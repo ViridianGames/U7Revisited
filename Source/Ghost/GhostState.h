@@ -110,6 +110,16 @@ public:
 	bool UpdateFontProperty();
 	bool UpdateFontSizeProperty();
 
+	// Control-type-specific font update helpers
+	void UpdateTextButtonFont(GuiTextButton* button, Font* font);
+	void UpdateIconButtonFont(GuiIconButton* button, Font* font);
+	void UpdateTextInputFont(GuiTextInput* input, Font* font);
+	void UpdateTextAreaFont(GuiTextArea* textarea, Font* font);
+	void UpdateListFont(GuiList* list, Font* font);
+	void UpdateListBoxFont(GuiListBox* listbox, Font* font);
+	void UpdatePanelFont(GuiPanel* panel, Font* font, int panelID);
+	void ApplyFontToElement(int elementID, Font* fontPtr);
+
 	// Generic width/height property helpers
 	bool UpdateWidthProperty(GuiElement* element);
 	bool UpdateHeightProperty(GuiElement* element);

@@ -491,21 +491,10 @@ void GhostSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, c
 		{
 			string text = element["text"];
 
-			// Inherit properties from parent, but allow override
-			string fontName = element.value("font", inheritedProps.is_null() ? "" : inheritedProps.value("font", ""));
-			int fontSize = element.value("fontSize", inheritedProps.is_null() ? 20 : inheritedProps.value("fontSize", 20));
-
-			// Track which properties are explicitly set in this element
-			if (element.contains("font"))
-			{
-				m_explicitProperties[id].insert("font");
-				m_elementFonts[id] = fontName;  // Store just the font name
-			}
-			if (element.contains("fontSize"))
-			{
-				m_explicitProperties[id].insert("fontSize");
-				m_elementFontSizes[id] = fontSize;
-			}
+			// Load font with inheritance support
+			string fontName;
+			int fontSize;
+			Font* font = LoadFontWithInheritance(element, inheritedProps, id, fontName, fontSize);
 
 			// Helper lambda to get color array with inheritance
 			auto getColorArray = [&](const string& key, Color defaultColor) -> Color {
@@ -533,36 +522,19 @@ void GhostSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, c
 			int absoluteX = parentX + posx;
 			int absoluteY = parentY + posy;
 
-			// Load font at the specified size (prepend base path)
-			string fontPath = fontName.empty() ? "" : s_baseFontPath + fontName;
-			Font font = LoadFontEx(fontPath.c_str(), fontSize, 0, 0);
-			if (font.texture.id == 0)
-			{
-				Log("GhostSerializer::LoadFromFile - Failed to load font: " + fontPath);
-				font = GetFontDefault();
-			}
-			else
-			{
-				Log("GhostSerializer (textbutton): Loaded font '" + fontPath + "' requested fontSize: " + std::to_string(fontSize) + ", actual baseSize: " + std::to_string(font.baseSize));
-			}
-
-			// Create a shared pointer for the font and store it to keep it alive
-			shared_ptr<Font> fontPtr = make_shared<Font>(font);
-			m_loadedFonts.push_back(fontPtr);
-
 			// Check if explicit size is provided, otherwise use auto-sizing
 			if (element.contains("size"))
 			{
 				auto sizeArr = element["size"];
 				int width = sizeArr[0].get<int>();
 				int height = sizeArr[1].get<int>();
-				gui->AddTextButton(id, absoluteX, absoluteY, width, height, text, fontPtr.get(),
+				gui->AddTextButton(id, absoluteX, absoluteY, width, height, text, font,
 				                   textColor, bgColor, borderColor, group, active);
 			}
 			else
 			{
 				// Use the auto-sizing version of AddTextButton
-				gui->AddTextButton(id, absoluteX, absoluteY, text, fontPtr.get(),
+				gui->AddTextButton(id, absoluteX, absoluteY, text, font,
 				                   textColor, bgColor, borderColor, group, active);
 			}
 		}
@@ -570,31 +542,10 @@ void GhostSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, c
 		{
 			string text = element["text"];
 
-			// Get font name with inheritance
-			string fontName = "";
-			if (element.contains("font"))
-			{
-				m_explicitProperties[id].insert("font");
-				fontName = element["font"].get<string>();
-				m_elementFonts[id] = fontName;  // Store just the font name
-			}
-			else if (!inheritedProps.is_null() && inheritedProps.contains("font"))
-			{
-				fontName = inheritedProps["font"].get<string>();
-			}
-
-			// Get font size with inheritance
-			int fontSize = 20;
-			if (element.contains("fontSize"))
-			{
-				m_explicitProperties[id].insert("fontSize");
-				fontSize = element["fontSize"].get<int>();
-				m_elementFontSizes[id] = fontSize;
-			}
-			else if (!inheritedProps.is_null() && inheritedProps.contains("fontSize"))
-			{
-				fontSize = inheritedProps["fontSize"].get<int>();
-			}
+			// Load font with inheritance support
+			string fontName;
+			int fontSize;
+			Font* font = LoadFontWithInheritance(element, inheritedProps, id, fontName, fontSize);
 
 			// Get textColor with inheritance
 			Color color = WHITE;
@@ -629,26 +580,10 @@ void GhostSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, c
 				int charWidth = element.value("width", 0);
 				height = element.value("height", 0);
 
-				// If we have a character width, we need to load the font first to multiply by baseSize
+				// If we have a character width, multiply by font baseSize
 				if (charWidth > 0)
 				{
-					// Load font temporarily to get baseSize for conversion
-					Font tempFont;
-					if (!fontName.empty())
-					{
-						string fontPath = s_baseFontPath + fontName;
-						tempFont = LoadFontEx(fontPath.c_str(), fontSize, 0, 0);
-						if (tempFont.texture.id != 0)
-						{
-							width = charWidth * tempFont.baseSize;
-							UnloadFont(tempFont);
-						}
-					}
-					if (width == 0)
-					{
-						// Fallback: assume baseSize of 30
-						width = charWidth * 30;
-					}
+					width = charWidth * font->baseSize;
 				}
 			}
 
@@ -658,36 +593,8 @@ void GhostSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, c
 			int absoluteX = parentX + posx;
 			int absoluteY = parentY + posy;
 
-			// Load font at the specified size, or use default if no name specified (prepend base path)
-			Font font;
-			if (!fontName.empty())
-			{
-				string fontPath = s_baseFontPath + fontName;
-				font = LoadFontEx(fontPath.c_str(), fontSize, 0, 0);
-				if (font.texture.id == 0)
-				{
-					Log("GhostSerializer::ParseElements - Failed to load font: " + fontPath);
-					font = GetFontDefault();
-				}
-				else
-				{
-					Log("GhostSerializer: Loaded font '" + fontPath + "' requested fontSize: " + std::to_string(fontSize) + ", actual baseSize: " + std::to_string(font.baseSize));
-				}
-			}
-			else
-			{
-				// No font name specified, use default font
-				font = GetFontDefault();
-				Log("GhostSerializer: Using default font, baseSize: " + std::to_string(font.baseSize));
-			}
-
-			// Create a shared pointer for the font and store it to keep it alive
-			shared_ptr<Font> fontPtr = make_shared<Font>(font);
-			m_loadedFonts.push_back(fontPtr);
-
 			// Width and height are now both in pixels, pass them directly
-			// (AddTextArea will no longer multiply width by baseSize)
-			gui->AddTextArea(id, fontPtr.get(), text, absoluteX, absoluteY, width, height, color, justified, group, active, false);
+			gui->AddTextArea(id, font, text, absoluteX, absoluteY, width, height, color, justified, group, active, false);
 		}
 		else if (type == "textinput")
 		{
@@ -696,50 +603,10 @@ void GhostSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, c
 			int width = size[0];
 			int height = size[1];
 
-			// Get font name with inheritance
-			string fontName = "";
-			if (element.contains("font"))
-			{
-				m_explicitProperties[id].insert("font");
-				fontName = element["font"].get<string>();
-				m_elementFonts[id] = fontName;  // Store just the font name
-			}
-			else if (!inheritedProps.is_null() && inheritedProps.contains("font"))
-			{
-				fontName = inheritedProps["font"].get<string>();
-			}
-
-			// Get font size with inheritance
-			int fontSize = 20;
-			if (element.contains("fontSize"))
-			{
-				m_explicitProperties[id].insert("fontSize");
-				fontSize = element["fontSize"].get<int>();
-				m_elementFontSizes[id] = fontSize;
-			}
-			else if (!inheritedProps.is_null() && inheritedProps.contains("fontSize"))
-			{
-				fontSize = inheritedProps["fontSize"].get<int>();
-			}
-
-			// Load font if specified
-			Font* font = gui->m_Font.get();  // Default to GUI font
-			if (!fontName.empty())
-			{
-				string fontPath = s_baseFontPath + fontName;
-				auto loadedFont = LoadFontEx(fontPath.c_str(), fontSize, 0, 0);
-				if (loadedFont.texture.id == 0)
-				{
-					Log("GhostSerializer::ParseElements - Failed to load font: " + fontPath);
-				}
-				else
-				{
-					// Store the font to keep it alive
-					auto fontPtr = make_shared<Font>(loadedFont);
-					m_loadedFonts.push_back(fontPtr);
-					font = fontPtr.get();
-				}
-			}
+			// Load font with inheritance support
+			string fontName;
+			int fontSize;
+			Font* font = LoadFontWithInheritance(element, inheritedProps, id, fontName, fontSize);
 
 			// Get colors
 			Color textColor = WHITE;
@@ -1024,65 +891,17 @@ void GhostSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, c
 				                    (unsigned char)arr[2], (unsigned char)arr[3] };
 			}
 
-			// Get font name with inheritance
-			string fontName = "";
-			if (element.contains("font"))
-			{
-				m_explicitProperties[id].insert("font");
-				fontName = element["font"].get<string>();
-				m_elementFonts[id] = fontName;  // Store just the font name
-			}
-			else if (!inheritedProps.is_null() && inheritedProps.contains("font"))
-			{
-				fontName = inheritedProps["font"].get<string>();
-			}
-
-			// Get font size with inheritance
-			int fontSize = 20;
-			if (element.contains("fontSize"))
-			{
-				m_explicitProperties[id].insert("fontSize");
-				fontSize = element["fontSize"].get<int>();
-				m_elementFontSizes[id] = fontSize;
-			}
-			else if (!inheritedProps.is_null() && inheritedProps.contains("fontSize"))
-			{
-				fontSize = inheritedProps["fontSize"].get<int>();
-			}
+			// Load font with inheritance support
+			string fontName;
+			int fontSize;
+			Font* font = LoadFontWithInheritance(element, inheritedProps, id, fontName, fontSize);
 
 			// Add parent offsets to make position absolute
 			int absoluteX = parentX + posx;
 			int absoluteY = parentY + posy;
 
-			// Load font at the specified size, or use default if no name specified (prepend base path)
-			Font font;
-			if (!fontName.empty())
-			{
-				string fontPath = s_baseFontPath + fontName;
-				font = LoadFontEx(fontPath.c_str(), fontSize, 0, 0);
-				if (font.texture.id == 0)
-				{
-					Log("GhostSerializer::ParseElements - Failed to load font: " + fontPath);
-					font = GetFontDefault();
-				}
-				else
-				{
-					Log("GhostSerializer: Loaded font '" + fontPath + "' requested fontSize: " + std::to_string(fontSize) + ", actual baseSize: " + std::to_string(font.baseSize));
-				}
-			}
-			else
-			{
-				// No font name specified, use default font
-				font = GetFontDefault();
-				Log("GhostSerializer: Using default font, baseSize: " + std::to_string(font.baseSize));
-			}
-
-			// Create a shared pointer for the font and store it to keep it alive
-			shared_ptr<Font> fontPtr = make_shared<Font>(font);
-			m_loadedFonts.push_back(fontPtr);
-
 			// Add the list
-			gui->AddGuiList(id, absoluteX, absoluteY, width, height, fontPtr.get(), items, textColor, bgColor, borderColor, group, active);
+			gui->AddGuiList(id, absoluteX, absoluteY, width, height, font, items, textColor, bgColor, borderColor, group, active);
 		}
 		else if (type == "listbox")
 		{
@@ -1148,60 +967,17 @@ void GhostSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, c
 				                    (unsigned char)arr[2], (unsigned char)arr[3] };
 			}
 
-			// Get font name with inheritance
-			string fontName = "";
-			if (element.contains("font"))
-			{
-				m_explicitProperties[id].insert("font");
-				fontName = element["font"].get<string>();
-				m_elementFonts[id] = fontName;  // Store just the font name
-			}
-			else if (!inheritedProps.is_null() && inheritedProps.contains("font"))
-			{
-				fontName = inheritedProps["font"].get<string>();
-			}
-
-			// Get font size with inheritance
-			int fontSize = 20;
-			if (element.contains("fontSize"))
-			{
-				m_explicitProperties[id].insert("fontSize");
-				fontSize = element["fontSize"].get<int>();
-				m_elementFontSizes[id] = fontSize;
-			}
-			else if (!inheritedProps.is_null() && inheritedProps.contains("fontSize"))
-			{
-				fontSize = inheritedProps["fontSize"].get<int>();
-			}
-
-			// Load font at the specified size
-			Font font;
-			if (!fontName.empty())
-			{
-				string fontPath = s_baseFontPath + fontName;
-				font = LoadFontEx(fontPath.c_str(), fontSize, 0, 0);
-				if (font.texture.id == 0)
-				{
-					Log("GhostSerializer::ParseElements - Failed to load font: " + fontPath);
-					font = GetFontDefault();
-				}
-			}
-			else
-			{
-				// No font name specified, use default font
-				font = GetFontDefault();
-			}
-
-			// Create a shared pointer for the font and store it to keep it alive
-			shared_ptr<Font> fontPtr = make_shared<Font>(font);
-			m_loadedFonts.push_back(fontPtr);
+			// Load font with inheritance support
+			string fontName;
+			int fontSize;
+			Font* font = LoadFontWithInheritance(element, inheritedProps, id, fontName, fontSize);
 
 			// Add parent offsets to make position absolute
 			int absoluteX = parentX + posx;
 			int absoluteY = parentY + posy;
 
 			// Add the listbox
-			gui->AddListBox(id, absoluteX, absoluteY, width, height, fontPtr.get(), items, textColor, bgColor, borderColor, group, active);
+			gui->AddListBox(id, absoluteX, absoluteY, width, height, font, items, textColor, bgColor, borderColor, group, active);
 		}
 		else if (type == "iconbutton")
 		{
@@ -1233,55 +1009,14 @@ void GhostSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, c
 				                  (unsigned char)arr[2], (unsigned char)arr[3] };
 			}
 
-			// Get font name with inheritance
-			string fontName = "";
-			if (element.contains("font"))
-			{
-				m_explicitProperties[id].insert("font");
-				fontName = element["font"].get<string>();
-				m_elementFonts[id] = fontName;
-			}
-			else if (!inheritedProps.is_null() && inheritedProps.contains("font"))
-			{
-				fontName = inheritedProps["font"].get<string>();
-			}
-
-			// Get font size with inheritance
-			int fontSize = 20;
-			if (element.contains("fontSize"))
-			{
-				m_explicitProperties[id].insert("fontSize");
-				fontSize = element["fontSize"].get<int>();
-				m_elementFontSizes[id] = fontSize;
-			}
-			else if (!inheritedProps.is_null() && inheritedProps.contains("fontSize"))
-			{
-				fontSize = inheritedProps["fontSize"].get<int>();
-			}
+			// Load font with inheritance support
+			string fontName;
+			int fontSize;
+			Font* font = LoadFontWithInheritance(element, inheritedProps, id, fontName, fontSize);
 
 			// Add parent offsets to make position absolute
 			int absoluteX = parentX + posx;
 			int absoluteY = parentY + posy;
-
-			// Load font if specified
-			Font font;
-			shared_ptr<Font> fontPtr;
-			if (!fontName.empty())
-			{
-				string fontPath = s_baseFontPath + fontName;
-				font = LoadFontEx(fontPath.c_str(), fontSize, 0, 0);
-				if (font.texture.id == 0)
-				{
-					Log("GhostSerializer::ParseElements - Failed to load font: " + fontPath);
-					font = GetFontDefault();
-				}
-				else
-				{
-					Log("GhostSerializer: Loaded font '" + fontPath + "' requested fontSize: " + std::to_string(fontSize) + ", actual baseSize: " + std::to_string(font.baseSize));
-				}
-				fontPtr = make_shared<Font>(font);
-				m_loadedFonts.push_back(fontPtr);
-			}
 
 			// Load sprite
 			shared_ptr<Sprite> upSprite = nullptr;
@@ -1311,7 +1046,7 @@ void GhostSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, c
 
 			// Add the iconbutton (downbutton and inactivebutton default to nullptr)
 			gui->AddIconButton(id, absoluteX, absoluteY, upSprite, nullptr, nullptr, text,
-			                  fontPtr ? fontPtr.get() : nullptr, fontColor, scale, group, active, canBeHeld);
+			                  font, fontColor, scale, group, active, canBeHeld);
 		}
 		else if (type == "octagonbox")
 		{
@@ -1629,6 +1364,66 @@ ghost_json GhostSerializer::BuildInheritedProps(int parentElementID) const
 	return inheritedProps;
 }
 
+std::string GhostSerializer::ResolveStringProperty(int elementID, const std::string& propertyName) const
+{
+	// Check if element has explicit property
+	if (propertyName == "font")
+	{
+		auto it = m_elementFonts.find(elementID);
+		if (it != m_elementFonts.end())
+		{
+			return it->second;
+		}
+	}
+
+	// Walk up parent chain to find inherited value
+	int currentID = GetParentID(elementID);
+	while (currentID != -1)
+	{
+		if (propertyName == "font")
+		{
+			auto it = m_elementFonts.find(currentID);
+			if (it != m_elementFonts.end())
+			{
+				return it->second;
+			}
+		}
+		currentID = GetParentID(currentID);
+	}
+
+	return "";  // Not found
+}
+
+int GhostSerializer::ResolveIntProperty(int elementID, const std::string& propertyName, int defaultValue) const
+{
+	// Check if element has explicit property
+	if (propertyName == "fontSize")
+	{
+		auto it = m_elementFontSizes.find(elementID);
+		if (it != m_elementFontSizes.end())
+		{
+			return it->second;
+		}
+	}
+
+	// Walk up parent chain to find inherited value
+	int currentID = GetParentID(elementID);
+	while (currentID != -1)
+	{
+		if (propertyName == "fontSize")
+		{
+			auto it = m_elementFontSizes.find(currentID);
+			if (it != m_elementFontSizes.end())
+			{
+				return it->second;
+			}
+		}
+		currentID = GetParentID(currentID);
+	}
+
+	return defaultValue;  // Not found, return default
+}
+
 bool GhostSerializer::LoadIntoPanel(const std::string& filename, Gui* gui, int parentX, int parentY, int parentElementID)
 {
 	// Read JSON from file
@@ -1794,11 +1589,11 @@ void GhostSerializer::ReflowPanel(int panelID, Gui* gui)
 
 	auto panel = static_cast<GuiPanel*>(panelIt->second.get());
 
-	// Get layout direction, padding, and columns
-	string layout = m_panelLayouts.count(panelID) ? m_panelLayouts[panelID] : "horz";
-	int horzPadding = m_panelHorzPaddings.count(panelID) ? m_panelHorzPaddings[panelID] : 5;
-	int vertPadding = m_panelVertPaddings.count(panelID) ? m_panelVertPaddings[panelID] : 5;
-	int columns = m_panelColumns.count(panelID) ? m_panelColumns[panelID] : 1;
+	// Get layout direction, padding, and columns (use getter methods for consistent defaults)
+	string layout = GetPanelLayout(panelID);
+	int horzPadding = GetPanelHorzPadding(panelID);
+	int vertPadding = GetPanelVertPadding(panelID);
+	int columns = GetPanelColumns(panelID);
 
 	// Get children of this panel
 	auto childrenIt = m_childrenMap.find(panelID);
@@ -2027,14 +1822,14 @@ ghost_json GhostSerializer::SerializeElement(int elementID, Gui* gui, int parent
 			if (explicitProps.count("font") > 0)
 			{
 				auto fontIt = m_elementFonts.find(elementID);
-				if (fontIt != m_elementFonts.end())
+				if (fontIt != m_elementFonts.end() && !fontIt->second.empty())
 					elementJson["font"] = fontIt->second;
 			}
 
 			if (explicitProps.count("fontSize") > 0)
 			{
 				auto sizeIt = m_elementFontSizes.find(elementID);
-				if (sizeIt != m_elementFontSizes.end())
+				if (sizeIt != m_elementFontSizes.end() && sizeIt->second > 0)
 					elementJson["fontSize"] = sizeIt->second;
 			}
 		}
@@ -2112,14 +1907,14 @@ ghost_json GhostSerializer::SerializeElement(int elementID, Gui* gui, int parent
 			if (explicitProps.count("font") > 0)
 			{
 				auto fontIt = m_elementFonts.find(elementID);
-				if (fontIt != m_elementFonts.end())
+				if (fontIt != m_elementFonts.end() && !fontIt->second.empty())
 					elementJson["font"] = fontIt->second;
 			}
 
 			if (explicitProps.count("fontSize") > 0)
 			{
 				auto sizeIt = m_elementFontSizes.find(elementID);
-				if (sizeIt != m_elementFontSizes.end())
+				if (sizeIt != m_elementFontSizes.end() && sizeIt->second > 0)
 					elementJson["fontSize"] = sizeIt->second;
 			}
 
@@ -2219,14 +2014,14 @@ ghost_json GhostSerializer::SerializeElement(int elementID, Gui* gui, int parent
 			if (explicitProps.count("font") > 0)
 			{
 				auto fontIt = m_elementFonts.find(elementID);
-				if (fontIt != m_elementFonts.end())
+				if (fontIt != m_elementFonts.end() && !fontIt->second.empty())
 					elementJson["font"] = fontIt->second;
 			}
 
 			if (explicitProps.count("fontSize") > 0)
 			{
 				auto sizeIt = m_elementFontSizes.find(elementID);
-				if (sizeIt != m_elementFontSizes.end())
+				if (sizeIt != m_elementFontSizes.end() && sizeIt->second > 0)
 					elementJson["fontSize"] = sizeIt->second;
 			}
 		}
@@ -2319,14 +2114,14 @@ ghost_json GhostSerializer::SerializeElement(int elementID, Gui* gui, int parent
 			if (explicitProps.count("font") > 0)
 			{
 				auto fontIt = m_elementFonts.find(elementID);
-				if (fontIt != m_elementFonts.end())
+				if (fontIt != m_elementFonts.end() && !fontIt->second.empty())
 					elementJson["font"] = fontIt->second;
 			}
 
 			if (explicitProps.count("fontSize") > 0)
 			{
 				auto sizeIt = m_elementFontSizes.find(elementID);
-				if (sizeIt != m_elementFontSizes.end())
+				if (sizeIt != m_elementFontSizes.end() && sizeIt->second > 0)
 					elementJson["fontSize"] = sizeIt->second;
 			}
 		}
@@ -2349,14 +2144,14 @@ ghost_json GhostSerializer::SerializeElement(int elementID, Gui* gui, int parent
 			if (explicitProps.count("font") > 0)
 			{
 				auto fontIt = m_elementFonts.find(elementID);
-				if (fontIt != m_elementFonts.end())
+				if (fontIt != m_elementFonts.end() && !fontIt->second.empty())
 					elementJson["font"] = fontIt->second;
 			}
 
 			if (explicitProps.count("fontSize") > 0)
 			{
 				auto sizeIt = m_elementFontSizes.find(elementID);
-				if (sizeIt != m_elementFontSizes.end())
+				if (sizeIt != m_elementFontSizes.end() && sizeIt->second > 0)
 					elementJson["fontSize"] = sizeIt->second;
 			}
 		}
@@ -2465,4 +2260,79 @@ GhostSerializer::SpriteDefinition GhostSerializer::GetStretchButtonRightSprite(i
 {
 	auto it = m_stretchButtonRightSprites.find(buttonID);
 	return (it != m_stretchButtonRightSprites.end()) ? it->second : SpriteDefinition();
+}
+
+// Helper function to load font with inheritance support
+Font* GhostSerializer::LoadFontWithInheritance(const ghost_json& element, const ghost_json& inheritedProps, int elementID, std::string& outFontName, int& outFontSize)
+{
+	// Get font name - check element first, then inherited
+	outFontName = "";
+	bool fontIsExplicit = false;
+
+	if (element.contains("font"))
+	{
+		outFontName = element["font"].get<std::string>();
+		// Only mark as explicit if non-empty
+		if (!outFontName.empty())
+		{
+			m_explicitProperties[elementID].insert("font");
+			m_elementFonts[elementID] = outFontName;
+			fontIsExplicit = true;
+		}
+	}
+
+	// If no valid explicit font, try inherited
+	if (!fontIsExplicit && !inheritedProps.is_null() && inheritedProps.contains("font"))
+	{
+		outFontName = inheritedProps["font"].get<std::string>();
+	}
+
+	// Get font size - check element first, then inherited
+	outFontSize = 20;  // default
+	bool fontSizeIsExplicit = false;
+
+	if (element.contains("fontSize"))
+	{
+		outFontSize = element["fontSize"].get<int>();
+		// Only mark as explicit if valid (> 0)
+		if (outFontSize > 0)
+		{
+			m_explicitProperties[elementID].insert("fontSize");
+			m_elementFontSizes[elementID] = outFontSize;
+			fontSizeIsExplicit = true;
+		}
+	}
+
+	// If no valid explicit fontSize, try inherited
+	if (!fontSizeIsExplicit && !inheritedProps.is_null() && inheritedProps.contains("fontSize"))
+	{
+		outFontSize = inheritedProps["fontSize"].get<int>();
+	}
+
+	// Load the font file
+	Font font;
+	if (!outFontName.empty())
+	{
+		std::string fontPath = s_baseFontPath + outFontName;
+		font = LoadFontEx(fontPath.c_str(), outFontSize, 0, 0);
+		if (font.texture.id == 0)
+		{
+			Log("GhostSerializer::LoadFontWithInheritance - Failed to load font: " + fontPath + ", using default");
+			font = GetFontDefault();
+		}
+		else
+		{
+			Log("GhostSerializer::LoadFontWithInheritance - Loaded font '" + fontPath + "' at size " + std::to_string(outFontSize));
+		}
+	}
+	else
+	{
+		// No font specified, use default
+		font = GetFontDefault();
+	}
+
+	// Store font in shared_ptr to keep it alive
+	auto fontPtr = std::make_shared<Font>(font);
+	m_loadedFonts.push_back(fontPtr);
+	return fontPtr.get();
 }

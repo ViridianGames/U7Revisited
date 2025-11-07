@@ -560,10 +560,20 @@ void GhostState::PopulateFontProperty()
 		auto fontInput = m_gui->GetElement(fontInputID);
 		if (fontInput && fontInput->m_Type == GUI_TEXTINPUT)
 		{
-			std::string font = m_contentSerializer->GetElementFont(m_selectedElementID);
 			auto textInput = static_cast<GuiTextInput*>(fontInput.get());
-			textInput->m_String = font;
-			Log("Populated PROPERTY_FONT with: " + font);
+
+			// Only populate if font is explicitly set (not inherited)
+			if (m_contentSerializer->IsPropertyExplicit(m_selectedElementID, "font"))
+			{
+				std::string font = m_contentSerializer->GetElementFont(m_selectedElementID);
+				textInput->m_String = font;
+				Log("Populated PROPERTY_FONT with explicit value: " + font);
+			}
+			else
+			{
+				textInput->m_String = "";
+				Log("PROPERTY_FONT cleared (property is inherited, not explicit)");
+			}
 		}
 	}
 }
@@ -575,7 +585,13 @@ void GhostState::PopulateFontSizeProperty()
 	if (fontSizeInputID != -1)
 	{
 		auto fontSizeInput = m_gui->GetElement(fontSizeInputID);
-		int fontSize = m_contentSerializer->GetElementFontSize(m_selectedElementID);
+
+		// Only populate if fontSize is explicitly set (not inherited)
+		int fontSize = 0;
+		if (m_contentSerializer->IsPropertyExplicit(m_selectedElementID, "fontSize"))
+		{
+			fontSize = m_contentSerializer->GetElementFontSize(m_selectedElementID);
+		}
 
 		if (fontSizeInput && fontSizeInput->m_Type == GUI_TEXTINPUT)
 		{
@@ -583,12 +599,13 @@ void GhostState::PopulateFontSizeProperty()
 			if (fontSize != 0)
 			{
 				textInput->m_String = to_string(fontSize);
+				Log("Populated PROPERTY_FONT_SIZE with explicit value: " + to_string(fontSize));
 			}
 			else
 			{
 				textInput->m_String = "";
+				Log("PROPERTY_FONT_SIZE cleared (property is inherited, not explicit)");
 			}
-			Log("Populated PROPERTY_FONT_SIZE with: " + to_string(fontSize));
 		}
 		else if (fontSizeInput && fontSizeInput->m_Type == GUI_SCROLLBAR)
 		{
@@ -596,13 +613,151 @@ void GhostState::PopulateFontSizeProperty()
 			if (fontSize != 0)
 			{
 				scrollbar->m_Value = fontSize;
+				Log("Populated PROPERTY_FONT_SIZE scrollbar with explicit value: " + to_string(fontSize));
 			}
 			else
 			{
 				scrollbar->m_Value = 0;
+				Log("PROPERTY_FONT_SIZE scrollbar cleared (property is inherited, not explicit)");
 			}
-			Log("Populated PROPERTY_FONT_SIZE scrollbar with: " + to_string(fontSize));
 		}
+	}
+}
+
+// Control-type-specific font update helpers
+// Each function handles ALL font-related updates for that control type
+
+void GhostState::UpdateTextButtonFont(GuiTextButton* button, Font* font)
+{
+	button->m_Font = font;
+	// Recalculate textbutton dimensions with new font
+	Vector2 textDims = MeasureTextEx(*button->m_Font, button->m_String.c_str(), button->m_Font->baseSize, 1);
+	button->m_Width = textDims.x;
+	button->m_Height = textDims.y;
+}
+
+void GhostState::UpdateIconButtonFont(GuiIconButton* button, Font* font)
+{
+	button->m_Font = font;
+}
+
+void GhostState::UpdateTextInputFont(GuiTextInput* input, Font* font)
+{
+	input->m_Font = font;
+	// Recalculate textinput height to accommodate new font size
+	float minHeight = static_cast<float>(input->m_Font->baseSize) + 4.0f;
+	if (input->m_Height < minHeight)
+	{
+		input->m_Height = minHeight;
+
+		// Update the PROPERTY_HEIGHT scrollbar to reflect the new height
+		int heightScrollbarID = m_propertySerializer->GetElementID("PROPERTY_HEIGHT");
+		if (heightScrollbarID != -1)
+		{
+			auto heightElem = m_gui->GetElement(heightScrollbarID);
+			if (heightElem && heightElem->m_Type == GUI_SCROLLBAR)
+			{
+				static_cast<GuiScrollBar*>(heightElem.get())->m_Value = static_cast<int>(minHeight);
+			}
+		}
+	}
+}
+
+void GhostState::UpdateTextAreaFont(GuiTextArea* textarea, Font* font)
+{
+	textarea->m_Font = font;
+	// Recalculate textarea dimensions with new font
+	Vector2 textDims = MeasureTextEx(*textarea->m_Font, textarea->m_String.c_str(), textarea->m_Font->baseSize, 1);
+	textarea->m_Width = textDims.x;
+	textarea->m_Height = textDims.y;
+
+	// Update the PROPERTY_WIDTH and PROPERTY_HEIGHT scrollbars to reflect the new dimensions
+	int widthScrollbarID = m_propertySerializer->GetElementID("PROPERTY_WIDTH");
+	if (widthScrollbarID != -1)
+	{
+		auto widthElem = m_gui->GetElement(widthScrollbarID);
+		if (widthElem && widthElem->m_Type == GUI_SCROLLBAR)
+		{
+			static_cast<GuiScrollBar*>(widthElem.get())->m_Value = static_cast<int>(textarea->m_Width);
+		}
+	}
+
+	int heightScrollbarID = m_propertySerializer->GetElementID("PROPERTY_HEIGHT");
+	if (heightScrollbarID != -1)
+	{
+		auto heightElem = m_gui->GetElement(heightScrollbarID);
+		if (heightElem && heightElem->m_Type == GUI_SCROLLBAR)
+		{
+			static_cast<GuiScrollBar*>(heightElem.get())->m_Value = static_cast<int>(textarea->m_Height);
+		}
+	}
+}
+
+void GhostState::UpdateListFont(GuiList* list, Font* font)
+{
+	list->m_Font = font;
+}
+
+void GhostState::UpdateListBoxFont(GuiListBox* listbox, Font* font)
+{
+	listbox->m_Font = font;
+	// Recalculate item height and visible item count based on new font
+	listbox->m_ItemHeight = font->baseSize + 4;
+	listbox->m_VisibleItemCount = static_cast<int>(listbox->m_Height / listbox->m_ItemHeight);
+}
+
+void GhostState::UpdatePanelFont(GuiPanel* panel, Font* font, int panelID)
+{
+	// Update the panel itself
+	panel->m_Font = font;
+
+	// Update children that inherit (don't have explicit font/fontSize)
+	std::vector<int> allIDs = m_contentSerializer->GetAllElementIDs();
+	for (int childID : allIDs)
+	{
+		if (m_contentSerializer->GetParentID(childID) == panelID)
+		{
+			bool hasExplicitFont = m_contentSerializer->IsPropertyExplicit(childID, "font");
+			bool hasExplicitSize = m_contentSerializer->IsPropertyExplicit(childID, "fontSize");
+
+			if (!hasExplicitFont && !hasExplicitSize)
+			{
+				ApplyFontToElement(childID, font);  // Recursive dispatch
+			}
+		}
+	}
+}
+
+void GhostState::ApplyFontToElement(int elementID, Font* fontPtr)
+{
+	auto elem = m_gui->GetElement(elementID);
+	if (!elem) return;
+
+	switch (elem->m_Type)
+	{
+	case GUI_TEXTBUTTON:
+		UpdateTextButtonFont(static_cast<GuiTextButton*>(elem.get()), fontPtr);
+		break;
+	case GUI_ICONBUTTON:
+		UpdateIconButtonFont(static_cast<GuiIconButton*>(elem.get()), fontPtr);
+		break;
+	case GUI_TEXTINPUT:
+		UpdateTextInputFont(static_cast<GuiTextInput*>(elem.get()), fontPtr);
+		break;
+	case GUI_TEXTAREA:
+		UpdateTextAreaFont(static_cast<GuiTextArea*>(elem.get()), fontPtr);
+		break;
+	case GUI_LIST:
+		UpdateListFont(static_cast<GuiList*>(elem.get()), fontPtr);
+		break;
+	case GUI_LISTBOX:
+		UpdateListBoxFont(static_cast<GuiListBox*>(elem.get()), fontPtr);
+		break;
+	case GUI_PANEL:
+		UpdatePanelFont(static_cast<GuiPanel*>(elem.get()), fontPtr, elementID);
+		break;
+	default:
+		break;
 	}
 }
 
@@ -610,274 +765,79 @@ void GhostState::PopulateFontSizeProperty()
 // Returns true if the property was updated
 bool GhostState::UpdateFontProperty()
 {
+	// 1. Get new font value from UI
 	int fontInputID = m_propertySerializer->GetElementID("PROPERTY_FONT");
-	if (fontInputID != -1 && m_selectedElementID != -1)
-	{
-		auto fontInput = m_gui->GetElement(fontInputID);
-		if (fontInput && fontInput->m_Type == GUI_TEXTINPUT)
-		{
-			auto textInput = static_cast<GuiTextInput*>(fontInput.get());
-			std::string newFont = textInput->m_String;
-			std::string oldFont = m_contentSerializer->GetElementFont(m_selectedElementID);
+	if (fontInputID == -1 || m_selectedElementID == -1) return false;
 
-			if (newFont != oldFont)
-			{
-				auto selectedElement = m_gui->GetElement(m_selectedElementID);
-				if (selectedElement)
-				{
-					int oldFontSize = m_contentSerializer->GetElementFontSize(m_selectedElementID);
-					if (oldFontSize == 0) oldFontSize = 16;
+	auto fontInput = m_gui->GetElement(fontInputID);
+	if (!fontInput || fontInput->m_Type != GUI_TEXTINPUT) return false;
 
-					std::string fontPath = m_fontPath + newFont;
-					auto newFontPtr = std::make_shared<Font>(LoadFontEx(fontPath.c_str(), oldFontSize, 0, 0));
+	std::string newFont = static_cast<GuiTextInput*>(fontInput.get())->m_String;
 
-					// Update font based on element type
-					Font* fontPtr = newFontPtr.get();
-					switch (selectedElement->m_Type)
-					{
-					case GUI_TEXTBUTTON:
-					{
-						auto textbutton = static_cast<GuiTextButton*>(selectedElement.get());
-						textbutton->m_Font = fontPtr;
-						// Recalculate textbutton dimensions with new font
-						Vector2 textDims = MeasureTextEx(*textbutton->m_Font, textbutton->m_String.c_str(), textbutton->m_Font->baseSize, 1);
-						textbutton->m_Width = textDims.x;
-						textbutton->m_Height = textDims.y;
-						break;
-					}
-					case GUI_ICONBUTTON:
-						static_cast<GuiIconButton*>(selectedElement.get())->m_Font = fontPtr;
-						break;
-					case GUI_TEXTINPUT:
-					{
-						auto textinput = static_cast<GuiTextInput*>(selectedElement.get());
-						textinput->m_Font = fontPtr;
-						// Recalculate textinput height to accommodate new font size
-						// Height should be at least the font baseSize plus some padding
-						float minHeight = static_cast<float>(textinput->m_Font->baseSize) + 4.0f;  // Add small padding
-						if (textinput->m_Height < minHeight)
-						{
-							textinput->m_Height = minHeight;
+	// 2. Compare with old value
+	std::string oldFont = m_contentSerializer->ResolveStringProperty(m_selectedElementID, "font");
+	if (oldFont.empty()) oldFont = "babyblocks.ttf";
+	if (newFont == oldFont) return false;
 
-							// Update the PROPERTY_HEIGHT scrollbar to reflect the new height
-							int heightScrollbarID = m_propertySerializer->GetElementID("PROPERTY_HEIGHT");
-							if (heightScrollbarID != -1)
-							{
-								auto heightElem = m_gui->GetElement(heightScrollbarID);
-								if (heightElem && heightElem->m_Type == GUI_SCROLLBAR)
-								{
-									static_cast<GuiScrollBar*>(heightElem.get())->m_Value = static_cast<int>(minHeight);
-								}
-							}
-						}
-						break;
-					}
-					case GUI_PANEL:
-						static_cast<GuiPanel*>(selectedElement.get())->m_Font = fontPtr;
-						break;
-					case GUI_TEXTAREA:
-					{
-						auto textarea = static_cast<GuiTextArea*>(selectedElement.get());
-						textarea->m_Font = fontPtr;
-						// Recalculate textarea dimensions with new font
-						Vector2 textDims = MeasureTextEx(*textarea->m_Font, textarea->m_String.c_str(), textarea->m_Font->baseSize, 1);
-						textarea->m_Width = textDims.x;
-						textarea->m_Height = textDims.y;
+	// 3. Load font with CURRENT font size
+	int fontSize = m_contentSerializer->ResolveIntProperty(m_selectedElementID, "fontSize", 16);
+	std::string fontPath = m_fontPath + newFont;
+	auto newFontPtr = std::make_shared<Font>(LoadFontEx(fontPath.c_str(), fontSize, 0, 0));
 
-						// Update the PROPERTY_WIDTH and PROPERTY_HEIGHT scrollbars to reflect the new dimensions
-						int widthScrollbarID = m_propertySerializer->GetElementID("PROPERTY_WIDTH");
-						if (widthScrollbarID != -1)
-						{
-							auto widthElem = m_gui->GetElement(widthScrollbarID);
-							if (widthElem && widthElem->m_Type == GUI_SCROLLBAR)
-							{
-								static_cast<GuiScrollBar*>(widthElem.get())->m_Value = static_cast<int>(textarea->m_Width);
-							}
-						}
+	// 4. Apply to element (dispatcher handles everything)
+	ApplyFontToElement(m_selectedElementID, newFontPtr.get());
 
-						int heightScrollbarID = m_propertySerializer->GetElementID("PROPERTY_HEIGHT");
-						if (heightScrollbarID != -1)
-						{
-							auto heightElem = m_gui->GetElement(heightScrollbarID);
-							if (heightElem && heightElem->m_Type == GUI_SCROLLBAR)
-							{
-								static_cast<GuiScrollBar*>(heightElem.get())->m_Value = static_cast<int>(textarea->m_Height);
-							}
-						}
-						break;
-					}
-					case GUI_LIST:
-						static_cast<GuiList*>(selectedElement.get())->m_Font = fontPtr;
-						break;
-					case GUI_LISTBOX:
-					{
-						auto listbox = static_cast<GuiListBox*>(selectedElement.get());
-						listbox->m_Font = fontPtr;
-						// Recalculate item height and visible item count based on new font
-						listbox->m_ItemHeight = fontPtr->baseSize + 4;  // Add padding
-						listbox->m_VisibleItemCount = static_cast<int>(listbox->m_Height / listbox->m_ItemHeight);
-						break;
-					}
-					default:
-						return false; // Element type doesn't support fonts
-					}
+	// 5. Save changes
+	m_preservedFonts.push_back(newFontPtr);
+	m_contentSerializer->SetElementFont(m_selectedElementID, newFont);
 
-					m_preservedFonts.push_back(newFontPtr);
-					m_contentSerializer->SetElementFont(m_selectedElementID, newFont);
-
-					Log("Updated element " + to_string(m_selectedElementID) + " font to: " + newFont);
-					return true;
-				}
-			}
-		}
-	}
-	return false;
+	Log("Updated element " + to_string(m_selectedElementID) + " font to: " + newFont);
+	return true;
 }
 
 // Helper to update font size property from property panel
 // Returns true if the property was updated
 bool GhostState::UpdateFontSizeProperty()
 {
+	// 1. Get new fontSize value from UI (TextInput OR ScrollBar)
 	int fontSizeInputID = m_propertySerializer->GetElementID("PROPERTY_FONT_SIZE");
-	if (fontSizeInputID != -1 && m_selectedElementID != -1)
+	if (fontSizeInputID == -1 || m_selectedElementID == -1) return false;
+
+	auto fontSizeInput = m_gui->GetElement(fontSizeInputID);
+	if (!fontSizeInput) return false;
+
+	int newFontSize = 0;
+	if (fontSizeInput->m_Type == GUI_TEXTINPUT)
 	{
-		auto fontSizeInput = m_gui->GetElement(fontSizeInputID);
-		int newFontSize = 0;
-
-		if (fontSizeInput && fontSizeInput->m_Type == GUI_TEXTINPUT)
-		{
-			auto textInput = static_cast<GuiTextInput*>(fontSizeInput.get());
-			try
-			{
-				newFontSize = std::stoi(textInput->m_String);
-			}
-			catch (...)
-			{
-				return false;
-			}
-		}
-		else if (fontSizeInput && fontSizeInput->m_Type == GUI_SCROLLBAR)
-		{
-			auto scrollbar = static_cast<GuiScrollBar*>(fontSizeInput.get());
-			newFontSize = scrollbar->m_Value;
-		}
-
-		if (newFontSize > 0)
-		{
-			int oldFontSize = m_contentSerializer->GetElementFontSize(m_selectedElementID);
-			if (newFontSize != oldFontSize)
-			{
-				auto selectedElement = m_gui->GetElement(m_selectedElementID);
-				if (selectedElement)
-				{
-					std::string fontName = m_contentSerializer->GetElementFont(m_selectedElementID);
-					bool hadEmptyFont = fontName.empty();
-					if (fontName.empty()) fontName = "babyblocks.ttf";
-
-					std::string fontPath = m_fontPath + fontName;
-					auto newFontPtr = std::make_shared<Font>(LoadFontEx(fontPath.c_str(), newFontSize, 0, 0));
-
-					// Update font based on element type
-					Font* fontPtr = newFontPtr.get();
-					switch (selectedElement->m_Type)
-					{
-					case GUI_TEXTBUTTON:
-					{
-						auto textbutton = static_cast<GuiTextButton*>(selectedElement.get());
-						textbutton->m_Font = fontPtr;
-						// Recalculate textbutton dimensions with new font
-						Vector2 textDims = MeasureTextEx(*textbutton->m_Font, textbutton->m_String.c_str(), textbutton->m_Font->baseSize, 1);
-						textbutton->m_Width = textDims.x;
-						textbutton->m_Height = textDims.y;
-						break;
-					}
-					case GUI_ICONBUTTON:
-						static_cast<GuiIconButton*>(selectedElement.get())->m_Font = fontPtr;
-						break;
-					case GUI_TEXTINPUT:
-					{
-						auto textinput = static_cast<GuiTextInput*>(selectedElement.get());
-						textinput->m_Font = fontPtr;
-						// Recalculate textinput height to accommodate new font size
-						// Height should be at least the font baseSize plus some padding
-						float minHeight = static_cast<float>(textinput->m_Font->baseSize) + 4.0f;  // Add small padding
-						if (textinput->m_Height < minHeight)
-						{
-							textinput->m_Height = minHeight;
-
-							// Update the PROPERTY_HEIGHT scrollbar to reflect the new height
-							int heightScrollbarID = m_propertySerializer->GetElementID("PROPERTY_HEIGHT");
-							if (heightScrollbarID != -1)
-							{
-								auto heightElem = m_gui->GetElement(heightScrollbarID);
-								if (heightElem && heightElem->m_Type == GUI_SCROLLBAR)
-								{
-									static_cast<GuiScrollBar*>(heightElem.get())->m_Value = static_cast<int>(minHeight);
-								}
-							}
-						}
-						break;
-					}
-					case GUI_PANEL:
-						static_cast<GuiPanel*>(selectedElement.get())->m_Font = fontPtr;
-						break;
-					case GUI_TEXTAREA:
-					{
-						auto textarea = static_cast<GuiTextArea*>(selectedElement.get());
-						textarea->m_Font = fontPtr;
-						// Recalculate textarea dimensions with new font size
-						Vector2 textDims = MeasureTextEx(*textarea->m_Font, textarea->m_String.c_str(), textarea->m_Font->baseSize, 1);
-						textarea->m_Width = textDims.x;
-						textarea->m_Height = textDims.y;
-
-						// Update the PROPERTY_WIDTH and PROPERTY_HEIGHT scrollbars to reflect the new dimensions
-						int widthScrollbarID = m_propertySerializer->GetElementID("PROPERTY_WIDTH");
-						if (widthScrollbarID != -1)
-						{
-							auto widthElem = m_gui->GetElement(widthScrollbarID);
-							if (widthElem && widthElem->m_Type == GUI_SCROLLBAR)
-							{
-								static_cast<GuiScrollBar*>(widthElem.get())->m_Value = static_cast<int>(textarea->m_Width);
-							}
-						}
-
-						int heightScrollbarID = m_propertySerializer->GetElementID("PROPERTY_HEIGHT");
-						if (heightScrollbarID != -1)
-						{
-							auto heightElem = m_gui->GetElement(heightScrollbarID);
-							if (heightElem && heightElem->m_Type == GUI_SCROLLBAR)
-							{
-								static_cast<GuiScrollBar*>(heightElem.get())->m_Value = static_cast<int>(textarea->m_Height);
-							}
-						}
-						break;
-					}
-					case GUI_LIST:
-						static_cast<GuiList*>(selectedElement.get())->m_Font = fontPtr;
-						break;
-					case GUI_LISTBOX:
-					{
-						auto listbox = static_cast<GuiListBox*>(selectedElement.get());
-						listbox->m_Font = fontPtr;
-						// Recalculate item height and visible item count based on new font
-						listbox->m_ItemHeight = fontPtr->baseSize + 4;  // Add padding
-						listbox->m_VisibleItemCount = static_cast<int>(listbox->m_Height / listbox->m_ItemHeight);
-						break;
-					}
-					default:
-						return false; // Element type doesn't support fonts
-					}
-
-					m_preservedFonts.push_back(newFontPtr);
-					m_contentSerializer->SetElementFontSize(m_selectedElementID, newFontSize);
-
-					Log("Updated element " + to_string(m_selectedElementID) + " font size to: " + to_string(newFontSize));
-					return true;
-				}
-			}
-		}
+		try { newFontSize = std::stoi(static_cast<GuiTextInput*>(fontSizeInput.get())->m_String); }
+		catch (...) { return false; }
 	}
-	return false;
+	else if (fontSizeInput->m_Type == GUI_SCROLLBAR)
+	{
+		newFontSize = static_cast<GuiScrollBar*>(fontSizeInput.get())->m_Value;
+	}
+
+	if (newFontSize <= 0) return false;
+
+	// 2. Compare with old value
+	int oldFontSize = m_contentSerializer->GetElementFontSize(m_selectedElementID);
+	if (newFontSize == oldFontSize) return false;
+
+	// 3. Load font with CURRENT font name
+	std::string fontName = m_contentSerializer->ResolveStringProperty(m_selectedElementID, "font");
+	if (fontName.empty()) fontName = "babyblocks.ttf";
+	std::string fontPath = m_fontPath + fontName;
+	auto newFontPtr = std::make_shared<Font>(LoadFontEx(fontPath.c_str(), newFontSize, 0, 0));
+
+	// 4. Apply to element (dispatcher handles everything)
+	ApplyFontToElement(m_selectedElementID, newFontPtr.get());
+
+	// 5. Save changes
+	m_preservedFonts.push_back(newFontPtr);
+	m_contentSerializer->SetElementFontSize(m_selectedElementID, newFontSize);
+
+	Log("Updated element " + to_string(m_selectedElementID) + " font size to: " + to_string(newFontSize));
+	return true;
 }
 
 // Generic helper to update element width from PROPERTY_WIDTH scrollbar
@@ -2334,6 +2294,8 @@ void GhostState::EnsureContentRoot()
 		m_contentSerializer->SetPanelLayout(containerID, "horz");
 		m_contentSerializer->SetPanelHorzPadding(containerID, 5);
 		m_contentSerializer->SetPanelVertPadding(containerID, 5);
+		m_contentSerializer->SetElementFont(containerID, "babyblocks.ttf");  // Set default font for inheritance
+		m_contentSerializer->SetElementFontSize(containerID, 30);  // Set default font size for inheritance
 		m_contentSerializer->RegisterChildOfParent(2000, containerID);
 
 		// Make the container the selected element so new elements go into it
@@ -2590,23 +2552,17 @@ void GhostState::InsertLabel()
 	}
 
 	// Add a text area (label) at calculated position
-	// Note: width parameter is multiplied by font baseSize in GuiTextArea
 	// Measure the text and calculate the width and height parameters needed
 	std::string labelText = "Label Text";
 	Vector2 textDims = MeasureTextEx(*font, labelText.c_str(), font->baseSize, 1);
-	int widthParam = int(textDims.x / font->baseSize) + 1;  // Add 1 for a bit of padding
-	int heightParam = int(textDims.y);  // Use actual text height
+	int widthParam = int(textDims.x);  // Width in pixels
+	int heightParam = int(textDims.y);  // Height in pixels
 	m_gui->AddTextArea(ctx.newID, font, labelText, ctx.absoluteX, ctx.absoluteY, widthParam, heightParam, WHITE, 0, 0, true, false);
 
 	// Mark color as explicit so it gets saved (prevents inheriting dark colors from parent)
 	m_contentSerializer->MarkPropertyAsExplicit(ctx.newID, "color");
 
-	// Store the font information in the serializer if we got an inherited font
-	if (fontSize > 0 && !fontName.empty())
-	{
-		m_contentSerializer->SetElementFontSize(ctx.newID, fontSize);
-		m_contentSerializer->SetElementFont(ctx.newID, fontName);
-	}
+	// Don't store inherited font/fontSize - let it inherit from parent when loaded
 
 	// Use helper to finalize insertion
 	FinalizeInsert(ctx.newID, ctx.parentID, "Label");
@@ -2632,12 +2588,7 @@ void GhostState::InsertButton()
 	// Add a text button at calculated position
 	m_gui->AddTextButton(ctx.newID, ctx.absoluteX, ctx.absoluteY, "Button", font, WHITE, DARKGRAY, WHITE, 0, true);
 
-	// Store the font information in the serializer if we got an inherited font
-	if (fontSize > 0 && !fontName.empty())
-	{
-		m_contentSerializer->SetElementFontSize(ctx.newID, fontSize);
-		m_contentSerializer->SetElementFont(ctx.newID, fontName);
-	}
+	// Don't store inherited font/fontSize - let it inherit from parent when loaded
 
 	// Use helper to finalize insertion
 	FinalizeInsert(ctx.newID, ctx.parentID, "Button");
@@ -2711,12 +2662,7 @@ void GhostState::InsertTextInput()
 	// Add a text input field at calculated position
 	m_gui->AddTextInput(ctx.newID, ctx.absoluteX, ctx.absoluteY, 150, scaledHeight, font, "", WHITE, WHITE, Color{0, 0, 0, 255}, 0, true);
 
-	// Store the font information in the serializer if we got an inherited font
-	if (fontSize > 0 && !fontName.empty())
-	{
-		m_contentSerializer->SetElementFontSize(ctx.newID, fontSize);
-		m_contentSerializer->SetElementFont(ctx.newID, fontName);
-	}
+	// Don't store inherited font/fontSize - let it inherit from parent when loaded
 
 	// Disable the text input so it can't accept keyboard input (content is for display only)
 	auto newElement = m_gui->GetElement(ctx.newID);
@@ -2933,12 +2879,7 @@ void GhostState::InsertList()
 	m_gui->AddGuiList(ctx.newID, ctx.absoluteX, ctx.absoluteY, 150, 100, font,
 		defaultItems, WHITE, Color{0, 0, 0, 255}, WHITE, 0, true);
 
-	// Store the font information in the serializer if we got an inherited font
-	if (fontSize > 0 && !fontName.empty())
-	{
-		m_contentSerializer->SetElementFontSize(ctx.newID, fontSize);
-		m_contentSerializer->SetElementFont(ctx.newID, fontName);
-	}
+	// Don't store inherited font/fontSize - let it inherit from parent when loaded
 
 	// Use helper to finalize insertion
 	FinalizeInsert(ctx.newID, ctx.parentID, "List");
@@ -2966,12 +2907,7 @@ void GhostState::InsertListBox()
 	m_gui->AddListBox(ctx.newID, ctx.absoluteX, ctx.absoluteY, 150, 200, font,
 		defaultItems, WHITE, Color{80, 80, 80, 255}, WHITE, 0, true);
 
-	// Store the font information in the serializer if we got an inherited font
-	if (fontSize > 0 && !fontName.empty())
-	{
-		m_contentSerializer->SetElementFontSize(ctx.newID, fontSize);
-		m_contentSerializer->SetElementFont(ctx.newID, fontName);
-	}
+	// Don't store inherited font/fontSize - let it inherit from parent when loaded
 
 	// Use helper to finalize insertion
 	FinalizeInsert(ctx.newID, ctx.parentID, "ListBox");
@@ -3208,8 +3144,12 @@ void GhostState::PopulatePropertyPanelFields()
 
 		PopulateScrollbarProperty("PROPERTY_WIDTH", static_cast<int>(textarea->m_Width));
 		PopulateScrollbarProperty("PROPERTY_HEIGHT", static_cast<int>(textarea->m_Height));
-		PopulateTextInputProperty("PROPERTY_FONT", m_contentSerializer->GetElementFont(m_selectedElementID));
-		PopulateScrollbarProperty("PROPERTY_FONT_SIZE", m_contentSerializer->GetElementFontSize(m_selectedElementID));
+
+		// Only populate font properties if they are explicitly set (not inherited)
+		if (m_contentSerializer->IsPropertyExplicit(m_selectedElementID, "font"))
+			PopulateTextInputProperty("PROPERTY_FONT", m_contentSerializer->GetElementFont(m_selectedElementID));
+		if (m_contentSerializer->IsPropertyExplicit(m_selectedElementID, "fontSize"))
+			PopulateScrollbarProperty("PROPERTY_FONT_SIZE", m_contentSerializer->GetElementFontSize(m_selectedElementID));
 	}
 
 	// Populate layout radio buttons and columns field (for panel elements)
@@ -3325,8 +3265,12 @@ void GhostState::PopulatePropertyPanelFields()
 
 		PopulateScrollbarProperty("PROPERTY_WIDTH", static_cast<int>(textinput->m_Width));
 		PopulateScrollbarProperty("PROPERTY_HEIGHT", static_cast<int>(textinput->m_Height));
-		PopulateTextInputProperty("PROPERTY_FONT", m_contentSerializer->GetElementFont(m_selectedElementID));
-		PopulateScrollbarProperty("PROPERTY_FONT_SIZE", m_contentSerializer->GetElementFontSize(m_selectedElementID));
+
+		// Only populate font properties if they are explicitly set (not inherited)
+		if (m_contentSerializer->IsPropertyExplicit(m_selectedElementID, "font"))
+			PopulateTextInputProperty("PROPERTY_FONT", m_contentSerializer->GetElementFont(m_selectedElementID));
+		if (m_contentSerializer->IsPropertyExplicit(m_selectedElementID, "fontSize"))
+			PopulateScrollbarProperty("PROPERTY_FONT_SIZE", m_contentSerializer->GetElementFontSize(m_selectedElementID));
 	}
 
 	// Populate checkbox properties (for checkbox elements)
@@ -3392,8 +3336,13 @@ void GhostState::PopulatePropertyPanelFields()
 
 		PopulateScrollbarProperty("PROPERTY_WIDTH", static_cast<int>(list->m_Width));
 		PopulateScrollbarProperty("PROPERTY_HEIGHT", static_cast<int>(list->m_Height));
-		PopulateTextInputProperty("PROPERTY_FONT", m_contentSerializer->GetElementFont(m_selectedElementID));
-		PopulateScrollbarProperty("PROPERTY_FONT_SIZE", m_contentSerializer->GetElementFontSize(m_selectedElementID));
+
+		// Only populate font properties if they are explicitly set (not inherited)
+		if (m_contentSerializer->IsPropertyExplicit(m_selectedElementID, "font"))
+			PopulateTextInputProperty("PROPERTY_FONT", m_contentSerializer->GetElementFont(m_selectedElementID));
+		if (m_contentSerializer->IsPropertyExplicit(m_selectedElementID, "fontSize"))
+			PopulateScrollbarProperty("PROPERTY_FONT_SIZE", m_contentSerializer->GetElementFontSize(m_selectedElementID));
+
 		PopulateGroupProperty(selectedElement.get());
 	}
 
@@ -3404,8 +3353,12 @@ void GhostState::PopulatePropertyPanelFields()
 
 		PopulateScrollbarProperty("PROPERTY_WIDTH", static_cast<int>(listbox->m_Width));
 		PopulateScrollbarProperty("PROPERTY_HEIGHT", static_cast<int>(listbox->m_Height));
-		PopulateTextInputProperty("PROPERTY_FONT", m_contentSerializer->GetElementFont(m_selectedElementID));
-		PopulateScrollbarProperty("PROPERTY_FONT_SIZE", m_contentSerializer->GetElementFontSize(m_selectedElementID));
+
+		// Only populate font properties if they are explicitly set (not inherited)
+		if (m_contentSerializer->IsPropertyExplicit(m_selectedElementID, "font"))
+			PopulateTextInputProperty("PROPERTY_FONT", m_contentSerializer->GetElementFont(m_selectedElementID));
+		if (m_contentSerializer->IsPropertyExplicit(m_selectedElementID, "fontSize"))
+			PopulateScrollbarProperty("PROPERTY_FONT_SIZE", m_contentSerializer->GetElementFontSize(m_selectedElementID));
 	}
 
 	// Update color picker button text colors to match the active colors
@@ -3551,6 +3504,16 @@ void GhostState::UpdateElementFromPropertyPanel()
 			{
 				m_contentSerializer->SetPanelLayout(m_selectedElementID, newLayout);
 				Log("Updated panel " + to_string(m_selectedElementID) + " layout from " + oldLayout + " to " + newLayout);
+
+				// When switching to table layout, ensure columns is initialized if not already set
+				// This ensures the default value (2) is properly stored in the map
+				if (newLayout == "table")
+				{
+					int currentColumns = m_contentSerializer->GetPanelColumns(m_selectedElementID);
+					m_contentSerializer->SetPanelColumns(m_selectedElementID, currentColumns);
+					Log("Initialized columns to " + to_string(currentColumns) + " for table layout");
+				}
+
 				wasUpdated = true;
 			}
 		}

@@ -176,14 +176,22 @@ public:
 	SpriteDefinition GetStretchButtonRightSprite(int buttonID) const;
 
 	// Font metadata methods
-	void SetElementFont(int elementID, const std::string& fontName) { m_elementFonts[elementID] = fontName; }
+	void SetElementFont(int elementID, const std::string& fontName)
+	{
+		m_elementFonts[elementID] = fontName;
+		m_explicitProperties[elementID].insert("font");
+	}
 	std::string GetElementFont(int elementID) const
 	{
 		auto it = m_elementFonts.find(elementID);
 		return (it != m_elementFonts.end()) ? it->second : "";
 	}
 
-	void SetElementFontSize(int elementID, int fontSize) { m_elementFontSizes[elementID] = fontSize; }
+	void SetElementFontSize(int elementID, int fontSize)
+	{
+		m_elementFontSizes[elementID] = fontSize;
+		m_explicitProperties[elementID].insert("fontSize");
+	}
 	int GetElementFontSize(int elementID) const
 	{
 		auto it = m_elementFontSizes.find(elementID);
@@ -194,6 +202,14 @@ public:
 	void MarkPropertyAsExplicit(int elementID, const std::string& propertyName)
 	{
 		m_explicitProperties[elementID].insert(propertyName);
+	}
+
+	bool IsPropertyExplicit(int elementID, const std::string& propertyName) const
+	{
+		auto it = m_explicitProperties.find(elementID);
+		if (it == m_explicitProperties.end())
+			return false;
+		return it->second.count(propertyName) > 0;
 	}
 
 	// Floating element methods
@@ -222,6 +238,12 @@ public:
 	// Returns a JSON object with properties that children should inherit (font, fontSize, etc.)
 	ghost_json BuildInheritedProps(int parentElementID) const;
 
+	// Resolve a property value by checking the element first, then walking up the parent chain
+	// Returns the property value if found, or empty string if not found
+	// This is used to get the actual runtime value of a property (explicit or inherited)
+	std::string ResolveStringProperty(int elementID, const std::string& propertyName) const;
+	int ResolveIntProperty(int elementID, const std::string& propertyName, int defaultValue = 0) const;
+
 	// Serialize an element and its children to JSON (for clipboard/undo support)
 	// parentX and parentY are the parent's absolute position (for calculating relative positions)
 	// forCopy: if true, serialize ALL current properties (for copy/paste); if false, only serialize explicit properties (for file save)
@@ -233,6 +255,12 @@ private:
 	// parentElementID tracks the parent in the tree structure (-1 for root level)
 	// namePrefix is prepended to all element names (used for includes to avoid name collisions)
 	void ParseElements(const ghost_json& elementsArray, Gui* gui, const ghost_json& inheritedProps = ghost_json(), int parentX = 0, int parentY = 0, int parentElementID = -1, const std::string& namePrefix = "");
+
+	// Helper function to load font with inheritance support
+	// Returns the loaded Font pointer (owned by m_loadedFonts)
+	// Tracks explicit font/fontSize properties only if non-empty/valid
+	// outFontName and outFontSize are populated with the resolved values
+	Font* LoadFontWithInheritance(const ghost_json& element, const ghost_json& inheritedProps, int elementID, std::string& outFontName, int& outFontSize);
 
 	// Storage for loaded fonts to keep them alive
 	std::vector<std::shared_ptr<Font>> m_loadedFonts;
