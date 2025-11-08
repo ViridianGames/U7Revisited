@@ -121,6 +121,10 @@ void GhostState::Init(const std::string& configfile)
 	// Property content elements start at 3001+
 	m_propertySerializer = make_unique<GhostSerializer>();
 	m_propertySerializer->SetAutoIDStart(3001);
+
+	// Populate the element hierarchy listbox with the initial root container
+	// This must come after m_propertySerializer is initialized
+	PopulateElementHierarchy();
 }
 
 void GhostState::Shutdown()
@@ -544,6 +548,10 @@ bool GhostState::UpdateNameProperty()
 					m_contentSerializer->SetElementName(newName, m_selectedElementID);
 				}
 
+				// Update the element hierarchy listbox to show the new name
+				PopulateElementHierarchy();
+				UpdateElementHierarchySelection();
+
 				return true;
 			}
 		}
@@ -774,7 +782,10 @@ bool GhostState::UpdateFontProperty()
 
 	std::string newFont = static_cast<GuiTextInput*>(fontInput.get())->m_String;
 
-	// 2. Compare with old value
+	// 2. If the textinput is empty, this means the font is inherited - no change needed
+	if (newFont.empty()) return false;
+
+	// 3. Compare with old value
 	std::string oldFont = m_contentSerializer->ResolveStringProperty(m_selectedElementID, "font");
 	if (oldFont.empty()) oldFont = "babyblocks.ttf";
 	if (newFont == oldFont) return false;
@@ -814,25 +825,53 @@ bool GhostState::UpdateFontSizeProperty()
 	}
 	else if (fontSizeInput->m_Type == GUI_SCROLLBAR)
 	{
-		newFontSize = static_cast<GuiScrollBar*>(fontSizeInput.get())->m_Value;
-	}
+		auto scrollbar = static_cast<GuiScrollBar*>(fontSizeInput.get());
+		newFontSize = scrollbar->m_Value;
 
-	if (newFontSize <= 0) return false;
+		// Map scrollbar value: 0 = inherited, 1-9 = snap to 10 (minimum explicit size)
+		// Update the scrollbar to reflect the snapped value
+		if (newFontSize > 0 && newFontSize < 10)
+		{
+			newFontSize = 10;
+			scrollbar->m_Value = 10;  // Update scrollbar to show 10
+		}
+	}
 
 	// 2. Compare with old value
 	int oldFontSize = m_contentSerializer->GetElementFontSize(m_selectedElementID);
 	if (newFontSize == oldFontSize) return false;
 
-	// 3. Load font with CURRENT font name
+	// 3. If newFontSize is 0, clear the explicit property (make it inherited)
+	if (newFontSize == 0)
+	{
+		// Clear the explicit fontSize property
+		m_contentSerializer->ClearElementFontSize(m_selectedElementID);
+
+		// Resolve and apply the inherited font size
+		std::string fontName = m_contentSerializer->ResolveStringProperty(m_selectedElementID, "font");
+		if (fontName.empty()) fontName = "babyblocks.ttf";
+		int inheritedFontSize = m_contentSerializer->ResolveIntProperty(m_selectedElementID, "fontSize", 16);
+		std::string fontPath = m_fontPath + fontName;
+		auto inheritedFontPtr = std::make_shared<Font>(LoadFontEx(fontPath.c_str(), inheritedFontSize, 0, 0));
+
+		ApplyFontToElement(m_selectedElementID, inheritedFontPtr.get());
+		m_preservedFonts.push_back(inheritedFontPtr);
+
+		Log("Cleared explicit fontSize for element " + to_string(m_selectedElementID) + ", now inheriting: " + to_string(inheritedFontSize));
+		return true;
+	}
+
+	// 4. Load font with CURRENT font name
 	std::string fontName = m_contentSerializer->ResolveStringProperty(m_selectedElementID, "font");
 	if (fontName.empty()) fontName = "babyblocks.ttf";
 	std::string fontPath = m_fontPath + fontName;
 	auto newFontPtr = std::make_shared<Font>(LoadFontEx(fontPath.c_str(), newFontSize, 0, 0));
 
-	// 4. Apply to element (dispatcher handles everything)
+	// 5. Apply to element (dispatcher handles everything)
 	ApplyFontToElement(m_selectedElementID, newFontPtr.get());
 
-	// 5. Save changes
+	// 6. Save changes - preserve the font object and save only the explicit fontSize
+	// Note: The font name can remain inherited while fontSize is explicit
 	m_preservedFonts.push_back(newFontPtr);
 	m_contentSerializer->SetElementFontSize(m_selectedElementID, newFontSize);
 
@@ -1033,6 +1072,29 @@ void GhostState::Update()
 		}
 	}
 
+	// Element hierarchy listbox click handler
+	// Check if user clicked an item in the hierarchy listbox
+	auto hierarchyListboxElement = m_gui->GetElement(1501);
+	if (hierarchyListboxElement && hierarchyListboxElement->m_Type == GUI_LISTBOX)
+	{
+		auto hierarchyListbox = static_cast<GuiListBox*>(hierarchyListboxElement.get());
+		if (hierarchyListbox->m_Clicked && hierarchyListbox->m_SelectedIndex >= 0)
+		{
+			// Get the element ID from the parallel list
+			if (hierarchyListbox->m_SelectedIndex < static_cast<int>(m_elementIDList.size()))
+			{
+				int clickedElementID = m_elementIDList[hierarchyListbox->m_SelectedIndex];
+				if (clickedElementID != m_selectedElementID)
+				{
+					m_selectedElementID = clickedElementID;
+					Log("Selected element from hierarchy: " + std::to_string(clickedElementID));
+					UpdatePropertyPanel();
+					UpdateStatusFooter();
+				}
+			}
+		}
+	}
+
 	// Generic color button click handler - checks all color property buttons
 	if (m_selectedElementID != -1)
 	{
@@ -1155,6 +1217,83 @@ void GhostState::Update()
 							Log("Opening sprite picker for " + propName);
 							break; // Only handle one button click per frame
 						}
+					}
+				}
+			}
+		}
+	}
+
+	// Font picker button click handler
+	if (m_selectedElementID != -1)
+	{
+		auto selectedElement = m_gui->GetElement(m_selectedElementID);
+		if (selectedElement)
+		{
+			// Check PROPERTY_PICK_FONT button
+			int pickFontButtonID = m_propertySerializer->GetElementID("PROPERTY_PICK_FONT");
+			if (pickFontButtonID != -1)
+			{
+				auto button = m_gui->GetElement(pickFontButtonID);
+				if (button && button->m_Type == GUI_ICONBUTTON)
+				{
+					auto iconButton = static_cast<GuiIconButton*>(button.get());
+					if (iconButton->m_Clicked)
+					{
+						Log("Opening file chooser for font selection");
+
+						// Get current font if one exists
+						std::string currentFont = m_contentSerializer->GetElementFont(m_selectedElementID);
+						std::string initialFilename = currentFont;
+
+						// Open FileChooserState for font selection
+						auto fileChooserState = static_cast<FileChooserState*>(g_StateMachine->GetState(3));
+						fileChooserState->SetMode(false, ".ttf", m_fontPath, "Select Font", initialFilename);
+						g_StateMachine->PushState(3);
+
+						// Set flag so we know to check for results when we resume
+						m_waitingForFontPicker = true;
+					}
+				}
+			}
+
+			// Check PROPERTY_CLEAR_FONT button
+			int clearFontButtonID = m_propertySerializer->GetElementID("PROPERTY_CLEAR_FONT");
+			if (clearFontButtonID != -1)
+			{
+				auto button = m_gui->GetElement(clearFontButtonID);
+				if (button && button->m_Type == GUI_ICONBUTTON)
+				{
+					auto iconButton = static_cast<GuiIconButton*>(button.get());
+					if (iconButton->m_Clicked)
+					{
+						Log("Clearing font property for element " + std::to_string(m_selectedElementID));
+
+						// Remove font from serializer metadata
+						m_contentSerializer->ClearElementFont(m_selectedElementID);
+
+						// Clear the PROPERTY_FONT textinput
+						int fontInputID = m_propertySerializer->GetElementID("PROPERTY_FONT");
+						if (fontInputID != -1)
+						{
+							auto fontInput = m_gui->GetElement(fontInputID);
+							if (fontInput && fontInput->m_Type == GUI_TEXTINPUT)
+							{
+								static_cast<GuiTextInput*>(fontInput.get())->m_String = "";
+							}
+						}
+
+						// Now resolve and apply the inherited font
+						std::string inheritedFont = m_contentSerializer->ResolveStringProperty(m_selectedElementID, "font");
+						if (inheritedFont.empty()) inheritedFont = "babyblocks.ttf";
+
+						int fontSize = m_contentSerializer->ResolveIntProperty(m_selectedElementID, "fontSize", 16);
+						std::string fontPath = m_fontPath + inheritedFont;
+						auto inheritedFontPtr = std::make_shared<Font>(LoadFontEx(fontPath.c_str(), fontSize, 0, 0));
+
+						ApplyFontToElement(m_selectedElementID, inheritedFontPtr.get());
+						m_preservedFonts.push_back(inheritedFontPtr);
+
+						Log("Font property cleared and element now inherits font from parent");
 					}
 				}
 			}
@@ -1387,10 +1526,66 @@ void GhostState::Update()
 
 		if (bestID != -1)
 		{
+			// Check for double-click to toggle floating/positioned state
+			double currentTime = GetTime();
+			bool isDoubleClick = false;
+
+			if (bestID == m_lastClickedElementID &&
+			    (currentTime - m_lastClickTime) < DOUBLE_CLICK_TIME)
+			{
+				isDoubleClick = true;
+
+				// Toggle floating state
+				bool isFloating = m_contentSerializer->IsFloating(bestID);
+				int parentID = m_contentSerializer->GetParentID(bestID);
+
+				if (isFloating)
+				{
+					// Make it positioned: set position to (0, 0) relative to parent
+					m_contentSerializer->SetFloating(bestID, false);
+					auto element = m_gui->GetElement(bestID);
+					if (element)
+					{
+						// Get parent position to calculate relative position
+						auto parent = m_gui->GetElement(parentID);
+						if (parent)
+						{
+							element->m_Pos.x = parent->m_Pos.x;
+							element->m_Pos.y = parent->m_Pos.y;
+						}
+					}
+					Log("Toggled element " + to_string(bestID) + " to positioned (0, 0)");
+				}
+				else
+				{
+					// Make it floating: set position to (-1, -1)
+					m_contentSerializer->SetFloating(bestID, true);
+					Log("Toggled element " + to_string(bestID) + " to floating (-1, -1)");
+				}
+
+				// Reflow parent panel after toggling
+				if (parentID != -1)
+				{
+					m_contentSerializer->ReflowPanel(parentID, m_gui.get());
+					Log("Reflowed parent panel " + to_string(parentID) + " after toggle");
+				}
+
+				// Reset double-click tracking
+				m_lastClickTime = 0.0;
+				m_lastClickedElementID = -1;
+			}
+			else
+			{
+				// Single click - update tracking for potential double-click
+				m_lastClickTime = currentTime;
+				m_lastClickedElementID = bestID;
+			}
+
 			m_selectedElementID = bestID;
 			Log("Selected element ID: " + to_string(bestID));
 			UpdatePropertyPanel();  // Update property panel when selection changes
 			UpdateStatusFooter();  // Update status footer with selected element info
+			UpdateElementHierarchySelection();  // Update listbox selection to match clicked element
 
 			// Sync scrollbar tracking variables after populating property panel
 			// This prevents false "change" detections on first frame after selection
@@ -1460,6 +1655,96 @@ void GhostState::Update()
 		}
 	}
 
+	// Handle drag-and-drop for positioned controls
+	if (m_selectedElementID != -1 && !m_contentSerializer->IsFloating(m_selectedElementID))
+	{
+		// Start dragging on mouse down
+		if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+		{
+			Vector2 mousePos = GetMousePosition();
+			float scaledX = mousePos.x / m_gui->m_InputScale;
+			float scaledY = mousePos.y / m_gui->m_InputScale;
+
+			auto element = m_gui->GetElement(m_selectedElementID);
+			if (element)
+			{
+				float elemX = m_gui->m_Pos.x + element->m_Pos.x;
+				float elemY = m_gui->m_Pos.y + element->m_Pos.y;
+
+				// Check if mouse is over the selected positioned element
+				if (scaledX >= elemX && scaledX <= elemX + element->m_Width &&
+				    scaledY >= elemY && scaledY <= elemY + element->m_Height)
+				{
+					m_isDragging = true;
+					m_dragElementID = m_selectedElementID;
+					m_dragStartMousePos = { scaledX, scaledY };
+					m_dragStartElementPos = element->m_Pos;
+					Log("Started dragging element " + to_string(m_selectedElementID));
+				}
+			}
+		}
+	}
+
+	// Update drag position while dragging
+	if (m_isDragging && IsMouseButtonDown(MOUSE_LEFT_BUTTON))
+	{
+		Vector2 mousePos = GetMousePosition();
+		float scaledX = mousePos.x / m_gui->m_InputScale;
+		float scaledY = mousePos.y / m_gui->m_InputScale;
+
+		// Calculate delta from drag start
+		float deltaX = scaledX - m_dragStartMousePos.x;
+		float deltaY = scaledY - m_dragStartMousePos.y;
+
+		// Update element position
+		auto element = m_gui->GetElement(m_dragElementID);
+		if (element)
+		{
+			// Calculate new position
+			float newX = m_dragStartElementPos.x + deltaX;
+			float newY = m_dragStartElementPos.y + deltaY;
+
+			// Get parent position to calculate relative position (for clamping)
+			int parentID = m_contentSerializer->GetParentID(m_dragElementID);
+			float parentX = 0;
+			float parentY = 0;
+			if (parentID != -1)
+			{
+				auto parent = m_gui->GetElement(parentID);
+				if (parent)
+				{
+					parentX = parent->m_Pos.x;
+					parentY = parent->m_Pos.y;
+				}
+			}
+
+			// Clamp to prevent negative relative positions
+			if (newX < parentX) newX = parentX;
+			if (newY < parentY) newY = parentY;
+
+			element->m_Pos.x = newX;
+			element->m_Pos.y = newY;
+			UpdateStatusFooter();  // Update status to show new position
+		}
+	}
+
+	// Stop dragging and reflow parent on mouse release
+	if (m_isDragging && IsMouseButtonReleased(MOUSE_LEFT_BUTTON))
+	{
+		Log("Stopped dragging element " + to_string(m_dragElementID));
+
+		// Get parent for reflow
+		int parentID = m_contentSerializer->GetParentID(m_dragElementID);
+		if (parentID != -1)
+		{
+			m_contentSerializer->ReflowPanel(parentID, m_gui.get());
+			Log("Reflowed parent panel " + to_string(parentID) + " after drag");
+		}
+
+		m_isDragging = false;
+		m_dragElementID = -1;
+	}
+
 	// Handle keyboard shortcuts
 	bool ctrlPressed = IsKeyDown(KEY_LEFT_CONTROL) || IsKeyDown(KEY_RIGHT_CONTROL);
 
@@ -1500,6 +1785,9 @@ void GhostState::Update()
 		m_selectedElementID = -1;
 		ClearPropertyPanel();
 		UpdateStatusFooter();
+
+		// Update the element hierarchy listbox
+		PopulateElementHierarchy();
 
 		// Mark as dirty
 		m_contentSerializer->SetDirty(true);
@@ -1550,6 +1838,9 @@ void GhostState::Update()
 		m_selectedElementID = -1;
 		ClearPropertyPanel();
 		UpdateStatusFooter();
+
+		// Update the element hierarchy listbox
+		PopulateElementHierarchy();
 
 		// Mark as dirty
 		m_contentSerializer->SetDirty(true);
@@ -1680,6 +1971,10 @@ void GhostState::Update()
 				UpdatePropertyPanel();
 				UpdateStatusFooter();
 
+				// Update the element hierarchy listbox
+				PopulateElementHierarchy();
+				UpdateElementHierarchySelection();
+
 				// Mark as dirty
 				m_contentSerializer->SetDirty(true);
 
@@ -1705,6 +2000,7 @@ void GhostState::Update()
 		Log("New button clicked!");
 		ClearLoadedContent();
 		EnsureContentRoot();  // Recreate empty root after clearing
+		PopulateElementHierarchy();  // Update listbox with new content
 	}
 	else if (activeID == m_serializer->GetElementID("CLOSE"))
 	{
@@ -1828,13 +2124,16 @@ void GhostState::Draw()
 		auto selectedElement = m_gui->GetElement(m_selectedElementID);
 		if (selectedElement)
 		{
-			// Draw a yellow outline around the selected element
+			// Draw outline: yellow for floating controls (-1,-1), green for positioned
+			bool isFloating = m_contentSerializer->IsFloating(m_selectedElementID);
+			Color highlightColor = isFloating ? YELLOW : GREEN;
+
 			DrawRectangleLines(
 				static_cast<int>(m_gui->m_Pos.x + selectedElement->m_Pos.x - 2),
 				static_cast<int>(m_gui->m_Pos.y + selectedElement->m_Pos.y - 2),
 				static_cast<int>(selectedElement->m_Width + 4),
 				static_cast<int>(selectedElement->m_Height + 4),
-				YELLOW
+				highlightColor
 			);
 		}
 	}
@@ -1900,6 +2199,22 @@ void GhostState::OnEnter()
 					// Use generic helper to set color on element
 					SetElementColor(selectedElement.get(), m_editingColorProperty, selectedColor);
 					Log("Applied " + m_editingColorProperty + " from color picker");
+
+					// Mark this color property as explicit so it gets saved
+					std::string propertyName;
+					if (m_editingColorProperty == "PROPERTY_TEXTCOLOR") propertyName = "textColor";
+					else if (m_editingColorProperty == "PROPERTY_BORDERCOLOR") propertyName = "borderColor";
+					else if (m_editingColorProperty == "PROPERTY_BACKGROUNDCOLOR") propertyName = "backgroundColor";
+					else if (m_editingColorProperty == "PROPERTY_BACKGROUND") propertyName = "backgroundColor";
+					else if (m_editingColorProperty == "PROPERTY_SPURCOLOR") propertyName = "spurColor";
+					else if (m_editingColorProperty == "PROPERTY_COLOR") propertyName = "color";
+
+					if (!propertyName.empty())
+					{
+						m_contentSerializer->MarkPropertyAsExplicit(m_selectedElementID, propertyName);
+						m_contentSerializer->SetDirty(true);
+						Log("Marked " + propertyName + " as explicit for element " + std::to_string(m_selectedElementID));
+					}
 
 					// Update the property button text color to match
 					int buttonID = m_propertySerializer->GetElementID(m_editingColorProperty);
@@ -2027,8 +2342,8 @@ void GhostState::OnEnter()
 						spriteElem->m_Width = sprite.w;
 						spriteElem->m_Height = sprite.h;
 
-						// Store sprite filename in serializer
-						m_contentSerializer->SetSpriteName(m_selectedElementID, sprite.spritesheet);
+						// Store full sprite definition in serializer (with x/y/w/h)
+						m_contentSerializer->SetSprite(m_selectedElementID, sprite);
 
 						Log("Updated sprite: " + sprite.spritesheet + " at (" + std::to_string(sprite.x) + "," + std::to_string(sprite.y) +
 							") size (" + std::to_string(sprite.w) + "x" + std::to_string(sprite.h) + ")");
@@ -2064,8 +2379,8 @@ void GhostState::OnEnter()
 					iconElem->m_Width = sprite.w;
 					iconElem->m_Height = sprite.h;
 
-					// Store sprite filename in serializer
-					m_contentSerializer->SetSpriteName(m_selectedElementID, sprite.spritesheet);
+					// Store full sprite definition in serializer (with x/y/w/h)
+					m_contentSerializer->SetSprite(m_selectedElementID, sprite);
 
 					Log("Updated iconbutton sprite: " + sprite.spritesheet + " at (" + std::to_string(sprite.x) + "," + std::to_string(sprite.y) +
 						") size (" + std::to_string(sprite.w) + "x" + std::to_string(sprite.h) + ")");
@@ -2088,31 +2403,72 @@ void GhostState::OnEnter()
 		Log("GhostState: Returning from FileChooserState");
 		auto fileChooserState = static_cast<FileChooserState*>(g_StateMachine->GetState(3));
 
-		// Only process file selection if user clicked OK (not Cancel)
-		Log("GhostState: WasAccepted = " + std::string(fileChooserState->WasAccepted() ? "true" : "false"));
-		if (fileChooserState->WasAccepted())
+		// Check if we were waiting for font picker results
+		if (m_waitingForFontPicker)
 		{
-			string filepath = fileChooserState->GetSelectedPath();
-			Log("Selected file: " + filepath);
+			Log("GhostState: Processing font picker results");
+			m_waitingForFontPicker = false;
 
-			// Check the mode that was set when the dialog was opened
-			if (fileChooserState->IsSaveMode())
+			if (fileChooserState->WasAccepted())
 			{
-				Log("FileChooser was in SAVE mode, saving file");
+				string filepath = fileChooserState->GetSelectedPath();
+				Log("Selected font file: " + filepath);
 
-				// Ensure .ghost extension
-				if (filepath.find(".ghost") == string::npos)
+				// Extract just the filename from the full path
+				string fontFilename = filepath;
+				size_t lastSlash = filepath.find_last_of("/\\");
+				if (lastSlash != string::npos)
 				{
-					filepath += ".ghost";
+					fontFilename = filepath.substr(lastSlash + 1);
 				}
 
-				m_loadedGhostFile = filepath;
-				SaveGhostFile();
+				Log("Font filename: " + fontFilename);
+
+				// Update the PROPERTY_FONT textinput (UpdateFontProperty will read from here)
+				int fontInputID = m_propertySerializer->GetElementID("PROPERTY_FONT");
+				if (fontInputID != -1)
+				{
+					auto fontInput = m_gui->GetElement(fontInputID);
+					if (fontInput && fontInput->m_Type == GUI_TEXTINPUT)
+					{
+						static_cast<GuiTextInput*>(fontInput.get())->m_String = fontFilename;
+					}
+				}
+
+				// Apply the new font by calling UpdateFontProperty (it will load, apply, and save the font)
+				UpdateFontProperty();
+
+				Log("Font applied: " + fontFilename);
 			}
-			else
+		}
+		else
+		{
+			// Only process file selection if user clicked OK (not Cancel)
+			Log("GhostState: WasAccepted = " + std::string(fileChooserState->WasAccepted() ? "true" : "false"));
+			if (fileChooserState->WasAccepted())
 			{
-				Log("FileChooser was in OPEN mode, loading file");
-				LoadGhostFile(filepath);
+				string filepath = fileChooserState->GetSelectedPath();
+				Log("Selected file: " + filepath);
+
+				// Check the mode that was set when the dialog was opened
+				if (fileChooserState->IsSaveMode())
+				{
+					Log("FileChooser was in SAVE mode, saving file");
+
+					// Ensure .ghost extension
+					if (filepath.find(".ghost") == string::npos)
+					{
+						filepath += ".ghost";
+					}
+
+					m_loadedGhostFile = filepath;
+					SaveGhostFile();
+				}
+				else
+				{
+					Log("FileChooser was in OPEN mode, loading file");
+					LoadGhostFile(filepath);
+				}
 			}
 		}
 	}
@@ -2180,6 +2536,9 @@ void GhostState::LoadGhostFile(const std::string& filepath)
 
 		// Mark content as clean after loading (not dirty until edited)
 		m_contentSerializer->SetDirty(false);
+
+		// Populate the element hierarchy listbox with loaded elements
+		PopulateElementHierarchy();
 	}
 	else
 	{
@@ -2231,6 +2590,16 @@ void GhostState::ClearLoadedContent()
 	// Clear property panel since there's no selected element anymore
 	ClearPropertyPanel();
 	UpdateStatusFooter();
+
+	// Clear the element hierarchy listbox
+	auto listboxElement = m_gui->GetElement(1501);
+	if (listboxElement && listboxElement->m_Type == GUI_LISTBOX)
+	{
+		auto listbox = static_cast<GuiListBox*>(listboxElement.get());
+		listbox->m_Items.clear();
+		listbox->m_SelectedIndex = -1;
+	}
+	m_elementIDList.clear();
 
 	// Reset the content serializer
 	m_contentSerializer.reset();
@@ -2286,9 +2655,9 @@ void GhostState::EnsureContentRoot()
 		int containerID = m_contentSerializer->GetNextAutoID();
 		m_contentSerializer->SetAutoIDStart(containerID + 1);
 
-		// Position it inside the content panel container
-		int containerX = static_cast<int>(contentContainer->m_Pos.x) + 10;
-		int containerY = static_cast<int>(contentContainer->m_Pos.y) + 10;
+		// Create as floating panel - parent will position it during layout
+		int containerX = static_cast<int>(contentContainer->m_Pos.x);
+		int containerY = static_cast<int>(contentContainer->m_Pos.y);
 
 		m_gui->AddPanel(containerID, containerX, containerY, 620, 700, Color{60, 60, 60, 255}, true, 0, true);
 		m_contentSerializer->SetPanelLayout(containerID, "horz");
@@ -2297,6 +2666,7 @@ void GhostState::EnsureContentRoot()
 		m_contentSerializer->SetElementFont(containerID, "babyblocks.ttf");  // Set default font for inheritance
 		m_contentSerializer->SetElementFontSize(containerID, 30);  // Set default font size for inheritance
 		m_contentSerializer->RegisterChildOfParent(2000, containerID);
+		m_contentSerializer->SetFloating(containerID, true);  // Mark as floating
 
 		// Make the container the selected element so new elements go into it
 		m_selectedElementID = containerID;
@@ -2306,6 +2676,10 @@ void GhostState::EnsureContentRoot()
 		{
 			UpdatePropertyPanel();
 			UpdateStatusFooter();
+
+			// Update the element hierarchy listbox
+			PopulateElementHierarchy();
+			UpdateElementHierarchySelection();
 		}
 
 		Log("Created default container panel with ID: " + to_string(containerID));
@@ -2406,6 +2780,10 @@ void GhostState::FinalizeInsert(int newID, int parentID, const std::string& elem
 	// Update property panel for the new element
 	UpdatePropertyPanel();
 	UpdateStatusFooter();
+
+	// Update the element hierarchy listbox
+	PopulateElementHierarchy();
+	UpdateElementHierarchySelection();
 
 	// Sync scrollbar tracking variables after populating property panel
 	// This prevents false "change" detections on first frame after insertion
@@ -2626,8 +3004,14 @@ void GhostState::InsertSprite()
 	// Add sprite at calculated position
 	m_gui->AddSprite(ctx.newID, ctx.absoluteX, ctx.absoluteY, sprite, 1.0f, 1.0f, WHITE, 0, true);
 
-	// Store the sprite filename for serialization
-	m_contentSerializer->SetSpriteName(ctx.newID, filename);
+	// Store the full sprite definition for serialization
+	GhostSerializer::SpriteDefinition spriteDef;
+	spriteDef.spritesheet = filename;
+	spriteDef.x = x;
+	spriteDef.y = y;
+	spriteDef.w = width;
+	spriteDef.h = height;
+	m_contentSerializer->SetSprite(ctx.newID, spriteDef);
 
 	// Use helper to finalize insertion
 	FinalizeInsert(ctx.newID, ctx.parentID, "Sprite");
@@ -2732,8 +3116,14 @@ void GhostState::InsertIconButton()
 	// Add icon button at calculated position (using simple form with one sprite)
 	m_gui->AddIconButton(ctx.newID, ctx.absoluteX, ctx.absoluteY, sprite, nullptr, nullptr, "", nullptr, WHITE, 1.0f, 0, true, false);
 
-	// Store the sprite filename for serialization
-	m_contentSerializer->SetSpriteName(ctx.newID, filename);
+	// Store the full sprite definition for serialization
+	GhostSerializer::SpriteDefinition spriteDef;
+	spriteDef.spritesheet = filename;
+	spriteDef.x = x;
+	spriteDef.y = y;
+	spriteDef.w = width;
+	spriteDef.h = height;
+	m_contentSerializer->SetSprite(ctx.newID, spriteDef);
 
 	// Use helper to finalize insertion
 	FinalizeInsert(ctx.newID, ctx.parentID, "Icon button");
@@ -3091,6 +3481,126 @@ std::string GhostState::GetElementName(int elementID)
 			return name;
 	}
 	return ""; // No name found
+}
+
+std::string GhostState::GetTypeName(int elementType)
+{
+	switch (elementType)
+	{
+	case GUI_PANEL: return "Panel";
+	case GUI_TEXTAREA: return "TextArea";
+	case GUI_TEXTBUTTON: return "TextButton";
+	case GUI_ICONBUTTON: return "IconButton";
+	case GUI_SPRITE: return "Sprite";
+	case GUI_TEXTINPUT: return "TextInput";
+	case GUI_CHECKBOX: return "CheckBox";
+	case GUI_RADIOBUTTON: return "RadioButton";
+	case GUI_SCROLLBAR: return "ScrollBar";
+	case GUI_OCTAGONBOX: return "OctagonBox";
+	case GUI_STRETCHBUTTON: return "StretchButton";
+	case GUI_LIST: return "List";
+	case GUI_LISTBOX: return "ListBox";
+	default: return "Unknown";
+	}
+}
+
+void GhostState::PopulateElementHierarchy()
+{
+	// Get the listbox element
+	auto listboxElement = m_gui->GetElement(1501);
+	if (!listboxElement || listboxElement->m_Type != GUI_LISTBOX)
+	{
+		Log("ERROR: Could not find element hierarchy listbox (ID 1501)");
+		return;
+	}
+	auto listbox = static_cast<GuiListBox*>(listboxElement.get());
+	if (!listbox)
+	{
+		Log("ERROR: Could not find element hierarchy listbox (ID 1501)");
+		return;
+	}
+
+	// Clear the current list
+	listbox->m_Items.clear();
+	m_elementIDList.clear();
+
+	// Get all element IDs in depth-first order (already hierarchical)
+	std::vector<int> allIDs = m_contentSerializer->GetAllElementIDs();
+
+	Log("PopulateElementHierarchy: Got " + std::to_string(allIDs.size()) + " element IDs from serializer");
+
+	// Build the hierarchical list with indentation
+	for (int id : allIDs)
+	{
+		// Skip the content container itself (ID 2000) - it's part of the app, not user content
+		if (id == 2000)
+			continue;
+
+		// Get element to check its type
+		// Note: Include directives don't create GUI elements, so they won't exist here - that's OK, just skip them
+		auto element = m_gui->GetElement(id);
+		if (!element)
+		{
+			Log("PopulateElementHierarchy: Skipping ID " + std::to_string(id) + " (no GUI element found - likely an include directive)");
+			continue;
+		}
+
+		// Calculate depth by counting parent hops
+		int depth = 0;
+		int currentID = id;
+		while (true)
+		{
+			int parentID = m_contentSerializer->GetParentID(currentID);
+			if (parentID == -1 || parentID == 2000) // Stop at root container
+				break;
+			depth++;
+			currentID = parentID;
+		}
+
+		// Build the display string with indentation (1 space per level)
+		std::string indent(depth, ' ');
+		std::string typeName = GetTypeName(element->m_Type);
+		std::string name = GetElementName(id);
+
+		std::string displayText;
+		if (!name.empty())
+		{
+			displayText = indent + name + ": " + typeName;
+		}
+		else
+		{
+			displayText = indent + typeName + " (" + std::to_string(id) + ")";
+		}
+
+		// Add to listbox and parallel ID list
+		listbox->m_Items.push_back(displayText);
+		m_elementIDList.push_back(id);
+	}
+
+	Log("Populated element hierarchy with " + std::to_string(listbox->m_Items.size()) + " items");
+}
+
+void GhostState::UpdateElementHierarchySelection()
+{
+	// Get the listbox element
+	auto listboxElement = m_gui->GetElement(1501);
+	if (!listboxElement || listboxElement->m_Type != GUI_LISTBOX)
+		return;
+	auto listbox = static_cast<GuiListBox*>(listboxElement.get());
+
+	// Find the index of the selected element in our ID list
+	int selectedIndex = -1;
+	for (size_t i = 0; i < m_elementIDList.size(); i++)
+	{
+		if (m_elementIDList[i] == m_selectedElementID)
+		{
+			selectedIndex = static_cast<int>(i);
+			break;
+		}
+	}
+
+	// Update the listbox selection
+	listbox->m_SelectedIndex = selectedIndex;
 }
 
 void GhostState::PopulatePropertyPanelFields()
@@ -3879,6 +4389,9 @@ void GhostState::Undo()
 	{
 		Log("Undo successful (undo stack: " + to_string(m_undoStack.size()) + ", redo stack: " + to_string(m_redoStack.size()) + ")");
 		m_contentSerializer->SetDirty(true);
+
+		// Update the element hierarchy listbox
+		PopulateElementHierarchy();
 	}
 	else
 	{
@@ -3949,6 +4462,9 @@ void GhostState::Redo()
 	{
 		Log("Redo successful (undo stack: " + to_string(m_undoStack.size()) + ", redo stack: " + to_string(m_redoStack.size()) + ")");
 		m_contentSerializer->SetDirty(true);
+
+		// Update the element hierarchy listbox
+		PopulateElementHierarchy();
 	}
 	else
 	{
@@ -3988,25 +4504,8 @@ void GhostState::UpdateStatusFooter()
 		return;
 	}
 
-	// Get element type name
-	std::string typeName;
-	switch (selectedElement->m_Type)
-	{
-		case GUI_PANEL: typeName = "Panel"; break;
-		case GUI_TEXTAREA: typeName = "TextArea"; break;
-		case GUI_TEXTINPUT: typeName = "TextInput"; break;
-		case GUI_TEXTBUTTON: typeName = "TextButton"; break;
-		case GUI_ICONBUTTON: typeName = "IconButton"; break;
-		case GUI_SCROLLBAR: typeName = "ScrollBar"; break;
-		case GUI_RADIOBUTTON: typeName = "RadioButton"; break;
-		case GUI_CHECKBOX: typeName = "CheckBox"; break;
-		case GUI_SPRITE: typeName = "Sprite"; break;
-		case GUI_OCTAGONBOX: typeName = "OctagonBox"; break;
-		case GUI_STRETCHBUTTON: typeName = "StretchButton"; break;
-		case GUI_LIST: typeName = "List"; break;
-		case GUI_LISTBOX: typeName = "ListBox"; break;
-		default: typeName = "Unknown"; break;
-	}
+	// Get element type name using shared helper function
+	std::string typeName = GetTypeName(selectedElement->m_Type);
 
 	// Get element name
 	std::string elementName = GetElementName(m_selectedElementID);
@@ -4015,6 +4514,32 @@ void GhostState::UpdateStatusFooter()
 		elementName = "(unnamed)";
 	}
 
+	// Get position info (floating vs positioned)
+	std::string positionInfo;
+	if (m_contentSerializer->IsFloating(m_selectedElementID))
+	{
+		positionInfo = " [Floating]";
+	}
+	else
+	{
+		// Get parent to calculate relative position
+		int parentID = m_contentSerializer->GetParentID(m_selectedElementID);
+		int relativeX = static_cast<int>(selectedElement->m_Pos.x);
+		int relativeY = static_cast<int>(selectedElement->m_Pos.y);
+
+		if (parentID != -1)
+		{
+			auto parent = m_gui->GetElement(parentID);
+			if (parent)
+			{
+				relativeX = static_cast<int>(selectedElement->m_Pos.x - parent->m_Pos.x);
+				relativeY = static_cast<int>(selectedElement->m_Pos.y - parent->m_Pos.y);
+			}
+		}
+
+		positionInfo = " [" + to_string(relativeX) + ", " + to_string(relativeY) + "]";
+	}
+
 	// Build the status string
-	footerText->m_String = typeName + " Name: " + elementName + " ID: " + to_string(m_selectedElementID);
+	footerText->m_String = typeName + " Name: " + elementName + " ID: " + to_string(m_selectedElementID) + positionInfo;
 }

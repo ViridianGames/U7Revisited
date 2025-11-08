@@ -660,8 +660,39 @@ void GhostSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, c
 		}
 		else if (type == "sprite")
 		{
-			// Get sprite/texture name
-			string spriteName = element.value("sprite", "");
+			// Parse sprite definition (support both old string format and new object format)
+			SpriteDefinition spriteDef;
+			if (element.contains("sprite"))
+			{
+				if (element["sprite"].is_string())
+				{
+					// Old format: "sprite": "filename.png"
+					string spriteName = element["sprite"].get<string>();
+					// Load full texture and store definition
+					string spritePath = spriteName.empty() ? "" : s_baseSpritePath + spriteName;
+					Texture loadedTexture = LoadTexture(spritePath.c_str());
+					spriteDef.spritesheet = spriteName;
+					spriteDef.x = 0;
+					spriteDef.y = 0;
+					spriteDef.w = (loadedTexture.id != 0) ? loadedTexture.width : 48;
+					spriteDef.h = (loadedTexture.id != 0) ? loadedTexture.height : 48;
+					if (loadedTexture.id != 0)
+						UnloadTexture(loadedTexture);  // We'll reload it below
+				}
+				else if (element["sprite"].is_object())
+				{
+					// New format: "sprite": {"spritesheet": "file.png", "x": 0, "y": 0, "w": 32, "h": 32}
+					auto spriteObj = element["sprite"];
+					spriteDef.spritesheet = spriteObj.value("spritesheet", "");
+					spriteDef.x = spriteObj.value("x", 0);
+					spriteDef.y = spriteObj.value("y", 0);
+					spriteDef.w = spriteObj.value("w", 48);
+					spriteDef.h = spriteObj.value("h", 48);
+				}
+			}
+
+			// Store sprite definition
+			SetSprite(id, spriteDef);
 
 			// Get scale with defaults
 			float scaleX = element.value("scaleX", 1.0f);
@@ -687,15 +718,15 @@ void GhostSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, c
 			int absoluteX = parentX + posx;
 			int absoluteY = parentY + posy;
 
-			// Load the sprite/texture (prepend base sprite path)
-			string spritePath = spriteName.empty() ? "" : s_baseSpritePath + spriteName;
+			// Load the sprite texture with the specified rectangle
+			string spritePath = spriteDef.spritesheet.empty() ? "" : s_baseSpritePath + spriteDef.spritesheet;
 			Texture loadedTexture = LoadTexture(spritePath.c_str());
 
 			shared_ptr<Sprite> sprite = make_shared<Sprite>();
 			if (loadedTexture.id == 0)
 			{
 				Log("GhostSerializer::ParseElements - Failed to load sprite: " + spritePath);
-				// Create a default 32x32 sprite without a texture (will still crash if drawn)
+				// Create a default sprite without a texture
 				sprite->m_sourceRect = Rectangle{0, 0, 32, 32};
 				sprite->m_texture = nullptr;
 			}
@@ -705,11 +736,14 @@ void GhostSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, c
 				Texture* texture = new Texture();
 				*texture = loadedTexture;
 				sprite->m_texture = texture;
-				sprite->m_sourceRect = Rectangle{0, 0, float(texture->width), float(texture->height)};
+				// Use the specified rectangle from the sprite definition
+				sprite->m_sourceRect = Rectangle{
+					static_cast<float>(spriteDef.x),
+					static_cast<float>(spriteDef.y),
+					static_cast<float>(spriteDef.w),
+					static_cast<float>(spriteDef.h)
+				};
 			}
-
-			// Store the sprite filename for serialization
-			m_spriteNames[id] = spriteName;
 
 			// Add the sprite element
 			gui->AddSprite(id, absoluteX, absoluteY, sprite, scaleX, scaleY, color, group, active);
@@ -981,8 +1015,39 @@ void GhostSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, c
 		}
 		else if (type == "iconbutton")
 		{
-			// Get sprite
-			string spriteName = element.value("sprite", "");
+			// Parse sprite definition (support both old string format and new object format)
+			SpriteDefinition spriteDef;
+			if (element.contains("sprite"))
+			{
+				if (element["sprite"].is_string())
+				{
+					// Old format: "sprite": "filename.png"
+					string spriteName = element["sprite"].get<string>();
+					// Load full texture and store definition
+					string spritePath = spriteName.empty() ? "" : s_baseSpritePath + spriteName;
+					Texture loadedTexture = LoadTexture(spritePath.c_str());
+					spriteDef.spritesheet = spriteName;
+					spriteDef.x = 0;
+					spriteDef.y = 0;
+					spriteDef.w = (loadedTexture.id != 0) ? loadedTexture.width : 48;
+					spriteDef.h = (loadedTexture.id != 0) ? loadedTexture.height : 48;
+					if (loadedTexture.id != 0)
+						UnloadTexture(loadedTexture);  // We'll reload it below
+				}
+				else if (element["sprite"].is_object())
+				{
+					// New format: "sprite": {"spritesheet": "file.png", "x": 0, "y": 0, "w": 32, "h": 32}
+					auto spriteObj = element["sprite"];
+					spriteDef.spritesheet = spriteObj.value("spritesheet", "");
+					spriteDef.x = spriteObj.value("x", 0);
+					spriteDef.y = spriteObj.value("y", 0);
+					spriteDef.w = spriteObj.value("w", 48);
+					spriteDef.h = spriteObj.value("h", 48);
+				}
+			}
+
+			// Store sprite definition
+			SetSprite(id, spriteDef);
 
 			// Get text (optional)
 			string text = element.value("text", "");
@@ -1018,11 +1083,11 @@ void GhostSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, c
 			int absoluteX = parentX + posx;
 			int absoluteY = parentY + posy;
 
-			// Load sprite
+			// Load sprite with the specified rectangle
 			shared_ptr<Sprite> upSprite = nullptr;
-			if (!spriteName.empty())
+			if (!spriteDef.spritesheet.empty())
 			{
-				string spritePath = s_baseSpritePath + spriteName;
+				string spritePath = s_baseSpritePath + spriteDef.spritesheet;
 				Texture loadedTexture = LoadTexture(spritePath.c_str());
 
 				upSprite = make_shared<Sprite>();
@@ -1037,11 +1102,14 @@ void GhostSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, c
 					Texture* texture = new Texture();
 					*texture = loadedTexture;
 					upSprite->m_texture = texture;
-					upSprite->m_sourceRect = Rectangle{0, 0, float(texture->width), float(texture->height)};
+					// Use the specified rectangle from the sprite definition
+					upSprite->m_sourceRect = Rectangle{
+						static_cast<float>(spriteDef.x),
+						static_cast<float>(spriteDef.y),
+						static_cast<float>(spriteDef.w),
+						static_cast<float>(spriteDef.h)
+					};
 				}
-
-				// Store the sprite filename for serialization
-				SetSpriteName(id, spriteName);
 			}
 
 			// Add the iconbutton (downbutton and inactivebutton default to nullptr)
@@ -1787,7 +1855,7 @@ ghost_json GhostSerializer::SerializeElement(int elementID, Gui* gui, int parent
 	if (element->m_Type == GUI_PANEL)
 	{
 		auto panel = static_cast<GuiPanel*>(element.get());
-		elementJson["size"] = { panel->m_Width, panel->m_Height };
+		elementJson["size"] = { static_cast<int>(panel->m_Width), static_cast<int>(panel->m_Height) };
 		elementJson["backgroundColor"] = { panel->m_Color.r, panel->m_Color.g, panel->m_Color.b, panel->m_Color.a };
 		elementJson["filled"] = panel->m_Filled;
 
@@ -1923,14 +1991,14 @@ ghost_json GhostSerializer::SerializeElement(int elementID, Gui* gui, int parent
 		}
 
 		// Use standard size array format (both in pixels) to match other elements
-		elementJson["size"] = { textarea->m_Width, textarea->m_Height };
+		elementJson["size"] = { static_cast<int>(textarea->m_Width), static_cast<int>(textarea->m_Height) };
 		elementJson["justified"] = textarea->m_Justified;
 	}
 	else if (element->m_Type == GUI_TEXTINPUT)
 	{
 		auto textinput = static_cast<GuiTextInput*>(element.get());
 		elementJson["text"] = textinput->m_String;
-		elementJson["size"] = { textinput->m_Width, textinput->m_Height };
+		elementJson["size"] = { static_cast<int>(textinput->m_Width), static_cast<int>(textinput->m_Height) };
 
 		// Only serialize properties that were explicitly set (not inherited)
 		auto explicitIt = m_explicitProperties.find(elementID);
@@ -1954,7 +2022,7 @@ ghost_json GhostSerializer::SerializeElement(int elementID, Gui* gui, int parent
 	else if (element->m_Type == GUI_CHECKBOX)
 	{
 		auto checkbox = static_cast<GuiCheckBox*>(element.get());
-		elementJson["size"] = { checkbox->m_Width, checkbox->m_Height };
+		elementJson["size"] = { static_cast<int>(checkbox->m_Width), static_cast<int>(checkbox->m_Height) };
 		elementJson["color"] = { checkbox->m_Color.r, checkbox->m_Color.g, checkbox->m_Color.b, checkbox->m_Color.a };
 		elementJson["selected"] = checkbox->m_Selected;
 		elementJson["scale"] = { checkbox->m_ScaleX, checkbox->m_ScaleY };
@@ -1962,7 +2030,7 @@ ghost_json GhostSerializer::SerializeElement(int elementID, Gui* gui, int parent
 	else if (element->m_Type == GUI_RADIOBUTTON)
 	{
 		auto radio = static_cast<GuiRadioButton*>(element.get());
-		elementJson["size"] = { radio->m_Width, radio->m_Height };
+		elementJson["size"] = { static_cast<int>(radio->m_Width), static_cast<int>(radio->m_Height) };
 		elementJson["color"] = { radio->m_Color.r, radio->m_Color.g, radio->m_Color.b, radio->m_Color.a };
 		elementJson["selected"] = radio->m_Selected;
 		elementJson["scale"] = { radio->m_ScaleX, radio->m_ScaleY };
@@ -1971,8 +2039,19 @@ ghost_json GhostSerializer::SerializeElement(int elementID, Gui* gui, int parent
 	{
 		auto sprite = static_cast<GuiSprite*>(element.get());
 
-		// Serialize sprite properties
-		elementJson["sprite"] = GetSpriteName(elementID);
+		// Serialize sprite definition (with x/y/w/h)
+		SpriteDefinition spriteDef = GetSprite(elementID);
+		if (!spriteDef.IsEmpty())
+		{
+			elementJson["sprite"] = {
+				{"spritesheet", spriteDef.spritesheet},
+				{"x", spriteDef.x},
+				{"y", spriteDef.y},
+				{"w", spriteDef.w},
+				{"h", spriteDef.h}
+			};
+		}
+
 		elementJson["scaleX"] = sprite->m_ScaleX;
 		elementJson["scaleY"] = sprite->m_ScaleY;
 
@@ -1989,7 +2068,7 @@ ghost_json GhostSerializer::SerializeElement(int elementID, Gui* gui, int parent
 	{
 		auto scrollbar = static_cast<GuiScrollBar*>(element.get());
 		elementJson["valueRange"] = scrollbar->m_ValueRange;
-		elementJson["size"] = { scrollbar->m_Width, scrollbar->m_Height };
+		elementJson["size"] = { static_cast<int>(scrollbar->m_Width), static_cast<int>(scrollbar->m_Height) };
 		elementJson["vertical"] = scrollbar->m_Vertical;
 		elementJson["spurColor"] = { scrollbar->m_SpurColor.r, scrollbar->m_SpurColor.g, scrollbar->m_SpurColor.b, scrollbar->m_SpurColor.a };
 		elementJson["backgroundColor"] = { scrollbar->m_BackgroundColor.r, scrollbar->m_BackgroundColor.g, scrollbar->m_BackgroundColor.b, scrollbar->m_BackgroundColor.a };
@@ -1997,7 +2076,20 @@ ghost_json GhostSerializer::SerializeElement(int elementID, Gui* gui, int parent
 	else if (element->m_Type == GUI_ICONBUTTON)
 	{
 		auto iconbutton = static_cast<GuiIconButton*>(element.get());
-		elementJson["sprite"] = GetSpriteName(elementID);
+
+		// Serialize sprite definition (with x/y/w/h)
+		SpriteDefinition spriteDef = GetSprite(elementID);
+		if (!spriteDef.IsEmpty())
+		{
+			elementJson["sprite"] = {
+				{"spritesheet", spriteDef.spritesheet},
+				{"x", spriteDef.x},
+				{"y", spriteDef.y},
+				{"w", spriteDef.w},
+				{"h", spriteDef.h}
+			};
+		}
+
 		if (!iconbutton->m_String.empty())
 			elementJson["text"] = iconbutton->m_String;
 		elementJson["color"] = { iconbutton->m_FontColor.r, iconbutton->m_FontColor.g, iconbutton->m_FontColor.b, iconbutton->m_FontColor.a };
@@ -2029,7 +2121,7 @@ ghost_json GhostSerializer::SerializeElement(int elementID, Gui* gui, int parent
 	else if (element->m_Type == GUI_OCTAGONBOX)
 	{
 		auto octagonbox = static_cast<GuiOctagonBox*>(element.get());
-		elementJson["size"] = { octagonbox->m_Width, octagonbox->m_Height };
+		elementJson["size"] = { static_cast<int>(octagonbox->m_Width), static_cast<int>(octagonbox->m_Height) };
 		elementJson["color"] = { octagonbox->m_Color.r, octagonbox->m_Color.g, octagonbox->m_Color.b, octagonbox->m_Color.a };
 
 		// Serialize border sprites if they exist
@@ -2099,7 +2191,7 @@ ghost_json GhostSerializer::SerializeElement(int elementID, Gui* gui, int parent
 	else if (element->m_Type == GUI_LIST)
 	{
 		auto list = static_cast<GuiList*>(element.get());
-		elementJson["size"] = { list->m_Width, list->m_Height };
+		elementJson["size"] = { static_cast<int>(list->m_Width), static_cast<int>(list->m_Height) };
 		elementJson["items"] = list->m_Items;
 		elementJson["textColor"] = { list->m_TextColor.r, list->m_TextColor.g, list->m_TextColor.b, list->m_TextColor.a };
 		elementJson["backgroundColor"] = { list->m_BackgroundColor.r, list->m_BackgroundColor.g, list->m_BackgroundColor.b, list->m_BackgroundColor.a };
@@ -2129,7 +2221,7 @@ ghost_json GhostSerializer::SerializeElement(int elementID, Gui* gui, int parent
 	else if (element->m_Type == GUI_LISTBOX)
 	{
 		auto listbox = static_cast<GuiListBox*>(element.get());
-		elementJson["size"] = { listbox->m_Width, listbox->m_Height };
+		elementJson["size"] = { static_cast<int>(listbox->m_Width), static_cast<int>(listbox->m_Height) };
 		elementJson["items"] = listbox->m_Items;
 		elementJson["textColor"] = { listbox->m_TextColor.r, listbox->m_TextColor.g, listbox->m_TextColor.b, listbox->m_TextColor.a };
 		elementJson["backgroundColor"] = { listbox->m_BackgroundColor.r, listbox->m_BackgroundColor.g, listbox->m_BackgroundColor.b, listbox->m_BackgroundColor.a };

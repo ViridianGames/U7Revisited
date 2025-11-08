@@ -146,15 +146,7 @@ public:
 		return (it != m_panelColumns.end()) ? it->second : 2;  // Default 2 columns
 	}
 
-	// Sprite metadata methods
-	void SetSpriteName(int spriteID, const std::string& filename) { m_spriteNames[spriteID] = filename; }
-	std::string GetSpriteName(int spriteID) const
-	{
-		auto it = m_spriteNames.find(spriteID);
-		return (it != m_spriteNames.end()) ? it->second : "image.png";  // Default image.png
-	}
-
-	// Sprite definition structure for stretchbutton sprites
+	// Sprite definition structure (used by all sprite-based elements)
 	struct SpriteDefinition
 	{
 		std::string spritesheet;
@@ -165,6 +157,29 @@ public:
 
 		bool IsEmpty() const { return spritesheet.empty(); }
 	};
+
+	// Unified sprite metadata methods (for GuiSprite and IconButton)
+	void SetSprite(int elementID, const SpriteDefinition& sprite) { m_spriteDefinitions[elementID] = sprite; }
+	SpriteDefinition GetSprite(int elementID) const
+	{
+		auto it = m_spriteDefinitions.find(elementID);
+		if (it != m_spriteDefinitions.end())
+			return it->second;
+		// Return default fallback
+		return SpriteDefinition{"image.png", 0, 0, 48, 48};
+	}
+
+	// Legacy compatibility methods (deprecated - use SetSprite/GetSprite instead)
+	void SetSpriteName(int spriteID, const std::string& filename)
+	{
+		SpriteDefinition def = GetSprite(spriteID);
+		def.spritesheet = filename;
+		SetSprite(spriteID, def);
+	}
+	std::string GetSpriteName(int spriteID) const
+	{
+		return GetSprite(spriteID).spritesheet;
+	}
 
 	// StretchButton sprite metadata methods
 	void SetStretchButtonLeftSprite(int buttonID, const SpriteDefinition& sprite);
@@ -186,6 +201,15 @@ public:
 		auto it = m_elementFonts.find(elementID);
 		return (it != m_elementFonts.end()) ? it->second : "";
 	}
+	void ClearElementFont(int elementID)
+	{
+		m_elementFonts.erase(elementID);
+		auto it = m_explicitProperties.find(elementID);
+		if (it != m_explicitProperties.end())
+		{
+			it->second.erase("font");
+		}
+	}
 
 	void SetElementFontSize(int elementID, int fontSize)
 	{
@@ -196,6 +220,15 @@ public:
 	{
 		auto it = m_elementFontSizes.find(elementID);
 		return (it != m_elementFontSizes.end()) ? it->second : 0;  // 0 means not set
+	}
+	void ClearElementFontSize(int elementID)
+	{
+		m_elementFontSizes.erase(elementID);
+		auto it = m_explicitProperties.find(elementID);
+		if (it != m_explicitProperties.end())
+		{
+			it->second.erase("fontSize");
+		}
 	}
 
 	// Property metadata methods
@@ -284,8 +317,8 @@ private:
 	std::map<int, int> m_panelVertPaddings;  // Maps panel ID -> vertical padding in pixels
 	std::map<int, int> m_panelColumns;  // Maps panel ID -> number of columns (for table layout)
 
-	// Sprite metadata (since Geist GuiSprite doesn't store the filename)
-	std::map<int, std::string> m_spriteNames;  // Maps sprite ID -> filename
+	// Sprite metadata (full sprite definition with x/y/w/h)
+	std::map<int, SpriteDefinition> m_spriteDefinitions;  // Maps sprite/iconbutton ID -> full sprite definition
 
 	// StretchButton sprite metadata (3 sprite definitions per button)
 	std::map<int, SpriteDefinition> m_stretchButtonLeftSprites;    // Maps stretchbutton ID -> left sprite definition

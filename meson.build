@@ -129,12 +129,16 @@ sources = files(
            'Source/Geist/StateMachine.cpp',
            'Source/Geist/TooltipSystem.cpp',
 
+           'Source/Ghost/GhostSerializer.cpp',
+           'Source/Ghost/GhostWindow.cpp',
+
            'Source/ConversationState.cpp',
            'Source/GumpManager.cpp',
            'Source/LoadingState.cpp',
            'Source/Main.cpp',
            'Source/MainState.cpp',
            'Source/OptionsState.cpp',
+           'Source/Pathfinding.cpp',
            'Source/ShapeData.cpp',
            'Source/ShapeEditorState.cpp',
            'Source/Terrain.cpp',
@@ -150,6 +154,38 @@ sources = files(
 
 executable('U7Revisited',
   sources,
+  dependencies: dependencies,
+  include_directories: include_directories,
+)
+
+# Ghost GUI Editor (Standalone Tool)
+ghost_sources = files(
+           'Source/Ghost/Main.cpp',
+           'Source/Ghost/GhostState.cpp',
+           'Source/Ghost/ColorPickerState.cpp',
+           'Source/Ghost/SpritePickerState.cpp',
+           'Source/Ghost/FileChooserState.cpp',
+           'Source/Ghost/GhostSerializer.cpp',
+           'Source/Ghost/GhostWindow.cpp',
+)
+
+ghost_geist_sources = files(
+           'Source/Geist/Config.cpp',
+           'Source/Geist/Engine.cpp',
+           'Source/Geist/Globals.cpp',
+           'Source/Geist/Gui.cpp',
+           'Source/Geist/GuiElements.cpp',
+           'Source/Geist/IO.cpp',
+           'Source/Geist/Logging.cpp',
+           'Source/Geist/Primitives.cpp',
+           'Source/Geist/RaylibModel.cpp',
+           'Source/Geist/ResourceManager.cpp',
+           'Source/Geist/ScriptingSystem.cpp',
+           'Source/Geist/StateMachine.cpp',
+)
+
+executable('Ghost',
+  ghost_sources + ghost_geist_sources,
   dependencies: dependencies,
   include_directories: include_directories,
 )

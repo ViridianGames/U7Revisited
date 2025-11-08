@@ -56,25 +56,88 @@
               },
               {
                 "type": "panel",
-                "name": "property_panel_container",
-                "id": 3000,
+                "name": "element_list_panel",
+                "id": 1500,
                 "position": [
-                  0,
-                  280
+                  -1,
+                  -1
                 ],
                 "size": [
-                  640,
-                  420
+                  300,
+                  400
                 ],
                 "backgroundColor": [
-                  45,
-                  45,
-                  45,
+                  55,
+                  55,
+                  55,
                   255
                 ],
                 "filled": true,
+                "layout": "horz",
+                "horzPadding": 5,
+                "vertPadding": 5,
+                "font": "babyblocks.ttf",
+                "fontSize": 30,
                 "group": 0,
-                "active": true
+                "active": true,
+                "elements": [
+                  {
+                    "type": "listbox",
+                    "name": "element_hierarchy_list",
+                    "id": 1501,
+                    "position": [
+                      -1,
+                      -1
+                    ],
+                    "size": [
+                      200,
+                      390
+                    ],
+                    "items": [],
+                    "textColor": [
+                      255,
+                      255,
+                      255,
+                      255
+                    ],
+                    "backgroundColor": [
+                      20,
+                      20,
+                      20,
+                      255
+                    ],
+                    "borderColor": [
+                      128,
+                      128,
+                      128,
+                      255
+                    ],
+                    "group": 0,
+                    "active": true
+                  },
+                  {
+                    "type": "panel",
+                    "name": "property_panel_container",
+                    "id": 3000,
+                    "position": [
+                      -1,
+                      -1
+                    ],
+                    "size": [
+                      300,
+                      400
+                    ],
+                    "backgroundColor": [
+                      45,
+                      45,
+                      45,
+                      255
+                    ],
+                    "filled": true,
+                    "group": 0,
+                    "active": true
+                  }
+                ]
               },
               {
                 "type": "textarea",
@@ -114,9 +177,9 @@
               720
             ],
             "backgroundColor": [
-              60,
-              60,
-              60,
+              80,
+              80,
+              80,
               255
             ],
             "filled": true,
