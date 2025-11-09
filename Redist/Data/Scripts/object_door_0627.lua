@@ -11,7 +11,7 @@ function object_door_0627(eventid, objectref)
         if var_0001 == 522 then
             if var_0002 == 0 and var_0003 then
                 set_object_shape(800, var_0000)
-                bark("Unlocked", var_0000)
+                bark(var_0000, "Unlocked")
             elseif var_0002 == 255 and var_0003 then
                 var_0004 = create_new_object(704)
                 if not var_0004 then
@@ -21,13 +21,13 @@ function object_door_0627(eventid, objectref)
                 end
                 if not var_0003 then
                     set_object_shape(var_0000, 800)
-                    bark("Unlocked", var_0000)
+                    bark(var_0000, "Unlocked")
                 else
-                    bark("Pick broke", var_0000)
+                    bark(var_0000, "Pick broke")
                     utility_unknown_1061(objectref)
                 end
             else
-                bark("Pick broke", var_0000)
+                bark(var_0000, "Pick broke")
                 utility_unknown_1061(objectref)
             end
         else
@@ -37,9 +37,9 @@ function object_door_0627(eventid, objectref)
                     if var_0002 == 0 then
                         if var_0003 and utility_unknown_0795(var_0000) == 2 then
                             utility_unknown_0796(0, var_0000)
-                            bark("Unlocked", var_0000)
+                            bark(var_0000, "Unlocked")
                         else
-                            bark("Pick broke", var_0000)
+                            bark(var_0000, "Pick broke")
                             utility_unknown_1061(objectref)
                         end
                     else
