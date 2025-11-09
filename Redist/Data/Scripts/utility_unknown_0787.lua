@@ -13,7 +13,7 @@ function utility_unknown_0787(eventid, objectref, arg1, arg2)
         if var_0005 > 24 then
             var_0007 = "@No, thank thee.@"
         else
-            consumeobject_(var_0002) --- Guess: Consumes item
+            consume_object(var_0002) --- Guess: Consumes item
             set_object_behavior(var_0000, var_0000) --- Guess: Sets item behavior
             apply_object_effect(var_0002) --- Guess: Applies item effect
             var_0008 = random(1, 10)

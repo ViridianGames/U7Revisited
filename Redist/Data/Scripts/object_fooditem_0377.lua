@@ -9,5 +9,5 @@ function object_fooditem_0377(objectref)
         4
     }
     var_0001 = var_0000[get_object_frame(objectref) + 1] --- Guess: Gets quantity based on item frame
-    consumeobject_(91, var_0001, objectref) --- Guess: Consumes item with specified quantity
+    consume_object(91, var_0001, objectref) --- Guess: Consumes item with specified quantity
 end
