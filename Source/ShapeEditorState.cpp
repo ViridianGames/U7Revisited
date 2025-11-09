@@ -4,6 +4,7 @@
 #include "Geist/ResourceManager.h"
 #include "Geist/ScriptingSystem.h"
 #include "Geist/TooltipSystem.h"
+#include "Geist/Logging.h"
 #include "U7Globals.h"
 #include "ShapeEditorState.h"
 #include "rlgl.h"
@@ -183,8 +184,196 @@ void ShapeEditorState::Shutdown()
 
 }
 
+void ShapeEditorState::SaveShapeTable()
+{
+	ofstream file("Data/shapetable.dat", ios::trunc);
+	if (file.is_open())
+	{
+		for (int i = 150; i < 1024; ++i)
+		{
+			for (int j = 0; j < 32; ++j)
+			{
+				g_shapeTable[i][j].Serialize(file);
+			}
+		}
+		file.close();
+	}
+	AddConsoleString("Saved shapetable.dat successfully!", GREEN);
+}
+
+void ShapeEditorState::RenameScript(const string& oldScript, const string& newName)
+{
+	// Rename the script file using git mv
+	string oldPath = "Data/Scripts/" + oldScript + ".lua";
+	string newPath = "Data/Scripts/" + newName + ".lua";
+
+	// Check if old file exists
+	ifstream oldFile(oldPath);
+	if (!oldFile.good())
+	{
+		Log("ERROR: Script file not found: " + oldPath);
+		AddConsoleString("ERROR: Script file not found: " + oldPath, RED);
+		return;
+	}
+	oldFile.close();
+
+	// Use git mv to rename the file
+	string gitCommand = "git mv \"" + oldPath + "\" \"" + newPath + "\"";
+	int result = system(gitCommand.c_str());
+
+	if (result != 0)
+	{
+		Log("ERROR: Failed to rename script file: git mv failed with error code " + std::to_string(result));
+		AddConsoleString("ERROR: Failed to rename file - git mv failed", RED);
+		return;
+	}
+
+	// Update all frames using this script
+	int updatedCount = 0;
+	for (int shape = 0; shape < g_shapeTable.size(); ++shape)
+	{
+		for (int frame = 0; frame < g_shapeTable[shape].size(); ++frame)
+		{
+			if (g_shapeTable[shape][frame].IsValid() &&
+				g_shapeTable[shape][frame].m_luaScript == oldScript)
+			{
+				g_shapeTable[shape][frame].m_luaScript = newName;
+				updatedCount++;
+			}
+		}
+	}
+
+	// Refresh the scripting system to pick up the renamed file
+	g_ScriptingSystem->Shutdown();
+	g_ScriptingSystem->Init("");
+
+	// Find the new script index
+	for (int i = 0; i < g_ScriptingSystem->m_scriptFiles.size(); ++i)
+	{
+		if (g_ScriptingSystem->m_scriptFiles[i].first == newName)
+		{
+			m_luaScriptIndex = i;
+			break;
+		}
+	}
+
+	// Update function names in all Lua scripts
+	int scriptFilesUpdated = 0;
+	for (const auto& scriptPair : g_ScriptingSystem->m_scriptFiles)
+	{
+		string scriptFile = "Scripts/" + scriptPair.first + ".lua";
+
+		// Read the entire file
+		ifstream inFile(scriptFile);
+		if (inFile.is_open())
+		{
+			stringstream buffer;
+			buffer << inFile.rdbuf();
+			string content = buffer.str();
+			inFile.close();
+
+			// Search and replace function name (old script name used as function name)
+			string oldFuncName = oldScript + "(";
+			string newFuncName = newName + "(";
+			size_t pos = 0;
+			bool modified = false;
+
+			while ((pos = content.find(oldFuncName, pos)) != string::npos)
+			{
+				content.replace(pos, oldFuncName.length(), newFuncName);
+				pos += newFuncName.length();
+				modified = true;
+			}
+
+			// Write back if modified
+			if (modified)
+			{
+				ofstream outFile(scriptFile, ios::trunc);
+				if (outFile.is_open())
+				{
+					outFile << content;
+					outFile.close();
+					scriptFilesUpdated++;
+				}
+			}
+		}
+	}
+
+	// Save the shape table with updated script names
+	SaveShapeTable();
+
+	string message = "Renamed script from '" + oldScript + "' to '" + newName + "' (" +
+					std::to_string(updatedCount) + " frames updated";
+	if (scriptFilesUpdated > 0)
+	{
+		message += ", " + std::to_string(scriptFilesUpdated) + " script files updated";
+	}
+	message += ")";
+	AddConsoleString(message);
+}
+
 void ShapeEditorState::Update()
 {
+	// If modal window is visible, only handle modal window input and return early
+	if (m_renameScriptWindow && m_renameScriptWindow->IsVisible())
+	{
+		// If we need to set focus and the mouse button is no longer pressed, do it now
+		if (m_renameScriptWindowNeedsFocus && !IsMouseButtonDown(MOUSE_LEFT_BUTTON))
+		{
+			int nameInputID = m_renameScriptWindow->GetElementID("SCRIPT_NAME");
+			if (nameInputID != -1)
+			{
+				auto elem = m_renameScriptWindow->GetGui()->GetElement(nameInputID);
+				if (elem && elem->m_Type == GUI_TEXTINPUT)
+				{
+					GuiTextInput* textInput = static_cast<GuiTextInput*>(elem.get());
+					textInput->m_HasFocus = true;
+					m_renameScriptWindow->GetGui()->m_ActiveElement = nameInputID;
+					Log("Set m_HasFocus = true after mouse released");
+				}
+			}
+			m_renameScriptWindowNeedsFocus = false;
+		}
+
+		m_renameScriptWindow->Update();
+
+		int okButtonID = m_renameScriptWindow->GetElementID("OK_BUTTON");
+		int cancelButtonID = m_renameScriptWindow->GetElementID("CANCEL_BUTTON");
+
+		if (m_renameScriptWindow->GetGui()->GetActiveElementID() == okButtonID)
+		{
+			// Get the new name from the text input
+			int nameInputID = m_renameScriptWindow->GetElementID("SCRIPT_NAME");
+			if (nameInputID != -1)
+			{
+				auto elem = m_renameScriptWindow->GetGui()->GetElement(nameInputID);
+				if (elem && elem->m_Type == GUI_TEXTINPUT)
+				{
+					string newName = elem->GetString();
+					string oldScript = g_shapeTable[m_currentShape][m_currentFrame].m_luaScript;
+
+					// Only rename if name changed and is valid
+					if (!newName.empty() && newName != "default" && newName != oldScript)
+					{
+						RenameScript(oldScript, newName);
+					}
+				}
+			}
+
+			m_renameScriptWindow->Hide();
+			m_renameScriptWindow.reset();
+			m_currentGui->m_AcceptingInput = true;
+		}
+		else if (m_renameScriptWindow->GetGui()->GetActiveElementID() == cancelButtonID)
+		{
+			m_renameScriptWindow->Hide();
+			m_renameScriptWindow.reset();
+			m_currentGui->m_AcceptingInput = true;
+		}
+
+		return;  // Don't process main GUI while modal is visible
+	}
+
 	//  Handle input
 	m_currentGui->Update();
 	ShapeData& shapeData = g_shapeTable[m_currentShape][m_currentFrame];
@@ -418,25 +607,7 @@ void ShapeEditorState::Update()
 	{
 		AddConsoleString("Saving shapetable.dat...", WHITE);
 		Draw();  // Force a frame render to show the loading message
-
-		ofstream file("Data/shapetable.dat", ios::trunc);
-		if (file.is_open())
-		{
-			for (int i = 150; i < 1024; ++i)
-			{
-				for (int j = 0; j < 32; ++j)
-				{
-					ShapeData& shapeData = g_shapeTable[i][j];
-					shapeData.Serialize(file);
-				}
-			}
-			file.close();
-			AddConsoleString("Saved shapetable.dat successfully!", GREEN);
-		}
-		else
-		{
-			AddConsoleString("ERROR: Failed to save shapetable.dat!", RED);
-		}
+		SaveShapeTable();
 	}
 
 	if (m_currentGui->GetActiveElementID() == GE_LOADBUTTON)
@@ -1517,6 +1688,77 @@ void ShapeEditorState::Update()
 		AddConsoleString("Cleared scripts for " + std::to_string(clearedCount) + " frames");
 	}
 
+	// Handle rename script button
+	if (m_currentGui->GetActiveElementID() == GE_RENAMESCRIPTBUTTON)
+	{
+		Log("Rename script button clicked!");
+		// Get the current script name (without .lua extension)
+		string currentScript = g_shapeTable[m_currentShape][m_currentFrame].m_luaScript;
+		Log("Current script: " + currentScript);
+		if (currentScript == "default" || currentScript.empty())
+		{
+			AddConsoleString("No script assigned to rename");
+		}
+		else
+		{
+			Log("Creating rename dialog window...");
+			Log("RenderWidth: " + std::to_string(g_Engine->m_RenderWidth) + ", RenderHeight: " + std::to_string(g_Engine->m_RenderHeight));
+			Log("ScreenWidth: " + std::to_string(g_Engine->m_ScreenWidth) + ", ScreenHeight: " + std::to_string(g_Engine->m_ScreenHeight));
+			Log("g_DrawScale: " + std::to_string(g_DrawScale));
+
+			// Create the rename dialog window - use render dimensions since it draws in the render target
+			m_renameScriptWindow = make_unique<GhostWindow>(
+				"GUI/script_rename.ghost",
+				"Data/u7.cfg",
+				g_ResourceManager.get(),
+				g_Engine->m_RenderWidth,
+				g_Engine->m_RenderHeight,
+				true  // modal
+			);
+
+			Log("Window created. IsValid: " + std::to_string(m_renameScriptWindow->IsValid()));
+
+			// Mouse coordinates are in screen space, but GUI is rendered in render target space
+			// InputScale divides mouse coords to transform them: screenMouse / g_DrawScale = renderMouse
+			m_renameScriptWindow->GetGui()->m_InputScale = g_DrawScale;
+			Log("Set InputScale to: " + std::to_string(g_DrawScale));
+
+			// Disable input on main GUI while modal is visible
+			m_currentGui->m_AcceptingInput = false;
+
+			// Set the ORIG_NAME textarea to show the current script name
+			int origNameID = m_renameScriptWindow->GetElementID("ORIG_NAME");
+			if (origNameID != -1)
+			{
+				auto origElem = m_renameScriptWindow->GetGui()->GetElement(origNameID);
+				if (origElem && origElem->m_Type == GUI_TEXTAREA)
+				{
+					origElem->m_String = currentScript;
+					Log("Set ORIG_NAME to: " + currentScript);
+				}
+			}
+
+			// Pre-fill the text input with the current script name
+			int nameInputID = m_renameScriptWindow->GetElementID("SCRIPT_NAME");
+			Log("SCRIPT_NAME ID: " + std::to_string(nameInputID));
+			if (nameInputID != -1)
+			{
+				auto elem = m_renameScriptWindow->GetGui()->GetElement(nameInputID);
+				if (elem && elem->m_Type == GUI_TEXTINPUT)
+				{
+					elem->m_String = currentScript;
+					Log("Pre-filled script name");
+				}
+			}
+
+			// Set flag to give focus after mouse button is released
+			m_renameScriptWindowNeedsFocus = true;
+
+			m_renameScriptWindow->Show();
+			Log("Called Show(). IsVisible: " + std::to_string(m_renameScriptWindow->IsVisible()));
+		}
+	}
+
 	if (somethingChanged)
 	{
 		shapeData.SafeAndSane();
@@ -1864,6 +2106,13 @@ void ShapeEditorState::Draw()
 	int y = -yOffset;
 
 	m_currentGui->Draw();
+
+	// Draw modal rename script window if visible
+	if (m_renameScriptWindow && m_renameScriptWindow->IsVisible())
+	{
+		Log("Drawing rename window!");
+		m_renameScriptWindow->Draw();
+	}
 
 	EndTextureMode();
 	DrawTexturePro(g_guiRenderTarget.texture,
@@ -2334,7 +2583,8 @@ int ShapeEditorState::SetupCommonGui(Gui* gui)
 
 	y += yoffset;
 
-	AddAutoStretchButton(gui, GE_ADDALLFRAMESSCRIPTBUTTON, 4, y - 2, "Add All Frames Script", g_guiFont.get());
+	AddAutoStretchButton(gui, GE_ADDALLFRAMESSCRIPTBUTTON, 4, y - 2, "Add All Frames", g_guiFont.get());
+	AddAutoStretchButton(gui, GE_RENAMESCRIPTBUTTON, 80, y - 2, "Rename", g_guiFont.get());
 	AddAutoStretchButton(gui, GE_CLEARSCRIPTBUTTON, 4, y + 11, "Clear Script", g_guiFont.get());
 	AddAutoStretchButton(gui, GE_CLEARALLSCRIPTSBUTTON, 71, y + 11, "Clear All", g_guiFont.get());
 

@@ -4,6 +4,7 @@
 #include "Geist/State.h"
 #include "Geist/Gui.h"
 #include "Geist/RaylibModel.h"
+#include "Ghost/GhostWindow.h"
 #include <list>
 #include <deque>
 #include <math.h>
@@ -34,6 +35,8 @@ public:
 
    void ChangeGui(Gui* newGui);
    void SwitchToGuiForDrawType(ShapeDrawType drawType);
+   void SaveShapeTable();
+   void RenameScript(const std::string& oldScript, const std::string& newName);
 
    void DrawCuboidWireframe(const Vector3& position, const Vector3& dims, const Vector3& scaling, float rotationAngle);
 
@@ -59,6 +62,9 @@ public:
    std::unique_ptr<Gui> m_dontDrawGui;
 
    Gui* m_currentGui = nullptr;
+
+   std::unique_ptr<GhostWindow> m_renameScriptWindow;
+   bool m_renameScriptWindowNeedsFocus = false;
 
    std::string m_sideDrawStrings[7];
    std::string m_sideStrings[6];
@@ -232,6 +238,7 @@ public:
       GE_OPENLUASCRIPTBUTTON,
       GE_SETLUASCRIPTTOSHAPEIDBUTTON,
       GE_ADDALLFRAMESSCRIPTBUTTON,
+      GE_RENAMESCRIPTBUTTON,
       GE_CLEARSCRIPTBUTTON,
       GE_CLEARALLSCRIPTSBUTTON,
 
