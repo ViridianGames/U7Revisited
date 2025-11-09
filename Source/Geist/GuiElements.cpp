@@ -462,7 +462,9 @@ void GuiTextInput::Draw()
 	}
 	else
 	{
-		if (GetTime() > 500)
+		// Flash cursor every 0.5 seconds using modulo
+		double flashTime = fmod(GetTime(), 1.0);
+		if (flashTime < 0.5)
 		{
 			DrawTextEx(*m_Font, (m_String + "|").c_str(), Vector2{adjustedx + 2, adjustedy + 2}, m_Font->baseSize, 1, m_TextColor);
 		}
