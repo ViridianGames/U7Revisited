@@ -65,6 +65,8 @@ public:
 
    std::unique_ptr<GhostWindow> m_renameScriptWindow;
    bool m_renameScriptWindowNeedsFocus = false;
+   std::string m_pendingRenameOldName;
+   std::string m_pendingRenameNewName;
 
    std::string m_sideDrawStrings[7];
    std::string m_sideStrings[6];

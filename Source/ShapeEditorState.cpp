@@ -217,6 +217,33 @@ void ShapeEditorState::RenameScript(const string& oldScript, const string& newNa
 	}
 	oldFile.close();
 
+	// First, update the function definition in the file itself BEFORE renaming
+	ifstream inFile(oldPath);
+	if (inFile.is_open())
+	{
+		stringstream buffer;
+		buffer << inFile.rdbuf();
+		string content = buffer.str();
+		inFile.close();
+
+		// Replace function definition: "function oldScript(" -> "function newName("
+		string oldFuncDef = "function " + oldScript + "(";
+		string newFuncDef = "function " + newName + "(";
+		size_t pos = content.find(oldFuncDef);
+		if (pos != string::npos)
+		{
+			content.replace(pos, oldFuncDef.length(), newFuncDef);
+
+			// Write back the updated content
+			ofstream outFile(oldPath, ios::trunc);
+			if (outFile.is_open())
+			{
+				outFile << content;
+				outFile.close();
+			}
+		}
+	}
+
 	// Use git mv to rename the file
 	string gitCommand = "git mv \"" + oldPath + "\" \"" + newPath + "\"";
 	int result = system(gitCommand.c_str());
@@ -261,7 +288,7 @@ void ShapeEditorState::RenameScript(const string& oldScript, const string& newNa
 	int scriptFilesUpdated = 0;
 	for (const auto& scriptPair : g_ScriptingSystem->m_scriptFiles)
 	{
-		string scriptFile = "Scripts/" + scriptPair.first + ".lua";
+		string scriptFile = "Data/Scripts/" + scriptPair.first + ".lua";
 
 		// Read the entire file
 		ifstream inFile(scriptFile);
@@ -314,6 +341,15 @@ void ShapeEditorState::RenameScript(const string& oldScript, const string& newNa
 
 void ShapeEditorState::Update()
 {
+	// Check if we have a pending rename to process (after dialog is hidden)
+	if (!m_pendingRenameOldName.empty() && !m_pendingRenameNewName.empty())
+	{
+		AddConsoleString("Renaming script from '" + m_pendingRenameOldName + "' to '" + m_pendingRenameNewName + "'...");
+		RenameScript(m_pendingRenameOldName, m_pendingRenameNewName);
+		m_pendingRenameOldName.clear();
+		m_pendingRenameNewName.clear();
+	}
+
 	// If modal window is visible, only handle modal window input and return early
 	if (m_renameScriptWindow && m_renameScriptWindow->IsVisible())
 	{
@@ -352,17 +388,25 @@ void ShapeEditorState::Update()
 					string newName = elem->GetString();
 					string oldScript = g_shapeTable[m_currentShape][m_currentFrame].m_luaScript;
 
-					// Only rename if name changed and is valid
+					// Only queue rename if name changed and is valid
 					if (!newName.empty() && newName != "default" && newName != oldScript)
 					{
-						RenameScript(oldScript, newName);
+						m_pendingRenameOldName = oldScript;
+						m_pendingRenameNewName = newName;
 					}
+
+					// Hide dialog and re-enable main GUI
+					m_renameScriptWindow->Hide();
+					m_renameScriptWindow.reset();
+					m_currentGui->m_AcceptingInput = true;
 				}
 			}
-
-			m_renameScriptWindow->Hide();
-			m_renameScriptWindow.reset();
-			m_currentGui->m_AcceptingInput = true;
+			else
+			{
+				m_renameScriptWindow->Hide();
+				m_renameScriptWindow.reset();
+				m_currentGui->m_AcceptingInput = true;
+			}
 		}
 		else if (m_renameScriptWindow->GetGui()->GetActiveElementID() == cancelButtonID)
 		{
