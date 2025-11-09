@@ -17438,9 +17438,9 @@
 694 29 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 694 29 default 
 694 30 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 694 30 default 
 694 31 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 694 31 default 
-695 0 0 0 8 8 0 8 8 20 8 0 26 8 3 2.2 2.5 2.2 0.3 0 0.6 0 1 2 2 3 3 1 Models/3dmodels/grandfather_clock_695.gltf 1 0 695 0 object_unknown_0695 
-695 1 0 0 8 8 0 8 8 20 8 0 26 8 3 1.5 2 1.5 0 0 0.5 0 1 2 2 3 3 1 Models/3dmodels/grandfather_clock_695.gltf 1 0 695 1 object_unknown_0695 
-695 2 0 0 8 8 0 8 8 20 8 0 26 8 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 695 2 object_unknown_0695 
+695 0 0 0 8 8 0 8 8 20 8 0 26 8 3 2.2 2.5 2.2 0.3 0 0.6 0 1 2 2 3 3 1 Models/3dmodels/grandfather_clock_695.gltf 1 0 695 0 object_clock_0695 
+695 1 0 0 8 8 0 8 8 20 8 0 26 8 3 1.5 2 1.5 0 0 0.5 0 1 2 2 3 3 1 Models/3dmodels/grandfather_clock_695.gltf 1 0 695 1 object_clock_0695 
+695 2 0 0 8 8 0 8 8 20 8 0 26 8 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 695 2 object_clock_0695 
 695 3 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 695 3 default 
 695 4 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 695 4 default 
 695 5 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 695 5 default 
@@ -18526,7 +18526,7 @@
 728 29 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 728 29 default 
 728 30 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 728 30 default 
 728 31 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 728 31 default 
-729 0 0 0 8 8 0 8 8 4 8 0 5 8 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 729 0 object_unknown_0729 
+729 0 0 0 8 8 0 8 8 4 8 0 5 8 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 729 0 object_crystalball_0729 
 729 1 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 729 1 default 
 729 2 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 729 2 default 
 729 3 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 729 3 default 
@@ -26910,7 +26910,7 @@
 990 29 0 0 16 16 0 16 16 9 16 0 9 16 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 990 29 default 
 990 30 0 0 16 16 0 16 16 9 16 0 9 16 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 990 30 default 
 990 31 0 0 16 16 0 16 16 9 16 0 9 16 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 990 31 default 
-991 0 0 0 24 8 0 8 24 5 24 0 2 8 3 3 3 3 0 0 0 90 1 2 2 3 3 1 Models/3dmodels/anvil_991x00.obj 1 0 991 0 object_unknown_0991 
+991 0 0 0 24 8 0 8 24 5 24 0 2 8 3 3 3 3 0 0 0 90 1 2 2 3 3 1 Models/3dmodels/anvil_991x00.obj 1 0 991 0 object_anvil_0991 
 991 1 0 0 24 8 0 8 24 6 24 0 2 8 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 991 1 default 
 991 2 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 991 2 default 
 991 3 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 991 3 default 

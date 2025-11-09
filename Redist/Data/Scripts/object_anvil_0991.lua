@@ -1,5 +1,5 @@
 --- Best guess: Checks for a sword blank (ID 668) in a specific position and triggers an external function (ID 623), likely for a crafting quest.
-function object_unknown_0991(eventid, objectref)
+function object_anvil_0991(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003
 
     if eventid == 1 then

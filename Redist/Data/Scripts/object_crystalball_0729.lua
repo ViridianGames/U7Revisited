@@ -1,5 +1,5 @@
 --- Best guess: Updates an object's state based on quality, possibly for a dynamic environmental effect or puzzle.
-function object_unknown_0729(eventid, objectref)
+function object_crystalball_0729(eventid, objectref)
     local var_0000, var_0001
 
     if eventid == 1 then
