@@ -491,8 +491,8 @@ void GuiTextInput::Update()
 	if (!m_Gui->m_AcceptingInput || !m_Active)
 		return;
 
-	//  If the left button is down, we are CLICKED
-	if (WasLeftButtonClickedInRect(adjustedx, adjustedy, adjustedx + m_Width, adjustedy + m_Height))
+	//  If the left button is clicked, we gain focus
+	if (WasLeftButtonClickedInRect(adjustedx * m_Gui->m_InputScale, adjustedy * m_Gui->m_InputScale, m_Width * m_Gui->m_InputScale, m_Height * m_Gui->m_InputScale))
 	{
 		if (!m_HasFocus)
 		{
