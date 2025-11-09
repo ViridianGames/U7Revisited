@@ -648,15 +648,8 @@ void GhostSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, c
 			int absoluteX = parentX + posx;
 			int absoluteY = parentY + posy;
 
-			// Scale height based on font size (baseline is 20px for default font)
-			int scaledHeight = height;
-			if (fontSize != 20)
-			{
-				scaledHeight = (int)((float)height * ((float)fontSize / 20.0f));
-			}
-
 			// Add the text input
-			gui->AddTextInput(id, absoluteX, absoluteY, width, scaledHeight, font, text, textColor, boxColor, bgColor, group, active);
+			gui->AddTextInput(id, absoluteX, absoluteY, width, height, font, text, textColor, boxColor, bgColor, group, active);
 		}
 		else if (type == "sprite")
 		{
