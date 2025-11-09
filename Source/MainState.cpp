@@ -1295,6 +1295,41 @@ void MainState::Draw()
 				objectDescription += " Frame: " + to_string(g_objectUnderMousePointer->m_Frame);
 			}
 
+			// Show lua script if not default
+			if (g_objectUnderMousePointer->m_isNPC && g_objectUnderMousePointer->m_hasConversationTree)
+			{
+				// NPCs look up scripts by NPC ID suffix: npc_*_XXXX
+				stringstream ss;
+				ss << std::setfill('0') << std::setw(4) << g_objectUnderMousePointer->m_NPCID;
+				string suffix = "_" + ss.str();
+
+				// Search for script ending with this suffix
+				for (int i = 0; i < g_ScriptingSystem->m_scriptFiles.size(); ++i)
+				{
+					const string& name = g_ScriptingSystem->m_scriptFiles[i].first;
+					if (name.length() >= suffix.length() &&
+						name.compare(name.length() - suffix.length(), suffix.length(), suffix) == 0)
+					{
+						objectDescription += " Script: " + name;
+						break;
+					}
+				}
+			}
+			else
+			{
+				// Regular objects use shape table scripts
+				int shape = g_objectUnderMousePointer->m_shapeData->GetShape();
+				int frame = g_objectUnderMousePointer->m_shapeData->GetFrame();
+				if (shape < g_shapeTable.size() && frame < g_shapeTable[shape].size())
+				{
+					const std::string& scriptName = g_shapeTable[shape][frame].m_luaScript;
+					if (!scriptName.empty() && scriptName != "default")
+					{
+						objectDescription += " Script: " + scriptName;
+					}
+				}
+			}
+
 			if (g_objectUnderMousePointer->m_isContained)
 			{
 				objectDescription += " This object is contained.";
