@@ -1,5 +1,5 @@
 --- Best guess: Applies bandages to NPCs, checking health status and displaying healing messages or rejection if unnecessary or invalid.
-function object_unknown_0827(eventid, objectref)
+function object_bandage_0827(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003
 
     if eventid == 1 then

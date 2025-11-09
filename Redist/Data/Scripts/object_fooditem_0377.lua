@@ -1,5 +1,5 @@
 --- Best guess: Manages consumption of food items by mapping item frames to quantities and processing the item, likely for hunger or gameplay effects.
-function object_unknown_0377(objectref)
+function object_fooditem_0377(objectref)
     local var_0000, var_0001
 
     var_0000 = {

@@ -1,5 +1,5 @@
 --- Best guess: Manages bucket interactions, handling water usage for drinking, filling troughs, dousing fires, and other actions, with appropriate messages.
-function object_unknown_0810(eventid, objectref)
+function object_bucket_0810(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E, var_000F, var_0010, var_0011, var_0012, var_0013, var_0014, var_0015, var_0016, var_0017, var_0018, var_0019, var_001A, var_001B, var_001C, var_001D, var_001E, var_001F, var_0020, var_0021, var_0022
 
     if eventid == 1 then

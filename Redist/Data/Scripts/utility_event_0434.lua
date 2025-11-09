@@ -18,7 +18,7 @@ function utility_event_0434(eventid, objectref)
         var_0001 = find_nearby(0, var_0000, 889, objectref)
         for i = 1, #var_0001 do
             var_0004 = var_0001[i]
-            object_unknown_0889(var_0004)
+            object_lamppost_0889(var_0004)
         end
     end
     return

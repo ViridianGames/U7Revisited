@@ -1,7 +1,7 @@
 -- Curtains
 -- There are 6 types of curtains that use this object id and 12 frames (0 - 11)
 -- Even frame number signify an open curtain while odd is for closed curtain
-function object_unknown_0657(eventid, objectref)
+function object_curtain_0678(eventid, objectref)
     local frame, new_frame
 
     if eventid == 1 then

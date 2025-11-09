@@ -1,5 +1,5 @@
 --- Best guess: Changes an object's shape (ID 481) and updates its state, possibly for a transformation or animation effect (e.g., a magical item or environmental object).
-function object_unknown_0435(eventid, objectref)
+function object_sconce_0435(eventid, objectref)
     local var_0000, var_0001
 
     if eventid == 1 or eventid == 2 then

@@ -1,5 +1,5 @@
 --- Best guess: Manages a lamppost, toggling its state (on/off) and changing its type if specific conditions are met.
-function object_unknown_0889(eventid, objectref)
+function object_lamppost_0889(eventid, objectref)
     local var_0000, var_0001
 
     if eventid == 1 or eventid == 2 then
