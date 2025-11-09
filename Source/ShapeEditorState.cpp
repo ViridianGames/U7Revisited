@@ -17,6 +17,7 @@
 #include <fstream>
 #include <algorithm>
 #include <unordered_map>
+#include <filesystem>
 
 using namespace std;
 
@@ -326,23 +327,71 @@ void ShapeEditorState::RenameScript(const string& oldScript, const string& newNa
 			if (g_shapeTable[shape][frame].IsValid() &&
 				g_shapeTable[shape][frame].m_luaScript == oldScript)
 			{
+				Log("RenameScript: Updating shapetable[" + std::to_string(shape) + "][" + std::to_string(frame) + "] from '" + oldScript + "' to '" + finalNewName + "'");
 				g_shapeTable[shape][frame].m_luaScript = finalNewName;
 				updatedCount++;
 			}
 		}
 	}
+	Log("RenameScript: Updated " + std::to_string(updatedCount) + " shapetable entries");
 
 	// Refresh the scripting system to pick up the renamed file
+	Log("RenameScript: Shutting down and reinitializing scripting system");
 	g_ScriptingSystem->Shutdown();
 	g_ScriptingSystem->Init("");
 
+	// Reload all scripts (same as Main.cpp initialization)
+	string directoryPath("Data/Scripts");
+	g_ScriptingSystem->LoadScript(directoryPath + "/global_flags_and_constants.lua");
+	g_ScriptingSystem->LoadScript(directoryPath + "/u7_engine_api.lua");
+
+	for (const auto& entry : std::filesystem::directory_iterator(directoryPath))
+	{
+		if (entry.is_regular_file())
+		{
+			std::string ext = entry.path().extension().string();
+
+			if (ext == ".lua")
+			{
+				std::string filepath = entry.path().string();
+				std::string filename = entry.path().filename().string();
+
+				// Skip files we already loaded explicitly
+				if (filename == "global_flags_and_constants.lua" ||
+					filename == "u7_engine_api.lua")
+				{
+					continue;
+				}
+
+				g_ScriptingSystem->LoadScript(filepath);
+			}
+		}
+	}
+
+	g_ScriptingSystem->SortScripts();
+	Log("RenameScript: Scripting system reinitialized, loaded " + std::to_string(g_ScriptingSystem->m_scriptFiles.size()) + " scripts");
+
 	// Find the new script index
+	bool foundNewScript = false;
 	for (int i = 0; i < g_ScriptingSystem->m_scriptFiles.size(); ++i)
 	{
-		if (g_ScriptingSystem->m_scriptFiles[i].first == finalNewName)
+		const string& scriptName = g_ScriptingSystem->m_scriptFiles[i].first;
+		if (scriptName == finalNewName)
 		{
 			m_luaScriptIndex = i;
+			Log("RenameScript: Found new script '" + finalNewName + "' at index " + std::to_string(i));
+			foundNewScript = true;
 			break;
+		}
+	}
+
+	if (!foundNewScript)
+	{
+		Log("ERROR: RenameScript: Could not find script '" + finalNewName + "' in scripting system after reload!");
+		Log("RenameScript: First 10 scripts in list:");
+		for (int i = 0; i < std::min(10, (int)g_ScriptingSystem->m_scriptFiles.size()); ++i)
+		{
+			Log("  [" + std::to_string(i) + "] " + g_ScriptingSystem->m_scriptFiles[i].first);
 		}
 	}
 
