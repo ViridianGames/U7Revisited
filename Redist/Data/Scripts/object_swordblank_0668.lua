@@ -11,7 +11,7 @@ function object_swordblank_0668(eventid, objectref)
                 if var_0001[1] == var_0002[1] and var_0001[2] == var_0002[2] and var_0001[3] == var_0002[3] + 1 then
                     var_0003 = get_object_frame(var_0000)
                     if var_0003 >= 10 and var_0003 <= 12 then
-                        object_unknown_0623(var_0000)
+                        object_hammer_0623(var_0000)
                     end
                 end
             end
