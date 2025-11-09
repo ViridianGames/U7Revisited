@@ -1,5 +1,5 @@
 --- Best guess: Manages a parrot NPC's interaction, displaying various squawks, treasure hints, or party gold info based on its state or player actions.
-function object_unknown_0675(eventid, objectref)
+function object_deskitem_0675(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     if eventid == 1 then

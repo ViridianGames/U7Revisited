@@ -203,9 +203,51 @@ void ShapeEditorState::SaveShapeTable()
 
 void ShapeEditorState::RenameScript(const string& oldScript, const string& newName)
 {
+	// Extract the shape ID suffix from the old script name
+	string shapeIDSuffix;
+	size_t underscorePos = oldScript.rfind('_');
+	if (underscorePos != string::npos)
+	{
+		shapeIDSuffix = oldScript.substr(underscorePos); // e.g., "_0290"
+	}
+
+	// Build the final new name with shape ID suffix
+	string finalNewName = newName;
+
+	// Check if newName already ends with _{number}
+	size_t newUnderscorePos = newName.rfind('_');
+	bool hasNumberSuffix = false;
+	if (newUnderscorePos != string::npos && newUnderscorePos < newName.length() - 1)
+	{
+		// Check if everything after the underscore is digits
+		string potentialNumber = newName.substr(newUnderscorePos + 1);
+		hasNumberSuffix = !potentialNumber.empty() &&
+			all_of(potentialNumber.begin(), potentialNumber.end(), ::isdigit);
+	}
+
+	// If new name doesn't have a number suffix, add the one from the original
+	if (!hasNumberSuffix && !shapeIDSuffix.empty())
+	{
+		finalNewName += shapeIDSuffix;
+	}
+	// If new name has a number suffix, check if it matches the current shape
+	else if (hasNumberSuffix)
+	{
+		string newSuffix = newName.substr(newUnderscorePos);
+		if (!shapeIDSuffix.empty() && newSuffix != shapeIDSuffix)
+		{
+			Log("ERROR: Shape ID mismatch - script has " + shapeIDSuffix + " but new name has " + newSuffix);
+			AddConsoleString("ERROR: Shape ID mismatch - cannot rename! Script has " + shapeIDSuffix + " but you entered " + newSuffix, RED);
+			return;  // Abort the rename
+		}
+	}
+
 	// Rename the script file using git mv
 	string oldPath = "Data/Scripts/" + oldScript + ".lua";
-	string newPath = "Data/Scripts/" + newName + ".lua";
+	string newPath = "Data/Scripts/" + finalNewName + ".lua";
+
+	Log("RenameScript: oldPath='" + oldPath + "', newPath='" + newPath + "'");
+	Log("RenameScript: oldScript='" + oldScript + "', finalNewName='" + finalNewName + "'");
 
 	// Check if old file exists
 	ifstream oldFile(oldPath);
@@ -218,6 +260,7 @@ void ShapeEditorState::RenameScript(const string& oldScript, const string& newNa
 	oldFile.close();
 
 	// First, update the function definition in the file itself BEFORE renaming
+	bool funcDefUpdated = false;
 	ifstream inFile(oldPath);
 	if (inFile.is_open())
 	{
@@ -226,12 +269,17 @@ void ShapeEditorState::RenameScript(const string& oldScript, const string& newNa
 		string content = buffer.str();
 		inFile.close();
 
-		// Replace function definition: "function oldScript(" -> "function newName("
+		Log("RenameScript: Read " + std::to_string(content.length()) + " bytes from " + oldPath);
+
+		// Replace function definition: "function oldScript(" -> "function finalNewName("
 		string oldFuncDef = "function " + oldScript + "(";
-		string newFuncDef = "function " + newName + "(";
+		string newFuncDef = "function " + finalNewName + "(";
+		Log("RenameScript: Searching for '" + oldFuncDef + "' to replace with '" + newFuncDef + "'");
+
 		size_t pos = content.find(oldFuncDef);
 		if (pos != string::npos)
 		{
+			Log("RenameScript: Found function definition at position " + std::to_string(pos));
 			content.replace(pos, oldFuncDef.length(), newFuncDef);
 
 			// Write back the updated content
@@ -240,8 +288,22 @@ void ShapeEditorState::RenameScript(const string& oldScript, const string& newNa
 			{
 				outFile << content;
 				outFile.close();
+				funcDefUpdated = true;
+				Log("Updated function definition in " + oldPath);
+			}
+			else
+			{
+				Log("ERROR: Failed to write updated function definition to " + oldPath);
 			}
 		}
+		else
+		{
+			Log("WARNING: Function definition '" + oldFuncDef + "' not found in " + oldPath);
+		}
+	}
+	else
+	{
+		Log("ERROR: Failed to open " + oldPath + " for reading");
 	}
 
 	// Use git mv to rename the file
@@ -264,7 +326,7 @@ void ShapeEditorState::RenameScript(const string& oldScript, const string& newNa
 			if (g_shapeTable[shape][frame].IsValid() &&
 				g_shapeTable[shape][frame].m_luaScript == oldScript)
 			{
-				g_shapeTable[shape][frame].m_luaScript = newName;
+				g_shapeTable[shape][frame].m_luaScript = finalNewName;
 				updatedCount++;
 			}
 		}
@@ -277,7 +339,7 @@ void ShapeEditorState::RenameScript(const string& oldScript, const string& newNa
 	// Find the new script index
 	for (int i = 0; i < g_ScriptingSystem->m_scriptFiles.size(); ++i)
 	{
-		if (g_ScriptingSystem->m_scriptFiles[i].first == newName)
+		if (g_ScriptingSystem->m_scriptFiles[i].first == finalNewName)
 		{
 			m_luaScriptIndex = i;
 			break;
@@ -301,7 +363,7 @@ void ShapeEditorState::RenameScript(const string& oldScript, const string& newNa
 
 			// Search and replace function name (old script name used as function name)
 			string oldFuncName = oldScript + "(";
-			string newFuncName = newName + "(";
+			string newFuncName = finalNewName + "(";
 			size_t pos = 0;
 			bool modified = false;
 
@@ -329,8 +391,12 @@ void ShapeEditorState::RenameScript(const string& oldScript, const string& newNa
 	// Save the shape table with updated script names
 	SaveShapeTable();
 
-	string message = "Renamed script from '" + oldScript + "' to '" + newName + "' (" +
-					std::to_string(updatedCount) + " frames updated";
+	string message = "Renamed script from '" + oldScript + "' to '" + finalNewName + "' (";
+	if (funcDefUpdated)
+	{
+		message += "1 function definition updated, ";
+	}
+	message += std::to_string(updatedCount) + " frames updated";
 	if (scriptFilesUpdated > 0)
 	{
 		message += ", " + std::to_string(scriptFilesUpdated) + " script files updated";
