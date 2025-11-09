@@ -1,5 +1,5 @@
 --- Best guess: Manages a cat NPC's interaction, displaying a player taunt (“Here kitty, kitty”), a hostile reaction (“I hate cats”) if a specific NPC is in the party, or a meow sound.
-function object_unknown_0495(eventid, objectref)
+function object_cat_0495(eventid, objectref)
     local var_0000
 
     if eventid == 1 then

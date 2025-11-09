@@ -1,5 +1,5 @@
 --- Best guess: Manages a cow NPC's interaction, randomly displaying “Moo!” barks from party members or a single “Moo” when idle.
-function object_unknown_0500(eventid, objectref)
+function object_cow_0500(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
     if eventid == 1 then

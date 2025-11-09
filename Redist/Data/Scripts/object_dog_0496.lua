@@ -1,5 +1,5 @@
 --- Best guess: Manages a dog NPC's interaction, displaying friendly barks (“Arf” or “Bark”) randomly or a greeting (“Good doggy”) when interacted with.
-function object_unknown_0496(eventid, objectref)
+function object_dog_0496(eventid, objectref)
     local var_0000
 
     if eventid == 1 then
