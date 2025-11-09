@@ -1,5 +1,5 @@
 --- Best guess: Manages a consumable item, applying an effect if used correctly or displaying an error if misused.
-function object_unknown_0648(eventid, objectref)
+function object_sleepingpowder_0648(eventid, objectref)
     local var_0000
 
     if eventid == 1 then

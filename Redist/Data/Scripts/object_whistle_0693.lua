@@ -1,5 +1,5 @@
 --- Best guess: Plays music (ID 55) and cycles NPC frames (ID 534) for an animation or event trigger.
-function object_unknown_0693(eventid, objectref)
+function object_whistle_0693(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003
 
     if eventid == 1 then

@@ -1,5 +1,5 @@
 --- Best guess: Handles a wand's interaction with specific items (e.g., Black Gate, ID 305) or NPCs (e.g., Batlin, ID 403), triggering effects or dialogue.
-function object_unknown_0771(eventid, objectref)
+function object_wand_0771(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     if eventid == 4 then

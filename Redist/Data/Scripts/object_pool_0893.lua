@@ -1,5 +1,5 @@
 --- Best guess: Modifies item properties based on quality and event ID, applying random or specific effects.
-function object_unknown_0893(eventid, objectref)
+function object_pool_0893(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003
 
     if eventid == 1 then

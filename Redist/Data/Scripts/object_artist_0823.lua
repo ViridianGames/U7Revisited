@@ -1,5 +1,5 @@
 --- Best guess: Manages a paintbrush, allowing painting on specific items (e.g., canvas, ID 837) with pigments, with random feedback messages.
-function object_unknown_0823(eventid, objectref)
+function object_artist_0823(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     if eventid == 1 then

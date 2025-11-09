@@ -1,5 +1,5 @@
 --- Best guess: Changes an object's shape (ID 936) on use or calls an external function (ID 303), possibly for a quest item or mechanism.
-function object_unknown_0936(eventid, objectref)
+function object_portcullis_0936(eventid, objectref)
     if eventid == 2 then
         set_object_shape(objectref, 936)
         return

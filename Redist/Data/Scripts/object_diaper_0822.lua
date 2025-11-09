@@ -1,5 +1,5 @@
 --- Best guess: Manages a diaper item, changing its state (clean, used, dirty) when applied to specific items (e.g., baby, ID 730).
-function object_unknown_0822(eventid, objectref)
+function object_diaper_0822(eventid, objectref)
     local var_0000, var_0001, var_0002
 
     if eventid == 1 then

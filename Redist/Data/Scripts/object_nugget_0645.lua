@@ -1,5 +1,5 @@
 --- Best guess: Displays the exchange rate for a gold nugget (10 crowns) when the item is used.
-function object_unknown_0645(eventid, objectref)
+function object_nugget_0645(eventid, objectref)
     local var_0000
 
     if eventid == 1 then

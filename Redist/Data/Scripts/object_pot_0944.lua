@@ -1,5 +1,5 @@
 --- Best guess: Triggers an NPC (ID 356) to spit and react, possibly a humorous or environmental interaction.
-function object_unknown_0944(eventid, objectref)
+function object_pot_0944(eventid, objectref)
     local var_0000
 
     if eventid == 1 then

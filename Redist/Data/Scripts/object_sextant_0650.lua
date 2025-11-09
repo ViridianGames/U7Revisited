@@ -1,5 +1,5 @@
 --- Best guess: Displays the player's coordinates as a compass direction (e.g., "North East"), failing if under a roof, likely for navigation.
-function object_unknown_0650(eventid, objectref)
+function object_sextant_0650(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
     if eventid == 1 then

@@ -1,5 +1,5 @@
 --- Best guess: Manages a spinning wheel, checking for wool (type 873) to produce thread (type 653), with a message if empty, and updating item frame randomly.
-function object_unknown_0651(eventid, objectref)
+function object_spinningwheel_0651(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006
 
     if eventid == 7 then

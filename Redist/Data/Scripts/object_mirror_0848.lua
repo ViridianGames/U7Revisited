@@ -1,5 +1,5 @@
 --- Best guess: Manages a quest item, triggering specific effects when used in a particular state (frame 3), setting a flag for quest progression.
-function object_unknown_0848(eventid, objectref)
+function object_mirror_0848(eventid, objectref)
     local var_0000, var_0001
 
     if eventid == 1 then

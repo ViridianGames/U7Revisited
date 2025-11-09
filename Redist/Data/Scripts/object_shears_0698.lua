@@ -1,5 +1,5 @@
 --- Best guess: Handles a scissors interaction, converting them to bandages (shape 827) or displaying a suggestion to use them for cutting cloth.
-function object_unknown_0698(eventid, objectref)
+function object_shears_0698(eventid, objectref)
     local var_0000, var_0001
 
     if eventid == 1 then

@@ -1,5 +1,5 @@
 --- Best guess: Animates an object with a sequence of frames, likely for a decorative or interactive effect.
-function object_unknown_0992(eventid, objectref)
+function object_cradle_0992(eventid, objectref)
     local var_0000, var_0001
 
     if eventid == 1 then

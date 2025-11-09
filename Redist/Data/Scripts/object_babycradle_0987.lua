@@ -1,5 +1,5 @@
 --- Best guess: Spawns a screaming creature (ID 992) with a chance to cry out, possibly for a trap or ambush.
-function object_unknown_0987(eventid, objectref)
+function object_babycradle_0987(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003
 
     if eventid == 1 then

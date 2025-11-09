@@ -1,5 +1,5 @@
 --- Best guess: Boosts NPC stats (strength, dexterity, intelligence) when a consumable item is used on them.
-function object_unknown_0649(eventid, objectref)
+function object_venom_0649(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
     if eventid == 1 then

@@ -1,5 +1,5 @@
 --- Best guess: Triggers a dialogue with the Time Lord (func_0269) when an hourglass is used, if specific conditions (flag 4) are met.
-function object_unknown_0839(eventid, objectref)
+function object_hourglass_0839(eventid, objectref)
     local var_0000
 
     if eventid == 1 then

@@ -1,5 +1,5 @@
 --- Best guess: Triggers a special effect when an item is used under specific conditions, likely for a dramatic event.
-function object_unknown_0770(eventid, objectref)
+function object_orrery_0770(eventid, objectref)
     if eventid == 1 and utility_unknown_1030() then
         close_gumps()
         view_tile({1420, 2892})

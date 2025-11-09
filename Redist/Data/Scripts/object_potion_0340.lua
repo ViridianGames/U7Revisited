@@ -1,5 +1,5 @@
 --- Best guess: Manages portion items, applying various effects (e.g., poisoning, healing) based on frame, with warnings for misuse.
-function object_unknown_0340(eventid, objectref)
+function object_potion_0340(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     if eventid == 1 then

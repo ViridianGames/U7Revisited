@@ -1,5 +1,5 @@
 --- Best guess: Simulates a coin toss game, allowing the player to call heads or tails and displaying the outcome.
-function object_unknown_0644(eventid, objectref)
+function object_coins_0644(eventid, objectref)
     local var_0000
 
     if eventid == 1 then

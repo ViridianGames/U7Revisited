@@ -1,5 +1,5 @@
 --- Best guess: Simulates a roulette game, checking time and casino state to determine outcomes and trigger effects.
-function object_unknown_0809(eventid, objectref)
+function object_triplesgame_0809(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B
 
     if eventid == 1 and not in_usecode(objectref) then

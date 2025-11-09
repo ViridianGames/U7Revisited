@@ -1,5 +1,5 @@
 --- Best guess: Triggers a telepathic probe with narrative messages, hiding the NPC and altering game state, likely for a mystical quest event.
-function object_unknown_0990(eventid, objectref)
+function object_darkcore_0990(eventid, objectref)
     local var_0000
 
     if eventid == 1 then

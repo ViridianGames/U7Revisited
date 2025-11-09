@@ -1,5 +1,5 @@
 --- Best guess: Manages a smokebomb, creating a smoke effect at the player's location and affecting nearby NPCs.
-function object_unknown_0769(eventid, objectref)
+function object_smokebomb_0769(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
     if eventid == 1 or eventid == 4 then
