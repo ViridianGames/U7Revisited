@@ -387,6 +387,14 @@ void MainState::UpdateInput()
 	if (IsKeyPressed(KEY_F8))
 	{
 		g_LuaDebug = !g_LuaDebug;
+		if (g_LuaDebug)
+		{
+			AddConsoleString("Lua debug mode ENABLED");
+		}
+		else
+		{
+			AddConsoleString("Lua debug mode DISABLED");
+		}
 	}
 
 	if (IsKeyPressed(KEY_F10))
@@ -908,7 +916,7 @@ void MainState::Update()
 				}
 				else
 				{
-					object->m_Visible = true;
+					if (!object->GetIsDead()) object->m_Visible = true;
 				}
 			}
 		}
@@ -916,12 +924,23 @@ void MainState::Update()
 		for (unordered_map<int, std::unique_ptr<U7Object> >::iterator node = g_objectList.begin(); node != g_objectList.end();)
 		{
 			if (!node->second)
+			{
+				++node;
 				continue;
+			}
 
 			if (node->second->GetIsDead())
 			{
+				if (g_LuaDebug)
+				{
+					AddConsoleString("Cleanup: Removing dead object ID " + std::to_string(node->first));
+				}
 				UnassignObjectChunk(node->second.get());
 				node = g_objectList.erase(node);
+				if (g_LuaDebug)
+				{
+					AddConsoleString("Cleanup: Object erased from g_objectList");
+				}
 			}
 			else
 			{

@@ -1034,20 +1034,41 @@ static int LuaSpawnObject(lua_State *L)
     return 1;
 }
 
-static int LuaDestroyObject(lua_State *L)
+// Helper function to destroy an object by ID (shared logic)
+static void DestroyObjectByID(int object_id)
 {
-    int object_id = luaL_checkinteger(L, 1);
-    U7Object* obj = g_objectList[object_id].get();
+    auto it = g_objectList.find(object_id);
+    if (it == g_objectList.end() || !it->second) return;
 
-    // Notify pathfinding grid before deleting if this is a non-walkable object
-    if (obj && obj->m_objectData && obj->m_objectData->m_isNotWalkable)
+    U7Object* obj = it->second.get();
+
+    // If object is in a container, remove it from that container's inventory
+    if (obj->m_containingObjectId != -1)
+    {
+        auto container_it = g_objectList.find(obj->m_containingObjectId);
+        if (container_it != g_objectList.end() && container_it->second)
+        {
+            container_it->second->RemoveObjectFromInventory(object_id);
+        }
+    }
+
+    // Notify pathfinding grid before deletion if this is a non-walkable object
+    if (obj->m_objectData && obj->m_objectData->m_isNotWalkable)
     {
         NotifyPathfindingGridUpdate((int)obj->m_Pos.x, (int)obj->m_Pos.z);
     }
 
-    UnassignObjectChunk(obj);
-    g_objectList.erase(object_id);
-    UpdateSortedVisibleObjects();
+    // Mark object as dead and invisible for deferred deletion
+    // The main update loop will remove it from chunk map and delete it
+    // This prevents iterator invalidation when called during object updates
+    obj->SetIsDead(true);
+    obj->m_Visible = false;
+}
+
+static int LuaDestroyObject(lua_State *L)
+{
+    int object_id = luaL_checkinteger(L, 1);
+    DestroyObjectByID(object_id);
     return 0;
 }
 
@@ -1055,6 +1076,30 @@ static int LuaDestroyObject(lua_State *L)
 static int LuaDestroyObjectSilent(lua_State *L)
 {
     return LuaDestroyObject(L);
+}
+
+// 0x005B | consume_object
+// Consumes an object (typically food), applying its effects and destroying it
+// Parameters: event_type (91 for eating), quantity (nutrition value), object_id
+static int LuaConsumeObject(lua_State *L)
+{
+    int event_type = luaL_checkinteger(L, 1);  // 91 = eating
+    int quantity = luaL_checkinteger(L, 2);     // nutrition/healing amount
+    int object_id = luaL_checkinteger(L, 3);    // the object to consume
+
+    if (g_LuaDebug)
+    {
+        DebugPrint("LUA: consume_object called - Event: " + to_string(event_type) +
+                   ", Quantity: " + to_string(quantity) +
+                   ", Object ID: " + to_string(object_id));
+    }
+
+    // TODO: Apply effects based on event_type
+    // For now, just destroy the object after consumption
+    // Future: restore health/hunger, play sound effects, etc.
+
+    DestroyObjectByID(object_id);
+    return 0;
 }
 
 static int LuaMoveObject(lua_State *L)
@@ -3940,6 +3985,7 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction( "spawn_object", LuaSpawnObject);
     g_ScriptingSystem->RegisterScriptFunction( "destroy_object", LuaDestroyObject);
     g_ScriptingSystem->RegisterScriptFunction( "destroy_object_silent", LuaDestroyObjectSilent);
+    g_ScriptingSystem->RegisterScriptFunction( "consume_object", LuaConsumeObject);
 
     g_ScriptingSystem->RegisterScriptFunction( "set_camera_angle", LuaSetCameraAngle);
     g_ScriptingSystem->RegisterScriptFunction( "jump_camera_angle", LuaJumpCameraAngle);
