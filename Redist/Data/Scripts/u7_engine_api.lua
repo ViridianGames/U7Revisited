@@ -458,6 +458,12 @@ function get_schedule_time() end
 ---@return integer schedule The schedule ID
 function get_schedule(npc_id) end
 
+---Gets the current schedule/activity type for an NPC by name
+---Returns activity codes like: 7=shop open, 14=sleeping, etc.
+---@param npc_name string The NPC name to query (e.g., "Greg", "Iolo")
+---@return integer schedule_type The current activity/schedule type (-1 if NPC not found)
+function get_schedule_type(npc_name) end
+
 ---Plays a music track
 ---⚠ Currently a stub (not fully implemented)
 ---@param track integer The music track number to play

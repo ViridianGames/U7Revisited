@@ -1669,6 +1669,43 @@ static int LuaGetSchedule(lua_State *L)
     return 1;
 }
 
+static int LuaGetScheduleType(lua_State *L)
+{
+    if (g_LuaDebug) DebugPrint("LUA: get_schedule_type called");
+
+    // Takes NPC name, looks up ID
+    string npc_name = luaL_checkstring(L, 1);
+    int npc_id = -1;
+
+    if (npc_name == g_Player->GetPlayerName())
+    {
+        npc_id = 0;
+    }
+    else
+    {
+        for (auto& pair : g_NPCData)
+        {
+            if (npc_name == pair.second->name)
+            {
+                npc_id = pair.second->id;
+                break;
+            }
+        }
+    }
+
+    if (npc_id >= 0 && g_NPCData.find(npc_id) != g_NPCData.end())
+    {
+        int schedule_type = g_NPCData[npc_id]->m_currentActivity;
+        lua_pushinteger(L, schedule_type);
+    }
+    else
+    {
+        lua_pushinteger(L, -1); // Invalid NPC
+    }
+
+    return 1;
+}
+
 static int LuaGetNPCNameFromId(lua_State *L)
 {
     if (g_LuaDebug) DebugPrint("LUA: get_npc_name called");
@@ -3985,6 +4022,7 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction("is_string_in_array", LuaIsStringInArray);
 
     g_ScriptingSystem->RegisterScriptFunction("get_schedule", LuaGetSchedule);
+    g_ScriptingSystem->RegisterScriptFunction("get_schedule_type", LuaGetScheduleType);
 
     g_ScriptingSystem->RegisterScriptFunction("debug_print", LuaDebugPrint);
     g_ScriptingSystem->RegisterScriptFunction("console_log", LuaConsoleLog);

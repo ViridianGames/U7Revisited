@@ -69,6 +69,7 @@ check_object_status - is this alias of get_item_flag ??
 
 # DONE
 
+get_schedule_type() takes npc name instead of id, use get_schedule() if you have the id
 npc_in_party -> npc_id_in_party
 destroy_object_silent - calls destroy_object for now
 cmps("Brom") - this is a shortcut for get_answer() and comparing it. i attempted implementation.
