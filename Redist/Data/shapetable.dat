@@ -12030,7 +12030,7 @@
 525 29 0 0 26 27 0 26 26 1 25 0 1 27 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 525 29 default 
 525 30 0 0 1 1 0 1 1 0 1 0 0 1 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 525 30 default 
 525 31 0 0 1 1 0 1 1 0 1 0 0 1 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 525 31 default 
-526 0 0 0 8 8 0 8 8 33 8 0 33 8 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 526 0 object_unknown_0526 
+526 0 0 0 8 8 0 8 8 33 8 0 33 8 3 1 1 1 0.5 0 -1 0 1 2 2 3 3 1 Models/3dmodels/lamp_post_889x00.gltf 1 0 526 0 object_unknown_0526 
 526 1 0 0 8 8 0 8 8 33 8 0 33 8 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 526 1 object_unknown_0526 
 526 2 0 0 8 8 0 8 8 31 8 0 32 8 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 526 2 object_unknown_0526 
 526 3 0 0 8 8 0 8 8 31 8 0 32 8 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 526 3 object_unknown_0526 

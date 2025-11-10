@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.15)
-project("Ultima 7 Revisited" VERSION 1.0.0 LANGUAGES C CXX RC)
+project("Ultima 7 Revisited" VERSION 1.0.0 LANGUAGES C CXX)
 
 # Set C++ standard
 set(CMAKE_CXX_STANDARD 17)
@@ -50,17 +50,24 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
 endif()
 
 # ============================================================================
-# Raylib Dependency
+# Raylib Dependency (Prebuilt)
 # ============================================================================
-set(BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
-set(GLFW_LIBRARY_TYPE "OBJECT" CACHE STRING "" FORCE)
-set(PLATFORM "Desktop" CACHE STRING "" FORCE)
+set(RAYLIB_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/raylib/include)
+set(RAYLIB_EXTERNAL_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/raylib/external/include)
+
+# Platform-specific library selection
 if(WIN32)
-    set(CMAKE_SYSTEM_VERSION "10.0.22621.0" CACHE STRING "" FORCE)
+    set(RAYLIB_LIBRARY ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/raylib/lib/raylib.lib)
+else()
+    set(RAYLIB_LIBRARY ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/raylib/lib/libraylib.a)
 endif()
 
-add_subdirectory(subprojects/raylib)
-set(RAYLIB_EXTERNAL_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/subprojects/raylib/src/external)
+# Create imported target for raylib
+add_library(raylib STATIC IMPORTED)
+set_target_properties(raylib PROPERTIES
+    IMPORTED_LOCATION ${RAYLIB_LIBRARY}
+    INTERFACE_INCLUDE_DIRECTORIES "${RAYLIB_INCLUDE_DIR};${RAYLIB_EXTERNAL_INCLUDE}"
+)
 
 # ============================================================================
 # Lua Static Library
@@ -185,7 +192,6 @@ target_link_libraries(U7Revisited PRIVATE
 # Additional include directories for dependencies
 target_include_directories(U7Revisited PRIVATE
     ${RAYLIB_EXTERNAL_INCLUDE}
-    ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/raylib/external
 )
 
 # Windows-specific dependencies
@@ -197,17 +203,26 @@ if(WIN32)
     )
 endif()
 
-# Set Visual Studio debugger working directory to Redist folder
-set_target_properties(U7Revisited PROPERTIES
-    VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
-)
-
-# Copy executable to Redist folder after build (Release only)
-add_custom_command(TARGET U7Revisited POST_BUILD
-    COMMAND $<$<CONFIG:Release>:${CMAKE_COMMAND}> $<$<CONFIG:Release>:-E> $<$<CONFIG:Release>:copy> $<$<CONFIG:Release>:$<TARGET_FILE:U7Revisited>> $<$<CONFIG:Release>:"${CMAKE_CURRENT_SOURCE_DIR}/Redist/">
-    COMMAND_EXPAND_LISTS
-    COMMENT "Copying Release executable to Redist folder"
-)
+# Set working directory for running the executable
+if(WIN32)
+    # Visual Studio debugger working directory
+    set_target_properties(U7Revisited PROPERTIES
+        VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
+    )
+    # Copy executable to Redist folder after build (Release only)
+    add_custom_command(TARGET U7Revisited POST_BUILD
+        COMMAND $<$<CONFIG:Release>:${CMAKE_COMMAND}> $<$<CONFIG:Release>:-E> $<$<CONFIG:Release>:copy> $<$<CONFIG:Release>:$<TARGET_FILE:U7Revisited>> $<$<CONFIG:Release>:"${CMAKE_CURRENT_SOURCE_DIR}/Redist/">
+        COMMAND_EXPAND_LISTS
+        COMMENT "Copying Release executable to Redist folder"
+    )
+else()
+    # On Linux/Unix, set runtime output directory to Redist
+    set_target_properties(U7Revisited PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
+        RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
+        RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
+    )
+endif()
 
 # Set as Visual Studio startup project
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT U7Revisited)
@@ -241,7 +256,6 @@ target_include_directories(ScriptTests PRIVATE
     Source
     Source/Geist
     ${RAYLIB_EXTERNAL_INCLUDE}
-    ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/raylib/external
 )
 
 # Windows-specific dependencies
@@ -249,12 +263,21 @@ if(WIN32)
     target_link_libraries(ScriptTests PRIVATE winmm)
 endif()
 
-# Set Visual Studio debugger working directory to Redist folder for testing
-# and pass --execute flag by default
-set_target_properties(ScriptTests PROPERTIES
-    VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
-    VS_DEBUGGER_COMMAND_ARGUMENTS "--execute"
-)
+# Set working directory for running tests
+if(WIN32)
+    # Visual Studio debugger working directory and args
+    set_target_properties(ScriptTests PROPERTIES
+        VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
+        VS_DEBUGGER_COMMAND_ARGUMENTS "--execute"
+    )
+else()
+    # On Linux/Unix, set runtime output directory to Redist
+    set_target_properties(ScriptTests PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
+        RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
+        RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
+    )
+endif()
 
 # ============================================================================
 # Ghost GUI Editor (Standalone Tool)
@@ -311,7 +334,6 @@ target_include_directories(Ghost PRIVATE
     Source
     Source/Geist
     ${RAYLIB_EXTERNAL_INCLUDE}
-    ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/raylib/external
 )
 
 # Windows-specific dependencies
@@ -323,17 +345,26 @@ if(WIN32)
     )
 endif()
 
-# Set Visual Studio debugger working directory to Ghost folder
-set_target_properties(Ghost PROPERTIES
-    VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Ghost"
-)
-
-# Copy executable to Ghost folder after build (Release only)
-add_custom_command(TARGET Ghost POST_BUILD
-    COMMAND $<$<CONFIG:Release>:${CMAKE_COMMAND}> $<$<CONFIG:Release>:-E> $<$<CONFIG:Release>:copy> $<$<CONFIG:Release>:$<TARGET_FILE:Ghost>> $<$<CONFIG:Release>:"${CMAKE_CURRENT_SOURCE_DIR}/Ghost/">
-    COMMAND_EXPAND_LISTS
-    COMMENT "Copying Ghost Release executable to Ghost folder"
-)
+# Set working directory for Ghost editor
+if(WIN32)
+    # Visual Studio debugger working directory
+    set_target_properties(Ghost PROPERTIES
+        VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Ghost"
+    )
+    # Copy executable to Ghost folder after build (Release only)
+    add_custom_command(TARGET Ghost POST_BUILD
+        COMMAND $<$<CONFIG:Release>:${CMAKE_COMMAND}> $<$<CONFIG:Release>:-E> $<$<CONFIG:Release>:copy> $<$<CONFIG:Release>:$<TARGET_FILE:Ghost>> $<$<CONFIG:Release>:"${CMAKE_CURRENT_SOURCE_DIR}/Ghost/">
+        COMMAND_EXPAND_LISTS
+        COMMENT "Copying Ghost Release executable to Ghost folder"
+    )
+else()
+    # On Linux/Unix, set runtime output directory to Ghost
+    set_target_properties(Ghost PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Ghost"
+        RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_CURRENT_SOURCE_DIR}/Ghost"
+        RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_CURRENT_SOURCE_DIR}/Ghost"
+    )
+endif()
 
 # Linux desktop integration
 if(UNIX AND NOT APPLE)
