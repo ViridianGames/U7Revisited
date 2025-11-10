@@ -53,8 +53,14 @@ endif()
 # Raylib Dependency (Prebuilt)
 # ============================================================================
 set(RAYLIB_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/raylib/include)
-set(RAYLIB_LIBRARY ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/raylib/lib/raylib.lib)
 set(RAYLIB_EXTERNAL_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/raylib/external/include)
+
+# Platform-specific library selection
+if(WIN32)
+    set(RAYLIB_LIBRARY ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/raylib/lib/raylib.lib)
+else()
+    set(RAYLIB_LIBRARY ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/raylib/lib/libraylib.a)
+endif()
 
 # Create imported target for raylib
 add_library(raylib STATIC IMPORTED)
