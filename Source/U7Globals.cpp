@@ -868,7 +868,11 @@ void PrintNPCPathStats()
 // Returns singular or plural with quantity
 std::string ParseU7TextFormat(const std::string& rawText, int quantity)
 {
-	// Format: "a/garlic//s" or just "bread"
+	// Format can be:
+	// "bread" - no slashes, just a name
+	// "a/garlic//s" - article/singular_name/middle_part/plural_suffix
+	// "/kni/fe/ves" - /prefix/suffix/plural_ending (for knife/knives)
+
 	size_t firstSlash = rawText.find('/');
 	if (firstSlash == std::string::npos)
 	{
@@ -876,7 +880,7 @@ std::string ParseU7TextFormat(const std::string& rawText, int quantity)
 		return rawText;
 	}
 
-	// Find the second slash (end of singular name)
+	// Find the second slash
 	size_t secondSlash = rawText.find('/', firstSlash + 1);
 	if (secondSlash == std::string::npos)
 	{
@@ -884,21 +888,45 @@ std::string ParseU7TextFormat(const std::string& rawText, int quantity)
 		return rawText;
 	}
 
-	// Extract the singular name between the slashes
-	std::string singularName = rawText.substr(firstSlash + 1, secondSlash - firstSlash - 1);
+	// Get the article (before first slash)
+	std::string article = rawText.substr(0, firstSlash);
 
-	// Find the plural suffix after the third slash
+	// Get the first part (between 1st and 2nd slash)
+	std::string firstPart = rawText.substr(firstSlash + 1, secondSlash - firstSlash - 1);
+
+	// Find the third slash
 	size_t thirdSlash = rawText.find('/', secondSlash + 1);
-	std::string pluralSuffix = "";
-	if (thirdSlash != std::string::npos && thirdSlash + 1 < rawText.length())
+
+	// Check if there's content between 2nd and 3rd slash (middle part exists)
+	bool hasMiddlePart = (thirdSlash != std::string::npos) && (thirdSlash > secondSlash + 1);
+
+	std::string singularName;
+	std::string pluralName;
+
+	if (hasMiddlePart)
 	{
-		pluralSuffix = rawText.substr(thirdSlash + 1);
+		// Format: article/prefix/suffix/plural_ending (e.g., "/kni/fe/ves")
+		std::string prefix = firstPart;
+		std::string suffix = rawText.substr(secondSlash + 1, thirdSlash - secondSlash - 1);
+		std::string pluralEnding = rawText.substr(thirdSlash + 1);
+
+		singularName = prefix + suffix;  // "kni" + "fe" = "knife"
+		pluralName = prefix + pluralEnding;  // "kni" + "ves" = "knives"
+	}
+	else
+	{
+		// Format: article/singular_name//plural_suffix (e.g., "a/garlic//s")
+		singularName = firstPart;
+		std::string pluralSuffix = "";
+		if (thirdSlash != std::string::npos && thirdSlash + 1 < rawText.length())
+		{
+			pluralSuffix = rawText.substr(thirdSlash + 1);
+		}
+		pluralName = singularName + pluralSuffix;  // "garlic" + "s" = "garlics"
 	}
 
 	if (quantity == 1)
 	{
-		// Get the article (before first slash): "a", "an", etc.
-		std::string article = rawText.substr(0, firstSlash);
 		// Only add article if it's not empty and not just whitespace
 		if (!article.empty() && article.find_first_not_of(" \t") != std::string::npos)
 			return article + " " + singularName;
@@ -907,9 +935,9 @@ std::string ParseU7TextFormat(const std::string& rawText, int quantity)
 	}
 	else
 	{
-		// Plural: quantity + name + suffix
+		// Plural: quantity + plural name
 		if (quantity > 0)
-			return std::to_string(quantity) + " " + singularName + pluralSuffix;
+			return std::to_string(quantity) + " " + pluralName;
 		else
 			return singularName; // quantity 0 or invalid, just show the name
 	}
@@ -954,6 +982,8 @@ std::string GetShapeFrameName(int shape, int frame, int quantity)
 				return ParseU7TextFormat(g_miscNames[miscIndex], quantity);
 			}
 		}
+
+		// TODO: Shape 863: Kitchen items - need to find correct misc_names mapping from Exult
 	}
 
 	// Fall back to shape name if no frame-specific name found
