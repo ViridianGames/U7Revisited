@@ -1,6 +1,7 @@
 #include "U7Globals.h"
 #include "Geist/Engine.h"
 #include "Geist/Logging.h"
+#include "Geist/ScriptingSystem.h"
 #include "ConversationState.h"
 #include "Pathfinding.h"
 #include "lua.hpp"
@@ -954,4 +955,28 @@ std::string GetShapeFrameName(int shape, int frame, int quantity)
 	}
 
 	return "unknown";
+}
+
+std::string FindNPCScriptByID(int npcID)
+{
+	// Format NPC ID as 4-digit hex suffix: _XXXX
+	stringstream ss;
+	ss << std::setfill('0') << std::setw(4) << npcID;
+	string suffix = "_" + ss.str();
+
+	// Search for script ending with this suffix that starts with "npc_"
+	for (int i = 0; i < g_ScriptingSystem->m_scriptFiles.size(); ++i)
+	{
+		const string& name = g_ScriptingSystem->m_scriptFiles[i].first;
+
+		// Check if name starts with "npc_" and ends with the suffix
+		if (name.length() >= 4 + suffix.length() &&
+			name.substr(0, 4) == "npc_" &&
+			name.compare(name.length() - suffix.length(), suffix.length(), suffix) == 0)
+		{
+			return name;
+		}
+	}
+
+	return "";  // No matching NPC script found
 }

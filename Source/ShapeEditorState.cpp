@@ -1692,11 +1692,28 @@ void ShapeEditorState::Update()
 			ss << std::setfill('0') << std::setw(4) << m_currentShape;
 			suffix = "_" + ss.str();
 		}
-		else if (m_currentShape >= 1025 && m_currentShape <= 1280)
+
+		// Search for script ending with the calculated suffix (for non-NPC scripts)
+		int newScriptIndex = 0;
+
+		if (m_currentShape >= 1025 && m_currentShape <= 1280)
 		{
-			// npc_*_XXXX (decimal - 1024, 4 digits)
-			ss << std::setfill('0') << std::setw(4) << (m_currentShape - 1024);
-			suffix = "_" + ss.str();
+			// npc_*_XXXX (decimal - 1024, 4 digits) - use helper function
+			int npcID = m_currentShape - 1024;
+			string scriptName = FindNPCScriptByID(npcID);
+			if (!scriptName.empty())
+			{
+				// Find index in script files
+				for (int i = 0; i < g_ScriptingSystem->m_scriptFiles.size(); ++i)
+				{
+					if (g_ScriptingSystem->m_scriptFiles[i].first == scriptName)
+					{
+						newScriptIndex = i;
+						AddConsoleString("Using script: " + scriptName);
+						break;
+					}
+				}
+			}
 		}
 		else if (m_currentShape > 1280)
 		{
@@ -1704,18 +1721,18 @@ void ShapeEditorState::Update()
 			ss << std::setfill('0') << std::setw(4) << (m_currentShape - 1280);
 			suffix = "_" + ss.str();
 		}
-
-		// Search for script ending with the calculated suffix
-		int newScriptIndex = 0;
-		for (int i = 0; i < g_ScriptingSystem->m_scriptFiles.size(); ++i)
+		if (m_currentShape < 1025 || m_currentShape > 1280)
 		{
-			const std::string& scriptName = g_ScriptingSystem->m_scriptFiles[i].first;
-			if (scriptName.length() >= suffix.length() &&
-				scriptName.compare(scriptName.length() - suffix.length(), suffix.length(), suffix) == 0)
+			for (int i = 0; i < g_ScriptingSystem->m_scriptFiles.size(); ++i)
 			{
-				newScriptIndex = i;
-				AddConsoleString("Using script: " + scriptName);
-				break;
+				const std::string& scriptName = g_ScriptingSystem->m_scriptFiles[i].first;
+				if (scriptName.length() >= suffix.length() &&
+					scriptName.compare(scriptName.length() - suffix.length(), suffix.length(), suffix) == 0)
+				{
+					newScriptIndex = i;
+					AddConsoleString("Using script: " + scriptName);
+					break;
+				}
 			}
 		}
 
@@ -1741,40 +1758,57 @@ void ShapeEditorState::Update()
 		std::string targetScript;
 		int foundScriptIndex = 0;
 		{
-			std::string suffix;
-			stringstream ss;
-
-			if (m_currentShape < 150)
+			// Handle NPCs separately with helper function
+			if (m_currentShape >= 1025 && m_currentShape <= 1280)
 			{
-				ss << std::setfill('0') << std::setw(4) << m_currentShape;
-				suffix = "_" + ss.str();
-			}
-			else if (m_currentShape >= 150 && m_currentShape <= 1024)
-			{
-				ss << std::setfill('0') << std::setw(4) << m_currentShape;
-				suffix = "_" + ss.str();
-			}
-			else if (m_currentShape >= 1025 && m_currentShape <= 1280)
-			{
-				ss << std::setfill('0') << std::setw(4) << (m_currentShape - 1024);
-				suffix = "_" + ss.str();
-			}
-			else if (m_currentShape > 1280)
-			{
-				ss << std::setfill('0') << std::setw(4) << (m_currentShape - 1280);
-				suffix = "_" + ss.str();
-			}
-
-			// Search for script ending with the calculated suffix
-			for (int i = 0; i < g_ScriptingSystem->m_scriptFiles.size(); ++i)
-			{
-				const std::string& scriptName = g_ScriptingSystem->m_scriptFiles[i].first;
-				if (scriptName.length() >= suffix.length() &&
-					scriptName.compare(scriptName.length() - suffix.length(), suffix.length(), suffix) == 0)
+				int npcID = m_currentShape - 1024;
+				targetScript = FindNPCScriptByID(npcID);
+				if (!targetScript.empty())
 				{
-					foundScriptIndex = i;
-					targetScript = scriptName;
-					break;
+					// Find index in script files
+					for (int i = 0; i < g_ScriptingSystem->m_scriptFiles.size(); ++i)
+					{
+						if (g_ScriptingSystem->m_scriptFiles[i].first == targetScript)
+						{
+							foundScriptIndex = i;
+							break;
+						}
+					}
+				}
+			}
+			else
+			{
+				// For non-NPC scripts, use suffix matching
+				std::string suffix;
+				stringstream ss;
+
+				if (m_currentShape < 150)
+				{
+					ss << std::setfill('0') << std::setw(4) << m_currentShape;
+					suffix = "_" + ss.str();
+				}
+				else if (m_currentShape >= 150 && m_currentShape <= 1024)
+				{
+					ss << std::setfill('0') << std::setw(4) << m_currentShape;
+					suffix = "_" + ss.str();
+				}
+				else if (m_currentShape > 1280)
+				{
+					ss << std::setfill('0') << std::setw(4) << (m_currentShape - 1280);
+					suffix = "_" + ss.str();
+				}
+
+				// Search for script ending with the calculated suffix
+				for (int i = 0; i < g_ScriptingSystem->m_scriptFiles.size(); ++i)
+				{
+					const std::string& scriptName = g_ScriptingSystem->m_scriptFiles[i].first;
+					if (scriptName.length() >= suffix.length() &&
+						scriptName.compare(scriptName.length() - suffix.length(), suffix.length(), suffix) == 0)
+					{
+						foundScriptIndex = i;
+						targetScript = scriptName;
+						break;
+					}
 				}
 			}
 

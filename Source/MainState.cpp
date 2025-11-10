@@ -1299,20 +1299,10 @@ void MainState::Draw()
 			if (g_objectUnderMousePointer->m_isNPC && g_objectUnderMousePointer->m_hasConversationTree)
 			{
 				// NPCs look up scripts by NPC ID suffix: npc_*_XXXX
-				stringstream ss;
-				ss << std::setfill('0') << std::setw(4) << g_objectUnderMousePointer->m_NPCID;
-				string suffix = "_" + ss.str();
-
-				// Search for script ending with this suffix
-				for (int i = 0; i < g_ScriptingSystem->m_scriptFiles.size(); ++i)
+				string scriptName = FindNPCScriptByID(g_objectUnderMousePointer->m_NPCID);
+				if (!scriptName.empty())
 				{
-					const string& name = g_ScriptingSystem->m_scriptFiles[i].first;
-					if (name.length() >= suffix.length() &&
-						name.compare(name.length() - suffix.length(), suffix.length(), suffix) == 0)
-					{
-						objectDescription += " Script: " + name;
-						break;
-					}
+					objectDescription += " Script: " + scriptName;
 				}
 			}
 			else

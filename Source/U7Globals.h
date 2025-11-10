@@ -129,6 +129,10 @@ extern std::vector<std::string> g_miscNames;
 // Get the name for a specific shape, frame, and quantity
 std::string GetShapeFrameName(int shape, int frame, int quantity = 1);
 
+// Find NPC script by NPC ID (returns script name or empty string)
+// Only matches scripts starting with "npc_" and ending with "_XXXX" where XXXX is the NPC ID
+std::string FindNPCScriptByID(int npcID);
+
 
 //  Here's how schedules work:
 //  Each NPC has a schedule that is a list of time indices.  Time indices can only be from 0 - 8 and represent three hour blocks of the day.
