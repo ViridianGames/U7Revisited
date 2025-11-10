@@ -32,6 +32,13 @@ static int LuaDebugPrint(lua_State *L)
     return 0;
 }
 
+static int LuaConsoleLog(lua_State *L)
+{
+    const char *text = luaL_checkstring(L, 1);
+    AddConsoleString(std::string(text));
+    return 0;
+}
+
 static int LuaAddDialogue(lua_State *L)
 {
     if (!g_ConversationState) {
@@ -3914,6 +3921,7 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction("get_schedule", LuaGetSchedule);
 
     g_ScriptingSystem->RegisterScriptFunction("debug_print", LuaDebugPrint);
+    g_ScriptingSystem->RegisterScriptFunction("console_log", LuaConsoleLog);
 
     g_ScriptingSystem->RegisterScriptFunction("is_player_wearing_fellowship_medallion", LuaIsPlayerWearingMedallion);
 

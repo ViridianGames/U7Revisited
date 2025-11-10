@@ -543,9 +543,13 @@ function is_int_in_array(value, array) end
 ---@return boolean found True if value is in array
 function is_string_in_array(value, array) end
 
----Debug print (outputs to console/log)
+---Debug print (outputs to debuglog.txt and stdout)
 ---@param message string The message to print
 function debug_print(message) end
+
+---Console log (outputs to in-game console visible to player)
+---@param message string The message to display in console
+function console_log(message) end
 
 -- ============================================================================
 -- EXULT INTRINSICS - SEARCH & FIND FUNCTIONS
@@ -969,11 +973,9 @@ function wizard_eye(x, y) end
 ---@param object_id integer Object to move
 function telekenesis(object_id) end
 
----[Exult 0x0057] Creates light effect
----@param x integer X position
----@param y integer Y position
----@param z integer Z position
-function cause_light(x, y, z) end
+---[Exult 0x0057] Creates light effect (stub - not yet implemented)
+---@param light_level integer Intensity of light to create
+function cause_light(light_level) end
 
 ---[Exult 0x0048] Displays map
 function display_map() end
