@@ -280,6 +280,14 @@ function destroy_object(object_id) end
 ---@param object_id integer The object to destroy
 function destroy_object_silent(object_id) end
 
+---Consumes an object (typically food), applying its effects and destroying it
+---Used primarily by food items to apply nutrition/healing and remove the consumed item from the world
+---@param event_type integer The consumption event type (91 = eating)
+---@param quantity integer The amount/value (e.g., nutrition points from food)
+---@param object_id integer The object to consume
+---@param eater_id integer The NPC ID of the character consuming the object
+function consume_object(event_type, quantity, object_id, eater_id) end
+
 -- ============================================================================
 -- NPC PROPERTIES
 -- ============================================================================

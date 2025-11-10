@@ -1038,9 +1038,21 @@ static int LuaSpawnObject(lua_State *L)
 static void DestroyObjectByID(int object_id)
 {
     auto it = g_objectList.find(object_id);
-    if (it == g_objectList.end() || !it->second) return;
+    if (it == g_objectList.end() || !it->second)
+    {
+        if (g_LuaDebug)
+        {
+            DebugPrint("DestroyObjectByID: Object " + to_string(object_id) + " not found in object list");
+        }
+        return;
+    }
 
     U7Object* obj = it->second.get();
+
+    if (g_LuaDebug)
+    {
+        DebugPrint("DestroyObjectByID: Marking object " + to_string(object_id) + " as dead");
+    }
 
     // If object is in a container, remove it from that container's inventory
     if (obj->m_containingObjectId != -1)
@@ -1056,6 +1068,13 @@ static void DestroyObjectByID(int object_id)
     if (obj->m_objectData && obj->m_objectData->m_isNotWalkable)
     {
         NotifyPathfindingGridUpdate((int)obj->m_Pos.x, (int)obj->m_Pos.z);
+    }
+
+    // Clear any active bark referencing this object to prevent crash when drawing
+    if (g_mainState && g_mainState->m_barkObject == obj)
+    {
+        g_mainState->m_barkObject = nullptr;
+        g_mainState->m_barkDuration = 0;
     }
 
     // Mark object as dead and invisible for deferred deletion
@@ -1080,23 +1099,25 @@ static int LuaDestroyObjectSilent(lua_State *L)
 
 // 0x005B | consume_object
 // Consumes an object (typically food), applying its effects and destroying it
-// Parameters: event_type (91 for eating), quantity (nutrition value), object_id
+// Parameters: event_type (91 for eating), quantity (nutrition value), object_id, eater_id
 static int LuaConsumeObject(lua_State *L)
 {
     int event_type = luaL_checkinteger(L, 1);  // 91 = eating
     int quantity = luaL_checkinteger(L, 2);     // nutrition/healing amount
     int object_id = luaL_checkinteger(L, 3);    // the object to consume
+    int eater_id = luaL_checkinteger(L, 4);     // the NPC eating the food
 
     if (g_LuaDebug)
     {
         DebugPrint("LUA: consume_object called - Event: " + to_string(event_type) +
                    ", Quantity: " + to_string(quantity) +
-                   ", Object ID: " + to_string(object_id));
+                   ", Object ID: " + to_string(object_id) +
+                   ", Eater ID: " + to_string(eater_id));
     }
 
-    // TODO: Apply effects based on event_type
+    // TODO: Apply effects based on event_type and eater_id
     // For now, just destroy the object after consumption
-    // Future: restore health/hunger, play sound effects, etc.
+    // Future: restore health/hunger for eater_id, play sound effects, etc.
 
     DestroyObjectByID(object_id);
     return 0;

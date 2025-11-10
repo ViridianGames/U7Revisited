@@ -366,6 +366,10 @@ U7Object* GetObjectFromID(int unitID)
 
 void UpdateSortedVisibleObjects()
 {
+	if (g_LuaDebug)
+	{
+		AddConsoleString("UpdateSortedVisibleObjects: Starting");
+	}
 	int cameraChunkX = static_cast<int>(g_camera.target.x / 16);
 	int cameraChunkY = static_cast<int>(g_camera.target.z / 16);
  	g_sortedVisibleObjects.clear();
@@ -381,7 +385,17 @@ void UpdateSortedVisibleObjects()
 
 			for (auto object : g_chunkObjectMap[x][y])
 			{
-				object->m_distanceFromCamera = Vector3DistanceSqr(object->m_centerPoint, g_camera.position);
+				// Skip null or dead objects
+			if (!object || object->GetIsDead())
+			{
+				if (g_LuaDebug && object && object->GetIsDead())
+				{
+					AddConsoleString("UpdateSortedVisibleObjects: Skipping dead object");
+				}
+				continue;
+			}
+
+			object->m_distanceFromCamera = Vector3DistanceSqr(object->m_centerPoint, g_camera.position);
 				g_sortedVisibleObjects.push_back(object);
  			}
  		}
