@@ -3,9 +3,19 @@ function object_pool_0893(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003
 
     if eventid == 1 then
+        -- pool's quality determines what happens when you drink
         var_0000 = get_object_quality(objectref)
-        var_0001 = click_on_item()
-        set_object_quality(objectref, 90)
+        -- allow player to pick who drinks
+        var_0001 = object_select_modal()
+        local npc_number = get_npc_number(var_0001)
+        if not npc_id_in_party(npc_number) then
+            -- i added this check here because it doesn't make
+            -- sense to allow non party members to drink from pool
+            -- or things like a lamppost
+            console_log("Pool only works on party members.")
+            return
+        end
+        -- set_object_quality(objectref, 90)
         if var_0000 == 1 then
             set_item_flag(var_0001, 1)
         elseif var_0000 == 2 then
@@ -13,12 +23,15 @@ function object_pool_0893(eventid, objectref)
             var_0003 = 13 - var_0002
             utility_unknown_1066(var_0001, var_0003)
         elseif var_0000 == 3 then
+            -- clears all status effects
+            -- i think status 0 is invisibility, 1 sleep, 8 poison
             clear_item_flag(var_0001, 8)
             clear_item_flag(var_0001, 7)
             clear_item_flag(var_0001, 1)
             clear_item_flag(var_0001, 2)
             clear_item_flag(var_0001, 3)
         elseif var_0000 == 4 then
+            -- poison whoever drinks it
             set_item_flag(var_0001, 8)
         elseif var_0000 == 5 then
             clear_item_flag(var_0001, 1)
