@@ -101,10 +101,10 @@ void Terrain::CalculateLighting()
 					int celly = (TILEHEIGHT / 2) + j - int(g_camera.target.z);
 
 					//  Already lit?  Continue.
-					if (ColorToInt(m_cellLighting[cellx][celly]) != ColorToInt(g_dayNightColor))
-					{
-						continue; // This cell has already been processed.
-					}
+					// if (ColorToInt(m_cellLighting[cellx][celly]) != ColorToInt(g_dayNightColor))
+					// {
+					// 	continue; // This cell has already been processed.
+					// }
 
 					float distance = Vector2DistanceSqr({float(i), float(j)}, {object->m_Pos.x, object->m_Pos.z});
 
@@ -114,7 +114,15 @@ void Terrain::CalculateLighting()
 					}
 					else if (distance <= softlightrangesquared)
 					{
-						m_cellLighting[cellx][celly] = {128, 128, 128, 255};
+						Color thiscell = m_cellLighting[cellx][celly];
+						if (thiscell.r < 128 && thiscell.g < 128 && thiscell.b < 128)
+						{
+							m_cellLighting[cellx][celly] = {128, 128, 128, 255};
+						}
+						else if (thiscell.r == 128 && thiscell.g == 128 && thiscell.b == 128)
+						{
+						 	m_cellLighting[cellx][celly] = WHITE;
+						}
 					}
 				}
 			}
