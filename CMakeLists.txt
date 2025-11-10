@@ -50,17 +50,18 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
 endif()
 
 # ============================================================================
-# Raylib Dependency
+# Raylib Dependency (Prebuilt)
 # ============================================================================
-set(BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
-set(GLFW_LIBRARY_TYPE "OBJECT" CACHE STRING "" FORCE)
-set(PLATFORM "Desktop" CACHE STRING "" FORCE)
-if(WIN32)
-    set(CMAKE_SYSTEM_VERSION "10.0.22621.0" CACHE STRING "" FORCE)
-endif()
+set(RAYLIB_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/raylib/include)
+set(RAYLIB_LIBRARY ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/raylib/lib/raylib.lib)
+set(RAYLIB_EXTERNAL_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/raylib/external/include)
 
-add_subdirectory(subprojects/raylib)
-set(RAYLIB_EXTERNAL_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/subprojects/raylib/src/external)
+# Create imported target for raylib
+add_library(raylib STATIC IMPORTED)
+set_target_properties(raylib PROPERTIES
+    IMPORTED_LOCATION ${RAYLIB_LIBRARY}
+    INTERFACE_INCLUDE_DIRECTORIES "${RAYLIB_INCLUDE_DIR};${RAYLIB_EXTERNAL_INCLUDE}"
+)
 
 # ============================================================================
 # Lua Static Library
@@ -185,7 +186,6 @@ target_link_libraries(U7Revisited PRIVATE
 # Additional include directories for dependencies
 target_include_directories(U7Revisited PRIVATE
     ${RAYLIB_EXTERNAL_INCLUDE}
-    ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/raylib/external
 )
 
 # Windows-specific dependencies
@@ -241,7 +241,6 @@ target_include_directories(ScriptTests PRIVATE
     Source
     Source/Geist
     ${RAYLIB_EXTERNAL_INCLUDE}
-    ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/raylib/external
 )
 
 # Windows-specific dependencies
@@ -311,7 +310,6 @@ target_include_directories(Ghost PRIVATE
     Source
     Source/Geist
     ${RAYLIB_EXTERNAL_INCLUDE}
-    ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/raylib/external
 )
 
 # Windows-specific dependencies
