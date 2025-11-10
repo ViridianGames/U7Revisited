@@ -12,7 +12,7 @@ function object_anvil_0991(eventid, objectref)
                     var_0003 = get_object_frame(var_0000)
                     if var_0003 >= 10 and var_0003 <= 12 then
                         -- calle 026FH, 623 (unmapped)
-                        object_hammer_0623(objectref)
+                        object_hammer_0623(eventid, objectref)
                     end
                 end
             end
