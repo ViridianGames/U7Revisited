@@ -203,17 +203,26 @@ if(WIN32)
     )
 endif()
 
-# Set Visual Studio debugger working directory to Redist folder
-set_target_properties(U7Revisited PROPERTIES
-    VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
-)
-
-# Copy executable to Redist folder after build (Release only)
-add_custom_command(TARGET U7Revisited POST_BUILD
-    COMMAND $<$<CONFIG:Release>:${CMAKE_COMMAND}> $<$<CONFIG:Release>:-E> $<$<CONFIG:Release>:copy> $<$<CONFIG:Release>:$<TARGET_FILE:U7Revisited>> $<$<CONFIG:Release>:"${CMAKE_CURRENT_SOURCE_DIR}/Redist/">
-    COMMAND_EXPAND_LISTS
-    COMMENT "Copying Release executable to Redist folder"
-)
+# Set working directory for running the executable
+if(WIN32)
+    # Visual Studio debugger working directory
+    set_target_properties(U7Revisited PROPERTIES
+        VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
+    )
+    # Copy executable to Redist folder after build (Release only)
+    add_custom_command(TARGET U7Revisited POST_BUILD
+        COMMAND $<$<CONFIG:Release>:${CMAKE_COMMAND}> $<$<CONFIG:Release>:-E> $<$<CONFIG:Release>:copy> $<$<CONFIG:Release>:$<TARGET_FILE:U7Revisited>> $<$<CONFIG:Release>:"${CMAKE_CURRENT_SOURCE_DIR}/Redist/">
+        COMMAND_EXPAND_LISTS
+        COMMENT "Copying Release executable to Redist folder"
+    )
+else()
+    # On Linux/Unix, set runtime output directory to Redist
+    set_target_properties(U7Revisited PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
+        RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
+        RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
+    )
+endif()
 
 # Set as Visual Studio startup project
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT U7Revisited)
@@ -254,12 +263,21 @@ if(WIN32)
     target_link_libraries(ScriptTests PRIVATE winmm)
 endif()
 
-# Set Visual Studio debugger working directory to Redist folder for testing
-# and pass --execute flag by default
-set_target_properties(ScriptTests PROPERTIES
-    VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
-    VS_DEBUGGER_COMMAND_ARGUMENTS "--execute"
-)
+# Set working directory for running tests
+if(WIN32)
+    # Visual Studio debugger working directory and args
+    set_target_properties(ScriptTests PROPERTIES
+        VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
+        VS_DEBUGGER_COMMAND_ARGUMENTS "--execute"
+    )
+else()
+    # On Linux/Unix, set runtime output directory to Redist
+    set_target_properties(ScriptTests PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
+        RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
+        RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
+    )
+endif()
 
 # ============================================================================
 # Ghost GUI Editor (Standalone Tool)
@@ -327,17 +345,26 @@ if(WIN32)
     )
 endif()
 
-# Set Visual Studio debugger working directory to Ghost folder
-set_target_properties(Ghost PROPERTIES
-    VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Ghost"
-)
-
-# Copy executable to Ghost folder after build (Release only)
-add_custom_command(TARGET Ghost POST_BUILD
-    COMMAND $<$<CONFIG:Release>:${CMAKE_COMMAND}> $<$<CONFIG:Release>:-E> $<$<CONFIG:Release>:copy> $<$<CONFIG:Release>:$<TARGET_FILE:Ghost>> $<$<CONFIG:Release>:"${CMAKE_CURRENT_SOURCE_DIR}/Ghost/">
-    COMMAND_EXPAND_LISTS
-    COMMENT "Copying Ghost Release executable to Ghost folder"
-)
+# Set working directory for Ghost editor
+if(WIN32)
+    # Visual Studio debugger working directory
+    set_target_properties(Ghost PROPERTIES
+        VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Ghost"
+    )
+    # Copy executable to Ghost folder after build (Release only)
+    add_custom_command(TARGET Ghost POST_BUILD
+        COMMAND $<$<CONFIG:Release>:${CMAKE_COMMAND}> $<$<CONFIG:Release>:-E> $<$<CONFIG:Release>:copy> $<$<CONFIG:Release>:$<TARGET_FILE:Ghost>> $<$<CONFIG:Release>:"${CMAKE_CURRENT_SOURCE_DIR}/Ghost/">
+        COMMAND_EXPAND_LISTS
+        COMMENT "Copying Ghost Release executable to Ghost folder"
+    )
+else()
+    # On Linux/Unix, set runtime output directory to Ghost
+    set_target_properties(Ghost PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Ghost"
+        RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_CURRENT_SOURCE_DIR}/Ghost"
+        RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_CURRENT_SOURCE_DIR}/Ghost"
+    )
+endif()
 
 # Linux desktop integration
 if(UNIX AND NOT APPLE)
