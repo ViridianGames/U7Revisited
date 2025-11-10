@@ -40,7 +40,7 @@ function object_strengthtester_0743(eventid, objectref)
         end
         if var_0005 > 7 then
             var_0004 = delayed_execute_usecode_array({var_0005 + 1, 24, 7715}, objectref)
-            if not npc_in_party(44) and not utility_unknown_1079(44) then
+            if not npc_id_in_party(44) and not utility_unknown_1079(44) then
                 bark(44, "@Avatar wins a Dragon!@")
                 var_0004 = add_party_items(false, 0, 359, 742, 1)
             end

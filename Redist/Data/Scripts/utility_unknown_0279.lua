@@ -10,7 +10,7 @@ function utility_unknown_0279(eventid, objectref)
         var_0000 = delayed_execute_usecode_array(19, 1, {17478, 7724}, var_0001) --- Guess: Adds item to container
     elseif eventid == 2 then
         set_schedule_type(15, objectref) --- Guess: Sets object behavior
-        if not npc_in_party(142) then
+        if not npc_id_in_party(142) then
             switch_talk_to(142)
             add_dialogue("\"There. It is done. Now take the blasted thing to Mordra. She will instruct thee in its use.\"")
             abort()

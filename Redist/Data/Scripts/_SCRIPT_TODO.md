@@ -52,7 +52,6 @@ get_conversation_target
 
 get_cont_items
 
-npc_in_party
 
 set_object_attributes
 
@@ -70,6 +69,7 @@ check_object_status - is this alias of get_item_flag ??
 
 # DONE
 
+npc_in_party -> npc_id_in_party
 destroy_object_silent - calls destroy_object for now
 cmps("Brom") - this is a shortcut for get_answer() and comparing it. i attempted implementation.
 select_option - alias for ask_yes_no() w/ no args

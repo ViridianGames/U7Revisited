@@ -872,7 +872,7 @@ static int LuaPlayMusic(lua_State *L)
 // Opcode 002F
 static int LuaNPCIDInParty(lua_State *L)
 {
-    if (g_LuaDebug) DebugPrint("LUA: npc_in_party called");
+    if (g_LuaDebug) DebugPrint("LUA: npc_id_in_party called");
     int npc_id = luaL_checkinteger(L, 1);
     bool in_party = g_Player->NPCIDInParty(npc_id);
     lua_pushboolean(L, in_party);
@@ -881,7 +881,7 @@ static int LuaNPCIDInParty(lua_State *L)
 
 static int LuaNPCNameInParty(lua_State *L)
 {
-    if (g_LuaDebug) DebugPrint("LUA: npc_in_party called");
+    if (g_LuaDebug) DebugPrint("LUA: npc_name_in_party called");
     const char* text = luaL_checkstring(L, 1);
     bool in_party = g_Player->NPCNameInParty(text);
     lua_pushboolean(L, in_party);

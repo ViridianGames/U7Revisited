@@ -11,7 +11,7 @@ function object_cat_0495(eventid, objectref)
         set_attack_mode(7, objectref)
         -- calli 004C, 2 (unmapped)
         set_oppressor(356, objectref)
-        if not npc_in_party(3) then
+        if not npc_id_in_party(3) then
             var_0000 = delayed_execute_usecode_array({4, "@I hate cats.@", {17490, 7715}}, 3)
         end
     elseif eventid == 0 then

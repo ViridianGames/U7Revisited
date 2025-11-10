@@ -7,7 +7,7 @@ function object_puppetshow_0503(eventid, objectref)
         if not in_usecode(objectref) then
             return
         end
-        if not npc_in_party(44) then
+        if not npc_id_in_party(44) then
             switch_talk_to(44)
             start_conversation()
             add_dialogue("\"Now is the time for the young and the old to dig in their pockets and give up the gold. * Dost thou wish to donate a gold piece?\"")

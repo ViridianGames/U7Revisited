@@ -30,7 +30,7 @@ function object_deskitem_0675(eventid, objectref)
                 var_0002 = execute_usecode_array({0, "@Gimmee a cracker!@", {17490, 7715}}, objectref)
             elseif var_0003 == 6 or var_0003 == 7 then
                 var_0002 = execute_usecode_array({0, "@Pretty bird!@", {17490, 7715}}, objectref)
-                if not npc_in_party(2) then
+                if not npc_id_in_party(2) then
                     var_0002 = delayed_execute_usecode_array({16, "@Ugly Bird!@", {17490, 7715}}, get_npc_name(2))
                     var_0002 = delayed_execute_usecode_array({32, "@Ugly Boy!@", {17490, 7715}}, objectref)
                     var_0002 = delayed_execute_usecode_array({48, "@Hey!!@", {17490, 7715}}, get_npc_name(2))
@@ -43,7 +43,7 @@ function object_deskitem_0675(eventid, objectref)
         elseif var_0000 == 17 or var_0000 == 18 or var_0000 == 19 then
             if not in_usecode(objectref) then
                 var_0002 = execute_usecode_array({18, 8006, 12, 7947, 19, 8006, 18, 8024, 17, 8006, 17, 7768}, objectref)
-                if not npc_in_party(2) then
+                if not npc_id_in_party(2) then
                     var_0002 = delayed_execute_usecode_array({4, "@That is really weird.@", {7762}}, get_npc_name(2))
                 end
             end
