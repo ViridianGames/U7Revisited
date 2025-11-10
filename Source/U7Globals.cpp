@@ -933,9 +933,8 @@ std::string GetShapeFrameName(int shape, int frame, int quantity)
 		// Shape 675: Desk items (21 frames)
 		if (shape == 675 && frame >= 0 && frame < 21)
 		{
-			// Desk items: frames 0-20 map to misc_names 299-319
-			// (gold sextant, sextant, gavel, quill, inkwell, quill holder, book mark, letter opener, etc.)
-			int miscIndex = 299 + frame;
+			// Desk items: frames 0-20 map to misc_names 301-321
+			int miscIndex = 301 + frame;
 			if (miscIndex < g_miscNames.size())
 			{
 				return ParseU7TextFormat(g_miscNames[miscIndex], quantity);
