@@ -44,6 +44,9 @@ std::unique_ptr<Terrain> g_Terrain;
 std::array<std::array<ShapeData, 32>, 1024> g_shapeTable;
 std::array<ObjectData, 1024> g_objectDataTable;
 
+// Weather/effect sprite data
+std::array<std::vector<SpriteFrame>, 32> g_spriteTable;
+
 // Misc names from TEXT.FLX for frame-specific item names
 std::vector<std::string> g_miscNames;
 

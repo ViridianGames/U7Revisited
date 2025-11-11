@@ -119,7 +119,7 @@ void LoadingState::Draw()
 
 void LoadingState::UpdateLoading()
 {
-	
+
 	if (!m_loadingFailed)
 	{
 		if (!m_loadingVersion)
@@ -168,6 +168,14 @@ void LoadingState::UpdateLoading()
 			AddConsoleString(std::string("Loading shapes..."));
 			CreateShapeTable();
 			m_loadingShapes = true;
+			return;
+		}
+
+		if (!m_loadingSprites)
+		{
+			AddConsoleString(std::string("Loading sprites..."));
+			LoadSprites();
+			m_loadingSprites = true;
 			return;
 		}
 
@@ -290,7 +298,7 @@ void LoadingState::LoadVersion()
 void LoadingState::LoadChunks()
 {
 	std::string dataPath = g_Engine->m_EngineConfig.GetString("data_path");
-	
+
 	//  Load data for all chunks first
 	std::string loadingPath(dataPath);
 	loadingPath.append("/STATIC/U7CHUNKS");
@@ -319,7 +327,7 @@ void LoadingState::LoadChunks()
 
 				g_ChunkTypeList[i][j][k] = thisdata;
 			}
-			
+
 		}
 	}
 	fclose(u7chunksfile);
@@ -378,19 +386,19 @@ void LoadingState::LoadIFIX()
 				ss << "U7IFIX" << std::hex << thissuperchunk;
 			}
 			std::string s = ss.str();
-            
+
             std::transform(s.begin(), s.end(), s.begin(), ::toupper);
-            
+
 						s.insert(0, loadingPath.c_str());
 
 			FILE* u7thisifix = fopen(s.c_str(), "rb");
-            
+
             if(u7thisifix == nullptr)
             {
                 int stopper = 0;
             }
 
-			//  Even though these files don't have an .flx description, 
+			//  Even though these files don't have an .flx description,
 			//  these are flex files.  Flex files have a header of 80 bytes,
 			//  which is the same for every file: "Ultima VII Data File (C) 1992 Origin Inc."
 			char header[80];
@@ -511,7 +519,7 @@ void LoadingState::LoadFaces()
 		int xDrawOffset;
 		int yDrawOffset;
 	};
-	
+
 	stringstream shapes;
 	shapes << shapesFile.rdbuf();
 	shapesFile.close();
@@ -639,7 +647,7 @@ void LoadingState::LoadFaces()
 
 		}
 
-		
+
 	}
 
 	shapesFile.close();
@@ -887,7 +895,7 @@ void LoadingState::CreateShapeTable()
 		palette.seekg(paletteEntryMap[i].offset);
 		unsigned char* paletteData = (unsigned char*)malloc(paletteEntryMap[1].length);
 		palette.read((char*)paletteData, paletteEntryMap[1].length);
-	
+
 		std::array<Color, 256> thisPalette;
 		//  Currently only loading the base palette.  Other palettes are for lighting effects.
 		for (int j = 0; j < 256; ++j)
@@ -900,7 +908,7 @@ void LoadingState::CreateShapeTable()
 			thisPalette[j].b = b * 4;
 			thisPalette[j].a = 255;
 		}
-	
+
 		thisPalette[254] = Color{ 128, 128, 128, 128 };
 
 		m_palettes.push_back(thisPalette);
@@ -1103,6 +1111,194 @@ void LoadingState::CreateShapeTable()
 
 	profilingTime = GetTime() - profilingTime;
 	Log("Time to load shapes: " + std::to_string(profilingTime));
+}
+
+void LoadingState::LoadSprites()
+{
+	std::string dataPath = g_Engine->m_EngineConfig.GetString("data_path");
+	std::string spritePath = dataPath + "/STATIC/SPRITES.VGA";
+
+	ifstream spritesFile;
+	spritesFile.open(spritePath.c_str(), ios::binary);
+
+	if (!spritesFile.good())
+	{
+		Log("SPRITES.VGA not found at: " + spritePath);
+		return;
+	}
+
+	stringstream sprites;
+	sprites << spritesFile.rdbuf();
+	spritesFile.close();
+
+	vector<FLXEntryData> spriteEntryMap = ParseFLXHeader(sprites);
+
+	Log("Loading " + std::to_string(spriteEntryMap.size()) + " sprite shapes from SPRITES.VGA");
+
+	float profilingTime = GetTime();
+
+	struct frameData
+	{
+		unsigned int fileOffset;
+		short W2;
+		short W1;
+		short H1;
+		short H2;
+		unsigned int width;
+		unsigned int height;
+		int xDrawOffset;
+		int yDrawOffset;
+	};
+
+	// Process each sprite shape (same format as SHAPES.VGA)
+	for (int thisSprite = 0; thisSprite < spriteEntryMap.size() && thisSprite < 32; ++thisSprite)
+	{
+		if (spriteEntryMap[thisSprite].offset == 0 && spriteEntryMap[thisSprite].length == 0)
+		{
+			continue; // Empty entry
+		}
+
+		sprites.seekg(spriteEntryMap[thisSprite].offset);
+		unsigned int headerStart = sprites.tellg();
+		unsigned int firstData = ReadU32(sprites);
+
+		// Check if RLE-encoded (same format as SHAPES.VGA)
+		if (firstData == spriteEntryMap[thisSprite].length)
+		{
+			// Next four bytes tell length of the header
+			unsigned int headerLength = ReadU32(sprites);
+			unsigned int frameCount = ((headerLength - 4) / 4);
+
+			std::vector<frameData> frameOffsets;
+			frameOffsets.resize(frameCount);
+			frameOffsets[0].fileOffset = 0;
+
+			for (unsigned int i = 1; i < frameCount; ++i)
+			{
+				frameOffsets[i].fileOffset = ReadU32(sprites);
+			}
+
+			// Read each frame
+			for (unsigned int frameNum = 0; frameNum < frameCount; ++frameNum)
+			{
+				// Seek to the start of this frame's data
+				if (frameNum > 0)
+				{
+					sprites.seekg(headerStart + frameOffsets[frameNum].fileOffset);
+				}
+
+				frameOffsets[frameNum].W2 = ReadS16(sprites);
+				frameOffsets[frameNum].W1 = ReadS16(sprites);
+				frameOffsets[frameNum].H1 = ReadS16(sprites);
+				frameOffsets[frameNum].H2 = ReadS16(sprites);
+
+				frameOffsets[frameNum].height = frameOffsets[frameNum].H1 + frameOffsets[frameNum].H2 + 1;
+				frameOffsets[frameNum].width = frameOffsets[frameNum].W2 + frameOffsets[frameNum].W1 + 1;
+
+				frameOffsets[frameNum].xDrawOffset = frameOffsets[frameNum].W2;
+				frameOffsets[frameNum].yDrawOffset = frameOffsets[frameNum].H2;
+
+				Image spriteImage = GenImageColor(frameOffsets[frameNum].width, frameOffsets[frameNum].height, Color{0, 0, 0, 0});
+
+				// Read each span - same format as SHAPES.VGA
+				while (true)
+				{
+					unsigned short blockData = ReadU16(sprites);
+					unsigned short spanLength = blockData >> 1;
+					unsigned short spanType = blockData & 1;
+
+					if (blockData == 0)
+					{
+						break; // No more spans; done with this frame
+					}
+
+					short xStart = ReadS16(sprites);
+					short yStart = ReadS16(sprites);
+					xStart += frameOffsets[frameNum].width - frameOffsets[frameNum].xDrawOffset - 1;
+					yStart += frameOffsets[frameNum].height - frameOffsets[frameNum].yDrawOffset - 1;
+
+					if (spanType == 0) // Not RLE, raw pixel data
+					{
+						for (int i = 0; i < spanLength; ++i)
+						{
+							unsigned char Value = ReadU8(sprites);
+							ImageDrawPixel(&spriteImage, xStart + i, yStart, m_palettes[0][Value]);
+						}
+					}
+					else // RLE
+					{
+						int endX = xStart + spanLength;
+
+						while (xStart < endX)
+						{
+							unsigned char runData = ReadU8(sprites);
+							int runLength = runData >> 1;
+							int runType = runData & 1;
+
+							if (runType == 0) // Non-RLE
+							{
+								for (int i = 0; i < runLength; ++i)
+								{
+									unsigned char Value = ReadU8(sprites);
+									ImageDrawPixel(&spriteImage, xStart + i, yStart, m_palettes[0][Value]);
+								}
+							}
+							else // RLE - repeat single pixel
+							{
+								unsigned char Value = ReadU8(sprites);
+								for (int i = 0; i < runLength; ++i)
+								{
+									ImageDrawPixel(&spriteImage, xStart + i, yStart, m_palettes[0][Value]);
+								}
+							}
+							xStart += runLength;
+						}
+					}
+				}
+
+				// Create texture from image
+				Texture2D spriteTexture = LoadTextureFromImage(spriteImage);
+
+				// Store in sprite table
+				SpriteFrame frame;
+				frame.image = spriteImage;
+				frame.texture = spriteTexture;
+				frame.width = frameOffsets[frameNum].width;
+				frame.height = frameOffsets[frameNum].height;
+				frame.xOffset = frameOffsets[frameNum].xDrawOffset;
+				frame.yOffset = frameOffsets[frameNum].yDrawOffset;
+
+				g_spriteTable[thisSprite].push_back(frame);
+			}
+		}
+	}
+
+	profilingTime = GetTime() - profilingTime;
+	Log("Time to load sprites: " + std::to_string(profilingTime));
+
+//#define DEBUG_SPRITES 1
+#if DEBUG_SPRITES
+	// Create Debug/Sprites directory if needed
+	std::filesystem::create_directories("Debug/Sprites");
+
+	// Log sprite counts and export images for debugging
+	for (int i = 0; i < 32; ++i)
+	{
+		if (!g_spriteTable[i].empty())
+		{
+			Log("Sprite " + std::to_string(i) + ": " + std::to_string(g_spriteTable[i].size()) + " frames");
+
+			// Export each frame as PNG for inspection
+			for (size_t frameNum = 0; frameNum < g_spriteTable[i].size(); ++frameNum)
+			{
+				std::string filename = "Debug/Sprites/sprite_" + std::to_string(i) + "_frame_" + std::to_string(frameNum) + ".png";
+				ExportImage(g_spriteTable[i][frameNum].image, filename.c_str());
+			}
+		}
+	}
+
+	Log("Sprites exported to Debug/Sprites/ folder");
+#endif
 }
 
 void LoadingState::LoadModels()
@@ -1369,7 +1565,7 @@ void LoadingState::LoadInitialGameState()
 			short npcCount2 = ReadU16(subFiles);
 			int fullcount = npcCount1 + npcCount2;
 			int filepos = subFiles.tellg();
-			
+
 			for (int i = 0; i < 256; ++i)
 			{
 				//if (i == 139) // This NPC is broken and attempting to parse it messes up all NPCs after it.  It's not used anyway so we just skip it.
@@ -1379,7 +1575,7 @@ void LoadingState::LoadInitialGameState()
 
 				int size = sizeof(NPCData);
 				NPCData thisNPC;
-				
+
 				thisNPC.x = ReadU8(subFiles);
 				thisNPC.y = ReadU8(subFiles);
 				thisNPC.shapeId = ReadU16(subFiles);
@@ -1591,13 +1787,13 @@ void LoadingState::LoadInitialGameState()
                         lift2 = z & 0x0f;
 							//z *= 8;
                      }
-						
+
                      unsigned char quality = ReadU8(subFiles);
-                     
+
                      int objectId = GetNextID();
 							U7Object* thisObject = AddObject(shape, frame, objectId, actualx, lift1, actualy);
 							thisObject->m_isContained = true;
-                     
+
 							AddObjectToContainer(objectId, nextID);
 						}
 						else if (length == 12) // container or egg
@@ -1646,7 +1842,7 @@ void LoadingState::LoadNPCSchedules()
 	if (file.is_open())
 	{
 		unsigned int npcCount = ReadU32(file); // Should be 256.
-		
+
 		unordered_map<unsigned char, unsigned short> schedulesPerNPC;
 
 		int entriesLastIndex = 0;

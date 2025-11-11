@@ -235,6 +235,18 @@ extern std::array<std::array<ShapeData, 32>, 1024> g_shapeTable;
 extern std::array<ObjectData, 1024> g_objectDataTable;
 extern std::unordered_map<int, std::unique_ptr<NPCData> > g_NPCData;
 
+// Weather/effect sprite data structure
+struct SpriteFrame {
+    Image image;
+    Texture2D texture;
+    int width;
+    int height;
+    int xOffset;
+    int yOffset;
+};
+
+extern std::array<std::vector<SpriteFrame>, 32> g_spriteTable;  // 32 sprite shapes, each with multiple frames
+
 extern std::vector<U7Object*> g_sortedVisibleObjects;
 
 extern unsigned int g_minimapSize;
