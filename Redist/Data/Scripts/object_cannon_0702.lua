@@ -46,7 +46,7 @@ function object_cannon_0702(eventid, objectref)
         var_0007 = get_object_shape(objectref)
         var_0008 = get_object_frame(objectref)
         if var_0007 == 704 then
-            var_0009 = delayed_execute_usecode_array({1, 704, {17493, 7715}}, objectref)
+            var_0009 = delayed_execute_usecode_array(objectref, {1, 704, {17493, 7715}})
         elseif var_0007 == 376 or var_0007 == 270 then
             var_000A = {18, 17, 16, 10, 9, 8, 2, 1, 0}
         elseif var_0007 == 433 or var_0007 == 432 then

@@ -24,8 +24,8 @@ function object_door_0329(eventid, objectref)
         utility_position_0808(7, objectref, 329, var_0005, {var_0004, var_0003})
     elseif eventid == 7 then
         if not is_pc_inside() then
-            var_0002 = execute_usecode_array({0, 14, -1, 17419, 8015, 3, -3, 17419, 8013, 2, 7975, 3, -1, 17419, 8016, 5, 7975, 14, -1, 17419, 8013, 0, 7750}, objectref)
-            var_0002 = execute_usecode_array({7, -6, 7947, 2, 17447, 8033, 2, 17447, 8037, 6, 17497, 17505, 7788}, -356)
+            var_0002 = execute_usecode_array(objectref, {0, 14, -1, 17419, 8015, 3, -3, 17419, 8013, 2, 7975, 3, -1, 17419, 8016, 5, 7975, 14, -1, 17419, 8013, 0, 7750})
+            var_0002 = execute_usecode_array(-356, {7, -6, 7947, 2, 17447, 8033, 2, 17447, 8037, 6, 17497, 17505, 7788})
         else
             utility_unknown_1022("@Try it outside!@")
         end

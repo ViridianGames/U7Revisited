@@ -27,7 +27,7 @@ function object_venom_0649(eventid, objectref)
             utility_unknown_0821(var_0002, 1, var_0000)
             utility_unknown_0821(var_0003, 2, var_0000)
             set_object_quality(objectref, 72)
-            var_0004 = execute_usecode_array({71, 8024, 1539, 8021, 1, 17449, 7715}, var_0000)
+            var_0004 = execute_usecode_array(var_0000, {71, 8024, 1539, 8021, 1, 17449, 7715})
             remove_item(objectref)
         else
             utility_unknown_1021(60)

@@ -99,7 +99,7 @@ function npc_nastassia_0075(eventid, objectref)
                     set_flag(226, true)
                 else
                     add_dialogue("Nastassia turns away and looks as if she might cry. \"Very well. Please leave me alone.\"")
-                    var_0000 = execute_usecode_array({0, 26, 17492, 7715}, objectref)
+                    var_0000 = execute_usecode_array(objectref, {0, 26, 17492, 7715})
                     return
                 end
             else
@@ -148,7 +148,7 @@ function npc_nastassia_0075(eventid, objectref)
             else
                 add_dialogue("\"Goodbye, " .. var_0005 .. ".\"")
             end
-            var_0000 = execute_usecode_array({0, 26, 17492, 7715}, objectref)
+            var_0000 = execute_usecode_array(objectref, {0, 26, 17492, 7715})
             break
         end
     end

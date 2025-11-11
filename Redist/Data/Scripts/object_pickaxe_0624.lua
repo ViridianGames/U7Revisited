@@ -30,7 +30,7 @@ function object_pickaxe_0624(eventid, objectref)
                 var_000A = utility_unknown_1069(var_0008)
             end
         end
-        var_000B = execute_usecode_array({624, 8021, 1, 17447, 8039, 2, 17447, 8037, 2, 17447, 8039, 2, 17447, 8549, var_000A, 7769}, -356)
+        var_000B = execute_usecode_array(-356, {624, 8021, 1, 17447, 8039, 2, 17447, 8037, 2, 17447, 8039, 2, 17447, 8549, var_000A, 7769})
     elseif eventid == 2 then
         if not get_flag(801) then
             var_000C = create_new_object(203)

@@ -6,7 +6,7 @@ function object_pot_0944(eventid, objectref)
         if get_object_frame(objectref) == 0 and not utility_unknown_1079(356) then
             bark(356, "ptui!")
             if not in_gump_mode() then
-                var_0000 = delayed_execute_usecode_array({3, 24, 7768}, objectref)
+                var_0000 = delayed_execute_usecode_array(objectref, {3, 24, 7768})
             end
         end
     end

@@ -32,7 +32,7 @@ function object_gem_0760(eventid, objectref)
                 end
                 -- calli 007E, 0 (unmapped)
                 close_gumps()
-                var_0003 = execute_usecode_array({760, 8021, 2, 7719}, objectref)
+                var_0003 = execute_usecode_array(objectref, {760, 8021, 2, 7719})
             end
         end
     elseif eventid == 2 then
@@ -48,10 +48,10 @@ function object_gem_0760(eventid, objectref)
     elseif eventid == 7 then
         -- call [0004] (092DH, unmapped)
         var_0007 = utility_unknown_1069(objectref)
-        var_0003 = execute_usecode_array({37, 17496, 8039, 2, 17447, 8038, 2, 17447, 8037, 2, 8487, var_0007, 7769}, 356)
-        var_0003 = execute_usecode_array({9, 8006, 10, 7719}, objectref)
+        var_0003 = execute_usecode_array(356, {37, 17496, 8039, 2, 17447, 8038, 2, 17447, 8037, 2, 8487, var_0007, 7769})
+        var_0003 = execute_usecode_array(objectref, {9, 8006, 10, 7719})
         var_0008 = get_container_objects(12, 359, 760, 356)
-        var_0003 = execute_usecode_array({848, 8021, 2, 7975, 13, 8006, 10, 7719}, var_0008)
+        var_0003 = execute_usecode_array(var_0008, {848, 8021, 2, 7975, 13, 8006, 10, 7719})
         set_flag(787, false)
         set_flag(819, false)
     end

@@ -34,19 +34,19 @@ function object_labburner_0307(eventid, objectref)
                     for var_0011 in ipairs(var_0010) do
                         var_0012 = get_object_position(var_0013)
                         if var_0012[1] == var_0000[1] + 1 and var_0012[2] == var_0000[2] + 2 and var_0012[3] == var_0000[3] + 2 then
-                            var_0015 = execute_usecode_array({8016, 10, 7975, 67, 17496, 7758}, objectref)
+                            var_0015 = execute_usecode_array(objectref, {8016, 10, 7975, 67, 17496, 7758})
                             var_0015 = delayed_execute_usecode_array(2, {1557, 17493, 7715}, var_0002)
                             var_0015 = delayed_execute_usecode_array(4, {1557, 17493, 7715}, var_0003)
                             var_0015 = delayed_execute_usecode_array(6, {1557, 17493, 7715}, var_0004)
-                            var_0015 = execute_usecode_array({-1, 4, 17419, 7758}, var_000E)
-                            var_0015 = execute_usecode_array({0, 3, -1, 17419, 7758}, var_0013)
+                            var_0015 = execute_usecode_array(var_000E, {-1, 4, 17419, 7758})
+                            var_0015 = execute_usecode_array(var_0013, {0, 3, -1, 17419, 7758})
                             set_flag(464, true)
                             abort()
                         end
                     end
                 end
             end
-            var_0015 = execute_usecode_array({8016, 10, 7975, 69, 17496, 7758}, objectref)
+            var_0015 = execute_usecode_array(objectref, {8016, 10, 7975, 69, 17496, 7758})
         end
         get_object_frame(objectref, 0)
     end

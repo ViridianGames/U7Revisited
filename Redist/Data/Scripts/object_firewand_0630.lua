@@ -8,6 +8,6 @@ function object_firewand_0630(eventid, objectref)
         var_0000 = objectref
     end
     halt_scheduled(-356)
-    var_0001 = execute_usecode_array({17508, 17530, 17514, 17512, 17508, 7715}, -356)
+    var_0001 = execute_usecode_array(-356, {17508, 17530, 17514, 17512, 17508, 7715})
     var_0001 = set_to_attack(630, var_0000, -356)
 end

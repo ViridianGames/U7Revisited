@@ -165,15 +165,15 @@ function utility_unknown_0502(objectref)
         utility_event_0508(objectref)
     end
     if var_0013 then
-        execute_usecode_array({1785, 8021, 1, 7719}, objectref)
+        execute_usecode_array(objectref, {1785, 8021, 1, 7719})
     end
     if var_0014 then
         var_001B = utility_unknown_1069(var_0011)
-        execute_usecode_array({8033, 2, 17447, 8042, 1, 17447, 8041, 1, 17447, 8040, 1, 17447, 8548, var_001B, 7769}, var_0011)
+        execute_usecode_array(var_0011, {8033, 2, 17447, 8042, 1, 17447, 8041, 1, 17447, 8040, 1, 17447, 8548, var_001B, 7769})
     end
     if var_0015 then
         var_001B = utility_unknown_1069(var_0011)
-        execute_usecode_array({8033, 2, 17447, 8042, 1, 17447, 8041, 1, 17447, 8040, 1, 17447, 8036, 2, 8487, var_001B, 7769}, var_0011)
+        execute_usecode_array(var_0011, {8033, 2, 17447, 8042, 1, 17447, 8041, 1, 17447, 8040, 1, 17447, 8036, 2, 8487, var_001B, 7769})
     end
     return
 end

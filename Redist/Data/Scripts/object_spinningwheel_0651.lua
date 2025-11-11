@@ -6,7 +6,7 @@ function object_spinningwheel_0651(eventid, objectref)
         var_0000 = find_nearby(0, 1, 873, -356)
         var_0001 = 0
         if #var_0000 > 0 then
-            var_0002 = execute_usecode_array({12, -1, 17419, 17515, 8044, 6, 7769}, -356)
+            var_0002 = execute_usecode_array(-356, {12, -1, 17419, 17515, 8044, 6, 7769})
             var_0001 = 3
         end
         halt_scheduled(objectref)

@@ -32,8 +32,8 @@ function object_swordblank_0668(eventid, objectref)
         end
     elseif eventid == 7 then
         var_0009 = utility_unknown_1069(objectref)
-        var_0008 = execute_usecode_array({8033, 3, 17447, 8556, var_0009, 7769}, get_npc_name(-356))
-        var_0008 = execute_usecode_array({1815, 8021, 3, 7719}, objectref)
+        var_0008 = execute_usecode_array(get_npc_name(-356), {8033, 3, 17447, 8556, var_0009, 7769})
+        var_0008 = execute_usecode_array(objectref, {1815, 8021, 3, 7719})
     elseif eventid == 2 then
         var_000A = get_cont_items(-359, -359, 668, get_npc_name(-356))
         if var_000A then
@@ -56,18 +56,18 @@ function object_swordblank_0668(eventid, objectref)
         end
     elseif eventid == 8 then
         var_0009 = utility_unknown_1069(objectref)
-        var_0008 = execute_usecode_array({8033, 3, 17447, 8556, var_0009, 7769}, get_npc_name(-356))
+        var_0008 = execute_usecode_array(get_npc_name(-356), {8033, 3, 17447, 8556, var_0009, 7769})
         var_000A = get_cont_items(-359, -359, 668, get_npc_name(-356))
-        var_0008 = execute_usecode_array({1675, 8021, 3, 7719}, var_000A)
+        var_0008 = execute_usecode_array(var_000A, {1675, 8021, 3, 7719})
     elseif eventid == 9 then
         var_0009 = utility_unknown_1069(objectref)
-        var_0008 = execute_usecode_array({8033, 3, 17447, 8556, var_0009, 7769}, get_npc_name(-356))
+        var_0008 = execute_usecode_array(get_npc_name(-356), {8033, 3, 17447, 8556, var_0009, 7769})
         var_000A = get_cont_items(-359, -359, 668, get_npc_name(-356))
-        var_0008 = execute_usecode_array({1676, 8021, 3, 7719}, var_000A)
+        var_0008 = execute_usecode_array(var_000A, {1676, 8021, 3, 7719})
     elseif eventid == 10 then
         var_0009 = utility_unknown_1069(objectref)
-        var_0008 = execute_usecode_array({8556, var_0009, 7769}, get_npc_name(-356))
-        var_0008 = execute_usecode_array({1677, 8021, 5, 7719}, objectref)
+        var_0008 = execute_usecode_array(get_npc_name(-356), {8556, var_0009, 7769})
+        var_0008 = execute_usecode_array(objectref, {1677, 8021, 5, 7719})
     end
     return
 end

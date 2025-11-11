@@ -4,9 +4,9 @@ function object_loom_0261(eventid, objectref)
 
     if eventid == 7 then
         halt_scheduled(objectref)
-        var_0000 = execute_usecode_array({261, 8021, 32, -4, 7947, 6, 17496, 17409, 8014, 0, 7750}, objectref)
+        var_0000 = execute_usecode_array(objectref, {261, 8021, 32, -4, 7947, 6, 17496, 17409, 8014, 0, 7750})
         var_0001 = utility_unknown_0807(objectref, -356)
-        var_0000 = execute_usecode_array({9, -5, 7947, 1, 17447, 17505, 17511, 8449, var_0001, 7769}, -356)
+        var_0000 = execute_usecode_array(-356, {9, -5, 7947, 1, 17447, 17505, 17511, 8449, var_0001, 7769})
     elseif eventid == 2 then
         var_0002 = get_container_objects(-359, -359, 654, -356)
         if var_0002 then

@@ -5,7 +5,7 @@ function object_fishingrod_0662(eventid, objectref)
     if eventid == 1 or eventid == 4 then
         close_gumps()
         var_0000 = object_select_modal()
-        var_0001 = execute_usecode_array({17505, 7783}, -356)
+        var_0001 = execute_usecode_array(-356, {17505, 7783})
         if not is_water({var_0000[2], var_0000[3], var_0000[4]}) then
             flash_mouse(0)
         end

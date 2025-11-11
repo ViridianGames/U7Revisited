@@ -11,7 +11,7 @@ function utility_event_0442(eventid, objectref)
                 halt_scheduled(var_0004)
                 utility_unknown_0288(var_0004)
                 var_0005 = delayed_execute_usecode_array(25, 1567, {17493, 7715}, var_0004)
-                var_0005 = execute_usecode_array({8033, 4, 17447, 8046, 4, 17447, 8045, 4, 17447, 8044, 5, 17447, 7715}, var_0004)
+                var_0005 = execute_usecode_array(var_0004, {8033, 4, 17447, 8046, 4, 17447, 8045, 4, 17447, 8044, 5, 17447, 7715})
                 if not utility_unknown_1079(var_0004) then
                     utility_unknown_1028(var_0004, {"@Yuk!@", "@Oh no!@", "@Eeehhh!@", "@Ohh!@"})
                 end

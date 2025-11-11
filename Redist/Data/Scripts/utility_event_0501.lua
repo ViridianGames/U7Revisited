@@ -19,10 +19,10 @@ function utility_event_0501(eventid, objectref)
     hide_npc(286)
     set_schedule_type(29, objectref)
     clear_item_flag(16, 356)
-    var_0005 = execute_usecode_array({13, 7719}, objectref)
+    var_0005 = execute_usecode_array(objectref, {13, 7719})
     var_0006 = utility_event_0897()
     var_0007 = delayed_execute_usecode_array(13, {17453, 7724}, var_0006)
-    var_0008 = execute_usecode_array({1693, 8021, 11, 7719}, get_npc_name(356))
+    var_0008 = execute_usecode_array(get_npc_name(356), {1693, 8021, 11, 7719})
     set_flag(786, true)
     return
 end

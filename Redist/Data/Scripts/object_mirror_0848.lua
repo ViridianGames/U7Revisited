@@ -5,7 +5,7 @@ function object_mirror_0848(eventid, objectref)
     if eventid == 1 then
         var_0000 = get_object_frame(objectref)
         if var_0000 == 3 then
-            var_0001 = execute_usecode_array({1782, 8021, 2, 7975, 4, -3, 7947, 4, 17447, 17486, 7937, 67, 7768}, objectref)
+            var_0001 = execute_usecode_array(objectref, {1782, 8021, 2, 7975, 4, -3, 7947, 4, 17447, 17486, 7937, 67, 7768})
         end
     elseif eventid == 2 then
         set_flag(815, true)

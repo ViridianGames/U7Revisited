@@ -6,7 +6,7 @@ function object_roulette_0725(eventid, objectref)
         var_0000 = random2(16, 1)
         -- calli 005C, 1 (unmapped)
         halt_scheduled(objectref)
-        var_0001 = execute_usecode_array({1546, 8021, 29, 17496, 8014, 3, 17447, 8014, 3, -14, 7947, 29, 8024, 1, 17447, 8014, 1, 17447, 8014, 1, 17447, 8014, 1, 17447, 8526, var_0000, -5, 7947, 29, 17496, 17486, 17409, 17486, 17409, 17486, 17409, 8014, 29, 7768}, objectref)
+        var_0001 = execute_usecode_array(objectref, {1546, 8021, 29, 17496, 8014, 3, 17447, 8014, 3, -14, 7947, 29, 8024, 1, 17447, 8014, 1, 17447, 8014, 1, 17447, 8014, 1, 17447, 8526, var_0000, -5, 7947, 29, 17496, 17486, 17409, 17486, 17409, 17486, 17409, 8014, 29, 7768})
         if get_time_hour() >= 15 or get_time_hour() <= 3 then
             if not utility_unknown_1079(-232) then
                 start_conversation()

@@ -9,13 +9,13 @@ function object_vial_0754(eventid, objectref)
             if get_flag(431) ~= true and (var_0001 == 519 or var_0001 == 747) then
                 var_0002 = check_flag_location(0, 40, 747, objectref)
                 if var_0002 then
-                    var_0003 = execute_usecode_array({7981, 9, 8024, 7, -4, 7947, 37, 8024, 2, 7975, 45, 8024, 1, 7750}, var_0002)
+                    var_0003 = execute_usecode_array(var_0002, {7981, 9, 8024, 7, -4, 7947, 37, 8024, 2, 7975, 45, 8024, 1, 7750})
                     var_0004 = get_object_position(var_0002)
                     var_0005 = sprite_effect(-1, 0, 0, 0, aidx(var_0004, 2) - 3, aidx(var_0004, 1) - 2, 12)
                     -- calli 006F, 1 (unmapped)
                     remove_item(objectref)
                 end
-                var_0003 = execute_usecode_array({754, 8021, 28, 7719}, 356)
+                var_0003 = execute_usecode_array(356, {754, 8021, 28, 7719})
             end
         end
     elseif eventid == 2 then

@@ -8,8 +8,8 @@ function object_cow_0500(eventid, objectref)
             var_0001 = var_0000
             var_0002 = var_0001
             var_0003 = var_0002
-            var_0004 = delayed_execute_usecode_array({random2(10, 1), "@Moo!@", {17490, 7715}}, var_0003)
-            var_0004 = delayed_execute_usecode_array({random2(30, 21), "@Moo!@", {17490, 7715}}, var_0003)
+            var_0004 = delayed_execute_usecode_array(var_0003, {random2(10, 1), "@Moo!@", {17490, 7715}})
+            var_0004 = delayed_execute_usecode_array(var_0003, {random2(30, 21), "@Moo!@", {17490, 7715}})
             if not var_0004 then
                 break
             end

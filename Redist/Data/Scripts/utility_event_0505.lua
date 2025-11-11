@@ -239,25 +239,25 @@ function utility_event_0505(eventid, objectref)
                 if not utility_unknown_1000(8) then
                     var_000C = utility_unknown_1000(8)
                     set_flag(791, true)
-                    var_002F = execute_usecode_array({1785, 8021, 2, 7719}, var_000C)
-                    var_0030 = execute_usecode_array({2, 8487, var_0001, 7769}, 356)
+                    var_002F = execute_usecode_array(var_000C, {1785, 8021, 2, 7719})
+                    var_0030 = execute_usecode_array(356, {2, 8487, var_0001, 7769})
                 end
             elseif get_flag(808) and not get_flag(807) then
                 if not utility_unknown_1000(10) then
                     var_000C = utility_unknown_1000(10)
                     set_flag(791, true)
-                    var_002F = execute_usecode_array({1785, 8021, 2, 7719}, var_000C)
-                    var_0030 = execute_usecode_array({2, 8487, var_0001, 7769}, 356)
+                    var_002F = execute_usecode_array(var_000C, {1785, 8021, 2, 7719})
+                    var_0030 = execute_usecode_array(356, {2, 8487, var_0001, 7769})
                 end
             elseif get_flag(834) and not get_flag(833) then
                 if not utility_unknown_1000(9) then
                     var_000C = utility_unknown_1000(9)
                     set_flag(791, true)
-                    var_002F = execute_usecode_array({1785, 8021, 2, 7719}, var_000C)
-                    var_0030 = execute_usecode_array({2, 8487, var_0001, 7769}, 356)
+                    var_002F = execute_usecode_array(var_000C, {1785, 8021, 2, 7719})
+                    var_0030 = execute_usecode_array(356, {2, 8487, var_0001, 7769})
                 end
             end
-            var_0030 = execute_usecode_array({1785, 8021, 1, 8487, var_0001, 7769}, 356)
+            var_0030 = execute_usecode_array(356, {1785, 8021, 1, 8487, var_0001, 7769})
         end
     end
     return

@@ -12,9 +12,9 @@ function object_wand_0771(eventid, objectref)
         var_0001 = get_object_shape(var_0000)
         if var_0001 == 914 then
             var_0002 = utility_unknown_1069(var_0000)
-            var_0003 = execute_usecode_array({7981, 5, 7719}, var_0000)
+            var_0003 = execute_usecode_array(var_0000, {7981, 5, 7719})
             var_0003 = set_to_attack(704, var_0000, -356)
-            var_0003 = execute_usecode_array({17530, 17505, 17511, 8449, var_0002, 7769}, -356)
+            var_0003 = execute_usecode_array(-356, {17530, 17505, 17511, 8449, var_0002, 7769})
         elseif var_0001 == 305 then
             var_0004 = find_nearby(176, 12, 168, objectref)
             var_0005 = find_nearby(0, 80, 403, -356)

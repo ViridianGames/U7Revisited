@@ -9,7 +9,7 @@ function object_blacksword_0707(eventid, objectref)
         if get_object_shape(objectref) == 990 then
             -- calli 008C, 3 (unmapped)
             fade_palette(0, 1, 12)
-            var_0000 = execute_usecode_array({990, 8021, 3, 7719}, objectref)
+            var_0000 = execute_usecode_array(objectref, {990, 8021, 3, 7719})
         end
     end
     return

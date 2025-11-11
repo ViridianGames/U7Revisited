@@ -10,7 +10,7 @@ function object_sconce_0435(eventid, objectref)
     --     set_object_shape(objectref, 481)
     --     -- call [0000] (0827H, unmapped)
     --     var_0000 = utility_unknown_0807(objectref, 356)
-    --     var_0001 = execute_usecode_array({17505, 17514, 8449, var_0000, 7769}, 356)
+    --     var_0001 = execute_usecode_array(356, {17505, 17514, 8449, var_0000, 7769})
     end
     --return
 end

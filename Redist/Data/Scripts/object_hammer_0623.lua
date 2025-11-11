@@ -41,9 +41,9 @@ function object_hammer_0623(eventid, objectref)
             item_say("@The sword is too cool.@", var_0007)
             var_0009 = execute_usecode_array(var_0008, 7769, var_0007)
         elseif var_0005 >= 10 and var_0005 <= 12 then
-            var_0009 = execute_usecode_array({17505, 17508, 17511, 17509, 8548, var_0008, 7769}, var_0007)
+            var_0009 = execute_usecode_array(var_0007, {17505, 17508, 17511, 17509, 8548, var_0008, 7769})
             var_0002 = find_nearest(3, 991, get_npc_name(-356))
-            var_0009 = execute_usecode_array({1681, 8021, 4, 7719}, var_0002)
+            var_0009 = execute_usecode_array(var_0002, {1681, 8021, 4, 7719})
         end
     end
     return

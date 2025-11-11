@@ -19,17 +19,17 @@ function object_bucket_0810(eventid, objectref)
             utility_position_0808(var_0003, var_0001, var_0002, -3, 810, objectref, 3)
         else
             close_gumps()
-            var_0004 = execute_usecode_array({810, 8021, 2, 7719}, objectref)
+            var_0004 = execute_usecode_array(objectref, {810, 8021, 2, 7719})
         end
     elseif eventid == 3 then
         var_0003 = utility_unknown_1093(objectref)
         var_0005 = utility_unknown_1069(var_0003)
         if is_npc(var_0003) then
-            var_0004 = execute_usecode_array({8033, 3, 17447, 8548, var_0005, 7769}, get_npc_name(-356))
-            var_0004 = execute_usecode_array({810, 8021, 2, 7975, 1682, 8021, 3, 7719}, objectref)
+            var_0004 = execute_usecode_array(get_npc_name(-356), {8033, 3, 17447, 8548, var_0005, 7769})
+            var_0004 = execute_usecode_array(objectref, {810, 8021, 2, 7975, 1682, 8021, 3, 7719})
         else
-            var_0004 = execute_usecode_array({8033, 3, 17447, 8556, var_0005, 7769}, get_npc_name(-356))
-            var_0004 = execute_usecode_array({810, 8021, 2, 7975, 1682, 8021, 3, 7719}, objectref)
+            var_0004 = execute_usecode_array(get_npc_name(-356), {8033, 3, 17447, 8556, var_0005, 7769})
+            var_0004 = execute_usecode_array(objectref, {810, 8021, 2, 7975, 1682, 8021, 3, 7719})
         end
     elseif eventid == 2 then
         var_0000 = get_object_frame(objectref)
@@ -42,7 +42,7 @@ function object_bucket_0810(eventid, objectref)
                 item_say("@The bucket is empty.@", get_npc_name(-356))
             else
                 item_say("@Ahhh, how refreshing.@", get_npc_name(-356))
-                var_0004 = execute_usecode_array({0, 7750}, objectref)
+                var_0004 = execute_usecode_array(objectref, {0, 7750})
             end
         elseif is_npc(var_0006) then
             var_0001 = {-2, 0, 2, 0}
@@ -50,7 +50,7 @@ function object_bucket_0810(eventid, objectref)
             if var_0000 == 0 then
                 item_say("@The bucket is empty.@", get_npc_name(-356))
             else
-                var_0004 = execute_usecode_array({50, -2, 7947, 1, 7719}, var_0006)
+                var_0004 = execute_usecode_array(var_0006, {50, -2, 7947, 1, 7719})
                 utility_position_0808(var_0006, var_0001, var_0002, 0, 810, var_0006, 4)
             end
         elseif var_0007 == 741 then
@@ -124,12 +124,12 @@ function object_bucket_0810(eventid, objectref)
         var_000B = utility_unknown_1069(objectref)
         var_000C = (var_000B + 4) % 8
         if var_0000 == 2 then
-            var_000D = execute_usecode_array({5, 7463, "@Foul miscreant!@", 8018, 2, 8487, var_000C, 7769}, objectref)
+            var_000D = execute_usecode_array(objectref, {5, 7463, "@Foul miscreant!@", 8018, 2, 8487, var_000C, 7769})
         else
-            var_000D = execute_usecode_array({5, 7463, "@Hey, stop that!@", 8018, 2, 8487, var_000C, 7769}, objectref)
+            var_000D = execute_usecode_array(objectref, {5, 7463, "@Hey, stop that!@", 8018, 2, 8487, var_000C, 7769})
         end
-        var_000E = execute_usecode_array({17505, 17508, 8551, var_000B, 7769}, get_npc_name(-356))
-        var_000F = execute_usecode_array({0, 8006, 2, 7719}, var_000A)
+        var_000E = execute_usecode_array(get_npc_name(-356), {17505, 17508, 8551, var_000B, 7769})
+        var_000F = execute_usecode_array(var_000A, {0, 8006, 2, 7719})
     elseif eventid == 7 then
         var_0010 = false
         var_0010 = find_nearest(5, 741, get_npc_name(-356))
@@ -155,9 +155,9 @@ function object_bucket_0810(eventid, objectref)
                     var_0013 = 1
                 end
             end
-            var_0014 = execute_usecode_array({17505, 17508, 8551, var_0005, 7769}, get_npc_name(-356))
-            var_0014 = execute_usecode_array({40, 17496, 8449, var_0012, 8006, 2, 7719}, var_0010)
-            var_0015 = execute_usecode_array({var_0013, 8006, 2, 7719}, objectref)
+            var_0014 = execute_usecode_array(get_npc_name(-356), {17505, 17508, 8551, var_0005, 7769})
+            var_0014 = execute_usecode_array(var_0010, {40, 17496, 8449, var_0012, 8006, 2, 7719})
+            var_0015 = execute_usecode_array(objectref, {var_0013, 8006, 2, 7719})
         end
     elseif eventid == 8 then
         var_000A = get_cont_items(-359, -359, 810, get_npc_name(-356))
@@ -168,14 +168,14 @@ function object_bucket_0810(eventid, objectref)
             if var_0015 == 4 then
                 item_say("@There are only coals.@", get_npc_name(-356))
             elseif var_0015 == 7 then
-                var_0016 = execute_usecode_array({17488, 17488, 17488, 7937, 1683, 7765}, objectref)
+                var_0016 = execute_usecode_array(objectref, {17488, 17488, 17488, 7937, 1683, 7765})
             elseif var_0015 == 6 then
-                var_0016 = execute_usecode_array({17488, 17488, 7937, 1683, 7765}, objectref)
+                var_0016 = execute_usecode_array(objectref, {17488, 17488, 7937, 1683, 7765})
             elseif var_0015 == 5 then
-                var_0016 = execute_usecode_array({17488, 7937, 1683, 7765}, objectref)
+                var_0016 = execute_usecode_array(objectref, {17488, 7937, 1683, 7765})
             end
             var_0005 = utility_unknown_1069(objectref)
-            var_0016 = execute_usecode_array({8033, 2, 17447, 8556, var_0005, 7769}, get_npc_name(-356))
+            var_0016 = execute_usecode_array(get_npc_name(-356), {8033, 2, 17447, 8556, var_0005, 7769})
             if var_0007 == 338 then
                 var_001A = 336
             elseif var_0007 == 435 then
@@ -190,7 +190,7 @@ function object_bucket_0810(eventid, objectref)
             set_object_frame(var_001B, var_0015)
             var_0017 = get_object_position(objectref)
             var_0005 = utility_unknown_1069(objectref)
-            var_001E = execute_usecode_array({8033, 2, 17447, 8556, var_0005, 7769}, get_npc_name(-356))
+            var_001E = execute_usecode_array(get_npc_name(-356), {8033, 2, 17447, 8556, var_0005, 7769})
             var_001D = {var_0017[1], var_0017[2]}
             sprite_effect(-1, 0, 0, 0, var_001D[2], var_001D[1], 9)
             play_sound_effect(46)
@@ -198,9 +198,9 @@ function object_bucket_0810(eventid, objectref)
             if var_0015 == 0 then
                 item_say("@There are only coals.@", get_npc_name(-356))
             else
-                var_001E = execute_usecode_array({0, 7750}, objectref)
+                var_001E = execute_usecode_array(objectref, {0, 7750})
                 var_0005 = utility_unknown_1069(objectref)
-                var_001E = execute_usecode_array({8033, 2, 17447, 8556, var_0005, 7769}, get_npc_name(-356))
+                var_001E = execute_usecode_array(get_npc_name(-356), {8033, 2, 17447, 8556, var_0005, 7769})
                 var_001F = get_object_position(objectref)
                 sprite_effect(-1, 0, 0, 0, var_001F[2], var_001F[1], 9)
                 play_sound_effect(46)
@@ -208,7 +208,7 @@ function object_bucket_0810(eventid, objectref)
         elseif var_0007 == 658 then
             if var_0015 == 0 then
                 var_0005 = utility_unknown_1069(objectref)
-                var_001E = execute_usecode_array({8033, 2, 17447, 8556, var_0005, 7769}, get_npc_name(-356))
+                var_001E = execute_usecode_array(get_npc_name(-356), {8033, 2, 17447, 8556, var_0005, 7769})
                 set_object_frame(objectref, 2)
             end
         end
@@ -220,11 +220,11 @@ function object_bucket_0810(eventid, objectref)
         elseif var_0021 >= 12 and var_0021 <= 23 then
             var_0021 = 13
         end
-        var_0022 = execute_usecode_array({8014, 1, 17447, 8014, 1, 17447, 8014, 1, 17447, 8014, 1, 17447, 8014, 2, 8487, var_0021, 8006, 1, 7719}, var_0020)
-        var_0022 = execute_usecode_array({4, 17447, 8039, 1, 17447, 8036, 1, 17447, 8038, 1, 17447, 8037, 1, 7975, 4, 8025, 2, 17447, 8039, 2, 7769}, get_npc_name(-356))
-        var_0022 = execute_usecode_array({1685, 8021, 17, 7719}, objectref)
+        var_0022 = execute_usecode_array(var_0020, {8014, 1, 17447, 8014, 1, 17447, 8014, 1, 17447, 8014, 1, 17447, 8014, 2, 8487, var_0021, 8006, 1, 7719})
+        var_0022 = execute_usecode_array(get_npc_name(-356), {4, 17447, 8039, 1, 17447, 8036, 1, 17447, 8038, 1, 17447, 8037, 1, 7975, 4, 8025, 2, 17447, 8039, 2, 7769})
+        var_0022 = execute_usecode_array(objectref, {1685, 8021, 17, 7719})
     elseif eventid == 10 then
-        var_000E = execute_usecode_array({8033, 3, 17447, 8044, 0, 7769}, get_npc_name(-356))
-        var_000F = execute_usecode_array({1684, 8021, 3, 7719}, objectref)
+        var_000E = execute_usecode_array(get_npc_name(-356), {8033, 3, 17447, 8044, 0, 7769})
+        var_000F = execute_usecode_array(objectref, {1684, 8021, 3, 7719})
     end
 end

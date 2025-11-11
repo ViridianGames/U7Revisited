@@ -14,8 +14,8 @@ function object_puppetshow_0503(eventid, objectref)
             -- call [0000] (090AH, unmapped)
             if ask_yes_no() then
                 var_0000 = give_object_to_party(359, 359, 644, 1, 357)
-                var_0000 = execute_usecode_array({0, 8006, 31, -1, 17419, 8014, 0, 17478, 7715}, objectref)
-                var_0000 = execute_usecode_array({85, 8024, 2, 7975, 83, 8024, 3, 7975, 83, 8024, 85, 8024, 1, 7975, 84, 8024, 83, 8024, 85, 8024, 11, 17447, 7715}, objectref)
+                var_0000 = execute_usecode_array(objectref, {0, 8006, 31, -1, 17419, 8014, 0, 17478, 7715})
+                var_0000 = execute_usecode_array(objectref, {85, 8024, 2, 7975, 83, 8024, 3, 7975, 83, 8024, 85, 8024, 1, 7975, 84, 8024, 83, 8024, 85, 8024, 11, 17447, 7715})
             end
             hide_npc(44)
         end

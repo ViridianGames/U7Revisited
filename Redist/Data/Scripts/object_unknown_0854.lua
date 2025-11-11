@@ -23,7 +23,7 @@ function object_unknown_0854(eventid, objectref)
             end
             if _SelectOption() then
                 add_dialogue("\"Very well. Prepare thyself.\" The voice falls silent.")
-                var_0001 = execute_usecode_array({1785, 8021, 1, 7719}, objectref)
+                var_0001 = execute_usecode_array(objectref, {1785, 8021, 1, 7719})
             else
                 add_dialogue("\"I wish thee well, then.\"")
                 abort()
@@ -72,8 +72,8 @@ function object_unknown_0854(eventid, objectref)
             add_dialogue("\"Well done, mighty warrior! The unsurpassed Courage which flows through thy veins could be none other than that of the Avatar. Thou hast proven thyself worthy of the reward of Courage with Valor, Sacrifice, Honor, and Spirituality... Receive it now in Humility.\"")
         end
         hide_npc(-287)
-        var_0002 = execute_usecode_array({8033, 2, 17447, 8044, 10, 17447, 8045, 2, 17447, 8044, 2, 7719}, -356)
-        var_0001 = execute_usecode_array({854, 8021, 8, 7719}, objectref)
+        var_0002 = execute_usecode_array(-356, {8033, 2, 17447, 8044, 10, 17447, 8045, 2, 17447, 8044, 2, 7719})
+        var_0001 = execute_usecode_array(objectref, {854, 8021, 8, 7719})
     elseif eventid == 2 then
         var_0000 = get_object_frame(objectref)
         if var_0000 == 16 then
@@ -90,7 +90,7 @@ function object_unknown_0854(eventid, objectref)
                     set_npc_quality(30 - var_0004[3], 5, get_npc_name(-356))
                 end
                 set_flag(790, true)
-                var_0006 = execute_usecode_array({854, 8021, 15, 7719}, objectref)
+                var_0006 = execute_usecode_array(objectref, {854, 8021, 15, 7719})
             else
                 switch_talk_to(287)
                 add_dialogue("\"Thou hast now experienced the full meaning of the Principle of Truth. The value of such is beyond measure, for truth shall guide thee throughout thy life's endeavors.\"")
@@ -111,7 +111,7 @@ function object_unknown_0854(eventid, objectref)
                     set_npc_quality(30 - var_0004[2], 4, get_npc_name(-356))
                 end
                 set_flag(799, true)
-                var_0006 = execute_usecode_array({854, 8021, 15, 7719}, objectref)
+                var_0006 = execute_usecode_array(objectref, {854, 8021, 15, 7719})
             else
                 switch_talk_to(287, 1)
                 add_dialogue("\"Now hast thou earnestly experienced all that is Love. 'Tis a benefit never to be taken lightly, for Love is a formidable motivator. Remember always the lessons in Compassion, Sacrifice, and Justice thou hast mastered.\"")
@@ -132,7 +132,7 @@ function object_unknown_0854(eventid, objectref)
                     set_npc_quality(30 - var_0004[2], 3, get_npc_name(-356))
                 end
                 set_flag(833, true)
-                var_0006 = execute_usecode_array({854, 8021, 15, 7719}, objectref)
+                var_0006 = execute_usecode_array(objectref, {854, 8021, 15, 7719})
             else
                 switch_talk_to(287, 2)
                 add_dialogue("Urgency breaks into the voice of the statue.~~\"I lay upon thee a geas, and as thou art the Avatar, thou art bound to respond. Thy quest is to seek the Talisman of Infinity. Within this castle there lies a scroll which can tell thee of its use. Go now, for time grows short.\"")

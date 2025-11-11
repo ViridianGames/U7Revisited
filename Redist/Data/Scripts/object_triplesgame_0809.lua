@@ -25,7 +25,7 @@ function object_triplesgame_0809(eventid, objectref)
         for var_0007 in ipairs(var_0005) do
             var_000A = random2(2, 0) * 8
             halt_scheduled(var_0009)
-            var_000B = execute_usecode_array({1547, 8533, var_000A, -3, 7947, 29, 17496, 8014, 22, -3, 7947, 29, 17496, 7758}, var_0009)
+            var_000B = execute_usecode_array(var_0009, {1547, 8533, var_000A, -3, 7947, 29, 17496, 8014, 22, -3, 7947, 29, 17496, 7758})
         end
     end
 end
