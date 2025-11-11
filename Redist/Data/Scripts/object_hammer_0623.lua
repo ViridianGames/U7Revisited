@@ -10,13 +10,13 @@ function object_hammer_0623(eventid, objectref)
         utility_unknown_0400(objectref)
     elseif eventid == 2 then
         var_0000 = false
-        var_0001 = get_item_shape(objectref)
+        var_0001 = get_object_shape(objectref)
         if var_0001 == 991 then
             var_0000 = find_nearest(1, 668, objectref)
         elseif var_0001 == 623 then
             var_0000 = click_on_item()
         end
-        if var_0000 and get_item_shape(var_0000) == 668 then
+        if var_0000 and get_object_shape(var_0000) == 668 then
             var_0002 = find_nearest(3, 991, var_0000)
             if not var_0002 then
                 var_0003 = get_object_position(var_0002)

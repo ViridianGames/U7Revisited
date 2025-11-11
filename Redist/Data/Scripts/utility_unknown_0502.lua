@@ -97,7 +97,7 @@ function utility_unknown_0502(objectref)
                 add_dialogue("\"Where is the corpse of which thou dost speak?\" The dark sword begins to vibrate in your hand.*")
                 hide_npc(292)
                 var_0011 = click_on_item()
-                var_0017 = get_item_shape(var_0011)
+                var_0017 = get_object_shape(var_0011)
                 var_0018 = get_object_position(var_0011)
                 switch_talk_to(292)
                 if not is_npc(var_0011) then

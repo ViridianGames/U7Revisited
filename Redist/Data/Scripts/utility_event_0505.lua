@@ -5,7 +5,7 @@ function utility_event_0505(eventid, objectref)
     var_0000 = false
     var_0001 = false
     if eventid == 2 then
-        var_0002 = get_item_shape(objectref)
+        var_0002 = get_object_shape(objectref)
         if var_0002 == 854 then
             return
         elseif var_0002 == 707 then

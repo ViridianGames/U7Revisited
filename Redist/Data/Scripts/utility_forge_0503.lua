@@ -15,7 +15,7 @@ function utility_forge_0503(eventid, objectref)
         end
         if not var_0001 and not get_flag(750) then
             set_flag(750, true)
-            var_0007 = create_new_object(get_item_shape(var_0001))
+            var_0007 = create_new_object(get_object_shape(var_0001))
             set_item_frame_rot(var_0001, var_0007)
             var_0008 = update_last_created(get_object_position(var_0001))
             utility_event_0998(var_0001)

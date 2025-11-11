@@ -38,7 +38,7 @@ function object_swordblank_0668(eventid, objectref)
         var_000A = get_cont_items(-359, -359, 668, get_npc_name(-356))
         if var_000A then
             var_000B = click_on_item()
-            var_000C = get_item_shape(var_000B)
+            var_000C = get_object_shape(var_000B)
             if var_000C == 991 and get_object_frame(var_000B) == 1 then
                 utility_position_0808(var_000B, 0, 0, 2, 668, var_000B, 8)
             elseif var_000C == 739 and get_object_frame(var_000B) >= 4 and get_object_frame(var_000B) <= 7 then

@@ -34,7 +34,7 @@ function object_bucket_0810(eventid, objectref)
     elseif eventid == 2 then
         var_0000 = get_object_frame(objectref)
         var_0006 = click_on_item()
-        var_0007 = get_item_shape(var_0006)
+        var_0007 = get_object_shape(var_0006)
         if var_0007 == 721 or var_0007 == 989 then
             if var_0000 == 2 then
                 item_say("@No, thank thee.@", get_npc_name(-356))
@@ -162,7 +162,7 @@ function object_bucket_0810(eventid, objectref)
     elseif eventid == 8 then
         var_000A = get_cont_items(-359, -359, 810, get_npc_name(-356))
         var_0000 = get_object_frame(var_000A)
-        var_0007 = get_item_shape(objectref)
+        var_0007 = get_object_shape(objectref)
         var_0015 = get_object_frame(objectref)
         if var_0007 == 739 then
             if var_0015 == 4 then

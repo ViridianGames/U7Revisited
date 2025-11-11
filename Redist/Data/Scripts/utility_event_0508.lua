@@ -4,7 +4,7 @@ function utility_event_0508(eventid, objectref)
 
     if eventid == 2 then
         var_0000 = click_on_item()
-        var_0001 = get_item_shape(var_0000)
+        var_0001 = get_object_shape(var_0000)
         var_0002 = false
         var_0003 = get_object_position(get_npc_name(356))
         if var_0001 == 721 or var_0001 == 989 then

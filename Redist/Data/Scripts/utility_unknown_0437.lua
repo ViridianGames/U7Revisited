@@ -17,7 +17,7 @@ function utility_unknown_0437(eventid, objectref)
                 if utility_unknown_0795(var_0004) == 2 then
                     var_0005 = var_0005 + 1
                 else
-                    var_0006 = get_item_shape(var_0004)
+                    var_0006 = get_object_shape(var_0004)
                     if var_0006 == 270 then
                         object_door_0270(var_0004)
                     elseif var_0006 == 376 then
