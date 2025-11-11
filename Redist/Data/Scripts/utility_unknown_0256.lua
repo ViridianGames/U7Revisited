@@ -6,7 +6,7 @@ function utility_unknown_0256(eventid, objectref)
     var_0001 = set_object_quality(objectref, var_0000) --- Guess: Sets item quality
     if var_0000 == 0 then
         halt_scheduled(objectref) --- Guess: Unknown item operation
-        var_0002 = get_object_type(objectref) --- Guess: Gets item type
+        var_0002 = get_object_shape(objectref) --- Guess: Gets item type
         if var_0002 == 338 then
             set_object_type(objectref, 997) --- Guess: Sets item type
         end

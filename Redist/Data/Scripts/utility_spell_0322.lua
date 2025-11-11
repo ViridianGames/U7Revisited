@@ -14,7 +14,7 @@ function utility_spell_0322(eventid, objectref)
             var_0002 = add_containerobject_s(objectref, {1542, 17493, 17511, 8549, var_0001, 7769})
         end
     elseif eventid == 4 then
-        var_0003 = get_object_type(objectref)
+        var_0003 = get_object_shape(objectref)
         if var_0003 == 435 or var_0003 == 338 or var_0003 == 526 or var_0003 == 701 then
             consume_reagents(var_0003) --- Guess: Consumes reagents
             var_0002 = add_containerobject_s(objectref, {var_0003, 7765})

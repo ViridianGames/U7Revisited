@@ -20,7 +20,7 @@ function utility_unknown_0768(eventid, objectref)
         hide_npc(var_0001) --- Guess: Hides NPC
     else
         var_0003 = get_object_frame(var_0000) --- Guess: Gets item frame
-        var_0004 = get_object_type(var_0000) --- Guess: Gets item type
+        var_0004 = get_object_shape(var_0000) --- Guess: Gets item type
         if var_0003 > 3 and not utility_unknown_0769(var_0000) then
             var_0005 = get_object_position(var_0000) --- Guess: Gets position data
             var_0006 = find_nearby(0, 2, var_0004, var_0000) --- Guess: Sets NPC location

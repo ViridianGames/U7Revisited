@@ -6,7 +6,7 @@ function utility_unknown_1090(eventid, objectref, arg1, arg2)
     if not get_object_quality(arg2) then --- Guess: Gets item quality
         var_0003 = set_object_quality(arg2, random(30, 60)) --- Guess: Sets item quality
     end
-    if get_object_type(arg2) == 595 and get_object_quality(arg2) == 255 then --- Guess: Gets item type and quality
+    if get_object_shape(arg2) == 595 and get_object_quality(arg2) == 255 then --- Guess: Gets item type and quality
         bark(arg2, "@Spent@") --- Guess: Item says dialogue
     end
     var_0004 = get_object_container(arg2) --- Guess: Gets item container

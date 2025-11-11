@@ -1,5 +1,6 @@
 --- Best guess: Iterates over negative indices to find a party member not in the party, defaulting to 356.
-function utility_unknown_1026(eventid, objectref)
+---@return integer npc_id The NPC ID found, or 356 as default
+function utility_unknown_1026()
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     var_0000 = {10, 2, 9, 8, 7, 5, 4, 3, 1}

@@ -8,7 +8,7 @@ function utility_unknown_0804(eventid, objectref)
         set_object_behavior(objectref, 62) --- Guess: Sets item behavior
         var_0001 = get_object_position(356) --- Guess: Gets position data
         var_0002 = get_object_position(var_0000) --- Guess: Gets position data
-        var_0003 = get_object_type(var_0000) --- Guess: Gets item type
+        var_0003 = get_object_shape(var_0000) --- Guess: Gets item type
         if var_0003 == 776 or var_0003 == 777 or var_0003 == 779 then
             var_0001 = utility_position_0805(2, var_0002, var_0001) --- External call to adjust position
         elseif var_0003 == 157 then

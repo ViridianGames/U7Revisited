@@ -29,7 +29,7 @@ function utility_unknown_0787(eventid, objectref, arg1, arg2)
                         var_0007 = "@May I have some more?@"
                     end
                 elseif var_0006 < 20 then
-                    if get_object_type(var_0002) == 842 then
+                    if get_object_shape(var_0002) == 842 then
                         var_0007 = "@Yum, garlic!@"
                     else
                         var_0007 = "@Ah yes, much better.@"
@@ -41,7 +41,7 @@ function utility_unknown_0787(eventid, objectref, arg1, arg2)
                     end
                 end
             elseif var_0005 < 20 then
-                if get_object_type(var_0002) == 842 then
+                if get_object_shape(var_0002) == 842 then
                     var_0007 = "@Yum, garlic!@"
                 else
                     var_0007 = "@Ahh, very tasty.@"

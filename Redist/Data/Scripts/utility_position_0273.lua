@@ -2,7 +2,7 @@
 function utility_position_0273(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
-    var_0000 = get_object_type(objectref) --- Guess: Gets item type
+    var_0000 = get_object_shape(objectref) --- Guess: Gets item type
     if var_0000 == 515 then
         var_0001 = 870
         var_0002 = 7

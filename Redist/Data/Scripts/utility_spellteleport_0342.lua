@@ -19,7 +19,7 @@ function utility_spellteleport_0342(eventid, objectref)
     elseif eventid == 4 then
         local valid_types = {785, 788, 950, 949}
         local invalid_types = {787, 1011, 696, 583, 873, 740, 470, 743, 434, 258, 431, 810, 329, 653, 651, 654, 261}
-        var_0003 = get_object_type(objectref)
+        var_0003 = get_object_shape(objectref)
         if var_0003 == valid_types[1] or var_0003 == valid_types[2] or var_0003 == valid_types[3] or var_0003 == valid_types[4] then
             var_0002 = add_containerobject_s(objectref, {var_0003, 7765})
         elseif not (var_0003 == invalid_types[1] or var_0003 == invalid_types[2]) then --  or ...

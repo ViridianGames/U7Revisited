@@ -43,7 +43,7 @@ function utility_unknown_0790(eventid, objectref)
         for i = 1, 5 do
             var_0013 = ({17, 18, 19, 16, 52})[i]
             if get_object_quality(var_0013) == var_0002 then
-                if get_object_type(var_0013) == 845 then
+                if get_object_shape(var_0013) == 845 then
                     var_0001 = lock_door(var_0013) --- Guess: Locks door
                 else
                     var_0001 = unlock_door(var_0013) --- Guess: Unlocks door

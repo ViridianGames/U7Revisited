@@ -7,7 +7,7 @@ function utility_gangplank_0809(eventid, objectref)
     var_0002 = {1, 0, -3, 0}
     var_0003 = {781, 781, 150, 150}
     var_0004 = {680}
-    var_0005 = get_object_type(var_0000) --- Guess: Gets item type
+    var_0005 = get_object_shape(var_0000) --- Guess: Gets item type
     var_0006 = get_object_frame(var_0000) --- Guess: Gets item frame
     var_0007 = get_object_position(var_0000) --- Guess: Gets position data
     var_0008 = var_0003[var_0006 + 1]

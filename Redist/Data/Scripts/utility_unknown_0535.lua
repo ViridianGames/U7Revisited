@@ -2,7 +2,7 @@
 function utility_unknown_0535(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003
 
-    if get_object_type(objectref) == 668 then --- Guess: Gets item type
+    if get_object_shape(objectref) == 668 then --- Guess: Gets item type
         var_0000 = get_object_position(objectref) --- Guess: Gets position data
         var_0001 = set_last_created(objectref) --- Guess: Checks position
         if not get_object_position(356) then --- Guess: Gets item position

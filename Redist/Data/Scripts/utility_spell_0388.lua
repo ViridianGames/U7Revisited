@@ -4,7 +4,7 @@ function utility_spell_0388(eventid, objectref)
 
     if eventid == 1 then
         var_0000 = object_select_modal() --- Guess: Selects spell target
-        var_0001 = get_object_type(var_0000) --- Guess: Gets item type
+        var_0001 = get_object_shape(var_0000) --- Guess: Gets item type
         var_0002 = get_object_position(var_0000) --- Guess: Gets position data
         var_0003 = select_spell_target(var_0000) --- Guess: Gets selected target
         destroy_object(var_0000)

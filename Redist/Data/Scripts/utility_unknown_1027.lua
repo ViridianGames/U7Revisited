@@ -1,5 +1,5 @@
 --- Best guess: Handles pig NPC dialogue, saying "Oink" or performing actions based on flags.
-function utility_unknown_1027(eventid, objectref, arg1, arg2)
+function utility_unknown_1027(arg1, arg2)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     if not npc_id_in_party(arg1) then --- Guess: Checks if NPC is in party

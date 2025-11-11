@@ -7,7 +7,7 @@ function utility_spell_0337(eventid, objectref)
     if eventid == 1 then
         destroy_object(objectref)
         var_0002 = object_select_modal() --- Guess: Selects spell target
-        var_0003 = get_object_type(var_0002)
+        var_0003 = get_object_shape(var_0002)
         var_0004 = select_spell_target(var_0002) --- Guess: Gets selected target
         bark(objectref, "@Ort Ylem@")
         if check_spell_requirements() and (var_0003 == var_0000[1] or var_0003 == var_0000[2]) then
@@ -21,7 +21,7 @@ function utility_spell_0337(eventid, objectref)
         -- Guess: sloop transforms item types
         for i = 1, 5 do
             var_0006 = var_0006 + 1
-            if var_0009 == get_object_type(objectref) then
+            if var_0009 == get_object_shape(objectref) then
                 set_object_type(objectref, var_0001[var_0006]) --- Guess: Sets item type
             end
         end

@@ -16,7 +16,7 @@ function utility_unknown_0895(objectref)
                     for j = 1, 10 do --- Guess: Sloop loop for 10 iterations
                         var_000C = var_0008[j]
                         if var_000C then
-                            var_000D = get_object_type(var_000C) --- Guess: Gets item type
+                            var_000D = get_object_shape(var_000C) --- Guess: Gets item type
                             if var_000D == 800 then
                                 var_000E = get_position_data(var_000C) --- Guess: Gets position data
                                 if var_000E[1] == var_0007[1] and var_000E[2] == var_0007[2] then
@@ -35,7 +35,7 @@ function utility_unknown_0895(objectref)
                     for k = 1, 10 do --- Guess: Sloop loop for 10 iterations
                         var_000C = var_0008[k]
                         if var_000C then
-                            var_000D = get_object_type(var_000C) --- Guess: Gets item type
+                            var_000D = get_object_shape(var_000C) --- Guess: Gets item type
                             var_00012 = get_position_data(var_000C) --- Guess: Gets position data
                             if var_00012[3] < 5 and var_000C ~= var_0009 then
                                 if var_000D == 338 then
@@ -59,7 +59,7 @@ function utility_unknown_0895(objectref)
                 end
                 var_000E = get_position_data(var_0009) --- Guess: Gets position data
                 create_explosion(-1, 0, 0, 0, var_000E[2] - 1, var_000E[1] - 1, 13) --- Guess: Creates explosion
-                var_00015 = get_object_type(var_0000) --- Guess: Gets item type
+                var_00015 = get_object_shape(var_0000) --- Guess: Gets item type
                 if var_00015 == 338 then
                     var_00013 = get_object_quality(var_0000) --- Guess: Gets item quality
                     var_00014 = get_object_frame(var_0000) --- Guess: Gets item frame
