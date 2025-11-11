@@ -6,6 +6,7 @@
 #include "Geist/TooltipSystem.h"
 #include "Geist/Logging.h"
 #include "U7Globals.h"
+#include "U7ScriptUtils.h"
 #include "ShapeEditorState.h"
 #include "rlgl.h"
 

@@ -24,6 +24,7 @@
 #include "LoadingState.h"
 #include "ShapeEditorState.h"
 #include "ConversationState.h"
+#include "ScriptRenameState.h"
 #include "ShapeData.h"
 #include "GumpManager.h"
 #include <string>
@@ -292,6 +293,10 @@ int main(int argv, char** argc)
       g_ConversationState = conversationState;
       conversationState->Init("engine.cfg");
       g_StateMachine->RegisterState(STATE_CONVERSATIONSTATE, conversationState, "CONVERSATION_STATE");
+
+      ScriptRenameState* scriptRenameState = new ScriptRenameState;
+      scriptRenameState->Init("engine.cfg");
+      g_StateMachine->RegisterState(STATE_SCRIPTRENAMESTATE, scriptRenameState, "SCRIPT_RENAME_STATE");
 
       g_StateMachine->MakeStateTransition(STATE_LOADINGSTATE);
 

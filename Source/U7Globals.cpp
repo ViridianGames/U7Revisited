@@ -5,6 +5,7 @@
 #include "ConversationState.h"
 #include "Pathfinding.h"
 #include "lua.hpp"
+#include "../ThirdParty/raylib/include/rlgl.h"
 #include <algorithm>
 #include <fstream>
 #include <sstream>
@@ -593,6 +594,54 @@ void AddConsoleString(std::string string, Color color)
 	cout << string << endl;
 }
 
+void SaveShapeTable()
+{
+	std::ofstream file("Data/shapetable.dat", std::ios::trunc);
+	if (file.is_open())
+	{
+		for (int i = 150; i < 1024; ++i)
+		{
+			for (int j = 0; j < 32; ++j)
+			{
+				g_shapeTable[i][j].Serialize(file);
+			}
+		}
+		file.close();
+	}
+	AddConsoleString("Saved shapetable.dat successfully!", GREEN);
+}
+
+void DrawWorld()
+{
+	// Draw 3D world - used by MainState and modal dialogs
+	BeginMode3D(g_camera);
+
+	// Draw the terrain
+	g_Terrain->Draw();
+
+	// Draw objects (non-flats first)
+	for (auto object : g_sortedVisibleObjects)
+	{
+		if (object->m_drawType != ShapeDrawType::OBJECT_DRAW_FLAT)
+		{
+			object->Draw();
+		}
+	}
+
+	// Flats require disabling the depth mask to draw correctly
+	rlDisableDepthMask();
+	for (auto object : g_sortedVisibleObjects)
+	{
+		if (object->m_drawType == ShapeDrawType::OBJECT_DRAW_FLAT)
+		{
+			object->Draw();
+		}
+	}
+	rlEnableDepthMask();
+
+	EndMode3D();
+}
+
 void DrawConsole()
 {
 	int counter = 0;
@@ -1025,4 +1074,32 @@ std::string FindNPCScriptByID(int npcID)
 	}
 
 	return "";  // No matching NPC script found
+}
+
+std::string GetObjectScriptName(U7Object* object)
+{
+	if (!object)
+		return "";
+
+	// NPCs with conversation trees use NPC ID-based scripts
+	if (object->m_isNPC && object->m_hasConversationTree)
+	{
+		return FindNPCScriptByID(object->m_NPCID);
+	}
+	// Regular objects use shape table scripts
+	else
+	{
+		int shape = object->m_shapeData->GetShape();
+		int frame = object->m_shapeData->GetFrame();
+		if (shape < g_shapeTable.size() && frame < g_shapeTable[shape].size())
+		{
+			const std::string& scriptName = g_shapeTable[shape][frame].m_luaScript;
+			if (!scriptName.empty() && scriptName != "default")
+			{
+				return scriptName;
+			}
+		}
+	}
+
+	return "";  // No script or using default
 }

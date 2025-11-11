@@ -5,7 +5,7 @@
 #include "../Geist/Config.h"
 
 GhostWindow::GhostWindow(const std::string& ghostFilePath, const std::string& configPath,
-                         ResourceManager* resourceManager, int screenWidth, int screenHeight, bool modal, float scale)
+                         ResourceManager* resourceManager, int screenWidth, int screenHeight, bool modal, float scale, float inputScale)
 	: m_gui(nullptr)
 	, m_serializer(nullptr)
 	, m_visible(false)
@@ -19,7 +19,7 @@ GhostWindow::GhostWindow(const std::string& ghostFilePath, const std::string& co
 	// Configure GUI layout with provided scale
 	// Use GUIP_USE_XY to keep Gui m_Pos at (0,0) - elements have absolute screen positions
 	m_gui->SetLayout(0, 0, screenWidth, screenHeight, scale, Gui::GUIP_USE_XY);
-	m_gui->m_InputScale = 1.0f;  // Input scale is separate from draw scale
+	m_gui->m_InputScale = inputScale;  // Input scale for converting screen coords to render coords
 	m_gui->m_AcceptingInput = true;  // GUI accepts input (interactive)
 
 	// Get font path from config

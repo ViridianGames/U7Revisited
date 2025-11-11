@@ -165,6 +165,8 @@ set(SOURCES
     Source/U7LuaFuncs.cpp
     Source/U7Object.cpp
     Source/U7Player.cpp
+    Source/U7ScriptUtils.cpp
+    Source/ScriptRenameState.cpp
 )
 
 # Organize files into virtual folders in Visual Studio

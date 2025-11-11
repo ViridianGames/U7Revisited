@@ -48,6 +48,7 @@ enum GameStates
 	STATE_SHAPEEDITORSTATE,
 	STATE_CREDITS,
 	STATE_CONVERSATIONSTATE,
+	STATE_SCRIPTRENAMESTATE,
 	STATE_LASTSTATE
 };
 
@@ -132,6 +133,10 @@ std::string GetShapeFrameName(int shape, int frame, int quantity = 1);
 // Find NPC script by NPC ID (returns script name or empty string)
 // Only matches scripts starting with "npc_" and ending with "_XXXX" where XXXX is the NPC ID
 std::string FindNPCScriptByID(int npcID);
+
+// Get the script name for any object (handles both NPCs and regular objects)
+// Returns empty string if object has no script or uses "default"
+std::string GetObjectScriptName(U7Object* object);
 
 
 //  Here's how schedules work:
@@ -337,7 +342,11 @@ void AddConsoleString(std::string string, Color color, float starttime);
 
 void AddConsoleString(std::string string, Color color = Color{ 255, 255, 255, 255 });
 
+void SaveShapeTable();
+
 void DrawConsole();
+
+void DrawWorld();  // Draws 3D world and terrain (used by MainState and modal dialogs)
 
 //int l_add_dialogue(lua_State* L);
 

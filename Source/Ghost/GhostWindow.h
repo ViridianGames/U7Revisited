@@ -12,7 +12,7 @@ class GhostWindow
 {
 public:
 	GhostWindow(const std::string& ghostFilePath, const std::string& configPath,
-	            ResourceManager* resourceManager, int screenWidth, int screenHeight, bool modal = true, float scale = 1.0f);
+	            ResourceManager* resourceManager, int screenWidth, int screenHeight, bool modal = true, float scale = 1.0f, float inputScale = 1.0f);
 	~GhostWindow();
 
 	void Update();

@@ -1433,8 +1433,11 @@ void MainState::HandleGhostButton()
 
 void MainState::HandleRenameButton()
 {
-	// TODO: Implement rename functionality
-	AddConsoleString("Rename button clicked");
+	Log("HandleRenameButton called");
+	AddConsoleString("Rename button clicked - opening rename dialog");
+	// Push the script rename dialog state
+	g_StateMachine->PushState(STATE_SCRIPTRENAMESTATE);
+	Log("PushState(STATE_SCRIPTRENAMESTATE) called");
 }
 
 void MainState::UpdateDebugToolsWindow()

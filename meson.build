@@ -150,6 +150,8 @@ sources = files(
            'Source/U7LuaFuncs.cpp',
            'Source/U7Object.cpp',
            'Source/U7Player.cpp',
+           'Source/U7ScriptUtils.cpp',
+           'Source/ScriptRenameState.cpp',
 )
 
 executable('U7Revisited',
