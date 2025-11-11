@@ -58,7 +58,7 @@ function utility_unknown_1007()
                 add_dialogue("\"With this, I will finish it shortly. Wait here whilst I tend to the cage.\"")
                 add_dialogue("\"Take the cage to Mistress Mordra and she will tell thee more about it and its use.\"")
                 set_flag(463, true)
-                utility_unknown_0279(objectref)
+                utility_unknown_0279(1, objectref)
                 return
             end
         elseif string.lower(unknown_XXXXH()) == "sacrifice" then
