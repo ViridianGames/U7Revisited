@@ -294,15 +294,15 @@ function consume_object(event_type, quantity, object_id, eater_id) end
 
 ---Gets an NPC property value
 ---@param npc_id integer The NPC to query
----@param property string The property name
----@return any value The property value
-function get_npc_property(npc_id, property) end
+---@param property_id integer The property ID (0=strength, 1=dexterity, 2=intelligence, 3=health, 4=combat, 5=mana, 6=magic, 7=training, 8=exp, 9=food_level, 10=sex_flag)
+---@return integer value The property value
+function get_npc_property(npc_id, property_id) end
 
 ---Sets an NPC property value
 ---@param npc_id integer The NPC to modify
----@param property string The property name
----@param value any The new value
-function set_npc_property(npc_id, property, value) end
+---@param property_id integer The property ID (0=strength, 1=dexterity, 2=intelligence, 3=health, 4=combat, 5=mana, 6=magic, 7=training, 8=exp, 9=food_level, 10=sex_flag)
+---@param value integer The new value
+function set_npc_property(npc_id, property_id, value) end
 
 ---Sets an NPC's position
 ---@param npc_id integer The NPC to move
