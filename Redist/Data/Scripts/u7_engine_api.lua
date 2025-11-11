@@ -812,21 +812,21 @@ function get_dead_party() end
 -- EXULT INTRINSICS - USECODE & SCRIPTING
 -- ============================================================================
 
----[Exult 0x0001] Executes usecode function with array of params
----@param usecode_num integer Usecode function number
----@param event_type integer Event type
----@param params table Array of parameters
-function execute_usecode_array(usecode_num, event_type, params) end
+---[Exult 0x0001] Executes usecode function with array of params (NOT FULLY IMPLEMENTED - returns 0)
+---@param object_id integer Object ID to execute script on
+---@param script_array table Array of animation/movement commands
+---@return integer event_id Event ID (currently always returns 0)
+function execute_usecode_array(object_id, script_array) end
 
----[Exult 0x0002] Delayed execution of usecode function
+---[Exult 0x0002] Delayed execution of usecode function (NOT FULLY IMPLEMENTED - returns 0)
+---@param object_id integer Object ID to execute script on
+---@param script_array table Array of animation/movement commands
 ---@param delay integer Delay in ticks
----@param usecode_num integer Usecode function number
----@param event_type integer Event type
----@param params table Array of parameters
-function delayed_execute_usecode_array(delay, usecode_num, event_type, params) end
+---@return integer event_id Event ID (currently always returns 0)
+function delayed_execute_usecode_array(object_id, script_array, delay) end
 
----[Exult 0x0079] Checks if currently in usecode
----@return boolean in_usecode True if usecode is running
+---[Exult 0x0079] Checks if currently in usecode (NOT FULLY IMPLEMENTED - always returns false)
+---@return boolean in_usecode True if usecode is running (currently always returns false)
 function in_usecode() end
 
 ---[Exult 0x007D] Runs usecode when path complete

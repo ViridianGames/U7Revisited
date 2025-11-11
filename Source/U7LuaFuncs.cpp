@@ -3386,7 +3386,7 @@ static int LuaExecuteUsecodeArray(lua_State *L)
 {
     // int object_id = (int)lua_tointeger(L, 1);
     // table script_array = lua_totable(L, 2);
-
+    // MASSIVE TODO
     // Scripted sequences not fully implemented
     // Would execute array of animation/movement commands
     // Return event ID (0 = no event)
@@ -3401,6 +3401,7 @@ static int LuaDelayedExecuteUsecodeArray(lua_State *L)
     // table script_array = lua_totable(L, 2);
     // int delay = (int)lua_tointeger(L, 3);
 
+    // MASSIVE TODO
     // Scripted sequences not fully implemented
     // Would execute array after delay
     // Return event ID (0 = no event)

@@ -9,7 +9,7 @@ function npc_sam_0137(eventid, objectref)
         var_0001 = get_lord_or_lady()
         var_0002 = get_schedule(127) --- Guess: Checks game state
         var_0003 = get_npc_name(137) --- Guess: Gets object ref
-        get_schedule_type(137) --- Guess: Gets schedule
+        get_schedule(137) --- Guess: Gets schedule
         var_0004 = "Avatar"
         -- why called twice?? var_0002 = get_schedule(137) --- Guess: Checks game state
         var_0005 = is_player_female()
@@ -143,7 +143,7 @@ function npc_sam_0137(eventid, objectref)
     elseif eventid == 0 then
         var_0002 = get_schedule(137) --- Guess: Checks game state
         var_0003 = get_npc_name(137) --- Guess: Gets object ref
-        get_schedule_type(137) --- Guess: Gets schedule
+        get_schedule(137) --- Guess: Gets schedule
         if var_0003 == 7 then
             var_000E = random(1, 4) --- Guess: Generates random number between min and max
             if var_000E == 1 then
