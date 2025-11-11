@@ -1664,7 +1664,17 @@ static int LuaGetSchedule(lua_State *L)
 {
     if (g_LuaDebug) DebugPrint("LUA: get_schedule called");
     int npc_id = luaL_checkinteger(L, 1);
-    int schedule = g_NPCData[npc_id]->m_currentActivity; // TODO: g_ScheduleSystem->GetSchedule(object_id)
+
+    // Bounds check: verify NPC exists in g_NPCData
+    auto it = g_NPCData.find(npc_id);
+    if (it == g_NPCData.end() || !it->second)
+    {
+        Log("ERROR: LuaGetSchedule - Invalid NPC ID: " + std::to_string(npc_id));
+        lua_pushinteger(L, 0);  // Return 0 as default schedule
+        return 1;
+    }
+
+    int schedule = it->second->m_currentActivity;
     lua_pushinteger(L, schedule);
     return 1;
 }
