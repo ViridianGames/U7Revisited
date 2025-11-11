@@ -1,6 +1,8 @@
 --- Best guess: Destroys items in a container, possibly for ritual cleanup or object removal.
+---@param eventid integer The event ID that triggered this function
+---@param objectref integer The object reference to process
 function utility_unknown_0530(eventid, objectref)
-    local var_0000, var_0001, var_0002, var_0003
+    local var_0000, var_0003
 
     if eventid == 3 then
         var_0000 = create_array(505) --- Guess: Creates array

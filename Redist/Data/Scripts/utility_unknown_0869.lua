@@ -1,5 +1,5 @@
 --- Best guess: Generates word pairs (e.g., "soup" or "soups"), possibly for linguistic puzzles.
-function utility_unknown_0869(eventid, objectref)
+function utility_unknown_0869()
     local var_0000, var_0001, var_0002, var_0003
 
     var_0000 = {
