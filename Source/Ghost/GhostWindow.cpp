@@ -5,7 +5,7 @@
 #include "../Geist/Config.h"
 
 GhostWindow::GhostWindow(const std::string& ghostFilePath, const std::string& configPath,
-                         ResourceManager* resourceManager, int screenWidth, int screenHeight, bool modal)
+                         ResourceManager* resourceManager, int screenWidth, int screenHeight, bool modal, float scale)
 	: m_gui(nullptr)
 	, m_serializer(nullptr)
 	, m_visible(false)
@@ -16,10 +16,10 @@ GhostWindow::GhostWindow(const std::string& ghostFilePath, const std::string& co
 	m_gui = new Gui();
 	m_serializer = new GhostSerializer();
 
-	// Configure GUI layout for screen space
-	// .ghost files are designed at screen resolution, not render resolution
-	m_gui->SetLayout(0, 0, screenWidth, screenHeight, 1.0f, Gui::GUIP_CENTER);
-	m_gui->m_InputScale = 1.0f;  // No scaling needed - working in screen space
+	// Configure GUI layout with provided scale
+	// Use GUIP_USE_XY to keep Gui m_Pos at (0,0) - elements have absolute screen positions
+	m_gui->SetLayout(0, 0, screenWidth, screenHeight, scale, Gui::GUIP_USE_XY);
+	m_gui->m_InputScale = 1.0f;  // Input scale is separate from draw scale
 	m_gui->m_AcceptingInput = true;  // GUI accepts input (interactive)
 
 	// Get font path from config
@@ -88,10 +88,22 @@ void GhostWindow::Toggle()
 
 void GhostWindow::MoveTo(int x, int y)
 {
-	if (m_gui)
+	if (m_gui && m_serializer)
 	{
-		m_gui->m_Pos.x = static_cast<float>(x);
-		m_gui->m_Pos.y = static_cast<float>(y);
+		// Get the root panel element and move it
+		int rootID = m_serializer->GetRootElementID();
+		if (rootID != -1)
+		{
+			auto rootElement = m_gui->GetElement(rootID);
+			if (rootElement)
+			{
+				rootElement->m_Pos.x = static_cast<float>(x);
+				rootElement->m_Pos.y = static_cast<float>(y);
+
+				// Reflow children to update their absolute positions
+				m_serializer->ReflowPanel(rootID, m_gui);
+			}
+		}
 	}
 }
 
@@ -114,6 +126,30 @@ void GhostWindow::GetSize(int& width, int& height) const
 			}
 		}
 	}
+}
+
+Rectangle GhostWindow::GetBounds() const
+{
+	Rectangle bounds = { 0, 0, 0, 0 };
+
+	if (m_serializer && m_gui)
+	{
+		// Get the root element (first panel loaded from .ghost file)
+		int rootID = m_serializer->GetRootElementID();
+		if (rootID != -1)
+		{
+			auto rootElement = m_gui->GetElement(rootID);
+			if (rootElement)
+			{
+				bounds.x = rootElement->m_Pos.x;
+				bounds.y = rootElement->m_Pos.y;
+				bounds.width = rootElement->m_Width;
+				bounds.height = rootElement->m_Height;
+			}
+		}
+	}
+
+	return bounds;
 }
 
 int GhostWindow::GetElementID(const std::string& elementName)

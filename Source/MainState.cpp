@@ -14,6 +14,7 @@
 #include "GumpManager.h"
 #include "Pathfinding.h"
 #include "Ghost/GhostWindow.h"
+#include "Ghost/GhostSerializer.h"
 
 #include <list>
 #include <string>
@@ -84,26 +85,32 @@ void MainState::Init(const string& configfile)
 
 	m_showObjects = true;
 
-	// Initialize color dialog (test for .ghost file loading)
-	m_colorDialog = nullptr;
-
 	// Initialize debug tools window (non-modal, always visible in sandbox mode)
-	m_debugToolsWindow = std::make_unique<GhostWindow>(
+	m_debugToolsWindow = new GhostWindow(
 		"Gui/debug_tools.ghost",
 		"Data/ghost.cfg",
 		g_ResourceManager.get(),
 		GetScreenWidth(),
 		GetScreenHeight(),
-		false);  // non-modal
+		false);  // non-modal, uses default scale 1.0f
 
 	if (m_debugToolsWindow && m_debugToolsWindow->IsValid())
 	{
-		m_debugToolsWindow->MoveTo(10, 10);
+		// Position on right side of screen, halfway down
+		int windowWidth, windowHeight;
+		m_debugToolsWindow->GetSize(windowWidth, windowHeight);
+
+		int x = GetScreenWidth() - windowWidth - 10;  // 10px from right edge
+		int y = (GetScreenHeight() - windowHeight) / 2;  // Centered vertically
+
+		m_debugToolsWindow->MoveTo(x, y);
 		// Will be shown/hidden based on game mode in Update()
 	}
 	else
 	{
 		Log("ERROR: Failed to load debug_tools.ghost");
+		delete m_debugToolsWindow;
+		m_debugToolsWindow = nullptr;
 	}
 
 	SetupGame();
@@ -164,11 +171,11 @@ void MainState::OnExit()
 
 void MainState::Shutdown()
 {
-	// Clean up color dialog
-	if (m_colorDialog)
+	// Clean up debug tools window
+	if (m_debugToolsWindow)
 	{
-		delete m_colorDialog;
-		m_colorDialog = nullptr;
+		delete m_debugToolsWindow;
+		m_debugToolsWindow = nullptr;
 	}
 
 	UnloadRenderTexture(g_guiRenderTarget);
@@ -269,21 +276,20 @@ void MainState::CalculateMouseOverUI()
 		100 * g_DrawScale
 	};
 
-	// Schedule button (sandbox mode only)
-	Rectangle scheduleButtonRect = {
-		m_scheduleToggleButton.x * g_DrawScale,
-		m_scheduleToggleButton.y * g_DrawScale,
-		m_scheduleToggleButton.width * g_DrawScale,
-		m_scheduleToggleButton.height * g_DrawScale
-	};
-
 	Vector2 mousePos = GetMousePosition();
 	bool overStats = IsPosInRect(mousePos, statsPanelRect);
 	bool overMinimap = IsPosInRect(mousePos, minimapRect);
 	bool overCharPanel = IsPosInRect(mousePos, charPanelRect);
-	bool overSchedule = (m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX && IsPosInRect(mousePos, scheduleButtonRect));
 
-	g_mouseOverUI = overStats || overMinimap || overCharPanel || overSchedule;
+	// Check if mouse is over debug tools window
+	bool overDebugTools = false;
+	if (m_debugToolsWindow && m_debugToolsWindow->IsVisible())
+	{
+		Rectangle debugRect = m_debugToolsWindow->GetBounds();
+		overDebugTools = CheckCollisionPointRec(mousePos, debugRect);
+	}
+
+	g_mouseOverUI = overStats || overMinimap || overCharPanel || overDebugTools;
 }
 
 void MainState::UpdateInput()
@@ -291,93 +297,6 @@ void MainState::UpdateInput()
 	if (!m_allowInput)
 	{
 		return;
-	}
-
-	// Handle NPC Schedule Toggle Button clicks (Sandbox mode only)
-	if (m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX && m_showUIElements && !m_paused)
-	{
-		Rectangle scaledButton = {
-			m_scheduleToggleButton.x * g_DrawScale,
-			m_scheduleToggleButton.y * g_DrawScale,
-			m_scheduleToggleButton.width * g_DrawScale,
-			m_scheduleToggleButton.height * g_DrawScale
-		};
-
-		if (WasLeftButtonClickedInRect(scaledButton))
-		{
-			m_npcSchedulesEnabled = !m_npcSchedulesEnabled;
-
-			// Toggle schedules for all NPCs
-			for (const auto& [id, npcData] : g_NPCData)
-			{
-				if (npcData && npcData->m_objectID >= 0)
-				{
-					g_objectList[npcData->m_objectID]->m_followingSchedule = m_npcSchedulesEnabled;
-				}
-			}
-
-			AddConsoleString(m_npcSchedulesEnabled ? "NPC Schedules ENABLED" : "NPC Schedules DISABLED");
-
-			// TEST: Load color dialog from .ghost file
-			if (!m_colorDialog)
-			{
-				// Create the dialog (modal by default)
-				m_colorDialog = new GhostWindow("Gui/ghost_color_dialog.ghost", "Data/engine.cfg",
-				                                g_ResourceManager.get(),
-				                                static_cast<int>(g_Engine->m_ScreenWidth),
-				                                static_cast<int>(g_Engine->m_ScreenHeight), true);
-
-				if (m_colorDialog->IsValid())
-				{
-					// Center the dialog on screen
-					int dialogWidth, dialogHeight;
-					m_colorDialog->GetSize(dialogWidth, dialogHeight);
-					int centerX = static_cast<int>(g_Engine->m_ScreenWidth / 2.0f - dialogWidth / 2.0f);
-					int centerY = static_cast<int>(g_Engine->m_ScreenHeight / 2.0f - dialogHeight / 2.0f);
-					m_colorDialog->MoveTo(centerX, centerY);
-
-					// Initialize sliders to 255 (white)
-					Gui* gui = m_colorDialog->GetGui();
-					int redID = m_colorDialog->GetElementID("RED_SLIDER");
-					int greenID = m_colorDialog->GetElementID("GREEN_SLIDER");
-					int blueID = m_colorDialog->GetElementID("BLUE_SLIDER");
-					int alphaID = m_colorDialog->GetElementID("ALPHA_SLIDER");
-
-					auto redSlider = gui->GetElement(redID);
-					auto greenSlider = gui->GetElement(greenID);
-					auto blueSlider = gui->GetElement(blueID);
-					auto alphaSlider = gui->GetElement(alphaID);
-
-					if (redSlider) static_cast<GuiScrollBar*>(redSlider.get())->m_Value = 255;
-					if (greenSlider) static_cast<GuiScrollBar*>(greenSlider.get())->m_Value = 255;
-					if (blueSlider) static_cast<GuiScrollBar*>(blueSlider.get())->m_Value = 255;
-					if (alphaSlider) static_cast<GuiScrollBar*>(alphaSlider.get())->m_Value = 255;
-
-					m_colorDialog->Show();
-					AddConsoleString("Color dialog loaded");
-				}
-				else
-				{
-					AddConsoleString("ERROR: Failed to load color dialog");
-					delete m_colorDialog;
-					m_colorDialog = nullptr;
-				}
-			}
-			else
-			{
-				// Toggle visibility
-				m_colorDialog->Toggle();
-				AddConsoleString(m_colorDialog->IsVisible() ? "Color dialog shown" : "Color dialog hidden");
-			}
-
-#ifdef DEBUG_NPC_PATHFINDING
-			// When schedules are disabled, print path statistics
-			if (!m_npcSchedulesEnabled)
-			{
-				PrintNPCPathStats();
-			}
-#endif
-		}
 	}
 
 	if (IsKeyPressed(KEY_ESCAPE))
@@ -993,93 +912,23 @@ void MainState::Update()
 	g_Terrain->Update();
 
 	UpdateStats();
-
-	// TEST: Update color dialog BEFORE UpdateInput() so it can consume input
-	if (m_colorDialog && m_colorDialog->IsVisible())
-	{
-		m_colorDialog->Update();
-
-		// Update color preview swatch from slider values
-		{
-			Gui* gui = m_colorDialog->GetGui();
-			int redID = m_colorDialog->GetElementID("RED_SLIDER");
-			int greenID = m_colorDialog->GetElementID("GREEN_SLIDER");
-			int blueID = m_colorDialog->GetElementID("BLUE_SLIDER");
-			int alphaID = m_colorDialog->GetElementID("ALPHA_SLIDER");
-			int previewID = m_colorDialog->GetElementID("COLOR_PREVIEW");
-
-			auto redSlider = gui->GetElement(redID);
-			auto greenSlider = gui->GetElement(greenID);
-			auto blueSlider = gui->GetElement(blueID);
-			auto alphaSlider = gui->GetElement(alphaID);
-			auto previewPanel = gui->GetElement(previewID);
-
-			if (redSlider && greenSlider && blueSlider && alphaSlider && previewPanel)
-			{
-				int r = static_cast<GuiScrollBar*>(redSlider.get())->m_Value;
-				int g = static_cast<GuiScrollBar*>(greenSlider.get())->m_Value;
-				int b = static_cast<GuiScrollBar*>(blueSlider.get())->m_Value;
-				int a = static_cast<GuiScrollBar*>(alphaSlider.get())->m_Value;
-
-				// Update the color preview panel
-				auto panel = static_cast<GuiPanel*>(previewPanel.get());
-				panel->m_Color = Color{static_cast<unsigned char>(r),
-				                       static_cast<unsigned char>(g),
-				                       static_cast<unsigned char>(b),
-				                       static_cast<unsigned char>(a)};
-			}
-		}
-
-		// Handle OK/Cancel button clicks
-		{
-			Gui* gui = m_colorDialog->GetGui();
-			int okButtonID = m_colorDialog->GetElementID("OK_BUTTON");
-			int cancelButtonID = m_colorDialog->GetElementID("CANCEL_BUTTON");
-
-			if (okButtonID != -1 && gui->m_ActiveElement == okButtonID)
-			{
-				// Read slider values
-				int redID = m_colorDialog->GetElementID("RED_SLIDER");
-				int greenID = m_colorDialog->GetElementID("GREEN_SLIDER");
-				int blueID = m_colorDialog->GetElementID("BLUE_SLIDER");
-				int alphaID = m_colorDialog->GetElementID("ALPHA_SLIDER");
-
-				auto redSlider = gui->GetElement(redID);
-				auto greenSlider = gui->GetElement(greenID);
-				auto blueSlider = gui->GetElement(blueID);
-				auto alphaSlider = gui->GetElement(alphaID);
-
-				if (redSlider && greenSlider && blueSlider && alphaSlider)
-				{
-					int r = static_cast<GuiScrollBar*>(redSlider.get())->m_Value;
-					int g = static_cast<GuiScrollBar*>(greenSlider.get())->m_Value;
-					int b = static_cast<GuiScrollBar*>(blueSlider.get())->m_Value;
-					int a = static_cast<GuiScrollBar*>(alphaSlider.get())->m_Value;
-
-					AddConsoleString("Color values: R=" + to_string(r) + " G=" + to_string(g) +
-					                " B=" + to_string(b) + " A=" + to_string(a));
-				}
-
-				m_colorDialog->Hide();
-				gui->m_ActiveElement = -1;
-			}
-
-			if (cancelButtonID != -1 && gui->m_ActiveElement == cancelButtonID)
-			{
-				m_colorDialog->Hide();
-				gui->m_ActiveElement = -1;
-				AddConsoleString("Color dialog cancelled");
-			}
-		}
-	}
-
 	// Show/hide debug tools window based on game mode
 	if (m_debugToolsWindow)
 	{
 		if (m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX)
 		{
 			if (!m_debugToolsWindow->IsVisible())
+			{
+				// Position on right side of screen, halfway down
+				int windowWidth, windowHeight;
+				m_debugToolsWindow->GetSize(windowWidth, windowHeight);
+
+				int x = GetScreenWidth() - windowWidth - 10;  // 10px from right edge
+				int y = (GetScreenHeight() - windowHeight) / 2;  // Centered vertically
+
+				m_debugToolsWindow->MoveTo(x, y);
 				m_debugToolsWindow->Show();
+			}
 		}
 		else
 		{
@@ -1092,13 +941,8 @@ void MainState::Update()
 		UpdateDebugToolsWindow();
 	}
 
-	// Process game input unless a modal dialog is blocking it
-	bool dialogIsBlocking = m_colorDialog && m_colorDialog->IsVisible() && m_colorDialog->IsModal();
-
-	if (!dialogIsBlocking)
-	{
-		UpdateInput();
-	}
+	// Process game input
+	UpdateInput();
 
 	if (m_barkDuration > 0 && m_barkObject != nullptr)
 	{
@@ -1301,29 +1145,6 @@ void MainState::Draw()
 		unsigned short shapeframe = g_World[worldZ][worldX];
 		int shape = shapeframe & 0x3ff;
 
-		if (m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX && m_showUIElements && !m_paused)
-		{
-			// Draw NPC Schedule Toggle Button
-			Color buttonColor = m_npcSchedulesEnabled ? Color{0, 200, 0, 255} : Color{200, 0, 0, 255}; // Green if on, red if off
-			DrawRectangle(m_scheduleToggleButton.x, m_scheduleToggleButton.y,
-			              m_scheduleToggleButton.width, m_scheduleToggleButton.height, buttonColor);
-			DrawRectangleLines(m_scheduleToggleButton.x, m_scheduleToggleButton.y,
-			                   m_scheduleToggleButton.width, m_scheduleToggleButton.height, WHITE);
-
-			// Draw text label next to button
-			string scheduleText = m_npcSchedulesEnabled ? "ON" : "OFF";
-			DrawTextEx(*g_SmallFont, scheduleText.c_str(),
-			           Vector2{m_scheduleToggleButton.x + m_scheduleToggleButton.width + 5,
-			                   m_scheduleToggleButton.y + 8},
-			           g_SmallFont->baseSize, 1, WHITE);
-
-			//DrawOutlinedText(g_SmallFont, "Cell under mouse: " + to_string(int(g_terrainUnderMousePointer.x)) + " " + to_string(int(g_terrainUnderMousePointer.y))
-			// + " " + to_string((int(g_terrainUnderMousePointer.z))) + ", Terrain type " + to_string(shape), Vector2{ 10, 272 }, g_SmallFont->baseSize, 1, WHITE);
-
-			//DrawOutlinedText(g_SmallFont, "Center terrain cell: " + to_string(int(g_camera.target.x)) + " " + to_string(int(g_camera.target.z))
-			//				 + ", Terrain type " + to_string(shape), Vector2{ 10, 292 }, g_SmallFont->baseSize, 1, WHITE);
-		}
-
 		if (g_objectUnderMousePointer != nullptr)
 		{
 			std::string objectDescription;
@@ -1449,10 +1270,10 @@ void MainState::Draw()
 		DrawTexturePro(*m_MinimapArrow, source, dest, origin, rotation, WHITE);
 	}
 
-	// TEST: Draw color dialog if visible
-	if (m_colorDialog && m_colorDialog->IsValid())
+	// Draw debug tools window if valid
+	if (m_debugToolsWindow)
 	{
-		m_colorDialog->Draw();
+		m_debugToolsWindow->Draw();
 	}
 
 	// Draw cursor AFTER dialog so it appears on top
@@ -1600,8 +1421,8 @@ void MainState::HandleScheduleButton()
 
 void MainState::HandleShapeTableButton()
 {
-	// TODO: Implement shape table functionality
-	AddConsoleString("Shape Table button clicked");
+	// Open shape editor (same as F1 key)
+	g_StateMachine->MakeStateTransition(STATE_SHAPEEDITORSTATE);
 }
 
 void MainState::HandleGhostButton()

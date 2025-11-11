@@ -1,0 +1,151 @@
+{
+  "gui": {
+    "elements": [
+      {
+        "type": "panel",
+        "position": [
+          -1,
+          -1
+        ],
+        "size": [
+          606,
+          112
+        ],
+        "backgroundColor": [
+          60,
+          60,
+          60,
+          255
+        ],
+        "filled": true,
+        "layout": "table",
+        "horzPadding": 11,
+        "vertPadding": 10,
+        "columns": 2,
+        "font": "babyblocks.ttf",
+        "fontSize": 11,
+        "elements": [
+          {
+            "type": "textarea",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Old Name:",
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "size": [
+              173,
+              27
+            ],
+            "justified": 0
+          },
+          {
+            "name": "ORIG_NAME",
+            "type": "textinput",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "",
+            "size": [
+              400,
+              13
+            ],
+            "justified": 0
+          },
+          {
+            "type": "textarea",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "New Name:",
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "size": [
+              173,
+              27
+            ],
+            "justified": 0
+          },
+          {
+            "name": "SCRIPT_NAME",
+            "type": "textinput",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "",
+            "size": [
+              400,
+              29
+            ]
+          },
+          {
+            "name": "OK_BUTTON",
+            "type": "textbutton",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "  OK  ",
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "backgroundColor": [
+              64,
+              128,
+              64,
+              255
+            ],
+            "borderColor": [
+              128,
+              255,
+              128,
+              255
+            ]
+          },
+          {
+            "name": "CANCEL_BUTTON",
+            "type": "textbutton",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": " Cancel ",
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "backgroundColor": [
+              128,
+              64,
+              64,
+              255
+            ],
+            "borderColor": [
+              255,
+              128,
+              128,
+              255
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

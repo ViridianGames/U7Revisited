@@ -2,6 +2,7 @@
 #define _GHOSTWINDOW_H_
 
 #include <string>
+#include "raylib.h"
 
 class Gui;
 class GhostSerializer;
@@ -11,7 +12,7 @@ class GhostWindow
 {
 public:
 	GhostWindow(const std::string& ghostFilePath, const std::string& configPath,
-	            ResourceManager* resourceManager, int screenWidth, int screenHeight, bool modal = true);
+	            ResourceManager* resourceManager, int screenWidth, int screenHeight, bool modal = true, float scale = 1.0f);
 	~GhostWindow();
 
 	void Update();
@@ -27,6 +28,7 @@ public:
 
 	void MoveTo(int x, int y);
 	void GetSize(int& width, int& height) const;
+	Rectangle GetBounds() const;
 
 	int GetElementID(const std::string& elementName);
 	Gui* GetGui() { return m_gui; }

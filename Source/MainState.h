@@ -71,11 +71,8 @@ public:
 
 	Gui* m_numberBarGui;
 
-	// Test: Color dialog loaded from .ghost JSON file
-	GhostWindow* m_colorDialog;
-
 	// Debug tools window (always visible in sandbox mode)
-	std::unique_ptr<GhostWindow> m_debugToolsWindow;
+	GhostWindow* m_debugToolsWindow;
 
 	std::string m_luaFunction;
 
