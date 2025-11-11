@@ -501,7 +501,7 @@ void Gui::LoadTXT(std::string fileName)
 
 void Gui::HideGroup(int group)
 {
-	for (auto entry : m_GuiElementList)
+	for (auto &entry : m_GuiElementList)
 	{
 		if (entry.second->m_Group == group)
 			entry.second->m_Visible = false;
@@ -510,7 +510,7 @@ void Gui::HideGroup(int group)
 
 void Gui::ShowGroup(int group)
 {
-	for (auto entry : m_GuiElementList)
+	for (auto &entry : m_GuiElementList)
 	{
 		if (entry.second->m_Group == group)
 			entry.second->m_Visible = true;
