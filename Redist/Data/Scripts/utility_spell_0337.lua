@@ -22,7 +22,7 @@ function utility_spell_0337(eventid, objectref)
         for i = 1, 5 do
             var_0006 = var_0006 + 1
             if var_0009 == get_object_shape(objectref) then
-                set_object_type(objectref, var_0001[var_0006]) --- Guess: Sets item type
+                set_object_shape(objectref, var_0001[var_0006]) --- Guess: Sets item type
             end
         end
     end

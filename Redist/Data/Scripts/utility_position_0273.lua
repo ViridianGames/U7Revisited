@@ -13,7 +13,7 @@ function utility_position_0273(eventid, objectref)
     var_0003 = get_object_position(objectref) --- Guess: Gets position data
     var_0003[2] = var_0003[2] + var_0002
     -- Placeholder for unknown opcode 46H
-    set_object_type(objectref, var_0001) --- Guess: Sets item type
+    set_object_shape(objectref, var_0001) --- Guess: Sets item type
     if not set_last_created(objectref) then --- Guess: Checks position
         var_0004 = update_last_created(var_0003) --- Guess: Updates position
     end

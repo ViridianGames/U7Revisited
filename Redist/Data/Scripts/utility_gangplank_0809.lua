@@ -27,9 +27,9 @@ function utility_gangplank_0809(eventid, objectref)
         end
     end
     if var_0005 == 150 then
-        set_object_type(781, var_0000) --- Guess: Sets item type
+        set_object_shape(781, var_0000) --- Guess: Sets item type
     else
-        set_object_type(150, var_0000) --- Guess: Sets item type
+        set_object_shape(150, var_0000) --- Guess: Sets item type
     end
     var_000A = set_last_created(var_0000) --- Guess: Checks position
     if not var_000A then

@@ -18,7 +18,7 @@ function utility_spell_0376(eventid, objectref)
     else
         var_0005 = set_object_count(1, objectref) --- Guess: Sets item count
         var_0005 = var_0005 * 10
-        set_object_type(645, objectref) --- Guess: Sets item type
+        set_object_shape(645, objectref) --- Guess: Sets item type
         var_0005 = set_object_weight(var_0005, objectref) --- Guess: Sets item weight
     end
 end

@@ -8,7 +8,7 @@ function utility_event_0771(eventid, objectref)
         var_0001 = 0
     end
     if not get_flag(3) and not var_0001 then
-        set_object_type(981, var_0000) --- Guess: Sets item type
+        set_object_shape(981, var_0000) --- Guess: Sets item type
         set_flag(3, true)
         var_0002 = {0, 885, 2743}
         move_object(var_0002, var_0000) --- Guess: Sets NPC target

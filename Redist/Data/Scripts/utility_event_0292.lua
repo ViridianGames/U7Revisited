@@ -14,7 +14,7 @@ function utility_event_0292(eventid, objectref)
             var_0002 = add_containerobject_s(356, {1572, 8021, 2, 7719})
         end
     elseif eventid == 2 then
-        set_object_type(objectref, 583) --- Guess: Sets item type
+        set_object_shape(objectref, 583) --- Guess: Sets item type
         set_object_frame(objectref, 0)
     elseif eventid == 7 then
         close_gumps() --- Guess: Clears game state

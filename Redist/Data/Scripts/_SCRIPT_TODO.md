@@ -7,7 +7,6 @@ Here are all the script functions that still need to be fixed up.
 
 aidx() - get/set array index. this can be replaced by arr[x] or arr[x] = y lua, doesn't need a function
 
-set_object_type - i think maybe this should be set_object_shape? but many scripts seem to have reversed the arguments
 
 clear_flag - many scripts seem to have reversed the arguments
 
@@ -68,6 +67,8 @@ display_sign() - this same as open_book()?
 check_object_status - is this alias of get_item_flag ??
 
 # DONE
+
+set_object_type - i think maybe this should be set_object_shape? but many scripts seem to have reversed the arguments
 
 get_schedule_type() takes npc name instead of id, use get_schedule() if you have the id
 npc_in_party -> npc_id_in_party

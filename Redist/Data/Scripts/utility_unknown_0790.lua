@@ -10,7 +10,7 @@ function utility_unknown_0790(eventid, objectref)
         -- Guess: sloop sets item types
         for i = 1, 5 do
             var_0006 = ({4, 5, 6, 3, 138})[i]
-            set_object_type(889, var_0006) --- Guess: Sets item type
+            set_object_shape(889, var_0006) --- Guess: Sets item type
             var_0007 = find_nearby(128, 10, 440, var_0006) --- Guess: Sets NPC location
             var_0008 = get_object_position(var_0006) --- Guess: Gets position data
             var_0009 = {var_0008[3], var_0008[2] + 3, var_0008[1] + 3}
@@ -27,7 +27,7 @@ function utility_unknown_0790(eventid, objectref)
         -- Guess: sloop creates items
         for i = 1, 5 do
             var_0006 = ({14, 15, 6, 3, 75})[i]
-            set_object_type(526, var_0006) --- Guess: Sets item type
+            set_object_shape(526, var_0006) --- Guess: Sets item type
             var_0007 = get_object_status(440) --- Guess: Gets item status
             if not var_0007 then
                 var_0008 = get_object_position(var_0006) --- Guess: Gets position data

@@ -52,7 +52,7 @@ function utility_unknown_0903(eventid, objectref, positions1, positions2)
     if var_0003 then
         create_explosion(-1, 0, 0, 0, positions2[2] - 1, positions2[1] - 1, 4) --- Guess: Creates explosion
         play_sound_effect(9) --- Guess: Unknown function
-        var_000C = set_object_type(275, objectref) --- Guess: Sets item type
+        var_000C = set_object_shape(275, objectref) --- Guess: Sets item type
         set_object_frame(6, var_000C) --- Guess: Sets item frame
         set_object_flag(18, var_000C, true) --- Guess: Sets item flag
         var_000D = set_object_quality(151, var_000C) --- Guess: Sets item quality
