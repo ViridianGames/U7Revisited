@@ -195,10 +195,10 @@ void ScriptRenameState::Update()
 					return;
 				}
 
-				// Check if names are identical
+				// Check if names are identical (nothing to rename)
 				if (m_oldName == m_newName)
 				{
-					Log("Names are identical, nothing to do");
+					Log("Names are identical, nothing to rename");
 					g_StateMachine->PopState();
 					return;
 				}
@@ -309,6 +309,9 @@ void ScriptRenameState::Draw()
 
 	// Draw the dialog GUI in render space
 	m_window->Draw();
+
+	// Draw console so error messages are visible
+	DrawConsole();
 
 	EndTextureMode();
 
