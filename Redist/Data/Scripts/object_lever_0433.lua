@@ -5,7 +5,7 @@ function object_lever_0433(eventid, objectref)
     if eventid ~= 1 then
         return
     end
-    var_0000 = utility_unknown_0795(eventid, objectref)
+    var_0000 = utility_unknown_0795(objectref)
     if var_0000 == 1 then
         if utility_position_0797(1, 0, 3, 0, 432, objectref) then
             utility_unknown_0798(7, 0, 0, 0, 270, 2, 1, 376, objectref)

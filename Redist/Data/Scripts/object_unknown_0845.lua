@@ -7,5 +7,4 @@ function object_unknown_0845(eventid, objectref)
             var_0000 = utility_unknown_0800(objectref)
         end
     end
-    return
 end
