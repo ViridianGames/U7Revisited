@@ -87,6 +87,25 @@ void MainState::Init(const string& configfile)
 	// Initialize color dialog (test for .ghost file loading)
 	m_colorDialog = nullptr;
 
+	// Initialize debug tools window (non-modal, always visible in sandbox mode)
+	m_debugToolsWindow = std::make_unique<GhostWindow>(
+		"Gui/debug_tools.ghost",
+		"Data/ghost.cfg",
+		g_ResourceManager.get(),
+		GetScreenWidth(),
+		GetScreenHeight(),
+		false);  // non-modal
+
+	if (m_debugToolsWindow && m_debugToolsWindow->IsValid())
+	{
+		m_debugToolsWindow->MoveTo(10, 10);
+		// Will be shown/hidden based on game mode in Update()
+	}
+	else
+	{
+		Log("ERROR: Failed to load debug_tools.ghost");
+	}
+
 	SetupGame();
 }
 
@@ -1054,6 +1073,25 @@ void MainState::Update()
 		}
 	}
 
+	// Show/hide debug tools window based on game mode
+	if (m_debugToolsWindow)
+	{
+		if (m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX)
+		{
+			if (!m_debugToolsWindow->IsVisible())
+				m_debugToolsWindow->Show();
+		}
+		else
+		{
+			if (m_debugToolsWindow->IsVisible())
+				m_debugToolsWindow->Hide();
+		}
+
+		// Update debug tools window
+		m_debugToolsWindow->Update();
+		UpdateDebugToolsWindow();
+	}
+
 	// Process game input unless a modal dialog is blocking it
 	bool dialogIsBlocking = m_colorDialog && m_colorDialog->IsVisible() && m_colorDialog->IsModal();
 
@@ -1537,5 +1575,113 @@ void MainState::UpdateStats()
 	if (WasLeftButtonClickedInRect({ 610 * g_DrawScale, 314 * g_DrawScale, 16 * g_DrawScale, 10 * g_DrawScale }))
 	{
 		OpenGump(g_NPCData[g_Player->GetSelectedPartyMember()]->m_objectID);
+	}
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//  Debug Tools Window Handler Functions
+////////////////////////////////////////////////////////////////////////////////
+
+void MainState::HandleScheduleButton()
+{
+	m_npcSchedulesEnabled = !m_npcSchedulesEnabled;
+
+	// Update all NPCs
+	for (const auto& [id, npcData] : g_NPCData)
+	{
+		if (npcData && npcData->m_objectID >= 0)
+		{
+			g_objectList[npcData->m_objectID]->m_followingSchedule = m_npcSchedulesEnabled;
+		}
+	}
+
+	AddConsoleString(m_npcSchedulesEnabled ? "NPC Schedules ENABLED" : "NPC Schedules DISABLED");
+}
+
+void MainState::HandleShapeTableButton()
+{
+	// TODO: Implement shape table functionality
+	AddConsoleString("Shape Table button clicked");
+}
+
+void MainState::HandleGhostButton()
+{
+	// TODO: Implement Ghost editor functionality
+	AddConsoleString("Ghost button clicked");
+}
+
+void MainState::HandleRenameButton()
+{
+	// TODO: Implement rename functionality
+	AddConsoleString("Rename button clicked");
+}
+
+void MainState::UpdateDebugToolsWindow()
+{
+	if (!m_debugToolsWindow || !m_debugToolsWindow->IsVisible())
+		return;
+
+	Gui* gui = m_debugToolsWindow->GetGui();
+	if (!gui)
+		return;
+
+	// Check SCHEDULE_BUTTON
+	int scheduleButtonID = m_debugToolsWindow->GetElementID("SCHEDULE_BUTTON");
+	if (scheduleButtonID != -1)
+	{
+		auto elem = gui->GetElement(scheduleButtonID);
+		if (elem && elem->m_Type == GUI_ICONBUTTON)
+		{
+			auto button = static_cast<GuiIconButton*>(elem.get());
+			if (button->m_Clicked)
+			{
+				HandleScheduleButton();
+			}
+		}
+	}
+
+	// Check SHAPETABLE_BUTTON
+	int shapeTableButtonID = m_debugToolsWindow->GetElementID("SHAPETABLE_BUTTON");
+	if (shapeTableButtonID != -1)
+	{
+		auto elem = gui->GetElement(shapeTableButtonID);
+		if (elem && elem->m_Type == GUI_ICONBUTTON)
+		{
+			auto button = static_cast<GuiIconButton*>(elem.get());
+			if (button->m_Clicked)
+			{
+				HandleShapeTableButton();
+			}
+		}
+	}
+
+	// Check GHOST_BUTTON
+	int ghostButtonID = m_debugToolsWindow->GetElementID("GHOST_BUTTON");
+	if (ghostButtonID != -1)
+	{
+		auto elem = gui->GetElement(ghostButtonID);
+		if (elem && elem->m_Type == GUI_ICONBUTTON)
+		{
+			auto button = static_cast<GuiIconButton*>(elem.get());
+			if (button->m_Clicked)
+			{
+				HandleGhostButton();
+			}
+		}
+	}
+
+	// Check RENAME_BUTTON
+	int renameButtonID = m_debugToolsWindow->GetElementID("RENAME_BUTTON");
+	if (renameButtonID != -1)
+	{
+		auto elem = gui->GetElement(renameButtonID);
+		if (elem && elem->m_Type == GUI_ICONBUTTON)
+		{
+			auto button = static_cast<GuiIconButton*>(elem.get());
+			if (button->m_Clicked)
+			{
+				HandleRenameButton();
+			}
+		}
 	}
 }

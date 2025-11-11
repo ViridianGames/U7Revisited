@@ -1177,33 +1177,8 @@ void GhostState::Update()
 							}
 							else if (propName == "PROPERTY_SPRITE")
 							{
-								// For sprite elements, get the sprite metadata
-								sprite.spritesheet = m_contentSerializer->GetSpriteName(m_selectedElementID);
-
-								// Get sprite source rect from the actual sprite element
-								auto selectedElement = m_gui->GetElement(m_selectedElementID);
-								if (selectedElement && selectedElement->m_Type == GUI_SPRITE)
-								{
-									auto spriteElem = static_cast<GuiSprite*>(selectedElement.get());
-									if (spriteElem->m_Sprite)
-									{
-										sprite.x = static_cast<int>(spriteElem->m_Sprite->m_sourceRect.x);
-										sprite.y = static_cast<int>(spriteElem->m_Sprite->m_sourceRect.y);
-										sprite.w = static_cast<int>(spriteElem->m_Sprite->m_sourceRect.width);
-										sprite.h = static_cast<int>(spriteElem->m_Sprite->m_sourceRect.height);
-									}
-								}
-							}
-							else if (selectedElement && selectedElement->m_Type == GUI_ICONBUTTON)
-							{
-								auto iconElem = static_cast<GuiIconButton*>(selectedElement.get());
-								if (iconElem->m_UpTexture)
-								{
-									sprite.x = static_cast<int>(iconElem->m_UpTexture->m_sourceRect.x);
-									sprite.y = static_cast<int>(iconElem->m_UpTexture->m_sourceRect.y);
-									sprite.w = static_cast<int>(iconElem->m_UpTexture->m_sourceRect.width);
-									sprite.h = static_cast<int>(iconElem->m_UpTexture->m_sourceRect.height);
-								}
+								// Get the sprite definition from serializer (includes x, y, w, h)
+								sprite = m_contentSerializer->GetSprite(m_selectedElementID);
 							}
 
 							// Track which property we're editing
