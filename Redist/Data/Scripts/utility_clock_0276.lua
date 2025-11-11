@@ -1,5 +1,5 @@
 --- Best guess: Handles a complex dialogue tree (states 1-29) with Guardian/Time Lord interactions, guiding the Avatar through choices.
-function utility_clock_0276(eventid, objectref)
+function utility_clock_0276()
     local var_0000
 
     start_conversation()

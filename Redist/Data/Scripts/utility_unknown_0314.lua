@@ -1,4 +1,6 @@
 --- Best guess: Manages random party member or Guardian dialogue during interaction, with phrases questioning the player's actions, triggered by a single party member.
+---@param eventid integer The event ID that triggered this function
+---@param objectref integer The object reference being interacted with
 function utility_unknown_0314(eventid, objectref)
     local var_0000, var_0001
 
