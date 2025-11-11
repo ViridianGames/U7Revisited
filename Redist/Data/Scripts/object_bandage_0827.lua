@@ -7,8 +7,8 @@ function object_bandage_0827(eventid, objectref)
         if not is_npc(var_0000) then
             utility_unknown_1022("@Do not soil the bandages.@", objectref)
         else
-            var_0001 = get_npc_prop(0, var_0000)
-            var_0002 = get_npc_prop(3, var_0000)
+            var_0001 = get_npc_property(0, var_0000)
+            var_0002 = get_npc_property(3, var_0000)
             if var_0002 == var_0001 then
                 utility_unknown_1023("@It does not appear as though a bandage is needed.@", objectref)
             else

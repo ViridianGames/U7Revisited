@@ -40,7 +40,7 @@ function utility_unknown_1011(var_0000)
             var_0002 = false
             var_0005 = false
             for _, var_0008 in ipairs(var_0003) do
-                if get_npc_prop(10, var_0008) == 1 then
+                if get_npc_property(10, var_0008) == 1 then
                     var_0005 = true
                     break
                 end
