@@ -13,7 +13,7 @@ function utility_unknown_0926(resurrect_cost, cure_poison_cost, heal_cost)
     if var_0005 then
         add_dialogue("\"Which of my services dost thou have need of?\"")
         var_0006 = {"resurrect", "cure poison", "heal"}
-        var_0007 = var_0006[_SelectOption(var_0006)]
+        var_0007 = var_0006[select_option(var_0006)]
         if var_0007 == "heal" or var_0007 == "cure poison" then
             var_0008 = var_0007 == "heal" and "healed" or "cured of poison"
             var_0009 = var_0007 == "heal" and heal_cost or cure_poison_cost
@@ -77,7 +77,7 @@ function utility_unknown_0926(resurrect_cost, cure_poison_cost, heal_cost)
             end
         else
             add_dialogue("\"My price is " .. var_0009 .. " gold. Is this price agreeable?\"")
-            var_0005 = _SelectOption()
+            var_0005 = select_option()
             if var_0005 then
                 var_0017 = count_objects(-359, -359, 644, -357)
                 if var_0017 >= var_0009 then

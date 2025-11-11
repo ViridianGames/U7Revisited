@@ -33,7 +33,7 @@ function object_unknown_0617(eventid, objectref)
         utility_unknown_1041(200)
     elseif not get_flag(467) then
         add_dialogue("\"Hast thou decided if thou wilt help me?\"")
-        var_0001 = _SelectOption()
+        var_0001 = select_option()
         if var_0001 then
             add_dialogue("The Time Lord looks relieved.", "\"Then I have a mission for thee.\"")
             add_answer("mission")
@@ -87,13 +87,13 @@ function object_unknown_0617(eventid, objectref)
             add_answer("Wisps")
         elseif var_0000 == "crisis" then
             add_dialogue("\"The land is under attack by a powerful and malicious being from another dimension, and thou art the only one who can stop him! I have been trapped here by a trick, due to a sorcery which The Guardian has performed. The Guardian has put a wrinkle in the space-time continuum by creating a powerful 'generator' which has made the Moongates and thine Orb of the Moons mostly inoperable.\"", "\"Thou -must- free me and we must work together in battling The Guardian. The fate of thy people depends upon it. Dost thou accept?\"")
-            var_0002 = _SelectOption()
+            var_0002 = select_option()
             if var_0002 then
                 add_dialogue("\"Then I have a mission for thee.\"")
                 add_answer("mission")
             else
                 add_dialogue("\"Then thou shalt be doomed to never finish thy quest. Art thou sure? I give thee one more chance. Dost thou want to help?\"")
-                var_0001 = _SelectOption()
+                var_0001 = select_option()
                 if var_0001 then
                     add_dialogue("\"Then I have a mission for thee.\"")
                 else

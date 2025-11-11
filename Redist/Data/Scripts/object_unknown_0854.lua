@@ -21,7 +21,7 @@ function object_unknown_0854(eventid, objectref)
             else
                 add_dialogue("The Shrine of Truth speaks. \"Greetings, seeker. Once again I ask thee, Dost thou seek my enlightenment?\"")
             end
-            if _SelectOption() then
+            if select_option() then
                 add_dialogue("\"Very well. Prepare thyself.\" The voice falls silent.")
                 var_0001 = execute_usecode_array(objectref, {1785, 8021, 1, 7719})
             else

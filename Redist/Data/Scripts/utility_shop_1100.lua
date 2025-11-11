@@ -56,7 +56,7 @@ function utility_shop_1100()
             add_dialogue("\"To see you already have that spell.\"")
         end
         add_dialogue("\"To be interested in another spell?\"")
-        var_0000 = _SelectOption()
+        var_0000 = select_option()
     end
     restore_answers()
 end
