@@ -1,5 +1,5 @@
 --- Best guess: Updates door states based on flag conditions, spawning items for visual effects.
-function utility_unknown_0791(eventid, objectref)
+function utility_unknown_0791(objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006
 
     var_0000 = objectref

@@ -1,5 +1,5 @@
 --- Best guess: Manages a cube puzzle, spawning floors (type 368 or 369) based on egg proximity.
-function utility_unknown_0784(eventid, objectref, arg1)
+function utility_unknown_0784(objectref, arg1)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B
 
     var_0000 = objectref

@@ -1,5 +1,5 @@
 --- Best guess: Checks item type (668) and triggers explosions, possibly for a trap or ritual effect.
-function utility_unknown_0535(eventid, objectref)
+function utility_unknown_0535(objectref)
     local var_0000, var_0001, var_0002, var_0003
 
     if get_object_shape(objectref) == 668 then --- Guess: Gets item type

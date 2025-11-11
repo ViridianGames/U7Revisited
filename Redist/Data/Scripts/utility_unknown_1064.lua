@@ -1,5 +1,5 @@
 --- Best guess: Similar to func_0927, but uses a modulo check on the item frame for liquid containers.
-function utility_unknown_1064(eventid, objectref, arg1)
+function utility_unknown_1064(arg1)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B
 
     start_conversation()

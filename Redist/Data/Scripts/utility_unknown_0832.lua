@@ -1,5 +1,5 @@
 --- Best guess: Manages a sage conversation, offering a notebook key if dialogue choices are correct.
-function utility_unknown_0832(eventid, objectref)
+function utility_unknown_0832()
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
     save_answers() --- Guess: Saves dialogue answers

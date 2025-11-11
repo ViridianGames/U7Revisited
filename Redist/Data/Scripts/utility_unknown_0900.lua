@@ -1,6 +1,6 @@
 --- Best guess: Progresses a murder investigation with a multi-step dialogue (occupation, evidence, suspect).
-function utility_unknown_0900(eventid, objectref)
-    debug_print("Starting func_0884(), reporting to Finnigan")
+function utility_unknown_0900()
+    debug_print("Starting utility_unknown_0900(), reporting to Finnigan")
     local var_884_0000, var_884_0001, var_884_0002, var_884_0003, var_884_0004, var_884_0005, var_884_0006
     debug_print("Declared local variables")
     -- --start_conversation()

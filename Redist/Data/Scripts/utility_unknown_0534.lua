@@ -1,5 +1,5 @@
 --- Best guess: Initializes ritual state and checks for items, similar to func_0715 but with flag reset.
-function utility_unknown_0534(eventid, objectref)
+function utility_unknown_0534()
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     set_flag(806, false)

@@ -1,5 +1,5 @@
 --- Best guess: Handles NPC feeding (e.g., garlic, type 842), adjusting NPC properties with dialogue responses.
-function utility_unknown_0787(eventid, objectref, arg1, arg2)
+function utility_unknown_0787(objectref, arg1, arg2)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009
 
     var_0000 = objectref

@@ -1,5 +1,5 @@
 --- Best guess: Randomly selects dialogue for an NPC (ID 253) based on status, likely for ambient flavor.
-function utility_unknown_0868(eventid, objectref)
+function utility_unknown_0868()
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
     var_0000 = get_object_owner(253) --- Guess: Gets item owner

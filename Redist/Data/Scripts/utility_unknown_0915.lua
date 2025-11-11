@@ -1,5 +1,5 @@
 --- Best guess: Handles final dialogue with Adjhar after mastering the Principle of Love.
-function utility_unknown_0915(eventid, objectref)
+function utility_unknown_0915()
     start_conversation()
     switch_talk_to(288) --- Guess: Initiates dialogue
     add_dialogue("@Adjhar appears to have resumed the stance of a more traditional golem guardian...@")

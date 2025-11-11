@@ -1,5 +1,5 @@
 --- Best guess: Counts iterations until a target value is matched, returning the count.
-function utility_unknown_1043(eventid, objectref, arg1, arg2)
+function utility_unknown_1043(arg1, arg2)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     var_0002 = 0
