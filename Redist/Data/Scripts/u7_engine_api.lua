@@ -825,9 +825,10 @@ function execute_usecode_array(object_id, script_array) end
 ---@return integer event_id Event ID (currently always returns 0)
 function delayed_execute_usecode_array(object_id, script_array, delay) end
 
----[Exult 0x0079] Checks if currently in usecode (NOT FULLY IMPLEMENTED - always returns false)
----@return boolean in_usecode True if usecode is running (currently always returns false)
-function in_usecode() end
+---[Exult 0x0079] Checks if object is currently executing usecode (NOT FULLY IMPLEMENTED - always returns false)
+---@param object_id integer Object ID to check
+---@return boolean in_usecode True if object is executing usecode (currently always returns false)
+function in_usecode(object_id) end
 
 ---[Exult 0x007D] Runs usecode when path complete
 ---@param npc_id integer NPC to wait for
