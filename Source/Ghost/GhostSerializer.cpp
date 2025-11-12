@@ -14,6 +14,7 @@ extern std::unique_ptr<ResourceManager> g_ResourceManager;
 // Initialize static members
 std::string GhostSerializer::s_baseFontPath = "Fonts/";
 std::string GhostSerializer::s_baseSpritePath = "Images/";
+std::string GhostSerializer::s_baseGhostPath = "Gui/Ghost/";
 
 GhostSerializer::GhostSerializer()
 {
@@ -31,6 +32,11 @@ void GhostSerializer::SetBaseFontPath(const std::string& path)
 void GhostSerializer::SetBaseSpritePath(const std::string& path)
 {
 	s_baseSpritePath = path;
+}
+
+void GhostSerializer::SetBaseGhostPath(const std::string& path)
+{
+	s_baseGhostPath = path;
 }
 
 ghost_json GhostSerializer::ReadJsonFromFile(const std::string& filename)
@@ -272,7 +278,7 @@ void GhostSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, c
 			}
 
 			// Read and parse the included file
-			ghost_json includedJson = ReadJsonFromFile("Gui/" + filename);
+			ghost_json includedJson = ReadJsonFromFile(s_baseGhostPath + filename);
 			if (!includedJson.empty() && includedJson.contains("gui") && includedJson["gui"].contains("elements"))
 			{
 				// Parse included elements with parent's offsets PLUS current layout position

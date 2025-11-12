@@ -5,6 +5,7 @@
 #include "../Geist/Config.h"
 #include "../Geist/Gui.h"
 #include "../Geist/GuiElements.h"
+#include "GhostSerializer.h"
 
 extern std::unique_ptr<StateMachine> g_StateMachine;
 extern std::unique_ptr<ResourceManager> g_ResourceManager;
@@ -19,7 +20,7 @@ void ColorPickerState::Init(const std::string& configfile)
 
 	// Create the window - it handles all config loading and GUI setup
 	m_window = std::make_unique<GhostWindow>(
-		"Gui/ghost_color_dialog.ghost",
+		GhostSerializer::GetBaseGhostPath() + "ghost_color_dialog.ghost",
 		"Data/ghost.cfg",
 		g_ResourceManager.get(),
 		GetScreenWidth(),

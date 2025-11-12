@@ -23,7 +23,7 @@ void SpritePickerState::Init(const std::string& configfile)
 
 	// Create the window - it handles all config loading and GUI setup
 	m_window = std::make_unique<GhostWindow>(
-		"Gui/ghost_sprite_dialog.ghost",
+		GhostSerializer::GetBaseGhostPath() + "ghost_sprite_dialog.ghost",
 		"Data/ghost.cfg",
 		g_ResourceManager.get(),
 		GetScreenWidth(),

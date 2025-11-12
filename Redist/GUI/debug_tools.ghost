@@ -56,9 +56,9 @@
             ],
             "sprite": {
               "spritesheet": "GUI/guielements.png",
-              "x": 202,
+              "x": 200,
               "y": 0,
-              "w": 19,
+              "w": 20,
               "h": 30
             },
             "color": [
@@ -78,7 +78,7 @@
             ],
             "sprite": {
               "spritesheet": "GUI/guielements.png",
-              "x": 167,
+              "x": 170,
               "y": 0,
               "w": 30,
               "h": 30
@@ -100,7 +100,7 @@
             ],
             "sprite": {
               "spritesheet": "GUI/guielements.png",
-              "x": 219,
+              "x": 220,
               "y": 0,
               "w": 23,
               "h": 30

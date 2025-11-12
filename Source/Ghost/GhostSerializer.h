@@ -26,6 +26,12 @@ public:
 	// Get the base sprite path
 	static std::string GetBaseSpritePath() { return s_baseSpritePath; }
 
+	// Set the base Ghost GUI path (e.g., "Gui/Ghost/")
+	static void SetBaseGhostPath(const std::string& path);
+
+	// Get the base Ghost GUI path
+	static std::string GetBaseGhostPath() { return s_baseGhostPath; }
+
 	// Load a GUI from a .ghost JSON file
 	bool LoadFromFile(const std::string& filename, Gui* gui);
 
@@ -341,6 +347,7 @@ private:
 	// Static base paths for resources
 	static std::string s_baseFontPath;
 	static std::string s_baseSpritePath;
+	static std::string s_baseGhostPath;
 };
 
 #endif

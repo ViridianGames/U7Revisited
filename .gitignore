@@ -22,6 +22,7 @@ cmake-build-debug/
 .idea/
 /Redist/runlog.txt
 /Redist/debuglog.txt
+/Redist/ghostlog.txt
 /Redist/textflx_debug.txt
 
 # Visual Studio resource cache files

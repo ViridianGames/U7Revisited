@@ -351,9 +351,9 @@ endif()
 
 # Set working directory for Ghost editor
 if(WIN32)
-    # Visual Studio debugger working directory
+    # Visual Studio debugger working directory - use Redist so Ghost can find its files
     set_target_properties(Ghost PROPERTIES
-        VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Ghost"
+        VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
     )
     # Copy executable to Ghost folder after build (Release only)
     add_custom_command(TARGET Ghost POST_BUILD
@@ -361,12 +361,17 @@ if(WIN32)
         COMMAND_EXPAND_LISTS
         COMMENT "Copying Ghost Release executable to Ghost folder"
     )
+    # Copy executable to Redist folder so it can be launched from game
+    add_custom_command(TARGET Ghost POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:Ghost> "${CMAKE_CURRENT_SOURCE_DIR}/Redist/"
+        COMMENT "Copying Ghost executable to Redist folder"
+    )
 else()
-    # On Linux/Unix, set runtime output directory to Ghost
+    # On Linux/Unix, set runtime output directory to Redist so Ghost can find its files
     set_target_properties(Ghost PROPERTIES
-        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Ghost"
-        RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_CURRENT_SOURCE_DIR}/Ghost"
-        RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_CURRENT_SOURCE_DIR}/Ghost"
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
+        RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
+        RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
     )
 endif()
 

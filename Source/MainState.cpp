@@ -24,6 +24,7 @@
 #include <fstream>
 #include <algorithm>
 #include <unordered_map>
+#include <thread>
 
 using namespace std;
 
@@ -1427,8 +1428,42 @@ void MainState::HandleShapeTableButton()
 
 void MainState::HandleGhostButton()
 {
-	// TODO: Implement Ghost editor functionality
-	AddConsoleString("Ghost button clicked");
+	Log("HandleGhostButton: Launching Ghost editor");
+
+	// Check if Ghost executable exists
+#ifdef _WIN32
+	const char* ghostPath = "Ghost.exe";
+#else
+	const char* ghostPath = "./Ghost";
+#endif
+
+	std::ifstream ghostFile(ghostPath);
+	if (!ghostFile.good())
+	{
+		Log("ERROR: Ghost executable not found: " + std::string(ghostPath));
+		AddConsoleString("ERROR: Ghost.exe not found - please build Ghost first", RED);
+		return;
+	}
+	ghostFile.close();
+
+	AddConsoleString("Launching Ghost GUI Editor...");
+
+	// Launch Ghost in a background thread so it doesn't block the game
+	// Thread is detached so it cleans up automatically when Ghost exits
+	std::thread([=]() {
+#ifdef _WIN32
+		// Windows: Use start command to launch in new window
+		int result = system("start Ghost.exe");
+#else
+		// Linux/Mac: Launch in background
+		int result = system("./Ghost &");
+#endif
+
+		if (result != 0)
+		{
+			Log("ERROR: Failed to launch Ghost - system() returned error code " + std::to_string(result));
+		}
+	}).detach();
 }
 
 void MainState::HandleRenameButton()

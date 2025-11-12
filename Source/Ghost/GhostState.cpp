@@ -64,6 +64,7 @@ void GhostState::Init(const std::string& configfile)
 	// Try to get paths - if empty, use defaults
 	m_fontPath = config->GetString("FontPath");
 	m_spritePath = config->GetString("SpritePath");
+	std::string ghostPath = config->GetString("GhostPath");
 
 	// If paths are empty, fall back to defaults
 	if (m_fontPath.empty())
@@ -96,9 +97,25 @@ void GhostState::Init(const std::string& configfile)
 		Log("SpritePath from config: " + m_spritePath);
 	}
 
+	if (ghostPath.empty())
+	{
+		ghostPath = "Gui/Ghost/";
+		Log("GhostPath not found in config, using default: " + ghostPath);
+	}
+	else
+	{
+		// Ensure path ends with a separator
+		if (!ghostPath.empty() && ghostPath.back() != '/' && ghostPath.back() != '\\')
+		{
+			ghostPath += "/";
+		}
+		Log("GhostPath from config: " + ghostPath);
+	}
+
 	// Set the resource paths in GhostSerializer so they can be used for loading
 	GhostSerializer::SetBaseFontPath(m_fontPath);
 	GhostSerializer::SetBaseSpritePath(m_spritePath);
+	GhostSerializer::SetBaseGhostPath(ghostPath);
 
 	// Create the main GUI
 	m_gui = make_unique<Gui>();
@@ -108,7 +125,7 @@ void GhostState::Init(const std::string& configfile)
 	m_serializer = make_unique<GhostSerializer>();
 
 	// Load GUI from JSON file
-	if (!m_serializer->LoadFromFile("Gui/ghost_app.ghost", m_gui.get()))
+	if (!m_serializer->LoadFromFile(GhostSerializer::GetBaseGhostPath() + "ghost_app.ghost", m_gui.get()))
 	{
 		Log("Failed to load ghost_app.ghost");
 	}
@@ -3351,46 +3368,47 @@ void GhostState::UpdatePropertyPanel()
 
 	// Determine which property file to load based on element type
 	string propertyFile;
+	string basePath = GhostSerializer::GetBaseGhostPath();
 	switch (selectedElement->m_Type)
 	{
 		case GUI_TEXTBUTTON:
-			propertyFile = "Gui/ghost_prop_textbutton.ghost";
+			propertyFile = basePath + "ghost_prop_textbutton.ghost";
 			break;
 		case GUI_ICONBUTTON:
-			propertyFile = "Gui/ghost_prop_iconbutton.ghost";
+			propertyFile = basePath + "ghost_prop_iconbutton.ghost";
 			break;
 		case GUI_SCROLLBAR:
-			propertyFile = "Gui/ghost_prop_scrollbar.ghost";
+			propertyFile = basePath + "ghost_prop_scrollbar.ghost";
 			break;
 		case GUI_RADIOBUTTON:
-			propertyFile = "Gui/ghost_prop_radiobutton.ghost";
+			propertyFile = basePath + "ghost_prop_radiobutton.ghost";
 			break;
 		case GUI_CHECKBOX:
-			propertyFile = "Gui/ghost_prop_checkbox.ghost";
+			propertyFile = basePath + "ghost_prop_checkbox.ghost";
 			break;
 		case GUI_TEXTINPUT:
-			propertyFile = "Gui/ghost_prop_textinput.ghost";
+			propertyFile = basePath + "ghost_prop_textinput.ghost";
 			break;
 		case GUI_PANEL:
-			propertyFile = "Gui/ghost_prop_panel.ghost";
+			propertyFile = basePath + "ghost_prop_panel.ghost";
 			break;
 		case GUI_TEXTAREA:
-			propertyFile = "Gui/ghost_prop_textarea.ghost";
+			propertyFile = basePath + "ghost_prop_textarea.ghost";
 			break;
 		case GUI_SPRITE:
-			propertyFile = "Gui/ghost_prop_sprite.ghost";
+			propertyFile = basePath + "ghost_prop_sprite.ghost";
 			break;
 		case GUI_OCTAGONBOX:
-			propertyFile = "Gui/ghost_prop_octagonbox.ghost";
+			propertyFile = basePath + "ghost_prop_octagonbox.ghost";
 			break;
 		case GUI_STRETCHBUTTON:
-			propertyFile = "Gui/ghost_prop_stretchbutton.ghost";
+			propertyFile = basePath + "ghost_prop_stretchbutton.ghost";
 			break;
 		case GUI_LIST:
-			propertyFile = "Gui/ghost_prop_list.ghost";
+			propertyFile = basePath + "ghost_prop_list.ghost";
 			break;
 		case GUI_LISTBOX:
-			propertyFile = "Gui/ghost_prop_listbox.ghost";
+			propertyFile = basePath + "ghost_prop_listbox.ghost";
 			break;
 		default:
 			Log("No property panel for element type: " + to_string(selectedElement->m_Type));

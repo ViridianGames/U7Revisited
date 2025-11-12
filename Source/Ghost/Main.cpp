@@ -47,6 +47,9 @@ int main()
 {
 	try
 	{
+		// Set Ghost to use its own log file
+		SetLogFileName("ghostlog.txt");
+
 		Log("Ghost - Geist GUI Editor starting...");
 
 		// Create window FIRST - this is the only thing before the main loop
