@@ -1462,7 +1462,15 @@ void MainState::UpdateStats()
 	for (int i = 0; i < g_Player->GetPartyMemberIds().size(); ++i)
 	{
 		Texture* thisTexture = g_ResourceManager->GetTexture("U7FACES" + to_string(i) + to_string(0));
-		if (WasLeftButtonClickedInRect((538.0f - thisTexture->width) * g_DrawScale, (200.0f + 40.0f * counter) * g_DrawScale, thisTexture->width * g_DrawScale, thisTexture->height * g_DrawScale))
+		Rectangle portraitRect = { (538.0f - thisTexture->width) * g_DrawScale, (200.0f + 40.0f * counter) * g_DrawScale, thisTexture->width * g_DrawScale, thisTexture->height * g_DrawScale };
+
+		// Check for double-click to toggle paperdoll
+		if (WasMouseButtonDoubleClicked(MOUSE_LEFT_BUTTON) && CheckCollisionPointRec(GetMousePosition(), portraitRect))
+		{
+			TogglePaperdoll(g_Player->GetPartyMemberIds()[i]);
+		}
+		// Check for single click to select party member
+		else if (WasLeftButtonClickedInRect(portraitRect.x, portraitRect.y, portraitRect.width, portraitRect.height))
 		{
 			g_Player->SetSelectedPartyMember(g_Player->GetPartyMemberIds()[i]);
 		}
