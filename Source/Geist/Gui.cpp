@@ -72,6 +72,25 @@ void Gui::Update()
 	if (m_Draggable)
 	{
 		Vector2 mousePos = GetMousePosition();
+
+		// Clamp mouse to screen bounds while dragging by actually moving the cursor
+		if (m_IsDragging)
+		{
+			int screenWidth = GetScreenWidth();
+			int screenHeight = GetScreenHeight();
+
+			bool needsClamp = false;
+			if (mousePos.x < 0) { mousePos.x = 0; needsClamp = true; }
+			if (mousePos.y < 0) { mousePos.y = 0; needsClamp = true; }
+			if (mousePos.x >= screenWidth) { mousePos.x = screenWidth - 1; needsClamp = true; }
+			if (mousePos.y >= screenHeight) { mousePos.y = screenHeight - 1; needsClamp = true; }
+
+			if (needsClamp)
+			{
+				SetMousePosition(static_cast<int>(mousePos.x), static_cast<int>(mousePos.y));
+			}
+		}
+
 		mousePos.x /= m_InputScale;
 		mousePos.y /= m_InputScale;
 
