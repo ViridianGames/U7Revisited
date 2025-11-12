@@ -1,5 +1,5 @@
 --- Best guess: Changes an item's type to 876 on event ID 2 and triggers another action on event ID 1.
-function object_unknown_0876(eventid, objectref)
+function object_metalwall_0876(eventid, objectref)
     if eventid == 2 then
         set_object_shape(objectref, 876)
         return
