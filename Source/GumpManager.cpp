@@ -75,8 +75,10 @@ void GumpManager::Update()
 	for (vector<std::shared_ptr<Gump>>::iterator gump = m_GumpList.begin(); gump != m_GumpList.end();)
 	{
 		// Temporarily disable dragging for non-topmost gumps
+		// BUT: if a gump is already being dragged, keep it draggable (for smooth dragging)
 		bool wasDraggable = (*gump)->m_gui.m_Draggable;
-		if (topmostGumpUnderMouse != nullptr && (*gump).get() != topmostGumpUnderMouse)
+		bool isBeingDragged = (*gump)->m_gui.m_IsDragging;
+		if (topmostGumpUnderMouse != nullptr && (*gump).get() != topmostGumpUnderMouse && !isBeingDragged)
 		{
 			(*gump)->m_gui.m_Draggable = false;
 		}
@@ -227,7 +229,7 @@ void GumpManager::Draw()
 	if (m_GumpList.size() != lastGumpCount)
 	{
 		Log("GumpManager::Draw - Drawing " + std::to_string(m_GumpList.size()) + " gumps");
-		lastGumpCount = m_GumpList.size();
+		lastGumpCount = static_cast<int>(m_GumpList.size());
 	}
 
 	for (auto& Gump : m_GumpList)
@@ -248,4 +250,16 @@ void GumpManager::Draw()
 void GumpManager::AddGump(std::shared_ptr<Gump> Gump)
 {
 	m_GumpList.push_back(Gump);
+}
+
+bool GumpManager::IsAnyGumpBeingDragged()
+{
+	for (const auto& gump : m_GumpList)
+	{
+		if (gump->m_gui.m_IsDragging)
+		{
+			return true;
+		}
+	}
+	return false;
 }

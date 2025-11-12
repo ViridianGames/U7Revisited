@@ -256,7 +256,8 @@ unsigned int DoCameraMovement(bool forcemove)
 		g_CameraMoved = true;
 	}
 
-	if (IsLeftButtonDownInRect(g_Engine->m_ScreenWidth - (g_minimapSize * g_DrawScale), 0, g_Engine->m_ScreenWidth, g_minimapSize * g_DrawScale))
+	if (IsLeftButtonDownInRect(g_Engine->m_ScreenWidth - (g_minimapSize * g_DrawScale), 0, g_Engine->m_ScreenWidth, g_minimapSize * g_DrawScale)
+		&& !g_gumpManager->IsAnyGumpBeingDragged())
 	{
 		float minimapx = float(GetMouseX() - (g_Engine->m_ScreenWidth - (g_minimapSize * g_DrawScale))) / float(g_minimapSize * g_DrawScale) * 3072;
 		float minimapy = float(GetMouseY()) / float(g_minimapSize * g_DrawScale) * 3072;
