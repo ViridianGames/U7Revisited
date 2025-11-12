@@ -29,6 +29,7 @@ private:
 	void InsertButton();
 	void InsertIconButton();
 	void InsertSprite();
+	void InsertCycle();
 	void InsertTextInput();
 	void InsertCheckbox();
 	void InsertRadioButton();
@@ -96,6 +97,12 @@ public:
 	int m_dragElementID = -1;
 	Vector2 m_dragStartMousePos = { 0, 0 };
 	Vector2 m_dragStartElementPos = { 0, 0 };
+
+	// Content panel zoom support
+	float m_contentZoom = 1.0f; // Current zoom level (1.0 = 100%, 2.0 = 200%, etc.)
+	static constexpr float MIN_ZOOM = 0.5f; // Minimum 50% zoom
+	static constexpr float MAX_ZOOM = 4.0f;  // Maximum 400% zoom
+	static constexpr float ZOOM_STEP = 0.1f; // Zoom in/out by 10% per wheel tick
 
 	// Element hierarchy listbox support
 	std::vector<int> m_elementIDList; // Parallel list of element IDs for listbox index mapping

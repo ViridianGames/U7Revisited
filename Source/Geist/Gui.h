@@ -95,6 +95,12 @@ public:
 	GuiSprite* AddSprite(int ID, int posx, int posy, std::shared_ptr<Sprite> sprite, float scalex = 1.0f, float scaley = 1.0f,
 		Color color = Color{ 255, 255, 255, 255 }, int group = 0, int active = true);
 
+	GuiCycle* AddCycle(int ID, int posx, int posy,
+		std::vector<std::shared_ptr<Sprite>> frames,
+		float scalex = 1.0f, float scaley = 1.0f,
+		Color color = Color{255, 255, 255, 255},
+		int group = 0, int active = true);
+
 	GuiOctagonBox* AddOctagonBox(int ID, int posx, int posy, int width, int height, std::vector<std::shared_ptr<Sprite> > borders,
 		Color color = Color{ 255, 255, 255, 255 }, int group = 0, int active = true);
 

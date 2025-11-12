@@ -1159,7 +1159,7 @@ void GhostState::Update()
 	if (m_selectedElementID != -1)
 	{
 		auto selectedElement = m_gui->GetElement(m_selectedElementID);
-		if (selectedElement && (selectedElement->m_Type == GUI_STRETCHBUTTON || selectedElement->m_Type == GUI_SPRITE || selectedElement->m_Type == GUI_ICONBUTTON))
+		if (selectedElement && (selectedElement->m_Type == GUI_STRETCHBUTTON || selectedElement->m_Type == GUI_SPRITE || selectedElement->m_Type == GUI_CYCLE || selectedElement->m_Type == GUI_ICONBUTTON))
 		{
 			// List of all sprite property button names
 			vector<string> spriteProperties = {
@@ -1465,24 +1465,47 @@ void GhostState::Update()
 
 		// Find all content elements under the cursor (2000-2999, not property panel 3000+)
 		// Include inactive elements too so disabled text inputs can still be selected
+		// Get content panel anchor for zoom calculations
+		auto contentPanel = m_gui->GetElement(2000);
+		float anchorX = contentPanel ? contentPanel->m_Pos.x : 0.0f;
+		float anchorY = contentPanel ? contentPanel->m_Pos.y : 0.0f;
+
 		std::vector<int> clickedElements;
 		for (const auto& pair : m_gui->m_GuiElementList)
 		{
 			const auto& element = pair.second;
 			if (element->m_ID >= 2000 && element->m_ID < 3000 && element->m_Visible)
 			{
-				float elemX = m_gui->m_Pos.x + element->m_Pos.x;
-				float elemY = m_gui->m_Pos.y + element->m_Pos.y;
+				float elemX, elemY, elemW, elemH;
 
-				if (scaledX >= elemX && scaledX <= elemX + element->m_Width &&
-					scaledY >= elemY && scaledY <= elemY + element->m_Height)
+				if (element->m_ID >= 2001)
+				{
+					// Apply zoom relative to anchor for content elements
+					float relX = element->m_Pos.x - anchorX;
+					float relY = element->m_Pos.y - anchorY;
+					elemX = m_gui->m_Pos.x + anchorX + relX * m_contentZoom;
+					elemY = m_gui->m_Pos.y + anchorY + relY * m_contentZoom;
+					elemW = element->m_Width * m_contentZoom;
+					elemH = element->m_Height * m_contentZoom;
+				}
+				else
+				{
+					// Root container 2000 - no zoom
+					elemX = m_gui->m_Pos.x + element->m_Pos.x;
+					elemY = m_gui->m_Pos.y + element->m_Pos.y;
+					elemW = element->m_Width;
+					elemH = element->m_Height;
+				}
+
+				if (scaledX >= elemX && scaledX <= elemX + elemW &&
+					scaledY >= elemY && scaledY <= elemY + elemH)
 				{
 					clickedElements.push_back(element->m_ID);
 				}
 			}
 		}
 
-		// Find the deepest element in the tree (the one with the most ancestors)
+		// Find the best element: prioritize by depth first (deepest wins), then by highest ID
 		int bestID = -1;
 		int maxDepth = -1;
 		bool clickedInvisibleRoot = false;
@@ -1503,12 +1526,15 @@ void GhostState::Update()
 				depth++;
 			}
 
-			if (depth > maxDepth)
+			// Prioritize by depth, then by highest ID for same depth
+			if (depth > maxDepth || (depth == maxDepth && id > bestID))
 			{
 				maxDepth = depth;
 				bestID = id;
 			}
 		}
+
+		Log("Clicked elements: " + to_string(clickedElements.size()) + ", bestID: " + to_string(bestID));
 
 		// If we clicked the invisible root (2000) and nothing else, select the normal root (2001)
 		if (bestID == -1 && clickedInvisibleRoot)
@@ -1658,14 +1684,22 @@ void GhostState::Update()
 			float scaledY = mousePos.y / m_gui->m_InputScale;
 
 			auto element = m_gui->GetElement(m_selectedElementID);
-			if (element)
+			auto contentPanel = m_gui->GetElement(2000);
+			if (element && contentPanel)
 			{
-				float elemX = m_gui->m_Pos.x + element->m_Pos.x;
-				float elemY = m_gui->m_Pos.y + element->m_Pos.y;
+				// Apply zoom to element bounds for hit testing
+				float anchorX = contentPanel->m_Pos.x;
+				float anchorY = contentPanel->m_Pos.y;
+				float relX = element->m_Pos.x - anchorX;
+				float relY = element->m_Pos.y - anchorY;
+				float elemX = m_gui->m_Pos.x + anchorX + relX * m_contentZoom;
+				float elemY = m_gui->m_Pos.y + anchorY + relY * m_contentZoom;
+				float elemW = element->m_Width * m_contentZoom;
+				float elemH = element->m_Height * m_contentZoom;
 
 				// Check if mouse is over the selected positioned element
-				if (scaledX >= elemX && scaledX <= elemX + element->m_Width &&
-				    scaledY >= elemY && scaledY <= elemY + element->m_Height)
+				if (scaledX >= elemX && scaledX <= elemX + elemW &&
+				    scaledY >= elemY && scaledY <= elemY + elemH)
 				{
 					m_isDragging = true;
 					m_dragElementID = m_selectedElementID;
@@ -1684,9 +1718,9 @@ void GhostState::Update()
 		float scaledX = mousePos.x / m_gui->m_InputScale;
 		float scaledY = mousePos.y / m_gui->m_InputScale;
 
-		// Calculate delta from drag start
-		float deltaX = scaledX - m_dragStartMousePos.x;
-		float deltaY = scaledY - m_dragStartMousePos.y;
+		// Calculate delta from drag start, accounting for zoom
+		float deltaX = (scaledX - m_dragStartMousePos.x) / m_contentZoom;
+		float deltaY = (scaledY - m_dragStartMousePos.y) / m_contentZoom;
 
 		// Update element position
 		auto element = m_gui->GetElement(m_dragElementID);
@@ -1986,6 +2020,90 @@ void GhostState::Update()
 		}
 	}
 
+	// Arrow keys: Nudge selected positioned element (green highlight) by 1 pixel
+	if (m_selectedElementID >= 2002 && m_selectedElementID < 3000)
+	{
+		auto selectedElement = m_gui->GetElement(m_selectedElementID);
+		if (selectedElement)
+		{
+			// Only allow nudging if element is positioned (green highlight), not floating (yellow highlight)
+			bool isFloating = m_contentSerializer->IsFloating(m_selectedElementID);
+			if (!isFloating)
+			{
+				bool nudged = false;
+				int deltaX = 0, deltaY = 0;
+
+				if (IsKeyPressed(KEY_LEFT))
+				{
+					deltaX = -1;
+					nudged = true;
+				}
+				else if (IsKeyPressed(KEY_RIGHT))
+				{
+					deltaX = 1;
+					nudged = true;
+				}
+				else if (IsKeyPressed(KEY_UP))
+				{
+					deltaY = -1;
+					nudged = true;
+				}
+				else if (IsKeyPressed(KEY_DOWN))
+				{
+					deltaY = 1;
+					nudged = true;
+				}
+
+				if (nudged)
+				{
+					// Save undo state before making changes
+					PushUndoState();
+
+					// Update position in the element
+					selectedElement->m_Pos.x += deltaX;
+					selectedElement->m_Pos.y += deltaY;
+
+					// Mark as dirty (position will be serialized from element on save)
+					m_contentSerializer->SetDirty(true);
+
+					Log("Nudged element " + to_string(m_selectedElementID) + " by (" +
+						to_string(deltaX) + ", " + to_string(deltaY) + ")");
+				}
+			}
+		}
+	}
+
+	// Mouse wheel zoom for content panel
+	float wheelMove = GetMouseWheelMove();
+	if (wheelMove != 0.0f)
+	{
+		// Check if mouse is over content panel (ID 2000)
+		Vector2 mousePos = GetMousePosition();
+		auto contentPanel = m_gui->GetElement(2000);
+		if (contentPanel)
+		{
+			float scaledX = mousePos.x / m_gui->m_InputScale;
+			float scaledY = mousePos.y / m_gui->m_InputScale;
+			float panelX = m_gui->m_Pos.x + contentPanel->m_Pos.x;
+			float panelY = m_gui->m_Pos.y + contentPanel->m_Pos.y;
+
+			if (scaledX >= panelX && scaledX <= panelX + contentPanel->m_Width &&
+			    scaledY >= panelY && scaledY <= panelY + contentPanel->m_Height)
+			{
+				// Adjust zoom
+				m_contentZoom += wheelMove * ZOOM_STEP;
+
+				// Clamp zoom to valid range
+				if (m_contentZoom < MIN_ZOOM)
+					m_contentZoom = MIN_ZOOM;
+				if (m_contentZoom > MAX_ZOOM)
+					m_contentZoom = MAX_ZOOM;
+
+				Log("Content zoom: " + to_string(static_cast<int>(m_contentZoom * 100)) + "%");
+			}
+		}
+	}
+
 	// Check for button clicks using name-based lookup
 	if (activeID == m_serializer->GetElementID("NEW"))
 	{
@@ -1993,6 +2111,7 @@ void GhostState::Update()
 		ClearLoadedContent();
 		EnsureContentRoot();  // Recreate empty root after clearing
 		PopulateElementHierarchy();  // Update listbox with new content
+		m_contentZoom = 1.0f;  // Reset zoom to 100%
 	}
 	else if (activeID == m_serializer->GetElementID("CLOSE"))
 	{
@@ -2063,6 +2182,11 @@ void GhostState::Update()
 		Log("Sprite button clicked!");
 		InsertSprite();
 	}
+	else if (activeID == m_serializer->GetElementID("CYCLE"))
+	{
+		Log("Cycle button clicked!");
+		InsertCycle();
+	}
 	else if (activeID == m_serializer->GetElementID("INPUT"))
 	{
 		Log("Input button clicked!");
@@ -2107,8 +2231,49 @@ void GhostState::Update()
 
 void GhostState::Draw()
 {
+	// Get content panel position as anchor point for zoom
+	auto contentPanel = m_gui->GetElement(2000);
+	float anchorX = contentPanel ? contentPanel->m_Pos.x : 0.0f;
+	float anchorY = contentPanel ? contentPanel->m_Pos.y : 0.0f;
+
+	// Apply zoom scale to content elements before drawing
+	if (m_contentZoom != 1.0f)
+	{
+		for (auto& [id, element] : m_gui->m_GuiElementList)
+		{
+			if (id >= 2001 && id < 3000 && element)
+			{
+				// Scale position relative to content panel anchor and scale size
+				float relX = element->m_Pos.x - anchorX;
+				float relY = element->m_Pos.y - anchorY;
+				element->m_Pos.x = anchorX + relX * m_contentZoom;
+				element->m_Pos.y = anchorY + relY * m_contentZoom;
+				element->m_Width *= m_contentZoom;
+				element->m_Height *= m_contentZoom;
+			}
+		}
+	}
+
 	// Draw the GUI
 	m_gui->Draw();
+
+	// Restore content elements to original scale
+	if (m_contentZoom != 1.0f)
+	{
+		for (auto& [id, element] : m_gui->m_GuiElementList)
+		{
+			if (id >= 2001 && id < 3000 && element)
+			{
+				// Restore position relative to content panel anchor and restore size
+				float relX = element->m_Pos.x - anchorX;
+				float relY = element->m_Pos.y - anchorY;
+				element->m_Pos.x = anchorX + relX / m_contentZoom;
+				element->m_Pos.y = anchorY + relY / m_contentZoom;
+				element->m_Width /= m_contentZoom;
+				element->m_Height /= m_contentZoom;
+			}
+		}
+	}
 
 	// Draw selection highlight around the selected element
 	if (m_selectedElementID != -1)
@@ -2120,44 +2285,51 @@ void GhostState::Draw()
 			bool isFloating = m_contentSerializer->IsFloating(m_selectedElementID);
 			Color highlightColor = isFloating ? YELLOW : GREEN;
 
-			DrawRectangleLines(
-				static_cast<int>(m_gui->m_Pos.x + selectedElement->m_Pos.x - 2),
-				static_cast<int>(m_gui->m_Pos.y + selectedElement->m_Pos.y - 2),
-				static_cast<int>(selectedElement->m_Width + 4),
-				static_cast<int>(selectedElement->m_Height + 4),
-				highlightColor
-			);
+			// Apply zoom to highlight box if this is a content element
+			if (m_selectedElementID >= 2001 && m_selectedElementID < 3000)
+			{
+				// Scale relative to content panel anchor
+				float relX = selectedElement->m_Pos.x - anchorX;
+				float relY = selectedElement->m_Pos.y - anchorY;
+				DrawRectangleLines(
+					static_cast<int>(m_gui->m_Pos.x + anchorX + relX * m_contentZoom - 2),
+					static_cast<int>(m_gui->m_Pos.y + anchorY + relY * m_contentZoom - 2),
+					static_cast<int>(selectedElement->m_Width * m_contentZoom + 4),
+					static_cast<int>(selectedElement->m_Height * m_contentZoom + 4),
+					highlightColor
+				);
+			}
+			else
+			{
+				// Non-content elements (property panel, etc.) - no zoom
+				DrawRectangleLines(
+					static_cast<int>(m_gui->m_Pos.x + selectedElement->m_Pos.x - 2),
+					static_cast<int>(m_gui->m_Pos.y + selectedElement->m_Pos.y - 2),
+					static_cast<int>(selectedElement->m_Width + 4),
+					static_cast<int>(selectedElement->m_Height + 4),
+					highlightColor
+				);
+			}
 		}
 	}
 
 	// Draw value overlays on property panel scrollbars
 	if (m_propertySerializer && m_selectedElementID != -1)
 	{
-		// List of property scrollbars to overlay values on
-		vector<string> scrollbarProperties = {
-			"PROPERTY_WIDTH", "PROPERTY_HEIGHT", "PROPERTY_VALUE_RANGE",
-			"PROPERTY_COLUMNS", "PROPERTY_HORZ_PADDING", "PROPERTY_VERT_PADDING",
-			"PROPERTY_FONT_SIZE", "PROPERTY_GROUP"
-		};
-
-		for (const auto& propName : scrollbarProperties)
+		// Automatically draw red value text on ALL scrollbars in the property panel (ID >= 3000)
+		for (const auto& [elementID, element] : m_gui->m_GuiElementList)
 		{
-			int scrollbarID = m_propertySerializer->GetElementID(propName);
-			if (scrollbarID != -1 && scrollbarID >= 3000)  // Only property panel elements
+			if (elementID >= 3000 && element && element->m_Type == GUI_SCROLLBAR && element->m_Visible)
 			{
-				auto scrollbarElement = m_gui->GetElement(scrollbarID);
-				if (scrollbarElement && scrollbarElement->m_Type == GUI_SCROLLBAR)
-				{
-					auto scrollbar = static_cast<GuiScrollBar*>(scrollbarElement.get());
+				auto scrollbar = static_cast<GuiScrollBar*>(element.get());
 
-					// Calculate center position for text
-					int textX = static_cast<int>(m_gui->m_Pos.x + scrollbar->m_Pos.x + scrollbar->m_Width / 2);
-					int textY = static_cast<int>(m_gui->m_Pos.y + scrollbar->m_Pos.y + scrollbar->m_Height / 2 - 8);
+				// Calculate center position for text
+				int textX = static_cast<int>(m_gui->m_Pos.x + scrollbar->m_Pos.x + scrollbar->m_Width / 2);
+				int textY = static_cast<int>(m_gui->m_Pos.y + scrollbar->m_Pos.y + scrollbar->m_Height / 2 - 8);
 
-					// Draw the value in red
-					string valueText = to_string(scrollbar->m_Value);
-					DrawText(valueText.c_str(), textX - MeasureText(valueText.c_str(), 16) / 2, textY, 16, RED);
-				}
+				// Draw the value in red
+				string valueText = to_string(scrollbar->m_Value);
+				DrawText(valueText.c_str(), textX - MeasureText(valueText.c_str(), 16) / 2, textY, 16, RED);
 			}
 		}
 	}
@@ -2345,6 +2517,42 @@ void GhostState::OnEnter()
 						Log("ERROR: Failed to load texture: " + spritePath);
 					}
 				}
+			else if (selectedElement && selectedElement->m_Type == GUI_CYCLE && m_editingSpriteProperty == "PROPERTY_SPRITE")
+			{
+				// Update cycle element with new sprite data
+				auto cycleElem = static_cast<GuiCycle*>(selectedElement.get());
+
+				// Load the new sprite texture
+				string spritePath = m_spritePath + sprite.spritesheet;
+				Texture* texture = g_ResourceManager->GetTexture(spritePath);
+
+				if (texture)
+				{
+					// Get current frame count from the element
+					int frameCount = cycleElem->m_FrameCount;
+					if (frameCount < 1) frameCount = 1;
+
+					// Create new frames from horizontal sprite sheet
+					vector<shared_ptr<Sprite>> frames = CreateHorizontalSpriteFrames(
+						texture, sprite.x, sprite.y, sprite.w, sprite.h, frameCount
+					);
+
+					// Update the cycle element
+					cycleElem->m_Frames = frames;
+					cycleElem->m_Width = sprite.w;
+					cycleElem->m_Height = sprite.h;
+
+					// Store full sprite definition in serializer (with x/y/w/h)
+					m_contentSerializer->SetSprite(m_selectedElementID, sprite);
+
+					Log("Updated cycle: " + sprite.spritesheet + " at (" + std::to_string(sprite.x) + "," + std::to_string(sprite.y) +
+						") size (" + std::to_string(sprite.w) + "x" + std::to_string(sprite.h) + ") frames=" + std::to_string(frameCount));
+				}
+				else
+				{
+					Log("ERROR: Failed to load texture: " + spritePath);
+				}
+			}
 			else if (selectedElement && selectedElement->m_Type == GUI_ICONBUTTON && m_editingSpriteProperty == "PROPERTY_SPRITE")
 			{
 				// Update icon button with new sprite data
@@ -2480,6 +2688,9 @@ void GhostState::LoadGhostFile(const std::string& filepath)
 
 	// Store the loaded file path
 	m_loadedGhostFile = filepath;
+
+	// Reset zoom to 100% when loading a new file
+	m_contentZoom = 1.0f;
 
 	// Before creating a new serializer, preserve the loaded fonts from the old one
 	// The fonts need to stay alive as long as the GUI elements using them exist
@@ -3009,6 +3220,47 @@ void GhostState::InsertSprite()
 	FinalizeInsert(ctx.newID, ctx.parentID, "Sprite");
 }
 
+void GhostState::InsertCycle()
+{
+	// Use helper to prepare insertion
+	InsertContext ctx = PrepareInsert("cycle");
+	if (ctx.newID == -1)
+		return;  // Error already logged
+
+	// Get fallback sprite for cycle (same as sprite)
+	string filename;
+	int x, y, width, height;
+	SpriteUtils::GetFallbackForType("sprite", filename, x, y, width, height);
+
+	Log("InsertCycle: Using fallback sprite: " + filename + " at (" + to_string(x) + "," + to_string(y) +
+		") size " + to_string(width) + "x" + to_string(height));
+
+	// Load sprite texture
+	string spritePath = m_spritePath + filename;
+	Texture* texture = g_ResourceManager->GetTexture(spritePath);
+
+	// Create frames for cycle (default to 1 frame)
+	int frameCount = 1;
+	vector<shared_ptr<Sprite>> frames = CreateHorizontalSpriteFrames(
+		texture, x, y, width, height, frameCount
+	);
+
+	// Add cycle at calculated position
+	m_gui->AddCycle(ctx.newID, ctx.absoluteX, ctx.absoluteY, frames, 1.0f, 1.0f, WHITE, 0, true);
+
+	// Store the full sprite definition for serialization
+	GhostSerializer::SpriteDefinition spriteDef;
+	spriteDef.spritesheet = filename;
+	spriteDef.x = x;
+	spriteDef.y = y;
+	spriteDef.w = width;
+	spriteDef.h = height;
+	m_contentSerializer->SetSprite(ctx.newID, spriteDef);
+
+	// Use helper to finalize insertion
+	FinalizeInsert(ctx.newID, ctx.parentID, "Cycle");
+}
+
 void GhostState::InsertTextInput()
 {
 	// Use helper to prepare insertion
@@ -3398,6 +3650,9 @@ void GhostState::UpdatePropertyPanel()
 		case GUI_SPRITE:
 			propertyFile = basePath + "ghost_prop_sprite.ghost";
 			break;
+		case GUI_CYCLE:
+			propertyFile = basePath + "ghost_prop_cycle.ghost";
+			break;
 		case GUI_OCTAGONBOX:
 			propertyFile = basePath + "ghost_prop_octagonbox.ghost";
 			break;
@@ -3485,6 +3740,7 @@ std::string GhostState::GetTypeName(int elementType)
 	case GUI_TEXTBUTTON: return "TextButton";
 	case GUI_ICONBUTTON: return "IconButton";
 	case GUI_SPRITE: return "Sprite";
+	case GUI_CYCLE: return "Cycle";
 	case GUI_TEXTINPUT: return "TextInput";
 	case GUI_CHECKBOX: return "CheckBox";
 	case GUI_RADIOBUTTON: return "RadioButton";
@@ -3862,6 +4118,16 @@ void GhostState::PopulatePropertyPanelFields()
 			PopulateTextInputProperty("PROPERTY_FONT", m_contentSerializer->GetElementFont(m_selectedElementID));
 		if (m_contentSerializer->IsPropertyExplicit(m_selectedElementID, "fontSize"))
 			PopulateScrollbarProperty("PROPERTY_FONT_SIZE", m_contentSerializer->GetElementFontSize(m_selectedElementID));
+	}
+
+	// Populate cycle properties (for cycle elements)
+	if (selectedElement && selectedElement->m_Type == GUI_CYCLE)
+	{
+		auto cycle = static_cast<GuiCycle*>(selectedElement.get());
+
+		PopulateScrollbarProperty("PROPERTY_FRAMECOUNT", cycle->m_FrameCount);
+		PopulateScrollbarProperty("PROPERTY_SCALE", static_cast<int>(cycle->m_ScaleX * 10));
+		PopulateGroupProperty(selectedElement.get());
 	}
 
 	// Update color picker button text colors to match the active colors
@@ -4247,6 +4513,74 @@ void GhostState::UpdateElementFromPropertyPanel()
 		if (UpdateWidthProperty(selectedElement.get())) wasUpdated = true;
 		if (UpdateHeightProperty(selectedElement.get())) wasUpdated = true;
 		// Font and font size are already handled by UpdateFontProperty() and UpdateFontSizeProperty() above
+	}
+
+	// Update cycle properties if changed
+	if (selectedElement && selectedElement->m_Type == GUI_CYCLE)
+	{
+		auto cycle = static_cast<GuiCycle*>(selectedElement.get());
+
+		// Update PROPERTY_FRAMECOUNT - when changed, regenerate frames from current sprite
+		int frameCountInputID = m_propertySerializer->GetElementID("PROPERTY_FRAMECOUNT");
+		if (frameCountInputID != -1)
+		{
+			auto frameCountInput = m_gui->GetElement(frameCountInputID);
+			if (frameCountInput && frameCountInput->m_Type == GUI_SCROLLBAR)
+			{
+				auto frameCountScrollbar = static_cast<GuiScrollBar*>(frameCountInput.get());
+				int newFrameCount = frameCountScrollbar->m_Value;
+				if (newFrameCount > 0 && newFrameCount != cycle->m_FrameCount)
+				{
+					// Get the current sprite definition
+					GhostSerializer::SpriteDefinition sprite = m_contentSerializer->GetSprite(m_selectedElementID);
+					if (!sprite.IsEmpty())
+					{
+						// Load the sprite texture
+						string spritePath = m_spritePath + sprite.spritesheet;
+						Texture* texture = g_ResourceManager->GetTexture(spritePath);
+
+						if (texture)
+						{
+							// Regenerate frames with new frame count
+							vector<shared_ptr<Sprite>> frames = CreateHorizontalSpriteFrames(
+								texture, sprite.x, sprite.y, sprite.w, sprite.h, newFrameCount
+							);
+
+							cycle->m_Frames = frames;
+							cycle->m_FrameCount = newFrameCount;
+
+							// Clamp current frame to new frame count
+							if (cycle->m_CurrentFrame >= newFrameCount)
+								cycle->m_CurrentFrame = newFrameCount - 1;
+
+							Log("Updated cycle " + to_string(m_selectedElementID) + " frame count to " + to_string(newFrameCount));
+							wasUpdated = true;
+						}
+					}
+				}
+			}
+		}
+
+		// Update PROPERTY_SCALE
+		int scaleInputID = m_propertySerializer->GetElementID("PROPERTY_SCALE");
+		if (scaleInputID != -1)
+		{
+			auto scaleInput = m_gui->GetElement(scaleInputID);
+			if (scaleInput && scaleInput->m_Type == GUI_SCROLLBAR)
+			{
+				auto scaleScrollbar = static_cast<GuiScrollBar*>(scaleInput.get());
+				float newScale = scaleScrollbar->m_Value / 10.0f; // Map 0-100 to 0-10
+				if (cycle->m_ScaleX != newScale || cycle->m_ScaleY != newScale)
+				{
+					cycle->m_ScaleX = newScale;
+					cycle->m_ScaleY = newScale;
+					Log("Updated cycle " + to_string(m_selectedElementID) + " scale to: " + to_string(newScale));
+					wasUpdated = true;
+				}
+			}
+		}
+
+		if (UpdateGroupProperty(selectedElement.get())) wasUpdated = true;
 	}
 
 	// PROPERTY_SPRITE is now a button that opens the sprite picker dialog

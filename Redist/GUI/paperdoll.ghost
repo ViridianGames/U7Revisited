@@ -1,0 +1,190 @@
+{
+  "gui": {
+    "elements": [
+      {
+        "type": "panel",
+        "position": [
+          -1,
+          -1
+        ],
+        "size": [
+          209,
+          214
+        ],
+        "backgroundColor": [
+          60,
+          60,
+          60,
+          255
+        ],
+        "filled": true,
+        "layout": "horz",
+        "horzPadding": 5,
+        "vertPadding": 5,
+        "font": "babyblocks.ttf",
+        "fontSize": 30,
+        "elements": [
+          {
+            "name": "PAPERDOLL",
+            "type": "sprite",
+            "position": [
+              -1,
+              -1
+            ],
+            "sprite": {
+              "spritesheet": "GUI/biggumps.png",
+              "x": 746,
+              "y": 963,
+              "w": 200,
+              "h": 205
+            },
+            "scaleX": 1.0,
+            "scaleY": 1.0
+          },
+          {
+            "name": "PEACE",
+            "type": "cycle",
+            "position": [
+              46,
+              119
+            ],
+            "sprite": {
+              "spritesheet": "GUI/biggumps.png",
+              "x": 1079,
+              "y": 0,
+              "w": 38,
+              "h": 34
+            },
+            "frameCount": 2,
+            "scaleX": 1.0,
+            "scaleY": 1.0
+          },
+          {
+            "name": "HALO",
+            "type": "cycle",
+            "position": [
+              51,
+              153
+            ],
+            "sprite": {
+              "spritesheet": "GUI/biggumps.png",
+              "x": 911,
+              "y": 0,
+              "w": 24,
+              "h": 14
+            },
+            "frameCount": 2,
+            "scaleX": 1.0,
+            "scaleY": 1.0
+          },
+          {
+            "name": "FORMATION",
+            "type": "cycle",
+            "position": [
+              49,
+              171
+            ],
+            "sprite": {
+              "spritesheet": "GUI/biggumps.png",
+              "x": 911,
+              "y": 48,
+              "w": 29,
+              "h": 29
+            },
+            "frameCount": 2,
+            "scaleX": 1.0,
+            "scaleY": 1.0
+          },
+          {
+            "name": "CARRY",
+            "type": "textarea",
+            "position": [
+              102,
+              186
+            ],
+            "text": "27/36",
+            "font": "pinch.ttf",
+            "fontSize": 29,
+            "textColor": [
+              55,
+              19,
+              1,
+              255
+            ],
+            "size": [
+              53,
+              12
+            ],
+            "justified": 0
+          },
+          {
+            "name": "HEART",
+            "type": "iconbutton",
+            "position": [
+              166,
+              181
+            ],
+            "sprite": {
+              "spritesheet": "GUI/biggumps.png",
+              "x": 966,
+              "y": 0,
+              "w": 26,
+              "h": 20
+            },
+            "color": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "scale": 1.0
+          },
+          {
+            "name": "CLOSE",
+            "type": "iconbutton",
+            "position": [
+              10,
+              161
+            ],
+            "sprite": {
+              "spritesheet": "GUI/biggumps.png",
+              "x": 501,
+              "y": 18,
+              "w": 32,
+              "h": 32
+            },
+            "color": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "scale": 1.0
+          },
+          {
+            "name": "DISK",
+            "type": "iconbutton",
+            "position": [
+              167,
+              158
+            ],
+            "sprite": {
+              "spritesheet": "GUI/biggumps.png",
+              "x": 1023,
+              "y": 0,
+              "w": 27,
+              "h": 20
+            },
+            "color": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "scale": 1.0
+          }
+        ]
+      }
+    ]
+  }
+}

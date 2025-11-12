@@ -1007,6 +1007,162 @@ void GuiSprite::Update()
 	Tween::Update();
 }
 
+// CreateHorizontalSpriteFrames - Helper function to generate sprite frames from horizontal sprite sheet
+std::vector<std::shared_ptr<Sprite>> CreateHorizontalSpriteFrames(
+	Texture* texture,
+	int firstFrameX, int firstFrameY,
+	int frameWidth, int frameHeight,
+	int frameCount)
+{
+	std::vector<std::shared_ptr<Sprite>> frames;
+	frames.reserve(frameCount);
+
+	for (int i = 0; i < frameCount; i++)
+	{
+		int xOffset = firstFrameX + (frameWidth * i);
+		auto sprite = std::make_shared<Sprite>(
+			texture, xOffset, firstFrameY, frameWidth, frameHeight
+		);
+		frames.push_back(sprite);
+	}
+
+	return frames;
+}
+
+// GUICYCLE
+
+GuiCycle::GuiCycle(Gui* parent)
+{
+	m_Gui = parent;
+	m_Visible = true;
+	m_CurrentFrame = 0;
+	m_FrameCount = 0;
+}
+
+void GuiCycle::Init(int ID, int posx, int posy,
+					std::vector<std::shared_ptr<Sprite>> frames,
+					float scalex, float scaley, Color color,
+					int group, int active)
+{
+	m_Type = GUI_CYCLE;
+	m_ID = ID;
+	m_Pos = Vector2{(float)posx, (float)posy};
+	m_ScaleX = scalex;
+	m_ScaleY = scaley;
+	m_Color = color;
+	m_Group = group;
+	m_Active = active;
+	m_Visible = true;
+
+	m_Frames = frames;
+	m_FrameCount = (int)frames.size();
+	m_CurrentFrame = 0;
+
+	// Set width/height from first frame
+	if (!frames.empty() && frames[0])
+	{
+		m_Width = frames[0]->m_sourceRect.width;
+		m_Height = frames[0]->m_sourceRect.height;
+	}
+}
+
+void GuiCycle::Update()
+{
+	Tween::Update();
+
+	m_Hovered = false;
+	m_Clicked = false;
+	m_Down = false;
+
+	if (!m_Gui->m_AcceptingInput || !m_Visible || !m_Active)
+		return;
+
+	if (m_Frames.empty())
+		return;
+
+	// Calculate screen rectangle (adjusted for GUI position and scale)
+	Rectangle adjustedRect = {
+		m_Gui->m_Pos.x + m_Pos.x,
+		m_Gui->m_Pos.y + m_Pos.y,
+		m_Width * m_ScaleX,
+		m_Height * m_ScaleY
+	};
+
+	// Check hover
+	if (IsMouseInRect((int)adjustedRect.x, (int)adjustedRect.y,
+					  (int)adjustedRect.width, (int)adjustedRect.height))
+	{
+		m_Hovered = true;
+	}
+
+	// Check button down
+	if (IsLeftButtonDownInRect((int)adjustedRect.x, (int)adjustedRect.y,
+								(int)adjustedRect.width, (int)adjustedRect.height))
+	{
+		m_Hovered = false;
+		m_Down = true;
+	}
+
+	// Check click release
+	else if (WasLeftButtonClickedInRect((int)adjustedRect.x, (int)adjustedRect.y,
+										 (int)adjustedRect.width, (int)adjustedRect.height))
+	{
+		m_Down = false;
+		m_Clicked = true;
+		NextFrame();
+		m_Gui->m_ActiveElement = m_ID;
+	}
+}
+
+void GuiCycle::Draw()
+{
+	if (!m_Visible || m_Frames.empty())
+		return;
+
+	if (m_CurrentFrame >= 0 && m_CurrentFrame < m_FrameCount)
+	{
+		auto& sprite = m_Frames[m_CurrentFrame];
+		if (sprite)
+		{
+			Rectangle dest = {
+				m_Gui->m_Pos.x + m_Pos.x,
+				m_Gui->m_Pos.y + m_Pos.y,
+				m_Width * m_ScaleX,
+				m_Height * m_ScaleY
+			};
+			sprite->DrawScaled(dest, Vector2{0, 0}, 0, m_Color);
+		}
+	}
+}
+
+int GuiCycle::GetValue()
+{
+	return m_CurrentFrame;
+}
+
+void GuiCycle::SetFrameIndex(int index)
+{
+	if (index >= 0 && index < m_FrameCount)
+		m_CurrentFrame = index;
+}
+
+int GuiCycle::GetFrameIndex() const
+{
+	return m_CurrentFrame;
+}
+
+void GuiCycle::NextFrame()
+{
+	if (m_FrameCount > 0)
+		m_CurrentFrame = (m_CurrentFrame + 1) % m_FrameCount;
+}
+
+void GuiCycle::PreviousFrame()
+{
+	if (m_FrameCount > 0)
+		m_CurrentFrame = (m_CurrentFrame - 1 + m_FrameCount) % m_FrameCount;
+}
+
 //  Just puts an image at a certain location.  Non-interactive.
 void GuiOctagonBox::Init(int ID, int posx, int posy, int width, int height, std::vector<std::shared_ptr<Sprite> > borders,
 	Color color, int group, int active)

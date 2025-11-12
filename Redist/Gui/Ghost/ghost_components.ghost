@@ -9,8 +9,8 @@
           -1
         ],
         "size": [
-          515.0,
-          235.0
+          549,
+          265
         ],
         "backgroundColor": [
           80,
@@ -126,13 +126,39 @@
             "text": "Stretch"
           },
           {
-            "name": "LIST",
             "type": "textbutton",
             "position": [
               -1,
               -1
             ],
             "text": "List"
+          },
+          {
+            "name": "CYCLE",
+            "type": "textbutton",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Cycle",
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "backgroundColor": [
+              80,
+              80,
+              80,
+              255
+            ],
+            "borderColor": [
+              255,
+              255,
+              255,
+              255
+            ]
           }
         ]
       }

@@ -757,6 +757,105 @@ void GhostSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, c
 			// Add the sprite element
 			gui->AddSprite(id, absoluteX, absoluteY, sprite, scaleX, scaleY, color, group, active);
 		}
+		else if (type == "cycle")
+		{
+			// Parse sprite definition (same as sprite)
+			SpriteDefinition spriteDef;
+			if (element.contains("sprite"))
+			{
+				if (element["sprite"].is_string())
+				{
+					// Old format: "sprite": "filename.png"
+					string spriteName = element["sprite"].get<string>();
+					// Load full texture and store definition
+					string spritePath = spriteName.empty() ? "" : s_baseSpritePath + spriteName;
+					Texture loadedTexture = LoadTexture(spritePath.c_str());
+					spriteDef.spritesheet = spriteName;
+					spriteDef.x = 0;
+					spriteDef.y = 0;
+					spriteDef.w = (loadedTexture.id != 0) ? loadedTexture.width : 48;
+					spriteDef.h = (loadedTexture.id != 0) ? loadedTexture.height : 48;
+					if (loadedTexture.id != 0)
+						UnloadTexture(loadedTexture);  // We'll reload it below
+				}
+				else if (element["sprite"].is_object())
+				{
+					// New format: "sprite": {"spritesheet": "file.png", "x": 0, "y": 0, "w": 32, "h": 32}
+					auto spriteObj = element["sprite"];
+					spriteDef.spritesheet = spriteObj.value("spritesheet", "");
+					spriteDef.x = spriteObj.value("x", 0);
+					spriteDef.y = spriteObj.value("y", 0);
+					spriteDef.w = spriteObj.value("w", 48);
+					spriteDef.h = spriteObj.value("h", 48);
+				}
+			}
+
+			// Store sprite definition
+			SetSprite(id, spriteDef);
+
+			// Get frame count (default to 1)
+			int frameCount = element.value("frameCount", 1);
+
+			// Get scale with defaults
+			float scaleX = element.value("scaleX", 1.0f);
+			float scaleY = element.value("scaleY", 1.0f);
+
+			// Get color with inheritance
+			Color color = WHITE;
+			if (element.contains("color"))
+			{
+				m_explicitProperties[id].insert("color");
+				auto arr = element["color"];
+				color = Color{ (unsigned char)arr[0], (unsigned char)arr[1],
+				              (unsigned char)arr[2], (unsigned char)arr[3] };
+			}
+			else if (!inheritedProps.is_null() && inheritedProps.contains("color"))
+			{
+				auto arr = inheritedProps["color"];
+				color = Color{ (unsigned char)arr[0], (unsigned char)arr[1],
+				              (unsigned char)arr[2], (unsigned char)arr[3] };
+			}
+
+			// Add parent offsets to make position absolute
+			int absoluteX = parentX + posx;
+			int absoluteY = parentY + posy;
+
+			// Load the sprite texture with the specified rectangle
+			string spritePath = spriteDef.spritesheet.empty() ? "" : s_baseSpritePath + spriteDef.spritesheet;
+			Texture loadedTexture = LoadTexture(spritePath.c_str());
+
+			// Create frames using helper function
+			vector<shared_ptr<Sprite>> frames;
+			if (loadedTexture.id == 0)
+			{
+				Log("GhostSerializer::ParseElements - Failed to load cycle sprite: " + spritePath);
+				// Create default frames
+				for (int i = 0; i < frameCount; i++)
+				{
+					auto sprite = make_shared<Sprite>();
+					sprite->m_sourceRect = Rectangle{0, 0, 32, 32};
+					sprite->m_texture = nullptr;
+					frames.push_back(sprite);
+				}
+			}
+			else
+			{
+				// Allocate texture on heap and copy the loaded texture
+				Texture* texture = new Texture();
+				*texture = loadedTexture;
+
+				// Use CreateHorizontalSpriteFrames to generate frames
+				frames = CreateHorizontalSpriteFrames(
+					texture,
+					spriteDef.x, spriteDef.y,
+					spriteDef.w, spriteDef.h,
+					frameCount
+				);
+			}
+
+			// Add the cycle element
+			gui->AddCycle(id, absoluteX, absoluteY, frames, scaleX, scaleY, color, group, active);
+		}
 		else if (type == "checkbox")
 		{
 			auto size = element["size"];
@@ -1808,6 +1907,9 @@ ghost_json GhostSerializer::SerializeElement(int elementID, Gui* gui, int parent
 		case GUI_SPRITE:
 			type = "sprite";
 			break;
+		case GUI_CYCLE:
+			type = "cycle";
+			break;
 		case GUI_SCROLLBAR:
 			type = "scrollbar";
 			break;
@@ -2071,6 +2173,36 @@ ghost_json GhostSerializer::SerializeElement(int elementID, Gui* gui, int parent
 			const auto& explicitProps = explicitIt->second;
 			if (explicitProps.count("color") > 0)
 				elementJson["color"] = { sprite->m_Color.r, sprite->m_Color.g, sprite->m_Color.b, sprite->m_Color.a };
+		}
+	}
+	else if (element->m_Type == GUI_CYCLE)
+	{
+		auto cycle = static_cast<GuiCycle*>(element.get());
+
+		// Serialize sprite definition (with x/y/w/h)
+		SpriteDefinition spriteDef = GetSprite(elementID);
+		if (!spriteDef.IsEmpty())
+		{
+			elementJson["sprite"] = {
+				{"spritesheet", spriteDef.spritesheet},
+				{"x", spriteDef.x},
+				{"y", spriteDef.y},
+				{"w", spriteDef.w},
+				{"h", spriteDef.h}
+			};
+		}
+
+		elementJson["frameCount"] = cycle->m_FrameCount;
+		elementJson["scaleX"] = cycle->m_ScaleX;
+		elementJson["scaleY"] = cycle->m_ScaleY;
+
+		// Only serialize color if explicitly set (not inherited)
+		auto explicitIt = m_explicitProperties.find(elementID);
+		if (explicitIt != m_explicitProperties.end())
+		{
+			const auto& explicitProps = explicitIt->second;
+			if (explicitProps.count("color") > 0)
+				elementJson["color"] = { cycle->m_Color.r, cycle->m_Color.g, cycle->m_Color.b, cycle->m_Color.a };
 		}
 	}
 	else if (element->m_Type == GUI_SCROLLBAR)

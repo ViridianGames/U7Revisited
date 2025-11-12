@@ -7,6 +7,7 @@
 #include "Gui.h"
 #include "ResourceManager.h"
 #include "Config.h"
+#include "Logging.h"
 
 #include "raylib.h"
 
@@ -336,6 +337,17 @@ GuiSprite* Gui::AddSprite(int ID, int posx, int posy, std::shared_ptr<Sprite> sp
 	guiSprite->Init(ID, posx, posy, sprite, scalex, scaley, color, group, active);
 	m_GuiElementList[ID] = (guiSprite);
 	return guiSprite.get();
+}
+
+GuiCycle* Gui::AddCycle(int ID, int posx, int posy,
+	std::vector<std::shared_ptr<Sprite>> frames,
+	float scalex, float scaley, Color color,
+	int group, int active)
+{
+	shared_ptr<GuiCycle> guiCycle = make_shared<GuiCycle>(this);
+	guiCycle->Init(ID, posx, posy, frames, scalex, scaley, color, group, active);
+	m_GuiElementList[ID] = guiCycle;
+	return guiCycle.get();
 }
 
 GuiOctagonBox* Gui::AddOctagonBox(int ID, int posx, int posy, int width, int height, std::vector<std::shared_ptr<Sprite> > borders,

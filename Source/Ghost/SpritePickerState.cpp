@@ -240,13 +240,17 @@ void SpritePickerState::Update()
 
 					Log("Reset sprite coordinates to full texture: " + std::to_string(texture->width) + "x" + std::to_string(texture->height));
 
-					// Update scrollbar values to reflect new coordinates
+					// Update scrollbar values AND ranges to reflect new texture dimensions
 					int xScrollbarID = m_window->GetElementID("SPRITE_X");
 					if (xScrollbarID != -1)
 					{
 						auto xElem = gui->GetElement(xScrollbarID);
 						if (xElem && xElem->m_Type == GUI_SCROLLBAR)
-							static_cast<GuiScrollBar*>(xElem.get())->m_Value = m_x;
+						{
+							auto scrollbar = static_cast<GuiScrollBar*>(xElem.get());
+							scrollbar->m_ValueRange = texture->width;
+							scrollbar->m_Value = m_x;
+						}
 					}
 
 					int yScrollbarID = m_window->GetElementID("SPRITE_Y");
@@ -254,7 +258,11 @@ void SpritePickerState::Update()
 					{
 						auto yElem = gui->GetElement(yScrollbarID);
 						if (yElem && yElem->m_Type == GUI_SCROLLBAR)
-							static_cast<GuiScrollBar*>(yElem.get())->m_Value = m_y;
+						{
+							auto scrollbar = static_cast<GuiScrollBar*>(yElem.get());
+							scrollbar->m_ValueRange = texture->height;
+							scrollbar->m_Value = m_y;
+						}
 					}
 
 					int widthScrollbarID = m_window->GetElementID("SPRITE_WIDTH");
@@ -262,7 +270,11 @@ void SpritePickerState::Update()
 					{
 						auto wElem = gui->GetElement(widthScrollbarID);
 						if (wElem && wElem->m_Type == GUI_SCROLLBAR)
-							static_cast<GuiScrollBar*>(wElem.get())->m_Value = m_width;
+						{
+							auto scrollbar = static_cast<GuiScrollBar*>(wElem.get());
+							scrollbar->m_ValueRange = texture->width;
+							scrollbar->m_Value = m_width;
+						}
 					}
 
 					int heightScrollbarID = m_window->GetElementID("SPRITE_HEIGHT");
@@ -270,7 +282,11 @@ void SpritePickerState::Update()
 					{
 						auto hElem = gui->GetElement(heightScrollbarID);
 						if (hElem && hElem->m_Type == GUI_SCROLLBAR)
-							static_cast<GuiScrollBar*>(hElem.get())->m_Value = m_height;
+						{
+							auto scrollbar = static_cast<GuiScrollBar*>(hElem.get());
+							scrollbar->m_ValueRange = texture->height;
+							scrollbar->m_Value = m_height;
+						}
 					}
 				}
 				else
