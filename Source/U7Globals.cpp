@@ -417,7 +417,7 @@ void UpdateSortedVisibleObjects()
 	}
 
 	//  Is a gump open?  Are we over it?  See if there's an object under our mouse.
-	if (!g_gumpManager->m_GumpList.empty() && g_gumpManager->IsMouseOverGump())
+	if (!g_gumpManager->m_GumpList.empty() && g_gumpManager->IsMouseOverGump() && g_gumpManager->m_gumpUnderMouse != nullptr)
 	{
 		g_objectUnderMousePointer = g_gumpManager->m_gumpUnderMouse->GetObjectUnderMousePointer();
 	}
