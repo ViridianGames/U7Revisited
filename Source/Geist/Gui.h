@@ -5,6 +5,7 @@
 #include <vector>
 #include <memory>
 #include <map>
+#include <functional>
 
 #include "Object.h"
 #include "Primitives.h"
@@ -167,6 +168,9 @@ public:
 	Vector2 m_DragOffset;
 	int m_DragAreaHeight = 20;
 	bool IsMouseInDragArea() const;
+
+	// Callback for pixel-perfect drag area validation (used by gumps to check transparency)
+	std::function<bool(Vector2)> m_DragAreaValidationCallback = nullptr;
 
 	bool m_isDone = false;
 	int m_doneButtonId = -3;

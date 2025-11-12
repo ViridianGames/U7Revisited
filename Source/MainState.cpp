@@ -10,6 +10,7 @@
 #include "MainState.h"
 #include "rlgl.h"
 #include "U7Gump.h"
+#include "U7GumpPaperdoll.h"
 #include "ConversationState.h"
 #include "GumpManager.h"
 #include "Pathfinding.h"
@@ -541,10 +542,36 @@ void MainState::UpdateInput()
 		}
 	}
 
-	if (WasMouseButtonDoubleClicked(MOUSE_BUTTON_LEFT) && g_objectUnderMousePointer != nullptr && !g_mouseOverUI)
+	if (WasMouseButtonDoubleClicked(MOUSE_BUTTON_LEFT) && g_objectUnderMousePointer != nullptr && !g_mouseOverUI && !g_gumpManager->m_isMouseOverGump)
 	{
+		// Check if this is the avatar or a party member NPC
+		bool isAvatar = g_objectUnderMousePointer->m_isNPC && g_objectUnderMousePointer->m_NPCID == 0;
+		bool isPartyMember = g_objectUnderMousePointer->m_isNPC &&
+		                     g_Player->NPCIDInParty(g_objectUnderMousePointer->m_NPCID);
+
+		if (isAvatar || isPartyMember)
+		{
+			int npcId = g_objectUnderMousePointer->m_NPCID;
+			bool anyPaperdollOpen = HasAnyPaperdollOpen();
+
+			Log("Double-clicked NPC " + std::to_string(npcId) +
+			    ", isAvatar=" + std::to_string(isAvatar) +
+			    ", anyPaperdollOpen=" + std::to_string(anyPaperdollOpen));
+
+			if (isAvatar || anyPaperdollOpen)
+			{
+				// Open/toggle paperdoll
+				TogglePaperdoll(npcId);
+			}
+			else
+			{
+				// No paperdoll open and not avatar - run normal NPC interaction
+				Log("Running normal interaction for NPC " + std::to_string(npcId));
+				g_objectUnderMousePointer->Interact(1);
+			}
+		}
 		// Handle doors and objects with scripts/conversations
-		if (g_objectUnderMousePointer->m_objectData->m_isDoor ||
+		else if (g_objectUnderMousePointer->m_objectData->m_isDoor ||
 		    g_objectUnderMousePointer->m_hasConversationTree ||
 		    g_objectUnderMousePointer->m_shapeData->m_luaScript != "default")
 		{
@@ -1037,6 +1064,54 @@ void MainState::OpenGump(int id)
 	gump->OnEnter();
 
 	g_gumpManager->AddGump(gump);
+}
+
+bool MainState::HasAnyPaperdollOpen()
+{
+	for (auto& gump : g_gumpManager->m_GumpList)
+	{
+		if (dynamic_cast<GumpPaperdoll*>(gump.get()))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+GumpPaperdoll* MainState::FindPaperdollByNpcId(int npcId)
+{
+	for (auto& gump : g_gumpManager->m_GumpList)
+	{
+		GumpPaperdoll* paperdoll = dynamic_cast<GumpPaperdoll*>(gump.get());
+		if (paperdoll && paperdoll->GetNpcId() == npcId)
+		{
+			return paperdoll;
+		}
+	}
+	return nullptr;
+}
+
+void MainState::TogglePaperdoll(int npcId)
+{
+	Log("TogglePaperdoll for NPC " + std::to_string(npcId));
+
+	// Check if paperdoll already open for this NPC
+	GumpPaperdoll* existing = FindPaperdollByNpcId(npcId);
+
+	if (existing)
+	{
+		// Close existing paperdoll
+		Log("Closing existing paperdoll for NPC " + std::to_string(npcId));
+		existing->OnExit();
+		return;
+	}
+
+	// Create new paperdoll
+	Log("Creating new paperdoll for NPC " + std::to_string(npcId));
+	auto paperdoll = std::make_shared<GumpPaperdoll>();
+	paperdoll->Setup(npcId);
+	paperdoll->OnEnter();
+	g_gumpManager->AddGump(paperdoll);
 }
 
 void MainState::Draw()

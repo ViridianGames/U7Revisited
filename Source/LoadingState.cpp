@@ -1748,6 +1748,12 @@ void LoadingState::LoadInitialGameState()
 
 				g_NPCData[thisNPC.id] = make_unique<NPCData>(thisNPC);
 
+				// Initialize equipment slots to empty
+				for (int slot = 0; slot < static_cast<int>(EquipmentSlot::SLOT_COUNT); slot++)
+				{
+					g_NPCData[thisNPC.id]->m_equipment[static_cast<EquipmentSlot>(slot)] = -1;
+				}
+
 				g_objectList[nextID].get()->NPCInit(g_NPCData[thisNPC.id].get());
 				//g_ObjectList[nextID].get()->m_NPCID = thisNPC.id;
 				//g_ObjectList[nextID]->m_isNPC = true;

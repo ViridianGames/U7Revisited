@@ -77,7 +77,14 @@ void Gui::Update()
 
 		if (IsMouseInDragArea())
 		{
-			if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+			// Check pixel-perfect validation if callback is set
+			bool isValidDragArea = true;
+			if (m_DragAreaValidationCallback != nullptr)
+			{
+				isValidDragArea = m_DragAreaValidationCallback(mousePos);
+			}
+
+			if (isValidDragArea && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
 			{
 				m_IsDragging = true;
 				m_DragOffset.x = mousePos.x - m_Pos.x;

@@ -103,6 +103,11 @@ void Gump::OnEnter()
 	m_gui.SetDoneButtonId(1005);
 	m_gui.m_Draggable = true;
 
+	// Set up pixel-perfect drag area validation
+	m_gui.m_DragAreaValidationCallback = [this](Vector2 mousePos) {
+		return this->IsMouseOverSolidPixel(mousePos);
+	};
+
 	U7Object* thisObject = GetObjectFromID(m_containerId);
 	if(thisObject->m_shouldBeSorted)
 	{
@@ -244,5 +249,40 @@ void Gump::SortContainer()
     }
 
 	thisObject->m_isSorted = true;
+}
+
+bool Gump::IsMouseOverSolidPixel(Vector2 mousePos)
+{
+	// Get the biggumps texture (used for container gump backgrounds)
+	Texture* backgroundTexture = g_ResourceManager->GetTexture("Images/GUI/biggumps.png");
+
+	// If no texture, default to solid (always block input)
+	if (!backgroundTexture)
+		return true;
+
+	// Convert mouse position to local gump coordinates
+	float localX = mousePos.x - m_gui.m_Pos.x;
+	float localY = mousePos.y - m_gui.m_Pos.y;
+
+	// Calculate pixel position in the source texture
+	int texX = int(m_containerData.m_texturePos.x + localX);
+	int texY = int(m_containerData.m_texturePos.y + localY);
+
+	// Load the texture as an image to check pixel alpha
+	Image img = LoadImageFromTexture(*backgroundTexture);
+
+	// Check bounds
+	if (texX < 0 || texY < 0 || texX >= img.width || texY >= img.height)
+	{
+		UnloadImage(img);
+		return false;
+	}
+
+	// Get the pixel color at the position
+	Color pixelColor = GetImageColor(img, texX, texY);
+	UnloadImage(img);
+
+	// Return true if alpha > 0 (non-transparent)
+	return pixelColor.a > 0;
 }
 

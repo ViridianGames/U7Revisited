@@ -1,5 +1,6 @@
 #include "GumpManager.h"
 #include "U7Gump.h"
+#include "U7GumpPaperdoll.h"
 #include "Gui.h"
 #include "Logging.h"
 #include <memory>
@@ -42,7 +43,16 @@ void GumpManager::Update()
 	for (vector<std::shared_ptr<Gump>>::iterator gump = m_GumpList.begin(); gump != m_GumpList.end();)
 	{
 		(*gump).get()->Update();
-		if (CheckCollisionPointRec(mousePos, Rectangle{ gump->get()->m_gui.m_Pos.x, gump->get()->m_gui.m_Pos.y, gump->get()->m_gui.m_Width, gump->get()->m_gui.m_Height }))
+		Rectangle gumpRect = { gump->get()->m_gui.m_Pos.x, gump->get()->m_gui.m_Pos.y, gump->get()->m_gui.m_Width, gump->get()->m_gui.m_Height };
+		bool collision = CheckCollisionPointRec(mousePos, gumpRect);
+
+		// If bounding box collision, check pixel-perfect collision
+		if (collision)
+		{
+			collision = gump->get()->IsMouseOverSolidPixel(mousePos);
+		}
+
+		if (collision)
 		{
 			m_isMouseOverGump = true;
 			m_gumpUnderMouse = gump->get();
@@ -78,6 +88,10 @@ void GumpManager::Update()
 		//  Dragging from inventory to inventory
 		for (auto gump : g_gumpManager->m_GumpList)
 		{
+			// Skip paperdolls - they don't have container objects
+			if (dynamic_cast<GumpPaperdoll*>(gump.get()))
+				continue;
+
 			if (CheckCollisionPointRec(mousePos, Rectangle{ gump->m_gui.m_Pos.x, gump->m_gui.m_Pos.y, gump->m_gui.m_Width, gump->m_gui.m_Height}))
 			{
 				if (CheckCollisionPointRec(mousePos, Rectangle{ gump->m_gui.m_Pos.x + (gump->m_containerData.m_boxOffset.x), gump->m_gui.m_Pos.y + (gump->m_containerData.m_boxOffset.y),

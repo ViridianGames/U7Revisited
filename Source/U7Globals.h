@@ -30,6 +30,7 @@
 #include "raylib.h"
 #include "raymath.h"
 #include "U7Player.h"
+#include "U7GumpPaperdoll.h"
 
 //class ConversationState;
 class MainState;
@@ -203,6 +204,32 @@ struct NPCData
 
 	int m_currentActivity;
 	int m_objectID;
+
+	// Equipment system - maps slot to object ID (-1 = empty slot)
+	std::map<EquipmentSlot, int> m_equipment;
+
+	// Helper methods
+	int GetEquippedItem(EquipmentSlot slot) const
+	{
+		auto it = m_equipment.find(slot);
+		return (it != m_equipment.end()) ? it->second : -1;
+	}
+
+	void SetEquippedItem(EquipmentSlot slot, int objectId)
+	{
+		m_equipment[slot] = objectId;
+	}
+
+	void UnequipItem(EquipmentSlot slot)
+	{
+		m_equipment[slot] = -1;
+	}
+
+	bool HasItemEquipped(EquipmentSlot slot) const
+	{
+		auto it = m_equipment.find(slot);
+		return (it != m_equipment.end() && it->second != -1);
+	}
 };
 
 extern std::string g_version;

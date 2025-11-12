@@ -13,6 +13,7 @@ class Gui;
 class GuiElement;
 class GumpManager;
 class GhostWindow;
+class GumpPaperdoll;
 
 enum class MainStateModes
 {
@@ -38,6 +39,11 @@ public:
    void SetupGame();
 
    void OpenGump(int id);
+
+   // Paperdoll management
+   bool HasAnyPaperdollOpen();
+   void TogglePaperdoll(int npcId);
+   GumpPaperdoll* FindPaperdollByNpcId(int npcId);
 
    void DrawStats();
    void UpdateStats();
