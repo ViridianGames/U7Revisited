@@ -386,6 +386,16 @@ void GhostSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, c
 			m_elementNameToID[prefixedName] = id;
 		}
 
+		// Store hover text if provided (for tooltips)
+		if (element.contains("hoverText"))
+		{
+			string hoverText = element["hoverText"];
+			if (!hoverText.empty())
+			{
+				SetElementHoverText(id, hoverText);
+			}
+		}
+
 		// Track tree structure for real elements
 		// If this is a root element (parentElementID == -1), store as root
 		if (parentElementID == -1 && m_rootElementID == -1)

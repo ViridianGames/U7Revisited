@@ -28,6 +28,7 @@
           {
             "name": "SCHEDULE_BUTTON",
             "type": "iconbutton",
+            "hoverText": "Toggle NPC pathfinding",
             "position": [
               -1,
               -1
@@ -50,6 +51,7 @@
           {
             "name": "SHAPETABLE_BUTTON",
             "type": "iconbutton",
+            "hoverText": "Toggle Shape Editor",
             "position": [
               -1,
               -1
@@ -72,6 +74,7 @@
           {
             "name": "GHOST_BUTTON",
             "type": "iconbutton",
+            "hoverText": "Open Ghost Editor",
             "position": [
               -1,
               -1
@@ -94,6 +97,7 @@
           {
             "name": "RENAME_BUTTON",
             "type": "iconbutton",
+            "hoverText": "Rename script tool",
             "position": [
               -1,
               -1

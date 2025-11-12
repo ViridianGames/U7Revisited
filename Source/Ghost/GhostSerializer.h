@@ -251,6 +251,18 @@ public:
 		return it->second.count(propertyName) > 0;
 	}
 
+	// Hover text metadata methods
+	void SetElementHoverText(int elementID, const std::string& hoverText)
+	{
+		m_elementHoverTexts[elementID] = hoverText;
+	}
+
+	std::string GetElementHoverText(int elementID) const
+	{
+		auto it = m_elementHoverTexts.find(elementID);
+		return (it != m_elementHoverTexts.end()) ? it->second : "";
+	}
+
 	// Floating element methods
 	void SetFloating(int elementID, bool floating)
 	{
@@ -343,6 +355,7 @@ private:
 	// Store values for properties that we need to serialize (can't be extracted from runtime objects)
 	std::map<int, std::string> m_elementFonts;  // Maps element ID -> font name
 	std::map<int, int> m_elementFontSizes;  // Maps element ID -> font size
+	std::map<int, std::string> m_elementHoverTexts;  // Maps element ID -> hover text for tooltips
 
 	// Static base paths for resources
 	static std::string s_baseFontPath;

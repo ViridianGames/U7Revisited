@@ -11,6 +11,8 @@ GhostWindow::GhostWindow(const std::string& ghostFilePath, const std::string& co
 	, m_visible(false)
 	, m_modal(modal)
 	, m_valid(false)
+	, m_hoveredElementID(-1)
+	, m_hoverStartTime(0.0f)
 {
 	// Create GUI and serializer
 	m_gui = new Gui();
@@ -60,6 +62,44 @@ void GhostWindow::Update()
 	if (m_visible && m_gui && m_valid)
 	{
 		m_gui->Update();
+
+		// Track which element is being hovered for tooltip display
+		Vector2 mousePos = GetMousePosition();
+		int hoveredID = -1;
+
+		// Check all elements to find which one is under mouse
+		for (const auto& pair : m_gui->m_GuiElementList)
+		{
+			int elementID = pair.first;
+			const auto& element = pair.second;
+
+			// Check if element has hover text
+			std::string hoverText = m_serializer->GetElementHoverText(elementID);
+			if (hoverText.empty())
+				continue;  // Skip elements without hover text
+
+			// Check if mouse is over this element
+			Rectangle bounds = {element->m_Pos.x, element->m_Pos.y, element->m_Width, element->m_Height};
+			if (CheckCollisionPointRec(mousePos, bounds))
+			{
+				hoveredID = elementID;
+				break;  // Found hovered element
+			}
+		}
+
+		// Update hover tracking
+		if (hoveredID != m_hoveredElementID)
+		{
+			// Different element hovered (or none)
+			m_hoveredElementID = hoveredID;
+			m_hoverStartTime = GetTime();
+		}
+	}
+	else
+	{
+		// Window not visible, clear hover state
+		m_hoveredElementID = -1;
+		m_hoverStartTime = 0.0f;
 	}
 }
 
@@ -68,6 +108,47 @@ void GhostWindow::Draw()
 	if (m_visible && m_gui && m_valid)
 	{
 		m_gui->Draw();
+
+		// Draw tooltip if hovering over an element with hover text for long enough
+		if (m_hoveredElementID != -1)
+		{
+			float hoverDuration = GetTime() - m_hoverStartTime;
+			if (hoverDuration >= TOOLTIP_DELAY)
+			{
+				std::string hoverText = m_serializer->GetElementHoverText(m_hoveredElementID);
+				if (!hoverText.empty())
+				{
+					// Calculate tooltip size and position
+					int fontSize = 24;  // 16 * 1.5
+					Vector2 textSize = MeasureTextEx(GetFontDefault(), hoverText.c_str(), fontSize, 1.0f);
+					int padding = 6;
+					int tooltipWidth = static_cast<int>(textSize.x) + padding * 2;
+					int tooltipHeight = static_cast<int>(textSize.y) + padding * 2;
+
+					// Position tooltip near mouse
+					Vector2 mousePos = GetMousePosition();
+					int tooltipX = static_cast<int>(mousePos.x) + 15;  // Offset from cursor
+					int tooltipY = static_cast<int>(mousePos.y) + 15;
+
+					// Keep tooltip on screen
+					int screenWidth = GetScreenWidth();
+					int screenHeight = GetScreenHeight();
+					if (tooltipX + tooltipWidth > screenWidth)
+						tooltipX = screenWidth - tooltipWidth - 5;
+					if (tooltipY + tooltipHeight > screenHeight)
+						tooltipY = static_cast<int>(mousePos.y) - tooltipHeight - 5;
+
+					// Draw tooltip background with border
+					DrawRectangle(tooltipX, tooltipY, tooltipWidth, tooltipHeight, Color{40, 40, 40, 240});
+					DrawRectangleLines(tooltipX, tooltipY, tooltipWidth, tooltipHeight, Color{200, 200, 200, 255});
+
+					// Draw tooltip text
+					DrawTextEx(GetFontDefault(), hoverText.c_str(),
+					          Vector2{static_cast<float>(tooltipX + padding), static_cast<float>(tooltipY + padding)},
+					          fontSize, 1.0f, Color{255, 255, 255, 255});
+				}
+			}
+		}
 	}
 }
 

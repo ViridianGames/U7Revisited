@@ -41,6 +41,11 @@ private:
 	bool m_visible;
 	bool m_modal;
 	bool m_valid;
+
+	// Tooltip tracking
+	int m_hoveredElementID;
+	float m_hoverStartTime;
+	static constexpr float TOOLTIP_DELAY = 0.5f;  // 500ms delay before showing tooltip
 };
 
 #endif
