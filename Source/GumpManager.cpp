@@ -71,25 +71,31 @@ void GumpManager::Update()
 		}
 	}
 
-	// Second pass: Update all gumps, but only let topmost one receive drag input
+	// Second pass: Update all gumps, but only let topmost one receive input
 	for (vector<std::shared_ptr<Gump>>::iterator gump = m_GumpList.begin(); gump != m_GumpList.end();)
 	{
-		// Temporarily disable dragging for non-topmost gumps
-		// BUT: if a gump is already being dragged, keep it draggable (for smooth dragging)
-		bool wasDraggable = (*gump)->m_gui.m_Draggable;
+		// Temporarily disable ALL input (including buttons) for non-topmost gumps
+		// BUT: if a gump is already being dragged, keep it active (for smooth dragging)
+		bool wasActive = (*gump)->m_gui.m_Active;
 		bool isBeingDragged = (*gump)->m_gui.m_IsDragging;
 		if (topmostGumpUnderMouse != nullptr && (*gump).get() != topmostGumpUnderMouse && !isBeingDragged)
 		{
-			(*gump)->m_gui.m_Draggable = false;
+			(*gump)->m_gui.m_Active = false;
 		}
 
 		(*gump).get()->Update();
 
-		// Restore draggable state
-		(*gump)->m_gui.m_Draggable = wasDraggable;
+		// Restore active state
+		(*gump)->m_gui.m_Active = wasActive;
 
 		if ((*gump).get()->GetIsDead())
 		{
+			// Clear m_gumpUnderMouse if it's pointing to the gump being removed
+			if (m_gumpUnderMouse == (*gump).get())
+			{
+				m_gumpUnderMouse = nullptr;
+			}
+
 			// Log which gump is being removed
 			GumpPaperdoll* paperdoll = dynamic_cast<GumpPaperdoll*>(gump->get());
 			if (paperdoll)
