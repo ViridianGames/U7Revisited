@@ -81,7 +81,7 @@
               -1,
               -1
             ],
-            "text": "Sprite:",
+            "text": "Up Sprite:",
             "textColor": [
               255,
               255,
@@ -96,6 +96,56 @@
           },
           {
             "name": "PROPERTY_SPRITE",
+            "type": "textbutton",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Pick Sprite",
+            "size": [
+              150.0,
+              20.0
+            ],
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "backgroundColor": [
+              64,
+              64,
+              64,
+              255
+            ],
+            "borderColor": [
+              128,
+              128,
+              128,
+              255
+            ]
+          },
+          {
+            "type": "textarea",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Down Sprite:",
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "justified": 0,
+            "size": [
+              180.0,
+              30.0
+            ]
+          },
+          {
+            "name": "PROPERTY_DOWNSPRITE",
             "type": "textbutton",
             "position": [
               -1,

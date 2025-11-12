@@ -1220,8 +1220,51 @@ void GhostSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, c
 				}
 			}
 
-			// Add the iconbutton (downbutton and inactivebutton default to nullptr)
-			gui->AddIconButton(id, absoluteX, absoluteY, upSprite, nullptr, nullptr, text,
+			// Parse and load down sprite definition (optional)
+			shared_ptr<Sprite> downSprite = nullptr;
+			if (element.contains("downSprite") && element["downSprite"].is_object())
+			{
+				auto downSpriteObj = element["downSprite"];
+				SpriteDefinition downSpriteDef;
+				downSpriteDef.spritesheet = downSpriteObj.value("spritesheet", "");
+				downSpriteDef.x = downSpriteObj.value("x", 0);
+				downSpriteDef.y = downSpriteObj.value("y", 0);
+				downSpriteDef.w = downSpriteObj.value("w", 48);
+				downSpriteDef.h = downSpriteObj.value("h", 48);
+
+				// Store down sprite definition
+				SetIconButtonDownSprite(id, downSpriteDef);
+
+				// Load down sprite texture
+				if (!downSpriteDef.spritesheet.empty())
+				{
+					string downSpritePath = s_baseSpritePath + downSpriteDef.spritesheet;
+					Texture loadedTexture = LoadTexture(downSpritePath.c_str());
+
+					downSprite = make_shared<Sprite>();
+					if (loadedTexture.id == 0)
+					{
+						Log("GhostSerializer::ParseElements - Failed to load iconbutton down sprite: " + downSpritePath);
+						downSprite->m_sourceRect = Rectangle{0, 0, 32, 32};
+						downSprite->m_texture = nullptr;
+					}
+					else
+					{
+						Texture* texture = new Texture();
+						*texture = loadedTexture;
+						downSprite->m_texture = texture;
+						downSprite->m_sourceRect = Rectangle{
+							static_cast<float>(downSpriteDef.x),
+							static_cast<float>(downSpriteDef.y),
+							static_cast<float>(downSpriteDef.w),
+							static_cast<float>(downSpriteDef.h)
+						};
+					}
+				}
+			}
+
+			// Add the iconbutton (inactivebutton defaults to nullptr)
+			gui->AddIconButton(id, absoluteX, absoluteY, upSprite, downSprite, nullptr, text,
 			                  font, fontColor, scale, group, active, canBeHeld);
 		}
 		else if (type == "octagonbox")
@@ -2228,6 +2271,19 @@ ghost_json GhostSerializer::SerializeElement(int elementID, Gui* gui, int parent
 				{"y", spriteDef.y},
 				{"w", spriteDef.w},
 				{"h", spriteDef.h}
+			};
+		}
+
+		// Serialize down sprite definition (optional)
+		SpriteDefinition downSpriteDef = GetIconButtonDownSprite(elementID);
+		if (!downSpriteDef.IsEmpty())
+		{
+			elementJson["downSprite"] = {
+				{"spritesheet", downSpriteDef.spritesheet},
+				{"x", downSpriteDef.x},
+				{"y", downSpriteDef.y},
+				{"w", downSpriteDef.w},
+				{"h", downSpriteDef.h}
 			};
 		}
 

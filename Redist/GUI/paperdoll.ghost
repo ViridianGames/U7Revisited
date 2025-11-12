@@ -15,7 +15,7 @@
           60,
           60,
           60,
-          255
+          0
         ],
         "filled": true,
         "layout": "horz",
@@ -113,7 +113,7 @@
             ],
             "size": [
               53,
-              12
+              11
             ],
             "justified": 0
           },
@@ -127,6 +127,13 @@
             "sprite": {
               "spritesheet": "GUI/biggumps.png",
               "x": 966,
+              "y": 0,
+              "w": 26,
+              "h": 20
+            },
+            "downSprite": {
+              "spritesheet": "GUI/biggumps.png",
+              "x": 992,
               "y": 0,
               "w": 26,
               "h": 20
@@ -153,6 +160,13 @@
               "w": 32,
               "h": 32
             },
+            "downSprite": {
+              "spritesheet": "GUI/biggumps.png",
+              "x": 501,
+              "y": 78,
+              "w": 148,
+              "h": 165
+            },
             "color": [
               255,
               255,
@@ -171,6 +185,13 @@
             "sprite": {
               "spritesheet": "GUI/biggumps.png",
               "x": 1023,
+              "y": 0,
+              "w": 27,
+              "h": 20
+            },
+            "downSprite": {
+              "spritesheet": "GUI/biggumps.png",
+              "x": 1050,
               "y": 0,
               "w": 27,
               "h": 20

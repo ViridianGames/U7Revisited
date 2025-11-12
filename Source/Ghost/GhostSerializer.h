@@ -187,6 +187,20 @@ public:
 		return GetSprite(spriteID).spritesheet;
 	}
 
+	// IconButton down sprite metadata methods
+	void SetIconButtonDownSprite(int buttonID, const SpriteDefinition& sprite)
+	{
+		m_iconButtonDownSprites[buttonID] = sprite;
+	}
+	SpriteDefinition GetIconButtonDownSprite(int buttonID) const
+	{
+		auto it = m_iconButtonDownSprites.find(buttonID);
+		if (it != m_iconButtonDownSprites.end())
+			return it->second;
+		// Return empty sprite if not set
+		return SpriteDefinition{"", 0, 0, 0, 0};
+	}
+
 	// StretchButton sprite metadata methods
 	void SetStretchButtonLeftSprite(int buttonID, const SpriteDefinition& sprite);
 	void SetStretchButtonCenterSprite(int buttonID, const SpriteDefinition& sprite);
@@ -336,7 +350,10 @@ private:
 	std::map<int, int> m_panelColumns;  // Maps panel ID -> number of columns (for table layout)
 
 	// Sprite metadata (full sprite definition with x/y/w/h)
-	std::map<int, SpriteDefinition> m_spriteDefinitions;  // Maps sprite/iconbutton ID -> full sprite definition
+	std::map<int, SpriteDefinition> m_spriteDefinitions;  // Maps sprite/iconbutton ID -> full sprite definition (up sprite)
+
+	// IconButton down sprite metadata
+	std::map<int, SpriteDefinition> m_iconButtonDownSprites;  // Maps iconbutton ID -> down sprite definition
 
 	// StretchButton sprite metadata (3 sprite definitions per button)
 	std::map<int, SpriteDefinition> m_stretchButtonLeftSprites;    // Maps stretchbutton ID -> left sprite definition

@@ -1163,7 +1163,7 @@ void GhostState::Update()
 		{
 			// List of all sprite property button names
 			vector<string> spriteProperties = {
-				"PROPERTY_SPRITE_LEFT", "PROPERTY_SPRITE_CENTER", "PROPERTY_SPRITE_RIGHT", "PROPERTY_SPRITE"
+				"PROPERTY_SPRITE_LEFT", "PROPERTY_SPRITE_CENTER", "PROPERTY_SPRITE_RIGHT", "PROPERTY_SPRITE", "PROPERTY_DOWNSPRITE"
 			};
 
 			for (const auto& propName : spriteProperties)
@@ -1196,6 +1196,11 @@ void GhostState::Update()
 							{
 								// Get the sprite definition from serializer (includes x, y, w, h)
 								sprite = m_contentSerializer->GetSprite(m_selectedElementID);
+							}
+							else if (propName == "PROPERTY_DOWNSPRITE")
+							{
+								// Get the down sprite definition for icon button
+								sprite = m_contentSerializer->GetIconButtonDownSprite(m_selectedElementID);
 							}
 
 							// Track which property we're editing
@@ -2583,6 +2588,41 @@ void GhostState::OnEnter()
 					m_contentSerializer->SetSprite(m_selectedElementID, sprite);
 
 					Log("Updated iconbutton sprite: " + sprite.spritesheet + " at (" + std::to_string(sprite.x) + "," + std::to_string(sprite.y) +
+						") size (" + std::to_string(sprite.w) + "x" + std::to_string(sprite.h) + ")");
+				}
+				else
+				{
+					Log("ERROR: Failed to load texture: " + spritePath);
+				}
+			}
+			else if (selectedElement && selectedElement->m_Type == GUI_ICONBUTTON && m_editingSpriteProperty == "PROPERTY_DOWNSPRITE")
+			{
+				// Update icon button down sprite
+				auto iconElem = static_cast<GuiIconButton*>(selectedElement.get());
+
+				// Load the new sprite texture
+				string spritePath = m_spritePath + sprite.spritesheet;
+				Texture* texture = g_ResourceManager->GetTexture(spritePath);
+
+				if (texture)
+				{
+					// Create new sprite with the specified source rectangle
+					shared_ptr<Sprite> newSprite = make_shared<Sprite>();
+					newSprite->m_texture = texture;
+					newSprite->m_sourceRect = Rectangle{
+						static_cast<float>(sprite.x),
+						static_cast<float>(sprite.y),
+						static_cast<float>(sprite.w),
+						static_cast<float>(sprite.h)
+					};
+
+					// Update the icon button's down texture
+					iconElem->m_DownTexture = newSprite;
+
+					// Store full down sprite definition in serializer
+					m_contentSerializer->SetIconButtonDownSprite(m_selectedElementID, sprite);
+
+					Log("Updated iconbutton down sprite: " + sprite.spritesheet + " at (" + std::to_string(sprite.x) + "," + std::to_string(sprite.y) +
 						") size (" + std::to_string(sprite.w) + "x" + std::to_string(sprite.h) + ")");
 				}
 				else
