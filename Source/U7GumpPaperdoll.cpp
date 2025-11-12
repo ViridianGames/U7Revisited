@@ -152,20 +152,94 @@ void GumpPaperdoll::OnEnter()
 	m_gui.m_Font = g_SmallFont;
 	m_gui.SetLayout(m_Pos.x, m_Pos.y, m_data.m_textureSize.x, m_data.m_textureSize.y, g_DrawScale, Gui::GUIP_USE_XY);
 
-	// Add paperdoll background sprite
-	m_gui.AddSprite(1000, 0, 0,
-		std::make_shared<Sprite>(g_ResourceManager->GetTexture(GUMPS_TEXTURE_PATH, false),
-			m_data.m_texturePos.x, m_data.m_texturePos.y,
-			m_data.m_textureSize.x, m_data.m_textureSize.y),
-		1, 1, Color{255, 255, 255, 255});
+	// Load paperdoll GUI from paperdoll.ghost file
+	m_serializer = std::make_unique<GhostSerializer>();
+	GhostSerializer::SetBaseFontPath("Fonts/");
+	GhostSerializer::SetBaseSpritePath("Images/");
 
-	// Add close button (checkmark) near bottom-left corner
-	// Y position = paperdoll height - checkmark height - small margin
-	// Paperdoll height is 205, checkmark is ~32px, so position at ~159
-	m_gui.AddIconButton(1001, 4, 159, g_gumpCheckmarkUp, g_gumpCheckmarkDown, g_gumpCheckmarkUp, "", g_SmallFont.get(), Color{255, 255, 255, 255}, 1, 0, 1, false);
+	if (m_serializer->LoadFromFile("GUI/paperdoll.ghost", &m_gui))
+	{
+		Log("GumpPaperdoll::OnEnter - Successfully loaded paperdoll.ghost");
 
-	// Set the close button as the done button
-	m_gui.SetDoneButtonId(1001);
+		// Keep loaded fonts alive
+		m_loadedFonts = m_serializer->GetLoadedFonts();
+
+		// Update the PAPERDOLL sprite to use the correct paperdoll type
+		int paperdollSpriteID = m_serializer->GetElementID("PAPERDOLL");
+		if (paperdollSpriteID != -1)
+		{
+			auto paperdollSprite = m_gui.GetElement(paperdollSpriteID);
+			if (paperdollSprite && paperdollSprite->m_Type == GUI_SPRITE)
+			{
+				auto sprite = static_cast<GuiSprite*>(paperdollSprite.get());
+				// Update sprite source rectangle to match the selected paperdoll type
+				sprite->m_Sprite->m_sourceRect = Rectangle{
+					m_data.m_texturePos.x,
+					m_data.m_texturePos.y,
+					m_data.m_textureSize.x,
+					m_data.m_textureSize.y
+				};
+			}
+		}
+
+		// Set the CLOSE button as the done button
+		int closeButtonID = m_serializer->GetElementID("CLOSE");
+		if (closeButtonID != -1)
+		{
+			m_gui.SetDoneButtonId(closeButtonID);
+		}
+
+		// Debug: Check cycle button states
+		int peaceID = m_serializer->GetElementID("PEACE");
+		int haloID = m_serializer->GetElementID("HALO");
+		int formationID = m_serializer->GetElementID("FORMATION");
+
+		if (peaceID != -1)
+		{
+			auto peaceElem = m_gui.GetElement(peaceID);
+			if (peaceElem && peaceElem->m_Type == GUI_CYCLE)
+			{
+				auto cycle = static_cast<GuiCycle*>(peaceElem.get());
+				Rectangle hitRect = {
+					m_gui.m_Pos.x + peaceElem->m_Pos.x,
+					m_gui.m_Pos.y + peaceElem->m_Pos.y,
+					peaceElem->m_Width * cycle->m_ScaleX,
+					peaceElem->m_Height * cycle->m_ScaleY
+				};
+				Log("PEACE button - ID: " + std::to_string(peaceID) + ", Active: " + std::to_string(peaceElem->m_Active) +
+					", Visible: " + std::to_string(peaceElem->m_Visible) + ", Type: " + std::to_string(peaceElem->m_Type) +
+					", FrameCount: " + std::to_string(cycle->m_FrameCount) + ", Frames size: " + std::to_string(cycle->m_Frames.size()) +
+					", HitRect: (" + std::to_string((int)hitRect.x) + "," + std::to_string((int)hitRect.y) + "," +
+					std::to_string((int)hitRect.width) + "," + std::to_string((int)hitRect.height) + ")");
+			}
+		}
+		if (haloID != -1)
+		{
+			auto haloElem = m_gui.GetElement(haloID);
+			if (haloElem && haloElem->m_Type == GUI_CYCLE)
+			{
+				auto cycle = static_cast<GuiCycle*>(haloElem.get());
+				Log("HALO button - ID: " + std::to_string(haloID) + ", Active: " + std::to_string(haloElem->m_Active) +
+					", Visible: " + std::to_string(haloElem->m_Visible) + ", Type: " + std::to_string(haloElem->m_Type) +
+					", FrameCount: " + std::to_string(cycle->m_FrameCount) + ", Frames size: " + std::to_string(cycle->m_Frames.size()));
+			}
+		}
+		if (formationID != -1)
+		{
+			auto formationElem = m_gui.GetElement(formationID);
+			if (formationElem && formationElem->m_Type == GUI_CYCLE)
+			{
+				auto cycle = static_cast<GuiCycle*>(formationElem.get());
+				Log("FORMATION button - ID: " + std::to_string(formationID) + ", Active: " + std::to_string(formationElem->m_Active) +
+					", Visible: " + std::to_string(formationElem->m_Visible) + ", Type: " + std::to_string(formationElem->m_Type) +
+					", FrameCount: " + std::to_string(cycle->m_FrameCount) + ", Frames size: " + std::to_string(cycle->m_Frames.size()));
+			}
+		}
+	}
+	else
+	{
+		Log("ERROR: GumpPaperdoll::OnEnter - Failed to load paperdoll.ghost");
+	}
 
 	// Make the paperdoll draggable
 	m_gui.m_Draggable = true;
@@ -185,12 +259,47 @@ void GumpPaperdoll::OnEnter()
 
 void GumpPaperdoll::Update()
 {
+	// Debug: Log accepting input state
+	static bool loggedOnce = false;
+	if (!loggedOnce)
+	{
+		Log("GumpPaperdoll::Update - m_gui.m_AcceptingInput: " + std::to_string(m_gui.m_AcceptingInput) +
+			", m_gui.m_Active: " + std::to_string(m_gui.m_Active));
+		loggedOnce = true;
+	}
+
 	// Update GUI elements
 	m_gui.Update();
 
 	// Ensure GUI position stays integer-aligned (like Gump does)
 	m_gui.m_Pos.x = int(m_gui.m_Pos.x);
 	m_gui.m_Pos.y = int(m_gui.m_Pos.y);
+
+	// Handle cycle button clicks
+	int peaceID = m_serializer->GetElementID("PEACE");
+	int haloID = m_serializer->GetElementID("HALO");
+	int formationID = m_serializer->GetElementID("FORMATION");
+
+	// Log active element every frame for debugging
+	static int lastActiveElement = -999;
+	if (m_gui.m_ActiveElement != lastActiveElement && m_gui.m_ActiveElement != -1)
+	{
+		Log("GumpPaperdoll::Update - m_ActiveElement changed to: " + std::to_string(m_gui.m_ActiveElement));
+		lastActiveElement = m_gui.m_ActiveElement;
+	}
+
+	if (m_gui.m_ActiveElement == peaceID)
+	{
+		Log("PEACE button clicked, frame: " + std::to_string(m_gui.GetElement(peaceID)->GetValue()));
+	}
+	else if (m_gui.m_ActiveElement == haloID)
+	{
+		Log("HALO button clicked, frame: " + std::to_string(m_gui.GetElement(haloID)->GetValue()));
+	}
+	else if (m_gui.m_ActiveElement == formationID)
+	{
+		Log("FORMATION button clicked, frame: " + std::to_string(m_gui.GetElement(formationID)->GetValue()));
+	}
 
 	// Check if close button was clicked
 	if (m_gui.m_ActiveElement == m_gui.m_doneButtonId)

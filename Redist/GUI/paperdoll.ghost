@@ -8,8 +8,8 @@
           -1
         ],
         "size": [
-          209,
-          214
+          200,
+          205
         ],
         "backgroundColor": [
           60,
@@ -19,8 +19,8 @@
         ],
         "filled": true,
         "layout": "horz",
-        "horzPadding": 5,
-        "vertPadding": 5,
+        "horzPadding": 0,
+        "vertPadding": 0,
         "font": "babyblocks.ttf",
         "fontSize": 30,
         "elements": [
@@ -45,7 +45,7 @@
             "name": "PEACE",
             "type": "cycle",
             "position": [
-              46,
+              41,
               119
             ],
             "sprite": {
@@ -63,14 +63,14 @@
             "name": "HALO",
             "type": "cycle",
             "position": [
-              51,
+              46,
               153
             ],
             "sprite": {
               "spritesheet": "GUI/biggumps.png",
               "x": 911,
               "y": 0,
-              "w": 24,
+              "w": 25,
               "h": 14
             },
             "frameCount": 2,
@@ -81,17 +81,17 @@
             "name": "FORMATION",
             "type": "cycle",
             "position": [
-              49,
+              44,
               171
             ],
             "sprite": {
               "spritesheet": "GUI/biggumps.png",
               "x": 911,
               "y": 48,
-              "w": 29,
+              "w": 28,
               "h": 29
             },
-            "frameCount": 2,
+            "frameCount": 10,
             "scaleX": 1.0,
             "scaleY": 1.0
           },
@@ -99,8 +99,8 @@
             "name": "CARRY",
             "type": "textarea",
             "position": [
-              102,
-              186
+              97,
+              182
             ],
             "text": "27/36",
             "font": "pinch.ttf",
@@ -121,7 +121,7 @@
             "name": "HEART",
             "type": "iconbutton",
             "position": [
-              166,
+              161,
               181
             ],
             "sprite": {
@@ -150,8 +150,8 @@
             "name": "CLOSE",
             "type": "iconbutton",
             "position": [
-              10,
-              161
+              5,
+              156
             ],
             "sprite": {
               "spritesheet": "GUI/biggumps.png",
@@ -164,8 +164,8 @@
               "spritesheet": "GUI/biggumps.png",
               "x": 501,
               "y": 78,
-              "w": 148,
-              "h": 165
+              "w": 32,
+              "h": 32
             },
             "color": [
               255,
@@ -179,7 +179,7 @@
             "name": "DISK",
             "type": "iconbutton",
             "position": [
-              167,
+              162,
               158
             ],
             "sprite": {

@@ -7,6 +7,7 @@
 #include "Geist/Primitives.h"
 #include "Geist/Gui.h"
 #include "Geist/GuiElements.h"
+#include "Ghost/GhostSerializer.h"
 
 static constexpr const char* GUMPS_TEXTURE_PATH = "Images/GUI/biggumps.png";
 
@@ -55,22 +56,22 @@ public:
 	};
 
 	// Slot rectangles - same for all paperdolls
-	// TODO: Measure actual rectangles from biggumps.png
+	// NOTE: These coordinates include the 5-pixel panel padding from paperdoll.ghost
 	static constexpr Rectangle m_slotRects[static_cast<int>(EquipmentSlot::SLOT_COUNT)] =
 	{
-		{ 170, 8, 16, 16 },    // SLOT_HEAD
-		{ 45, 31, 16, 16 },    // SLOT_NECK
-		{ 45, 50, 16, 16 },    // SLOT_TORSO
-		{ 170, 120, 16, 16 },  // SLOT_LEGS
-		{ 170, 99, 16, 16 },   // SLOT_HANDS
-		{ 110, 145, 16, 16 },  // SLOT_FEET
-		{ 170, 76, 16, 16 },   // SLOT_LEFT_HAND
-		{ 45, 76, 16, 16 },    // SLOT_RIGHT_HAND
-		{ 45, 8, 16, 16 },     // SLOT_AMMO
-		{ 170, 99, 16, 16 },   // SLOT_LEFT_RING
-		{ 45, 101, 16, 16 },   // SLOT_RIGHT_RING
-		{ 170, 50, 16, 16 },   // SLOT_BELT
-		{ 170, 30, 16, 16 }    // SLOT_BACKPACK (TODO: Set correct position)
+		{ 175, 9, 16, 16 },    // SLOT_HEAD
+		{ 50, 32, 16, 16 },    // SLOT_NECK
+		{ 50, 51, 16, 16 },    // SLOT_TORSO
+		{ 175, 121, 16, 16 },  // SLOT_LEGS
+		{ 175, 100, 16, 16 },   // SLOT_HANDS
+		{ 115, 146, 16, 16 },  // SLOT_FEET
+		{ 175, 77, 16, 16 },   // SLOT_LEFT_HAND
+		{ 50, 77, 16, 16 },    // SLOT_RIGHT_HAND
+		{ 50, 9, 16, 16 },     // SLOT_AMMO
+		{ 175, 100, 16, 16 },   // SLOT_LEFT_RING
+		{ 50, 101, 16, 16 },   // SLOT_RIGHT_RING
+		{ 175, 51, 16, 16 },   // SLOT_BELT
+		{ 175, 31, 16, 16 }    // SLOT_BACKPACK
 	};
 
 	// Static data array - one entry per paperdoll type
@@ -121,6 +122,8 @@ private:
 	int m_paperdollType;       // Index into m_paperdollData array
 	PaperdollData m_data;      // Cached paperdoll data
 	Texture* m_backgroundTexture; // Pointer to biggumps.png texture for pixel checking
+	std::unique_ptr<GhostSerializer> m_serializer; // GUI serializer for loading paperdoll.ghost
+	std::vector<std::shared_ptr<Font>> m_loadedFonts; // Keep fonts alive
 	// Note: m_gui is inherited from Gump base class
 };
 

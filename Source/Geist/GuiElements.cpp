@@ -1080,32 +1080,30 @@ void GuiCycle::Update()
 	if (m_Frames.empty())
 		return;
 
-	// Calculate screen rectangle (adjusted for GUI position and scale)
-	Rectangle adjustedRect = {
-		m_Gui->m_Pos.x + m_Pos.x,
-		m_Gui->m_Pos.y + m_Pos.y,
-		m_Width * m_ScaleX,
-		m_Height * m_ScaleY
-	};
-
-	// Check hover
-	if (IsMouseInRect((int)adjustedRect.x, (int)adjustedRect.y,
-					  (int)adjustedRect.width, (int)adjustedRect.height))
+	// Check hover (match GuiIconButton's approach with m_InputScale)
+	if (IsMouseInRect((m_Gui->m_Pos.x + int(m_Pos.x)) * m_Gui->m_InputScale,
+					  (m_Gui->m_Pos.y + int(m_Pos.y)) * m_Gui->m_InputScale,
+					  m_Width * m_Gui->m_InputScale * m_ScaleX,
+					  m_Height * m_Gui->m_InputScale * m_ScaleY))
 	{
 		m_Hovered = true;
 	}
 
 	// Check button down
-	if (IsLeftButtonDownInRect((int)adjustedRect.x, (int)adjustedRect.y,
-								(int)adjustedRect.width, (int)adjustedRect.height))
+	if (IsLeftButtonDownInRect((m_Gui->m_Pos.x + int(m_Pos.x)) * m_Gui->m_InputScale,
+							   (m_Gui->m_Pos.y + int(m_Pos.y)) * m_Gui->m_InputScale,
+							   m_Width * m_Gui->m_InputScale * m_ScaleX,
+							   m_Height * m_Gui->m_InputScale * m_ScaleY))
 	{
 		m_Hovered = false;
 		m_Down = true;
 	}
 
 	// Check click release
-	else if (WasLeftButtonClickedInRect((int)adjustedRect.x, (int)adjustedRect.y,
-										 (int)adjustedRect.width, (int)adjustedRect.height))
+	else if (WasLeftButtonClickedInRect((m_Gui->m_Pos.x + int(m_Pos.x)) * m_Gui->m_InputScale,
+										 (m_Gui->m_Pos.y + int(m_Pos.y)) * m_Gui->m_InputScale,
+										 m_Width * m_Gui->m_InputScale * m_ScaleX,
+										 m_Height * m_Gui->m_InputScale * m_ScaleY))
 	{
 		m_Down = false;
 		m_Clicked = true;
