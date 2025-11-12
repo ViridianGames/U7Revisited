@@ -132,10 +132,21 @@ void GumpPaperdoll::OnEnter()
 {
 	Log("GumpPaperdoll::OnEnter - NPC " + std::to_string(m_npcId));
 
-	// Position paperdoll on screen
-	// TODO: Better positioning logic (maybe cascade based on number of open paperdolls)
-	m_Pos.x = 100;
-	m_Pos.y = 100;
+	// Position paperdoll on screen with cascading offsets for multiple paperdolls
+	// Count how many paperdolls are already open
+	int paperdollCount = 0;
+	for (const auto& gump : g_gumpManager->m_GumpList)
+	{
+		if (dynamic_cast<GumpPaperdoll*>(gump.get()))
+		{
+			paperdollCount++;
+		}
+	}
+
+	// Cascade position: each new paperdoll offset by 30 pixels right and down
+	const int CASCADE_OFFSET = 30;
+	m_Pos.x = 100 + (paperdollCount * CASCADE_OFFSET);
+	m_Pos.y = 100 + (paperdollCount * CASCADE_OFFSET);
 
 	// Set up GUI layout
 	m_gui.m_Font = g_SmallFont;

@@ -40,31 +40,80 @@ void GumpManager::Update()
 
 	//  Update all gumps, remove dead ones.
 	m_isMouseOverGump = false;
-	for (vector<std::shared_ptr<Gump>>::iterator gump = m_GumpList.begin(); gump != m_GumpList.end();)
+	m_gumpUnderMouse = nullptr;  // Clear this every frame
+	std::shared_ptr<Gump> gumpToMoveToFront = nullptr;
+	Gump* topmostGumpUnderMouse = nullptr;
+
+	// First pass: Find topmost gump under mouse (iterate backwards to find last one)
+	for (auto it = m_GumpList.rbegin(); it != m_GumpList.rend(); ++it)
 	{
-		(*gump).get()->Update();
-		Rectangle gumpRect = { gump->get()->m_gui.m_Pos.x, gump->get()->m_gui.m_Pos.y, gump->get()->m_gui.m_Width, gump->get()->m_gui.m_Height };
+		Rectangle gumpRect = { (*it)->m_gui.m_Pos.x, (*it)->m_gui.m_Pos.y, (*it)->m_gui.m_Width, (*it)->m_gui.m_Height };
 		bool collision = CheckCollisionPointRec(mousePos, gumpRect);
 
 		// If bounding box collision, check pixel-perfect collision
 		if (collision)
 		{
-			collision = gump->get()->IsMouseOverSolidPixel(mousePos);
+			collision = (*it)->IsMouseOverSolidPixel(mousePos);
 		}
 
 		if (collision)
 		{
+			topmostGumpUnderMouse = (*it).get();
 			m_isMouseOverGump = true;
-			m_gumpUnderMouse = gump->get();
+			m_gumpUnderMouse = topmostGumpUnderMouse;
+
+			// If mouse clicked on this gump, bring it to front (if not already at front)
+			if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+			{
+				gumpToMoveToFront = *it;
+			}
+			break; // Found topmost, stop searching
 		}
+	}
+
+	// Second pass: Update all gumps, but only let topmost one receive drag input
+	for (vector<std::shared_ptr<Gump>>::iterator gump = m_GumpList.begin(); gump != m_GumpList.end();)
+	{
+		// Temporarily disable dragging for non-topmost gumps
+		bool wasDraggable = (*gump)->m_gui.m_Draggable;
+		if (topmostGumpUnderMouse != nullptr && (*gump).get() != topmostGumpUnderMouse)
+		{
+			(*gump)->m_gui.m_Draggable = false;
+		}
+
+		(*gump).get()->Update();
+
+		// Restore draggable state
+		(*gump)->m_gui.m_Draggable = wasDraggable;
 
 		if ((*gump).get()->GetIsDead())
 		{
+			// Log which gump is being removed
+			GumpPaperdoll* paperdoll = dynamic_cast<GumpPaperdoll*>(gump->get());
+			if (paperdoll)
+			{
+				Log("Removing paperdoll for NPC " + std::to_string(paperdoll->GetNpcId()));
+			}
+			else
+			{
+				Log("Removing container gump");
+			}
 			gump = m_GumpList.erase(gump);
 		}
 		else
 		{
 			++gump;
+		}
+	}
+
+	// Bring clicked gump to front by moving it to the end of the list
+	if (gumpToMoveToFront)
+	{
+		auto it = std::find(m_GumpList.begin(), m_GumpList.end(), gumpToMoveToFront);
+		if (it != m_GumpList.end() && it != m_GumpList.end() - 1)
+		{
+			m_GumpList.erase(it);
+			m_GumpList.push_back(gumpToMoveToFront);
 		}
 	}
 
@@ -173,6 +222,14 @@ gump->m_containerData.m_boxSize.x, gump->m_containerData.m_boxSize.y }))
 
 void GumpManager::Draw()
 {
+	// Debug: Log gump count every frame to detect disappearing gumps
+	static int lastGumpCount = -1;
+	if (m_GumpList.size() != lastGumpCount)
+	{
+		Log("GumpManager::Draw - Drawing " + std::to_string(m_GumpList.size()) + " gumps");
+		lastGumpCount = m_GumpList.size();
+	}
+
 	for (auto& Gump : m_GumpList)
 	{
 		Gump.get()->Draw();
