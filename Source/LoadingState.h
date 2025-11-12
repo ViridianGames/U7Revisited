@@ -29,6 +29,7 @@ public:
    void LoadMap();
    void CreateShapeTable();
    void LoadSprites();
+   void ExtractGumps();
    void CreateObjectTable();
    void LoadIFIX();
    void ParseIREGFile(std::stringstream& ireg, int superchunkx, int superchunky);

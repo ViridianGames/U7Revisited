@@ -175,6 +175,7 @@ void LoadingState::UpdateLoading()
 		{
 			AddConsoleString(std::string("Loading sprites..."));
 			LoadSprites();
+			ExtractGumps();
 			m_loadingSprites = true;
 			return;
 		}
@@ -1299,6 +1300,201 @@ void LoadingState::LoadSprites()
 
 	Log("Sprites exported to Debug/Sprites/ folder");
 #endif
+}
+
+void LoadingState::ExtractGumps()
+{
+	std::string dataPath = g_Engine->m_EngineConfig.GetString("data_path");
+	std::string gumpsPath = dataPath + "/STATIC/GUMPS.VGA";
+
+	ifstream gumpsFile;
+	gumpsFile.open(gumpsPath.c_str(), ios::binary);
+
+	if (!gumpsFile.good())
+	{
+		Log("GUMPS.VGA not found at: " + gumpsPath);
+		return;
+	}
+
+	stringstream gumps;
+	gumps << gumpsFile.rdbuf();
+	gumpsFile.close();
+
+	vector<FLXEntryData> gumpEntryMap = ParseFLXHeader(gumps);
+
+	Log("Extracting " + std::to_string(gumpEntryMap.size()) + " gump shapes from GUMPS.VGA");
+
+	// Debug: Log first few entries to verify offsets
+	for (int i = 0; i < std::min(10, (int)gumpEntryMap.size()); ++i)
+	{
+		Log("  Gump " + std::to_string(i) + ": offset=" + std::to_string(gumpEntryMap[i].offset) +
+			" length=" + std::to_string(gumpEntryMap[i].length));
+	}
+
+	// Create Debug/Gumps directory
+	std::filesystem::create_directories("Debug/Gumps");
+
+	struct frameData
+	{
+		unsigned int fileOffset;
+		short W2;
+		short W1;
+		short H1;
+		short H2;
+		unsigned int width;
+		unsigned int height;
+		int xDrawOffset;
+		int yDrawOffset;
+	};
+
+	// Process each gump shape (same format as SHAPES.VGA)
+	for (int thisGump = 0; thisGump < gumpEntryMap.size(); ++thisGump)
+	{
+		if (gumpEntryMap[thisGump].offset == 0 && gumpEntryMap[thisGump].length == 0)
+		{
+			continue; // Empty entry
+		}
+
+		gumps.seekg(gumpEntryMap[thisGump].offset);
+		unsigned int headerStart = gumps.tellg();
+		unsigned int firstData = ReadU32(gumps);
+
+		// Check if RLE-encoded
+		if (firstData == gumpEntryMap[thisGump].length)
+		{
+			// Next four bytes tell length of the header
+			unsigned int headerLength = ReadU32(gumps);
+			unsigned int frameCount = ((headerLength - 4) / 4);
+
+			std::vector<frameData> frameOffsets;
+			frameOffsets.resize(frameCount);
+			frameOffsets[0].fileOffset = 0;
+
+			for (unsigned int i = 1; i < frameCount; ++i)
+			{
+				frameOffsets[i].fileOffset = ReadU32(gumps);
+			}
+
+			// Read each frame
+			for (unsigned int frameNum = 0; frameNum < frameCount; ++frameNum)
+			{
+				// Seek to the start of this frame's data
+				if (frameNum > 0)
+				{
+					gumps.seekg(headerStart + frameOffsets[frameNum].fileOffset);
+				}
+
+				frameOffsets[frameNum].W2 = ReadS16(gumps);
+				frameOffsets[frameNum].W1 = ReadS16(gumps);
+				frameOffsets[frameNum].H1 = ReadS16(gumps);
+				frameOffsets[frameNum].H2 = ReadS16(gumps);
+
+				frameOffsets[frameNum].height = frameOffsets[frameNum].H1 + frameOffsets[frameNum].H2 + 1;
+				frameOffsets[frameNum].width = frameOffsets[frameNum].W2 + frameOffsets[frameNum].W1 + 1;
+				frameOffsets[frameNum].xDrawOffset = frameOffsets[frameNum].W2;
+				frameOffsets[frameNum].yDrawOffset = frameOffsets[frameNum].H2;
+
+				if (frameOffsets[frameNum].width > 1024 || frameOffsets[frameNum].height > 1024 || frameOffsets[frameNum].width == 0 || frameOffsets[frameNum].height == 0)
+				{
+					Log("Invalid gump dimensions: " + std::to_string(frameOffsets[frameNum].width) + "x" + std::to_string(frameOffsets[frameNum].height));
+					continue;
+				}
+
+				// Create image for this frame
+				Image frameImage = GenImageColor(frameOffsets[frameNum].width, frameOffsets[frameNum].height, BLANK);
+
+				// Decode gump RLE data (Exult format with 2-byte scanline headers)
+				while (true)
+				{
+					// Read 2-byte scanline length
+					unsigned short scanlen = ReadU16(gumps);
+
+					if (scanlen == 0)
+					{
+						// End of shape
+						break;
+					}
+
+					// Extract encoded flag and length
+					bool encoded = (scanlen & 1) != 0;
+					scanlen = scanlen >> 1;
+
+					// Read scanline position (2 bytes each)
+					short scanx = ReadS16(gumps);
+					short scany = ReadS16(gumps);
+
+					// Adjust coordinates based on frame offsets (same as SHAPES.VGA)
+					scanx += frameOffsets[frameNum].width - frameOffsets[frameNum].xDrawOffset - 1;
+					scany += frameOffsets[frameNum].height - frameOffsets[frameNum].yDrawOffset - 1;
+
+					// Validate scanline position
+					if (scany < 0 || scany >= (int)frameOffsets[frameNum].height)
+						continue;
+
+					if (encoded)
+					{
+						// RLE encoded scanline
+						int x = scanx;
+
+						while (scanlen > 0)
+						{
+							unsigned char bcnt = ReadU8(gumps);
+
+							bool repeat = (bcnt & 1) != 0;
+							bcnt = bcnt >> 1;
+
+							if (repeat)
+							{
+								// Repeat single color
+								unsigned char col = ReadU8(gumps);
+	
+								for (int i = 0; i < bcnt && x >= 0 && x < (int)frameOffsets[frameNum].width; ++i, ++x)
+								{
+									Color color = m_palettes[0][col];
+									ImageDrawPixel(&frameImage, x, scany, color);
+								}
+							}
+							else
+							{
+								// Copy literal pixels
+								for (int i = 0; i < bcnt && x >= 0 && x < (int)frameOffsets[frameNum].width; ++i, ++x)
+								{
+									unsigned char col = ReadU8(gumps);
+		
+									Color color = m_palettes[0][col];
+									ImageDrawPixel(&frameImage, x, scany, color);
+								}
+							}
+
+						// Track remaining length like Exult does
+						scanlen -= bcnt;
+					}
+				}
+				else
+					{
+						// Unencoded scanline - copy pixels directly
+						int x = scanx;
+						for (int i = 0; i < scanlen && x >= 0 && x < (int)frameOffsets[frameNum].width; ++i, ++x)
+						{
+							unsigned char col = ReadU8(gumps);
+							Color color = m_palettes[0][col];
+							ImageDrawPixel(&frameImage, x, scany, color);
+						}
+					}
+				}
+
+				// Export frame as PNG
+				std::string filename = "Debug/Gumps/gump_" + std::to_string(thisGump) + "_frame_" + std::to_string(frameNum) + ".png";
+				ExportImage(frameImage, filename.c_str());
+
+				UnloadImage(frameImage);
+			}
+
+			Log("Extracted gump " + std::to_string(thisGump) + " with " + std::to_string(frameCount) + " frames");
+		}
+	}
+
+	Log("Gumps extracted to Debug/Gumps/ folder");
 }
 
 void LoadingState::LoadModels()

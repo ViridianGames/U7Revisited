@@ -87,7 +87,7 @@ void GumpPaperdoll::Setup(int npcId)
 	std::filesystem::create_directories("Debug/Paperdolls");
 
 	// Load the biggumps texture
-	Texture* biggumps = g_ResourceManager->GetTexture("Images/GUI/biggumps.png");
+	Texture* biggumps = g_ResourceManager->GetTexture(GUMPS_TEXTURE_PATH);
 	if (biggumps)
 	{
 		Image paperdollImage = LoadImageFromTexture(*biggumps);
@@ -154,7 +154,7 @@ void GumpPaperdoll::OnEnter()
 
 	// Add paperdoll background sprite
 	m_gui.AddSprite(1000, 0, 0,
-		std::make_shared<Sprite>(g_ResourceManager->GetTexture("Images/GUI/biggumps.png", false),
+		std::make_shared<Sprite>(g_ResourceManager->GetTexture(GUMPS_TEXTURE_PATH, false),
 			m_data.m_texturePos.x, m_data.m_texturePos.y,
 			m_data.m_textureSize.x, m_data.m_textureSize.y),
 		1, 1, Color{255, 255, 255, 255});
@@ -176,7 +176,7 @@ void GumpPaperdoll::OnEnter()
 	};
 
 	// Store texture reference for pixel-perfect collision
-	m_backgroundTexture = g_ResourceManager->GetTexture("Images/GUI/biggumps.png");
+	m_backgroundTexture = g_ResourceManager->GetTexture(GUMPS_TEXTURE_PATH);
 
 	// Debug: Log GUI bounds for collision detection
 	Log("GumpPaperdoll::OnEnter - GUI bounds: pos(" + std::to_string(m_gui.m_Pos.x) + ", " + std::to_string(m_gui.m_Pos.y) +
@@ -238,6 +238,24 @@ void GumpPaperdoll::Draw()
 				}
 			}
 		}
+	}
+
+	// Debug: Draw red boxes around each slot rect
+	for (int i = 0; i < static_cast<int>(EquipmentSlot::SLOT_COUNT); i++)
+	{
+		Rectangle slotRect = m_slotRects[i];
+		Rectangle debugRect = {
+			m_gui.m_Pos.x + slotRect.x,
+			m_gui.m_Pos.y + slotRect.y,
+			slotRect.width,
+			slotRect.height
+		};
+		DrawRectangleLines(
+			static_cast<int>(debugRect.x),
+			static_cast<int>(debugRect.y),
+			static_cast<int>(debugRect.width),
+			static_cast<int>(debugRect.height),
+			RED);
 	}
 }
 
