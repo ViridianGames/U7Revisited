@@ -226,6 +226,16 @@ gump->m_containerData.m_boxSize.x, gump->m_containerData.m_boxSize.y }))
 			g_gumpManager->m_sourceGump = nullptr;
 		}
 	}
+
+	// Process pending gumps (added after iteration to avoid iterator invalidation)
+	if (!m_PendingGumps.empty())
+	{
+		for (auto& gump : m_PendingGumps)
+		{
+			m_GumpList.push_back(gump);
+		}
+		m_PendingGumps.clear();
+	}
 }
 
 void GumpManager::Draw()
@@ -255,7 +265,8 @@ void GumpManager::Draw()
 
 void GumpManager::AddGump(std::shared_ptr<Gump> Gump)
 {
-	m_GumpList.push_back(Gump);
+	// Add to pending list instead of directly to avoid iterator invalidation
+	m_PendingGumps.push_back(Gump);
 }
 
 bool GumpManager::IsAnyGumpBeingDragged()

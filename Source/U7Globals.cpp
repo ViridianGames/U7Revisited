@@ -25,6 +25,7 @@ Mesh* g_AnimationFrames;
 
 Texture* g_Cursor;
 Texture* g_objectSelectCursor;
+Texture* g_EmptyTexture;
 Texture* g_Minimap;
 
 std::shared_ptr<Font> g_Font;
@@ -757,10 +758,21 @@ void AddObjectToContainer(int objectID, int containerID)
 
 	if (object == nullptr || container == nullptr)
 	{
+		Log("AddObjectToContainer ERROR: object=" + std::to_string(objectID) + " is " + (object ? "valid" : "NULL") +
+			", container=" + std::to_string(containerID) + " is " + (container ? "valid" : "NULL"));
 		return;
 	}
 
-	container->AddObjectToInventory(objectID);
+	bool success = container->AddObjectToInventory(objectID);
+
+	// Debug: Log inventory addition
+	static int addCount = 0;
+	if (addCount < 30)
+	{
+		Log("AddObjectToContainer: Added object " + std::to_string(objectID) + " to container " + std::to_string(containerID) +
+			" (success=" + std::string(success ? "true" : "false") + ", inventory size now=" + std::to_string(container->m_inventory.size()) + ")");
+		addCount++;
+	}
 
 	// Objects in containers are not in world chunks
 	UnassignObjectChunk(object);
@@ -1103,4 +1115,37 @@ std::string GetObjectScriptName(U7Object* object)
 	}
 
 	return "";  // No script or using default
+}
+
+// Determines which equipment slot an item belongs to based on its shape ID
+EquipmentSlot GetEquipmentSlotForShape(int shapeId)
+{
+	// Backpack (check first - most important)
+	if (shapeId == 801) return EquipmentSlot::SLOT_BACKPACK;
+
+	// Boots (feet)
+	if (shapeId == 587) return EquipmentSlot::SLOT_FEET;
+
+	// Helmets/hoods (head)
+	if (shapeId == 444) return EquipmentSlot::SLOT_HEAD;  // hood
+	if (shapeId == 539) return EquipmentSlot::SLOT_HEAD;  // chain coif
+	if (shapeId == 541) return EquipmentSlot::SLOT_HEAD;  // great helm
+	if (shapeId == 542) return EquipmentSlot::SLOT_HEAD;  // crested helm
+
+	// Shields (left hand)
+	if (shapeId == 543) return EquipmentSlot::SLOT_LEFT_HAND;  // buckler
+	if (shapeId == 545) return EquipmentSlot::SLOT_LEFT_HAND;  // curved heather
+
+	// Armor (torso)
+	if (shapeId == 569) return EquipmentSlot::SLOT_TORSO;  // leather armor
+
+	// Leggings (legs)
+	if (shapeId == 574) return EquipmentSlot::SLOT_LEGS;  // leather leggings
+
+	// Weapons (right hand)
+	if (shapeId == 594) return EquipmentSlot::SLOT_RIGHT_HAND;  // dagger
+	if (shapeId == 598) return EquipmentSlot::SLOT_RIGHT_HAND;  // crossbow
+
+	// Not an equippable item
+	return EquipmentSlot::SLOT_COUNT;
 }

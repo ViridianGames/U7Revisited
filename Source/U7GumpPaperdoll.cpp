@@ -10,6 +10,7 @@ extern std::unique_ptr<U7Player> g_Player;
 extern std::unordered_map<int, std::unique_ptr<NPCData>> g_NPCData;
 extern std::unordered_map<int, std::unique_ptr<U7Object>> g_objectList;
 extern std::shared_ptr<Font> g_SmallFont;
+extern std::shared_ptr<Font> g_ConversationFont;
 extern float g_DrawScale;
 extern std::shared_ptr<Sprite> g_gumpCheckmarkUp;
 extern std::shared_ptr<Sprite> g_gumpCheckmarkDown;
@@ -17,6 +18,10 @@ extern std::shared_ptr<Sprite> g_gumpCheckmarkDown;
 GumpPaperdoll::GumpPaperdoll()
 	: m_npcId(-1)
 	, m_paperdollType(0)
+	, m_data{}
+	, m_backgroundTexture(nullptr)
+	, m_hoverText("")
+	, m_hoverTextDuration(0.0f)
 {
 }
 
@@ -81,7 +86,7 @@ void GumpPaperdoll::Setup(int npcId)
 
 	Log("GumpPaperdoll::Setup - NPC " + std::to_string(npcId) + ", type " + std::to_string(m_paperdollType));
 
-#define DEBUG_PAPERDOLLS 1
+// #define DEBUG_PAPERDOLLS 1
 #ifdef DEBUG_PAPERDOLLS
 	// Create Debug/Paperdolls folder if it doesn't exist
 	std::filesystem::create_directories("Debug/Paperdolls");
@@ -307,11 +312,133 @@ void GumpPaperdoll::Update()
 		OnExit();
 	}
 
+	// Handle equipment slot clicks
+	const char* slotNames[] = {
+		"SLOT_HEAD", "SLOT_NECK", "SLOT_TORSO", "SLOT_LEGS", "SLOT_HANDS", "SLOT_FEET",
+		"SLOT_LEFT_HAND", "SLOT_RIGHT_HAND", "SLOT_AMMO", "SLOT_LEFT_RING",
+		"SLOT_RIGHT_RING", "SLOT_BELT", "SLOT_BACKPACK"
+	};
+
+	auto npcIt = g_NPCData.find(m_npcId);
+	if (npcIt != g_NPCData.end() && npcIt->second)
+	{
+		NPCData* npcData = npcIt->second.get();
+
+		// Get mouse position in GUI space
+		Vector2 mousePos = GetMousePosition();
+		mousePos.x /= g_DrawScale;
+		mousePos.y /= g_DrawScale;
+
+		for (int i = 0; i < static_cast<int>(EquipmentSlot::SLOT_COUNT); i++)
+		{
+			int slotID = m_serializer->GetElementID(slotNames[i]);
+			if (slotID != -1)
+			{
+				auto element = m_gui.GetElement(slotID);
+				if (element)
+				{
+					GuiSprite* slotSprite = dynamic_cast<GuiSprite*>(element.get());
+					if (slotSprite && slotSprite->m_Sprite)
+					{
+						// Check if mouse is over this slot
+						Rectangle slotRect = {
+							m_gui.m_Pos.x + slotSprite->m_Pos.x,
+							m_gui.m_Pos.y + slotSprite->m_Pos.y,
+							slotSprite->m_Sprite->m_sourceRect.width,
+							slotSprite->m_Sprite->m_sourceRect.height
+						};
+
+						if (CheckCollisionPointRec(mousePos, slotRect))
+						{
+							EquipmentSlot slot = static_cast<EquipmentSlot>(i);
+							int objectId = npcData->GetEquippedItem(slot);
+
+							// Check for double-click on backpack
+							if (slot == EquipmentSlot::SLOT_BACKPACK && objectId != -1)
+							{
+								if (WasMouseButtonDoubleClicked(MOUSE_BUTTON_LEFT))
+								{
+									Log("Paperdoll - Double-click on backpack, opening gump for objectId=" + std::to_string(objectId));
+									// Open the backpack gump
+									if (g_mainState)
+									{
+										Log("Paperdoll - Calling g_mainState->OpenGump(" + std::to_string(objectId) + ")");
+										g_mainState->OpenGump(objectId);
+										Log("Paperdoll - OpenGump returned successfully");
+									}
+									else
+									{
+										Log("Paperdoll - ERROR: g_mainState is null!");
+									}
+									break; // Don't process bark after opening gump
+								}
+							}
+
+							// Single click: show item name
+							if (objectId != -1 && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+							{
+								Log("Paperdoll - Single click on slot " + std::to_string(i) + ", objectId=" + std::to_string(objectId));
+								auto objIt = g_objectList.find(objectId);
+								if (objIt != g_objectList.end() && objIt->second)
+								{
+									U7Object* obj = objIt->second.get();
+									if (obj->m_shapeData)
+									{
+										int quantity = (obj->m_Quality > 0) ? obj->m_Quality : 1;
+										m_hoverText = GetShapeFrameName(obj->m_shapeData->GetShape(), obj->m_shapeData->GetFrame(), quantity);
+										Log("Paperdoll - Showing hover text: " + m_hoverText);
+										m_hoverTextDuration = 2.0f;
+
+										// Calculate screen position from GUI coordinates
+										float screenX = (m_gui.m_Pos.x + slotSprite->m_Pos.x + slotSprite->m_Sprite->m_sourceRect.width / 2.0f);
+										float screenY = (m_gui.m_Pos.y + slotSprite->m_Pos.y);
+										m_hoverTextPos.x = screenX;
+										m_hoverTextPos.y = screenY;
+
+										Log("Hover text position: screen(" + std::to_string(screenX) + ", " + std::to_string(screenY) +
+											") gui.pos(" + std::to_string(m_gui.m_Pos.x) + ", " + std::to_string(m_gui.m_Pos.y) +
+											") slot.pos(" + std::to_string(slotSprite->m_Pos.x) + ", " + std::to_string(slotSprite->m_Pos.y) + ")");
+									}
+								}
+								break; // Don't process multiple slots
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	// Update hover text timer
+	if (m_hoverTextDuration > 0.0f)
+	{
+		m_hoverTextDuration -= GetFrameTime();
+		if (m_hoverTextDuration <= 0.0f)
+		{
+			m_hoverText.clear();
+		}
+	}
+
 	// Also allow ESC key to close
 	if (IsKeyPressed(KEY_ESCAPE))
 	{
 		OnExit();
 	}
+}
+
+// Helper function to update a sprite's texture and resize it
+static void SetSpriteTexture(GuiSprite* sprite, Texture* texture)
+{
+	if (!sprite || !sprite->m_Sprite || !texture)
+		return;
+
+	sprite->m_Sprite->m_texture = texture;
+	sprite->m_Sprite->m_sourceRect.x = 0;
+	sprite->m_Sprite->m_sourceRect.y = 0;
+	sprite->m_Sprite->m_sourceRect.width = texture->width;
+	sprite->m_Sprite->m_sourceRect.height = texture->height;
+	sprite->m_Width = texture->width;
+	sprite->m_Height = texture->height;
 }
 
 void GumpPaperdoll::Draw()
@@ -329,6 +456,14 @@ void GumpPaperdoll::Draw()
 			"SLOT_RIGHT_RING", "SLOT_BELT", "SLOT_BACKPACK"
 		};
 
+		// Debug: Log equipment check
+		static bool loggedOnce = false;
+		if (!loggedOnce && m_npcId == 0)
+		{
+			Log("Paperdoll Draw - Checking equipment for NPC " + std::to_string(m_npcId));
+			loggedOnce = true;
+		}
+
 		for (int i = 0; i < static_cast<int>(EquipmentSlot::SLOT_COUNT); i++)
 		{
 			EquipmentSlot slot = static_cast<EquipmentSlot>(i);
@@ -342,6 +477,26 @@ void GumpPaperdoll::Draw()
 					auto slotSprite = static_cast<GuiSprite*>(slotElement.get());
 					int objectId = npcData->GetEquippedItem(slot);
 
+					// Debug: Log what we find
+					static int debugCount = 0;
+					if (debugCount < 13 && m_npcId == 0)
+					{
+						if (objectId != -1)
+						{
+							auto objIt = g_objectList.find(objectId);
+							if (objIt != g_objectList.end() && objIt->second)
+							{
+								int shape = objIt->second->m_shapeData ? objIt->second->m_shapeData->GetShape() : -1;
+								Log("Paperdoll - " + std::string(slotNames[i]) + " has objectId=" + std::to_string(objectId) + ", shape=" + std::to_string(shape));
+							}
+						}
+						else
+						{
+							Log("Paperdoll - " + std::string(slotNames[i]) + " is EMPTY");
+						}
+						debugCount++;
+					}
+
 					if (objectId != -1)
 					{
 						// Item is equipped - show the item's texture
@@ -350,19 +505,37 @@ void GumpPaperdoll::Draw()
 						{
 							U7Object* obj = objIt->second.get();
 							Texture* itemTexture = obj->m_shapeData->GetTexture();
-							if (itemTexture && slotSprite->m_Sprite)
+
+							// Debug: Log texture info
+							static int textureLogCount = 0;
+							if (textureLogCount < 10 && m_npcId == 0 && itemTexture)
 							{
-								slotSprite->m_Sprite->m_texture = itemTexture;
+								Log("Paperdoll - Setting texture for " + std::string(slotNames[i]) +
+									": texture=" + std::to_string((long long)itemTexture) +
+									", size=" + std::to_string(itemTexture->width) + "x" + std::to_string(itemTexture->height));
+								textureLogCount++;
+							}
+
+							SetSpriteTexture(slotSprite, itemTexture);
+						}
+						else
+						{
+							// Debug: Log why texture failed
+							static int failLogCount = 0;
+							if (failLogCount < 5 && m_npcId == 0)
+							{
+								Log("Paperdoll - FAILED to get texture for " + std::string(slotNames[i]) +
+									": objFound=" + std::string((objIt != g_objectList.end()) ? "yes" : "no") +
+									", objValid=" + std::string((objIt != g_objectList.end() && objIt->second) ? "yes" : "no") +
+									", hasShapeData=" + std::string((objIt != g_objectList.end() && objIt->second && objIt->second->m_shapeData) ? "yes" : "no"));
+								failLogCount++;
 							}
 						}
 					}
 					else
 					{
-						// No item equipped - hide the sprite by setting texture to nullptr
-						if (slotSprite->m_Sprite)
-						{
-							slotSprite->m_Sprite->m_texture = nullptr;
-						}
+						// No item equipped - use empty texture
+						SetSpriteTexture(slotSprite, g_EmptyTexture);
 					}
 				}
 			}
@@ -371,6 +544,28 @@ void GumpPaperdoll::Draw()
 
 	// Draw all GUI elements (including slot sprites)
 	m_gui.Draw();
+
+	// Draw hover text if active (uses same style as bark text)
+	if (!m_hoverText.empty() && m_hoverTextDuration > 0.0f)
+	{
+		// Measure text with conversation font
+		float width = MeasureTextEx(*g_ConversationFont, m_hoverText.c_str(), g_ConversationFont->baseSize, 1).x * 1.2f;
+		float height = g_ConversationFont->baseSize * 1.2f;
+
+		// Center text horizontally at stored slot position, slightly above
+		Vector2 textPos = {
+			m_hoverTextPos.x - width / 2.0f,
+			m_hoverTextPos.y - height - 5.0f  // Above slot
+		};
+
+		// Draw rounded rectangle background (pill-shaped, semi-transparent)
+		DrawRectangleRounded({textPos.x, textPos.y, width, height}, 5.0f, 10, Color{0, 0, 0, 192});
+
+		// Draw text in yellow (same as bark)
+		DrawTextEx(*g_ConversationFont, m_hoverText.c_str(),
+			{ textPos.x + (width * 0.1f), textPos.y + (height * 0.1f) },
+			g_ConversationFont->baseSize, 1, YELLOW);
+	}
 }
 
 bool GumpPaperdoll::IsMouseOverSolidPixel(Vector2 mousePos)

@@ -156,6 +156,27 @@ struct NPCSchedule
 
 extern std::unordered_map<int, std::vector<NPCSchedule> > g_NPCSchedules;
 
+enum class EquipmentSlot
+{
+	SLOT_HEAD = 0,
+	SLOT_NECK,
+	SLOT_TORSO,
+	SLOT_LEGS,
+	SLOT_HANDS,
+	SLOT_FEET,
+	SLOT_LEFT_HAND,    // Shield
+	SLOT_RIGHT_HAND,   // Weapon
+	SLOT_AMMO,
+	SLOT_LEFT_RING,
+	SLOT_RIGHT_RING,
+	SLOT_BELT,
+	SLOT_BACKPACK,
+	SLOT_COUNT
+};
+
+// Helper function to determine equipment slot from item shape ID
+EquipmentSlot GetEquipmentSlotForShape(int shapeId);
+
 struct NPCData
 {
    unsigned char x;
@@ -238,6 +259,7 @@ extern Vector3 g_Gravity;
 
 extern Texture* g_Cursor;
 extern Texture* g_objectSelectCursor;
+extern Texture* g_EmptyTexture; // Empty 4x4 texture for hidden/empty slots
 
 extern std::shared_ptr<Font> g_Font;
 extern std::shared_ptr<Font> g_SmallFont;

@@ -40,6 +40,7 @@ public:
 	Config		m_GumpManagerConfig;
 	std::string	m_ConfigFileName;
 	std::vector<std::shared_ptr<Gump>> m_GumpList;
+	std::vector<std::shared_ptr<Gump>> m_PendingGumps;  // Gumps to add after current update completes
 	bool			m_draggingObject;
 	Gump*			m_sourceGump;
 	int			m_draggedObjectId;

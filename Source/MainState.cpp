@@ -1479,7 +1479,22 @@ void MainState::UpdateStats()
 
 	if (WasLeftButtonClickedInRect({ 610 * g_DrawScale, 314 * g_DrawScale, 16 * g_DrawScale, 10 * g_DrawScale }))
 	{
-		OpenGump(g_NPCData[g_Player->GetSelectedPartyMember()]->m_objectID);
+		// Open the equipped backpack, not the NPC itself
+		int npcIndex = g_Player->GetSelectedPartyMember();
+		int backpackId = g_NPCData[npcIndex]->GetEquippedItem(EquipmentSlot::SLOT_BACKPACK);
+		int npcId = g_NPCData[npcIndex]->m_objectID;
+
+		if (backpackId != -1)
+		{
+			Log("Opening backpack: backpackId=" + std::to_string(backpackId) + ", npcId=" + std::to_string(npcId));
+			OpenGump(backpackId);
+		}
+		else
+		{
+			Log("No backpack equipped, opening NPC inventory: npcId=" + std::to_string(npcId));
+			// Fallback to NPC inventory if no backpack equipped
+			OpenGump(npcId);
+		}
 	}
 }
 

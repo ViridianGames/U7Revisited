@@ -1959,10 +1959,21 @@ void LoadingState::LoadInitialGameState()
 				{
 					unsigned char length = 99;
 					bool incontainer = false;
+					int currentContainerId = nextID; // Track which container items go into (starts as NPC)
 					while (length != 0)
 					{
 						int pointerlocation = subFiles.tellg();
 						length = ReadU8(subFiles);
+
+						// Debug: Log all entries for Avatar to understand structure
+						static int logCount = 0;
+						if (logCount < 50 && thisNPC.id == 0 && length != 0)
+						{
+							std::string containerStatus = incontainer ? " (inside container)" : " (root level)";
+							Log("NPC 0 - length: " + std::to_string(length) + containerStatus);
+							logCount++;
+						}
+
 						if (length == 6) //  Object.
 						{
    						unsigned char x = ReadU8(subFiles);
@@ -1980,6 +1991,15 @@ void LoadingState::LoadInitialGameState()
                      int shape = shapeData & 0x3ff;
                      int frame = (shapeData >> 10) & 0x1f;
 
+							// Debug: Log items for Avatar and Iolo
+							static int shapeLogCount = 0;
+							if (shapeLogCount < 50 && (thisNPC.id == 0 || thisNPC.id == 1))
+							{
+								std::string location = incontainer ? " IN CONTAINER" : " ROOT LEVEL";
+								Log("NPC " + std::to_string(thisNPC.id) + location + " - shape: " + std::to_string(shape) + ", frame: " + std::to_string(frame));
+								shapeLogCount++;
+							}
+
                      unsigned char z = ReadU8(subFiles);
                      float lift1 = 0;
                      float lift2 = 0;
@@ -1995,22 +2015,134 @@ void LoadingState::LoadInitialGameState()
                      int objectId = GetNextID();
 							U7Object* thisObject = AddObject(shape, frame, objectId, actualx, lift1, actualy);
 							thisObject->m_isContained = true;
+							thisObject->m_Quality = quality;
 
-							AddObjectToContainer(objectId, nextID);
+							// Debug: Log where EVERY item goes for Avatar and Iolo
+							if (thisNPC.id == 0 || thisNPC.id == 1)
+							{
+								std::string dest = (currentContainerId == nextID) ? "NPC" : "CONTAINER";
+								Log("NPC " + std::to_string(thisNPC.id) + " - ADDING shape " + std::to_string(shape) + " (id=" + std::to_string(objectId) +
+									") to " + dest + " (containerID=" + std::to_string(currentContainerId) + ", npcID=" + std::to_string(nextID) + ")");
+							}
+
+							AddObjectToContainer(objectId, currentContainerId);
+
+							// If item is at root level (not in container), auto-equip based on shape ID
+							// In original U7 format, root level items are the equipped items
+							if (!incontainer)
+							{
+								EquipmentSlot slot = GetEquipmentSlotForShape(shape);
+
+								// Debug: Show ALL root level items for Avatar/Iolo
+								if (thisNPC.id == 0 || thisNPC.id == 1)
+								{
+									if (slot != EquipmentSlot::SLOT_COUNT)
+									{
+										const char* slotNames[] = {"HEAD", "NECK", "TORSO", "LEGS", "HANDS", "FEET",
+											"LEFT_HAND", "RIGHT_HAND", "AMMO", "LEFT_RING", "RIGHT_RING", "BELT", "BACKPACK"};
+										Log("NPC " + std::to_string(thisNPC.id) + " - Shape " + std::to_string(shape) +
+											" mapped to slot " + std::to_string(static_cast<int>(slot)) + " (" + slotNames[static_cast<int>(slot)] + ")");
+									}
+									else
+									{
+										Log("NPC " + std::to_string(thisNPC.id) + " - Root level shape " + std::to_string(shape) +
+											" has NO equipment slot mapping!");
+									}
+								}
+
+								if (slot != EquipmentSlot::SLOT_COUNT)
+								{
+									g_NPCData[thisNPC.id]->SetEquippedItem(slot, objectId);
+								}
+							}
+
 						}
-						else if (length == 12) // container or egg
+						else if (length == 12) // Container (backpack, bag, etc.)
 						{
-							incontainer = true;
-							for (int i = 0; i < 12; ++i)
+							// Read container object data (same format as regular objects, plus 6 extra bytes)
+							unsigned char x = ReadU8(subFiles);
+							unsigned char y = ReadU8(subFiles);
+
+							int chunkx = x >> 4;
+							int chunky = y >> 4;
+							int intx = x & 0x0f;
+							int inty = y & 0x0f;
+
+							int actualx = (chunkx * 16) + intx;
+							int actualy = (chunky * 16) + inty;
+
+							unsigned short shapeData = ReadU16(subFiles);
+							int shape = shapeData & 0x3ff;
+							int frame = (shapeData >> 10) & 0x1f;
+
+							unsigned char z = ReadU8(subFiles);
+							float lift1 = 0;
+							if (z != 0)
+							{
+								lift1 = z >> 4;
+							}
+
+							unsigned char quality = ReadU8(subFiles);
+
+							// Skip the 6 extra container-specific bytes (volume, flags, etc.)
+							for (int i = 0; i < 6; ++i)
 							{
 								ReadU8(subFiles);
 							}
+
+							// Create the container object
+							int containerId = GetNextID();
+							U7Object* containerObject = AddObject(shape, frame, containerId, actualx, lift1, actualy);
+							containerObject->m_isContainer = true;  // Mark as container so items can be added to it
+							containerObject->m_isContained = true;
+							containerObject->m_Quality = quality;
+
+							// Debug: Log where container goes
+							if (thisNPC.id == 0)
+							{
+								std::string dest = (currentContainerId == nextID) ? "NPC" : "CONTAINER";
+								Log("NPC 0 - ADDING CONTAINER shape " + std::to_string(shape) + " (id=" + std::to_string(containerId) +
+									") to " + dest + " (containerID=" + std::to_string(currentContainerId) + ", npcID=" + std::to_string(nextID) + ")");
+								Log("NPC 0 - Setting currentContainerId to " + std::to_string(containerId) + " (was " + std::to_string(currentContainerId) + ")");
+							}
+
+							AddObjectToContainer(containerId, currentContainerId);
+
+							// If container is at root level (not inside another container), auto-equip it
+							if (!incontainer)
+							{
+								EquipmentSlot slot = GetEquipmentSlotForShape(shape);
+								if (slot != EquipmentSlot::SLOT_COUNT)
+								{
+									g_NPCData[thisNPC.id]->SetEquippedItem(slot, containerId);
+									Log("NPC " + std::to_string(thisNPC.id) + " - Auto-equipped container shape " +
+										std::to_string(shape) + " to slot " + std::to_string(static_cast<int>(slot)));
+								}
+							}
+
+							// Mark that we're now reading items inside this container
+							incontainer = true;
+							currentContainerId = containerId; // Subsequent items go inside this container
 						}
 						else if(length == 1)
 						{
+							static int endContainerCount = 0;
+							if (endContainerCount < 5 && thisNPC.id == 0)
+							{
+								Log("NPC 0 - Hit length==1 (end container), incontainer=" + std::string(incontainer ? "true" : "false") +
+									", currentContainerId=" + std::to_string(currentContainerId) + ", nextID=" + std::to_string(nextID));
+								endContainerCount++;
+							}
+
 							if (incontainer)
 							{
 								incontainer = false;
+								currentContainerId = nextID; // Back to adding items to NPC
+
+								if (endContainerCount <= 5 && thisNPC.id == 0)
+								{
+									Log("NPC 0 - Reset: incontainer=false, currentContainerId=" + std::to_string(currentContainerId));
+								}
 							}
 						}
 					}

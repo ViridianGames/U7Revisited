@@ -27,24 +27,6 @@ enum class PaperdollType
 	PAPERDOLL_LAST
 };
 
-enum class EquipmentSlot
-{
-	SLOT_HEAD = 0,
-	SLOT_NECK,
-	SLOT_TORSO,
-	SLOT_LEGS,
-	SLOT_HANDS,
-	SLOT_FEET,
-	SLOT_LEFT_HAND,    // Shield
-	SLOT_RIGHT_HAND,   // Weapon
-	SLOT_AMMO,
-	SLOT_LEFT_RING,
-	SLOT_RIGHT_RING,
-	SLOT_BELT,
-	SLOT_BACKPACK,
-	SLOT_COUNT
-};
-
 class GumpPaperdoll : public Gump
 {
 public:
@@ -125,6 +107,11 @@ private:
 	std::unique_ptr<GhostSerializer> m_serializer; // GUI serializer for loading paperdoll.ghost
 	std::vector<std::shared_ptr<Font>> m_loadedFonts; // Keep fonts alive
 	// Note: m_gui is inherited from Gump base class
+
+	// Hover text for clicked items
+	std::string m_hoverText;
+	float m_hoverTextDuration = 0.0f;
+	Vector2 m_hoverTextPos = {0, 0};  // Screen position for hover text
 };
 
 #endif
