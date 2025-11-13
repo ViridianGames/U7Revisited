@@ -297,8 +297,8 @@ void GumpPaperdoll::Update()
 
 	if (g_gumpManager->m_draggingObject && g_gumpManager->m_draggedObjectId != -1)
 	{
-		// Check if mouse is over this paperdoll
-		if (CheckCollisionPointRec(mousePos, m_gui.GetBounds()))
+		// Check if mouse is over this paperdoll (bounding box + solid pixel check)
+		if (CheckCollisionPointRec(mousePos, m_gui.GetBounds()) && IsMouseOverSolidPixel(mousePos))
 		{
 			// Get the dragged object
 			auto objIt = g_objectList.find(g_gumpManager->m_draggedObjectId);

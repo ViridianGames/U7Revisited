@@ -33,6 +33,13 @@
       "SLOT_LEGS"
     ]
   },
+  "377": {
+    "name": "food",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
+    ]
+  },
   "383": {
     "name": "magic helm",
     "slots": [

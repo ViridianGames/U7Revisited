@@ -142,6 +142,29 @@ void GumpManager::Update()
 			return;
 		}
 
+		// Re-check which gump is under mouse now (may have changed during drag)
+		// Use same logic as initial check: proper z-order (rbegin) and pixel-perfect collision
+		m_gumpUnderMouse = nullptr;
+		m_isMouseOverGump = false;
+		for (auto it = m_GumpList.rbegin(); it != m_GumpList.rend(); ++it)
+		{
+			Rectangle gumpRect = (*it)->m_gui.GetBounds();
+			bool collision = CheckCollisionPointRec(mousePos, gumpRect);
+
+			// Pixel-perfect collision detection (checks transparency)
+			if (collision)
+			{
+				collision = (*it)->IsMouseOverSolidPixel(mousePos);
+			}
+
+			if (collision)
+			{
+				m_gumpUnderMouse = (*it).get();
+				m_isMouseOverGump = true;
+				break;  // Found topmost gump with solid pixel under mouse
+			}
+		}
+
 		//  First check if we're dropping on a paperdoll
 		bool droppedOnPaperdoll = false;
 		bool attemptedPaperdollDrop = false;
@@ -350,20 +373,9 @@ gump->m_containerData.m_boxSize.x, gump->m_containerData.m_boxSize.y }))
 		{
 			bool returnedToSource = false;
 
-			// Check if mouse is over ANY gump - if not, user is intentionally dropping to ground
-			bool mouseOverAnyGump = false;
-			for (auto& gump : g_gumpManager->m_GumpList)
-			{
-				if (CheckCollisionPointRec(mousePos, gump->m_gui.GetBounds()))
-				{
-					mouseOverAnyGump = true;
-					break;
-				}
-			}
-
 			// Only return to source if mouse is over a gump (failed drop attempt)
-			// If mouse is over the world, user wants to drop to ground
-			if (m_sourceGump != nullptr && mouseOverAnyGump)
+			// If mouse is over the world (m_gumpUnderMouse == nullptr), user wants to drop to ground
+			if (m_sourceGump != nullptr && m_gumpUnderMouse != nullptr)
 			{
 				GumpPaperdoll* sourcePaperdoll = dynamic_cast<GumpPaperdoll*>(m_sourceGump);
 				if (sourcePaperdoll)
