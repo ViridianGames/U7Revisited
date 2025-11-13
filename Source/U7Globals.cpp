@@ -6,6 +6,7 @@
 #include "Pathfinding.h"
 #include "lua.hpp"
 #include "../ThirdParty/raylib/include/rlgl.h"
+#include "../ThirdParty/nlohmann/json.hpp"
 #include <algorithm>
 #include <fstream>
 #include <sstream>
@@ -140,7 +141,7 @@ bool g_mouseOverUI = false;
 
 U7Object* g_doubleClickedObject;
 
-//  This makes an animation 
+//  This makes an animation
 void MakeAnimationFrameMeshes()
 {
 	g_AnimationFrames = new Mesh();
@@ -1117,43 +1118,135 @@ std::string GetObjectScriptName(U7Object* object)
 	return "";  // No script or using default
 }
 
-// Determines which equipment slot an item belongs to based on its shape ID
+// Equipment slot configuration loaded from slots.json
+static std::map<int, std::vector<EquipmentSlot>> g_equipmentSlotMap;      // Valid slots item can be placed in
+static std::map<int, std::vector<EquipmentSlot>> g_equipmentSlotFillsMap; // All slots item occupies when equipped
+
+// String to EquipmentSlot enum conversion
+static EquipmentSlot StringToEquipmentSlot(const std::string& slotName)
+{
+	if (slotName == "SLOT_HEAD") return EquipmentSlot::SLOT_HEAD;
+	if (slotName == "SLOT_NECK") return EquipmentSlot::SLOT_NECK;
+	if (slotName == "SLOT_TORSO") return EquipmentSlot::SLOT_TORSO;
+	if (slotName == "SLOT_LEGS") return EquipmentSlot::SLOT_LEGS;
+	if (slotName == "SLOT_HANDS") return EquipmentSlot::SLOT_HANDS;
+	if (slotName == "SLOT_FEET") return EquipmentSlot::SLOT_FEET;
+	if (slotName == "SLOT_LEFT_HAND") return EquipmentSlot::SLOT_LEFT_HAND;
+	if (slotName == "SLOT_RIGHT_HAND") return EquipmentSlot::SLOT_RIGHT_HAND;
+	if (slotName == "SLOT_AMMO") return EquipmentSlot::SLOT_AMMO;
+	if (slotName == "SLOT_LEFT_RING") return EquipmentSlot::SLOT_LEFT_RING;
+	if (slotName == "SLOT_RIGHT_RING") return EquipmentSlot::SLOT_RIGHT_RING;
+	if (slotName == "SLOT_BELT") return EquipmentSlot::SLOT_BELT;
+	if (slotName == "SLOT_BACKPACK") return EquipmentSlot::SLOT_BACKPACK;
+	return EquipmentSlot::SLOT_COUNT;
+}
+
+// Load equipment slot configuration from Data/equip_slots.json
+void LoadEquipmentSlotsConfig()
+{
+	g_equipmentSlotMap.clear();
+	g_equipmentSlotFillsMap.clear();
+
+	std::string configPath = "Data/equip_slots.json";
+
+	std::ifstream file(configPath);
+	if (!file.is_open())
+	{
+		Log("ERROR: Could not open " + configPath);
+		return;
+	}
+
+	try
+	{
+		nlohmann::json config;
+		file >> config;
+
+		// New format: root object is a map of shape_id (as string) to item data
+		if (config.is_object())
+		{
+			for (auto& [shapeIdStr, item] : config.items())
+			{
+				// Convert string key to int
+				int shapeId = std::stoi(shapeIdStr);
+
+				if (item.contains("slots") && item["slots"].is_array())
+				{
+					std::vector<EquipmentSlot> validSlots;
+
+					// Load valid slots (where item can be placed)
+					for (const auto& slotName : item["slots"])
+					{
+						EquipmentSlot slot = StringToEquipmentSlot(slotName.get<std::string>());
+						if (slot != EquipmentSlot::SLOT_COUNT)
+						{
+							validSlots.push_back(slot);
+						}
+					}
+
+					if (!validSlots.empty())
+					{
+						g_equipmentSlotMap[shapeId] = validSlots;
+					}
+
+					// Load fills (all slots occupied when equipped)
+					if (item.contains("fills") && item["fills"].is_array())
+					{
+						std::vector<EquipmentSlot> fillSlots;
+						for (const auto& slotName : item["fills"])
+						{
+							EquipmentSlot slot = StringToEquipmentSlot(slotName.get<std::string>());
+							if (slot != EquipmentSlot::SLOT_COUNT)
+							{
+								fillSlots.push_back(slot);
+							}
+						}
+						if (!fillSlots.empty())
+						{
+							g_equipmentSlotFillsMap[shapeId] = fillSlots;
+						}
+					}
+				}
+			}
+		}
+
+		Log("Loaded equipment slot configuration for " + std::to_string(g_equipmentSlotMap.size()) + " item types");
+	}
+	catch (const std::exception& e)
+	{
+		Log("ERROR: Failed to parse " + configPath + ": " + e.what());
+	}
+}
+
+// Returns all valid equipment slots for an item shape ID
+std::vector<EquipmentSlot> GetEquipmentSlotsForShape(int shapeId)
+{
+	auto it = g_equipmentSlotMap.find(shapeId);
+	if (it != g_equipmentSlotMap.end())
+	{
+		return it->second;
+	}
+	return {}; // Empty vector if not equippable
+}
+
+// Returns all slots this item occupies when equipped (may be multiple)
+std::vector<EquipmentSlot> GetEquipmentSlotsFilled(int shapeId)
+{
+	auto it = g_equipmentSlotFillsMap.find(shapeId);
+	if (it != g_equipmentSlotFillsMap.end())
+	{
+		return it->second;
+	}
+	return {}; // Empty vector if not equippable
+}
+
+// Deprecated: Returns only the first valid equipment slot for an item
+// Use GetEquipmentSlotsForShape() for items that can go in multiple slots
 EquipmentSlot GetEquipmentSlotForShape(int shapeId)
 {
-	// Backpack (check first - most important)
-	if (shapeId == 801) return EquipmentSlot::SLOT_BACKPACK;
-
-	// Ammo (arrows and bolts)
-	if (shapeId == 554) return EquipmentSlot::SLOT_AMMO;  // burst arrow
-	if (shapeId == 556) return EquipmentSlot::SLOT_AMMO;  // magic arrow
-	if (shapeId == 558) return EquipmentSlot::SLOT_AMMO;  // lucky arrow
-	if (shapeId == 560) return EquipmentSlot::SLOT_AMMO;  // love arrow
-	if (shapeId == 568) return EquipmentSlot::SLOT_AMMO;  // tes arrow
-	if (shapeId == 723) return EquipmentSlot::SLOT_AMMO;  // bolts
-
-	// Boots (feet)
-	if (shapeId == 587) return EquipmentSlot::SLOT_FEET;
-
-	// Helmets/hoods (head)
-	if (shapeId == 444) return EquipmentSlot::SLOT_HEAD;  // hood
-	if (shapeId == 539) return EquipmentSlot::SLOT_HEAD;  // chain coif
-	if (shapeId == 541) return EquipmentSlot::SLOT_HEAD;  // great helm
-	if (shapeId == 542) return EquipmentSlot::SLOT_HEAD;  // crested helm
-
-	// Shields (left hand)
-	if (shapeId == 543) return EquipmentSlot::SLOT_LEFT_HAND;  // buckler
-	if (shapeId == 545) return EquipmentSlot::SLOT_LEFT_HAND;  // curved heather
-
-	// Armor (torso)
-	if (shapeId == 569) return EquipmentSlot::SLOT_TORSO;  // leather armor
-
-	// Leggings (legs)
-	if (shapeId == 574) return EquipmentSlot::SLOT_LEGS;  // leather leggings
-
-	// Weapons (right hand)
-	if (shapeId == 594) return EquipmentSlot::SLOT_RIGHT_HAND;  // dagger
-	if (shapeId == 598) return EquipmentSlot::SLOT_RIGHT_HAND;  // crossbow
-
-	// Not an equippable item
+	auto slots = GetEquipmentSlotsForShape(shapeId);
+	if (!slots.empty())
+	{
+		return slots[0];
+	}
 	return EquipmentSlot::SLOT_COUNT;
 }

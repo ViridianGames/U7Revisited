@@ -145,8 +145,10 @@ void GumpManager::Update()
 		//  First check if we're dropping on a paperdoll
 		bool droppedOnPaperdoll = false;
 		bool attemptedPaperdollDrop = false;
-		for (auto gump : g_gumpManager->m_GumpList)
+		// Iterate backwards to check topmost gumps first (last in list = highest z-order)
+		for (auto it = g_gumpManager->m_GumpList.rbegin(); it != g_gumpManager->m_GumpList.rend(); ++it)
 		{
+			auto& gump = *it;
 			GumpPaperdoll* paperdoll = dynamic_cast<GumpPaperdoll*>(gump.get());
 			if (paperdoll)
 			{
@@ -155,11 +157,12 @@ void GumpManager::Update()
 				{
 					attemptedPaperdollDrop = true;
 
-					// Get which slot this item should go to based on its shape
+					// Get all valid slots this item can be equipped to
 					int shape = object->m_shapeData->GetShape();
-					EquipmentSlot slot = GetEquipmentSlotForShape(shape);
+					std::vector<EquipmentSlot> validSlots = GetEquipmentSlotsForShape(shape);
+					std::vector<EquipmentSlot> fillSlots = GetEquipmentSlotsFilled(shape);
 
-					if (slot != EquipmentSlot::SLOT_COUNT)
+					if (!validSlots.empty())
 					{
 						// Get NPC data
 						auto npcIt = g_NPCData.find(paperdoll->GetNpcId());
@@ -167,22 +170,55 @@ void GumpManager::Update()
 						{
 							NPCData* npcData = npcIt->second.get();
 
-							// Check if slot is empty
-							int currentEquipped = npcData->GetEquippedItem(slot);
-							if (currentEquipped == -1)
+							// Try each valid slot in order
+							for (EquipmentSlot slot : validSlots)
 							{
-								// Slot is empty, equip the item
-								npcData->SetEquippedItem(slot, object->m_ID);
+								// If item has explicit fills, check all those slots are empty
+								// Otherwise just check the single slot
+								bool allSlotsEmpty = true;
+								if (!fillSlots.empty())
+								{
+									// Multi-slot item (e.g., crossbow, gauntlets) - check ALL fill slots
+									for (EquipmentSlot fillSlot : fillSlots)
+									{
+										if (npcData->GetEquippedItem(fillSlot) != -1)
+										{
+											allSlotsEmpty = false;
+											break;
+										}
+									}
+								}
+								else
+								{
+									// Single-slot item - just check this slot
+									allSlotsEmpty = (npcData->GetEquippedItem(slot) == -1);
+								}
 
-								// Item was already removed from source when drag started, so just mark as contained
-								object->m_isContained = true; // Equipped items are considered contained
-								droppedOnPaperdoll = true;
-
-								Log("Equipped shape " + std::to_string(shape) + " to slot " + std::to_string(static_cast<int>(slot)));
+								if (allSlotsEmpty)
+								{
+									// Equip: if fills is specified, use those slots; otherwise just the single slot
+									if (!fillSlots.empty())
+									{
+										for (EquipmentSlot fillSlot : fillSlots)
+										{
+											npcData->SetEquippedItem(fillSlot, object->m_ID);
+										}
+									}
+									else
+									{
+										npcData->SetEquippedItem(slot, object->m_ID);
+									}
+									object->m_isContained = true;
+									droppedOnPaperdoll = true;
+									Log("Equipped shape " + std::to_string(shape) + " to slot " + std::to_string(static_cast<int>(slot)) +
+									    " (fills " + std::to_string(fillSlots.size()) + " slots)");
+									break;
+								}
 							}
-							else
+
+							if (!droppedOnPaperdoll)
 							{
-								Log("Cannot equip - slot " + std::to_string(static_cast<int>(slot)) + " is already occupied");
+								Log("Cannot equip - required slots are occupied");
 							}
 						}
 					}
@@ -201,12 +237,20 @@ void GumpManager::Update()
 							if (sourcePaperdoll)
 							{
 								// Re-equip to the paperdoll we dragged from
+								// Try each valid slot to find first empty one
 								auto sourceNpcIt = g_NPCData.find(sourcePaperdoll->GetNpcId());
-								if (sourceNpcIt != g_NPCData.end() && slot != EquipmentSlot::SLOT_COUNT)
+								if (sourceNpcIt != g_NPCData.end() && !validSlots.empty())
 								{
-									sourceNpcIt->second->SetEquippedItem(slot, object->m_ID);
-									object->m_isContained = true;
-									Log("Returned item to source paperdoll slot " + std::to_string(static_cast<int>(slot)));
+									for (EquipmentSlot slot : validSlots)
+									{
+										if (sourceNpcIt->second->GetEquippedItem(slot) == -1)
+										{
+											sourceNpcIt->second->SetEquippedItem(slot, object->m_ID);
+											object->m_isContained = true;
+											Log("Returned item to source paperdoll slot " + std::to_string(static_cast<int>(slot)));
+											break;
+										}
+									}
 								}
 							}
 							else if (m_sourceGump->m_containerObject != nullptr)

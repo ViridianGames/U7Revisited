@@ -1,0 +1,117 @@
+{
+  "801": {
+    "name": "backpack",
+    "slots": ["SLOT_BACKPACK"]
+  },
+  "554": {
+    "name": "burst arrow",
+    "slots": ["SLOT_AMMO"]
+  },
+  "556": {
+    "name": "magic arrow",
+    "slots": ["SLOT_AMMO"]
+  },
+  "558": {
+    "name": "lucky arrow",
+    "slots": ["SLOT_AMMO"]
+  },
+  "560": {
+    "name": "love arrow",
+    "slots": ["SLOT_AMMO"]
+  },
+  "568": {
+    "name": "tes arrow",
+    "slots": ["SLOT_AMMO"]
+  },
+  "723": {
+    "name": "bolts",
+    "slots": ["SLOT_AMMO"]
+  },
+  "444": {
+    "name": "hood",
+    "slots": ["SLOT_HEAD"]
+  },
+  "539": {
+    "name": "chain coif",
+    "slots": ["SLOT_HEAD"]
+  },
+  "541": {
+    "name": "great helm",
+    "slots": ["SLOT_HEAD"]
+  },
+  "542": {
+    "name": "crested helm",
+    "slots": ["SLOT_HEAD"]
+  },
+  "543": {
+    "name": "buckler",
+    "slots": ["SLOT_LEFT_HAND"]
+  },
+  "545": {
+    "name": "curved heather",
+    "slots": ["SLOT_LEFT_HAND"]
+  },
+  "569": {
+    "name": "leather armor",
+    "slots": ["SLOT_TORSO"]
+  },
+  "574": {
+    "name": "leather leggings",
+    "slots": ["SLOT_LEGS"]
+  },
+  "579": {
+    "name": "leather gloves",
+    "slots": ["SLOT_LEFT_RING"]
+  },
+  "580": {
+    "name": "gauntlets",
+    "slots": ["SLOT_LEFT_RING"],
+    "fills": ["SLOT_LEFT_RING", "SLOT_RIGHT_RING"]
+  },
+  "581": {
+    "name": "ammunition",
+    "slots": ["SLOT_AMMO"]
+  },
+  "582": {
+    "name": "leather collar",
+    "slots": ["SLOT_NECK"]
+  },
+  "584": {
+    "name": "kidney belt",
+    "slots": ["SLOT_BELT"]
+  },
+  "585": {
+    "name": "shoes",
+    "slots": ["SLOT_FEET"]
+  },
+  "586": {
+    "name": "gorget",
+    "slots": ["SLOT_NECK"]
+  },
+  "587": {
+    "name": "boots",
+    "slots": ["SLOT_FEET"]
+  },
+  "588": {
+    "name": "swamp boots",
+    "slots": ["SLOT_FEET"]
+  },
+  "594": {
+    "name": "dagger",
+    "slots": ["SLOT_RIGHT_HAND", "SLOT_LEFT_HAND"]
+  },
+  "595": {
+    "name": "torch",
+    "slots": ["SLOT_RIGHT_HAND", "SLOT_LEFT_HAND"]
+  },
+  "598": {
+    "name": "crossbow",
+    "slots": ["SLOT_RIGHT_HAND"],
+    "fills": ["SLOT_RIGHT_HAND", "SLOT_LEFT_HAND"]
+  },
+  "609": {
+    "name": "kite shield",
+    "slots": ["SLOT_LEFT_HAND"],
+    "fills": ["SLOT_LEFT_HAND"]
+  }
+}

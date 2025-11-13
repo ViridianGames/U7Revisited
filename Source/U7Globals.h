@@ -174,8 +174,11 @@ enum class EquipmentSlot
 	SLOT_COUNT
 };
 
-// Helper function to determine equipment slot from item shape ID
-EquipmentSlot GetEquipmentSlotForShape(int shapeId);
+// Helper functions to determine equipment slots from item shape ID
+void LoadEquipmentSlotsConfig();
+std::vector<EquipmentSlot> GetEquipmentSlotsForShape(int shapeId);
+std::vector<EquipmentSlot> GetEquipmentSlotsFilled(int shapeId); // Returns all slots this item occupies when equipped
+EquipmentSlot GetEquipmentSlotForShape(int shapeId); // Deprecated: returns first valid slot only
 
 struct NPCData
 {

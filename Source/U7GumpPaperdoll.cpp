@@ -397,10 +397,32 @@ void GumpPaperdoll::Update()
 									g_gumpManager->m_draggingObject = true;
 									g_gumpManager->m_sourceGump = this;
 
-									// Unequip the item
-									npcData->UnequipItem(slot);
+									// Unequip from ALL slots this item fills
+									auto objIt = g_objectList.find(objectId);
+									if (objIt != g_objectList.end() && objIt->second && objIt->second->m_shapeData)
+									{
+										int shape = objIt->second->m_shapeData->GetShape();
+										std::vector<EquipmentSlot> fillSlots = GetEquipmentSlotsFilled(shape);
 
-									Log("Started dragging equipped item from slot " + std::to_string(i) + ", objectId=" + std::to_string(objectId));
+										// If item has explicit fills, clear all those slots
+										// Otherwise just clear the clicked slot
+										if (!fillSlots.empty())
+										{
+											for (EquipmentSlot fillSlot : fillSlots)
+											{
+												npcData->UnequipItem(fillSlot);
+											}
+											Log("Started dragging equipped item from slot " + std::to_string(i) + ", objectId=" + std::to_string(objectId) +
+											    " (cleared " + std::to_string(fillSlots.size()) + " fills slots)");
+										}
+										else
+										{
+											// Single-slot item - just clear the clicked slot
+											npcData->UnequipItem(static_cast<EquipmentSlot>(i));
+											Log("Started dragging equipped item from slot " + std::to_string(i) + ", objectId=" + std::to_string(objectId));
+										}
+									}
+
 									break;
 								}
 							}

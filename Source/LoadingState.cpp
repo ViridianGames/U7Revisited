@@ -1729,6 +1729,9 @@ std::vector<LoadingState::FLXEntryData> LoadingState::ParseFLXHeader(istream &fi
 
 void LoadingState::LoadInitialGameState()
 {
+	// Load equipment slot configuration
+	LoadEquipmentSlotsConfig();
+
 	//  Load shape data
 	std::string dataPath = g_Engine->m_EngineConfig.GetString("data_path");
 	ifstream initGameFile;
@@ -1974,6 +1977,54 @@ void LoadingState::LoadInitialGameState()
 							logCount++;
 						}
 
+						// Helper lambda to auto-equip items - defined here so both length==6 and length==12 can use it
+						auto AutoEquipItem = [&](int itemId, int shapeId) {
+							std::vector<EquipmentSlot> validSlots = GetEquipmentSlotsForShape(shapeId);
+							std::vector<EquipmentSlot> fillSlots = GetEquipmentSlotsFilled(shapeId);
+
+							// Try each valid slot in order, use first where all required slots are empty
+							for (EquipmentSlot slot : validSlots)
+							{
+								// If item has explicit fills, check all those slots are empty
+								// Otherwise just check the single slot
+								bool allEmpty = true;
+								if (!fillSlots.empty())
+								{
+									for (EquipmentSlot fillSlot : fillSlots)
+									{
+										if (g_NPCData[thisNPC.id]->GetEquippedItem(fillSlot) != -1)
+										{
+											allEmpty = false;
+											break;
+										}
+									}
+								}
+								else
+								{
+									// Single slot item - just check this one slot
+									allEmpty = (g_NPCData[thisNPC.id]->GetEquippedItem(slot) == -1);
+								}
+
+								if (allEmpty)
+								{
+									// Equip: if fills is specified, use those slots; otherwise just the single slot
+									if (!fillSlots.empty())
+									{
+										for (EquipmentSlot fillSlot : fillSlots)
+										{
+											g_NPCData[thisNPC.id]->SetEquippedItem(fillSlot, itemId);
+										}
+									}
+									else
+									{
+										g_NPCData[thisNPC.id]->SetEquippedItem(slot, itemId);
+									}
+									return true;
+								}
+							}
+							return false;
+						};
+
 						if (length == 6) //  Object.
 						{
    						unsigned char x = ReadU8(subFiles);
@@ -2031,17 +2082,17 @@ void LoadingState::LoadInitialGameState()
 							// In original U7 format, root level items are the equipped items
 							if (!incontainer)
 							{
-								EquipmentSlot slot = GetEquipmentSlotForShape(shape);
+								std::vector<EquipmentSlot> validSlots = GetEquipmentSlotsForShape(shape);
 
 								// Debug: Show ALL root level items for Avatar/Iolo
 								if (thisNPC.id == 0 || thisNPC.id == 1)
 								{
-									if (slot != EquipmentSlot::SLOT_COUNT)
+									if (!validSlots.empty())
 									{
 										const char* slotNames[] = {"HEAD", "NECK", "TORSO", "LEGS", "HANDS", "FEET",
 											"LEFT_HAND", "RIGHT_HAND", "AMMO", "LEFT_RING", "RIGHT_RING", "BELT", "BACKPACK"};
 										Log("NPC " + std::to_string(thisNPC.id) + " - Shape " + std::to_string(shape) +
-											" mapped to slot " + std::to_string(static_cast<int>(slot)) + " (" + slotNames[static_cast<int>(slot)] + ")");
+											" mapped to slot " + std::to_string(static_cast<int>(validSlots[0])) + " (" + slotNames[static_cast<int>(validSlots[0])] + ")");
 									}
 									else
 									{
@@ -2050,10 +2101,8 @@ void LoadingState::LoadInitialGameState()
 									}
 								}
 
-								if (slot != EquipmentSlot::SLOT_COUNT)
-								{
-									g_NPCData[thisNPC.id]->SetEquippedItem(slot, objectId);
-								}
+								// Auto-equip the item
+								AutoEquipItem(objectId, shape);
 							}
 
 						}
@@ -2111,12 +2160,13 @@ void LoadingState::LoadInitialGameState()
 							// If container is at root level (not inside another container), auto-equip it
 							if (!incontainer)
 							{
-								EquipmentSlot slot = GetEquipmentSlotForShape(shape);
-								if (slot != EquipmentSlot::SLOT_COUNT)
+								if (AutoEquipItem(containerId, shape))
 								{
-									g_NPCData[thisNPC.id]->SetEquippedItem(slot, containerId);
+									std::vector<EquipmentSlot> validSlots = GetEquipmentSlotsForShape(shape);
+									std::vector<EquipmentSlot> fillSlots = GetEquipmentSlotsFilled(shape);
 									Log("NPC " + std::to_string(thisNPC.id) + " - Auto-equipped container shape " +
-										std::to_string(shape) + " to slot " + std::to_string(static_cast<int>(slot)));
+										std::to_string(shape) + " to slot " + std::to_string(static_cast<int>(validSlots[0])) +
+										" (fills " + std::to_string(fillSlots.size()) + " slots)");
 								}
 							}
 
