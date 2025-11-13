@@ -163,6 +163,7 @@ public:
 
    float GetWeight(); // Recursive cached weight calculation
    void InvalidateWeightCache(); // Invalidate this object + parent chain
+   float GetRemainingCarryCapacity(); // How much more weight can this NPC carry (max - current)
 };
 
 #endif

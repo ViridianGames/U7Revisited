@@ -371,6 +371,37 @@ U7Object* GetObjectFromID(int unitID)
 	return nullptr;
 }
 
+U7Object* GetRootNPCFromContainer(U7Object* container)
+{
+	if (container == nullptr)
+		return nullptr;
+
+	// If this container is already an NPC, return it
+	if (container->m_isNPC)
+		return container;
+
+	// Follow the parent chain up to find an NPC
+	int currentId = container->m_containingObjectId;
+	while (currentId != -1)
+	{
+		U7Object* parent = GetObjectFromID(currentId);
+		if (parent == nullptr)
+			break;
+
+		if (parent->m_isNPC)
+			return parent;
+
+		currentId = parent->m_containingObjectId;
+	}
+
+	return nullptr;
+}
+
+float GetMaxWeightFromStrength(int strength)
+{
+	return 2.0f * strength;
+}
+
 void UpdateSortedVisibleObjects()
 {
 	if (g_LuaDebug)

@@ -727,6 +727,18 @@ void U7Object::InvalidateWeightCache()
 	}
 }
 
+float U7Object::GetRemainingCarryCapacity()
+{
+	// Only NPCs have carry capacity
+	if (!m_isNPC || m_NPCData == nullptr)
+		return 0.0f;
+
+	float maxWeight = GetMaxWeightFromStrength(m_NPCData->str);
+	float currentWeight = GetWeight();
+
+	return maxWeight - currentWeight;
+}
+
 bool U7Object::IsLocked()
 {
 	if (m_shapeData->m_shape == 522)

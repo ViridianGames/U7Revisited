@@ -331,6 +331,16 @@ U7Object* GetObjectFromID(int unitID);
 
 U7Object* GetObjectUnderMouse();
 
+/// @brief Find the root NPC owner of a container (follows parent chain to find NPC)
+/// @param container The container object to start from
+/// @return The root NPC object, or nullptr if no NPC found in parent chain
+U7Object* GetRootNPCFromContainer(U7Object* container);
+
+/// @brief Calculate max carry weight from strength stat
+/// @param strength The strength value
+/// @return Maximum weight that can be carried (2 * strength)
+float GetMaxWeightFromStrength(int strength);
+
 U7Object* U7ObjectClassFactory(int type);
 
 void PopulateLocationMap();

@@ -332,27 +332,48 @@ void GumpManager::Update()
 
 				if (CheckCollisionPointRec(mousePos, gump->m_gui.GetBounds()))
 				{
-					if (CheckCollisionPointRec(mousePos, Rectangle{ gump->m_gui.m_Pos.x + (gump->m_containerData.m_boxOffset.x), gump->m_gui.m_Pos.y + (gump->m_containerData.m_boxOffset.y),
-gump->m_containerData.m_boxSize.x, gump->m_containerData.m_boxSize.y }))
+					// Check if root owner is an NPC and can carry this item
+					U7Object* rootNPC = GetRootNPCFromContainer(gump->m_containerObject);
+					float itemWeight = object->GetWeight();
+					bool canCarry = true;
+
+					if (rootNPC != nullptr)
 					{
-						object->m_InventoryPos = {mousePos.x - (gump->m_gui.m_Pos.x + (gump->m_containerData.m_boxOffset.x)), mousePos.y - (gump->m_gui.m_Pos.y + (gump->m_containerData.m_boxOffset.y)) };
-					}
-					else // In the container but not in the box area
-					{
-						object->m_InventoryPos = {0, 0 };
+						float remainingCapacity = rootNPC->GetRemainingCarryCapacity();
+						if (itemWeight > remainingCapacity)
+						{
+							canCarry = false;
+							AddConsoleString("Too heavy! Cannot carry that much.", RED);
+							Log("Drop failed: Item weight " + std::to_string(itemWeight) +
+							    " exceeds NPC remaining capacity " + std::to_string(remainingCapacity));
+						}
 					}
 
-					// Add to new container (item was already removed from source when drag started)
-					gump->m_containerObject->AddObjectToInventory(object->m_ID);
-					object->m_isContained = true;
-					if (object->m_shapeData->GetShape() == 641 && object->m_Quality == 253)
+					if (canCarry)
 					{
-						g_ScriptingSystem->SetFlag(60, 1);
-					}
+						if (CheckCollisionPointRec(mousePos, Rectangle{ gump->m_gui.m_Pos.x + (gump->m_containerData.m_boxOffset.x), gump->m_gui.m_Pos.y + (gump->m_containerData.m_boxOffset.y),
+	gump->m_containerData.m_boxSize.x, gump->m_containerData.m_boxSize.y }))
+						{
+							object->m_InventoryPos = {mousePos.x - (gump->m_gui.m_Pos.x + (gump->m_containerData.m_boxOffset.x)), mousePos.y - (gump->m_gui.m_Pos.y + (gump->m_containerData.m_boxOffset.y)) };
+						}
+						else // In the container but not in the box area
+						{
+							object->m_InventoryPos = {0, 0 };
+						}
 
-					g_gumpManager->m_draggingObject = false;
-					g_gumpManager->m_draggedObjectId = -1;
-					g_gumpManager->m_sourceGump = nullptr;
+						// Add to new container (item was already removed from source when drag started)
+						gump->m_containerObject->AddObjectToInventory(object->m_ID);
+						object->m_isContained = true;
+						if (object->m_shapeData->GetShape() == 641 && object->m_Quality == 253)
+						{
+							g_ScriptingSystem->SetFlag(60, 1);
+						}
+
+						g_gumpManager->m_draggingObject = false;
+						g_gumpManager->m_draggedObjectId = -1;
+						g_gumpManager->m_sourceGump = nullptr;
+					}
+					// If can't carry, leave m_draggingObject true so it falls through to return-to-source logic
 					break;
 				}
 			}
@@ -363,8 +384,8 @@ gump->m_containerData.m_boxSize.x, gump->m_containerData.m_boxSize.y }))
 		{
 			bool returnedToSource = false;
 
-			// Only return to source if mouse is over a gump (failed drop attempt)
-			// If mouse is over the world (m_gumpUnderMouse == nullptr), user wants to drop to ground
+			// Return to source if mouse is over a gump (failed drop attempt)
+			// If mouse is over world, user wants to drop to ground
 			if (m_sourceGump != nullptr && m_gumpUnderMouse != nullptr)
 			{
 				GumpPaperdoll* sourcePaperdoll = dynamic_cast<GumpPaperdoll*>(m_sourceGump);
@@ -411,9 +432,19 @@ gump->m_containerData.m_boxSize.x, gump->m_containerData.m_boxSize.y }))
 			// If we couldn't return to source, drop to ground
 			if (!returnedToSource)
 			{
-				object->SetPos(g_terrainUnderMousePointer);
+				// If dragged from world and drop failed (mouse over gump), return to original position
+				// Otherwise, drop at mouse position (successful world drop)
+				if (m_sourceGump == nullptr && m_gumpUnderMouse != nullptr && m_draggedObjectOriginalPos.x != 0.0f)
+				{
+					object->SetPos(m_draggedObjectOriginalPos);
+					Log("Returned item to original world position (drop failed)");
+				}
+				else
+				{
+					object->SetPos(g_terrainUnderMousePointer);
+					Log("Dropped item to ground");
+				}
 				object->m_isContained = false;
-				Log("Dropped item to ground");
 			}
 
 			// Item was already removed from source when drag started, so just clean up drag state
