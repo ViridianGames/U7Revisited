@@ -853,6 +853,7 @@ void ShapeEditorState::Update()
 		bool foundInstance = false;
 		for (unordered_map<int, unique_ptr<U7Object>>::iterator node = g_objectList.begin(); node != g_objectList.end(); ++node)
 		{
+			if ((*node).second == nullptr) continue;
 			if((*node).second->m_shapeData->m_shape == m_currentShape && (*node).second->m_shapeData->m_frame == m_currentFrame && !(*node).second->m_isContained)
 			{
 				g_camera.target = (*node).second->m_Pos;
