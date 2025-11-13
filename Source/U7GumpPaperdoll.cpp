@@ -329,6 +329,12 @@ void GumpPaperdoll::Update()
 		mousePos.x /= g_DrawScale;
 		mousePos.y /= g_DrawScale;
 
+		// Reset drag start if mouse button is released
+		if (!IsMouseButtonDown(MOUSE_LEFT_BUTTON))
+		{
+			m_dragStart = {0, 0};
+		}
+
 		for (int i = 0; i < static_cast<int>(EquipmentSlot::SLOT_COUNT); i++)
 		{
 			int slotID = m_serializer->GetElementID(slotNames[i]);
@@ -374,7 +380,32 @@ void GumpPaperdoll::Update()
 								}
 							}
 
-							// Single click: show item name
+							// Handle drag start for equipped items
+							if (objectId != -1 && IsMouseButtonDown(MOUSE_LEFT_BUTTON))
+							{
+								// Track drag start position
+								if (m_dragStart.x == 0 && m_dragStart.y == 0)
+								{
+									m_dragStart = mousePos;
+								}
+
+								// If mouse moved enough, start dragging
+								if (Vector2DistanceSqr(m_dragStart, mousePos) > 4 && !g_gumpManager->m_draggingObject)
+								{
+									// Start dragging this equipped item
+									g_gumpManager->m_draggedObjectId = objectId;
+									g_gumpManager->m_draggingObject = true;
+									g_gumpManager->m_sourceGump = this;
+
+									// Unequip the item
+									npcData->UnequipItem(slot);
+
+									Log("Started dragging equipped item from slot " + std::to_string(i) + ", objectId=" + std::to_string(objectId));
+									break;
+								}
+							}
+
+							// Single click (without drag): show item name
 							if (objectId != -1 && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
 							{
 								Log("Paperdoll - Single click on slot " + std::to_string(i) + ", objectId=" + std::to_string(objectId));

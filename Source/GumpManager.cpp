@@ -142,85 +142,138 @@ void GumpManager::Update()
 			return;
 		}
 
-		//  Dragging from inventory to inventory
+		//  First check if we're dropping on a paperdoll
+		bool droppedOnPaperdoll = false;
+		bool attemptedPaperdollDrop = false;
 		for (auto gump : g_gumpManager->m_GumpList)
 		{
-			// Skip paperdolls - they don't have container objects
-			if (dynamic_cast<GumpPaperdoll*>(gump.get()))
-				continue;
-
-			if (CheckCollisionPointRec(mousePos, Rectangle{ gump->m_gui.m_Pos.x, gump->m_gui.m_Pos.y, gump->m_gui.m_Width, gump->m_gui.m_Height}))
+			GumpPaperdoll* paperdoll = dynamic_cast<GumpPaperdoll*>(gump.get());
+			if (paperdoll)
 			{
-				if (CheckCollisionPointRec(mousePos, Rectangle{ gump->m_gui.m_Pos.x + (gump->m_containerData.m_boxOffset.x), gump->m_gui.m_Pos.y + (gump->m_containerData.m_boxOffset.y),
-gump->m_containerData.m_boxSize.x, gump->m_containerData.m_boxSize.y }))
+				// Check if mouse is over this paperdoll
+				if (CheckCollisionPointRec(mousePos, Rectangle{ gump->m_gui.m_Pos.x, gump->m_gui.m_Pos.y, gump->m_gui.m_Width, gump->m_gui.m_Height}))
 				{
-					object->m_InventoryPos = {mousePos.x - (gump->m_gui.m_Pos.x + (gump->m_containerData.m_boxOffset.x)), mousePos.y - (gump->m_gui.m_Pos.y + (gump->m_containerData.m_boxOffset.y)) };
-				}
-				else // In the container but not in the box area
-				{
-					object->m_InventoryPos = {0, 0 };
-				}
+					attemptedPaperdollDrop = true;
 
-				gump->m_containerObject->m_inventory.push_back(object->m_ID);
-				object->m_isContained = true;
-				if (object->m_shapeData->GetShape() == 641 && object->m_Quality == 253)
-				{
-					g_ScriptingSystem->SetFlag(60, 1);
-				}
+					// Get which slot this item should go to based on its shape
+					int shape = object->m_shapeData->GetShape();
+					EquipmentSlot slot = GetEquipmentSlotForShape(shape);
 
-				//  If we're dragging to the same gump, or dragging from the ground, don't remove from inventory
-				if (gump.get() != m_sourceGump || m_sourceGump == nullptr)
-				{
-					gump->m_containerObject->m_inventory.push_back(object->m_ID);
-					for (std::vector<int>::iterator node = gump->m_containerObject->m_inventory.begin(); node != gump->m_containerObject->m_inventory.end(); node++)
+					if (slot != EquipmentSlot::SLOT_COUNT)
 					{
-						if ((*node) == object->m_ID)
+						// Get NPC data
+						auto npcIt = g_NPCData.find(paperdoll->GetNpcId());
+						if (npcIt != g_NPCData.end())
 						{
-							gump->m_containerObject->m_inventory.erase(node);
-							break;
+							NPCData* npcData = npcIt->second.get();
+
+							// Check if slot is empty
+							int currentEquipped = npcData->GetEquippedItem(slot);
+							if (currentEquipped == -1)
+							{
+								// Slot is empty, equip the item
+								npcData->SetEquippedItem(slot, object->m_ID);
+
+								// Item was already removed from source when drag started, so just mark as contained
+								object->m_isContained = true; // Equipped items are considered contained
+								droppedOnPaperdoll = true;
+
+								Log("Equipped shape " + std::to_string(shape) + " to slot " + std::to_string(static_cast<int>(slot)));
+							}
+							else
+							{
+								Log("Cannot equip - slot " + std::to_string(static_cast<int>(slot)) + " is already occupied");
+							}
 						}
 					}
+					else
+					{
+						Log("Cannot equip shape " + std::to_string(shape) + " - not an equippable item");
+					}
+
+					// If we attempted to drop on paperdoll but failed, return item to source
+					if (attemptedPaperdollDrop && !droppedOnPaperdoll)
+					{
+						// Return to source container if we dragged from one
+						if (m_sourceGump != nullptr)
+						{
+							GumpPaperdoll* sourcePaperdoll = dynamic_cast<GumpPaperdoll*>(m_sourceGump);
+							if (sourcePaperdoll)
+							{
+								// Re-equip to the paperdoll we dragged from
+								auto sourceNpcIt = g_NPCData.find(sourcePaperdoll->GetNpcId());
+								if (sourceNpcIt != g_NPCData.end() && slot != EquipmentSlot::SLOT_COUNT)
+								{
+									sourceNpcIt->second->SetEquippedItem(slot, object->m_ID);
+									object->m_isContained = true;
+									Log("Returned item to source paperdoll slot " + std::to_string(static_cast<int>(slot)));
+								}
+							}
+							else if (m_sourceGump->m_containerObject != nullptr)
+							{
+								// Return to source container inventory
+								m_sourceGump->m_containerObject->m_inventory.push_back(object->m_ID);
+								object->m_isContained = true;
+								Log("Returned item to source container");
+							}
+						}
+					}
+
+					if (droppedOnPaperdoll || attemptedPaperdollDrop)
+					{
+						g_gumpManager->m_draggingObject = false;
+						g_gumpManager->m_draggedObjectId = -1;
+						g_gumpManager->m_sourceGump = nullptr;
+						break;
+					}
 				}
-				g_gumpManager->m_draggingObject = false;
-				g_gumpManager->m_draggedObjectId = -1;
-				g_gumpManager->m_sourceGump = nullptr;
-				break;
 			}
 		}
 
-		//  Didn't drag into another container?  Check dragging from inventory to ground
+		//  If not dropped on paperdoll, check dragging to regular containers
+		if (!droppedOnPaperdoll)
+		{
+			for (auto gump : g_gumpManager->m_GumpList)
+			{
+				// Skip paperdolls - they don't have container objects
+				if (dynamic_cast<GumpPaperdoll*>(gump.get()))
+					continue;
+
+				if (CheckCollisionPointRec(mousePos, Rectangle{ gump->m_gui.m_Pos.x, gump->m_gui.m_Pos.y, gump->m_gui.m_Width, gump->m_gui.m_Height}))
+				{
+					if (CheckCollisionPointRec(mousePos, Rectangle{ gump->m_gui.m_Pos.x + (gump->m_containerData.m_boxOffset.x), gump->m_gui.m_Pos.y + (gump->m_containerData.m_boxOffset.y),
+gump->m_containerData.m_boxSize.x, gump->m_containerData.m_boxSize.y }))
+					{
+						object->m_InventoryPos = {mousePos.x - (gump->m_gui.m_Pos.x + (gump->m_containerData.m_boxOffset.x)), mousePos.y - (gump->m_gui.m_Pos.y + (gump->m_containerData.m_boxOffset.y)) };
+					}
+					else // In the container but not in the box area
+					{
+						object->m_InventoryPos = {0, 0 };
+					}
+
+					// Add to new container (item was already removed from source when drag started)
+					gump->m_containerObject->m_inventory.push_back(object->m_ID);
+					object->m_isContained = true;
+					if (object->m_shapeData->GetShape() == 641 && object->m_Quality == 253)
+					{
+						g_ScriptingSystem->SetFlag(60, 1);
+					}
+
+					g_gumpManager->m_draggingObject = false;
+					g_gumpManager->m_draggedObjectId = -1;
+					g_gumpManager->m_sourceGump = nullptr;
+					break;
+				}
+			}
+		}
+
+		//  Didn't drag into another container?  Drop to ground
 		if (g_gumpManager->m_draggingObject)
 		{
 			object->SetPos(g_terrainUnderMousePointer);
-
 			object->m_isContained = false;
 
-			// Validate m_sourceGump is still in the active gump list
-			bool gumpStillValid = false;
-			if (m_sourceGump != nullptr)
-			{
-				for (const auto& gump : m_GumpList)
-				{
-					if (gump.get() == m_sourceGump)
-					{
-						gumpStillValid = true;
-						break;
-					}
-				}
-			}
-
-			if (gumpStillValid && m_sourceGump->m_containerObject != nullptr)
-			{
-				//  If we dragged from a gump, remove from that inventory
-				for (std::vector<int>::iterator node = m_sourceGump->m_containerObject->m_inventory.begin(); node != m_sourceGump->m_containerObject->m_inventory.end(); node++)
-				{
-					if ((*node) == object->m_ID)
-					{
-						m_sourceGump->m_containerObject->m_inventory.erase(node);
-						break;
-					}
-				}
-			}
+			// Item was already removed from source when drag started, so just clean up drag state
 			g_gumpManager->m_draggingObject = false;
 			g_gumpManager->m_draggedObjectId = -1;
 			g_gumpManager->m_sourceGump = nullptr;

@@ -1123,6 +1123,14 @@ EquipmentSlot GetEquipmentSlotForShape(int shapeId)
 	// Backpack (check first - most important)
 	if (shapeId == 801) return EquipmentSlot::SLOT_BACKPACK;
 
+	// Ammo (arrows and bolts)
+	if (shapeId == 554) return EquipmentSlot::SLOT_AMMO;  // burst arrow
+	if (shapeId == 556) return EquipmentSlot::SLOT_AMMO;  // magic arrow
+	if (shapeId == 558) return EquipmentSlot::SLOT_AMMO;  // lucky arrow
+	if (shapeId == 560) return EquipmentSlot::SLOT_AMMO;  // love arrow
+	if (shapeId == 568) return EquipmentSlot::SLOT_AMMO;  // tes arrow
+	if (shapeId == 723) return EquipmentSlot::SLOT_AMMO;  // bolts
+
 	// Boots (feet)
 	if (shapeId == 587) return EquipmentSlot::SLOT_FEET;
 

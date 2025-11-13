@@ -154,8 +154,9 @@ void Gump::Update()
 
 			if (Vector2DistanceSqr(m_dragStart, mousePos) > 4 && !g_gumpManager->m_draggingObject)
 			{
-				for (auto containerObjectId : m_containerObject->m_inventory)
+				for (auto it = m_containerObject->m_inventory.begin(); it != m_containerObject->m_inventory.end(); ++it)
 				{
+					int containerObjectId = *it;
 					auto object = GetObjectFromID(containerObjectId);
 					if (object && object->m_shapeData)
 					{
@@ -165,6 +166,11 @@ void Gump::Update()
 							g_gumpManager->m_draggingObject = true;
 							g_gumpManager->m_sourceGump = this;
 							m_containerObject->m_shouldBeSorted = false; //  We are dragging an object, so we no longer need to sort.
+
+							// Remove from inventory immediately when drag starts
+							m_containerObject->m_inventory.erase(it);
+							Log("Removed object " + std::to_string(object->m_ID) + " from container on drag start");
+
 							break; //  We found the object we are dragging, so break out of the loop
 						}
 					}
