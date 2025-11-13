@@ -316,56 +316,61 @@ void GumpPaperdoll::Update()
 
 void GumpPaperdoll::Draw()
 {
-	// Draw GUI elements first (background will be added as sprite)
-	m_gui.Draw();
-
-	// Draw equipped items
+	// Update slot sprites to show equipped items
 	auto it = g_NPCData.find(m_npcId);
 	if (it != g_NPCData.end() && it->second)
 	{
 		NPCData* npcData = it->second.get();
+
+		// Slot name mapping
+		const char* slotNames[] = {
+			"SLOT_HEAD", "SLOT_NECK", "SLOT_TORSO", "SLOT_LEGS", "SLOT_HANDS", "SLOT_FEET",
+			"SLOT_LEFT_HAND", "SLOT_RIGHT_HAND", "SLOT_AMMO", "SLOT_LEFT_RING",
+			"SLOT_RIGHT_RING", "SLOT_BELT", "SLOT_BACKPACK"
+		};
+
 		for (int i = 0; i < static_cast<int>(EquipmentSlot::SLOT_COUNT); i++)
 		{
 			EquipmentSlot slot = static_cast<EquipmentSlot>(i);
-			int objectId = npcData->GetEquippedItem(slot);
+			int slotSpriteID = m_serializer->GetElementID(slotNames[i]);
 
-			if (objectId != -1)
+			if (slotSpriteID != -1)
 			{
-				auto objIt = g_objectList.find(objectId);
-				if (objIt != g_objectList.end() && objIt->second && objIt->second->m_shapeData)
+				auto slotElement = m_gui.GetElement(slotSpriteID);
+				if (slotElement && slotElement->m_Type == GUI_SPRITE)
 				{
-					// Draw equipped item sprite at slot position
-					U7Object* obj = objIt->second.get();
-					Rectangle slotRect = m_slotRects[i];
-					Texture* itemTexture = obj->m_shapeData->GetTexture();
-					if (itemTexture)
+					auto slotSprite = static_cast<GuiSprite*>(slotElement.get());
+					int objectId = npcData->GetEquippedItem(slot);
+
+					if (objectId != -1)
 					{
-						DrawTextureEx(*itemTexture,
-							Vector2{ m_gui.m_Pos.x + slotRect.x, m_gui.m_Pos.y + slotRect.y },
-							0, 1, WHITE);
+						// Item is equipped - show the item's texture
+						auto objIt = g_objectList.find(objectId);
+						if (objIt != g_objectList.end() && objIt->second && objIt->second->m_shapeData)
+						{
+							U7Object* obj = objIt->second.get();
+							Texture* itemTexture = obj->m_shapeData->GetTexture();
+							if (itemTexture && slotSprite->m_Sprite)
+							{
+								slotSprite->m_Sprite->m_texture = itemTexture;
+							}
+						}
+					}
+					else
+					{
+						// No item equipped - hide the sprite by setting texture to nullptr
+						if (slotSprite->m_Sprite)
+						{
+							slotSprite->m_Sprite->m_texture = nullptr;
+						}
 					}
 				}
 			}
 		}
 	}
 
-	// Debug: Draw red boxes around each slot rect
-	for (int i = 0; i < static_cast<int>(EquipmentSlot::SLOT_COUNT); i++)
-	{
-		Rectangle slotRect = m_slotRects[i];
-		Rectangle debugRect = {
-			m_gui.m_Pos.x + slotRect.x,
-			m_gui.m_Pos.y + slotRect.y,
-			slotRect.width,
-			slotRect.height
-		};
-		DrawRectangleLines(
-			static_cast<int>(debugRect.x),
-			static_cast<int>(debugRect.y),
-			static_cast<int>(debugRect.width),
-			static_cast<int>(debugRect.height),
-			RED);
-	}
+	// Draw all GUI elements (including slot sprites)
+	m_gui.Draw();
 }
 
 bool GumpPaperdoll::IsMouseOverSolidPixel(Vector2 mousePos)

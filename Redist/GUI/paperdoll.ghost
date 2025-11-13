@@ -8,8 +8,8 @@
           -1
         ],
         "size": [
-          200,
-          205
+          199,
+          204
         ],
         "backgroundColor": [
           60,
@@ -100,7 +100,7 @@
             "type": "textarea",
             "position": [
               97,
-              182
+              181
             ],
             "text": "27/36",
             "font": "pinch.ttf",
@@ -151,7 +151,7 @@
             "type": "iconbutton",
             "position": [
               5,
-              156
+              155
             ],
             "sprite": {
               "spritesheet": "GUI/biggumps.png",
@@ -203,6 +203,227 @@
               255
             ],
             "scale": 1.0
+          },
+          {
+            "name": "SLOT_HEAD",
+            "type": "sprite",
+            "position": [
+              172,
+              8
+            ],
+            "sprite": {
+              "spritesheet": "GUI/biggumps.png",
+              "x": 0,
+              "y": 0,
+              "w": 16,
+              "h": 16
+            },
+            "scaleX": 1.0,
+            "scaleY": 1.0
+          },
+          {
+            "name": "SLOT_NECK",
+            "type": "sprite",
+            "position": [
+              46,
+              30
+            ],
+            "sprite": {
+              "spritesheet": "GUI/biggumps.png",
+              "x": 0,
+              "y": 0,
+              "w": 16,
+              "h": 16
+            },
+            "scaleX": 1.0,
+            "scaleY": 1.0
+          },
+          {
+            "name": "SLOT_TORSO",
+            "type": "sprite",
+            "position": [
+              46,
+              49
+            ],
+            "sprite": {
+              "spritesheet": "GUI/biggumps.png",
+              "x": 0,
+              "y": 0,
+              "w": 16,
+              "h": 16
+            },
+            "scaleX": 1.0,
+            "scaleY": 1.0
+          },
+          {
+            "name": "SLOT_LEGS",
+            "type": "sprite",
+            "position": [
+              171,
+              121
+            ],
+            "sprite": {
+              "spritesheet": "GUI/biggumps.png",
+              "x": 0,
+              "y": 0,
+              "w": 16,
+              "h": 16
+            },
+            "scaleX": 1.0,
+            "scaleY": 1.0
+          },
+          {
+            "name": "SLOT_HANDS",
+            "type": "sprite",
+            "position": [
+              171,
+              99
+            ],
+            "sprite": {
+              "spritesheet": "GUI/biggumps.png",
+              "x": 0,
+              "y": 0,
+              "w": 16,
+              "h": 16
+            },
+            "scaleX": 1.0,
+            "scaleY": 1.0
+          },
+          {
+            "name": "SLOT_FEET",
+            "type": "sprite",
+            "position": [
+              109,
+              141
+            ],
+            "sprite": {
+              "spritesheet": "GUI/biggumps.png",
+              "x": 0,
+              "y": 0,
+              "w": 16,
+              "h": 16
+            },
+            "scaleX": 1.0,
+            "scaleY": 1.0
+          },
+          {
+            "name": "SLOT_LEFT_HAND",
+            "type": "sprite",
+            "position": [
+              171,
+              77
+            ],
+            "sprite": {
+              "spritesheet": "GUI/biggumps.png",
+              "x": 0,
+              "y": 0,
+              "w": 16,
+              "h": 16
+            },
+            "scaleX": 1.0,
+            "scaleY": 1.0
+          },
+          {
+            "name": "SLOT_RIGHT_HAND",
+            "type": "sprite",
+            "position": [
+              46,
+              77
+            ],
+            "sprite": {
+              "spritesheet": "GUI/biggumps.png",
+              "x": 0,
+              "y": 0,
+              "w": 16,
+              "h": 16
+            },
+            "scaleX": 1.0,
+            "scaleY": 1.0
+          },
+          {
+            "name": "SLOT_AMMO",
+            "type": "sprite",
+            "position": [
+              46,
+              8
+            ],
+            "sprite": {
+              "spritesheet": "GUI/biggumps.png",
+              "x": 0,
+              "y": 0,
+              "w": 16,
+              "h": 16
+            },
+            "scaleX": 1.0,
+            "scaleY": 1.0
+          },
+          {
+            "name": "SLOT_LEFT_RING",
+            "type": "sprite",
+            "position": [
+              171,
+              99
+            ],
+            "sprite": {
+              "spritesheet": "GUI/biggumps.png",
+              "x": 0,
+              "y": 0,
+              "w": 16,
+              "h": 16
+            },
+            "scaleX": 1.0,
+            "scaleY": 1.0
+          },
+          {
+            "name": "SLOT_RIGHT_RING",
+            "type": "sprite",
+            "position": [
+              46,
+              101
+            ],
+            "sprite": {
+              "spritesheet": "GUI/biggumps.png",
+              "x": 0,
+              "y": 0,
+              "w": 16,
+              "h": 16
+            },
+            "scaleX": 1.0,
+            "scaleY": 1.0
+          },
+          {
+            "name": "SLOT_BELT",
+            "type": "sprite",
+            "position": [
+              171,
+              50
+            ],
+            "sprite": {
+              "spritesheet": "GUI/biggumps.png",
+              "x": 0,
+              "y": 0,
+              "w": 16,
+              "h": 16
+            },
+            "scaleX": 1.0,
+            "scaleY": 1.0
+          },
+          {
+            "name": "SLOT_BACKPACK",
+            "type": "sprite",
+            "position": [
+              171,
+              31
+            ],
+            "sprite": {
+              "spritesheet": "GUI/biggumps.png",
+              "x": 0,
+              "y": 0,
+              "w": 16,
+              "h": 16
+            },
+            "scaleX": 1.0,
+            "scaleY": 1.0
           }
         ]
       }

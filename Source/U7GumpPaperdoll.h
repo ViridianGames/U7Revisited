@@ -57,22 +57,22 @@ public:
 
 	// Slot rectangles - same for all paperdolls
 	// NOTE: These coordinates include the 5-pixel panel padding from paperdoll.ghost
-	static constexpr Rectangle m_slotRects[static_cast<int>(EquipmentSlot::SLOT_COUNT)] =
-	{
-		{ 175, 9, 16, 16 },    // SLOT_HEAD
-		{ 50, 32, 16, 16 },    // SLOT_NECK
-		{ 50, 51, 16, 16 },    // SLOT_TORSO
-		{ 175, 121, 16, 16 },  // SLOT_LEGS
-		{ 175, 100, 16, 16 },   // SLOT_HANDS
-		{ 115, 146, 16, 16 },  // SLOT_FEET
-		{ 175, 77, 16, 16 },   // SLOT_LEFT_HAND
-		{ 50, 77, 16, 16 },    // SLOT_RIGHT_HAND
-		{ 50, 9, 16, 16 },     // SLOT_AMMO
-		{ 175, 100, 16, 16 },   // SLOT_LEFT_RING
-		{ 50, 101, 16, 16 },   // SLOT_RIGHT_RING
-		{ 175, 51, 16, 16 },   // SLOT_BELT
-		{ 175, 31, 16, 16 }    // SLOT_BACKPACK
-	};
+	// static constexpr Rectangle m_slotRects[static_cast<int>(EquipmentSlot::SLOT_COUNT)] =
+	// {
+	// 	{ 175, 9, 16, 16 },    // SLOT_HEAD
+	// 	{ 50, 32, 16, 16 },    // SLOT_NECK
+	// 	{ 50, 51, 16, 16 },    // SLOT_TORSO
+	// 	{ 175, 121, 16, 16 },  // SLOT_LEGS
+	// 	{ 175, 100, 16, 16 },   // SLOT_HANDS
+	// 	{ 115, 146, 16, 16 },  // SLOT_FEET
+	// 	{ 175, 77, 16, 16 },   // SLOT_LEFT_HAND
+	// 	{ 50, 77, 16, 16 },    // SLOT_RIGHT_HAND
+	// 	{ 50, 9, 16, 16 },     // SLOT_AMMO
+	// 	{ 175, 100, 16, 16 },   // SLOT_LEFT_RING
+	// 	{ 50, 101, 16, 16 },   // SLOT_RIGHT_RING
+	// 	{ 175, 51, 16, 16 },   // SLOT_BELT
+	// 	{ 175, 31, 16, 16 }    // SLOT_BACKPACK
+	// };
 
 	// Static data array - one entry per paperdoll type
 	// TODO: Measure actual coordinates from biggumps.png
