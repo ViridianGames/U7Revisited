@@ -88,6 +88,7 @@ public:
 	void SetPos(int x, int y) { m_Pos.x = float(x); m_Pos.y = float(y); }
 	void SetSize(int w, int h) { m_Width = float(w); m_Height = float(h); }
 	void SetSize(float w, float h) { m_Width = w; m_Height = h; }
+	Rectangle GetBounds() const { return Rectangle{ m_Pos.x, m_Pos.y, m_Width, m_Height }; }
 
 	int m_Type;
 	int m_ID;
@@ -346,7 +347,15 @@ public:
 	void Draw();
 	void Update();
 	int GetValue() { return 0; }
-	void SetSprite(std::shared_ptr<Sprite> newSprite) { m_Sprite = newSprite; }
+	void SetSprite(std::shared_ptr<Sprite> newSprite)
+	{
+		m_Sprite = newSprite;
+		if (newSprite)
+		{
+			m_Width = newSprite->m_sourceRect.width;
+			m_Height = newSprite->m_sourceRect.height;
+		}
+	}
 	std::shared_ptr<Sprite> GetSprite() { return m_Sprite; }
 
 	Color m_Color = Color{ 255, 255, 255, 255 };

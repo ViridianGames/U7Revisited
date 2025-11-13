@@ -79,7 +79,7 @@ void GhostWindow::Update()
 				continue;  // Skip elements without hover text
 
 			// Check if mouse is over this element
-			Rectangle bounds = {element->m_Pos.x, element->m_Pos.y, element->m_Width, element->m_Height};
+			Rectangle bounds = element->GetBounds();
 			if (CheckCollisionPointRec(mousePos, bounds))
 			{
 				hoveredID = elementID;

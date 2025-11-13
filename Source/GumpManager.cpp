@@ -47,7 +47,7 @@ void GumpManager::Update()
 	// First pass: Find topmost gump under mouse (iterate backwards to find last one)
 	for (auto it = m_GumpList.rbegin(); it != m_GumpList.rend(); ++it)
 	{
-		Rectangle gumpRect = { (*it)->m_gui.m_Pos.x, (*it)->m_gui.m_Pos.y, (*it)->m_gui.m_Width, (*it)->m_gui.m_Height };
+		Rectangle gumpRect = (*it)->m_gui.GetBounds();
 		bool collision = CheckCollisionPointRec(mousePos, gumpRect);
 
 		// If bounding box collision, check pixel-perfect collision
@@ -153,7 +153,7 @@ void GumpManager::Update()
 			if (paperdoll)
 			{
 				// Check if mouse is over this paperdoll
-				if (CheckCollisionPointRec(mousePos, Rectangle{ gump->m_gui.m_Pos.x, gump->m_gui.m_Pos.y, gump->m_gui.m_Width, gump->m_gui.m_Height}))
+				if (CheckCollisionPointRec(mousePos, gump->m_gui.GetBounds()))
 				{
 					attemptedPaperdollDrop = true;
 
@@ -170,8 +170,76 @@ void GumpManager::Update()
 						{
 							NPCData* npcData = npcIt->second.get();
 
-							// Try each valid slot in order
-							for (EquipmentSlot slot : validSlots)
+							// Check if mouse is over a specific highlighted slot
+							EquipmentSlot targetSlot = EquipmentSlot::SLOT_COUNT;
+							if (!paperdoll->m_highlightedSlots.empty())
+							{
+								// Check each highlighted slot to see if mouse is over it
+								for (int slotIndex : paperdoll->m_highlightedSlots)
+								{
+									EquipmentSlot slot = static_cast<EquipmentSlot>(slotIndex);
+									// Check if this is a valid slot for this item
+									if (std::find(validSlots.begin(), validSlots.end(), slot) != validSlots.end())
+									{
+										// Get slot sprite bounds to check mouse position
+										static const char* slotNames[] = {
+											"SLOT_HEAD", "SLOT_NECK", "SLOT_TORSO", "SLOT_LEGS", "SLOT_HANDS", "SLOT_FEET",
+											"SLOT_LEFT_HAND", "SLOT_RIGHT_HAND", "SLOT_AMMO", "SLOT_LEFT_RING", "SLOT_RIGHT_RING",
+											"SLOT_BELT", "SLOT_BACKPACK"
+										};
+
+										int slotID = paperdoll->m_serializer->GetElementID(slotNames[slotIndex]);
+										if (slotID != -1)
+										{
+											auto element = paperdoll->m_gui.GetElement(slotID);
+											if (element)
+											{
+												GuiSprite* slotSprite = dynamic_cast<GuiSprite*>(element.get());
+												if (slotSprite)
+												{
+													float width = slotSprite->m_Width * slotSprite->m_ScaleX;
+													float height = slotSprite->m_Height * slotSprite->m_ScaleY;
+													if (width < 16.0f) width = 16.0f;
+													if (height < 16.0f) height = 16.0f;
+
+													Rectangle slotRect = {
+														paperdoll->m_gui.m_Pos.x + slotSprite->m_Pos.x,
+														paperdoll->m_gui.m_Pos.y + slotSprite->m_Pos.y,
+														width,
+														height
+													};
+
+													if (CheckCollisionPointRec(mousePos, slotRect))
+													{
+														targetSlot = slot;
+														break;
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+
+							// If we found a specific target slot, try that first; otherwise try all valid slots
+							std::vector<EquipmentSlot> slotsToTry;
+							if (targetSlot != EquipmentSlot::SLOT_COUNT)
+							{
+								slotsToTry.push_back(targetSlot);
+								// Add remaining valid slots as fallback
+								for (EquipmentSlot slot : validSlots)
+								{
+									if (slot != targetSlot)
+										slotsToTry.push_back(slot);
+								}
+							}
+							else
+							{
+								slotsToTry = validSlots;
+							}
+
+							// Try each slot in order (target slot first if specified)
+							for (EquipmentSlot slot : slotsToTry)
 							{
 								// If item has explicit fills, check all those slots are empty
 								// Otherwise just check the single slot
@@ -227,43 +295,9 @@ void GumpManager::Update()
 						Log("Cannot equip shape " + std::to_string(shape) + " - not an equippable item");
 					}
 
-					// If we attempted to drop on paperdoll but failed, return item to source
-					if (attemptedPaperdollDrop && !droppedOnPaperdoll)
-					{
-						// Return to source container if we dragged from one
-						if (m_sourceGump != nullptr)
-						{
-							GumpPaperdoll* sourcePaperdoll = dynamic_cast<GumpPaperdoll*>(m_sourceGump);
-							if (sourcePaperdoll)
-							{
-								// Re-equip to the paperdoll we dragged from
-								// Try each valid slot to find first empty one
-								auto sourceNpcIt = g_NPCData.find(sourcePaperdoll->GetNpcId());
-								if (sourceNpcIt != g_NPCData.end() && !validSlots.empty())
-								{
-									for (EquipmentSlot slot : validSlots)
-									{
-										if (sourceNpcIt->second->GetEquippedItem(slot) == -1)
-										{
-											sourceNpcIt->second->SetEquippedItem(slot, object->m_ID);
-											object->m_isContained = true;
-											Log("Returned item to source paperdoll slot " + std::to_string(static_cast<int>(slot)));
-											break;
-										}
-									}
-								}
-							}
-							else if (m_sourceGump->m_containerObject != nullptr)
-							{
-								// Return to source container inventory
-								m_sourceGump->m_containerObject->m_inventory.push_back(object->m_ID);
-								object->m_isContained = true;
-								Log("Returned item to source container");
-							}
-						}
-					}
-
-					if (droppedOnPaperdoll || attemptedPaperdollDrop)
+					// Only break if we successfully dropped on paperdoll
+					// If we failed, continue to check other gumps (containers)
+					if (droppedOnPaperdoll)
 					{
 						g_gumpManager->m_draggingObject = false;
 						g_gumpManager->m_draggedObjectId = -1;
@@ -283,7 +317,7 @@ void GumpManager::Update()
 				if (dynamic_cast<GumpPaperdoll*>(gump.get()))
 					continue;
 
-				if (CheckCollisionPointRec(mousePos, Rectangle{ gump->m_gui.m_Pos.x, gump->m_gui.m_Pos.y, gump->m_gui.m_Width, gump->m_gui.m_Height}))
+				if (CheckCollisionPointRec(mousePos, gump->m_gui.GetBounds()))
 				{
 					if (CheckCollisionPointRec(mousePos, Rectangle{ gump->m_gui.m_Pos.x + (gump->m_containerData.m_boxOffset.x), gump->m_gui.m_Pos.y + (gump->m_containerData.m_boxOffset.y),
 gump->m_containerData.m_boxSize.x, gump->m_containerData.m_boxSize.y }))
@@ -311,11 +345,74 @@ gump->m_containerData.m_boxSize.x, gump->m_containerData.m_boxSize.y }))
 			}
 		}
 
-		//  Didn't drag into another container?  Drop to ground
+		//  Didn't drag into another container?  Try to return to source, otherwise drop to ground
 		if (g_gumpManager->m_draggingObject)
 		{
-			object->SetPos(g_terrainUnderMousePointer);
-			object->m_isContained = false;
+			bool returnedToSource = false;
+
+			// Check if mouse is over ANY gump - if not, user is intentionally dropping to ground
+			bool mouseOverAnyGump = false;
+			for (auto& gump : g_gumpManager->m_GumpList)
+			{
+				if (CheckCollisionPointRec(mousePos, gump->m_gui.GetBounds()))
+				{
+					mouseOverAnyGump = true;
+					break;
+				}
+			}
+
+			// Only return to source if mouse is over a gump (failed drop attempt)
+			// If mouse is over the world, user wants to drop to ground
+			if (m_sourceGump != nullptr && mouseOverAnyGump)
+			{
+				GumpPaperdoll* sourcePaperdoll = dynamic_cast<GumpPaperdoll*>(m_sourceGump);
+				if (sourcePaperdoll)
+				{
+					// Re-equip to the exact slot(s) we dragged from
+					auto sourceNpcIt = g_NPCData.find(sourcePaperdoll->GetNpcId());
+					if (sourceNpcIt != g_NPCData.end() && m_sourceSlotIndex >= 0)
+					{
+						int shape = object->m_shapeData->GetShape();
+						std::vector<EquipmentSlot> fillSlots = GetEquipmentSlotsFilled(shape);
+
+						// Re-equip to the same slot(s) we removed from
+						if (!fillSlots.empty())
+						{
+							// Multi-slot item - re-equip to all fill slots
+							for (EquipmentSlot fillSlot : fillSlots)
+							{
+								sourceNpcIt->second->SetEquippedItem(fillSlot, object->m_ID);
+							}
+							Log("Returned multi-slot item to source paperdoll slot " + std::to_string(m_sourceSlotIndex) +
+							    " (filled " + std::to_string(fillSlots.size()) + " slots)");
+						}
+						else
+						{
+							// Single-slot item - re-equip to the exact slot
+							sourceNpcIt->second->SetEquippedItem(static_cast<EquipmentSlot>(m_sourceSlotIndex), object->m_ID);
+							Log("Returned item to source paperdoll slot " + std::to_string(m_sourceSlotIndex));
+						}
+						object->m_isContained = true;
+						returnedToSource = true;
+					}
+				}
+				else if (m_sourceGump->m_containerObject != nullptr)
+				{
+					// Return to source container inventory
+					m_sourceGump->m_containerObject->m_inventory.push_back(object->m_ID);
+					object->m_isContained = true;
+					returnedToSource = true;
+					Log("Returned item to source container");
+				}
+			}
+
+			// If we couldn't return to source, drop to ground
+			if (!returnedToSource)
+			{
+				object->SetPos(g_terrainUnderMousePointer);
+				object->m_isContained = false;
+				Log("Dropped item to ground");
+			}
 
 			// Item was already removed from source when drag started, so just clean up drag state
 			g_gumpManager->m_draggingObject = false;

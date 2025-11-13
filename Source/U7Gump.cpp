@@ -165,6 +165,7 @@ void Gump::Update()
 							g_gumpManager->m_draggedObjectId = object->m_ID;
 							g_gumpManager->m_draggingObject = true;
 							g_gumpManager->m_sourceGump = this;
+							g_gumpManager->m_sourceSlotIndex = -1;  // Not from a paperdoll slot
 							m_containerObject->m_shouldBeSorted = false; //  We are dragging an object, so we no longer need to sort.
 
 							// Remove from inventory immediately when drag starts

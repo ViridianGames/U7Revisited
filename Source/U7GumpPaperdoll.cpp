@@ -280,6 +280,71 @@ void GumpPaperdoll::Update()
 	m_gui.m_Pos.x = int(m_gui.m_Pos.x);
 	m_gui.m_Pos.y = int(m_gui.m_Pos.y);
 
+	// Slot names array - shared by multiple sections
+	static const char* slotNames[] = {
+		"SLOT_HEAD", "SLOT_NECK", "SLOT_TORSO", "SLOT_LEGS", "SLOT_HANDS", "SLOT_FEET",
+		"SLOT_LEFT_HAND", "SLOT_RIGHT_HAND", "SLOT_AMMO", "SLOT_LEFT_RING", "SLOT_RIGHT_RING",
+		"SLOT_BELT", "SLOT_BACKPACK"
+	};
+
+	// Handle slot highlighting when dragging over paperdoll
+	Vector2 mousePos = GetMousePosition();
+	mousePos.x /= g_DrawScale;
+	mousePos.y /= g_DrawScale;
+
+	bool shouldHighlight = false;
+	std::vector<EquipmentSlot> validSlots;
+
+	if (g_gumpManager->m_draggingObject && g_gumpManager->m_draggedObjectId != -1)
+	{
+		// Check if mouse is over this paperdoll
+		if (CheckCollisionPointRec(mousePos, m_gui.GetBounds()))
+		{
+			// Get the dragged object
+			auto objIt = g_objectList.find(g_gumpManager->m_draggedObjectId);
+			if (objIt != g_objectList.end() && objIt->second && objIt->second->m_shapeData)
+			{
+				int shape = objIt->second->m_shapeData->GetShape();
+				validSlots = GetEquipmentSlotsForShape(shape);
+
+				if (!validSlots.empty())
+				{
+					shouldHighlight = true;
+					static bool loggedOnce = false;
+					if (!loggedOnce)
+					{
+						Log("Paperdoll - Highlighting enabled for shape " + std::to_string(shape) + ", " + std::to_string(validSlots.size()) + " valid slots");
+						loggedOnce = true;
+					}
+				}
+			}
+		}
+	}
+
+	// Determine which slots should be highlighted
+	m_highlightedSlots.clear();
+	if (shouldHighlight)
+	{
+		auto npcData = g_NPCData[m_npcId].get();
+		for (int i = 0; i < 13; i++)
+		{
+			EquipmentSlot slot = static_cast<EquipmentSlot>(i);
+			bool isValidSlot = std::find(validSlots.begin(), validSlots.end(), slot) != validSlots.end();
+			bool isEmpty = npcData->GetEquippedItem(slot) == -1;
+
+			if (isValidSlot && isEmpty)
+			{
+				m_highlightedSlots.insert(i);
+				static int logCount = 0;
+				if (logCount < 5)
+				{
+					Log("Paperdoll - Will highlight slot " + std::to_string(i) + " (" + std::string(slotNames[i]) + ")");
+					logCount++;
+				}
+			}
+		}
+	}
+
 	// Handle cycle button clicks
 	int peaceID = m_serializer->GetElementID("PEACE");
 	int haloID = m_serializer->GetElementID("HALO");
@@ -313,12 +378,6 @@ void GumpPaperdoll::Update()
 	}
 
 	// Handle equipment slot clicks
-	const char* slotNames[] = {
-		"SLOT_HEAD", "SLOT_NECK", "SLOT_TORSO", "SLOT_LEGS", "SLOT_HANDS", "SLOT_FEET",
-		"SLOT_LEFT_HAND", "SLOT_RIGHT_HAND", "SLOT_AMMO", "SLOT_LEFT_RING",
-		"SLOT_RIGHT_RING", "SLOT_BELT", "SLOT_BACKPACK"
-	};
-
 	auto npcIt = g_NPCData.find(m_npcId);
 	if (npcIt != g_NPCData.end() && npcIt->second)
 	{
@@ -396,6 +455,7 @@ void GumpPaperdoll::Update()
 									g_gumpManager->m_draggedObjectId = objectId;
 									g_gumpManager->m_draggingObject = true;
 									g_gumpManager->m_sourceGump = this;
+									g_gumpManager->m_sourceSlotIndex = i;  // Remember which slot we dragged from
 
 									// Unequip from ALL slots this item fills
 									auto objIt = g_objectList.find(objectId);
@@ -550,6 +610,7 @@ void GumpPaperdoll::Draw()
 						debugCount++;
 					}
 
+					// Update slot texture based on equipped item (highlighting is done separately via border drawing)
 					if (objectId != -1)
 					{
 						// Item is equipped - show the item's texture
@@ -598,6 +659,45 @@ void GumpPaperdoll::Draw()
 	// Draw all GUI elements (including slot sprites)
 	m_gui.Draw();
 
+	// Draw green borders around highlighted slots
+	if (!m_highlightedSlots.empty())
+	{
+		static const char* slotNames[] = {
+			"SLOT_HEAD", "SLOT_NECK", "SLOT_TORSO", "SLOT_LEGS", "SLOT_HANDS", "SLOT_FEET",
+			"SLOT_LEFT_HAND", "SLOT_RIGHT_HAND", "SLOT_AMMO", "SLOT_LEFT_RING", "SLOT_RIGHT_RING",
+			"SLOT_BELT", "SLOT_BACKPACK"
+		};
+
+		for (int slotIndex : m_highlightedSlots)
+		{
+			int slotID = m_serializer->GetElementID(slotNames[slotIndex]);
+			if (slotID != -1)
+			{
+				auto element = m_gui.GetElement(slotID);
+				if (element)
+				{
+					GuiSprite* slotSprite = dynamic_cast<GuiSprite*>(element.get());
+					if (slotSprite)
+					{
+						// Draw green border around the slot (use at least 16x16 for empty slots)
+						float width = slotSprite->m_Width * slotSprite->m_ScaleX;
+						float height = slotSprite->m_Height * slotSprite->m_ScaleY;
+						if (width < 16.0f) width = 16.0f;
+						if (height < 16.0f) height = 16.0f;
+
+						Rectangle slotRect = {
+							m_gui.m_Pos.x + slotSprite->m_Pos.x,
+							m_gui.m_Pos.y + slotSprite->m_Pos.y,
+							width,
+							height
+						};
+						DrawRectangleLinesEx(slotRect, 1.0f, Color{ 0, 255, 0, 200 });
+					}
+				}
+			}
+		}
+	}
+
 	// Draw hover text if active (uses same style as bark text)
 	if (!m_hoverText.empty() && m_hoverTextDuration > 0.0f)
 	{
@@ -623,7 +723,76 @@ void GumpPaperdoll::Draw()
 
 bool GumpPaperdoll::IsMouseOverSolidPixel(Vector2 mousePos)
 {
-	// If no texture, default to solid
+	// First check if mouse is over any GUI elements (slots or buttons) - if so, NOT draggable
+	// Check all equipment slots
+	const char* slotNames[] = {
+		"SLOT_HEAD", "SLOT_NECK", "SLOT_TORSO", "SLOT_LEGS", "SLOT_HANDS", "SLOT_FEET",
+		"SLOT_LEFT_HAND", "SLOT_RIGHT_HAND", "SLOT_AMMO", "SLOT_LEFT_RING", "SLOT_RIGHT_RING",
+		"SLOT_BELT", "SLOT_BACKPACK"
+	};
+
+	for (int i = 0; i < 13; i++)
+	{
+		int slotID = m_serializer->GetElementID(slotNames[i]);
+		if (slotID != -1)
+		{
+			auto element = m_gui.GetElement(slotID);
+			if (element)
+			{
+				GuiSprite* slotSprite = dynamic_cast<GuiSprite*>(element.get());
+				if (slotSprite && slotSprite->m_Sprite)
+				{
+					Rectangle slotRect = {
+						m_gui.m_Pos.x + slotSprite->m_Pos.x,
+						m_gui.m_Pos.y + slotSprite->m_Pos.y,
+						slotSprite->m_Sprite->m_sourceRect.width,
+						slotSprite->m_Sprite->m_sourceRect.height
+					};
+
+					if (CheckCollisionPointRec(mousePos, slotRect))
+					{
+						return false;  // Over a slot - not draggable
+					}
+				}
+			}
+		}
+	}
+
+	// Check for combat/stats buttons (if they exist)
+	// Check for buttons by ID
+	int combatID = m_serializer->GetElementID("btn_combat");
+	if (combatID != -1)
+	{
+		auto element = m_gui.GetElement(combatID);
+		if (element)
+		{
+			Rectangle btnRect = element->GetBounds();
+			btnRect.x += m_gui.m_Pos.x;
+			btnRect.y += m_gui.m_Pos.y;
+			if (CheckCollisionPointRec(mousePos, btnRect))
+			{
+				return false;  // Over a button - not draggable
+			}
+		}
+	}
+
+	int statsID = m_serializer->GetElementID("btn_stats");
+	if (statsID != -1)
+	{
+		auto element = m_gui.GetElement(statsID);
+		if (element)
+		{
+			Rectangle btnRect = element->GetBounds();
+			btnRect.x += m_gui.m_Pos.x;
+			btnRect.y += m_gui.m_Pos.y;
+			if (CheckCollisionPointRec(mousePos, btnRect))
+			{
+				return false;  // Over a button - not draggable
+			}
+		}
+	}
+
+	// Not over any interactive elements, now check if over solid background pixel
 	if (!m_backgroundTexture)
 		return true;
 

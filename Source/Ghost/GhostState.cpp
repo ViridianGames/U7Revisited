@@ -2329,8 +2329,9 @@ void GhostState::Draw()
 				auto scrollbar = static_cast<GuiScrollBar*>(element.get());
 
 				// Calculate center position for text
-				int textX = static_cast<int>(m_gui->m_Pos.x + scrollbar->m_Pos.x + scrollbar->m_Width / 2);
-				int textY = static_cast<int>(m_gui->m_Pos.y + scrollbar->m_Pos.y + scrollbar->m_Height / 2 - 8);
+				Rectangle bounds = scrollbar->GetBounds();
+				int textX = static_cast<int>(m_gui->m_Pos.x + bounds.x + bounds.width / 2);
+				int textY = static_cast<int>(m_gui->m_Pos.y + bounds.y + bounds.height / 2 - 8);
 
 				// Draw the value in red
 				string valueText = to_string(scrollbar->m_Value);

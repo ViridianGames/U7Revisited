@@ -45,15 +45,19 @@
   },
   "543": {
     "name": "buckler",
-    "slots": ["SLOT_LEFT_HAND"]
+    "slots": ["SLOT_BELT", "SLOT_LEFT_HAND", "SLOT_RIGHT_HAND"]
   },
   "545": {
     "name": "curved heather",
-    "slots": ["SLOT_LEFT_HAND"]
+    "slots": ["SLOT_BELT", "SLOT_LEFT_HAND", "SLOT_RIGHT_HAND"]
   },
   "569": {
     "name": "leather armor",
     "slots": ["SLOT_TORSO"]
+  },
+  "572": {
+    "name": "wooden shield",
+    "slots": ["SLOT_BELT", "SLOT_LEFT_HAND", "SLOT_RIGHT_HAND"]
   },
   "574": {
     "name": "leather leggings",
@@ -61,7 +65,8 @@
   },
   "579": {
     "name": "leather gloves",
-    "slots": ["SLOT_LEFT_RING"]
+    "slots": ["SLOT_LEFT_RING"],
+    "fills": ["SLOT_LEFT_RING", "SLOT_RIGHT_RING"]
   },
   "580": {
     "name": "gauntlets",
@@ -109,9 +114,53 @@
     "slots": ["SLOT_RIGHT_HAND"],
     "fills": ["SLOT_RIGHT_HAND", "SLOT_LEFT_HAND"]
   },
+  "599": {
+    "name": "sword",
+    "slots": ["SLOT_RIGHT_HAND", "SLOT_LEFT_HAND"]
+  },
+  "600": {
+    "name": "two-handed hammer",
+    "slots": ["SLOT_RIGHT_HAND", "SLOT_LEFT_HAND"],
+    "fills": ["SLOT_RIGHT_HAND", "SLOT_LEFT_HAND"]
+  },
+  "601": {
+    "name": "two-handed axe",
+    "slots": ["SLOT_RIGHT_HAND", "SLOT_LEFT_HAND"],
+    "fills": ["SLOT_RIGHT_HAND", "SLOT_LEFT_HAND"]
+  },
+  "602": {
+    "name": "two-handed sword",
+    "slots": ["SLOT_RIGHT_HAND", "SLOT_LEFT_HAND"],
+    "fills": ["SLOT_RIGHT_HAND", "SLOT_LEFT_HAND"]
+  },
+  "603": {
+    "name": "halberd",
+    "slots": ["SLOT_RIGHT_HAND", "SLOT_LEFT_HAND"],
+    "fills": ["SLOT_RIGHT_HAND", "SLOT_LEFT_HAND"]
+  },
+  "604": {
+    "name": "glass sword",
+    "slots": ["SLOT_RIGHT_HAND", "SLOT_LEFT_HAND"]
+  },
+  "605": {
+    "name": "boomerang",
+    "slots": ["SLOT_RIGHT_HAND", "SLOT_LEFT_HAND"]
+  },
+  "606": {
+    "name": "glass bow",
+    "slots": ["SLOT_RIGHT_HAND", "SLOT_LEFT_HAND"],
+    "fills": ["SLOT_RIGHT_HAND", "SLOT_LEFT_HAND"]
+  },
   "609": {
     "name": "kite shield",
-    "slots": ["SLOT_LEFT_HAND"],
-    "fills": ["SLOT_LEFT_HAND"]
+    "slots": ["SLOT_BELT", "SLOT_LEFT_HAND", "SLOT_RIGHT_HAND"]
+  },
+  "622": {
+    "name": "whip",
+    "slots": ["SLOT_RIGHT_HAND", "SLOT_LEFT_HAND"]
+  },
+  "1004": {
+    "name": "leather helm",
+    "slots": ["SLOT_HEAD"]
   }
 }

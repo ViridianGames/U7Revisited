@@ -99,12 +99,15 @@ public:
 	void Setup(int npcId);  // Configure for specific NPC
 	int GetNpcId() const { return m_npcId; }
 
+	// Public for access from GumpManager
+	std::unique_ptr<GhostSerializer> m_serializer; // GUI serializer for loading paperdoll.ghost
+	std::set<int> m_highlightedSlots;  // Set of slot indices currently highlighted
+
 private:
 	int m_npcId;               // Which NPC this paperdoll belongs to
 	int m_paperdollType;       // Index into m_paperdollData array
 	PaperdollData m_data;      // Cached paperdoll data
 	Texture* m_backgroundTexture; // Pointer to biggumps.png texture for pixel checking
-	std::unique_ptr<GhostSerializer> m_serializer; // GUI serializer for loading paperdoll.ghost
 	std::vector<std::shared_ptr<Font>> m_loadedFonts; // Keep fonts alive
 	// Note: m_gui is inherited from Gump base class
 

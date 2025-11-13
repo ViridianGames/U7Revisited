@@ -24,6 +24,7 @@ public:
 	void SetLayout(int x, int y, int width, int height, float scale, int flag);
 	void SetAcceptingInput(bool acceptingInput) { m_AcceptingInput = acceptingInput; }
 	bool GetAcceptingInput() { return m_AcceptingInput; }
+	Rectangle GetBounds() const { return Rectangle{ m_Pos.x, m_Pos.y, m_Width, m_Height }; }
 
 	// Add a generic element to the GUI
 	void AddElement(std::shared_ptr<GuiElement> element);

@@ -484,6 +484,7 @@ void MainState::UpdateInput()
 					g_gumpManager->m_draggedObjectId = g_objectUnderMousePointer->m_ID;
 					g_gumpManager->m_draggingObject = true;
 					g_gumpManager->m_sourceGump = nullptr;
+					g_gumpManager->m_sourceSlotIndex = -1;  // Not from a paperdoll slot
 
 				}
 			}
