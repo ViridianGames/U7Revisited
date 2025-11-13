@@ -8,8 +8,8 @@
           -1
         ],
         "size": [
-          199,
-          204
+          167,
+          146
         ],
         "backgroundColor": [
           60,
@@ -32,11 +32,11 @@
               -1
             ],
             "sprite": {
-              "spritesheet": "GUI/biggumps.png",
-              "x": 746,
-              "y": 963,
-              "w": 200,
-              "h": 205
+              "spritesheet": "GUI/gumps.png",
+              "x": 497,
+              "y": 641,
+              "w": 133,
+              "h": 136
             },
             "scaleX": 1.0,
             "scaleY": 1.0
@@ -45,15 +45,15 @@
             "name": "PEACE",
             "type": "cycle",
             "position": [
-              41,
-              119
+              27,
+              79
             ],
             "sprite": {
-              "spritesheet": "GUI/biggumps.png",
-              "x": 1079,
+              "spritesheet": "GUI/gumps.png",
+              "x": 720,
               "y": 0,
-              "w": 38,
-              "h": 34
+              "w": 25,
+              "h": 23
             },
             "frameCount": 2,
             "scaleX": 1.0,
@@ -63,15 +63,15 @@
             "name": "HALO",
             "type": "cycle",
             "position": [
-              46,
-              153
+              30,
+              101
             ],
             "sprite": {
-              "spritesheet": "GUI/biggumps.png",
-              "x": 911,
+              "spritesheet": "GUI/gumps.png",
+              "x": 608,
               "y": 0,
-              "w": 25,
-              "h": 14
+              "w": 17,
+              "h": 9
             },
             "frameCount": 2,
             "scaleX": 1.0,
@@ -81,15 +81,15 @@
             "name": "FORMATION",
             "type": "cycle",
             "position": [
-              44,
-              171
+              29,
+              111
             ],
             "sprite": {
-              "spritesheet": "GUI/biggumps.png",
-              "x": 911,
-              "y": 48,
-              "w": 28,
-              "h": 29
+              "spritesheet": "GUI/gumps.png",
+              "x": 608,
+              "y": 32,
+              "w": 19,
+              "h": 19
             },
             "frameCount": 10,
             "scaleX": 1.0,
@@ -99,12 +99,12 @@
             "name": "CARRY",
             "type": "textarea",
             "position": [
-              97,
-              181
+              64,
+              119
             ],
             "text": "27/36",
             "font": "pinch.ttf",
-            "fontSize": 29,
+            "fontSize": 27,
             "textColor": [
               55,
               19,
@@ -112,8 +112,8 @@
               255
             ],
             "size": [
-              53,
-              11
+              102,
+              27
             ],
             "justified": 0
           },
@@ -121,22 +121,22 @@
             "name": "HEART",
             "type": "iconbutton",
             "position": [
-              161,
-              181
+              107,
+              119
             ],
             "sprite": {
-              "spritesheet": "GUI/biggumps.png",
-              "x": 966,
+              "spritesheet": "GUI/gumps.png",
+              "x": 645,
               "y": 0,
-              "w": 26,
-              "h": 20
+              "w": 17,
+              "h": 13
             },
             "downSprite": {
-              "spritesheet": "GUI/biggumps.png",
-              "x": 992,
+              "spritesheet": "GUI/gumps.png",
+              "x": 662,
               "y": 0,
-              "w": 26,
-              "h": 20
+              "w": 17,
+              "h": 13
             },
             "color": [
               255,
@@ -150,22 +150,22 @@
             "name": "CLOSE",
             "type": "iconbutton",
             "position": [
-              5,
-              155
+              3,
+              101
             ],
             "sprite": {
-              "spritesheet": "GUI/biggumps.png",
-              "x": 501,
-              "y": 18,
-              "w": 32,
-              "h": 32
+              "spritesheet": "GUI/gumps.png",
+              "x": 333,
+              "y": 11,
+              "w": 21,
+              "h": 21
             },
             "downSprite": {
-              "spritesheet": "GUI/biggumps.png",
-              "x": 501,
-              "y": 78,
-              "w": 32,
-              "h": 32
+              "spritesheet": "GUI/gumps.png",
+              "x": 333,
+              "y": 51,
+              "w": 21,
+              "h": 21
             },
             "color": [
               255,
@@ -179,22 +179,22 @@
             "name": "DISK",
             "type": "iconbutton",
             "position": [
-              162,
-              158
+              107,
+              105
             ],
             "sprite": {
-              "spritesheet": "GUI/biggumps.png",
-              "x": 1023,
+              "spritesheet": "GUI/gumps.png",
+              "x": 683,
               "y": 0,
-              "w": 27,
-              "h": 20
+              "w": 17,
+              "h": 13
             },
             "downSprite": {
-              "spritesheet": "GUI/biggumps.png",
-              "x": 1050,
+              "spritesheet": "GUI/gumps.png",
+              "x": 700,
               "y": 0,
-              "w": 27,
-              "h": 20
+              "w": 17,
+              "h": 13
             },
             "color": [
               255,
@@ -208,11 +208,11 @@
             "name": "SLOT_HEAD",
             "type": "sprite",
             "position": [
-              172,
-              8
+              107,
+              5
             ],
             "sprite": {
-              "spritesheet": "GUI/biggumps.png",
+              "spritesheet": "GUI/gumps.png",
               "x": 0,
               "y": 0,
               "w": 16,
@@ -225,11 +225,11 @@
             "name": "SLOT_NECK",
             "type": "sprite",
             "position": [
-              46,
-              30
+              30,
+              17
             ],
             "sprite": {
-              "spritesheet": "GUI/biggumps.png",
+              "spritesheet": "GUI/gumps.png",
               "x": 0,
               "y": 0,
               "w": 16,
@@ -242,11 +242,11 @@
             "name": "SLOT_TORSO",
             "type": "sprite",
             "position": [
-              46,
-              49
+              30,
+              32
             ],
             "sprite": {
-              "spritesheet": "GUI/biggumps.png",
+              "spritesheet": "GUI/gumps.png",
               "x": 0,
               "y": 0,
               "w": 16,
@@ -259,11 +259,11 @@
             "name": "SLOT_LEGS",
             "type": "sprite",
             "position": [
-              171,
-              121
+              107,
+              80
             ],
             "sprite": {
-              "spritesheet": "GUI/biggumps.png",
+              "spritesheet": "GUI/gumps.png",
               "x": 0,
               "y": 0,
               "w": 16,
@@ -276,11 +276,11 @@
             "name": "SLOT_HANDS",
             "type": "sprite",
             "position": [
-              171,
-              99
+              107,
+              65
             ],
             "sprite": {
-              "spritesheet": "GUI/biggumps.png",
+              "spritesheet": "GUI/gumps.png",
               "x": 0,
               "y": 0,
               "w": 16,
@@ -293,11 +293,11 @@
             "name": "SLOT_FEET",
             "type": "sprite",
             "position": [
-              109,
-              141
+              72,
+              92
             ],
             "sprite": {
-              "spritesheet": "GUI/biggumps.png",
+              "spritesheet": "GUI/gumps.png",
               "x": 0,
               "y": 0,
               "w": 16,
@@ -310,11 +310,11 @@
             "name": "SLOT_LEFT_HAND",
             "type": "sprite",
             "position": [
-              171,
-              77
+              107,
+              51
             ],
             "sprite": {
-              "spritesheet": "GUI/biggumps.png",
+              "spritesheet": "GUI/gumps.png",
               "x": 0,
               "y": 0,
               "w": 16,
@@ -327,11 +327,11 @@
             "name": "SLOT_RIGHT_HAND",
             "type": "sprite",
             "position": [
-              46,
-              77
+              30,
+              50
             ],
             "sprite": {
-              "spritesheet": "GUI/biggumps.png",
+              "spritesheet": "GUI/gumps.png",
               "x": 0,
               "y": 0,
               "w": 16,
@@ -344,11 +344,11 @@
             "name": "SLOT_AMMO",
             "type": "sprite",
             "position": [
-              46,
-              8
+              30,
+              5
             ],
             "sprite": {
-              "spritesheet": "GUI/biggumps.png",
+              "spritesheet": "GUI/gumps.png",
               "x": 0,
               "y": 0,
               "w": 16,
@@ -361,11 +361,11 @@
             "name": "SLOT_LEFT_RING",
             "type": "sprite",
             "position": [
-              171,
-              99
+              107,
+              65
             ],
             "sprite": {
-              "spritesheet": "GUI/biggumps.png",
+              "spritesheet": "GUI/gumps.png",
               "x": 0,
               "y": 0,
               "w": 16,
@@ -378,11 +378,11 @@
             "name": "SLOT_RIGHT_RING",
             "type": "sprite",
             "position": [
-              46,
-              101
+              30,
+              67
             ],
             "sprite": {
-              "spritesheet": "GUI/biggumps.png",
+              "spritesheet": "GUI/gumps.png",
               "x": 0,
               "y": 0,
               "w": 16,
@@ -395,11 +395,11 @@
             "name": "SLOT_BELT",
             "type": "sprite",
             "position": [
-              171,
-              50
+              107,
+              33
             ],
             "sprite": {
-              "spritesheet": "GUI/biggumps.png",
+              "spritesheet": "GUI/gumps.png",
               "x": 0,
               "y": 0,
               "w": 16,
@@ -412,11 +412,11 @@
             "name": "SLOT_BACKPACK",
             "type": "sprite",
             "position": [
-              171,
-              31
+              107,
+              20
             ],
             "sprite": {
-              "spritesheet": "GUI/biggumps.png",
+              "spritesheet": "GUI/gumps.png",
               "x": 0,
               "y": 0,
               "w": 16,

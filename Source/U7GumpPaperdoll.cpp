@@ -297,8 +297,8 @@ void GumpPaperdoll::Update()
 
 	if (g_gumpManager->m_draggingObject && g_gumpManager->m_draggedObjectId != -1)
 	{
-		// Check if mouse is over this paperdoll (bounding box + solid pixel check)
-		if (CheckCollisionPointRec(mousePos, m_gui.GetBounds()) && IsMouseOverSolidPixel(mousePos))
+		// Check if THIS paperdoll is the topmost gump under the mouse cursor
+		if (g_gumpManager->GetGumpUnderMouse() == this)
 		{
 			// Get the dragged object
 			auto objIt = g_objectList.find(g_gumpManager->m_draggedObjectId);
@@ -456,6 +456,9 @@ void GumpPaperdoll::Update()
 									g_gumpManager->m_draggingObject = true;
 									g_gumpManager->m_sourceGump = this;
 									g_gumpManager->m_sourceSlotIndex = i;  // Remember which slot we dragged from
+
+									// Close any gump associated with this object to prevent dragging into itself
+									g_gumpManager->CloseGumpForObject(objectId);
 
 									// Unequip from ALL slots this item fills
 									auto objIt = g_objectList.find(objectId);

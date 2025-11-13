@@ -486,6 +486,9 @@ void MainState::UpdateInput()
 					g_gumpManager->m_sourceGump = nullptr;
 					g_gumpManager->m_sourceSlotIndex = -1;  // Not from a paperdoll slot
 
+					// Close any gump associated with this object to prevent dragging into itself
+					g_gumpManager->CloseGumpForObject(g_objectUnderMousePointer->m_ID);
+
 				}
 			}
 		}

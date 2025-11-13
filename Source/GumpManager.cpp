@@ -168,17 +168,12 @@ void GumpManager::Update()
 		//  First check if we're dropping on a paperdoll
 		bool droppedOnPaperdoll = false;
 		bool attemptedPaperdollDrop = false;
-		// Iterate backwards to check topmost gumps first (last in list = highest z-order)
-		for (auto it = g_gumpManager->m_GumpList.rbegin(); it != g_gumpManager->m_GumpList.rend(); ++it)
+
+		// Use m_gumpUnderMouse which already has proper z-order and pixel-perfect collision
+		GumpPaperdoll* paperdoll = dynamic_cast<GumpPaperdoll*>(m_gumpUnderMouse);
+		if (paperdoll)
 		{
-			auto& gump = *it;
-			GumpPaperdoll* paperdoll = dynamic_cast<GumpPaperdoll*>(gump.get());
-			if (paperdoll)
-			{
-				// Check if mouse is over this paperdoll
-				if (CheckCollisionPointRec(mousePos, gump->m_gui.GetBounds()))
-				{
-					attemptedPaperdollDrop = true;
+			attemptedPaperdollDrop = true;
 
 					// Get all valid slots this item can be equipped to
 					int shape = object->m_shapeData->GetShape();
@@ -318,16 +313,11 @@ void GumpManager::Update()
 						Log("Cannot equip shape " + std::to_string(shape) + " - not an equippable item");
 					}
 
-					// Only break if we successfully dropped on paperdoll
-					// If we failed, continue to check other gumps (containers)
-					if (droppedOnPaperdoll)
-					{
-						g_gumpManager->m_draggingObject = false;
-						g_gumpManager->m_draggedObjectId = -1;
-						g_gumpManager->m_sourceGump = nullptr;
-						break;
-					}
-				}
+			if (droppedOnPaperdoll)
+			{
+				g_gumpManager->m_draggingObject = false;
+				g_gumpManager->m_draggedObjectId = -1;
+				g_gumpManager->m_sourceGump = nullptr;
 			}
 		}
 
@@ -473,6 +463,20 @@ void GumpManager::AddGump(std::shared_ptr<Gump> Gump)
 {
 	// Add to pending list instead of directly to avoid iterator invalidation
 	m_PendingGumps.push_back(Gump);
+}
+
+void GumpManager::CloseGumpForObject(int objectId)
+{
+	// Close any gump associated with this object to prevent dragging into itself
+	for (auto& gump : m_GumpList)
+	{
+		if (gump->GetContainerId() == objectId)
+		{
+			gump->OnExit();
+			Log("Closed gump for container " + std::to_string(objectId) + " on drag start");
+			break;
+		}
+	}
 }
 
 bool GumpManager::IsAnyGumpBeingDragged()

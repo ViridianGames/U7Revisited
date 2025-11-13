@@ -168,6 +168,9 @@ void Gump::Update()
 							g_gumpManager->m_sourceSlotIndex = -1;  // Not from a paperdoll slot
 							m_containerObject->m_shouldBeSorted = false; //  We are dragging an object, so we no longer need to sort.
 
+							// Close any gump associated with this container object to prevent dragging into itself
+							g_gumpManager->CloseGumpForObject(object->m_ID);
+
 							// Remove from inventory immediately when drag starts
 							m_containerObject->m_inventory.erase(it);
 							Log("Removed object " + std::to_string(object->m_ID) + " from container on drag start");

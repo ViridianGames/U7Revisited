@@ -33,6 +33,7 @@ public:
 	virtual void Draw();
 
 	void AddGump(std::shared_ptr<Gump> gump);
+	void CloseGumpForObject(int objectId);  // Close any gump associated with the given object ID
 
 	bool IsMouseOverGump() { return m_isMouseOverGump; }
 	Gump* GetGumpUnderMouse() { return m_gumpUnderMouse; }

@@ -9,7 +9,7 @@
 #include "Geist/GuiElements.h"
 #include "Ghost/GhostSerializer.h"
 
-static constexpr const char* GUMPS_TEXTURE_PATH = "Images/GUI/biggumps.png";
+static constexpr const char* GUMPS_TEXTURE_PATH = "Images/GUI/gumps.png";
 
 enum class PaperdollType
 {
@@ -37,51 +37,32 @@ public:
 		PaperdollType m_paperdollType;
 	};
 
-	// Slot rectangles - same for all paperdolls
-	// NOTE: These coordinates include the 5-pixel panel padding from paperdoll.ghost
-	// static constexpr Rectangle m_slotRects[static_cast<int>(EquipmentSlot::SLOT_COUNT)] =
-	// {
-	// 	{ 175, 9, 16, 16 },    // SLOT_HEAD
-	// 	{ 50, 32, 16, 16 },    // SLOT_NECK
-	// 	{ 50, 51, 16, 16 },    // SLOT_TORSO
-	// 	{ 175, 121, 16, 16 },  // SLOT_LEGS
-	// 	{ 175, 100, 16, 16 },   // SLOT_HANDS
-	// 	{ 115, 146, 16, 16 },  // SLOT_FEET
-	// 	{ 175, 77, 16, 16 },   // SLOT_LEFT_HAND
-	// 	{ 50, 77, 16, 16 },    // SLOT_RIGHT_HAND
-	// 	{ 50, 9, 16, 16 },     // SLOT_AMMO
-	// 	{ 175, 100, 16, 16 },   // SLOT_LEFT_RING
-	// 	{ 50, 101, 16, 16 },   // SLOT_RIGHT_RING
-	// 	{ 175, 51, 16, 16 },   // SLOT_BELT
-	// 	{ 175, 31, 16, 16 }    // SLOT_BACKPACK
-	// };
-
 	// Static data array - one entry per paperdoll type
 	// TODO: Measure actual coordinates from biggumps.png
 	static constexpr PaperdollData m_paperdollData[] =
 	{
 		// PAPERDOLL_MALE_AVATAR
-		{ { 746, 963 }, { 200, 205 }, PaperdollType::PAPERDOLL_MALE_AVATAR },
+		{ { 498, 642 }, { 133, 136 }, PaperdollType::PAPERDOLL_MALE_AVATAR },
 		// PAPERDOLL_FEMALE_AVATAR
-		{ { 946, 963 }, { 200, 205 }, PaperdollType::PAPERDOLL_FEMALE_AVATAR },
+		{ { 631, 642 }, { 133, 136 }, PaperdollType::PAPERDOLL_FEMALE_AVATAR },
 		// PAPERDOLL_IOLO
-		{ { 1146, 963 }, { 200, 205 }, PaperdollType::PAPERDOLL_IOLO },
+		{ { 764, 642 }, { 133, 136 }, PaperdollType::PAPERDOLL_IOLO },
 		// PAPERDOLL_SHAMINO
-		{ { 1546, 963 }, { 200, 205 }, PaperdollType::PAPERDOLL_SHAMINO },
+		{ { 1030, 642 }, { 133, 136 }, PaperdollType::PAPERDOLL_SHAMINO },
 		// PAPERDOLL_DUPRE
-		{ { 546, 1168 }, { 200, 205 }, PaperdollType::PAPERDOLL_DUPRE },
+		{ { 365, 779 }, { 133, 136 }, PaperdollType::PAPERDOLL_DUPRE },
 		// PAPERDOLL_SPARK
-		{ { 1346, 963 }, { 200, 205 }, PaperdollType::PAPERDOLL_SPARK },
+		{ { 897, 642 }, { 133, 136 }, PaperdollType::PAPERDOLL_SPARK },
 		// PAPERDOLL_SENTRI
-		{ { 946, 1168 }, { 200, 205 }, PaperdollType::PAPERDOLL_SENTRI },
+		{ { 631, 779 }, { 133, 136 }, PaperdollType::PAPERDOLL_SENTRI },
 		// PAPERDOLL_TSERAMED
-		{ { 1546, 1168 }, { 200, 205 }, PaperdollType::PAPERDOLL_TSERAMED },
+		{ { 1030, 779 }, { 133, 136 }, PaperdollType::PAPERDOLL_TSERAMED },
 		// PAPERDOLL_JAANA
-		{ { 746, 1168 }, { 200, 205 }, PaperdollType::PAPERDOLL_JAANA },
+		{ { 498, 779 }, { 133, 136 }, PaperdollType::PAPERDOLL_JAANA },
 		// PAPERDOLL_KATRINA
-		{ { 1346, 1168 }, { 200, 205 }, PaperdollType::PAPERDOLL_KATRINA },
+		{ { 897, 779 }, { 133, 136 }, PaperdollType::PAPERDOLL_KATRINA },
 		// PAPERDOLL_JULIA
-		{ { 1146, 1168 }, { 200, 205 }, PaperdollType::PAPERDOLL_JULIA }
+		{ { 764, 779 }, { 133, 136 }, PaperdollType::PAPERDOLL_JULIA }
 	};
 
 	GumpPaperdoll();
