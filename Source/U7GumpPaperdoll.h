@@ -76,6 +76,7 @@ public:
 	virtual void OnEnter();
 	virtual U7Object* GetObjectUnderMousePointer() override { return nullptr; }  // Paperdolls don't show container inventory
 	virtual bool IsMouseOverSolidPixel(Vector2 mousePos) override;  // Pixel-perfect collision detection
+	bool IsOverSlot(Vector2 mousePos);  // Check if mouse is over equipment slot or button
 
 	void Setup(int npcId);  // Configure for specific NPC
 	int GetNpcId() const { return m_npcId; }

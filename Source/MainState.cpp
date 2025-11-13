@@ -1156,7 +1156,7 @@ void MainState::Draw()
 		rlEnableDepthMask();
 	}
 
-	if (g_gumpManager->m_draggingObject)
+	if (g_gumpManager->m_draggingObject && !g_gumpManager->m_isMouseOverGump)
 	{
 		U7Object* draggedObject = g_objectList[g_gumpManager->m_draggedObjectId].get();
 		BoundingBox box;
@@ -1225,7 +1225,7 @@ void MainState::Draw()
 		unsigned short shapeframe = g_World[worldZ][worldX];
 		int shape = shapeframe & 0x3ff;
 
-		if (g_objectUnderMousePointer != nullptr)
+		if (g_objectUnderMousePointer != nullptr && !g_gumpManager->m_isMouseOverGump)
 		{
 			std::string objectDescription;
 			if (g_objectUnderMousePointer->m_isContainer)

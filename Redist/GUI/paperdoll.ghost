@@ -8,7 +8,7 @@
           -1
         ],
         "size": [
-          167,
+          166,
           146
         ],
         "backgroundColor": [
@@ -64,7 +64,7 @@
             "type": "cycle",
             "position": [
               30,
-              101
+              102
             ],
             "sprite": {
               "spritesheet": "GUI/gumps.png",
@@ -82,7 +82,7 @@
             "type": "cycle",
             "position": [
               29,
-              111
+              114
             ],
             "sprite": {
               "spritesheet": "GUI/gumps.png",
@@ -112,8 +112,8 @@
               255
             ],
             "size": [
-              102,
-              27
+              101,
+              26
             ],
             "justified": 0
           },
@@ -311,7 +311,7 @@
             "type": "sprite",
             "position": [
               107,
-              51
+              50
             ],
             "sprite": {
               "spritesheet": "GUI/gumps.png",
@@ -328,7 +328,7 @@
             "type": "sprite",
             "position": [
               30,
-              50
+              49
             ],
             "sprite": {
               "spritesheet": "GUI/gumps.png",

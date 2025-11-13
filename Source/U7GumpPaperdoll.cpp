@@ -249,9 +249,9 @@ void GumpPaperdoll::OnEnter()
 	// Make the paperdoll draggable
 	m_gui.m_Draggable = true;
 
-	// Set up pixel-perfect drag area validation
+	// Set up drag area validation: allow dragging from solid background but not from slots/buttons
 	m_gui.m_DragAreaValidationCallback = [this](Vector2 mousePos) {
-		return this->IsMouseOverSolidPixel(mousePos);
+		return this->IsMouseOverSolidPixel(mousePos) && !this->IsOverSlot(mousePos);
 	};
 
 	// Store texture reference for pixel-perfect collision
@@ -724,10 +724,9 @@ void GumpPaperdoll::Draw()
 	}
 }
 
-bool GumpPaperdoll::IsMouseOverSolidPixel(Vector2 mousePos)
+bool GumpPaperdoll::IsOverSlot(Vector2 mousePos)
 {
-	// First check if mouse is over any GUI elements (slots or buttons) - if so, NOT draggable
-	// Check all equipment slots
+	// Check if mouse is over any equipment slots or buttons
 	const char* slotNames[] = {
 		"SLOT_HEAD", "SLOT_NECK", "SLOT_TORSO", "SLOT_LEGS", "SLOT_HANDS", "SLOT_FEET",
 		"SLOT_LEFT_HAND", "SLOT_RIGHT_HAND", "SLOT_AMMO", "SLOT_LEFT_RING", "SLOT_RIGHT_RING",
@@ -754,48 +753,40 @@ bool GumpPaperdoll::IsMouseOverSolidPixel(Vector2 mousePos)
 
 					if (CheckCollisionPointRec(mousePos, slotRect))
 					{
-						return false;  // Over a slot - not draggable
+						return true;
 					}
 				}
 			}
 		}
 	}
 
-	// Check for combat/stats buttons (if they exist)
-	// Check for buttons by ID
-	int combatID = m_serializer->GetElementID("btn_combat");
-	if (combatID != -1)
+	// Check for buttons (HEART, CLOSE, DISK, etc.)
+	const char* buttonNames[] = {"HEART", "CLOSE", "DISK", "PEACE", "HALO", "FORMATION"};
+	for (int i = 0; i < 6; i++)
 	{
-		auto element = m_gui.GetElement(combatID);
-		if (element)
+		int buttonID = m_serializer->GetElementID(buttonNames[i]);
+		if (buttonID != -1)
 		{
-			Rectangle btnRect = element->GetBounds();
-			btnRect.x += m_gui.m_Pos.x;
-			btnRect.y += m_gui.m_Pos.y;
-			if (CheckCollisionPointRec(mousePos, btnRect))
+			auto element = m_gui.GetElement(buttonID);
+			if (element)
 			{
-				return false;  // Over a button - not draggable
+				Rectangle btnRect = element->GetBounds();
+				btnRect.x += m_gui.m_Pos.x;
+				btnRect.y += m_gui.m_Pos.y;
+				if (CheckCollisionPointRec(mousePos, btnRect))
+				{
+					return true;
+				}
 			}
 		}
 	}
 
-	int statsID = m_serializer->GetElementID("btn_stats");
-	if (statsID != -1)
-	{
-		auto element = m_gui.GetElement(statsID);
-		if (element)
-		{
-			Rectangle btnRect = element->GetBounds();
-			btnRect.x += m_gui.m_Pos.x;
-			btnRect.y += m_gui.m_Pos.y;
-			if (CheckCollisionPointRec(mousePos, btnRect))
-			{
-				return false;  // Over a button - not draggable
-			}
-		}
-	}
+	return false;
+}
 
-	// Not over any interactive elements, now check if over solid background pixel
+bool GumpPaperdoll::IsMouseOverSolidPixel(Vector2 mousePos)
+{
+	// Check if over solid background pixel (transparent areas let world clicks through)
 	if (!m_backgroundTexture)
 		return true;
 
