@@ -705,6 +705,7 @@
   "761": {
     "name": "spellbook",
     "slots": [
+      "SLOT_BELT",
       "SLOT_LEFT_HAND",
       "SLOT_RIGHT_HAND"
     ]

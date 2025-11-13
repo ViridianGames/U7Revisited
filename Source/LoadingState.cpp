@@ -2198,6 +2198,30 @@ void LoadingState::LoadInitialGameState()
 					}
 				}
 			}
+
+			// Give Avatar (NPC ID 0) a spellbook in their belt slot
+			auto avatarIt = g_NPCData.find(0);
+			if (avatarIt != g_NPCData.end() && avatarIt->second)
+			{
+				NPCData* avatarNPC = avatarIt->second.get();
+				U7Object* avatarObject = g_objectList[avatarNPC->m_objectID].get();
+
+				if (avatarObject)
+				{
+					// Create spellbook (shape 761)
+					unsigned int spellbookID = GetNextID();
+					AddObject(761, 0, spellbookID, avatarObject->m_Pos.x, avatarObject->m_Pos.y, avatarObject->m_Pos.z);
+
+					// Add to Avatar's inventory
+					AddObjectToContainer(spellbookID, avatarNPC->m_objectID);
+
+					// Equip in belt slot
+					avatarNPC->SetEquippedItem(EquipmentSlot::SLOT_BELT, spellbookID);
+
+					Log("Gave Avatar spellbook (shape 761, id=" + std::to_string(spellbookID) + ") equipped in SLOT_BELT");
+				}
+			}
+
 			stringstream npcData;
 		}
 		if (filename.substr(0, 6) == "u7ireg")
