@@ -158,6 +158,11 @@ public:
 	int m_currentFrameY = 0;
 
    std::vector<int> m_inventory; //  Each entry is the ID of an object in the object list
+
+   float m_totalWeight = 0.0f; // 0.0f = cache invalid, needs recalc
+
+   float GetWeight(); // Recursive cached weight calculation
+   void InvalidateWeightCache(); // Invalidate this object + parent chain
 };
 
 #endif

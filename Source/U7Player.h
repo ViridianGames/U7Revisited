@@ -42,7 +42,6 @@ public:
 	int GetInt() { return m_int; }
 	int GetCombat() { return m_combat; }
 	int GetMagic() { return m_magic; }
-	float GetWeight();
 	float GetMaxWeight() { return 2 * m_str;}
 
 	void SetTrainingPoints(int tp) { m_TrainingPoints = tp; };

@@ -559,6 +559,30 @@ static void SetSpriteTexture(GuiSprite* sprite, Texture* texture)
 
 void GumpPaperdoll::Draw()
 {
+	// Update CARRY text area to show weight
+	int carryTextID = m_serializer->GetElementID("CARRY");
+	if (carryTextID != -1)
+	{
+		auto carryElement = m_gui.GetElement(carryTextID);
+		if (carryElement && carryElement->m_Type == GUI_TEXTAREA)
+		{
+			auto carryText = static_cast<GuiTextArea*>(carryElement.get());
+
+			// Get the NPC's object to calculate weight
+			auto npcIt = g_NPCData.find(m_npcId);
+			if (npcIt != g_NPCData.end() && npcIt->second)
+			{
+				U7Object* npcObject = g_objectList[npcIt->second->m_objectID].get();
+				if (npcObject)
+				{
+					int currentWeight = static_cast<int>(npcObject->GetWeight());
+					int maxWeight = static_cast<int>(g_Player->GetMaxWeight()); // For now all NPCs use Avatar's max weight
+					carryText->m_String = std::to_string(currentWeight) + "/" + std::to_string(maxWeight);
+				}
+			}
+		}
+	}
+
 	// Update slot sprites to show equipped items
 	auto it = g_NPCData.find(m_npcId);
 	if (it != g_NPCData.end() && it->second)

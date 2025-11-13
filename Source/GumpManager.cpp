@@ -343,7 +343,7 @@ gump->m_containerData.m_boxSize.x, gump->m_containerData.m_boxSize.y }))
 					}
 
 					// Add to new container (item was already removed from source when drag started)
-					gump->m_containerObject->m_inventory.push_back(object->m_ID);
+					gump->m_containerObject->AddObjectToInventory(object->m_ID);
 					object->m_isContained = true;
 					if (object->m_shapeData->GetShape() == 641 && object->m_Quality == 253)
 					{
@@ -401,7 +401,7 @@ gump->m_containerData.m_boxSize.x, gump->m_containerData.m_boxSize.y }))
 				else if (m_sourceGump->m_containerObject != nullptr)
 				{
 					// Return to source container inventory
-					m_sourceGump->m_containerObject->m_inventory.push_back(object->m_ID);
+					m_sourceGump->m_containerObject->AddObjectToInventory(object->m_ID);
 					object->m_isContained = true;
 					returnedToSource = true;
 					Log("Returned item to source container");

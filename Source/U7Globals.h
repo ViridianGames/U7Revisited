@@ -239,15 +239,8 @@ struct NPCData
 		return (it != m_equipment.end()) ? it->second : -1;
 	}
 
-	void SetEquippedItem(EquipmentSlot slot, int objectId)
-	{
-		m_equipment[slot] = objectId;
-	}
-
-	void UnequipItem(EquipmentSlot slot)
-	{
-		m_equipment[slot] = -1;
-	}
+	void SetEquippedItem(EquipmentSlot slot, int objectId);
+	void UnequipItem(EquipmentSlot slot);
 
 	bool HasItemEquipped(EquipmentSlot slot) const
 	{

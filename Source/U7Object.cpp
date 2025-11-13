@@ -591,6 +591,15 @@ bool U7Object::AddObjectToInventory(int objectid)
 	if (m_isContainer)
 	{
 		m_inventory.push_back(objectid);
+
+		// Set the child's containing object ID to point back to this container
+		U7Object* child = g_objectList[objectid].get();
+		if (child)
+		{
+			child->m_containingObjectId = m_ID;
+		}
+
+		InvalidateWeightCache();
 		return true;
 	}
 
@@ -605,8 +614,14 @@ bool U7Object::RemoveObjectFromInventory(int objectid)
 		{
 			if (m_inventory[i] == objectid)
 			{
-				GetObjectFromID(objectid)->m_isContained = true;
+				U7Object* child = GetObjectFromID(objectid);
+				if (child)
+				{
+					child->m_isContained = true;
+					child->m_containingObjectId = -1; // Clear parent reference
+				}
 				m_inventory.erase(m_inventory.begin() + i);
+				InvalidateWeightCache();
 				return true;
 			}
 		}
@@ -675,6 +690,41 @@ bool U7Object::IsInInventory(int shape, int frame, int quality)
 	}
 
 	return false;
+}
+
+float U7Object::GetWeight()
+{
+	if (m_totalWeight > 0.0f)
+		return m_totalWeight;
+
+	float baseWeight = g_objectDataTable[m_shapeData->m_shape].m_weight;
+	float inventoryWeight = 0.0f;
+
+	for (int childId : m_inventory)
+	{
+		U7Object* child = g_objectList[childId].get();
+		if (child != nullptr)
+		{
+			inventoryWeight += child->GetWeight();
+		}
+	}
+
+	m_totalWeight = baseWeight + inventoryWeight;
+	return m_totalWeight;
+}
+
+void U7Object::InvalidateWeightCache()
+{
+	m_totalWeight = 0.0f;
+
+	if (m_containingObjectId != -1)
+	{
+		U7Object* parent = g_objectList[m_containingObjectId].get();
+		if (parent != nullptr)
+		{
+			parent->InvalidateWeightCache();
+		}
+	}
 }
 
 bool U7Object::IsLocked()

@@ -2003,7 +2003,8 @@ static int LuaPurchaseObject(lua_State *L)
         return 1;
     }
 
-    if (g_Player->GetWeight() + (amount * g_objectDataTable[shape].m_weight) > g_Player->GetMaxWeight())
+    U7Object* avatarObject = g_objectList[g_NPCData[0]->m_objectID].get();
+    if (avatarObject->GetWeight() + (amount * g_objectDataTable[shape].m_weight) > g_Player->GetMaxWeight())
     {
         lua_pushinteger(L, 2);
         return 1;
@@ -2656,8 +2657,9 @@ static int LuaRemovePartyItems(lua_State *L)
                 {
                     // Remove entire stack
                     remaining_to_remove -= item_quantity;
-                    it = party_member->m_inventory.erase(it);
+                    party_member->RemoveObjectFromInventory(item_id);
                     g_objectList.erase(item_id);
+                    it = party_member->m_inventory.begin(); // Reset iterator after modification
                 }
                 else
                 {

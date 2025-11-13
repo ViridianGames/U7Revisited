@@ -172,7 +172,8 @@ void Gump::Update()
 							g_gumpManager->CloseGumpForObject(object->m_ID);
 
 							// Remove from inventory immediately when drag starts
-							m_containerObject->m_inventory.erase(it);
+							int objectToRemove = *it;
+							m_containerObject->RemoveObjectFromInventory(objectToRemove);
 							Log("Removed object " + std::to_string(object->m_ID) + " from container on drag start");
 
 							break; //  We found the object we are dragging, so break out of the loop

@@ -1250,3 +1250,40 @@ EquipmentSlot GetEquipmentSlotForShape(int shapeId)
 	}
 	return EquipmentSlot::SLOT_COUNT;
 }
+
+// NPCData equipment management implementations
+void NPCData::SetEquippedItem(EquipmentSlot slot, int objectId)
+{
+	m_equipment[slot] = objectId;
+
+	// Add to NPC's inventory if not already there, or invalidate cache if it is
+	U7Object* npcObject = g_objectList[m_objectID].get();
+	if (npcObject)
+	{
+		if (!npcObject->IsInInventoryById(objectId))
+		{
+			npcObject->AddObjectToInventory(objectId);
+		}
+		else
+		{
+			// Item already in inventory, just invalidate weight cache
+			npcObject->InvalidateWeightCache();
+		}
+	}
+}
+
+void NPCData::UnequipItem(EquipmentSlot slot)
+{
+	int objectId = GetEquippedItem(slot);
+	m_equipment[slot] = -1;
+
+	// Remove from NPC's inventory
+	if (objectId != -1)
+	{
+		U7Object* npcObject = g_objectList[m_objectID].get();
+		if (npcObject)
+		{
+			npcObject->RemoveObjectFromInventory(objectId);
+		}
+	}
+}
