@@ -55,7 +55,8 @@ public:
 
 	// Load elements from a file and add them at a specific parent position
 	// parentElementID specifies which element should be the parent (-1 for root level)
-	bool LoadIntoPanel(const std::string& filename, Gui* gui, int parentX, int parentY, int parentElementID = -1);
+	// insertIndex specifies where to insert in parent's children list (-1 = append at end, 0 = first child, etc.)
+	bool LoadIntoPanel(const std::string& filename, Gui* gui, int parentX, int parentY, int parentElementID = -1, int insertIndex = -1);
 
 	// Get the current auto-ID counter value (for tracking loaded content)
 	int GetNextAutoID() const { return m_nextAutoID; }
@@ -78,6 +79,32 @@ public:
 	void RegisterChildOfParent(int parentID, int childID)
 	{
 		m_childrenMap[parentID].push_back(childID);
+	}
+
+	// Register an element as a child at a specific index (-1 = append at end)
+	void RegisterChildOfParentAtIndex(int parentID, int childID, int index)
+	{
+		auto& children = m_childrenMap[parentID];
+		if (index < 0 || index > static_cast<int>(children.size()))
+		{
+			// Invalid index or -1 means append at end
+			children.push_back(childID);
+		}
+		else
+		{
+			// Insert at the specified index (insert at end if index == size)
+			children.insert(children.begin() + index, childID);
+		}
+	}
+
+	// Get children of a specific parent
+	const std::vector<int>& GetChildren(int parentID) const
+	{
+		static std::vector<int> emptyVector;
+		auto it = m_childrenMap.find(parentID);
+		if (it != m_childrenMap.end())
+			return it->second;
+		return emptyVector;
 	}
 
 	// Reflow floating children of a panel
@@ -319,7 +346,8 @@ private:
 	// parentX and parentY track the cumulative offset from nested parents
 	// parentElementID tracks the parent in the tree structure (-1 for root level)
 	// namePrefix is prepended to all element names (used for includes to avoid name collisions)
-	void ParseElements(const ghost_json& elementsArray, Gui* gui, const ghost_json& inheritedProps = ghost_json(), int parentX = 0, int parentY = 0, int parentElementID = -1, const std::string& namePrefix = "");
+	// insertIndex specifies where to insert elements in parent's children (-1 = append at end)
+	void ParseElements(const ghost_json& elementsArray, Gui* gui, const ghost_json& inheritedProps = ghost_json(), int parentX = 0, int parentY = 0, int parentElementID = -1, const std::string& namePrefix = "", int insertIndex = -1);
 
 	// Helper function to load font with inheritance support
 	// Returns the loaded Font pointer (owned by m_loadedFonts)

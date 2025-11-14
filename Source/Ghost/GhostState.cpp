@@ -1916,13 +1916,15 @@ void GhostState::Update()
 		// Save undo state before making changes
 		PushUndoState();
 
-		// Determine where to paste based on currently selected element (same logic as InsertButton)
+		// Determine where to paste based on currently selected element
 		int parentID = -1;
+		int insertIndex = -1;  // -1 means append at end
 
 		if (m_selectedElementID == -1)
 		{
-			// No selection - paste as child of root
+			// No selection - paste as child of root at end
 			parentID = m_contentSerializer->GetRootElementID();
+			insertIndex = -1;
 			Log("Pasting as child of root ID: " + to_string(parentID));
 		}
 		else
@@ -1931,20 +1933,33 @@ void GhostState::Update()
 			auto selectedElement = m_gui->GetElement(m_selectedElementID);
 			if (selectedElement && selectedElement->m_Type == GUI_PANEL)
 			{
-				// Selected element is a panel - paste as its child
+				// Selected element is a panel - paste as its FIRST child
 				parentID = m_selectedElementID;
-				Log("Pasting as child of selected panel ID: " + to_string(parentID));
+				insertIndex = 0;  // Insert at beginning of panel's children
+				Log("Pasting as first child of selected panel ID: " + to_string(parentID));
 			}
 			else
 			{
-				// Selected element is not a panel - paste as sibling (same parent)
+				// Selected element is not a panel - paste immediately after it as sibling
 				parentID = m_contentSerializer->GetParentID(m_selectedElementID);
 				if (parentID == -1)
 				{
 					Log("ERROR: Cannot paste as sibling - selected element has no valid parent");
 					return;
 				}
-				Log("Pasting as sibling of selected element ID: " + to_string(m_selectedElementID));
+
+				// Find the index of the selected element in its parent's children
+				const auto& siblings = m_contentSerializer->GetChildren(parentID);
+				for (size_t i = 0; i < siblings.size(); i++)
+				{
+					if (siblings[i] == m_selectedElementID)
+					{
+						insertIndex = static_cast<int>(i) + 1;  // Insert after selected element
+						break;
+					}
+				}
+
+				Log("Pasting immediately after selected element ID: " + to_string(m_selectedElementID) + " at index: " + to_string(insertIndex));
 			}
 		}
 
@@ -1960,10 +1975,31 @@ void GhostState::Update()
 		// Get next auto ID for the pasted element
 		int newElementID = m_contentSerializer->GetNextAutoID();
 
+		// Create a copy of the clipboard data to modify
+		ghost_json pasteData = m_clipboard;
+
+		// If the element has a name, make it unique by appending "_copy"
+		if (pasteData.contains("name"))
+		{
+			string originalName = pasteData["name"];
+			string newName = originalName + "_copy";
+
+			// If that name already exists, append a number
+			int copyNumber = 1;
+			while (m_contentSerializer->GetElementID(newName) != -1)
+			{
+				newName = originalName + "_copy" + to_string(copyNumber);
+				copyNumber++;
+			}
+
+			pasteData["name"] = newName;
+			Log("Renamed pasted element from '" + originalName + "' to '" + newName + "'");
+		}
+
 		// Create a temporary .ghost file structure in memory with proper format
 		ghost_json tempFileJson;
 		tempFileJson["gui"]["elements"] = ghost_json::array();
-		tempFileJson["gui"]["elements"].push_back(m_clipboard);
+		tempFileJson["gui"]["elements"].push_back(pasteData);
 
 		// Write to a temporary file
 		string tempFilename = "temp_paste_" + to_string(newElementID) + ".ghost";
@@ -1973,10 +2009,10 @@ void GhostState::Update()
 			tempFile << tempFileJson.dump(2);
 			tempFile.close();
 
-			Log("Pasting element with parent offset (" + to_string(parentX) + ", " + to_string(parentY) + ")");
+			Log("Pasting element with parent offset (" + to_string(parentX) + ", " + to_string(parentY) + ") at index: " + to_string(insertIndex));
 
 			// Load using LoadIntoPanel which handles parent offset correctly
-			if (m_contentSerializer->LoadIntoPanel(tempFilename, m_gui.get(), parentX, parentY, parentID))
+			if (m_contentSerializer->LoadIntoPanel(tempFilename, m_gui.get(), parentX, parentY, parentID, insertIndex))
 			{
 				// Transfer fonts from content serializer to preserved fonts
 				auto& fonts = m_contentSerializer->GetLoadedFonts();

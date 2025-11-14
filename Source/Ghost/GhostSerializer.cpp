@@ -213,7 +213,7 @@ std::pair<int, int> GhostSerializer::CalculateNextFloatingPosition(int parentID,
 	return {relX, relY};
 }
 
-void GhostSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, const ghost_json& inheritedProps, int parentX, int parentY, int parentElementID, const std::string& namePrefix)
+void GhostSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, const ghost_json& inheritedProps, int parentX, int parentY, int parentElementID, const std::string& namePrefix, int insertIndex)
 {
 	// Track layout position for floating elements
 	// Get parent's layout type and padding (defaults to "horz" and 5px if no parent or not found)
@@ -402,10 +402,19 @@ void GhostSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, c
 		{
 			m_rootElementID = id;
 		}
-		// Add to parent's children list
+		// Add to parent's children list at the specified index
 		if (parentElementID != -1)
 		{
-			m_childrenMap[parentElementID].push_back(id);
+			if (insertIndex >= 0)
+			{
+				RegisterChildOfParentAtIndex(parentElementID, id, insertIndex);
+				// Increment insertIndex for next element in this batch
+				insertIndex++;
+			}
+			else
+			{
+				m_childrenMap[parentElementID].push_back(id);
+			}
 		}
 
 		if (type == "panel")
@@ -1643,7 +1652,7 @@ int GhostSerializer::ResolveIntProperty(int elementID, const std::string& proper
 	return defaultValue;  // Not found, return default
 }
 
-bool GhostSerializer::LoadIntoPanel(const std::string& filename, Gui* gui, int parentX, int parentY, int parentElementID)
+bool GhostSerializer::LoadIntoPanel(const std::string& filename, Gui* gui, int parentX, int parentY, int parentElementID, int insertIndex)
 {
 	// Read JSON from file
 	ghost_json j = ReadJsonFromFile(filename);
@@ -1658,7 +1667,7 @@ bool GhostSerializer::LoadIntoPanel(const std::string& filename, Gui* gui, int p
 	// Parse elements directly at the specified position
 	if (j.contains("gui") && j["gui"].contains("elements"))
 	{
-		ParseElements(j["gui"]["elements"], gui, inheritedProps, parentX, parentY, parentElementID);
+		ParseElements(j["gui"]["elements"], gui, inheritedProps, parentX, parentY, parentElementID, "", insertIndex);
 		return true;
 	}
 
