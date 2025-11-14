@@ -8,8 +8,8 @@
           5
         ],
         "size": [
-          225.0,
-          350.0
+          385,
+          316
         ],
         "backgroundColor": [
           80,
@@ -17,13 +17,13 @@
           80,
           255
         ],
-        "font": "babyblocks.ttf",
-        "fontSize": 30,
         "filled": true,
         "layout": "table",
         "horzPadding": 5,
         "vertPadding": 5,
         "columns": 2,
+        "font": "babyblocks.ttf",
+        "fontSize": 30,
         "elements": [
           {
             "type": "textarea",
@@ -38,11 +38,11 @@
               255,
               255
             ],
-            "justified": 0,
             "size": [
-              180.0,
-              30.0
-            ]
+              180,
+              30
+            ],
+            "justified": 0
           },
           {
             "name": "PROPERTY_NAME",
@@ -53,10 +53,16 @@
             ],
             "text": "",
             "size": [
-              150.0,
-              20.0
+              150,
+              38
             ],
             "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "borderColor": [
               255,
               255,
               255,
@@ -66,6 +72,54 @@
               0,
               0,
               0,
+              255
+            ]
+          },
+          {
+            "type": "textarea",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Layout:",
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "size": [
+              180,
+              30
+            ],
+            "justified": 0
+          },
+          {
+            "name": "PROPERTY_LAYOUT",
+            "type": "list",
+            "position": [
+              -1,
+              -1
+            ],
+            "size": [
+              150,
+              38
+            ],
+            "items": [
+              "Horz",
+              "Vert",
+              "Table"
+            ],
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "backgroundColor": [
+              64,
+              64,
+              64,
               255
             ],
             "borderColor": [
@@ -81,135 +135,6 @@
               -1,
               -1
             ],
-            "text": "Horz:",
-            "textColor": [
-              255,
-              255,
-              255,
-              255
-            ],
-            "justified": 0,
-            "size": [
-              180.0,
-              30.0
-            ]
-          },
-          {
-            "name": "PROPERTY_LAYOUT_HORZ",
-            "type": "radiobutton",
-            "position": [
-              -1,
-              -1
-            ],
-            "size": [
-              20.0,
-              20.0
-            ],
-            "backgroundColor": [
-              255,
-              255,
-              255,
-              255
-            ],
-            "selected": false,
-            "scale": [
-              1.0,
-              1.0
-            ],
-            "group": 1
-          },
-          {
-            "type": "textarea",
-            "position": [
-              -1,
-              -1
-            ],
-            "text": "Vert:",
-            "textColor": [
-              255,
-              255,
-              255,
-              255
-            ],
-            "justified": 0,
-            "size": [
-              180.0,
-              30.0
-            ]
-          },
-          {
-            "name": "PROPERTY_LAYOUT_VERT",
-            "type": "radiobutton",
-            "position": [
-              -1,
-              -1
-            ],
-            "size": [
-              20.0,
-              20.0
-            ],
-            "backgroundColor": [
-              255,
-              255,
-              255,
-              255
-            ],
-            "selected": false,
-            "scale": [
-              1.0,
-              1.0
-            ],
-            "group": 1
-          },
-          {
-            "type": "textarea",
-            "position": [
-              -1,
-              -1
-            ],
-            "text": "Table:",
-            "textColor": [
-              255,
-              255,
-              255,
-              255
-            ],
-            "justified": 0,
-            "size": [
-              180.0,
-              30.0
-            ]
-          },
-          {
-            "name": "PROPERTY_LAYOUT_TABLE",
-            "type": "radiobutton",
-            "position": [
-              -1,
-              -1
-            ],
-            "size": [
-              20.0,
-              20.0
-            ],
-            "backgroundColor": [
-              255,
-              255,
-              255,
-              255
-            ],
-            "selected": false,
-            "scale": [
-              1.0,
-              1.0
-            ],
-            "group": 1
-          },
-          {
-            "type": "textarea",
-            "position": [
-              -1,
-              -1
-            ],
             "text": "Columns:",
             "textColor": [
               255,
@@ -217,11 +142,11 @@
               255,
               255
             ],
-            "justified": 0,
             "size": [
-              180.0,
-              30.0
-            ]
+              180,
+              30
+            ],
+            "justified": 0
           },
           {
             "name": "PROPERTY_COLUMNS",
@@ -232,8 +157,8 @@
             ],
             "valueRange": 64,
             "size": [
-              150.0,
-              20.0
+              150,
+              20
             ],
             "vertical": false,
             "spurColor": [
@@ -262,11 +187,11 @@
               255,
               255
             ],
-            "justified": 0,
             "size": [
-              180.0,
-              30.0
-            ]
+              180,
+              30
+            ],
+            "justified": 0
           },
           {
             "name": "PROPERTY_HORZ_PADDING",
@@ -277,8 +202,8 @@
             ],
             "valueRange": 64,
             "size": [
-              150.0,
-              20.0
+              150,
+              20
             ],
             "vertical": false,
             "spurColor": [
@@ -307,11 +232,11 @@
               255,
               255
             ],
-            "justified": 0,
             "size": [
-              180.0,
-              30.0
-            ]
+              180,
+              30
+            ],
+            "justified": 0
           },
           {
             "name": "PROPERTY_VERT_PADDING",
@@ -322,8 +247,8 @@
             ],
             "valueRange": 64,
             "size": [
-              150.0,
-              20.0
+              150,
+              20
             ],
             "vertical": false,
             "spurColor": [
@@ -352,15 +277,111 @@
               255,
               255
             ],
-            "justified": 0,
             "size": [
-              180.0,
-              30.0
-            ]
+              180,
+              30
+            ],
+            "justified": 0
           },
           {
-            "type": "include",
-            "filename": "ghost_font_select.ghost"
+            "type": "panel",
+            "position": [
+              -1,
+              -1
+            ],
+            "size": [
+              190,
+              20
+            ],
+            "backgroundColor": [
+              80,
+              80,
+              80,
+              255
+            ],
+            "filled": true,
+            "layout": "horz",
+            "horzPadding": 0,
+            "vertPadding": 0,
+            "font": "babyblocks.ttf",
+            "fontSize": 30,
+            "elements": [
+              {
+                "name": "PROPERTY_FONT",
+                "type": "textinput",
+                "position": [
+                  -1,
+                  -1
+                ],
+                "text": "",
+                "size": [
+                  150,
+                  20
+                ],
+                "textColor": [
+                  255,
+                  255,
+                  255,
+                  255
+                ],
+                "borderColor": [
+                  255,
+                  255,
+                  255,
+                  255
+                ],
+                "backgroundColor": [
+                  0,
+                  0,
+                  0,
+                  255
+                ]
+              },
+              {
+                "name": "PROPERTY_PICK_FONT",
+                "type": "iconbutton",
+                "position": [
+                  -1,
+                  -1
+                ],
+                "sprite": {
+                  "spritesheet": "GUI/guielements.png",
+                  "x": 40,
+                  "y": 0,
+                  "w": 20,
+                  "h": 20
+                },
+                "color": [
+                  255,
+                  255,
+                  255,
+                  255
+                ],
+                "scale": 1.0
+              },
+              {
+                "name": "PROPERTY_CLEAR_FONT",
+                "type": "iconbutton",
+                "position": [
+                  -1,
+                  -1
+                ],
+                "sprite": {
+                  "spritesheet": "GUI/guielements.png",
+                  "x": 100,
+                  "y": 0,
+                  "w": 20,
+                  "h": 20
+                },
+                "color": [
+                  255,
+                  255,
+                  255,
+                  255
+                ],
+                "scale": 1.0
+              }
+            ]
           },
           {
             "type": "textarea",
@@ -375,11 +396,11 @@
               255,
               255
             ],
-            "justified": 0,
             "size": [
-              180.0,
-              30.0
-            ]
+              180,
+              30
+            ],
+            "justified": 0
           },
           {
             "name": "PROPERTY_FONT_SIZE",
@@ -390,8 +411,8 @@
             ],
             "valueRange": 200,
             "size": [
-              150.0,
-              20.0
+              150,
+              20
             ],
             "vertical": false,
             "spurColor": [
@@ -420,11 +441,11 @@
               255,
               255
             ],
-            "justified": 0,
             "size": [
-              180.0,
-              30.0
-            ]
+              180,
+              30
+            ],
+            "justified": 0
           },
           {
             "name": "PROPERTY_BACKGROUND",
@@ -434,10 +455,6 @@
               -1
             ],
             "text": "Pick Color",
-            "size": [
-              150.0,
-              20.0
-            ],
             "textColor": [
               255,
               255,

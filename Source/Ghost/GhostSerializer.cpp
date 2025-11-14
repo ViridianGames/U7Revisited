@@ -624,6 +624,11 @@ void GhostSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, c
 		else if (type == "textinput")
 		{
 			string text = element.value("text", "");
+			// If text is empty, use "example" as default to show the font
+			if (text.empty())
+			{
+				text = "example";
+			}
 			auto size = element["size"];
 			int width = size[0];
 			int height = size[1];

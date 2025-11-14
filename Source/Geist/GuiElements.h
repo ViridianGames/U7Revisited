@@ -221,6 +221,7 @@ public:
 	int m_SpurLocation;
 
 	bool m_Vertical;
+	bool m_DebugValue = false;
 
 	Color m_SpurColor;
 	Color m_BackgroundColor;

@@ -142,6 +142,23 @@ void GhostState::Init(const std::string& configfile)
 	// Populate the element hierarchy listbox with the initial root container
 	// This must come after m_propertySerializer is initialized
 	PopulateElementHierarchy();
+
+	// Select the root element automatically on startup
+	if (!m_elementIDList.empty())
+	{
+		int rootID = m_elementIDList[0];  // First element is always the root
+		m_selectedElementID = rootID;
+		UpdatePropertyPanel();
+		UpdateStatusFooter();
+
+		// Also select it in the hierarchy listbox
+		auto listboxElement = m_gui->GetElement(1501);
+		if (listboxElement && listboxElement->m_Type == GUI_LISTBOX)
+		{
+			auto listbox = static_cast<GuiListBox*>(listboxElement.get());
+			listbox->SetSelectedIndex(0);
+		}
+	}
 }
 
 void GhostState::Shutdown()
@@ -1005,6 +1022,12 @@ void GhostState::Update()
 	m_gui->Update();
 
 	int activeID = m_gui->GetActiveElementID();
+
+	// Debug: Log when arrow keys are pressed
+	if (IsKeyPressed(KEY_LEFT) || IsKeyPressed(KEY_RIGHT) || IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_DOWN))
+	{
+		Log("Arrow key pressed in GhostState::Update - activeID: " + to_string(activeID) + ", LastElement: " + to_string(m_gui->m_LastElement));
+	}
 
 	// Update element properties when property panel inputs change
 	// Only update if a property panel element just became active (was clicked/interacted with)
@@ -2067,9 +2090,21 @@ void GhostState::Update()
 		auto selectedElement = m_gui->GetElement(m_selectedElementID);
 		if (selectedElement)
 		{
+			// Skip nudging if a property panel scrollbar is active (let scrollbar handle arrow keys)
+			bool scrollbarActive = false;
+			if (m_gui->m_LastElement >= 3000 && m_gui->m_LastElement < 4000)
+			{
+				auto lastElement = m_gui->GetElement(m_gui->m_LastElement);
+				if (lastElement && lastElement->m_Type == GUI_SCROLLBAR)
+				{
+					scrollbarActive = true;
+					Log("Skipping nudge - scrollbar " + to_string(m_gui->m_LastElement) + " is active");
+				}
+			}
+
 			// Only allow nudging if element is positioned (green highlight), not floating (yellow highlight)
 			bool isFloating = m_contentSerializer->IsFloating(m_selectedElementID);
-			if (!isFloating)
+			if (!isFloating && !scrollbarActive)
 			{
 				bool nudged = false;
 				int deltaX = 0, deltaY = 0;
@@ -2354,27 +2389,6 @@ void GhostState::Draw()
 		}
 	}
 
-	// Draw value overlays on property panel scrollbars
-	if (m_propertySerializer && m_selectedElementID != -1)
-	{
-		// Automatically draw red value text on ALL scrollbars in the property panel (ID >= 3000)
-		for (const auto& [elementID, element] : m_gui->m_GuiElementList)
-		{
-			if (elementID >= 3000 && element && element->m_Type == GUI_SCROLLBAR && element->m_Visible)
-			{
-				auto scrollbar = static_cast<GuiScrollBar*>(element.get());
-
-				// Calculate center position for text
-				Rectangle bounds = scrollbar->GetBounds();
-				int textX = static_cast<int>(m_gui->m_Pos.x + bounds.x + bounds.width / 2);
-				int textY = static_cast<int>(m_gui->m_Pos.y + bounds.y + bounds.height / 2 - 8);
-
-				// Draw the value in red
-				string valueText = to_string(scrollbar->m_Value);
-				DrawText(valueText.c_str(), textX - MeasureText(valueText.c_str(), 16) / 2, textY, 16, RED);
-			}
-		}
-	}
 }
 
 void GhostState::OnEnter()
@@ -3365,7 +3379,7 @@ void GhostState::InsertTextInput()
 	}
 
 	// Add a text input field at calculated position
-	m_gui->AddTextInput(ctx.newID, ctx.absoluteX, ctx.absoluteY, 150, scaledHeight, font, "", WHITE, WHITE, Color{0, 0, 0, 255}, 0, true);
+	m_gui->AddTextInput(ctx.newID, ctx.absoluteX, ctx.absoluteY, 150, scaledHeight, font, "example", WHITE, WHITE, Color{0, 0, 0, 255}, 0, true);
 
 	// Don't store inherited font/fontSize - let it inherit from parent when loaded
 
@@ -3769,6 +3783,16 @@ void GhostState::UpdatePropertyPanel()
 		m_lastPropertyElementType = selectedElement->m_Type;
 		Log("Loaded property panel: " + propertyFile);
 
+		// Enable debug value display on all property panel scrollbars (ID >= 3000)
+		for (auto& [id, element] : m_gui->m_GuiElementList)
+		{
+			if (id >= 3000 && element && element->m_Type == GUI_SCROLLBAR)
+			{
+				auto scrollbar = static_cast<GuiScrollBar*>(element.get());
+				scrollbar->m_DebugValue = true;
+			}
+		}
+
 		// Debug: Check ALL text inputs to see their IDs
 		Log("=== Checking all text inputs after property panel load ===");
 		for (auto& [id, element] : m_gui->m_GuiElementList)
@@ -3997,67 +4021,20 @@ void GhostState::PopulatePropertyPanelFields()
 
 		Log("PopulatePropertyPanelFields: Panel layout='" + layout + "', columns=" + to_string(columns));
 
-		// Set the appropriate radio button
-		int horzRadioID = m_propertySerializer->GetElementID("PROPERTY_LAYOUT_HORZ");
-		int vertRadioID = m_propertySerializer->GetElementID("PROPERTY_LAYOUT_VERT");
-		int tableRadioID = m_propertySerializer->GetElementID("PROPERTY_LAYOUT_TABLE");
-
-		Log("Radio button IDs: horz=" + to_string(horzRadioID) + ", vert=" + to_string(vertRadioID) + ", table=" + to_string(tableRadioID));
-
-		// Debug: Log radio button and text input positions to check for overlaps
-		auto logBounds = [this](const std::string& name, int id) {
-			auto elem = m_gui->GetElement(id);
-			if (elem) {
-				float absX = m_gui->m_Pos.x + elem->m_Pos.x;
-				float absY = m_gui->m_Pos.y + elem->m_Pos.y;
-				Log("  " + name + " (ID " + to_string(id) + "): absPos(" + to_string(absX) + ", " + to_string(absY) +
-					") size(" + to_string(elem->m_Width) + " x " + to_string(elem->m_Height) + ")");
-			}
-		};
-
-		Log("Element bounds:");
-		logBounds("HORZ radio", horzRadioID);
-		logBounds("VERT radio", vertRadioID);
-		logBounds("TABLE radio", tableRadioID);
-		logBounds("COLUMNS input", m_propertySerializer->GetElementID("PROPERTY_COLUMNS"));
-
-		// Set the correct radio button to selected (deselection happens in the loop below)
-		int selectedRadioID = -1;
-		if (layout == "horz") selectedRadioID = horzRadioID;
-		else if (layout == "vert") selectedRadioID = vertRadioID;
-		else if (layout == "table") selectedRadioID = tableRadioID;
-
-		if (selectedRadioID != -1)
+		// Set the layout dropdown list
+		int layoutListID = m_propertySerializer->GetElementID("PROPERTY_LAYOUT");
+		if (layoutListID != -1)
 		{
-			auto selectedRadio = m_gui->GetElement(selectedRadioID);
-			if (selectedRadio && selectedRadio->m_Type == GUI_RADIOBUTTON)
+			auto layoutList = m_gui->GetElement(layoutListID);
+			if (layoutList && layoutList->m_Type == GUI_LIST)
 			{
-				// First deselect ALL radio buttons in this group (mimicking what radio button click does)
-				for (auto& [id, element] : m_gui->m_GuiElementList)
-				{
-					if (element && element->m_Type == GUI_RADIOBUTTON && element->m_Group == selectedRadio->m_Group)
-					{
-						element->m_Selected = false;
-					}
-				}
+				auto list = static_cast<GuiList*>(layoutList.get());
 
-				// Now select only the one we want
-				selectedRadio->m_Selected = true;
-				Log("Set radio button ID " + to_string(selectedRadioID) + " to SELECTED for layout: " + layout);
-
-				// Verify all three radio buttons immediately after setting
-				if (horzRadioID != -1) {
-					auto radio = m_gui->GetElement(horzRadioID);
-					if (radio) Log("  Verify: HORZ (3005) m_Selected=" + to_string(radio->m_Selected));
-				}
-				if (vertRadioID != -1) {
-					auto radio = m_gui->GetElement(vertRadioID);
-					if (radio) Log("  Verify: VERT (3007) m_Selected=" + to_string(radio->m_Selected));
-				}
-				if (tableRadioID != -1) {
-					auto radio = m_gui->GetElement(tableRadioID);
-					if (radio) Log("  Verify: TABLE (3009) m_Selected=" + to_string(radio->m_Selected));
-				}
+				// Set the selected index based on layout value
+				if (layout == "horz") list->m_SelectedIndex = 0;
+				else if (layout == "vert") list->m_SelectedIndex = 1;
+				else if (layout == "table") list->m_SelectedIndex = 2;
+				else list->m_SelectedIndex = 0; // Default to Horz
 			}
 		}
 
@@ -4335,32 +4312,23 @@ void GhostState::UpdateElementFromPropertyPanel()
 	// Update layout properties if it's a panel
 	if (selectedElement && selectedElement->m_Type == GUI_PANEL)
 	{
-		// Check which layout radio button is selected
-		int horzRadioID = m_propertySerializer->GetElementID("PROPERTY_LAYOUT_HORZ");
-		int vertRadioID = m_propertySerializer->GetElementID("PROPERTY_LAYOUT_VERT");
-		int tableRadioID = m_propertySerializer->GetElementID("PROPERTY_LAYOUT_TABLE");
-
-		Log("UpdateElementFromPropertyPanel reading radio buttons:");
+		// Check layout dropdown list
+		int layoutListID = m_propertySerializer->GetElementID("PROPERTY_LAYOUT");
 		std::string newLayout = "";
-		if (horzRadioID != -1)
+
+		if (layoutListID != -1)
 		{
-			auto horzRadio = m_gui->GetElement(horzRadioID);
-			Log("  HORZ (3005) m_Selected=" + to_string(horzRadio ? horzRadio->m_Selected : -1));
-			if (horzRadio && horzRadio->m_Selected) newLayout = "horz";
+			auto layoutList = m_gui->GetElement(layoutListID);
+			if (layoutList && layoutList->m_Type == GUI_LIST)
+			{
+				auto list = static_cast<GuiList*>(layoutList.get());
+
+				// Convert list index to layout string
+				if (list->m_SelectedIndex == 0) newLayout = "horz";
+				else if (list->m_SelectedIndex == 1) newLayout = "vert";
+				else if (list->m_SelectedIndex == 2) newLayout = "table";
+			}
 		}
-		if (vertRadioID != -1)
-		{
-			auto vertRadio = m_gui->GetElement(vertRadioID);
-			Log("  VERT (3007) m_Selected=" + to_string(vertRadio ? vertRadio->m_Selected : -1));
-			if (vertRadio && vertRadio->m_Selected) newLayout = "vert";
-		}
-		if (tableRadioID != -1)
-		{
-			auto tableRadio = m_gui->GetElement(tableRadioID);
-			Log("  TABLE (3009) m_Selected=" + to_string(tableRadio ? tableRadio->m_Selected : -1));
-			if (tableRadio && tableRadio->m_Selected) newLayout = "table";
-		}
-		Log("  Determined newLayout='" + newLayout + "'");
 
 		// Update layout if changed
 		if (!newLayout.empty())
@@ -4369,7 +4337,6 @@ void GhostState::UpdateElementFromPropertyPanel()
 			if (newLayout != oldLayout)
 			{
 				m_contentSerializer->SetPanelLayout(m_selectedElementID, newLayout);
-				Log("Updated panel " + to_string(m_selectedElementID) + " layout from " + oldLayout + " to " + newLayout);
 
 				// When switching to table layout, ensure columns is initialized if not already set
 				// This ensures the default value (2) is properly stored in the map
@@ -4377,7 +4344,6 @@ void GhostState::UpdateElementFromPropertyPanel()
 				{
 					int currentColumns = m_contentSerializer->GetPanelColumns(m_selectedElementID);
 					m_contentSerializer->SetPanelColumns(m_selectedElementID, currentColumns);
-					Log("Initialized columns to " + to_string(currentColumns) + " for table layout");
 				}
 
 				wasUpdated = true;

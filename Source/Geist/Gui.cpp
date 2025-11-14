@@ -60,6 +60,7 @@ void Gui::Update()
 
 	m_LastElement = m_ActiveElement;
 	m_ActiveElement = -1;
+
 	for (auto& node : m_GuiElementList)
 	{
 		node.second->Update();
@@ -131,9 +132,34 @@ void Gui::Draw()
 	if (!m_Active || m_isDone)
 		return;
 
+	// First pass: Draw all elements normally
 	for (auto& node : m_GuiElementList)
 	{
 		node.second->Draw();
+	}
+
+	// Second pass: Draw expanded dropdowns on top of everything
+	for (auto& node : m_GuiElementList)
+	{
+		if (node.second->m_Type == GUI_LIST)
+		{
+			GuiList* list = static_cast<GuiList*>(node.second.get());
+			if (list->m_IsExpanded)
+			{
+				// Draw expanded dropdown items
+				float itemHeight = list->m_Height;
+				for (int i = 0; i < list->m_Items.size() && i < list->m_VisibleItems; ++i)
+				{
+					float y = list->m_Pos.y + (i + 1) * itemHeight;
+					DrawRectangle(static_cast<int>(list->m_Pos.x), static_cast<int>(y),
+					              static_cast<int>(list->m_Width), static_cast<int>(itemHeight), list->m_BackgroundColor);
+					DrawRectangleLines(static_cast<int>(list->m_Pos.x), static_cast<int>(y),
+					                   static_cast<int>(list->m_Width), static_cast<int>(itemHeight), list->m_BorderColor);
+					DrawTextEx(*list->m_Font, list->m_Items[i].c_str(), {list->m_Pos.x + 5, y + 5},
+					           list->m_Font->baseSize, 1, list->m_TextColor);
+				}
+			}
+		}
 	}
 }
 
