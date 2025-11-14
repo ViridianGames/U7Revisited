@@ -1587,20 +1587,23 @@ void GhostState::Update()
 
 				if (isFloating)
 				{
-					// Make it positioned: set position to (0, 0) relative to parent
-					m_contentSerializer->SetFloating(bestID, false);
+					// Make it positioned: save current screen position and convert to relative position
+					// Floating (-1,-1) = controlled by parent layout
+					// Positioned (x,y) = NOT controlled by layout, fixed position
 					auto element = m_gui->GetElement(bestID);
+
 					if (element)
 					{
-						// Get parent position to calculate relative position
-						auto parent = m_gui->GetElement(parentID);
-						if (parent)
-						{
-							element->m_Pos.x = parent->m_Pos.x;
-							element->m_Pos.y = parent->m_Pos.y;
-						}
+						// Element m_Pos is already stored relative to GUI root
+						// When drawn: screen_pos = m_Gui->m_Pos + element->m_Pos
+						// The layout system has already positioned this floating element correctly,
+						// so we just need to keep the current m_Pos value (don't modify it)
+
+						Log("Converting floating to positioned, keeping current m_Pos (" + to_string(element->m_Pos.x) + ", " + to_string(element->m_Pos.y) + ")");
 					}
-					Log("Toggled element " + to_string(bestID) + " to positioned (0, 0)");
+
+					m_contentSerializer->SetFloating(bestID, false);
+					Log("Toggled element " + to_string(bestID) + " to positioned");
 				}
 				else
 				{
@@ -1614,6 +1617,13 @@ void GhostState::Update()
 				{
 					m_contentSerializer->ReflowPanel(parentID, m_gui.get());
 					Log("Reflowed parent panel " + to_string(parentID) + " after toggle");
+
+					// Log the element's position after reflow to verify it stayed put
+					auto element = m_gui->GetElement(bestID);
+					if (element)
+					{
+						Log("After reflow: element screen pos (" + to_string(element->m_Pos.x) + ", " + to_string(element->m_Pos.y) + ")");
+					}
 				}
 
 				// Reset double-click tracking
