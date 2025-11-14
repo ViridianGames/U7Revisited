@@ -1,5 +1,5 @@
 --- Best guess: Spawns items and applies sprite effects, likely for transformation visuals tied to Erethian's shape-shifting.
-function utility_unknown_0408(eventid, objectref)
+function utility_unknown_0408(objectref)
     local var_0000, var_0001, var_0002, var_0003
 
     var_0000 = get_object_position(objectref) --- Guess: Gets position data

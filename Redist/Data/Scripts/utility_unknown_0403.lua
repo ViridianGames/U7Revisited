@@ -1,5 +1,5 @@
 --- Best guess: Applies sprite effects and moves items, likely for visual or environmental effects.
-function utility_unknown_0403(eventid, objectref)
+function utility_unknown_0403(objectref)
     local var_0000, var_0001
 
     var_0000 = get_object_position(objectref) --- Guess: Gets position data

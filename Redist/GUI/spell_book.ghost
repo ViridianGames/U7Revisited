@@ -1,0 +1,399 @@
+{
+  "gui": {
+    "elements": [
+      {
+        "type": "panel",
+        "position": [
+          -1,
+          -1
+        ],
+        "size": [
+          160,
+          90
+        ],
+        "backgroundColor": [
+          60,
+          60,
+          60,
+          0
+        ],
+        "filled": true,
+        "layout": "horz",
+        "horzPadding": 0,
+        "vertPadding": 0,
+        "font": "babyblocks.ttf",
+        "fontSize": 30,
+        "elements": [
+          {
+            "name": "SPELLBOOK",
+            "type": "sprite",
+            "position": [
+              -1,
+              -1
+            ],
+            "sprite": {
+              "spritesheet": "GUI/gumps.png",
+              "x": 18,
+              "y": 451,
+              "w": 160,
+              "h": 90
+            },
+            "scaleX": 1.0,
+            "scaleY": 1.0
+          },
+          {
+            "name": "BOOKMARK",
+            "type": "sprite",
+            "position": [
+              116,
+              0
+            ],
+            "sprite": {
+              "spritesheet": "GUI/gumps.png",
+              "x": 0,
+              "y": 465,
+              "w": 8,
+              "h": 4
+            },
+            "scaleX": 1.0,
+            "scaleY": 1.0
+          },
+          {
+            "name": "CLOSE",
+            "type": "iconbutton",
+            "position": [
+              3,
+              2
+            ],
+            "sprite": {
+              "spritesheet": "GUI/gumps.png",
+              "x": 333,
+              "y": 11,
+              "w": 21,
+              "h": 21
+            },
+            "downSprite": {
+              "spritesheet": "GUI/gumps.png",
+              "x": 333,
+              "y": 51,
+              "w": 21,
+              "h": 21
+            },
+            "color": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "scale": 1.0
+          },
+          {
+            "name": "PREV",
+            "type": "iconbutton",
+            "position": [
+              37,
+              4
+            ],
+            "sprite": {
+              "spritesheet": "GUI/gumps.png",
+              "x": 0,
+              "y": 448,
+              "w": 7,
+              "h": 7
+            },
+            "downSprite": {
+              "spritesheet": "GUI/gumps.png",
+              "x": 0,
+              "y": 448,
+              "w": 7,
+              "h": 7
+            },
+            "color": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "scale": 1.0
+          },
+          {
+            "name": "NEXT",
+            "type": "iconbutton",
+            "position": [
+              131,
+              4
+            ],
+            "sprite": {
+              "spritesheet": "GUI/gumps.png",
+              "x": 0,
+              "y": 457,
+              "w": 7,
+              "h": 7
+            },
+            "downSprite": {
+              "spritesheet": "GUI/gumps.png",
+              "x": 0,
+              "y": 457,
+              "w": 7,
+              "h": 7
+            },
+            "color": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "scale": 1.0
+          },
+          {
+            "name": "CIRCLE",
+            "type": "textarea",
+            "position": [
+              97,
+              4
+            ],
+            "text": "Circle",
+            "textColor": [
+              5,
+              6,
+              5,
+              255
+            ],
+            "size": [
+              52,
+              8
+            ],
+            "justified": 0
+          },
+          {
+            "name": "LEVEL",
+            "type": "textarea",
+            "position": [
+              48,
+              4
+            ],
+            "text": "First",
+            "textColor": [
+              0,
+              0,
+              0,
+              255
+            ],
+            "size": [
+              52,
+              8
+            ],
+            "justified": 0
+          },
+          {
+            "type": "panel",
+            "position": [
+              27,
+              11
+            ],
+            "size": [
+              117,
+              74
+            ],
+            "backgroundColor": [
+              80,
+              80,
+              80,
+              0
+            ],
+            "filled": true,
+            "layout": "horz",
+            "horzPadding": 10,
+            "vertPadding": 0,
+            "elements": [
+              {
+                "name": "LEFT",
+                "type": "panel",
+                "position": [
+                  -1,
+                  -1
+                ],
+                "size": [
+                  44,
+                  74
+                ],
+                "backgroundColor": [
+                  80,
+                  80,
+                  80,
+                  1
+                ],
+                "filled": true,
+                "layout": "vert",
+                "horzPadding": 0,
+                "vertPadding": 1,
+                "elements": [
+                  {
+                    "name": "1",
+                    "type": "sprite",
+                    "position": [
+                      -1,
+                      -1
+                    ],
+                    "sprite": {
+                      "spritesheet": "GUI/gumps.png",
+                      "x": 666,
+                      "y": 284,
+                      "w": 44,
+                      "h": 16
+                    },
+                    "scaleX": 1.0,
+                    "scaleY": 1.0
+                  },
+                  {
+                    "name": "2",
+                    "type": "sprite",
+                    "position": [
+                      -1,
+                      -1
+                    ],
+                    "sprite": {
+                      "spritesheet": "GUI/gumps.png",
+                      "x": 666,
+                      "y": 300,
+                      "w": 44,
+                      "h": 16
+                    },
+                    "scaleX": 1.0,
+                    "scaleY": 1.0
+                  },
+                  {
+                    "name": "3",
+                    "type": "sprite",
+                    "position": [
+                      -1,
+                      -1
+                    ],
+                    "sprite": {
+                      "spritesheet": "GUI/gumps.png",
+                      "x": 666,
+                      "y": 316,
+                      "w": 44,
+                      "h": 16
+                    },
+                    "scaleX": 1.0,
+                    "scaleY": 1.0
+                  },
+                  {
+                    "name": "4",
+                    "type": "sprite",
+                    "position": [
+                      -1,
+                      -1
+                    ],
+                    "sprite": {
+                      "spritesheet": "GUI/gumps.png",
+                      "x": 666,
+                      "y": 332,
+                      "w": 44,
+                      "h": 16
+                    },
+                    "scaleX": 1.0,
+                    "scaleY": 1.0
+                  }
+                ]
+              },
+              {
+                "name": "RIGHT",
+                "type": "panel",
+                "position": [
+                  -1,
+                  -1
+                ],
+                "size": [
+                  44,
+                  74
+                ],
+                "backgroundColor": [
+                  80,
+                  80,
+                  80,
+                  1
+                ],
+                "filled": true,
+                "layout": "vert",
+                "horzPadding": 0,
+                "vertPadding": 1,
+                "elements": [
+                  {
+                    "name": "5",
+                    "type": "sprite",
+                    "position": [
+                      -1,
+                      -1
+                    ],
+                    "sprite": {
+                      "spritesheet": "GUI/gumps.png",
+                      "x": 666,
+                      "y": 284,
+                      "w": 44,
+                      "h": 16
+                    },
+                    "scaleX": 1.0,
+                    "scaleY": 1.0
+                  },
+                  {
+                    "name": "6",
+                    "type": "sprite",
+                    "position": [
+                      -1,
+                      -1
+                    ],
+                    "sprite": {
+                      "spritesheet": "GUI/gumps.png",
+                      "x": 666,
+                      "y": 300,
+                      "w": 44,
+                      "h": 16
+                    },
+                    "scaleX": 1.0,
+                    "scaleY": 1.0
+                  },
+                  {
+                    "name": "7",
+                    "type": "sprite",
+                    "position": [
+                      -1,
+                      -1
+                    ],
+                    "sprite": {
+                      "spritesheet": "GUI/gumps.png",
+                      "x": 666,
+                      "y": 316,
+                      "w": 44,
+                      "h": 16
+                    },
+                    "scaleX": 1.0,
+                    "scaleY": 1.0
+                  },
+                  {
+                    "name": "8",
+                    "type": "sprite",
+                    "position": [
+                      -1,
+                      -1
+                    ],
+                    "sprite": {
+                      "spritesheet": "GUI/gumps.png",
+                      "x": 666,
+                      "y": 332,
+                      "w": 44,
+                      "h": 16
+                    },
+                    "scaleX": 1.0,
+                    "scaleY": 1.0
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

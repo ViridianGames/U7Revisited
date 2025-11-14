@@ -69,7 +69,7 @@ function utility_event_0509(eventid, objectref)
             remove_item(var_0012)
         end
         var_0013 = delayed_execute_usecode_array(9, {17493, 7715, 1800}, var_0010)
-        var_0014 = execute_usecode_array({1789, 17493, 7715}, var_0010)
+        var_0014 = execute_usecode_array(var_0010, {1789, 17493, 7715})
     end
     return
 end

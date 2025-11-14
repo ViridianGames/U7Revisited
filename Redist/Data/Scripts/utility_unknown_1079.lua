@@ -1,5 +1,5 @@
 --- Best guess: Checks multiple NPC properties and flags, returning true if all conditions are met (e.g., for eligibility or state validation).
-function utility_unknown_1079(eventid, objectref, arg1)
+function utility_unknown_1079(arg1)
     local var_0000, var_0001
 
     if get_npc_property(2, arg1) >= 10 and --- Guess: Gets NPC property

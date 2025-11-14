@@ -139,7 +139,7 @@ get_party_members() - Returns an array of strings containing a list of NPC's in 
 
 get_player_name() - Returns name of the player as a string, or "Avatar" if not set
 
-npc_in_party(npc_id) - Returns true if the given NPC is in the party
+npc_id_in_party(npc_id) - Returns true if the given NPC is in the party
 
 
 These are general utility functions:

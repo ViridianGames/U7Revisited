@@ -8,6 +8,7 @@
 #include "Geist/Engine.h"
 #include "Geist/Globals.h"
 #include "Geist/ResourceManager.h"
+#include "Geist/Logging.h"
 #include "U7Globals.h"
 
 #include "raylib.h"
@@ -103,6 +104,11 @@ void Gump::OnEnter()
 	m_gui.SetDoneButtonId(1005);
 	m_gui.m_Draggable = true;
 
+	// Set up pixel-perfect drag area validation
+	m_gui.m_DragAreaValidationCallback = [this](Vector2 mousePos) {
+		return this->IsMouseOverSolidPixel(mousePos);
+	};
+
 	U7Object* thisObject = GetObjectFromID(m_containerId);
 	if(thisObject->m_shouldBeSorted)
 	{
@@ -148,8 +154,9 @@ void Gump::Update()
 
 			if (Vector2DistanceSqr(m_dragStart, mousePos) > 4 && !g_gumpManager->m_draggingObject)
 			{
-				for (auto containerObjectId : m_containerObject->m_inventory)
+				for (auto it = m_containerObject->m_inventory.begin(); it != m_containerObject->m_inventory.end(); ++it)
 				{
+					int containerObjectId = *it;
 					auto object = GetObjectFromID(containerObjectId);
 					if (object && object->m_shapeData)
 					{
@@ -158,7 +165,17 @@ void Gump::Update()
 							g_gumpManager->m_draggedObjectId = object->m_ID;
 							g_gumpManager->m_draggingObject = true;
 							g_gumpManager->m_sourceGump = this;
+							g_gumpManager->m_sourceSlotIndex = -1;  // Not from a paperdoll slot
 							m_containerObject->m_shouldBeSorted = false; //  We are dragging an object, so we no longer need to sort.
+
+							// Close any gump associated with this container object to prevent dragging into itself
+							g_gumpManager->CloseGumpForObject(object->m_ID);
+
+							// Remove from inventory immediately when drag starts
+							int objectToRemove = *it;
+							m_containerObject->RemoveObjectFromInventory(objectToRemove);
+							Log("Removed object " + std::to_string(object->m_ID) + " from container on drag start");
+
 							break; //  We found the object we are dragging, so break out of the loop
 						}
 					}
@@ -170,6 +187,10 @@ void Gump::Update()
 
 U7Object* Gump::GetObjectUnderMousePointer()
 {
+	// Skip gumps without container objects (paperdolls, spellbooks, etc.)
+	if (m_containerObject == nullptr)
+		return nullptr;
+
 	Vector2 mousePos = GetMousePosition();
 	mousePos.x = int(mousePos.x /= g_DrawScale);
 	mousePos.y = int(mousePos.y /= g_DrawScale);
@@ -193,6 +214,32 @@ void Gump::Draw()
 	m_gui.Draw();
 
 	U7Object* thisObject = GetObjectFromID(m_containerId);
+
+	// Debug: Log what container we're drawing
+	static bool loggedGump = false;
+	if (!loggedGump && thisObject)
+	{
+		Log("Gump::Draw - Drawing container " + std::to_string(m_containerId) +
+			", inventory size=" + std::to_string(thisObject->m_inventory.size()) +
+			", isContainer=" + std::string(thisObject->m_isContainer ? "true" : "false"));
+
+		// Log first few items
+		int count = 0;
+		for (auto& itemId : thisObject->m_inventory)
+		{
+			if (count < 5)
+			{
+				auto obj = GetObjectFromID(itemId);
+				if (obj && obj->m_shapeData)
+				{
+					Log("  Item " + std::to_string(count) + ": id=" + std::to_string(itemId) +
+						", shape=" + std::to_string(obj->m_shapeData->GetShape()));
+				}
+				count++;
+			}
+		}
+		loggedGump = true;
+	}
 
 	for (auto& item : thisObject->m_inventory)
 	{
@@ -244,5 +291,40 @@ void Gump::SortContainer()
     }
 
 	thisObject->m_isSorted = true;
+}
+
+bool Gump::IsMouseOverSolidPixel(Vector2 mousePos)
+{
+	// Get the biggumps texture (used for container gump backgrounds)
+	Texture* backgroundTexture = g_ResourceManager->GetTexture("Images/GUI/biggumps.png");
+
+	// If no texture, default to solid (always block input)
+	if (!backgroundTexture)
+		return true;
+
+	// Convert mouse position to local gump coordinates
+	float localX = mousePos.x - m_gui.m_Pos.x;
+	float localY = mousePos.y - m_gui.m_Pos.y;
+
+	// Calculate pixel position in the source texture
+	int texX = int(m_containerData.m_texturePos.x + localX);
+	int texY = int(m_containerData.m_texturePos.y + localY);
+
+	// Load the texture as an image to check pixel alpha
+	Image img = LoadImageFromTexture(*backgroundTexture);
+
+	// Check bounds
+	if (texX < 0 || texY < 0 || texX >= img.width || texY >= img.height)
+	{
+		UnloadImage(img);
+		return false;
+	}
+
+	// Get the pixel color at the position
+	Color pixelColor = GetImageColor(img, texX, texY);
+	UnloadImage(img);
+
+	// Return true if alpha > 0 (non-transparent)
+	return pixelColor.a > 0;
 }
 

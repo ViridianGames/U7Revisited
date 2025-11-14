@@ -48,7 +48,7 @@ function npc_unknown_0236(eventid, objectref)
                 remove_answer("Klog")
             elseif answer == "philosophy" then
                 remove_answer("philosophy")
-                func_091A()
+                -- ??? func_091A()
             elseif answer == "bye" then
                 add_dialogue("\"Goodbye. I hope to see thee again, soon.\"")
                 clear_answers()

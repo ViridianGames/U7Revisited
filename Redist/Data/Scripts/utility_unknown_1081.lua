@@ -1,5 +1,5 @@
 --- Best guess: Validates an NPC ID, ensuring it's within a valid range or returning its owner.
-function utility_unknown_1081(eventid, objectref, arg1)
+function utility_unknown_1081(arg1)
     local var_0000, var_0001
 
     var_0000 = arg1

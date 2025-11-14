@@ -32,6 +32,13 @@ static int LuaDebugPrint(lua_State *L)
     return 0;
 }
 
+static int LuaConsoleLog(lua_State *L)
+{
+    const char *text = luaL_checkstring(L, 1);
+    AddConsoleString(std::string(text));
+    return 0;
+}
+
 static int LuaAddDialogue(lua_State *L)
 {
     if (!g_ConversationState) {
@@ -865,7 +872,7 @@ static int LuaPlayMusic(lua_State *L)
 // Opcode 002F
 static int LuaNPCIDInParty(lua_State *L)
 {
-    if (g_LuaDebug) DebugPrint("LUA: npc_in_party called");
+    if (g_LuaDebug) DebugPrint("LUA: npc_id_in_party called");
     int npc_id = luaL_checkinteger(L, 1);
     bool in_party = g_Player->NPCIDInParty(npc_id);
     lua_pushboolean(L, in_party);
@@ -874,7 +881,7 @@ static int LuaNPCIDInParty(lua_State *L)
 
 static int LuaNPCNameInParty(lua_State *L)
 {
-    if (g_LuaDebug) DebugPrint("LUA: npc_in_party called");
+    if (g_LuaDebug) DebugPrint("LUA: npc_name_in_party called");
     const char* text = luaL_checkstring(L, 1);
     bool in_party = g_Player->NPCNameInParty(text);
     lua_pushboolean(L, in_party);
@@ -1027,20 +1034,60 @@ static int LuaSpawnObject(lua_State *L)
     return 1;
 }
 
-static int LuaDestroyObject(lua_State *L)
+// Helper function to destroy an object by ID (shared logic)
+static void DestroyObjectByID(int object_id)
 {
-    int object_id = luaL_checkinteger(L, 1);
-    U7Object* obj = g_objectList[object_id].get();
+    auto it = g_objectList.find(object_id);
+    if (it == g_objectList.end() || !it->second)
+    {
+        if (g_LuaDebug)
+        {
+            DebugPrint("DestroyObjectByID: Object " + to_string(object_id) + " not found in object list");
+        }
+        return;
+    }
 
-    // Notify pathfinding grid before deleting if this is a non-walkable object
-    if (obj && obj->m_objectData && obj->m_objectData->m_isNotWalkable)
+    U7Object* obj = it->second.get();
+
+    if (g_LuaDebug)
+    {
+        DebugPrint("DestroyObjectByID: Marking object " + to_string(object_id) + " as dead");
+    }
+
+    // If object is in a container, remove it from that container's inventory
+    if (obj->m_containingObjectId != -1)
+    {
+        auto container_it = g_objectList.find(obj->m_containingObjectId);
+        if (container_it != g_objectList.end() && container_it->second)
+        {
+            container_it->second->RemoveObjectFromInventory(object_id);
+        }
+    }
+
+    // Notify pathfinding grid before deletion if this is a non-walkable object
+    if (obj->m_objectData && obj->m_objectData->m_isNotWalkable)
     {
         NotifyPathfindingGridUpdate((int)obj->m_Pos.x, (int)obj->m_Pos.z);
     }
 
-    UnassignObjectChunk(obj);
-    g_objectList.erase(object_id);
-    UpdateSortedVisibleObjects();
+    // Clear any active bark referencing this object to prevent crash when drawing
+    if (g_mainState && g_mainState->m_barkObject == obj)
+    {
+        g_mainState->m_barkObject = nullptr;
+        g_mainState->m_barkDuration = 0;
+    }
+
+    // Mark object as dead and invisible for deferred deletion
+    // The main update loop will remove it from chunk map and delete it
+    // This prevents iterator invalidation when called during object updates
+    obj->SetIsDead(true);
+    obj->m_Visible = false;
+}
+
+static int LuaDestroyObject(lua_State *L)
+{
+    int object_id = luaL_checkinteger(L, 1);
+    DestroyObjectByID(object_id);
     return 0;
 }
 
@@ -1048,6 +1095,32 @@ static int LuaDestroyObject(lua_State *L)
 static int LuaDestroyObjectSilent(lua_State *L)
 {
     return LuaDestroyObject(L);
+}
+
+// 0x005B | consume_object
+// Consumes an object (typically food), applying its effects and destroying it
+// Parameters: event_type (91 for eating), quantity (nutrition value), object_id, eater_id
+static int LuaConsumeObject(lua_State *L)
+{
+    int event_type = luaL_checkinteger(L, 1);  // 91 = eating
+    int quantity = luaL_checkinteger(L, 2);     // nutrition/healing amount
+    int object_id = luaL_checkinteger(L, 3);    // the object to consume
+    int eater_id = luaL_checkinteger(L, 4);     // the NPC eating the food
+
+    if (g_LuaDebug)
+    {
+        DebugPrint("LUA: consume_object called - Event: " + to_string(event_type) +
+                   ", Quantity: " + to_string(quantity) +
+                   ", Object ID: " + to_string(object_id) +
+                   ", Eater ID: " + to_string(eater_id));
+    }
+
+    // TODO: Apply effects based on event_type and eater_id
+    // For now, just destroy the object after consumption
+    // Future: restore health/hunger for eater_id, play sound effects, etc.
+
+    DestroyObjectByID(object_id);
+    return 0;
 }
 
 static int LuaMoveObject(lua_State *L)
@@ -1591,8 +1664,55 @@ static int LuaGetSchedule(lua_State *L)
 {
     if (g_LuaDebug) DebugPrint("LUA: get_schedule called");
     int npc_id = luaL_checkinteger(L, 1);
-    int schedule = g_NPCData[npc_id]->m_currentActivity; // TODO: g_ScheduleSystem->GetSchedule(object_id)
+
+    // Bounds check: verify NPC exists in g_NPCData
+    auto it = g_NPCData.find(npc_id);
+    if (it == g_NPCData.end() || !it->second)
+    {
+        Log("ERROR: LuaGetSchedule - Invalid NPC ID: " + std::to_string(npc_id));
+        lua_pushinteger(L, 0);  // Return 0 as default schedule
+        return 1;
+    }
+
+    int schedule = it->second->m_currentActivity;
     lua_pushinteger(L, schedule);
+    return 1;
+}
+
+static int LuaGetScheduleType(lua_State *L)
+{
+    if (g_LuaDebug) DebugPrint("LUA: get_schedule_type called");
+
+    // Takes NPC name, looks up ID
+    string npc_name = luaL_checkstring(L, 1);
+    int npc_id = -1;
+
+    if (npc_name == g_Player->GetPlayerName())
+    {
+        npc_id = 0;
+    }
+    else
+    {
+        for (auto& pair : g_NPCData)
+        {
+            if (npc_name == pair.second->name)
+            {
+                npc_id = pair.second->id;
+                break;
+            }
+        }
+    }
+
+    if (npc_id >= 0 && g_NPCData.find(npc_id) != g_NPCData.end())
+    {
+        int schedule_type = g_NPCData[npc_id]->m_currentActivity;
+        lua_pushinteger(L, schedule_type);
+    }
+    else
+    {
+        lua_pushinteger(L, -1); // Invalid NPC
+    }
+
     return 1;
 }
 
@@ -1883,7 +2003,8 @@ static int LuaPurchaseObject(lua_State *L)
         return 1;
     }
 
-    if (g_Player->GetWeight() + (amount * g_objectDataTable[shape].m_weight) > g_Player->GetMaxWeight())
+    U7Object* avatarObject = g_objectList[g_NPCData[0]->m_objectID].get();
+    if (avatarObject->GetWeight() + (amount * g_objectDataTable[shape].m_weight) > g_Player->GetMaxWeight())
     {
         lua_pushinteger(L, 2);
         return 1;
@@ -2536,8 +2657,9 @@ static int LuaRemovePartyItems(lua_State *L)
                 {
                     // Remove entire stack
                     remaining_to_remove -= item_quantity;
-                    it = party_member->m_inventory.erase(it);
+                    party_member->RemoveObjectFromInventory(item_id);
                     g_objectList.erase(item_id);
+                    it = party_member->m_inventory.begin(); // Reset iterator after modification
                 }
                 else
                 {
@@ -3276,7 +3398,7 @@ static int LuaExecuteUsecodeArray(lua_State *L)
 {
     // int object_id = (int)lua_tointeger(L, 1);
     // table script_array = lua_totable(L, 2);
-
+    // MASSIVE TODO
     // Scripted sequences not fully implemented
     // Would execute array of animation/movement commands
     // Return event ID (0 = no event)
@@ -3291,6 +3413,7 @@ static int LuaDelayedExecuteUsecodeArray(lua_State *L)
     // table script_array = lua_totable(L, 2);
     // int delay = (int)lua_tointeger(L, 3);
 
+    // MASSIVE TODO
     // Scripted sequences not fully implemented
     // Would execute array after delay
     // Return event ID (0 = no event)
@@ -3912,8 +4035,10 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction("is_string_in_array", LuaIsStringInArray);
 
     g_ScriptingSystem->RegisterScriptFunction("get_schedule", LuaGetSchedule);
+    g_ScriptingSystem->RegisterScriptFunction("get_schedule_type", LuaGetScheduleType);
 
     g_ScriptingSystem->RegisterScriptFunction("debug_print", LuaDebugPrint);
+    g_ScriptingSystem->RegisterScriptFunction("console_log", LuaConsoleLog);
 
     g_ScriptingSystem->RegisterScriptFunction("is_player_wearing_fellowship_medallion", LuaIsPlayerWearingMedallion);
 
@@ -3932,6 +4057,7 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction( "spawn_object", LuaSpawnObject);
     g_ScriptingSystem->RegisterScriptFunction( "destroy_object", LuaDestroyObject);
     g_ScriptingSystem->RegisterScriptFunction( "destroy_object_silent", LuaDestroyObjectSilent);
+    g_ScriptingSystem->RegisterScriptFunction( "consume_object", LuaConsumeObject);
 
     g_ScriptingSystem->RegisterScriptFunction( "set_camera_angle", LuaSetCameraAngle);
     g_ScriptingSystem->RegisterScriptFunction( "jump_camera_angle", LuaJumpCameraAngle);

@@ -1,5 +1,5 @@
 --- Best guess: Handles door locking/unlocking based on quality and flag states, with item spawning.
-function utility_unknown_0790(eventid, objectref)
+function utility_unknown_0790(objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E, var_000F, var_0010, var_0011, var_0012, var_0013, var_0014, var_0015, var_0016, var_0017, var_0018, var_0019, var_001A, var_001B, var_001C, var_001D, var_001E, var_001F, var_0020, var_0021
 
     var_0000 = objectref
@@ -10,7 +10,7 @@ function utility_unknown_0790(eventid, objectref)
         -- Guess: sloop sets item types
         for i = 1, 5 do
             var_0006 = ({4, 5, 6, 3, 138})[i]
-            set_object_type(889, var_0006) --- Guess: Sets item type
+            set_object_shape(889, var_0006) --- Guess: Sets item type
             var_0007 = find_nearby(128, 10, 440, var_0006) --- Guess: Sets NPC location
             var_0008 = get_object_position(var_0006) --- Guess: Gets position data
             var_0009 = {var_0008[3], var_0008[2] + 3, var_0008[1] + 3}
@@ -27,7 +27,7 @@ function utility_unknown_0790(eventid, objectref)
         -- Guess: sloop creates items
         for i = 1, 5 do
             var_0006 = ({14, 15, 6, 3, 75})[i]
-            set_object_type(526, var_0006) --- Guess: Sets item type
+            set_object_shape(526, var_0006) --- Guess: Sets item type
             var_0007 = get_object_status(440) --- Guess: Gets item status
             if not var_0007 then
                 var_0008 = get_object_position(var_0006) --- Guess: Gets position data
@@ -43,7 +43,7 @@ function utility_unknown_0790(eventid, objectref)
         for i = 1, 5 do
             var_0013 = ({17, 18, 19, 16, 52})[i]
             if get_object_quality(var_0013) == var_0002 then
-                if get_object_type(var_0013) == 845 then
+                if get_object_shape(var_0013) == 845 then
                     var_0001 = lock_door(var_0013) --- Guess: Locks door
                 else
                     var_0001 = unlock_door(var_0013) --- Guess: Unlocks door

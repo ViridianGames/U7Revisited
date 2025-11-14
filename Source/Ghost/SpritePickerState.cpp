@@ -23,7 +23,7 @@ void SpritePickerState::Init(const std::string& configfile)
 
 	// Create the window - it handles all config loading and GUI setup
 	m_window = std::make_unique<GhostWindow>(
-		"Gui/ghost_sprite_dialog.ghost",
+		GhostSerializer::GetBaseGhostPath() + "ghost_sprite_dialog.ghost",
 		"Data/ghost.cfg",
 		g_ResourceManager.get(),
 		GetScreenWidth(),
@@ -66,22 +66,36 @@ void SpritePickerState::OnEnter()
 	Gui* gui = m_window->GetGui();
 	if (!gui) return;
 
-	// Set textinput value for filename
-	int filenameInputID = m_window->GetElementID("SPRITE_FILENAME");
-	if (filenameInputID != -1)
+	// Get texture dimensions to set scrollbar ranges
+	int textureWidth = 255;
+	int textureHeight = 255;
+	if (!m_filename.empty())
 	{
-		auto elem = gui->GetElement(filenameInputID);
-		if (elem && elem->m_Type == GUI_TEXTINPUT)
-			static_cast<GuiTextInput*>(elem.get())->m_String = m_filename;
+		std::string spritePath = GhostSerializer::GetBaseSpritePath() + m_filename;
+		Texture* texture = g_ResourceManager->GetTexture(spritePath);
+		if (texture)
+		{
+			textureWidth = texture->width;
+			textureHeight = texture->height;
+		}
 	}
 
 	// Set scrollbar values for x, y, width, height
+	Log("OnEnter: Setting scrollbars to x=" + std::to_string(m_x) + " y=" + std::to_string(m_y) +
+	    " w=" + std::to_string(m_width) + " h=" + std::to_string(m_height));
+	Log("OnEnter: Texture dimensions: " + std::to_string(textureWidth) + "x" + std::to_string(textureHeight));
+
 	int xScrollbarID = m_window->GetElementID("SPRITE_X");
 	if (xScrollbarID != -1)
 	{
 		auto elem = gui->GetElement(xScrollbarID);
 		if (elem && elem->m_Type == GUI_SCROLLBAR)
-			static_cast<GuiScrollBar*>(elem.get())->m_Value = m_x;
+		{
+			auto scrollbar = static_cast<GuiScrollBar*>(elem.get());
+			scrollbar->m_ValueRange = textureWidth;
+			scrollbar->m_Value = m_x;
+			Log("Set X scrollbar: value=" + std::to_string(scrollbar->m_Value) + " range=" + std::to_string(scrollbar->m_ValueRange));
+		}
 	}
 
 	int yScrollbarID = m_window->GetElementID("SPRITE_Y");
@@ -89,7 +103,11 @@ void SpritePickerState::OnEnter()
 	{
 		auto elem = gui->GetElement(yScrollbarID);
 		if (elem && elem->m_Type == GUI_SCROLLBAR)
-			static_cast<GuiScrollBar*>(elem.get())->m_Value = m_y;
+		{
+			auto scrollbar = static_cast<GuiScrollBar*>(elem.get());
+			scrollbar->m_ValueRange = textureHeight;
+			scrollbar->m_Value = m_y;
+		}
 	}
 
 	int widthScrollbarID = m_window->GetElementID("SPRITE_WIDTH");
@@ -97,7 +115,11 @@ void SpritePickerState::OnEnter()
 	{
 		auto elem = gui->GetElement(widthScrollbarID);
 		if (elem && elem->m_Type == GUI_SCROLLBAR)
-			static_cast<GuiScrollBar*>(elem.get())->m_Value = m_width;
+		{
+			auto scrollbar = static_cast<GuiScrollBar*>(elem.get());
+			scrollbar->m_ValueRange = textureWidth;
+			scrollbar->m_Value = m_width;
+		}
 	}
 
 	int heightScrollbarID = m_window->GetElementID("SPRITE_HEIGHT");
@@ -105,7 +127,11 @@ void SpritePickerState::OnEnter()
 	{
 		auto elem = gui->GetElement(heightScrollbarID);
 		if (elem && elem->m_Type == GUI_SCROLLBAR)
-			static_cast<GuiScrollBar*>(elem.get())->m_Value = m_height;
+		{
+			auto scrollbar = static_cast<GuiScrollBar*>(elem.get());
+			scrollbar->m_ValueRange = textureHeight;
+			scrollbar->m_Value = m_height;
+		}
 	}
 }
 
@@ -214,22 +240,17 @@ void SpritePickerState::Update()
 
 					Log("Reset sprite coordinates to full texture: " + std::to_string(texture->width) + "x" + std::to_string(texture->height));
 
-					// Update the SPRITE_FILENAME textinput to show the new filename
-					int filenameInputID = m_window->GetElementID("SPRITE_FILENAME");
-					if (filenameInputID != -1)
-					{
-						auto filenameElem = gui->GetElement(filenameInputID);
-						if (filenameElem && filenameElem->m_Type == GUI_TEXTINPUT)
-							static_cast<GuiTextInput*>(filenameElem.get())->m_String = m_filename;
-					}
-
-					// Update scrollbar values to reflect new coordinates
+					// Update scrollbar values AND ranges to reflect new texture dimensions
 					int xScrollbarID = m_window->GetElementID("SPRITE_X");
 					if (xScrollbarID != -1)
 					{
 						auto xElem = gui->GetElement(xScrollbarID);
 						if (xElem && xElem->m_Type == GUI_SCROLLBAR)
-							static_cast<GuiScrollBar*>(xElem.get())->m_Value = m_x;
+						{
+							auto scrollbar = static_cast<GuiScrollBar*>(xElem.get());
+							scrollbar->m_ValueRange = texture->width;
+							scrollbar->m_Value = m_x;
+						}
 					}
 
 					int yScrollbarID = m_window->GetElementID("SPRITE_Y");
@@ -237,7 +258,11 @@ void SpritePickerState::Update()
 					{
 						auto yElem = gui->GetElement(yScrollbarID);
 						if (yElem && yElem->m_Type == GUI_SCROLLBAR)
-							static_cast<GuiScrollBar*>(yElem.get())->m_Value = m_y;
+						{
+							auto scrollbar = static_cast<GuiScrollBar*>(yElem.get());
+							scrollbar->m_ValueRange = texture->height;
+							scrollbar->m_Value = m_y;
+						}
 					}
 
 					int widthScrollbarID = m_window->GetElementID("SPRITE_WIDTH");
@@ -245,7 +270,11 @@ void SpritePickerState::Update()
 					{
 						auto wElem = gui->GetElement(widthScrollbarID);
 						if (wElem && wElem->m_Type == GUI_SCROLLBAR)
-							static_cast<GuiScrollBar*>(wElem.get())->m_Value = m_width;
+						{
+							auto scrollbar = static_cast<GuiScrollBar*>(wElem.get());
+							scrollbar->m_ValueRange = texture->width;
+							scrollbar->m_Value = m_width;
+						}
 					}
 
 					int heightScrollbarID = m_window->GetElementID("SPRITE_HEIGHT");
@@ -253,7 +282,11 @@ void SpritePickerState::Update()
 					{
 						auto hElem = gui->GetElement(heightScrollbarID);
 						if (hElem && hElem->m_Type == GUI_SCROLLBAR)
-							static_cast<GuiScrollBar*>(hElem.get())->m_Value = m_height;
+						{
+							auto scrollbar = static_cast<GuiScrollBar*>(hElem.get());
+							scrollbar->m_ValueRange = texture->height;
+							scrollbar->m_Value = m_height;
+						}
 					}
 				}
 				else
@@ -427,8 +460,9 @@ void SpritePickerState::Draw()
 				auto scrollbar = static_cast<GuiScrollBar*>(scrollbarElement.get());
 
 				// Calculate center position for text
-				int textX = static_cast<int>(gui->m_Pos.x + scrollbar->m_Pos.x + scrollbar->m_Width / 2);
-				int textY = static_cast<int>(gui->m_Pos.y + scrollbar->m_Pos.y + scrollbar->m_Height / 2 - 8);
+				Rectangle bounds = scrollbar->GetBounds();
+				int textX = static_cast<int>(gui->m_Pos.x + bounds.x + bounds.width / 2);
+				int textY = static_cast<int>(gui->m_Pos.y + bounds.y + bounds.height / 2 - 8);
 
 				// Draw the value in red
 				std::string valueText = std::to_string(scrollbar->m_Value);
@@ -440,11 +474,15 @@ void SpritePickerState::Draw()
 
 void SpritePickerState::SetSprite(const std::string& filename, int x, int y, int width, int height)
 {
+	Log("SetSprite called with: filename=" + filename + " x=" + std::to_string(x) +
+		" y=" + std::to_string(y) + " w=" + std::to_string(width) + " h=" + std::to_string(height));
 	m_filename = filename;
 	m_x = x;
 	m_y = y;
 	m_width = width;
 	m_height = height;
+	Log("SetSprite: member variables now: x=" + std::to_string(m_x) + " y=" + std::to_string(m_y) +
+		" w=" + std::to_string(m_width) + " h=" + std::to_string(m_height));
 }
 
 void SpritePickerState::ValidateAndApplyFallbacks()

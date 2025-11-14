@@ -10,10 +10,13 @@
 #include "MainState.h"
 #include "rlgl.h"
 #include "U7Gump.h"
+#include "U7GumpPaperdoll.h"
+#include "U7GumpSpellbook.h"
 #include "ConversationState.h"
 #include "GumpManager.h"
 #include "Pathfinding.h"
 #include "Ghost/GhostWindow.h"
+#include "Ghost/GhostSerializer.h"
 
 #include <list>
 #include <string>
@@ -23,6 +26,7 @@
 #include <fstream>
 #include <algorithm>
 #include <unordered_map>
+#include <thread>
 
 using namespace std;
 
@@ -84,8 +88,33 @@ void MainState::Init(const string& configfile)
 
 	m_showObjects = true;
 
-	// Initialize color dialog (test for .ghost file loading)
-	m_colorDialog = nullptr;
+	// Initialize debug tools window (non-modal, always visible in sandbox mode)
+	m_debugToolsWindow = new GhostWindow(
+		"Gui/debug_tools.ghost",
+		"Data/ghost.cfg",
+		g_ResourceManager.get(),
+		GetScreenWidth(),
+		GetScreenHeight(),
+		false);  // non-modal, uses default scale 1.0f
+
+	if (m_debugToolsWindow && m_debugToolsWindow->IsValid())
+	{
+		// Position on right side of screen, halfway down
+		int windowWidth, windowHeight;
+		m_debugToolsWindow->GetSize(windowWidth, windowHeight);
+
+		int x = GetScreenWidth() - windowWidth - 10;  // 10px from right edge
+		int y = (GetScreenHeight() - windowHeight) / 2;  // Centered vertically
+
+		m_debugToolsWindow->MoveTo(x, y);
+		// Will be shown/hidden based on game mode in Update()
+	}
+	else
+	{
+		Log("ERROR: Failed to load debug_tools.ghost");
+		delete m_debugToolsWindow;
+		m_debugToolsWindow = nullptr;
+	}
 
 	SetupGame();
 }
@@ -145,11 +174,11 @@ void MainState::OnExit()
 
 void MainState::Shutdown()
 {
-	// Clean up color dialog
-	if (m_colorDialog)
+	// Clean up debug tools window
+	if (m_debugToolsWindow)
 	{
-		delete m_colorDialog;
-		m_colorDialog = nullptr;
+		delete m_debugToolsWindow;
+		m_debugToolsWindow = nullptr;
 	}
 
 	UnloadRenderTexture(g_guiRenderTarget);
@@ -250,21 +279,20 @@ void MainState::CalculateMouseOverUI()
 		100 * g_DrawScale
 	};
 
-	// Schedule button (sandbox mode only)
-	Rectangle scheduleButtonRect = {
-		m_scheduleToggleButton.x * g_DrawScale,
-		m_scheduleToggleButton.y * g_DrawScale,
-		m_scheduleToggleButton.width * g_DrawScale,
-		m_scheduleToggleButton.height * g_DrawScale
-	};
-
 	Vector2 mousePos = GetMousePosition();
 	bool overStats = IsPosInRect(mousePos, statsPanelRect);
 	bool overMinimap = IsPosInRect(mousePos, minimapRect);
 	bool overCharPanel = IsPosInRect(mousePos, charPanelRect);
-	bool overSchedule = (m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX && IsPosInRect(mousePos, scheduleButtonRect));
 
-	g_mouseOverUI = overStats || overMinimap || overCharPanel || overSchedule;
+	// Check if mouse is over debug tools window
+	bool overDebugTools = false;
+	if (m_debugToolsWindow && m_debugToolsWindow->IsVisible())
+	{
+		Rectangle debugRect = m_debugToolsWindow->GetBounds();
+		overDebugTools = CheckCollisionPointRec(mousePos, debugRect);
+	}
+
+	g_mouseOverUI = overStats || overMinimap || overCharPanel || overDebugTools;
 }
 
 void MainState::UpdateInput()
@@ -272,93 +300,6 @@ void MainState::UpdateInput()
 	if (!m_allowInput)
 	{
 		return;
-	}
-
-	// Handle NPC Schedule Toggle Button clicks (Sandbox mode only)
-	if (m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX && m_showUIElements && !m_paused)
-	{
-		Rectangle scaledButton = {
-			m_scheduleToggleButton.x * g_DrawScale,
-			m_scheduleToggleButton.y * g_DrawScale,
-			m_scheduleToggleButton.width * g_DrawScale,
-			m_scheduleToggleButton.height * g_DrawScale
-		};
-
-		if (WasLeftButtonClickedInRect(scaledButton))
-		{
-			m_npcSchedulesEnabled = !m_npcSchedulesEnabled;
-
-			// Toggle schedules for all NPCs
-			for (const auto& [id, npcData] : g_NPCData)
-			{
-				if (npcData && npcData->m_objectID >= 0)
-				{
-					g_objectList[npcData->m_objectID]->m_followingSchedule = m_npcSchedulesEnabled;
-				}
-			}
-
-			AddConsoleString(m_npcSchedulesEnabled ? "NPC Schedules ENABLED" : "NPC Schedules DISABLED");
-
-			// TEST: Load color dialog from .ghost file
-			if (!m_colorDialog)
-			{
-				// Create the dialog (modal by default)
-				m_colorDialog = new GhostWindow("Gui/ghost_color_dialog.ghost", "Data/engine.cfg",
-				                                g_ResourceManager.get(),
-				                                static_cast<int>(g_Engine->m_ScreenWidth),
-				                                static_cast<int>(g_Engine->m_ScreenHeight), true);
-
-				if (m_colorDialog->IsValid())
-				{
-					// Center the dialog on screen
-					int dialogWidth, dialogHeight;
-					m_colorDialog->GetSize(dialogWidth, dialogHeight);
-					int centerX = static_cast<int>(g_Engine->m_ScreenWidth / 2.0f - dialogWidth / 2.0f);
-					int centerY = static_cast<int>(g_Engine->m_ScreenHeight / 2.0f - dialogHeight / 2.0f);
-					m_colorDialog->MoveTo(centerX, centerY);
-
-					// Initialize sliders to 255 (white)
-					Gui* gui = m_colorDialog->GetGui();
-					int redID = m_colorDialog->GetElementID("RED_SLIDER");
-					int greenID = m_colorDialog->GetElementID("GREEN_SLIDER");
-					int blueID = m_colorDialog->GetElementID("BLUE_SLIDER");
-					int alphaID = m_colorDialog->GetElementID("ALPHA_SLIDER");
-
-					auto redSlider = gui->GetElement(redID);
-					auto greenSlider = gui->GetElement(greenID);
-					auto blueSlider = gui->GetElement(blueID);
-					auto alphaSlider = gui->GetElement(alphaID);
-
-					if (redSlider) static_cast<GuiScrollBar*>(redSlider.get())->m_Value = 255;
-					if (greenSlider) static_cast<GuiScrollBar*>(greenSlider.get())->m_Value = 255;
-					if (blueSlider) static_cast<GuiScrollBar*>(blueSlider.get())->m_Value = 255;
-					if (alphaSlider) static_cast<GuiScrollBar*>(alphaSlider.get())->m_Value = 255;
-
-					m_colorDialog->Show();
-					AddConsoleString("Color dialog loaded");
-				}
-				else
-				{
-					AddConsoleString("ERROR: Failed to load color dialog");
-					delete m_colorDialog;
-					m_colorDialog = nullptr;
-				}
-			}
-			else
-			{
-				// Toggle visibility
-				m_colorDialog->Toggle();
-				AddConsoleString(m_colorDialog->IsVisible() ? "Color dialog shown" : "Color dialog hidden");
-			}
-
-#ifdef DEBUG_NPC_PATHFINDING
-			// When schedules are disabled, print path statistics
-			if (!m_npcSchedulesEnabled)
-			{
-				PrintNPCPathStats();
-			}
-#endif
-		}
 	}
 
 	if (IsKeyPressed(KEY_ESCAPE))
@@ -387,6 +328,14 @@ void MainState::UpdateInput()
 	if (IsKeyPressed(KEY_F8))
 	{
 		g_LuaDebug = !g_LuaDebug;
+		if (g_LuaDebug)
+		{
+			AddConsoleString("Lua debug mode ENABLED");
+		}
+		else
+		{
+			AddConsoleString("Lua debug mode DISABLED");
+		}
 	}
 
 	if (IsKeyPressed(KEY_F10))
@@ -512,7 +461,7 @@ void MainState::UpdateInput()
 	}
 
 	// Always update selected shape/frame when clicking an object (for F1 shape editor)
-	if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) && g_objectUnderMousePointer != nullptr && !g_gumpManager->m_isMouseOverGump && !g_gumpManager->m_draggingObject && !g_mouseOverUI)
+	if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) && g_objectUnderMousePointer != nullptr && !g_gumpManager->m_isMouseOverGump && !g_gumpManager->m_draggingObject && !g_gumpManager->IsAnyGumpBeingDragged() && !g_mouseOverUI)
 	{
 		g_selectedShape = g_objectUnderMousePointer->m_shapeData->m_shape;
 		g_selectedFrame = g_objectUnderMousePointer->m_shapeData->m_frame;
@@ -536,6 +485,11 @@ void MainState::UpdateInput()
 					g_gumpManager->m_draggedObjectId = g_objectUnderMousePointer->m_ID;
 					g_gumpManager->m_draggingObject = true;
 					g_gumpManager->m_sourceGump = nullptr;
+					g_gumpManager->m_sourceSlotIndex = -1;  // Not from a paperdoll slot
+					g_gumpManager->m_draggedObjectOriginalPos = g_objectUnderMousePointer->m_Pos;  // Store original world position
+
+					// Close any gump associated with this object to prevent dragging into itself
+					g_gumpManager->CloseGumpForObject(g_objectUnderMousePointer->m_ID);
 
 				}
 			}
@@ -594,10 +548,36 @@ void MainState::UpdateInput()
 		}
 	}
 
-	if (WasMouseButtonDoubleClicked(MOUSE_BUTTON_LEFT) && g_objectUnderMousePointer != nullptr && !g_mouseOverUI)
+	if (WasMouseButtonDoubleClicked(MOUSE_BUTTON_LEFT) && g_objectUnderMousePointer != nullptr && !g_mouseOverUI && !g_gumpManager->m_isMouseOverGump)
 	{
+		// Check if this is the avatar or a party member NPC
+		bool isAvatar = g_objectUnderMousePointer->m_isNPC && g_objectUnderMousePointer->m_NPCID == 0;
+		bool isPartyMember = g_objectUnderMousePointer->m_isNPC &&
+		                     g_Player->NPCIDInParty(g_objectUnderMousePointer->m_NPCID);
+
+		if (isAvatar || isPartyMember)
+		{
+			int npcId = g_objectUnderMousePointer->m_NPCID;
+			bool anyPaperdollOpen = HasAnyPaperdollOpen();
+
+			Log("Double-clicked NPC " + std::to_string(npcId) +
+			    ", isAvatar=" + std::to_string(isAvatar) +
+			    ", anyPaperdollOpen=" + std::to_string(anyPaperdollOpen));
+
+			if (isAvatar || anyPaperdollOpen)
+			{
+				// Open/toggle paperdoll
+				TogglePaperdoll(npcId);
+			}
+			else
+			{
+				// No paperdoll open and not avatar - run normal NPC interaction
+				Log("Running normal interaction for NPC " + std::to_string(npcId));
+				g_objectUnderMousePointer->Interact(1);
+			}
+		}
 		// Handle doors and objects with scripts/conversations
-		if (g_objectUnderMousePointer->m_objectData->m_isDoor ||
+		else if (g_objectUnderMousePointer->m_objectData->m_isDoor ||
 		    g_objectUnderMousePointer->m_hasConversationTree ||
 		    g_objectUnderMousePointer->m_shapeData->m_luaScript != "default")
 		{
@@ -908,7 +888,7 @@ void MainState::Update()
 				}
 				else
 				{
-					object->m_Visible = true;
+					if (!object->GetIsDead()) object->m_Visible = true;
 				}
 			}
 		}
@@ -916,12 +896,23 @@ void MainState::Update()
 		for (unordered_map<int, std::unique_ptr<U7Object> >::iterator node = g_objectList.begin(); node != g_objectList.end();)
 		{
 			if (!node->second)
+			{
+				++node;
 				continue;
+			}
 
 			if (node->second->GetIsDead())
 			{
+				if (g_LuaDebug)
+				{
+					AddConsoleString("Cleanup: Removing dead object ID " + std::to_string(node->first));
+				}
 				UnassignObjectChunk(node->second.get());
 				node = g_objectList.erase(node);
+				if (g_LuaDebug)
+				{
+					AddConsoleString("Cleanup: Object erased from g_objectList");
+				}
 			}
 			else
 			{
@@ -955,93 +946,37 @@ void MainState::Update()
 	g_Terrain->Update();
 
 	UpdateStats();
-
-	// TEST: Update color dialog BEFORE UpdateInput() so it can consume input
-	if (m_colorDialog && m_colorDialog->IsVisible())
+	// Show/hide debug tools window based on game mode
+	if (m_debugToolsWindow)
 	{
-		m_colorDialog->Update();
-
-		// Update color preview swatch from slider values
+		if (m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX)
 		{
-			Gui* gui = m_colorDialog->GetGui();
-			int redID = m_colorDialog->GetElementID("RED_SLIDER");
-			int greenID = m_colorDialog->GetElementID("GREEN_SLIDER");
-			int blueID = m_colorDialog->GetElementID("BLUE_SLIDER");
-			int alphaID = m_colorDialog->GetElementID("ALPHA_SLIDER");
-			int previewID = m_colorDialog->GetElementID("COLOR_PREVIEW");
-
-			auto redSlider = gui->GetElement(redID);
-			auto greenSlider = gui->GetElement(greenID);
-			auto blueSlider = gui->GetElement(blueID);
-			auto alphaSlider = gui->GetElement(alphaID);
-			auto previewPanel = gui->GetElement(previewID);
-
-			if (redSlider && greenSlider && blueSlider && alphaSlider && previewPanel)
+			if (!m_debugToolsWindow->IsVisible())
 			{
-				int r = static_cast<GuiScrollBar*>(redSlider.get())->m_Value;
-				int g = static_cast<GuiScrollBar*>(greenSlider.get())->m_Value;
-				int b = static_cast<GuiScrollBar*>(blueSlider.get())->m_Value;
-				int a = static_cast<GuiScrollBar*>(alphaSlider.get())->m_Value;
+				// Position on right side of screen, halfway down
+				int windowWidth, windowHeight;
+				m_debugToolsWindow->GetSize(windowWidth, windowHeight);
 
-				// Update the color preview panel
-				auto panel = static_cast<GuiPanel*>(previewPanel.get());
-				panel->m_Color = Color{static_cast<unsigned char>(r),
-				                       static_cast<unsigned char>(g),
-				                       static_cast<unsigned char>(b),
-				                       static_cast<unsigned char>(a)};
+				int x = GetScreenWidth() - windowWidth - 10;  // 10px from right edge
+				int y = (GetScreenHeight() - windowHeight) / 2;  // Centered vertically
+
+				m_debugToolsWindow->MoveTo(x, y);
+				m_debugToolsWindow->Show();
 			}
 		}
-
-		// Handle OK/Cancel button clicks
+		else
 		{
-			Gui* gui = m_colorDialog->GetGui();
-			int okButtonID = m_colorDialog->GetElementID("OK_BUTTON");
-			int cancelButtonID = m_colorDialog->GetElementID("CANCEL_BUTTON");
-
-			if (okButtonID != -1 && gui->m_ActiveElement == okButtonID)
-			{
-				// Read slider values
-				int redID = m_colorDialog->GetElementID("RED_SLIDER");
-				int greenID = m_colorDialog->GetElementID("GREEN_SLIDER");
-				int blueID = m_colorDialog->GetElementID("BLUE_SLIDER");
-				int alphaID = m_colorDialog->GetElementID("ALPHA_SLIDER");
-
-				auto redSlider = gui->GetElement(redID);
-				auto greenSlider = gui->GetElement(greenID);
-				auto blueSlider = gui->GetElement(blueID);
-				auto alphaSlider = gui->GetElement(alphaID);
-
-				if (redSlider && greenSlider && blueSlider && alphaSlider)
-				{
-					int r = static_cast<GuiScrollBar*>(redSlider.get())->m_Value;
-					int g = static_cast<GuiScrollBar*>(greenSlider.get())->m_Value;
-					int b = static_cast<GuiScrollBar*>(blueSlider.get())->m_Value;
-					int a = static_cast<GuiScrollBar*>(alphaSlider.get())->m_Value;
-
-					AddConsoleString("Color values: R=" + to_string(r) + " G=" + to_string(g) +
-					                " B=" + to_string(b) + " A=" + to_string(a));
-				}
-
-				m_colorDialog->Hide();
-				gui->m_ActiveElement = -1;
-			}
-
-			if (cancelButtonID != -1 && gui->m_ActiveElement == cancelButtonID)
-			{
-				m_colorDialog->Hide();
-				gui->m_ActiveElement = -1;
-				AddConsoleString("Color dialog cancelled");
-			}
+			if (m_debugToolsWindow->IsVisible())
+				m_debugToolsWindow->Hide();
 		}
+
+		// Update debug tools window
+		m_debugToolsWindow->Update();
+		UpdateDebugToolsWindow();
 	}
 
-	// Process game input unless a modal dialog is blocking it
-	bool dialogIsBlocking = m_colorDialog && m_colorDialog->IsVisible() && m_colorDialog->IsModal();
-
-	if (!dialogIsBlocking)
-	{
-		UpdateInput();
-	}
+	// Process game input
+	UpdateInput();
 
 	if (m_barkDuration > 0 && m_barkObject != nullptr)
 	{
@@ -1137,6 +1072,75 @@ void MainState::OpenGump(int id)
 	g_gumpManager->AddGump(gump);
 }
 
+void MainState::OpenSpellbookGump(int npcId)
+{
+	// Check if this NPC already has a spellbook gump open
+	for (auto& gump : g_gumpManager->m_GumpList)
+	{
+		GumpSpellbook* spellbook = dynamic_cast<GumpSpellbook*>(gump.get());
+		if (spellbook && spellbook->GetNpcId() == npcId)
+		{
+			Log("MainState::OpenSpellbookGump - Spellbook already open for NPC " + std::to_string(npcId));
+			return; // Spellbook already open for this NPC
+		}
+	}
+
+	Log("MainState::OpenSpellbookGump - Creating spellbook gump for NPC " + std::to_string(npcId));
+	auto spellbookGump = std::make_shared<GumpSpellbook>();
+	spellbookGump->Setup(npcId);
+	spellbookGump->Init();
+	spellbookGump->OnEnter();
+	g_gumpManager->AddGump(spellbookGump);
+}
+
+bool MainState::HasAnyPaperdollOpen()
+{
+	for (auto& gump : g_gumpManager->m_GumpList)
+	{
+		if (dynamic_cast<GumpPaperdoll*>(gump.get()))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+GumpPaperdoll* MainState::FindPaperdollByNpcId(int npcId)
+{
+	for (auto& gump : g_gumpManager->m_GumpList)
+	{
+		GumpPaperdoll* paperdoll = dynamic_cast<GumpPaperdoll*>(gump.get());
+		if (paperdoll && paperdoll->GetNpcId() == npcId)
+		{
+			return paperdoll;
+		}
+	}
+	return nullptr;
+}
+
+void MainState::TogglePaperdoll(int npcId)
+{
+	Log("TogglePaperdoll for NPC " + std::to_string(npcId));
+
+	// Check if paperdoll already open for this NPC
+	GumpPaperdoll* existing = FindPaperdollByNpcId(npcId);
+
+	if (existing)
+	{
+		// Close existing paperdoll
+		Log("Closing existing paperdoll for NPC " + std::to_string(npcId));
+		existing->OnExit();
+		return;
+	}
+
+	// Create new paperdoll
+	Log("Creating new paperdoll for NPC " + std::to_string(npcId));
+	auto paperdoll = std::make_shared<GumpPaperdoll>();
+	paperdoll->Setup(npcId);
+	paperdoll->OnEnter();
+	g_gumpManager->AddGump(paperdoll);
+}
+
 void MainState::Draw()
 {
 	if (g_pixelated)
@@ -1175,7 +1179,7 @@ void MainState::Draw()
 		rlEnableDepthMask();
 	}
 
-	if (g_gumpManager->m_draggingObject)
+	if (g_gumpManager->m_draggingObject && !g_gumpManager->m_isMouseOverGump)
 	{
 		U7Object* draggedObject = g_objectList[g_gumpManager->m_draggedObjectId].get();
 		BoundingBox box;
@@ -1244,30 +1248,7 @@ void MainState::Draw()
 		unsigned short shapeframe = g_World[worldZ][worldX];
 		int shape = shapeframe & 0x3ff;
 
-		if (m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX && m_showUIElements && !m_paused)
-		{
-			// Draw NPC Schedule Toggle Button
-			Color buttonColor = m_npcSchedulesEnabled ? Color{0, 200, 0, 255} : Color{200, 0, 0, 255}; // Green if on, red if off
-			DrawRectangle(m_scheduleToggleButton.x, m_scheduleToggleButton.y,
-			              m_scheduleToggleButton.width, m_scheduleToggleButton.height, buttonColor);
-			DrawRectangleLines(m_scheduleToggleButton.x, m_scheduleToggleButton.y,
-			                   m_scheduleToggleButton.width, m_scheduleToggleButton.height, WHITE);
-
-			// Draw text label next to button
-			string scheduleText = m_npcSchedulesEnabled ? "ON" : "OFF";
-			DrawTextEx(*g_SmallFont, scheduleText.c_str(),
-			           Vector2{m_scheduleToggleButton.x + m_scheduleToggleButton.width + 5,
-			                   m_scheduleToggleButton.y + 8},
-			           g_SmallFont->baseSize, 1, WHITE);
-
-			//DrawOutlinedText(g_SmallFont, "Cell under mouse: " + to_string(int(g_terrainUnderMousePointer.x)) + " " + to_string(int(g_terrainUnderMousePointer.y))
-			// + " " + to_string((int(g_terrainUnderMousePointer.z))) + ", Terrain type " + to_string(shape), Vector2{ 10, 272 }, g_SmallFont->baseSize, 1, WHITE);
-
-			//DrawOutlinedText(g_SmallFont, "Center terrain cell: " + to_string(int(g_camera.target.x)) + " " + to_string(int(g_camera.target.z))
-			//				 + ", Terrain type " + to_string(shape), Vector2{ 10, 292 }, g_SmallFont->baseSize, 1, WHITE);
-		}
-
-		if (g_objectUnderMousePointer != nullptr)
+		if (g_objectUnderMousePointer != nullptr && !g_gumpManager->m_isMouseOverGump)
 		{
 			std::string objectDescription;
 			if (g_objectUnderMousePointer->m_isContainer)
@@ -1293,6 +1274,31 @@ void MainState::Draw()
 			if (g_objectUnderMousePointer->m_objectData && g_objectUnderMousePointer->m_objectData->m_isDoor)
 			{
 				objectDescription += " Frame: " + to_string(g_objectUnderMousePointer->m_Frame);
+			}
+
+			// Show lua script if not default
+			if (g_objectUnderMousePointer->m_isNPC && g_objectUnderMousePointer->m_hasConversationTree)
+			{
+				// NPCs look up scripts by NPC ID suffix: npc_*_XXXX
+				string scriptName = FindNPCScriptByID(g_objectUnderMousePointer->m_NPCID);
+				if (!scriptName.empty())
+				{
+					objectDescription += " Script: " + scriptName;
+				}
+			}
+			else
+			{
+				// Regular objects use shape table scripts
+				int shape = g_objectUnderMousePointer->m_shapeData->GetShape();
+				int frame = g_objectUnderMousePointer->m_shapeData->GetFrame();
+				if (shape < g_shapeTable.size() && frame < g_shapeTable[shape].size())
+				{
+					const std::string& scriptName = g_shapeTable[shape][frame].m_luaScript;
+					if (!scriptName.empty() && scriptName != "default")
+					{
+						objectDescription += " Script: " + scriptName;
+					}
+				}
 			}
 
 			if (g_objectUnderMousePointer->m_isContained)
@@ -1367,10 +1373,10 @@ void MainState::Draw()
 		DrawTexturePro(*m_MinimapArrow, source, dest, origin, rotation, WHITE);
 	}
 
-	// TEST: Draw color dialog if visible
-	if (m_colorDialog && m_colorDialog->IsValid())
+	// Draw debug tools window if valid
+	if (m_debugToolsWindow)
 	{
-		m_colorDialog->Draw();
+		m_debugToolsWindow->Draw();
 	}
 
 	// Draw cursor AFTER dialog so it appears on top
@@ -1467,7 +1473,8 @@ void MainState::DrawStats()
 	}
 
 	DrawOutlinedText(g_SmallFont, "Gold: " + to_string(g_Player->GetGold()), { 542, 208.0f + 11 * yoffset + 8 }, g_SmallFont.get()->baseSize, 1, WHITE);
-	DrawOutlinedText(g_SmallFont, "Weight: " + to_string(int(g_Player->GetWeight())) + "/" + to_string(int(g_Player->GetMaxWeight())), { 542, 208.0f + 12 * yoffset + 9 }, g_SmallFont.get()->baseSize, 1, WHITE);
+	U7Object* avatarObject = g_objectList[g_NPCData[0]->m_objectID].get();
+	DrawOutlinedText(g_SmallFont, "Weight: " + to_string(int(avatarObject->GetWeight())) + "/" + to_string(int(g_Player->GetMaxWeight())), { 542, 208.0f + 12 * yoffset + 9 }, g_SmallFont.get()->baseSize, 1, WHITE);
 
 
 
@@ -1483,7 +1490,15 @@ void MainState::UpdateStats()
 	for (int i = 0; i < g_Player->GetPartyMemberIds().size(); ++i)
 	{
 		Texture* thisTexture = g_ResourceManager->GetTexture("U7FACES" + to_string(i) + to_string(0));
-		if (WasLeftButtonClickedInRect((538.0f - thisTexture->width) * g_DrawScale, (200.0f + 40.0f * counter) * g_DrawScale, thisTexture->width * g_DrawScale, thisTexture->height * g_DrawScale))
+		Rectangle portraitRect = { (538.0f - thisTexture->width) * g_DrawScale, (200.0f + 40.0f * counter) * g_DrawScale, thisTexture->width * g_DrawScale, thisTexture->height * g_DrawScale };
+
+		// Check for double-click to toggle paperdoll
+		if (WasMouseButtonDoubleClicked(MOUSE_LEFT_BUTTON) && CheckCollisionPointRec(GetMousePosition(), portraitRect))
+		{
+			TogglePaperdoll(g_Player->GetPartyMemberIds()[i]);
+		}
+		// Check for single click to select party member
+		else if (WasLeftButtonClickedInRect(portraitRect.x, portraitRect.y, portraitRect.width, portraitRect.height))
 		{
 			g_Player->SetSelectedPartyMember(g_Player->GetPartyMemberIds()[i]);
 		}
@@ -1492,6 +1507,166 @@ void MainState::UpdateStats()
 
 	if (WasLeftButtonClickedInRect({ 610 * g_DrawScale, 314 * g_DrawScale, 16 * g_DrawScale, 10 * g_DrawScale }))
 	{
-		OpenGump(g_NPCData[g_Player->GetSelectedPartyMember()]->m_objectID);
+		// Open the equipped backpack, not the NPC itself
+		int npcIndex = g_Player->GetSelectedPartyMember();
+		int backpackId = g_NPCData[npcIndex]->GetEquippedItem(EquipmentSlot::SLOT_BACKPACK);
+		int npcId = g_NPCData[npcIndex]->m_objectID;
+
+		if (backpackId != -1)
+		{
+			Log("Opening backpack: backpackId=" + std::to_string(backpackId) + ", npcId=" + std::to_string(npcId));
+			OpenGump(backpackId);
+		}
+		else
+		{
+			Log("No backpack equipped, opening NPC inventory: npcId=" + std::to_string(npcId));
+			// Fallback to NPC inventory if no backpack equipped
+			OpenGump(npcId);
+		}
+	}
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//  Debug Tools Window Handler Functions
+////////////////////////////////////////////////////////////////////////////////
+
+void MainState::HandleScheduleButton()
+{
+	m_npcSchedulesEnabled = !m_npcSchedulesEnabled;
+
+	// Update all NPCs
+	for (const auto& [id, npcData] : g_NPCData)
+	{
+		if (npcData && npcData->m_objectID >= 0)
+		{
+			g_objectList[npcData->m_objectID]->m_followingSchedule = m_npcSchedulesEnabled;
+		}
+	}
+
+	AddConsoleString(m_npcSchedulesEnabled ? "NPC Schedules ENABLED" : "NPC Schedules DISABLED");
+}
+
+void MainState::HandleShapeTableButton()
+{
+	// Open shape editor (same as F1 key)
+	g_StateMachine->MakeStateTransition(STATE_SHAPEEDITORSTATE);
+}
+
+void MainState::HandleGhostButton()
+{
+	Log("HandleGhostButton: Launching Ghost editor");
+
+	// Check if Ghost executable exists
+#ifdef _WIN32
+	const char* ghostPath = "Ghost.exe";
+#else
+	const char* ghostPath = "./Ghost";
+#endif
+
+	std::ifstream ghostFile(ghostPath);
+	if (!ghostFile.good())
+	{
+		Log("ERROR: Ghost executable not found: " + std::string(ghostPath));
+		AddConsoleString("ERROR: Ghost.exe not found - please build Ghost first", RED);
+		return;
+	}
+	ghostFile.close();
+
+	AddConsoleString("Launching Ghost GUI Editor...");
+
+	// Launch Ghost in a background thread so it doesn't block the game
+	// Thread is detached so it cleans up automatically when Ghost exits
+	std::thread([=]() {
+#ifdef _WIN32
+		// Windows: Use start command to launch in new window
+		int result = system("start Ghost.exe");
+#else
+		// Linux/Mac: Launch in background
+		int result = system("./Ghost &");
+#endif
+
+		if (result != 0)
+		{
+			Log("ERROR: Failed to launch Ghost - system() returned error code " + std::to_string(result));
+		}
+	}).detach();
+}
+
+void MainState::HandleRenameButton()
+{
+	Log("HandleRenameButton called");
+	AddConsoleString("Rename button clicked - opening rename dialog");
+	// Push the script rename dialog state
+	g_StateMachine->PushState(STATE_SCRIPTRENAMESTATE);
+	Log("PushState(STATE_SCRIPTRENAMESTATE) called");
+}
+
+void MainState::UpdateDebugToolsWindow()
+{
+	if (!m_debugToolsWindow || !m_debugToolsWindow->IsVisible())
+		return;
+
+	Gui* gui = m_debugToolsWindow->GetGui();
+	if (!gui)
+		return;
+
+	// Check SCHEDULE_BUTTON
+	int scheduleButtonID = m_debugToolsWindow->GetElementID("SCHEDULE_BUTTON");
+	if (scheduleButtonID != -1)
+	{
+		auto elem = gui->GetElement(scheduleButtonID);
+		if (elem && elem->m_Type == GUI_ICONBUTTON)
+		{
+			auto button = static_cast<GuiIconButton*>(elem.get());
+			if (button->m_Clicked)
+			{
+				HandleScheduleButton();
+			}
+		}
+	}
+
+	// Check SHAPETABLE_BUTTON
+	int shapeTableButtonID = m_debugToolsWindow->GetElementID("SHAPETABLE_BUTTON");
+	if (shapeTableButtonID != -1)
+	{
+		auto elem = gui->GetElement(shapeTableButtonID);
+		if (elem && elem->m_Type == GUI_ICONBUTTON)
+		{
+			auto button = static_cast<GuiIconButton*>(elem.get());
+			if (button->m_Clicked)
+			{
+				HandleShapeTableButton();
+			}
+		}
+	}
+
+	// Check GHOST_BUTTON
+	int ghostButtonID = m_debugToolsWindow->GetElementID("GHOST_BUTTON");
+	if (ghostButtonID != -1)
+	{
+		auto elem = gui->GetElement(ghostButtonID);
+		if (elem && elem->m_Type == GUI_ICONBUTTON)
+		{
+			auto button = static_cast<GuiIconButton*>(elem.get());
+			if (button->m_Clicked)
+			{
+				HandleGhostButton();
+			}
+		}
+	}
+
+	// Check RENAME_BUTTON
+	int renameButtonID = m_debugToolsWindow->GetElementID("RENAME_BUTTON");
+	if (renameButtonID != -1)
+	{
+		auto elem = gui->GetElement(renameButtonID);
+		if (elem && elem->m_Type == GUI_ICONBUTTON)
+		{
+			auto button = static_cast<GuiIconButton*>(elem.get());
+			if (button->m_Clicked)
+			{
+				HandleRenameButton();
+			}
+		}
 	}
 }

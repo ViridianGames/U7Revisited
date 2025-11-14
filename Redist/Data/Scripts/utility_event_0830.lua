@@ -18,7 +18,7 @@ function utility_event_0830(P0, P1)
                 table.insert(var_0004, var_0007)
             end
         end
-        if utility_unknown_0782(0, var_0004) then
+        if utility_unknown_0782(var_0004) then
             var_0008 = execute_usecode_array(objectref, {4, -1, 17419, 8014, 1, 7750})
         elseif not get_flag(61) then
             return false

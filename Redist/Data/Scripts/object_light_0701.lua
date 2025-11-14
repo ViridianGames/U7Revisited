@@ -8,7 +8,7 @@ function object_light_0701(eventid, objectref)
     elseif eventid == 7 then
         -- call [0001] (0827H, unmapped)
         var_0000 = utility_unknown_0807(objectref, 356)
-        var_0001 = execute_usecode_array({17505, 17514, 8449, var_0000, 7769}, 356)
+        var_0001 = execute_usecode_array(356, {17505, 17514, 8449, var_0000, 7769})
         -- call [0000] (0839H, unmapped)
         utility_event_0825(595, objectref)
     elseif eventid == 5 then

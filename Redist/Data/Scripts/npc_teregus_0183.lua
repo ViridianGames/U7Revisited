@@ -46,7 +46,7 @@ function npc_teregus_0183(eventid, objectref)
                 add_answer({"Runeb", "Quan"})
                 remove_answer("Fellowship")
             elseif answer == "rumors" then
-                var_0001 = is_dead(get_npc_name(184))
+                var_0001 = is_dead(184)
                 if var_0001 then
                     add_dialogue("\"To be sorry that we have lost Runeb. Perhaps to be for the best. To be certainly overjoyed to have avoided damage to the altars.\"")
                 else

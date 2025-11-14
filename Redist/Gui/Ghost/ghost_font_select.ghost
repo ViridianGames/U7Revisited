@@ -1,0 +1,94 @@
+{
+  "gui": {
+    "elements": [
+      {
+        "type": "panel",
+        "position": [
+          -1,
+          -1
+        ],
+        "size": [
+          220,
+          35
+        ],
+        "backgroundColor": [
+          80,
+          80,
+          80,
+          255
+        ],
+        "filled": true,
+        "layout": "horz",
+        "horzPadding": 0,
+        "vertPadding": 0,
+        "font": "babyblocks.ttf",
+        "fontSize": 30,
+        "elements": [
+          {
+            "name": "PROPERTY_FONT",
+            "type": "textinput",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "",
+            "size": [
+              150,
+              35
+            ],
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "backgroundColor": [
+              0,
+              0,
+              0,
+              255
+            ],
+            "borderColor": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          {
+            "name": "PROPERTY_PICK_FONT",
+            "type": "iconbutton",
+            "position": [
+              -1,
+              -1
+            ],
+            "sprite": {
+              "spritesheet": "GUI/guielements.png",
+              "x": 40,
+              "y": 0,
+              "w": 20,
+              "h": 20
+            },
+            "scale": 1.0
+          },
+          {
+            "name": "PROPERTY_CLEAR_FONT",
+            "type": "iconbutton",
+            "position": [
+              -1,
+              -1
+            ],
+            "sprite": {
+              "spritesheet": "GUI/guielements.png",
+              "x": 100,
+              "y": 0,
+              "w": 20,
+              "h": 20
+            },
+            "scale": 1.0
+          }
+        ]
+      }
+    ]
+  }
+}

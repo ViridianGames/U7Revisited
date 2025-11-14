@@ -101,7 +101,7 @@ function npc_trent_0142(eventid, objectref)
         elseif cmps("ring") then
             var_0005 = remove_party_items(false, 359, 0, 295, 1)
             add_dialogue("You hold out the ring to Trent. At first he ignores you. Then, recognizing the ring, he takes it from you and holds it before him. Something in him snaps and his huge frame slumps forward.~~You let the ghost cry for a while, and when he finishes, you see a remarkable change in his appearance.")
-            _hide_npc(142)
+            hide_npc(142)
             switch_talk_to(1, 142)
             add_dialogue("The flames that once burned in his eyes are now gone, replaced by a deep shade of blue. He looks like a new man, or rather, ghost as it were.~~ \"Forgive my behavior, " .. var_0001 .. ". I know not what came over me. I remember flames, but they burned no hotter than mine own Hatred.\" He looks pained at the memory.~~ \"Thou hast seen her? Thou hast seen Rowena? And she still cares for me. Well, all the more reason to finish this Soul Cage. We must free her from Horance's vile sorcery.\"")
             set_flag(421, true)

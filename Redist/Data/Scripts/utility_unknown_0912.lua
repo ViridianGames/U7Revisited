@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Adjhar, progressing a quest involving Bollux's sacrifice and the book "The Stone of Castambre".
-function utility_unknown_0912(eventid, objectref)
+function utility_unknown_0912()
     local var_0000, var_0001
 
     start_conversation()

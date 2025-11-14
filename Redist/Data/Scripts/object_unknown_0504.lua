@@ -58,7 +58,7 @@ function object_unknown_0504(eventid, objectref)
                 var_0008 = var_0007
                 var_0009 = var_0008
                 if get_object_quality(var_0009) == 10 then
-                    var_000A = execute_usecode_array({935, 8021, 3, -1, 17419, 8016, 33, 8024, 4, 7750}, var_0009)
+                    var_000A = execute_usecode_array(var_0009, {935, 8021, 3, -1, 17419, 8016, 33, 8024, 4, 7750})
                 end
                 if not var_000A then
                     break

@@ -5,6 +5,7 @@
 #include "../Geist/Config.h"
 #include "../Geist/Gui.h"
 #include "../Geist/GuiElements.h"
+#include "GhostSerializer.h"
 #include <algorithm>
 
 extern std::unique_ptr<StateMachine> g_StateMachine;
@@ -20,7 +21,7 @@ void FileChooserState::Init(const std::string& configfile)
 
 	// Create the window - it handles all config loading and GUI setup
 	m_window = std::make_unique<GhostWindow>(
-		"Gui/ghost_open_file.ghost",
+		GhostSerializer::GetBaseGhostPath() + "ghost_open_file.ghost",
 		"Data/ghost.cfg",
 		g_ResourceManager.get(),
 		GetScreenWidth(),

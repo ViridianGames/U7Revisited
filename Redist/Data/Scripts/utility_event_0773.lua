@@ -4,7 +4,7 @@ function utility_event_0773(eventid, objectref)
 
     var_0000 = objectref
     if not get_flag(4) then
-        set_object_type(981, var_0000) --- Guess: Sets item type
+        set_object_shape(981, var_0000) --- Guess: Sets item type
         var_0001 = {0, 1120, 535}
         move_object(var_0001, var_0000) --- Guess: Sets NPC target
         var_0001[2] = var_0001[2] + 2

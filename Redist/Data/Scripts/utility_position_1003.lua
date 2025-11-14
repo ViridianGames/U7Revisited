@@ -46,7 +46,7 @@ function utility_position_1003(var_0000, var_0001, var_0002)
         var_0007 = find_nearby(0, 3, -1, objectref)
         for _, var_0010 in ipairs(var_0007) do
             var_0011 = get_object_position(var_0010)
-            if var_0011[3] < 5 and (get_item_shape(var_0010) ~= 331 and get_item_shape(var_0010) ~= 224) then
+            if var_0011[3] < 5 and (get_object_shape(var_0010) ~= 331 and get_object_shape(var_0010) ~= 224) then
                 if var_0011[1] == var_0005[1] and var_0011[2] == var_0005[2] then
                     var_0018 = var_0003 - get_distance(objectref, var_0010)
                     var_0011[1] = var_0011[1] - var_0018

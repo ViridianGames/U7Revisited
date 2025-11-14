@@ -248,6 +248,15 @@ void GuiIconButton::Draw()
 			Vector2{ 0, 0 }, 0, m_Color);
 		}
 	}
+
+	// Draw text if we have a font and string
+	if (m_Font && !m_String.empty())
+	{
+		Vector2 textSize = MeasureTextEx(*m_Font, m_String.c_str(), m_Font->baseSize, 1);
+		float textX = m_Gui->m_Pos.x + m_Pos.x + (m_Width * m_Scale - textSize.x) / 2.0f;
+		float textY = m_Gui->m_Pos.y + m_Pos.y + (m_Height * m_Scale - textSize.y) / 2.0f + yoffset;
+		DrawTextEx(*m_Font, m_String.c_str(), Vector2{ textX, textY }, m_Font->baseSize, 1, m_FontColor);
+	}
 };
 
 void GuiIconButton::Update()
@@ -350,6 +359,16 @@ void GuiScrollBar::Draw()
 		m_SpurLocation = int((float(m_Value) / float(m_ValueRange) * (adjustedw - adjustedh)));//;
 		DrawRectangle(adjustedx + m_SpurLocation, adjustedy, int(m_Height), int(m_Height), m_SpurColor);
 	}
+
+	// Draw debug value if enabled
+	if (m_DebugValue && m_Gui->m_Font != nullptr)
+	{
+		std::string valueStr = std::to_string(m_Value);
+		int textWidth = MeasureText(valueStr.c_str(), 32);
+		int textX = adjustedx + adjustedw / 2 - textWidth / 2;
+		int textY = adjustedy + adjustedh / 2 - 16;
+		DrawText(valueStr.c_str(), textX, textY, 32, RED);
+	}
 }
 
 void GuiScrollBar::Update()
@@ -369,9 +388,58 @@ void GuiScrollBar::Update()
 	int adjustedh = m_Height * m_Gui->m_InputScale;
 
 	//  Previously clicked, try for hysterisis
-	if ((m_Gui->m_ActiveElement == -1 || m_Gui->m_ActiveElement == m_ID) && IsLeftButtonDownInRect(adjustedx, adjustedy, adjustedw, adjustedh))
+	// Only start a new drag if:
+	// 1. We were pressed this frame (no element was active last frame AND no other element claimed it this frame), OR
+	// 2. We were the active element last frame (continuing a drag)
+	bool anotherElementClaimedClick = (m_Gui->m_ActiveElement != -1 && m_Gui->m_ActiveElement != m_ID);
+	bool startingNewDrag = (m_Gui->m_LastElement == -1 && IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && !anotherElementClaimedClick);
+	bool continuingDrag = (m_Gui->m_LastElement == m_ID);
+
+	// Clear selection if another element claimed the click
+	if (anotherElementClaimedClick && m_Selected)
+	{
+		m_Selected = false;
+		Log("Scrollbar " + std::to_string(m_ID) + " - Deselected, another element claimed click");
+	}
+
+	// Check for click to make this scrollbar "selected" for keyboard input
+	bool inBounds = IsMouseInRect(adjustedx, adjustedy, adjustedx + adjustedw, adjustedy + adjustedh);
+	bool mousePressed = IsMouseButtonPressed(MOUSE_LEFT_BUTTON);
+
+	if (inBounds && mousePressed)
+	{
+		Log("Scrollbar " + std::to_string(m_ID) + " - Mouse in bounds and pressed. anotherElementClaimedClick=" + std::to_string(anotherElementClaimedClick));
+		if (!anotherElementClaimedClick)
+		{
+			m_Selected = true;
+			Log("Scrollbar " + std::to_string(m_ID) + " - Setting as selected for keyboard input");
+		}
+	}
+
+	if ((startingNewDrag || continuingDrag) && IsLeftButtonDownInRect(adjustedx, adjustedy, adjustedw, adjustedh))
 	{
 		m_Gui->m_ActiveElement = m_ID;
+
+		// When drag starts, also mark as selected for keyboard input
+		if (startingNewDrag)
+		{
+			// Deselect all other scrollbars
+			for (auto& [id, element] : m_Gui->m_GuiElementList)
+			{
+				if (element->m_Type == GUI_SCROLLBAR && id != m_ID)
+				{
+					GuiScrollBar* otherScrollbar = static_cast<GuiScrollBar*>(element.get());
+					if (otherScrollbar->m_Selected)
+					{
+						otherScrollbar->m_Selected = false;
+						Log("Scrollbar " + std::to_string(id) + " - Deselected because scrollbar " + std::to_string(m_ID) + " was selected");
+					}
+				}
+			}
+
+			m_Selected = true;
+			Log("Scrollbar " + std::to_string(m_ID) + " - Drag started, setting as selected");
+		}
 		if (m_Vertical)
 		{
 			m_Value = std::round((float(GetMouseY() - adjustedy) / float(adjustedh)) * m_ValueRange);
@@ -404,6 +472,50 @@ void GuiScrollBar::Update()
 	else if (IsMouseInRect(adjustedx, adjustedy, adjustedx + adjustedw, adjustedy + adjustedh))
 	{
 		m_Hovered = true;
+	}
+
+	// Handle keyboard input when this scrollbar is selected
+	if (m_Selected)
+	{
+		bool valueChanged = false;
+		if (m_Vertical)
+		{
+			// Up/Down arrows for vertical scrollbars
+			if (IsKeyPressed(KEY_UP))
+			{
+				m_Value--;
+				if (m_Value < 0) m_Value = 0;
+				valueChanged = true;
+			}
+			else if (IsKeyPressed(KEY_DOWN))
+			{
+				m_Value++;
+				if (m_Value > m_ValueRange) m_Value = m_ValueRange;
+				valueChanged = true;
+			}
+		}
+		else
+		{
+			// Left/Right arrows for horizontal scrollbars
+			if (IsKeyPressed(KEY_LEFT))
+			{
+				m_Value--;
+				if (m_Value < 0) m_Value = 0;
+				valueChanged = true;
+			}
+			else if (IsKeyPressed(KEY_RIGHT))
+			{
+				m_Value++;
+				if (m_Value > m_ValueRange) m_Value = m_ValueRange;
+				valueChanged = true;
+			}
+		}
+
+		// Keep this scrollbar as the active element if we changed the value
+		if (valueChanged)
+		{
+			m_Gui->m_ActiveElement = m_ID;
+		}
 	}
 };
 
@@ -462,7 +574,9 @@ void GuiTextInput::Draw()
 	}
 	else
 	{
-		if (GetTime() > 500)
+		// Flash cursor every 0.5 seconds using modulo
+		double flashTime = fmod(GetTime(), 1.0);
+		if (flashTime < 0.5)
 		{
 			DrawTextEx(*m_Font, (m_String + "|").c_str(), Vector2{adjustedx + 2, adjustedy + 2}, m_Font->baseSize, 1, m_TextColor);
 		}
@@ -491,8 +605,8 @@ void GuiTextInput::Update()
 	if (!m_Gui->m_AcceptingInput || !m_Active)
 		return;
 
-	//  If the left button is down, we are CLICKED
-	if (WasLeftButtonClickedInRect(adjustedx, adjustedy, adjustedx + m_Width, adjustedy + m_Height))
+	//  If the left button is clicked, we gain focus
+	if (WasLeftButtonClickedInRect(adjustedx * m_Gui->m_InputScale, adjustedy * m_Gui->m_InputScale, m_Width * m_Gui->m_InputScale, m_Height * m_Gui->m_InputScale))
 	{
 		if (!m_HasFocus)
 		{
@@ -1005,6 +1119,160 @@ void GuiSprite::Update()
 	Tween::Update();
 }
 
+// CreateHorizontalSpriteFrames - Helper function to generate sprite frames from horizontal sprite sheet
+std::vector<std::shared_ptr<Sprite>> CreateHorizontalSpriteFrames(
+	Texture* texture,
+	int firstFrameX, int firstFrameY,
+	int frameWidth, int frameHeight,
+	int frameCount)
+{
+	std::vector<std::shared_ptr<Sprite>> frames;
+	frames.reserve(frameCount);
+
+	for (int i = 0; i < frameCount; i++)
+	{
+		int xOffset = firstFrameX + (frameWidth * i);
+		auto sprite = std::make_shared<Sprite>(
+			texture, xOffset, firstFrameY, frameWidth, frameHeight
+		);
+		frames.push_back(sprite);
+	}
+
+	return frames;
+}
+
+// GUICYCLE
+
+GuiCycle::GuiCycle(Gui* parent)
+{
+	m_Gui = parent;
+	m_Visible = true;
+	m_CurrentFrame = 0;
+	m_FrameCount = 0;
+}
+
+void GuiCycle::Init(int ID, int posx, int posy,
+					std::vector<std::shared_ptr<Sprite>> frames,
+					float scalex, float scaley, Color color,
+					int group, int active)
+{
+	m_Type = GUI_CYCLE;
+	m_ID = ID;
+	m_Pos = Vector2{(float)posx, (float)posy};
+	m_ScaleX = scalex;
+	m_ScaleY = scaley;
+	m_Color = color;
+	m_Group = group;
+	m_Active = active;
+	m_Visible = true;
+
+	m_Frames = frames;
+	m_FrameCount = (int)frames.size();
+	m_CurrentFrame = 0;
+
+	// Set width/height from first frame
+	if (!frames.empty() && frames[0])
+	{
+		m_Width = frames[0]->m_sourceRect.width;
+		m_Height = frames[0]->m_sourceRect.height;
+	}
+}
+
+void GuiCycle::Update()
+{
+	Tween::Update();
+
+	m_Hovered = false;
+	m_Clicked = false;
+	m_Down = false;
+
+	if (!m_Gui->m_AcceptingInput || !m_Visible || !m_Active)
+		return;
+
+	if (m_Frames.empty())
+		return;
+
+	// Check hover (match GuiIconButton's approach with m_InputScale)
+	if (IsMouseInRect((m_Gui->m_Pos.x + int(m_Pos.x)) * m_Gui->m_InputScale,
+					  (m_Gui->m_Pos.y + int(m_Pos.y)) * m_Gui->m_InputScale,
+					  m_Width * m_Gui->m_InputScale * m_ScaleX,
+					  m_Height * m_Gui->m_InputScale * m_ScaleY))
+	{
+		m_Hovered = true;
+	}
+
+	// Check button down
+	if (IsLeftButtonDownInRect((m_Gui->m_Pos.x + int(m_Pos.x)) * m_Gui->m_InputScale,
+							   (m_Gui->m_Pos.y + int(m_Pos.y)) * m_Gui->m_InputScale,
+							   m_Width * m_Gui->m_InputScale * m_ScaleX,
+							   m_Height * m_Gui->m_InputScale * m_ScaleY))
+	{
+		m_Hovered = false;
+		m_Down = true;
+	}
+
+	// Check click release
+	else if (WasLeftButtonClickedInRect((m_Gui->m_Pos.x + int(m_Pos.x)) * m_Gui->m_InputScale,
+										 (m_Gui->m_Pos.y + int(m_Pos.y)) * m_Gui->m_InputScale,
+										 m_Width * m_Gui->m_InputScale * m_ScaleX,
+										 m_Height * m_Gui->m_InputScale * m_ScaleY))
+	{
+		m_Down = false;
+		m_Clicked = true;
+		NextFrame();
+		m_Gui->m_ActiveElement = m_ID;
+	}
+}
+
+void GuiCycle::Draw()
+{
+	if (!m_Visible || m_Frames.empty())
+		return;
+
+	if (m_CurrentFrame >= 0 && m_CurrentFrame < m_FrameCount)
+	{
+		auto& sprite = m_Frames[m_CurrentFrame];
+		if (sprite)
+		{
+			Rectangle dest = {
+				m_Gui->m_Pos.x + m_Pos.x,
+				m_Gui->m_Pos.y + m_Pos.y,
+				m_Width * m_ScaleX,
+				m_Height * m_ScaleY
+			};
+			sprite->DrawScaled(dest, Vector2{0, 0}, 0, m_Color);
+		}
+	}
+}
+
+int GuiCycle::GetValue()
+{
+	return m_CurrentFrame;
+}
+
+void GuiCycle::SetFrameIndex(int index)
+{
+	if (index >= 0 && index < m_FrameCount)
+		m_CurrentFrame = index;
+}
+
+int GuiCycle::GetFrameIndex() const
+{
+	return m_CurrentFrame;
+}
+
+void GuiCycle::NextFrame()
+{
+	if (m_FrameCount > 0)
+		m_CurrentFrame = (m_CurrentFrame + 1) % m_FrameCount;
+}
+
+void GuiCycle::PreviousFrame()
+{
+	if (m_FrameCount > 0)
+		m_CurrentFrame = (m_CurrentFrame - 1 + m_FrameCount) % m_FrameCount;
+}
+
 //  Just puts an image at a certain location.  Non-interactive.
 void GuiOctagonBox::Init(int ID, int posx, int posy, int width, int height, std::vector<std::shared_ptr<Sprite> > borders,
 	Color color, int group, int active)
@@ -1290,29 +1558,49 @@ void GuiList::Update()
     m_Hovered = (scaledX >= m_Pos.x && scaledX <= m_Pos.x + m_Width &&
                  scaledY >= m_Pos.y && scaledY <= m_Pos.y + m_Height);
 
-    if (m_Hovered && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-        m_IsExpanded = !m_IsExpanded;
-        m_Clicked = true;
-        m_Gui->m_ActiveElement = m_ID;
-    } else if (!m_Hovered && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-        m_IsExpanded = false;
+    // Check if mouse is over the expanded dropdown area
+    bool mouseOverExpanded = false;
+    if (m_IsExpanded) {
+        float itemHeight = m_Height;
+        float expandedHeight = m_Items.size() < m_VisibleItems ? m_Items.size() * itemHeight : m_VisibleItems * itemHeight;
+        float expandedY = m_Pos.y + itemHeight;
+        mouseOverExpanded = (scaledX >= m_Pos.x && scaledX <= m_Pos.x + m_Width &&
+                            scaledY >= expandedY && scaledY <= expandedY + expandedHeight);
     }
 
-    // Handle selection in expanded list
-    if (m_IsExpanded) {
+    // Check for mouse clicks ONCE at the start
+    bool mouseClicked = IsMouseButtonPressed(MOUSE_LEFT_BUTTON);
+
+    // Handle selection in expanded list FIRST (before closing dropdown)
+    bool clickedOnItem = false;
+    if (m_IsExpanded && mouseClicked) {
         float itemHeight = m_Height;
         for (int i = 0; i < m_Items.size() && i < m_VisibleItems; ++i) {
             float y = m_Pos.y + (i + 1) * itemHeight;
             if (scaledX >= m_Pos.x && scaledX <= m_Pos.x + m_Width &&
                 scaledY >= y && scaledY <= y + itemHeight) {
-                if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-                    m_SelectedIndex = i;
-                    m_IsExpanded = false;
-                    m_Clicked = true;
-                    m_Gui->m_ActiveElement = m_ID;
-                }
+                m_SelectedIndex = i;
+                m_IsExpanded = false;
+                m_Clicked = true;
+                m_Gui->m_ActiveElement = m_ID;
+                clickedOnItem = true;
+                break;
             }
         }
+
+        // If expanded and clicked anywhere on the dropdown (but didn't select an item), consume the click
+        if (!clickedOnItem && (m_Hovered || mouseOverExpanded)) {
+            clickedOnItem = true;  // Prevent click from falling through to elements behind
+        }
+    }
+
+    // Handle main box click (toggle expansion)
+    if (!clickedOnItem && m_Hovered && mouseClicked) {
+        m_IsExpanded = !m_IsExpanded;
+        m_Clicked = true;
+        m_Gui->m_ActiveElement = m_ID;
+    } else if (!clickedOnItem && !m_Hovered && !mouseOverExpanded && mouseClicked) {
+        m_IsExpanded = false;
     }
 }
 
@@ -1332,19 +1620,8 @@ void GuiList::Draw()
                    {m_Pos.x + 5, m_Pos.y + 5}, m_Font->baseSize, 1, m_TextColor);
     }
 
-    // Draw expanded list
-    if (m_IsExpanded) {
-        float itemHeight = m_Height;
-        for (int i = 0; i < m_Items.size() && i < m_VisibleItems; ++i) {
-            float y = m_Pos.y + (i + 1) * itemHeight;
-            DrawRectangle(static_cast<int>(m_Pos.x), static_cast<int>(y),
-                          static_cast<int>(m_Width), static_cast<int>(itemHeight), m_BackgroundColor);
-            DrawRectangleLines(static_cast<int>(m_Pos.x), static_cast<int>(y),
-                               static_cast<int>(m_Width), static_cast<int>(itemHeight), m_BorderColor);
-            DrawTextEx(*m_Font, m_Items[i].c_str(), {m_Pos.x + 5, y + 5},
-                       m_Font->baseSize, 1, m_TextColor);
-        }
-    }
+    // Note: Expanded dropdown items are drawn by Gui::Draw() in a second pass
+    // to ensure they appear on top of all other GUI elements
 }
 
 void GuiList::AddItem(const std::string& item)

@@ -1,5 +1,5 @@
 --- Best guess: Performs complex item manipulation and explosion creation, possibly for combat or traps.
-function utility_unknown_0903(eventid, objectref, positions1, positions2)
+function utility_unknown_0903(objectref, positions1, positions2)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E, var_000F
 
     var_0003 = false
@@ -52,14 +52,14 @@ function utility_unknown_0903(eventid, objectref, positions1, positions2)
     if var_0003 then
         create_explosion(-1, 0, 0, 0, positions2[2] - 1, positions2[1] - 1, 4) --- Guess: Creates explosion
         play_sound_effect(9) --- Guess: Unknown function
-        var_000C = set_object_type(275, objectref) --- Guess: Sets item type
+        var_000C = set_object_shape(275, objectref) --- Guess: Sets item type
         set_object_frame(6, var_000C) --- Guess: Sets item frame
         set_object_flag(18, var_000C, true) --- Guess: Sets item flag
         var_000D = set_object_quality(151, var_000C) --- Guess: Sets item quality
         var_000D = update_position(positions2) --- Guess: Updates position
         utility_ship_0904(var_000C) --- External call to item processing
         remove_item(var_000C) --- Guess: Unknown function, possibly removes item
-        remove_item(eventid) --- Guess: Unknown function, possibly removes item
+        --remove_item(eventid) --- Guess: Unknown function, possibly removes item
         destroy_object(objectref) --- Guess: Destroys item
         add_containerobject_s(objectref, {1800, 17493, 7715}) --- Guess: Adds items to container
         return 0

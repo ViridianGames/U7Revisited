@@ -48,7 +48,7 @@ function npc_batlin_0026(eventid, objectref)
                 else
                     add_dialogue("\"Thou art too encumbered to receive thy Fellowship medallion. Thou must lighten thy load.\"")
                 end
-                execute_usecode_array({23, 17494, 7715}, objectref)
+                execute_usecode_array(objectref, {23, 17494, 7715})
                 return
             else
                 add_dialogue("\"My dear Avatar. Thou must realize that thou must know everything there is to know about The Fellowship before I can induct thee. Please study thy Book of Fellowship and return to me.")

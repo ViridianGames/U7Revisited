@@ -1,0 +1,132 @@
+{
+  "gui": {
+    "elements": [
+      {
+        "type": "panel",
+        "position": [
+          5,
+          5
+        ],
+        "size": [
+          228.0,
+          75.0
+        ],
+        "backgroundColor": [
+          80,
+          80,
+          80,
+          255
+        ],
+        "font": "babyblocks.ttf",
+        "fontSize": 30,
+        "filled": true,
+        "layout": "table",
+        "horzPadding": 6,
+        "vertPadding": 5,
+        "columns": 2,
+        "elements": [
+          {
+            "type": "textarea",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Name:",
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "justified": 0,
+            "size": [
+              180.0,
+              30.0
+            ]
+          },
+          {
+            "name": "PROPERTY_NAME",
+            "type": "textinput",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "",
+            "size": [
+              150,
+              35
+            ],
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "backgroundColor": [
+              0,
+              0,
+              0,
+              255
+            ],
+            "borderColor": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          {
+            "type": "textarea",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Sprite:",
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "justified": 0,
+            "size": [
+              180.0,
+              30.0
+            ]
+          },
+          {
+            "name": "PROPERTY_SPRITE",
+            "type": "textbutton",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Pick Sprite",
+            "size": [
+              150.0,
+              20.0
+            ],
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "backgroundColor": [
+              64,
+              64,
+              64,
+              255
+            ],
+            "borderColor": [
+              128,
+              128,
+              128,
+              255
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

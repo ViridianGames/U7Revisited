@@ -129,7 +129,7 @@ function npc_salamon_0101(eventid, objectref)
         end
         add_dialogue("\"My hope is for your welfare, human.\"")
     elseif eventid == 0 then
-        var_0007 = get_schedule_type(101) --- Guess: Gets object state
+        var_0007 = get_schedule(101) --- Guess: Gets object state
         if var_0007 == 11 and var_0000 then
             var_0008 = random(1, 4)
             if var_0008 == 1 then

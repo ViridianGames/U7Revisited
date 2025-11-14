@@ -4,7 +4,9 @@
 #include "Geist/ResourceManager.h"
 #include "Geist/ScriptingSystem.h"
 #include "Geist/TooltipSystem.h"
+#include "Geist/Logging.h"
 #include "U7Globals.h"
+#include "U7ScriptUtils.h"
 #include "ShapeEditorState.h"
 #include "rlgl.h"
 
@@ -16,6 +18,7 @@
 #include <fstream>
 #include <algorithm>
 #include <unordered_map>
+#include <filesystem>
 
 using namespace std;
 
@@ -183,8 +186,354 @@ void ShapeEditorState::Shutdown()
 
 }
 
+void ShapeEditorState::SaveShapeTable()
+{
+	ofstream file("Data/shapetable.dat", ios::trunc);
+	if (file.is_open())
+	{
+		for (int i = 150; i < 1024; ++i)
+		{
+			for (int j = 0; j < 32; ++j)
+			{
+				g_shapeTable[i][j].Serialize(file);
+			}
+		}
+		file.close();
+	}
+	AddConsoleString("Saved shapetable.dat successfully!", GREEN);
+}
+
+void ShapeEditorState::RenameScript(const string& oldScript, const string& newName)
+{
+	// Extract the shape ID suffix from the old script name
+	string shapeIDSuffix;
+	size_t underscorePos = oldScript.rfind('_');
+	if (underscorePos != string::npos)
+	{
+		shapeIDSuffix = oldScript.substr(underscorePos); // e.g., "_0290"
+	}
+
+	// Build the final new name with shape ID suffix
+	string finalNewName = newName;
+
+	// Check if newName already ends with _{number}
+	size_t newUnderscorePos = newName.rfind('_');
+	bool hasNumberSuffix = false;
+	if (newUnderscorePos != string::npos && newUnderscorePos < newName.length() - 1)
+	{
+		// Check if everything after the underscore is digits
+		string potentialNumber = newName.substr(newUnderscorePos + 1);
+		hasNumberSuffix = !potentialNumber.empty() &&
+			all_of(potentialNumber.begin(), potentialNumber.end(), ::isdigit);
+	}
+
+	// If new name doesn't have a number suffix, add the one from the original
+	if (!hasNumberSuffix && !shapeIDSuffix.empty())
+	{
+		finalNewName += shapeIDSuffix;
+	}
+	// If new name has a number suffix, check if it matches the current shape
+	else if (hasNumberSuffix)
+	{
+		string newSuffix = newName.substr(newUnderscorePos);
+		if (!shapeIDSuffix.empty() && newSuffix != shapeIDSuffix)
+		{
+			Log("ERROR: Shape ID mismatch - script has " + shapeIDSuffix + " but new name has " + newSuffix);
+			AddConsoleString("ERROR: Shape ID mismatch - cannot rename! Script has " + shapeIDSuffix + " but you entered " + newSuffix, RED);
+			return;  // Abort the rename
+		}
+	}
+
+	// Rename the script file using git mv
+	string oldPath = "Data/Scripts/" + oldScript + ".lua";
+	string newPath = "Data/Scripts/" + finalNewName + ".lua";
+
+	Log("RenameScript: oldPath='" + oldPath + "', newPath='" + newPath + "'");
+	Log("RenameScript: oldScript='" + oldScript + "', finalNewName='" + finalNewName + "'");
+
+	// Check if old file exists
+	ifstream oldFile(oldPath);
+	if (!oldFile.good())
+	{
+		Log("ERROR: Script file not found: " + oldPath);
+		AddConsoleString("ERROR: Script file not found: " + oldPath, RED);
+		return;
+	}
+	oldFile.close();
+
+	// First, update the function definition in the file itself BEFORE renaming
+	bool funcDefUpdated = false;
+	ifstream inFile(oldPath);
+	if (inFile.is_open())
+	{
+		stringstream buffer;
+		buffer << inFile.rdbuf();
+		string content = buffer.str();
+		inFile.close();
+
+		Log("RenameScript: Read " + std::to_string(content.length()) + " bytes from " + oldPath);
+
+		// Replace function definition: "function oldScript(" -> "function finalNewName("
+		string oldFuncDef = "function " + oldScript + "(";
+		string newFuncDef = "function " + finalNewName + "(";
+		Log("RenameScript: Searching for '" + oldFuncDef + "' to replace with '" + newFuncDef + "'");
+
+		size_t pos = content.find(oldFuncDef);
+		if (pos != string::npos)
+		{
+			Log("RenameScript: Found function definition at position " + std::to_string(pos));
+			content.replace(pos, oldFuncDef.length(), newFuncDef);
+
+			// Write back the updated content
+			ofstream outFile(oldPath, ios::trunc);
+			if (outFile.is_open())
+			{
+				outFile << content;
+				outFile.close();
+				funcDefUpdated = true;
+				Log("Updated function definition in " + oldPath);
+			}
+			else
+			{
+				Log("ERROR: Failed to write updated function definition to " + oldPath);
+			}
+		}
+		else
+		{
+			Log("WARNING: Function definition '" + oldFuncDef + "' not found in " + oldPath);
+		}
+	}
+	else
+	{
+		Log("ERROR: Failed to open " + oldPath + " for reading");
+	}
+
+	// Use git mv to rename the file
+	string gitCommand = "git mv \"" + oldPath + "\" \"" + newPath + "\"";
+	int result = system(gitCommand.c_str());
+
+	if (result != 0)
+	{
+		Log("ERROR: Failed to rename script file: git mv failed with error code " + std::to_string(result));
+		AddConsoleString("ERROR: Failed to rename file - git mv failed", RED);
+		return;
+	}
+
+	// Update all frames using this script
+	int updatedCount = 0;
+	for (int shape = 0; shape < g_shapeTable.size(); ++shape)
+	{
+		for (int frame = 0; frame < g_shapeTable[shape].size(); ++frame)
+		{
+			if (g_shapeTable[shape][frame].IsValid() &&
+				g_shapeTable[shape][frame].m_luaScript == oldScript)
+			{
+				Log("RenameScript: Updating shapetable[" + std::to_string(shape) + "][" + std::to_string(frame) + "] from '" + oldScript + "' to '" + finalNewName + "'");
+				g_shapeTable[shape][frame].m_luaScript = finalNewName;
+				updatedCount++;
+			}
+		}
+	}
+	Log("RenameScript: Updated " + std::to_string(updatedCount) + " shapetable entries");
+
+	// Refresh the scripting system to pick up the renamed file
+	Log("RenameScript: Shutting down and reinitializing scripting system");
+	g_ScriptingSystem->Shutdown();
+	g_ScriptingSystem->Init("");
+
+	// Reload all scripts (same as Main.cpp initialization)
+	string directoryPath("Data/Scripts");
+	g_ScriptingSystem->LoadScript(directoryPath + "/global_flags_and_constants.lua");
+	g_ScriptingSystem->LoadScript(directoryPath + "/u7_engine_api.lua");
+
+	for (const auto& entry : std::filesystem::directory_iterator(directoryPath))
+	{
+		if (entry.is_regular_file())
+		{
+			std::string ext = entry.path().extension().string();
+
+			if (ext == ".lua")
+			{
+				std::string filepath = entry.path().string();
+				std::string filename = entry.path().filename().string();
+
+				// Skip files we already loaded explicitly
+				if (filename == "global_flags_and_constants.lua" ||
+					filename == "u7_engine_api.lua")
+				{
+					continue;
+				}
+
+				g_ScriptingSystem->LoadScript(filepath);
+			}
+		}
+	}
+
+	g_ScriptingSystem->SortScripts();
+	Log("RenameScript: Scripting system reinitialized, loaded " + std::to_string(g_ScriptingSystem->m_scriptFiles.size()) + " scripts");
+
+	// Find the new script index
+	bool foundNewScript = false;
+	for (int i = 0; i < g_ScriptingSystem->m_scriptFiles.size(); ++i)
+	{
+		const string& scriptName = g_ScriptingSystem->m_scriptFiles[i].first;
+		if (scriptName == finalNewName)
+		{
+			m_luaScriptIndex = i;
+			Log("RenameScript: Found new script '" + finalNewName + "' at index " + std::to_string(i));
+			foundNewScript = true;
+			break;
+		}
+	}
+
+	if (!foundNewScript)
+	{
+		Log("ERROR: RenameScript: Could not find script '" + finalNewName + "' in scripting system after reload!");
+		Log("RenameScript: First 10 scripts in list:");
+		for (int i = 0; i < std::min(10, (int)g_ScriptingSystem->m_scriptFiles.size()); ++i)
+		{
+			Log("  [" + std::to_string(i) + "] " + g_ScriptingSystem->m_scriptFiles[i].first);
+		}
+	}
+
+	// Update function names in all Lua scripts
+	int scriptFilesUpdated = 0;
+	for (const auto& scriptPair : g_ScriptingSystem->m_scriptFiles)
+	{
+		string scriptFile = "Data/Scripts/" + scriptPair.first + ".lua";
+
+		// Read the entire file
+		ifstream inFile(scriptFile);
+		if (inFile.is_open())
+		{
+			stringstream buffer;
+			buffer << inFile.rdbuf();
+			string content = buffer.str();
+			inFile.close();
+
+			// Search and replace function name (old script name used as function name)
+			string oldFuncName = oldScript + "(";
+			string newFuncName = finalNewName + "(";
+			size_t pos = 0;
+			bool modified = false;
+
+			while ((pos = content.find(oldFuncName, pos)) != string::npos)
+			{
+				content.replace(pos, oldFuncName.length(), newFuncName);
+				pos += newFuncName.length();
+				modified = true;
+			}
+
+			// Write back if modified
+			if (modified)
+			{
+				ofstream outFile(scriptFile, ios::trunc);
+				if (outFile.is_open())
+				{
+					outFile << content;
+					outFile.close();
+					scriptFilesUpdated++;
+				}
+			}
+		}
+	}
+
+	// Save the shape table with updated script names
+	SaveShapeTable();
+
+	string message = "Renamed script from '" + oldScript + "' to '" + finalNewName + "' (";
+	if (funcDefUpdated)
+	{
+		message += "1 function definition updated, ";
+	}
+	message += std::to_string(updatedCount) + " frames updated";
+	if (scriptFilesUpdated > 0)
+	{
+		message += ", " + std::to_string(scriptFilesUpdated) + " script files updated";
+	}
+	message += ")";
+	AddConsoleString(message);
+}
+
 void ShapeEditorState::Update()
 {
+	// Check if we have a pending rename to process (after dialog is hidden)
+	if (!m_pendingRenameOldName.empty() && !m_pendingRenameNewName.empty())
+	{
+		AddConsoleString("Renaming script from '" + m_pendingRenameOldName + "' to '" + m_pendingRenameNewName + "'...");
+		RenameScript(m_pendingRenameOldName, m_pendingRenameNewName);
+		m_pendingRenameOldName.clear();
+		m_pendingRenameNewName.clear();
+	}
+
+	// If modal window is visible, only handle modal window input and return early
+	if (m_renameScriptWindow && m_renameScriptWindow->IsVisible())
+	{
+		// If we need to set focus and the mouse button is no longer pressed, do it now
+		if (m_renameScriptWindowNeedsFocus && !IsMouseButtonDown(MOUSE_LEFT_BUTTON))
+		{
+			int nameInputID = m_renameScriptWindow->GetElementID("SCRIPT_NAME");
+			if (nameInputID != -1)
+			{
+				auto elem = m_renameScriptWindow->GetGui()->GetElement(nameInputID);
+				if (elem && elem->m_Type == GUI_TEXTINPUT)
+				{
+					GuiTextInput* textInput = static_cast<GuiTextInput*>(elem.get());
+					textInput->m_HasFocus = true;
+					m_renameScriptWindow->GetGui()->m_ActiveElement = nameInputID;
+					Log("Set m_HasFocus = true after mouse released");
+				}
+			}
+			m_renameScriptWindowNeedsFocus = false;
+		}
+
+		m_renameScriptWindow->Update();
+
+		int okButtonID = m_renameScriptWindow->GetElementID("OK_BUTTON");
+		int cancelButtonID = m_renameScriptWindow->GetElementID("CANCEL_BUTTON");
+
+		if (m_renameScriptWindow->GetGui()->GetActiveElementID() == okButtonID)
+		{
+			// Get the new name from the text input
+			int nameInputID = m_renameScriptWindow->GetElementID("SCRIPT_NAME");
+			if (nameInputID != -1)
+			{
+				auto elem = m_renameScriptWindow->GetGui()->GetElement(nameInputID);
+				if (elem && elem->m_Type == GUI_TEXTINPUT)
+				{
+					string newName = elem->GetString();
+					string oldScript = g_shapeTable[m_currentShape][m_currentFrame].m_luaScript;
+
+					// Only queue rename if name changed and is valid
+					if (!newName.empty() && newName != "default" && newName != oldScript)
+					{
+						m_pendingRenameOldName = oldScript;
+						m_pendingRenameNewName = newName;
+					}
+
+					// Hide dialog and re-enable main GUI
+					m_renameScriptWindow->Hide();
+					m_renameScriptWindow.reset();
+					m_currentGui->m_AcceptingInput = true;
+				}
+			}
+			else
+			{
+				m_renameScriptWindow->Hide();
+				m_renameScriptWindow.reset();
+				m_currentGui->m_AcceptingInput = true;
+			}
+		}
+		else if (m_renameScriptWindow->GetGui()->GetActiveElementID() == cancelButtonID)
+		{
+			m_renameScriptWindow->Hide();
+			m_renameScriptWindow.reset();
+			m_currentGui->m_AcceptingInput = true;
+		}
+
+		return;  // Don't process main GUI while modal is visible
+	}
+
 	//  Handle input
 	m_currentGui->Update();
 	ShapeData& shapeData = g_shapeTable[m_currentShape][m_currentFrame];
@@ -418,25 +767,7 @@ void ShapeEditorState::Update()
 	{
 		AddConsoleString("Saving shapetable.dat...", WHITE);
 		Draw();  // Force a frame render to show the loading message
-
-		ofstream file("Data/shapetable.dat", ios::trunc);
-		if (file.is_open())
-		{
-			for (int i = 150; i < 1024; ++i)
-			{
-				for (int j = 0; j < 32; ++j)
-				{
-					ShapeData& shapeData = g_shapeTable[i][j];
-					shapeData.Serialize(file);
-				}
-			}
-			file.close();
-			AddConsoleString("Saved shapetable.dat successfully!", GREEN);
-		}
-		else
-		{
-			AddConsoleString("ERROR: Failed to save shapetable.dat!", RED);
-		}
+		SaveShapeTable();
 	}
 
 	if (m_currentGui->GetActiveElementID() == GE_LOADBUTTON)
@@ -522,6 +853,7 @@ void ShapeEditorState::Update()
 		bool foundInstance = false;
 		for (unordered_map<int, unique_ptr<U7Object>>::iterator node = g_objectList.begin(); node != g_objectList.end(); ++node)
 		{
+			if ((*node).second == nullptr) continue;
 			if((*node).second->m_shapeData->m_shape == m_currentShape && (*node).second->m_shapeData->m_frame == m_currentFrame && !(*node).second->m_isContained)
 			{
 				g_camera.target = (*node).second->m_Pos;
@@ -1362,11 +1694,28 @@ void ShapeEditorState::Update()
 			ss << std::setfill('0') << std::setw(4) << m_currentShape;
 			suffix = "_" + ss.str();
 		}
-		else if (m_currentShape >= 1025 && m_currentShape <= 1280)
+
+		// Search for script ending with the calculated suffix (for non-NPC scripts)
+		int newScriptIndex = 0;
+
+		if (m_currentShape >= 1025 && m_currentShape <= 1280)
 		{
-			// npc_*_XXXX (decimal - 1024, 4 digits)
-			ss << std::setfill('0') << std::setw(4) << (m_currentShape - 1024);
-			suffix = "_" + ss.str();
+			// npc_*_XXXX (decimal - 1024, 4 digits) - use helper function
+			int npcID = m_currentShape - 1024;
+			string scriptName = FindNPCScriptByID(npcID);
+			if (!scriptName.empty())
+			{
+				// Find index in script files
+				for (int i = 0; i < g_ScriptingSystem->m_scriptFiles.size(); ++i)
+				{
+					if (g_ScriptingSystem->m_scriptFiles[i].first == scriptName)
+					{
+						newScriptIndex = i;
+						AddConsoleString("Using script: " + scriptName);
+						break;
+					}
+				}
+			}
 		}
 		else if (m_currentShape > 1280)
 		{
@@ -1374,18 +1723,18 @@ void ShapeEditorState::Update()
 			ss << std::setfill('0') << std::setw(4) << (m_currentShape - 1280);
 			suffix = "_" + ss.str();
 		}
-
-		// Search for script ending with the calculated suffix
-		int newScriptIndex = 0;
-		for (int i = 0; i < g_ScriptingSystem->m_scriptFiles.size(); ++i)
+		if (m_currentShape < 1025 || m_currentShape > 1280)
 		{
-			const std::string& scriptName = g_ScriptingSystem->m_scriptFiles[i].first;
-			if (scriptName.length() >= suffix.length() &&
-				scriptName.compare(scriptName.length() - suffix.length(), suffix.length(), suffix) == 0)
+			for (int i = 0; i < g_ScriptingSystem->m_scriptFiles.size(); ++i)
 			{
-				newScriptIndex = i;
-				AddConsoleString("Using script: " + scriptName);
-				break;
+				const std::string& scriptName = g_ScriptingSystem->m_scriptFiles[i].first;
+				if (scriptName.length() >= suffix.length() &&
+					scriptName.compare(scriptName.length() - suffix.length(), suffix.length(), suffix) == 0)
+				{
+					newScriptIndex = i;
+					AddConsoleString("Using script: " + scriptName);
+					break;
+				}
 			}
 		}
 
@@ -1411,40 +1760,57 @@ void ShapeEditorState::Update()
 		std::string targetScript;
 		int foundScriptIndex = 0;
 		{
-			std::string suffix;
-			stringstream ss;
-
-			if (m_currentShape < 150)
+			// Handle NPCs separately with helper function
+			if (m_currentShape >= 1025 && m_currentShape <= 1280)
 			{
-				ss << std::setfill('0') << std::setw(4) << m_currentShape;
-				suffix = "_" + ss.str();
-			}
-			else if (m_currentShape >= 150 && m_currentShape <= 1024)
-			{
-				ss << std::setfill('0') << std::setw(4) << m_currentShape;
-				suffix = "_" + ss.str();
-			}
-			else if (m_currentShape >= 1025 && m_currentShape <= 1280)
-			{
-				ss << std::setfill('0') << std::setw(4) << (m_currentShape - 1024);
-				suffix = "_" + ss.str();
-			}
-			else if (m_currentShape > 1280)
-			{
-				ss << std::setfill('0') << std::setw(4) << (m_currentShape - 1280);
-				suffix = "_" + ss.str();
-			}
-
-			// Search for script ending with the calculated suffix
-			for (int i = 0; i < g_ScriptingSystem->m_scriptFiles.size(); ++i)
-			{
-				const std::string& scriptName = g_ScriptingSystem->m_scriptFiles[i].first;
-				if (scriptName.length() >= suffix.length() &&
-					scriptName.compare(scriptName.length() - suffix.length(), suffix.length(), suffix) == 0)
+				int npcID = m_currentShape - 1024;
+				targetScript = FindNPCScriptByID(npcID);
+				if (!targetScript.empty())
 				{
-					foundScriptIndex = i;
-					targetScript = scriptName;
-					break;
+					// Find index in script files
+					for (int i = 0; i < g_ScriptingSystem->m_scriptFiles.size(); ++i)
+					{
+						if (g_ScriptingSystem->m_scriptFiles[i].first == targetScript)
+						{
+							foundScriptIndex = i;
+							break;
+						}
+					}
+				}
+			}
+			else
+			{
+				// For non-NPC scripts, use suffix matching
+				std::string suffix;
+				stringstream ss;
+
+				if (m_currentShape < 150)
+				{
+					ss << std::setfill('0') << std::setw(4) << m_currentShape;
+					suffix = "_" + ss.str();
+				}
+				else if (m_currentShape >= 150 && m_currentShape <= 1024)
+				{
+					ss << std::setfill('0') << std::setw(4) << m_currentShape;
+					suffix = "_" + ss.str();
+				}
+				else if (m_currentShape > 1280)
+				{
+					ss << std::setfill('0') << std::setw(4) << (m_currentShape - 1280);
+					suffix = "_" + ss.str();
+				}
+
+				// Search for script ending with the calculated suffix
+				for (int i = 0; i < g_ScriptingSystem->m_scriptFiles.size(); ++i)
+				{
+					const std::string& scriptName = g_ScriptingSystem->m_scriptFiles[i].first;
+					if (scriptName.length() >= suffix.length() &&
+						scriptName.compare(scriptName.length() - suffix.length(), suffix.length(), suffix) == 0)
+					{
+						foundScriptIndex = i;
+						targetScript = scriptName;
+						break;
+					}
 				}
 			}
 
@@ -1515,6 +1881,77 @@ void ShapeEditorState::Update()
 		}
 
 		AddConsoleString("Cleared scripts for " + std::to_string(clearedCount) + " frames");
+	}
+
+	// Handle rename script button
+	if (m_currentGui->GetActiveElementID() == GE_RENAMESCRIPTBUTTON)
+	{
+		Log("Rename script button clicked!");
+		// Get the current script name (without .lua extension)
+		string currentScript = g_shapeTable[m_currentShape][m_currentFrame].m_luaScript;
+		Log("Current script: " + currentScript);
+		if (currentScript == "default" || currentScript.empty())
+		{
+			AddConsoleString("No script assigned to rename");
+		}
+		else
+		{
+			Log("Creating rename dialog window...");
+			Log("RenderWidth: " + std::to_string(g_Engine->m_RenderWidth) + ", RenderHeight: " + std::to_string(g_Engine->m_RenderHeight));
+			Log("ScreenWidth: " + std::to_string(g_Engine->m_ScreenWidth) + ", ScreenHeight: " + std::to_string(g_Engine->m_ScreenHeight));
+			Log("g_DrawScale: " + std::to_string(g_DrawScale));
+
+			// Create the rename dialog window - use render dimensions since it draws in the render target
+			m_renameScriptWindow = make_unique<GhostWindow>(
+				"GUI/script_rename.ghost",
+				"Data/u7.cfg",
+				g_ResourceManager.get(),
+				g_Engine->m_RenderWidth,
+				g_Engine->m_RenderHeight,
+				true  // modal
+			);
+
+			Log("Window created. IsValid: " + std::to_string(m_renameScriptWindow->IsValid()));
+
+			// Mouse coordinates are in screen space, but GUI is rendered in render target space
+			// InputScale divides mouse coords to transform them: screenMouse / g_DrawScale = renderMouse
+			m_renameScriptWindow->GetGui()->m_InputScale = g_DrawScale;
+			Log("Set InputScale to: " + std::to_string(g_DrawScale));
+
+			// Disable input on main GUI while modal is visible
+			m_currentGui->m_AcceptingInput = false;
+
+			// Set the ORIG_NAME textarea to show the current script name
+			int origNameID = m_renameScriptWindow->GetElementID("ORIG_NAME");
+			if (origNameID != -1)
+			{
+				auto origElem = m_renameScriptWindow->GetGui()->GetElement(origNameID);
+				if (origElem && origElem->m_Type == GUI_TEXTAREA)
+				{
+					origElem->m_String = currentScript;
+					Log("Set ORIG_NAME to: " + currentScript);
+				}
+			}
+
+			// Pre-fill the text input with the current script name
+			int nameInputID = m_renameScriptWindow->GetElementID("SCRIPT_NAME");
+			Log("SCRIPT_NAME ID: " + std::to_string(nameInputID));
+			if (nameInputID != -1)
+			{
+				auto elem = m_renameScriptWindow->GetGui()->GetElement(nameInputID);
+				if (elem && elem->m_Type == GUI_TEXTINPUT)
+				{
+					elem->m_String = currentScript;
+					Log("Pre-filled script name");
+				}
+			}
+
+			// Set flag to give focus after mouse button is released
+			m_renameScriptWindowNeedsFocus = true;
+
+			m_renameScriptWindow->Show();
+			Log("Called Show(). IsVisible: " + std::to_string(m_renameScriptWindow->IsVisible()));
+		}
 	}
 
 	if (somethingChanged)
@@ -1864,6 +2301,13 @@ void ShapeEditorState::Draw()
 	int y = -yOffset;
 
 	m_currentGui->Draw();
+
+	// Draw modal rename script window if visible
+	if (m_renameScriptWindow && m_renameScriptWindow->IsVisible())
+	{
+		Log("Drawing rename window!");
+		m_renameScriptWindow->Draw();
+	}
 
 	EndTextureMode();
 	DrawTexturePro(g_guiRenderTarget.texture,
@@ -2334,7 +2778,8 @@ int ShapeEditorState::SetupCommonGui(Gui* gui)
 
 	y += yoffset;
 
-	AddAutoStretchButton(gui, GE_ADDALLFRAMESSCRIPTBUTTON, 4, y - 2, "Add All Frames Script", g_guiFont.get());
+	AddAutoStretchButton(gui, GE_ADDALLFRAMESSCRIPTBUTTON, 4, y - 2, "Add All Frames", g_guiFont.get());
+	AddAutoStretchButton(gui, GE_RENAMESCRIPTBUTTON, 80, y - 2, "Rename", g_guiFont.get());
 	AddAutoStretchButton(gui, GE_CLEARSCRIPTBUTTON, 4, y + 11, "Clear Script", g_guiFont.get());
 	AddAutoStretchButton(gui, GE_CLEARALLSCRIPTSBUTTON, 71, y + 11, "Clear All", g_guiFont.get());
 

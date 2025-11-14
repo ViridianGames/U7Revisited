@@ -1,5 +1,8 @@
 --- Best guess: Manages a gargoyle healer's services (heal, cure poison, resurrect), selecting a target and applying effects based on gold and conditions.
-function utility_unknown_0925(P0, P1, P2)
+---@param resurrect_cost integer The gold cost for resurrection service
+---@param cure_poison_cost integer The gold cost for cure poison service
+---@param heal_cost integer The gold cost for healing service
+function utility_unknown_0925(resurrect_cost, cure_poison_cost, heal_cost)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E, var_000F, var_0010, var_0011, var_0012
 
     add_dialogue("\"To be able to heal, cure poison, and resurrect. To be interested in one of these services?\"")
@@ -11,7 +14,7 @@ function utility_unknown_0925(P0, P1, P2)
         var_0005 = var_0004[utility_unknown_1035(var_0004)]
         if var_0005 == "heal" or var_0005 == "cure poison" then
             var_0006 = var_0005 == "heal" and "healed" or "cured of poison"
-            var_0007 = var_0005 == "heal" and P2 or P1
+            var_0007 = var_0005 == "heal" and heal_cost or cure_poison_cost
             add_dialogue("\"To want to " .. var_0006 .. " whom?\"")
             var_0008 = utility_unknown_1038()
             if var_0008 == 0 then
@@ -31,7 +34,7 @@ function utility_unknown_0925(P0, P1, P2)
                 end
             end
             add_dialogue("\"To be sorely wounded. To attempt to restore them to this world.\"")
-            var_0007 = P0
+            var_0007 = resurrect_cost
         end
         add_dialogue("\"To charge " .. var_0007 .. " gold. To still want my services?\"")
         var_000B = ask_yes_no()

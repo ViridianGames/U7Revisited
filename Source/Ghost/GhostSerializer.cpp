@@ -14,6 +14,7 @@ extern std::unique_ptr<ResourceManager> g_ResourceManager;
 // Initialize static members
 std::string GhostSerializer::s_baseFontPath = "Fonts/";
 std::string GhostSerializer::s_baseSpritePath = "Images/";
+std::string GhostSerializer::s_baseGhostPath = "Gui/Ghost/";
 
 GhostSerializer::GhostSerializer()
 {
@@ -31,6 +32,11 @@ void GhostSerializer::SetBaseFontPath(const std::string& path)
 void GhostSerializer::SetBaseSpritePath(const std::string& path)
 {
 	s_baseSpritePath = path;
+}
+
+void GhostSerializer::SetBaseGhostPath(const std::string& path)
+{
+	s_baseGhostPath = path;
 }
 
 ghost_json GhostSerializer::ReadJsonFromFile(const std::string& filename)
@@ -207,7 +213,7 @@ std::pair<int, int> GhostSerializer::CalculateNextFloatingPosition(int parentID,
 	return {relX, relY};
 }
 
-void GhostSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, const ghost_json& inheritedProps, int parentX, int parentY, int parentElementID, const std::string& namePrefix)
+void GhostSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, const ghost_json& inheritedProps, int parentX, int parentY, int parentElementID, const std::string& namePrefix, int insertIndex)
 {
 	// Track layout position for floating elements
 	// Get parent's layout type and padding (defaults to "horz" and 5px if no parent or not found)
@@ -272,7 +278,7 @@ void GhostSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, c
 			}
 
 			// Read and parse the included file
-			ghost_json includedJson = ReadJsonFromFile("Gui/" + filename);
+			ghost_json includedJson = ReadJsonFromFile(s_baseGhostPath + filename);
 			if (!includedJson.empty() && includedJson.contains("gui") && includedJson["gui"].contains("elements"))
 			{
 				// Parse included elements with parent's offsets PLUS current layout position
@@ -287,12 +293,27 @@ void GhostSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, c
 			{
 				const vector<int>& childrenAfter = m_childrenMap[parentElementID];
 
+				// Track the first child added by the include for serialization purposes
+				int firstIncludedChildID = -1;
+
 				// Find newly added children (those in childrenAfter but not in childrenBefore)
 				for (int childID : childrenAfter)
 				{
 					// Check if this child existed before
 					if (find(childrenBefore.begin(), childrenBefore.end(), childID) != childrenBefore.end())
 						continue;  // Skip existing children
+
+					// Track first child for include metadata
+					if (firstIncludedChildID == -1)
+					{
+						firstIncludedChildID = childID;
+						// Store include metadata for this child
+						IncludeMetadata metadata;
+						metadata.filename = filename;
+						metadata.namePrefix = includeNamePrefix;
+						m_includeElements[childID] = metadata;
+						Log("Marked element " + to_string(childID) + " as include from: " + filename);
+					}
 
 					// This is a new child added by the include
 					auto child = gui->GetElement(childID);
@@ -380,16 +401,35 @@ void GhostSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, c
 			m_elementNameToID[prefixedName] = id;
 		}
 
+		// Store hover text if provided (for tooltips)
+		if (element.contains("hoverText"))
+		{
+			string hoverText = element["hoverText"];
+			if (!hoverText.empty())
+			{
+				SetElementHoverText(id, hoverText);
+			}
+		}
+
 		// Track tree structure for real elements
 		// If this is a root element (parentElementID == -1), store as root
 		if (parentElementID == -1 && m_rootElementID == -1)
 		{
 			m_rootElementID = id;
 		}
-		// Add to parent's children list
+		// Add to parent's children list at the specified index
 		if (parentElementID != -1)
 		{
-			m_childrenMap[parentElementID].push_back(id);
+			if (insertIndex >= 0)
+			{
+				RegisterChildOfParentAtIndex(parentElementID, id, insertIndex);
+				// Increment insertIndex for next element in this batch
+				insertIndex++;
+			}
+			else
+			{
+				m_childrenMap[parentElementID].push_back(id);
+			}
 		}
 
 		if (type == "panel")
@@ -599,6 +639,11 @@ void GhostSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, c
 		else if (type == "textinput")
 		{
 			string text = element.value("text", "");
+			// If text is empty, use "example" as default to show the font
+			if (text.empty())
+			{
+				text = "example";
+			}
 			auto size = element["size"];
 			int width = size[0];
 			int height = size[1];
@@ -648,15 +693,8 @@ void GhostSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, c
 			int absoluteX = parentX + posx;
 			int absoluteY = parentY + posy;
 
-			// Scale height based on font size (baseline is 20px for default font)
-			int scaledHeight = height;
-			if (fontSize != 20)
-			{
-				scaledHeight = (int)((float)height * ((float)fontSize / 20.0f));
-			}
-
 			// Add the text input
-			gui->AddTextInput(id, absoluteX, absoluteY, width, scaledHeight, font, text, textColor, boxColor, bgColor, group, active);
+			gui->AddTextInput(id, absoluteX, absoluteY, width, height, font, text, textColor, boxColor, bgColor, group, active);
 		}
 		else if (type == "sprite")
 		{
@@ -747,6 +785,105 @@ void GhostSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, c
 
 			// Add the sprite element
 			gui->AddSprite(id, absoluteX, absoluteY, sprite, scaleX, scaleY, color, group, active);
+		}
+		else if (type == "cycle")
+		{
+			// Parse sprite definition (same as sprite)
+			SpriteDefinition spriteDef;
+			if (element.contains("sprite"))
+			{
+				if (element["sprite"].is_string())
+				{
+					// Old format: "sprite": "filename.png"
+					string spriteName = element["sprite"].get<string>();
+					// Load full texture and store definition
+					string spritePath = spriteName.empty() ? "" : s_baseSpritePath + spriteName;
+					Texture loadedTexture = LoadTexture(spritePath.c_str());
+					spriteDef.spritesheet = spriteName;
+					spriteDef.x = 0;
+					spriteDef.y = 0;
+					spriteDef.w = (loadedTexture.id != 0) ? loadedTexture.width : 48;
+					spriteDef.h = (loadedTexture.id != 0) ? loadedTexture.height : 48;
+					if (loadedTexture.id != 0)
+						UnloadTexture(loadedTexture);  // We'll reload it below
+				}
+				else if (element["sprite"].is_object())
+				{
+					// New format: "sprite": {"spritesheet": "file.png", "x": 0, "y": 0, "w": 32, "h": 32}
+					auto spriteObj = element["sprite"];
+					spriteDef.spritesheet = spriteObj.value("spritesheet", "");
+					spriteDef.x = spriteObj.value("x", 0);
+					spriteDef.y = spriteObj.value("y", 0);
+					spriteDef.w = spriteObj.value("w", 48);
+					spriteDef.h = spriteObj.value("h", 48);
+				}
+			}
+
+			// Store sprite definition
+			SetSprite(id, spriteDef);
+
+			// Get frame count (default to 1)
+			int frameCount = element.value("frameCount", 1);
+
+			// Get scale with defaults
+			float scaleX = element.value("scaleX", 1.0f);
+			float scaleY = element.value("scaleY", 1.0f);
+
+			// Get color with inheritance
+			Color color = WHITE;
+			if (element.contains("color"))
+			{
+				m_explicitProperties[id].insert("color");
+				auto arr = element["color"];
+				color = Color{ (unsigned char)arr[0], (unsigned char)arr[1],
+				              (unsigned char)arr[2], (unsigned char)arr[3] };
+			}
+			else if (!inheritedProps.is_null() && inheritedProps.contains("color"))
+			{
+				auto arr = inheritedProps["color"];
+				color = Color{ (unsigned char)arr[0], (unsigned char)arr[1],
+				              (unsigned char)arr[2], (unsigned char)arr[3] };
+			}
+
+			// Add parent offsets to make position absolute
+			int absoluteX = parentX + posx;
+			int absoluteY = parentY + posy;
+
+			// Load the sprite texture with the specified rectangle
+			string spritePath = spriteDef.spritesheet.empty() ? "" : s_baseSpritePath + spriteDef.spritesheet;
+			Texture loadedTexture = LoadTexture(spritePath.c_str());
+
+			// Create frames using helper function
+			vector<shared_ptr<Sprite>> frames;
+			if (loadedTexture.id == 0)
+			{
+				Log("GhostSerializer::ParseElements - Failed to load cycle sprite: " + spritePath);
+				// Create default frames
+				for (int i = 0; i < frameCount; i++)
+				{
+					auto sprite = make_shared<Sprite>();
+					sprite->m_sourceRect = Rectangle{0, 0, 32, 32};
+					sprite->m_texture = nullptr;
+					frames.push_back(sprite);
+				}
+			}
+			else
+			{
+				// Allocate texture on heap and copy the loaded texture
+				Texture* texture = new Texture();
+				*texture = loadedTexture;
+
+				// Use CreateHorizontalSpriteFrames to generate frames
+				frames = CreateHorizontalSpriteFrames(
+					texture,
+					spriteDef.x, spriteDef.y,
+					spriteDef.w, spriteDef.h,
+					frameCount
+				);
+			}
+
+			// Add the cycle element
+			gui->AddCycle(id, absoluteX, absoluteY, frames, scaleX, scaleY, color, group, active);
 		}
 		else if (type == "checkbox")
 		{
@@ -1112,8 +1249,51 @@ void GhostSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, c
 				}
 			}
 
-			// Add the iconbutton (downbutton and inactivebutton default to nullptr)
-			gui->AddIconButton(id, absoluteX, absoluteY, upSprite, nullptr, nullptr, text,
+			// Parse and load down sprite definition (optional)
+			shared_ptr<Sprite> downSprite = nullptr;
+			if (element.contains("downSprite") && element["downSprite"].is_object())
+			{
+				auto downSpriteObj = element["downSprite"];
+				SpriteDefinition downSpriteDef;
+				downSpriteDef.spritesheet = downSpriteObj.value("spritesheet", "");
+				downSpriteDef.x = downSpriteObj.value("x", 0);
+				downSpriteDef.y = downSpriteObj.value("y", 0);
+				downSpriteDef.w = downSpriteObj.value("w", 48);
+				downSpriteDef.h = downSpriteObj.value("h", 48);
+
+				// Store down sprite definition
+				SetIconButtonDownSprite(id, downSpriteDef);
+
+				// Load down sprite texture
+				if (!downSpriteDef.spritesheet.empty())
+				{
+					string downSpritePath = s_baseSpritePath + downSpriteDef.spritesheet;
+					Texture loadedTexture = LoadTexture(downSpritePath.c_str());
+
+					downSprite = make_shared<Sprite>();
+					if (loadedTexture.id == 0)
+					{
+						Log("GhostSerializer::ParseElements - Failed to load iconbutton down sprite: " + downSpritePath);
+						downSprite->m_sourceRect = Rectangle{0, 0, 32, 32};
+						downSprite->m_texture = nullptr;
+					}
+					else
+					{
+						Texture* texture = new Texture();
+						*texture = loadedTexture;
+						downSprite->m_texture = texture;
+						downSprite->m_sourceRect = Rectangle{
+							static_cast<float>(downSpriteDef.x),
+							static_cast<float>(downSpriteDef.y),
+							static_cast<float>(downSpriteDef.w),
+							static_cast<float>(downSpriteDef.h)
+						};
+					}
+				}
+			}
+
+			// Add the iconbutton (inactivebutton defaults to nullptr)
+			gui->AddIconButton(id, absoluteX, absoluteY, upSprite, downSprite, nullptr, text,
 			                  font, fontColor, scale, group, active, canBeHeld);
 		}
 		else if (type == "octagonbox")
@@ -1492,7 +1672,7 @@ int GhostSerializer::ResolveIntProperty(int elementID, const std::string& proper
 	return defaultValue;  // Not found, return default
 }
 
-bool GhostSerializer::LoadIntoPanel(const std::string& filename, Gui* gui, int parentX, int parentY, int parentElementID)
+bool GhostSerializer::LoadIntoPanel(const std::string& filename, Gui* gui, int parentX, int parentY, int parentElementID, int insertIndex)
 {
 	// Read JSON from file
 	ghost_json j = ReadJsonFromFile(filename);
@@ -1507,7 +1687,7 @@ bool GhostSerializer::LoadIntoPanel(const std::string& filename, Gui* gui, int p
 	// Parse elements directly at the specified position
 	if (j.contains("gui") && j["gui"].contains("elements"))
 	{
-		ParseElements(j["gui"]["elements"], gui, inheritedProps, parentX, parentY, parentElementID);
+		ParseElements(j["gui"]["elements"], gui, inheritedProps, parentX, parentY, parentElementID, "", insertIndex);
 		return true;
 	}
 
@@ -1799,6 +1979,9 @@ ghost_json GhostSerializer::SerializeElement(int elementID, Gui* gui, int parent
 		case GUI_SPRITE:
 			type = "sprite";
 			break;
+		case GUI_CYCLE:
+			type = "cycle";
+			break;
 		case GUI_SCROLLBAR:
 			type = "scrollbar";
 			break;
@@ -1997,7 +2180,9 @@ ghost_json GhostSerializer::SerializeElement(int elementID, Gui* gui, int parent
 	else if (element->m_Type == GUI_TEXTINPUT)
 	{
 		auto textinput = static_cast<GuiTextInput*>(element.get());
-		elementJson["text"] = textinput->m_String;
+		// Don't save "example" text - it was just added for display purposes
+		string textToSave = (textinput->m_String == "example") ? "" : textinput->m_String;
+		elementJson["text"] = textToSave;
 		elementJson["size"] = { static_cast<int>(textinput->m_Width), static_cast<int>(textinput->m_Height) };
 
 		// Only serialize properties that were explicitly set (not inherited)
@@ -2064,6 +2249,36 @@ ghost_json GhostSerializer::SerializeElement(int elementID, Gui* gui, int parent
 				elementJson["color"] = { sprite->m_Color.r, sprite->m_Color.g, sprite->m_Color.b, sprite->m_Color.a };
 		}
 	}
+	else if (element->m_Type == GUI_CYCLE)
+	{
+		auto cycle = static_cast<GuiCycle*>(element.get());
+
+		// Serialize sprite definition (with x/y/w/h)
+		SpriteDefinition spriteDef = GetSprite(elementID);
+		if (!spriteDef.IsEmpty())
+		{
+			elementJson["sprite"] = {
+				{"spritesheet", spriteDef.spritesheet},
+				{"x", spriteDef.x},
+				{"y", spriteDef.y},
+				{"w", spriteDef.w},
+				{"h", spriteDef.h}
+			};
+		}
+
+		elementJson["frameCount"] = cycle->m_FrameCount;
+		elementJson["scaleX"] = cycle->m_ScaleX;
+		elementJson["scaleY"] = cycle->m_ScaleY;
+
+		// Only serialize color if explicitly set (not inherited)
+		auto explicitIt = m_explicitProperties.find(elementID);
+		if (explicitIt != m_explicitProperties.end())
+		{
+			const auto& explicitProps = explicitIt->second;
+			if (explicitProps.count("color") > 0)
+				elementJson["color"] = { cycle->m_Color.r, cycle->m_Color.g, cycle->m_Color.b, cycle->m_Color.a };
+		}
+	}
 	else if (element->m_Type == GUI_SCROLLBAR)
 	{
 		auto scrollbar = static_cast<GuiScrollBar*>(element.get());
@@ -2087,6 +2302,19 @@ ghost_json GhostSerializer::SerializeElement(int elementID, Gui* gui, int parent
 				{"y", spriteDef.y},
 				{"w", spriteDef.w},
 				{"h", spriteDef.h}
+			};
+		}
+
+		// Serialize down sprite definition (optional)
+		SpriteDefinition downSpriteDef = GetIconButtonDownSprite(elementID);
+		if (!downSpriteDef.IsEmpty())
+		{
+			elementJson["downSprite"] = {
+				{"spritesheet", downSpriteDef.spritesheet},
+				{"x", downSpriteDef.x},
+				{"y", downSpriteDef.y},
+				{"w", downSpriteDef.w},
+				{"h", downSpriteDef.h}
 			};
 		}
 
@@ -2265,11 +2493,30 @@ ghost_json GhostSerializer::SerializeElement(int elementID, Gui* gui, int parent
 		elementJson["elements"] = ghost_json::array();
 		for (int childID : childIt->second)
 		{
-			// Pass this element's position as the parent position for children
-			ghost_json childJson = SerializeElement(childID, gui, element->m_Pos.x, element->m_Pos.y);
-			if (!childJson.is_null())
+			// Check if this child represents an include
+			auto includeIt = m_includeElements.find(childID);
+			if (includeIt != m_includeElements.end())
 			{
-				elementJson["elements"].push_back(childJson);
+				// Serialize as an include instead of expanding the element
+				ghost_json includeJson;
+				includeJson["type"] = "include";
+				includeJson["filename"] = includeIt->second.filename;
+				if (!includeIt->second.namePrefix.empty())
+				{
+					includeJson["namePrefix"] = includeIt->second.namePrefix;
+				}
+				elementJson["elements"].push_back(includeJson);
+				Log("Serialized element " + to_string(childID) + " as include: " + includeIt->second.filename);
+			}
+			else
+			{
+				// Normal child - serialize recursively
+				// Pass this element's position as the parent position for children
+				ghost_json childJson = SerializeElement(childID, gui, element->m_Pos.x, element->m_Pos.y);
+				if (!childJson.is_null())
+				{
+					elementJson["elements"].push_back(childJson);
+				}
 			}
 		}
 	}

@@ -36,7 +36,7 @@ function utility_shopreagents_1098()
             end
             var_000D = 0
             add_dialogue("\"" .. var_000C .. " To agree to the cost?\"")
-            var_000E = _SelectOption()
+            var_000E = select_option()
             if not var_000E then
                 add_dialogue("\"To want how many?\"")
                 var_000D = utility_shop_1016(true, 1, 20, var_000B, var_0009, var_0003[var_000A], var_0002[var_000A])
@@ -48,7 +48,7 @@ function utility_shopreagents_1098()
                     add_dialogue("\"To have not enough gold for that!\"")
                 end
                 add_dialogue("\"To want something else?\"")
-                var_0000 = _SelectOption()
+                var_0000 = select_option()
             end
         end
         ::continue::

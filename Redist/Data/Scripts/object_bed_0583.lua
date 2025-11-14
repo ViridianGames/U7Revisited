@@ -22,8 +22,8 @@ function object_bed_0583(eventid, objectref)
             end
         end
     elseif eventid == 7 then
-        var_0001 = execute_usecode_array({17505, 17516, 17456, 7769}, -356)
-        var_0001 = execute_usecode_array({583, 8021, 2, 7719}, objectref)
+        var_0001 = execute_usecode_array(-356, {17505, 17516, 17456, 7769})
+        var_0001 = execute_usecode_array(objectref, {583, 8021, 2, 7719})
     elseif eventid == 2 then
         set_object_shape(objectref, 1011)
         get_object_frame(objectref, 17)

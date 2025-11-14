@@ -85,7 +85,7 @@ function npc_iolo_0001(eventid, objectref)
         -- halt_scheduled(1) --- Guess: Updates object state or position
         -- halt_scheduled(11) --- Guess: Updates object state or position
         -- if not get_flag(59) then
-        --     var_0005 = execute_usecode_array({0, 0, 17492, 7715}, objectref) --- Guess: Executes a specific action with parameters
+        --     var_0005 = execute_usecode_array(objectref, {0, 0, 17492, 7715}) --- Guess: Executes a specific action with parameters
         --     set_flag(59, true)
         -- end
         -- Wait for the conversation to finish.

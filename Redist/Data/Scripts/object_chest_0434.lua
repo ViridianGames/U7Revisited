@@ -24,7 +24,7 @@ function object_chest_0434(eventid, objectref)
                 set_object_frame(var_0001, 3)
                 var_0002 = update_last_created(var_0000)
             end
-            var_0002 = execute_usecode_array({17516, 7937, 0, 7769}, 356)
+            var_0002 = execute_usecode_array(356, {17516, 7937, 0, 7769})
         end
     end
     return

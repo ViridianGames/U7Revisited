@@ -1,5 +1,5 @@
 --- Best guess: Handles NPC feeding (e.g., garlic, type 842), adjusting NPC properties with dialogue responses.
-function utility_unknown_0787(eventid, objectref, arg1, arg2)
+function utility_unknown_0787(objectref, arg1, arg2)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009
 
     var_0000 = objectref
@@ -13,7 +13,7 @@ function utility_unknown_0787(eventid, objectref, arg1, arg2)
         if var_0005 > 24 then
             var_0007 = "@No, thank thee.@"
         else
-            consumeobject_(var_0002) --- Guess: Consumes item
+            consume_object(var_0002) --- Guess: Consumes item
             set_object_behavior(var_0000, var_0000) --- Guess: Sets item behavior
             apply_object_effect(var_0002) --- Guess: Applies item effect
             var_0008 = random(1, 10)
@@ -29,7 +29,7 @@ function utility_unknown_0787(eventid, objectref, arg1, arg2)
                         var_0007 = "@May I have some more?@"
                     end
                 elseif var_0006 < 20 then
-                    if get_object_type(var_0002) == 842 then
+                    if get_object_shape(var_0002) == 842 then
                         var_0007 = "@Yum, garlic!@"
                     else
                         var_0007 = "@Ah yes, much better.@"
@@ -41,7 +41,7 @@ function utility_unknown_0787(eventid, objectref, arg1, arg2)
                     end
                 end
             elseif var_0005 < 20 then
-                if get_object_type(var_0002) == 842 then
+                if get_object_shape(var_0002) == 842 then
                     var_0007 = "@Yum, garlic!@"
                 else
                     var_0007 = "@Ahh, very tasty.@"

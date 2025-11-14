@@ -6,7 +6,7 @@ function utility_event_0507(eventid, objectref)
         if get_object_quality(objectref) == 100 then
             if not get_flag(767) then
                 set_flag(767, true)
-                var_0000 = execute_usecode_array({1786, 8021, 20, 17447, 17452, 7715}, objectref)
+                var_0000 = execute_usecode_array(objectref, {1786, 8021, 20, 17447, 17452, 7715})
                 utility_earthquake_0989()
             elseif not get_flag(780) then
                 if get_random(100) <= 10 then
@@ -15,7 +15,7 @@ function utility_event_0507(eventid, objectref)
             end
         end
     elseif eventid == 2 then
-        var_0000 = execute_usecode_array({1786, 8021, 20, 17447, 17452, 7715}, get_npc_name(356))
+        var_0000 = execute_usecode_array(get_npc_name(356), {1786, 8021, 20, 17447, 17452, 7715})
         utility_earthquake_0989()
     end
     return

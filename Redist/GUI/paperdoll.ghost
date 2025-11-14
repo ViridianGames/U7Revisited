@@ -1,0 +1,432 @@
+{
+  "gui": {
+    "elements": [
+      {
+        "type": "panel",
+        "position": [
+          -1,
+          -1
+        ],
+        "size": [
+          166,
+          146
+        ],
+        "backgroundColor": [
+          60,
+          60,
+          60,
+          0
+        ],
+        "filled": true,
+        "layout": "horz",
+        "horzPadding": 0,
+        "vertPadding": 0,
+        "font": "babyblocks.ttf",
+        "fontSize": 30,
+        "elements": [
+          {
+            "name": "PAPERDOLL",
+            "type": "sprite",
+            "position": [
+              -1,
+              -1
+            ],
+            "sprite": {
+              "spritesheet": "GUI/gumps.png",
+              "x": 497,
+              "y": 641,
+              "w": 133,
+              "h": 136
+            },
+            "scaleX": 1.0,
+            "scaleY": 1.0
+          },
+          {
+            "name": "PEACE",
+            "type": "cycle",
+            "position": [
+              28,
+              79
+            ],
+            "sprite": {
+              "spritesheet": "GUI/gumps.png",
+              "x": 720,
+              "y": 0,
+              "w": 25,
+              "h": 23
+            },
+            "frameCount": 2,
+            "scaleX": 1.0,
+            "scaleY": 1.0
+          },
+          {
+            "name": "HALO",
+            "type": "cycle",
+            "position": [
+              30,
+              102
+            ],
+            "sprite": {
+              "spritesheet": "GUI/gumps.png",
+              "x": 608,
+              "y": 0,
+              "w": 17,
+              "h": 9
+            },
+            "frameCount": 2,
+            "scaleX": 1.0,
+            "scaleY": 1.0
+          },
+          {
+            "name": "FORMATION",
+            "type": "cycle",
+            "position": [
+              29,
+              114
+            ],
+            "sprite": {
+              "spritesheet": "GUI/gumps.png",
+              "x": 608,
+              "y": 32,
+              "w": 19,
+              "h": 19
+            },
+            "frameCount": 10,
+            "scaleX": 1.0,
+            "scaleY": 1.0
+          },
+          {
+            "name": "CARRY",
+            "type": "textarea",
+            "position": [
+              64,
+              119
+            ],
+            "text": "27/36",
+            "font": "pinch.ttf",
+            "fontSize": 27,
+            "textColor": [
+              55,
+              19,
+              1,
+              255
+            ],
+            "size": [
+              101,
+              26
+            ],
+            "justified": 0
+          },
+          {
+            "name": "HEART",
+            "type": "iconbutton",
+            "position": [
+              107,
+              119
+            ],
+            "sprite": {
+              "spritesheet": "GUI/gumps.png",
+              "x": 645,
+              "y": 0,
+              "w": 17,
+              "h": 13
+            },
+            "downSprite": {
+              "spritesheet": "GUI/gumps.png",
+              "x": 662,
+              "y": 0,
+              "w": 17,
+              "h": 13
+            },
+            "color": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "scale": 1.0
+          },
+          {
+            "name": "CLOSE",
+            "type": "iconbutton",
+            "position": [
+              3,
+              101
+            ],
+            "sprite": {
+              "spritesheet": "GUI/gumps.png",
+              "x": 333,
+              "y": 11,
+              "w": 21,
+              "h": 21
+            },
+            "downSprite": {
+              "spritesheet": "GUI/gumps.png",
+              "x": 333,
+              "y": 51,
+              "w": 21,
+              "h": 21
+            },
+            "color": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "scale": 1.0
+          },
+          {
+            "name": "DISK",
+            "type": "iconbutton",
+            "position": [
+              107,
+              105
+            ],
+            "sprite": {
+              "spritesheet": "GUI/gumps.png",
+              "x": 683,
+              "y": 0,
+              "w": 17,
+              "h": 13
+            },
+            "downSprite": {
+              "spritesheet": "GUI/gumps.png",
+              "x": 700,
+              "y": 0,
+              "w": 17,
+              "h": 13
+            },
+            "color": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "scale": 1.0
+          },
+          {
+            "name": "SLOT_HEAD",
+            "type": "sprite",
+            "position": [
+              107,
+              5
+            ],
+            "sprite": {
+              "spritesheet": "GUI/gumps.png",
+              "x": 0,
+              "y": 0,
+              "w": 16,
+              "h": 16
+            },
+            "scaleX": 1.0,
+            "scaleY": 1.0
+          },
+          {
+            "name": "SLOT_NECK",
+            "type": "sprite",
+            "position": [
+              30,
+              17
+            ],
+            "sprite": {
+              "spritesheet": "GUI/gumps.png",
+              "x": 0,
+              "y": 0,
+              "w": 16,
+              "h": 16
+            },
+            "scaleX": 1.0,
+            "scaleY": 1.0
+          },
+          {
+            "name": "SLOT_TORSO",
+            "type": "sprite",
+            "position": [
+              30,
+              32
+            ],
+            "sprite": {
+              "spritesheet": "GUI/gumps.png",
+              "x": 0,
+              "y": 0,
+              "w": 16,
+              "h": 16
+            },
+            "scaleX": 1.0,
+            "scaleY": 1.0
+          },
+          {
+            "name": "SLOT_LEGS",
+            "type": "sprite",
+            "position": [
+              107,
+              80
+            ],
+            "sprite": {
+              "spritesheet": "GUI/gumps.png",
+              "x": 0,
+              "y": 0,
+              "w": 16,
+              "h": 16
+            },
+            "scaleX": 1.0,
+            "scaleY": 1.0
+          },
+          {
+            "name": "SLOT_HANDS",
+            "type": "sprite",
+            "position": [
+              107,
+              65
+            ],
+            "sprite": {
+              "spritesheet": "GUI/gumps.png",
+              "x": 0,
+              "y": 0,
+              "w": 16,
+              "h": 16
+            },
+            "scaleX": 1.0,
+            "scaleY": 1.0
+          },
+          {
+            "name": "SLOT_FEET",
+            "type": "sprite",
+            "position": [
+              72,
+              92
+            ],
+            "sprite": {
+              "spritesheet": "GUI/gumps.png",
+              "x": 0,
+              "y": 0,
+              "w": 16,
+              "h": 16
+            },
+            "scaleX": 1.0,
+            "scaleY": 1.0
+          },
+          {
+            "name": "SLOT_LEFT_HAND",
+            "type": "sprite",
+            "position": [
+              107,
+              50
+            ],
+            "sprite": {
+              "spritesheet": "GUI/gumps.png",
+              "x": 0,
+              "y": 0,
+              "w": 16,
+              "h": 16
+            },
+            "scaleX": 1.0,
+            "scaleY": 1.0
+          },
+          {
+            "name": "SLOT_RIGHT_HAND",
+            "type": "sprite",
+            "position": [
+              30,
+              49
+            ],
+            "sprite": {
+              "spritesheet": "GUI/gumps.png",
+              "x": 0,
+              "y": 0,
+              "w": 16,
+              "h": 16
+            },
+            "scaleX": 1.0,
+            "scaleY": 1.0
+          },
+          {
+            "name": "SLOT_AMMO",
+            "type": "sprite",
+            "position": [
+              30,
+              5
+            ],
+            "sprite": {
+              "spritesheet": "GUI/gumps.png",
+              "x": 0,
+              "y": 0,
+              "w": 16,
+              "h": 16
+            },
+            "scaleX": 1.0,
+            "scaleY": 1.0
+          },
+          {
+            "name": "SLOT_LEFT_RING",
+            "type": "sprite",
+            "position": [
+              107,
+              65
+            ],
+            "sprite": {
+              "spritesheet": "GUI/gumps.png",
+              "x": 0,
+              "y": 0,
+              "w": 16,
+              "h": 16
+            },
+            "scaleX": 1.0,
+            "scaleY": 1.0
+          },
+          {
+            "name": "SLOT_RIGHT_RING",
+            "type": "sprite",
+            "position": [
+              30,
+              67
+            ],
+            "sprite": {
+              "spritesheet": "GUI/gumps.png",
+              "x": 0,
+              "y": 0,
+              "w": 16,
+              "h": 16
+            },
+            "scaleX": 1.0,
+            "scaleY": 1.0
+          },
+          {
+            "name": "SLOT_BELT",
+            "type": "sprite",
+            "position": [
+              107,
+              33
+            ],
+            "sprite": {
+              "spritesheet": "GUI/gumps.png",
+              "x": 0,
+              "y": 0,
+              "w": 16,
+              "h": 16
+            },
+            "scaleX": 1.0,
+            "scaleY": 1.0
+          },
+          {
+            "name": "SLOT_BACKPACK",
+            "type": "sprite",
+            "position": [
+              107,
+              20
+            ],
+            "sprite": {
+              "spritesheet": "GUI/gumps.png",
+              "x": 0,
+              "y": 0,
+              "w": 16,
+              "h": 16
+            },
+            "scaleX": 1.0,
+            "scaleY": 1.0
+          }
+        ]
+      }
+    ]
+  }
+}

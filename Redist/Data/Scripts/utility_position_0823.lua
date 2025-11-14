@@ -14,7 +14,7 @@ function utility_position_0823(eventid, objectref, arg1, arg2, arg3, arg4)
     var_0006 = get_object_container(objectref) --- Guess: Gets item container
     var_0007 = get_object_position(objectref) --- Guess: Gets position data
     var_0008 = set_last_created(objectref) --- Guess: Checks position
-    if spawn_object_at(get_object_type(objectref), var_0005) then --- Guess: Spawns item at position
+    if spawn_object_at(get_object_shape(objectref), var_0005) then --- Guess: Spawns item at position
         if not var_0008 then
             update_last_created(var_0005) --- Guess: Updates position
             play_sound_effect(73) --- Guess: Triggers event

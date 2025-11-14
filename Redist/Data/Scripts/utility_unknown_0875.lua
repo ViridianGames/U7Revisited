@@ -1,4 +1,5 @@
 --- Best guess: Generates a random phrase from a predefined list, likely for NPC dialogue or a dramatic effect.
+---@return string phrase A randomly selected phrase
 function utility_unknown_0875()
     local var_0000, var_0001, var_0002
 

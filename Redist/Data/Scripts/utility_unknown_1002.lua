@@ -2,7 +2,7 @@
 function utility_unknown_1002(var_0000)
     local var_0001, var_0002
 
-    var_0001 = get_item_shape(var_0000)
+    var_0001 = get_object_shape(var_0000)
     var_0002 = get_object_frame(var_0000)
     if is_readied(var_0002, var_0001, 0, 356) then
         return 1

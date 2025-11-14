@@ -4,7 +4,7 @@ function utility_event_0508(eventid, objectref)
 
     if eventid == 2 then
         var_0000 = click_on_item()
-        var_0001 = get_item_shape(var_0000)
+        var_0001 = get_object_shape(var_0000)
         var_0002 = false
         var_0003 = get_object_position(get_npc_name(356))
         if var_0001 == 721 or var_0001 == 989 then
@@ -25,7 +25,7 @@ function utility_event_0508(eventid, objectref)
         var_0005 = set_object_quality(150, var_0004)
         var_0005 = update_last_created(var_0002)
         var_0006 = utility_unknown_1069(var_0004)
-        var_0007 = execute_usecode_array({7769, var_0006}, get_npc_name(356))
+        var_0007 = execute_usecode_array(get_npc_name(356), {7769, var_0006})
         if var_0002[1] ~= var_0003[1] then
             if var_0002[1] < var_0003[1] then
                 var_0003[1] = var_0003[1] - 1
@@ -55,7 +55,7 @@ function utility_event_0508(eventid, objectref)
             remove_item(var_0004)
         end
         var_0009 = delayed_execute_usecode_array(9, {17493, 7715, 1800}, var_0008)
-        var_0010 = execute_usecode_array({1789, 17493, 7715}, var_0008)
+        var_0010 = execute_usecode_array(var_0008, {1789, 17493, 7715})
     elseif eventid == 1 then
         var_0011 = find_nearby(0, 80, 797, get_npc_name(356))
         for i = 1, #var_0011 do

@@ -1,5 +1,5 @@
 --- Best guess: Similar to func_0937, checks NPC flags and properties, returning true if any condition is met.
-function utility_unknown_1080(eventid, objectref, arg1)
+function utility_unknown_1080(arg1)
     local var_0000
 
     var_0000 = utility_unknown_1081(arg1) --- External call to func_0939

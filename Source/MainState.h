@@ -13,6 +13,7 @@ class Gui;
 class GuiElement;
 class GumpManager;
 class GhostWindow;
+class GumpPaperdoll;
 
 enum class MainStateModes
 {
@@ -38,6 +39,12 @@ public:
    void SetupGame();
 
    void OpenGump(int id);
+   void OpenSpellbookGump(int npcId);
+
+   // Paperdoll management
+   bool HasAnyPaperdollOpen();
+   void TogglePaperdoll(int npcId);
+   GumpPaperdoll* FindPaperdollByNpcId(int npcId);
 
    void DrawStats();
    void UpdateStats();
@@ -54,6 +61,13 @@ public:
 
 	void Wait(float seconds); // Wait while not blocking, called by Lua scripts.
 
+	// Debug tools window button handlers
+	void HandleScheduleButton();
+	void HandleShapeTableButton();
+	void HandleGhostButton();
+	void HandleRenameButton();
+	void UpdateDebugToolsWindow();
+
 	float m_waitTime = 0;
 
    Gui* m_Gui;
@@ -64,8 +78,8 @@ public:
 
 	Gui* m_numberBarGui;
 
-	// Test: Color dialog loaded from .ghost JSON file
-	GhostWindow* m_colorDialog;
+	// Debug tools window (always visible in sandbox mode)
+	GhostWindow* m_debugToolsWindow;
 
 	std::string m_luaFunction;
 
@@ -149,9 +163,8 @@ public:
 
 	bool m_showUIElements = true;
 
-	// NPC Schedule toggle button
+	// NPC Schedule toggle
 	bool m_npcSchedulesEnabled = false;
-	Rectangle m_scheduleToggleButton = { 10, 10, 30, 30 }; // x, y, width, height
 
 	// Pathfinding debug visualization
 	bool m_showPathfindingDebug = false;  // F10: Tile-level visualization (shows objects)

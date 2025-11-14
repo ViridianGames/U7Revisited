@@ -20,7 +20,7 @@ function utility_unknown_0914(eventid, objectref)
             remove_answer("Talisman") --- Guess: Removes dialogue option
             if get_dialogue_choice() then --- Guess: Gets dialogue choice
                 add_dialogue("@I was put here to protect the Shrines and prevent any from acquiring the Talisman...@")
-                var_0000 = set_object_type(955, objectref) --- Guess: Sets item type
+                var_0000 = set_object_shape(955, objectref) --- Guess: Sets item type
                 set_object_frame(10, var_0000) --- Guess: Sets item frame
                 var_0001 = add_object_to_party(get_object_owner(356)) --- Guess: Adds item to party
                 if var_0001 then

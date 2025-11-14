@@ -1,5 +1,5 @@
 --- Best guess: Checks for items (type 414) within a specific area, likely for puzzle or ritual validation.
-function utility_unknown_0788(eventid, objectref)
+function utility_unknown_0788()
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     var_0000 = {}

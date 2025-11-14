@@ -22,7 +22,7 @@ function utility_unknown_1099(P0, P1)
         var_000B = {var_000A, var_0009, var_0001, var_0008}
         if var_0004 then
             add_dialogue("\"To accept?\"")
-            var_0005 = _SelectOption()
+            var_0005 = select_option()
             if var_0005 then
                 add_dialogue("\"To have a deal.\"")
                 return var_0001

@@ -11,7 +11,7 @@ function object_lever_0788(eventid, objectref)
     elseif eventid == 7 or eventid == 2 then
         if eventid ~= 2 then
             var_0003 = utility_unknown_0807(objectref, -356)
-            var_0004 = execute_usecode_array({17505, 17511, 8449, var_0003, 7769}, -356)
+            var_0004 = execute_usecode_array(-356, {17505, 17511, 8449, var_0003, 7769})
         end
         var_0005 = get_object_frame(objectref)
         if var_0005 % 2 == 0 then

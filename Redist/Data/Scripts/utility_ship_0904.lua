@@ -21,7 +21,7 @@ function utility_ship_0904(eventid, objectref)
     var_0004 = set_npc_location(8, 80, -1, objectref) --- Guess: Sets NPC location
     if var_0001 or var_0002 then
         for _, var_0007 in ipairs({4, 5, 6, 7}) do
-            var_000D = get_object_type(var_0007) --- Guess: Gets item type
+            var_000D = get_object_shape(var_0007) --- Guess: Gets item type
             if var_000D == 721 or var_000D == 989 then
                 set_object_owner(var_0007, 0) --- Guess: Sets item owner
             end
@@ -29,7 +29,7 @@ function utility_ship_0904(eventid, objectref)
     end
     if var_0003 then
         for _, var_0007 in ipairs({4, 5, 6, 7}) do
-            var_000D = get_object_type(var_0007) --- Guess: Gets item type
+            var_000D = get_object_shape(var_0007) --- Guess: Gets item type
             if var_000D == 721 or var_000D == 989 then
                 set_object_state(var_0007, 2) --- Guess: Sets object state
                 set_object_owner(var_0007, 0) --- Guess: Sets item owner

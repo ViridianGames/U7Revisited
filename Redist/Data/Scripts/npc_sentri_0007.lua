@@ -10,9 +10,9 @@ function npc_sentri_0007(eventid, objectref)
         var_0002 = get_party_members()
         var_0003 = get_npc_name(7) --- Guess: Retrieves object reference from ID
         var_0004 = get_player_name()
-        var_0005 = get_schedule_type(7) --- Guess: Gets object state
+        var_0005 = get_schedule(7) --- Guess: Gets object state
         add_answer({"bye", "job", "name"})
-        if is_int_in_array(var_0003, var_0002) then
+        if is_string_in_array(var_0003, var_0002) then
             add_answer("leave")
         end
         if not get_flag(26) then
@@ -28,7 +28,7 @@ function npc_sentri_0007(eventid, objectref)
                 remove_answer("name")
             elseif var_0006 == "job" then
                 add_dialogue("\"When I am not adventuring with old friends, I am a trainer in Britain. I specialize in combat involving swordsmanship. I am quite good at that, as thou dost remember.\"")
-                if not is_int_in_array(var_0003, var_0002) then
+                if not is_string_in_array(var_0003, var_0002) then
                     add_dialogue("\"But I would drop everything to join thy group if thou art not too encumbered.\"")
                     add_answer("join")
                 end
@@ -63,13 +63,13 @@ function npc_sentri_0007(eventid, objectref)
                     add_dialogue("\"Very good. I shall wait here until thou dost return.\"")
                     set_flag(219, false)
                     remove_from_party(7) --- Guess: Sets object state (e.g., active/inactive)
-                    set_schedule_type(15, get_npc_name(7)) --- Guess: Sets a generic object property
+                    set_schedule_type(7, 15) --- Guess: Sets a generic object property
                     abort()
                 else
                     add_dialogue("\"Farewell, " .. var_0004 .. ". If thou dost need my services again, I shall be only too happy to comply.\"")
                     set_flag(219, false)
                     remove_from_party(7) --- Guess: Sets object state (e.g., active/inactive)
-                    set_schedule_type(11, get_npc_name(7)) --- Guess: Sets a generic object property
+                    set_schedule_type(7, 11) --- Guess: Sets a generic object property
                     abort()
                 end
             elseif var_0006 == "Britain" then
@@ -82,7 +82,7 @@ function npc_sentri_0007(eventid, objectref)
                 add_answer("Lord British")
             elseif var_0006 == "train" then
                 if not get_flag(219) then
-                    var_0005 = get_schedule_type(7) --- Guess: Gets object state
+                    var_0005 = get_schedule(7) --- Guess: Gets object state
                     if var_0005 == 27 or var_0005 == 11 or var_0005 == 15 then
                         add_dialogue("\"My fee is 30 gold for a training session. Is this all right?\"")
                         var_000B = select_option()

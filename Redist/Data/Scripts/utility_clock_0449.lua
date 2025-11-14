@@ -12,7 +12,7 @@ function utility_clock_0449(eventid, objectref)
             var_0004 = {var_0000, var_0001, var_0002, var_0003}
             for i = 1, #var_0004 do
                 var_0007 = var_0004[i]
-                var_0008 = get_item_shape(var_0007)
+                var_0008 = get_object_shape(var_0007)
                 var_0009 = get_object_position(var_0007)
                 if var_0009[3] == 6 then
                     if var_0008 == 867 or var_0008 == 912 then

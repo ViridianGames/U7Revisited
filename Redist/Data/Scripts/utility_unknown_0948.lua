@@ -1,5 +1,8 @@
 --- Best guess: Manages a free healer's dialogue offering services (heal, cure poison, resurrect), handling service selection and application to party members.
-function utility_unknown_0948(var_0000, var_0001, var_0002)
+---@param resurrect_cost integer The gold cost for resurrection service (free in this case)
+---@param cure_poison_cost integer The gold cost for cure poison service (free in this case)
+---@param heal_cost integer The gold cost for healing service (free in this case)
+function utility_unknown_0948(resurrect_cost, cure_poison_cost, heal_cost)
     start_conversation()
     local var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_0010, var_0011
 
@@ -13,10 +16,10 @@ function utility_unknown_0948(var_0000, var_0001, var_0002)
         if var_0005 == "heal" or var_0005 == "cure poison" then
             if var_0005 == "heal" then
                 var_0006 = "healed"
-                var_0007 = var_0002
+                var_0007 = heal_cost
             elseif var_0005 == "cure poison" then
                 var_0006 = "cured of poison"
-                var_0007 = var_0001
+                var_0007 = cure_poison_cost
             end
             add_dialogue("\"Who dost thou wish to be " .. var_0006 .. "?\"")
             var_0008 = utility_unknown_1038()
@@ -36,7 +39,7 @@ function utility_unknown_0948(var_0000, var_0001, var_0002)
                 return
             end
             add_dialogue("\"Indeed, this person is badly wounded. I will attempt to return them to health.\"")
-            var_0007 = var_0000
+            var_0007 = resurrect_cost
         end
         add_dialogue("\"Of course, it will never cost thee anything to use mine healing services.\"")
         if var_0005 == "heal" then

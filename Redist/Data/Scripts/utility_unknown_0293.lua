@@ -4,7 +4,7 @@ function utility_unknown_0293(eventid, objectref)
 
     start_conversation()
     if eventid == 1 then
-        var_0000 = get_object_type(objectref) --- Guess: Gets item type
+        var_0000 = get_object_shape(objectref) --- Guess: Gets item type
         var_0001 = {273, 379}
         var_0002 = {307, 440}
         var_0003 = get_object_position(356) --- Guess: Gets position data

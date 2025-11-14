@@ -1,5 +1,6 @@
 --- Best guess: Generates verb conjugations (e.g., "lactate", "lactated"), likely for dialogue or actions.
-function utility_unknown_0872(eventid, objectref)
+---@return table conjugations A table containing {present, past, present_participle} verb forms
+function utility_unknown_0872()
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
     var_0000 = {

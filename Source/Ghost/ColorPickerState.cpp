@@ -5,6 +5,7 @@
 #include "../Geist/Config.h"
 #include "../Geist/Gui.h"
 #include "../Geist/GuiElements.h"
+#include "GhostSerializer.h"
 
 extern std::unique_ptr<StateMachine> g_StateMachine;
 extern std::unique_ptr<ResourceManager> g_ResourceManager;
@@ -19,7 +20,7 @@ void ColorPickerState::Init(const std::string& configfile)
 
 	// Create the window - it handles all config loading and GUI setup
 	m_window = std::make_unique<GhostWindow>(
-		"Gui/ghost_color_dialog.ghost",
+		GhostSerializer::GetBaseGhostPath() + "ghost_color_dialog.ghost",
 		"Data/ghost.cfg",
 		g_ResourceManager.get(),
 		GetScreenWidth(),
@@ -210,8 +211,9 @@ void ColorPickerState::Draw()
 					auto scrollbar = static_cast<GuiScrollBar*>(sliderElement.get());
 
 					// Calculate center position for text
-					int textX = static_cast<int>(gui->m_Pos.x + scrollbar->m_Pos.x + scrollbar->m_Width / 2);
-					int textY = static_cast<int>(gui->m_Pos.y + scrollbar->m_Pos.y + scrollbar->m_Height / 2 - 8);
+					Rectangle bounds = scrollbar->GetBounds();
+					int textX = static_cast<int>(gui->m_Pos.x + bounds.x + bounds.width / 2);
+					int textY = static_cast<int>(gui->m_Pos.y + bounds.y + bounds.height / 2 - 8);
 
 					// Draw the value in red
 					std::string valueText = std::to_string(scrollbar->m_Value);

@@ -28,6 +28,8 @@ public:
    void LoadChunks();
    void LoadMap();
    void CreateShapeTable();
+   void LoadSprites();
+   void ExtractGumps();
    void CreateObjectTable();
    void LoadIFIX();
    void ParseIREGFile(std::stringstream& ireg, int superchunkx, int superchunky);
@@ -72,6 +74,7 @@ public:
    bool m_loadingChunks = false;
    bool m_loadingMap = false;
    bool m_loadingShapes = false;
+   bool m_loadingSprites = false;
    bool m_loadingFaces = false;
    bool m_loadingObjects = false;
    bool m_loadingIFIX = false;
@@ -82,6 +85,7 @@ public:
    bool m_makingMap = false;
    bool m_loadingNPCSchedules = false;
    bool m_buildingPathfindingGrid = false;
+   bool m_loadingSpells = false;
 
    bool m_loadingFailed = false;
 
