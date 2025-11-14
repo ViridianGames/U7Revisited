@@ -124,6 +124,9 @@ void GhostState::Init(const std::string& configfile)
 	// Create serializer (keep it alive to preserve loaded fonts)
 	m_serializer = make_unique<GhostSerializer>();
 
+	// Enable "example" placeholder text for empty textinput fields (Ghost editor only)
+	m_serializer->SetUseExampleText(true);
+
 	// Load GUI from JSON file
 	if (!m_serializer->LoadFromFile(GhostSerializer::GetBaseGhostPath() + "ghost_app.ghost", m_gui.get()))
 	{

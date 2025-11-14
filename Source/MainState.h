@@ -25,7 +25,7 @@ enum class MainStateModes
 class MainState : public State
 {
 public:
-   MainState(){};
+   MainState() { m_DrawCursor = false; }  // MainState draws its own cursor with custom logic
    ~MainState();
 
    void Init(const std::string& configfile) override;

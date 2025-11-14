@@ -87,9 +87,11 @@ void Engine::Update()
 
 void Engine::Draw()
 {
+	BeginDrawing();
 	g_ResourceManager->Draw();
 	g_StateMachine->Draw();
 	g_ScriptingSystem->Draw();
+	EndDrawing();
 }
 
 void Engine::CaptureScreenshot()

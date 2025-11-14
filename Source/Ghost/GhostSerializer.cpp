@@ -642,8 +642,8 @@ void GhostSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, c
 		else if (type == "textinput")
 		{
 			string text = element.value("text", "");
-			// If text is empty, use "example" as default to show the font
-			if (text.empty())
+			// If text is empty and example text is enabled, use "example" as default to show the font
+			if (text.empty() && m_useExampleText)
 			{
 				text = "example";
 			}

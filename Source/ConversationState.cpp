@@ -277,10 +277,8 @@ void ConversationState::Update()
 
 void ConversationState::Draw()
 {
-	// (Unchanged, as it’s unrelated to coroutines)
+	// (Unchanged, as it's unrelated to coroutines)
 	ClearBackground(Color{0, 0, 0, 255});
-
-	BeginDrawing();
 
 	BeginMode3D(g_camera);
 
@@ -374,10 +372,6 @@ void ConversationState::Draw()
 		               -float(g_Engine->m_ScreenHeight)
 	               },
 	               {0, 0}, 0, WHITE);
-
-	DrawTextureEx(*g_Cursor, {float(GetMouseX()), float(GetMouseY())}, 0, g_DrawScale, WHITE);
-
-	EndDrawing();
 }
 
 void ConversationState::AddAnswers(std::vector<std::string> answers)

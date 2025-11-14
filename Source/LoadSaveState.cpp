@@ -21,6 +21,9 @@ LoadSaveState::LoadSaveState()
 {
 	// Initialize save names vector with 10 empty slots
 	m_saveNames.resize(10, "");
+
+	// This is a modal dialog - render the game world beneath it
+	m_RenderStack = true;
 }
 
 LoadSaveState::~LoadSaveState()
@@ -33,6 +36,13 @@ void LoadSaveState::OnEnter()
 
 	// Disable dragging - modal system dialog should stay centered
 	m_gui.m_Draggable = false;
+
+	// Reset GUI state
+	m_gui.m_isDone = false;
+
+	// Reset mouse release tracking
+	m_waitingForMouseRelease = true;
+	m_releaseFrameCount = 0;
 
 	// Disable input until mouse is released (prevents instant close from triggering click)
 	m_gui.SetAcceptingInput(false);
@@ -96,8 +106,18 @@ void LoadSaveState::Init(const std::string& data)
 			}
 		}
 
-		// TODO: Load save game names from disk and populate slots
-		// For now, leave them empty (will show "example" text)
+		// Populate slots with test strings
+		for (int i = 0; i < 10; i++)
+		{
+			if (m_slotIds[i] != -1)
+			{
+				auto element = m_gui.GetElement(m_slotIds[i]);
+				if (element)
+				{
+					element->m_String = "Test Save " + std::to_string(i + 1);
+				}
+			}
+		}
 	}
 	else
 	{
@@ -189,28 +209,6 @@ void LoadSaveState::Update()
 
 void LoadSaveState::Draw()
 {
-	if (g_pixelated)
-	{
-		BeginTextureMode(g_renderTarget);
-	}
-
-	ClearBackground(Color{ 0, 0, 0, 255 });
-
-	BeginDrawing();
-
-	// Draw the 3D world using central function
-	DrawWorld();
-
-	// Handle pixelated mode render target
-	if (g_pixelated)
-	{
-		EndTextureMode();
-		DrawTexturePro(g_renderTarget.texture,
-			{ 0, 0, float(g_renderTarget.texture.width), float(g_renderTarget.texture.height) },
-			{ 0, float(g_Engine->m_ScreenHeight), float(g_Engine->m_ScreenWidth), -float(g_Engine->m_ScreenHeight) },
-			{ 0, 0 }, 0, WHITE);
-	}
-
 	// Draw the GUI with modal overlay
 	BeginTextureMode(g_guiRenderTarget);
 	ClearBackground({ 0, 0, 0, 0 });
@@ -221,9 +219,6 @@ void LoadSaveState::Draw()
 	// Draw the dialog GUI in render space
 	m_gui.Draw();
 
-	// Draw console so error messages are visible
-	DrawConsole();
-
 	EndTextureMode();
 
 	// Draw the GUI render target to screen
@@ -231,9 +226,4 @@ void LoadSaveState::Draw()
 		{ 0, 0, float(g_guiRenderTarget.texture.width), float(g_guiRenderTarget.texture.height) },
 		{ 0, float(g_Engine->m_ScreenHeight), float(g_Engine->m_ScreenWidth), -float(g_Engine->m_ScreenHeight) },
 		{ 0, 0 }, 0, WHITE);
-
-	// Draw cursor on top of everything
-	DrawTextureEx(*g_Cursor, { float(GetMouseX()), float(GetMouseY()) }, 0, g_DrawScale, WHITE);
-
-	EndDrawing();
 }

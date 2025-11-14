@@ -167,6 +167,12 @@ void GhostWindow::Toggle()
 	m_visible = !m_visible;
 }
 
+void GhostWindow::ClearHoverText()
+{
+	m_hoveredElementID = -1;
+	m_hoverStartTime = 0.0f;
+}
+
 void GhostWindow::MoveTo(int x, int y)
 {
 	if (m_gui && m_serializer)

@@ -35,6 +35,8 @@ public:
 	GhostSerializer* GetSerializer() { return m_serializer; }
 	bool IsValid() const { return m_gui != nullptr && m_valid; }
 
+	void ClearHoverText();  // Clear hover text state
+
 private:
 	Gui* m_gui;
 	GhostSerializer* m_serializer;

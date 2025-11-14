@@ -336,6 +336,10 @@ public:
 	std::string ResolveStringProperty(int elementID, const std::string& propertyName) const;
 	int ResolveIntProperty(int elementID, const std::string& propertyName, int defaultValue = 0) const;
 
+	// Control whether empty text fields get filled with "example" placeholder
+	void SetUseExampleText(bool use) { m_useExampleText = use; }
+	bool GetUseExampleText() const { return m_useExampleText; }
+
 	// Helper to center a loaded ghost GUI on screen
 	// Gets root panel size and calls SetLayout with GUIP_CENTER
 	// Returns true if successful, false if no root panel found
@@ -414,6 +418,10 @@ private:
 	std::map<int, std::string> m_elementFonts;  // Maps element ID -> font name
 	std::map<int, int> m_elementFontSizes;  // Maps element ID -> font size
 	std::map<int, std::string> m_elementHoverTexts;  // Maps element ID -> hover text for tooltips
+
+	// Control whether empty text fields get filled with "example" placeholder text
+	// Defaults to false - only Ghost editor should enable this
+	bool m_useExampleText = false;
 
 	// Static base paths for resources
 	static std::string s_baseFontPath;

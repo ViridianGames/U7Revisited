@@ -1179,8 +1179,6 @@ void MainState::Draw()
 
 	ClearBackground(Color{ 0, 0, 0, 255 });
 
-	BeginDrawing();
-
 	BeginMode3D(g_camera);
 
 	//  Draw the terrain
@@ -1422,9 +1420,6 @@ void MainState::Draw()
 	}
 
 	DrawRectangle(0, 0, g_Engine->m_ScreenWidth, g_Engine->m_ScreenHeight, { 0, 0, 0, m_currentFadeAlpha });
-
-
-	EndDrawing();
 }
 
 void MainState::SetupGame()
@@ -1625,6 +1620,13 @@ void MainState::HandleRenameButton()
 {
 	Log("HandleRenameButton called");
 	AddConsoleString("Rename button clicked - opening rename dialog");
+
+	// Clear hover text from debug tools window
+	if (m_debugToolsWindow)
+	{
+		m_debugToolsWindow->ClearHoverText();
+	}
+
 	// Push the script rename dialog state
 	g_StateMachine->PushState(STATE_SCRIPTRENAMESTATE);
 	Log("PushState(STATE_SCRIPTRENAMESTATE) called");

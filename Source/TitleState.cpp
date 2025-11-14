@@ -90,7 +90,6 @@ void TitleState::Draw()
 {
 	//rlSetBlendFactors(RL_SRC_ALPHA, RL_ONE_MINUS_SRC_ALPHA, RL_MIN);
 	rlSetBlendMode(BLEND_ALPHA);
-	BeginDrawing();
 
 	ClearBackground(Color{0, 0, 0, 255});
 
@@ -160,8 +159,6 @@ void TitleState::Draw()
 	}
 
 	//DrawFPS(10, 300);
-
-	EndDrawing();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
