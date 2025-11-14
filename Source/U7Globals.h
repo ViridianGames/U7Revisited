@@ -156,6 +156,50 @@ struct NPCSchedule
 
 extern std::unordered_map<int, std::vector<NPCSchedule> > g_NPCSchedules;
 
+//////////////////////////////////////////////////////////////////////////////
+//  SPELL SYSTEM
+//////////////////////////////////////////////////////////////////////////////
+
+/// @brief Reagent definition structure
+struct ReagentData
+{
+	std::string name;                 // "Black Pearl", "Blood Moss", etc.
+	int frame;                        // Frame number in shape 842
+};
+
+/// @brief Spell data structure matching spells.json format
+struct SpellData
+{
+	int id;                           // Unique spell ID (0-63)
+	std::string name;                 // "Awaken All", "Create Food", etc.
+	std::string words;                // "Vas An Zu", "In Mani Ylem", etc.
+	int scriptId;                     // Script shape ID (320-391)
+	std::vector<std::string> reagents; // Reagent names: "Ginseng", "Garlic", etc.
+	std::string desc;                 // Spell description
+	int circle;                       // Which circle this spell belongs to (1-8)
+};
+
+/// @brief Circle data structure (8 circles, each with 8 spells)
+struct SpellCircle
+{
+	int circle;                       // Circle number (1-8)
+	std::string name;                 // "First Circle", "Second Circle", etc.
+	std::vector<SpellData> spells;    // 8 spells in this circle
+};
+
+// Spell data loaded from spells.json
+extern std::vector<ReagentData> g_reagentData;        // 8 reagents
+extern std::vector<SpellCircle> g_spellCircles;       // 8 circles with 8 spells each
+extern std::unordered_map<int, SpellData*> g_spellMap; // Quick lookup by spell ID
+
+// Load spell data from Redist/Data/spells.json
+void LoadSpellData();
+
+// Get spell data by ID (0-63)
+SpellData* GetSpellData(int spellId);
+
+//////////////////////////////////////////////////////////////////////////////
+
 enum class EquipmentSlot
 {
 	SLOT_HEAD = 0,

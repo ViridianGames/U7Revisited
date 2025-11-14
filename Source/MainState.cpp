@@ -11,6 +11,7 @@
 #include "rlgl.h"
 #include "U7Gump.h"
 #include "U7GumpPaperdoll.h"
+#include "U7GumpSpellbook.h"
 #include "ConversationState.h"
 #include "GumpManager.h"
 #include "Pathfinding.h"
@@ -1069,6 +1070,27 @@ void MainState::OpenGump(int id)
 	gump->OnEnter();
 
 	g_gumpManager->AddGump(gump);
+}
+
+void MainState::OpenSpellbookGump(int npcId)
+{
+	// Check if this NPC already has a spellbook gump open
+	for (auto& gump : g_gumpManager->m_GumpList)
+	{
+		GumpSpellbook* spellbook = dynamic_cast<GumpSpellbook*>(gump.get());
+		if (spellbook && spellbook->GetNpcId() == npcId)
+		{
+			Log("MainState::OpenSpellbookGump - Spellbook already open for NPC " + std::to_string(npcId));
+			return; // Spellbook already open for this NPC
+		}
+	}
+
+	Log("MainState::OpenSpellbookGump - Creating spellbook gump for NPC " + std::to_string(npcId));
+	auto spellbookGump = std::make_shared<GumpSpellbook>();
+	spellbookGump->Setup(npcId);
+	spellbookGump->Init();
+	spellbookGump->OnEnter();
+	g_gumpManager->AddGump(spellbookGump);
 }
 
 bool MainState::HasAnyPaperdollOpen()

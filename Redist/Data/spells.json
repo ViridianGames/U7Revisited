@@ -1,0 +1,127 @@
+{
+  "comment": "Ultima VII: The Black Gate - Spell Data",
+  "reagents": [
+    { "name": "Black Pearl", "frame": 0 },
+    { "name": "Blood Moss", "frame": 1 },
+    { "name": "Nightshade", "frame": 2 },
+    { "name": "Mandrake Root", "frame": 3 },
+    { "name": "Garlic", "frame": 4 },
+    { "name": "Ginseng", "frame": 5 },
+    { "name": "Spider Silk", "frame": 6 },
+    { "name": "Sulfurous Ash", "frame": 7 }
+  ],
+  "circles": [
+    {
+      "circle": 1,
+      "name": "First Circle",
+      "spells": [
+        { "id": 0, "name": "Awaken All", "words": "Vas An Zu", "scriptId": 335, "reagents": ["Ginseng", "Garlic"], "desc": "This spell awakens all unconscious members of the mage's party." },
+        { "id": 1, "name": "Create Food", "words": "In Mani Ylem", "scriptId": 328, "reagents": ["Garlic", "Ginseng", "Mandrake Root"], "desc": "This spell creates enough food for the mage and each member in his party to have one meal." },
+        { "id": 2, "name": "Cure", "words": "An Nox", "scriptId": 329, "reagents": ["Ginseng", "Garlic"], "desc": "This spell cures poison and restores a person afflicted with paralysis. It has also been known to work against an assortment of other malicious maladies." },
+        { "id": 3, "name": "Detect Trap", "words": "Wis Jux", "scriptId": 330, "reagents": ["Spider's Silk", "Nightshade"], "desc": "This spell reveals the location of all traps within sight of the mage and his party." },
+        { "id": 4, "name": "Great Douse", "words": "Vas An Flam", "scriptId": 331, "reagents": ["Garlic", "Spider's Silk"], "desc": "This spell is a more potent version of the Linear spell Douse. It extinguishes all dousable items within a certain area." },
+        { "id": 5, "name": "Great Ignite", "words": "Vas In Flam", "scriptId": 332, "reagents": ["Sulfurous Ash", "Spider's Silk"], "desc": "This spell is a more potent version of the Linear spell Ignite. It will cause all flammable items within a certain area to burst into flame." },
+        { "id": 6, "name": "Light", "words": "In Lor", "scriptId": 333, "reagents": ["Sulfurous Ash"], "desc": "This spell is a more potent version of the Linear spell Glimmer. It creates a source of light that will illuminate a darkened area. This light source can travel with the party and lasts for a significant amount of time." },
+        { "id": 7, "name": "Locate", "words": "In Wis", "scriptId": 334, "reagents": ["Nightshade"], "desc": "This spell reveals the sextant position of the mage, even when underground." }
+      ]
+    },
+    {
+      "circle": 2,
+      "name": "Second Circle",
+      "spells": [
+        { "id": 8, "name": "Awaken", "words": "An Zu", "scriptId": 320, "reagents": ["Ginseng", "Garlic"], "desc": "This spell awakens one unconscious member of the mage's party." },
+        { "id": 9, "name": "Destroy Trap", "words": "An Jux", "scriptId": 336, "reagents": ["Sulfurous Ash", "Blood Moss"], "desc": "This spell destroys any one specific trap upon which it is cast." },
+        { "id": 10, "name": "Enchant", "words": "Ort Ylem", "scriptId": 337, "reagents": ["Black Pearl", "Mandrake Root"], "desc": "This spell causes up to an entire bundle of arrows or bolts to become enchanted and glow blue. Enchanted missiles will always hit their target and do significantly more damage than normal." },
+        { "id": 11, "name": "Fire Blast", "words": "Vas Flam", "scriptId": 338, "reagents": ["Sulfurous Ash", "Black Pearl"], "desc": "This spell causes great jets of flame to burst forth from the mage and strike his target." },
+        { "id": 12, "name": "Great Light", "words": "Vas Lor", "scriptId": 339, "reagents": ["Sulfurous Ash", "Mandrake Root"], "desc": "This spell is a more potent version of the First Circle spell Light, and has a substantially longer duration." },
+        { "id": 13, "name": "Mass Cure", "words": "Vas An Nox", "scriptId": 340, "reagents": ["Mandrake Root", "Garlic", "Ginseng"], "desc": "This spel l cures the mage and all members of his party at once." },
+        { "id": 14, "name": "Protection", "words": "Uus Sanct", "scriptId": 341, "reagents": ["Sulfurous Ash", "Ginseng", "Garlic"], "desc": "This spell temporarily makes its subject more difficult to strike in combat, as well as rendering him invulnerable to traps and other hazards." },
+        { "id": 15, "name": "Telekinesis", "words": "Ort Por Ylem", "scriptId": 354, "reagents": ["Blood Moss", "Mandrake Root", "Black Pearl"], "desc": "This spell allows the mage to manipulate objects without touching them." }
+      ]
+    },
+    {
+      "circle": 3,
+      "name": "Third Circle",
+      "spells": [
+        { "id": 16, "name": "Curse", "words": "Des Sanct", "scriptId": 344, "reagents": ["Sulfurous Ash", "Nightshade", "Garlic"], "desc": "This spell is a minor curse that temporarily makes an enemy easier to hit in combat, while making it harder for him to strike the mage or any member of his party." },
+        { "id": 17, "name": "Fireworks", "words": "In Vas Grav Por", "scriptId": 325, "reagents": [], "desc": "Decorative fireworks spell." },
+        { "id": 18, "name": "Heal", "words": "Mani", "scriptId": 345, "reagents": ["Ginseng", "Garlic", "Spider's Silk"], "desc": "This spell heals half the injuries that its subject has sustained." },
+        { "id": 19, "name": "Magic Lock", "words": "An Por", "scriptId": 324, "reagents": [], "desc": "This spell magically locks doors and containers." },
+        { "id": 20, "name": "Paralyze", "words": "An Ex Por", "scriptId": 359, "reagents": ["Spider's Silk", "Nightshade"], "desc": "This spell paralyzes an enemy in his tracks for a short period of time." },
+        { "id": 21, "name": "Peer", "words": "Vas Wis", "scriptId": 349, "reagents": ["Nightshade", "Mandrake Root"], "desc": "This spell gives the Mage a look at the entire world as well as showing his location in it." },
+        { "id": 22, "name": "Poison", "words": "In Nox", "scriptId": 350, "reagents": ["Nightshade", "Blood Moss", "Black Pearl"], "desc": "This spell enables a mage to poison one enemy." },
+        { "id": 23, "name": "Teleport", "words": "Rel Por", "scriptId": 351, "reagents": [], "desc": "This spell teleports the mage and his party to a targeted location." }
+      ]
+    },
+    {
+      "circle": 4,
+      "name": "Fourth Circle",
+      "spells": [
+        { "id": 24, "name": "Dispel Field", "words": "An Grav", "scriptId": 362, "reagents": ["Garlic", "Black Pearl", "Sulfurous Ash", "Spider's Silk"], "desc": "This spell can dispel any type of magical field, such as a Fire Field." },
+        { "id": 25, "name": "Explosion", "words": "Vas Ort Flam", "scriptId": 353, "reagents": ["Mandrake Root", "Sulfurous Ash", "Black Pearl", "Blood Moss"], "desc": "This spell creates a ball of flame that rushes toward the mage's intended target and explodes." },
+        { "id": 26, "name": "Great Heal", "words": "Vas In Mani", "scriptId": 347, "reagents": ["Ginseng", "Spider's Silk", "Mandrake Root", "Garlic"], "desc": "This spell completely heals an injured person." },
+        { "id": 27, "name": "Magic Unlock", "words": "Ex Por", "scriptId": 323, "reagents": ["Sulfurous Ash", "Blood Moss"], "desc": "This spell unlocks magically locked items, including doors and chests." },
+        { "id": 28, "name": "Mass Protection", "words": "Vas Uus Sanct", "scriptId": 356, "reagents": ["Sulfurous Ash", "Ginseng", "Garlic", "Mandrake Root"], "desc": "This spell is the equivalent of casting the Third Circle spell Protection on everyone in the mage's party simultaneously." },
+        { "id": 29, "name": "Poison Field", "words": "In Nox Grav", "scriptId": 373, "reagents": ["Nightshade", "Spider's Silk", "Black Pearl"], "desc": "This spell creates a field of energy that will poison all who come into contact with it." },
+        { "id": 30, "name": "Sleep", "words": "In Zu", "scriptId": 358, "reagents": ["Nightshade", "Spider's Silk", "Black Pearl"], "desc": "This spell causes the enchanted person to fall asleep." },
+        { "id": 31, "name": "Unlock Magic", "words": "Rel Por", "scriptId": 321, "reagents": [], "desc": "This spell unlocks magically locked items." }
+      ]
+    },
+    {
+      "circle": 5,
+      "name": "Fifth Circle",
+      "spells": [
+        { "id": 32, "name": "Charm", "words": "An Xen Ex", "scriptId": 360, "reagents": ["Black Pearl", "Nightshade", "Spider's Silk"], "desc": "This spell can be used either to ensorcell an enemy or creature into doing the mage's bidding, or to free one who is under the effects of a charm." },
+        { "id": 33, "name": "Clone", "words": "In Quas Xen", "scriptId": 369, "reagents": ["Sulfurous Ash", "Spider's Silk", "Blood Moss", "Ginseng", "Nightshade", "Mandrake Root"], "desc": "This spell creates an exact duplicate of any mortal creature, who will then fight on the same side as the original." },
+        { "id": 34, "name": "Energy Field", "words": "In Sanct Grav", "scriptId": 379, "reagents": ["Mandrake Root", "Spider's Silk", "Black Pearl", "Sulfurous Ash"], "desc": "This spell creates an electrical field that protects the mage by harming all who attempt to pass through it." },
+        { "id": 35, "name": "Fear", "words": "Quas Corp", "scriptId": 368, "reagents": ["Nightshade", "Mandrake Root", "Garlic"], "desc": "This spell causes such a wave of fear that each man and creature who is not in the mage's party might flee as if in danger of death." },
+        { "id": 36, "name": "Fire Field", "words": "In Flam Grav", "scriptId": 366, "reagents": ["Black Pearl", "Sulfurous Ash", "Spider's Silk"], "desc": "This spell creates a wall of fire between the mage and his enemies." },
+        { "id": 37, "name": "Mass Curse", "words": "Vas Des Sanct", "scriptId": 355, "reagents": ["Sulfurous Ash", "Nightshade", "Garlic", "Mandrake Root"], "desc": "This spell is similar to the Third Circle spell Curse, but it affects an entire group of the mage's enemies." },
+        { "id": 38, "name": "Mass Sleep", "words": "Vas Zu", "scriptId": 367, "reagents": ["Ginseng", "Nightshade", "Spider's Silk"], "desc": "This spell is a more potent version of the Second Circle spell Sleep. It puts to sleep a group of targets that are not in the mage's party." },
+        { "id": 39, "name": "Poison Cloud", "words": "Vas In Nox", "scriptId": 350, "reagents": [], "desc": "This spell creates a poisonous cloud that damages enemies." }
+      ]
+    },
+    {
+      "circle": 6,
+      "name": "Sixth Circle",
+      "spells": [
+        { "id": 40, "name": "Chain Bolt", "words": "Vas Ort Grav", "scriptId": 370, "reagents": [], "desc": "This spell creates a bolt of lightning that chains between multiple enemies." },
+        { "id": 41, "name": "Dispel Magic", "words": "An Ort", "scriptId": 322, "reagents": [], "desc": "This spell dispels magical effects." },
+        { "id": 42, "name": "Energy Bolt", "words": "Corp Por", "scriptId": 377, "reagents": [], "desc": "This spell projects a bolt of magical energy at the target." },
+        { "id": 43, "name": "Explosion Field", "words": "Vas In Flam Grav", "scriptId": 371, "reagents": [], "desc": "This spell creates a field that explodes when enemies enter it." },
+        { "id": 44, "name": "Invisibility", "words": "Sanct Lor", "scriptId": 365, "reagents": ["Nightshade", "Blood Moss"], "desc": "This spell renders the mage undetectable, not only from sight but to all means of normal detection. There are certain creatures that, for various reasons, are capable of seeing invisible objects or people." },
+        { "id": 45, "name": "Mass Invisibility", "words": "Vas Sanct Lor", "scriptId": 387, "reagents": ["Mandrake Root", "Nightshade", "Blood Moss", "Black Pearl"], "desc": "This spell is the equivalent of casting the Fifth Circle spell Invisibility upon the mage and everyone in his party." },
+        { "id": 46, "name": "Reveal", "words": "Wis Quas", "scriptId": 357, "reagents": ["Sulfurous Ash", "Blood Moss"], "desc": "This spell makes visible all things that were invisible within a specific area." },
+        { "id": 47, "name": "Summon", "words": "Kal Xen", "scriptId": 352, "reagents": ["Mandrake Root", "Garlic", "Blood Moss"], "desc": "This spell summons a powerful creature that will fight for the mage and his party." }
+      ]
+    },
+    {
+      "circle": 7,
+      "name": "Seventh Circle",
+      "spells": [
+        { "id": 48, "name": "Create Gold", "words": "Rel Ylem", "scriptId": 376, "reagents": ["Mandrake Root", "Spider's Silk"], "desc": "This spell changes a chunk of lead into ten gold nuggets." },
+        { "id": 49, "name": "Death Vortex", "words": "Vas Corp Hur", "scriptId": 385, "reagents": ["Mandrake Root", "Nightshade", "Sulfurous Ash", "Blood Moss"], "desc": "This spell creates a swirling black vortex at the point the mage designates, which will thereafter move at random. Everyone within this vortex will be continuously struck by lightning." },
+        { "id": 50, "name": "Energy Mist", "words": "Ort Ylem", "scriptId": 378, "reagents": ["Mandrake Root", "Nightshade", "Sulfurous Ash", "Blood Moss"], "desc": "This spell causes an electrified mist that flows from the caster, enveloping his enemies and harming them as long as they remain within it." },
+        { "id": 51, "name": "Mass Charm", "words": "Vas An Xen Ex", "scriptId": 381, "reagents": ["Black Pearl", "Nightshade", "Spider's Silk", "Mandrake Root"], "desc": "This spell is similar to the Fifth Circle spell Charm, but it affects an entire group of the mage's enemies." },
+        { "id": 52, "name": "Mass Might", "words": "In Hur Grav Ylem", "scriptId": 380, "reagents": ["Black Pearl", "Mandrake Root", "Ginseng"], "desc": "This spell doubles the strength and combat abilities of everyone in the mage's party." },
+        { "id": 53, "name": "Might", "words": "Uus Mani", "scriptId": 346, "reagents": [], "desc": "This spell doubles the strength and combat abilities of one party member." },
+        { "id": 54, "name": "Restoration", "words": "Vas Mani", "scriptId": 383, "reagents": ["Ginseng", "Garlic", "Sulfurous Ash", "Mandrake Root"], "desc": "This spell instantly heals all injury, dispels all harmful magic and cures all poison or paralysis inflicting the mage and his party." },
+        { "id": 55, "name": "Swordstrike", "words": "In Jux Por Ylem", "scriptId": 390, "reagents": ["Black Pearl", "Nightshade", "Mandrake Root"], "desc": "This spell creates a deadly pinwheel of eight spinning swords that sails toward the designated target." }
+      ]
+    },
+    {
+      "circle": 8,
+      "name": "Eighth Circle",
+      "spells": [
+        { "id": 56, "name": "Create Ice", "words": "In Frio Ex Ylem", "scriptId": 384, "reagents": [], "desc": "This spell creates ice from thin air." },
+        { "id": 57, "name": "Death Bolt", "words": "Corp Por Ylem", "scriptId": 386, "reagents": ["Black Pearl", "Nightshade", "Sulfurous Ash"], "desc": "This spell enables the mage to project a bolt of lethal energy at a specified target." },
+        { "id": 58, "name": "Earthquake", "words": "Vas Hur", "scriptId": 327, "reagents": [], "desc": "This spell creates violent tremors in the earth." },
+        { "id": 59, "name": "Fetch", "words": "Kal Ort Xen", "scriptId": 326, "reagents": [], "desc": "This spell summons a distant object to the mage's hand." },
+        { "id": 60, "name": "Flame Strike", "words": "Kal Vas Flam", "scriptId": 388, "reagents": ["Sulfurous Ash", "Black Pearl", "Blood Moss"], "desc": "This spell creates a field of fire at the feet of all the mage's enemies that are within sight." },
+        { "id": 61, "name": "Mass Death", "words": "Vas Corp", "scriptId": 364, "reagents": ["Garlic", "Ginseng", "Mandrake Root", "Nightshade", "Blood Moss"], "desc": "This spell causes everyone in sight (except of the mage and his party) to instantly drop dead." },
+        { "id": 62, "name": "Resurrect", "words": "In Mani Corp", "scriptId": 374, "reagents": ["Garlic", "Ginseng", "Spider's Silk", "Sulfurous Ash"], "desc": "This spell, when successful, empowers the mage to restore life in one who has died." },
+        { "id": 63, "name": "Time Stop", "words": "An Tym", "scriptId": 391, "reagents": ["Mandrake Root", "Garlic", "Blood Moss"], "desc": "This spell stops the passage of time for the entire world, with the exception of the mage and his party." }
+      ]
+    }
+  ]
+}

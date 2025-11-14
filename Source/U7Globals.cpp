@@ -55,6 +55,11 @@ std::vector<std::string> g_miscNames;
 
 std::unordered_map<int, unique_ptr<NPCData>> g_NPCData;
 
+// Spell system data
+std::vector<ReagentData> g_reagentData;
+std::vector<SpellCircle> g_spellCircles;
+std::unordered_map<int, SpellData*> g_spellMap;
+
 ConversationState* g_ConversationState;
 MainState* g_mainState;
 
@@ -1317,4 +1322,121 @@ void NPCData::UnequipItem(EquipmentSlot slot)
 			npcObject->RemoveObjectFromInventory(objectId);
 		}
 	}
+}
+
+//////////////////////////////////////////////////////////////////////////////
+//  SPELL SYSTEM
+//////////////////////////////////////////////////////////////////////////////
+
+void LoadSpellData()
+{
+	Log("Loading spell data from spells.json...");
+
+	// Clear existing data
+	g_reagentData.clear();
+	g_spellCircles.clear();
+	g_spellMap.clear();
+
+	// Open spells.json
+	std::string spellDataPath = g_Engine->m_EngineConfig.GetString("data_path") + "/spells.json";
+	std::ifstream file(spellDataPath);
+
+	if (!file.is_open())
+	{
+		Log("ERROR: Could not open " + spellDataPath);
+		AddConsoleString("ERROR: Could not open " + spellDataPath, RED);
+		return;
+	}
+
+	try
+	{
+		nlohmann::json spellJson;
+		file >> spellJson;
+
+		// Load reagents
+		if (spellJson.contains("reagents") && spellJson["reagents"].is_array())
+		{
+			for (const auto& reagentJson : spellJson["reagents"])
+			{
+				ReagentData reagent;
+				reagent.name = reagentJson["name"].get<std::string>();
+				reagent.frame = reagentJson["frame"].get<int>();
+				g_reagentData.push_back(reagent);
+			}
+			Log("Loaded " + std::to_string(g_reagentData.size()) + " reagents");
+		}
+
+		// Load spell circles
+		if (spellJson.contains("circles") && spellJson["circles"].is_array())
+		{
+			for (const auto& circleJson : spellJson["circles"])
+			{
+				SpellCircle circle;
+				circle.circle = circleJson["circle"].get<int>();
+				circle.name = circleJson["name"].get<std::string>();
+
+				// Load spells in this circle
+				if (circleJson.contains("spells") && circleJson["spells"].is_array())
+				{
+					for (const auto& spellJson : circleJson["spells"])
+					{
+						SpellData spell;
+						spell.id = spellJson["id"].get<int>();
+						spell.name = spellJson["name"].get<std::string>();
+						spell.words = spellJson["words"].get<std::string>();
+						spell.scriptId = spellJson["scriptId"].get<int>();
+						spell.circle = circle.circle;
+
+						// Load reagents
+						if (spellJson.contains("reagents") && spellJson["reagents"].is_array())
+						{
+							for (const auto& reagentName : spellJson["reagents"])
+							{
+								spell.reagents.push_back(reagentName.get<std::string>());
+							}
+						}
+
+						// Load description
+						if (spellJson.contains("desc"))
+						{
+							spell.desc = spellJson["desc"].get<std::string>();
+						}
+
+						circle.spells.push_back(spell);
+					}
+				}
+
+				g_spellCircles.push_back(circle);
+			}
+			Log("Loaded " + std::to_string(g_spellCircles.size()) + " spell circles");
+		}
+
+		// Build spell lookup map
+		for (auto& circle : g_spellCircles)
+		{
+			for (auto& spell : circle.spells)
+			{
+				g_spellMap[spell.id] = &spell;
+			}
+		}
+		Log("Built spell lookup map with " + std::to_string(g_spellMap.size()) + " spells");
+		AddConsoleString("Loaded " + std::to_string(g_spellMap.size()) + " spells from spells.json", GREEN);
+	}
+	catch (const std::exception& e)
+	{
+		Log("ERROR: Exception while loading spell data: " + std::string(e.what()));
+		AddConsoleString("ERROR: Exception while loading spell data", RED);
+	}
+
+	file.close();
+}
+
+SpellData* GetSpellData(int spellId)
+{
+	auto it = g_spellMap.find(spellId);
+	if (it != g_spellMap.end())
+	{
+		return it->second;
+	}
+	return nullptr;
 }

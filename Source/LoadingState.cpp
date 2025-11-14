@@ -220,6 +220,14 @@ void LoadingState::UpdateLoading()
 			return;
 		}
 
+		if (!m_loadingSpells)
+		{
+			AddConsoleString(std::string("Loading spell data..."));
+			LoadSpellData();
+			m_loadingSpells = true;
+			return;
+		}
+
 		if (!m_buildingPathfindingGrid)
 		{
 			AddConsoleString(std::string("Initializing pathfinding system..."));

@@ -439,6 +439,29 @@ void GumpPaperdoll::Update()
 								}
 							}
 
+							// Check for double-click on spellbook (shape 761)
+							if (objectId != -1)
+							{
+								auto objIt = g_objectList.find(objectId);
+								if (objIt != g_objectList.end() && objIt->second->m_shapeData && objIt->second->m_shapeData->m_shape == 761)
+								{
+									if (WasMouseButtonDoubleClicked(MOUSE_BUTTON_LEFT))
+									{
+										Log("Paperdoll - Double-click on spellbook, opening spellbook gump for NPC=" + std::to_string(m_npcId));
+										// Open the spellbook gump
+										if (g_mainState)
+										{
+											g_mainState->OpenSpellbookGump(m_npcId);
+										}
+										else
+										{
+											Log("Paperdoll - ERROR: g_mainState is null!");
+										}
+										break; // Don't process bark after opening gump
+									}
+								}
+							}
+
 							// Handle drag start for equipped items
 							if (objectId != -1 && IsMouseButtonDown(MOUSE_LEFT_BUTTON))
 							{
@@ -465,6 +488,12 @@ void GumpPaperdoll::Update()
 									if (objIt != g_objectList.end() && objIt->second && objIt->second->m_shapeData)
 									{
 										int shape = objIt->second->m_shapeData->GetShape();
+
+										// If it's a spellbook (shape 761), close the spellbook gump
+										if (shape == 761)
+										{
+											g_gumpManager->CloseSpellbookForNpc(m_npcId);
+										}
 										std::vector<EquipmentSlot> fillSlots = GetEquipmentSlotsFilled(shape);
 
 										// If item has explicit fills, clear all those slots

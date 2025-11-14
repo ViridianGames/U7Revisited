@@ -24,6 +24,7 @@ public:
 		GUMP_BOOK,
 		GUMP_SIGN,
 		GUMP_NUMBER_BAR,
+		GUMP_SPELLBOOK,
 
 	};
 

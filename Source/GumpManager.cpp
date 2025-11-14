@@ -1,6 +1,7 @@
 #include "GumpManager.h"
 #include "U7Gump.h"
 #include "U7GumpPaperdoll.h"
+#include "U7GumpSpellbook.h"
 #include "Gui.h"
 #include "Logging.h"
 #include <memory>
@@ -326,8 +327,8 @@ void GumpManager::Update()
 		{
 			for (auto gump : g_gumpManager->m_GumpList)
 			{
-				// Skip paperdolls - they don't have container objects
-				if (dynamic_cast<GumpPaperdoll*>(gump.get()))
+				// Skip gumps without container objects (paperdolls, spellbooks, etc.)
+				if (gump->m_containerObject == nullptr)
 					continue;
 
 				if (CheckCollisionPointRec(mousePos, gump->m_gui.GetBounds()))
@@ -505,6 +506,21 @@ void GumpManager::CloseGumpForObject(int objectId)
 		{
 			gump->OnExit();
 			Log("Closed gump for container " + std::to_string(objectId) + " on drag start");
+			break;
+		}
+	}
+}
+
+void GumpManager::CloseSpellbookForNpc(int npcId)
+{
+	// Close any spellbook gump for this NPC
+	for (auto& gump : m_GumpList)
+	{
+		GumpSpellbook* spellbook = dynamic_cast<GumpSpellbook*>(gump.get());
+		if (spellbook && spellbook->GetNpcId() == npcId)
+		{
+			spellbook->OnExit();
+			Log("Closed spellbook gump for NPC " + std::to_string(npcId));
 			break;
 		}
 	}

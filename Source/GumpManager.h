@@ -34,6 +34,7 @@ public:
 
 	void AddGump(std::shared_ptr<Gump> gump);
 	void CloseGumpForObject(int objectId);  // Close any gump associated with the given object ID
+	void CloseSpellbookForNpc(int npcId);   // Close spellbook gump for the given NPC ID
 
 	bool IsMouseOverGump() { return m_isMouseOverGump; }
 	Gump* GetGumpUnderMouse() { return m_gumpUnderMouse; }

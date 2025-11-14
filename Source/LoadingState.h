@@ -85,6 +85,7 @@ public:
    bool m_makingMap = false;
    bool m_loadingNPCSchedules = false;
    bool m_buildingPathfindingGrid = false;
+   bool m_loadingSpells = false;
 
    bool m_loadingFailed = false;
 

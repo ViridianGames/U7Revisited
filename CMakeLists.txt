@@ -161,6 +161,7 @@ set(SOURCES
     Source/U7GumpNumberBar.cpp
     Source/U7GumpBook.cpp
     Source/U7GumpPaperdoll.cpp
+    Source/U7GumpSpellbook.cpp
     Source/U7Globals.cpp
     Source/U7Gump.cpp
     Source/U7LuaFuncs.cpp
