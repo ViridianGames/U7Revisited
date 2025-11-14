@@ -1,14 +1,15 @@
---- Updates door frame and adjusts position to simulate hinge rotation
---- P0 = unused
---- P1 = Z offset
---- P2 = X offset
---- P3 = frame adjustment
---- P4 = new shape
---- P5 = object ID
-
--- Track original positions for each door to toggle between original and offset
+--- Track original positions for each door to toggle between original and offset
 local doorOriginalPositions = {}
 
+--- Updates door frame and adjusts position to simulate hinge rotation.
+--- Tracks original positions for each door to toggle between original and offset positions.
+--- @param P0 number Unused
+--- @param P1 number Z offset for door movement
+--- @param P2 number X offset for door movement
+--- @param P3 number Frame adjustment value
+--- @param P4 number New shape ID to set
+--- @param P5 number Object ID of the door
+--- @return boolean Always returns true
 function utility_position_0797(P0, P1, P2, P3, P4, P5)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007
 

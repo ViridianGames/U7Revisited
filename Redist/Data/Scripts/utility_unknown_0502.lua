@@ -1,5 +1,5 @@
 --- Best guess: Manages dialogue with Arcadion in the mirror or sword, handling multiple conversation paths and flag updates based on player choices.
-function utility_unknown_0502(eventid, objectref)
+function utility_unknown_0502(objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_0010, var_0011, var_0012, var_0013, var_0014, var_0015, var_0016, var_0017, var_0018, var_0019, var_0020, var_0021, var_0022, var_0023, var_0024, var_0025, var_0026, var_0027, var_0028, var_0029, var_0030
 
     if not get_flag(815) then
@@ -97,7 +97,7 @@ function utility_unknown_0502(eventid, objectref)
                 add_dialogue("\"Where is the corpse of which thou dost speak?\" The dark sword begins to vibrate in your hand.*")
                 hide_npc(292)
                 var_0011 = click_on_item()
-                var_0017 = get_item_shape(var_0011)
+                var_0017 = get_object_shape(var_0011)
                 var_0018 = get_object_position(var_0011)
                 switch_talk_to(292)
                 if not is_npc(var_0011) then
@@ -165,15 +165,15 @@ function utility_unknown_0502(eventid, objectref)
         utility_event_0508(objectref)
     end
     if var_0013 then
-        execute_usecode_array({1785, 8021, 1, 7719}, objectref)
+        execute_usecode_array(objectref, {1785, 8021, 1, 7719})
     end
     if var_0014 then
         var_001B = utility_unknown_1069(var_0011)
-        execute_usecode_array({8033, 2, 17447, 8042, 1, 17447, 8041, 1, 17447, 8040, 1, 17447, 8548, var_001B, 7769}, var_0011)
+        execute_usecode_array(var_0011, {8033, 2, 17447, 8042, 1, 17447, 8041, 1, 17447, 8040, 1, 17447, 8548, var_001B, 7769})
     end
     if var_0015 then
         var_001B = utility_unknown_1069(var_0011)
-        execute_usecode_array({8033, 2, 17447, 8042, 1, 17447, 8041, 1, 17447, 8040, 1, 17447, 8036, 2, 8487, var_001B, 7769}, var_0011)
+        execute_usecode_array(var_0011, {8033, 2, 17447, 8042, 1, 17447, 8041, 1, 17447, 8040, 1, 17447, 8036, 2, 8487, var_001B, 7769})
     end
     return
 end

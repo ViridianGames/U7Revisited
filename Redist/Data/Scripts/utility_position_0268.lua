@@ -6,7 +6,7 @@ function utility_position_0268(eventid, objectref)
         set_schedule_type(10, 232)
     end
 
-    if not npc_in_party(232) then
+    if not npc_id_in_party(232) then
         var_0000 = find_nearby(0, 50, 764, -356)
         for var_0003 in ipairs(var_0000) do
             get_object_frame(var_0003, 0)

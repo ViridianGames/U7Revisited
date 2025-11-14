@@ -1,5 +1,5 @@
 --- Best guess: Handles evidence discussion in the murder investigation, setting flags for progress.
-function utility_unknown_0901(eventid, objectref)
+function utility_unknown_0901()
     local var_0000, var_0001, var_0002
 
     start_conversation()

@@ -1,5 +1,5 @@
 --- Best guess: Checks an item's status via func_0937, then adds items to a container if the condition fails.
-function utility_unknown_1075(eventid, objectref, arg1, arg2, arg3)
+function utility_unknown_1075(arg1, arg2, arg3)
     local var_0000, var_0001, var_0002, var_0003
 
     if not utility_unknown_1079(arg3) then --- External call to func_0937

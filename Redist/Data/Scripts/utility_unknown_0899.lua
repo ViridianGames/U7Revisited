@@ -1,5 +1,5 @@
 --- Best guess: Introduces a murder investigation, switching dialogue to an NPC (Petre) and prompting a search.
-function utility_unknown_0899(eventid, objectref)
+function utility_unknown_0899()
     local var_0000, var_0001
 
     start_conversation()

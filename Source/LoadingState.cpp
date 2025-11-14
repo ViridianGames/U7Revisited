@@ -119,7 +119,7 @@ void LoadingState::Draw()
 
 void LoadingState::UpdateLoading()
 {
-	
+
 	if (!m_loadingFailed)
 	{
 		if (!m_loadingVersion)
@@ -171,6 +171,15 @@ void LoadingState::UpdateLoading()
 			return;
 		}
 
+		if (!m_loadingSprites)
+		{
+			AddConsoleString(std::string("Loading sprites..."));
+			LoadSprites();
+			ExtractGumps();
+			m_loadingSprites = true;
+			return;
+		}
+
 		if(!m_loadingFaces)
 		{
 			AddConsoleString(std::string("Loading faces..."));
@@ -208,6 +217,14 @@ void LoadingState::UpdateLoading()
 			AddConsoleString(std::string("Loading NPC Schedules..."));
 			LoadNPCSchedules();
 			m_loadingNPCSchedules = true;
+			return;
+		}
+
+		if (!m_loadingSpells)
+		{
+			AddConsoleString(std::string("Loading spell data..."));
+			LoadSpellData();
+			m_loadingSpells = true;
 			return;
 		}
 
@@ -290,7 +307,7 @@ void LoadingState::LoadVersion()
 void LoadingState::LoadChunks()
 {
 	std::string dataPath = g_Engine->m_EngineConfig.GetString("data_path");
-	
+
 	//  Load data for all chunks first
 	std::string loadingPath(dataPath);
 	loadingPath.append("/STATIC/U7CHUNKS");
@@ -319,7 +336,7 @@ void LoadingState::LoadChunks()
 
 				g_ChunkTypeList[i][j][k] = thisdata;
 			}
-			
+
 		}
 	}
 	fclose(u7chunksfile);
@@ -378,19 +395,19 @@ void LoadingState::LoadIFIX()
 				ss << "U7IFIX" << std::hex << thissuperchunk;
 			}
 			std::string s = ss.str();
-            
+
             std::transform(s.begin(), s.end(), s.begin(), ::toupper);
-            
+
 						s.insert(0, loadingPath.c_str());
 
 			FILE* u7thisifix = fopen(s.c_str(), "rb");
-            
+
             if(u7thisifix == nullptr)
             {
                 int stopper = 0;
             }
 
-			//  Even though these files don't have an .flx description, 
+			//  Even though these files don't have an .flx description,
 			//  these are flex files.  Flex files have a header of 80 bytes,
 			//  which is the same for every file: "Ultima VII Data File (C) 1992 Origin Inc."
 			char header[80];
@@ -511,7 +528,7 @@ void LoadingState::LoadFaces()
 		int xDrawOffset;
 		int yDrawOffset;
 	};
-	
+
 	stringstream shapes;
 	shapes << shapesFile.rdbuf();
 	shapesFile.close();
@@ -639,7 +656,7 @@ void LoadingState::LoadFaces()
 
 		}
 
-		
+
 	}
 
 	shapesFile.close();
@@ -887,7 +904,7 @@ void LoadingState::CreateShapeTable()
 		palette.seekg(paletteEntryMap[i].offset);
 		unsigned char* paletteData = (unsigned char*)malloc(paletteEntryMap[1].length);
 		palette.read((char*)paletteData, paletteEntryMap[1].length);
-	
+
 		std::array<Color, 256> thisPalette;
 		//  Currently only loading the base palette.  Other palettes are for lighting effects.
 		for (int j = 0; j < 256; ++j)
@@ -900,7 +917,7 @@ void LoadingState::CreateShapeTable()
 			thisPalette[j].b = b * 4;
 			thisPalette[j].a = 255;
 		}
-	
+
 		thisPalette[254] = Color{ 128, 128, 128, 128 };
 
 		m_palettes.push_back(thisPalette);
@@ -1103,6 +1120,389 @@ void LoadingState::CreateShapeTable()
 
 	profilingTime = GetTime() - profilingTime;
 	Log("Time to load shapes: " + std::to_string(profilingTime));
+}
+
+void LoadingState::LoadSprites()
+{
+	std::string dataPath = g_Engine->m_EngineConfig.GetString("data_path");
+	std::string spritePath = dataPath + "/STATIC/SPRITES.VGA";
+
+	ifstream spritesFile;
+	spritesFile.open(spritePath.c_str(), ios::binary);
+
+	if (!spritesFile.good())
+	{
+		Log("SPRITES.VGA not found at: " + spritePath);
+		return;
+	}
+
+	stringstream sprites;
+	sprites << spritesFile.rdbuf();
+	spritesFile.close();
+
+	vector<FLXEntryData> spriteEntryMap = ParseFLXHeader(sprites);
+
+	Log("Loading " + std::to_string(spriteEntryMap.size()) + " sprite shapes from SPRITES.VGA");
+
+	float profilingTime = GetTime();
+
+	struct frameData
+	{
+		unsigned int fileOffset;
+		short W2;
+		short W1;
+		short H1;
+		short H2;
+		unsigned int width;
+		unsigned int height;
+		int xDrawOffset;
+		int yDrawOffset;
+	};
+
+	// Process each sprite shape (same format as SHAPES.VGA)
+	for (int thisSprite = 0; thisSprite < spriteEntryMap.size() && thisSprite < 32; ++thisSprite)
+	{
+		if (spriteEntryMap[thisSprite].offset == 0 && spriteEntryMap[thisSprite].length == 0)
+		{
+			continue; // Empty entry
+		}
+
+		sprites.seekg(spriteEntryMap[thisSprite].offset);
+		unsigned int headerStart = sprites.tellg();
+		unsigned int firstData = ReadU32(sprites);
+
+		// Check if RLE-encoded (same format as SHAPES.VGA)
+		if (firstData == spriteEntryMap[thisSprite].length)
+		{
+			// Next four bytes tell length of the header
+			unsigned int headerLength = ReadU32(sprites);
+			unsigned int frameCount = ((headerLength - 4) / 4);
+
+			std::vector<frameData> frameOffsets;
+			frameOffsets.resize(frameCount);
+			frameOffsets[0].fileOffset = 0;
+
+			for (unsigned int i = 1; i < frameCount; ++i)
+			{
+				frameOffsets[i].fileOffset = ReadU32(sprites);
+			}
+
+			// Read each frame
+			for (unsigned int frameNum = 0; frameNum < frameCount; ++frameNum)
+			{
+				// Seek to the start of this frame's data
+				if (frameNum > 0)
+				{
+					sprites.seekg(headerStart + frameOffsets[frameNum].fileOffset);
+				}
+
+				frameOffsets[frameNum].W2 = ReadS16(sprites);
+				frameOffsets[frameNum].W1 = ReadS16(sprites);
+				frameOffsets[frameNum].H1 = ReadS16(sprites);
+				frameOffsets[frameNum].H2 = ReadS16(sprites);
+
+				frameOffsets[frameNum].height = frameOffsets[frameNum].H1 + frameOffsets[frameNum].H2 + 1;
+				frameOffsets[frameNum].width = frameOffsets[frameNum].W2 + frameOffsets[frameNum].W1 + 1;
+
+				frameOffsets[frameNum].xDrawOffset = frameOffsets[frameNum].W2;
+				frameOffsets[frameNum].yDrawOffset = frameOffsets[frameNum].H2;
+
+				Image spriteImage = GenImageColor(frameOffsets[frameNum].width, frameOffsets[frameNum].height, Color{0, 0, 0, 0});
+
+				// Read each span - same format as SHAPES.VGA
+				while (true)
+				{
+					unsigned short blockData = ReadU16(sprites);
+					unsigned short spanLength = blockData >> 1;
+					unsigned short spanType = blockData & 1;
+
+					if (blockData == 0)
+					{
+						break; // No more spans; done with this frame
+					}
+
+					short xStart = ReadS16(sprites);
+					short yStart = ReadS16(sprites);
+					xStart += frameOffsets[frameNum].width - frameOffsets[frameNum].xDrawOffset - 1;
+					yStart += frameOffsets[frameNum].height - frameOffsets[frameNum].yDrawOffset - 1;
+
+					if (spanType == 0) // Not RLE, raw pixel data
+					{
+						for (int i = 0; i < spanLength; ++i)
+						{
+							unsigned char Value = ReadU8(sprites);
+							ImageDrawPixel(&spriteImage, xStart + i, yStart, m_palettes[0][Value]);
+						}
+					}
+					else // RLE
+					{
+						int endX = xStart + spanLength;
+
+						while (xStart < endX)
+						{
+							unsigned char runData = ReadU8(sprites);
+							int runLength = runData >> 1;
+							int runType = runData & 1;
+
+							if (runType == 0) // Non-RLE
+							{
+								for (int i = 0; i < runLength; ++i)
+								{
+									unsigned char Value = ReadU8(sprites);
+									ImageDrawPixel(&spriteImage, xStart + i, yStart, m_palettes[0][Value]);
+								}
+							}
+							else // RLE - repeat single pixel
+							{
+								unsigned char Value = ReadU8(sprites);
+								for (int i = 0; i < runLength; ++i)
+								{
+									ImageDrawPixel(&spriteImage, xStart + i, yStart, m_palettes[0][Value]);
+								}
+							}
+							xStart += runLength;
+						}
+					}
+				}
+
+				// Create texture from image
+				Texture2D spriteTexture = LoadTextureFromImage(spriteImage);
+
+				// Store in sprite table
+				SpriteFrame frame;
+				frame.image = spriteImage;
+				frame.texture = spriteTexture;
+				frame.width = frameOffsets[frameNum].width;
+				frame.height = frameOffsets[frameNum].height;
+				frame.xOffset = frameOffsets[frameNum].xDrawOffset;
+				frame.yOffset = frameOffsets[frameNum].yDrawOffset;
+
+				g_spriteTable[thisSprite].push_back(frame);
+			}
+		}
+	}
+
+	profilingTime = GetTime() - profilingTime;
+	Log("Time to load sprites: " + std::to_string(profilingTime));
+
+//#define DEBUG_SPRITES 1
+#if DEBUG_SPRITES
+	// Create Debug/Sprites directory if needed
+	std::filesystem::create_directories("Debug/Sprites");
+
+	// Log sprite counts and export images for debugging
+	for (int i = 0; i < 32; ++i)
+	{
+		if (!g_spriteTable[i].empty())
+		{
+			Log("Sprite " + std::to_string(i) + ": " + std::to_string(g_spriteTable[i].size()) + " frames");
+
+			// Export each frame as PNG for inspection
+			for (size_t frameNum = 0; frameNum < g_spriteTable[i].size(); ++frameNum)
+			{
+				std::string filename = "Debug/Sprites/sprite_" + std::to_string(i) + "_frame_" + std::to_string(frameNum) + ".png";
+				ExportImage(g_spriteTable[i][frameNum].image, filename.c_str());
+			}
+		}
+	}
+
+	Log("Sprites exported to Debug/Sprites/ folder");
+#endif
+}
+
+void LoadingState::ExtractGumps()
+{
+	std::string dataPath = g_Engine->m_EngineConfig.GetString("data_path");
+	std::string gumpsPath = dataPath + "/STATIC/GUMPS.VGA";
+
+	ifstream gumpsFile;
+	gumpsFile.open(gumpsPath.c_str(), ios::binary);
+
+	if (!gumpsFile.good())
+	{
+		Log("GUMPS.VGA not found at: " + gumpsPath);
+		return;
+	}
+
+	stringstream gumps;
+	gumps << gumpsFile.rdbuf();
+	gumpsFile.close();
+
+	vector<FLXEntryData> gumpEntryMap = ParseFLXHeader(gumps);
+
+	Log("Extracting " + std::to_string(gumpEntryMap.size()) + " gump shapes from GUMPS.VGA");
+
+	// Debug: Log first few entries to verify offsets
+	for (int i = 0; i < std::min(10, (int)gumpEntryMap.size()); ++i)
+	{
+		Log("  Gump " + std::to_string(i) + ": offset=" + std::to_string(gumpEntryMap[i].offset) +
+			" length=" + std::to_string(gumpEntryMap[i].length));
+	}
+
+	// Create Debug/Gumps directory
+	std::filesystem::create_directories("Debug/Gumps");
+
+	struct frameData
+	{
+		unsigned int fileOffset;
+		short W2;
+		short W1;
+		short H1;
+		short H2;
+		unsigned int width;
+		unsigned int height;
+		int xDrawOffset;
+		int yDrawOffset;
+	};
+
+	// Process each gump shape (same format as SHAPES.VGA)
+	for (int thisGump = 0; thisGump < gumpEntryMap.size(); ++thisGump)
+	{
+		if (gumpEntryMap[thisGump].offset == 0 && gumpEntryMap[thisGump].length == 0)
+		{
+			continue; // Empty entry
+		}
+
+		gumps.seekg(gumpEntryMap[thisGump].offset);
+		unsigned int headerStart = gumps.tellg();
+		unsigned int firstData = ReadU32(gumps);
+
+		// Check if RLE-encoded
+		if (firstData == gumpEntryMap[thisGump].length)
+		{
+			// Next four bytes tell length of the header
+			unsigned int headerLength = ReadU32(gumps);
+			unsigned int frameCount = ((headerLength - 4) / 4);
+
+			std::vector<frameData> frameOffsets;
+			frameOffsets.resize(frameCount);
+			frameOffsets[0].fileOffset = 0;
+
+			for (unsigned int i = 1; i < frameCount; ++i)
+			{
+				frameOffsets[i].fileOffset = ReadU32(gumps);
+			}
+
+			// Read each frame
+			for (unsigned int frameNum = 0; frameNum < frameCount; ++frameNum)
+			{
+				// Seek to the start of this frame's data
+				if (frameNum > 0)
+				{
+					gumps.seekg(headerStart + frameOffsets[frameNum].fileOffset);
+				}
+
+				frameOffsets[frameNum].W2 = ReadS16(gumps);
+				frameOffsets[frameNum].W1 = ReadS16(gumps);
+				frameOffsets[frameNum].H1 = ReadS16(gumps);
+				frameOffsets[frameNum].H2 = ReadS16(gumps);
+
+				frameOffsets[frameNum].height = frameOffsets[frameNum].H1 + frameOffsets[frameNum].H2 + 1;
+				frameOffsets[frameNum].width = frameOffsets[frameNum].W2 + frameOffsets[frameNum].W1 + 1;
+				frameOffsets[frameNum].xDrawOffset = frameOffsets[frameNum].W2;
+				frameOffsets[frameNum].yDrawOffset = frameOffsets[frameNum].H2;
+
+				if (frameOffsets[frameNum].width > 1024 || frameOffsets[frameNum].height > 1024 || frameOffsets[frameNum].width == 0 || frameOffsets[frameNum].height == 0)
+				{
+					Log("Invalid gump dimensions: " + std::to_string(frameOffsets[frameNum].width) + "x" + std::to_string(frameOffsets[frameNum].height));
+					continue;
+				}
+
+				// Create image for this frame
+				Image frameImage = GenImageColor(frameOffsets[frameNum].width, frameOffsets[frameNum].height, BLANK);
+
+				// Decode gump RLE data (Exult format with 2-byte scanline headers)
+				while (true)
+				{
+					// Read 2-byte scanline length
+					unsigned short scanlen = ReadU16(gumps);
+
+					if (scanlen == 0)
+					{
+						// End of shape
+						break;
+					}
+
+					// Extract encoded flag and length
+					bool encoded = (scanlen & 1) != 0;
+					scanlen = scanlen >> 1;
+
+					// Read scanline position (2 bytes each)
+					short scanx = ReadS16(gumps);
+					short scany = ReadS16(gumps);
+
+					// Adjust coordinates based on frame offsets (same as SHAPES.VGA)
+					scanx += frameOffsets[frameNum].width - frameOffsets[frameNum].xDrawOffset - 1;
+					scany += frameOffsets[frameNum].height - frameOffsets[frameNum].yDrawOffset - 1;
+
+					// Validate scanline position
+					if (scany < 0 || scany >= (int)frameOffsets[frameNum].height)
+						continue;
+
+					if (encoded)
+					{
+						// RLE encoded scanline
+						int x = scanx;
+
+						while (scanlen > 0)
+						{
+							unsigned char bcnt = ReadU8(gumps);
+
+							bool repeat = (bcnt & 1) != 0;
+							bcnt = bcnt >> 1;
+
+							if (repeat)
+							{
+								// Repeat single color
+								unsigned char col = ReadU8(gumps);
+	
+								for (int i = 0; i < bcnt && x >= 0 && x < (int)frameOffsets[frameNum].width; ++i, ++x)
+								{
+									Color color = m_palettes[0][col];
+									ImageDrawPixel(&frameImage, x, scany, color);
+								}
+							}
+							else
+							{
+								// Copy literal pixels
+								for (int i = 0; i < bcnt && x >= 0 && x < (int)frameOffsets[frameNum].width; ++i, ++x)
+								{
+									unsigned char col = ReadU8(gumps);
+		
+									Color color = m_palettes[0][col];
+									ImageDrawPixel(&frameImage, x, scany, color);
+								}
+							}
+
+						// Track remaining length like Exult does
+						scanlen -= bcnt;
+					}
+				}
+				else
+					{
+						// Unencoded scanline - copy pixels directly
+						int x = scanx;
+						for (int i = 0; i < scanlen && x >= 0 && x < (int)frameOffsets[frameNum].width; ++i, ++x)
+						{
+							unsigned char col = ReadU8(gumps);
+							Color color = m_palettes[0][col];
+							ImageDrawPixel(&frameImage, x, scany, color);
+						}
+					}
+				}
+
+				// Export frame as PNG
+				std::string filename = "Debug/Gumps/gump_" + std::to_string(thisGump) + "_frame_" + std::to_string(frameNum) + ".png";
+				ExportImage(frameImage, filename.c_str());
+
+				UnloadImage(frameImage);
+			}
+
+			Log("Extracted gump " + std::to_string(thisGump) + " with " + std::to_string(frameCount) + " frames");
+		}
+	}
+
+	Log("Gumps extracted to Debug/Gumps/ folder");
 }
 
 void LoadingState::LoadModels()
@@ -1337,6 +1737,9 @@ std::vector<LoadingState::FLXEntryData> LoadingState::ParseFLXHeader(istream &fi
 
 void LoadingState::LoadInitialGameState()
 {
+	// Load equipment slot configuration
+	LoadEquipmentSlotsConfig();
+
 	//  Load shape data
 	std::string dataPath = g_Engine->m_EngineConfig.GetString("data_path");
 	ifstream initGameFile;
@@ -1369,7 +1772,7 @@ void LoadingState::LoadInitialGameState()
 			short npcCount2 = ReadU16(subFiles);
 			int fullcount = npcCount1 + npcCount2;
 			int filepos = subFiles.tellg();
-			
+
 			for (int i = 0; i < 256; ++i)
 			{
 				//if (i == 139) // This NPC is broken and attempting to parse it messes up all NPCs after it.  It's not used anyway so we just skip it.
@@ -1379,7 +1782,7 @@ void LoadingState::LoadInitialGameState()
 
 				int size = sizeof(NPCData);
 				NPCData thisNPC;
-				
+
 				thisNPC.x = ReadU8(subFiles);
 				thisNPC.y = ReadU8(subFiles);
 				thisNPC.shapeId = ReadU16(subFiles);
@@ -1552,6 +1955,12 @@ void LoadingState::LoadInitialGameState()
 
 				g_NPCData[thisNPC.id] = make_unique<NPCData>(thisNPC);
 
+				// Initialize equipment slots to empty
+				for (int slot = 0; slot < static_cast<int>(EquipmentSlot::SLOT_COUNT); slot++)
+				{
+					g_NPCData[thisNPC.id]->m_equipment[static_cast<EquipmentSlot>(slot)] = -1;
+				}
+
 				g_objectList[nextID].get()->NPCInit(g_NPCData[thisNPC.id].get());
 				//g_ObjectList[nextID].get()->m_NPCID = thisNPC.id;
 				//g_ObjectList[nextID]->m_isNPC = true;
@@ -1561,10 +1970,69 @@ void LoadingState::LoadInitialGameState()
 				{
 					unsigned char length = 99;
 					bool incontainer = false;
+					int currentContainerId = nextID; // Track which container items go into (starts as NPC)
 					while (length != 0)
 					{
 						int pointerlocation = subFiles.tellg();
 						length = ReadU8(subFiles);
+
+						// Debug: Log all entries for Avatar to understand structure
+						static int logCount = 0;
+						if (logCount < 50 && thisNPC.id == 0 && length != 0)
+						{
+							std::string containerStatus = incontainer ? " (inside container)" : " (root level)";
+							Log("NPC 0 - length: " + std::to_string(length) + containerStatus);
+							logCount++;
+						}
+
+						// Helper lambda to auto-equip items - defined here so both length==6 and length==12 can use it
+						auto AutoEquipItem = [&](int itemId, int shapeId) {
+							std::vector<EquipmentSlot> validSlots = GetEquipmentSlotsForShape(shapeId);
+							std::vector<EquipmentSlot> fillSlots = GetEquipmentSlotsFilled(shapeId);
+
+							// Try each valid slot in order, use first where all required slots are empty
+							for (EquipmentSlot slot : validSlots)
+							{
+								// If item has explicit fills, check all those slots are empty
+								// Otherwise just check the single slot
+								bool allEmpty = true;
+								if (!fillSlots.empty())
+								{
+									for (EquipmentSlot fillSlot : fillSlots)
+									{
+										if (g_NPCData[thisNPC.id]->GetEquippedItem(fillSlot) != -1)
+										{
+											allEmpty = false;
+											break;
+										}
+									}
+								}
+								else
+								{
+									// Single slot item - just check this one slot
+									allEmpty = (g_NPCData[thisNPC.id]->GetEquippedItem(slot) == -1);
+								}
+
+								if (allEmpty)
+								{
+									// Equip: if fills is specified, use those slots; otherwise just the single slot
+									if (!fillSlots.empty())
+									{
+										for (EquipmentSlot fillSlot : fillSlots)
+										{
+											g_NPCData[thisNPC.id]->SetEquippedItem(fillSlot, itemId);
+										}
+									}
+									else
+									{
+										g_NPCData[thisNPC.id]->SetEquippedItem(slot, itemId);
+									}
+									return true;
+								}
+							}
+							return false;
+						};
+
 						if (length == 6) //  Object.
 						{
    						unsigned char x = ReadU8(subFiles);
@@ -1582,6 +2050,15 @@ void LoadingState::LoadInitialGameState()
                      int shape = shapeData & 0x3ff;
                      int frame = (shapeData >> 10) & 0x1f;
 
+							// Debug: Log items for Avatar and Iolo
+							static int shapeLogCount = 0;
+							if (shapeLogCount < 50 && (thisNPC.id == 0 || thisNPC.id == 1))
+							{
+								std::string location = incontainer ? " IN CONTAINER" : " ROOT LEVEL";
+								Log("NPC " + std::to_string(thisNPC.id) + location + " - shape: " + std::to_string(shape) + ", frame: " + std::to_string(frame));
+								shapeLogCount++;
+							}
+
                      unsigned char z = ReadU8(subFiles);
                      float lift1 = 0;
                      float lift2 = 0;
@@ -1591,33 +2068,168 @@ void LoadingState::LoadInitialGameState()
                         lift2 = z & 0x0f;
 							//z *= 8;
                      }
-						
+
                      unsigned char quality = ReadU8(subFiles);
-                     
+
                      int objectId = GetNextID();
 							U7Object* thisObject = AddObject(shape, frame, objectId, actualx, lift1, actualy);
 							thisObject->m_isContained = true;
-                     
-							AddObjectToContainer(objectId, nextID);
+							thisObject->m_Quality = quality;
+
+							// Debug: Log where EVERY item goes for Avatar and Iolo
+							if (thisNPC.id == 0 || thisNPC.id == 1)
+							{
+								std::string dest = (currentContainerId == nextID) ? "NPC" : "CONTAINER";
+								Log("NPC " + std::to_string(thisNPC.id) + " - ADDING shape " + std::to_string(shape) + " (id=" + std::to_string(objectId) +
+									") to " + dest + " (containerID=" + std::to_string(currentContainerId) + ", npcID=" + std::to_string(nextID) + ")");
+							}
+
+							AddObjectToContainer(objectId, currentContainerId);
+
+							// If item is at root level (not in container), auto-equip based on shape ID
+							// In original U7 format, root level items are the equipped items
+							if (!incontainer)
+							{
+								std::vector<EquipmentSlot> validSlots = GetEquipmentSlotsForShape(shape);
+
+								// Debug: Show ALL root level items for Avatar/Iolo
+								if (thisNPC.id == 0 || thisNPC.id == 1)
+								{
+									if (!validSlots.empty())
+									{
+										const char* slotNames[] = {"HEAD", "NECK", "TORSO", "LEGS", "HANDS", "FEET",
+											"LEFT_HAND", "RIGHT_HAND", "AMMO", "LEFT_RING", "RIGHT_RING", "BELT", "BACKPACK"};
+										Log("NPC " + std::to_string(thisNPC.id) + " - Shape " + std::to_string(shape) +
+											" mapped to slot " + std::to_string(static_cast<int>(validSlots[0])) + " (" + slotNames[static_cast<int>(validSlots[0])] + ")");
+									}
+									else
+									{
+										Log("NPC " + std::to_string(thisNPC.id) + " - Root level shape " + std::to_string(shape) +
+											" has NO equipment slot mapping!");
+									}
+								}
+
+								// Auto-equip the item
+								AutoEquipItem(objectId, shape);
+							}
+
 						}
-						else if (length == 12) // container or egg
+						else if (length == 12) // Container (backpack, bag, etc.)
 						{
-							incontainer = true;
-							for (int i = 0; i < 12; ++i)
+							// Read container object data (same format as regular objects, plus 6 extra bytes)
+							unsigned char x = ReadU8(subFiles);
+							unsigned char y = ReadU8(subFiles);
+
+							int chunkx = x >> 4;
+							int chunky = y >> 4;
+							int intx = x & 0x0f;
+							int inty = y & 0x0f;
+
+							int actualx = (chunkx * 16) + intx;
+							int actualy = (chunky * 16) + inty;
+
+							unsigned short shapeData = ReadU16(subFiles);
+							int shape = shapeData & 0x3ff;
+							int frame = (shapeData >> 10) & 0x1f;
+
+							unsigned char z = ReadU8(subFiles);
+							float lift1 = 0;
+							if (z != 0)
+							{
+								lift1 = z >> 4;
+							}
+
+							unsigned char quality = ReadU8(subFiles);
+
+							// Skip the 6 extra container-specific bytes (volume, flags, etc.)
+							for (int i = 0; i < 6; ++i)
 							{
 								ReadU8(subFiles);
 							}
+
+							// Create the container object
+							int containerId = GetNextID();
+							U7Object* containerObject = AddObject(shape, frame, containerId, actualx, lift1, actualy);
+							containerObject->m_isContainer = true;  // Mark as container so items can be added to it
+							containerObject->m_isContained = true;
+							containerObject->m_Quality = quality;
+
+							// Debug: Log where container goes
+							if (thisNPC.id == 0)
+							{
+								std::string dest = (currentContainerId == nextID) ? "NPC" : "CONTAINER";
+								Log("NPC 0 - ADDING CONTAINER shape " + std::to_string(shape) + " (id=" + std::to_string(containerId) +
+									") to " + dest + " (containerID=" + std::to_string(currentContainerId) + ", npcID=" + std::to_string(nextID) + ")");
+								Log("NPC 0 - Setting currentContainerId to " + std::to_string(containerId) + " (was " + std::to_string(currentContainerId) + ")");
+							}
+
+							AddObjectToContainer(containerId, currentContainerId);
+
+							// If container is at root level (not inside another container), auto-equip it
+							if (!incontainer)
+							{
+								if (AutoEquipItem(containerId, shape))
+								{
+									std::vector<EquipmentSlot> validSlots = GetEquipmentSlotsForShape(shape);
+									std::vector<EquipmentSlot> fillSlots = GetEquipmentSlotsFilled(shape);
+									Log("NPC " + std::to_string(thisNPC.id) + " - Auto-equipped container shape " +
+										std::to_string(shape) + " to slot " + std::to_string(static_cast<int>(validSlots[0])) +
+										" (fills " + std::to_string(fillSlots.size()) + " slots)");
+								}
+							}
+
+							// Mark that we're now reading items inside this container
+							incontainer = true;
+							currentContainerId = containerId; // Subsequent items go inside this container
 						}
 						else if(length == 1)
 						{
+							static int endContainerCount = 0;
+							if (endContainerCount < 5 && thisNPC.id == 0)
+							{
+								Log("NPC 0 - Hit length==1 (end container), incontainer=" + std::string(incontainer ? "true" : "false") +
+									", currentContainerId=" + std::to_string(currentContainerId) + ", nextID=" + std::to_string(nextID));
+								endContainerCount++;
+							}
+
 							if (incontainer)
 							{
 								incontainer = false;
+								currentContainerId = nextID; // Back to adding items to NPC
+
+								if (endContainerCount <= 5 && thisNPC.id == 0)
+								{
+									Log("NPC 0 - Reset: incontainer=false, currentContainerId=" + std::to_string(currentContainerId));
+								}
 							}
 						}
 					}
 				}
 			}
+
+			// Give Avatar (NPC ID 0) a spellbook in their belt slot
+			auto avatarIt = g_NPCData.find(0);
+			if (avatarIt != g_NPCData.end() && avatarIt->second)
+			{
+				NPCData* avatarNPC = avatarIt->second.get();
+				U7Object* avatarObject = g_objectList[avatarNPC->m_objectID].get();
+
+				if (avatarObject)
+				{
+					// Create spellbook (shape 761)
+					unsigned int spellbookID = GetNextID();
+					AddObject(761, 0, spellbookID, avatarObject->m_Pos.x, avatarObject->m_Pos.y, avatarObject->m_Pos.z);
+
+					// Add to Avatar's inventory
+					AddObjectToContainer(spellbookID, avatarNPC->m_objectID);
+
+					// Equip in belt slot
+					avatarNPC->SetEquippedItem(EquipmentSlot::SLOT_BELT, spellbookID);
+
+					Log("Gave Avatar spellbook (shape 761, id=" + std::to_string(spellbookID) + ") equipped in SLOT_BELT");
+				}
+			}
+
 			stringstream npcData;
 		}
 		if (filename.substr(0, 6) == "u7ireg")
@@ -1646,7 +2258,7 @@ void LoadingState::LoadNPCSchedules()
 	if (file.is_open())
 	{
 		unsigned int npcCount = ReadU32(file); // Should be 256.
-		
+
 		unordered_map<unsigned char, unsigned short> schedulesPerNPC;
 
 		int entriesLastIndex = 0;

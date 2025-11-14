@@ -280,21 +280,29 @@ function destroy_object(object_id) end
 ---@param object_id integer The object to destroy
 function destroy_object_silent(object_id) end
 
+---Consumes an object (typically food), applying its effects and destroying it
+---Used primarily by food items to apply nutrition/healing and remove the consumed item from the world
+---@param event_type integer The consumption event type (91 = eating)
+---@param quantity integer The amount/value (e.g., nutrition points from food)
+---@param object_id integer The object to consume
+---@param eater_id integer The NPC ID of the character consuming the object
+function consume_object(event_type, quantity, object_id, eater_id) end
+
 -- ============================================================================
 -- NPC PROPERTIES
 -- ============================================================================
 
 ---Gets an NPC property value
 ---@param npc_id integer The NPC to query
----@param property string The property name
----@return any value The property value
-function get_npc_property(npc_id, property) end
+---@param property_id integer The property ID (0=strength, 1=dexterity, 2=intelligence, 3=health, 4=combat, 5=mana, 6=magic, 7=training, 8=exp, 9=food_level, 10=sex_flag)
+---@return integer value The property value
+function get_npc_property(npc_id, property_id) end
 
 ---Sets an NPC property value
 ---@param npc_id integer The NPC to modify
----@param property string The property name
----@param value any The new value
-function set_npc_property(npc_id, property, value) end
+---@param property_id integer The property ID (0=strength, 1=dexterity, 2=intelligence, 3=health, 4=combat, 5=mana, 6=magic, 7=training, 8=exp, 9=food_level, 10=sex_flag)
+---@param value integer The new value
+function set_npc_property(npc_id, property_id, value) end
 
 ---Sets an NPC's position
 ---@param npc_id integer The NPC to move
@@ -450,6 +458,12 @@ function get_schedule_time() end
 ---@return integer schedule The schedule ID
 function get_schedule(npc_id) end
 
+---Gets the current schedule/activity type for an NPC by name
+---Returns activity codes like: 7=shop open, 14=sleeping, etc.
+---@param npc_name string The NPC name to query (e.g., "Greg", "Iolo")
+---@return integer schedule_type The current activity/schedule type (-1 if NPC not found)
+function get_schedule_type(npc_name) end
+
 ---Plays a music track
 ---⚠ Currently a stub (not fully implemented)
 ---@param track integer The music track number to play
@@ -543,9 +557,13 @@ function is_int_in_array(value, array) end
 ---@return boolean found True if value is in array
 function is_string_in_array(value, array) end
 
----Debug print (outputs to console/log)
+---Debug print (outputs to debuglog.txt and stdout)
 ---@param message string The message to print
 function debug_print(message) end
+
+---Console log (outputs to in-game console visible to player)
+---@param message string The message to display in console
+function console_log(message) end
 
 -- ============================================================================
 -- EXULT INTRINSICS - SEARCH & FIND FUNCTIONS
@@ -794,22 +812,23 @@ function get_dead_party() end
 -- EXULT INTRINSICS - USECODE & SCRIPTING
 -- ============================================================================
 
----[Exult 0x0001] Executes usecode function with array of params
----@param usecode_num integer Usecode function number
----@param event_type integer Event type
----@param params table Array of parameters
-function execute_usecode_array(usecode_num, event_type, params) end
+---[Exult 0x0001] Executes usecode function with array of params (NOT FULLY IMPLEMENTED - returns 0)
+---@param object_id integer Object ID to execute script on
+---@param script_array table Array of animation/movement commands
+---@return integer event_id Event ID (currently always returns 0)
+function execute_usecode_array(object_id, script_array) end
 
----[Exult 0x0002] Delayed execution of usecode function
+---[Exult 0x0002] Delayed execution of usecode function (NOT FULLY IMPLEMENTED - returns 0)
+---@param object_id integer Object ID to execute script on
+---@param script_array table Array of animation/movement commands
 ---@param delay integer Delay in ticks
----@param usecode_num integer Usecode function number
----@param event_type integer Event type
----@param params table Array of parameters
-function delayed_execute_usecode_array(delay, usecode_num, event_type, params) end
+---@return integer event_id Event ID (currently always returns 0)
+function delayed_execute_usecode_array(object_id, script_array, delay) end
 
----[Exult 0x0079] Checks if currently in usecode
----@return boolean in_usecode True if usecode is running
-function in_usecode() end
+---[Exult 0x0079] Checks if object is currently executing usecode (NOT FULLY IMPLEMENTED - always returns false)
+---@param object_id integer Object ID to check
+---@return boolean in_usecode True if object is executing usecode (currently always returns false)
+function in_usecode(object_id) end
 
 ---[Exult 0x007D] Runs usecode when path complete
 ---@param npc_id integer NPC to wait for
@@ -969,11 +988,9 @@ function wizard_eye(x, y) end
 ---@param object_id integer Object to move
 function telekenesis(object_id) end
 
----[Exult 0x0057] Creates light effect
----@param x integer X position
----@param y integer Y position
----@param z integer Z position
-function cause_light(x, y, z) end
+---[Exult 0x0057] Creates light effect (stub - not yet implemented)
+---@param light_level integer Intensity of light to create
+function cause_light(light_level) end
 
 ---[Exult 0x0048] Displays map
 function display_map() end

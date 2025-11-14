@@ -24,6 +24,7 @@ public:
 		GUMP_BOOK,
 		GUMP_SIGN,
 		GUMP_NUMBER_BAR,
+		GUMP_SPELLBOOK,
 
 	};
 
@@ -96,7 +97,11 @@ public:
 
 	void SortContainer();
 
-	U7Object* GetObjectUnderMousePointer();
+	virtual U7Object* GetObjectUnderMousePointer();
+
+	// Pixel-perfect collision detection - returns true if mouse is over non-transparent pixel
+	// Checks the gump's background texture for transparency
+	virtual bool IsMouseOverSolidPixel(Vector2 mousePos);
 
 	int m_containerType; // Defines the look of the gump we'll use to show this container's contents
 	ContainerData m_containerData; //  The data for the container type

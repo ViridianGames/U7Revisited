@@ -15,7 +15,7 @@ function object_unknown_0840(eventid, objectref)
         elseif get_item_flag(21, var_0000) then
             clear_item_flag(10, objectref)
             clear_item_flag(26, objectref)
-            var_0001 = execute_usecode_array({10, -2, 17419, 17441, 7736}, var_0000)
+            var_0001 = execute_usecode_array(var_0000, {10, -2, 17419, 17441, 7736})
             play_music(255, 0)
         else
             utility_unknown_1023("@I do not believe that we can land here safely.@")

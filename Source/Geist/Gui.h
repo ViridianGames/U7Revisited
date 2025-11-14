@@ -5,6 +5,7 @@
 #include <vector>
 #include <memory>
 #include <map>
+#include <functional>
 
 #include "Object.h"
 #include "Primitives.h"
@@ -23,6 +24,7 @@ public:
 	void SetLayout(int x, int y, int width, int height, float scale, int flag);
 	void SetAcceptingInput(bool acceptingInput) { m_AcceptingInput = acceptingInput; }
 	bool GetAcceptingInput() { return m_AcceptingInput; }
+	Rectangle GetBounds() const { return Rectangle{ m_Pos.x, m_Pos.y, m_Width, m_Height }; }
 
 	// Add a generic element to the GUI
 	void AddElement(std::shared_ptr<GuiElement> element);
@@ -93,6 +95,12 @@ public:
 
 	GuiSprite* AddSprite(int ID, int posx, int posy, std::shared_ptr<Sprite> sprite, float scalex = 1.0f, float scaley = 1.0f,
 		Color color = Color{ 255, 255, 255, 255 }, int group = 0, int active = true);
+
+	GuiCycle* AddCycle(int ID, int posx, int posy,
+		std::vector<std::shared_ptr<Sprite>> frames,
+		float scalex = 1.0f, float scaley = 1.0f,
+		Color color = Color{255, 255, 255, 255},
+		int group = 0, int active = true);
 
 	GuiOctagonBox* AddOctagonBox(int ID, int posx, int posy, int width, int height, std::vector<std::shared_ptr<Sprite> > borders,
 		Color color = Color{ 255, 255, 255, 255 }, int group = 0, int active = true);
@@ -167,6 +175,9 @@ public:
 	Vector2 m_DragOffset;
 	int m_DragAreaHeight = 20;
 	bool IsMouseInDragArea() const;
+
+	// Callback for pixel-perfect drag area validation (used by gumps to check transparency)
+	std::function<bool(Vector2)> m_DragAreaValidationCallback = nullptr;
 
 	bool m_isDone = false;
 	int m_doneButtonId = -3;

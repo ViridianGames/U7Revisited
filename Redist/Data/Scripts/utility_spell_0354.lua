@@ -5,7 +5,7 @@ function utility_spell_0354(eventid, objectref)
     if eventid == 1 then
         destroy_object(objectref)
         var_0000 = object_select_modal() --- Guess: Selects spell target
-        if get_object_type(var_0000) ~= 330 and get_object_owner(356) and not get_flag(39) then
+        if get_object_shape(var_0000) ~= 330 and get_object_owner(356) and not get_flag(39) then
             bark(objectref, "@Kal Por Ylem@")
             var_0001 = add_containerobject_s(var_0000, {1554, 17493, 7715})
             var_0002 = add_containerobject_s(objectref, {17514, 17520, 8047, 67, 7768})

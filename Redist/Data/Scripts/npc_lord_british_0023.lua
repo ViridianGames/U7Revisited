@@ -320,12 +320,12 @@ function npc_lord_british_0023(eventid, objectref)
         if not get_flag(780) then
             set_flag(780, true)
             var_000F = get_object_position(get_npc_name(356)) --- Guess: Gets NPC data
-            var_0010 = get_npc_prop(3, get_npc_name(356)) --- Guess: Gets NPC property
+            var_0010 = get_npc_property(3, get_npc_name(356)) --- Guess: Gets NPC property
             var_0010[1] = var_0010[1] - 1
             var_0010[2] = var_0010[2] - 1
             sprite_effect(7, var_0010[2] - 1, var_0010[1] - 1, 0, 0, 0, 0) --- Guess: Sets game state
             play_sound_effect(67) --- Guess: Adds quest flag
-            var_0010 = get_npc_prop(0, get_npc_name(356)) --- Guess: Gets NPC property
+            var_0010 = get_npc_property(0, get_npc_name(356)) --- Guess: Gets NPC property
             if var_0010[1] >= 60 then
                 var_0011 = set_npc_prop(0, get_npc_name(356), var_0010[1] - 60) --- Guess: Sets NPC property
             end

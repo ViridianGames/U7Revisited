@@ -1,0 +1,390 @@
+{
+  "gui": {
+    "elements": [
+      {
+        "type": "panel",
+        "position": [
+          5,
+          5
+        ],
+        "size": [
+          237.0,
+          235.0
+        ],
+        "backgroundColor": [
+          80,
+          80,
+          80,
+          255
+        ],
+        "font": "babyblocks.ttf",
+        "fontSize": 30,
+        "filled": true,
+        "layout": "table",
+        "horzPadding": 9,
+        "vertPadding": 5,
+        "columns": 2,
+        "elements": [
+          {
+            "type": "textarea",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Name:",
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "justified": 0,
+            "size": [
+              180.0,
+              30.0
+            ]
+          },
+          {
+            "name": "PROPERTY_NAME",
+            "type": "textinput",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "",
+            "size": [
+              150,
+              35
+            ],
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "backgroundColor": [
+              0,
+              0,
+              0,
+              255
+            ],
+            "borderColor": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          {
+            "type": "textarea",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Width:",
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "justified": 0,
+            "size": [
+              180.0,
+              30.0
+            ]
+          },
+          {
+            "name": "PROPERTY_WIDTH",
+            "type": "scrollbar",
+            "position": [
+              -1,
+              -1
+            ],
+            "valueRange": 255,
+            "size": [
+              150.0,
+              20.0
+            ],
+            "vertical": false,
+            "spurColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "backgroundColor": [
+              128,
+              128,
+              128,
+              255
+            ]
+          },
+          {
+            "type": "textarea",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Height:",
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "justified": 0,
+            "size": [
+              180.0,
+              30.0
+            ]
+          },
+          {
+            "name": "PROPERTY_HEIGHT",
+            "type": "scrollbar",
+            "position": [
+              -1,
+              -1
+            ],
+            "valueRange": 255,
+            "size": [
+              150.0,
+              20.0
+            ],
+            "vertical": false,
+            "spurColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "backgroundColor": [
+              128,
+              128,
+              128,
+              255
+            ]
+          },
+          {
+            "type": "textarea",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Font:",
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "justified": 0,
+            "size": [
+              180.0,
+              30.0
+            ]
+          },
+          {
+            "type": "include",
+            "filename": "ghost_font_select.ghost"
+          },
+          {
+            "type": "textarea",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Font Size:",
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "justified": 0,
+            "size": [
+              180.0,
+              30.0
+            ]
+          },
+          {
+            "name": "PROPERTY_FONT_SIZE",
+            "type": "scrollbar",
+            "position": [
+              -1,
+              -1
+            ],
+            "valueRange": 200,
+            "size": [
+              150.0,
+              20.0
+            ],
+            "vertical": false,
+            "spurColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "backgroundColor": [
+              128,
+              128,
+              128,
+              255
+            ]
+          },
+          {
+            "type": "textarea",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Text Color:",
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "justified": 0,
+            "size": [
+              180.0,
+              30.0
+            ]
+          },
+          {
+            "name": "PROPERTY_TEXTCOLOR",
+            "type": "textbutton",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Pick Color",
+            "size": [
+              150.0,
+              20.0
+            ],
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "backgroundColor": [
+              64,
+              64,
+              64,
+              255
+            ],
+            "borderColor": [
+              128,
+              128,
+              128,
+              255
+            ]
+          },
+          {
+            "type": "textarea",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Border Color:",
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "justified": 0,
+            "size": [
+              180.0,
+              30.0
+            ]
+          },
+          {
+            "name": "PROPERTY_BORDERCOLOR",
+            "type": "textbutton",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Pick Color",
+            "size": [
+              150.0,
+              20.0
+            ],
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "backgroundColor": [
+              64,
+              64,
+              64,
+              255
+            ],
+            "borderColor": [
+              128,
+              128,
+              128,
+              255
+            ]
+          },
+          {
+            "type": "textarea",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Background:",
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "justified": 0,
+            "size": [
+              180.0,
+              30.0
+            ]
+          },
+          {
+            "name": "PROPERTY_BACKGROUNDCOLOR",
+            "type": "textbutton",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Pick Color",
+            "size": [
+              150.0,
+              20.0
+            ],
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "backgroundColor": [
+              64,
+              64,
+              64,
+              255
+            ],
+            "borderColor": [
+              128,
+              128,
+              128,
+              255
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

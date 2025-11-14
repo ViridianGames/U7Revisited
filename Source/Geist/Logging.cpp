@@ -10,10 +10,26 @@
 using namespace std;
 using namespace std::chrono;
 
-string logfile = "";
+string logfile = "runlog.txt";
+
+void SetLogFileName(string filename)
+{
+	logfile = filename;
+}
+
+string GetLogFileName()
+{
+	return logfile;
+}
 
 void Log(string text, string filename, bool suppressDateTime)
 {
+	// Use global logfile if filename is empty
+	if (filename.empty())
+	{
+		filename = logfile;
+	}
+
 	static unordered_map<std::string, unique_ptr<ofstream> > logstreams;
 
 	if (logstreams.find(filename) == logstreams.end())

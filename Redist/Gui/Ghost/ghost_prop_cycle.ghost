@@ -1,0 +1,173 @@
+{
+  "gui": {
+    "elements": [
+      {
+        "type": "panel",
+        "position": [
+          5,
+          5
+        ],
+        "size": [
+          376,
+          125
+        ],
+        "backgroundColor": [
+          80,
+          80,
+          80,
+          255
+        ],
+        "filled": true,
+        "layout": "table",
+        "horzPadding": 6,
+        "vertPadding": 5,
+        "columns": 2,
+        "font": "babyblocks.ttf",
+        "fontSize": 30,
+        "elements": [
+          {
+            "type": "textarea",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Name:",
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "size": [
+              180,
+              30
+            ],
+            "justified": 0
+          },
+          {
+            "name": "PROPERTY_NAME",
+            "type": "textinput",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "",
+            "size": [
+              150,
+              35
+            ],
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "borderColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "backgroundColor": [
+              0,
+              0,
+              0,
+              255
+            ]
+          },
+          {
+            "type": "textarea",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Sprite:",
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "size": [
+              180,
+              30
+            ],
+            "justified": 0
+          },
+          {
+            "name": "PROPERTY_SPRITE",
+            "type": "textbutton",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Pick Sprite",
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "backgroundColor": [
+              64,
+              64,
+              64,
+              255
+            ],
+            "borderColor": [
+              128,
+              128,
+              128,
+              255
+            ]
+          },
+          {
+            "type": "textarea",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Frames:",
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "size": [
+              180,
+              30
+            ],
+            "justified": 0
+          },
+          {
+            "name": "PROPERTY_FRAMECOUNT",
+            "type": "scrollbar",
+            "position": [
+              -1,
+              -1
+            ],
+            "valueRange": 32,
+            "size": [
+              100,
+              20
+            ],
+            "vertical": false,
+            "spurColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "backgroundColor": [
+              80,
+              80,
+              80,
+              255
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -4,7 +4,7 @@ function utility_ship_0308(eventid, objectref)
 
     var_0000 = get_object_owner(objectref) --- Guess: Gets item owner
     if not var_0000 then
-        var_0001 = get_object_type(objectref) --- Guess: Gets item type
+        var_0001 = get_object_shape(objectref) --- Guess: Gets item type
         if var_0001 == 840 then
             utility_event_0786(var_0000) --- Guess: Handles barge movement
         elseif var_0001 == 652 then

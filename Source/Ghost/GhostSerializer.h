@@ -26,6 +26,12 @@ public:
 	// Get the base sprite path
 	static std::string GetBaseSpritePath() { return s_baseSpritePath; }
 
+	// Set the base Ghost GUI path (e.g., "Gui/Ghost/")
+	static void SetBaseGhostPath(const std::string& path);
+
+	// Get the base Ghost GUI path
+	static std::string GetBaseGhostPath() { return s_baseGhostPath; }
+
 	// Load a GUI from a .ghost JSON file
 	bool LoadFromFile(const std::string& filename, Gui* gui);
 
@@ -49,7 +55,8 @@ public:
 
 	// Load elements from a file and add them at a specific parent position
 	// parentElementID specifies which element should be the parent (-1 for root level)
-	bool LoadIntoPanel(const std::string& filename, Gui* gui, int parentX, int parentY, int parentElementID = -1);
+	// insertIndex specifies where to insert in parent's children list (-1 = append at end, 0 = first child, etc.)
+	bool LoadIntoPanel(const std::string& filename, Gui* gui, int parentX, int parentY, int parentElementID = -1, int insertIndex = -1);
 
 	// Get the current auto-ID counter value (for tracking loaded content)
 	int GetNextAutoID() const { return m_nextAutoID; }
@@ -72,6 +79,32 @@ public:
 	void RegisterChildOfParent(int parentID, int childID)
 	{
 		m_childrenMap[parentID].push_back(childID);
+	}
+
+	// Register an element as a child at a specific index (-1 = append at end)
+	void RegisterChildOfParentAtIndex(int parentID, int childID, int index)
+	{
+		auto& children = m_childrenMap[parentID];
+		if (index < 0 || index > static_cast<int>(children.size()))
+		{
+			// Invalid index or -1 means append at end
+			children.push_back(childID);
+		}
+		else
+		{
+			// Insert at the specified index (insert at end if index == size)
+			children.insert(children.begin() + index, childID);
+		}
+	}
+
+	// Get children of a specific parent
+	const std::vector<int>& GetChildren(int parentID) const
+	{
+		static std::vector<int> emptyVector;
+		auto it = m_childrenMap.find(parentID);
+		if (it != m_childrenMap.end())
+			return it->second;
+		return emptyVector;
 	}
 
 	// Reflow floating children of a panel
@@ -181,6 +214,20 @@ public:
 		return GetSprite(spriteID).spritesheet;
 	}
 
+	// IconButton down sprite metadata methods
+	void SetIconButtonDownSprite(int buttonID, const SpriteDefinition& sprite)
+	{
+		m_iconButtonDownSprites[buttonID] = sprite;
+	}
+	SpriteDefinition GetIconButtonDownSprite(int buttonID) const
+	{
+		auto it = m_iconButtonDownSprites.find(buttonID);
+		if (it != m_iconButtonDownSprites.end())
+			return it->second;
+		// Return empty sprite if not set
+		return SpriteDefinition{"", 0, 0, 0, 0};
+	}
+
 	// StretchButton sprite metadata methods
 	void SetStretchButtonLeftSprite(int buttonID, const SpriteDefinition& sprite);
 	void SetStretchButtonCenterSprite(int buttonID, const SpriteDefinition& sprite);
@@ -245,6 +292,18 @@ public:
 		return it->second.count(propertyName) > 0;
 	}
 
+	// Hover text metadata methods
+	void SetElementHoverText(int elementID, const std::string& hoverText)
+	{
+		m_elementHoverTexts[elementID] = hoverText;
+	}
+
+	std::string GetElementHoverText(int elementID) const
+	{
+		auto it = m_elementHoverTexts.find(elementID);
+		return (it != m_elementHoverTexts.end()) ? it->second : "";
+	}
+
 	// Floating element methods
 	void SetFloating(int elementID, bool floating)
 	{
@@ -287,7 +346,8 @@ private:
 	// parentX and parentY track the cumulative offset from nested parents
 	// parentElementID tracks the parent in the tree structure (-1 for root level)
 	// namePrefix is prepended to all element names (used for includes to avoid name collisions)
-	void ParseElements(const ghost_json& elementsArray, Gui* gui, const ghost_json& inheritedProps = ghost_json(), int parentX = 0, int parentY = 0, int parentElementID = -1, const std::string& namePrefix = "");
+	// insertIndex specifies where to insert elements in parent's children (-1 = append at end)
+	void ParseElements(const ghost_json& elementsArray, Gui* gui, const ghost_json& inheritedProps = ghost_json(), int parentX = 0, int parentY = 0, int parentElementID = -1, const std::string& namePrefix = "", int insertIndex = -1);
 
 	// Helper function to load font with inheritance support
 	// Returns the loaded Font pointer (owned by m_loadedFonts)
@@ -318,7 +378,10 @@ private:
 	std::map<int, int> m_panelColumns;  // Maps panel ID -> number of columns (for table layout)
 
 	// Sprite metadata (full sprite definition with x/y/w/h)
-	std::map<int, SpriteDefinition> m_spriteDefinitions;  // Maps sprite/iconbutton ID -> full sprite definition
+	std::map<int, SpriteDefinition> m_spriteDefinitions;  // Maps sprite/iconbutton ID -> full sprite definition (up sprite)
+
+	// IconButton down sprite metadata
+	std::map<int, SpriteDefinition> m_iconButtonDownSprites;  // Maps iconbutton ID -> down sprite definition
 
 	// StretchButton sprite metadata (3 sprite definitions per button)
 	std::map<int, SpriteDefinition> m_stretchButtonLeftSprites;    // Maps stretchbutton ID -> left sprite definition
@@ -331,16 +394,25 @@ private:
 	// Floating element tracking (elements that should use automatic layout)
 	std::set<int> m_floatingElements;  // Set of element IDs that are floating
 
+	// Include tracking - maps child element ID to include metadata
+	struct IncludeMetadata {
+		std::string filename;
+		std::string namePrefix;
+	};
+	std::map<int, IncludeMetadata> m_includeElements;  // Maps element ID -> include metadata (for elements that represent includes)
+
 	// Track which properties were explicitly set in JSON (vs inherited)
 	std::map<int, std::set<std::string>> m_explicitProperties;  // Maps element ID -> set of property names
 
 	// Store values for properties that we need to serialize (can't be extracted from runtime objects)
 	std::map<int, std::string> m_elementFonts;  // Maps element ID -> font name
 	std::map<int, int> m_elementFontSizes;  // Maps element ID -> font size
+	std::map<int, std::string> m_elementHoverTexts;  // Maps element ID -> hover text for tooltips
 
 	// Static base paths for resources
 	static std::string s_baseFontPath;
 	static std::string s_baseSpritePath;
+	static std::string s_baseGhostPath;
 };
 
 #endif

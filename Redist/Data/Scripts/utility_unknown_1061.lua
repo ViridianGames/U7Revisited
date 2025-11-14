@@ -1,5 +1,5 @@
 --- Best guess: Manages item quantity, decrementing or removing items based on quantity.
-function utility_unknown_1061(eventid, objectref, arg1)
+function utility_unknown_1061(arg1)
     local var_0000, var_0001, var_0002
 
     var_0001 = get_object_quantity(arg1, 356) --- Guess: Gets item quantity

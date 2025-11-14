@@ -1,5 +1,5 @@
 --- Best guess: Manages a door mechanic in the Courage region, checking flags (829, 830) to toggle door (ID 936) and metal wall (ID 303) states based on quality.
-function utility_unknown_0526(eventid, objectref)
+function utility_unknown_0526(objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008
 
     var_0000 = find_nearby(0, 1, 936, objectref)

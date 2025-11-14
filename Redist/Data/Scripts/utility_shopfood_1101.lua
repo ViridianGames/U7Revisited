@@ -22,7 +22,7 @@ function utility_shopfood_1101()
             var_000A = _FormatPrice(var_0005, var_0002[var_0009], var_0006[var_0009], var_0001[var_0009], var_0007[var_0009])
             var_000B = 0
             add_dialogue("\"^" .. var_000A .. " Is that acceptable?\"")
-            var_000C = _SelectOption()
+            var_000C = select_option()
             if not var_000C then
                 add_dialogue("\"How much do ye want?\"")
                 var_000B = utility_shop_1016(true, 1, 20, var_0002[var_0009], var_0008[var_0009], var_0004[var_0009], var_0003)
@@ -34,7 +34,7 @@ function utility_shopfood_1101()
                     add_dialogue("\"Ye've not got the gold. I kinna do business like that!\"")
                 end
                 add_dialogue("\"Anything else ye want?\"")
-                var_0000 = _SelectOption()
+                var_0000 = select_option()
             end
         end
     end

@@ -1,5 +1,5 @@
 --- Best guess: Manages a dialogue with Chuckles, providing a scroll (item 797) if conditions are met.
-function utility_unknown_0866(eventid, objectref)
+function utility_unknown_0866()
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007
 
     start_conversation()

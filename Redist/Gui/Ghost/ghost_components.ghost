@@ -1,0 +1,204 @@
+{
+  "gui": {
+    "elements": [
+      {
+        "name": "menu_panel",
+        "type": "panel",
+        "position": [
+          -1,
+          -1
+        ],
+        "size": [
+          639,
+          200
+        ],
+        "backgroundColor": [
+          80,
+          80,
+          80,
+          255
+        ],
+        "filled": true,
+        "layout": "table",
+        "horzPadding": 8,
+        "vertPadding": 5,
+        "columns": 5,
+        "font": "babyblocks.ttf",
+        "fontSize": 40,
+        "elements": [
+          {
+            "name": "PANEL",
+            "type": "textbutton",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Panel"
+          },
+          {
+            "name": "TEXT",
+            "type": "textbutton",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Text"
+          },
+          {
+            "name": "SPRITE",
+            "type": "textbutton",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Sprite"
+          },
+          {
+            "name": "BUTTON",
+            "type": "textbutton",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Button"
+          },
+          {
+            "name": "INPUT",
+            "type": "textbutton",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Input"
+          },
+          {
+            "name": "RADIO",
+            "type": "textbutton",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Radio"
+          },
+          {
+            "name": "CHECK",
+            "type": "textbutton",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Check"
+          },
+          {
+            "name": "SCROLLBAR",
+            "type": "textbutton",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Scroller"
+          },
+          {
+            "name": "ICONBUTTON",
+            "type": "textbutton",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Icon"
+          },
+          {
+            "name": "LIST",
+            "type": "textbutton",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "List"
+          },
+          {
+            "name": "CYCLE",
+            "type": "textbutton",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Cycle",
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "backgroundColor": [
+              80,
+              80,
+              80,
+              255
+            ],
+            "borderColor": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          {
+            "name": "LISTBOX_copy_copy",
+            "type": "textbutton",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Listbox",
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "backgroundColor": [
+              80,
+              80,
+              80,
+              255
+            ],
+            "borderColor": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          {
+            "name": "STRETCHBUTTON_copy",
+            "type": "textbutton",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Stretch",
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "backgroundColor": [
+              80,
+              80,
+              80,
+              255
+            ],
+            "borderColor": [
+              255,
+              255,
+              255,
+              255
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

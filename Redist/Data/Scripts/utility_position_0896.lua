@@ -2,7 +2,7 @@
 function utility_position_0896(eventid, objectref, positions)
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
-    var_0002 = get_object_type(objectref) --- Guess: Gets item type
+    var_0002 = get_object_shape(objectref) --- Guess: Gets item type
     var_0003 = get_object_frame(objectref) --- Guess: Gets item frame
     var_0004 = eventid
     if not set_object_attributes(var_0004, var_0002, var_0003, positions[1] + 1, positions[2] + 1) or

@@ -1,5 +1,8 @@
 --- Best guess: Manages a human healer's services (heal, cure poison, resurrect), selecting a party member and applying effects based on gold or party status.
-function utility_unknown_0926(P0, P1, P2)
+---@param resurrect_cost integer The gold cost for resurrection service
+---@param cure_poison_cost integer The gold cost for cure poison service
+---@param heal_cost integer The gold cost for healing service
+function utility_unknown_0926(resurrect_cost, cure_poison_cost, heal_cost)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E, var_000F, var_0010, var_0011, var_0012, var_0013, var_0014, var_0015, var_0016, var_0017
 
     var_0003 = get_npc_name(-5)
@@ -10,10 +13,10 @@ function utility_unknown_0926(P0, P1, P2)
     if var_0005 then
         add_dialogue("\"Which of my services dost thou have need of?\"")
         var_0006 = {"resurrect", "cure poison", "heal"}
-        var_0007 = var_0006[_SelectOption(var_0006)]
+        var_0007 = var_0006[select_option(var_0006)]
         if var_0007 == "heal" or var_0007 == "cure poison" then
             var_0008 = var_0007 == "heal" and "healed" or "cured of poison"
-            var_0009 = var_0007 == "heal" and P2 or P1
+            var_0009 = var_0007 == "heal" and heal_cost or cure_poison_cost
             add_dialogue("\"Who dost thou wish to be " .. var_0008 .. "?\"")
             var_000A = get_player_name(get_party_list2())
             var_000B = get_party_list2()
@@ -55,7 +58,7 @@ function utility_unknown_0926(P0, P1, P2)
                 end
                 var_0001 = var_0001 + 1
             end
-            var_0009 = var_0000 and 0 or 400
+            var_0009 = var_0000 and 0 or resurrect_cost
         end
         if var_0000 then
             add_dialogue("\"Since I am travelling in thy group, I shall waive my fee.\"")
@@ -74,7 +77,7 @@ function utility_unknown_0926(P0, P1, P2)
             end
         else
             add_dialogue("\"My price is " .. var_0009 .. " gold. Is this price agreeable?\"")
-            var_0005 = _SelectOption()
+            var_0005 = select_option()
             if var_0005 then
                 var_0017 = count_objects(-359, -359, 644, -357)
                 if var_0017 >= var_0009 then

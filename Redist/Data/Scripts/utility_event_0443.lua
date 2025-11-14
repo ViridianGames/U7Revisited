@@ -7,7 +7,7 @@ function utility_event_0443(eventid, objectref)
         var_0001 = get_party_list2()
         for i = 1, #var_0001 do
             var_0004 = var_0001[i]
-            if var_0004 ~= 356 and not roll_to_win(15, get_npc_prop(2, var_0004)) then
+            if var_0004 ~= 356 and not roll_to_win(15, get_npc_property(2, var_0004)) then
                 halt_scheduled(var_0004)
                 utility_unknown_1087(0, var_0004)
                 set_attack_mode(7, var_0004)

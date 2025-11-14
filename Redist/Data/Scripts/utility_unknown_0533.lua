@@ -1,5 +1,5 @@
 --- Best guess: Checks for ritual items and triggers the endgame sequence if conditions are met.
-function utility_unknown_0533(eventid, objectref)
+function utility_unknown_0533()
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C
 
     var_0000 = find_nearby(8, 40, 1015, 356) --- Guess: Sets NPC location

@@ -155,10 +155,10 @@ function object_sign_0820(eventid, objectref)
         var_0008 = get_object_position(var_0000)
         var_000B = get_object_position(-23)
         if math.abs(var_0008[1] - var_000B[1]) <= 2 and math.abs(var_0008[2] - var_000B[2]) <= 2 then
-            var_0007 = execute_usecode_array({7981, 1545, 8021, 1545, 8021, 1545, 7765}, var_0000)
-            var_0007 = execute_usecode_array({820, 17493, 17518, 7937, 86, 17496, 17517, 8033, 19, 8024, 3, 7719}, -23)
+            var_0007 = execute_usecode_array(var_0000, {7981, 1545, 8021, 1545, 8021, 1545, 7765})
+            var_0007 = execute_usecode_array(-23, {820, 17493, 17518, 7937, 86, 17496, 17517, 8033, 19, 8024, 3, 7719})
             utility_unknown_1022({"@Yancey-Hausman will pay!@", "@He's dead, Avatar!@", ""})
-            var_0007 = execute_usecode_array({17494, 26, 7715}, -356)
+            var_0007 = execute_usecode_array(-356, {17494, 26, 7715})
         else
             var_000A = {"BRITISH", "LORD", "OF", "ROOM", "THRONE", "THE"}
         end

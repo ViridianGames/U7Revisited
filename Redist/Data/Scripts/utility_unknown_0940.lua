@@ -1,5 +1,8 @@
 --- Best guess: Manages a healer's dialogue offering services (heal, cure poison, resurrect), handling service selection, pricing, and application to party members.
-function utility_unknown_0940(var_0000, var_0001, var_0002)
+---@param resurrect_cost integer The gold cost for resurrection service
+---@param cure_poison_cost integer The gold cost for cure poison service
+---@param heal_cost integer The gold cost for healing service
+function utility_unknown_0940(resurrect_cost, cure_poison_cost, heal_cost)
     start_conversation()
     local var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_0010, var_0011, var_0012
 
@@ -13,10 +16,10 @@ function utility_unknown_0940(var_0000, var_0001, var_0002)
         if var_0005 == "heal" or var_0005 == "cure poison" then
             if var_0005 == "heal" then
                 var_0006 = "healed"
-                var_0007 = var_0002
+                var_0007 = heal_cost
             elseif var_0005 == "cure poison" then
                 var_0006 = "cured of poison"
-                var_0007 = var_0001
+                var_0007 = cure_poison_cost
             end
             add_dialogue("\"Who dost thou wish to have " .. var_0006 .. "?\"")
             var_0008 = utility_unknown_1038()
@@ -34,7 +37,7 @@ function utility_unknown_0940(var_0000, var_0001, var_0002)
                     return
                 end
             end
-            var_0007 = var_0000
+            var_0007 = resurrect_cost
             add_dialogue("\"Indeed, this individual needs restoration!\"")
         end
         add_dialogue("\"My price is " .. var_0007 .. " gold. Art thou interested?\"")

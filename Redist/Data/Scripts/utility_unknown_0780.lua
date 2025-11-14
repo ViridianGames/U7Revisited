@@ -1,6 +1,8 @@
 --- Best guess: Identifies the type of an item (ID -359) within a radius, returning a specific item ID (840, 652, or 199) based on predefined lists.
-function utility_unknown_0780(eventid, objectref)
-    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007
+---@param objectref integer The object reference to check nearby items for
+---@return integer item_id The identified item ID (840, 652, or 199 as default)
+function utility_unknown_0780(objectref)
+    local var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007
 
     var_0001 = find_nearby(0, 2, -359, objectref)
     var_0002 = {840}

@@ -59,6 +59,17 @@ void ScriptingSystem::Init(const std::string& configfile)
 
 void ScriptingSystem::Shutdown()
 {
+    // Clear all loaded scripts
+    m_scriptFiles.clear();
+
+    // Clean up all active coroutines
+    for (const auto& pair : m_activeCoroutines)
+    {
+        luaL_unref(m_luaState, LUA_REGISTRYINDEX, pair.second);
+    }
+    m_activeCoroutines.clear();
+    m_waiters.clear();
+
     // TODO: Save flags to file
 }
 

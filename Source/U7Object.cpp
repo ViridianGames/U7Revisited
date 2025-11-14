@@ -591,6 +591,15 @@ bool U7Object::AddObjectToInventory(int objectid)
 	if (m_isContainer)
 	{
 		m_inventory.push_back(objectid);
+
+		// Set the child's containing object ID to point back to this container
+		U7Object* child = g_objectList[objectid].get();
+		if (child)
+		{
+			child->m_containingObjectId = m_ID;
+		}
+
+		InvalidateWeightCache();
 		return true;
 	}
 
@@ -605,8 +614,14 @@ bool U7Object::RemoveObjectFromInventory(int objectid)
 		{
 			if (m_inventory[i] == objectid)
 			{
-				GetObjectFromID(objectid)->m_isContained = true;
+				U7Object* child = GetObjectFromID(objectid);
+				if (child)
+				{
+					child->m_isContained = true;
+					child->m_containingObjectId = -1; // Clear parent reference
+				}
 				m_inventory.erase(m_inventory.begin() + i);
+				InvalidateWeightCache();
 				return true;
 			}
 		}
@@ -623,26 +638,11 @@ void U7Object::Interact(int event)
 
 		// Find NPC script using new naming: npc_*_XXXX where XXXX = NPC ID in decimal (4 digits)
 		// NPC IDs start at 0 and increment, independent of shape ID
-		stringstream ss;
-		ss << std::setfill('0') << std::setw(4) << m_NPCID;
-		string suffix = "_" + ss.str();
-
-		// Search for script ending with the calculated suffix (e.g., npc_iolo_0001)
-		string scriptName = "";
-		for (int i = 0; i < g_ScriptingSystem->m_scriptFiles.size(); ++i)
-		{
-			const string& name = g_ScriptingSystem->m_scriptFiles[i].first;
-			if (name.length() >= suffix.length() &&
-				name.compare(name.length() - suffix.length(), suffix.length(), suffix) == 0)
-			{
-				scriptName = name;
-				break;
-			}
-		}
+		string scriptName = FindNPCScriptByID(m_NPCID);
 
 		if (scriptName.empty())
 		{
-			DebugPrint("No script found for NPC ID: " + to_string(m_NPCID) + " (looking for suffix: " + suffix + ")");
+			DebugPrint("No script found for NPC ID: " + to_string(m_NPCID));
 			return;
 		}
 
@@ -690,6 +690,53 @@ bool U7Object::IsInInventory(int shape, int frame, int quality)
 	}
 
 	return false;
+}
+
+float U7Object::GetWeight()
+{
+	if (m_totalWeight > 0.0f)
+		return m_totalWeight;
+
+	float baseWeight = g_objectDataTable[m_shapeData->m_shape].m_weight;
+	float inventoryWeight = 0.0f;
+
+	for (int childId : m_inventory)
+	{
+		U7Object* child = g_objectList[childId].get();
+		if (child != nullptr)
+		{
+			inventoryWeight += child->GetWeight();
+		}
+	}
+
+	m_totalWeight = baseWeight + inventoryWeight;
+	return m_totalWeight;
+}
+
+void U7Object::InvalidateWeightCache()
+{
+	m_totalWeight = 0.0f;
+
+	if (m_containingObjectId != -1)
+	{
+		U7Object* parent = g_objectList[m_containingObjectId].get();
+		if (parent != nullptr)
+		{
+			parent->InvalidateWeightCache();
+		}
+	}
+}
+
+float U7Object::GetRemainingCarryCapacity()
+{
+	// Only NPCs have carry capacity
+	if (!m_isNPC || m_NPCData == nullptr)
+		return 0.0f;
+
+	float maxWeight = GetMaxWeightFromStrength(m_NPCData->str);
+	float currentWeight = GetWeight();
+
+	return maxWeight - currentWeight;
 }
 
 bool U7Object::IsLocked()

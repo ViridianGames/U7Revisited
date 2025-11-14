@@ -30,6 +30,7 @@
 #include "raylib.h"
 #include "raymath.h"
 #include "U7Player.h"
+#include "U7GumpPaperdoll.h"
 
 //class ConversationState;
 class MainState;
@@ -48,6 +49,7 @@ enum GameStates
 	STATE_SHAPEEDITORSTATE,
 	STATE_CREDITS,
 	STATE_CONVERSATIONSTATE,
+	STATE_SCRIPTRENAMESTATE,
 	STATE_LASTSTATE
 };
 
@@ -129,6 +131,14 @@ extern std::vector<std::string> g_miscNames;
 // Get the name for a specific shape, frame, and quantity
 std::string GetShapeFrameName(int shape, int frame, int quantity = 1);
 
+// Find NPC script by NPC ID (returns script name or empty string)
+// Only matches scripts starting with "npc_" and ending with "_XXXX" where XXXX is the NPC ID
+std::string FindNPCScriptByID(int npcID);
+
+// Get the script name for any object (handles both NPCs and regular objects)
+// Returns empty string if object has no script or uses "default"
+std::string GetObjectScriptName(U7Object* object);
+
 
 //  Here's how schedules work:
 //  Each NPC has a schedule that is a list of time indices.  Time indices can only be from 0 - 8 and represent three hour blocks of the day.
@@ -145,6 +155,76 @@ struct NPCSchedule
 };
 
 extern std::unordered_map<int, std::vector<NPCSchedule> > g_NPCSchedules;
+
+//////////////////////////////////////////////////////////////////////////////
+//  SPELL SYSTEM
+//////////////////////////////////////////////////////////////////////////////
+
+/// @brief Reagent definition structure
+struct ReagentData
+{
+	std::string name;                 // "Black Pearl", "Blood Moss", etc.
+	int frame;                        // Frame number in shape 842
+};
+
+/// @brief Spell data structure matching spells.json format
+struct SpellData
+{
+	int id;                           // Unique spell ID (0-63)
+	std::string name;                 // "Awaken All", "Create Food", etc.
+	int x;                            // X coordinate in gumps.png for spell icon
+	int y;                            // Y coordinate in gumps.png for spell icon
+	std::string words;                // "Vas An Zu", "In Mani Ylem", etc.
+	int scriptId;                     // Script shape ID (320-391)
+	std::vector<std::string> reagents; // Reagent names: "Ginseng", "Garlic", etc.
+	std::string desc;                 // Spell description
+	int circle;                       // Which circle this spell belongs to (1-8)
+};
+
+/// @brief Circle data structure (8 circles, each with 8 spells)
+struct SpellCircle
+{
+	int circle;                       // Circle number (1-8)
+	std::string name;                 // "First Circle", "Second Circle", etc.
+	std::vector<SpellData> spells;    // 8 spells in this circle
+};
+
+// Spell data loaded from spells.json
+extern std::vector<ReagentData> g_reagentData;        // 8 reagents
+extern std::vector<SpellCircle> g_spellCircles;       // 8 circles with 8 spells each
+extern std::unordered_map<int, SpellData*> g_spellMap; // Quick lookup by spell ID
+
+// Load spell data from Redist/Data/spells.json
+void LoadSpellData();
+
+// Get spell data by ID (0-63)
+SpellData* GetSpellData(int spellId);
+
+//////////////////////////////////////////////////////////////////////////////
+
+enum class EquipmentSlot
+{
+	SLOT_HEAD = 0,
+	SLOT_NECK,
+	SLOT_TORSO,
+	SLOT_LEGS,
+	SLOT_HANDS,
+	SLOT_FEET,
+	SLOT_LEFT_HAND,    // Shield
+	SLOT_RIGHT_HAND,   // Weapon
+	SLOT_AMMO,
+	SLOT_LEFT_RING,
+	SLOT_RIGHT_RING,
+	SLOT_BELT,
+	SLOT_BACKPACK,
+	SLOT_COUNT
+};
+
+// Helper functions to determine equipment slots from item shape ID
+void LoadEquipmentSlotsConfig();
+std::vector<EquipmentSlot> GetEquipmentSlotsForShape(int shapeId);
+std::vector<EquipmentSlot> GetEquipmentSlotsFilled(int shapeId); // Returns all slots this item occupies when equipped
+EquipmentSlot GetEquipmentSlotForShape(int shapeId); // Deprecated: returns first valid slot only
 
 struct NPCData
 {
@@ -194,6 +274,25 @@ struct NPCData
 
 	int m_currentActivity;
 	int m_objectID;
+
+	// Equipment system - maps slot to object ID (-1 = empty slot)
+	std::map<EquipmentSlot, int> m_equipment;
+
+	// Helper methods
+	int GetEquippedItem(EquipmentSlot slot) const
+	{
+		auto it = m_equipment.find(slot);
+		return (it != m_equipment.end()) ? it->second : -1;
+	}
+
+	void SetEquippedItem(EquipmentSlot slot, int objectId);
+	void UnequipItem(EquipmentSlot slot);
+
+	bool HasItemEquipped(EquipmentSlot slot) const
+	{
+		auto it = m_equipment.find(slot);
+		return (it != m_equipment.end() && it->second != -1);
+	}
 };
 
 extern std::string g_version;
@@ -202,6 +301,7 @@ extern Vector3 g_Gravity;
 
 extern Texture* g_Cursor;
 extern Texture* g_objectSelectCursor;
+extern Texture* g_EmptyTexture; // Empty 4x4 texture for hidden/empty slots
 
 extern std::shared_ptr<Font> g_Font;
 extern std::shared_ptr<Font> g_SmallFont;
@@ -230,6 +330,18 @@ extern std::vector<U7Object*> g_chunkObjectMap[192][192]; // The objects in each
 extern std::array<std::array<ShapeData, 32>, 1024> g_shapeTable;
 extern std::array<ObjectData, 1024> g_objectDataTable;
 extern std::unordered_map<int, std::unique_ptr<NPCData> > g_NPCData;
+
+// Weather/effect sprite data structure
+struct SpriteFrame {
+    Image image;
+    Texture2D texture;
+    int width;
+    int height;
+    int xOffset;
+    int yOffset;
+};
+
+extern std::array<std::vector<SpriteFrame>, 32> g_spriteTable;  // 32 sprite shapes, each with multiple frames
 
 extern std::vector<U7Object*> g_sortedVisibleObjects;
 
@@ -264,6 +376,16 @@ void IsPointVisible(float x, float y);
 U7Object* GetObjectFromID(int unitID);
 
 U7Object* GetObjectUnderMouse();
+
+/// @brief Find the root NPC owner of a container (follows parent chain to find NPC)
+/// @param container The container object to start from
+/// @return The root NPC object, or nullptr if no NPC found in parent chain
+U7Object* GetRootNPCFromContainer(U7Object* container);
+
+/// @brief Calculate max carry weight from strength stat
+/// @param strength The strength value
+/// @return Maximum weight that can be carried (2 * strength)
+float GetMaxWeightFromStrength(int strength);
 
 U7Object* U7ObjectClassFactory(int type);
 
@@ -321,7 +443,11 @@ void AddConsoleString(std::string string, Color color, float starttime);
 
 void AddConsoleString(std::string string, Color color = Color{ 255, 255, 255, 255 });
 
+void SaveShapeTable();
+
 void DrawConsole();
+
+void DrawWorld();  // Draws 3D world and terrain (used by MainState and modal dialogs)
 
 //int l_add_dialogue(lua_State* L);
 

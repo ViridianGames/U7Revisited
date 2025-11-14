@@ -1,4 +1,6 @@
 --- Best guess: Manages a strength training session, teaching weight training and combat techniques, potentially increasing strength and combat ability, with gold and experience checks.
+---@param var_0000 integer The gold cost for the training session
+---@param var_0001 integer The maximum stat value allowed for training
 function utility_unknown_0958(var_0000, var_0001)
     local var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_0010, var_0011
 

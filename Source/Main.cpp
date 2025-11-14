@@ -24,6 +24,7 @@
 #include "LoadingState.h"
 #include "ShapeEditorState.h"
 #include "ConversationState.h"
+#include "ScriptRenameState.h"
 #include "ShapeData.h"
 #include "GumpManager.h"
 #include <string>
@@ -106,6 +107,11 @@ int main(int argv, char** argc)
       //  Initialize globals
       g_Cursor = g_ResourceManager->GetTexture("Images/pointer.png");
       g_objectSelectCursor = g_ResourceManager->GetTexture("Images/usepointer.png");
+
+      // Create empty 1x1 transparent texture for empty equipment slots
+      Image emptyImg = GenImageColor(1, 1, Color{0, 0, 0, 0}); // Fully transparent
+      g_EmptyTexture = new Texture(LoadTextureFromImage(emptyImg));
+      UnloadImage(emptyImg);
 
       g_DrawScale = g_Engine->m_ScreenHeight / g_Engine->m_RenderHeight;
 
@@ -292,6 +298,10 @@ int main(int argv, char** argc)
       g_ConversationState = conversationState;
       conversationState->Init("engine.cfg");
       g_StateMachine->RegisterState(STATE_CONVERSATIONSTATE, conversationState, "CONVERSATION_STATE");
+
+      ScriptRenameState* scriptRenameState = new ScriptRenameState;
+      scriptRenameState->Init("engine.cfg");
+      g_StateMachine->RegisterState(STATE_SCRIPTRENAMESTATE, scriptRenameState, "SCRIPT_RENAME_STATE");
 
       g_StateMachine->MakeStateTransition(STATE_LOADINGSTATE);
 

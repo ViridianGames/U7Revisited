@@ -18,7 +18,7 @@ function utility_unknown_0822(eventid, objectref, arg1)
         for i = 1, 5 do
             var_0006 = ({4, 5, 6, 3, 139})[i]
             if get_object_quality(var_0006) == var_0002 then
-                var_0007 = get_object_type(var_0006) --- Guess: Gets item type
+                var_0007 = get_object_shape(var_0006) --- Guess: Gets item type
                 if var_0007 == 303 then
                     utility_event_0818(936, var_0006) --- External call to add items
                 elseif var_0007 == 876 then

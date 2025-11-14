@@ -15,7 +15,7 @@ function object_lever_0246(eventid, objectref)
             set_object_quality(objectref, 31)
         else
             -- call [0003] (0818H, unmapped)
-            utility_unknown_0792()
+            utility_unknown_0792(objectref)
         end
     elseif var_0000 == 0 then
         -- call [0001] (081DH, unmapped)
@@ -25,7 +25,7 @@ function object_lever_0246(eventid, objectref)
             set_object_quality(objectref, 30)
         else
             -- call [0003] (0818H, unmapped)
-            utility_unknown_0792()
+            utility_unknown_0792(objectref)
         end
     elseif var_0000 == 2 then
         -- call [0004] (0819H, unmapped)

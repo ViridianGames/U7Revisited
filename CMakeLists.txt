@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.15)
-project("Ultima 7 Revisited" VERSION 1.0.0 LANGUAGES C CXX)
+project("Ultima 7 Revisited" VERSION 1.0.0 LANGUAGES C CXX RC)
 
 # Set C++ standard
 set(CMAKE_CXX_STANDARD 17)
@@ -160,11 +160,15 @@ set(SOURCES
     Source/TitleState.cpp
     Source/U7GumpNumberBar.cpp
     Source/U7GumpBook.cpp
+    Source/U7GumpPaperdoll.cpp
+    Source/U7GumpSpellbook.cpp
     Source/U7Globals.cpp
     Source/U7Gump.cpp
     Source/U7LuaFuncs.cpp
     Source/U7Object.cpp
     Source/U7Player.cpp
+    Source/U7ScriptUtils.cpp
+    Source/ScriptRenameState.cpp
 )
 
 # Organize files into virtual folders in Visual Studio
@@ -221,6 +225,8 @@ else()
         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
         RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
         RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
+        OUTPUT_NAME_DEBUG "u7revisited_debug"
+        OUTPUT_NAME_RELEASE "u7revisited"
     )
 endif()
 
@@ -347,9 +353,9 @@ endif()
 
 # Set working directory for Ghost editor
 if(WIN32)
-    # Visual Studio debugger working directory
+    # Visual Studio debugger working directory - use Redist so Ghost can find its files
     set_target_properties(Ghost PROPERTIES
-        VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Ghost"
+        VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
     )
     # Copy executable to Ghost folder after build (Release only)
     add_custom_command(TARGET Ghost POST_BUILD
@@ -357,12 +363,17 @@ if(WIN32)
         COMMAND_EXPAND_LISTS
         COMMENT "Copying Ghost Release executable to Ghost folder"
     )
+    # Copy executable to Redist folder so it can be launched from game
+    add_custom_command(TARGET Ghost POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:Ghost> "${CMAKE_CURRENT_SOURCE_DIR}/Redist/"
+        COMMENT "Copying Ghost executable to Redist folder"
+    )
 else()
-    # On Linux/Unix, set runtime output directory to Ghost
+    # On Linux/Unix, set runtime output directory to Redist so Ghost can find its files
     set_target_properties(Ghost PROPERTIES
-        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Ghost"
-        RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_CURRENT_SOURCE_DIR}/Ghost"
-        RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_CURRENT_SOURCE_DIR}/Ghost"
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
+        RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
+        RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
     )
 endif()
 

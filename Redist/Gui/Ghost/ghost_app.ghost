@@ -1,0 +1,193 @@
+{
+  "gui": {
+    "elements": [
+      {
+        "type": "panel",
+        "name": "app_container",
+        "position": [
+          0,
+          0
+        ],
+        "size": [
+          1280,
+          720
+        ],
+        "backgroundColor": [
+          40,
+          40,
+          40,
+          255
+        ],
+        "filled": true,
+        "group": 0,
+        "active": true,
+        "layout": "vert",
+        "elements": [
+          {
+            "type": "panel",
+            "name": "left_column",
+            "position": [
+              0,
+              0
+            ],
+            "size": [
+              640,
+              720
+            ],
+            "backgroundColor": [
+              50,
+              50,
+              50,
+              255
+            ],
+            "filled": true,
+            "group": 0,
+            "active": true,
+            "layout": "vert",
+            "padding": 5,
+            "elements": [
+              {
+                "type": "include",
+                "filename": "ghost_menu.ghost"
+              },
+              {
+                "type": "include",
+                "filename": "ghost_components.ghost"
+              },
+              {
+                "type": "panel",
+                "name": "element_list_panel",
+                "id": 1500,
+                "position": [
+                  -1,
+                  -1
+                ],
+                "size": [
+                  300,
+                  400
+                ],
+                "backgroundColor": [
+                  55,
+                  55,
+                  55,
+                  255
+                ],
+                "filled": true,
+                "layout": "horz",
+                "horzPadding": 5,
+                "vertPadding": 5,
+                "font": "babyblocks.ttf",
+                "fontSize": 30,
+                "group": 0,
+                "active": true,
+                "elements": [
+                  {
+                    "type": "listbox",
+                    "name": "element_hierarchy_list",
+                    "id": 1501,
+                    "position": [
+                      -1,
+                      -1
+                    ],
+                    "size": [
+                      200,
+                      390
+                    ],
+                    "items": [],
+                    "textColor": [
+                      255,
+                      255,
+                      255,
+                      255
+                    ],
+                    "backgroundColor": [
+                      20,
+                      20,
+                      20,
+                      255
+                    ],
+                    "borderColor": [
+                      128,
+                      128,
+                      128,
+                      255
+                    ],
+                    "group": 0,
+                    "active": true
+                  },
+                  {
+                    "type": "panel",
+                    "name": "property_panel_container",
+                    "id": 3000,
+                    "position": [
+                      -1,
+                      -1
+                    ],
+                    "size": [
+                      300,
+                      400
+                    ],
+                    "backgroundColor": [
+                      45,
+                      45,
+                      45,
+                      255
+                    ],
+                    "filled": true,
+                    "group": 0,
+                    "active": true
+                  }
+                ]
+              },
+              {
+                "type": "textarea",
+                "name": "status_footer",
+                "id": 4000,
+                "position": [
+                  640,
+                  685
+                ],
+                "text": "",
+                "textColor": [
+                  255,
+                  255,
+                  255,
+                  255
+                ],
+                "font": "babyblocks.ttf",
+                "fontSize": 24,
+                "justified": 0,
+                "size": [
+                  1500.0,
+                  30.0
+                ]
+              }
+            ]
+          },
+          {
+            "type": "panel",
+            "name": "content_panel_container",
+            "id": 2000,
+            "position": [
+              640,
+              0
+            ],
+            "size": [
+              640,
+              720
+            ],
+            "backgroundColor": [
+              80,
+              80,
+              80,
+              255
+            ],
+            "filled": true,
+            "group": 0,
+            "active": true
+          }
+        ]
+      }
+    ]
+  }
+}

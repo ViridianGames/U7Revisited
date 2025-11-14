@@ -66,6 +66,7 @@ enum GuiElementType
 	GUI_STRETCHBUTTON,
 	GUI_LIST,
 	GUI_LISTBOX,
+	GUI_CYCLE,
 
 	GUI_LAST
 };
@@ -87,6 +88,7 @@ public:
 	void SetPos(int x, int y) { m_Pos.x = float(x); m_Pos.y = float(y); }
 	void SetSize(int w, int h) { m_Width = float(w); m_Height = float(h); }
 	void SetSize(float w, float h) { m_Width = w; m_Height = h; }
+	Rectangle GetBounds() const { return Rectangle{ m_Pos.x, m_Pos.y, m_Width, m_Height }; }
 
 	int m_Type;
 	int m_ID;
@@ -219,6 +221,7 @@ public:
 	int m_SpurLocation;
 
 	bool m_Vertical;
+	bool m_DebugValue = false;
 
 	Color m_SpurColor;
 	Color m_BackgroundColor;
@@ -345,7 +348,15 @@ public:
 	void Draw();
 	void Update();
 	int GetValue() { return 0; }
-	void SetSprite(std::shared_ptr<Sprite> newSprite) { m_Sprite = newSprite; }
+	void SetSprite(std::shared_ptr<Sprite> newSprite)
+	{
+		m_Sprite = newSprite;
+		if (newSprite)
+		{
+			m_Width = newSprite->m_sourceRect.width;
+			m_Height = newSprite->m_sourceRect.height;
+		}
+	}
 	std::shared_ptr<Sprite> GetSprite() { return m_Sprite; }
 
 	Color m_Color = Color{ 255, 255, 255, 255 };
@@ -486,6 +497,46 @@ public:
 private:
 	double m_LastClickTime = 0;  // Track time of last click for double-click detection
 	int m_LastClickedIndex = -1; // Track which item was last clicked
+};
+
+// Helper function: Generate sprite frames from horizontal sprite sheet
+// Takes first frame coordinates and count, returns vector of sprites
+std::vector<std::shared_ptr<Sprite>> CreateHorizontalSpriteFrames(
+	Texture* texture,
+	int firstFrameX, int firstFrameY,
+	int frameWidth, int frameHeight,
+	int frameCount);
+
+// GuiCycle is a clickable control that displays and cycles through sprite frames
+// Each click advances to the next frame with wraparound
+class GuiCycle : public GuiElement
+{
+public:
+	GuiCycle(Gui* parent);
+
+	void Init(int ID, int posx, int posy,
+			  std::vector<std::shared_ptr<Sprite>> frames,
+			  float scalex = 1.0f, float scaley = 1.0f,
+			  Color color = Color{255, 255, 255, 255},
+			  int group = 0, int active = true);
+
+	void Draw() override;
+	void Update() override;
+	int GetValue() override;  // Returns current frame index
+
+	// Frame control methods
+	void SetFrameIndex(int index);
+	int GetFrameIndex() const;
+	void NextFrame();
+	void PreviousFrame();
+
+	// Public members (accessed by GhostSerializer and GhostState)
+	std::vector<std::shared_ptr<Sprite>> m_Frames;
+	int m_CurrentFrame;
+	int m_FrameCount;
+	float m_ScaleX;
+	float m_ScaleY;
+	Color m_Color;
 };
 
 #endif

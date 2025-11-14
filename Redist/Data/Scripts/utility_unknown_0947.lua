@@ -1,13 +1,15 @@
 --- Best guess: Manages party member interactions, updating the party list based on item qualities and conditions, likely for quest or dialogue purposes.
-function utility_unknown_0947(eventid)
+---@param objectref integer The object reference used as a reference point for finding nearby objects
+---@return boolean success True if party members were seated, false otherwise
+function utility_unknown_0947(objectref)
     local var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_0010, var_0011, var_0012, var_0013, var_0014
 
     var_0001 = 1
     var_0002 = 0
     var_0003 = false
     var_0004 = get_party_list2()
-    var_0005 = get_barge(eventid)
-    var_0006 = find_nearby(0, 30, 292, eventid)
+    var_0005 = get_barge(objectref)
+    var_0006 = find_nearby(0, 30, 292, objectref)
     var_0007 = {}
     var_0008 = {}
     for i = 1, #var_0006 do

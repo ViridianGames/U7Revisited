@@ -18,7 +18,7 @@ function utility_unknown_0291(eventid, objectref)
         end
         set_item_flag(1, 356) --- Guess: Sets item flag
         clear_item_flag(1, 356) --- Guess: Sets quest flag
-        if get_object_type(objectref) == 1011 and get_object_frame(objectref) == 17 then
+        if get_object_shape(objectref) == 1011 and get_object_frame(objectref) == 17 then
             utility_event_0292(objectref, 1) --- External call to retrieve bedroll
         end
     end

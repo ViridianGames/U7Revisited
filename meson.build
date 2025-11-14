@@ -145,11 +145,14 @@ sources = files(
            'Source/TitleState.cpp',
            'Source/U7GumpNumberBar.cpp',
            'Source/U7GumpBook.cpp',
+           'Source/U7GumpSpellbook.cpp',
            'Source/U7Globals.cpp',
            'Source/U7Gump.cpp',
            'Source/U7LuaFuncs.cpp',
            'Source/U7Object.cpp',
            'Source/U7Player.cpp',
+           'Source/U7ScriptUtils.cpp',
+           'Source/ScriptRenameState.cpp',
 )
 
 executable('U7Revisited',

@@ -1,9 +1,12 @@
 #include "U7Globals.h"
 #include "Geist/Engine.h"
 #include "Geist/Logging.h"
+#include "Geist/ScriptingSystem.h"
 #include "ConversationState.h"
 #include "Pathfinding.h"
 #include "lua.hpp"
+#include "../ThirdParty/raylib/include/rlgl.h"
+#include "../ThirdParty/nlohmann/json.hpp"
 #include <algorithm>
 #include <fstream>
 #include <sstream>
@@ -23,6 +26,7 @@ Mesh* g_AnimationFrames;
 
 Texture* g_Cursor;
 Texture* g_objectSelectCursor;
+Texture* g_EmptyTexture;
 Texture* g_Minimap;
 
 std::shared_ptr<Font> g_Font;
@@ -43,10 +47,18 @@ std::unique_ptr<Terrain> g_Terrain;
 std::array<std::array<ShapeData, 32>, 1024> g_shapeTable;
 std::array<ObjectData, 1024> g_objectDataTable;
 
+// Weather/effect sprite data
+std::array<std::vector<SpriteFrame>, 32> g_spriteTable;
+
 // Misc names from TEXT.FLX for frame-specific item names
 std::vector<std::string> g_miscNames;
 
 std::unordered_map<int, unique_ptr<NPCData>> g_NPCData;
+
+// Spell system data
+std::vector<ReagentData> g_reagentData;
+std::vector<SpellCircle> g_spellCircles;
+std::unordered_map<int, SpellData*> g_spellMap;
 
 ConversationState* g_ConversationState;
 MainState* g_mainState;
@@ -134,7 +146,7 @@ bool g_mouseOverUI = false;
 
 U7Object* g_doubleClickedObject;
 
-//  This makes an animation 
+//  This makes an animation
 void MakeAnimationFrameMeshes()
 {
 	g_AnimationFrames = new Mesh();
@@ -251,7 +263,8 @@ unsigned int DoCameraMovement(bool forcemove)
 		g_CameraMoved = true;
 	}
 
-	if (IsLeftButtonDownInRect(g_Engine->m_ScreenWidth - (g_minimapSize * g_DrawScale), 0, g_Engine->m_ScreenWidth, g_minimapSize * g_DrawScale))
+	if (IsLeftButtonDownInRect(g_Engine->m_ScreenWidth - (g_minimapSize * g_DrawScale), 0, g_Engine->m_ScreenWidth, g_minimapSize * g_DrawScale)
+		&& !g_gumpManager->IsAnyGumpBeingDragged())
 	{
 		float minimapx = float(GetMouseX() - (g_Engine->m_ScreenWidth - (g_minimapSize * g_DrawScale))) / float(g_minimapSize * g_DrawScale) * 3072;
 		float minimapy = float(GetMouseY()) / float(g_minimapSize * g_DrawScale) * 3072;
@@ -363,8 +376,43 @@ U7Object* GetObjectFromID(int unitID)
 	return nullptr;
 }
 
+U7Object* GetRootNPCFromContainer(U7Object* container)
+{
+	if (container == nullptr)
+		return nullptr;
+
+	// If this container is already an NPC, return it
+	if (container->m_isNPC)
+		return container;
+
+	// Follow the parent chain up to find an NPC
+	int currentId = container->m_containingObjectId;
+	while (currentId != -1)
+	{
+		U7Object* parent = GetObjectFromID(currentId);
+		if (parent == nullptr)
+			break;
+
+		if (parent->m_isNPC)
+			return parent;
+
+		currentId = parent->m_containingObjectId;
+	}
+
+	return nullptr;
+}
+
+float GetMaxWeightFromStrength(int strength)
+{
+	return 2.0f * strength;
+}
+
 void UpdateSortedVisibleObjects()
 {
+	if (g_LuaDebug)
+	{
+		AddConsoleString("UpdateSortedVisibleObjects: Starting");
+	}
 	int cameraChunkX = static_cast<int>(g_camera.target.x / 16);
 	int cameraChunkY = static_cast<int>(g_camera.target.z / 16);
  	g_sortedVisibleObjects.clear();
@@ -380,7 +428,17 @@ void UpdateSortedVisibleObjects()
 
 			for (auto object : g_chunkObjectMap[x][y])
 			{
-				object->m_distanceFromCamera = Vector3DistanceSqr(object->m_centerPoint, g_camera.position);
+				// Skip null or dead objects
+			if (!object || object->GetIsDead())
+			{
+				if (g_LuaDebug && object && object->GetIsDead())
+				{
+					AddConsoleString("UpdateSortedVisibleObjects: Skipping dead object");
+				}
+				continue;
+			}
+
+			object->m_distanceFromCamera = Vector3DistanceSqr(object->m_centerPoint, g_camera.position);
 				g_sortedVisibleObjects.push_back(object);
  			}
  		}
@@ -397,7 +455,7 @@ void UpdateSortedVisibleObjects()
 	}
 
 	//  Is a gump open?  Are we over it?  See if there's an object under our mouse.
-	if (!g_gumpManager->m_GumpList.empty() && g_gumpManager->IsMouseOverGump())
+	if (!g_gumpManager->m_GumpList.empty() && g_gumpManager->IsMouseOverGump() && g_gumpManager->m_gumpUnderMouse != nullptr)
 	{
 		g_objectUnderMousePointer = g_gumpManager->m_gumpUnderMouse->GetObjectUnderMousePointer();
 	}
@@ -575,6 +633,54 @@ void AddConsoleString(std::string string, Color color)
 	cout << string << endl;
 }
 
+void SaveShapeTable()
+{
+	std::ofstream file("Data/shapetable.dat", std::ios::trunc);
+	if (file.is_open())
+	{
+		for (int i = 150; i < 1024; ++i)
+		{
+			for (int j = 0; j < 32; ++j)
+			{
+				g_shapeTable[i][j].Serialize(file);
+			}
+		}
+		file.close();
+	}
+	AddConsoleString("Saved shapetable.dat successfully!", GREEN);
+}
+
+void DrawWorld()
+{
+	// Draw 3D world - used by MainState and modal dialogs
+	BeginMode3D(g_camera);
+
+	// Draw the terrain
+	g_Terrain->Draw();
+
+	// Draw objects (non-flats first)
+	for (auto object : g_sortedVisibleObjects)
+	{
+		if (object->m_drawType != ShapeDrawType::OBJECT_DRAW_FLAT)
+		{
+			object->Draw();
+		}
+	}
+
+	// Flats require disabling the depth mask to draw correctly
+	rlDisableDepthMask();
+	for (auto object : g_sortedVisibleObjects)
+	{
+		if (object->m_drawType == ShapeDrawType::OBJECT_DRAW_FLAT)
+		{
+			object->Draw();
+		}
+	}
+	rlEnableDepthMask();
+
+	EndMode3D();
+}
+
 void DrawConsole()
 {
 	int counter = 0;
@@ -689,10 +795,21 @@ void AddObjectToContainer(int objectID, int containerID)
 
 	if (object == nullptr || container == nullptr)
 	{
+		Log("AddObjectToContainer ERROR: object=" + std::to_string(objectID) + " is " + (object ? "valid" : "NULL") +
+			", container=" + std::to_string(containerID) + " is " + (container ? "valid" : "NULL"));
 		return;
 	}
 
-	container->AddObjectToInventory(objectID);
+	bool success = container->AddObjectToInventory(objectID);
+
+	// Debug: Log inventory addition
+	static int addCount = 0;
+	if (addCount < 30)
+	{
+		Log("AddObjectToContainer: Added object " + std::to_string(objectID) + " to container " + std::to_string(containerID) +
+			" (success=" + std::string(success ? "true" : "false") + ", inventory size now=" + std::to_string(container->m_inventory.size()) + ")");
+		addCount++;
+	}
 
 	// Objects in containers are not in world chunks
 	UnassignObjectChunk(object);
@@ -853,7 +970,11 @@ void PrintNPCPathStats()
 // Returns singular or plural with quantity
 std::string ParseU7TextFormat(const std::string& rawText, int quantity)
 {
-	// Format: "a/garlic//s" or just "bread"
+	// Format can be:
+	// "bread" - no slashes, just a name
+	// "a/garlic//s" - article/singular_name/middle_part/plural_suffix
+	// "/kni/fe/ves" - /prefix/suffix/plural_ending (for knife/knives)
+
 	size_t firstSlash = rawText.find('/');
 	if (firstSlash == std::string::npos)
 	{
@@ -861,7 +982,7 @@ std::string ParseU7TextFormat(const std::string& rawText, int quantity)
 		return rawText;
 	}
 
-	// Find the second slash (end of singular name)
+	// Find the second slash
 	size_t secondSlash = rawText.find('/', firstSlash + 1);
 	if (secondSlash == std::string::npos)
 	{
@@ -869,21 +990,45 @@ std::string ParseU7TextFormat(const std::string& rawText, int quantity)
 		return rawText;
 	}
 
-	// Extract the singular name between the slashes
-	std::string singularName = rawText.substr(firstSlash + 1, secondSlash - firstSlash - 1);
+	// Get the article (before first slash)
+	std::string article = rawText.substr(0, firstSlash);
 
-	// Find the plural suffix after the third slash
+	// Get the first part (between 1st and 2nd slash)
+	std::string firstPart = rawText.substr(firstSlash + 1, secondSlash - firstSlash - 1);
+
+	// Find the third slash
 	size_t thirdSlash = rawText.find('/', secondSlash + 1);
-	std::string pluralSuffix = "";
-	if (thirdSlash != std::string::npos && thirdSlash + 1 < rawText.length())
+
+	// Check if there's content between 2nd and 3rd slash (middle part exists)
+	bool hasMiddlePart = (thirdSlash != std::string::npos) && (thirdSlash > secondSlash + 1);
+
+	std::string singularName;
+	std::string pluralName;
+
+	if (hasMiddlePart)
 	{
-		pluralSuffix = rawText.substr(thirdSlash + 1);
+		// Format: article/prefix/suffix/plural_ending (e.g., "/kni/fe/ves")
+		std::string prefix = firstPart;
+		std::string suffix = rawText.substr(secondSlash + 1, thirdSlash - secondSlash - 1);
+		std::string pluralEnding = rawText.substr(thirdSlash + 1);
+
+		singularName = prefix + suffix;  // "kni" + "fe" = "knife"
+		pluralName = prefix + pluralEnding;  // "kni" + "ves" = "knives"
+	}
+	else
+	{
+		// Format: article/singular_name//plural_suffix (e.g., "a/garlic//s")
+		singularName = firstPart;
+		std::string pluralSuffix = "";
+		if (thirdSlash != std::string::npos && thirdSlash + 1 < rawText.length())
+		{
+			pluralSuffix = rawText.substr(thirdSlash + 1);
+		}
+		pluralName = singularName + pluralSuffix;  // "garlic" + "s" = "garlics"
 	}
 
 	if (quantity == 1)
 	{
-		// Get the article (before first slash): "a", "an", etc.
-		std::string article = rawText.substr(0, firstSlash);
 		// Only add article if it's not empty and not just whitespace
 		if (!article.empty() && article.find_first_not_of(" \t") != std::string::npos)
 			return article + " " + singularName;
@@ -892,9 +1037,9 @@ std::string ParseU7TextFormat(const std::string& rawText, int quantity)
 	}
 	else
 	{
-		// Plural: quantity + name + suffix
+		// Plural: quantity + plural name
 		if (quantity > 0)
-			return std::to_string(quantity) + " " + singularName + pluralSuffix;
+			return std::to_string(quantity) + " " + pluralName;
 		else
 			return singularName; // quantity 0 or invalid, just show the name
 	}
@@ -932,14 +1077,15 @@ std::string GetShapeFrameName(int shape, int frame, int quantity)
 		// Shape 675: Desk items (21 frames)
 		if (shape == 675 && frame >= 0 && frame < 21)
 		{
-			// Desk items: frames 0-20 map to misc_names 299-319
-			// (gold sextant, sextant, gavel, quill, inkwell, quill holder, book mark, letter opener, etc.)
-			int miscIndex = 299 + frame;
+			// Desk items: frames 0-20 map to misc_names 301-321
+			int miscIndex = 301 + frame;
 			if (miscIndex < g_miscNames.size())
 			{
 				return ParseU7TextFormat(g_miscNames[miscIndex], quantity);
 			}
 		}
+
+		// TODO: Shape 863: Kitchen items - need to find correct misc_names mapping from Exult
 	}
 
 	// Fall back to shape name if no frame-specific name found
@@ -954,4 +1100,345 @@ std::string GetShapeFrameName(int shape, int frame, int quantity)
 	}
 
 	return "unknown";
+}
+
+std::string FindNPCScriptByID(int npcID)
+{
+	// Format NPC ID as 4-digit hex suffix: _XXXX
+	stringstream ss;
+	ss << std::setfill('0') << std::setw(4) << npcID;
+	string suffix = "_" + ss.str();
+
+	// Search for script ending with this suffix that starts with "npc_"
+	for (int i = 0; i < g_ScriptingSystem->m_scriptFiles.size(); ++i)
+	{
+		const string& name = g_ScriptingSystem->m_scriptFiles[i].first;
+
+		// Check if name starts with "npc_" and ends with the suffix
+		if (name.length() >= 4 + suffix.length() &&
+			name.substr(0, 4) == "npc_" &&
+			name.compare(name.length() - suffix.length(), suffix.length(), suffix) == 0)
+		{
+			return name;
+		}
+	}
+
+	return "";  // No matching NPC script found
+}
+
+std::string GetObjectScriptName(U7Object* object)
+{
+	if (!object)
+		return "";
+
+	// NPCs with conversation trees use NPC ID-based scripts
+	if (object->m_isNPC && object->m_hasConversationTree)
+	{
+		return FindNPCScriptByID(object->m_NPCID);
+	}
+	// Regular objects use shape table scripts
+	else
+	{
+		int shape = object->m_shapeData->GetShape();
+		int frame = object->m_shapeData->GetFrame();
+		if (shape < g_shapeTable.size() && frame < g_shapeTable[shape].size())
+		{
+			const std::string& scriptName = g_shapeTable[shape][frame].m_luaScript;
+			if (!scriptName.empty() && scriptName != "default")
+			{
+				return scriptName;
+			}
+		}
+	}
+
+	return "";  // No script or using default
+}
+
+// Equipment slot configuration loaded from slots.json
+static std::map<int, std::vector<EquipmentSlot>> g_equipmentSlotMap;      // Valid slots item can be placed in
+static std::map<int, std::vector<EquipmentSlot>> g_equipmentSlotFillsMap; // All slots item occupies when equipped
+
+// String to EquipmentSlot enum conversion
+static EquipmentSlot StringToEquipmentSlot(const std::string& slotName)
+{
+	if (slotName == "SLOT_HEAD") return EquipmentSlot::SLOT_HEAD;
+	if (slotName == "SLOT_NECK") return EquipmentSlot::SLOT_NECK;
+	if (slotName == "SLOT_TORSO") return EquipmentSlot::SLOT_TORSO;
+	if (slotName == "SLOT_LEGS") return EquipmentSlot::SLOT_LEGS;
+	if (slotName == "SLOT_HANDS") return EquipmentSlot::SLOT_HANDS;
+	if (slotName == "SLOT_FEET") return EquipmentSlot::SLOT_FEET;
+	if (slotName == "SLOT_LEFT_HAND") return EquipmentSlot::SLOT_LEFT_HAND;
+	if (slotName == "SLOT_RIGHT_HAND") return EquipmentSlot::SLOT_RIGHT_HAND;
+	if (slotName == "SLOT_AMMO") return EquipmentSlot::SLOT_AMMO;
+	if (slotName == "SLOT_LEFT_RING") return EquipmentSlot::SLOT_LEFT_RING;
+	if (slotName == "SLOT_RIGHT_RING") return EquipmentSlot::SLOT_RIGHT_RING;
+	if (slotName == "SLOT_BELT") return EquipmentSlot::SLOT_BELT;
+	if (slotName == "SLOT_BACKPACK") return EquipmentSlot::SLOT_BACKPACK;
+	return EquipmentSlot::SLOT_COUNT;
+}
+
+// Load equipment slot configuration from Data/equip_slots.json
+void LoadEquipmentSlotsConfig()
+{
+	g_equipmentSlotMap.clear();
+	g_equipmentSlotFillsMap.clear();
+
+	std::string configPath = "Data/equip_slots.json";
+
+	std::ifstream file(configPath);
+	if (!file.is_open())
+	{
+		Log("ERROR: Could not open " + configPath);
+		return;
+	}
+
+	try
+	{
+		nlohmann::json config;
+		file >> config;
+
+		// New format: root object is a map of shape_id (as string) to item data
+		if (config.is_object())
+		{
+			for (auto& [shapeIdStr, item] : config.items())
+			{
+				// Convert string key to int
+				int shapeId = std::stoi(shapeIdStr);
+
+				if (item.contains("slots") && item["slots"].is_array())
+				{
+					std::vector<EquipmentSlot> validSlots;
+
+					// Load valid slots (where item can be placed)
+					for (const auto& slotName : item["slots"])
+					{
+						EquipmentSlot slot = StringToEquipmentSlot(slotName.get<std::string>());
+						if (slot != EquipmentSlot::SLOT_COUNT)
+						{
+							validSlots.push_back(slot);
+						}
+					}
+
+					if (!validSlots.empty())
+					{
+						g_equipmentSlotMap[shapeId] = validSlots;
+					}
+
+					// Load fills (all slots occupied when equipped)
+					if (item.contains("fills") && item["fills"].is_array())
+					{
+						std::vector<EquipmentSlot> fillSlots;
+						for (const auto& slotName : item["fills"])
+						{
+							EquipmentSlot slot = StringToEquipmentSlot(slotName.get<std::string>());
+							if (slot != EquipmentSlot::SLOT_COUNT)
+							{
+								fillSlots.push_back(slot);
+							}
+						}
+						if (!fillSlots.empty())
+						{
+							g_equipmentSlotFillsMap[shapeId] = fillSlots;
+						}
+					}
+				}
+			}
+		}
+
+		Log("Loaded equipment slot configuration for " + std::to_string(g_equipmentSlotMap.size()) + " item types");
+	}
+	catch (const std::exception& e)
+	{
+		Log("ERROR: Failed to parse " + configPath + ": " + e.what());
+	}
+}
+
+// Returns all valid equipment slots for an item shape ID
+std::vector<EquipmentSlot> GetEquipmentSlotsForShape(int shapeId)
+{
+	auto it = g_equipmentSlotMap.find(shapeId);
+	if (it != g_equipmentSlotMap.end())
+	{
+		return it->second;
+	}
+	return {}; // Empty vector if not equippable
+}
+
+// Returns all slots this item occupies when equipped (may be multiple)
+std::vector<EquipmentSlot> GetEquipmentSlotsFilled(int shapeId)
+{
+	auto it = g_equipmentSlotFillsMap.find(shapeId);
+	if (it != g_equipmentSlotFillsMap.end())
+	{
+		return it->second;
+	}
+	return {}; // Empty vector if not equippable
+}
+
+// Deprecated: Returns only the first valid equipment slot for an item
+// Use GetEquipmentSlotsForShape() for items that can go in multiple slots
+EquipmentSlot GetEquipmentSlotForShape(int shapeId)
+{
+	auto slots = GetEquipmentSlotsForShape(shapeId);
+	if (!slots.empty())
+	{
+		return slots[0];
+	}
+	return EquipmentSlot::SLOT_COUNT;
+}
+
+// NPCData equipment management implementations
+void NPCData::SetEquippedItem(EquipmentSlot slot, int objectId)
+{
+	m_equipment[slot] = objectId;
+
+	// Add to NPC's inventory if not already there, or invalidate cache if it is
+	U7Object* npcObject = g_objectList[m_objectID].get();
+	if (npcObject)
+	{
+		if (!npcObject->IsInInventoryById(objectId))
+		{
+			npcObject->AddObjectToInventory(objectId);
+		}
+		else
+		{
+			// Item already in inventory, just invalidate weight cache
+			npcObject->InvalidateWeightCache();
+		}
+	}
+}
+
+void NPCData::UnequipItem(EquipmentSlot slot)
+{
+	int objectId = GetEquippedItem(slot);
+	m_equipment[slot] = -1;
+
+	// Remove from NPC's inventory
+	if (objectId != -1)
+	{
+		U7Object* npcObject = g_objectList[m_objectID].get();
+		if (npcObject)
+		{
+			npcObject->RemoveObjectFromInventory(objectId);
+		}
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////////
+//  SPELL SYSTEM
+//////////////////////////////////////////////////////////////////////////////
+
+void LoadSpellData()
+{
+	Log("Loading spell data from spells.json...");
+
+	// Clear existing data
+	g_reagentData.clear();
+	g_spellCircles.clear();
+	g_spellMap.clear();
+
+	// Open spells.json
+	std::string spellDataPath = "Data/spells.json";
+	std::ifstream file(spellDataPath);
+
+	if (!file.is_open())
+	{
+		Log("ERROR: Could not open " + spellDataPath);
+		AddConsoleString("ERROR: Could not open " + spellDataPath, RED);
+		return;
+	}
+
+	try
+	{
+		nlohmann::json spellJson;
+		file >> spellJson;
+
+		// Load reagents
+		if (spellJson.contains("reagents") && spellJson["reagents"].is_array())
+		{
+			for (const auto& reagentJson : spellJson["reagents"])
+			{
+				ReagentData reagent;
+				reagent.name = reagentJson["name"].get<std::string>();
+				reagent.frame = reagentJson["frame"].get<int>();
+				g_reagentData.push_back(reagent);
+			}
+			Log("Loaded " + std::to_string(g_reagentData.size()) + " reagents");
+		}
+
+		// Load spell circles
+		if (spellJson.contains("circles") && spellJson["circles"].is_array())
+		{
+			for (const auto& circleJson : spellJson["circles"])
+			{
+				SpellCircle circle;
+				circle.circle = circleJson["circle"].get<int>();
+				circle.name = circleJson["name"].get<std::string>();
+
+				// Load spells in this circle
+				if (circleJson.contains("spells") && circleJson["spells"].is_array())
+				{
+					for (const auto& spellJson : circleJson["spells"])
+					{
+						SpellData spell;
+						spell.id = spellJson["id"].get<int>();
+						spell.name = spellJson["name"].get<std::string>();
+						spell.x = spellJson["x"].get<int>();
+						spell.y = spellJson["y"].get<int>();
+						spell.words = spellJson["words"].get<std::string>();
+						spell.scriptId = spellJson["scriptId"].get<int>();
+						spell.circle = circle.circle;
+
+						// Load reagents
+						if (spellJson.contains("reagents") && spellJson["reagents"].is_array())
+						{
+							for (const auto& reagentName : spellJson["reagents"])
+							{
+								spell.reagents.push_back(reagentName.get<std::string>());
+							}
+						}
+
+						// Load description
+						if (spellJson.contains("desc"))
+						{
+							spell.desc = spellJson["desc"].get<std::string>();
+						}
+
+						circle.spells.push_back(spell);
+					}
+				}
+
+				g_spellCircles.push_back(circle);
+			}
+			Log("Loaded " + std::to_string(g_spellCircles.size()) + " spell circles");
+		}
+
+		// Build spell lookup map
+		for (auto& circle : g_spellCircles)
+		{
+			for (auto& spell : circle.spells)
+			{
+				g_spellMap[spell.id] = &spell;
+			}
+		}
+		Log("Built spell lookup map with " + std::to_string(g_spellMap.size()) + " spells");
+		AddConsoleString("Loaded " + std::to_string(g_spellMap.size()) + " spells from spells.json", GREEN);
+	}
+	catch (const std::exception& e)
+	{
+		Log("ERROR: Exception while loading spell data: " + std::string(e.what()));
+		AddConsoleString("ERROR: Exception while loading spell data", RED);
+	}
+
+	file.close();
+}
+
+SpellData* GetSpellData(int spellId)
+{
+	auto it = g_spellMap.find(spellId);
+	if (it != g_spellMap.end())
+	{
+		return it->second;
+	}
+	return nullptr;
 }

@@ -64,6 +64,7 @@ void GhostState::Init(const std::string& configfile)
 	// Try to get paths - if empty, use defaults
 	m_fontPath = config->GetString("FontPath");
 	m_spritePath = config->GetString("SpritePath");
+	std::string ghostPath = config->GetString("GhostPath");
 
 	// If paths are empty, fall back to defaults
 	if (m_fontPath.empty())
@@ -96,9 +97,25 @@ void GhostState::Init(const std::string& configfile)
 		Log("SpritePath from config: " + m_spritePath);
 	}
 
+	if (ghostPath.empty())
+	{
+		ghostPath = "Gui/Ghost/";
+		Log("GhostPath not found in config, using default: " + ghostPath);
+	}
+	else
+	{
+		// Ensure path ends with a separator
+		if (!ghostPath.empty() && ghostPath.back() != '/' && ghostPath.back() != '\\')
+		{
+			ghostPath += "/";
+		}
+		Log("GhostPath from config: " + ghostPath);
+	}
+
 	// Set the resource paths in GhostSerializer so they can be used for loading
 	GhostSerializer::SetBaseFontPath(m_fontPath);
 	GhostSerializer::SetBaseSpritePath(m_spritePath);
+	GhostSerializer::SetBaseGhostPath(ghostPath);
 
 	// Create the main GUI
 	m_gui = make_unique<Gui>();
@@ -108,7 +125,7 @@ void GhostState::Init(const std::string& configfile)
 	m_serializer = make_unique<GhostSerializer>();
 
 	// Load GUI from JSON file
-	if (!m_serializer->LoadFromFile("Gui/ghost_app.ghost", m_gui.get()))
+	if (!m_serializer->LoadFromFile(GhostSerializer::GetBaseGhostPath() + "ghost_app.ghost", m_gui.get()))
 	{
 		Log("Failed to load ghost_app.ghost");
 	}
@@ -125,6 +142,23 @@ void GhostState::Init(const std::string& configfile)
 	// Populate the element hierarchy listbox with the initial root container
 	// This must come after m_propertySerializer is initialized
 	PopulateElementHierarchy();
+
+	// Select the root element automatically on startup
+	if (!m_elementIDList.empty())
+	{
+		int rootID = m_elementIDList[0];  // First element is always the root
+		m_selectedElementID = rootID;
+		UpdatePropertyPanel();
+		UpdateStatusFooter();
+
+		// Also select it in the hierarchy listbox
+		auto listboxElement = m_gui->GetElement(1501);
+		if (listboxElement && listboxElement->m_Type == GUI_LISTBOX)
+		{
+			auto listbox = static_cast<GuiListBox*>(listboxElement.get());
+			listbox->SetSelectedIndex(0);
+		}
+	}
 }
 
 void GhostState::Shutdown()
@@ -989,6 +1023,12 @@ void GhostState::Update()
 
 	int activeID = m_gui->GetActiveElementID();
 
+	// Debug: Log when arrow keys are pressed
+	if (IsKeyPressed(KEY_LEFT) || IsKeyPressed(KEY_RIGHT) || IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_DOWN))
+	{
+		Log("Arrow key pressed in GhostState::Update - activeID: " + to_string(activeID) + ", LastElement: " + to_string(m_gui->m_LastElement));
+	}
+
 	// Update element properties when property panel inputs change
 	// Only update if a property panel element just became active (was clicked/interacted with)
 	static int lastActiveID = -1;
@@ -1142,11 +1182,11 @@ void GhostState::Update()
 	if (m_selectedElementID != -1)
 	{
 		auto selectedElement = m_gui->GetElement(m_selectedElementID);
-		if (selectedElement && (selectedElement->m_Type == GUI_STRETCHBUTTON || selectedElement->m_Type == GUI_SPRITE || selectedElement->m_Type == GUI_ICONBUTTON))
+		if (selectedElement && (selectedElement->m_Type == GUI_STRETCHBUTTON || selectedElement->m_Type == GUI_SPRITE || selectedElement->m_Type == GUI_CYCLE || selectedElement->m_Type == GUI_ICONBUTTON))
 		{
 			// List of all sprite property button names
 			vector<string> spriteProperties = {
-				"PROPERTY_SPRITE_LEFT", "PROPERTY_SPRITE_CENTER", "PROPERTY_SPRITE_RIGHT", "PROPERTY_SPRITE"
+				"PROPERTY_SPRITE_LEFT", "PROPERTY_SPRITE_CENTER", "PROPERTY_SPRITE_RIGHT", "PROPERTY_SPRITE", "PROPERTY_DOWNSPRITE"
 			};
 
 			for (const auto& propName : spriteProperties)
@@ -1177,33 +1217,13 @@ void GhostState::Update()
 							}
 							else if (propName == "PROPERTY_SPRITE")
 							{
-								// For sprite elements, get the sprite metadata
-								sprite.spritesheet = m_contentSerializer->GetSpriteName(m_selectedElementID);
-
-								// Get sprite source rect from the actual sprite element
-								auto selectedElement = m_gui->GetElement(m_selectedElementID);
-								if (selectedElement && selectedElement->m_Type == GUI_SPRITE)
-								{
-									auto spriteElem = static_cast<GuiSprite*>(selectedElement.get());
-									if (spriteElem->m_Sprite)
-									{
-										sprite.x = static_cast<int>(spriteElem->m_Sprite->m_sourceRect.x);
-										sprite.y = static_cast<int>(spriteElem->m_Sprite->m_sourceRect.y);
-										sprite.w = static_cast<int>(spriteElem->m_Sprite->m_sourceRect.width);
-										sprite.h = static_cast<int>(spriteElem->m_Sprite->m_sourceRect.height);
-									}
-								}
+								// Get the sprite definition from serializer (includes x, y, w, h)
+								sprite = m_contentSerializer->GetSprite(m_selectedElementID);
 							}
-							else if (selectedElement && selectedElement->m_Type == GUI_ICONBUTTON)
+							else if (propName == "PROPERTY_DOWNSPRITE")
 							{
-								auto iconElem = static_cast<GuiIconButton*>(selectedElement.get());
-								if (iconElem->m_UpTexture)
-								{
-									sprite.x = static_cast<int>(iconElem->m_UpTexture->m_sourceRect.x);
-									sprite.y = static_cast<int>(iconElem->m_UpTexture->m_sourceRect.y);
-									sprite.w = static_cast<int>(iconElem->m_UpTexture->m_sourceRect.width);
-									sprite.h = static_cast<int>(iconElem->m_UpTexture->m_sourceRect.height);
-								}
+								// Get the down sprite definition for icon button
+								sprite = m_contentSerializer->GetIconButtonDownSprite(m_selectedElementID);
 							}
 
 							// Track which property we're editing
@@ -1473,24 +1493,47 @@ void GhostState::Update()
 
 		// Find all content elements under the cursor (2000-2999, not property panel 3000+)
 		// Include inactive elements too so disabled text inputs can still be selected
+		// Get content panel anchor for zoom calculations
+		auto contentPanel = m_gui->GetElement(2000);
+		float anchorX = contentPanel ? contentPanel->m_Pos.x : 0.0f;
+		float anchorY = contentPanel ? contentPanel->m_Pos.y : 0.0f;
+
 		std::vector<int> clickedElements;
 		for (const auto& pair : m_gui->m_GuiElementList)
 		{
 			const auto& element = pair.second;
 			if (element->m_ID >= 2000 && element->m_ID < 3000 && element->m_Visible)
 			{
-				float elemX = m_gui->m_Pos.x + element->m_Pos.x;
-				float elemY = m_gui->m_Pos.y + element->m_Pos.y;
+				float elemX, elemY, elemW, elemH;
 
-				if (scaledX >= elemX && scaledX <= elemX + element->m_Width &&
-					scaledY >= elemY && scaledY <= elemY + element->m_Height)
+				if (element->m_ID >= 2001)
+				{
+					// Apply zoom relative to anchor for content elements
+					float relX = element->m_Pos.x - anchorX;
+					float relY = element->m_Pos.y - anchorY;
+					elemX = m_gui->m_Pos.x + anchorX + relX * m_contentZoom;
+					elemY = m_gui->m_Pos.y + anchorY + relY * m_contentZoom;
+					elemW = element->m_Width * m_contentZoom;
+					elemH = element->m_Height * m_contentZoom;
+				}
+				else
+				{
+					// Root container 2000 - no zoom
+					elemX = m_gui->m_Pos.x + element->m_Pos.x;
+					elemY = m_gui->m_Pos.y + element->m_Pos.y;
+					elemW = element->m_Width;
+					elemH = element->m_Height;
+				}
+
+				if (scaledX >= elemX && scaledX <= elemX + elemW &&
+					scaledY >= elemY && scaledY <= elemY + elemH)
 				{
 					clickedElements.push_back(element->m_ID);
 				}
 			}
 		}
 
-		// Find the deepest element in the tree (the one with the most ancestors)
+		// Find the best element: prioritize by depth first (deepest wins), then by highest ID
 		int bestID = -1;
 		int maxDepth = -1;
 		bool clickedInvisibleRoot = false;
@@ -1511,12 +1554,15 @@ void GhostState::Update()
 				depth++;
 			}
 
-			if (depth > maxDepth)
+			// Prioritize by depth, then by highest ID for same depth
+			if (depth > maxDepth || (depth == maxDepth && id > bestID))
 			{
 				maxDepth = depth;
 				bestID = id;
 			}
 		}
+
+		Log("Clicked elements: " + to_string(clickedElements.size()) + ", bestID: " + to_string(bestID));
 
 		// If we clicked the invisible root (2000) and nothing else, select the normal root (2001)
 		if (bestID == -1 && clickedInvisibleRoot)
@@ -1541,20 +1587,23 @@ void GhostState::Update()
 
 				if (isFloating)
 				{
-					// Make it positioned: set position to (0, 0) relative to parent
-					m_contentSerializer->SetFloating(bestID, false);
+					// Make it positioned: save current screen position and convert to relative position
+					// Floating (-1,-1) = controlled by parent layout
+					// Positioned (x,y) = NOT controlled by layout, fixed position
 					auto element = m_gui->GetElement(bestID);
+
 					if (element)
 					{
-						// Get parent position to calculate relative position
-						auto parent = m_gui->GetElement(parentID);
-						if (parent)
-						{
-							element->m_Pos.x = parent->m_Pos.x;
-							element->m_Pos.y = parent->m_Pos.y;
-						}
+						// Element m_Pos is already stored relative to GUI root
+						// When drawn: screen_pos = m_Gui->m_Pos + element->m_Pos
+						// The layout system has already positioned this floating element correctly,
+						// so we just need to keep the current m_Pos value (don't modify it)
+
+						Log("Converting floating to positioned, keeping current m_Pos (" + to_string(element->m_Pos.x) + ", " + to_string(element->m_Pos.y) + ")");
 					}
-					Log("Toggled element " + to_string(bestID) + " to positioned (0, 0)");
+
+					m_contentSerializer->SetFloating(bestID, false);
+					Log("Toggled element " + to_string(bestID) + " to positioned");
 				}
 				else
 				{
@@ -1568,6 +1617,13 @@ void GhostState::Update()
 				{
 					m_contentSerializer->ReflowPanel(parentID, m_gui.get());
 					Log("Reflowed parent panel " + to_string(parentID) + " after toggle");
+
+					// Log the element's position after reflow to verify it stayed put
+					auto element = m_gui->GetElement(bestID);
+					if (element)
+					{
+						Log("After reflow: element screen pos (" + to_string(element->m_Pos.x) + ", " + to_string(element->m_Pos.y) + ")");
+					}
 				}
 
 				// Reset double-click tracking
@@ -1666,14 +1722,22 @@ void GhostState::Update()
 			float scaledY = mousePos.y / m_gui->m_InputScale;
 
 			auto element = m_gui->GetElement(m_selectedElementID);
-			if (element)
+			auto contentPanel = m_gui->GetElement(2000);
+			if (element && contentPanel)
 			{
-				float elemX = m_gui->m_Pos.x + element->m_Pos.x;
-				float elemY = m_gui->m_Pos.y + element->m_Pos.y;
+				// Apply zoom to element bounds for hit testing
+				float anchorX = contentPanel->m_Pos.x;
+				float anchorY = contentPanel->m_Pos.y;
+				float relX = element->m_Pos.x - anchorX;
+				float relY = element->m_Pos.y - anchorY;
+				float elemX = m_gui->m_Pos.x + anchorX + relX * m_contentZoom;
+				float elemY = m_gui->m_Pos.y + anchorY + relY * m_contentZoom;
+				float elemW = element->m_Width * m_contentZoom;
+				float elemH = element->m_Height * m_contentZoom;
 
 				// Check if mouse is over the selected positioned element
-				if (scaledX >= elemX && scaledX <= elemX + element->m_Width &&
-				    scaledY >= elemY && scaledY <= elemY + element->m_Height)
+				if (scaledX >= elemX && scaledX <= elemX + elemW &&
+				    scaledY >= elemY && scaledY <= elemY + elemH)
 				{
 					m_isDragging = true;
 					m_dragElementID = m_selectedElementID;
@@ -1692,9 +1756,9 @@ void GhostState::Update()
 		float scaledX = mousePos.x / m_gui->m_InputScale;
 		float scaledY = mousePos.y / m_gui->m_InputScale;
 
-		// Calculate delta from drag start
-		float deltaX = scaledX - m_dragStartMousePos.x;
-		float deltaY = scaledY - m_dragStartMousePos.y;
+		// Calculate delta from drag start, accounting for zoom
+		float deltaX = (scaledX - m_dragStartMousePos.x) / m_contentZoom;
+		float deltaY = (scaledY - m_dragStartMousePos.y) / m_contentZoom;
 
 		// Update element position
 		auto element = m_gui->GetElement(m_dragElementID);
@@ -1885,13 +1949,15 @@ void GhostState::Update()
 		// Save undo state before making changes
 		PushUndoState();
 
-		// Determine where to paste based on currently selected element (same logic as InsertButton)
+		// Determine where to paste based on currently selected element
 		int parentID = -1;
+		int insertIndex = -1;  // -1 means append at end
 
 		if (m_selectedElementID == -1)
 		{
-			// No selection - paste as child of root
+			// No selection - paste as child of root at end
 			parentID = m_contentSerializer->GetRootElementID();
+			insertIndex = -1;
 			Log("Pasting as child of root ID: " + to_string(parentID));
 		}
 		else
@@ -1900,20 +1966,33 @@ void GhostState::Update()
 			auto selectedElement = m_gui->GetElement(m_selectedElementID);
 			if (selectedElement && selectedElement->m_Type == GUI_PANEL)
 			{
-				// Selected element is a panel - paste as its child
+				// Selected element is a panel - paste as its FIRST child
 				parentID = m_selectedElementID;
-				Log("Pasting as child of selected panel ID: " + to_string(parentID));
+				insertIndex = 0;  // Insert at beginning of panel's children
+				Log("Pasting as first child of selected panel ID: " + to_string(parentID));
 			}
 			else
 			{
-				// Selected element is not a panel - paste as sibling (same parent)
+				// Selected element is not a panel - paste immediately after it as sibling
 				parentID = m_contentSerializer->GetParentID(m_selectedElementID);
 				if (parentID == -1)
 				{
 					Log("ERROR: Cannot paste as sibling - selected element has no valid parent");
 					return;
 				}
-				Log("Pasting as sibling of selected element ID: " + to_string(m_selectedElementID));
+
+				// Find the index of the selected element in its parent's children
+				const auto& siblings = m_contentSerializer->GetChildren(parentID);
+				for (size_t i = 0; i < siblings.size(); i++)
+				{
+					if (siblings[i] == m_selectedElementID)
+					{
+						insertIndex = static_cast<int>(i) + 1;  // Insert after selected element
+						break;
+					}
+				}
+
+				Log("Pasting immediately after selected element ID: " + to_string(m_selectedElementID) + " at index: " + to_string(insertIndex));
 			}
 		}
 
@@ -1929,10 +2008,31 @@ void GhostState::Update()
 		// Get next auto ID for the pasted element
 		int newElementID = m_contentSerializer->GetNextAutoID();
 
+		// Create a copy of the clipboard data to modify
+		ghost_json pasteData = m_clipboard;
+
+		// If the element has a name, make it unique by appending "_copy"
+		if (pasteData.contains("name"))
+		{
+			string originalName = pasteData["name"];
+			string newName = originalName + "_copy";
+
+			// If that name already exists, append a number
+			int copyNumber = 1;
+			while (m_contentSerializer->GetElementID(newName) != -1)
+			{
+				newName = originalName + "_copy" + to_string(copyNumber);
+				copyNumber++;
+			}
+
+			pasteData["name"] = newName;
+			Log("Renamed pasted element from '" + originalName + "' to '" + newName + "'");
+		}
+
 		// Create a temporary .ghost file structure in memory with proper format
 		ghost_json tempFileJson;
 		tempFileJson["gui"]["elements"] = ghost_json::array();
-		tempFileJson["gui"]["elements"].push_back(m_clipboard);
+		tempFileJson["gui"]["elements"].push_back(pasteData);
 
 		// Write to a temporary file
 		string tempFilename = "temp_paste_" + to_string(newElementID) + ".ghost";
@@ -1942,10 +2042,10 @@ void GhostState::Update()
 			tempFile << tempFileJson.dump(2);
 			tempFile.close();
 
-			Log("Pasting element with parent offset (" + to_string(parentX) + ", " + to_string(parentY) + ")");
+			Log("Pasting element with parent offset (" + to_string(parentX) + ", " + to_string(parentY) + ") at index: " + to_string(insertIndex));
 
 			// Load using LoadIntoPanel which handles parent offset correctly
-			if (m_contentSerializer->LoadIntoPanel(tempFilename, m_gui.get(), parentX, parentY, parentID))
+			if (m_contentSerializer->LoadIntoPanel(tempFilename, m_gui.get(), parentX, parentY, parentID, insertIndex))
 			{
 				// Transfer fonts from content serializer to preserved fonts
 				auto& fonts = m_contentSerializer->GetLoadedFonts();
@@ -1994,6 +2094,100 @@ void GhostState::Update()
 		}
 	}
 
+	// Arrow keys: Nudge selected positioned element (green highlight) by 1 pixel
+	if (m_selectedElementID >= 2002 && m_selectedElementID < 3000)
+	{
+		auto selectedElement = m_gui->GetElement(m_selectedElementID);
+		if (selectedElement)
+		{
+			// Skip nudging if a property panel scrollbar is active (let scrollbar handle arrow keys)
+			bool scrollbarActive = false;
+			if (m_gui->m_LastElement >= 3000 && m_gui->m_LastElement < 4000)
+			{
+				auto lastElement = m_gui->GetElement(m_gui->m_LastElement);
+				if (lastElement && lastElement->m_Type == GUI_SCROLLBAR)
+				{
+					scrollbarActive = true;
+					Log("Skipping nudge - scrollbar " + to_string(m_gui->m_LastElement) + " is active");
+				}
+			}
+
+			// Only allow nudging if element is positioned (green highlight), not floating (yellow highlight)
+			bool isFloating = m_contentSerializer->IsFloating(m_selectedElementID);
+			if (!isFloating && !scrollbarActive)
+			{
+				bool nudged = false;
+				int deltaX = 0, deltaY = 0;
+
+				if (IsKeyPressed(KEY_LEFT))
+				{
+					deltaX = -1;
+					nudged = true;
+				}
+				else if (IsKeyPressed(KEY_RIGHT))
+				{
+					deltaX = 1;
+					nudged = true;
+				}
+				else if (IsKeyPressed(KEY_UP))
+				{
+					deltaY = -1;
+					nudged = true;
+				}
+				else if (IsKeyPressed(KEY_DOWN))
+				{
+					deltaY = 1;
+					nudged = true;
+				}
+
+				if (nudged)
+				{
+					// Save undo state before making changes
+					PushUndoState();
+
+					// Update position in the element
+					selectedElement->m_Pos.x += deltaX;
+					selectedElement->m_Pos.y += deltaY;
+
+					// Mark as dirty (position will be serialized from element on save)
+					m_contentSerializer->SetDirty(true);
+
+					Log("Nudged element " + to_string(m_selectedElementID) + " by (" +
+						to_string(deltaX) + ", " + to_string(deltaY) + ")");
+				}
+			}
+		}
+	}
+
+	// Mouse wheel zoom for content panel
+	float wheelMove = GetMouseWheelMove();
+	if (wheelMove != 0.0f)
+	{
+		// Check if mouse is over content panel (ID 2000)
+		Vector2 mousePos = GetMousePosition();
+		auto contentPanel = m_gui->GetElement(2000);
+		if (contentPanel)
+		{
+			float scaledX = mousePos.x / m_gui->m_InputScale;
+			float scaledY = mousePos.y / m_gui->m_InputScale;
+			float panelX = m_gui->m_Pos.x + contentPanel->m_Pos.x;
+			float panelY = m_gui->m_Pos.y + contentPanel->m_Pos.y;
+
+			if (scaledX >= panelX && scaledX <= panelX + contentPanel->m_Width &&
+			    scaledY >= panelY && scaledY <= panelY + contentPanel->m_Height)
+			{
+				// Adjust zoom
+				m_contentZoom += wheelMove * ZOOM_STEP;
+
+				// Clamp zoom to valid range
+				if (m_contentZoom < MIN_ZOOM)
+					m_contentZoom = MIN_ZOOM;
+				if (m_contentZoom > MAX_ZOOM)
+					m_contentZoom = MAX_ZOOM;
+			}
+		}
+	}
+
 	// Check for button clicks using name-based lookup
 	if (activeID == m_serializer->GetElementID("NEW"))
 	{
@@ -2001,6 +2195,7 @@ void GhostState::Update()
 		ClearLoadedContent();
 		EnsureContentRoot();  // Recreate empty root after clearing
 		PopulateElementHierarchy();  // Update listbox with new content
+		m_contentZoom = 1.0f;  // Reset zoom to 100%
 	}
 	else if (activeID == m_serializer->GetElementID("CLOSE"))
 	{
@@ -2071,6 +2266,11 @@ void GhostState::Update()
 		Log("Sprite button clicked!");
 		InsertSprite();
 	}
+	else if (activeID == m_serializer->GetElementID("CYCLE"))
+	{
+		Log("Cycle button clicked!");
+		InsertCycle();
+	}
 	else if (activeID == m_serializer->GetElementID("INPUT"))
 	{
 		Log("Input button clicked!");
@@ -2115,8 +2315,49 @@ void GhostState::Update()
 
 void GhostState::Draw()
 {
+	// Get content panel position as anchor point for zoom
+	auto contentPanel = m_gui->GetElement(2000);
+	float anchorX = contentPanel ? contentPanel->m_Pos.x : 0.0f;
+	float anchorY = contentPanel ? contentPanel->m_Pos.y : 0.0f;
+
+	// Apply zoom scale to content elements before drawing
+	if (m_contentZoom != 1.0f)
+	{
+		for (auto& [id, element] : m_gui->m_GuiElementList)
+		{
+			if (id >= 2001 && id < 3000 && element)
+			{
+				// Scale position relative to content panel anchor and scale size
+				float relX = element->m_Pos.x - anchorX;
+				float relY = element->m_Pos.y - anchorY;
+				element->m_Pos.x = anchorX + relX * m_contentZoom;
+				element->m_Pos.y = anchorY + relY * m_contentZoom;
+				element->m_Width *= m_contentZoom;
+				element->m_Height *= m_contentZoom;
+			}
+		}
+	}
+
 	// Draw the GUI
 	m_gui->Draw();
+
+	// Restore content elements to original scale
+	if (m_contentZoom != 1.0f)
+	{
+		for (auto& [id, element] : m_gui->m_GuiElementList)
+		{
+			if (id >= 2001 && id < 3000 && element)
+			{
+				// Restore position relative to content panel anchor and restore size
+				float relX = element->m_Pos.x - anchorX;
+				float relY = element->m_Pos.y - anchorY;
+				element->m_Pos.x = anchorX + relX / m_contentZoom;
+				element->m_Pos.y = anchorY + relY / m_contentZoom;
+				element->m_Width /= m_contentZoom;
+				element->m_Height /= m_contentZoom;
+			}
+		}
+	}
 
 	// Draw selection highlight around the selected element
 	if (m_selectedElementID != -1)
@@ -2128,47 +2369,34 @@ void GhostState::Draw()
 			bool isFloating = m_contentSerializer->IsFloating(m_selectedElementID);
 			Color highlightColor = isFloating ? YELLOW : GREEN;
 
-			DrawRectangleLines(
-				static_cast<int>(m_gui->m_Pos.x + selectedElement->m_Pos.x - 2),
-				static_cast<int>(m_gui->m_Pos.y + selectedElement->m_Pos.y - 2),
-				static_cast<int>(selectedElement->m_Width + 4),
-				static_cast<int>(selectedElement->m_Height + 4),
-				highlightColor
-			);
-		}
-	}
-
-	// Draw value overlays on property panel scrollbars
-	if (m_propertySerializer && m_selectedElementID != -1)
-	{
-		// List of property scrollbars to overlay values on
-		vector<string> scrollbarProperties = {
-			"PROPERTY_WIDTH", "PROPERTY_HEIGHT", "PROPERTY_VALUE_RANGE",
-			"PROPERTY_COLUMNS", "PROPERTY_HORZ_PADDING", "PROPERTY_VERT_PADDING",
-			"PROPERTY_FONT_SIZE", "PROPERTY_GROUP"
-		};
-
-		for (const auto& propName : scrollbarProperties)
-		{
-			int scrollbarID = m_propertySerializer->GetElementID(propName);
-			if (scrollbarID != -1 && scrollbarID >= 3000)  // Only property panel elements
+			// Apply zoom to highlight box if this is a content element
+			if (m_selectedElementID >= 2001 && m_selectedElementID < 3000)
 			{
-				auto scrollbarElement = m_gui->GetElement(scrollbarID);
-				if (scrollbarElement && scrollbarElement->m_Type == GUI_SCROLLBAR)
-				{
-					auto scrollbar = static_cast<GuiScrollBar*>(scrollbarElement.get());
-
-					// Calculate center position for text
-					int textX = static_cast<int>(m_gui->m_Pos.x + scrollbar->m_Pos.x + scrollbar->m_Width / 2);
-					int textY = static_cast<int>(m_gui->m_Pos.y + scrollbar->m_Pos.y + scrollbar->m_Height / 2 - 8);
-
-					// Draw the value in red
-					string valueText = to_string(scrollbar->m_Value);
-					DrawText(valueText.c_str(), textX - MeasureText(valueText.c_str(), 16) / 2, textY, 16, RED);
-				}
+				// Scale relative to content panel anchor
+				float relX = selectedElement->m_Pos.x - anchorX;
+				float relY = selectedElement->m_Pos.y - anchorY;
+				DrawRectangleLines(
+					static_cast<int>(m_gui->m_Pos.x + anchorX + relX * m_contentZoom - 2),
+					static_cast<int>(m_gui->m_Pos.y + anchorY + relY * m_contentZoom - 2),
+					static_cast<int>(selectedElement->m_Width * m_contentZoom + 4),
+					static_cast<int>(selectedElement->m_Height * m_contentZoom + 4),
+					highlightColor
+				);
+			}
+			else
+			{
+				// Non-content elements (property panel, etc.) - no zoom
+				DrawRectangleLines(
+					static_cast<int>(m_gui->m_Pos.x + selectedElement->m_Pos.x - 2),
+					static_cast<int>(m_gui->m_Pos.y + selectedElement->m_Pos.y - 2),
+					static_cast<int>(selectedElement->m_Width + 4),
+					static_cast<int>(selectedElement->m_Height + 4),
+					highlightColor
+				);
 			}
 		}
 	}
+
 }
 
 void GhostState::OnEnter()
@@ -2353,6 +2581,42 @@ void GhostState::OnEnter()
 						Log("ERROR: Failed to load texture: " + spritePath);
 					}
 				}
+			else if (selectedElement && selectedElement->m_Type == GUI_CYCLE && m_editingSpriteProperty == "PROPERTY_SPRITE")
+			{
+				// Update cycle element with new sprite data
+				auto cycleElem = static_cast<GuiCycle*>(selectedElement.get());
+
+				// Load the new sprite texture
+				string spritePath = m_spritePath + sprite.spritesheet;
+				Texture* texture = g_ResourceManager->GetTexture(spritePath);
+
+				if (texture)
+				{
+					// Get current frame count from the element
+					int frameCount = cycleElem->m_FrameCount;
+					if (frameCount < 1) frameCount = 1;
+
+					// Create new frames from horizontal sprite sheet
+					vector<shared_ptr<Sprite>> frames = CreateHorizontalSpriteFrames(
+						texture, sprite.x, sprite.y, sprite.w, sprite.h, frameCount
+					);
+
+					// Update the cycle element
+					cycleElem->m_Frames = frames;
+					cycleElem->m_Width = sprite.w;
+					cycleElem->m_Height = sprite.h;
+
+					// Store full sprite definition in serializer (with x/y/w/h)
+					m_contentSerializer->SetSprite(m_selectedElementID, sprite);
+
+					Log("Updated cycle: " + sprite.spritesheet + " at (" + std::to_string(sprite.x) + "," + std::to_string(sprite.y) +
+						") size (" + std::to_string(sprite.w) + "x" + std::to_string(sprite.h) + ") frames=" + std::to_string(frameCount));
+				}
+				else
+				{
+					Log("ERROR: Failed to load texture: " + spritePath);
+				}
+			}
 			else if (selectedElement && selectedElement->m_Type == GUI_ICONBUTTON && m_editingSpriteProperty == "PROPERTY_SPRITE")
 			{
 				// Update icon button with new sprite data
@@ -2383,6 +2647,41 @@ void GhostState::OnEnter()
 					m_contentSerializer->SetSprite(m_selectedElementID, sprite);
 
 					Log("Updated iconbutton sprite: " + sprite.spritesheet + " at (" + std::to_string(sprite.x) + "," + std::to_string(sprite.y) +
+						") size (" + std::to_string(sprite.w) + "x" + std::to_string(sprite.h) + ")");
+				}
+				else
+				{
+					Log("ERROR: Failed to load texture: " + spritePath);
+				}
+			}
+			else if (selectedElement && selectedElement->m_Type == GUI_ICONBUTTON && m_editingSpriteProperty == "PROPERTY_DOWNSPRITE")
+			{
+				// Update icon button down sprite
+				auto iconElem = static_cast<GuiIconButton*>(selectedElement.get());
+
+				// Load the new sprite texture
+				string spritePath = m_spritePath + sprite.spritesheet;
+				Texture* texture = g_ResourceManager->GetTexture(spritePath);
+
+				if (texture)
+				{
+					// Create new sprite with the specified source rectangle
+					shared_ptr<Sprite> newSprite = make_shared<Sprite>();
+					newSprite->m_texture = texture;
+					newSprite->m_sourceRect = Rectangle{
+						static_cast<float>(sprite.x),
+						static_cast<float>(sprite.y),
+						static_cast<float>(sprite.w),
+						static_cast<float>(sprite.h)
+					};
+
+					// Update the icon button's down texture
+					iconElem->m_DownTexture = newSprite;
+
+					// Store full down sprite definition in serializer
+					m_contentSerializer->SetIconButtonDownSprite(m_selectedElementID, sprite);
+
+					Log("Updated iconbutton down sprite: " + sprite.spritesheet + " at (" + std::to_string(sprite.x) + "," + std::to_string(sprite.y) +
 						") size (" + std::to_string(sprite.w) + "x" + std::to_string(sprite.h) + ")");
 				}
 				else
@@ -2488,6 +2787,9 @@ void GhostState::LoadGhostFile(const std::string& filepath)
 
 	// Store the loaded file path
 	m_loadedGhostFile = filepath;
+
+	// Reset zoom to 100% when loading a new file
+	m_contentZoom = 1.0f;
 
 	// Before creating a new serializer, preserve the loaded fonts from the old one
 	// The fonts need to stay alive as long as the GUI elements using them exist
@@ -3017,6 +3319,47 @@ void GhostState::InsertSprite()
 	FinalizeInsert(ctx.newID, ctx.parentID, "Sprite");
 }
 
+void GhostState::InsertCycle()
+{
+	// Use helper to prepare insertion
+	InsertContext ctx = PrepareInsert("cycle");
+	if (ctx.newID == -1)
+		return;  // Error already logged
+
+	// Get fallback sprite for cycle (same as sprite)
+	string filename;
+	int x, y, width, height;
+	SpriteUtils::GetFallbackForType("sprite", filename, x, y, width, height);
+
+	Log("InsertCycle: Using fallback sprite: " + filename + " at (" + to_string(x) + "," + to_string(y) +
+		") size " + to_string(width) + "x" + to_string(height));
+
+	// Load sprite texture
+	string spritePath = m_spritePath + filename;
+	Texture* texture = g_ResourceManager->GetTexture(spritePath);
+
+	// Create frames for cycle (default to 1 frame)
+	int frameCount = 1;
+	vector<shared_ptr<Sprite>> frames = CreateHorizontalSpriteFrames(
+		texture, x, y, width, height, frameCount
+	);
+
+	// Add cycle at calculated position
+	m_gui->AddCycle(ctx.newID, ctx.absoluteX, ctx.absoluteY, frames, 1.0f, 1.0f, WHITE, 0, true);
+
+	// Store the full sprite definition for serialization
+	GhostSerializer::SpriteDefinition spriteDef;
+	spriteDef.spritesheet = filename;
+	spriteDef.x = x;
+	spriteDef.y = y;
+	spriteDef.w = width;
+	spriteDef.h = height;
+	m_contentSerializer->SetSprite(ctx.newID, spriteDef);
+
+	// Use helper to finalize insertion
+	FinalizeInsert(ctx.newID, ctx.parentID, "Cycle");
+}
+
 void GhostState::InsertTextInput()
 {
 	// Use helper to prepare insertion
@@ -3044,7 +3387,7 @@ void GhostState::InsertTextInput()
 	}
 
 	// Add a text input field at calculated position
-	m_gui->AddTextInput(ctx.newID, ctx.absoluteX, ctx.absoluteY, 150, scaledHeight, font, "", WHITE, WHITE, Color{0, 0, 0, 255}, 0, true);
+	m_gui->AddTextInput(ctx.newID, ctx.absoluteX, ctx.absoluteY, 150, scaledHeight, font, "example", WHITE, WHITE, Color{0, 0, 0, 255}, 0, true);
 
 	// Don't store inherited font/fontSize - let it inherit from parent when loaded
 
@@ -3376,46 +3719,50 @@ void GhostState::UpdatePropertyPanel()
 
 	// Determine which property file to load based on element type
 	string propertyFile;
+	string basePath = GhostSerializer::GetBaseGhostPath();
 	switch (selectedElement->m_Type)
 	{
 		case GUI_TEXTBUTTON:
-			propertyFile = "Gui/ghost_prop_textbutton.ghost";
+			propertyFile = basePath + "ghost_prop_textbutton.ghost";
 			break;
 		case GUI_ICONBUTTON:
-			propertyFile = "Gui/ghost_prop_iconbutton.ghost";
+			propertyFile = basePath + "ghost_prop_iconbutton.ghost";
 			break;
 		case GUI_SCROLLBAR:
-			propertyFile = "Gui/ghost_prop_scrollbar.ghost";
+			propertyFile = basePath + "ghost_prop_scrollbar.ghost";
 			break;
 		case GUI_RADIOBUTTON:
-			propertyFile = "Gui/ghost_prop_radiobutton.ghost";
+			propertyFile = basePath + "ghost_prop_radiobutton.ghost";
 			break;
 		case GUI_CHECKBOX:
-			propertyFile = "Gui/ghost_prop_checkbox.ghost";
+			propertyFile = basePath + "ghost_prop_checkbox.ghost";
 			break;
 		case GUI_TEXTINPUT:
-			propertyFile = "Gui/ghost_prop_textinput.ghost";
+			propertyFile = basePath + "ghost_prop_textinput.ghost";
 			break;
 		case GUI_PANEL:
-			propertyFile = "Gui/ghost_prop_panel.ghost";
+			propertyFile = basePath + "ghost_prop_panel.ghost";
 			break;
 		case GUI_TEXTAREA:
-			propertyFile = "Gui/ghost_prop_textarea.ghost";
+			propertyFile = basePath + "ghost_prop_textarea.ghost";
 			break;
 		case GUI_SPRITE:
-			propertyFile = "Gui/ghost_prop_sprite.ghost";
+			propertyFile = basePath + "ghost_prop_sprite.ghost";
+			break;
+		case GUI_CYCLE:
+			propertyFile = basePath + "ghost_prop_cycle.ghost";
 			break;
 		case GUI_OCTAGONBOX:
-			propertyFile = "Gui/ghost_prop_octagonbox.ghost";
+			propertyFile = basePath + "ghost_prop_octagonbox.ghost";
 			break;
 		case GUI_STRETCHBUTTON:
-			propertyFile = "Gui/ghost_prop_stretchbutton.ghost";
+			propertyFile = basePath + "ghost_prop_stretchbutton.ghost";
 			break;
 		case GUI_LIST:
-			propertyFile = "Gui/ghost_prop_list.ghost";
+			propertyFile = basePath + "ghost_prop_list.ghost";
 			break;
 		case GUI_LISTBOX:
-			propertyFile = "Gui/ghost_prop_listbox.ghost";
+			propertyFile = basePath + "ghost_prop_listbox.ghost";
 			break;
 		default:
 			Log("No property panel for element type: " + to_string(selectedElement->m_Type));
@@ -3443,6 +3790,16 @@ void GhostState::UpdatePropertyPanel()
 	{
 		m_lastPropertyElementType = selectedElement->m_Type;
 		Log("Loaded property panel: " + propertyFile);
+
+		// Enable debug value display on all property panel scrollbars (ID >= 3000)
+		for (auto& [id, element] : m_gui->m_GuiElementList)
+		{
+			if (id >= 3000 && element && element->m_Type == GUI_SCROLLBAR)
+			{
+				auto scrollbar = static_cast<GuiScrollBar*>(element.get());
+				scrollbar->m_DebugValue = true;
+			}
+		}
 
 		// Debug: Check ALL text inputs to see their IDs
 		Log("=== Checking all text inputs after property panel load ===");
@@ -3492,6 +3849,7 @@ std::string GhostState::GetTypeName(int elementType)
 	case GUI_TEXTBUTTON: return "TextButton";
 	case GUI_ICONBUTTON: return "IconButton";
 	case GUI_SPRITE: return "Sprite";
+	case GUI_CYCLE: return "Cycle";
 	case GUI_TEXTINPUT: return "TextInput";
 	case GUI_CHECKBOX: return "CheckBox";
 	case GUI_RADIOBUTTON: return "RadioButton";
@@ -3671,67 +4029,20 @@ void GhostState::PopulatePropertyPanelFields()
 
 		Log("PopulatePropertyPanelFields: Panel layout='" + layout + "', columns=" + to_string(columns));
 
-		// Set the appropriate radio button
-		int horzRadioID = m_propertySerializer->GetElementID("PROPERTY_LAYOUT_HORZ");
-		int vertRadioID = m_propertySerializer->GetElementID("PROPERTY_LAYOUT_VERT");
-		int tableRadioID = m_propertySerializer->GetElementID("PROPERTY_LAYOUT_TABLE");
-
-		Log("Radio button IDs: horz=" + to_string(horzRadioID) + ", vert=" + to_string(vertRadioID) + ", table=" + to_string(tableRadioID));
-
-		// Debug: Log radio button and text input positions to check for overlaps
-		auto logBounds = [this](const std::string& name, int id) {
-			auto elem = m_gui->GetElement(id);
-			if (elem) {
-				float absX = m_gui->m_Pos.x + elem->m_Pos.x;
-				float absY = m_gui->m_Pos.y + elem->m_Pos.y;
-				Log("  " + name + " (ID " + to_string(id) + "): absPos(" + to_string(absX) + ", " + to_string(absY) +
-					") size(" + to_string(elem->m_Width) + " x " + to_string(elem->m_Height) + ")");
-			}
-		};
-
-		Log("Element bounds:");
-		logBounds("HORZ radio", horzRadioID);
-		logBounds("VERT radio", vertRadioID);
-		logBounds("TABLE radio", tableRadioID);
-		logBounds("COLUMNS input", m_propertySerializer->GetElementID("PROPERTY_COLUMNS"));
-
-		// Set the correct radio button to selected (deselection happens in the loop below)
-		int selectedRadioID = -1;
-		if (layout == "horz") selectedRadioID = horzRadioID;
-		else if (layout == "vert") selectedRadioID = vertRadioID;
-		else if (layout == "table") selectedRadioID = tableRadioID;
-
-		if (selectedRadioID != -1)
+		// Set the layout dropdown list
+		int layoutListID = m_propertySerializer->GetElementID("PROPERTY_LAYOUT");
+		if (layoutListID != -1)
 		{
-			auto selectedRadio = m_gui->GetElement(selectedRadioID);
-			if (selectedRadio && selectedRadio->m_Type == GUI_RADIOBUTTON)
+			auto layoutList = m_gui->GetElement(layoutListID);
+			if (layoutList && layoutList->m_Type == GUI_LIST)
 			{
-				// First deselect ALL radio buttons in this group (mimicking what radio button click does)
-				for (auto& [id, element] : m_gui->m_GuiElementList)
-				{
-					if (element && element->m_Type == GUI_RADIOBUTTON && element->m_Group == selectedRadio->m_Group)
-					{
-						element->m_Selected = false;
-					}
-				}
+				auto list = static_cast<GuiList*>(layoutList.get());
 
-				// Now select only the one we want
-				selectedRadio->m_Selected = true;
-				Log("Set radio button ID " + to_string(selectedRadioID) + " to SELECTED for layout: " + layout);
-
-				// Verify all three radio buttons immediately after setting
-				if (horzRadioID != -1) {
-					auto radio = m_gui->GetElement(horzRadioID);
-					if (radio) Log("  Verify: HORZ (3005) m_Selected=" + to_string(radio->m_Selected));
-				}
-				if (vertRadioID != -1) {
-					auto radio = m_gui->GetElement(vertRadioID);
-					if (radio) Log("  Verify: VERT (3007) m_Selected=" + to_string(radio->m_Selected));
-				}
-				if (tableRadioID != -1) {
-					auto radio = m_gui->GetElement(tableRadioID);
-					if (radio) Log("  Verify: TABLE (3009) m_Selected=" + to_string(radio->m_Selected));
-				}
+				// Set the selected index based on layout value
+				if (layout == "horz") list->m_SelectedIndex = 0;
+				else if (layout == "vert") list->m_SelectedIndex = 1;
+				else if (layout == "table") list->m_SelectedIndex = 2;
+				else list->m_SelectedIndex = 0; // Default to Horz
 			}
 		}
 
@@ -3812,6 +4123,26 @@ void GhostState::PopulatePropertyPanelFields()
 		PopulateTextInputProperty("PROPERTY_TEXT", iconbutton->m_String);
 		PopulateScrollbarProperty("PROPERTY_SCALE", static_cast<int>(iconbutton->m_Scale * 10));
 		PopulateCheckboxProperty("PROPERTY_CANBEHELD", iconbutton->m_CanBeHeld);
+
+		// Only populate font properties if they are explicitly set (not inherited)
+		if (m_contentSerializer->IsPropertyExplicit(m_selectedElementID, "font"))
+			PopulateTextInputProperty("PROPERTY_FONT", m_contentSerializer->GetElementFont(m_selectedElementID));
+		if (m_contentSerializer->IsPropertyExplicit(m_selectedElementID, "fontSize"))
+			PopulateScrollbarProperty("PROPERTY_FONT_SIZE", m_contentSerializer->GetElementFontSize(m_selectedElementID));
+
+		// If no explicit font, ensure inherited font is applied
+		if (!m_contentSerializer->IsPropertyExplicit(m_selectedElementID, "font") &&
+		    !m_contentSerializer->IsPropertyExplicit(m_selectedElementID, "fontSize"))
+		{
+			std::string fontName = m_contentSerializer->ResolveStringProperty(m_selectedElementID, "font");
+			if (fontName.empty()) fontName = "babyblocks.ttf";
+			int fontSize = m_contentSerializer->ResolveIntProperty(m_selectedElementID, "fontSize", 16);
+			std::string fontPath = m_fontPath + fontName;
+			auto inheritedFontPtr = std::make_shared<Font>(LoadFontEx(fontPath.c_str(), fontSize, 0, 0));
+			ApplyFontToElement(m_selectedElementID, inheritedFontPtr.get());
+			m_preservedFonts.push_back(inheritedFontPtr);
+		}
+
 		PopulateGroupProperty(selectedElement.get());
 	}
 
@@ -3869,6 +4200,16 @@ void GhostState::PopulatePropertyPanelFields()
 			PopulateTextInputProperty("PROPERTY_FONT", m_contentSerializer->GetElementFont(m_selectedElementID));
 		if (m_contentSerializer->IsPropertyExplicit(m_selectedElementID, "fontSize"))
 			PopulateScrollbarProperty("PROPERTY_FONT_SIZE", m_contentSerializer->GetElementFontSize(m_selectedElementID));
+	}
+
+	// Populate cycle properties (for cycle elements)
+	if (selectedElement && selectedElement->m_Type == GUI_CYCLE)
+	{
+		auto cycle = static_cast<GuiCycle*>(selectedElement.get());
+
+		PopulateScrollbarProperty("PROPERTY_FRAMECOUNT", cycle->m_FrameCount);
+		PopulateScrollbarProperty("PROPERTY_SCALE", static_cast<int>(cycle->m_ScaleX * 10));
+		PopulateGroupProperty(selectedElement.get());
 	}
 
 	// Update color picker button text colors to match the active colors
@@ -3979,32 +4320,23 @@ void GhostState::UpdateElementFromPropertyPanel()
 	// Update layout properties if it's a panel
 	if (selectedElement && selectedElement->m_Type == GUI_PANEL)
 	{
-		// Check which layout radio button is selected
-		int horzRadioID = m_propertySerializer->GetElementID("PROPERTY_LAYOUT_HORZ");
-		int vertRadioID = m_propertySerializer->GetElementID("PROPERTY_LAYOUT_VERT");
-		int tableRadioID = m_propertySerializer->GetElementID("PROPERTY_LAYOUT_TABLE");
-
-		Log("UpdateElementFromPropertyPanel reading radio buttons:");
+		// Check layout dropdown list
+		int layoutListID = m_propertySerializer->GetElementID("PROPERTY_LAYOUT");
 		std::string newLayout = "";
-		if (horzRadioID != -1)
+
+		if (layoutListID != -1)
 		{
-			auto horzRadio = m_gui->GetElement(horzRadioID);
-			Log("  HORZ (3005) m_Selected=" + to_string(horzRadio ? horzRadio->m_Selected : -1));
-			if (horzRadio && horzRadio->m_Selected) newLayout = "horz";
+			auto layoutList = m_gui->GetElement(layoutListID);
+			if (layoutList && layoutList->m_Type == GUI_LIST)
+			{
+				auto list = static_cast<GuiList*>(layoutList.get());
+
+				// Convert list index to layout string
+				if (list->m_SelectedIndex == 0) newLayout = "horz";
+				else if (list->m_SelectedIndex == 1) newLayout = "vert";
+				else if (list->m_SelectedIndex == 2) newLayout = "table";
+			}
 		}
-		if (vertRadioID != -1)
-		{
-			auto vertRadio = m_gui->GetElement(vertRadioID);
-			Log("  VERT (3007) m_Selected=" + to_string(vertRadio ? vertRadio->m_Selected : -1));
-			if (vertRadio && vertRadio->m_Selected) newLayout = "vert";
-		}
-		if (tableRadioID != -1)
-		{
-			auto tableRadio = m_gui->GetElement(tableRadioID);
-			Log("  TABLE (3009) m_Selected=" + to_string(tableRadio ? tableRadio->m_Selected : -1));
-			if (tableRadio && tableRadio->m_Selected) newLayout = "table";
-		}
-		Log("  Determined newLayout='" + newLayout + "'");
 
 		// Update layout if changed
 		if (!newLayout.empty())
@@ -4013,7 +4345,6 @@ void GhostState::UpdateElementFromPropertyPanel()
 			if (newLayout != oldLayout)
 			{
 				m_contentSerializer->SetPanelLayout(m_selectedElementID, newLayout);
-				Log("Updated panel " + to_string(m_selectedElementID) + " layout from " + oldLayout + " to " + newLayout);
 
 				// When switching to table layout, ensure columns is initialized if not already set
 				// This ensures the default value (2) is properly stored in the map
@@ -4021,7 +4352,6 @@ void GhostState::UpdateElementFromPropertyPanel()
 				{
 					int currentColumns = m_contentSerializer->GetPanelColumns(m_selectedElementID);
 					m_contentSerializer->SetPanelColumns(m_selectedElementID, currentColumns);
-					Log("Initialized columns to " + to_string(currentColumns) + " for table layout");
 				}
 
 				wasUpdated = true;
@@ -4254,6 +4584,74 @@ void GhostState::UpdateElementFromPropertyPanel()
 		if (UpdateWidthProperty(selectedElement.get())) wasUpdated = true;
 		if (UpdateHeightProperty(selectedElement.get())) wasUpdated = true;
 		// Font and font size are already handled by UpdateFontProperty() and UpdateFontSizeProperty() above
+	}
+
+	// Update cycle properties if changed
+	if (selectedElement && selectedElement->m_Type == GUI_CYCLE)
+	{
+		auto cycle = static_cast<GuiCycle*>(selectedElement.get());
+
+		// Update PROPERTY_FRAMECOUNT - when changed, regenerate frames from current sprite
+		int frameCountInputID = m_propertySerializer->GetElementID("PROPERTY_FRAMECOUNT");
+		if (frameCountInputID != -1)
+		{
+			auto frameCountInput = m_gui->GetElement(frameCountInputID);
+			if (frameCountInput && frameCountInput->m_Type == GUI_SCROLLBAR)
+			{
+				auto frameCountScrollbar = static_cast<GuiScrollBar*>(frameCountInput.get());
+				int newFrameCount = frameCountScrollbar->m_Value;
+				if (newFrameCount > 0 && newFrameCount != cycle->m_FrameCount)
+				{
+					// Get the current sprite definition
+					GhostSerializer::SpriteDefinition sprite = m_contentSerializer->GetSprite(m_selectedElementID);
+					if (!sprite.IsEmpty())
+					{
+						// Load the sprite texture
+						string spritePath = m_spritePath + sprite.spritesheet;
+						Texture* texture = g_ResourceManager->GetTexture(spritePath);
+
+						if (texture)
+						{
+							// Regenerate frames with new frame count
+							vector<shared_ptr<Sprite>> frames = CreateHorizontalSpriteFrames(
+								texture, sprite.x, sprite.y, sprite.w, sprite.h, newFrameCount
+							);
+
+							cycle->m_Frames = frames;
+							cycle->m_FrameCount = newFrameCount;
+
+							// Clamp current frame to new frame count
+							if (cycle->m_CurrentFrame >= newFrameCount)
+								cycle->m_CurrentFrame = newFrameCount - 1;
+
+							Log("Updated cycle " + to_string(m_selectedElementID) + " frame count to " + to_string(newFrameCount));
+							wasUpdated = true;
+						}
+					}
+				}
+			}
+		}
+
+		// Update PROPERTY_SCALE
+		int scaleInputID = m_propertySerializer->GetElementID("PROPERTY_SCALE");
+		if (scaleInputID != -1)
+		{
+			auto scaleInput = m_gui->GetElement(scaleInputID);
+			if (scaleInput && scaleInput->m_Type == GUI_SCROLLBAR)
+			{
+				auto scaleScrollbar = static_cast<GuiScrollBar*>(scaleInput.get());
+				float newScale = scaleScrollbar->m_Value / 10.0f; // Map 0-100 to 0-10
+				if (cycle->m_ScaleX != newScale || cycle->m_ScaleY != newScale)
+				{
+					cycle->m_ScaleX = newScale;
+					cycle->m_ScaleY = newScale;
+					Log("Updated cycle " + to_string(m_selectedElementID) + " scale to: " + to_string(newScale));
+					wasUpdated = true;
+				}
+			}
+		}
+
+		if (UpdateGroupProperty(selectedElement.get())) wasUpdated = true;
 	}
 
 	// PROPERTY_SPRITE is now a button that opens the sprite picker dialog

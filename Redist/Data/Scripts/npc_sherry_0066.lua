@@ -83,7 +83,7 @@ function npc_sherry_0066(eventid, objectref)
         end
         add_dialogue("\"Farewell, " .. var_0001 .. "!\"")
     elseif eventid == 0 then
-        var_0002 = get_schedule_type(66) --- Guess: Gets object state
+        var_0002 = get_schedule(66) --- Guess: Gets object state
         if var_0002 == 25 then
             var_0007 = random(1, 4)
             if var_0007 == 1 then

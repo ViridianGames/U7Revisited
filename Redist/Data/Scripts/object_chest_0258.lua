@@ -21,6 +21,6 @@ function object_chest_0258(eventid, objectref)
                 var_0002 = update_last_created(var_0000)
             end
         end
-        var_0002 = execute_usecode_array({17516, 7937, 0, 7769}, -356)
+        var_0002 = execute_usecode_array(-356, {17516, 7937, 0, 7769})
     end
 end

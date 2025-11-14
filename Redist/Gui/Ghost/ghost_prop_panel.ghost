@@ -1,0 +1,385 @@
+{
+  "gui": {
+    "elements": [
+      {
+        "type": "panel",
+        "position": [
+          5,
+          5
+        ],
+        "size": [
+          385,
+          318
+        ],
+        "backgroundColor": [
+          80,
+          80,
+          80,
+          255
+        ],
+        "filled": true,
+        "layout": "table",
+        "horzPadding": 5,
+        "vertPadding": 5,
+        "columns": 2,
+        "font": "babyblocks.ttf",
+        "fontSize": 30,
+        "elements": [
+          {
+            "type": "textarea",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Name:",
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "size": [
+              180,
+              30
+            ],
+            "justified": 0
+          },
+          {
+            "name": "PROPERTY_NAME",
+            "type": "textinput",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "",
+            "size": [
+              150,
+              35
+            ],
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "borderColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "backgroundColor": [
+              0,
+              0,
+              0,
+              255
+            ]
+          },
+          {
+            "type": "textarea",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Layout:",
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "size": [
+              180,
+              30
+            ],
+            "justified": 0
+          },
+          {
+            "name": "PROPERTY_LAYOUT",
+            "type": "list",
+            "position": [
+              -1,
+              -1
+            ],
+            "size": [
+              150,
+              38
+            ],
+            "items": [
+              "Horz",
+              "Vert",
+              "Table"
+            ],
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "backgroundColor": [
+              64,
+              64,
+              64,
+              255
+            ],
+            "borderColor": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          {
+            "type": "textarea",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Columns:",
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "size": [
+              180,
+              30
+            ],
+            "justified": 0
+          },
+          {
+            "name": "PROPERTY_COLUMNS",
+            "type": "scrollbar",
+            "position": [
+              -1,
+              -1
+            ],
+            "valueRange": 64,
+            "size": [
+              150,
+              20
+            ],
+            "vertical": false,
+            "spurColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "backgroundColor": [
+              128,
+              128,
+              128,
+              255
+            ]
+          },
+          {
+            "type": "textarea",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Horz Padding:",
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "size": [
+              180,
+              30
+            ],
+            "justified": 0
+          },
+          {
+            "name": "PROPERTY_HORZ_PADDING",
+            "type": "scrollbar",
+            "position": [
+              -1,
+              -1
+            ],
+            "valueRange": 64,
+            "size": [
+              150,
+              20
+            ],
+            "vertical": false,
+            "spurColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "backgroundColor": [
+              128,
+              128,
+              128,
+              255
+            ]
+          },
+          {
+            "type": "textarea",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Vert Padding:",
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "size": [
+              180,
+              30
+            ],
+            "justified": 0
+          },
+          {
+            "name": "PROPERTY_VERT_PADDING",
+            "type": "scrollbar",
+            "position": [
+              -1,
+              -1
+            ],
+            "valueRange": 64,
+            "size": [
+              150,
+              20
+            ],
+            "vertical": false,
+            "spurColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "backgroundColor": [
+              128,
+              128,
+              128,
+              255
+            ]
+          },
+          {
+            "type": "textarea",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Font:",
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "size": [
+              180,
+              30
+            ],
+            "justified": 0
+          },
+          {
+            "type": "include",
+            "filename": "ghost_font_select.ghost"
+          },
+          {
+            "type": "textarea",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Font Size:",
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "size": [
+              180,
+              30
+            ],
+            "justified": 0
+          },
+          {
+            "name": "PROPERTY_FONT_SIZE",
+            "type": "scrollbar",
+            "position": [
+              -1,
+              -1
+            ],
+            "valueRange": 200,
+            "size": [
+              150,
+              20
+            ],
+            "vertical": false,
+            "spurColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "backgroundColor": [
+              128,
+              128,
+              128,
+              255
+            ]
+          },
+          {
+            "type": "textarea",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Background:",
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "size": [
+              180,
+              30
+            ],
+            "justified": 0
+          },
+          {
+            "name": "PROPERTY_BACKGROUND",
+            "type": "textbutton",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Pick Color",
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "backgroundColor": [
+              64,
+              64,
+              64,
+              255
+            ],
+            "borderColor": [
+              128,
+              128,
+              128,
+              255
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -143,7 +143,7 @@ function utility_forge_0419(eventid, objectref)
     elseif var_0000 == 6 then
         var_0015 = find_nearby(8, 10, 1, objectref)
         for i = 1, 5 do
-            if get_item_shape(var_0018) == 504 and not get_cont_items(4, 241, 797, var_0018) then
+            if get_object_shape(var_0018) == 504 and not get_cont_items(4, 241, 797, var_0018) then
                 object_unknown_0504(objectref)
             end
         end

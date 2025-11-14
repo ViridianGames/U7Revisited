@@ -1,0 +1,857 @@
+{
+  "296": {
+    "name": "ring of invisibility",
+    "slots": [
+      "SLOT_LEFT_RING",
+      "SLOT_RIGHT_RING"
+    ]
+  },
+  "297": {
+    "name": "ring of protection",
+    "slots": [
+      "SLOT_LEFT_RING",
+      "SLOT_RIGHT_RING"
+    ]
+  },
+  "298": {
+    "name": "ring of regeneration",
+    "slots": [
+      "SLOT_LEFT_RING",
+      "SLOT_RIGHT_RING"
+    ]
+  },
+  "340": {
+    "name": "potion",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
+    ]
+  },
+  "353": {
+    "name": "greaves",
+    "slots": [
+      "SLOT_LEGS"
+    ]
+  },
+  "377": {
+    "name": "food",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
+    ]
+  },
+  "383": {
+    "name": "magic helm",
+    "slots": [
+      "SLOT_HEAD"
+    ]
+  },
+  "444": {
+    "name": "hood",
+    "slots": [
+      "SLOT_HEAD"
+    ]
+  },
+  "527": {
+    "name": "death bolt",
+    "slots": [
+      "SLOT_AMMO"
+    ]
+  },
+  "539": {
+    "name": "chain coif",
+    "slots": [
+      "SLOT_HEAD"
+    ]
+  },
+  "541": {
+    "name": "great helm",
+    "slots": [
+      "SLOT_HEAD"
+    ]
+  },
+  "542": {
+    "name": "crested helm",
+    "slots": [
+      "SLOT_HEAD"
+    ]
+  },
+  "543": {
+    "name": "buckler",
+    "slots": [
+      "SLOT_BELT",
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
+    ]
+  },
+  "545": {
+    "name": "curved heather",
+    "slots": [
+      "SLOT_BELT",
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
+    ]
+  },
+  "547": {
+    "name": "magic sword",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND",
+      "SLOT_BELT"
+    ]
+  },
+  "548": {
+    "name": "Hoe of Destruction",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
+    ]
+  },
+  "549": {
+    "name": "lightning whip",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND",
+      "SLOT_BELT"
+    ]
+  },
+  "551": {
+    "name": "fire sword",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND",
+      "SLOT_BELT"
+    ]
+  },
+  "552": {
+    "name": "magic axe",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND",
+      "SLOT_BELT"
+    ]
+  },
+  "554": {
+    "name": "burst arrow",
+    "slots": [
+      "SLOT_AMMO"
+    ]
+  },
+  "556": {
+    "name": "magic arrow",
+    "slots": [
+      "SLOT_AMMO"
+    ]
+  },
+  "557": {
+    "name": "juggernaut hammer",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
+    ],
+    "fills": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
+    ]
+  },
+  "558": {
+    "name": "lucky arrow",
+    "slots": [
+      "SLOT_AMMO"
+    ]
+  },
+  "560": {
+    "name": "love arrow",
+    "slots": [
+      "SLOT_AMMO"
+    ]
+  },
+  "561": {
+    "name": "great dagger",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND",
+      "SLOT_BELT"
+    ]
+  },
+  "564": {
+    "name": "poison dagger",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND",
+      "SLOT_BELT"
+    ]
+  },
+  "567": {
+    "name": "sword of defense",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND",
+      "SLOT_BELT"
+    ]
+  },
+  "568": {
+    "name": "tes arrow",
+    "slots": [
+      "SLOT_AMMO"
+    ]
+  },
+  "569": {
+    "name": "leather armor",
+    "slots": [
+      "SLOT_TORSO"
+    ]
+  },
+  "572": {
+    "name": "wooden shield",
+    "slots": [
+      "SLOT_BELT",
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
+    ]
+  },
+  "573": {
+    "name": "plate armour",
+    "slots": [
+      "SLOT_TORSO"
+    ]
+  },
+  "574": {
+    "name": "leather leggings",
+    "slots": [
+      "SLOT_LEGS"
+    ]
+  },
+  "575": {
+    "name": "chain leggings",
+    "slots": [
+      "SLOT_LEGS"
+    ]
+  },
+  "576": {
+    "name": "plate leggings",
+    "slots": [
+      "SLOT_LEGS"
+    ]
+  },
+  "578": {
+    "name": "spiked shield",
+    "slots": [
+      "SLOT_BELT",
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
+    ]
+  },
+  "579": {
+    "name": "leather gloves",
+    "slots": [
+      "SLOT_LEFT_RING"
+    ],
+    "fills": [
+      "SLOT_LEFT_RING",
+      "SLOT_RIGHT_RING"
+    ]
+  },
+  "580": {
+    "name": "gauntlets",
+    "slots": [
+      "SLOT_LEFT_RING"
+    ],
+    "fills": [
+      "SLOT_LEFT_RING",
+      "SLOT_RIGHT_RING"
+    ]
+  },
+  "581": {
+    "name": "ammunition",
+    "slots": [
+      "SLOT_AMMO"
+    ]
+  },
+  "582": {
+    "name": "leather collar",
+    "slots": [
+      "SLOT_NECK"
+    ]
+  },
+  "584": {
+    "name": "kidney belt",
+    "slots": [
+      "SLOT_BELT"
+    ]
+  },
+  "585": {
+    "name": "shoes",
+    "slots": [
+      "SLOT_FEET"
+    ]
+  },
+  "586": {
+    "name": "gorget",
+    "slots": [
+      "SLOT_NECK"
+    ]
+  },
+  "587": {
+    "name": "boots",
+    "slots": [
+      "SLOT_FEET"
+    ]
+  },
+  "588": {
+    "name": "swamp boots",
+    "slots": [
+      "SLOT_FEET"
+    ]
+  },
+  "589": {
+    "name": "pitchfork",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
+    ]
+  },
+  "592": {
+    "name": "spear",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND",
+      "SLOT_BELT"
+    ]
+  },
+  "593": {
+    "name": "throwing axe",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND",
+      "SLOT_BELT"
+    ]
+  },
+  "594": {
+    "name": "dagger",
+    "slots": [
+      "SLOT_RIGHT_HAND",
+      "SLOT_LEFT_HAND"
+    ]
+  },
+  "595": {
+    "name": "torch",
+    "slots": [
+      "SLOT_RIGHT_HAND",
+      "SLOT_LEFT_HAND"
+    ]
+  },
+  "597": {
+    "name": "bow",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
+    ],
+    "fills": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
+    ]
+  },
+  "598": {
+    "name": "crossbow",
+    "slots": [
+      "SLOT_RIGHT_HAND"
+    ],
+    "fills": [
+      "SLOT_RIGHT_HAND",
+      "SLOT_LEFT_HAND"
+    ]
+  },
+  "599": {
+    "name": "sword",
+    "slots": [
+      "SLOT_RIGHT_HAND",
+      "SLOT_LEFT_HAND"
+    ]
+  },
+  "600": {
+    "name": "two-handed hammer",
+    "slots": [
+      "SLOT_RIGHT_HAND",
+      "SLOT_LEFT_HAND"
+    ],
+    "fills": [
+      "SLOT_RIGHT_HAND",
+      "SLOT_LEFT_HAND"
+    ]
+  },
+  "601": {
+    "name": "two-handed axe",
+    "slots": [
+      "SLOT_RIGHT_HAND",
+      "SLOT_LEFT_HAND"
+    ],
+    "fills": [
+      "SLOT_RIGHT_HAND",
+      "SLOT_LEFT_HAND"
+    ]
+  },
+  "602": {
+    "name": "two-handed sword",
+    "slots": [
+      "SLOT_RIGHT_HAND",
+      "SLOT_LEFT_HAND"
+    ],
+    "fills": [
+      "SLOT_RIGHT_HAND",
+      "SLOT_LEFT_HAND"
+    ]
+  },
+  "603": {
+    "name": "halberd",
+    "slots": [
+      "SLOT_RIGHT_HAND",
+      "SLOT_LEFT_HAND"
+    ],
+    "fills": [
+      "SLOT_RIGHT_HAND",
+      "SLOT_LEFT_HAND"
+    ]
+  },
+  "604": {
+    "name": "glass sword",
+    "slots": [
+      "SLOT_RIGHT_HAND",
+      "SLOT_LEFT_HAND"
+    ]
+  },
+  "605": {
+    "name": "boomerang",
+    "slots": [
+      "SLOT_RIGHT_HAND",
+      "SLOT_LEFT_HAND"
+    ]
+  },
+  "606": {
+    "name": "glass bow",
+    "slots": [
+      "SLOT_RIGHT_HAND",
+      "SLOT_LEFT_HAND"
+    ],
+    "fills": [
+      "SLOT_RIGHT_HAND",
+      "SLOT_LEFT_HAND"
+    ]
+  },
+  "608": {
+    "name": "decorative sword",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND",
+      "SLOT_BELT"
+    ]
+  },
+  "609": {
+    "name": "kite shield",
+    "slots": [
+      "SLOT_BELT",
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
+    ]
+  },
+  "616": {
+    "name": "bottle",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
+    ]
+  },
+  "620": {
+    "name": "rake",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
+    ]
+  },
+  "622": {
+    "name": "whip",
+    "slots": [
+      "SLOT_RIGHT_HAND",
+      "SLOT_LEFT_HAND"
+    ]
+  },
+  "623": {
+    "name": "hammer",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
+    ],
+    "fills": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
+    ]
+  },
+  "624": {
+    "name": "pick",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
+    ]
+  },
+  "625": {
+    "name": "shovel",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
+    ]
+  },
+  "626": {
+    "name": "hoe",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
+    ]
+  },
+  "627": {
+    "name": "lockpick",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
+    ]
+  },
+  "628": {
+    "name": "cup",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
+    ]
+  },
+  "629": {
+    "name": "lightning wand",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
+    ]
+  },
+  "630": {
+    "name": "fire wand",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
+    ]
+  },
+  "635": {
+    "name": "custom sword",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND",
+      "SLOT_BELT"
+    ]
+  },
+  "636": {
+    "name": "serpentine dagger",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND",
+      "SLOT_BELT"
+    ]
+  },
+  "637": {
+    "name": "serpentine sword",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND",
+      "SLOT_BELT"
+    ]
+  },
+  "638": {
+    "name": "Caddellite Helmet",
+    "slots": [
+      "SLOT_HEAD"
+    ]
+  },
+  "641": {
+    "name": "key",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
+    ]
+  },
+  "642": {
+    "name": "book",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
+    ]
+  },
+  "644": {
+    "name": "gold coin",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
+    ]
+  },
+  "645": {
+    "name": "gold nugget",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
+    ]
+  },
+  "647": {
+    "name": "triple crossbow",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
+    ],
+    "fills": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
+    ]
+  },
+  "649": {
+    "name": "venom",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
+    ]
+  },
+  "659": {
+    "name": "mace",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND",
+      "SLOT_BELT"
+    ]
+  },
+  "663": {
+    "name": "magic shield",
+    "slots": [
+      "SLOT_BELT",
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
+    ]
+  },
+  "666": {
+    "name": "magic armor",
+    "slots": [
+      "SLOT_TORSO"
+    ]
+  },
+  "686": {
+    "name": "magic leggings",
+    "slots": [
+      "SLOT_LEGS"
+    ]
+  },
+  "701": {
+    "name": "lit torch",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND",
+      "SLOT_BELT"
+    ]
+  },
+  "707": {
+    "name": "The Black Sword",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND",
+      "SLOT_BELT"
+    ]
+  },
+  "717": {
+    "name": "dinner plate",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
+    ]
+  },
+  "722": {
+    "name": "arrow",
+    "slots": [
+      "SLOT_AMMO"
+    ]
+  },
+  "723": {
+    "name": "bolts",
+    "slots": [
+      "SLOT_AMMO"
+    ]
+  },
+  "729": {
+    "name": "crystal ball",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
+    ]
+  },
+  "746": {
+    "name": "The Orrery Crystal",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
+    ]
+  },
+  "754": {
+    "name": "vial",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
+    ]
+  },
+  "760": {
+    "name": "gem",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
+    ]
+  },
+  "761": {
+    "name": "spellbook",
+    "slots": [
+      "SLOT_BELT",
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
+    ]
+  },
+  "771": {
+    "name": "Rudyoms Wand",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
+    ]
+  },
+  "785": {
+    "name": "Orb of the Moons",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
+    ]
+  },
+  "792": {
+    "name": "Magicians Wand",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
+    ]
+  },
+  "797": {
+    "name": "scroll",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
+    ]
+  },
+  "798": {
+    "name": "sealed box",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
+    ]
+  },
+  "799": {
+    "name": "unsealed box",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
+    ]
+  },
+  "801": {
+    "name": "backpack",
+    "slots": [
+      "SLOT_BACKPACK"
+    ]
+  },
+  "802": {
+    "name": "bag",
+    "slots": [
+      "SLOT_BACKPACK"
+    ]
+  },
+  "803": {
+    "name": "basket",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
+    ]
+  },
+  "804": {
+    "name": "crate",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
+    ]
+  },
+  "810": {
+    "name": "bucket",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
+    ]
+  },
+  "819": {
+    "name": "barrel",
+    "slots": [
+      "SLOT_BACK"
+    ]
+  },
+  "835": {
+    "name": "magic gauntlets",
+    "slots": [
+      "SLOT_HANDS"
+    ]
+  },
+  "836": {
+    "name": "antique armor",
+    "slots": [
+      "SLOT_TORSO"
+    ]
+  },
+  "839": {
+    "name": "hourglass",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
+    ]
+  },
+  "842": {
+    "name": "reagent",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
+    ]
+  },
+  "843": {
+    "name": "magic gorget",
+    "slots": [
+      "SLOT_NECK"
+    ]
+  },
+  "856": {
+    "name": "fire bolt",
+    "slots": [
+      "SLOT_AMMO"
+    ]
+  },
+  "948": {
+    "name": "bolt",
+    "slots": [
+      "SLOT_AMMO"
+    ]
+  },
+  "955": {
+    "name": "amulet",
+    "slots": [
+      "SLOT_NECK"
+    ]
+  },
+  "998": {
+    "name": "horseshoe",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
+    ]
+  },
+  "1004": {
+    "name": "leather helm",
+    "slots": [
+      "SLOT_HEAD"
+    ]
+  }
+}

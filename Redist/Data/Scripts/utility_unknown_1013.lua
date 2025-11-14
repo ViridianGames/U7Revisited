@@ -1,12 +1,15 @@
 --- Best guess: Manages a dialogue where an NPC greets party members, acknowledges the Avatar, and engages in specific conversations with Shamino and Spark, with flag-based progression.
-function utility_unknown_1013(var_0000, var_0001)
+---@param party_members table Array of party member IDs
+---@param npc_name string The name of the NPC conducting the dialogue
+---@return table party_members The updated party members array
+function utility_unknown_1013(party_members, npc_name)
     start_conversation()
     local var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_0010, var_0011, var_0012, var_0013, var_0014, var_0015
 
     save_answers()
     var_0002 = "nobody"
     var_0003 = {}
-    for _, var_0006 in ipairs(var_0000) do
+    for _, var_0006 in ipairs(party_members) do
         table.insert(var_0003, get_npc_name(var_0006))
     end
     table.insert(var_0003, var_0002)
@@ -17,9 +20,9 @@ function utility_unknown_1013(var_0000, var_0001)
         if var_0009 == var_0008 then
             break
         end
-        var_0010 = var_0000[var_0009]
+        var_0010 = party_members[var_0009]
         var_0011 = get_npc_number(var_0010)
-        utility_unknown_1084(var_0000, var_0010)
+        utility_unknown_1084(party_members, var_0010)
         utility_unknown_1084(var_0003, var_0003[var_0009])
         var_0012 = false
         if var_0011 == -1 then
@@ -87,5 +90,5 @@ function utility_unknown_1013(var_0000, var_0001)
     if var_0008 == 1 then
         set_flag(351, true)
     end
-    return var_0000
+    return party_members
 end

@@ -1,5 +1,5 @@
 --- Best guess: Provides dialogue for liquid containers, suggesting liquids or commenting on use if the frame is non-zero.
-function utility_unknown_1063(eventid, objectref, arg1)
+function utility_unknown_1063(arg1)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007
 
     start_conversation()

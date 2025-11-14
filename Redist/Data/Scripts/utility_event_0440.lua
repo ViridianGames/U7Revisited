@@ -7,7 +7,7 @@ function utility_event_0440(eventid, objectref)
         var_0001 = get_object_quality(objectref)
         for i = 1, #var_0000 do
             var_0004 = var_0000[i]
-            var_0005 = get_npc_prop(0, var_0004)
+            var_0005 = get_npc_property(0, var_0004)
             if not roll_to_win(15, var_0005) then
                 var_0006 = get_npc_name(var_0004)
                 utility_unknown_0288(var_0006)

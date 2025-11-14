@@ -1,5 +1,6 @@
 --- Best guess: Manages door state (locked/unlocked) with dialogue feedback, tied to quality checks.
-function utility_unknown_0789(eventid, objectref)
+---@param objectref integer The door object reference to manage
+function utility_unknown_0789(objectref)
     local this_object, var_0001, this_object_quality, var_0003, var_0004
 
     this_object = objectref

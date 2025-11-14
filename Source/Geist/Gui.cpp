@@ -7,6 +7,7 @@
 #include "Gui.h"
 #include "ResourceManager.h"
 #include "Config.h"
+#include "Logging.h"
 
 #include "raylib.h"
 
@@ -59,6 +60,7 @@ void Gui::Update()
 
 	m_LastElement = m_ActiveElement;
 	m_ActiveElement = -1;
+
 	for (auto& node : m_GuiElementList)
 	{
 		node.second->Update();
@@ -72,12 +74,38 @@ void Gui::Update()
 	if (m_Draggable)
 	{
 		Vector2 mousePos = GetMousePosition();
+
+		// Clamp mouse to screen bounds while dragging by actually moving the cursor
+		if (m_IsDragging)
+		{
+			int screenWidth = GetScreenWidth();
+			int screenHeight = GetScreenHeight();
+
+			bool needsClamp = false;
+			if (mousePos.x < 0) { mousePos.x = 0; needsClamp = true; }
+			if (mousePos.y < 0) { mousePos.y = 0; needsClamp = true; }
+			if (mousePos.x >= screenWidth) { mousePos.x = screenWidth - 1; needsClamp = true; }
+			if (mousePos.y >= screenHeight) { mousePos.y = screenHeight - 1; needsClamp = true; }
+
+			if (needsClamp)
+			{
+				SetMousePosition(static_cast<int>(mousePos.x), static_cast<int>(mousePos.y));
+			}
+		}
+
 		mousePos.x /= m_InputScale;
 		mousePos.y /= m_InputScale;
 
 		if (IsMouseInDragArea())
 		{
-			if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+			// Check pixel-perfect validation if callback is set
+			bool isValidDragArea = true;
+			if (m_DragAreaValidationCallback != nullptr)
+			{
+				isValidDragArea = m_DragAreaValidationCallback(mousePos);
+			}
+
+			if (isValidDragArea && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
 			{
 				m_IsDragging = true;
 				m_DragOffset.x = mousePos.x - m_Pos.x;
@@ -104,9 +132,34 @@ void Gui::Draw()
 	if (!m_Active || m_isDone)
 		return;
 
+	// First pass: Draw all elements normally
 	for (auto& node : m_GuiElementList)
 	{
 		node.second->Draw();
+	}
+
+	// Second pass: Draw expanded dropdowns on top of everything
+	for (auto& node : m_GuiElementList)
+	{
+		if (node.second->m_Type == GUI_LIST)
+		{
+			GuiList* list = static_cast<GuiList*>(node.second.get());
+			if (list->m_IsExpanded)
+			{
+				// Draw expanded dropdown items
+				float itemHeight = list->m_Height;
+				for (int i = 0; i < list->m_Items.size() && i < list->m_VisibleItems; ++i)
+				{
+					float y = list->m_Pos.y + (i + 1) * itemHeight;
+					DrawRectangle(static_cast<int>(list->m_Pos.x), static_cast<int>(y),
+					              static_cast<int>(list->m_Width), static_cast<int>(itemHeight), list->m_BackgroundColor);
+					DrawRectangleLines(static_cast<int>(list->m_Pos.x), static_cast<int>(y),
+					                   static_cast<int>(list->m_Width), static_cast<int>(itemHeight), list->m_BorderColor);
+					DrawTextEx(*list->m_Font, list->m_Items[i].c_str(), {list->m_Pos.x + 5, y + 5},
+					           list->m_Font->baseSize, 1, list->m_TextColor);
+				}
+			}
+		}
 	}
 }
 
@@ -312,6 +365,17 @@ GuiSprite* Gui::AddSprite(int ID, int posx, int posy, std::shared_ptr<Sprite> sp
 	return guiSprite.get();
 }
 
+GuiCycle* Gui::AddCycle(int ID, int posx, int posy,
+	std::vector<std::shared_ptr<Sprite>> frames,
+	float scalex, float scaley, Color color,
+	int group, int active)
+{
+	shared_ptr<GuiCycle> guiCycle = make_shared<GuiCycle>(this);
+	guiCycle->Init(ID, posx, posy, frames, scalex, scaley, color, group, active);
+	m_GuiElementList[ID] = guiCycle;
+	return guiCycle.get();
+}
+
 GuiOctagonBox* Gui::AddOctagonBox(int ID, int posx, int posy, int width, int height, std::vector<std::shared_ptr<Sprite> > borders,
 	Color color, int group, int active)
 {
@@ -501,7 +565,7 @@ void Gui::LoadTXT(std::string fileName)
 
 void Gui::HideGroup(int group)
 {
-	for (auto entry : m_GuiElementList)
+	for (auto &entry : m_GuiElementList)
 	{
 		if (entry.second->m_Group == group)
 			entry.second->m_Visible = false;
@@ -510,7 +574,7 @@ void Gui::HideGroup(int group)
 
 void Gui::ShowGroup(int group)
 {
-	for (auto entry : m_GuiElementList)
+	for (auto &entry : m_GuiElementList)
 	{
 		if (entry.second->m_Group == group)
 			entry.second->m_Visible = true;

@@ -84,7 +84,7 @@ function utility_event_0504(eventid, objectref)
                     var_0015 = update_last_created({var_0005[1] - 1, var_0005[2] - 1, var_0005[3] + 2})
                     sprite_effect(-1, 0, 0, 0, var_0005[2] - 2, var_0005[1] - 2, 7)
                     play_sound_effect(68)
-                    execute_usecode_array({1784, 17493, 7937, 31, 8006, 24, -1, 17419, 8014, 5, 7750}, var_0004)
+                    execute_usecode_array(var_0004, {1784, 17493, 7937, 31, 8006, 24, -1, 17419, 8014, 5, 7750})
                 end
             end
         end
@@ -129,7 +129,7 @@ function utility_event_0504(eventid, objectref)
                     end
                     var_0015 = update_last_created(var_001D)
                     sprite_effect(-1, 0, 0, 0, var_001D[2] - 1, var_001D[1] - 1, 13)
-                    execute_usecode_array({8048, 5, 8487, var_0013[2], 7769}, var_0017)
+                    execute_usecode_array(var_0017, {8048, 5, 8487, var_0013[2], 7769})
                 end
                 earthquake(1)
                 sprite_effect(-1, 0, 0, 0, var_0013[1], var_0013[2], 17)
@@ -145,7 +145,7 @@ function utility_event_0504(eventid, objectref)
             add_dialogue("\"Vas An Ort Ailem!\"")
             add_dialogue("You immediately recognize the resonance of a spell gone awry, and apparently so does Erethian. A look of horror comes to his wrinkled features which appear to become more lined by the second.*")
             var_001C = find_nearest(10, 154, objectref)
-            execute_usecode_array({8045, 2, 17447, 8044, 2, 7719}, var_001C)
+            execute_usecode_array(var_001C, {8045, 2, 17447, 8044, 2, 7719})
             earthquake(1)
             var_0022 = find_nearby(16, 10, 275, objectref)
             for i = 1, #var_0022 do
@@ -206,10 +206,10 @@ function utility_event_0504(eventid, objectref)
             end
             clear_item_flag(16, 356)
             delayed_execute_usecode_array(14, 17453, {7724}, utility_event_0897())
-            execute_usecode_array({1693, 8021, 12, 7719}, get_npc_name(356))
+            execute_usecode_array(get_npc_name(356), {1693, 8021, 12, 7719})
             var_0030 = find_nearest(10, 726, objectref)
             if var_0030 then
-                execute_usecode_array({1784, 8021, 16, 7719}, var_0030)
+                execute_usecode_array(var_0030, {1784, 8021, 16, 7719})
             end
             remove_item(objectref)
             set_flag(780, true)

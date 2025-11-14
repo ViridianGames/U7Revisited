@@ -37,7 +37,7 @@ function object_orb_0785(eventid, objectref)
                 play_music(51, 33)
                 set_item_flag(18, var_0009)
                 set_object_quality(var_0002, var_0009)
-                var_000A = execute_usecode_array({7981, 3, -1, 17419, 8016, 4, 8006, 5, -7, 7947, 5, 5, -1, 17420, 8014, 4, 8006, 10, -1, 17419, 8014, 0, 7750}, var_0009)
+                var_000A = execute_usecode_array(var_0009, {7981, 3, -1, 17419, 8016, 4, 8006, 5, -7, 7947, 5, 5, -1, 17420, 8014, 4, 8006, 10, -1, 17419, 8014, 0, 7750})
                 var_000B = 5 - get_distance(-356, var_0009)
                 var_000C = {8496 + var_0002, 7769}
                 if var_000B > 0 then

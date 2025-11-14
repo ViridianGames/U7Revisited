@@ -8,7 +8,7 @@ function utility_unknown_0312(eventid, objectref)
     end
     start_conversation()
     if eventid == 2 then
-        if var_0000 == 144 and get_object_type(objectref) == 642 then
+        if var_0000 == 144 and get_object_shape(objectref) == 642 then
             display_message("@Odd. The page is smudged with dirt here. I cannot make out this text.@") --- Guess: Displays message
             var_0001 = set_object_quality(objectref, 145)
             var_0001 = add_containerobject_s(objectref, {1592, 7765})

@@ -77,6 +77,7 @@ Sandbox is the "debug" mode and has extra options available for building and tes
 - LDBL - Left double clicking calls Interact() on objects/NPCs
 - F1 Toggles the Shape Editor Tool
 - F7 Toggles black outline borders and dragging of static objects
+- F8 Toggles Lua debug for extra logging
 - F9 Toggles debug bounding boxes
 - F10 Toggles pathfind costs shown by coloring tiles
 - F11 Toggles green highlights for scripted objects

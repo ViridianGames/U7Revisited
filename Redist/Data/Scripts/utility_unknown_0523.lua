@@ -1,5 +1,5 @@
 --- Best guess: Manages a container mechanic, checking items within a container (ID -356), applying effects based on container state, and creating items (ID 1803).
-function utility_unknown_0523(eventid, objectref)
+function utility_unknown_0523(objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008
 
     if not utility_unknown_1092(objectref) then

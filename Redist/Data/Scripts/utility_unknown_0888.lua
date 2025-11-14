@@ -1,5 +1,5 @@
 --- Best guess: Offers combat training, focusing on sleight of hand and strike feints.
-function utility_unknown_0888(eventid, objectref, arg1, arg2)
+function utility_unknown_0888(arg1, arg2)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009
 
     var_0002 = get_training_target() --- Guess: Gets training target

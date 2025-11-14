@@ -1,5 +1,5 @@
 --- Best guess: Finds the outermost container of an item, ensuring it's not owned by the Avatar (ID 356).
-function utility_unknown_1092(eventid, objectref)
+function utility_unknown_1092(objectref)
     local var_0000, var_0001
 
     var_0001 = get_object_container(objectref) --- Guess: Gets item container

@@ -1,5 +1,7 @@
 --- Best guess: Manages a combat training session with Jakher, checking player intelligence and gold, enhancing tactical skills if conditions are met.
-function utility_unknown_0927(P0, P1)
+---@param training_cost integer The gold cost for the training session
+---@param max_stat_value integer The maximum stat value allowed for training
+function utility_unknown_0927(training_cost, max_stat_value)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A
 
     var_0002 = utility_unknown_1056()
@@ -12,13 +14,13 @@ function utility_unknown_0927(P0, P1)
         return
     end
     var_0005 = 2
-    var_0006 = utility_unknown_1058(var_0005, var_0002, P0, P1)
+    var_0006 = utility_unknown_1058(var_0005, var_0002, training_cost, max_stat_value)
     if var_0006 == 0 then
         add_dialogue("Jakher looks into your eyes, sizing you up intellectually. \"Thou dost need to learn more on the field of battle. If we spoke now I would be wasting my breath. Thou wouldst not understand a word I said.\"")
     elseif var_0006 == 1 then
         var_0007 = count_objects(-359, -359, 644, -357)
         add_dialogue("You gather your gold and count it, finding that you have " .. var_0007 .. " gold altogether.")
-        if var_0007 < P0 then
+        if var_0007 < training_cost then
             add_dialogue("\"Thou dost not seem to have as much gold as I require to train here. Mayhaps at another time, when thy fortunes are more prosperous...\"")
             return
         end
@@ -26,8 +28,8 @@ function utility_unknown_0927(P0, P1)
         add_dialogue("\"Thou art already well-versed in the tactics of the battlefield. I am afraid that I am unable to train thee further in this.\"")
         return
     end
-    var_0008 = remove_party_items(true, -359, -359, 644, P0)
-    add_dialogue("You pay " .. P0 .. " gold, and the training session begins.")
+    var_0008 = remove_party_items(true, -359, -359, 644, training_cost)
+    add_dialogue("You pay " .. training_cost .. " gold, and the training session begins.")
     add_dialogue("Jakher's eyes glow bright as he begins to explain some of the strategies used by great military leaders in awesome battles fought in ages past. He whispers to " .. var_0003 .. " conspiratorially as he draws maps in the dirt. After some time, " .. var_0003 .. " can practically feel some of his shrewdness starting to be absorbed.")
     var_0009 = utility_unknown_1040(2, var_0002)
     var_000A = utility_unknown_1040(0, var_0002)

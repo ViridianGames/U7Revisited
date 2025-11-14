@@ -5,7 +5,7 @@ function object_door_0432(eventid, objectref)
     if eventid ~= 1 then
         return
     end
-    var_0000 = utility_unknown_0795(eventid, objectref)
+    var_0000 = utility_unknown_0795(objectref)
     if var_0000 == 1 then
         if utility_position_0797(5, 3, 0, 0, 433, objectref) then
             utility_unknown_0798(7, 0, 0, 0, 376, 1, 1, 270, objectref)
