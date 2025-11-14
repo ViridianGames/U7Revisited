@@ -145,6 +145,41 @@ void Gump::Update()
 	if (CheckCollisionPointRec(mousePos, Rectangle{ m_gui.m_Pos.x + (m_containerData.m_boxOffset.x), m_gui.m_Pos.y + (m_containerData.m_boxOffset.y),
 		m_containerData.m_boxSize.x, m_containerData.m_boxSize.y }))
 	{
+		// Check for double-click on spellbook or map
+		if (WasMouseButtonDoubleClicked(MOUSE_BUTTON_LEFT))
+		{
+			for (auto containerObjectId : m_containerObject->m_inventory)
+			{
+				auto object = GetObjectFromID(containerObjectId);
+				if (object && object->m_shapeData)
+				{
+					if (CheckCollisionPointRec(mousePos, Rectangle{ m_gui.m_Pos.x + (m_containerData.m_boxOffset.x * 1) + object->m_InventoryPos.x, m_gui.m_Pos.y + (m_containerData.m_boxOffset.y * 1) + object->m_InventoryPos.y, float(object->m_shapeData->GetDefaultTextureImage().width), float(object->m_shapeData->GetDefaultTextureImage().height) }))
+					{
+						// Check for spellbook (shape 761)
+						if (object->m_shapeData->m_shape == 761)
+						{
+							Log("Container - Double-click on spellbook, opening spellbook gump");
+							if (g_mainState)
+							{
+								g_mainState->OpenSpellbookGump(0); // Use Avatar's spellbook (NPC ID 0)
+							}
+							return; // Exit Update to prevent drag handling
+						}
+						// Check for map (shape 178)
+						else if (object->m_shapeData->m_shape == 178)
+						{
+							Log("Container - Double-click on map, opening minimap gump");
+							if (g_mainState)
+							{
+								g_mainState->OpenMinimapGump(0); // Use Avatar's map (NPC ID 0)
+							}
+							return; // Exit Update to prevent drag handling
+						}
+					}
+				}
+			}
+		}
+
 		if (IsMouseButtonDown(MOUSE_LEFT_BUTTON))
 		{
 			if (m_dragStart.x == 0 && m_dragStart.y == 0)

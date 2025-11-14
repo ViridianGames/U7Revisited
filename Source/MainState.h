@@ -40,6 +40,7 @@ public:
 
    void OpenGump(int id);
    void OpenSpellbookGump(int npcId);
+   void OpenMinimapGump(int npcId);
 
    // Paperdoll management
    bool HasAnyPaperdollOpen();

@@ -466,6 +466,9 @@ void GhostSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, c
 			auto panelElement = gui->GetElement(id);
 			GuiPanel* panel = static_cast<GuiPanel*>(panelElement.get());
 
+			// Store the original panel size from JSON
+			m_panelSizes[id] = std::make_pair(width, height);
+
 			// Store layout property (defaults to "horz" if not specified)
 			string layout = element.value("layout", "horz");
 			m_panelLayouts[id] = layout;
@@ -1670,6 +1673,27 @@ int GhostSerializer::ResolveIntProperty(int elementID, const std::string& proper
 	}
 
 	return defaultValue;  // Not found, return default
+}
+
+bool GhostSerializer::CenterLoadedGUI(Gui* gui, float inputScale)
+{
+	// Get the original panel size from JSON (not the calculated size from children)
+	auto sizeIt = m_panelSizes.find(m_rootElementID);
+	if (sizeIt == m_panelSizes.end())
+	{
+		Log("CenterLoadedGUI: Failed to find panel size for root element ID " + std::to_string(m_rootElementID));
+		return false;
+	}
+
+	int panelWidth = sizeIt->second.first;
+	int panelHeight = sizeIt->second.second;
+
+	Log("CenterLoadedGUI: Root panel size: " + std::to_string(panelWidth) + "x" + std::to_string(panelHeight));
+
+	// Use SetLayout with GUIP_CENTER to center the GUI
+	gui->SetLayout(0, 0, panelWidth, panelHeight, inputScale, Gui::GUIP_CENTER);
+
+	return true;
 }
 
 bool GhostSerializer::LoadIntoPanel(const std::string& filename, Gui* gui, int parentX, int parentY, int parentElementID, int insertIndex)

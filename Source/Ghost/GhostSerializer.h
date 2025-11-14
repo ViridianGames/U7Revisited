@@ -336,6 +336,11 @@ public:
 	std::string ResolveStringProperty(int elementID, const std::string& propertyName) const;
 	int ResolveIntProperty(int elementID, const std::string& propertyName, int defaultValue = 0) const;
 
+	// Helper to center a loaded ghost GUI on screen
+	// Gets root panel size and calls SetLayout with GUIP_CENTER
+	// Returns true if successful, false if no root panel found
+	bool CenterLoadedGUI(Gui* gui, float inputScale);
+
 	// Serialize an element and its children to JSON (for clipboard/undo support)
 	// parentX and parentY are the parent's absolute position (for calculating relative positions)
 	// forCopy: if true, serialize ALL current properties (for copy/paste); if false, only serialize explicit properties (for file save)
@@ -376,6 +381,7 @@ private:
 	std::map<int, int> m_panelHorzPaddings;  // Maps panel ID -> horizontal padding in pixels
 	std::map<int, int> m_panelVertPaddings;  // Maps panel ID -> vertical padding in pixels
 	std::map<int, int> m_panelColumns;  // Maps panel ID -> number of columns (for table layout)
+	std::map<int, std::pair<int, int>> m_panelSizes;  // Maps panel ID -> original size from JSON (width, height)
 
 	// Sprite metadata (full sprite definition with x/y/w/h)
 	std::map<int, SpriteDefinition> m_spriteDefinitions;  // Maps sprite/iconbutton ID -> full sprite definition (up sprite)

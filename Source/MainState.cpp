@@ -12,6 +12,7 @@
 #include "U7Gump.h"
 #include "U7GumpPaperdoll.h"
 #include "U7GumpSpellbook.h"
+#include "U7GumpMinimap.h"
 #include "ConversationState.h"
 #include "GumpManager.h"
 #include "Pathfinding.h"
@@ -1139,6 +1140,28 @@ void MainState::TogglePaperdoll(int npcId)
 	paperdoll->Setup(npcId);
 	paperdoll->OnEnter();
 	g_gumpManager->AddGump(paperdoll);
+}
+
+void MainState::OpenMinimapGump(int npcId)
+{
+	// Check if a minimap gump is already open
+	for (auto& gump : g_gumpManager->m_GumpList)
+	{
+		GumpMinimap* minimap = dynamic_cast<GumpMinimap*>(gump.get());
+		if (minimap)
+		{
+			Log("MainState::OpenMinimapGump - Minimap already open, closing it");
+			minimap->OnExit();
+			return; // Close existing minimap
+		}
+	}
+
+	Log("MainState::OpenMinimapGump - Creating minimap gump for NPC " + std::to_string(npcId));
+	auto minimapGump = std::make_shared<GumpMinimap>();
+	minimapGump->Setup(npcId);
+	minimapGump->Init();
+	minimapGump->OnEnter();
+	g_gumpManager->AddGump(minimapGump);
 }
 
 void MainState::Draw()

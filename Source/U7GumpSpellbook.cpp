@@ -44,18 +44,8 @@ void GumpSpellbook::OnEnter()
 
 void GumpSpellbook::Init(const std::string& data)
 {
-	// Position spellbook on screen (centered)
-	m_Pos.x = (640 - 160) / 2;  // Center horizontally (160 is spellbook width)
-	m_Pos.y = (360 - 90) / 2;   // Center vertically (90 is spellbook height)
-
-	// Set up GUI layout
-	m_gui.m_Font = g_SmallFont;
-	m_gui.SetLayout(m_Pos.x, m_Pos.y, 160, 90, g_DrawScale, Gui::GUIP_USE_XY);
-
 	// Load spellbook GUI from spell_book.ghost file
 	m_serializer = std::make_unique<GhostSerializer>();
-	GhostSerializer::SetBaseFontPath("Fonts/");
-	GhostSerializer::SetBaseSpritePath("Images/");
 
 	if (m_serializer->LoadFromFile("GUI/spell_book.ghost", &m_gui))
 	{
@@ -63,6 +53,12 @@ void GumpSpellbook::Init(const std::string& data)
 
 		// Keep loaded fonts alive
 		m_loadedFonts = m_serializer->GetLoadedFonts();
+
+		// Center the GUI on screen
+		m_serializer->CenterLoadedGUI(&m_gui, g_DrawScale);
+
+		m_Pos.x = m_gui.m_Pos.x;
+		m_Pos.y = m_gui.m_Pos.y;
 
 		// Set the CLOSE button as the done button
 		int closeButtonID = m_serializer->GetElementID("CLOSE");

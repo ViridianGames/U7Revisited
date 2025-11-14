@@ -22,7 +22,7 @@
         "horzPadding": 0,
         "vertPadding": 0,
         "font": "babyblocks.ttf",
-        "fontSize": 30,
+        "fontSize": 8,
         "elements": [
           {
             "name": "SPELLBOOK",
@@ -160,8 +160,8 @@
               255
             ],
             "size": [
-              52,
-              8
+              35,
+              12
             ],
             "justified": 0
           },
@@ -180,8 +180,8 @@
               255
             ],
             "size": [
-              52,
-              8
+              29,
+              12
             ],
             "justified": 0
           },
@@ -192,8 +192,8 @@
               11
             ],
             "size": [
-              117,
-              74
+              118,
+              69
             ],
             "backgroundColor": [
               80,
@@ -215,7 +215,7 @@
                 ],
                 "size": [
                   44,
-                  74
+                  69
                 ],
                 "backgroundColor": [
                   80,
@@ -307,7 +307,7 @@
                 ],
                 "size": [
                   44,
-                  74
+                  69
                 ],
                 "backgroundColor": [
                   80,

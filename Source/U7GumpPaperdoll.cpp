@@ -159,8 +159,6 @@ void GumpPaperdoll::OnEnter()
 
 	// Load paperdoll GUI from paperdoll.ghost file
 	m_serializer = std::make_unique<GhostSerializer>();
-	GhostSerializer::SetBaseFontPath("Fonts/");
-	GhostSerializer::SetBaseSpritePath("Images/");
 
 	if (m_serializer->LoadFromFile("GUI/paperdoll.ghost", &m_gui))
 	{
@@ -452,6 +450,24 @@ void GumpPaperdoll::Update()
 										if (g_mainState)
 										{
 											g_mainState->OpenSpellbookGump(m_npcId);
+										}
+										else
+										{
+											Log("Paperdoll - ERROR: g_mainState is null!");
+										}
+										break; // Don't process bark after opening gump
+									}
+								}
+								// Check for double-click on map (shape 178)
+								else if (objIt != g_objectList.end() && objIt->second->m_shapeData && objIt->second->m_shapeData->m_shape == 178)
+								{
+									if (WasMouseButtonDoubleClicked(MOUSE_BUTTON_LEFT))
+									{
+										Log("Paperdoll - Double-click on map, opening minimap gump for NPC=" + std::to_string(m_npcId));
+										// Open the minimap gump
+										if (g_mainState)
+										{
+											g_mainState->OpenMinimapGump(m_npcId);
 										}
 										else
 										{
