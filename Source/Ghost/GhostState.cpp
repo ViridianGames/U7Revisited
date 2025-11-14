@@ -2184,8 +2184,6 @@ void GhostState::Update()
 					m_contentZoom = MIN_ZOOM;
 				if (m_contentZoom > MAX_ZOOM)
 					m_contentZoom = MAX_ZOOM;
-
-				Log("Content zoom: " + to_string(static_cast<int>(m_contentZoom * 100)) + "%");
 			}
 		}
 	}
