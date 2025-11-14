@@ -141,7 +141,7 @@
             "justified": 0
           },
           {
-            "name": "CYCLE_FRAMES",
+            "name": "PROPERTY_FRAMECOUNT",
             "type": "scrollbar",
             "position": [
               -1,
