@@ -2180,7 +2180,9 @@ ghost_json GhostSerializer::SerializeElement(int elementID, Gui* gui, int parent
 	else if (element->m_Type == GUI_TEXTINPUT)
 	{
 		auto textinput = static_cast<GuiTextInput*>(element.get());
-		elementJson["text"] = textinput->m_String;
+		// Don't save "example" text - it was just added for display purposes
+		string textToSave = (textinput->m_String == "example") ? "" : textinput->m_String;
+		elementJson["text"] = textToSave;
 		elementJson["size"] = { static_cast<int>(textinput->m_Width), static_cast<int>(textinput->m_Height) };
 
 		// Only serialize properties that were explicitly set (not inherited)
