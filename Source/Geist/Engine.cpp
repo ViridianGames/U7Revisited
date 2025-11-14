@@ -45,6 +45,10 @@ void Engine::Init(const std::string &configfile)
 	SetTargetFPS(60);
 	HideCursor(); // We'll use our own.
 
+	// Initialize audio device
+	InitAudioDevice();
+	Log("Audio device initialized");
+
 	Log("Done with Engine::Init()");
 }
 
@@ -52,6 +56,7 @@ void Engine::Shutdown()
 {
 	g_StateMachine->Shutdown();
 	g_ResourceManager->Shutdown();
+	CloseAudioDevice();
 }
 
 void Engine::Update()
