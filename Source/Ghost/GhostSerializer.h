@@ -394,6 +394,13 @@ private:
 	// Floating element tracking (elements that should use automatic layout)
 	std::set<int> m_floatingElements;  // Set of element IDs that are floating
 
+	// Include tracking - maps child element ID to include metadata
+	struct IncludeMetadata {
+		std::string filename;
+		std::string namePrefix;
+	};
+	std::map<int, IncludeMetadata> m_includeElements;  // Maps element ID -> include metadata (for elements that represent includes)
+
 	// Track which properties were explicitly set in JSON (vs inherited)
 	std::map<int, std::set<std::string>> m_explicitProperties;  // Maps element ID -> set of property names
 

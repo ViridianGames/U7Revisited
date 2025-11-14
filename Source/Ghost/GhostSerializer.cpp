@@ -293,12 +293,27 @@ void GhostSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, c
 			{
 				const vector<int>& childrenAfter = m_childrenMap[parentElementID];
 
+				// Track the first child added by the include for serialization purposes
+				int firstIncludedChildID = -1;
+
 				// Find newly added children (those in childrenAfter but not in childrenBefore)
 				for (int childID : childrenAfter)
 				{
 					// Check if this child existed before
 					if (find(childrenBefore.begin(), childrenBefore.end(), childID) != childrenBefore.end())
 						continue;  // Skip existing children
+
+					// Track first child for include metadata
+					if (firstIncludedChildID == -1)
+					{
+						firstIncludedChildID = childID;
+						// Store include metadata for this child
+						IncludeMetadata metadata;
+						metadata.filename = filename;
+						metadata.namePrefix = includeNamePrefix;
+						m_includeElements[childID] = metadata;
+						Log("Marked element " + to_string(childID) + " as include from: " + filename);
+					}
 
 					// This is a new child added by the include
 					auto child = gui->GetElement(childID);
@@ -2476,11 +2491,30 @@ ghost_json GhostSerializer::SerializeElement(int elementID, Gui* gui, int parent
 		elementJson["elements"] = ghost_json::array();
 		for (int childID : childIt->second)
 		{
-			// Pass this element's position as the parent position for children
-			ghost_json childJson = SerializeElement(childID, gui, element->m_Pos.x, element->m_Pos.y);
-			if (!childJson.is_null())
+			// Check if this child represents an include
+			auto includeIt = m_includeElements.find(childID);
+			if (includeIt != m_includeElements.end())
 			{
-				elementJson["elements"].push_back(childJson);
+				// Serialize as an include instead of expanding the element
+				ghost_json includeJson;
+				includeJson["type"] = "include";
+				includeJson["filename"] = includeIt->second.filename;
+				if (!includeIt->second.namePrefix.empty())
+				{
+					includeJson["namePrefix"] = includeIt->second.namePrefix;
+				}
+				elementJson["elements"].push_back(includeJson);
+				Log("Serialized element " + to_string(childID) + " as include: " + includeIt->second.filename);
+			}
+			else
+			{
+				// Normal child - serialize recursively
+				// Pass this element's position as the parent position for children
+				ghost_json childJson = SerializeElement(childID, gui, element->m_Pos.x, element->m_Pos.y);
+				if (!childJson.is_null())
+				{
+					elementJson["elements"].push_back(childJson);
+				}
 			}
 		}
 	}
