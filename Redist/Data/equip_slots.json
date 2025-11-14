@@ -1,4 +1,11 @@
 {
+    "178": {
+    "name": "map",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
+    ]
+  },
   "296": {
     "name": "ring of invisibility",
     "slots": [
