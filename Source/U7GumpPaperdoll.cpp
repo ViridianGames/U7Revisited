@@ -375,6 +375,15 @@ void GumpPaperdoll::Update()
 		OnExit();
 	}
 
+	// Check if DISK button was clicked (opens load/save dialog)
+	int diskID = m_serializer->GetElementID("DISK");
+	if (m_gui.m_ActiveElement == diskID)
+	{
+		Log("DISK button clicked - opening load/save dialog");
+		g_mainState->OpenLoadSaveGump();
+		m_gui.m_ActiveElement = -1; // Clear active element to prevent multiple triggers
+	}
+
 	// Handle equipment slot clicks
 	auto npcIt = g_NPCData.find(m_npcId);
 	if (npcIt != g_NPCData.end() && npcIt->second)

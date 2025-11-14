@@ -1164,6 +1164,12 @@ void MainState::OpenMinimapGump(int npcId)
 	g_gumpManager->AddGump(minimapGump);
 }
 
+void MainState::OpenLoadSaveGump()
+{
+	Log("MainState::OpenLoadSaveGump - Pushing load/save state");
+	g_StateMachine->PushState(STATE_LOADSAVESTATE);
+}
+
 void MainState::Draw()
 {
 	if (g_pixelated)
