@@ -65,6 +65,19 @@ private:
 	Vector2 m_dragStart;              // Where the drag started
 	std::unique_ptr<GhostSerializer> m_serializer; // GUI serializer for loading spell_book.ghost
 	std::vector<std::shared_ptr<Font>> m_loadedFonts; // Keep fonts alive
+
+	// GUI element IDs
+	int m_prevButtonId = -1;          // PREV button for going to previous circle
+	int m_nextButtonId = -1;          // NEXT button for going to next circle
+	int m_levelTextId = -1;           // LEVEL text area showing circle name
+
+	/// @brief Get the name of a circle (e.g., "First", "Second", etc.)
+	/// @param circle Circle number (1-8)
+	/// @return Circle name
+	std::string GetCircleName(int circle);
+
+	/// @brief Update the level text to show current circle
+	void UpdateCircleDisplay();
 };
 
 #endif

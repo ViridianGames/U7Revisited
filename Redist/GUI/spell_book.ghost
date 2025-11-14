@@ -89,7 +89,7 @@
           },
           {
             "name": "PREV",
-            "type": "sprite",
+            "type": "iconbutton",
             "position": [
               37,
               4
@@ -101,12 +101,24 @@
               "w": 7,
               "h": 7
             },
-            "scaleX": 1.0,
-            "scaleY": 1.0
+            "downSprite": {
+              "spritesheet": "GUI/gumps.png",
+              "x": 0,
+              "y": 448,
+              "w": 7,
+              "h": 7
+            },
+            "color": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "scale": 1.0
           },
           {
             "name": "NEXT",
-            "type": "sprite",
+            "type": "iconbutton",
             "position": [
               131,
               4
@@ -118,8 +130,20 @@
               "w": 7,
               "h": 7
             },
-            "scaleX": 1.0,
-            "scaleY": 1.0
+            "downSprite": {
+              "spritesheet": "GUI/gumps.png",
+              "x": 0,
+              "y": 457,
+              "w": 7,
+              "h": 7
+            },
+            "color": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "scale": 1.0
           },
           {
             "name": "CIRCLE",
@@ -128,7 +152,7 @@
               97,
               5
             ],
-            "text": "CIRCLE",
+            "text": "Circle",
             "textColor": [
               5,
               6,
@@ -148,7 +172,7 @@
               48,
               5
             ],
-            "text": "FIRST",
+            "text": "First",
             "textColor": [
               0,
               0,

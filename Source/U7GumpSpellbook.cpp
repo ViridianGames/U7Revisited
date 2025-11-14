@@ -75,6 +75,16 @@ void GumpSpellbook::Init(const std::string& data)
 		{
 			Log("GumpSpellbook::Init - WARNING: CLOSE button not found in spell_book.ghost");
 		}
+
+		// Store element IDs for navigation buttons and level text
+		m_prevButtonId = m_serializer->GetElementID("PREV");
+		m_nextButtonId = m_serializer->GetElementID("NEXT");
+		m_levelTextId = m_serializer->GetElementID("LEVEL");
+
+		if (m_prevButtonId == -1 || m_nextButtonId == -1 || m_levelTextId == -1)
+		{
+			Log("GumpSpellbook::Init - WARNING: Could not find PREV, NEXT, or LEVEL elements");
+		}
 	}
 	else
 	{
@@ -93,7 +103,38 @@ void GumpSpellbook::Setup(int npcId)
 	// TODO: Load learned spells for this NPC from their inventory
 	// Check for spell scrolls in NPC's inventory to determine which spells are learned
 
+	// Update the circle display to show "First"
+	UpdateCircleDisplay();
+
 	Log("GumpSpellbook::Setup() for NPC " + std::to_string(npcId));
+}
+
+std::string GumpSpellbook::GetCircleName(int circle)
+{
+	switch (circle)
+	{
+		case 1: return "First";
+		case 2: return "Second";
+		case 3: return "Third";
+		case 4: return "Fourth";
+		case 5: return "Fifth";
+		case 6: return "Sixth";
+		case 7: return "Seventh";
+		case 8: return "Eighth";
+		default: return "Unknown";
+	}
+}
+
+void GumpSpellbook::UpdateCircleDisplay()
+{
+	if (m_levelTextId != -1)
+	{
+		std::shared_ptr<GuiElement> levelElement = m_gui.GetElement(m_levelTextId);
+		if (levelElement && levelElement->m_Type == GUI_TEXTAREA)
+		{
+			levelElement->m_String = GetCircleName(m_currentCircle);
+		}
+	}
 }
 
 bool GumpSpellbook::IsSpellLearned(int spellId)
@@ -157,25 +198,77 @@ void GumpSpellbook::Update()
 		return;
 	}
 
+	// Handle PREV button click
+	if (m_gui.m_ActiveElement == m_prevButtonId && m_currentCircle > 1)
+	{
+		m_currentCircle--;
+		m_selectedSpellId = -1;
+		UpdateCircleDisplay();
+		Log("Spellbook - Previous circle: " + std::to_string(m_currentCircle));
+	}
+
+	// Handle NEXT button click
+	if (m_gui.m_ActiveElement == m_nextButtonId && m_currentCircle < 8)
+	{
+		m_currentCircle++;
+		m_selectedSpellId = -1;
+		UpdateCircleDisplay();
+		Log("Spellbook - Next circle: " + std::to_string(m_currentCircle));
+	}
+
 	// Handle circle navigation (1-8 keys or left/right arrows)
 	if (IsKeyPressed(KEY_LEFT) && m_currentCircle > 1)
 	{
 		m_currentCircle--;
 		m_selectedSpellId = -1;
+		UpdateCircleDisplay();
 	}
 	else if (IsKeyPressed(KEY_RIGHT) && m_currentCircle < 8)
 	{
 		m_currentCircle++;
 		m_selectedSpellId = -1;
+		UpdateCircleDisplay();
 	}
-	else if (IsKeyPressed(KEY_ONE)) m_currentCircle = 1;
-	else if (IsKeyPressed(KEY_TWO)) m_currentCircle = 2;
-	else if (IsKeyPressed(KEY_THREE)) m_currentCircle = 3;
-	else if (IsKeyPressed(KEY_FOUR)) m_currentCircle = 4;
-	else if (IsKeyPressed(KEY_FIVE)) m_currentCircle = 5;
-	else if (IsKeyPressed(KEY_SIX)) m_currentCircle = 6;
-	else if (IsKeyPressed(KEY_SEVEN)) m_currentCircle = 7;
-	else if (IsKeyPressed(KEY_EIGHT)) m_currentCircle = 8;
+	else if (IsKeyPressed(KEY_ONE))
+	{
+		m_currentCircle = 1;
+		UpdateCircleDisplay();
+	}
+	else if (IsKeyPressed(KEY_TWO))
+	{
+		m_currentCircle = 2;
+		UpdateCircleDisplay();
+	}
+	else if (IsKeyPressed(KEY_THREE))
+	{
+		m_currentCircle = 3;
+		UpdateCircleDisplay();
+	}
+	else if (IsKeyPressed(KEY_FOUR))
+	{
+		m_currentCircle = 4;
+		UpdateCircleDisplay();
+	}
+	else if (IsKeyPressed(KEY_FIVE))
+	{
+		m_currentCircle = 5;
+		UpdateCircleDisplay();
+	}
+	else if (IsKeyPressed(KEY_SIX))
+	{
+		m_currentCircle = 6;
+		UpdateCircleDisplay();
+	}
+	else if (IsKeyPressed(KEY_SEVEN))
+	{
+		m_currentCircle = 7;
+		UpdateCircleDisplay();
+	}
+	else if (IsKeyPressed(KEY_EIGHT))
+	{
+		m_currentCircle = 8;
+		UpdateCircleDisplay();
+	}
 
 	// TODO: Handle spell selection and casting
 	// TODO: Handle mouse clicks on spell icons
