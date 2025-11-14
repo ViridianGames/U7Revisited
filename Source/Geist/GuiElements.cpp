@@ -248,6 +248,15 @@ void GuiIconButton::Draw()
 			Vector2{ 0, 0 }, 0, m_Color);
 		}
 	}
+
+	// Draw text if we have a font and string
+	if (m_Font && !m_String.empty())
+	{
+		Vector2 textSize = MeasureTextEx(*m_Font, m_String.c_str(), m_Font->baseSize, 1);
+		float textX = m_Gui->m_Pos.x + m_Pos.x + (m_Width * m_Scale - textSize.x) / 2.0f;
+		float textY = m_Gui->m_Pos.y + m_Pos.y + (m_Height * m_Scale - textSize.y) / 2.0f + yoffset;
+		DrawTextEx(*m_Font, m_String.c_str(), Vector2{ textX, textY }, m_Font->baseSize, 1, m_FontColor);
+	}
 };
 
 void GuiIconButton::Update()

@@ -4138,6 +4138,26 @@ void GhostState::PopulatePropertyPanelFields()
 		PopulateTextInputProperty("PROPERTY_TEXT", iconbutton->m_String);
 		PopulateScrollbarProperty("PROPERTY_SCALE", static_cast<int>(iconbutton->m_Scale * 10));
 		PopulateCheckboxProperty("PROPERTY_CANBEHELD", iconbutton->m_CanBeHeld);
+
+		// Only populate font properties if they are explicitly set (not inherited)
+		if (m_contentSerializer->IsPropertyExplicit(m_selectedElementID, "font"))
+			PopulateTextInputProperty("PROPERTY_FONT", m_contentSerializer->GetElementFont(m_selectedElementID));
+		if (m_contentSerializer->IsPropertyExplicit(m_selectedElementID, "fontSize"))
+			PopulateScrollbarProperty("PROPERTY_FONT_SIZE", m_contentSerializer->GetElementFontSize(m_selectedElementID));
+
+		// If no explicit font, ensure inherited font is applied
+		if (!m_contentSerializer->IsPropertyExplicit(m_selectedElementID, "font") &&
+		    !m_contentSerializer->IsPropertyExplicit(m_selectedElementID, "fontSize"))
+		{
+			std::string fontName = m_contentSerializer->ResolveStringProperty(m_selectedElementID, "font");
+			if (fontName.empty()) fontName = "babyblocks.ttf";
+			int fontSize = m_contentSerializer->ResolveIntProperty(m_selectedElementID, "fontSize", 16);
+			std::string fontPath = m_fontPath + fontName;
+			auto inheritedFontPtr = std::make_shared<Font>(LoadFontEx(fontPath.c_str(), fontSize, 0, 0));
+			ApplyFontToElement(m_selectedElementID, inheritedFontPtr.get());
+			m_preservedFonts.push_back(inheritedFontPtr);
+		}
+
 		PopulateGroupProperty(selectedElement.get());
 	}
 
