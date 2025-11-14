@@ -485,6 +485,12 @@ void GumpPaperdoll::Update()
 
 									// Unequip from ALL slots this item fills
 									auto objIt = g_objectList.find(objectId);
+									// Center the drag image on the cursor
+									if (objIt != g_objectList.end() && objIt->second && objIt->second->m_shapeData)
+									{
+										auto& img = objIt->second->m_shapeData->GetDefaultTextureImage();
+										g_gumpManager->m_draggedObjectOffset = {-img.width / 2.0f, -img.height / 2.0f};
+									}
 									if (objIt != g_objectList.end() && objIt->second && objIt->second->m_shapeData)
 									{
 										int shape = objIt->second->m_shapeData->GetShape();
