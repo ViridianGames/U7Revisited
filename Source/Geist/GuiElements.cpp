@@ -477,21 +477,18 @@ void GuiScrollBar::Update()
 	// Handle keyboard input when this scrollbar is selected
 	if (m_Selected)
 	{
-		Log("Scrollbar " + std::to_string(m_ID) + " - Selected, checking keys. Vertical=" + std::to_string(m_Vertical));
 		bool valueChanged = false;
 		if (m_Vertical)
 		{
 			// Up/Down arrows for vertical scrollbars
 			if (IsKeyPressed(KEY_UP))
 			{
-				Log("Scrollbar " + std::to_string(m_ID) + " - UP pressed");
 				m_Value--;
 				if (m_Value < 0) m_Value = 0;
 				valueChanged = true;
 			}
 			else if (IsKeyPressed(KEY_DOWN))
 			{
-				Log("Scrollbar " + std::to_string(m_ID) + " - DOWN pressed");
 				m_Value++;
 				if (m_Value > m_ValueRange) m_Value = m_ValueRange;
 				valueChanged = true;
@@ -502,14 +499,12 @@ void GuiScrollBar::Update()
 			// Left/Right arrows for horizontal scrollbars
 			if (IsKeyPressed(KEY_LEFT))
 			{
-				Log("Scrollbar " + std::to_string(m_ID) + " - LEFT pressed, value=" + std::to_string(m_Value));
 				m_Value--;
 				if (m_Value < 0) m_Value = 0;
 				valueChanged = true;
 			}
 			else if (IsKeyPressed(KEY_RIGHT))
 			{
-				Log("Scrollbar " + std::to_string(m_ID) + " - RIGHT pressed, value=" + std::to_string(m_Value));
 				m_Value++;
 				if (m_Value > m_ValueRange) m_Value = m_ValueRange;
 				valueChanged = true;
@@ -519,7 +514,6 @@ void GuiScrollBar::Update()
 		// Keep this scrollbar as the active element if we changed the value
 		if (valueChanged)
 		{
-			Log("Scrollbar " + std::to_string(m_ID) + " - Value changed, setting ActiveElement");
 			m_Gui->m_ActiveElement = m_ID;
 		}
 	}
