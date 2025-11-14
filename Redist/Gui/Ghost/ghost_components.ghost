@@ -126,6 +126,7 @@
             "text": "Stretch"
           },
           {
+            "name": "LIST",
             "type": "textbutton",
             "position": [
               -1,
