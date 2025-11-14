@@ -8,7 +8,7 @@
           -1
         ],
         "size": [
-          160,
+          180,
           90
         ],
         "backgroundColor": [
@@ -150,7 +150,7 @@
             "type": "textarea",
             "position": [
               97,
-              5
+              4
             ],
             "text": "Circle",
             "textColor": [
@@ -160,7 +160,7 @@
               255
             ],
             "size": [
-              53,
+              52,
               8
             ],
             "justified": 0
@@ -170,7 +170,7 @@
             "type": "textarea",
             "position": [
               48,
-              5
+              4
             ],
             "text": "First",
             "textColor": [
@@ -180,10 +180,146 @@
               255
             ],
             "size": [
-              53,
+              52,
               8
             ],
             "justified": 0
+          },
+          {
+            "name": "1",
+            "type": "sprite",
+            "position": [
+              37,
+              13
+            ],
+            "sprite": {
+              "spritesheet": "GUI/gumps.png",
+              "x": 666,
+              "y": 284,
+              "w": 44,
+              "h": 16
+            },
+            "scaleX": 1.0,
+            "scaleY": 1.0
+          },
+          {
+            "name": "2",
+            "type": "sprite",
+            "position": [
+              37,
+              28
+            ],
+            "sprite": {
+              "spritesheet": "GUI/gumps.png",
+              "x": 666,
+              "y": 300,
+              "w": 44,
+              "h": 16
+            },
+            "scaleX": 1.0,
+            "scaleY": 1.0
+          },
+          {
+            "name": "3",
+            "type": "sprite",
+            "position": [
+              37,
+              46
+            ],
+            "sprite": {
+              "spritesheet": "GUI/gumps.png",
+              "x": 666,
+              "y": 316,
+              "w": 44,
+              "h": 16
+            },
+            "scaleX": 1.0,
+            "scaleY": 1.0
+          },
+          {
+            "name": "4",
+            "type": "sprite",
+            "position": [
+              37,
+              63
+            ],
+            "sprite": {
+              "spritesheet": "GUI/gumps.png",
+              "x": 666,
+              "y": 332,
+              "w": 44,
+              "h": 16
+            },
+            "scaleX": 1.0,
+            "scaleY": 1.0
+          },
+          {
+            "name": "5",
+            "type": "sprite",
+            "position": [
+              93,
+              13
+            ],
+            "sprite": {
+              "spritesheet": "GUI/gumps.png",
+              "x": 666,
+              "y": 284,
+              "w": 44,
+              "h": 16
+            },
+            "scaleX": 1.0,
+            "scaleY": 1.0
+          },
+          {
+            "name": "6",
+            "type": "sprite",
+            "position": [
+              93,
+              28
+            ],
+            "sprite": {
+              "spritesheet": "GUI/gumps.png",
+              "x": 666,
+              "y": 300,
+              "w": 44,
+              "h": 16
+            },
+            "scaleX": 1.0,
+            "scaleY": 1.0
+          },
+          {
+            "name": "7",
+            "type": "sprite",
+            "position": [
+              93,
+              46
+            ],
+            "sprite": {
+              "spritesheet": "GUI/gumps.png",
+              "x": 666,
+              "y": 316,
+              "w": 44,
+              "h": 16
+            },
+            "scaleX": 1.0,
+            "scaleY": 1.0
+          },
+          {
+            "name": "8",
+            "type": "sprite",
+            "position": [
+              93,
+              63
+            ],
+            "sprite": {
+              "spritesheet": "GUI/gumps.png",
+              "x": 666,
+              "y": 332,
+              "w": 44,
+              "h": 16
+            },
+            "scaleX": 1.0,
+            "scaleY": 1.0
           }
         ]
       }

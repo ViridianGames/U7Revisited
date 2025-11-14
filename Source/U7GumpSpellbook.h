@@ -70,6 +70,7 @@ private:
 	int m_prevButtonId = -1;          // PREV button for going to previous circle
 	int m_nextButtonId = -1;          // NEXT button for going to next circle
 	int m_levelTextId = -1;           // LEVEL text area showing circle name
+	int m_spellSpriteIds[8];          // Sprite IDs for spells 1-8
 
 	/// @brief Get the name of a circle (e.g., "First", "Second", etc.)
 	/// @param circle Circle number (1-8)

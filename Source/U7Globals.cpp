@@ -1338,7 +1338,7 @@ void LoadSpellData()
 	g_spellMap.clear();
 
 	// Open spells.json
-	std::string spellDataPath = g_Engine->m_EngineConfig.GetString("data_path") + "/spells.json";
+	std::string spellDataPath = "Data/spells.json";
 	std::ifstream file(spellDataPath);
 
 	if (!file.is_open())
@@ -1383,6 +1383,8 @@ void LoadSpellData()
 						SpellData spell;
 						spell.id = spellJson["id"].get<int>();
 						spell.name = spellJson["name"].get<std::string>();
+						spell.x = spellJson["x"].get<int>();
+						spell.y = spellJson["y"].get<int>();
 						spell.words = spellJson["words"].get<std::string>();
 						spell.scriptId = spellJson["scriptId"].get<int>();
 						spell.circle = circle.circle;

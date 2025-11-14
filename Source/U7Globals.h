@@ -172,6 +172,8 @@ struct SpellData
 {
 	int id;                           // Unique spell ID (0-63)
 	std::string name;                 // "Awaken All", "Create Food", etc.
+	int x;                            // X coordinate in gumps.png for spell icon
+	int y;                            // Y coordinate in gumps.png for spell icon
 	std::string words;                // "Vas An Zu", "In Mani Ylem", etc.
 	int scriptId;                     // Script shape ID (320-391)
 	std::vector<std::string> reagents; // Reagent names: "Ginseng", "Garlic", etc.

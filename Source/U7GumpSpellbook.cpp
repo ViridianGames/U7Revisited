@@ -85,6 +85,16 @@ void GumpSpellbook::Init(const std::string& data)
 		{
 			Log("GumpSpellbook::Init - WARNING: Could not find PREV, NEXT, or LEVEL elements");
 		}
+
+		// Store element IDs for spell sprites (named "1" through "8")
+		for (int i = 0; i < 8; i++)
+		{
+			m_spellSpriteIds[i] = m_serializer->GetElementID(std::to_string(i + 1));
+			if (m_spellSpriteIds[i] == -1)
+			{
+				Log("GumpSpellbook::Init - WARNING: Could not find spell sprite " + std::to_string(i + 1));
+			}
+		}
 	}
 	else
 	{
@@ -276,10 +286,49 @@ void GumpSpellbook::Update()
 
 void GumpSpellbook::Draw()
 {
+	// Update spell sprites for the current circle before drawing
+	if (m_currentCircle >= 1 && m_currentCircle <= 8)
+	{
+		// Get the spells for the current circle
+		const auto& circleSpells = g_spellCircles[m_currentCircle - 1].spells;
+
+		// Get the gumps texture
+		Texture* gumpsTexture = g_ResourceManager->GetTexture("Images/GUI/gumps.png");
+
+		if (gumpsTexture)
+		{
+			// Update each of the 8 spell sprite elements
+			for (int i = 0; i < 8 && i < circleSpells.size(); i++)
+			{
+				if (m_spellSpriteIds[i] != -1)
+				{
+					std::shared_ptr<GuiElement> element = m_gui.GetElement(m_spellSpriteIds[i]);
+					if (element && element->m_Type == GUI_SPRITE)
+					{
+						GuiSprite* spriteElement = static_cast<GuiSprite*>(element.get());
+
+						// Get the spell data for this position
+						const SpellData& spell = circleSpells[i];
+
+						// Create a new sprite with the correct texture coordinates
+						auto newSprite = std::make_shared<Sprite>(
+							gumpsTexture,
+							spell.x,
+							spell.y,
+							44,  // Width of spell icon
+							16   // Height of spell icon
+						);
+
+						spriteElement->SetSprite(newSprite);
+					}
+				}
+			}
+		}
+	}
+
 	// Draw the spellbook GUI (loaded from spell_book.ghost)
 	m_gui.Draw();
 
-	// TODO: Draw spell icons for current circle
 	// TODO: Draw spell details for selected spell
 	// TODO: Draw reagent requirements
 	// TODO: Draw cast button
