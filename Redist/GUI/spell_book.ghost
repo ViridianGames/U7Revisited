@@ -45,7 +45,7 @@
             "name": "BOOKMARK",
             "type": "sprite",
             "position": [
-              123,
+              116,
               0
             ],
             "sprite": {
@@ -63,7 +63,7 @@
             "type": "iconbutton",
             "position": [
               3,
-              6
+              2
             ],
             "sprite": {
               "spritesheet": "GUI/gumps.png",
@@ -86,6 +86,80 @@
               255
             ],
             "scale": 1.0
+          },
+          {
+            "name": "PREV",
+            "type": "sprite",
+            "position": [
+              37,
+              4
+            ],
+            "sprite": {
+              "spritesheet": "GUI/gumps.png",
+              "x": 0,
+              "y": 448,
+              "w": 7,
+              "h": 7
+            },
+            "scaleX": 1.0,
+            "scaleY": 1.0
+          },
+          {
+            "name": "NEXT",
+            "type": "sprite",
+            "position": [
+              131,
+              4
+            ],
+            "sprite": {
+              "spritesheet": "GUI/gumps.png",
+              "x": 0,
+              "y": 457,
+              "w": 7,
+              "h": 7
+            },
+            "scaleX": 1.0,
+            "scaleY": 1.0
+          },
+          {
+            "name": "CIRCLE",
+            "type": "textarea",
+            "position": [
+              97,
+              5
+            ],
+            "text": "CIRCLE",
+            "textColor": [
+              5,
+              6,
+              5,
+              255
+            ],
+            "size": [
+              53,
+              8
+            ],
+            "justified": 0
+          },
+          {
+            "name": "LEVEL",
+            "type": "textarea",
+            "position": [
+              48,
+              5
+            ],
+            "text": "FIRST",
+            "textColor": [
+              0,
+              0,
+              0,
+              255
+            ],
+            "size": [
+              53,
+              8
+            ],
+            "justified": 0
           }
         ]
       }

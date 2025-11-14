@@ -101,7 +101,7 @@ public:
 	// Content panel zoom support
 	float m_contentZoom = 1.0f; // Current zoom level (1.0 = 100%, 2.0 = 200%, etc.)
 	static constexpr float MIN_ZOOM = 0.5f; // Minimum 50% zoom
-	static constexpr float MAX_ZOOM = 4.0f;  // Maximum 400% zoom
+	static constexpr float MAX_ZOOM = 10.0f;  // Maximum 1000% zoom
 	static constexpr float ZOOM_STEP = 0.1f; // Zoom in/out by 10% per wheel tick
 
 	// Element hierarchy listbox support
