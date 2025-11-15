@@ -201,9 +201,8 @@ void LoadSaveState::Update()
 	// Handle QUIT button click
 	if (m_gui.m_ActiveElement == m_quitButtonId)
 	{
-		Log("LoadSaveState::Update - Quit button clicked");
-		// TODO: Exit to main menu or desktop
-
+		Log("LoadSaveState::Update - Quit button clicked - opening exit confirmation");
+		g_StateMachine->PushState(STATE_ASKEXITSTATE);
 	}
 }
 

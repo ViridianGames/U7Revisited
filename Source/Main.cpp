@@ -26,6 +26,7 @@
 #include "ConversationState.h"
 #include "ScriptRenameState.h"
 #include "LoadSaveState.h"
+#include "AskExitState.h"
 #include "ShapeData.h"
 #include "GumpManager.h"
 #include <string>
@@ -307,6 +308,10 @@ int main(int argv, char** argc)
       LoadSaveState* loadSaveState = new LoadSaveState;
       loadSaveState->Init("engine.cfg");
       g_StateMachine->RegisterState(STATE_LOADSAVESTATE, loadSaveState, "LOAD_SAVE_STATE");
+
+      AskExitState* askExitState = new AskExitState;
+      askExitState->Init("engine.cfg");
+      g_StateMachine->RegisterState(STATE_ASKEXITSTATE, askExitState, "ASK_EXIT_STATE");
 
       g_StateMachine->MakeStateTransition(STATE_LOADINGSTATE);
 

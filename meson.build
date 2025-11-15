@@ -132,6 +132,7 @@ sources = files(
            'Source/Ghost/GhostSerializer.cpp',
            'Source/Ghost/GhostWindow.cpp',
 
+           'Source/AskExitState.cpp',
            'Source/ConversationState.cpp',
            'Source/GumpManager.cpp',
            'Source/LoadingState.cpp',

@@ -1,4 +1,11 @@
 cmake_minimum_required(VERSION 3.15)
+
+# Use dynamic runtime library (/MD for Release, /MDd for Debug) to match raylib
+# MUST be set before project() to apply as default policy
+if(MSVC OR MSVC_IDE)
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
+endif()
+
 project("Ultima 7 Revisited" VERSION 1.0.0 LANGUAGES C CXX RC)
 
 # Set C++ standard
@@ -114,6 +121,11 @@ if(WIN32)
     target_compile_definitions(lua PRIVATE LUA_BUILD_AS_DLL)
 endif()
 
+# Ensure lua uses the same runtime library as the main project
+if(MSVC)
+    set_property(TARGET lua PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
+endif()
+
 # ============================================================================
 # Project Include Directories
 # ============================================================================
@@ -147,6 +159,7 @@ set(SOURCES
     Source/Ghost/GhostSerializer.cpp
     Source/Ghost/GhostWindow.cpp
 
+    Source/AskExitState.cpp
     Source/ConversationState.cpp
     Source/GumpManager.cpp
     Source/LoadingState.cpp
