@@ -132,6 +132,7 @@ endif()
 include_directories(
     Source/Geist
     Source
+    ThirdParty/nlohmann
 )
 
 # ============================================================================
@@ -161,6 +162,7 @@ set(SOURCES
 
     Source/AskExitState.cpp
     Source/ConversationState.cpp
+    Source/GameSerializer.cpp
     Source/GumpManager.cpp
     Source/LoadingState.cpp
     Source/Main.cpp

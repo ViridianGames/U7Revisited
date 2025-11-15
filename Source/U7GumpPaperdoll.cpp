@@ -133,6 +133,18 @@ void GumpPaperdoll::Setup(int npcId)
 #endif
 }
 
+void GumpPaperdoll::OnExit()
+{
+	m_IsDead = true;
+	
+	// Clear any cached state to prevent accessing stale data
+	m_npcId = -1;
+	m_highlightedSlots.clear();
+	m_hoverText.clear();
+	m_hoverTextDuration = 0.0f;
+	m_backgroundTexture = nullptr;
+}
+
 void GumpPaperdoll::OnEnter()
 {
 	Log("GumpPaperdoll::OnEnter - NPC " + std::to_string(m_npcId));

@@ -38,13 +38,12 @@ private:
 	std::vector<std::string> m_saveNames;
 	int m_selectedSlot = -1;
 
-	// Wait for mouse release before accepting input
-	bool m_waitingForMouseRelease = true;
-	int m_releaseFrameCount = 0;
-
 	// Ghost serializer for loading the GUI
 	std::unique_ptr<GhostSerializer> m_serializer;
 	std::vector<std::shared_ptr<Font>> m_loadedFonts;
+
+	// Helper method to update slot highlighting
+	void UpdateSlotHighlighting();
 };
 
 #endif

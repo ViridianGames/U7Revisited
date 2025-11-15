@@ -14,6 +14,7 @@
 #include "Geist/StateMachine.h"
 #include "Geist/Config.h"
 #include "Geist/ScriptingSystem.h"
+#include "Geist/Logging.h"
 #include "U7Globals.h"
 #include "U7Object.h"
 #include "ShapeData.h"
@@ -753,6 +754,7 @@ void U7Object::NPCInit(NPCData* npcData)
 {
 	m_NPCData = npcData;
 	m_isNPC = true;
+	m_UnitType = UnitTypes::UNIT_TYPE_NPC;
 	m_isContainer = true;
 	m_isContained = false;
 	m_speed = 2.5f;
@@ -761,4 +763,206 @@ void U7Object::NPCInit(NPCData* npcData)
 
 }
 
+// ============================================================================
+// Serialization
+// ============================================================================
 
+json U7Object::SaveToJson() const
+{
+	// note: this will never be called for STATIC objects
+	json j;
+
+	// Core identity
+	j["id"] = m_ID;
+
+	// Only save unitType if not UNIT_TYPE_OBJECT (the default)
+	if (m_UnitType != UnitTypes::UNIT_TYPE_OBJECT)
+		j["unitType"] = static_cast<int>(m_UnitType);
+
+	j["shape"] = m_ObjectType;
+
+	// Only save non-default values
+	if (m_Frame != 0)
+		j["frame"] = m_Frame;
+	if (m_Quality != 0)
+		j["quality"] = m_Quality;
+
+	// Transform (only save position if not contained)
+	if (!m_isContained)
+	{
+		j["position"] = { m_Pos.x, m_Pos.y, m_Pos.z };
+	}
+
+	// State (only save if non-zero)
+	if (m_flags != 0)
+		j["flags"] = m_flags;
+
+	// Container hierarchy
+	if (m_isContained)
+	{
+		j["containingObjectId"] = m_containingObjectId;
+		j["containerPos"] = { m_InventoryPos.x, m_InventoryPos.y };
+	}
+
+	// Only save inventory if it has items
+	if (!m_inventory.empty())
+		j["inventoryIds"] = m_inventory;
+
+	// Save container state (only if not default)
+	if (m_isContainer && !m_shouldBeSorted)
+		j["shouldBeSorted"] = m_shouldBeSorted;
+
+	// NPC-specific fields
+	if (m_UnitType == UnitTypes::UNIT_TYPE_NPC && m_NPCData != nullptr)
+	{
+		j["hp"] = m_hp;
+		j["combat"] = m_combat;
+		j["magic"] = m_magic;
+		j["team"] = m_Team;
+		j["npcID"] = m_NPCID;
+		j["currentFrameX"] = m_currentFrameX;
+		j["currentFrameY"] = m_currentFrameY;
+
+		// Save conversation tree flag if true
+		if (m_hasConversationTree)
+			j["hasConversationTree"] = m_hasConversationTree;
+
+		// Save movement state if true (default is false)
+		if (m_isMoving)
+			j["isMoving"] = m_isMoving;
+
+		// Save schedule state
+		if (m_followingSchedule)
+			j["followingSchedule"] = m_followingSchedule;
+		if (m_lastSchedule != -1)
+			j["lastSchedule"] = m_lastSchedule;
+
+		// Save destination for pathfinding
+		j["destination"] = { m_Dest.x, m_Dest.y, m_Dest.z };
+
+		// Equipment slots
+		json equipment;
+		equipment["HEAD"] = m_NPCData->GetEquippedItem(EquipmentSlot::SLOT_HEAD);
+		equipment["NECK"] = m_NPCData->GetEquippedItem(EquipmentSlot::SLOT_NECK);
+		equipment["TORSO"] = m_NPCData->GetEquippedItem(EquipmentSlot::SLOT_TORSO);
+		equipment["LEGS"] = m_NPCData->GetEquippedItem(EquipmentSlot::SLOT_LEGS);
+		equipment["HANDS"] = m_NPCData->GetEquippedItem(EquipmentSlot::SLOT_HANDS);
+		equipment["FEET"] = m_NPCData->GetEquippedItem(EquipmentSlot::SLOT_FEET);
+		equipment["LEFT_HAND"] = m_NPCData->GetEquippedItem(EquipmentSlot::SLOT_LEFT_HAND);
+		equipment["RIGHT_HAND"] = m_NPCData->GetEquippedItem(EquipmentSlot::SLOT_RIGHT_HAND);
+		equipment["AMMO"] = m_NPCData->GetEquippedItem(EquipmentSlot::SLOT_AMMO);
+		equipment["LEFT_RING"] = m_NPCData->GetEquippedItem(EquipmentSlot::SLOT_LEFT_RING);
+		equipment["RIGHT_RING"] = m_NPCData->GetEquippedItem(EquipmentSlot::SLOT_RIGHT_RING);
+		equipment["BELT"] = m_NPCData->GetEquippedItem(EquipmentSlot::SLOT_BELT);
+		equipment["BACKPACK"] = m_NPCData->GetEquippedItem(EquipmentSlot::SLOT_BACKPACK);
+		j["equipment"] = equipment;
+	}
+
+	return j;
+}
+
+U7Object* U7Object::LoadFromJson(const json& j)
+{
+	// Create new object
+	U7Object* obj = new U7Object();
+
+	// Set minimal properties needed for Init()
+	// IMPORTANT: unitType defaults to 1 (UNIT_TYPE_OBJECT) if not present in JSON
+	// We only save unitType if it's NOT 1 to reduce file size (see SaveToJson line 778)
+	obj->m_UnitType = static_cast<UnitTypes>(j.value("unitType", 1));
+	obj->m_ObjectType = j.value("shape", 0);
+	obj->m_Frame = j.value("frame", 0);
+
+	// Initialize object FIRST (loads texture, shape data, etc.)
+	// This must happen before setting ANY other properties, since Init() resets many flags to defaults
+	// IMPORTANT: Init's 2nd parameter is the SHAPE number (confusingly named "unitType" in Init's signature)
+	obj->Init("", obj->m_ObjectType, obj->m_Frame);
+
+	// Check if this is an egg object (same logic as LoadingState.cpp line 826)
+	if (obj->m_objectData->m_name == "Egg" || obj->m_objectData->m_name == "path")
+	{
+		obj->m_isEgg = true;
+		obj->m_isContainer = false;
+	}
+
+	// Now restore all other properties (which will overwrite Init's defaults)
+	obj->m_ID = j.value("id", 0);
+	obj->m_Quality = j.value("quality", 0);
+
+	// Restore transform
+	if (j.contains("position") && j["position"].is_array() && j["position"].size() == 3)
+	{
+		Vector3 loadedPos = {
+			j["position"][0].get<float>(),
+			j["position"][1].get<float>(),
+			j["position"][2].get<float>()
+		};
+		// Use SetPos to properly calculate centerPoint, boundingBox, etc.
+		obj->SetPos(loadedPos);
+	}
+
+	// Restore state
+	obj->m_flags = j.value("flags", 0u);
+
+	// Container hierarchy (restored in second pass by GameSerializer)
+	int containingId = j.value("containingObjectId", -1);
+	obj->m_isContained = (containingId != -1);
+	obj->m_containingObjectId = containingId;
+
+	if (j.contains("containerPos") && j["containerPos"].is_array() && j["containerPos"].size() == 2)
+	{
+		obj->m_InventoryPos.x = j["containerPos"][0];
+		obj->m_InventoryPos.y = j["containerPos"][1];
+	}
+
+	// Inventory IDs will be restored in second pass by GameSerializer
+
+	// Restore container state
+	if (j.contains("shouldBeSorted"))
+		obj->m_shouldBeSorted = j["shouldBeSorted"];
+
+	// NPC-specific fields
+	if (obj->m_UnitType == UnitTypes::UNIT_TYPE_NPC)
+	{
+		obj->m_hp = j.value("hp", 25.0f);
+		obj->m_combat = j.value("combat", 10.0f);
+		obj->m_magic = j.value("magic", 0.0f);
+		obj->m_Team = j.value("team", 0);
+		obj->m_NPCID = j.value("npcID", 0);
+		obj->m_currentFrameX = j.value("currentFrameX", 0);
+		obj->m_currentFrameY = j.value("currentFrameY", 0);
+
+		// Restore conversation tree flag
+		obj->m_hasConversationTree = j.value("hasConversationTree", false);
+
+		// Restore movement state (defaults to false)
+		obj->m_isMoving = j.value("isMoving", false);
+
+		// Restore schedule state
+		obj->m_followingSchedule = j.value("followingSchedule", false);
+		obj->m_lastSchedule = j.value("lastSchedule", -1);
+
+		// Restore destination for pathfinding
+		if (j.contains("destination") && j["destination"].is_array() && j["destination"].size() == 3)
+		{
+			Vector3 dest = Vector3{
+				j["destination"][0].get<float>(),
+				j["destination"][1].get<float>(),
+				j["destination"][2].get<float>()
+			};
+			obj->SetDest(dest);
+		}
+
+		// Get NPCData (should already be loaded from original data files)
+		if (obj->m_NPCID >= 0 && obj->m_NPCID < g_NPCData.size())
+		{
+			obj->m_NPCData = g_NPCData[obj->m_NPCID].get();
+			obj->m_isNPC = true;
+			obj->m_isContainer = true;
+		}
+
+		// Equipment slots will be restored in second pass by GameSerializer
+	}
+
+	return obj;
+}

@@ -9,6 +9,8 @@
 #include "Geist/StateMachine.h"
 #include "Geist/Engine.h"
 #include "U7Globals.h"
+#include "GameSerializer.h"
+#include "MainState.h"
 
 #include "raylib.h"
 
@@ -40,12 +42,34 @@ void LoadSaveState::OnEnter()
 	// Reset GUI state
 	m_gui.m_isDone = false;
 
-	// Reset mouse release tracking
-	m_waitingForMouseRelease = true;
-	m_releaseFrameCount = 0;
+	// Set slot 0 as initially selected
+	m_selectedSlot = 0;
 
-	// Disable input until mouse is released (prevents instant close from triggering click)
-	m_gui.SetAcceptingInput(false);
+	// Populate save slots from disk
+	for (int i = 0; i < 10; i++)
+	{
+		if (m_slotIds[i] != -1)
+		{
+			auto element = m_gui.GetElement(m_slotIds[i]);
+			if (element)
+			{
+				if (GameSerializer::DoesSaveExist(i))
+				{
+					std::string saveName = GameSerializer::GetSaveName(i);
+					element->m_String = saveName;
+					m_saveNames[i] = saveName;
+				}
+				else
+				{
+					element->m_String = "empty";
+					m_saveNames[i] = "";
+				}
+			}
+		}
+	}
+
+	// Highlight the initially selected slot
+	UpdateSlotHighlighting();
 }
 
 void LoadSaveState::OnExit()
@@ -105,19 +129,6 @@ void LoadSaveState::Init(const std::string& data)
 				Log("LoadSaveState::Init - WARNING: Could not find slot " + std::to_string(i));
 			}
 		}
-
-		// Populate slots with test strings
-		for (int i = 0; i < 10; i++)
-		{
-			if (m_slotIds[i] != -1)
-			{
-				auto element = m_gui.GetElement(m_slotIds[i]);
-				if (element)
-				{
-					element->m_String = "Test Save " + std::to_string(i + 1);
-				}
-			}
-		}
 	}
 	else
 	{
@@ -134,38 +145,26 @@ void LoadSaveState::Shutdown()
 
 void LoadSaveState::Update()
 {
-	// Wait for mouse button to be released before accepting any input
-	// We wait until we see the button is NOT down (meaning it was released)
-	if (m_waitingForMouseRelease)
-	{
-		// Check if button is released (IsMouseButtonReleased is more reliable than checking IsMouseButtonDown)
-		// Also accept if the button is simply not down anymore
-		if (IsMouseButtonReleased(MOUSE_LEFT_BUTTON) || !IsMouseButtonDown(MOUSE_LEFT_BUTTON))
-		{
-			// Wait one more frame to be sure
-			m_releaseFrameCount++;
-			if (m_releaseFrameCount > 1)
-			{
-				m_waitingForMouseRelease = false;
-				m_gui.SetAcceptingInput(true);
-				Log("LoadSaveState::Update - Mouse released, now accepting input");
-			}
-		}
-		// Do NOT call Update() while waiting - skip all input processing
-		return;
-	}
-
 	m_gui.Update();
 
 	// Close dialog if user presses ESC or clicks close button
-	if (IsKeyPressed(KEY_ESCAPE) || m_gui.m_isDone)
+	if (IsKeyPressed(KEY_ESCAPE))
 	{
+		Log("LoadSaveState::Update - ESC pressed, closing dialog");
 		g_StateMachine->PopState();
 		return;
 	}
-
-	// Detect which slot is selected (user clicked in a textinput)
-	m_selectedSlot = -1;
+	
+	if (m_gui.m_isDone)
+	{
+		Log("LoadSaveState::Update - m_isDone is true, closing dialog");
+		g_StateMachine->PopState();
+		return;
+	}
+	
+// Detect which slot is selected (user clicked in a textinput)
+	// Only update if user clicked on a slot - persist the selection otherwise
+	int previousSlot = m_selectedSlot;
 	for (int i = 0; i < 10; i++)
 	{
 		if (m_slotIds[i] != -1 && m_gui.m_ActiveElement == m_slotIds[i])
@@ -175,16 +174,58 @@ void LoadSaveState::Update()
 		}
 	}
 
+	// Update highlighting if slot changed
+	if (m_selectedSlot != previousSlot)
+	{
+		UpdateSlotHighlighting();
+	}
+
 	// Handle SAVE button click
 	if (m_gui.m_ActiveElement == m_saveButtonId && m_selectedSlot != -1)
 	{
 		Log("LoadSaveState::Update - Save button clicked for slot " + std::to_string(m_selectedSlot));
 
-		// TODO: Get text from selected slot textinput
-		// TODO: Save game to disk with that name
-		// TODO: Close dialog
+		// Clear active element to prevent repeated processing
+		m_gui.m_ActiveElement = -1;
 
-		g_StateMachine->PopState();
+		// Get save name from selected slot textinput
+		auto element = m_gui.GetElement(m_slotIds[m_selectedSlot]);
+		if (element)
+		{
+			std::string saveName = element->m_String;
+
+			// Validate save name
+			if (saveName.empty() || saveName == "empty")
+			{
+				Log("LoadSaveState::Update - ERROR: Save name is empty");
+				AddConsoleString("Please enter a save name", RED);
+				return;
+			}
+
+			// Sanitize the filename (replaces reserved characters with underscores)
+			std::string sanitizedName = GameSerializer::SanitizeSaveName(saveName);
+
+			// Update textinput if the name was changed during sanitization
+			if (sanitizedName != saveName)
+			{
+				element->m_String = sanitizedName;
+				m_saveNames[m_selectedSlot] = sanitizedName;
+			}
+
+			// Attempt to save game
+			if (GameSerializer::SaveGame(m_selectedSlot, sanitizedName))
+			{
+				Log("LoadSaveState::Update - Game saved successfully to slot " + std::to_string(m_selectedSlot));
+				AddConsoleString("Game saved as '" + sanitizedName + "'", GREEN);
+				g_StateMachine->PopState();
+			}
+			else
+			{
+				std::string error = GameSerializer::GetLastError();
+				Log("LoadSaveState::Update - ERROR: Failed to save game - " + error);
+				AddConsoleString("Save failed: " + error, RED);
+			}
+		}
 	}
 
 	// Handle LOAD button click
@@ -192,10 +233,46 @@ void LoadSaveState::Update()
 	{
 		Log("LoadSaveState::Update - Load button clicked for slot " + std::to_string(m_selectedSlot));
 
-		// TODO: Load game from selected slot
-		// TODO: Close dialog
+		// Clear active element to prevent repeated processing
+		m_gui.m_ActiveElement = -1;
 
-		g_StateMachine->PopState();
+		// Verify save exists
+		if (!GameSerializer::DoesSaveExist(m_selectedSlot))
+		{
+			Log("LoadSaveState::Update - ERROR: No save file in slot " + std::to_string(m_selectedSlot));
+			AddConsoleString("No save file in this slot", RED);
+			return;
+		}
+
+		// Close all gumps before loading to prevent stale data
+		g_gumpManager->CloseAllGumps();
+
+		// Attempt to load game
+		if (GameSerializer::LoadGame(m_selectedSlot))
+		{
+			Log("LoadSaveState::Update - Game loaded successfully from slot " + std::to_string(m_selectedSlot));
+
+			// Trigger rebuild of game world from loaded data
+			MainState* mainState = dynamic_cast<MainState*>(g_StateMachine->GetState(STATE_MAINSTATE));
+			if (mainState)
+			{
+				mainState->RebuildWorldFromLoadedData();
+			}
+
+			// Show success message
+			std::string saveName = m_saveNames[m_selectedSlot];
+			if (saveName.empty())
+				saveName = "slot " + std::to_string(m_selectedSlot);
+			AddConsoleString("Loaded '" + saveName + "'", GREEN);
+
+			g_StateMachine->PopState();
+		}
+		else
+		{
+			std::string error = GameSerializer::GetLastError();
+			Log("LoadSaveState::Update - ERROR: Failed to load game - " + error);
+			AddConsoleString("Load failed: " + error, RED);
+		}
 	}
 
 	// Handle QUIT button click
@@ -225,4 +302,33 @@ void LoadSaveState::Draw()
 		{ 0, 0, float(g_guiRenderTarget.texture.width), float(g_guiRenderTarget.texture.height) },
 		{ 0, float(g_Engine->m_ScreenHeight), float(g_Engine->m_ScreenWidth), -float(g_Engine->m_ScreenHeight) },
 		{ 0, 0 }, 0, WHITE);
+}
+
+void LoadSaveState::UpdateSlotHighlighting()
+{
+	// Update background colors for all slots
+	for (int i = 0; i < 10; i++)
+	{
+		if (m_slotIds[i] != -1)
+		{
+			auto element = m_gui.GetElement(m_slotIds[i]);
+			if (element)
+			{
+				// Cast to GuiTextInput to access background color
+				GuiTextInput* textInput = dynamic_cast<GuiTextInput*>(element.get());
+				if (textInput)
+				{
+					// Highlighted slot gets transparent blue, others get transparent black
+					if (i == m_selectedSlot)
+					{
+						textInput->m_BackgroundColor = Color{ 64, 128, 255, 128 };  // Transparent blue
+					}
+					else
+					{
+						textInput->m_BackgroundColor = Color{ 0, 0, 0, 128 };  // Transparent black (default)
+					}
+				}
+			}
+		}
+	}
 }

@@ -1427,6 +1427,78 @@ void MainState::SetupGame()
 
 }
 
+void MainState::RebuildWorldFromLoadedData()
+{
+	Log("MainState::RebuildWorldFromLoadedData - Rebuilding world after load");
+
+	// Clear visible objects list (contains dangling pointers to deleted objects)
+	g_sortedVisibleObjects.clear();
+
+	// Clear chunk object map (contains dangling pointers to deleted objects)
+	for (int x = 0; x < 192; x++)
+	{
+		for (int y = 0; y < 192; y++)
+		{
+			g_chunkObjectMap[x][y].clear();
+		}
+	}
+
+	// Repopulate chunk object map with ALL objects (static and dynamic)
+	// BUT skip contained objects (they're in inventories, not in the world)
+	int staticCount = 0;
+	int dynamicCount = 0;
+	int containedCount = 0;
+	int npcCount = 0;
+	for (auto& [id, obj] : g_objectList)
+	{
+		if (obj != nullptr)
+		{
+			if (obj->m_isContained)
+			{
+				containedCount++;
+			}
+			else
+			{
+				if (obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_STATIC)
+					staticCount++;
+				else if (obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC)
+					npcCount++;
+				else
+					dynamicCount++;
+				
+				AssignObjectChunk(obj.get());
+			}
+		}
+	}
+	Log("MainState::RebuildWorldFromLoadedData - Assigned to chunks: " + std::to_string(staticCount) + " static, " + std::to_string(dynamicCount) + " objects, " + std::to_string(npcCount) + " NPCs, " + std::to_string(containedCount) + " contained (skipped)");
+
+	// Force immediate update of visible objects after loading
+	Log("MainState::RebuildWorldFromLoadedData - Calling UpdateSortedVisibleObjects now...");
+	UpdateSortedVisibleObjects();
+	Log("MainState::RebuildWorldFromLoadedData - UpdateSortedVisibleObjects returned, g_sortedVisibleObjects.size() = " + std::to_string(g_sortedVisibleObjects.size()));
+
+	// Debug: Verify objects are still in g_objectList after rebuild
+	int finalStatic = 0, finalObjects = 0, finalNpcs = 0, finalTotal = 0;
+	for (const auto& [id, obj] : g_objectList)
+	{
+		if (obj != nullptr)
+		{
+			finalTotal++;
+			if (obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_STATIC)
+				finalStatic++;
+			else if (obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC)
+				finalNpcs++;
+			else
+				finalObjects++;
+		}
+	}
+	Log("MainState::RebuildWorldFromLoadedData - g_objectList after rebuild: " + std::to_string(finalTotal) +
+	    " total (" + std::to_string(finalStatic) + " static, " + std::to_string(finalObjects) +
+	    " objects, " + std::to_string(finalNpcs) + " NPCs)");
+
+	Log("MainState::RebuildWorldFromLoadedData - Complete");
+}
+
 void MainState::DrawStats()
 {
 	//  Draw background

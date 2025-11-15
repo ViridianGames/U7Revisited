@@ -72,7 +72,7 @@ public:
 	virtual void Draw() override;
 	virtual void Init() { Init(std::string("")); }
 	virtual void Init(const std::string& data) override;
-	virtual void OnExit() { m_IsDead = true; }
+	virtual void OnExit() override;
 	virtual void OnEnter();
 	virtual U7Object* GetObjectUnderMousePointer() override { return nullptr; }  // Paperdolls don't show container inventory
 	virtual bool IsMouseOverSolidPixel(Vector2 mousePos) override;  // Pixel-perfect collision detection

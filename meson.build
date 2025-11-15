@@ -106,7 +106,8 @@ endif
 
 include_directories = include_directories(
   'Source/Geist',
-  'Source'
+  'Source',
+  'ThirdParty/nlohmann'
 )
 
 # Only cpp files needed here. Keep alphabetized.
@@ -134,6 +135,7 @@ sources = files(
 
            'Source/AskExitState.cpp',
            'Source/ConversationState.cpp',
+           'Source/GameSerializer.cpp',
            'Source/GumpManager.cpp',
            'Source/LoadingState.cpp',
            'Source/Main.cpp',

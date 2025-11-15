@@ -7,6 +7,9 @@
 #include <list>
 #include "lua.h"
 #include "U7Globals.h"
+#include <json.hpp>
+
+using json = nlohmann::json;
 
 struct ObjectData;
 enum class ObjectTypes;
@@ -71,7 +74,11 @@ public:
 	bool IsMagicLocked();
 
 	void SetFrames(int framex, int framey) { m_currentFrameX = framex; m_currentFrameY = framey; }
-  
+
+	// Serialization
+	json SaveToJson() const;
+	static U7Object* LoadFromJson(const json& j);
+
    Vector3 m_Pos;
    Vector3 m_Dest;
    Vector3 m_Direction;

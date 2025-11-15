@@ -85,7 +85,7 @@ public:
 	virtual void Draw() override;
 	virtual void Init() { Init(std::string("")); }
 	virtual void Init(const std::string& data) override {};
-	virtual void OnExit() { m_IsDead = true; }
+	virtual void OnExit();
 	virtual void OnEnter();
 
 	//  Inventory Gump

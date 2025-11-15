@@ -1,0 +1,147 @@
+{
+  "gui": {
+    "elements": [
+      {
+        "type": "panel",
+        "position": [
+          -1,
+          -1
+        ],
+        "size": [
+          131,
+          54
+        ],
+        "backgroundColor": [
+          60,
+          60,
+          60,
+          255
+        ],
+        "filled": true,
+        "layout": "horz",
+        "horzPadding": 0,
+        "vertPadding": 1,
+        "font": "babyblocks.ttf",
+        "fontSize": 30,
+        "elements": [
+          {
+            "name": "BG",
+            "type": "sprite",
+            "position": [
+              -1,
+              -1
+            ],
+            "sprite": {
+              "spritesheet": "GUI/gumps.png",
+              "x": 160,
+              "y": 320,
+              "w": 131,
+              "h": 52
+            },
+            "scaleX": 1.0,
+            "scaleY": 1.0
+          },
+          {
+            "name": "MSG",
+            "type": "sprite",
+            "position": [
+              6,
+              7
+            ],
+            "sprite": {
+              "spritesheet": "GUI/gumps.png",
+              "x": 26,
+              "y": 384,
+              "w": 115,
+              "h": 25
+            },
+            "scaleX": 1.0,
+            "scaleY": 1.0
+          },
+          {
+            "name": "BTN_PANEL",
+            "type": "panel",
+            "position": [
+              46,
+              35
+            ],
+            "size": [
+              46,
+              10
+            ],
+            "backgroundColor": [
+              80,
+              80,
+              80,
+              6
+            ],
+            "filled": true,
+            "layout": "horz",
+            "horzPadding": 2,
+            "vertPadding": 0,
+            "elements": [
+              {
+                "name": "YES",
+                "type": "iconbutton",
+                "position": [
+                  -1,
+                  -1
+                ],
+                "sprite": {
+                  "spritesheet": "GUI/gumps.png",
+                  "x": 294,
+                  "y": 320,
+                  "w": 22,
+                  "h": 10
+                },
+                "downSprite": {
+                  "spritesheet": "GUI/gumps.png",
+                  "x": 295,
+                  "y": 331,
+                  "w": 20,
+                  "h": 10
+                },
+                "color": [
+                  255,
+                  255,
+                  255,
+                  255
+                ],
+                "scale": 1.0
+              },
+              {
+                "name": "NO",
+                "type": "iconbutton",
+                "position": [
+                  -1,
+                  -1
+                ],
+                "sprite": {
+                  "spritesheet": "GUI/gumps.png",
+                  "x": 318,
+                  "y": 320,
+                  "w": 18,
+                  "h": 10
+                },
+                "downSprite": {
+                  "spritesheet": "GUI/gumps.png",
+                  "x": 319,
+                  "y": 331,
+                  "w": 18,
+                  "h": 9
+                },
+                "color": [
+                  255,
+                  255,
+                  255,
+                  255
+                ],
+                "scale": 1.0
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -44,6 +44,19 @@ Gump::~Gump()
 {
 }
 
+void Gump::OnExit()
+{
+	m_IsDead = true;
+	
+	// Clear any references to the container object to prevent accessing stale pointers
+	if (m_containerObject)
+	{
+		// Reset the sorted flag so the container will re-sort when reopened
+		m_containerObject->m_isSorted = false;
+		m_containerObject = nullptr;
+	}
+}
+
 void Gump::OnEnter()
 {
 	int posx = int(g_NonVitalRNG->Random(150));
@@ -306,6 +319,10 @@ void Gump::SortContainer()
 		U7Object* aObj = GetObjectFromID(a);
 		U7Object* bObj = GetObjectFromID(b);
 
+		// Safety check: if either object is invalid or has no shape data, consider them equal
+		if (!aObj || !bObj || !aObj->m_shapeData || !bObj->m_shapeData)
+			return false;
+
 		return (aObj->m_shapeData->GetDefaultTextureImage().height > bObj->m_shapeData->GetDefaultTextureImage().height);
 	});
 
@@ -317,6 +334,11 @@ void Gump::SortContainer()
     for (int item : thisObject->m_inventory) {
         // If adding the item exceeds maxWidth, move to the next row
 		U7Object* itemObj = GetObjectFromID(item);
+		
+		// Safety check: skip invalid objects or objects without shape data
+		if (!itemObj || !itemObj->m_shapeData)
+			continue;
+		
         if (currentX + itemObj->m_shapeData->GetDefaultTextureImage().width > m_containerData.m_boxSize.x * 1) {
             currentX = 0.0f;
             currentY += maxRowHeight;

@@ -37,6 +37,7 @@ public:
 	void OnExit() override;
    
    void SetupGame();
+   void RebuildWorldFromLoadedData();  // Rebuild spatial indexing after loading a save
 
    void OpenGump(int id);
    void OpenSpellbookGump(int npcId);

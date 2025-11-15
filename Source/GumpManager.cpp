@@ -538,6 +538,22 @@ void GumpManager::CloseSpellbookForNpc(int npcId)
 	}
 }
 
+void GumpManager::CloseAllGumps()
+{
+	// Call OnExit on all gumps and immediately clear the list
+	int count = static_cast<int>(m_GumpList.size());
+	for (auto& gump : m_GumpList)
+	{
+		gump->OnExit();
+	}
+	m_GumpList.clear();
+	m_PendingGumps.clear();  // Also clear any pending gumps
+	m_isMouseOverGump = false;
+	m_gumpUnderMouse = nullptr;
+
+	Log("Closed all gumps (" + std::to_string(count) + " total)");
+}
+
 bool GumpManager::IsAnyGumpBeingDragged()
 {
 	for (const auto& gump : m_GumpList)

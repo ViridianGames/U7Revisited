@@ -10,6 +10,9 @@
 #include "Geist/Primitives.h"
 #include "Geist/Gui.h"
 #include "Geist/GuiElements.h"
+#include <json.hpp>
+
+using json = nlohmann::json;
 
 class U7Player
 {
@@ -55,6 +58,10 @@ public:
 	void SetSelectedPartyMember(int index);
 	void AddPartyMember(int index);
 	void RemovePartyMember(int index);
+
+	// Serialization
+	json SaveToJson() const;
+	void LoadFromJson(const json& j);
 
 	private:
 	int m_Gold = 100;
