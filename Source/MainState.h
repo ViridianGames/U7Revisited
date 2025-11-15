@@ -42,6 +42,7 @@ public:
    void OpenGump(int id);
    void OpenSpellbookGump(int npcId);
    void OpenMinimapGump(int npcId);
+   void OpenStatsGump(int npcId);
    void OpenLoadSaveGump();
 
    // Paperdoll management

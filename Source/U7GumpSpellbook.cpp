@@ -35,10 +35,75 @@ void GumpSpellbook::OnEnter()
 
 	// Enable dragging for the spellbook gump
 	m_gui.m_Draggable = true;
+	m_gui.m_DragAreaHeight = int(m_gui.m_Height);  // Allow dragging from anywhere, not just top
 
 	// Set up pixel-perfect drag area validation
 	m_gui.m_DragAreaValidationCallback = [this](Vector2 mousePos) {
-		return this->IsMouseOverSolidPixel(mousePos);
+		// First check if over solid pixel
+		if (!this->IsMouseOverSolidPixel(mousePos))
+			return false;
+
+		// Don't allow dragging from CLOSE button
+		int closeButtonID = m_serializer->GetElementID("CLOSE");
+		if (closeButtonID != -1)
+		{
+			auto element = m_gui.GetElement(closeButtonID);
+			if (element)
+			{
+				Rectangle btnRect = element->GetBounds();
+				btnRect.x += m_gui.m_Pos.x;
+				btnRect.y += m_gui.m_Pos.y;
+				if (CheckCollisionPointRec(mousePos, btnRect))
+					return false;
+			}
+		}
+
+		// Don't allow dragging from PREV button
+		if (m_prevButtonId != -1)
+		{
+			auto element = m_gui.GetElement(m_prevButtonId);
+			if (element)
+			{
+				Rectangle btnRect = element->GetBounds();
+				btnRect.x += m_gui.m_Pos.x;
+				btnRect.y += m_gui.m_Pos.y;
+				if (CheckCollisionPointRec(mousePos, btnRect))
+					return false;
+			}
+		}
+
+		// Don't allow dragging from NEXT button
+		if (m_nextButtonId != -1)
+		{
+			auto element = m_gui.GetElement(m_nextButtonId);
+			if (element)
+			{
+				Rectangle btnRect = element->GetBounds();
+				btnRect.x += m_gui.m_Pos.x;
+				btnRect.y += m_gui.m_Pos.y;
+				if (CheckCollisionPointRec(mousePos, btnRect))
+					return false;
+			}
+		}
+
+		// Don't allow dragging from spell sprites (1-8)
+		for (int i = 0; i < 8; i++)
+		{
+			if (m_spellSpriteIds[i] != -1)
+			{
+				auto element = m_gui.GetElement(m_spellSpriteIds[i]);
+				if (element)
+				{
+					Rectangle spriteRect = element->GetBounds();
+					spriteRect.x += m_gui.m_Pos.x;
+					spriteRect.y += m_gui.m_Pos.y;
+					if (CheckCollisionPointRec(mousePos, spriteRect))
+						return false;
+				}
+			}
+		}
+
+		return true;
 	};
 }
 

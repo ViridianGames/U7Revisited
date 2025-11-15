@@ -179,6 +179,7 @@ set(SOURCES
     Source/U7GumpMinimap.cpp
     Source/U7GumpPaperdoll.cpp
     Source/U7GumpSpellbook.cpp
+    Source/U7GumpStats.cpp
     Source/U7Globals.cpp
     Source/U7Gump.cpp
     Source/U7LuaFuncs.cpp

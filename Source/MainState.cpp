@@ -13,6 +13,7 @@
 #include "U7GumpPaperdoll.h"
 #include "U7GumpSpellbook.h"
 #include "U7GumpMinimap.h"
+#include "U7GumpStats.h"
 #include "ConversationState.h"
 #include "GumpManager.h"
 #include "Pathfinding.h"
@@ -1163,6 +1164,27 @@ void MainState::OpenMinimapGump(int npcId)
 	minimapGump->Init();
 	minimapGump->OnEnter();
 	g_gumpManager->AddGump(minimapGump);
+}
+
+void MainState::OpenStatsGump(int npcId)
+{
+	// Check if this NPC already has a stats gump open
+	for (auto& gump : g_gumpManager->m_GumpList)
+	{
+		GumpStats* stats = dynamic_cast<GumpStats*>(gump.get());
+		if (stats && stats->GetNpcId() == npcId)
+		{
+			Log("MainState::OpenStatsGump - Stats already open for NPC " + std::to_string(npcId));
+			return; // Stats already open for this NPC
+		}
+	}
+
+	Log("MainState::OpenStatsGump - Creating stats gump for NPC " + std::to_string(npcId));
+	auto statsGump = std::make_shared<GumpStats>();
+	statsGump->Setup(npcId);
+	statsGump->Init();
+	statsGump->OnEnter();
+	g_gumpManager->AddGump(statsGump);
 }
 
 void MainState::OpenLoadSaveGump()

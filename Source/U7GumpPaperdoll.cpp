@@ -257,12 +257,12 @@ void GumpPaperdoll::OnEnter()
 
 	// Make the paperdoll draggable
 	m_gui.m_Draggable = true;
+	m_gui.m_DragAreaHeight = int(m_gui.m_Height);  // Allow dragging from anywhere, not just top 20 pixels
 
-	// Set up drag area validation: allow dragging from solid background but not from slots/buttons
+	// Drag area validation: allow dragging from solid background but not from slots/buttons
 	m_gui.m_DragAreaValidationCallback = [this](Vector2 mousePos) {
 		return this->IsMouseOverSolidPixel(mousePos) && !this->IsOverSlot(mousePos);
 	};
-
 	// Store texture reference for pixel-perfect collision
 	m_backgroundTexture = g_ResourceManager->GetTexture(GUMPS_TEXTURE_PATH);
 
@@ -392,6 +392,15 @@ void GumpPaperdoll::Update()
 	{
 		Log("DISK button clicked - opening load/save dialog");
 		g_mainState->OpenLoadSaveGump();
+		m_gui.m_ActiveElement = -1; // Clear active element to prevent multiple triggers
+	}
+
+	// Check if HEART button was clicked (opens stats gump)
+	int heartID = m_serializer->GetElementID("HEART");
+	if (m_gui.m_ActiveElement == heartID)
+	{
+		Log("HEART button clicked - opening stats gump for NPC " + std::to_string(m_npcId));
+		g_mainState->OpenStatsGump(m_npcId);
 		m_gui.m_ActiveElement = -1; // Clear active element to prevent multiple triggers
 	}
 
@@ -822,40 +831,6 @@ void GumpPaperdoll::Draw()
 
 bool GumpPaperdoll::IsOverSlot(Vector2 mousePos)
 {
-	// Check if mouse is over any equipment slots or buttons
-	const char* slotNames[] = {
-		"SLOT_HEAD", "SLOT_NECK", "SLOT_TORSO", "SLOT_LEGS", "SLOT_HANDS", "SLOT_FEET",
-		"SLOT_LEFT_HAND", "SLOT_RIGHT_HAND", "SLOT_AMMO", "SLOT_LEFT_RING", "SLOT_RIGHT_RING",
-		"SLOT_BELT", "SLOT_BACKPACK"
-	};
-
-	for (int i = 0; i < 13; i++)
-	{
-		int slotID = m_serializer->GetElementID(slotNames[i]);
-		if (slotID != -1)
-		{
-			auto element = m_gui.GetElement(slotID);
-			if (element)
-			{
-				GuiSprite* slotSprite = dynamic_cast<GuiSprite*>(element.get());
-				if (slotSprite && slotSprite->m_Sprite)
-				{
-					Rectangle slotRect = {
-						m_gui.m_Pos.x + slotSprite->m_Pos.x,
-						m_gui.m_Pos.y + slotSprite->m_Pos.y,
-						slotSprite->m_Sprite->m_sourceRect.width,
-						slotSprite->m_Sprite->m_sourceRect.height
-					};
-
-					if (CheckCollisionPointRec(mousePos, slotRect))
-					{
-						return true;
-					}
-				}
-			}
-		}
-	}
-
 	// Check for buttons (HEART, CLOSE, DISK, etc.)
 	const char* buttonNames[] = {"HEART", "CLOSE", "DISK", "PEACE", "HALO", "FORMATION"};
 	for (int i = 0; i < 6; i++)
@@ -870,6 +845,31 @@ bool GumpPaperdoll::IsOverSlot(Vector2 mousePos)
 				btnRect.x += m_gui.m_Pos.x;
 				btnRect.y += m_gui.m_Pos.y;
 				if (CheckCollisionPointRec(mousePos, btnRect))
+				{
+					return true;
+				}
+			}
+		}
+	}
+
+	// Check for equipment slots
+	const char* slotNames[] = {
+		"SLOT_HEAD", "SLOT_NECK", "SLOT_TORSO", "SLOT_LEGS", "SLOT_HANDS", "SLOT_FEET",
+		"SLOT_LEFT_HAND", "SLOT_RIGHT_HAND", "SLOT_AMMO", "SLOT_LEFT_RING", "SLOT_RIGHT_RING",
+		"SLOT_BELT", "SLOT_BACKPACK"
+	};
+	for (int i = 0; i < 13; i++)
+	{
+		int slotID = m_serializer->GetElementID(slotNames[i]);
+		if (slotID != -1)
+		{
+			auto element = m_gui.GetElement(slotID);
+			if (element)
+			{
+				Rectangle slotRect = element->GetBounds();
+				slotRect.x += m_gui.m_Pos.x;
+				slotRect.y += m_gui.m_Pos.y;
+				if (CheckCollisionPointRec(mousePos, slotRect))
 				{
 					return true;
 				}
