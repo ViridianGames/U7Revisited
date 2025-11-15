@@ -138,6 +138,12 @@ void GumpStats::OnEnter()
 		Log("ERROR: GumpStats::OnEnter - Failed to load stats.ghost");
 	}
 
+	// Activate the GUI
+	m_gui.m_Active = true;
+	m_gui.m_isDone = false;
+	m_gui.m_IsDragging = false;
+	m_gui.m_ActiveElement = -1;
+
 	// Make the stats gump draggable
 	m_gui.m_Draggable = true;
 	m_gui.m_DragAreaHeight = int(m_gui.m_Height);  // Allow dragging from anywhere
