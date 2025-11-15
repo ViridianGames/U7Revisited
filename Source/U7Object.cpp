@@ -809,9 +809,13 @@ json U7Object::SaveToJson() const
 	if (!m_inventory.empty())
 		j["inventoryIds"] = m_inventory;
 
-	// Save container state (only if not default)
-	if (m_isContainer && !m_shouldBeSorted)
-		j["shouldBeSorted"] = m_shouldBeSorted;
+	// Save container state
+	if (m_isContainer)
+	{
+		j["isContainer"] = true;
+		if (!m_shouldBeSorted)
+			j["shouldBeSorted"] = m_shouldBeSorted;
+	}
 
 	// NPC-specific fields
 	if (m_UnitType == UnitTypes::UNIT_TYPE_NPC && m_NPCData != nullptr)
@@ -919,6 +923,8 @@ U7Object* U7Object::LoadFromJson(const json& j)
 	// Inventory IDs will be restored in second pass by GameSerializer
 
 	// Restore container state
+	if (j.contains("isContainer"))
+		obj->m_isContainer = j["isContainer"];
 	if (j.contains("shouldBeSorted"))
 		obj->m_shouldBeSorted = j["shouldBeSorted"];
 
