@@ -453,6 +453,17 @@ void GumpManager::Update()
 					object->SetPos(g_terrainUnderMousePointer);
 					g_ResourceManager->PlaySound("drag_drop.wav");
 					Log("Dropped item to ground");
+
+					// For NPCs: if they were stationary before drag (pos == dest), update dest to new pos
+					// If they were moving (pos != dest), keep the original dest so they continue moving
+					if (m_draggedObjectOriginalPos.x == m_draggedObjectOriginalDest.x &&
+					    m_draggedObjectOriginalPos.y == m_draggedObjectOriginalDest.y &&
+					    m_draggedObjectOriginalPos.z == m_draggedObjectOriginalDest.z)
+					{
+						// NPC was stationary - update dest to match new pos
+						object->SetDest(object->m_Pos);
+					}
+					// Otherwise, dest is unchanged and NPC will continue moving to original destination
 				}
 				object->m_isContained = false;
 			}

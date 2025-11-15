@@ -488,6 +488,7 @@ void MainState::UpdateInput()
 					g_gumpManager->m_sourceGump = nullptr;
 					g_gumpManager->m_sourceSlotIndex = -1;  // Not from a paperdoll slot
 					g_gumpManager->m_draggedObjectOriginalPos = g_objectUnderMousePointer->m_Pos;  // Store original world position
+					g_gumpManager->m_draggedObjectOriginalDest = g_objectUnderMousePointer->m_Dest;  // Store original destination (for NPCs)
 
 					// Close any gump associated with this object to prevent dragging into itself
 					g_gumpManager->CloseGumpForObject(g_objectUnderMousePointer->m_ID);

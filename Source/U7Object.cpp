@@ -837,8 +837,8 @@ json U7Object::SaveToJson() const
 		if (m_lastSchedule != -1)
 			j["lastSchedule"] = m_lastSchedule;
 
-		// Save destination for pathfinding
-		j["destination"] = { m_Dest.x, m_Dest.y, m_Dest.z };
+		// Don't save destination - we want NPCs to stay at their saved position
+		// The schedule system will set new destinations as needed after load
 
 		// Equipment slots
 		json equipment;
@@ -942,16 +942,10 @@ U7Object* U7Object::LoadFromJson(const json& j)
 		obj->m_followingSchedule = j.value("followingSchedule", false);
 		obj->m_lastSchedule = j.value("lastSchedule", -1);
 
-		// Restore destination for pathfinding
-		if (j.contains("destination") && j["destination"].is_array() && j["destination"].size() == 3)
-		{
-			Vector3 dest = Vector3{
-				j["destination"][0].get<float>(),
-				j["destination"][1].get<float>(),
-				j["destination"][2].get<float>()
-			};
-			obj->SetDest(dest);
-		}
+		// DON'T restore destination - set it to current position so NPC doesn't walk back
+		// If NPC was moved by player in sandbox mode, we want them to stay at their saved position
+		// If they need to move for a schedule, the schedule system will set a new destination
+		obj->SetDest(obj->m_Pos);
 
 		// Get NPCData (should already be loaded from original data files)
 		if (obj->m_NPCID >= 0 && obj->m_NPCID < g_NPCData.size())

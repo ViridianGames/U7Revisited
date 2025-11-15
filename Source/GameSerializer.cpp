@@ -548,7 +548,7 @@ bool GameSerializer::LoadFromStream(std::ifstream& stream)
 
 		return true;
 	}
-	catch (const json::parse_error& e)
+	catch (const json::parse_error&)
 	{
 		SetError("Save file is corrupted or unreadable");
 		return false;

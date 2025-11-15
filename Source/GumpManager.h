@@ -50,6 +50,7 @@ public:
 	int			m_draggedObjectId;
 	int			m_sourceSlotIndex;  // Slot index item was dragged from (-1 if from container)
 	Vector3		m_draggedObjectOriginalPos = { 0, 0, 0 };  // Original world position (for returning to world)
+	Vector3		m_draggedObjectOriginalDest = { 0, 0, 0 };  // Original destination (for NPCs)
 	Vector2		m_draggedObjectOffset = { 0, 0 };
 	bool			m_isMouseOverGump;
 	Gump*			m_gumpUnderMouse;

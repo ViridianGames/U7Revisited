@@ -305,13 +305,14 @@ void LoadSaveState::Update()
 				mainState->RebuildWorldFromLoadedData();
 			}
 
-			// Show success message
+			// Pop state first (MainState::OnEnter will clear console)
+			g_StateMachine->PopState();
+
+			// Show success message AFTER PopState (MainState::OnEnter clears console)
 			std::string saveName = m_saveNames[m_selectedSlot];
 			if (saveName.empty())
 				saveName = "slot " + std::to_string(m_selectedSlot);
 			AddConsoleString("Loaded '" + saveName + "'", GREEN);
-
-			g_StateMachine->PopState();
 		}
 		else
 		{
