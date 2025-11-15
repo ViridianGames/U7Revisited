@@ -42,6 +42,8 @@ private:
 	void SelectFile(const std::string& filename);
 	void UpdatePathDisplay();
 	std::string SanitizePath(const std::string& path);  // Convert backslashes to forward slashes
+	std::string& GetLastDirectoryForFilter();  // Get the appropriate last directory based on filter
+	void SetLastDirectoryForFilter(const std::string& path);  // Set the appropriate last directory based on filter
 
 	std::unique_ptr<GhostWindow> m_window;
 
@@ -59,6 +61,8 @@ private:
 	std::vector<std::string> m_files;    // Files matching filter in current path
 	int m_selectedFileIndex = -1;
 
-	// Remember last directory used
-	static std::string s_lastDirectory;
+	// Remember last directory used for each file type
+	static std::string s_lastGhostDirectory;
+	static std::string s_lastFontDirectory;
+	static std::string s_lastImageDirectory;
 };

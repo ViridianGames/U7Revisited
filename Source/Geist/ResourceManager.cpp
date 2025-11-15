@@ -274,8 +274,9 @@ void ResourceManager::ReloadTexture(const std::string& textureName)
 		// Unload the old texture from GPU
 		UnloadTexture(*it->second);
 
-		// Load the new texture from disk
-		it->second = std::make_unique<Texture>(LoadTexture(textureName.c_str()));
+		// Load the new texture from disk and store it IN-PLACE in the same Texture object
+		// This preserves the pointer that existing Sprite objects are holding
+		*it->second = LoadTexture(textureName.c_str());
 
 		// Verify it loaded correctly
 		Texture* tex = it->second.get();

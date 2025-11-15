@@ -763,27 +763,26 @@ void GhostSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, c
 			string spritePath = spriteDef.spritesheet.empty() ? "" : s_baseSpritePath + spriteDef.spritesheet;
 			Texture loadedTexture = LoadTexture(spritePath.c_str());
 
-			shared_ptr<Sprite> sprite = make_shared<Sprite>();
+			shared_ptr<Sprite> sprite;
 			if (loadedTexture.id == 0)
 			{
 				Log("GhostSerializer::ParseElements - Failed to load sprite: " + spritePath);
 				// Create a default sprite without a texture
-				sprite->m_sourceRect = Rectangle{0, 0, 32, 32};
-				sprite->m_texture = nullptr;
+				sprite = make_shared<Sprite>(nullptr, 0, 0, 32, 32);
 			}
 			else
 			{
 				// Allocate texture on heap and copy the loaded texture
 				Texture* texture = new Texture();
 				*texture = loadedTexture;
-				sprite->m_texture = texture;
-				// Use the specified rectangle from the sprite definition
-				sprite->m_sourceRect = Rectangle{
-					static_cast<float>(spriteDef.x),
-					static_cast<float>(spriteDef.y),
-					static_cast<float>(spriteDef.w),
-					static_cast<float>(spriteDef.h)
-				};
+				// Use the proper Sprite constructor
+				sprite = make_shared<Sprite>(
+					texture,
+					spriteDef.x,
+					spriteDef.y,
+					spriteDef.w,
+					spriteDef.h
+				);
 			}
 
 			// Add the sprite element
@@ -862,13 +861,11 @@ void GhostSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, c
 			{
 				Log("GhostSerializer::ParseElements - Failed to load cycle sprite: " + spritePath);
 				// Create default frames
-				for (int i = 0; i < frameCount; i++)
-				{
-					auto sprite = make_shared<Sprite>();
-					sprite->m_sourceRect = Rectangle{0, 0, 32, 32};
-					sprite->m_texture = nullptr;
-					frames.push_back(sprite);
-				}
+			for (int i = 0; i < frameCount; i++)
+			{
+				auto sprite = make_shared<Sprite>(nullptr, 0, 0, 32, 32);
+				frames.push_back(sprite);
+			}
 			}
 			else
 			{
@@ -1506,20 +1503,18 @@ void GhostSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, c
 					string spritePath = s_baseSpritePath + spriteName;
 					Texture loadedTexture = LoadTexture(spritePath.c_str());
 
-					shared_ptr<Sprite> sprite = make_shared<Sprite>();
-					if (loadedTexture.id == 0)
-					{
-						Log("GhostSerializer::ParseElements - Failed to load octagonbox border sprite: " + spritePath);
-						sprite->m_sourceRect = Rectangle{0, 0, 32, 32};
-						sprite->m_texture = nullptr;
-					}
-					else
-					{
-						Texture* texture = new Texture();
-						*texture = loadedTexture;
-						sprite->m_texture = texture;
-						sprite->m_sourceRect = Rectangle{0, 0, float(texture->width), float(texture->height)};
-					}
+					shared_ptr<Sprite> sprite;
+				if (loadedTexture.id == 0)
+				{
+					Log("GhostSerializer::ParseElements - Failed to load octagonbox border sprite: " + spritePath);
+					sprite = make_shared<Sprite>(nullptr, 0, 0, 32, 32);
+				}
+				else
+				{
+					Texture* texture = new Texture();
+					*texture = loadedTexture;
+					sprite = make_shared<Sprite>(texture, 0, 0, texture->width, texture->height);
+				}
 
 					borders.push_back(sprite);
 					borderSpriteNames.push_back(spriteName);

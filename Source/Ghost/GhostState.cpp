@@ -2030,22 +2030,28 @@ void GhostState::Update()
 		// Create a copy of the clipboard data to modify
 		ghost_json pasteData = m_clipboard;
 
-		// If the element has a name, make it unique by appending "_copy"
+		// If the element has a name, make it unique only if there's a naming conflict
 		if (pasteData.contains("name"))
 		{
 			string originalName = pasteData["name"];
-			string newName = originalName + "_copy";
+			string newName = originalName;
 
-			// If that name already exists, append a number
-			int copyNumber = 1;
-			while (m_contentSerializer->GetElementID(newName) != -1)
+			// Only add "_copy" if the original name conflicts
+			if (m_contentSerializer->GetElementID(newName) != -1)
 			{
-				newName = originalName + "_copy" + to_string(copyNumber);
-				copyNumber++;
-			}
+				newName = originalName + "_copy";
 
-			pasteData["name"] = newName;
-			Log("Renamed pasted element from '" + originalName + "' to '" + newName + "'");
+				// If that name already exists, append a number
+				int copyNumber = 1;
+				while (m_contentSerializer->GetElementID(newName) != -1)
+				{
+					newName = originalName + "_copy" + to_string(copyNumber);
+					copyNumber++;
+				}
+
+				pasteData["name"] = newName;
+				Log("Renamed pasted element from '" + originalName + "' to '" + newName + "'");
+			}
 		}
 
 		// Create a temporary .ghost file structure in memory with proper format
@@ -2167,6 +2173,12 @@ void GhostState::Update()
 					// Update position in the element
 					selectedElement->m_Pos.x += deltaX;
 					selectedElement->m_Pos.y += deltaY;
+
+					// If this is a panel, reflow its children
+					if (selectedElement->m_Type == GUI_PANEL)
+					{
+						m_contentSerializer->ReflowPanel(m_selectedElementID, m_gui.get());
+					}
 
 					// Mark as dirty (position will be serialized from element on save)
 					m_contentSerializer->SetDirty(true);
@@ -2522,15 +2534,14 @@ void GhostState::OnEnter()
 
 					if (texture)
 					{
-						// Create new sprite with the specified source rectangle
-						shared_ptr<Sprite> newSprite = make_shared<Sprite>();
-						newSprite->m_texture = texture;
-						newSprite->m_sourceRect = Rectangle{
-							static_cast<float>(sprite.x),
-							static_cast<float>(sprite.y),
-							static_cast<float>(sprite.w),
-							static_cast<float>(sprite.h)
-						};
+						// Create new sprite with the specified source rectangle using proper constructor
+						shared_ptr<Sprite> newSprite = make_shared<Sprite>(
+							texture,
+							sprite.x,
+							sprite.y,
+							sprite.w,
+							sprite.h
+						);
 
 						// Store sprite definition in serializer AND update the button's sprite
 						if (m_editingSpriteProperty == "PROPERTY_SPRITE_LEFT")
@@ -2574,15 +2585,14 @@ void GhostState::OnEnter()
 
 					if (texture)
 					{
-						// Create new sprite with the specified source rectangle
-						shared_ptr<Sprite> newSprite = make_shared<Sprite>();
-						newSprite->m_texture = texture;
-						newSprite->m_sourceRect = Rectangle{
-							static_cast<float>(sprite.x),
-							static_cast<float>(sprite.y),
-							static_cast<float>(sprite.w),
-							static_cast<float>(sprite.h)
-						};
+						// Create new sprite with the specified source rectangle using proper constructor
+						shared_ptr<Sprite> newSprite = make_shared<Sprite>(
+							texture,
+							sprite.x,
+							sprite.y,
+							sprite.w,
+							sprite.h
+						);
 
 						// Update the sprite element
 						spriteElem->m_Sprite = newSprite;
@@ -2647,15 +2657,14 @@ void GhostState::OnEnter()
 
 				if (texture)
 				{
-					// Create new sprite with the specified source rectangle
-					shared_ptr<Sprite> newSprite = make_shared<Sprite>();
-					newSprite->m_texture = texture;
-					newSprite->m_sourceRect = Rectangle{
-						static_cast<float>(sprite.x),
-						static_cast<float>(sprite.y),
-						static_cast<float>(sprite.w),
-						static_cast<float>(sprite.h)
-					};
+					// Create new sprite with the specified source rectangle using proper constructor
+					shared_ptr<Sprite> newSprite = make_shared<Sprite>(
+						texture,
+						sprite.x,
+						sprite.y,
+						sprite.w,
+						sprite.h
+					);
 
 					// Update the icon button's up texture
 					iconElem->m_UpTexture = newSprite;
@@ -2684,15 +2693,14 @@ void GhostState::OnEnter()
 
 				if (texture)
 				{
-					// Create new sprite with the specified source rectangle
-					shared_ptr<Sprite> newSprite = make_shared<Sprite>();
-					newSprite->m_texture = texture;
-					newSprite->m_sourceRect = Rectangle{
-						static_cast<float>(sprite.x),
-						static_cast<float>(sprite.y),
-						static_cast<float>(sprite.w),
-						static_cast<float>(sprite.h)
-					};
+					// Create new sprite with the specified source rectangle using proper constructor
+					shared_ptr<Sprite> newSprite = make_shared<Sprite>(
+						texture,
+						sprite.x,
+						sprite.y,
+						sprite.w,
+						sprite.h
+					);
 
 					// Update the icon button's down texture
 					iconElem->m_DownTexture = newSprite;
@@ -2719,15 +2727,14 @@ void GhostState::OnEnter()
 
 				if (texture)
 				{
-					// Create new sprite with the specified source rectangle
-					shared_ptr<Sprite> newSprite = make_shared<Sprite>();
-					newSprite->m_texture = texture;
-					newSprite->m_sourceRect = Rectangle{
-						static_cast<float>(sprite.x),
-						static_cast<float>(sprite.y),
-						static_cast<float>(sprite.w),
-						static_cast<float>(sprite.h)
-					};
+					// Create new sprite with the specified source rectangle using proper constructor
+					shared_ptr<Sprite> newSprite = make_shared<Sprite>(
+						texture,
+						sprite.x,
+						sprite.y,
+						sprite.w,
+						sprite.h
+					);
 
 					// Update the checkbox's select sprite
 					checkboxElem->m_SelectSprite = newSprite;
@@ -2754,15 +2761,14 @@ void GhostState::OnEnter()
 
 				if (texture)
 				{
-					// Create new sprite with the specified source rectangle
-					shared_ptr<Sprite> newSprite = make_shared<Sprite>();
-					newSprite->m_texture = texture;
-					newSprite->m_sourceRect = Rectangle{
-						static_cast<float>(sprite.x),
-						static_cast<float>(sprite.y),
-						static_cast<float>(sprite.w),
-						static_cast<float>(sprite.h)
-					};
+					// Create new sprite with the specified source rectangle using proper constructor
+					shared_ptr<Sprite> newSprite = make_shared<Sprite>(
+						texture,
+						sprite.x,
+						sprite.y,
+						sprite.w,
+						sprite.h
+					);
 
 					// Update the checkbox's deselect sprite
 					checkboxElem->m_DeselectSprite = newSprite;
@@ -2789,15 +2795,14 @@ void GhostState::OnEnter()
 
 				if (texture)
 				{
-					// Create new sprite with the specified source rectangle
-					shared_ptr<Sprite> newSprite = make_shared<Sprite>();
-					newSprite->m_texture = texture;
-					newSprite->m_sourceRect = Rectangle{
-						static_cast<float>(sprite.x),
-						static_cast<float>(sprite.y),
-						static_cast<float>(sprite.w),
-						static_cast<float>(sprite.h)
-					};
+					// Create new sprite with the specified source rectangle using proper constructor
+					shared_ptr<Sprite> newSprite = make_shared<Sprite>(
+						texture,
+						sprite.x,
+						sprite.y,
+						sprite.w,
+						sprite.h
+					);
 
 					// Update the radiobutton's select sprite
 					radioElem->m_SelectSprite = newSprite;
@@ -2824,15 +2829,14 @@ void GhostState::OnEnter()
 
 				if (texture)
 				{
-					// Create new sprite with the specified source rectangle
-					shared_ptr<Sprite> newSprite = make_shared<Sprite>();
-					newSprite->m_texture = texture;
-					newSprite->m_sourceRect = Rectangle{
-						static_cast<float>(sprite.x),
-						static_cast<float>(sprite.y),
-						static_cast<float>(sprite.w),
-						static_cast<float>(sprite.h)
-					};
+					// Create new sprite with the specified source rectangle using proper constructor
+					shared_ptr<Sprite> newSprite = make_shared<Sprite>(
+						texture,
+						sprite.x,
+						sprite.y,
+						sprite.w,
+						sprite.h
+					);
 
 					// Update the radiobutton's deselect sprite
 					radioElem->m_DeselectSprite = newSprite;
@@ -4512,6 +4516,9 @@ void GhostState::UpdateElementFromPropertyPanel()
 					int currentColumns = m_contentSerializer->GetPanelColumns(m_selectedElementID);
 					m_contentSerializer->SetPanelColumns(m_selectedElementID, currentColumns);
 				}
+
+				// Reflow children to update positions based on new layout
+				m_contentSerializer->ReflowPanel(m_selectedElementID, m_gui.get());
 
 				wasUpdated = true;
 			}

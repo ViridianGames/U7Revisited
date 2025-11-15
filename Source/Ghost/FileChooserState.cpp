@@ -11,8 +11,10 @@
 extern std::unique_ptr<StateMachine> g_StateMachine;
 extern std::unique_ptr<ResourceManager> g_ResourceManager;
 
-// Initialize static member
-std::string FileChooserState::s_lastDirectory = "Gui/";
+// Initialize static members for last directories per file type
+std::string FileChooserState::s_lastGhostDirectory = "Gui/";
+std::string FileChooserState::s_lastFontDirectory = "Data/Fonts/";
+std::string FileChooserState::s_lastImageDirectory = "Images/";
 
 FileChooserState::~FileChooserState()
 {
@@ -175,7 +177,7 @@ void FileChooserState::Update()
 				{
 					m_selectedPath = m_currentPath + m_files[m_selectedFileIndex];
 					m_accepted = true;
-			s_lastDirectory = m_currentPath;  // Remember this directory
+					SetLastDirectoryForFilter(m_currentPath);  // Remember this directory
 					Log("Accepted file: " + m_selectedPath);
 					m_window->Hide();  // Hide immediately
 					m_shouldClose = true;  // Close on next frame to prevent input bleed-through
@@ -255,7 +257,7 @@ void FileChooserState::Update()
 								// Construct full path
 								m_selectedPath = m_currentPath + filename;
 								m_accepted = true;
-			s_lastDirectory = m_currentPath;  // Remember this directory
+								SetLastDirectoryForFilter(m_currentPath);  // Remember this directory
 								Log("Save file: " + m_selectedPath);
 							}
 							else
@@ -273,7 +275,7 @@ void FileChooserState::Update()
 						// File selected from list
 						m_selectedPath = m_currentPath + m_files[m_selectedFileIndex];
 						m_accepted = true;
-			s_lastDirectory = m_currentPath;  // Remember this directory
+					SetLastDirectoryForFilter(m_currentPath);  // Remember this directory
 						Log("Selected file: " + m_selectedPath);
 					}
 					else
@@ -341,16 +343,20 @@ void FileChooserState::SetMode(bool isSave, const std::string& filter, const std
 	{
 		m_currentPath = SanitizePath(initialPath);
 	}
-	else if (!s_lastDirectory.empty())
-	{
-		// Use last directory that was accessed
-		m_currentPath = SanitizePath(s_lastDirectory);
-	}
 	else
 	{
-		// Default to Gui folder where .ghost files are located
-		m_currentPath = SanitizePath(GetWorkingDirectory());
-		m_currentPath += "/Gui/";
+		// Use last directory that was accessed for this file type
+		std::string& lastDir = GetLastDirectoryForFilter();
+		if (!lastDir.empty())
+		{
+			m_currentPath = SanitizePath(lastDir);
+		}
+		else
+		{
+			// Fallback to default directory
+			m_currentPath = SanitizePath(GetWorkingDirectory());
+			m_currentPath += "/Gui/";
+		}
 	}
 
 	Log("FileChooserState::SetMode - isSave: " + std::to_string(isSave) + ", filter: " + filter + ", path: " + m_currentPath + ", title: " + m_title + ", initialFilename: " + initialFilename);
@@ -663,4 +669,30 @@ std::string FileChooserState::SanitizePath(const std::string& path)
 			c = '/';
 	}
 	return sanitized;
+}
+
+std::string& FileChooserState::GetLastDirectoryForFilter()
+{
+	// Determine which last directory to use based on the filter
+	if (m_filter.find(".ttf") != std::string::npos)
+	{
+		return s_lastFontDirectory;
+	}
+	else if (m_filter.find(".png") != std::string::npos ||
+	         m_filter.find(".jpg") != std::string::npos ||
+	         m_filter.find(".jpeg") != std::string::npos ||
+	         m_filter.find(".bmp") != std::string::npos)
+	{
+		return s_lastImageDirectory;
+	}
+	else  // Default to ghost files (.ghost)
+	{
+		return s_lastGhostDirectory;
+	}
+}
+
+void FileChooserState::SetLastDirectoryForFilter(const std::string& path)
+{
+	// Set the appropriate last directory based on the filter
+	GetLastDirectoryForFilter() = path;
 }
