@@ -8,8 +8,8 @@
           5
         ],
         "size": [
-          225.0,
-          145.0
+          345,
+          250
         ],
         "backgroundColor": [
           80,
@@ -38,11 +38,11 @@
               255,
               255
             ],
-            "justified": 0,
             "size": [
-              180.0,
-              30.0
-            ]
+              180,
+              30
+            ],
+            "justified": 0
           },
           {
             "name": "PROPERTY_NAME",
@@ -62,16 +62,16 @@
               255,
               255
             ],
-            "backgroundColor": [
-              0,
-              0,
-              0,
-              255
-            ],
             "borderColor": [
               255,
               255,
               255,
+              255
+            ],
+            "backgroundColor": [
+              0,
+              0,
+              0,
               255
             ]
           },
@@ -88,11 +88,11 @@
               255,
               255
             ],
-            "justified": 0,
             "size": [
-              180.0,
-              30.0
-            ]
+              180,
+              30
+            ],
+            "justified": 0
           },
           {
             "name": "PROPERTY_WIDTH",
@@ -103,8 +103,8 @@
             ],
             "valueRange": 255,
             "size": [
-              150.0,
-              20.0
+              150,
+              20
             ],
             "vertical": false,
             "spurColor": [
@@ -133,11 +133,11 @@
               255,
               255
             ],
-            "justified": 0,
             "size": [
-              180.0,
-              30.0
-            ]
+              180,
+              30
+            ],
+            "justified": 0
           },
           {
             "name": "PROPERTY_HEIGHT",
@@ -148,8 +148,8 @@
             ],
             "valueRange": 255,
             "size": [
-              150.0,
-              20.0
+              150,
+              20
             ],
             "vertical": false,
             "spurColor": [
@@ -178,11 +178,11 @@
               255,
               255
             ],
-            "justified": 0,
             "size": [
-              180.0,
-              30.0
-            ]
+              180,
+              30
+            ],
+            "justified": 0
           },
           {
             "name": "PROPERTY_GROUP",
@@ -193,8 +193,8 @@
             ],
             "valueRange": 255,
             "size": [
-              150.0,
-              20.0
+              150,
+              20
             ],
             "vertical": false,
             "spurColor": [
@@ -204,6 +204,86 @@
               255
             ],
             "backgroundColor": [
+              128,
+              128,
+              128,
+              255
+            ]
+          },
+          {
+            "type": "textarea",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Selected:",
+            "size": [
+              180,
+              30
+            ],
+            "justified": 0
+          },
+          {
+            "name": "PROPERTY_SELECTED_SPRITE",
+            "type": "textbutton",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Pick Sprite",
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "backgroundColor": [
+              64,
+              64,
+              64,
+              255
+            ],
+            "borderColor": [
+              128,
+              128,
+              128,
+              255
+            ]
+          },
+          {
+            "type": "textarea",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Deselected:",
+            "size": [
+              180,
+              30
+            ],
+            "justified": 0
+          },
+          {
+            "name": "PROPERTY_DESELECT_SPRITE",
+            "type": "textbutton",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Pick Sprite",
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "backgroundColor": [
+              64,
+              64,
+              64,
+              255
+            ],
+            "borderColor": [
               128,
               128,
               128,

@@ -24,7 +24,7 @@ unordered_map<int, std::unique_ptr<U7Object> > g_objectList;
 
 Mesh* g_AnimationFrames;
 
-Texture* g_Cursor;
+extern Texture* g_Cursor; // Defined in StateMachine.cpp
 Texture* g_objectSelectCursor;
 Texture* g_EmptyTexture;
 Texture* g_Minimap;
@@ -815,7 +815,7 @@ void AddObjectToContainer(int objectID, int containerID)
 	UnassignObjectChunk(object);
 }
 
-float g_DrawScale;
+extern float g_DrawScale; // Defined in StateMachine.cpp
 
 std::shared_ptr<Sprite> g_BoxTL;
 std::shared_ptr<Sprite> g_BoxT;

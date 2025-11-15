@@ -11,6 +11,9 @@
 extern std::unique_ptr<StateMachine> g_StateMachine;
 extern std::unique_ptr<ResourceManager> g_ResourceManager;
 
+// Initialize static member
+std::string FileChooserState::s_lastDirectory = "Gui/";
+
 FileChooserState::~FileChooserState()
 {
 }
@@ -172,6 +175,7 @@ void FileChooserState::Update()
 				{
 					m_selectedPath = m_currentPath + m_files[m_selectedFileIndex];
 					m_accepted = true;
+			s_lastDirectory = m_currentPath;  // Remember this directory
 					Log("Accepted file: " + m_selectedPath);
 					m_window->Hide();  // Hide immediately
 					m_shouldClose = true;  // Close on next frame to prevent input bleed-through
@@ -251,6 +255,7 @@ void FileChooserState::Update()
 								// Construct full path
 								m_selectedPath = m_currentPath + filename;
 								m_accepted = true;
+			s_lastDirectory = m_currentPath;  // Remember this directory
 								Log("Save file: " + m_selectedPath);
 							}
 							else
@@ -268,6 +273,7 @@ void FileChooserState::Update()
 						// File selected from list
 						m_selectedPath = m_currentPath + m_files[m_selectedFileIndex];
 						m_accepted = true;
+			s_lastDirectory = m_currentPath;  // Remember this directory
 						Log("Selected file: " + m_selectedPath);
 					}
 					else
@@ -334,6 +340,11 @@ void FileChooserState::SetMode(bool isSave, const std::string& filter, const std
 	if (!initialPath.empty())
 	{
 		m_currentPath = SanitizePath(initialPath);
+	}
+	else if (!s_lastDirectory.empty())
+	{
+		// Use last directory that was accessed
+		m_currentPath = SanitizePath(s_lastDirectory);
 	}
 	else
 	{

@@ -78,8 +78,8 @@
               0
             ],
             "size": [
-              204,
-              147
+              203,
+              164
             ],
             "backgroundColor": [
               80,
@@ -101,7 +101,7 @@
                 ],
                 "text": "",
                 "size": [
-                  204,
+                  203,
                   10
                 ],
                 "textColor": [
@@ -132,7 +132,7 @@
                 ],
                 "text": "",
                 "size": [
-                  204,
+                  203,
                   10
                 ],
                 "textColor": [
@@ -163,7 +163,7 @@
                 ],
                 "text": "",
                 "size": [
-                  204,
+                  203,
                   10
                 ],
                 "textColor": [
@@ -194,7 +194,7 @@
                 ],
                 "text": "",
                 "size": [
-                  204,
+                  203,
                   10
                 ],
                 "textColor": [
@@ -225,7 +225,7 @@
                 ],
                 "text": "",
                 "size": [
-                  204,
+                  203,
                   10
                 ],
                 "textColor": [
@@ -256,7 +256,7 @@
                 ],
                 "text": "",
                 "size": [
-                  204,
+                  203,
                   10
                 ],
                 "textColor": [
@@ -287,7 +287,7 @@
                 ],
                 "text": "",
                 "size": [
-                  204,
+                  203,
                   10
                 ],
                 "textColor": [
@@ -318,7 +318,7 @@
                 ],
                 "text": "",
                 "size": [
-                  204,
+                  203,
                   10
                 ],
                 "textColor": [
@@ -349,7 +349,7 @@
                 ],
                 "text": "",
                 "size": [
-                  204,
+                  203,
                   10
                 ],
                 "textColor": [
@@ -380,7 +380,7 @@
                 ],
                 "text": "",
                 "size": [
-                  204,
+                  203,
                   10
                 ],
                 "textColor": [
@@ -407,11 +407,11 @@
                 "type": "panel",
                 "position": [
                   0,
-                  133
+                  132
                 ],
                 "size": [
-                  204,
-                  22
+                  202,
+                  28
                 ],
                 "backgroundColor": [
                   80,
@@ -422,7 +422,7 @@
                 "filled": true,
                 "layout": "table",
                 "horzPadding": 6,
-                "vertPadding": 0,
+                "vertPadding": 2,
                 "columns": 3,
                 "elements": [
                   {
@@ -513,90 +513,114 @@
                   },
                   {
                     "name": "MUSIC",
-                    "type": "iconbutton",
+                    "type": "checkbox",
                     "position": [
                       -1,
                       -1
                     ],
-                    "sprite": {
-                      "spritesheet": "GUI/gumps.png",
-                      "x": 673,
-                      "y": 74,
-                      "w": 60,
-                      "h": 11
-                    },
-                    "downSprite": {
-                      "spritesheet": "GUI/gumps.png",
-                      "x": 673,
-                      "y": 86,
-                      "w": 60,
-                      "h": 11
-                    },
+                    "size": [
+                      59,
+                      11
+                    ],
                     "color": [
                       255,
                       255,
                       255,
                       255
                     ],
-                    "scale": 1.0
+                    "selected": false,
+                    "scale": [
+                      1.0,
+                      1.0
+                    ],
+                    "selectSprite": {
+                      "spritesheet": "GUI/gumps.png",
+                      "x": 735,
+                      "y": 99,
+                      "w": 60,
+                      "h": 11
+                    },
+                    "deselectSprite": {
+                      "spritesheet": "GUI/gumps.png",
+                      "x": 735,
+                      "y": 111,
+                      "w": 60,
+                      "h": 11
+                    }
                   },
                   {
                     "name": "SPEECH",
-                    "type": "iconbutton",
+                    "type": "checkbox",
                     "position": [
                       -1,
                       -1
                     ],
-                    "sprite": {
-                      "spritesheet": "GUI/gumps.png",
-                      "x": 673,
-                      "y": 74,
-                      "w": 60,
-                      "h": 11
-                    },
-                    "downSprite": {
-                      "spritesheet": "GUI/gumps.png",
-                      "x": 673,
-                      "y": 86,
-                      "w": 60,
-                      "h": 11
-                    },
+                    "size": [
+                      59,
+                      11
+                    ],
                     "color": [
                       255,
                       255,
                       255,
                       255
                     ],
-                    "scale": 1.0
+                    "selected": false,
+                    "scale": [
+                      1.0,
+                      1.0
+                    ],
+                    "selectSprite": {
+                      "spritesheet": "GUI/gumps.png",
+                      "x": 608,
+                      "y": 99,
+                      "w": 60,
+                      "h": 11
+                    },
+                    "deselectSprite": {
+                      "spritesheet": "GUI/gumps.png",
+                      "x": 608,
+                      "y": 111,
+                      "w": 60,
+                      "h": 11
+                    }
                   },
                   {
                     "name": "SOUND",
-                    "type": "iconbutton",
+                    "type": "checkbox",
                     "position": [
                       -1,
                       -1
                     ],
-                    "sprite": {
-                      "spritesheet": "GUI/gumps.png",
-                      "x": 673,
-                      "y": 74,
-                      "w": 60,
-                      "h": 11
-                    },
-                    "downSprite": {
-                      "spritesheet": "GUI/gumps.png",
-                      "x": 673,
-                      "y": 86,
-                      "w": 60,
-                      "h": 11
-                    },
+                    "size": [
+                      59,
+                      11
+                    ],
                     "color": [
                       255,
                       255,
                       255,
                       255
                     ],
-                    "scale": 1.0
+                    "selected": false,
+                    "scale": [
+                      1.0,
+                      1.0
+                    ],
+                    "selectSprite": {
+                      "spritesheet": "GUI/gumps.png",
+                      "x": 672,
+                      "y": 99,
+                      "w": 60,
+                      "h": 11
+                    },
+                    "deselectSprite": {
+                      "spritesheet": "GUI/gumps.png",
+                      "x": 672,
+                      "y": 111,
+                      "w": 60,
+                      "h": 11
+                    }
                   }
                 ]
               }

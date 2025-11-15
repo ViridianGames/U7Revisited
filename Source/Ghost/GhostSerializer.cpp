@@ -889,10 +889,16 @@ void GhostSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, c
 			gui->AddCycle(id, absoluteX, absoluteY, frames, scaleX, scaleY, color, group, active);
 		}
 		else if (type == "checkbox")
+	{
+		// Get size (optional, only needed for non-sprite rendering)
+		int width = 16;  // default
+		int height = 16; // default
+		if (element.contains("size"))
 		{
 			auto size = element["size"];
-			int width = size[0];
-			int height = size[1];
+			width = size[0];
+			height = size[1];
+		}
 
 			// Get color
 			Color color = WHITE;
@@ -904,21 +910,100 @@ void GhostSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, c
 			}
 
 			// Get scale
-			float scaleX = 1.0f;
-			float scaleY = 1.0f;
-			if (element.contains("scale"))
+		float scaleX = 1.0f;
+		float scaleY = 1.0f;
+		if (element.contains("scale"))
+		{
+			auto scale = element["scale"];
+			if (scale.is_array())
 			{
-				auto scale = element["scale"];
 				scaleX = scale[0];
 				scaleY = scale[1];
 			}
+			else if (scale.is_number())
+			{
+				scaleX = scaleY = scale.get<float>();
+			}
+		}
 
 			// Add parent offsets to make position absolute
 			int absoluteX = parentX + posx;
 			int absoluteY = parentY + posy;
 
-			// Add the checkbox (using simple box rendering, not sprites)
-			auto checkbox = gui->AddCheckBox(id, absoluteX, absoluteY, width, height, scaleX, scaleY, color, group, active);
+			// Parse select sprite definition (optional)
+			shared_ptr<Sprite> selectSprite = nullptr;
+			if (element.contains("selectSprite") && element["selectSprite"].is_object())
+			{
+				auto selectSpriteObj = element["selectSprite"];
+				SpriteDefinition selectSpriteDef;
+				selectSpriteDef.spritesheet = selectSpriteObj.value("spritesheet", "");
+				selectSpriteDef.x = selectSpriteObj.value("x", 0);
+				selectSpriteDef.y = selectSpriteObj.value("y", 0);
+				selectSpriteDef.w = selectSpriteObj.value("w", 16);
+				selectSpriteDef.h = selectSpriteObj.value("h", 16);
+
+				// Store select sprite definition
+				SetCheckBoxSelectSprite(id, selectSpriteDef);
+
+				// Load select sprite texture
+				if (!selectSpriteDef.spritesheet.empty())
+				{
+					string selectSpritePath = s_baseSpritePath + selectSpriteDef.spritesheet;
+					Texture* texture = g_ResourceManager->GetTexture(selectSpritePath);
+					if (texture && texture->id != 0 && texture->width > 0 && texture->height > 0)
+					{
+						selectSprite = std::make_shared<Sprite>(texture, selectSpriteDef.x, selectSpriteDef.y, selectSpriteDef.w, selectSpriteDef.h);
+					}
+					else
+					{
+						Log("GhostSerializer::ParseElements - Failed to load checkbox select sprite: " + selectSpritePath);
+					}
+				}
+			}
+
+			// Parse deselect sprite definition (optional)
+			shared_ptr<Sprite> deselectSprite = nullptr;
+			if (element.contains("deselectSprite") && element["deselectSprite"].is_object())
+			{
+				auto deselectSpriteObj = element["deselectSprite"];
+				SpriteDefinition deselectSpriteDef;
+				deselectSpriteDef.spritesheet = deselectSpriteObj.value("spritesheet", "");
+				deselectSpriteDef.x = deselectSpriteObj.value("x", 0);
+				deselectSpriteDef.y = deselectSpriteObj.value("y", 0);
+				deselectSpriteDef.w = deselectSpriteObj.value("w", 16);
+				deselectSpriteDef.h = deselectSpriteObj.value("h", 16);
+
+				// Store deselect sprite definition
+				SetCheckBoxDeselectSprite(id, deselectSpriteDef);
+
+				// Load deselect sprite texture
+				if (!deselectSpriteDef.spritesheet.empty())
+				{
+					string deselectSpritePath = s_baseSpritePath + deselectSpriteDef.spritesheet;
+					Texture* texture = g_ResourceManager->GetTexture(deselectSpritePath);
+					if (texture && texture->id != 0 && texture->width > 0 && texture->height > 0)
+					{
+						deselectSprite = std::make_shared<Sprite>(texture, deselectSpriteDef.x, deselectSpriteDef.y, deselectSpriteDef.w, deselectSpriteDef.h);
+					}
+					else
+					{
+						Log("GhostSerializer::ParseElements - Failed to load checkbox deselect sprite: " + deselectSpritePath);
+					}
+				}
+			}
+
+			// Add the checkbox
+			GuiCheckBox* checkbox = nullptr;
+			if (selectSprite || deselectSprite)
+			{
+				// Use sprite-based rendering
+				checkbox = gui->AddCheckBox(id, absoluteX, absoluteY, deselectSprite, selectSprite, nullptr, nullptr, scaleX, scaleY, color, group, active);
+			}
+			else
+			{
+				// Use simple box rendering (fallback)
+				checkbox = gui->AddCheckBox(id, absoluteX, absoluteY, width, height, scaleX, scaleY, color, group, active);
+			}
 
 			// Set selected state if specified
 			if (element.contains("selected"))
@@ -927,10 +1012,16 @@ void GhostSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, c
 			}
 		}
 		else if (type == "radiobutton")
+	{
+		// Get size (optional, only needed for non-sprite rendering)
+		int width = 16;  // default
+		int height = 16; // default
+		if (element.contains("size"))
 		{
 			auto size = element["size"];
-			int width = size[0];
-			int height = size[1];
+			width = size[0];
+			height = size[1];
+		}
 
 			// Get color
 			Color color = WHITE;
@@ -942,21 +1033,102 @@ void GhostSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, c
 			}
 
 			// Get scale
-			float scaleX = 1.0f;
-			float scaleY = 1.0f;
-			if (element.contains("scale"))
+		float scaleX = 1.0f;
+		float scaleY = 1.0f;
+		if (element.contains("scale"))
+		{
+			auto scale = element["scale"];
+			if (scale.is_array())
 			{
-				auto scale = element["scale"];
 				scaleX = scale[0];
 				scaleY = scale[1];
 			}
+			else if (scale.is_number())
+			{
+				scaleX = scaleY = scale.get<float>();
+			}
+		}
 
 			// Add parent offsets to make position absolute
 			int absoluteX = parentX + posx;
 			int absoluteY = parentY + posy;
 
-			// Add the radio button (using simple circle rendering, not sprites)
-			auto radio = gui->AddRadioButton(id, absoluteX, absoluteY, width, height, scaleX, scaleY, color, group, active, false);
+			// Check for sprite definitions
+			std::shared_ptr<Sprite> selectSprite = nullptr;
+			std::shared_ptr<Sprite> deselectSprite = nullptr;
+
+			// Parse selectSprite if present
+			if (element.contains("selectSprite") && element["selectSprite"].is_object())
+			{
+				auto selectSpriteObj = element["selectSprite"];
+				SpriteDefinition selectSpriteDef;
+				selectSpriteDef.spritesheet = selectSpriteObj.value("spritesheet", "");
+				selectSpriteDef.x = selectSpriteObj.value("x", 0);
+				selectSpriteDef.y = selectSpriteObj.value("y", 0);
+				selectSpriteDef.w = selectSpriteObj.value("w", 0);
+				selectSpriteDef.h = selectSpriteObj.value("h", 0);
+
+				// Store the sprite definition
+				SetRadioButtonSelectSprite(id, selectSpriteDef);
+
+			// Load select sprite texture
+			if (!selectSpriteDef.spritesheet.empty())
+			{
+				string selectSpritePath = s_baseSpritePath + selectSpriteDef.spritesheet;
+				Texture* texture = g_ResourceManager->GetTexture(selectSpritePath);
+				if (texture && texture->id != 0 && texture->width > 0 && texture->height > 0)
+				{
+					selectSprite = std::make_shared<Sprite>(texture, selectSpriteDef.x, selectSpriteDef.y, selectSpriteDef.w, selectSpriteDef.h);
+				}
+				else
+				{
+					Log("GhostSerializer::ParseElements - Failed to load radiobutton select sprite: " + selectSpritePath);
+				}
+			}
+		}
+
+		// Parse deselectSprite if present
+		if (element.contains("deselectSprite") && element["deselectSprite"].is_object())
+		{
+			auto deselectSpriteObj = element["deselectSprite"];
+			SpriteDefinition deselectSpriteDef;
+			deselectSpriteDef.spritesheet = deselectSpriteObj.value("spritesheet", "");
+			deselectSpriteDef.x = deselectSpriteObj.value("x", 0);
+			deselectSpriteDef.y = deselectSpriteObj.value("y", 0);
+			deselectSpriteDef.w = deselectSpriteObj.value("w", 0);
+			deselectSpriteDef.h = deselectSpriteObj.value("h", 0);
+
+			// Store the sprite definition
+			SetRadioButtonDeselectSprite(id, deselectSpriteDef);
+
+			// Load deselect sprite texture
+			if (!deselectSpriteDef.spritesheet.empty())
+			{
+				string deselectSpritePath = s_baseSpritePath + deselectSpriteDef.spritesheet;
+				Texture* texture = g_ResourceManager->GetTexture(deselectSpritePath);
+				if (texture && texture->id != 0 && texture->width > 0 && texture->height > 0)
+				{
+					deselectSprite = std::make_shared<Sprite>(texture, deselectSpriteDef.x, deselectSpriteDef.y, deselectSpriteDef.w, deselectSpriteDef.h);
+				}
+				else
+				{
+					Log("GhostSerializer::ParseElements - Failed to load radiobutton deselect sprite: " + deselectSpritePath);
+				}
+			}
+		}
+
+			// Add the radio button - use sprite-based version if sprites are defined
+			GuiRadioButton* radio = nullptr;
+			if (selectSprite || deselectSprite)
+			{
+				// Use sprite-based radio button
+				radio = gui->AddRadioButton(id, absoluteX, absoluteY, selectSprite, deselectSprite, nullptr, scaleX, scaleY, color, group, active);
+			}
+			else
+			{
+				// Use simple circle rendering
+				radio = gui->AddRadioButton(id, absoluteX, absoluteY, width, height, scaleX, scaleY, color, group, active, false);
+			}
 
 			// Set selected state if specified
 			if (element.contains("selected"))
@@ -2235,6 +2407,32 @@ ghost_json GhostSerializer::SerializeElement(int elementID, Gui* gui, int parent
 		elementJson["color"] = { checkbox->m_Color.r, checkbox->m_Color.g, checkbox->m_Color.b, checkbox->m_Color.a };
 		elementJson["selected"] = checkbox->m_Selected;
 		elementJson["scale"] = { checkbox->m_ScaleX, checkbox->m_ScaleY };
+
+		// Serialize selectSprite if present
+		SpriteDefinition selectSpriteDef = GetCheckBoxSelectSprite(elementID);
+		if (!selectSpriteDef.IsEmpty())
+		{
+			elementJson["selectSprite"] = {
+				{"spritesheet", selectSpriteDef.spritesheet},
+				{"x", selectSpriteDef.x},
+				{"y", selectSpriteDef.y},
+				{"w", selectSpriteDef.w},
+				{"h", selectSpriteDef.h}
+			};
+		}
+
+		// Serialize deselectSprite if present
+		SpriteDefinition deselectSpriteDef = GetCheckBoxDeselectSprite(elementID);
+		if (!deselectSpriteDef.IsEmpty())
+		{
+			elementJson["deselectSprite"] = {
+				{"spritesheet", deselectSpriteDef.spritesheet},
+				{"x", deselectSpriteDef.x},
+				{"y", deselectSpriteDef.y},
+				{"w", deselectSpriteDef.w},
+				{"h", deselectSpriteDef.h}
+			};
+		}
 	}
 	else if (element->m_Type == GUI_RADIOBUTTON)
 	{
@@ -2243,6 +2441,32 @@ ghost_json GhostSerializer::SerializeElement(int elementID, Gui* gui, int parent
 		elementJson["color"] = { radio->m_Color.r, radio->m_Color.g, radio->m_Color.b, radio->m_Color.a };
 		elementJson["selected"] = radio->m_Selected;
 		elementJson["scale"] = { radio->m_ScaleX, radio->m_ScaleY };
+
+		// Serialize selectSprite if present
+		SpriteDefinition selectSpriteDef = GetRadioButtonSelectSprite(elementID);
+		if (!selectSpriteDef.IsEmpty())
+		{
+			elementJson["selectSprite"] = {
+				{"spritesheet", selectSpriteDef.spritesheet},
+				{"x", selectSpriteDef.x},
+				{"y", selectSpriteDef.y},
+				{"w", selectSpriteDef.w},
+				{"h", selectSpriteDef.h}
+			};
+		}
+
+		// Serialize deselectSprite if present
+		SpriteDefinition deselectSpriteDef = GetRadioButtonDeselectSprite(elementID);
+		if (!deselectSpriteDef.IsEmpty())
+		{
+			elementJson["deselectSprite"] = {
+				{"spritesheet", deselectSpriteDef.spritesheet},
+				{"x", deselectSpriteDef.x},
+				{"y", deselectSpriteDef.y},
+				{"w", deselectSpriteDef.w},
+				{"h", deselectSpriteDef.h}
+			};
+		}
 	}
 	else if (element->m_Type == GUI_SPRITE)
 	{

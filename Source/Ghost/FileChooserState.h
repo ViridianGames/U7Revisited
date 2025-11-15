@@ -58,4 +58,7 @@ private:
 	std::vector<std::string> m_folders;  // Subdirectories in current path
 	std::vector<std::string> m_files;    // Files matching filter in current path
 	int m_selectedFileIndex = -1;
+
+	// Remember last directory used
+	static std::string s_lastDirectory;
 };

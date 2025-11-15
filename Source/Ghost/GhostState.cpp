@@ -1185,11 +1185,11 @@ void GhostState::Update()
 	if (m_selectedElementID != -1)
 	{
 		auto selectedElement = m_gui->GetElement(m_selectedElementID);
-		if (selectedElement && (selectedElement->m_Type == GUI_STRETCHBUTTON || selectedElement->m_Type == GUI_SPRITE || selectedElement->m_Type == GUI_CYCLE || selectedElement->m_Type == GUI_ICONBUTTON))
+		if (selectedElement && (selectedElement->m_Type == GUI_STRETCHBUTTON || selectedElement->m_Type == GUI_SPRITE || selectedElement->m_Type == GUI_CYCLE || selectedElement->m_Type == GUI_ICONBUTTON || selectedElement->m_Type == GUI_CHECKBOX || selectedElement->m_Type == GUI_RADIOBUTTON))
 		{
 			// List of all sprite property button names
 			vector<string> spriteProperties = {
-				"PROPERTY_SPRITE_LEFT", "PROPERTY_SPRITE_CENTER", "PROPERTY_SPRITE_RIGHT", "PROPERTY_SPRITE", "PROPERTY_DOWNSPRITE"
+				"PROPERTY_SPRITE_LEFT", "PROPERTY_SPRITE_CENTER", "PROPERTY_SPRITE_RIGHT", "PROPERTY_SPRITE", "PROPERTY_DOWNSPRITE", "PROPERTY_SELECTED_SPRITE", "PROPERTY_DESELECT_SPRITE"
 			};
 
 			for (const auto& propName : spriteProperties)
@@ -1227,6 +1227,22 @@ void GhostState::Update()
 							{
 								// Get the down sprite definition for icon button
 								sprite = m_contentSerializer->GetIconButtonDownSprite(m_selectedElementID);
+							}
+							else if (propName == "PROPERTY_SELECTED_SPRITE")
+							{
+								// Get the select sprite definition for checkbox/radiobutton
+								if (selectedElement->m_Type == GUI_CHECKBOX)
+									sprite = m_contentSerializer->GetCheckBoxSelectSprite(m_selectedElementID);
+								else if (selectedElement->m_Type == GUI_RADIOBUTTON)
+									sprite = m_contentSerializer->GetRadioButtonSelectSprite(m_selectedElementID);
+							}
+							else if (propName == "PROPERTY_DESELECT_SPRITE")
+							{
+								// Get the deselect sprite definition for checkbox/radiobutton
+								if (selectedElement->m_Type == GUI_CHECKBOX)
+									sprite = m_contentSerializer->GetCheckBoxDeselectSprite(m_selectedElementID);
+								else if (selectedElement->m_Type == GUI_RADIOBUTTON)
+									sprite = m_contentSerializer->GetRadioButtonDeselectSprite(m_selectedElementID);
 							}
 
 							// Track which property we're editing
@@ -2685,6 +2701,146 @@ void GhostState::OnEnter()
 					m_contentSerializer->SetIconButtonDownSprite(m_selectedElementID, sprite);
 
 					Log("Updated iconbutton down sprite: " + sprite.spritesheet + " at (" + std::to_string(sprite.x) + "," + std::to_string(sprite.y) +
+						") size (" + std::to_string(sprite.w) + "x" + std::to_string(sprite.h) + ")");
+				}
+				else
+				{
+					Log("ERROR: Failed to load texture: " + spritePath);
+				}
+			}
+			else if (selectedElement && selectedElement->m_Type == GUI_CHECKBOX && m_editingSpriteProperty == "PROPERTY_SELECTED_SPRITE")
+			{
+				// Update checkbox select sprite
+				auto checkboxElem = static_cast<GuiCheckBox*>(selectedElement.get());
+
+				// Load the new sprite texture
+				string spritePath = m_spritePath + sprite.spritesheet;
+				Texture* texture = g_ResourceManager->GetTexture(spritePath);
+
+				if (texture)
+				{
+					// Create new sprite with the specified source rectangle
+					shared_ptr<Sprite> newSprite = make_shared<Sprite>();
+					newSprite->m_texture = texture;
+					newSprite->m_sourceRect = Rectangle{
+						static_cast<float>(sprite.x),
+						static_cast<float>(sprite.y),
+						static_cast<float>(sprite.w),
+						static_cast<float>(sprite.h)
+					};
+
+					// Update the checkbox's select sprite
+					checkboxElem->m_SelectSprite = newSprite;
+
+					// Store full sprite definition in serializer
+					m_contentSerializer->SetCheckBoxSelectSprite(m_selectedElementID, sprite);
+
+					Log("Updated checkbox select sprite: " + sprite.spritesheet + " at (" + std::to_string(sprite.x) + "," + std::to_string(sprite.y) +
+						") size (" + std::to_string(sprite.w) + "x" + std::to_string(sprite.h) + ")");
+				}
+				else
+				{
+					Log("ERROR: Failed to load texture: " + spritePath);
+				}
+			}
+			else if (selectedElement && selectedElement->m_Type == GUI_CHECKBOX && m_editingSpriteProperty == "PROPERTY_DESELECT_SPRITE")
+			{
+				// Update checkbox deselect sprite
+				auto checkboxElem = static_cast<GuiCheckBox*>(selectedElement.get());
+
+				// Load the new sprite texture
+				string spritePath = m_spritePath + sprite.spritesheet;
+				Texture* texture = g_ResourceManager->GetTexture(spritePath);
+
+				if (texture)
+				{
+					// Create new sprite with the specified source rectangle
+					shared_ptr<Sprite> newSprite = make_shared<Sprite>();
+					newSprite->m_texture = texture;
+					newSprite->m_sourceRect = Rectangle{
+						static_cast<float>(sprite.x),
+						static_cast<float>(sprite.y),
+						static_cast<float>(sprite.w),
+						static_cast<float>(sprite.h)
+					};
+
+					// Update the checkbox's deselect sprite
+					checkboxElem->m_DeselectSprite = newSprite;
+
+					// Store full sprite definition in serializer
+					m_contentSerializer->SetCheckBoxDeselectSprite(m_selectedElementID, sprite);
+
+					Log("Updated checkbox deselect sprite: " + sprite.spritesheet + " at (" + std::to_string(sprite.x) + "," + std::to_string(sprite.y) +
+						") size (" + std::to_string(sprite.w) + "x" + std::to_string(sprite.h) + ")");
+				}
+				else
+				{
+					Log("ERROR: Failed to load texture: " + spritePath);
+				}
+			}
+			else if (selectedElement && selectedElement->m_Type == GUI_RADIOBUTTON && m_editingSpriteProperty == "PROPERTY_SELECTED_SPRITE")
+			{
+				// Update radiobutton select sprite
+				auto radioElem = static_cast<GuiRadioButton*>(selectedElement.get());
+
+				// Load the new sprite texture
+				string spritePath = m_spritePath + sprite.spritesheet;
+				Texture* texture = g_ResourceManager->GetTexture(spritePath);
+
+				if (texture)
+				{
+					// Create new sprite with the specified source rectangle
+					shared_ptr<Sprite> newSprite = make_shared<Sprite>();
+					newSprite->m_texture = texture;
+					newSprite->m_sourceRect = Rectangle{
+						static_cast<float>(sprite.x),
+						static_cast<float>(sprite.y),
+						static_cast<float>(sprite.w),
+						static_cast<float>(sprite.h)
+					};
+
+					// Update the radiobutton's select sprite
+					radioElem->m_SelectSprite = newSprite;
+
+					// Store full sprite definition in serializer
+					m_contentSerializer->SetRadioButtonSelectSprite(m_selectedElementID, sprite);
+
+					Log("Updated radiobutton select sprite: " + sprite.spritesheet + " at (" + std::to_string(sprite.x) + "," + std::to_string(sprite.y) +
+						") size (" + std::to_string(sprite.w) + "x" + std::to_string(sprite.h) + ")");
+				}
+				else
+				{
+					Log("ERROR: Failed to load texture: " + spritePath);
+				}
+			}
+			else if (selectedElement && selectedElement->m_Type == GUI_RADIOBUTTON && m_editingSpriteProperty == "PROPERTY_DESELECT_SPRITE")
+			{
+				// Update radiobutton deselect sprite
+				auto radioElem = static_cast<GuiRadioButton*>(selectedElement.get());
+
+				// Load the new sprite texture
+				string spritePath = m_spritePath + sprite.spritesheet;
+				Texture* texture = g_ResourceManager->GetTexture(spritePath);
+
+				if (texture)
+				{
+					// Create new sprite with the specified source rectangle
+					shared_ptr<Sprite> newSprite = make_shared<Sprite>();
+					newSprite->m_texture = texture;
+					newSprite->m_sourceRect = Rectangle{
+						static_cast<float>(sprite.x),
+						static_cast<float>(sprite.y),
+						static_cast<float>(sprite.w),
+						static_cast<float>(sprite.h)
+					};
+
+					// Update the radiobutton's deselect sprite
+					radioElem->m_DeselectSprite = newSprite;
+
+					// Store full sprite definition in serializer
+					m_contentSerializer->SetRadioButtonDeselectSprite(m_selectedElementID, sprite);
+
+					Log("Updated radiobutton deselect sprite: " + sprite.spritesheet + " at (" + std::to_string(sprite.x) + "," + std::to_string(sprite.y) +
 						") size (" + std::to_string(sprite.w) + "x" + std::to_string(sprite.h) + ")");
 				}
 				else

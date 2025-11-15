@@ -228,6 +228,56 @@ public:
 		return SpriteDefinition{"", 0, 0, 0, 0};
 	}
 
+	// CheckBox sprite metadata methods
+	void SetCheckBoxSelectSprite(int checkboxID, const SpriteDefinition& sprite)
+	{
+		m_checkBoxSelectSprites[checkboxID] = sprite;
+	}
+	SpriteDefinition GetCheckBoxSelectSprite(int checkboxID) const
+	{
+		auto it = m_checkBoxSelectSprites.find(checkboxID);
+		if (it != m_checkBoxSelectSprites.end())
+			return it->second;
+		return SpriteDefinition{"", 0, 0, 0, 0};
+	}
+
+	void SetCheckBoxDeselectSprite(int checkboxID, const SpriteDefinition& sprite)
+	{
+		m_checkBoxDeselectSprites[checkboxID] = sprite;
+	}
+	SpriteDefinition GetCheckBoxDeselectSprite(int checkboxID) const
+	{
+		auto it = m_checkBoxDeselectSprites.find(checkboxID);
+		if (it != m_checkBoxDeselectSprites.end())
+			return it->second;
+		return SpriteDefinition{"", 0, 0, 0, 0};
+	}
+
+	// RadioButton sprite metadata methods
+	void SetRadioButtonSelectSprite(int radiobuttonID, const SpriteDefinition& sprite)
+	{
+		m_radioButtonSelectSprites[radiobuttonID] = sprite;
+	}
+	SpriteDefinition GetRadioButtonSelectSprite(int radiobuttonID) const
+	{
+		auto it = m_radioButtonSelectSprites.find(radiobuttonID);
+		if (it != m_radioButtonSelectSprites.end())
+			return it->second;
+		return SpriteDefinition{"", 0, 0, 0, 0};
+	}
+
+	void SetRadioButtonDeselectSprite(int radiobuttonID, const SpriteDefinition& sprite)
+	{
+		m_radioButtonDeselectSprites[radiobuttonID] = sprite;
+	}
+	SpriteDefinition GetRadioButtonDeselectSprite(int radiobuttonID) const
+	{
+		auto it = m_radioButtonDeselectSprites.find(radiobuttonID);
+		if (it != m_radioButtonDeselectSprites.end())
+			return it->second;
+		return SpriteDefinition{"", 0, 0, 0, 0};
+	}
+
 	// StretchButton sprite metadata methods
 	void SetStretchButtonLeftSprite(int buttonID, const SpriteDefinition& sprite);
 	void SetStretchButtonCenterSprite(int buttonID, const SpriteDefinition& sprite);
@@ -392,6 +442,14 @@ private:
 
 	// IconButton down sprite metadata
 	std::map<int, SpriteDefinition> m_iconButtonDownSprites;  // Maps iconbutton ID -> down sprite definition
+
+	// CheckBox sprite metadata
+	std::map<int, SpriteDefinition> m_checkBoxSelectSprites;    // Maps checkbox ID -> select sprite definition
+	std::map<int, SpriteDefinition> m_checkBoxDeselectSprites;  // Maps checkbox ID -> deselect sprite definition
+
+	// RadioButton sprite metadata
+	std::map<int, SpriteDefinition> m_radioButtonSelectSprites;    // Maps radiobutton ID -> select sprite definition
+	std::map<int, SpriteDefinition> m_radioButtonDeselectSprites;  // Maps radiobutton ID -> deselect sprite definition
 
 	// StretchButton sprite metadata (3 sprite definitions per button)
 	std::map<int, SpriteDefinition> m_stretchButtonLeftSprites;    // Maps stretchbutton ID -> left sprite definition

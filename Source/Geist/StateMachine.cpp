@@ -1,9 +1,12 @@
 #include "StateMachine.h"
 #include "Logging.h"
-#include "../U7Globals.h"
 #include "raylib.h"
 
 using namespace std;
+
+// Globals for cursor drawing (defined here for both projects)
+Texture* g_Cursor = nullptr;
+float g_DrawScale = 1.0f;
 
 void StateMachine::Init(const std::string& configfile)
 {
@@ -76,7 +79,7 @@ void StateMachine::Draw()
 		}
 
 		// Draw cursor if the topmost state wants it
-		if (topState->m_DrawCursor)
+		if (topState->m_DrawCursor && g_Cursor)
 		{
 			DrawTextureEx(*g_Cursor, { float(GetMouseX()), float(GetMouseY()) }, 0, g_DrawScale, WHITE);
 		}
