@@ -33,6 +33,7 @@ static int lastTextInputFontSizeScrollbarValue = -1;
 static bool lastVerticalCheckboxValue = false;
 static bool lastCanBeHeldCheckboxValue = false;
 static bool lastShadowedCheckboxValue = false;
+static int lastLayoutListValue = -1;
 
 GhostState::~GhostState()
 {
@@ -1089,6 +1090,26 @@ void GhostState::Update()
 	CheckCheckboxChanged("PROPERTY_VERTICAL", lastVerticalCheckboxValue);
 	CheckCheckboxChanged("PROPERTY_CANBEHELD", lastCanBeHeldCheckboxValue);
 	CheckCheckboxChanged("PROPERTY_SHADOWED", lastShadowedCheckboxValue);
+
+	// Check PROPERTY_LAYOUT list (dropdown) for changes
+	if (m_selectedElementID != -1 && m_propertySerializer)
+	{
+		int layoutListID = m_propertySerializer->GetElementID("PROPERTY_LAYOUT");
+		if (layoutListID != -1)
+		{
+			auto layoutElement = m_gui->GetElement(layoutListID);
+			if (layoutElement && layoutElement->m_Type == GUI_LIST)
+			{
+				auto layoutList = static_cast<GuiList*>(layoutElement.get());
+				if (layoutList->m_SelectedIndex != lastLayoutListValue)
+				{
+					lastLayoutListValue = layoutList->m_SelectedIndex;
+					Log("Layout list value changed to " + to_string(layoutList->m_SelectedIndex) + ", triggering update");
+					UpdateElementFromPropertyPanel();
+				}
+			}
+		}
+	}
 
 	// Check PROPERTY_FONT_SIZE scrollbar for textinput elements
 	// Note: Font size for other elements (textbutton, panel) uses lastFontSizeScrollbarValue tracked elsewhere
@@ -4206,6 +4227,9 @@ void GhostState::PopulatePropertyPanelFields()
 				else if (layout == "vert") list->m_SelectedIndex = 1;
 				else if (layout == "table") list->m_SelectedIndex = 2;
 				else list->m_SelectedIndex = 0; // Default to Horz
+				
+				// Sync the tracking variable to prevent false triggers
+				lastLayoutListValue = list->m_SelectedIndex;
 			}
 		}
 
