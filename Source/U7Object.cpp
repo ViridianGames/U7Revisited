@@ -618,7 +618,8 @@ bool U7Object::RemoveObjectFromInventory(int objectid)
 				U7Object* child = GetObjectFromID(objectid);
 				if (child)
 				{
-					child->m_isContained = true;
+					// Don't change m_isContained here - let the code that places the object set it
+					// (e.g., equip sets true, drop to ground sets false, add to container sets true)
 					child->m_containingObjectId = -1; // Clear parent reference
 				}
 				m_inventory.erase(m_inventory.begin() + i);
