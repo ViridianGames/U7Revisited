@@ -1,7 +1,7 @@
 #include <fstream>
 #include <string>
 
-#include "AskExitState.h"
+#include "AskState.h"
 #include "Geist/Config.h"
 #include "Geist/Globals.h"
 #include "Geist/ResourceManager.h"
@@ -16,19 +16,19 @@ using namespace std;
 
 extern std::unique_ptr<Engine> g_Engine;
 
-AskExitState::AskExitState()
+AskState::AskState()
 {
 	// This is a modal dialog - render the game world beneath it
 	m_RenderStack = true;
 }
 
-AskExitState::~AskExitState()
+AskState::~AskState()
 {
 }
 
-void AskExitState::OnEnter()
+void AskState::OnEnter()
 {
-	Log("AskExitState::OnEnter()");
+	Log("AskState::OnEnter()");
 
 	// Disable dragging - modal system dialog should stay centered
 	m_gui.m_Draggable = false;
@@ -44,19 +44,25 @@ void AskExitState::OnEnter()
 	m_gui.SetAcceptingInput(false);
 }
 
-void AskExitState::OnExit()
+void AskState::OnExit()
 {
-	Log("AskExitState::OnExit()");
+	Log("AskState::OnExit()");
 }
 
-void AskExitState::Init(const std::string& data)
+void AskState::Init(const std::string& data)
 {
-	// Load exit confirmation GUI from ask_exit.ghost file
+	// Use the ghost file path if set, otherwise default to ask_exit.ghost for backward compatibility
+	if (m_ghostFilePath.empty())
+	{
+		m_ghostFilePath = "GUI/ask_exit.ghost";
+	}
+
+	// Load question dialog GUI from ghost file
 	m_serializer = std::make_unique<GhostSerializer>();
 
-	if (m_serializer->LoadFromFile("GUI/ask_exit.ghost", &m_gui))
+	if (m_serializer->LoadFromFile(m_ghostFilePath, &m_gui))
 	{
-		Log("AskExitState::Init - Successfully loaded ask_exit.ghost");
+		Log("AskState::Init - Successfully loaded " + m_ghostFilePath);
 
 		// Keep loaded fonts alive
 		m_loadedFonts = m_serializer->GetLoadedFonts();
@@ -70,7 +76,7 @@ void AskExitState::Init(const std::string& data)
 
 		if (m_yesButtonId == -1 || m_noButtonId == -1)
 		{
-			Log("AskExitState::Init - WARNING: Could not find button elements");
+			Log("AskState::Init - WARNING: Could not find YES/NO button elements");
 		}
 
 		// Set NO button as done button (close on NO)
@@ -81,18 +87,18 @@ void AskExitState::Init(const std::string& data)
 	}
 	else
 	{
-		Log("AskExitState::Init - ERROR: Failed to load ask_exit.ghost");
+		Log("AskState::Init - ERROR: Failed to load " + m_ghostFilePath);
 	}
 
-	Log("AskExitState::Init - Exit confirmation dialog initialized");
+	Log("AskState::Init - Question dialog initialized");
 }
 
-void AskExitState::Shutdown()
+void AskState::Shutdown()
 {
-	Log("AskExitState::Shutdown()");
+	Log("AskState::Shutdown()");
 }
 
-void AskExitState::Update()
+void AskState::Update()
 {
 	// Wait for mouse button to be released before accepting any input
 	// We wait until we see the button is NOT down (meaning it was released)
@@ -108,7 +114,7 @@ void AskExitState::Update()
 			{
 				m_waitingForMouseRelease = false;
 				m_gui.SetAcceptingInput(true);
-				Log("AskExitState::Update - Mouse released, now accepting input");
+				Log("AskState::Update - Mouse released, now accepting input");
 			}
 		}
 		// Do NOT call Update() while waiting - skip all input processing
@@ -124,15 +130,23 @@ void AskExitState::Update()
 		return;
 	}
 
-	// Handle YES button click - exit the game
+	// Handle YES button click
 	if (m_gui.m_ActiveElement == m_yesButtonId)
 	{
-		Log("AskExitState::Update - YES button clicked - exiting game");
-		g_Engine->m_Done = true;
+		Log("AskState::Update - YES button clicked");
+
+		// Call the callback if one is set
+		if (m_yesCallback)
+		{
+			m_yesCallback();
+		}
+
+		// Pop the state to close the dialog
+		g_StateMachine->PopState();
 	}
 }
 
-void AskExitState::Draw()
+void AskState::Draw()
 {
 	// Draw the GUI with modal overlay
 	BeginTextureMode(g_guiRenderTarget);

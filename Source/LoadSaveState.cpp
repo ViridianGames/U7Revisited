@@ -11,6 +11,7 @@
 #include "U7Globals.h"
 #include "GameSerializer.h"
 #include "MainState.h"
+#include "AskState.h"
 
 #include "raylib.h"
 
@@ -70,6 +71,9 @@ void LoadSaveState::OnEnter()
 
 	// Highlight the initially selected slot
 	UpdateSlotHighlighting();
+
+	// Update button visibility based on selected slot
+	UpdateButtonVisibility();
 }
 
 void LoadSaveState::OnExit()
@@ -178,6 +182,28 @@ void LoadSaveState::Update()
 	if (m_selectedSlot != previousSlot)
 	{
 		UpdateSlotHighlighting();
+		UpdateButtonVisibility();
+	}
+
+	// Check if text in selected slot changed (to update button visibility)
+	if (m_selectedSlot != -1 && m_slotIds[m_selectedSlot] != -1)
+	{
+		auto element = m_gui.GetElement(m_slotIds[m_selectedSlot]);
+		if (element)
+		{
+			// Clear slot text if it's exactly "empt"
+			if (element->m_String == "empt")
+			{
+				element->m_String = "";
+			}
+
+			// Update button visibility if text changed
+			if (element->m_String != m_saveNames[m_selectedSlot])
+			{
+				m_saveNames[m_selectedSlot] = element->m_String;
+				UpdateButtonVisibility();
+			}
+		}
 	}
 
 	// Handle SAVE button click
@@ -212,18 +238,38 @@ void LoadSaveState::Update()
 				m_saveNames[m_selectedSlot] = sanitizedName;
 			}
 
-			// Attempt to save game
-			if (GameSerializer::SaveGame(m_selectedSlot, sanitizedName))
+			// Check if we're overwriting an existing save with a different name
+			bool isOverwriting = false;
+			if (GameSerializer::DoesSaveExist(m_selectedSlot))
 			{
-				Log("LoadSaveState::Update - Game saved successfully to slot " + std::to_string(m_selectedSlot));
-				AddConsoleString("Game saved as '" + sanitizedName + "'", GREEN);
-				g_StateMachine->PopState();
+				std::string existingSaveName = GameSerializer::GetSaveName(m_selectedSlot);
+				isOverwriting = (existingSaveName != sanitizedName);
+			}
+
+			// If overwriting, show confirmation dialog
+			if (isOverwriting)
+			{
+				Log("LoadSaveState::Update - Requesting confirmation to overwrite existing save");
+
+				// Get the AskSaveState and set callback to perform the save
+				AskState* askSaveState = dynamic_cast<AskState*>(g_StateMachine->GetState(STATE_ASKSAVESTATE));
+				if (askSaveState)
+				{
+					// Capture values for the callback
+					int slotNumber = m_selectedSlot;
+					std::string nameToSave = sanitizedName;
+
+					askSaveState->SetYesCallback([this, slotNumber, nameToSave]() {
+						PerformSave(slotNumber, nameToSave);
+					});
+
+					g_StateMachine->PushState(STATE_ASKSAVESTATE);
+				}
 			}
 			else
 			{
-				std::string error = GameSerializer::GetLastError();
-				Log("LoadSaveState::Update - ERROR: Failed to save game - " + error);
-				AddConsoleString("Save failed: " + error, RED);
+				// No conflict, save directly
+				PerformSave(m_selectedSlot, sanitizedName);
 			}
 		}
 	}
@@ -330,5 +376,66 @@ void LoadSaveState::UpdateSlotHighlighting()
 				}
 			}
 		}
+	}
+}
+
+void LoadSaveState::UpdateButtonVisibility()
+{
+	// Get current text from selected slot
+	std::string currentText = "";
+	if (m_selectedSlot != -1 && m_slotIds[m_selectedSlot] != -1)
+	{
+		auto element = m_gui.GetElement(m_slotIds[m_selectedSlot]);
+		if (element)
+		{
+			currentText = element->m_String;
+		}
+	}
+
+	// Check if slot text is valid (not empty and not "empty")
+	bool isValidText = !currentText.empty() && currentText != "empty";
+
+	// SAVE button: visible only if text is valid
+	if (m_saveButtonId != -1)
+	{
+		auto saveButton = m_gui.GetElement(m_saveButtonId);
+		if (saveButton)
+		{
+			saveButton->m_Visible = isValidText;
+		}
+	}
+
+	// LOAD button: visible only if save exists AND current text matches the saved filename
+	if (m_loadButtonId != -1)
+	{
+		auto loadButton = m_gui.GetElement(m_loadButtonId);
+		if (loadButton)
+		{
+			bool canLoad = false;
+			if (isValidText && m_selectedSlot != -1 && GameSerializer::DoesSaveExist(m_selectedSlot))
+			{
+				// Check if current text matches the actual save name on disk
+				std::string savedName = GameSerializer::GetSaveName(m_selectedSlot);
+				canLoad = (currentText == savedName);
+			}
+			loadButton->m_Visible = canLoad;
+		}
+	}
+}
+
+void LoadSaveState::PerformSave(int slotNumber, const std::string& saveName)
+{
+	// Attempt to save game
+	if (GameSerializer::SaveGame(slotNumber, saveName))
+	{
+		Log("LoadSaveState::PerformSave - Game saved successfully to slot " + std::to_string(slotNumber));
+		AddConsoleString("Game saved as '" + saveName + "'", GREEN);
+		g_StateMachine->PopState();
+	}
+	else
+	{
+		std::string error = GameSerializer::GetLastError();
+		Log("LoadSaveState::PerformSave - ERROR: Failed to save game - " + error);
+		AddConsoleString("Save failed: " + error, RED);
 	}
 }

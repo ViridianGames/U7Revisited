@@ -26,7 +26,7 @@
 #include "ConversationState.h"
 #include "ScriptRenameState.h"
 #include "LoadSaveState.h"
-#include "AskExitState.h"
+#include "AskState.h"
 #include "ShapeData.h"
 #include "GumpManager.h"
 #include <string>
@@ -309,9 +309,17 @@ int main(int argv, char** argc)
       loadSaveState->Init("engine.cfg");
       g_StateMachine->RegisterState(STATE_LOADSAVESTATE, loadSaveState, "LOAD_SAVE_STATE");
 
-      AskExitState* askExitState = new AskExitState;
+      AskState* askExitState = new AskState;
+      askExitState->SetGhostFile("GUI/ask_exit.ghost");
+      askExitState->SetYesCallback([]() { g_Engine->m_Done = true; });
       askExitState->Init("engine.cfg");
       g_StateMachine->RegisterState(STATE_ASKEXITSTATE, askExitState, "ASK_EXIT_STATE");
+
+      AskState* askSaveState = new AskState;
+      askSaveState->SetGhostFile("GUI/ask_save.ghost");
+      // Callback will be set dynamically in LoadSaveState before pushing the state
+      askSaveState->Init("engine.cfg");
+      g_StateMachine->RegisterState(STATE_ASKSAVESTATE, askSaveState, "ASK_SAVE_STATE");
 
       g_StateMachine->MakeStateTransition(STATE_LOADINGSTATE);
 

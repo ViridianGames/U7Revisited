@@ -42,8 +42,10 @@ private:
 	std::unique_ptr<GhostSerializer> m_serializer;
 	std::vector<std::shared_ptr<Font>> m_loadedFonts;
 
-	// Helper method to update slot highlighting
+	// Helper methods
 	void UpdateSlotHighlighting();
+	void UpdateButtonVisibility();  // Show/hide LOAD/SAVE buttons based on selected slot
+	void PerformSave(int slotNumber, const std::string& saveName);  // Actually perform the save operation
 };
 
 #endif

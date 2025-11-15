@@ -160,7 +160,7 @@ set(SOURCES
     Source/Ghost/GhostSerializer.cpp
     Source/Ghost/GhostWindow.cpp
 
-    Source/AskExitState.cpp
+    Source/AskState.cpp
     Source/ConversationState.cpp
     Source/GameSerializer.cpp
     Source/GumpManager.cpp
