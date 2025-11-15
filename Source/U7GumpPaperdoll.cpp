@@ -20,9 +20,8 @@ GumpPaperdoll::GumpPaperdoll()
 	, m_paperdollType(0)
 	, m_data{}
 	, m_backgroundTexture(nullptr)
-	, m_hoverText("")
-	, m_hoverTextDuration(0.0f)
 {
+	// m_hoverText, m_hoverTextDuration, m_hoverTextPos inherited from Gump base class
 }
 
 GumpPaperdoll::~GumpPaperdoll()
@@ -396,9 +395,10 @@ void GumpPaperdoll::Update()
 		m_gui.m_ActiveElement = -1; // Clear active element to prevent multiple triggers
 	}
 
-	// Handle equipment slot clicks
+	// Handle equipment slot clicks (only if we're the topmost gump)
+	bool isTopmostGump = (g_gumpManager->m_gumpUnderMouse == this);
 	auto npcIt = g_NPCData.find(m_npcId);
-	if (npcIt != g_NPCData.end() && npcIt->second)
+	if (isTopmostGump && npcIt != g_NPCData.end() && npcIt->second)
 	{
 		NPCData* npcData = npcIt->second.get();
 

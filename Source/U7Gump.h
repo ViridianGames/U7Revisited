@@ -117,6 +117,11 @@ public:
 
 	Vector2 m_dragStart;
 
+	// Hover text for showing item names
+	std::string m_hoverText;
+	float m_hoverTextDuration = 0.0f;
+	Vector2 m_hoverTextPos = {0, 0};  // Screen position for hover text
+
 	//int m_draggedObjectId = -1;
 	//bool m_draggingObject = false;
 	//Vector2 m_dragOffset;
