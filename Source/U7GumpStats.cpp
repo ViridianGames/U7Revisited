@@ -77,7 +77,7 @@ void GumpStats::OnEnter()
 			{
 				auto nameText = static_cast<GuiTextArea*>(nameElement.get());
 
-				// Get NPC name
+				// Get NPC data
 				auto npcIt = g_NPCData.find(m_npcId);
 				if (npcIt != g_NPCData.end() && npcIt->second)
 				{
@@ -86,6 +86,49 @@ void GumpStats::OnEnter()
 				else
 				{
 					nameText->m_String = "Unknown";
+				}
+			}
+		}
+
+		// Get NPC data for stats
+		auto npcIt = g_NPCData.find(m_npcId);
+		if (npcIt != g_NPCData.end() && npcIt->second)
+		{
+			NPCData* npcData = npcIt->second.get();
+
+			// Update STR
+			int strTextID = m_serializer->GetElementID("STR");
+			if (strTextID != -1)
+			{
+				auto strElement = m_gui.GetElement(strTextID);
+				if (strElement && strElement->m_Type == GUI_TEXTAREA)
+				{
+					auto strText = static_cast<GuiTextArea*>(strElement.get());
+					strText->m_String = std::to_string(static_cast<int>(npcData->str));
+				}
+			}
+
+			// Update DEX
+			int dexTextID = m_serializer->GetElementID("DEX");
+			if (dexTextID != -1)
+			{
+				auto dexElement = m_gui.GetElement(dexTextID);
+				if (dexElement && dexElement->m_Type == GUI_TEXTAREA)
+				{
+					auto dexText = static_cast<GuiTextArea*>(dexElement.get());
+					dexText->m_String = std::to_string(static_cast<int>(npcData->dex));
+				}
+			}
+
+			// Update INT
+			int intTextID = m_serializer->GetElementID("INT");
+			if (intTextID != -1)
+			{
+				auto intElement = m_gui.GetElement(intTextID);
+				if (intElement && intElement->m_Type == GUI_TEXTAREA)
+				{
+					auto intText = static_cast<GuiTextArea*>(intElement.get());
+					intText->m_String = std::to_string(static_cast<int>(npcData->iq));
 				}
 			}
 		}

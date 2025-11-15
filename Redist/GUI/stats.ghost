@@ -8,7 +8,7 @@
           -1
         ],
         "size": [
-          135,
+          306,
           135
         ],
         "backgroundColor": [
@@ -82,13 +82,97 @@
               255,
               255,
               255,
-              255
+              250
             ],
             "size": [
-              27,
+              26,
               10
             ],
             "justified": 0
+          },
+          {
+            "name": "STATS",
+            "type": "panel",
+            "position": [
+              110,
+              15
+            ],
+            "size": [
+              20,
+              30
+            ],
+            "backgroundColor": [
+              80,
+              80,
+              80,
+              0
+            ],
+            "filled": true,
+            "layout": "vert",
+            "horzPadding": 0,
+            "vertPadding": 0,
+            "elements": [
+              {
+                "name": "STR",
+                "type": "textarea",
+                "position": [
+                  -1,
+                  -1
+                ],
+                "text": "Label Text",
+                "textColor": [
+                  0,
+                  0,
+                  0,
+                  255
+                ],
+                "size": [
+                  20,
+                  10
+                ],
+                "justified": 0
+              },
+              {
+                "name": "DEX",
+                "type": "textarea",
+                "position": [
+                  -1,
+                  -1
+                ],
+                "text": "Label Text",
+                "textColor": [
+                  0,
+                  0,
+                  0,
+                  255
+                ],
+                "size": [
+                  20,
+                  10
+                ],
+                "justified": 0
+              },
+              {
+                "name": "INT",
+                "type": "textarea",
+                "position": [
+                  -1,
+                  -1
+                ],
+                "text": "Label Text",
+                "textColor": [
+                  0,
+                  0,
+                  0,
+                  255
+                ],
+                "size": [
+                  20,
+                  10
+                ],
+                "justified": 0
+              }
+            ]
           }
         ]
       }
