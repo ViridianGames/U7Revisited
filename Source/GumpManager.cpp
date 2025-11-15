@@ -359,7 +359,13 @@ void GumpManager::Update()
 						if (CheckCollisionPointRec(mousePos, Rectangle{ gump->m_gui.m_Pos.x + (gump->m_containerData.m_boxOffset.x), gump->m_gui.m_Pos.y + (gump->m_containerData.m_boxOffset.y),
 	gump->m_containerData.m_boxSize.x, gump->m_containerData.m_boxSize.y }))
 						{
-							object->m_InventoryPos = {mousePos.x - (gump->m_gui.m_Pos.x + (gump->m_containerData.m_boxOffset.x)), mousePos.y - (gump->m_gui.m_Pos.y + (gump->m_containerData.m_boxOffset.y)) };
+							// Center item on cursor by offsetting by half the item's size
+							float itemWidth = object->m_shapeData->GetDefaultTextureImage().width;
+							float itemHeight = object->m_shapeData->GetDefaultTextureImage().height;
+							object->m_InventoryPos = {
+								mousePos.x - (gump->m_gui.m_Pos.x + (gump->m_containerData.m_boxOffset.x)) - (itemWidth / 2.0f),
+								mousePos.y - (gump->m_gui.m_Pos.y + (gump->m_containerData.m_boxOffset.y)) - (itemHeight / 2.0f)
+							};
 						}
 						else // In the container but not in the box area
 						{
