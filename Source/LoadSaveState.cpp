@@ -365,14 +365,14 @@ void LoadSaveState::UpdateSlotHighlighting()
 				GuiTextInput* textInput = dynamic_cast<GuiTextInput*>(element.get());
 				if (textInput)
 				{
-					// Highlighted slot gets transparent blue, others get transparent black
+					// Highlighted slot gets dark brown, others get light brown
 					if (i == m_selectedSlot)
 					{
-						textInput->m_BackgroundColor = Color{ 64, 128, 255, 128 };  // Transparent blue
+						textInput->m_BackgroundColor = Color{ 136, 92, 44, 255 };  // Dark brown (#885c2c)
 					}
 					else
 					{
-						textInput->m_BackgroundColor = Color{ 0, 0, 0, 128 };  // Transparent black (default)
+						textInput->m_BackgroundColor = Color{ 184, 152, 112, 255 };  // Light brown (#b89870)
 					}
 				}
 			}

@@ -46,7 +46,7 @@
             "type": "iconbutton",
             "position": [
               4,
-              111
+              114
             ],
             "sprite": {
               "spritesheet": "GUI/gumps.png",
@@ -78,7 +78,7 @@
               1
             ],
             "size": [
-              203,
+              206,
               164
             ],
             "backgroundColor": [
@@ -101,7 +101,7 @@
                 ],
                 "text": "",
                 "size": [
-                  203,
+                  206,
                   10
                 ],
                 "textColor": [
@@ -132,7 +132,7 @@
                 ],
                 "text": "",
                 "size": [
-                  203,
+                  206,
                   10
                 ],
                 "textColor": [
@@ -163,7 +163,7 @@
                 ],
                 "text": "",
                 "size": [
-                  203,
+                  206,
                   10
                 ],
                 "textColor": [
@@ -194,7 +194,7 @@
                 ],
                 "text": "",
                 "size": [
-                  203,
+                  206,
                   10
                 ],
                 "textColor": [
@@ -225,7 +225,7 @@
                 ],
                 "text": "",
                 "size": [
-                  203,
+                  206,
                   10
                 ],
                 "textColor": [
@@ -256,7 +256,7 @@
                 ],
                 "text": "",
                 "size": [
-                  203,
+                  206,
                   10
                 ],
                 "textColor": [
@@ -287,7 +287,7 @@
                 ],
                 "text": "",
                 "size": [
-                  203,
+                  206,
                   10
                 ],
                 "textColor": [
@@ -318,7 +318,7 @@
                 ],
                 "text": "",
                 "size": [
-                  203,
+                  206,
                   10
                 ],
                 "textColor": [
@@ -349,7 +349,7 @@
                 ],
                 "text": "",
                 "size": [
-                  203,
+                  206,
                   10
                 ],
                 "textColor": [
@@ -380,7 +380,7 @@
                 ],
                 "text": "",
                 "size": [
-                  203,
+                  206,
                   10
                 ],
                 "textColor": [
