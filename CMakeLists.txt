@@ -375,13 +375,7 @@ if(WIN32)
     set_target_properties(Ghost PROPERTIES
         VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
     )
-    # Copy executable to Ghost folder after build (Release only)
-    add_custom_command(TARGET Ghost POST_BUILD
-        COMMAND $<$<CONFIG:Release>:${CMAKE_COMMAND}> $<$<CONFIG:Release>:-E> $<$<CONFIG:Release>:copy> $<$<CONFIG:Release>:$<TARGET_FILE:Ghost>> $<$<CONFIG:Release>:"${CMAKE_CURRENT_SOURCE_DIR}/Ghost/">
-        COMMAND_EXPAND_LISTS
-        COMMENT "Copying Ghost Release executable to Ghost folder"
-    )
-    # Copy executable to Redist folder so it can be launched from game
+    # Copy executable to Redist folder
     add_custom_command(TARGET Ghost POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:Ghost> "${CMAKE_CURRENT_SOURCE_DIR}/Redist/"
         COMMENT "Copying Ghost executable to Redist folder"
