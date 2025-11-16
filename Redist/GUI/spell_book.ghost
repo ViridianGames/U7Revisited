@@ -180,7 +180,7 @@
               255
             ],
             "size": [
-              29,
+              28,
               12
             ],
             "justified": 0
@@ -391,6 +391,74 @@
                 ]
               }
             ]
+          },
+          {
+            "name": "PAGE1",
+            "type": "sprite",
+            "position": [
+              37,
+              -10
+            ],
+            "sprite": {
+              "spritesheet": "GUI/gumps.png",
+              "x": 61,
+              "y": 687,
+              "w": 51,
+              "h": 92
+            },
+            "scaleX": 1.0,
+            "scaleY": 1.0
+          },
+          {
+            "name": "PAGE2",
+            "type": "sprite",
+            "position": [
+              66,
+              -16
+            ],
+            "sprite": {
+              "spritesheet": "GUI/gumps.png",
+              "x": 34,
+              "y": 684,
+              "w": 26,
+              "h": 95
+            },
+            "scaleX": 1.0,
+            "scaleY": 1.0
+          },
+          {
+            "name": "PAGE3",
+            "type": "sprite",
+            "position": [
+              81,
+              -12
+            ],
+            "sprite": {
+              "spritesheet": "GUI/gumps.png",
+              "x": 0,
+              "y": 684,
+              "w": 32,
+              "h": 95
+            },
+            "scaleX": 1.0,
+            "scaleY": 1.0
+          },
+          {
+            "name": "PAGE4",
+            "type": "sprite",
+            "position": [
+              86,
+              -13
+            ],
+            "sprite": {
+              "spritesheet": "GUI/gumps.png",
+              "x": 112,
+              "y": 689,
+              "w": 52,
+              "h": 89
+            },
+            "scaleX": 1.0,
+            "scaleY": 1.0
           }
         ]
       }
