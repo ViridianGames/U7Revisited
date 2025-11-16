@@ -6,6 +6,12 @@
       "SLOT_RIGHT_HAND"
     ]
   },
+  "249": {
+    "name": "top",
+    "slots": [
+      "SLOT_TORSO"
+    ]
+  },
   "296": {
     "name": "ring of invisibility",
     "slots": [
@@ -686,6 +692,12 @@
     "slots": [
       "SLOT_LEFT_HAND",
       "SLOT_RIGHT_HAND"
+    ]
+  },
+  "738": {
+    "name": "pants",
+    "slots": [
+      "SLOT_LEGS"
     ]
   },
   "746": {
