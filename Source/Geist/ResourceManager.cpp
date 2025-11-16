@@ -10,9 +10,21 @@
 
 using namespace std;
 
+// Initialize static members
+std::string ResourceManager::s_audioPath = "Audio/";
+
 void ResourceManager::Init(const std::string& configfile)
 {
+	Config config;
+	config.Load(configfile);
 
+	// Load AudioPath from config if present
+	std::string audioPath = config.GetString("AudioPath");
+	if (!audioPath.empty())
+	{
+		s_audioPath = audioPath;
+		Log("ResourceManager: AudioPath set to: " + s_audioPath);
+	}
 }
 
 void ResourceManager::Shutdown()
@@ -21,6 +33,13 @@ void ResourceManager::Shutdown()
 	for (node = m_TextureList.begin(); node != m_TextureList.end(); ++node)
 	{
 		UnloadTexture(*(*node).second);
+	}
+
+	// Unload cached sounds
+	map<std::string, unique_ptr<Sound> >::iterator node2;
+	for (node2 = m_CachedSoundList.begin(); node2 != m_CachedSoundList.end(); ++node2)
+	{
+		UnloadSound(*(*node2).second);
 	}
 
 	map<std::string, unique_ptr<Wave> >::iterator node3;
@@ -100,8 +119,9 @@ void ResourceManager::AddModel(const std::string& modelName)
 
 void ResourceManager::AddSound(const std::string& soundName)
 {
-	Log("Loading sound " + soundName);
-	m_SoundList[soundName] = std::make_unique<Wave>(LoadWave(soundName.c_str()));
+	std::string fullPath = s_audioPath + soundName;
+	Log("Loading sound " + fullPath);
+	m_SoundList[soundName] = std::make_unique<Wave>(LoadWave(fullPath.c_str()));
 	Log("Load successful.");
 }
 
@@ -171,6 +191,39 @@ Wave* ResourceManager::GetSound(const std::string& soundName)
 	}
 }
 
+Sound* ResourceManager::GetCachedSound(const std::string& soundName)
+{
+	map<std::string, unique_ptr<Sound> >::iterator node;
+	node = m_CachedSoundList.find(soundName);
+
+	if (node != m_CachedSoundList.end())
+	{
+		return (*node).second.get();
+	}
+	else
+	{
+		Log("Creating cached sound " + soundName + " on the fly!");
+		// Get the wave (which auto-loads if needed)
+		Wave* wave = GetSound(soundName);
+		if (wave)
+		{
+			m_CachedSoundList[soundName] = std::make_unique<Sound>(LoadSoundFromWave(*wave));
+			return m_CachedSoundList[soundName].get();
+		}
+		return nullptr;
+	}
+}
+
+void ResourceManager::PlaySound(const std::string& soundName, float volume)
+{
+	Sound* sound = GetCachedSound(soundName);
+	if (sound)
+	{
+		SetSoundVolume(*sound, volume);
+		::PlaySound(*sound);
+	}
+}
+
 Music* ResourceManager::GetMusic(const std::string& musicName)
 {
 	map<std::string, unique_ptr<Music> >::iterator node;
@@ -221,8 +274,9 @@ void ResourceManager::ReloadTexture(const std::string& textureName)
 		// Unload the old texture from GPU
 		UnloadTexture(*it->second);
 
-		// Load the new texture from disk
-		it->second = std::make_unique<Texture>(LoadTexture(textureName.c_str()));
+		// Load the new texture from disk and store it IN-PLACE in the same Texture object
+		// This preserves the pointer that existing Sprite objects are holding
+		*it->second = LoadTexture(textureName.c_str());
 
 		// Verify it loaded correctly
 		Texture* tex = it->second.get();

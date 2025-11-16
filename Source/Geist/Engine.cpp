@@ -4,6 +4,7 @@
 #include "StateMachine.h"
 #include "ScriptingSystem.h"
 #include "Logging.h"
+#include "U7Globals.h"
 #include <sstream>
 #include <fstream>
 #include <time.h>
@@ -45,6 +46,10 @@ void Engine::Init(const std::string &configfile)
 	SetTargetFPS(60);
 	HideCursor(); // We'll use our own.
 
+	// Initialize audio device
+	InitAudioDevice();
+	Log("Audio device initialized");
+
 	Log("Done with Engine::Init()");
 }
 
@@ -52,6 +57,7 @@ void Engine::Shutdown()
 {
 	g_StateMachine->Shutdown();
 	g_ResourceManager->Shutdown();
+	CloseAudioDevice();
 }
 
 void Engine::Update()
@@ -60,9 +66,10 @@ void Engine::Update()
 	g_StateMachine->Update();
 	g_ScriptingSystem->Update();
 
-	if (WindowShouldClose())
+	if (WindowShouldClose() && !m_askedToExit)
 	{
-		m_Done = true;
+		m_askedToExit = true;
+		g_StateMachine->PushState(STATE_ASKEXITSTATE);
 	}
 
 	// F12 takes a screenshot
@@ -82,9 +89,11 @@ void Engine::Update()
 
 void Engine::Draw()
 {
+	BeginDrawing();
 	g_ResourceManager->Draw();
 	g_StateMachine->Draw();
 	g_ScriptingSystem->Draw();
+	EndDrawing();
 }
 
 void Engine::CaptureScreenshot()

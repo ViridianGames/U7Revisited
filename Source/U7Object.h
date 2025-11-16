@@ -7,6 +7,9 @@
 #include <list>
 #include "lua.h"
 #include "U7Globals.h"
+#include <json.hpp>
+
+using json = nlohmann::json;
 
 struct ObjectData;
 enum class ObjectTypes;
@@ -27,7 +30,54 @@ public:
 		UNIT_TYPE_LAST
 	};
 
-   U7Object() {};
+   U7Object()
+      : m_Pos({ 0.0f, 0.0f, 0.0f })
+      , m_Dest({ 0.0f, 0.0f, 0.0f })
+      , m_Direction({ 0.0f, 0.0f, 0.0f })
+      , m_Scaling({ 1.0f, 1.0f, 1.0f })
+      , m_anchorPos({ 0.0f, 0.0f, 0.0f })
+      , m_ExternalForce({ 0.0f, 0.0f, 0.0f })
+      , m_Angle(0.0f)
+      , m_ObjectType(0)
+      , m_Frame(0)
+      , m_Quality(0)
+      , m_Visible(false)
+      , m_Selected(false)
+      , m_BaseSpeed(0.0f)
+      , m_BaseMaxHP(0.0f)
+      , m_BaseHP(0.0f)
+      , m_BaseAttack(0.0f)
+      , m_BaseDefense(0.0f)
+      , m_BaseTeam(0.0f)
+      , m_speed(0.0f)
+      , m_hp(0.0f)
+      , m_combat(0.0f)
+      , m_magic(0.0f)
+      , m_Team(0)
+      , m_GravityFlag(false)
+      , m_ExternalForceFlag(false)
+      , m_BounceFlag(false)
+      , m_Mesh(nullptr)
+      , m_Texture(nullptr)
+      , m_DropShadow(nullptr)
+      , m_ObjectConfig(nullptr)
+      , m_drawType(ShapeDrawType(0))
+      , m_shapeData(nullptr)
+      , m_objectData(nullptr)
+      , m_distanceFromCamera(0.0)
+      , m_boundingBox({ 0 })
+      , m_terrainCenterPoint({ 0.0f, 0.0f, 0.0f })
+      , m_centerPoint({ 0.0f, 0.0f, 0.0f })
+      , m_isNPC(false)
+      , m_isContainer(false)
+      , m_isContained(false)
+      , m_containingObjectId(-1)
+      , m_hasConversationTree(false)
+      , m_hasGump(false)
+      , m_isEgg(false)
+      , m_NPCID(-1)
+      , m_InventoryPos({ 0.0f, 0.0f })
+   {}
    virtual ~U7Object();
 
    virtual void Init(const std::string& configfile, int unitType, int frame);
@@ -71,7 +121,11 @@ public:
 	bool IsMagicLocked();
 
 	void SetFrames(int framex, int framey) { m_currentFrameX = framex; m_currentFrameY = framey; }
-  
+
+	// Serialization
+	json SaveToJson() const;
+	static U7Object* LoadFromJson(const json& j);
+
    Vector3 m_Pos;
    Vector3 m_Dest;
    Vector3 m_Direction;

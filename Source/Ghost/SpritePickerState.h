@@ -42,4 +42,26 @@ private:
 	int m_y = 0;
 	int m_width = 0;
 	int m_height = 0;
+
+	// Zoom and pan state
+	float m_zoom = 1.0f;
+	float m_panX = 0.0f;
+	float m_panY = 0.0f;
+
+	// Drag selection state
+	bool m_isDragging = false;
+	int m_dragStartX = 0;
+	int m_dragStartY = 0;
+	int m_dragEndX = 0;
+	int m_dragEndY = 0;
+
+	// Pan state
+	bool m_isPanning = false;
+	float m_panStartMouseX = 0.0f;
+	float m_panStartMouseY = 0.0f;
+	float m_panStartX = 0.0f;
+	float m_panStartY = 0.0f;
+
+	// Fixed browser area bounds (relative to main panel position)
+	const Rectangle m_browserBounds = {500.0f, 10.0f, 103.0f, 408.0f};
 };

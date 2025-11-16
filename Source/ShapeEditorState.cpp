@@ -2171,8 +2171,6 @@ void ShapeEditorState::DrawCuboidWireframe(const Vector3& position, const Vector
 
 void ShapeEditorState::Draw()
 {
-	BeginDrawing();
-
 	ClearBackground(Color{ 106, 90, 205, 255 });
 
 	ShapeData* shapeData = &g_shapeTable[m_currentShape][m_currentFrame];
@@ -2390,10 +2388,6 @@ void ShapeEditorState::Draw()
 
 	// Draw angle value (larger font for readability)
 	DrawTextEx(*g_guiFont.get(), TextFormat("%d deg", currentAngle), {(float)(sliderX + sliderWidth + 10), (float)(sliderY)}, labelFontSize, 1, WHITE);
-
-	DrawTextureEx(*g_Cursor, { float(GetMouseX()), float(GetMouseY()) }, 0, g_DrawScale, WHITE);
-
-	EndDrawing();
 }
 
 void ShapeEditorState::SetupBboardGui()

@@ -174,7 +174,7 @@ public:
 	bool m_IsDragging = false;
 	Vector2 m_DragOffset;
 	int m_DragAreaHeight = 20;
-	bool IsMouseInDragArea() const;
+	virtual bool IsMouseInDragArea() const;
 
 	// Callback for pixel-perfect drag area validation (used by gumps to check transparency)
 	std::function<bool(Vector2)> m_DragAreaValidationCallback = nullptr;

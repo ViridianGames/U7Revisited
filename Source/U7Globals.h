@@ -50,6 +50,9 @@ enum GameStates
 	STATE_CREDITS,
 	STATE_CONVERSATIONSTATE,
 	STATE_SCRIPTRENAMESTATE,
+	STATE_LOADSAVESTATE,
+	STATE_ASKEXITSTATE,
+	STATE_ASKSAVESTATE,
 	STATE_LASTSTATE
 };
 
@@ -319,6 +322,7 @@ extern std::unique_ptr<Terrain> g_Terrain;
 
 extern std::unordered_map<int, std::unique_ptr<U7Object> > g_objectList;
 
+extern unsigned int g_CurrentUnitID;  // Next available object ID for dynamic objects
 extern unsigned int g_CurrentUpdate;
 
 extern bool g_CameraMoved;

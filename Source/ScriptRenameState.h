@@ -9,7 +9,7 @@
 class ScriptRenameState : public State
 {
 public:
-	ScriptRenameState() {};
+	ScriptRenameState() { m_RenderStack = true; }
 	~ScriptRenameState();
 
 	void Init(const std::string& configfile) override;

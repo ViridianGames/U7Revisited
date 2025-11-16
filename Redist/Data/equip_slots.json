@@ -1,4 +1,17 @@
 {
+    "178": {
+    "name": "map",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
+    ]
+  },
+  "249": {
+    "name": "top",
+    "slots": [
+      "SLOT_TORSO"
+    ]
+  },
   "296": {
     "name": "ring of invisibility",
     "slots": [
@@ -44,6 +57,13 @@
     "name": "magic helm",
     "slots": [
       "SLOT_HEAD"
+    ]
+  },
+  "388": {
+    "name": "eating utensils",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
     ]
   },
   "444": {
@@ -137,6 +157,13 @@
       "SLOT_AMMO"
     ]
   },
+  "555": {
+    "name": "hawk",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
+    ]
+  },
   "556": {
     "name": "magic arrow",
     "slots": [
@@ -172,6 +199,17 @@
       "SLOT_LEFT_HAND",
       "SLOT_RIGHT_HAND",
       "SLOT_BELT"
+    ]
+  },
+  "562": {
+    "name": "The Death Scythe",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
+    ],
+    "fills": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
     ]
   },
   "564": {
@@ -293,7 +331,7 @@
     ]
   },
   "587": {
-    "name": "boots",
+    "name": "magic boots",
     "slots": [
       "SLOT_FEET"
     ]
@@ -309,6 +347,14 @@
     "slots": [
       "SLOT_LEFT_HAND",
       "SLOT_RIGHT_HAND"
+    ]
+  },
+  "591": {
+    "name": "main gauche",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND",
+      "SLOT_BELT"
     ]
   },
   "592": {
@@ -633,10 +679,26 @@
       "SLOT_TORSO"
     ]
   },
+  "675": {
+    "name": "desk items",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND",
+      "SLOT_BELT"
+    ]
+  },
   "686": {
     "name": "magic leggings",
     "slots": [
       "SLOT_LEGS"
+    ]
+  },
+  "698": {
+    "name": "shears",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND",
+      "SLOT_BELT"
     ]
   },
   "701": {
@@ -679,6 +741,12 @@
     "slots": [
       "SLOT_LEFT_HAND",
       "SLOT_RIGHT_HAND"
+    ]
+  },
+  "738": {
+    "name": "pants",
+    "slots": [
+      "SLOT_LEGS"
     ]
   },
   "746": {
@@ -827,6 +895,17 @@
     "name": "fire bolt",
     "slots": [
       "SLOT_AMMO"
+    ]
+  },
+  "885": {
+    "name": "fellowship staff",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
+    ],
+    "fills": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
     ]
   },
   "948": {

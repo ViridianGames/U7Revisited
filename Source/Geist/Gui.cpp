@@ -138,10 +138,10 @@ void Gui::Draw()
 		node.second->Draw();
 	}
 
-	// Second pass: Draw expanded dropdowns on top of everything
+	// Second pass: ONLY draw expanded dropdown items on top of everything
 	for (auto& node : m_GuiElementList)
 	{
-		if (node.second->m_Type == GUI_LIST)
+		if (node.second->m_Type == GUI_LIST && node.second->m_Visible)
 		{
 			GuiList* list = static_cast<GuiList*>(node.second.get());
 			if (list->m_IsExpanded)

@@ -1,0 +1,47 @@
+{
+  "gui": {
+    "elements": [
+      {
+        "type": "panel",
+        "position": [
+          -1,
+          -1
+        ],
+        "size": [
+          375,
+          375
+        ],
+        "backgroundColor": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "filled": true,
+        "layout": "horz",
+        "horzPadding": 0,
+        "vertPadding": 0,
+        "font": "babyblocks.ttf",
+        "fontSize": 30,
+        "elements": [
+          {
+            "type": "sprite",
+            "position": [
+              -1,
+              -1
+            ],
+            "sprite": {
+              "spritesheet": "minimap.png",
+              "x": 0,
+              "y": 0,
+              "w": 1500,
+              "h": 1500
+            },
+            "scaleX": 0.25,
+            "scaleY": 0.25
+          }
+        ]
+      }
+    ]
+  }
+}

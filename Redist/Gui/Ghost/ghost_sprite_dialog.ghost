@@ -8,8 +8,8 @@
           20
         ],
         "size": [
-          800.0,
-          400.0
+          455,
+          428
         ],
         "backgroundColor": [
           60,
@@ -31,8 +31,8 @@
               -1
             ],
             "size": [
-              294.0,
-              362.0
+              435,
+              450
             ],
             "backgroundColor": [
               60,
@@ -61,11 +61,11 @@
                   255,
                   255
                 ],
-                "justified": 0,
                 "size": [
-                  180.0,
-                  30.0
-                ]
+                  180,
+                  29
+                ],
+                "justified": 0
               },
               {
                 "name": "SPRITE_FILENAME",
@@ -75,10 +75,6 @@
                   -1
                 ],
                 "text": "Open Image...",
-                "size": [
-                  150.0,
-                  20.0
-                ],
                 "textColor": [
                   255,
                   255,
@@ -111,11 +107,11 @@
                   255,
                   255
                 ],
-                "justified": 0,
                 "size": [
-                  30.0,
-                  46.0
-                ]
+                  119,
+                  46
+                ],
+                "justified": 0
               },
               {
                 "name": "SPRITE_X",
@@ -126,8 +122,8 @@
                 ],
                 "valueRange": 255,
                 "size": [
-                  200.0,
-                  40.0
+                  199,
+                  40
                 ],
                 "vertical": false,
                 "spurColor": [
@@ -156,11 +152,11 @@
                   255,
                   255
                 ],
-                "justified": 0,
                 "size": [
-                  60.0,
-                  46.0
-                ]
+                  119,
+                  46
+                ],
+                "justified": 0
               },
               {
                 "name": "SPRITE_Y",
@@ -171,8 +167,8 @@
                 ],
                 "valueRange": 255,
                 "size": [
-                  200.0,
-                  40.0
+                  199,
+                  40
                 ],
                 "vertical": false,
                 "spurColor": [
@@ -201,11 +197,11 @@
                   255,
                   255
                 ],
-                "justified": 0,
                 "size": [
-                  60.0,
-                  46.0
-                ]
+                  119,
+                  46
+                ],
+                "justified": 0
               },
               {
                 "name": "SPRITE_WIDTH",
@@ -216,8 +212,8 @@
                 ],
                 "valueRange": 255,
                 "size": [
-                  200.0,
-                  40.0
+                  199,
+                  40
                 ],
                 "vertical": false,
                 "spurColor": [
@@ -246,11 +242,11 @@
                   255,
                   255
                 ],
-                "justified": 0,
                 "size": [
-                  60.0,
-                  46.0
-                ]
+                  119,
+                  46
+                ],
+                "justified": 0
               },
               {
                 "name": "SPRITE_HEIGHT",
@@ -261,8 +257,8 @@
                 ],
                 "valueRange": 255,
                 "size": [
-                  200.0,
-                  40.0
+                  199,
+                  40
                 ],
                 "vertical": false,
                 "spurColor": [
@@ -331,19 +327,57 @@
                   128,
                   255
                 ]
+              },
+              {
+                "type": "textarea",
+                "position": [
+                  -1,
+                  -1
+                ],
+                "text": "Sprite:",
+                "textColor": [
+                  255,
+                  255,
+                  255,
+                  255
+                ],
+                "size": [
+                  119,
+                  29
+                ],
+                "justified": 0
+              },
+              {
+                "name": "SPRITE_SELECTION",
+                "type": "sprite",
+                "position": [
+                  -1,
+                  -1
+                ],
+                "sprite": {
+                  "spritesheet": "image.png",
+                  "x": 0,
+                  "y": 0,
+                  "w": 48,
+                  "h": 48
+                },
+                "scaleX": 1.0,
+                "scaleY": 1.0
+              },
+              {
+                "type": "textarea",
+                "position": [
+                  10,
+                  409
+                ],
+                "text": "Scrollwheel to zoom, middle mouse to pan, drag rect to select area",
+                "size": [
+                  161,
+                  32
+                ],
+                "justified": 0
               }
             ]
-          },
-          {
-            "name": "SPRITE_PREVIEW",
-            "type": "sprite",
-            "position": [
-              -1,
-              -1
-            ],
-            "sprite": "image.png",
-            "scaleX": 1.0,
-            "scaleY": 1.0
           }
         ]
       }

@@ -33,6 +33,8 @@ static int lastTextInputFontSizeScrollbarValue = -1;
 static bool lastVerticalCheckboxValue = false;
 static bool lastCanBeHeldCheckboxValue = false;
 static bool lastShadowedCheckboxValue = false;
+static int lastLayoutListValue = -1;
+static int lastJustifyListValue = -1;
 
 GhostState::~GhostState()
 {
@@ -123,6 +125,9 @@ void GhostState::Init(const std::string& configfile)
 
 	// Create serializer (keep it alive to preserve loaded fonts)
 	m_serializer = make_unique<GhostSerializer>();
+
+	// Enable "example" placeholder text for empty textinput fields (Ghost editor only)
+	m_serializer->SetUseExampleText(true);
 
 	// Load GUI from JSON file
 	if (!m_serializer->LoadFromFile(GhostSerializer::GetBaseGhostPath() + "ghost_app.ghost", m_gui.get()))
@@ -358,6 +363,32 @@ void GhostState::UpdateColorButton(const std::string& buttonPropertyName, Color 
 	}
 }
 
+// Helper to find next element to select after deleting/cutting current element
+int GhostState::FindNextSelectionAfterRemoval(int elementID, int parentID)
+{
+	int newSelection = -1;
+	if (parentID != -1)
+	{
+		auto& siblings = m_contentSerializer->GetChildren(parentID);
+		// Find the element's position in sibling list
+		for (size_t i = 0; i < siblings.size(); i++)
+		{
+			if (siblings[i] == elementID)
+			{
+				// Select next sibling if available, otherwise previous sibling
+				if (i + 1 < siblings.size())
+					newSelection = siblings[i + 1];
+				else if (i > 0)
+					newSelection = siblings[i - 1];
+				else
+					newSelection = parentID; // No siblings, select parent
+				break;
+			}
+		}
+	}
+	return newSelection;
+}
+
 // Generic helper to get group from any element
 int GhostState::GetElementGroup(GuiElement* element)
 {
@@ -570,15 +601,36 @@ bool GhostState::UpdateNameProperty()
 			{
 				Log("UpdateNameProperty: element " + to_string(m_selectedElementID) + " changing name from '" + oldName + "' to '" + newName + "'");
 
-				// Remove old name mapping if it exists
+				// DEBUG: Check if the old name actually maps to THIS element
 				if (!oldName.empty())
 				{
-					m_contentSerializer->RemoveElementName(oldName);
+					int mappedID = m_contentSerializer->GetElementID(oldName);
+					if (mappedID != m_selectedElementID)
+					{
+						Log("WARNING: oldName '" + oldName + "' maps to element " + to_string(mappedID) + ", but selected element is " + to_string(m_selectedElementID));
+						Log("This indicates the name mapping is incorrect - skipping name removal to preserve correct mapping");
+					}
+					else
+					{
+						// Only remove if it actually maps to this element
+						m_contentSerializer->RemoveElementName(oldName);
+					}
 				}
 
 				// Set new name mapping if not empty
 				if (!newName.empty())
 				{
+					// Check if the new name already exists and points to a different element
+					int existingID = m_contentSerializer->GetElementID(newName);
+					if (existingID != -1 && existingID != m_selectedElementID)
+					{
+						Log("ERROR: Name '" + newName + "' already exists for element " + to_string(existingID) + " - cannot rename element " + to_string(m_selectedElementID));
+						// Revert the text input to show the old name
+						textInput->m_String = oldName;
+						return false;
+					}
+
+					// Safe to set the new name
 					m_contentSerializer->SetElementName(newName, m_selectedElementID);
 				}
 
@@ -1087,6 +1139,46 @@ void GhostState::Update()
 	CheckCheckboxChanged("PROPERTY_CANBEHELD", lastCanBeHeldCheckboxValue);
 	CheckCheckboxChanged("PROPERTY_SHADOWED", lastShadowedCheckboxValue);
 
+	// Check PROPERTY_LAYOUT list (dropdown) for changes
+	if (m_selectedElementID != -1 && m_propertySerializer)
+	{
+		int layoutListID = m_propertySerializer->GetElementID("PROPERTY_LAYOUT");
+		if (layoutListID != -1)
+		{
+			auto layoutElement = m_gui->GetElement(layoutListID);
+			if (layoutElement && layoutElement->m_Type == GUI_LIST)
+			{
+				auto layoutList = static_cast<GuiList*>(layoutElement.get());
+				if (layoutList->m_SelectedIndex != lastLayoutListValue)
+				{
+					lastLayoutListValue = layoutList->m_SelectedIndex;
+					Log("Layout list value changed to " + to_string(layoutList->m_SelectedIndex) + ", triggering update");
+					UpdateElementFromPropertyPanel();
+				}
+			}
+		}
+	}
+
+	// Check PROPERTY_JUSTIFY list (dropdown) for changes
+	if (m_selectedElementID != -1 && m_propertySerializer)
+	{
+		int justifyListID = m_propertySerializer->GetElementID("PROPERTY_JUSTIFY");
+		if (justifyListID != -1)
+		{
+			auto justifyElement = m_gui->GetElement(justifyListID);
+			if (justifyElement && justifyElement->m_Type == GUI_LIST)
+			{
+				auto justifyList = static_cast<GuiList*>(justifyElement.get());
+				if (justifyList->m_SelectedIndex != lastJustifyListValue)
+				{
+					lastJustifyListValue = justifyList->m_SelectedIndex;
+					Log("Justify list value changed to " + to_string(justifyList->m_SelectedIndex) + ", triggering update");
+					UpdateElementFromPropertyPanel();
+				}
+			}
+		}
+	}
+
 	// Check PROPERTY_FONT_SIZE scrollbar for textinput elements
 	// Note: Font size for other elements (textbutton, panel) uses lastFontSizeScrollbarValue tracked elsewhere
 	if (m_selectedElementID != -1)
@@ -1182,11 +1274,11 @@ void GhostState::Update()
 	if (m_selectedElementID != -1)
 	{
 		auto selectedElement = m_gui->GetElement(m_selectedElementID);
-		if (selectedElement && (selectedElement->m_Type == GUI_STRETCHBUTTON || selectedElement->m_Type == GUI_SPRITE || selectedElement->m_Type == GUI_CYCLE || selectedElement->m_Type == GUI_ICONBUTTON))
+		if (selectedElement && (selectedElement->m_Type == GUI_STRETCHBUTTON || selectedElement->m_Type == GUI_SPRITE || selectedElement->m_Type == GUI_CYCLE || selectedElement->m_Type == GUI_ICONBUTTON || selectedElement->m_Type == GUI_CHECKBOX || selectedElement->m_Type == GUI_RADIOBUTTON))
 		{
 			// List of all sprite property button names
 			vector<string> spriteProperties = {
-				"PROPERTY_SPRITE_LEFT", "PROPERTY_SPRITE_CENTER", "PROPERTY_SPRITE_RIGHT", "PROPERTY_SPRITE", "PROPERTY_DOWNSPRITE"
+				"PROPERTY_SPRITE_LEFT", "PROPERTY_SPRITE_CENTER", "PROPERTY_SPRITE_RIGHT", "PROPERTY_SPRITE", "PROPERTY_DOWNSPRITE", "PROPERTY_SELECTED_SPRITE", "PROPERTY_DESELECT_SPRITE"
 			};
 
 			for (const auto& propName : spriteProperties)
@@ -1224,6 +1316,22 @@ void GhostState::Update()
 							{
 								// Get the down sprite definition for icon button
 								sprite = m_contentSerializer->GetIconButtonDownSprite(m_selectedElementID);
+							}
+							else if (propName == "PROPERTY_SELECTED_SPRITE")
+							{
+								// Get the select sprite definition for checkbox/radiobutton
+								if (selectedElement->m_Type == GUI_CHECKBOX)
+									sprite = m_contentSerializer->GetCheckBoxSelectSprite(m_selectedElementID);
+								else if (selectedElement->m_Type == GUI_RADIOBUTTON)
+									sprite = m_contentSerializer->GetRadioButtonSelectSprite(m_selectedElementID);
+							}
+							else if (propName == "PROPERTY_DESELECT_SPRITE")
+							{
+								// Get the deselect sprite definition for checkbox/radiobutton
+								if (selectedElement->m_Type == GUI_CHECKBOX)
+									sprite = m_contentSerializer->GetCheckBoxDeselectSprite(m_selectedElementID);
+								else if (selectedElement->m_Type == GUI_RADIOBUTTON)
+									sprite = m_contentSerializer->GetRadioButtonDeselectSprite(m_selectedElementID);
 							}
 
 							// Track which property we're editing
@@ -1833,6 +1941,17 @@ void GhostState::Update()
 		// Get parent ID before deleting (for reflow)
 		int parentID = m_contentSerializer->GetParentID(m_selectedElementID);
 
+		// Remove name mapping if this element has a name
+		std::string elementName = GetElementName(m_selectedElementID);
+		if (!elementName.empty())
+		{
+			m_contentSerializer->RemoveElementName(elementName);
+			Log("Removed name mapping for deleted element: " + elementName);
+		}
+
+		// Find the next sibling to select after delete
+		int newSelection = FindNextSelectionAfterRemoval(m_selectedElementID, parentID);
+
 		// Remove from GUI
 		m_gui->m_GuiElementList.erase(m_selectedElementID);
 
@@ -1845,13 +1964,14 @@ void GhostState::Update()
 			m_contentSerializer->ReflowPanel(parentID, m_gui.get());
 		}
 
-		// Clear selection and property panel
-		m_selectedElementID = -1;
-		ClearPropertyPanel();
+		// Select the next appropriate element
+		m_selectedElementID = newSelection;
+		UpdatePropertyPanel();
 		UpdateStatusFooter();
 
 		// Update the element hierarchy listbox
 		PopulateElementHierarchy();
+		UpdateElementHierarchySelection();
 
 		// Mark as dirty
 		m_contentSerializer->SetDirty(true);
@@ -1886,6 +2006,17 @@ void GhostState::Update()
 			Log("Element copied to clipboard");
 		}
 
+		// Remove name mapping if this element has a name
+		std::string elementName = GetElementName(m_selectedElementID);
+		if (!elementName.empty())
+		{
+			m_contentSerializer->RemoveElementName(elementName);
+			Log("Removed name mapping for cut element: " + elementName);
+		}
+
+		// Find the next sibling to select after cut
+		int newSelection = FindNextSelectionAfterRemoval(m_selectedElementID, parentID);
+
 		// Remove from GUI
 		m_gui->m_GuiElementList.erase(m_selectedElementID);
 
@@ -1898,13 +2029,14 @@ void GhostState::Update()
 			m_contentSerializer->ReflowPanel(parentID, m_gui.get());
 		}
 
-		// Clear selection and property panel
-		m_selectedElementID = -1;
-		ClearPropertyPanel();
+		// Select the next appropriate element
+		m_selectedElementID = newSelection;
+		UpdatePropertyPanel();
 		UpdateStatusFooter();
 
 		// Update the element hierarchy listbox
 		PopulateElementHierarchy();
+		UpdateElementHierarchySelection();
 
 		// Mark as dirty
 		m_contentSerializer->SetDirty(true);
@@ -2005,28 +2137,35 @@ void GhostState::Update()
 			parentY = static_cast<int>(parentElement->m_Pos.y);
 		}
 
-		// Get next auto ID for the pasted element
+		// Get next auto ID for the pasted element and reserve it
 		int newElementID = m_contentSerializer->GetNextAutoID();
+		m_contentSerializer->SetAutoIDStart(newElementID + 1);
 
 		// Create a copy of the clipboard data to modify
 		ghost_json pasteData = m_clipboard;
 
-		// If the element has a name, make it unique by appending "_copy"
+		// If the element has a name, make it unique only if there's a naming conflict
 		if (pasteData.contains("name"))
 		{
 			string originalName = pasteData["name"];
-			string newName = originalName + "_copy";
+			string newName = originalName;
 
-			// If that name already exists, append a number
-			int copyNumber = 1;
-			while (m_contentSerializer->GetElementID(newName) != -1)
+			// Only add "_copy" if the original name conflicts
+			if (m_contentSerializer->GetElementID(newName) != -1)
 			{
-				newName = originalName + "_copy" + to_string(copyNumber);
-				copyNumber++;
-			}
+				newName = originalName + "_copy";
 
-			pasteData["name"] = newName;
-			Log("Renamed pasted element from '" + originalName + "' to '" + newName + "'");
+				// If that name already exists, append a number
+				int copyNumber = 1;
+				while (m_contentSerializer->GetElementID(newName) != -1)
+				{
+					newName = originalName + "_copy" + to_string(copyNumber);
+					copyNumber++;
+				}
+
+				pasteData["name"] = newName;
+				Log("Renamed pasted element from '" + originalName + "' to '" + newName + "'");
+			}
 		}
 
 		// Create a temporary .ghost file structure in memory with proper format
@@ -2148,6 +2287,12 @@ void GhostState::Update()
 					// Update position in the element
 					selectedElement->m_Pos.x += deltaX;
 					selectedElement->m_Pos.y += deltaY;
+
+					// If this is a panel, reflow its children
+					if (selectedElement->m_Type == GUI_PANEL)
+					{
+						m_contentSerializer->ReflowPanel(m_selectedElementID, m_gui.get());
+					}
 
 					// Mark as dirty (position will be serialized from element on save)
 					m_contentSerializer->SetDirty(true);
@@ -2503,15 +2648,14 @@ void GhostState::OnEnter()
 
 					if (texture)
 					{
-						// Create new sprite with the specified source rectangle
-						shared_ptr<Sprite> newSprite = make_shared<Sprite>();
-						newSprite->m_texture = texture;
-						newSprite->m_sourceRect = Rectangle{
-							static_cast<float>(sprite.x),
-							static_cast<float>(sprite.y),
-							static_cast<float>(sprite.w),
-							static_cast<float>(sprite.h)
-						};
+						// Create new sprite with the specified source rectangle using proper constructor
+						shared_ptr<Sprite> newSprite = make_shared<Sprite>(
+							texture,
+							sprite.x,
+							sprite.y,
+							sprite.w,
+							sprite.h
+						);
 
 						// Store sprite definition in serializer AND update the button's sprite
 						if (m_editingSpriteProperty == "PROPERTY_SPRITE_LEFT")
@@ -2555,15 +2699,14 @@ void GhostState::OnEnter()
 
 					if (texture)
 					{
-						// Create new sprite with the specified source rectangle
-						shared_ptr<Sprite> newSprite = make_shared<Sprite>();
-						newSprite->m_texture = texture;
-						newSprite->m_sourceRect = Rectangle{
-							static_cast<float>(sprite.x),
-							static_cast<float>(sprite.y),
-							static_cast<float>(sprite.w),
-							static_cast<float>(sprite.h)
-						};
+						// Create new sprite with the specified source rectangle using proper constructor
+						shared_ptr<Sprite> newSprite = make_shared<Sprite>(
+							texture,
+							sprite.x,
+							sprite.y,
+							sprite.w,
+							sprite.h
+						);
 
 						// Update the sprite element
 						spriteElem->m_Sprite = newSprite;
@@ -2628,15 +2771,14 @@ void GhostState::OnEnter()
 
 				if (texture)
 				{
-					// Create new sprite with the specified source rectangle
-					shared_ptr<Sprite> newSprite = make_shared<Sprite>();
-					newSprite->m_texture = texture;
-					newSprite->m_sourceRect = Rectangle{
-						static_cast<float>(sprite.x),
-						static_cast<float>(sprite.y),
-						static_cast<float>(sprite.w),
-						static_cast<float>(sprite.h)
-					};
+					// Create new sprite with the specified source rectangle using proper constructor
+					shared_ptr<Sprite> newSprite = make_shared<Sprite>(
+						texture,
+						sprite.x,
+						sprite.y,
+						sprite.w,
+						sprite.h
+					);
 
 					// Update the icon button's up texture
 					iconElem->m_UpTexture = newSprite;
@@ -2665,15 +2807,14 @@ void GhostState::OnEnter()
 
 				if (texture)
 				{
-					// Create new sprite with the specified source rectangle
-					shared_ptr<Sprite> newSprite = make_shared<Sprite>();
-					newSprite->m_texture = texture;
-					newSprite->m_sourceRect = Rectangle{
-						static_cast<float>(sprite.x),
-						static_cast<float>(sprite.y),
-						static_cast<float>(sprite.w),
-						static_cast<float>(sprite.h)
-					};
+					// Create new sprite with the specified source rectangle using proper constructor
+					shared_ptr<Sprite> newSprite = make_shared<Sprite>(
+						texture,
+						sprite.x,
+						sprite.y,
+						sprite.w,
+						sprite.h
+					);
 
 					// Update the icon button's down texture
 					iconElem->m_DownTexture = newSprite;
@@ -2682,6 +2823,142 @@ void GhostState::OnEnter()
 					m_contentSerializer->SetIconButtonDownSprite(m_selectedElementID, sprite);
 
 					Log("Updated iconbutton down sprite: " + sprite.spritesheet + " at (" + std::to_string(sprite.x) + "," + std::to_string(sprite.y) +
+						") size (" + std::to_string(sprite.w) + "x" + std::to_string(sprite.h) + ")");
+				}
+				else
+				{
+					Log("ERROR: Failed to load texture: " + spritePath);
+				}
+			}
+			else if (selectedElement && selectedElement->m_Type == GUI_CHECKBOX && m_editingSpriteProperty == "PROPERTY_SELECTED_SPRITE")
+			{
+				// Update checkbox select sprite
+				auto checkboxElem = static_cast<GuiCheckBox*>(selectedElement.get());
+
+				// Load the new sprite texture
+				string spritePath = m_spritePath + sprite.spritesheet;
+				Texture* texture = g_ResourceManager->GetTexture(spritePath);
+
+				if (texture)
+				{
+					// Create new sprite with the specified source rectangle using proper constructor
+					shared_ptr<Sprite> newSprite = make_shared<Sprite>(
+						texture,
+						sprite.x,
+						sprite.y,
+						sprite.w,
+						sprite.h
+					);
+
+					// Update the checkbox's select sprite
+					checkboxElem->m_SelectSprite = newSprite;
+
+					// Store full sprite definition in serializer
+					m_contentSerializer->SetCheckBoxSelectSprite(m_selectedElementID, sprite);
+
+					Log("Updated checkbox select sprite: " + sprite.spritesheet + " at (" + std::to_string(sprite.x) + "," + std::to_string(sprite.y) +
+						") size (" + std::to_string(sprite.w) + "x" + std::to_string(sprite.h) + ")");
+				}
+				else
+				{
+					Log("ERROR: Failed to load texture: " + spritePath);
+				}
+			}
+			else if (selectedElement && selectedElement->m_Type == GUI_CHECKBOX && m_editingSpriteProperty == "PROPERTY_DESELECT_SPRITE")
+			{
+				// Update checkbox deselect sprite
+				auto checkboxElem = static_cast<GuiCheckBox*>(selectedElement.get());
+
+				// Load the new sprite texture
+				string spritePath = m_spritePath + sprite.spritesheet;
+				Texture* texture = g_ResourceManager->GetTexture(spritePath);
+
+				if (texture)
+				{
+					// Create new sprite with the specified source rectangle using proper constructor
+					shared_ptr<Sprite> newSprite = make_shared<Sprite>(
+						texture,
+						sprite.x,
+						sprite.y,
+						sprite.w,
+						sprite.h
+					);
+
+					// Update the checkbox's deselect sprite
+					checkboxElem->m_DeselectSprite = newSprite;
+
+					// Store full sprite definition in serializer
+					m_contentSerializer->SetCheckBoxDeselectSprite(m_selectedElementID, sprite);
+
+					Log("Updated checkbox deselect sprite: " + sprite.spritesheet + " at (" + std::to_string(sprite.x) + "," + std::to_string(sprite.y) +
+						") size (" + std::to_string(sprite.w) + "x" + std::to_string(sprite.h) + ")");
+				}
+				else
+				{
+					Log("ERROR: Failed to load texture: " + spritePath);
+				}
+			}
+			else if (selectedElement && selectedElement->m_Type == GUI_RADIOBUTTON && m_editingSpriteProperty == "PROPERTY_SELECTED_SPRITE")
+			{
+				// Update radiobutton select sprite
+				auto radioElem = static_cast<GuiRadioButton*>(selectedElement.get());
+
+				// Load the new sprite texture
+				string spritePath = m_spritePath + sprite.spritesheet;
+				Texture* texture = g_ResourceManager->GetTexture(spritePath);
+
+				if (texture)
+				{
+					// Create new sprite with the specified source rectangle using proper constructor
+					shared_ptr<Sprite> newSprite = make_shared<Sprite>(
+						texture,
+						sprite.x,
+						sprite.y,
+						sprite.w,
+						sprite.h
+					);
+
+					// Update the radiobutton's select sprite
+					radioElem->m_SelectSprite = newSprite;
+
+					// Store full sprite definition in serializer
+					m_contentSerializer->SetRadioButtonSelectSprite(m_selectedElementID, sprite);
+
+					Log("Updated radiobutton select sprite: " + sprite.spritesheet + " at (" + std::to_string(sprite.x) + "," + std::to_string(sprite.y) +
+						") size (" + std::to_string(sprite.w) + "x" + std::to_string(sprite.h) + ")");
+				}
+				else
+				{
+					Log("ERROR: Failed to load texture: " + spritePath);
+				}
+			}
+			else if (selectedElement && selectedElement->m_Type == GUI_RADIOBUTTON && m_editingSpriteProperty == "PROPERTY_DESELECT_SPRITE")
+			{
+				// Update radiobutton deselect sprite
+				auto radioElem = static_cast<GuiRadioButton*>(selectedElement.get());
+
+				// Load the new sprite texture
+				string spritePath = m_spritePath + sprite.spritesheet;
+				Texture* texture = g_ResourceManager->GetTexture(spritePath);
+
+				if (texture)
+				{
+					// Create new sprite with the specified source rectangle using proper constructor
+					shared_ptr<Sprite> newSprite = make_shared<Sprite>(
+						texture,
+						sprite.x,
+						sprite.y,
+						sprite.w,
+						sprite.h
+					);
+
+					// Update the radiobutton's deselect sprite
+					radioElem->m_DeselectSprite = newSprite;
+
+					// Store full sprite definition in serializer
+					m_contentSerializer->SetRadioButtonDeselectSprite(m_selectedElementID, sprite);
+
+					Log("Updated radiobutton deselect sprite: " + sprite.spritesheet + " at (" + std::to_string(sprite.x) + "," + std::to_string(sprite.y) +
 						") size (" + std::to_string(sprite.w) + "x" + std::to_string(sprite.h) + ")");
 				}
 				else
@@ -4018,6 +4295,22 @@ void GhostState::PopulatePropertyPanelFields()
 			PopulateTextInputProperty("PROPERTY_FONT", m_contentSerializer->GetElementFont(m_selectedElementID));
 		if (m_contentSerializer->IsPropertyExplicit(m_selectedElementID, "fontSize"))
 			PopulateScrollbarProperty("PROPERTY_FONT_SIZE", m_contentSerializer->GetElementFontSize(m_selectedElementID));
+
+		// Populate justify dropdown list
+		int justifyListID = m_propertySerializer->GetElementID("PROPERTY_JUSTIFY");
+		if (justifyListID != -1)
+		{
+			auto justifyList = m_gui->GetElement(justifyListID);
+			if (justifyList && justifyList->m_Type == GUI_LIST)
+			{
+				auto list = static_cast<GuiList*>(justifyList.get());
+				// GuiTextArea::m_Justified: LEFT=0, CENTERED=1, RIGHT=2
+				list->m_SelectedIndex = static_cast<int>(textarea->m_Justified);
+
+				// Sync the tracking variable to prevent false triggers
+				lastJustifyListValue = list->m_SelectedIndex;
+			}
+		}
 	}
 
 	// Populate layout radio buttons and columns field (for panel elements)
@@ -4043,6 +4336,9 @@ void GhostState::PopulatePropertyPanelFields()
 				else if (layout == "vert") list->m_SelectedIndex = 1;
 				else if (layout == "table") list->m_SelectedIndex = 2;
 				else list->m_SelectedIndex = 0; // Default to Horz
+				
+				// Sync the tracking variable to prevent false triggers
+				lastLayoutListValue = list->m_SelectedIndex;
 			}
 		}
 
@@ -4354,6 +4650,9 @@ void GhostState::UpdateElementFromPropertyPanel()
 					m_contentSerializer->SetPanelColumns(m_selectedElementID, currentColumns);
 				}
 
+				// Reflow children to update positions based on new layout
+				m_contentSerializer->ReflowPanel(m_selectedElementID, m_gui.get());
+
 				wasUpdated = true;
 			}
 		}
@@ -4576,6 +4875,26 @@ void GhostState::UpdateElementFromPropertyPanel()
 		if (UpdateWidthProperty(selectedElement.get())) wasUpdated = true;
 		if (UpdateHeightProperty(selectedElement.get())) wasUpdated = true;
 		// Font and font size are already handled by UpdateFontProperty() and UpdateFontSizeProperty() above
+
+		// Update justify property from dropdown list
+		int justifyListID = m_propertySerializer->GetElementID("PROPERTY_JUSTIFY");
+		if (justifyListID != -1)
+		{
+			auto justifyElement = m_gui->GetElement(justifyListID);
+			if (justifyElement && justifyElement->m_Type == GUI_LIST)
+			{
+				auto justifyList = static_cast<GuiList*>(justifyElement.get());
+				auto textarea = static_cast<GuiTextArea*>(selectedElement.get());
+
+				// Update the GuiTextArea's m_Justified (LEFT=0, CENTERED=1, RIGHT=2)
+				int newJustify = justifyList->m_SelectedIndex;
+				if (textarea->m_Justified != newJustify)
+				{
+					textarea->m_Justified = newJustify;
+					wasUpdated = true;
+				}
+			}
+		}
 	}
 
 	// Update listbox properties if changed
@@ -4777,23 +5096,40 @@ void GhostState::Undo()
 	m_contentSerializer.reset();
 	m_contentSerializer = make_unique<GhostSerializer>();
 	m_contentSerializer->SetAutoIDStart(2001);
+	m_contentSerializer->SetRootElementID(2000); // Set root to content panel container
 
 	// Restore the undo state
-	ghost_json tempJson;
-	tempJson["gui"]["elements"] = ghost_json::array();
-	tempJson["gui"]["elements"].push_back(undoState);
+	// The undoState contains the serialized root element with all its children
+	// We need to restore the children into the content panel (ID 2000)
 
-	if (m_contentSerializer->ParseJson(tempJson, m_gui.get()))
+	// Get the content panel to find its position
+	auto contentPanel = m_gui->GetElement(2000);
+	if (!contentPanel)
 	{
+		Log("ERROR: Content panel (ID 2000) not found during undo");
+		return;
+	}
+
+	int containerX = static_cast<int>(contentPanel->m_Pos.x);
+	int containerY = static_cast<int>(contentPanel->m_Pos.y);
+
+	// Build inherited properties from the content panel
+	ghost_json inheritedProps = m_contentSerializer->BuildInheritedProps(2000);
+
+	// Parse the children directly into the content panel
+	if (undoState.contains("elements") && undoState["elements"].is_array())
+	{
+		m_contentSerializer->ParseElements(undoState["elements"], m_gui.get(), inheritedProps, containerX, containerY, 2000);
 		Log("Undo successful (undo stack: " + to_string(m_undoStack.size()) + ", redo stack: " + to_string(m_redoStack.size()) + ")");
 		m_contentSerializer->SetDirty(true);
 
 		// Update the element hierarchy listbox
 		PopulateElementHierarchy();
+		UpdateElementHierarchySelection();  // Clear selection in listbox since m_selectedElementID is -1
 	}
 	else
 	{
-		Log("Failed to restore undo state");
+		Log("Undo state has no elements to restore");
 	}
 }
 
@@ -4850,23 +5186,40 @@ void GhostState::Redo()
 	m_contentSerializer.reset();
 	m_contentSerializer = make_unique<GhostSerializer>();
 	m_contentSerializer->SetAutoIDStart(2001);
+	m_contentSerializer->SetRootElementID(2000); // Set root to content panel container
 
 	// Restore the redo state
-	ghost_json tempJson;
-	tempJson["gui"]["elements"] = ghost_json::array();
-	tempJson["gui"]["elements"].push_back(redoState);
+	// The redoState contains the serialized root element with all its children
+	// We need to restore the children into the content panel (ID 2000)
 
-	if (m_contentSerializer->ParseJson(tempJson, m_gui.get()))
+	// Get the content panel to find its position
+	auto contentPanel = m_gui->GetElement(2000);
+	if (!contentPanel)
 	{
+		Log("ERROR: Content panel (ID 2000) not found during redo");
+		return;
+	}
+
+	int containerX = static_cast<int>(contentPanel->m_Pos.x);
+	int containerY = static_cast<int>(contentPanel->m_Pos.y);
+
+	// Build inherited properties from the content panel
+	ghost_json inheritedProps = m_contentSerializer->BuildInheritedProps(2000);
+
+	// Parse the children directly into the content panel
+	if (redoState.contains("elements") && redoState["elements"].is_array())
+	{
+		m_contentSerializer->ParseElements(redoState["elements"], m_gui.get(), inheritedProps, containerX, containerY, 2000);
 		Log("Redo successful (undo stack: " + to_string(m_undoStack.size()) + ", redo stack: " + to_string(m_redoStack.size()) + ")");
 		m_contentSerializer->SetDirty(true);
 
 		// Update the element hierarchy listbox
 		PopulateElementHierarchy();
+		UpdateElementHierarchySelection();  // Clear selection in listbox since m_selectedElementID is -1
 	}
 	else
 	{
-		Log("Failed to restore redo state");
+		Log("Redo state has no elements to restore");
 	}
 }
 

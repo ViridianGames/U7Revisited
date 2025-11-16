@@ -33,6 +33,7 @@ public:
 
 	Config m_EngineConfig;
 	bool m_Done;
+	bool m_askedToExit = false;  // Track if we've shown exit confirmation dialog
 	std::string m_ConfigFileName;
 
 	int m_GameUpdates = 0;

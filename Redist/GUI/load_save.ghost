@@ -1,0 +1,634 @@
+{
+  "gui": {
+    "elements": [
+      {
+        "type": "panel",
+        "position": [
+          -1,
+          -1
+        ],
+        "size": [
+          244,
+          160
+        ],
+        "backgroundColor": [
+          60,
+          60,
+          60,
+          5
+        ],
+        "filled": true,
+        "layout": "horz",
+        "horzPadding": 0,
+        "vertPadding": 0,
+        "font": "babyblocks.ttf",
+        "fontSize": 8,
+        "elements": [
+          {
+            "name": "BACKGROUND",
+            "type": "sprite",
+            "position": [
+              -1,
+              -1
+            ],
+            "sprite": {
+              "spritesheet": "GUI/gumps.png",
+              "x": 359,
+              "y": 12,
+              "w": 244,
+              "h": 160
+            },
+            "scaleX": 1.0,
+            "scaleY": 1.0
+          },
+          {
+            "name": "CLOSE",
+            "type": "iconbutton",
+            "position": [
+              4,
+              114
+            ],
+            "sprite": {
+              "spritesheet": "GUI/gumps.png",
+              "x": 333,
+              "y": 11,
+              "w": 21,
+              "h": 21
+            },
+            "downSprite": {
+              "spritesheet": "GUI/gumps.png",
+              "x": 333,
+              "y": 51,
+              "w": 21,
+              "h": 21
+            },
+            "color": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "scale": 1.0
+          },
+          {
+            "name": "SLOT_PANEL",
+            "type": "panel",
+            "position": [
+              31,
+              1
+            ],
+            "size": [
+              206,
+              164
+            ],
+            "backgroundColor": [
+              80,
+              80,
+              80,
+              0
+            ],
+            "filled": true,
+            "layout": "vert",
+            "horzPadding": 0,
+            "vertPadding": 3,
+            "elements": [
+              {
+                "name": "SLOT1",
+                "type": "textinput",
+                "position": [
+                  -1,
+                  -1
+                ],
+                "text": "",
+                "size": [
+                  206,
+                  10
+                ],
+                "textColor": [
+                  0,
+                  0,
+                  0,
+                  255
+                ],
+                "borderColor": [
+                  255,
+                  255,
+                  255,
+                  0
+                ],
+                "backgroundColor": [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              },
+              {
+                "name": "SLOT2",
+                "type": "textinput",
+                "position": [
+                  -1,
+                  -1
+                ],
+                "text": "",
+                "size": [
+                  206,
+                  10
+                ],
+                "textColor": [
+                  0,
+                  0,
+                  0,
+                  255
+                ],
+                "borderColor": [
+                  255,
+                  255,
+                  255,
+                  0
+                ],
+                "backgroundColor": [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              },
+              {
+                "name": "SLOT3",
+                "type": "textinput",
+                "position": [
+                  -1,
+                  -1
+                ],
+                "text": "",
+                "size": [
+                  206,
+                  10
+                ],
+                "textColor": [
+                  0,
+                  0,
+                  0,
+                  255
+                ],
+                "borderColor": [
+                  255,
+                  255,
+                  255,
+                  0
+                ],
+                "backgroundColor": [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              },
+              {
+                "name": "SLOT4",
+                "type": "textinput",
+                "position": [
+                  -1,
+                  -1
+                ],
+                "text": "",
+                "size": [
+                  206,
+                  10
+                ],
+                "textColor": [
+                  0,
+                  0,
+                  0,
+                  255
+                ],
+                "borderColor": [
+                  255,
+                  255,
+                  255,
+                  0
+                ],
+                "backgroundColor": [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              },
+              {
+                "name": "SLOT5",
+                "type": "textinput",
+                "position": [
+                  -1,
+                  -1
+                ],
+                "text": "",
+                "size": [
+                  206,
+                  10
+                ],
+                "textColor": [
+                  0,
+                  0,
+                  0,
+                  255
+                ],
+                "borderColor": [
+                  255,
+                  255,
+                  255,
+                  0
+                ],
+                "backgroundColor": [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              },
+              {
+                "name": "SLOT6",
+                "type": "textinput",
+                "position": [
+                  -1,
+                  -1
+                ],
+                "text": "",
+                "size": [
+                  206,
+                  10
+                ],
+                "textColor": [
+                  0,
+                  0,
+                  0,
+                  255
+                ],
+                "borderColor": [
+                  255,
+                  255,
+                  255,
+                  0
+                ],
+                "backgroundColor": [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              },
+              {
+                "name": "SLOT7",
+                "type": "textinput",
+                "position": [
+                  -1,
+                  -1
+                ],
+                "text": "",
+                "size": [
+                  206,
+                  10
+                ],
+                "textColor": [
+                  0,
+                  0,
+                  0,
+                  255
+                ],
+                "borderColor": [
+                  255,
+                  255,
+                  255,
+                  0
+                ],
+                "backgroundColor": [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              },
+              {
+                "name": "SLOT8",
+                "type": "textinput",
+                "position": [
+                  -1,
+                  -1
+                ],
+                "text": "",
+                "size": [
+                  206,
+                  10
+                ],
+                "textColor": [
+                  0,
+                  0,
+                  0,
+                  255
+                ],
+                "borderColor": [
+                  255,
+                  255,
+                  255,
+                  0
+                ],
+                "backgroundColor": [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              },
+              {
+                "name": "SLOT9",
+                "type": "textinput",
+                "position": [
+                  -1,
+                  -1
+                ],
+                "text": "",
+                "size": [
+                  206,
+                  10
+                ],
+                "textColor": [
+                  0,
+                  0,
+                  0,
+                  255
+                ],
+                "borderColor": [
+                  255,
+                  255,
+                  255,
+                  0
+                ],
+                "backgroundColor": [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              },
+              {
+                "name": "SLOT10",
+                "type": "textinput",
+                "position": [
+                  -1,
+                  -1
+                ],
+                "text": "",
+                "size": [
+                  206,
+                  10
+                ],
+                "textColor": [
+                  0,
+                  0,
+                  0,
+                  255
+                ],
+                "borderColor": [
+                  255,
+                  255,
+                  255,
+                  0
+                ],
+                "backgroundColor": [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              },
+              {
+                "name": "BUTTON_PANEL",
+                "type": "panel",
+                "position": [
+                  0,
+                  132
+                ],
+                "size": [
+                  202,
+                  28
+                ],
+                "backgroundColor": [
+                  80,
+                  80,
+                  80,
+                  0
+                ],
+                "filled": true,
+                "layout": "table",
+                "horzPadding": 6,
+                "vertPadding": 2,
+                "columns": 3,
+                "elements": [
+                  {
+                    "name": "SAVE",
+                    "type": "iconbutton",
+                    "position": [
+                      -1,
+                      -1
+                    ],
+                    "sprite": {
+                      "spritesheet": "GUI/gumps.png",
+                      "x": 673,
+                      "y": 74,
+                      "w": 60,
+                      "h": 11
+                    },
+                    "downSprite": {
+                      "spritesheet": "GUI/gumps.png",
+                      "x": 673,
+                      "y": 86,
+                      "w": 60,
+                      "h": 11
+                    },
+                    "color": [
+                      255,
+                      255,
+                      255,
+                      255
+                    ],
+                    "scale": 1.0
+                  },
+                  {
+                    "name": "LOAD",
+                    "type": "iconbutton",
+                    "position": [
+                      -1,
+                      -1
+                    ],
+                    "sprite": {
+                      "spritesheet": "GUI/gumps.png",
+                      "x": 608,
+                      "y": 74,
+                      "w": 60,
+                      "h": 11
+                    },
+                    "downSprite": {
+                      "spritesheet": "GUI/gumps.png",
+                      "x": 608,
+                      "y": 86,
+                      "w": 60,
+                      "h": 11
+                    },
+                    "color": [
+                      255,
+                      255,
+                      255,
+                      255
+                    ],
+                    "scale": 1.0
+                  },
+                  {
+                    "name": "QUIT",
+                    "type": "iconbutton",
+                    "position": [
+                      -1,
+                      -1
+                    ],
+                    "sprite": {
+                      "spritesheet": "GUI/gumps.png",
+                      "x": 735,
+                      "y": 74,
+                      "w": 60,
+                      "h": 11
+                    },
+                    "downSprite": {
+                      "spritesheet": "GUI/gumps.png",
+                      "x": 735,
+                      "y": 86,
+                      "w": 60,
+                      "h": 11
+                    },
+                    "color": [
+                      255,
+                      255,
+                      255,
+                      255
+                    ],
+                    "scale": 1.0
+                  },
+                  {
+                    "name": "MUSIC",
+                    "type": "checkbox",
+                    "position": [
+                      -1,
+                      -1
+                    ],
+                    "size": [
+                      59,
+                      11
+                    ],
+                    "color": [
+                      255,
+                      255,
+                      255,
+                      255
+                    ],
+                    "selected": false,
+                    "scale": [
+                      1.0,
+                      1.0
+                    ],
+                    "selectSprite": {
+                      "spritesheet": "GUI/gumps.png",
+                      "x": 735,
+                      "y": 99,
+                      "w": 60,
+                      "h": 11
+                    },
+                    "deselectSprite": {
+                      "spritesheet": "GUI/gumps.png",
+                      "x": 735,
+                      "y": 111,
+                      "w": 60,
+                      "h": 11
+                    }
+                  },
+                  {
+                    "name": "SPEECH",
+                    "type": "checkbox",
+                    "position": [
+                      -1,
+                      -1
+                    ],
+                    "size": [
+                      59,
+                      11
+                    ],
+                    "color": [
+                      255,
+                      255,
+                      255,
+                      255
+                    ],
+                    "selected": false,
+                    "scale": [
+                      1.0,
+                      1.0
+                    ],
+                    "selectSprite": {
+                      "spritesheet": "GUI/gumps.png",
+                      "x": 608,
+                      "y": 99,
+                      "w": 60,
+                      "h": 11
+                    },
+                    "deselectSprite": {
+                      "spritesheet": "GUI/gumps.png",
+                      "x": 608,
+                      "y": 111,
+                      "w": 60,
+                      "h": 11
+                    }
+                  },
+                  {
+                    "name": "SOUND",
+                    "type": "checkbox",
+                    "position": [
+                      -1,
+                      -1
+                    ],
+                    "size": [
+                      59,
+                      11
+                    ],
+                    "color": [
+                      255,
+                      255,
+                      255,
+                      255
+                    ],
+                    "selected": false,
+                    "scale": [
+                      1.0,
+                      1.0
+                    ],
+                    "selectSprite": {
+                      "spritesheet": "GUI/gumps.png",
+                      "x": 672,
+                      "y": 99,
+                      "w": 60,
+                      "h": 11
+                    },
+                    "deselectSprite": {
+                      "spritesheet": "GUI/gumps.png",
+                      "x": 672,
+                      "y": 111,
+                      "w": 60,
+                      "h": 11
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -66,6 +66,9 @@ private:
 	void SetElementColor(GuiElement* element, const std::string& propertyName, Color color);
 	void UpdateColorButton(const std::string& buttonPropertyName, Color color);
 
+	// Helper to find next element to select after deleting/cutting current element
+	int FindNextSelectionAfterRemoval(int elementID, int parentID);
+
 public:
 
 	std::unique_ptr<Gui> m_gui;

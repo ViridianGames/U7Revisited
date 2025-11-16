@@ -278,28 +278,6 @@ void ScriptRenameState::Update()
 
 void ScriptRenameState::Draw()
 {
-	if (g_pixelated)
-	{
-		BeginTextureMode(g_renderTarget);
-	}
-
-	ClearBackground(Color{ 0, 0, 0, 255 });
-
-	BeginDrawing();
-
-	// Draw the 3D world using central function
-	DrawWorld();
-
-	// Handle pixelated mode render target
-	if (g_pixelated)
-	{
-		EndTextureMode();
-		DrawTexturePro(g_renderTarget.texture,
-			{ 0, 0, float(g_renderTarget.texture.width), float(g_renderTarget.texture.height) },
-			{ 0, float(g_Engine->m_ScreenHeight), float(g_Engine->m_ScreenWidth), -float(g_Engine->m_ScreenHeight) },
-			{ 0, 0 }, 0, WHITE);
-	}
-
 	// Draw the GUI with modal overlay
 	BeginTextureMode(g_guiRenderTarget);
 	ClearBackground({ 0, 0, 0, 0 });
@@ -320,9 +298,4 @@ void ScriptRenameState::Draw()
 		{ 0, 0, float(g_guiRenderTarget.texture.width), float(g_guiRenderTarget.texture.height) },
 		{ 0, float(g_Engine->m_ScreenHeight), float(g_Engine->m_ScreenWidth), -float(g_Engine->m_ScreenHeight) },
 		{ 0, 0 }, 0, WHITE);
-
-	// Draw cursor on top of everything
-	DrawTextureEx(*g_Cursor, { float(GetMouseX()), float(GetMouseY()) }, 0, g_DrawScale, WHITE);
-
-	EndDrawing();
 }

@@ -43,7 +43,7 @@ enum CREDITSIDS
 class TitleState : public State
 {
 public:
-   TitleState(){};
+   TitleState() { m_DrawCursor = false; }  // TitleState draws cursor only after mouse moves
    ~TitleState();
 
 

@@ -228,6 +228,56 @@ public:
 		return SpriteDefinition{"", 0, 0, 0, 0};
 	}
 
+	// CheckBox sprite metadata methods
+	void SetCheckBoxSelectSprite(int checkboxID, const SpriteDefinition& sprite)
+	{
+		m_checkBoxSelectSprites[checkboxID] = sprite;
+	}
+	SpriteDefinition GetCheckBoxSelectSprite(int checkboxID) const
+	{
+		auto it = m_checkBoxSelectSprites.find(checkboxID);
+		if (it != m_checkBoxSelectSprites.end())
+			return it->second;
+		return SpriteDefinition{"", 0, 0, 0, 0};
+	}
+
+	void SetCheckBoxDeselectSprite(int checkboxID, const SpriteDefinition& sprite)
+	{
+		m_checkBoxDeselectSprites[checkboxID] = sprite;
+	}
+	SpriteDefinition GetCheckBoxDeselectSprite(int checkboxID) const
+	{
+		auto it = m_checkBoxDeselectSprites.find(checkboxID);
+		if (it != m_checkBoxDeselectSprites.end())
+			return it->second;
+		return SpriteDefinition{"", 0, 0, 0, 0};
+	}
+
+	// RadioButton sprite metadata methods
+	void SetRadioButtonSelectSprite(int radiobuttonID, const SpriteDefinition& sprite)
+	{
+		m_radioButtonSelectSprites[radiobuttonID] = sprite;
+	}
+	SpriteDefinition GetRadioButtonSelectSprite(int radiobuttonID) const
+	{
+		auto it = m_radioButtonSelectSprites.find(radiobuttonID);
+		if (it != m_radioButtonSelectSprites.end())
+			return it->second;
+		return SpriteDefinition{"", 0, 0, 0, 0};
+	}
+
+	void SetRadioButtonDeselectSprite(int radiobuttonID, const SpriteDefinition& sprite)
+	{
+		m_radioButtonDeselectSprites[radiobuttonID] = sprite;
+	}
+	SpriteDefinition GetRadioButtonDeselectSprite(int radiobuttonID) const
+	{
+		auto it = m_radioButtonDeselectSprites.find(radiobuttonID);
+		if (it != m_radioButtonDeselectSprites.end())
+			return it->second;
+		return SpriteDefinition{"", 0, 0, 0, 0};
+	}
+
 	// StretchButton sprite metadata methods
 	void SetStretchButtonLeftSprite(int buttonID, const SpriteDefinition& sprite);
 	void SetStretchButtonCenterSprite(int buttonID, const SpriteDefinition& sprite);
@@ -336,18 +386,28 @@ public:
 	std::string ResolveStringProperty(int elementID, const std::string& propertyName) const;
 	int ResolveIntProperty(int elementID, const std::string& propertyName, int defaultValue = 0) const;
 
+	// Control whether empty text fields get filled with "example" placeholder
+	void SetUseExampleText(bool use) { m_useExampleText = use; }
+	bool GetUseExampleText() const { return m_useExampleText; }
+
+	// Helper to center a loaded ghost GUI on screen
+	// Gets root panel size and calls SetLayout with GUIP_CENTER
+	// Returns true if successful, false if no root panel found
+	bool CenterLoadedGUI(Gui* gui, float inputScale);
+
 	// Serialize an element and its children to JSON (for clipboard/undo support)
 	// parentX and parentY are the parent's absolute position (for calculating relative positions)
 	// forCopy: if true, serialize ALL current properties (for copy/paste); if false, only serialize explicit properties (for file save)
 	ghost_json SerializeElement(int elementID, Gui* gui, int parentX = 0, int parentY = 0, bool forCopy = false);
 
-private:
 	// Helper function to recursively parse elements with property inheritance
 	// parentX and parentY track the cumulative offset from nested parents
 	// parentElementID tracks the parent in the tree structure (-1 for root level)
 	// namePrefix is prepended to all element names (used for includes to avoid name collisions)
 	// insertIndex specifies where to insert elements in parent's children (-1 = append at end)
 	void ParseElements(const ghost_json& elementsArray, Gui* gui, const ghost_json& inheritedProps = ghost_json(), int parentX = 0, int parentY = 0, int parentElementID = -1, const std::string& namePrefix = "", int insertIndex = -1);
+
+private:
 
 	// Helper function to load font with inheritance support
 	// Returns the loaded Font pointer (owned by m_loadedFonts)
@@ -376,12 +436,21 @@ private:
 	std::map<int, int> m_panelHorzPaddings;  // Maps panel ID -> horizontal padding in pixels
 	std::map<int, int> m_panelVertPaddings;  // Maps panel ID -> vertical padding in pixels
 	std::map<int, int> m_panelColumns;  // Maps panel ID -> number of columns (for table layout)
+	std::map<int, std::pair<int, int>> m_panelSizes;  // Maps panel ID -> original size from JSON (width, height)
 
 	// Sprite metadata (full sprite definition with x/y/w/h)
 	std::map<int, SpriteDefinition> m_spriteDefinitions;  // Maps sprite/iconbutton ID -> full sprite definition (up sprite)
 
 	// IconButton down sprite metadata
 	std::map<int, SpriteDefinition> m_iconButtonDownSprites;  // Maps iconbutton ID -> down sprite definition
+
+	// CheckBox sprite metadata
+	std::map<int, SpriteDefinition> m_checkBoxSelectSprites;    // Maps checkbox ID -> select sprite definition
+	std::map<int, SpriteDefinition> m_checkBoxDeselectSprites;  // Maps checkbox ID -> deselect sprite definition
+
+	// RadioButton sprite metadata
+	std::map<int, SpriteDefinition> m_radioButtonSelectSprites;    // Maps radiobutton ID -> select sprite definition
+	std::map<int, SpriteDefinition> m_radioButtonDeselectSprites;  // Maps radiobutton ID -> deselect sprite definition
 
 	// StretchButton sprite metadata (3 sprite definitions per button)
 	std::map<int, SpriteDefinition> m_stretchButtonLeftSprites;    // Maps stretchbutton ID -> left sprite definition
@@ -408,6 +477,10 @@ private:
 	std::map<int, std::string> m_elementFonts;  // Maps element ID -> font name
 	std::map<int, int> m_elementFontSizes;  // Maps element ID -> font size
 	std::map<int, std::string> m_elementHoverTexts;  // Maps element ID -> hover text for tooltips
+
+	// Control whether empty text fields get filled with "example" placeholder text
+	// Defaults to false - only Ghost editor should enable this
+	bool m_useExampleText = false;
 
 	// Static base paths for resources
 	static std::string s_baseFontPath;
