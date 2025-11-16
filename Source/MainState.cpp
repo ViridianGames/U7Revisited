@@ -1077,7 +1077,7 @@ void MainState::Update()
 
 void MainState::OpenGump(int id)
 {
-	for (auto gump : g_gumpManager->m_GumpList)
+	for (const auto& gump : g_gumpManager->m_GumpList)
 	{
 		if (gump.get()->GetContainerId() == id)
 		{
