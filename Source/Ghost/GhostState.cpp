@@ -34,6 +34,7 @@ static bool lastVerticalCheckboxValue = false;
 static bool lastCanBeHeldCheckboxValue = false;
 static bool lastShadowedCheckboxValue = false;
 static int lastLayoutListValue = -1;
+static int lastJustifyListValue = -1;
 
 GhostState::~GhostState()
 {
@@ -1152,6 +1153,26 @@ void GhostState::Update()
 				{
 					lastLayoutListValue = layoutList->m_SelectedIndex;
 					Log("Layout list value changed to " + to_string(layoutList->m_SelectedIndex) + ", triggering update");
+					UpdateElementFromPropertyPanel();
+				}
+			}
+		}
+	}
+
+	// Check PROPERTY_JUSTIFY list (dropdown) for changes
+	if (m_selectedElementID != -1 && m_propertySerializer)
+	{
+		int justifyListID = m_propertySerializer->GetElementID("PROPERTY_JUSTIFY");
+		if (justifyListID != -1)
+		{
+			auto justifyElement = m_gui->GetElement(justifyListID);
+			if (justifyElement && justifyElement->m_Type == GUI_LIST)
+			{
+				auto justifyList = static_cast<GuiList*>(justifyElement.get());
+				if (justifyList->m_SelectedIndex != lastJustifyListValue)
+				{
+					lastJustifyListValue = justifyList->m_SelectedIndex;
+					Log("Justify list value changed to " + to_string(justifyList->m_SelectedIndex) + ", triggering update");
 					UpdateElementFromPropertyPanel();
 				}
 			}
@@ -4274,6 +4295,22 @@ void GhostState::PopulatePropertyPanelFields()
 			PopulateTextInputProperty("PROPERTY_FONT", m_contentSerializer->GetElementFont(m_selectedElementID));
 		if (m_contentSerializer->IsPropertyExplicit(m_selectedElementID, "fontSize"))
 			PopulateScrollbarProperty("PROPERTY_FONT_SIZE", m_contentSerializer->GetElementFontSize(m_selectedElementID));
+
+		// Populate justify dropdown list
+		int justifyListID = m_propertySerializer->GetElementID("PROPERTY_JUSTIFY");
+		if (justifyListID != -1)
+		{
+			auto justifyList = m_gui->GetElement(justifyListID);
+			if (justifyList && justifyList->m_Type == GUI_LIST)
+			{
+				auto list = static_cast<GuiList*>(justifyList.get());
+				// GuiTextArea::m_Justified: LEFT=0, CENTERED=1, RIGHT=2
+				list->m_SelectedIndex = static_cast<int>(textarea->m_Justified);
+
+				// Sync the tracking variable to prevent false triggers
+				lastJustifyListValue = list->m_SelectedIndex;
+			}
+		}
 	}
 
 	// Populate layout radio buttons and columns field (for panel elements)
@@ -4838,6 +4875,26 @@ void GhostState::UpdateElementFromPropertyPanel()
 		if (UpdateWidthProperty(selectedElement.get())) wasUpdated = true;
 		if (UpdateHeightProperty(selectedElement.get())) wasUpdated = true;
 		// Font and font size are already handled by UpdateFontProperty() and UpdateFontSizeProperty() above
+
+		// Update justify property from dropdown list
+		int justifyListID = m_propertySerializer->GetElementID("PROPERTY_JUSTIFY");
+		if (justifyListID != -1)
+		{
+			auto justifyElement = m_gui->GetElement(justifyListID);
+			if (justifyElement && justifyElement->m_Type == GUI_LIST)
+			{
+				auto justifyList = static_cast<GuiList*>(justifyElement.get());
+				auto textarea = static_cast<GuiTextArea*>(selectedElement.get());
+
+				// Update the GuiTextArea's m_Justified (LEFT=0, CENTERED=1, RIGHT=2)
+				int newJustify = justifyList->m_SelectedIndex;
+				if (textarea->m_Justified != newJustify)
+				{
+					textarea->m_Justified = newJustify;
+					wasUpdated = true;
+				}
+			}
+		}
 	}
 
 	// Update listbox properties if changed

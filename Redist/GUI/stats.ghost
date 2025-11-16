@@ -74,21 +74,21 @@
             "name": "NAME",
             "type": "textarea",
             "position": [
-              30,
+              31,
               5
             ],
             "text": "Name",
             "textColor": [
-              255,
-              255,
-              255,
+              0,
+              0,
+              0,
               250
             ],
             "size": [
-              25,
+              95,
               10
             ],
-            "justified": 0
+            "justified": 1
           },
           {
             "name": "BOTTOM",
@@ -158,12 +158,12 @@
             "name": "STATS1",
             "type": "panel",
             "position": [
-              113,
+              106,
               15
             ],
             "size": [
               20,
-              29
+              30
             ],
             "backgroundColor": [
               80,
@@ -183,7 +183,7 @@
                   -1,
                   -1
                 ],
-                "text": "Label Text",
+                "text": "88",
                 "textColor": [
                   0,
                   0,
@@ -194,7 +194,7 @@
                   20,
                   10
                 ],
-                "justified": 0
+                "justified": 2
               },
               {
                 "name": "DEX",
@@ -203,7 +203,7 @@
                   -1,
                   -1
                 ],
-                "text": "Label Text",
+                "text": "88",
                 "textColor": [
                   0,
                   0,
@@ -214,7 +214,7 @@
                   20,
                   10
                 ],
-                "justified": 0
+                "justified": 2
               },
               {
                 "name": "INT",
@@ -223,7 +223,7 @@
                   -1,
                   -1
                 ],
-                "text": "Label Text",
+                "text": "88",
                 "textColor": [
                   0,
                   0,
@@ -234,7 +234,7 @@
                   20,
                   10
                 ],
-                "justified": 0
+                "justified": 2
               }
             ]
           },
@@ -242,12 +242,12 @@
             "name": "STATS4",
             "type": "panel",
             "position": [
-              113,
+              106,
               84
             ],
             "size": [
               20,
-              29
+              30
             ],
             "backgroundColor": [
               80,
@@ -267,7 +267,7 @@
                   -1,
                   -1
                 ],
-                "text": "Label Text",
+                "text": "88",
                 "textColor": [
                   0,
                   0,
@@ -278,7 +278,7 @@
                   20,
                   10
                 ],
-                "justified": 0
+                "justified": 2
               },
               {
                 "name": "LVL",
@@ -287,7 +287,7 @@
                   -1,
                   -1
                 ],
-                "text": "Label Text",
+                "text": "88",
                 "textColor": [
                   0,
                   0,
@@ -298,7 +298,7 @@
                   20,
                   10
                 ],
-                "justified": 0
+                "justified": 2
               },
               {
                 "name": "TRAIN",
@@ -307,7 +307,7 @@
                   -1,
                   -1
                 ],
-                "text": "Label Text",
+                "text": "88",
                 "textColor": [
                   0,
                   0,
@@ -318,7 +318,7 @@
                   20,
                   10
                 ],
-                "justified": 0
+                "justified": 2
               }
             ]
           },
@@ -326,7 +326,7 @@
             "name": "STATS3",
             "type": "panel",
             "position": [
-              113,
+              106,
               64
             ],
             "size": [
@@ -351,7 +351,7 @@
                   -1,
                   -1
                 ],
-                "text": "Label Text",
+                "text": "88",
                 "textColor": [
                   0,
                   0,
@@ -362,7 +362,7 @@
                   20,
                   10
                 ],
-                "justified": 0
+                "justified": 2
               },
               {
                 "name": "MANA",
@@ -371,7 +371,7 @@
                   -1,
                   -1
                 ],
-                "text": "Label Text",
+                "text": "88",
                 "textColor": [
                   0,
                   0,
@@ -382,7 +382,7 @@
                   20,
                   10
                 ],
-                "justified": 0
+                "justified": 2
               }
             ]
           },
@@ -390,7 +390,7 @@
             "name": "STATS2",
             "type": "panel",
             "position": [
-              113,
+              106,
               44
             ],
             "size": [
@@ -415,7 +415,7 @@
                   -1,
                   -1
                 ],
-                "text": "Label Text",
+                "text": "88",
                 "textColor": [
                   0,
                   0,
@@ -426,7 +426,7 @@
                   20,
                   10
                 ],
-                "justified": 0
+                "justified": 2
               },
               {
                 "name": "MAGIC",
@@ -435,7 +435,7 @@
                   -1,
                   -1
                 ],
-                "text": "Label Text",
+                "text": "88",
                 "textColor": [
                   0,
                   0,
@@ -446,7 +446,7 @@
                   20,
                   10
                 ],
-                "justified": 0
+                "justified": 2
               }
             ]
           }

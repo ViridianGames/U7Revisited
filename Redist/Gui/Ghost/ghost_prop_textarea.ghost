@@ -332,6 +332,56 @@
               128,
               255
             ]
+          },
+          {
+            "type": "textarea",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Justify:",
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "justified": 0,
+            "size": [
+              180.0,
+              30.0
+            ]
+          },
+          {
+            "name": "PROPERTY_JUSTIFY",
+            "type": "list",
+            "position": [
+              -1,
+              -1
+            ],
+            "size": [
+              150,
+              38
+            ],
+            "items": ["Left", "Center", "Right"],
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "backgroundColor": [
+              64,
+              64,
+              64,
+              255
+            ],
+            "borderColor": [
+              128,
+              128,
+              128,
+              255
+            ]
           }
         ]
       }
