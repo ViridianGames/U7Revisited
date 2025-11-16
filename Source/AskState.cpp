@@ -47,6 +47,9 @@ void AskState::OnEnter()
 void AskState::OnExit()
 {
 	Log("AskState::OnExit()");
+
+	// Reset the asked to exit flag so the dialog can be shown again
+	g_Engine->m_askedToExit = false;
 }
 
 void AskState::Init(const std::string& data)

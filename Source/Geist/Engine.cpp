@@ -4,6 +4,7 @@
 #include "StateMachine.h"
 #include "ScriptingSystem.h"
 #include "Logging.h"
+#include "U7Globals.h"
 #include <sstream>
 #include <fstream>
 #include <time.h>
@@ -65,9 +66,10 @@ void Engine::Update()
 	g_StateMachine->Update();
 	g_ScriptingSystem->Update();
 
-	if (WindowShouldClose())
+	if (WindowShouldClose() && !m_askedToExit)
 	{
-		m_Done = true;
+		m_askedToExit = true;
+		g_StateMachine->PushState(STATE_ASKEXITSTATE);
 	}
 
 	// F12 takes a screenshot
