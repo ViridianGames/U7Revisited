@@ -302,10 +302,7 @@ void GumpStats::Draw()
 		if (goldElement && goldElement->m_Type == GUI_TEXTAREA)
 		{
 			auto goldText = static_cast<GuiTextArea*>(goldElement.get());
-			
-			// TODO: Calculate actual gold from NPC's inventory
-			// For now, show placeholder
-			goldText->m_String = "GOLD: 0";
+			goldText->m_String = "GOLD: " + std::to_string(g_Player->GetGold());
 		}
 	}
 
