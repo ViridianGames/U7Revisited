@@ -314,7 +314,7 @@ void GumpStats::Draw()
 		if (weightElement && weightElement->m_Type == GUI_TEXTAREA)
 		{
 			auto weightText = static_cast<GuiTextArea*>(weightElement.get());
-			
+
 			// Get the NPC's object to calculate weight
 			auto npcIt = g_NPCData.find(m_npcId);
 			if (npcIt != g_NPCData.end() && npcIt->second)

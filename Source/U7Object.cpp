@@ -598,6 +598,8 @@ bool U7Object::AddObjectToInventory(int objectid)
 		if (child)
 		{
 			child->m_containingObjectId = m_ID;
+			child->m_isContained = true;  // Mark as contained
+			child->SetPos(Vector3{0, 0, 0});  // Clear world position
 		}
 
 		InvalidateWeightCache();

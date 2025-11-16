@@ -380,16 +380,16 @@ void MainState::UpdateInput()
 	{
 		//if (m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX)
 		//{
-			if (m_heightCutoff == 4.0f)
-			{
-				m_heightCutoff = 10.0f;
-				AddConsoleString("Viewing Second Floor");
-			}
-			else if (m_heightCutoff == 10.0f)
-			{
-				m_heightCutoff = 16.0f;
-				AddConsoleString("Viewing Third Floor");
-			}
+		if (m_heightCutoff == 4.0f)
+		{
+			m_heightCutoff = 10.0f;
+			AddConsoleString("Viewing Second Floor");
+		}
+		else if (m_heightCutoff == 10.0f)
+		{
+			m_heightCutoff = 16.0f;
+			AddConsoleString("Viewing Third Floor");
+		}
 		//}
 	}
 
@@ -467,7 +467,7 @@ void MainState::UpdateInput()
 	}
 	if (!IsMouseButtonDown(MOUSE_LEFT_BUTTON))
 	{
-		m_dragStart = {0, 0};
+		m_dragStart = { 0, 0 };
 	}
 
 	// Always update selected shape/frame when clicking an object (for F1 shape editor)
@@ -478,7 +478,7 @@ void MainState::UpdateInput()
 
 		if (m_doingObjectSelection)
 		{
-			g_ScriptingSystem->ResumeCoroutine(m_luaFunction, {g_objectUnderMousePointer->m_ID}); // Lua arrays are 1-indexed
+			g_ScriptingSystem->ResumeCoroutine(m_luaFunction, { g_objectUnderMousePointer->m_ID }); // Lua arrays are 1-indexed
 		}
 
 		// Only allow dragging if not a static object (or if static movement is enabled)
@@ -498,6 +498,10 @@ void MainState::UpdateInput()
 					g_gumpManager->m_sourceSlotIndex = -1;  // Not from a paperdoll slot
 					g_gumpManager->m_draggedObjectOriginalPos = g_objectUnderMousePointer->m_Pos;  // Store original world position
 					g_gumpManager->m_draggedObjectOriginalDest = g_objectUnderMousePointer->m_Dest;  // Store original destination (for NPCs)
+
+					// Remove object from world immediately when drag starts
+					g_objectUnderMousePointer->m_isContained = true;  // Mark as contained so it won't be drawn in world
+					Log("Removed object " + std::to_string(g_objectUnderMousePointer->m_ID) + " from world on drag start");
 
 					// Close any gump associated with this object to prevent dragging into itself
 					g_gumpManager->CloseGumpForObject(g_objectUnderMousePointer->m_ID);
@@ -564,7 +568,7 @@ void MainState::UpdateInput()
 		// Check if this is the avatar or a party member NPC
 		bool isAvatar = g_objectUnderMousePointer->m_isNPC && g_objectUnderMousePointer->m_NPCID == 0;
 		bool isPartyMember = g_objectUnderMousePointer->m_isNPC &&
-		                     g_Player->NPCIDInParty(g_objectUnderMousePointer->m_NPCID);
+			g_Player->NPCIDInParty(g_objectUnderMousePointer->m_NPCID);
 
 		if (isAvatar || isPartyMember)
 		{
@@ -572,8 +576,8 @@ void MainState::UpdateInput()
 			bool anyPaperdollOpen = HasAnyPaperdollOpen();
 
 			Log("Double-clicked NPC " + std::to_string(npcId) +
-			    ", isAvatar=" + std::to_string(isAvatar) +
-			    ", anyPaperdollOpen=" + std::to_string(anyPaperdollOpen));
+				", isAvatar=" + std::to_string(isAvatar) +
+				", anyPaperdollOpen=" + std::to_string(anyPaperdollOpen));
 
 			if (isAvatar || anyPaperdollOpen)
 			{
@@ -589,8 +593,8 @@ void MainState::UpdateInput()
 		}
 		// Handle doors and objects with scripts/conversations
 		else if (g_objectUnderMousePointer->m_objectData->m_isDoor ||
-		    g_objectUnderMousePointer->m_hasConversationTree ||
-		    g_objectUnderMousePointer->m_shapeData->m_luaScript != "default")
+			g_objectUnderMousePointer->m_hasConversationTree ||
+			g_objectUnderMousePointer->m_shapeData->m_luaScript != "default")
 		{
 			g_objectUnderMousePointer->Interact(1);;
 		}
@@ -616,7 +620,7 @@ void MainState::UpdateInput()
 				if (g_ScriptingSystem->IsCoroutineYielded(m_luaFunction))
 				{
 					m_objectSelectionMode = false;
-					g_ScriptingSystem->ResumeCoroutine(m_luaFunction, {g_objectUnderMousePointer->m_ID}); // Lua arrays are 1-indexed
+					g_ScriptingSystem->ResumeCoroutine(m_luaFunction, { g_objectUnderMousePointer->m_ID }); // Lua arrays are 1-indexed
 				}
 			}
 			else
@@ -644,7 +648,7 @@ void MainState::UpdateInput()
 					string npcName = g_NPCData[npcID] ? g_NPCData[npcID]->name : "Unknown";
 					AddConsoleString("=== NPC #" + to_string(npcID) + " (" + npcName + ") Schedule ===");
 					AddConsoleString("Current game time: " + to_string(g_hour) + ":" + (g_minute < 10 ? "0" : "") + to_string(g_minute) +
-					                 " (schedule block: " + to_string(g_scheduleTime) + ")");
+						" (schedule block: " + to_string(g_scheduleTime) + ")");
 
 					if (g_NPCSchedules.find(npcID) != g_NPCSchedules.end() && !g_NPCSchedules[npcID].empty())
 					{
@@ -655,8 +659,8 @@ void MainState::UpdateInput()
 
 						std::sort(sortedIndices.begin(), sortedIndices.end(),
 							[npcID](int a, int b) {
-								return g_NPCSchedules[npcID][a].m_time < g_NPCSchedules[npcID][b].m_time;
-							});
+							return g_NPCSchedules[npcID][a].m_time < g_NPCSchedules[npcID][b].m_time;
+						});
 
 						// Find the currently active schedule (most recent schedule where time <= current time)
 						int activeScheduleIndex = -1;
@@ -685,23 +689,23 @@ void MainState::UpdateInput()
 							string timeStr;
 							switch (schedule.m_time)
 							{
-								case 0: timeStr = "0:00 (Midnight)"; break;
-								case 1: timeStr = "3:00"; break;
-								case 2: timeStr = "6:00"; break;
-								case 3: timeStr = "9:00"; break;
-								case 4: timeStr = "12:00 (Noon)"; break;
-								case 5: timeStr = "15:00"; break;
-								case 6: timeStr = "18:00"; break;
-								case 7: timeStr = "21:00"; break;
-								default: timeStr = to_string(schedule.m_time); break;
+							case 0: timeStr = "0:00 (Midnight)"; break;
+							case 1: timeStr = "3:00"; break;
+							case 2: timeStr = "6:00"; break;
+							case 3: timeStr = "9:00"; break;
+							case 4: timeStr = "12:00 (Noon)"; break;
+							case 5: timeStr = "15:00"; break;
+							case 6: timeStr = "18:00"; break;
+							case 7: timeStr = "21:00"; break;
+							default: timeStr = to_string(schedule.m_time); break;
 							}
 
 							// Print active schedule in gold, others in white
 							bool isActive = (idx == activeScheduleIndex);
 							Color lineColor = isActive ? GOLD : WHITE;
 							AddConsoleString("  [" + to_string(idx) + "] Time: " + timeStr +
-							                 ", Dest: (" + to_string(schedule.m_destX) + ", " + to_string(schedule.m_destY) + ")" +
-							                 ", Activity: " + to_string(schedule.m_activity), lineColor);
+								", Dest: (" + to_string(schedule.m_destX) + ", " + to_string(schedule.m_destY) + ")" +
+								", Activity: " + to_string(schedule.m_activity), lineColor);
 						}
 					}
 					else
@@ -714,13 +718,13 @@ void MainState::UpdateInput()
 					{
 						AddConsoleString("=== Current Waypoints ===", YELLOW);
 						AddConsoleString("  Total waypoints: " + to_string(g_objectUnderMousePointer->m_pathWaypoints.size()) +
-						                 ", Current index: " + to_string(g_objectUnderMousePointer->m_currentWaypointIndex));
+							", Current index: " + to_string(g_objectUnderMousePointer->m_currentWaypointIndex));
 						for (size_t i = 0; i < g_objectUnderMousePointer->m_pathWaypoints.size(); i++)
 						{
 							const auto& wp = g_objectUnderMousePointer->m_pathWaypoints[i];
 							string marker = (i == g_objectUnderMousePointer->m_currentWaypointIndex) ? " <-- CURRENT" : "";
 							AddConsoleString("  [" + to_string(i) + "] (" +
-							                 to_string((int)wp.x) + ", " + to_string((int)wp.z) + ")" + marker);
+								to_string((int)wp.x) + ", " + to_string((int)wp.z) + ")" + marker);
 						}
 					}
 					else
@@ -740,31 +744,31 @@ void MainState::UpdateInput()
 				int worldZ = (int)floor(g_terrainUnderMousePointer.z);
 
 				if (worldX >= 0 && worldX < 3072 && worldZ >= 0 && worldZ < 3072)
-			{
-				// Get terrain shape
-				unsigned short shapeframe = g_World[worldZ][worldX];
-				int shapeID = shapeframe & 0x3ff;  // Bits 0-9
-				int frameID = (shapeframe >> 10) & 0x3f;  // Bits 10-15
-
-				// Look up name and cost from terrain costs
-				extern AStar* g_aStar;
-				string terrainName = g_aStar ? g_aStar->GetTerrainName(shapeID) : "Unknown";
-				bool walkable = g_pathfindingGrid->IsPositionWalkable(worldX, worldZ);
-
-				AddConsoleString("=== " + terrainName + " (" + to_string(worldX) + ", " + to_string(worldZ) + ") ===", SKYBLUE);
-				AddConsoleString("  Shape ID: " + to_string(shapeID) + ", Frame: " + to_string(frameID), WHITE);
-
-				if (walkable)
 				{
-					float cost = g_aStar ? g_aStar->GetMovementCost(worldX, worldZ, g_pathfindingGrid) : 1.0f;
-					AddConsoleString("  Movement Cost: " + to_string(cost), GREEN);
-					AddConsoleString("  Walkable: YES", GREEN);
+					// Get terrain shape
+					unsigned short shapeframe = g_World[worldZ][worldX];
+					int shapeID = shapeframe & 0x3ff;  // Bits 0-9
+					int frameID = (shapeframe >> 10) & 0x3f;  // Bits 10-15
+
+					// Look up name and cost from terrain costs
+					extern AStar* g_aStar;
+					string terrainName = g_aStar ? g_aStar->GetTerrainName(shapeID) : "Unknown";
+					bool walkable = g_pathfindingGrid->IsPositionWalkable(worldX, worldZ);
+
+					AddConsoleString("=== " + terrainName + " (" + to_string(worldX) + ", " + to_string(worldZ) + ") ===", SKYBLUE);
+					AddConsoleString("  Shape ID: " + to_string(shapeID) + ", Frame: " + to_string(frameID), WHITE);
+
+					if (walkable)
+					{
+						float cost = g_aStar ? g_aStar->GetMovementCost(worldX, worldZ, g_pathfindingGrid) : 1.0f;
+						AddConsoleString("  Movement Cost: " + to_string(cost), GREEN);
+						AddConsoleString("  Walkable: YES", GREEN);
+					}
+					else
+					{
+						AddConsoleString("  Walkable: NO", RED);
+					}
 				}
-				else
-				{
-					AddConsoleString("  Walkable: NO", RED);
-				}
-			}
 			}
 #endif
 		}
@@ -1012,7 +1016,7 @@ void MainState::Update()
 		if (m_waitTime < 0)
 		{
 			m_waitTime = 0;
-			g_ScriptingSystem->ResumeCoroutine(m_luaFunction, {0}); // Lua arrays are 1-indexed
+			g_ScriptingSystem->ResumeCoroutine(m_luaFunction, { 0 }); // Lua arrays are 1-indexed
 		}
 	}
 
@@ -1067,7 +1071,7 @@ void MainState::Update()
 
 	if (int(g_terrainUnderMousePointer.x / 16) == 66 && int(g_terrainUnderMousePointer.z / 16 == 137) && g_ScriptingSystem->GetFlag(60) == false)
 	{
-		g_ScriptingSystem->SetFlag(60 , true);
+		g_ScriptingSystem->SetFlag(60, true);
 	}
 }
 
@@ -1225,10 +1229,10 @@ void MainState::Draw()
 	{
 		for (auto object : g_sortedVisibleObjects)
 		{
-		 	if (object->m_drawType != ShapeDrawType::OBJECT_DRAW_FLAT)
-		 	{
-		 		object->Draw();
-		 	}
+			if (object->m_drawType != ShapeDrawType::OBJECT_DRAW_FLAT)
+			{
+				object->Draw();
+			}
 		}
 
 		//  Flats require disabling the depth mask to draw correctly.
@@ -1247,7 +1251,7 @@ void MainState::Draw()
 	{
 		U7Object* draggedObject = g_objectList[g_gumpManager->m_draggedObjectId].get();
 		BoundingBox box;
-		box.min = Vector3Subtract(g_terrainUnderMousePointer, {draggedObject->m_shapeData->m_Dims.x - 1, 0, draggedObject->m_shapeData->m_Dims.z - 1});//, {draggedObject->m_shapeData->m_Dims.x / 2, draggedObject->m_shapeData->m_Dims.y / 2, draggedObject->m_shapeData->m_Dims.z / 2});
+		box.min = Vector3Subtract(g_terrainUnderMousePointer, { draggedObject->m_shapeData->m_Dims.x - 1, 0, draggedObject->m_shapeData->m_Dims.z - 1 });//, {draggedObject->m_shapeData->m_Dims.x / 2, draggedObject->m_shapeData->m_Dims.y / 2, draggedObject->m_shapeData->m_Dims.z / 2});
 		box.max = Vector3Add(box.min, draggedObject->m_shapeData->m_Dims);
 		DrawBoundingBox(box, WHITE);
 	}
@@ -1326,13 +1330,13 @@ void MainState::Draw()
 
 			int quantity = (g_objectUnderMousePointer->m_Quality > 0) ? g_objectUnderMousePointer->m_Quality : 1;
 			objectDescription += GetShapeFrameName(g_objectUnderMousePointer->m_shapeData->GetShape(),
-			                                        g_objectUnderMousePointer->m_shapeData->GetFrame(),
-			                                        quantity) + " at " +
-			  to_string(int(g_objectUnderMousePointer->m_Pos.x)) +
-			  " " +
-			  to_string(int(g_objectUnderMousePointer->m_Pos.z)) +
-			  " Quality: " +
-			  to_string(int(g_objectUnderMousePointer->m_Quality));
+				g_objectUnderMousePointer->m_shapeData->GetFrame(),
+				quantity) + " at " +
+				to_string(int(g_objectUnderMousePointer->m_Pos.x)) +
+				" " +
+				to_string(int(g_objectUnderMousePointer->m_Pos.z)) +
+				" Quality: " +
+				to_string(int(g_objectUnderMousePointer->m_Quality));
 
 			// Show frame for doors
 			if (g_objectUnderMousePointer->m_objectData && g_objectUnderMousePointer->m_objectData->m_isDoor)
@@ -1400,7 +1404,7 @@ void MainState::Draw()
 		screenPos.x -= width / 2;
 		float height = g_ConversationFont->baseSize * 1.2;
 
-		DrawRectangleRounded({screenPos.x, screenPos.y, width, height}, 5, 100, {0, 0, 0, 192});
+		DrawRectangleRounded({ screenPos.x, screenPos.y, width, height }, 5, 100, { 0, 0, 0, 192 });
 		DrawTextEx(*g_ConversationFont, m_barkText.c_str(), { float(screenPos.x) + (width * .1f), float(screenPos.y) + (height * .1f) }, g_ConversationFont->baseSize, 1, YELLOW);
 	}
 
@@ -1507,7 +1511,7 @@ void MainState::RebuildWorldFromLoadedData()
 					npcCount++;
 				else
 					dynamicCount++;
-				
+
 				AssignObjectChunk(obj.get());
 			}
 		}
@@ -1535,8 +1539,8 @@ void MainState::RebuildWorldFromLoadedData()
 		}
 	}
 	Log("MainState::RebuildWorldFromLoadedData - g_objectList after rebuild: " + std::to_string(finalTotal) +
-	    " total (" + std::to_string(finalStatic) + " static, " + std::to_string(finalObjects) +
-	    " objects, " + std::to_string(finalNpcs) + " NPCs)");
+		" total (" + std::to_string(finalStatic) + " static, " + std::to_string(finalObjects) +
+		" objects, " + std::to_string(finalNpcs) + " NPCs)");
 
 	Log("MainState::RebuildWorldFromLoadedData - Complete");
 }
