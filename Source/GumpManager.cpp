@@ -329,7 +329,7 @@ void GumpManager::Update()
 		//  If not dropped on paperdoll, check dragging to regular containers
 		if (!droppedOnPaperdoll)
 		{
-			for (auto gump : g_gumpManager->m_GumpList)
+			for (const auto& gump : g_gumpManager->m_GumpList)
 			{
 				// Skip gumps without container objects (paperdolls, spellbooks, etc.)
 				if (gump->m_containerObject == nullptr)
