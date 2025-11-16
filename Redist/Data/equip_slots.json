@@ -150,6 +150,13 @@
       "SLOT_AMMO"
     ]
   },
+  "555": {
+    "name": "hawk",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
+    ]
+  },
   "556": {
     "name": "magic arrow",
     "slots": [
@@ -185,6 +192,17 @@
       "SLOT_LEFT_HAND",
       "SLOT_RIGHT_HAND",
       "SLOT_BELT"
+    ]
+  },
+  "562": {
+    "name": "The Death Scythe",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
+    ],
+    "fills": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
     ]
   },
   "564": {
@@ -306,7 +324,7 @@
     ]
   },
   "587": {
-    "name": "boots",
+    "name": "magic boots",
     "slots": [
       "SLOT_FEET"
     ]
