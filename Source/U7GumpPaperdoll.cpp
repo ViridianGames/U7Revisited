@@ -316,6 +316,7 @@ void GumpPaperdoll::Update()
 				int shape = objIt->second->m_shapeData->GetShape();
 				validSlots = GetEquipmentSlotsForShape(shape);
 
+				// Enable highlighting if item is equippable OR if we have any equipped containers
 				if (!validSlots.empty())
 				{
 					shouldHighlight = true;
@@ -324,6 +325,24 @@ void GumpPaperdoll::Update()
 					{
 						Log("Paperdoll - Highlighting enabled for shape " + std::to_string(shape) + ", " + std::to_string(validSlots.size()) + " valid slots");
 						loggedOnce = true;
+					}
+				}
+				else
+				{
+					// Item not equippable, but check if we have any equipped containers to highlight
+					auto npcData = g_NPCData[m_npcId].get();
+					for (int i = 0; i < 13; i++)
+					{
+						int equippedItemId = npcData->GetEquippedItem(static_cast<EquipmentSlot>(i));
+						if (equippedItemId != -1)
+						{
+							U7Object* equippedItem = GetObjectFromID(equippedItemId);
+							if (equippedItem && equippedItem->m_isContainer)
+							{
+								shouldHighlight = true;
+								break;
+							}
+						}
 					}
 				}
 			}
@@ -339,15 +358,29 @@ void GumpPaperdoll::Update()
 		{
 			EquipmentSlot slot = static_cast<EquipmentSlot>(i);
 			bool isValidSlot = std::find(validSlots.begin(), validSlots.end(), slot) != validSlots.end();
-			bool isEmpty = npcData->GetEquippedItem(slot) == -1;
+			int equippedItemId = npcData->GetEquippedItem(slot);
+			bool isEmpty = equippedItemId == -1;
 
-			if (isValidSlot && isEmpty)
+			// Also check if the slot has an equipped container
+			bool hasContainer = false;
+			if (!isEmpty)
+			{
+				U7Object* equippedItem = GetObjectFromID(equippedItemId);
+				if (equippedItem && equippedItem->m_isContainer)
+				{
+					hasContainer = true;
+				}
+			}
+
+			// Highlight if: (valid slot for equipping AND empty) OR (has container regardless of validity)
+			if ((isValidSlot && isEmpty) || hasContainer)
 			{
 				m_highlightedSlots.insert(i);
 				static int logCount = 0;
 				if (logCount < 5)
 				{
-					Log("Paperdoll - Will highlight slot " + std::to_string(i) + " (" + std::string(slotNames[i]) + ")");
+					Log("Paperdoll - Will highlight slot " + std::to_string(i) + " (" + std::string(slotNames[i]) +
+					    (hasContainer ? ") [has container]" : ")"));
 					logCount++;
 				}
 			}
@@ -910,4 +943,257 @@ bool GumpPaperdoll::IsMouseOverSolidPixel(Vector2 mousePos)
 
 	// Return true if alpha > 0 (non-transparent)
 	return pixelColor.a > 0;
+}
+
+bool GumpPaperdoll::HandleDrop(U7Object* object, Vector2 mousePos)
+{
+	if (!object)
+		return false;
+
+	bool droppedSuccessfully = false;
+	int shape = object->m_shapeData->GetShape();
+	std::vector<EquipmentSlot> validSlots = GetEquipmentSlotsForShape(shape);
+	std::vector<EquipmentSlot> fillSlots = GetEquipmentSlotsFilled(shape);
+
+	static const char* slotNames[] = {
+		"SLOT_HEAD", "SLOT_NECK", "SLOT_TORSO", "SLOT_LEGS", "SLOT_HANDS", "SLOT_FEET",
+		"SLOT_LEFT_HAND", "SLOT_RIGHT_HAND", "SLOT_AMMO", "SLOT_LEFT_RING", "SLOT_RIGHT_RING",
+		"SLOT_BELT", "SLOT_BACKPACK"
+	};
+
+	auto npcIt = g_NPCData.find(m_npcId);
+	if (npcIt == g_NPCData.end())
+		return false;
+
+	NPCData* npcData = npcIt->second.get();
+
+	// FIRST: Check if mouse is directly over a container slot - if so, prioritize adding to container
+	for (int slotIndex : m_highlightedSlots)
+	{
+		EquipmentSlot slot = static_cast<EquipmentSlot>(slotIndex);
+		int equippedItemId = npcData->GetEquippedItem(slot);
+
+		if (equippedItemId != -1)
+		{
+			U7Object* equippedItem = GetObjectFromID(equippedItemId);
+			if (equippedItem && equippedItem->m_isContainer)
+			{
+				// Check if mouse is over this container slot
+				int slotID = m_serializer->GetElementID(slotNames[slotIndex]);
+				if (slotID != -1)
+				{
+					auto element = m_gui.GetElement(slotID);
+					if (element)
+					{
+						GuiSprite* slotSprite = dynamic_cast<GuiSprite*>(element.get());
+						if (slotSprite)
+						{
+							float width = slotSprite->m_Width * slotSprite->m_ScaleX;
+							float height = slotSprite->m_Height * slotSprite->m_ScaleY;
+							if (width < 16.0f) width = 16.0f;
+							if (height < 16.0f) height = 16.0f;
+
+							Rectangle slotRect = {
+								m_gui.m_Pos.x + slotSprite->m_Pos.x,
+								m_gui.m_Pos.y + slotSprite->m_Pos.y,
+								width,
+								height
+							};
+
+							if (CheckCollisionPointRec(mousePos, slotRect))
+							{
+								// Mouse is over a container slot - check weight and add to container
+								U7Object* rootNPC = GetRootNPCFromContainer(equippedItem);
+								float itemWeight = object->GetWeight();
+								bool canCarry = true;
+
+								if (rootNPC != nullptr)
+								{
+									float remainingCapacity = rootNPC->GetRemainingCarryCapacity();
+									if (itemWeight > remainingCapacity)
+									{
+										canCarry = false;
+										AddConsoleString("Too heavy! Cannot carry that much.", RED);
+										Log("Drop failed: Item weight " + std::to_string(itemWeight) +
+										    " exceeds NPC remaining capacity " + std::to_string(remainingCapacity));
+									}
+								}
+
+								if (canCarry)
+								{
+									equippedItem->AddObjectToInventory(object->m_ID);
+									object->m_isContained = true;
+									object->m_InventoryPos = { 0, 0 };
+									Log("Added item to equipped container in slot " + std::to_string(static_cast<int>(slot)));
+									return true;
+								}
+								// Exit early - we tried to drop on container
+								return false;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	// SECOND: If not dropped on container, try to equip if item is equippable
+	if (!validSlots.empty())
+	{
+		// Check if mouse is over a specific highlighted slot
+		EquipmentSlot targetSlot = EquipmentSlot::SLOT_COUNT;
+		if (!m_highlightedSlots.empty())
+		{
+			// Check each highlighted slot to see if mouse is over it
+			for (int slotIndex : m_highlightedSlots)
+			{
+				EquipmentSlot slot = static_cast<EquipmentSlot>(slotIndex);
+				// Check if this is a valid slot for this item
+				if (std::find(validSlots.begin(), validSlots.end(), slot) != validSlots.end())
+				{
+					// Get slot sprite bounds to check mouse position
+					int slotID = m_serializer->GetElementID(slotNames[slotIndex]);
+					if (slotID != -1)
+					{
+						auto element = m_gui.GetElement(slotID);
+						if (element)
+						{
+							GuiSprite* slotSprite = dynamic_cast<GuiSprite*>(element.get());
+							if (slotSprite)
+							{
+								float width = slotSprite->m_Width * slotSprite->m_ScaleX;
+								float height = slotSprite->m_Height * slotSprite->m_ScaleY;
+								if (width < 16.0f) width = 16.0f;
+								if (height < 16.0f) height = 16.0f;
+
+								Rectangle slotRect = {
+									m_gui.m_Pos.x + slotSprite->m_Pos.x,
+									m_gui.m_Pos.y + slotSprite->m_Pos.y,
+									width,
+									height
+								};
+
+								if (CheckCollisionPointRec(mousePos, slotRect))
+								{
+									targetSlot = slot;
+									break;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		// If we found a specific target slot, try that first; otherwise try all valid slots
+		std::vector<EquipmentSlot> slotsToTry;
+		if (targetSlot != EquipmentSlot::SLOT_COUNT)
+		{
+			slotsToTry.push_back(targetSlot);
+			// Add remaining valid slots as fallback
+			for (EquipmentSlot slot : validSlots)
+			{
+				if (slot != targetSlot)
+					slotsToTry.push_back(slot);
+			}
+		}
+		else
+		{
+			slotsToTry = validSlots;
+		}
+
+		// Try each slot in order (target slot first if specified)
+		for (EquipmentSlot slot : slotsToTry)
+		{
+			// If item has explicit fills, check all those slots are empty
+			// Otherwise just check the single slot
+			bool allSlotsEmpty = true;
+			if (!fillSlots.empty())
+			{
+				// Multi-slot item (e.g., crossbow, gauntlets) - check ALL fill slots
+				for (EquipmentSlot fillSlot : fillSlots)
+				{
+					if (npcData->GetEquippedItem(fillSlot) != -1)
+					{
+						allSlotsEmpty = false;
+						break;
+					}
+				}
+			}
+			else
+			{
+				// Single-slot item - just check this slot
+				allSlotsEmpty = (npcData->GetEquippedItem(slot) == -1);
+			}
+
+			if (allSlotsEmpty)
+			{
+				// Equip: if fills is specified, use those slots; otherwise just the single slot
+				if (!fillSlots.empty())
+				{
+					for (EquipmentSlot fillSlot : fillSlots)
+					{
+						npcData->SetEquippedItem(fillSlot, object->m_ID);
+					}
+				}
+				else
+				{
+					npcData->SetEquippedItem(slot, object->m_ID);
+				}
+				object->m_isContained = true;
+				Log("Equipped shape " + std::to_string(shape) + " to slot " + std::to_string(static_cast<int>(slot)) +
+				    " (fills " + std::to_string(fillSlots.size()) + " slots)");
+				return true;
+			}
+		}
+
+		Log("Cannot equip - required slots are occupied");
+	}
+	else
+	{
+		Log("Cannot equip shape " + std::to_string(shape) + " - not an equippable item");
+	}
+
+	// THIRD: If not equipped and not dropped yet, check if there are any highlighted container slots as fallback
+	for (int slotIndex : m_highlightedSlots)
+	{
+		EquipmentSlot slot = static_cast<EquipmentSlot>(slotIndex);
+		int equippedItemId = npcData->GetEquippedItem(slot);
+
+		if (equippedItemId != -1)
+		{
+			U7Object* equippedItem = GetObjectFromID(equippedItemId);
+			if (equippedItem && equippedItem->m_isContainer)
+			{
+				// Check weight capacity
+				U7Object* rootNPC = GetRootNPCFromContainer(equippedItem);
+				float itemWeight = object->GetWeight();
+				bool canCarry = true;
+
+				if (rootNPC != nullptr)
+				{
+					float remainingCapacity = rootNPC->GetRemainingCarryCapacity();
+					if (itemWeight > remainingCapacity)
+					{
+						canCarry = false;
+						AddConsoleString("Too heavy! Cannot carry that much.", RED);
+						Log("Drop failed: Item weight " + std::to_string(itemWeight) +
+						    " exceeds NPC remaining capacity " + std::to_string(remainingCapacity));
+						return false;
+					}
+				}
+
+				if (canCarry)
+				{
+					equippedItem->AddObjectToInventory(object->m_ID);
+					object->m_isContained = true;
+					object->m_InventoryPos = { 0, 0 };
+					Log("Added item to equipped container in slot " + std::to_string(static_cast<int>(slot)) + " (fallback)");
+					return true;
+				}
+			}
+		}
+	}
+
+	return false;
 }

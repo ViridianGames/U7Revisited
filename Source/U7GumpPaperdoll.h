@@ -81,6 +81,10 @@ public:
 	void Setup(int npcId);  // Configure for specific NPC
 	int GetNpcId() const { return m_npcId; }
 
+	// Handle dropping an object onto this paperdoll
+	// Returns true if the drop was handled, false otherwise
+	bool HandleDrop(U7Object* object, Vector2 mousePos);
+
 	// Public for access from GumpManager
 	std::unique_ptr<GhostSerializer> m_serializer; // GUI serializer for loading paperdoll.ghost
 	std::set<int> m_highlightedSlots;  // Set of slot indices currently highlighted
