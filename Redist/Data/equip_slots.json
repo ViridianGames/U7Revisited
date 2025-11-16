@@ -342,6 +342,14 @@
       "SLOT_RIGHT_HAND"
     ]
   },
+  "591": {
+    "name": "main gauche",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND",
+      "SLOT_BELT"
+    ]
+  },
   "592": {
     "name": "spear",
     "slots": [
@@ -664,10 +672,26 @@
       "SLOT_TORSO"
     ]
   },
+  "675": {
+    "name": "desk items",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND",
+      "SLOT_BELT"
+    ]
+  },
   "686": {
     "name": "magic leggings",
     "slots": [
       "SLOT_LEGS"
+    ]
+  },
+  "698": {
+    "name": "shears",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND",
+      "SLOT_BELT"
     ]
   },
   "701": {
