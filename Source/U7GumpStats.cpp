@@ -131,6 +131,93 @@ void GumpStats::OnEnter()
 					intText->m_String = std::to_string(static_cast<int>(npcData->iq));
 				}
 			}
+
+			// Update COMBAT
+			int combatTextID = m_serializer->GetElementID("COMBAT");
+			if (combatTextID != -1)
+			{
+				auto combatElement = m_gui.GetElement(combatTextID);
+				if (combatElement && combatElement->m_Type == GUI_TEXTAREA)
+				{
+					auto combatText = static_cast<GuiTextArea*>(combatElement.get());
+					combatText->m_String = std::to_string(static_cast<int>(npcData->combat));
+				}
+			}
+
+			// Update MAGIC
+			int magicTextID = m_serializer->GetElementID("MAGIC");
+			if (magicTextID != -1)
+			{
+				auto magicElement = m_gui.GetElement(magicTextID);
+				if (magicElement && magicElement->m_Type == GUI_TEXTAREA)
+				{
+					auto magicText = static_cast<GuiTextArea*>(magicElement.get());
+					magicText->m_String = std::to_string(static_cast<int>(npcData->magic));
+				}
+			}
+
+			// Update HITS
+			int hitsTextID = m_serializer->GetElementID("HITS");
+			if (hitsTextID != -1)
+			{
+				auto hitsElement = m_gui.GetElement(hitsTextID);
+				if (hitsElement && hitsElement->m_Type == GUI_TEXTAREA)
+				{
+					auto hitsText = static_cast<GuiTextArea*>(hitsElement.get());
+					// TODO: Get actual health from NPC properties
+					hitsText->m_String = "?";
+				}
+			}
+
+			// Update MANA
+			int manaTextID = m_serializer->GetElementID("MANA");
+			if (manaTextID != -1)
+			{
+				auto manaElement = m_gui.GetElement(manaTextID);
+				if (manaElement && manaElement->m_Type == GUI_TEXTAREA)
+				{
+					auto manaText = static_cast<GuiTextArea*>(manaElement.get());
+					// TODO: Get actual mana from NPC properties
+					manaText->m_String = "?";
+				}
+			}
+
+			// Update EXP
+			int expTextID = m_serializer->GetElementID("EXP");
+			if (expTextID != -1)
+			{
+				auto expElement = m_gui.GetElement(expTextID);
+				if (expElement && expElement->m_Type == GUI_TEXTAREA)
+				{
+					auto expText = static_cast<GuiTextArea*>(expElement.get());
+					expText->m_String = std::to_string(static_cast<int>(npcData->xp));
+				}
+			}
+
+			// Update LVL
+			int lvlTextID = m_serializer->GetElementID("LVL");
+			if (lvlTextID != -1)
+			{
+				auto lvlElement = m_gui.GetElement(lvlTextID);
+				if (lvlElement && lvlElement->m_Type == GUI_TEXTAREA)
+				{
+					auto lvlText = static_cast<GuiTextArea*>(lvlElement.get());
+					// TODO: Calculate level from XP or add level field to NPCData
+					lvlText->m_String = "?";
+				}
+			}
+
+			// Update TRAIN
+			int trainTextID = m_serializer->GetElementID("TRAIN");
+			if (trainTextID != -1)
+			{
+				auto trainElement = m_gui.GetElement(trainTextID);
+				if (trainElement && trainElement->m_Type == GUI_TEXTAREA)
+				{
+					auto trainText = static_cast<GuiTextArea*>(trainElement.get());
+					trainText->m_String = std::to_string(static_cast<int>(npcData->training));
+				}
+			}
 		}
 	}
 	else
@@ -207,8 +294,46 @@ void GumpStats::Update()
 
 void GumpStats::Draw()
 {
-	// TODO: Update stats display with current NPC stats values
-	// For now, just draw the GUI
+	// Update GOLD text area
+	int goldTextID = m_serializer->GetElementID("GOLD");
+	if (goldTextID != -1)
+	{
+		auto goldElement = m_gui.GetElement(goldTextID);
+		if (goldElement && goldElement->m_Type == GUI_TEXTAREA)
+		{
+			auto goldText = static_cast<GuiTextArea*>(goldElement.get());
+			
+			// TODO: Calculate actual gold from NPC's inventory
+			// For now, show placeholder
+			goldText->m_String = "GOLD: 0";
+		}
+	}
+
+	// Update WEIGHT text area
+	int weightTextID = m_serializer->GetElementID("WEIGHT");
+	if (weightTextID != -1)
+	{
+		auto weightElement = m_gui.GetElement(weightTextID);
+		if (weightElement && weightElement->m_Type == GUI_TEXTAREA)
+		{
+			auto weightText = static_cast<GuiTextArea*>(weightElement.get());
+			
+			// Get the NPC's object to calculate weight
+			auto npcIt = g_NPCData.find(m_npcId);
+			if (npcIt != g_NPCData.end() && npcIt->second)
+			{
+				U7Object* npcObject = g_objectList[npcIt->second->m_objectID].get();
+				if (npcObject)
+				{
+					int currentWeight = static_cast<int>(npcObject->GetWeight());
+					int maxWeight = static_cast<int>(g_Player->GetMaxWeight()); // For now all NPCs use Avatar's max weight
+					weightText->m_String = "WEIGHT: " + std::to_string(currentWeight) + "/" + std::to_string(maxWeight);
+				}
+			}
+		}
+	}
+
+	// Draw the GUI
 	m_gui.Draw();
 }
 
