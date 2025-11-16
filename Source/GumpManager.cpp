@@ -329,11 +329,13 @@ void GumpManager::Update()
 		//  If not dropped on paperdoll, check dragging to regular containers
 		if (!droppedOnPaperdoll)
 		{
-			for (const auto& gump : g_gumpManager->m_GumpList)
+			// Only allow dropping on the gump that's actually under the mouse (proper z-order and pixel-perfect)
+			Gump* targetGump = m_gumpUnderMouse;
+
+			// Check if the gump under mouse is a container gump
+			if (targetGump != nullptr && targetGump->m_containerObject != nullptr)
 			{
-				// Skip gumps without container objects (paperdolls, spellbooks, etc.)
-				if (gump->m_containerObject == nullptr)
-					continue;
+				auto& gump = targetGump;
 
 				if (CheckCollisionPointRec(mousePos, gump->m_gui.GetBounds()))
 				{
@@ -386,7 +388,6 @@ void GumpManager::Update()
 						g_gumpManager->m_sourceGump = nullptr;
 					}
 					// If can't carry, leave m_draggingObject true so it falls through to return-to-source logic
-					break;
 				}
 			}
 		}

@@ -59,6 +59,13 @@
       "SLOT_HEAD"
     ]
   },
+  "388": {
+    "name": "eating utensils",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
+    ]
+  },
   "444": {
     "name": "hood",
     "slots": [
@@ -888,6 +895,17 @@
     "name": "fire bolt",
     "slots": [
       "SLOT_AMMO"
+    ]
+  },
+  "885": {
+    "name": "fellowship staff",
+    "slots": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
+    ],
+    "fills": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
     ]
   },
   "948": {
