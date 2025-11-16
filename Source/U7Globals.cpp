@@ -24,7 +24,7 @@ unordered_map<int, std::unique_ptr<U7Object> > g_objectList;
 
 Mesh* g_AnimationFrames;
 
-Texture* g_Cursor;
+extern Texture* g_Cursor; // Defined in StateMachine.cpp
 Texture* g_objectSelectCursor;
 Texture* g_EmptyTexture;
 Texture* g_Minimap;
@@ -415,7 +415,11 @@ void UpdateSortedVisibleObjects()
 	}
 	int cameraChunkX = static_cast<int>(g_camera.target.x / 16);
 	int cameraChunkY = static_cast<int>(g_camera.target.z / 16);
- 	g_sortedVisibleObjects.clear();
+ 	
+	// DEBUG: Log before clearing
+	int beforeCount = static_cast<int>(g_sortedVisibleObjects.size());
+	
+	g_sortedVisibleObjects.clear();
 
  	for (int x = cameraChunkX - 2; x <= cameraChunkX + 2; x++)
  	{
@@ -443,6 +447,19 @@ void UpdateSortedVisibleObjects()
  			}
  		}
  	}
+
+ 	// DEBUG: Log count after populating
+	int afterCount = static_cast<int>(g_sortedVisibleObjects.size());
+	static int lastLoggedCount = -1;
+	// Always log when called from RebuildWorldFromLoadedData, otherwise only log on changes
+	static bool forceNextLog = false;
+	if (afterCount != lastLoggedCount || forceNextLog)
+	{
+		Log("UpdateSortedVisibleObjects: Camera chunk (" + std::to_string(cameraChunkX) + "," + std::to_string(cameraChunkY) + 
+			"), found " + std::to_string(afterCount) + " visible objects (was " + std::to_string(beforeCount) + ")");
+		lastLoggedCount = afterCount;
+		forceNextLog = false;
+	}
 
  	std::sort(g_sortedVisibleObjects.begin(), g_sortedVisibleObjects.end(), [](U7Object* a, U7Object* b) { return a->m_distanceFromCamera > b->m_distanceFromCamera; });
 
@@ -815,7 +832,7 @@ void AddObjectToContainer(int objectID, int containerID)
 	UnassignObjectChunk(object);
 }
 
-float g_DrawScale;
+extern float g_DrawScale; // Defined in StateMachine.cpp
 
 std::shared_ptr<Sprite> g_BoxTL;
 std::shared_ptr<Sprite> g_BoxT;

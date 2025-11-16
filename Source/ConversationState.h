@@ -39,6 +39,11 @@ public:
 	};
 
 	ConversationState()
+		: m_Gui(nullptr)
+		, m_npcId(-1)
+		, m_npcFrame(0)
+		, m_secondSpeakerId(-1)
+		, m_secondSpeakerFrame(0)
 	{
 	}
 

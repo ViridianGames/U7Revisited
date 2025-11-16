@@ -4,5 +4,5 @@ function utility_unknown_1023(message)
     local var_0001
 
     var_0001 = utility_unknown_1024()
-    utility_unknown_1027(message, var_0001)
+    utility_unknown_1027(var_0001, message)
 end

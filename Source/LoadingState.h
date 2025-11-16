@@ -10,7 +10,7 @@
 class LoadingState : public State
 {
 public:
-   LoadingState(){};
+   LoadingState() { m_DrawCursor = false; }
    ~LoadingState();
 
 

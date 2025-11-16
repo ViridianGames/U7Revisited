@@ -106,7 +106,8 @@ endif
 
 include_directories = include_directories(
   'Source/Geist',
-  'Source'
+  'Source',
+  'ThirdParty/nlohmann'
 )
 
 # Only cpp files needed here. Keep alphabetized.
@@ -132,7 +133,9 @@ sources = files(
            'Source/Ghost/GhostSerializer.cpp',
            'Source/Ghost/GhostWindow.cpp',
 
+           'Source/AskState.cpp',
            'Source/ConversationState.cpp',
+           'Source/GameSerializer.cpp',
            'Source/GumpManager.cpp',
            'Source/LoadingState.cpp',
            'Source/Main.cpp',
@@ -145,7 +148,11 @@ sources = files(
            'Source/TitleState.cpp',
            'Source/U7GumpNumberBar.cpp',
            'Source/U7GumpBook.cpp',
+           'Source/LoadSaveState.cpp',
+           'Source/U7GumpMinimap.cpp',
+           'Source/U7GumpPaperdoll.cpp',
            'Source/U7GumpSpellbook.cpp',
+           'Source/U7GumpStats.cpp',
            'Source/U7Globals.cpp',
            'Source/U7Gump.cpp',
            'Source/U7LuaFuncs.cpp',

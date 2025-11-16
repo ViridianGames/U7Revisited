@@ -65,7 +65,11 @@ public:
 class Tween : public Object
 {
 public:
-	Tween() {};
+	Tween()
+		: m_Start({ 0.0f, 0.0f })
+		, m_Pos({ 0.0f, 0.0f })
+		, m_Dest({ 0.0f, 0.0f })
+	{}
 	void Init(const std::string& data) { throw("Tweens can't be initialized from data (yet)."); }
 	void Init(Vector2 start, Vector2 dest, float speed, float acceleration)
 	{
@@ -147,7 +151,7 @@ private:
 	//  at a time.
 	struct Anim
 	{
-		Anim() { m_Looping = false; }
+		Anim() : m_MSPerFrame(0), m_Looping(false) { }
 		Anim(std::initializer_list<int> frameOrder, int frameRate, bool looping) { m_FrameOrder = frameOrder; m_FrameRate = frameRate; m_Looping = looping; m_MSPerFrame = int(m_FrameOrder.size()) / 1000; }
 		Anim(std::vector<int> frameOrder, int frameRate, bool looping) { m_FrameOrder = frameOrder; m_FrameRate = frameRate; m_Looping = looping; m_MSPerFrame = int(m_FrameOrder.size()) / 1000; }
 		std::vector<int> m_FrameOrder;
@@ -183,7 +187,13 @@ public:
 class ModTexture // A texture with an associated image that can be modified after creation.
 {
 public:
-	ModTexture() { };
+	ModTexture()
+		: m_Image({ 0 })
+		, m_OriginalImage({ 0 })
+		, m_Texture({ 0 })
+		, width(0)
+		, height(0)
+	{ }
 	ModTexture(char* image) { AssignImage(image); }
 	ModTexture(Image img) { AssignImage(img); }
 	void AssignImage(char* image);

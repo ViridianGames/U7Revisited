@@ -72,7 +72,7 @@ public:
 	virtual void Draw() override;
 	virtual void Init() { Init(std::string("")); }
 	virtual void Init(const std::string& data) override;
-	virtual void OnExit() { m_IsDead = true; }
+	virtual void OnExit() override;
 	virtual void OnEnter();
 	virtual U7Object* GetObjectUnderMousePointer() override { return nullptr; }  // Paperdolls don't show container inventory
 	virtual bool IsMouseOverSolidPixel(Vector2 mousePos) override;  // Pixel-perfect collision detection
@@ -80,6 +80,10 @@ public:
 
 	void Setup(int npcId);  // Configure for specific NPC
 	int GetNpcId() const { return m_npcId; }
+
+	// Handle dropping an object onto this paperdoll
+	// Returns true if the drop was handled, false otherwise
+	bool HandleDrop(U7Object* object, Vector2 mousePos);
 
 	// Public for access from GumpManager
 	std::unique_ptr<GhostSerializer> m_serializer; // GUI serializer for loading paperdoll.ghost
@@ -91,12 +95,7 @@ private:
 	PaperdollData m_data;      // Cached paperdoll data
 	Texture* m_backgroundTexture; // Pointer to biggumps.png texture for pixel checking
 	std::vector<std::shared_ptr<Font>> m_loadedFonts; // Keep fonts alive
-	// Note: m_gui is inherited from Gump base class
-
-	// Hover text for clicked items
-	std::string m_hoverText;
-	float m_hoverTextDuration = 0.0f;
-	Vector2 m_hoverTextPos = {0, 0};  // Screen position for hover text
+	// Note: m_gui and m_hoverText/m_hoverTextDuration/m_hoverTextPos are inherited from Gump base class
 };
 
 #endif

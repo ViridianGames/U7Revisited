@@ -25,7 +25,7 @@ enum class MainStateModes
 class MainState : public State
 {
 public:
-   MainState(){};
+   MainState() { m_DrawCursor = false; }  // MainState draws its own cursor with custom logic
    ~MainState();
 
    void Init(const std::string& configfile) override;
@@ -37,9 +37,13 @@ public:
 	void OnExit() override;
    
    void SetupGame();
+   void RebuildWorldFromLoadedData();  // Rebuild spatial indexing after loading a save
 
    void OpenGump(int id);
    void OpenSpellbookGump(int npcId);
+   void OpenMinimapGump(int npcId);
+   void OpenStatsGump(int npcId);
+   void OpenLoadSaveGump();
 
    // Paperdoll management
    bool HasAnyPaperdollOpen();
@@ -60,6 +64,8 @@ public:
 	void NPCBark(int npc_id, const std::string& text, float duration = 3.0f);
 
 	void Wait(float seconds); // Wait while not blocking, called by Lua scripts.
+
+	void ShowErrorCursor() { m_errorCursorFramesRemaining = 5; }  // Show error cursor for 5 frames
 
 	// Debug tools window button handlers
 	void HandleScheduleButton();
@@ -113,9 +119,13 @@ public:
    Texture* m_Minimap;
    Texture* m_MinimapArrow;
 	Texture* m_usePointer;
-   
+	Texture* m_errorCursor;
+
 
    bool m_showObjects;
+
+	// Error cursor display (shown for 5 frames after drag/drop error)
+	int m_errorCursorFramesRemaining = 0;
 
 	bool m_objectSelectionMode = false;
 
@@ -162,6 +172,9 @@ public:
 	bool m_ranFinnigansScript = false;
 
 	bool m_showUIElements = true;
+
+	// Track if we've shown the initial welcome messages (only show once, not on every OnEnter)
+	bool m_hasShownWelcomeMessages = false;
 
 	// NPC Schedule toggle
 	bool m_npcSchedulesEnabled = false;

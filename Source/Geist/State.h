@@ -17,6 +17,13 @@ private:
 	bool m_IsDead = false;
 
 public:
+	// If true, this state will render all states below it in the stack
+	// If false, only this state will be rendered (default behavior)
+	bool m_RenderStack = false;
+
+	// If true, StateMachine will draw the cursor after this state's Draw() call
+	bool m_DrawCursor = true;
+
 	State() {};
 
 	virtual void Init() { Init(std::string("")); }

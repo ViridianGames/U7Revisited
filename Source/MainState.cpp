@@ -12,6 +12,8 @@
 #include "U7Gump.h"
 #include "U7GumpPaperdoll.h"
 #include "U7GumpSpellbook.h"
+#include "U7GumpMinimap.h"
+#include "U7GumpStats.h"
 #include "ConversationState.h"
 #include "GumpManager.h"
 #include "Pathfinding.h"
@@ -47,6 +49,7 @@ void MainState::Init(const string& configfile)
 	GenTextureMipmaps(m_MinimapArrow);
 
 	m_usePointer = g_ResourceManager->GetTexture("Images/usepointer.png");
+	m_errorCursor = g_ResourceManager->GetTexture("Images/error.png");
 
 	m_Gui = new Gui();
 
@@ -155,15 +158,21 @@ void MainState::OnEnter()
 	else
 	{
 		m_paused = false;
-		ClearConsole();
-		AddConsoleString(std::string("Welcome to Ultima VII: Revisited!"));
-		AddConsoleString(std::string("Move with WASD, rotate with Q and E."));
-		AddConsoleString(std::string("Zoom in and out with mousewheel."));
-		AddConsoleString(std::string("Left-click in the minimap to teleport."));
-		AddConsoleString(std::string("Press F1 to switch to the Object Viewer."));
-		AddConsoleString(std::string("Press KP ENTER to advance time an hour."));
-		AddConsoleString(std::string("Press SPACE to pause/unpause time."));
-		AddConsoleString(std::string("Press ESC to exit."));
+
+		// Only show welcome messages on first OnEnter, not when returning from dialogs
+		if (!m_hasShownWelcomeMessages)
+		{
+			m_hasShownWelcomeMessages = true;
+			ClearConsole();
+			AddConsoleString(std::string("Welcome to Ultima VII: Revisited!"));
+			AddConsoleString(std::string("Move with WASD, rotate with Q and E."));
+			AddConsoleString(std::string("Zoom in and out with mousewheel."));
+			AddConsoleString(std::string("Left-click in the minimap to teleport."));
+			AddConsoleString(std::string("Press F1 to switch to the Object Viewer."));
+			AddConsoleString(std::string("Press KP ENTER to advance time an hour."));
+			AddConsoleString(std::string("Press SPACE to pause/unpause time."));
+			AddConsoleString(std::string("Press ESC to exit."));
+		}
 	}
 
 }
@@ -308,9 +317,10 @@ void MainState::UpdateInput()
 		{
 			g_gumpManager->m_GumpList.back().get()->SetIsDead(true);
 		}
-		else
+		else if (!g_Engine->m_askedToExit)
 		{
-			g_Engine->m_Done = true;
+			g_Engine->m_askedToExit = true;
+			g_StateMachine->PushState(STATE_ASKEXITSTATE);
 		}
 	}
 
@@ -487,6 +497,7 @@ void MainState::UpdateInput()
 					g_gumpManager->m_sourceGump = nullptr;
 					g_gumpManager->m_sourceSlotIndex = -1;  // Not from a paperdoll slot
 					g_gumpManager->m_draggedObjectOriginalPos = g_objectUnderMousePointer->m_Pos;  // Store original world position
+					g_gumpManager->m_draggedObjectOriginalDest = g_objectUnderMousePointer->m_Dest;  // Store original destination (for NPCs)
 
 					// Close any gump associated with this object to prevent dragging into itself
 					g_gumpManager->CloseGumpForObject(g_objectUnderMousePointer->m_ID);
@@ -794,6 +805,12 @@ void MainState::Bark(U7Object* object, const std::string& text, float duration)
 
 void MainState::Update()
 {
+	// Decrement error cursor frame counter
+	if (m_errorCursorFramesRemaining > 0)
+	{
+		m_errorCursorFramesRemaining--;
+	}
+
 	UpdateTime();
 
 	// Check if schedule time has changed and populate pathfinding queue
@@ -1141,6 +1158,55 @@ void MainState::TogglePaperdoll(int npcId)
 	g_gumpManager->AddGump(paperdoll);
 }
 
+void MainState::OpenMinimapGump(int npcId)
+{
+	// Check if a minimap gump is already open
+	for (auto& gump : g_gumpManager->m_GumpList)
+	{
+		GumpMinimap* minimap = dynamic_cast<GumpMinimap*>(gump.get());
+		if (minimap)
+		{
+			Log("MainState::OpenMinimapGump - Minimap already open, closing it");
+			minimap->OnExit();
+			return; // Close existing minimap
+		}
+	}
+
+	Log("MainState::OpenMinimapGump - Creating minimap gump for NPC " + std::to_string(npcId));
+	auto minimapGump = std::make_shared<GumpMinimap>();
+	minimapGump->Setup(npcId);
+	minimapGump->Init();
+	minimapGump->OnEnter();
+	g_gumpManager->AddGump(minimapGump);
+}
+
+void MainState::OpenStatsGump(int npcId)
+{
+	// Check if this NPC already has a stats gump open
+	for (auto& gump : g_gumpManager->m_GumpList)
+	{
+		GumpStats* stats = dynamic_cast<GumpStats*>(gump.get());
+		if (stats && stats->GetNpcId() == npcId)
+		{
+			Log("MainState::OpenStatsGump - Stats already open for NPC " + std::to_string(npcId));
+			return; // Stats already open for this NPC
+		}
+	}
+
+	Log("MainState::OpenStatsGump - Creating stats gump for NPC " + std::to_string(npcId));
+	auto statsGump = std::make_shared<GumpStats>();
+	statsGump->Setup(npcId);
+	statsGump->Init();
+	statsGump->OnEnter();
+	g_gumpManager->AddGump(statsGump);
+}
+
+void MainState::OpenLoadSaveGump()
+{
+	Log("MainState::OpenLoadSaveGump - Pushing load/save state");
+	g_StateMachine->PushState(STATE_LOADSAVESTATE);
+}
+
 void MainState::Draw()
 {
 	if (g_pixelated)
@@ -1149,8 +1215,6 @@ void MainState::Draw()
 	}
 
 	ClearBackground(Color{ 0, 0, 0, 255 });
-
-	BeginDrawing();
 
 	BeginMode3D(g_camera);
 
@@ -1382,7 +1446,12 @@ void MainState::Draw()
 	// Draw cursor AFTER dialog so it appears on top
 	if (!m_paused && m_showUIElements)
 	{
-		if (m_objectSelectionMode)
+		if (m_errorCursorFramesRemaining > 0 && m_errorCursor != nullptr)
+		{
+			// Show error cursor for 5 frames after drag/drop error
+			DrawTextureEx(*m_errorCursor, { float(GetMouseX()), float(GetMouseY()) }, 0, g_DrawScale, WHITE);
+		}
+		else if (m_objectSelectionMode)
 		{
 			DrawTextureEx(*g_objectSelectCursor, { float(GetMouseX()), float(GetMouseY()) }, 0, g_DrawScale, WHITE);
 		}
@@ -1393,14 +1462,83 @@ void MainState::Draw()
 	}
 
 	DrawRectangle(0, 0, g_Engine->m_ScreenWidth, g_Engine->m_ScreenHeight, { 0, 0, 0, m_currentFadeAlpha });
-
-
-	EndDrawing();
 }
 
 void MainState::SetupGame()
 {
 
+}
+
+void MainState::RebuildWorldFromLoadedData()
+{
+	Log("MainState::RebuildWorldFromLoadedData - Rebuilding world after load");
+
+	// Clear visible objects list (contains dangling pointers to deleted objects)
+	g_sortedVisibleObjects.clear();
+
+	// Clear chunk object map (contains dangling pointers to deleted objects)
+	for (int x = 0; x < 192; x++)
+	{
+		for (int y = 0; y < 192; y++)
+		{
+			g_chunkObjectMap[x][y].clear();
+		}
+	}
+
+	// Repopulate chunk object map with ALL objects (static and dynamic)
+	// BUT skip contained objects (they're in inventories, not in the world)
+	int staticCount = 0;
+	int dynamicCount = 0;
+	int containedCount = 0;
+	int npcCount = 0;
+	for (auto& [id, obj] : g_objectList)
+	{
+		if (obj != nullptr)
+		{
+			if (obj->m_isContained)
+			{
+				containedCount++;
+			}
+			else
+			{
+				if (obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_STATIC)
+					staticCount++;
+				else if (obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC)
+					npcCount++;
+				else
+					dynamicCount++;
+				
+				AssignObjectChunk(obj.get());
+			}
+		}
+	}
+	Log("MainState::RebuildWorldFromLoadedData - Assigned to chunks: " + std::to_string(staticCount) + " static, " + std::to_string(dynamicCount) + " objects, " + std::to_string(npcCount) + " NPCs, " + std::to_string(containedCount) + " contained (skipped)");
+
+	// Force immediate update of visible objects after loading
+	Log("MainState::RebuildWorldFromLoadedData - Calling UpdateSortedVisibleObjects now...");
+	UpdateSortedVisibleObjects();
+	Log("MainState::RebuildWorldFromLoadedData - UpdateSortedVisibleObjects returned, g_sortedVisibleObjects.size() = " + std::to_string(g_sortedVisibleObjects.size()));
+
+	// Debug: Verify objects are still in g_objectList after rebuild
+	int finalStatic = 0, finalObjects = 0, finalNpcs = 0, finalTotal = 0;
+	for (const auto& [id, obj] : g_objectList)
+	{
+		if (obj != nullptr)
+		{
+			finalTotal++;
+			if (obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_STATIC)
+				finalStatic++;
+			else if (obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC)
+				finalNpcs++;
+			else
+				finalObjects++;
+		}
+	}
+	Log("MainState::RebuildWorldFromLoadedData - g_objectList after rebuild: " + std::to_string(finalTotal) +
+	    " total (" + std::to_string(finalStatic) + " static, " + std::to_string(finalObjects) +
+	    " objects, " + std::to_string(finalNpcs) + " NPCs)");
+
+	Log("MainState::RebuildWorldFromLoadedData - Complete");
 }
 
 void MainState::DrawStats()
@@ -1596,6 +1734,13 @@ void MainState::HandleRenameButton()
 {
 	Log("HandleRenameButton called");
 	AddConsoleString("Rename button clicked - opening rename dialog");
+
+	// Clear hover text from debug tools window
+	if (m_debugToolsWindow)
+	{
+		m_debugToolsWindow->ClearHoverText();
+	}
+
 	// Push the script rename dialog state
 	g_StateMachine->PushState(STATE_SCRIPTRENAMESTATE);
 	Log("PushState(STATE_SCRIPTRENAMESTATE) called");

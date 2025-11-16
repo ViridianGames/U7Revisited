@@ -100,15 +100,15 @@
             "type": "textarea",
             "position": [
               64,
-              119
+              120
             ],
             "text": "27/36",
             "font": "pinch.ttf",
-            "fontSize": 27,
+            "fontSize": 10,
             "textColor": [
-              55,
-              19,
-              1,
+              0,
+              0,
+              0,
               255
             ],
             "size": [

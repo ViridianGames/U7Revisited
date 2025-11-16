@@ -71,6 +71,15 @@ private:
 	int m_nextButtonId = -1;          // NEXT button for going to next circle
 	int m_levelTextId = -1;           // LEVEL text area showing circle name
 	int m_spellSpriteIds[8];          // Sprite IDs for spells 1-8
+	int m_pageSpriteIds[4];           // Sprite IDs for PAGE1-PAGE4 (page turn animation)
+
+	// Page turn animation state
+	bool m_isAnimating = false;       // Is a page turn animation playing?
+	bool m_animateForward = true;     // true = NEXT (4,3,2,1), false = PREV (1,2,3,4)
+	int m_animFrame = 0;              // Current animation frame (0-4)
+	int m_lastLoggedFrame = -1;       // Last frame we logged (to avoid duplicate logs)
+	int m_frameCounter = 0;           // Counts updates for current frame
+	const int m_updatesPerFrame = 2;  // How many Update() calls per animation frame
 
 	/// @brief Get the name of a circle (e.g., "First", "Second", etc.)
 	/// @param circle Circle number (1-8)

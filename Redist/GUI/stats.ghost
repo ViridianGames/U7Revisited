@@ -1,0 +1,457 @@
+{
+  "gui": {
+    "elements": [
+      {
+        "type": "panel",
+        "position": [
+          -1,
+          -1
+        ],
+        "size": [
+          135,
+          135
+        ],
+        "backgroundColor": [
+          60,
+          60,
+          60,
+          0
+        ],
+        "filled": true,
+        "layout": "horz",
+        "horzPadding": 0,
+        "vertPadding": 0,
+        "font": "babyblocks.ttf",
+        "fontSize": 10,
+        "elements": [
+          {
+            "name": "BG",
+            "type": "sprite",
+            "position": [
+              -1,
+              -1
+            ],
+            "sprite": {
+              "spritesheet": "GUI/gumps.png",
+              "x": 232,
+              "y": 437,
+              "w": 135,
+              "h": 135
+            },
+            "scaleX": 1.0,
+            "scaleY": 1.0
+          },
+          {
+            "name": "CLOSE",
+            "type": "iconbutton",
+            "position": [
+              3,
+              99
+            ],
+            "sprite": {
+              "spritesheet": "GUI/gumps.png",
+              "x": 333,
+              "y": 11,
+              "w": 21,
+              "h": 21
+            },
+            "downSprite": {
+              "spritesheet": "GUI/gumps.png",
+              "x": 333,
+              "y": 51,
+              "w": 21,
+              "h": 21
+            },
+            "color": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "scale": 1.0
+          },
+          {
+            "name": "NAME",
+            "type": "textarea",
+            "position": [
+              31,
+              5
+            ],
+            "text": "Name",
+            "textColor": [
+              0,
+              0,
+              0,
+              250
+            ],
+            "size": [
+              95,
+              10
+            ],
+            "justified": 1
+          },
+          {
+            "name": "BOTTOM",
+            "type": "panel",
+            "position": [
+              32,
+              114
+            ],
+            "size": [
+              80,
+              20
+            ],
+            "backgroundColor": [
+              80,
+              80,
+              80,
+              0
+            ],
+            "filled": true,
+            "layout": "vert",
+            "horzPadding": 0,
+            "vertPadding": 0,
+            "elements": [
+              {
+                "name": "GOLD",
+                "type": "textarea",
+                "position": [
+                  -1,
+                  -1
+                ],
+                "text": "GOLD: 0",
+                "textColor": [
+                  255,
+                  255,
+                  255,
+                  255
+                ],
+                "size": [
+                  80,
+                  10
+                ],
+                "justified": 0
+              },
+              {
+                "name": "WEIGHT",
+                "type": "textarea",
+                "position": [
+                  -1,
+                  -1
+                ],
+                "text": "WEIGHT: 0/0",
+                "textColor": [
+                  255,
+                  255,
+                  255,
+                  255
+                ],
+                "size": [
+                  20,
+                  10
+                ],
+                "justified": 0
+              }
+            ]
+          },
+          {
+            "name": "STATS1",
+            "type": "panel",
+            "position": [
+              106,
+              15
+            ],
+            "size": [
+              20,
+              30
+            ],
+            "backgroundColor": [
+              80,
+              80,
+              80,
+              0
+            ],
+            "filled": true,
+            "layout": "vert",
+            "horzPadding": 0,
+            "vertPadding": 0,
+            "elements": [
+              {
+                "name": "STR",
+                "type": "textarea",
+                "position": [
+                  -1,
+                  -1
+                ],
+                "text": "88",
+                "textColor": [
+                  0,
+                  0,
+                  0,
+                  255
+                ],
+                "size": [
+                  20,
+                  10
+                ],
+                "justified": 2
+              },
+              {
+                "name": "DEX",
+                "type": "textarea",
+                "position": [
+                  -1,
+                  -1
+                ],
+                "text": "88",
+                "textColor": [
+                  0,
+                  0,
+                  0,
+                  255
+                ],
+                "size": [
+                  20,
+                  10
+                ],
+                "justified": 2
+              },
+              {
+                "name": "INT",
+                "type": "textarea",
+                "position": [
+                  -1,
+                  -1
+                ],
+                "text": "88",
+                "textColor": [
+                  0,
+                  0,
+                  0,
+                  255
+                ],
+                "size": [
+                  20,
+                  10
+                ],
+                "justified": 2
+              }
+            ]
+          },
+          {
+            "name": "STATS4",
+            "type": "panel",
+            "position": [
+              106,
+              84
+            ],
+            "size": [
+              20,
+              30
+            ],
+            "backgroundColor": [
+              80,
+              80,
+              80,
+              0
+            ],
+            "filled": true,
+            "layout": "vert",
+            "horzPadding": 0,
+            "vertPadding": 0,
+            "elements": [
+              {
+                "name": "EXP",
+                "type": "textarea",
+                "position": [
+                  -1,
+                  -1
+                ],
+                "text": "88",
+                "textColor": [
+                  0,
+                  0,
+                  0,
+                  255
+                ],
+                "size": [
+                  20,
+                  10
+                ],
+                "justified": 2
+              },
+              {
+                "name": "LVL",
+                "type": "textarea",
+                "position": [
+                  -1,
+                  -1
+                ],
+                "text": "88",
+                "textColor": [
+                  0,
+                  0,
+                  0,
+                  255
+                ],
+                "size": [
+                  20,
+                  10
+                ],
+                "justified": 2
+              },
+              {
+                "name": "TRAIN",
+                "type": "textarea",
+                "position": [
+                  -1,
+                  -1
+                ],
+                "text": "88",
+                "textColor": [
+                  0,
+                  0,
+                  0,
+                  255
+                ],
+                "size": [
+                  20,
+                  10
+                ],
+                "justified": 2
+              }
+            ]
+          },
+          {
+            "name": "STATS3",
+            "type": "panel",
+            "position": [
+              106,
+              64
+            ],
+            "size": [
+              20,
+              20
+            ],
+            "backgroundColor": [
+              80,
+              80,
+              80,
+              0
+            ],
+            "filled": true,
+            "layout": "vert",
+            "horzPadding": 0,
+            "vertPadding": 0,
+            "elements": [
+              {
+                "name": "HITS",
+                "type": "textarea",
+                "position": [
+                  -1,
+                  -1
+                ],
+                "text": "88",
+                "textColor": [
+                  0,
+                  0,
+                  0,
+                  255
+                ],
+                "size": [
+                  20,
+                  10
+                ],
+                "justified": 2
+              },
+              {
+                "name": "MANA",
+                "type": "textarea",
+                "position": [
+                  -1,
+                  -1
+                ],
+                "text": "88",
+                "textColor": [
+                  0,
+                  0,
+                  0,
+                  255
+                ],
+                "size": [
+                  20,
+                  10
+                ],
+                "justified": 2
+              }
+            ]
+          },
+          {
+            "name": "STATS2",
+            "type": "panel",
+            "position": [
+              106,
+              44
+            ],
+            "size": [
+              20,
+              20
+            ],
+            "backgroundColor": [
+              80,
+              80,
+              80,
+              0
+            ],
+            "filled": true,
+            "layout": "vert",
+            "horzPadding": 0,
+            "vertPadding": 0,
+            "elements": [
+              {
+                "name": "COMBAT",
+                "type": "textarea",
+                "position": [
+                  -1,
+                  -1
+                ],
+                "text": "88",
+                "textColor": [
+                  0,
+                  0,
+                  0,
+                  255
+                ],
+                "size": [
+                  20,
+                  10
+                ],
+                "justified": 2
+              },
+              {
+                "name": "MAGIC",
+                "type": "textarea",
+                "position": [
+                  -1,
+                  -1
+                ],
+                "text": "88",
+                "textColor": [
+                  0,
+                  0,
+                  0,
+                  255
+                ],
+                "size": [
+                  20,
+                  10
+                ],
+                "justified": 2
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

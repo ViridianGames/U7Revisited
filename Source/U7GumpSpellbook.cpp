@@ -35,27 +35,82 @@ void GumpSpellbook::OnEnter()
 
 	// Enable dragging for the spellbook gump
 	m_gui.m_Draggable = true;
+	m_gui.m_DragAreaHeight = int(m_gui.m_Height);  // Allow dragging from anywhere, not just top
 
 	// Set up pixel-perfect drag area validation
 	m_gui.m_DragAreaValidationCallback = [this](Vector2 mousePos) {
-		return this->IsMouseOverSolidPixel(mousePos);
+		// First check if over solid pixel
+		if (!this->IsMouseOverSolidPixel(mousePos))
+			return false;
+
+		// Don't allow dragging from CLOSE button
+		int closeButtonID = m_serializer->GetElementID("CLOSE");
+		if (closeButtonID != -1)
+		{
+			auto element = m_gui.GetElement(closeButtonID);
+			if (element)
+			{
+				Rectangle btnRect = element->GetBounds();
+				btnRect.x += m_gui.m_Pos.x;
+				btnRect.y += m_gui.m_Pos.y;
+				if (CheckCollisionPointRec(mousePos, btnRect))
+					return false;
+			}
+		}
+
+		// Don't allow dragging from PREV button
+		if (m_prevButtonId != -1)
+		{
+			auto element = m_gui.GetElement(m_prevButtonId);
+			if (element)
+			{
+				Rectangle btnRect = element->GetBounds();
+				btnRect.x += m_gui.m_Pos.x;
+				btnRect.y += m_gui.m_Pos.y;
+				if (CheckCollisionPointRec(mousePos, btnRect))
+					return false;
+			}
+		}
+
+		// Don't allow dragging from NEXT button
+		if (m_nextButtonId != -1)
+		{
+			auto element = m_gui.GetElement(m_nextButtonId);
+			if (element)
+			{
+				Rectangle btnRect = element->GetBounds();
+				btnRect.x += m_gui.m_Pos.x;
+				btnRect.y += m_gui.m_Pos.y;
+				if (CheckCollisionPointRec(mousePos, btnRect))
+					return false;
+			}
+		}
+
+		// Don't allow dragging from spell sprites (1-8)
+		for (int i = 0; i < 8; i++)
+		{
+			if (m_spellSpriteIds[i] != -1)
+			{
+				auto element = m_gui.GetElement(m_spellSpriteIds[i]);
+				if (element)
+				{
+					Rectangle spriteRect = element->GetBounds();
+					spriteRect.x += m_gui.m_Pos.x;
+					spriteRect.y += m_gui.m_Pos.y;
+					if (CheckCollisionPointRec(mousePos, spriteRect))
+						return false;
+				}
+			}
+		}
+
+		return true;
 	};
 }
 
 void GumpSpellbook::Init(const std::string& data)
 {
-	// Position spellbook on screen (centered)
-	m_Pos.x = (640 - 160) / 2;  // Center horizontally (160 is spellbook width)
-	m_Pos.y = (360 - 90) / 2;   // Center vertically (90 is spellbook height)
-
-	// Set up GUI layout
-	m_gui.m_Font = g_SmallFont;
-	m_gui.SetLayout(m_Pos.x, m_Pos.y, 160, 90, g_DrawScale, Gui::GUIP_USE_XY);
-
 	// Load spellbook GUI from spell_book.ghost file
 	m_serializer = std::make_unique<GhostSerializer>();
-	GhostSerializer::SetBaseFontPath("Fonts/");
-	GhostSerializer::SetBaseSpritePath("Images/");
 
 	if (m_serializer->LoadFromFile("GUI/spell_book.ghost", &m_gui))
 	{
@@ -63,6 +118,12 @@ void GumpSpellbook::Init(const std::string& data)
 
 		// Keep loaded fonts alive
 		m_loadedFonts = m_serializer->GetLoadedFonts();
+
+		// Center the GUI on screen
+		m_serializer->CenterLoadedGUI(&m_gui, g_DrawScale);
+
+		m_Pos.x = m_gui.m_Pos.x;
+		m_Pos.y = m_gui.m_Pos.y;
 
 		// Set the CLOSE button as the done button
 		int closeButtonID = m_serializer->GetElementID("CLOSE");
@@ -93,6 +154,26 @@ void GumpSpellbook::Init(const std::string& data)
 			if (m_spellSpriteIds[i] == -1)
 			{
 				Log("GumpSpellbook::Init - WARNING: Could not find spell sprite " + std::to_string(i + 1));
+			}
+		}
+
+		// Hide PAGE1-PAGE4 sprites (used for page turn animations)
+		for (int i = 1; i <= 4; i++)
+		{
+			int pageId = m_serializer->GetElementID("PAGE" + std::to_string(i));
+			m_pageSpriteIds[i - 1] = pageId;
+			if (pageId != -1)
+			{
+				std::shared_ptr<GuiElement> pageElement = m_gui.GetElement(pageId);
+				if (pageElement)
+				{
+					pageElement->m_Visible = false;
+					Log("GumpSpellbook::Init - Set PAGE" + std::to_string(i) + " to invisible");
+				}
+			}
+			else
+			{
+				Log("GumpSpellbook::Init - WARNING: Could not find PAGE" + std::to_string(i) + " element");
 			}
 		}
 	}
@@ -208,22 +289,121 @@ void GumpSpellbook::Update()
 		return;
 	}
 
-	// Handle PREV button click
-	if (m_gui.m_ActiveElement == m_prevButtonId && m_currentCircle > 1)
+	// Handle PREV button click - trigger page turn animation
+	if (m_gui.m_ActiveElement == m_prevButtonId && m_currentCircle > 1 && !m_isAnimating)
 	{
-		m_currentCircle--;
-		m_selectedSpellId = -1;
-		UpdateCircleDisplay();
-		Log("Spellbook - Previous circle: " + std::to_string(m_currentCircle));
+		// Start PREV animation (1,2,3,4)
+		m_isAnimating = true;
+		m_animateForward = false;
+		m_animFrame = 0;
+		m_frameCounter = 0;
+		m_lastLoggedFrame = -1;
 	}
 
-	// Handle NEXT button click
-	if (m_gui.m_ActiveElement == m_nextButtonId && m_currentCircle < 8)
+	// Handle NEXT button click - trigger page turn animation
+	if (m_gui.m_ActiveElement == m_nextButtonId && m_currentCircle < 8 && !m_isAnimating)
 	{
-		m_currentCircle++;
-		m_selectedSpellId = -1;
-		UpdateCircleDisplay();
-		Log("Spellbook - Next circle: " + std::to_string(m_currentCircle));
+		// Start NEXT animation (4,3,2,1)
+		m_isAnimating = true;
+		m_animateForward = true;
+		m_animFrame = 0;
+		m_frameCounter = 0;
+		m_lastLoggedFrame = -1;
+	}
+
+	// Update page turn animation
+	if (m_isAnimating)
+	{
+		// Increment counter and advance frame FIRST
+		m_frameCounter++;
+		
+		if (m_frameCounter >= m_updatesPerFrame)
+		{
+			m_frameCounter = 0;
+			m_animFrame++;
+			
+			// Change circle at frame 3 (after halfway through animation)
+			if (m_animFrame == 3)
+			{
+				if (m_animateForward)
+				{
+					m_currentCircle++;
+				}
+				else
+				{
+					m_currentCircle--;
+				}
+				
+				m_selectedSpellId = -1;
+				UpdateCircleDisplay();
+			}
+			
+			// Animation has 5 frames total (first and last page show twice)
+			if (m_animFrame >= 5)
+			{
+				m_isAnimating = false;
+				m_animFrame = 0;
+				
+				// Hide all page sprites when animation ends
+				for (int i = 0; i < 4; i++)
+				{
+					if (m_pageSpriteIds[i] != -1)
+					{
+						std::shared_ptr<GuiElement> pageElement = m_gui.GetElement(m_pageSpriteIds[i]);
+						if (pageElement)
+						{
+							pageElement->m_Visible = false;
+						}
+					}
+				}
+				
+				return; // Exit early when animation is done
+			}
+		}
+		
+		// THEN show the current animation frame's page sprite
+		{
+			// Hide all pages first
+			for (int i = 0; i < 4; i++)
+			{
+				if (m_pageSpriteIds[i] != -1)
+				{
+					std::shared_ptr<GuiElement> pageElement = m_gui.GetElement(m_pageSpriteIds[i]);
+					if (pageElement)
+					{
+						pageElement->m_Visible = false;
+					}
+				}
+			}
+			
+			// Show the current frame
+			int pageIndex;
+			if (m_animateForward)
+			{
+				// NEXT: 4,4,3,2,1 (frames 0,1,2,3,4 -> indices 3,3,2,1,0)
+				if (m_animFrame <= 1)
+					pageIndex = 3; // PAGE4 for frames 0 and 1
+				else
+					pageIndex = 4 - m_animFrame; // frame 2->idx 2 (PAGE3), frame 3->idx 1 (PAGE2), frame 4->idx 0 (PAGE1)
+			}
+			else
+			{
+				// PREV: 1,1,2,3,4 (frames 0,1,2,3,4 -> indices 0,0,1,2,3)
+				if (m_animFrame <= 1)
+					pageIndex = 0; // PAGE1 for frames 0 and 1
+				else
+					pageIndex = m_animFrame - 1; // frame 2->idx 1 (PAGE2), frame 3->idx 2 (PAGE3), frame 4->idx 3 (PAGE4)
+			}
+			
+			if (pageIndex >= 0 && pageIndex < 4 && m_pageSpriteIds[pageIndex] != -1)
+			{
+				std::shared_ptr<GuiElement> pageElement = m_gui.GetElement(m_pageSpriteIds[pageIndex]);
+				if (pageElement)
+				{
+					pageElement->m_Visible = true;
+				}
+			}
+		}
 	}
 
 	// Handle circle navigation (1-8 keys or left/right arrows)

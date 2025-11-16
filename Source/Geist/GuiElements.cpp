@@ -676,8 +676,19 @@ void GuiCheckBox::Init(int ID, int posx, int posy, shared_ptr<Sprite> unselected
 	m_HoveredSprite = hovered;
 	m_HoveredSelectedSprite = hoveredselected;
 	m_Color = color;
-	m_Width = selected->m_sourceRect.width;
-	m_Height = selected->m_sourceRect.height;
+	
+	// Use the first available sprite to determine size
+	shared_ptr<Sprite> sizeSprite = selected ? selected : unselected;
+	if (sizeSprite)
+	{
+		m_Width = sizeSprite->m_sourceRect.width;
+		m_Height = sizeSprite->m_sourceRect.height;
+	}
+	else
+	{
+		m_Width = 16;
+		m_Height = 16;
+	}
 	m_ScaleX = scalex;
 	m_ScaleY = scaley;
 	m_Selected = false;
@@ -714,7 +725,7 @@ void GuiCheckBox::Draw()
 	int adjustedw = int(m_Width);
 	int adjustedh = int(m_Height);
 
-	if (m_SelectSprite == nullptr) // no sprites, just use draw commands to draw it
+	if (m_SelectSprite == nullptr && m_DeselectSprite == nullptr) // no sprites, just use draw commands to draw it
 	{
 		if (m_Selected)
 		{
@@ -730,33 +741,40 @@ void GuiCheckBox::Draw()
 	{
 		if (m_Selected)
 		{
-			if (m_Hovered || m_Down)
+			std::shared_ptr<Sprite> spriteToUse = m_SelectSprite;
+			if ((m_Hovered || m_Down) && m_HoveredSelectedSprite != nullptr)
 			{
-				m_HoveredSelectedSprite->DrawScaled(
-					Rectangle{ m_Gui->m_Pos.x + int(m_Pos.x), m_Gui->m_Pos.y + int(m_Pos.y),
-					m_ScaleX* 1, m_ScaleY* 1 }, Vector2{ 0, 0 }, 0, m_Color);
+				spriteToUse = m_HoveredSelectedSprite;
 			}
-			else
+
+			if (spriteToUse != nullptr)
 			{
-				m_SelectSprite->DrawScaled(
-					Rectangle{m_Gui->m_Pos.x + int(m_Pos.x), m_Gui->m_Pos.y + int(m_Pos.y),
-					m_ScaleX, m_ScaleY }, Vector2{ 0, 0 }, 0, m_Color);
+				spriteToUse->DrawScaled(
+					Rectangle{ m_Gui->m_Pos.x + int(m_Pos.x), m_Gui->m_Pos.y + int(m_Pos.y),
+					m_Width * m_ScaleX, m_Height * m_ScaleY }, Vector2{ 0, 0 }, 0, m_Color);
 			}
 		}
 		else
 		{
-			if (m_Hovered || m_Down)
+			std::shared_ptr<Sprite> spriteToUse = nullptr;
+			if ((m_Hovered || m_Down) && m_HoveredSprite != nullptr)
 			{
-				m_HoveredSprite->DrawScaled(
-					Rectangle {m_Gui->m_Pos.x + int(m_Pos.x), m_Gui->m_Pos.y + int(m_Pos.y),
-					m_ScaleX, m_ScaleY }, Vector2{ 0, 0 }, 0, m_Color);
-
+				spriteToUse = m_HoveredSprite;
+			}
+			else if (m_DeselectSprite != nullptr)
+			{
+				spriteToUse = m_DeselectSprite;
 			}
 			else
 			{
-				m_DeselectSprite->DrawScaled(
-					Rectangle { m_Gui->m_Pos.x + int(m_Pos.x), m_Gui->m_Pos.y + int(m_Pos.y),
-					m_ScaleX, m_ScaleY }, Vector2{ 0, 0 }, 0, m_Color);
+				spriteToUse = m_SelectSprite;
+			}
+
+			if (spriteToUse != nullptr)
+			{
+				spriteToUse->DrawScaled(
+					Rectangle{ m_Gui->m_Pos.x + int(m_Pos.x), m_Gui->m_Pos.y + int(m_Pos.y),
+					m_Width * m_ScaleX, m_Height * m_ScaleY }, Vector2{ 0, 0 }, 0, m_Color);
 			}
 		}
 	}
@@ -877,27 +895,29 @@ void GuiRadioButton::Draw()
 		}
 		else
 		{
+			std::shared_ptr<Sprite> spriteToUse = nullptr;
 			if (m_Hovered && m_HoveredSprite != nullptr)
 			{
-				if (m_Shadowed)
-				{
-					m_HoveredSprite->DrawScaled(
-						Rectangle{ m_Gui->m_Pos.x + int((m_Pos.x + 3)), m_Gui->m_Pos.y + int((m_Pos.y + 3)),
-						m_ScaleX* 1, m_ScaleY* 1 }, Vector2{ 0, 0 }, 0, Color{ 0, 0, 0, 255 });
-				}
-				m_HoveredSprite->DrawScaled(
-					Rectangle{ m_Gui->m_Pos.x + int(m_Pos.x), m_Gui->m_Pos.y + int(m_Pos.y),
-					m_ScaleX* 1, m_ScaleY* 1 }, Vector2{ 0, 0 }, 0, m_Color);
+				spriteToUse = m_HoveredSprite;
+			}
+			else if (m_DeselectSprite != nullptr)
+			{
+				spriteToUse = m_DeselectSprite;
 			}
 			else
 			{
+				spriteToUse = m_SelectSprite;
+			}
+
+			if (spriteToUse != nullptr)
+			{
 				if (m_Shadowed)
 				{
-					m_DeselectSprite->DrawScaled(
+					spriteToUse->DrawScaled(
 						Rectangle{ m_Gui->m_Pos.x + int((m_Pos.x + 3)), m_Gui->m_Pos.y + int((m_Pos.y + 3)),
 						m_ScaleX* 1, m_ScaleY* 1 }, Vector2{ 0, 0 }, 0, Color{ 0, 0, 0, 255 });
 				}
-				m_DeselectSprite->DrawScaled(
+				spriteToUse->DrawScaled(
 					Rectangle{ m_Gui->m_Pos.x + int(m_Pos.x), m_Gui->m_Pos.y + int(m_Pos.y),
 					m_ScaleX* 1, m_ScaleY* 1 }, Vector2{ 0, 0 }, 0, m_Color);
 			}
@@ -1047,11 +1067,13 @@ void GuiTextArea::Draw()
 		if (m_Width == 0 || MeasureTextEx(*m_Font, m_String.c_str(), m_Font->baseSize, 1).x < m_Width)
 		{
 			int textlength = MeasureTextEx(*m_Gui->m_Font.get(), m_String.c_str(), m_Font->baseSize, 1).x;
+			Vector2 dims = MeasureTextEx(*m_Font, m_String.c_str(), m_Font->baseSize, 1);
+			float yOffset = dims.y / 2;  // Compensate for DrawStringCentered subtracting half height
 
 			//DrawRectangle(int(m_Gui->m_Pos.x + ((m_Pos.x + (m_Width / 2)))) - (m_Width / 2), int(m_Gui->m_Pos.y + (m_Pos.y)), m_Width, m_Font->height, Color(.5, 0, 0, .75), true);
 			if (m_Shadowed)
-				DrawStringCentered(m_Font, m_Font->baseSize, m_String, int(m_Gui->m_Pos.x + ((m_Pos.x + (m_Width / 2))) + (m_Font->baseSize * .125)), int(m_Gui->m_Pos.y + (m_Pos.y) + (m_Font->baseSize * .125)), Color{ 0, 0, 0, 255 });
-			DrawStringCentered(m_Font, m_Font->baseSize, m_String, int(m_Gui->m_Pos.x + ((m_Pos.x + (m_Width / 2)))), int(m_Gui->m_Pos.y + (m_Pos.y)), m_Color);
+				DrawStringCentered(m_Font, m_Font->baseSize, m_String, int(m_Gui->m_Pos.x + ((m_Pos.x + (m_Width / 2))) + (m_Font->baseSize * .125)), int(m_Gui->m_Pos.y + (m_Pos.y + yOffset) + (m_Font->baseSize * .125)), Color{ 0, 0, 0, 255 });
+			DrawStringCentered(m_Font, m_Font->baseSize, m_String, int(m_Gui->m_Pos.x + ((m_Pos.x + (m_Width / 2)))), int(m_Gui->m_Pos.y + (m_Pos.y + yOffset)), m_Color);
 		}
 	}
 	else

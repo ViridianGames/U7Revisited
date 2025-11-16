@@ -22,7 +22,14 @@ class Gump;
 class GumpManager : public Object
 {
 public:
-	GumpManager() {};
+	GumpManager()
+		: m_draggingObject(false)
+		, m_sourceGump(nullptr)
+		, m_draggedObjectId(-1)
+		, m_sourceSlotIndex(-1)
+		, m_isMouseOverGump(false)
+		, m_gumpUnderMouse(nullptr)
+	{}
 
 	virtual void Init() { Init(std::string("")); }
 	virtual void Init(char* data) { Init(std::string(data)); }
@@ -35,6 +42,7 @@ public:
 	void AddGump(std::shared_ptr<Gump> gump);
 	void CloseGumpForObject(int objectId);  // Close any gump associated with the given object ID
 	void CloseSpellbookForNpc(int npcId);   // Close spellbook gump for the given NPC ID
+	void CloseAllGumps();                   // Close all gumps (used when loading save)
 
 	bool IsMouseOverGump() { return m_isMouseOverGump; }
 	Gump* GetGumpUnderMouse() { return m_gumpUnderMouse; }
@@ -49,6 +57,7 @@ public:
 	int			m_draggedObjectId;
 	int			m_sourceSlotIndex;  // Slot index item was dragged from (-1 if from container)
 	Vector3		m_draggedObjectOriginalPos = { 0, 0, 0 };  // Original world position (for returning to world)
+	Vector3		m_draggedObjectOriginalDest = { 0, 0, 0 };  // Original destination (for NPCs)
 	Vector2		m_draggedObjectOffset = { 0, 0 };
 	bool			m_isMouseOverGump;
 	Gump*			m_gumpUnderMouse;

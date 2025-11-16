@@ -12,6 +12,7 @@
 #include "Geist/ResourceManager.h"
 #include "Geist/Config.h"
 #include "Geist/Engine.h"
+#include "Geist/Logging.h"
 #include "U7Globals.h"
 #include "ShapeData.h"
 

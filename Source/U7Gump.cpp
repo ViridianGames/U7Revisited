@@ -44,12 +44,26 @@ Gump::~Gump()
 {
 }
 
+void Gump::OnExit()
+{
+	m_IsDead = true;
+	
+	// Clear any references to the container object to prevent accessing stale pointers
+	if (m_containerObject)
+	{
+		// Reset the sorted flag so the container will re-sort when reopened
+		m_containerObject->m_isSorted = false;
+		m_containerObject = nullptr;
+	}
+}
+
 void Gump::OnEnter()
 {
 	int posx = int(g_NonVitalRNG->Random(150));
 	int posy = int(g_NonVitalRNG->Random(150));
 
 	m_containerObject = GetObjectFromID(m_containerId);
+	int x = 4, y = 34;
 
 	//  Find out what kind of container this is and set the gump background accordingly
 	switch(m_containerObject->m_ObjectType)
@@ -83,7 +97,7 @@ void Gump::OnEnter()
 		case 283: //  Drawer
 			m_containerData = g_containerData[static_cast<int>(ContainerType::CONTAINER_DRAWER)];
 			break;
-		case 1000: //  Corpse
+		case 507: //  Corpse
 			m_containerData = g_containerData[static_cast<int>(ContainerType::CONTAINER_CORPSE)];
 			break;
 		default:
@@ -95,9 +109,11 @@ void Gump::OnEnter()
 	m_gui.SetLayout(posx, posy, 220, 150, g_DrawScale, Gui::GUIP_USE_XY);
 	m_gui.AddSprite(1004, 0, 0,
 		make_shared<Sprite>(g_ResourceManager->GetTexture("Images/GUI/biggumps.png", false), m_containerData.m_texturePos.x, m_containerData.m_texturePos.y, m_containerData.m_textureSize.x, m_containerData.m_textureSize.y), 1, 1, Color{255, 255, 255, 255});
-	m_gui.AddIconButton(1005, 4, 34, g_gumpCheckmarkUp, g_gumpCheckmarkDown, g_gumpCheckmarkUp, "", g_SmallFont.get(), Color{255, 255, 255, 255}, 1, 0, 1, false);
+	int checkX = m_containerData.m_checkMarkOffset.x;
+	int checkY = m_containerData.m_checkMarkOffset.y;
+	m_gui.AddIconButton(1005, checkX, checkY, g_gumpCheckmarkUp, g_gumpCheckmarkDown, g_gumpCheckmarkUp, "", g_SmallFont.get(), Color{255, 255, 255, 255}, 1, 0, 1, false);
 
-	m_gui.AddStretchButton(1006, 6, 18, 28, "Sort",
+	m_gui.AddStretchButton(1006, checkX + 2, checkY - 16, 28, "Sort",
 		g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
 		g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM);
 
@@ -141,10 +157,78 @@ void Gump::Update()
 		m_dragStart = {0, 0};
 	}
 
-	//  Are we in the box bounds of the gump?
-	if (CheckCollisionPointRec(mousePos, Rectangle{ m_gui.m_Pos.x + (m_containerData.m_boxOffset.x), m_gui.m_Pos.y + (m_containerData.m_boxOffset.y),
+	//  Are we in the box bounds of the gump AND are we the topmost gump?
+	bool isTopmostGump = (g_gumpManager->m_gumpUnderMouse == this);
+	if (isTopmostGump && CheckCollisionPointRec(mousePos, Rectangle{ m_gui.m_Pos.x + (m_containerData.m_boxOffset.x), m_gui.m_Pos.y + (m_containerData.m_boxOffset.y),
 		m_containerData.m_boxSize.x, m_containerData.m_boxSize.y }))
 	{
+		// Check for double-click on spellbook or map
+		if (WasMouseButtonDoubleClicked(MOUSE_BUTTON_LEFT))
+		{
+			for (auto containerObjectId : m_containerObject->m_inventory)
+			{
+				auto object = GetObjectFromID(containerObjectId);
+				if (object && object->m_shapeData)
+				{
+					if (CheckCollisionPointRec(mousePos, Rectangle{ m_gui.m_Pos.x + (m_containerData.m_boxOffset.x * 1) + object->m_InventoryPos.x, m_gui.m_Pos.y + (m_containerData.m_boxOffset.y * 1) + object->m_InventoryPos.y, float(object->m_shapeData->GetDefaultTextureImage().width), float(object->m_shapeData->GetDefaultTextureImage().height) }))
+					{
+						// Check for spellbook (shape 761)
+						if (object->m_shapeData->m_shape == 761)
+						{
+							Log("Container - Double-click on spellbook, opening spellbook gump");
+							if (g_mainState)
+							{
+								g_mainState->OpenSpellbookGump(0); // Use Avatar's spellbook (NPC ID 0)
+							}
+							return; // Exit Update to prevent drag handling
+						}
+						// Check for map (shape 178)
+						else if (object->m_shapeData->m_shape == 178)
+						{
+							Log("Container - Double-click on map, opening minimap gump");
+							if (g_mainState)
+							{
+								g_mainState->OpenMinimapGump(0); // Use Avatar's map (NPC ID 0)
+							}
+							return; // Exit Update to prevent drag handling
+						}
+					}
+				}
+			}
+		}
+
+		// Handle single click to show item name
+		if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+		{
+			for (auto it = m_containerObject->m_inventory.begin(); it != m_containerObject->m_inventory.end(); ++it)
+			{
+				int containerObjectId = *it;
+				auto object = GetObjectFromID(containerObjectId);
+				if (object && object->m_shapeData)
+				{
+					Rectangle itemRect = {
+						m_gui.m_Pos.x + (m_containerData.m_boxOffset.x * 1) + object->m_InventoryPos.x,
+						m_gui.m_Pos.y + (m_containerData.m_boxOffset.y * 1) + object->m_InventoryPos.y,
+						float(object->m_shapeData->GetDefaultTextureImage().width),
+						float(object->m_shapeData->GetDefaultTextureImage().height)
+					};
+
+					if (CheckCollisionPointRec(mousePos, itemRect))
+					{
+						// Show item name
+						int quantity = (object->m_Quality > 0) ? object->m_Quality : 1;
+						m_hoverText = GetShapeFrameName(object->m_shapeData->GetShape(), object->m_shapeData->GetFrame(), quantity);
+						m_hoverTextDuration = 2.0f;
+
+						// Position text above the item
+						m_hoverTextPos.x = itemRect.x + itemRect.width / 2.0f;
+						m_hoverTextPos.y = itemRect.y;
+						break;
+					}
+				}
+			}
+		}
+
 		if (IsMouseButtonDown(MOUSE_LEFT_BUTTON))
 		{
 			if (m_dragStart.x == 0 && m_dragStart.y == 0)
@@ -166,6 +250,11 @@ void Gump::Update()
 							g_gumpManager->m_draggingObject = true;
 							g_gumpManager->m_sourceGump = this;
 							g_gumpManager->m_sourceSlotIndex = -1;  // Not from a paperdoll slot
+
+							// Center the drag image on the cursor
+							auto& img = object->m_shapeData->GetDefaultTextureImage();
+							g_gumpManager->m_draggedObjectOffset = {-img.width / 2.0f, -img.height / 2.0f};
+
 							m_containerObject->m_shouldBeSorted = false; //  We are dragging an object, so we no longer need to sort.
 
 							// Close any gump associated with this container object to prevent dragging into itself
@@ -181,6 +270,16 @@ void Gump::Update()
 					}
 				}
 			}
+		}
+	}
+
+	// Update hover text timer
+	if (m_hoverTextDuration > 0.0f)
+	{
+		m_hoverTextDuration -= GetFrameTime();
+		if (m_hoverTextDuration <= 0.0f)
+		{
+			m_hoverText.clear();
 		}
 	}
 }
@@ -249,6 +348,28 @@ void Gump::Draw()
 			DrawTextureEx(*object->m_shapeData->GetTexture(), Vector2{m_gui.m_Pos.x + m_containerData.m_boxOffset.x + object->m_InventoryPos.x, m_gui.m_Pos.y + m_containerData.m_boxOffset.y + object->m_InventoryPos.y}, 0, 1, Color{255, 255, 255, 255});
 		}
 	}
+
+	// Draw hover text if active (uses same style as bark text)
+	if (!m_hoverText.empty() && m_hoverTextDuration > 0.0f)
+	{
+		// Measure text with conversation font
+		float width = MeasureTextEx(*g_ConversationFont, m_hoverText.c_str(), g_ConversationFont->baseSize, 1).x * 1.2f;
+		float height = g_ConversationFont->baseSize * 1.2f;
+
+		// Center text horizontally at stored position, slightly above
+		Vector2 textPos = {
+			m_hoverTextPos.x - width / 2.0f,
+			m_hoverTextPos.y - height - 5.0f  // Above item
+		};
+
+		// Draw rounded rectangle background (pill-shaped, semi-transparent)
+		DrawRectangleRounded({textPos.x, textPos.y, width, height}, 5.0f, 10, Color{0, 0, 0, 192});
+
+		// Draw text in yellow (same as bark)
+		DrawTextEx(*g_ConversationFont, m_hoverText.c_str(),
+			{ textPos.x + (width * 0.1f), textPos.y + (height * 0.1f) },
+			g_ConversationFont->baseSize, 1, YELLOW);
+	}
 }
 
 void Gump::SortContainer()
@@ -266,6 +387,10 @@ void Gump::SortContainer()
 		U7Object* aObj = GetObjectFromID(a);
 		U7Object* bObj = GetObjectFromID(b);
 
+		// Safety check: if either object is invalid or has no shape data, consider them equal
+		if (!aObj || !bObj || !aObj->m_shapeData || !bObj->m_shapeData)
+			return false;
+
 		return (aObj->m_shapeData->GetDefaultTextureImage().height > bObj->m_shapeData->GetDefaultTextureImage().height);
 	});
 
@@ -277,6 +402,11 @@ void Gump::SortContainer()
     for (int item : thisObject->m_inventory) {
         // If adding the item exceeds maxWidth, move to the next row
 		U7Object* itemObj = GetObjectFromID(item);
+		
+		// Safety check: skip invalid objects or objects without shape data
+		if (!itemObj || !itemObj->m_shapeData)
+			continue;
+		
         if (currentX + itemObj->m_shapeData->GetDefaultTextureImage().width > m_containerData.m_boxSize.x * 1) {
             currentX = 0.0f;
             currentY += maxRowHeight;

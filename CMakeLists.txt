@@ -1,4 +1,11 @@
 cmake_minimum_required(VERSION 3.15)
+
+# Use dynamic runtime library (/MD for Release, /MDd for Debug) to match raylib
+# MUST be set before project() to apply as default policy
+if(MSVC OR MSVC_IDE)
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
+endif()
+
 project("Ultima 7 Revisited" VERSION 1.0.0 LANGUAGES C CXX RC)
 
 # Set C++ standard
@@ -114,12 +121,18 @@ if(WIN32)
     target_compile_definitions(lua PRIVATE LUA_BUILD_AS_DLL)
 endif()
 
+# Ensure lua uses the same runtime library as the main project
+if(MSVC)
+    set_property(TARGET lua PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
+endif()
+
 # ============================================================================
 # Project Include Directories
 # ============================================================================
 include_directories(
     Source/Geist
     Source
+    ThirdParty/nlohmann
 )
 
 # ============================================================================
@@ -147,7 +160,9 @@ set(SOURCES
     Source/Ghost/GhostSerializer.cpp
     Source/Ghost/GhostWindow.cpp
 
+    Source/AskState.cpp
     Source/ConversationState.cpp
+    Source/GameSerializer.cpp
     Source/GumpManager.cpp
     Source/LoadingState.cpp
     Source/Main.cpp
@@ -160,8 +175,11 @@ set(SOURCES
     Source/TitleState.cpp
     Source/U7GumpNumberBar.cpp
     Source/U7GumpBook.cpp
+    Source/LoadSaveState.cpp
+    Source/U7GumpMinimap.cpp
     Source/U7GumpPaperdoll.cpp
     Source/U7GumpSpellbook.cpp
+    Source/U7GumpStats.cpp
     Source/U7Globals.cpp
     Source/U7Gump.cpp
     Source/U7LuaFuncs.cpp
@@ -179,7 +197,10 @@ source_group("Source Files" REGULAR_EXPRESSION "Source/[^/]+\\.cpp")
 # ============================================================================
 # Executable
 # ============================================================================
-add_executable(U7Revisited WIN32 ${SOURCES})
+add_executable(U7Revisited WIN32
+    ${SOURCES}
+    $<$<PLATFORM_ID:Windows>:Source/u7revisited.rc>
+)
 
 # Build configuration specific definitions
 target_compile_definitions(U7Revisited PRIVATE
@@ -357,13 +378,7 @@ if(WIN32)
     set_target_properties(Ghost PROPERTIES
         VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
     )
-    # Copy executable to Ghost folder after build (Release only)
-    add_custom_command(TARGET Ghost POST_BUILD
-        COMMAND $<$<CONFIG:Release>:${CMAKE_COMMAND}> $<$<CONFIG:Release>:-E> $<$<CONFIG:Release>:copy> $<$<CONFIG:Release>:$<TARGET_FILE:Ghost>> $<$<CONFIG:Release>:"${CMAKE_CURRENT_SOURCE_DIR}/Ghost/">
-        COMMAND_EXPAND_LISTS
-        COMMENT "Copying Ghost Release executable to Ghost folder"
-    )
-    # Copy executable to Redist folder so it can be launched from game
+    # Copy executable to Redist folder
     add_custom_command(TARGET Ghost POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:Ghost> "${CMAKE_CURRENT_SOURCE_DIR}/Redist/"
         COMMENT "Copying Ghost executable to Redist folder"

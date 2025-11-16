@@ -1,7 +1,12 @@
 #include "StateMachine.h"
 #include "Logging.h"
+#include "raylib.h"
 
 using namespace std;
+
+// Globals for cursor drawing (defined here for both projects)
+Texture* g_Cursor = nullptr;
+float g_DrawScale = 1.0f;
 
 void StateMachine::Init(const std::string& configfile)
 {
@@ -54,15 +59,31 @@ void StateMachine::Update()
 
 void StateMachine::Draw()
 {
-	//  We draw states in reverse order, so popups are drawn on top of the
-	//  states they are popped on top of.
+	// Check if the topmost state wants to render the stack below it
+	if (m_StateStack.size() > 0)
+	{
+		State* topState = m_StateMap[get<0>(m_StateStack[0])];
 
-	m_StateMap[get<0>(m_StateStack[0])]->Draw();
+		if (topState->m_RenderStack)
+		{
+			// Draw all states in reverse order, so popups are drawn on top
+			for (auto i = m_StateStack.rbegin(); i != m_StateStack.rend(); ++i)
+			{
+				m_StateMap[get<0>(*i)]->Draw();
+			}
+		}
+		else
+		{
+			// Only draw the topmost state
+			topState->Draw();
+		}
 
-	//for (auto i = m_StateStack.rbegin(); i != m_StateStack.rend(); ++i)
-	//{
-	//	m_StateMap[get<0>(*i)]->Draw();
-	//}
+		// Draw cursor if the topmost state wants it
+		if (topState->m_DrawCursor && g_Cursor)
+		{
+			DrawTextureEx(*g_Cursor, { float(GetMouseX()), float(GetMouseY()) }, 0, g_DrawScale, WHITE);
+		}
+	}
 }
 
 void StateMachine::RegisterState(int id, State* state, string name)
