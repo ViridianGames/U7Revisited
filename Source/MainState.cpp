@@ -1445,7 +1445,7 @@ void MainState::Draw()
 	// Draw cursor AFTER dialog so it appears on top
 	if (!m_paused && m_showUIElements)
 	{
-		if (m_errorCursorFramesRemaining > 0)
+		if (m_errorCursorFramesRemaining > 0 && m_errorCursor != nullptr)
 		{
 			// Show error cursor for 5 frames after drag/drop error
 			DrawTextureEx(*m_errorCursor, { float(GetMouseX()), float(GetMouseY()) }, 0, g_DrawScale, WHITE);
