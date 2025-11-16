@@ -157,15 +157,21 @@ void MainState::OnEnter()
 	else
 	{
 		m_paused = false;
-		ClearConsole();
-		AddConsoleString(std::string("Welcome to Ultima VII: Revisited!"));
-		AddConsoleString(std::string("Move with WASD, rotate with Q and E."));
-		AddConsoleString(std::string("Zoom in and out with mousewheel."));
-		AddConsoleString(std::string("Left-click in the minimap to teleport."));
-		AddConsoleString(std::string("Press F1 to switch to the Object Viewer."));
-		AddConsoleString(std::string("Press KP ENTER to advance time an hour."));
-		AddConsoleString(std::string("Press SPACE to pause/unpause time."));
-		AddConsoleString(std::string("Press ESC to exit."));
+
+		// Only show welcome messages on first OnEnter, not when returning from dialogs
+		if (!m_hasShownWelcomeMessages)
+		{
+			m_hasShownWelcomeMessages = true;
+			ClearConsole();
+			AddConsoleString(std::string("Welcome to Ultima VII: Revisited!"));
+			AddConsoleString(std::string("Move with WASD, rotate with Q and E."));
+			AddConsoleString(std::string("Zoom in and out with mousewheel."));
+			AddConsoleString(std::string("Left-click in the minimap to teleport."));
+			AddConsoleString(std::string("Press F1 to switch to the Object Viewer."));
+			AddConsoleString(std::string("Press KP ENTER to advance time an hour."));
+			AddConsoleString(std::string("Press SPACE to pause/unpause time."));
+			AddConsoleString(std::string("Press ESC to exit."));
+		}
 	}
 
 }

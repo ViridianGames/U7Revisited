@@ -167,6 +167,9 @@ public:
 
 	bool m_showUIElements = true;
 
+	// Track if we've shown the initial welcome messages (only show once, not on every OnEnter)
+	bool m_hasShownWelcomeMessages = false;
+
 	// NPC Schedule toggle
 	bool m_npcSchedulesEnabled = false;
 
