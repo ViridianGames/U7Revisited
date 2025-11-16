@@ -362,6 +362,32 @@ void GhostState::UpdateColorButton(const std::string& buttonPropertyName, Color 
 	}
 }
 
+// Helper to find next element to select after deleting/cutting current element
+int GhostState::FindNextSelectionAfterRemoval(int elementID, int parentID)
+{
+	int newSelection = -1;
+	if (parentID != -1)
+	{
+		auto& siblings = m_contentSerializer->GetChildren(parentID);
+		// Find the element's position in sibling list
+		for (size_t i = 0; i < siblings.size(); i++)
+		{
+			if (siblings[i] == elementID)
+			{
+				// Select next sibling if available, otherwise previous sibling
+				if (i + 1 < siblings.size())
+					newSelection = siblings[i + 1];
+				else if (i > 0)
+					newSelection = siblings[i - 1];
+				else
+					newSelection = parentID; // No siblings, select parent
+				break;
+			}
+		}
+	}
+	return newSelection;
+}
+
 // Generic helper to get group from any element
 int GhostState::GetElementGroup(GuiElement* element)
 {
@@ -574,15 +600,36 @@ bool GhostState::UpdateNameProperty()
 			{
 				Log("UpdateNameProperty: element " + to_string(m_selectedElementID) + " changing name from '" + oldName + "' to '" + newName + "'");
 
-				// Remove old name mapping if it exists
+				// DEBUG: Check if the old name actually maps to THIS element
 				if (!oldName.empty())
 				{
-					m_contentSerializer->RemoveElementName(oldName);
+					int mappedID = m_contentSerializer->GetElementID(oldName);
+					if (mappedID != m_selectedElementID)
+					{
+						Log("WARNING: oldName '" + oldName + "' maps to element " + to_string(mappedID) + ", but selected element is " + to_string(m_selectedElementID));
+						Log("This indicates the name mapping is incorrect - skipping name removal to preserve correct mapping");
+					}
+					else
+					{
+						// Only remove if it actually maps to this element
+						m_contentSerializer->RemoveElementName(oldName);
+					}
 				}
 
 				// Set new name mapping if not empty
 				if (!newName.empty())
 				{
+					// Check if the new name already exists and points to a different element
+					int existingID = m_contentSerializer->GetElementID(newName);
+					if (existingID != -1 && existingID != m_selectedElementID)
+					{
+						Log("ERROR: Name '" + newName + "' already exists for element " + to_string(existingID) + " - cannot rename element " + to_string(m_selectedElementID));
+						// Revert the text input to show the old name
+						textInput->m_String = oldName;
+						return false;
+					}
+
+					// Safe to set the new name
 					m_contentSerializer->SetElementName(newName, m_selectedElementID);
 				}
 
@@ -1873,6 +1920,17 @@ void GhostState::Update()
 		// Get parent ID before deleting (for reflow)
 		int parentID = m_contentSerializer->GetParentID(m_selectedElementID);
 
+		// Remove name mapping if this element has a name
+		std::string elementName = GetElementName(m_selectedElementID);
+		if (!elementName.empty())
+		{
+			m_contentSerializer->RemoveElementName(elementName);
+			Log("Removed name mapping for deleted element: " + elementName);
+		}
+
+		// Find the next sibling to select after delete
+		int newSelection = FindNextSelectionAfterRemoval(m_selectedElementID, parentID);
+
 		// Remove from GUI
 		m_gui->m_GuiElementList.erase(m_selectedElementID);
 
@@ -1885,13 +1943,14 @@ void GhostState::Update()
 			m_contentSerializer->ReflowPanel(parentID, m_gui.get());
 		}
 
-		// Clear selection and property panel
-		m_selectedElementID = -1;
-		ClearPropertyPanel();
+		// Select the next appropriate element
+		m_selectedElementID = newSelection;
+		UpdatePropertyPanel();
 		UpdateStatusFooter();
 
 		// Update the element hierarchy listbox
 		PopulateElementHierarchy();
+		UpdateElementHierarchySelection();
 
 		// Mark as dirty
 		m_contentSerializer->SetDirty(true);
@@ -1926,6 +1985,17 @@ void GhostState::Update()
 			Log("Element copied to clipboard");
 		}
 
+		// Remove name mapping if this element has a name
+		std::string elementName = GetElementName(m_selectedElementID);
+		if (!elementName.empty())
+		{
+			m_contentSerializer->RemoveElementName(elementName);
+			Log("Removed name mapping for cut element: " + elementName);
+		}
+
+		// Find the next sibling to select after cut
+		int newSelection = FindNextSelectionAfterRemoval(m_selectedElementID, parentID);
+
 		// Remove from GUI
 		m_gui->m_GuiElementList.erase(m_selectedElementID);
 
@@ -1938,13 +2008,14 @@ void GhostState::Update()
 			m_contentSerializer->ReflowPanel(parentID, m_gui.get());
 		}
 
-		// Clear selection and property panel
-		m_selectedElementID = -1;
-		ClearPropertyPanel();
+		// Select the next appropriate element
+		m_selectedElementID = newSelection;
+		UpdatePropertyPanel();
 		UpdateStatusFooter();
 
 		// Update the element hierarchy listbox
 		PopulateElementHierarchy();
+		UpdateElementHierarchySelection();
 
 		// Mark as dirty
 		m_contentSerializer->SetDirty(true);
@@ -2045,8 +2116,9 @@ void GhostState::Update()
 			parentY = static_cast<int>(parentElement->m_Pos.y);
 		}
 
-		// Get next auto ID for the pasted element
+		// Get next auto ID for the pasted element and reserve it
 		int newElementID = m_contentSerializer->GetNextAutoID();
+		m_contentSerializer->SetAutoIDStart(newElementID + 1);
 
 		// Create a copy of the clipboard data to modify
 		ghost_json pasteData = m_clipboard;
@@ -4967,23 +5039,40 @@ void GhostState::Undo()
 	m_contentSerializer.reset();
 	m_contentSerializer = make_unique<GhostSerializer>();
 	m_contentSerializer->SetAutoIDStart(2001);
+	m_contentSerializer->SetRootElementID(2000); // Set root to content panel container
 
 	// Restore the undo state
-	ghost_json tempJson;
-	tempJson["gui"]["elements"] = ghost_json::array();
-	tempJson["gui"]["elements"].push_back(undoState);
+	// The undoState contains the serialized root element with all its children
+	// We need to restore the children into the content panel (ID 2000)
 
-	if (m_contentSerializer->ParseJson(tempJson, m_gui.get()))
+	// Get the content panel to find its position
+	auto contentPanel = m_gui->GetElement(2000);
+	if (!contentPanel)
 	{
+		Log("ERROR: Content panel (ID 2000) not found during undo");
+		return;
+	}
+
+	int containerX = static_cast<int>(contentPanel->m_Pos.x);
+	int containerY = static_cast<int>(contentPanel->m_Pos.y);
+
+	// Build inherited properties from the content panel
+	ghost_json inheritedProps = m_contentSerializer->BuildInheritedProps(2000);
+
+	// Parse the children directly into the content panel
+	if (undoState.contains("elements") && undoState["elements"].is_array())
+	{
+		m_contentSerializer->ParseElements(undoState["elements"], m_gui.get(), inheritedProps, containerX, containerY, 2000);
 		Log("Undo successful (undo stack: " + to_string(m_undoStack.size()) + ", redo stack: " + to_string(m_redoStack.size()) + ")");
 		m_contentSerializer->SetDirty(true);
 
 		// Update the element hierarchy listbox
 		PopulateElementHierarchy();
+		UpdateElementHierarchySelection();  // Clear selection in listbox since m_selectedElementID is -1
 	}
 	else
 	{
-		Log("Failed to restore undo state");
+		Log("Undo state has no elements to restore");
 	}
 }
 
@@ -5040,23 +5129,40 @@ void GhostState::Redo()
 	m_contentSerializer.reset();
 	m_contentSerializer = make_unique<GhostSerializer>();
 	m_contentSerializer->SetAutoIDStart(2001);
+	m_contentSerializer->SetRootElementID(2000); // Set root to content panel container
 
 	// Restore the redo state
-	ghost_json tempJson;
-	tempJson["gui"]["elements"] = ghost_json::array();
-	tempJson["gui"]["elements"].push_back(redoState);
+	// The redoState contains the serialized root element with all its children
+	// We need to restore the children into the content panel (ID 2000)
 
-	if (m_contentSerializer->ParseJson(tempJson, m_gui.get()))
+	// Get the content panel to find its position
+	auto contentPanel = m_gui->GetElement(2000);
+	if (!contentPanel)
 	{
+		Log("ERROR: Content panel (ID 2000) not found during redo");
+		return;
+	}
+
+	int containerX = static_cast<int>(contentPanel->m_Pos.x);
+	int containerY = static_cast<int>(contentPanel->m_Pos.y);
+
+	// Build inherited properties from the content panel
+	ghost_json inheritedProps = m_contentSerializer->BuildInheritedProps(2000);
+
+	// Parse the children directly into the content panel
+	if (redoState.contains("elements") && redoState["elements"].is_array())
+	{
+		m_contentSerializer->ParseElements(redoState["elements"], m_gui.get(), inheritedProps, containerX, containerY, 2000);
 		Log("Redo successful (undo stack: " + to_string(m_undoStack.size()) + ", redo stack: " + to_string(m_redoStack.size()) + ")");
 		m_contentSerializer->SetDirty(true);
 
 		// Update the element hierarchy listbox
 		PopulateElementHierarchy();
+		UpdateElementHierarchySelection();  // Clear selection in listbox since m_selectedElementID is -1
 	}
 	else
 	{
-		Log("Failed to restore redo state");
+		Log("Redo state has no elements to restore");
 	}
 }
 

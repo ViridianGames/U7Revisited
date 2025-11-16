@@ -400,13 +400,14 @@ public:
 	// forCopy: if true, serialize ALL current properties (for copy/paste); if false, only serialize explicit properties (for file save)
 	ghost_json SerializeElement(int elementID, Gui* gui, int parentX = 0, int parentY = 0, bool forCopy = false);
 
-private:
 	// Helper function to recursively parse elements with property inheritance
 	// parentX and parentY track the cumulative offset from nested parents
 	// parentElementID tracks the parent in the tree structure (-1 for root level)
 	// namePrefix is prepended to all element names (used for includes to avoid name collisions)
 	// insertIndex specifies where to insert elements in parent's children (-1 = append at end)
 	void ParseElements(const ghost_json& elementsArray, Gui* gui, const ghost_json& inheritedProps = ghost_json(), int parentX = 0, int parentY = 0, int parentElementID = -1, const std::string& namePrefix = "", int insertIndex = -1);
+
+private:
 
 	// Helper function to load font with inheritance support
 	// Returns the loaded Font pointer (owned by m_loadedFonts)
