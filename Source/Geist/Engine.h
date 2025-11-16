@@ -21,7 +21,22 @@
 class Engine : public Object
 {
 public:
-	Engine() {};
+	Engine()
+		: m_Done(false)
+		, m_CurrentFrame(0)
+		, m_FrameRate(0.0f)
+		, m_MillisecondsThisFrame(0.0f)
+		, m_Frames{0}
+		, m_DrawFrames{0}
+		, m_UpdateFrames{0}
+		, m_DrawTime(0)
+		, m_UpdateTime(0)
+		, m_debugDrawing(false)
+		, m_RenderWidth(0.0f)
+		, m_RenderHeight(0.0f)
+		, m_ScreenWidth(0.0f)
+		, m_ScreenHeight(0.0f)
+	{}
 
 	virtual void Init() { Init(std::string("")); }
 	virtual void Init(const std::string &configfile);

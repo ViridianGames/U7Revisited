@@ -46,9 +46,9 @@ public:
    void OpenLoadSaveGump();
 
    // Paperdoll management
-   bool HasAnyPaperdollOpen();
+   bool HasAnyPaperdollOpen() const;
    void TogglePaperdoll(int npcId);
-   GumpPaperdoll* FindPaperdollByNpcId(int npcId);
+   GumpPaperdoll* FindPaperdollByNpcId(int npcId) const;
 
    void DrawStats();
    void UpdateStats();

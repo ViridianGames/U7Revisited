@@ -313,39 +313,15 @@ void Gump::Draw()
 	m_gui.Draw();
 
 	U7Object* thisObject = GetObjectFromID(m_containerId);
-
-	// Debug: Log what container we're drawing
-	static bool loggedGump = false;
-	if (!loggedGump && thisObject)
+	if (thisObject)
 	{
-		Log("Gump::Draw - Drawing container " + std::to_string(m_containerId) +
-			", inventory size=" + std::to_string(thisObject->m_inventory.size()) +
-			", isContainer=" + std::string(thisObject->m_isContainer ? "true" : "false"));
-
-		// Log first few items
-		int count = 0;
-		for (auto& itemId : thisObject->m_inventory)
+		for (auto& item : thisObject->m_inventory)
 		{
-			if (count < 5)
+			if (item != g_gumpManager->m_draggedObjectId) // Don't draw dragged object, GumpManager handles that.
 			{
-				auto obj = GetObjectFromID(itemId);
-				if (obj && obj->m_shapeData)
-				{
-					Log("  Item " + std::to_string(count) + ": id=" + std::to_string(itemId) +
-						", shape=" + std::to_string(obj->m_shapeData->GetShape()));
-				}
-				count++;
+				auto object = GetObjectFromID(item);
+				DrawTextureEx(*object->m_shapeData->GetTexture(), Vector2{m_gui.m_Pos.x + m_containerData.m_boxOffset.x + object->m_InventoryPos.x, m_gui.m_Pos.y + m_containerData.m_boxOffset.y + object->m_InventoryPos.y}, 0, 1, Color{255, 255, 255, 255});
 			}
-		}
-		loggedGump = true;
-	}
-
-	for (auto& item : thisObject->m_inventory)
-	{
-		if (item != g_gumpManager->m_draggedObjectId) // Don't draw dragged object, GumpManager handles that.
-		{
-			auto object = GetObjectFromID(item);
-			DrawTextureEx(*object->m_shapeData->GetTexture(), Vector2{m_gui.m_Pos.x + m_containerData.m_boxOffset.x + object->m_InventoryPos.x, m_gui.m_Pos.y + m_containerData.m_boxOffset.y + object->m_InventoryPos.y}, 0, 1, Color{255, 255, 255, 255});
 		}
 	}
 

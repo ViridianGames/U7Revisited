@@ -232,7 +232,7 @@ void MainState::UpdateTime()
 	else if (g_hour == 6)
 	{
 		unsigned char darkness = darklevel + ((float(g_minute) / 60.0f) * (255 - darklevel));
-		unsigned char red_green = (darklevel / 2) + ((float(g_minute) / 60.0f) * (255 - red_green_level));
+		unsigned char red_green = (darklevel / 2.0f) + ((float(g_minute) / 60.0f) * (255 - red_green_level));
 		g_dayNightColor = { red_green, red_green, darkness, 255 };
 		g_isDay = darkness < .1f;
 	}
@@ -1114,9 +1114,9 @@ void MainState::OpenSpellbookGump(int npcId)
 	g_gumpManager->AddGump(spellbookGump);
 }
 
-bool MainState::HasAnyPaperdollOpen()
+bool MainState::HasAnyPaperdollOpen() const
 {
-	for (auto& gump : g_gumpManager->m_GumpList)
+	for (const auto& gump : g_gumpManager->m_GumpList)
 	{
 		if (dynamic_cast<GumpPaperdoll*>(gump.get()))
 		{
@@ -1126,9 +1126,9 @@ bool MainState::HasAnyPaperdollOpen()
 	return false;
 }
 
-GumpPaperdoll* MainState::FindPaperdollByNpcId(int npcId)
+GumpPaperdoll* MainState::FindPaperdollByNpcId(int npcId) const
 {
-	for (auto& gump : g_gumpManager->m_GumpList)
+	for (const auto& gump : g_gumpManager->m_GumpList)
 	{
 		GumpPaperdoll* paperdoll = dynamic_cast<GumpPaperdoll*>(gump.get());
 		if (paperdoll && paperdoll->GetNpcId() == npcId)
@@ -1250,7 +1250,7 @@ void MainState::Draw()
 	if (g_gumpManager->m_draggingObject && !g_gumpManager->m_isMouseOverGump)
 	{
 		U7Object* draggedObject = g_objectList[g_gumpManager->m_draggedObjectId].get();
-		BoundingBox box;
+		BoundingBox box = { Vector3{0, 0, 0}, Vector3{0, 0, 0} };
 		box.min = Vector3Subtract(g_terrainUnderMousePointer, { draggedObject->m_shapeData->m_Dims.x - 1, 0, draggedObject->m_shapeData->m_Dims.z - 1 });//, {draggedObject->m_shapeData->m_Dims.x / 2, draggedObject->m_shapeData->m_Dims.y / 2, draggedObject->m_shapeData->m_Dims.z / 2});
 		box.max = Vector3Add(box.min, draggedObject->m_shapeData->m_Dims);
 		DrawBoundingBox(box, WHITE);

@@ -44,8 +44,8 @@ public:
 	void CloseSpellbookForNpc(int npcId);   // Close spellbook gump for the given NPC ID
 	void CloseAllGumps();                   // Close all gumps (used when loading save)
 
-	bool IsMouseOverGump() { return m_isMouseOverGump; }
-	Gump* GetGumpUnderMouse() { return m_gumpUnderMouse; }
+	bool IsMouseOverGump() const { return m_isMouseOverGump; }
+	Gump* GetGumpUnderMouse() const { return m_gumpUnderMouse; }
 	bool IsAnyGumpBeingDragged();
 
 	Config		m_GumpManagerConfig;
