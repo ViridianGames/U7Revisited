@@ -288,12 +288,99 @@ void U7Object::NPCDraw()
 
 }
 
+// Helper function to convert activity ID to script name
+static std::string GetActivityScriptName(int activityId)
+{
+	// Map activity IDs to descriptive script names
+	static const char* ACTIVITY_SCRIPT_NAMES[] = {
+		"combat",          // 0
+		"hpace",           // 1  (horizontal pace)
+		"vpace",           // 2  (vertical pace)
+		"talk",            // 3
+		"dance",           // 4
+		"eat",             // 5
+		"farm",            // 6
+		"tend_shop",       // 7
+		"miner",           // 8
+		"hound",           // 9
+		"stand",           // 10
+		"loiter",          // 11
+		"wander",          // 12
+		"blacksmith",      // 13
+		"sleep",           // 14
+		"wait",            // 15
+		"sit",             // 16  (major sit)
+		"graze",           // 17
+		"bake",            // 18
+		"sew",             // 19
+		"shy",             // 20
+		"lab",             // 21
+		"thief",           // 22
+		"waiter",          // 23
+		"special",         // 24
+		"kid_games",       // 25
+		"eat_at_inn",      // 26
+		"duel",            // 27
+		"preach",          // 28
+		"patrol",          // 29
+		"desk_work",       // 30
+		"follow_avatar"    // 31
+	};
+
+	if (activityId >= 0 && activityId <= 31)
+	{
+		return std::string("activity_") + ACTIVITY_SCRIPT_NAMES[activityId];
+	}
+
+	// Fallback for invalid activity IDs
+	return "activity_" + std::to_string(activityId);
+}
+
 void U7Object::NPCUpdate()
 {
 	// Don't do schedules while in the party
 	if (g_Player->NPCIDInParty(m_NPCID) && m_NPCID != 0)
 	{
 		return;
+	}
+
+	// Activity coroutine management - check if activity has changed
+	if (g_NPCData.find(m_NPCID) != g_NPCData.end())
+	{
+		int currentActivity = g_NPCData[m_NPCID]->m_currentActivity;
+		int lastActivity = g_NPCData[m_NPCID]->m_lastActivity;
+
+		// Has activity changed?
+		if (currentActivity != lastActivity)
+		{
+			// Cleanup old coroutine if it exists
+			if (lastActivity >= 0)
+			{
+				std::string old_script = GetActivityScriptName(lastActivity);
+				if (g_ScriptingSystem->IsCoroutineActive(old_script))
+				{
+					g_ScriptingSystem->CleanupCoroutine(old_script);
+				}
+			}
+
+			// Start new activity script
+			std::string new_script = GetActivityScriptName(currentActivity);
+			std::vector<ScriptingSystem::LuaArg> args = { m_NPCID };
+			g_ScriptingSystem->CallScript(new_script, args);
+
+			// Update last activity
+			g_NPCData[m_NPCID]->m_lastActivity = currentActivity;
+		}
+		// Activity hasn't changed - resume coroutine if yielded
+		else if (currentActivity >= 0)
+		{
+			std::string script_name = GetActivityScriptName(currentActivity);
+			if (g_ScriptingSystem->IsCoroutineYielded(script_name))
+			{
+				std::vector<ScriptingSystem::LuaArg> args = { m_NPCID };
+				g_ScriptingSystem->ResumeCoroutine(script_name, args);
+			}
+		}
 	}
 
 	// Schedule checking is now handled by MainState::Update() queue system

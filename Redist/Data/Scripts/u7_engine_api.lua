@@ -535,6 +535,12 @@ function jump_camera_angle(angle) end
 -- ANIMATION
 -- ============================================================================
 
+---Sets an NPC's animation frames (sprite position in spritesheet)
+---@param npc_id integer The NPC to animate
+---@param frameX integer The X frame index in the sprite sheet
+---@param frameY integer The Y frame index in the sprite sheet (0=standing, 8=sitting, 16=lying down)
+function play_animation(npc_id, frameX, frameY) end
+
 ---Sets a model's animation frame
 ---@param object_id integer The object to modify
 ---@param anim string The animation name

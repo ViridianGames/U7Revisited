@@ -276,6 +276,7 @@ struct NPCData
 	std::vector<std::vector<Texture*> > m_walkTextures;
 
 	int m_currentActivity;
+	int m_lastActivity = -1;  // Track last activity to detect changes
 	int m_objectID;
 
 	// Equipment system - maps slot to object ID (-1 = empty slot)

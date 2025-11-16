@@ -642,6 +642,13 @@ static int LuaSetObjectShape(lua_State *L)
     int shape = luaL_checkinteger(L, 2);
     U7Object *object = GetObjectFromID(object_id);
 
+    // Clear any active bark referencing this object to prevent crash when shapeData changes
+    if (g_mainState && g_mainState->m_barkObject == object)
+    {
+        g_mainState->m_barkObject = nullptr;
+        g_mainState->m_barkDuration = 0;
+    }
+
     // If the current object is a door, mark the new shape as a door too
     // This fixes doors that change shape when opened/closed
     bool wasDoor = object->m_objectData->m_isDoor;
@@ -3938,6 +3945,310 @@ static int LuaSetTimePalette(lua_State *L)
     return 0;
 }
 
+// ============================================================================
+// NPC Activity System Helper Functions
+// ============================================================================
+
+// distance_to(npc_id, object_id) -> number
+static int LuaDistanceTo(lua_State *L)
+{
+    int npc_id = luaL_checkinteger(L, 1);
+    int object_id = luaL_checkinteger(L, 2);
+
+    if (g_NPCData.find(npc_id) == g_NPCData.end())
+    {
+        return luaL_error(L, "Invalid NPC ID: %d", npc_id);
+    }
+
+    U7Object* npc = g_objectList[g_NPCData[npc_id]->m_objectID].get();
+    U7Object* target = GetObjectFromID(object_id);
+
+    if (!npc || !target)
+    {
+        lua_pushnumber(L, 999999.0);  // Return huge distance if invalid
+        return 1;
+    }
+
+    Vector3 npcPos = npc->GetPos();
+    Vector3 targetPos = target->GetPos();
+    float distance = Vector3Distance(npcPos, targetPos);
+
+    lua_pushnumber(L, distance);
+    return 1;
+}
+
+// is_near_object(npc_id, object_id, distance) -> boolean
+static int LuaIsNearObject(lua_State *L)
+{
+    int npc_id = luaL_checkinteger(L, 1);
+    int object_id = luaL_checkinteger(L, 2);
+    float max_distance = (float)luaL_checknumber(L, 3);
+
+    if (g_NPCData.find(npc_id) == g_NPCData.end())
+    {
+        lua_pushboolean(L, 0);
+        return 1;
+    }
+
+    U7Object* npc = g_objectList[g_NPCData[npc_id]->m_objectID].get();
+    U7Object* target = GetObjectFromID(object_id);
+
+    if (!npc || !target)
+    {
+        lua_pushboolean(L, 0);
+        return 1;
+    }
+
+    Vector3 npcPos = npc->GetPos();
+    Vector3 targetPos = target->GetPos();
+    float distance = Vector3Distance(npcPos, targetPos);
+
+    lua_pushboolean(L, distance <= max_distance);
+    return 1;
+}
+
+// get_npc_position(npc_id) -> x, y, z
+static int LuaGetNPCPosition(lua_State *L)
+{
+    int npc_id = luaL_checkinteger(L, 1);
+
+    if (g_NPCData.find(npc_id) == g_NPCData.end())
+    {
+        return luaL_error(L, "Invalid NPC ID: %d", npc_id);
+    }
+
+    U7Object* npc = g_objectList[g_NPCData[npc_id]->m_objectID].get();
+    if (!npc)
+    {
+        lua_pushnumber(L, 0);
+        lua_pushnumber(L, 0);
+        lua_pushnumber(L, 0);
+        return 3;
+    }
+
+    Vector3 pos = npc->GetPos();
+    lua_pushnumber(L, pos.x);
+    lua_pushnumber(L, pos.y);
+    lua_pushnumber(L, pos.z);
+    return 3;
+}
+
+// find_nearest_object_of_shape(npc_id, shape_id) -> object_id or nil
+static int LuaFindNearestObjectOfShape(lua_State *L)
+{
+    int npc_id = luaL_checkinteger(L, 1);
+    int shape_id = luaL_checkinteger(L, 2);
+
+    if (g_NPCData.find(npc_id) == g_NPCData.end())
+    {
+        lua_pushnil(L);
+        return 1;
+    }
+
+    U7Object* npc = g_objectList[g_NPCData[npc_id]->m_objectID].get();
+    if (!npc)
+    {
+        lua_pushnil(L);
+        return 1;
+    }
+
+    Vector3 npcPos = npc->GetPos();
+    float minDistance = 999999.0f;
+    int nearestObjectId = -1;
+
+    for (auto& objPair : g_objectList)
+    {
+        U7Object* obj = objPair.second.get();
+        if (obj && obj->m_ObjectType == shape_id)
+        {
+            Vector3 objPos = obj->GetPos();
+            float distance = Vector3Distance(npcPos, objPos);
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+                nearestObjectId = obj->m_ID;
+            }
+        }
+    }
+
+    if (nearestObjectId >= 0)
+    {
+        lua_pushinteger(L, nearestObjectId);
+    }
+    else
+    {
+        lua_pushnil(L);
+    }
+    return 1;
+}
+
+// find_nearest_bed(npc_id) -> object_id or nil
+// Beds are shape 696 in Ultima 7
+static int LuaFindNearestBed(lua_State *L)
+{
+    int npc_id = luaL_checkinteger(L, 1);
+    lua_pushinteger(L, 696);  // Bed shape
+    return LuaFindNearestObjectOfShape(L);
+}
+
+// find_nearest_chair(npc_id) -> object_id or nil
+// Chairs are shape 873 in Ultima 7
+static int LuaFindNearestChair(lua_State *L)
+{
+    int npc_id = luaL_checkinteger(L, 1);
+    lua_pushinteger(L, 873);  // Chair shape
+    return LuaFindNearestObjectOfShape(L);
+}
+
+// get_current_animation(npc_id) -> frameX, frameY
+static int LuaGetCurrentAnimation(lua_State *L)
+{
+    int npc_id = luaL_checkinteger(L, 1);
+
+    if (g_NPCData.find(npc_id) == g_NPCData.end())
+    {
+        lua_pushinteger(L, 0);
+        lua_pushinteger(L, 0);
+        return 2;
+    }
+
+    U7Object* npc = g_objectList[g_NPCData[npc_id]->m_objectID].get();
+    if (!npc)
+    {
+        lua_pushinteger(L, 0);
+        lua_pushinteger(L, 0);
+        return 2;
+    }
+
+    lua_pushinteger(L, npc->m_currentFrameX);
+    lua_pushinteger(L, npc->m_currentFrameY);
+    return 2;
+}
+
+// play_animation(npc_id, frameX, frameY)
+static int LuaPlayAnimation(lua_State *L)
+{
+    int npc_id = luaL_checkinteger(L, 1);
+    int frameX = luaL_checkinteger(L, 2);
+    int frameY = luaL_checkinteger(L, 3);
+
+    if (g_NPCData.find(npc_id) == g_NPCData.end())
+    {
+        return 0;
+    }
+
+    U7Object* npc = g_objectList[g_NPCData[npc_id]->m_objectID].get();
+    if (npc)
+    {
+        npc->SetFrames(frameX, frameY);
+    }
+
+    return 0;
+}
+
+// is_sleeping(npc_id) -> boolean
+// NPCs are sleeping if they're in a lying down animation (frameY == 16 for lying down)
+static int LuaIsSleeping(lua_State *L)
+{
+    int npc_id = luaL_checkinteger(L, 1);
+
+    if (g_NPCData.find(npc_id) == g_NPCData.end())
+    {
+        lua_pushboolean(L, 0);
+        return 1;
+    }
+
+    U7Object* npc = g_objectList[g_NPCData[npc_id]->m_objectID].get();
+    if (!npc)
+    {
+        lua_pushboolean(L, 0);
+        return 1;
+    }
+
+    // Frame 16 is the lying down animation in U7
+    lua_pushboolean(L, npc->m_currentFrameY == 16);
+    return 1;
+}
+
+// is_sitting(npc_id) -> boolean
+// NPCs are sitting if they're in a sitting animation (frameY == 8 for sitting)
+static int LuaIsSitting(lua_State *L)
+{
+    int npc_id = luaL_checkinteger(L, 1);
+
+    if (g_NPCData.find(npc_id) == g_NPCData.end())
+    {
+        lua_pushboolean(L, 0);
+        return 1;
+    }
+
+    U7Object* npc = g_objectList[g_NPCData[npc_id]->m_objectID].get();
+    if (!npc)
+    {
+        lua_pushboolean(L, 0);
+        return 1;
+    }
+
+    // Frame 8 is the sitting animation in U7
+    lua_pushboolean(L, npc->m_currentFrameY == 8);
+    return 1;
+}
+
+// walk_to_object(npc_id, object_id)
+static int LuaWalkToObject(lua_State *L)
+{
+    int npc_id = luaL_checkinteger(L, 1);
+    int object_id = luaL_checkinteger(L, 2);
+
+    if (g_NPCData.find(npc_id) == g_NPCData.end())
+    {
+        return 0;
+    }
+
+    U7Object* target = GetObjectFromID(object_id);
+    if (!target)
+    {
+        return 0;
+    }
+
+    Vector3 targetPos = target->GetPos();
+    g_objectList[g_NPCData[npc_id]->m_objectID]->SetDest(targetPos);
+
+    return 0;
+}
+
+// walk_to_position(npc_id, x, y, z)
+static int LuaWalkToPosition(lua_State *L)
+{
+    int npc_id = luaL_checkinteger(L, 1);
+    float x = (float)luaL_checknumber(L, 2);
+    float y = (float)luaL_checknumber(L, 3);
+    float z = (float)luaL_checknumber(L, 4);
+
+    if (g_NPCData.find(npc_id) == g_NPCData.end())
+    {
+        return 0;
+    }
+
+    g_objectList[g_NPCData[npc_id]->m_objectID]->SetDest({x, y, z});
+
+    return 0;
+}
+
+// get_current_hour() -> hour (0-23)
+static int LuaGetCurrentHour(lua_State *L)
+{
+    lua_pushinteger(L, g_hour);
+    return 1;
+}
+
+// get_current_minute() -> minute (0-59)
+static int LuaGetCurrentMinute(lua_State *L)
+{
+    lua_pushinteger(L, g_minute);
+    return 1;
+}
+
 void RegisterAllLuaFunctions()
 {
     cout << "Registering Lua functions\n";
@@ -4171,6 +4482,22 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction( "mark_virtue_stone", LuaMarkVirtueStone);
     g_ScriptingSystem->RegisterScriptFunction( "recall_virtue_stone", LuaRecallVirtueStone);
     g_ScriptingSystem->RegisterScriptFunction( "set_time_palette", LuaSetTimePalette);
+
+    // NPC Activity System functions
+    g_ScriptingSystem->RegisterScriptFunction( "distance_to", LuaDistanceTo);
+    g_ScriptingSystem->RegisterScriptFunction( "is_near_object", LuaIsNearObject);
+    g_ScriptingSystem->RegisterScriptFunction( "get_npc_position", LuaGetNPCPosition);
+    g_ScriptingSystem->RegisterScriptFunction( "find_nearest_object_of_shape", LuaFindNearestObjectOfShape);
+    g_ScriptingSystem->RegisterScriptFunction( "find_nearest_bed", LuaFindNearestBed);
+    g_ScriptingSystem->RegisterScriptFunction( "find_nearest_chair", LuaFindNearestChair);
+    g_ScriptingSystem->RegisterScriptFunction( "get_current_animation", LuaGetCurrentAnimation);
+    g_ScriptingSystem->RegisterScriptFunction( "play_animation", LuaPlayAnimation);
+    g_ScriptingSystem->RegisterScriptFunction( "is_sleeping", LuaIsSleeping);
+    g_ScriptingSystem->RegisterScriptFunction( "is_sitting", LuaIsSitting);
+    g_ScriptingSystem->RegisterScriptFunction( "walk_to_object", LuaWalkToObject);
+    g_ScriptingSystem->RegisterScriptFunction( "walk_to_position", LuaWalkToPosition);
+    g_ScriptingSystem->RegisterScriptFunction( "get_current_hour", LuaGetCurrentHour);
+    g_ScriptingSystem->RegisterScriptFunction( "get_current_minute", LuaGetCurrentMinute);
 
     cout << "Registered all Lua functions\n";
 }

@@ -8,7 +8,7 @@
           0
         ],
         "size": [
-          68,
+          99,
           75
         ],
         "backgroundColor": [
@@ -21,7 +21,7 @@
         "layout": "table",
         "horzPadding": 5,
         "vertPadding": 5,
-        "columns": 2,
+        "columns": 3,
         "font": "babyblocks.ttf",
         "fontSize": 30,
         "elements": [
@@ -35,7 +35,7 @@
             ],
             "sprite": {
               "spritesheet": "GUI/guielements.png",
-              "x": 249,
+              "x": 250,
               "y": 0,
               "w": 30,
               "h": 30
@@ -107,6 +107,29 @@
               "x": 220,
               "y": 0,
               "w": 23,
+              "h": 30
+            },
+            "color": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "scale": 1.0
+          },
+          {
+            "name": "NPC_LIST_BUTTON",
+            "type": "iconbutton",
+            "hoverText":"Show NPC List",
+            "position": [
+              -1,
+              -1
+            ],
+            "sprite": {
+              "spritesheet": "GUI/guielements.png",
+              "x": 280,
+              "y": 0,
+              "w": 30,
               "h": 30
             },
             "color": [

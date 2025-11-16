@@ -167,6 +167,7 @@ set(SOURCES
     Source/LoadingState.cpp
     Source/Main.cpp
     Source/MainState.cpp
+    Source/NpcListWindow.cpp
     Source/OptionsState.cpp
     Source/Pathfinding.cpp
     Source/ShapeData.cpp

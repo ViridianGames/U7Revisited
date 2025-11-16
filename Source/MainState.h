@@ -14,6 +14,7 @@ class GuiElement;
 class GumpManager;
 class GhostWindow;
 class GumpPaperdoll;
+class NpcListWindow;
 
 enum class MainStateModes
 {
@@ -72,6 +73,7 @@ public:
 	void HandleShapeTableButton();
 	void HandleGhostButton();
 	void HandleRenameButton();
+	void HandleNPCListButton();
 	void UpdateDebugToolsWindow();
 
 	float m_waitTime = 0;
@@ -86,6 +88,9 @@ public:
 
 	// Debug tools window (always visible in sandbox mode)
 	GhostWindow* m_debugToolsWindow;
+
+	// NPC list window for debugging/navigation
+	NpcListWindow* m_npcListWindow;
 
 	std::string m_luaFunction;
 

@@ -19,6 +19,7 @@
 #include "Pathfinding.h"
 #include "Ghost/GhostWindow.h"
 #include "Ghost/GhostSerializer.h"
+#include "NpcListWindow.h"
 
 #include <list>
 #include <string>
@@ -119,6 +120,13 @@ void MainState::Init(const string& configfile)
 		m_debugToolsWindow = nullptr;
 	}
 
+	// Initialize NPC list window
+	m_npcListWindow = new NpcListWindow(g_ResourceManager.get(), GetScreenWidth(), GetScreenHeight());
+	if (!m_npcListWindow || !m_npcListWindow->IsVisible())
+	{
+		m_npcListWindow->Hide();  // Start hidden
+	}
+
 	SetupGame();
 }
 
@@ -188,6 +196,13 @@ void MainState::Shutdown()
 	{
 		delete m_debugToolsWindow;
 		m_debugToolsWindow = nullptr;
+	}
+
+	// Clean up NPC list window
+	if (m_npcListWindow)
+	{
+		delete m_npcListWindow;
+		m_npcListWindow = nullptr;
 	}
 
 	UnloadRenderTexture(g_guiRenderTarget);
@@ -996,6 +1011,12 @@ void MainState::Update()
 		UpdateDebugToolsWindow();
 	}
 
+	// Update NPC list window
+	if (m_npcListWindow)
+	{
+		m_npcListWindow->Update();
+	}
+
 	// Process game input
 	UpdateInput();
 
@@ -1380,7 +1401,7 @@ void MainState::Draw()
 		//DrawOutlinedText(g_SmallFont, "Objects: " + to_string(g_ObjectList.size()) + " Visible: " + to_string(g_sortedVisibleObjects.size()), Vector2{ 10, 320 }, g_SmallFont->baseSize, 1, WHITE);
 	}
 	// Draw bark text if active
-	if (m_barkDuration > 0 && m_barkObject != nullptr)
+	if (m_barkDuration > 0 && m_barkObject != nullptr && m_barkObject->m_shapeData != nullptr)
 	{
 		// If auto-update is enabled, regenerate bark text from current object state
 		if (m_barkAutoUpdate)
@@ -1445,6 +1466,12 @@ void MainState::Draw()
 	if (m_debugToolsWindow)
 	{
 		m_debugToolsWindow->Draw();
+	}
+
+	// Draw NPC list window if valid
+	if (m_npcListWindow)
+	{
+		m_npcListWindow->Draw();
 	}
 
 	// Draw cursor AFTER dialog so it appears on top
@@ -1750,6 +1777,31 @@ void MainState::HandleRenameButton()
 	Log("PushState(STATE_SCRIPTRENAMESTATE) called");
 }
 
+void MainState::HandleNPCListButton()
+{
+	Log("HandleNPCListButton called");
+
+	// Clear hover text from debug tools window
+	if (m_debugToolsWindow)
+	{
+		m_debugToolsWindow->ClearHoverText();
+	}
+
+	// Toggle NPC list window visibility
+	if (m_npcListWindow)
+	{
+		m_npcListWindow->Toggle();
+		if (m_npcListWindow->IsVisible())
+		{
+			AddConsoleString("NPC list window opened");
+		}
+		else
+		{
+			AddConsoleString("NPC list window closed");
+		}
+	}
+}
+
 void MainState::UpdateDebugToolsWindow()
 {
 	if (!m_debugToolsWindow || !m_debugToolsWindow->IsVisible())
@@ -1815,6 +1867,21 @@ void MainState::UpdateDebugToolsWindow()
 			if (button->m_Clicked)
 			{
 				HandleRenameButton();
+			}
+		}
+	}
+
+	// Check NPC_LIST_BUTTON
+	int npcListButtonID = m_debugToolsWindow->GetElementID("NPC_LIST_BUTTON");
+	if (npcListButtonID != -1)
+	{
+		auto elem = gui->GetElement(npcListButtonID);
+		if (elem && elem->m_Type == GUI_ICONBUTTON)
+		{
+			auto button = static_cast<GuiIconButton*>(elem.get());
+			if (button->m_Clicked)
+			{
+				HandleNPCListButton();
 			}
 		}
 	}
