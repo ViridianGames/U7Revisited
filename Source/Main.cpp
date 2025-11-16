@@ -36,6 +36,41 @@
 
 #include "rlgl.h"
 
+#ifdef _WIN32
+// Forward declare Windows types and functions we need
+typedef void* HWND;
+typedef void* HICON;
+typedef void* HMODULE;
+typedef void* HINSTANCE;
+#ifdef _WIN64
+typedef long long LONG_PTR;
+#else
+typedef long LONG_PTR;
+#endif
+typedef LONG_PTR LRESULT;
+typedef LONG_PTR LPARAM;
+typedef unsigned int UINT;
+
+#define MAKEINTRESOURCE(i) ((char*)((unsigned long long)((unsigned short)(i))))
+#define WM_SETICON 0x0080
+#define ICON_SMALL 0
+#define ICON_BIG 1
+#define IMAGE_ICON 1
+#define LR_DEFAULTSIZE 0x0040
+#define LR_SHARED 0x8000
+
+extern "C" {
+	__declspec(dllimport) HWND __stdcall GetActiveWindow(void);
+	__declspec(dllimport) HICON __stdcall LoadIconA(HINSTANCE hInstance, const char* lpIconName);
+	__declspec(dllimport) HMODULE __stdcall GetModuleHandleA(const char* lpModuleName);
+	__declspec(dllimport) LRESULT __stdcall SendMessageA(HWND hWnd, UINT Msg, LPARAM wParam, LPARAM lParam);
+}
+
+#define LoadIcon LoadIconA
+#define GetModuleHandle GetModuleHandleA
+#define SendMessage SendMessageA
+#endif
+
 using namespace std;
 using namespace std::filesystem;
 
@@ -45,6 +80,43 @@ int main(int argv, char** argc)
    {
       g_Engine = make_unique<Engine>();
       g_Engine->Init("Data/engine.cfg");
+
+      // Set window icon - EXACT copy of Ghost's working code
+      #ifdef _WIN32
+      HWND hwnd = GetActiveWindow();
+      if (hwnd)
+      {
+         // Load icon from exe resources (ID 1 is what we used in u7revisited.rc)
+         HICON hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(1));
+         if (hIcon)
+         {
+            SendMessage(hwnd, WM_SETICON, ICON_BIG, (LPARAM)hIcon);
+            SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)hIcon);
+            Log("Window icon set successfully");
+         }
+         else
+         {
+            Log("ERROR: Failed to load icon from resources");
+         }
+      }
+      else
+      {
+         Log("ERROR: Failed to get window handle for icon");
+      }
+      #else
+      // On Linux, load icon from file using raylib
+      Image icon = LoadImage("Redist/Images/u7_logo.png");
+      if (icon.data != nullptr)
+      {
+         SetWindowIcon(icon);
+         UnloadImage(icon);
+         Log("Window icon set successfully");
+      }
+      else
+      {
+         Log("ERROR: Failed to load icon from file");
+      }
+      #endif
 
       g_alphaDiscard = LoadShader(NULL, "Data/Shaders/alphaDiscard.fs");
 

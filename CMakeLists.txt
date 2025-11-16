@@ -197,7 +197,10 @@ source_group("Source Files" REGULAR_EXPRESSION "Source/[^/]+\\.cpp")
 # ============================================================================
 # Executable
 # ============================================================================
-add_executable(U7Revisited WIN32 ${SOURCES})
+add_executable(U7Revisited WIN32
+    ${SOURCES}
+    $<$<PLATFORM_ID:Windows>:Source/u7revisited.rc>
+)
 
 # Build configuration specific definitions
 target_compile_definitions(U7Revisited PRIVATE
