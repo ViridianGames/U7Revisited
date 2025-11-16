@@ -54,15 +54,15 @@ public:
 
 	static constexpr ContainerData g_containerData[] =
 	{
-		{ { 9, 18 },    { 228, 132 }, { 72, 48 },   { 114, 108 }, { 0, 0 }, ContainerType::CONTAINER_BOX },
-		{ { 242, 18 },  { 254, 102 }, { 82, 30 },   { 128, 48 },  { 0, 0 }, ContainerType::CONTAINER_CRATE },
-		{ { 1452, 18 }, { 198, 178 }, { 42, 40 },   { 96, 98 },   { 0, 0 }, ContainerType::CONTAINER_BARREL },
-		{ { 9, 264 },   { 234, 146 }, { 82, 34 },   { 90, 58 },   { 0, 0 }, ContainerType::CONTAINER_BAG },
-		{ { 250, 266 }, { 218, 154 }, { 68, 58 },   { 114, 64 },  { 0, 0 }, ContainerType::CONTAINER_BACKPACK },
-		{ { 474, 264 }, { 212, 120 }, { 74, 52 },   { 100, 40 },   { 0, 0 }, ContainerType::CONTAINER_BASKET },
-		{ { 1104, 264 },{ 176, 106 }, { 64, 34 },   { 92, 54 },   { 0, 0 }, ContainerType::CONTAINER_TREASURECHEST },
-		{ { 10, 428 },   { 204, 104 }, { 66, 24 },   { 102, 50 },  { 0, 0 }, ContainerType::CONTAINER_DRAWER },
-		{ { 10, 864 },   { 210, 158 }, { 68, 77 },   { 114, 56 },  { 0, 0 }, ContainerType::CONTAINER_CORPSE }
+		{ { 9, 18 },    { 228, 132 }, { 72, 48 },   { 114, 108 }, { 4, 34 }, ContainerType::CONTAINER_BOX },
+		{ { 242, 18 },  { 254, 102 }, { 82, 30 },   { 128, 48 },  { 4, 50 }, ContainerType::CONTAINER_CRATE },
+		{ { 1452, 18 }, { 198, 178 }, { 42, 40 },   { 96, 98 },   { 9, 134 }, ContainerType::CONTAINER_BARREL },
+		{ { 9, 264 },   { 234, 146 }, { 82, 34 },   { 90, 58 },   { 4, 44 }, ContainerType::CONTAINER_BAG },
+		{ { 250, 266 }, { 218, 154 }, { 68, 58 },   { 114, 64 },  { 4, 34 }, ContainerType::CONTAINER_BACKPACK },
+		{ { 474, 264 }, { 212, 120 }, { 74, 52 },   { 100, 40 },   { 4, 34 }, ContainerType::CONTAINER_BASKET },
+		{ { 1104, 264 },{ 176, 106 }, { 64, 34 },   { 92, 54 },   { 4, 23 }, ContainerType::CONTAINER_TREASURECHEST },
+		{ { 10, 428 },   { 204, 104 }, { 66, 24 },   { 102, 50 },  { 4, 22 }, ContainerType::CONTAINER_DRAWER },
+		{ { 10, 864 },   { 210, 158 }, { 68, 77 },   { 114, 56 },  { 4, 60 }, ContainerType::CONTAINER_CORPSE }
 	};
 
 	// static constexpr ContainerData g_containerData[] =

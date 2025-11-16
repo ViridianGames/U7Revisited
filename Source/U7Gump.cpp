@@ -63,6 +63,7 @@ void Gump::OnEnter()
 	int posy = int(g_NonVitalRNG->Random(150));
 
 	m_containerObject = GetObjectFromID(m_containerId);
+	int x = 4, y = 34;
 
 	//  Find out what kind of container this is and set the gump background accordingly
 	switch(m_containerObject->m_ObjectType)
@@ -96,7 +97,7 @@ void Gump::OnEnter()
 		case 283: //  Drawer
 			m_containerData = g_containerData[static_cast<int>(ContainerType::CONTAINER_DRAWER)];
 			break;
-		case 1000: //  Corpse
+		case 507: //  Corpse
 			m_containerData = g_containerData[static_cast<int>(ContainerType::CONTAINER_CORPSE)];
 			break;
 		default:
@@ -108,9 +109,11 @@ void Gump::OnEnter()
 	m_gui.SetLayout(posx, posy, 220, 150, g_DrawScale, Gui::GUIP_USE_XY);
 	m_gui.AddSprite(1004, 0, 0,
 		make_shared<Sprite>(g_ResourceManager->GetTexture("Images/GUI/biggumps.png", false), m_containerData.m_texturePos.x, m_containerData.m_texturePos.y, m_containerData.m_textureSize.x, m_containerData.m_textureSize.y), 1, 1, Color{255, 255, 255, 255});
-	m_gui.AddIconButton(1005, 4, 34, g_gumpCheckmarkUp, g_gumpCheckmarkDown, g_gumpCheckmarkUp, "", g_SmallFont.get(), Color{255, 255, 255, 255}, 1, 0, 1, false);
+	int checkX = m_containerData.m_checkMarkOffset.x;
+	int checkY = m_containerData.m_checkMarkOffset.y;
+	m_gui.AddIconButton(1005, checkX, checkY, g_gumpCheckmarkUp, g_gumpCheckmarkDown, g_gumpCheckmarkUp, "", g_SmallFont.get(), Color{255, 255, 255, 255}, 1, 0, 1, false);
 
-	m_gui.AddStretchButton(1006, 6, 18, 28, "Sort",
+	m_gui.AddStretchButton(1006, checkX + 2, checkY - 16, 28, "Sort",
 		g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
 		g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM);
 
