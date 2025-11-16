@@ -317,9 +317,10 @@ void MainState::UpdateInput()
 		{
 			g_gumpManager->m_GumpList.back().get()->SetIsDead(true);
 		}
-		else
+		else if (!g_Engine->m_askedToExit)
 		{
-			g_Engine->m_Done = true;
+			g_Engine->m_askedToExit = true;
+			g_StateMachine->PushState(STATE_ASKEXITSTATE);
 		}
 	}
 
