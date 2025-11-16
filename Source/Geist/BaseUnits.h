@@ -27,7 +27,10 @@ class Config;
 class Unit2D : public Object
 {
 public:
-	Unit2D() {};
+	Unit2D()
+		: m_Pos({ 0.0f, 0.0f })
+		, m_UnitConfig(nullptr)
+	{}
 
 	virtual void Init() { Init(std::string("")); }
 	virtual void Init(char* data) { Init(std::string(data)); }
@@ -52,7 +55,10 @@ protected:
 class Unit3D : public Object
 {
 public:
-	Unit3D() {};
+	Unit3D()
+		: m_Pos({ 0.0f, 0.0f, 0.0f })
+		, m_UnitConfig(nullptr)
+	{}
 
 	virtual void Init() { Init(std::string("")); }
 	virtual void Init(char* data) { Init(std::string(data)); }

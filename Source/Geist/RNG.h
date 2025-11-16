@@ -19,7 +19,7 @@
 class RNG
 {
 public:
-	RNG() {};
+	RNG() : m_SeedTable{0} {}
 	void          SeedRNG(unsigned int seed);
 	unsigned int  Random(unsigned int range);
 	float         RandomFloat(float range);

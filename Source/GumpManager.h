@@ -22,7 +22,14 @@ class Gump;
 class GumpManager : public Object
 {
 public:
-	GumpManager() {};
+	GumpManager()
+		: m_draggingObject(false)
+		, m_sourceGump(nullptr)
+		, m_draggedObjectId(-1)
+		, m_sourceSlotIndex(-1)
+		, m_isMouseOverGump(false)
+		, m_gumpUnderMouse(nullptr)
+	{}
 
 	virtual void Init() { Init(std::string("")); }
 	virtual void Init(char* data) { Init(std::string(data)); }
