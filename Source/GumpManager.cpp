@@ -429,6 +429,7 @@ void GumpManager::Update()
 						}
 						object->m_isContained = true;
 						g_ResourceManager->PlaySound("error.wav");
+						g_mainState->ShowErrorCursor();
 						returnedToSource = true;
 					}
 				}
@@ -438,6 +439,7 @@ void GumpManager::Update()
 					m_sourceGump->m_containerObject->AddObjectToInventory(object->m_ID);
 					object->m_isContained = true;
 					g_ResourceManager->PlaySound("error.wav");
+					g_mainState->ShowErrorCursor();
 					returnedToSource = true;
 					Log("Returned item to source container");
 				}
@@ -452,6 +454,7 @@ void GumpManager::Update()
 				{
 					object->SetPos(m_draggedObjectOriginalPos);
 					g_ResourceManager->PlaySound("error.wav");
+					g_mainState->ShowErrorCursor();
 					Log("Returned item to original world position (drop failed)");
 				}
 				else

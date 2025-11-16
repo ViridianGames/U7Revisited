@@ -49,6 +49,7 @@ void MainState::Init(const string& configfile)
 	GenTextureMipmaps(m_MinimapArrow);
 
 	m_usePointer = g_ResourceManager->GetTexture("Images/usepointer.png");
+	m_errorCursor = g_ResourceManager->GetTexture("Images/error.png");
 
 	m_Gui = new Gui();
 
@@ -803,6 +804,12 @@ void MainState::Bark(U7Object* object, const std::string& text, float duration)
 
 void MainState::Update()
 {
+	// Decrement error cursor frame counter
+	if (m_errorCursorFramesRemaining > 0)
+	{
+		m_errorCursorFramesRemaining--;
+	}
+
 	UpdateTime();
 
 	// Check if schedule time has changed and populate pathfinding queue
@@ -1438,7 +1445,12 @@ void MainState::Draw()
 	// Draw cursor AFTER dialog so it appears on top
 	if (!m_paused && m_showUIElements)
 	{
-		if (m_objectSelectionMode)
+		if (m_errorCursorFramesRemaining > 0)
+		{
+			// Show error cursor for 5 frames after drag/drop error
+			DrawTextureEx(*m_errorCursor, { float(GetMouseX()), float(GetMouseY()) }, 0, g_DrawScale, WHITE);
+		}
+		else if (m_objectSelectionMode)
 		{
 			DrawTextureEx(*g_objectSelectCursor, { float(GetMouseX()), float(GetMouseY()) }, 0, g_DrawScale, WHITE);
 		}

@@ -65,6 +65,8 @@ public:
 
 	void Wait(float seconds); // Wait while not blocking, called by Lua scripts.
 
+	void ShowErrorCursor() { m_errorCursorFramesRemaining = 5; }  // Show error cursor for 5 frames
+
 	// Debug tools window button handlers
 	void HandleScheduleButton();
 	void HandleShapeTableButton();
@@ -117,9 +119,13 @@ public:
    Texture* m_Minimap;
    Texture* m_MinimapArrow;
 	Texture* m_usePointer;
-   
+	Texture* m_errorCursor;
+
 
    bool m_showObjects;
+
+	// Error cursor display (shown for 5 frames after drag/drop error)
+	int m_errorCursorFramesRemaining = 0;
 
 	bool m_objectSelectionMode = false;
 
