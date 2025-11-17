@@ -51,6 +51,7 @@ private:
 	std::vector<NPCListEntry> m_filteredNPCs;  // Filtered by search
 	std::string m_lastSearchText;  // Track search text changes
 	SortMode m_sortMode;  // Current sort mode
+	unsigned int m_lastScheduleTime;  // Track schedule changes
 };
 
 #endif

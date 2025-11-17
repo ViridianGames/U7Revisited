@@ -33,7 +33,7 @@ function activity_sit(npc_id)
 
     -- At chair but not sitting - sit down
     debug_print(npc_name .. " sitting down")
-    play_animation(npc_id, 0, 8)  -- Frame 8 = sitting
+    play_animation(npc_id, 0, 26)  -- Frame 26 = sitting
 
     -- Stay sitting (yield forever until activity changes)
     while true do

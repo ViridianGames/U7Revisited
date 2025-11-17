@@ -4,23 +4,21 @@ function activity_wander(npc_id)
     local npc_name = get_npc_name(npc_id)
     debug_print(npc_name .. " wandering")
 
-    -- Get current position as anchor point
-    local anchor_x, anchor_y, anchor_z = get_npc_position(npc_id)
-
     while true do
-        -- Pick a random destination within 10 tiles of anchor
-        local offset_x = (math.random() * 20.0) - 10.0
-        local offset_z = (math.random() * 20.0) - 10.0
-        local dest_x = anchor_x + offset_x
-        local dest_z = anchor_z + offset_z
+        -- Find a random walkable destination within 10 tiles
+        local dest_x, dest_y, dest_z = find_random_walkable(npc_id, 10.0)
 
-        -- Walk to random destination
-        walk_to_position(npc_id, dest_x, anchor_y, dest_z)
+        if dest_x and dest_y and dest_z then
+            -- Found a valid destination - walk to it
+            walk_to_position(npc_id, dest_x, dest_y, dest_z)
 
-        -- Wait a bit at destination (random 2-5 seconds worth of frames)
-        local wait_frames = math.random(120, 300)  -- Assuming ~60 fps
-        for i = 1, wait_frames do
-            coroutine.yield()
+            -- Wait a bit at destination (random 2-5 seconds)
+            local wait_time = 2.0 + (math.random() * 3.0)
+            wait(wait_time)
+        else
+            -- Couldn't find a walkable position - just stand still for a bit
+            debug_print(npc_name .. " couldn't find walkable position, standing")
+            wait(1.0)
         end
     end
 end

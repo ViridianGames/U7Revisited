@@ -304,6 +304,13 @@ function get_npc_property(npc_id, property_id) end
 ---@param value integer The new value
 function set_npc_property(npc_id, property_id, value) end
 
+---Gets an NPC's current position
+---@param npc_id integer The NPC to query
+---@return number x X coordinate
+---@return number y Y coordinate
+---@return number z Z coordinate
+function get_npc_position(npc_id) end
+
 ---Sets an NPC's position
 ---@param npc_id integer The NPC to move
 ---@param x integer X coordinate
@@ -317,6 +324,59 @@ function set_npc_pos(npc_id, x, y, z) end
 ---@param y integer Target Y coordinate
 ---@param z integer Target Z coordinate
 function set_npc_dest(npc_id, x, y, z) end
+
+---Walks an NPC to an object using A* pathfinding (avoids obstacles)
+---@param npc_id integer The NPC to move
+---@param object_id integer The target object ID
+function walk_to_object(npc_id, object_id) end
+
+---Walks an NPC to a position using A* pathfinding (avoids obstacles)
+---@param npc_id integer The NPC to move
+---@param x number Target X coordinate
+---@param y number Target Y coordinate
+---@param z number Target Z coordinate
+function walk_to_position(npc_id, x, y, z) end
+
+---Finds the nearest bed to an NPC
+---@param npc_id integer The NPC to search from
+---@return integer|nil object_id The object ID of the nearest bed, or nil if none found
+function find_nearest_bed(npc_id) end
+
+---Finds the nearest chair to an NPC
+---@param npc_id integer The NPC to search from
+---@return integer|nil object_id The object ID of the nearest chair, or nil if none found
+function find_nearest_chair(npc_id) end
+
+---Finds the nearest object matching any of the specified shape IDs
+---@param npc_id integer The NPC to search from
+---@param shape_ids table Array of shape IDs to search for (e.g., {696, 1011})
+---@return integer|nil object_id The object ID of the nearest matching object, or nil if none found
+function find_nearest_shape(npc_id, shape_ids) end
+
+---Finds a random walkable position within radius of an NPC
+---Ensures the position is both walkable and pathfinding can reach it
+---@param npc_id integer The NPC to search from
+---@param radius number The search radius in tiles
+---@return number|nil x X coordinate, or nil if no valid position found
+---@return number|nil y Y coordinate
+---@return number|nil z Z coordinate
+function find_random_walkable(npc_id, radius) end
+
+---Calculates the distance between an NPC and an object
+---@param npc_id integer The NPC to measure from
+---@param object_id integer The target object ID
+---@return number distance The distance in tiles
+function distance_to(npc_id, object_id) end
+
+---Checks if an NPC is currently sitting (frameY == 26)
+---@param npc_id integer The NPC to check
+---@return boolean is_sitting True if the NPC is in sitting animation
+function is_sitting(npc_id) end
+
+---Checks if an NPC is currently sleeping/lying down (frameY == 16)
+---@param npc_id integer The NPC to check
+---@return boolean is_sleeping True if the NPC is in sleeping animation
+function is_sleeping(npc_id) end
 
 ---Sets an NPC's animation frame
 ---@param npc_id integer The NPC to modify
@@ -449,6 +509,14 @@ function get_time_hour() end
 ---@return integer minute The current minute
 function get_time_minute() end
 
+---Gets the current game hour (0-23) - Working version
+---@return integer hour The current hour
+function get_current_hour() end
+
+---Gets the current game minute (0-59) - Working version
+---@return integer minute The current minute
+function get_current_minute() end
+
 ---Gets the current schedule time period
 ---@return integer schedule The schedule period ID
 function get_schedule_time() end
@@ -538,7 +606,7 @@ function jump_camera_angle(angle) end
 ---Sets an NPC's animation frames (sprite position in spritesheet)
 ---@param npc_id integer The NPC to animate
 ---@param frameX integer The X frame index in the sprite sheet
----@param frameY integer The Y frame index in the sprite sheet (0=standing, 8=sitting, 16=lying down)
+---@param frameY integer The Y frame index in the sprite sheet (0=standing, 16=lying down, 26=sitting)
 function play_animation(npc_id, frameX, frameY) end
 
 ---Sets a model's animation frame

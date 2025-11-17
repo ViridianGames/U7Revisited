@@ -12,6 +12,7 @@
 #include "Logging.h"
 #include "U7GumpBook.h"
 #include "MainState.h"
+#include "Pathfinding.h"
 
 extern "C"
 {
@@ -4083,12 +4084,69 @@ static int LuaFindNearestObjectOfShape(lua_State *L)
 }
 
 // find_nearest_bed(npc_id) -> object_id or nil
-// Beds are shape 696 in Ultima 7
+// Beds are shapes 696, 1011 in Ultima 7
 static int LuaFindNearestBed(lua_State *L)
 {
     int npc_id = luaL_checkinteger(L, 1);
-    lua_pushinteger(L, 696);  // Bed shape
-    return LuaFindNearestObjectOfShape(L);
+
+    if (g_NPCData.find(npc_id) == g_NPCData.end())
+    {
+        lua_pushnil(L);
+        return 1;
+    }
+
+    U7Object* npc = g_objectList[g_NPCData[npc_id]->m_objectID].get();
+    if (!npc)
+    {
+        lua_pushnil(L);
+        return 1;
+    }
+
+    Vector3 npcPos = npc->GetPos();
+    float minDistance = 999999.0f;
+    int nearestObjectId = -1;
+
+    // Check for multiple bed shapes
+    const int bedShapes[] = {696, 1011};
+
+    for (auto& objPair : g_objectList)
+    {
+        U7Object* obj = objPair.second.get();
+        if (obj)
+        {
+            // Check if this object is any of the bed shapes
+            bool isBed = false;
+            for (int bedShape : bedShapes)
+            {
+                if (obj->m_ObjectType == bedShape)
+                {
+                    isBed = true;
+                    break;
+                }
+            }
+
+            if (isBed)
+            {
+                Vector3 objPos = obj->GetPos();
+                float distance = Vector3Distance(npcPos, objPos);
+                if (distance < minDistance)
+                {
+                    minDistance = distance;
+                    nearestObjectId = obj->m_ID;
+                }
+            }
+        }
+    }
+
+    if (nearestObjectId >= 0)
+    {
+        lua_pushinteger(L, nearestObjectId);
+    }
+    else
+    {
+        lua_pushnil(L);
+    }
+    return 1;
 }
 
 // find_nearest_chair(npc_id) -> object_id or nil
@@ -4096,8 +4154,223 @@ static int LuaFindNearestBed(lua_State *L)
 static int LuaFindNearestChair(lua_State *L)
 {
     int npc_id = luaL_checkinteger(L, 1);
-    lua_pushinteger(L, 873);  // Chair shape
-    return LuaFindNearestObjectOfShape(L);
+
+    if (g_NPCData.find(npc_id) == g_NPCData.end())
+    {
+        lua_pushnil(L);
+        return 1;
+    }
+
+    U7Object* npc = g_objectList[g_NPCData[npc_id]->m_objectID].get();
+    if (!npc)
+    {
+        lua_pushnil(L);
+        return 1;
+    }
+
+    Vector3 npcPos = npc->GetPos();
+    float minDistance = 999999.0f;
+    int nearestObjectId = -1;
+
+    // Check for multiple chair shapes (add more as needed)
+    const int chairShapes[] = {873, 897};
+
+    for (auto& objPair : g_objectList)
+    {
+        U7Object* obj = objPair.second.get();
+        if (obj)
+        {
+            // Check if this object is any of the chair shapes
+            bool isChair = false;
+            for (int chairShape : chairShapes)
+            {
+                if (obj->m_ObjectType == chairShape)
+                {
+                    isChair = true;
+                    break;
+                }
+            }
+
+            if (isChair)
+            {
+                Vector3 objPos = obj->GetPos();
+                float distance = Vector3Distance(npcPos, objPos);
+                if (distance < minDistance)
+                {
+                    minDistance = distance;
+                    nearestObjectId = obj->m_ID;
+                }
+            }
+        }
+    }
+
+    if (nearestObjectId >= 0)
+    {
+        lua_pushinteger(L, nearestObjectId);
+    }
+    else
+    {
+        lua_pushnil(L);
+    }
+    return 1;
+}
+
+// find_nearest_shape(npc_id, shape_table) -> object_id or nil
+// Generic function to find nearest object matching any shape ID in the table
+// shape_table is a Lua table of shape IDs: {696, 1011, ...}
+static int LuaFindNearestShape(lua_State *L)
+{
+    int npc_id = luaL_checkinteger(L, 1);
+
+    // Second argument must be a table
+    if (!lua_istable(L, 2))
+    {
+        luaL_error(L, "find_nearest_shape: second argument must be a table of shape IDs");
+        return 0;
+    }
+
+    if (g_NPCData.find(npc_id) == g_NPCData.end())
+    {
+        lua_pushnil(L);
+        return 1;
+    }
+
+    U7Object* npc = g_objectList[g_NPCData[npc_id]->m_objectID].get();
+    if (!npc)
+    {
+        lua_pushnil(L);
+        return 1;
+    }
+
+    // Read shape IDs from Lua table into a vector
+    std::vector<int> shapeIds;
+    lua_pushnil(L);  // First key
+    while (lua_next(L, 2) != 0)
+    {
+        // Key is at -2, value is at -1
+        if (lua_isnumber(L, -1))
+        {
+            shapeIds.push_back(lua_tointeger(L, -1));
+        }
+        lua_pop(L, 1);  // Remove value, keep key for next iteration
+    }
+
+    if (shapeIds.empty())
+    {
+        lua_pushnil(L);
+        return 1;
+    }
+
+    Vector3 npcPos = npc->GetPos();
+    float minDistance = 999999.0f;
+    int nearestObjectId = -1;
+
+    // Search through all objects
+    for (auto& objPair : g_objectList)
+    {
+        U7Object* obj = objPair.second.get();
+        if (obj)
+        {
+            // Check if this object matches any of the shape IDs
+            bool matchesShape = false;
+            for (int shapeId : shapeIds)
+            {
+                if (obj->m_ObjectType == shapeId)
+                {
+                    matchesShape = true;
+                    break;
+                }
+            }
+
+            if (matchesShape)
+            {
+                Vector3 objPos = obj->GetPos();
+                float distance = Vector3Distance(npcPos, objPos);
+                if (distance < minDistance)
+                {
+                    minDistance = distance;
+                    nearestObjectId = obj->m_ID;
+                }
+            }
+        }
+    }
+
+    if (nearestObjectId >= 0)
+    {
+        lua_pushinteger(L, nearestObjectId);
+    }
+    else
+    {
+        lua_pushnil(L);
+    }
+    return 1;
+}
+
+// find_random_walkable(npc_id, radius) -> x, y, z or nil
+// Finds a random walkable position within radius tiles of the NPC
+// Ensures the position is walkable AND pathfinding can reach it
+static int LuaFindRandomWalkable(lua_State *L)
+{
+    int npc_id = luaL_checkinteger(L, 1);
+    float radius = (float)luaL_checknumber(L, 2);
+
+    if (g_NPCData.find(npc_id) == g_NPCData.end())
+    {
+        lua_pushnil(L);
+        return 1;
+    }
+
+    U7Object* npc = g_objectList[g_NPCData[npc_id]->m_objectID].get();
+    if (!npc)
+    {
+        lua_pushnil(L);
+        return 1;
+    }
+
+    extern PathfindingGrid* g_pathfindingGrid;
+    extern AStar* g_aStar;
+
+    if (!g_pathfindingGrid || !g_aStar)
+    {
+        lua_pushnil(L);
+        return 1;
+    }
+
+    Vector3 npcPos = npc->GetPos();
+    int anchorX = (int)npcPos.x;
+    int anchorZ = (int)npcPos.z;
+
+    // Try up to 50 random positions
+    for (int attempt = 0; attempt < 50; attempt++)
+    {
+        // Pick random offset within radius
+        float offsetX = ((float)rand() / RAND_MAX * 2.0f - 1.0f) * radius;
+        float offsetZ = ((float)rand() / RAND_MAX * 2.0f - 1.0f) * radius;
+
+        int targetX = anchorX + (int)offsetX;
+        int targetZ = anchorZ + (int)offsetZ;
+
+        // Check if position is walkable
+        if (!g_pathfindingGrid->IsPositionWalkable(targetX, targetZ))
+            continue;
+
+        // Check if pathfinding can find a route to it
+        Vector3 targetPos = {(float)targetX, npcPos.y, (float)targetZ};
+        std::vector<Vector3> path = g_aStar->FindPath(npcPos, targetPos, g_pathfindingGrid);
+
+        if (!path.empty())
+        {
+            // Found a valid, reachable position
+            lua_pushnumber(L, (float)targetX);
+            lua_pushnumber(L, npcPos.y);
+            lua_pushnumber(L, (float)targetZ);
+            return 3;
+        }
+    }
+
+    // Failed to find a walkable position after 50 attempts
+    lua_pushnil(L);
+    return 1;
 }
 
 // get_current_animation(npc_id) -> frameX, frameY
@@ -4189,8 +4462,8 @@ static int LuaIsSitting(lua_State *L)
         return 1;
     }
 
-    // Frame 8 is the sitting animation in U7
-    lua_pushboolean(L, npc->m_currentFrameY == 8);
+    // Frame 26 is the sitting animation in U7
+    lua_pushboolean(L, npc->m_currentFrameY == 26);
     return 1;
 }
 
@@ -4212,7 +4485,7 @@ static int LuaWalkToObject(lua_State *L)
     }
 
     Vector3 targetPos = target->GetPos();
-    g_objectList[g_NPCData[npc_id]->m_objectID]->SetDest(targetPos);
+    g_objectList[g_NPCData[npc_id]->m_objectID]->PathfindToDest(targetPos);
 
     return 0;
 }
@@ -4230,7 +4503,7 @@ static int LuaWalkToPosition(lua_State *L)
         return 0;
     }
 
-    g_objectList[g_NPCData[npc_id]->m_objectID]->SetDest({x, y, z});
+    g_objectList[g_NPCData[npc_id]->m_objectID]->PathfindToDest({x, y, z});
 
     return 0;
 }
@@ -4490,6 +4763,8 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction( "find_nearest_object_of_shape", LuaFindNearestObjectOfShape);
     g_ScriptingSystem->RegisterScriptFunction( "find_nearest_bed", LuaFindNearestBed);
     g_ScriptingSystem->RegisterScriptFunction( "find_nearest_chair", LuaFindNearestChair);
+    g_ScriptingSystem->RegisterScriptFunction( "find_nearest_shape", LuaFindNearestShape);
+    g_ScriptingSystem->RegisterScriptFunction( "find_random_walkable", LuaFindRandomWalkable);
     g_ScriptingSystem->RegisterScriptFunction( "get_current_animation", LuaGetCurrentAnimation);
     g_ScriptingSystem->RegisterScriptFunction( "play_animation", LuaPlayAnimation);
     g_ScriptingSystem->RegisterScriptFunction( "is_sleeping", LuaIsSleeping);

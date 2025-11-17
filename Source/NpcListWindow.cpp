@@ -46,6 +46,7 @@ NpcListWindow::NpcListWindow(ResourceManager* resourceManager, int screenWidth, 
 	: m_window(nullptr)
 	, m_lastSearchText("")
 	, m_sortMode(SortMode::BY_ID)
+	, m_lastScheduleTime(0)
 {
 	m_window = new GhostWindow("Gui/npc_list_window.ghost", "Gui",
 	                           resourceManager, screenWidth, screenHeight,
@@ -161,6 +162,15 @@ void NpcListWindow::Update()
 			HandleDoubleClick();
 			listbox->m_DoubleClicked = false;  // Reset flag
 		}
+	}
+
+	// Check if schedule time has changed - rebuild list to show updated activities
+	extern unsigned int g_scheduleTime;
+	if (g_scheduleTime != m_lastScheduleTime)
+	{
+		m_lastScheduleTime = g_scheduleTime;
+		BuildNPCList();
+		RebuildFilteredList();
 	}
 }
 
