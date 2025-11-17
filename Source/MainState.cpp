@@ -467,7 +467,7 @@ void MainState::UpdateInput()
 		g_pixelated = !g_pixelated;
 	}
 
-	if (IsKeyPressed(KEY_KP_SUBTRACT))
+	if (IsKeyPressed(KEY_KP_SUBTRACT) || IsKeyPressed(KEY_MINUS))
 	{
 		g_secsPerMinute -= 0.1f;
 		if (g_secsPerMinute < 0.1f)
@@ -480,7 +480,7 @@ void MainState::UpdateInput()
 		}
 	}
 
-	if (IsKeyPressed(KEY_KP_ADD))
+	if (IsKeyPressed(KEY_KP_ADD) || IsKeyPressed(KEY_EQUAL))
 	{
 		g_secsPerMinute += 0.1f;
 		if (g_secsPerMinute > 5.0f)

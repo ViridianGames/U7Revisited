@@ -1,6 +1,7 @@
 #include "U7LuaFuncs.h"
 
 #include <algorithm>
+#include <fstream>
 
 #include "U7Globals.h"
 #include "Geist/ScriptingSystem.h"
@@ -38,6 +39,90 @@ static int LuaConsoleLog(lua_State *L)
     const char *text = luaL_checkstring(L, 1);
     AddConsoleString(std::string(text));
     return 0;
+}
+
+// wait(seconds)
+// Waits for a specified number of real-time seconds
+static int LuaWait(lua_State *L)
+{
+    if (lua_gettop(L) != 1 || !lua_isnumber(L, 1))
+    {
+        luaL_error(L, "Expected one number argument (seconds)");
+        return 0;
+    }
+
+    double delay = lua_tonumber(L, 1);
+    if (delay < 0)
+    {
+        luaL_error(L, "Delay must be non-negative");
+        return 0;
+    }
+
+    // Get the script key from the coroutine itself, not from m_currentScript
+    // which gets overwritten by other concurrent scripts
+    std::string scriptKey = g_ScriptingSystem->GetFuncNameFromCo(L);
+
+    if (scriptKey.empty())
+    {
+        scriptKey = "default";  // Fallback if we can't identify the coroutine
+    }
+
+    g_ScriptingSystem->m_waitTimers[scriptKey] = (float)delay;
+
+    // Debug logging
+    std::ofstream debugLog("C:\\U7Revisited\\Redist\\wait_debug.txt", std::ios::app);
+    if (debugLog.is_open())
+    {
+        debugLog << "wait SET: key=" << scriptKey << " secs=" << delay << std::endl;
+        debugLog.close();
+    }
+
+    return lua_yield(L, 1);
+}
+
+// npc_wait(game_minutes)
+// Waits for a specified number of game-time minutes (scaled by g_secsPerMinute)
+// Use this for NPC activity scripts to wait based on in-game time rather than real-time
+static int LuaNPCWait(lua_State *L)
+{
+    if (lua_gettop(L) != 1 || !lua_isnumber(L, 1))
+    {
+        luaL_error(L, "Expected one number argument (game minutes)");
+        return 0;
+    }
+
+    double gameMinutes = lua_tonumber(L, 1);
+    if (gameMinutes < 0)
+    {
+        luaL_error(L, "Game minutes must be non-negative");
+        return 0;
+    }
+
+    // Convert game minutes to real-time seconds using g_secsPerMinute
+    extern float g_secsPerMinute;
+    double realSeconds = gameMinutes * g_secsPerMinute;
+
+    // Get the script key from the coroutine itself, not from m_currentScript
+    // which gets overwritten by other concurrent scripts
+    std::string scriptKey = g_ScriptingSystem->GetFuncNameFromCo(L);
+
+    if (scriptKey.empty())
+    {
+        scriptKey = "default";  // Fallback if we can't identify the coroutine
+    }
+
+    g_ScriptingSystem->m_waitTimers[scriptKey] = (float)realSeconds;
+
+    // Debug logging
+    std::ofstream debugLog("C:\\U7Revisited\\Redist\\wait_debug.txt", std::ios::app);
+    if (debugLog.is_open())
+    {
+        debugLog << "npc_wait SET: key=" << scriptKey
+                 << " mins=" << gameMinutes << " secs=" << realSeconds << std::endl;
+        debugLog.close();
+    }
+
+    return lua_yield(L, 1);
 }
 
 static int LuaAddDialogue(lua_State *L)
@@ -4348,7 +4433,23 @@ static int LuaFindRandomWalkable(lua_State *L)
     int targetZ = anchorZ + (int)offsetZ;
 
     // Only check if position is walkable - NO pathfinding (too expensive)
-    if (!g_pathfindingGrid->IsPositionWalkable(targetX, targetZ))
+    bool isWalkable = g_pathfindingGrid->IsPositionWalkable(targetX, targetZ);
+
+    // Debug logging
+    std::ofstream debugLog("C:\\U7Revisited\\Redist\\wait_debug.txt", std::ios::app);
+    if (debugLog.is_open())
+    {
+        debugLog << "find_random_walkable: npc=" << npc_id
+                 << " from=(" << anchorX << "," << anchorZ << ")"
+                 << " to=(" << targetX << "," << targetZ << ")"
+                 << " radius=" << radius
+                 << " offset=(" << offsetX << "," << offsetZ << ")"
+                 << " walkable=" << (isWalkable ? "YES" : "NO")
+                 << std::endl;
+        debugLog.close();
+    }
+
+    if (!isWalkable)
     {
         lua_pushnil(L);
         return 1;
@@ -4496,6 +4597,22 @@ static int LuaWalkToPosition(lua_State *L)
     return 0;
 }
 
+// is_npc_moving(npc_id) -> bool
+static int LuaIsNPCMoving(lua_State *L)
+{
+    int npc_id = luaL_checkinteger(L, 1);
+
+    if (g_NPCData.find(npc_id) == g_NPCData.end())
+    {
+        lua_pushboolean(L, false);
+        return 1;
+    }
+
+    bool is_moving = g_objectList[g_NPCData[npc_id]->m_objectID]->m_isMoving;
+    lua_pushboolean(L, is_moving);
+    return 1;
+}
+
 // get_current_hour() -> hour (0-23)
 static int LuaGetCurrentHour(lua_State *L)
 {
@@ -4513,6 +4630,18 @@ static int LuaGetCurrentMinute(lua_State *L)
 void RegisterAllLuaFunctions()
 {
     cout << "Registering Lua functions\n";
+
+    // Clear debug log file at startup
+    std::ofstream debugLog("C:\\U7Revisited\\Redist\\wait_debug.txt", std::ios::trunc);
+    if (debugLog.is_open())
+    {
+        debugLog << "=== New Session Started ===" << std::endl;
+        debugLog.close();
+    }
+
+    // Wait/timing functions
+    g_ScriptingSystem->RegisterScriptFunction("wait", LuaWait);
+    g_ScriptingSystem->RegisterScriptFunction("npc_wait", LuaNPCWait);
 
     // These functions handle the conversation system.
     g_ScriptingSystem->RegisterScriptFunction("switch_talk_to", LuaSwitchTalkTo);
@@ -4759,6 +4888,7 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction( "is_sitting", LuaIsSitting);
     g_ScriptingSystem->RegisterScriptFunction( "walk_to_object", LuaWalkToObject);
     g_ScriptingSystem->RegisterScriptFunction( "walk_to_position", LuaWalkToPosition);
+    g_ScriptingSystem->RegisterScriptFunction( "is_npc_moving", LuaIsNPCMoving);
     g_ScriptingSystem->RegisterScriptFunction( "get_current_hour", LuaGetCurrentHour);
     g_ScriptingSystem->RegisterScriptFunction( "get_current_minute", LuaGetCurrentMinute);
 

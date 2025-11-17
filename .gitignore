@@ -13,7 +13,8 @@
 Saves/
 Music/
 schedules.csv
-/Ghost/runlog.txt
+wait_debug.txt
+ghostlog.txt
 
 /subprojects/raylib/
 /subprojects/packagecache/

@@ -14,44 +14,6 @@ using namespace std;
 // Forward declare to access g_ScriptingSystem
 extern std::unique_ptr<ScriptingSystem> g_ScriptingSystem;
 
-// Lua wait function (unchanged)
-static int LuaWait(lua_State *L)
-{
-
-    if (lua_gettop(L) != 1 || !lua_isnumber(L, 1))
-    {
-        luaL_error(L, "Expected one number argument (seconds)");
-        return 0;
-    }
-
-    double delay = lua_tonumber(L, 1);
-    if (delay < 0)
-    {
-        luaL_error(L, "Delay must be non-negative");
-        return 0;
-    }
-
-    // Get the NPC ID from the Lua coroutine's first upvalue/argument
-    // For activity scripts, the first arg is always the NPC ID
-    std::string scriptKey = g_ScriptingSystem->m_currentScript;
-
-    // Try to get npc_id from Lua local variable at stack position 1 (first param)
-    lua_Debug ar;
-    if (lua_getstack(L, 0, &ar) && lua_getlocal(L, &ar, 1))
-    {
-        if (lua_isnumber(L, -1))
-        {
-            int npc_id = lua_tointeger(L, -1);
-            scriptKey = g_ScriptingSystem->m_currentScript + "_" + std::to_string(npc_id);
-        }
-        lua_pop(L, 1);  // Pop the local variable
-    }
-
-    g_ScriptingSystem->m_waitTimers[scriptKey] = (float)delay;
-
-    return lua_yield(L, 1);
-}
-
 ScriptingSystem::ScriptingSystem()
 {
     m_luaState = luaL_newstate();
@@ -70,7 +32,6 @@ ScriptingSystem::~ScriptingSystem()
 void ScriptingSystem::Init(const std::string& configfile)
 {
     // TODO: Load flags from save file
-    RegisterScriptFunction("wait", LuaWait);
 }
 
 void ScriptingSystem::Shutdown()
@@ -127,10 +88,19 @@ void ScriptingSystem::Update()
     // Resume all scripts whose wait timers expired
     for (const std::string& scriptKey : scriptsToResume)
     {
+        // Debug logging
+        std::ofstream debugLog("C:\\U7Revisited\\Redist\\wait_debug.txt", std::ios::app);
+        if (debugLog.is_open())
+        {
+            debugLog << "RESUME: key=" << scriptKey << std::endl;
+            debugLog.close();
+        }
+
         m_waitTimers.erase(scriptKey);
 
-        // Extract the base script name (before the "_NPCID" suffix if present)
+        // Extract the base script name and NPC ID (from the "_NPCID" suffix if present)
         std::string scriptName = scriptKey;
+        int npc_id = 0;
         size_t underscorePos = scriptKey.find_last_of('_');
         if (underscorePos != std::string::npos)
         {
@@ -145,14 +115,15 @@ void ScriptingSystem::Update()
                 }
             }
 
-            // If it's a numeric suffix, strip it to get the base script name
+            // If it's a numeric suffix, extract both the base name and NPC ID
             if (isNumeric && underscorePos > 0)
             {
                 scriptName = scriptKey.substr(0, underscorePos);
+                npc_id = std::stoi(scriptKey.substr(underscorePos + 1));
             }
         }
 
-        ResumeCoroutine(scriptName, {0});
+        ResumeCoroutine(scriptKey, {npc_id});
     }
 }
 
@@ -201,12 +172,26 @@ void ScriptingSystem::SortScripts()
 string ScriptingSystem::CallScript(const string& func_name, const vector<LuaArg>& args)
 {
     // (mostly unchanged, but replace unref/erase with CleanupCoroutine)
-    // Check if the function is loaded
+    // Extract base function name (strip per-NPC suffix like "_123" from "activity_loiter_123")
+    string base_func_name = func_name;
+    size_t last_underscore = func_name.find_last_of('_');
+    if (last_underscore != string::npos)
+    {
+        string suffix = func_name.substr(last_underscore + 1);
+        // Check if suffix is all digits (NPC ID)
+        bool all_digits = !suffix.empty() && std::all_of(suffix.begin(), suffix.end(), ::isdigit);
+        if (all_digits)
+        {
+            base_func_name = func_name.substr(0, last_underscore);
+        }
+    }
+
+    // Check if the base function is loaded
     bool valid = false;
     string path = "";
     for (auto& script : m_scriptFiles)
     {
-        if (script.first == func_name)
+        if (script.first == base_func_name)
         {
             valid = true;
             path = script.second;
@@ -216,15 +201,15 @@ string ScriptingSystem::CallScript(const string& func_name, const vector<LuaArg>
 
     if (!valid)
     {
-        string error = "Function " + func_name + " not loaded.";
+        string error = "Function " + base_func_name + " not loaded.";
         std::cerr << error << "\n";
         return error;
     }
 
-    // Clear any existing coroutine before reloading to ensure we get the fresh version
+    // Clear any existing coroutine to start fresh (using full func_name as key)
     CleanupCoroutine(func_name);
 
-    LoadScript(path);
+    // NOTE: Script is already loaded in Lua state from startup, no need to reload
     m_currentScript = func_name;
 
     lua_State* co = nullptr;
@@ -250,7 +235,8 @@ string ScriptingSystem::CallScript(const string& func_name, const vector<LuaArg>
         co_ref = luaL_ref(m_luaState, LUA_REGISTRYINDEX);
         m_activeCoroutines[func_name] = co_ref;
 
-        lua_getglobal(co, func_name.c_str());
+        // Use base function name to get the actual Lua function
+        lua_getglobal(co, base_func_name.c_str());
         if (!lua_isfunction(co, -1))
         {
             lua_pop(co, 1);
@@ -360,6 +346,12 @@ bool ScriptingSystem::IsCoroutineYielded(const string& func_name) const
 
 string ScriptingSystem::ResumeCoroutine(const string& func_name, const vector<LuaArg>& args)
 {
+    // Check if this script has an active wait timer - if so, don't resume it
+    if (m_waitTimers.find(func_name) != m_waitTimers.end())
+    {
+        return "Script " + func_name + " is waiting (timer active)";
+    }
+
     auto it = m_activeCoroutines.find(func_name);
     if (it == m_activeCoroutines.end())
         return "No active coroutine for " + func_name;

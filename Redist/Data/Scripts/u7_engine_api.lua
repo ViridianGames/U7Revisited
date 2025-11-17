@@ -337,6 +337,13 @@ function walk_to_object(npc_id, object_id) end
 ---@param z number Target Z coordinate
 function walk_to_position(npc_id, x, y, z) end
 
+---Checks if an NPC is currently moving/walking
+---Use this to wait for an NPC to reach their destination after calling walk_to_position()
+---@param npc_id integer The NPC to check
+---@return boolean is_moving True if the NPC is currently in motion
+---@usage walk_to_position(npc_id, x, y, z) while is_npc_moving(npc_id) do coroutine.yield() end
+function is_npc_moving(npc_id) end
+
 ---Finds the nearest bed to an NPC
 ---@param npc_id integer The NPC to search from
 ---@return integer|nil object_id The object ID of the nearest bed, or nil if none found
@@ -572,6 +579,13 @@ function set_pause(paused) end
 ---Pauses script execution for the specified duration
 ---@param seconds number Duration to wait in seconds
 function wait(seconds) end
+
+---Waits for a specified number of in-game minutes (scaled by time speed)
+---Use this in NPC activity scripts to wait based on game time rather than real time
+---The actual wait time in real seconds will be: game_minutes * g_secsPerMinute
+---@param game_minutes number Number of in-game minutes to wait
+---@usage npc_wait(5)  -- Wait for 5 game minutes (10-25 real seconds depending on time speed)
+function npc_wait(game_minutes) end
 
 ---Fades the screen out
 ---@param duration number Fade duration in seconds

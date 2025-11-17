@@ -6,28 +6,23 @@ function activity_wander(npc_id)
 
     while true do
         -- Try to find a random walkable destination within 10 tiles
-        local dest_x, dest_y, dest_z = nil, nil, nil
-        local attempts = 0
-
-        while not dest_x and attempts < 10 do
-            dest_x, dest_y, dest_z = find_random_walkable(npc_id, 10.0)
-            if not dest_x then
-                attempts = attempts + 1
-                coroutine.yield()  -- Yield between attempts to avoid blocking
-            end
-        end
+        local dest_x, dest_y, dest_z = find_random_walkable(npc_id, 10.0)
 
         if dest_x and dest_y and dest_z then
             -- Found a valid destination - walk to it
             walk_to_position(npc_id, dest_x, dest_y, dest_z)
 
-            -- Wait a bit at destination (random 2-5 seconds)
-            local wait_time = 2.0 + (math.random() * 3.0)
-            wait(wait_time)
+            -- Wait until we arrive at destination
+            while is_npc_moving(npc_id) do
+                coroutine.yield()
+            end
+
+            -- Wait a bit at destination (0.5 to 1 game minute)
+            local wait_minutes = 5 + (math.random() * 10)
+            npc_wait(wait_minutes)
         else
-            -- Couldn't find a walkable position after 10 attempts - just stand still
-            debug_print(npc_name .. " couldn't find walkable position, standing")
-            wait(2.0)
+            -- Couldn't find a walkable position - just stand still
+            npc_wait(2)  -- Wait 2 game minutes
         end
 
         -- Safety yield to prevent instruction overrun

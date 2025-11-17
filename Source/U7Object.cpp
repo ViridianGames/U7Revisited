@@ -344,8 +344,29 @@ void U7Object::NPCUpdate()
 		return;
 	}
 
+	// Frame-based batching for activity coroutine updates only
+	// Movement/pathfinding runs every frame, but activity scripts run batched (16 NPCs per frame)
+	static int s_frameCounter = 0;
+	static double s_lastFrameTime = 0;
+
+	// Increment frame counter once per frame
+	double currentTime = GetTime();
+	if (currentTime != s_lastFrameTime)
+	{
+		s_frameCounter++;
+		s_lastFrameTime = currentTime;
+	}
+
+	int batchSize = 16;
+	int batchIndex = s_frameCounter % ((g_NPCData.size() + batchSize - 1) / batchSize);
+	int startNPC = batchIndex * batchSize;
+	int endNPC = startNPC + batchSize;
+
+	// Only update activity scripts if this NPC is in the current batch
+	bool shouldUpdateActivity = (m_NPCID >= startNPC && m_NPCID < endNPC);
+
 	// Activity coroutine management - check if activity has changed
-	if (g_NPCData.find(m_NPCID) != g_NPCData.end())
+	if (shouldUpdateActivity && g_NPCData.find(m_NPCID) != g_NPCData.end())
 	{
 		int currentActivity = g_NPCData[m_NPCID]->m_currentActivity;
 		int lastActivity = g_NPCData[m_NPCID]->m_lastActivity;
@@ -356,15 +377,15 @@ void U7Object::NPCUpdate()
 			// Cleanup old coroutine if it exists
 			if (lastActivity >= 0)
 			{
-				std::string old_script = GetActivityScriptName(lastActivity);
+				std::string old_script = GetActivityScriptName(lastActivity) + "_" + std::to_string(m_NPCID);
 				if (g_ScriptingSystem->IsCoroutineActive(old_script))
 				{
 					g_ScriptingSystem->CleanupCoroutine(old_script);
 				}
 			}
 
-			// Start new activity script
-			std::string new_script = GetActivityScriptName(currentActivity);
+			// Start new activity script - use per-NPC coroutine key
+			std::string new_script = GetActivityScriptName(currentActivity) + "_" + std::to_string(m_NPCID);
 			std::vector<ScriptingSystem::LuaArg> args = { m_NPCID };
 			g_ScriptingSystem->CallScript(new_script, args);
 
@@ -374,7 +395,7 @@ void U7Object::NPCUpdate()
 		// Activity hasn't changed - resume coroutine if yielded
 		else if (currentActivity >= 0)
 		{
-			std::string script_name = GetActivityScriptName(currentActivity);
+			std::string script_name = GetActivityScriptName(currentActivity) + "_" + std::to_string(m_NPCID);
 			if (g_ScriptingSystem->IsCoroutineYielded(script_name))
 			{
 				std::vector<ScriptingSystem::LuaArg> args = { m_NPCID };
