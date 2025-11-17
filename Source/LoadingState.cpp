@@ -2294,24 +2294,8 @@ void LoadingState::LoadNPCSchedules()
 
 		file.close();
 
-		// Initialize NPC activities based on starting time (g_scheduleTime will be set to 1 in MainState::OnEnter)
-		// This ensures NPCs have their activities set from the start instead of waiting for the first schedule change
-		int startingScheduleTime = 1;  // 7am (hour 7 / 3 = schedule block 1)
-		for (const auto& [npcID, schedules] : g_NPCSchedules)
-		{
-			if (g_NPCData.find(npcID) == g_NPCData.end() || !g_NPCData[npcID])
-				continue;
-
-			// Find the schedule entry for the starting time
-			for (const auto& schedule : schedules)
-			{
-				if (schedule.m_time == startingScheduleTime)
-				{
-					g_NPCData[npcID]->m_currentActivity = schedule.m_activity;
-					break;
-				}
-			}
-		}
+		// NOTE: NPC activities will be initialized in MainState::OnEnter() after g_scheduleTime is set to 1
+		// Don't initialize here because g_scheduleTime is still 0 at this point
 	}
 // #define DEBUG_DUMP_SCHEDULES 1
 #ifdef DEBUG_DUMP_SCHEDULES

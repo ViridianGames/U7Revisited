@@ -159,6 +159,9 @@ struct NPCSchedule
 
 extern std::unordered_map<int, std::vector<NPCSchedule> > g_NPCSchedules;
 
+// Helper function to initialize NPC activities based on current schedule time
+void InitializeNPCActivitiesFromSchedules();
+
 //////////////////////////////////////////////////////////////////////////////
 //  SPELL SYSTEM
 //////////////////////////////////////////////////////////////////////////////

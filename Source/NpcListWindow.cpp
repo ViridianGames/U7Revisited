@@ -228,6 +228,8 @@ void NpcListWindow::BuildNPCList()
 
 	DebugPrint("BuildNPCList: g_NPCData has " + std::to_string(g_NPCData.size()) + " NPCs");
 
+	extern unsigned int g_scheduleTime;
+
 	// Iterate through all NPCs in g_NPCData
 	for (const auto& pair : g_NPCData)
 	{
@@ -243,10 +245,39 @@ void NpcListWindow::BuildNPCList()
 		entry.activityId = npcData->m_currentActivity;
 		entry.activityName = GetActivityName(npcData->m_currentActivity);
 
-		// Format: "ID: Name - Activity"
+		// Check if this is a "continued" activity (not an exact schedule match for current time)
+		bool isContinued = false;
+		if (g_NPCSchedules.find(npcId) != g_NPCSchedules.end())
+		{
+			const auto& schedules = g_NPCSchedules[npcId];
+
+			// Check if there's an exact schedule match for current time
+			bool exactMatch = false;
+			for (const auto& schedule : schedules)
+			{
+				if (schedule.m_time == g_scheduleTime)
+				{
+					exactMatch = true;
+					break;
+				}
+			}
+
+			// If no exact match and we have a valid activity, it's continued from previous
+			if (!exactMatch && npcData->m_currentActivity >= 0)
+			{
+				isContinued = true;
+			}
+		}
+
+		// Format: "ID: Name - Activity" or "ID: Name - Activity - cont"
 		entry.displayText = std::to_string(npcId) + ": " +
 		                   entry.name + " - " +
 		                   entry.activityName;
+
+		if (isContinued)
+		{
+			entry.displayText += " - cont";
+		}
 
 		m_allNPCs.push_back(entry);
 	}

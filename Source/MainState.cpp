@@ -137,6 +137,10 @@ void MainState::OnEnter()
 	g_hour = 7;
 	g_scheduleTime = 1;
 
+	// Initialize NPC activities based on starting schedule time (for new games)
+	// This must happen AFTER g_scheduleTime is set, so NPCs get the correct activity for time slot 1
+	InitializeNPCActivitiesFromSchedules();
+
 	if (m_gameMode == MainStateModes::MAIN_STATE_MODE_TRINSIC_DEMO)
 	{
 		m_heightCutoff = 16.0f; // Draw everything unless the player is inside.
@@ -1584,6 +1588,10 @@ void MainState::RebuildWorldFromLoadedData()
 		}
 	}
 	Log("MainState::RebuildWorldFromLoadedData - Assigned to chunks: " + std::to_string(staticCount) + " static, " + std::to_string(dynamicCount) + " objects, " + std::to_string(npcCount) + " NPCs, " + std::to_string(containedCount) + " contained (skipped)");
+
+	// Initialize NPC activities based on current schedule time (after loading saved game)
+	Log("MainState::RebuildWorldFromLoadedData - Initializing NPC activities from schedules...");
+	InitializeNPCActivitiesFromSchedules();
 
 	// Force immediate update of visible objects after loading
 	Log("MainState::RebuildWorldFromLoadedData - Calling UpdateSortedVisibleObjects now...");

@@ -1460,3 +1460,47 @@ SpellData* GetSpellData(int spellId)
 	}
 	return nullptr;
 }
+
+// Initialize NPC activities based on current schedule time
+// This should be called after loading schedules OR after loading a saved game
+void InitializeNPCActivitiesFromSchedules()
+{
+	extern unsigned int g_scheduleTime;
+
+	for (const auto& [npcID, schedules] : g_NPCSchedules)
+	{
+		if (g_NPCData.find(npcID) == g_NPCData.end() || !g_NPCData[npcID])
+			continue;
+
+		// Find the most recent schedule <= current time (looking backwards)
+		int mostRecentTime = -1;
+		const NPCSchedule* mostRecentSchedule = nullptr;
+
+		for (const auto& schedule : schedules)
+		{
+			if ((int)schedule.m_time <= (int)g_scheduleTime && (int)schedule.m_time > mostRecentTime)
+			{
+				mostRecentTime = (int)schedule.m_time;
+				mostRecentSchedule = &schedule;
+			}
+		}
+
+		// If no schedule found <= current time, wrap around and look at end of day (time 21, 18, 15, etc)
+		if (!mostRecentSchedule)
+		{
+			for (const auto& schedule : schedules)
+			{
+				if ((int)schedule.m_time > mostRecentTime)
+				{
+					mostRecentTime = (int)schedule.m_time;
+					mostRecentSchedule = &schedule;
+				}
+			}
+		}
+
+		if (mostRecentSchedule)
+		{
+			g_NPCData[npcID]->m_currentActivity = mostRecentSchedule->m_activity;
+		}
+	}
+}
