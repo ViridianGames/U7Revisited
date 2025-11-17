@@ -19,8 +19,8 @@ function activity_loiter(npc_id)
                 -- Found a valid destination - walk to it
                 walk_to_position(npc_id, dest_x, dest_y, dest_z)
 
-                -- Wait until we arrive at destination
-                while is_npc_moving(npc_id) do
+                -- Wait until path completes
+                while not wait_move_end(npc_id) do
                     coroutine.yield()
                 end
             end

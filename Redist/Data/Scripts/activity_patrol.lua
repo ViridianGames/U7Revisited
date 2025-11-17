@@ -21,6 +21,11 @@ function activity_patrol(npc_id)
             -- Walk to patrol point
             walk_to_position(npc_id, dest_x, dest_y, dest_z)
 
+            -- Wait until path completes
+            while not wait_move_end(npc_id) do
+                coroutine.yield()
+            end
+
             -- Pause at patrol point, looking around (2-4 seconds)
             local pause_time = 2.0 + (math.random() * 2.0)
             wait(pause_time)

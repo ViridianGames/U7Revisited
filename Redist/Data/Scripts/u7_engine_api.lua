@@ -344,6 +344,12 @@ function walk_to_position(npc_id, x, y, z) end
 ---@usage walk_to_position(npc_id, x, y, z) while is_npc_moving(npc_id) do coroutine.yield() end
 function is_npc_moving(npc_id) end
 
+---[Exult 0x0086] Waits until NPC finishes moving (yields until movement complete)
+---Properly handles pathfinding completion by checking both m_isMoving and m_pathWaypoints
+---@param npc_id integer The NPC to wait for
+---@usage walk_to_position(npc_id, x, y, z) wait_move_end(npc_id)
+function wait_move_end(npc_id) end
+
 ---Finds the nearest bed to an NPC
 ---@param npc_id integer The NPC to search from
 ---@return integer|nil object_id The object ID of the nearest bed, or nil if none found
@@ -994,12 +1000,12 @@ function reset_conv_face() end
 -- EXULT INTRINSICS - COLLISION & PATHFINDING
 -- ============================================================================
 
----[Exult 0x0085] Checks if tile is not blocked
+---[Exult 0x0085] Checks if tile is blocked
 ---@param x integer X coordinate
----@param y integer Y coordinate
+---@param y integer Y coordinate (elevation)
 ---@param z integer Z coordinate
----@return boolean not_blocked True if tile is passable
-function is_not_blocked(x, y, z) end
+---@return boolean blocked True if tile is blocked/unwalkable
+function is_blocked(x, y, z) end
 
 ---[Exult 0x0072] Checks if item is readied/equipped
 ---@param object_id integer Item to check

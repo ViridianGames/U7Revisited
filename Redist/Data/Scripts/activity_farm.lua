@@ -21,6 +21,11 @@ function activity_farm(npc_id)
             -- Walk to the spot
             walk_to_position(npc_id, dest_x, dest_y, dest_z)
 
+            -- Wait until path completes
+            while not wait_move_end(npc_id) do
+                coroutine.yield()
+            end
+
             -- Work at that spot for a while (4-8 seconds)
             local work_time = 4.0 + (math.random() * 4.0)
             wait(work_time)

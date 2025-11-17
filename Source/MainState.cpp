@@ -1327,6 +1327,32 @@ void MainState::Draw()
 		g_pathfindingGrid->DrawDebugOverlayTileLevel();
 	}
 
+	// Draw NPC paths as blue highlight tiles for NPCs with active waypoints
+	if (m_showPathfindingDebug)
+	{
+		for (auto& object : g_sortedVisibleObjects)
+		{
+			if (object->m_isNPC && !object->m_pathWaypoints.empty())
+			{
+				// Check if NPC is on screen or near camera
+				float distToCamera = Vector2Distance(
+					{object->m_Pos.x, object->m_Pos.z},
+					{g_camera.target.x, g_camera.target.z}
+				);
+
+				if (distToCamera < 50.0f)  // Within 50 tiles of camera
+				{
+					// Draw each waypoint as a blue semi-transparent tile
+					for (const auto& waypoint : object->m_pathWaypoints)
+					{
+						Vector3 tilePos = {waypoint.x + 0.5f, 0.05f, waypoint.z + 0.5f};
+						DrawCube(tilePos, 1.0f, 0.1f, 1.0f, Color{50, 150, 255, 180});  // Bright blue
+					}
+				}
+			}
+		}
+	}
+
 	EndMode3D();
 
 	float ratio = float(g_Engine->m_ScreenWidth) / float(g_Engine->m_RenderWidth);

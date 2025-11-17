@@ -294,8 +294,8 @@ static std::string GetActivityScriptName(int activityId)
 	// Map activity IDs to descriptive script names
 	static const char* ACTIVITY_SCRIPT_NAMES[] = {
 		"combat",          // 0
-		"hpace",           // 1  (horizontal pace)
-		"vpace",           // 2  (vertical pace)
+		"pace_horz",       // 1  (horizontal pace)
+		"pace_vert",       // 2  (vertical pace)
 		"talk",            // 3
 		"dance",           // 4
 		"eat",             // 5

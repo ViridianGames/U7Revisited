@@ -3693,14 +3693,25 @@ static int LuaResetConvFace(lua_State *L)
     return 0;
 }
 
-// 0x0085 | is_not_blocked
-static int LuaIsNotBlocked(lua_State *L)
+// 0x0085 | is_blocked
+static int LuaIsBlocked(lua_State *L)
 {
-    // Position table (x, y, z), shape, frame
-    // In full implementation, would check pathfinding grid
-    // For now, assume locations are passable
-    lua_pushboolean(L, 1); // true = not blocked
-    return 1;
+	int x = (int)lua_tointeger(L, 1);
+	int y = (int)lua_tointeger(L, 2);  // Y is elevation, but we need it for completeness
+	int z = (int)lua_tointeger(L, 3);
+
+	extern PathfindingGrid* g_pathfindingGrid;
+	
+	if (!g_pathfindingGrid)
+	{
+		lua_pushboolean(L, 1); // If no pathfinding grid, assume blocked
+		return 1;
+	}
+
+	// Check if the tile is walkable
+	bool walkable = g_pathfindingGrid->IsPositionWalkable(x, z);
+	lua_pushboolean(L, !walkable); // Return true if blocked
+	return 1;
 }
 
 // 0x0072 | is_readied
@@ -4613,6 +4624,31 @@ static int LuaIsNPCMoving(lua_State *L)
     return 1;
 }
 
+// 0x0086 | is_path_complete
+// Returns true if NPC has completed its path (no more waypoints)
+static int LuaWaitMoveEnd(lua_State *L)
+{
+    int npc_id = luaL_checkinteger(L, 1);
+
+    if (g_NPCData.find(npc_id) == g_NPCData.end())
+    {
+        lua_pushboolean(L, true);  // NPC doesn't exist, consider path complete
+        return 1;
+    }
+
+    U7Object* npc = g_objectList[g_NPCData[npc_id]->m_objectID].get();
+    if (!npc)
+    {
+        lua_pushboolean(L, true);  // NPC doesn't exist, consider path complete
+        return 1;
+    }
+
+    // Check if path is complete (no more waypoints)
+    bool path_complete = npc->m_pathWaypoints.empty();
+    lua_pushboolean(L, path_complete);
+    return 1;
+}
+
 // get_current_hour() -> hour (0-23)
 static int LuaGetCurrentHour(lua_State *L)
 {
@@ -4836,7 +4872,7 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction( "fade_palette", LuaFadePalette);
     g_ScriptingSystem->RegisterScriptFunction( "set_camera", LuaSetCameraTarget);
     g_ScriptingSystem->RegisterScriptFunction( "reset_conv_face", LuaResetConvFace);
-    g_ScriptingSystem->RegisterScriptFunction( "is_not_blocked", LuaIsNotBlocked);
+    g_ScriptingSystem->RegisterScriptFunction( "is_blocked", LuaIsBlocked);
     g_ScriptingSystem->RegisterScriptFunction( "is_readied", LuaIsReadied);
     g_ScriptingSystem->RegisterScriptFunction( "die_roll", LuaDieRoll);
     g_ScriptingSystem->RegisterScriptFunction( "roll_to_win", LuaRollToWin);
@@ -4889,6 +4925,7 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction( "walk_to_object", LuaWalkToObject);
     g_ScriptingSystem->RegisterScriptFunction( "walk_to_position", LuaWalkToPosition);
     g_ScriptingSystem->RegisterScriptFunction( "is_npc_moving", LuaIsNPCMoving);
+    g_ScriptingSystem->RegisterScriptFunction( "wait_move_end", LuaWaitMoveEnd);
     g_ScriptingSystem->RegisterScriptFunction( "get_current_hour", LuaGetCurrentHour);
     g_ScriptingSystem->RegisterScriptFunction( "get_current_minute", LuaGetCurrentMinute);
 

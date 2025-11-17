@@ -36,6 +36,11 @@ function activity_graze(npc_id)
             if dest_x and dest_y and dest_z then
                 walk_to_position(npc_id, dest_x, dest_y, dest_z)
 
+                -- Wait until path completes
+                while not wait_move_end(npc_id) do
+                    coroutine.yield()
+                end
+
                 -- Wait at destination (3-8 seconds)
                 local wait_time = 3.0 + (math.random() * 5.0)
                 wait(wait_time)
