@@ -44,5 +44,8 @@ function activity_pace_horizontal(npc_id)
 
         -- Reverse direction
         going_east = not going_east
+
+        -- Safety yield to prevent instruction overrun
+        coroutine.yield()
     end
 end

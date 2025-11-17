@@ -449,17 +449,18 @@ void UpdateSortedVisibleObjects()
 	}
 
 	// DEBUG: Log count after populating
-	int afterCount = static_cast<int>(g_sortedVisibleObjects.size());
-	static int lastLoggedCount = -1;
-	// Always log when called from RebuildWorldFromLoadedData, otherwise only log on changes
-	static bool forceNextLog = false;
-	if (afterCount != lastLoggedCount || forceNextLog)
-	{
-		Log("UpdateSortedVisibleObjects: Camera chunk (" + std::to_string(cameraChunkX) + "," + std::to_string(cameraChunkY) +
-			"), found " + std::to_string(afterCount) + " visible objects (was " + std::to_string(beforeCount) + ")");
-		lastLoggedCount = afterCount;
-		forceNextLog = false;
-	}
+	// DISABLED: This was causing lag by writing to disk on every camera movement
+	// int afterCount = static_cast<int>(g_sortedVisibleObjects.size());
+	// static int lastLoggedCount = -1;
+	// // Always log when called from RebuildWorldFromLoadedData, otherwise only log on changes
+	// static bool forceNextLog = false;
+	// if (afterCount != lastLoggedCount || forceNextLog)
+	// {
+	// 	Log("UpdateSortedVisibleObjects: Camera chunk (" + std::to_string(cameraChunkX) + "," + std::to_string(cameraChunkY) +
+	// 		"), found " + std::to_string(afterCount) + " visible objects (was " + std::to_string(beforeCount) + ")");
+	// 	lastLoggedCount = afterCount;
+	// 	forceNextLog = false;
+	// }
 
 	std::sort(g_sortedVisibleObjects.begin(), g_sortedVisibleObjects.end(), [](U7Object* a, U7Object* b) { return a->m_distanceFromCamera > b->m_distanceFromCamera; });
 

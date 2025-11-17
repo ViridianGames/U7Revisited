@@ -17,5 +17,8 @@ function activity_dance(npc_id)
             local turn_time = 0.3 + (math.random() * 0.2)
             wait(turn_time)
         end
+
+        -- Safety yield to prevent instruction overrun
+        coroutine.yield()
     end
 end

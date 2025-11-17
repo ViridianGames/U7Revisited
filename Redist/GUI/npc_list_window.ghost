@@ -126,6 +126,7 @@
               -1
             ],
             "text": "NPC List",
+            "name": "LIST_HEADER",
             "textColor": [
               255,
               255,

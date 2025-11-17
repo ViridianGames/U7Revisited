@@ -33,5 +33,8 @@ function activity_tend_shop(npc_id)
         -- frameX controls facing direction (0-3 for different orientations)
         local direction = math.random(0, 3)
         play_animation(npc_id, direction, 0)
+
+        -- Safety yield in case wait() didn't work
+        coroutine.yield()
     end
 end

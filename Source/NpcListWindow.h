@@ -24,13 +24,14 @@ public:
 	NpcListWindow(ResourceManager* resourceManager, int screenWidth, int screenHeight);
 	~NpcListWindow();
 
-	void Update();
+	void Update(bool schedulesEnabled);
 	void Draw();
 
 	void Show();
 	void Hide();
 	void Toggle();
 	bool IsVisible() const;
+	GhostWindow* GetWindow() const { return m_window; }
 
 private:
 	enum class SortMode
@@ -45,6 +46,7 @@ private:
 	void SortNPCList();  // Sort list based on current sort mode
 	void HandleDoubleClick();  // Handle double-click on NPC in list
 	std::string GetActivityName(int activityId);  // Convert activity ID to name
+	void UpdateHeaderStatus(bool schedulesEnabled);  // Update header text/color based on schedule state
 
 	GhostWindow* m_window;
 	std::vector<NPCListEntry> m_allNPCs;  // All NPCs

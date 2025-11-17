@@ -70,6 +70,7 @@ public:
 
 	// Debug tools window button handlers
 	void HandleScheduleButton();
+	void HandlePathfindButton();
 	void HandleShapeTableButton();
 	void HandleGhostButton();
 	void HandleRenameButton();
@@ -182,7 +183,10 @@ public:
 	bool m_hasShownWelcomeMessages = false;
 
 	// NPC Schedule toggle
-	bool m_npcSchedulesEnabled = false;
+	bool m_npcSchedulesEnabled = true;  // Default enabled so NPCs follow schedules
+
+	// NPC Pathfinding on schedule change toggle
+	bool m_npcPathfindingEnabled = false;  // Default disabled - NPCs stay in place when schedules change
 
 	// Pathfinding debug visualization
 	bool m_showPathfindingDebug = false;  // F10: Tile-level visualization (shows objects)

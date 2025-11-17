@@ -8,7 +8,9 @@ function activity_eat_at_inn(npc_id)
         -- No chair/table nearby - just stand
         debug_print(npc_name .. " has no table for eat at inn activity, standing")
         play_animation(npc_id, 0, 0)  -- Frame 0 = standing
-        coroutine.yield()
+        while true do
+            coroutine.yield()
+        end
         return
     end
 

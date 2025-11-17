@@ -11,6 +11,9 @@
 
 using namespace std;
 
+// Forward declare to access g_ScriptingSystem
+extern std::unique_ptr<ScriptingSystem> g_ScriptingSystem;
+
 // Lua wait function (unchanged)
 static int LuaWait(lua_State *L)
 {
@@ -28,10 +31,23 @@ static int LuaWait(lua_State *L)
         return 0;
     }
 
-    DebugPrint("LUA: wait called for " + to_string(delay) + " seconds");
+    // Get the NPC ID from the Lua coroutine's first upvalue/argument
+    // For activity scripts, the first arg is always the NPC ID
+    std::string scriptKey = g_ScriptingSystem->m_currentScript;
 
-    g_ScriptingSystem->m_waitTimer = (float)delay;
-    g_ScriptingSystem->m_waitingScript = g_ScriptingSystem->m_currentScript;
+    // Try to get npc_id from Lua local variable at stack position 1 (first param)
+    lua_Debug ar;
+    if (lua_getstack(L, 0, &ar) && lua_getlocal(L, &ar, 1))
+    {
+        if (lua_isnumber(L, -1))
+        {
+            int npc_id = lua_tointeger(L, -1);
+            scriptKey = g_ScriptingSystem->m_currentScript + "_" + std::to_string(npc_id);
+        }
+        lua_pop(L, 1);  // Pop the local variable
+    }
+
+    g_ScriptingSystem->m_waitTimers[scriptKey] = (float)delay;
 
     return lua_yield(L, 1);
 }
@@ -95,21 +111,48 @@ void ScriptingSystem::Update()
         CleanupCoroutine(func);
     }
 
-    if (m_waitTimer > 0.0f)
+    // Update all wait timers and resume scripts that are done waiting
+    float frameTime = GetFrameTime();
+    std::vector<std::string> scriptsToResume;
+
+    for (auto& pair : m_waitTimers)
     {
-        m_waitTimer -= GetFrameTime();
-        if (m_waitTimer < 0.0f)
+        pair.second -= frameTime;
+        if (pair.second <= 0.0f)
         {
-            m_waitTimer = 0.0f;
-            if (m_currentScript == m_waitingScript)
+            scriptsToResume.push_back(pair.first);
+        }
+    }
+
+    // Resume all scripts whose wait timers expired
+    for (const std::string& scriptKey : scriptsToResume)
+    {
+        m_waitTimers.erase(scriptKey);
+
+        // Extract the base script name (before the "_NPCID" suffix if present)
+        std::string scriptName = scriptKey;
+        size_t underscorePos = scriptKey.find_last_of('_');
+        if (underscorePos != std::string::npos)
+        {
+            // Check if everything after the underscore is a number (NPC ID)
+            bool isNumeric = true;
+            for (size_t i = underscorePos + 1; i < scriptKey.length(); i++)
             {
-                ResumeCoroutine(m_waitingScript, {0});
+                if (!isdigit(scriptKey[i]))
+                {
+                    isNumeric = false;
+                    break;
+                }
             }
-            else
+
+            // If it's a numeric suffix, strip it to get the base script name
+            if (isNumeric && underscorePos > 0)
             {
-                m_waiters.erase(m_waitingScript);
+                scriptName = scriptKey.substr(0, underscorePos);
             }
         }
+
+        ResumeCoroutine(scriptName, {0});
     }
 }
 
@@ -246,8 +289,24 @@ string ScriptingSystem::CallScript(const string& func_name, const vector<LuaArg>
         }
     }
 
+    // Track execution time to detect lockups
+    float startTime = GetTime();
+    m_scriptStartTime[func_name] = startTime;
+
     int nresults;
     int status = lua_resume(co, nullptr, static_cast<int>(args.size()), &nresults);
+
+    float elapsed = GetTime() - startTime;
+    m_scriptStartTime.erase(func_name);
+
+    // Check if script took too long
+    if (elapsed > MAX_SCRIPT_TIME)
+    {
+        DebugPrint("WARNING: Script '" + func_name + "' took " +
+                   to_string(elapsed * 1000.0f) + "ms without yielding! (max: " +
+                   to_string(MAX_SCRIPT_TIME * 1000.0f) + "ms)");
+    }
+
     if (status == LUA_YIELD)
     {
         return "";
@@ -329,8 +388,24 @@ string ScriptingSystem::ResumeCoroutine(const string& func_name, const vector<Lu
         }, arg);
     }
 
+    // Track execution time to detect lockups
+    float startTime = GetTime();
+    m_scriptStartTime[func_name] = startTime;
+
     int nresults;
     int status = lua_resume(co, nullptr, static_cast<int>(args.size()), &nresults);
+
+    float elapsed = GetTime() - startTime;
+    m_scriptStartTime.erase(func_name);
+
+    // Check if script took too long
+    if (elapsed > MAX_SCRIPT_TIME)
+    {
+        DebugPrint("WARNING: Script '" + func_name + "' (resume) took " +
+                   to_string(elapsed * 1000.0f) + "ms without yielding! (max: " +
+                   to_string(MAX_SCRIPT_TIME * 1000.0f) + "ms)");
+    }
+
     if (status == LUA_YIELD)
     {
         return "";

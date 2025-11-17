@@ -8,7 +8,7 @@
           0
         ],
         "size": [
-          99,
+          102,
           75
         ],
         "backgroundColor": [
@@ -28,7 +28,7 @@
           {
             "name": "SCHEDULE_BUTTON",
             "type": "iconbutton",
-            "hoverText": "Toggle NPC pathfinding",
+            "hoverText": "Toggle NPC schedules",
             "position": [
               -1,
               -1
@@ -36,6 +36,52 @@
             "sprite": {
               "spritesheet": "GUI/guielements.png",
               "x": 250,
+              "y": 0,
+              "w": 30,
+              "h": 30
+            },
+            "color": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "scale": 1.0
+          },
+          {
+            "name": "PATHFIND_BUTTON",
+            "type": "iconbutton",
+            "hoverText": "Toggle NPC pathfinding",
+            "position": [
+              -1,
+              -1
+            ],
+            "sprite": {
+              "spritesheet": "GUI/guielements.png",
+              "x": 310,
+              "y": 0,
+              "w": 30,
+              "h": 30
+            },
+            "color": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "scale": 1.0
+          },
+          {
+            "name": "NPC_LIST_BUTTON",
+            "type": "iconbutton",
+            "hoverText":"Show NPC List",
+            "position": [
+              -1,
+              -1
+            ],
+            "sprite": {
+              "spritesheet": "GUI/guielements.png",
+              "x": 280,
               "y": 0,
               "w": 30,
               "h": 30
@@ -107,29 +153,6 @@
               "x": 220,
               "y": 0,
               "w": 23,
-              "h": 30
-            },
-            "color": [
-              255,
-              255,
-              255,
-              255
-            ],
-            "scale": 1.0
-          },
-          {
-            "name": "NPC_LIST_BUTTON",
-            "type": "iconbutton",
-            "hoverText":"Show NPC List",
-            "position": [
-              -1,
-              -1
-            ],
-            "sprite": {
-              "spritesheet": "GUI/guielements.png",
-              "x": 280,
-              "y": 0,
-              "w": 30,
               "h": 30
             },
             "color": [

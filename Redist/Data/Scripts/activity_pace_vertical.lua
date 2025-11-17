@@ -44,5 +44,8 @@ function activity_pace_vertical(npc_id)
 
         -- Reverse direction
         going_south = not going_south
+
+        -- Safety yield to prevent instruction overrun
+        coroutine.yield()
     end
 end

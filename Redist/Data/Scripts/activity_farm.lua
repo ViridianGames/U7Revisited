@@ -5,8 +5,17 @@ function activity_farm(npc_id)
     debug_print(npc_name .. " farming")
 
     while true do
-        -- Find a random spot in the farm area (within 8 tiles)
-        local dest_x, dest_y, dest_z = find_random_walkable(npc_id, 8.0)
+        -- Try to find a random spot in the farm area (within 8 tiles)
+        local dest_x, dest_y, dest_z = nil, nil, nil
+        local attempts = 0
+
+        while not dest_x and attempts < 10 do
+            dest_x, dest_y, dest_z = find_random_walkable(npc_id, 8.0)
+            if not dest_x then
+                attempts = attempts + 1
+                coroutine.yield()  -- Yield between attempts
+            end
+        end
 
         if dest_x and dest_y and dest_z then
             -- Walk to the spot
@@ -27,5 +36,8 @@ function activity_farm(npc_id)
             debug_print(npc_name .. " couldn't find farm spot, standing")
             wait(3.0)
         end
+
+        -- Safety yield to prevent instruction overrun
+        coroutine.yield()
     end
 end

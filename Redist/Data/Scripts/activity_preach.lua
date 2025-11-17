@@ -37,5 +37,8 @@ function activity_preach(npc_id)
         -- Turn to face congregation on right side
         play_animation(npc_id, 1, 0)
         wait(2.0 + (math.random() * 2.0))
+
+        -- Safety yield to prevent instruction overrun
+        coroutine.yield()
     end
 end

@@ -316,7 +316,15 @@ void MainState::CalculateMouseOverUI()
 		overDebugTools = CheckCollisionPointRec(mousePos, debugRect);
 	}
 
-	g_mouseOverUI = overStats || overMinimap || overCharPanel || overDebugTools;
+	// Check if mouse is over NPC list window
+	bool overNpcList = false;
+	if (m_npcListWindow && m_npcListWindow->IsVisible())
+	{
+		Rectangle npcListRect = m_npcListWindow->GetWindow()->GetBounds();
+		overNpcList = CheckCollisionPointRec(mousePos, npcListRect);
+	}
+
+	g_mouseOverUI = overStats || overMinimap || overCharPanel || overDebugTools || overNpcList;
 }
 
 void MainState::UpdateInput()
@@ -855,23 +863,47 @@ void MainState::Update()
 			if (!npcObj || !npcObj->m_followingSchedule)
 				continue;
 
-			// Check if NPC has a schedule for this time
+			// Find the most recent schedule entry <= current time
+			// This ensures NPCs update to correct activity even when time skips or when loading
+			int mostRecentScheduleTime = -1;
+			int mostRecentActivity = -1;
 			for (const auto& schedule : g_NPCSchedules[npcID])
 			{
-				if (schedule.m_time == g_scheduleTime)
+				if (schedule.m_time <= g_scheduleTime && (int)schedule.m_time > mostRecentScheduleTime)
 				{
-					g_npcPathfindQueue.push(npcID);
-					break;
+					mostRecentScheduleTime = (int)schedule.m_time;
+					mostRecentActivity = (int)schedule.m_activity;
+				}
+			}
+
+			// If we found a valid schedule and it's different from current, update it
+			if (mostRecentScheduleTime >= 0)
+			{
+				// Check if this is a NEW schedule (either different time or activity changed)
+				bool needsUpdate = (mostRecentScheduleTime != npcObj->m_lastSchedule) ||
+				                   (mostRecentActivity != npcData->m_currentActivity);
+
+				if (needsUpdate)
+				{
+					// Update the schedule time and activity
+					npcObj->m_lastSchedule = mostRecentScheduleTime;
+					npcData->m_currentActivity = mostRecentActivity;
+
+					// Only queue for pathfinding if pathfinding is enabled
+					if (m_npcPathfindingEnabled)
+					{
+						g_npcPathfindQueue.push(npcID);
+					}
 				}
 			}
 		}
 
-		// Debug: Uncomment to see schedule changes
-		//if (!g_npcPathfindQueue.empty())
-		//{
-		//	AddConsoleString("Schedule changed to block " + std::to_string(g_scheduleTime) +
-		//	                 ", queued " + std::to_string(g_npcPathfindQueue.size()) + " NPCs for pathfinding", YELLOW);
-		//}
+		// Debug: Show schedule changes
+		if (!g_npcPathfindQueue.empty())
+		{
+			AddConsoleString("Schedule changed to block " + std::to_string(g_scheduleTime) +
+			                 ", queued " + std::to_string(g_npcPathfindQueue.size()) + " NPCs for pathfinding", YELLOW);
+		}
 	}
 
 	// Process one NPC from pathfinding queue per frame
@@ -880,22 +912,30 @@ void MainState::Update()
 		int npcID = g_npcPathfindQueue.front();
 		g_npcPathfindQueue.pop();
 
-		// Find the schedule entry for current time
+		// Find the most recent schedule entry <= current time
 		if (g_NPCData.find(npcID) != g_NPCData.end() && g_NPCData[npcID])
 		{
 			U7Object* npcObj = g_objectList[g_NPCData[npcID]->m_objectID].get();
-			if (npcObj)
+			if (npcObj && g_NPCSchedules.find(npcID) != g_NPCSchedules.end())
 			{
+				// Find most recent schedule
+				int mostRecentScheduleTime = -1;
+				const NPCSchedule* mostRecentSchedule = nullptr;
+
 				for (const auto& schedule : g_NPCSchedules[npcID])
 				{
-					if (schedule.m_time == g_scheduleTime)
+					if (schedule.m_time <= g_scheduleTime && (int)schedule.m_time > mostRecentScheduleTime)
 					{
-						npcObj->PathfindToDest(Vector3{ float(schedule.m_destX), 0, float(schedule.m_destY) });
-						npcObj->m_isMoving = true;
-						npcObj->m_lastSchedule = schedule.m_time;
-						g_NPCData[npcID]->m_currentActivity = schedule.m_activity;
-						break;
+						mostRecentScheduleTime = (int)schedule.m_time;
+						mostRecentSchedule = &schedule;
 					}
+				}
+
+				if (mostRecentSchedule)
+				{
+					// Pathfind to destination (pathfinding is only queued if enabled)
+					npcObj->PathfindToDest(Vector3{ float(mostRecentSchedule->m_destX), 0, float(mostRecentSchedule->m_destY) });
+					npcObj->m_isMoving = true;
 				}
 			}
 		}
@@ -1014,7 +1054,7 @@ void MainState::Update()
 	// Update NPC list window
 	if (m_npcListWindow)
 	{
-		m_npcListWindow->Update();
+		m_npcListWindow->Update(m_npcSchedulesEnabled);
 	}
 
 	// Process game input
@@ -1715,6 +1755,22 @@ void MainState::HandleScheduleButton()
 	AddConsoleString(m_npcSchedulesEnabled ? "NPC Schedules ENABLED" : "NPC Schedules DISABLED");
 }
 
+void MainState::HandlePathfindButton()
+{
+	m_npcPathfindingEnabled = !m_npcPathfindingEnabled;
+
+	// Clear the pathfinding queue when disabling pathfinding
+	if (!m_npcPathfindingEnabled)
+	{
+		while (!g_npcPathfindQueue.empty())
+		{
+			g_npcPathfindQueue.pop();
+		}
+	}
+
+	AddConsoleString(m_npcPathfindingEnabled ? "NPC Pathfinding ENABLED" : "NPC Pathfinding DISABLED");
+}
+
 void MainState::HandleShapeTableButton()
 {
 	// Open shape editor (same as F1 key)
@@ -1822,6 +1878,21 @@ void MainState::UpdateDebugToolsWindow()
 			if (button->m_Clicked)
 			{
 				HandleScheduleButton();
+			}
+		}
+	}
+
+	// Check PATHFIND_BUTTON
+	int pathfindButtonID = m_debugToolsWindow->GetElementID("PATHFIND_BUTTON");
+	if (pathfindButtonID != -1)
+	{
+		auto elem = gui->GetElement(pathfindButtonID);
+		if (elem && elem->m_Type == GUI_ICONBUTTON)
+		{
+			auto button = static_cast<GuiIconButton*>(elem.get());
+			if (button->m_Clicked)
+			{
+				HandlePathfindButton();
 			}
 		}
 	}

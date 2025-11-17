@@ -22,7 +22,16 @@ function activity_graze(npc_id)
             wait(graze_time)
         else
             -- No grass nearby - just wander to random spot
-            local dest_x, dest_y, dest_z = find_random_walkable(npc_id, 5.0)
+            local dest_x, dest_y, dest_z = nil, nil, nil
+            local attempts = 0
+
+            while not dest_x and attempts < 10 do
+                dest_x, dest_y, dest_z = find_random_walkable(npc_id, 5.0)
+                if not dest_x then
+                    attempts = attempts + 1
+                    coroutine.yield()  -- Yield between attempts
+                end
+            end
 
             if dest_x and dest_y and dest_z then
                 walk_to_position(npc_id, dest_x, dest_y, dest_z)
@@ -36,5 +45,8 @@ function activity_graze(npc_id)
                 wait(2.0)
             end
         end
+
+        -- Safety yield to prevent instruction overrun
+        coroutine.yield()
     end
 end

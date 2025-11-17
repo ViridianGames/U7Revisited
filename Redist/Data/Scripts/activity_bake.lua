@@ -38,5 +38,8 @@ function activity_bake(npc_id)
             -- Turn back to oven
             play_animation(npc_id, 0, 0)
         end
+
+        -- Safety yield to prevent instruction overrun
+        coroutine.yield()
     end
 end

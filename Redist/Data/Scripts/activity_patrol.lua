@@ -5,8 +5,17 @@ function activity_patrol(npc_id)
     debug_print(npc_name .. " patrolling")
 
     while true do
-        -- Find a random patrol point within 12 tiles
-        local dest_x, dest_y, dest_z = find_random_walkable(npc_id, 12.0)
+        -- Try to find a random patrol point within 12 tiles
+        local dest_x, dest_y, dest_z = nil, nil, nil
+        local attempts = 0
+
+        while not dest_x and attempts < 10 do
+            dest_x, dest_y, dest_z = find_random_walkable(npc_id, 12.0)
+            if not dest_x then
+                attempts = attempts + 1
+                coroutine.yield()  -- Yield between attempts
+            end
+        end
 
         if dest_x and dest_y and dest_z then
             -- Walk to patrol point
@@ -29,5 +38,8 @@ function activity_patrol(npc_id)
             play_animation(npc_id, direction, 0)
             wait(2.0)
         end
+
+        -- Safety yield to prevent instruction overrun
+        coroutine.yield()
     end
 end

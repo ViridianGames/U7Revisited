@@ -8,7 +8,9 @@ function activity_sit(npc_id)
         -- No chair - stand instead
         debug_print(npc_name .. " has no chair for sit activity, standing")
         play_animation(npc_id, 0, 0)  -- Frame 0 = standing
-        coroutine.yield()
+        while true do
+            coroutine.yield()
+        end
         return
     end
 
@@ -16,7 +18,9 @@ function activity_sit(npc_id)
     if is_sitting(npc_id) and distance_to(npc_id, chair) < 1.5 then
         -- Already sitting - just continue sitting
         debug_print(npc_name .. " already sitting, continuing")
-        coroutine.yield()
+        while true do
+            coroutine.yield()
+        end
         return
     end
 

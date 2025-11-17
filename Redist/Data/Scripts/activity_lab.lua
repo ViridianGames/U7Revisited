@@ -38,5 +38,8 @@ function activity_lab(npc_id)
             -- Turn back to main equipment
             play_animation(npc_id, 0, 0)
         end
+
+        -- Safety yield to prevent instruction overrun
+        coroutine.yield()
     end
 end

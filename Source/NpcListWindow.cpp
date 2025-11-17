@@ -50,7 +50,7 @@ NpcListWindow::NpcListWindow(ResourceManager* resourceManager, int screenWidth, 
 {
 	m_window = new GhostWindow("Gui/npc_list_window.ghost", "Gui",
 	                           resourceManager, screenWidth, screenHeight,
-	                           true, 1.0f, 1.0f);  // Modal to block input passthrough
+	                           false, 1.0f, 1.0f);  // Not modal - uses g_mouseOverUI instead
 
 	BuildNPCList();
 	RebuildFilteredList();
@@ -61,12 +61,15 @@ NpcListWindow::~NpcListWindow()
 	delete m_window;
 }
 
-void NpcListWindow::Update()
+void NpcListWindow::Update(bool schedulesEnabled)
 {
 	if (!m_window || !m_window->IsVisible())
 		return;
 
 	m_window->Update();
+
+	// Update header status based on schedule state
+	UpdateHeaderStatus(schedulesEnabled);
 
 	// Check if search text changed
 	Gui* gui = m_window->GetGui();
@@ -150,17 +153,19 @@ void NpcListWindow::Update()
 		}
 	}
 
-	// Check for double-click on listbox
+	// Check for click on listbox (single-click to move camera)
 	int listboxId = m_window->GetElementID("NPC_LISTBOX");
 	auto listboxElement = gui->GetElement(listboxId);
 
 	if (listboxElement && listboxElement->m_Type == GUI_LISTBOX)
 	{
 		auto listbox = static_cast<GuiListBox*>(listboxElement.get());
-		if (listbox->m_DoubleClicked)
+
+		// Single-click moves camera to NPC
+		if (listbox->m_Clicked)
 		{
-			HandleDoubleClick();
-			listbox->m_DoubleClicked = false;  // Reset flag
+			HandleDoubleClick();  // Reuse same function for single-click
+			listbox->m_Clicked = false;  // Reset flag
 		}
 	}
 
@@ -396,9 +401,10 @@ void NpcListWindow::HandleDoubleClick()
 
 	g_CameraMoved = true;
 
-	DebugPrint("Camera teleported to NPC " + std::string(npcData->name) +
-	          " at (" + std::to_string((int)npcPos.x) + ", " +
-	          std::to_string((int)npcPos.z) + ")");
+	// DISABLED: Reduce log spam to improve responsiveness when clicking NPCs
+	// DebugPrint("Camera teleported to NPC " + std::string(npcData->name) +
+	//           " at (" + std::to_string((int)npcPos.x) + ", " +
+	//           std::to_string((int)npcPos.z) + ")");
 }
 
 std::string NpcListWindow::GetActivityName(int activityId)
@@ -414,5 +420,31 @@ std::string NpcListWindow::GetActivityName(int activityId)
 	else
 	{
 		return "Unknown (" + std::to_string(activityId) + ")";
+	}
+}
+
+void NpcListWindow::UpdateHeaderStatus(bool schedulesEnabled)
+{
+	Gui* gui = m_window->GetGui();
+	if (!gui)
+		return;
+
+	int headerId = m_window->GetElementID("LIST_HEADER");
+	auto headerElement = gui->GetElement(headerId);
+
+	if (headerElement && headerElement->m_Type == GUI_TEXTAREA)
+	{
+		auto header = static_cast<GuiTextArea*>(headerElement.get());
+
+		if (schedulesEnabled)
+		{
+			header->m_String = "NPC List";
+			header->m_Color = Color{ 0, 255, 0, 255 };  // Green
+		}
+		else
+		{
+			header->m_String = "NPC List - DISABLED";
+			header->m_Color = Color{ 255, 0, 0, 255 };  // Red
+		}
 	}
 }

@@ -4340,37 +4340,25 @@ static int LuaFindRandomWalkable(lua_State *L)
     int anchorX = (int)npcPos.x;
     int anchorZ = (int)npcPos.z;
 
-    // Try up to 50 random positions
-    for (int attempt = 0; attempt < 50; attempt++)
+    // Pick ONE random offset within radius (caller should retry with yields if needed)
+    float offsetX = ((float)rand() / RAND_MAX * 2.0f - 1.0f) * radius;
+    float offsetZ = ((float)rand() / RAND_MAX * 2.0f - 1.0f) * radius;
+
+    int targetX = anchorX + (int)offsetX;
+    int targetZ = anchorZ + (int)offsetZ;
+
+    // Only check if position is walkable - NO pathfinding (too expensive)
+    if (!g_pathfindingGrid->IsPositionWalkable(targetX, targetZ))
     {
-        // Pick random offset within radius
-        float offsetX = ((float)rand() / RAND_MAX * 2.0f - 1.0f) * radius;
-        float offsetZ = ((float)rand() / RAND_MAX * 2.0f - 1.0f) * radius;
-
-        int targetX = anchorX + (int)offsetX;
-        int targetZ = anchorZ + (int)offsetZ;
-
-        // Check if position is walkable
-        if (!g_pathfindingGrid->IsPositionWalkable(targetX, targetZ))
-            continue;
-
-        // Check if pathfinding can find a route to it
-        Vector3 targetPos = {(float)targetX, npcPos.y, (float)targetZ};
-        std::vector<Vector3> path = g_aStar->FindPath(npcPos, targetPos, g_pathfindingGrid);
-
-        if (!path.empty())
-        {
-            // Found a valid, reachable position
-            lua_pushnumber(L, (float)targetX);
-            lua_pushnumber(L, npcPos.y);
-            lua_pushnumber(L, (float)targetZ);
-            return 3;
-        }
+        lua_pushnil(L);
+        return 1;
     }
 
-    // Failed to find a walkable position after 50 attempts
-    lua_pushnil(L);
-    return 1;
+    // Position is walkable, return it
+    lua_pushnumber(L, (float)targetX);
+    lua_pushnumber(L, npcPos.y);
+    lua_pushnumber(L, (float)targetZ);
+    return 3;
 }
 
 // get_current_animation(npc_id) -> frameX, frameY

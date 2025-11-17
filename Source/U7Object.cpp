@@ -667,9 +667,10 @@ void U7Object::PathfindToDest(Vector3 dest)
 	else
 	{
 		// No path found, don't move at all
-		AddConsoleString("WARNING: NPC " + std::to_string(m_NPCID) + " could not find path from (" +
-		                 std::to_string((int)m_Pos.x) + "," + std::to_string((int)m_Pos.z) + ") to (" +
-		                 std::to_string((int)dest.x) + "," + std::to_string((int)dest.z) + ") - staying put!", RED);
+		// DISABLED: Reduce console spam from activity scripts pathfinding
+		//AddConsoleString("WARNING: NPC " + std::to_string(m_NPCID) + " could not find path from (" +
+		//                 std::to_string((int)m_Pos.x) + "," + std::to_string((int)m_Pos.z) + ") to (" +
+		//                 std::to_string((int)dest.x) + "," + std::to_string((int)dest.z) + ") - staying put!", RED);
 		// Don't call SetDest() - NPC will remain stationary
 	}
 }

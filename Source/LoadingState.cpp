@@ -1446,7 +1446,7 @@ void LoadingState::ExtractGumps()
 							{
 								// Repeat single color
 								unsigned char col = ReadU8(gumps);
-	
+
 								for (int i = 0; i < bcnt && x >= 0 && x < (int)frameOffsets[frameNum].width; ++i, ++x)
 								{
 									Color color = m_palettes[0][col];
@@ -1459,7 +1459,7 @@ void LoadingState::ExtractGumps()
 								for (int i = 0; i < bcnt && x >= 0 && x < (int)frameOffsets[frameNum].width; ++i, ++x)
 								{
 									unsigned char col = ReadU8(gumps);
-		
+
 									Color color = m_palettes[0][col];
 									ImageDrawPixel(&frameImage, x, scany, color);
 								}
@@ -2313,4 +2313,72 @@ void LoadingState::LoadNPCSchedules()
 			}
 		}
 	}
+// #define DEBUG_DUMP_SCHEDULES 1
+#ifdef DEBUG_DUMP_SCHEDULES
+	// Write schedules.csv for debugging
+	// Format: name,0,3,6,9,12,15,18,21
+	ofstream csvFile("schedules.csv");
+	if (csvFile.is_open())
+	{
+		// Activity names (from NpcListWindow.cpp)
+		static const char* ACTIVITY_NAMES[] = {
+			"Combat", "Horizontal Pace", "Vertical Pace", "Talk", "Dance", "Eat", "Farm",
+			"Tend Shop", "Miner", "Hound", "Stand", "Loiter", "Wander", "Blacksmith",
+			"Sleep", "Wait", "Major Sit", "Graze", "Bake", "Sew", "Shy", "Lab",
+			"Thief", "Waiter", "Special", "Kid Games", "Eat at Inn", "Duel", "Preach",
+			"Patrol", "Desk Work", "Follow Avatar"
+		};
+
+		// CSV header
+		csvFile << "Name,0,3,6,9,12,15,18,21\n";
+
+		// Write each NPC's schedule
+		for (unsigned int npcID = 1; npcID < 256; ++npcID)
+		{
+			if (g_NPCData.find(npcID) == g_NPCData.end() || !g_NPCData[npcID])
+				continue;
+
+			csvFile << g_NPCData[npcID]->name;
+
+			// For each time block (0-7)
+			for (int timeBlock = 0; timeBlock < 8; ++timeBlock)
+			{
+				csvFile << ",";
+
+				// Find the schedule entry for this time block
+				bool found = false;
+				if (g_NPCSchedules.find(npcID) != g_NPCSchedules.end())
+				{
+					for (const auto& schedule : g_NPCSchedules[npcID])
+					{
+						if (schedule.m_time == timeBlock)
+						{
+							int activityId = schedule.m_activity;
+							if (activityId >= 0 && activityId <= 31)
+							{
+								csvFile << ACTIVITY_NAMES[activityId];
+							}
+							else
+							{
+								csvFile << "Unknown(" << activityId << ")";
+							}
+							found = true;
+							break;
+						}
+					}
+				}
+
+				if (!found)
+				{
+					csvFile << "None";
+				}
+			}
+
+			csvFile << "\n";
+		}
+
+		csvFile.close();
+		Log("Wrote schedules.csv with NPC schedule data");
+	}
+#endif
 }
