@@ -10,7 +10,19 @@ function activity_lab(npc_id)
         -- Walk to equipment if not already there
         if distance_to(npc_id, equipment) > 2.0 then
             debug_npc(npc_id, "walking to lab equipment")
-            walk_to_object(npc_id, equipment)
+
+            local obj_pos = get_object_position(equipment)
+            if obj_pos then
+                local request_id = request_pathfind(npc_id, obj_pos.x, obj_pos.y, obj_pos.z)
+
+                -- Wait for path to be computed
+                while not is_path_ready(request_id) do
+                    coroutine.yield()
+                end
+
+                -- Start following the path
+                start_following_path(npc_id)
+            end
 
             -- Wait until we reach the equipment
             while distance_to(npc_id, equipment) > 2.0 do

@@ -302,8 +302,10 @@ string ScriptingSystem::CallScript(const string& func_name, const vector<LuaArg>
     {
         const char* error = lua_tostring(co, -1);
         lua_pop(co, 1);
+        string errorMsg = error ? error : "Unknown error";
+        DebugPrint("LUA ERROR in script '" + func_name + "': " + errorMsg);
         CleanupCoroutine(func_name); // Changed
-        return error ? error : "Unknown error";
+        return errorMsg;
     }
 
     string result = "";
@@ -407,8 +409,10 @@ string ScriptingSystem::ResumeCoroutine(const string& func_name, const vector<Lu
     {
         const char* error = lua_tostring(co, -1);
         lua_pop(co, 1);
+        string errorMsg = error ? error : "Unknown error";
+        DebugPrint("LUA ERROR in script '" + func_name + "': " + errorMsg);
         CleanupCoroutine(func_name); // Changed
-        return error ? error : "Unknown error";
+        return errorMsg;
     }
 
     string result = "";

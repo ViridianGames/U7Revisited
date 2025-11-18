@@ -31,9 +31,18 @@ function activity_pace_horz(npc_id)
 
         -- Walk to destination if we found somewhere to go
         if dest_x ~= curr_x then
-            walk_to_position(npc_id, dest_x, curr_y, curr_z)
+            -- Step 1: Request pathfind
+            local request_id = request_pathfind(npc_id, dest_x, curr_y, curr_z)
 
-            -- Wait until path completes
+            -- Step 2: Wait for path to be computed
+            while not is_path_ready(request_id) do
+                coroutine.yield()
+            end
+
+            -- Step 3: Start following the path
+            start_following_path(npc_id)
+
+            -- Wait until movement completes
             while not wait_move_end(npc_id) do
                 coroutine.yield()
             end

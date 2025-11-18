@@ -325,17 +325,61 @@ function set_npc_pos(npc_id, x, y, z) end
 ---@param z integer Target Z coordinate
 function set_npc_dest(npc_id, x, y, z) end
 
----Walks an NPC to an object using A* pathfinding (avoids obstacles)
----@param npc_id integer The NPC to move
----@param object_id integer The target object ID
-function walk_to_object(npc_id, object_id) end
-
----Walks an NPC to a position using A* pathfinding (avoids obstacles)
+---Low-level: Request pathfinding (step 1 of 3)
 ---@param npc_id integer The NPC to move
 ---@param x number Target X coordinate
 ---@param y number Target Y coordinate
 ---@param z number Target Z coordinate
-function walk_to_position(npc_id, x, y, z) end
+---@return integer request_id Request ID for tracking
+function request_pathfind(npc_id, x, y, z) end
+
+---Low-level: Check if pathfinding is ready (step 2 of 3, consumes result)
+---@param request_id integer Request ID from request_pathfind
+---@return boolean ready True if path is computed
+function is_path_ready(request_id) end
+
+---Low-level: Start following computed path (step 3 of 3)
+---@param npc_id integer The NPC to start moving
+function start_following_path(npc_id) end
+
+---Walks an NPC to an object using A* pathfinding (avoids obstacles)
+---ASYNC: Returns immediately, path computed in background
+---@param npc_id integer The NPC to move
+---@param object_id integer The target object ID
+function walk_to_object(npc_id, object_id)
+    local obj_pos = get_object_position(object_id)
+    if not obj_pos then return end
+
+    -- Step 1: Request pathfind
+    local request_id = request_pathfind(npc_id, obj_pos.x, obj_pos.y, obj_pos.z)
+
+    -- Step 2: Wait for path
+    while not is_path_ready(request_id) do
+        coroutine.yield()
+    end
+
+    -- Step 3: Start moving
+    start_following_path(npc_id)
+end
+
+---Walks an NPC to a position using A* pathfinding (avoids obstacles)
+---ASYNC: Returns immediately, path computed in background
+---@param npc_id integer The NPC to move
+---@param x number Target X coordinate
+---@param y number Target Y coordinate
+---@param z number Target Z coordinate
+function walk_to_position(npc_id, x, y, z)
+    -- Step 1: Request pathfind
+    local request_id = request_pathfind(npc_id, x, y, z)
+
+    -- Step 2: Wait for path
+    while not is_path_ready(request_id) do
+        coroutine.yield()
+    end
+
+    -- Step 3: Start moving
+    start_following_path(npc_id)
+end
 
 ---Checks if an NPC is currently moving/walking
 ---Use this to wait for an NPC to reach their destination after calling walk_to_position()

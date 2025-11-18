@@ -904,9 +904,6 @@ void MainState::Update()
 						// Update the schedule time and activity
 						npcObj->m_lastSchedule = mostRecentScheduleTime;
 						npcData->m_currentActivity = mostRecentActivity;
-					// Clear schedule path flag - will be set again if new schedule has destination
-					npcObj->m_isSchedulePath = false;
-
 
 						// Only queue for pathfinding if pathfinding is enabled
 						if (m_npcPathfindingEnabled)
@@ -1018,11 +1015,6 @@ void MainState::Update()
 					npcObj->PathfindToDest(Vector3{ float(mostRecentSchedule->m_destX), 0, float(mostRecentSchedule->m_destY) });
 					npcObj->m_isMoving = true;
 				}
-			else
-			{
-				// No schedule destination ("None" entry) - clear schedule path flag so activity can run
-				npcObj->m_isSchedulePath = false;
-			}
 			}
 		}
 	}

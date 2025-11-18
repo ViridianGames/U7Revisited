@@ -10,7 +10,18 @@ function activity_graze(npc_id)
 
         if grass and distance_to(npc_id, grass) < 10.0 then
             -- Walk to grass patch
-            walk_to_object(npc_id, grass)
+            local obj_pos = get_object_position(grass)
+            if obj_pos then
+                local request_id = request_pathfind(npc_id, obj_pos.x, obj_pos.y, obj_pos.z)
+
+                -- Wait for path to be computed
+                while not is_path_ready(request_id) do
+                    coroutine.yield()
+                end
+
+                -- Start following the path
+                start_following_path(npc_id)
+            end
 
             -- Wait until we reach the grass
             while distance_to(npc_id, grass) > 2.0 do
@@ -34,9 +45,17 @@ function activity_graze(npc_id)
             end
 
             if dest_x and dest_y and dest_z then
-                walk_to_position(npc_id, dest_x, dest_y, dest_z)
+                local request_id = request_pathfind(npc_id, dest_x, dest_y, dest_z)
 
-                -- Wait until path completes
+                -- Wait for path to be computed
+                while not is_path_ready(request_id) do
+                    coroutine.yield()
+                end
+
+                -- Start following the path
+                start_following_path(npc_id)
+
+                -- Wait until movement completes
                 while not wait_move_end(npc_id) do
                     coroutine.yield()
                 end

@@ -138,6 +138,7 @@ public:
    std::vector<Vector3> m_pathWaypoints;  // Queue of waypoints to follow
    int m_currentWaypointIndex = 0;         // Which waypoint we're moving toward
    bool m_pathfindingPending = false;      // True when waiting for async pathfinding result
+   bool m_isSchedulePath = false;          // True for C++ schedule paths, false for Lua activity paths
 
    Vector3 m_ExternalForce;
 

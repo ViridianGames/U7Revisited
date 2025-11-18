@@ -33,6 +33,9 @@ public:
 	bool IsVisible() const;
 	GhostWindow* GetWindow() const { return m_window; }
 
+	// Select an NPC by ID (clears search, highlights NPC, scrolls into view)
+	void SelectNPC(int npcId);
+
 private:
 	enum class SortMode
 	{

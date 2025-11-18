@@ -783,14 +783,14 @@ static int LuaGetObjectPosition(lua_State *L)
     U7Object *object = GetObjectFromID(object_id);
     if (object)
     {
-        // Create table {x, y, z}
+        // Create table {x = x, y = y, z = z}
         lua_newtable(L);
         lua_pushnumber(L, object->m_Pos.x);
-        lua_rawseti(L, -2, 1);  // table[1] = x
+        lua_setfield(L, -2, "x");  // table.x = x
         lua_pushnumber(L, object->m_Pos.y);
-        lua_rawseti(L, -2, 2);  // table[2] = y
+        lua_setfield(L, -2, "y");  // table.y = y
         lua_pushnumber(L, object->m_Pos.z);
-        lua_rawseti(L, -2, 3);  // table[3] = z
+        lua_setfield(L, -2, "z");  // table.z = z
         return 1;  // Return 1 table
     }
     return 0;
@@ -4540,46 +4540,6 @@ static int LuaIsSitting(lua_State *L)
     return 1;
 }
 
-// walk_to_object(npc_id, object_id)
-static int LuaWalkToObject(lua_State *L)
-{
-    int npc_id = luaL_checkinteger(L, 1);
-    int object_id = luaL_checkinteger(L, 2);
-
-    if (g_NPCData.find(npc_id) == g_NPCData.end())
-    {
-        return 0;
-    }
-
-    U7Object* target = GetObjectFromID(object_id);
-    if (!target)
-    {
-        return 0;
-    }
-
-    Vector3 targetPos = target->GetPos();
-    g_objectList[g_NPCData[npc_id]->m_objectID]->PathfindToDest(targetPos);
-
-    return 0;
-}
-
-// walk_to_position(npc_id, x, y, z)
-static int LuaWalkToPosition(lua_State *L)
-{
-    int npc_id = luaL_checkinteger(L, 1);
-    float x = (float)luaL_checknumber(L, 2);
-    float y = (float)luaL_checknumber(L, 3);
-    float z = (float)luaL_checknumber(L, 4);
-
-    if (g_NPCData.find(npc_id) == g_NPCData.end())
-    {
-        return 0;
-    }
-
-    g_objectList[g_NPCData[npc_id]->m_objectID]->PathfindToDest({x, y, z});
-
-    return 0;
-}
 
 // request_pathfind(npc_id, x, y, z) -> request_id
 // Step 1: Submit pathfinding request, returns ID for tracking
@@ -4596,7 +4556,16 @@ static int LuaRequestPathfind(lua_State *L)
         return 1;
     }
 
-    int requestID = g_objectList[g_NPCData[npc_id]->m_objectID]->PathfindToDestTracked({x, y, z});
+    U7Object* npc = g_objectList[g_NPCData[npc_id]->m_objectID].get();
+
+    // Stop movement while new path is being computed
+    // (PathfindToDestTracked will clear waypoints and set m_pathfindingPending)
+    npc->m_isMoving = false;
+
+    int requestID = npc->PathfindToDestTracked({x, y, z});
+    DebugPrint("Lua: NPC " + std::to_string(npc_id) + " requested pathfind to (" +
+               std::to_string((int)x) + "," + std::to_string((int)y) + "," + std::to_string((int)z) +
+               "), got request ID " + std::to_string(requestID));
     lua_pushinteger(L, requestID);
     return 1;
 }
@@ -4622,15 +4591,20 @@ static int LuaIsPathReady(lua_State *L)
     }
 
     bool ready = g_pathfindingThreadPool->IsPathReady(requestID);
+    if (ready)
+    {
+        DebugPrint("Lua: Path ready for request ID " + std::to_string(requestID));
+    }
     lua_pushboolean(L, ready);
     return 1;
 }
 
-// start_following_path(npc_id)
+// start_following_path(npc_id, request_id)
 // Step 3: Start following the computed path (path must be ready first)
 static int LuaStartFollowingPath(lua_State *L)
 {
     int npc_id = luaL_checkinteger(L, 1);
+    int request_id = luaL_optinteger(L, 2, 0);  // Optional request ID for logging
 
     if (g_NPCData.find(npc_id) == g_NPCData.end())
     {
@@ -4640,8 +4614,22 @@ static int LuaStartFollowingPath(lua_State *L)
     U7Object* npc = g_objectList[g_NPCData[npc_id]->m_objectID].get();
     if (npc && !npc->m_pathWaypoints.empty())
     {
+        DebugPrint("Lua: NPC " + std::to_string(npc_id) + " (request " + std::to_string(request_id) +
+                   ") starting to follow path with " + std::to_string(npc->m_pathWaypoints.size()) +
+                   " waypoints, m_isMoving=" + std::to_string(npc->m_isMoving) +
+                   ", m_pathfindingPending=" + std::to_string(npc->m_pathfindingPending));
         npc->SetDest(npc->m_pathWaypoints[0]);
         npc->m_isMoving = true;
+        DebugPrint("Lua: NPC " + std::to_string(npc_id) + " SetDest to (" +
+                   std::to_string((int)npc->m_pathWaypoints[0].x) + "," +
+                   std::to_string((int)npc->m_pathWaypoints[0].z) + "), m_isMoving now=" +
+                   std::to_string(npc->m_isMoving));
+    }
+    else if (npc)
+    {
+        DebugPrint("Lua: NPC " + std::to_string(npc_id) + " (request " + std::to_string(request_id) +
+                   ") has NO waypoints to follow! m_pathfindingPending=" +
+                   std::to_string(npc->m_pathfindingPending));
     }
 
     return 0;

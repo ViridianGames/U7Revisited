@@ -403,16 +403,19 @@ void U7Object::NPCUpdate()
 				}
 			}
 
-			// Start new activity script - use per-NPC coroutine key
-			std::string new_script = GetActivityScriptName(currentActivity) + "_" + std::to_string(m_NPCID);
-			std::vector<ScriptingSystem::LuaArg> args = { m_NPCID };
-			g_ScriptingSystem->CallScript(new_script, args);
-
-			// Update last activity
-			g_NPCData[m_NPCID]->m_lastActivity = currentActivity;
+			// Only start activity if not following a schedule path
+			// Block if: pathfinding pending OR currently on schedule path (orange)
+			if (!m_pathfindingPending && !m_isSchedulePath)
+			{
+				// Start new activity script
+				std::string new_script = GetActivityScriptName(currentActivity) + "_" + std::to_string(m_NPCID);
+				std::vector<ScriptingSystem::LuaArg> args = { m_NPCID };
+				g_ScriptingSystem->CallScript(new_script, args);
+				g_NPCData[m_NPCID]->m_lastActivity = currentActivity;
+			}
 		}
-		// Activity hasn't changed - resume coroutine if yielded
-		else if (currentActivity >= 0)
+		// Activity hasn't changed - resume if not on schedule path
+		else if (currentActivity >= 0 && !m_pathfindingPending && !m_isSchedulePath)
 		{
 			std::string script_name = GetActivityScriptName(currentActivity) + "_" + std::to_string(m_NPCID);
 			if (g_ScriptingSystem->IsCoroutineYielded(script_name))
@@ -440,8 +443,8 @@ void U7Object::NPCUpdate()
 	// Schedule checking is now handled by MainState::Update() queue system
 	// This function only handles waypoint following and movement
 
-	// Follow waypoints from pathfinding (but not if pathfinding is still in progress)
-	if (!m_pathfindingPending && !m_pathWaypoints.empty() && m_currentWaypointIndex < m_pathWaypoints.size())
+	// Follow waypoints from pathfinding (only when actively moving)
+	if (m_isMoving && !m_pathfindingPending && !m_pathWaypoints.empty() && m_currentWaypointIndex < m_pathWaypoints.size())
 	{
 		// Check if reached current waypoint (within 0.5 tiles for intermediate, exact for last)
 		float distToWaypoint = Vector3Distance(m_Pos, m_pathWaypoints[m_currentWaypointIndex]);
@@ -456,6 +459,7 @@ void U7Object::NPCUpdate()
 				m_pathWaypoints.clear();
 				m_currentWaypointIndex = 0;
 				m_isMoving = false;
+				m_isSchedulePath = false;  // Clear schedule path flag - now can run activity
 				SetDest(m_Pos);  // Set destination to current position to stop movement
 			}
 			else

@@ -171,20 +171,11 @@ void NpcListWindow::Update(bool schedulesEnabled)
 	}
 
 	// Check if schedule time has changed - rebuild list to show updated activities
+	// This happens at the start of each 3-hour schedule block (0:00, 3:00, 6:00, 9:00, etc.)
 	extern unsigned int g_scheduleTime;
 	if (g_scheduleTime != m_lastScheduleTime)
 	{
 		m_lastScheduleTime = g_scheduleTime;
-		BuildNPCList();
-		RebuildFilteredList();
-		m_lastRefreshTime = GetTime();
-	}
-	
-	// Also refresh every 2 seconds to catch activity changes within a time block
-	double currentTime = GetTime();
-	if (currentTime - m_lastRefreshTime >= 2.0)
-	{
-		m_lastRefreshTime = currentTime;
 		BuildNPCList();
 		RebuildFilteredList();
 	}
@@ -351,6 +342,33 @@ void NpcListWindow::SortNPCList()
 
 void NpcListWindow::RebuildFilteredList()
 {
+	// Get current selection before rebuilding
+	Gui* gui = m_window->GetGui();
+	if (!gui)
+	{
+		DebugPrint("RebuildFilteredList: No GUI!");
+		return;
+	}
+
+	int listboxId = m_window->GetElementID("NPC_LISTBOX");
+	auto listboxElement = gui->GetElement(listboxId);
+
+	if (!listboxElement || listboxElement->m_Type != GUI_LISTBOX)
+	{
+		DebugPrint("RebuildFilteredList: NPC_LISTBOX not found or wrong type! ID=" + std::to_string(listboxId));
+		return;
+	}
+
+	auto listbox = static_cast<GuiListBox*>(listboxElement.get());
+
+	// Save currently selected NPC ID (if any)
+	int selectedNpcId = -1;
+	int oldSelectedIndex = listbox->GetSelectedIndex();
+	if (oldSelectedIndex >= 0 && oldSelectedIndex < (int)m_filteredNPCs.size())
+	{
+		selectedNpcId = m_filteredNPCs[oldSelectedIndex].npcId;
+	}
+
 	m_filteredNPCs.clear();
 
 	// Convert search text to lowercase for case-insensitive search
@@ -381,32 +399,27 @@ void NpcListWindow::RebuildFilteredList()
 	}
 
 	// Update listbox with filtered items
-	Gui* gui = m_window->GetGui();
-	if (!gui)
+	listbox->Clear();
+
+	for (const auto& entry : m_filteredNPCs)
 	{
-		DebugPrint("RebuildFilteredList: No GUI!");
-		return;
+		listbox->AddItem(entry.displayText);
 	}
 
-	int listboxId = m_window->GetElementID("NPC_LISTBOX");
-	auto listboxElement = gui->GetElement(listboxId);
-
-	if (listboxElement && listboxElement->m_Type == GUI_LISTBOX)
+	// Restore selection if the NPC is still in the filtered list
+	if (selectedNpcId >= 0)
 	{
-		auto listbox = static_cast<GuiListBox*>(listboxElement.get());
-		listbox->Clear();
-
-		for (const auto& entry : m_filteredNPCs)
+		for (size_t i = 0; i < m_filteredNPCs.size(); i++)
 		{
-			listbox->AddItem(entry.displayText);
+			if (m_filteredNPCs[i].npcId == selectedNpcId)
+			{
+				listbox->SetSelectedIndex((int)i);
+				break;
+			}
 		}
+	}
 
-		DebugPrint("RebuildFilteredList: Added " + std::to_string(m_filteredNPCs.size()) + " items to listbox");
-	}
-	else
-	{
-		DebugPrint("RebuildFilteredList: NPC_LISTBOX not found or wrong type! ID=" + std::to_string(listboxId));
-	}
+	DebugPrint("RebuildFilteredList: Added " + std::to_string(m_filteredNPCs.size()) + " items to listbox");
 }
 
 void NpcListWindow::HandleDoubleClick()
@@ -503,5 +516,55 @@ void NpcListWindow::UpdateHeaderStatus(bool schedulesEnabled)
 			header->m_String = "NPC List - DISABLED";
 			header->m_Color = Color{ 255, 0, 0, 255 };  // Red
 		}
+	}
+}
+
+void NpcListWindow::SelectNPC(int npcId)
+{
+	if (!m_window || !m_window->IsVisible())
+		return;
+
+	Gui* gui = m_window->GetGui();
+	if (!gui)
+		return;
+
+	// Clear the search input
+	int searchInputId = m_window->GetElementID("SEARCH_INPUT");
+	auto searchElement = gui->GetElement(searchInputId);
+
+	if (searchElement && searchElement->m_Type == GUI_TEXTINPUT)
+	{
+		auto textInput = static_cast<GuiTextInput*>(searchElement.get());
+		textInput->m_String = "";
+		m_lastSearchText = "";
+	}
+
+	// Rebuild filtered list (now shows all NPCs since search is cleared)
+	RebuildFilteredList();
+
+	// Find the NPC in the filtered list
+	int listboxId = m_window->GetElementID("NPC_LISTBOX");
+	auto listboxElement = gui->GetElement(listboxId);
+
+	if (!listboxElement || listboxElement->m_Type != GUI_LISTBOX)
+		return;
+
+	auto listbox = static_cast<GuiListBox*>(listboxElement.get());
+
+	// Find index of NPC with matching ID
+	int indexToSelect = -1;
+	for (size_t i = 0; i < m_filteredNPCs.size(); i++)
+	{
+		if (m_filteredNPCs[i].npcId == npcId)
+		{
+			indexToSelect = (int)i;
+			break;
+		}
+	}
+
+	if (indexToSelect >= 0)
+	{
+		// Select the NPC (SetSelectedIndex automatically scrolls to make it visible)
+		listbox->SetSelectedIndex(indexToSelect);
 	}
 }

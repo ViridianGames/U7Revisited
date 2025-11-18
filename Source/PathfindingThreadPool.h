@@ -62,6 +62,8 @@ public:
 	int GetNextRequestID();  // Get unique request ID
 	bool IsPathReady(int requestID);  // Check if path is ready (consumes the result)
 	void MarkRequestReady(int requestID);  // Mark a request as ready (called by MainState)
+	void StorePendingLuaPath(int requestID, const std::vector<Vector3>& waypoints);  // Store waypoints for Lua
+	std::vector<Vector3> RetrievePendingLuaPath(int requestID);  // Get and remove waypoints for Lua
 
 private:
 	void WorkerThread(int workerID);
@@ -82,6 +84,7 @@ private:
 
 	// Request tracking for Lua
 	std::unordered_map<int, bool> m_readyResults;  // requestID -> ready?
+	std::unordered_map<int, std::vector<Vector3>> m_pendingLuaPaths;  // requestID -> waypoints
 	std::mutex m_readyResultsMutex;
 };
 

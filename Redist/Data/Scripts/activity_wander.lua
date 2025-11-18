@@ -10,9 +10,17 @@ function activity_wander(npc_id)
 
         if dest_x and dest_y and dest_z then
             -- Found a valid destination - walk to it
-            walk_to_position(npc_id, dest_x, dest_y, dest_z)
+            local request_id = request_pathfind(npc_id, dest_x, dest_y, dest_z)
 
-            -- Wait until path completes
+            -- Wait for path to be computed
+            while not is_path_ready(request_id) do
+                coroutine.yield()
+            end
+
+            -- Start following the path
+            start_following_path(npc_id)
+
+            -- Wait until movement completes
             while not wait_move_end(npc_id) do
                 coroutine.yield()
             end

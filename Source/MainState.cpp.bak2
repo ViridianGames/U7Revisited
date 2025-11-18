@@ -904,9 +904,6 @@ void MainState::Update()
 						// Update the schedule time and activity
 						npcObj->m_lastSchedule = mostRecentScheduleTime;
 						npcData->m_currentActivity = mostRecentActivity;
-					// Clear schedule path flag - will be set again if new schedule has destination
-					npcObj->m_isSchedulePath = false;
-
 
 						// Only queue for pathfinding if pathfinding is enabled
 						if (m_npcPathfindingEnabled)
