@@ -1452,6 +1452,13 @@ void MainState::Draw()
 	BeginTextureMode(g_guiRenderTarget);
 	ClearBackground({ 0, 0, 0, 0 });
 
+	// Set custom blend mode to preserve destination alpha while blending RGB
+	// This prevents anti-aliased text from creating transparent "holes" in gump backgrounds
+	// RGB: Normal alpha blending (SRC_ALPHA, ONE_MINUS_SRC_ALPHA)
+	// Alpha: Use MAX to preserve background alpha (ONE, ONE_MINUS_SRC_ALPHA gives us max(src.a, dst.a))
+	rlSetBlendMode(BLEND_CUSTOM_SEPARATE);
+	rlSetBlendFactorsSeparate(RL_SRC_ALPHA, RL_ONE_MINUS_SRC_ALPHA, RL_ONE, RL_ONE_MINUS_SRC_ALPHA, RL_FUNC_ADD, RL_MAX);
+
 	//  Draw the minimap and marker
 
 	if (!m_paused && m_showUIElements)
@@ -1585,6 +1592,9 @@ void MainState::Draw()
 	{
 		g_gumpManager->Draw();
 	}
+
+	// Restore default blend mode
+	rlSetBlendMode(BLEND_ALPHA);
 
 	EndTextureMode();
 

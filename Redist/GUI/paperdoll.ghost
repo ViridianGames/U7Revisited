@@ -8,8 +8,8 @@
           -1
         ],
         "size": [
-          166,
-          146
+          133,
+          136
         ],
         "backgroundColor": [
           80,
@@ -99,12 +99,12 @@
             "name": "CARRY",
             "type": "textarea",
             "position": [
-              64,
+              60,
               120
             ],
             "text": "27/36",
             "font": "babyblocks.ttf",
-            "fontSize": 8,
+            "fontSize": 10,
             "textColor": [
               0,
               0,
@@ -112,10 +112,10 @@
               255
             ],
             "size": [
-              101,
-              26
+              30,
+              10
             ],
-            "justified": 0
+            "justified": 1
           },
           {
             "name": "HEART",
@@ -311,7 +311,7 @@
             "type": "sprite",
             "position": [
               107,
-              50
+              49
             ],
             "sprite": {
               "spritesheet": "GUI/gumps.png",
