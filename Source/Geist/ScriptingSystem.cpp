@@ -99,32 +99,48 @@ void ScriptingSystem::Update()
 
         m_waitTimers.erase(scriptKey);
 
-        // Extract the base script name and NPC ID (from the "_NPCID" suffix if present)
+        // ONLY strip suffix for activity scripts (which start with "activity_")
+        // Other scripts like npc_* need to keep their full name including suffix
         std::string scriptName = scriptKey;
         int npc_id = 0;
-        size_t underscorePos = scriptKey.find_last_of('_');
-        if (underscorePos != std::string::npos)
-        {
-            // Check if everything after the underscore is a number (NPC ID)
-            bool isNumeric = true;
-            for (size_t i = underscorePos + 1; i < scriptKey.length(); i++)
-            {
-                if (!isdigit(scriptKey[i]))
-                {
-                    isNumeric = false;
-                    break;
-                }
-            }
+        bool hasNpcId = false;
 
-            // If it's a numeric suffix, extract both the base name and NPC ID
-            if (isNumeric && underscorePos > 0)
+        // Check if this is an activity script
+        if (scriptKey.find("activity_") == 0)
+        {
+            size_t underscorePos = scriptKey.find_last_of('_');
+            if (underscorePos != std::string::npos)
             {
-                scriptName = scriptKey.substr(0, underscorePos);
-                npc_id = std::stoi(scriptKey.substr(underscorePos + 1));
+                // Check if everything after the underscore is a number (NPC ID)
+                bool isNumeric = true;
+                for (size_t i = underscorePos + 1; i < scriptKey.length(); i++)
+                {
+                    if (!isdigit(scriptKey[i]))
+                    {
+                        isNumeric = false;
+                        break;
+                    }
+                }
+
+                // If it's a numeric suffix, extract both the base name and NPC ID
+                if (isNumeric && underscorePos > 0)
+                {
+                    scriptName = scriptKey.substr(0, underscorePos);
+                    npc_id = std::stoi(scriptKey.substr(underscorePos + 1));
+                    hasNpcId = true;
+                }
             }
         }
 
-        ResumeCoroutine(scriptKey, {npc_id});
+        // Only pass npc_id for activity scripts
+        if (hasNpcId)
+        {
+            ResumeCoroutine(scriptName, {npc_id});
+        }
+        else
+        {
+            ResumeCoroutine(scriptKey, {});
+        }
     }
 }
 
@@ -174,16 +190,20 @@ string ScriptingSystem::CallScript(const string& func_name, const vector<LuaArg>
 {
     // (mostly unchanged, but replace unref/erase with CleanupCoroutine)
     // Extract base function name (strip per-NPC suffix like "_123" from "activity_loiter_123")
+    // ONLY strip suffix for activity scripts (those starting with "activity_")
     string base_func_name = func_name;
-    size_t last_underscore = func_name.find_last_of('_');
-    if (last_underscore != string::npos)
+    if (func_name.find("activity_") == 0)
     {
-        string suffix = func_name.substr(last_underscore + 1);
-        // Check if suffix is all digits (NPC ID)
-        bool all_digits = !suffix.empty() && std::all_of(suffix.begin(), suffix.end(), ::isdigit);
-        if (all_digits)
+        size_t last_underscore = func_name.find_last_of('_');
+        if (last_underscore != string::npos)
         {
-            base_func_name = func_name.substr(0, last_underscore);
+            string suffix = func_name.substr(last_underscore + 1);
+            // Check if suffix is all digits (NPC ID)
+            bool all_digits = !suffix.empty() && std::all_of(suffix.begin(), suffix.end(), ::isdigit);
+            if (all_digits)
+            {
+                base_func_name = func_name.substr(0, last_underscore);
+            }
         }
     }
 
