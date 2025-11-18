@@ -1665,26 +1665,19 @@ void LoadingState::CreateObjectTable()
 		g_objectDataTable[i].m_isTranslucent = (buffer[2] >> 7) & 0x01;
 		g_objectDataTable[i].m_name = shapeNames[i];
 
-		// Fix: Some doors don't have m_isDoor flag set in the data file
-		// If the name contains "door" (case-insensitive), mark it as a door
+		// NOTE: Door workaround no longer needed - TFA parsing was fixed to read isDoor flag correctly
+		// Previously the bit shift was wrong (buffer[1] >> 9 instead of buffer[1] >> 5)
+		/*
 		string lowerName = g_objectDataTable[i].m_name;
 		transform(lowerName.begin(), lowerName.end(), lowerName.begin(), ::tolower);
 		if (lowerName.find("door") != string::npos)
 		{
 			g_objectDataTable[i].m_isDoor = true;
 		}
+		*/
 	}
 
-#ifdef DEBUG_NPC_PATHFINDING
-	// Count how many shapes were marked as doors
-	int doorCount = 0;
-	for (int i = 0; i < 1024; i++)
-	{
-		if (g_objectDataTable[i].m_isDoor)
-			doorCount++;
-	}
-	AddConsoleString("Marked " + to_string(doorCount) + " shapes as doors", GREEN);
-#endif
+	// Door flags are now correctly parsed from TFA data (bit 5 of byte 1)
 
 	wgtvolfile.close();
 	tfafile.close();
