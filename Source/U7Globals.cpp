@@ -1125,6 +1125,34 @@ std::string GetShapeFrameName(int shape, int frame, int quantity)
 	return "unknown";
 }
 
+std::string GetObjectDisplayName(U7Object* object)
+{
+	if (!object || !object->m_shapeData)
+		return "Unknown";
+
+	int shape = object->m_shapeData->GetShape();
+	
+	// Calculate quantity correctly for stackable items
+	// For stackable items (shape type 3), quality field lower 7 bits = quantity
+	// High bit (0x80) is used for other flags and must be masked off
+	int quantity = 1;
+	char shapeType = (shape >= 0 && shape < 1024) ? g_objectDataTable[shape].m_shapeType : 0;
+	
+	DebugPrint("GetObjectDisplayName: shape=" + std::to_string(shape) + 
+	           " shapeType=" + std::to_string((int)shapeType) +
+	           " rawQuality=" + std::to_string(object->m_Quality));
+	
+	// Check shape type from global table
+	if (shapeType == 3)
+	{
+		quantity = object->m_Quality & 0x7f;
+		if (quantity == 0) quantity = 1;
+		DebugPrint("  -> Stackable item, maskedQuantity=" + std::to_string(quantity));
+	}
+
+	return GetShapeFrameName(shape, object->m_shapeData->GetFrame(), quantity);
+}
+
 std::string FindNPCScriptByID(int npcID)
 {
 	// Format NPC ID as 4-digit hex suffix: _XXXX

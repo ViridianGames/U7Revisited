@@ -135,6 +135,9 @@ extern std::vector<std::string> g_miscNames;
 // Get the name for a specific shape, frame, and quantity
 std::string GetShapeFrameName(int shape, int frame, int quantity = 1);
 
+// Get the display name for an object (handles quantity calculation)
+std::string GetObjectDisplayName(U7Object* object);
+
 // Find NPC script by NPC ID (returns script name or empty string)
 // Only matches scripts starting with "npc_" and ending with "_XXXX" where XXXX is the NPC ID
 std::string FindNPCScriptByID(int npcID);

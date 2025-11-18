@@ -2652,9 +2652,19 @@ static int LuaGetItemQuantity(lua_State *L)
     }
 
     U7Object* obj = g_objectList[object_id].get();
-    // In Ultima 7, quality field is used as quantity for stackable items
+    // In Ultima 7, quality field is used as quantity for stackable items (shape type 3)
+    // For stackable items, lower 7 bits = quantity, high bit (0x80) is a flag
     // For non-stackable items, quantity is implicitly 1
-    int quantity = (obj->m_Quality > 0) ? obj->m_Quality : 1;
+    int quantity = 1;
+    if (obj->m_shapeData)
+    {
+        int shape = obj->m_shapeData->GetShape();
+        if (shape >= 0 && shape < 1024 && g_objectDataTable[shape].m_shapeType == 3)
+        {
+            quantity = obj->m_Quality & 0x7f;
+            if (quantity == 0) quantity = 1;
+        }
+    }
 
     lua_pushinteger(L, quantity);
     return 1;
@@ -2673,8 +2683,17 @@ static int LuaSetItemQuantity(lua_State *L)
 
     U7Object* obj = g_objectList[object_id].get();
     // Set quality field which represents quantity for stackable items
-    obj->m_Quality = quantity;
-
+    // Preserve the high bit (0x80) flag when setting quantity
+    if (obj->m_shapeData)
+    {
+        int shape = obj->m_shapeData->GetShape();
+        if (shape >= 0 && shape < 1024 && g_objectDataTable[shape].m_shapeType == 3)
+        {
+            obj->m_Quality = (quantity & 0x7f) | (obj->m_Quality & 0x80);
+        }
+    }
+    // For non-stackable items, don't modify quality field based on "quantity"
+    
     // TODO: If quantity reaches 0, should the object be destroyed?
     // Exult does this, but leaving it for now to avoid breaking things
 

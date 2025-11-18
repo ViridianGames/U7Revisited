@@ -614,8 +614,7 @@ void GumpPaperdoll::Update()
 									U7Object* obj = objIt->second.get();
 									if (obj->m_shapeData)
 									{
-										int quantity = (obj->m_Quality > 0) ? obj->m_Quality : 1;
-										m_hoverText = GetShapeFrameName(obj->m_shapeData->GetShape(), obj->m_shapeData->GetFrame(), quantity);
+										m_hoverText = GetObjectDisplayName(obj);
 										Log("Paperdoll - Showing hover text: " + m_hoverText);
 										m_hoverTextDuration = 2.0f;
 

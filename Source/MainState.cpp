@@ -824,8 +824,7 @@ void MainState::Bark(U7Object* object, const std::string& text, float duration)
 	if (text.empty() && object)
 	{
 		m_barkAutoUpdate = true;
-		int quantity = (object->m_Quality > 0) ? object->m_Quality : 1;
-		m_barkText = GetShapeFrameName(object->m_shapeData->GetShape(), object->m_shapeData->GetFrame(), quantity);
+		m_barkText = GetObjectDisplayName(object);
 	}
 	else
 	{
@@ -1508,10 +1507,7 @@ void MainState::Draw()
 			else
 				objectDescription = "Object ";
 
-			int quantity = (g_objectUnderMousePointer->m_Quality > 0) ? g_objectUnderMousePointer->m_Quality : 1;
-			objectDescription += GetShapeFrameName(g_objectUnderMousePointer->m_shapeData->GetShape(),
-				g_objectUnderMousePointer->m_shapeData->GetFrame(),
-				quantity) + " at " +
+			objectDescription += GetObjectDisplayName(g_objectUnderMousePointer) + " at " +
 				to_string(int(g_objectUnderMousePointer->m_Pos.x)) +
 				" " +
 				to_string(int(g_objectUnderMousePointer->m_Pos.z)) +
@@ -1565,8 +1561,7 @@ void MainState::Draw()
 		// If auto-update is enabled, regenerate bark text from current object state
 		if (m_barkAutoUpdate)
 		{
-			int quantity = (m_barkObject->m_Quality > 0) ? m_barkObject->m_Quality : 1;
-			m_barkText = GetShapeFrameName(m_barkObject->m_shapeData->GetShape(), m_barkObject->m_shapeData->GetFrame(), quantity);
+			m_barkText = GetObjectDisplayName(m_barkObject);
 		}
 
 		Vector3 textPos = { m_barkObject->m_Pos.x, m_barkObject->m_Pos.y + m_barkObject->m_shapeData->m_Dims.y, m_barkObject->m_Pos.z };

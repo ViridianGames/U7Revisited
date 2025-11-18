@@ -1642,20 +1642,23 @@ void LoadingState::CreateObjectTable()
 		g_objectDataTable[i].m_volume = float(volume);
 
 		//  All other data from tfa.dat
-		char buffer[3]; // 3 bytes to store the 24 bits
-		tfafile.read(buffer, sizeof(buffer));
+		unsigned char buffer[3]; // 3 bytes to store the 24 bits
+		tfafile.read((char*)buffer, sizeof(buffer));
 
+		// Byte 0: bits 0-7
 		g_objectDataTable[i].m_hasSoundEffect = buffer[0] & 0x01;
 		g_objectDataTable[i].m_rotatable = (buffer[0] >> 1) & 0x01;
 		g_objectDataTable[i].m_isAnimated = (buffer[0] >> 2) & 0x01;
 		g_objectDataTable[i].m_isNotWalkable = (buffer[0] >> 3) & 0x01;
 		g_objectDataTable[i].m_isWater = (buffer[0] >> 4) & 0x01;
 		g_objectDataTable[i].m_height = (buffer[0] >> 5) & 0x07;
-		g_objectDataTable[i].m_shapeType = (buffer[1] >> 4) & 0x0F;
-		g_objectDataTable[i].m_isTrap = (buffer[1] >> 8) & 0x01;
-		g_objectDataTable[i].m_isDoor = (buffer[1] >> 9) & 0x01;
-		g_objectDataTable[i].m_isVehiclePart = (buffer[1] >> 10) & 0x01;
-		g_objectDataTable[i].m_isNotSelectable = (buffer[1] >> 11) & 0x01;
+		
+		// Byte 1: bits 8-15
+		g_objectDataTable[i].m_shapeType = buffer[1] & 0x0F;  // Lower 4 bits of byte 1
+		g_objectDataTable[i].m_isTrap = (buffer[1] >> 4) & 0x01;
+		g_objectDataTable[i].m_isDoor = (buffer[1] >> 5) & 0x01;
+		g_objectDataTable[i].m_isVehiclePart = (buffer[1] >> 6) & 0x01;
+		g_objectDataTable[i].m_isNotSelectable = (buffer[1] >> 7) & 0x01;
 		g_objectDataTable[i].m_width = ((buffer[2]) & 0x07) + 1;
 		g_objectDataTable[i].m_depth = ((buffer[2] >> 3) & 0x07) + 1;
 		g_objectDataTable[i].m_isLightSource = (buffer[2] >> 6) & 0x01;

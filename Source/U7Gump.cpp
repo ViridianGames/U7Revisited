@@ -216,9 +216,8 @@ void Gump::Update()
 
 					if (CheckCollisionPointRec(mousePos, itemRect))
 					{
-						// Show item name
-						int quantity = (object->m_Quality > 0) ? object->m_Quality : 1;
-						m_hoverText = GetShapeFrameName(object->m_shapeData->GetShape(), object->m_shapeData->GetFrame(), quantity);
+					// Show item name
+					m_hoverText = GetObjectDisplayName(object);
 						m_hoverTextDuration = 2.0f;
 
 						// Position text above the item
