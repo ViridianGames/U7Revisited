@@ -237,26 +237,43 @@ void U7Object::NPCDraw()
 
 	int frameIndex = 0;
 
-		//  North frames are 1 and 2, South frames are 17 and 18
-	switch(finalAngle)
+	// If not moving, use the current frame set via npc_frame()
+	if (!m_isMoving && m_Frame != 0)
 	{
-		case 0: // South-West
-			finalTexture = m_NPCData->m_walkTextures[0][m_isMoving ? thisTime : 0];
-			break;
-		case 1: // North-West
-			finalTexture = m_NPCData->m_walkTextures[3][m_isMoving ? thisTime : 0];
-			billboardAngle = 45.0f;
-			break;
-		case 2: // North-East
-			finalTexture = m_NPCData->m_walkTextures[2][m_isMoving ? thisTime : 0];
-			break;
-		case 3: // South-East
-			finalTexture = m_NPCData->m_walkTextures[1][m_isMoving ? thisTime : 0];
-			billboardAngle = 45.0f;
-			break;
-		default:
-			int stopper = 0;
-			break;
+		// Use the frame that was explicitly set (sleeping, sitting, etc.)
+		if (g_shapeTable[m_ObjectType][m_Frame].m_texture != nullptr)
+		{
+			finalTexture = &g_shapeTable[m_ObjectType][m_Frame].m_texture->m_Texture;
+		}
+		else
+		{
+			// Frame doesn't exist, fall back to standing
+			finalTexture = m_NPCData->m_walkTextures[0][0];
+		}
+	}
+	else
+	{
+		// Normal walking animation (or standing if frame 0)
+		switch(finalAngle)
+		{
+			case 0: // South-West
+				finalTexture = m_NPCData->m_walkTextures[0][m_isMoving ? thisTime : 0];
+				break;
+			case 1: // North-West
+				finalTexture = m_NPCData->m_walkTextures[3][m_isMoving ? thisTime : 0];
+				billboardAngle = 45.0f;
+				break;
+			case 2: // North-East
+				finalTexture = m_NPCData->m_walkTextures[2][m_isMoving ? thisTime : 0];
+				break;
+			case 3: // South-East
+				finalTexture = m_NPCData->m_walkTextures[1][m_isMoving ? thisTime : 0];
+				billboardAngle = 45.0f;
+				break;
+			default:
+				int stopper = 0;
+				break;
+		}
 	}
 	dims = Vector3{ float(finalTexture->width) / 8.0f, float(finalTexture->height) / 8.0f, 1 };
 
@@ -366,7 +383,8 @@ void U7Object::NPCUpdate()
 	bool shouldUpdateActivity = (m_NPCID >= startNPC && m_NPCID < endNPC);
 
 	// Activity coroutine management - check if activity has changed
-	if (shouldUpdateActivity && g_NPCData.find(m_NPCID) != g_NPCData.end())
+	// Only run activity scripts if schedules are enabled for this NPC
+	if (shouldUpdateActivity && m_followingSchedule && g_NPCData.find(m_NPCID) != g_NPCData.end())
 	{
 		int currentActivity = g_NPCData[m_NPCID]->m_currentActivity;
 		int lastActivity = g_NPCData[m_NPCID]->m_lastActivity;
@@ -401,6 +419,20 @@ void U7Object::NPCUpdate()
 				std::vector<ScriptingSystem::LuaArg> args = { m_NPCID };
 				g_ScriptingSystem->ResumeCoroutine(script_name, args);
 			}
+		}
+	}
+	// If schedules are disabled, cleanup any running activity scripts
+	else if (!m_followingSchedule && g_NPCData.find(m_NPCID) != g_NPCData.end())
+	{
+		int lastActivity = g_NPCData[m_NPCID]->m_lastActivity;
+		if (lastActivity >= 0)
+		{
+			std::string old_script = GetActivityScriptName(lastActivity) + "_" + std::to_string(m_NPCID);
+			if (g_ScriptingSystem->IsCoroutineActive(old_script))
+			{
+				g_ScriptingSystem->CleanupCoroutine(old_script);
+			}
+			g_NPCData[m_NPCID]->m_lastActivity = -1;
 		}
 	}
 

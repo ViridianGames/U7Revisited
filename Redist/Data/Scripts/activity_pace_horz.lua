@@ -1,8 +1,11 @@
 -- Activity 1: Horizontal Pace
 -- NPCs walk back and forth horizontally (east-west)
 function activity_pace_horz(npc_id)
-    local npc_name = get_npc_name(npc_id)
-    debug_print(npc_name .. " pacing horizontally")
+    
+    debug_npc(npc_id, "pacing horizontally")
+    
+    -- Stand up first (in case sitting/laying down from previous activity)
+    npc_frame(npc_id, 0)
 
     local going_east = true
 
@@ -18,7 +21,6 @@ function activity_pace_horz(npc_id)
         -- Find how far we can walk in current direction
         local dest_x = curr_x
         local step = going_east and 1 or -1
-        debug_print(npc_name .. " at (" .. curr_x .. "," .. curr_y .. "," .. curr_z .. ") going_east=" .. tostring(going_east) .. " step=" .. step)
 
         -- Walk ahead until we hit a blocked tile (max 30 tiles to prevent infinite loop)
         local max_check = 30
@@ -29,7 +31,6 @@ function activity_pace_horz(npc_id)
 
         -- Walk to destination if we found somewhere to go
         if dest_x ~= curr_x then
-            debug_print(npc_name .. " walking from x=" .. curr_x .. " to x=" .. dest_x)
             walk_to_position(npc_id, dest_x, curr_y, curr_z)
 
             -- Wait until path completes
@@ -40,7 +41,6 @@ function activity_pace_horz(npc_id)
             -- Check where we actually ended up
             local final_x, _, _ = get_npc_position(npc_id)
             final_x = math.floor(final_x)
-            debug_print(npc_name .. " stopped at x=" .. final_x .. " (target was " .. dest_x .. ")")
 
             -- Turn around after reaching the wall (or getting stuck)
             going_east = not going_east

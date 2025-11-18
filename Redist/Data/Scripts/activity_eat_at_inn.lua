@@ -1,13 +1,13 @@
 -- Activity 26: Eat at Inn
 -- NPCs find nearest chair at inn and sit to eat (same as regular eat)
 function activity_eat_at_inn(npc_id)
-    local npc_name = get_npc_name(npc_id)
+    
     local chair = find_nearest_chair(npc_id)
 
     if not chair then
         -- No chair/table nearby - just stand
-        debug_print(npc_name .. " has no table for eat at inn activity, standing")
-        play_animation(npc_id, 0, 0)  -- Frame 0 = standing
+        debug_npc(npc_id, "has no table for eat at inn activity, standing")
+        npc_frame(npc_id, 0)  -- Frame 0 = standing
         while true do
             coroutine.yield()
         end
@@ -17,7 +17,7 @@ function activity_eat_at_inn(npc_id)
     -- STATE CHECK: Already sitting at table?
     if is_sitting(npc_id) and distance_to(npc_id, chair) < 2.0 then
         -- Already sitting and eating - stay here
-        debug_print(npc_name .. " already eating at inn, continuing")
+        debug_npc(npc_id, "already eating at inn, continuing")
         while true do
             coroutine.yield()
         end
@@ -26,7 +26,7 @@ function activity_eat_at_inn(npc_id)
 
     -- Walk to chair/table if not already there
     if distance_to(npc_id, chair) > 2.0 then
-        debug_print(npc_name .. " walking to inn table")
+        debug_npc(npc_id, "walking to inn table")
         walk_to_object(npc_id, chair)
 
         -- Wait until we reach the chair
@@ -36,8 +36,8 @@ function activity_eat_at_inn(npc_id)
     end
 
     -- Sit down at table to eat
-    debug_print(npc_name .. " sitting down to eat at inn")
-    play_animation(npc_id, 0, 26)  -- Frame 26 = sitting
+    debug_npc(npc_id, "sitting down to eat at inn")
+    npc_frame(npc_id, 26)  -- Frame 26 = sitting
 
     -- Stay eating (yield forever until activity changes)
     while true do

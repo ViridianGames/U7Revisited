@@ -2,6 +2,7 @@
 #include "Config.h"
 #include "Logging.h"
 #include "Globals.h"
+#include "../U7Globals.h"
 #include "raylib.h"
 #include "raymath.h"
 #include <fstream>
@@ -440,6 +441,9 @@ void ScriptingSystem::CleanupCoroutine(const string& func_name)
         luaL_unref(m_luaState, LUA_REGISTRYINDEX, it->second);
         m_activeCoroutines.erase(it);
     }
+
+    // Don't clear m_currentActivity when script ends - the schedule system will update it when needed
+    // The activity value shows what the NPC is SUPPOSED to be doing, even if the script crashed/exited
     // Resume any coroutines waiting on this one to complete
     auto wit = m_waiters.find(func_name);
     if (wit != m_waiters.end())

@@ -2314,7 +2314,7 @@ void LoadingState::LoadNPCSchedules()
 		};
 
 		// CSV header
-		csvFile << "Name,0,3,6,9,12,15,18,21\n";
+		csvFile << "npc_id,Name,0,3,6,9,12,15,18,21\n";
 
 		// Write each NPC's schedule
 		for (unsigned int npcID = 1; npcID < 256; ++npcID)
@@ -2322,7 +2322,7 @@ void LoadingState::LoadNPCSchedules()
 			if (g_NPCData.find(npcID) == g_NPCData.end() || !g_NPCData[npcID])
 				continue;
 
-			csvFile << g_NPCData[npcID]->name;
+			csvFile << npcID << "," << g_NPCData[npcID]->name;
 
 			// For each time block (0-7)
 			for (int timeBlock = 0; timeBlock < 8; ++timeBlock)

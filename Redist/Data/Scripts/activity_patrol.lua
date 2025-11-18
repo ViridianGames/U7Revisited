@@ -1,8 +1,9 @@
 -- Activity 29: Patrol
 -- NPCs patrol around an area, walking to random positions
 function activity_patrol(npc_id)
-    local npc_name = get_npc_name(npc_id)
-    debug_print(npc_name .. " patrolling")
+
+    debug_npc(npc_id, "patrolling")
+    npc_frame(npc_id, 0)  -- Frame 0 = standing
 
     while true do
         -- Try to find a random patrol point within 12 tiles
@@ -26,21 +27,12 @@ function activity_patrol(npc_id)
                 coroutine.yield()
             end
 
-            -- Pause at patrol point, looking around (2-4 seconds)
+            -- Pause at patrol point (2-4 seconds)
             local pause_time = 2.0 + (math.random() * 2.0)
             wait(pause_time)
-
-            -- Look in different directions while at patrol point
-            for i = 1, 2 do
-                local direction = math.random(0, 3)
-                play_animation(npc_id, direction, 0)
-                wait(1.0)
-            end
         else
-            -- Couldn't find a patrol point - just stand and look around
-            debug_print(npc_name .. " couldn't find patrol point, standing")
-            local direction = math.random(0, 3)
-            play_animation(npc_id, direction, 0)
+            -- Couldn't find a patrol point - just stand
+            debug_npc(npc_id, "couldn't find patrol point, standing")
             wait(2.0)
         end
 

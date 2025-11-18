@@ -47,13 +47,14 @@ NpcListWindow::NpcListWindow(ResourceManager* resourceManager, int screenWidth, 
 	, m_lastSearchText("")
 	, m_sortMode(SortMode::BY_ID)
 	, m_lastScheduleTime(0)
+	, m_lastRefreshTime(0.0)
 {
 	m_window = new GhostWindow("Gui/npc_list_window.ghost", "Gui",
 	                           resourceManager, screenWidth, screenHeight,
 	                           false, 1.0f, 1.0f);  // Not modal - uses g_mouseOverUI instead
 
-	BuildNPCList();
-	RebuildFilteredList();
+	// Don't build list in constructor - it will be built when window is first shown
+	// This ensures InitializeNPCActivitiesFromSchedules() has run first
 }
 
 NpcListWindow::~NpcListWindow()
@@ -176,6 +177,16 @@ void NpcListWindow::Update(bool schedulesEnabled)
 		m_lastScheduleTime = g_scheduleTime;
 		BuildNPCList();
 		RebuildFilteredList();
+		m_lastRefreshTime = GetTime();
+	}
+	
+	// Also refresh every 2 seconds to catch activity changes within a time block
+	double currentTime = GetTime();
+	if (currentTime - m_lastRefreshTime >= 2.0)
+	{
+		m_lastRefreshTime = currentTime;
+		BuildNPCList();
+		RebuildFilteredList();
 	}
 }
 
@@ -191,6 +202,14 @@ void NpcListWindow::Show()
 {
 	if (m_window)
 	{
+		DebugPrint("NpcListWindow::Show() called");
+		// Debug: Check Blacktooth's activity before building list
+		if (g_NPCData.find(226) != g_NPCData.end())
+		{
+			DebugPrint("  Before BuildNPCList: Blacktooth m_currentActivity=" + 
+			           std::to_string(g_NPCData[226]->m_currentActivity));
+		}
+		
 		m_window->Show();
 		BuildNPCList();  // Refresh list when shown
 		RebuildFilteredList();
@@ -244,6 +263,13 @@ void NpcListWindow::BuildNPCList()
 		entry.name = std::string(npcData->name);
 		entry.activityId = npcData->m_currentActivity;
 		entry.activityName = GetActivityName(npcData->m_currentActivity);
+		
+		// Debug: Log activity for Blacktooth
+		if (npcId == 226)
+		{
+			DebugPrint("BuildNPCList: Blacktooth (226) m_currentActivity=" + std::to_string(npcData->m_currentActivity) + 
+			           " activityName=" + entry.activityName);
+		}
 
 		// Check if this is a "continued" activity (not an exact schedule match for current time)
 		bool isContinued = false;

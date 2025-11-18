@@ -1,8 +1,8 @@
 -- Activity 6: Farm
 -- NPCs wander around farm area working the fields
 function activity_farm(npc_id)
-    local npc_name = get_npc_name(npc_id)
-    debug_print(npc_name .. " farming")
+    
+    debug_npc(npc_id, "farming")
 
     while true do
         -- Try to find a random spot in the farm area (within 8 tiles)
@@ -29,16 +29,9 @@ function activity_farm(npc_id)
             -- Work at that spot for a while (4-8 seconds)
             local work_time = 4.0 + (math.random() * 4.0)
             wait(work_time)
-
-            -- Occasionally turn while working
-            if math.random() < 0.3 then
-                local direction = math.random(0, 3)
-                play_animation(npc_id, direction, 0)
-                wait(1.0)
-            end
         else
             -- Couldn't find a spot - just stand and work
-            debug_print(npc_name .. " couldn't find farm spot, standing")
+            debug_npc(npc_id, "couldn't find farm spot, standing")
             wait(3.0)
         end
 

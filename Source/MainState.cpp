@@ -140,6 +140,13 @@ void MainState::OnEnter()
 	// Initialize NPC activities based on starting schedule time (for new games)
 	// This must happen AFTER g_scheduleTime is set, so NPCs get the correct activity for time slot 1
 	InitializeNPCActivitiesFromSchedules();
+	
+	// Debug: Verify Blacktooth's activity immediately after initialization
+	if (g_NPCData.find(226) != g_NPCData.end())
+	{
+		DebugPrint("MainState::OnEnter AFTER Init: Blacktooth m_currentActivity=" + 
+		           std::to_string(g_NPCData[226]->m_currentActivity));
+	}
 
 	if (m_gameMode == MainStateModes::MAIN_STATE_MODE_TRINSIC_DEMO)
 	{
@@ -883,22 +890,29 @@ void MainState::Update()
 			// If we found a valid schedule and it's different from current, update it
 			if (mostRecentScheduleTime >= 0)
 			{
-				// Check if this is a NEW schedule (either different time or activity changed)
-				bool needsUpdate = (mostRecentScheduleTime != npcObj->m_lastSchedule) ||
-				                   (mostRecentActivity != npcData->m_currentActivity);
-
-				if (needsUpdate)
+				// Only update activity if there's an EXACT schedule entry for current time
+				// This prevents "None" entries (which don't exist in SCHEDULE.DAT) from changing activities
+				// InitializeNPCActivitiesFromSchedules() already filled in activities at startup
+				if (mostRecentScheduleTime == g_scheduleTime)
 				{
-					// Update the schedule time and activity
-					npcObj->m_lastSchedule = mostRecentScheduleTime;
-					npcData->m_currentActivity = mostRecentActivity;
+					// Check if this is a NEW schedule (different time or activity changed)
+					bool needsUpdate = (mostRecentScheduleTime != npcObj->m_lastSchedule) ||
+					                   (mostRecentActivity != npcData->m_currentActivity);
 
-					// Only queue for pathfinding if pathfinding is enabled
-					if (m_npcPathfindingEnabled)
+					if (needsUpdate)
 					{
-						g_npcPathfindQueue.push(npcID);
+						// Update the schedule time and activity
+						npcObj->m_lastSchedule = mostRecentScheduleTime;
+						npcData->m_currentActivity = mostRecentActivity;
+
+						// Only queue for pathfinding if pathfinding is enabled
+						if (m_npcPathfindingEnabled)
+						{
+							g_npcPathfindQueue.push(npcID);
+						}
 					}
 				}
+				// else: no exact match for current time = "None" entry, keep current activity
 			}
 		}
 

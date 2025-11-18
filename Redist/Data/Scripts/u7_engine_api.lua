@@ -381,20 +381,15 @@ function find_random_walkable(npc_id, radius) end
 ---@return number distance The distance in tiles
 function distance_to(npc_id, object_id) end
 
----Checks if an NPC is currently sitting (frameY == 26)
+---BROKEN: Checks if an NPC is currently sitting (frameY == 26)
 ---@param npc_id integer The NPC to check
 ---@return boolean is_sitting True if the NPC is in sitting animation
 function is_sitting(npc_id) end
 
----Checks if an NPC is currently sleeping/lying down (frameY == 16)
+---BROKEN: Checks if an NPC frame is (NOT a standard sleeping frame!)
 ---@param npc_id integer The NPC to check
 ---@return boolean is_sleeping True if the NPC is in sleeping animation
 function is_sleeping(npc_id) end
-
----Sets an NPC's animation frame
----@param npc_id integer The NPC to modify
----@param frame integer The animation frame
-function set_npc_frame(npc_id, frame) end
 
 ---Sets an NPC's visibility
 ---@param npc_id integer The NPC to modify
@@ -623,11 +618,10 @@ function jump_camera_angle(angle) end
 -- ANIMATION
 -- ============================================================================
 
----Sets an NPC's animation frames (sprite position in spritesheet)
----@param npc_id integer The NPC to animate
----@param frameX integer The X frame index in the sprite sheet
----@param frameY integer The Y frame index in the sprite sheet (0=standing, 16=lying down, 26=sitting)
-function play_animation(npc_id, frameX, frameY) end
+---Sets an NPC's frame (for changing appearance - standing, sitting, lying down, etc.)
+---@param npc_id integer The NPC to modify
+---@param frame integer The frame number (0=standing, 29=lying down, etc.)
+function npc_frame(npc_id, frame) end
 
 ---Sets a model's animation frame
 ---@param object_id integer The object to modify
@@ -654,6 +648,14 @@ function is_string_in_array(value, array) end
 ---Debug print (outputs to debuglog.txt and stdout)
 ---@param message string The message to print
 function debug_print(message) end
+
+---Debug print for NPC activities (includes game time and NPC name)
+---@param npc_id integer The NPC ID
+---@param message string The message to print
+function debug_npc(npc_id, message)
+    local npc_name = get_npc_name(npc_id)
+    debug_print(string.format("[%02d:%02d] %s %s", get_time_hour(), get_time_minute(), npc_name, message))
+end
 
 ---Console log (outputs to in-game console visible to player)
 ---@param message string The message to display in console

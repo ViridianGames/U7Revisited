@@ -130,8 +130,7 @@ static int LuaAddDialogue(lua_State *L)
     if (!g_ConversationState) {
         return luaL_error(L, "ConversationState not initialized");
     }
-    cout << "Lua says: " << luaL_checkstring(L, 1) << "\n";
-    DebugPrint("LUA: add_dialogue called with " + string(luaL_checkstring(L, 1)));
+DebugPrint("LUA: add_dialogue called with " + string(luaL_checkstring(L, 1)));
     const char *text = luaL_checkstring(L, 1);
 
     ConversationState::ConversationStep step;
@@ -181,9 +180,7 @@ static int LuaHideNPC(lua_State *L)
     DebugPrint("LUA: hide_npc called");
     int npc_id = luaL_checkinteger(L, 1);
     //g_ConversationState->SetNPC(npc_id, -1);
-    cout << "Hiding NPC ID: " << npc_id << "\n";
-
-    return 0;
+return 0;
 }
 
 // Opcode 0005
@@ -234,8 +231,7 @@ static int LuaAddAnswers(lua_State *L)
         std::vector<std::string> answers;
         answers.push_back(answer);
         g_ConversationState->AddAnswers(answers);
-        std::cout << "Added answer: " << answer << "\n";
-    }
+}
     else if (type == LUA_TTABLE)
     {
         // Table: iterate over elements and add strings
@@ -256,12 +252,10 @@ static int LuaAddAnswers(lua_State *L)
                 localAnswers.push_back(answer);
                 lua_rawseti(L, answers_idx, len + 1);
                 len++; // Increment for next insertion
-                std::cout << "Added answer: " << answer << "\n";
-            }
+        }
             else
             {
-                std::cout << "Warning: Non-string element at index " << i << " ignored\n";
-            }
+}
 
             lua_pop(L, 1); // Pop table[i]
         }
@@ -330,8 +324,7 @@ static int LuaRemoveAnswers(lua_State *L)
         }
         lua_rawseti(L, answers_idx, len + 1);
         g_ConversationState->RemoveAnswer(answer);
-        std::cout << "Removed answer: " << answer << "\n";
-    }
+}
     else if (type == LUA_TTABLE)
     {
         // Table: iterate over elements and add strings
@@ -350,12 +343,10 @@ static int LuaRemoveAnswers(lua_State *L)
                 g_ConversationState->RemoveAnswer(answer);
                 lua_rawseti(L, answers_idx, len + 1);
                 len++; // Increment for next insertion
-                std::cout << "Remove answer: " << answer << "\n";
-            }
+}
             else
             {
-                std::cout << "Warning: Non-string element at index " << i << " ignored\n";
-            }
+}
             lua_pop(L, 1); // Pop table[i]
         }
     }
@@ -377,8 +368,7 @@ static int LuaSaveAnswers(lua_State *L)
     }
     if (g_LuaDebug) DebugPrint("LUA: save_answers called");
     g_ConversationState->SaveAnswers();
-    cout << "Saving answers\n";
-    return 0;
+return 0;
 }
 
 // Opcode 0008
@@ -389,8 +379,7 @@ static int LuaRestoreAnswers(lua_State *L)
     }
     if (g_LuaDebug) DebugPrint("LUA: restore_answers called");
     g_ConversationState->RestoreAnswers();
-    cout << "Restoring answers\n";
-    return 0;
+return 0;
 }
 
 // Opcode 000A
@@ -555,8 +544,7 @@ static int LuaAskAnswer(lua_State *L)
                 return luaL_error(L, "ask_answer: lua_tostring returned nullptr at index %d", i);
             }
             step.answers.push_back(answer);
-            std::cout << "Added answer: " << answer << "\n";
-        }
+    }
         else
         {
             std::cout << "Warning: Non-string element at index " << i << " ignored\n";
@@ -614,8 +602,7 @@ static int LuaAskMultipleChoice(lua_State *L)
             {
                 step.answers.push_back(answer);
             }
-            std::cout << "Added answer: " << answer << "\n";
-        }
+    }
         else
         {
             std::cout << "Warning: Non-string element at index " << i << " ignored\n";
@@ -664,8 +651,7 @@ static int LuaGetPurchaseOption(lua_State *L)
             {
                 step.answers.insert(step.answers.begin(), answer);
             }
-            std::cout << "Added answer: " << answer << "\n";
-        }
+    }
         else
         {
             std::cout << "Warning: Non-string element at index " << i << " ignored\n";
@@ -985,8 +971,7 @@ static int LuaNPCNameInParty(lua_State *L)
 static int LuaGetTimeHour(lua_State *L)
 {
     if (g_LuaDebug) DebugPrint("LUA: get_time_hour called");
-    int hour = 0; // TODO: g_TimeSystem->GetHour()
-    lua_pushinteger(L, hour);
+    lua_pushinteger(L, g_hour);
     return 1;
 }
 
@@ -994,8 +979,7 @@ static int LuaGetTimeHour(lua_State *L)
 static int LuaGetTimeMinute(lua_State *L)
 {
     if (g_LuaDebug) DebugPrint("LUA: get_time_minute called");
-    int minute = 0; // TODO: g_TimeSystem->GetMinute()
-    lua_pushinteger(L, minute);
+    lua_pushinteger(L, g_minute);
     return 1;
 }
 
@@ -2311,18 +2295,24 @@ static int LuaSetModelAnimationFrame(lua_State *L)
     return 0;
 }
 
-//  Force an NPC to a specific frame in their current animation
+// Set NPC frame (for changing appearance - standing, sitting, lying down, etc.)
+// This is the same as LuaNPCFrame defined later, kept here for backwards compatibility
 static int LuaSetNPCFrame(lua_State *L)
 {
     int npc_id = luaL_checkinteger(L, 1);
-    int framex = luaL_checkinteger(L, 2);
-    int framey = luaL_checkinteger(L, 3);
-    if (g_objectList.find(g_NPCData[npc_id].get()->m_objectID) != g_objectList.end())
+    int frame = luaL_checkinteger(L, 2);
+
+    if (g_NPCData.find(npc_id) == g_NPCData.end())
     {
-        if (g_LuaDebug) DebugPrint("LUA: set_npc_frame called on npc " + to_string(npc_id) +
-        " frame " + to_string(framex) + "," + to_string(framey));
-        g_objectList[g_NPCData[npc_id].get()->m_objectID].get()->SetFrames(framex, framey);
+        return 0;
     }
+
+    U7Object* npc = g_objectList[g_NPCData[npc_id]->m_objectID].get();
+    if (npc)
+    {
+        npc->SetFrame(frame);
+    }
+
     return 0;
 }
 
@@ -3701,7 +3691,7 @@ static int LuaIsBlocked(lua_State *L)
 	int z = (int)lua_tointeger(L, 3);
 
 	extern PathfindingGrid* g_pathfindingGrid;
-	
+
 	if (!g_pathfindingGrid)
 	{
 		lua_pushboolean(L, 1); // If no pathfinding grid, assume blocked
@@ -4498,29 +4488,11 @@ static int LuaGetCurrentAnimation(lua_State *L)
     return 2;
 }
 
-// play_animation(npc_id, frameX, frameY)
-static int LuaPlayAnimation(lua_State *L)
-{
-    int npc_id = luaL_checkinteger(L, 1);
-    int frameX = luaL_checkinteger(L, 2);
-    int frameY = luaL_checkinteger(L, 3);
-
-    if (g_NPCData.find(npc_id) == g_NPCData.end())
-    {
-        return 0;
-    }
-
-    U7Object* npc = g_objectList[g_NPCData[npc_id]->m_objectID].get();
-    if (npc)
-    {
-        npc->SetFrames(frameX, frameY);
-    }
-
-    return 0;
-}
 
 // is_sleeping(npc_id) -> boolean
-// NPCs are sleeping if they're in a lying down animation (frameY == 16 for lying down)
+// Checks if NPC frame is set to 16 (used by activity_sleep.lua)
+// NOTE: Frame 16 is NOT a standard sleeping frame - it's actually a walk frame!
+// This function only exists for backwards compatibility
 static int LuaIsSleeping(lua_State *L)
 {
     int npc_id = luaL_checkinteger(L, 1);
@@ -4538,13 +4510,13 @@ static int LuaIsSleeping(lua_State *L)
         return 1;
     }
 
-    // Frame 16 is the lying down animation in U7
-    lua_pushboolean(L, npc->m_currentFrameY == 16);
+    // Check if frame 16 is set (which activity_sleep.lua uses)
+    lua_pushboolean(L, npc->m_Frame == 16);
     return 1;
 }
 
 // is_sitting(npc_id) -> boolean
-// NPCs are sitting if they're in a sitting animation (frameY == 8 for sitting)
+// Checks if NPC frame is set to 26 (used by activity_sit.lua and others)
 static int LuaIsSitting(lua_State *L)
 {
     int npc_id = luaL_checkinteger(L, 1);
@@ -4562,8 +4534,8 @@ static int LuaIsSitting(lua_State *L)
         return 1;
     }
 
-    // Frame 26 is the sitting animation in U7
-    lua_pushboolean(L, npc->m_currentFrameY == 26);
+    // Check if frame 26 is set
+    lua_pushboolean(L, npc->m_Frame == 26);
     return 1;
 }
 
@@ -4804,7 +4776,7 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction( "start_npc_schedule", LuaStartNPCSchedule);
     g_ScriptingSystem->RegisterScriptFunction( "stop_npc_schedule", LuaStopNPCSchedule);
 
-    g_ScriptingSystem->RegisterScriptFunction( "set_npc_frame", LuaSetNPCFrame);
+    g_ScriptingSystem->RegisterScriptFunction( "npc_frame", LuaSetNPCFrame);
     g_ScriptingSystem->RegisterScriptFunction( "set_model_animation_frame", LuaSetModelAnimationFrame);
 
     g_ScriptingSystem->RegisterScriptFunction( "set_object_visibility", LuaSetObjectVisibility);
@@ -4919,7 +4891,6 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction( "find_nearest_shape", LuaFindNearestShape);
     g_ScriptingSystem->RegisterScriptFunction( "find_random_walkable", LuaFindRandomWalkable);
     g_ScriptingSystem->RegisterScriptFunction( "get_current_animation", LuaGetCurrentAnimation);
-    g_ScriptingSystem->RegisterScriptFunction( "play_animation", LuaPlayAnimation);
     g_ScriptingSystem->RegisterScriptFunction( "is_sleeping", LuaIsSleeping);
     g_ScriptingSystem->RegisterScriptFunction( "is_sitting", LuaIsSitting);
     g_ScriptingSystem->RegisterScriptFunction( "walk_to_object", LuaWalkToObject);

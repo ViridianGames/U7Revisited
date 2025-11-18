@@ -1,8 +1,8 @@
 -- Activity 17: Graze
 -- Animals wander slowly and "graze" (eat grass)
 function activity_graze(npc_id)
-    local npc_name = get_npc_name(npc_id)
-    debug_print(npc_name .. " grazing")
+    
+    debug_npc(npc_id, "grazing")
 
     while true do
         -- Try to find grass to graze on (TODO: find actual grass shape IDs)
@@ -46,7 +46,7 @@ function activity_graze(npc_id)
                 wait(wait_time)
             else
                 -- Couldn't find anywhere - just stand still
-                debug_print(npc_name .. " couldn't find grazing spot, standing")
+                debug_npc(npc_id, "couldn't find grazing spot, standing")
                 wait(2.0)
             end
         end

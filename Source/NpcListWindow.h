@@ -54,6 +54,7 @@ private:
 	std::string m_lastSearchText;  // Track search text changes
 	SortMode m_sortMode;  // Current sort mode
 	unsigned int m_lastScheduleTime;  // Track schedule changes
+	double m_lastRefreshTime;  // Time of last list rebuild (for periodic refresh)
 };
 
 #endif

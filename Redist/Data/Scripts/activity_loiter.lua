@@ -1,12 +1,12 @@
 -- Activity 11: Loiter
 -- NPCs move around a small area, standing/sitting around casually
 function activity_loiter(npc_id)
-    local npc_name = get_npc_name(npc_id)
-    debug_print(npc_name .. " loitering")
+    debug_npc(npc_id, "loitering")
+    npc_frame(npc_id, 0)  -- Frame 0 = standing
 
     while true do
         -- Stand still for a while (0.5 to 1 game minute)
-        play_animation(npc_id, 0, 0)  -- Frame 0 = standing
+        npc_frame(npc_id, 0)  -- Frame 0 = standing
         local stand_minutes = 5 + (math.random() * 5)  -- 0.5-1.0 game minutes
         npc_wait(stand_minutes)
 

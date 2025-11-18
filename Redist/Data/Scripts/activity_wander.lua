@@ -1,8 +1,8 @@
 -- Activity 12: Wander
 -- NPCs wander randomly within a small radius
 function activity_wander(npc_id)
-    local npc_name = get_npc_name(npc_id)
-    debug_print(npc_name .. " wandering")
+    debug_npc(npc_id, "wandering")
+    npc_frame(npc_id, 0)  -- Frame 0 = standing
 
     while true do
         -- Try to find a random walkable destination within 10 tiles

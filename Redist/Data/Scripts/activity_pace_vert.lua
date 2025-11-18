@@ -1,8 +1,11 @@
 -- Activity 2: Vertical Pace
 -- NPCs walk back and forth vertically (north-south)
 function activity_pace_vert(npc_id)
-    local npc_name = get_npc_name(npc_id)
-    debug_print(npc_name .. " pacing vertically")
+    
+    debug_npc(npc_id, "pacing vertically")
+    
+    -- Stand up first (in case sitting/laying down from previous activity)
+    npc_frame(npc_id, 0)
 
     local going_south = true
 
@@ -18,7 +21,6 @@ function activity_pace_vert(npc_id)
         -- Find how far we can walk in current direction
         local dest_z = curr_z
         local step = going_south and 1 or -1
-        debug_print(npc_name .. " at (" .. curr_x .. "," .. curr_y .. "," .. curr_z .. ") going_south=" .. tostring(going_south) .. " step=" .. step)
 
         -- Walk ahead until we hit a blocked tile (max 30 tiles to prevent infinite loop)
         local max_check = 30
@@ -29,7 +31,6 @@ function activity_pace_vert(npc_id)
 
         -- Walk to destination if we found somewhere to go
         if dest_z ~= curr_z then
-            debug_print(npc_name .. " walking from z=" .. curr_z .. " to z=" .. dest_z)
             walk_to_position(npc_id, curr_x, curr_y, dest_z)
 
             -- Wait until path completes
@@ -40,7 +41,6 @@ function activity_pace_vert(npc_id)
             -- Check where we actually ended up
             local _, _, final_z = get_npc_position(npc_id)
             final_z = math.floor(final_z)
-            debug_print(npc_name .. " stopped at z=" .. final_z .. " (target was " .. dest_z .. ")")
 
             -- Turn around after reaching the wall (or getting stuck)
             going_south = not going_south
