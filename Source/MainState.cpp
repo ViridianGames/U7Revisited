@@ -1422,10 +1422,13 @@ void MainState::Draw()
 						Color{255, 128, 0, 255} :   // Orange for schedule paths
 						Color{50, 50, 255, 255};     // Blue for Lua paths
 
-					for (const auto& waypoint : object->m_pathWaypoints)
+					for (size_t i = 0; i < object->m_pathWaypoints.size(); i++)
 					{
+						const auto& waypoint = object->m_pathWaypoints[i];
 						Vector3 tilePos = {waypoint.x + 0.5f, 0.05f, waypoint.z + 0.5f};
-						DrawCube(tilePos, 1.0f, 0.1f, 1.0f, pathColor);
+						// First tile is black, rest use the path color (orange/blue)
+						Color tileColor = (i == 0) ? Color{0, 0, 0, 255} : pathColor;
+						DrawCube(tilePos, 1.0f, 0.1f, 1.0f, tileColor);
 					}
 				}
 			}

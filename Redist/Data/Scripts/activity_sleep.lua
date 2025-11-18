@@ -18,11 +18,11 @@ function activity_sleep(npc_id)
         debug_npc(npc_id, "walking to bed (bed ID: " .. tostring(bed) .. ")")
 
         local obj_pos = get_object_position(bed)
-        debug_npc(npc_id, "get_object_position returned: " .. tostring(obj_pos))
+        -- debug_npc(npc_id, "get_object_position returned: " .. tostring(obj_pos))
         if obj_pos then
-            debug_npc(npc_id, "walking to (" .. obj_pos.x .. "," .. obj_pos.y .. "," .. obj_pos.z .. ")")
+            -- debug_npc(npc_id, "walking to (" .. obj_pos.x .. "," .. obj_pos.y .. "," .. obj_pos.z .. ")")
             local request_id = request_pathfind(npc_id, obj_pos.x, obj_pos.y, obj_pos.z)
-            debug_npc(npc_id, "made request " .. request_id)
+            -- debug_npc(npc_id, "made request " .. request_id)
 
             -- Wait for path to be computed
             while not is_path_ready(request_id) do

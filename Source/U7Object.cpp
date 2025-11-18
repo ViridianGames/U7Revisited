@@ -480,7 +480,11 @@ void U7Object::NPCUpdate()
 		if(Vector3DistanceSqr(newPos, m_Dest) > Vector3DistanceSqr(m_Pos, m_Dest))
 		{
 			SetPos(m_Dest);
-			m_isMoving = false;
+			// Only stop moving if we have no more waypoints to follow
+			if (m_pathWaypoints.empty())
+			{
+				m_isMoving = false;
+			}
 		}
 		else
 		{
