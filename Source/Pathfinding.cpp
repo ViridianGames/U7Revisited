@@ -269,7 +269,7 @@ void PathfindingGrid::DrawDebugOverlayTileLevel()
 	if (!m_cachedBlueTiles.empty())
 	{
 		rlBegin(RL_TRIANGLES);
-		rlColor4ub(0, 0, 255, 192);  // Blue, more opaque than red/green
+		rlColor4ub(60, 60, 255, 160);  // Blue, more opaque than red/green
 		for (const auto& pos : m_cachedBlueTiles)
 		{
 			// Two triangles forming a 1x1 quad

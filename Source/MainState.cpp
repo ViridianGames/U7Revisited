@@ -1360,7 +1360,7 @@ void MainState::Draw()
 					for (const auto& waypoint : object->m_pathWaypoints)
 					{
 						Vector3 tilePos = {waypoint.x + 0.5f, 0.05f, waypoint.z + 0.5f};
-						DrawCube(tilePos, 1.0f, 0.1f, 1.0f, Color{50, 150, 255, 180});  // Bright blue
+						DrawCube(tilePos, 1.0f, 0.1f, 1.0f, Color{50, 50, 255, 255});  // Bright blue
 					}
 				}
 			}
