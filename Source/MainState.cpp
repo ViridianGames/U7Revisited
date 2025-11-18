@@ -95,7 +95,7 @@ void MainState::Init(const string& configfile)
 
 	// Initialize debug tools window (non-modal, always visible in sandbox mode)
 	m_debugToolsWindow = new GhostWindow(
-		"Gui/debug_tools.ghost",
+		"GUI/debug_tools.ghost",
 		"Data/ghost.cfg",
 		g_ResourceManager.get(),
 		GetScreenWidth(),
@@ -141,13 +141,6 @@ void MainState::OnEnter()
 	// Initialize NPC activities based on starting schedule time (for new games)
 	// This must happen AFTER g_scheduleTime is set, so NPCs get the correct activity for time slot 1
 	InitializeNPCActivitiesFromSchedules();
-	
-	// Debug: Verify Blacktooth's activity immediately after initialization
-	if (g_NPCData.find(226) != g_NPCData.end())
-	{
-		DebugPrint("MainState::OnEnter AFTER Init: Blacktooth m_currentActivity=" + 
-		           std::to_string(g_NPCData[226]->m_currentActivity));
-	}
 
 	if (m_gameMode == MainStateModes::MAIN_STATE_MODE_TRINSIC_DEMO)
 	{
