@@ -2772,6 +2772,14 @@ ghost_json GhostSerializer::SerializeElement(int elementID, Gui* gui, int parent
 	}
 
 	// Common properties that go after type-specific ones
+	
+	// Save tooltip (hoverText) if it exists
+	auto hoverTextIt = m_elementHoverTexts.find(elementID);
+	if (hoverTextIt != m_elementHoverTexts.end() && !hoverTextIt->second.empty())
+	{
+		elementJson["hoverText"] = hoverTextIt->second;
+	}
+	
 	// Only save group if it's non-zero (we're not using grouping yet)
 	if (element->m_Group != 0)
 	{
