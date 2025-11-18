@@ -40,7 +40,6 @@ public:
 	// Debug visualization
 	void DrawDebugOverlayTileLevel();                     // Tile-level visualization (3D with cost cubes)
 	void DebugPrintTileInfo(int worldX, int worldZ);      // Print why a tile is blocked
-	void SetDebugWaypoints(const std::vector<Vector3>& waypoints);  // Set waypoints to visualize
 
 	// Helper: Get all objects that overlap a tile (used by pathfinding and door opening)
 	struct OverlappingObject {

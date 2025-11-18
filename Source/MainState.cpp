@@ -661,20 +661,6 @@ void MainState::UpdateInput()
 			{
 				Bark(g_objectUnderMousePointer, "", 3.0f);  // Empty string = use object's current name
 
-				// Visualize NPC waypoints as blue tiles when clicking on any NPC
-				if (g_objectUnderMousePointer->m_isNPC)
-				{
-					if (!g_objectUnderMousePointer->m_pathWaypoints.empty())
-					{
-						g_pathfindingGrid->SetDebugWaypoints(g_objectUnderMousePointer->m_pathWaypoints);
-					}
-					else
-					{
-						// Clear waypoint visualization if no waypoints
-						g_pathfindingGrid->SetDebugWaypoints({});
-					}
-				}
-
 				// Debug mode: Print NPC schedule when clicking on NPCs
 				if (g_LuaDebug && g_objectUnderMousePointer->m_isNPC)
 				{

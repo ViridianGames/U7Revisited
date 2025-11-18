@@ -265,47 +265,6 @@ void PathfindingGrid::DrawDebugOverlayTileLevel()
 	}
 	rlEnd();
 
-	// Draw blue tiles for NPC waypoints (third draw call - only when NPC selected)
-	if (!m_cachedBlueTiles.empty())
-	{
-		rlBegin(RL_TRIANGLES);
-		rlColor4ub(60, 60, 255, 160);  // Blue, more opaque than red/green
-		for (const auto& pos : m_cachedBlueTiles)
-		{
-			// Two triangles forming a 1x1 quad
-			Vector3 v1 = {pos.x, pos.y, pos.z};
-			Vector3 v2 = {pos.x + 1.0f, pos.y, pos.z};
-			Vector3 v3 = {pos.x + 1.0f, pos.y, pos.z + 1.0f};
-			Vector3 v4 = {pos.x, pos.y, pos.z + 1.0f};
-
-			// Triangle 1
-			rlVertex3f(v1.x, v1.y, v1.z);
-			rlVertex3f(v2.x, v2.y, v2.z);
-			rlVertex3f(v3.x, v3.y, v3.z);
-
-			// Triangle 2
-			rlVertex3f(v1.x, v1.y, v1.z);
-			rlVertex3f(v3.x, v3.y, v3.z);
-			rlVertex3f(v4.x, v4.y, v4.z);
-		}
-		rlEnd();
-	}
-}
-
-void PathfindingGrid::SetDebugWaypoints(const std::vector<Vector3>& waypoints)
-{
-	m_cachedBlueTiles.clear();
-	m_cachedBlueTiles.reserve(waypoints.size());
-
-	for (const auto& wp : waypoints)
-	{
-		// Convert waypoint position to tile coordinates
-		int tileX = (int)wp.x;
-		int tileZ = (int)wp.z;
-
-		// Add to blue tiles cache
-		m_cachedBlueTiles.push_back({(float)tileX, 0.15f, (float)tileZ});  // Slightly higher than red/green
-	}
 }
 
 void PathfindingGrid::DebugPrintTileInfo(int worldX, int worldZ)
