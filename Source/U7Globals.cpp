@@ -1138,16 +1138,11 @@ std::string GetObjectDisplayName(U7Object* object)
 	int quantity = 1;
 	char shapeType = (shape >= 0 && shape < 1024) ? g_objectDataTable[shape].m_shapeType : 0;
 	
-	DebugPrint("GetObjectDisplayName: shape=" + std::to_string(shape) + 
-	           " shapeType=" + std::to_string((int)shapeType) +
-	           " rawQuality=" + std::to_string(object->m_Quality));
-	
 	// Check shape type from global table
 	if (shapeType == 3)
 	{
 		quantity = object->m_Quality & 0x7f;
 		if (quantity == 0) quantity = 1;
-		DebugPrint("  -> Stackable item, maskedQuantity=" + std::to_string(quantity));
 	}
 
 	return GetShapeFrameName(shape, object->m_shapeData->GetFrame(), quantity);
