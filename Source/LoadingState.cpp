@@ -6,6 +6,7 @@
 #include "U7Globals.h"
 #include "LoadingState.h"
 #include "Pathfinding.h"
+#include "PathfindingThreadPool.h"
 
 #include <cstring>
 #include <list>
@@ -225,6 +226,11 @@ void LoadingState::UpdateLoading()
 			g_pathfindingGrid = new PathfindingGrid();
 			g_aStar = new AStar();
 			g_aStar->LoadTerrainCosts("Data/terrain_walkable.csv");
+
+			// Initialize thread pool with 4 worker threads
+			g_pathfindingThreadPool = new PathfindingThreadPool(4, g_pathfindingGrid);
+			AddConsoleString(std::string("Pathfinding thread pool initialized with 4 workers"));
+
 			m_buildingPathfindingGrid = true;
 		}
 	}

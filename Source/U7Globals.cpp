@@ -130,6 +130,8 @@ int g_lastScheduleTimeCheck = -1;
 // Pathfinding
 PathfindingGrid* g_pathfindingGrid = nullptr;
 AStar* g_aStar = nullptr;
+PathfindingThreadPool* g_pathfindingThreadPool = nullptr;
+std::shared_mutex g_chunkMapMutex;
 
 #ifdef DEBUG_NPC_PATHFINDING
 std::unordered_map<int, NPCPathStats> g_npcMaxPathStats;
@@ -576,6 +578,7 @@ void UpdateObjectChunk(U7Object* object, Vector3 fromPos)
 		return;
 	}
 
+	std::unique_lock lock(g_chunkMapMutex);  // Exclusive write lock
 	auto& fromChunk = g_chunkObjectMap[int(fromChunkPos.x)][int(fromChunkPos.y)];
 	auto fromChunknode = std::find(fromChunk.begin(), fromChunk.end(), object);
 	if (fromChunknode != fromChunk.end()) {
@@ -591,6 +594,7 @@ void AssignObjectChunk(U7Object* object)
 	int i = static_cast<int>(object->m_Pos.x / 16);
 	int j = static_cast<int>(object->m_Pos.z / 16);
 
+	std::unique_lock lock(g_chunkMapMutex);  // Exclusive write lock
 	g_chunkObjectMap[i][j].push_back(object);
 }
 
@@ -599,6 +603,7 @@ void UnassignObjectChunk(U7Object* object)
 	int i = static_cast<int>(object->m_Pos.x / 16);
 	int j = static_cast<int>(object->m_Pos.z / 16);
 
+	std::unique_lock lock(g_chunkMapMutex);  // Exclusive write lock
 	auto fromChunkPos = std::find(g_chunkObjectMap[i][j].begin(), g_chunkObjectMap[i][j].end(), object);
 	if (fromChunkPos != g_chunkObjectMap[i][j].end())
 	{

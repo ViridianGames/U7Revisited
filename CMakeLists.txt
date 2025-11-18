@@ -170,6 +170,7 @@ set(SOURCES
     Source/NpcListWindow.cpp
     Source/OptionsState.cpp
     Source/Pathfinding.cpp
+    Source/PathfindingThreadPool.cpp
     Source/ShapeData.cpp
     Source/ShapeEditorState.cpp
     Source/Terrain.cpp

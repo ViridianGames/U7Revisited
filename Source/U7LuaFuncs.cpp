@@ -14,6 +14,7 @@
 #include "U7GumpBook.h"
 #include "MainState.h"
 #include "Pathfinding.h"
+#include "PathfindingThreadPool.h"
 
 extern "C"
 {
@@ -4580,6 +4581,72 @@ static int LuaWalkToPosition(lua_State *L)
     return 0;
 }
 
+// request_pathfind(npc_id, x, y, z) -> request_id
+// Step 1: Submit pathfinding request, returns ID for tracking
+static int LuaRequestPathfind(lua_State *L)
+{
+    int npc_id = luaL_checkinteger(L, 1);
+    float x = (float)luaL_checknumber(L, 2);
+    float y = (float)luaL_checknumber(L, 3);
+    float z = (float)luaL_checknumber(L, 4);
+
+    if (g_NPCData.find(npc_id) == g_NPCData.end())
+    {
+        lua_pushinteger(L, 0);  // Return 0 if NPC doesn't exist
+        return 1;
+    }
+
+    int requestID = g_objectList[g_NPCData[npc_id]->m_objectID]->PathfindToDestTracked({x, y, z});
+    lua_pushinteger(L, requestID);
+    return 1;
+}
+
+// is_path_ready(request_id) -> bool
+// Step 2: Check if async pathfinding request is complete (consumes the result)
+static int LuaIsPathReady(lua_State *L)
+{
+    extern PathfindingThreadPool* g_pathfindingThreadPool;
+
+    int requestID = luaL_checkinteger(L, 1);
+
+    if (requestID == 0)
+    {
+        lua_pushboolean(L, true);  // Request ID 0 means synchronous (already done)
+        return 1;
+    }
+
+    if (!g_pathfindingThreadPool)
+    {
+        lua_pushboolean(L, true);  // No thread pool, assume synchronous (already done)
+        return 1;
+    }
+
+    bool ready = g_pathfindingThreadPool->IsPathReady(requestID);
+    lua_pushboolean(L, ready);
+    return 1;
+}
+
+// start_following_path(npc_id)
+// Step 3: Start following the computed path (path must be ready first)
+static int LuaStartFollowingPath(lua_State *L)
+{
+    int npc_id = luaL_checkinteger(L, 1);
+
+    if (g_NPCData.find(npc_id) == g_NPCData.end())
+    {
+        return 0;
+    }
+
+    U7Object* npc = g_objectList[g_NPCData[npc_id]->m_objectID].get();
+    if (npc && !npc->m_pathWaypoints.empty())
+    {
+        npc->SetDest(npc->m_pathWaypoints[0]);
+        npc->m_isMoving = true;
+    }
+
+    return 0;
+}
+
 // is_npc_moving(npc_id) -> bool
 static int LuaIsNPCMoving(lua_State *L)
 {
@@ -4893,8 +4960,9 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction( "get_current_animation", LuaGetCurrentAnimation);
     g_ScriptingSystem->RegisterScriptFunction( "is_sleeping", LuaIsSleeping);
     g_ScriptingSystem->RegisterScriptFunction( "is_sitting", LuaIsSitting);
-    g_ScriptingSystem->RegisterScriptFunction( "walk_to_object", LuaWalkToObject);
-    g_ScriptingSystem->RegisterScriptFunction( "walk_to_position", LuaWalkToPosition);
+    g_ScriptingSystem->RegisterScriptFunction( "request_pathfind", LuaRequestPathfind);
+    g_ScriptingSystem->RegisterScriptFunction( "is_path_ready", LuaIsPathReady);
+    g_ScriptingSystem->RegisterScriptFunction( "start_following_path", LuaStartFollowingPath);
     g_ScriptingSystem->RegisterScriptFunction( "is_npc_moving", LuaIsNPCMoving);
     g_ScriptingSystem->RegisterScriptFunction( "wait_move_end", LuaWaitMoveEnd);
     g_ScriptingSystem->RegisterScriptFunction( "get_current_hour", LuaGetCurrentHour);

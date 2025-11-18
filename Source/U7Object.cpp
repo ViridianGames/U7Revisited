@@ -21,6 +21,7 @@
 #include "LoadingState.h"
 #include "MainState.h"
 #include "Pathfinding.h"
+#include "PathfindingThreadPool.h"
 
 #include <iostream>
 #include <string>
@@ -439,8 +440,8 @@ void U7Object::NPCUpdate()
 	// Schedule checking is now handled by MainState::Update() queue system
 	// This function only handles waypoint following and movement
 
-	// Follow waypoints from pathfinding
-	if (!m_pathWaypoints.empty() && m_currentWaypointIndex < m_pathWaypoints.size())
+	// Follow waypoints from pathfinding (but not if pathfinding is still in progress)
+	if (!m_pathfindingPending && !m_pathWaypoints.empty() && m_currentWaypointIndex < m_pathWaypoints.size())
 	{
 		// Check if reached current waypoint (within 0.5 tiles for intermediate, exact for last)
 		float distToWaypoint = Vector3Distance(m_Pos, m_pathWaypoints[m_currentWaypointIndex]);
@@ -664,22 +665,38 @@ void U7Object::TryOpenDoorAtCurrentPosition()
 void U7Object::PathfindToDest(Vector3 dest)
 {
 	extern PathfindingGrid* g_pathfindingGrid;
+	extern PathfindingThreadPool* g_pathfindingThreadPool;
 
-	// Clear previous path
+	// Clear previous path and mark as pending
 	m_pathWaypoints.clear();
 	m_currentWaypointIndex = 0;
+	m_pathfindingPending = true;
 
 	// If no pathfinding grid, fall back to direct movement
 	if (!g_pathfindingGrid)
 	{
 		SetDest(dest);
+		m_pathfindingPending = false;
 		return;
 	}
 
-	// Use A* to find path
+	// If thread pool is available, submit asynchronous pathfinding request
+	if (g_pathfindingThreadPool)
+	{
+		PathRequest request;
+		request.npcID = m_NPCID;
+		request.start = m_Pos;
+		request.goal = dest;
+		request.requestID = 0;  // Fire-and-forget, no tracking
+		g_pathfindingThreadPool->SubmitRequest(request);
+		return;
+	}
+
+	// Fallback: Use synchronous A* (for backwards compatibility)
 	if (!g_aStar)
 	{
 		AddConsoleString("ERROR: g_aStar is null!", RED);
+		m_pathfindingPending = false;
 		return;
 	}
 	std::vector<Vector3> path = g_aStar->FindPath(m_Pos, dest, g_pathfindingGrid);
@@ -689,6 +706,7 @@ void U7Object::PathfindToDest(Vector3 dest)
 	{
 		m_pathWaypoints = path;
 		m_currentWaypointIndex = 0;
+		m_pathfindingPending = false;  // Path is ready immediately (synchronous)
 
 		// Set first waypoint as destination
 		if (m_pathWaypoints.size() > 0)
@@ -719,6 +737,7 @@ void U7Object::PathfindToDest(Vector3 dest)
 	}
 	else
 	{
+		m_pathfindingPending = false;  // No path found, done trying
 		// No path found, don't move at all
 		// DISABLED: Reduce console spam from activity scripts pathfinding
 		//AddConsoleString("WARNING: NPC " + std::to_string(m_NPCID) + " could not find path from (" +
@@ -726,6 +745,64 @@ void U7Object::PathfindToDest(Vector3 dest)
 		//                 std::to_string((int)dest.x) + "," + std::to_string((int)dest.z) + ") - staying put!", RED);
 		// Don't call SetDest() - NPC will remain stationary
 	}
+}
+
+int U7Object::PathfindToDestTracked(Vector3 dest)
+{
+	extern PathfindingGrid* g_pathfindingGrid;
+	extern PathfindingThreadPool* g_pathfindingThreadPool;
+
+	// Clear previous path and mark as pending
+	m_pathWaypoints.clear();
+	m_currentWaypointIndex = 0;
+	m_pathfindingPending = true;
+
+	// If no pathfinding grid, fall back to direct movement
+	if (!g_pathfindingGrid)
+	{
+		SetDest(dest);
+		m_pathfindingPending = false;
+		return 0;  // No tracking for fallback
+	}
+
+	// If thread pool is available, submit tracked pathfinding request
+	if (g_pathfindingThreadPool)
+	{
+		int requestID = g_pathfindingThreadPool->GetNextRequestID();
+		PathRequest request;
+		request.npcID = m_NPCID;
+		request.start = m_Pos;
+		request.goal = dest;
+		request.requestID = requestID;
+		g_pathfindingThreadPool->SubmitRequest(request);
+		return requestID;  // Return ID for Lua to track
+	}
+
+	// Fallback to synchronous pathfinding (no thread pool)
+	if (!g_aStar)
+	{
+		AddConsoleString("ERROR: g_aStar is null!", RED);
+		m_pathfindingPending = false;
+		return 0;
+	}
+
+	std::vector<Vector3> path = g_aStar->FindPath(m_Pos, dest, g_pathfindingGrid);
+	if (!path.empty())
+	{
+		m_pathWaypoints = path;
+		m_currentWaypointIndex = 0;
+		m_pathfindingPending = false;
+		if (m_pathWaypoints.size() > 0)
+		{
+			SetDest(m_pathWaypoints[0]);
+		}
+	}
+	else
+	{
+		m_pathfindingPending = false;
+	}
+
+	return 0;  // Synchronous, no tracking needed
 }
 
 bool U7Object::AddObjectToInventory(int objectid)

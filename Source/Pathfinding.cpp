@@ -34,6 +34,8 @@ std::vector<PathfindingGrid::OverlappingObject> PathfindingGrid::GetOverlappingO
 	int chunkX = worldX / 16;
 	int chunkZ = worldZ / 16;
 
+	std::shared_lock lock(g_chunkMapMutex);  // Shared read lock for thread-safe access
+
 	// Check this chunk and neighbors
 	for (int dz = -1; dz <= 1; dz++)
 	{

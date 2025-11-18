@@ -17,6 +17,7 @@
 #include "ConversationState.h"
 #include "GumpManager.h"
 #include "Pathfinding.h"
+#include "PathfindingThreadPool.h"
 #include "Ghost/GhostWindow.h"
 #include "Ghost/GhostSerializer.h"
 #include "NpcListWindow.h"
@@ -202,6 +203,13 @@ void MainState::OnExit()
 
 void MainState::Shutdown()
 {
+	// Clean up pathfinding thread pool (must be done before cleaning up g_pathfindingGrid)
+	if (g_pathfindingThreadPool)
+	{
+		delete g_pathfindingThreadPool;
+		g_pathfindingThreadPool = nullptr;
+	}
+
 	// Clean up debug tools window
 	if (m_debugToolsWindow)
 	{
@@ -910,7 +918,57 @@ void MainState::Update()
 		}
 	}
 
-	// Process one NPC from pathfinding queue per frame
+	// Process pathfinding results from background threads
+	if (g_pathfindingThreadPool)
+	{
+		PathResult result;
+		while (g_pathfindingThreadPool->PopResult(result))
+		{
+			// Find the NPC and apply waypoints
+			if (g_NPCData.find(result.npcID) != g_NPCData.end() && g_NPCData[result.npcID])
+			{
+				U7Object* npcObj = g_objectList[g_NPCData[result.npcID]->m_objectID].get();
+				if (npcObj && result.success)
+				{
+					npcObj->m_pathWaypoints = result.waypoints;
+					npcObj->m_currentWaypointIndex = 0;
+					npcObj->m_pathfindingPending = false;  // Path is ready!
+					if (!result.waypoints.empty())
+					{
+						npcObj->SetDest(result.waypoints[0]);
+						npcObj->m_isMoving = true;
+					}
+
+					// If this was a tracked request, mark it as ready for Lua
+					if (result.requestID > 0)
+					{
+						g_pathfindingThreadPool->MarkRequestReady(result.requestID);
+					}
+
+#ifdef DEBUG_NPC_PATHFINDING
+					// Track longest path for this NPC
+					if (!result.waypoints.empty())
+					{
+						float pathDistance = Vector3Distance(result.waypoints.front(), result.waypoints.back());
+						auto it = g_npcMaxPathStats.find(result.npcID);
+						if (it == g_npcMaxPathStats.end() || pathDistance > it->second.distance)
+						{
+							NPCPathStats stats;
+							stats.npcID = result.npcID;
+							stats.startPos = result.waypoints.front();
+							stats.endPos = result.waypoints.back();
+							stats.distance = pathDistance;
+							stats.waypointCount = (int)result.waypoints.size();
+							g_npcMaxPathStats[result.npcID] = stats;
+						}
+					}
+#endif
+				}
+			}
+		}
+	}
+
+	// Process one NPC from pathfinding queue per frame (submit to thread pool or fall back to sync)
 	if (!g_npcPathfindQueue.empty())
 	{
 		int npcID = g_npcPathfindQueue.front();
@@ -937,7 +995,7 @@ void MainState::Update()
 
 				if (mostRecentSchedule)
 				{
-					// Pathfind to destination (pathfinding is only queued if enabled)
+					// Pathfind to destination (will use thread pool if available, otherwise sync A*)
 					npcObj->PathfindToDest(Vector3{ float(mostRecentSchedule->m_destX), 0, float(mostRecentSchedule->m_destY) });
 					npcObj->m_isMoving = true;
 				}

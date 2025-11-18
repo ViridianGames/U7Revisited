@@ -18,6 +18,7 @@
 #include <unordered_map>
 #include <array>
 #include <queue>
+#include <shared_mutex>
 
 #include "Geist/Primitives.h"
 #include "Geist/RNG.h"
@@ -334,6 +335,7 @@ extern bool g_CameraMoved;
 extern std::unordered_map<int, int[16][16] > g_ChunkTypeList;  // The 16x16 tiles for each chunk type
 extern int g_chunkTypeMap[192][192]; // The type of each chunk in the map
 extern std::vector<U7Object*> g_chunkObjectMap[192][192]; // The objects in each chunk
+extern std::shared_mutex g_chunkMapMutex; // Protects g_chunkObjectMap for thread-safe pathfinding
 
 extern std::array<std::array<ShapeData, 32>, 1024> g_shapeTable;
 extern std::array<ObjectData, 1024> g_objectDataTable;
@@ -561,8 +563,10 @@ void RecalculateCamera();
 
 class PathfindingGrid;
 class AStar;
+class PathfindingThreadPool;
 extern PathfindingGrid* g_pathfindingGrid;
 extern AStar* g_aStar;
+extern PathfindingThreadPool* g_pathfindingThreadPool;
 
 // Call this whenever ANY object changes position or state
 void NotifyPathfindingGridUpdate(int worldX, int worldZ, int radius = 1);
