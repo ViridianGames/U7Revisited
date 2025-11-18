@@ -1402,9 +1402,24 @@ void GhostSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, c
 				upSprite = make_shared<Sprite>();
 				if (loadedTexture.id == 0)
 				{
-					Log("GhostSerializer::ParseElements - Failed to load iconbutton sprite: " + spritePath);
-					upSprite->m_sourceRect = Rectangle{0, 0, 32, 32};
-					upSprite->m_texture = nullptr;
+					Log("GhostSerializer::ParseElements - Failed to load iconbutton sprite: " + spritePath + " - using fallback");
+					
+					// Load fallback texture (image.png) via ResourceManager
+					string fallbackPath = s_baseSpritePath + "image.png";
+					Texture* fallbackTexture = g_ResourceManager->GetTexture(fallbackPath);
+					
+					if (fallbackTexture && fallbackTexture->id != 0 && fallbackTexture->width > 0 && fallbackTexture->height > 0)
+					{
+						upSprite->m_texture = fallbackTexture;
+						upSprite->m_sourceRect = Rectangle{0, 0, static_cast<float>(fallbackTexture->width), static_cast<float>(fallbackTexture->height)};
+					}
+					else
+					{
+						// Last resort: set to null and let defensive code handle it
+						Log("GhostSerializer::ParseElements - Failed to load fallback image.png");
+						upSprite->m_sourceRect = Rectangle{0, 0, 32, 32};
+						upSprite->m_texture = nullptr;
+					}
 				}
 				else
 				{
@@ -1418,6 +1433,27 @@ void GhostSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, c
 						static_cast<float>(spriteDef.w),
 						static_cast<float>(spriteDef.h)
 					};
+				}
+			}
+			else
+			{
+				// No spritesheet specified, load fallback
+				Log("GhostSerializer::ParseElements - No spritesheet specified for iconbutton, using fallback");
+				
+				upSprite = make_shared<Sprite>();
+				string fallbackPath = s_baseSpritePath + "image.png";
+				Texture* fallbackTexture = g_ResourceManager->GetTexture(fallbackPath);
+				
+				if (fallbackTexture && fallbackTexture->id != 0 && fallbackTexture->width > 0 && fallbackTexture->height > 0)
+				{
+					upSprite->m_texture = fallbackTexture;
+					upSprite->m_sourceRect = Rectangle{0, 0, static_cast<float>(fallbackTexture->width), static_cast<float>(fallbackTexture->height)};
+				}
+				else
+				{
+					Log("GhostSerializer::ParseElements - Failed to load fallback image.png");
+					upSprite->m_sourceRect = Rectangle{0, 0, 32, 32};
+					upSprite->m_texture = nullptr;
 				}
 			}
 
@@ -1445,9 +1481,24 @@ void GhostSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, c
 					downSprite = make_shared<Sprite>();
 					if (loadedTexture.id == 0)
 					{
-						Log("GhostSerializer::ParseElements - Failed to load iconbutton down sprite: " + downSpritePath);
-						downSprite->m_sourceRect = Rectangle{0, 0, 32, 32};
-						downSprite->m_texture = nullptr;
+						Log("GhostSerializer::ParseElements - Failed to load iconbutton down sprite: " + downSpritePath + " - using fallback");
+						
+						// Load fallback texture (image.png)
+						string fallbackPath = s_baseSpritePath + "image.png";
+						Texture* fallbackTexture = g_ResourceManager->GetTexture(fallbackPath);
+						
+						if (fallbackTexture && fallbackTexture->id != 0 && fallbackTexture->width > 0 && fallbackTexture->height > 0)
+						{
+							downSprite->m_texture = fallbackTexture;
+							downSprite->m_sourceRect = Rectangle{0, 0, static_cast<float>(fallbackTexture->width), static_cast<float>(fallbackTexture->height)};
+						}
+						else
+						{
+							// Last resort: set to null
+							Log("GhostSerializer::ParseElements - Failed to load fallback image.png for down sprite");
+							downSprite->m_sourceRect = Rectangle{0, 0, 32, 32};
+							downSprite->m_texture = nullptr;
+						}
 					}
 					else
 					{

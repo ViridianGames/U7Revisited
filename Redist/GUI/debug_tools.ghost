@@ -8,7 +8,7 @@
           0
         ],
         "size": [
-          102,
+          110,
           75
         ],
         "backgroundColor": [
@@ -27,61 +27,88 @@
         "elements": [
           {
             "name": "SCHEDULE_BUTTON",
-            "type": "iconbutton",
-            "hoverText": "Toggle NPC schedules",
+            "type": "checkbox",
             "position": [
               -1,
               -1
             ],
-            "sprite": {
+            "size": [
+              30,
+              30
+            ],
+            "color": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "selected": false,
+            "scale": [
+              1.0,
+              1.0
+            ],
+            "selectSprite": {
               "spritesheet": "GUI/guielements.png",
               "x": 250,
               "y": 0,
               "w": 30,
               "h": 30
             },
+            "deselectSprite": {
+              "spritesheet": "GUI/guielements.png",
+              "x": 250,
+              "y": 30,
+              "w": 30,
+              "h": 30
+            }
+          },
+          {
+            "name": "PATHFIND_BUTTON",
+            "type": "checkbox",
+            "position": [
+              -1,
+              -1
+            ],
+            "size": [
+              30,
+              30
+            ],
             "color": [
               255,
               255,
               255,
               255
             ],
-            "scale": 1.0
-          },
-          {
-            "name": "PATHFIND_BUTTON",
-            "type": "iconbutton",
-            "hoverText": "Toggle NPC pathfinding",
-            "position": [
-              -1,
-              -1
+            "selected": false,
+            "scale": [
+              1.0,
+              1.0
             ],
-            "sprite": {
+            "selectSprite": {
               "spritesheet": "GUI/guielements.png",
               "x": 310,
               "y": 0,
               "w": 30,
               "h": 30
             },
-            "color": [
-              255,
-              255,
-              255,
-              255
-            ],
-            "scale": 1.0
+            "deselectSprite": {
+              "spritesheet": "GUI/guielements.png",
+              "x": 310,
+              "y": 30,
+              "w": 30,
+              "h": 30
+            }
           },
           {
             "name": "NPC_LIST_BUTTON",
             "type": "iconbutton",
-            "hoverText":"Show NPC List",
             "position": [
               -1,
               -1
             ],
             "sprite": {
               "spritesheet": "GUI/guielements.png",
-              "x": 280,
+              "x": 281,
               "y": 0,
               "w": 30,
               "h": 30
@@ -97,7 +124,6 @@
           {
             "name": "SHAPETABLE_BUTTON",
             "type": "iconbutton",
-            "hoverText": "Toggle Shape Editor",
             "position": [
               -1,
               -1
@@ -120,7 +146,6 @@
           {
             "name": "GHOST_BUTTON",
             "type": "iconbutton",
-            "hoverText": "Open Ghost Editor",
             "position": [
               -1,
               -1
@@ -143,7 +168,6 @@
           {
             "name": "RENAME_BUTTON",
             "type": "iconbutton",
-            "hoverText": "Rename script tool",
             "position": [
               -1,
               -1

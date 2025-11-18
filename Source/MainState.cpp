@@ -1988,12 +1988,26 @@ void MainState::UpdateDebugToolsWindow()
 	if (scheduleButtonID != -1)
 	{
 		auto elem = gui->GetElement(scheduleButtonID);
-		if (elem && elem->m_Type == GUI_ICONBUTTON)
+		if (elem && (elem->m_Type == GUI_ICONBUTTON || elem->m_Type == GUI_CHECKBOX))
 		{
-			auto button = static_cast<GuiIconButton*>(elem.get());
-			if (button->m_Clicked)
+			if (elem->m_Type == GUI_ICONBUTTON)
 			{
-				HandleScheduleButton();
+				auto button = static_cast<GuiIconButton*>(elem.get());
+				if (button->m_Clicked)
+				{
+					HandleScheduleButton();
+				}
+			}
+			else if (elem->m_Type == GUI_CHECKBOX)
+			{
+				auto checkbox = static_cast<GuiCheckBox*>(elem.get());
+				
+				// Check if user clicked and toggled the checkbox
+				if (checkbox->m_Selected != m_npcSchedulesEnabled)
+				{
+					// User toggled the checkbox, so toggle the flag
+					HandleScheduleButton();
+				}
 			}
 		}
 	}
@@ -2003,12 +2017,26 @@ void MainState::UpdateDebugToolsWindow()
 	if (pathfindButtonID != -1)
 	{
 		auto elem = gui->GetElement(pathfindButtonID);
-		if (elem && elem->m_Type == GUI_ICONBUTTON)
+		if (elem && (elem->m_Type == GUI_ICONBUTTON || elem->m_Type == GUI_CHECKBOX))
 		{
-			auto button = static_cast<GuiIconButton*>(elem.get());
-			if (button->m_Clicked)
+			if (elem->m_Type == GUI_ICONBUTTON)
 			{
-				HandlePathfindButton();
+				auto button = static_cast<GuiIconButton*>(elem.get());
+				if (button->m_Clicked)
+				{
+					HandlePathfindButton();
+				}
+			}
+			else if (elem->m_Type == GUI_CHECKBOX)
+			{
+				auto checkbox = static_cast<GuiCheckBox*>(elem.get());
+				
+				// Check if user clicked and toggled the checkbox
+				if (checkbox->m_Selected != m_npcPathfindingEnabled)
+				{
+					// User toggled the checkbox, so toggle the flag
+					HandlePathfindButton();
+				}
 			}
 		}
 	}
