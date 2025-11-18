@@ -22,7 +22,7 @@
         "horzPadding": 0,
         "vertPadding": 0,
         "font": "babyblocks.ttf",
-        "fontSize": 30,
+        "fontSize": 8,
         "elements": [
           {
             "name": "PAPERDOLL",
@@ -103,8 +103,8 @@
               120
             ],
             "text": "27/36",
-            "font": "pinch.ttf",
-            "fontSize": 10,
+            "font": "babyblocks.ttf",
+            "fontSize": 8,
             "textColor": [
               0,
               0,
