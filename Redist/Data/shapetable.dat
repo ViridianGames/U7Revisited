@@ -6118,7 +6118,7 @@
 341 5 0 0 24 16 0 16 24 7 24 0 1 16 3 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/rock_341x05.gltf 1 0 341 5 default 
 341 6 0 0 24 16 0 16 24 8 24 0 2 16 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 341 6 default 
 341 7 0 0 24 16 0 16 24 8 24 0 4 16 3 1.5 1.5 1.5 1 0 1 0 1 2 2 3 3 1 Models/3dmodels/rock_341x07.gltf 1 0 341 7 default 
-341 8 0 0 24 16 0 16 24 7 24 0 2 16 3 1.5 1.5 1.5 1.2 0 1.2 0 1 2 2 3 3 1 Models/3dmodels/rock_341x08.gltf 1 0 341 8 default 
+341 8 0 0 24 16 0 16 24 7 24 0 2 16 3 1.5 1.5 1.5 0.3 0 0.25 0 1 2 2 3 3 1 Models/3dmodels/rock_341x08.gltf 1 0 341 8 default 
 341 9 0 0 24 16 0 16 24 7 24 0 17 16 3 1.2 1.2 1.2 -0.6 0 -0.6 0 1 2 2 3 3 1 Models/3dmodels/rock_341x09.gltf 1 0 341 9 default 
 341 10 0 0 24 16 0 16 24 7 24 0 2 16 3 2 2 2 1 0 1 0 1 2 2 3 3 1 Models/3dmodels/rock_341x10.gltf 1 0 341 10 default 
 341 11 0 0 23 16 0 16 23 10 22 0 1 16 3 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/rock_341x02.gltf 1 0 341 11 default 
@@ -23143,8 +23143,8 @@
 873 6 0 0 8 8 0 8 8 12 8 0 15 8 3 1 1 1.1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/chair_873x06.obj 1 0 873 6 object_chair_0873 
 873 7 0 0 8 8 0 8 8 16 8 0 7 8 3 1 1 1 0.7 0 0.7 270 1 2 2 3 3 1 Models/3dmodels/chair_873x06.obj 1 0 873 7 object_chair_0873 
 873 8 0 0 8 8 0 8 8 7 8 0 16 8 3 1 1 1 0.7 0 0.7 180 1 2 2 3 3 1 Models/3dmodels/chair_873x10.obj 1 0 873 8 object_chair_0873 
-873 9 0 0 8 8 0 8 8 15 8 0 12 8 3 1 1 1 0 0 1.5 90 1 2 2 3 3 1 Models/3dmodels/chair_873x10.obj 1 0 873 9 object_chair_0873 
-873 10 0 0 8 8 0 8 8 12 8 0 15 8 3 1 1 1 0.7 0 0.7 0 1 2 2 3 3 1 Models/3dmodels/chair_873x10.obj 1 0 873 10 object_chair_0873 
+873 9 0 0 8 8 0 8 8 15 8 0 12 8 3 1 1 1 0.2 0 0.5 90 1 2 2 3 3 1 Models/3dmodels/chair_873x10.obj 1 0 873 9 object_chair_0873 
+873 10 0 0 8 8 0 8 8 12 8 0 15 8 3 1 1 1 0.7 0 0.5 0 1 2 2 3 3 1 Models/3dmodels/chair_873x10.obj 1 0 873 10 object_chair_0873 
 873 11 0 0 8 8 0 8 8 16 8 0 7 8 3 1 1 1 0.7 0 0.4 270 1 2 2 3 3 1 Models/3dmodels/chair_873x10.obj 1 0 873 11 object_chair_0873 
 873 12 0 0 8 8 0 8 8 11 8 0 16 8 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 873 12 object_chair_0873 
 873 13 0 0 8 8 0 8 8 16 8 0 17 8 3 1.4 1.4 1.2 0.2 0 0.4 0 1 2 2 3 3 1 Models/3dmodels/chair_873x13.obj 1 0 873 13 object_chair_0873 
