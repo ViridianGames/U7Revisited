@@ -71,8 +71,8 @@ private:
 	int m_nextButtonId = -1;          // NEXT button for going to next circle
 	int m_levelTextId = -1;           // LEVEL text area showing circle name
 	int m_bookmarkId = -1;            // BOOKMARK cycle button
-	int m_spellSpriteIds[8];          // Sprite IDs for spells 1-8
-	int m_pageSpriteIds[4];           // Sprite IDs for PAGE1-PAGE4 (page turn animation)
+	int m_spellSpriteIds[8] = {-1, -1, -1, -1, -1, -1, -1, -1};  // Sprite IDs for spells 1-8
+	int m_pageSpriteIds[4] = {-1, -1, -1, -1};  // Sprite IDs for PAGE1-PAGE4 (page turn animation)
 
 	// Bookmark state (tracks NPC's chosen spell for quick access)
 	int m_bookmarkedCircle = -1;     // Circle where bookmark is set (-1 = none)

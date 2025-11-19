@@ -16,5 +16,10 @@
     ],
 
     // Don't prompt about third-party library detection
-    "Lua.workspace.checkThirdParty": false
+    "Lua.workspace.checkThirdParty": false,
+    "files.associations": {
+        "*.h": "cpp",
+        "*.ghost": "json",
+        "iosfwd": "cpp"
+    }
 }
