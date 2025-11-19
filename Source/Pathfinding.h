@@ -51,6 +51,9 @@ public:
 	};
 	std::vector<OverlappingObject> GetOverlappingObjects(int worldX, int worldZ) const;
 
+	// Get the effective walkable height at a tile (obj.y + obj.height if object present, else 0.0)
+	float GetTileHeight(int worldX, int worldZ) const;
+
 private:
 	// Helper: Check if specific tile is walkable
 	bool CheckTileWalkable(int worldX, int worldZ) const;
@@ -96,7 +99,7 @@ private:
 	std::vector<PathNode*> GetNeighbors(PathNode* node, PathfindingGrid* grid, int goalX, int goalZ);
 
 	// Reconstruct path from goal to start
-	std::vector<Vector3> ReconstructPath(PathNode* goal);
+	std::vector<Vector3> ReconstructPath(PathNode* goal, PathfindingGrid* grid);
 
 	// Cleanup allocated nodes
 	void CleanupNodes();

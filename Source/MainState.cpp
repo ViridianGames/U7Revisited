@@ -1424,7 +1424,8 @@ void MainState::Draw()
 					for (size_t i = 0; i < object->m_pathWaypoints.size(); i++)
 					{
 						const auto& waypoint = object->m_pathWaypoints[i];
-						Vector3 tilePos = {waypoint.x + 0.5f, 0.05f, waypoint.z + 0.5f};
+						// Waypoint already contains correct Y coordinate from pathfinding
+						Vector3 tilePos = {waypoint.x + 0.5f, waypoint.y + 0.05f, waypoint.z + 0.5f};
 						// First tile is black, rest use the path color (orange/blue)
 						Color tileColor = (i == 0) ? Color{0, 0, 0, 255} : pathColor;
 						DrawCube(tilePos, 1.0f, 0.1f, 1.0f, tileColor);

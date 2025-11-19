@@ -573,6 +573,12 @@ extern PathfindingGrid* g_pathfindingGrid;
 extern AStar* g_aStar;
 extern PathfindingThreadPool* g_pathfindingThreadPool;
 
+// Maximum height difference NPCs can climb/descend between adjacent tiles
+const float MAX_CLIMBABLE_HEIGHT = 1.0f;
+
+// Movement cost for walking on objects (stairs, platforms, etc.) - replaces terrain cost
+const float CLIMB_MOVEMENT_COST = 2.0f;
+
 // Call this whenever ANY object changes position or state
 void NotifyPathfindingGridUpdate(int worldX, int worldZ, int radius = 1);
 

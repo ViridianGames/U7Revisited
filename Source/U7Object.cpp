@@ -103,6 +103,14 @@ void U7Object::Draw()
 			renderColor.g = (renderColor.g + 255) / 2;
 			renderColor.b = (renderColor.b + 0) / 2;
 		}
+		// Apply blue tint if F11 debug is enabled and object is walkable (isNotWalkable = false)
+		else if (g_showScriptedObjects && m_objectData && !m_objectData->m_isNotWalkable)
+		{
+			// Blend with blue to highlight walkable objects
+			renderColor.r = (renderColor.r + 0) / 2;
+			renderColor.g = (renderColor.g + 0) / 2;
+			renderColor.b = (renderColor.b + 255) / 2;
+		}
 
 		m_shapeData->Draw(m_Pos, m_Angle, renderColor);
 	}
@@ -298,6 +306,14 @@ void U7Object::NPCDraw()
 		lighting.r = (lighting.r + 0) / 2;
 		lighting.g = (lighting.g + 255) / 2;
 		lighting.b = (lighting.b + 0) / 2;
+	}
+	// Apply blue tint if F11 debug is enabled and object is walkable (isNotWalkable = false)
+	else if (g_showScriptedObjects && m_objectData && !m_objectData->m_isNotWalkable)
+	{
+		// Blend with blue to highlight walkable objects
+		lighting.r = (lighting.r + 0) / 2;
+		lighting.g = (lighting.g + 0) / 2;
+		lighting.b = (lighting.b + 255) / 2;
 	}
 
 	DrawBillboardPro(g_camera, *finalTexture, Rectangle{ 0, 0, float(finalTexture->width), float(finalTexture->height) }, finalPos, Vector3{ 0, 1, 0 },
