@@ -252,7 +252,7 @@ void Gump::Update()
 							g_gumpManager->m_sourceSlotIndex = -1;  // Not from a paperdoll slot
 
 							// Center the drag image on the cursor
-							auto& img = object->m_shapeData->GetDefaultTextureImage();
+							auto img = object->m_shapeData->GetDefaultTextureImage();
 							g_gumpManager->m_draggedObjectOffset = {-img.width / 2.0f, -img.height / 2.0f};
 
 							m_containerObject->m_shouldBeSorted = false; //  We are dragging an object, so we no longer need to sort.

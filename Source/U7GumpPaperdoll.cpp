@@ -567,7 +567,7 @@ void GumpPaperdoll::Update()
 									// Center the drag image on the cursor
 									if (objIt != g_objectList.end() && objIt->second && objIt->second->m_shapeData)
 									{
-										auto& img = objIt->second->m_shapeData->GetDefaultTextureImage();
+										auto img = objIt->second->m_shapeData->GetDefaultTextureImage();
 										g_gumpManager->m_draggedObjectOffset = {-img.width / 2.0f, -img.height / 2.0f};
 									}
 									if (objIt != g_objectList.end() && objIt->second && objIt->second->m_shapeData)

@@ -93,7 +93,7 @@ void MainState::Init(const string& configfile)
 
 	// Initialize debug tools window (non-modal, always visible in sandbox mode)
 	m_debugToolsWindow = new GhostWindow(
-		"Gui/debug_tools.ghost",
+		"GUI/debug_tools.ghost",
 		"Data/ghost.cfg",
 		g_ResourceManager.get(),
 		GetScreenWidth(),
