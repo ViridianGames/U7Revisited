@@ -1,5 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
       <Configuration>Debug</Configuration>
@@ -9,242 +12,464 @@
       <Configuration>Release</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Redist\Data\engine.cfg" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Source\ConversationState.cpp" />
-    <ClCompile Include="Source\Geist\BaseUnits.cpp" />
-    <ClCompile Include="Source\Geist\Config.cpp" />
-    <ClCompile Include="Source\Geist\Engine.cpp" />
-    <ClCompile Include="Source\Geist\Globals.cpp" />
-    <ClCompile Include="Source\Geist\Gui.cpp" />
-    <ClCompile Include="Source\Geist\GuiElements.cpp" />
-    <ClCompile Include="Source\Geist\GuiManager.cpp" />
-    <ClCompile Include="Source\Geist\IO.cpp" />
-    <ClCompile Include="Source\Geist\Logging.cpp" />
-    <ClCompile Include="Source\Geist\ParticleSystem.cpp" />
-    <ClCompile Include="Source\Geist\Primitives.cpp" />
-    <ClCompile Include="Source\Geist\RaylibModel.cpp" />
-    <ClCompile Include="Source\Geist\ResourceManager.cpp" />
-    <ClCompile Include="Source\Geist\RNG.cpp" />
-    <ClCompile Include="Source\Geist\ScriptingSystem.cpp" />
-    <ClCompile Include="Source\Geist\StateMachine.cpp" />
-    <ClCompile Include="Source\Geist\TooltipSystem.cpp" />
-    <ClCompile Include="Source\GumpManager.cpp" />
-    <ClCompile Include="Source\LoadingState.cpp" />
-    <ClCompile Include="Source\Main.cpp" />
-    <ClCompile Include="Source\MainState.cpp" />
-    <ClCompile Include="Source\OptionsState.cpp" />
-    <ClCompile Include="Source\Pathfinding.cpp" />
-    <ClCompile Include="Source\ShapeData.cpp" />
-    <ClCompile Include="Source\ShapeEditorState.cpp" />
-    <ClCompile Include="Source\Terrain.cpp" />
-    <ClCompile Include="Source\TitleState.cpp" />
-    <ClCompile Include="Source\U7Globals.cpp" />
-    <ClCompile Include="Source\U7Gump.cpp" />
-    <ClCompile Include="Source\U7GumpBook.cpp" />
-    <ClCompile Include="Source\U7GumpNumberBar.cpp" />
-    <ClCompile Include="Source\U7LuaFuncs.cpp" />
-    <ClCompile Include="Source\U7Object.cpp" />
-    <ClCompile Include="Source\U7Player.cpp" />
-    <ClCompile Include="ThirdParty\lua\src\lapi.c" />
-    <ClCompile Include="ThirdParty\lua\src\lauxlib.c" />
-    <ClCompile Include="ThirdParty\lua\src\lbaselib.c" />
-    <ClCompile Include="ThirdParty\lua\src\lcode.c" />
-    <ClCompile Include="ThirdParty\lua\src\lcorolib.c" />
-    <ClCompile Include="ThirdParty\lua\src\lctype.c" />
-    <ClCompile Include="ThirdParty\lua\src\ldblib.c" />
-    <ClCompile Include="ThirdParty\lua\src\ldebug.c" />
-    <ClCompile Include="ThirdParty\lua\src\ldo.c" />
-    <ClCompile Include="ThirdParty\lua\src\ldump.c" />
-    <ClCompile Include="ThirdParty\lua\src\lfunc.c" />
-    <ClCompile Include="ThirdParty\lua\src\lgc.c" />
-    <ClCompile Include="ThirdParty\lua\src\linit.c" />
-    <ClCompile Include="ThirdParty\lua\src\liolib.c" />
-    <ClCompile Include="ThirdParty\lua\src\llex.c" />
-    <ClCompile Include="ThirdParty\lua\src\lmathlib.c" />
-    <ClCompile Include="ThirdParty\lua\src\lmem.c" />
-    <ClCompile Include="ThirdParty\lua\src\loadlib.c" />
-    <ClCompile Include="ThirdParty\lua\src\lobject.c" />
-    <ClCompile Include="ThirdParty\lua\src\lopcodes.c" />
-    <ClCompile Include="ThirdParty\lua\src\loslib.c" />
-    <ClCompile Include="ThirdParty\lua\src\lparser.c" />
-    <ClCompile Include="ThirdParty\lua\src\lstate.c" />
-    <ClCompile Include="ThirdParty\lua\src\lstring.c" />
-    <ClCompile Include="ThirdParty\lua\src\lstrlib.c" />
-    <ClCompile Include="ThirdParty\lua\src\ltable.c" />
-    <ClCompile Include="ThirdParty\lua\src\ltablib.c" />
-    <ClCompile Include="ThirdParty\lua\src\ltm.c" />
-    <ClCompile Include="ThirdParty\lua\src\lundump.c" />
-    <ClCompile Include="ThirdParty\lua\src\lutf8lib.c" />
-    <ClCompile Include="ThirdParty\lua\src\lvm.c" />
-    <ClCompile Include="ThirdParty\lua\src\lzio.c" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Source\ConversationState.h" />
-    <ClInclude Include="Source\Geist\BaseUnits.h" />
-    <ClInclude Include="Source\Geist\Config.h" />
-    <ClInclude Include="Source\Geist\Engine.h" />
-    <ClInclude Include="Source\Geist\Globals.h" />
-    <ClInclude Include="Source\Geist\Gui.h" />
-    <ClInclude Include="Source\Geist\GuiElements.h" />
-    <ClInclude Include="Source\Geist\GuiManager.h" />
-    <ClInclude Include="Source\Geist\IO.h" />
-    <ClInclude Include="Source\Geist\Logging.h" />
-    <ClInclude Include="Source\Geist\Object.h" />
-    <ClInclude Include="Source\Geist\ParticleSystem.h" />
-    <ClInclude Include="Source\Geist\Primitives.h" />
-    <ClInclude Include="Source\Geist\RaylibModel.h" />
-    <ClInclude Include="Source\Geist\ResourceManager.h" />
-    <ClInclude Include="Source\Geist\RNG.h" />
-    <ClInclude Include="Source\Geist\ScriptingSystem.h" />
-    <ClInclude Include="Source\Geist\State.h" />
-    <ClInclude Include="Source\Geist\StateMachine.h" />
-    <ClInclude Include="Source\Geist\TooltipSystem.h" />
-    <ClInclude Include="Source\GumpManager.h" />
-    <ClInclude Include="Source\LoadingState.h" />
-    <ClInclude Include="Source\MainState.h" />
-    <ClInclude Include="Source\OptionsState.h" />
-    <ClInclude Include="Source\Pathfinding.h" />
-    <ClInclude Include="Source\ShapeData.h" />
-    <ClInclude Include="Source\ShapeEditorState.h" />
-    <ClInclude Include="Source\Terrain.h" />
-    <ClInclude Include="Source\TitleState.h" />
-    <ClInclude Include="Source\U7Globals.h" />
-    <ClInclude Include="Source\U7Gump.h" />
-    <ClInclude Include="Source\U7GumpBook.h" />
-    <ClInclude Include="Source\U7GumpNumberBar.h" />
-    <ClInclude Include="Source\U7LuaFuncs.h" />
-    <ClInclude Include="Source\U7Object.h" />
-    <ClInclude Include="Source\U7Player.h" />
-    <ClInclude Include="ThirdParty\lua\src\lapi.h" />
-    <ClInclude Include="ThirdParty\lua\src\lauxlib.h" />
-    <ClInclude Include="ThirdParty\lua\src\lcode.h" />
-    <ClInclude Include="ThirdParty\lua\src\lctype.h" />
-    <ClInclude Include="ThirdParty\lua\src\ldebug.h" />
-    <ClInclude Include="ThirdParty\lua\src\ldo.h" />
-    <ClInclude Include="ThirdParty\lua\src\lfunc.h" />
-    <ClInclude Include="ThirdParty\lua\src\lgc.h" />
-    <ClInclude Include="ThirdParty\lua\src\ljumptab.h" />
-    <ClInclude Include="ThirdParty\lua\src\llex.h" />
-    <ClInclude Include="ThirdParty\lua\src\llimits.h" />
-    <ClInclude Include="ThirdParty\lua\src\lmem.h" />
-    <ClInclude Include="ThirdParty\lua\src\lobject.h" />
-    <ClInclude Include="ThirdParty\lua\src\lopcodes.h" />
-    <ClInclude Include="ThirdParty\lua\src\lopnames.h" />
-    <ClInclude Include="ThirdParty\lua\src\lparser.h" />
-    <ClInclude Include="ThirdParty\lua\src\lprefix.h" />
-    <ClInclude Include="ThirdParty\lua\src\lstate.h" />
-    <ClInclude Include="ThirdParty\lua\src\lstring.h" />
-    <ClInclude Include="ThirdParty\lua\src\ltable.h" />
-    <ClInclude Include="ThirdParty\lua\src\ltm.h" />
-    <ClInclude Include="ThirdParty\lua\src\lua.h" />
-    <ClInclude Include="ThirdParty\lua\src\lua.hpp" />
-    <ClInclude Include="ThirdParty\lua\src\luaconf.h" />
-    <ClInclude Include="ThirdParty\lua\src\lualib.h" />
-    <ClInclude Include="ThirdParty\lua\src\lundump.h" />
-    <ClInclude Include="ThirdParty\lua\src\lvm.h" />
-    <ClInclude Include="ThirdParty\lua\src\lzio.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="Redist\Data\version.txt" />
+    <ProjectConfiguration Include="MinSizeRel|x64">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|x64">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{C659928C-52E7-445E-88F4-F51BDDD632A1}</ProjectGuid>
+    <ProjectGuid>{BC231FF4-6D86-3846-B15C-0169392FF8C3}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>RWTT</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
+    <Platform>x64</Platform>
+    <ProjectName>U7Revisited</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
     <PlatformToolset>v143</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
-  <ImportGroup Label="Shared">
-  </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+  <ImportGroup Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LinkIncremental>true</LinkIncremental>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LinkIncremental>false</LinkIncremental>
-    <CustomBuildAfterTargets>
-    </CustomBuildAfterTargets>
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\repos\U7RTest\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">U7Revisited.dir\Debug\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">U7Revisited</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateManifest>
+    <LocalDebuggerWorkingDirectory Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/repos/U7RTest/Redist</LocalDebuggerWorkingDirectory>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\repos\U7RTest\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">U7Revisited.dir\Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">U7Revisited</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'"></LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateManifest>
+    <LocalDebuggerWorkingDirectory Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/repos/U7RTest/Redist</LocalDebuggerWorkingDirectory>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\repos\U7RTest\MinSizeRel\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">U7Revisited.dir\MinSizeRel\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">U7Revisited</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">true</GenerateManifest>
+    <LocalDebuggerWorkingDirectory Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/repos/U7RTest/Redist</LocalDebuggerWorkingDirectory>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\repos\U7RTest\RelWithDebInfo\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">U7Revisited.dir\RelWithDebInfo\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">U7Revisited</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</GenerateManifest>
+    <LocalDebuggerWorkingDirectory Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/repos/U7RTest/Redist</LocalDebuggerWorkingDirectory>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
-      <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_DEBUG;WITH_WINMM;_WINDOWS;DEBUG_MODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>Source\Geist;ThirdParty\raylib\include;ThirdParty\raylib\external;ThirdParty\nlohmann;ThirdParty\lua\src;ThirdParty\nlohmann;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <DisableSpecificWarnings>%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <MinimalRebuild>false</MinimalRebuild>
+      <AdditionalIncludeDirectories>C:\repos\U7RTest\Source\Geist;C:\repos\U7RTest\Source;C:\repos\U7RTest\ThirdParty\nlohmann;C:\repos\U7RTest\ThirdParty\lua\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "C:/repos/U7RTest/ThirdParty/raylib/external/include" /external:I "C:/repos/U7RTest/ThirdParty/raylib/include"</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <DisableSpecificWarnings>4244;4305</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;DEBUG_MODE;_CRT_SECURE_NO_WARNINGS;CMAKE_INTDIR="Debug"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
     </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_DEBUG;_WINDOWS;DEBUG_MODE;_CRT_SECURE_NO_WARNINGS;CMAKE_INTDIR=\"Debug\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\repos\U7RTest\Source\Geist;C:\repos\U7RTest\Source;C:\repos\U7RTest\ThirdParty\nlohmann;C:\repos\U7RTest\ThirdParty\lua\src;C:\repos\U7RTest\ThirdParty\raylib\external\include;C:\repos\U7RTest\ThirdParty\raylib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\repos\U7RTest\Source\Geist;C:\repos\U7RTest\Source;C:\repos\U7RTest\ThirdParty\nlohmann;C:\repos\U7RTest\ThirdParty\lua\src;C:\repos\U7RTest\ThirdParty\raylib\external\include;C:\repos\U7RTest\ThirdParty\raylib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <PostBuildEvent>
+      <Message></Message>
+      <Command></Command>
+    </PostBuildEvent>
     <Link>
+      <AdditionalDependencies>ThirdParty\raylib\lib\raylib.lib;Debug\lua.lib;winmm.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <DataExecutionPrevention></DataExecutionPrevention>
+      <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
+      <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImageHasSafeExceptionHandlers></ImageHasSafeExceptionHandlers>
+      <ImportLibrary>C:/repos/U7RTest/Debug/U7Revisited.lib</ImportLibrary>
+      <LinkErrorReporting></LinkErrorReporting>
+      <ProgramDataBaseFile>C:/repos/U7RTest/Debug/U7Revisited.pdb</ProgramDataBaseFile>
+      <RandomizedBaseAddress></RandomizedBaseAddress>
       <SubSystem>Windows</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>winmm.lib;OpenGL32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;raylib.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>ThirdParty\raylib\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <EntryPointSymbol>"mainCRTStartup"</EntryPointSymbol>
     </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
-      <Optimization>MaxSpeed</Optimization>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>NDEBUG;PLATFORM_DESKTOP;GRAPHICS_API_OPENGL_33;_WINSOCK_DEPRECATED_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;_WIN32;RELEASE_MODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>Source\Geist;ThirdParty\raylib\include;ThirdParty\raylib\external;ThirdParty\nlohmann;ThirdParty\lua\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <DisableSpecificWarnings>%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalIncludeDirectories>C:\repos\U7RTest\Source\Geist;C:\repos\U7RTest\Source;C:\repos\U7RTest\ThirdParty\nlohmann;C:\repos\U7RTest\ThirdParty\lua\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "C:/repos/U7RTest/ThirdParty/raylib/external/include" /external:I "C:/repos/U7RTest/ThirdParty/raylib/include"</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <DisableSpecificWarnings>4244;4305</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <Optimization>Full</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;RELEASE_MODE;_CRT_SECURE_NO_WARNINGS;CMAKE_INTDIR="Release"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
     </ClCompile>
-    <Link>
-      <SubSystem>Windows</SubSystem>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <OptimizeReferences>true</OptimizeReferences>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>winmm.lib;OpenGL32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;raylib.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>ThirdParty\raylib\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
-      <EntryPointSymbol>"mainCRTStartup"</EntryPointSymbol>
-    </Link>
-    <CustomBuildStep>
-      <Command>
-      </Command>
-    </CustomBuildStep>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;RELEASE_MODE;_CRT_SECURE_NO_WARNINGS;CMAKE_INTDIR=\"Release\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\repos\U7RTest\Source\Geist;C:\repos\U7RTest\Source;C:\repos\U7RTest\ThirdParty\nlohmann;C:\repos\U7RTest\ThirdParty\lua\src;C:\repos\U7RTest\ThirdParty\raylib\external\include;C:\repos\U7RTest\ThirdParty\raylib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\repos\U7RTest\Source\Geist;C:\repos\U7RTest\Source;C:\repos\U7RTest\ThirdParty\nlohmann;C:\repos\U7RTest\ThirdParty\lua\src;C:\repos\U7RTest\ThirdParty\raylib\external\include;C:\repos\U7RTest\ThirdParty\raylib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
     <PostBuildEvent>
-      <Command>xcopy /y "$(ProjectDir)x64\Release\U7Revisited.exe" "$(ProjectDir)Redist"</Command>
+      <Message>Copying Release executable to Redist folder</Message>
+      <Command>setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E copy C:/repos/U7RTest/Release/U7Revisited.exe "C:/repos/U7RTest/Redist/"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
     </PostBuildEvent>
+    <Link>
+      <AdditionalDependencies>ThirdParty\raylib\lib\raylib.lib;Release\lua.lib;winmm.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <DataExecutionPrevention></DataExecutionPrevention>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImageHasSafeExceptionHandlers></ImageHasSafeExceptionHandlers>
+      <ImportLibrary>C:/repos/U7RTest/Release/U7Revisited.lib</ImportLibrary>
+      <LinkErrorReporting></LinkErrorReporting>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <OptimizeReferences>true</OptimizeReferences>
+      <ProgramDataBaseFile>C:/repos/U7RTest/Release/U7Revisited.pdb</ProgramDataBaseFile>
+      <RandomizedBaseAddress></RandomizedBaseAddress>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\repos\U7RTest\Source\Geist;C:\repos\U7RTest\Source;C:\repos\U7RTest\ThirdParty\nlohmann;C:\repos\U7RTest\ThirdParty\lua\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "C:/repos/U7RTest/ThirdParty/raylib/external/include" /external:I "C:/repos/U7RTest/ThirdParty/raylib/include"</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <DisableSpecificWarnings>4244;4305</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <Optimization>MinSpace</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;_CRT_SECURE_NO_WARNINGS;CMAKE_INTDIR="MinSizeRel"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;_CRT_SECURE_NO_WARNINGS;CMAKE_INTDIR=\"MinSizeRel\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\repos\U7RTest\Source\Geist;C:\repos\U7RTest\Source;C:\repos\U7RTest\ThirdParty\nlohmann;C:\repos\U7RTest\ThirdParty\lua\src;C:\repos\U7RTest\ThirdParty\raylib\external\include;C:\repos\U7RTest\ThirdParty\raylib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\repos\U7RTest\Source\Geist;C:\repos\U7RTest\Source;C:\repos\U7RTest\ThirdParty\nlohmann;C:\repos\U7RTest\ThirdParty\lua\src;C:\repos\U7RTest\ThirdParty\raylib\external\include;C:\repos\U7RTest\ThirdParty\raylib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <PostBuildEvent>
+      <Message></Message>
+      <Command></Command>
+    </PostBuildEvent>
+    <Link>
+      <AdditionalDependencies>ThirdParty\raylib\lib\raylib.lib;MinSizeRel\lua.lib;winmm.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <DataExecutionPrevention></DataExecutionPrevention>
+      <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImageHasSafeExceptionHandlers></ImageHasSafeExceptionHandlers>
+      <ImportLibrary>C:/repos/U7RTest/MinSizeRel/U7Revisited.lib</ImportLibrary>
+      <LinkErrorReporting></LinkErrorReporting>
+      <ProgramDataBaseFile>C:/repos/U7RTest/MinSizeRel/U7Revisited.pdb</ProgramDataBaseFile>
+      <RandomizedBaseAddress></RandomizedBaseAddress>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\repos\U7RTest\Source\Geist;C:\repos\U7RTest\Source;C:\repos\U7RTest\ThirdParty\nlohmann;C:\repos\U7RTest\ThirdParty\lua\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "C:/repos/U7RTest/ThirdParty/raylib/external/include" /external:I "C:/repos/U7RTest/ThirdParty/raylib/include"</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4244;4305</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;_CRT_SECURE_NO_WARNINGS;CMAKE_INTDIR="RelWithDebInfo"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;_CRT_SECURE_NO_WARNINGS;CMAKE_INTDIR=\"RelWithDebInfo\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\repos\U7RTest\Source\Geist;C:\repos\U7RTest\Source;C:\repos\U7RTest\ThirdParty\nlohmann;C:\repos\U7RTest\ThirdParty\lua\src;C:\repos\U7RTest\ThirdParty\raylib\external\include;C:\repos\U7RTest\ThirdParty\raylib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\repos\U7RTest\Source\Geist;C:\repos\U7RTest\Source;C:\repos\U7RTest\ThirdParty\nlohmann;C:\repos\U7RTest\ThirdParty\lua\src;C:\repos\U7RTest\ThirdParty\raylib\external\include;C:\repos\U7RTest\ThirdParty\raylib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <PostBuildEvent>
+      <Message></Message>
+      <Command></Command>
+    </PostBuildEvent>
+    <Link>
+      <AdditionalDependencies>ThirdParty\raylib\lib\raylib.lib;RelWithDebInfo\lua.lib;winmm.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <DataExecutionPrevention></DataExecutionPrevention>
+      <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImageHasSafeExceptionHandlers></ImageHasSafeExceptionHandlers>
+      <ImportLibrary>C:/repos/U7RTest/RelWithDebInfo/U7Revisited.lib</ImportLibrary>
+      <LinkErrorReporting></LinkErrorReporting>
+      <ProgramDataBaseFile>C:/repos/U7RTest/RelWithDebInfo/U7Revisited.pdb</ProgramDataBaseFile>
+      <RandomizedBaseAddress></RandomizedBaseAddress>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\repos\U7RTest\CMakeLists.txt">
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule C:/repos/U7RTest/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/repos/U7RTest -BC:/repos/U7RTest --check-stamp-file C:/repos/U7RTest/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeCInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeCXXInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeGenericSystem.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeRCInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeCLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeCXXLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeCommonLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Linker\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Linker\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Linker\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Linker\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Linker\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Linker\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows-Initialize.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\WindowsPaths.cmake;C:\repos\U7RTest\CMakeFiles\4.1.3\CMakeCCompiler.cmake;C:\repos\U7RTest\CMakeFiles\4.1.3\CMakeCXXCompiler.cmake;C:\repos\U7RTest\CMakeFiles\4.1.3\CMakeRCCompiler.cmake;C:\repos\U7RTest\CMakeFiles\4.1.3\CMakeSystem.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\repos\U7RTest\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule C:/repos/U7RTest/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/repos/U7RTest -BC:/repos/U7RTest --check-stamp-file C:/repos/U7RTest/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeCInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeCXXInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeGenericSystem.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeRCInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeCLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeCXXLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeCommonLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Linker\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Linker\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Linker\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Linker\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Linker\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Linker\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows-Initialize.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\WindowsPaths.cmake;C:\repos\U7RTest\CMakeFiles\4.1.3\CMakeCCompiler.cmake;C:\repos\U7RTest\CMakeFiles\4.1.3\CMakeCXXCompiler.cmake;C:\repos\U7RTest\CMakeFiles\4.1.3\CMakeRCCompiler.cmake;C:\repos\U7RTest\CMakeFiles\4.1.3\CMakeSystem.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\repos\U7RTest\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Building Custom Rule C:/repos/U7RTest/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/repos/U7RTest -BC:/repos/U7RTest --check-stamp-file C:/repos/U7RTest/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeCInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeCXXInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeGenericSystem.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeRCInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeCLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeCXXLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeCommonLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Linker\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Linker\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Linker\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Linker\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Linker\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Linker\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows-Initialize.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\WindowsPaths.cmake;C:\repos\U7RTest\CMakeFiles\4.1.3\CMakeCCompiler.cmake;C:\repos\U7RTest\CMakeFiles\4.1.3\CMakeCXXCompiler.cmake;C:\repos\U7RTest\CMakeFiles\4.1.3\CMakeRCCompiler.cmake;C:\repos\U7RTest\CMakeFiles\4.1.3\CMakeSystem.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\repos\U7RTest\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Building Custom Rule C:/repos/U7RTest/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/repos/U7RTest -BC:/repos/U7RTest --check-stamp-file C:/repos/U7RTest/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeCInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeCXXInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeGenericSystem.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeRCInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeCLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeCXXLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeCommonLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Linker\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Linker\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Linker\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Linker\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Linker\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Linker\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows-Initialize.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\WindowsPaths.cmake;C:\repos\U7RTest\CMakeFiles\4.1.3\CMakeCCompiler.cmake;C:\repos\U7RTest\CMakeFiles\4.1.3\CMakeCXXCompiler.cmake;C:\repos\U7RTest\CMakeFiles\4.1.3\CMakeRCCompiler.cmake;C:\repos\U7RTest\CMakeFiles\4.1.3\CMakeSystem.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\repos\U7RTest\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="C:\repos\U7RTest\Source\Geist\BaseUnits.cpp" />
+    <ClCompile Include="C:\repos\U7RTest\Source\Geist\Config.cpp" />
+    <ClCompile Include="C:\repos\U7RTest\Source\Geist\Engine.cpp" />
+    <ClCompile Include="C:\repos\U7RTest\Source\Geist\Globals.cpp" />
+    <ClCompile Include="C:\repos\U7RTest\Source\Geist\Gui.cpp" />
+    <ClCompile Include="C:\repos\U7RTest\Source\Geist\GuiElements.cpp" />
+    <ClCompile Include="C:\repos\U7RTest\Source\Geist\GuiManager.cpp" />
+    <ClCompile Include="C:\repos\U7RTest\Source\Geist\IO.cpp" />
+    <ClCompile Include="C:\repos\U7RTest\Source\Geist\Logging.cpp" />
+    <ClCompile Include="C:\repos\U7RTest\Source\Geist\ParticleSystem.cpp" />
+    <ClCompile Include="C:\repos\U7RTest\Source\Geist\Primitives.cpp" />
+    <ClCompile Include="C:\repos\U7RTest\Source\Geist\RaylibModel.cpp" />
+    <ClCompile Include="C:\repos\U7RTest\Source\Geist\ResourceManager.cpp" />
+    <ClCompile Include="C:\repos\U7RTest\Source\Geist\RNG.cpp" />
+    <ClCompile Include="C:\repos\U7RTest\Source\Geist\ScriptingSystem.cpp" />
+    <ClCompile Include="C:\repos\U7RTest\Source\Geist\StateMachine.cpp" />
+    <ClCompile Include="C:\repos\U7RTest\Source\Geist\TooltipSystem.cpp" />
+    <ClCompile Include="C:\repos\U7RTest\Source\Ghost\GhostSerializer.cpp" />
+    <ClCompile Include="C:\repos\U7RTest\Source\Ghost\GhostWindow.cpp" />
+    <ClCompile Include="C:\repos\U7RTest\Source\AskState.cpp" />
+    <ClCompile Include="C:\repos\U7RTest\Source\ConversationState.cpp" />
+    <ClCompile Include="C:\repos\U7RTest\Source\GameSerializer.cpp" />
+    <ClCompile Include="C:\repos\U7RTest\Source\GumpManager.cpp" />
+    <ClCompile Include="C:\repos\U7RTest\Source\LoadingState.cpp" />
+    <ClCompile Include="C:\repos\U7RTest\Source\Main.cpp" />
+    <ClCompile Include="C:\repos\U7RTest\Source\MainState.cpp" />
+    <ClCompile Include="C:\repos\U7RTest\Source\OptionsState.cpp" />
+    <ClCompile Include="C:\repos\U7RTest\Source\Pathfinding.cpp" />
+    <ClCompile Include="C:\repos\U7RTest\Source\ShapeData.cpp" />
+    <ClCompile Include="C:\repos\U7RTest\Source\ShapeEditorState.cpp" />
+    <ClCompile Include="C:\repos\U7RTest\Source\Terrain.cpp" />
+    <ClCompile Include="C:\repos\U7RTest\Source\TitleState.cpp" />
+    <ClCompile Include="C:\repos\U7RTest\Source\U7GumpNumberBar.cpp" />
+    <ClCompile Include="C:\repos\U7RTest\Source\U7GumpBook.cpp" />
+    <ClCompile Include="C:\repos\U7RTest\Source\LoadSaveState.cpp" />
+    <ClCompile Include="C:\repos\U7RTest\Source\U7GumpMinimap.cpp" />
+    <ClCompile Include="C:\repos\U7RTest\Source\U7GumpPaperdoll.cpp" />
+    <ClCompile Include="C:\repos\U7RTest\Source\U7GumpSpellbook.cpp" />
+    <ClCompile Include="C:\repos\U7RTest\Source\U7GumpStats.cpp" />
+    <ClCompile Include="C:\repos\U7RTest\Source\U7Globals.cpp" />
+    <ClCompile Include="C:\repos\U7RTest\Source\U7Gump.cpp" />
+    <ClCompile Include="C:\repos\U7RTest\Source\U7LuaFuncs.cpp" />
+    <ClCompile Include="C:\repos\U7RTest\Source\U7Object.cpp" />
+    <ClCompile Include="C:\repos\U7RTest\Source\U7Player.cpp" />
+    <ClCompile Include="C:\repos\U7RTest\Source\U7ScriptUtils.cpp" />
+    <ClCompile Include="C:\repos\U7RTest\Source\ScriptRenameState.cpp" />
+    <ResourceCompile Include="C:\repos\U7RTest\Source\u7revisited.rc" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="C:\repos\U7RTest\ZERO_CHECK.vcxproj">
+      <Project>{604AE11C-62A8-3B95-B704-1DB5DFF191B5}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+    <ProjectReference Include="C:\repos\U7RTest\lua.vcxproj">
+      <Project>{EC371062-764A-3AAD-8185-79A518E235B6}</Project>
+      <Name>lua</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
