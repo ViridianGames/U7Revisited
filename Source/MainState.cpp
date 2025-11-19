@@ -939,7 +939,7 @@ void MainState::Update()
 					// Lua will call start_following_path() to begin movement
 					if (result.requestID > 0)
 					{
-						DebugPrint("MainState: Tracked path ready for NPC " + std::to_string(result.npcID) +
+						NPCDebugPrint("MainState: Tracked path ready for NPC " + std::to_string(result.npcID) +
 						           ", request ID " + std::to_string(result.requestID) +
 						           ", " + std::to_string(result.waypoints.size()) + " waypoints");
 						npcObj->m_isSchedulePath = false;  // Lua activity path
@@ -948,7 +948,7 @@ void MainState::Update()
 					// Fire-and-forget requests (requestID == 0) start movement immediately
 					else if (!result.waypoints.empty())
 					{
-						DebugPrint("MainState: Fire-and-forget path ready for NPC " + std::to_string(result.npcID) +
+						NPCDebugPrint("MainState: Fire-and-forget path ready for NPC " + std::to_string(result.npcID) +
 						           ", " + std::to_string(result.waypoints.size()) + " waypoints, auto-starting");
 						npcObj->m_isSchedulePath = true;  // C++ schedule path
 						npcObj->SetDest(result.waypoints[0]);

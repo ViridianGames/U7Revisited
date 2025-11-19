@@ -15,6 +15,7 @@ Music/
 schedules.csv
 wait_debug.txt
 ghostlog.txt
+*.log
 
 /subprojects/raylib/
 /subprojects/packagecache/

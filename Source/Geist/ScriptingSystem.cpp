@@ -89,13 +89,7 @@ void ScriptingSystem::Update()
     // Resume all scripts whose wait timers expired
     for (const std::string& scriptKey : scriptsToResume)
     {
-        // Debug logging
-        std::ofstream debugLog("C:\\U7Revisited\\Redist\\wait_debug.txt", std::ios::app);
-        if (debugLog.is_open())
-        {
-            debugLog << "RESUME: key=" << scriptKey << std::endl;
-            debugLog.close();
-        }
+        NPCDebugPrint("RESUME: key=" + scriptKey);
 
         m_waitTimers.erase(scriptKey);
 

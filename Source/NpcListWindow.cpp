@@ -193,11 +193,11 @@ void NpcListWindow::Show()
 {
 	if (m_window)
 	{
-		DebugPrint("NpcListWindow::Show() called");
+		NPCDebugPrint("NpcListWindow::Show() called");
 		// Debug: Check Blacktooth's activity before building list
 		if (g_NPCData.find(226) != g_NPCData.end())
 		{
-			DebugPrint("  Before BuildNPCList: Blacktooth m_currentActivity=" + 
+			NPCDebugPrint("  Before BuildNPCList: Blacktooth m_currentActivity=" + 
 			           std::to_string(g_NPCData[226]->m_currentActivity));
 		}
 		
@@ -236,7 +236,7 @@ void NpcListWindow::BuildNPCList()
 {
 	m_allNPCs.clear();
 
-	DebugPrint("BuildNPCList: g_NPCData has " + std::to_string(g_NPCData.size()) + " NPCs");
+	NPCDebugPrint("BuildNPCList: g_NPCData has " + std::to_string(g_NPCData.size()) + " NPCs");
 
 	extern unsigned int g_scheduleTime;
 
@@ -258,7 +258,7 @@ void NpcListWindow::BuildNPCList()
 		// Debug: Log activity for Blacktooth
 		if (npcId == 226)
 		{
-			DebugPrint("BuildNPCList: Blacktooth (226) m_currentActivity=" + std::to_string(npcData->m_currentActivity) + 
+			NPCDebugPrint("BuildNPCList: Blacktooth (226) m_currentActivity=" + std::to_string(npcData->m_currentActivity) + 
 			           " activityName=" + entry.activityName);
 		}
 
@@ -301,7 +301,7 @@ void NpcListWindow::BuildNPCList()
 
 	SortNPCList();
 
-	DebugPrint("BuildNPCList: Built list with " + std::to_string(m_allNPCs.size()) + " NPCs");
+	NPCDebugPrint("BuildNPCList: Built list with " + std::to_string(m_allNPCs.size()) + " NPCs");
 }
 
 void NpcListWindow::SortNPCList()
@@ -346,7 +346,7 @@ void NpcListWindow::RebuildFilteredList()
 	Gui* gui = m_window->GetGui();
 	if (!gui)
 	{
-		DebugPrint("RebuildFilteredList: No GUI!");
+		NPCDebugPrint("RebuildFilteredList: No GUI!");
 		return;
 	}
 
@@ -355,7 +355,7 @@ void NpcListWindow::RebuildFilteredList()
 
 	if (!listboxElement || listboxElement->m_Type != GUI_LISTBOX)
 	{
-		DebugPrint("RebuildFilteredList: NPC_LISTBOX not found or wrong type! ID=" + std::to_string(listboxId));
+		NPCDebugPrint("RebuildFilteredList: NPC_LISTBOX not found or wrong type! ID=" + std::to_string(listboxId));
 		return;
 	}
 
@@ -419,7 +419,7 @@ void NpcListWindow::RebuildFilteredList()
 		}
 	}
 
-	DebugPrint("RebuildFilteredList: Added " + std::to_string(m_filteredNPCs.size()) + " items to listbox");
+	NPCDebugPrint("RebuildFilteredList: Added " + std::to_string(m_filteredNPCs.size()) + " items to listbox");
 }
 
 void NpcListWindow::HandleDoubleClick()
@@ -472,7 +472,7 @@ void NpcListWindow::HandleDoubleClick()
 	g_CameraMoved = true;
 
 	// DISABLED: Reduce log spam to improve responsiveness when clicking NPCs
-	// DebugPrint("Camera teleported to NPC " + std::string(npcData->name) +
+	// NPCDebugPrint("Camera teleported to NPC " + std::string(npcData->name) +
 	//           " at (" + std::to_string((int)npcPos.x) + ", " +
 	//           std::to_string((int)npcPos.z) + ")");
 }

@@ -95,7 +95,7 @@ bool PathfindingThreadPool::IsPathReady(int requestID)
 	std::lock_guard<std::mutex> lock(m_readyResultsMutex);
 	auto it = m_readyResults.find(requestID);
 
-	DebugPrint("ThreadPool: Checking if request ID " + std::to_string(requestID) +
+	NPCDebugPrint("ThreadPool: Checking if request ID " + std::to_string(requestID) +
 	           " is ready, found=" + std::to_string(it != m_readyResults.end()));
 
 	if (it != m_readyResults.end() && it->second)
@@ -110,7 +110,7 @@ void PathfindingThreadPool::MarkRequestReady(int requestID)
 {
 	std::lock_guard<std::mutex> lock(m_readyResultsMutex);
 	m_readyResults[requestID] = true;
-	DebugPrint("ThreadPool: Marked request ID " + std::to_string(requestID) + " as ready");
+	NPCDebugPrint("ThreadPool: Marked request ID " + std::to_string(requestID) + " as ready");
 }
 
 void PathfindingThreadPool::WorkerThread(int workerID)

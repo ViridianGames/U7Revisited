@@ -374,6 +374,8 @@ void DrawParagraph(std::shared_ptr<Font> font, const std::string& text, Vector2 
 
 void DebugPrint(std::string text);
 
+void NPCDebugPrint(std::string text);  // Writes to npcdebug.log instead of debuglog.txt
+
 float GetDistance(float startX, float startZ, float endX, float endZ);
 
 bool IsDistanceLessThan(float startX, float startZ, float endX, float endZ, float range);

@@ -1495,9 +1495,9 @@ void InitializeNPCActivitiesFromSchedules()
 {
 	extern unsigned int g_scheduleTime;
 
-	DebugPrint("InitializeNPCActivitiesFromSchedules: g_scheduleTime=" + std::to_string(g_scheduleTime));
-	DebugPrint("InitializeNPCActivitiesFromSchedules: g_NPCSchedules size=" + std::to_string(g_NPCSchedules.size()));
-	DebugPrint("InitializeNPCActivitiesFromSchedules: g_NPCData size=" + std::to_string(g_NPCData.size()));
+	NPCDebugPrint("  NPC: g_scheduleTime=" + std::to_string(g_scheduleTime));
+	NPCDebugPrint("  NPC: g_NPCSchedules size=" + std::to_string(g_NPCSchedules.size()));
+	NPCDebugPrint("  NPC: g_NPCData size=" + std::to_string(g_NPCData.size()));
 
 	for (const auto& [npcID, schedules] : g_NPCSchedules)
 	{
@@ -1533,7 +1533,7 @@ void InitializeNPCActivitiesFromSchedules()
 		if (mostRecentSchedule)
 		{
 			g_NPCData[npcID]->m_currentActivity = mostRecentSchedule->m_activity;
-			DebugPrint("  NPC " + std::to_string(npcID) + " (" + std::string(g_NPCData[npcID]->name) + 
+			NPCDebugPrint("  NPC " + std::to_string(npcID) + " (" + std::string(g_NPCData[npcID]->name) + 
 			           ") set to activity " + std::to_string(mostRecentSchedule->m_activity) + 
 			           " from time " + std::to_string(mostRecentTime));
 			
@@ -1541,18 +1541,18 @@ void InitializeNPCActivitiesFromSchedules()
 			if (g_NPCData[npcID]->m_objectID >= 0 && g_objectList[g_NPCData[npcID]->m_objectID])
 			{
 				g_objectList[g_NPCData[npcID]->m_objectID]->m_lastSchedule = mostRecentTime;
-				DebugPrint("    Set m_lastSchedule=" + std::to_string(mostRecentTime) + 
+				NPCDebugPrint("  NPC m_lastSchedule=" + std::to_string(mostRecentTime) + 
 				           " on object " + std::to_string(g_NPCData[npcID]->m_objectID));
 			}
 			else
 			{
-				DebugPrint("    WARNING: Could not set m_lastSchedule, objectID=" + 
+				NPCDebugPrint("  NPC: Could not set m_lastSchedule, objectID=" + 
 				           std::to_string(g_NPCData[npcID]->m_objectID));
 			}
 		}
 		else
 		{
-			DebugPrint("  NPC " + std::to_string(npcID) + " has no schedule entry!");
+			NPCDebugPrint("  NPC " + std::to_string(npcID) + " has no schedule entry!");
 		}
 	}
 }
