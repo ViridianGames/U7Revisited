@@ -119,11 +119,11 @@ float PathfindingGrid::GetTileHeight(int worldX, int worldZ) const
 	// Get all objects at this tile
 	auto objects = GetOverlappingObjects(worldX, worldZ);
 
-	// DEBUG: Log first few calls to see what's happening
-	static int debugCount = 0;
-	bool shouldDebug = (debugCount < 5);
+	// Find the LOWEST walkable surface below height threshold
+	// This ensures we use ground floor, not upper floors
+	float lowestHeight = -1.0f;
+	bool foundWalkableSurface = false;
 
-	// Look for walkable surface objects (floors, bridges, stairs)
 	for (const auto& ovObj : objects)
 	{
 		U7Object* obj = ovObj.obj;
@@ -132,31 +132,27 @@ float PathfindingGrid::GetTileHeight(int worldX, int worldZ) const
 
 		int shapeID = obj->m_shapeData->GetShape();
 
-		if (shouldDebug)
-		{
-			TraceLog(LOG_INFO, "GetTileHeight(%d,%d): Found shapeID=%d, y=%.2f, height=%.2f",
-				worldX, worldZ, shapeID, obj->m_Pos.y, obj->m_objectData->m_height);
-		}
+		// Skip very high objects (upper floors)
+		// This filters out second story floors while keeping tall bridges
+		if (obj->m_Pos.y >= MAX_WALKABLE_SURFACE_HEIGHT)
+			continue;
 
 		// Check if this is a known walkable surface
 		if (IsWalkableSurface(shapeID))
 		{
-			float result = obj->m_Pos.y + obj->m_objectData->m_height;
-			if (shouldDebug)
+			float surfaceHeight = obj->m_Pos.y + obj->m_objectData->m_height;
+			
+			// Keep the lowest walkable surface
+			if (!foundWalkableSurface || surfaceHeight < lowestHeight)
 			{
-				TraceLog(LOG_INFO, "  -> IsWalkableSurface=TRUE, returning %.2f", result);
-				debugCount++;
+				lowestHeight = surfaceHeight;
+				foundWalkableSurface = true;
 			}
-			// Return the top surface height for ANY tile this object covers
-			return result;
 		}
 	}
 
-	if (shouldDebug && objects.size() > 0)
-	{
-		TraceLog(LOG_INFO, "GetTileHeight(%d,%d): No walkable surface found, returning 0.0", worldX, worldZ);
-		debugCount++;
-	}
+	if (foundWalkableSurface)
+		return lowestHeight;
 
 	// No walkable surface objects - ground level
 	return 0.0f;
@@ -237,6 +233,10 @@ bool PathfindingGrid::CheckTileWalkable(int worldX, int worldZ) const
 
 			if (IsWalkableSurface(shapeID))
 			{
+				// Skip very high walkable surfaces (upper floors)
+				if (obj->m_Pos.y >= MAX_WALKABLE_SURFACE_HEIGHT)
+					continue;
+					
 				// This is a known walkable surface - clear terrain blocking and allow tile
 				std::stringstream ss;
 				ss << "  -> Allowing tile (" << worldX << "," << worldZ << ") with floor shape " << shapeID;
@@ -246,9 +246,8 @@ bool PathfindingGrid::CheckTileWalkable(int worldX, int worldZ) const
 			}
 		}
 
-		// Skip objects that are very elevated (high bridges, roofs at y > 2.0)
-		// These don't block ground-level or low-level movement
-		if (obj->m_Pos.y > 2.0f)
+		// Skip very high objects (upper floors)
+		if (obj->m_Pos.y >= MAX_WALKABLE_SURFACE_HEIGHT)
 			continue;
 
 		// Any other ground-level blocking object blocks the tile

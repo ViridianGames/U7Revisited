@@ -579,6 +579,9 @@ const float MAX_CLIMBABLE_HEIGHT = 1.0f;
 // Movement cost for walking on objects (stairs, platforms, etc.) - replaces terrain cost
 const float CLIMB_MOVEMENT_COST = 2.0f;
 
+// Maximum height for walkable surface objects to be considered (filters out upper floors)
+const float MAX_WALKABLE_SURFACE_HEIGHT = 5.0f;
+
 // Call this whenever ANY object changes position or state
 void NotifyPathfindingGridUpdate(int worldX, int worldZ, int radius = 1);
 
