@@ -1,0 +1,342 @@
+{
+  "gui": {
+    "elements": [
+      {
+        "type": "panel",
+        "position": [5, 5],
+        "size": [400, 700],
+        "backgroundColor": [80, 80, 80, 255],
+        "filled": true,
+        "layout": "table",
+        "horzPadding": 5,
+        "vertPadding": 5,
+        "columns": 2,
+        "font": "babyblocks.ttf",
+        "fontSize": 24,
+        "elements": [
+          {
+            "type": "textarea",
+            "position": [-1, -1],
+            "text": "Team:",
+            "textColor": [255, 255, 255, 255],
+            "size": [180, 30],
+            "justified": 0
+          },
+          {
+            "name": "NPC_TEAM",
+            "type": "textinput",
+            "position": [-1, -1],
+            "text": "0",
+            "size": [180, 35],
+            "textColor": [255, 255, 255, 255],
+            "borderColor": [255, 255, 255, 255],
+            "backgroundColor": [0, 0, 0, 255]
+          },
+          {
+            "type": "textarea",
+            "position": [-1, -1],
+            "text": "Strength:",
+            "textColor": [255, 255, 255, 255],
+            "size": [180, 30],
+            "justified": 0
+          },
+          {
+            "name": "NPC_STR",
+            "type": "textinput",
+            "position": [-1, -1],
+            "text": "10",
+            "size": [180, 35],
+            "textColor": [255, 255, 255, 255],
+            "borderColor": [255, 255, 255, 255],
+            "backgroundColor": [0, 0, 0, 255]
+          },
+          {
+            "type": "textarea",
+            "position": [-1, -1],
+            "text": "Dexterity:",
+            "textColor": [255, 255, 255, 255],
+            "size": [180, 30],
+            "justified": 0
+          },
+          {
+            "name": "NPC_DEX",
+            "type": "textinput",
+            "position": [-1, -1],
+            "text": "10",
+            "size": [180, 35],
+            "textColor": [255, 255, 255, 255],
+            "borderColor": [255, 255, 255, 255],
+            "backgroundColor": [0, 0, 0, 255]
+          },
+          {
+            "type": "textarea",
+            "position": [-1, -1],
+            "text": "Intelligence:",
+            "textColor": [255, 255, 255, 255],
+            "size": [180, 30],
+            "justified": 0
+          },
+          {
+            "name": "NPC_INT",
+            "type": "textinput",
+            "position": [-1, -1],
+            "text": "10",
+            "size": [180, 35],
+            "textColor": [255, 255, 255, 255],
+            "borderColor": [255, 255, 255, 255],
+            "backgroundColor": [0, 0, 0, 255]
+          },
+          {
+            "type": "textarea",
+            "position": [-1, -1],
+            "text": "Endurance:",
+            "textColor": [255, 255, 255, 255],
+            "size": [180, 30],
+            "justified": 0
+          },
+          {
+            "name": "NPC_END",
+            "type": "textinput",
+            "position": [-1, -1],
+            "text": "10",
+            "size": [180, 35],
+            "textColor": [255, 255, 255, 255],
+            "borderColor": [255, 255, 255, 255],
+            "backgroundColor": [0, 0, 0, 255]
+          },
+          {
+            "type": "textarea",
+            "position": [-1, -1],
+            "text": "Charisma:",
+            "textColor": [255, 255, 255, 255],
+            "size": [180, 30],
+            "justified": 0
+          },
+          {
+            "name": "NPC_CHA",
+            "type": "textinput",
+            "position": [-1, -1],
+            "text": "10",
+            "size": [180, 35],
+            "textColor": [255, 255, 255, 255],
+            "borderColor": [255, 255, 255, 255],
+            "backgroundColor": [0, 0, 0, 255]
+          },
+          {
+            "type": "textarea",
+            "position": [-1, -1],
+            "text": "Level:",
+            "textColor": [255, 255, 255, 255],
+            "size": [180, 30],
+            "justified": 0
+          },
+          {
+            "name": "NPC_LEVEL",
+            "type": "textinput",
+            "position": [-1, -1],
+            "text": "1",
+            "size": [180, 35],
+            "textColor": [255, 255, 255, 255],
+            "borderColor": [255, 255, 255, 255],
+            "backgroundColor": [0, 0, 0, 255]
+          },
+          {
+            "type": "textarea",
+            "position": [-1, -1],
+            "text": "Experience:",
+            "textColor": [255, 255, 255, 255],
+            "size": [180, 30],
+            "justified": 0
+          },
+          {
+            "name": "NPC_EXPERIENCE",
+            "type": "textinput",
+            "position": [-1, -1],
+            "text": "0",
+            "size": [180, 35],
+            "textColor": [255, 255, 255, 255],
+            "borderColor": [255, 255, 255, 255],
+            "backgroundColor": [0, 0, 0, 255]
+          },
+          {
+            "type": "textarea",
+            "position": [-1, -1],
+            "text": "Current HP:",
+            "textColor": [255, 255, 255, 255],
+            "size": [180, 30],
+            "justified": 0
+          },
+          {
+            "name": "NPC_CURRENT_HP",
+            "type": "textinput",
+            "position": [-1, -1],
+            "text": "0",
+            "size": [180, 35],
+            "textColor": [255, 255, 255, 255],
+            "borderColor": [255, 255, 255, 255],
+            "backgroundColor": [0, 0, 0, 255]
+          },
+          {
+            "type": "textarea",
+            "position": [-1, -1],
+            "text": "Max HP:",
+            "textColor": [255, 255, 255, 255],
+            "size": [180, 30],
+            "justified": 0
+          },
+          {
+            "name": "NPC_MAX_HP",
+            "type": "textinput",
+            "position": [-1, -1],
+            "text": "0",
+            "size": [180, 35],
+            "textColor": [255, 255, 255, 255],
+            "borderColor": [255, 255, 255, 255],
+            "backgroundColor": [0, 0, 0, 255]
+          },
+          {
+            "type": "textarea",
+            "position": [-1, -1],
+            "text": "Current MP:",
+            "textColor": [255, 255, 255, 255],
+            "size": [180, 30],
+            "justified": 0
+          },
+          {
+            "name": "NPC_CURRENT_MP",
+            "type": "textinput",
+            "position": [-1, -1],
+            "text": "0",
+            "size": [180, 35],
+            "textColor": [255, 255, 255, 255],
+            "borderColor": [255, 255, 255, 255],
+            "backgroundColor": [0, 0, 0, 255]
+          },
+          {
+            "type": "textarea",
+            "position": [-1, -1],
+            "text": "Max MP:",
+            "textColor": [255, 255, 255, 255],
+            "size": [180, 30],
+            "justified": 0
+          },
+          {
+            "name": "NPC_MAX_MP",
+            "type": "textinput",
+            "position": [-1, -1],
+            "text": "0",
+            "size": [180, 35],
+            "textColor": [255, 255, 255, 255],
+            "borderColor": [255, 255, 255, 255],
+            "backgroundColor": [0, 0, 0, 255]
+          },
+          {
+            "type": "textarea",
+            "position": [-1, -1],
+            "text": "Can Fly:",
+            "textColor": [255, 255, 255, 255],
+            "size": [180, 30],
+            "justified": 0
+          },
+          {
+            "name": "NPC_CAN_FLY",
+            "type": "checkbox",
+            "position": [-1, -1],
+            "size": [30, 30],
+            "group": 0
+          },
+          {
+            "type": "textarea",
+            "position": [-1, -1],
+            "text": "Can Swim:",
+            "textColor": [255, 255, 255, 255],
+            "size": [180, 30],
+            "justified": 0
+          },
+          {
+            "name": "NPC_CAN_SWIM",
+            "type": "checkbox",
+            "position": [-1, -1],
+            "size": [30, 30],
+            "group": 0
+          },
+          {
+            "type": "textarea",
+            "position": [-1, -1],
+            "text": "Is Ethereal:",
+            "textColor": [255, 255, 255, 255],
+            "size": [180, 30],
+            "justified": 0
+          },
+          {
+            "name": "NPC_IS_ETHEREAL",
+            "type": "checkbox",
+            "position": [-1, -1],
+            "size": [30, 30],
+            "group": 0
+          },
+          {
+            "type": "textarea",
+            "position": [-1, -1],
+            "text": "Can See Invisible:",
+            "textColor": [255, 255, 255, 255],
+            "size": [180, 30],
+            "justified": 0
+          },
+          {
+            "name": "NPC_CAN_SEE_INVISIBLE",
+            "type": "checkbox",
+            "position": [-1, -1],
+            "size": [30, 30],
+            "group": 0
+          },
+          {
+            "type": "textarea",
+            "position": [-1, -1],
+            "text": "Can Speak:",
+            "textColor": [255, 255, 255, 255],
+            "size": [180, 30],
+            "justified": 0
+          },
+          {
+            "name": "NPC_CAN_SPEAK",
+            "type": "checkbox",
+            "position": [-1, -1],
+            "size": [30, 30],
+            "group": 0
+          },
+          {
+            "type": "textarea",
+            "position": [-1, -1],
+            "text": "Can Bleed:",
+            "textColor": [255, 255, 255, 255],
+            "size": [180, 30],
+            "justified": 0
+          },
+          {
+            "name": "NPC_CAN_BLEED",
+            "type": "checkbox",
+            "position": [-1, -1],
+            "size": [30, 30],
+            "group": 0
+          },
+          {
+            "type": "textarea",
+            "position": [-1, -1],
+            "text": "Has Schedule:",
+            "textColor": [255, 255, 255, 255],
+            "size": [180, 30],
+            "justified": 0
+          },
+          {
+            "name": "NPC_HAS_SCHEDULE",
+            "type": "checkbox",
+            "position": [-1, -1],
+            "size": [30, 30],
+            "group": 0
+          }
+        ]
+      }
+    ]
+  }
+}
