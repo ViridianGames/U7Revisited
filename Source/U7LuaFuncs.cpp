@@ -61,16 +61,20 @@ static int LuaWait(lua_State *L)
 
     // Get the script key from the coroutine itself, not from m_currentScript
     // which gets overwritten by other concurrent scripts
-    std::string scriptKey = g_ScriptingSystem->GetFuncNameFromCo(L);
-
-    if (scriptKey.empty())
+    // Note: We scope the string operations before lua_yield because yield uses
+    // longjmp which doesn't properly unwind C++ destructors
     {
-        scriptKey = "default";  // Fallback if we can't identify the coroutine
+        std::string scriptKey = g_ScriptingSystem->GetFuncNameFromCo(L);
+
+        if (scriptKey.empty())
+        {
+            scriptKey = "default";  // Fallback if we can't identify the coroutine
+        }
+
+        g_ScriptingSystem->m_waitTimers[scriptKey] = (float)delay;
+
+        NPCDebugPrint("wait SET: key=" + scriptKey + " secs=" + std::to_string(delay));
     }
-
-    g_ScriptingSystem->m_waitTimers[scriptKey] = (float)delay;
-
-    NPCDebugPrint("wait SET: key=" + scriptKey + " secs=" + std::to_string(delay));
 
     return lua_yield(L, 1);
 }
@@ -99,17 +103,21 @@ static int LuaNPCWait(lua_State *L)
 
     // Get the script key from the coroutine itself, not from m_currentScript
     // which gets overwritten by other concurrent scripts
-    std::string scriptKey = g_ScriptingSystem->GetFuncNameFromCo(L);
-
-    if (scriptKey.empty())
+    // Note: We scope the string operations before lua_yield because yield uses
+    // longjmp which doesn't properly unwind C++ destructors
     {
-        scriptKey = "default";  // Fallback if we can't identify the coroutine
+        std::string scriptKey = g_ScriptingSystem->GetFuncNameFromCo(L);
+
+        if (scriptKey.empty())
+        {
+            scriptKey = "default";  // Fallback if we can't identify the coroutine
+        }
+
+        g_ScriptingSystem->m_waitTimers[scriptKey] = (float)realSeconds;
+
+        NPCDebugPrint("npc_wait SET: key=" + scriptKey +
+                       " mins=" + std::to_string(gameMinutes) + " secs=" + std::to_string(realSeconds));
     }
-
-    g_ScriptingSystem->m_waitTimers[scriptKey] = (float)realSeconds;
-
-    NPCDebugPrint("npc_wait SET: key=" + scriptKey + 
-                   " mins=" + std::to_string(gameMinutes) + " secs=" + std::to_string(realSeconds));
 
     return lua_yield(L, 1);
 }
