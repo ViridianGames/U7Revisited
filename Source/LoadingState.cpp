@@ -915,7 +915,19 @@ void LoadingState::CreateShapeTable()
 			thisPalette[j].a = 255;
 		}
 
-		thisPalette[254] = Color{ 128, 128, 128, 128 };
+		//  Fix for translucent blood
+		thisPalette[244] = Color{ 144, 40, 192, 128 };
+		thisPalette[245] = Color{ 96, 40, 16, 128 };
+		thisPalette[246] = Color{ 100, 108, 116, 192 };
+		thisPalette[247] = Color{ 68, 132, 28, 128 };
+		thisPalette[248] = Color{ 255, 208, 48, 64 };
+		thisPalette[249] = Color{ 28, 52, 255, 128 };
+		thisPalette[250] = Color{ 8, 68, 0, 128 };
+		thisPalette[251] = Color{ 255, 8, 8, 118 };
+		thisPalette[252] = Color{ 255, 244, 248, 128 };
+		thisPalette[253] = Color{ 56, 40, 32, 128 };
+		thisPalette[254] = Color{ 228, 224, 214, 82 };
+		thisPalette[255] = Color{ 0, 0, 0, 0 };
 
 		m_palettes.push_back(thisPalette);
 	}

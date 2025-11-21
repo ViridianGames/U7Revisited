@@ -6,7 +6,7 @@ if(MSVC OR MSVC_IDE)
     set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
 endif()
 
-project("Ultima 7 Revisited" VERSION 1.0.0 LANGUAGES C CXX RC)
+project("Ultima 7 Revisited" VERSION 1.0.0 LANGUAGES C CXX)
 
 # Set C++ standard
 set(CMAKE_CXX_STANDARD 17)
