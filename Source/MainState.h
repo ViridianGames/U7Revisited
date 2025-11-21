@@ -179,7 +179,7 @@ public:
 	bool m_hasShownWelcomeMessages = false;
 
 	// NPC Schedule toggle
-	bool m_npcSchedulesEnabled = true;  // Default enabled so NPCs follow schedules
+	bool m_npcSchedulesEnabled = false;  // Default disabled - user must enable
 
 	// NPC Pathfinding on schedule change toggle
 	bool m_npcPathfindingEnabled = false;  // Default disabled - NPCs stay in place when schedules change

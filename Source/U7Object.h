@@ -209,7 +209,7 @@ public:
 
 	NPCData* m_NPCData = nullptr;
 
-	bool m_followingSchedule = true;
+	bool m_followingSchedule = false;
    int m_lastSchedule = -1;
 	int m_currentFrameX = 0;
 	int m_currentFrameY = 0;
