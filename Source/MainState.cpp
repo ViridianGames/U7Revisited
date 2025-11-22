@@ -17,8 +17,10 @@
 #include "ConversationState.h"
 #include "GumpManager.h"
 #include "Pathfinding.h"
+#include "PathfindingThreadPool.h"
 #include "Ghost/GhostWindow.h"
 #include "Ghost/GhostSerializer.h"
+#include "NpcListWindow.h"
 
 #include <list>
 #include <string>
@@ -119,6 +121,13 @@ void MainState::Init(const string& configfile)
 		m_debugToolsWindow = nullptr;
 	}
 
+	// Initialize NPC list window
+	m_npcListWindow = new NpcListWindow(g_ResourceManager.get(), GetScreenWidth(), GetScreenHeight());
+	if (!m_npcListWindow || !m_npcListWindow->IsVisible())
+	{
+		m_npcListWindow->Hide();  // Start hidden
+	}
+
 	SetupGame();
 }
 
@@ -128,6 +137,10 @@ void MainState::OnEnter()
 	g_minute = 0;
 	g_hour = 7;
 	g_scheduleTime = 1;
+
+	// Initialize NPC activities based on starting schedule time (for new games)
+	// This must happen AFTER g_scheduleTime is set, so NPCs get the correct activity for time slot 1
+	InitializeNPCActivitiesFromSchedules();
 
 	if (m_gameMode == MainStateModes::MAIN_STATE_MODE_TRINSIC_DEMO)
 	{
@@ -183,11 +196,25 @@ void MainState::OnExit()
 
 void MainState::Shutdown()
 {
+	// Clean up pathfinding thread pool (must be done before cleaning up g_pathfindingGrid)
+	if (g_pathfindingThreadPool)
+	{
+		delete g_pathfindingThreadPool;
+		g_pathfindingThreadPool = nullptr;
+	}
+
 	// Clean up debug tools window
 	if (m_debugToolsWindow)
 	{
 		delete m_debugToolsWindow;
 		m_debugToolsWindow = nullptr;
+	}
+
+	// Clean up NPC list window
+	if (m_npcListWindow)
+	{
+		delete m_npcListWindow;
+		m_npcListWindow = nullptr;
 	}
 
 	UnloadRenderTexture(g_guiRenderTarget);
@@ -232,7 +259,7 @@ void MainState::UpdateTime()
 	else if (g_hour == 6)
 	{
 		unsigned char darkness = darklevel + ((float(g_minute) / 60.0f) * (255 - darklevel));
-		unsigned char red_green = (darklevel / 2) + ((float(g_minute) / 60.0f) * (255 - red_green_level));
+		unsigned char red_green = (darklevel / 2.0f) + ((float(g_minute) / 60.0f) * (255 - red_green_level));
 		g_dayNightColor = { red_green, red_green, darkness, 255 };
 		g_isDay = darkness < .1f;
 	}
@@ -301,7 +328,15 @@ void MainState::CalculateMouseOverUI()
 		overDebugTools = CheckCollisionPointRec(mousePos, debugRect);
 	}
 
-	g_mouseOverUI = overStats || overMinimap || overCharPanel || overDebugTools;
+	// Check if mouse is over NPC list window
+	bool overNpcList = false;
+	if (m_npcListWindow && m_npcListWindow->IsVisible())
+	{
+		Rectangle npcListRect = m_npcListWindow->GetWindow()->GetBounds();
+		overNpcList = CheckCollisionPointRec(mousePos, npcListRect);
+	}
+
+	g_mouseOverUI = overStats || overMinimap || overCharPanel || overDebugTools || overNpcList;
 }
 
 void MainState::UpdateInput()
@@ -380,16 +415,16 @@ void MainState::UpdateInput()
 	{
 		//if (m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX)
 		//{
-			if (m_heightCutoff == 4.0f)
-			{
-				m_heightCutoff = 10.0f;
-				AddConsoleString("Viewing Second Floor");
-			}
-			else if (m_heightCutoff == 10.0f)
-			{
-				m_heightCutoff = 16.0f;
-				AddConsoleString("Viewing Third Floor");
-			}
+		if (m_heightCutoff == 4.0f)
+		{
+			m_heightCutoff = 10.0f;
+			AddConsoleString("Viewing Second Floor");
+		}
+		else if (m_heightCutoff == 10.0f)
+		{
+			m_heightCutoff = 16.0f;
+			AddConsoleString("Viewing Third Floor");
+		}
 		//}
 	}
 
@@ -440,7 +475,7 @@ void MainState::UpdateInput()
 		g_pixelated = !g_pixelated;
 	}
 
-	if (IsKeyPressed(KEY_KP_SUBTRACT))
+	if (IsKeyPressed(KEY_KP_SUBTRACT) || IsKeyPressed(KEY_MINUS))
 	{
 		g_secsPerMinute -= 0.1f;
 		if (g_secsPerMinute < 0.1f)
@@ -453,7 +488,7 @@ void MainState::UpdateInput()
 		}
 	}
 
-	if (IsKeyPressed(KEY_KP_ADD))
+	if (IsKeyPressed(KEY_KP_ADD) || IsKeyPressed(KEY_EQUAL))
 	{
 		g_secsPerMinute += 0.1f;
 		if (g_secsPerMinute > 5.0f)
@@ -467,7 +502,7 @@ void MainState::UpdateInput()
 	}
 	if (!IsMouseButtonDown(MOUSE_LEFT_BUTTON))
 	{
-		m_dragStart = {0, 0};
+		m_dragStart = { 0, 0 };
 	}
 
 	// Always update selected shape/frame when clicking an object (for F1 shape editor)
@@ -478,7 +513,7 @@ void MainState::UpdateInput()
 
 		if (m_doingObjectSelection)
 		{
-			g_ScriptingSystem->ResumeCoroutine(m_luaFunction, {g_objectUnderMousePointer->m_ID}); // Lua arrays are 1-indexed
+			g_ScriptingSystem->ResumeCoroutine(m_luaFunction, { g_objectUnderMousePointer->m_ID }); // Lua arrays are 1-indexed
 		}
 
 		// Only allow dragging if not a static object (or if static movement is enabled)
@@ -498,6 +533,10 @@ void MainState::UpdateInput()
 					g_gumpManager->m_sourceSlotIndex = -1;  // Not from a paperdoll slot
 					g_gumpManager->m_draggedObjectOriginalPos = g_objectUnderMousePointer->m_Pos;  // Store original world position
 					g_gumpManager->m_draggedObjectOriginalDest = g_objectUnderMousePointer->m_Dest;  // Store original destination (for NPCs)
+
+					// Remove object from world immediately when drag starts
+					g_objectUnderMousePointer->m_isContained = true;  // Mark as contained so it won't be drawn in world
+					Log("Removed object " + std::to_string(g_objectUnderMousePointer->m_ID) + " from world on drag start");
 
 					// Close any gump associated with this object to prevent dragging into itself
 					g_gumpManager->CloseGumpForObject(g_objectUnderMousePointer->m_ID);
@@ -564,7 +603,7 @@ void MainState::UpdateInput()
 		// Check if this is the avatar or a party member NPC
 		bool isAvatar = g_objectUnderMousePointer->m_isNPC && g_objectUnderMousePointer->m_NPCID == 0;
 		bool isPartyMember = g_objectUnderMousePointer->m_isNPC &&
-		                     g_Player->NPCIDInParty(g_objectUnderMousePointer->m_NPCID);
+			g_Player->NPCIDInParty(g_objectUnderMousePointer->m_NPCID);
 
 		if (isAvatar || isPartyMember)
 		{
@@ -572,8 +611,8 @@ void MainState::UpdateInput()
 			bool anyPaperdollOpen = HasAnyPaperdollOpen();
 
 			Log("Double-clicked NPC " + std::to_string(npcId) +
-			    ", isAvatar=" + std::to_string(isAvatar) +
-			    ", anyPaperdollOpen=" + std::to_string(anyPaperdollOpen));
+				", isAvatar=" + std::to_string(isAvatar) +
+				", anyPaperdollOpen=" + std::to_string(anyPaperdollOpen));
 
 			if (isAvatar || anyPaperdollOpen)
 			{
@@ -589,8 +628,8 @@ void MainState::UpdateInput()
 		}
 		// Handle doors and objects with scripts/conversations
 		else if (g_objectUnderMousePointer->m_objectData->m_isDoor ||
-		    g_objectUnderMousePointer->m_hasConversationTree ||
-		    g_objectUnderMousePointer->m_shapeData->m_luaScript != "default")
+			g_objectUnderMousePointer->m_hasConversationTree ||
+			g_objectUnderMousePointer->m_shapeData->m_luaScript != "default")
 		{
 			g_objectUnderMousePointer->Interact(1);;
 		}
@@ -616,25 +655,17 @@ void MainState::UpdateInput()
 				if (g_ScriptingSystem->IsCoroutineYielded(m_luaFunction))
 				{
 					m_objectSelectionMode = false;
-					g_ScriptingSystem->ResumeCoroutine(m_luaFunction, {g_objectUnderMousePointer->m_ID}); // Lua arrays are 1-indexed
+					g_ScriptingSystem->ResumeCoroutine(m_luaFunction, { g_objectUnderMousePointer->m_ID }); // Lua arrays are 1-indexed
 				}
 			}
 			else
 			{
 				Bark(g_objectUnderMousePointer, "", 3.0f);  // Empty string = use object's current name
 
-				// Visualize NPC waypoints as blue tiles when clicking on any NPC
-				if (g_objectUnderMousePointer->m_isNPC)
+				// If NPC list window is open and this is an NPC, select it in the list
+				if (g_objectUnderMousePointer->m_isNPC && m_npcListWindow && m_npcListWindow->IsVisible())
 				{
-					if (!g_objectUnderMousePointer->m_pathWaypoints.empty())
-					{
-						g_pathfindingGrid->SetDebugWaypoints(g_objectUnderMousePointer->m_pathWaypoints);
-					}
-					else
-					{
-						// Clear waypoint visualization if no waypoints
-						g_pathfindingGrid->SetDebugWaypoints({});
-					}
+					m_npcListWindow->SelectNPC(g_objectUnderMousePointer->m_NPCID);
 				}
 
 				// Debug mode: Print NPC schedule when clicking on NPCs
@@ -644,7 +675,7 @@ void MainState::UpdateInput()
 					string npcName = g_NPCData[npcID] ? g_NPCData[npcID]->name : "Unknown";
 					AddConsoleString("=== NPC #" + to_string(npcID) + " (" + npcName + ") Schedule ===");
 					AddConsoleString("Current game time: " + to_string(g_hour) + ":" + (g_minute < 10 ? "0" : "") + to_string(g_minute) +
-					                 " (schedule block: " + to_string(g_scheduleTime) + ")");
+						" (schedule block: " + to_string(g_scheduleTime) + ")");
 
 					if (g_NPCSchedules.find(npcID) != g_NPCSchedules.end() && !g_NPCSchedules[npcID].empty())
 					{
@@ -655,8 +686,8 @@ void MainState::UpdateInput()
 
 						std::sort(sortedIndices.begin(), sortedIndices.end(),
 							[npcID](int a, int b) {
-								return g_NPCSchedules[npcID][a].m_time < g_NPCSchedules[npcID][b].m_time;
-							});
+							return g_NPCSchedules[npcID][a].m_time < g_NPCSchedules[npcID][b].m_time;
+						});
 
 						// Find the currently active schedule (most recent schedule where time <= current time)
 						int activeScheduleIndex = -1;
@@ -685,23 +716,23 @@ void MainState::UpdateInput()
 							string timeStr;
 							switch (schedule.m_time)
 							{
-								case 0: timeStr = "0:00 (Midnight)"; break;
-								case 1: timeStr = "3:00"; break;
-								case 2: timeStr = "6:00"; break;
-								case 3: timeStr = "9:00"; break;
-								case 4: timeStr = "12:00 (Noon)"; break;
-								case 5: timeStr = "15:00"; break;
-								case 6: timeStr = "18:00"; break;
-								case 7: timeStr = "21:00"; break;
-								default: timeStr = to_string(schedule.m_time); break;
+							case 0: timeStr = "0:00 (Midnight)"; break;
+							case 1: timeStr = "3:00"; break;
+							case 2: timeStr = "6:00"; break;
+							case 3: timeStr = "9:00"; break;
+							case 4: timeStr = "12:00 (Noon)"; break;
+							case 5: timeStr = "15:00"; break;
+							case 6: timeStr = "18:00"; break;
+							case 7: timeStr = "21:00"; break;
+							default: timeStr = to_string(schedule.m_time); break;
 							}
 
 							// Print active schedule in gold, others in white
 							bool isActive = (idx == activeScheduleIndex);
 							Color lineColor = isActive ? GOLD : WHITE;
 							AddConsoleString("  [" + to_string(idx) + "] Time: " + timeStr +
-							                 ", Dest: (" + to_string(schedule.m_destX) + ", " + to_string(schedule.m_destY) + ")" +
-							                 ", Activity: " + to_string(schedule.m_activity), lineColor);
+								", Dest: (" + to_string(schedule.m_destX) + ", " + to_string(schedule.m_destY) + ")" +
+								", Activity: " + to_string(schedule.m_activity), lineColor);
 						}
 					}
 					else
@@ -714,13 +745,13 @@ void MainState::UpdateInput()
 					{
 						AddConsoleString("=== Current Waypoints ===", YELLOW);
 						AddConsoleString("  Total waypoints: " + to_string(g_objectUnderMousePointer->m_pathWaypoints.size()) +
-						                 ", Current index: " + to_string(g_objectUnderMousePointer->m_currentWaypointIndex));
+							", Current index: " + to_string(g_objectUnderMousePointer->m_currentWaypointIndex));
 						for (size_t i = 0; i < g_objectUnderMousePointer->m_pathWaypoints.size(); i++)
 						{
 							const auto& wp = g_objectUnderMousePointer->m_pathWaypoints[i];
 							string marker = (i == g_objectUnderMousePointer->m_currentWaypointIndex) ? " <-- CURRENT" : "";
 							AddConsoleString("  [" + to_string(i) + "] (" +
-							                 to_string((int)wp.x) + ", " + to_string((int)wp.z) + ")" + marker);
+								to_string((int)wp.x) + ", " + to_string((int)wp.z) + ")" + marker);
 						}
 					}
 					else
@@ -740,31 +771,31 @@ void MainState::UpdateInput()
 				int worldZ = (int)floor(g_terrainUnderMousePointer.z);
 
 				if (worldX >= 0 && worldX < 3072 && worldZ >= 0 && worldZ < 3072)
-			{
-				// Get terrain shape
-				unsigned short shapeframe = g_World[worldZ][worldX];
-				int shapeID = shapeframe & 0x3ff;  // Bits 0-9
-				int frameID = (shapeframe >> 10) & 0x3f;  // Bits 10-15
-
-				// Look up name and cost from terrain costs
-				extern AStar* g_aStar;
-				string terrainName = g_aStar ? g_aStar->GetTerrainName(shapeID) : "Unknown";
-				bool walkable = g_pathfindingGrid->IsPositionWalkable(worldX, worldZ);
-
-				AddConsoleString("=== " + terrainName + " (" + to_string(worldX) + ", " + to_string(worldZ) + ") ===", SKYBLUE);
-				AddConsoleString("  Shape ID: " + to_string(shapeID) + ", Frame: " + to_string(frameID), WHITE);
-
-				if (walkable)
 				{
-					float cost = g_aStar ? g_aStar->GetMovementCost(worldX, worldZ, g_pathfindingGrid) : 1.0f;
-					AddConsoleString("  Movement Cost: " + to_string(cost), GREEN);
-					AddConsoleString("  Walkable: YES", GREEN);
+					// Get terrain shape
+					unsigned short shapeframe = g_World[worldZ][worldX];
+					int shapeID = shapeframe & 0x3ff;  // Bits 0-9
+					int frameID = (shapeframe >> 10) & 0x3f;  // Bits 10-15
+
+					// Look up name and cost from terrain costs
+					extern AStar* g_aStar;
+					string terrainName = g_aStar ? g_aStar->GetTerrainName(shapeID) : "Unknown";
+					bool walkable = g_pathfindingGrid->IsPositionWalkable(worldX, worldZ);
+
+					AddConsoleString("=== " + terrainName + " (" + to_string(worldX) + ", " + to_string(worldZ) + ") ===", SKYBLUE);
+					AddConsoleString("  Shape ID: " + to_string(shapeID) + ", Frame: " + to_string(frameID), WHITE);
+
+					if (walkable)
+					{
+						float cost = g_aStar ? g_aStar->GetMovementCost(worldX, worldZ, g_pathfindingGrid) : 1.0f;
+						AddConsoleString("  Movement Cost: " + to_string(cost), GREEN);
+						AddConsoleString("  Walkable: YES", GREEN);
+					}
+					else
+					{
+						AddConsoleString("  Walkable: NO", RED);
+					}
 				}
-				else
-				{
-					AddConsoleString("  Walkable: NO", RED);
-				}
-			}
 			}
 #endif
 		}
@@ -793,8 +824,7 @@ void MainState::Bark(U7Object* object, const std::string& text, float duration)
 	if (text.empty() && object)
 	{
 		m_barkAutoUpdate = true;
-		int quantity = (object->m_Quality > 0) ? object->m_Quality : 1;
-		m_barkText = GetShapeFrameName(object->m_shapeData->GetShape(), object->m_shapeData->GetFrame(), quantity);
+		m_barkText = GetObjectDisplayName(object);
 	}
 	else
 	{
@@ -836,48 +866,155 @@ void MainState::Update()
 			if (!npcObj || !npcObj->m_followingSchedule)
 				continue;
 
-			// Check if NPC has a schedule for this time
+			// Find the most recent schedule entry <= current time
+			// This ensures NPCs update to correct activity even when time skips or when loading
+			int mostRecentScheduleTime = -1;
+			int mostRecentActivity = -1;
 			for (const auto& schedule : g_NPCSchedules[npcID])
 			{
-				if (schedule.m_time == g_scheduleTime)
+				if (schedule.m_time <= g_scheduleTime && (int)schedule.m_time > mostRecentScheduleTime)
 				{
-					g_npcPathfindQueue.push(npcID);
-					break;
+					mostRecentScheduleTime = (int)schedule.m_time;
+					mostRecentActivity = (int)schedule.m_activity;
 				}
+			}
+
+			// If we found a valid schedule and it's different from current, update it
+			if (mostRecentScheduleTime >= 0)
+			{
+				// Only update activity if there's an EXACT schedule entry for current time
+				// This prevents "None" entries (which don't exist in SCHEDULE.DAT) from changing activities
+				// InitializeNPCActivitiesFromSchedules() already filled in activities at startup
+				if (mostRecentScheduleTime == g_scheduleTime)
+				{
+					// Check if this is a NEW schedule (different time or activity changed)
+					bool needsUpdate = (mostRecentScheduleTime != npcObj->m_lastSchedule) ||
+					                   (mostRecentActivity != npcData->m_currentActivity);
+
+					if (needsUpdate)
+					{
+						// Update the schedule time and activity
+						npcObj->m_lastSchedule = mostRecentScheduleTime;
+						npcData->m_currentActivity = mostRecentActivity;
+					// Clear schedule path flag - will be set again if new schedule has destination
+					npcObj->m_isSchedulePath = false;
+
+
+						// Only queue for pathfinding if pathfinding is enabled
+						if (m_npcPathfindingEnabled)
+						{
+							g_npcPathfindQueue.push(npcID);
+						}
+					}
+				}
+				// else: no exact match for current time = "None" entry, keep current activity
 			}
 		}
 
-		// Debug: Uncomment to see schedule changes
-		//if (!g_npcPathfindQueue.empty())
-		//{
-		//	AddConsoleString("Schedule changed to block " + std::to_string(g_scheduleTime) +
-		//	                 ", queued " + std::to_string(g_npcPathfindQueue.size()) + " NPCs for pathfinding", YELLOW);
-		//}
+		// Debug: Show schedule changes
+		if (!g_npcPathfindQueue.empty())
+		{
+			AddConsoleString("Schedule changed to block " + std::to_string(g_scheduleTime) +
+			                 ", queued " + std::to_string(g_npcPathfindQueue.size()) + " NPCs for pathfinding", YELLOW);
+		}
 	}
 
-	// Process one NPC from pathfinding queue per frame
+	// Process pathfinding results from background threads
+	if (g_pathfindingThreadPool)
+	{
+		PathResult result;
+		while (g_pathfindingThreadPool->PopResult(result))
+		{
+			// Find the NPC and apply waypoints
+			if (g_NPCData.find(result.npcID) != g_NPCData.end() && g_NPCData[result.npcID])
+			{
+				U7Object* npcObj = g_objectList[g_NPCData[result.npcID]->m_objectID].get();
+				if (npcObj && result.success)
+				{
+					npcObj->m_pathWaypoints = result.waypoints;
+					npcObj->m_currentWaypointIndex = 0;
+					npcObj->m_pathfindingPending = false;  // Path is ready!
+
+					// If this was a tracked request, mark it as ready for Lua
+					// Lua will call start_following_path() to begin movement
+					if (result.requestID > 0)
+					{
+						NPCDebugPrint("MainState: Tracked path ready for NPC " + std::to_string(result.npcID) +
+						           ", request ID " + std::to_string(result.requestID) +
+						           ", " + std::to_string(result.waypoints.size()) + " waypoints");
+						npcObj->m_isSchedulePath = false;  // Lua activity path
+						g_pathfindingThreadPool->MarkRequestReady(result.requestID);
+					}
+					// Fire-and-forget requests (requestID == 0) start movement immediately
+					else if (!result.waypoints.empty())
+					{
+						NPCDebugPrint("MainState: Fire-and-forget path ready for NPC " + std::to_string(result.npcID) +
+						           ", " + std::to_string(result.waypoints.size()) + " waypoints, auto-starting");
+						npcObj->m_isSchedulePath = true;  // C++ schedule path
+						npcObj->SetDest(result.waypoints[0]);
+						npcObj->m_isMoving = true;
+					}
+
+#ifdef DEBUG_NPC_PATHFINDING
+					// Track longest path for this NPC
+					if (!result.waypoints.empty())
+					{
+						float pathDistance = Vector3Distance(result.waypoints.front(), result.waypoints.back());
+						auto it = g_npcMaxPathStats.find(result.npcID);
+						if (it == g_npcMaxPathStats.end() || pathDistance > it->second.distance)
+						{
+							NPCPathStats stats;
+							stats.npcID = result.npcID;
+							stats.startPos = result.waypoints.front();
+							stats.endPos = result.waypoints.back();
+							stats.distance = pathDistance;
+							stats.waypointCount = (int)result.waypoints.size();
+							g_npcMaxPathStats[result.npcID] = stats;
+						}
+					}
+#endif
+				}
+			}
+		}
+	}
+
+	// Process one NPC from pathfinding queue per frame (submit to thread pool or fall back to sync)
 	if (!g_npcPathfindQueue.empty())
 	{
 		int npcID = g_npcPathfindQueue.front();
 		g_npcPathfindQueue.pop();
 
-		// Find the schedule entry for current time
+		// Find the most recent schedule entry <= current time
 		if (g_NPCData.find(npcID) != g_NPCData.end() && g_NPCData[npcID])
 		{
 			U7Object* npcObj = g_objectList[g_NPCData[npcID]->m_objectID].get();
-			if (npcObj)
+			if (npcObj && g_NPCSchedules.find(npcID) != g_NPCSchedules.end())
 			{
+				// Find most recent schedule
+				int mostRecentScheduleTime = -1;
+				const NPCSchedule* mostRecentSchedule = nullptr;
+
 				for (const auto& schedule : g_NPCSchedules[npcID])
 				{
-					if (schedule.m_time == g_scheduleTime)
+					if (schedule.m_time <= g_scheduleTime && (int)schedule.m_time > mostRecentScheduleTime)
 					{
-						npcObj->PathfindToDest(Vector3{ float(schedule.m_destX), 0, float(schedule.m_destY) });
-						npcObj->m_isMoving = true;
-						npcObj->m_lastSchedule = schedule.m_time;
-						g_NPCData[npcID]->m_currentActivity = schedule.m_activity;
-						break;
+						mostRecentScheduleTime = (int)schedule.m_time;
+						mostRecentSchedule = &schedule;
 					}
 				}
+
+				if (mostRecentSchedule)
+				{
+					// Pathfind to destination (will use thread pool if available, otherwise sync A*)
+					npcObj->m_isSchedulePath = true;  // Mark as schedule path to block activity scripts
+					npcObj->PathfindToDest(Vector3{ float(mostRecentSchedule->m_destX), 0, float(mostRecentSchedule->m_destY) });
+					npcObj->m_isMoving = true;
+				}
+			else
+			{
+				// No schedule destination ("None" entry) - clear schedule path flag so activity can run
+				npcObj->m_isSchedulePath = false;
+			}
 			}
 		}
 	}
@@ -992,6 +1129,12 @@ void MainState::Update()
 		UpdateDebugToolsWindow();
 	}
 
+	// Update NPC list window
+	if (m_npcListWindow)
+	{
+		m_npcListWindow->Update(m_npcSchedulesEnabled);
+	}
+
 	// Process game input
 	UpdateInput();
 
@@ -1012,7 +1155,7 @@ void MainState::Update()
 		if (m_waitTime < 0)
 		{
 			m_waitTime = 0;
-			g_ScriptingSystem->ResumeCoroutine(m_luaFunction, {0}); // Lua arrays are 1-indexed
+			g_ScriptingSystem->ResumeCoroutine(m_luaFunction, { 0 }); // Lua arrays are 1-indexed
 		}
 	}
 
@@ -1067,13 +1210,13 @@ void MainState::Update()
 
 	if (int(g_terrainUnderMousePointer.x / 16) == 66 && int(g_terrainUnderMousePointer.z / 16 == 137) && g_ScriptingSystem->GetFlag(60) == false)
 	{
-		g_ScriptingSystem->SetFlag(60 , true);
+		g_ScriptingSystem->SetFlag(60, true);
 	}
 }
 
 void MainState::OpenGump(int id)
 {
-	for (auto gump : g_gumpManager->m_GumpList)
+	for (const auto& gump : g_gumpManager->m_GumpList)
 	{
 		if (gump.get()->GetContainerId() == id)
 		{
@@ -1110,9 +1253,9 @@ void MainState::OpenSpellbookGump(int npcId)
 	g_gumpManager->AddGump(spellbookGump);
 }
 
-bool MainState::HasAnyPaperdollOpen()
+bool MainState::HasAnyPaperdollOpen() const
 {
-	for (auto& gump : g_gumpManager->m_GumpList)
+	for (const auto& gump : g_gumpManager->m_GumpList)
 	{
 		if (dynamic_cast<GumpPaperdoll*>(gump.get()))
 		{
@@ -1122,9 +1265,9 @@ bool MainState::HasAnyPaperdollOpen()
 	return false;
 }
 
-GumpPaperdoll* MainState::FindPaperdollByNpcId(int npcId)
+GumpPaperdoll* MainState::FindPaperdollByNpcId(int npcId) const
 {
-	for (auto& gump : g_gumpManager->m_GumpList)
+	for (const auto& gump : g_gumpManager->m_GumpList)
 	{
 		GumpPaperdoll* paperdoll = dynamic_cast<GumpPaperdoll*>(gump.get());
 		if (paperdoll && paperdoll->GetNpcId() == npcId)
@@ -1225,10 +1368,10 @@ void MainState::Draw()
 	{
 		for (auto object : g_sortedVisibleObjects)
 		{
-		 	if (object->m_drawType != ShapeDrawType::OBJECT_DRAW_FLAT)
-		 	{
-		 		object->Draw();
-		 	}
+			if (object->m_drawType != ShapeDrawType::OBJECT_DRAW_FLAT)
+			{
+				object->Draw();
+			}
 		}
 
 		//  Flats require disabling the depth mask to draw correctly.
@@ -1246,8 +1389,8 @@ void MainState::Draw()
 	if (g_gumpManager->m_draggingObject && !g_gumpManager->m_isMouseOverGump)
 	{
 		U7Object* draggedObject = g_objectList[g_gumpManager->m_draggedObjectId].get();
-		BoundingBox box;
-		box.min = Vector3Subtract(g_terrainUnderMousePointer, {draggedObject->m_shapeData->m_Dims.x - 1, 0, draggedObject->m_shapeData->m_Dims.z - 1});//, {draggedObject->m_shapeData->m_Dims.x / 2, draggedObject->m_shapeData->m_Dims.y / 2, draggedObject->m_shapeData->m_Dims.z / 2});
+		BoundingBox box = { Vector3{0, 0, 0}, Vector3{0, 0, 0} };
+		box.min = Vector3Subtract(g_terrainUnderMousePointer, { draggedObject->m_shapeData->m_Dims.x - 1, 0, draggedObject->m_shapeData->m_Dims.z - 1 });//, {draggedObject->m_shapeData->m_Dims.x / 2, draggedObject->m_shapeData->m_Dims.y / 2, draggedObject->m_shapeData->m_Dims.z / 2});
 		box.max = Vector3Add(box.min, draggedObject->m_shapeData->m_Dims);
 		DrawBoundingBox(box, WHITE);
 	}
@@ -1256,6 +1399,40 @@ void MainState::Draw()
 	if (m_showPathfindingDebug && g_pathfindingGrid)
 	{
 		g_pathfindingGrid->DrawDebugOverlayTileLevel();
+	}
+
+	// Draw NPC paths as blue highlight tiles for NPCs with active waypoints
+	if (m_showPathfindingDebug)
+	{
+		for (auto& object : g_sortedVisibleObjects)
+		{
+			if (object->m_isNPC && !object->m_pathWaypoints.empty())
+			{
+				// Check if NPC is on screen or near camera
+				float distToCamera = Vector2Distance(
+					{object->m_Pos.x, object->m_Pos.z},
+					{g_camera.target.x, g_camera.target.z}
+				);
+
+				if (distToCamera < 50.0f)  // Within 50 tiles of camera
+				{
+					// Draw waypoints: Orange for C++ schedule paths, Blue for Lua activity paths
+					Color pathColor = object->m_isSchedulePath ?
+						Color{255, 128, 0, 255} :   // Orange for schedule paths
+						Color{50, 50, 255, 255};     // Blue for Lua paths
+
+					for (size_t i = 0; i < object->m_pathWaypoints.size(); i++)
+					{
+						const auto& waypoint = object->m_pathWaypoints[i];
+						// Waypoint already contains correct Y coordinate from pathfinding
+						Vector3 tilePos = {waypoint.x + 0.5f, waypoint.y + 0.05f, waypoint.z + 0.5f};
+						// First tile is black, rest use the path color (orange/blue)
+						Color tileColor = (i == 0) ? Color{0, 0, 0, 255} : pathColor;
+						DrawCube(tilePos, 1.0f, 0.1f, 1.0f, tileColor);
+					}
+				}
+			}
+		}
 	}
 
 	EndMode3D();
@@ -1274,6 +1451,13 @@ void MainState::Draw()
 	//  Draw the GUI
 	BeginTextureMode(g_guiRenderTarget);
 	ClearBackground({ 0, 0, 0, 0 });
+
+	// Set custom blend mode to preserve destination alpha while blending RGB
+	// This prevents anti-aliased text from creating transparent "holes" in gump backgrounds
+	// RGB: Normal alpha blending (SRC_ALPHA, ONE_MINUS_SRC_ALPHA)
+	// Alpha: Use MAX to preserve background alpha (ONE, ONE_MINUS_SRC_ALPHA gives us max(src.a, dst.a))
+	rlSetBlendMode(BLEND_CUSTOM_SEPARATE);
+	rlSetBlendFactorsSeparate(RL_SRC_ALPHA, RL_ONE_MINUS_SRC_ALPHA, RL_ONE, RL_ONE_MINUS_SRC_ALPHA, RL_FUNC_ADD, RL_MAX);
 
 	//  Draw the minimap and marker
 
@@ -1324,15 +1508,12 @@ void MainState::Draw()
 			else
 				objectDescription = "Object ";
 
-			int quantity = (g_objectUnderMousePointer->m_Quality > 0) ? g_objectUnderMousePointer->m_Quality : 1;
-			objectDescription += GetShapeFrameName(g_objectUnderMousePointer->m_shapeData->GetShape(),
-			                                        g_objectUnderMousePointer->m_shapeData->GetFrame(),
-			                                        quantity) + " at " +
-			  to_string(int(g_objectUnderMousePointer->m_Pos.x)) +
-			  " " +
-			  to_string(int(g_objectUnderMousePointer->m_Pos.z)) +
-			  " Quality: " +
-			  to_string(int(g_objectUnderMousePointer->m_Quality));
+			objectDescription += GetObjectDisplayName(g_objectUnderMousePointer) + " at " +
+				to_string(int(g_objectUnderMousePointer->m_Pos.x)) +
+				" " +
+				to_string(int(g_objectUnderMousePointer->m_Pos.z)) +
+				" Quality: " +
+				to_string(int(g_objectUnderMousePointer->m_Quality));
 
 			// Show frame for doors
 			if (g_objectUnderMousePointer->m_objectData && g_objectUnderMousePointer->m_objectData->m_isDoor)
@@ -1376,13 +1557,12 @@ void MainState::Draw()
 		//DrawOutlinedText(g_SmallFont, "Objects: " + to_string(g_ObjectList.size()) + " Visible: " + to_string(g_sortedVisibleObjects.size()), Vector2{ 10, 320 }, g_SmallFont->baseSize, 1, WHITE);
 	}
 	// Draw bark text if active
-	if (m_barkDuration > 0 && m_barkObject != nullptr)
+	if (m_barkDuration > 0 && m_barkObject != nullptr && m_barkObject->m_shapeData != nullptr)
 	{
 		// If auto-update is enabled, regenerate bark text from current object state
 		if (m_barkAutoUpdate)
 		{
-			int quantity = (m_barkObject->m_Quality > 0) ? m_barkObject->m_Quality : 1;
-			m_barkText = GetShapeFrameName(m_barkObject->m_shapeData->GetShape(), m_barkObject->m_shapeData->GetFrame(), quantity);
+			m_barkText = GetObjectDisplayName(m_barkObject);
 		}
 
 		Vector3 textPos = { m_barkObject->m_Pos.x, m_barkObject->m_Pos.y + m_barkObject->m_shapeData->m_Dims.y, m_barkObject->m_Pos.z };
@@ -1400,7 +1580,7 @@ void MainState::Draw()
 		screenPos.x -= width / 2;
 		float height = g_ConversationFont->baseSize * 1.2;
 
-		DrawRectangleRounded({screenPos.x, screenPos.y, width, height}, 5, 100, {0, 0, 0, 192});
+		DrawRectangleRounded({ screenPos.x, screenPos.y, width, height }, 5, 100, { 0, 0, 0, 192 });
 		DrawTextEx(*g_ConversationFont, m_barkText.c_str(), { float(screenPos.x) + (width * .1f), float(screenPos.y) + (height * .1f) }, g_ConversationFont->baseSize, 1, YELLOW);
 	}
 
@@ -1408,6 +1588,9 @@ void MainState::Draw()
 	{
 		g_gumpManager->Draw();
 	}
+
+	// Restore default blend mode
+	rlSetBlendMode(BLEND_ALPHA);
 
 	EndTextureMode();
 
@@ -1441,6 +1624,12 @@ void MainState::Draw()
 	if (m_debugToolsWindow)
 	{
 		m_debugToolsWindow->Draw();
+	}
+
+	// Draw NPC list window if valid
+	if (m_npcListWindow)
+	{
+		m_npcListWindow->Draw();
 	}
 
 	// Draw cursor AFTER dialog so it appears on top
@@ -1507,12 +1696,16 @@ void MainState::RebuildWorldFromLoadedData()
 					npcCount++;
 				else
 					dynamicCount++;
-				
+
 				AssignObjectChunk(obj.get());
 			}
 		}
 	}
 	Log("MainState::RebuildWorldFromLoadedData - Assigned to chunks: " + std::to_string(staticCount) + " static, " + std::to_string(dynamicCount) + " objects, " + std::to_string(npcCount) + " NPCs, " + std::to_string(containedCount) + " contained (skipped)");
+
+	// Initialize NPC activities based on current schedule time (after loading saved game)
+	Log("MainState::RebuildWorldFromLoadedData - Initializing NPC activities from schedules...");
+	InitializeNPCActivitiesFromSchedules();
 
 	// Force immediate update of visible objects after loading
 	Log("MainState::RebuildWorldFromLoadedData - Calling UpdateSortedVisibleObjects now...");
@@ -1535,8 +1728,8 @@ void MainState::RebuildWorldFromLoadedData()
 		}
 	}
 	Log("MainState::RebuildWorldFromLoadedData - g_objectList after rebuild: " + std::to_string(finalTotal) +
-	    " total (" + std::to_string(finalStatic) + " static, " + std::to_string(finalObjects) +
-	    " objects, " + std::to_string(finalNpcs) + " NPCs)");
+		" total (" + std::to_string(finalStatic) + " static, " + std::to_string(finalObjects) +
+		" objects, " + std::to_string(finalNpcs) + " NPCs)");
 
 	Log("MainState::RebuildWorldFromLoadedData - Complete");
 }
@@ -1684,6 +1877,22 @@ void MainState::HandleScheduleButton()
 	AddConsoleString(m_npcSchedulesEnabled ? "NPC Schedules ENABLED" : "NPC Schedules DISABLED");
 }
 
+void MainState::HandlePathfindButton()
+{
+	m_npcPathfindingEnabled = !m_npcPathfindingEnabled;
+
+	// Clear the pathfinding queue when disabling pathfinding
+	if (!m_npcPathfindingEnabled)
+	{
+		while (!g_npcPathfindQueue.empty())
+		{
+			g_npcPathfindQueue.pop();
+		}
+	}
+
+	AddConsoleString(m_npcPathfindingEnabled ? "NPC Pathfinding ENABLED" : "NPC Pathfinding DISABLED");
+}
+
 void MainState::HandleShapeTableButton()
 {
 	// Open shape editor (same as F1 key)
@@ -1746,6 +1955,31 @@ void MainState::HandleRenameButton()
 	Log("PushState(STATE_SCRIPTRENAMESTATE) called");
 }
 
+void MainState::HandleNPCListButton()
+{
+	Log("HandleNPCListButton called");
+
+	// Clear hover text from debug tools window
+	if (m_debugToolsWindow)
+	{
+		m_debugToolsWindow->ClearHoverText();
+	}
+
+	// Toggle NPC list window visibility
+	if (m_npcListWindow)
+	{
+		m_npcListWindow->Toggle();
+		if (m_npcListWindow->IsVisible())
+		{
+			AddConsoleString("NPC list window opened");
+		}
+		else
+		{
+			AddConsoleString("NPC list window closed");
+		}
+	}
+}
+
 void MainState::UpdateDebugToolsWindow()
 {
 	if (!m_debugToolsWindow || !m_debugToolsWindow->IsVisible())
@@ -1760,12 +1994,55 @@ void MainState::UpdateDebugToolsWindow()
 	if (scheduleButtonID != -1)
 	{
 		auto elem = gui->GetElement(scheduleButtonID);
-		if (elem && elem->m_Type == GUI_ICONBUTTON)
+		if (elem && (elem->m_Type == GUI_ICONBUTTON || elem->m_Type == GUI_CHECKBOX))
 		{
-			auto button = static_cast<GuiIconButton*>(elem.get());
-			if (button->m_Clicked)
+			if (elem->m_Type == GUI_ICONBUTTON)
 			{
-				HandleScheduleButton();
+				auto button = static_cast<GuiIconButton*>(elem.get());
+				if (button->m_Clicked)
+				{
+					HandleScheduleButton();
+				}
+			}
+			else if (elem->m_Type == GUI_CHECKBOX)
+			{
+				auto checkbox = static_cast<GuiCheckBox*>(elem.get());
+				
+				// Check if user clicked and toggled the checkbox
+				if (checkbox->m_Selected != m_npcSchedulesEnabled)
+				{
+					// User toggled the checkbox, so toggle the flag
+					HandleScheduleButton();
+				}
+			}
+		}
+	}
+
+	// Check PATHFIND_BUTTON
+	int pathfindButtonID = m_debugToolsWindow->GetElementID("PATHFIND_BUTTON");
+	if (pathfindButtonID != -1)
+	{
+		auto elem = gui->GetElement(pathfindButtonID);
+		if (elem && (elem->m_Type == GUI_ICONBUTTON || elem->m_Type == GUI_CHECKBOX))
+		{
+			if (elem->m_Type == GUI_ICONBUTTON)
+			{
+				auto button = static_cast<GuiIconButton*>(elem.get());
+				if (button->m_Clicked)
+				{
+					HandlePathfindButton();
+				}
+			}
+			else if (elem->m_Type == GUI_CHECKBOX)
+			{
+				auto checkbox = static_cast<GuiCheckBox*>(elem.get());
+				
+				// Check if user clicked and toggled the checkbox
+				if (checkbox->m_Selected != m_npcPathfindingEnabled)
+				{
+					// User toggled the checkbox, so toggle the flag
+					HandlePathfindButton();
+				}
 			}
 		}
 	}
@@ -1811,6 +2088,21 @@ void MainState::UpdateDebugToolsWindow()
 			if (button->m_Clicked)
 			{
 				HandleRenameButton();
+			}
+		}
+	}
+
+	// Check NPC_LIST_BUTTON
+	int npcListButtonID = m_debugToolsWindow->GetElementID("NPC_LIST_BUTTON");
+	if (npcListButtonID != -1)
+	{
+		auto elem = gui->GetElement(npcListButtonID);
+		if (elem && elem->m_Type == GUI_ICONBUTTON)
+		{
+			auto button = static_cast<GuiIconButton*>(elem.get());
+			if (button->m_Clicked)
+			{
+				HandleNPCListButton();
 			}
 		}
 	}

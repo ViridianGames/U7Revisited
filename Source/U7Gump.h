@@ -92,7 +92,7 @@ public:
 
 
 	void SetContainerId(int containerId) { m_containerId = containerId; }
-	int GetContainerId() { return m_containerId; }
+	int GetContainerId() const { return m_containerId; }
 	void SetContainerType(int containerType) { m_containerType = containerType; }
 
 	void SortContainer();

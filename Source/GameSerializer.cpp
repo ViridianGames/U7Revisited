@@ -1,5 +1,6 @@
 #include "GameSerializer.h"
 #include "Geist/Logging.h"
+#include "Geist/ScriptingSystem.h"
 #include "U7Globals.h"
 #include "U7Player.h"
 #include "U7Object.h"
@@ -377,6 +378,27 @@ bool GameSerializer::SaveToStream(std::ofstream& stream, const std::string& save
 		// Global state
 		saveData["nextObjectID"] = g_CurrentUnitID;
 
+		// Save global flags
+		json flagsArray = json::array();
+		if (g_ScriptingSystem != nullptr)
+		{
+			Log("GameSerializer::SaveToStream - Saving " + std::to_string(g_ScriptingSystem->m_flags.size()) + " total flags");
+			for (const auto& [flagId, value] : g_ScriptingSystem->m_flags)
+			{
+				if (value)  // Only save flags that are set to true
+				{
+					flagsArray.push_back(flagId);
+					Log("GameSerializer::SaveToStream - Saving flag " + std::to_string(flagId) + " = true");
+				}
+			}
+		}
+		else
+		{
+			Log("GameSerializer::SaveToStream - WARNING: g_ScriptingSystem is null!");
+		}
+		saveData["flags"] = flagsArray;
+		Log("GameSerializer::SaveToStream - Saved " + std::to_string(flagsArray.size()) + " flags that are set to true");
+
 		// Write to stream with indentation for readability
 		stream << saveData.dump(2);
 
@@ -523,6 +545,29 @@ bool GameSerializer::LoadFromStream(std::ifstream& stream)
 		if (saveData.contains("nextObjectID"))
 		{
 			g_CurrentUnitID = saveData["nextObjectID"];
+		}
+
+		// Restore global flags
+		if (g_ScriptingSystem != nullptr)
+		{
+			g_ScriptingSystem->m_flags.clear();  // Clear all flags first
+			if (saveData.contains("flags") && saveData["flags"].is_array())
+			{
+				Log("GameSerializer::LoadFromStream - Loading " + std::to_string(saveData["flags"].size()) + " flags");
+				for (int flagId : saveData["flags"])
+				{
+					g_ScriptingSystem->m_flags[flagId] = true;
+					Log("GameSerializer::LoadFromStream - Loaded flag " + std::to_string(flagId) + " = true");
+				}
+			}
+			else
+			{
+				Log("GameSerializer::LoadFromStream - No flags found in save file");
+			}
+		}
+		else
+		{
+			Log("GameSerializer::LoadFromStream - WARNING: g_ScriptingSystem is null!");
 		}
 
 		Log("GameSerializer::LoadFromStream - Loaded " + std::to_string(saveData["objects"].size()) + " objects");

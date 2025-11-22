@@ -95,7 +95,8 @@ public:
    void SetInitialPos(Vector3 pos);
    virtual void SetPos(Vector3 pos);
    virtual void SetDest(Vector3 pos);
-   void PathfindToDest(Vector3 dest);  // Use A* pathfinding to reach dest
+   void PathfindToDest(Vector3 dest);  // Use A* pathfinding to reach dest (fire-and-forget)
+   int PathfindToDestTracked(Vector3 dest);  // Returns request ID for tracking (used by Lua)
    virtual void SetSpeed(float speed) { m_speed = speed; }
    void SetFrame(int frame);  // Change object frame (e.g., for doors)
 
@@ -136,6 +137,8 @@ public:
    // Pathfinding
    std::vector<Vector3> m_pathWaypoints;  // Queue of waypoints to follow
    int m_currentWaypointIndex = 0;         // Which waypoint we're moving toward
+   bool m_pathfindingPending = false;      // True when waiting for async pathfinding result
+   bool m_isSchedulePath = false;          // True for C++ schedule paths, false for Lua activity paths
 
    Vector3 m_ExternalForce;
 

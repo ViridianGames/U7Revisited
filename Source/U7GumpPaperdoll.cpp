@@ -40,44 +40,44 @@ void GumpPaperdoll::Setup(int npcId)
 	// NPC IDs: 0=Avatar, 1=Iolo, 2=Shamino, 3=Dupre, 4=Spark, 5=Sentri, 6=Tseramed, 7=Jaana, 8=Katrina, 9=Julia
 	switch (npcId)
 	{
-		case 0:  // Avatar
-			if (g_Player->GetIsMale())
-				m_paperdollType = static_cast<int>(PaperdollType::PAPERDOLL_MALE_AVATAR);
-			else
-				m_paperdollType = static_cast<int>(PaperdollType::PAPERDOLL_FEMALE_AVATAR);
-			break;
-		case 1:  // Iolo
-			m_paperdollType = static_cast<int>(PaperdollType::PAPERDOLL_IOLO);
-			break;
-		case 2:  // Shamino
-			m_paperdollType = static_cast<int>(PaperdollType::PAPERDOLL_SHAMINO);
-			break;
-		case 3:  // Dupre
-			m_paperdollType = static_cast<int>(PaperdollType::PAPERDOLL_DUPRE);
-			break;
-		case 4:  // Spark
-			m_paperdollType = static_cast<int>(PaperdollType::PAPERDOLL_SPARK);
-			break;
-		case 5:  // Sentri
-			m_paperdollType = static_cast<int>(PaperdollType::PAPERDOLL_SENTRI);
-			break;
-		case 6:  // Tseramed
-			m_paperdollType = static_cast<int>(PaperdollType::PAPERDOLL_TSERAMED);
-			break;
-		case 7:  // Jaana
-			m_paperdollType = static_cast<int>(PaperdollType::PAPERDOLL_JAANA);
-			break;
-		case 8:  // Katrina
-			m_paperdollType = static_cast<int>(PaperdollType::PAPERDOLL_KATRINA);
-			break;
-		case 9:  // Julia
-			m_paperdollType = static_cast<int>(PaperdollType::PAPERDOLL_JULIA);
-			break;
-		default:
-			// Unknown NPC, default to Iolo paperdoll
-			Log("WARNING: Unknown NPC ID " + std::to_string(npcId) + ", defaulting to Iolo paperdoll");
-			m_paperdollType = static_cast<int>(PaperdollType::PAPERDOLL_IOLO);
-			break;
+	case 0:  // Avatar
+		if (g_Player->GetIsMale())
+			m_paperdollType = static_cast<int>(PaperdollType::PAPERDOLL_MALE_AVATAR);
+		else
+			m_paperdollType = static_cast<int>(PaperdollType::PAPERDOLL_FEMALE_AVATAR);
+		break;
+	case 1:  // Iolo
+		m_paperdollType = static_cast<int>(PaperdollType::PAPERDOLL_IOLO);
+		break;
+	case 2:  // Shamino
+		m_paperdollType = static_cast<int>(PaperdollType::PAPERDOLL_SHAMINO);
+		break;
+	case 3:  // Dupre
+		m_paperdollType = static_cast<int>(PaperdollType::PAPERDOLL_DUPRE);
+		break;
+	case 4:  // Spark
+		m_paperdollType = static_cast<int>(PaperdollType::PAPERDOLL_SPARK);
+		break;
+	case 5:  // Sentri
+		m_paperdollType = static_cast<int>(PaperdollType::PAPERDOLL_SENTRI);
+		break;
+	case 6:  // Tseramed
+		m_paperdollType = static_cast<int>(PaperdollType::PAPERDOLL_TSERAMED);
+		break;
+	case 7:  // Jaana
+		m_paperdollType = static_cast<int>(PaperdollType::PAPERDOLL_JAANA);
+		break;
+	case 8:  // Katrina
+		m_paperdollType = static_cast<int>(PaperdollType::PAPERDOLL_KATRINA);
+		break;
+	case 9:  // Julia
+		m_paperdollType = static_cast<int>(PaperdollType::PAPERDOLL_JULIA);
+		break;
+	default:
+		// Unknown NPC, default to Iolo paperdoll
+		Log("WARNING: Unknown NPC ID " + std::to_string(npcId) + ", defaulting to Iolo paperdoll");
+		m_paperdollType = static_cast<int>(PaperdollType::PAPERDOLL_IOLO);
+		break;
 	}
 
 	// Cache the paperdoll data
@@ -85,7 +85,7 @@ void GumpPaperdoll::Setup(int npcId)
 
 	Log("GumpPaperdoll::Setup - NPC " + std::to_string(npcId) + ", type " + std::to_string(m_paperdollType));
 
-// #define DEBUG_PAPERDOLLS 1
+	// #define DEBUG_PAPERDOLLS 1
 #ifdef DEBUG_PAPERDOLLS
 	// Create Debug/Paperdolls folder if it doesn't exist
 	std::filesystem::create_directories("Debug/Paperdolls");
@@ -135,7 +135,7 @@ void GumpPaperdoll::Setup(int npcId)
 void GumpPaperdoll::OnExit()
 {
 	m_IsDead = true;
-	
+
 	// Clear any cached state to prevent accessing stale data
 	m_npcId = -1;
 	m_highlightedSlots.clear();
@@ -380,7 +380,7 @@ void GumpPaperdoll::Update()
 				if (logCount < 5)
 				{
 					Log("Paperdoll - Will highlight slot " + std::to_string(i) + " (" + std::string(slotNames[i]) +
-					    (hasContainer ? ") [has container]" : ")"));
+						(hasContainer ? ") [has container]" : ")"));
 					logCount++;
 				}
 			}
@@ -452,7 +452,7 @@ void GumpPaperdoll::Update()
 		// Reset drag start if mouse button is released
 		if (!IsMouseButtonDown(MOUSE_LEFT_BUTTON))
 		{
-			m_dragStart = {0, 0};
+			m_dragStart = { 0, 0 };
 		}
 
 		for (int i = 0; i < static_cast<int>(EquipmentSlot::SLOT_COUNT); i++)
@@ -567,8 +567,8 @@ void GumpPaperdoll::Update()
 									// Center the drag image on the cursor
 									if (objIt != g_objectList.end() && objIt->second && objIt->second->m_shapeData)
 									{
-										auto img = objIt->second->m_shapeData->GetDefaultTextureImage();
-										g_gumpManager->m_draggedObjectOffset = {-img.width / 2.0f, -img.height / 2.0f};
+										auto& img = objIt->second->m_shapeData->GetDefaultTextureImage();
+										g_gumpManager->m_draggedObjectOffset = { -img.width / 2.0f, -img.height / 2.0f };
 									}
 									if (objIt != g_objectList.end() && objIt->second && objIt->second->m_shapeData)
 									{
@@ -590,7 +590,7 @@ void GumpPaperdoll::Update()
 												npcData->UnequipItem(fillSlot);
 											}
 											Log("Started dragging equipped item from slot " + std::to_string(i) + ", objectId=" + std::to_string(objectId) +
-											    " (cleared " + std::to_string(fillSlots.size()) + " fills slots)");
+												" (cleared " + std::to_string(fillSlots.size()) + " fills slots)");
 										}
 										else
 										{
@@ -614,8 +614,7 @@ void GumpPaperdoll::Update()
 									U7Object* obj = objIt->second.get();
 									if (obj->m_shapeData)
 									{
-										int quantity = (obj->m_Quality > 0) ? obj->m_Quality : 1;
-										m_hoverText = GetShapeFrameName(obj->m_shapeData->GetShape(), obj->m_shapeData->GetFrame(), quantity);
+										m_hoverText = GetObjectDisplayName(obj);
 										Log("Paperdoll - Showing hover text: " + m_hoverText);
 										m_hoverTextDuration = 2.0f;
 
@@ -853,7 +852,7 @@ void GumpPaperdoll::Draw()
 		};
 
 		// Draw rounded rectangle background (pill-shaped, semi-transparent)
-		DrawRectangleRounded({textPos.x, textPos.y, width, height}, 5.0f, 10, Color{0, 0, 0, 192});
+		DrawRectangleRounded({ textPos.x, textPos.y, width, height }, 5.0f, 10, Color{ 0, 0, 0, 192 });
 
 		// Draw text in yellow (same as bark)
 		DrawTextEx(*g_ConversationFont, m_hoverText.c_str(),
@@ -865,7 +864,7 @@ void GumpPaperdoll::Draw()
 bool GumpPaperdoll::IsOverSlot(Vector2 mousePos)
 {
 	// Check for buttons (HEART, CLOSE, DISK, etc.)
-	const char* buttonNames[] = {"HEART", "CLOSE", "DISK", "PEACE", "HALO", "FORMATION"};
+	const char* buttonNames[] = { "HEART", "CLOSE", "DISK", "PEACE", "HALO", "FORMATION" };
 	for (int i = 0; i < 6; i++)
 	{
 		int buttonID = m_serializer->GetElementID(buttonNames[i]);
@@ -1015,14 +1014,13 @@ bool GumpPaperdoll::HandleDrop(U7Object* object, Vector2 mousePos)
 										canCarry = false;
 										AddConsoleString("Too heavy! Cannot carry that much.", RED);
 										Log("Drop failed: Item weight " + std::to_string(itemWeight) +
-										    " exceeds NPC remaining capacity " + std::to_string(remainingCapacity));
+											" exceeds NPC remaining capacity " + std::to_string(remainingCapacity));
 									}
 								}
 
 								if (canCarry)
 								{
 									equippedItem->AddObjectToInventory(object->m_ID);
-									object->m_isContained = true;
 									object->m_InventoryPos = { 0, 0 };
 									Log("Added item to equipped container in slot " + std::to_string(static_cast<int>(slot)));
 									return true;
@@ -1140,9 +1138,8 @@ bool GumpPaperdoll::HandleDrop(U7Object* object, Vector2 mousePos)
 				{
 					npcData->SetEquippedItem(slot, object->m_ID);
 				}
-				object->m_isContained = true;
 				Log("Equipped shape " + std::to_string(shape) + " to slot " + std::to_string(static_cast<int>(slot)) +
-				    " (fills " + std::to_string(fillSlots.size()) + " slots)");
+					" (fills " + std::to_string(fillSlots.size()) + " slots)");
 				return true;
 			}
 		}
@@ -1178,7 +1175,7 @@ bool GumpPaperdoll::HandleDrop(U7Object* object, Vector2 mousePos)
 						canCarry = false;
 						AddConsoleString("Too heavy! Cannot carry that much.", RED);
 						Log("Drop failed: Item weight " + std::to_string(itemWeight) +
-						    " exceeds NPC remaining capacity " + std::to_string(remainingCapacity));
+							" exceeds NPC remaining capacity " + std::to_string(remainingCapacity));
 						return false;
 					}
 				}
@@ -1186,7 +1183,6 @@ bool GumpPaperdoll::HandleDrop(U7Object* object, Vector2 mousePos)
 				if (canCarry)
 				{
 					equippedItem->AddObjectToInventory(object->m_ID);
-					object->m_isContained = true;
 					object->m_InventoryPos = { 0, 0 };
 					Log("Added item to equipped container in slot " + std::to_string(static_cast<int>(slot)) + " (fallback)");
 					return true;

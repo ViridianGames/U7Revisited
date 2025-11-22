@@ -14,6 +14,7 @@ class GuiElement;
 class GumpManager;
 class GhostWindow;
 class GumpPaperdoll;
+class NpcListWindow;
 
 enum class MainStateModes
 {
@@ -46,9 +47,9 @@ public:
    void OpenLoadSaveGump();
 
    // Paperdoll management
-   bool HasAnyPaperdollOpen();
+   bool HasAnyPaperdollOpen() const;
    void TogglePaperdoll(int npcId);
-   GumpPaperdoll* FindPaperdollByNpcId(int npcId);
+   GumpPaperdoll* FindPaperdollByNpcId(int npcId) const;
 
    void DrawStats();
    void UpdateStats();
@@ -61,31 +62,32 @@ public:
 
 	void Bark(U7Object* object, const std::string& text, float duration = 3.0f);
 
-	void NPCBark(int npc_id, const std::string& text, float duration = 3.0f);
-
-	void Wait(float seconds); // Wait while not blocking, called by Lua scripts.
-
 	void ShowErrorCursor() { m_errorCursorFramesRemaining = 5; }  // Show error cursor for 5 frames
 
 	// Debug tools window button handlers
 	void HandleScheduleButton();
+	void HandlePathfindButton();
 	void HandleShapeTableButton();
 	void HandleGhostButton();
 	void HandleRenameButton();
+	void HandleNPCListButton();
 	void UpdateDebugToolsWindow();
 
 	float m_waitTime = 0;
 
-   Gui* m_Gui;
+   Gui* m_Gui = nullptr;
 
-   Gui* m_OptionsGui;
+   Gui* m_OptionsGui = nullptr;
 
-   Gui* m_toolTipGui;
+   Gui* m_toolTipGui = nullptr;
 
-	Gui* m_numberBarGui;
+	Gui* m_numberBarGui = nullptr;
 
 	// Debug tools window (always visible in sandbox mode)
-	GhostWindow* m_debugToolsWindow;
+	GhostWindow* m_debugToolsWindow = nullptr;
+
+	// NPC list window for debugging/navigation
+	NpcListWindow* m_npcListWindow = nullptr;
 
 	std::string m_luaFunction;
 
@@ -95,34 +97,34 @@ public:
 	float m_barkDuration = 0;;
 	bool m_barkAutoUpdate = false;  // True if bark should regenerate from object name each frame
    
-   float m_LastUpdate;
+   float m_LastUpdate = 0.0f;
    
-   int m_NumberOfVisibleUnits;
+   int m_NumberOfVisibleUnits = 0;
    
-   int m_GuiMode;
+   int m_GuiMode = 0;
    
-   bool m_DrawMarker;
-   float m_MarkerRadius;
+   bool m_DrawMarker = false;
+   float m_MarkerRadius = 0.0f;
    
-   ParticleSystem* m_Particles;
+   ParticleSystem* m_Particles = nullptr;
    
 //   SDL_Rect** m_Resolutions;
 //   int m_CurrentRes;
    
    // Game options
-   unsigned int m_NumberOfPlayers;
-   unsigned int m_PlayerID;
-   unsigned int m_GameType;
-   unsigned int m_RNGSeed;
+   unsigned int m_NumberOfPlayers = 1;
+   unsigned int m_PlayerID = 0;
+   unsigned int m_GameType = 0;
+   unsigned int m_RNGSeed = 0;
    
    //Texture* m_TerrainTexture;
-   Texture* m_Minimap;
-   Texture* m_MinimapArrow;
-	Texture* m_usePointer;
-	Texture* m_errorCursor;
+   Texture* m_Minimap = nullptr;
+   Texture* m_MinimapArrow = nullptr;
+	Texture* m_usePointer = nullptr;
+	Texture* m_errorCursor = nullptr;
 
 
-   bool m_showObjects;
+   bool m_showObjects = true;
 
 	// Error cursor display (shown for 5 frames after drag/drop error)
 	int m_errorCursorFramesRemaining = 0;
@@ -149,7 +151,7 @@ public:
 
    bool m_paused = false;
 
-	Vector2 m_dragStart;
+	Vector2 m_dragStart = {0, 0};
 
 	bool m_allowInput = true;
 
@@ -177,7 +179,10 @@ public:
 	bool m_hasShownWelcomeMessages = false;
 
 	// NPC Schedule toggle
-	bool m_npcSchedulesEnabled = false;
+	bool m_npcSchedulesEnabled = false;  // Default disabled - user must enable
+
+	// NPC Pathfinding on schedule change toggle
+	bool m_npcPathfindingEnabled = false;  // Default disabled - NPCs stay in place when schedules change
 
 	// Pathfinding debug visualization
 	bool m_showPathfindingDebug = false;  // F10: Tile-level visualization (shows objects)

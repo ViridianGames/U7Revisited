@@ -16,12 +16,20 @@
 
 using namespace std;
 
+const int BOOKMARK_LEFT_X = 78;
+const int BOOKMARK_RIGHT_X = 125;
+
+// Static storage for bookmark state (persists between spellbook opens)
+// TODO: Move this to NPC data structure when that system is implemented
+static int s_savedBookmarkedCircle = -1;
+static int s_savedBookmarkedSpellIndex = -1;
+
 GumpSpellbook::GumpSpellbook()
 	: m_npcId(-1)
 	, m_currentCircle(1)
 	, m_selectedSpellId(-1)
 	, m_isDragging(false)
-	, m_dragStart({0, 0})
+	, m_dragStart({ 0, 0 })
 {
 }
 
@@ -31,7 +39,12 @@ GumpSpellbook::~GumpSpellbook()
 
 void GumpSpellbook::OnEnter()
 {
-	Log("GumpSpellbook::OnEnter()");
+	Log("GumpSpellbook::OnEnter() - m_currentCircle=" + std::to_string(m_currentCircle) + 
+		" bookmarked circle=" + std::to_string(m_bookmarkedCircle));
+
+	// Update circle display now that GUI is loaded (Setup called UpdateCircleDisplay before Init loaded the GUI)
+	UpdateCircleDisplay();
+	UpdateBookmark();
 
 	// Enable dragging for the spellbook gump
 	m_gui.m_Draggable = true;
@@ -137,14 +150,20 @@ void GumpSpellbook::Init(const std::string& data)
 			Log("GumpSpellbook::Init - WARNING: CLOSE button not found in spell_book.ghost");
 		}
 
-		// Store element IDs for navigation buttons and level text
+		// Store element IDs for navigation buttons, level text, and bookmark
 		m_prevButtonId = m_serializer->GetElementID("PREV");
 		m_nextButtonId = m_serializer->GetElementID("NEXT");
 		m_levelTextId = m_serializer->GetElementID("LEVEL");
+		m_bookmarkId = m_serializer->GetElementID("BOOKMARK");
 
 		if (m_prevButtonId == -1 || m_nextButtonId == -1 || m_levelTextId == -1)
 		{
 			Log("GumpSpellbook::Init - WARNING: Could not find PREV, NEXT, or LEVEL elements");
+		}
+
+		if (m_bookmarkId == -1)
+		{
+			Log("GumpSpellbook::Init - WARNING: Could not find BOOKMARK element");
 		}
 
 		// Store element IDs for spell sprites (named "1" through "8")
@@ -188,14 +207,35 @@ void GumpSpellbook::Init(const std::string& data)
 void GumpSpellbook::Setup(int npcId)
 {
 	m_npcId = npcId;
-	m_currentCircle = 1;
 	m_selectedSpellId = -1;
 
 	// TODO: Load learned spells for this NPC from their inventory
 	// Check for spell scrolls in NPC's inventory to determine which spells are learned
 
-	// Update the circle display to show "First"
+	// TODO: Load bookmarked spell from NPC data
+	// For now, load from static storage (persists between spellbook opens)
+	Log("GumpSpellbook::Setup - Loading from static: circle=" + std::to_string(s_savedBookmarkedCircle) + 
+		" index=" + std::to_string(s_savedBookmarkedSpellIndex));
+	m_bookmarkedCircle = s_savedBookmarkedCircle;
+	m_bookmarkedSpellIndex = s_savedBookmarkedSpellIndex;
+
+	// If there's a bookmarked spell, start on that circle; otherwise start on circle 1
+	if (m_bookmarkedCircle != -1)
+	{
+		m_currentCircle = m_bookmarkedCircle;
+		Log("GumpSpellbook::Setup() - Opening to bookmarked circle " + std::to_string(m_currentCircle));
+	}
+	else
+	{
+		m_currentCircle = 1;
+		Log("GumpSpellbook::Setup() - Opening to First circle (no bookmark)");
+	}
+
+	// Update the circle display
 	UpdateCircleDisplay();
+
+	// Update bookmark visibility
+	UpdateBookmark();
 
 	Log("GumpSpellbook::Setup() for NPC " + std::to_string(npcId));
 }
@@ -204,15 +244,15 @@ std::string GumpSpellbook::GetCircleName(int circle)
 {
 	switch (circle)
 	{
-		case 1: return "First";
-		case 2: return "Second";
-		case 3: return "Third";
-		case 4: return "Fourth";
-		case 5: return "Fifth";
-		case 6: return "Sixth";
-		case 7: return "Seventh";
-		case 8: return "Eighth";
-		default: return "Unknown";
+	case 1: return "First";
+	case 2: return "Second";
+	case 3: return "Third";
+	case 4: return "Fourth";
+	case 5: return "Fifth";
+	case 6: return "Sixth";
+	case 7: return "Seventh";
+	case 8: return "Eighth";
+	default: return "Unknown";
 	}
 }
 
@@ -225,6 +265,75 @@ void GumpSpellbook::UpdateCircleDisplay()
 		{
 			levelElement->m_String = GetCircleName(m_currentCircle);
 		}
+	}
+}
+
+void GumpSpellbook::UpdateBookmark()
+{
+	if (m_bookmarkId == -1)
+	{
+		Log("GumpSpellbook::UpdateBookmark - m_bookmarkId is -1");
+		return;
+	}
+
+	std::shared_ptr<GuiElement> bookmarkElement = m_gui.GetElement(m_bookmarkId);
+	if (!bookmarkElement)
+	{
+		Log("GumpSpellbook::UpdateBookmark - bookmarkElement is null");
+		return;
+	}
+
+	if (bookmarkElement->m_Type != GUI_CYCLE)
+	{
+		Log("GumpSpellbook::UpdateBookmark - bookmarkElement is not GUI_CYCLE, type=" + std::to_string(bookmarkElement->m_Type));
+		return;
+	}
+
+	GuiCycle* bookmark = static_cast<GuiCycle*>(bookmarkElement.get());
+
+	// Make bookmark non-interactive so it can't be clicked
+	bookmark->m_Active = false;
+	Log("GumpSpellbook::UpdateBookmark - Set bookmark m_Active = false");
+
+	// If no spell is bookmarked, hide the bookmark
+	if (m_bookmarkedCircle == -1 || m_bookmarkedSpellIndex == -1)
+	{
+		Log("GumpSpellbook::UpdateBookmark - No spell bookmarked, hiding");
+		bookmark->m_Visible = false;
+		return;
+	}
+
+	Log("GumpSpellbook::UpdateBookmark - Setting bookmark visible, circle=" + std::to_string(m_bookmarkedCircle) +
+		" index=" + std::to_string(m_bookmarkedSpellIndex));
+	bookmark->m_Visible = true;
+
+	// Check if viewing the bookmarked circle
+	if (m_currentCircle == m_bookmarkedCircle)
+	{
+		// Bookmark is on current page - set frame based on row (1-4)
+		// Spells are in 2 columns (LEFT: indices 0-3, RIGHT: indices 4-7)
+		// Frame 1 = top row, frame 2 = second row, etc.
+		int row = (m_bookmarkedSpellIndex % 4) + 1; // Row 1-4
+		bookmark->m_CurrentFrame = row;
+	}
+	else
+	{
+		// Viewing a different circle - use frame 0
+		bookmark->m_CurrentFrame = 0;
+	}
+
+	// Set X position based on left (0-3) or right (4-7) column
+	if (m_bookmarkedSpellIndex < 4)
+	{
+		// Left page
+		bookmark->m_Pos.x = BOOKMARK_LEFT_X;
+		// Log("GumpSpellbook::UpdateBookmark - On bookmarked circle, LEFT page, frame=" + std::to_string(row) + " x=200");
+	}
+	else
+	{
+		// Right page
+		bookmark->m_Pos.x = BOOKMARK_RIGHT_X;
+		// Log("GumpSpellbook::UpdateBookmark - On bookmarked circle, RIGHT page, frame=" + std::to_string(row) + " x=400");
 	}
 }
 
@@ -280,6 +389,16 @@ void GumpSpellbook::CastSpell(int spellId)
 
 void GumpSpellbook::Update()
 {
+	// Make bookmark non-interactive every frame (prevent it from being clicked)
+	if (m_bookmarkId != -1)
+	{
+		std::shared_ptr<GuiElement> bookmarkElement = m_gui.GetElement(m_bookmarkId);
+		if (bookmarkElement && bookmarkElement->m_Type == GUI_CYCLE)
+		{
+			bookmarkElement->m_Active = false;
+		}
+	}
+
 	m_gui.Update();
 
 	// Close spellbook if user presses ESC or clicks outside
@@ -316,12 +435,12 @@ void GumpSpellbook::Update()
 	{
 		// Increment counter and advance frame FIRST
 		m_frameCounter++;
-		
+
 		if (m_frameCounter >= m_updatesPerFrame)
 		{
 			m_frameCounter = 0;
 			m_animFrame++;
-			
+
 			// Change circle at frame 3 (after halfway through animation)
 			if (m_animFrame == 3)
 			{
@@ -333,17 +452,18 @@ void GumpSpellbook::Update()
 				{
 					m_currentCircle--;
 				}
-				
-				m_selectedSpellId = -1;
+
 				UpdateCircleDisplay();
+				UpdateBookmark();
+				m_selectedSpellId = -1;
 			}
-			
+
 			// Animation has 5 frames total (first and last page show twice)
 			if (m_animFrame >= 5)
 			{
 				m_isAnimating = false;
 				m_animFrame = 0;
-				
+
 				// Hide all page sprites when animation ends
 				for (int i = 0; i < 4; i++)
 				{
@@ -356,11 +476,11 @@ void GumpSpellbook::Update()
 						}
 					}
 				}
-				
+
 				return; // Exit early when animation is done
 			}
 		}
-		
+
 		// THEN show the current animation frame's page sprite
 		{
 			// Hide all pages first
@@ -375,7 +495,7 @@ void GumpSpellbook::Update()
 					}
 				}
 			}
-			
+
 			// Show the current frame
 			int pageIndex;
 			if (m_animateForward)
@@ -394,7 +514,7 @@ void GumpSpellbook::Update()
 				else
 					pageIndex = m_animFrame - 1; // frame 2->idx 1 (PAGE2), frame 3->idx 2 (PAGE3), frame 4->idx 3 (PAGE4)
 			}
-			
+
 			if (pageIndex >= 0 && pageIndex < 4 && m_pageSpriteIds[pageIndex] != -1)
 			{
 				std::shared_ptr<GuiElement> pageElement = m_gui.GetElement(m_pageSpriteIds[pageIndex]);
@@ -412,56 +532,91 @@ void GumpSpellbook::Update()
 		m_currentCircle--;
 		m_selectedSpellId = -1;
 		UpdateCircleDisplay();
+		UpdateBookmark();
 	}
 	else if (IsKeyPressed(KEY_RIGHT) && m_currentCircle < 8)
 	{
 		m_currentCircle++;
 		m_selectedSpellId = -1;
 		UpdateCircleDisplay();
+		UpdateBookmark();
 	}
 	else if (IsKeyPressed(KEY_ONE))
 	{
 		m_currentCircle = 1;
 		UpdateCircleDisplay();
+		UpdateBookmark();
 	}
 	else if (IsKeyPressed(KEY_TWO))
 	{
 		m_currentCircle = 2;
 		UpdateCircleDisplay();
+		UpdateBookmark();
 	}
 	else if (IsKeyPressed(KEY_THREE))
 	{
 		m_currentCircle = 3;
 		UpdateCircleDisplay();
+		UpdateBookmark();
 	}
 	else if (IsKeyPressed(KEY_FOUR))
 	{
 		m_currentCircle = 4;
 		UpdateCircleDisplay();
+		UpdateBookmark();
 	}
 	else if (IsKeyPressed(KEY_FIVE))
 	{
 		m_currentCircle = 5;
 		UpdateCircleDisplay();
+		UpdateBookmark();
 	}
 	else if (IsKeyPressed(KEY_SIX))
 	{
 		m_currentCircle = 6;
 		UpdateCircleDisplay();
+		UpdateBookmark();
 	}
 	else if (IsKeyPressed(KEY_SEVEN))
 	{
 		m_currentCircle = 7;
 		UpdateCircleDisplay();
+		UpdateBookmark();
 	}
 	else if (IsKeyPressed(KEY_EIGHT))
 	{
 		m_currentCircle = 8;
 		UpdateCircleDisplay();
+		UpdateBookmark();
 	}
 
-	// TODO: Handle spell selection and casting
-	// TODO: Handle mouse clicks on spell icons
+	// Handle spell clicks - spell icons are now interactive iconbuttons
+	for (int i = 0; i < 8; i++)
+	{
+		if (m_spellSpriteIds[i] != -1)
+		{
+			// Check if this spell button was clicked
+			if (m_gui.m_ActiveElement == m_spellSpriteIds[i])
+			{
+				// Spell clicked - update bookmark to this spell
+				m_bookmarkedCircle = m_currentCircle;
+				m_bookmarkedSpellIndex = i;
+
+				// Save to static storage so it persists between spellbook opens
+				s_savedBookmarkedCircle = m_bookmarkedCircle;
+				s_savedBookmarkedSpellIndex = m_bookmarkedSpellIndex;
+				Log("GumpSpellbook::Update - Saved to static: circle=" + std::to_string(s_savedBookmarkedCircle) + 
+					" index=" + std::to_string(s_savedBookmarkedSpellIndex));
+
+				Log("GumpSpellbook::Update - Bookmarked spell " + std::to_string(i) +
+					" in circle " + std::to_string(m_currentCircle));
+
+				// Update bookmark position and frame
+				UpdateBookmark();
+				break;
+			}
+		}
+	}
 }
 
 void GumpSpellbook::Draw()
@@ -483,23 +638,30 @@ void GumpSpellbook::Draw()
 				if (m_spellSpriteIds[i] != -1)
 				{
 					std::shared_ptr<GuiElement> element = m_gui.GetElement(m_spellSpriteIds[i]);
+					
+					// Get the spell data for this position
+					const SpellData& spell = circleSpells[i];
+
+					// Create a new sprite with the correct texture coordinates
+					auto newSprite = std::make_shared<Sprite>(
+						gumpsTexture,
+						spell.x,
+						spell.y,
+						44,  // Width of spell icon
+						16   // Height of spell icon
+					);
+
+					// Handle both GUI_SPRITE and GUI_ICONBUTTON types
 					if (element && element->m_Type == GUI_SPRITE)
 					{
 						GuiSprite* spriteElement = static_cast<GuiSprite*>(element.get());
-
-						// Get the spell data for this position
-						const SpellData& spell = circleSpells[i];
-
-						// Create a new sprite with the correct texture coordinates
-						auto newSprite = std::make_shared<Sprite>(
-							gumpsTexture,
-							spell.x,
-							spell.y,
-							44,  // Width of spell icon
-							16   // Height of spell icon
-						);
-
 						spriteElement->SetSprite(newSprite);
+					}
+					else if (element && element->m_Type == GUI_ICONBUTTON)
+					{
+						GuiIconButton* iconButton = static_cast<GuiIconButton*>(element.get());
+						iconButton->m_UpTexture = newSprite;
+						iconButton->m_DownTexture = newSprite;  // Use same sprite for down state
 					}
 				}
 			}

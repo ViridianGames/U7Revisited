@@ -62,6 +62,13 @@ private:
 	float m_panStartX = 0.0f;
 	float m_panStartY = 0.0f;
 
+	// Double-click detection
+	double m_lastClickTime = 0.0;
+	int m_lastClickX = 0;
+	int m_lastClickY = 0;
+	const double m_doubleClickDelay = 0.3; // seconds
+	const int m_doubleClickRadius = 5; // pixels
+
 	// Fixed browser area bounds (relative to main panel position)
 	const Rectangle m_browserBounds = {500.0f, 10.0f, 103.0f, 408.0f};
 };

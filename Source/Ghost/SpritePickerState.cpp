@@ -9,9 +9,96 @@
 #include "SpriteUtils.h"
 #include "FileChooserState.h"
 #include <algorithm>
+#include <queue>
+#include <set>
 
 extern std::unique_ptr<StateMachine> g_StateMachine;
 extern std::unique_ptr<ResourceManager> g_ResourceManager;
+
+// Helper function: Flood fill to find all connected non-transparent pixels
+// Returns a bounding box (x, y, width, height) of the filled region
+static Rectangle FloodFillBoundingBox(Texture* texture, int startX, int startY)
+{
+	if (!texture || texture->id == 0)
+		return {0, 0, 0, 0};
+
+	// Get pixel data from texture
+	Image image = LoadImageFromTexture(*texture);
+	Color* pixels = LoadImageColors(image);
+	
+	int width = image.width;
+	int height = image.height;
+	
+	// Check if start pixel is transparent
+	int startIndex = startY * width + startX;
+	if (startX < 0 || startX >= width || startY < 0 || startY >= height ||
+		pixels[startIndex].a == 0)
+	{
+		UnloadImageColors(pixels);
+		UnloadImage(image);
+		return {0, 0, 0, 0};
+	}
+	
+	// Flood fill using BFS
+	std::queue<std::pair<int, int>> queue;
+	std::set<std::pair<int, int>> visited;
+	
+	queue.push({startX, startY});
+	visited.insert({startX, startY});
+	
+	int minX = startX;
+	int maxX = startX;
+	int minY = startY;
+	int maxY = startY;
+	
+	// 4-way connectivity (up, down, left, right)
+	int dx[] = {0, 0, -1, 1};
+	int dy[] = {-1, 1, 0, 0};
+	
+	while (!queue.empty())
+	{
+		auto [x, y] = queue.front();
+		queue.pop();
+		
+		// Update bounding box
+		minX = std::min(minX, x);
+		maxX = std::max(maxX, x);
+		minY = std::min(minY, y);
+		maxY = std::max(maxY, y);
+		
+		// Check all 4 neighbors
+		for (int i = 0; i < 4; i++)
+		{
+			int nx = x + dx[i];
+			int ny = y + dy[i];
+			
+			// Check bounds
+			if (nx < 0 || nx >= width || ny < 0 || ny >= height)
+				continue;
+			
+			// Check if already visited
+			if (visited.find({nx, ny}) != visited.end())
+				continue;
+			
+			// Check if pixel is non-transparent
+			int index = ny * width + nx;
+			if (pixels[index].a > 0)
+			{
+				queue.push({nx, ny});
+				visited.insert({nx, ny});
+			}
+		}
+	}
+	
+	UnloadImageColors(pixels);
+	UnloadImage(image);
+	
+	// Return bounding box
+	float boxWidth = static_cast<float>(maxX - minX + 1);
+	float boxHeight = static_cast<float>(maxY - minY + 1);
+	
+	return {static_cast<float>(minX), static_cast<float>(minY), boxWidth, boxHeight};
+}
 
 SpritePickerState::~SpritePickerState()
 {
@@ -406,18 +493,98 @@ void SpritePickerState::Update()
 					m_panStartY = m_panY;
 				}
 
-				// Handle mouse clicks - start drag selection
+				// Handle mouse clicks - start drag selection or double-click flood fill
 				if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && !m_isPanning)
 				{
 					// Calculate texture coordinates accounting for zoom and pan
 					float relX = (mousePos.x - bounds.x - m_panX) / m_zoom;
 					float relY = (mousePos.y - bounds.y - m_panY) / m_zoom;
 
-					m_dragStartX = static_cast<int>(relX);
-					m_dragStartY = static_cast<int>(relY);
-					m_dragEndX = m_dragStartX;
-					m_dragEndY = m_dragStartY;
-					m_isDragging = true;
+					int clickX = static_cast<int>(relX);
+					int clickY = static_cast<int>(relY);
+					
+					// Check for double-click
+					double currentTime = GetTime();
+					bool isDoubleClick = false;
+					
+					if (currentTime - m_lastClickTime < m_doubleClickDelay)
+					{
+						// Check if click is close to previous click position
+						int dx = clickX - m_lastClickX;
+						int dy = clickY - m_lastClickY;
+						if (dx * dx + dy * dy < m_doubleClickRadius * m_doubleClickRadius)
+						{
+							isDoubleClick = true;
+						}
+					}
+					
+					if (isDoubleClick)
+					{
+						// Perform flood fill to find bounding box
+						Rectangle bbox = FloodFillBoundingBox(texture, clickX, clickY);
+						
+						if (bbox.width > 0 && bbox.height > 0)
+						{
+							// Update selection to the flood-filled bounding box
+							m_x = static_cast<int>(bbox.x);
+							m_y = static_cast<int>(bbox.y);
+							m_width = static_cast<int>(bbox.width);
+							m_height = static_cast<int>(bbox.height);
+							
+							Log("Flood fill bounding box: x=" + std::to_string(m_x) + " y=" + std::to_string(m_y) +
+								" w=" + std::to_string(m_width) + " h=" + std::to_string(m_height));
+							
+							// Update scrollbars
+							int xScrollbarID = m_window->GetElementID("SPRITE_X");
+							if (xScrollbarID != -1)
+							{
+								auto elem = gui->GetElement(xScrollbarID);
+								if (elem && elem->m_Type == GUI_SCROLLBAR)
+									static_cast<GuiScrollBar*>(elem.get())->m_Value = m_x;
+							}
+
+							int yScrollbarID = m_window->GetElementID("SPRITE_Y");
+							if (yScrollbarID != -1)
+							{
+								auto elem = gui->GetElement(yScrollbarID);
+								if (elem && elem->m_Type == GUI_SCROLLBAR)
+									static_cast<GuiScrollBar*>(elem.get())->m_Value = m_y;
+							}
+
+							int widthScrollbarID = m_window->GetElementID("SPRITE_WIDTH");
+							if (widthScrollbarID != -1)
+							{
+								auto elem = gui->GetElement(widthScrollbarID);
+								if (elem && elem->m_Type == GUI_SCROLLBAR)
+									static_cast<GuiScrollBar*>(elem.get())->m_Value = m_width;
+							}
+
+							int heightScrollbarID = m_window->GetElementID("SPRITE_HEIGHT");
+							if (heightScrollbarID != -1)
+							{
+								auto elem = gui->GetElement(heightScrollbarID);
+								if (elem && elem->m_Type == GUI_SCROLLBAR)
+									static_cast<GuiScrollBar*>(elem.get())->m_Value = m_height;
+							}
+						}
+						
+						// Reset double-click tracking
+						m_lastClickTime = 0.0;
+					}
+					else
+					{
+						// Single click - start drag selection
+						m_dragStartX = clickX;
+						m_dragStartY = clickY;
+						m_dragEndX = m_dragStartX;
+						m_dragEndY = m_dragStartY;
+						m_isDragging = true;
+						
+						// Update double-click tracking
+						m_lastClickTime = currentTime;
+						m_lastClickX = clickX;
+						m_lastClickY = clickY;
+					}
 				}
 
 				// Update drag selection

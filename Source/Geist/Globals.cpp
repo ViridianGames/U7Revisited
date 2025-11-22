@@ -114,3 +114,9 @@ void DebugPrint(std::string msg)
 	Log(msg, "debuglog.txt", true);
 	// Don't print to cout here - Log() already does it when suppressdatetime=true
 }
+
+
+void NPCDebugPrint(std::string msg)
+{
+	Log(msg, "npcdebug.log", true);
+}

@@ -22,7 +22,7 @@
         "horzPadding": 0,
         "vertPadding": 0,
         "font": "babyblocks.ttf",
-        "fontSize": 10,
+        "fontSize": 8,
         "elements": [
           {
             "name": "BG",

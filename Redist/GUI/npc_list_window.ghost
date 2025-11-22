@@ -1,0 +1,227 @@
+{
+  "gui": {
+    "elements": [
+      {
+        "type": "panel",
+        "position": [
+          -1,
+          -1
+        ],
+        "size": [
+          333,
+          528
+        ],
+        "backgroundColor": [
+          40,
+          40,
+          40,
+          255
+        ],
+        "filled": true,
+        "layout": "vert",
+        "horzPadding": 10,
+        "vertPadding": 10,
+        "font": "babyblocks.ttf",
+        "fontSize": 20,
+        "elements": [
+          {
+            "type": "textarea",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Search NPC Name:",
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "size": [
+              280,
+              20
+            ],
+            "justified": 0
+          },
+          {
+            "type": "panel",
+            "position": [
+              -1,
+              -1
+            ],
+            "size": [
+              300,
+              29
+            ],
+            "backgroundColor": [
+              80,
+              80,
+              80,
+              0
+            ],
+            "filled": true,
+            "layout": "horz",
+            "horzPadding": 0,
+            "vertPadding": 0,
+            "elements": [
+              {
+                "name": "SEARCH_INPUT",
+                "type": "textinput",
+                "position": [
+                  -1,
+                  -1
+                ],
+                "text": "",
+                "size": [
+                  280,
+                  29
+                ],
+                "textColor": [
+                  255,
+                  255,
+                  255,
+                  255
+                ],
+                "borderColor": [
+                  100,
+                  100,
+                  100,
+                  255
+                ],
+                "backgroundColor": [
+                  20,
+                  20,
+                  20,
+                  255
+                ]
+              },
+              {
+                "name": "CLEAR",
+                "type": "iconbutton",
+                "position": [
+                  -1,
+                  -1
+                ],
+                "sprite": {
+                  "spritesheet": "GUI/guielements.png",
+                  "x": 100,
+                  "y": 0,
+                  "w": 20,
+                  "h": 20
+                },
+                "color": [
+                  255,
+                  255,
+                  255,
+                  255
+                ],
+                "scale": 1.0
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "NPC List",
+            "name": "LIST_HEADER",
+            "textColor": [
+              255,
+              255,
+              0,
+              255
+            ],
+            "size": [
+              280,
+              29
+            ],
+            "justified": 1
+          },
+          {
+            "name": "NPC_LISTBOX",
+            "type": "listbox",
+            "position": [
+              -1,
+              -1
+            ],
+            "size": [
+              300,
+              350
+            ],
+            "items": [],
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "backgroundColor": [
+              20,
+              20,
+              20,
+              255
+            ],
+            "borderColor": [
+              100,
+              100,
+              100,
+              255
+            ]
+          },
+          {
+            "type": "panel",
+            "position": [
+              -1,
+              -1
+            ],
+            "size": [
+              313,
+              40
+            ],
+            "backgroundColor": [
+              80,
+              80,
+              80,
+              0
+            ],
+            "filled": true,
+            "layout": "horz",
+            "horzPadding": 5,
+            "vertPadding": 5,
+            "elements": [
+              {
+                "name": "SORT_ID",
+                "type": "textbutton",
+                "position": [
+                  -1,
+                  -1
+                ],
+                "text": "Sort ID"
+              },
+              {
+                "name": "SORT_NAME",
+                "type": "textbutton",
+                "position": [
+                  -1,
+                  -1
+                ],
+                "text": "Sort Name"
+              },
+              {
+                "name": "SORT_ACTIVITY",
+                "type": "textbutton",
+                "position": [
+                  -1,
+                  -1
+                ],
+                "text": "Sort Act"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

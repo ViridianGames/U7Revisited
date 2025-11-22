@@ -165,9 +165,11 @@ int GuiTextButton::GetValue()
 void GuiIconButton::Init(int ID, int posx, int posy, shared_ptr<Sprite> upbutton, shared_ptr<Sprite> downbutton,
 	shared_ptr<Sprite> inactivebutton, std::string text, Font* font, Color fontcolor, float scale, int group, int active, bool canbeheld)
 {
-	if (upbutton == nullptr)
+	if (upbutton == nullptr || upbutton->m_texture == nullptr)
 	{
-		throw("Bad sprite in GuiIconButton!");
+		Log("GuiIconButton::Init - Bad sprite (null upbutton or texture), ID: " + std::to_string(ID));
+		// Don't throw, just return early - the element won't be created but won't crash
+		return;
 	}
 
 	m_Type = GUI_ICONBUTTON;
@@ -218,9 +220,12 @@ void GuiIconButton::Draw()
 		}
 		else
 		{
-			m_UpTexture->DrawScaled(
-			Rectangle{ (m_Gui->m_Pos.x + (m_Pos.x)), (m_Gui->m_Pos.y + (m_Pos.y)), m_Width * m_Scale, m_Height * m_Scale },
-			Vector2{ 0, 0 }, 0, m_Color);
+			if (m_UpTexture)
+			{
+				m_UpTexture->DrawScaled(
+				Rectangle{ (m_Gui->m_Pos.x + (m_Pos.x)), (m_Gui->m_Pos.y + (m_Pos.y)), m_Width * m_Scale, m_Height * m_Scale },
+				Vector2{ 0, 0 }, 0, m_Color);
+			}
 		}
 	}
 	else
@@ -235,17 +240,23 @@ void GuiIconButton::Draw()
 				Vector2{ 0, 0 }, 0, m_Color);
 			}
 			else
+		{
+			if (m_UpTexture)
 			{
 				m_UpTexture->DrawScaled(
 				Rectangle{ (m_Gui->m_Pos.x + (m_Pos.x)), (m_Gui->m_Pos.y + (m_Pos.y)), m_Width * m_Scale, m_Height * m_Scale },
 				Vector2{ 0, 0 }, 0, m_Color);
 			}
 		}
+		}
 		else
 		{
-			m_UpTexture->DrawScaled(
-			Rectangle{ (m_Gui->m_Pos.x + (m_Pos.x)), (m_Gui->m_Pos.y + (m_Pos.y)), m_Width * m_Scale, m_Height * m_Scale },
-			Vector2{ 0, 0 }, 0, m_Color);
+			if (m_UpTexture)
+			{
+				m_UpTexture->DrawScaled(
+				Rectangle{ (m_Gui->m_Pos.x + (m_Pos.x)), (m_Gui->m_Pos.y + (m_Pos.y)), m_Width * m_Scale, m_Height * m_Scale },
+				Vector2{ 0, 0 }, 0, m_Color);
+			}
 		}
 	}
 
@@ -1039,7 +1050,6 @@ void GuiTextArea::Init(int ID, Font* font, std::string text, int posx, int posy,
 	m_Pos.y = float(posy) * 1;
 	m_String = text;
 	m_Justified = justified;
-	m_Font = font;
 	m_Color = color;
 	m_Width = width;  // Now directly in pixels (no longer multiplied by baseSize)
 	m_Shadowed = shadowed;
@@ -1171,6 +1181,9 @@ GuiCycle::GuiCycle(Gui* parent)
 	m_Visible = true;
 	m_CurrentFrame = 0;
 	m_FrameCount = 0;
+	m_Color = WHITE;
+	m_ScaleX = 1.0f;
+	m_ScaleY = 1.0f;
 }
 
 void GuiCycle::Init(int ID, int posx, int posy,

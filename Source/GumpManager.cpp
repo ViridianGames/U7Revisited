@@ -23,7 +23,7 @@ void GumpManager::Init(const std::string& configfile)
 	m_GumpManagerConfig.Load(configfile);
 	m_draggingObject = false;
 	m_draggedObjectId = -1;
-	m_draggedObjectOffset = {0, 0};
+	m_draggedObjectOffset = { 0, 0 };
 
 	Log("Done with GumpManager::Init()");
 }
@@ -215,7 +215,7 @@ void GumpManager::Update()
 							canCarry = false;
 							AddConsoleString("Too heavy! Cannot carry that much.", RED);
 							Log("Drop failed: Item weight " + std::to_string(itemWeight) +
-							    " exceeds NPC remaining capacity " + std::to_string(remainingCapacity));
+								" exceeds NPC remaining capacity " + std::to_string(remainingCapacity));
 						}
 					}
 
@@ -234,12 +234,11 @@ void GumpManager::Update()
 						}
 						else // In the container but not in the box area
 						{
-							object->m_InventoryPos = {0, 0 };
+							object->m_InventoryPos = { 0, 0 };
 						}
 
 						// Add to new container (item was already removed from source when drag started)
 						gump->m_containerObject->AddObjectToInventory(object->m_ID);
-						object->m_isContained = true;
 						if (object->m_shapeData->GetShape() == 641 && object->m_Quality == 253)
 						{
 							g_ScriptingSystem->SetFlag(60, 1);
@@ -283,7 +282,7 @@ void GumpManager::Update()
 								sourceNpcIt->second->SetEquippedItem(fillSlot, object->m_ID);
 							}
 							Log("Returned multi-slot item to source paperdoll slot " + std::to_string(m_sourceSlotIndex) +
-							    " (filled " + std::to_string(fillSlots.size()) + " slots)");
+								" (filled " + std::to_string(fillSlots.size()) + " slots)");
 						}
 						else
 						{
@@ -291,7 +290,6 @@ void GumpManager::Update()
 							sourceNpcIt->second->SetEquippedItem(static_cast<EquipmentSlot>(m_sourceSlotIndex), object->m_ID);
 							Log("Returned item to source paperdoll slot " + std::to_string(m_sourceSlotIndex));
 						}
-						object->m_isContained = true;
 						g_ResourceManager->PlaySound("error.wav");
 						g_mainState->ShowErrorCursor();
 						returnedToSource = true;
@@ -301,7 +299,6 @@ void GumpManager::Update()
 				{
 					// Return to source container inventory
 					m_sourceGump->m_containerObject->AddObjectToInventory(object->m_ID);
-					object->m_isContained = true;
 					g_ResourceManager->PlaySound("error.wav");
 					g_mainState->ShowErrorCursor();
 					returnedToSource = true;
@@ -330,8 +327,8 @@ void GumpManager::Update()
 					// For NPCs: if they were stationary before drag (pos == dest), update dest to new pos
 					// If they were moving (pos != dest), keep the original dest so they continue moving
 					if (m_draggedObjectOriginalPos.x == m_draggedObjectOriginalDest.x &&
-					    m_draggedObjectOriginalPos.y == m_draggedObjectOriginalDest.y &&
-					    m_draggedObjectOriginalPos.z == m_draggedObjectOriginalDest.z)
+						m_draggedObjectOriginalPos.y == m_draggedObjectOriginalDest.y &&
+						m_draggedObjectOriginalPos.z == m_draggedObjectOriginalDest.z)
 					{
 						// NPC was stationary - update dest to match new pos
 						object->SetDest(object->m_Pos);
@@ -380,7 +377,7 @@ void GumpManager::Draw()
 		Vector2 mousePos = GetMousePosition();
 		mousePos.x = int(mousePos.x /= g_DrawScale);
 		mousePos.y = int(mousePos.y /= g_DrawScale);
-		DrawTextureEx(*object->m_shapeData->GetTexture(), Vector2Add(mousePos, m_draggedObjectOffset), 0, 1, Color{255, 255, 255, 255});
+		DrawTextureEx(*object->m_shapeData->GetTexture(), Vector2Add(mousePos, m_draggedObjectOffset), 0, 1, Color{ 255, 255, 255, 255 });
 	}
 }
 

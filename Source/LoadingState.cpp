@@ -6,6 +6,7 @@
 #include "U7Globals.h"
 #include "LoadingState.h"
 #include "Pathfinding.h"
+#include "PathfindingThreadPool.h"
 
 #include <cstring>
 #include <list>
@@ -225,6 +226,11 @@ void LoadingState::UpdateLoading()
 			g_pathfindingGrid = new PathfindingGrid();
 			g_aStar = new AStar();
 			g_aStar->LoadTerrainCosts("Data/terrain_walkable.csv");
+
+			// Initialize thread pool with 4 worker threads
+			g_pathfindingThreadPool = new PathfindingThreadPool(4, g_pathfindingGrid);
+			AddConsoleString(std::string("Pathfinding thread pool initialized with 4 workers"));
+
 			m_buildingPathfindingGrid = true;
 		}
 	}
@@ -1458,7 +1464,7 @@ void LoadingState::ExtractGumps()
 							{
 								// Repeat single color
 								unsigned char col = ReadU8(gumps);
-	
+
 								for (int i = 0; i < bcnt && x >= 0 && x < (int)frameOffsets[frameNum].width; ++i, ++x)
 								{
 									Color color = m_palettes[0][col];
@@ -1471,7 +1477,7 @@ void LoadingState::ExtractGumps()
 								for (int i = 0; i < bcnt && x >= 0 && x < (int)frameOffsets[frameNum].width; ++i, ++x)
 								{
 									unsigned char col = ReadU8(gumps);
-		
+
 									Color color = m_palettes[0][col];
 									ImageDrawPixel(&frameImage, x, scany, color);
 								}
@@ -1648,46 +1654,42 @@ void LoadingState::CreateObjectTable()
 		g_objectDataTable[i].m_volume = float(volume);
 
 		//  All other data from tfa.dat
-		char buffer[3]; // 3 bytes to store the 24 bits
-		tfafile.read(buffer, sizeof(buffer));
+		unsigned char buffer[3]; // 3 bytes to store the 24 bits
+		tfafile.read((char*)buffer, sizeof(buffer));
 
+		// Byte 0: bits 0-7
 		g_objectDataTable[i].m_hasSoundEffect = buffer[0] & 0x01;
 		g_objectDataTable[i].m_rotatable = (buffer[0] >> 1) & 0x01;
 		g_objectDataTable[i].m_isAnimated = (buffer[0] >> 2) & 0x01;
 		g_objectDataTable[i].m_isNotWalkable = (buffer[0] >> 3) & 0x01;
 		g_objectDataTable[i].m_isWater = (buffer[0] >> 4) & 0x01;
 		g_objectDataTable[i].m_height = (buffer[0] >> 5) & 0x07;
-		g_objectDataTable[i].m_shapeType = (buffer[1] >> 4) & 0x0F;
-		g_objectDataTable[i].m_isTrap = (buffer[1] >> 8) & 0x01;
-		g_objectDataTable[i].m_isDoor = (buffer[1] >> 9) & 0x01;
-		g_objectDataTable[i].m_isVehiclePart = (buffer[1] >> 10) & 0x01;
-		g_objectDataTable[i].m_isNotSelectable = (buffer[1] >> 11) & 0x01;
+		
+		// Byte 1: bits 8-15
+		g_objectDataTable[i].m_shapeType = buffer[1] & 0x0F;  // Lower 4 bits of byte 1
+		g_objectDataTable[i].m_isTrap = (buffer[1] >> 4) & 0x01;
+		g_objectDataTable[i].m_isDoor = (buffer[1] >> 5) & 0x01;
+		g_objectDataTable[i].m_isVehiclePart = (buffer[1] >> 6) & 0x01;
+		g_objectDataTable[i].m_isNotSelectable = (buffer[1] >> 7) & 0x01;
 		g_objectDataTable[i].m_width = ((buffer[2]) & 0x07) + 1;
 		g_objectDataTable[i].m_depth = ((buffer[2] >> 3) & 0x07) + 1;
 		g_objectDataTable[i].m_isLightSource = (buffer[2] >> 6) & 0x01;
 		g_objectDataTable[i].m_isTranslucent = (buffer[2] >> 7) & 0x01;
 		g_objectDataTable[i].m_name = shapeNames[i];
 
-		// Fix: Some doors don't have m_isDoor flag set in the data file
-		// If the name contains "door" (case-insensitive), mark it as a door
+		// NOTE: Door workaround no longer needed - TFA parsing was fixed to read isDoor flag correctly
+		// Previously the bit shift was wrong (buffer[1] >> 9 instead of buffer[1] >> 5)
+		/*
 		string lowerName = g_objectDataTable[i].m_name;
 		transform(lowerName.begin(), lowerName.end(), lowerName.begin(), ::tolower);
 		if (lowerName.find("door") != string::npos)
 		{
 			g_objectDataTable[i].m_isDoor = true;
 		}
+		*/
 	}
 
-#ifdef DEBUG_NPC_PATHFINDING
-	// Count how many shapes were marked as doors
-	int doorCount = 0;
-	for (int i = 0; i < 1024; i++)
-	{
-		if (g_objectDataTable[i].m_isDoor)
-			doorCount++;
-	}
-	AddConsoleString("Marked " + to_string(doorCount) + " shapes as doors", GREEN);
-#endif
+	// Door flags are now correctly parsed from TFA data (bit 5 of byte 1)
 
 	wgtvolfile.close();
 	tfafile.close();
@@ -1963,6 +1965,10 @@ void LoadingState::LoadInitialGameState()
 				{
 					g_NPCData[thisNPC.id]->m_equipment[static_cast<EquipmentSlot>(slot)] = -1;
 				}
+
+				// Initialize activity tracking (-1 = no activity)
+				g_NPCData[thisNPC.id]->m_currentActivity = -1;
+				g_NPCData[thisNPC.id]->m_lastActivity = -1;
 
 				g_objectList[nextID].get()->NPCInit(g_NPCData[thisNPC.id].get());
 				//g_ObjectList[nextID].get()->m_NPCID = thisNPC.id;
@@ -2301,5 +2307,76 @@ void LoadingState::LoadNPCSchedules()
 		}
 
 		file.close();
+
+		// NOTE: NPC activities will be initialized in MainState::OnEnter() after g_scheduleTime is set to 1
+		// Don't initialize here because g_scheduleTime is still 0 at this point
 	}
+// #define DEBUG_DUMP_SCHEDULES 1
+#ifdef DEBUG_DUMP_SCHEDULES
+	// Write schedules.csv for debugging
+	// Format: name,0,3,6,9,12,15,18,21
+	ofstream csvFile("schedules.csv");
+	if (csvFile.is_open())
+	{
+		// Activity names (from NpcListWindow.cpp)
+		static const char* ACTIVITY_NAMES[] = {
+			"Combat", "Horizontal Pace", "Vertical Pace", "Talk", "Dance", "Eat", "Farm",
+			"Tend Shop", "Miner", "Hound", "Stand", "Loiter", "Wander", "Blacksmith",
+			"Sleep", "Wait", "Major Sit", "Graze", "Bake", "Sew", "Shy", "Lab",
+			"Thief", "Waiter", "Special", "Kid Games", "Eat at Inn", "Duel", "Preach",
+			"Patrol", "Desk Work", "Follow Avatar"
+		};
+
+		// CSV header
+		csvFile << "npc_id,Name,0,3,6,9,12,15,18,21\n";
+
+		// Write each NPC's schedule
+		for (unsigned int npcID = 1; npcID < 256; ++npcID)
+		{
+			if (g_NPCData.find(npcID) == g_NPCData.end() || !g_NPCData[npcID])
+				continue;
+
+			csvFile << npcID << "," << g_NPCData[npcID]->name;
+
+			// For each time block (0-7)
+			for (int timeBlock = 0; timeBlock < 8; ++timeBlock)
+			{
+				csvFile << ",";
+
+				// Find the schedule entry for this time block
+				bool found = false;
+				if (g_NPCSchedules.find(npcID) != g_NPCSchedules.end())
+				{
+					for (const auto& schedule : g_NPCSchedules[npcID])
+					{
+						if (schedule.m_time == timeBlock)
+						{
+							int activityId = schedule.m_activity;
+							if (activityId >= 0 && activityId <= 31)
+							{
+								csvFile << ACTIVITY_NAMES[activityId];
+							}
+							else
+							{
+								csvFile << "Unknown(" << activityId << ")";
+							}
+							found = true;
+							break;
+						}
+					}
+				}
+
+				if (!found)
+				{
+					csvFile << "None";
+				}
+			}
+
+			csvFile << "\n";
+		}
+
+		csvFile.close();
+		Log("Wrote schedules.csv with NPC schedule data");
+	}
+#endif
 }

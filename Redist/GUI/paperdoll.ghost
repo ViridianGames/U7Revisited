@@ -8,13 +8,13 @@
           -1
         ],
         "size": [
-          166,
-          146
+          133,
+          136
         ],
         "backgroundColor": [
-          60,
-          60,
-          60,
+          80,
+          80,
+          80,
           0
         ],
         "filled": true,
@@ -22,7 +22,7 @@
         "horzPadding": 0,
         "vertPadding": 0,
         "font": "babyblocks.ttf",
-        "fontSize": 30,
+        "fontSize": 8,
         "elements": [
           {
             "name": "PAPERDOLL",
@@ -99,11 +99,11 @@
             "name": "CARRY",
             "type": "textarea",
             "position": [
-              64,
+              60,
               120
             ],
             "text": "27/36",
-            "font": "pinch.ttf",
+            "font": "babyblocks.ttf",
             "fontSize": 10,
             "textColor": [
               0,
@@ -112,10 +112,10 @@
               255
             ],
             "size": [
-              101,
-              26
+              30,
+              10
             ],
-            "justified": 0
+            "justified": 1
           },
           {
             "name": "HEART",
@@ -311,7 +311,7 @@
             "type": "sprite",
             "position": [
               107,
-              50
+              49
             ],
             "sprite": {
               "spritesheet": "GUI/gumps.png",
