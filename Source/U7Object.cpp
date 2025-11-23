@@ -21,6 +21,7 @@
 #include "LoadingState.h"
 #include "MainState.h"
 #include "Pathfinding.h"
+#include "PathfindingThreadPool.h"
 
 #include <iostream>
 #include <string>
@@ -101,6 +102,14 @@ void U7Object::Draw()
 			renderColor.r = (renderColor.r + 0) / 2;
 			renderColor.g = (renderColor.g + 255) / 2;
 			renderColor.b = (renderColor.b + 0) / 2;
+		}
+		// Apply blue tint if F11 debug is enabled and object is walkable (isNotWalkable = false)
+		else if (g_showScriptedObjects && m_objectData && !m_objectData->m_isNotWalkable)
+		{
+			// Blend with blue to highlight walkable objects
+			renderColor.r = (renderColor.r + 0) / 2;
+			renderColor.g = (renderColor.g + 0) / 2;
+			renderColor.b = (renderColor.b + 255) / 2;
 		}
 
 		m_shapeData->Draw(m_Pos, m_Angle, renderColor);
@@ -237,26 +246,43 @@ void U7Object::NPCDraw()
 
 	int frameIndex = 0;
 
-		//  North frames are 1 and 2, South frames are 17 and 18
-	switch(finalAngle)
+	// If not moving, use the current frame set via npc_frame()
+	if (!m_isMoving && m_Frame != 0)
 	{
-		case 0: // South-West
-			finalTexture = m_NPCData->m_walkTextures[0][m_isMoving ? thisTime : 0];
-			break;
-		case 1: // North-West
-			finalTexture = m_NPCData->m_walkTextures[3][m_isMoving ? thisTime : 0];
-			billboardAngle = 45.0f;
-			break;
-		case 2: // North-East
-			finalTexture = m_NPCData->m_walkTextures[2][m_isMoving ? thisTime : 0];
-			break;
-		case 3: // South-East
-			finalTexture = m_NPCData->m_walkTextures[1][m_isMoving ? thisTime : 0];
-			billboardAngle = 45.0f;
-			break;
-		default:
-			int stopper = 0;
-			break;
+		// Use the frame that was explicitly set (sleeping, sitting, etc.)
+		if (g_shapeTable[m_ObjectType][m_Frame].m_texture != nullptr)
+		{
+			finalTexture = &g_shapeTable[m_ObjectType][m_Frame].m_texture->m_Texture;
+		}
+		else
+		{
+			// Frame doesn't exist, fall back to standing
+			finalTexture = m_NPCData->m_walkTextures[0][0];
+		}
+	}
+	else
+	{
+		// Normal walking animation (or standing if frame 0)
+		switch(finalAngle)
+		{
+			case 0: // South-West
+				finalTexture = m_NPCData->m_walkTextures[0][m_isMoving ? thisTime : 0];
+				break;
+			case 1: // North-West
+				finalTexture = m_NPCData->m_walkTextures[3][m_isMoving ? thisTime : 0];
+				billboardAngle = 45.0f;
+				break;
+			case 2: // North-East
+				finalTexture = m_NPCData->m_walkTextures[2][m_isMoving ? thisTime : 0];
+				break;
+			case 3: // South-East
+				finalTexture = m_NPCData->m_walkTextures[1][m_isMoving ? thisTime : 0];
+				billboardAngle = 45.0f;
+				break;
+			default:
+				int stopper = 0;
+				break;
+		}
 	}
 	dims = Vector3{ float(finalTexture->width) / 8.0f, float(finalTexture->height) / 8.0f, 1 };
 
@@ -281,11 +307,67 @@ void U7Object::NPCDraw()
 		lighting.g = (lighting.g + 255) / 2;
 		lighting.b = (lighting.b + 0) / 2;
 	}
+	// Apply blue tint if F11 debug is enabled and object is walkable (isNotWalkable = false)
+	else if (g_showScriptedObjects && m_objectData && !m_objectData->m_isNotWalkable)
+	{
+		// Blend with blue to highlight walkable objects
+		lighting.r = (lighting.r + 0) / 2;
+		lighting.g = (lighting.g + 0) / 2;
+		lighting.b = (lighting.b + 255) / 2;
+	}
 
 	DrawBillboardPro(g_camera, *finalTexture, Rectangle{ 0, 0, float(finalTexture->width), float(finalTexture->height) }, finalPos, Vector3{ 0, 1, 0 },
 		Vector2{ dims.x, dims.y }, Vector2{ 0, 0 }, billboardAngle, lighting);
 	EndShaderMode();
 
+}
+
+// Helper function to convert activity ID to script name
+static std::string GetActivityScriptName(int activityId)
+{
+	// Map activity IDs to descriptive script names
+	static const char* ACTIVITY_SCRIPT_NAMES[] = {
+		"combat",          // 0
+		"pace_horz",       // 1  (horizontal pace)
+		"pace_vert",       // 2  (vertical pace)
+		"talk",            // 3
+		"dance",           // 4
+		"eat",             // 5
+		"farm",            // 6
+		"tend_shop",       // 7
+		"miner",           // 8
+		"hound",           // 9
+		"stand",           // 10
+		"loiter",          // 11
+		"wander",          // 12
+		"blacksmith",      // 13
+		"sleep",           // 14
+		"wait",            // 15
+		"sit",             // 16  (major sit)
+		"graze",           // 17
+		"bake",            // 18
+		"sew",             // 19
+		"shy",             // 20
+		"lab",             // 21
+		"thief",           // 22
+		"waiter",          // 23
+		"special",         // 24
+		"kid_games",       // 25
+		"eat_at_inn",      // 26
+		"duel",            // 27
+		"preach",          // 28
+		"patrol",          // 29
+		"desk_work",       // 30
+		"follow_avatar"    // 31
+	};
+
+	if (activityId >= 0 && activityId <= 31)
+	{
+		return std::string("activity_") + ACTIVITY_SCRIPT_NAMES[activityId];
+	}
+
+	// Fallback for invalid activity IDs
+	return "activity_" + std::to_string(activityId);
 }
 
 void U7Object::NPCUpdate()
@@ -296,11 +378,89 @@ void U7Object::NPCUpdate()
 		return;
 	}
 
+	// Frame-based batching for activity coroutine updates only
+	// Movement/pathfinding runs every frame, but activity scripts run batched (16 NPCs per frame)
+	static int s_frameCounter = 0;
+	static double s_lastFrameTime = 0;
+
+	// Increment frame counter once per frame
+	double currentTime = GetTime();
+	if (currentTime != s_lastFrameTime)
+	{
+		s_frameCounter++;
+		s_lastFrameTime = currentTime;
+	}
+
+	int batchSize = 16;
+	int batchIndex = s_frameCounter % ((g_NPCData.size() + batchSize - 1) / batchSize);
+	int startNPC = batchIndex * batchSize;
+	int endNPC = startNPC + batchSize;
+
+	// Only update activity scripts if this NPC is in the current batch
+	bool shouldUpdateActivity = (m_NPCID >= startNPC && m_NPCID < endNPC);
+
+	// Activity coroutine management - check if activity has changed
+	// Only run activity scripts if schedules are enabled for this NPC
+	if (shouldUpdateActivity && m_followingSchedule && g_NPCData.find(m_NPCID) != g_NPCData.end())
+	{
+		int currentActivity = g_NPCData[m_NPCID]->m_currentActivity;
+		int lastActivity = g_NPCData[m_NPCID]->m_lastActivity;
+
+		// Has activity changed?
+		if (currentActivity != lastActivity)
+		{
+			// Cleanup old coroutine if it exists
+			if (lastActivity >= 0)
+			{
+				std::string old_script = GetActivityScriptName(lastActivity) + "_" + std::to_string(m_NPCID);
+				if (g_ScriptingSystem->IsCoroutineActive(old_script))
+				{
+					g_ScriptingSystem->CleanupCoroutine(old_script);
+				}
+			}
+
+			// Only start activity if not following a schedule path
+			// Block if: pathfinding pending OR currently on schedule path (orange)
+			if (!m_pathfindingPending && !m_isSchedulePath)
+			{
+				// Start new activity script
+				std::string new_script = GetActivityScriptName(currentActivity) + "_" + std::to_string(m_NPCID);
+				std::vector<ScriptingSystem::LuaArg> args = { m_NPCID };
+				g_ScriptingSystem->CallScript(new_script, args);
+				g_NPCData[m_NPCID]->m_lastActivity = currentActivity;
+			}
+		}
+		// Activity hasn't changed - resume if not on schedule path
+		else if (currentActivity >= 0 && !m_pathfindingPending && !m_isSchedulePath)
+		{
+			std::string script_name = GetActivityScriptName(currentActivity) + "_" + std::to_string(m_NPCID);
+			if (g_ScriptingSystem->IsCoroutineYielded(script_name))
+			{
+				std::vector<ScriptingSystem::LuaArg> args = { m_NPCID };
+				g_ScriptingSystem->ResumeCoroutine(script_name, args);
+			}
+		}
+	}
+	// If schedules are disabled, cleanup any running activity scripts
+	else if (!m_followingSchedule && g_NPCData.find(m_NPCID) != g_NPCData.end())
+	{
+		int lastActivity = g_NPCData[m_NPCID]->m_lastActivity;
+		if (lastActivity >= 0)
+		{
+			std::string old_script = GetActivityScriptName(lastActivity) + "_" + std::to_string(m_NPCID);
+			if (g_ScriptingSystem->IsCoroutineActive(old_script))
+			{
+				g_ScriptingSystem->CleanupCoroutine(old_script);
+			}
+			g_NPCData[m_NPCID]->m_lastActivity = -1;
+		}
+	}
+
 	// Schedule checking is now handled by MainState::Update() queue system
 	// This function only handles waypoint following and movement
 
-	// Follow waypoints from pathfinding
-	if (!m_pathWaypoints.empty() && m_currentWaypointIndex < m_pathWaypoints.size())
+	// Follow waypoints from pathfinding (only when actively moving)
+	if (m_isMoving && !m_pathfindingPending && !m_pathWaypoints.empty() && m_currentWaypointIndex < m_pathWaypoints.size())
 	{
 		// Check if reached current waypoint (within 0.5 tiles for intermediate, exact for last)
 		float distToWaypoint = Vector3Distance(m_Pos, m_pathWaypoints[m_currentWaypointIndex]);
@@ -315,6 +475,7 @@ void U7Object::NPCUpdate()
 				m_pathWaypoints.clear();
 				m_currentWaypointIndex = 0;
 				m_isMoving = false;
+				m_isSchedulePath = false;  // Clear schedule path flag - now can run activity
 				SetDest(m_Pos);  // Set destination to current position to stop movement
 			}
 			else
@@ -335,7 +496,11 @@ void U7Object::NPCUpdate()
 		if(Vector3DistanceSqr(newPos, m_Dest) > Vector3DistanceSqr(m_Pos, m_Dest))
 		{
 			SetPos(m_Dest);
-			m_isMoving = false;
+			// Only stop moving if we have no more waypoints to follow
+			if (m_pathWaypoints.empty())
+			{
+				m_isMoving = false;
+			}
 		}
 		else
 		{
@@ -524,22 +689,38 @@ void U7Object::TryOpenDoorAtCurrentPosition()
 void U7Object::PathfindToDest(Vector3 dest)
 {
 	extern PathfindingGrid* g_pathfindingGrid;
+	extern PathfindingThreadPool* g_pathfindingThreadPool;
 
-	// Clear previous path
+	// Clear previous path and mark as pending
 	m_pathWaypoints.clear();
 	m_currentWaypointIndex = 0;
+	m_pathfindingPending = true;
 
 	// If no pathfinding grid, fall back to direct movement
 	if (!g_pathfindingGrid)
 	{
 		SetDest(dest);
+		m_pathfindingPending = false;
 		return;
 	}
 
-	// Use A* to find path
+	// If thread pool is available, submit asynchronous pathfinding request
+	if (g_pathfindingThreadPool)
+	{
+		PathRequest request;
+		request.npcID = m_NPCID;
+		request.start = m_Pos;
+		request.goal = dest;
+		request.requestID = 0;  // Fire-and-forget, no tracking
+		g_pathfindingThreadPool->SubmitRequest(request);
+		return;
+	}
+
+	// Fallback: Use synchronous A* (for backwards compatibility)
 	if (!g_aStar)
 	{
 		AddConsoleString("ERROR: g_aStar is null!", RED);
+		m_pathfindingPending = false;
 		return;
 	}
 	std::vector<Vector3> path = g_aStar->FindPath(m_Pos, dest, g_pathfindingGrid);
@@ -549,6 +730,7 @@ void U7Object::PathfindToDest(Vector3 dest)
 	{
 		m_pathWaypoints = path;
 		m_currentWaypointIndex = 0;
+		m_pathfindingPending = false;  // Path is ready immediately (synchronous)
 
 		// Set first waypoint as destination
 		if (m_pathWaypoints.size() > 0)
@@ -579,12 +761,72 @@ void U7Object::PathfindToDest(Vector3 dest)
 	}
 	else
 	{
+		m_pathfindingPending = false;  // No path found, done trying
 		// No path found, don't move at all
-		AddConsoleString("WARNING: NPC " + std::to_string(m_NPCID) + " could not find path from (" +
-		                 std::to_string((int)m_Pos.x) + "," + std::to_string((int)m_Pos.z) + ") to (" +
-		                 std::to_string((int)dest.x) + "," + std::to_string((int)dest.z) + ") - staying put!", RED);
+		// DISABLED: Reduce console spam from activity scripts pathfinding
+		//AddConsoleString("WARNING: NPC " + std::to_string(m_NPCID) + " could not find path from (" +
+		//                 std::to_string((int)m_Pos.x) + "," + std::to_string((int)m_Pos.z) + ") to (" +
+		//                 std::to_string((int)dest.x) + "," + std::to_string((int)dest.z) + ") - staying put!", RED);
 		// Don't call SetDest() - NPC will remain stationary
 	}
+}
+
+int U7Object::PathfindToDestTracked(Vector3 dest)
+{
+	extern PathfindingGrid* g_pathfindingGrid;
+	extern PathfindingThreadPool* g_pathfindingThreadPool;
+
+	// Clear previous path and mark as pending
+	m_pathWaypoints.clear();
+	m_currentWaypointIndex = 0;
+	m_pathfindingPending = true;
+
+	// If no pathfinding grid, fall back to direct movement
+	if (!g_pathfindingGrid)
+	{
+		SetDest(dest);
+		m_pathfindingPending = false;
+		return 0;  // No tracking for fallback
+	}
+
+	// If thread pool is available, submit tracked pathfinding request
+	if (g_pathfindingThreadPool)
+	{
+		int requestID = g_pathfindingThreadPool->GetNextRequestID();
+		PathRequest request;
+		request.npcID = m_NPCID;
+		request.start = m_Pos;
+		request.goal = dest;
+		request.requestID = requestID;
+		g_pathfindingThreadPool->SubmitRequest(request);
+		return requestID;  // Return ID for Lua to track
+	}
+
+	// Fallback to synchronous pathfinding (no thread pool)
+	if (!g_aStar)
+	{
+		AddConsoleString("ERROR: g_aStar is null!", RED);
+		m_pathfindingPending = false;
+		return 0;
+	}
+
+	std::vector<Vector3> path = g_aStar->FindPath(m_Pos, dest, g_pathfindingGrid);
+	if (!path.empty())
+	{
+		m_pathWaypoints = path;
+		m_currentWaypointIndex = 0;
+		m_pathfindingPending = false;
+		if (m_pathWaypoints.size() > 0)
+		{
+			SetDest(m_pathWaypoints[0]);
+		}
+	}
+	else
+	{
+		m_pathfindingPending = false;
+	}
+
+	return 0;  // Synchronous, no tracking needed
 }
 
 bool U7Object::AddObjectToInventory(int objectid)
@@ -598,6 +840,8 @@ bool U7Object::AddObjectToInventory(int objectid)
 		if (child)
 		{
 			child->m_containingObjectId = m_ID;
+			child->m_isContained = true;  // Mark as contained
+			child->SetPos(Vector3{0, 0, 0});  // Clear world position
 		}
 
 		InvalidateWeightCache();
@@ -644,14 +888,14 @@ void U7Object::Interact(int event)
 
 		if (scriptName.empty())
 		{
-			DebugPrint("No script found for NPC ID: " + to_string(m_NPCID));
+			NPCDebugPrint("No script found for NPC ID: " + to_string(m_NPCID));
 			return;
 		}
 
 		g_ConversationState->SetLuaFunction(scriptName);
 
-		DebugPrint("Calling Lua function: " + scriptName + " event: " + to_string(event) + " NPCID: " + to_string(m_NPCID));
-		DebugPrint(g_ScriptingSystem->CallScript(scriptName, { event, m_NPCID }));
+		NPCDebugPrint("Calling Lua function: " + scriptName + " event: " + to_string(event) + " NPCID: " + to_string(m_NPCID));
+		NPCDebugPrint(g_ScriptingSystem->CallScript(scriptName, { event, m_NPCID }));
 	}
 	else
 	{
@@ -659,8 +903,8 @@ void U7Object::Interact(int event)
 		if (m_shapeData->m_luaScript != "")
 		{
 			dynamic_cast<MainState*>(g_StateMachine->GetState(STATE_MAINSTATE))->SetLuaFunction(m_shapeData->m_luaScript);
-			DebugPrint("Calling Lua function: " + m_shapeData->m_luaScript + " event: " + to_string(event) + " ID: " + to_string(m_ID) + " (Shape: " + to_string(m_ObjectType) + ", Frame: " + to_string(m_Frame) + ")");
-			DebugPrint(g_ScriptingSystem->CallScript(m_shapeData->m_luaScript, { event, m_ID }));
+			NPCDebugPrint("Calling Lua function: " + m_shapeData->m_luaScript + " event: " + to_string(event) + " ID: " + to_string(m_ID) + " (Shape: " + to_string(m_ObjectType) + ", Frame: " + to_string(m_Frame) + ")");
+			NPCDebugPrint(g_ScriptingSystem->CallScript(m_shapeData->m_luaScript, { event, m_ID }));
 		}
 	}
 }

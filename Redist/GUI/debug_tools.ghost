@@ -8,7 +8,7 @@
           0
         ],
         "size": [
-          68,
+          110,
           75
         ],
         "backgroundColor": [
@@ -21,21 +21,97 @@
         "layout": "table",
         "horzPadding": 5,
         "vertPadding": 5,
-        "columns": 2,
+        "columns": 3,
         "font": "babyblocks.ttf",
         "fontSize": 30,
         "elements": [
           {
             "name": "SCHEDULE_BUTTON",
-            "type": "iconbutton",
+            "type": "checkbox",
+            "hoverText": "Toggle NPC schedules",
+            "position": [
+              -1,
+              -1
+            ],
+            "size": [
+              30,
+              30
+            ],
+            "color": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "selected": false,
+            "scale": [
+              1.0,
+              1.0
+            ],
+            "selectSprite": {
+              "spritesheet": "GUI/guielements.png",
+              "x": 250,
+              "y": 0,
+              "w": 30,
+              "h": 30
+            },
+            "deselectSprite": {
+              "spritesheet": "GUI/guielements.png",
+              "x": 250,
+              "y": 30,
+              "w": 30,
+              "h": 30
+            }
+          },
+          {
+            "name": "PATHFIND_BUTTON",
+            "type": "checkbox",
             "hoverText": "Toggle NPC pathfinding",
+            "position": [
+              -1,
+              -1
+            ],
+            "size": [
+              30,
+              30
+            ],
+            "color": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "selected": false,
+            "scale": [
+              1.0,
+              1.0
+            ],
+            "selectSprite": {
+              "spritesheet": "GUI/guielements.png",
+              "x": 310,
+              "y": 0,
+              "w": 30,
+              "h": 30
+            },
+            "deselectSprite": {
+              "spritesheet": "GUI/guielements.png",
+              "x": 310,
+              "y": 30,
+              "w": 30,
+              "h": 30
+            }
+          },
+          {
+            "name": "NPC_LIST_BUTTON",
+            "type": "iconbutton",
+            "hoverText":"Show NPC List",
             "position": [
               -1,
               -1
             ],
             "sprite": {
               "spritesheet": "GUI/guielements.png",
-              "x": 249,
+              "x": 281,
               "y": 0,
               "w": 30,
               "h": 30

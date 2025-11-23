@@ -60,8 +60,14 @@ public:
     // New: Map for coroutines waiting on other coroutines to complete (sub_func -> list of waiter funcs)
     std::unordered_map<std::string, std::vector<std::string>> m_waiters;
 
-    float m_waitTimer = 0.0f;
-    std::string m_waitingScript;
+    // Per-script wait timers (each script can wait independently)
+    std::unordered_map<std::string, float> m_waitTimers;
+
+    // Track when each script started executing to detect lockups
+    std::unordered_map<std::string, float> m_scriptStartTime;
+
+    // Max time a script can run without yielding (in seconds)
+    static constexpr float MAX_SCRIPT_TIME = 0.1f;  // 100ms
 
 };
 

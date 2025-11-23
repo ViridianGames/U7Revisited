@@ -18,6 +18,7 @@
 #include <unordered_map>
 #include <array>
 #include <queue>
+#include <shared_mutex>
 
 #include "Geist/Primitives.h"
 #include "Geist/RNG.h"
@@ -134,6 +135,9 @@ extern std::vector<std::string> g_miscNames;
 // Get the name for a specific shape, frame, and quantity
 std::string GetShapeFrameName(int shape, int frame, int quantity = 1);
 
+// Get the display name for an object (handles quantity calculation)
+std::string GetObjectDisplayName(U7Object* object);
+
 // Find NPC script by NPC ID (returns script name or empty string)
 // Only matches scripts starting with "npc_" and ending with "_XXXX" where XXXX is the NPC ID
 std::string FindNPCScriptByID(int npcID);
@@ -158,6 +162,9 @@ struct NPCSchedule
 };
 
 extern std::unordered_map<int, std::vector<NPCSchedule> > g_NPCSchedules;
+
+// Helper function to initialize NPC activities based on current schedule time
+void InitializeNPCActivitiesFromSchedules();
 
 //////////////////////////////////////////////////////////////////////////////
 //  SPELL SYSTEM
@@ -276,6 +283,7 @@ struct NPCData
 	std::vector<std::vector<Texture*> > m_walkTextures;
 
 	int m_currentActivity;
+	int m_lastActivity = -1;  // Track last activity to detect changes
 	int m_objectID;
 
 	// Equipment system - maps slot to object ID (-1 = empty slot)
@@ -330,6 +338,7 @@ extern bool g_CameraMoved;
 extern std::unordered_map<int, int[16][16] > g_ChunkTypeList;  // The 16x16 tiles for each chunk type
 extern int g_chunkTypeMap[192][192]; // The type of each chunk in the map
 extern std::vector<U7Object*> g_chunkObjectMap[192][192]; // The objects in each chunk
+extern std::shared_mutex g_chunkMapMutex; // Protects g_chunkObjectMap for thread-safe pathfinding
 
 extern std::array<std::array<ShapeData, 32>, 1024> g_shapeTable;
 extern std::array<ObjectData, 1024> g_objectDataTable;
@@ -364,6 +373,8 @@ void DrawOutlinedText(std::shared_ptr<Font> font, const std::string& text, Vecto
 void DrawParagraph(std::shared_ptr<Font> font, const std::string& text, Vector2 position, float maxwidth, float fontSize, int spacing, Color color, bool outlined = false);
 
 void DebugPrint(std::string text);
+
+void NPCDebugPrint(std::string text);  // Writes to npcdebug.log instead of debuglog.txt
 
 float GetDistance(float startX, float startZ, float endX, float endZ);
 
@@ -557,8 +568,19 @@ void RecalculateCamera();
 
 class PathfindingGrid;
 class AStar;
+class PathfindingThreadPool;
 extern PathfindingGrid* g_pathfindingGrid;
 extern AStar* g_aStar;
+extern PathfindingThreadPool* g_pathfindingThreadPool;
+
+// Maximum height difference NPCs can climb/descend between adjacent tiles
+const float MAX_CLIMBABLE_HEIGHT = 1.0f;
+
+// Movement cost for walking on objects (stairs, platforms, etc.) - replaces terrain cost
+const float CLIMB_MOVEMENT_COST = 2.0f;
+
+// Maximum height for walkable surface objects to be considered (filters out upper floors)
+const float MAX_WALKABLE_SURFACE_HEIGHT = 5.0f;
 
 // Call this whenever ANY object changes position or state
 void NotifyPathfindingGridUpdate(int worldX, int worldZ, int radius = 1);

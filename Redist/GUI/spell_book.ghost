@@ -42,23 +42,6 @@
             "scaleY": 1.0
           },
           {
-            "name": "BOOKMARK",
-            "type": "sprite",
-            "position": [
-              116,
-              0
-            ],
-            "sprite": {
-              "spritesheet": "GUI/gumps.png",
-              "x": 0,
-              "y": 465,
-              "w": 8,
-              "h": 4
-            },
-            "scaleX": 1.0,
-            "scaleY": 1.0
-          },
-          {
             "name": "CLOSE",
             "type": "iconbutton",
             "position": [
@@ -154,9 +137,9 @@
             ],
             "text": "Circle",
             "textColor": [
-              5,
-              6,
-              5,
+              0,
+              0,
+              0,
               255
             ],
             "size": [
@@ -221,7 +204,7 @@
                   80,
                   80,
                   80,
-                  1
+                  0
                 ],
                 "filled": true,
                 "layout": "vert",
@@ -230,7 +213,7 @@
                 "elements": [
                   {
                     "name": "1",
-                    "type": "sprite",
+                    "type": "iconbutton",
                     "position": [
                       -1,
                       -1
@@ -242,12 +225,17 @@
                       "w": 44,
                       "h": 16
                     },
-                    "scaleX": 1.0,
-                    "scaleY": 1.0
+                    "color": [
+                      255,
+                      255,
+                      255,
+                      255
+                    ],
+                    "scale": 1.0
                   },
                   {
                     "name": "2",
-                    "type": "sprite",
+                    "type": "iconbutton",
                     "position": [
                       -1,
                       -1
@@ -259,12 +247,17 @@
                       "w": 44,
                       "h": 16
                     },
-                    "scaleX": 1.0,
-                    "scaleY": 1.0
+                    "color": [
+                      255,
+                      255,
+                      255,
+                      255
+                    ],
+                    "scale": 1.0
                   },
                   {
                     "name": "3",
-                    "type": "sprite",
+                    "type": "iconbutton",
                     "position": [
                       -1,
                       -1
@@ -276,12 +269,17 @@
                       "w": 44,
                       "h": 16
                     },
-                    "scaleX": 1.0,
-                    "scaleY": 1.0
+                    "color": [
+                      255,
+                      255,
+                      255,
+                      255
+                    ],
+                    "scale": 1.0
                   },
                   {
                     "name": "4",
-                    "type": "sprite",
+                    "type": "iconbutton",
                     "position": [
                       -1,
                       -1
@@ -293,8 +291,13 @@
                       "w": 44,
                       "h": 16
                     },
-                    "scaleX": 1.0,
-                    "scaleY": 1.0
+                    "color": [
+                      255,
+                      255,
+                      255,
+                      255
+                    ],
+                    "scale": 1.0
                   }
                 ]
               },
@@ -313,7 +316,7 @@
                   80,
                   80,
                   80,
-                  1
+                  0
                 ],
                 "filled": true,
                 "layout": "vert",
@@ -322,7 +325,7 @@
                 "elements": [
                   {
                     "name": "5",
-                    "type": "sprite",
+                    "type": "iconbutton",
                     "position": [
                       -1,
                       -1
@@ -334,12 +337,17 @@
                       "w": 44,
                       "h": 16
                     },
-                    "scaleX": 1.0,
-                    "scaleY": 1.0
+                    "color": [
+                      255,
+                      255,
+                      255,
+                      255
+                    ],
+                    "scale": 1.0
                   },
                   {
                     "name": "6",
-                    "type": "sprite",
+                    "type": "iconbutton",
                     "position": [
                       -1,
                       -1
@@ -351,12 +359,17 @@
                       "w": 44,
                       "h": 16
                     },
-                    "scaleX": 1.0,
-                    "scaleY": 1.0
+                    "color": [
+                      255,
+                      255,
+                      255,
+                      255
+                    ],
+                    "scale": 1.0
                   },
                   {
                     "name": "7",
-                    "type": "sprite",
+                    "type": "iconbutton",
                     "position": [
                       -1,
                       -1
@@ -368,12 +381,17 @@
                       "w": 44,
                       "h": 16
                     },
-                    "scaleX": 1.0,
-                    "scaleY": 1.0
+                    "color": [
+                      255,
+                      255,
+                      255,
+                      255
+                    ],
+                    "scale": 1.0
                   },
                   {
                     "name": "8",
-                    "type": "sprite",
+                    "type": "iconbutton",
                     "position": [
                       -1,
                       -1
@@ -385,12 +403,35 @@
                       "w": 44,
                       "h": 16
                     },
-                    "scaleX": 1.0,
-                    "scaleY": 1.0
+                    "color": [
+                      255,
+                      255,
+                      255,
+                      255
+                    ],
+                    "scale": 1.0
                   }
                 ]
               }
             ]
+          },
+          {
+            "name": "BOOKMARK",
+            "type": "cycle",
+            "position": [
+              125,
+              0
+            ],
+            "sprite": {
+              "spritesheet": "GUI/gumps.png",
+              "x": 184,
+              "y": 448,
+              "w": 8,
+              "h": 80
+            },
+            "frameCount": 5,
+            "scaleX": 1.0,
+            "scaleY": 1.0
           },
           {
             "name": "PAGE1",

@@ -79,7 +79,7 @@ Vector3 g_CameraMovementSpeed = Vector3{ 0, 0, 0 };
 
 std::string g_gameStateStrings[] = { "LoadingState", "TitleState", "MainState", "OptionsState", "ObjectEditorState", "WorldEditorState" };
 
-std::string g_objectDrawTypeStrings[] = { "Billboard", "Cuboid", "Flat", "Custom Mesh"};
+std::string g_objectDrawTypeStrings[] = { "Billboard", "Cuboid", "Flat", "Custom Mesh" };
 
 std::string g_objectTypeStrings[] = { "Static", "Creature", "Weapon", "Armor", "Container", "Quest Item", "Key", "Item" };
 
@@ -130,6 +130,8 @@ int g_lastScheduleTimeCheck = -1;
 // Pathfinding
 PathfindingGrid* g_pathfindingGrid = nullptr;
 AStar* g_aStar = nullptr;
+PathfindingThreadPool* g_pathfindingThreadPool = nullptr;
+std::shared_mutex g_chunkMapMutex;
 
 #ifdef DEBUG_NPC_PATHFINDING
 std::unordered_map<int, NPCPathStats> g_npcMaxPathStats;
@@ -189,7 +191,7 @@ unsigned int DoCameraMovement(bool forcemove)
 
 	if (IsKeyDown(KEY_A))
 	{
-		direction = Vector3Add(direction, {-GetFrameTime() * frameTimeModifier, 0, GetFrameTime() * frameTimeModifier });
+		direction = Vector3Add(direction, { -GetFrameTime() * frameTimeModifier, 0, GetFrameTime() * frameTimeModifier });
 		g_CameraMoved = true;
 	}
 
@@ -207,7 +209,7 @@ unsigned int DoCameraMovement(bool forcemove)
 
 	if (IsKeyDown(KEY_S))
 	{
-		direction = Vector3Add(direction,  { GetFrameTime() * frameTimeModifier, 0, GetFrameTime() * frameTimeModifier });
+		direction = Vector3Add(direction, { GetFrameTime() * frameTimeModifier, 0, GetFrameTime() * frameTimeModifier });
 		g_CameraMoved = true;
 	}
 
@@ -246,7 +248,7 @@ unsigned int DoCameraMovement(bool forcemove)
 		mouseWheel = true;
 	}
 
-	if(mouseWheel)
+	if (mouseWheel)
 	{
 		if (newDistance > g_Engine->m_EngineConfig.GetNumber("camera_far_limit"))
 		{
@@ -336,7 +338,7 @@ unsigned int DoCameraMovement(bool forcemove)
 
 		while (g_cameraRotation < 0)
 		{
-			g_cameraRotation +=  2 * PI;
+			g_cameraRotation += 2 * PI;
 		}
 
 		while (g_cameraRotation > 2 * PI)
@@ -415,53 +417,54 @@ void UpdateSortedVisibleObjects()
 	}
 	int cameraChunkX = static_cast<int>(g_camera.target.x / 16);
 	int cameraChunkY = static_cast<int>(g_camera.target.z / 16);
- 	
+
 	// DEBUG: Log before clearing
 	int beforeCount = static_cast<int>(g_sortedVisibleObjects.size());
-	
+
 	g_sortedVisibleObjects.clear();
 
- 	for (int x = cameraChunkX - 2; x <= cameraChunkX + 2; x++)
- 	{
- 		for (int y = cameraChunkY - 2; y <= cameraChunkY + 2; y++)
- 		{
- 			if (x < 0 || x >= 192 || y < 0 || y >= 192)
- 			{
- 				continue; // Out of bounds
- 			}
+	for (int x = cameraChunkX - 2; x <= cameraChunkX + 2; x++)
+	{
+		for (int y = cameraChunkY - 2; y <= cameraChunkY + 2; y++)
+		{
+			if (x < 0 || x >= 192 || y < 0 || y >= 192)
+			{
+				continue; // Out of bounds
+			}
 
 			for (auto object : g_chunkObjectMap[x][y])
 			{
-				// Skip null or dead objects
-			if (!object || object->GetIsDead())
-			{
-				if (g_LuaDebug && object && object->GetIsDead())
+				// Skip null, dead, or contained objects
+				if (!object || object->GetIsDead() || object->m_isContained)
 				{
-					AddConsoleString("UpdateSortedVisibleObjects: Skipping dead object");
+					if (g_LuaDebug && object && object->GetIsDead())
+					{
+						AddConsoleString("UpdateSortedVisibleObjects: Skipping dead object");
+					}
+					continue;
 				}
-				continue;
-			}
 
-			object->m_distanceFromCamera = Vector3DistanceSqr(object->m_centerPoint, g_camera.position);
+				object->m_distanceFromCamera = Vector3DistanceSqr(object->m_centerPoint, g_camera.position);
 				g_sortedVisibleObjects.push_back(object);
- 			}
- 		}
- 	}
-
- 	// DEBUG: Log count after populating
-	int afterCount = static_cast<int>(g_sortedVisibleObjects.size());
-	static int lastLoggedCount = -1;
-	// Always log when called from RebuildWorldFromLoadedData, otherwise only log on changes
-	static bool forceNextLog = false;
-	if (afterCount != lastLoggedCount || forceNextLog)
-	{
-		Log("UpdateSortedVisibleObjects: Camera chunk (" + std::to_string(cameraChunkX) + "," + std::to_string(cameraChunkY) + 
-			"), found " + std::to_string(afterCount) + " visible objects (was " + std::to_string(beforeCount) + ")");
-		lastLoggedCount = afterCount;
-		forceNextLog = false;
+			}
+		}
 	}
 
- 	std::sort(g_sortedVisibleObjects.begin(), g_sortedVisibleObjects.end(), [](U7Object* a, U7Object* b) { return a->m_distanceFromCamera > b->m_distanceFromCamera; });
+	// DEBUG: Log count after populating
+	// DISABLED: This was causing lag by writing to disk on every camera movement
+	// int afterCount = static_cast<int>(g_sortedVisibleObjects.size());
+	// static int lastLoggedCount = -1;
+	// // Always log when called from RebuildWorldFromLoadedData, otherwise only log on changes
+	// static bool forceNextLog = false;
+	// if (afterCount != lastLoggedCount || forceNextLog)
+	// {
+	// 	Log("UpdateSortedVisibleObjects: Camera chunk (" + std::to_string(cameraChunkX) + "," + std::to_string(cameraChunkY) +
+	// 		"), found " + std::to_string(afterCount) + " visible objects (was " + std::to_string(beforeCount) + ")");
+	// 	lastLoggedCount = afterCount;
+	// 	forceNextLog = false;
+	// }
+
+	std::sort(g_sortedVisibleObjects.begin(), g_sortedVisibleObjects.end(), [](U7Object* a, U7Object* b) { return a->m_distanceFromCamera > b->m_distanceFromCamera; });
 
 	g_objectUnderMousePointer = nullptr;
 
@@ -485,7 +488,7 @@ void UpdateSortedVisibleObjects()
 				continue;
 			}
 
-			Vector3 pos = { 0, 0, 0};
+			Vector3 pos = { 0, 0, 0 };
 			float picked = (*node)->PickXYZ(pos);
 
 			if (picked != -1)
@@ -521,7 +524,7 @@ void UpdateSortedVisibleObjects()
 		}
 	}
 
-	g_terrainUnderMousePointer = {pickx, 0, picky};
+	g_terrainUnderMousePointer = { pickx, 0, picky };
 
 	g_terrainUnderMousePointer.x = roundf(g_terrainUnderMousePointer.x);
 	g_terrainUnderMousePointer.y = roundf(g_terrainUnderMousePointer.y);
@@ -575,11 +578,12 @@ void UpdateObjectChunk(U7Object* object, Vector3 fromPos)
 		return;
 	}
 
+	std::unique_lock lock(g_chunkMapMutex);  // Exclusive write lock
 	auto& fromChunk = g_chunkObjectMap[int(fromChunkPos.x)][int(fromChunkPos.y)];
 	auto fromChunknode = std::find(fromChunk.begin(), fromChunk.end(), object);
-    if (fromChunknode != fromChunk.end()) {
-        fromChunk.erase(fromChunknode);
-    }
+	if (fromChunknode != fromChunk.end()) {
+		fromChunk.erase(fromChunknode);
+	}
 
 	auto& toChunk = g_chunkObjectMap[int(object->GetChunkPos().x)][int(object->GetChunkPos().y)];
 	toChunk.push_back(object);
@@ -590,6 +594,7 @@ void AssignObjectChunk(U7Object* object)
 	int i = static_cast<int>(object->m_Pos.x / 16);
 	int j = static_cast<int>(object->m_Pos.z / 16);
 
+	std::unique_lock lock(g_chunkMapMutex);  // Exclusive write lock
 	g_chunkObjectMap[i][j].push_back(object);
 }
 
@@ -598,11 +603,12 @@ void UnassignObjectChunk(U7Object* object)
 	int i = static_cast<int>(object->m_Pos.x / 16);
 	int j = static_cast<int>(object->m_Pos.z / 16);
 
+	std::unique_lock lock(g_chunkMapMutex);  // Exclusive write lock
 	auto fromChunkPos = std::find(g_chunkObjectMap[i][j].begin(), g_chunkObjectMap[i][j].end(), object);
-    if (fromChunkPos != g_chunkObjectMap[i][j].end())
-    {
-        g_chunkObjectMap[i][j].erase(fromChunkPos);
-    }
+	if (fromChunkPos != g_chunkObjectMap[i][j].end())
+	{
+		g_chunkObjectMap[i][j].erase(fromChunkPos);
+	}
 }
 
 void AddObjectToInventory(int objectId, int containerId)
@@ -770,7 +776,7 @@ void DrawParagraph(std::shared_ptr<Font> font, const std::string& text, Vector2 
 		while (lineStream >> word)
 		{
 			int currentLineWidth = MeasureTextEx(*font, (line + word).c_str(), fontSize, spacing).x;
-			if(currentLineWidth > maxwidth)
+			if (currentLineWidth > maxwidth)
 			{
 				lines.push_back(line);
 				line.clear();
@@ -900,7 +906,7 @@ bool WasMouseButtonDoubleClicked(int button)
 			lmblastTime = GetTime();
 		}
 	}
-	else if(IsMouseButtonPressed(button))  // if (IsMouseButtonPressed
+	else if (IsMouseButtonPressed(button))  // if (IsMouseButtonPressed
 	{
 		if (GetTime() - lmblastTime < .25f)
 		{
@@ -915,16 +921,16 @@ bool WasMouseButtonDoubleClicked(int button)
 
 void OpenURL(const std::string& url)
 {
-    #ifdef __linux__
-        std::string command = "xdg-open " + url;
-    #elif _WIN32
-        std::string command = "start " + url;
-    #elif __APPLE__
-        std::string command = "open " + url;
-    #else
-        return; // Unsupported platform
-    #endif
-    std::system(command.c_str());
+#ifdef __linux__
+	std::string command = "xdg-open " + url;
+#elif _WIN32
+	std::string command = "start " + url;
+#elif __APPLE__
+	std::string command = "open " + url;
+#else
+	return; // Unsupported platform
+#endif
+	std::system(command.c_str());
 }
 
 // Pathfinding grid update notification
@@ -964,10 +970,10 @@ void PrintNPCPathStats()
 	for (const auto& stat : stats)
 	{
 		std::string msg = "NPC " + std::to_string(stat.npcID) +
-		                  ": Distance=" + std::to_string((int)stat.distance) + " tiles" +
-		                  ", Waypoints=" + std::to_string(stat.waypointCount) +
-		                  ", From=(" + std::to_string((int)stat.startPos.x) + "," + std::to_string((int)stat.startPos.z) + ")" +
-		                  " To=(" + std::to_string((int)stat.endPos.x) + "," + std::to_string((int)stat.endPos.z) + ")";
+			": Distance=" + std::to_string((int)stat.distance) + " tiles" +
+			", Waypoints=" + std::to_string(stat.waypointCount) +
+			", From=(" + std::to_string((int)stat.startPos.x) + "," + std::to_string((int)stat.startPos.z) + ")" +
+			" To=(" + std::to_string((int)stat.endPos.x) + "," + std::to_string((int)stat.endPos.z) + ")";
 		AddConsoleString(msg, WHITE);
 	}
 
@@ -1117,6 +1123,29 @@ std::string GetShapeFrameName(int shape, int frame, int quantity)
 	}
 
 	return "unknown";
+}
+
+std::string GetObjectDisplayName(U7Object* object)
+{
+	if (!object || !object->m_shapeData)
+		return "Unknown";
+
+	int shape = object->m_shapeData->GetShape();
+	
+	// Calculate quantity correctly for stackable items
+	// For stackable items (shape type 3), quality field lower 7 bits = quantity
+	// High bit (0x80) is used for other flags and must be masked off
+	int quantity = 1;
+	char shapeType = (shape >= 0 && shape < 1024) ? g_objectDataTable[shape].m_shapeType : 0;
+	
+	// Check shape type from global table
+	if (shapeType == 3)
+	{
+		quantity = object->m_Quality & 0x7f;
+		if (quantity == 0) quantity = 1;
+	}
+
+	return GetShapeFrameName(shape, object->m_shapeData->GetFrame(), quantity);
 }
 
 std::string FindNPCScriptByID(int npcID)
@@ -1458,4 +1487,72 @@ SpellData* GetSpellData(int spellId)
 		return it->second;
 	}
 	return nullptr;
+}
+
+// Initialize NPC activities based on current schedule time
+// This should be called after loading schedules OR after loading a saved game
+void InitializeNPCActivitiesFromSchedules()
+{
+	extern unsigned int g_scheduleTime;
+
+	NPCDebugPrint("  NPC: g_scheduleTime=" + std::to_string(g_scheduleTime));
+	NPCDebugPrint("  NPC: g_NPCSchedules size=" + std::to_string(g_NPCSchedules.size()));
+	NPCDebugPrint("  NPC: g_NPCData size=" + std::to_string(g_NPCData.size()));
+
+	for (const auto& [npcID, schedules] : g_NPCSchedules)
+	{
+		if (g_NPCData.find(npcID) == g_NPCData.end() || !g_NPCData[npcID])
+			continue;
+
+		// Find the most recent schedule <= current time (looking backwards)
+		int mostRecentTime = -1;
+		const NPCSchedule* mostRecentSchedule = nullptr;
+
+		for (const auto& schedule : schedules)
+		{
+			if ((int)schedule.m_time <= (int)g_scheduleTime && (int)schedule.m_time > mostRecentTime)
+			{
+				mostRecentTime = (int)schedule.m_time;
+				mostRecentSchedule = &schedule;
+			}
+		}
+
+		// If no schedule found <= current time, wrap around and look at end of day (time 21, 18, 15, etc)
+		if (!mostRecentSchedule)
+		{
+			for (const auto& schedule : schedules)
+			{
+				if ((int)schedule.m_time > mostRecentTime)
+				{
+					mostRecentTime = (int)schedule.m_time;
+					mostRecentSchedule = &schedule;
+				}
+			}
+		}
+
+		if (mostRecentSchedule)
+		{
+			g_NPCData[npcID]->m_currentActivity = mostRecentSchedule->m_activity;
+			NPCDebugPrint("  NPC " + std::to_string(npcID) + " (" + std::string(g_NPCData[npcID]->name) + 
+			           ") set to activity " + std::to_string(mostRecentSchedule->m_activity) + 
+			           " from time " + std::to_string(mostRecentTime));
+			
+			// Also set m_lastSchedule on the NPC object so schedule checker knows initialization is done
+			if (g_NPCData[npcID]->m_objectID >= 0 && g_objectList[g_NPCData[npcID]->m_objectID])
+			{
+				g_objectList[g_NPCData[npcID]->m_objectID]->m_lastSchedule = mostRecentTime;
+				NPCDebugPrint("  NPC m_lastSchedule=" + std::to_string(mostRecentTime) + 
+				           " on object " + std::to_string(g_NPCData[npcID]->m_objectID));
+			}
+			else
+			{
+				NPCDebugPrint("  NPC: Could not set m_lastSchedule, objectID=" + 
+				           std::to_string(g_NPCData[npcID]->m_objectID));
+			}
+		}
+		else
+		{
+			NPCDebugPrint("  NPC " + std::to_string(npcID) + " has no schedule entry!");
+		}
+	}
 }

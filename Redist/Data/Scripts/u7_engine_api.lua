@@ -304,6 +304,13 @@ function get_npc_property(npc_id, property_id) end
 ---@param value integer The new value
 function set_npc_property(npc_id, property_id, value) end
 
+---Gets an NPC's current position
+---@param npc_id integer The NPC to query
+---@return number x X coordinate
+---@return number y Y coordinate
+---@return number z Z coordinate
+function get_npc_position(npc_id) end
+
 ---Sets an NPC's position
 ---@param npc_id integer The NPC to move
 ---@param x integer X coordinate
@@ -318,10 +325,115 @@ function set_npc_pos(npc_id, x, y, z) end
 ---@param z integer Target Z coordinate
 function set_npc_dest(npc_id, x, y, z) end
 
----Sets an NPC's animation frame
----@param npc_id integer The NPC to modify
----@param frame integer The animation frame
-function set_npc_frame(npc_id, frame) end
+---Low-level: Request pathfinding (step 1 of 3)
+---@param npc_id integer The NPC to move
+---@param x number Target X coordinate
+---@param y number Target Y coordinate
+---@param z number Target Z coordinate
+---@return integer request_id Request ID for tracking
+function request_pathfind(npc_id, x, y, z) end
+
+---Low-level: Check if pathfinding is ready (step 2 of 3, consumes result)
+---@param request_id integer Request ID from request_pathfind
+---@return boolean ready True if path is computed
+function is_path_ready(request_id) end
+
+---Low-level: Start following computed path (step 3 of 3)
+---@param npc_id integer The NPC to start moving
+function start_following_path(npc_id) end
+
+---Walks an NPC to an object using A* pathfinding (avoids obstacles)
+---ASYNC: Returns immediately, path computed in background
+---@param npc_id integer The NPC to move
+---@param object_id integer The target object ID
+function walk_to_object(npc_id, object_id)
+    local obj_pos = get_object_position(object_id)
+    if not obj_pos then return end
+
+    -- Step 1: Request pathfind
+    local request_id = request_pathfind(npc_id, obj_pos.x, obj_pos.y, obj_pos.z)
+
+    -- Step 2: Wait for path
+    while not is_path_ready(request_id) do
+        coroutine.yield()
+    end
+
+    -- Step 3: Start moving
+    start_following_path(npc_id)
+end
+
+---Walks an NPC to a position using A* pathfinding (avoids obstacles)
+---ASYNC: Returns immediately, path computed in background
+---@param npc_id integer The NPC to move
+---@param x number Target X coordinate
+---@param y number Target Y coordinate
+---@param z number Target Z coordinate
+function walk_to_position(npc_id, x, y, z)
+    -- Step 1: Request pathfind
+    local request_id = request_pathfind(npc_id, x, y, z)
+
+    -- Step 2: Wait for path
+    while not is_path_ready(request_id) do
+        coroutine.yield()
+    end
+
+    -- Step 3: Start moving
+    start_following_path(npc_id)
+end
+
+---Checks if an NPC is currently moving/walking
+---Use this to wait for an NPC to reach their destination after calling walk_to_position()
+---@param npc_id integer The NPC to check
+---@return boolean is_moving True if the NPC is currently in motion
+---@usage walk_to_position(npc_id, x, y, z) while is_npc_moving(npc_id) do coroutine.yield() end
+function is_npc_moving(npc_id) end
+
+---[Exult 0x0086] Waits until NPC finishes moving (yields until movement complete)
+---Properly handles pathfinding completion by checking both m_isMoving and m_pathWaypoints
+---@param npc_id integer The NPC to wait for
+---@usage walk_to_position(npc_id, x, y, z) wait_move_end(npc_id)
+function wait_move_end(npc_id) end
+
+---Finds the nearest bed to an NPC
+---@param npc_id integer The NPC to search from
+---@return integer|nil object_id The object ID of the nearest bed, or nil if none found
+function find_nearest_bed(npc_id) end
+
+---Finds the nearest chair to an NPC
+---@param npc_id integer The NPC to search from
+---@return integer|nil object_id The object ID of the nearest chair, or nil if none found
+function find_nearest_chair(npc_id) end
+
+---Finds the nearest object matching any of the specified shape IDs
+---@param npc_id integer The NPC to search from
+---@param shape_ids table Array of shape IDs to search for (e.g., {696, 1011})
+---@return integer|nil object_id The object ID of the nearest matching object, or nil if none found
+function find_nearest_shape(npc_id, shape_ids) end
+
+---Finds a random walkable position within radius of an NPC
+---Ensures the position is both walkable and pathfinding can reach it
+---@param npc_id integer The NPC to search from
+---@param radius number The search radius in tiles
+---@return number|nil x X coordinate, or nil if no valid position found
+---@return number|nil y Y coordinate
+---@return number|nil z Z coordinate
+function find_random_walkable(npc_id, radius) end
+
+---Calculates the distance between an NPC and an object
+---@param npc_id integer The NPC to measure from
+---@param object_id integer The target object ID
+---@return number distance The distance in tiles
+function distance_to(npc_id, object_id) end
+
+---BROKEN: Checks if an NPC is currently sitting (frameY == 26)
+---@param npc_id integer The NPC to check
+---@return boolean is_sitting True if the NPC is in sitting animation
+function is_sitting(npc_id) end
+
+---BROKEN: Checks if an NPC frame is (NOT a standard sleeping frame!)
+---@param npc_id integer The NPC to check
+---@return boolean is_sleeping True if the NPC is in sleeping animation
+function is_sleeping(npc_id) end
 
 ---Sets an NPC's visibility
 ---@param npc_id integer The NPC to modify
@@ -449,6 +561,14 @@ function get_time_hour() end
 ---@return integer minute The current minute
 function get_time_minute() end
 
+---Gets the current game hour (0-23) - Working version
+---@return integer hour The current hour
+function get_current_hour() end
+
+---Gets the current game minute (0-59) - Working version
+---@return integer minute The current minute
+function get_current_minute() end
+
 ---Gets the current schedule time period
 ---@return integer schedule The schedule period ID
 function get_schedule_time() end
@@ -505,6 +625,13 @@ function set_pause(paused) end
 ---@param seconds number Duration to wait in seconds
 function wait(seconds) end
 
+---Waits for a specified number of in-game minutes (scaled by time speed)
+---Use this in NPC activity scripts to wait based on game time rather than real time
+---The actual wait time in real seconds will be: game_minutes * g_secsPerMinute
+---@param game_minutes number Number of in-game minutes to wait
+---@usage npc_wait(5)  -- Wait for 5 game minutes (10-25 real seconds depending on time speed)
+function npc_wait(game_minutes) end
+
 ---Fades the screen out
 ---@param duration number Fade duration in seconds
 function fade_out(duration) end
@@ -535,6 +662,11 @@ function jump_camera_angle(angle) end
 -- ANIMATION
 -- ============================================================================
 
+---Sets an NPC's frame (for changing appearance - standing, sitting, lying down, etc.)
+---@param npc_id integer The NPC to modify
+---@param frame integer The frame number (0=standing, 29=lying down, etc.)
+function npc_frame(npc_id, frame) end
+
 ---Sets a model's animation frame
 ---@param object_id integer The object to modify
 ---@param anim string The animation name
@@ -560,6 +692,14 @@ function is_string_in_array(value, array) end
 ---Debug print (outputs to debuglog.txt and stdout)
 ---@param message string The message to print
 function debug_print(message) end
+
+---Debug print for NPC activities (includes game time and NPC name)
+---@param npc_id integer The NPC ID
+---@param message string The message to print
+function debug_npc(npc_id, message)
+    local npc_name = get_npc_name(npc_id)
+    debug_print(string.format("[%02d:%02d] %s %s", get_time_hour(), get_time_minute(), npc_name, message))
+end
 
 ---Console log (outputs to in-game console visible to player)
 ---@param message string The message to display in console
@@ -906,12 +1046,12 @@ function reset_conv_face() end
 -- EXULT INTRINSICS - COLLISION & PATHFINDING
 -- ============================================================================
 
----[Exult 0x0085] Checks if tile is not blocked
+---[Exult 0x0085] Checks if tile is blocked
 ---@param x integer X coordinate
----@param y integer Y coordinate
+---@param y integer Y coordinate (elevation)
 ---@param z integer Z coordinate
----@return boolean not_blocked True if tile is passable
-function is_not_blocked(x, y, z) end
+---@return boolean blocked True if tile is blocked/unwalkable
+function is_blocked(x, y, z) end
 
 ---[Exult 0x0072] Checks if item is readied/equipped
 ---@param object_id integer Item to check

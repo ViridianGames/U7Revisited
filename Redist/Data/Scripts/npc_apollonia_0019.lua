@@ -88,7 +88,7 @@ function npc_apollonia_0019(eventid, objectref)
                 add_dialogue("Apollonia blushes and bats her eyelashes. \"Oh, " .. var_0001 .. "! I would wager that thou dost say that to all the barmaids!\"")
                 remove_answer("flirt")
             elseif var_0005 == "buy" then
-                func_0842()
+                utility_shopinn_0842()
                 debug_print("Back in 0413")
             elseif var_0005 == "bye" then
                 break

@@ -14,16 +14,19 @@ using namespace std;
 
 void Sprite::Draw(float x, float y, Color tint)
 {
+	if (m_texture == nullptr) return;
 	DrawTextureRec(*m_texture, m_sourceRect, Vector2{ float(x), float(y) }, tint);
 }
 
 void Sprite::Draw(Vector2 pos, Color tint)
 {
+	if (m_texture == nullptr) return;
 	DrawTextureRec(*m_texture, m_sourceRect, pos, tint);
 }
 
 void Sprite::DrawScaled(Rectangle dest, Vector2 origin, float rotation, Color tint)
 {
+	if (m_texture == nullptr) return;
 	DrawTexturePro(*m_texture, m_sourceRect, dest, origin, rotation, tint);
 }
 
@@ -390,6 +393,7 @@ Vertex2D CreateVertex2D(float inx, float iny, Color color, float inu, float inv)
 SpriteSheet::SpriteSheet(Texture* texture, int columns, int rows)
 {
 	m_Texture = texture;
+	m_Mesh = nullptr;
 
 	vector<Vertex> vertices;
 	vector<unsigned int> indices;

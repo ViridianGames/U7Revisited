@@ -75,7 +75,16 @@ enum GuiElementType
 class GuiElement : public Tween
 {
 public:
-	GuiElement() {};
+	GuiElement()
+		: m_Type(0)
+		, m_ID(0)
+		, m_Active(0)
+		, m_Group(0)
+		, m_Visible(0)
+		, m_Width(0.0f)
+		, m_Height(0.0f)
+		, m_Gui(nullptr)
+	{}
 	virtual ~GuiElement() {};
 
 	virtual void Init() {};
@@ -117,7 +126,16 @@ class GuiTextButton : public GuiElement
 {
 public:
 
-	GuiTextButton(Gui* parent) { m_Gui = parent; m_Visible = true; };
+	GuiTextButton(Gui* parent)
+		: m_Font(nullptr)
+		, m_TextColor{255, 255, 255, 255}
+		, m_BackgroundColor{0, 0, 0, 255}
+		, m_BorderColor{255, 255, 255, 255}
+		, m_TextWidth(0)
+	{
+		m_Gui = parent;
+		m_Visible = true;
+	}
 
 	void Init(int ID, int posx, int posy, int width, int height, std::string text, Font* font,
 		Color textcolor = Color{ 255, 255, 255, 255 },
@@ -146,7 +164,13 @@ class GuiIconButton : public GuiElement
 {
 public:
 
-	GuiIconButton(Gui* parent) { m_Gui = parent; m_Visible = true; };
+	GuiIconButton(Gui* parent)
+		: m_Font(nullptr)
+		, m_FontColor{255, 255, 255, 255}
+	{
+		m_Gui = parent;
+		m_Visible = true;
+	}
 
 	void Init(int ID, int posx, int posy, std::shared_ptr<Sprite> upbutton, std::shared_ptr<Sprite> downbutton = NULL,
 		std::shared_ptr<Sprite> inactivebutton = NULL, std::string text = "", Font* font = NULL,
@@ -204,7 +228,17 @@ public:
 class GuiScrollBar : public GuiElement
 {
 public:
-	GuiScrollBar(Gui* parent) { m_Gui = parent; m_Visible = true; };
+	GuiScrollBar(Gui* parent)
+		: m_Value(0)
+		, m_ValueRange(0)
+		, m_SpurLocation(0)
+		, m_Vertical(false)
+		, m_SpurColor{128, 128, 255, 255}
+		, m_BackgroundColor{0, 0, 0, 0}
+	{
+		m_Gui = parent;
+		m_Visible = true;
+	}
 
 	void Init(int ID, int valuerange, int posx, int posy, int width, int height, bool vertical,
 		Color spurcolor = Color{ 128, 128, 255, 255 }, Color backgroundcolor = Color{ 0, 0, 0, 0 }, int group = 0, int active = true, bool shadowed = false);
@@ -238,7 +272,16 @@ public:
 class GuiTextInput : public GuiElement
 {
 public:
-	GuiTextInput(Gui* parent) { m_Gui = parent; m_Visible = true; };
+	GuiTextInput(Gui* parent)
+		: m_Font(nullptr)
+		, m_BoxColor{255, 255, 255, 255}
+		, m_BackgroundColor{0, 0, 0, 0}
+		, m_TextColor{255, 255, 255, 255}
+		, m_HasFocus(0)
+	{
+		m_Gui = parent;
+		m_Visible = true;
+	}
 	void Init(int ID, int posx, int posy, int width, int height, Font* font,
 		std::string initialtext = "", Color textColor = Color{ 255, 255, 255, 255 },
 		Color boxcolor = Color{ 255, 255, 255, 255 }, Color backgroundcolor = Color{ 0, 0, 0, 0 },
@@ -295,7 +338,13 @@ public:
 class GuiPanel : public GuiElement
 {
 public:
-	GuiPanel(Gui* parent) { m_Gui = parent; m_Visible = true; };
+	GuiPanel(Gui* parent)
+		: m_Filled(false)
+		, m_Color{255, 255, 255, 255}
+	{
+		m_Gui = parent;
+		m_Visible = true;
+	}
 	void Init(int ID, int posx, int posy, int width, int height,
 		Color color = Color{ 255, 255, 255, 255 }, bool filled = false,
 		int group = 0, int active = true);
@@ -317,7 +366,14 @@ public:
 class GuiTextArea : public GuiElement
 {
 public:
-	GuiTextArea(Gui* parent) { m_Gui = parent; m_Visible = true; };
+	GuiTextArea(Gui* parent)
+		: m_Font(nullptr)
+		, m_Color{255, 255, 255, 255}
+		, m_Justified(LEFT)
+	{
+		m_Gui = parent;
+		m_Visible = true;
+	}
 	void Init(int ID, Font* font, std::string text, int posx, int posy, int width = 0, int height = 0,
 		Color color = Color{ 255, 255, 255, 255 }, int justified = GuiTextArea::LEFT, int group = 0, int active = true, bool shadowed = false);
 
@@ -430,8 +486,24 @@ public:
 class GuiList : public GuiElement
 {
 public:
-	GuiList() : GuiElement() { m_Gui = nullptr; m_Visible = true; } // Default constructor
-	GuiList(Gui* parent) : GuiElement() { m_Gui = parent; m_Visible = true; }
+	GuiList() : GuiElement()
+		, m_Font(nullptr)
+		, m_TextColor{255, 255, 255, 255}
+		, m_BackgroundColor{0, 0, 0, 255}
+		, m_BorderColor{255, 255, 255, 255}
+	{
+		m_Gui = nullptr;
+		m_Visible = true;
+	}
+	GuiList(Gui* parent) : GuiElement()
+		, m_Font(nullptr)
+		, m_TextColor{255, 255, 255, 255}
+		, m_BackgroundColor{0, 0, 0, 255}
+		, m_BorderColor{255, 255, 255, 255}
+	{
+		m_Gui = parent;
+		m_Visible = true;
+	}
 	void Init(int ID, int posx, int posy, int width, int height, Font* font,
 				 const std::vector<std::string>& items, Color textcolor = {255, 255, 255, 255},
 				 Color backgroundcolor = {0, 0, 0, 255}, Color bordercolor = {255, 255, 255, 255},
@@ -463,8 +535,24 @@ public:
 class GuiListBox : public GuiElement
 {
 public:
-	GuiListBox() : GuiElement() { m_Gui = nullptr; m_Visible = true; }
-	GuiListBox(Gui* parent) : GuiElement() { m_Gui = parent; m_Visible = true; }
+	GuiListBox() : GuiElement()
+		, m_Font(nullptr)
+		, m_TextColor{255, 255, 255, 255}
+		, m_BackgroundColor{0, 0, 0, 255}
+		, m_BorderColor{255, 255, 255, 255}
+	{
+		m_Gui = nullptr;
+		m_Visible = true;
+	}
+	GuiListBox(Gui* parent) : GuiElement()
+		, m_Font(nullptr)
+		, m_TextColor{255, 255, 255, 255}
+		, m_BackgroundColor{0, 0, 0, 255}
+		, m_BorderColor{255, 255, 255, 255}
+	{
+		m_Gui = parent;
+		m_Visible = true;
+	}
 
 	void Init(int ID, int posx, int posy, int width, int height, Font* font,
 			  const std::vector<std::string>& items = {},

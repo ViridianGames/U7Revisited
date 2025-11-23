@@ -347,6 +347,10 @@
     "slots": [
       "SLOT_LEFT_HAND",
       "SLOT_RIGHT_HAND"
+    ],
+    "fills": [
+      "SLOT_LEFT_HAND",
+      "SLOT_RIGHT_HAND"
     ]
   },
   "591": {

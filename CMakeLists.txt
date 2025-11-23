@@ -43,6 +43,15 @@ if(MSVC)
     add_link_options($<$<CONFIG:Release>:/OPT:REF>)  # Remove unreferenced functions/data
     add_link_options($<$<CONFIG:Release>:/OPT:ICF>)  # Identical COMDAT folding
     add_compile_definitions($<$<CONFIG:Release>:NDEBUG>)  # Define NDEBUG
+    # RelWithDebInfo configuration for profiling
+    set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "/MD /Zi /O2 /Ob2 /GL /DNDEBUG /Oy-" CACHE STRING "" FORCE)
+    set(CMAKE_C_FLAGS_RELWITHDEBINFO "/MD /Zi /O2 /Ob2 /GL /DNDEBUG /Oy-" CACHE STRING "" FORCE)
+    add_link_options($<$<CONFIG:RelWithDebInfo>:/DEBUG>)   # Generate debug info
+    add_link_options($<$<CONFIG:RelWithDebInfo>:/INCREMENTAL:NO>) # Disable incremental linking (incompatible with OPT)
+    add_link_options($<$<CONFIG:RelWithDebInfo>:/LTCG>)    # Link time code generation
+    add_link_options($<$<CONFIG:RelWithDebInfo>:/OPT:REF>) # Remove unreferenced functions/data
+    add_link_options($<$<CONFIG:RelWithDebInfo>:/OPT:ICF>) # Identical COMDAT folding
+    add_compile_definitions($<$<CONFIG:RelWithDebInfo>:RELEASE_MODE>)  # Define RELEASE_MODE
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     # Maximum warning level
     add_compile_options(-Wall -Wextra -Wpedantic)
@@ -167,8 +176,10 @@ set(SOURCES
     Source/LoadingState.cpp
     Source/Main.cpp
     Source/MainState.cpp
+    Source/NpcListWindow.cpp
     Source/OptionsState.cpp
     Source/Pathfinding.cpp
+    Source/PathfindingThreadPool.cpp
     Source/ShapeData.cpp
     Source/ShapeEditorState.cpp
     Source/Terrain.cpp
@@ -239,6 +250,13 @@ if(WIN32)
         COMMAND $<$<CONFIG:Release>:${CMAKE_COMMAND}> $<$<CONFIG:Release>:-E> $<$<CONFIG:Release>:copy> $<$<CONFIG:Release>:$<TARGET_FILE:U7Revisited>> $<$<CONFIG:Release>:"${CMAKE_CURRENT_SOURCE_DIR}/Redist/">
         COMMAND_EXPAND_LISTS
         COMMENT "Copying Release executable to Redist folder"
+    )
+    # Copy executable and PDB to Redist folder after build (RelWithDebInfo)
+    add_custom_command(TARGET U7Revisited POST_BUILD
+        COMMAND $<$<CONFIG:RelWithDebInfo>:${CMAKE_COMMAND}> $<$<CONFIG:RelWithDebInfo>:-E> $<$<CONFIG:RelWithDebInfo>:copy> $<$<CONFIG:RelWithDebInfo>:$<TARGET_FILE:U7Revisited>> $<$<CONFIG:RelWithDebInfo>:"${CMAKE_CURRENT_SOURCE_DIR}/Redist/">
+        COMMAND $<$<CONFIG:RelWithDebInfo>:${CMAKE_COMMAND}> $<$<CONFIG:RelWithDebInfo>:-E> $<$<CONFIG:RelWithDebInfo>:copy> $<$<CONFIG:RelWithDebInfo>:$<TARGET_PDB_FILE:U7Revisited>> $<$<CONFIG:RelWithDebInfo>:"${CMAKE_CURRENT_SOURCE_DIR}/Redist/">
+        COMMAND_EXPAND_LISTS
+        COMMENT "Copying RelWithDebInfo executable and PDB to Redist folder"
     )
 else()
     # On Linux/Unix, set runtime output directory to Redist

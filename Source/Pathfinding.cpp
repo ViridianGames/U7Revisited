@@ -34,6 +34,8 @@ std::vector<PathfindingGrid::OverlappingObject> PathfindingGrid::GetOverlappingO
 	int chunkX = worldX / 16;
 	int chunkZ = worldZ / 16;
 
+	std::shared_lock lock(g_chunkMapMutex);  // Shared read lock for thread-safe access
+
 	// Check this chunk and neighbors
 	for (int dz = -1; dz <= 1; dz++)
 	{
@@ -79,6 +81,81 @@ std::vector<PathfindingGrid::OverlappingObject> PathfindingGrid::GetOverlappingO
 	}
 
 	return result;
+}
+
+// Helper: Check if a shape ID is a walkable surface (floors, bridges, stairs)
+static bool IsWalkableSurface(int shapeID)
+{
+	// Bridge/floor pieces: 367-370
+	if (shapeID >= 367 && shapeID <= 370)
+		return true;
+
+	// Additional floor shapes
+	if (shapeID == 1014)
+		return true;
+
+	// Stairs: 426-430
+	if (shapeID >= 426 && shapeID <= 430)
+		return true;
+
+	if (shapeID == 150)
+		return true;
+
+	if (shapeID >= 385 && shapeID <= 387)
+		return true;
+
+	// TODO: Add more walkable surface shape IDs as we discover them
+	// This might include stairs, platforms, etc.
+
+	return false;
+}
+
+float PathfindingGrid::GetTileHeight(int worldX, int worldZ) const
+{
+	// Bounds check
+	if (worldX < 0 || worldX >= 3072 || worldZ < 0 || worldZ >= 3072)
+		return 0.0f;
+
+	// Get all objects at this tile
+	auto objects = GetOverlappingObjects(worldX, worldZ);
+
+	// Find the LOWEST walkable surface below height threshold
+	// This ensures we use ground floor, not upper floors
+	float lowestHeight = -1.0f;
+	bool foundWalkableSurface = false;
+
+	for (const auto& ovObj : objects)
+	{
+		U7Object* obj = ovObj.obj;
+		if (!obj || !obj->m_objectData || !obj->m_shapeData)
+			continue;
+
+		int shapeID = obj->m_shapeData->GetShape();
+
+		// Skip very high objects (upper floors)
+		// This filters out second story floors while keeping tall bridges
+		if (obj->m_Pos.y >= MAX_WALKABLE_SURFACE_HEIGHT)
+			continue;
+
+		// Check if this is a known walkable surface
+		if (IsWalkableSurface(shapeID))
+		{
+			float surfaceHeight = obj->m_Pos.y + obj->m_objectData->m_height;
+			
+			// Keep the lowest walkable surface
+			if (!foundWalkableSurface || surfaceHeight < lowestHeight)
+			{
+				lowestHeight = surfaceHeight;
+				foundWalkableSurface = true;
+			}
+		}
+	}
+
+	if (foundWalkableSurface)
+		return lowestHeight;
+
+	// No walkable surface objects - ground level
+	return 0.0f;
 }
 
 bool PathfindingGrid::CheckTileWalkable(int worldX, int worldZ) const
@@ -136,16 +213,46 @@ bool PathfindingGrid::CheckTileWalkable(int worldX, int worldZ) const
 			continue;
 		}
 
-		// Skip objects above ground level (roofs, bridges, etc.) - only check ground level
-		// Note: Doors are checked above BEFORE this check
-		if (obj->m_Pos.y > 2.0f)
-			continue;
-
 		// If we already found a door, ignore other blocking objects
 		if (hasDoor)
 			continue;
 
-		return false;  // Blocked by non-door object
+		// Check if this is a walkable surface (floor, bridge, stairs)
+		if (obj->m_shapeData)
+		{
+			int shapeID = obj->m_shapeData->GetShape();
+
+			// DEBUG: Log all floor shapes
+			if (shapeID >= 367 && shapeID <= 370)
+			{
+				std::stringstream ss;
+				ss << "CheckTileWalkable(" << worldX << "," << worldZ << "): Found floor shape "
+				   << shapeID << ", y=" << obj->m_Pos.y << ", IsWalkableSurface=" << (IsWalkableSurface(shapeID) ? 1 : 0);
+				NPCDebugPrint(ss.str());
+			}
+
+			if (IsWalkableSurface(shapeID))
+			{
+				// Skip very high walkable surfaces (upper floors)
+				if (obj->m_Pos.y >= MAX_WALKABLE_SURFACE_HEIGHT)
+					continue;
+					
+				// This is a known walkable surface - clear terrain blocking and allow tile
+				std::stringstream ss;
+				ss << "  -> Allowing tile (" << worldX << "," << worldZ << ") with floor shape " << shapeID;
+				NPCDebugPrint(ss.str());
+				terrainBlocks = false;  // Clear any terrain blocking below this walkable surface
+				continue;
+			}
+		}
+
+		// Skip very high objects (upper floors)
+		if (obj->m_Pos.y >= MAX_WALKABLE_SURFACE_HEIGHT)
+			continue;
+
+		// Any other ground-level blocking object blocks the tile
+		// (Height difference validation happens later in A* neighbor checking)
+		return false;
 	}
 
 	// Final check: if terrain blocks and no door cleared it, return false
@@ -190,11 +297,19 @@ void PathfindingGrid::DrawDebugOverlayTileLevel()
 
 				if (walkable)
 				{
+					// Get tile height for walkable tiles only
+					float tileHeight = GetTileHeight(worldX, worldZ);
+					float displayHeight = tileHeight + 0.1f;  // Slightly above surface to avoid z-fighting
+
 					float cost = g_aStar ? g_aStar->GetMovementCost(worldX, worldZ, this) : 1.0f;
-					m_cachedGreenTiles.push_back({{(float)worldX, 0.1f, (float)worldZ}, cost});
+					// Check if on object to get actual movement cost
+					if (tileHeight > 0.1f)
+						cost = CLIMB_MOVEMENT_COST;  // Override with climbing cost
+					m_cachedGreenTiles.push_back({{(float)worldX, displayHeight, (float)worldZ}, cost});
 				}
 				else
 				{
+					// Blocked tiles always at ground level
 					m_cachedRedTiles.push_back({(float)worldX, 0.1f, (float)worldZ});
 				}
 			}
@@ -265,47 +380,6 @@ void PathfindingGrid::DrawDebugOverlayTileLevel()
 	}
 	rlEnd();
 
-	// Draw blue tiles for NPC waypoints (third draw call - only when NPC selected)
-	if (!m_cachedBlueTiles.empty())
-	{
-		rlBegin(RL_TRIANGLES);
-		rlColor4ub(0, 0, 255, 192);  // Blue, more opaque than red/green
-		for (const auto& pos : m_cachedBlueTiles)
-		{
-			// Two triangles forming a 1x1 quad
-			Vector3 v1 = {pos.x, pos.y, pos.z};
-			Vector3 v2 = {pos.x + 1.0f, pos.y, pos.z};
-			Vector3 v3 = {pos.x + 1.0f, pos.y, pos.z + 1.0f};
-			Vector3 v4 = {pos.x, pos.y, pos.z + 1.0f};
-
-			// Triangle 1
-			rlVertex3f(v1.x, v1.y, v1.z);
-			rlVertex3f(v2.x, v2.y, v2.z);
-			rlVertex3f(v3.x, v3.y, v3.z);
-
-			// Triangle 2
-			rlVertex3f(v1.x, v1.y, v1.z);
-			rlVertex3f(v3.x, v3.y, v3.z);
-			rlVertex3f(v4.x, v4.y, v4.z);
-		}
-		rlEnd();
-	}
-}
-
-void PathfindingGrid::SetDebugWaypoints(const std::vector<Vector3>& waypoints)
-{
-	m_cachedBlueTiles.clear();
-	m_cachedBlueTiles.reserve(waypoints.size());
-
-	for (const auto& wp : waypoints)
-	{
-		// Convert waypoint position to tile coordinates
-		int tileX = (int)wp.x;
-		int tileZ = (int)wp.z;
-
-		// Add to blue tiles cache
-		m_cachedBlueTiles.push_back({(float)tileX, 0.15f, (float)tileZ});  // Slightly higher than red/green
-	}
 }
 
 void PathfindingGrid::DebugPrintTileInfo(int worldX, int worldZ)
@@ -593,7 +667,20 @@ std::vector<Vector3> AStar::FindPath(Vector3 start, Vector3 goal, PathfindingGri
 			}
 
 			// Calculate tentative g cost
-			float moveCost = GetMovementCost(neighbor->x, neighbor->z, grid);
+			float neighborHeight = grid->GetTileHeight(neighbor->x, neighbor->z);
+			float moveCost;
+
+			if (neighborHeight > 0.1f)  // On an object, not ground
+			{
+				// Walking on an object (stairs, platform, etc.) - use climbing cost
+				moveCost = CLIMB_MOVEMENT_COST;
+			}
+			else
+			{
+				// Walking on ground - use terrain cost
+				moveCost = GetMovementCost(neighbor->x, neighbor->z, grid);
+			}
+
 			float tentativeG = current->g + moveCost;
 
 			// Check if neighbor is in open set
@@ -694,7 +781,7 @@ std::vector<Vector3> AStar::FindPath(Vector3 start, Vector3 goal, PathfindingGri
 	std::vector<Vector3> path;
 	if (goalNode != nullptr)
 	{
-		path = ReconstructPath(goalNode);
+		path = ReconstructPath(goalNode, grid);
 	}
 
 	return path;
@@ -733,7 +820,36 @@ std::vector<PathNode*> AStar::GetNeighbors(PathNode* node, PathfindingGrid* grid
 
 		// Walkability check (tile-level) - skip for goal tile
 		if (!isGoal && !grid->IsPositionWalkable(nx, nz))
+		{
+			// DEBUG: Log rejected walkability near bridge
+			static int walkDebugCount = 0;
+			if (walkDebugCount < 10 && nx >= 955 && nx <= 970 && nz >= 1165 && nz <= 1195)
+			{
+				std::stringstream ss;
+				ss << "A* rejected tile (" << nx << "," << nz << ") as non-walkable from (" << node->x << "," << node->z << ")";
+				NPCDebugPrint(ss.str());
+				walkDebugCount++;
+			}
 			continue;
+		}
+
+		// Height difference check - NPCs can only climb/descend a limited amount
+		float currentHeight = grid->GetTileHeight(node->x, node->z);
+		float neighborHeight = grid->GetTileHeight(nx, nz);
+		float heightDiff = fabs(neighborHeight - currentHeight);
+
+		if (heightDiff > MAX_CLIMBABLE_HEIGHT)
+		{
+			// DEBUG: Log rejected transitions
+			static int debugCount = 0;
+			if (debugCount < 10)
+			{
+				TraceLog(LOG_INFO, "A* rejected transition (%d,%d)->(%d,%d): currentH=%.2f, neighborH=%.2f, diff=%.2f > %.2f",
+					node->x, node->z, nx, nz, currentHeight, neighborHeight, heightDiff, MAX_CLIMBABLE_HEIGHT);
+				debugCount++;
+			}
+			continue;  // Too steep to climb or descend
+		}
 
 		neighbors.push_back(new PathNode(nx, nz));
 	}
@@ -809,17 +925,20 @@ float AStar::GetMovementCost(int worldX, int worldZ, PathfindingGrid* grid)
 	return baseCost;
 }
 
-std::vector<Vector3> AStar::ReconstructPath(PathNode* goal)
+std::vector<Vector3> AStar::ReconstructPath(PathNode* goal, PathfindingGrid* grid)
 {
 	std::vector<Vector3> path;
 	PathNode* current = goal;
 
 	while (current != nullptr)
 	{
-		// Use tile coordinates directly
+		// Get the actual height of this waypoint tile
+		float tileHeight = grid ? grid->GetTileHeight(current->x, current->z) : 0.0f;
+
+		// Create waypoint with correct 3D position
 		Vector3 waypoint;
 		waypoint.x = (float)current->x;
-		waypoint.y = 0;
+		waypoint.y = tileHeight;
 		waypoint.z = (float)current->z;
 
 		path.push_back(waypoint);

@@ -18,7 +18,7 @@ using namespace std;
 Gump::Gump()
 {
 	std::vector<Sprite> m_gumpBackgrounds;
-	
+
 	m_gumpBackgrounds.resize(1);
 
 	m_gui.m_PositionFlag = Gui::GUIP_USE_XY;
@@ -47,7 +47,7 @@ Gump::~Gump()
 void Gump::OnExit()
 {
 	m_IsDead = true;
-	
+
 	// Clear any references to the container object to prevent accessing stale pointers
 	if (m_containerObject)
 	{
@@ -95,6 +95,7 @@ void Gump::OnEnter()
 		case 416: //  Drawer
 		case 407: //  Drawer
 		case 283: //  Drawer
+		case 406: //  Nightstand
 			m_containerData = g_containerData[static_cast<int>(ContainerType::CONTAINER_DRAWER)];
 			break;
 		case 507: //  Corpse
@@ -215,9 +216,8 @@ void Gump::Update()
 
 					if (CheckCollisionPointRec(mousePos, itemRect))
 					{
-						// Show item name
-						int quantity = (object->m_Quality > 0) ? object->m_Quality : 1;
-						m_hoverText = GetShapeFrameName(object->m_shapeData->GetShape(), object->m_shapeData->GetFrame(), quantity);
+					// Show item name
+					m_hoverText = GetObjectDisplayName(object);
 						m_hoverTextDuration = 2.0f;
 
 						// Position text above the item
@@ -313,39 +313,15 @@ void Gump::Draw()
 	m_gui.Draw();
 
 	U7Object* thisObject = GetObjectFromID(m_containerId);
-
-	// Debug: Log what container we're drawing
-	static bool loggedGump = false;
-	if (!loggedGump && thisObject)
+	if (thisObject)
 	{
-		Log("Gump::Draw - Drawing container " + std::to_string(m_containerId) +
-			", inventory size=" + std::to_string(thisObject->m_inventory.size()) +
-			", isContainer=" + std::string(thisObject->m_isContainer ? "true" : "false"));
-
-		// Log first few items
-		int count = 0;
-		for (auto& itemId : thisObject->m_inventory)
+		for (auto& item : thisObject->m_inventory)
 		{
-			if (count < 5)
+			if (item != g_gumpManager->m_draggedObjectId) // Don't draw dragged object, GumpManager handles that.
 			{
-				auto obj = GetObjectFromID(itemId);
-				if (obj && obj->m_shapeData)
-				{
-					Log("  Item " + std::to_string(count) + ": id=" + std::to_string(itemId) +
-						", shape=" + std::to_string(obj->m_shapeData->GetShape()));
-				}
-				count++;
+				auto object = GetObjectFromID(item);
+				DrawTextureEx(*object->m_shapeData->GetTexture(), Vector2{m_gui.m_Pos.x + m_containerData.m_boxOffset.x + object->m_InventoryPos.x, m_gui.m_Pos.y + m_containerData.m_boxOffset.y + object->m_InventoryPos.y}, 0, 1, Color{255, 255, 255, 255});
 			}
-		}
-		loggedGump = true;
-	}
-
-	for (auto& item : thisObject->m_inventory)
-	{
-		if (item != g_gumpManager->m_draggedObjectId) // Don't draw dragged object, GumpManager handles that.
-		{
-			auto object = GetObjectFromID(item);
-			DrawTextureEx(*object->m_shapeData->GetTexture(), Vector2{m_gui.m_Pos.x + m_containerData.m_boxOffset.x + object->m_InventoryPos.x, m_gui.m_Pos.y + m_containerData.m_boxOffset.y + object->m_InventoryPos.y}, 0, 1, Color{255, 255, 255, 255});
 		}
 	}
 
@@ -402,11 +378,11 @@ void Gump::SortContainer()
     for (int item : thisObject->m_inventory) {
         // If adding the item exceeds maxWidth, move to the next row
 		U7Object* itemObj = GetObjectFromID(item);
-		
+
 		// Safety check: skip invalid objects or objects without shape data
 		if (!itemObj || !itemObj->m_shapeData)
 			continue;
-		
+
         if (currentX + itemObj->m_shapeData->GetDefaultTextureImage().width > m_containerData.m_boxSize.x * 1) {
             currentX = 0.0f;
             currentY += maxRowHeight;
@@ -457,4 +433,3 @@ bool Gump::IsMouseOverSolidPixel(Vector2 mousePos)
 	// Return true if alpha > 0 (non-transparent)
 	return pixelColor.a > 0;
 }
-

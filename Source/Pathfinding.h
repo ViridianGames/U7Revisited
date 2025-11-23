@@ -40,7 +40,6 @@ public:
 	// Debug visualization
 	void DrawDebugOverlayTileLevel();                     // Tile-level visualization (3D with cost cubes)
 	void DebugPrintTileInfo(int worldX, int worldZ);      // Print why a tile is blocked
-	void SetDebugWaypoints(const std::vector<Vector3>& waypoints);  // Set waypoints to visualize
 
 	// Helper: Get all objects that overlap a tile (used by pathfinding and door opening)
 	struct OverlappingObject {
@@ -51,6 +50,9 @@ public:
 		int depth;
 	};
 	std::vector<OverlappingObject> GetOverlappingObjects(int worldX, int worldZ) const;
+
+	// Get the effective walkable height at a tile (obj.y + obj.height if object present, else 0.0)
+	float GetTileHeight(int worldX, int worldZ) const;
 
 private:
 	// Helper: Check if specific tile is walkable
@@ -97,7 +99,7 @@ private:
 	std::vector<PathNode*> GetNeighbors(PathNode* node, PathfindingGrid* grid, int goalX, int goalZ);
 
 	// Reconstruct path from goal to start
-	std::vector<Vector3> ReconstructPath(PathNode* goal);
+	std::vector<Vector3> ReconstructPath(PathNode* goal, PathfindingGrid* grid);
 
 	// Cleanup allocated nodes
 	void CleanupNodes();
