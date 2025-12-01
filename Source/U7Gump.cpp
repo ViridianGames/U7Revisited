@@ -287,8 +287,8 @@ void Gump::Update()
 U7Object* Gump::GetObjectUnderMousePointer()
 {
 	// Skip gumps without container objects (paperdolls, spellbooks, etc.)
-	if (m_containerObject == nullptr)
-		return nullptr;
+	//if (m_containerObject == nullptr)
+		//return nullptr;
 
 	Vector2 mousePos = GetMousePosition();
 	mousePos.x = int(mousePos.x /= g_DrawScale);

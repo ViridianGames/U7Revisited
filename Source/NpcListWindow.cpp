@@ -49,7 +49,7 @@ NpcListWindow::NpcListWindow(ResourceManager* resourceManager, int screenWidth, 
 	, m_lastScheduleTime(0)
 	, m_lastRefreshTime(0.0)
 {
-	m_window = new GhostWindow("Gui/npc_list_window.ghost", "Gui",
+	m_window = new GhostWindow("GUI/npc_list_window.ghost", "Data/ghost.cfg",
 	                           resourceManager, screenWidth, screenHeight,
 	                           false, 1.0f, 1.0f);  // Not modal - uses g_mouseOverUI instead
 

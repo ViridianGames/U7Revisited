@@ -517,7 +517,7 @@ void MainState::UpdateInput()
 		}
 
 		// Only allow dragging if not a static object (or if static movement is enabled)
-		if (m_allowMovingStaticObjects || g_objectUnderMousePointer->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_STATIC)
+		if (m_allowMovingStaticObjects || g_objectUnderMousePointer->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_STATIC )
 		{
 			if (m_dragStart.x == 0 && m_dragStart.y == 0)
 			{
@@ -598,7 +598,7 @@ void MainState::UpdateInput()
 		}
 	}
 
-	if (WasMouseButtonDoubleClicked(MOUSE_BUTTON_LEFT) && g_objectUnderMousePointer != nullptr && !g_mouseOverUI && !g_gumpManager->m_isMouseOverGump)
+	if (WasMouseButtonDoubleClicked(MOUSE_BUTTON_LEFT) && g_objectUnderMousePointer != nullptr)// && !g_mouseOverUI && !g_gumpManager->m_isMouseOverGump)
 	{
 		// Check if this is the avatar or a party member NPC
 		bool isAvatar = g_objectUnderMousePointer->m_isNPC && g_objectUnderMousePointer->m_NPCID == 0;
@@ -769,6 +769,10 @@ void MainState::UpdateInput()
 			{
 				int worldX = (int)floor(g_terrainUnderMousePointer.x);
 				int worldZ = (int)floor(g_terrainUnderMousePointer.z);
+
+				U7Object* avatar = g_objectList[g_NPCData[0]->m_objectID].get();
+				//avatar->SetDest({float(worldX), 0, float(worldZ)});
+				avatar->PathfindToDest({float(worldX), 0, float(worldZ)});
 
 				if (worldX >= 0 && worldX < 3072 && worldZ >= 0 && worldZ < 3072)
 				{
