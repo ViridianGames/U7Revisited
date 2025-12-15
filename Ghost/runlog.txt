@@ -1,0 +1,2100 @@
+ Sun Nov 16 11:33:42 2025.871 Ghost - Geist GUI Editor starting...
+ Sun Nov 16 11:33:42 2025.976 Starting Ghost main loop.
+ Sun Nov 16 11:33:42 2025.977 GhostState::Init() called
+ Sun Nov 16 11:33:42 2025.977 Loading config from: Data/ghost.cfg
+ Sun Nov 16 11:33:42 2025.977 Loading config Data/ghost.cfg on the fly!
+ Sun Nov 16 11:33:42 2025.977 Loading config Data/ghost.cfg
+ Sun Nov 16 11:33:42 2025.977 Could not openData/ghost.cfg
+ Sun Nov 16 11:33:42 2025.977 Load successful.
+ Sun Nov 16 11:33:42 2025.977 FontPath not found in config, using default: Data/
+ Sun Nov 16 11:33:42 2025.977 SpritePath not found in config, using default: Data/
+ Sun Nov 16 11:33:42 2025.977 GhostSerializer::ReadJsonFromFile - Could not open file: Gui/ghost_app.ghost
+ Sun Nov 16 11:33:42 2025.977 Failed to load ghost_app.ghost
+ Sun Nov 16 11:33:42 2025.977 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:42 2025.977 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:42 2025.977 Created state GHOST_STATE with ID 0
+ Sun Nov 16 11:33:42 2025.977 ColorPickerState::Init
+ Sun Nov 16 11:33:42 2025.977 FontPath not found in config, using default: Data/Fonts/
+ Sun Nov 16 11:33:42 2025.977 GhostSerializer::ReadJsonFromFile - Could not open file: Gui/ghost_color_dialog.ghost
+ Sun Nov 16 11:33:42 2025.977 ERROR: GhostWindow failed to load Gui/ghost_color_dialog.ghost
+ Sun Nov 16 11:33:42 2025.977 ColorPickerState: Successfully loaded dialog GUI
+ Sun Nov 16 11:33:42 2025.977 Created state COLOR_PICKER_STATE with ID 1
+ Sun Nov 16 11:33:42 2025.977 SpritePickerState::Init
+ Sun Nov 16 11:33:42 2025.977 FontPath not found in config, using default: Data/Fonts/
+ Sun Nov 16 11:33:42 2025.977 GhostSerializer::ReadJsonFromFile - Could not open file: Gui/ghost_sprite_dialog.ghost
+ Sun Nov 16 11:33:42 2025.977 ERROR: GhostWindow failed to load Gui/ghost_sprite_dialog.ghost
+ Sun Nov 16 11:33:42 2025.977 SpritePickerState: Successfully loaded dialog GUI
+ Sun Nov 16 11:33:42 2025.977 Created state SPRITE_PICKER_STATE with ID 2
+ Sun Nov 16 11:33:42 2025.977 FileChooserState::Init
+ Sun Nov 16 11:33:42 2025.977 FontPath not found in config, using default: Data/Fonts/
+ Sun Nov 16 11:33:42 2025.977 GhostSerializer::ReadJsonFromFile - Could not open file: Gui/ghost_open_file.ghost
+ Sun Nov 16 11:33:42 2025.977 ERROR: GhostWindow failed to load Gui/ghost_open_file.ghost
+ Sun Nov 16 11:33:42 2025.977 FileChooserState: Successfully loaded dialog GUI
+ Sun Nov 16 11:33:42 2025.977 Created state FILE_CHOOSER_STATE with ID 3
+ Sun Nov 16 11:33:42 2025.977 StateMachine: Transitioning to state GHOST_STATE, ID 0
+ Sun Nov 16 11:33:42 2025.977 GhostState::OnEnter - Previous state: -1
+ Sun Nov 16 11:33:42 2025.977 New button clicked!
+ Sun Nov 16 11:33:42 2025.977 Clearing loaded content
+ Sun Nov 16 11:33:42 2025.977 Property panel cleared
+ Sun Nov 16 11:33:42 2025.977 Content cleared successfully
+ Sun Nov 16 11:33:42 2025.977 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:42 2025.977 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:42 2025.993 New button clicked!
+ Sun Nov 16 11:33:42 2025.994 Clearing loaded content
+ Sun Nov 16 11:33:42 2025.994 Property panel cleared
+ Sun Nov 16 11:33:42 2025.994 Content cleared successfully
+ Sun Nov 16 11:33:42 2025.994 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:42 2025.994 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:43 2025.010 New button clicked!
+ Sun Nov 16 11:33:43 2025.010 Clearing loaded content
+ Sun Nov 16 11:33:43 2025.010 Property panel cleared
+ Sun Nov 16 11:33:43 2025.010 Content cleared successfully
+ Sun Nov 16 11:33:43 2025.010 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:43 2025.010 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:43 2025.027 New button clicked!
+ Sun Nov 16 11:33:43 2025.027 Clearing loaded content
+ Sun Nov 16 11:33:43 2025.027 Property panel cleared
+ Sun Nov 16 11:33:43 2025.027 Content cleared successfully
+ Sun Nov 16 11:33:43 2025.027 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:43 2025.027 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:43 2025.043 New button clicked!
+ Sun Nov 16 11:33:43 2025.044 Clearing loaded content
+ Sun Nov 16 11:33:43 2025.044 Property panel cleared
+ Sun Nov 16 11:33:43 2025.044 Content cleared successfully
+ Sun Nov 16 11:33:43 2025.044 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:43 2025.044 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:43 2025.060 New button clicked!
+ Sun Nov 16 11:33:43 2025.060 Clearing loaded content
+ Sun Nov 16 11:33:43 2025.060 Property panel cleared
+ Sun Nov 16 11:33:43 2025.060 Content cleared successfully
+ Sun Nov 16 11:33:43 2025.060 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:43 2025.060 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:43 2025.077 New button clicked!
+ Sun Nov 16 11:33:43 2025.077 Clearing loaded content
+ Sun Nov 16 11:33:43 2025.077 Property panel cleared
+ Sun Nov 16 11:33:43 2025.077 Content cleared successfully
+ Sun Nov 16 11:33:43 2025.077 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:43 2025.077 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:43 2025.093 New button clicked!
+ Sun Nov 16 11:33:43 2025.094 Clearing loaded content
+ Sun Nov 16 11:33:43 2025.094 Property panel cleared
+ Sun Nov 16 11:33:43 2025.094 Content cleared successfully
+ Sun Nov 16 11:33:43 2025.094 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:43 2025.094 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:43 2025.110 New button clicked!
+ Sun Nov 16 11:33:43 2025.110 Clearing loaded content
+ Sun Nov 16 11:33:43 2025.110 Property panel cleared
+ Sun Nov 16 11:33:43 2025.110 Content cleared successfully
+ Sun Nov 16 11:33:43 2025.110 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:43 2025.110 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:43 2025.127 New button clicked!
+ Sun Nov 16 11:33:43 2025.127 Clearing loaded content
+ Sun Nov 16 11:33:43 2025.127 Property panel cleared
+ Sun Nov 16 11:33:43 2025.127 Content cleared successfully
+ Sun Nov 16 11:33:43 2025.127 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:43 2025.127 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:43 2025.143 New button clicked!
+ Sun Nov 16 11:33:43 2025.144 Clearing loaded content
+ Sun Nov 16 11:33:43 2025.144 Property panel cleared
+ Sun Nov 16 11:33:43 2025.144 Content cleared successfully
+ Sun Nov 16 11:33:43 2025.144 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:43 2025.144 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:43 2025.160 New button clicked!
+ Sun Nov 16 11:33:43 2025.160 Clearing loaded content
+ Sun Nov 16 11:33:43 2025.160 Property panel cleared
+ Sun Nov 16 11:33:43 2025.160 Content cleared successfully
+ Sun Nov 16 11:33:43 2025.160 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:43 2025.160 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:43 2025.177 New button clicked!
+ Sun Nov 16 11:33:43 2025.177 Clearing loaded content
+ Sun Nov 16 11:33:43 2025.177 Property panel cleared
+ Sun Nov 16 11:33:43 2025.177 Content cleared successfully
+ Sun Nov 16 11:33:43 2025.177 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:43 2025.177 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:43 2025.193 New button clicked!
+ Sun Nov 16 11:33:43 2025.194 Clearing loaded content
+ Sun Nov 16 11:33:43 2025.194 Property panel cleared
+ Sun Nov 16 11:33:43 2025.194 Content cleared successfully
+ Sun Nov 16 11:33:43 2025.194 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:43 2025.194 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:43 2025.210 New button clicked!
+ Sun Nov 16 11:33:43 2025.210 Clearing loaded content
+ Sun Nov 16 11:33:43 2025.210 Property panel cleared
+ Sun Nov 16 11:33:43 2025.210 Content cleared successfully
+ Sun Nov 16 11:33:43 2025.210 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:43 2025.210 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:43 2025.227 New button clicked!
+ Sun Nov 16 11:33:43 2025.227 Clearing loaded content
+ Sun Nov 16 11:33:43 2025.227 Property panel cleared
+ Sun Nov 16 11:33:43 2025.227 Content cleared successfully
+ Sun Nov 16 11:33:43 2025.227 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:43 2025.227 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:43 2025.243 New button clicked!
+ Sun Nov 16 11:33:43 2025.244 Clearing loaded content
+ Sun Nov 16 11:33:43 2025.244 Property panel cleared
+ Sun Nov 16 11:33:43 2025.244 Content cleared successfully
+ Sun Nov 16 11:33:43 2025.244 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:43 2025.244 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:43 2025.260 New button clicked!
+ Sun Nov 16 11:33:43 2025.260 Clearing loaded content
+ Sun Nov 16 11:33:43 2025.260 Property panel cleared
+ Sun Nov 16 11:33:43 2025.260 Content cleared successfully
+ Sun Nov 16 11:33:43 2025.260 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:43 2025.260 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:43 2025.277 New button clicked!
+ Sun Nov 16 11:33:43 2025.277 Clearing loaded content
+ Sun Nov 16 11:33:43 2025.277 Property panel cleared
+ Sun Nov 16 11:33:43 2025.277 Content cleared successfully
+ Sun Nov 16 11:33:43 2025.277 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:43 2025.277 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:43 2025.293 New button clicked!
+ Sun Nov 16 11:33:43 2025.294 Clearing loaded content
+ Sun Nov 16 11:33:43 2025.294 Property panel cleared
+ Sun Nov 16 11:33:43 2025.294 Content cleared successfully
+ Sun Nov 16 11:33:43 2025.294 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:43 2025.294 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:43 2025.310 New button clicked!
+ Sun Nov 16 11:33:43 2025.310 Clearing loaded content
+ Sun Nov 16 11:33:43 2025.310 Property panel cleared
+ Sun Nov 16 11:33:43 2025.310 Content cleared successfully
+ Sun Nov 16 11:33:43 2025.310 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:43 2025.310 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:43 2025.327 New button clicked!
+ Sun Nov 16 11:33:43 2025.327 Clearing loaded content
+ Sun Nov 16 11:33:43 2025.327 Property panel cleared
+ Sun Nov 16 11:33:43 2025.327 Content cleared successfully
+ Sun Nov 16 11:33:43 2025.327 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:43 2025.327 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:43 2025.343 New button clicked!
+ Sun Nov 16 11:33:43 2025.344 Clearing loaded content
+ Sun Nov 16 11:33:43 2025.344 Property panel cleared
+ Sun Nov 16 11:33:43 2025.344 Content cleared successfully
+ Sun Nov 16 11:33:43 2025.344 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:43 2025.344 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:43 2025.360 New button clicked!
+ Sun Nov 16 11:33:43 2025.360 Clearing loaded content
+ Sun Nov 16 11:33:43 2025.360 Property panel cleared
+ Sun Nov 16 11:33:43 2025.360 Content cleared successfully
+ Sun Nov 16 11:33:43 2025.360 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:43 2025.360 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:43 2025.377 New button clicked!
+ Sun Nov 16 11:33:43 2025.377 Clearing loaded content
+ Sun Nov 16 11:33:43 2025.377 Property panel cleared
+ Sun Nov 16 11:33:43 2025.377 Content cleared successfully
+ Sun Nov 16 11:33:43 2025.377 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:43 2025.377 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:43 2025.393 New button clicked!
+ Sun Nov 16 11:33:43 2025.394 Clearing loaded content
+ Sun Nov 16 11:33:43 2025.394 Property panel cleared
+ Sun Nov 16 11:33:43 2025.394 Content cleared successfully
+ Sun Nov 16 11:33:43 2025.394 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:43 2025.394 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:43 2025.410 New button clicked!
+ Sun Nov 16 11:33:43 2025.410 Clearing loaded content
+ Sun Nov 16 11:33:43 2025.410 Property panel cleared
+ Sun Nov 16 11:33:43 2025.410 Content cleared successfully
+ Sun Nov 16 11:33:43 2025.410 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:43 2025.410 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:43 2025.427 New button clicked!
+ Sun Nov 16 11:33:43 2025.427 Clearing loaded content
+ Sun Nov 16 11:33:43 2025.427 Property panel cleared
+ Sun Nov 16 11:33:43 2025.427 Content cleared successfully
+ Sun Nov 16 11:33:43 2025.427 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:43 2025.427 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:43 2025.443 New button clicked!
+ Sun Nov 16 11:33:43 2025.444 Clearing loaded content
+ Sun Nov 16 11:33:43 2025.444 Property panel cleared
+ Sun Nov 16 11:33:43 2025.444 Content cleared successfully
+ Sun Nov 16 11:33:43 2025.444 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:43 2025.444 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:43 2025.460 New button clicked!
+ Sun Nov 16 11:33:43 2025.460 Clearing loaded content
+ Sun Nov 16 11:33:43 2025.460 Property panel cleared
+ Sun Nov 16 11:33:43 2025.460 Content cleared successfully
+ Sun Nov 16 11:33:43 2025.460 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:43 2025.460 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:43 2025.477 New button clicked!
+ Sun Nov 16 11:33:43 2025.477 Clearing loaded content
+ Sun Nov 16 11:33:43 2025.477 Property panel cleared
+ Sun Nov 16 11:33:43 2025.477 Content cleared successfully
+ Sun Nov 16 11:33:43 2025.477 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:43 2025.477 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:43 2025.493 New button clicked!
+ Sun Nov 16 11:33:43 2025.494 Clearing loaded content
+ Sun Nov 16 11:33:43 2025.494 Property panel cleared
+ Sun Nov 16 11:33:43 2025.494 Content cleared successfully
+ Sun Nov 16 11:33:43 2025.494 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:43 2025.494 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:43 2025.510 New button clicked!
+ Sun Nov 16 11:33:43 2025.510 Clearing loaded content
+ Sun Nov 16 11:33:43 2025.510 Property panel cleared
+ Sun Nov 16 11:33:43 2025.510 Content cleared successfully
+ Sun Nov 16 11:33:43 2025.510 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:43 2025.510 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:43 2025.527 New button clicked!
+ Sun Nov 16 11:33:43 2025.527 Clearing loaded content
+ Sun Nov 16 11:33:43 2025.527 Property panel cleared
+ Sun Nov 16 11:33:43 2025.527 Content cleared successfully
+ Sun Nov 16 11:33:43 2025.527 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:43 2025.527 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:43 2025.543 New button clicked!
+ Sun Nov 16 11:33:43 2025.544 Clearing loaded content
+ Sun Nov 16 11:33:43 2025.544 Property panel cleared
+ Sun Nov 16 11:33:43 2025.544 Content cleared successfully
+ Sun Nov 16 11:33:43 2025.544 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:43 2025.544 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:43 2025.560 New button clicked!
+ Sun Nov 16 11:33:43 2025.560 Clearing loaded content
+ Sun Nov 16 11:33:43 2025.560 Property panel cleared
+ Sun Nov 16 11:33:43 2025.560 Content cleared successfully
+ Sun Nov 16 11:33:43 2025.560 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:43 2025.560 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:43 2025.577 New button clicked!
+ Sun Nov 16 11:33:43 2025.577 Clearing loaded content
+ Sun Nov 16 11:33:43 2025.577 Property panel cleared
+ Sun Nov 16 11:33:43 2025.577 Content cleared successfully
+ Sun Nov 16 11:33:43 2025.577 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:43 2025.577 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:43 2025.593 New button clicked!
+ Sun Nov 16 11:33:43 2025.594 Clearing loaded content
+ Sun Nov 16 11:33:43 2025.594 Property panel cleared
+ Sun Nov 16 11:33:43 2025.594 Content cleared successfully
+ Sun Nov 16 11:33:43 2025.594 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:43 2025.594 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:43 2025.610 New button clicked!
+ Sun Nov 16 11:33:43 2025.610 Clearing loaded content
+ Sun Nov 16 11:33:43 2025.610 Property panel cleared
+ Sun Nov 16 11:33:43 2025.610 Content cleared successfully
+ Sun Nov 16 11:33:43 2025.610 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:43 2025.610 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:43 2025.627 New button clicked!
+ Sun Nov 16 11:33:43 2025.627 Clearing loaded content
+ Sun Nov 16 11:33:43 2025.627 Property panel cleared
+ Sun Nov 16 11:33:43 2025.627 Content cleared successfully
+ Sun Nov 16 11:33:43 2025.627 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:43 2025.627 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:43 2025.644 New button clicked!
+ Sun Nov 16 11:33:43 2025.644 Clearing loaded content
+ Sun Nov 16 11:33:43 2025.644 Property panel cleared
+ Sun Nov 16 11:33:43 2025.644 Content cleared successfully
+ Sun Nov 16 11:33:43 2025.644 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:43 2025.644 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:43 2025.660 New button clicked!
+ Sun Nov 16 11:33:43 2025.660 Clearing loaded content
+ Sun Nov 16 11:33:43 2025.660 Property panel cleared
+ Sun Nov 16 11:33:43 2025.660 Content cleared successfully
+ Sun Nov 16 11:33:43 2025.660 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:43 2025.660 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:43 2025.677 New button clicked!
+ Sun Nov 16 11:33:43 2025.677 Clearing loaded content
+ Sun Nov 16 11:33:43 2025.677 Property panel cleared
+ Sun Nov 16 11:33:43 2025.677 Content cleared successfully
+ Sun Nov 16 11:33:43 2025.677 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:43 2025.677 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:43 2025.694 New button clicked!
+ Sun Nov 16 11:33:43 2025.694 Clearing loaded content
+ Sun Nov 16 11:33:43 2025.694 Property panel cleared
+ Sun Nov 16 11:33:43 2025.694 Content cleared successfully
+ Sun Nov 16 11:33:43 2025.694 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:43 2025.694 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:43 2025.710 New button clicked!
+ Sun Nov 16 11:33:43 2025.710 Clearing loaded content
+ Sun Nov 16 11:33:43 2025.710 Property panel cleared
+ Sun Nov 16 11:33:43 2025.710 Content cleared successfully
+ Sun Nov 16 11:33:43 2025.710 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:43 2025.710 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:43 2025.727 New button clicked!
+ Sun Nov 16 11:33:43 2025.727 Clearing loaded content
+ Sun Nov 16 11:33:43 2025.727 Property panel cleared
+ Sun Nov 16 11:33:43 2025.727 Content cleared successfully
+ Sun Nov 16 11:33:43 2025.727 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:43 2025.727 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:43 2025.743 New button clicked!
+ Sun Nov 16 11:33:43 2025.744 Clearing loaded content
+ Sun Nov 16 11:33:43 2025.744 Property panel cleared
+ Sun Nov 16 11:33:43 2025.744 Content cleared successfully
+ Sun Nov 16 11:33:43 2025.744 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:43 2025.744 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:43 2025.760 New button clicked!
+ Sun Nov 16 11:33:43 2025.760 Clearing loaded content
+ Sun Nov 16 11:33:43 2025.760 Property panel cleared
+ Sun Nov 16 11:33:43 2025.760 Content cleared successfully
+ Sun Nov 16 11:33:43 2025.760 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:43 2025.760 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:43 2025.777 New button clicked!
+ Sun Nov 16 11:33:43 2025.777 Clearing loaded content
+ Sun Nov 16 11:33:43 2025.777 Property panel cleared
+ Sun Nov 16 11:33:43 2025.777 Content cleared successfully
+ Sun Nov 16 11:33:43 2025.777 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:43 2025.777 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:43 2025.793 New button clicked!
+ Sun Nov 16 11:33:43 2025.794 Clearing loaded content
+ Sun Nov 16 11:33:43 2025.794 Property panel cleared
+ Sun Nov 16 11:33:43 2025.794 Content cleared successfully
+ Sun Nov 16 11:33:43 2025.794 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:43 2025.794 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:43 2025.810 New button clicked!
+ Sun Nov 16 11:33:43 2025.810 Clearing loaded content
+ Sun Nov 16 11:33:43 2025.810 Property panel cleared
+ Sun Nov 16 11:33:43 2025.810 Content cleared successfully
+ Sun Nov 16 11:33:43 2025.810 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:43 2025.810 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:43 2025.827 New button clicked!
+ Sun Nov 16 11:33:43 2025.827 Clearing loaded content
+ Sun Nov 16 11:33:43 2025.827 Property panel cleared
+ Sun Nov 16 11:33:43 2025.827 Content cleared successfully
+ Sun Nov 16 11:33:43 2025.827 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:43 2025.827 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:43 2025.844 New button clicked!
+ Sun Nov 16 11:33:43 2025.844 Clearing loaded content
+ Sun Nov 16 11:33:43 2025.844 Property panel cleared
+ Sun Nov 16 11:33:43 2025.844 Content cleared successfully
+ Sun Nov 16 11:33:43 2025.844 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:43 2025.844 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:43 2025.860 New button clicked!
+ Sun Nov 16 11:33:43 2025.860 Clearing loaded content
+ Sun Nov 16 11:33:43 2025.860 Property panel cleared
+ Sun Nov 16 11:33:43 2025.860 Content cleared successfully
+ Sun Nov 16 11:33:43 2025.860 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:43 2025.860 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:43 2025.877 New button clicked!
+ Sun Nov 16 11:33:43 2025.877 Clearing loaded content
+ Sun Nov 16 11:33:43 2025.877 Property panel cleared
+ Sun Nov 16 11:33:43 2025.877 Content cleared successfully
+ Sun Nov 16 11:33:43 2025.877 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:43 2025.877 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:43 2025.894 New button clicked!
+ Sun Nov 16 11:33:43 2025.894 Clearing loaded content
+ Sun Nov 16 11:33:43 2025.894 Property panel cleared
+ Sun Nov 16 11:33:43 2025.894 Content cleared successfully
+ Sun Nov 16 11:33:43 2025.894 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:43 2025.894 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:43 2025.910 New button clicked!
+ Sun Nov 16 11:33:43 2025.910 Clearing loaded content
+ Sun Nov 16 11:33:43 2025.910 Property panel cleared
+ Sun Nov 16 11:33:43 2025.910 Content cleared successfully
+ Sun Nov 16 11:33:43 2025.910 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:43 2025.910 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:43 2025.927 New button clicked!
+ Sun Nov 16 11:33:43 2025.927 Clearing loaded content
+ Sun Nov 16 11:33:43 2025.927 Property panel cleared
+ Sun Nov 16 11:33:43 2025.927 Content cleared successfully
+ Sun Nov 16 11:33:43 2025.927 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:43 2025.927 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:43 2025.944 New button clicked!
+ Sun Nov 16 11:33:43 2025.944 Clearing loaded content
+ Sun Nov 16 11:33:43 2025.944 Property panel cleared
+ Sun Nov 16 11:33:43 2025.944 Content cleared successfully
+ Sun Nov 16 11:33:43 2025.944 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:43 2025.944 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:43 2025.960 New button clicked!
+ Sun Nov 16 11:33:43 2025.960 Clearing loaded content
+ Sun Nov 16 11:33:43 2025.960 Property panel cleared
+ Sun Nov 16 11:33:43 2025.960 Content cleared successfully
+ Sun Nov 16 11:33:43 2025.960 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:43 2025.960 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:43 2025.977 New button clicked!
+ Sun Nov 16 11:33:43 2025.977 Clearing loaded content
+ Sun Nov 16 11:33:43 2025.977 Property panel cleared
+ Sun Nov 16 11:33:43 2025.977 Content cleared successfully
+ Sun Nov 16 11:33:43 2025.977 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:43 2025.977 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:43 2025.994 New button clicked!
+ Sun Nov 16 11:33:43 2025.994 Clearing loaded content
+ Sun Nov 16 11:33:43 2025.994 Property panel cleared
+ Sun Nov 16 11:33:43 2025.994 Content cleared successfully
+ Sun Nov 16 11:33:43 2025.994 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:43 2025.994 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:44 2025.010 New button clicked!
+ Sun Nov 16 11:33:44 2025.010 Clearing loaded content
+ Sun Nov 16 11:33:44 2025.010 Property panel cleared
+ Sun Nov 16 11:33:44 2025.010 Content cleared successfully
+ Sun Nov 16 11:33:44 2025.010 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:44 2025.010 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:44 2025.027 New button clicked!
+ Sun Nov 16 11:33:44 2025.027 Clearing loaded content
+ Sun Nov 16 11:33:44 2025.027 Property panel cleared
+ Sun Nov 16 11:33:44 2025.027 Content cleared successfully
+ Sun Nov 16 11:33:44 2025.027 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:44 2025.027 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:44 2025.044 New button clicked!
+ Sun Nov 16 11:33:44 2025.044 Clearing loaded content
+ Sun Nov 16 11:33:44 2025.044 Property panel cleared
+ Sun Nov 16 11:33:44 2025.044 Content cleared successfully
+ Sun Nov 16 11:33:44 2025.044 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:44 2025.044 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:44 2025.060 New button clicked!
+ Sun Nov 16 11:33:44 2025.060 Clearing loaded content
+ Sun Nov 16 11:33:44 2025.060 Property panel cleared
+ Sun Nov 16 11:33:44 2025.060 Content cleared successfully
+ Sun Nov 16 11:33:44 2025.060 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:44 2025.060 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:44 2025.077 New button clicked!
+ Sun Nov 16 11:33:44 2025.077 Clearing loaded content
+ Sun Nov 16 11:33:44 2025.077 Property panel cleared
+ Sun Nov 16 11:33:44 2025.077 Content cleared successfully
+ Sun Nov 16 11:33:44 2025.077 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:44 2025.077 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:44 2025.094 New button clicked!
+ Sun Nov 16 11:33:44 2025.094 Clearing loaded content
+ Sun Nov 16 11:33:44 2025.094 Property panel cleared
+ Sun Nov 16 11:33:44 2025.094 Content cleared successfully
+ Sun Nov 16 11:33:44 2025.094 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:44 2025.094 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:44 2025.110 New button clicked!
+ Sun Nov 16 11:33:44 2025.110 Clearing loaded content
+ Sun Nov 16 11:33:44 2025.110 Property panel cleared
+ Sun Nov 16 11:33:44 2025.110 Content cleared successfully
+ Sun Nov 16 11:33:44 2025.110 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:44 2025.110 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:44 2025.127 New button clicked!
+ Sun Nov 16 11:33:44 2025.127 Clearing loaded content
+ Sun Nov 16 11:33:44 2025.127 Property panel cleared
+ Sun Nov 16 11:33:44 2025.127 Content cleared successfully
+ Sun Nov 16 11:33:44 2025.127 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:44 2025.127 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:44 2025.144 New button clicked!
+ Sun Nov 16 11:33:44 2025.144 Clearing loaded content
+ Sun Nov 16 11:33:44 2025.144 Property panel cleared
+ Sun Nov 16 11:33:44 2025.144 Content cleared successfully
+ Sun Nov 16 11:33:44 2025.144 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:44 2025.144 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:44 2025.160 New button clicked!
+ Sun Nov 16 11:33:44 2025.160 Clearing loaded content
+ Sun Nov 16 11:33:44 2025.160 Property panel cleared
+ Sun Nov 16 11:33:44 2025.160 Content cleared successfully
+ Sun Nov 16 11:33:44 2025.160 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:44 2025.160 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:44 2025.177 New button clicked!
+ Sun Nov 16 11:33:44 2025.177 Clearing loaded content
+ Sun Nov 16 11:33:44 2025.177 Property panel cleared
+ Sun Nov 16 11:33:44 2025.177 Content cleared successfully
+ Sun Nov 16 11:33:44 2025.177 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:44 2025.177 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:44 2025.194 New button clicked!
+ Sun Nov 16 11:33:44 2025.194 Clearing loaded content
+ Sun Nov 16 11:33:44 2025.194 Property panel cleared
+ Sun Nov 16 11:33:44 2025.194 Content cleared successfully
+ Sun Nov 16 11:33:44 2025.194 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:44 2025.194 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:44 2025.210 New button clicked!
+ Sun Nov 16 11:33:44 2025.210 Clearing loaded content
+ Sun Nov 16 11:33:44 2025.210 Property panel cleared
+ Sun Nov 16 11:33:44 2025.210 Content cleared successfully
+ Sun Nov 16 11:33:44 2025.210 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:44 2025.210 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:44 2025.227 New button clicked!
+ Sun Nov 16 11:33:44 2025.227 Clearing loaded content
+ Sun Nov 16 11:33:44 2025.227 Property panel cleared
+ Sun Nov 16 11:33:44 2025.227 Content cleared successfully
+ Sun Nov 16 11:33:44 2025.227 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:44 2025.227 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:44 2025.244 New button clicked!
+ Sun Nov 16 11:33:44 2025.244 Clearing loaded content
+ Sun Nov 16 11:33:44 2025.244 Property panel cleared
+ Sun Nov 16 11:33:44 2025.244 Content cleared successfully
+ Sun Nov 16 11:33:44 2025.244 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:44 2025.244 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:44 2025.260 New button clicked!
+ Sun Nov 16 11:33:44 2025.260 Clearing loaded content
+ Sun Nov 16 11:33:44 2025.260 Property panel cleared
+ Sun Nov 16 11:33:44 2025.260 Content cleared successfully
+ Sun Nov 16 11:33:44 2025.260 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:44 2025.260 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:44 2025.277 New button clicked!
+ Sun Nov 16 11:33:44 2025.277 Clearing loaded content
+ Sun Nov 16 11:33:44 2025.277 Property panel cleared
+ Sun Nov 16 11:33:44 2025.277 Content cleared successfully
+ Sun Nov 16 11:33:44 2025.277 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:44 2025.277 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:44 2025.294 New button clicked!
+ Sun Nov 16 11:33:44 2025.294 Clearing loaded content
+ Sun Nov 16 11:33:44 2025.294 Property panel cleared
+ Sun Nov 16 11:33:44 2025.294 Content cleared successfully
+ Sun Nov 16 11:33:44 2025.294 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:44 2025.294 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:44 2025.310 New button clicked!
+ Sun Nov 16 11:33:44 2025.310 Clearing loaded content
+ Sun Nov 16 11:33:44 2025.310 Property panel cleared
+ Sun Nov 16 11:33:44 2025.310 Content cleared successfully
+ Sun Nov 16 11:33:44 2025.310 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:44 2025.310 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:44 2025.327 New button clicked!
+ Sun Nov 16 11:33:44 2025.327 Clearing loaded content
+ Sun Nov 16 11:33:44 2025.327 Property panel cleared
+ Sun Nov 16 11:33:44 2025.327 Content cleared successfully
+ Sun Nov 16 11:33:44 2025.327 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:44 2025.327 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:44 2025.344 New button clicked!
+ Sun Nov 16 11:33:44 2025.344 Clearing loaded content
+ Sun Nov 16 11:33:44 2025.344 Property panel cleared
+ Sun Nov 16 11:33:44 2025.344 Content cleared successfully
+ Sun Nov 16 11:33:44 2025.344 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:44 2025.344 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:44 2025.360 New button clicked!
+ Sun Nov 16 11:33:44 2025.360 Clearing loaded content
+ Sun Nov 16 11:33:44 2025.360 Property panel cleared
+ Sun Nov 16 11:33:44 2025.360 Content cleared successfully
+ Sun Nov 16 11:33:44 2025.360 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:44 2025.360 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:44 2025.377 New button clicked!
+ Sun Nov 16 11:33:44 2025.377 Clearing loaded content
+ Sun Nov 16 11:33:44 2025.377 Property panel cleared
+ Sun Nov 16 11:33:44 2025.377 Content cleared successfully
+ Sun Nov 16 11:33:44 2025.377 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:44 2025.377 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:44 2025.394 New button clicked!
+ Sun Nov 16 11:33:44 2025.394 Clearing loaded content
+ Sun Nov 16 11:33:44 2025.394 Property panel cleared
+ Sun Nov 16 11:33:44 2025.394 Content cleared successfully
+ Sun Nov 16 11:33:44 2025.394 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:44 2025.394 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:44 2025.410 New button clicked!
+ Sun Nov 16 11:33:44 2025.410 Clearing loaded content
+ Sun Nov 16 11:33:44 2025.410 Property panel cleared
+ Sun Nov 16 11:33:44 2025.410 Content cleared successfully
+ Sun Nov 16 11:33:44 2025.410 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:44 2025.410 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:44 2025.427 New button clicked!
+ Sun Nov 16 11:33:44 2025.427 Clearing loaded content
+ Sun Nov 16 11:33:44 2025.427 Property panel cleared
+ Sun Nov 16 11:33:44 2025.427 Content cleared successfully
+ Sun Nov 16 11:33:44 2025.427 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:44 2025.427 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:44 2025.444 New button clicked!
+ Sun Nov 16 11:33:44 2025.444 Clearing loaded content
+ Sun Nov 16 11:33:44 2025.444 Property panel cleared
+ Sun Nov 16 11:33:44 2025.444 Content cleared successfully
+ Sun Nov 16 11:33:44 2025.444 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:44 2025.444 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:44 2025.460 New button clicked!
+ Sun Nov 16 11:33:44 2025.460 Clearing loaded content
+ Sun Nov 16 11:33:44 2025.460 Property panel cleared
+ Sun Nov 16 11:33:44 2025.460 Content cleared successfully
+ Sun Nov 16 11:33:44 2025.460 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:44 2025.460 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:44 2025.477 New button clicked!
+ Sun Nov 16 11:33:44 2025.477 Clearing loaded content
+ Sun Nov 16 11:33:44 2025.477 Property panel cleared
+ Sun Nov 16 11:33:44 2025.477 Content cleared successfully
+ Sun Nov 16 11:33:44 2025.477 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:44 2025.477 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:44 2025.494 New button clicked!
+ Sun Nov 16 11:33:44 2025.494 Clearing loaded content
+ Sun Nov 16 11:33:44 2025.494 Property panel cleared
+ Sun Nov 16 11:33:44 2025.494 Content cleared successfully
+ Sun Nov 16 11:33:44 2025.494 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:44 2025.494 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:44 2025.510 New button clicked!
+ Sun Nov 16 11:33:44 2025.510 Clearing loaded content
+ Sun Nov 16 11:33:44 2025.510 Property panel cleared
+ Sun Nov 16 11:33:44 2025.510 Content cleared successfully
+ Sun Nov 16 11:33:44 2025.510 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:44 2025.510 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:44 2025.527 New button clicked!
+ Sun Nov 16 11:33:44 2025.527 Clearing loaded content
+ Sun Nov 16 11:33:44 2025.527 Property panel cleared
+ Sun Nov 16 11:33:44 2025.527 Content cleared successfully
+ Sun Nov 16 11:33:44 2025.527 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:44 2025.527 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:44 2025.544 New button clicked!
+ Sun Nov 16 11:33:44 2025.544 Clearing loaded content
+ Sun Nov 16 11:33:44 2025.544 Property panel cleared
+ Sun Nov 16 11:33:44 2025.544 Content cleared successfully
+ Sun Nov 16 11:33:44 2025.544 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:44 2025.544 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:44 2025.560 New button clicked!
+ Sun Nov 16 11:33:44 2025.560 Clearing loaded content
+ Sun Nov 16 11:33:44 2025.560 Property panel cleared
+ Sun Nov 16 11:33:44 2025.560 Content cleared successfully
+ Sun Nov 16 11:33:44 2025.560 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:44 2025.560 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:44 2025.577 New button clicked!
+ Sun Nov 16 11:33:44 2025.577 Clearing loaded content
+ Sun Nov 16 11:33:44 2025.577 Property panel cleared
+ Sun Nov 16 11:33:44 2025.577 Content cleared successfully
+ Sun Nov 16 11:33:44 2025.577 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:44 2025.577 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:44 2025.594 New button clicked!
+ Sun Nov 16 11:33:44 2025.594 Clearing loaded content
+ Sun Nov 16 11:33:44 2025.594 Property panel cleared
+ Sun Nov 16 11:33:44 2025.594 Content cleared successfully
+ Sun Nov 16 11:33:44 2025.594 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:44 2025.594 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:44 2025.610 New button clicked!
+ Sun Nov 16 11:33:44 2025.610 Clearing loaded content
+ Sun Nov 16 11:33:44 2025.610 Property panel cleared
+ Sun Nov 16 11:33:44 2025.610 Content cleared successfully
+ Sun Nov 16 11:33:44 2025.610 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:44 2025.610 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:44 2025.627 New button clicked!
+ Sun Nov 16 11:33:44 2025.627 Clearing loaded content
+ Sun Nov 16 11:33:44 2025.627 Property panel cleared
+ Sun Nov 16 11:33:44 2025.627 Content cleared successfully
+ Sun Nov 16 11:33:44 2025.627 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:44 2025.627 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:44 2025.644 New button clicked!
+ Sun Nov 16 11:33:44 2025.644 Clearing loaded content
+ Sun Nov 16 11:33:44 2025.644 Property panel cleared
+ Sun Nov 16 11:33:44 2025.644 Content cleared successfully
+ Sun Nov 16 11:33:44 2025.644 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:44 2025.644 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:44 2025.660 New button clicked!
+ Sun Nov 16 11:33:44 2025.660 Clearing loaded content
+ Sun Nov 16 11:33:44 2025.660 Property panel cleared
+ Sun Nov 16 11:33:44 2025.660 Content cleared successfully
+ Sun Nov 16 11:33:44 2025.660 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:44 2025.660 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:44 2025.677 New button clicked!
+ Sun Nov 16 11:33:44 2025.677 Clearing loaded content
+ Sun Nov 16 11:33:44 2025.677 Property panel cleared
+ Sun Nov 16 11:33:44 2025.677 Content cleared successfully
+ Sun Nov 16 11:33:44 2025.677 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:44 2025.677 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:44 2025.694 New button clicked!
+ Sun Nov 16 11:33:44 2025.694 Clearing loaded content
+ Sun Nov 16 11:33:44 2025.694 Property panel cleared
+ Sun Nov 16 11:33:44 2025.694 Content cleared successfully
+ Sun Nov 16 11:33:44 2025.694 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:44 2025.694 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:44 2025.710 New button clicked!
+ Sun Nov 16 11:33:44 2025.710 Clearing loaded content
+ Sun Nov 16 11:33:44 2025.710 Property panel cleared
+ Sun Nov 16 11:33:44 2025.710 Content cleared successfully
+ Sun Nov 16 11:33:44 2025.710 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:44 2025.710 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:44 2025.727 New button clicked!
+ Sun Nov 16 11:33:44 2025.727 Clearing loaded content
+ Sun Nov 16 11:33:44 2025.727 Property panel cleared
+ Sun Nov 16 11:33:44 2025.727 Content cleared successfully
+ Sun Nov 16 11:33:44 2025.727 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:44 2025.727 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:44 2025.744 New button clicked!
+ Sun Nov 16 11:33:44 2025.744 Clearing loaded content
+ Sun Nov 16 11:33:44 2025.744 Property panel cleared
+ Sun Nov 16 11:33:44 2025.744 Content cleared successfully
+ Sun Nov 16 11:33:44 2025.744 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:44 2025.744 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:44 2025.760 New button clicked!
+ Sun Nov 16 11:33:44 2025.760 Clearing loaded content
+ Sun Nov 16 11:33:44 2025.760 Property panel cleared
+ Sun Nov 16 11:33:44 2025.760 Content cleared successfully
+ Sun Nov 16 11:33:44 2025.760 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:44 2025.760 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:44 2025.777 New button clicked!
+ Sun Nov 16 11:33:44 2025.777 Clearing loaded content
+ Sun Nov 16 11:33:44 2025.777 Property panel cleared
+ Sun Nov 16 11:33:44 2025.777 Content cleared successfully
+ Sun Nov 16 11:33:44 2025.777 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:44 2025.777 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:44 2025.794 New button clicked!
+ Sun Nov 16 11:33:44 2025.794 Clearing loaded content
+ Sun Nov 16 11:33:44 2025.794 Property panel cleared
+ Sun Nov 16 11:33:44 2025.794 Content cleared successfully
+ Sun Nov 16 11:33:44 2025.794 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:44 2025.794 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:44 2025.810 New button clicked!
+ Sun Nov 16 11:33:44 2025.810 Clearing loaded content
+ Sun Nov 16 11:33:44 2025.810 Property panel cleared
+ Sun Nov 16 11:33:44 2025.810 Content cleared successfully
+ Sun Nov 16 11:33:44 2025.810 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:44 2025.810 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:44 2025.827 New button clicked!
+ Sun Nov 16 11:33:44 2025.827 Clearing loaded content
+ Sun Nov 16 11:33:44 2025.827 Property panel cleared
+ Sun Nov 16 11:33:44 2025.827 Content cleared successfully
+ Sun Nov 16 11:33:44 2025.827 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:44 2025.827 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:44 2025.844 New button clicked!
+ Sun Nov 16 11:33:44 2025.844 Clearing loaded content
+ Sun Nov 16 11:33:44 2025.844 Property panel cleared
+ Sun Nov 16 11:33:44 2025.844 Content cleared successfully
+ Sun Nov 16 11:33:44 2025.844 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:44 2025.844 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:44 2025.860 New button clicked!
+ Sun Nov 16 11:33:44 2025.860 Clearing loaded content
+ Sun Nov 16 11:33:44 2025.860 Property panel cleared
+ Sun Nov 16 11:33:44 2025.860 Content cleared successfully
+ Sun Nov 16 11:33:44 2025.860 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:44 2025.860 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:44 2025.877 New button clicked!
+ Sun Nov 16 11:33:44 2025.877 Clearing loaded content
+ Sun Nov 16 11:33:44 2025.877 Property panel cleared
+ Sun Nov 16 11:33:44 2025.877 Content cleared successfully
+ Sun Nov 16 11:33:44 2025.877 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:44 2025.877 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:44 2025.894 New button clicked!
+ Sun Nov 16 11:33:44 2025.894 Clearing loaded content
+ Sun Nov 16 11:33:44 2025.894 Property panel cleared
+ Sun Nov 16 11:33:44 2025.894 Content cleared successfully
+ Sun Nov 16 11:33:44 2025.894 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:44 2025.894 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:44 2025.910 New button clicked!
+ Sun Nov 16 11:33:44 2025.910 Clearing loaded content
+ Sun Nov 16 11:33:44 2025.910 Property panel cleared
+ Sun Nov 16 11:33:44 2025.910 Content cleared successfully
+ Sun Nov 16 11:33:44 2025.910 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:44 2025.910 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:44 2025.927 New button clicked!
+ Sun Nov 16 11:33:44 2025.927 Clearing loaded content
+ Sun Nov 16 11:33:44 2025.927 Property panel cleared
+ Sun Nov 16 11:33:44 2025.927 Content cleared successfully
+ Sun Nov 16 11:33:44 2025.927 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:44 2025.927 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:44 2025.944 New button clicked!
+ Sun Nov 16 11:33:44 2025.944 Clearing loaded content
+ Sun Nov 16 11:33:44 2025.944 Property panel cleared
+ Sun Nov 16 11:33:44 2025.944 Content cleared successfully
+ Sun Nov 16 11:33:44 2025.944 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:44 2025.944 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:44 2025.960 New button clicked!
+ Sun Nov 16 11:33:44 2025.960 Clearing loaded content
+ Sun Nov 16 11:33:44 2025.960 Property panel cleared
+ Sun Nov 16 11:33:44 2025.960 Content cleared successfully
+ Sun Nov 16 11:33:44 2025.960 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:44 2025.960 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:44 2025.977 New button clicked!
+ Sun Nov 16 11:33:44 2025.977 Clearing loaded content
+ Sun Nov 16 11:33:44 2025.977 Property panel cleared
+ Sun Nov 16 11:33:44 2025.977 Content cleared successfully
+ Sun Nov 16 11:33:44 2025.977 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:44 2025.977 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:44 2025.994 New button clicked!
+ Sun Nov 16 11:33:44 2025.994 Clearing loaded content
+ Sun Nov 16 11:33:44 2025.994 Property panel cleared
+ Sun Nov 16 11:33:44 2025.994 Content cleared successfully
+ Sun Nov 16 11:33:44 2025.994 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:44 2025.994 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:45 2025.010 New button clicked!
+ Sun Nov 16 11:33:45 2025.010 Clearing loaded content
+ Sun Nov 16 11:33:45 2025.010 Property panel cleared
+ Sun Nov 16 11:33:45 2025.010 Content cleared successfully
+ Sun Nov 16 11:33:45 2025.010 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:45 2025.010 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:45 2025.027 New button clicked!
+ Sun Nov 16 11:33:45 2025.027 Clearing loaded content
+ Sun Nov 16 11:33:45 2025.027 Property panel cleared
+ Sun Nov 16 11:33:45 2025.027 Content cleared successfully
+ Sun Nov 16 11:33:45 2025.027 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:45 2025.027 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:45 2025.044 New button clicked!
+ Sun Nov 16 11:33:45 2025.044 Clearing loaded content
+ Sun Nov 16 11:33:45 2025.044 Property panel cleared
+ Sun Nov 16 11:33:45 2025.044 Content cleared successfully
+ Sun Nov 16 11:33:45 2025.044 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:45 2025.044 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:45 2025.060 New button clicked!
+ Sun Nov 16 11:33:45 2025.060 Clearing loaded content
+ Sun Nov 16 11:33:45 2025.060 Property panel cleared
+ Sun Nov 16 11:33:45 2025.060 Content cleared successfully
+ Sun Nov 16 11:33:45 2025.060 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:45 2025.060 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:45 2025.077 New button clicked!
+ Sun Nov 16 11:33:45 2025.077 Clearing loaded content
+ Sun Nov 16 11:33:45 2025.077 Property panel cleared
+ Sun Nov 16 11:33:45 2025.077 Content cleared successfully
+ Sun Nov 16 11:33:45 2025.077 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:45 2025.077 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:45 2025.094 New button clicked!
+ Sun Nov 16 11:33:45 2025.094 Clearing loaded content
+ Sun Nov 16 11:33:45 2025.094 Property panel cleared
+ Sun Nov 16 11:33:45 2025.094 Content cleared successfully
+ Sun Nov 16 11:33:45 2025.094 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:45 2025.094 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:45 2025.110 New button clicked!
+ Sun Nov 16 11:33:45 2025.110 Clearing loaded content
+ Sun Nov 16 11:33:45 2025.110 Property panel cleared
+ Sun Nov 16 11:33:45 2025.110 Content cleared successfully
+ Sun Nov 16 11:33:45 2025.110 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:45 2025.110 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:45 2025.127 New button clicked!
+ Sun Nov 16 11:33:45 2025.127 Clearing loaded content
+ Sun Nov 16 11:33:45 2025.127 Property panel cleared
+ Sun Nov 16 11:33:45 2025.127 Content cleared successfully
+ Sun Nov 16 11:33:45 2025.127 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:45 2025.127 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:45 2025.144 New button clicked!
+ Sun Nov 16 11:33:45 2025.144 Clearing loaded content
+ Sun Nov 16 11:33:45 2025.144 Property panel cleared
+ Sun Nov 16 11:33:45 2025.144 Content cleared successfully
+ Sun Nov 16 11:33:45 2025.144 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:45 2025.144 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:45 2025.160 New button clicked!
+ Sun Nov 16 11:33:45 2025.160 Clearing loaded content
+ Sun Nov 16 11:33:45 2025.160 Property panel cleared
+ Sun Nov 16 11:33:45 2025.160 Content cleared successfully
+ Sun Nov 16 11:33:45 2025.160 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:45 2025.160 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:45 2025.177 New button clicked!
+ Sun Nov 16 11:33:45 2025.177 Clearing loaded content
+ Sun Nov 16 11:33:45 2025.177 Property panel cleared
+ Sun Nov 16 11:33:45 2025.177 Content cleared successfully
+ Sun Nov 16 11:33:45 2025.177 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:45 2025.177 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:45 2025.194 New button clicked!
+ Sun Nov 16 11:33:45 2025.194 Clearing loaded content
+ Sun Nov 16 11:33:45 2025.194 Property panel cleared
+ Sun Nov 16 11:33:45 2025.194 Content cleared successfully
+ Sun Nov 16 11:33:45 2025.194 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:45 2025.194 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:45 2025.210 New button clicked!
+ Sun Nov 16 11:33:45 2025.210 Clearing loaded content
+ Sun Nov 16 11:33:45 2025.210 Property panel cleared
+ Sun Nov 16 11:33:45 2025.210 Content cleared successfully
+ Sun Nov 16 11:33:45 2025.210 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:45 2025.210 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:45 2025.227 New button clicked!
+ Sun Nov 16 11:33:45 2025.227 Clearing loaded content
+ Sun Nov 16 11:33:45 2025.227 Property panel cleared
+ Sun Nov 16 11:33:45 2025.227 Content cleared successfully
+ Sun Nov 16 11:33:45 2025.227 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:45 2025.227 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:45 2025.244 New button clicked!
+ Sun Nov 16 11:33:45 2025.244 Clearing loaded content
+ Sun Nov 16 11:33:45 2025.244 Property panel cleared
+ Sun Nov 16 11:33:45 2025.244 Content cleared successfully
+ Sun Nov 16 11:33:45 2025.244 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:45 2025.244 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:45 2025.260 New button clicked!
+ Sun Nov 16 11:33:45 2025.260 Clearing loaded content
+ Sun Nov 16 11:33:45 2025.260 Property panel cleared
+ Sun Nov 16 11:33:45 2025.260 Content cleared successfully
+ Sun Nov 16 11:33:45 2025.260 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:45 2025.260 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:45 2025.277 New button clicked!
+ Sun Nov 16 11:33:45 2025.277 Clearing loaded content
+ Sun Nov 16 11:33:45 2025.277 Property panel cleared
+ Sun Nov 16 11:33:45 2025.277 Content cleared successfully
+ Sun Nov 16 11:33:45 2025.277 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:45 2025.277 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:45 2025.294 New button clicked!
+ Sun Nov 16 11:33:45 2025.294 Clearing loaded content
+ Sun Nov 16 11:33:45 2025.294 Property panel cleared
+ Sun Nov 16 11:33:45 2025.294 Content cleared successfully
+ Sun Nov 16 11:33:45 2025.294 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:45 2025.294 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:45 2025.310 New button clicked!
+ Sun Nov 16 11:33:45 2025.310 Clearing loaded content
+ Sun Nov 16 11:33:45 2025.310 Property panel cleared
+ Sun Nov 16 11:33:45 2025.310 Content cleared successfully
+ Sun Nov 16 11:33:45 2025.310 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:45 2025.310 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:45 2025.327 New button clicked!
+ Sun Nov 16 11:33:45 2025.327 Clearing loaded content
+ Sun Nov 16 11:33:45 2025.327 Property panel cleared
+ Sun Nov 16 11:33:45 2025.327 Content cleared successfully
+ Sun Nov 16 11:33:45 2025.327 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:45 2025.327 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:45 2025.344 New button clicked!
+ Sun Nov 16 11:33:45 2025.344 Clearing loaded content
+ Sun Nov 16 11:33:45 2025.344 Property panel cleared
+ Sun Nov 16 11:33:45 2025.344 Content cleared successfully
+ Sun Nov 16 11:33:45 2025.344 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:45 2025.344 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:45 2025.360 New button clicked!
+ Sun Nov 16 11:33:45 2025.360 Clearing loaded content
+ Sun Nov 16 11:33:45 2025.360 Property panel cleared
+ Sun Nov 16 11:33:45 2025.360 Content cleared successfully
+ Sun Nov 16 11:33:45 2025.360 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:45 2025.360 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:45 2025.377 New button clicked!
+ Sun Nov 16 11:33:45 2025.377 Clearing loaded content
+ Sun Nov 16 11:33:45 2025.377 Property panel cleared
+ Sun Nov 16 11:33:45 2025.377 Content cleared successfully
+ Sun Nov 16 11:33:45 2025.377 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:45 2025.377 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:45 2025.394 New button clicked!
+ Sun Nov 16 11:33:45 2025.394 Clearing loaded content
+ Sun Nov 16 11:33:45 2025.394 Property panel cleared
+ Sun Nov 16 11:33:45 2025.394 Content cleared successfully
+ Sun Nov 16 11:33:45 2025.394 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:45 2025.394 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:45 2025.410 New button clicked!
+ Sun Nov 16 11:33:45 2025.410 Clearing loaded content
+ Sun Nov 16 11:33:45 2025.410 Property panel cleared
+ Sun Nov 16 11:33:45 2025.410 Content cleared successfully
+ Sun Nov 16 11:33:45 2025.410 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:45 2025.410 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:45 2025.427 New button clicked!
+ Sun Nov 16 11:33:45 2025.427 Clearing loaded content
+ Sun Nov 16 11:33:45 2025.427 Property panel cleared
+ Sun Nov 16 11:33:45 2025.427 Content cleared successfully
+ Sun Nov 16 11:33:45 2025.427 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:45 2025.427 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:45 2025.444 New button clicked!
+ Sun Nov 16 11:33:45 2025.444 Clearing loaded content
+ Sun Nov 16 11:33:45 2025.444 Property panel cleared
+ Sun Nov 16 11:33:45 2025.444 Content cleared successfully
+ Sun Nov 16 11:33:45 2025.444 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:45 2025.444 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:45 2025.460 New button clicked!
+ Sun Nov 16 11:33:45 2025.460 Clearing loaded content
+ Sun Nov 16 11:33:45 2025.460 Property panel cleared
+ Sun Nov 16 11:33:45 2025.460 Content cleared successfully
+ Sun Nov 16 11:33:45 2025.460 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:45 2025.460 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:45 2025.477 New button clicked!
+ Sun Nov 16 11:33:45 2025.477 Clearing loaded content
+ Sun Nov 16 11:33:45 2025.477 Property panel cleared
+ Sun Nov 16 11:33:45 2025.477 Content cleared successfully
+ Sun Nov 16 11:33:45 2025.477 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:45 2025.477 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:45 2025.494 New button clicked!
+ Sun Nov 16 11:33:45 2025.494 Clearing loaded content
+ Sun Nov 16 11:33:45 2025.494 Property panel cleared
+ Sun Nov 16 11:33:45 2025.494 Content cleared successfully
+ Sun Nov 16 11:33:45 2025.494 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:45 2025.494 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:45 2025.510 New button clicked!
+ Sun Nov 16 11:33:45 2025.510 Clearing loaded content
+ Sun Nov 16 11:33:45 2025.510 Property panel cleared
+ Sun Nov 16 11:33:45 2025.510 Content cleared successfully
+ Sun Nov 16 11:33:45 2025.510 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:45 2025.510 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:45 2025.527 New button clicked!
+ Sun Nov 16 11:33:45 2025.527 Clearing loaded content
+ Sun Nov 16 11:33:45 2025.527 Property panel cleared
+ Sun Nov 16 11:33:45 2025.527 Content cleared successfully
+ Sun Nov 16 11:33:45 2025.527 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:45 2025.527 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:45 2025.544 New button clicked!
+ Sun Nov 16 11:33:45 2025.544 Clearing loaded content
+ Sun Nov 16 11:33:45 2025.544 Property panel cleared
+ Sun Nov 16 11:33:45 2025.544 Content cleared successfully
+ Sun Nov 16 11:33:45 2025.544 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:45 2025.544 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:45 2025.560 New button clicked!
+ Sun Nov 16 11:33:45 2025.560 Clearing loaded content
+ Sun Nov 16 11:33:45 2025.560 Property panel cleared
+ Sun Nov 16 11:33:45 2025.560 Content cleared successfully
+ Sun Nov 16 11:33:45 2025.560 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:45 2025.560 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:45 2025.577 New button clicked!
+ Sun Nov 16 11:33:45 2025.577 Clearing loaded content
+ Sun Nov 16 11:33:45 2025.577 Property panel cleared
+ Sun Nov 16 11:33:45 2025.577 Content cleared successfully
+ Sun Nov 16 11:33:45 2025.577 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:45 2025.577 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:45 2025.594 New button clicked!
+ Sun Nov 16 11:33:45 2025.594 Clearing loaded content
+ Sun Nov 16 11:33:45 2025.594 Property panel cleared
+ Sun Nov 16 11:33:45 2025.594 Content cleared successfully
+ Sun Nov 16 11:33:45 2025.594 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:45 2025.594 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:45 2025.610 New button clicked!
+ Sun Nov 16 11:33:45 2025.610 Clearing loaded content
+ Sun Nov 16 11:33:45 2025.610 Property panel cleared
+ Sun Nov 16 11:33:45 2025.610 Content cleared successfully
+ Sun Nov 16 11:33:45 2025.610 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:45 2025.610 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:45 2025.627 New button clicked!
+ Sun Nov 16 11:33:45 2025.627 Clearing loaded content
+ Sun Nov 16 11:33:45 2025.627 Property panel cleared
+ Sun Nov 16 11:33:45 2025.627 Content cleared successfully
+ Sun Nov 16 11:33:45 2025.627 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:45 2025.627 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:45 2025.644 New button clicked!
+ Sun Nov 16 11:33:45 2025.644 Clearing loaded content
+ Sun Nov 16 11:33:45 2025.644 Property panel cleared
+ Sun Nov 16 11:33:45 2025.644 Content cleared successfully
+ Sun Nov 16 11:33:45 2025.644 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:45 2025.644 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:45 2025.660 New button clicked!
+ Sun Nov 16 11:33:45 2025.660 Clearing loaded content
+ Sun Nov 16 11:33:45 2025.660 Property panel cleared
+ Sun Nov 16 11:33:45 2025.660 Content cleared successfully
+ Sun Nov 16 11:33:45 2025.660 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:45 2025.660 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:45 2025.677 New button clicked!
+ Sun Nov 16 11:33:45 2025.677 Clearing loaded content
+ Sun Nov 16 11:33:45 2025.677 Property panel cleared
+ Sun Nov 16 11:33:45 2025.677 Content cleared successfully
+ Sun Nov 16 11:33:45 2025.677 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:45 2025.677 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:45 2025.694 New button clicked!
+ Sun Nov 16 11:33:45 2025.694 Clearing loaded content
+ Sun Nov 16 11:33:45 2025.694 Property panel cleared
+ Sun Nov 16 11:33:45 2025.694 Content cleared successfully
+ Sun Nov 16 11:33:45 2025.694 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:45 2025.694 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:45 2025.712 New button clicked!
+ Sun Nov 16 11:33:45 2025.712 Clearing loaded content
+ Sun Nov 16 11:33:45 2025.712 Property panel cleared
+ Sun Nov 16 11:33:45 2025.712 Content cleared successfully
+ Sun Nov 16 11:33:45 2025.712 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:45 2025.712 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:45 2025.728 New button clicked!
+ Sun Nov 16 11:33:45 2025.728 Clearing loaded content
+ Sun Nov 16 11:33:45 2025.728 Property panel cleared
+ Sun Nov 16 11:33:45 2025.728 Content cleared successfully
+ Sun Nov 16 11:33:45 2025.728 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:45 2025.728 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:45 2025.745 New button clicked!
+ Sun Nov 16 11:33:45 2025.745 Clearing loaded content
+ Sun Nov 16 11:33:45 2025.745 Property panel cleared
+ Sun Nov 16 11:33:45 2025.745 Content cleared successfully
+ Sun Nov 16 11:33:45 2025.745 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:45 2025.745 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:45 2025.762 New button clicked!
+ Sun Nov 16 11:33:45 2025.762 Clearing loaded content
+ Sun Nov 16 11:33:45 2025.762 Property panel cleared
+ Sun Nov 16 11:33:45 2025.762 Content cleared successfully
+ Sun Nov 16 11:33:45 2025.762 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:45 2025.762 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:45 2025.778 New button clicked!
+ Sun Nov 16 11:33:45 2025.778 Clearing loaded content
+ Sun Nov 16 11:33:45 2025.778 Property panel cleared
+ Sun Nov 16 11:33:45 2025.778 Content cleared successfully
+ Sun Nov 16 11:33:45 2025.778 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:45 2025.778 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:45 2025.795 New button clicked!
+ Sun Nov 16 11:33:45 2025.795 Clearing loaded content
+ Sun Nov 16 11:33:45 2025.795 Property panel cleared
+ Sun Nov 16 11:33:45 2025.795 Content cleared successfully
+ Sun Nov 16 11:33:45 2025.795 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:45 2025.795 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:45 2025.812 New button clicked!
+ Sun Nov 16 11:33:45 2025.812 Clearing loaded content
+ Sun Nov 16 11:33:45 2025.812 Property panel cleared
+ Sun Nov 16 11:33:45 2025.812 Content cleared successfully
+ Sun Nov 16 11:33:45 2025.812 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:45 2025.812 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:45 2025.828 New button clicked!
+ Sun Nov 16 11:33:45 2025.828 Clearing loaded content
+ Sun Nov 16 11:33:45 2025.828 Property panel cleared
+ Sun Nov 16 11:33:45 2025.828 Content cleared successfully
+ Sun Nov 16 11:33:45 2025.828 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:45 2025.828 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:45 2025.845 New button clicked!
+ Sun Nov 16 11:33:45 2025.845 Clearing loaded content
+ Sun Nov 16 11:33:45 2025.845 Property panel cleared
+ Sun Nov 16 11:33:45 2025.845 Content cleared successfully
+ Sun Nov 16 11:33:45 2025.845 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:45 2025.845 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:45 2025.862 New button clicked!
+ Sun Nov 16 11:33:45 2025.862 Clearing loaded content
+ Sun Nov 16 11:33:45 2025.862 Property panel cleared
+ Sun Nov 16 11:33:45 2025.862 Content cleared successfully
+ Sun Nov 16 11:33:45 2025.862 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:45 2025.862 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:45 2025.878 New button clicked!
+ Sun Nov 16 11:33:45 2025.878 Clearing loaded content
+ Sun Nov 16 11:33:45 2025.878 Property panel cleared
+ Sun Nov 16 11:33:45 2025.878 Content cleared successfully
+ Sun Nov 16 11:33:45 2025.878 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:45 2025.878 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:45 2025.895 New button clicked!
+ Sun Nov 16 11:33:45 2025.895 Clearing loaded content
+ Sun Nov 16 11:33:45 2025.895 Property panel cleared
+ Sun Nov 16 11:33:45 2025.895 Content cleared successfully
+ Sun Nov 16 11:33:45 2025.895 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:45 2025.895 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:45 2025.914 New button clicked!
+ Sun Nov 16 11:33:45 2025.914 Clearing loaded content
+ Sun Nov 16 11:33:45 2025.914 Property panel cleared
+ Sun Nov 16 11:33:45 2025.914 Content cleared successfully
+ Sun Nov 16 11:33:45 2025.914 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:45 2025.914 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:45 2025.931 New button clicked!
+ Sun Nov 16 11:33:45 2025.931 Clearing loaded content
+ Sun Nov 16 11:33:45 2025.931 Property panel cleared
+ Sun Nov 16 11:33:45 2025.931 Content cleared successfully
+ Sun Nov 16 11:33:45 2025.931 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:45 2025.931 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:45 2025.948 New button clicked!
+ Sun Nov 16 11:33:45 2025.948 Clearing loaded content
+ Sun Nov 16 11:33:45 2025.948 Property panel cleared
+ Sun Nov 16 11:33:45 2025.948 Content cleared successfully
+ Sun Nov 16 11:33:45 2025.948 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:45 2025.948 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:45 2025.964 New button clicked!
+ Sun Nov 16 11:33:45 2025.964 Clearing loaded content
+ Sun Nov 16 11:33:45 2025.964 Property panel cleared
+ Sun Nov 16 11:33:45 2025.964 Content cleared successfully
+ Sun Nov 16 11:33:45 2025.964 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:45 2025.964 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:45 2025.981 New button clicked!
+ Sun Nov 16 11:33:45 2025.981 Clearing loaded content
+ Sun Nov 16 11:33:45 2025.981 Property panel cleared
+ Sun Nov 16 11:33:45 2025.981 Content cleared successfully
+ Sun Nov 16 11:33:45 2025.981 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:45 2025.981 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:45 2025.998 New button clicked!
+ Sun Nov 16 11:33:45 2025.998 Clearing loaded content
+ Sun Nov 16 11:33:45 2025.998 Property panel cleared
+ Sun Nov 16 11:33:45 2025.998 Content cleared successfully
+ Sun Nov 16 11:33:45 2025.998 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:45 2025.998 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:46 2025.014 New button clicked!
+ Sun Nov 16 11:33:46 2025.014 Clearing loaded content
+ Sun Nov 16 11:33:46 2025.014 Property panel cleared
+ Sun Nov 16 11:33:46 2025.014 Content cleared successfully
+ Sun Nov 16 11:33:46 2025.014 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:46 2025.014 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:46 2025.031 New button clicked!
+ Sun Nov 16 11:33:46 2025.031 Clearing loaded content
+ Sun Nov 16 11:33:46 2025.031 Property panel cleared
+ Sun Nov 16 11:33:46 2025.031 Content cleared successfully
+ Sun Nov 16 11:33:46 2025.031 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:46 2025.031 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:46 2025.048 New button clicked!
+ Sun Nov 16 11:33:46 2025.048 Clearing loaded content
+ Sun Nov 16 11:33:46 2025.048 Property panel cleared
+ Sun Nov 16 11:33:46 2025.048 Content cleared successfully
+ Sun Nov 16 11:33:46 2025.048 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:46 2025.048 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:46 2025.064 New button clicked!
+ Sun Nov 16 11:33:46 2025.064 Clearing loaded content
+ Sun Nov 16 11:33:46 2025.064 Property panel cleared
+ Sun Nov 16 11:33:46 2025.064 Content cleared successfully
+ Sun Nov 16 11:33:46 2025.064 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:46 2025.064 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:46 2025.081 New button clicked!
+ Sun Nov 16 11:33:46 2025.081 Clearing loaded content
+ Sun Nov 16 11:33:46 2025.081 Property panel cleared
+ Sun Nov 16 11:33:46 2025.081 Content cleared successfully
+ Sun Nov 16 11:33:46 2025.081 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:46 2025.081 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:46 2025.098 New button clicked!
+ Sun Nov 16 11:33:46 2025.098 Clearing loaded content
+ Sun Nov 16 11:33:46 2025.098 Property panel cleared
+ Sun Nov 16 11:33:46 2025.098 Content cleared successfully
+ Sun Nov 16 11:33:46 2025.098 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:46 2025.098 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:46 2025.114 New button clicked!
+ Sun Nov 16 11:33:46 2025.114 Clearing loaded content
+ Sun Nov 16 11:33:46 2025.114 Property panel cleared
+ Sun Nov 16 11:33:46 2025.114 Content cleared successfully
+ Sun Nov 16 11:33:46 2025.114 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:46 2025.114 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:46 2025.131 New button clicked!
+ Sun Nov 16 11:33:46 2025.131 Clearing loaded content
+ Sun Nov 16 11:33:46 2025.131 Property panel cleared
+ Sun Nov 16 11:33:46 2025.131 Content cleared successfully
+ Sun Nov 16 11:33:46 2025.131 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:46 2025.131 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:46 2025.148 New button clicked!
+ Sun Nov 16 11:33:46 2025.148 Clearing loaded content
+ Sun Nov 16 11:33:46 2025.148 Property panel cleared
+ Sun Nov 16 11:33:46 2025.148 Content cleared successfully
+ Sun Nov 16 11:33:46 2025.148 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:46 2025.148 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:46 2025.164 New button clicked!
+ Sun Nov 16 11:33:46 2025.164 Clearing loaded content
+ Sun Nov 16 11:33:46 2025.164 Property panel cleared
+ Sun Nov 16 11:33:46 2025.164 Content cleared successfully
+ Sun Nov 16 11:33:46 2025.164 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:46 2025.164 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:46 2025.181 New button clicked!
+ Sun Nov 16 11:33:46 2025.181 Clearing loaded content
+ Sun Nov 16 11:33:46 2025.181 Property panel cleared
+ Sun Nov 16 11:33:46 2025.181 Content cleared successfully
+ Sun Nov 16 11:33:46 2025.181 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:46 2025.181 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:46 2025.198 New button clicked!
+ Sun Nov 16 11:33:46 2025.198 Clearing loaded content
+ Sun Nov 16 11:33:46 2025.198 Property panel cleared
+ Sun Nov 16 11:33:46 2025.198 Content cleared successfully
+ Sun Nov 16 11:33:46 2025.198 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:46 2025.198 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:46 2025.214 New button clicked!
+ Sun Nov 16 11:33:46 2025.214 Clearing loaded content
+ Sun Nov 16 11:33:46 2025.214 Property panel cleared
+ Sun Nov 16 11:33:46 2025.214 Content cleared successfully
+ Sun Nov 16 11:33:46 2025.214 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:46 2025.214 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:46 2025.231 New button clicked!
+ Sun Nov 16 11:33:46 2025.231 Clearing loaded content
+ Sun Nov 16 11:33:46 2025.231 Property panel cleared
+ Sun Nov 16 11:33:46 2025.231 Content cleared successfully
+ Sun Nov 16 11:33:46 2025.231 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:46 2025.231 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:46 2025.248 New button clicked!
+ Sun Nov 16 11:33:46 2025.248 Clearing loaded content
+ Sun Nov 16 11:33:46 2025.248 Property panel cleared
+ Sun Nov 16 11:33:46 2025.248 Content cleared successfully
+ Sun Nov 16 11:33:46 2025.248 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:46 2025.248 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:46 2025.264 New button clicked!
+ Sun Nov 16 11:33:46 2025.264 Clearing loaded content
+ Sun Nov 16 11:33:46 2025.264 Property panel cleared
+ Sun Nov 16 11:33:46 2025.264 Content cleared successfully
+ Sun Nov 16 11:33:46 2025.264 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:46 2025.264 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:46 2025.281 New button clicked!
+ Sun Nov 16 11:33:46 2025.281 Clearing loaded content
+ Sun Nov 16 11:33:46 2025.281 Property panel cleared
+ Sun Nov 16 11:33:46 2025.281 Content cleared successfully
+ Sun Nov 16 11:33:46 2025.281 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:46 2025.281 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:46 2025.298 New button clicked!
+ Sun Nov 16 11:33:46 2025.298 Clearing loaded content
+ Sun Nov 16 11:33:46 2025.298 Property panel cleared
+ Sun Nov 16 11:33:46 2025.298 Content cleared successfully
+ Sun Nov 16 11:33:46 2025.298 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:46 2025.298 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:46 2025.314 New button clicked!
+ Sun Nov 16 11:33:46 2025.314 Clearing loaded content
+ Sun Nov 16 11:33:46 2025.314 Property panel cleared
+ Sun Nov 16 11:33:46 2025.314 Content cleared successfully
+ Sun Nov 16 11:33:46 2025.314 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:46 2025.314 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:46 2025.331 New button clicked!
+ Sun Nov 16 11:33:46 2025.331 Clearing loaded content
+ Sun Nov 16 11:33:46 2025.331 Property panel cleared
+ Sun Nov 16 11:33:46 2025.331 Content cleared successfully
+ Sun Nov 16 11:33:46 2025.331 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:46 2025.331 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:46 2025.348 New button clicked!
+ Sun Nov 16 11:33:46 2025.348 Clearing loaded content
+ Sun Nov 16 11:33:46 2025.348 Property panel cleared
+ Sun Nov 16 11:33:46 2025.348 Content cleared successfully
+ Sun Nov 16 11:33:46 2025.348 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:46 2025.348 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:46 2025.364 New button clicked!
+ Sun Nov 16 11:33:46 2025.364 Clearing loaded content
+ Sun Nov 16 11:33:46 2025.364 Property panel cleared
+ Sun Nov 16 11:33:46 2025.364 Content cleared successfully
+ Sun Nov 16 11:33:46 2025.364 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:46 2025.364 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:46 2025.381 New button clicked!
+ Sun Nov 16 11:33:46 2025.381 Clearing loaded content
+ Sun Nov 16 11:33:46 2025.381 Property panel cleared
+ Sun Nov 16 11:33:46 2025.381 Content cleared successfully
+ Sun Nov 16 11:33:46 2025.381 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:46 2025.381 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:46 2025.398 New button clicked!
+ Sun Nov 16 11:33:46 2025.398 Clearing loaded content
+ Sun Nov 16 11:33:46 2025.398 Property panel cleared
+ Sun Nov 16 11:33:46 2025.398 Content cleared successfully
+ Sun Nov 16 11:33:46 2025.398 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:46 2025.398 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:46 2025.414 New button clicked!
+ Sun Nov 16 11:33:46 2025.414 Clearing loaded content
+ Sun Nov 16 11:33:46 2025.414 Property panel cleared
+ Sun Nov 16 11:33:46 2025.414 Content cleared successfully
+ Sun Nov 16 11:33:46 2025.414 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:46 2025.414 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:46 2025.431 New button clicked!
+ Sun Nov 16 11:33:46 2025.431 Clearing loaded content
+ Sun Nov 16 11:33:46 2025.431 Property panel cleared
+ Sun Nov 16 11:33:46 2025.431 Content cleared successfully
+ Sun Nov 16 11:33:46 2025.431 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:46 2025.431 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:46 2025.448 New button clicked!
+ Sun Nov 16 11:33:46 2025.448 Clearing loaded content
+ Sun Nov 16 11:33:46 2025.448 Property panel cleared
+ Sun Nov 16 11:33:46 2025.448 Content cleared successfully
+ Sun Nov 16 11:33:46 2025.448 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:46 2025.448 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:46 2025.464 New button clicked!
+ Sun Nov 16 11:33:46 2025.464 Clearing loaded content
+ Sun Nov 16 11:33:46 2025.464 Property panel cleared
+ Sun Nov 16 11:33:46 2025.464 Content cleared successfully
+ Sun Nov 16 11:33:46 2025.464 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:46 2025.464 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:46 2025.481 New button clicked!
+ Sun Nov 16 11:33:46 2025.481 Clearing loaded content
+ Sun Nov 16 11:33:46 2025.481 Property panel cleared
+ Sun Nov 16 11:33:46 2025.481 Content cleared successfully
+ Sun Nov 16 11:33:46 2025.481 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:46 2025.481 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:46 2025.498 New button clicked!
+ Sun Nov 16 11:33:46 2025.498 Clearing loaded content
+ Sun Nov 16 11:33:46 2025.498 Property panel cleared
+ Sun Nov 16 11:33:46 2025.498 Content cleared successfully
+ Sun Nov 16 11:33:46 2025.498 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:46 2025.498 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:46 2025.514 New button clicked!
+ Sun Nov 16 11:33:46 2025.514 Clearing loaded content
+ Sun Nov 16 11:33:46 2025.514 Property panel cleared
+ Sun Nov 16 11:33:46 2025.514 Content cleared successfully
+ Sun Nov 16 11:33:46 2025.514 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:46 2025.514 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:46 2025.531 New button clicked!
+ Sun Nov 16 11:33:46 2025.531 Clearing loaded content
+ Sun Nov 16 11:33:46 2025.531 Property panel cleared
+ Sun Nov 16 11:33:46 2025.531 Content cleared successfully
+ Sun Nov 16 11:33:46 2025.531 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:46 2025.531 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:46 2025.548 New button clicked!
+ Sun Nov 16 11:33:46 2025.548 Clearing loaded content
+ Sun Nov 16 11:33:46 2025.548 Property panel cleared
+ Sun Nov 16 11:33:46 2025.548 Content cleared successfully
+ Sun Nov 16 11:33:46 2025.548 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:46 2025.548 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:46 2025.564 New button clicked!
+ Sun Nov 16 11:33:46 2025.564 Clearing loaded content
+ Sun Nov 16 11:33:46 2025.564 Property panel cleared
+ Sun Nov 16 11:33:46 2025.564 Content cleared successfully
+ Sun Nov 16 11:33:46 2025.564 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:46 2025.564 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:46 2025.581 New button clicked!
+ Sun Nov 16 11:33:46 2025.581 Clearing loaded content
+ Sun Nov 16 11:33:46 2025.581 Property panel cleared
+ Sun Nov 16 11:33:46 2025.581 Content cleared successfully
+ Sun Nov 16 11:33:46 2025.581 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:46 2025.581 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:46 2025.598 New button clicked!
+ Sun Nov 16 11:33:46 2025.598 Clearing loaded content
+ Sun Nov 16 11:33:46 2025.598 Property panel cleared
+ Sun Nov 16 11:33:46 2025.598 Content cleared successfully
+ Sun Nov 16 11:33:46 2025.598 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:46 2025.598 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:46 2025.614 New button clicked!
+ Sun Nov 16 11:33:46 2025.614 Clearing loaded content
+ Sun Nov 16 11:33:46 2025.614 Property panel cleared
+ Sun Nov 16 11:33:46 2025.614 Content cleared successfully
+ Sun Nov 16 11:33:46 2025.614 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:46 2025.614 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:46 2025.631 New button clicked!
+ Sun Nov 16 11:33:46 2025.631 Clearing loaded content
+ Sun Nov 16 11:33:46 2025.631 Property panel cleared
+ Sun Nov 16 11:33:46 2025.631 Content cleared successfully
+ Sun Nov 16 11:33:46 2025.631 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:46 2025.631 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:46 2025.648 New button clicked!
+ Sun Nov 16 11:33:46 2025.648 Clearing loaded content
+ Sun Nov 16 11:33:46 2025.648 Property panel cleared
+ Sun Nov 16 11:33:46 2025.648 Content cleared successfully
+ Sun Nov 16 11:33:46 2025.648 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:46 2025.648 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:46 2025.664 New button clicked!
+ Sun Nov 16 11:33:46 2025.664 Clearing loaded content
+ Sun Nov 16 11:33:46 2025.664 Property panel cleared
+ Sun Nov 16 11:33:46 2025.664 Content cleared successfully
+ Sun Nov 16 11:33:46 2025.664 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:46 2025.664 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:46 2025.681 New button clicked!
+ Sun Nov 16 11:33:46 2025.681 Clearing loaded content
+ Sun Nov 16 11:33:46 2025.681 Property panel cleared
+ Sun Nov 16 11:33:46 2025.681 Content cleared successfully
+ Sun Nov 16 11:33:46 2025.681 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:46 2025.681 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:46 2025.698 New button clicked!
+ Sun Nov 16 11:33:46 2025.698 Clearing loaded content
+ Sun Nov 16 11:33:46 2025.698 Property panel cleared
+ Sun Nov 16 11:33:46 2025.698 Content cleared successfully
+ Sun Nov 16 11:33:46 2025.698 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:46 2025.698 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:46 2025.714 New button clicked!
+ Sun Nov 16 11:33:46 2025.714 Clearing loaded content
+ Sun Nov 16 11:33:46 2025.714 Property panel cleared
+ Sun Nov 16 11:33:46 2025.714 Content cleared successfully
+ Sun Nov 16 11:33:46 2025.714 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:46 2025.714 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:46 2025.731 New button clicked!
+ Sun Nov 16 11:33:46 2025.731 Clearing loaded content
+ Sun Nov 16 11:33:46 2025.731 Property panel cleared
+ Sun Nov 16 11:33:46 2025.731 Content cleared successfully
+ Sun Nov 16 11:33:46 2025.731 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:46 2025.731 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:46 2025.748 New button clicked!
+ Sun Nov 16 11:33:46 2025.748 Clearing loaded content
+ Sun Nov 16 11:33:46 2025.748 Property panel cleared
+ Sun Nov 16 11:33:46 2025.748 Content cleared successfully
+ Sun Nov 16 11:33:46 2025.748 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:46 2025.748 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:46 2025.764 New button clicked!
+ Sun Nov 16 11:33:46 2025.764 Clearing loaded content
+ Sun Nov 16 11:33:46 2025.764 Property panel cleared
+ Sun Nov 16 11:33:46 2025.764 Content cleared successfully
+ Sun Nov 16 11:33:46 2025.764 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:46 2025.764 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:46 2025.781 New button clicked!
+ Sun Nov 16 11:33:46 2025.781 Clearing loaded content
+ Sun Nov 16 11:33:46 2025.781 Property panel cleared
+ Sun Nov 16 11:33:46 2025.781 Content cleared successfully
+ Sun Nov 16 11:33:46 2025.781 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:46 2025.781 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:46 2025.798 New button clicked!
+ Sun Nov 16 11:33:46 2025.798 Clearing loaded content
+ Sun Nov 16 11:33:46 2025.798 Property panel cleared
+ Sun Nov 16 11:33:46 2025.798 Content cleared successfully
+ Sun Nov 16 11:33:46 2025.798 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:46 2025.798 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:46 2025.814 New button clicked!
+ Sun Nov 16 11:33:46 2025.814 Clearing loaded content
+ Sun Nov 16 11:33:46 2025.814 Property panel cleared
+ Sun Nov 16 11:33:46 2025.814 Content cleared successfully
+ Sun Nov 16 11:33:46 2025.814 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:46 2025.814 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:46 2025.831 New button clicked!
+ Sun Nov 16 11:33:46 2025.831 Clearing loaded content
+ Sun Nov 16 11:33:46 2025.831 Property panel cleared
+ Sun Nov 16 11:33:46 2025.831 Content cleared successfully
+ Sun Nov 16 11:33:46 2025.831 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:46 2025.831 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:46 2025.848 New button clicked!
+ Sun Nov 16 11:33:46 2025.848 Clearing loaded content
+ Sun Nov 16 11:33:46 2025.848 Property panel cleared
+ Sun Nov 16 11:33:46 2025.848 Content cleared successfully
+ Sun Nov 16 11:33:46 2025.848 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:46 2025.848 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:46 2025.864 New button clicked!
+ Sun Nov 16 11:33:46 2025.864 Clearing loaded content
+ Sun Nov 16 11:33:46 2025.864 Property panel cleared
+ Sun Nov 16 11:33:46 2025.864 Content cleared successfully
+ Sun Nov 16 11:33:46 2025.864 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:46 2025.864 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:46 2025.881 New button clicked!
+ Sun Nov 16 11:33:46 2025.881 Clearing loaded content
+ Sun Nov 16 11:33:46 2025.881 Property panel cleared
+ Sun Nov 16 11:33:46 2025.881 Content cleared successfully
+ Sun Nov 16 11:33:46 2025.881 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:46 2025.881 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:46 2025.898 New button clicked!
+ Sun Nov 16 11:33:46 2025.898 Clearing loaded content
+ Sun Nov 16 11:33:46 2025.898 Property panel cleared
+ Sun Nov 16 11:33:46 2025.898 Content cleared successfully
+ Sun Nov 16 11:33:46 2025.898 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:46 2025.898 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:46 2025.914 New button clicked!
+ Sun Nov 16 11:33:46 2025.914 Clearing loaded content
+ Sun Nov 16 11:33:46 2025.914 Property panel cleared
+ Sun Nov 16 11:33:46 2025.914 Content cleared successfully
+ Sun Nov 16 11:33:46 2025.914 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:46 2025.914 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:46 2025.931 New button clicked!
+ Sun Nov 16 11:33:46 2025.931 Clearing loaded content
+ Sun Nov 16 11:33:46 2025.931 Property panel cleared
+ Sun Nov 16 11:33:46 2025.931 Content cleared successfully
+ Sun Nov 16 11:33:46 2025.931 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:46 2025.931 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:46 2025.948 New button clicked!
+ Sun Nov 16 11:33:46 2025.948 Clearing loaded content
+ Sun Nov 16 11:33:46 2025.948 Property panel cleared
+ Sun Nov 16 11:33:46 2025.948 Content cleared successfully
+ Sun Nov 16 11:33:46 2025.948 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:46 2025.948 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:46 2025.964 New button clicked!
+ Sun Nov 16 11:33:46 2025.964 Clearing loaded content
+ Sun Nov 16 11:33:46 2025.964 Property panel cleared
+ Sun Nov 16 11:33:46 2025.964 Content cleared successfully
+ Sun Nov 16 11:33:46 2025.964 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:46 2025.964 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:46 2025.981 New button clicked!
+ Sun Nov 16 11:33:46 2025.981 Clearing loaded content
+ Sun Nov 16 11:33:46 2025.981 Property panel cleared
+ Sun Nov 16 11:33:46 2025.981 Content cleared successfully
+ Sun Nov 16 11:33:46 2025.981 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:46 2025.981 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:46 2025.998 New button clicked!
+ Sun Nov 16 11:33:46 2025.998 Clearing loaded content
+ Sun Nov 16 11:33:46 2025.998 Property panel cleared
+ Sun Nov 16 11:33:46 2025.998 Content cleared successfully
+ Sun Nov 16 11:33:46 2025.998 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:46 2025.998 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:47 2025.014 New button clicked!
+ Sun Nov 16 11:33:47 2025.014 Clearing loaded content
+ Sun Nov 16 11:33:47 2025.014 Property panel cleared
+ Sun Nov 16 11:33:47 2025.014 Content cleared successfully
+ Sun Nov 16 11:33:47 2025.014 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:47 2025.014 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:47 2025.031 New button clicked!
+ Sun Nov 16 11:33:47 2025.031 Clearing loaded content
+ Sun Nov 16 11:33:47 2025.031 Property panel cleared
+ Sun Nov 16 11:33:47 2025.031 Content cleared successfully
+ Sun Nov 16 11:33:47 2025.031 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:47 2025.031 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:47 2025.048 New button clicked!
+ Sun Nov 16 11:33:47 2025.048 Clearing loaded content
+ Sun Nov 16 11:33:47 2025.048 Property panel cleared
+ Sun Nov 16 11:33:47 2025.048 Content cleared successfully
+ Sun Nov 16 11:33:47 2025.048 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:47 2025.048 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:47 2025.064 New button clicked!
+ Sun Nov 16 11:33:47 2025.064 Clearing loaded content
+ Sun Nov 16 11:33:47 2025.064 Property panel cleared
+ Sun Nov 16 11:33:47 2025.064 Content cleared successfully
+ Sun Nov 16 11:33:47 2025.064 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:47 2025.064 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:47 2025.081 New button clicked!
+ Sun Nov 16 11:33:47 2025.081 Clearing loaded content
+ Sun Nov 16 11:33:47 2025.081 Property panel cleared
+ Sun Nov 16 11:33:47 2025.081 Content cleared successfully
+ Sun Nov 16 11:33:47 2025.081 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:47 2025.081 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:47 2025.098 New button clicked!
+ Sun Nov 16 11:33:47 2025.098 Clearing loaded content
+ Sun Nov 16 11:33:47 2025.098 Property panel cleared
+ Sun Nov 16 11:33:47 2025.098 Content cleared successfully
+ Sun Nov 16 11:33:47 2025.098 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:47 2025.098 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:47 2025.114 New button clicked!
+ Sun Nov 16 11:33:47 2025.114 Clearing loaded content
+ Sun Nov 16 11:33:47 2025.114 Property panel cleared
+ Sun Nov 16 11:33:47 2025.114 Content cleared successfully
+ Sun Nov 16 11:33:47 2025.114 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:47 2025.114 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:47 2025.131 New button clicked!
+ Sun Nov 16 11:33:47 2025.131 Clearing loaded content
+ Sun Nov 16 11:33:47 2025.131 Property panel cleared
+ Sun Nov 16 11:33:47 2025.131 Content cleared successfully
+ Sun Nov 16 11:33:47 2025.131 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:47 2025.131 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:47 2025.148 New button clicked!
+ Sun Nov 16 11:33:47 2025.148 Clearing loaded content
+ Sun Nov 16 11:33:47 2025.148 Property panel cleared
+ Sun Nov 16 11:33:47 2025.148 Content cleared successfully
+ Sun Nov 16 11:33:47 2025.148 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:47 2025.148 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:47 2025.164 New button clicked!
+ Sun Nov 16 11:33:47 2025.164 Clearing loaded content
+ Sun Nov 16 11:33:47 2025.164 Property panel cleared
+ Sun Nov 16 11:33:47 2025.164 Content cleared successfully
+ Sun Nov 16 11:33:47 2025.164 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:47 2025.164 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:47 2025.181 New button clicked!
+ Sun Nov 16 11:33:47 2025.181 Clearing loaded content
+ Sun Nov 16 11:33:47 2025.181 Property panel cleared
+ Sun Nov 16 11:33:47 2025.181 Content cleared successfully
+ Sun Nov 16 11:33:47 2025.181 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:47 2025.181 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:47 2025.198 New button clicked!
+ Sun Nov 16 11:33:47 2025.198 Clearing loaded content
+ Sun Nov 16 11:33:47 2025.198 Property panel cleared
+ Sun Nov 16 11:33:47 2025.198 Content cleared successfully
+ Sun Nov 16 11:33:47 2025.198 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:47 2025.198 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:47 2025.214 New button clicked!
+ Sun Nov 16 11:33:47 2025.214 Clearing loaded content
+ Sun Nov 16 11:33:47 2025.214 Property panel cleared
+ Sun Nov 16 11:33:47 2025.214 Content cleared successfully
+ Sun Nov 16 11:33:47 2025.214 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:47 2025.214 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:47 2025.231 New button clicked!
+ Sun Nov 16 11:33:47 2025.231 Clearing loaded content
+ Sun Nov 16 11:33:47 2025.231 Property panel cleared
+ Sun Nov 16 11:33:47 2025.231 Content cleared successfully
+ Sun Nov 16 11:33:47 2025.231 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:47 2025.231 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:47 2025.248 New button clicked!
+ Sun Nov 16 11:33:47 2025.248 Clearing loaded content
+ Sun Nov 16 11:33:47 2025.248 Property panel cleared
+ Sun Nov 16 11:33:47 2025.248 Content cleared successfully
+ Sun Nov 16 11:33:47 2025.248 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:47 2025.248 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:47 2025.264 New button clicked!
+ Sun Nov 16 11:33:47 2025.264 Clearing loaded content
+ Sun Nov 16 11:33:47 2025.264 Property panel cleared
+ Sun Nov 16 11:33:47 2025.264 Content cleared successfully
+ Sun Nov 16 11:33:47 2025.264 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:47 2025.264 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:47 2025.281 New button clicked!
+ Sun Nov 16 11:33:47 2025.281 Clearing loaded content
+ Sun Nov 16 11:33:47 2025.281 Property panel cleared
+ Sun Nov 16 11:33:47 2025.281 Content cleared successfully
+ Sun Nov 16 11:33:47 2025.281 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:47 2025.281 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:47 2025.298 New button clicked!
+ Sun Nov 16 11:33:47 2025.298 Clearing loaded content
+ Sun Nov 16 11:33:47 2025.298 Property panel cleared
+ Sun Nov 16 11:33:47 2025.298 Content cleared successfully
+ Sun Nov 16 11:33:47 2025.298 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:47 2025.298 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:47 2025.314 New button clicked!
+ Sun Nov 16 11:33:47 2025.314 Clearing loaded content
+ Sun Nov 16 11:33:47 2025.314 Property panel cleared
+ Sun Nov 16 11:33:47 2025.314 Content cleared successfully
+ Sun Nov 16 11:33:47 2025.314 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:47 2025.314 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:47 2025.331 New button clicked!
+ Sun Nov 16 11:33:47 2025.331 Clearing loaded content
+ Sun Nov 16 11:33:47 2025.331 Property panel cleared
+ Sun Nov 16 11:33:47 2025.331 Content cleared successfully
+ Sun Nov 16 11:33:47 2025.331 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:47 2025.331 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:47 2025.348 New button clicked!
+ Sun Nov 16 11:33:47 2025.348 Clearing loaded content
+ Sun Nov 16 11:33:47 2025.348 Property panel cleared
+ Sun Nov 16 11:33:47 2025.348 Content cleared successfully
+ Sun Nov 16 11:33:47 2025.348 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:47 2025.348 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:47 2025.364 New button clicked!
+ Sun Nov 16 11:33:47 2025.364 Clearing loaded content
+ Sun Nov 16 11:33:47 2025.364 Property panel cleared
+ Sun Nov 16 11:33:47 2025.364 Content cleared successfully
+ Sun Nov 16 11:33:47 2025.364 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:47 2025.364 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:47 2025.381 New button clicked!
+ Sun Nov 16 11:33:47 2025.381 Clearing loaded content
+ Sun Nov 16 11:33:47 2025.381 Property panel cleared
+ Sun Nov 16 11:33:47 2025.381 Content cleared successfully
+ Sun Nov 16 11:33:47 2025.381 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:47 2025.381 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:47 2025.398 New button clicked!
+ Sun Nov 16 11:33:47 2025.398 Clearing loaded content
+ Sun Nov 16 11:33:47 2025.398 Property panel cleared
+ Sun Nov 16 11:33:47 2025.398 Content cleared successfully
+ Sun Nov 16 11:33:47 2025.398 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:47 2025.398 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:47 2025.414 New button clicked!
+ Sun Nov 16 11:33:47 2025.414 Clearing loaded content
+ Sun Nov 16 11:33:47 2025.414 Property panel cleared
+ Sun Nov 16 11:33:47 2025.414 Content cleared successfully
+ Sun Nov 16 11:33:47 2025.414 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:47 2025.414 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:47 2025.431 New button clicked!
+ Sun Nov 16 11:33:47 2025.431 Clearing loaded content
+ Sun Nov 16 11:33:47 2025.431 Property panel cleared
+ Sun Nov 16 11:33:47 2025.431 Content cleared successfully
+ Sun Nov 16 11:33:47 2025.431 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:47 2025.431 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:47 2025.448 New button clicked!
+ Sun Nov 16 11:33:47 2025.448 Clearing loaded content
+ Sun Nov 16 11:33:47 2025.448 Property panel cleared
+ Sun Nov 16 11:33:47 2025.448 Content cleared successfully
+ Sun Nov 16 11:33:47 2025.448 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:47 2025.448 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:47 2025.464 New button clicked!
+ Sun Nov 16 11:33:47 2025.464 Clearing loaded content
+ Sun Nov 16 11:33:47 2025.464 Property panel cleared
+ Sun Nov 16 11:33:47 2025.464 Content cleared successfully
+ Sun Nov 16 11:33:47 2025.464 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:47 2025.464 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:47 2025.481 New button clicked!
+ Sun Nov 16 11:33:47 2025.481 Clearing loaded content
+ Sun Nov 16 11:33:47 2025.481 Property panel cleared
+ Sun Nov 16 11:33:47 2025.481 Content cleared successfully
+ Sun Nov 16 11:33:47 2025.481 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:47 2025.481 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:47 2025.498 New button clicked!
+ Sun Nov 16 11:33:47 2025.498 Clearing loaded content
+ Sun Nov 16 11:33:47 2025.498 Property panel cleared
+ Sun Nov 16 11:33:47 2025.498 Content cleared successfully
+ Sun Nov 16 11:33:47 2025.498 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:47 2025.498 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:47 2025.514 New button clicked!
+ Sun Nov 16 11:33:47 2025.514 Clearing loaded content
+ Sun Nov 16 11:33:47 2025.514 Property panel cleared
+ Sun Nov 16 11:33:47 2025.514 Content cleared successfully
+ Sun Nov 16 11:33:47 2025.514 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:47 2025.514 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:47 2025.531 New button clicked!
+ Sun Nov 16 11:33:47 2025.531 Clearing loaded content
+ Sun Nov 16 11:33:47 2025.531 Property panel cleared
+ Sun Nov 16 11:33:47 2025.531 Content cleared successfully
+ Sun Nov 16 11:33:47 2025.531 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:47 2025.531 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:47 2025.548 New button clicked!
+ Sun Nov 16 11:33:47 2025.548 Clearing loaded content
+ Sun Nov 16 11:33:47 2025.548 Property panel cleared
+ Sun Nov 16 11:33:47 2025.548 Content cleared successfully
+ Sun Nov 16 11:33:47 2025.548 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:47 2025.548 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:47 2025.564 New button clicked!
+ Sun Nov 16 11:33:47 2025.564 Clearing loaded content
+ Sun Nov 16 11:33:47 2025.564 Property panel cleared
+ Sun Nov 16 11:33:47 2025.564 Content cleared successfully
+ Sun Nov 16 11:33:47 2025.564 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:47 2025.564 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:47 2025.581 New button clicked!
+ Sun Nov 16 11:33:47 2025.581 Clearing loaded content
+ Sun Nov 16 11:33:47 2025.581 Property panel cleared
+ Sun Nov 16 11:33:47 2025.581 Content cleared successfully
+ Sun Nov 16 11:33:47 2025.581 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:47 2025.581 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:47 2025.598 New button clicked!
+ Sun Nov 16 11:33:47 2025.598 Clearing loaded content
+ Sun Nov 16 11:33:47 2025.598 Property panel cleared
+ Sun Nov 16 11:33:47 2025.598 Content cleared successfully
+ Sun Nov 16 11:33:47 2025.598 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:47 2025.598 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:47 2025.614 New button clicked!
+ Sun Nov 16 11:33:47 2025.614 Clearing loaded content
+ Sun Nov 16 11:33:47 2025.614 Property panel cleared
+ Sun Nov 16 11:33:47 2025.614 Content cleared successfully
+ Sun Nov 16 11:33:47 2025.614 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:47 2025.614 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:47 2025.631 New button clicked!
+ Sun Nov 16 11:33:47 2025.631 Clearing loaded content
+ Sun Nov 16 11:33:47 2025.631 Property panel cleared
+ Sun Nov 16 11:33:47 2025.631 Content cleared successfully
+ Sun Nov 16 11:33:47 2025.631 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:47 2025.631 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:47 2025.648 New button clicked!
+ Sun Nov 16 11:33:47 2025.648 Clearing loaded content
+ Sun Nov 16 11:33:47 2025.648 Property panel cleared
+ Sun Nov 16 11:33:47 2025.648 Content cleared successfully
+ Sun Nov 16 11:33:47 2025.648 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:47 2025.648 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:47 2025.664 New button clicked!
+ Sun Nov 16 11:33:47 2025.664 Clearing loaded content
+ Sun Nov 16 11:33:47 2025.664 Property panel cleared
+ Sun Nov 16 11:33:47 2025.664 Content cleared successfully
+ Sun Nov 16 11:33:47 2025.664 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:47 2025.664 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:47 2025.681 New button clicked!
+ Sun Nov 16 11:33:47 2025.681 Clearing loaded content
+ Sun Nov 16 11:33:47 2025.681 Property panel cleared
+ Sun Nov 16 11:33:47 2025.681 Content cleared successfully
+ Sun Nov 16 11:33:47 2025.681 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:47 2025.681 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:47 2025.698 New button clicked!
+ Sun Nov 16 11:33:47 2025.698 Clearing loaded content
+ Sun Nov 16 11:33:47 2025.698 Property panel cleared
+ Sun Nov 16 11:33:47 2025.698 Content cleared successfully
+ Sun Nov 16 11:33:47 2025.698 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:47 2025.698 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:47 2025.714 New button clicked!
+ Sun Nov 16 11:33:47 2025.714 Clearing loaded content
+ Sun Nov 16 11:33:47 2025.714 Property panel cleared
+ Sun Nov 16 11:33:47 2025.714 Content cleared successfully
+ Sun Nov 16 11:33:47 2025.714 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:47 2025.714 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:47 2025.731 New button clicked!
+ Sun Nov 16 11:33:47 2025.731 Clearing loaded content
+ Sun Nov 16 11:33:47 2025.731 Property panel cleared
+ Sun Nov 16 11:33:47 2025.731 Content cleared successfully
+ Sun Nov 16 11:33:47 2025.731 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:47 2025.731 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:47 2025.748 New button clicked!
+ Sun Nov 16 11:33:47 2025.748 Clearing loaded content
+ Sun Nov 16 11:33:47 2025.748 Property panel cleared
+ Sun Nov 16 11:33:47 2025.748 Content cleared successfully
+ Sun Nov 16 11:33:47 2025.748 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:47 2025.748 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:47 2025.764 New button clicked!
+ Sun Nov 16 11:33:47 2025.764 Clearing loaded content
+ Sun Nov 16 11:33:47 2025.764 Property panel cleared
+ Sun Nov 16 11:33:47 2025.764 Content cleared successfully
+ Sun Nov 16 11:33:47 2025.764 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:47 2025.764 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:47 2025.781 New button clicked!
+ Sun Nov 16 11:33:47 2025.781 Clearing loaded content
+ Sun Nov 16 11:33:47 2025.781 Property panel cleared
+ Sun Nov 16 11:33:47 2025.781 Content cleared successfully
+ Sun Nov 16 11:33:47 2025.781 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:47 2025.781 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:47 2025.798 New button clicked!
+ Sun Nov 16 11:33:47 2025.798 Clearing loaded content
+ Sun Nov 16 11:33:47 2025.798 Property panel cleared
+ Sun Nov 16 11:33:47 2025.798 Content cleared successfully
+ Sun Nov 16 11:33:47 2025.798 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:47 2025.798 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:47 2025.814 New button clicked!
+ Sun Nov 16 11:33:47 2025.814 Clearing loaded content
+ Sun Nov 16 11:33:47 2025.814 Property panel cleared
+ Sun Nov 16 11:33:47 2025.814 Content cleared successfully
+ Sun Nov 16 11:33:47 2025.814 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:47 2025.814 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:47 2025.831 New button clicked!
+ Sun Nov 16 11:33:47 2025.831 Clearing loaded content
+ Sun Nov 16 11:33:47 2025.831 Property panel cleared
+ Sun Nov 16 11:33:47 2025.831 Content cleared successfully
+ Sun Nov 16 11:33:47 2025.831 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:47 2025.831 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:47 2025.848 New button clicked!
+ Sun Nov 16 11:33:47 2025.848 Clearing loaded content
+ Sun Nov 16 11:33:47 2025.848 Property panel cleared
+ Sun Nov 16 11:33:47 2025.848 Content cleared successfully
+ Sun Nov 16 11:33:47 2025.848 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:47 2025.848 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:47 2025.864 New button clicked!
+ Sun Nov 16 11:33:47 2025.864 Clearing loaded content
+ Sun Nov 16 11:33:47 2025.864 Property panel cleared
+ Sun Nov 16 11:33:47 2025.864 Content cleared successfully
+ Sun Nov 16 11:33:47 2025.864 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:47 2025.864 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:47 2025.881 New button clicked!
+ Sun Nov 16 11:33:47 2025.881 Clearing loaded content
+ Sun Nov 16 11:33:47 2025.881 Property panel cleared
+ Sun Nov 16 11:33:47 2025.881 Content cleared successfully
+ Sun Nov 16 11:33:47 2025.881 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:47 2025.881 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:47 2025.898 New button clicked!
+ Sun Nov 16 11:33:47 2025.898 Clearing loaded content
+ Sun Nov 16 11:33:47 2025.898 Property panel cleared
+ Sun Nov 16 11:33:47 2025.898 Content cleared successfully
+ Sun Nov 16 11:33:47 2025.898 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:47 2025.898 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:47 2025.914 New button clicked!
+ Sun Nov 16 11:33:47 2025.914 Clearing loaded content
+ Sun Nov 16 11:33:47 2025.914 Property panel cleared
+ Sun Nov 16 11:33:47 2025.914 Content cleared successfully
+ Sun Nov 16 11:33:47 2025.914 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:47 2025.914 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:47 2025.931 New button clicked!
+ Sun Nov 16 11:33:47 2025.931 Clearing loaded content
+ Sun Nov 16 11:33:47 2025.931 Property panel cleared
+ Sun Nov 16 11:33:47 2025.931 Content cleared successfully
+ Sun Nov 16 11:33:47 2025.931 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:47 2025.931 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:47 2025.948 New button clicked!
+ Sun Nov 16 11:33:47 2025.948 Clearing loaded content
+ Sun Nov 16 11:33:47 2025.948 Property panel cleared
+ Sun Nov 16 11:33:47 2025.948 Content cleared successfully
+ Sun Nov 16 11:33:47 2025.948 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:47 2025.948 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:47 2025.964 New button clicked!
+ Sun Nov 16 11:33:47 2025.964 Clearing loaded content
+ Sun Nov 16 11:33:47 2025.964 Property panel cleared
+ Sun Nov 16 11:33:47 2025.964 Content cleared successfully
+ Sun Nov 16 11:33:47 2025.964 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:47 2025.964 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:47 2025.981 New button clicked!
+ Sun Nov 16 11:33:47 2025.981 Clearing loaded content
+ Sun Nov 16 11:33:47 2025.981 Property panel cleared
+ Sun Nov 16 11:33:47 2025.981 Content cleared successfully
+ Sun Nov 16 11:33:47 2025.981 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:47 2025.981 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:47 2025.998 New button clicked!
+ Sun Nov 16 11:33:47 2025.998 Clearing loaded content
+ Sun Nov 16 11:33:47 2025.998 Property panel cleared
+ Sun Nov 16 11:33:47 2025.998 Content cleared successfully
+ Sun Nov 16 11:33:47 2025.998 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:47 2025.998 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:48 2025.014 New button clicked!
+ Sun Nov 16 11:33:48 2025.014 Clearing loaded content
+ Sun Nov 16 11:33:48 2025.014 Property panel cleared
+ Sun Nov 16 11:33:48 2025.014 Content cleared successfully
+ Sun Nov 16 11:33:48 2025.014 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:48 2025.014 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:48 2025.031 New button clicked!
+ Sun Nov 16 11:33:48 2025.031 Clearing loaded content
+ Sun Nov 16 11:33:48 2025.031 Property panel cleared
+ Sun Nov 16 11:33:48 2025.031 Content cleared successfully
+ Sun Nov 16 11:33:48 2025.031 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:48 2025.031 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:48 2025.048 New button clicked!
+ Sun Nov 16 11:33:48 2025.048 Clearing loaded content
+ Sun Nov 16 11:33:48 2025.048 Property panel cleared
+ Sun Nov 16 11:33:48 2025.048 Content cleared successfully
+ Sun Nov 16 11:33:48 2025.048 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:48 2025.048 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:48 2025.064 New button clicked!
+ Sun Nov 16 11:33:48 2025.064 Clearing loaded content
+ Sun Nov 16 11:33:48 2025.064 Property panel cleared
+ Sun Nov 16 11:33:48 2025.064 Content cleared successfully
+ Sun Nov 16 11:33:48 2025.064 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:48 2025.064 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:48 2025.081 New button clicked!
+ Sun Nov 16 11:33:48 2025.081 Clearing loaded content
+ Sun Nov 16 11:33:48 2025.081 Property panel cleared
+ Sun Nov 16 11:33:48 2025.081 Content cleared successfully
+ Sun Nov 16 11:33:48 2025.081 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:48 2025.081 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:48 2025.098 New button clicked!
+ Sun Nov 16 11:33:48 2025.098 Clearing loaded content
+ Sun Nov 16 11:33:48 2025.098 Property panel cleared
+ Sun Nov 16 11:33:48 2025.098 Content cleared successfully
+ Sun Nov 16 11:33:48 2025.098 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:48 2025.098 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:48 2025.114 New button clicked!
+ Sun Nov 16 11:33:48 2025.114 Clearing loaded content
+ Sun Nov 16 11:33:48 2025.114 Property panel cleared
+ Sun Nov 16 11:33:48 2025.114 Content cleared successfully
+ Sun Nov 16 11:33:48 2025.114 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:48 2025.114 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:48 2025.131 New button clicked!
+ Sun Nov 16 11:33:48 2025.131 Clearing loaded content
+ Sun Nov 16 11:33:48 2025.131 Property panel cleared
+ Sun Nov 16 11:33:48 2025.131 Content cleared successfully
+ Sun Nov 16 11:33:48 2025.131 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:48 2025.131 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:48 2025.148 New button clicked!
+ Sun Nov 16 11:33:48 2025.148 Clearing loaded content
+ Sun Nov 16 11:33:48 2025.148 Property panel cleared
+ Sun Nov 16 11:33:48 2025.148 Content cleared successfully
+ Sun Nov 16 11:33:48 2025.148 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:48 2025.148 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:48 2025.164 New button clicked!
+ Sun Nov 16 11:33:48 2025.164 Clearing loaded content
+ Sun Nov 16 11:33:48 2025.164 Property panel cleared
+ Sun Nov 16 11:33:48 2025.164 Content cleared successfully
+ Sun Nov 16 11:33:48 2025.164 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:48 2025.164 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:48 2025.181 New button clicked!
+ Sun Nov 16 11:33:48 2025.181 Clearing loaded content
+ Sun Nov 16 11:33:48 2025.181 Property panel cleared
+ Sun Nov 16 11:33:48 2025.181 Content cleared successfully
+ Sun Nov 16 11:33:48 2025.181 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:48 2025.181 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:48 2025.198 New button clicked!
+ Sun Nov 16 11:33:48 2025.198 Clearing loaded content
+ Sun Nov 16 11:33:48 2025.198 Property panel cleared
+ Sun Nov 16 11:33:48 2025.198 Content cleared successfully
+ Sun Nov 16 11:33:48 2025.198 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:48 2025.198 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:48 2025.214 New button clicked!
+ Sun Nov 16 11:33:48 2025.214 Clearing loaded content
+ Sun Nov 16 11:33:48 2025.214 Property panel cleared
+ Sun Nov 16 11:33:48 2025.214 Content cleared successfully
+ Sun Nov 16 11:33:48 2025.214 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:48 2025.214 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:48 2025.231 New button clicked!
+ Sun Nov 16 11:33:48 2025.231 Clearing loaded content
+ Sun Nov 16 11:33:48 2025.231 Property panel cleared
+ Sun Nov 16 11:33:48 2025.231 Content cleared successfully
+ Sun Nov 16 11:33:48 2025.231 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:48 2025.231 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:48 2025.248 New button clicked!
+ Sun Nov 16 11:33:48 2025.248 Clearing loaded content
+ Sun Nov 16 11:33:48 2025.248 Property panel cleared
+ Sun Nov 16 11:33:48 2025.248 Content cleared successfully
+ Sun Nov 16 11:33:48 2025.248 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:48 2025.248 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:48 2025.264 New button clicked!
+ Sun Nov 16 11:33:48 2025.264 Clearing loaded content
+ Sun Nov 16 11:33:48 2025.264 Property panel cleared
+ Sun Nov 16 11:33:48 2025.264 Content cleared successfully
+ Sun Nov 16 11:33:48 2025.264 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:48 2025.264 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:48 2025.281 New button clicked!
+ Sun Nov 16 11:33:48 2025.281 Clearing loaded content
+ Sun Nov 16 11:33:48 2025.281 Property panel cleared
+ Sun Nov 16 11:33:48 2025.281 Content cleared successfully
+ Sun Nov 16 11:33:48 2025.281 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:48 2025.281 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:48 2025.298 New button clicked!
+ Sun Nov 16 11:33:48 2025.298 Clearing loaded content
+ Sun Nov 16 11:33:48 2025.298 Property panel cleared
+ Sun Nov 16 11:33:48 2025.298 Content cleared successfully
+ Sun Nov 16 11:33:48 2025.298 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:48 2025.298 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:48 2025.314 New button clicked!
+ Sun Nov 16 11:33:48 2025.314 Clearing loaded content
+ Sun Nov 16 11:33:48 2025.314 Property panel cleared
+ Sun Nov 16 11:33:48 2025.314 Content cleared successfully
+ Sun Nov 16 11:33:48 2025.314 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:48 2025.314 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:48 2025.331 New button clicked!
+ Sun Nov 16 11:33:48 2025.331 Clearing loaded content
+ Sun Nov 16 11:33:48 2025.331 Property panel cleared
+ Sun Nov 16 11:33:48 2025.331 Content cleared successfully
+ Sun Nov 16 11:33:48 2025.331 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:48 2025.331 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:48 2025.348 New button clicked!
+ Sun Nov 16 11:33:48 2025.348 Clearing loaded content
+ Sun Nov 16 11:33:48 2025.348 Property panel cleared
+ Sun Nov 16 11:33:48 2025.348 Content cleared successfully
+ Sun Nov 16 11:33:48 2025.348 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:48 2025.348 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:48 2025.364 New button clicked!
+ Sun Nov 16 11:33:48 2025.364 Clearing loaded content
+ Sun Nov 16 11:33:48 2025.364 Property panel cleared
+ Sun Nov 16 11:33:48 2025.364 Content cleared successfully
+ Sun Nov 16 11:33:48 2025.364 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:48 2025.364 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:48 2025.381 New button clicked!
+ Sun Nov 16 11:33:48 2025.381 Clearing loaded content
+ Sun Nov 16 11:33:48 2025.381 Property panel cleared
+ Sun Nov 16 11:33:48 2025.381 Content cleared successfully
+ Sun Nov 16 11:33:48 2025.381 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:48 2025.381 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:48 2025.398 New button clicked!
+ Sun Nov 16 11:33:48 2025.398 Clearing loaded content
+ Sun Nov 16 11:33:48 2025.398 Property panel cleared
+ Sun Nov 16 11:33:48 2025.398 Content cleared successfully
+ Sun Nov 16 11:33:48 2025.398 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:48 2025.398 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:48 2025.414 New button clicked!
+ Sun Nov 16 11:33:48 2025.414 Clearing loaded content
+ Sun Nov 16 11:33:48 2025.414 Property panel cleared
+ Sun Nov 16 11:33:48 2025.414 Content cleared successfully
+ Sun Nov 16 11:33:48 2025.414 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:48 2025.414 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:48 2025.431 New button clicked!
+ Sun Nov 16 11:33:48 2025.431 Clearing loaded content
+ Sun Nov 16 11:33:48 2025.431 Property panel cleared
+ Sun Nov 16 11:33:48 2025.431 Content cleared successfully
+ Sun Nov 16 11:33:48 2025.431 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:48 2025.431 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:48 2025.448 New button clicked!
+ Sun Nov 16 11:33:48 2025.448 Clearing loaded content
+ Sun Nov 16 11:33:48 2025.448 Property panel cleared
+ Sun Nov 16 11:33:48 2025.448 Content cleared successfully
+ Sun Nov 16 11:33:48 2025.448 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:48 2025.448 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:48 2025.464 New button clicked!
+ Sun Nov 16 11:33:48 2025.464 Clearing loaded content
+ Sun Nov 16 11:33:48 2025.464 Property panel cleared
+ Sun Nov 16 11:33:48 2025.464 Content cleared successfully
+ Sun Nov 16 11:33:48 2025.464 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:48 2025.464 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:48 2025.481 New button clicked!
+ Sun Nov 16 11:33:48 2025.481 Clearing loaded content
+ Sun Nov 16 11:33:48 2025.481 Property panel cleared
+ Sun Nov 16 11:33:48 2025.481 Content cleared successfully
+ Sun Nov 16 11:33:48 2025.481 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:48 2025.481 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:48 2025.498 New button clicked!
+ Sun Nov 16 11:33:48 2025.498 Clearing loaded content
+ Sun Nov 16 11:33:48 2025.498 Property panel cleared
+ Sun Nov 16 11:33:48 2025.498 Content cleared successfully
+ Sun Nov 16 11:33:48 2025.498 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:48 2025.498 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:48 2025.514 New button clicked!
+ Sun Nov 16 11:33:48 2025.514 Clearing loaded content
+ Sun Nov 16 11:33:48 2025.514 Property panel cleared
+ Sun Nov 16 11:33:48 2025.514 Content cleared successfully
+ Sun Nov 16 11:33:48 2025.514 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:48 2025.514 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:48 2025.531 New button clicked!
+ Sun Nov 16 11:33:48 2025.531 Clearing loaded content
+ Sun Nov 16 11:33:48 2025.531 Property panel cleared
+ Sun Nov 16 11:33:48 2025.531 Content cleared successfully
+ Sun Nov 16 11:33:48 2025.531 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:48 2025.531 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:48 2025.548 New button clicked!
+ Sun Nov 16 11:33:48 2025.548 Clearing loaded content
+ Sun Nov 16 11:33:48 2025.548 Property panel cleared
+ Sun Nov 16 11:33:48 2025.548 Content cleared successfully
+ Sun Nov 16 11:33:48 2025.548 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:48 2025.548 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:48 2025.564 New button clicked!
+ Sun Nov 16 11:33:48 2025.564 Clearing loaded content
+ Sun Nov 16 11:33:48 2025.564 Property panel cleared
+ Sun Nov 16 11:33:48 2025.564 Content cleared successfully
+ Sun Nov 16 11:33:48 2025.564 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:48 2025.564 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:48 2025.581 New button clicked!
+ Sun Nov 16 11:33:48 2025.581 Clearing loaded content
+ Sun Nov 16 11:33:48 2025.581 Property panel cleared
+ Sun Nov 16 11:33:48 2025.581 Content cleared successfully
+ Sun Nov 16 11:33:48 2025.581 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:48 2025.581 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:48 2025.598 New button clicked!
+ Sun Nov 16 11:33:48 2025.598 Clearing loaded content
+ Sun Nov 16 11:33:48 2025.598 Property panel cleared
+ Sun Nov 16 11:33:48 2025.598 Content cleared successfully
+ Sun Nov 16 11:33:48 2025.598 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:48 2025.598 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:48 2025.614 New button clicked!
+ Sun Nov 16 11:33:48 2025.614 Clearing loaded content
+ Sun Nov 16 11:33:48 2025.614 Property panel cleared
+ Sun Nov 16 11:33:48 2025.614 Content cleared successfully
+ Sun Nov 16 11:33:48 2025.614 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:48 2025.614 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:48 2025.631 New button clicked!
+ Sun Nov 16 11:33:48 2025.631 Clearing loaded content
+ Sun Nov 16 11:33:48 2025.631 Property panel cleared
+ Sun Nov 16 11:33:48 2025.631 Content cleared successfully
+ Sun Nov 16 11:33:48 2025.631 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:48 2025.631 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:48 2025.648 New button clicked!
+ Sun Nov 16 11:33:48 2025.648 Clearing loaded content
+ Sun Nov 16 11:33:48 2025.648 Property panel cleared
+ Sun Nov 16 11:33:48 2025.648 Content cleared successfully
+ Sun Nov 16 11:33:48 2025.648 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:48 2025.648 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:48 2025.664 New button clicked!
+ Sun Nov 16 11:33:48 2025.664 Clearing loaded content
+ Sun Nov 16 11:33:48 2025.664 Property panel cleared
+ Sun Nov 16 11:33:48 2025.664 Content cleared successfully
+ Sun Nov 16 11:33:48 2025.664 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:48 2025.664 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:48 2025.681 New button clicked!
+ Sun Nov 16 11:33:48 2025.681 Clearing loaded content
+ Sun Nov 16 11:33:48 2025.681 Property panel cleared
+ Sun Nov 16 11:33:48 2025.681 Content cleared successfully
+ Sun Nov 16 11:33:48 2025.681 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:48 2025.681 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:48 2025.698 New button clicked!
+ Sun Nov 16 11:33:48 2025.698 Clearing loaded content
+ Sun Nov 16 11:33:48 2025.698 Property panel cleared
+ Sun Nov 16 11:33:48 2025.698 Content cleared successfully
+ Sun Nov 16 11:33:48 2025.698 ERROR: Content panel container (ID 2000) not found in EnsureContentRoot!
+ Sun Nov 16 11:33:48 2025.698 ERROR: Could not find element hierarchy listbox (ID 1501)
+ Sun Nov 16 11:33:48 2025.714 Ghost shutting down.

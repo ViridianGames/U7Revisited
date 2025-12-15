@@ -11294,7 +11294,7 @@
 502 29 0 0 24 24 0 24 24 32 24 0 19 24 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 502 29 default 
 502 30 0 0 24 24 0 24 24 25 24 0 6 24 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 502 30 default 
 502 31 0 0 24 24 0 24 24 25 24 0 4 24 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 502 31 default 
-503 0 0 0 40 8 0 8 40 21 40 0 21 8 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 503 0 object_puppetshow_0503 
+503 0 0 0 40 8 0 8 40 21 40 0 21 8 3 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/puppetshow_503x00.gltf 1 0 503 0 object_puppetshow_0503 
 503 1 0 0 40 8 0 8 40 21 40 0 21 8 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 503 0 default 
 503 2 0 0 40 8 0 8 40 21 40 0 21 8 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 503 1 default 
 503 3 0 0 40 8 0 8 40 21 40 0 21 8 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 503 3 default 
