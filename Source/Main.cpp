@@ -324,7 +324,7 @@ int main(int argv, char** argc)
       g_scheduleTime = 0;
       g_hour = 0;
       g_minute = 0;
-		g_secsPerMinute = 2.0f;
+		g_secsPerMinute = 1.0f;
 
       for(int i = 0; i < 8; i++)
       {

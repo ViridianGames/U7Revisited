@@ -23,12 +23,9 @@ U7Player::U7Player()
 	}
 	m_PartyMemberIDs.clear();
 	m_PartyMemberIDs.push_back(0);
-	m_PartyMemberIDs.push_back(1);
-	//m_PartyMemberIDs.push_back(2);
+
 	m_PartyMemberNames.clear();
 	m_PartyMemberNames.push_back("Avatar");
-	m_PartyMemberNames.push_back("Iolo");
-	//m_PartyMemberNames.push_back("Spark");
 
 	m_PlayerPosition = { 0.0f, 0.0f, 0.0f };
 	m_PlayerDirection = { 0.0f, 0.0f, 1.0f }; // Default direction facing forward
@@ -78,12 +75,18 @@ bool U7Player::NPCNameInParty(std::string npc_name)
 	return false;
 }
 
+U7Object* U7Player::GetAvatarObject()
+{
+	g_objectList[g_NPCData[0]->m_objectID];
+}
+
 void U7Player::AddPartyMember(int index)
 {
 	if (std::find(m_PartyMemberIDs.begin(), m_PartyMemberIDs.end(), index) == m_PartyMemberIDs.end())
 	{
 		m_PartyMemberIDs.push_back(index);
 		m_PartyMemberNames.push_back(g_NPCData[index]->name);
+		g_objectList[g_NPCData[index]->m_objectID]->m_speed = 7.5f; // Set speed to match avatar
 	}
 }
 

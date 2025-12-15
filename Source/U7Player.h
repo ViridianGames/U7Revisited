@@ -63,6 +63,8 @@ public:
 	json SaveToJson() const;
 	void LoadFromJson(const json& j);
 
+	U7Object* GetAvatarObject();
+
 	private:
 	int m_Gold = 100;
 	int m_str = 18;

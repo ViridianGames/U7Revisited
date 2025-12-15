@@ -181,6 +181,12 @@ void MakeAnimationFrameMeshes()
 	//g_AnimationFrames->Init(vertices, indices);
 }
 
+bool g_isCameraLockedToAvatar = false;
+
+void LockCamera() { g_isCameraLockedToAvatar = true; }
+
+void UnlockCamera() { g_isCameraLockedToAvatar = false; }
+
 unsigned int DoCameraMovement(bool forcemove)
 {
 	g_CameraMoved = forcemove;
@@ -190,28 +196,42 @@ unsigned int DoCameraMovement(bool forcemove)
 
 	float frameTimeModifier = 30;
 
-	if (IsKeyDown(KEY_A))
+	if (!g_isCameraLockedToAvatar)
 	{
-		direction = Vector3Add(direction, { -GetFrameTime() * frameTimeModifier, 0, GetFrameTime() * frameTimeModifier });
-		g_CameraMoved = true;
-	}
+		if (IsKeyDown(KEY_A))
+		{
+			direction = Vector3Add(direction, { -GetFrameTime() * frameTimeModifier, 0, GetFrameTime() * frameTimeModifier });
+			g_CameraMoved = true;
+		}
 
-	if (IsKeyDown(KEY_D))
-	{
-		direction = Vector3Add(direction, { GetFrameTime() * frameTimeModifier, 0, -GetFrameTime() * frameTimeModifier });
-		g_CameraMoved = true;
-	}
+		if (IsKeyDown(KEY_D))
+		{
+			direction = Vector3Add(direction, { GetFrameTime() * frameTimeModifier, 0, -GetFrameTime() * frameTimeModifier });
+			g_CameraMoved = true;
+		}
 
-	if (IsKeyDown(KEY_W))
-	{
-		direction = Vector3Add(direction, { -GetFrameTime() * frameTimeModifier, 0, -GetFrameTime() * frameTimeModifier });
-		g_CameraMoved = true;
-	}
+		if (IsKeyDown(KEY_W))
+		{
+			direction = Vector3Add(direction, { -GetFrameTime() * frameTimeModifier, 0, -GetFrameTime() * frameTimeModifier });
+			g_CameraMoved = true;
+		}
 
-	if (IsKeyDown(KEY_S))
+		if (IsKeyDown(KEY_S))
+		{
+			direction = Vector3Add(direction, { GetFrameTime() * frameTimeModifier, 0, GetFrameTime() * frameTimeModifier });
+			g_CameraMoved = true;
+		}
+	}
+	else
 	{
-		direction = Vector3Add(direction, { GetFrameTime() * frameTimeModifier, 0, GetFrameTime() * frameTimeModifier });
-		g_CameraMoved = true;
+		Vector3 cameraPosition = g_camera.target;
+		Vector3 playerPosition = g_objectList[g_NPCData[0]->m_objectID]->m_Pos;
+
+		if (cameraPosition.x != playerPosition.x || cameraPosition.y != playerPosition.y || cameraPosition.z != playerPosition.z)
+		{
+			g_camera.target = playerPosition;
+			g_CameraMoved = true;
+		}
 	}
 
 	if (g_CameraMoved)

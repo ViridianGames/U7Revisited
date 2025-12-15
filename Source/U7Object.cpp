@@ -375,7 +375,7 @@ void U7Object::NPCUpdate()
 	// Don't do schedules while in the party
 	if (g_Player->NPCIDInParty(m_NPCID) && m_NPCID != 0)
 	{
-		return;
+		//return;
 	}
 
 	// Frame-based batching for activity coroutine updates only
@@ -1002,7 +1002,14 @@ void U7Object::NPCInit(NPCData* npcData)
 	m_UnitType = UnitTypes::UNIT_TYPE_NPC;
 	m_isContainer = true;
 	m_isContained = false;
-	m_speed = 2.5f;
+	if (std::string(m_NPCData->name) == "Avatar")
+	{
+		m_speed = 7.5f;
+	}
+	else
+	{
+		m_speed = 2.5f;
+	}
 	m_NPCID = npcData->id;
 	m_anchorPos = m_Pos;
 

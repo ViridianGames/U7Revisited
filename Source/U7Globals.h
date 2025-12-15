@@ -382,6 +382,12 @@ bool IsDistanceLessThan(float startX, float startZ, float endX, float endZ, floa
 
 void MakeAnimationFrameMeshes();
 
+extern bool g_isCameraLockedToAvatar;
+
+void LockCamera();
+
+void UnlockCamera();
+
 unsigned int DoCameraMovement(bool forcemove = false);
 
 void IsCellVisible(float x, float y);

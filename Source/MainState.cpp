@@ -171,6 +171,7 @@ void MainState::OnEnter()
 	else
 	{
 		m_paused = false;
+		g_Player->AddPartyMember(1);
 
 		// Only show welcome messages on first OnEnter, not when returning from dialogs
 		if (!m_hasShownWelcomeMessages)
@@ -187,7 +188,6 @@ void MainState::OnEnter()
 			AddConsoleString(std::string("Press ESC to exit."));
 		}
 	}
-
 }
 
 void MainState::OnExit()
@@ -382,6 +382,12 @@ void MainState::UpdateInput()
 			AddConsoleString("Lua debug mode DISABLED");
 		}
 	}
+
+	if (IsKeyPressed(KEY_F5))
+	{
+		g_isCameraLockedToAvatar = !g_isCameraLockedToAvatar;
+	}
+
 
 	if (IsKeyPressed(KEY_F10))
 	{
@@ -773,6 +779,18 @@ void MainState::UpdateInput()
 				U7Object* avatar = g_objectList[g_NPCData[0]->m_objectID].get();
 				//avatar->SetDest({float(worldX), 0, float(worldZ)});
 				avatar->PathfindToDest({float(worldX), 0, float(worldZ)});
+
+				int counter = 1;
+				for (int id : g_Player->GetPartyMemberIds())
+				{
+					U7Object* partyMember = g_objectList[g_NPCData[id]->m_objectID].get();
+					if (id % 2 == 0)
+						partyMember->PathfindToDest({float(worldX + counter), 0, float(worldZ + counter)});
+					else
+						partyMember->PathfindToDest({float(worldX + counter), 0, float(worldZ - counter)});
+
+					counter += 1;
+				}
 
 				if (worldX >= 0 && worldX < 3072 && worldZ >= 0 && worldZ < 3072)
 				{
