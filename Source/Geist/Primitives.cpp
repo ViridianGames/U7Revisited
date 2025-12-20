@@ -1,11 +1,11 @@
 #include <fstream>
 #include <cstring>
 
-#include "raylib.h"
-#include "raymath.h"
-#include "Primitives.h"
-#include "IO.h"
-#include "Globals.h"
+#include <raylib.h>
+#include <raymath.h>
+#include <Geist/Primitives.h>
+#include <Geist/IO.h>
+#include <Geist/Globals.h>
 
 using namespace std;
 

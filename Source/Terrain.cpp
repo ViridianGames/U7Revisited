@@ -41,7 +41,7 @@ Terrain::~Terrain()
 
 void Terrain::Init()
 {
-
+	SetupChunkData();
 }
 
 void Terrain::UpdateTerrainTexture(Image img)
@@ -165,4 +165,19 @@ void Terrain::UpdateTerrainTiles()
 		}
 	}
 	EndTextureMode();
+}
+
+void Terrain::SetupChunkData()
+{
+	//  There are two major elements to the chunk data.
+	//
+	//  The first is pathfinding.  A lot of chunks are simply clear and can be freely walked through.
+	//  Some chunks have obstructions that need a little pathfinding (like forest chunks)
+	//  Some chunks have buildings and will need full pathfinding.
+	//
+	//  The second is roof data.  Some chunks have roofs that need to be linked together so that when you enter one
+	//  building, all roofs in associated chunks are hidden.  We simply need to check the roof IDs of nearby chunks
+	//  and if the avatar is in a chunk with a roof, hide all roofs with the same roof ID.
+
+
 }

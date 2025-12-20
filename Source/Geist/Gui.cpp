@@ -2,14 +2,14 @@
 #include <string>
 #include <sstream>
 
-#include "Globals.h"
-#include "Engine.h"
-#include "Gui.h"
-#include "ResourceManager.h"
-#include "Config.h"
-#include "Logging.h"
+#include <Geist/Globals.h>
+#include <Geist/Engine.h>
+#include <Geist/Gui.h>
+#include <Geist/ResourceManager.h>
+#include <Geist/Config.h>
+#include <Geist/Logging.h>
 
-#include "raylib.h"
+#include <raylib.h>
 
 using namespace std;
 

@@ -1,9 +1,9 @@
-#include "raylib.h"
+#include <raylib.h>
 #include <list>
-#include "Globals.h"
-#include "ResourceManager.h"
-#include "Config.h"
-#include "BaseUnits.h"
+#include <Geist/Globals.h>
+#include <Geist/ResourceManager.h>
+#include <Geist/Config.h>
+#include <Geist/BaseUnits.h>
 
 using namespace std;
 

@@ -1,10 +1,10 @@
-#include "Globals.h"
-#include "Engine.h"
-#include "ResourceManager.h"
-#include "StateMachine.h"
-#include "ScriptingSystem.h"
-#include "Primitives.h"
-#include "Logging.h"
+#include <Geist/Globals.h>
+#include <Geist/Engine.h>
+#include <Geist/ResourceManager.h>
+#include <Geist/StateMachine.h>
+#include <Geist/ScriptingSystem.h>
+#include <Geist/Primitives.h>
+#include <Geist/Logging.h>
 #include <iostream>
 
 using namespace std;

@@ -2,15 +2,13 @@
 #include <sstream>
 #include <fstream>
 
-#include "Config.h"
-#include "Logging.h"
+#include <Geist/Config.h>
+#include <Geist/Logging.h>
 
 using namespace std;
 
 bool Config::Load(string fileName)
 {
-   string line, leftside, rightside;
-
    ifstream instream(fileName.c_str());
 
    if (instream.fail())
@@ -20,6 +18,19 @@ bool Config::Load(string fileName)
    }
 
    m_FileName = fileName;
+
+   // Read entire file into string
+   string content((istreambuf_iterator<char>(instream)), istreambuf_iterator<char>());
+   instream.close();
+
+   return ParseFromString(content);
+}
+
+bool Config::ParseFromString(string content)
+{
+   string line, leftside, rightside;
+
+   istringstream instream(content);
 
    m_Config.clear();
 
@@ -93,8 +104,6 @@ bool Config::Load(string fileName)
          m_StringsInOrder.emplace_back(line);
       }
    } while (!instream.eof());
-
-   instream.close();
 
    return true;
 }

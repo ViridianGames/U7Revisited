@@ -1,6 +1,6 @@
-#include "GuiManager.h"
-#include "Gui.h"
-#include "Logging.h"
+#include <Geist/GuiManager.h>
+#include <Geist/Gui.h>
+#include <Geist/Logging.h>
 #include <memory>
 #include <algorithm>
 

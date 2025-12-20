@@ -1,9 +1,9 @@
-#include "ResourceManager.h"
-#include "Config.h"
-#include "Logging.h"
-#include "Globals.h"
-#include "raylib.h"
-#include "raymath.h"
+#include <Geist/ResourceManager.h>
+#include <Geist/Config.h>
+#include <Geist/Logging.h>
+#include <Geist/Globals.h>
+#include <raylib.h>
+#include <raymath.h>
 
 #include <fstream>
 #include <sstream>

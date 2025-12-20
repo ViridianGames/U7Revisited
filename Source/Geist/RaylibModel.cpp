@@ -1,6 +1,6 @@
-#include "RaylibModel.h"
+#include <Geist/RaylibModel.h>
 #include <cassert>
-#include "raymath.h"
+#include <raymath.h>
 
 using namespace std;
 

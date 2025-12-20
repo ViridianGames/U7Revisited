@@ -1,6 +1,6 @@
-#include "StateMachine.h"
-#include "Logging.h"
-#include "raylib.h"
+#include <Geist/StateMachine.h>
+#include <Geist/Logging.h>
+#include <raylib.h>
 
 using namespace std;
 

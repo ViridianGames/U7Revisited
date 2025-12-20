@@ -1,5 +1,5 @@
-#include "TooltipSystem.h"
-#include "Globals.h"
+#include <Geist/TooltipSystem.h>
+#include <Geist/Globals.h>
 
 using namespace std;
 

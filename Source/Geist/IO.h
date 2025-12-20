@@ -58,12 +58,14 @@ namespace IO
 	//  Serialization
 	void Serialize(std::istream& stream, int& data);
 	void Serialize(std::istream& stream, unsigned int& data);
+	void Serialize(std::istream& stream, unsigned char& data);
 	void Serialize(std::istream& stream, float& data);
 	void Serialize(std::istream& stream, bool& data);
 	void Serialize(std::istream& stream, std::string& data);
 
 	void Serialize(std::ostream& stream, const int data);
 	void Serialize(std::ostream& stream, const unsigned int data);
+	void Serialize(std::ostream& stream, const unsigned char data);
 	void Serialize(std::ostream& stream, const float data);
 	void Serialize(std::ostream& stream, const bool data);
 	void Serialize(std::ostream& stream, const std::string data);

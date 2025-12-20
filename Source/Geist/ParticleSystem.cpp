@@ -1,5 +1,5 @@
-#include "ParticleSystem.h"
-#include "Globals.h"
+#include <Geist/ParticleSystem.h>
+#include <Geist/Globals.h>
 
 using namespace std;
 

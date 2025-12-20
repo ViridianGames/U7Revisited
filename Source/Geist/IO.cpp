@@ -1,7 +1,7 @@
 //  TODO - Write out config files in the same order they are read in, or as
 //  close as possible.
 
-#include "IO.h"
+#include <Geist/IO.h>
 #include <fstream>
 #include <sstream>
 
@@ -13,13 +13,7 @@ void IO::Serialize(istream& stream, int& data)
 	if (stream.eof())
 		throw("STREAM ENDED PREMATURELY!");
 
-	char* joiner = (char*)&data;
-
-	for (int i = 0; i < 4; ++i)
-	{
-		stream.get(*joiner);
-		++joiner;
-	}
+	stream.read(reinterpret_cast<char*>(&data), sizeof(int));
 }
 
 void IO::Serialize(istream& stream, unsigned int& data)
@@ -27,14 +21,15 @@ void IO::Serialize(istream& stream, unsigned int& data)
 	if (stream.eof())
 		throw("STREAM ENDED PREMATURELY!");
 
+	stream.read(reinterpret_cast<char*>(&data), sizeof(unsigned int));
+}
 
-	char* joiner = (char*)&data;
+void IO::Serialize(istream& stream, unsigned char& data)
+{
+	if (stream.eof())
+		throw("STREAM ENDED PREMATURELY!");
 
-	for (int i = 0; i < 4; ++i)
-	{
-		stream.get(*joiner);
-		++joiner;
-	}
+	stream.read(reinterpret_cast<char*>(&data), 1);
 }
 
 void IO::Serialize(istream& stream, float& data)
@@ -42,14 +37,7 @@ void IO::Serialize(istream& stream, float& data)
 	if (stream.eof())
 		throw("STREAM ENDED PREMATURELY!");
 
-
-	char* joiner = (char*)&data;
-
-	for (int i = 0; i < 4; ++i)
-	{
-		stream.get(*joiner);
-		++joiner;
-	}
+	stream.read(reinterpret_cast<char*>(&data), sizeof(float));
 }
 
 void IO::Serialize(istream& stream, bool& data)
@@ -73,13 +61,17 @@ void IO::Serialize(istream& stream, string& data)
 	if (stream.eof())
 		throw("STREAM ENDED PREMATURELY!");
 
-
 	int length;
 	IO::Serialize(stream, length);
-	data.resize(length);
-	char input[256];
-	stream.get(input, length + 1);
-	data.assign(input);
+	if (length > 0)
+	{
+		data.resize(length);
+		stream.read(&data[0], length);
+	}
+	else
+	{
+		data.clear();
+	}
 }
 
 //  OUT-ONLY
@@ -106,6 +98,12 @@ void IO::Serialize(ostream& stream, const unsigned int data)
 		++splitter;
 	}
 
+	stream.flush();
+}
+
+void IO::Serialize(ostream& stream, const unsigned char data)
+{
+	stream.put(static_cast<char>(data));
 	stream.flush();
 }
 

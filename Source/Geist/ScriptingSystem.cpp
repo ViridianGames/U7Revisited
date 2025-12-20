@@ -1,10 +1,10 @@
-#include "ScriptingSystem.h"
-#include "Config.h"
-#include "Logging.h"
-#include "Globals.h"
-#include "../U7Globals.h"
-#include "raylib.h"
-#include "raymath.h"
+#include <Geist/ScriptingSystem.h>
+#include <Geist/Config.h>
+#include <Geist/Logging.h>
+#include <Geist/Globals.h>
+
+#include <raylib.h>
+#include <raymath.h>
 #include <fstream>
 #include <sstream>
 #include <iostream>
@@ -89,7 +89,7 @@ void ScriptingSystem::Update()
     // Resume all scripts whose wait timers expired
     for (const std::string& scriptKey : scriptsToResume)
     {
-        NPCDebugPrint("RESUME: key=" + scriptKey);
+        DebugPrint("RESUME: key=" + scriptKey);
 
         m_waitTimers.erase(scriptKey);
 

@@ -1,10 +1,9 @@
-#include "Globals.h"
-#include "Engine.h"
-#include "ResourceManager.h"
-#include "StateMachine.h"
-#include "ScriptingSystem.h"
-#include "Logging.h"
-#include "U7Globals.h"
+#include <Geist/Globals.h>
+#include <Geist/Engine.h>
+#include <Geist/ResourceManager.h>
+#include <Geist/StateMachine.h>
+#include <Geist/ScriptingSystem.h>
+#include <Geist/Logging.h>
 #include <sstream>
 #include <fstream>
 #include <time.h>
@@ -37,7 +36,8 @@ void Engine::Init(const std::string &configfile)
 	m_ScreenHeight = m_EngineConfig.GetNumber("v_res");
 
 	//  Initialize Raylib and the screen.
-	InitWindow(g_Engine->m_EngineConfig.GetNumber("h_res"), g_Engine->m_EngineConfig.GetNumber("v_res"), "Ultima VII: Revisited");
+	std::string windowTitle = m_EngineConfig.GetString("name");
+	InitWindow(g_Engine->m_EngineConfig.GetNumber("h_res"), g_Engine->m_EngineConfig.GetNumber("v_res"), windowTitle.c_str());
 	SetExitKey(KEY_NULL); // We'll handle exiting with ESC
 	if (g_Engine->m_EngineConfig.GetNumber("full_screen") == 1)
 	{
@@ -66,10 +66,9 @@ void Engine::Update()
 	g_StateMachine->Update();
 	g_ScriptingSystem->Update();
 
-	if (WindowShouldClose() && !m_askedToExit)
+	if (WindowShouldClose())
 	{
-		m_askedToExit = true;
-		g_StateMachine->PushState(STATE_ASKEXITSTATE);
+		m_Done = true;
 	}
 
 	// F12 takes a screenshot
@@ -90,6 +89,7 @@ void Engine::Update()
 void Engine::Draw()
 {
 	BeginDrawing();
+	ClearBackground(BLACK);
 	g_ResourceManager->Draw();
 	g_StateMachine->Draw();
 	g_ScriptingSystem->Draw();

@@ -12,6 +12,17 @@
 constexpr int TILEWIDTH = 100;
 constexpr int TILEHEIGHT = 100;
 
+struct ChunkData
+{
+	int m_chunkId;
+	bool m_NClear;
+	bool m_EClear;
+	bool m_SClear;
+	bool m_WClear;
+	int m_roofLinkId;
+
+};
+
 class Terrain : public Object
 {
 
@@ -42,6 +53,13 @@ public:
    void UpdateTerrainTexture(Image img);
 
 	void UpdateTerrainTiles();
+
+	void SetupChunkData();
+
+	ChunkData m_chunkData[192][192];
+
+	ChunkData m_chunkDatabase[3072];
+
 };
 
 #endif

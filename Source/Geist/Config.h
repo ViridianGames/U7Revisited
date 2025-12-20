@@ -34,6 +34,7 @@ private:
 
 public:
 	bool        Load(std::string filename);
+	bool        ParseFromString(std::string content);
 	void        Save();
 	void        Save(std::string filename);
 	float       GetNumber(std::string node);

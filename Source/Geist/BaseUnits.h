@@ -67,9 +67,9 @@ public:
 	virtual void Update();
 	virtual void Draw();
 
-	bool GetIsDead() const { return m_IsDead; }
+	bool GetIsDead() { return m_IsDead; }
 	void SetIsDead(bool dead) { m_IsDead = dead; }
-	Vector3 GetPos() const { return m_Pos; }
+	Vector3 GetPos() { return m_Pos; }
 	void SetPos(Vector3 newpos) { m_Pos = newpos; }
 
 protected:
