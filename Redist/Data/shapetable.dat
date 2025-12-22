@@ -2654,8 +2654,8 @@
 232 29 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 232 29 default 
 232 30 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 232 30 default 
 232 31 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 232 31 default 
-233 0 0 0 32 32 0 32 32 1 32 0 1 32 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 233 0 default 
-233 1 0 0 32 32 0 32 32 1 32 0 1 32 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 233 1 default 
+233 0 0 0 32 32 0 32 32 1 32 0 1 32 3 1 1 1 -1 0 -1 0 1 2 2 3 3 1 Models/3dmodels/platform_233x00.gltf 1 0 233 0 default 
+233 1 0 0 32 32 0 32 32 1 32 0 1 32 3 1 1 1 -1 0 -1 0 1 2 2 3 3 1 Models/3dmodels/platform_233x01.gltf 1 0 233 1 default 
 233 2 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 233 2 default 
 233 3 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 233 3 default 
 233 4 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 233 4 default 
