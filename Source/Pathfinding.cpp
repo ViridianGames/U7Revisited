@@ -799,14 +799,18 @@ std::vector<PathNode*> AStar::GetNeighbors(PathNode* node, PathfindingGrid* grid
 	std::vector<PathNode*> neighbors;
 
 	// 4-directional neighbors (N, S, E, W)
-	int directions[4][2] = {
+	int directions[8][2] = {
 		{0, -1},  // North
+		{1, -1},  // Northeast
+		{-1, -1}, // Northwest
 		{0, 1},   // South
+		{1, 1},   // Southeast
+		{-1, 1},  // Southwest
 		{1, 0},   // East
 		{-1, 0}   // West
 	};
 
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 8; i++)
 	{
 		int nx = node->x + directions[i][0];
 		int nz = node->z + directions[i][1];
