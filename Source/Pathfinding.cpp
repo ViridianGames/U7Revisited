@@ -384,16 +384,16 @@ void PathfindingGrid::DrawDebugOverlayTileLevel()
 
 void PathfindingGrid::DebugPrintTileInfo(int worldX, int worldZ)
 {
-	AddConsoleString("=== Debug Tile (" + std::to_string(worldX) + ", " + std::to_string(worldZ) + ") ===");
+	// AddConsoleString("=== Debug Tile (" + std::to_string(worldX) + ", " + std::to_string(worldZ) + ") ===");
 
 	// Check terrain
 	unsigned short shapeframe = g_World[worldZ][worldX];
 	int shapeID = shapeframe & 0x3ff;
 	int frameID = (shapeframe >> 10) & 0x3f;
 
-	AddConsoleString("Terrain: shape=" + std::to_string(shapeID) +
-	                 " frame=" + std::to_string(frameID) +
-	                 " name=" + g_objectDataTable[shapeID].m_name);
+	// AddConsoleString("Terrain: shape=" + std::to_string(shapeID) +
+	//                  " frame=" + std::to_string(frameID) +
+	//                  " name=" + g_objectDataTable[shapeID].m_name);
 
 	if (shapeID < 1024 && g_objectDataTable[shapeID].m_isNotWalkable)
 	{

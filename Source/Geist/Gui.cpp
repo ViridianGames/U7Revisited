@@ -40,6 +40,16 @@ void Gui::AddElement(std::shared_ptr<GuiElement> element)
 	}
 }
 
+bool Gui::IsMouseOverGui() const
+{
+	Vector2 mousepos = GetMousePosition();
+	mousepos.x /= m_InputScale;
+	mousepos.y /= m_InputScale;
+	Rectangle bounds = GetBounds();
+	return CheckCollisionPointRec(mousepos, bounds);
+}
+
+
 std::shared_ptr<GuiElement> Gui::GetActiveElement()
 {
 	if (m_ActiveElement != -1 && m_GuiElementList.find(m_ActiveElement) != m_GuiElementList.end())

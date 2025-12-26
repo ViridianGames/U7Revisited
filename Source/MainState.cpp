@@ -679,9 +679,9 @@ void MainState::UpdateInput()
 				{
 					int npcID = g_objectUnderMousePointer->m_NPCID;
 					string npcName = g_NPCData[npcID] ? g_NPCData[npcID]->name : "Unknown";
-					AddConsoleString("=== NPC #" + to_string(npcID) + " (" + npcName + ") Schedule ===");
-					AddConsoleString("Current game time: " + to_string(g_hour) + ":" + (g_minute < 10 ? "0" : "") + to_string(g_minute) +
-						" (schedule block: " + to_string(g_scheduleTime) + ")");
+//					AddConsoleString("=== NPC #" + to_string(npcID) + " (" + npcName + ") Schedule ===");
+//					AddConsoleString("Current game time: " + to_string(g_hour) + ":" + (g_minute < 10 ? "0" : "") + to_string(g_minute) +
+						//" (schedule block: " + to_string(g_scheduleTime) + ")");
 
 					if (g_NPCSchedules.find(npcID) != g_NPCSchedules.end() && !g_NPCSchedules[npcID].empty())
 					{
@@ -749,15 +749,15 @@ void MainState::UpdateInput()
 					// Print current waypoints if any
 					if (!g_objectUnderMousePointer->m_pathWaypoints.empty())
 					{
-						AddConsoleString("=== Current Waypoints ===", YELLOW);
-						AddConsoleString("  Total waypoints: " + to_string(g_objectUnderMousePointer->m_pathWaypoints.size()) +
-							", Current index: " + to_string(g_objectUnderMousePointer->m_currentWaypointIndex));
+						// AddConsoleString("=== Current Waypoints ===", YELLOW);
+						// AddConsoleString("  Total waypoints: " + to_string(g_objectUnderMousePointer->m_pathWaypoints.size()) +
+						// 	", Current index: " + to_string(g_objectUnderMousePointer->m_currentWaypointIndex));
 						for (size_t i = 0; i < g_objectUnderMousePointer->m_pathWaypoints.size(); i++)
 						{
 							const auto& wp = g_objectUnderMousePointer->m_pathWaypoints[i];
 							string marker = (i == g_objectUnderMousePointer->m_currentWaypointIndex) ? " <-- CURRENT" : "";
-							AddConsoleString("  [" + to_string(i) + "] (" +
-								to_string((int)wp.x) + ", " + to_string((int)wp.z) + ")" + marker);
+							// AddConsoleString("  [" + to_string(i) + "] (" +
+							// 	to_string((int)wp.x) + ", " + to_string((int)wp.z) + ")" + marker);
 						}
 					}
 					else
@@ -804,18 +804,18 @@ void MainState::UpdateInput()
 					string terrainName = g_aStar ? g_aStar->GetTerrainName(shapeID) : "Unknown";
 					bool walkable = g_pathfindingGrid->IsPositionWalkable(worldX, worldZ);
 
-					AddConsoleString("=== " + terrainName + " (" + to_string(worldX) + ", " + to_string(worldZ) + ") ===", SKYBLUE);
-					AddConsoleString("  Shape ID: " + to_string(shapeID) + ", Frame: " + to_string(frameID), WHITE);
+					//AddConsoleString("=== " + terrainName + " (" + to_string(worldX) + ", " + to_string(worldZ) + ") ===", SKYBLUE);
+					//AddConsoleString("  Shape ID: " + to_string(shapeID) + ", Frame: " + to_string(frameID), WHITE);
 
 					if (walkable)
 					{
 						float cost = g_aStar ? g_aStar->GetMovementCost(worldX, worldZ, g_pathfindingGrid) : 1.0f;
-						AddConsoleString("  Movement Cost: " + to_string(cost), GREEN);
-						AddConsoleString("  Walkable: YES", GREEN);
+						//AddConsoleString("  Movement Cost: " + to_string(cost), GREEN);
+						//AddConsoleString("  Walkable: YES", GREEN);
 					}
 					else
 					{
-						AddConsoleString("  Walkable: NO", RED);
+						//AddConsoleString("  Walkable: NO", RED);
 					}
 				}
 			}

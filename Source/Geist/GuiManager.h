@@ -15,6 +15,7 @@
 
 #include "Object.h"
 #include "Config.h"
+#include "Gui.h"
 
 class Gui;
 
@@ -30,6 +31,8 @@ public:
 	virtual void Draw();
 
 	void AddGui(std::shared_ptr<Gui>& gui);
+
+	bool IsMouseOverAnyGui() const;
 
 	Config                               m_GUIManagerConfig;
 	std::string                          m_ConfigFileName;

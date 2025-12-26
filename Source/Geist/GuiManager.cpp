@@ -49,3 +49,13 @@ void GuiManager::AddGui(std::shared_ptr<Gui>& gui)
 {
 	m_GuiList.push_back(gui);
 }
+
+bool GuiManager::IsMouseOverAnyGui() const
+{
+	for (const auto& gui : m_GuiList)
+	{
+		if (gui->IsMouseOverGui())
+			return true;
+	}
+	return false;
+}
