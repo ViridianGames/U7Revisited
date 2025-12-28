@@ -485,7 +485,6 @@ void LoadingState::LoadIFIX()
 
 							int nextId = GetNextID();
 							AddObject(shape, frame, nextId, (superchunkx * 256) + (chunkx * 16) + x, z, (superchunky * 256) + (chunky * 16) + y);
-							g_objectList[nextId]->m_UnitType = U7Object::UnitTypes::UNIT_TYPE_STATIC;
 
 							int stopper = 0;
 						}
@@ -688,7 +687,6 @@ void LoadingState::MakeMap()
 					{
 						int nextId = GetNextID();
 						AddObject(shapenum, framenum, nextId, (i * 16 + k), 0, (j * 16 + l));
-						g_objectList[nextId]->m_UnitType = U7Object::UnitTypes::UNIT_TYPE_STATIC;
 					}
 				}
 			}

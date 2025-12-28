@@ -68,6 +68,15 @@ void U7Object::Init(const string& configfile, int unitType, int frame)
 	m_isNPC = false;
 	m_isMoving = false;
 	m_distanceFromCamera = 999999;
+
+	if (!g_isObjectMoveable[unitType])
+	{
+		m_UnitType = U7Object::UnitTypes::UNIT_TYPE_STATIC;
+	}
+	else
+	{
+		m_UnitType = U7Object::UnitTypes::UNIT_TYPE_OBJECT;
+	}
 }
 
 void U7Object::Draw()

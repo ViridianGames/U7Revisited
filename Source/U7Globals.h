@@ -344,6 +344,8 @@ extern std::array<std::array<ShapeData, 32>, 1024> g_shapeTable;
 extern std::array<ObjectData, 1024> g_objectDataTable;
 extern std::unordered_map<int, std::unique_ptr<NPCData> > g_NPCData;
 
+extern std::array<int, 1024> g_isObjectMoveable;        // Maps item shape ID to valid equipment slots
+
 // Weather/effect sprite data structure
 struct SpriteFrame {
     Image image;
