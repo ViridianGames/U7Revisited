@@ -27550,12 +27550,12 @@
 1010 29 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 1010 29 default 
 1010 30 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 1010 30 default 
 1010 31 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 1010 31 default 
-1011 0 1 0 24 40 1 40 24 5 24 0 7 40 3 1 1 1 -0.5 0 -1.5 270 0 2 2 3 3 1 Models/3dmodels/bed_696x00.gltf 1 0 1011 0 object_bed_1011 
+1011 0 1 0 24 40 1 40 24 5 24 0 7 40 3 0.95 1 0.9 -0.5 0 -1.5 270 0 2 2 3 3 1 Models/3dmodels/bed_696x00.gltf 1 0 1011 0 object_bed_1011 
 1011 1 1 0 24 40 1 40 24 5 24 0 7 40 3 1 1 1 -0.5 0 -1.5 270 0 2 2 3 3 1 Models/3dmodels/bed_696x01.gltf 1 0 1011 1 object_bed_1011 
 1011 2 1 0 24 40 1 38 24 5 21 0 7 40 3 1 1 1 -0.5 0 -1.5 270 0 2 2 3 3 1 Models/3dmodels/bed_696x02.gltf 1 0 1011 2 object_bed_1011 
 1011 3 1 0 24 40 1 40 24 5 24 0 7 40 3 1 1 1 -0.5 -1 -1.5 270 0 2 2 3 3 1 Models/3dmodels/bed_696x03.gltf 1 0 1011 3 object_bed_1011 
 1011 4 1 0 24 33 1 28 24 5 23 0 7 33 3 1 1 1 -0.5 -1 -1.5 270 0 2 2 3 3 1 Models/3dmodels/bed_696x04.gltf 1 0 1011 4 object_bed_1011 
-1011 5 1 0 24 40 1 40 24 5 24 0 7 40 3 1 1 1 -0.5 -1 -1.5 270 0 2 2 3 3 1 Models/3dmodels/bed_696x05.gltf 1 0 1011 5 object_bed_1011 
+1011 5 1 0 24 40 1 40 24 5 24 0 7 40 3 0.95 1 0.9 -0.5 -1 -1.5 270 0 2 2 3 3 1 Models/3dmodels/bed_696x05.gltf 1 0 1011 5 object_bed_1011 
 1011 6 1 0 24 33 1 28 24 5 23 0 7 33 3 1 1 1 -0.5 -1 -1.5 270 0 2 2 3 3 1 Models/3dmodels/bed_696x06.gltf 1 0 1011 6 object_bed_1011 
 1011 7 1 0 24 40 1 40 24 5 24 0 7 40 3 1 1 1 -0.5 -1 -1.5 270 0 2 2 3 3 1 Models/3dmodels/bed_696x07.gltf 1 0 1011 7 object_bed_1011 
 1011 8 1 0 24 33 1 28 24 5 23 0 7 33 3 1 1 1 -0.5 -1 -1.5 270 0 2 2 3 3 1 Models/3dmodels/bed_696x08.gltf 1 0 1011 8 object_bed_1011 

@@ -77,7 +77,7 @@ bool U7Player::NPCNameInParty(std::string npc_name)
 
 U7Object* U7Player::GetAvatarObject()
 {
-	g_objectList[g_NPCData[0]->m_objectID];
+	return g_objectList[g_NPCData[0]->m_objectID].get();
 }
 
 void U7Player::AddPartyMember(int index)
@@ -86,7 +86,7 @@ void U7Player::AddPartyMember(int index)
 	{
 		m_PartyMemberIDs.push_back(index);
 		m_PartyMemberNames.push_back(g_NPCData[index]->name);
-		g_objectList[g_NPCData[index]->m_objectID]->m_speed = 7.5f; // Set speed to match avatar
+		g_objectList[g_NPCData[index]->m_objectID]->m_speed = 5.0f; // Set speed to match avatar
 	}
 }
 

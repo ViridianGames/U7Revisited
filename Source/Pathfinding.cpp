@@ -570,7 +570,7 @@ std::vector<Vector3> AStar::FindPath(Vector3 start, Vector3 goal, PathfindingGri
 	if (startX < 0 || startX >= 3072 || startZ < 0 || startZ >= 3072 ||
 	    goalX < 0 || goalX >= 3072 || goalZ < 0 || goalZ >= 3072)
 	{
-		AddConsoleString("  FAILED: Out of bounds!", RED);
+		//AddConsoleString("  FAILED: Out of bounds!", RED);
 		return std::vector<Vector3>();  // Out of bounds
 	}
 
@@ -583,7 +583,7 @@ std::vector<Vector3> AStar::FindPath(Vector3 start, Vector3 goal, PathfindingGri
 	int distance = abs(goalX - startX) + abs(goalZ - startZ);
 	if (distance > maxDistance)
 	{
-		AddConsoleString("  FAILED: Distance too far (" + std::to_string(distance) + " tiles, max " + std::to_string(maxDistance) + ")", RED);
+		//AddConsoleString("  FAILED: Distance too far (" + std::to_string(distance) + " tiles, max " + std::to_string(maxDistance) + ")", RED);
 		return std::vector<Vector3>();
 	}
 

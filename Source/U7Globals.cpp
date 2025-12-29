@@ -149,6 +149,8 @@ bool g_mouseOverUI = false;
 
 U7Object* g_doubleClickedObject;
 
+bool g_allowInput = true;
+
 //  This makes an animation
 void MakeAnimationFrameMeshes()
 {
@@ -196,7 +198,7 @@ unsigned int DoCameraMovement(bool forcemove)
 
 	float frameTimeModifier = 30;
 
-	if (!g_isCameraLockedToAvatar)
+	if (!g_isCameraLockedToAvatar && g_allowInput)
 	{
 		if (IsKeyDown(KEY_A))
 		{
@@ -240,33 +242,41 @@ unsigned int DoCameraMovement(bool forcemove)
 	}
 
 	bool cameraRotated = false;
-	if (IsKeyDown(KEY_Q))
-	{
-		g_CameraRotateSpeed = GetFrameTime() * 5;
-		g_CameraMoved = true;
-		cameraRotated = true;
-	}
 
-	if (IsKeyDown(KEY_E))
+	if (g_allowInput)
 	{
-		g_CameraRotateSpeed = -GetFrameTime() * 5;
-		g_CameraMoved = true;
-		cameraRotated = true;
+		if (IsKeyDown(KEY_Q))
+		{
+			g_CameraRotateSpeed = GetFrameTime() * 5;
+			g_CameraMoved = true;
+			cameraRotated = true;
+		}
+
+		if (IsKeyDown(KEY_E))
+		{
+			g_CameraRotateSpeed = -GetFrameTime() * 5;
+			g_CameraMoved = true;
+			cameraRotated = true;
+		}
 	}
 
 	float newDistance = g_cameraDistance;
 	bool mouseWheel = false;
 	float mouseDelta = 1;
-	if (GetMouseWheelMove() < 0)
-	{
-		newDistance = g_cameraDistance + mouseDelta;
-		mouseWheel = true;
-	}
 
-	if (GetMouseWheelMove() > 0)
+	if (g_allowInput)
 	{
-		newDistance = g_cameraDistance - mouseDelta;
-		mouseWheel = true;
+		if (GetMouseWheelMove() < 0)
+		{
+			newDistance = g_cameraDistance + mouseDelta;
+			mouseWheel = true;
+		}
+
+		if (GetMouseWheelMove() > 0)
+		{
+			newDistance = g_cameraDistance - mouseDelta;
+			mouseWheel = true;
+		}
 	}
 
 	if (mouseWheel)
@@ -286,14 +296,17 @@ unsigned int DoCameraMovement(bool forcemove)
 		g_CameraMoved = true;
 	}
 
-	if (IsLeftButtonDownInRect(g_Engine->m_ScreenWidth - (g_minimapSize * g_DrawScale), 0, g_Engine->m_ScreenWidth, g_minimapSize * g_DrawScale)
-		&& !g_gumpManager->IsAnyGumpBeingDragged())
+	if (g_allowInput)
 	{
-		float minimapx = float(GetMouseX() - (g_Engine->m_ScreenWidth - (g_minimapSize * g_DrawScale))) / float(g_minimapSize * g_DrawScale) * 3072;
-		float minimapy = float(GetMouseY()) / float(g_minimapSize * g_DrawScale) * 3072;
+		if (IsLeftButtonDownInRect(g_Engine->m_ScreenWidth - (g_minimapSize * g_DrawScale), 0, g_Engine->m_ScreenWidth, g_minimapSize * g_DrawScale)
+			&& !g_gumpManager->IsAnyGumpBeingDragged())
+		{
+			float minimapx = float(GetMouseX() - (g_Engine->m_ScreenWidth - (g_minimapSize * g_DrawScale))) / float(g_minimapSize * g_DrawScale) * 3072;
+			float minimapy = float(GetMouseY()) / float(g_minimapSize * g_DrawScale) * 3072;
 
-		g_camera.target = Vector3{ minimapx, 0, minimapy };
-		g_CameraMoved = true;
+			g_camera.target = Vector3{ minimapx, 0, minimapy };
+			g_CameraMoved = true;
+		}
 	}
 
 	bool moveDecay = false;
@@ -1618,7 +1631,7 @@ std::array<int, 1024> g_isObjectMoveable =
 	1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1, // 560-575
 	1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1, // 576-591
 	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0, // 592-607
-	1,1,0,0,0,0,1,1,1,1,0,1,0,1,1,1, // 608-623
+	1,1,0,0,0,0,1,1,1,1,0,0,0,1,1,1, // 608-623
 	1,1,1,1,1,1,1,0,0,0,0,1,1,1,1,0, // 624-639
 	1,1,1,0,1,1,1,1,1,1,1,0,0,0,1,0, // 640-655
 	0,0,1,1,0,0,1,1,0,0,1,0,1,0,0,0, // 656-671

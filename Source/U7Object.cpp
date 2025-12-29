@@ -1013,7 +1013,7 @@ void U7Object::NPCInit(NPCData* npcData)
 	m_isContained = false;
 	if (std::string(m_NPCData->name) == "Avatar")
 	{
-		m_speed = 7.5f;
+		m_speed = 5.0f;
 	}
 	else
 	{

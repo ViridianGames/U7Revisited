@@ -2231,14 +2231,14 @@ static int LuaHideUIElements(lua_State *L)
 static int LuaBlockInput(lua_State *L)
 {
     if (g_LuaDebug) NPCDebugPrint("LUA: block_input called");
-    g_mainState->m_allowInput = false;
+    g_allowInput = false;
     return 0;
 }
 
 static int LuaResumeInput(lua_State *L)
 {
     if (g_LuaDebug) NPCDebugPrint("LUA: resume_input called");
-    g_mainState->m_allowInput = true;
+    g_allowInput = true;
     return 0;
 }
 

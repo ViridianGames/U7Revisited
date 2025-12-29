@@ -593,6 +593,8 @@ const float MAX_WALKABLE_SURFACE_HEIGHT = 5.0f;
 // Call this whenever ANY object changes position or state
 void NotifyPathfindingGridUpdate(int worldX, int worldZ, int radius = 1);
 
+extern bool g_allowInput;
+
 #ifdef DEBUG_NPC_PATHFINDING
 struct NPCPathStats
 {

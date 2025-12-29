@@ -138,14 +138,14 @@ void MainState::OnEnter()
 	g_hour = 7;
 	g_scheduleTime = 1;
 
+	m_heightCutoff = 16.0f; // Draw everything unless the player is inside.
+
 	// Initialize NPC activities based on starting schedule time (for new games)
 	// This must happen AFTER g_scheduleTime is set, so NPCs get the correct activity for time slot 1
 	InitializeNPCActivitiesFromSchedules();
 
 	if (m_gameMode == MainStateModes::MAIN_STATE_MODE_TRINSIC_DEMO)
 	{
-		m_heightCutoff = 16.0f; // Draw everything unless the player is inside.
-
 		// Fade out.
 
 		// Move camera to start position and rotation.
@@ -273,18 +273,6 @@ void MainState::UpdateTime()
 		g_dayNightColor = { 255, 255, 255, 255 };
 		g_isDay = true;
 	}
-
-	// unsigned short shapeframe = g_World[int(g_camera.target.z)][int(g_camera.target.x)];
-	// int shape = shapeframe & 0x3ff;
-	// if (shape == 0 || shape == 5 || shape == 17 || shape == 18 || shape == 21 || shape == 27 || shape == 47 || shape >= 149)
-	// {
-	// 	m_heightCutoff = 4.0f;
-	// }
-	// else
-	// {
-	// 	m_heightCutoff = 16.0f;
-	// }
-
 }
 
 void MainState::CalculateMouseOverUI()
@@ -341,7 +329,7 @@ void MainState::CalculateMouseOverUI()
 
 void MainState::UpdateInput()
 {
-	if (!m_allowInput)
+	if (!g_allowInput)
 	{
 		return;
 	}
@@ -604,53 +592,105 @@ void MainState::UpdateInput()
 		}
 	}
 
-	if (WasMouseButtonDoubleClicked(MOUSE_BUTTON_LEFT) && g_objectUnderMousePointer != nullptr)// && !g_mouseOverUI && !g_gumpManager->m_isMouseOverGump)
+	if (WasMouseButtonDoubleClicked(MOUSE_BUTTON_LEFT))// && !g_mouseOverUI && !g_gumpManager->m_isMouseOverGump)
 	{
-		// Check if this is the avatar or a party member NPC
-		bool isAvatar = g_objectUnderMousePointer->m_isNPC && g_objectUnderMousePointer->m_NPCID == 0;
-		bool isPartyMember = g_objectUnderMousePointer->m_isNPC &&
-			g_Player->NPCIDInParty(g_objectUnderMousePointer->m_NPCID);
-
-		if (isAvatar || isPartyMember)
+		if (g_objectUnderMousePointer != nullptr)
 		{
-			int npcId = g_objectUnderMousePointer->m_NPCID;
-			bool anyPaperdollOpen = HasAnyPaperdollOpen();
+			// Check if this is the avatar or a party member NPC
+			bool isAvatar = g_objectUnderMousePointer->m_isNPC && g_objectUnderMousePointer->m_NPCID == 0;
+			bool isPartyMember = g_objectUnderMousePointer->m_isNPC &&
+				g_Player->NPCIDInParty(g_objectUnderMousePointer->m_NPCID);
 
-			Log("Double-clicked NPC " + std::to_string(npcId) +
-				", isAvatar=" + std::to_string(isAvatar) +
-				", anyPaperdollOpen=" + std::to_string(anyPaperdollOpen));
-
-			if (isAvatar || anyPaperdollOpen)
+			if (isAvatar || isPartyMember)
 			{
-				// Open/toggle paperdoll
-				TogglePaperdoll(npcId);
+				int npcId = g_objectUnderMousePointer->m_NPCID;
+				bool anyPaperdollOpen = HasAnyPaperdollOpen();
+
+				Log("Double-clicked NPC " + std::to_string(npcId) +
+					", isAvatar=" + std::to_string(isAvatar) +
+					", anyPaperdollOpen=" + std::to_string(anyPaperdollOpen));
+
+				if (isAvatar || anyPaperdollOpen)
+				{
+					// Open/toggle paperdoll
+					TogglePaperdoll(npcId);
+				}
+				else
+				{
+					// No paperdoll open and not avatar - run normal NPC interaction
+					Log("Running normal interaction for NPC " + std::to_string(npcId));
+					g_objectUnderMousePointer->Interact(1);
+				}
 			}
-			else
+			// Handle doors and objects with scripts/conversations
+			else if (g_objectUnderMousePointer->m_objectData->m_isDoor ||
+				g_objectUnderMousePointer->m_hasConversationTree ||
+				g_objectUnderMousePointer->m_shapeData->m_luaScript != "default")
 			{
-				// No paperdoll open and not avatar - run normal NPC interaction
-				Log("Running normal interaction for NPC " + std::to_string(npcId));
-				g_objectUnderMousePointer->Interact(1);
+				g_objectUnderMousePointer->Interact(1);;
+			}
+			else if (g_objectUnderMousePointer->m_isContainer && !g_objectUnderMousePointer->IsLocked())
+			{
+				OpenGump(g_objectUnderMousePointer->m_ID);
+			}
+			else if (g_objectUnderMousePointer->m_isContainer)
+			{
+				Bark(g_objectUnderMousePointer, "Locked", 3.0f);
+			}
+			else if (!g_objectUnderMousePointer->m_isContainer)
+			{
+				AddConsoleString("Object " + to_string(g_objectUnderMousePointer->m_ID) + " is not a container.");
 			}
 		}
-		// Handle doors and objects with scripts/conversations
-		else if (g_objectUnderMousePointer->m_objectData->m_isDoor ||
-			g_objectUnderMousePointer->m_hasConversationTree ||
-			g_objectUnderMousePointer->m_shapeData->m_luaScript != "default")
+		else
 		{
-			g_objectUnderMousePointer->Interact(1);;
+			int worldX = (int)floor(g_terrainUnderMousePointer.x);
+			int worldZ = (int)floor(g_terrainUnderMousePointer.z);
+
+			U7Object* avatar = g_objectList[g_NPCData[0]->m_objectID].get();
+			//avatar->SetDest({float(worldX), 0, float(worldZ)});
+			avatar->PathfindToDest({float(worldX), 0, float(worldZ)});
+
+			int counter = 1;
+			for (int id : g_Player->GetPartyMemberIds())
+			{
+				U7Object* partyMember = g_objectList[g_NPCData[id]->m_objectID].get();
+				if (id % 2 == 0)
+					partyMember->PathfindToDest({float(worldX + counter), 0, float(worldZ + counter)});
+				else
+					partyMember->PathfindToDest({float(worldX + counter), 0, float(worldZ - counter)});
+
+				counter += 1;
+			}
+
+			if (worldX >= 0 && worldX < 3072 && worldZ >= 0 && worldZ < 3072)
+			{
+				// Get terrain shape
+				unsigned short shapeframe = g_World[worldZ][worldX];
+				int shapeID = shapeframe & 0x3ff;  // Bits 0-9
+				int frameID = (shapeframe >> 10) & 0x3f;  // Bits 10-15
+
+				// Look up name and cost from terrain costs
+				extern AStar* g_aStar;
+				string terrainName = g_aStar ? g_aStar->GetTerrainName(shapeID) : "Unknown";
+				bool walkable = g_pathfindingGrid->IsPositionWalkable(worldX, worldZ);
+
+				//AddConsoleString("=== " + terrainName + " (" + to_string(worldX) + ", " + to_string(worldZ) + ") ===", SKYBLUE);
+				//AddConsoleString("  Shape ID: " + to_string(shapeID) + ", Frame: " + to_string(frameID), WHITE);
+
+				if (walkable)
+				{
+					float cost = g_aStar ? g_aStar->GetMovementCost(worldX, worldZ, g_pathfindingGrid) : 1.0f;
+					//AddConsoleString("  Movement Cost: " + to_string(cost), GREEN);
+					//AddConsoleString("  Walkable: YES", GREEN);
+				}
+				else
+				{
+					//AddConsoleString("  Walkable: NO", RED);
+				}
+			}
 		}
-		else if (g_objectUnderMousePointer->m_isContainer && !g_objectUnderMousePointer->IsLocked())
-		{
-			OpenGump(g_objectUnderMousePointer->m_ID);
-		}
-		else if (g_objectUnderMousePointer->m_isContainer)
-		{
-			Bark(g_objectUnderMousePointer, "Locked", 3.0f);
-		}
-		else if (!g_objectUnderMousePointer->m_isContainer)
-		{
-			AddConsoleString("Object " + to_string(g_objectUnderMousePointer->m_ID) + " is not a container.");
-		}
+
 	}
 	else if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
 	{
@@ -773,51 +813,7 @@ void MainState::UpdateInput()
 			// Clicked on terrain (no object) - show terrain debug info (sandbox mode only)
 			if (m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX)
 			{
-				int worldX = (int)floor(g_terrainUnderMousePointer.x);
-				int worldZ = (int)floor(g_terrainUnderMousePointer.z);
 
-				U7Object* avatar = g_objectList[g_NPCData[0]->m_objectID].get();
-				//avatar->SetDest({float(worldX), 0, float(worldZ)});
-				avatar->PathfindToDest({float(worldX), 0, float(worldZ)});
-
-				int counter = 1;
-				for (int id : g_Player->GetPartyMemberIds())
-				{
-					U7Object* partyMember = g_objectList[g_NPCData[id]->m_objectID].get();
-					if (id % 2 == 0)
-						partyMember->PathfindToDest({float(worldX + counter), 0, float(worldZ + counter)});
-					else
-						partyMember->PathfindToDest({float(worldX + counter), 0, float(worldZ - counter)});
-
-					counter += 1;
-				}
-
-				if (worldX >= 0 && worldX < 3072 && worldZ >= 0 && worldZ < 3072)
-				{
-					// Get terrain shape
-					unsigned short shapeframe = g_World[worldZ][worldX];
-					int shapeID = shapeframe & 0x3ff;  // Bits 0-9
-					int frameID = (shapeframe >> 10) & 0x3f;  // Bits 10-15
-
-					// Look up name and cost from terrain costs
-					extern AStar* g_aStar;
-					string terrainName = g_aStar ? g_aStar->GetTerrainName(shapeID) : "Unknown";
-					bool walkable = g_pathfindingGrid->IsPositionWalkable(worldX, worldZ);
-
-					//AddConsoleString("=== " + terrainName + " (" + to_string(worldX) + ", " + to_string(worldZ) + ") ===", SKYBLUE);
-					//AddConsoleString("  Shape ID: " + to_string(shapeID) + ", Frame: " + to_string(frameID), WHITE);
-
-					if (walkable)
-					{
-						float cost = g_aStar ? g_aStar->GetMovementCost(worldX, worldZ, g_pathfindingGrid) : 1.0f;
-						//AddConsoleString("  Movement Cost: " + to_string(cost), GREEN);
-						//AddConsoleString("  Walkable: YES", GREEN);
-					}
-					else
-					{
-						//AddConsoleString("  Walkable: NO", RED);
-					}
-				}
 			}
 #endif
 		}
@@ -835,6 +831,42 @@ void MainState::UpdateInput()
 	// 	}
 	//
 	// }
+
+	if (g_isCameraLockedToAvatar && g_allowInput)
+	{
+		Vector3 direction = { 0, 0, 0 };
+		bool avatarMoved = false;
+		if (IsKeyDown(KEY_A))
+		{
+			direction = Vector3Add(direction, { -GetFrameTime() * g_Player->GetAvatarObject()->GetSpeed(), 0, GetFrameTime() * g_Player->GetAvatarObject()->GetSpeed() });
+			avatarMoved = true;
+
+		}
+
+		if (IsKeyDown(KEY_D))
+		{
+			direction = Vector3Add(direction, { GetFrameTime() * g_Player->GetAvatarObject()->GetSpeed(), 0, -GetFrameTime() * g_Player->GetAvatarObject()->GetSpeed() });
+			avatarMoved = true;
+		}
+
+		if (IsKeyDown(KEY_W))
+		{
+			direction = Vector3Add(direction, { -GetFrameTime() * g_Player->GetAvatarObject()->GetSpeed(), 0, -GetFrameTime() * g_Player->GetAvatarObject()->GetSpeed() });
+			avatarMoved = true;
+		}
+
+		if (IsKeyDown(KEY_S))
+		{
+			direction = Vector3Add(direction, { GetFrameTime() * g_Player->GetAvatarObject()->GetSpeed(), 0, GetFrameTime() * g_Player->GetAvatarObject()->GetSpeed() });
+			avatarMoved = true;
+		}
+
+		if (avatarMoved)
+		{
+			Vector3 finalmovement = Vector3RotateByAxisAngle(direction, Vector3{ 0, 1, 0 }, g_cameraRotation);
+			g_Player->GetAvatarObject()->SetDest(Vector3Add(g_Player->GetAvatarObject()->GetPos(), finalmovement));
+		}
+	}
 }
 
 void MainState::Bark(U7Object* object, const std::string& text, float duration)
@@ -864,6 +896,18 @@ void MainState::Update()
 	}
 
 	UpdateTime();
+
+	unsigned short currentTargetTile = g_World[g_camera.target.z][g_camera.target.x];
+	currentTargetTile = currentTargetTile & 0x3ff; // We just need the shape, not the frame.
+	if (currentTargetTile == 0 || currentTargetTile == 5 || currentTargetTile == 17 || currentTargetTile == 18 ||
+		currentTargetTile == 21 || currentTargetTile == 23 || currentTargetTile == 27 || currentTargetTile == 47 || currentTargetTile >= 149)
+	{
+		m_heightCutoff = 4.0f;
+	}
+	else
+	{
+		m_heightCutoff = 16.0f;
+	}
 
 	// Check if schedule time has changed and populate pathfinding queue
 	if (g_scheduleTime != g_lastScheduleTimeCheck)
@@ -1573,7 +1617,7 @@ void MainState::Draw()
 				objectDescription += " This object is contained.";
 			}
 
-			DrawOutlinedText(g_SmallFont, objectDescription, Vector2{ 10, 288 }, g_SmallFont->baseSize, 1, WHITE);
+			//DrawOutlinedText(g_SmallFont, objectDescription, Vector2{ 10, 288 }, g_SmallFont->baseSize, 1, WHITE);
 		}
 		//DrawOutlinedText(g_SmallFont, "Current chunk: " + to_string(int(g_camera.target.x / 16.0f)) + " x " + to_string(int(g_camera.target.z / 16.0f)), Vector2{ 10, 304 }, g_SmallFont->baseSize, 1, WHITE);
 		//DrawOutlinedText(g_SmallFont, "Objects: " + to_string(g_ObjectList.size()) + " Visible: " + to_string(g_sortedVisibleObjects.size()), Vector2{ 10, 320 }, g_SmallFont->baseSize, 1, WHITE);
@@ -1605,6 +1649,16 @@ void MainState::Draw()
 		DrawRectangleRounded({ screenPos.x, screenPos.y, width, height }, 5, 100, { 0, 0, 0, 192 });
 		DrawTextEx(*g_ConversationFont, m_barkText.c_str(), { float(screenPos.x) + (width * .1f), float(screenPos.y) + (height * .1f) }, g_ConversationFont->baseSize, 1, YELLOW);
 	}
+
+	//unsigned short shapenum = g_World[j][i] & 0x3ff;
+	//unsigned short framenum = (g_World[j][i] >> 10) & 0x1f;
+
+	//unsigned short shapenum = g_World[static_cast<unsigned short>(g_camera.target.z)][static_cast<unsigned short>(g_camera.target.x)] & 0x3ff;
+	//unsigned short shapenum = currentTargetTile & 0x3ff;
+	//unsigned short framenum = (g_World[static_cast<unsigned short>(g_camera.target.z)][static_cast<unsigned short>(g_camera.target.x)] >> 10) & 0x1f;
+	//currentTargetTile = currentTargetTile & 0x3ff;
+	//DrawOutlinedText(g_SmallFont, "Tile under camera target: " + to_string(shapenum) + " " + to_string(framenum), Vector2{ 10, 288 }, g_SmallFont->baseSize, 1, WHITE);
+	//DrawOutlinedText(g_SmallFont, "Camera Target: " + to_string(g_camera.target.x) + " " + to_string(g_camera.target.y) + " " + to_string(g_camera.target.z), Vector2{ 10, 308 }, g_SmallFont->baseSize, 1, WHITE);
 
 	if (!m_paused && m_showUIElements)
 	{

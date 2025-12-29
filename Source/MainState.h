@@ -145,15 +145,13 @@ public:
 
    unsigned int m_selectedObject = 0;
 
-   float m_heightCutoff = 4.0f;
+   float m_heightCutoff = 16.0f;
 
    bool m_isPopupShowing = false;  //  If true, the game is paused and a popup is showing
 
    bool m_paused = false;
 
 	Vector2 m_dragStart = {0, 0};
-
-	bool m_allowInput = true;
 
 	MainStateModes m_gameMode = MainStateModes::MAIN_STATE_MODE_SANDBOX;
 
