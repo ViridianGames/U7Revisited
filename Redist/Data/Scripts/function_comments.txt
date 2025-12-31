@@ -6604,7 +6604,7 @@ function func_0919(eventid, objectref)
 File: func_091A.lua
 --------------------------------------------------
 -- Delivers Fellowship philosophy dialogue and offers membership.
-function func_091A()
+function utility_fellowship_philosophy_1050()
 
 File: func_091B.lua
 --------------------------------------------------

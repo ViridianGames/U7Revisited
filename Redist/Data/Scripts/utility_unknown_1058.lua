@@ -1,5 +1,5 @@
 -- Evaluates training ability, checking gold and training level caps, returning 0 (insufficient experience), 1 (insufficient gold), 2 (maxed out), or 3 (can train).
-function utility_unknown_1058(training_points_required, npc_id, cost_to_train, stat_to_train)
+function utility_check_training_okay_1058(training_points_required, npc_id, cost_to_train, stat_to_train)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A
 
     debug_print("Starting function 0922")

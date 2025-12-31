@@ -37,7 +37,8 @@ public:
 	void SetActive(bool active) { m_Active = active; }
 	void SetDoneButtonId(int id) { m_doneButtonId = id; }
 
-	void LoadTXT(std::string fileName);
+
+
 
 	GuiTextButton* AddTextButton(int ID, int posx, int posy, int width, int height, std::string text, Font* font,
 		Color textcolor = (Color{ 255, 255, 255, 255 }),

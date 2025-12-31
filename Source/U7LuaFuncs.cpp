@@ -494,7 +494,7 @@ static int LuaSelectPartyMemberByName(lua_State *L)
     step.type = ConversationState::ConversationStepType::STEP_MULTIPLE_CHOICE;
     step.dialog =  luaL_checkstring(L, 1);;
     step.answers.push_back(g_Player->GetPlayerName());
-    for (int i = 0; i < g_Player->GetPartyMemberNames().size(); ++i)
+    for (int i = 1; i < g_Player->GetPartyMemberNames().size(); ++i)
     {
         step.answers.push_back(g_Player->GetPartyMemberNames()[i]);
     }

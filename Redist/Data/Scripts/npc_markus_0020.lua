@@ -31,7 +31,7 @@ function npc_markus_0020(eventid, objectref)
             elseif var_0000 == "train" then
                 if var_0001 == 7 then
                     if ask_yes_no("\"The cost to train with me is 20 gold. Too costly, right?\"") == false then
-                        func_08BD(20, 4) -- 4 is the ID for combat skill
+                        utility_training_markus_0957(20, 4) -- 4 is the ID for combat skill
                     else
                         add_dialogue("Markus yawns. \"Very well.\"")
                     end

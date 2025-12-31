@@ -445,10 +445,6 @@ float GetMaxWeightFromStrength(int strength)
 
 void UpdateSortedVisibleObjects()
 {
-	if (g_LuaDebug)
-	{
-		AddConsoleString("UpdateSortedVisibleObjects: Starting");
-	}
 	int cameraChunkX = static_cast<int>(g_camera.target.x / 16);
 	int cameraChunkY = static_cast<int>(g_camera.target.z / 16);
 
@@ -471,10 +467,6 @@ void UpdateSortedVisibleObjects()
 				// Skip null, dead, or contained objects
 				if (!object || object->GetIsDead() || object->m_isContained)
 				{
-					if (g_LuaDebug && object && object->GetIsDead())
-					{
-						AddConsoleString("UpdateSortedVisibleObjects: Skipping dead object");
-					}
 					continue;
 				}
 
@@ -1567,26 +1559,26 @@ void InitializeNPCActivitiesFromSchedules()
 		if (mostRecentSchedule)
 		{
 			g_NPCData[npcID]->m_currentActivity = mostRecentSchedule->m_activity;
-			NPCDebugPrint("  NPC " + std::to_string(npcID) + " (" + std::string(g_NPCData[npcID]->name) + 
-			           ") set to activity " + std::to_string(mostRecentSchedule->m_activity) + 
-			           " from time " + std::to_string(mostRecentTime));
+			// NPCDebugPrint("  NPC " + std::to_string(npcID) + " (" + std::string(g_NPCData[npcID]->name) +
+			//            ") set to activity " + std::to_string(mostRecentSchedule->m_activity) +
+			//            " from time " + std::to_string(mostRecentTime));
 			
 			// Also set m_lastSchedule on the NPC object so schedule checker knows initialization is done
 			if (g_NPCData[npcID]->m_objectID >= 0 && g_objectList[g_NPCData[npcID]->m_objectID])
 			{
 				g_objectList[g_NPCData[npcID]->m_objectID]->m_lastSchedule = mostRecentTime;
-				NPCDebugPrint("  NPC m_lastSchedule=" + std::to_string(mostRecentTime) + 
-				           " on object " + std::to_string(g_NPCData[npcID]->m_objectID));
+				// NPCDebugPrint("  NPC m_lastSchedule=" + std::to_string(mostRecentTime) +
+				//            " on object " + std::to_string(g_NPCData[npcID]->m_objectID));
 			}
 			else
 			{
-				NPCDebugPrint("  NPC: Could not set m_lastSchedule, objectID=" + 
-				           std::to_string(g_NPCData[npcID]->m_objectID));
+				// NPCDebugPrint("  NPC: Could not set m_lastSchedule, objectID=" +
+				//            std::to_string(g_NPCData[npcID]->m_objectID));
 			}
 		}
 		else
 		{
-			NPCDebugPrint("  NPC " + std::to_string(npcID) + " has no schedule entry!");
+			// NPCDebugPrint("  NPC " + std::to_string(npcID) + " has no schedule entry!");
 		}
 	}
 }

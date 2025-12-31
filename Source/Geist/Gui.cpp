@@ -60,7 +60,7 @@ std::shared_ptr<GuiElement> Gui::GetActiveElement()
 
 void Gui::Init(const std::string& configfile)
 {
-	LoadTXT(configfile);
+
 }
 
 void Gui::Update()
@@ -447,130 +447,6 @@ std::string Gui::GetString(int ID)
 		return "";
 
 	return m_GuiElementList[ID]->GetString();
-}
-
-void Gui::LoadTXT(std::string fileName)
-{
-	ifstream instream(fileName.c_str(), ios::in | ios::binary);
-	if (!instream.fail())
-	{
-		string line;
-		stringstream parser;
-		instream >> m_Pos.x;
-		instream >> m_Pos.y;
-
-		getline(instream, line);
-		getline(instream, line);
-
-		if (line.size() > 0)
-		{
-			if (line.at(line.size() - 1) == '\r')
-			{
-				line = line.substr(0, line.size() - 1);
-			}
-		}
-
-		m_Font = make_shared<Font>(LoadFont(line.c_str()));
-
-		while (!instream.eof())
-		{
-			getline(instream, line);
-
-			if (line.size() > 0)
-			{
-				if (line.at(line.size() - 1) == '\r')
-				{
-					line = line.substr(0, line.size() - 1);
-				}
-			}
-
-			if (line[0] != '#')
-			{
-				stringstream _LineData;
-				_LineData << line;
-				int type;
-				_LineData >> type;
-				switch (type)
-				{
-				case GUI_ICONBUTTON:
-				{
-					int buttonid, active, group, tilex, tiley, posx, posy, width, height;
-					string Texture;
-					_LineData >> buttonid;
-					_LineData >> active;
-					_LineData >> group;
-					_LineData >> tilex;
-					_LineData >> tiley;
-					_LineData >> posx;
-					_LineData >> posy;
-					_LineData >> width;
-					_LineData >> height;
-
-					string _Buffer;
-					_LineData >> _Buffer;
-					Texture = _Buffer;
-
-					shared_ptr<Sprite> upbutton = make_shared<Sprite>();
-					upbutton->m_texture = g_ResourceManager->GetTexture(Texture);
-					upbutton->m_sourceRect.x = float(tilex);
-					upbutton->m_sourceRect.y = float(tiley);
-					upbutton->m_sourceRect.width = float(width);
-					upbutton->m_sourceRect.height = float(height);
-
-					AddIconButton(buttonid, posx, posy, upbutton);
-				}
-				break;
-
-				case GUI_PANEL:
-				{
-					int id, active, group, x, y, width, height, r, g, b, a;
-					bool filled;
-					_LineData >> id;
-					_LineData >> active;
-					_LineData >> group;
-					_LineData >> x;
-					_LineData >> y;
-					_LineData >> width;
-					_LineData >> height;
-					_LineData >> filled;
-					_LineData >> r;
-					_LineData >> g;
-					_LineData >> b;
-					_LineData >> a;
-					shared_ptr<GuiPanel> temp = make_shared<GuiPanel>(this);
-					temp->Init(id, x, y, width, height, Color{ static_cast<unsigned char>(r), static_cast<unsigned char>(g), static_cast<unsigned char>(b), static_cast<unsigned char>(a) });
-					m_GuiElementList[id] = temp;
-				}
-				break;
-
-				case GUI_TEXTAREA:
-				{
-					int id, active, group, x, y, r, g, b, a;
-					string initialtext;
-					_LineData >> id;
-					_LineData >> active;
-					_LineData >> group;
-					_LineData >> x;
-					_LineData >> y;
-					_LineData >> r;
-					_LineData >> g;
-					_LineData >> b;
-					_LineData >> a;
-
-					char _Buffer[256];
-					_LineData.get(_Buffer, 255, '\n');
-					initialtext = _Buffer;
-					initialtext.erase(0, 1);
-
-					shared_ptr<GuiTextArea> temp = make_shared<GuiTextArea>(this);
-					temp->Init(id, m_Font.get(), initialtext, x, y, 0, 0, Color{ static_cast<unsigned char>(r), static_cast<unsigned char>(g), static_cast<unsigned char>(b), static_cast<unsigned char>(a) });
-					m_GuiElementList[id] = temp;
-				}
-				break;
-				}
-			}
-		}
-	}
 }
 
 void Gui::HideGroup(int group)

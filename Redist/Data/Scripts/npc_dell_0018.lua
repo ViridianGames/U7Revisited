@@ -57,10 +57,10 @@ function npc_dell_0018(eventid, objectref)
                     second_speaker(1, 0, "Iolo whispers to you, \"Pleasant chap, is he not?\"")
                 end
             elseif var_0007 == "Fellowship" then
-                func_0919()
+                utility_fellowship_intro_1049()
                 remove_answer("Fellowship")
             elseif var_0007 == "philosophy" then
-                func_091A()
+                utility_fellowship_philosophy_1050()
                 remove_answer("philosophy")
             elseif var_0007 == "buy" then
                 if var_0003 == 7 then

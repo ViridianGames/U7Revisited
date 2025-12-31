@@ -40,7 +40,7 @@ function npc_caroline_0022(eventid, objectref)
                 remove_answer("members")
             elseif var_0002 == "Fellowship" then
                 debug_print("Clicked 'Fellowship'")
-                func_0919()
+                utility_fellowship_intro_1049()
                 remove_answer("Fellowship")
                 add_answer({"society"})
             elseif var_0002 == "society" then
@@ -48,7 +48,7 @@ function npc_caroline_0022(eventid, objectref)
                 remove_answer("society")
             elseif var_0002 == "philosophy" then
                 remove_answer("philosophy")
-                func_091A()
+                utility_fellowship_philosophy_1050()
             elseif var_0002 == "bye" then
                 break
             end
