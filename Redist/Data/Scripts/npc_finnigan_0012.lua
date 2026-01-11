@@ -267,5 +267,4 @@ function npc_finnigan_0012(eventid, objectref)
             break
         end
     end
-    return
 end

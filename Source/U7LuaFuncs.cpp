@@ -143,8 +143,16 @@ NPCDebugPrint("LUA: add_dialogue called with " + string(luaL_checkstring(L, 1)))
 // Opcode 0033
 static int LuaStartConversation(lua_State *L)
 {
-   DebugPrint ("LUA: start_conversation called");
+    string func_name = luaL_checkstring(L, 3);
+    if (func_name.empty())
+    {
+        func_name = g_ScriptingSystem->GetFuncNameFromCo(L);
+    }
+
+    DebugPrint ("LUA: start_conversation called");
+    g_ConversationState->SetLuaFunction(func_name);
     g_StateMachine->PushState(STATE_CONVERSATIONSTATE);
+
     return 0;
 }
 
@@ -1999,7 +2007,7 @@ static int LuaSetTrainingLevel(lua_State *L)
     return 0;
 }
 
-static int LuaSetCameraAngle(lua_State *L)
+static int LuaSetCameraDestinationAngle(lua_State *L)
 {
     int new_angle = luaL_checkinteger(L, 1);
     if (g_LuaDebug) NPCDebugPrint("LUA: set_camera_angle called with angle " + to_string(new_angle));
@@ -2021,7 +2029,7 @@ static int LuaJumpCameraAngle(lua_State *L)
     if (new_angle_rads < 0) new_angle_rads += 360;
     new_angle_rads = (new_angle_rads * 3.14159f) / 180.0f;
     g_cameraRotation = new_angle_rads;
-    DoCameraMovement(true);
+    CameraUpdate(true);
     return 0;
 }
 
@@ -4698,6 +4706,15 @@ static int LuaGetCurrentMinute(lua_State *L)
     return 1;
 }
 
+static int LuaPushBlockingCoroutine(lua_State *L)
+{
+    const char *text = luaL_checkstring(L, 1);
+    g_ScriptingSystem->AddScript(text, {});
+    g_ScriptingSystem->SetBlockingScript(text);
+    NPCDebugPrint(text);  // Lua debug messages go to npcdebug.log
+    return 0;
+}
+
 void RegisterAllLuaFunctions()
 {
     cout << "Registering Lua functions\n";
@@ -4833,7 +4850,7 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction( "destroy_object_silent", LuaDestroyObjectSilent);
     g_ScriptingSystem->RegisterScriptFunction( "consume_object", LuaConsumeObject);
 
-    g_ScriptingSystem->RegisterScriptFunction( "set_camera_angle", LuaSetCameraAngle);
+    g_ScriptingSystem->RegisterScriptFunction( "set_camera_destination_angle", LuaSetCameraDestinationAngle);
     g_ScriptingSystem->RegisterScriptFunction( "jump_camera_angle", LuaJumpCameraAngle);
     g_ScriptingSystem->RegisterScriptFunction( "show_ui_elements", LuaShowUIElements);
     g_ScriptingSystem->RegisterScriptFunction( "hide_ui_elements", LuaHideUIElements);
@@ -4965,6 +4982,8 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction( "wait_move_end", LuaWaitMoveEnd);
     g_ScriptingSystem->RegisterScriptFunction( "get_current_hour", LuaGetCurrentHour);
     g_ScriptingSystem->RegisterScriptFunction( "get_current_minute", LuaGetCurrentMinute);
+
+    g_ScriptingSystem->RegisterScriptFunction("push_blocking_coroutine", LuaPushBlockingCoroutine);
 
     cout << "Registered all Lua functions\n";
 }

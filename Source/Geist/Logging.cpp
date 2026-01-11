@@ -44,9 +44,9 @@ void Log(string text, string filename, bool suppressDateTime)
 
 	if (suppressDateTime)
 	{
-#ifdef DEBUG_MODE
+//#ifdef DEBUG_MODE
 		cout << text << endl;
-#endif
+//#endif
 		*logstreams[filename] << text << endl;
 #ifdef DEBUG_MODE
 		logstreams[filename]->flush();

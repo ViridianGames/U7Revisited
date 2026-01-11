@@ -38,6 +38,9 @@ public:
     std::string ResumeCoroutine(const std::string& func_name, const std::vector<LuaArg>& args);
     void CleanupCoroutine(const std::string& func_name);
 
+    void AddScript(const std::string& func_name, const std::vector<LuaArg>& args );
+    void SetBlockingScript(const std::string& func_name);
+
     // Flag management
     void SetFlag(int flag_id, bool value);
     bool GetFlag(int flag_id);
@@ -45,6 +48,8 @@ public:
     // Conversation management
     void SetAnswer(const std::string& answer);
     std::vector<std::string> GetAnswers();
+
+    std::string m_blockingCoroutine = "";
 
     // New: Get func_name from a coroutine state (for waiter identification)
     std::string GetFuncNameFromCo(lua_State* co) const;

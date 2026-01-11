@@ -390,7 +390,9 @@ void LockCamera();
 
 void UnlockCamera();
 
-unsigned int DoCameraMovement(bool forcemove = false);
+void CameraUpdate(bool forcemove = false);
+
+void CameraInput();
 
 void IsCellVisible(float x, float y);
 

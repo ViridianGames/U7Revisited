@@ -15744,10 +15744,10 @@
 641 31 0 0 5 8 0 8 5 2 4 0 1 8 2 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 641 31 default 
 642 0 0 0 8 8 0 8 8 3 8 0 13 8 3 1 1 1 0 0 0.4 0 1 2 2 3 3 1 Models/3dmodels/book_642x00.obj 1 0 642 0 object_book_0642 
 642 1 0 0 8 8 0 8 8 4 8 0 4 8 3 1 1 1 0.5 0 0.4 0 1 2 2 3 3 1 Models/3dmodels/book_642x01.obj 1 0 642 1 object_book_0642 
-642 2 0 0 8 8 0 8 8 7 8 0 2 8 3 1 1 1 0.5 0 0.5 0 1 2 2 3 3 1 Models/3dmodels/book_642x02.obj 1 0 642 2 object_book_0642 
+642 2 0 0 8 8 0 8 8 7 8 0 2 8 3 0.8 0.8 0.8 0.5 1 0.5 0 1 2 2 3 3 1 Models/3dmodels/book_642x02.obj 1 0 642 2 object_book_0642 
 642 3 0 0 8 8 0 8 8 3 8 0 11 8 3 1 1 1 0 0 0.4 0 1 2 2 3 3 1 Models/3dmodels/book_642x03.obj 1 0 642 3 object_book_0642 
 642 4 0 0 8 8 0 8 8 4 8 0 3 8 3 1 1 1 0.5 0 0.4 0 1 2 2 3 3 1 Models/3dmodels/book_642x04.obj 1 0 642 4 object_book_0642 
-642 5 0 0 8 8 0 8 8 3 8 0 1 8 3 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/book_642x05.obj 1 0 642 5 object_book_0642 
+642 5 0 0 8 8 0 8 8 3 8 0 1 8 3 0.8 0.8 0.8 0.5 0 0.5 0 1 2 2 3 3 1 Models/3dmodels/book_642x05.obj 1 0 642 5 object_book_0642 
 642 6 0 0 8 8 0 8 8 3 8 0 13 8 3 1 1 1 0 0 0.4 0 1 2 2 3 3 1 Models/3dmodels/book_642x06.obj 1 0 642 6 object_book_0642 
 642 7 0 0 8 8 0 8 8 4 8 0 4 8 3 1 1 1 0.5 0 0.4 0 1 2 2 3 3 1 Models/3dmodels/book_642x07.obj 1 0 642 7 object_book_0642 
 642 8 0 0 8 8 0 8 8 7 8 0 2 8 3 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/book_642x08.obj 1 0 642 8 object_book_0642 
@@ -15756,7 +15756,7 @@
 642 11 0 0 8 8 0 8 8 7 8 0 2 8 3 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/book_642x11.obj 1 0 642 11 object_book_0642 
 642 12 0 0 8 8 0 8 8 3 8 0 11 8 3 1 1 1 0 0 0.4 0 1 2 2 3 3 1 Models/3dmodels/book_642x12.obj 1 0 642 12 object_book_0642 
 642 13 0 0 8 8 0 8 8 4 8 0 3 8 3 1 1 1 0.5 0 0.4 0 1 2 2 3 3 1 Models/3dmodels/book_642x13.obj 1 0 642 13 object_book_0642 
-642 14 0 0 8 8 0 8 8 3 8 0 1 8 3 1 1 1 0.5 0 0.5 0 1 2 2 3 3 1 Models/3dmodels/book_642x14.obj 1 0 642 14 object_book_0642 
+642 14 0 0 8 8 0 8 8 3 8 0 1 8 3 0.8 0.8 0.8 0.5 0 0.5 0 1 2 2 3 3 1 Models/3dmodels/book_642x14.obj 1 0 642 14 object_book_0642 
 642 15 0 0 8 8 0 8 8 3 8 0 11 8 3 1 1 1 0 0 0.4 0 1 2 2 3 3 1 Models/3dmodels/book_642x15.obj 1 0 642 15 object_book_0642 
 642 16 0 0 8 8 0 8 8 4 8 0 2 8 3 1 1 1 0.5 0 0.4 0 1 2 2 3 3 1 Models/3dmodels/book_642x16.obj 1 0 642 16 object_book_0642 
 642 17 0 0 8 8 0 8 8 3 8 0 1 8 3 1 1 1 0.5 0 0.5 0 1 2 2 3 3 1 Models/3dmodels/book_642x17.obj 1 0 642 17 object_book_0642 
@@ -24606,10 +24606,10 @@
 918 29 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 918 29 default 
 918 30 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 918 30 default 
 918 31 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 918 31 default 
-919 0 0 0 40 8 0 8 40 2 40 0 2 8 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 919 0 default 
-919 1 1 1 38 8 0 7 40 3 37 0 4 5 1 1 1 1 0 0 0 0 1 2 3 0 0 6 Models/3dmodels/zzwrongcube.obj 1 0 919 1 default 
-919 2 0 0 40 8 0 8 40 2 40 0 2 8 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 919 2 default 
-919 3 0 0 40 8 0 8 40 2 40 0 2 8 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 919 3 default 
+919 0 0 0 40 8 0 8 40 2 40 0 2 8 3 1 1 1 -1.5 0 0.5 0 1 2 2 3 3 1 Models/3dmodels/bookshelf_919x00.gltf 1 0 919 0 default 
+919 1 0 0 40 8 0 8 40 2 40 0 2 8 3 1 1 1 -1.5 0 0.5 0 1 2 2 3 3 1 Models/3dmodels/bookshelf_919x01.gltf 1 0 919 1 default 
+919 2 0 0 40 8 0 8 40 2 40 0 2 8 3 1 1 1 -1.5 0 0.5 0 1 2 2 3 3 1 Models/3dmodels/bookshelf_919x02.gltf 1 0 919 2 default 
+919 3 0 0 40 8 0 8 40 2 40 0 2 8 3 1 1 1 -1.5 0 0.5 0 1 2 2 3 3 1 Models/3dmodels/bookshelf_919x03.gltf 1 0 919 3 default 
 919 4 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 919 4 default 
 919 5 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 919 5 default 
 919 6 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 919 6 default 

@@ -152,7 +152,7 @@ void MainState::OnEnter()
 		g_camera.target = Vector3{ 1068.0f, 0.0f, 2213.0f };
 		g_cameraRotation = 0;
 		g_cameraDistance = 22.0f;
-		DoCameraMovement();
+		CameraUpdate();
 
 		// Hack-move Petre and put him in the proper position.
 		g_objectList[g_NPCData[11]->m_objectID]->m_Angle = 2 * (PI / 2);
@@ -1153,10 +1153,12 @@ void MainState::Update()
 		m_LastUpdate = GetTime();
 	}
 
-	if (!m_paused)
+	if (!m_paused && g_allowInput)
 	{
-		m_cameraUpdateTime = DoCameraMovement();
+		CameraInput();
 	}
+
+	CameraUpdate();
 
 	m_terrainUpdateTime = GetTime();
 	g_Terrain->CalculateLighting();
@@ -1253,14 +1255,15 @@ void MainState::Update()
 
 	if (m_gameMode == MainStateModes::MAIN_STATE_MODE_TRINSIC_DEMO)
 	{
-		if (m_ranIolosScript && g_StateMachine->GetCurrentState() == STATE_CONVERSATIONSTATE)
+		if (m_ranIntroScript && g_StateMachine->GetCurrentState() == STATE_CONVERSATIONSTATE)
 		{
-			m_iolosScriptRunning = true;
+			m_introScriptRunning = true;
 		}
-		else if (!m_ranIolosScript)
+		else if (!m_ranIntroScript)
 		{
-			m_ranIolosScript = true;
-			g_objectList[g_NPCData[1]->m_objectID]->Interact(3);
+			m_ranIntroScript = true;
+			NPCDebugPrint(g_ScriptingSystem->CallScript("utility_intro_script", { 1, 0 }));
+			//g_objectList[g_NPCData[1]->m_objectID]->Interact(3);
 		}
 
 		// if (m_iolosScriptRunning && g_StateMachine->GetCurrentState() != STATE_CONVERSATIONSTATE) // Iolo's script finished.

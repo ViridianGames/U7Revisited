@@ -167,9 +167,8 @@ public:
 	float m_fadeTime = 0;
 	unsigned char m_currentFadeAlpha = 255;
 
-	bool m_ranIolosScript = false;
-	bool m_iolosScriptRunning = false;
-	bool m_ranFinnigansScript = false;
+	bool m_ranIntroScript = false;
+	bool m_introScriptRunning = false;
 
 	bool m_showUIElements = true;
 

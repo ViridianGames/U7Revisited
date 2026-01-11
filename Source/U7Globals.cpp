@@ -189,9 +189,9 @@ void LockCamera() { g_isCameraLockedToAvatar = true; }
 
 void UnlockCamera() { g_isCameraLockedToAvatar = false; }
 
-unsigned int DoCameraMovement(bool forcemove)
+void CameraInput()
 {
-	g_CameraMoved = forcemove;
+	g_CameraMoved = false;
 
 	Vector3 direction = { 0, 0, 0 };
 	float deltaRotation = 0;
@@ -328,10 +328,31 @@ unsigned int DoCameraMovement(bool forcemove)
 		moveDecay = true;
 	}
 
-	float delta = g_cameraRotationTarget - g_cameraRotation;
+}
+
+void CameraUpdate(bool forcemove)
+{
+	// The camera was manually moved.
+	if (g_CameraMoved || forcemove || g_autoRotate)
+	{
+		g_cameraRotation += g_CameraRotateSpeed;
+
+		while (g_cameraRotation < 0)
+		{
+			g_cameraRotation += 2 * PI;
+		}
+
+		while (g_cameraRotation > 2 * PI)
+		{
+			g_cameraRotation -= 2 * PI;
+		}
+	}
+
+	// A rotation and/or destination was set, probably by a script.
 	if (g_autoRotate == true)
 	{
-		if (abs(delta) > 0.05 && !cameraRotated && g_autoRotate)
+		float delta = g_cameraRotationTarget - g_cameraRotation;
+		if (abs(delta) > 0.05 && g_autoRotate)
 		{
 			if (delta > PI)
 			{
@@ -350,56 +371,33 @@ unsigned int DoCameraMovement(bool forcemove)
 		}
 	}
 
-	if (!cameraRotated && g_CameraRotateSpeed != 0)
+	//  Make sure we eventually stop moving no matter what.
+	if (g_CameraRotateSpeed != 0)
 	{
 		g_CameraRotateSpeed = g_CameraRotateSpeed * .75f;
 		if (abs(g_CameraRotateSpeed) < .01f)
 		{
 			g_CameraRotateSpeed = 0;
 		}
-
-		rotateDecay = true;
 	}
 
-	if (moveDecay || rotateDecay)
-	{
-		g_CameraMoved = true;
-	}
+	Vector3 current = g_camera.target;
 
-	if (g_CameraMoved)
-	{
-		g_cameraRotation += g_CameraRotateSpeed;
+	Vector3 finalmovement = Vector3RotateByAxisAngle(g_CameraMovementSpeed, Vector3{ 0, 1, 0 }, g_cameraRotation);
 
-		while (g_cameraRotation < 0)
-		{
-			g_cameraRotation += 2 * PI;
-		}
+	current = Vector3Add(current, finalmovement);
 
-		while (g_cameraRotation > 2 * PI)
-		{
-			g_cameraRotation -= 2 * PI;
-		}
+	if (current.x < 0) current.x = 0;
+	if (current.x > 3072) current.x = 3072;
+	if (current.z < 0) current.z = 0;
+	if (current.z > 3072) current.z = 3072;
 
-		Vector3 current = g_camera.target;
+	Vector3 camPos = { g_cameraDistance, g_cameraDistance, g_cameraDistance };
+	camPos = Vector3RotateByAxisAngle(camPos, Vector3{ 0, 1, 0 }, g_cameraRotation);
 
-		Vector3 finalmovement = Vector3RotateByAxisAngle(g_CameraMovementSpeed, Vector3{ 0, 1, 0 }, g_cameraRotation);
-
-		current = Vector3Add(current, finalmovement);
-
-		if (current.x < 0) current.x = 0;
-		if (current.x > 3072) current.x = 3072;
-		if (current.z < 0) current.z = 0;
-		if (current.z > 3072) current.z = 3072;
-
-		Vector3 camPos = { g_cameraDistance, g_cameraDistance, g_cameraDistance };
-		camPos = Vector3RotateByAxisAngle(camPos, Vector3{ 0, 1, 0 }, g_cameraRotation);
-
-		g_camera.target = current;
-		g_camera.position = Vector3Add(current, camPos);
-		g_camera.fovy = g_cameraDistance;
-	}
-
-	return 0;
+	g_camera.target = current;
+	g_camera.position = Vector3Add(current, camPos);
+	g_camera.fovy = g_cameraDistance;
 }
 
 U7Object* GetObjectFromID(int unitID)

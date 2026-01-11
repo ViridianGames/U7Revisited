@@ -53,6 +53,26 @@ void ScriptingSystem::Shutdown()
 
 void ScriptingSystem::Update()
 {
+    //  If a script is blocking, update only that script until it yields.
+    if (m_blockingCoroutine != "")
+    {
+        for (const auto& pair : m_activeCoroutines)
+        {
+            if (pair.first == m_blockingCoroutine)
+            {
+                lua_rawgeti(m_luaState, LUA_REGISTRYINDEX, pair.second);
+                lua_State* co = lua_tothread(m_luaState, -1);
+                lua_pop(m_luaState, 1);
+
+                if (lua_status(co) != LUA_YIELD)
+                {
+                    CleanupCoroutine(m_blockingCoroutine);
+                }
+                return;
+            }
+        }
+    }
+
     // Collect coroutines that are no longer yielded (completed or errored)
     std::vector<std::string> to_cleanup;
     for (const auto& pair : m_activeCoroutines)
@@ -178,6 +198,69 @@ void ScriptingSystem::SortScripts()
     {
         return a.first < b.first;
     });
+}
+
+void ScriptingSystem::SetBlockingScript(const std::string& func_name)
+{
+    for (const auto& pair : m_activeCoroutines)
+    {
+        if (pair.first == func_name)
+        {
+            m_blockingCoroutine = pair.first;
+        }
+    }
+}
+
+void ScriptingSystem::AddScript(const std::string& func_name, const vector<LuaArg>& args )
+{
+    m_currentScript = func_name;
+
+    lua_State* co = nullptr;
+    int co_ref = -1;
+    auto it = m_activeCoroutines.find(func_name);
+    if (it != m_activeCoroutines.end())
+    {
+        co_ref = it->second;
+        lua_rawgeti(m_luaState, LUA_REGISTRYINDEX, co_ref);
+        co = lua_tothread(m_luaState, -1);
+        lua_pop(m_luaState, 1);
+
+        if (lua_status(co) != LUA_YIELD)
+        {
+            CleanupCoroutine(func_name); // Changed
+            co = nullptr;
+        }
+    }
+
+    if (!co)
+    {
+        co = lua_newthread(m_luaState);
+        co_ref = luaL_ref(m_luaState, LUA_REGISTRYINDEX);
+        m_activeCoroutines[func_name] = co_ref;
+
+        // Use base function name to get the actual Lua function
+        lua_getglobal(co, func_name.c_str());
+        if (!lua_isfunction(co, -1))
+        {
+            lua_pop(co, 1);
+            CleanupCoroutine(func_name); // Changed
+            Log( "Function " + func_name + " is not a function.");
+        }
+
+        for (const auto& arg : args)
+        {
+            std::visit([&](const auto& value) {
+                using T = std::decay_t<decltype(value)>;
+                if constexpr (std::is_same_v<T, lua_Integer>) {
+                    lua_pushinteger(co, value);
+                } else if constexpr (std::is_same_v<T, std::string>) {
+                    lua_pushstring(co, value.c_str());
+                } else if constexpr (std::is_same_v<T, bool>) {
+                    lua_pushboolean(co, value);
+                }
+            }, arg);
+        }
+    }
 }
 
 string ScriptingSystem::CallScript(const string& func_name, const vector<LuaArg>& args)
