@@ -308,7 +308,12 @@ void CameraInput()
 			g_CameraMoved = true;
 		}
 	}
+}
 
+void CameraUpdate(bool forcemove)
+{
+
+	//  There is residual movement in either the position or rotation of the camera.  Make sure it gets applied.
 	bool moveDecay = false;
 	bool rotateDecay = false;
 	if (!g_CameraMoved && (g_CameraMovementSpeed.x != 0 || g_CameraMovementSpeed.z != 0))
@@ -328,12 +333,20 @@ void CameraInput()
 		moveDecay = true;
 	}
 
-}
+	//  Make sure we eventually stop moving no matter what.
+	if (g_CameraRotateSpeed != 0)
+	{
+		g_CameraRotateSpeed = g_CameraRotateSpeed * .75f;
+		if (abs(g_CameraRotateSpeed) < .01f)
+		{
+			g_CameraRotateSpeed = 0;
+		}
 
-void CameraUpdate(bool forcemove)
-{
+		rotateDecay = true;
+	}
+
 	// The camera was manually moved.
-	if (g_CameraMoved || forcemove || g_autoRotate)
+	if (g_CameraMoved || forcemove || g_autoRotate || rotateDecay || moveDecay)
 	{
 		g_cameraRotation += g_CameraRotateSpeed;
 
@@ -371,15 +384,6 @@ void CameraUpdate(bool forcemove)
 		}
 	}
 
-	//  Make sure we eventually stop moving no matter what.
-	if (g_CameraRotateSpeed != 0)
-	{
-		g_CameraRotateSpeed = g_CameraRotateSpeed * .75f;
-		if (abs(g_CameraRotateSpeed) < .01f)
-		{
-			g_CameraRotateSpeed = 0;
-		}
-	}
 
 	Vector3 current = g_camera.target;
 
