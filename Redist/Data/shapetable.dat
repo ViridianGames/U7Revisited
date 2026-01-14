@@ -15710,7 +15710,7 @@
 640 29 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 640 29 default 
 640 30 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 640 30 default 
 640 31 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 640 31 default 
-641 0 0 0 8 5 0 4 8 1 8 0 2 5 2 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 641 0 object_doorkey_0641 
+641 0 0 0 8 5 0 4 8 1 8 0 2 5 3 1.5 4 1.5 0.5 0 0.5 0 1 2 2 3 3 1 Models/3dmodels/gold_key_0641.obj 0 0 641 0 object_doorkey_0641 
 641 1 0 0 8 5 0 4 8 1 8 0 2 5 2 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 641 1 default 
 641 2 0 0 8 8 0 8 8 1 8 0 8 8 2 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 641 2 default 
 641 3 0 0 8 5 0 4 8 1 8 0 2 5 2 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 641 3 default 

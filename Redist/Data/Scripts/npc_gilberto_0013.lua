@@ -36,7 +36,7 @@ function npc_gilberto_0013(eventid, objectref)
     end
 
     while true do
-        coroutine.yield()
+        coroutine.yield(0)
         var_0001 = get_answer()
         if var_0001 == "name" then
             add_dialogue("\"I am Gilberto.\"")

@@ -38,7 +38,7 @@ public:
 	std::vector<int>& GetPartyMemberIds() { return m_PartyMemberIDs; };
 	bool NPCIDInParty(int npc_id);
 	bool NPCNameInParty(std::string name);
-	bool IsWearingFellowshipMedallion() { return m_isWearingFellowshipMedallion; }
+	bool IsWearingFellowshipMedallion();
 	int GetTrainingPoints() { return m_TrainingPoints; };
 	int GetStr() { return m_str; }
 	int GetDex() { return m_dex; }

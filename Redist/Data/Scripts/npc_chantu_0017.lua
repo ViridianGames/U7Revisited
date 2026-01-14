@@ -11,17 +11,17 @@ function npc_chantu_0017(eventid, objectref)
         if get_flag(63) then
             add_answer({"Klog", "Fellowship"})
         end
+        if not get_flag(82) then
+            add_dialogue("You see a solemn fellow in healer's robes.")
+            set_flag(82, true)
+        else
+            add_dialogue("\"Hello, again,\" Chantu says. \"How may I help thee?\"")
+        end
 
-        --while true do
-            var_0002 = get_answer()
-            if var_0002 == "nil" then
-                if not get_flag(82) then
-                    add_dialogue("You see a solemn fellow in healer's robes.")
-                    set_flag(82, true)
-                else
-                    add_dialogue("\"Hello, again,\" Chantu says. \"How may I help thee?\"")
-                end
-            elseif var_0002 == "name" then
+        while true do
+            coroutine.yield(0)
+            local var_0002 = get_answer()
+            if var_0002 == "name" then
                 add_dialogue("\"My name is Chantu,\" he says with a slight bow.")
                 remove_answer("name")
             elseif var_0002 == "job" then
@@ -33,7 +33,8 @@ function npc_chantu_0017(eventid, objectref)
                 add_dialogue("\"CALL GENERIC HEALER SCRIPT\"")
                 --utility_unknown_0864(400, 50, 30) --- Guess: Performs healing, curing, or resurrection
             elseif var_0002 == "Fellowship" then
-                add_dialogue("The healer frowns. \"The Fellowship does not appreciate the efforts of healers in Britannia. Although they do admirable things, The Fellowship is short-sighted when evaluating the need for healers. They believe that our work can be done through their so-called 'Triad of Inner Strength'.\"")
+                add_dialogue("The healer frowns. \"The Fellowship does not appreciate the efforts of healers in Britannia. Although they do admirable things,")
+                add_dialogue("The Fellowship is short-sighted when evaluating the need for healers. They believe that our work can be done through their so-called 'Triad of Inner Strength'.\"")
                 if var_0001 then
                     add_dialogue("Chantu notices your medallion and his eyes widen.")
                     add_dialogue("\"Excuse me, " .. var_0000 .. ", I did not mean to offend thee.\"")
@@ -47,7 +48,7 @@ function npc_chantu_0017(eventid, objectref)
                 clear_answers()
                 --break
             end
-        --end
+        end
         
     elseif eventid == 0 then
         var_0002 = get_schedule_type(17) --- Guess: Gets object state

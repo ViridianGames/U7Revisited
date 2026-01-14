@@ -899,14 +899,17 @@ void MainState::Update()
 
 	unsigned short currentTargetTile = g_World[g_camera.target.z][g_camera.target.x];
 	currentTargetTile = currentTargetTile & 0x3ff; // We just need the shape, not the frame.
-	if (currentTargetTile == 0 || currentTargetTile == 5 || currentTargetTile == 17 || currentTargetTile == 18 ||
-		currentTargetTile == 21 || currentTargetTile == 23 || currentTargetTile == 27 || currentTargetTile == 47 || currentTargetTile >= 149)
+	if (MainStateModes::MAIN_STATE_MODE_SANDBOX != m_gameMode)
 	{
-		m_heightCutoff = 4.0f;
-	}
-	else
-	{
-		m_heightCutoff = 16.0f;
+		if (currentTargetTile == 0 || currentTargetTile == 5 || currentTargetTile == 17 || currentTargetTile == 18 ||
+			currentTargetTile == 21 || currentTargetTile == 23 || currentTargetTile == 27 || currentTargetTile == 47 || currentTargetTile >= 149)
+		{
+			m_heightCutoff = 4.0f;
+		}
+		else
+		{
+			m_heightCutoff = 16.0f;
+		}
 	}
 
 	// Check if schedule time has changed and populate pathfinding queue

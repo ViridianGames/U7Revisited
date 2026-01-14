@@ -156,3 +156,15 @@ void U7Player::LoadFromJson(const json& j)
 		m_PartyMemberIDs = j["partyMemberIDs"].get<std::vector<int>>();
 	}
 }
+
+bool U7Player::IsWearingFellowshipMedallion()
+{
+	if (g_NPCData[0]->GetEquippedItem(EquipmentSlot::SLOT_NECK) == -1) // Nothing on the neck
+	{
+		return false;
+	}
+
+	int neckShape = g_objectList[g_NPCData[0]->GetEquippedItem(EquipmentSlot::SLOT_NECK)]->m_shapeData->GetShape();
+	int neckFrame = g_objectList[g_NPCData[0]->GetEquippedItem(EquipmentSlot::SLOT_NECK)]->m_shapeData->GetFrame();
+	return (neckShape == 955 && neckFrame == 1);
+}

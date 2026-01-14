@@ -140,10 +140,18 @@ NPCDebugPrint("LUA: add_dialogue called with " + string(luaL_checkstring(L, 1)))
     return 0;
 }
 
-// Opcode 0033
 static int LuaStartConversation(lua_State *L)
 {
-    string func_name = luaL_checkstring(L, 3);
+    DebugPrint ("LUA: start_conversation called");
+    g_StateMachine->PushState(STATE_CONVERSATIONSTATE);
+
+    return 0;
+}
+
+// Opcode 0033
+static int LuaStartConversationWithCO(lua_State *L)
+{
+    string func_name = luaL_checkstring(L, 1);
     if (func_name.empty())
     {
         func_name = g_ScriptingSystem->GetFuncNameFromCo(L);
@@ -151,6 +159,8 @@ static int LuaStartConversation(lua_State *L)
 
     DebugPrint ("LUA: start_conversation called");
     g_ConversationState->SetLuaFunction(func_name);
+    g_ScriptingSystem->AddScript(func_name, {});
+    g_ScriptingSystem->SetBlockingScript(func_name);
     g_StateMachine->PushState(STATE_CONVERSATIONSTATE);
 
     return 0;
@@ -4739,6 +4749,7 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction("hide_npc", LuaHideNPC);
     g_ScriptingSystem->RegisterScriptFunction("add_dialogue", LuaAddDialogue);
     g_ScriptingSystem->RegisterScriptFunction("add_answer", LuaAddAnswers);
+    g_ScriptingSystem->RegisterScriptFunction("start_conversation_with_co", LuaStartConversationWithCO);
     g_ScriptingSystem->RegisterScriptFunction("start_conversation", LuaStartConversation);
     g_ScriptingSystem->RegisterScriptFunction("end_conversation", LuaEndConversation);
     g_ScriptingSystem->RegisterScriptFunction("abort", LuaAbort);

@@ -3,9 +3,8 @@ function utility_intro_iolo()
     local player_name
 
     set_flag(20, true)
-    push_blocking_coroutine("utility_intro_iolo")
     player_name = get_player_name()
-    start_conversation()
+    start_conversation_with_co("utility_intro_iolo")
     add_dialogue(
         "A rather large, familiar man looks up and sees you. The shock that is evident from his dumbfounded expression quickly evolves into delight. He smiles broadly.")
     add_dialogue("\"" ..

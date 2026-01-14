@@ -312,7 +312,6 @@ void CameraInput()
 
 void CameraUpdate(bool forcemove)
 {
-
 	//  There is residual movement in either the position or rotation of the camera.  Make sure it gets applied.
 	bool moveDecay = false;
 	bool rotateDecay = false;
