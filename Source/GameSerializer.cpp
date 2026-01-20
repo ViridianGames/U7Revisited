@@ -9,7 +9,7 @@
 #include <sstream>
 #include <iomanip>
 
-using json = nlohmann::json;
+using u7json = nlohmann::json;
 namespace fs = std::filesystem;
 
 // Static member initialization

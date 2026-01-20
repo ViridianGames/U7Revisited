@@ -475,3 +475,22 @@ bool Gui::IsMouseInDragArea() const
 	return (scaledX >= m_Pos.x && scaledX <= m_Pos.x + m_Width &&
 		scaledY >= m_Pos.y && scaledY <= m_Pos.y + m_DragAreaHeight);
 }
+
+void Gui::Serialize(std::string filename)
+{
+	//  Write the current state of the GUI to a file using JSON.
+
+
+}
+
+//  Read the specified file and set up this Gui based on it.
+//  NOTE: Any previous settings will be overwritten!
+void Gui::Deserialize(std::string filename)
+{
+	json j;
+
+	//  Serialize Gui parameters.
+
+	//  Go through and serialize all GuiElements
+
+}

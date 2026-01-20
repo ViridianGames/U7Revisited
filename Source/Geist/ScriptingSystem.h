@@ -49,8 +49,6 @@ public:
     void SetAnswer(const std::string& answer);
     std::vector<std::string> GetAnswers();
 
-    std::string m_blockingCoroutine = "";
-
     // New: Get func_name from a coroutine state (for waiter identification)
     std::string GetFuncNameFromCo(lua_State* co) const;
 

@@ -53,26 +53,6 @@ void ScriptingSystem::Shutdown()
 
 void ScriptingSystem::Update()
 {
-    //  If a script is blocking, update only that script until it yields.
-    if (m_blockingCoroutine != "")
-    {
-        for (const auto& pair : m_activeCoroutines)
-        {
-            if (pair.first == m_blockingCoroutine)
-            {
-                lua_rawgeti(m_luaState, LUA_REGISTRYINDEX, pair.second);
-                lua_State* co = lua_tothread(m_luaState, -1);
-                lua_pop(m_luaState, 1);
-
-                if (lua_status(co) != LUA_YIELD)
-                {
-                    CleanupCoroutine(m_blockingCoroutine);
-                }
-                return;
-            }
-        }
-    }
-
     // Collect coroutines that are no longer yielded (completed or errored)
     std::vector<std::string> to_cleanup;
     for (const auto& pair : m_activeCoroutines)
@@ -198,17 +178,6 @@ void ScriptingSystem::SortScripts()
     {
         return a.first < b.first;
     });
-}
-
-void ScriptingSystem::SetBlockingScript(const std::string& func_name)
-{
-    for (const auto& pair : m_activeCoroutines)
-    {
-        if (pair.first == func_name)
-        {
-            m_blockingCoroutine = pair.first;
-        }
-    }
 }
 
 void ScriptingSystem::AddScript(const std::string& func_name, const vector<LuaArg>& args )

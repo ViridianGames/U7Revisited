@@ -331,6 +331,15 @@ void MainState::UpdateInput()
 {
 	if (!g_allowInput)
 	{
+		if (IsKeyPressed(KEY_ESCAPE)) // ESC to exit the program ALWAYS works.
+		{
+			if (!g_Engine->m_askedToExit)
+			{
+				g_Engine->m_askedToExit = true;
+				g_StateMachine->PushState(STATE_ASKEXITSTATE);
+			}
+		}
+
 		return;
 	}
 
@@ -642,7 +651,7 @@ void MainState::UpdateInput()
 				AddConsoleString("Object " + to_string(g_objectUnderMousePointer->m_ID) + " is not a container.");
 			}
 		}
-		else
+		else if (!g_mouseOverUI && !g_gumpManager->m_isMouseOverGump)
 		{
 			int worldX = (int)floor(g_terrainUnderMousePointer.x);
 			int worldZ = (int)floor(g_terrainUnderMousePointer.z);

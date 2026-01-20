@@ -24,7 +24,7 @@ function npc_ellen_0236(eventid, objectref)
         add_answer({"bye", "murder", "job", "name"})
 
         while true do
-            coroutine.yield(0)
+            coroutine.yield()
             local answer = get_answer()
             debug_print("Answer is " .. answer .. ".")
             if answer == "name" then
@@ -57,5 +57,4 @@ function npc_ellen_0236(eventid, objectref)
     elseif eventid == 0 then
         utility_unknown_1070(236)
     end
-    return
 end

@@ -11,6 +11,10 @@
 #include "Primitives.h"
 #include "GuiElements.h"
 
+#include <../nlohmann/json.hpp>
+
+using json = nlohmann::ordered_json;
+
 class Gui
 {
 public:
@@ -37,8 +41,9 @@ public:
 	void SetActive(bool active) { m_Active = active; }
 	void SetDoneButtonId(int id) { m_doneButtonId = id; }
 
-
-
+	//  These functions use JSON to store GUI layouts
+	void Serialize(std::string filename);
+	void Deserialize(std::string filename);
 
 	GuiTextButton* AddTextButton(int ID, int posx, int posy, int width, int height, std::string text, Font* font,
 		Color textcolor = (Color{ 255, 255, 255, 255 }),

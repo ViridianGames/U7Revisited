@@ -93,10 +93,8 @@ function npc_johnson_0014(eventid, objectref)
             add_dialogue("\"Thou canst purchase that from Gargan the Shipwright.\"")
             remove_answer("deed")
         elseif answer == "bye" then
-            break
+            add_dialogue("\"Good day.\"")
+            clear_answers()
         end
     end
-    add_dialogue("\"Good day.\"")
-    clear_answers()
-    return
 end

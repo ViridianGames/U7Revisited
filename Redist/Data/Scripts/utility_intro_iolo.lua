@@ -4,7 +4,7 @@ function utility_intro_iolo()
 
     set_flag(20, true)
     player_name = get_player_name()
-    start_conversation_with_co("utility_intro_iolo")
+    start_conversation()
     add_dialogue(
         "A rather large, familiar man looks up and sees you. The shock that is evident from his dumbfounded expression quickly evolves into delight. He smiles broadly.")
     add_dialogue("\"" ..

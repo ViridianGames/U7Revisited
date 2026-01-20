@@ -143,24 +143,8 @@ NPCDebugPrint("LUA: add_dialogue called with " + string(luaL_checkstring(L, 1)))
 static int LuaStartConversation(lua_State *L)
 {
     DebugPrint ("LUA: start_conversation called");
-    g_StateMachine->PushState(STATE_CONVERSATIONSTATE);
-
-    return 0;
-}
-
-// Opcode 0033
-static int LuaStartConversationWithCO(lua_State *L)
-{
-    string func_name = luaL_checkstring(L, 1);
-    if (func_name.empty())
-    {
-        func_name = g_ScriptingSystem->GetFuncNameFromCo(L);
-    }
-
-    DebugPrint ("LUA: start_conversation called");
+    string func_name = g_ScriptingSystem->GetFuncNameFromCo(L);
     g_ConversationState->SetLuaFunction(func_name);
-    g_ScriptingSystem->AddScript(func_name, {});
-    g_ScriptingSystem->SetBlockingScript(func_name);
     g_StateMachine->PushState(STATE_CONVERSATIONSTATE);
 
     return 0;
@@ -743,6 +727,7 @@ static int LuaSetObjectShape(lua_State *L)
     int currentFrame = object->m_shapeData->GetFrame();
     object->m_shapeData = &g_shapeTable[shape][currentFrame];
     object->m_objectData = &g_objectDataTable[shape];
+    object->SetPos(object->GetPos());
 
     // Propagate door flag to new shape
     if (wasDoor)
@@ -4716,15 +4701,6 @@ static int LuaGetCurrentMinute(lua_State *L)
     return 1;
 }
 
-static int LuaPushBlockingCoroutine(lua_State *L)
-{
-    const char *text = luaL_checkstring(L, 1);
-    g_ScriptingSystem->AddScript(text, {});
-    g_ScriptingSystem->SetBlockingScript(text);
-    NPCDebugPrint(text);  // Lua debug messages go to npcdebug.log
-    return 0;
-}
-
 void RegisterAllLuaFunctions()
 {
     cout << "Registering Lua functions\n";
@@ -4749,7 +4725,6 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction("hide_npc", LuaHideNPC);
     g_ScriptingSystem->RegisterScriptFunction("add_dialogue", LuaAddDialogue);
     g_ScriptingSystem->RegisterScriptFunction("add_answer", LuaAddAnswers);
-    g_ScriptingSystem->RegisterScriptFunction("start_conversation_with_co", LuaStartConversationWithCO);
     g_ScriptingSystem->RegisterScriptFunction("start_conversation", LuaStartConversation);
     g_ScriptingSystem->RegisterScriptFunction("end_conversation", LuaEndConversation);
     g_ScriptingSystem->RegisterScriptFunction("abort", LuaAbort);
@@ -4993,8 +4968,6 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction( "wait_move_end", LuaWaitMoveEnd);
     g_ScriptingSystem->RegisterScriptFunction( "get_current_hour", LuaGetCurrentHour);
     g_ScriptingSystem->RegisterScriptFunction( "get_current_minute", LuaGetCurrentMinute);
-
-    g_ScriptingSystem->RegisterScriptFunction("push_blocking_coroutine", LuaPushBlockingCoroutine);
 
     cout << "Registered all Lua functions\n";
 }

@@ -12,7 +12,7 @@
 #include "Geist/GuiElements.h"
 #include <json.hpp>
 
-using json = nlohmann::json;
+using u7json = nlohmann::json;
 
 class U7Player
 {
@@ -60,7 +60,7 @@ public:
 	void RemovePartyMember(int index);
 
 	// Serialization
-	json SaveToJson() const;
+	u7json SaveToJson() const;
 	void LoadFromJson(const json& j);
 
 	U7Object* GetAvatarObject();

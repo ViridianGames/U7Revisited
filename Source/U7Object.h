@@ -9,7 +9,7 @@
 #include "U7Globals.h"
 #include <json.hpp>
 
-using json = nlohmann::json;
+using u7json = nlohmann::json;
 
 struct ObjectData;
 enum class ObjectTypes;

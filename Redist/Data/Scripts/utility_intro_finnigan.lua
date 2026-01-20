@@ -4,7 +4,7 @@ function utility_intro_finnigan()
 
     set_flag(20, true)
     player_name = get_player_name()
-    start_conversation_with_co("utility_intro_finnigan")
+    start_conversation()
     switch_talk_to(12)
     add_dialogue("You see a middle-aged nobleman.")
     set_flag(76, true)

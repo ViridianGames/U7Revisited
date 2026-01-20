@@ -901,8 +901,6 @@ void U7Object::Interact(int event)
 			return;
 		}
 
-		g_ConversationState->SetLuaFunction(scriptName);
-
 		NPCDebugPrint("Calling Lua function: " + scriptName + " event: " + to_string(event) + " NPCID: " + to_string(m_NPCID));
 		NPCDebugPrint(g_ScriptingSystem->CallScript(scriptName, { event, m_NPCID }));
 	}

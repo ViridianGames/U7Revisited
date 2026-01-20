@@ -100,9 +100,9 @@ void U7Player::RemovePartyMember(int index)
 // Serialization
 // ============================================================================
 
-json U7Player::SaveToJson() const
+u7json U7Player::SaveToJson() const
 {
-	json j;
+	u7json j;
 
 	j["name"] = m_PlayerName;
 	j["isMale"] = m_isMale;
