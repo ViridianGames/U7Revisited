@@ -153,7 +153,10 @@ function npc_gargan_0021(eventid, objectref)
                     utility_unknown_0909()
                 end
             elseif var_0003 == "Hook" then
-                add_dialogue("\"Matey, I have always seen pirates and sailors with peglegs and hooks. If thou hast seen one, thou hast seen another.\"")add_dialogue("But the man suddenly frowns. \"Hmm. Now that thou dost mention it, I -did- see a man with a hook late last night after sundown. I was leaving the shop and saw him outside. There was a wingless gargoyle with him. They were walking east.\"")
+                add_dialogue(
+                "\"Matey, I have always seen pirates and sailors with peglegs and hooks. If thou hast seen one, thou hast seen another.\"")
+                add_dialogue("But the man suddenly frowns. \"Hmm. Now that thou dost mention it, I -did- see a man with a hook late last night after sundown.")
+                add_dialogue("I was leaving the shop and saw him outside. There was a wingless gargoyle with him. They were walking east.\"")
                 add_dialogue("Gargan sneezes, then coughs a couple of times.")
                 var_0008 = npc_id_in_party(2)
                 if var_0008 then

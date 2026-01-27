@@ -322,6 +322,7 @@ static int LuaRemoveAnswers(lua_State *L)
             return luaL_error(L, "Answers table lost at index %d", answers_idx);
         }
         lua_rawseti(L, answers_idx, len + 1);
+        NPCDebugPrint("Removing answer " + string(answer));  // Lua debug messages go to npcdebug.log
         g_ConversationState->RemoveAnswer(answer);
 }
     else if (type == LUA_TTABLE)
@@ -340,6 +341,7 @@ static int LuaRemoveAnswers(lua_State *L)
                     return luaL_error(L, "Answers table lost at index %d", answers_idx);
                 }
                 g_ConversationState->RemoveAnswer(answer);
+                NPCDebugPrint("Removing answer " + string(answer));  // Lua debug messages go to npcdebug.log
                 lua_rawseti(L, answers_idx, len + 1);
                 len++; // Increment for next insertion
 }

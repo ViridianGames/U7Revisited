@@ -191,7 +191,7 @@ int main(int argv, char** argc)
 
       float baseFontSize = 9;
       const char* fontPath = "Data/Fonts/softsquare.ttf";
-      //const char* fontPath = "Data/Fonts/babyblocks.ttf";
+      const char* babyfontPath = "Data/Fonts/birdseed.ttf";
 
       g_fontSize = baseFontSize * int(g_DrawScale);
       Font font = LoadFontEx(fontPath, g_fontSize, NULL, 0);
@@ -206,7 +206,7 @@ int main(int argv, char** argc)
       //const char* conversationFontPath = "Data/Fonts/softsquare.ttf"; float conversationFontSize = 18;
       Font conversationFont = LoadFontEx(conversationFontPath, conversationFontSize, NULL, 0);
       g_ConversationFont = make_shared<Font>(conversationFont);
-      Font conversationSmallFont = LoadFontEx(conversationFontPath, 18, NULL, 0);
+      Font conversationSmallFont = LoadFontEx(babyfontPath, 22, NULL, 0);
       g_ConversationSmallFont = make_shared<Font>(conversationSmallFont);
 
       const char* guiFontPath = "Data/Fonts/babyblocks.ttf"; float guiFontSize = 8;

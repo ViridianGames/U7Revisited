@@ -183,15 +183,15 @@ void ConversationState::Update()
 				for (int i = 0; i < m_answers.size(); i++)
 				{
 					std::string adjustedAnswer = std::string("* ") + m_answers[i];
-					Vector2 dims = MeasureTextEx(*g_SmallFont.get(), adjustedAnswer.c_str(), g_SmallFont.get()->baseSize, 1);
+					Vector2 dims = MeasureTextEx(*g_ConversationFont.get(), adjustedAnswer.c_str(), g_ConversationFont.get()->baseSize, 1);
 
 					Vector2 mousePosition = GetMousePosition();
 					if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) &&
 						CheckCollisionPointRec(mousePosition, {
 							                       190 * g_DrawScale,
-							                       float((140 + (i * g_SmallFont.get()->baseSize * 1.3)) * g_DrawScale),
+							                       float((135 + (i * g_ConversationFont.get()->baseSize * 1.2)) * g_DrawScale),
 							                       dims.x * g_DrawScale,
-							                       float((g_SmallFont.get()->baseSize * 1.3) * g_DrawScale)
+							                       float((g_ConversationFont.get()->baseSize * 1.2) * g_DrawScale)
 						                       }))
 					{
 						if (m_steps.size() == 0)
@@ -235,10 +235,10 @@ void ConversationState::Update()
 	}
 	else if (m_scriptFinished && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
 	{
-		if (m_steps.empty())
-		{
-			g_StateMachine->PopState();
-		}
+		// if (m_steps.empty())
+		// {
+		// 	g_StateMachine->PopState();
+		// }
 	}
 
 	if (m_answerPending && g_ScriptingSystem->IsCoroutineYielded(m_luaFunction))
@@ -353,8 +353,8 @@ void ConversationState::Draw()
 			DrawTextureEx(*thisTexture, {100, 135}, 0, 2, WHITE);
 			for (int i = 0; i < m_answers.size(); i++)
 			{
-				DrawOutlinedText(g_SmallFont, "* " + m_answers[i],
-				                 {190, float(140 + (i * g_SmallFont.get()->baseSize * 1.3))}, g_SmallFont.get()->baseSize,
+				DrawOutlinedText(g_ConversationFont, "* " + m_answers[i],
+				                 {190, float(135 + (i * g_ConversationFont.get()->baseSize * 1.2))}, g_ConversationFont.get()->baseSize,
 				                 1, YELLOW);
 			}
 		}
@@ -362,7 +362,7 @@ void ConversationState::Draw()
 
 	DrawConsole();
 
-	DrawOutlinedText(g_SmallFont, g_version.c_str(), Vector2{600, 340}, g_SmallFont->baseSize, 1, WHITE);
+	DrawOutlinedText(g_ConversationFont, g_version.c_str(), Vector2{600, 340}, g_ConversationFont->baseSize, 1, WHITE);
 
 	EndTextureMode();
 	DrawTexturePro(g_guiRenderTarget.texture,
