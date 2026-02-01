@@ -1,7 +1,8 @@
 --- Best guess: Handles dialogue with Iolo in Trinsic, discussing the murder, companions, and quest progression, with options to join or leave.
 function utility_intro_script()
     local player_name, player_member_names, party_member_1_name, lord_or_lady, player_female, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E, var_000F, var_0010, var_0011, var_0012
-
+    
+    
     set_flag(20, true)
     hide_ui_elements()
     jump_camera_angle(315)
@@ -43,8 +44,9 @@ function utility_intro_script()
     utility_intro_iolo()
     set_camera_destination_angle(0)
     set_npc_dest(12, 1065, 0, 2215)
+    wait(2.5) --  wait(6)
     bark_npc(12, "I would have words with thee.")
-    wait(5)
+    wait(3)-- wait(7)
     utility_intro_finnigan()
     resume_input()
     show_ui_elements()

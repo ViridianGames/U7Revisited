@@ -127,7 +127,7 @@ static int LuaAddDialogue(lua_State *L)
     if (!g_ConversationState) {
         return luaL_error(L, "ConversationState not initialized");
     }
-NPCDebugPrint("LUA: add_dialogue called with " + string(luaL_checkstring(L, 1)));
+    NPCDebugPrint("LUA: add_dialogue called with " + string(luaL_checkstring(L, 1)));
     const char *text = luaL_checkstring(L, 1);
 
     ConversationState::ConversationStep step;
@@ -137,7 +137,7 @@ NPCDebugPrint("LUA: add_dialogue called with " + string(luaL_checkstring(L, 1)))
     step.frame = 0;
     g_ConversationState->AddStep(step);
 
-    return 0;
+    return lua_yield(L, 0);
 }
 
 static int LuaStartConversation(lua_State *L)
@@ -167,7 +167,7 @@ static int LuaSecondSpeaker(lua_State *L)
     step.frame = frame;
     g_ConversationState->AddStep(step);
 
-    return 0;
+    return  lua_yield(L, 0);
 }
 
 // Opcode 0004
