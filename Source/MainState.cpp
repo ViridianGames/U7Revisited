@@ -520,7 +520,7 @@ void MainState::UpdateInput()
 		}
 
 		// Only allow dragging if not a static object (or if static movement is enabled)
-		if (m_allowMovingStaticObjects || g_objectUnderMousePointer->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_STATIC )
+		if (m_allowMovingStaticObjects || g_objectUnderMousePointer->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_STATIC)
 		{
 			if (m_dragStart.x == 0 && m_dragStart.y == 0)
 			{
@@ -658,16 +658,16 @@ void MainState::UpdateInput()
 
 			U7Object* avatar = g_objectList[g_NPCData[0]->m_objectID].get();
 			//avatar->SetDest({float(worldX), 0, float(worldZ)});
-			avatar->PathfindToDest({float(worldX), 0, float(worldZ)});
+			avatar->PathfindToDest({ float(worldX), 0, float(worldZ) });
 
 			int counter = 1;
 			for (int id : g_Player->GetPartyMemberIds())
 			{
 				U7Object* partyMember = g_objectList[g_NPCData[id]->m_objectID].get();
 				if (id % 2 == 0)
-					partyMember->PathfindToDest({float(worldX + counter), 0, float(worldZ + counter)});
+					partyMember->PathfindToDest({ float(worldX + counter), 0, float(worldZ + counter) });
 				else
-					partyMember->PathfindToDest({float(worldX + counter), 0, float(worldZ - counter)});
+					partyMember->PathfindToDest({ float(worldX + counter), 0, float(worldZ - counter) });
 
 				counter += 1;
 			}
@@ -728,9 +728,9 @@ void MainState::UpdateInput()
 				{
 					int npcID = g_objectUnderMousePointer->m_NPCID;
 					string npcName = g_NPCData[npcID] ? g_NPCData[npcID]->name : "Unknown";
-//					AddConsoleString("=== NPC #" + to_string(npcID) + " (" + npcName + ") Schedule ===");
-//					AddConsoleString("Current game time: " + to_string(g_hour) + ":" + (g_minute < 10 ? "0" : "") + to_string(g_minute) +
-						//" (schedule block: " + to_string(g_scheduleTime) + ")");
+					//					AddConsoleString("=== NPC #" + to_string(npcID) + " (" + npcName + ") Schedule ===");
+					//					AddConsoleString("Current game time: " + to_string(g_hour) + ":" + (g_minute < 10 ? "0" : "") + to_string(g_minute) +
+											//" (schedule block: " + to_string(g_scheduleTime) + ")");
 
 					if (g_NPCSchedules.find(npcID) != g_NPCSchedules.end() && !g_NPCSchedules[npcID].empty())
 					{
@@ -741,8 +741,8 @@ void MainState::UpdateInput()
 
 						std::sort(sortedIndices.begin(), sortedIndices.end(),
 							[npcID](int a, int b) {
-							return g_NPCSchedules[npcID][a].m_time < g_NPCSchedules[npcID][b].m_time;
-						});
+								return g_NPCSchedules[npcID][a].m_time < g_NPCSchedules[npcID][b].m_time;
+							});
 
 						// Find the currently active schedule (most recent schedule where time <= current time)
 						int activeScheduleIndex = -1;
@@ -843,39 +843,96 @@ void MainState::UpdateInput()
 
 	if (g_isCameraLockedToAvatar && g_allowInput)
 	{
-		Vector3 direction = { 0, 0, 0 };
-		bool avatarMoved = false;
-		if (IsKeyDown(KEY_A))
+		// First-person camera-relative movement when enabled, otherwise keep existing rotation-based controls
+		if (g_firstPersonEnabled)
 		{
-			direction = Vector3Add(direction, { -GetFrameTime() * g_Player->GetAvatarObject()->GetSpeed(), 0, GetFrameTime() * g_Player->GetAvatarObject()->GetSpeed() });
-			avatarMoved = true;
+			U7Object* avatar = g_Player->GetAvatarObject();
+			if (!avatar) return;
 
+			float dt = GetFrameTime();
+
+			// Build a flattened forward vector from the current camera (horizontal only)
+			Vector3 camForward = Vector3Subtract(g_camera.target, g_camera.position);
+			camForward.y = 0.0f;
+			if (Vector3Length(camForward) < 0.0001f)
+			{
+				// fallback to avatar direction if camera forward is degenerate
+				camForward = avatar->m_Direction;
+				camForward.y = 0.0f;
+			}
+			Vector3 flatForward = Vector3Normalize(camForward);
+
+			// Camera-right on XZ plane
+			Vector3 right = Vector3{ flatForward.z, 0.0f, -flatForward.x };
+			right = Vector3Normalize(right);
+
+			// Movement input (camera-relative)
+			Vector3 move = { 0.0f, 0.0f, 0.0f };
+			float speed = g_Player->GetAvatarObject()->GetSpeed();
+			if (IsKeyDown(KEY_W)) move = Vector3Add(move, Vector3Scale(flatForward, speed * dt));
+			if (IsKeyDown(KEY_S)) move = Vector3Add(move, Vector3Scale(flatForward, -speed * dt));
+			if (IsKeyDown(KEY_D)) move = Vector3Add(move, Vector3Scale(right, -speed * dt));
+			if (IsKeyDown(KEY_A)) move = Vector3Add(move, Vector3Scale(right, speed * dt));
+
+			if (move.x != 0.0f || move.z != 0.0f)
+			{
+				// Apply movement by setting destination one step ahead (keeps existing movement system)
+				Vector3 finalDest = Vector3Add(g_Player->GetAvatarObject()->GetPos(), move);
+				// Clamp in world bounds
+				if (finalDest.x < 0.0f) finalDest.x = 0.0f;
+				if (finalDest.x > 3072.0f) finalDest.x = 3072.0f;
+				if (finalDest.z < 0.0f) finalDest.z = 0.0f;
+				if (finalDest.z > 3072.0f) finalDest.z = 3072.0f;
+
+				g_Player->GetAvatarObject()->SetDest(finalDest);
+
+				// Face avatar toward camera horizontal forward so heading matches view
+				Vector3 flatForDir = flatForward;
+				if (Vector3Length(flatForDir) > 0.0001f)
+				{
+					flatForDir = Vector3Normalize(flatForDir);
+					g_Player->SetPlayerDirection(flatForDir);
+					g_Player->GetAvatarObject()->m_Direction = flatForDir;
+				}
+			}
 		}
-
-		if (IsKeyDown(KEY_D))
+		else
 		{
-			direction = Vector3Add(direction, { GetFrameTime() * g_Player->GetAvatarObject()->GetSpeed(), 0, -GetFrameTime() * g_Player->GetAvatarObject()->GetSpeed() });
-			avatarMoved = true;
-		}
+			// Existing rotation-based movement (unchanged)
+			Vector3 direction = { 0, 0, 0 };
+			bool avatarMoved = false;
+			if (IsKeyDown(KEY_A))
+			{
+				direction = Vector3Add(direction, { -GetFrameTime() * g_Player->GetAvatarObject()->GetSpeed(), 0, GetFrameTime() * g_Player->GetAvatarObject()->GetSpeed() });
+				avatarMoved = true;
+			}
 
-		if (IsKeyDown(KEY_W))
-		{
-			direction = Vector3Add(direction, { -GetFrameTime() * g_Player->GetAvatarObject()->GetSpeed(), 0, -GetFrameTime() * g_Player->GetAvatarObject()->GetSpeed() });
-			avatarMoved = true;
-		}
+			if (IsKeyDown(KEY_D))
+			{
+				direction = Vector3Add(direction, { GetFrameTime() * g_Player->GetAvatarObject()->GetSpeed(), 0, -GetFrameTime() * g_Player->GetAvatarObject()->GetSpeed() });
+				avatarMoved = true;
+			}
 
-		if (IsKeyDown(KEY_S))
-		{
-			direction = Vector3Add(direction, { GetFrameTime() * g_Player->GetAvatarObject()->GetSpeed(), 0, GetFrameTime() * g_Player->GetAvatarObject()->GetSpeed() });
-			avatarMoved = true;
-		}
+			if (IsKeyDown(KEY_W))
+			{
+				direction = Vector3Add(direction, { -GetFrameTime() * g_Player->GetAvatarObject()->GetSpeed(), 0, -GetFrameTime() * g_Player->GetAvatarObject()->GetSpeed() });
+				avatarMoved = true;
+			}
 
-		if (avatarMoved)
-		{
-			Vector3 finalmovement = Vector3RotateByAxisAngle(direction, Vector3{ 0, 1, 0 }, g_cameraRotation);
-			g_Player->GetAvatarObject()->SetDest(Vector3Add(g_Player->GetAvatarObject()->GetPos(), finalmovement));
+			if (IsKeyDown(KEY_S))
+			{
+				direction = Vector3Add(direction, { GetFrameTime() * g_Player->GetAvatarObject()->GetSpeed(), 0, GetFrameTime() * g_Player->GetAvatarObject()->GetSpeed() });
+				avatarMoved = true;
+			}
+
+			if (avatarMoved)
+			{
+				Vector3 finalmovement = Vector3RotateByAxisAngle(direction, Vector3{ 0, 1, 0 }, g_cameraRotation);
+				g_Player->GetAvatarObject()->SetDest(Vector3Add(g_Player->GetAvatarObject()->GetPos(), finalmovement));
+			}
 		}
 	}
+
 }
 
 void MainState::Bark(U7Object* object, const std::string& text, float duration)
@@ -967,15 +1024,15 @@ void MainState::Update()
 				{
 					// Check if this is a NEW schedule (different time or activity changed)
 					bool needsUpdate = (mostRecentScheduleTime != npcObj->m_lastSchedule) ||
-					                   (mostRecentActivity != npcData->m_currentActivity);
+						(mostRecentActivity != npcData->m_currentActivity);
 
 					if (needsUpdate)
 					{
 						// Update the schedule time and activity
 						npcObj->m_lastSchedule = mostRecentScheduleTime;
 						npcData->m_currentActivity = mostRecentActivity;
-					// Clear schedule path flag - will be set again if new schedule has destination
-					npcObj->m_isSchedulePath = false;
+						// Clear schedule path flag - will be set again if new schedule has destination
+						npcObj->m_isSchedulePath = false;
 
 
 						// Only queue for pathfinding if pathfinding is enabled
@@ -993,7 +1050,7 @@ void MainState::Update()
 		if (!g_npcPathfindQueue.empty())
 		{
 			AddConsoleString("Schedule changed to block " + std::to_string(g_scheduleTime) +
-			                 ", queued " + std::to_string(g_npcPathfindQueue.size()) + " NPCs for pathfinding", YELLOW);
+				", queued " + std::to_string(g_npcPathfindQueue.size()) + " NPCs for pathfinding", YELLOW);
 		}
 	}
 
@@ -1018,8 +1075,8 @@ void MainState::Update()
 					if (result.requestID > 0)
 					{
 						NPCDebugPrint("MainState: Tracked path ready for NPC " + std::to_string(result.npcID) +
-						           ", request ID " + std::to_string(result.requestID) +
-						           ", " + std::to_string(result.waypoints.size()) + " waypoints");
+							", request ID " + std::to_string(result.requestID) +
+							", " + std::to_string(result.waypoints.size()) + " waypoints");
 						npcObj->m_isSchedulePath = false;  // Lua activity path
 						g_pathfindingThreadPool->MarkRequestReady(result.requestID);
 					}
@@ -1027,7 +1084,7 @@ void MainState::Update()
 					else if (!result.waypoints.empty())
 					{
 						NPCDebugPrint("MainState: Fire-and-forget path ready for NPC " + std::to_string(result.npcID) +
-						           ", " + std::to_string(result.waypoints.size()) + " waypoints, auto-starting");
+							", " + std::to_string(result.waypoints.size()) + " waypoints, auto-starting");
 						npcObj->m_isSchedulePath = true;  // C++ schedule path
 						npcObj->SetDest(result.waypoints[0]);
 						npcObj->m_isMoving = true;
@@ -1088,11 +1145,11 @@ void MainState::Update()
 					npcObj->PathfindToDest(Vector3{ float(mostRecentSchedule->m_destX), 0, float(mostRecentSchedule->m_destY) });
 					npcObj->m_isMoving = true;
 				}
-			else
-			{
-				// No schedule destination ("None" entry) - clear schedule path flag so activity can run
-				npcObj->m_isSchedulePath = false;
-			}
+				else
+				{
+					// No schedule destination ("None" entry) - clear schedule path flag so activity can run
+					npcObj->m_isSchedulePath = false;
+				}
 			}
 		}
 	}
@@ -1491,24 +1548,24 @@ void MainState::Draw()
 			{
 				// Check if NPC is on screen or near camera
 				float distToCamera = Vector2Distance(
-					{object->m_Pos.x, object->m_Pos.z},
-					{g_camera.target.x, g_camera.target.z}
+					{ object->m_Pos.x, object->m_Pos.z },
+					{ g_camera.target.x, g_camera.target.z }
 				);
 
 				if (distToCamera < 50.0f)  // Within 50 tiles of camera
 				{
 					// Draw waypoints: Orange for C++ schedule paths, Blue for Lua activity paths
 					Color pathColor = object->m_isSchedulePath ?
-						Color{255, 128, 0, 255} :   // Orange for schedule paths
-						Color{50, 50, 255, 255};     // Blue for Lua paths
+						Color{ 255, 128, 0, 255 } :   // Orange for schedule paths
+						Color{ 50, 50, 255, 255 };     // Blue for Lua paths
 
 					for (size_t i = 0; i < object->m_pathWaypoints.size(); i++)
 					{
 						const auto& waypoint = object->m_pathWaypoints[i];
 						// Waypoint already contains correct Y coordinate from pathfinding
-						Vector3 tilePos = {waypoint.x + 0.5f, waypoint.y + 0.05f, waypoint.z + 0.5f};
+						Vector3 tilePos = { waypoint.x + 0.5f, waypoint.y + 0.05f, waypoint.z + 0.5f };
 						// First tile is black, rest use the path color (orange/blue)
-						Color tileColor = (i == 0) ? Color{0, 0, 0, 255} : pathColor;
+						Color tileColor = (i == 0) ? Color{ 0, 0, 0, 255 } : pathColor;
 						DrawCube(tilePos, 1.0f, 0.1f, 1.0f, tileColor);
 					}
 				}
@@ -2027,7 +2084,7 @@ void MainState::HandleGhostButton()
 		{
 			Log("ERROR: Failed to launch Ghost - system() returned error code " + std::to_string(result));
 		}
-	}).detach();
+		}).detach();
 }
 
 void MainState::HandleRenameButton()
@@ -2098,7 +2155,7 @@ void MainState::UpdateDebugToolsWindow()
 			else if (elem->m_Type == GUI_CHECKBOX)
 			{
 				auto checkbox = static_cast<GuiCheckBox*>(elem.get());
-				
+
 				// Check if user clicked and toggled the checkbox
 				if (checkbox->m_Selected != m_npcSchedulesEnabled)
 				{
@@ -2127,7 +2184,7 @@ void MainState::UpdateDebugToolsWindow()
 			else if (elem->m_Type == GUI_CHECKBOX)
 			{
 				auto checkbox = static_cast<GuiCheckBox*>(elem.get());
-				
+
 				// Check if user clicked and toggled the checkbox
 				if (checkbox->m_Selected != m_npcPathfindingEnabled)
 				{

@@ -7262,8 +7262,8 @@
 376 29 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 376 29 default 
 376 30 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 376 30 default 
 376 31 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 376 31 default 
-377 0 0 0 8 8 0 8 8 1 8 0 5 8 3 1.5 1.5 1.5 0.5 0.25 0 0 1 2 2 3 3 1 Models/3dmodels/food_item_377x00.gltf 1 0 377 0 object_fooditem_0377 
-377 1 0 0 8 8 0 8 8 15 8 0 1 8 3 1.5 1.5 1.5 0.5 0.2 -0.5 0 1 2 2 3 3 1 Models/3dmodels/food_item_377x01.gltf 1 0 377 1 object_fooditem_0377 
+377 0 0 0 8 8 0 8 8 1 8 0 5 8 3 1.5 1.5 1.5 0.5 -0.75 0.5 0 1 2 2 3 3 1 Models/3dmodels/food_item_377x00.gltf 1 0 377 0 object_fooditem_0377 
+377 1 0 0 8 8 0 8 8 15 8 0 1 8 3 1.5 1.5 1.5 0.5 0.2 -0.5 0 1 2 2 3 3 1 Models/3dmodels/food_item_377x01.gltf 1 0 377 0 object_fooditem_0377 
 377 2 0 0 8 7 0 6 8 1 7 0 1 7 2 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 377 2 object_fooditem_0377 
 377 3 0 0 8 8 0 8 8 1 8 0 5 8 3 1.5 1.5 1.5 0.4 0.35 0.4 0 1 2 2 3 3 1 Models/3dmodels/food_item_377x03.gltf 1 0 377 3 object_fooditem_0377 
 377 4 0 0 8 8 0 8 8 5 8 0 7 8 3 1.5 1.5 1.5 0.4 0.3 0.4 0 1 2 2 3 3 1 Models/3dmodels/food_item_377x04.gltf 1 0 377 4 object_fooditem_0377 
