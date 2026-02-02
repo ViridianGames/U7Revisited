@@ -86,6 +86,13 @@ void ConversationState::Update()
 		DebugPrint("No steps and no answers; conversation over.");
 		g_ScriptingSystem->ResumeCoroutine(m_luaFunction, {0}); // Lua arrays are 1-indexed
 		g_StateMachine->PopState();
+
+		if (!m_luaFunction.empty())
+		{
+			g_ScriptingSystem->ResumeCoroutine(m_luaFunction, { 0 }); // Lua arrays are 1-indexed
+			// Clear saved function name now that we've resumed it.
+			m_luaFunction.clear();
+		}
 		return;
 	}
 
@@ -104,6 +111,11 @@ void ConversationState::Update()
 				if (!m_waitingForAnswer && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
 				{
 					EraseTopStep();
+
+					if (!m_luaFunction.empty() && g_ScriptingSystem->IsCoroutineYielded(m_luaFunction))
+					{
+						g_ScriptingSystem->ResumeCoroutine(m_luaFunction, std::vector<ScriptingSystem::LuaArg>{});
+					}
 				}
 			}
 			break;
@@ -120,6 +132,11 @@ void ConversationState::Update()
 			if (!m_waitingForAnswer && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
 			{
 				EraseTopStep();
+
+				if (!m_luaFunction.empty() && g_ScriptingSystem->IsCoroutineYielded(m_luaFunction))
+				{
+					g_ScriptingSystem->ResumeCoroutine(m_luaFunction, std::vector<ScriptingSystem::LuaArg>{});
+				}
 			}
 			break;
 		case ConversationStepType::STEP_MULTIPLE_CHOICE:
@@ -235,10 +252,10 @@ void ConversationState::Update()
 	}
 	else if (m_scriptFinished && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
 	{
-		// if (m_steps.empty())
-		// {
-		// 	g_StateMachine->PopState();
-		// }
+		 if (m_steps.empty())
+		 {
+			g_StateMachine->PopState();
+		}
 	}
 
 	if (m_answerPending && g_ScriptingSystem->IsCoroutineYielded(m_luaFunction))

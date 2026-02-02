@@ -73,6 +73,9 @@ unsigned int g_minimapSize;
 std::vector< std::vector<unsigned short> > g_World;
 
 Vector3 g_Gravity = Vector3{ 0, .1f, 0 };
+// Default first-person settings
+constexpr float DEFAULT_FIRSTPERSON_HEIGHT = 5.5f;
+constexpr float DEFAULT_FIRSTPERSON_PITCH = 0.0f;
 
 float g_CameraRotateSpeed = 0;
 
@@ -185,14 +188,219 @@ void MakeAnimationFrameMeshes()
 
 bool g_isCameraLockedToAvatar = false;
 
-void LockCamera() { g_isCameraLockedToAvatar = true; }
+void LockCamera() { 
+	g_isCameraLockedToAvatar = true; 
 
-void UnlockCamera() { g_isCameraLockedToAvatar = false; }
+	// Reset pitch & height to defaults when locking to avatar
+	g_firstPersonHeight = DEFAULT_FIRSTPERSON_HEIGHT;
+	g_firstPersonPitch = DEFAULT_FIRSTPERSON_PITCH;
+
+	// Force an immediate camera update so view reflects the change
+	CameraUpdate(true);
+}
+
+void UnlockCamera() { 
+	g_isCameraLockedToAvatar = false; 
+
+	// Reset pitch & height to defaults when unlocking from avatar
+	g_firstPersonHeight = DEFAULT_FIRSTPERSON_HEIGHT;
+	g_firstPersonPitch = DEFAULT_FIRSTPERSON_PITCH;
+
+	// Force an immediate camera update so view reflects the change
+	CameraUpdate(true);
+}
 
 void CameraInput()
 {
 	g_CameraMoved = false;
 
+	// Toggle first-person: Left Ctrl + P
+	if (g_allowInput)
+	{
+		if (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyPressed(KEY_P))
+		{
+			g_firstPersonEnabled = !g_firstPersonEnabled;
+
+			// Reset first-person height and pitch to defaults whenever we toggle first-person mode
+			g_firstPersonHeight = DEFAULT_FIRSTPERSON_HEIGHT;
+			g_firstPersonPitch = DEFAULT_FIRSTPERSON_PITCH;
+
+			// Initialize yaw depending on whether camera is locked to avatar or free
+			if (g_firstPersonEnabled && g_Player)
+			{
+				U7Object* avatar = g_Player->GetAvatarObject();
+
+				// If camera is locked to the avatar, derive yaw from player/avatar direction as before
+				if (g_isCameraLockedToAvatar)
+				{
+					Vector3 dir = g_Player->GetPlayerDirection();
+					if (Vector3Length(dir) < 0.001f && avatar)
+						dir = avatar->m_Direction;
+					if (Vector3Length(dir) >= 0.001f)
+						g_firstPersonYaw = atan2f(dir.z, dir.x);
+				}
+				else
+				{
+					// Camera is free: derive yaw from the current camera forward vector so orientation doesn't flip.
+					// IMPORTANT: flatten to XZ and only overwrite yaw if non-degenerate.
+					Vector3 camForward = Vector3Subtract(g_camera.target, g_camera.position); // target - position (true forward)
+					Vector3 flatForward = camForward;
+					flatForward.y = 0.0f;
+					const float EPS = 0.0005f;
+					if (Vector3Length(flatForward) >= EPS)
+					{
+						flatForward = Vector3Normalize(flatForward);
+						g_firstPersonYaw = atan2f(flatForward.z, flatForward.x);
+					}
+					// else: keep existing yaw to avoid jumps
+				}
+			}
+
+			// Hide/show avatar mesh when toggling first-person
+			if (g_Player)
+			{
+				U7Object* avatar = g_Player->GetAvatarObject();
+				if (avatar)
+				{
+					avatar->m_ShouldDraw = !g_firstPersonEnabled;
+				}
+			}
+
+			AddConsoleString(std::string("First-person view ") + (g_firstPersonEnabled ? "enabled" : "disabled"), WHITE);
+
+			// Update camera once so position/target reflect the new first-person yaw/height without changing X/Z
+			CameraUpdate(true);
+
+			// Debug: camera state after toggle
+			Vector3 afterPos = g_camera.position;
+			Vector3 afterTarget = g_camera.target;
+			std::ostringstream ossAfter;
+			ossAfter << "CAM_TOGGLE AFTER  pos=(" << afterPos.x << "," << afterPos.y << "," << afterPos.z << ") tgt=("
+				<< afterTarget.x << "," << afterTarget.y << "," << afterTarget.z << ")";
+			AddConsoleString(ossAfter.str(), WHITE);
+		}
+	}
+
+	// If first-person enabled, compute camera-relative forward/right once and use them both for locked and free movement
+	if (g_firstPersonEnabled && g_Player && g_allowInput)
+	{
+		U7Object* avatar = g_Player->GetAvatarObject();
+		if (!avatar) return;
+
+		float dt = GetFrameTime();
+
+		// Rotation (Q/E) - Q = left, E = right
+		if (IsKeyDown(KEY_Q))
+		{
+			g_firstPersonYaw -= dt * 3.5f; // rotate left
+		}
+		if (IsKeyDown(KEY_E))
+		{
+			g_firstPersonYaw += dt * 3.5f; // rotate right
+		}
+
+		// Z / C behavior:
+		// - When NOT locked to avatar: Z lowers the camera (decrease eye height), C raises it (increase eye height).
+		// - When locked to avatar: Z looks down (decrease pitch), C looks up (increase pitch) while keeping eye height at avatar head.
+		const float heightSpeed = 2.5f;    // units per second for raising/lowering
+		const float pitchSpeed = 1.5f;     // radians per second for looking up/down
+		const float minHeight = 1.0f;
+		const float maxHeight = 20.0f;
+		const float maxPitch = PI * 0.45f; // ~81 deg limit
+		const float minPitch = -PI * 0.45f;
+
+		if (!g_isCameraLockedToAvatar)
+		{
+			// Free first-person: change eye height
+			if (IsKeyDown(KEY_Z))
+			{
+				g_firstPersonHeight -= heightSpeed * dt;
+				if (g_firstPersonHeight < minHeight) g_firstPersonHeight = minHeight;
+			}
+			if (IsKeyDown(KEY_C))
+			{
+				g_firstPersonHeight += heightSpeed * dt;
+				if (g_firstPersonHeight > maxHeight) g_firstPersonHeight = maxHeight;
+			}
+
+			// When free, keep pitch neutral to avoid accidental tilt
+			g_firstPersonPitch = 0.0f;
+		}
+		else
+		{
+			// Locked-first-person: change pitch (look up/down) but keep eye height anchored to avatar
+			if (IsKeyDown(KEY_Z))
+			{
+				g_firstPersonPitch -= pitchSpeed * dt; // look down
+				if (g_firstPersonPitch < minPitch) g_firstPersonPitch = minPitch;
+			}
+			if (IsKeyDown(KEY_C))
+			{
+				g_firstPersonPitch += pitchSpeed * dt; // look up
+				if (g_firstPersonPitch > maxPitch) g_firstPersonPitch = maxPitch;
+			}
+		}
+
+		// normalize yaw
+		while (g_firstPersonYaw < 0.0f) g_firstPersonYaw += 2 * PI;
+		while (g_firstPersonYaw >= 2 * PI) g_firstPersonYaw -= 2 * PI;
+
+		// Ensure camera uses latest yaw/pitch/height
+		CameraUpdate(true);
+
+		// Derive a horizontal forward vector from the camera look direction (flat on XZ)
+		Vector3 camForward = Vector3Subtract(g_camera.target, g_camera.position);
+		Vector3 flatForward = camForward;
+		flatForward.y = 0.0f;
+		if (Vector3Length(flatForward) < 0.0001f)
+		{
+			flatForward = Vector3{ cosf(g_firstPersonYaw), 0.0f, sinf(g_firstPersonYaw) };
+		}
+		flatForward = Vector3Normalize(flatForward);
+
+		// Right vector on XZ plane (camera-right)
+		Vector3 right = Vector3{ flatForward.z, 0.0f, -flatForward.x };
+		right = Vector3Normalize(right);
+
+		// Movement relative to camera (horizontal only)
+		Vector3 move = { 0.0f, 0.0f, 0.0f };
+		if (IsKeyDown(KEY_W)) move = Vector3Add(move, Vector3Scale(flatForward, g_firstPersonMoveSpeed * dt));
+		if (IsKeyDown(KEY_S)) move = Vector3Add(move, Vector3Scale(flatForward, -g_firstPersonMoveSpeed * dt));
+		if (IsKeyDown(KEY_D)) move = Vector3Add(move, Vector3Scale(right, -g_firstPersonMoveSpeed * dt));
+		if (IsKeyDown(KEY_A)) move = Vector3Add(move, Vector3Scale(right, g_firstPersonMoveSpeed * dt));
+
+		if (move.x != 0.0f || move.z != 0.0f)
+		{
+			if (!g_isCameraLockedToAvatar)
+			{
+				// Free camera: move both camera position and target by the same vector
+				Vector3 newCamPos = Vector3Add(g_camera.position, move);
+				Vector3 newCamTarget = Vector3Add(g_camera.target, move);
+
+				// Keep camera within world bounds in X/Z
+				if (newCamPos.x < 0.0f) newCamPos.x = 0.0f;
+				if (newCamPos.x > 3072.0f) newCamPos.x = 3072.0f;
+				if (newCamPos.z < 0.0f) newCamPos.z = 0.0f;
+				if (newCamPos.z > 3072.0f) newCamPos.z = 3072.0f;
+
+				g_camera.position = newCamPos;
+				g_camera.target = newCamTarget;
+				g_hasCameraChanged = true;
+				g_CameraMoved = true;
+			}
+			// else: locked camera shouldn't move the avatar here
+		}
+		else
+		{
+			// no movement, but allow rotation-only to update camera
+			g_CameraMoved = true;
+		}
+
+		// Done handling first-person input — don't fall through to third-person controls
+		return;
+	}
+
+	// --- existing third-person controls (unchanged) ---
 	Vector3 direction = { 0, 0, 0 };
 	float deltaRotation = 0;
 
@@ -310,9 +518,57 @@ void CameraInput()
 	}
 }
 
+// --- Replace CameraUpdate() to honor first-person yaw when enabled ---
 void CameraUpdate(bool forcemove)
 {
-	//  There is residual movement in either the position or rotation of the camera.  Make sure it gets applied.
+	// First-person: position camera at avatar eye when locked, or keep X/Z and apply first-person angle/height when not locked
+	if (g_firstPersonEnabled && g_Player)
+	{
+		U7Object* avatar = g_Player->GetAvatarObject();
+		if (avatar)
+		{
+			// If camera is locked to avatar, use avatar center as base (previous behavior)
+			if (g_isCameraLockedToAvatar)
+			{
+				Vector3 basePos = avatar->m_centerPoint;
+				Vector3 eyePos = Vector3Add(basePos, Vector3{ 0.0f, g_firstPersonHeight, 0.0f });
+
+				// forward now respects pitch
+				float cp = cosf(g_firstPersonPitch);
+				Vector3 forward = { cosf(g_firstPersonYaw) * cp, sinf(g_firstPersonPitch), sinf(g_firstPersonYaw) * cp };
+				Vector3 target = Vector3Add(eyePos, Vector3Scale(forward, 10.0f)); // look 10 units ahead
+
+				g_camera.position = eyePos;
+				g_camera.target = target;
+				g_camera.up = Vector3{ 0.0f, 1.0f, 0.0f };
+				g_camera.projection = CAMERA_PERSPECTIVE;
+				g_camera.fovy = g_firstPersonFOV;
+				g_hasCameraChanged = true;
+			}
+			else
+			{
+				// Camera not locked to avatar: preserve current X/Z, set Y to avatar height + eye offset,
+				// then orient by first-person yaw (no center-of-screen focus logic).
+				Vector3 prevPos = g_camera.position; // preserve X/Z
+				Vector3 eyePos = prevPos;
+				eyePos.y = avatar->m_centerPoint.y + g_firstPersonHeight;
+
+				// For free camera we keep horizontal forward (no pitch) so the view remains level.
+				Vector3 forward = { cosf(g_firstPersonYaw), 0.0f, sinf(g_firstPersonYaw) };
+				Vector3 target = Vector3Add(eyePos, Vector3Scale(forward, 10.0f));
+
+				g_camera.position = eyePos;
+				g_camera.target = target;
+				g_camera.up = Vector3{ 0.0f, 1.0f, 0.0f };
+				g_camera.projection = CAMERA_PERSPECTIVE;
+				g_camera.fovy = g_firstPersonFOV;
+				g_hasCameraChanged = true;
+			}
+		}
+		return; // skip third-person updates
+	}
+
+	// --- existing third-person CameraUpdate logic below (unchanged) ---
 	bool moveDecay = false;
 	bool rotateDecay = false;
 	if (!g_CameraMoved && (g_CameraMovementSpeed.x != 0 || g_CameraMovementSpeed.z != 0))
@@ -1600,9 +1856,8 @@ std::array<int, 1024> g_isObjectMoveable =
 	0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0, // 176-191
 	0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0, // 192-207
 	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, // 208-223
-	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, // 224-239
-	0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0, // 240-255
-	0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0, // 256-271
+	0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0, // 224-239
+	0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0, // 240-255
 	0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0, // 272-287
 	0,0,0,0,0,0,0,1,1,1,1,0,1,1,1,0, // 288-303
 	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, // 304-319
@@ -1614,41 +1869,51 @@ std::array<int, 1024> g_isObjectMoveable =
 	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1, // 400-415
 	0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0, // 416-431
 	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, // 432-447
-	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, //	448-463
+	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, // 448-463
 	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, // 464-479
 	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, // 480-495
-	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, // 496-511
-	0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0, // 512-527
-	0,0,0,0,0,0,0,0,0,0,0,1,0,1,1,1, // 528-543
-	0,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1, // 544-559
-	1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1, // 560-575
-	1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1, // 576-591
-	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0, // 592-607
-	1,1,0,0,0,0,1,1,1,1,0,0,0,1,1,1, // 608-623
-	1,1,1,1,1,1,1,0,0,0,0,1,1,1,1,0, // 624-639
-	1,1,1,0,1,1,1,1,1,1,1,0,0,0,1,0, // 640-655
-	0,0,1,1,0,0,1,1,0,0,1,0,1,0,0,0, // 656-671
-	0,0,0,1,0,1,0,0,0,1,1,0,0,0,1,0, // 672-687
-	0,0,0,1,1,1,0,0,0,0,1,0,0,0,0,1, // 688-703
-	1,0,0,1,0,0,1,0,0,0,0,0,0,1,0,0, // 704-719
-	0,0,1,1,0,0,1,0,1,1,1,0,0,0,0,0, // 720-735
-	0,0,1,0,0,0,1,0,0,0,1,1,0,1,0,0, // 736-751
-	1,0,1,0,1,0,0,1,1,1,0,0,0,0,0,1, // 752-767
-	0,1,1,1,1,0,0,0,0,0,0,0,0,0,1,0, // 768-783
-	0,1,1,0,0,0,1,0,1,0,0,0,0,1,1,1, // 784-799
-	1,1,1,1,1,0,0,0,0,0,1,0,0,0,0,1, // 800-815
-	0,0,0,0,0,0,1,1,1,0,0,1,0,0,0,0, // 816-831
-	0,0,0,1,1,0,1,1,0,0,1,1,0,0,0,0, // 832-847
-	0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1, // 848-863
-	1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0, // 864-879
-	0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0, // 880-895
-	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, // 896-911
-	0,0,1,1,1,0,0,0,0,1,0,0,0,0,0,0, // 912-927
-	0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0, // 928-943
+	0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0, // 496-511
+	0,0,0,0,0,0,0,0,0,0,0,1,0,1,1,1, // 512-527
+	0,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1, // 528-543
+	1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1, // 544-559
+	1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1, // 560-575
+	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0, // 576-591
+	1,1,0,0,0,0,1,1,1,1,0,0,0,1,1,1, // 592-607
+	1,1,1,1,1,1,1,0,0,0,0,1,1,1,1,0, // 608-623
+	1,1,1,0,1,1,1,1,1,1,1,0,0,0,1,0, // 624-639
+	0,0,1,1,0,0,1,1,0,0,1,0,1,0,0,0, // 640-655
+	0,0,0,1,0,1,0,0,0,1,1,0,0,0,1,0, // 656-671
+	0,0,0,1,1,1,0,0,0,0,1,0,0,0,0,1, // 672-687
+	1,0,0,1,0,0,1,0,0,0,0,0,0,1,0,0, // 688-703
+	0,0,1,1,0,0,1,0,1,1,1,0,0,0,0,0, // 704-719
+	0,0,1,0,0,0,1,0,0,0,1,1,0,1,0,0, // 720-735
+	1,0,1,0,1,0,0,1,1,1,0,0,0,0,0,1, // 736-751
+	0,1,1,1,1,0,0,0,0,0,0,0,0,0,1,0, // 752-767
+	0,1,1,0,0,0,1,0,1,0,0,0,0,1,1,1, // 768-783
+	1,1,1,1,1,0,0,0,0,0,1,0,0,0,0,1, // 784-799
+	0,0,0,0,0,0,1,1,1,0,0,1,0,0,0,0, // 800-815
+	0,0,0,1,1,0,1,1,0,0,1,1,0,0,0,0, // 816-831
+	0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1, // 832-847
+	1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0, // 848-863
+	0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0, // 864-879
+	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, // 880-895
+	0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0, // 896-911
+	0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0, // 912-927
+	0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0, // 928-943
 	1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0, // 944-959
 	0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0, // 960-975
 	0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1, // 976-991
 	0,0,1,0,0,1,1,0,0,0,0,0,1,0,0,0, // 992-1007
 	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0  // 1008-1023
+};
 
-};        // Maps item shape ID to valid equipment slots
+
+bool g_firstPersonEnabled = false;
+float g_firstPersonHeight = DEFAULT_FIRSTPERSON_HEIGHT;   // eye height above avatar center (tweak)
+float g_firstPersonFOV = 60.0f;
+float g_firstPersonYaw = 0.0f;
+float g_firstPersonPitch = DEFAULT_FIRSTPERSON_PITCH;
+float g_firstPersonMoveSpeed = 5.0f; // units per second
+bool g_firstPersonPreserveCenter = false;
+Vector3 g_firstPersonFocus = { 0.0f, 0.0f, 0.0f };
+

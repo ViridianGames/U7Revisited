@@ -238,47 +238,47 @@ EquipmentSlot GetEquipmentSlotForShape(int shapeId); // Deprecated: returns firs
 
 struct NPCData
 {
-   unsigned char x;
-   unsigned char y;
-   unsigned short shapeId;
-   unsigned short type;
-   unsigned char proba;
-   unsigned short data1;
-   unsigned char lift;
-   unsigned short data2;
+	unsigned char x;
+	unsigned char y;
+	unsigned short shapeId;
+	unsigned short type;
+	unsigned char proba;
+	unsigned short data1;
+	unsigned char lift;
+	unsigned short data2;
 
-   unsigned short index;
-   unsigned short referent;
-   unsigned short status;
-   unsigned char str;
-   unsigned char dex;
-   unsigned char iq;
-   unsigned char combat;
-   unsigned char magic;
-   unsigned char DAM;
-   char soak1[3];
-   unsigned short status2;
-   unsigned char id;
-   char soak2[2];
-   unsigned int xp;
-   unsigned char training;
-   unsigned short primary;
-   unsigned short secondary;
-   unsigned short oppressor;
-   unsigned short ivrx;
-   unsigned short ivry;
-   unsigned short svrx;
-   unsigned short svry;
-   unsigned short status3;
-   char soak3[5];
-   unsigned char acty;
-   char soak4[29];
-   unsigned char SN;
-   unsigned char V1;
-   unsigned char V2;
-   unsigned char food;
-   char soak5[7];
-   char name[16];
+	unsigned short index;
+	unsigned short referent;
+	unsigned short status;
+	unsigned char str;
+	unsigned char dex;
+	unsigned char iq;
+	unsigned char combat;
+	unsigned char magic;
+	unsigned char DAM;
+	char soak1[3];
+	unsigned short status2;
+	unsigned char id;
+	char soak2[2];
+	unsigned int xp;
+	unsigned char training;
+	unsigned short primary;
+	unsigned short secondary;
+	unsigned short oppressor;
+	unsigned short ivrx;
+	unsigned short ivry;
+	unsigned short svrx;
+	unsigned short svry;
+	unsigned short status3;
+	char soak3[5];
+	unsigned char acty;
+	char soak4[29];
+	unsigned char SN;
+	unsigned char V1;
+	unsigned char V2;
+	unsigned char food;
+	char soak5[7];
+	char name[16];
 	std::vector<int> m_schedule;
 	std::vector<std::vector<Texture*> > m_walkTextures;
 
@@ -348,12 +348,12 @@ extern std::array<int, 1024> g_isObjectMoveable;        // Maps item shape ID to
 
 // Weather/effect sprite data structure
 struct SpriteFrame {
-    Image image;
-    Texture2D texture;
-    int width;
-    int height;
-    int xOffset;
-    int yOffset;
+	Image image;
+	Texture2D texture;
+	int width;
+	int height;
+	int xOffset;
+	int yOffset;
 };
 
 extern std::array<std::vector<SpriteFrame>, 32> g_spriteTable;  // 32 sprite shapes, each with multiple frames
@@ -563,6 +563,18 @@ extern RenderTexture2D g_guiRenderTarget;
 //////////////////////////////////////////////////////////////////////////////
 
 extern Camera g_camera;
+
+extern bool g_hasCameraChanged;
+
+// --- FIRST PERSON CAMERA ---
+extern bool g_firstPersonEnabled;    // Toggleable first-person view
+extern float g_firstPersonHeight;    // Eye height above avatar center
+extern float g_firstPersonFOV;       // FOV when in first-person
+extern float g_firstPersonYaw;       // Yaw (radians) for first-person look
+extern float g_firstPersonPitch;     // Pitch (radians) for first-person look (unused by default)
+extern float g_firstPersonMoveSpeed; // Movement speed while in first-person
+//extern bool g_firstPersonPreserveCenter;
+//extern Vector3 g_firstPersonFocus; // world coords of the center-of-screen to preserve when entering 1st person
 
 extern float g_cameraDistance; // distance from target
 extern float g_cameraRotation; // angle around target

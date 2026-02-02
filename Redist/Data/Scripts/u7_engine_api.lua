@@ -658,6 +658,11 @@ function set_camera_angle(angle) end
 ---@param angle number The camera angle in degrees
 function jump_camera_angle(angle) end
 
+---Sets the camera destination angle (for smooth panning)
+---@param angle number The target camera angle in degrees
+function set_camera_destination_angle(angle)end
+    
+
 -- ============================================================================
 -- ANIMATION
 -- ============================================================================
