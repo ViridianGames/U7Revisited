@@ -3,10 +3,12 @@
 #include <Geist/ResourceManager.h>
 #include <Geist/StateMachine.h>
 #include <Geist/ScriptingSystem.h>
+#include <Geist/SoundSystem.h>
 #include <Geist/Logging.h>
 #include <sstream>
 #include <fstream>
 #include <time.h>
+
 using namespace std;
 
 void Engine::Init(const std::string &configfile)
@@ -22,6 +24,8 @@ void Engine::Init(const std::string &configfile)
 	g_StateMachine->Init(configfile);
 	g_ScriptingSystem = make_unique<ScriptingSystem>();
 	g_ScriptingSystem->Init(configfile);
+	g_SoundSystem = make_unique<SoundSystem>();
+	g_SoundSystem->Init(configfile);
 
 	m_GameUpdates = 0;
 
@@ -65,6 +69,7 @@ void Engine::Update()
 	g_ResourceManager->Update();
 	g_StateMachine->Update();
 	g_ScriptingSystem->Update();
+	g_SoundSystem->Update();
 
 	if (WindowShouldClose())
 	{

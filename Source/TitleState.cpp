@@ -14,6 +14,8 @@
 #include <fstream>
 #include <algorithm>
 
+#include "SoundSystem.h"
+
 using namespace std;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -37,10 +39,12 @@ void TitleState::OnEnter()
 {
 	ClearConsole();
 	m_LastUpdate = 0;
+	g_SoundSystem->PlaySound("Audio/Music/22bg.ogg");
 }
 
 void TitleState::OnExit()
 {
+	g_SoundSystem->StopSound("Audio/Music/22bg.ogg");
 }
 
 void TitleState::Shutdown()
@@ -83,6 +87,46 @@ void TitleState::Update()
 	{
 		g_StateMachine->MakeStateTransition(STATE_SHAPEEDITORSTATE);
 	}
+
+	if (m_fadeState == FadeState::FADE_OUT)
+	{
+		m_fadeTime += GetFrameTime();
+		if (m_fadeTime > m_fadeDuration)
+		{
+			m_fadeTime = m_fadeDuration;
+			m_fadeState = FadeState::FADE_NONE;
+		}
+		m_currentFadeAlpha = int(255 * (m_fadeTime / m_fadeDuration));
+	}
+
+	else if (m_fadeState == FadeState::FADE_IN)
+	{
+		m_fadeTime -= GetFrameTime();
+		if (m_fadeTime < 0)
+		{
+			m_fadeTime = 0;
+			m_fadeState = FadeState::FADE_NONE;
+		}
+		m_currentFadeAlpha = int(255 * (m_fadeTime / m_fadeDuration));
+	}
+	else
+	{
+		m_currentFadeAlpha = 0;
+	}
+}
+
+void TitleState::FadeIn(float fadeTime)
+{
+	m_fadeState = FadeState::FADE_IN;
+	m_fadeDuration = fadeTime;
+	m_fadeTime = 0;
+}
+
+void TitleState::FadeOut(float fadeTime)
+{
+	m_fadeState = FadeState::FADE_OUT;
+	m_fadeDuration = fadeTime;
+	m_fadeTime = 0;
 }
 
 
@@ -157,6 +201,8 @@ void TitleState::Draw()
 	{
 		DrawTextureEx(*g_Cursor, {float(GetMouseX()), float(GetMouseY())}, 0, g_DrawScale, WHITE);
 	}
+
+	DrawRectangle(0, 0, g_Engine->m_ScreenWidth, g_Engine->m_ScreenHeight, { 0, 0, 0, m_currentFadeAlpha });
 
 	//DrawFPS(10, 300);
 }
@@ -390,6 +436,11 @@ void TitleState::UpdateTitle()
 	m_TitleGui->Update();
 	m_CreditsGui->Update();
 
+	if (m_fadingOut && int(m_currentFadeAlpha) > 250) // Fully faded
+	{
+		g_StateMachine->MakeStateTransition(STATE_MAINSTATE);
+	}
+
 	if (m_TitleGui->m_ActiveElement == GUI_TITLE_BUTTON_QUIT)
 	{
 		g_Engine->m_Done = true;
@@ -403,8 +454,13 @@ void TitleState::UpdateTitle()
 
 	if (m_TitleGui->m_ActiveElement == GUI_TITLE_BUTTON_TRINSIC_DEMO)
 	{
-		dynamic_cast<MainState*>(g_StateMachine->GetState(STATE_MAINSTATE))->m_gameMode = MainStateModes::MAIN_STATE_MODE_TRINSIC_DEMO;
-		g_StateMachine->MakeStateTransition(STATE_MAINSTATE);
+		if (m_fadeState != FadeState::FADE_OUT)
+		{
+			m_fadingOut = true;
+			FadeOut(3);
+			dynamic_cast<MainState*>(g_StateMachine->GetState(STATE_MAINSTATE))->m_gameMode = MainStateModes::MAIN_STATE_MODE_TRINSIC_DEMO;
+			m_TitleGui->m_AcceptingInput = false;
+		}
 	}
 
 	if (m_TitleGui->m_ActiveElement == GUI_TITLE_BUTTON_SHAPE_EDITOR)

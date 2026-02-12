@@ -55,7 +55,6 @@ void ConversationState::OnExit()
 
 	if (!m_luaFunction.empty())
 	{
-		g_ScriptingSystem->CleanupCoroutine(m_luaFunction);
 		m_luaFunction.clear();
 	}
 
@@ -83,15 +82,12 @@ void ConversationState::Update()
 {
 	if (m_steps.empty() && m_answers.empty())
 	{
-		DebugPrint("No steps and no answers; conversation over.");
 		g_ScriptingSystem->ResumeCoroutine(m_luaFunction, {0}); // Lua arrays are 1-indexed
-		g_StateMachine->PopState();
-
-		if (!m_luaFunction.empty())
+		DebugPrint("No steps and no answers; conversation over.");
+		if (m_steps.empty() && m_answers.empty())
 		{
-			g_ScriptingSystem->ResumeCoroutine(m_luaFunction, { 0 }); // Lua arrays are 1-indexed
-			// Clear saved function name now that we've resumed it.
-			m_luaFunction.clear();
+			g_ScriptingSystem->ResumeCoroutine(m_luaFunction, {});
+			g_StateMachine->PopState();
 		}
 		return;
 	}
@@ -108,14 +104,13 @@ void ConversationState::Update()
 				{
 					m_waitingForAnswer = true;
 				}
+				else
+				{
+					m_waitingForAnswer = false; // Can't ask for an answer until dialogue is finished.
+				}
 				if (!m_waitingForAnswer && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
 				{
 					EraseTopStep();
-
-					if (!m_luaFunction.empty() && g_ScriptingSystem->IsCoroutineYielded(m_luaFunction))
-					{
-						g_ScriptingSystem->ResumeCoroutine(m_luaFunction, std::vector<ScriptingSystem::LuaArg>{});
-					}
 				}
 			}
 			break;
@@ -132,11 +127,6 @@ void ConversationState::Update()
 			if (!m_waitingForAnswer && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
 			{
 				EraseTopStep();
-
-				if (!m_luaFunction.empty() && g_ScriptingSystem->IsCoroutineYielded(m_luaFunction))
-				{
-					g_ScriptingSystem->ResumeCoroutine(m_luaFunction, std::vector<ScriptingSystem::LuaArg>{});
-				}
 			}
 			break;
 		case ConversationStepType::STEP_MULTIPLE_CHOICE:
@@ -164,6 +154,13 @@ void ConversationState::Update()
 				m_currentDialogue = m_steps[0].dialog;
 				m_waitingForAnswer = true;
 				m_numberBarPending = true;
+			}
+			break;
+		case ConversationStepType::STEP_END_CONVERSATION:
+			if (g_ScriptingSystem->IsCoroutineYielded(m_luaFunction))
+			{
+				g_ScriptingSystem->ResumeCoroutine(m_luaFunction, {});
+				g_StateMachine->PopState();
 			}
 			break;
 		}
@@ -252,10 +249,10 @@ void ConversationState::Update()
 	}
 	else if (m_scriptFinished && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
 	{
-		 if (m_steps.empty())
-		 {
-			g_StateMachine->PopState();
-		}
+		// if (m_steps.empty())
+		// {
+		// 	g_StateMachine->PopState();
+		// }
 	}
 
 	if (m_answerPending && g_ScriptingSystem->IsCoroutineYielded(m_luaFunction))

@@ -29,29 +29,21 @@ void ResourceManager::Init(const std::string& configfile)
 
 void ResourceManager::Shutdown()
 {
-	map<std::string, unique_ptr<Texture> >::iterator node;
-	for (node = m_TextureList.begin(); node != m_TextureList.end(); ++node)
+	for (auto node = m_TextureList.begin(); node != m_TextureList.end(); ++node)
 	{
 		UnloadTexture(*(*node).second);
 	}
 
-	// Unload cached sounds
 	map<std::string, unique_ptr<Sound> >::iterator node2;
-	for (node2 = m_CachedSoundList.begin(); node2 != m_CachedSoundList.end(); ++node2)
+	for (auto node = m_SoundList.begin(); node != m_SoundList.end(); ++node)
 	{
-		UnloadSound(*(*node2).second);
-	}
-
-	map<std::string, unique_ptr<Wave> >::iterator node3;
-	for (node3 = m_SoundList.begin(); node3 != m_SoundList.end(); ++node3)
-	{
-		UnloadWave(*(*node3).second);
+		UnloadSound(*(*node).second);
 	}
 
 	map<std::string, unique_ptr<Music> >::iterator node4;
-	for (node4 = m_MusicList.begin(); node4 != m_MusicList.end(); ++node3)
+	for (auto node = m_MusicList.begin(); node != m_MusicList.end(); ++node)
 	{
-		UnloadMusicStream(*(*node4).second);
+		UnloadMusicStream(*(*node).second);
 	}
 }
 
@@ -121,7 +113,9 @@ void ResourceManager::AddSound(const std::string& soundName)
 {
 	std::string fullPath = s_audioPath + soundName;
 	Log("Loading sound " + fullPath);
-	m_SoundList[soundName] = std::make_unique<Wave>(LoadWave(fullPath.c_str()));
+	Wave wave = LoadWave(soundName.c_str());
+	m_SoundList[soundName] = std::make_unique<Sound>(LoadSoundFromWave(wave));
+	UnloadWave(wave);
 	Log("Load successful.");
 }
 
@@ -129,7 +123,15 @@ void ResourceManager::AddMusic(const std::string& musicName)
 {
 	Log("Loading music " + musicName);
 	m_MusicList[musicName] = std::make_unique<Music>(LoadMusicStream(musicName.c_str()));
-	Log("Load successful.");
+	if (m_MusicList[musicName].get()->ctxData == nullptr)
+	{
+		m_MusicList.erase(musicName);
+		Log("Load unsuccessful!");
+	}
+	else
+	{
+		Log("Load successful.");
+	}
 }
 
 void ResourceManager::AddConfig(const std::string& configName)
@@ -174,9 +176,9 @@ RaylibModel* ResourceManager::GetModel(const std::string& modelName)
 	}
 }
 
-Wave* ResourceManager::GetSound(const std::string& soundName)
+Sound* ResourceManager::GetSound(const std::string& soundName)
 {
-	map<std::string, unique_ptr<Wave> >::iterator node;
+	map<std::string, unique_ptr<Sound> >::iterator node;
 	node = m_SoundList.find(soundName);
 
 	if (node != m_SoundList.end())
@@ -185,42 +187,16 @@ Wave* ResourceManager::GetSound(const std::string& soundName)
 	}
 	else
 	{
-		Log("Loading sound " + soundName + " on the fly!");
 		AddSound(soundName);
-		return m_SoundList[soundName].get();
-	}
-}
-
-Sound* ResourceManager::GetCachedSound(const std::string& soundName)
-{
-	map<std::string, unique_ptr<Sound> >::iterator node;
-	node = m_CachedSoundList.find(soundName);
-
-	if (node != m_CachedSoundList.end())
-	{
-		return (*node).second.get();
-	}
-	else
-	{
-		Log("Creating cached sound " + soundName + " on the fly!");
-		// Get the wave (which auto-loads if needed)
-		Wave* wave = GetSound(soundName);
-		if (wave)
-		{
-			m_CachedSoundList[soundName] = std::make_unique<Sound>(LoadSoundFromWave(*wave));
-			return m_CachedSoundList[soundName].get();
-		}
-		return nullptr;
-	}
-}
-
-void ResourceManager::PlaySound(const std::string& soundName, float volume)
-{
-	Sound* sound = GetCachedSound(soundName);
-	if (sound)
-	{
-		SetSoundVolume(*sound, volume);
-		::PlaySound(*sound);
+		// if (IsSoundReady(*m_SoundList[soundName].get()))
+		// {
+			return m_SoundList[soundName].get();
+		// }
+		// else
+		// {
+		// 	m_SoundList.erase(soundName); // The sound didn't load correctly.
+		// 	return nullptr;
+		// }
 	}
 }
 
@@ -233,12 +209,14 @@ Music* ResourceManager::GetMusic(const std::string& musicName)
 	{
 		return (*node).second.get();
 	}
-	else
+
+	AddMusic(musicName);
+	if (m_MusicList.find(musicName) != m_MusicList.end())
 	{
-		Log("Loading music " + musicName + " on the fly!");
-		AddMusic(musicName);
 		return m_MusicList[musicName].get();
 	}
+
+	return nullptr;
 }
 
 Config* ResourceManager::GetConfig(const std::string& configName)

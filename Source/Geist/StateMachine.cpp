@@ -174,7 +174,6 @@ void StateMachine::PopStateEX()
 			m_StateMap[get<0>(m_StateStack[0])]->OnExit(); // Run the OnExit of the state we're popping.
 			m_StateStack.pop_front();
 			m_CurrentState = get<0>(m_StateStack[0]);
-			m_StateMap[m_CurrentState]->OnEnter(); // Call OnEnter on the state that's now active
 		}
 		else
 		{

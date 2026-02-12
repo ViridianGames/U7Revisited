@@ -137,7 +137,7 @@ static int LuaAddDialogue(lua_State *L)
     step.frame = 0;
     g_ConversationState->AddStep(step);
 
-    return lua_yield(L, 0);
+    return 0;
 }
 
 static int LuaStartConversation(lua_State *L)
@@ -1838,13 +1838,12 @@ static int LuaEndConversation(lua_State *L)
     if (!g_ConversationState) {
         return luaL_error(L, "ConversationState not initialized");
     }
-    if (g_LuaDebug) NPCDebugPrint("LUA: end_conversation called");
-    g_ConversationState->m_conversationActive = false;
-    g_StateMachine->PopState();
-    return 0;
+    ConversationState::ConversationStep step;
+    step.type = ConversationState::ConversationStepType::STEP_END_CONVERSATION;
+    g_ConversationState->AddStep(step);
+
+    return lua_yield(L, 0);
 }
-
-
 
 static int LuaClearAnswers(lua_State *L)
 {
@@ -4703,6 +4702,40 @@ static int LuaGetCurrentMinute(lua_State *L)
     return 1;
 }
 
+static int LuaSetNPCOverrideFrame(lua_State *L)
+{
+
+    int npc_id = luaL_checkinteger(L, 1);
+    int npc_frame = luaL_checkinteger(L, 2);
+
+    DebugPrint("SetNPCOverrideFrame called with npc_id: " + std::to_string(npc_id) + "npc_frame: " + std::to_string(npc_frame) );
+
+    U7Object* npc = g_objectList[g_NPCData[npc_id]->m_objectID].get();
+    if (!npc)
+    {
+        return 1;
+    }
+
+    npc->SetOverrideFrame(npc_frame);
+
+    return 1;
+}
+
+static int LuaClearNPCOverrideFrame(lua_State *L)
+{
+    int npc_id = luaL_checkinteger(L, 1);
+
+    U7Object* npc = g_objectList[g_NPCData[npc_id]->m_objectID].get();
+    if (!npc)
+    {
+        return 1;
+    }
+
+    npc->ClearOverrideFrame();
+
+    return 1;
+}
+
 void RegisterAllLuaFunctions()
 {
     cout << "Registering Lua functions\n";
@@ -4970,6 +5003,9 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction( "wait_move_end", LuaWaitMoveEnd);
     g_ScriptingSystem->RegisterScriptFunction( "get_current_hour", LuaGetCurrentHour);
     g_ScriptingSystem->RegisterScriptFunction( "get_current_minute", LuaGetCurrentMinute);
+
+    g_ScriptingSystem->RegisterScriptFunction( "set_npc_override_frame", LuaSetNPCOverrideFrame);
+    g_ScriptingSystem->RegisterScriptFunction( "clear_npc_override_frame", LuaClearNPCOverrideFrame);
 
     cout << "Registered all Lua functions\n";
 }

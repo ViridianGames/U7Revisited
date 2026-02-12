@@ -3,6 +3,7 @@
 #include <Geist/ResourceManager.h>
 #include <Geist/StateMachine.h>
 #include <Geist/ScriptingSystem.h>
+#include <Geist/SoundSystem.h>
 #include <Geist/Primitives.h>
 #include <Geist/Logging.h>
 #include <iostream>
@@ -13,6 +14,7 @@ unique_ptr<Engine>           g_Engine;
 unique_ptr<ResourceManager>  g_ResourceManager;
 unique_ptr<StateMachine>     g_StateMachine;
 unique_ptr<ScriptingSystem>  g_ScriptingSystem;
+unique_ptr<SoundSystem>      g_SoundSystem;
 
 //  These functions only return true if the mouse is in the rectangle and no mouse button is clicked or held.
 bool IsMouseInRect(int x, int y, int w, int h)

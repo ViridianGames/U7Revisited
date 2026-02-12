@@ -32,6 +32,8 @@
 #include <unordered_map>
 #include <thread>
 
+#include "SoundSystem.h"
+
 using namespace std;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -147,11 +149,13 @@ void MainState::OnEnter()
 	if (m_gameMode == MainStateModes::MAIN_STATE_MODE_TRINSIC_DEMO)
 	{
 		// Fade out.
+		g_SoundSystem->PlaySound("Audio/Music/35bg.ogg");
 
 		// Move camera to start position and rotation.
 		g_camera.target = Vector3{ 1068.0f, 0.0f, 2213.0f };
 		g_cameraRotation = 0;
 		g_cameraDistance = 22.0f;
+		g_isCameraLockedToAvatar = true;
 		CameraUpdate();
 
 		// Hack-move Petre and put him in the proper position.
@@ -1688,12 +1692,12 @@ void MainState::Draw()
 			{
 				objectDescription += " This object is contained.";
 			}
-
 			//DrawOutlinedText(g_SmallFont, objectDescription, Vector2{ 10, 288 }, g_SmallFont->baseSize, 1, WHITE);
 		}
 		//DrawOutlinedText(g_SmallFont, "Current chunk: " + to_string(int(g_camera.target.x / 16.0f)) + " x " + to_string(int(g_camera.target.z / 16.0f)), Vector2{ 10, 304 }, g_SmallFont->baseSize, 1, WHITE);
 		//DrawOutlinedText(g_SmallFont, "Objects: " + to_string(g_ObjectList.size()) + " Visible: " + to_string(g_sortedVisibleObjects.size()), Vector2{ 10, 320 }, g_SmallFont->baseSize, 1, WHITE);
 	}
+
 	// Draw bark text if active
 	if (m_barkDuration > 0 && m_barkObject != nullptr && m_barkObject->m_shapeData != nullptr)
 	{

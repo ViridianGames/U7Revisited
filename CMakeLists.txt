@@ -165,6 +165,8 @@ set(SOURCES
     Source/Geist/ScriptingSystem.cpp
     Source/Geist/StateMachine.cpp
     Source/Geist/TooltipSystem.cpp
+    Source/Geist/SoundSystem.h
+    Source/Geist/SoundSystem.cpp
 
     Source/Ghost/GhostSerializer.cpp
     Source/Ghost/GhostWindow.cpp

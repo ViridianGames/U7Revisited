@@ -116,6 +116,9 @@ public:
    void NPCInit(NPCData* npcData);
    void TryOpenDoorAtCurrentPosition();
 
+	void SetOverrideFrame(int overrideFrame) { m_overrideFrame = overrideFrame; m_isFrameOverridden = true;}
+	void ClearOverrideFrame() { m_isFrameOverridden = false; m_overrideFrame = 0; }
+
 	void CheckLighting();
 
 	bool IsLocked();
@@ -149,6 +152,8 @@ public:
    int m_Frame;
    int m_Quality;
 
+	bool m_isFrameOverridden = false;
+	int m_overrideFrame = 0;
    bool m_Visible; // This is set to false for objects that are out of range or otherwise not visible
 	bool m_ShouldDraw = true; // This is an override that can be set in a Lua script.
    bool m_Selected;

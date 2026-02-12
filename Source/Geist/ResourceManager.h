@@ -34,8 +34,7 @@ public:
 
 	std::map<std::string, std::unique_ptr<Texture> > m_TextureList;
 	std::map<std::string, std::unique_ptr<RaylibModel>> m_ModelList;
-	std::map<std::string, std::unique_ptr<Wave> > m_SoundList;
-	std::map<std::string, std::unique_ptr<Sound> > m_CachedSoundList;  // Cached Sound objects ready to play
+	std::map<std::string, std::unique_ptr<Sound> > m_SoundList;
 	std::map<std::string, std::unique_ptr<Music> > m_MusicList;
 	std::map<std::string, std::unique_ptr<Config> > m_configList;
 
@@ -52,13 +51,9 @@ public:
 	//  deleting them.
 	Texture* GetTexture(const std::string& textureName, bool mipmaps = true);
 	RaylibModel* GetModel(const std::string& meshname);
-	Wave* GetSound(const std::string& soundname);
-	Sound* GetCachedSound(const std::string& soundname);  // Get cached Sound ready to play
+	Sound* GetSound(const std::string& soundname);
 	Music* GetMusic(const std::string& musicname);
 	Config* GetConfig(const std::string& configname);
-
-	//  Audio playback
-	void PlaySound(const std::string& soundname, float volume = 1.0f);
 
 	//  Utilities
 	bool DoesFileExist(const std::string& filename);

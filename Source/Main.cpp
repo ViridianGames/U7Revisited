@@ -130,7 +130,7 @@ int main(int argv, char** argc)
       g_VitalRNG = make_unique<RNG>();
       int seed = (unsigned int)time(NULL);
       g_VitalRNG->SeedRNG(seed);
-      int x = g_VitalRNG->Random(7);
+      int x = 2;//g_VitalRNG->Random(7);
 
       switch (x)
       {

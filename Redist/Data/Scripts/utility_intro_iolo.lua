@@ -26,4 +26,5 @@ function utility_intro_iolo()
         "Iolo nods, his joy fading quickly as he is reminded of the reason he was standing there in the first place.")
     add_dialogue(
         "\"Ah, yes. Our friend Petre here discovered something truly ghastly this morning. Take a look inside the stables. I shall accompany thee.\"")
+    end_conversation()
 end

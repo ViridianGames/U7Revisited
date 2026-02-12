@@ -256,17 +256,39 @@ void U7Object::NPCDraw()
 	int frameIndex = 0;
 
 	// If not moving, use the current frame set via npc_frame()
-	if (!m_isMoving && m_Frame != 0)
+	if (!m_isMoving)
 	{
-		// Use the frame that was explicitly set (sleeping, sitting, etc.)
-		if (g_shapeTable[m_ObjectType][m_Frame].m_texture != nullptr)
+		if (m_isFrameOverridden)
 		{
-			finalTexture = &g_shapeTable[m_ObjectType][m_Frame].m_texture->m_Texture;
+			// Use the frame that was explicitly set (sleeping, sitting, etc.)
+			if (g_shapeTable[m_ObjectType][m_overrideFrame].m_texture != nullptr)
+			{
+				finalTexture = &g_shapeTable[m_ObjectType][m_overrideFrame].m_texture->m_Texture;
+				billboardAngle = m_overrideFrame % 2 ? 45.0f : 0.0f;
+			}
 		}
 		else
 		{
-			// Frame doesn't exist, fall back to standing
-			finalTexture = m_NPCData->m_walkTextures[0][0];
+			switch(finalAngle)
+			{
+				case 0: // South-West
+					finalTexture = m_NPCData->m_walkTextures[0][0];
+					break;
+				case 1: // North-West
+					finalTexture = m_NPCData->m_walkTextures[3][0];
+					billboardAngle = 45.0f;
+					break;
+				case 2: // North-East
+					finalTexture = m_NPCData->m_walkTextures[2][0];
+					break;
+				case 3: // South-East
+					finalTexture = m_NPCData->m_walkTextures[1][0];
+					billboardAngle = 45.0f;
+					break;
+				default:
+					int stopper = 0;
+					break;
+			}
 		}
 	}
 	else
@@ -655,8 +677,16 @@ float U7Object::PickXYZ(Vector3& pos)
 void U7Object::SetDest(Vector3 dest)
 {
 	m_Dest = dest;
-	m_Direction = Vector3Subtract(m_Dest, m_Pos);
-	m_Direction = Vector3Normalize(m_Direction);
+
+	if (m_Dest.x == m_Pos.x && m_Dest.z == m_Pos.z)
+		return;
+
+	Vector3 newDirection = Vector3Subtract(m_Dest, m_Pos);
+	newDirection = Vector3Normalize(newDirection);
+	if (newDirection.x != 0 || newDirection.z != 0)
+	{
+		m_Direction = newDirection;
+	}
 }
 
 void U7Object::TryOpenDoorAtCurrentPosition()

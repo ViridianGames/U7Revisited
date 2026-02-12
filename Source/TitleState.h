@@ -61,6 +61,9 @@ public:
 
    void TestUpdate();
    void TestDraw();
+
+   void FadeOut(float fadeTime);
+   void FadeIn(float fadeTime);
    
    std::shared_ptr<Gui> m_TitleGui;
    std::shared_ptr<Gui> m_CreditsGui;
@@ -69,6 +72,19 @@ public:
 
    bool m_mouseMoved;
    Texture* m_title;
+
+   enum class FadeState
+   {
+      FADE_NONE = 0,
+      FADE_OUT,
+      FADE_IN
+   };
+
+   FadeState m_fadeState = FadeState::FADE_NONE; // 0 = no fade, 1 = fade out, 2 = fade in
+   float m_fadeDuration = 0; // 0.0 to 1.0
+   float m_fadeTime = 0;
+   unsigned char m_currentFadeAlpha = 255;
+   bool m_fadingOut = false;
 };
 
 #endif
