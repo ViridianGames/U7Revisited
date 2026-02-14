@@ -24,8 +24,6 @@ void Engine::Init(const std::string &configfile)
 	g_StateMachine->Init(configfile);
 	g_ScriptingSystem = make_unique<ScriptingSystem>();
 	g_ScriptingSystem->Init(configfile);
-	g_SoundSystem = make_unique<SoundSystem>();
-	g_SoundSystem->Init(configfile);
 
 	m_GameUpdates = 0;
 
@@ -48,11 +46,12 @@ void Engine::Init(const std::string &configfile)
 		ToggleFullscreen();
 	}
 	SetTargetFPS(60);
-	HideCursor(); // We'll use our own.
 
-	// Initialize audio device
-	InitAudioDevice();
-	Log("Audio device initialized");
+	//  Relies on Raylib, so let's set it up after Raylib has started.
+	g_SoundSystem = make_unique<SoundSystem>();
+	g_SoundSystem->Init(configfile);
+
+	HideCursor(); // We'll use our own.
 
 	Log("Done with Engine::Init()");
 }

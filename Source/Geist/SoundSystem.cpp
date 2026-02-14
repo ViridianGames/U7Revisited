@@ -37,7 +37,8 @@ void SoundSystem::PlayMusic(std::string musicName, float volume)
 
       if (volume == -1)
       {
-         SetMusicVolume(*music, float(m_GlobalMusicVolume) / 100.0f);
+         float vol = float(m_GlobalMusicVolume) / 100.0f;
+         SetMusicVolume(*music, vol);
       }
       else
       {
@@ -113,7 +114,7 @@ void SoundSystem::SetGlobalMusicVolume(float newVolume)
    if (newVolume < 0)
       newVolume = 0;
 
-   m_GlobalSoundVolume = newVolume;
+   m_GlobalMusicVolume = newVolume;
 
-   g_Engine->m_EngineConfig.SetNumber("sound_volume", m_GlobalSoundVolume);
+   g_Engine->m_EngineConfig.SetNumber("music_volume", m_GlobalMusicVolume);
 }
