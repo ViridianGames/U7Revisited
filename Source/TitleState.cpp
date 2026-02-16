@@ -39,7 +39,7 @@ void TitleState::OnEnter()
 {
 	ClearConsole();
 	m_LastUpdate = 0;
-	g_SoundSystem->PlayMusic("Audio/Music/powermonger.mod");
+	g_SoundSystem->PlayMusic("Audio/Music/22bg.ogg");
 }
 
 void TitleState::OnExit()

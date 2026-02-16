@@ -163,7 +163,13 @@ function npc_finnigan_0012(eventid, objectref)
             add_answer("Trinsic")
         elseif answer == "Trinsic" then
             var_0008 = var_0003 and "by one who claimed she was the Avatar." or "by one who claimed he was the Avatar."
-            add_dialogue("\"Trinsic was once the city of Honor. I suppose it still is. Our Rune of Honor was taken many years ago " .. var_0008 .. " I believe it now resides in the Royal Museum in Britain, yet the empty pedestal still remains in the center of town. I feel this is symbolic of the town itself. It is rather empty -- of people, of life, and of honor. 'Tis sad, really.\"")
+            add_dialogue(
+            "\"Trinsic was once the city of Honor. I suppose it still is. Our Rune of Honor was taken many years ago " ..
+            var_0008 )
+            add_dialogue(
+                "I believe it now resides in the Royal Museum in Britain, yet the empty pedestal still remains in the center of town.")
+            add_dialogue(
+            "I feel this is symbolic of the town itself. It is rather empty -- of people, of life, and of honor. 'Tis sad, really.\"")
             add_dialogue("\"Then there is this murder, of course. We have temporarily closed the gates of the city and require a password to get in or out.\"")
             remove_answer("Trinsic")
             add_answer("password")
@@ -180,7 +186,11 @@ function npc_finnigan_0012(eventid, objectref)
             remove_answer("Pay me now, please")
         elseif answer == "murder" then
             if not get_flag(61) then
-                add_dialogue("\"A crime like this has never happened in Trinsic before. I cannot believe this happened to Christopher and Inamo. Please -- explore the town! I would appreciate it if thou wouldst bring me a report on thy progress. Be sure to ask everyone in town about the murder. After speaking with Christopher's son, thou mightest next want to speak with Gilberto, the guard on watch at the dock last night.\"")
+                add_dialogue(
+                    "\"A crime like this has never happened in Trinsic before. I cannot believe this happened to Christopher and Inamo.")
+                add_dialogue(
+                "Please -- explore the town! I would appreciate it if thou wouldst bring me a report on thy progress. Be sure to ask everyone in town about the murder.")
+                add_dialogue("After speaking with Christopher's son, thou mightest next want to speak with Gilberto, the guard on watch at the dock last night.\"")
                 add_dialogue("The mayor hesitates, then leans in to speak quietly.")
                 add_dialogue("\"Actually, I have seen something like this before. It was about four years ago, in Britain.\"")
                 add_answer({"report", "Britain", "Inamo", "Christopher", "Gilberto"})
@@ -190,13 +200,17 @@ function npc_finnigan_0012(eventid, objectref)
                 add_dialogue("\"I hope thou art progressing on the murder investigation.\"")
             end
         elseif answer == "Britain" then
-            add_dialogue("\"'Twas before I came to Trinsic. There was a murder with strikingly similar aspects. A body was found mutilated exactly like poor Christopher. It appeared to be a ritualistic killing. I would wager that whoever was responsible for that murder is the culprit behind this one.\"")
+            add_dialogue(
+            "\"'Twas before I came to Trinsic. There was a murder with strikingly similar aspects. A body was found mutilated exactly like poor Christopher.")
+            add_dialogue("It appeared to be a ritualistic killing. I would wager that whoever was responsible for that murder is the culprit behind this one.\"")
             remove_answer("Britain")
         elseif answer == "son" then
             add_dialogue("\"Christopher's son is called Spark. Their house is in the northwest area of town.\"")
             remove_answer("son")
         elseif answer == "Gilberto" then
-            add_dialogue("\"He was struck from behind early this morning and was knocked senseless. Johnson, the morning watch, found him unconscious. He is recuperating at Chantu the Healer's house on the west side of town.\"")
+            add_dialogue(
+            "\"He was struck from behind early this morning and was knocked senseless. Johnson, the morning watch, found him unconscious.")
+            add_dialogue("He is recuperating at Chantu the Healer's house on the west side of town.\"")
             remove_answer("Gilberto")
             add_answer({"Chantu", "Johnson"})
         elseif answer == "Chantu" then
@@ -209,14 +223,14 @@ function npc_finnigan_0012(eventid, objectref)
                 var_000A = ask_yes_no("\"Art thou ready to answer some questions concerning the investigation?\"")
                 if var_000A then
                     set_flag(93, true)
-                    func_0884()
+                    utility_finnigan_report()
                 else
                     add_dialogue("\"Oh. Well, carry on with thine investigation.\"")
                 end
             else
                 var_000B = ask_yes_no("\"Shall we continue thy report?\"")
                 if var_000B then
-                    func_0884()
+                    utility_finnigan_report()
                 else
                     add_dialogue("\"Oh. Well, carry on with thine investigation.\"")
                 end
@@ -232,11 +246,15 @@ function npc_finnigan_0012(eventid, objectref)
             add_dialogue("\"He is probably at the dock right now.\"")
             remove_answer("Johnson")
         elseif answer == "Christopher" then
-            add_dialogue("\"Christopher was the local blacksmith. He lives, or rather -lived-, with his son in the northwest part of town. The blacksmith's shop is in the southwest corner. Christopher was not a rich man by any means -- he barely kept himself and his son alive. But he certainly enjoyed his work.\"")
+            add_dialogue(
+                "\"Christopher was the local blacksmith. He lives, or rather -lived-, with his son in the northwest part of town. The blacksmith's shop is in the southwest corner.")
+            add_dialogue("Christopher was not a rich man by any means -- he barely kept himself and his son alive. But he certainly enjoyed his work.\"")
             remove_answer("Christopher")
             add_answer("son")
         elseif answer == "Inamo" then
-            add_dialogue("\"The Gargoyle Inamo slept in the stables, as I understand it. I believe he emigrated here from Terfin a few months ago. It seems that he was merely a chance victim of someone intent on violence.\"")
+            add_dialogue(
+            "\"The Gargoyle Inamo slept in the stables, as I understand it. I believe he emigrated here from Terfin a few months ago.")
+            add_dialogue("It seems that he was merely a chance victim of someone intent on violence.\"")
             remove_answer("Inamo")
         elseif answer == "password" then
             if get_flag(68) and not get_flag(61) then

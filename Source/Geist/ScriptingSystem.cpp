@@ -453,7 +453,7 @@ string ScriptingSystem::ResumeCoroutine(const string& func_name, const vector<Lu
     float startTime = GetTime();
     m_scriptStartTime[func_name] = startTime;
 
-    int nresults;
+    int nresults = 0;
     int status = lua_resume(co, nullptr, static_cast<int>(args.size()), &nresults);
 
     float elapsed = GetTime() - startTime;

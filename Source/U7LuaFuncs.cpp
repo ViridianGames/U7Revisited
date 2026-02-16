@@ -344,10 +344,10 @@ static int LuaRemoveAnswers(lua_State *L)
                 NPCDebugPrint("Removing answer " + string(answer));  // Lua debug messages go to npcdebug.log
                 lua_rawseti(L, answers_idx, len + 1);
                 len++; // Increment for next insertion
-}
+            }
             else
             {
-}
+            }
             lua_pop(L, 1); // Pop table[i]
         }
     }
@@ -1040,6 +1040,7 @@ static int LuaGetFlag(lua_State *L)
 {
     int flag_id = luaL_checkinteger(L, 1);
     bool value = g_ScriptingSystem->GetFlag(flag_id);
+    DebugPrint("Getting Lua flag " + to_string(flag_id) + ", value is " + to_string(value));
     lua_pushboolean(L, value);
     return 1;
 }
@@ -1048,6 +1049,7 @@ static int LuaSetFlag(lua_State *L)
 {
     int flag_id = luaL_checkinteger(L, 1);
     bool value = lua_toboolean(L, 2);
+    DebugPrint("Setting Lua flag " + to_string(flag_id) + " to " + to_string(value));
     g_ScriptingSystem->SetFlag(flag_id, value);
     return 0;
 }
