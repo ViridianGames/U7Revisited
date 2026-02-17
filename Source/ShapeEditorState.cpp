@@ -671,6 +671,7 @@ void ShapeEditorState::Update()
 			if (g_shapeTable[m_currentShape][newFrame].IsValid())
 			{
 				m_currentFrame = newFrame;
+				SwitchToGuiForDrawType(g_shapeTable[m_currentShape][m_currentFrame].m_drawType);
 				break;
 			}
 			newFrame++;
@@ -1436,15 +1437,6 @@ void ShapeEditorState::Update()
 		shapeData.m_meshOutline = m_currentGui->GetActiveElement()->m_Selected;
 	}
 
-	if (m_currentGui->GetActiveElementID() == GE_USESHAPEPOINTERCHECKBOX)
-	{
-		somethingChanged = true;
-		shapeData.m_useShapePointer = m_currentGui->GetActiveElement()->m_Selected;
-
-		shapeData.UpdateTextures();
-		shapeData.SafeAndSane();
-	}
-
 	// Tweak Rotation
 	if (m_currentGui->GetActiveElementID() == GE_TWEAKROTATIONPLUSBUTTON)
 	{
@@ -1562,104 +1554,6 @@ void ShapeEditorState::Update()
 		}
 
 		g_shapeTable[m_currentShape][m_currentFrame].m_luaScript = (g_ScriptingSystem->m_scriptFiles[m_luaScriptIndex].first);
-	}
-
-	if (m_currentGui->GetActiveElementID() == GE_PREVSHAPEPOINTERBUTTON)
-	{
-		int pointerShape = shapeData.m_pointerShape;
-		int newShape = pointerShape - 1;
-
-		if (IsKeyDown(KEY_LEFT_SHIFT))
-		{
-			newShape -= 9;
-		}
-
-		if (newShape < 0)
-		{
-			newShape = 1023;
-		}
-
-		if (g_shapeTable[newShape][0].IsValid())
-		{
-			shapeData.m_pointerShape = newShape;
-			if (shapeData.m_useShapePointer)
-			{
-				somethingChanged = true;
-			}
-		}
-		else
-		{
-			shapeData.m_pointerShape = 0;
-		}
-
-		shapeData.m_pointerFrame = 0;
-	}
-
-	if (m_currentGui->GetActiveElementID() == GE_NEXTSHAPEPOINTERBUTTON)
-	{
-		int pointerShape = shapeData.m_pointerShape;
-		int newShape = pointerShape + 1;
-
-		if (IsKeyDown(KEY_LEFT_SHIFT))
-		{
-			newShape += 9;
-		}
-
-		if (newShape > 1023)
-		{
-			newShape = 150;
-		}
-
-		if (g_shapeTable[newShape][0].IsValid())
-		{
-			shapeData.m_pointerShape = newShape;
-			if (shapeData.m_useShapePointer)
-			{
-				somethingChanged = true;
-			}
-		}
-		else
-		{
-			shapeData.m_pointerShape = 0;
-		}
-
-		shapeData.m_pointerFrame = 0;
-	}
-
-	if (m_currentGui->GetActiveElementID() == GE_NEXTFRAMEPOINTERBUTTON)
-	{
-		int newFrame = shapeData.m_pointerFrame + 1;
-		if (newFrame > 31)
-		{
-			newFrame = 0;
-		}
-
-		if (g_shapeTable[shapeData.m_pointerShape][newFrame].IsValid())
-		{
-			shapeData.m_pointerFrame = newFrame;
-			if (shapeData.m_useShapePointer)
-			{
-				somethingChanged = true;
-			}
-		}
-	}
-
-	if (IsKeyPressed(KEY_S) || m_currentGui->GetActiveElementID() == GE_PREVFRAMEPOINTERBUTTON)
-	{
-		int newFrame = shapeData.m_pointerFrame - 1;
-		if (newFrame < 0)
-		{
-			newFrame = 31;
-		}
-
-		if (g_shapeTable[m_currentShape][newFrame].IsValid())
-		{
-			shapeData.m_pointerFrame = newFrame;
-			if (shapeData.m_useShapePointer)
-			{
-				somethingChanged = true;
-			}
-		}
 	}
 
 	if(m_currentGui->GetActiveElementID() == GE_OPENLUASCRIPTBUTTON)
@@ -2013,12 +1907,6 @@ void ShapeEditorState::Update()
 		m_currentGui->GetElement(GE_BOTTOMSIDETEXTURETEXTAREA)->m_String = m_sideDrawStrings[static_cast<int>(shapeData.GetTextureForSide(CuboidSides::CUBOID_BOTTOM))];
 		m_currentGui->GetElement(GE_BACKSIDETEXTURETEXTAREA)->m_String = m_sideDrawStrings[static_cast<int>(shapeData.GetTextureForSide(CuboidSides::CUBOID_BACK))];
 		m_currentGui->GetElement(GE_LEFTSIDETEXTURETEXTAREA)->m_String = m_sideDrawStrings[static_cast<int>(shapeData.GetTextureForSide(CuboidSides::CUBOID_LEFT))];
-	}
-
-	if(m_currentGui == m_shapePointerGui.get())
-	{
-		m_currentGui->GetElement(GE_CURRENTSHAPEPOINTERIDTEXTAREA)->m_String = "PS:" + to_string(shapeData.m_pointerShape);
-		m_currentGui->GetElement(GE_CURRENTFRAMEPOINTERIDTEXTAREA)->m_String = "PF:" + to_string(shapeData.m_pointerFrame);
 	}
 
 	std::ostringstream out;
@@ -2632,15 +2520,6 @@ void ShapeEditorState::SetupShapePointerGui()
 	m_shapePointerGui->GetElement(GE_CURRENTDRAWTYPETEXTAREA)->m_String = "Pointer";
 
 	int yoffset = 13;
-
-	m_shapePointerGui->AddIconButton(GE_PREVSHAPEPOINTERBUTTON, 2, y, g_LeftArrow);
-	m_shapePointerGui->AddIconButton(GE_NEXTSHAPEPOINTERBUTTON, 50, y, g_RightArrow);
-	m_shapePointerGui->AddTextArea(GE_CURRENTSHAPEPOINTERIDTEXTAREA, g_guiFont.get(), "PS: " + to_string(m_currentShape), 12, y);
-
-	m_shapePointerGui->AddIconButton(GE_PREVFRAMEPOINTERBUTTON, 62, y, g_LeftArrow);
-	m_shapePointerGui->AddIconButton(GE_NEXTFRAMEPOINTERBUTTON, 110, y, g_RightArrow);
-	m_shapePointerGui->AddTextArea(GE_CURRENTFRAMEPOINTERIDTEXTAREA, g_guiFont.get(), "PF: " + to_string(m_currentFrame), 71, y);
-
 }
 
 void ShapeEditorState::SetupDontDrawGui()
