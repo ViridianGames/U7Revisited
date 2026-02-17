@@ -2082,15 +2082,6 @@ void ShapeEditorState::DrawCuboidWireframe(const Vector3& position, const Vector
 	// Gap size for offsetting faces outward so they don't overlap
 	float gap = 0.05f;
 
-	// Helper function to rotate a point around Y axis (angle in radians)
-	auto rotateY = [](Vector3 point, float angleRadians) -> Vector3 {
-		float s = sinf(angleRadians);
-		float c = cosf(angleRadians);
-		float newX = point.x * c - point.z * s;
-		float newZ = point.x * s + point.z * c;
-		return Vector3{ newX, point.y, newZ };
-	};
-
 	// Define the 8 corners in model space (before scaling)
 	// The cuboid model is a 1x1x1 cube with origin at bottom-left-back corner (0,0,0 to 1,1,1)
 	Vector3 localCorners[8] = {
@@ -2115,7 +2106,7 @@ void ShapeEditorState::DrawCuboidWireframe(const Vector3& position, const Vector
 		// Rotate around origin (0,0,0) in model space
 		// DrawModelEx expects degrees but receives rotationAngle (radians), so it does: angle*DEG2RAD
 		// To match this, we need to apply the same conversion: rotationAngle * DEG2RAD
-		Vector3 rotated = rotateY(scaled, rotationAngle * DEG2RAD);
+		Vector3 rotated = Vector3RotateByAxisAngle(scaled, {0, 1, 0}, rotationAngle * DEG2RAD);
 		// Translate to world position
 		corners[i] = Vector3Add(rotated, thisPos);
 	}
