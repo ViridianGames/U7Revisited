@@ -120,6 +120,19 @@ void ShapeEditorState::ChangeGui(Gui* newGui)
 	newGui->m_Active = true;
 
 	m_currentGui = newGui;
+
+	ShapeData& shapeData = g_shapeTable[m_currentShape][m_currentFrame];
+	if (newGui == m_meshGui.get())
+	{
+		for (auto node = g_ResourceManager->m_ModelList.begin(); node != g_ResourceManager->m_ModelList.end(); ++node)
+		{
+			if (node->first == shapeData.m_customMeshName)
+			{
+				m_modelIndex = node;
+				break;
+			}
+		}
+	}
 }
 
 void ShapeEditorState::SwitchToGuiForDrawType(ShapeDrawType drawType)
@@ -1467,6 +1480,17 @@ void ShapeEditorState::Update()
 				}
 			}
 		}
+		else if(IsKeyDown(KEY_LEFT_CONTROL))
+		{
+			for(int i = 0; i < 50; ++i)
+			{
+				m_modelIndex++;
+				if (m_modelIndex == g_ResourceManager->m_ModelList.end())
+				{
+					m_modelIndex = g_ResourceManager->m_ModelList.begin();
+				}
+			}
+		}
 		else
 		{
 			m_modelIndex++;
@@ -1485,6 +1509,17 @@ void ShapeEditorState::Update()
 		if (IsKeyDown(KEY_LEFT_SHIFT))
 		{
 			for(int i = 0; i < 10; ++i)
+			{
+				if (m_modelIndex == g_ResourceManager->m_ModelList.begin())
+				{
+					m_modelIndex = g_ResourceManager->m_ModelList.end();
+				}
+				m_modelIndex--;
+			}
+		}
+		else if (IsKeyDown(KEY_LEFT_CONTROL))
+		{
+			for(int i = 0; i < 50; ++i)
 			{
 				if (m_modelIndex == g_ResourceManager->m_ModelList.begin())
 				{
