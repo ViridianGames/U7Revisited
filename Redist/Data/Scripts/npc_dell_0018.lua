@@ -24,7 +24,7 @@ function npc_dell_0018(eventid, objectref)
             if var_0003 == 7 then
                 add_dialogue("\"Thou hast entered my shop, so thou had best buy something.\"")
             end
-            var_0006 = ask_multiple_choice("\"Who might I be addressing?\"", {var_0002, var_0004})
+            var_0006 = ask_multiple_choice({"\"Who might I be addressing?\"", var_0002, var_0004})
             if var_0006 == var_0002 then
                 add_dialogue("\"Hmph. My name is Dell.\"")
             else
@@ -66,13 +66,13 @@ function npc_dell_0018(eventid, objectref)
                 if var_0003 == 7 then
                     add_dialogue("\"Certainly, " .. var_0001 .. ". What type of ware wouldst thou wish to see?\"")
                     save_answers()
-                    --clear_answers()
+                    clear_answers()
                     add_answer({"provisions", "armour", "weapons", "nothing"})
                 else
                     add_dialogue("\"Come to my shop during business hours.\"")
                 end
             elseif var_0007 == "weapons" then
-                func_0872()
+                utility_shopweapons_0882()
             elseif var_0007 == "armour" then
                 func_0873()
             elseif var_0007 == "provisions" then

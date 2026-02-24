@@ -121,18 +121,18 @@ void ShapeEditorState::ChangeGui(Gui* newGui)
 
 	m_currentGui = newGui;
 
-	ShapeData& shapeData = g_shapeTable[m_currentShape][m_currentFrame];
-	if (newGui == m_meshGui.get())
-	{
-		for (auto node = g_ResourceManager->m_ModelList.begin(); node != g_ResourceManager->m_ModelList.end(); ++node)
-		{
-			if (node->first == shapeData.m_customMeshName)
-			{
-				m_modelIndex = node;
-				break;
-			}
-		}
-	}
+	// ShapeData& shapeData = g_shapeTable[m_currentShape][m_currentFrame];
+	// if (newGui == m_meshGui.get())
+	// {
+	// 	for (auto node = g_ResourceManager->m_ModelList.begin(); node != g_ResourceManager->m_ModelList.end(); ++node)
+	// 	{
+	// 		if (node->first == shapeData.m_customMeshName)
+	// 		{
+	// 			m_modelIndex = node;
+	// 			break;
+	// 		}
+	// 	}
+	// }
 }
 
 void ShapeEditorState::SwitchToGuiForDrawType(ShapeDrawType drawType)
@@ -704,6 +704,7 @@ void ShapeEditorState::Update()
 			if (g_shapeTable[m_currentShape][newFrame].IsValid())
 			{
 				m_currentFrame = newFrame;
+				SwitchToGuiForDrawType(g_shapeTable[m_currentShape][m_currentFrame].m_drawType);
 				break;
 			}
 			newFrame--;

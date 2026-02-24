@@ -25,6 +25,7 @@
 #include "ConversationState.h"
 #include "GumpManager.h"
 #include "MainState.h"
+#include "Pathfinding.h"
 #include "Terrain.h"
 #include "ShapeData.h"
 #include "U7Object.h"
@@ -346,6 +347,8 @@ extern std::unordered_map<int, std::unique_ptr<NPCData> > g_NPCData;
 
 extern std::array<int, 1024> g_isObjectMoveable;        // Maps item shape ID to valid equipment slots
 
+extern std::unique_ptr<PathfindingSystem> g_pathfindingSystem;
+
 // Weather/effect sprite data structure
 struct SpriteFrame {
 	Image image;
@@ -602,7 +605,7 @@ const float MAX_CLIMBABLE_HEIGHT = 1.0f;
 const float CLIMB_MOVEMENT_COST = 2.0f;
 
 // Maximum height for walkable surface objects to be considered (filters out upper floors)
-const float MAX_WALKABLE_SURFACE_HEIGHT = 5.0f;
+const float MAX_WALKABLE_SURFACE_HEIGHT = 6.0f;
 
 // Call this whenever ANY object changes position or state
 void NotifyPathfindingGridUpdate(int worldX, int worldZ, int radius = 1);
