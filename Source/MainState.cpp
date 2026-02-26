@@ -650,9 +650,14 @@ void MainState::UpdateInput()
 			{
 				Bark(g_objectUnderMousePointer, "Locked", 3.0f);
 			}
-			else if (!g_objectUnderMousePointer->m_isContainer)
+			else if (!g_objectUnderMousePointer->m_isContainer) // Try to walk onto this object
 			{
-				AddConsoleString("Object " + to_string(g_objectUnderMousePointer->m_ID) + " is not a container.");
+				int worldX = (int)floor(g_terrainUnderMousePointer.x);
+				int worldZ = (int)floor(g_terrainUnderMousePointer.z);
+
+				U7Object* avatar = g_objectList[g_NPCData[0]->m_objectID].get();
+				//avatar->SetDest({float(worldX), 0, float(worldZ)});
+				avatar->PathfindToDest({ g_objectUnderMousePointer->m_Pos.x, 0, g_objectUnderMousePointer->m_Pos.x });
 			}
 		}
 		else if (!g_mouseOverUI && !g_gumpManager->m_isMouseOverGump)
@@ -1770,6 +1775,35 @@ void MainState::Draw()
 		Vector2 origin = { m_MinimapArrow->width * g_DrawScale / 2.0f, m_MinimapArrow->height * g_DrawScale / 2.0f };
 
 		DrawTexturePro(*m_MinimapArrow, source, dest, origin, rotation, WHITE);
+
+		if (m_showPathfindingDebug)
+		{
+			DrawTextureEx(*m_Minimap, { 0, 0 }, 0, g_DrawScale * .2f, WHITE);
+			int length = 5;
+			for (int y = 0; y < 192; ++y)
+			{
+				for (int x = 0; x < 192; ++x)
+				{
+					ChunkInfo& chunk = g_pathfindingSystem->m_chunkInfoMap[x][y];
+					if (chunk.canReach[DIR_N])
+						DrawLine(x * length, y * length, x * length, (y - 1) * length, WHITE );
+					if (chunk.canReach[DIR_NE])
+						DrawLine(x * length, y * length, (x + 1) * length, (y - 1) * length, WHITE );
+					if (chunk.canReach[DIR_E])
+						DrawLine(x * length, y * length, (x + 1) * length, (y) * length, WHITE );
+					if (chunk.canReach[DIR_SE])
+						DrawLine(x * length, y * length, (x + 1) * length, (y + 1) * length, WHITE );
+					if (chunk.canReach[DIR_S])
+						DrawLine(x * length, y * length, (x) * length, (y + 1) * length, WHITE );
+					if (chunk.canReach[DIR_SW])
+						DrawLine(x * length, y * length, (x - 1) * length, (y + 1) * length, WHITE );
+					if (chunk.canReach[DIR_W])
+						DrawLine(x * length, y * length, (x - 1) * length, (y) * length, WHITE );
+					if (chunk.canReach[DIR_NW])
+						DrawLine(x * length, y * length, (x - 1) * length, (y - 1) * length, WHITE );
+				}
+			}
+		}
 	}
 
 	// Draw debug tools window if valid

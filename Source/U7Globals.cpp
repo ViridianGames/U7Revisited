@@ -61,6 +61,8 @@ std::vector<ReagentData> g_reagentData;
 std::vector<SpellCircle> g_spellCircles;
 std::unordered_map<int, SpellData*> g_spellMap;
 
+std::unique_ptr<PathfindingSystem> g_pathfindingSystem;
+
 ConversationState* g_ConversationState;
 MainState* g_mainState;
 

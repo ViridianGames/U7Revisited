@@ -8,8 +8,52 @@
 #include "raylib.h"
 #include "raymath.h"
 
+#include "Geist/Object.h"
+
 // Forward declarations
 class U7Object;
+
+struct ChunkInfo
+{
+	bool walkable[16][16] = { false };
+
+	bool hasRoof = false;
+	int  roofGroupID = -1;          // -1 = no roof / no building
+
+	// Connectivity flags for 8 directions (0 = North, 1 = NE, 2 = E, etc.)
+	bool canReach[8] = { false };
+};
+
+// Direction constants for readability
+enum Dir8
+{
+	DIR_N  = 0,
+	DIR_NE = 1,
+	DIR_E  = 2,
+	DIR_SE = 3,
+	DIR_S  = 4,
+	DIR_SW = 5,
+	DIR_W  = 6,
+	DIR_NW = 7
+};
+
+class PathfindingSystem : public Object
+{
+public:
+	PathfindingSystem(){};
+	~PathfindingSystem(){};
+
+	virtual void Init(const std::string& configfile){};
+	virtual void Shutdown(){};
+	virtual void Update(){};
+	void Draw() {};
+
+	ChunkInfo m_chunkInfoMap[192][192];
+
+	//  Since this looks both at the terrain and the objects, it needs to be called
+	//  after all loading is finished.
+	void PopulateChunkPathfindingGrid();
+};
 
 // ============================================================================
 // PathNode: Used by A* algorithm

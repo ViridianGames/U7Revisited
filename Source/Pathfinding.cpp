@@ -101,6 +101,16 @@ static bool IsWalkableSurface(int shapeID)
 	if (shapeID == 150)
 		return true;
 
+	if (shapeID == 193)
+		return true;
+
+	if (shapeID == 192)
+		return true;
+
+	if (shapeID == 973 || shapeID == 974)
+		return true;
+
+
 	if (shapeID >= 385 && shapeID <= 387)
 		return true;
 
@@ -963,3 +973,226 @@ void AStar::CleanupNodes()
 	}
 	m_allocatedNodes.clear();
 }
+
+//----------------------------------------------
+// High-level chunk-based initial pathfinding
+//---------------------------------------------
+
+//  By building a high-level map of which chunk has a clear path to which
+//  neighboring chunk, we can assign pathfinding nodes much more quickly.
+//
+//  We'll still need A* to reach the final destination within a chunk.
+
+// 3D Line vs full AABB intersection (slab method)
+bool LineIntersectsAABB3D(Vector3 p1, Vector3 p2, Vector3 boxMin, Vector3 boxMax)
+{
+	Vector3 dir = Vector3Subtract(p2, p1);
+
+	float tmin = 0.0f;
+	float tmax = 1.0f;
+
+	for (int i = 0; i < 3; ++i)
+	{
+		float p = (&p1.x)[i];
+		float d = (&dir.x)[i];
+
+		if (d != 0.0f)
+		{
+			float t1 = ((&boxMin.x)[i] - p) / d;
+			float t2 = ((&boxMax.x)[i] - p) / d;
+
+			if (t1 > t2) std::swap(t1, t2);
+
+			tmin = std::max(tmin, t1);
+			tmax = std::min(tmax, t2);
+
+			if (tmin > tmax) return false;
+		}
+		else if (p < (&boxMin.x)[i] || p > (&boxMax.x)[i])
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
+// 3D version of LineOfTilesIsWalkable that checks full bounding boxes of objects
+bool LineOfTilesIsWalkable3D(Vector3 start, Vector3 end)
+{
+	// Get chunk coordinates for the two endpoints
+	int cx1 = std::clamp(static_cast<int>(start.x) / 16, 0, 191);
+	int cz1 = std::clamp(static_cast<int>(start.z) / 16, 0, 191);
+	int cx2 = std::clamp(static_cast<int>(end.x) / 16, 0, 191);
+	int cz2 = std::clamp(static_cast<int>(end.z) / 16, 0, 191);
+
+	// Collect the chunks the line crosses
+	std::vector<std::pair<int, int>> chunksToCheck;
+	chunksToCheck.emplace_back(cx1, cz1);
+	if (cx1 != cx2 || cz1 != cz2)
+	{
+		chunksToCheck.emplace_back(cx2, cz2);
+
+		// For diagonal movement add the corner chunk
+		if (cx1 != cx2 && cz1 != cz2)
+		{
+			int midCX = cx1 + (cx2 > cx1 ? 1 : -1);
+			int midCZ = cz1 + (cz2 > cz1 ? 1 : -1);
+			chunksToCheck.emplace_back(midCX, midCZ);
+		}
+	}
+
+	// Test against every object in those chunks
+	for (const auto& [cx, cz] : chunksToCheck)
+	{
+		for (U7Object* obj : g_chunkObjectMap[cx][cz])
+		{
+			if (obj == nullptr) continue;
+
+			Vector3 half = Vector3Multiply(obj->m_shapeData->m_Dims, {0.5f, 0.5f, 0.5f});
+			Vector3 min = Vector3Subtract(obj->m_Pos, half);
+			Vector3 max = Vector3Add(obj->m_Pos, half);
+
+			if (LineIntersectsAABB3D(start, end, min, max))
+			{
+				return false;  // blocked by this object
+			}
+		}
+	}
+
+	return true;  // clear path in 3D
+}
+
+bool AreAllTilesInDirectionWalkable(Vector2 start, Dir8 direction)
+{
+	int startx = start.x;
+	int starty = start.y;
+	int destx = 0;
+	int desty = 0;
+
+	switch (direction)
+	{
+		case DIR_N:
+			destx = 0;
+			desty = -1;
+			break;
+
+		case DIR_NW:
+			destx = -1;
+			desty = -1;
+			break;
+
+		case DIR_NE:
+			destx = 1;
+			desty = -1;
+			break;
+
+		case DIR_E:
+			destx = 1;
+			desty = 0;
+			break;
+
+		case DIR_SE:
+			destx = 1;
+			desty = 1;
+			break;
+
+		case DIR_S:
+			destx = 0;
+			desty = 1;
+			break;
+
+		case DIR_SW:
+			destx = -1;
+			desty = 1;
+			break;
+
+		case DIR_W:
+			destx = -1;
+			desty = 0;
+			break;
+	}
+
+	for (int i = 0; i < 16; ++i)
+	{
+		startx += destx;
+		starty += desty;
+
+		//  Stay on the world, please.
+		if (startx < 0) startx = 0;
+		if (starty < 0) starty = 0;
+		if (startx > 3071) startx = 3071;
+		if (starty > 3071) starty = 3071;
+
+		unsigned short shapeframe = g_World[startx][starty];
+		int shapeID = shapeframe & 0x3ff;  // Extract shape ID (bits 0-9)
+		if (g_objectDataTable[shapeID].m_isNotWalkable)
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
+
+void PathfindingSystem::PopulateChunkPathfindingGrid()
+{
+	for (int cz = 0; cz < 192; ++cz)
+	{
+		for (int cx = 0; cx < 192; ++cx)
+		{
+			ChunkInfo& ci = m_chunkInfoMap[cz][cx];
+
+			Vector3 center = { cx * 16.0f + 8.0f, 0.0f, cz * 16.0f + 8.0f };
+			for(int i = 0; i < 8; ++i)
+			{
+				ci.canReach[i] = AreAllTilesInDirectionWalkable({center.x, center.z}, Dir8(i));
+			}
+
+			// North
+			if (ci.canReach[DIR_N]) //  Tiles passable?  Check for objects in the way.
+			{
+				ci.canReach[DIR_N] = LineOfTilesIsWalkable3D(center, { center.x, center.y, center.z - 16.0f });
+			}
+
+			// North-East
+			if (ci.canReach[DIR_NE]) //  Tiles passable?  Check for objects in the way.
+			{
+				ci.canReach[DIR_NE] = LineOfTilesIsWalkable3D(center, { center.x + 16.0f, center.y, center.z - 16.0f });
+			}
+
+			// East
+			if (ci.canReach[DIR_E]) //  Tiles passable?  Check for objects in the way.
+			{
+				ci.canReach[DIR_E] = LineOfTilesIsWalkable3D(center, { center.x + 16.0f, center.y, center.z });
+			}
+
+			// South-East
+			if (ci.canReach[DIR_SE]) //  Tiles passable?  Check for objects in the way.
+			{
+				ci.canReach[DIR_SE] = LineOfTilesIsWalkable3D(center, { center.x + 16.0f, center.y, center.z  + 16.0f });
+			}
+
+			// South
+			if (ci.canReach[DIR_S]) //  Tiles passable?  Check for objects in the way.
+			{
+				ci.canReach[DIR_S] = LineOfTilesIsWalkable3D(center, { center.x, center.y, center.z  + 16.0f });
+			}
+
+			// South-West
+			if (ci.canReach[DIR_SW]) //  Tiles passable?  Check for objects in the way.
+			{
+				ci.canReach[DIR_SW] = LineOfTilesIsWalkable3D(center, { center.x - 16.0f, center.y, center.z  + 16.0f });
+			}
+
+			// West
+			if (ci.canReach[DIR_W]) //  Tiles passable?  Check for objects in the way.
+			{
+				ci.canReach[DIR_W] = LineOfTilesIsWalkable3D(center, { center.x - 16.0f, center.y, center.z });
+			}
+		}
+	}
+}
+
+
+

@@ -120,6 +120,19 @@ void ShapeEditorState::ChangeGui(Gui* newGui)
 	newGui->m_Active = true;
 
 	m_currentGui = newGui;
+
+	// ShapeData& shapeData = g_shapeTable[m_currentShape][m_currentFrame];
+	// if (newGui == m_meshGui.get())
+	// {
+	// 	for (auto node = g_ResourceManager->m_ModelList.begin(); node != g_ResourceManager->m_ModelList.end(); ++node)
+	// 	{
+	// 		if (node->first == shapeData.m_customMeshName)
+	// 		{
+	// 			m_modelIndex = node;
+	// 			break;
+	// 		}
+	// 	}
+	// }
 }
 
 void ShapeEditorState::SwitchToGuiForDrawType(ShapeDrawType drawType)
@@ -671,6 +684,7 @@ void ShapeEditorState::Update()
 			if (g_shapeTable[m_currentShape][newFrame].IsValid())
 			{
 				m_currentFrame = newFrame;
+				SwitchToGuiForDrawType(g_shapeTable[m_currentShape][m_currentFrame].m_drawType);
 				break;
 			}
 			newFrame++;
@@ -690,6 +704,7 @@ void ShapeEditorState::Update()
 			if (g_shapeTable[m_currentShape][newFrame].IsValid())
 			{
 				m_currentFrame = newFrame;
+				SwitchToGuiForDrawType(g_shapeTable[m_currentShape][m_currentFrame].m_drawType);
 				break;
 			}
 			newFrame--;
@@ -1436,15 +1451,6 @@ void ShapeEditorState::Update()
 		shapeData.m_meshOutline = m_currentGui->GetActiveElement()->m_Selected;
 	}
 
-	if (m_currentGui->GetActiveElementID() == GE_USESHAPEPOINTERCHECKBOX)
-	{
-		somethingChanged = true;
-		shapeData.m_useShapePointer = m_currentGui->GetActiveElement()->m_Selected;
-
-		shapeData.UpdateTextures();
-		shapeData.SafeAndSane();
-	}
-
 	// Tweak Rotation
 	if (m_currentGui->GetActiveElementID() == GE_TWEAKROTATIONPLUSBUTTON)
 	{
@@ -1475,6 +1481,17 @@ void ShapeEditorState::Update()
 				}
 			}
 		}
+		else if(IsKeyDown(KEY_LEFT_CONTROL))
+		{
+			for(int i = 0; i < 50; ++i)
+			{
+				m_modelIndex++;
+				if (m_modelIndex == g_ResourceManager->m_ModelList.end())
+				{
+					m_modelIndex = g_ResourceManager->m_ModelList.begin();
+				}
+			}
+		}
 		else
 		{
 			m_modelIndex++;
@@ -1493,6 +1510,17 @@ void ShapeEditorState::Update()
 		if (IsKeyDown(KEY_LEFT_SHIFT))
 		{
 			for(int i = 0; i < 10; ++i)
+			{
+				if (m_modelIndex == g_ResourceManager->m_ModelList.begin())
+				{
+					m_modelIndex = g_ResourceManager->m_ModelList.end();
+				}
+				m_modelIndex--;
+			}
+		}
+		else if (IsKeyDown(KEY_LEFT_CONTROL))
+		{
+			for(int i = 0; i < 50; ++i)
 			{
 				if (m_modelIndex == g_ResourceManager->m_ModelList.begin())
 				{
@@ -1562,104 +1590,6 @@ void ShapeEditorState::Update()
 		}
 
 		g_shapeTable[m_currentShape][m_currentFrame].m_luaScript = (g_ScriptingSystem->m_scriptFiles[m_luaScriptIndex].first);
-	}
-
-	if (m_currentGui->GetActiveElementID() == GE_PREVSHAPEPOINTERBUTTON)
-	{
-		int pointerShape = shapeData.m_pointerShape;
-		int newShape = pointerShape - 1;
-
-		if (IsKeyDown(KEY_LEFT_SHIFT))
-		{
-			newShape -= 9;
-		}
-
-		if (newShape < 0)
-		{
-			newShape = 1023;
-		}
-
-		if (g_shapeTable[newShape][0].IsValid())
-		{
-			shapeData.m_pointerShape = newShape;
-			if (shapeData.m_useShapePointer)
-			{
-				somethingChanged = true;
-			}
-		}
-		else
-		{
-			shapeData.m_pointerShape = 0;
-		}
-
-		shapeData.m_pointerFrame = 0;
-	}
-
-	if (m_currentGui->GetActiveElementID() == GE_NEXTSHAPEPOINTERBUTTON)
-	{
-		int pointerShape = shapeData.m_pointerShape;
-		int newShape = pointerShape + 1;
-
-		if (IsKeyDown(KEY_LEFT_SHIFT))
-		{
-			newShape += 9;
-		}
-
-		if (newShape > 1023)
-		{
-			newShape = 150;
-		}
-
-		if (g_shapeTable[newShape][0].IsValid())
-		{
-			shapeData.m_pointerShape = newShape;
-			if (shapeData.m_useShapePointer)
-			{
-				somethingChanged = true;
-			}
-		}
-		else
-		{
-			shapeData.m_pointerShape = 0;
-		}
-
-		shapeData.m_pointerFrame = 0;
-	}
-
-	if (m_currentGui->GetActiveElementID() == GE_NEXTFRAMEPOINTERBUTTON)
-	{
-		int newFrame = shapeData.m_pointerFrame + 1;
-		if (newFrame > 31)
-		{
-			newFrame = 0;
-		}
-
-		if (g_shapeTable[shapeData.m_pointerShape][newFrame].IsValid())
-		{
-			shapeData.m_pointerFrame = newFrame;
-			if (shapeData.m_useShapePointer)
-			{
-				somethingChanged = true;
-			}
-		}
-	}
-
-	if (IsKeyPressed(KEY_S) || m_currentGui->GetActiveElementID() == GE_PREVFRAMEPOINTERBUTTON)
-	{
-		int newFrame = shapeData.m_pointerFrame - 1;
-		if (newFrame < 0)
-		{
-			newFrame = 31;
-		}
-
-		if (g_shapeTable[m_currentShape][newFrame].IsValid())
-		{
-			shapeData.m_pointerFrame = newFrame;
-			if (shapeData.m_useShapePointer)
-			{
-				somethingChanged = true;
-			}
-		}
 	}
 
 	if(m_currentGui->GetActiveElementID() == GE_OPENLUASCRIPTBUTTON)
@@ -2015,12 +1945,6 @@ void ShapeEditorState::Update()
 		m_currentGui->GetElement(GE_LEFTSIDETEXTURETEXTAREA)->m_String = m_sideDrawStrings[static_cast<int>(shapeData.GetTextureForSide(CuboidSides::CUBOID_LEFT))];
 	}
 
-	if(m_currentGui == m_shapePointerGui.get())
-	{
-		m_currentGui->GetElement(GE_CURRENTSHAPEPOINTERIDTEXTAREA)->m_String = "PS:" + to_string(shapeData.m_pointerShape);
-		m_currentGui->GetElement(GE_CURRENTFRAMEPOINTERIDTEXTAREA)->m_String = "PF:" + to_string(shapeData.m_pointerFrame);
-	}
-
 	std::ostringstream out;
 	out.precision(2);
 	out << std::fixed << shapeData.m_Scaling.x;
@@ -2082,15 +2006,6 @@ void ShapeEditorState::DrawCuboidWireframe(const Vector3& position, const Vector
 	// Gap size for offsetting faces outward so they don't overlap
 	float gap = 0.05f;
 
-	// Helper function to rotate a point around Y axis (angle in radians)
-	auto rotateY = [](Vector3 point, float angleRadians) -> Vector3 {
-		float s = sinf(angleRadians);
-		float c = cosf(angleRadians);
-		float newX = point.x * c - point.z * s;
-		float newZ = point.x * s + point.z * c;
-		return Vector3{ newX, point.y, newZ };
-	};
-
 	// Define the 8 corners in model space (before scaling)
 	// The cuboid model is a 1x1x1 cube with origin at bottom-left-back corner (0,0,0 to 1,1,1)
 	Vector3 localCorners[8] = {
@@ -2115,7 +2030,7 @@ void ShapeEditorState::DrawCuboidWireframe(const Vector3& position, const Vector
 		// Rotate around origin (0,0,0) in model space
 		// DrawModelEx expects degrees but receives rotationAngle (radians), so it does: angle*DEG2RAD
 		// To match this, we need to apply the same conversion: rotationAngle * DEG2RAD
-		Vector3 rotated = rotateY(scaled, rotationAngle * DEG2RAD);
+		Vector3 rotated = Vector3RotateByAxisAngle(scaled, {0, 1, 0}, rotationAngle * DEG2RAD);
 		// Translate to world position
 		corners[i] = Vector3Add(rotated, thisPos);
 	}
@@ -2641,15 +2556,6 @@ void ShapeEditorState::SetupShapePointerGui()
 	m_shapePointerGui->GetElement(GE_CURRENTDRAWTYPETEXTAREA)->m_String = "Pointer";
 
 	int yoffset = 13;
-
-	m_shapePointerGui->AddIconButton(GE_PREVSHAPEPOINTERBUTTON, 2, y, g_LeftArrow);
-	m_shapePointerGui->AddIconButton(GE_NEXTSHAPEPOINTERBUTTON, 50, y, g_RightArrow);
-	m_shapePointerGui->AddTextArea(GE_CURRENTSHAPEPOINTERIDTEXTAREA, g_guiFont.get(), "PS: " + to_string(m_currentShape), 12, y);
-
-	m_shapePointerGui->AddIconButton(GE_PREVFRAMEPOINTERBUTTON, 62, y, g_LeftArrow);
-	m_shapePointerGui->AddIconButton(GE_NEXTFRAMEPOINTERBUTTON, 110, y, g_RightArrow);
-	m_shapePointerGui->AddTextArea(GE_CURRENTFRAMEPOINTERIDTEXTAREA, g_guiFont.get(), "PF: " + to_string(m_currentFrame), 71, y);
-
 }
 
 void ShapeEditorState::SetupDontDrawGui()

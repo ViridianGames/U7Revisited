@@ -29,6 +29,7 @@
 #include "AskState.h"
 #include "ShapeData.h"
 #include "GumpManager.h"
+#include "Pathfinding.h"
 #include <string>
 #include <sstream>
 #include <memory>
@@ -344,6 +345,9 @@ int main(int argv, char** argc)
 		}
 
       g_gumpManager = make_unique<GumpManager>();
+
+      //  Start Pathfinding system
+      g_pathfindingSystem = make_unique<PathfindingSystem>();
 
       //  Initialize states
       Log("Initializing states.");
