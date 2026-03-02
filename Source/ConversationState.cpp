@@ -194,18 +194,23 @@ void ConversationState::Update()
 			}
 			else
 			{
+				Font* fontToUse = g_ConversationFont.get();
+				float fontsize = 2.8f;
+				fontToUse = g_SmallFont.get();
+
 				for (int i = 0; i < m_answers.size(); i++)
 				{
 					std::string adjustedAnswer = std::string("* ") + m_answers[i];
-					Vector2 dims = MeasureTextEx(*g_ConversationFont.get(), adjustedAnswer.c_str(), g_ConversationFont.get()->baseSize, 1);
+
+					Vector2 dims = MeasureTextEx(*fontToUse, adjustedAnswer.c_str(), fontToUse->baseSize, 1);
 
 					Vector2 mousePosition = GetMousePosition();
 					if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) &&
 						CheckCollisionPointRec(mousePosition, {
 							                       190 * g_DrawScale,
-							                       float((135 + (i * g_ConversationFont.get()->baseSize * 1.2)) * g_DrawScale),
-							                       dims.x * g_DrawScale,
-							                       float((g_ConversationFont.get()->baseSize * 1.2) * g_DrawScale)
+							                       float((135 + (i * fontToUse->baseSize * 2.1)) * g_DrawScale),
+							                       dims.x * 2 * g_DrawScale,
+							                       float((fontToUse->baseSize * 2) * g_DrawScale)
 						                       }))
 					{
 						if (m_steps.size() == 0)
@@ -365,11 +370,27 @@ void ConversationState::Draw()
 			}
 
 			DrawTextureEx(*thisTexture, {100, 135}, 0, 2, WHITE);
+
+			float height = m_answers.size() * g_SmallFont.get()->baseSize * 2.1;
+
+			float width = 0;
+
+			float roundness = .55 - .04f * m_answers.size();
+
 			for (int i = 0; i < m_answers.size(); i++)
 			{
-				DrawOutlinedText(g_ConversationFont, "* " + m_answers[i],
-				                 {190, float(135 + (i * g_ConversationFont.get()->baseSize * 1.2))}, g_ConversationFont.get()->baseSize,
-				                 1, YELLOW);
+				Vector2 textsize = MeasureTextEx(*g_SmallFont.get(), std::string("* " + m_answers[i]).c_str(), g_SmallFont.get()->baseSize * 2, 1);
+				if (textsize.x > width)
+					width = textsize.x;
+			}
+
+			DrawRectangleRounded({184, 130, width * 1.08f, height * 1.08f}, roundness, 100, {0, 0, 0, 224});
+
+			for (int i = 0; i < m_answers.size(); i++)
+			{
+				DrawOutlinedText(g_SmallFont, "* " + m_answers[i],
+								 {190, float(135 + (i * g_SmallFont.get()->baseSize * 2.1))}, g_SmallFont.get()->baseSize * 2,
+								 1, YELLOW);
 			}
 		}
 	}

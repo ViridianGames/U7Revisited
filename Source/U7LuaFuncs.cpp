@@ -2096,7 +2096,9 @@ static int LuaPurchaseObject(lua_State *L)
         unsigned int nextID = GetNextID();
         AddObject(shape, frame, nextID, 0, 0, 0);
 
-        AddObjectToContainer(nextID, g_NPCData[0]->m_objectID);
+        int backpackId = g_NPCData[0]->GetEquippedItem(EquipmentSlot::SLOT_BACKPACK);
+
+        AddObjectToContainer(nextID, backpackId);
     }
 
     g_Player->SetGold(g_Player->GetGold() - (cost_per * amount));
