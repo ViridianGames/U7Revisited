@@ -25,7 +25,7 @@
 #include "ConversationState.h"
 #include "GumpManager.h"
 #include "MainState.h"
-#include "Pathfinding.h"
+#include "PathfindingSystem.h"
 #include "Terrain.h"
 #include "ShapeData.h"
 #include "U7Object.h"
@@ -94,8 +94,6 @@ extern unsigned int g_minute;
 extern unsigned int g_scheduleTime;
 extern float g_secsPerMinute;
 
-// NPC pathfinding queue system
-extern std::queue<int> g_npcPathfindQueue;  // Queue of NPC IDs needing pathfinding
 extern int g_lastScheduleTimeCheck;          // Last schedule time we checked
 
 extern Color g_dayNightColor;
@@ -339,7 +337,6 @@ extern bool g_CameraMoved;
 extern std::unordered_map<int, int[16][16] > g_ChunkTypeList;  // The 16x16 tiles for each chunk type
 extern int g_chunkTypeMap[192][192]; // The type of each chunk in the map
 extern std::vector<U7Object*> g_chunkObjectMap[192][192]; // The objects in each chunk
-extern std::shared_mutex g_chunkMapMutex; // Protects g_chunkObjectMap for thread-safe pathfinding
 
 extern std::array<std::array<ShapeData, 32>, 1024> g_shapeTable;
 extern std::array<ObjectData, 1024> g_objectDataTable;
@@ -590,13 +587,6 @@ void RecalculateCamera();
 //////////////////////////////////////////////////////////////////////////////
 ///  PATHFINDING
 //////////////////////////////////////////////////////////////////////////////
-
-class PathfindingGrid;
-class AStar;
-class PathfindingThreadPool;
-extern PathfindingGrid* g_pathfindingGrid;
-extern AStar* g_aStar;
-extern PathfindingThreadPool* g_pathfindingThreadPool;
 
 // Maximum height difference NPCs can climb/descend between adjacent tiles
 const float MAX_CLIMBABLE_HEIGHT = 1.0f;

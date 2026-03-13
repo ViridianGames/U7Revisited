@@ -13,8 +13,7 @@
 #include "Logging.h"
 #include "U7GumpBook.h"
 #include "MainState.h"
-#include "Pathfinding.h"
-#include "PathfindingThreadPool.h"
+#include "PathfindingSystem.h"
 
 extern "C"
 {
@@ -3714,16 +3713,8 @@ static int LuaIsBlocked(lua_State *L)
 	int y = (int)lua_tointeger(L, 2);  // Y is elevation, but we need it for completeness
 	int z = (int)lua_tointeger(L, 3);
 
-	extern PathfindingGrid* g_pathfindingGrid;
-
-	if (!g_pathfindingGrid)
-	{
-		lua_pushboolean(L, 1); // If no pathfinding grid, assume blocked
-		return 1;
-	}
-
 	// Check if the tile is walkable
-	bool walkable = g_pathfindingGrid->IsPositionWalkable(x, z);
+	bool walkable = g_pathfindingSystem->IsPositionWalkable(x, z);
 	lua_pushboolean(L, !walkable); // Return true if blocked
 	return 1;
 }
@@ -4437,15 +4428,6 @@ static int LuaFindRandomWalkable(lua_State *L)
         return 1;
     }
 
-    extern PathfindingGrid* g_pathfindingGrid;
-    extern AStar* g_aStar;
-
-    if (!g_pathfindingGrid || !g_aStar)
-    {
-        lua_pushnil(L);
-        return 1;
-    }
-
     Vector3 npcPos = npc->GetPos();
     int anchorX = (int)npcPos.x;
     int anchorZ = (int)npcPos.z;
@@ -4458,7 +4440,7 @@ static int LuaFindRandomWalkable(lua_State *L)
     int targetZ = anchorZ + (int)offsetZ;
 
     // Only check if position is walkable - NO pathfinding (too expensive)
-    bool isWalkable = g_pathfindingGrid->IsPositionWalkable(targetX, targetZ);
+    bool isWalkable = g_pathfindingSystem->IsPositionWalkable(targetX, targetZ);
 
     NPCDebugPrint("find_random_walkable: npc=" + std::to_string(npc_id) +
                    " from=(" + std::to_string(anchorX) + "," + std::to_string(anchorZ) + ")" +
@@ -4578,11 +4560,7 @@ static int LuaRequestPathfind(lua_State *L)
     // (PathfindToDestTracked will clear waypoints and set m_pathfindingPending)
     npc->m_isMoving = false;
 
-    int requestID = npc->PathfindToDestTracked({x, y, z});
-    NPCDebugPrint("Lua: NPC " + std::to_string(npc_id) + " requested pathfind to (" +
-               std::to_string((int)x) + "," + std::to_string((int)y) + "," + std::to_string((int)z) +
-               "), got request ID " + std::to_string(requestID));
-    lua_pushinteger(L, requestID);
+    npc->PathfindToDest({x, y, z});
     return 1;
 }
 
@@ -4590,28 +4568,7 @@ static int LuaRequestPathfind(lua_State *L)
 // Step 2: Check if async pathfinding request is complete (consumes the result)
 static int LuaIsPathReady(lua_State *L)
 {
-    extern PathfindingThreadPool* g_pathfindingThreadPool;
-
-    int requestID = luaL_checkinteger(L, 1);
-
-    if (requestID == 0)
-    {
-        lua_pushboolean(L, true);  // Request ID 0 means synchronous (already done)
-        return 1;
-    }
-
-    if (!g_pathfindingThreadPool)
-    {
-        lua_pushboolean(L, true);  // No thread pool, assume synchronous (already done)
-        return 1;
-    }
-
-    bool ready = g_pathfindingThreadPool->IsPathReady(requestID);
-    if (ready)
-    {
-        NPCDebugPrint("Lua: Path ready for request ID " + std::to_string(requestID));
-    }
-    lua_pushboolean(L, ready);
+    lua_pushboolean(L, true);
     return 1;
 }
 

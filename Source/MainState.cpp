@@ -16,8 +16,7 @@
 #include "U7GumpStats.h"
 #include "ConversationState.h"
 #include "GumpManager.h"
-#include "Pathfinding.h"
-#include "PathfindingThreadPool.h"
+#include "PathfindingSystem.h"
 #include "Ghost/GhostWindow.h"
 #include "Ghost/GhostSerializer.h"
 #include "NpcListWindow.h"
@@ -200,13 +199,6 @@ void MainState::OnExit()
 
 void MainState::Shutdown()
 {
-	// Clean up pathfinding thread pool (must be done before cleaning up g_pathfindingGrid)
-	if (g_pathfindingThreadPool)
-	{
-		delete g_pathfindingThreadPool;
-		g_pathfindingThreadPool = nullptr;
-	}
-
 	// Clean up debug tools window
 	if (m_debugToolsWindow)
 	{
@@ -403,12 +395,12 @@ void MainState::UpdateInput()
 	}
 
 	// Right-click to debug specific tile when pathfinding debug is on
-	if (m_showPathfindingDebug && IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) && g_pathfindingGrid)
+	if (m_showPathfindingDebug && IsMouseButtonPressed(MOUSE_BUTTON_RIGHT))
 	{
 		// Get world position where mouse clicked
 		int worldX = (int)floor(g_terrainUnderMousePointer.x);
 		int worldZ = (int)floor(g_terrainUnderMousePointer.z);
-		g_pathfindingGrid->DebugPrintTileInfo(worldX, worldZ);
+		g_pathfindingSystem->m_pathfindingGrid->DebugPrintTileInfo(worldX, worldZ);
 	}
 
 	if (IsKeyPressed(KEY_KP_ENTER))
@@ -689,23 +681,22 @@ void MainState::UpdateInput()
 				int frameID = (shapeframe >> 10) & 0x3f;  // Bits 10-15
 
 				// Look up name and cost from terrain costs
-				extern AStar* g_aStar;
-				string terrainName = g_aStar ? g_aStar->GetTerrainName(shapeID) : "Unknown";
-				bool walkable = g_pathfindingGrid->IsPositionWalkable(worldX, worldZ);
+				string terrainName = g_pathfindingSystem->GetTerrainName(shapeID);
+				bool walkable = g_pathfindingSystem->IsPositionWalkable(worldX, worldZ);
 
-				//AddConsoleString("=== " + terrainName + " (" + to_string(worldX) + ", " + to_string(worldZ) + ") ===", SKYBLUE);
-				//AddConsoleString("  Shape ID: " + to_string(shapeID) + ", Frame: " + to_string(frameID), WHITE);
+				AddConsoleString("=== " + terrainName + " (" + to_string(worldX) + ", " + to_string(worldZ) + ") ===", SKYBLUE);
+				AddConsoleString("  Shape ID: " + to_string(shapeID) + ", Frame: " + to_string(frameID), WHITE);
 
-				if (walkable)
-				{
-					float cost = g_aStar ? g_aStar->GetMovementCost(worldX, worldZ, g_pathfindingGrid) : 1.0f;
-					//AddConsoleString("  Movement Cost: " + to_string(cost), GREEN);
-					//AddConsoleString("  Walkable: YES", GREEN);
-				}
-				else
-				{
+				//if (walkable)
+				//{
+					float cost = g_pathfindingSystem->GetMovementCost(worldX, worldZ);
+					AddConsoleString("  Movement Cost: " + to_string(cost), GREEN);
+					AddConsoleString("  Walkable: YES", GREEN);
+				//}
+				//else
+				//{
 					//AddConsoleString("  Walkable: NO", RED);
-				}
+				//}
 			}
 		}
 
@@ -993,8 +984,7 @@ void MainState::Update()
 		g_lastScheduleTimeCheck = g_scheduleTime;
 
 		// Clear any pending pathfinding requests from previous schedule
-		while (!g_npcPathfindQueue.empty())
-			g_npcPathfindQueue.pop();
+
 
 		// Enqueue all NPCs that need to move to a new destination
 		for (const auto& [npcID, npcData] : g_NPCData)
@@ -1045,120 +1035,11 @@ void MainState::Update()
 
 
 						// Only queue for pathfinding if pathfinding is enabled
-						if (m_npcPathfindingEnabled)
-						{
-							g_npcPathfindQueue.push(npcID);
-						}
+						NPCSchedule newSchedule = g_NPCSchedules[npcID][npcData->m_currentActivity];
+						npcObj->m_pathWaypoints = g_pathfindingSystem->FindPath(npcObj->GetPos(), {float(newSchedule.m_destX), 0, float(newSchedule.m_destY) });
 					}
 				}
 				// else: no exact match for current time = "None" entry, keep current activity
-			}
-		}
-
-		// Debug: Show schedule changes
-		if (!g_npcPathfindQueue.empty())
-		{
-			AddConsoleString("Schedule changed to block " + std::to_string(g_scheduleTime) +
-				", queued " + std::to_string(g_npcPathfindQueue.size()) + " NPCs for pathfinding", YELLOW);
-		}
-	}
-
-	// Process pathfinding results from background threads
-	if (g_pathfindingThreadPool)
-	{
-		PathResult result;
-		while (g_pathfindingThreadPool->PopResult(result))
-		{
-			// Find the NPC and apply waypoints
-			if (g_NPCData.find(result.npcID) != g_NPCData.end() && g_NPCData[result.npcID])
-			{
-				U7Object* npcObj = g_objectList[g_NPCData[result.npcID]->m_objectID].get();
-				if (npcObj && result.success)
-				{
-					npcObj->m_pathWaypoints = result.waypoints;
-					npcObj->m_currentWaypointIndex = 0;
-					npcObj->m_pathfindingPending = false;  // Path is ready!
-
-					// If this was a tracked request, mark it as ready for Lua
-					// Lua will call start_following_path() to begin movement
-					if (result.requestID > 0)
-					{
-						NPCDebugPrint("MainState: Tracked path ready for NPC " + std::to_string(result.npcID) +
-							", request ID " + std::to_string(result.requestID) +
-							", " + std::to_string(result.waypoints.size()) + " waypoints");
-						npcObj->m_isSchedulePath = false;  // Lua activity path
-						g_pathfindingThreadPool->MarkRequestReady(result.requestID);
-					}
-					// Fire-and-forget requests (requestID == 0) start movement immediately
-					else if (!result.waypoints.empty())
-					{
-						NPCDebugPrint("MainState: Fire-and-forget path ready for NPC " + std::to_string(result.npcID) +
-							", " + std::to_string(result.waypoints.size()) + " waypoints, auto-starting");
-						npcObj->m_isSchedulePath = true;  // C++ schedule path
-						npcObj->SetDest(result.waypoints[0]);
-						npcObj->m_isMoving = true;
-					}
-
-#ifdef DEBUG_NPC_PATHFINDING
-					// Track longest path for this NPC
-					if (!result.waypoints.empty())
-					{
-						float pathDistance = Vector3Distance(result.waypoints.front(), result.waypoints.back());
-						auto it = g_npcMaxPathStats.find(result.npcID);
-						if (it == g_npcMaxPathStats.end() || pathDistance > it->second.distance)
-						{
-							NPCPathStats stats;
-							stats.npcID = result.npcID;
-							stats.startPos = result.waypoints.front();
-							stats.endPos = result.waypoints.back();
-							stats.distance = pathDistance;
-							stats.waypointCount = (int)result.waypoints.size();
-							g_npcMaxPathStats[result.npcID] = stats;
-						}
-					}
-#endif
-				}
-			}
-		}
-	}
-
-	// Process one NPC from pathfinding queue per frame (submit to thread pool or fall back to sync)
-	if (!g_npcPathfindQueue.empty())
-	{
-		int npcID = g_npcPathfindQueue.front();
-		g_npcPathfindQueue.pop();
-
-		// Find the most recent schedule entry <= current time
-		if (g_NPCData.find(npcID) != g_NPCData.end() && g_NPCData[npcID])
-		{
-			U7Object* npcObj = g_objectList[g_NPCData[npcID]->m_objectID].get();
-			if (npcObj && g_NPCSchedules.find(npcID) != g_NPCSchedules.end())
-			{
-				// Find most recent schedule
-				int mostRecentScheduleTime = -1;
-				const NPCSchedule* mostRecentSchedule = nullptr;
-
-				for (const auto& schedule : g_NPCSchedules[npcID])
-				{
-					if (schedule.m_time <= g_scheduleTime && (int)schedule.m_time > mostRecentScheduleTime)
-					{
-						mostRecentScheduleTime = (int)schedule.m_time;
-						mostRecentSchedule = &schedule;
-					}
-				}
-
-				if (mostRecentSchedule)
-				{
-					// Pathfind to destination (will use thread pool if available, otherwise sync A*)
-					npcObj->m_isSchedulePath = true;  // Mark as schedule path to block activity scripts
-					npcObj->PathfindToDest(Vector3{ float(mostRecentSchedule->m_destX), 0, float(mostRecentSchedule->m_destY) });
-					npcObj->m_isMoving = true;
-				}
-				else
-				{
-					// No schedule destination ("None" entry) - clear schedule path flag so activity can run
-					npcObj->m_isSchedulePath = false;
-				}
 			}
 		}
 	}
@@ -1543,9 +1424,9 @@ void MainState::Draw()
 	}
 
 	// Draw pathfinding debug overlay (tile-level - shows objects)
-	if (m_showPathfindingDebug && g_pathfindingGrid)
+	if (m_showPathfindingDebug)
 	{
-		g_pathfindingGrid->DrawDebugOverlayTileLevel();
+		g_pathfindingSystem->m_pathfindingGrid->DrawDebugOverlayTileLevel();
 	}
 
 	// Draw NPC paths as blue highlight tiles for NPCs with active waypoints
@@ -1778,29 +1659,31 @@ void MainState::Draw()
 
 		if (m_showPathfindingDebug)
 		{
-			DrawTextureEx(*m_Minimap, { 0, 0 }, 0, g_DrawScale * .2f, WHITE);
-			int length = 5;
+			float xoffset = g_Engine->m_ScreenWidth - float(g_minimapSize * g_DrawScale);
+
+			//DrawTextureEx(*m_Minimap, { 0, 0 }, 0, g_DrawScale * .1f, WHITE);
+			float length = 2.225;
 			for (int y = 0; y < 192; ++y)
 			{
 				for (int x = 0; x < 192; ++x)
 				{
 					ChunkInfo& chunk = g_pathfindingSystem->m_chunkInfoMap[x][y];
 					if (chunk.canReach[DIR_N])
-						DrawLine(x * length, y * length, x * length, (y - 1) * length, WHITE );
+						DrawLine(xoffset + x * length, y * length, xoffset + x * length, (y - 1) * length, WHITE );
 					if (chunk.canReach[DIR_NE])
-						DrawLine(x * length, y * length, (x + 1) * length, (y - 1) * length, WHITE );
+						DrawLine(xoffset + x * length, y * length, xoffset + (x + 1) * length, (y - 1) * length, WHITE );
 					if (chunk.canReach[DIR_E])
-						DrawLine(x * length, y * length, (x + 1) * length, (y) * length, WHITE );
+						DrawLine(xoffset + x * length, y * length, xoffset + (x + 1) * length, (y) * length, WHITE );
 					if (chunk.canReach[DIR_SE])
-						DrawLine(x * length, y * length, (x + 1) * length, (y + 1) * length, WHITE );
+						DrawLine(xoffset + x * length, y * length, xoffset + (x + 1) * length, (y + 1) * length, WHITE );
 					if (chunk.canReach[DIR_S])
-						DrawLine(x * length, y * length, (x) * length, (y + 1) * length, WHITE );
+						DrawLine(xoffset + x * length, y * length, xoffset + (x) * length, (y + 1) * length, WHITE );
 					if (chunk.canReach[DIR_SW])
-						DrawLine(x * length, y * length, (x - 1) * length, (y + 1) * length, WHITE );
+						DrawLine(xoffset + x * length, y * length, xoffset + (x - 1) * length, (y + 1) * length, WHITE );
 					if (chunk.canReach[DIR_W])
-						DrawLine(x * length, y * length, (x - 1) * length, (y) * length, WHITE );
+						DrawLine(xoffset + x * length, y * length, xoffset + (x - 1) * length, (y) * length, WHITE );
 					if (chunk.canReach[DIR_NW])
-						DrawLine(x * length, y * length, (x - 1) * length, (y - 1) * length, WHITE );
+						DrawLine(xoffset + x * length, y * length, xoffset + (x - 1) * length, (y - 1) * length, WHITE );
 				}
 			}
 		}
@@ -2066,15 +1949,6 @@ void MainState::HandleScheduleButton()
 void MainState::HandlePathfindButton()
 {
 	m_npcPathfindingEnabled = !m_npcPathfindingEnabled;
-
-	// Clear the pathfinding queue when disabling pathfinding
-	if (!m_npcPathfindingEnabled)
-	{
-		while (!g_npcPathfindQueue.empty())
-		{
-			g_npcPathfindQueue.pop();
-		}
-	}
 
 	AddConsoleString(m_npcPathfindingEnabled ? "NPC Pathfinding ENABLED" : "NPC Pathfinding DISABLED");
 }

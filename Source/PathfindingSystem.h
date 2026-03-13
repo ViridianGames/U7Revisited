@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <queue>
 #include <string>
+#include <memory>
 #include "raylib.h"
 #include "raymath.h"
 
@@ -35,38 +36,6 @@ enum Dir8
 	DIR_SW = 5,
 	DIR_W  = 6,
 	DIR_NW = 7
-};
-
-class PathfindingSystem : public Object
-{
-public:
-	PathfindingSystem(){};
-	~PathfindingSystem(){};
-
-	virtual void Init(const std::string& configfile){};
-	virtual void Shutdown(){};
-	virtual void Update(){};
-	void Draw() {};
-
-	ChunkInfo m_chunkInfoMap[192][192];
-
-	//  Since this looks both at the terrain and the objects, it needs to be called
-	//  after all loading is finished.
-	void PopulateChunkPathfindingGrid();
-};
-
-// ============================================================================
-// PathNode: Used by A* algorithm
-// ============================================================================
-struct PathNode
-{
-	int x, z;           // World tile coordinates
-	float g;            // Cost from start
-	float h;            // Heuristic cost to goal
-	float f;            // Total cost (g + h)
-	PathNode* parent;   // For path reconstruction
-
-	PathNode(int _x, int _z) : x(_x), z(_z), g(0), h(0), f(0), parent(nullptr) {}
 };
 
 // ============================================================================
@@ -114,9 +83,26 @@ private:
 	mutable int m_lastCameraCenterZ = -9999;
 };
 
+
+
 // ============================================================================
 // AStar: Pathfinding algorithm
 // ============================================================================
+
+// ============================================================================
+// PathNode: Used by A* algorithm
+// ============================================================================
+struct PathNode
+{
+	int x, z;           // World tile coordinates
+	float g;            // Cost from start
+	float h;            // Heuristic cost to goal
+	float f;            // Total cost (g + h)
+	PathNode* parent;   // For path reconstruction
+
+	PathNode(int _x, int _z) : x(_x), z(_z), g(0), h(0), f(0), parent(nullptr) {}
+};
+
 class AStar
 {
 public:
@@ -156,6 +142,36 @@ private:
 
 	// Terrain names (shape ID -> name)
 	std::unordered_map<int, std::string> m_terrainNames;
+};
+
+
+class PathfindingSystem : public Object
+{
+public:
+	PathfindingSystem(){};
+	~PathfindingSystem(){};
+
+	virtual void Init(const std::string& configfile);
+	virtual void Shutdown(){};
+	virtual void Update(){};
+	void Draw() {};
+
+	std::vector<Vector3> FindPath(Vector3 start, Vector3 goal);
+
+	std::string GetTerrainName(int shapeID) const { return m_aStar->GetTerrainName(shapeID); }
+
+	bool IsPositionWalkable(int worldX, int worldZ) const { return m_pathfindingGrid->IsPositionWalkable(worldX, worldZ); }
+
+	float GetMovementCost(int worldX, int worldZ) { return m_aStar->GetMovementCost(worldX, worldZ, m_pathfindingGrid.get());}
+
+	std::unique_ptr<PathfindingGrid> m_pathfindingGrid;
+	std::unique_ptr<AStar> m_aStar;
+
+	ChunkInfo m_chunkInfoMap[192][192];
+
+	//  Since this looks both at the terrain and the objects, it needs to be called
+	//  after all loading is finished.
+	void PopulateChunkPathfindingGrid();
 };
 
 #endif

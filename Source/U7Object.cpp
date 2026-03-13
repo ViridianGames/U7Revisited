@@ -20,8 +20,7 @@
 #include "ShapeData.h"
 #include "LoadingState.h"
 #include "MainState.h"
-#include "Pathfinding.h"
-#include "PathfindingThreadPool.h"
+#include "PathfindingSystem.h"
 
 #include <iostream>
 #include <string>
@@ -705,11 +704,7 @@ void U7Object::TryOpenDoorAtCurrentPosition()
 	lastCheckedPos[m_NPCID] = {worldX, worldZ};
 
 	// Use the pathfinding grid's helper to get overlapping objects at current position
-	extern PathfindingGrid* g_pathfindingGrid;
-	if (!g_pathfindingGrid)
-		return;
-
-	auto overlappingObjects = g_pathfindingGrid->GetOverlappingObjects(worldX, worldZ);
+	auto overlappingObjects = g_pathfindingSystem->m_pathfindingGrid->GetOverlappingObjects(worldX, worldZ);
 
 	// Check if any of the overlapping objects is a door
 	for (const auto& ovObj : overlappingObjects)
@@ -727,47 +722,16 @@ void U7Object::TryOpenDoorAtCurrentPosition()
 
 void U7Object::PathfindToDest(Vector3 dest)
 {
-	extern PathfindingGrid* g_pathfindingGrid;
-	extern PathfindingThreadPool* g_pathfindingThreadPool;
-
 	// Clear previous path and mark as pending
 	m_pathWaypoints.clear();
 	m_currentWaypointIndex = 0;
 	m_pathfindingPending = true;
 
-	// If no pathfinding grid, fall back to direct movement
-	if (!g_pathfindingGrid)
-	{
-		SetDest(dest);
-		m_pathfindingPending = false;
-		return;
-	}
-
-	// If thread pool is available, submit asynchronous pathfinding request
-	if (g_pathfindingThreadPool)
-	{
-		PathRequest request;
-		request.npcID = m_NPCID;
-		request.start = m_Pos;
-		request.goal = dest;
-		request.requestID = 0;  // Fire-and-forget, no tracking
-		g_pathfindingThreadPool->SubmitRequest(request);
-		return;
-	}
-
-	// Fallback: Use synchronous A* (for backwards compatibility)
-	if (!g_aStar)
-	{
-		AddConsoleString("ERROR: g_aStar is null!", RED);
-		m_pathfindingPending = false;
-		return;
-	}
-	std::vector<Vector3> path = g_aStar->FindPath(m_Pos, dest, g_pathfindingGrid);
+	m_pathWaypoints = g_pathfindingSystem->FindPath(m_Pos, dest);
 
 	// If path found, store waypoints
-	if (!path.empty())
+	if (!m_pathWaypoints.empty())
 	{
-		m_pathWaypoints = path;
 		m_currentWaypointIndex = 0;
 		m_pathfindingPending = false;  // Path is ready immediately (synchronous)
 
@@ -788,7 +752,7 @@ void U7Object::PathfindToDest(Vector3 dest)
 			stats.startPos = m_Pos;
 			stats.endPos = dest;
 			stats.distance = pathDistance;
-			stats.waypointCount = (int)path.size();
+			stats.waypointCount = (int)m_pathWaypoints.size();
 			g_npcMaxPathStats[m_NPCID] = stats;
 		}
 #endif
@@ -808,64 +772,6 @@ void U7Object::PathfindToDest(Vector3 dest)
 		//                 std::to_string((int)dest.x) + "," + std::to_string((int)dest.z) + ") - staying put!", RED);
 		// Don't call SetDest() - NPC will remain stationary
 	}
-}
-
-int U7Object::PathfindToDestTracked(Vector3 dest)
-{
-	extern PathfindingGrid* g_pathfindingGrid;
-	extern PathfindingThreadPool* g_pathfindingThreadPool;
-
-	// Clear previous path and mark as pending
-	m_pathWaypoints.clear();
-	m_currentWaypointIndex = 0;
-	m_pathfindingPending = true;
-
-	// If no pathfinding grid, fall back to direct movement
-	if (!g_pathfindingGrid)
-	{
-		SetDest(dest);
-		m_pathfindingPending = false;
-		return 0;  // No tracking for fallback
-	}
-
-	// If thread pool is available, submit tracked pathfinding request
-	if (g_pathfindingThreadPool)
-	{
-		int requestID = g_pathfindingThreadPool->GetNextRequestID();
-		PathRequest request;
-		request.npcID = m_NPCID;
-		request.start = m_Pos;
-		request.goal = dest;
-		request.requestID = requestID;
-		g_pathfindingThreadPool->SubmitRequest(request);
-		return requestID;  // Return ID for Lua to track
-	}
-
-	// Fallback to synchronous pathfinding (no thread pool)
-	if (!g_aStar)
-	{
-		AddConsoleString("ERROR: g_aStar is null!", RED);
-		m_pathfindingPending = false;
-		return 0;
-	}
-
-	std::vector<Vector3> path = g_aStar->FindPath(m_Pos, dest, g_pathfindingGrid);
-	if (!path.empty())
-	{
-		m_pathWaypoints = path;
-		m_currentWaypointIndex = 0;
-		m_pathfindingPending = false;
-		if (m_pathWaypoints.size() > 0)
-		{
-			SetDest(m_pathWaypoints[0]);
-		}
-	}
-	else
-	{
-		m_pathfindingPending = false;
-	}
-
-	return 0;  // Synchronous, no tracking needed
 }
 
 bool U7Object::AddObjectToInventory(int objectid)

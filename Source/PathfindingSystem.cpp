@@ -1,4 +1,4 @@
-#include "Pathfinding.h"
+#include "PathfindingSystem.h"
 #include "U7Globals.h"
 #include "U7Object.h"
 #include "rlgl.h"
@@ -33,8 +33,6 @@ std::vector<PathfindingGrid::OverlappingObject> PathfindingGrid::GetOverlappingO
 
 	int chunkX = worldX / 16;
 	int chunkZ = worldZ / 16;
-
-	std::shared_lock lock(g_chunkMapMutex);  // Shared read lock for thread-safe access
 
 	// Check this chunk and neighbors
 	for (int dz = -1; dz <= 1; dz++)
@@ -311,7 +309,7 @@ void PathfindingGrid::DrawDebugOverlayTileLevel()
 					float tileHeight = GetTileHeight(worldX, worldZ);
 					float displayHeight = tileHeight + 0.1f;  // Slightly above surface to avoid z-fighting
 
-					float cost = g_aStar ? g_aStar->GetMovementCost(worldX, worldZ, this) : 1.0f;
+					float cost = g_pathfindingSystem->m_aStar ? g_pathfindingSystem->m_aStar->GetMovementCost(worldX, worldZ, this) : 1.0f;
 					// Check if on object to get actual movement cost
 					if (tileHeight > 0.1f)
 						cost = CLIMB_MOVEMENT_COST;  // Override with climbing cost
@@ -461,6 +459,7 @@ void PathfindingGrid::DebugPrintTileInfo(int worldX, int worldZ)
 
 AStar::AStar()
 {
+	LoadTerrainCosts("Data/terrain_walkable.csv");
 }
 
 AStar::~AStar()
@@ -1134,6 +1133,14 @@ bool AreAllTilesInDirectionWalkable(Vector2 start, Dir8 direction)
 	return true;
 }
 
+void PathfindingSystem::Init(const std::string& configfile)
+{
+	m_aStar = std::make_unique<AStar>();
+	m_pathfindingGrid = std::make_unique<PathfindingGrid>();
+	PopulateChunkPathfindingGrid();
+}
+
+
 
 void PathfindingSystem::PopulateChunkPathfindingGrid()
 {
@@ -1194,5 +1201,8 @@ void PathfindingSystem::PopulateChunkPathfindingGrid()
 	}
 }
 
-
+std::vector<Vector3> PathfindingSystem::FindPath(Vector3 start, Vector3 end)
+{
+	return m_aStar->FindPath(start, end, m_pathfindingGrid.get());
+}
 

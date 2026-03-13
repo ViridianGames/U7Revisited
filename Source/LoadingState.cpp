@@ -5,8 +5,7 @@
 #include "Geist/ResourceManager.h"
 #include "U7Globals.h"
 #include "LoadingState.h"
-#include "Pathfinding.h"
-#include "PathfindingThreadPool.h"
+#include "PathfindingSystem.h"
 
 #include <cstring>
 #include <list>
@@ -223,13 +222,11 @@ void LoadingState::UpdateLoading()
 		if (!m_buildingPathfindingGrid)
 		{
 			AddConsoleString(std::string("Initializing pathfinding system..."));
-			g_pathfindingGrid = new PathfindingGrid();
-			g_aStar = new AStar();
-			g_aStar->LoadTerrainCosts("Data/terrain_walkable.csv");
-
-			// Initialize thread pool with 4 worker threads
-			g_pathfindingThreadPool = new PathfindingThreadPool(4, g_pathfindingGrid);
 			AddConsoleString(std::string("Pathfinding thread pool initialized with 4 workers"));
+
+			//  Start Pathfinding system
+			g_pathfindingSystem = make_unique<PathfindingSystem>();
+			g_pathfindingSystem->Init("");
 
 			m_buildingPathfindingGrid = true;
 		}
