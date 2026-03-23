@@ -850,7 +850,7 @@ void LoadingState::ParseIREGFile(stringstream& ireg, int superchunkx, int superc
 			}
 			if (shape == 275)
 			{
-				if (actualx == 973 && actualy == 2295)
+				if (actualx == 972 && actualy == 2291)
 				{
 					int stopper = 0;
 				}
@@ -863,7 +863,7 @@ void LoadingState::ParseIREGFile(stringstream& ireg, int superchunkx, int superc
 				EggData& egg = thisObject->m_eggData;
 
 				uint8_t typeByte  = entryBuffer[4];
-				uint8_t extraByte = entryBuffer[5];   // This byte holds criteria + distance
+				uint8_t criteriaDist = entryBuffer[5];   // This byte holds criteria + distance
 				uint8_t prob      = entryBuffer[6];
 				uint8_t specVal   = entryBuffer[7];
 
@@ -874,14 +874,18 @@ void LoadingState::ParseIREGFile(stringstream& ireg, int superchunkx, int superc
 				egg.probability = prob;
 
 				// Criterion: low 3 bits of byte 5
-				uint8_t criteriaRaw = extraByte & 0x07;  // Bits 0–2 (0–7)
+				uint8_t criteriaRaw = criteriaDist & 0x07;  // Bits 0–2 (0–7)
 				egg.criteria = static_cast<EggCriteria>(criteriaRaw);
 
 				// Distance: usually next 4 bits (bits 2–5 shifted)
-				egg.distance = (extraByte >> 2) & 0x0F;  // 0x09 >> 2 = 2 (matches your Guardian egg)
+				egg.distance = (criteriaDist >> 2) & 0x0F;  // 0x09 >> 2 = 2 (matches your Guardian egg)
 
 				// Once-Only: usually bit 6 in byte 4 (0x40)
-				egg.onceOnly = (typeByte & 0x40) != 0;
+				// Once-Only: bit 3 of byte 5 (0x08)
+				egg.nocturnal = (typeByte >> 4 ) & 0x01;
+				egg.onceOnly = (typeByte >> 4) & 0x02;
+				egg.hasTriggered = (typeByte >> 4) & 0x04;
+				egg.autoReset = (typeByte >> 4) & 0x08;
 
 				// Specific value (speech #, usecode param, etc.)
 				egg.specificValue = specVal;
@@ -898,14 +902,23 @@ void LoadingState::ParseIREGFile(stringstream& ireg, int superchunkx, int superc
 					egg.audioFile = "Audio/guardian-laugh.ogg";
 				}
 
-				// Debug
-				// TraceLog(LOG_INFO, "Egg: type=%d, criteria=%d, dist=%d, prob=%d, specific=0x%02X, onceOnly=%d",
-				// 		 static_cast<int>(egg.type),
-				// 		 static_cast<uint8_t>(egg.criteria),
-				// 		 egg.distance,
-				// 		 egg.probability,
-				// 		 egg.specificValue,
-				// 		 egg.onceOnly);
+				// Build debug string
+				std::string traceString = "Egg: "
+					+ std::to_string(static_cast<int>(egg.type))
+					+ " Criteria: "
+					+ std::to_string(static_cast<uint8_t>(egg.criteria))
+					+ " Distance: "
+					+ std::to_string(egg.distance)
+					+ " Probability: "
+					+ std::to_string(egg.probability)
+					+ " SpecificValue: "
+					+ std::to_string(egg.specificValue)
+					+ " OnceOnly: "
+					+ std::to_string(egg.onceOnly)
+					+ " Nocturnal: "
+					+ std::to_string(egg.nocturnal);
+
+				DebugPrint(traceString);
 			}
 			else
 			{
