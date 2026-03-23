@@ -16,7 +16,8 @@ enum GUIIDS
    GUI_TITLE_PANEL2,
    GUI_TITLE_TITLE,
    GUI_TITLE_BUTTON_SINGLE_PLAYER,
-   GUI_TITLE_BUTTON_TRINSIC_DEMO,
+   GUI_TITLE_BUTTON_START_TRINSIC_DEMO,
+   GUI_TITLE_BUTTON_LOAD_TRINSIC_DEMO,
    GUI_TITLE_BUTTON_SHAPE_EDITOR,
    GUI_TITLE_BUTTON_OBJECT_EDITOR,
    GUI_TITLE_BUTTON_WORLD_EDITOR,
@@ -58,6 +59,8 @@ public:
    void CreateTitleGUI();
    void CreateCreditsGUI();
    void UpdateTitle();
+
+   void FixObjectListForLoading();
 
    void TestUpdate();
    void TestDraw();

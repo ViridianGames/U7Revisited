@@ -959,6 +959,132 @@ void SaveShapeTable()
 	AddConsoleString("Saved shapetable.dat successfully!", GREEN);
 }
 
+void AnalyzeGlobalObjectList()
+{
+	int staticObjects = 0;
+	int npcObjects = 0;
+	int nonStaticObjects = 0;
+	int eggsAndTriggers = 0;
+	for (auto& object : g_objectList)
+	{
+		if (object.second->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_STATIC)
+			++staticObjects;
+		else if (object.second->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC)
+			++npcObjects;
+		else if (object.second->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_OBJECT)
+		{
+			++nonStaticObjects;
+			DebugPrint("Non-static object in IFIX: " + std::to_string(object.second->m_ObjectType));
+		}
+		else if (object.second->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_EGG)
+			++eggsAndTriggers;
+	}
+	AddConsoleString("Total objects: " + std::to_string(g_objectList.size()), GREEN);
+	AddConsoleString("Static objects: " + std::to_string(staticObjects), GREEN);
+	AddConsoleString("NPC objects: " + std::to_string(npcObjects), GREEN);
+	AddConsoleString("Non-static objects: " + std::to_string(nonStaticObjects), GREEN);
+	AddConsoleString("Eggs and triggers: " + std::to_string(eggsAndTriggers), GREEN);
+
+	DebugPrint("Total objects: " + std::to_string(g_objectList.size()));
+	DebugPrint("Static objects: " + std::to_string(staticObjects));
+	DebugPrint("NPC objects: " + std::to_string(npcObjects));
+	DebugPrint("Non-static objects: " + std::to_string(nonStaticObjects));
+	DebugPrint("Eggs and triggers: " + std::to_string(eggsAndTriggers));
+}
+
+void AnalyzeTrinsicObjectList()
+{
+	std::vector<U7Object*> statics;
+	std::vector<U7Object*> npcs;
+	std::vector<U7Object*> objects;
+	std::vector<U7Object*> eggs;
+
+	for (auto& unit : g_objectList)
+	{
+		if ( unit.second->m_Pos.x >= 944 && unit.second->m_Pos.x <= 1104 && unit.second->m_Pos.z >= 2096 && unit.second->m_Pos.z <= 2336 )
+		{
+			switch (unit.second->m_UnitType)
+			{
+				case U7Object::UnitTypes::UNIT_TYPE_STATIC:
+				{
+					// If we don't already have a static with this shape/frame in the list, add it to the list
+					bool dupe = false;
+					for (auto& staticObject : statics)
+					{
+						if ((staticObject->m_shapeData->m_shape == unit.second->m_shapeData->m_shape) && (staticObject->m_shapeData->m_frame == unit.second->m_shapeData->m_frame))
+						{
+							dupe = true;
+						}
+					}
+					if (!dupe)
+					{
+						statics.push_back(unit.second.get());
+					}
+				}
+					break;
+
+				case U7Object::UnitTypes::UNIT_TYPE_NPC:
+					npcs.push_back(unit.second.get());
+					break;
+
+				case U7Object::UnitTypes::UNIT_TYPE_OBJECT:
+					for (auto& object : objects)
+					{
+						if (object->m_ObjectType == unit.second->m_ObjectType)
+						{
+							continue; // we already have one of these in the list.
+						}
+					}
+					objects.push_back(unit.second.get());
+					break;
+
+				case U7Object::UnitTypes::UNIT_TYPE_EGG:
+					eggs.push_back(unit.second.get());
+					break;
+			}
+		}
+	}
+
+	std::sort(statics.begin(), statics.end(),
+	[](const U7Object* a, const U7Object* b)
+	{
+		return (a->m_shapeData->m_shape != b->m_shapeData->m_shape)
+			? (a->m_shapeData->m_shape < b->m_shapeData->m_shape)
+			: (a->m_shapeData->m_frame < b->m_shapeData->m_frame);
+	});
+
+	DebugPrint("Total objects: " + to_string(g_objectList.size()));
+
+	for (auto& staticObject : statics)
+	{
+		DebugPrint("Static: " + g_objectDataTable[staticObject->m_shapeData->m_shape].m_name + " " + to_string(staticObject->m_shapeData->m_shape) + " " + to_string(staticObject->m_shapeData->m_frame));
+	}
+
+	DebugPrint("NPCs: " + to_string(npcs.size()));
+
+	for (auto& npc : npcs)
+	{
+		DebugPrint("NPC: " + std::string(g_NPCData[npc->m_NPCID]->name));
+	}
+
+	DebugPrint("Objects: " + to_string(objects.size()));
+
+	std::sort(objects.begin(), objects.end(),
+	[](const U7Object* a, const U7Object* b)
+	{
+		return (a->m_shapeData->m_shape != b->m_shapeData->m_shape)
+			? (a->m_shapeData->m_shape < b->m_shapeData->m_shape)
+			: (a->m_shapeData->m_frame < b->m_shapeData->m_frame);
+	});
+
+	for (auto& object : objects)
+	{
+		DebugPrint("Object: " + g_objectDataTable[object->m_ObjectType].m_name  + " " + to_string(object->m_shapeData->m_shape) + " " + to_string(object->m_shapeData->m_frame));
+	}
+
+	DebugPrint("Eggs: " + to_string(eggs.size()));
+
+}
 void DrawWorld()
 {
 	// Draw 3D world - used by MainState and modal dialogs
@@ -1765,6 +1891,8 @@ void LoadSpellData()
 	file.close();
 }
 
+bool IsDistanceLessThan(float startX, float startZ, float endX, float endZ, float range);
+
 SpellData* GetSpellData(int spellId)
 {
 	auto it = g_spellMap.find(spellId);
@@ -1921,3 +2049,47 @@ float g_firstPersonMoveSpeed = 5.0f; // units per second
 bool g_firstPersonPreserveCenter = false;
 Vector3 g_firstPersonFocus = { 0.0f, 0.0f, 0.0f };
 
+// -----------------------------------------------------------------------------
+// Serialize m_flags to a JSON object
+// -----------------------------------------------------------------------------
+nlohmann::json SaveGameFlagsToJson(const std::unordered_map<int, bool>& flags)
+{
+	nlohmann::json j = nlohmann::json::object();
+
+	for (const auto& [key, value] : flags)
+	{
+		j[std::to_string(key)] = value;
+	}
+
+	return j;
+}
+
+// -----------------------------------------------------------------------------
+// Load m_flags from a JSON object
+// -----------------------------------------------------------------------------
+void LoadGameFlagsFromJson(std::unordered_map<int, bool>& flags, const nlohmann::json& j)
+{
+	// Clear existing flags to avoid leftovers
+	flags.clear();
+
+	if (!j.is_object())
+	{
+		// Optional: log error or throw
+		return;
+	}
+
+	for (auto& [keyStr, val] : j.items())
+	{
+		try
+		{
+			int key = std::stoi(keyStr);
+			bool value = val.get<bool>();
+			flags[key] = value;
+		}
+		catch (const std::exception&)
+		{
+			// Skip invalid entries (malformed key or non-bool value)
+			// Optional: log warning
+		}
+	}
+}

@@ -305,6 +305,8 @@ struct NPCData
 	}
 };
 
+
+
 extern std::string g_version;
 
 extern Vector3 g_Gravity;
@@ -474,6 +476,12 @@ void DrawConsole();
 
 void DrawWorld();  // Draws 3D world and terrain (used by MainState and modal dialogs)
 
+//void AnalyzeGlobalObjectList();
+
+json SaveGameFlagsToJson();
+
+void LoadGameFlagsFromJson(const json& j);
+
 //int l_add_dialogue(lua_State* L);
 
 extern ConversationState* g_ConversationState;
@@ -595,12 +603,14 @@ const float MAX_CLIMBABLE_HEIGHT = 1.0f;
 const float CLIMB_MOVEMENT_COST = 2.0f;
 
 // Maximum height for walkable surface objects to be considered (filters out upper floors)
-const float MAX_WALKABLE_SURFACE_HEIGHT = 6.0f;
+const float MAX_WALKABLE_SURFACE_HEIGHT = 5.0f;
 
 // Call this whenever ANY object changes position or state
 void NotifyPathfindingGridUpdate(int worldX, int worldZ, int radius = 1);
 
 extern bool g_allowInput;
+
+//void AnalyzeTrinsicObjectList();
 
 #ifdef DEBUG_NPC_PATHFINDING
 struct NPCPathStats

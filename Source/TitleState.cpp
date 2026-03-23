@@ -224,9 +224,15 @@ void TitleState::CreateTitleGUI()
 	int y = 186;
 	int yoffset = 22;
 
-	m_TitleGui->AddStretchButtonCentered(GUI_TITLE_BUTTON_TRINSIC_DEMO, y, "Trinsic Demo",
+	m_TitleGui->AddStretchButtonCentered(GUI_TITLE_BUTTON_START_TRINSIC_DEMO, y, "Start Trinsic Demo",
 	                                     g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
 	                                     g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
+
+	y += yoffset;
+
+	m_TitleGui->AddStretchButtonCentered(GUI_TITLE_BUTTON_LOAD_TRINSIC_DEMO, y, "Load Trinsic Demo",
+									 g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
+									 g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
 
 	y += yoffset;
 
@@ -452,7 +458,7 @@ void TitleState::UpdateTitle()
 		g_StateMachine->MakeStateTransition(STATE_MAINSTATE);
 	}
 
-	if (m_TitleGui->m_ActiveElement == GUI_TITLE_BUTTON_TRINSIC_DEMO)
+	if (m_TitleGui->m_ActiveElement == GUI_TITLE_BUTTON_START_TRINSIC_DEMO)
 	{
 		if (m_fadeState != FadeState::FADE_OUT)
 		{
@@ -462,6 +468,19 @@ void TitleState::UpdateTitle()
 			m_TitleGui->m_AcceptingInput = false;
 		}
 	}
+
+	if (m_TitleGui->m_ActiveElement == GUI_TITLE_BUTTON_LOAD_TRINSIC_DEMO)
+	{
+		FixObjectListForLoading();
+		if (m_fadeState != FadeState::FADE_OUT)
+		{
+			m_fadingOut = true;
+			FadeOut(3);
+			dynamic_cast<MainState*>(g_StateMachine->GetState(STATE_MAINSTATE))->m_gameMode = MainStateModes::MAIN_STATE_MODE_TRINSIC_DEMO;
+			m_TitleGui->m_AcceptingInput = false;
+		}
+	}
+
 
 	if (m_TitleGui->m_ActiveElement == GUI_TITLE_BUTTON_SHAPE_EDITOR)
 	{
@@ -520,6 +539,23 @@ void TitleState::UpdateTitle()
 	if (abs(GetMouseDelta().x) > 25 || abs(GetMouseDelta().y) > 25)
 	{
 		m_mouseMoved = true;
+	}
+}
+
+void TitleState::FixObjectListForLoading()
+{
+	//  We're about to load a save, so purge any non-static object from the object list.
+	for (auto it = g_objectList.begin(); it != g_objectList.end(); )
+	{
+		U7Object* obj = it->second.get();
+		if (obj && obj->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_STATIC)
+		{
+			it = g_objectList.erase(it);
+		}
+		else
+		{
+			++it;
+		}
 	}
 }
 

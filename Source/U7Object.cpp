@@ -14,6 +14,7 @@
 #include "Geist/StateMachine.h"
 #include "Geist/Config.h"
 #include "Geist/ScriptingSystem.h"
+#include "Geist/SoundSystem.h"
 #include "Geist/Logging.h"
 #include "U7Globals.h"
 #include "U7Object.h"
@@ -165,7 +166,108 @@ void U7Object::Update()
 	{
 		NPCUpdate();
 	}
+
+	if (m_isEgg || m_UnitType == U7Object::UnitTypes::UNIT_TYPE_EGG)
+	{
+		EggUpdate();
+	}
 }
+
+void U7Object::EggUpdate()
+{
+	switch (m_eggData.type)
+	{
+		case EggType::MonsterSpawner:
+			HandleMonsterSpawnerEgg();
+			break; // Not implemented yet
+
+		case EggType::Jukebox:
+			HandleJukeboxEgg();
+			break; // Not implemented yet
+
+		case EggType::ProximitySound:
+			HandleProximitySoundEgg();
+			break; // Not implemented yet
+
+		case EggType::Voice:
+			HandleVoiceEgg();
+			break;
+
+		case EggType::Weather:
+			HandleWeatherEgg();
+			break;
+
+		case EggType::Teleporter:
+			HandleTeleporterEgg();
+			break;
+
+		case EggType::Path:
+			HandlePathEgg();
+			break;
+
+		case EggType::Usecode:
+			HandleUsecodeEgg();
+			break;
+	}
+}
+
+void U7Object::HandleMonsterSpawnerEgg()
+{
+
+}
+
+void U7Object::HandleProximitySoundEgg()
+{
+
+}
+
+void U7Object::HandleJukeboxEgg()
+{
+
+}
+
+void U7Object::HandleVoiceEgg()
+{
+	bool playing = false;
+	switch (m_eggData.criteria)
+	{
+		case EggCriteria::AvatarNear:
+		case EggCriteria::PartyNear:
+			if (!m_eggData.hasTriggered && Vector2Distance({m_Pos.x, m_Pos.z}, {g_Player->GetAvatarObject()->m_Pos.x, g_Player->GetAvatarObject()->m_Pos.z}) <= m_eggData.distance)
+			{
+				playing = true;
+				m_eggData.hasTriggered = true;
+			}
+			break;
+	}
+
+	if (playing)
+	{
+		g_SoundSystem->PlaySound(m_eggData.audioFile);
+	}
+}
+
+void U7Object::HandleWeatherEgg()
+{
+
+}
+
+void U7Object::HandleTeleporterEgg()
+{
+
+}
+
+void U7Object::HandlePathEgg()
+{
+
+}
+
+void U7Object::HandleUsecodeEgg()
+{
+
+}
+
+
 
 void U7Object::Attack(int _UnitID)
 {
@@ -732,13 +834,13 @@ void U7Object::PathfindToDest(Vector3 dest)
 	// If path found, store waypoints
 	if (!m_pathWaypoints.empty())
 	{
-		m_currentWaypointIndex = 0;
+		m_currentWaypointIndex = 1;
 		m_pathfindingPending = false;  // Path is ready immediately (synchronous)
 
 		// Set first waypoint as destination
 		if (m_pathWaypoints.size() > 0)
 		{
-			SetDest(m_pathWaypoints[0]);
+			SetDest(m_pathWaypoints[1]);
 		}
 
 #ifdef DEBUG_NPC_PATHFINDING
@@ -971,7 +1073,7 @@ json U7Object::SaveToJson() const
 	j["id"] = m_ID;
 
 	// Only save unitType if not UNIT_TYPE_OBJECT (the default)
-	if (m_UnitType != UnitTypes::UNIT_TYPE_OBJECT)
+	if (m_UnitType != UnitTypes::UNIT_TYPE_STATIC)
 		j["unitType"] = static_cast<int>(m_UnitType);
 
 	j["shape"] = m_ObjectType;
@@ -1072,17 +1174,21 @@ U7Object* U7Object::LoadFromJson(const json& j)
 	obj->m_ObjectType = j.value("shape", 0);
 	obj->m_Frame = j.value("frame", 0);
 
+	UnitTypes savedType = obj->m_UnitType;
+
 	// Initialize object FIRST (loads texture, shape data, etc.)
 	// This must happen before setting ANY other properties, since Init() resets many flags to defaults
 	// IMPORTANT: Init's 2nd parameter is the SHAPE number (confusingly named "unitType" in Init's signature)
 	obj->Init("", obj->m_ObjectType, obj->m_Frame);
+	obj->m_UnitType = savedType;
 
 	// Check if this is an egg object (same logic as LoadingState.cpp line 826)
-	if (obj->m_objectData->m_name == "Egg" || obj->m_objectData->m_name == "path")
-	{
-		obj->m_isEgg = true;
-		obj->m_isContainer = false;
-	}
+	// if (obj->m_objectData->m_name == "Egg" || obj->m_objectData->m_name == "path")
+	// {
+	// 	obj->m_UnitType = U7Object::UnitTypes::UNIT_TYPE_EGG;
+	// 	obj->m_isEgg = true;
+	// 	obj->m_isContainer = false;
+	// }
 
 	// Now restore all other properties (which will overwrite Init's defaults)
 	obj->m_ID = j.value("id", 0);
@@ -1156,7 +1262,14 @@ U7Object* U7Object::LoadFromJson(const json& j)
 			obj->m_isContainer = true;
 		}
 
+		obj->NPCInit(obj->m_NPCData);
+
 		// Equipment slots will be restored in second pass by GameSerializer
+	}
+
+	if (obj->m_UnitType == UnitTypes::UNIT_TYPE_EGG || obj->m_shapeData->m_shape == 275)
+	{
+		obj->m_Visible = false;
 	}
 
 	return obj;

@@ -140,8 +140,10 @@ void LoadingState::UpdateLoading()
 
 		if (!m_loadingObjects)
 		{
-			AddConsoleString(std::string("Loading objects..."));
 			CreateObjectTable();
+			AddConsoleString(std::string("Loading objects..."));
+			DebugPrint(std::string("Loading objects..."));
+			//AnalyzeGlobalObjectList();
 			m_loadingObjects = true;
 			return;
 		}
@@ -189,17 +191,22 @@ void LoadingState::UpdateLoading()
 
 		if (!m_loadingIFIX)
 		{
-			AddConsoleString(std::string("Loading IFIX..."));
 			LoadIFIX();
+			AddConsoleString(std::string("Loading IFIX..."));
+			DebugPrint(std::string("Loading IFIX..."));
+			//AnalyzeGlobalObjectList();
 			m_loadingIFIX = true;
 			return;
 		}
 
 		if (!m_loadingInitialGameState)
 		{
-			AddConsoleString(std::string("Loading Initial Game State..."));
 			LoadInitialGameState();
+			AddConsoleString(std::string("Loading Initial Game State..."));
+			DebugPrint(std::string("Loading Initial Game State..."));
 			m_loadingInitialGameState = true;
+
+			//AnalyzeGlobalObjectList();
 			return;
 		}
 
@@ -227,6 +234,7 @@ void LoadingState::UpdateLoading()
 			//  Start Pathfinding system
 			g_pathfindingSystem = make_unique<PathfindingSystem>();
 			g_pathfindingSystem->Init("");
+			//AnalyzeTrinsicObjectList();
 
 			m_buildingPathfindingGrid = true;
 		}
@@ -741,6 +749,22 @@ void LoadingState::ParseIREGFile(stringstream& ireg, int superchunkx, int superc
 			actualy = (superchunky * 256) + (chunky * 16) + inty;
 		}
 
+		if (actualx == 973 && actualy == 2295)
+		{
+			int stopper = 0;
+		}
+
+		if (actualx == 972 && actualy == 2291)
+		{
+			int stopper = 0;
+		}
+
+		if (actualx == 968 && actualy == 2296)
+		{
+			int stopper = 0;
+		}
+
+
 		unsigned short shapeData = *(unsigned short*)&entryBuffer[2];
 		int shape = shapeData & 0x3ff;
 		int frame = (shapeData >> 10) & 0x1f;
@@ -824,12 +848,64 @@ void LoadingState::ParseIREGFile(stringstream& ireg, int superchunkx, int superc
 			{
 				thisObject->m_Visible = false;
 			}
-			if (g_objectDataTable[shape].m_name == "Egg" || g_objectDataTable[shape].m_name == "path" || type == 1)
+			if (shape == 275)
 			{
-				thisObject->m_isEgg = true;
-				thisObject->m_isContainer = false;
+				if (actualx == 973 && actualy == 2295)
+				{
+					int stopper = 0;
+				}
 
-				//DebugPrint("Object: " + std::to_string(id) + " named " + g_objectDataTable[shape].m_name + " located at " + std::to_string(actualx) + ", " + std::to_string(actualy) + " is an egg");
+
+				thisObject->m_isEgg = true;
+				thisObject->m_Visible = false;
+				thisObject->m_Pos = {float(actualx), lift1, float(actualy)};
+
+				EggData& egg = thisObject->m_eggData;
+
+				uint8_t typeByte  = entryBuffer[4];
+				uint8_t extraByte = entryBuffer[5];   // This byte holds criteria + distance
+				uint8_t prob      = entryBuffer[6];
+				uint8_t specVal   = entryBuffer[7];
+
+				// Type from frame
+				egg.type = static_cast<EggType>(frame);
+
+				// Probability
+				egg.probability = prob;
+
+				// Criterion: low 3 bits of byte 5
+				uint8_t criteriaRaw = extraByte & 0x07;  // Bits 0–2 (0–7)
+				egg.criteria = static_cast<EggCriteria>(criteriaRaw);
+
+				// Distance: usually next 4 bits (bits 2–5 shifted)
+				egg.distance = (extraByte >> 2) & 0x0F;  // 0x09 >> 2 = 2 (matches your Guardian egg)
+
+				// Once-Only: usually bit 6 in byte 4 (0x40)
+				egg.onceOnly = (typeByte & 0x40) != 0;
+
+				// Specific value (speech #, usecode param, etc.)
+				egg.specificValue = specVal;
+
+				// Usecode special case
+				if (egg.type == EggType::Usecode)
+				{
+					egg.usecodeFunc = entryBuffer[10] | (entryBuffer[11] << 8);
+				}
+
+				// Voice example
+				if (egg.type == EggType::Voice && egg.specificValue == 31)
+				{
+					egg.audioFile = "Audio/guardian-laugh.ogg";
+				}
+
+				// Debug
+				// TraceLog(LOG_INFO, "Egg: type=%d, criteria=%d, dist=%d, prob=%d, specific=0x%02X, onceOnly=%d",
+				// 		 static_cast<int>(egg.type),
+				// 		 static_cast<uint8_t>(egg.criteria),
+				// 		 egg.distance,
+				// 		 egg.probability,
+				// 		 egg.specificValue,
+				// 		 egg.onceOnly);
 			}
 			else
 			{

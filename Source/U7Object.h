@@ -17,6 +17,57 @@ enum class ShapeDrawType;
 class ShapeData;
 struct NPCData;
 
+// EggType - Main behavior of the egg
+enum class EggType
+{
+	MonsterSpawner = 0,
+	ProximitySound,
+	Jukebox,
+	Voice,
+	Weather,
+	Teleporter,
+	Path,
+	Usecode,
+	// Add more as needed for the demo and beyond
+};
+
+enum class EggCriteria : uint8_t
+{
+	CachedIn      = 0,   // Default / cached in memory (internal trigger)
+	PartyNear     = 1,
+	AvatarNear    = 2,
+	AvatarFar     = 3,
+	AvatarFootpad = 4,
+	PartyFootpad  = 5,
+	SomethingOn   = 6,
+	External      = 7,
+};
+
+struct EggData
+{
+	EggType      type          = EggType::MonsterSpawner;
+	EggCriteria  criteria      = EggCriteria::CachedIn;  // MUST have at least this
+	uint8_t      distance      = 8;
+	uint8_t      probability   = 100;
+	bool         hasTriggered  = false;
+	bool		 onceOnly      = false;
+	bool		 nocturnal     = false;
+	bool         autoReset    = false;
+
+	uint8_t      specificValue = 0;
+	std::string  audioFile;
+	int          usecodeFunc  = 0;
+
+	// Monster spawner extras (optional)
+	int          monsterShape  = 0;
+	int          monsterFrame  = 0;
+	int          spawnCount    = 1;
+	float        spawnChance   = 1.0f;
+
+	// Teleport extras
+	Vector3      teleportDest  = {0,0,0};
+	int          destMap       = 0;
+};
 class U7Object : public Unit3D
 {
 public:
@@ -115,6 +166,17 @@ public:
    void NPCDraw();
    void NPCInit(NPCData* npcData);
    void TryOpenDoorAtCurrentPosition();
+
+	void EggUpdate();
+
+	void HandleMonsterSpawnerEgg();
+	void HandleProximitySoundEgg();
+	void HandleJukeboxEgg();
+	void HandleVoiceEgg();
+	void HandleWeatherEgg();
+	void HandleTeleporterEgg();
+	void HandlePathEgg();
+	void HandleUsecodeEgg();
 
 	void SetOverrideFrame(int overrideFrame) { m_overrideFrame = overrideFrame; m_isFrameOverridden = true;}
 	void ClearOverrideFrame() { m_isFrameOverridden = false; m_overrideFrame = 0; }
@@ -218,6 +280,8 @@ public:
    int m_lastSchedule = -1;
 	int m_currentFrameX = 0;
 	int m_currentFrameY = 0;
+
+	EggData m_eggData;
 
    std::vector<int> m_inventory; //  Each entry is the ID of an object in the object list
 

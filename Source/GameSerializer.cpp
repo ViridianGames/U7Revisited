@@ -330,11 +330,11 @@ bool GameSerializer::SaveToStream(std::ofstream& stream, const std::string& save
 		auto now = std::chrono::system_clock::now();
 		auto time = std::chrono::system_clock::to_time_t(now);
 		std::tm tm;
-		#ifdef _WIN32
+#ifdef _WIN32
 		localtime_s(&tm, &time);
-		#else
+#else
 		localtime_r(&time, &tm);
-		#endif
+#endif
 		char timestamp[32];
 		strftime(timestamp, sizeof(timestamp), "%Y-%m-%dT%H:%M:%S", &tm);
 		saveData["timestamp"] = timestamp;
@@ -359,19 +359,16 @@ bool GameSerializer::SaveToStream(std::ofstream& stream, const std::string& save
 		json objectsArray = json::array();
 		for (const auto& [id, obj] : g_objectList)
 		{
+			if (obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_OBJECT || obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC)
+			{
+				int stopper = 0;
+			}
+
 			// Skip null or dead objects
-			if (obj == nullptr || obj->GetIsDead())
+			if (obj == nullptr || obj->GetIsDead() || obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_STATIC )
 				continue;
 
-			// Only save dynamic objects
-			if (obj->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_STATIC)
-			{
-				// Skip terrain tiles (shape < 150)
-				if (obj->m_ObjectType >= 150)
-				{
-					objectsArray.push_back(obj->SaveToJson());
-				}
-			}
+			objectsArray.push_back(obj->SaveToJson());
 		}
 		saveData["objects"] = objectsArray;
 
@@ -398,6 +395,9 @@ bool GameSerializer::SaveToStream(std::ofstream& stream, const std::string& save
 		}
 		saveData["flags"] = flagsArray;
 		Log("GameSerializer::SaveToStream - Saved " + std::to_string(flagsArray.size()) + " flags that are set to true");
+
+		//  Save NPCData structure
+
 
 		// Write to stream with indentation for readability
 		stream << saveData.dump(2);
@@ -582,11 +582,15 @@ bool GameSerializer::LoadFromStream(std::ifstream& stream)
 				if (obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_STATIC)
 					staticCount++;
 				else if (obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC)
+				{
+					g_NPCData[obj->m_NPCID]->m_objectID = obj->m_ID;
 					npcCount++;
+				}
 				else
 					objectCount++;
 			}
 		}
+
 		Log("GameSerializer::LoadFromStream - g_objectList now has " + std::to_string(totalCount) +
 		    " total objects: " + std::to_string(staticCount) + " static, " +
 		    std::to_string(objectCount) + " objects, " + std::to_string(npcCount) + " NPCs");

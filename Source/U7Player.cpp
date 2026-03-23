@@ -118,6 +118,7 @@ u7json U7Player::SaveToJson() const
 	j["partyMemberIDs"] = m_PartyMemberIDs;
 	j["selectedPartyMember"] = m_selectedPartyMember;
 	j["isWearingFellowshipMedallion"] = m_isWearingFellowshipMedallion;
+	j["avatarObject"] = g_NPCData[0]->m_objectID;
 
 	return j;
 }
@@ -155,6 +156,8 @@ void U7Player::LoadFromJson(const json& j)
 	{
 		m_PartyMemberIDs = j["partyMemberIDs"].get<std::vector<int>>();
 	}
+
+
 }
 
 bool U7Player::IsWearingFellowshipMedallion()
