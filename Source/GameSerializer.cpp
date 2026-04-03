@@ -4,7 +4,7 @@
 #include "U7Globals.h"
 #include "U7Player.h"
 #include "U7Object.h"
-#include <json.hpp>
+#include "../ThirdParty/nlohmann/json.hpp"
 #include <filesystem>
 #include <sstream>
 #include <iomanip>

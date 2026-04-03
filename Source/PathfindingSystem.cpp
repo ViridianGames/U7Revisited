@@ -560,7 +560,7 @@ std::string AStar::GetTerrainName(int shapeID) const
 	return "Unknown";
 }
 
-std::vector<Vector3> AStar::FindPath(Vector3 start, Vector3 goal, PathfindingGrid* grid)
+std::vector<Vector3> AStar::FindPath(Vector3 start, Vector3 goal, PathfindingGrid* grid, ChunkInfo chunkMap[192][192])
 {
 	if (!grid)
 		return std::vector<Vector3>();  // No grid, can't pathfind
@@ -587,14 +587,125 @@ std::vector<Vector3> AStar::FindPath(Vector3 start, Vector3 goal, PathfindingGri
 	// (like sitting on chairs) and destinations might be blocked objects (like altars).
 	// Pathfinding will work around obstacles to get as close as possible.
 
-	// Limit search distance to avoid searching entire map (performance)
-	int maxDistance = 500;  // Max 500 tiles (enough for cross-map NPC schedules)
+	// Calculate distance
 	int distance = abs(goalX - startX) + abs(goalZ - startZ);
+	
+	// ===== HIERARCHICAL PATHFINDING =====
+	// For distances >100 tiles and when chunk map is available, use hierarchical approach
+	const int HIERARCHICAL_THRESHOLD = 100;
+	
+	if (distance > HIERARCHICAL_THRESHOLD && chunkMap != nullptr)
+	{
+		// Convert to chunk coordinates
+		int startChunkX = startX / 16;
+		int startChunkZ = startZ / 16;
+		int goalChunkX = goalX / 16;
+		int goalChunkZ = goalZ / 16;
+		
+		// Get chunk-level path
+		std::vector<Vector2> chunkPath = FindChunkPath(startChunkX, startChunkZ, goalChunkX, goalChunkZ, chunkMap);
+		
+		if (!chunkPath.empty() && chunkPath.size() > 1)
+		{
+			// Successfully got chunk path - now convert to tile-level path
+			std::vector<Vector3> finalPath;
+			
+			// Track current position as we build the path
+			Vector3 currentPos = start;
+			
+			// For each chunk in the path, pathfind to its exit point
+			for (size_t i = 0; i < chunkPath.size(); i++)
+			{
+				int chunkX = (int)chunkPath[i].x;
+				int chunkZ = (int)chunkPath[i].y;
+				
+				// Determine the goal for this chunk segment
+				Vector3 segmentGoal;
+				
+				if (i == chunkPath.size() - 1)
+				{
+					// Last chunk: goal is the actual destination
+					segmentGoal = goal;
+				}
+				else
+				{
+					// Intermediate chunk: goal is the exit point toward next chunk
+					int nextChunkX = (int)chunkPath[i + 1].x;
+					int nextChunkZ = (int)chunkPath[i + 1].y;
+					int direction = GetDirectionToNeighbor(chunkX, chunkZ, nextChunkX, nextChunkZ);
+					
+					if (direction < 0)
+					{
+						// Invalid transition, fall back to direct pathfinding
+						return FindPathDirect(start, goal, grid);
+					}
+					
+					// Find exit point from this chunk toward next chunk
+					Vector2 exitPoint = FindChunkExitPoint(chunkX, chunkZ, direction, grid);
+					segmentGoal = Vector3{exitPoint.x, 0, exitPoint.y};
+				}
+				
+				// Pathfind from current position to segment goal
+				std::vector<Vector3> segment = FindPathDirect(currentPos, segmentGoal, grid);
+				
+				if (segment.empty())
+				{
+					// Segment failed, fall back to full direct pathfinding
+					return FindPathDirect(start, goal, grid);
+				}
+				
+				// Add segment to final path
+				if (finalPath.empty())
+				{
+					// First segment: add all waypoints
+					finalPath.insert(finalPath.end(), segment.begin(), segment.end());
+				}
+				else
+				{
+					// Subsequent segments: skip first point (duplicates last point of previous segment)
+					finalPath.insert(finalPath.end(), segment.begin() + 1, segment.end());
+				}
+				
+				// Update current position to end of this segment
+				if (!segment.empty())
+				{
+					currentPos = segment.back();
+				}
+			}
+			
+			// If hierarchical pathfinding succeeded, return it
+			if (!finalPath.empty())
+			{
+				//AddConsoleString("Hierarchical pathfinding succeeded: " + std::to_string(finalPath.size()) + " waypoints");
+				return finalPath;
+			}
+		}
+		
+		// If hierarchical failed, fall through to direct A*
+		//AddConsoleString("Hierarchical pathfinding failed, using direct A*");
+	}
+	
+	// ===== DIRECT TILE-LEVEL A* =====
+	// Use direct A* for short paths or as fallback
+	
+	// Limit search distance to avoid searching entire map (performance)
+	int maxDistance = 500;  // Max 500 tiles
 	if (distance > maxDistance)
 	{
 		//AddConsoleString("  FAILED: Distance too far (" + std::to_string(distance) + " tiles, max " + std::to_string(maxDistance) + ")", RED);
 		return std::vector<Vector3>();
 	}
+	
+	return FindPathDirect(start, goal, grid);
+}
+
+// Direct tile-level A* (extracted from original FindPath)
+std::vector<Vector3> AStar::FindPathDirect(Vector3 start, Vector3 goal, PathfindingGrid* grid)
+{
+	int startX = (int)start.x;
+	int startZ = (int)start.z;
+	int goalX = (int)goal.x;
+	int goalZ = (int)goal.z;
 
 	// Cleanup any previous pathfinding data
 	CleanupNodes();
@@ -973,6 +1084,340 @@ void AStar::CleanupNodes()
 	m_allocatedNodes.clear();
 }
 
+void AStar::CleanupChunkNodes()
+{
+	for (ChunkNode* node : m_allocatedChunkNodes)
+	{
+		delete node;
+	}
+	m_allocatedChunkNodes.clear();
+}
+
+// ============================================================================
+// HIERARCHICAL PATHFINDING - Chunk-Level A*
+// ============================================================================
+
+// Helper: Get direction index between two neighboring chunks
+int AStar::GetDirectionToNeighbor(int fromX, int fromZ, int toX, int toZ)
+{
+	int dx = toX - fromX;
+	int dz = toZ - fromZ;
+	
+	// Map dx,dz to direction index (0=N, 1=NE, 2=E, 3=SE, 4=S, 5=SW, 6=W, 7=NW)
+	if (dx == 0 && dz == -1) return DIR_N;   // North
+	if (dx == 1 && dz == -1) return DIR_NE;  // Northeast
+	if (dx == 1 && dz == 0) return DIR_E;    // East
+	if (dx == 1 && dz == 1) return DIR_SE;   // Southeast
+	if (dx == 0 && dz == 1) return DIR_S;    // South
+	if (dx == -1 && dz == 1) return DIR_SW;  // Southwest
+	if (dx == -1 && dz == 0) return DIR_W;   // West
+	if (dx == -1 && dz == -1) return DIR_NW; // Northwest
+	
+	return -1; // Invalid/non-adjacent
+}
+
+// Get valid chunk neighbors based on connectivity
+std::vector<ChunkNode*> AStar::GetChunkNeighbors(ChunkNode* node, ChunkInfo chunkMap[192][192])
+{
+	std::vector<ChunkNode*> neighbors;
+	
+	// 8 directions: N, NE, E, SE, S, SW, W, NW
+	const int dx[] = {0, 1, 1, 1, 0, -1, -1, -1};
+	const int dz[] = {-1, -1, 0, 1, 1, 1, 0, -1};
+	
+	for (int dir = 0; dir < 8; dir++)
+	{
+		int nx = node->x + dx[dir];
+		int nz = node->z + dz[dir];
+		
+		// Bounds check
+		if (nx < 0 || nx >= 192 || nz < 0 || nz >= 192)
+			continue;
+		
+		// Check connectivity - can we reach this neighbor?
+		if (!chunkMap[node->z][node->x].canReach[dir])
+			continue;
+		
+		// Valid neighbor
+		ChunkNode* neighbor = new ChunkNode(nx, nz);
+		neighbors.push_back(neighbor);
+	}
+	
+	return neighbors;
+}
+
+// Find chunk-level path using A* on 192x192 chunk graph
+std::vector<Vector2> AStar::FindChunkPath(int startChunkX, int startChunkZ, 
+                                          int goalChunkX, int goalChunkZ,
+                                          ChunkInfo chunkMap[192][192])
+{
+	// Bounds check
+	if (startChunkX < 0 || startChunkX >= 192 || startChunkZ < 0 || startChunkZ >= 192 ||
+	    goalChunkX < 0 || goalChunkX >= 192 || goalChunkZ < 0 || goalChunkZ >= 192)
+	{
+		return std::vector<Vector2>(); // Out of bounds
+	}
+	
+	// If start and goal are in same chunk, return single-element path
+	if (startChunkX == goalChunkX && startChunkZ == goalChunkZ)
+	{
+		return std::vector<Vector2>{ Vector2{(float)startChunkX, (float)startChunkZ} };
+	}
+	
+	// Cleanup any previous chunk pathfinding data
+	CleanupChunkNodes();
+	
+	// Create start node
+	ChunkNode* startNode = new ChunkNode(startChunkX, startChunkZ);
+	startNode->g = 0;
+	startNode->h = Heuristic(startChunkX, startChunkZ, goalChunkX, goalChunkZ);
+	startNode->f = startNode->g + startNode->h;
+	m_allocatedChunkNodes.push_back(startNode);
+	
+	// Priority queue for chunk nodes
+	auto cmp = [](ChunkNode* a, ChunkNode* b) { return a->f > b->f; };
+	std::priority_queue<ChunkNode*, std::vector<ChunkNode*>, decltype(cmp)> openSet(cmp);
+	std::unordered_map<int, ChunkNode*> openSetLookup;
+	std::unordered_map<int, ChunkNode*> closedSet;
+	
+	int startKey = startChunkZ * 192 + startChunkX;
+	openSet.push(startNode);
+	openSetLookup[startKey] = startNode;
+	
+	ChunkNode* goalNode = nullptr;
+	int nodesExplored = 0;
+	const int maxChunkNodesToExplore = 10000; // 192*192 = 36,864 max, so 10k is reasonable
+	
+	// A* main loop on chunk graph
+	while (!openSet.empty() && nodesExplored < maxChunkNodesToExplore)
+	{
+		nodesExplored++;
+		
+		ChunkNode* current = openSet.top();
+		openSet.pop();
+		
+		int currentKey = current->z * 192 + current->x;
+		
+		// Skip outdated duplicates
+		auto lookupIt = openSetLookup.find(currentKey);
+		if (lookupIt != openSetLookup.end() && lookupIt->second != current)
+			continue;
+		
+		openSetLookup.erase(currentKey);
+		
+		// Check if we reached the goal chunk
+		if (current->x == goalChunkX && current->z == goalChunkZ)
+		{
+			goalNode = current;
+			break;
+		}
+		
+		// Mark as visited
+		closedSet[currentKey] = current;
+		
+		// Explore neighbors using chunk connectivity
+		std::vector<ChunkNode*> neighbors = GetChunkNeighbors(current, chunkMap);
+		
+		for (ChunkNode* neighbor : neighbors)
+		{
+			m_allocatedChunkNodes.push_back(neighbor);
+			
+			int neighborKey = neighbor->z * 192 + neighbor->x;
+			
+			// Skip if already visited
+			if (closedSet.find(neighborKey) != closedSet.end())
+				continue;
+			
+			// Calculate costs (uniform cost for chunk movement)
+			float tentative_g = current->g + 1.0f;
+			
+			// Check if this path to neighbor is better
+			auto existingIt = openSetLookup.find(neighborKey);
+			if (existingIt != openSetLookup.end())
+			{
+				if (tentative_g >= existingIt->second->g)
+					continue; // Not a better path
+			}
+			
+			// This is the best path so far to this neighbor
+			neighbor->g = tentative_g;
+			neighbor->h = Heuristic(neighbor->x, neighbor->z, goalChunkX, goalChunkZ);
+			neighbor->f = neighbor->g + neighbor->h;
+			neighbor->parent = current;
+			
+			openSet.push(neighbor);
+			openSetLookup[neighborKey] = neighbor;
+		}
+	}
+	
+	// Reconstruct chunk path
+	std::vector<Vector2> chunkPath;
+	if (goalNode)
+	{
+		ChunkNode* current = goalNode;
+		while (current != nullptr)
+		{
+			chunkPath.push_back(Vector2{(float)current->x, (float)current->z});
+			current = current->parent;
+		}
+		std::reverse(chunkPath.begin(), chunkPath.end());
+	}
+	
+	return chunkPath;
+}
+
+// Find best exit tile from a chunk toward a neighboring chunk
+Vector2 AStar::FindChunkExitPoint(int chunkX, int chunkZ, int direction, PathfindingGrid* grid)
+{
+	// Direction offsets for 8 directions
+	const int dx[] = {0, 1, 1, 1, 0, -1, -1, -1};
+	const int dz[] = {-1, -1, 0, 1, 1, 1, 0, -1};
+	
+	// Get chunk's world tile range (each chunk is 16x16 tiles)
+	int chunkMinX = chunkX * 16;
+	int chunkMinZ = chunkZ * 16;
+	int chunkMaxX = chunkMinX + 15;
+	int chunkMaxZ = chunkMinZ + 15;
+	
+	// Determine which edge to search based on direction
+	std::vector<Vector2> candidateTiles;
+	
+	if (direction == DIR_N || direction == DIR_NE || direction == DIR_NW)
+	{
+		// North edge (z = chunkMinZ)
+		for (int x = chunkMinX; x <= chunkMaxX; x++)
+			candidateTiles.push_back(Vector2{(float)x, (float)chunkMinZ});
+	}
+	if (direction == DIR_S || direction == DIR_SE || direction == DIR_SW)
+	{
+		// South edge (z = chunkMaxZ)
+		for (int x = chunkMinX; x <= chunkMaxX; x++)
+			candidateTiles.push_back(Vector2{(float)x, (float)chunkMaxZ});
+	}
+	if (direction == DIR_E || direction == DIR_NE || direction == DIR_SE)
+	{
+		// East edge (x = chunkMaxX)
+		for (int z = chunkMinZ; z <= chunkMaxZ; z++)
+			candidateTiles.push_back(Vector2{(float)chunkMaxX, (float)z});
+	}
+	if (direction == DIR_W || direction == DIR_NW || direction == DIR_SW)
+	{
+		// West edge (x = chunkMinX)
+		for (int z = chunkMinZ; z <= chunkMaxZ; z++)
+			candidateTiles.push_back(Vector2{(float)chunkMinX, (float)z});
+	}
+	
+	// Find the best walkable tile from candidates
+	// Prefer: 1) Walkable, 2) Center of edge (less likely to be blocked), 3) Low movement cost
+	Vector2 bestTile = Vector2{(float)(chunkMinX + 8), (float)(chunkMinZ + 8)}; // Default to chunk center
+	float bestScore = -1000.0f;
+	
+	int targetX = chunkX + dx[direction];
+	int targetZ = chunkZ + dz[direction];
+	int centerX = targetX * 16 + 8;  // Center of target chunk
+	int centerZ = targetZ * 16 + 8;
+	
+	for (const Vector2& tile : candidateTiles)
+	{
+		int tileX = (int)tile.x;
+		int tileZ = (int)tile.y;
+		
+		// Must be walkable
+		if (!grid->IsPositionWalkable(tileX, tileZ))
+			continue;
+		
+		// Score based on: proximity to center and alignment toward target chunk center
+		float distToTargetCenter = sqrtf(powf(tileX - centerX, 2) + powf(tileZ - centerZ, 2));
+		float score = -distToTargetCenter;  // Prefer tiles closer to target chunk center
+		
+		// Bonus for being in the middle of the edge (less likely to have corner obstacles)
+		int edgeMidX = chunkMinX + 8;
+		int edgeMidZ = chunkMinZ + 8;
+		float distToEdgeMid = sqrtf(powf(tileX - edgeMidX, 2) + powf(tileZ - edgeMidZ, 2));
+		score += 5.0f - distToEdgeMid * 0.5f;  // Modest bonus for center tiles
+		
+		if (score > bestScore)
+		{
+			bestScore = score;
+			bestTile = tile;
+		}
+	}
+	
+	return bestTile;
+}
+
+// Find best entry tile into a chunk from a specific direction
+Vector2 AStar::FindChunkEntryPoint(int chunkX, int chunkZ, int fromDirection, PathfindingGrid* grid)
+{
+	// Entry point is on the opposite edge from where we're coming FROM
+	// If coming FROM the north (DIR_N), we enter from the north edge (top)
+	// If coming FROM the south (DIR_S), we enter from the south edge (bottom)
+	
+	int oppositeDirection = fromDirection;  // Use same direction (we're entering from that side)
+	
+	// Get chunk's world tile range
+	int chunkMinX = chunkX * 16;
+	int chunkMinZ = chunkZ * 16;
+	int chunkMaxX = chunkMinX + 15;
+	int chunkMaxZ = chunkMinZ + 15;
+	
+	// Determine which edge to search based on entry direction
+	std::vector<Vector2> candidateTiles;
+	
+	if (fromDirection == DIR_N || fromDirection == DIR_NE || fromDirection == DIR_NW)
+	{
+		// Entering from north edge (z = chunkMinZ)
+		for (int x = chunkMinX; x <= chunkMaxX; x++)
+			candidateTiles.push_back(Vector2{(float)x, (float)chunkMinZ});
+	}
+	if (fromDirection == DIR_S || fromDirection == DIR_SE || fromDirection == DIR_SW)
+	{
+		// Entering from south edge (z = chunkMaxZ)
+		for (int x = chunkMinX; x <= chunkMaxX; x++)
+			candidateTiles.push_back(Vector2{(float)x, (float)chunkMaxZ});
+	}
+	if (fromDirection == DIR_E || fromDirection == DIR_NE || fromDirection == DIR_SE)
+	{
+		// Entering from east edge (x = chunkMaxX)
+		for (int z = chunkMinZ; z <= chunkMaxZ; z++)
+			candidateTiles.push_back(Vector2{(float)chunkMaxX, (float)z});
+	}
+	if (fromDirection == DIR_W || fromDirection == DIR_NW || fromDirection == DIR_SW)
+	{
+		// Entering from west edge (x = chunkMinX)
+		for (int z = chunkMinZ; z <= chunkMaxZ; z++)
+			candidateTiles.push_back(Vector2{(float)chunkMinX, (float)z});
+	}
+	
+	// Find the best walkable tile
+	Vector2 bestTile = Vector2{(float)(chunkMinX + 8), (float)(chunkMinZ + 8)}; // Default to chunk center
+	float bestScore = -1000.0f;
+	
+	for (const Vector2& tile : candidateTiles)
+	{
+		int tileX = (int)tile.x;
+		int tileZ = (int)tile.y;
+		
+		// Must be walkable
+		if (!grid->IsPositionWalkable(tileX, tileZ))
+			continue;
+		
+		// Prefer tiles near the middle of the edge
+		int edgeMidX = chunkMinX + 8;
+		int edgeMidZ = chunkMinZ + 8;
+		float distToMid = sqrtf(powf(tileX - edgeMidX, 2) + powf(tileZ - edgeMidZ, 2));
+		float score = 10.0f - distToMid;
+		
+		if (score > bestScore)
+		{
+			bestScore = score;
+			bestTile = tile;
+		}
+	}
+	
+	return bestTile;
+}
+
 //----------------------------------------------
 // High-level chunk-based initial pathfinding
 //---------------------------------------------
@@ -1203,6 +1648,6 @@ void PathfindingSystem::PopulateChunkPathfindingGrid()
 
 std::vector<Vector3> PathfindingSystem::FindPath(Vector3 start, Vector3 end)
 {
-	return m_aStar->FindPath(start, end, m_pathfindingGrid.get());
+	return m_aStar->FindPath(start, end, m_pathfindingGrid.get(), m_chunkInfoMap);
 }
 

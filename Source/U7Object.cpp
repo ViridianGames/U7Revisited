@@ -66,7 +66,6 @@ void U7Object::Init(const string& configfile, int unitType, int frame)
 	m_hasConversationTree = false;
 	m_InventoryPos = Vector2{ 0, 0 };
 	m_isNPC = false;
-	m_isMoving = false;
 	m_distanceFromCamera = 999999;
 
 	if (!g_isObjectMoveable[unitType])
@@ -283,7 +282,7 @@ void U7Object::NPCDraw()
 {
 	if (!m_Visible)
 	{
-		return;
+		//return;
 	}
 
 	// Check if this object has NPC data and properly initialized walk textures
@@ -357,7 +356,7 @@ void U7Object::NPCDraw()
 	int frameIndex = 0;
 
 	// If not moving, use the current frame set via npc_frame()
-	if (!m_isMoving)
+	if (m_pathWaypoints.empty()  && !m_isMoving)
 	{
 		if (m_isFrameOverridden)
 		{
@@ -504,154 +503,98 @@ static std::string GetActivityScriptName(int activityId)
 
 void U7Object::NPCUpdate()
 {
-	// Don't do schedules while in the party
-	if (g_Player->NPCIDInParty(m_NPCID) && m_NPCID != 0)
+	//  Check for updated schedules
+	if (m_followingSchedule)
 	{
-		//return;
-	}
-
-	// Frame-based batching for activity coroutine updates only
-	// Movement/pathfinding runs every frame, but activity scripts run batched (16 NPCs per frame)
-	static int s_frameCounter = 0;
-	static double s_lastFrameTime = 0;
-
-	// Increment frame counter once per frame
-	double currentTime = GetTime();
-	if (currentTime != s_lastFrameTime)
-	{
-		s_frameCounter++;
-		s_lastFrameTime = currentTime;
-	}
-
-	int batchSize = 16;
-	int batchIndex = s_frameCounter % ((g_NPCData.size() + batchSize - 1) / batchSize);
-	int startNPC = batchIndex * batchSize;
-	int endNPC = startNPC + batchSize;
-
-	// Only update activity scripts if this NPC is in the current batch
-	bool shouldUpdateActivity = (m_NPCID >= startNPC && m_NPCID < endNPC);
-
-	// Activity coroutine management - check if activity has changed
-	// Only run activity scripts if schedules are enabled for this NPC
-	if (shouldUpdateActivity && m_followingSchedule && g_NPCData.find(m_NPCID) != g_NPCData.end())
-	{
-		int currentActivity = g_NPCData[m_NPCID]->m_currentActivity;
-		int lastActivity = g_NPCData[m_NPCID]->m_lastActivity;
-
-		// Has activity changed?
-		if (currentActivity != lastActivity)
+		// Time for a new activity?
+		if (m_scheduleTime != g_scheduleTime)
 		{
-			// Cleanup old coroutine if it exists
-			if (lastActivity >= 0)
+			m_scheduleTime = g_scheduleTime;
+
+			if (!g_NPCSchedules[m_NPCID].empty() && g_NPCSchedules.find(m_NPCID) != g_NPCSchedules.end())
 			{
-				std::string old_script = GetActivityScriptName(lastActivity) + "_" + std::to_string(m_NPCID);
-				if (g_ScriptingSystem->IsCoroutineActive(old_script))
+				for (const auto& schedule : g_NPCSchedules[m_NPCID])
 				{
-					g_ScriptingSystem->CleanupCoroutine(old_script);
+					if (schedule.m_time == m_scheduleTime)
+					{
+						m_currentActivity = schedule.m_activity;
+						//  Set path to start that activity
+						m_pathWaypoints.clear();
+						m_pathWaypoints.erase(m_pathWaypoints.begin());
+						m_pathWaypoints = g_pathfindingSystem->FindPath(m_Pos, {float(schedule.m_destX), 0, float(schedule.m_destY)});
+						if (!m_pathWaypoints.empty())
+						{
+							SetDest(m_pathWaypoints[0]);
+							m_movingToActivity = true;
+						}
+						break;
+					}
 				}
-			}
-
-			// Only start activity if not following a schedule path
-			// Block if: pathfinding pending OR currently on schedule path (orange)
-			if (!m_pathfindingPending && !m_isSchedulePath)
-			{
-				// Start new activity script
-				std::string new_script = GetActivityScriptName(currentActivity) + "_" + std::to_string(m_NPCID);
-				std::vector<ScriptingSystem::LuaArg> args = { m_NPCID };
-				g_ScriptingSystem->CallScript(new_script, args);
-				g_NPCData[m_NPCID]->m_lastActivity = currentActivity;
-			}
-		}
-		// Activity hasn't changed - resume if not on schedule path
-		else if (currentActivity >= 0 && !m_pathfindingPending && !m_isSchedulePath)
-		{
-			std::string script_name = GetActivityScriptName(currentActivity) + "_" + std::to_string(m_NPCID);
-			if (g_ScriptingSystem->IsCoroutineYielded(script_name))
-			{
-				std::vector<ScriptingSystem::LuaArg> args = { m_NPCID };
-				g_ScriptingSystem->ResumeCoroutine(script_name, args);
-			}
-		}
-	}
-	// If schedules are disabled, cleanup any running activity scripts
-	else if (!m_followingSchedule && g_NPCData.find(m_NPCID) != g_NPCData.end())
-	{
-		int lastActivity = g_NPCData[m_NPCID]->m_lastActivity;
-		if (lastActivity >= 0)
-		{
-			std::string old_script = GetActivityScriptName(lastActivity) + "_" + std::to_string(m_NPCID);
-			if (g_ScriptingSystem->IsCoroutineActive(old_script))
-			{
-				g_ScriptingSystem->CleanupCoroutine(old_script);
-			}
-			g_NPCData[m_NPCID]->m_lastActivity = -1;
-		}
-	}
-
-	// Schedule checking is now handled by MainState::Update() queue system
-	// This function only handles waypoint following and movement
-
-	// Follow waypoints from pathfinding (only when actively moving)
-	if (m_isMoving && !m_pathfindingPending && !m_pathWaypoints.empty() && m_currentWaypointIndex < m_pathWaypoints.size())
-	{
-		// Check if reached current waypoint (within 0.5 tiles for intermediate, exact for last)
-		float distToWaypoint = Vector3Distance(m_Pos, m_pathWaypoints[m_currentWaypointIndex]);
-		bool isLastWaypoint = (m_currentWaypointIndex == m_pathWaypoints.size() - 1);
-		float threshold = isLastWaypoint ? 0.1f : 0.5f;  // Stricter threshold for final waypoint
-
-		if (distToWaypoint < threshold)
-		{
-			if (isLastWaypoint)
-			{
-				// Reached final destination
-				m_pathWaypoints.clear();
-				m_currentWaypointIndex = 0;
-				m_isMoving = false;
-				m_isSchedulePath = false;  // Clear schedule path flag - now can run activity
-				SetDest(m_Pos);  // Set destination to current position to stop movement
-			}
-			else
-			{
-				// Advance to next waypoint
-				m_currentWaypointIndex++;
-				SetDest(m_pathWaypoints[m_currentWaypointIndex]);
-			}
-		}
-	}
-
-	if (m_Pos.x != m_Dest.x || m_Pos.y != m_Dest.y  || m_Pos.z != m_Dest.z)
-	{
-		float deltav = (5.0f / g_secsPerMinute) * m_speed * GetFrameTime();
-		Vector3 newPos = Vector3Add(m_Pos, Vector3Scale(m_Direction, deltav));
-
-		//  If this update would take we beyond the destination, set the position to the destination
-		if(Vector3DistanceSqr(newPos, m_Dest) > Vector3DistanceSqr(m_Pos, m_Dest))
-		{
-			SetPos(m_Dest);
-			// Only stop moving if we have no more waypoints to follow
-			if (m_pathWaypoints.empty())
-			{
-				m_isMoving = false;
 			}
 		}
 		else
 		{
-			m_isMoving = true;
-			SetPos(newPos);
+			if(m_pathWaypoints.empty())
+			{
+				//  We're where we need to be, do the activity.
 
+			}
+		}
+	}
+
+	if (m_NPCID == 19)
+	{
+		int stopper = 0;
+	}
+
+	m_isMoving = false;
+
+	// Follow waypoints from pathfinding (only when actively moving)
+	// What happens next?  They WALK!
+	if (!m_pathWaypoints.empty())
+	{
+		if (!Vector3Equals(m_Pos, m_Dest))
+		{
+			float deltav = (5.0f / g_secsPerMinute) * m_speed * GetFrameTime();
+			Vector3 newPos = Vector3Add(m_Pos, Vector3Scale(m_Direction, deltav));
+
+			//  If this update would take we beyond the destination,
+			//  set the position to the destination instead of the new position
+			if(Vector3DistanceSqr(newPos, m_Dest) > Vector3DistanceSqr(m_Pos, m_Dest))
+			{
+				newPos = m_Dest;
+			}
+			SetPos(newPos);
+			m_isMoving = true;
+		}
+		else // We have arrived
+		{
+			// Only stop moving if we have no more waypoints to follow
+			m_pathWaypoints.erase(m_pathWaypoints.begin());
+			if (!m_pathWaypoints.empty())
+			{
+				SetDest(m_pathWaypoints[0]);
+			}
 			// Check for doors after moving to new position
 			TryOpenDoorAtCurrentPosition();
 		}
 	}
-	else  // Not moving, so randomly decide to move
+	else  //  No path, but not at destination?  Direct movement.
 	{
-		//if (g_VitalRNG->RandomFloat(100.0f) < 5.0f)
-		//{
-		//	m_isMoving = true;
-		//	Vector3 dest = Vector3{ g_VitalRNG->RandomFloat(10.0f) - 5.0f, 0, g_VitalRNG->RandomFloat(10.0f) - 5.0f };
-		//	dest = Vector3Add(m_anchorPos, dest);
-		//	SetDest(dest);
-		//}
+		if (!Vector3Equals(m_Pos, m_Dest))
+		{
+			float deltav = (5.0f / g_secsPerMinute) * m_speed * GetFrameTime();
+			Vector3 newPos = Vector3Add(m_Pos, Vector3Scale(m_Direction, deltav));
+
+			//  If this update would take we beyond the destination,
+			//  set the position to the destination instead of the new position
+			if(Vector3DistanceSqr(newPos, m_Dest) > Vector3DistanceSqr(m_Pos, m_Dest))
+			{
+				newPos = m_Dest;
+			}
+			SetPos(newPos);
+			m_isMoving = true;
+		}
 	}
 }
 
@@ -824,23 +767,32 @@ void U7Object::TryOpenDoorAtCurrentPosition()
 
 void U7Object::PathfindToDest(Vector3 dest)
 {
+	if (m_NPCID == 19)
+	{
+		int stopper = 0;
+	}
+
 	// Clear previous path and mark as pending
 	m_pathWaypoints.clear();
 	m_currentWaypointIndex = 0;
-	m_pathfindingPending = true;
 
 	m_pathWaypoints = g_pathfindingSystem->FindPath(m_Pos, dest);
 
 	// If path found, store waypoints
 	if (!m_pathWaypoints.empty())
 	{
-		m_currentWaypointIndex = 1;
-		m_pathfindingPending = false;  // Path is ready immediately (synchronous)
-
 		// Set first waypoint as destination
-		if (m_pathWaypoints.size() > 0)
+		// Path includes start position at index 0, so skip it if path has multiple waypoints
+		if (m_pathWaypoints.size() > 1)
 		{
+			m_currentWaypointIndex = 1;
 			SetDest(m_pathWaypoints[1]);
+		}
+		else if (m_pathWaypoints.size() == 1)
+		{
+			// Single waypoint path (rare but valid for same-tile destinations)
+			m_currentWaypointIndex = 0;
+			SetDest(m_pathWaypoints[0]);
 		}
 
 #ifdef DEBUG_NPC_PATHFINDING
@@ -866,13 +818,7 @@ void U7Object::PathfindToDest(Vector3 dest)
 	}
 	else
 	{
-		m_pathfindingPending = false;  // No path found, done trying
-		// No path found, don't move at all
-		// DISABLED: Reduce console spam from activity scripts pathfinding
-		//AddConsoleString("WARNING: NPC " + std::to_string(m_NPCID) + " could not find path from (" +
-		//                 std::to_string((int)m_Pos.x) + "," + std::to_string((int)m_Pos.z) + ") to (" +
-		//                 std::to_string((int)dest.x) + "," + std::to_string((int)dest.z) + ") - staying put!", RED);
-		// Don't call SetDest() - NPC will remain stationary
+		DebugPrint("NPC " + std::string(m_NPCData[m_NPCID].name) + " could not find a path to " + to_string(dest.x) + ", " + to_string(dest.z));
 	}
 }
 
@@ -1129,8 +1075,8 @@ json U7Object::SaveToJson() const
 			j["hasConversationTree"] = m_hasConversationTree;
 
 		// Save movement state if true (default is false)
-		if (m_isMoving)
-			j["isMoving"] = m_isMoving;
+		// if (m_isMoving)
+		// 	j["isMoving"] = m_isMoving;
 
 		// Save schedule state
 		if (m_followingSchedule)
@@ -1243,7 +1189,7 @@ U7Object* U7Object::LoadFromJson(const json& j)
 		obj->m_hasConversationTree = j.value("hasConversationTree", false);
 
 		// Restore movement state (defaults to false)
-		obj->m_isMoving = j.value("isMoving", false);
+		//obj->m_isMoving = j.value("isMoving", false);
 
 		// Restore schedule state
 		obj->m_followingSchedule = j.value("followingSchedule", false);

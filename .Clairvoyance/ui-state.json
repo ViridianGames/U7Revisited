@@ -1,0 +1,69 @@
+{
+  "version": 1,
+  "lastSaved": 1774362517552,
+  "sidebarWidth": 250,
+  "staffAreaHeight": 813,
+  "staffListWidth": 280,
+  "sidebarVisible": true,
+  "staffAreaVisible": true,
+  "sidebarMode": "notes",
+  "sidebarFilterPreferences": {
+    "notes": "all",
+    "reports": "all",
+    "canvas": "all",
+    "exhibits": "all",
+    "todos": "all"
+  },
+  "exhibitSections": {
+    "favorites": true,
+    "recent": true,
+    "workspace": true,
+    "byWorkspace": false,
+    "workspaces": {},
+    "byTag": false,
+    "tags": {}
+  },
+  "canvasSections": {
+    "favorites": true,
+    "recent": true,
+    "workspace": true,
+    "byWorkspace": false,
+    "workspaces": {},
+    "byTag": false,
+    "tags": {}
+  },
+  "reportSections": {
+    "favorites": true,
+    "recent": true,
+    "workspace": true,
+    "byWorkspace": false,
+    "workspaces": {},
+    "byTag": false,
+    "tags": {}
+  },
+  "todoSections": {
+    "byStatus": false,
+    "statuses": {
+      "todo": false,
+      "in_progress": false,
+      "reviewed": false,
+      "done": false,
+      "wont_fix": false,
+      "canceled": false,
+      "working_as_designed": false
+    },
+    "byPriority": false,
+    "priorities": {},
+    "recent": false,
+    "thisWorkspace": false,
+    "byWorkspace": false,
+    "workspaces": {},
+    "byTag": false,
+    "tags": {},
+    "bySprint": false,
+    "sprints": {},
+    "archive": false
+  },
+  "searchFilesToInclude": "",
+  "searchFilesToExclude": ""
+}

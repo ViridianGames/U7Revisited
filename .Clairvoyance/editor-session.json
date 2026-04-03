@@ -1,0 +1,23 @@
+{
+  "version": 2,
+  "lastSaved": 1774362517552,
+  "activeTabId": "/home/anthony/.config/clairvoyance/notes/Welcome.md",
+  "tabs": [
+    {
+      "id": "/home/anthony/.config/clairvoyance/notes/Welcome.md",
+      "filePath": "/home/anthony/.config/clairvoyance/notes/Welcome.md",
+      "fileName": "Welcome.md",
+      "isPinned": false,
+      "isDirectory": false,
+      "fileType": "markdown"
+    },
+    {
+      "id": "/home/anthony/.config/clairvoyance/notes/Getting Started.md",
+      "filePath": "/home/anthony/.config/clairvoyance/notes/Getting Started.md",
+      "fileName": "Getting Started.md",
+      "isPinned": true,
+      "isDirectory": false,
+      "fileType": "markdown"
+    }
+  ]
+}

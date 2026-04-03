@@ -11,7 +11,7 @@
 #include "Primitives.h"
 #include "GuiElements.h"
 
-#include <../nlohmann/json.hpp>
+#include "../../ThirdParty/nlohmann/json.hpp"
 
 using json = nlohmann::ordered_json;
 

@@ -10,7 +10,7 @@
 #include "Geist/Primitives.h"
 #include "Geist/Gui.h"
 #include "Geist/GuiElements.h"
-#include <json.hpp>
+#include "../ThirdParty/nlohmann/json.hpp"
 
 using u7json = nlohmann::json;
 

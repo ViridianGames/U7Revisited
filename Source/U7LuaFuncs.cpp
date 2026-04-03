@@ -4558,17 +4558,8 @@ static int LuaRequestPathfind(lua_State *L)
 
     // Stop movement while new path is being computed
     // (PathfindToDestTracked will clear waypoints and set m_pathfindingPending)
-    npc->m_isMoving = false;
 
     npc->PathfindToDest({x, y, z});
-    return 1;
-}
-
-// is_path_ready(request_id) -> bool
-// Step 2: Check if async pathfinding request is complete (consumes the result)
-static int LuaIsPathReady(lua_State *L)
-{
-    lua_pushboolean(L, true);
     return 1;
 }
 
@@ -4589,20 +4580,16 @@ static int LuaStartFollowingPath(lua_State *L)
     {
         NPCDebugPrint("Lua: NPC " + std::to_string(npc_id) + " (request " + std::to_string(request_id) +
                    ") starting to follow path with " + std::to_string(npc->m_pathWaypoints.size()) +
-                   " waypoints, m_isMoving=" + std::to_string(npc->m_isMoving) +
-                   ", m_pathfindingPending=" + std::to_string(npc->m_pathfindingPending));
+                   " waypoints");
         npc->SetDest(npc->m_pathWaypoints[0]);
-        npc->m_isMoving = true;
         NPCDebugPrint("Lua: NPC " + std::to_string(npc_id) + " SetDest to (" +
                    std::to_string((int)npc->m_pathWaypoints[0].x) + "," +
-                   std::to_string((int)npc->m_pathWaypoints[0].z) + "), m_isMoving now=" +
-                   std::to_string(npc->m_isMoving));
+                   std::to_string((int)npc->m_pathWaypoints[0].z));
     }
     else if (npc)
     {
         NPCDebugPrint("Lua: NPC " + std::to_string(npc_id) + " (request " + std::to_string(request_id) +
-                   ") has NO waypoints to follow! m_pathfindingPending=" +
-                   std::to_string(npc->m_pathfindingPending));
+                   ") has NO waypoints to follow!");
     }
 
     return 0;
@@ -4619,7 +4606,7 @@ static int LuaIsNPCMoving(lua_State *L)
         return 1;
     }
 
-    bool is_moving = g_objectList[g_NPCData[npc_id]->m_objectID]->m_isMoving;
+    bool is_moving = g_objectList[g_NPCData[npc_id]->m_objectID]->m_pathWaypoints.size() > 0;
     lua_pushboolean(L, is_moving);
     return 1;
 }
@@ -4958,7 +4945,6 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction( "is_sleeping", LuaIsSleeping);
     g_ScriptingSystem->RegisterScriptFunction( "is_sitting", LuaIsSitting);
     g_ScriptingSystem->RegisterScriptFunction( "request_pathfind", LuaRequestPathfind);
-    g_ScriptingSystem->RegisterScriptFunction( "is_path_ready", LuaIsPathReady);
     g_ScriptingSystem->RegisterScriptFunction( "start_following_path", LuaStartFollowingPath);
     g_ScriptingSystem->RegisterScriptFunction( "is_npc_moving", LuaIsNPCMoving);
     g_ScriptingSystem->RegisterScriptFunction( "wait_move_end", LuaWaitMoveEnd);

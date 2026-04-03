@@ -103,6 +103,20 @@ struct PathNode
 	PathNode(int _x, int _z) : x(_x), z(_z), g(0), h(0), f(0), parent(nullptr) {}
 };
 
+// ============================================================================
+// ChunkNode: Used by chunk-level A* algorithm
+// ============================================================================
+struct ChunkNode
+{
+	int x, z;           // Chunk coordinates (0-191)
+	float g;            // Cost from start
+	float h;            // Heuristic cost to goal
+	float f;            // Total cost (g + h)
+	ChunkNode* parent;  // For path reconstruction
+
+	ChunkNode(int _x, int _z) : x(_x), z(_z), g(0), h(0), f(0), parent(nullptr) {}
+};
+
 class AStar
 {
 public:
@@ -113,13 +127,34 @@ public:
 	void LoadTerrainCosts(const std::string& filename);
 
 	// Find path from start to goal (returns waypoints in world coordinates)
-	std::vector<Vector3> FindPath(Vector3 start, Vector3 goal, PathfindingGrid* grid);
+	std::vector<Vector3> FindPath(Vector3 start, Vector3 goal, PathfindingGrid* grid, ChunkInfo chunkMap[192][192] = nullptr);
 
 	// Get movement cost for a tile (for debug visualization)
 	float GetMovementCost(int worldX, int worldZ, PathfindingGrid* grid);
 
 	// Get terrain name by shape ID (for debug)
 	std::string GetTerrainName(int shapeID) const;
+
+	// ===== HIERARCHICAL PATHFINDING =====
+	
+	// Find chunk-level path using chunk connectivity graph
+	// Returns list of chunk coordinates to traverse, or empty if no path
+	std::vector<Vector2> FindChunkPath(int startChunkX, int startChunkZ, 
+	                                    int goalChunkX, int goalChunkZ,
+	                                    ChunkInfo chunkMap[192][192]);
+	
+	// Find best exit tile from a chunk toward a neighbor chunk
+	// direction: 0-7 (DIR_N, DIR_NE, etc.)
+	Vector2 FindChunkExitPoint(int chunkX, int chunkZ, int direction, 
+	                           PathfindingGrid* grid);
+	
+	// Find best entry tile into a chunk from a specific direction
+	// direction: direction coming FROM (opposite of movement direction)
+	Vector2 FindChunkEntryPoint(int chunkX, int chunkZ, int fromDirection,
+	                            PathfindingGrid* grid);
+	
+	// Direct tile-level A* without hierarchical optimization
+	std::vector<Vector3> FindPathDirect(Vector3 start, Vector3 goal, PathfindingGrid* grid);
 
 private:
 	// Heuristic function (Manhattan distance)
@@ -134,8 +169,14 @@ private:
 	// Cleanup allocated nodes
 	void CleanupNodes();
 
+	// Chunk-level pathfinding helpers
+	void CleanupChunkNodes();
+	std::vector<ChunkNode*> GetChunkNeighbors(ChunkNode* node, ChunkInfo chunkMap[192][192]);
+	int GetDirectionToNeighbor(int fromX, int fromZ, int toX, int toZ);
+
 	// Temporary storage for nodes during pathfinding
 	std::vector<PathNode*> m_allocatedNodes;
+	std::vector<ChunkNode*> m_allocatedChunkNodes;
 
 	// Terrain movement costs (shape ID -> cost multiplier)
 	std::unordered_map<int, float> m_terrainCosts;

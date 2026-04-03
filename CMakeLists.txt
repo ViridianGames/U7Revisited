@@ -350,6 +350,7 @@ set(GHOST_GEIST_SOURCES
     Source/Geist/RaylibModel.cpp
     Source/Geist/ResourceManager.cpp
     Source/Geist/ScriptingSystem.cpp
+    Source/Geist/SoundSystem.cpp
     Source/Geist/StateMachine.cpp
 )
 

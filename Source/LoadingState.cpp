@@ -846,16 +846,10 @@ void LoadingState::ParseIREGFile(stringstream& ireg, int superchunkx, int superc
 			//  Egg or container?  01 Egg, 00 container.
 			if (shape == 607)
 			{
-				thisObject->m_Visible = false;
+				//thisObject->m_Visible = false;
 			}
 			if (shape == 275)
 			{
-				if (actualx == 972 && actualy == 2291)
-				{
-					int stopper = 0;
-				}
-
-
 				thisObject->m_isEgg = true;
 				thisObject->m_Visible = false;
 				thisObject->m_Pos = {float(actualx), lift1, float(actualy)};
@@ -901,24 +895,6 @@ void LoadingState::ParseIREGFile(stringstream& ireg, int superchunkx, int superc
 				{
 					egg.audioFile = "Audio/guardian-laugh.ogg";
 				}
-
-				// Build debug string
-				std::string traceString = "Egg: "
-					+ std::to_string(static_cast<int>(egg.type))
-					+ " Criteria: "
-					+ std::to_string(static_cast<uint8_t>(egg.criteria))
-					+ " Distance: "
-					+ std::to_string(egg.distance)
-					+ " Probability: "
-					+ std::to_string(egg.probability)
-					+ " SpecificValue: "
-					+ std::to_string(egg.specificValue)
-					+ " OnceOnly: "
-					+ std::to_string(egg.onceOnly)
-					+ " Nocturnal: "
-					+ std::to_string(egg.nocturnal);
-
-				DebugPrint(traceString);
 			}
 			else
 			{

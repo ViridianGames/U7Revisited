@@ -210,102 +210,11 @@ void LoadSpellData();
 SpellData* GetSpellData(int spellId);
 
 //////////////////////////////////////////////////////////////////////////////
-
-enum class EquipmentSlot
-{
-	SLOT_HEAD = 0,
-	SLOT_NECK,
-	SLOT_TORSO,
-	SLOT_LEGS,
-	SLOT_HANDS,
-	SLOT_FEET,
-	SLOT_LEFT_HAND,    // Shield
-	SLOT_RIGHT_HAND,   // Weapon
-	SLOT_AMMO,
-	SLOT_LEFT_RING,
-	SLOT_RIGHT_RING,
-	SLOT_BELT,
-	SLOT_BACKPACK,
-	SLOT_COUNT
-};
-
 // Helper functions to determine equipment slots from item shape ID
 void LoadEquipmentSlotsConfig();
 std::vector<EquipmentSlot> GetEquipmentSlotsForShape(int shapeId);
 std::vector<EquipmentSlot> GetEquipmentSlotsFilled(int shapeId); // Returns all slots this item occupies when equipped
 EquipmentSlot GetEquipmentSlotForShape(int shapeId); // Deprecated: returns first valid slot only
-
-struct NPCData
-{
-	unsigned char x;
-	unsigned char y;
-	unsigned short shapeId;
-	unsigned short type;
-	unsigned char proba;
-	unsigned short data1;
-	unsigned char lift;
-	unsigned short data2;
-
-	unsigned short index;
-	unsigned short referent;
-	unsigned short status;
-	unsigned char str;
-	unsigned char dex;
-	unsigned char iq;
-	unsigned char combat;
-	unsigned char magic;
-	unsigned char DAM;
-	char soak1[3];
-	unsigned short status2;
-	unsigned char id;
-	char soak2[2];
-	unsigned int xp;
-	unsigned char training;
-	unsigned short primary;
-	unsigned short secondary;
-	unsigned short oppressor;
-	unsigned short ivrx;
-	unsigned short ivry;
-	unsigned short svrx;
-	unsigned short svry;
-	unsigned short status3;
-	char soak3[5];
-	unsigned char acty;
-	char soak4[29];
-	unsigned char SN;
-	unsigned char V1;
-	unsigned char V2;
-	unsigned char food;
-	char soak5[7];
-	char name[16];
-	std::vector<int> m_schedule;
-	std::vector<std::vector<Texture*> > m_walkTextures;
-
-	int m_currentActivity;
-	int m_lastActivity = -1;  // Track last activity to detect changes
-	int m_objectID;
-
-	// Equipment system - maps slot to object ID (-1 = empty slot)
-	std::map<EquipmentSlot, int> m_equipment;
-
-	// Helper methods
-	int GetEquippedItem(EquipmentSlot slot) const
-	{
-		auto it = m_equipment.find(slot);
-		return (it != m_equipment.end()) ? it->second : -1;
-	}
-
-	void SetEquippedItem(EquipmentSlot slot, int objectId);
-	void UnequipItem(EquipmentSlot slot);
-
-	bool HasItemEquipped(EquipmentSlot slot) const
-	{
-		auto it = m_equipment.find(slot);
-		return (it != m_equipment.end() && it->second != -1);
-	}
-};
-
-
 
 extern std::string g_version;
 

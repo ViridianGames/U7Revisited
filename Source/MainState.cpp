@@ -243,7 +243,7 @@ void MainState::UpdateTime()
 	}
 
 	unsigned char darklevel = 24;
-	unsigned char red_green_level = (darklevel / 2);
+	unsigned char red_green_level = (darklevel / 4);
 
 	if (g_hour == 20)
 	{
@@ -597,6 +597,57 @@ void MainState::UpdateInput()
 		}
 	}
 
+	if (WasMouseButtonDoubleClicked(MOUSE_BUTTON_RIGHT))
+	{
+		if (!g_mouseOverUI && !g_gumpManager->m_isMouseOverGump)
+		{
+			int worldX = (int)floor(g_terrainUnderMousePointer.x);
+			int worldZ = (int)floor(g_terrainUnderMousePointer.z);
+
+			U7Object* avatar = g_objectList[g_NPCData[0]->m_objectID].get();
+			//avatar->SetDest({float(worldX), 0, float(worldZ)});
+			avatar->PathfindToDest({ float(worldX), 0, float(worldZ) });
+
+			int counter = 1;
+			for (int id : g_Player->GetPartyMemberIds())
+			{
+				U7Object* partyMember = g_objectList[g_NPCData[id]->m_objectID].get();
+				if (id % 2 == 0)
+					partyMember->PathfindToDest({ float(worldX + counter), 0, float(worldZ + counter) });
+				else
+					partyMember->PathfindToDest({ float(worldX + counter), 0, float(worldZ - counter) });
+
+				counter += 1;
+			}
+
+			if (worldX >= 0 && worldX < 3072 && worldZ >= 0 && worldZ < 3072)
+			{
+				// Get terrain shape
+				unsigned short shapeframe = g_World[worldZ][worldX];
+				int shapeID = shapeframe & 0x3ff;  // Bits 0-9
+				int frameID = (shapeframe >> 10) & 0x3f;  // Bits 10-15
+
+				// Look up name and cost from terrain costs
+				string terrainName = g_pathfindingSystem->GetTerrainName(shapeID);
+				bool walkable = g_pathfindingSystem->IsPositionWalkable(worldX, worldZ);
+
+				AddConsoleString("=== " + terrainName + " (" + to_string(worldX) + ", " + to_string(worldZ) + ") ===", SKYBLUE);
+				AddConsoleString("  Shape ID: " + to_string(shapeID) + ", Frame: " + to_string(frameID), WHITE);
+
+				//if (walkable)
+				//{
+				float cost = g_pathfindingSystem->GetMovementCost(worldX, worldZ);
+				AddConsoleString("  Movement Cost: " + to_string(cost), GREEN);
+				AddConsoleString("  Walkable: YES", GREEN);
+				//}
+				//else
+				//{
+				//AddConsoleString("  Walkable: NO", RED);
+				//}
+			}
+		}
+	}
+
 	if (WasMouseButtonDoubleClicked(MOUSE_BUTTON_LEFT))// && !g_mouseOverUI && !g_gumpManager->m_isMouseOverGump)
 	{
 		if (g_objectUnderMousePointer != nullptr)
@@ -652,54 +703,6 @@ void MainState::UpdateInput()
 				avatar->PathfindToDest({ g_objectUnderMousePointer->m_Pos.x, 0, g_objectUnderMousePointer->m_Pos.x });
 			}
 		}
-		else if (!g_mouseOverUI && !g_gumpManager->m_isMouseOverGump)
-		{
-			int worldX = (int)floor(g_terrainUnderMousePointer.x);
-			int worldZ = (int)floor(g_terrainUnderMousePointer.z);
-
-			U7Object* avatar = g_objectList[g_NPCData[0]->m_objectID].get();
-			//avatar->SetDest({float(worldX), 0, float(worldZ)});
-			avatar->PathfindToDest({ float(worldX), 0, float(worldZ) });
-
-			int counter = 1;
-			for (int id : g_Player->GetPartyMemberIds())
-			{
-				U7Object* partyMember = g_objectList[g_NPCData[id]->m_objectID].get();
-				if (id % 2 == 0)
-					partyMember->PathfindToDest({ float(worldX + counter), 0, float(worldZ + counter) });
-				else
-					partyMember->PathfindToDest({ float(worldX + counter), 0, float(worldZ - counter) });
-
-				counter += 1;
-			}
-
-			if (worldX >= 0 && worldX < 3072 && worldZ >= 0 && worldZ < 3072)
-			{
-				// Get terrain shape
-				unsigned short shapeframe = g_World[worldZ][worldX];
-				int shapeID = shapeframe & 0x3ff;  // Bits 0-9
-				int frameID = (shapeframe >> 10) & 0x3f;  // Bits 10-15
-
-				// Look up name and cost from terrain costs
-				string terrainName = g_pathfindingSystem->GetTerrainName(shapeID);
-				bool walkable = g_pathfindingSystem->IsPositionWalkable(worldX, worldZ);
-
-				AddConsoleString("=== " + terrainName + " (" + to_string(worldX) + ", " + to_string(worldZ) + ") ===", SKYBLUE);
-				AddConsoleString("  Shape ID: " + to_string(shapeID) + ", Frame: " + to_string(frameID), WHITE);
-
-				//if (walkable)
-				//{
-					float cost = g_pathfindingSystem->GetMovementCost(worldX, worldZ);
-					AddConsoleString("  Movement Cost: " + to_string(cost), GREEN);
-					AddConsoleString("  Walkable: YES", GREEN);
-				//}
-				//else
-				//{
-					//AddConsoleString("  Walkable: NO", RED);
-				//}
-			}
-		}
-
 	}
 	else if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
 	{
@@ -979,70 +982,70 @@ void MainState::Update()
 	}
 
 	// Check if schedule time has changed and populate pathfinding queue
-	if (g_scheduleTime != g_lastScheduleTimeCheck)
-	{
-		g_lastScheduleTimeCheck = g_scheduleTime;
+	//if (g_scheduleTime != g_lastScheduleTimeCheck)
+	//{
+	//	g_lastScheduleTimeCheck = g_scheduleTime;
 
-		// Clear any pending pathfinding requests from previous schedule
-
-
-		// Enqueue all NPCs that need to move to a new destination
-		for (const auto& [npcID, npcData] : g_NPCData)
-		{
-			if (!npcData || npcData->m_objectID < 0)
-				continue;
-
-			// Check if this NPC has schedules and is following them
-			if (g_NPCSchedules.find(npcID) == g_NPCSchedules.end() || g_NPCSchedules[npcID].empty())
-				continue;
-
-			U7Object* npcObj = g_objectList[npcData->m_objectID].get();
-			if (!npcObj || !npcObj->m_followingSchedule)
-				continue;
-
-			// Find the most recent schedule entry <= current time
-			// This ensures NPCs update to correct activity even when time skips or when loading
-			int mostRecentScheduleTime = -1;
-			int mostRecentActivity = -1;
-			for (const auto& schedule : g_NPCSchedules[npcID])
-			{
-				if (schedule.m_time <= g_scheduleTime && (int)schedule.m_time > mostRecentScheduleTime)
-				{
-					mostRecentScheduleTime = (int)schedule.m_time;
-					mostRecentActivity = (int)schedule.m_activity;
-				}
-			}
-
-			// If we found a valid schedule and it's different from current, update it
-			if (mostRecentScheduleTime >= 0)
-			{
-				// Only update activity if there's an EXACT schedule entry for current time
-				// This prevents "None" entries (which don't exist in SCHEDULE.DAT) from changing activities
-				// InitializeNPCActivitiesFromSchedules() already filled in activities at startup
-				if (mostRecentScheduleTime == g_scheduleTime)
-				{
-					// Check if this is a NEW schedule (different time or activity changed)
-					bool needsUpdate = (mostRecentScheduleTime != npcObj->m_lastSchedule) ||
-						(mostRecentActivity != npcData->m_currentActivity);
-
-					if (needsUpdate)
-					{
-						// Update the schedule time and activity
-						npcObj->m_lastSchedule = mostRecentScheduleTime;
-						npcData->m_currentActivity = mostRecentActivity;
-						// Clear schedule path flag - will be set again if new schedule has destination
-						npcObj->m_isSchedulePath = false;
-
-
-						// Only queue for pathfinding if pathfinding is enabled
-						NPCSchedule newSchedule = g_NPCSchedules[npcID][npcData->m_currentActivity];
-						npcObj->m_pathWaypoints = g_pathfindingSystem->FindPath(npcObj->GetPos(), {float(newSchedule.m_destX), 0, float(newSchedule.m_destY) });
-					}
-				}
-				// else: no exact match for current time = "None" entry, keep current activity
-			}
-		}
-	}
+	// 	// Clear any pending pathfinding requests from previous schedule
+	//
+	//
+	// 	// Enqueue all NPCs that need to move to a new destination
+	// 	for (const auto& [npcID, npcData] : g_NPCData)
+	// 	{
+	// 		if (!npcData || npcData->m_objectID < 0)
+	// 			continue;
+	//
+	// 		// Check if this NPC has schedules and is following them
+	// 		if (g_NPCSchedules.find(npcID) == g_NPCSchedules.end() || g_NPCSchedules[npcID].empty())
+	// 			continue;
+	//
+	// 		U7Object* npcObj = g_objectList[npcData->m_objectID].get();
+	// 		if (!npcObj || !npcObj->m_followingSchedule)
+	// 			continue;
+	//
+	// 		// Find the most recent schedule entry <= current time
+	// 		// This ensures NPCs update to correct activity even when time skips or when loading
+	// 		int mostRecentScheduleTime = -1;
+	// 		int mostRecentActivity = -1;
+	// 		for (const auto& schedule : g_NPCSchedules[npcID])
+	// 		{
+	// 			if (schedule.m_time <= g_scheduleTime && (int)schedule.m_time > mostRecentScheduleTime)
+	// 			{
+	// 				mostRecentScheduleTime = (int)schedule.m_time;
+	// 				mostRecentActivity = (int)schedule.m_activity;
+	// 			}
+	// 		}
+	//
+	// 		// If we found a valid schedule and it's different from current, update it
+	// 		if (mostRecentScheduleTime >= 0)
+	// 		{
+	// 			// Only update activity if there's an EXACT schedule entry for current time
+	// 			// This prevents "None" entries (which don't exist in SCHEDULE.DAT) from changing activities
+	// 			// InitializeNPCActivitiesFromSchedules() already filled in activities at startup
+	// 			if (mostRecentScheduleTime == g_scheduleTime)
+	// 			{
+	// 				// Check if this is a NEW schedule (different time or activity changed)
+	// 				bool needsUpdate = (mostRecentScheduleTime != npcObj->m_lastSchedule) ||
+	// 					(mostRecentActivity != npcData->m_currentActivity);
+	//
+	// 				if (needsUpdate)
+	// 				{
+	// 					// Update the schedule time and activity
+	// 					npcObj->m_lastSchedule = mostRecentScheduleTime;
+	// 					npcData->m_currentActivity = mostRecentActivity;
+	// 					// Clear schedule path flag - will be set again if new schedule has destination
+	// 					npcObj->m_isSchedulePath = false;
+	//
+	//
+	// 					// Only queue for pathfinding if pathfinding is enabled
+	// 					NPCSchedule newSchedule = g_NPCSchedules[npcID][npcData->m_currentActivity];
+	// 					npcObj->m_pathWaypoints = g_pathfindingSystem->FindPath(npcObj->GetPos(), {float(newSchedule.m_destX), 0, float(newSchedule.m_destY) });
+	// 				}
+	// 			}
+	// 			// else: no exact match for current time = "None" entry, keep current activity
+	// 		}
+	// 	}
+	// }
 
 	g_gumpManager->Update();
 
