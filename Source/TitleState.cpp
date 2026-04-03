@@ -14,6 +14,7 @@
 #include <fstream>
 #include <algorithm>
 
+#include "LoadSaveState.h"
 #include "Logging.h"
 #include "SoundSystem.h"
 
@@ -176,6 +177,8 @@ void TitleState::Draw()
 	//  Draw version number in lower-right
 	DrawOutlinedText(g_SmallFont, g_version.c_str(), Vector2{600, 340}, g_SmallFont->baseSize, 1, WHITE);
 
+	DrawRectangleRounded({0, 0, 206, 80}, .25, 100, {0, 0, 0, 224});
+
 	if (m_mouseMoved)
 	{
 		m_TitleGui->Draw();
@@ -195,7 +198,7 @@ void TitleState::Draw()
 	//DrawTexture(*m_title, 0, 0, WHITE);
 
 	DrawTexturePro(*m_title, Rectangle{0, 0, float(m_title->width), float(m_title->height)}, Rectangle{
-		               0, 0, float(m_title->width * g_DrawScale * .5f), float(m_title->height * g_DrawScale * .5f)
+		               g_DrawScale * 1.5f, g_DrawScale, float(m_title->width * g_DrawScale * .5f), float(m_title->height * g_DrawScale * .5f)
 	               }, {0, 0}, 0, WHITE);
 
 	if (m_mouseMoved)
@@ -264,7 +267,6 @@ void TitleState::CreateTitleGUI()
 	                                     g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
 
 	y += 16;
-	int width = MeasureTextEx(*g_SmallFont, "GitHub", g_SmallFont->baseSize, 1).x * 1.3f;
 	Texture* githubIcon = g_ResourceManager->GetTexture("Images/GUI/github.png");
 
 	Texture* youtubeIcon = g_ResourceManager->GetTexture("Images/GUI/youtube.png");
@@ -275,31 +277,11 @@ void TitleState::CreateTitleGUI()
 
 	m_TitleGui->AddIconButton(GUI_TITLE_BUTTON_GITHUB, githubIcon, 308, y, 0, 0, githubIcon->width, githubIcon->height);
 
-
-	// width = MeasureTextEx(*g_SmallFont, "X", g_SmallFont->baseSize, 1).x * 2.0f;
-	// m_TitleGui->AddStretchButton(GUI_TITLE_BUTTON_X, 360, y, width, "X",
-	//                              g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
-	//                              g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
-
-	//y += yoffset;
-
 	Texture* patreonIcon = g_ResourceManager->GetTexture("Images/GUI/patreon.png");
 	m_TitleGui->AddIconButton(GUI_TITLE_BUTTON_PATREON, patreonIcon, 343, y, 0, 0, githubIcon->width, githubIcon->height);
 
 	Texture* kofiIcon = g_ResourceManager->GetTexture("Images/GUI/kofi.png");
 	m_TitleGui->AddIconButton(GUI_TITLE_BUTTON_KOFI, kofiIcon, 378, y, 0, 0, githubIcon->width, githubIcon->height);
-
-
-	// width = MeasureTextEx(*g_SmallFont, "Patreon", g_SmallFont->baseSize, 1).x * 1.3f;
-	// m_TitleGui->AddStretchButton(GUI_TITLE_BUTTON_PATREON, 260, y, width, "Patreon",
-	//                              g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
-	//                              g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
-
-	// width = MeasureTextEx(*g_SmallFont, "Ko-Fi", g_SmallFont->baseSize, 1).x * 1.5f;
-	// m_TitleGui->AddStretchButton(GUI_TITLE_BUTTON_KOFI, 320, y, width, "Ko-Fi",
-	//                              g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
-	//                              g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
-
 
 	m_TitleGui->m_Active = true;
 
@@ -443,8 +425,8 @@ void TitleState::UpdateTitle()
 	if (m_TitleGui->m_ActiveElement == GUI_TITLE_BUTTON_LOAD_TRINSIC_DEMO)
 	{
 		Log("MainState::OpenLoadSaveGump - Pushing load/save state");
-		g_StateMachine->PushState(STATE_LOADSAVESTATE);
 		dynamic_cast<MainState*>(g_StateMachine->GetState(STATE_MAINSTATE))->m_gameMode = MainStateModes::MAIN_STATE_MODE_TRINSIC_DEMO;
+		dynamic_cast<MainState*>(g_StateMachine->GetState(STATE_MAINSTATE))->m_loadOnEntry = true;
 		g_StateMachine->MakeStateTransition(STATE_MAINSTATE);
 
 		//		FixObjectListForLoading();

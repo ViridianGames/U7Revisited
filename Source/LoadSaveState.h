@@ -23,6 +23,8 @@ public:
 	virtual void Update() override;
 	virtual void Draw() override;
 
+	void SetAllowSaving(bool allowSaving) { m_allowSaving = allowSaving; }
+
 private:
 	// GUI instance
 	Gui m_gui;
@@ -37,6 +39,8 @@ private:
 	// Save slot data
 	std::vector<std::string> m_saveNames;
 	int m_selectedSlot = -1;
+
+	bool m_allowSaving = true; // Sometimes we only want the player to be able to load.
 
 	// Ghost serializer for loading the GUI
 	std::unique_ptr<GhostSerializer> m_serializer;

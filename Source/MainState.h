@@ -186,6 +186,8 @@ public:
 
 	// Debug: Allow moving static objects
 	bool m_allowMovingStaticObjects = false;  // F7: Toggle moving static objects
+
+	bool m_loadOnEntry = false;
 };
 
 #endif

@@ -31,6 +31,7 @@
 #include <unordered_map>
 #include <thread>
 
+#include "LoadSaveState.h"
 #include "SoundSystem.h"
 
 using namespace std;
@@ -147,19 +148,40 @@ void MainState::OnEnter()
 
 	if (m_gameMode == MainStateModes::MAIN_STATE_MODE_TRINSIC_DEMO)
 	{
+		if (m_loadOnEntry)
+		{
+			m_loadOnEntry = false;
+			m_ranIntroScript = true;
+			m_introScriptRunning = false;
+			g_isCameraLockedToAvatar = true;
+			g_allowInput = true;
+			dynamic_cast<LoadSaveState*>(g_StateMachine->GetState(STATE_LOADSAVESTATE))->SetAllowSaving(false);
+			OpenLoadSaveGump();
+
+			m_fadeState = FadeState::FADE_IN;
+			m_fadeTime = 1.0;
+			m_currentFadeAlpha = 0.0f;
+			m_fadeDuration = 1.0f;
+		}
 		// Fade out.
-		g_SoundSystem->PlaySound("Audio/Music/35bg.ogg");
+		else
+		{
+			g_SoundSystem->PlaySound("Audio/Music/35bg.ogg");
 
-		// Move camera to start position and rotation.
-		g_camera.target = Vector3{ 1068.0f, 0.0f, 2213.0f };
-		g_cameraRotation = 0;
-		g_cameraDistance = 22.0f;
-		g_isCameraLockedToAvatar = true;
-		CameraUpdate();
+			// Move camera to start position and rotation.
+			g_camera.target = Vector3{ 1068.0f, 0.0f, 2213.0f };
+			g_cameraRotation = 0;
+			g_cameraDistance = 22.0f;
+			g_isCameraLockedToAvatar = true;
+			CameraUpdate();
 
-		// Hack-move Petre and put him in the proper position.
-		g_objectList[g_NPCData[11]->m_objectID]->m_Angle = 2 * (PI / 2);
-		g_objectList[g_NPCData[11]->m_objectID]->Update();
+			// Hack-move Petre and put him in the proper position.
+			g_objectList[g_NPCData[11]->m_objectID]->m_Angle = 2 * (PI / 2);
+			g_objectList[g_NPCData[11]->m_objectID]->Update();
+		}
+
+
+
 
 
 		// Hack-move the Avatar off the screen.
@@ -931,7 +953,11 @@ void MainState::UpdateInput()
 			if (avatarMoved)
 			{
 				Vector3 finalmovement = Vector3RotateByAxisAngle(direction, Vector3{ 0, 1, 0 }, g_cameraRotation);
-				g_Player->GetAvatarObject()->SetDest(Vector3Add(g_Player->GetAvatarObject()->GetPos(), finalmovement));
+				finalmovement = Vector3Add(g_Player->GetAvatarObject()->GetPos(), finalmovement);
+				if (g_pathfindingSystem->IsPositionWalkable(finalmovement.x, finalmovement.z))
+				{
+					g_Player->GetAvatarObject()->SetDest(finalmovement);
+				}
 			}
 		}
 	}

@@ -547,37 +547,31 @@ void U7Object::NPCUpdate()
 		int stopper = 0;
 	}
 
-	m_isMoving = false;
-
 	// Follow waypoints from pathfinding (only when actively moving)
 	// What happens next?  They WALK!
 	if (!m_pathWaypoints.empty())
 	{
-		if (!Vector3Equals(m_Pos, m_Dest))
-		{
-			float deltav = (5.0f / g_secsPerMinute) * m_speed * GetFrameTime();
-			Vector3 newPos = Vector3Add(m_Pos, Vector3Scale(m_Direction, deltav));
+		m_isMoving = true;
+		float deltav = (5.0f / g_secsPerMinute) * m_speed * GetFrameTime();
+		Vector3 newPos = Vector3Add(m_Pos, Vector3Scale(m_Direction, deltav));
 
-			//  If this update would take we beyond the destination,
-			//  set the position to the destination instead of the new position
-			if(Vector3DistanceSqr(newPos, m_Dest) > Vector3DistanceSqr(m_Pos, m_Dest))
-			{
-				newPos = m_Dest;
-			}
-			SetPos(newPos);
-			m_isMoving = true;
-		}
-		else // We have arrived
+		TryOpenDoorAtCurrentPosition();
+
+		// Time for a new waypoint?
+		if(Vector3DistanceSqr(newPos, m_Dest) >= Vector3DistanceSqr(m_Pos, m_Dest))
 		{
-			// Only stop moving if we have no more waypoints to follow
 			m_pathWaypoints.erase(m_pathWaypoints.begin());
 			if (!m_pathWaypoints.empty())
 			{
 				SetDest(m_pathWaypoints[0]);
 			}
-			// Check for doors after moving to new position
-			TryOpenDoorAtCurrentPosition();
 		}
+		else // no more waypoints, we're done.
+		{
+			newPos = m_Dest;
+		}
+
+		SetPos(newPos);
 	}
 	else  //  No path, but not at destination?  Direct movement.
 	{
@@ -594,6 +588,10 @@ void U7Object::NPCUpdate()
 			}
 			SetPos(newPos);
 			m_isMoving = true;
+		}
+		else
+		{
+			m_isMoving = false;
 		}
 	}
 }

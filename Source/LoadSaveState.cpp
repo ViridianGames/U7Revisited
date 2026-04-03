@@ -69,6 +69,11 @@ void LoadSaveState::OnEnter()
 		}
 	}
 
+	if (!m_allowSaving)
+	{
+		m_gui.GetElement(m_saveButtonId)->m_Active = false;
+	}
+
 	// Highlight the initially selected slot
 	UpdateSlotHighlighting();
 
@@ -79,6 +84,7 @@ void LoadSaveState::OnEnter()
 void LoadSaveState::OnExit()
 {
 	Log("LoadSaveState::OnExit()");
+	m_allowSaving = true;
 }
 
 void LoadSaveState::Init(const std::string& data)
@@ -207,7 +213,7 @@ void LoadSaveState::Update()
 	}
 
 	// Handle SAVE button click
-	if (m_gui.m_ActiveElement == m_saveButtonId && m_selectedSlot != -1)
+	if (m_gui.m_ActiveElement == m_saveButtonId && m_selectedSlot != -1 && m_allowSaving)
 	{
 		Log("LoadSaveState::Update - Save button clicked for slot " + std::to_string(m_selectedSlot));
 
