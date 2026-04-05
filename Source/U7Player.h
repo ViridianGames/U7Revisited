@@ -10,7 +10,7 @@
 #include "Geist/Primitives.h"
 #include "Geist/Gui.h"
 #include "Geist/GuiElements.h"
-#include "../ThirdParty/nlohmann/json.hpp"
+#include <json.hpp>
 
 using u7json = nlohmann::json;
 
@@ -64,6 +64,10 @@ public:
 	void LoadFromJson(const json& j);
 
 	U7Object* GetAvatarObject();
+
+	// Attempt to move avatar to desired position using collision and height checks.
+// Returns true if move was accepted (dest set), false if blocked.
+	bool TryMove(const Vector3& desiredPos);
 
 	private:
 	int m_Gold = 100;

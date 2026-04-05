@@ -35,6 +35,7 @@ std::shared_ptr<Font> g_SmallFont;
 std::shared_ptr<Font> g_ConversationFont;
 std::shared_ptr<Font> g_ConversationSmallFont;
 std::shared_ptr<Font> g_guiFont;
+std::shared_mutex g_chunkMapMutex;
 
 //float g_smallFontSize = 8;
 float g_fontSize = 16;

@@ -619,15 +619,61 @@ void MainState::UpdateInput()
 		}
 	}
 
-	if (WasMouseButtonDoubleClicked(MOUSE_BUTTON_RIGHT))
+	if (WasMouseButtonDoubleClicked(MOUSE_BUTTON_RIGHT))// && !g_mouseOverUI && !g_gumpManager->m_isMouseOverGump)
 	{
-		if (!g_mouseOverUI && !g_gumpManager->m_isMouseOverGump)
+		if (g_objectUnderMousePointer != nullptr)
+		{
+			// If none of the interactive cases above applied, and this object has a walkable surface (stairs/roof/etc),
+			// issue a pathfind as a convenience.
+			if (!g_objectUnderMousePointer->m_isContainer &&
+				!g_objectUnderMousePointer->m_objectData->m_isDoor &&
+				!g_objectUnderMousePointer->m_hasConversationTree &&
+				(g_objectUnderMousePointer->m_shapeData->m_luaScript == "default"))
+			{
+				int objTileX = (int)floor(g_objectUnderMousePointer->m_Pos.x);
+				int objTileZ = (int)floor(g_objectUnderMousePointer->m_Pos.z);
+
+				float surfaceY = g_objectUnderMousePointer->m_Pos.y;
+				if (g_objectUnderMousePointer->m_objectData)
+					surfaceY += g_objectUnderMousePointer->m_objectData->m_height;
+
+				bool hasWalkableLayer = false;
+				if (g_pathfindingSystem && g_pathfindingSystem->m_pathfindingGrid)
+				{
+					g_pathfindingSystem->m_pathfindingGrid->DebugPrintTileInfo(objTileX, objTileZ);
+					auto heights = g_pathfindingSystem->m_pathfindingGrid->GetWalkableSurfaceHeights(objTileX, objTileZ);
+					if (!heights.empty())
+					{
+						for (float h : heights)
+						{
+							if (h > 0.1f)
+							{
+								hasWalkableLayer = true;
+								surfaceY = h;
+								break;
+							}
+						}
+						if (heights.size() > 1) hasWalkableLayer = true;
+					}
+				}
+
+				if (hasWalkableLayer)
+				{
+					U7Object* avatar = g_objectList[g_NPCData[0]->m_objectID].get();
+					if (avatar)
+					{
+						Vector3 dest = { (float)objTileX + 0.0f, surfaceY, (float)objTileZ + 0.0f };
+						avatar->PathfindToDest(dest);
+					}
+				}
+			}
+		}
+		else if (!g_mouseOverUI && !g_gumpManager->m_isMouseOverGump)
 		{
 			int worldX = (int)floor(g_terrainUnderMousePointer.x);
 			int worldZ = (int)floor(g_terrainUnderMousePointer.z);
 
 			U7Object* avatar = g_objectList[g_NPCData[0]->m_objectID].get();
-			//avatar->SetDest({float(worldX), 0, float(worldZ)});
 			avatar->PathfindToDest({ float(worldX), 0, float(worldZ) });
 
 			int counter = 1;
@@ -644,28 +690,19 @@ void MainState::UpdateInput()
 
 			if (worldX >= 0 && worldX < 3072 && worldZ >= 0 && worldZ < 3072)
 			{
-				// Get terrain shape
 				unsigned short shapeframe = g_World[worldZ][worldX];
 				int shapeID = shapeframe & 0x3ff;  // Bits 0-9
 				int frameID = (shapeframe >> 10) & 0x3f;  // Bits 10-15
 
-				// Look up name and cost from terrain costs
 				string terrainName = g_pathfindingSystem->GetTerrainName(shapeID);
 				bool walkable = g_pathfindingSystem->IsPositionWalkable(worldX, worldZ);
 
 				AddConsoleString("=== " + terrainName + " (" + to_string(worldX) + ", " + to_string(worldZ) + ") ===", SKYBLUE);
 				AddConsoleString("  Shape ID: " + to_string(shapeID) + ", Frame: " + to_string(frameID), WHITE);
 
-				//if (walkable)
-				//{
 				float cost = g_pathfindingSystem->GetMovementCost(worldX, worldZ);
 				AddConsoleString("  Movement Cost: " + to_string(cost), GREEN);
 				AddConsoleString("  Walkable: YES", GREEN);
-				//}
-				//else
-				//{
-				//AddConsoleString("  Walkable: NO", RED);
-				//}
 			}
 		}
 	}
@@ -715,14 +752,52 @@ void MainState::UpdateInput()
 			{
 				Bark(g_objectUnderMousePointer, "Locked", 3.0f);
 			}
-			else if (!g_objectUnderMousePointer->m_isContainer) // Try to walk onto this object
-			{
-				int worldX = (int)floor(g_terrainUnderMousePointer.x);
-				int worldZ = (int)floor(g_terrainUnderMousePointer.z);
+		}
+		else if (!g_mouseOverUI && !g_gumpManager->m_isMouseOverGump)
+		{
+			int worldX = (int)floor(g_terrainUnderMousePointer.x);
+			int worldZ = (int)floor(g_terrainUnderMousePointer.z);
 
-				U7Object* avatar = g_objectList[g_NPCData[0]->m_objectID].get();
-				//avatar->SetDest({float(worldX), 0, float(worldZ)});
-				avatar->PathfindToDest({ g_objectUnderMousePointer->m_Pos.x, 0, g_objectUnderMousePointer->m_Pos.x });
+			U7Object* avatar = g_objectList[g_NPCData[0]->m_objectID].get();
+			//avatar->SetDest({float(worldX), 0, float(worldZ)});
+			avatar->PathfindToDest({ float(worldX), 0, float(worldZ) });
+
+			int counter = 1;
+			for (int id : g_Player->GetPartyMemberIds())
+			{
+				U7Object* partyMember = g_objectList[g_NPCData[id]->m_objectID].get();
+				if (id % 2 == 0)
+					partyMember->PathfindToDest({ float(worldX + counter), 0, float(worldZ + counter) });
+				else
+					//			partyMember->PathfindToDest({ float(worldX + counter), 0, float(worldZ - counter) });
+
+					counter += 1;
+			}
+
+			if (worldX >= 0 && worldX < 3072 && worldZ >= 0 && worldZ < 3072)
+			{
+				// Get terrain shape
+				unsigned short shapeframe = g_World[worldZ][worldX];
+				int shapeID = shapeframe & 0x3ff;  // Bits 0-9
+				int frameID = (shapeframe >> 10) & 0x3f;  // Bits 10-15
+
+				// Look up name and cost from terrain costs
+				string terrainName = g_pathfindingSystem->GetTerrainName(shapeID);
+				bool walkable = g_pathfindingSystem->IsPositionWalkable(worldX, worldZ);
+
+				AddConsoleString("=== " + terrainName + " (" + to_string(worldX) + ", " + to_string(worldZ) + ") ===", SKYBLUE);
+				AddConsoleString("  Shape ID: " + to_string(shapeID) + ", Frame: " + to_string(frameID), WHITE);
+
+				//if (walkable)
+				//{
+				float cost = g_pathfindingSystem->GetMovementCost(worldX, worldZ);
+				AddConsoleString("  Movement Cost: " + to_string(cost), GREEN);
+				AddConsoleString("  Walkable: YES", GREEN);
+				//}
+				//else
+				//{
+					//AddConsoleString("  Walkable: NO", RED);
+				//}
 			}
 		}
 	}
@@ -909,7 +984,17 @@ void MainState::UpdateInput()
 				if (finalDest.z < 0.0f) finalDest.z = 0.0f;
 				if (finalDest.z > 3072.0f) finalDest.z = 3072.0f;
 
-				g_Player->GetAvatarObject()->SetDest(finalDest);
+				
+
+				// Use player TryMove which enforces height and collision checks
+				if (g_Player)
+				{
+					g_Player->TryMove(finalDest);
+				}
+				else
+				{
+					g_Player->GetAvatarObject()->SetDest(finalDest);
+				}
 
 				// Face avatar toward camera horizontal forward so heading matches view
 				Vector3 flatForDir = flatForward;
@@ -953,10 +1038,16 @@ void MainState::UpdateInput()
 			if (avatarMoved)
 			{
 				Vector3 finalmovement = Vector3RotateByAxisAngle(direction, Vector3{ 0, 1, 0 }, g_cameraRotation);
-				finalmovement = Vector3Add(g_Player->GetAvatarObject()->GetPos(), finalmovement);
-				if (g_pathfindingSystem->IsPositionWalkable(finalmovement.x, finalmovement.z))
+				Vector3 desired = Vector3Add(g_Player->GetAvatarObject()->GetPos(), finalmovement);
+
+				// Use player TryMove which enforces height and collision checks
+				if (g_Player)
 				{
-					g_Player->GetAvatarObject()->SetDest(finalmovement);
+					g_Player->TryMove(desired);
+				}
+				else
+				{
+					g_Player->GetAvatarObject()->SetDest(desired);
 				}
 			}
 		}
@@ -1645,7 +1736,6 @@ void MainState::Draw()
 	//unsigned short framenum = (g_World[j][i] >> 10) & 0x1f;
 
 	//unsigned short shapenum = g_World[static_cast<unsigned short>(g_camera.target.z)][static_cast<unsigned short>(g_camera.target.x)] & 0x3ff;
-	//unsigned short shapenum = currentTargetTile & 0x3ff;
 	//unsigned short framenum = (g_World[static_cast<unsigned short>(g_camera.target.z)][static_cast<unsigned short>(g_camera.target.x)] >> 10) & 0x1f;
 	//currentTargetTile = currentTargetTile & 0x3ff;
 	//DrawOutlinedText(g_SmallFont, "Tile under camera target: " + to_string(shapenum) + " " + to_string(framenum), Vector2{ 10, 288 }, g_SmallFont->baseSize, 1, WHITE);
@@ -1740,7 +1830,10 @@ void MainState::Draw()
 		}
 		else if (m_objectSelectionMode)
 		{
-			DrawTextureEx(*g_objectSelectCursor, { float(GetMouseX()), float(GetMouseY()) }, 0, g_DrawScale, WHITE);
+			//DrawTextureEx(*g_objectSelectCursor, { float(GetMouseX()), float(GetMouseY()) }, 0, g_DrawScale, WHITE);
+			// Use the existing member texture (m_usePointer) instead of undefined m_objectSelectCursor
+			if (m_usePointer)
+				DrawTextureEx(*m_usePointer, { float(GetMouseX()), float(GetMouseY()) }, 0, g_DrawScale, WHITE);
 		}
 		else
 		{
