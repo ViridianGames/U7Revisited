@@ -264,7 +264,7 @@ void MainState::UpdateTime()
 		g_scheduleTime = g_hour / 3;
 	}
 
-	unsigned char darklevel = 24;
+	unsigned char darklevel = 96;
 	unsigned char red_green_level = (darklevel / 4);
 
 	if (g_hour == 20)
@@ -1421,6 +1421,12 @@ void MainState::Draw()
 	//  Draw the terrain
 	g_Terrain->Draw();
 
+	if (m_showPathfindingDebug)
+	{
+		DrawDebugChunkPathfindingInfo();
+	}
+
+
 	if (m_showObjects)
 	{
 		for (auto object : g_sortedVisibleObjects)
@@ -1613,6 +1619,8 @@ void MainState::Draw()
 		//DrawOutlinedText(g_SmallFont, "Objects: " + to_string(g_ObjectList.size()) + " Visible: " + to_string(g_sortedVisibleObjects.size()), Vector2{ 10, 320 }, g_SmallFont->baseSize, 1, WHITE);
 	}
 
+	float xoffset = g_Engine->m_ScreenWidth - float(g_minimapSize * g_DrawScale);
+
 	// Draw bark text if active
 	if (m_barkDuration > 0 && m_barkObject != nullptr && m_barkObject->m_shapeData != nullptr)
 	{
@@ -1649,7 +1657,8 @@ void MainState::Draw()
 	//unsigned short framenum = (g_World[static_cast<unsigned short>(g_camera.target.z)][static_cast<unsigned short>(g_camera.target.x)] >> 10) & 0x1f;
 	//currentTargetTile = currentTargetTile & 0x3ff;
 	//DrawOutlinedText(g_SmallFont, "Tile under camera target: " + to_string(shapenum) + " " + to_string(framenum), Vector2{ 10, 288 }, g_SmallFont->baseSize, 1, WHITE);
-	//DrawOutlinedText(g_SmallFont, "Camera Target: " + to_string(g_camera.target.x) + " " + to_string(g_camera.target.y) + " " + to_string(g_camera.target.z), Vector2{ 10, 308 }, g_SmallFont->baseSize, 1, WHITE);
+	DrawOutlinedText(g_SmallFont, "Camera Target: " + to_string(g_camera.target.x) + " " + to_string(g_camera.target.y) + " " + to_string(g_camera.target.z), Vector2{ 10, 308 }, g_SmallFont->baseSize, 1, WHITE);
+	DrawOutlinedText(g_SmallFont, "Current Chunk: " + to_string(int(g_camera.target.x / 16)) + " " + to_string(g_camera.target.y) + " " + to_string(int(g_camera.target.z / 16)), Vector2{ 10, 316 }, g_SmallFont->baseSize, 1, WHITE);
 
 	if (!m_paused && m_showUIElements)
 	{
@@ -1685,37 +1694,6 @@ void MainState::Draw()
 		Vector2 origin = { m_MinimapArrow->width * g_DrawScale / 2.0f, m_MinimapArrow->height * g_DrawScale / 2.0f };
 
 		DrawTexturePro(*m_MinimapArrow, source, dest, origin, rotation, WHITE);
-
-		if (m_showPathfindingDebug)
-		{
-			float xoffset = g_Engine->m_ScreenWidth - float(g_minimapSize * g_DrawScale);
-
-			//DrawTextureEx(*m_Minimap, { 0, 0 }, 0, g_DrawScale * .1f, WHITE);
-			float length = 2.225;
-			for (int y = 0; y < 192; ++y)
-			{
-				for (int x = 0; x < 192; ++x)
-				{
-					ChunkInfo& chunk = g_pathfindingSystem->m_chunkInfoMap[x][y];
-					if (chunk.canReach[DIR_N])
-						DrawLine(xoffset + x * length, y * length, xoffset + x * length, (y - 1) * length, WHITE );
-					if (chunk.canReach[DIR_NE])
-						DrawLine(xoffset + x * length, y * length, xoffset + (x + 1) * length, (y - 1) * length, WHITE );
-					if (chunk.canReach[DIR_E])
-						DrawLine(xoffset + x * length, y * length, xoffset + (x + 1) * length, (y) * length, WHITE );
-					if (chunk.canReach[DIR_SE])
-						DrawLine(xoffset + x * length, y * length, xoffset + (x + 1) * length, (y + 1) * length, WHITE );
-					if (chunk.canReach[DIR_S])
-						DrawLine(xoffset + x * length, y * length, xoffset + (x) * length, (y + 1) * length, WHITE );
-					if (chunk.canReach[DIR_SW])
-						DrawLine(xoffset + x * length, y * length, xoffset + (x - 1) * length, (y + 1) * length, WHITE );
-					if (chunk.canReach[DIR_W])
-						DrawLine(xoffset + x * length, y * length, xoffset + (x - 1) * length, (y) * length, WHITE );
-					if (chunk.canReach[DIR_NW])
-						DrawLine(xoffset + x * length, y * length, xoffset + (x - 1) * length, (y - 1) * length, WHITE );
-				}
-			}
-		}
 	}
 
 	// Draw debug tools window if valid
@@ -1745,6 +1723,27 @@ void MainState::Draw()
 		else
 		{
 			DrawTextureEx(*g_Cursor, { float(GetMouseX()), float(GetMouseY()) }, 0, g_DrawScale, WHITE);
+		}
+	}
+
+	//DrawTextureEx(*m_Minimap, { 0, 0 }, 0, g_DrawScale * .1f, WHITE);
+	if (m_showPathfindingDebug)
+	{
+		float length = 2.225;
+		for (int y = 0; y < 192; ++y)
+		{
+			for (int x = 0; x < 192; ++x)
+			{
+				ChunkInfo& chunk = g_pathfindingSystem->m_chunkInfoMap[x][y];
+				for (int dir = 0; dir < 8; ++dir)
+				{
+					if (chunk.canReach[dir])
+					{
+						Vector2 dirVector = g_DirVectors[dir];
+						DrawLine(xoffset + x * length, y * length, xoffset + (x + dirVector.x) * length, (y + dirVector.y) * length, WHITE );
+					}
+				}
+			}
 		}
 	}
 
@@ -2192,6 +2191,65 @@ void MainState::UpdateDebugToolsWindow()
 			if (button->m_Clicked)
 			{
 				HandleNPCListButton();
+			}
+		}
+	}
+}
+
+void DrawThickLine3D(Vector3 start, Vector3 end, float thickness, Color color)
+{
+	DrawCylinderEx(start, end, thickness, thickness, 4, color);
+}
+
+void MainState::DrawDebugChunkPathfindingInfo()
+{
+	int centerchunkx = g_camera.target.x / 16;
+	int centerchunky = g_camera.target.z / 16;
+
+	Color dirColors[8] = { RED, ORANGE, YELLOW, GREEN, BLUE, PURPLE, VIOLET, DARKGREEN };
+
+
+	for (int y = centerchunky - 5; y < centerchunky + 5; ++y)
+	{
+		for (int x = centerchunkx - 5; x < centerchunkx + 5; ++x)
+		{
+			if (x >= 0 && x < 192 && y >= 0 && y < 192)
+			{
+				ChunkInfo& ci = g_pathfindingSystem->m_chunkInfoMap[x][y];
+
+				//  Draw a box around this chunk
+
+				for (int dir = 0; dir <= 7; ++dir )
+				{
+					if (ci.canReach[dir])
+					{
+						DrawThickLine3D(
+							{float(x) * 16 + 8, 0, float(y) * 16 + 8},
+							{float(x) * 16 + 8 + (g_DirVectors[dir].x * 7.0f), 0, float(y) * 16 + 8 + (g_DirVectors[dir].y * 7.0f) },
+							.25f, dirColors[dir]);
+					}
+				}
+
+				DrawThickLine3D(
+		{float(x) * 16, 0, float(y) * 16},
+		{float(x + 1) * 16, 0, float(y) * 16},
+		.25f, BLACK);
+
+				DrawThickLine3D(
+					{float(x + 1) * 16, 0, float(y) * 16},
+					{float(x + 1) * 16, 0, float(y + 1) * 16},
+					.25f, BLACK);
+
+				DrawThickLine3D(
+					{float(x + 1) * 16, 0, float(y + 1) * 16},
+					{float(x) * 16, 0, float(y + 1) * 16},
+					.25f, BLACK);
+
+				DrawThickLine3D(
+					{float(x) * 16, 0, float(y + 1) * 16},
+					{float(x) * 16, 0, float(y) * 16},
+					.25f, BLACK);
+
 			}
 		}
 	}

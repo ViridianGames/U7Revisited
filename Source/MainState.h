@@ -73,7 +73,9 @@ public:
 	void HandleNPCListButton();
 	void UpdateDebugToolsWindow();
 
-	float m_waitTime = 0;
+   void DrawDebugChunkPathfindingInfo();
+
+   float m_waitTime = 0;
 
    Gui* m_Gui = nullptr;
 

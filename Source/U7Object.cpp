@@ -517,17 +517,19 @@ void U7Object::NPCUpdate()
 				{
 					if (schedule.m_time == m_scheduleTime)
 					{
-						m_currentActivity = schedule.m_activity;
-						//  Set path to start that activity
-						m_pathWaypoints.clear();
-						m_pathWaypoints.erase(m_pathWaypoints.begin());
-						m_pathWaypoints = g_pathfindingSystem->FindPath(m_Pos, {float(schedule.m_destX), 0, float(schedule.m_destY)});
-						if (!m_pathWaypoints.empty())
+						if (schedule.m_activity != 0 && m_currentActivity != schedule.m_activity)
 						{
-							SetDest(m_pathWaypoints[0]);
-							m_movingToActivity = true;
+							//  Set path to start that activity
+							m_pathWaypoints.clear();
+							m_pathWaypoints.erase(m_pathWaypoints.begin());
+							m_pathWaypoints = g_pathfindingSystem->FindPath(m_Pos, {float(schedule.m_destX), 0, float(schedule.m_destY)});
+							if (!m_pathWaypoints.empty())
+							{
+								SetDest(m_pathWaypoints[0]);
+								m_movingToActivity = true;
+							}
+							break;
 						}
-						break;
 					}
 				}
 			}

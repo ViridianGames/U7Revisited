@@ -1737,6 +1737,23 @@ void LoadingState::CreateObjectTable()
 		g_objectDataTable[i].m_isTranslucent = (buffer[2] >> 7) & 0x01;
 		g_objectDataTable[i].m_name = shapeNames[i];
 
+		if (g_objectDataTable[i].m_shapeType < 150)
+		{
+			g_objectDataTable[i].m_isNotWalkable = false;
+		}
+
+		if (g_objectDataTable[i].m_shapeType == 2 ||
+			g_objectDataTable[i].m_shapeType == 19 ||
+			g_objectDataTable[i].m_shapeType == 20 ||
+			g_objectDataTable[i].m_shapeType == 26 ||
+			g_objectDataTable[i].m_shapeType == 30 ||
+			g_objectDataTable[i].m_shapeType == 64 ||
+			g_objectDataTable[i].m_shapeType == 65
+			)
+			{
+				g_objectDataTable[i].m_isNotWalkable = true;
+			}
+
 		// NOTE: Door workaround no longer needed - TFA parsing was fixed to read isDoor flag correctly
 		// Previously the bit shift was wrong (buffer[1] >> 9 instead of buffer[1] >> 5)
 		/*

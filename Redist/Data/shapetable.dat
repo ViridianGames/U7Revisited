@@ -5793,12 +5793,12 @@
 331 0 0 0 8 8 0 8 8 8 8 0 17 8 3 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/rock_331x00.gltf 1 0 331 0 default 
 331 1 0 0 8 8 0 8 8 9 8 0 8 8 3 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/rock_331x01.gltf 1 0 331 1 default 
 331 2 0 0 8 8 0 8 8 10 8 0 7 8 3 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/rock_331x02.gltf 1 0 331 2 default 
-331 3 0 0 8 8 0 8 8 2 8 0 5 8 3 2 2 2 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/rock_331x03.gltf 1 0 331 3 default 
-331 4 0 0 8 8 0 8 8 2 8 0 3 8 3 2 2 2 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/rock_331x04.gltf 1 0 331 4 default 
-331 5 0 0 8 8 0 8 8 1 8 0 3 8 3 2 2 2 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/rock_331x05.gltf 1 0 331 5 default 
+331 3 0 0 8 8 0 8 8 2 8 0 5 8 3 2 2 2 0.5 0 0.5 0 1 2 2 3 3 1 Models/3dmodels/rock_331x03.gltf 1 0 331 3 default 
+331 4 0 0 8 8 0 8 8 2 8 0 3 8 3 2 2 2 0.5 0 0.5 0 1 2 2 3 3 1 Models/3dmodels/rock_331x04.gltf 1 0 331 4 default 
+331 5 0 0 8 8 0 8 8 1 8 0 3 8 3 2 2 2 0.5 0 0.5 0 1 2 2 3 3 1 Models/3dmodels/rock_331x05.gltf 1 0 331 5 default 
 331 6 0 0 8 8 0 8 8 3 8 0 7 8 3 2 2 2 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/rock_331x06.gltf 1 0 331 6 default 
 331 7 0 0 8 8 0 8 8 4 8 0 4 8 3 2 2 2 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/rock_331x07.gltf 1 0 331 7 default 
-331 8 0 0 8 8 0 8 8 6 8 0 8 8 3 2 2 2 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/rock_331x08.gltf 1 0 331 8 default 
+331 8 0 0 8 8 0 8 8 6 8 0 8 8 3 2 2 2 0.5 0 0.5 0 1 2 2 3 3 1 Models/3dmodels/rock_331x08.gltf 1 0 331 8 default 
 331 9 0 0 8 8 0 8 8 3 8 0 4 8 3 2 2 2 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/rock_331x09.gltf 1 0 331 9 default 
 331 10 0 0 8 8 0 8 8 7 8 0 11 8 3 2 1 2 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/rock_331x10.gltf 1 0 331 10 default 
 331 11 0 0 8 8 0 8 8 11 8 0 10 8 2 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 331 11 default 
@@ -23140,7 +23140,7 @@
 873 3 0 0 8 8 0 8 8 16 8 0 6 8 3 2.4 2.9 2.05 0.5 0 0.5 90 1 2 2 3 3 1 Models/3dmodels/chair_873x01.obj 1 0 873 3 object_chair_0873 
 873 4 0 0 8 8 0 8 8 7 8 0 16 8 3 1 1 1 0.7 0 0.7 180 1 2 2 3 3 1 Models/3dmodels/chair_873x06.obj 1 0 873 4 object_chair_0873 
 873 5 0 0 8 8 0 8 8 15 8 0 12 8 3 1 1 1 0.4 0 0.7 90 1 2 2 3 3 1 Models/3dmodels/chair_873x06.obj 1 0 873 5 object_chair_0873 
-873 6 0 0 8 8 0 8 8 12 8 0 15 8 3 1 1 1.1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/chair_873x06.obj 1 0 873 6 object_chair_0873 
+873 6 0 0 8 8 0 8 8 12 8 0 15 8 3 1 1 1.1 0.5 0 0.5 0 1 2 2 3 3 1 Models/3dmodels/chair_873x06.obj 1 0 873 6 object_chair_0873 
 873 7 0 0 8 8 0 8 8 16 8 0 7 8 3 1 1 1 0.7 0 0.7 270 1 2 2 3 3 1 Models/3dmodels/chair_873x06.obj 1 0 873 7 object_chair_0873 
 873 8 0 0 8 8 0 8 8 7 8 0 16 8 3 1 1 1 0.7 0 0.7 180 1 2 2 3 3 1 Models/3dmodels/chair_873x10.obj 1 0 873 8 object_chair_0873 
 873 9 0 0 8 8 0 8 8 15 8 0 12 8 3 1 1 1 0.2 0 0.5 90 1 2 2 3 3 1 Models/3dmodels/chair_873x10.obj 1 0 873 9 object_chair_0873 

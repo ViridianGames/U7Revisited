@@ -99,6 +99,11 @@ extern int g_lastScheduleTimeCheck;          // Last schedule time we checked
 extern Color g_dayNightColor;
 extern bool g_isDay;
 
+inline Vector2 g_DirVectors[8] = {
+	{ 0, -1 }, { 1, -1 }, { 1, 0 }, { 1, 1 },
+	{ 0, 1 }, { -1, 1 }, { -1, 0 }, { -1, -1 }
+};
+
 struct ObjectData
 {
 	//  From wgtvol.dat

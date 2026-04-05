@@ -689,7 +689,7 @@ std::vector<Vector3> AStar::FindPath(Vector3 start, Vector3 goal, PathfindingGri
 	// Use direct A* for short paths or as fallback
 	
 	// Limit search distance to avoid searching entire map (performance)
-	int maxDistance = 500;  // Max 500 tiles
+	int maxDistance = HIERARCHICAL_THRESHOLD;  // Max 500 tiles
 	if (distance > maxDistance)
 	{
 		//AddConsoleString("  FAILED: Distance too far (" + std::to_string(distance) + " tiles, max " + std::to_string(maxDistance) + ")", RED);
