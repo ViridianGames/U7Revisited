@@ -1,11 +1,14 @@
 #include "U7Globals.h"
 #include "U7Player.h"
+#include "Geist/StateMachine.h"  
+#include "MainState.h"           
 
 #include <algorithm>
+#include <shared_mutex>
 #include <string>
 
-#include <string>
 #include <vector>
+#include <sstream>  
 
 using namespace std;
 
@@ -87,13 +90,36 @@ void U7Player::AddPartyMember(int index)
 		m_PartyMemberIDs.push_back(index);
 		m_PartyMemberNames.push_back(g_NPCData[index]->name);
 		g_objectList[g_NPCData[index]->m_objectID]->m_speed = 5.0f; // Set speed to match avatar
+
+		// Ensure new party member does NOT follow schedules
+		if (g_StateMachine)
+		{
+			auto mainState = dynamic_cast<MainState*>(g_StateMachine->GetState(STATE_MAINSTATE));
+			if (mainState)
+				mainState->SetFollowingScheduleForNpc(index, false);
+		}
 	}
 }
 
 void U7Player::RemovePartyMember(int index)
 {
-	m_PartyMemberIDs.erase(std::find(m_PartyMemberIDs.begin(), m_PartyMemberIDs.end(), index));
-	m_PartyMemberNames.erase(std::find(m_PartyMemberNames.begin(), m_PartyMemberNames.end(), g_NPCData[index]->name));
+	auto itId = std::find(m_PartyMemberIDs.begin(), m_PartyMemberIDs.end(), index);
+	if (itId != m_PartyMemberIDs.end())
+		m_PartyMemberIDs.erase(itId);
+	auto itName = std::find(m_PartyMemberNames.begin(), m_PartyMemberNames.end(), g_NPCData[index]->name);
+	if (itName != m_PartyMemberNames.end())
+		m_PartyMemberNames.erase(itName);
+
+	// Restore schedule-following for this NPC if schedules are enabled
+	if (g_StateMachine)
+	{
+		auto mainState = dynamic_cast<MainState*>(g_StateMachine->GetState(STATE_MAINSTATE));
+		if (mainState)
+		{
+			bool enabled = mainState->IsNpcSchedulesEnabled();
+			mainState->SetFollowingScheduleForNpc(index, enabled && enabled /*explicit intent, keep readable*/);
+		}
+	}
 }
 
 // ============================================================================

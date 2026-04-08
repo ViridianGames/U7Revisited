@@ -30,6 +30,8 @@
 #include <algorithm>
 #include <unordered_map>
 #include <thread>
+#include <mutex>
+#include <condition_variable>
 
 #include "LoadSaveState.h"
 #include "SoundSystem.h"
@@ -131,6 +133,13 @@ void MainState::Init(const string& configfile)
 	}
 
 	SetupGame();
+
+	// Start background pathfinding worker
+	{
+		std::lock_guard<std::mutex> lk(m_scheduleMutex);
+		m_pathfinderRunning = true;
+	}
+	m_pathfinderThread = std::thread(&MainState::PathfindingWorkerLoop, this);
 }
 
 void MainState::OnEnter()
@@ -138,7 +147,7 @@ void MainState::OnEnter()
 	g_lastTime = 0;
 	g_minute = 0;
 	g_hour = 7;
-	g_scheduleTime = 1;
+	g_scheduleTime = 2;
 
 	m_heightCutoff = 16.0f; // Draw everything unless the player is inside.
 
@@ -148,6 +157,28 @@ void MainState::OnEnter()
 
 	if (m_gameMode == MainStateModes::MAIN_STATE_MODE_TRINSIC_DEMO)
 	{
+		g_Player->AddPartyMember(1);
+		// Enable schedules and pathfinding for demo mode so NPCs behave like sandbox
+		m_npcSchedulesEnabled = true;
+		m_npcPathfindingEnabled = true;
+
+		// Mark loaded NPC objects to follow schedules, except party members
+		for (const auto& [id, npcData] : g_NPCData)
+		{
+			if (!npcData) continue;
+			if (npcData->m_objectID < 0) continue;
+			// Skip NPCs in player's party so they stay under player control
+			if (g_Player && g_Player->NPCIDInParty(id))
+				continue;
+			auto itObj = g_objectList.find(npcData->m_objectID);
+			if (itObj != g_objectList.end() && itObj->second)
+			{
+				itObj->second->m_followingSchedule = true;
+			}
+		}
+
+		// Force MainState schedule-check to run on next Update() (enqueue pathfinding)
+		g_lastScheduleTimeCheck = -1;
 		if (m_loadOnEntry)
 		{
 			m_loadOnEntry = false;
@@ -221,6 +252,17 @@ void MainState::OnExit()
 
 void MainState::Shutdown()
 {
+	// Stop background worker
+	{
+		{
+			std::lock_guard<std::mutex> lk(m_scheduleMutex);
+			m_pathfinderRunning = false;
+		}
+		m_scheduleCv.notify_all();
+		if (m_pathfinderThread.joinable())
+			m_pathfinderThread.join();
+	}
+
 	// Clean up debug tools window
 	if (m_debugToolsWindow)
 	{
@@ -1008,70 +1050,94 @@ void MainState::Update()
 	}
 
 	// Check if schedule time has changed and populate pathfinding queue
-	//if (g_scheduleTime != g_lastScheduleTimeCheck)
-	//{
-	//	g_lastScheduleTimeCheck = g_scheduleTime;
+	if (g_scheduleTime != g_lastScheduleTimeCheck)
+	{
+		// Update last-checked value immediately to avoid re-entrancy in this frame
+		g_lastScheduleTimeCheck = g_scheduleTime;
 
-	// 	// Clear any pending pathfinding requests from previous schedule
-	//
-	//
-	// 	// Enqueue all NPCs that need to move to a new destination
-	// 	for (const auto& [npcID, npcData] : g_NPCData)
-	// 	{
-	// 		if (!npcData || npcData->m_objectID < 0)
-	// 			continue;
-	//
-	// 		// Check if this NPC has schedules and is following them
-	// 		if (g_NPCSchedules.find(npcID) == g_NPCSchedules.end() || g_NPCSchedules[npcID].empty())
-	// 			continue;
-	//
-	// 		U7Object* npcObj = g_objectList[npcData->m_objectID].get();
-	// 		if (!npcObj || !npcObj->m_followingSchedule)
-	// 			continue;
-	//
-	// 		// Find the most recent schedule entry <= current time
-	// 		// This ensures NPCs update to correct activity even when time skips or when loading
-	// 		int mostRecentScheduleTime = -1;
-	// 		int mostRecentActivity = -1;
-	// 		for (const auto& schedule : g_NPCSchedules[npcID])
-	// 		{
-	// 			if (schedule.m_time <= g_scheduleTime && (int)schedule.m_time > mostRecentScheduleTime)
-	// 			{
-	// 				mostRecentScheduleTime = (int)schedule.m_time;
-	// 				mostRecentActivity = (int)schedule.m_activity;
-	// 			}
-	// 		}
-	//
-	// 		// If we found a valid schedule and it's different from current, update it
-	// 		if (mostRecentScheduleTime >= 0)
-	// 		{
-	// 			// Only update activity if there's an EXACT schedule entry for current time
-	// 			// This prevents "None" entries (which don't exist in SCHEDULE.DAT) from changing activities
-	// 			// InitializeNPCActivitiesFromSchedules() already filled in activities at startup
-	// 			if (mostRecentScheduleTime == g_scheduleTime)
-	// 			{
-	// 				// Check if this is a NEW schedule (different time or activity changed)
-	// 				bool needsUpdate = (mostRecentScheduleTime != npcObj->m_lastSchedule) ||
-	// 					(mostRecentActivity != npcData->m_currentActivity);
-	//
-	// 				if (needsUpdate)
-	// 				{
-	// 					// Update the schedule time and activity
-	// 					npcObj->m_lastSchedule = mostRecentScheduleTime;
-	// 					npcData->m_currentActivity = mostRecentActivity;
-	// 					// Clear schedule path flag - will be set again if new schedule has destination
-	// 					npcObj->m_isSchedulePath = false;
-	//
-	//
-	// 					// Only queue for pathfinding if pathfinding is enabled
-	// 					NPCSchedule newSchedule = g_NPCSchedules[npcID][npcData->m_currentActivity];
-	// 					npcObj->m_pathWaypoints = g_pathfindingSystem->FindPath(npcObj->GetPos(), {float(newSchedule.m_destX), 0, float(newSchedule.m_destY) });
-	// 				}
-	// 			}
-	// 			// else: no exact match for current time = "None" entry, keep current activity
-	// 		}
-	// 	}
-	// }
+		// Walk every NPC and update those that follow schedules
+		for (const auto& [npcID, npcDataPtr] : g_NPCData)
+		{
+			if (!npcDataPtr) continue;
+			NPCData* npcData = npcDataPtr.get();
+			if (npcData->m_objectID < 0) continue;
+
+			// Skip NPCs without schedules or that are not following schedules
+			auto schedulesIt = g_NPCSchedules.find(npcID);
+			if (schedulesIt == g_NPCSchedules.end() || schedulesIt->second.empty())
+				continue;
+
+			U7Object* npcObj = nullptr;
+			auto objIt = g_objectList.find(npcData->m_objectID);
+			if (objIt != g_objectList.end())
+				npcObj = objIt->second.get();
+
+			if (!npcObj) continue;
+			if (!npcObj->m_followingSchedule) continue;
+
+			// Find an exact schedule entry for the current timeslot (g_scheduleTime)
+			const NPCSchedule* exactSchedule = nullptr;
+			for (const auto& s : schedulesIt->second)
+			{
+				if ((int)s.m_time == (int)g_scheduleTime)
+				{
+					exactSchedule = &s;
+					break;
+				}
+			}
+
+			// If there is no exact entry for this timeslot, do not change activity (preserve current).
+			if (!exactSchedule)
+				continue;
+
+			// If activity or last-schedule time changed, apply update
+			bool activityChanged = (npcData->m_currentActivity != (int)exactSchedule->m_activity);
+			bool timeChanged = (npcObj->m_lastSchedule != (int)g_scheduleTime);
+
+			if (activityChanged || timeChanged)
+			{
+				// Update NPC activity and last schedule marker
+				npcData->m_currentActivity = (int)exactSchedule->m_activity;
+				npcObj->m_lastSchedule = (int)g_scheduleTime;
+
+				// Clear schedule-path flag; we'll set it when a path is applied.
+				npcObj->m_isSchedulePath = false;
+				
+									// Build destination
+					Vector3 dest = { float(exactSchedule->m_destX), 0.0f, float(exactSchedule->m_destY) };
+				
+									// If pathfinding is enabled, enqueue path request for worker thread.
+					if (m_npcPathfindingEnabled)
+					{
+						// Mark pending so NPC activity coroutines are blocked until a path is assigned.
+						npcObj->m_pathfindingPending = true;
+
+						SchedulePathRequest req;
+						req.npcID = npcID;
+						req.start = npcObj->GetPos();  // snapshot start position now
+						req.dest = dest;
+
+						{
+							std::lock_guard<std::mutex> lk(m_scheduleMutex);
+							m_schedulePathQueue.push_back(std::move(req));
+						}
+						m_scheduleCv.notify_one();
+					}
+				 else
+				 {
+						// Pathfinding disabled: teleport NPC to scheduled location immediately.
+						npcObj->SetPos(dest);
+					npcObj->SetDest(dest);
+					npcObj->m_isSchedulePath = false;
+					NPCDebugPrint("Schedule: NPC " + std::to_string(npcID) + " teleported to (" +
+						std::to_string((int)dest.x) + "," + std::to_string((int)dest.z) + ") (pathfinding disabled)");
+				 }
+
+				// Ensure activity coroutines will be restarted on next NPC updates
+				// (m_lastActivity is managed when coroutines are started/cleaned up inside U7Object::NPCUpdate)
+			}
+		}
+	}
 
 	g_gumpManager->Update();
 
@@ -1079,9 +1145,73 @@ void MainState::Update()
 	{
 		g_CurrentUpdate++;
 
+		// Reset per-frame scripting counters to enforce throttling budgets
+		if (g_ScriptingSystem)
+		{
+			g_ScriptingSystem->ResetPerFrameScriptCounters();
+		}
+
 		m_NumberOfVisibleUnits = 0;
 		m_numberofDrawnObjects = 0;
 		m_numberofObjectsPassingFirstCheck = 0;
+
+		// Apply any completed paths from the background worker
+		{
+			std::lock_guard<std::mutex> resLock(m_resultMutex);
+
+			int processed = 0;
+			int budget = std::max(1, m_schedulePathBudgetPerFrame); // at least 1 per frame
+			while (!m_scheduleResults.empty() && processed < budget)
+			{
+				auto res = std::move(m_scheduleResults.front());
+				m_scheduleResults.pop_front();
+				++processed;
+
+				// Validate NPC & object
+				auto itNpc = g_NPCData.find(res.npcID);
+				if (itNpc == g_NPCData.end() || !itNpc->second) continue;
+				int objId = itNpc->second->m_objectID;
+				auto itObj = g_objectList.find(objId);
+				if (itObj == g_objectList.end() || !itObj->second) continue;
+				U7Object* npcObj = itObj->second.get();
+
+				if (res.success && !res.path.empty())
+				{
+					// Assign waypoints computed by worker
+					npcObj->m_pathWaypoints = std::move(res.path);
+					npcObj->m_pathfindingPending = false;
+					npcObj->m_isSchedulePath = true;
+
+					// Determine starting index (mirror PathfindToDest logic)
+					if (npcObj->m_pathWaypoints.size() > 1)
+						npcObj->m_currentWaypointIndex = 1;
+					else
+						npcObj->m_currentWaypointIndex = 0;
+
+					if (npcObj->m_currentWaypointIndex >= 0 && npcObj->m_currentWaypointIndex < static_cast<int>(npcObj->m_pathWaypoints.size()))
+					{
+						npcObj->SetDest(npcObj->m_pathWaypoints[npcObj->m_currentWaypointIndex]);
+						npcObj->m_isMoving = true;
+					}
+
+					// Keep a concise debug print (can be gated by a flag)
+					NPCDebugPrint("Schedule: NPC " + std::to_string(res.npcID) + " assigned path to (" +
+						std::to_string((int)res.dest.x) + "," + std::to_string((int)res.dest.z) + ") (background)");
+				}
+				else
+				{
+					// No path found: teleport as fallback and clear pending flag.
+					npcObj->SetPos(res.dest);
+					npcObj->SetDest(res.dest);
+					npcObj->m_isSchedulePath = false;
+					npcObj->m_pathfindingPending = false;
+					NPCDebugPrint("Schedule: NPC " + std::to_string(res.npcID) + " had no path, teleported (" +
+						std::to_string((int)res.dest.x) + "," + std::to_string((int)res.dest.z) + ")");
+				}
+			}
+
+			// leave remainder for next frame if any
+		}
 
 		for (const auto& [id, object] : g_objectList)
 		{
@@ -1271,6 +1401,61 @@ void MainState::Update()
 	}
 }
 
+// Background worker thread implementation
+void MainState::PathfindingWorkerLoop()
+{
+	// Worker loop: wait for requests, compute path using PathfindingSystem, post results.
+	while (true)
+	{
+		SchedulePathRequest req;
+		{
+			std::unique_lock<std::mutex> lk(m_scheduleMutex);
+			m_scheduleCv.wait(lk, [&]() { return !m_schedulePathQueue.empty() || !m_pathfinderRunning; });
+
+			if (!m_pathfinderRunning && m_schedulePathQueue.empty())
+				return; // shutdown requested and no work left
+
+			if (!m_schedulePathQueue.empty())
+			{
+				req = std::move(m_schedulePathQueue.front());
+				m_schedulePathQueue.pop_front();
+			}
+			else
+			{
+				continue;
+			}
+		}
+
+		// Compute path off the main thread.
+		// NOTE: PathfindingSystem::FindPath reads engine-global state; this implementation
+		// assumes read-only usage is reasonably safe. If you hit race issues, we'll need
+		// to snapshot the grid/chunk info under a short lock in PathfindingSystem.
+		std::vector<Vector3> path;
+		bool success = false;
+		try
+		{
+			path = g_pathfindingSystem->FindPath(req.start, req.dest);
+			success = !path.empty();
+		}
+		catch (...)
+		{
+			// Safeguard: on any exception, treat as failure and continue.
+			success = false;
+			path.clear();
+		}
+
+		SchedulePathResult result;
+		result.npcID = req.npcID;
+		result.path = std::move(path);
+		result.success = success;
+		result.dest = req.dest;
+
+		{
+			std::lock_guard<std::mutex> lk(m_resultMutex);
+			m_scheduleResults.push_back(std::move(result));
+		}
+	}
+}
 void MainState::OpenGump(int id)
 {
 	for (const auto& gump : g_gumpManager->m_GumpList)
@@ -1962,12 +2147,22 @@ void MainState::HandleScheduleButton()
 {
 	m_npcSchedulesEnabled = !m_npcSchedulesEnabled;
 
-	// Update all NPCs
+	// Update NPCs: when enabling, skip party members; when disabling, clear for all.
 	for (const auto& [id, npcData] : g_NPCData)
 	{
-		if (npcData && npcData->m_objectID >= 0)
+		if (!npcData || npcData->m_objectID < 0) continue;
+
+		// If schedules were just enabled, only enable for NPCs not in player's party.
+		if (m_npcSchedulesEnabled)
 		{
-			g_objectList[npcData->m_objectID]->m_followingSchedule = m_npcSchedulesEnabled;
+			if (g_Player && g_Player->NPCIDInParty(id))
+				continue;
+			g_objectList[npcData->m_objectID]->m_followingSchedule = true;
+		}
+		else
+		{
+			// When disabling, turn off for everyone.
+			g_objectList[npcData->m_objectID]->m_followingSchedule = false;
 		}
 	}
 
@@ -2253,4 +2448,20 @@ void MainState::DrawDebugChunkPathfindingInfo()
 			}
 		}
 	}
+}
+
+void MainState::SetFollowingScheduleForNpc(int npcId, bool follow)
+{
+    auto itNpc = g_NPCData.find(npcId);
+    if (itNpc == g_NPCData.end() || !itNpc->second) return;
+    int objId = itNpc->second->m_objectID;
+    if (objId < 0) return;
+    auto itObj = g_objectList.find(objId);
+    if (itObj == g_objectList.end() || !itObj->second) return;
+    itObj->second->m_followingSchedule = follow;
+}
+
+bool MainState::IsNpcSchedulesEnabled() const
+{
+	return m_npcSchedulesEnabled;
 }

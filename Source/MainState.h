@@ -7,6 +7,9 @@
 #include <deque>
 #include <array>
 #include <math.h>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
 
 class ParticleSystem;
 class Gui;
@@ -90,6 +93,38 @@ public:
 
 	// NPC list window for debugging/navigation
 	NpcListWindow* m_npcListWindow = nullptr;
+		// Request for scheduled pathfinding (non-blocking enqueue)
+		struct SchedulePathRequest
+		{
+		int npcID = -1;
+		Vector3 start = { 0.0f, 0.0f, 0.0f }; // start position at enqueue time (avoid reading later)
+		Vector3 dest = { 0.0f, 0.0f, 0.0f };
+	};
+
+	// Result posted back from background worker
+	struct SchedulePathResult
+	{
+		int npcID = -1;
+		std::vector<Vector3> path;
+		bool success = false;
+		Vector3 dest = { 0.0f, 0.0f, 0.0f };
+	};
+
+	std::deque<SchedulePathRequest> m_schedulePathQueue; // enqueued schedule pathfinding requests
+	int m_schedulePathBudgetPerFrame = 6; // kept for legacy/budget reasons (not used for sync pathfinding)
+
+	// Background worker thread + synchronization for pathfinding
+	std::thread m_pathfinderThread;
+	std::mutex m_scheduleMutex;                 // protects m_schedulePathQueue
+	std::condition_variable m_scheduleCv;
+	bool m_pathfinderRunning = false;
+
+	// Results produced by worker and consumed on main thread
+	std::deque<SchedulePathResult> m_scheduleResults;
+	std::mutex m_resultMutex;                   // protects m_scheduleResults
+
+	// Worker loop entry
+	void PathfindingWorkerLoop();
 
 	std::string m_luaFunction;
 
@@ -190,6 +225,10 @@ public:
 	bool m_allowMovingStaticObjects = false;  // F7: Toggle moving static objects
 
 	bool m_loadOnEntry = false;
+
+	// added near the other public members
+	void SetFollowingScheduleForNpc(int npcId, bool follow);
+	bool IsNpcSchedulesEnabled() const;
 };
 
 #endif
