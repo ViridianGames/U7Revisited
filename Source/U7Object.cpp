@@ -29,9 +29,14 @@
 #include <iomanip>
 #include "raymath.h"
 #include "rlgl.h"
+#include <atomic>
 
 
 using namespace std;
+
+// Contiguous per-NPC batch index allocator.
+// This is file-scoped so it's preserved while the program runs and used by NPCInit / LoadFromJson.
+static std::atomic_int s_nextNpcBatchIndex{0};
 
 U7Object::~U7Object()
 {
@@ -66,6 +71,7 @@ void U7Object::Init(const string& configfile, int unitType, int frame)
 	m_hasConversationTree = false;
 	m_InventoryPos = Vector2{ 0, 0 };
 	m_isNPC = false;
+	m_isMoving = false;
 	m_distanceFromCamera = 999999;
 
 	if (!g_isObjectMoveable[unitType])
@@ -356,7 +362,7 @@ void U7Object::NPCDraw()
 	int frameIndex = 0;
 
 	// If not moving, use the current frame set via npc_frame()
-	if (m_pathWaypoints.empty()  && !m_isMoving)
+	if (!m_isMoving)
 	{
 		if (m_isFrameOverridden)
 		{
@@ -503,97 +509,268 @@ static std::string GetActivityScriptName(int activityId)
 
 void U7Object::NPCUpdate()
 {
-	//  Check for updated schedules
-	if (m_followingSchedule)
-	{
-		// Time for a new activity?
-		if (m_scheduleTime != g_scheduleTime)
-		{
-			m_scheduleTime = g_scheduleTime;
+	// Don't do schedules while in the party
+	// (Note: previously we returned early here which also prevented movement for party members,
+	// causing them to animate but never change position.  Instead mark the in-party state
+	// and skip only the activity/coroutine handling below.)
+	bool isInParty = (g_Player->NPCIDInParty(m_NPCID) && m_NPCID != 0);
 
-			if (!g_NPCSchedules[m_NPCID].empty() && g_NPCSchedules.find(m_NPCID) != g_NPCSchedules.end())
+	// Frame-based batching for activity coroutine updates only
+	// Movement/pathfinding runs every frame, but activity scripts run batched (16 NPCs per frame)
+	int batchSize = 16;
+
+	// totalAssigned is the number of NPC batch indices assigned so far (compact)
+	int totalAssigned = s_nextNpcBatchIndex.load();
+	if (totalAssigned <= 0) totalAssigned = 1;
+	int numBatches = (totalAssigned + batchSize - 1) / batchSize;
+	if (numBatches <= 0) numBatches = 1;
+
+	// Use the global update counter so batch rotation is tied to the main update loop
+	// (this mirrors the previous behavior before the per-call s_frameCounter change)
+	int batchIndex = static_cast<int>(g_CurrentUpdate % numBatches);
+
+	// Ensure this NPC has a batch index; if not, assign one lazily.
+	if (m_npcBatchIndex < 0)
+	{
+		m_npcBatchIndex = s_nextNpcBatchIndex.fetch_add(1);
+		// update totalAssigned/numBatches for this frame's decision if needed (safe skip, will run next cycle)
+		totalAssigned = s_nextNpcBatchIndex.load();
+		numBatches = (totalAssigned + batchSize - 1) / batchSize;
+		if (numBatches <= 0) numBatches = 1;
+		// recompute batchIndex in case numBatches changed (keep consistency for this frame)
+		batchIndex = static_cast<int>(g_CurrentUpdate % numBatches);
+	}
+
+	bool shouldUpdateActivity = ((m_npcBatchIndex % numBatches) == batchIndex);
+
+	// Optional targeted debug: only emit verbose per-NPC diagnostics when g_LuaDebug is enabled.
+	//if (m_NPCID == 75 && g_LuaDebug)
+	//{
+	//	std::stringstream ss;
+	//	ss << "NPCUpdate Debug id=" << m_NPCID
+	//	   << " batchIndexAssigned=" << m_npcBatchIndex
+	//	   << " totalAssigned=" << totalAssigned
+	//	   << " numBatches=" << numBatches
+	//	   << " frameBatchIndex=" << batchIndex
+	//	   << " shouldUpdateActivity=" << (shouldUpdateActivity ? 1 : 0)
+	//	   << " followingSchedule=" << (m_followingSchedule ? 1 : 0)
+	//	   << " pathfindingPending=" << (m_pathfindingPending ? 1 : 0)
+	//	   << " isSchedulePath=" << (m_isSchedulePath ? 1 : 0)
+	//	   << " isMoving=" << (m_isMoving ? 1 : 0)
+	//	   << " currentDest=(" << m_Dest.x << "," << m_Dest.y << "," << m_Dest.z << ")";
+	//	NPCDebugPrint(ss.str());
+	//}
+
+	// Activity coroutine management - check if activity has changed
+	// Only run activity scripts if schedules are enabled for this NPC
+	// IMPORTANT: skip activity/coroutines for party members, but continue with movement below
+	if (shouldUpdateActivity && m_followingSchedule && g_NPCData.find(m_NPCID) != g_NPCData.end() && !isInParty)
+	{
+		int currentActivity = g_NPCData[m_NPCID]->m_currentActivity;
+		int lastActivity = g_NPCData[m_NPCID]->m_lastActivity;
+
+		// Debug: log activity values for the NPC being checked (only when verbose debug enabled)
+		if (m_NPCID == 75 && g_LuaDebug)
+		{
+			std::stringstream ss;
+			ss << "NPCActivity Debug id=" << m_NPCID
+			   << " currentActivity=" << currentActivity
+			   << " lastActivity=" << lastActivity;
+			NPCDebugPrint(ss.str());
+		}
+
+		// Has activity changed?
+		if (currentActivity != lastActivity)
+		{
+			// Cleanup old coroutine if it exists
+			if (lastActivity >= 0)
 			{
-				for (const auto& schedule : g_NPCSchedules[m_NPCID])
+				std::string old_script = GetActivityScriptName(lastActivity) + "_" + std::to_string(m_NPCID);
+				if (g_ScriptingSystem->IsCoroutineActive(old_script))
 				{
-					if (schedule.m_time == m_scheduleTime)
-					{
-						if (schedule.m_activity != 0 && m_currentActivity != schedule.m_activity)
-						{
-							//  Set path to start that activity
-							m_pathWaypoints.clear();
-							m_pathWaypoints.erase(m_pathWaypoints.begin());
-							m_pathWaypoints = g_pathfindingSystem->FindPath(m_Pos, {float(schedule.m_destX), 0, float(schedule.m_destY)});
-							if (!m_pathWaypoints.empty())
-							{
-								SetDest(m_pathWaypoints[0]);
-								m_movingToActivity = true;
-							}
-							break;
-						}
-					}
+					g_ScriptingSystem->CleanupCoroutine(old_script);
+				}
+			}
+			
+			// Only start activity script if not following a schedule path
+			// Block if: pathfinding pending OR currently on schedule path (orange)
+			if (!m_pathfindingPending && !m_isSchedulePath)
+			{
+				// Start new activity script
+				std::string new_script = GetActivityScriptName(currentActivity) + "_" + std::to_string(m_NPCID);
+				std::vector<ScriptingSystem::LuaArg> args = { m_NPCID };
+
+				// Log attempt only when verbose debug is enabled
+				if (g_LuaDebug)
+					NPCDebugPrint("Attempting to start activity script: " + new_script);
+
+				// Try to start this frame (throttle)
+				if (g_ScriptingSystem->TryConsumeScriptStart())
+				{
+				    std::string callResult = g_ScriptingSystem->CallScript(new_script, args);
+
+				    if (!callResult.empty())
+				    {
+				        if (g_LuaDebug)
+				            NPCDebugPrint("CallScript error for " + new_script + ": " + callResult);
+				    }
+				    else
+				    {
+				        if (g_LuaDebug)
+				            NPCDebugPrint("Started activity coroutine: " + new_script);
+				        g_NPCData[m_NPCID]->m_lastActivity = currentActivity;
+				    }
+				}
+				else
+				{
+				    // Throttled - try again next frame
+				    if (m_NPCID == 75 && g_LuaDebug) NPCDebugPrint("Throttled start for " + new_script + " (deferred)");
+				}
+			}
+			else
+			{
+				// Debug: activity start blocked by movement/pathfinding flags (only when verbose)
+				if (m_NPCID == 75 && g_LuaDebug)
+				{
+					std::stringstream ss;
+					ss << "NPCActivity Blocked id=" << m_NPCID
+					   << " pathfindingPending=" << (m_pathfindingPending ? 1 : 0)
+					   << " isSchedulePath=" << (m_isSchedulePath ? 1 : 0);
+					NPCDebugPrint(ss.str());
 				}
 			}
 		}
-		else
+		
+		// Activity hasn't changed - resume if not on schedule path
+		else if (currentActivity >= 0 && !m_pathfindingPending && !m_isSchedulePath)
 		{
-			if(m_pathWaypoints.empty())
-			{
-				//  We're where we need to be, do the activity.
+			std::string script_name = GetActivityScriptName(currentActivity) + "_" + std::to_string(m_NPCID);
+			bool yielded = g_ScriptingSystem->IsCoroutineYielded(script_name);
 
+			// --- when resuming a yielded activity coroutine ---
+			if (yielded)
+			{
+			    if (g_ScriptingSystem->TryConsumeScriptResume())
+			    {
+			        std::vector<ScriptingSystem::LuaArg> args = { m_NPCID };
+			        g_ScriptingSystem->ResumeCoroutine(script_name, args);
+
+			        if (m_NPCID == 75 && g_LuaDebug)
+			        {
+			            NPCDebugPrint("NPCResume Debug: called ResumeCoroutine for " + script_name);
+			        }
+			    }
+			    else
+			    {
+			        if (m_NPCID == 75 && g_LuaDebug) NPCDebugPrint("Throttled resume for " + script_name + " (deferred)");
+			    }
+			}
+		}
+	}
+	// If schedules are disabled, cleanup any running activity scripts
+	else if (!m_followingSchedule && g_NPCData.find(m_NPCID) != g_NPCData.end())
+	{
+		int lastActivity = g_NPCData[m_NPCID]->m_lastActivity;
+		if (lastActivity >= 0)
+		{
+			std::string old_script = GetActivityScriptName(lastActivity) + "_" + std::to_string(m_NPCID);
+			if (g_ScriptingSystem->IsCoroutineActive(old_script))
+			{
+				g_ScriptingSystem->CleanupCoroutine(old_script);
+			}
+			g_NPCData[m_NPCID]->m_lastActivity = -1;
+
+			if (m_NPCID == 75 && g_LuaDebug)
+			{
+				NPCDebugPrint("NPCActivity Cleanup: cleared lastActivity for id=75");
 			}
 		}
 	}
 
-	if (m_NPCID == 19)
-	{
-		int stopper = 0;
-	}
+	// Schedule checking is now handled by MainState::Update() queue system
+	// This function only handles waypoint following and movement
 
 	// Follow waypoints from pathfinding (only when actively moving)
-	// What happens next?  They WALK!
-	if (!m_pathWaypoints.empty())
+	if (m_isMoving && !m_pathfindingPending && !m_pathWaypoints.empty() && m_currentWaypointIndex < m_pathWaypoints.size())
 	{
-		m_isMoving = true;
+		float distToWaypoint = Vector3Distance(m_Pos, m_pathWaypoints[m_currentWaypointIndex]);
+		bool isLastWaypoint = (m_currentWaypointIndex == m_pathWaypoints.size() - 1);
+		float threshold = isLastWaypoint ? 0.1f : 0.5f;
+
+		if (distToWaypoint < threshold)
+		{
+			if (isLastWaypoint)
+			{
+				m_pathWaypoints.clear();
+				m_currentWaypointIndex = 0;
+				m_isMoving = false;
+				m_isSchedulePath = false;
+				SetDest(m_Pos);
+			}
+			else
+			{
+				// Advance to next waypoint
+				m_currentWaypointIndex++;
+				SetDest(m_pathWaypoints[m_currentWaypointIndex]);
+			}
+		}
+	}
+
+	if (m_Pos.x != m_Dest.x || m_Pos.y != m_Dest.y  || m_Pos.z != m_Dest.z)
+	{
 		float deltav = (5.0f / g_secsPerMinute) * m_speed * GetFrameTime();
+
+		// Detect "walking in place" and always log it for debugging.
+		// Previously this was gated by g_LuaDebug, so you saw nothing when that flag was false.
+		NPCDebugPrint("Checking for walking in place: " + std::to_string(m_NPCID) +
+			" isMoving=" + std::to_string(m_isMoving) +
+			" Direction=(" + std::to_string(m_Direction.x) + "," + std::to_string(m_Direction.y) + "," + std::to_string(m_Direction.z) + ")" +
+			" Dest=(" + std::to_string(m_Dest.x) + "," + std::to_string(m_Dest.y) + "," + std::to_string(m_Dest.z) + ")" +
+			" Pos=(" + std::to_string(m_Pos.x) + "," + std::to_string(m_Pos.y) + "," + std::to_string(m_Pos.z) + ")" +
+			" deltav=" + std::to_string(deltav) +
+			" speed=" + std::to_string(m_speed));
+
+		if (m_isMoving &&
+			fabs(m_Direction.x) < 0.001f && fabs(m_Direction.z) < 0.001f)
+		{
+			std::stringstream ss;
+			ss << "NPC walking-in-place detected id=" << m_NPCID
+			   << " pos=(" << m_Pos.x << "," << m_Pos.y << "," << m_Pos.z << ")"
+			   << " dest=(" << m_Dest.x << "," << m_Dest.y << "," << m_Dest.z << ")"
+			   << " dir=(" << m_Direction.x << "," << m_Direction.y << "," << m_Direction.z << ")"
+			   << " deltav=" << deltav
+			   << " speed=" << m_speed
+			   << " waypointCount=" << m_pathWaypoints.size()
+			   << " waypointIndex=" << m_currentWaypointIndex;
+			NPCDebugPrint(ss.str());
+
+			// Dump the current waypoint list (helps verify whether waypoints actually advance in X/Z)
+			for (size_t i = 0; i < m_pathWaypoints.size(); ++i)
+			{
+				const Vector3& wp = m_pathWaypoints[i];
+				std::stringstream s2;
+				s2 << "  wp[" << i << "] = (" << wp.x << ", " << wp.y << ", " << wp.z << ")";
+				NPCDebugPrint(s2.str());
+			}
+		}
+
 		Vector3 newPos = Vector3Add(m_Pos, Vector3Scale(m_Direction, deltav));
 
-		TryOpenDoorAtCurrentPosition();
-
-		// Time for a new waypoint?
-		if(Vector3DistanceSqr(newPos, m_Dest) >= Vector3DistanceSqr(m_Pos, m_Dest))
+		if (Vector3DistanceSqr(newPos, m_Dest) > Vector3DistanceSqr(m_Pos, m_Dest))
 		{
-			m_pathWaypoints.erase(m_pathWaypoints.begin());
-			if (!m_pathWaypoints.empty())
+			SetPos(m_Dest);
+			if (m_pathWaypoints.empty())
 			{
-				SetDest(m_pathWaypoints[0]);
+				m_isMoving = false;
 			}
-		}
-		else // no more waypoints, we're done.
-		{
-			newPos = m_Dest;
-		}
-
-		SetPos(newPos);
-	}
-	else  //  No path, but not at destination?  Direct movement.
-	{
-		if (!Vector3Equals(m_Pos, m_Dest))
-		{
-			float deltav = (5.0f / g_secsPerMinute) * m_speed * GetFrameTime();
-			Vector3 newPos = Vector3Add(m_Pos, Vector3Scale(m_Direction, deltav));
-
-			//  If this update would take we beyond the destination,
-			//  set the position to the destination instead of the new position
-			if(Vector3DistanceSqr(newPos, m_Dest) > Vector3DistanceSqr(m_Pos, m_Dest))
-			{
-				newPos = m_Dest;
-			}
-			SetPos(newPos);
-			m_isMoving = true;
 		}
 		else
 		{
-			m_isMoving = false;
+			m_isMoving = true;
+			SetPos(newPos);
+
+			// Check for doors after moving to new position
+			TryOpenDoorAtCurrentPosition();
 		}
 	}
 }
@@ -775,50 +952,100 @@ void U7Object::PathfindToDest(Vector3 dest)
 	// Clear previous path and mark as pending
 	m_pathWaypoints.clear();
 	m_currentWaypointIndex = 0;
+	m_pathfindingPending = true;
 
 	m_pathWaypoints = g_pathfindingSystem->FindPath(m_Pos, dest);
 
 	// If path found, store waypoints
 	if (!m_pathWaypoints.empty())
 	{
-		// Set first waypoint as destination
-		// Path includes start position at index 0, so skip it if path has multiple waypoints
+		// Pathfinding completed synchronously
+		m_pathfindingPending = false;
+
+		// Debug: Print the returned waypoints for inspection
+		// This will show whether the A* path includes non-zero Y values for stairs/upper floors.
+//#ifdef DEBUG_NPC_PATHFINDING
+//		{
+//			std::stringstream ss;
+//			ss << "PathfindToDest: found " << m_pathWaypoints.size() << " waypoints (dest requested: "
+//				<< dest.x << "," << dest.y << "," << dest.z << ")";
+//			NPCDebugPrint(ss.str());
+//
+//			for (size_t i = 0; i < m_pathWaypoints.size(); ++i)
+//			{
+//				const Vector3& wp = m_pathWaypoints[i];
+//				std::stringstream s2;
+//				s2 << "  wp[" << i << "] = (" << wp.x << ", " << wp.y << ", " << wp.z << ")";
+//				NPCDebugPrint(s2.str());
+//			}
+//		}
+//#endif
+		// Determine the correct initial waypoint index.
+		// FindPath may return a single-point path (size == 1) — previously code used m_pathWaypoints[1] unguarded
+		// which caused "vector subscript out of range" when size == 1.
 		if (m_pathWaypoints.size() > 1)
 		{
+			// common case: first entry is current tile, second is the first step
 			m_currentWaypointIndex = 1;
-			SetDest(m_pathWaypoints[1]);
 		}
-		else if (m_pathWaypoints.size() == 1)
+		else
 		{
-			// Single waypoint path (rare but valid for same-tile destinations)
+			// single-point path: use index 0
 			m_currentWaypointIndex = 0;
-			SetDest(m_pathWaypoints[0]);
 		}
 
-#ifdef DEBUG_NPC_PATHFINDING
-		// Track longest path for this NPC
-		float pathDistance = Vector3Distance(m_Pos, dest);
-		auto it = g_npcMaxPathStats.find(m_NPCID);
-		if (it == g_npcMaxPathStats.end() || pathDistance > it->second.distance)
+		// Skip initial waypoints that do not change X/Z (these cause SetDest to not set a direction,
+		// which results in "walking in place" because m_Direction remains zero but m_isMoving becomes true)
+		int skipped = 0;
+		while (m_currentWaypointIndex < static_cast<int>(m_pathWaypoints.size()) &&
+			   (int)m_pathWaypoints[m_currentWaypointIndex].x == (int)m_Pos.x &&
+			   (int)m_pathWaypoints[m_currentWaypointIndex].z == (int)m_Pos.z)
 		{
-			NPCPathStats stats;
-			stats.npcID = m_NPCID;
-			stats.startPos = m_Pos;
-			stats.endPos = dest;
-			stats.distance = pathDistance;
-			stats.waypointCount = (int)m_pathWaypoints.size();
-			g_npcMaxPathStats[m_NPCID] = stats;
+			m_currentWaypointIndex++;
+			skipped++;
 		}
-#endif
 
-		// Debug: Uncomment to see successful pathfinding
-		//AddConsoleString("NPC " + std::to_string(m_NPCID) + " found path with " + std::to_string(path.size()) + " waypoints from (" +
-		//                 std::to_string((int)m_Pos.x) + "," + std::to_string((int)m_Pos.z) + ") to (" +
-		//                 std::to_string((int)dest.x) + "," + std::to_string((int)dest.z) + ")", GREEN);
+		// ALWAYS emit this debug info while debugging the walking-in-place issue so you see what's happening.
+		// (Previously this was gated on g_LuaDebug; that prevented logs when the flag was false.)
+		if (skipped > 0)
+		{
+			std::stringstream ss;
+			ss << "PathfindToDest: skipped " << skipped << " initial waypoint(s) equal to current XZ for NPC " << m_NPCID
+			   << "  new waypointIndex=" << m_currentWaypointIndex;
+			NPCDebugPrint(ss.str());
+
+			// Dump the waypoint list so you can inspect X/Y/Z values returned by the pathfinder
+			for (size_t i = 0; i < m_pathWaypoints.size(); ++i)
+			{
+				const Vector3& wp = m_pathWaypoints[i];
+				std::stringstream s2;
+				s2 << "  wp[" << i << "] = (" << wp.x << ", " << wp.y << ", " << wp.z << ")";
+				NPCDebugPrint(s2.str());
+			}
+		}
+
+		// If we've advanced past the end, no effective movement needed
+		if (m_currentWaypointIndex >= static_cast<int>(m_pathWaypoints.size()))
+		{
+			// Nothing to do (destination is current tile)
+			m_pathWaypoints.clear();
+			m_currentWaypointIndex = 0;
+			m_isMoving = false;
+			m_isSchedulePath = false;
+		}
+		else
+		{
+			// Set the initial destination only if the index is valid
+			SetDest(m_pathWaypoints[m_currentWaypointIndex]);
+
+			// Make sure NPC starts moving toward the destination right away.
+			m_isMoving = true;
+		}
 	}
 	else
 	{
-		DebugPrint("NPC " + std::string(m_NPCData[m_NPCID].name) + " could not find a path to " + to_string(dest.x) + ", " + to_string(dest.z));
+		m_pathfindingPending = false;  // No path found, done trying
+		// No path found, don't move at all
 	}
 }
 
@@ -1004,6 +1231,22 @@ void U7Object::NPCInit(NPCData* npcData)
 	m_NPCID = npcData->id;
 	m_anchorPos = m_Pos;
 
+	// Assign contiguous batch index if not already set (preserve any value restored from save)
+	if (m_npcBatchIndex < 0)
+	{
+		// post-increment gives each NPC a unique contiguous index
+		m_npcBatchIndex = s_nextNpcBatchIndex.fetch_add(1);
+	}
+	else
+	{
+		// Ensure allocator is ahead of any loaded index (LoadFromJson may have set m_npcBatchIndex)
+		int desired = m_npcBatchIndex + 1;
+		int cur = s_nextNpcBatchIndex.load();
+		while (cur < desired && !s_nextNpcBatchIndex.compare_exchange_weak(cur, desired))
+		{
+			// loop until swapped or cur updated
+		}
+	}
 }
 
 // ============================================================================
@@ -1019,7 +1262,7 @@ json U7Object::SaveToJson() const
 	j["id"] = m_ID;
 
 	// Only save unitType if not UNIT_TYPE_OBJECT (the default)
-	if (m_UnitType != UnitTypes::UNIT_TYPE_STATIC)
+	if (m_UnitType != UnitTypes::UNIT_TYPE_OBJECT)
 		j["unitType"] = static_cast<int>(m_UnitType);
 
 	j["shape"] = m_ObjectType;
@@ -1075,8 +1318,8 @@ json U7Object::SaveToJson() const
 			j["hasConversationTree"] = m_hasConversationTree;
 
 		// Save movement state if true (default is false)
-		// if (m_isMoving)
-		// 	j["isMoving"] = m_isMoving;
+		if (m_isMoving)
+			j["isMoving"] = m_isMoving;
 
 		// Save schedule state
 		if (m_followingSchedule)
@@ -1087,6 +1330,9 @@ json U7Object::SaveToJson() const
 		// Don't save destination - we want NPCs to stay at their saved position
 		// The schedule system will set new destinations as needed after load
 
+		// Persist batch index so distribution is stable across loads
+		if (m_npcBatchIndex >= 0)
+		 j["npcBatchIndex"] = m_npcBatchIndex;
 		// Equipment slots
 		json equipment;
 		equipment["HEAD"] = m_NPCData->GetEquippedItem(EquipmentSlot::SLOT_HEAD);
@@ -1129,12 +1375,11 @@ U7Object* U7Object::LoadFromJson(const json& j)
 	obj->m_UnitType = savedType;
 
 	// Check if this is an egg object (same logic as LoadingState.cpp line 826)
-	// if (obj->m_objectData->m_name == "Egg" || obj->m_objectData->m_name == "path")
-	// {
-	// 	obj->m_UnitType = U7Object::UnitTypes::UNIT_TYPE_EGG;
-	// 	obj->m_isEgg = true;
-	// 	obj->m_isContainer = false;
-	// }
+	if (obj->m_objectData->m_name == "Egg" || obj->m_objectData->m_name == "path")
+	{
+		obj->m_isEgg = true;
+		obj->m_isContainer = false;
+	}
 
 	// Now restore all other properties (which will overwrite Init's defaults)
 	obj->m_ID = j.value("id", 0);
@@ -1189,12 +1434,13 @@ U7Object* U7Object::LoadFromJson(const json& j)
 		obj->m_hasConversationTree = j.value("hasConversationTree", false);
 
 		// Restore movement state (defaults to false)
-		//obj->m_isMoving = j.value("isMoving", false);
+		obj->m_isMoving = j.value("isMoving", false);
 
 		// Restore schedule state
 		obj->m_followingSchedule = j.value("followingSchedule", false);
 		obj->m_lastSchedule = j.value("lastSchedule", -1);
-
+		// Restore persisted batch index (optional)
+		obj->m_npcBatchIndex = j.value("npcBatchIndex", -1);
 		// DON'T restore destination - set it to current position so NPC doesn't walk back
 		// If NPC was moved by player in sandbox mode, we want them to stay at their saved position
 		// If they need to move for a schedule, the schedule system will set a new destination

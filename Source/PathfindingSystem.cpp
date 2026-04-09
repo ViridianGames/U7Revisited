@@ -562,8 +562,11 @@ std::string AStar::GetTerrainName(int shapeID) const
 
 std::vector<Vector3> AStar::FindPath(Vector3 start, Vector3 goal, PathfindingGrid* grid, ChunkInfo chunkMap[192][192])
 {
-	if (!grid)
-		return std::vector<Vector3>();  // No grid, can't pathfind
+	// Prevent concurrent calls into A* instance (protects m_allocatedNodes etc.)
+	std::lock_guard<std::mutex> guard(m_findMutex);
+
+    if (!grid)
+        return std::vector<Vector3>();  // No grid, can't pathfind
 
 	// Use tile coordinates directly
 	int startX = (int)start.x;

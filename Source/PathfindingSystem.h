@@ -6,6 +6,7 @@
 #include <queue>
 #include <string>
 #include <memory>
+#include <mutex>
 #include "raylib.h"
 #include "raymath.h"
 
@@ -177,7 +178,8 @@ private:
 	// Temporary storage for nodes during pathfinding
 	std::vector<PathNode*> m_allocatedNodes;
 	std::vector<ChunkNode*> m_allocatedChunkNodes;
-
+	// Guard to make FindPath reentrant/thread-safe
+	mutable std::mutex m_findMutex;
 	// Terrain movement costs (shape ID -> cost multiplier)
 	std::unordered_map<int, float> m_terrainCosts;
 

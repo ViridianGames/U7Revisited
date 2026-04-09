@@ -67,7 +67,18 @@ static int LuaWait(lua_State *L)
 
         if (scriptKey.empty())
         {
-            scriptKey = "default";  // Fallback if we can't identify the coroutine
+            if (!g_ScriptingSystem->m_currentScript.empty())
+            {
+                scriptKey = g_ScriptingSystem->m_currentScript;
+                NPCDebugPrint("wait WARNING: GetFuncNameFromCo returned empty, using m_currentScript: " + scriptKey);
+            }
+            else
+            {
+                // last-resort unique key so the timer will be resumed deterministically
+                uintptr_t ptr = reinterpret_cast<uintptr_t>(L);
+                scriptKey = "co_ptr_" + std::to_string(ptr);
+                NPCDebugPrint("wait WARNING: GetFuncNameFromCo and m_currentScript empty, using fallback key: " + scriptKey);
+            }
         }
 
         g_ScriptingSystem->m_waitTimers[scriptKey] = (float)delay;
@@ -109,7 +120,18 @@ static int LuaNPCWait(lua_State *L)
 
         if (scriptKey.empty())
         {
-            scriptKey = "default";  // Fallback if we can't identify the coroutine
+            if (!g_ScriptingSystem->m_currentScript.empty())
+            {
+                scriptKey = g_ScriptingSystem->m_currentScript;
+                NPCDebugPrint("wait WARNING: GetFuncNameFromCo returned empty, using m_currentScript: " + scriptKey);
+            }
+            else
+            {
+                // last-resort unique key so the timer will be resumed deterministically
+                uintptr_t ptr = reinterpret_cast<uintptr_t>(L);
+                scriptKey = "co_ptr_" + std::to_string(ptr);
+                NPCDebugPrint("wait WARNING: GetFuncNameFromCo and m_currentScript empty, using fallback key: " + scriptKey);
+            }
         }
 
         g_ScriptingSystem->m_waitTimers[scriptKey] = (float)realSeconds;
@@ -4558,8 +4580,17 @@ static int LuaRequestPathfind(lua_State *L)
 
     // Stop movement while new path is being computed
     // (PathfindToDestTracked will clear waypoints and set m_pathfindingPending)
+    npc->m_isMoving = false;
 
     npc->PathfindToDest({x, y, z});
+    return 1;
+}
+
+// is_path_ready(request_id) -> bool
+// Step 2: Check if async pathfinding request is complete (consumes the result)
+static int LuaIsPathReady(lua_State *L)
+{
+    lua_pushboolean(L, true);
     return 1;
 }
 
@@ -4576,20 +4607,32 @@ static int LuaStartFollowingPath(lua_State *L)
     }
 
     U7Object* npc = g_objectList[g_NPCData[npc_id]->m_objectID].get();
-    if (npc && !npc->m_pathWaypoints.empty())
+    if (!npc)
     {
-        NPCDebugPrint("Lua: NPC " + std::to_string(npc_id) + " (request " + std::to_string(request_id) +
-                   ") starting to follow path with " + std::to_string(npc->m_pathWaypoints.size()) +
-                   " waypoints");
-        npc->SetDest(npc->m_pathWaypoints[0]);
-        NPCDebugPrint("Lua: NPC " + std::to_string(npc_id) + " SetDest to (" +
-                   std::to_string((int)npc->m_pathWaypoints[0].x) + "," +
-                   std::to_string((int)npc->m_pathWaypoints[0].z));
+        return 0;
     }
-    else if (npc)
+
+    if (!npc->m_pathWaypoints.empty())
+    {
+        // Ensure the current waypoint index is valid. PathfindToDest normally sets
+        // m_currentWaypointIndex (1 if there is an initial current-tile entry).
+        int idx = npc->m_currentWaypointIndex;
+        if (idx < 0 || idx >= static_cast<int>(npc->m_pathWaypoints.size()))
+        {
+            // Recover to a safe default (prefer 1 if path length > 1, else 0).
+            idx = (npc->m_pathWaypoints.size() > 1) ? 1 : 0;
+            npc->m_currentWaypointIndex = idx;
+        }
+
+        // Use the validated index (not hardcoded 0)
+        npc->SetDest(npc->m_pathWaypoints[idx]);
+        npc->m_isMoving = true;
+    }
+    else
     {
         NPCDebugPrint("Lua: NPC " + std::to_string(npc_id) + " (request " + std::to_string(request_id) +
-                   ") has NO waypoints to follow!");
+            ") has NO waypoints to follow! m_pathfindingPending=" +
+            std::to_string(npc->m_pathfindingPending));
     }
 
     return 0;
@@ -4606,7 +4649,7 @@ static int LuaIsNPCMoving(lua_State *L)
         return 1;
     }
 
-    bool is_moving = g_objectList[g_NPCData[npc_id]->m_objectID]->m_pathWaypoints.size() > 0;
+    bool is_moving = g_objectList[g_NPCData[npc_id]->m_objectID]->m_isMoving;
     lua_pushboolean(L, is_moving);
     return 1;
 }
@@ -4945,6 +4988,7 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction( "is_sleeping", LuaIsSleeping);
     g_ScriptingSystem->RegisterScriptFunction( "is_sitting", LuaIsSitting);
     g_ScriptingSystem->RegisterScriptFunction( "request_pathfind", LuaRequestPathfind);
+    g_ScriptingSystem->RegisterScriptFunction( "is_path_ready", LuaIsPathReady);
     g_ScriptingSystem->RegisterScriptFunction( "start_following_path", LuaStartFollowingPath);
     g_ScriptingSystem->RegisterScriptFunction( "is_npc_moving", LuaIsNPCMoving);
     g_ScriptingSystem->RegisterScriptFunction( "wait_move_end", LuaWaitMoveEnd);

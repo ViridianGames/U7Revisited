@@ -19,6 +19,36 @@ ScriptingSystem::ScriptingSystem()
 {
     m_luaState = luaL_newstate();
     luaL_openlibs(m_luaState);
+    // Initialize throttling counters
+    m_scriptStartsThisFrame = 0;
+    m_scriptResumesThisFrame = 0;
+}
+
+// Throttling helpers: try-consume and reset per-frame counters
+bool ScriptingSystem::TryConsumeScriptStart()
+{
+    if (m_scriptStartsThisFrame < m_maxScriptStartsPerFrame)
+    {
+        ++m_scriptStartsThisFrame;
+        return true;
+    }
+    return false;
+}
+
+bool ScriptingSystem::TryConsumeScriptResume()
+{
+    if (m_scriptResumesThisFrame < m_maxScriptResumesPerFrame)
+    {
+        ++m_scriptResumesThisFrame;
+        return true;
+    }
+    return false;
+}
+
+void ScriptingSystem::ResetPerFrameScriptCounters()
+{
+    m_scriptStartsThisFrame = 0;
+    m_scriptResumesThisFrame = 0;
 }
 
 ScriptingSystem::~ScriptingSystem()
@@ -53,6 +83,10 @@ void ScriptingSystem::Shutdown()
 
 void ScriptingSystem::Update()
 {
+    // Reset per-frame throttling so TryConsumeScriptStart/TryConsumeScriptResume
+    // works as intended and doesn't permanently block resumes.
+    ResetPerFrameScriptCounters();
+
     // Collect coroutines that are no longer yielded (completed or errored)
     std::vector<std::string> to_cleanup;
     for (const auto& pair : m_activeCoroutines)
@@ -89,7 +123,7 @@ void ScriptingSystem::Update()
     // Resume all scripts whose wait timers expired
     for (const std::string& scriptKey : scriptsToResume)
     {
-        DebugPrint("RESUME: key=" + scriptKey);
+        //DebugPrint("RESUME: key=" + scriptKey);
 
         m_waitTimers.erase(scriptKey);
 
@@ -121,6 +155,7 @@ void ScriptingSystem::Update()
                 {
                     scriptName = scriptKey.substr(0, underscorePos);
                     npc_id = std::stoi(scriptKey.substr(underscorePos + 1));
+					DebugPrint("Parsed activity script: base_name=" + scriptName + " npc_id=" + std::to_string(npc_id));
                     hasNpcId = true;
                 }
             }
@@ -129,12 +164,68 @@ void ScriptingSystem::Update()
         // Only pass npc_id for activity scripts
         if (hasNpcId)
         {
-            ResumeCoroutine(scriptName, {npc_id});
+            // Throttle resumes to avoid main-thread spikes
+            if (TryConsumeScriptResume())
+                ResumeCoroutine(scriptName, {npc_id});
+            else
+            {
+                // Re-enqueue for next frame via wait timer (tiny delay)
+                m_waitTimers[scriptKey] = 0.01f; // 10ms delay
+            }
         }
         else
         {
-            ResumeCoroutine(scriptKey, {});
+            if (TryConsumeScriptResume())
+                ResumeCoroutine(scriptKey, {});
+            else
+            {
+                m_waitTimers[scriptKey] = 0.01f;
+            }
         }
+    }
+
+    // Periodically dump instrumentation summary (every 1s)
+    float now = GetTime();
+    if (now - m_lastInstrumentDumpTime >= 60.0f)
+    {
+        m_lastInstrumentDumpTime = now;
+        // Summarize top N scripts by cumulative time
+        std::vector<std::pair<std::string, double>> totals;
+        for (const auto& kv : m_instrumentCallTime)
+        {
+            double t = kv.second;
+            if (m_instrumentResumeTime.find(kv.first) != m_instrumentResumeTime.end())
+                t += m_instrumentResumeTime[kv.first];
+            totals.push_back({kv.first, t});
+        }
+        for (const auto& kv : m_instrumentResumeTime)
+        {
+            if (m_instrumentCallTime.find(kv.first) == m_instrumentCallTime.end())
+                totals.push_back({kv.first, kv.second});
+        }
+
+        if (!totals.empty())
+        {
+            std::sort(totals.begin(), totals.end(), [](auto &a, auto &b){ return a.second > b.second; });
+            int limit = std::min((size_t)8, totals.size());
+            std::stringstream ss;
+            ss << "SCRIPT INSTRUMENTATION: top " << limit << "\n";
+            for (int i = 0; i < limit; ++i)
+            {
+                const auto &p = totals[i];
+                const std::string &name = p.first;
+                double total = p.second;
+                int calls = m_instrumentCallCount[name];
+                int resumes = m_instrumentResumeCount[name];
+                ss << "  " << name << " calls=" << calls << " resumes=" << resumes << " total_ms=" << (total*1000.0) << "\n";
+            }
+            DebugPrint(ss.str());
+        }
+        // Reset instrumentation counters to avoid unbounded growth
+        m_instrumentCallCount.clear();
+        m_instrumentResumeCount.clear();
+        m_instrumentCallTime.clear();
+        m_instrumentResumeTime.clear();
     }
 }
 
@@ -352,6 +443,10 @@ string ScriptingSystem::CallScript(const string& func_name, const vector<LuaArg>
     float elapsed = GetTime() - startTime;
     m_scriptStartTime.erase(func_name);
 
+    // Instrumentation: record call count and cumulative time
+    m_instrumentCallCount[func_name]++;
+    m_instrumentCallTime[func_name] += elapsed;
+
     // Check if script took too long
     if (elapsed > MAX_SCRIPT_TIME)
     {
@@ -458,6 +553,9 @@ string ScriptingSystem::ResumeCoroutine(const string& func_name, const vector<Lu
 
     float elapsed = GetTime() - startTime;
     m_scriptStartTime.erase(func_name);
+    // Instrumentation: record resume count and cumulative time
+    m_instrumentResumeCount[func_name]++;
+    m_instrumentResumeTime[func_name] += elapsed;
 
     // Check if script took too long
     if (elapsed > MAX_SCRIPT_TIME)

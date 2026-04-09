@@ -334,6 +334,7 @@ public:
 	std::vector<Vector3> m_pathWaypoints; // Queue of waypoints to follow
 	int m_currentWaypointIndex = 0; // Which waypoint we're moving toward
 	bool m_isSchedulePath = false; // True for C++ schedule paths, false for Lua activity paths
+	bool m_pathfindingPending = false; // True while waiting for pathfinding to complete
 
 	Vector3 m_ExternalForce;
 
@@ -426,6 +427,10 @@ public:
 	bool m_movingToActivity = false;
 	bool m_isMoving = false;
 	bool m_isPaused = true;
+
+		// Per-NPC contiguous index used for deterministic batching of activity script updates.
+		// Assigned at NPCInit time to guarantee a compact range [0..N).
+		int m_npcBatchIndex = -1;
 };
 
 #endif
