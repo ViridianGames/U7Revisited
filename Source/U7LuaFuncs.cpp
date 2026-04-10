@@ -14,6 +14,7 @@
 #include "U7GumpBook.h"
 #include "MainState.h"
 #include "PathfindingSystem.h"
+#include "SoundSystem.h"
 
 extern "C"
 {
@@ -778,7 +779,7 @@ static int LuaGetObjectFrame(lua_State *L)
     if (g_LuaDebug) NPCDebugPrint("LUA: get_object_frame called");
     int object_id = luaL_checkinteger(L, 1);
     int frame = GetObjectFromID(object_id)->m_shapeData->GetFrame();
-    //DebugPrint("ID: " + to_string(object_id) +  " Frame: " + to_string(frame));
+    DebugPrint("ID: " + to_string(object_id) +  " Frame: " + to_string(frame));
     lua_pushinteger(L, frame);
     return 1;
 }
@@ -792,6 +793,7 @@ static int LuaSetObjectFrame(lua_State *L)
     U7Object *object = GetObjectFromID(object_id);
     if (object)
     {
+        DebugPrint("ID: " + to_string(object_id) +  " Frame: " + to_string(frame));
         object->SetFrame(frame);  // Now includes pathfinding grid update for doors
     }
     return 0;
@@ -3649,10 +3651,10 @@ static int LuaIsWater(lua_State *L)
 // 0x000F | play_sound_effect
 static int LuaPlaySoundEffect(lua_State *L)
 {
-    // int sound_id = (int)lua_tointeger(L, 1);
+    int sound_id = (int)lua_tointeger(L, 1);
 
-    // Audio not yet implemented in U7Revisited
-    // In full implementation, would play audio file by ID
+    g_SoundSystem->PlaySound(g_soundEffectList[sound_id]);
+
     return 0;
 }
 

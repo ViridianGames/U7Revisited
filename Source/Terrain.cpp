@@ -79,8 +79,8 @@ void Terrain::CalculateLighting()
 	if (g_isDay)
 		return;
 
-	int softlightrange = 12;
-	int lightrange = 6;
+	int softlightrange = 14;
+	int lightrange = 3;
 	int lightrangesquared = lightrange * lightrange;
 	int softlightrangesquared = softlightrange * softlightrange;
 	for (auto object : g_sortedVisibleObjects)
@@ -110,7 +110,7 @@ void Terrain::CalculateLighting()
 
 					if (distance <= lightrangesquared)
 					{
-						m_cellLighting[cellx][celly] = WHITE;
+						m_cellLighting[cellx][celly] = {192, 192, 192, 255};
 					}
 					else if (distance <= softlightrangesquared)
 					{
@@ -119,10 +119,10 @@ void Terrain::CalculateLighting()
 						{
 							m_cellLighting[cellx][celly] = {128, 128, 128, 255};
 						}
-						else if (thiscell.r == 128 && thiscell.g == 128 && thiscell.b == 128)
-						{
-						 	m_cellLighting[cellx][celly] = WHITE;
-						}
+						// else if (thiscell.r == 128 && thiscell.g == 128 && thiscell.b == 128)
+						// {
+						//  	m_cellLighting[cellx][celly] = WHITE;
+						// }
 					}
 				}
 			}

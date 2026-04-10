@@ -2,25 +2,20 @@
 function utility_unknown_0438(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007
 
-    if eventid == 3 then
-        play_sound_effect(28)
-        var_0000 = find_nearby(0, 20, 873, objectref)
-        var_0001 = {}
-        for i = 1, #var_0000 do
-            var_0001 = get_distance(var_0001, var_0000[i], objectref)
+    debug_print("STARTED FUNCTION 0438")
+
+    --if eventid == 3 then
+    play_sound_effect(28)
+    var_0000 = find_nearest_chair(0)
+    if var_0000 then
+        var_0001 = get_object_frame(var_0000)
+        var_0002 = var_0001 % 4
+        if var_0002 >= 3 then
+            var_0001 = var_0001 - 3
+        else
+            var_0001 = var_0001 + 1
         end
-        var_0000 = utility_unknown_1085(var_0001, var_0000)
-        var_0004 = var_0000[1]
-        if var_0004 then
-            var_0005 = get_object_frame(var_0004)
-            var_0006 = var_0005 % 4
-            if var_0006 >= 3 then
-                var_0007 = execute_usecode_array(var_0004, {8014, 83, 7768})
-            else
-                var_0005 = var_0005 - var_0006
-                var_0007 = execute_usecode_array(var_0004, {var_0005, 8006, 83, 7768})
-            end
-        end
+        set_object_frame(var_0000, var_0001)
     end
-    return
+    --end
 end

@@ -1,4 +1,8 @@
 --- Best guess: Triggers external functions (IDs 338, 701, 526) for party members when event ID 3 is received, likely part of a dungeon environmental effect.
+-- 338 - Lit candle
+-- 526 - Lit lamp
+-- 701 - Lit torch
+--  Looks like this function finds all nearby lit objects and...douses them, maybe?
 function utility_event_0435(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008
 

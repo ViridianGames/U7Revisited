@@ -95,7 +95,7 @@ void MainState::Init(const string& configfile)
 
 	m_GuiMode = 0;
 
-	m_showObjects = true;
+	m_showObjects = false;
 
 	// Initialize debug tools window (non-modal, always visible in sandbox mode)
 	m_debugToolsWindow = new GhostWindow(
@@ -306,8 +306,8 @@ void MainState::UpdateTime()
 		g_scheduleTime = g_hour / 3;
 	}
 
-	unsigned char darklevel = 96;
-	unsigned char red_green_level = (darklevel / 4);
+	unsigned char darklevel = 72;
+	unsigned char red_green_level = (darklevel / 2);
 
 	if (g_hour == 20)
 	{
@@ -695,14 +695,14 @@ void MainState::UpdateInput()
 				string terrainName = g_pathfindingSystem->GetTerrainName(shapeID);
 				bool walkable = g_pathfindingSystem->IsPositionWalkable(worldX, worldZ);
 
-				AddConsoleString("=== " + terrainName + " (" + to_string(worldX) + ", " + to_string(worldZ) + ") ===", SKYBLUE);
-				AddConsoleString("  Shape ID: " + to_string(shapeID) + ", Frame: " + to_string(frameID), WHITE);
+				//AddConsoleString("=== " + terrainName + " (" + to_string(worldX) + ", " + to_string(worldZ) + ") ===", SKYBLUE);
+				//AddConsoleString("  Shape ID: " + to_string(shapeID) + ", Frame: " + to_string(frameID), WHITE);
 
 				//if (walkable)
 				//{
 				float cost = g_pathfindingSystem->GetMovementCost(worldX, worldZ);
-				AddConsoleString("  Movement Cost: " + to_string(cost), GREEN);
-				AddConsoleString("  Walkable: YES", GREEN);
+				//AddConsoleString("  Movement Cost: " + to_string(cost), GREEN);
+				//AddConsoleString("  Walkable: YES", GREEN);
 				//}
 				//else
 				//{
@@ -1842,8 +1842,8 @@ void MainState::Draw()
 	//unsigned short framenum = (g_World[static_cast<unsigned short>(g_camera.target.z)][static_cast<unsigned short>(g_camera.target.x)] >> 10) & 0x1f;
 	//currentTargetTile = currentTargetTile & 0x3ff;
 	//DrawOutlinedText(g_SmallFont, "Tile under camera target: " + to_string(shapenum) + " " + to_string(framenum), Vector2{ 10, 288 }, g_SmallFont->baseSize, 1, WHITE);
-	DrawOutlinedText(g_SmallFont, "Camera Target: " + to_string(g_camera.target.x) + " " + to_string(g_camera.target.y) + " " + to_string(g_camera.target.z), Vector2{ 10, 308 }, g_SmallFont->baseSize, 1, WHITE);
-	DrawOutlinedText(g_SmallFont, "Current Chunk: " + to_string(int(g_camera.target.x / 16)) + " " + to_string(g_camera.target.y) + " " + to_string(int(g_camera.target.z / 16)), Vector2{ 10, 316 }, g_SmallFont->baseSize, 1, WHITE);
+	//DrawOutlinedText(g_SmallFont, "Camera Target: " + to_string(g_camera.target.x) + " " + to_string(g_camera.target.y) + " " + to_string(g_camera.target.z), Vector2{ 10, 308 }, g_SmallFont->baseSize, 1, WHITE);
+	//DrawOutlinedText(g_SmallFont, "Current Chunk: " + to_string(int(g_camera.target.x / 16)) + " " + to_string(g_camera.target.y) + " " + to_string(int(g_camera.target.z / 16)), Vector2{ 10, 316 }, g_SmallFont->baseSize, 1, WHITE);
 
 	if (!m_paused && m_showUIElements)
 	{

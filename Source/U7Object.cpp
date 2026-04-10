@@ -269,7 +269,43 @@ void U7Object::HandlePathEgg()
 
 void U7Object::HandleUsecodeEgg()
 {
+	U7Object* _avatar = g_Player->GetAvatarObject();
 
+	if (m_eggData.hasTriggered && !m_eggData.autoReset)
+	{
+		return;
+	}
+
+	switch (m_eggData.criteria)
+	{
+		case EggCriteria::AvatarFootpad:
+		{
+			if (Vector3Equals(m_Pos, _avatar->m_Pos))
+			{
+				m_eggData.hasTriggered = true;
+			}
+
+		}
+
+		case EggCriteria::AvatarNear:
+		case EggCriteria::PartyNear:
+			if (Vector2Distance({m_Pos.x, m_Pos.z}, {_avatar->m_Pos.x, _avatar->m_Pos.z}) <= m_eggData.distance)
+			{
+				m_eggData.hasTriggered = true;
+			}
+			break;
+	}
+
+	if (m_eggData.hasTriggered)
+	{
+		int stopper = 0;
+		//  Get the script for this egg.
+		int scriptnumber = m_eggData.usecodeFunc - 1280;
+		string scriptname = "utility_unknown_0"+(std::to_string(scriptnumber));
+
+		//  Run it.
+		g_ScriptingSystem->CallScript(scriptname, {});
+	}
 }
 
 

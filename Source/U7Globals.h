@@ -104,6 +104,8 @@ inline Vector2 g_DirVectors[8] = {
 	{ 0, 1 }, { -1, 1 }, { -1, 0 }, { -1, -1 }
 };
 
+inline std::unordered_map<int, std::string> g_soundEffectList;
+
 struct ObjectData
 {
 	//  From wgtvol.dat

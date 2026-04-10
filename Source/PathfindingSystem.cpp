@@ -765,7 +765,7 @@ std::vector<Vector3> AStar::FindPathDirect(Vector3 start, Vector3 goal, Pathfind
 			if (nodesExplored > maxNodesUsed)
 			{
 				maxNodesUsed = nodesExplored;
-				AddConsoleString("  NEW MAX: Path found using " + std::to_string(nodesExplored) + " nodes", GREEN);
+				//AddConsoleString("  NEW MAX: Path found using " + std::to_string(nodesExplored) + " nodes", GREEN);
 			}
 #endif
 			break;
