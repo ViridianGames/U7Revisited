@@ -1,0 +1,758 @@
+# Object Walkability Configuration
+# Format: shape_id,name,walkability,step_height
+# walkability: walkable, blocking, climbable, door
+# step_height: surface height for climbable objects (blank = use object height)
+
+# Remaining objects - classify as needed
+150,gangplank,climbable,1
+151,wall,blocking,5
+152,wall,blocking,5
+156,tile roof,climbable,1
+157,Moongate,walkable,5
+158,stand,blocking,1
+159,pocketwatch,walkable,1
+161,,climbable,1
+162,,climbable,1
+163,rock outcropping,blocking,5
+164,slate roof,climbable,1
+165,slate roof,climbable,1
+166,slate roof,climbable,1
+167,slate roof,climbable,1
+168,beam of light,walkable,5
+169,slate roof,climbable,1
+170,wood roof,climbable,1
+171,wood roof,climbable,1
+172,wood roof,climbable,1
+173,wood roof,climbable,1
+174,wood roof,climbable,1
+175,wood roof,climbable,1
+176,wood roof,climbable,1
+177,alchemist device,blocking,1
+178,cloth map,walkable,1
+179,lightning,walkable,0
+180,mountain,blocking,1
+181,tree,blocking,7
+182,mountain,blocking,1
+183,mountain,blocking,1
+184,Caddelite meteor,blocking,2
+185,dead tree,blocking,6
+186,carpet,walkable,1
+187,carpet,walkable,1
+188,rug,walkable,0
+189,floor,walkable,0
+190,carpet,walkable,0
+191,fortress,climbable,5
+192,fortress,climbable,5
+193,floor,climbable,1
+194,Knight's Bridge piece,blocking,7
+195,mountain,blocking,5
+196,mountain,blocking,5
+197,mountain,blocking,5
+198,light,walkable,0
+199,mast,blocking,7
+200,trap,walkable,1
+201,debris,walkable,1
+202,debris,blocking,3
+203,small rock,walkable,1
+204,scorch mark,walkable,2
+205,wall,blocking,4
+206,wall,blocking,4
+207,scorch mark,walkable,2
+208,broken door,walkable,5
+209,dust,walkable,1
+210,chicken coop,climbable,1
+211,broken door,walkable,5
+212,bridge,blocking,5
+213,bridge,blocking,5
+214,bridge,blocking,5
+215,bridge,blocking,5
+216,broken wall,blocking,3
+217,broken wall,blocking,4
+218,wall,blocking,3
+219,wall,blocking,3
+220,wall,blocking,4
+221,wall,blocking,3
+222,blue flag,walkable,2
+223,broken roof,blocking,1
+224,dust,walkable,0
+225,Abbey door,door,7
+231,blinker,walkable,1
+232,red flag,walkable,2
+233,platform,climbable,1
+234,Sphere Generator,blocking,5
+235,Sphere Generator,blocking,5
+236,Sphere Generator,blocking,5
+237,Sphere Generator,blocking,5
+238,Cube Generator,blocking,5
+239,Cube Generator,blocking,5
+240,Cube Generator,blocking,5
+241,Cube Generator,blocking,5
+242,Tetrahedron Generator,blocking,5
+243,Tetrahedron Generator,blocking,5
+244,Tetrahedron Generator,blocking,5
+245,Tetrahedron Generator,blocking,5
+246,Abbey door,door,7
+248,green flag,walkable,2
+249,top,walkable,1
+250,Abbey door,door,7
+251,sails,walkable,7
+252,grandfather clock,blocking,4
+253,wall,climbable,5
+254,wall,climbable,5
+255,broken wall,blocking,5
+256,delta,walkable,0
+257,fortress gateway,walkable,1
+258,keg,blocking,5
+260,fortress,climbable,5
+261,loom,blocking,3
+262,Go away!,walkable,1
+263,fortress,climbable,5
+264,iron bars,walkable,1
+266,wall,climbable,5
+267,mysterious craft,blocking,2
+268,mirror,blocking,5
+269,carpet,walkable,1
+270,door,door,5
+271,portcullis,blocking,5
+272,portcullis,blocking,5
+273,wall,climbable,5
+275,Egg,walkable,1
+276,crossbeam,blocking,1
+277,crossbeam,blocking,1
+278,musket,walkable,1
+279,cavern,blocking,5
+280,ignite,walkable,1
+281,curse,walkable,1
+282,painting,walkable,2
+283,desk,climbable,2
+284,sundial,blocking,3
+285,cloak,walkable,1
+286,banner,walkable,5
+287,swordstrike,walkable,1
+288,slime attack,walkable,1
+289,The Passion Play Theatre,blocking,5
+290,closed shutters,blocking,3
+291,closed shutters,blocking,3
+292,seat,walkable,2
+293,tapestry,walkable,4
+294,carpet,walkable,1
+295,wedding ring,walkable,1
+296,ring of invisibility,walkable,1
+297,ring of protection,walkable,1
+298,ring of regeneration,walkable,1
+300,cooking utensils,walkable,1
+301,cart,climbable,1
+302,pumpkin,walkable,2
+303,metal wall,blocking,5
+305,The Black Gate,walkable,7
+306,evergreen,blocking,7
+307,laboratory burner,blocking,1
+308,wall,climbable,5
+309,fallen tree,blocking,2
+310,tree,blocking,7
+311,trophy,walkable,2
+312,gargoyle futon,walkable,0
+313,stump,blocking,2
+314,weeds,walkable,0
+315,fallen tree,blocking,2
+316,large rock,blocking,0
+320,brambles,blocking,3
+321,reeds,walkable,5
+322,open shutters,walkable,3
+323,cattails,walkable,3
+324,mountain,blocking,1
+325,dead tree,blocking,7
+326,tropical plant,blocking,2
+327,cypress tree,blocking,7
+328,baobab tree,blocking,6
+329,kite,walkable,2
+330,Virtue Stone,walkable,1
+331,rock,blocking,0
+332,tree,blocking,6
+333,table,climbable,2
+334,bubbles,walkable,0
+335,bubbles,walkable,0
+336,light source,walkable,2
+337,ghost,walkable,4
+338,lit light source,walkable,2
+339,dispel magic,walkable,1
+340,potion,walkable,1
+341,rock,blocking,2
+342,boulder,blocking,4
+343,boulder,blocking,3
+344,wall,climbable,5
+345,wall,climbable,5
+346,wall,climbable,2
+347,broken wall,blocking,2
+348,wall,climbable,5
+349,wall,climbable,5
+350,wall,climbable,5
+351,wall,climbable,5
+352,fortress,climbable,5
+353,greaves,walkable,1
+355,wall,climbable,5
+356,broken wall,blocking,5
+357,wall,climbable,5
+358,wall,climbable,2
+359,wall,climbable,2
+360,sign,walkable,4
+361,sign,walkable,4
+362,wall,climbable,5
+363,gargoyle futon,walkable,0
+364,platform,climbable,1
+365,wall,climbable,5
+366,wall,climbable,5
+367,floor,climbable,1
+368,floor,climbable,1
+369,floor,climbable,1
+370,floor,climbable,1
+371,wall,climbable,5
+372,open shutters,walkable,3
+373,glass wall,blocking,5
+374,wall,climbable,2
+376,door,door,5
+377,food item,walkable,1
+378,fence,climbable,2
+379,sign,walkable,1
+383,magic helm,walkable,1
+384,waves,blocking,0
+385,stairs,climbable,1
+386,stairs,climbable,2
+387,stairs,climbable,3
+388,eating utensils,walkable,1
+389,cavern,blocking,2
+390,cavern,blocking,5
+391,cavern,blocking,4
+392,Abbey door,door,7
+393,wall,blocking,5
+395,mountain,blocking,5
+396,mountain,blocking,5
+397,,walkable,1
+398,,walkable,1
+399,energy mist,walkable,1
+400,body,walkable,1
+402,ferry,climbable,1
+404,honeycomb,blocking,5
+405,ship's hold,walkable,1
+406,nightstand,blocking,2
+407,desk,climbable,2
+408,paralyze,walkable,1
+409,trophy,blocking,3
+410,mining machine,blocking,5
+411,conveyer belt,climbable,1
+412,The Black Gate Dais,climbable,1
+413,carpet,walkable,1
+414,body,walkable,1
+415,garbage,walkable,1
+416,drawers,climbable,3
+417,magic bolt,walkable,1
+418,giant bones,blocking,3
+419,delta,walkable,0
+420,fence,climbable,2
+421,fence,climbable,2
+422,fence,climbable,2
+423,crops,walkable,3
+424,poison,walkable,1
+425,wall,climbable,5
+426,stairs,climbable,1
+427,stairs,climbable,2
+428,stairs,climbable,3
+429,stairs,climbable,4
+430,stairs,climbable,5
+431,bellows,blocking,2
+432,door,door,5
+433,door,door,5
+434,cask,blocking,4
+435,lit sconce,walkable,2
+436,wagon floor,climbable,3
+437,wagon wheel,blocking,4
+438,window,blocking,3
+439,chimney,blocking,2
+440,light,walkable,0
+441,floor,climbable,1
+442,fireplace,blocking,3
+443,telekinesis,walkable,1
+444,hood,walkable,1
+447,wounded man,blocking,1
+453,tree,blocking,7
+470,well,blocking,2
+474,sling,walkable,1
+481,sconce,walkable,2
+483,rug,walkable,0
+484,bars,blocking,5
+486,statue,blocking,4
+497,wall,climbable,5
+503,puppet show,blocking,5
+507,corpse,walkable,1
+508,stained glass window,blocking,6
+512,stained glass window,blocking,6
+515,closed drawbridge,blocking,7
+516,delta,walkable,0
+517,insects,walkable,2
+518,glass counter tops,blocking,2
+520,Virtue Roulette Table,blocking,2
+522,locked chest,climbable,1
+526,lit lamp,blocking,7
+527,death bolt,walkable,1
+531,cavern,blocking,5
+535,spent sconce,walkable,1
+538,fence,climbable,2
+539,chain coif,walkable,1
+540,douse,walkable,1
+541,great helm,walkable,1
+542,crested helm,walkable,1
+543,buckler,walkable,1
+544,broken columns,blocking,2
+545,curved heater,walkable,1
+546,broken dish,walkable,1
+547,magic sword,walkable,1
+548,Hoe of Destruction,walkable,1
+549,lightning whip,walkable,1
+550,magic boomerang,walkable,1
+551,fire sword,walkable,1
+552,magic axe,walkable,1
+553,firedoom staff,walkable,1
+554,burst arrows,walkable,1
+556,magic arrows,walkable,1
+557,juggernaut hammer,walkable,1
+558,lucky arrows,walkable,1
+559,Magebane,walkable,1
+560,love arrows,walkable,1
+561,great dagger,walkable,1
+562,The Death Scythe,walkable,1
+563,blowgun,walkable,1
+564,poison dagger,walkable,1
+565,starbursts,walkable,1
+566,glimmer,walkable,1
+567,sword of defense,walkable,1
+568,Tseramed Arrows,walkable,1
+569,leather armour,walkable,1
+570,scale armour,walkable,1
+571,chain armour,walkable,1
+572,wooden shield,walkable,1
+573,plate armour,walkable,1
+574,leather leggings,walkable,1
+575,chain leggings,walkable,1
+576,plate leggings,walkable,1
+577,pedestal,blocking,2
+578,spiked shield,walkable,1
+579,leather gloves,walkable,1
+580,gauntlets,walkable,1
+581,ammunition,walkable,1
+582,leather collar,walkable,1
+583,bed roll,walkable,1
+584,kidney belt,walkable,1
+585,shoes,walkable,1
+586,gorget,walkable,1
+587,boots,walkable,1
+588,swamp boots,walkable,1
+589,pitchfork,walkable,1
+590,club,walkable,1
+591,main gauche,walkable,1
+592,spear,walkable,1
+593,throwing axe,walkable,1
+594,dagger,walkable,1
+595,torch,walkable,1
+596,morning star,walkable,1
+597,bow,walkable,1
+598,crossbow,walkable,1
+599,sword,walkable,1
+600,two-handed hammer,walkable,1
+601,two handed axe ,walkable,1
+602,two-handed sword,walkable,1
+603,halberd,walkable,1
+604,Glass Sword,walkable,1
+605,boomerang,walkable,1
+606,magic bow,walkable,1
+607,path,walkable,1
+608,decorative sword,walkable,1
+609,kite shield,walkable,1
+610,delta,walkable,0
+611,lily pads,walkable,0
+612,surf,walkable,0
+613,surf,walkable,0
+614,cleaver,walkable,1
+615,knife,walkable,1
+616,bottle,walkable,1
+618,scythe,walkable,1
+619,fern,blocking,3
+620,rake,walkable,1
+621,delayed explosion,walkable,1
+622,whip,walkable,1
+623,hammers,walkable,1
+624,pick,walkable,1
+625,shovel,walkable,1
+626,hoe,walkable,1
+627,lockpicks,walkable,1
+628,cup,walkable,1
+629,lightning wand,walkable,1
+630,fire wand,walkable,1
+631,tree,blocking,7
+632,surf,walkable,0
+633,table,climbable,2
+634,standing stone,blocking,3
+635,custom sword,walkable,1
+636,serpentine daggers,walkable,1
+637,serpentine sword,walkable,1
+638,Caddellite Helmet,walkable,1
+639,death vortex,walkable,1
+640,ring,walkable,1
+641,keys,walkable,1
+642,book,walkable,1
+643,tree,blocking,1
+644,gold coins,walkable,1
+645,gold nuggets,walkable,1
+646,gold bars,walkable,1
+647,triple crossbow,walkable,1
+648,sleeping powder,walkable,1
+649,venom,walkable,1
+650,sextant,walkable,1
+651,spinning wheel,blocking,3
+652,cart,climbable,1
+653,bale of wool,climbable,1
+654,spindle of thread,walkable,1
+655,topiary,blocking,6
+656,wine press,blocking,3
+657,curtain,walkable,5
+658,dough,walkable,1
+659,mace,walkable,1
+660,cart,climbable,1
+661,mongbat,walkable,3
+662,fishing rod,walkable,1
+663,magic shield,walkable,1
+664,stove,blocking,2
+665,prow,blocking,7
+666,magic armor,walkable,1
+667,cobwebs,walkable,3
+668,sword blank,walkable,1
+669,cactus,blocking,7
+670,maple tree,blocking,7
+671,mushrooms,walkable,1
+672,shrubbery,blocking,6
+673,plant,blocking,2
+674,silverleaf tree,blocking,7
+675,desk item,walkable,2
+676,,walkable,1
+677,sack of wheat,climbable,1
+678,curtain,walkable,5
+679,drawers,climbable,3
+680,deck,climbable,1
+681,jar,walkable,1
+682,glass item,blocking,2
+683,tree,blocking,7
+684,trellis,blocking,1
+685,mechanism,blocking,7
+686,magic leggings,walkable,1
+687,pillar,blocking,5
+688,blank type,walkable,1
+689,harpsichord,blocking,2
+690,xylophone,blocking,2
+691,lyre,walkable,1
+692,lute,walkable,1
+693,whistle,walkable,1
+694,cave door,blocking,5
+695,grandfather clock,blocking,4
+696,bed ,climbable,1
+697,podium,blocking,2
+698,shears,walkable,1
+699,surf,walkable,0
+700,deck,climbable,1
+701,lit torch,walkable,1
+702,cannon,blocking,2
+703,cannon ball,walkable,1
+704,powder keg,blocking,2
+705,rope ladder,climbable,1
+707,The Black Sword,walkable,1
+708,Stocks,blocking,3
+709,guillotine,blocking,2
+710,log saw,walkable,1
+711,blocking,walkable,2
+712,stove,blocking,4
+713,post,blocking,5
+714,rope ladder,climbable,1
+715,tombstone,blocking,2
+716,bird,walkable,1
+717,plate,walkable,1
+718,pedestal,blocking,2
+719,water trough,blocking,2
+722,arrows,walkable,1
+723,bolts,walkable,1
+724,Fellowship Icon,blocking,4
+725,Virtue Roulette Wheel,blocking,2
+726,lens,blocking,3
+728,Caddellite chunks,walkable,1
+729,crystal ball,walkable,1
+730,baby,walkable,1
+731,,walkable,1
+732,window,blocking,3
+733,carpet,walkable,0
+734,guillotine,blocking,5
+735,archery target,blocking,4
+736,surf,walkable,0
+737,surf,walkable,0
+738,pants,walkable,1
+739,firepit,blocking,2
+740,well,blocking,2
+741,water trough,blocking,2
+742,stuffed toy,walkable,2
+743,strength tester,blocking,7
+744,telescope,blocking,7
+745,harp,blocking,3
+746,The Orrery Crystal,walkable,1
+747,Soul Cage,blocking,2
+748,Well of Souls,blocking,2
+749,alchemist aparatus,walkable,1
+750,carpet,walkable,0
+751,surf,walkable,0
+752,music box,walkable,1
+753,stone harpie,blocking,3
+754,vial,walkable,1
+755,orrery paths,walkable,0
+756,caltrops,walkable,4
+757,cart,climbable,4
+758,carpet,walkable,0
+759,ethereal ring,walkable,1
+760,gem,walkable,1
+761,spellbook,walkable,1
+762,body,walkable,1
+763,The Rat Race Game,blocking,2
+764,The Rat Race Game,blocking,1
+765,The Planet Britannia,walkable,4
+766,The Moon Trammel,walkable,7
+767,small orrery,walkable,1
+768,energy field,walkable,4
+769,smokebombs,walkable,1
+770,orrery viewer,blocking,1
+771,Rudyom's Wand,walkable,1
+772,honey,walkable,1
+773,cart,climbable,2
+774,cart,climbable,3
+775,ship rails,blocking,3
+776,moongate,walkable,5
+777,moongate,walkable,5
+778,body,walkable,1
+779,Moongate,walkable,5
+780,bubbles,walkable,0
+781,gang plank,climbable,2
+782,flaming oil,walkable,1
+783,tree,blocking,7
+785,Orb of the Moons,walkable,1
+786,The Vortex Cube,walkable,1
+787,lever,walkable,1
+788,switch,walkable,1
+789,sword in a stone,blocking,2
+790,invisibility dust,walkable,1
+791,ship,climbable,3
+792,Magician's Wand,walkable,1
+793,,walkable,0
+794,water,walkable,0
+795,mantle,blocking,1
+796,draft horse,blocking,4
+797,scroll,walkable,1
+798,sealed box,walkable,1
+799,unsealed box,walkable,1
+800,chest,climbable,1
+801,backpack,walkable,1
+802,bag,walkable,1
+803,basket,walkable,1
+804,crate,climbable,1
+807,lightning,walkable,1
+808,surf,walkable,0
+809,The Triples Game,blocking,1
+810,bucket,walkable,1
+812,Iron Maiden,blocking,5
+813,The Rack,blocking,2
+814,The Triples Game,blocking,2
+815,stone chips,walkable,1
+816,nest,walkable,1
+817,cactus,walkable,2
+818,The Triples Game,blocking,1
+819,barrel,climbable,2
+820,plaque,walkable,1
+821,painting,walkable,2
+822,diaper,walkable,1
+823,artist's equipment,walkable,1
+824,pitcher,walkable,1
+825,campfire,walkable,1
+826,tree top,blocking,7
+827,bandages,walkable,1
+828,wall,climbable,5
+829,floor,climbable,1
+830,gear,blocking,1
+831,baking hearth,blocking,1
+832,glass wall,blocking,5
+833,glass wall,blocking,5
+834,surf,walkable,0
+835,magic gauntlets,walkable,1
+836,antique armor,walkable,1
+837,easel,walkable,4
+838,Avatar Costume,walkable,1
+839,hourglass,walkable,2
+840,flying carpet,walkable,1
+841,glass wall,blocking,5
+842,reagents,walkable,1
+843,magic gorget,walkable,1
+845,wall,climbable,5
+846,mantle,blocking,1
+847,table ,blocking,2
+848,mirror,blocking,5
+849,tapestry,walkable,4
+850,carpet,walkable,0
+851,cloth,walkable,1
+852,crenellations,blocking,3
+853,greenhouse roof,blocking,5
+854,statue,blocking,5
+855,Rats Face Cage,blocking,6
+856,fire bolt,walkable,1
+857,dragon breath,walkable,1
+858,bookshelf,blocking,1
+859,casting frames,walkable,1
+860,fencing dummy,walkable,5
+862,shaft,blocking,1
+863,kitchen items,walkable,1
+866,Thumbscrews,walkable,1
+867,victim,walkable,0
+868,wall mount,walkable,2
+869,wall,climbable,5
+870,drawbridge,climbable,1
+871,wall,climbable,5
+872,stove,blocking,2
+873,chair,walkable,2
+874,,walkable,0
+875,surf,walkable,0
+876,metal wall,blocking,5
+877,Rune,walkable,1
+878,crenellations,blocking,3
+879,wall,climbable,5
+880,shaft,blocking,1
+885,Fellowship Staff,walkable,1
+886,anchor,walkable,1
+887,test tubes,walkable,1
+888,horn,walkable,2
+889,lamp post,blocking,7
+890,table,climbable,2
+891,wood roof,climbable,1
+892,body,walkable,1
+893,pool of water,blocking,2
+894,monolith,blocking,5
+895,fire field,walkable,4
+896,crenellations,blocking,3
+897,seat,walkable,2
+898,altar,climbable,2
+899,wall,climbable,2
+900,poison field,walkable,4
+901,crenellations,blocking,3
+902,sleep field,walkable,4
+903,crenellations,blocking,3
+904,wall,climbable,2
+905,cavern,blocking,5
+906,Statue,blocking,3
+907,surf,walkable,0
+908,tile roof,climbable,1
+909,wall,climbable,5
+910,wall,climbable,5
+911,surf,walkable,0
+912,blood,walkable,0
+913,pillar,blocking,5
+914,blackrock,walkable,1
+915,chunks of lead,walkable,1
+916,chunks of iron ore,walkable,1
+917,shaft,blocking,4
+918,surf,walkable,0
+919,bookshelf,blocking,1
+920,pillar,blocking,5
+921,betting marker,walkable,1
+922,small bush,walkable,2
+923,piece of wood,climbable,1
+924,cavern,blocking,5
+925,cavern,blocking,5
+926,delta,walkable,0
+927,delta,walkable,0
+928,cavern,blocking,5
+930,delta,walkable,0
+931,mountain,blocking,1
+932,tree,blocking,4
+933,millsaw,blocking,5
+934,water wheel,blocking,7
+935,portcullis door,walkable,0
+936,portcullis door,walkable,0
+937,Gargoyle jewelry,walkable,1
+938,delta,walkable,0
+939,wall,blocking,5
+940,wall,blocking,5
+941,water wheel,blocking,7
+942,water wheel,blocking,7
+943,wall,blocking,5
+944,pot,walkable,1
+945,Guardian Statue,blocking,7
+947,bee stingers,walkable,1
+948,bolts,walkable,1
+949,winch,blocking,2
+950,winch,blocking,2
+951,water wheel,blocking,7
+953,wall,blocking,5
+954,greenhouse roof,blocking,1
+955,amulet,walkable,1
+956,wood roof,climbable,1
+958,The Moon Felucca,walkable,7
+959,mountain,blocking,1
+960,mushroom,blocking,2
+961,barge,climbable,1
+962,slate roof,climbable,1
+963,slate roof,climbable,1
+964,table,climbable,2
+966,tile roof,climbable,1
+967,broken wall,blocking,5
+968,Enclosed Prism,walkable,1
+969,mountain,blocking,1
+971,table,climbable,2
+972,wall,blocking,5
+973,stairs,climbable,4
+974,stairs,climbable,5
+975,wagon door,door,5
+976,wagon,climbable,5
+977,wagon,climbable,5
+978,wagon,climbable,5
+979,wagon roof,blocking,1
+980,wall,blocking,5
+981,Prism,walkable,1
+982,chimney,blocking,3
+983,mountain,blocking,1
+984,piece of wood,climbable,1
+985,waves,walkable,0
+986,stove top,blocking,4
+987,baby in a cradle,blocking,2
+988,planet,walkable,3
+990,The Dark Core,blocking,2
+991,anvil,blocking,1
+992,cradle,blocking,2
+993,mushroom,blocking,2
+994,tongs,walkable,1
+995,cauldron,blocking,2
+996,glass wall,blocking,5
+997,spent light source,walkable,2
+998,horseshoe,walkable,1
+999,plant,blocking,3
+1000,table,climbable,2
+1001,table,climbable,2
+1002,table,climbable,2
+1003,table,climbable,2
+1004,leather helm,walkable,1
+1005,glass wall,blocking,5
+1006,broken wall,blocking,5
+1007,glass wall,blocking,5
+1008,waves,walkable,0
+1009,waves,walkable,0
+1010,prism,blocking,5
+1011,bed ,climbable,1
+1012,surf,walkable,0
+1013,rocking horse,walkable,2
+1014,floor,climbable,1
+1016,floor,climbable,1
+1017,ship,blocking,3
+1018,table,climbable,2
+1019,glass wall,blocking,5
+1020,surf,walkable,0
+1021,time barrier,blocking,5
+1022,surf,walkable,0
+1023,haystack,blocking,2

@@ -1,27 +1,35 @@
 ﻿shape_id,name,suggested_cost
-0,"carpet",0.5
-1,"sidewalk",1.5
+0,"carpet",1
+1,"sidewalk",1
+2,"water",99
 3,"lightning",99
 4,"grass",2
 5,"cavefloor",2
 6,"arrow",99
+7,"spring",2
+8,"water",99
 9,"fireball",99
 10,"sand",2
 11,"ether",99
 12,"void",99
-14,"ford",99
-15,"ford",99
-16,"rut",2
+13,"spring",2
+14,"ford",2
+15,"ford",2
+16,"rut",1
 17,"planking",1
 18,"tile",1
+19,"",99
+20,"",99
 21,"stone floor",1
 22,"swamp",5
-23,"dirt",3
+23,"dirt",2
 24,"cobblestone",1
-25,"rut",3
-27,"carpet",0.5
+25,"rut",1
+26,"",99
+27,"carpet",1
 28,"sandy grass",2
-29,"muddy bank",3
+29,"muddy bank",2
+30,"",99
 31,"grass",2
 32,"grass",2
 33,"grass",2
@@ -37,8 +45,9 @@
 43,"grass",2
 44,"grass",2
 45,"grass",2
-46,"rocky grass",3
-47,"carpet",0.5
+46,"rocky grass",2
+47,"carpet",1
+48,"ethereal void",99
 49,"cavefloor",2
 50,"cavefloor",2
 51,"cavefloor",2
@@ -54,6 +63,8 @@
 61,"cavefloor",2
 62,"cavefloor",2
 63,"cavefloor",2
+64,"",99
+65,"",99
 66,"grass",2
 67,"muck",3
 68,"enchant missiles",99
@@ -71,65 +82,70 @@
 80,"charm",99
 81,"flamestrike",99
 82,"delayed explosion",99
-83,"",99
+83,"",2
 84,"ford",2
-85,"muddy bank",3
-86,"muddy bank",3
-87,"muddy bank",3
-88,"muddy bank",3
-89,"muddy bank",3
-90,"muddy bank",3
-91,"muddy bank",3
-92,"muddy bank",3
-93,"muddy bank",3
-94,"muddy bank",3
-95,"muddy bank",3
-96,"muddy bank",3
-97,"muddy bank",3
-98,"muddy bank",3
-99,"muddy bank",3
-100,"muddy bank",3
-101,"muddy bank",3
-102,"muddy bank",3
-103,"muddy bank",3
-104,"muddy bank",3
-105,"muddy bank",3
-106,"muddy bank",3
-107,"muddy bank",3
-108,"muddy bank",3
-109,"muddy bank",3
+85,"muddy bank",2
+86,"muddy bank",2
+87,"muddy bank",2
+88,"muddy bank",2
+89,"muddy bank",2
+90,"muddy bank",2
+91,"muddy bank",2
+92,"muddy bank",2
+93,"muddy bank",2
+94,"muddy bank",2
+95,"muddy bank",2
+96,"muddy bank",2
+97,"muddy bank",2
+98,"muddy bank",2
+99,"muddy bank",2
+100,"muddy bank",2
+101,"muddy bank",2
+102,"muddy bank",2
+103,"muddy bank",2
+104,"muddy bank",2
+105,"muddy bank",2
+106,"muddy bank",2
+107,"muddy bank",2
+108,"muddy bank",2
+109,"muddy bank",2
 110,"",99
-111,"sandy ground",3
+111,"sandy ground",2
 112,"ford",2
-118,"sandy grass",3
-119,"sandy grass",3
-120,"sandy grass",3
-121,"sandy grass",3
-122,"sandy grass",3
-123,"sandy grass",3
-124,"sandy grass",3
-125,"sandy grass",3
-126,"sandy grass",3
-127,"sandy grass",3
-128,"sandy grass",3
-129,"sandy grass",3
-130,"sandy grass",3
-131,"sandy grass",3
-132,"sandy grass",3
-133,"sandy grass",3
-134,"grassy mud",3
-135,"grassy mud",3
-136,"grassy mud",3
-137,"grassy mud",3
-138,"grassy mud",3
-139,"grassy mud",3
-140,"grassy mud",3
-141,"grassy mud",3
-142,"grassy mud",3
-143,"grassy mud",3
-144,"grassy mud",3
-145,"grassy mud",3
+113,"swamp",5
+114,"swamp",5
+115,"swamp",5
+116,"swamp",5
+117,"swamp",5
+118,"sandy grass",2
+119,"sandy grass",2
+120,"sandy grass",2
+121,"sandy grass",2
+122,"sandy grass",2
+123,"sandy grass",2
+124,"sandy grass",2
+125,"sandy grass",2
+126,"sandy grass",2
+127,"sandy grass",2
+128,"sandy grass",2
+129,"sandy grass",2
+130,"sandy grass",2
+131,"sandy grass",2
+132,"sandy grass",2
+133,"sandy grass",2
+134,"grassy mud",2
+135,"grassy mud",2
+136,"grassy mud",2
+137,"grassy mud",2
+138,"grassy mud",2
+139,"grassy mud",2
+140,"grassy mud",2
+141,"grassy mud",2
+142,"grassy mud",2
+143,"grassy mud",2
+144,"grassy mud",2
+145,"grassy mud",2
 146,"grass",2
 147,"grass",2
 148,"grass",2
-149,"mud",3
+149,"mud",2
