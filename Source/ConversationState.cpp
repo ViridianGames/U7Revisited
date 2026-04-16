@@ -371,7 +371,7 @@ void ConversationState::Draw()
 
 			DrawTextureEx(*thisTexture, {100, 135}, 0, 2, WHITE);
 
-			float height = m_answers.size() * g_SmallFont.get()->baseSize * 2.1;
+			float height = m_answers.size() * g_SmallFont.get()->baseSize * 2;
 
 			float width = 0;
 
@@ -379,7 +379,7 @@ void ConversationState::Draw()
 
 			for (int i = 0; i < m_answers.size(); i++)
 			{
-				Vector2 textsize = MeasureTextEx(*g_SmallFont.get(), std::string("* " + m_answers[i]).c_str(), g_SmallFont.get()->baseSize * 2, 1);
+				Vector2 textsize = MeasureTextEx(*g_SmallFont.get(), std::string("* " + m_answers[i]).c_str(), g_SmallFont.get()->baseSize * 2.1, 1);
 				if (textsize.x > width)
 					width = textsize.x;
 			}
@@ -389,7 +389,7 @@ void ConversationState::Draw()
 			for (int i = 0; i < m_answers.size(); i++)
 			{
 				DrawOutlinedText(g_SmallFont, "* " + m_answers[i],
-								 {190, float(135 + (i * g_SmallFont.get()->baseSize * 2.1))}, g_SmallFont.get()->baseSize * 2,
+								 {190, float(135 + (i * g_SmallFont.get()->baseSize * 2))}, g_SmallFont.get()->baseSize * 2,
 								 1, YELLOW);
 			}
 		}
