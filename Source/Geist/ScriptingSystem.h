@@ -11,8 +11,9 @@
 #include <memory>
 #include <map>
 #include <variant> // For flexible argument types
+#include <atomic>
 
-class Config;
+class Config; 
 
 class ScriptingSystem : public Object
 {
@@ -79,9 +80,15 @@ public:
     std::unordered_map<std::string, double> m_instrumentResumeTime;
     float m_lastInstrumentDumpTime = 0.0f;
 
+    // Total script error counter (monotonic, used for telemetry delta)
+    std::atomic<uint64_t> m_totalScriptErrors{0};
+
+    // Per-script cooldown map: when a script errors, set cooldown until GetTime() reaches this value
+    std::unordered_map<std::string, float> m_scriptErrorCooldowns;
+
     // Throttling: limit number of script start/resume operations performed on main thread per frame
-    int m_maxScriptStartsPerFrame = 6;    // allows up to 8 new script starts per frame
-    int m_maxScriptResumesPerFrame = 12;  // allows up to 16 resumes per frame
+    int m_maxScriptStartsPerFrame = 8;    // allows up to 8 new script starts per frame
+    int m_maxScriptResumesPerFrame = 32;  // allows up to 16 resumes per frame
     int m_scriptStartsThisFrame = 0;
     int m_scriptResumesThisFrame = 0;
 

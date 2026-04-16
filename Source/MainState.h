@@ -10,6 +10,8 @@
 #include <thread>
 #include <mutex>
 #include <condition_variable>
+#include <atomic>
+#include "U7Globals.h"
 
 class ParticleSystem;
 class Gui;
@@ -61,7 +63,7 @@ public:
 	void UpdateTime();
 
 	void SetLuaFunction(const std::string& func_name) { m_luaFunction = func_name; }
-	void StartObjectSelectionMode() { m_objectSelectionMode = true; }
+	void StartObjectSelectionMode() { m_objectSelectionMode = true; m_doingObjectSelection = true; }
 
 	void Bark(U7Object* object, const std::string& text, float duration = 3.0f);
 
@@ -75,8 +77,9 @@ public:
 	void HandleRenameButton();
 	void HandleNPCListButton();
 	void UpdateDebugToolsWindow();
+	void DumpNpcScheduleStats();
 
-   void DrawDebugChunkPathfindingInfo();
+  // void DrawDebugChunkPathfindingInfo();
 
    float m_waitTime = 0;
 
@@ -109,12 +112,12 @@ public:
 		bool success = false;
 		Vector3 dest = { 0.0f, 0.0f, 0.0f };
 	};
-
+	
 	std::deque<SchedulePathRequest> m_schedulePathQueue; // enqueued schedule pathfinding requests
 	int m_schedulePathBudgetPerFrame = 6; // kept for legacy/budget reasons (not used for sync pathfinding)
 
-	// Background worker thread + synchronization for pathfinding
-	std::thread m_pathfinderThread;
+	// Background worker threads + synchronization for pathfinding
+	std::vector<std::thread> m_pathfinderThreads;
 	std::mutex m_scheduleMutex;                 // protects m_schedulePathQueue
 	std::condition_variable m_scheduleCv;
 	bool m_pathfinderRunning = false;
@@ -125,6 +128,16 @@ public:
 
 	// Worker loop entry
 	void PathfindingWorkerLoop();
+
+	// Telemetry: track synchronous FindPath calls observed on main thread
+	std::atomic<uint64_t> m_syncFindPathCalls{0};
+
+	// Telemetry aggregation (per-second dumps)
+	float m_lastTelemetryDumpTime = 0.0f;
+	uint64_t m_lastAstarTotalCalls = 0;
+	uint64_t m_lastAstarTotalMs = 0;
+	uint64_t m_lastScriptErrorTotal = 0;
+	int m_resultsAppliedThisSecond = 0;
 
 	std::string m_luaFunction;
 
@@ -229,6 +242,35 @@ public:
 	// added near the other public members
 	void SetFollowingScheduleForNpc(int npcId, bool follow);
 	bool IsNpcSchedulesEnabled() const;
+
+	void MaybeUpdatePartyFollowing();
+
+	Vector3 m_lastPartyAnchorPos = { 0.0f, 0.0f, 0.0f };
+	float  m_lastPartyFollowTime = 0.0f;
+	float  m_partyFollowCooldown = 0.5f;        // seconds
+	float  m_partyAnchorThreshold = 3.0f;       // tiles moved since last anchor -> update
+	float  m_partyMemberFollowThreshold = 2.0f; // distance per member to trigger pathfind
+	float  m_partySpacing = 1.0f;               // tiles between members in the line
+
+	// Camera-drag while holding left+right: state & helpers
+	void StartCameraDrag();
+	void UpdateCameraDrag();
+	void EndCameraDrag();
+
+	// Mouse-hold detection (prevents quick clicks from triggering hold movement)
+	float m_rightMouseHoldStart = 0.0f;
+	bool  m_rightMouseHeld = false;
+	float m_rightMouseHoldThreshold = 0.15f; // seconds required to be considered a "hold"
+
+	float m_leftMouseHoldStart = 0.0f;
+	bool  m_leftMouseHeld = false;
+	float m_leftMouseHoldThreshold = 0.15f;  // seconds required to be considered a "hold"
+
+	// Camera-drag state (used while holding left+right)
+	Vector2 m_cameraDragLockPos = { 0.0f, 0.0f };
+	bool    m_cameraDragging = false;
+	bool    m_cursorLocked = false;
+	float   m_cameraDragSensitivity = 0.008f; // radians per pixel (tune as needed)
 };
 
 #endif

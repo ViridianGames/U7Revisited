@@ -551,9 +551,9 @@ void U7Object::NPCUpdate()
 	// and skip only the activity/coroutine handling below.)
 	bool isInParty = (g_Player->NPCIDInParty(m_NPCID) && m_NPCID != 0);
 
-	// Frame-based batching for activity coroutine updates only
-	// Movement/pathfinding runs every frame, but activity scripts run batched (16 NPCs per frame)
-	int batchSize = 16;
+	// Increase batch size so fewer NPCs are checked per frame for starting/resuming activity scripts.
+	// This reduces the number of script starts/resumes per frame for background NPCs.
+	int batchSize = 48; // tune between 32..128 depending on performance vs responsiveness
 
 	// totalAssigned is the number of NPC batch indices assigned so far (compact)
 	int totalAssigned = s_nextNpcBatchIndex.load();
@@ -758,13 +758,6 @@ void U7Object::NPCUpdate()
 
 		// Detect "walking in place" and always log it for debugging.
 		// Previously this was gated by g_LuaDebug, so you saw nothing when that flag was false.
-		NPCDebugPrint("Checking for walking in place: " + std::to_string(m_NPCID) +
-			" isMoving=" + std::to_string(m_isMoving) +
-			" Direction=(" + std::to_string(m_Direction.x) + "," + std::to_string(m_Direction.y) + "," + std::to_string(m_Direction.z) + ")" +
-			" Dest=(" + std::to_string(m_Dest.x) + "," + std::to_string(m_Dest.y) + "," + std::to_string(m_Dest.z) + ")" +
-			" Pos=(" + std::to_string(m_Pos.x) + "," + std::to_string(m_Pos.y) + "," + std::to_string(m_Pos.z) + ")" +
-			" deltav=" + std::to_string(deltav) +
-			" speed=" + std::to_string(m_speed));
 
 		if (m_isMoving &&
 			fabs(m_Direction.x) < 0.001f && fabs(m_Direction.z) < 0.001f)

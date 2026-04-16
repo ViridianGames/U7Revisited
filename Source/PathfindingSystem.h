@@ -3,14 +3,17 @@
 
 #include <vector>
 #include <unordered_map>
+#include <unordered_set>
 #include <queue>
 #include <string>
 #include <memory>
 #include <mutex>
+#include <deque>
 #include "raylib.h"
 #include "raymath.h"
-
+#include <cstdint>
 #include "Geist/Object.h"
+#include <atomic>
 
 // Forward declarations
 class U7Object;
@@ -68,6 +71,9 @@ public:
 	// Get the effective walkable height at a tile (obj.y + obj.height if object present, else 0.0)
 	float GetTileHeight(int worldX, int worldZ) const;
 
+	// New helper: collect all walkable surface heights (including ground 0.0)
+	std::vector<float> GetWalkableSurfaceHeights(int worldX, int worldZ) const;
+
 private:
 	// Helper: Check if specific tile is walkable
 	bool CheckTileWalkable(int worldX, int worldZ) const;
@@ -76,6 +82,8 @@ private:
 	struct TileWithCost {
 		Vector3 pos;
 		float cost;
+		bool visited;   // visited by A*
+		bool onPath;    // on final path
 	};
 	mutable std::vector<TileWithCost> m_cachedGreenTiles;
 	mutable std::vector<Vector3> m_cachedRedTiles;
@@ -83,6 +91,7 @@ private:
 	mutable int m_lastCameraCenterX = -9999;
 	mutable int m_lastCameraCenterZ = -9999;
 };
+
 
 
 
@@ -96,26 +105,13 @@ private:
 struct PathNode
 {
 	int x, z;           // World tile coordinates
+	float y;            // Chosen surface height for this node (world Y)
 	float g;            // Cost from start
 	float h;            // Heuristic cost to goal
 	float f;            // Total cost (g + h)
-	PathNode* parent;   // For path reconstruction
+	int parent;         // Index into node pool for parent (-1 = none)
 
-	PathNode(int _x, int _z) : x(_x), z(_z), g(0), h(0), f(0), parent(nullptr) {}
-};
-
-// ============================================================================
-// ChunkNode: Used by chunk-level A* algorithm
-// ============================================================================
-struct ChunkNode
-{
-	int x, z;           // Chunk coordinates (0-191)
-	float g;            // Cost from start
-	float h;            // Heuristic cost to goal
-	float f;            // Total cost (g + h)
-	ChunkNode* parent;  // For path reconstruction
-
-	ChunkNode(int _x, int _z) : x(_x), z(_z), g(0), h(0), f(0), parent(nullptr) {}
+	PathNode(int _x, int _z, float _y = 0.0f) : x(_x), z(_z), y(_y), g(0), h(0), f(0), parent(-1) {}
 };
 
 class AStar
@@ -128,7 +124,7 @@ public:
 	void LoadTerrainCosts(const std::string& filename);
 
 	// Find path from start to goal (returns waypoints in world coordinates)
-	std::vector<Vector3> FindPath(Vector3 start, Vector3 goal, PathfindingGrid* grid, ChunkInfo chunkMap[192][192] = nullptr);
+	std::vector<Vector3> FindPath(Vector3 start, Vector3 goal, PathfindingGrid* grid);
 
 	// Get movement cost for a tile (for debug visualization)
 	float GetMovementCost(int worldX, int worldZ, PathfindingGrid* grid);
@@ -136,55 +132,45 @@ public:
 	// Get terrain name by shape ID (for debug)
 	std::string GetTerrainName(int shapeID) const;
 
-	// ===== HIERARCHICAL PATHFINDING =====
-	
-	// Find chunk-level path using chunk connectivity graph
-	// Returns list of chunk coordinates to traverse, or empty if no path
-	std::vector<Vector2> FindChunkPath(int startChunkX, int startChunkZ, 
-	                                    int goalChunkX, int goalChunkZ,
-	                                    ChunkInfo chunkMap[192][192]);
-	
-	// Find best exit tile from a chunk toward a neighbor chunk
-	// direction: 0-7 (DIR_N, DIR_NE, etc.)
-	Vector2 FindChunkExitPoint(int chunkX, int chunkZ, int direction, 
-	                           PathfindingGrid* grid);
-	
-	// Find best entry tile into a chunk from a specific direction
-	// direction: direction coming FROM (opposite of movement direction)
-	Vector2 FindChunkEntryPoint(int chunkX, int chunkZ, int fromDirection,
-	                            PathfindingGrid* grid);
-	
-	// Direct tile-level A* without hierarchical optimization
-	std::vector<Vector3> FindPathDirect(Vector3 start, Vector3 goal, PathfindingGrid* grid);
+	// Debug markers recorded during FindPath()
+	// These are public so debug drawing code can query them.
+	std::unordered_set<int64_t> m_visitedNodeKeys; // quantized x/z/y keys visited during search
+	std::unordered_set<int64_t> m_finalPathKeys;   // quantized keys on the reconstructed final path
+
+	// Clear markers
+	void ClearDebugMarkers();
+
+	// Query markers (helpers for debug drawing)
+	bool IsNodeVisited(int x, int z, float y) const;
+	bool IsNodeOnFinalPath(int x, int z, float y) const;
 
 private:
-	// Heuristic function (Manhattan distance)
+	// Heuristic function (Manhattan/Octile distance)
 	float Heuristic(int x1, int z1, int x2, int z2);
 
-	// Get walkable neighbors of a node
-	std::vector<PathNode*> GetNeighbors(PathNode* node, PathfindingGrid* grid, int goalX, int goalZ);
+	// Get walkable neighbors of a node: now index-based (returns indices into nodePool)
+	std::vector<int> GetNeighbors(int nodeIndex, PathfindingGrid* grid, int goalX, int goalZ,
+		std::unordered_map<int, bool>& walkableCache,
+		std::unordered_map<int, std::vector<float>>& heightsCache,
+		std::vector<PathNode>& nodePool);
 
-	// Reconstruct path from goal to start
-	std::vector<Vector3> ReconstructPath(PathNode* goal, PathfindingGrid* grid);
+	// Reconstruct path from goal index
+	std::vector<Vector3> ReconstructPath(int goalIndex, PathfindingGrid* grid, std::vector<PathNode>& nodePool);
 
-	// Cleanup allocated nodes
+	// Cleanup allocated nodes (legacy)
 	void CleanupNodes();
 
-	// Chunk-level pathfinding helpers
-	void CleanupChunkNodes();
-	std::vector<ChunkNode*> GetChunkNeighbors(ChunkNode* node, ChunkInfo chunkMap[192][192]);
-	int GetDirectionToNeighbor(int fromX, int fromZ, int toX, int toZ);
-
-	// Temporary storage for nodes during pathfinding
+	// Temporary storage for nodes during pathfinding (legacy pointer storage not used)
 	std::vector<PathNode*> m_allocatedNodes;
-	std::vector<ChunkNode*> m_allocatedChunkNodes;
-	// Guard to make FindPath reentrant/thread-safe
-	mutable std::mutex m_findMutex;
+
 	// Terrain movement costs (shape ID -> cost multiplier)
 	std::unordered_map<int, float> m_terrainCosts;
 
 	// Terrain names (shape ID -> name)
 	std::unordered_map<int, std::string> m_terrainNames;
+
+	// Mutex to make FindPath reentrant/thread-safe
+	std::mutex m_findMutex;
 };
 
 
@@ -201,6 +187,9 @@ public:
 
 	std::vector<Vector3> FindPath(Vector3 start, Vector3 goal);
 
+	// Guard to make FindPath reentrant/thread-safe
+	mutable std::mutex m_findMutex;
+
 	std::string GetTerrainName(int shapeID) const { return m_aStar->GetTerrainName(shapeID); }
 
 	bool IsPositionWalkable(int worldX, int worldZ) const { return m_pathfindingGrid->IsPositionWalkable(worldX, worldZ); }
@@ -211,6 +200,24 @@ public:
 	std::unique_ptr<AStar> m_aStar;
 
 	ChunkInfo m_chunkInfoMap[192][192];
+
+	// Simple atomic telemetry counters for A* timing (monotonic totals)
+	std::atomic<uint64_t> m_astarTotalCalls{0};
+	std::atomic<uint64_t> m_astarTotalMs{0};
+	std::atomic<uint64_t> m_astarMaxMs{0};
+	// Queue/worker latency instrumentation (collected even if no worker yet)
+	std::atomic<uint64_t> m_astarQueueTotalMs{0};
+	std::atomic<uint64_t> m_astarQueueCalls{0};
+
+	// Moving-average of per-call A* duration (ms) for realtime telemetry
+	// Protected by m_instrumentMutex
+	double m_astarEmaMs = 0.0;
+	float  m_astarEmaAlpha = 0.10f; // EMA alpha (tunable)
+	std::mutex m_instrumentMutex;
+
+	// Record queue latency (ms) for a request that spent time waiting before worker handled it.
+	// Call from producer / worker when appropriate.
+	void RecordQueueLatency(uint64_t ms);
 
 	//  Since this looks both at the terrain and the objects, it needs to be called
 	//  after all loading is finished.

@@ -779,7 +779,7 @@ static int LuaGetObjectFrame(lua_State *L)
     if (g_LuaDebug) NPCDebugPrint("LUA: get_object_frame called");
     int object_id = luaL_checkinteger(L, 1);
     int frame = GetObjectFromID(object_id)->m_shapeData->GetFrame();
-    DebugPrint("ID: " + to_string(object_id) +  " Frame: " + to_string(frame));
+    //DebugPrint("ID: " + to_string(object_id) +  " Frame: " + to_string(frame));
     lua_pushinteger(L, frame);
     return 1;
 }
@@ -793,7 +793,6 @@ static int LuaSetObjectFrame(lua_State *L)
     U7Object *object = GetObjectFromID(object_id);
     if (object)
     {
-        DebugPrint("ID: " + to_string(object_id) +  " Frame: " + to_string(frame));
         object->SetFrame(frame);  // Now includes pathfinding grid update for doors
     }
     return 0;
