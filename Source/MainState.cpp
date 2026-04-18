@@ -56,7 +56,7 @@ void MainState::Init(const string& configfile)
 	m_MinimapArrow = g_ResourceManager->GetTexture("Images/minimaparrow.png", false);
 	GenTextureMipmaps(m_MinimapArrow);
 
-	m_usePointer = g_ResourceManager->GetTexture("Images/usepointer.png");
+	m_useCursor = g_ResourceManager->GetTexture("Images/usepointer.png");
 	m_errorCursor = g_ResourceManager->GetTexture("Images/error.png");
 
 	m_Gui = new Gui();
@@ -315,8 +315,8 @@ void MainState::UpdateTime()
 		g_scheduleTime = g_hour / 3;
 	}
 
-	unsigned char darklevel = 96;
-	unsigned char red_green_level = (darklevel / 4);
+	unsigned char darklevel = 64;
+	unsigned char red_green_level = (darklevel / 2);
 
 	if (g_hour == 20)
 	{
@@ -400,35 +400,51 @@ void MainState::UpdateInput()
 {
 	if (!g_allowInput)
 	{
-		if (IsKeyPressed(KEY_ESCAPE)) // ESC to exit the program ALWAYS works.
-		{
-			if (!g_Engine->m_askedToExit)
-			{
-				g_Engine->m_askedToExit = true;
-				g_StateMachine->PushState(STATE_ASKEXITSTATE);
-			}
-		}
-
-		return;
-	}
-
-	if (IsKeyPressed(KEY_ESCAPE))
-	{
-		if (!g_gumpManager->m_GumpList.empty())
-		{
-			g_gumpManager->m_GumpList.back().get()->SetIsDead(true);
-		}
-		else if (!g_Engine->m_askedToExit)
+		if (IsKeyPressed(KEY_ESCAPE) && !g_Engine->m_askedToExit)
 		{
 			g_Engine->m_askedToExit = true;
 			g_StateMachine->PushState(STATE_ASKEXITSTATE);
 		}
+		return;
 	}
 
-	if (IsKeyPressed(KEY_F1))
+	HandleEscapeKey();
+	HandleDebugKeys();
+	HandleGameKeys();
+	HandleObjectDrag();
+	HandleMiddleClick();
+	HandleRightDoubleClick();
+	HandleMouseHoldTimers();
+	HandleLeftDoubleClick();
+	HandleLeftSingleClick();
+	HandleAvatarMovement();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// UpdateInput() sub-handlers
+////////////////////////////////////////////////////////////////////////////////
+
+void MainState::HandleEscapeKey()
+{
+	if (!IsKeyPressed(KEY_ESCAPE))
+		return;
+
+	if (!g_gumpManager->m_GumpList.empty())
+		g_gumpManager->m_GumpList.back().get()->SetIsDead(true);
+	else if (!g_Engine->m_askedToExit)
 	{
-		g_StateMachine->MakeStateTransition(STATE_SHAPEEDITORSTATE);
+		g_Engine->m_askedToExit = true;
+		g_StateMachine->PushState(STATE_ASKEXITSTATE);
 	}
+}
+
+void MainState::HandleDebugKeys()
+{
+	if (IsKeyPressed(KEY_F1))
+		g_StateMachine->MakeStateTransition(STATE_SHAPEEDITORSTATE);
+
+	if (IsKeyPressed(KEY_F5))
+		g_isCameraLockedToAvatar = !g_isCameraLockedToAvatar;
 
 	if (IsKeyPressed(KEY_F7))
 	{
@@ -439,21 +455,8 @@ void MainState::UpdateInput()
 	if (IsKeyPressed(KEY_F8))
 	{
 		g_LuaDebug = !g_LuaDebug;
-		if (g_LuaDebug)
-		{
-			AddConsoleString("Lua debug mode ENABLED");
-		}
-		else
-		{
-			AddConsoleString("Lua debug mode DISABLED");
-		}
+		AddConsoleString(g_LuaDebug ? "Lua debug mode ENABLED" : "Lua debug mode DISABLED");
 	}
-
-	if (IsKeyPressed(KEY_F5))
-	{
-		g_isCameraLockedToAvatar = !g_isCameraLockedToAvatar;
-	}
-
 
 	if (IsKeyPressed(KEY_F10))
 	{
@@ -466,22 +469,20 @@ void MainState::UpdateInput()
 		g_showScriptedObjects = !g_showScriptedObjects;
 		AddConsoleString(g_showScriptedObjects ? "Script Debug ON - highlighting objects with scripts" : "Script Debug OFF");
 	}
-	
-	// inside MainState::Update(), add:
-	if (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyPressed(KEY_L))
-	{
-		DumpNpcScheduleStats();
-	}
 
-	// Right-click to debug specific tile when pathfinding debug is on
+	if (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyPressed(KEY_L))
+		DumpNpcScheduleStats();
+
 	if (m_showPathfindingDebug && IsMouseButtonPressed(MOUSE_BUTTON_RIGHT))
 	{
-		// Get world position where mouse clicked
 		int worldX = (int)floor(g_terrainUnderMousePointer.x);
 		int worldZ = (int)floor(g_terrainUnderMousePointer.z);
 		g_pathfindingSystem->m_pathfindingGrid->DebugPrintTileInfo(worldX, worldZ);
 	}
+}
 
+void MainState::HandleGameKeys()
+{
 	if (IsKeyPressed(KEY_KP_ENTER))
 	{
 		++g_hour;
@@ -489,9 +490,28 @@ void MainState::UpdateInput()
 			g_hour = 0;
 	}
 
+	if (IsKeyPressed(KEY_SPACE))
+		m_paused = !m_paused;
+
+	// Skip to next hour (Sandbox mode only)
+	if (IsKeyPressed(KEY_RIGHT) && m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX)
+	{
+		g_hour++;
+		if (g_hour >= 24)
+			g_hour = 0;
+		g_minute = 0;
+		AddConsoleString("Time skipped to " + std::to_string(g_hour) + ":00");
+	}
+
 	if (IsKeyPressed(KEY_PAGE_UP))
 	{
-		if (m_heightCutoff == 4.0f)
+		if (m_heightCutoff == 0.0f)
+		{
+			m_showObjects = true;
+			m_heightCutoff = 4.0f;
+			AddConsoleString("Viewing First Floor");
+		}
+		else if (m_heightCutoff == 4.0f)
 		{
 			m_heightCutoff = 10.0f;
 			AddConsoleString("Viewing Second Floor");
@@ -501,34 +521,6 @@ void MainState::UpdateInput()
 			m_heightCutoff = 16.0f;
 			AddConsoleString("Viewing Third Floor");
 		}
-	}
-
-	if (IsKeyPressed(KEY_SPACE))
-	{
-		m_paused = !m_paused;
-	}
-
-	// Skip to next hour (Sandbox mode only)
-	if (IsKeyPressed(KEY_RIGHT) && m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX)
-	{
-		// Advance to next full hour
-		if (g_minute > 0)
-		{
-			// If not on the hour, go to next hour
-			g_hour++;
-			if (g_hour >= 24)
-				g_hour = 0;
-			g_minute = 0;
-		}
-		else
-		{
-			// Already on the hour, go to next hour
-			g_hour++;
-			if (g_hour >= 24)
-				g_hour = 0;
-		}
-
-		AddConsoleString("Time skipped to " + std::to_string(g_hour) + ":00");
 	}
 
 	if (IsKeyPressed(KEY_PAGE_DOWN))
@@ -543,671 +535,523 @@ void MainState::UpdateInput()
 			m_heightCutoff = 4.0f;
 			AddConsoleString("Viewing First Floor");
 		}
+		else if (m_heightCutoff == 4.0f)
+		{
+			m_heightCutoff = 0.0f;
+			m_showObjects = false;
+			AddConsoleString("Viewing Ground");
+		}
 	}
 
-	if (IsKeyPressed(KEY_F7))
-	{
+	// F9: toggle pixelated rendering (was incorrectly bound to F7 — duplicate fixed)
+	if (IsKeyPressed(KEY_F9))
 		g_pixelated = !g_pixelated;
-	}
 
 	if (IsKeyPressed(KEY_KP_SUBTRACT) || IsKeyPressed(KEY_MINUS))
 	{
 		g_secsPerMinute -= 0.1f;
 		if (g_secsPerMinute < 0.1f)
-		{
 			g_secsPerMinute = 0.1f;
-		}
 		else
-		{
 			AddConsoleString("Time Speed: " + to_string(g_secsPerMinute) + " seconds per minute");
-		}
 	}
 
 	if (IsKeyPressed(KEY_KP_ADD) || IsKeyPressed(KEY_EQUAL))
 	{
 		g_secsPerMinute += 0.1f;
 		if (g_secsPerMinute > 5.0f)
-		{
 			g_secsPerMinute = 5.0f;
-		}
 		else
-		{
 			AddConsoleString("Time Speed: " + to_string(g_secsPerMinute) + " seconds per minute");
-		}
 	}
+}
+
+void MainState::HandleObjectDrag()
+{
 	if (!IsMouseButtonDown(MOUSE_LEFT_BUTTON))
 	{
 		m_dragStart = { 0, 0 };
+		return;
 	}
 
-	// Always update selected shape/frame when clicking an object (for F1 shape editor)
-	if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) && g_objectUnderMousePointer != nullptr && !g_gumpManager->m_isMouseOverGump && !g_gumpManager->m_draggingObject && !g_gumpManager->IsAnyGumpBeingDragged() && !g_mouseOverUI)
+	if (g_objectUnderMousePointer == nullptr || g_gumpManager->m_isMouseOverGump ||
+		g_gumpManager->m_draggingObject || g_gumpManager->IsAnyGumpBeingDragged() || g_mouseOverUI)
+		return;
+
+	// Keep shape editor in sync with whatever object is under the cursor
+	g_selectedShape = g_objectUnderMousePointer->m_shapeData->m_shape;
+	g_selectedFrame = g_objectUnderMousePointer->m_shapeData->m_frame;
+
+	// if (m_doingObjectSelection)
+	// {
+	// 	g_ScriptingSystem->ResumeCoroutine(m_luaFunction, { g_objectUnderMousePointer->m_ID });
+	// 	m_doingObjectSelection = false;
+	// 	m_objectSelectionMode = false;
+	// 	m_luaFunction.clear();
+	// }
+
+	if (!m_allowMovingStaticObjects && g_objectUnderMousePointer->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_STATIC)
+		return;
+
+	if (m_dragStart.x == 0 && m_dragStart.y == 0)
 	{
-		g_selectedShape = g_objectUnderMousePointer->m_shapeData->m_shape;
-		g_selectedFrame = g_objectUnderMousePointer->m_shapeData->m_frame;
+		m_dragStart = GetMousePosition();
+	}
+	else if (Vector2DistanceSqr(m_dragStart, GetMousePosition()) > 4 * g_DrawScale)
+	{
+		g_gumpManager->m_draggedObjectId = g_objectUnderMousePointer->m_ID;
+		g_gumpManager->m_draggingObject = true;
+		g_gumpManager->m_sourceGump = nullptr;
+		g_gumpManager->m_sourceSlotIndex = -1;
+		g_gumpManager->m_draggedObjectOriginalPos = g_objectUnderMousePointer->m_Pos;
+		g_gumpManager->m_draggedObjectOriginalDest = g_objectUnderMousePointer->m_Dest;
+		g_objectUnderMousePointer->m_isContained = true;
+		Log("Removed object " + std::to_string(g_objectUnderMousePointer->m_ID) + " from world on drag start");
+		g_gumpManager->CloseGumpForObject(g_objectUnderMousePointer->m_ID);
+	}
+}
 
-		if (m_doingObjectSelection)
+void MainState::HandleMiddleClick()
+{
+	if (!IsMouseButtonPressed(MOUSE_BUTTON_MIDDLE) || g_objectUnderMousePointer == nullptr || g_mouseOverUI)
+		return;
+
+	string scriptName;
+	if (g_objectUnderMousePointer->m_hasConversationTree)
+	{
+		int NPCId = g_objectUnderMousePointer->m_NPCID;
+		stringstream ss;
+		ss << "func_04" << std::setw(2) << std::setfill('0') << std::hex << std::uppercase << NPCId;
+		scriptName = ss.str();
+	}
+	else
+	{
+		stringstream ss;
+		ss << "func_0" << std::setw(3) << std::setfill('0') << std::hex << std::uppercase << g_objectUnderMousePointer->m_shapeData->m_shape;
+		scriptName = ss.str();
+	}
+
+	int scriptIndex = 0;
+	bool validScript = false;
+	for (int i = 0; i < (int)g_ScriptingSystem->m_scriptFiles.size(); ++i)
+	{
+		if (g_ScriptingSystem->m_scriptFiles[i].first == scriptName)
 		{
-			// Resume the waiting Lua coroutine and pass selected object ID (1-indexing in Lua)
-			g_ScriptingSystem->ResumeCoroutine(m_luaFunction, { g_objectUnderMousePointer->m_ID });
+			scriptIndex = i;
+			validScript = true;
+			break;
+		}
+	}
 
-			// Clear selection state so we don't resume again on subsequent frames
-			m_doingObjectSelection = false;
-			m_objectSelectionMode = false;
-			m_luaFunction.clear();
+	if (!validScript)
+	{
+		AddConsoleString("No script for object " + to_string(g_objectUnderMousePointer->m_shapeData->m_shape) +
+			" (" + g_objectUnderMousePointer->m_objectData->m_name + ")");
+		return;
+	}
+
+	std::string filePath = g_ScriptingSystem->m_scriptFiles[scriptIndex].second;
+#ifdef _WIN32
+	system(("start \"\" \"" + filePath + "\"").c_str());
+#elif __APPLE__
+	system(("open \"" + filePath + "\"").c_str());
+#else
+	system(("xdg-open \"" + filePath + "\"").c_str());
+#endif
+}
+
+void MainState::HandleRightDoubleClick()
+{
+	if (!WasMouseButtonDoubleClicked(MOUSE_BUTTON_RIGHT))
+		return;
+
+	if (g_objectUnderMousePointer != nullptr)
+	{
+		// Pathfind onto walkable surfaces (stairs, rooftops, etc.) — skip interactive objects
+		if (g_objectUnderMousePointer->m_isContainer ||
+			g_objectUnderMousePointer->m_objectData->m_isDoor ||
+			g_objectUnderMousePointer->m_hasConversationTree ||
+			g_objectUnderMousePointer->m_shapeData->m_luaScript != "default")
+			return;
+
+		int objTileX = (int)floor(g_objectUnderMousePointer->m_Pos.x);
+		int objTileZ = (int)floor(g_objectUnderMousePointer->m_Pos.z);
+
+		float surfaceY = g_objectUnderMousePointer->m_Pos.y;
+		if (g_objectUnderMousePointer->m_objectData)
+			surfaceY += g_objectUnderMousePointer->m_objectData->m_height;
+
+		bool hasWalkableLayer = false;
+		if (g_pathfindingSystem && g_pathfindingSystem->m_pathfindingGrid)
+		{
+			g_pathfindingSystem->m_pathfindingGrid->DebugPrintTileInfo(objTileX, objTileZ);
+			auto heights = g_pathfindingSystem->m_pathfindingGrid->GetWalkableSurfaceHeights(objTileX, objTileZ);
+			if (!heights.empty())
+			{
+				for (float h : heights)
+				{
+					if (h > 0.1f) { hasWalkableLayer = true; surfaceY = h; break; }
+				}
+				if (heights.size() > 1) hasWalkableLayer = true;
+			}
 		}
 
-		// Only allow dragging if not a static object (or if static movement is enabled)
-		if (m_allowMovingStaticObjects || g_objectUnderMousePointer->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_STATIC)
+		if (hasWalkableLayer)
 		{
-			if (m_dragStart.x == 0 && m_dragStart.y == 0)
-			{
-				m_dragStart = GetMousePosition();
-			}
+			U7Object* avatar = g_objectList[g_NPCData[0]->m_objectID].get();
+			if (avatar)
+				avatar->PathfindToDest({ (float)objTileX, surfaceY, (float)objTileZ });
+		}
+	}
+	else if (!g_mouseOverUI && !g_gumpManager->m_isMouseOverGump)
+	{
+		int worldX = (int)floor(g_terrainUnderMousePointer.x);
+		int worldZ = (int)floor(g_terrainUnderMousePointer.z);
+
+		U7Object* avatar = g_objectList[g_NPCData[0]->m_objectID].get();
+		avatar->PathfindToDest({ float(worldX), 0, float(worldZ) });
+
+		int counter = 1;
+		for (int id : g_Player->GetPartyMemberIds())
+		{
+			U7Object* partyMember = g_objectList[g_NPCData[id]->m_objectID].get();
+			if (id % 2 == 0)
+				partyMember->PathfindToDest({ float(worldX + counter), 0, float(worldZ + counter) });
+			else
+				partyMember->PathfindToDest({ float(worldX + counter), 0, float(worldZ - counter) });
+			counter++;
+		}
+
+		if (worldX >= 0 && worldX < 3072 && worldZ >= 0 && worldZ < 3072)
+		{
+			unsigned short shapeframe = g_World[worldZ][worldX];
+			int shapeID = shapeframe & 0x3ff;
+			int frameID = (shapeframe >> 10) & 0x3f;
+			string terrainName = g_pathfindingSystem->GetTerrainName(shapeID);
+			AddConsoleString("=== " + terrainName + " (" + to_string(worldX) + ", " + to_string(worldZ) + ") ===", SKYBLUE);
+			AddConsoleString("  Shape ID: " + to_string(shapeID) + ", Frame: " + to_string(frameID), WHITE);
+			AddConsoleString("  Movement Cost: " + to_string(g_pathfindingSystem->GetMovementCost(worldX, worldZ)), GREEN);
+			AddConsoleString("  Walkable: YES", GREEN);
+		}
+	}
+}
+
+void MainState::HandleMouseHoldTimers()
+{
+	double now = GetTime();
+
+	if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT) && !g_mouseOverUI && !g_gumpManager->m_isMouseOverGump)
+	{
+		if (m_rightMouseHoldStart == 0.0f)
+			m_rightMouseHoldStart = (float)now;
+		else if (!m_rightMouseHeld && (now - m_rightMouseHoldStart) >= m_rightMouseHoldThreshold)
+			m_rightMouseHeld = true;
+	}
+	else
+	{
+		m_rightMouseHoldStart = 0.0f;
+		m_rightMouseHeld = false;
+	}
+
+	if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && !g_mouseOverUI && !g_gumpManager->m_isMouseOverGump)
+	{
+		if (m_leftMouseHoldStart == 0.0f)
+			m_leftMouseHoldStart = (float)now;
+		else if (!m_leftMouseHeld && (now - m_leftMouseHoldStart) >= m_leftMouseHoldThreshold)
+			m_leftMouseHeld = true;
+	}
+	else
+	{
+		m_leftMouseHoldStart = 0.0f;
+		m_leftMouseHeld = false;
+	}
+
+	HandleRightMouseHoldMovement();
+}
+
+void MainState::HandleRightMouseHoldMovement()
+{
+	if (!m_rightMouseHeld || g_mouseOverUI || g_gumpManager->m_isMouseOverGump || !g_isCameraLockedToAvatar)
+	{
+		if (m_cameraDragging)
+			EndCameraDrag();
+		return;
+	}
+
+	U7Object* avatar = g_Player ? g_Player->GetAvatarObject() : nullptr;
+	if (!avatar)
+		return;
+
+	Vector3 toMouse = Vector3Subtract(g_terrainUnderMousePointer, avatar->GetPos());
+	toMouse.y = 0.0f;
+	float dist = Vector3Length(toMouse);
+
+	const float DEADZONE = 0.25f;
+	if (dist > DEADZONE)
+	{
+		Vector3 dir = Vector3Normalize(toMouse);
+
+		const float MAX_EFFECT_DISTANCE = 10.0f;
+		const float MIN_SPEED_MULT = 0.20f;
+		const float MAX_SPEED_MULT = 1.50f;
+		float t = std::fmin(std::fmax(dist / MAX_EFFECT_DISTANCE, 0.0f), 1.0f);
+		float speedMult = MIN_SPEED_MULT + (MAX_SPEED_MULT - MIN_SPEED_MULT) * t;
+		float baseSpeed = avatar->GetSpeed();
+		if (baseSpeed <= 0.0f) baseSpeed = 3.0f;
+
+		float dt = GetFrameTime();
+		Vector3 desired = Vector3Add(avatar->GetPos(), Vector3Scale(dir, baseSpeed * speedMult * dt));
+		desired.x = std::fmax(0.0f, std::fmin(3072.0f, desired.x));
+		desired.z = std::fmax(0.0f, std::fmin(3072.0f, desired.z));
+
+		if (g_Player)
+			g_Player->TryMove(desired);
+		else
+			avatar->SetDest(desired);
+
+		if (Vector3Length(dir) > 0.0001f)
+		{
+			Vector3 flatDir = Vector3Normalize(dir);
+			g_Player->SetPlayerDirection(flatDir);
+			avatar->m_Direction = flatDir;
+		}
+	}
+
+	// Hold Left+Right together to drag the camera
+	if (m_leftMouseHeld)
+	{
+		if (!m_cameraDragging)
+			StartCameraDrag();
+		UpdateCameraDrag();
+	}
+	else if (m_cameraDragging)
+	{
+		EndCameraDrag();
+	}
+}
+
+void MainState::HandleLeftDoubleClick()
+{
+	if (!WasMouseButtonDoubleClicked(MOUSE_BUTTON_LEFT))
+		return;
+
+	if (g_objectUnderMousePointer != nullptr)
+	{
+		bool isAvatar = g_objectUnderMousePointer->m_isNPC && g_objectUnderMousePointer->m_NPCID == 0;
+		bool isPartyMember = g_objectUnderMousePointer->m_isNPC &&
+			g_Player->NPCIDInParty(g_objectUnderMousePointer->m_NPCID);
+
+		if (isAvatar || isPartyMember)
+		{
+			int npcId = g_objectUnderMousePointer->m_NPCID;
+			bool anyPaperdollOpen = HasAnyPaperdollOpen();
+			Log("Double-clicked NPC " + std::to_string(npcId) +
+				", isAvatar=" + std::to_string(isAvatar) +
+				", anyPaperdollOpen=" + std::to_string(anyPaperdollOpen));
+
+			if (isAvatar || anyPaperdollOpen)
+				TogglePaperdoll(npcId);
 			else
 			{
-				if (Vector2DistanceSqr(m_dragStart, GetMousePosition()) > 4 * g_DrawScale)
-				{
-					g_gumpManager->m_draggedObjectId = g_objectUnderMousePointer->m_ID;
-					g_gumpManager->m_draggingObject = true;
-					g_gumpManager->m_sourceGump = nullptr;
-					g_gumpManager->m_sourceSlotIndex = -1;  // Not from a paperdoll slot
-					g_gumpManager->m_draggedObjectOriginalPos = g_objectUnderMousePointer->m_Pos;  // Store original world position
-					g_gumpManager->m_draggedObjectOriginalDest = g_objectUnderMousePointer->m_Dest;  // Store original destination (for NPCs)
-
-					// Remove object from world immediately when drag starts
-					g_objectUnderMousePointer->m_isContained = true;  // Mark as contained so it won't be drawn in world
-					Log("Removed object " + std::to_string(g_objectUnderMousePointer->m_ID) + " from world on drag start");
-
-					// Close any gump associated with this object to prevent dragging into itself
-					g_gumpManager->CloseGumpForObject(g_objectUnderMousePointer->m_ID);
-
-				}
+				Log("Running normal interaction for NPC " + std::to_string(npcId));
+				g_objectUnderMousePointer->Interact(1);
 			}
 		}
-	}
-
-	if (IsMouseButtonPressed(MOUSE_BUTTON_MIDDLE) && g_objectUnderMousePointer != nullptr && !g_mouseOverUI)
-	{
-		std::string filePath;
-		string scriptName;
-		bool validScript = false;
-		if (g_objectUnderMousePointer->m_hasConversationTree)
+		else if (g_objectUnderMousePointer->m_objectData->m_isDoor ||
+			g_objectUnderMousePointer->m_hasConversationTree ||
+			g_objectUnderMousePointer->m_shapeData->m_luaScript != "default")
 		{
-			int NPCId = g_objectUnderMousePointer->m_NPCID;
-			scriptName = "func_04";
-			stringstream ss;
-			ss << std::setw(2) << std::setfill('0') << std::hex << std::uppercase << NPCId;
-			scriptName += ss.str();
+			g_objectUnderMousePointer->Interact(1);
+		}
+		else if (g_objectUnderMousePointer->m_isContainer && !g_objectUnderMousePointer->IsLocked())
+		{
+			OpenGump(g_objectUnderMousePointer->m_ID);
+		}
+		else if (g_objectUnderMousePointer->m_isContainer)
+		{
+			Bark(g_objectUnderMousePointer, "Locked", 3.0f);
+		}
+	}
+	else if (!g_mouseOverUI && !g_gumpManager->m_isMouseOverGump)
+	{
+		int worldX = (int)floor(g_terrainUnderMousePointer.x);
+		int worldZ = (int)floor(g_terrainUnderMousePointer.z);
+		if (worldX >= 0 && worldX < 3072 && worldZ >= 0 && worldZ < 3072)
+		{
+			unsigned short shapeframe = g_World[worldZ][worldX];
+			int shapeID = shapeframe & 0x3ff;
+			int frameID = (shapeframe >> 10) & 0x3f;
+			string terrainName = g_pathfindingSystem->GetTerrainName(shapeID);
+			AddConsoleString("=== " + terrainName + " (" + to_string(worldX) + ", " + to_string(worldZ) + ") ===", SKYBLUE);
+			AddConsoleString("  Shape ID: " + to_string(shapeID) + ", Frame: " + to_string(frameID), WHITE);
+			AddConsoleString("  Movement Cost: " + to_string(g_pathfindingSystem->GetMovementCost(worldX, worldZ)), GREEN);
+			AddConsoleString("  Walkable: YES", GREEN);
+		}
+	}
+}
+
+void MainState::HandleLeftSingleClick()
+{
+	if (!IsMouseButtonReleased(MOUSE_LEFT_BUTTON))
+		return;
+
+	if (g_gumpManager->m_isMouseOverGump || g_gumpManager->m_draggingObject || g_mouseOverUI)
+		return;
+
+	if (g_objectUnderMousePointer != nullptr)
+	{
+		if (m_objectSelectionMode)
+		{
+			if (g_ScriptingSystem->IsCoroutineYielded(m_luaFunction))
+			{
+				m_objectSelectionMode = false;
+				g_ScriptingSystem->ResumeCoroutine(m_luaFunction, { g_objectUnderMousePointer->m_ID });
+			}
 		}
 		else
 		{
-			scriptName = "func_0";
-			stringstream ss;
-			ss << std::setw(3) << std::setfill('0') << std::hex << std::uppercase << g_objectUnderMousePointer->m_shapeData->m_shape;
-			scriptName += ss.str();
-		}
+			Bark(g_objectUnderMousePointer, g_objectUnderMousePointer->m_objectData->m_name, 1.0f);
 
-		//  Find the script path from the script name
-		int newScriptIndex = 0;
-		for (int i = 0; i < g_ScriptingSystem->m_scriptFiles.size(); ++i)
+			if (g_objectUnderMousePointer->m_isNPC && m_npcListWindow && m_npcListWindow->IsVisible())
+				m_npcListWindow->SelectNPC(g_objectUnderMousePointer->m_NPCID);
+
+			if (g_LuaDebug && g_objectUnderMousePointer->m_isNPC)
+				DebugPrintNpcSchedule(g_objectUnderMousePointer);
+		}
+	}
+}
+
+void MainState::DebugPrintNpcSchedule(U7Object* npc)
+{
+	int npcID = npc->m_NPCID;
+
+	if (g_NPCSchedules.find(npcID) == g_NPCSchedules.end() || g_NPCSchedules[npcID].empty())
+	{
+		AddConsoleString("  No schedule data for this NPC");
+	}
+	else
+	{
+		vector<int> sortedIndices(g_NPCSchedules[npcID].size());
+		for (int i = 0; i < (int)sortedIndices.size(); i++)
+			sortedIndices[i] = i;
+
+		std::sort(sortedIndices.begin(), sortedIndices.end(),
+			[npcID](int a, int b) {
+				return g_NPCSchedules[npcID][a].m_time < g_NPCSchedules[npcID][b].m_time;
+			});
+
+		// Find the currently active schedule block
+		int activeScheduleIndex = -1;
+		for (int idx : sortedIndices)
 		{
-			if (g_ScriptingSystem->m_scriptFiles[i].first == scriptName)
-			{
-				newScriptIndex = i;
-				validScript = true;
+			if (g_NPCSchedules[npcID][idx].m_time <= g_scheduleTime)
+				activeScheduleIndex = idx;
+			else
 				break;
+		}
+		if (activeScheduleIndex == -1 && !g_NPCSchedules[npcID].empty())
+			activeScheduleIndex = sortedIndices.back();
+
+		for (int idx : sortedIndices)
+		{
+			const auto& schedule = g_NPCSchedules[npcID][idx];
+			string timeStr;
+			switch (schedule.m_time)
+			{
+			case 0: timeStr = "0:00 (Midnight)"; break;
+			case 1: timeStr = "3:00";  break;
+			case 2: timeStr = "6:00";  break;
+			case 3: timeStr = "9:00";  break;
+			case 4: timeStr = "12:00 (Noon)"; break;
+			case 5: timeStr = "15:00"; break;
+			case 6: timeStr = "18:00"; break;
+			case 7: timeStr = "21:00"; break;
+			default: timeStr = to_string(schedule.m_time); break;
 			}
-		}
-
-		if (!validScript)
-		{
-			AddConsoleString("No script for object " + to_string(g_objectUnderMousePointer->m_shapeData->m_shape) + " (" + g_objectUnderMousePointer->m_objectData->m_name + ")");
-		}
-		else
-		{
-			filePath = g_ScriptingSystem->m_scriptFiles[newScriptIndex].second;
-
-			// Open the file with the default system application
-#ifdef _WIN32
-			system(("start \"\" \"" + std::string(filePath) + "\"").c_str());
-#elif __APPLE__
-			system(("open \"" + std::string(filePath) + "\"").c_str());
-#else // Linux and others
-			system(("xdg-open \"" + std::string(filePath) + "\"").c_str());
-#endif
+			Color lineColor = (idx == activeScheduleIndex) ? GOLD : WHITE;
+			AddConsoleString("  [" + to_string(idx) + "] Time: " + timeStr +
+				", Dest: (" + to_string(schedule.m_destX) + ", " + to_string(schedule.m_destY) + ")" +
+				", Activity: " + to_string(schedule.m_activity), lineColor);
 		}
 	}
 
-	// Right-double-click pathfind / left-double-click behavior preserved for UI interactions.
-	if (WasMouseButtonDoubleClicked(MOUSE_BUTTON_RIGHT)) // copilot instructions: right-button double-click for pathfinding
+	if (npc->m_pathWaypoints.empty())
+		AddConsoleString("No active waypoints", GRAY);
+}
+
+void MainState::HandleAvatarMovement()
+{
+	if (!g_isCameraLockedToAvatar)
+		return;
+
+	if (g_firstPersonEnabled)
 	{
-		if (g_objectUnderMousePointer != nullptr)
+		U7Object* avatar = g_Player->GetAvatarObject();
+		if (!avatar) return;
+
+		float dt = GetFrameTime();
+		Vector3 camForward = Vector3Subtract(g_camera.target, g_camera.position);
+		camForward.y = 0.0f;
+		if (Vector3Length(camForward) < 0.0001f)
 		{
-			// If none of the interactive cases above applied, and this object has a walkable surface (stairs/roof/etc),
-			// issue a pathfind as a convenience.
-			if (!g_objectUnderMousePointer->m_isContainer &&
-				!g_objectUnderMousePointer->m_objectData->m_isDoor &&
-				!g_objectUnderMousePointer->m_hasConversationTree &&
-				(g_objectUnderMousePointer->m_shapeData->m_luaScript == "default"))
-			{
-				int objTileX = (int)floor(g_objectUnderMousePointer->m_Pos.x);
-				int objTileZ = (int)floor(g_objectUnderMousePointer->m_Pos.z);
-
-				float surfaceY = g_objectUnderMousePointer->m_Pos.y;
-				if (g_objectUnderMousePointer->m_objectData)
-					surfaceY += g_objectUnderMousePointer->m_objectData->m_height;
-
-				bool hasWalkableLayer = false;
-				if (g_pathfindingSystem && g_pathfindingSystem->m_pathfindingGrid)
-				{
-					g_pathfindingSystem->m_pathfindingGrid->DebugPrintTileInfo(objTileX, objTileZ);
-					auto heights = g_pathfindingSystem->m_pathfindingGrid->GetWalkableSurfaceHeights(objTileX, objTileZ);
-					if (!heights.empty())
-					{
-						for (float h : heights)
-						{
-							if (h > 0.1f)
-							{
-								hasWalkableLayer = true;
-								surfaceY = h;
-								break;
-							}
-						}
-						if (heights.size() > 1) hasWalkableLayer = true;
-					}
-				}
-
-				if (hasWalkableLayer)
-				{
-					U7Object* avatar = g_objectList[g_NPCData[0]->m_objectID].get();
-					if (avatar)
-					{
-						Vector3 dest = { (float)objTileX + 0.0f, surfaceY, (float)objTileZ + 0.0f };
-						avatar->PathfindToDest(dest);
-					}
-				}
-			}
-		}
-		else if (!g_mouseOverUI && !g_gumpManager->m_isMouseOverGump)
-		{
-			int worldX = (int)floor(g_terrainUnderMousePointer.x);
-			int worldZ = (int)floor(g_terrainUnderMousePointer.z);
-
-			U7Object* avatar = g_objectList[g_NPCData[0]->m_objectID].get();
-			//avatar->SetDest({float(worldX), 0, float(worldZ)});
-			avatar->PathfindToDest({ float(worldX), 0, float(worldZ) });
-
-			int counter = 1;
-			for (int id : g_Player->GetPartyMemberIds())
-			{
-				U7Object* partyMember = g_objectList[g_NPCData[id]->m_objectID].get();
-				if (id % 2 == 0)
-					partyMember->PathfindToDest({ float(worldX + counter), 0, float(worldZ + counter) });
-				else
-					partyMember->PathfindToDest({ float(worldX + counter), 0, float(worldZ - counter) });
-
-				counter += 1;
-			}
-
-			if (worldX >= 0 && worldX < 3072 && worldZ >= 0 && worldZ < 3072)
-			{
-				// Get terrain shape
-				unsigned short shapeframe = g_World[worldZ][worldX];
-				int shapeID = shapeframe & 0x3ff;  // Bits 0-9
-				int frameID = (shapeframe >> 10) & 0x3f;  // Bits 10-15
-
-				// Look up name and cost from terrain costs
-				string terrainName = g_pathfindingSystem->GetTerrainName(shapeID);
-				bool walkable = g_pathfindingSystem->IsPositionWalkable(worldX, worldZ);
-
-				AddConsoleString("=== " + terrainName + " (" + to_string(worldX) + ", " + to_string(worldZ) + ") ===", SKYBLUE);
-				AddConsoleString("  Shape ID: " + to_string(shapeID) + ", Frame: " + to_string(frameID), WHITE);
-
-				float cost = g_pathfindingSystem->GetMovementCost(worldX, worldZ);
-				AddConsoleString("  Movement Cost: " + to_string(cost), GREEN);
-				AddConsoleString("  Walkable: YES", GREEN);
-			}
-		}
-	}
-	{
-		// Update hold timers/flags each frame (do not consume click events)
-		double now = GetTime();
-
-		// RIGHT button hold detection (only when pointer not over UI/gumps)
-		if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT) && !g_mouseOverUI && !g_gumpManager->m_isMouseOverGump)
-		{
-			if (m_rightMouseHoldStart == 0.0f)
-				m_rightMouseHoldStart = (float)now;
-			else if (!m_rightMouseHeld && (now - m_rightMouseHoldStart) >= m_rightMouseHoldThreshold)
-				m_rightMouseHeld = true;
-		}
-		else
-		{
-			// Released or over UI: reset
-			m_rightMouseHoldStart = 0.0f;
-			m_rightMouseHeld = false;
-		}
-
-		// LEFT button hold detection (we don't want quick left clicks to trigger drag)
-		if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && !g_mouseOverUI && !g_gumpManager->m_isMouseOverGump)
-		{
-			if (m_leftMouseHoldStart == 0.0f)
-				m_leftMouseHoldStart = (float)now;
-			else if (!m_leftMouseHeld && (now - m_leftMouseHoldStart) >= m_leftMouseHoldThreshold)
-				m_leftMouseHeld = true;
-		}
-		else
-		{
-			m_leftMouseHoldStart = 0.0f;
-			m_leftMouseHeld = false;
-		}
-
-		// Only engage movement when RIGHT has been held long enough and camera is locked to avatar
-		if (m_rightMouseHeld && !g_mouseOverUI && !g_gumpManager->m_isMouseOverGump && g_allowInput && g_isCameraLockedToAvatar)
-		{
-			U7Object* avatar = g_Player ? g_Player->GetAvatarObject() : nullptr;
-			if (avatar)
-			{
-				Vector3 mouseWorld = g_terrainUnderMousePointer;
-				Vector3 avatarPos = avatar->GetPos();
-				Vector3 toMouse = Vector3Subtract(mouseWorld, avatarPos);
-				toMouse.y = 0.0f;
-				float dist = Vector3Length(toMouse);
-
-				const float DEADZONE = 0.25f;
-				if (dist > DEADZONE)
-				{
-					Vector3 dir = Vector3Normalize(toMouse);
-
-					// Speed mapping as before
-					const float MAX_EFFECT_DISTANCE = 10.0f;
-					const float MIN_SPEED_MULT = 0.20f;
-					const float MAX_SPEED_MULT = 1.50f;
-
-					float t = dist / MAX_EFFECT_DISTANCE;
-					t = std::fmin(std::fmax(t, 0.0f), 1.0f);
-
-					float speedMult = MIN_SPEED_MULT + (MAX_SPEED_MULT - MIN_SPEED_MULT) * t;
-					float baseSpeed = avatar->GetSpeed();
-					if (baseSpeed <= 0.0f) baseSpeed = 3.0f;
-
-					float dt = GetFrameTime();
-					Vector3 movement = Vector3Scale(dir, baseSpeed * speedMult * dt);
-					Vector3 desired = Vector3Add(avatar->GetPos(), movement);
-
-					// Clamp bounds
-					desired.x = std::fmax(0.0f, std::fmin(3072.0f, desired.x));
-					desired.z = std::fmax(0.0f, std::fmin(3072.0f, desired.z));
-
-					if (g_Player)
-						g_Player->TryMove(desired);
-					else
-						avatar->SetDest(desired);
-
-					// Face avatar toward movement direction
-					Vector3 flatDir = dir;
-					if (Vector3Length(flatDir) > 0.0001f)
-					{
-						flatDir = Vector3Normalize(flatDir);
-						g_Player->SetPlayerDirection(flatDir);
-						avatar->m_Direction = flatDir;
-					}
-				}
-
-				// Camera rotation while holding LEFT+RIGHT: require both buttons to be held past thresholds
-				if (m_leftMouseHeld)
-				{
-					// start drag if first frame
-					if (!m_cameraDragging)
-						StartCameraDrag();
-
-					// Update rotation from locked cursor deltas
-					UpdateCameraDrag();
-				}
-				else
-				{
-					// End camera drag if we were dragging but left released (or didn't meet hold threshold)
-					if (m_cameraDragging)
-						EndCameraDrag();
-				}
-			}
-		}
-		else
-		{
-			// If right released while we were dragging, ensure we clean up the drag state
-			if (m_cameraDragging)
-			{
-				EndCameraDrag();
-			}
-		}
-	}
-	// Left double-click behaviour remains (interaction / open gump etc.)
-	if (WasMouseButtonDoubleClicked(MOUSE_BUTTON_LEFT))
-	{
-		if (g_objectUnderMousePointer != nullptr)
-		{
-			// Check if this is the avatar or a party member NPC
-			bool isAvatar = g_objectUnderMousePointer->m_isNPC && g_objectUnderMousePointer->m_NPCID == 0;
-			bool isPartyMember = g_objectUnderMousePointer->m_isNPC &&
-				g_Player->NPCIDInParty(g_objectUnderMousePointer->m_NPCID);
-
-			if (isAvatar || isPartyMember)
-			{
-				int npcId = g_objectUnderMousePointer->m_NPCID;
-				bool anyPaperdollOpen = HasAnyPaperdollOpen();
-
-				Log("Double-clicked NPC " + std::to_string(npcId) +
-					", isAvatar=" + std::to_string(isAvatar) +
-					", anyPaperdollOpen=" + std::to_string(anyPaperdollOpen));
-
-				if (isAvatar || anyPaperdollOpen)
-				{
-					// Open/toggle paperdoll
-					TogglePaperdoll(npcId);
-				}
-				else
-				{
-					// No paperdoll open and not avatar - run normal NPC interaction
-					Log("Running normal interaction for NPC " + std::to_string(npcId));
-					g_objectUnderMousePointer->Interact(1);
-				}
-			}
-			// Handle doors and objects with scripts/conversations
-			else if (g_objectUnderMousePointer->m_objectData->m_isDoor ||
-				g_objectUnderMousePointer->m_hasConversationTree ||
-				g_objectUnderMousePointer->m_shapeData->m_luaScript != "default")
-			{
-				g_objectUnderMousePointer->Interact(1);;
-			}
-			else if (g_objectUnderMousePointer->m_isContainer && !g_objectUnderMousePointer->IsLocked())
-			{
-				OpenGump(g_objectUnderMousePointer->m_ID);
-			}
-			else if (g_objectUnderMousePointer->m_isContainer)
-			{
-				Bark(g_objectUnderMousePointer, "Locked", 3.0f);
-			}
-		}
-		else if (!g_mouseOverUI && !g_gumpManager->m_isMouseOverGump)
-		{
-			int worldX = (int)floor(g_terrainUnderMousePointer.x);
-			int worldZ = (int)floor(g_terrainUnderMousePointer.z);
-
-			U7Object* avatar = g_objectList[g_NPCData[0]->m_objectID].get();
-			//avatar->SetDest({float(worldX), 0, float(worldZ)});
-			//avatar->PathfindToDest({ float(worldX), 0, float(worldZ) });
-
-			//int counter = 1;
-			//for (int id : g_Player->GetPartyMemberIds())
-			//{
-			//	U7Object* partyMember = g_objectList[g_NPCData[id]->m_objectID].get();
-			//	if (id % 2 == 0)
-			//		partyMember->PathfindToDest({ float(worldX + counter), 0, float(worldZ + counter) });
-			//	else
-			//		//			partyMember->PathfindToDest({ float(worldX + counter), 0, float(worldZ - counter) });
-
-			//		counter += 1;
-			//}
-
-			if (worldX >= 0 && worldX < 3072 && worldZ >= 0 && worldZ < 3072)
-			{
-				// Get terrain shape
-				unsigned short shapeframe = g_World[worldZ][worldX];
-				int shapeID = shapeframe & 0x3ff;  // Bits 0-9
-				int frameID = (shapeframe >> 10) & 0x3f;  // Bits 10-15
-
-				// Look up name and cost from terrain costs
-				string terrainName = g_pathfindingSystem->GetTerrainName(shapeID);
-				bool walkable = g_pathfindingSystem->IsPositionWalkable(worldX, worldZ);
-
-				AddConsoleString("=== " + terrainName + " (" + to_string(worldX) + ", " + to_string(worldZ) + ") ===", SKYBLUE);
-				AddConsoleString("  Shape ID: " + to_string(shapeID) + ", Frame: " + to_string(frameID), WHITE);
-
-				float cost = g_pathfindingSystem->GetMovementCost(worldX, worldZ);
-				AddConsoleString("  Movement Cost: " + to_string(cost), GREEN);
-				AddConsoleString("  Walkable: YES", GREEN);
-			}
-		}
-		else if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
-		{
-			if (!g_gumpManager->m_isMouseOverGump && !g_gumpManager->m_draggingObject && !g_mouseOverUI && g_objectUnderMousePointer != nullptr)
-			{
-				if (m_objectSelectionMode == true)
-				{
-					if (g_ScriptingSystem->IsCoroutineYielded(m_luaFunction))
-					{
-						m_objectSelectionMode = false;
-						g_ScriptingSystem->ResumeCoroutine(m_luaFunction, { g_objectUnderMousePointer->m_ID }); // Lua arrays are 1-indexed
-					}
-				}
-				else
-				{
-					Bark(g_objectUnderMousePointer, "", 3.0f);  // Empty string = use object's current name
-
-					// If NPC list window is open and this is an NPC, select it in the list
-					if (g_objectUnderMousePointer->m_isNPC && m_npcListWindow && m_npcListWindow->IsVisible())
-					{
-						m_npcListWindow->SelectNPC(g_objectUnderMousePointer->m_NPCID);
-					}
-
-					// Debug mode: Print NPC schedule when clicking on NPCs
-					if (g_LuaDebug && g_objectUnderMousePointer->m_isNPC)
-					{
-						int npcID = g_objectUnderMousePointer->m_NPCID;
-						string npcName = g_NPCData[npcID] ? g_NPCData[npcID]->name : "Unknown";
-						//					AddConsoleString("=== NPC #" + to_string(npcID) + " (" + npcName + ") Schedule ===");
-						//					AddConsoleString("Current game time: " + to_string(g_hour) + ":" + (g_minute < 10 ? "0" : "") + to_string(g_minute) +
-												//" (schedule block: " + to_string(g_scheduleTime) + ")");
-
-						if (g_NPCSchedules.find(npcID) != g_NPCSchedules.end() && !g_NPCSchedules[npcID].empty())
-						{
-							// Create sorted indices based on schedule time
-							vector<int> sortedIndices(g_NPCSchedules[npcID].size());
-							for (int i = 0; i < static_cast<int>(sortedIndices.size()); i++)
-								sortedIndices[i] = i;
-
-							std::sort(sortedIndices.begin(), sortedIndices.end(),
-								[npcID](int a, int b) {
-									return g_NPCSchedules[npcID][a].m_time < g_NPCSchedules[npcID][b].m_time;
-								});
-
-							// Find the currently active schedule (most recent schedule where time <= current time)
-							int activeScheduleIndex = -1;
-							for (int idx : sortedIndices)
-							{
-								if (g_NPCSchedules[npcID][idx].m_time <= g_scheduleTime)
-								{
-									activeScheduleIndex = idx;
-								}
-								else
-								{
-									break;  // Now sorted, so we can break early
-								}
-							}
-
-							// If no schedule found, use the last one in sorted order (wraps from midnight)
-							if (activeScheduleIndex == -1 && g_NPCSchedules[npcID].size() > 0)
-							{
-								activeScheduleIndex = sortedIndices[sortedIndices.size() - 1];
-							}
-
-							// Display schedules in chronological order
-							for (int idx : sortedIndices)
-							{
-								const auto& schedule = g_NPCSchedules[npcID][idx];
-								string timeStr;
-								switch (schedule.m_time)
-								{
-								case 0: timeStr = "0:00 (Midnight)"; break;
-								case 1: timeStr = "3:00"; break;
-								case 2: timeStr = "6:00"; break;
-								case 3: timeStr = "9:00"; break;
-								case 4: timeStr = "12:00 (Noon)"; break;
-								case 5: timeStr = "15:00"; break;
-								case 6: timeStr = "18:00"; break;
-								case 7: timeStr = "21:00"; break;
-								default: timeStr = to_string(schedule.m_time); break;
-								}
-
-								// Print active schedule in gold, others in white
-								bool isActive = (idx == activeScheduleIndex);
-								Color lineColor = isActive ? GOLD : WHITE;
-								AddConsoleString("  [" + to_string(idx) + "] Time: " + timeStr +
-									", Dest: (" + to_string(schedule.m_destX) + ", " + to_string(schedule.m_destY) + ")" +
-									", Activity: " + to_string(schedule.m_activity), lineColor);
-							}
-						}
-						else
-						{
-							AddConsoleString("  No schedule data for this NPC");
-						}
-
-						// Print current waypoints if any
-						if (!g_objectUnderMousePointer->m_pathWaypoints.empty())
-						{
-							// AddConsoleString("=== Current Waypoints ===", YELLOW);
-							// AddConsoleString("  Total waypoints: " + to_string(g_objectUnderMousePointer->m_pathWaypoints.size()) +
-							// 	", Current index: " + to_string(g_objectUnderMousePointer->m_currentWaypointIndex));
-							for (size_t i = 0; i < g_objectUnderMousePointer->m_pathWaypoints.size(); i++)
-							{
-								const auto& wp = g_objectUnderMousePointer->m_pathWaypoints[i];
-								string marker = (i == g_objectUnderMousePointer->m_currentWaypointIndex) ? " <-- CURRENT" : "";
-								// AddConsoleString("  [" + to_string(i) + "] (" +
-								// 	to_string((int)wp.x) + ", " + to_string((int)wp.z) + ")" + marker);
-							}
-						}
-						else
-						{
-							AddConsoleString("No active waypoints", GRAY);
-						}
-					}
-				}
-			}
-			else if (!g_gumpManager->m_isMouseOverGump && !g_gumpManager->m_draggingObject && !g_mouseOverUI && g_objectUnderMousePointer == nullptr)
-			{
-#ifdef DEBUG_NPC_PATHFINDING
-				// Clicked on terrain (no object) - show terrain debug info (sandbox mode only)
-				if (m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX)
-				{
-
-				}
-#endif
-			}
-		}
-	}
-
-
-	if (g_isCameraLockedToAvatar && g_allowInput)
-	{
-		// First-person camera-relative movement when enabled, otherwise keep existing rotation-based controls
-		if (g_firstPersonEnabled)
-		{
-			U7Object* avatar = g_Player->GetAvatarObject();
-			if (!avatar) return;
-
-			float dt = GetFrameTime();
-
-			// Build a flattened forward vector from the current camera (horizontal only)
-			Vector3 camForward = Vector3Subtract(g_camera.target, g_camera.position);
+			camForward = avatar->m_Direction;
 			camForward.y = 0.0f;
-			if (Vector3Length(camForward) < 0.0001f)
-			{
-				// fallback to avatar direction if camera forward is degenerate
-				camForward = avatar->m_Direction;
-				camForward.y = 0.0f;
-			}
-			Vector3 flatForward = Vector3Normalize(camForward);
-
-			// Camera-right on XZ plane
-			Vector3 right = Vector3{ flatForward.z, 0.0f, -flatForward.x };
-			right = Vector3Normalize(right);
-
-			// Movement input (camera-relative)
-			Vector3 move = { 0.0f, 0.0f, 0.0f };
-			float speed = g_Player->GetAvatarObject()->GetSpeed();
-			if (IsKeyDown(KEY_W)) move = Vector3Add(move, Vector3Scale(flatForward, speed * dt));
-			if (IsKeyDown(KEY_S)) move = Vector3Add(move, Vector3Scale(flatForward, -speed * dt));
-			if (IsKeyDown(KEY_D)) move = Vector3Add(move, Vector3Scale(right, -speed * dt));
-			if (IsKeyDown(KEY_A)) move = Vector3Add(move, Vector3Scale(right, speed * dt));
-
-			if (move.x != 0.0f || move.z != 0.0f)
-			{
-				// Apply movement by setting destination one step ahead (keeps existing movement system)
-				Vector3 finalDest = Vector3Add(g_Player->GetAvatarObject()->GetPos(), move);
-				// Clamp in world bounds
-				if (finalDest.x < 0.0f) finalDest.x = 0.0f;
-				if (finalDest.x > 3072.0f) finalDest.x = 3072.0f;
-				if (finalDest.z < 0.0f) finalDest.z = 0.0f;
-				if (finalDest.z > 3072.0f) finalDest.z = 3072.0f;
-
-				// Use player TryMove which enforces height and collision checks
-				if (g_Player)
-				{
-					g_Player->TryMove(finalDest);
-				}
-				else
-				{
-					g_Player->GetAvatarObject()->SetDest(finalDest);
-				}
-
-				// Face avatar toward camera horizontal forward so heading matches view
-				Vector3 flatForDir = flatForward;
-				if (Vector3Length(flatForDir) > 0.0001f)
-				{
-					flatForDir = Vector3Normalize(flatForDir);
-					g_Player->SetPlayerDirection(flatForDir);
-					g_Player->GetAvatarObject()->m_Direction = flatForDir;
-				}
-			}
 		}
-		else
+		Vector3 flatForward = Vector3Normalize(camForward);
+		Vector3 right = Vector3Normalize(Vector3{ flatForward.z, 0.0f, -flatForward.x });
+
+		float speed = g_Player->GetAvatarObject()->GetSpeed();
+		Vector3 move = { 0.0f, 0.0f, 0.0f };
+		if (IsKeyDown(KEY_W)) move = Vector3Add(move, Vector3Scale(flatForward,  speed * dt));
+		if (IsKeyDown(KEY_S)) move = Vector3Add(move, Vector3Scale(flatForward, -speed * dt));
+		if (IsKeyDown(KEY_D)) move = Vector3Add(move, Vector3Scale(right,       -speed * dt));
+		if (IsKeyDown(KEY_A)) move = Vector3Add(move, Vector3Scale(right,        speed * dt));
+
+		if (move.x != 0.0f || move.z != 0.0f)
 		{
-			// Existing rotation-based movement (unchanged)
-			Vector3 direction = { 0, 0, 0 };
-			bool avatarMoved = false;
-			if (IsKeyDown(KEY_A))
-			{
-				direction = Vector3Add(direction, { -GetFrameTime() * g_Player->GetAvatarObject()->GetSpeed(), 0, GetFrameTime() * g_Player->GetAvatarObject()->GetSpeed() });
-				avatarMoved = true;
-			}
+			Vector3 finalDest = Vector3Add(g_Player->GetAvatarObject()->GetPos(), move);
+			finalDest.x = std::fmax(0.0f, std::fmin(3072.0f, finalDest.x));
+			finalDest.z = std::fmax(0.0f, std::fmin(3072.0f, finalDest.z));
 
-			if (IsKeyDown(KEY_D))
-			{
-				direction = Vector3Add(direction, { GetFrameTime() * g_Player->GetAvatarObject()->GetSpeed(), 0, -GetFrameTime() * g_Player->GetAvatarObject()->GetSpeed() });
-				avatarMoved = true;
-			}
+			if (g_Player)
+				g_Player->TryMove(finalDest);
+			else
+				g_Player->GetAvatarObject()->SetDest(finalDest);
 
-			if (IsKeyDown(KEY_W))
+			Vector3 flatForDir = Vector3Normalize(flatForward);
+			if (Vector3Length(flatForDir) > 0.0001f)
 			{
-				direction = Vector3Add(direction, { -GetFrameTime() * g_Player->GetAvatarObject()->GetSpeed(), 0, -GetFrameTime() * g_Player->GetAvatarObject()->GetSpeed() });
-				avatarMoved = true;
-			}
-
-			if (IsKeyDown(KEY_S))
-			{
-				direction = Vector3Add(direction, { GetFrameTime() * g_Player->GetAvatarObject()->GetSpeed(), 0, GetFrameTime() * g_Player->GetAvatarObject()->GetSpeed() });
-				avatarMoved = true;
-			}
-
-			if (avatarMoved)
-			{
-				Vector3 finalmovement = Vector3RotateByAxisAngle(direction, Vector3{ 0, 1, 0 }, g_cameraRotation);
-				Vector3 desired = Vector3Add(g_Player->GetAvatarObject()->GetPos(), finalmovement);
-
-				// Use player TryMove which enforces height and collision checks
-				if (g_Player)
-				{
-					g_Player->TryMove(desired);
-				}
-				else
-				{
-					g_Player->GetAvatarObject()->SetDest(desired);
-				}
+				g_Player->SetPlayerDirection(flatForDir);
+				g_Player->GetAvatarObject()->m_Direction = flatForDir;
 			}
 		}
-		MaybeUpdatePartyFollowing();
 	}
+	else
+	{
+		// Rotation-based movement
+		Vector3 direction = { 0, 0, 0 };
+		bool avatarMoved = false;
+		float speed = g_Player->GetAvatarObject()->GetSpeed();
+		float dt = GetFrameTime();
+
+		if (IsKeyDown(KEY_A)) { direction = Vector3Add(direction, { -dt * speed,  0,  dt * speed }); avatarMoved = true; }
+		if (IsKeyDown(KEY_D)) { direction = Vector3Add(direction, {  dt * speed,  0, -dt * speed }); avatarMoved = true; }
+		if (IsKeyDown(KEY_W)) { direction = Vector3Add(direction, { -dt * speed,  0, -dt * speed }); avatarMoved = true; }
+		if (IsKeyDown(KEY_S)) { direction = Vector3Add(direction, {  dt * speed,  0,  dt * speed }); avatarMoved = true; }
+
+		if (avatarMoved)
+		{
+			Vector3 finalmovement = Vector3RotateByAxisAngle(direction, Vector3{ 0, 1, 0 }, g_cameraRotation);
+			Vector3 desired = Vector3Add(g_Player->GetAvatarObject()->GetPos(), finalmovement);
+
+			if (g_Player)
+				g_Player->TryMove(desired);
+			else
+				g_Player->GetAvatarObject()->SetDest(desired);
+		}
+	}
+
+	MaybeUpdatePartyFollowing();
 }
 
 

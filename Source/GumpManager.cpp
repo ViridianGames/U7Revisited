@@ -378,7 +378,11 @@ void GumpManager::Draw()
 		Vector2 mousePos = GetMousePosition();
 		mousePos.x = int(mousePos.x /= g_DrawScale);
 		mousePos.y = int(mousePos.y /= g_DrawScale);
-		DrawTextureEx(*object->m_shapeData->GetTexture(), Vector2Add(mousePos, m_draggedObjectOffset), 0, 1, Color{ 255, 255, 255, 255 });
+
+		//mousePos = Vector2Add(mousePos, m_draggedObjectOffset);
+		mousePos = Vector2Subtract(mousePos, {float(object->m_shapeData->m_texture->m_Image.width) * .75f, float(object->m_shapeData->m_texture->m_Image.height) * .75f });
+
+		DrawTexture(*object->m_shapeData->GetTexture(), int(mousePos.x), int(mousePos.y), Color{ 255, 255, 255, 255 });
 	}
 }
 

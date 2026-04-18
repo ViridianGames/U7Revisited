@@ -320,7 +320,7 @@ void Gump::Draw()
 			if (item != g_gumpManager->m_draggedObjectId) // Don't draw dragged object, GumpManager handles that.
 			{
 				auto object = GetObjectFromID(item);
-				DrawTextureEx(*object->m_shapeData->GetTexture(), Vector2{m_gui.m_Pos.x + m_containerData.m_boxOffset.x + object->m_InventoryPos.x, m_gui.m_Pos.y + m_containerData.m_boxOffset.y + object->m_InventoryPos.y}, 0, 1, Color{255, 255, 255, 255});
+				DrawTexture(*object->m_shapeData->GetTexture(), int(m_gui.m_Pos.x + m_containerData.m_boxOffset.x + object->m_InventoryPos.x), int(m_gui.m_Pos.y + m_containerData.m_boxOffset.y + object->m_InventoryPos.y), Color{ 255, 255, 255, 255 });
 			}
 		}
 	}

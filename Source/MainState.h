@@ -170,7 +170,7 @@ public:
    //Texture* m_TerrainTexture;
    Texture* m_Minimap = nullptr;
    Texture* m_MinimapArrow = nullptr;
-	Texture* m_usePointer = nullptr;
+	Texture* m_useCursor = nullptr;
 	Texture* m_errorCursor = nullptr;
 
 
@@ -256,6 +256,21 @@ public:
 	void StartCameraDrag();
 	void UpdateCameraDrag();
 	void EndCameraDrag();
+
+private:
+	// UpdateInput() sub-handlers — each owns one concern
+	void HandleEscapeKey();
+	void HandleDebugKeys();
+	void HandleGameKeys();
+	void HandleObjectDrag();
+	void HandleMiddleClick();
+	void HandleRightDoubleClick();
+	void HandleMouseHoldTimers();
+	void HandleRightMouseHoldMovement();
+	void HandleLeftDoubleClick();
+	void HandleLeftSingleClick();
+	void DebugPrintNpcSchedule(U7Object* npc);
+	void HandleAvatarMovement();
 
 	// Mouse-hold detection (prevents quick clicks from triggering hold movement)
 	float m_rightMouseHoldStart = 0.0f;
