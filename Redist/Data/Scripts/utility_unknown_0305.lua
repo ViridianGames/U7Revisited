@@ -9,7 +9,6 @@ function utility_unknown_0305(eventid, objectref)
         var_0002 = find_nearby(0, 15, 515, objectref) --- Guess: Sets NPC location
         var_0001 = {var_0001, var_0002}
         var_0002 = {}
-        -- Guess: sloop filters items by quality
         for i = 1, 5 do
             var_0005 = ({3, 4, 5, 1, 27})[i]
             if get_object_quality(var_0005) == var_0000 then

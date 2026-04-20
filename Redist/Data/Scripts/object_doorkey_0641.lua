@@ -16,6 +16,7 @@ function object_doorkey_0641(eventid, objectref)
             end
         --  Locked chest
         elseif target_object_shape == 522 then
+            debug_print("Attempting to unlock a locked chest.")
             if this_object_quality == target_object_quality then
                 bark(target_object, "Unlocked")
                 set_object_shape(target_object, 800)

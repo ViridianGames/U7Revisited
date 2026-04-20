@@ -31,7 +31,7 @@ public:
 	bool GetIsMale() { return m_isMale; }
 	std::string GetPlayerName() { return m_PlayerName; }
 	void SetPlayerPosition(Vector3 position) { m_PlayerPosition = position; }
-	Vector3 GetPlayerPosition() { return m_PlayerPosition; }
+	Vector3 GetPlayerPosition();
 	void SetPlayerDirection(Vector3 direction) { m_PlayerDirection = direction; }
 	Vector3 GetPlayerDirection() { return m_PlayerDirection; }
 	std::vector<std::string>& GetPartyMemberNames();

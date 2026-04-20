@@ -328,9 +328,15 @@ void U7Object::NPCDraw()
 	}
 
 	// Check if this object has NPC data and properly initialized walk textures
-	if (m_NPCData == nullptr || m_NPCData->m_walkTextures.size() < 4)
+	if (m_NPCData == nullptr)
 	{
 		return;
+	}
+
+	if (m_drawType == ShapeDrawType::OBJECT_DRAW_FLAT )
+	{
+
+		return; // Xorinia the wisp is the only flat type, we'll handle her later.
 	}
 
 	// Verify all directional animation vectors are properly sized
@@ -466,9 +472,21 @@ void U7Object::NPCDraw()
 	rlEnableDepthMask();
 
 	BeginShaderMode(g_alphaDiscard);
-	Color lighting = g_dayNightColor;
-	if (m_isLit)
-		lighting = WHITE;
+
+	Vector3 offset = Vector3Subtract(m_Pos, g_camera.target);
+	offset = Vector3Add(offset, Vector3{ 50, 0, 50 });
+
+	if (offset.x < 0 || offset.z < 0 || offset.x > 100 || offset.z > 100)
+	{
+		return; // This NPC is off the screen
+	}
+
+	Color lighting = g_Terrain->m_cellLighting[int(offset.x)][int(offset.z)];
+
+
+
+	//if (m_isLit)
+		//lighting = WHITE;
 
 	// Apply green tint if F11 script debug is enabled and NPC has a non-default script
 	// Also check for conversation trees (NPCs with dialogue scripts)
@@ -1142,7 +1160,8 @@ void U7Object::Interact(int event)
 		}
 
 		NPCDebugPrint("Calling Lua function: " + scriptName + " event: " + to_string(event) + " NPCID: " + to_string(m_NPCID));
-		NPCDebugPrint(g_ScriptingSystem->CallScript(scriptName, { event, m_NPCID }));
+		std::string response = g_ScriptingSystem->CallScript(scriptName, { event, m_NPCID });
+		NPCDebugPrint(response);
 	}
 	else
 	{

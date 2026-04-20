@@ -38,6 +38,11 @@ U7Player::U7Player()
 	m_selectedPartyMember = 0;
 }
 
+Vector3 U7Player::GetPlayerPosition()
+{
+	return g_objectList[g_NPCData[0]->m_objectID]->m_Pos;
+}
+
 vector<string>& U7Player::GetPartyMemberNames()
 {
 	return m_PartyMemberNames;

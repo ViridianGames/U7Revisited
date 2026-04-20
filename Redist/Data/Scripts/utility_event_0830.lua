@@ -1,4 +1,4 @@
---- Best guess: Manages a winch mechanic, handling events to raise/lower objects (via 0828H) and checking for blockers (via 080EH), with quality-based filtering.
+-- Handles using a winch to raise/lower a drawbridge (objects 870 and 515)
 function utility_event_0830(P0, P1)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008
 

@@ -79,9 +79,9 @@ function npc_johnson_0014(eventid, objectref)
             end
             if var_0003 == "Blackbird" then
                 add_dialogue("\"Very well, thou mayest pass.\"")
-                --clear_answers()
-                --utility_unknown_0820()
-                --return
+                clear_answers()
+                utility_unknown_0820()
+                return
             else
                 add_dialogue("\"Thou dost not know the password. I am sorry. The Mayor may give thee the proper password.\"")
                 set_flag(66, true)

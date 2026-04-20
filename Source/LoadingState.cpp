@@ -1855,12 +1855,12 @@ void LoadingState::LoadInitialGameState()
 			int fullcount = npcCount1 + npcCount2;
 			int filepos = subFiles.tellg();
 
-			for (int i = 0; i < 256; ++i)
+			for (int i = 0; i < fullcount; ++i)
 			{
-				//if (i == 139) // This NPC is broken and attempting to parse it messes up all NPCs after it.  It's not used anyway so we just skip it.
-				//{
-				//	//Log("Stopper");// subFiles.seekg(2761, ios::cur);
-				//}
+				if (i == 257)
+				{
+					int stopper = 0;
+				}
 
 				int size = sizeof(NPCData);
 				NPCData thisNPC;
@@ -1908,6 +1908,7 @@ void LoadingState::LoadInitialGameState()
 
 				thisNPC.status2 = ReadU16(subFiles);
 				thisNPC.id = ReadU8(subFiles);
+				thisNPC.id = i;
 
 				subFiles.read(thisNPC.soak2, 2);
 
@@ -1944,6 +1945,7 @@ void LoadingState::LoadInitialGameState()
 					thisNPC.m_walkTextures[f].resize(2);
 				}
 
+				bool _is8Way = true;
 				//  Check if required frames exist for this shape
 				if (g_shapeTable[shapenum][0].m_texture == nullptr ||
 				    g_shapeTable[shapenum][1].m_texture == nullptr ||
@@ -1952,88 +1954,87 @@ void LoadingState::LoadInitialGameState()
 				    g_shapeTable[shapenum][17].m_texture == nullptr)
 				{
 					// Skip this NPC - missing required animation frames
+					_is8Way = false;
 					Log("Warning: Skipping NPC with shape " + to_string(shapenum) + " - missing required animation frames");
-					continue;
-				}
-
-				Image image;
-
-				//  South-west
-				thisNPC.m_walkTextures[0][0] = &g_shapeTable[shapenum][16].m_texture->m_Texture;
-				thisNPC.m_walkTextures[0][1] = &g_shapeTable[shapenum][17].m_texture->m_Texture;
-
-				//  North-west
-
-				//  Frame 1
-				std::string texturename = to_string(shapenum) + "_NW_0";
-				if(g_ResourceManager->DoesTextureExist(texturename))
-				{
-					thisNPC.m_walkTextures[1][0] = g_ResourceManager->GetTexture(texturename);
 				}
 				else
 				{
-					image = ImageCopy(g_shapeTable[shapenum][16].m_texture->m_Image);
-					ImageFlipHorizontal(&image);
-					g_ResourceManager->AddTexture(image, texturename);
-					thisNPC.m_walkTextures[1][0] = g_ResourceManager->GetTexture(texturename);
-				}
+					Image image;
 
-				//  Frame 2
+					//  South-west
+					thisNPC.m_walkTextures[0][0] = &g_shapeTable[shapenum][16].m_texture->m_Texture;
+					thisNPC.m_walkTextures[0][1] = &g_shapeTable[shapenum][17].m_texture->m_Texture;
 
-				texturename = to_string(shapenum) + "_NW_1";
-				if(g_ResourceManager->DoesTextureExist(texturename))
-				{
-					thisNPC.m_walkTextures[1][1] = g_ResourceManager->GetTexture(texturename);
-				}
-				else
-				{
-					image = ImageCopy(g_shapeTable[shapenum][17].m_texture->m_Image);
-					ImageFlipHorizontal(&image);
-					g_ResourceManager->AddTexture(image, texturename);
-					thisNPC.m_walkTextures[1][1] = g_ResourceManager->GetTexture(texturename);
-				}
+					//  North-west
 
-				//  North-east
-				thisNPC.m_walkTextures[2][0] = &g_shapeTable[shapenum][0].m_texture->m_Texture;
-				thisNPC.m_walkTextures[2][1] = &g_shapeTable[shapenum][1].m_texture->m_Texture;
+					//  Frame 1
+					std::string texturename = to_string(shapenum) + "_NW_0";
+					if(g_ResourceManager->DoesTextureExist(texturename))
+					{
+						thisNPC.m_walkTextures[1][0] = g_ResourceManager->GetTexture(texturename);
+					}
+					else
+					{
+						image = ImageCopy(g_shapeTable[shapenum][16].m_texture->m_Image);
+						ImageFlipHorizontal(&image);
+						g_ResourceManager->AddTexture(image, texturename);
+						thisNPC.m_walkTextures[1][0] = g_ResourceManager->GetTexture(texturename);
+					}
 
-				//  South-east
+					//  Frame 2
 
-				//  Frame 1
-				texturename = to_string(shapenum) + "_SE_0";
-				if(g_ResourceManager->DoesTextureExist(texturename))
-				{
-					thisNPC.m_walkTextures[3][0] = g_ResourceManager->GetTexture(texturename);
-				}
-				else
-				{
-					image = ImageCopy(g_shapeTable[shapenum][1].m_texture->m_Image);
-					ImageFlipHorizontal(&image);
-					g_ResourceManager->AddTexture(image, texturename);
-					thisNPC.m_walkTextures[3][0] = g_ResourceManager->GetTexture(texturename);
-				}
+					texturename = to_string(shapenum) + "_NW_1";
+					if(g_ResourceManager->DoesTextureExist(texturename))
+					{
+						thisNPC.m_walkTextures[1][1] = g_ResourceManager->GetTexture(texturename);
+					}
+					else
+					{
+						image = ImageCopy(g_shapeTable[shapenum][17].m_texture->m_Image);
+						ImageFlipHorizontal(&image);
+						g_ResourceManager->AddTexture(image, texturename);
+						thisNPC.m_walkTextures[1][1] = g_ResourceManager->GetTexture(texturename);
+					}
 
-				//  Frame 2
+					//  North-east
+					thisNPC.m_walkTextures[2][0] = &g_shapeTable[shapenum][0].m_texture->m_Texture;
+					thisNPC.m_walkTextures[2][1] = &g_shapeTable[shapenum][1].m_texture->m_Texture;
 
-				texturename = to_string(shapenum) + "_SE_1";
-				if(g_ResourceManager->DoesTextureExist(texturename))
-				{
-					thisNPC.m_walkTextures[3][1] = g_ResourceManager->GetTexture(texturename);
-				}
-				else
-				{
-					image = ImageCopy(g_shapeTable[shapenum][2].m_texture->m_Image);
-					ImageFlipHorizontal(&image);
-					g_ResourceManager->AddTexture(image, texturename);
-					thisNPC.m_walkTextures[3][1] = g_ResourceManager->GetTexture(texturename);
+					//  South-east
+
+					//  Frame 1
+					texturename = to_string(shapenum) + "_SE_0";
+					if(g_ResourceManager->DoesTextureExist(texturename))
+					{
+						thisNPC.m_walkTextures[3][0] = g_ResourceManager->GetTexture(texturename);
+					}
+					else
+					{
+						image = ImageCopy(g_shapeTable[shapenum][1].m_texture->m_Image);
+						ImageFlipHorizontal(&image);
+						g_ResourceManager->AddTexture(image, texturename);
+						thisNPC.m_walkTextures[3][0] = g_ResourceManager->GetTexture(texturename);
+					}
+
+					//  Frame 2
+
+					texturename = to_string(shapenum) + "_SE_1";
+					if(g_ResourceManager->DoesTextureExist(texturename))
+					{
+						thisNPC.m_walkTextures[3][1] = g_ResourceManager->GetTexture(texturename);
+					}
+					else
+					{
+						image = ImageCopy(g_shapeTable[shapenum][2].m_texture->m_Image);
+						ImageFlipHorizontal(&image);
+						g_ResourceManager->AddTexture(image, texturename);
+						thisNPC.m_walkTextures[3][1] = g_ResourceManager->GetTexture(texturename);
+					}
 				}
 
 				thisNPC.m_objectID = nextID;
 
 				int newfilepos = subFiles.tellg();
-
-				// if (thisNPC.id > 256)
-				// 	continue;
 
 				g_NPCData[thisNPC.id] = make_unique<NPCData>(thisNPC);
 
@@ -2048,6 +2049,10 @@ void LoadingState::LoadInitialGameState()
 				g_NPCData[thisNPC.id]->m_lastActivity = -1;
 
 				g_objectList[nextID].get()->NPCInit(g_NPCData[thisNPC.id].get());
+				if (!_is8Way)
+				{
+					g_objectList[nextID].get()->m_drawType = ShapeDrawType::OBJECT_DRAW_FLAT;
+				}
 				//g_ObjectList[nextID].get()->m_NPCID = thisNPC.id;
 				//g_ObjectList[nextID]->m_isNPC = true;
 

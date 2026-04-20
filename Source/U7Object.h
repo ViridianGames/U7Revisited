@@ -57,7 +57,7 @@ struct NPCData
 	unsigned char DAM;
 	char soak1[3];
 	unsigned short status2;
-	unsigned char id;
+	unsigned short id;
 	char soak2[2];
 	unsigned int xp;
 	unsigned char training;

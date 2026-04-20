@@ -837,6 +837,42 @@ static int LuaSetObjectPosition(lua_State *L)
 
 // NOTE: LuaFindNearbyObjects removed - not needed for single door implementation
 // Double door support can be added back later if needed
+static int LuaFindObjectTypeNearNPC(lua_State *L)
+{
+    int npc_id = luaL_checknumber(L, 1);
+    int shape = luaL_checknumber(L, 2);
+    int max_distance = luaL_checknumber(L, 3);
+
+    lua_newtable(L);  // Create result table
+
+    Vector3 npc_pos = g_objectList[g_NPCData[npc_id]->m_objectID]->m_Pos;
+    int table_index = 1;
+
+    // Search all objects for matches near the avatar
+    for (const auto& pair : g_objectList)
+    {
+        int candidate_id = pair.first;
+        U7Object* candidate = pair.second.get();
+
+        // Skip if shape doesn't match (or shape == -1 for any object)
+        if (shape != -1 && candidate->m_ObjectType != shape)
+            continue;
+
+        // Calculate distance from player
+        Vector3 candidate_pos = candidate->GetPos();
+        int dx = (int)abs(candidate_pos.x - npc_pos.x);
+        int dz = (int)abs(candidate_pos.z - npc_pos.z);
+        int distance = (dx > dz) ? dx : dz;  // Chebyshev distance
+
+        // Add to result table if within range
+        if (distance <= max_distance)
+        {
+            lua_pushinteger(L, pair.first);
+        }
+    }
+
+    return 1;
+}
 
 // Opcode 0014
 static int LuaGetObjectQuality(lua_State *L)
@@ -2643,6 +2679,9 @@ static int LuaFindNearbyAvatar(lua_State *L)
         int candidate_id = pair.first;
         U7Object* candidate = pair.second.get();
 
+        if (candidate == nullptr)
+            continue;
+
         // Skip if shape doesn't match (or shape == -1 for any object)
         if (shape != -1 && candidate->m_ObjectType != shape)
             continue;
@@ -2656,12 +2695,12 @@ static int LuaFindNearbyAvatar(lua_State *L)
         // Add to result table if within range
         if (distance <= max_distance)
         {
-            lua_pushinteger(L, table_index);
             lua_pushinteger(L, candidate_id);
-            lua_settable(L, -3);
-            table_index++;
+            return 1;
         }
     }
+
+    lua_pushnil(L);
 
     return 1;
 }
@@ -4998,6 +5037,8 @@ void RegisterAllLuaFunctions()
 
     g_ScriptingSystem->RegisterScriptFunction( "set_npc_override_frame", LuaSetNPCOverrideFrame);
     g_ScriptingSystem->RegisterScriptFunction( "clear_npc_override_frame", LuaClearNPCOverrideFrame);
+
+    g_ScriptingSystem->RegisterScriptFunction( "find_object_type_near_npc",LuaFindObjectTypeNearNPC);
 
     cout << "Registered all Lua functions\n";
 }
