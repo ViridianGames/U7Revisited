@@ -110,14 +110,14 @@ void Terrain::CalculateLighting()
 
 					if (distance <= lightrangesquared)
 					{
-						m_cellLighting[cellx][celly] = {192, 192, 192, 255};
+						m_cellLighting[cellx][celly] = {208, 208, 192, 255};
 					}
 					else if (distance <= softlightrangesquared)
 					{
 						Color thiscell = m_cellLighting[cellx][celly];
 						if (thiscell.r < 128 && thiscell.g < 128 && thiscell.b < 128)
 						{
-							m_cellLighting[cellx][celly] = {128, 128, 128, 255};
+							m_cellLighting[cellx][celly] = {144, 144, 128, 255};
 						}
 						// else if (thiscell.r == 128 && thiscell.g == 128 && thiscell.b == 128)
 						// {
