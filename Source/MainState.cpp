@@ -910,7 +910,7 @@ void MainState::HandleLeftSingleClick()
 		}
 		else
 		{
-			Bark(g_objectUnderMousePointer, g_objectUnderMousePointer->m_objectData->m_name, 1.0f);
+			Bark(g_objectUnderMousePointer, GetObjectDisplayName(g_objectUnderMousePointer), 1.0f);
 
 			if (g_objectUnderMousePointer->m_isNPC && m_npcListWindow && m_npcListWindow->IsVisible())
 				m_npcListWindow->SelectNPC(g_objectUnderMousePointer->m_NPCID);
@@ -1899,12 +1899,13 @@ void MainState::Draw()
 		screenPos.y = int(screenPos.y);
 		screenPos.y -= g_ConversationFont->baseSize * 1.5f; // Offset above the object
 
-		float width = MeasureTextEx(*g_ConversationFont, m_barkText.c_str(), g_ConversationFont->baseSize, 1).x * 1.2;
+		int xoffset = 8 * g_DrawScale;
+		float width = MeasureTextEx(*g_ConversationFont, m_barkText.c_str(), g_ConversationFont->baseSize, 1).x + xoffset;
 		screenPos.x -= width / 2;
 		float height = g_ConversationFont->baseSize * 1.2;
 
 		DrawRectangleRounded({ screenPos.x, screenPos.y, width, height }, 5, 100, { 0, 0, 0, 192 });
-		DrawTextEx(*g_ConversationFont, m_barkText.c_str(), { float(screenPos.x) + (width * .1f), float(screenPos.y) + (height * .1f) }, g_ConversationFont->baseSize, 1, YELLOW);
+		DrawTextEx(*g_ConversationFont, m_barkText.c_str(), { float(screenPos.x) + xoffset / 2, float(screenPos.y) + (height * .1f) }, g_ConversationFont->baseSize, 1, YELLOW);
 	}
 
 	if (!m_paused && m_showUIElements)
@@ -2745,4 +2746,15 @@ void MainState::MaybeUpdatePartyFollowing()
 
         ++counter;
     }
+}
+
+void MainState::BuildDemoHelpGUI()
+{
+
+}
+
+
+void MainState::BuildSandboxHelpGUI()
+{
+
 }

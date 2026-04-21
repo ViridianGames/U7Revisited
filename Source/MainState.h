@@ -79,6 +79,9 @@ public:
 	void UpdateDebugToolsWindow();
 	void DumpNpcScheduleStats();
 
+	void BuildDemoHelpGUI();
+	void BuildSandboxHelpGUI();
+
   // void DrawDebugChunkPathfindingInfo();
 
    float m_waitTime = 0;
