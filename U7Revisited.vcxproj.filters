@@ -1,160 +1,517 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="C:\repos\U7RTest\Source\Geist\BaseUnits.cpp">
+    <ClCompile Include="Source\AskState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ConversationState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GameSerializer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GumpManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\LoadingState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\LoadSaveState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\MainState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\NpcListWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\OptionsState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ScriptRenameState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ShapeData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ShapeEditorState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Terrain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\TitleState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\U7Globals.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\U7Gump.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\U7GumpBook.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\U7GumpMinimap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\U7GumpNumberBar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\U7GumpPaperdoll.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\U7GumpSpellbook.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\U7GumpStats.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\U7LuaFuncs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\U7Object.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\U7Player.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\U7ScriptUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Geist\BaseUnits.cpp">
       <Filter>Geist</Filter>
     </ClCompile>
-    <ClCompile Include="C:\repos\U7RTest\Source\Geist\Config.cpp">
+    <ClCompile Include="Source\Geist\Config.cpp">
       <Filter>Geist</Filter>
     </ClCompile>
-    <ClCompile Include="C:\repos\U7RTest\Source\Geist\Engine.cpp">
+    <ClCompile Include="Source\Geist\Engine.cpp">
       <Filter>Geist</Filter>
     </ClCompile>
-    <ClCompile Include="C:\repos\U7RTest\Source\Geist\Globals.cpp">
+    <ClCompile Include="Source\Geist\Globals.cpp">
       <Filter>Geist</Filter>
     </ClCompile>
-    <ClCompile Include="C:\repos\U7RTest\Source\Geist\Gui.cpp">
+    <ClCompile Include="Source\Geist\Gui.cpp">
       <Filter>Geist</Filter>
     </ClCompile>
-    <ClCompile Include="C:\repos\U7RTest\Source\Geist\GuiElements.cpp">
+    <ClCompile Include="Source\Geist\GuiElements.cpp">
       <Filter>Geist</Filter>
     </ClCompile>
-    <ClCompile Include="C:\repos\U7RTest\Source\Geist\GuiManager.cpp">
+    <ClCompile Include="Source\Geist\GuiManager.cpp">
       <Filter>Geist</Filter>
     </ClCompile>
-    <ClCompile Include="C:\repos\U7RTest\Source\Geist\IO.cpp">
+    <ClCompile Include="Source\Geist\IO.cpp">
       <Filter>Geist</Filter>
     </ClCompile>
-    <ClCompile Include="C:\repos\U7RTest\Source\Geist\Logging.cpp">
+    <ClCompile Include="Source\Geist\Logging.cpp">
       <Filter>Geist</Filter>
     </ClCompile>
-    <ClCompile Include="C:\repos\U7RTest\Source\Geist\ParticleSystem.cpp">
+    <ClCompile Include="Source\Geist\ParticleSystem.cpp">
       <Filter>Geist</Filter>
     </ClCompile>
-    <ClCompile Include="C:\repos\U7RTest\Source\Geist\Primitives.cpp">
+    <ClCompile Include="Source\Geist\Primitives.cpp">
       <Filter>Geist</Filter>
     </ClCompile>
-    <ClCompile Include="C:\repos\U7RTest\Source\Geist\RaylibModel.cpp">
+    <ClCompile Include="Source\Geist\RaylibModel.cpp">
       <Filter>Geist</Filter>
     </ClCompile>
-    <ClCompile Include="C:\repos\U7RTest\Source\Geist\ResourceManager.cpp">
+    <ClCompile Include="Source\Geist\ResourceManager.cpp">
       <Filter>Geist</Filter>
     </ClCompile>
-    <ClCompile Include="C:\repos\U7RTest\Source\Geist\RNG.cpp">
+    <ClCompile Include="Source\Geist\RNG.cpp">
       <Filter>Geist</Filter>
     </ClCompile>
-    <ClCompile Include="C:\repos\U7RTest\Source\Geist\ScriptingSystem.cpp">
+    <ClCompile Include="Source\Geist\ScriptingSystem.cpp">
       <Filter>Geist</Filter>
     </ClCompile>
-    <ClCompile Include="C:\repos\U7RTest\Source\Geist\StateMachine.cpp">
+    <ClCompile Include="Source\Geist\SoundSystem.cpp">
       <Filter>Geist</Filter>
     </ClCompile>
-    <ClCompile Include="C:\repos\U7RTest\Source\Geist\TooltipSystem.cpp">
+    <ClCompile Include="Source\Geist\StateMachine.cpp">
       <Filter>Geist</Filter>
     </ClCompile>
-    <ClCompile Include="C:\repos\U7RTest\Source\Ghost\GhostSerializer.cpp">
-      <Filter>Ghost</Filter>
+    <ClCompile Include="Source\Geist\TooltipSystem.cpp">
+      <Filter>Geist</Filter>
     </ClCompile>
-    <ClCompile Include="C:\repos\U7RTest\Source\Ghost\GhostWindow.cpp">
-      <Filter>Ghost</Filter>
+    <ClCompile Include="Source\Ghost\GhostWindow.cpp">
+      <Filter>Geist</Filter>
     </ClCompile>
-    <ClCompile Include="C:\repos\U7RTest\Source\AskState.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="ThirdParty\lua\src\lapi.c">
+      <Filter>ThirdParty</Filter>
     </ClCompile>
-    <ClCompile Include="C:\repos\U7RTest\Source\ConversationState.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="ThirdParty\lua\src\lauxlib.c">
+      <Filter>ThirdParty</Filter>
     </ClCompile>
-    <ClCompile Include="C:\repos\U7RTest\Source\GameSerializer.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="ThirdParty\lua\src\lbaselib.c">
+      <Filter>ThirdParty</Filter>
     </ClCompile>
-    <ClCompile Include="C:\repos\U7RTest\Source\GumpManager.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="ThirdParty\lua\src\lcode.c">
+      <Filter>ThirdParty</Filter>
     </ClCompile>
-    <ClCompile Include="C:\repos\U7RTest\Source\LoadingState.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="ThirdParty\lua\src\lcorolib.c">
+      <Filter>ThirdParty</Filter>
     </ClCompile>
-    <ClCompile Include="C:\repos\U7RTest\Source\Main.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="ThirdParty\lua\src\lctype.c">
+      <Filter>ThirdParty</Filter>
     </ClCompile>
-    <ClCompile Include="C:\repos\U7RTest\Source\MainState.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="ThirdParty\lua\src\ldblib.c">
+      <Filter>ThirdParty</Filter>
     </ClCompile>
-    <ClCompile Include="C:\repos\U7RTest\Source\OptionsState.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="ThirdParty\lua\src\ldebug.c">
+      <Filter>ThirdParty</Filter>
     </ClCompile>
-    <ClCompile Include="C:\repos\U7RTest\Source\Pathfinding.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="ThirdParty\lua\src\ldo.c">
+      <Filter>ThirdParty</Filter>
     </ClCompile>
-    <ClCompile Include="C:\repos\U7RTest\Source\ShapeData.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="ThirdParty\lua\src\ldump.c">
+      <Filter>ThirdParty</Filter>
     </ClCompile>
-    <ClCompile Include="C:\repos\U7RTest\Source\ShapeEditorState.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="ThirdParty\lua\src\lfunc.c">
+      <Filter>ThirdParty</Filter>
     </ClCompile>
-    <ClCompile Include="C:\repos\U7RTest\Source\Terrain.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="ThirdParty\lua\src\lgc.c">
+      <Filter>ThirdParty</Filter>
     </ClCompile>
-    <ClCompile Include="C:\repos\U7RTest\Source\TitleState.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="ThirdParty\lua\src\linit.c">
+      <Filter>ThirdParty</Filter>
     </ClCompile>
-    <ClCompile Include="C:\repos\U7RTest\Source\U7GumpNumberBar.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="ThirdParty\lua\src\liolib.c">
+      <Filter>ThirdParty</Filter>
     </ClCompile>
-    <ClCompile Include="C:\repos\U7RTest\Source\U7GumpBook.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="ThirdParty\lua\src\llex.c">
+      <Filter>ThirdParty</Filter>
     </ClCompile>
-    <ClCompile Include="C:\repos\U7RTest\Source\LoadSaveState.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="ThirdParty\lua\src\lmathlib.c">
+      <Filter>ThirdParty</Filter>
     </ClCompile>
-    <ClCompile Include="C:\repos\U7RTest\Source\U7GumpMinimap.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="ThirdParty\lua\src\lmem.c">
+      <Filter>ThirdParty</Filter>
     </ClCompile>
-    <ClCompile Include="C:\repos\U7RTest\Source\U7GumpPaperdoll.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="ThirdParty\lua\src\loadlib.c">
+      <Filter>ThirdParty</Filter>
     </ClCompile>
-    <ClCompile Include="C:\repos\U7RTest\Source\U7GumpSpellbook.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="ThirdParty\lua\src\lobject.c">
+      <Filter>ThirdParty</Filter>
     </ClCompile>
-    <ClCompile Include="C:\repos\U7RTest\Source\U7GumpStats.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="ThirdParty\lua\src\lopcodes.c">
+      <Filter>ThirdParty</Filter>
     </ClCompile>
-    <ClCompile Include="C:\repos\U7RTest\Source\U7Globals.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="ThirdParty\lua\src\loslib.c">
+      <Filter>ThirdParty</Filter>
     </ClCompile>
-    <ClCompile Include="C:\repos\U7RTest\Source\U7Gump.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="ThirdParty\lua\src\lparser.c">
+      <Filter>ThirdParty</Filter>
     </ClCompile>
-    <ClCompile Include="C:\repos\U7RTest\Source\U7LuaFuncs.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="ThirdParty\lua\src\lstate.c">
+      <Filter>ThirdParty</Filter>
     </ClCompile>
-    <ClCompile Include="C:\repos\U7RTest\Source\U7Object.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="ThirdParty\lua\src\lstring.c">
+      <Filter>ThirdParty</Filter>
     </ClCompile>
-    <ClCompile Include="C:\repos\U7RTest\Source\U7Player.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="ThirdParty\lua\src\lstrlib.c">
+      <Filter>ThirdParty</Filter>
     </ClCompile>
-    <ClCompile Include="C:\repos\U7RTest\Source\U7ScriptUtils.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="ThirdParty\lua\src\ltable.c">
+      <Filter>ThirdParty</Filter>
     </ClCompile>
-    <ClCompile Include="C:\repos\U7RTest\Source\ScriptRenameState.cpp">
+    <ClCompile Include="ThirdParty\lua\src\ltablib.c">
+      <Filter>ThirdParty</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\lua\src\ltm.c">
+      <Filter>ThirdParty</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\lua\src\lundump.c">
+      <Filter>ThirdParty</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\lua\src\lutf8lib.c">
+      <Filter>ThirdParty</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\lua\src\lvm.c">
+      <Filter>ThirdParty</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\lua\src\lzio.c">
+      <Filter>ThirdParty</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Ghost\GhostSerializer.cpp">
+      <Filter>Geist</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Ghost\FileChooserState.cpp">
+      <Filter>Geist</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Ghost\SpritePickerState.cpp">
+      <Filter>Geist</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\PathfindingSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="C:\repos\U7RTest\CMakeLists.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="C:\repos\U7RTest\Source\u7revisited.rc" />
+    <ResourceCompile Include="Source\u7revisited.rc">
+      <Filter>Source Files</Filter>
+    </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Geist">
       <UniqueIdentifier>{F1318034-2B5C-3D60-B0AE-46EF578D5CB0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Ghost">
-      <UniqueIdentifier>{93CA4D2C-E707-3767-9BFC-F294CB684D10}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files">
       <UniqueIdentifier>{F6326E43-EBB3-3D8A-842C-27D239078E0F}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ThirdParty">
+      <UniqueIdentifier>{d6a7fae8-d790-4748-a656-9e7c5b950ff2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\AskState.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ConversationState.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\GameSerializer.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\GumpManager.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\LoadingState.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\LoadSaveState.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\MainState.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\NpcListWindow.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\OptionsState.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ScriptRenameState.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ShapeData.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ShapeEditorState.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Terrain.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\TitleState.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\U7Globals.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\U7Gump.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\U7GumpBook.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\U7GumpMinimap.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\U7GumpNumberBar.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\U7GumpPaperdoll.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\U7GumpSpellbook.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\U7GumpStats.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\U7LuaFuncs.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\U7Object.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\U7Player.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\U7ScriptUtils.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Geist\BaseUnits.h">
+      <Filter>Geist</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Geist\Config.h">
+      <Filter>Geist</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Geist\Engine.h">
+      <Filter>Geist</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Geist\GhostSerializer.h">
+      <Filter>Geist</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Geist\GhostWindow.h">
+      <Filter>Geist</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Geist\Globals.h">
+      <Filter>Geist</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Geist\Gui.h">
+      <Filter>Geist</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Geist\GuiElements.h">
+      <Filter>Geist</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Geist\GuiManager.h">
+      <Filter>Geist</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Geist\IO.h">
+      <Filter>Geist</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Geist\Logging.h">
+      <Filter>Geist</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Geist\Object.h">
+      <Filter>Geist</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Geist\ParticleSystem.h">
+      <Filter>Geist</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Geist\Primitives.h">
+      <Filter>Geist</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Geist\RaylibModel.h">
+      <Filter>Geist</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Geist\ResourceManager.h">
+      <Filter>Geist</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Geist\RNG.h">
+      <Filter>Geist</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Geist\ScriptingSystem.h">
+      <Filter>Geist</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Geist\SoundSystem.h">
+      <Filter>Geist</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Geist\State.h">
+      <Filter>Geist</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Geist\StateMachine.h">
+      <Filter>Geist</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Geist\TooltipSystem.h">
+      <Filter>Geist</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Ghost\GhostWindow.h">
+      <Filter>Geist</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\lua\src\lapi.h">
+      <Filter>ThirdParty</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\lua\src\lauxlib.h">
+      <Filter>ThirdParty</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\lua\src\lcode.h">
+      <Filter>ThirdParty</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\lua\src\lctype.h">
+      <Filter>ThirdParty</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\lua\src\ldebug.h">
+      <Filter>ThirdParty</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\lua\src\ldo.h">
+      <Filter>ThirdParty</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\lua\src\lfunc.h">
+      <Filter>ThirdParty</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\lua\src\lgc.h">
+      <Filter>ThirdParty</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\lua\src\ljumptab.h">
+      <Filter>ThirdParty</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\lua\src\llex.h">
+      <Filter>ThirdParty</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\lua\src\llimits.h">
+      <Filter>ThirdParty</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\lua\src\lmem.h">
+      <Filter>ThirdParty</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\lua\src\lobject.h">
+      <Filter>ThirdParty</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\lua\src\lopcodes.h">
+      <Filter>ThirdParty</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\lua\src\lopnames.h">
+      <Filter>ThirdParty</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\lua\src\lparser.h">
+      <Filter>ThirdParty</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\lua\src\lprefix.h">
+      <Filter>ThirdParty</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\lua\src\lstate.h">
+      <Filter>ThirdParty</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\lua\src\lstring.h">
+      <Filter>ThirdParty</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\lua\src\ltable.h">
+      <Filter>ThirdParty</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\lua\src\ltm.h">
+      <Filter>ThirdParty</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\lua\src\lua.h">
+      <Filter>ThirdParty</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\lua\src\luaconf.h">
+      <Filter>ThirdParty</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\lua\src\lualib.h">
+      <Filter>ThirdParty</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\lua\src\lundump.h">
+      <Filter>ThirdParty</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\lua\src\lvm.h">
+      <Filter>ThirdParty</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\lua\src\lzio.h">
+      <Filter>ThirdParty</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\lua\src\lua.hpp">
+      <Filter>ThirdParty</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Ghost\GhostSerializer.h">
+      <Filter>Geist</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Ghost\FileChooserState.h">
+      <Filter>Geist</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Ghost\SpritePickerState.h">
+      <Filter>Geist</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\PathfindingSystem.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Source\u7_logo.ico">
+      <Filter>Source Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>
