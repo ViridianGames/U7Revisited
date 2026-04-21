@@ -100,12 +100,6 @@ void Terrain::CalculateLighting()
 					int cellx = (TILEWIDTH / 2) + i - int(g_camera.target.x);
 					int celly = (TILEHEIGHT / 2) + j - int(g_camera.target.z);
 
-					//  Already lit?  Continue.
-					// if (ColorToInt(m_cellLighting[cellx][celly]) != ColorToInt(g_dayNightColor))
-					// {
-					// 	continue; // This cell has already been processed.
-					// }
-
 					float distance = Vector2DistanceSqr({float(i), float(j)}, {object->m_Pos.x, object->m_Pos.z});
 
 					if (distance <= lightrangesquared)
