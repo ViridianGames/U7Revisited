@@ -20,6 +20,8 @@
 #include <unordered_map>
 #include <filesystem>
 
+#include "InputSystem.h"
+
 using namespace std;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -483,7 +485,7 @@ void ShapeEditorState::Update()
 	if (m_renameScriptWindow && m_renameScriptWindow->IsVisible())
 	{
 		// If we need to set focus and the mouse button is no longer pressed, do it now
-		if (m_renameScriptWindowNeedsFocus && !IsMouseButtonDown(MOUSE_LEFT_BUTTON))
+		if (m_renameScriptWindowNeedsFocus && !g_InputSystem->IsLButtonDown())
 		{
 			int nameInputID = m_renameScriptWindow->GetElementID("SCRIPT_NAME");
 			if (nameInputID != -1)
@@ -737,7 +739,7 @@ void ShapeEditorState::Update()
 	int sliderY = g_Engine->m_ScreenHeight - 40;
 
 	// Detect initial press on slider (bounds check only on first press)
-	if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+	if (g_InputSystem->IsLButtonDown())
 	{
 		int mouseX = GetMouseX();
 		int mouseY = GetMouseY();
@@ -749,7 +751,7 @@ void ShapeEditorState::Update()
 	}
 
 	// While dragging, track mouse X anywhere (sticky - no bounds check)
-	if (m_isDraggingSlider && IsMouseButtonDown(MOUSE_LEFT_BUTTON))
+	if (m_isDraggingSlider && g_InputSystem->IsLButtonDown())
 	{
 		int mouseX = GetMouseX();
 		int newAngle = ((mouseX - sliderX) * 360) / sliderWidth;

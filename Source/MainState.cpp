@@ -35,6 +35,8 @@
 #include <condition_variable>
 #include <atomic>
 #include <chrono>
+
+#include "InputSystem.h"
 #include "LoadSaveState.h"
 #include "SoundSystem.h"
 
@@ -373,9 +375,9 @@ void MainState::CalculateMouseOverUI()
 	};
 
 	Vector2 mousePos = GetMousePosition();
-	bool overStats = IsPosInRect(mousePos, statsPanelRect);
-	bool overMinimap = IsPosInRect(mousePos, minimapRect);
-	bool overCharPanel = IsPosInRect(mousePos, charPanelRect);
+	bool overStats = g_InputSystem->IsMouseInRegion(statsPanelRect);
+	bool overMinimap = g_InputSystem->IsMouseInRegion(minimapRect);
+	bool overCharPanel = g_InputSystem->IsMouseInRegion(charPanelRect);
 
 	// Check if mouse is over debug tools window
 	bool overDebugTools = false;
@@ -408,6 +410,8 @@ void MainState::UpdateInput()
 		return;
 	}
 
+	m_handledDoubleLeftClickThisFrame = false;
+
 	HandleEscapeKey();
 	HandleDebugKeys();
 	HandleGameKeys();
@@ -435,6 +439,14 @@ void MainState::HandleEscapeKey()
 	{
 		g_Engine->m_askedToExit = true;
 		g_StateMachine->PushState(STATE_ASKEXITSTATE);
+	}
+
+	if (m_objectSelectionMode)
+	{
+		g_ScriptingSystem->ResumeCoroutine(m_luaFunction, {0});
+		m_doingObjectSelection = false;
+		m_objectSelectionMode = false;
+		m_luaFunction.clear();
 	}
 }
 
@@ -473,7 +485,7 @@ void MainState::HandleDebugKeys()
 	if (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyPressed(KEY_L))
 		DumpNpcScheduleStats();
 
-	if (m_showPathfindingDebug && IsMouseButtonPressed(MOUSE_BUTTON_RIGHT))
+	if (m_showPathfindingDebug && g_InputSystem->WasRButtonClicked())
 	{
 		int worldX = (int)floor(g_terrainUnderMousePointer.x);
 		int worldZ = (int)floor(g_terrainUnderMousePointer.z);
@@ -568,7 +580,7 @@ void MainState::HandleGameKeys()
 
 void MainState::HandleObjectDrag()
 {
-	if (!IsMouseButtonDown(MOUSE_LEFT_BUTTON))
+	if (!g_InputSystem->IsLButtonDown())
 	{
 		m_dragStart = { 0, 0 };
 		return;
@@ -613,7 +625,7 @@ void MainState::HandleObjectDrag()
 
 void MainState::HandleMiddleClick()
 {
-	if (!IsMouseButtonPressed(MOUSE_BUTTON_MIDDLE) || g_objectUnderMousePointer == nullptr || g_mouseOverUI)
+	if (!g_InputSystem->WasMButtonClicked() || g_objectUnderMousePointer == nullptr || g_mouseOverUI)
 		return;
 
 	string scriptName;
@@ -662,7 +674,7 @@ void MainState::HandleMiddleClick()
 
 void MainState::HandleRightDoubleClick()
 {
-	if (!WasMouseButtonDoubleClicked(MOUSE_BUTTON_RIGHT))
+	if (!g_InputSystem->WasRButtonDoubleClicked())
 		return;
 
 	if (g_objectUnderMousePointer != nullptr)
@@ -740,7 +752,7 @@ void MainState::HandleMouseHoldTimers()
 {
 	double now = GetTime();
 
-	if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT) && !g_mouseOverUI && !g_gumpManager->m_isMouseOverGump)
+	if (g_InputSystem->IsRButtonDown() && !g_mouseOverUI && !g_gumpManager->m_isMouseOverGump)
 	{
 		if (m_rightMouseHoldStart == 0.0f)
 			m_rightMouseHoldStart = (float)now;
@@ -753,7 +765,7 @@ void MainState::HandleMouseHoldTimers()
 		m_rightMouseHeld = false;
 	}
 
-	if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && !g_mouseOverUI && !g_gumpManager->m_isMouseOverGump)
+	if (g_InputSystem->IsLButtonDown() && !g_mouseOverUI && !g_gumpManager->m_isMouseOverGump)
 	{
 		if (m_leftMouseHoldStart == 0.0f)
 			m_leftMouseHoldStart = (float)now;
@@ -832,7 +844,7 @@ void MainState::HandleRightMouseHoldMovement()
 
 void MainState::HandleLeftDoubleClick()
 {
-	if (!WasMouseButtonDoubleClicked(MOUSE_BUTTON_LEFT))
+	if (!g_InputSystem->WasLButtonDoubleClicked())
 		return;
 
 	if (g_objectUnderMousePointer != nullptr)
@@ -854,6 +866,7 @@ void MainState::HandleLeftDoubleClick()
 			else
 			{
 				Log("Running normal interaction for NPC " + std::to_string(npcId));
+				m_handledDoubleLeftClickThisFrame = true;
 				g_objectUnderMousePointer->Interact(1);
 			}
 		}
@@ -861,14 +874,20 @@ void MainState::HandleLeftDoubleClick()
 			g_objectUnderMousePointer->m_hasConversationTree ||
 			g_objectUnderMousePointer->m_shapeData->m_luaScript != "default")
 		{
-			g_objectUnderMousePointer->Interact(1);
+			if (!m_objectSelectionMode)
+			{
+				m_handledDoubleLeftClickThisFrame = true;
+				g_objectUnderMousePointer->Interact(1);
+			}
 		}
 		else if (g_objectUnderMousePointer->m_isContainer && !g_objectUnderMousePointer->IsLocked())
 		{
+			m_handledDoubleLeftClickThisFrame = true;
 			OpenGump(g_objectUnderMousePointer->m_ID);
 		}
 		else if (g_objectUnderMousePointer->m_isContainer)
 		{
+			m_handledDoubleLeftClickThisFrame = true;
 			Bark(g_objectUnderMousePointer, "Locked", 3.0f);
 		}
 	}
@@ -892,7 +911,7 @@ void MainState::HandleLeftDoubleClick()
 
 void MainState::HandleLeftSingleClick()
 {
-	if (!IsMouseButtonReleased(MOUSE_LEFT_BUTTON))
+	if (!g_InputSystem->WasLButtonClicked())
 		return;
 
 	if (g_gumpManager->m_isMouseOverGump || g_gumpManager->m_draggingObject || g_mouseOverUI)
@@ -2226,19 +2245,19 @@ void MainState::UpdateStats()
 		Rectangle portraitRect = { (538.0f - thisTexture->width) * g_DrawScale, (200.0f + 40.0f * counter) * g_DrawScale, thisTexture->width * g_DrawScale, thisTexture->height * g_DrawScale };
 
 		// Check for double-click to toggle paperdoll
-		if (WasMouseButtonDoubleClicked(MOUSE_BUTTON_LEFT) && CheckCollisionPointRec(GetMousePosition(), portraitRect))
+		if (g_InputSystem->WasLButtonDoubleClicked() && CheckCollisionPointRec(GetMousePosition(), portraitRect))
 		{
 			TogglePaperdoll(g_Player->GetPartyMemberIds()[i]);
 		}
 		// Check for single click to select party member
-		else if (WasLeftButtonClickedInRect(portraitRect.x, portraitRect.y, portraitRect.width, portraitRect.height))
+		else if (g_InputSystem->WasLButtonClickedInRegion(portraitRect.x, portraitRect.y, portraitRect.width, portraitRect.height))
 		{
 			g_Player->SetSelectedPartyMember(g_Player->GetPartyMemberIds()[i]);
 		}
 		++counter;
 	}
 
-	if (WasLeftButtonClickedInRect({ 610 * g_DrawScale, 314 * g_DrawScale, 16 * g_DrawScale, 10 * g_DrawScale }))
+	if (g_InputSystem->WasLButtonClickedInRegion(610 * g_DrawScale, 314 * g_DrawScale, 16 * g_DrawScale, 10 * g_DrawScale ))
 	{
 		// Open the equipped backpack, not the NPC itself
 		int npcIndex = g_Player->GetSelectedPartyMember();

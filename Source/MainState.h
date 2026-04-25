@@ -289,6 +289,8 @@ private:
 	bool    m_cameraDragging = false;
 	bool    m_cursorLocked = false;
 	float   m_cameraDragSensitivity = 0.008f; // radians per pixel (tune as needed)
+
+	bool m_handledDoubleLeftClickThisFrame = false;
 };
 
 #endif

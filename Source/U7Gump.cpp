@@ -4,6 +4,8 @@
 #include <algorithm>
 
 #include "U7Gump.h"
+
+#include "InputSystem.h"
 #include "Geist/Config.h"
 #include "Geist/Engine.h"
 #include "Geist/Globals.h"
@@ -153,7 +155,7 @@ void Gump::Update()
 	mousePos.x = int(mousePos.x /= g_DrawScale);
 	mousePos.y = int(mousePos.y /= g_DrawScale);
 
-	if (!IsMouseButtonDown(MOUSE_LEFT_BUTTON))
+	if (!g_InputSystem->IsLButtonDown())
 	{
 		m_dragStart = {0, 0};
 	}
@@ -164,7 +166,7 @@ void Gump::Update()
 		m_containerData.m_boxSize.x, m_containerData.m_boxSize.y }))
 	{
 		// Check for double-click on spellbook or map
-		if (WasMouseButtonDoubleClicked(MOUSE_BUTTON_LEFT))
+		if (g_InputSystem->WasLButtonDoubleClicked())
 		{
 			for (auto containerObjectId : m_containerObject->m_inventory)
 			{
@@ -229,7 +231,7 @@ void Gump::Update()
 			}
 		}
 
-		if (IsMouseButtonDown(MOUSE_LEFT_BUTTON))
+		if (g_InputSystem->IsLButtonDown())
 		{
 			if (m_dragStart.x == 0 && m_dragStart.y == 0)
 			{

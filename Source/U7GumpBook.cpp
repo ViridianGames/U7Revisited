@@ -4,6 +4,8 @@
 
 #include "U7Gump.h"
 #include "U7GumpBook.h"
+
+#include "InputSystem.h"
 #include "Geist/Config.h"
 #include "Geist/Globals.h"
 #include "Geist/ResourceManager.h"
@@ -117,7 +119,7 @@ void GumpBook::Setup(const int book_type, const std::vector<std::string>& text)
 
 void GumpBook::Update()
 {
-	if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+	if (g_InputSystem->WasLButtonClicked())
 	{
 		m_bookPages.erase(m_bookPages.begin());
 		//  Books have two pages, unlike every other book type

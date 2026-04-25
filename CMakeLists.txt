@@ -155,6 +155,7 @@ set(SOURCES
     Source/Geist/Gui.cpp
     Source/Geist/GuiElements.cpp
     Source/Geist/GuiManager.cpp
+    Source/Geist/InputSystem.cpp
     Source/Geist/IO.cpp
     Source/Geist/Logging.cpp
     Source/Geist/ParticleSystem.cpp
@@ -344,6 +345,7 @@ set(GHOST_GEIST_SOURCES
     Source/Geist/Globals.cpp
     Source/Geist/Gui.cpp
     Source/Geist/GuiElements.cpp
+    Source/Geist/InputSystem.cpp
     Source/Geist/IO.cpp
     Source/Geist/Logging.cpp
     Source/Geist/Primitives.cpp

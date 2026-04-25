@@ -354,8 +354,6 @@ void AddObjectToContainer(int objectID, int containerID);
 
 unsigned int GetNextID();
 
-bool WasMouseButtonDoubleClicked(int button);
-
 void OpenURL(const std::string& url);
 
 extern Vector3 g_terrainUnderMousePointer;

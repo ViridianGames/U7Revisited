@@ -17,6 +17,8 @@
 #include <iostream>
 #include <cassert>
 #include <mutex>
+
+#include "InputSystem.h"
 #include "raylib.h"
 using namespace std;
 
@@ -502,7 +504,7 @@ void CameraInput()
 
 	if (g_allowInput)
 	{
-		if (IsLeftButtonDownInRect(g_Engine->m_ScreenWidth - (g_minimapSize * g_DrawScale), 0, g_Engine->m_ScreenWidth, g_minimapSize * g_DrawScale)
+		if (g_InputSystem->IsLButtonDownInRegion(g_Engine->m_ScreenWidth - (g_minimapSize * g_DrawScale), 0, g_Engine->m_ScreenWidth, g_minimapSize * g_DrawScale)
 			&& !g_gumpManager->IsAnyGumpBeingDragged())
 		{
 			float minimapx = float(GetMouseX() - (g_Engine->m_ScreenWidth - (g_minimapSize * g_DrawScale))) / float(g_minimapSize * g_DrawScale) * 3072;
@@ -1339,32 +1341,6 @@ bool g_hasCameraChanged = true;
 EngineModes g_engineMode = EngineModes::ENGINE_MODE_BLACK_GATE;
 
 std::string g_engineModeStrings[] = { "blackgate", "serpentisle", "NONE" };
-
-bool WasMouseButtonDoubleClicked(int button)
-{
-	static bool lmblastState = false;
-	static float lmblastTime = 0;
-
-	if (IsMouseButtonReleased(button))
-	{
-		if (lmblastState == false)
-		{
-			lmblastState = true;
-			lmblastTime = GetTime();
-		}
-	}
-	else if (IsMouseButtonPressed(button))  // if (IsMouseButtonPressed
-	{
-		if (GetTime() - lmblastTime < .25f)
-		{
-			lmblastState = false;
-			return true;
-		}
-		lmblastState = false;
-	}
-
-	return false;
-}
 
 void OpenURL(const std::string& url)
 {

@@ -7,6 +7,7 @@
 #include <memory>
 #include <algorithm>
 
+#include "InputSystem.h"
 #include "ScriptingSystem.h"
 #include "U7Globals.h"
 #include "ResourceManager.h"
@@ -68,7 +69,7 @@ void GumpManager::Update()
 			m_gumpUnderMouse = topmostGumpUnderMouse;
 
 			// If mouse clicked on this gump, bring it to front (if not already at front)
-			if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+			if (g_InputSystem->IsLButtonDown())
 			{
 				gumpToMoveToFront = *it;
 			}
@@ -134,7 +135,7 @@ void GumpManager::Update()
 
 
 	// Handle dragging
-	if (g_gumpManager->m_draggingObject && !IsMouseButtonDown(MOUSE_LEFT_BUTTON))
+	if (g_gumpManager->m_draggingObject && !g_InputSystem->IsLButtonDown())
 	{
 		auto object = GetObjectFromID(g_gumpManager->m_draggedObjectId);
 
