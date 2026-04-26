@@ -390,7 +390,15 @@ void ConversationState::Draw()
 
 			for (int i = 0; i < m_answers.size(); i++)
 			{
-				DrawOutlinedText(g_SmallFont, "* " + m_answers[i],
+				// Check if first character is a letter and is lowercase
+				std::string capsAnswer = m_answers[i];
+				if (std::isalpha(static_cast<unsigned char>(capsAnswer[0])) &&
+					 std::islower(static_cast<unsigned char>(capsAnswer[0])))
+				{
+					capsAnswer[0] = std::toupper(static_cast<unsigned char>(capsAnswer[0]));
+				}
+
+				DrawOutlinedText(g_SmallFont, "* " + capsAnswer,
 								 {190, float(135 + (i * g_SmallFont.get()->baseSize * 2))}, g_SmallFont.get()->baseSize * 2,
 								 1, YELLOW);
 			}

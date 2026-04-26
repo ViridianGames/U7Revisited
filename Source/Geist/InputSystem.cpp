@@ -101,33 +101,6 @@ void InputSystem::Update()
 
 void InputSystem::Draw()
 {
-   std::string str = "MouseX: " + to_string(m_MouseX) + " MouseY: " + to_string(m_MouseY) + " MouseZ: " + to_string(m_MouseZ);
-   DrawText(str.c_str(), 500, 10, 24, MAROON);
-
-   if (WasLButtonClicked())
-   {
-      str = "Left Button Clicked";
-      DrawText(str.c_str(), 500, 30, 24, MAROON);
-   }
-
-   if (IsLButtonDown())
-   {
-      str = "Left Button Down";
-      DrawText(str.c_str(), 500, 50, 24, MAROON);
-   }
-
-   if (WasLButtonDoubleClicked())
-   {
-      str = "Left Button Double-clicked";
-      DrawText(str.c_str(), 500, 70, 24, MAROON);
-   }
-
-   if (m_LeftSingleClickPending)
-   {
-      str = "Left Button PENDING";
-      DrawText(str.c_str(), 500, 90, 24, MAROON);
-   }
-
 
 }
 
