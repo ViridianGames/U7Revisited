@@ -528,7 +528,7 @@ void CameraUpdate(bool forcemove)
 			// If camera is locked to avatar, use avatar center as base (previous behavior)
 			if (g_isCameraLockedToAvatar)
 			{
-				Vector3 basePos = avatar->m_centerPoint;
+				Vector3 basePos = avatar->m_Pos;
 				Vector3 eyePos = Vector3Add(basePos, Vector3{ 0.0f, g_firstPersonHeight, 0.0f });
 
 				// forward now respects pitch
@@ -579,7 +579,7 @@ void CameraUpdate(bool forcemove)
 			if (avatar)
 			{
 				// Use the avatar center point (includes vertical offset of the model) so camera targets the same floor
-				playerPosition = avatar->m_centerPoint;
+				playerPosition = avatar->m_Pos;
 				havePlayerPos = true;
 			}
 		}

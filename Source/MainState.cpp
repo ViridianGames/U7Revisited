@@ -464,6 +464,11 @@ void MainState::HandleDebugKeys()
 		AddConsoleString(m_allowMovingStaticObjects ? "DEBUG: Can now move static objects" : "DEBUG: Static objects locked");
 	}
 
+	if (IsKeyPressed(KEY_F6))
+	{
+		g_pixelated = !g_pixelated;
+	}
+
 	if (IsKeyPressed(KEY_F8))
 	{
 		g_LuaDebug = !g_LuaDebug;
@@ -554,10 +559,6 @@ void MainState::HandleGameKeys()
 			AddConsoleString("Viewing Ground");
 		}
 	}
-
-	// F9: toggle pixelated rendering (was incorrectly bound to F7 — duplicate fixed)
-	if (IsKeyPressed(KEY_F9))
-		g_pixelated = !g_pixelated;
 
 	if (IsKeyPressed(KEY_KP_SUBTRACT) || IsKeyPressed(KEY_MINUS))
 	{
@@ -1973,6 +1974,8 @@ void MainState::Draw()
 	{
 		m_npcListWindow->Draw();
 	}
+
+	DrawOutlinedText(g_SmallFont, "CameraTarget: " + to_string(g_camera.target.x) + " " + to_string(g_camera.target.y) + " "+ to_string(g_camera.target.z) + " ", Vector2{ 10, 20 }, g_SmallFont.get()->baseSize, 1, WHITE);
 
 	// Draw cursor AFTER dialog so it appears on top
 	if (!m_paused && m_showUIElements)
