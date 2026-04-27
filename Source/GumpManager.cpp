@@ -171,6 +171,29 @@ void GumpManager::Update()
 			}
 		}
 
+		// Handle dropping onto the Avatar or other party member.
+		if (g_objectUnderMousePointer != nullptr && g_objectUnderMousePointer == g_Player->GetAvatarObject())
+		{
+			//  Attempt to drop the object into the Avatar's inventory.
+			U7Object* avatar = g_Player->GetAvatarObject();
+			U7Object* draggedObject = GetObjectFromID(m_draggedObjectId);
+			if (avatar->GetRemainingCarryCapacity() > object->GetWeight())
+			{
+				AddConsoleString("Added " + GetObjectDisplayName(draggedObject) + " to Avatar's inventory.", WHITE);
+				int backpackId = g_NPCData[0]->GetEquippedItem(EquipmentSlot::SLOT_BACKPACK);
+
+				AddObjectToContainer(m_draggedObjectId, backpackId);
+				g_SoundSystem->PlaySound("drag_drop.wav");
+				g_gumpManager->m_draggingObject = false;
+				g_gumpManager->m_draggedObjectId = -1;
+				g_gumpManager->m_sourceGump = nullptr;
+			}
+			else
+			{
+				AddConsoleString("Too heavy!", RED);
+			}
+		}
+
 		//  First check if we're dropping on a paperdoll
 		bool droppedOnPaperdoll = false;
 		bool attemptedPaperdollDrop = false;

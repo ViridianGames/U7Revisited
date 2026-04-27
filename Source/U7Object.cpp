@@ -772,7 +772,13 @@ void U7Object::NPCUpdate()
 
 	if (m_Pos.x != m_Dest.x || m_Pos.y != m_Dest.y  || m_Pos.z != m_Dest.z)
 	{
-		float deltav = (5.0f / g_secsPerMinute) * m_speed * GetFrameTime();
+		if (m_NPCID == 0)
+		{
+			int stopper = 0;
+			stopper++;
+		}
+
+		float deltav = m_speed * GetFrameTime();
 
 		// Detect "walking in place" and always log it for debugging.
 		// Previously this was gated by g_LuaDebug, so you saw nothing when that flag was false.
@@ -1270,11 +1276,11 @@ void U7Object::NPCInit(NPCData* npcData)
 	m_isContained = false;
 	if (std::string(m_NPCData->name) == "Avatar")
 	{
-		m_speed = 5.0f;
+		m_speed = 20.0f;
 	}
 	else
 	{
-		m_speed = 2.5f;
+		m_speed = 10.0f;
 	}
 	m_NPCID = npcData->id;
 	m_anchorPos = m_Pos;

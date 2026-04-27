@@ -96,7 +96,7 @@ void U7Player::AddPartyMember(int index)
 	{
 		m_PartyMemberIDs.push_back(index);
 		m_PartyMemberNames.push_back(g_NPCData[index]->name);
-		g_objectList[g_NPCData[index]->m_objectID]->m_speed = 5.0f; // Set speed to match avatar
+		g_objectList[g_NPCData[index]->m_objectID]->m_speed = g_objectList[g_NPCData[0]->m_objectID]->m_speed; // Set speed to match avatar
 
 		// Ensure new party member does NOT follow schedules
 		if (g_StateMachine)

@@ -1051,23 +1051,21 @@ void MainState::HandleAvatarMovement()
 		// Rotation-based movement
 		Vector3 direction = { 0, 0, 0 };
 		bool avatarMoved = false;
-		float speed = g_Player->GetAvatarObject()->GetSpeed();
-		float dt = GetFrameTime();
+		//float speed = g_Player->GetAvatarObject()->GetSpeed() * GetFrameTime();
 
-		if (IsKeyDown(KEY_A)) { direction = Vector3Add(direction, { -dt * speed,  0,  dt * speed }); avatarMoved = true; }
-		if (IsKeyDown(KEY_D)) { direction = Vector3Add(direction, {  dt * speed,  0, -dt * speed }); avatarMoved = true; }
-		if (IsKeyDown(KEY_W)) { direction = Vector3Add(direction, { -dt * speed,  0, -dt * speed }); avatarMoved = true; }
-		if (IsKeyDown(KEY_S)) { direction = Vector3Add(direction, {  dt * speed,  0,  dt * speed }); avatarMoved = true; }
+		if (IsKeyDown(KEY_A)) { direction = Vector3Add(direction, { -1,  0, 1 }); avatarMoved = true; }
+		if (IsKeyDown(KEY_D)) { direction = Vector3Add(direction, {  1,  0, -1 }); avatarMoved = true; }
+		if (IsKeyDown(KEY_W)) { direction = Vector3Add(direction, { -1,  0, -1 }); avatarMoved = true; }
+		if (IsKeyDown(KEY_S)) { direction = Vector3Add(direction, {  1,  0,  1 }); avatarMoved = true; }
 
 		if (avatarMoved)
 		{
-			Vector3 finalmovement = Vector3RotateByAxisAngle(direction, Vector3{ 0, 1, 0 }, g_cameraRotation);
-			Vector3 desired = Vector3Add(g_Player->GetAvatarObject()->GetPos(), finalmovement);
+			direction = Vector3Normalize(direction);
+			//direction = Vector3Multiply(direction, {speed, speed, speed} );
+			direction = Vector3RotateByAxisAngle(direction, Vector3{ 0, 1, 0 }, g_cameraRotation);
+			Vector3 desired = Vector3Add(g_Player->GetAvatarObject()->GetPos(), direction);
 
-			if (g_Player)
-				g_Player->TryMove(desired);
-			else
-				g_Player->GetAvatarObject()->SetDest(desired);
+			g_Player->TryMove(desired);
 		}
 	}
 
@@ -1784,7 +1782,7 @@ void MainState::Draw()
 		rlEnableDepthMask();
 	}
 
-	if (g_gumpManager->m_draggingObject && !g_gumpManager->m_isMouseOverGump)
+	if (g_gumpManager->m_draggingObject && !g_gumpManager->m_isMouseOverGump && g_objectUnderMousePointer != g_Player->GetAvatarObject())
 	{
 		U7Object* draggedObject = nullptr;
 		{
