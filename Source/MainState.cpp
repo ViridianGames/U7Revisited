@@ -1973,8 +1973,6 @@ void MainState::Draw()
 		m_npcListWindow->Draw();
 	}
 
-	DrawOutlinedText(g_SmallFont, "CameraTarget: " + to_string(g_camera.target.x) + " " + to_string(g_camera.target.y) + " "+ to_string(g_camera.target.z) + " ", Vector2{ 10, 20 }, g_SmallFont.get()->baseSize, 1, WHITE);
-
 	// Draw cursor AFTER dialog so it appears on top
 	if (!m_paused && m_showUIElements)
 	{

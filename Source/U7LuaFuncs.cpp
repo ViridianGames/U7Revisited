@@ -724,6 +724,7 @@ static int LuaObjectSelectModal(lua_State *L)
     if (g_StateMachine->GetCurrentState() == STATE_MAINSTATE)
     {
         dynamic_cast<MainState*>(g_StateMachine->GetState(STATE_MAINSTATE))->StartObjectSelectionMode();
+        dynamic_cast<MainState*>(g_StateMachine->GetState(STATE_MAINSTATE))->SetLuaFunction(g_ScriptingSystem->m_currentScript);
     }
 
     return lua_yield(L, 0);
