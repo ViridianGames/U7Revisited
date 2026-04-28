@@ -7,6 +7,11 @@
 #include <deque>
 #include <array>
 #include <math.h>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
+#include <atomic>
+#include "U7Globals.h"
 
 class ParticleSystem;
 class Gui;
@@ -58,7 +63,7 @@ public:
 	void UpdateTime();
 
 	void SetLuaFunction(const std::string& func_name) { m_luaFunction = func_name; }
-	void StartObjectSelectionMode() { m_objectSelectionMode = true; }
+	void StartObjectSelectionMode() { m_objectSelectionMode = true; m_doingObjectSelection = true; }
 
 	void Bark(U7Object* object, const std::string& text, float duration = 3.0f);
 
@@ -72,8 +77,14 @@ public:
 	void HandleRenameButton();
 	void HandleNPCListButton();
 	void UpdateDebugToolsWindow();
+	void DumpNpcScheduleStats();
 
-	float m_waitTime = 0;
+	void BuildDemoHelpGUI();
+	void BuildSandboxHelpGUI();
+
+  // void DrawDebugChunkPathfindingInfo();
+
+   float m_waitTime = 0;
 
    Gui* m_Gui = nullptr;
 
@@ -88,6 +99,48 @@ public:
 
 	// NPC list window for debugging/navigation
 	NpcListWindow* m_npcListWindow = nullptr;
+		// Request for scheduled pathfinding (non-blocking enqueue)
+		struct SchedulePathRequest
+		{
+		int npcID = -1;
+		Vector3 start = { 0.0f, 0.0f, 0.0f }; // start position at enqueue time (avoid reading later)
+		Vector3 dest = { 0.0f, 0.0f, 0.0f };
+	};
+
+	// Result posted back from background worker
+	struct SchedulePathResult
+	{
+		int npcID = -1;
+		std::vector<Vector3> path;
+		bool success = false;
+		Vector3 dest = { 0.0f, 0.0f, 0.0f };
+	};
+	
+	std::deque<SchedulePathRequest> m_schedulePathQueue; // enqueued schedule pathfinding requests
+	int m_schedulePathBudgetPerFrame = 6; // kept for legacy/budget reasons (not used for sync pathfinding)
+
+	// Background worker threads + synchronization for pathfinding
+	std::vector<std::thread> m_pathfinderThreads;
+	std::mutex m_scheduleMutex;                 // protects m_schedulePathQueue
+	std::condition_variable m_scheduleCv;
+	bool m_pathfinderRunning = false;
+
+	// Results produced by worker and consumed on main thread
+	std::deque<SchedulePathResult> m_scheduleResults;
+	std::mutex m_resultMutex;                   // protects m_scheduleResults
+
+	// Worker loop entry
+	void PathfindingWorkerLoop();
+
+	// Telemetry: track synchronous FindPath calls observed on main thread
+	std::atomic<uint64_t> m_syncFindPathCalls{0};
+
+	// Telemetry aggregation (per-second dumps)
+	float m_lastTelemetryDumpTime = 0.0f;
+	uint64_t m_lastAstarTotalCalls = 0;
+	uint64_t m_lastAstarTotalMs = 0;
+	uint64_t m_lastScriptErrorTotal = 0;
+	int m_resultsAppliedThisSecond = 0;
 
 	std::string m_luaFunction;
 
@@ -120,7 +173,7 @@ public:
    //Texture* m_TerrainTexture;
    Texture* m_Minimap = nullptr;
    Texture* m_MinimapArrow = nullptr;
-	Texture* m_usePointer = nullptr;
+	Texture* m_useCursor = nullptr;
 	Texture* m_errorCursor = nullptr;
 
 
@@ -188,6 +241,59 @@ public:
 	bool m_allowMovingStaticObjects = false;  // F7: Toggle moving static objects
 
 	bool m_loadOnEntry = false;
+
+	// added near the other public members
+	void SetFollowingScheduleForNpc(int npcId, bool follow);
+	bool IsNpcSchedulesEnabled() const;
+
+	void MaybeUpdatePartyFollowing();
+
+	Vector3 m_lastPartyAnchorPos = { 0.0f, 0.0f, 0.0f };
+	float  m_lastPartyFollowTime = 0.0f;
+	float  m_partyFollowCooldown = 0.5f;        // seconds
+	float  m_partyAnchorThreshold = 3.0f;       // tiles moved since last anchor -> update
+	float  m_partyMemberFollowThreshold = 2.0f; // distance per member to trigger pathfind
+	float  m_partySpacing = 1.0f;               // tiles between members in the line
+
+	// Camera-drag while holding left+right: state & helpers
+	void StartCameraDrag();
+	void UpdateCameraDrag();
+	void EndCameraDrag();
+
+private:
+	// UpdateInput() sub-handlers — each owns one concern
+	void HandleEscapeKey();
+	void HandleDebugKeys();
+	void HandleGameKeys();
+	void HandleObjectDrag();
+	void HandleMiddleClick();
+	void HandleRightDoubleClick();
+	void HandleMouseHoldTimers();
+	void HandleRightMouseHoldMovement();
+	void HandleLeftDoubleClick();
+	void HandleLeftSingleClick();
+	void DebugPrintNpcSchedule(U7Object* npc);
+	void HandleAvatarMovement();
+
+	// Mouse-hold detection (prevents quick clicks from triggering hold movement)
+	float m_rightMouseHoldStart = 0.0f;
+	bool  m_rightMouseHeld = false;
+	float m_rightMouseHoldThreshold = 0.15f; // seconds required to be considered a "hold"
+
+	float m_leftMouseHoldStart = 0.0f;
+	bool  m_leftMouseHeld = false;
+	float m_leftMouseHoldThreshold = 0.15f;  // seconds required to be considered a "hold"
+
+	// Camera-drag state (used while holding left+right)
+	Vector2 m_cameraDragLockPos = { 0.0f, 0.0f };
+	bool    m_cameraDragging = false;
+	bool    m_cursorLocked = false;
+	float   m_cameraDragSensitivity = 0.008f; // radians per pixel (tune as needed)
+
+	bool m_handledDoubleLeftClickThisFrame = false;
+
+	float m_barkTimer = 0.0f;
+	U7Object* m_previousObjectUnderMousePointer = nullptr;
 };
 
 #endif

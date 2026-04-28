@@ -4,6 +4,7 @@
 #include <Geist/StateMachine.h>
 #include <Geist/ScriptingSystem.h>
 #include <Geist/SoundSystem.h>
+#include <Geist/InputSystem.h>
 #include <Geist/Logging.h>
 #include <sstream>
 #include <fstream>
@@ -24,6 +25,8 @@ void Engine::Init(const std::string &configfile)
 	g_StateMachine->Init(configfile);
 	g_ScriptingSystem = make_unique<ScriptingSystem>();
 	g_ScriptingSystem->Init(configfile);
+	g_InputSystem = make_unique<InputSystem>();
+	g_InputSystem->Init(configfile);
 
 	m_GameUpdates = 0;
 
@@ -60,11 +63,13 @@ void Engine::Shutdown()
 {
 	g_StateMachine->Shutdown();
 	g_ResourceManager->Shutdown();
+	g_InputSystem->Shutdown();
 	CloseAudioDevice();
 }
 
 void Engine::Update()
 {
+	g_InputSystem->Update();
 	g_ResourceManager->Update();
 	g_StateMachine->Update();
 	g_ScriptingSystem->Update();
@@ -97,6 +102,7 @@ void Engine::Draw()
 	g_ResourceManager->Draw();
 	g_StateMachine->Draw();
 	g_ScriptingSystem->Draw();
+	g_InputSystem->Draw();
 	EndDrawing();
 }
 

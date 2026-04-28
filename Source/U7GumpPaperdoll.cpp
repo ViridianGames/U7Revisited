@@ -5,6 +5,8 @@
 #include "Geist/Logging.h"
 #include <filesystem>
 
+#include "InputSystem.h"
+
 extern std::unique_ptr<ResourceManager> g_ResourceManager;
 extern std::unique_ptr<U7Player> g_Player;
 extern std::unordered_map<int, std::unique_ptr<NPCData>> g_NPCData;
@@ -450,7 +452,7 @@ void GumpPaperdoll::Update()
 		mousePos.y /= g_DrawScale;
 
 		// Reset drag start if mouse button is released
-		if (!IsMouseButtonDown(MOUSE_LEFT_BUTTON))
+		if (!g_InputSystem->IsLButtonDown())
 		{
 			m_dragStart = { 0, 0 };
 		}
@@ -482,7 +484,7 @@ void GumpPaperdoll::Update()
 							// Check for double-click on backpack
 							if (slot == EquipmentSlot::SLOT_BACKPACK && objectId != -1)
 							{
-								if (WasMouseButtonDoubleClicked(MOUSE_BUTTON_LEFT))
+								if (g_InputSystem->WasLButtonDoubleClicked())
 								{
 									Log("Paperdoll - Double-click on backpack, opening gump for objectId=" + std::to_string(objectId));
 									// Open the backpack gump
@@ -506,7 +508,7 @@ void GumpPaperdoll::Update()
 								auto objIt = g_objectList.find(objectId);
 								if (objIt != g_objectList.end() && objIt->second->m_shapeData && objIt->second->m_shapeData->m_shape == 761)
 								{
-									if (WasMouseButtonDoubleClicked(MOUSE_BUTTON_LEFT))
+									if (g_InputSystem->WasLButtonDoubleClicked())
 									{
 										Log("Paperdoll - Double-click on spellbook, opening spellbook gump for NPC=" + std::to_string(m_npcId));
 										// Open the spellbook gump
@@ -524,7 +526,7 @@ void GumpPaperdoll::Update()
 								// Check for double-click on map (shape 178)
 								else if (objIt != g_objectList.end() && objIt->second->m_shapeData && objIt->second->m_shapeData->m_shape == 178)
 								{
-									if (WasMouseButtonDoubleClicked(MOUSE_BUTTON_LEFT))
+									if (g_InputSystem->WasLButtonDoubleClicked())
 									{
 										Log("Paperdoll - Double-click on map, opening minimap gump for NPC=" + std::to_string(m_npcId));
 										// Open the minimap gump
@@ -542,7 +544,7 @@ void GumpPaperdoll::Update()
 							}
 
 							// Handle drag start for equipped items
-							if (objectId != -1 && IsMouseButtonDown(MOUSE_LEFT_BUTTON))
+							if (objectId != -1 && g_InputSystem->IsLButtonDown())
 							{
 								// Track drag start position
 								if (m_dragStart.x == 0 && m_dragStart.y == 0)
@@ -605,7 +607,7 @@ void GumpPaperdoll::Update()
 							}
 
 							// Single click (without drag): show item name
-							if (objectId != -1 && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+							if (objectId != -1 && g_InputSystem->WasLButtonClicked())
 							{
 								Log("Paperdoll - Single click on slot " + std::to_string(i) + ", objectId=" + std::to_string(objectId));
 								auto objIt = g_objectList.find(objectId);

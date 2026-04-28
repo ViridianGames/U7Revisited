@@ -99,6 +99,13 @@ extern int g_lastScheduleTimeCheck;          // Last schedule time we checked
 extern Color g_dayNightColor;
 extern bool g_isDay;
 
+inline Vector2 g_DirVectors[8] = {
+	{ 0, -1 }, { 1, -1 }, { 1, 0 }, { 1, 1 },
+	{ 0, 1 }, { -1, 1 }, { -1, 0 }, { -1, -1 }
+};
+
+inline std::unordered_map<int, std::string> g_soundEffectList;
+
 struct ObjectData
 {
 	//  From wgtvol.dat
@@ -346,8 +353,6 @@ U7Object* AddObject(int shapenum, int framenum, int id, float x, float y, float 
 void AddObjectToContainer(int objectID, int containerID);
 
 unsigned int GetNextID();
-
-bool WasMouseButtonDoubleClicked(int button);
 
 void OpenURL(const std::string& url);
 

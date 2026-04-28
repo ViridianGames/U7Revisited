@@ -3,6 +3,8 @@
 
 #include "U7Gump.h"
 #include "U7GumpMinimap.h"
+
+#include "InputSystem.h"
 #include "Geist/Config.h"
 #include "Geist/Globals.h"
 #include "Geist/ResourceManager.h"
@@ -72,7 +74,7 @@ void GumpMinimap::Update()
 	Gump::Update();
 
 	// Modal behavior: close on any mouse click anywhere on screen
-	if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+	if (g_InputSystem->WasLButtonClicked())
 	{
 		Log("GumpMinimap::Update - Mouse clicked, closing minimap");
 		m_IsDead = true;

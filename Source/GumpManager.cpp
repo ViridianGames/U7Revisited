@@ -7,6 +7,7 @@
 #include <memory>
 #include <algorithm>
 
+#include "InputSystem.h"
 #include "ScriptingSystem.h"
 #include "U7Globals.h"
 #include "ResourceManager.h"
@@ -68,7 +69,7 @@ void GumpManager::Update()
 			m_gumpUnderMouse = topmostGumpUnderMouse;
 
 			// If mouse clicked on this gump, bring it to front (if not already at front)
-			if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+			if (g_InputSystem->IsLButtonDown())
 			{
 				gumpToMoveToFront = *it;
 			}
@@ -134,7 +135,7 @@ void GumpManager::Update()
 
 
 	// Handle dragging
-	if (g_gumpManager->m_draggingObject && !IsMouseButtonDown(MOUSE_LEFT_BUTTON))
+	if (g_gumpManager->m_draggingObject && !g_InputSystem->IsLButtonDown())
 	{
 		auto object = GetObjectFromID(g_gumpManager->m_draggedObjectId);
 
@@ -167,6 +168,33 @@ void GumpManager::Update()
 				m_gumpUnderMouse = (*it).get();
 				m_isMouseOverGump = true;
 				break;  // Found topmost gump with solid pixel under mouse
+			}
+		}
+
+		// Handle dropping onto the Avatar or other party member.
+		if (g_objectUnderMousePointer != nullptr && g_objectUnderMousePointer == g_Player->GetAvatarObject())
+		{
+			//  Attempt to drop the object into the Avatar's inventory.
+			U7Object* avatar = g_Player->GetAvatarObject();
+			U7Object* draggedObject = GetObjectFromID(m_draggedObjectId);
+			if (avatar->GetRemainingCarryCapacity() > object->GetWeight())
+			{
+				AddConsoleString("Added " + GetObjectDisplayName(draggedObject) + " to Avatar's inventory.", WHITE);
+				int backpackId = g_NPCData[0]->GetEquippedItem(EquipmentSlot::SLOT_BACKPACK);
+
+				AddObjectToContainer(m_draggedObjectId, backpackId);
+				if (draggedObject->m_shapeData->GetShape() == 641 && draggedObject->m_Quality == 253)
+				{
+					g_ScriptingSystem->SetFlag(60, 1);
+				}
+				g_SoundSystem->PlaySound("drag_drop.wav");
+				g_gumpManager->m_draggingObject = false;
+				g_gumpManager->m_draggedObjectId = -1;
+				g_gumpManager->m_sourceGump = nullptr;
+			}
+			else
+			{
+				AddConsoleString("Too heavy!", RED);
 			}
 		}
 
@@ -378,7 +406,11 @@ void GumpManager::Draw()
 		Vector2 mousePos = GetMousePosition();
 		mousePos.x = int(mousePos.x /= g_DrawScale);
 		mousePos.y = int(mousePos.y /= g_DrawScale);
-		DrawTextureEx(*object->m_shapeData->GetTexture(), Vector2Add(mousePos, m_draggedObjectOffset), 0, 1, Color{ 255, 255, 255, 255 });
+
+		//mousePos = Vector2Add(mousePos, m_draggedObjectOffset);
+		mousePos = Vector2Subtract(mousePos, {float(object->m_shapeData->m_texture->m_Image.width) * .75f, float(object->m_shapeData->m_texture->m_Image.height) * .75f });
+
+		DrawTexture(*object->m_shapeData->GetTexture(), int(mousePos.x), int(mousePos.y), Color{ 255, 255, 255, 255 });
 	}
 }
 

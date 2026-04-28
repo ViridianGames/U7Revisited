@@ -283,6 +283,10 @@ int main(int argv, char** argc)
 
       g_CuboidModel = nullptr;
 
+      g_soundEffectList[0] = "Audio/door_wooden_close.wav";
+      g_soundEffectList[31] = "Audio/guardian-laugh.ogg";
+      g_soundEffectList[28] = "Audio/open_chest.wav";
+
       //  Initialize scripts
 
       string directoryPath("Data/Scripts");

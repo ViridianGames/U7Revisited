@@ -1,4 +1,5 @@
 #include "U7Globals.h"
+#include "U7Object.h"
 #include "Geist/Engine.h"
 #include "Geist/Logging.h"
 #include "Geist/ScriptingSystem.h"
@@ -17,11 +18,13 @@
 #include <cassert>
 #include <mutex>
 
+#include "InputSystem.h"
+#include "raylib.h"
 using namespace std;
 
 std::string g_version;
 
-unordered_map<int, std::unique_ptr<U7Object> > g_objectList;
+std::unordered_map<int, std::unique_ptr<U7Object>> g_objectList;
 
 Mesh* g_AnimationFrames;
 
@@ -501,7 +504,7 @@ void CameraInput()
 
 	if (g_allowInput)
 	{
-		if (IsLeftButtonDownInRect(g_Engine->m_ScreenWidth - (g_minimapSize * g_DrawScale), 0, g_Engine->m_ScreenWidth, g_minimapSize * g_DrawScale)
+		if (g_InputSystem->IsLButtonDownInRegion(g_Engine->m_ScreenWidth - (g_minimapSize * g_DrawScale), 0, g_Engine->m_ScreenWidth, g_minimapSize * g_DrawScale)
 			&& !g_gumpManager->IsAnyGumpBeingDragged())
 		{
 			float minimapx = float(GetMouseX() - (g_Engine->m_ScreenWidth - (g_minimapSize * g_DrawScale))) / float(g_minimapSize * g_DrawScale) * 3072;
@@ -525,7 +528,7 @@ void CameraUpdate(bool forcemove)
 			// If camera is locked to avatar, use avatar center as base (previous behavior)
 			if (g_isCameraLockedToAvatar)
 			{
-				Vector3 basePos = avatar->m_centerPoint;
+				Vector3 basePos = avatar->m_Pos;
 				Vector3 eyePos = Vector3Add(basePos, Vector3{ 0.0f, g_firstPersonHeight, 0.0f });
 
 				// forward now respects pitch
@@ -565,13 +568,46 @@ void CameraUpdate(bool forcemove)
 
 	if (g_isCameraLockedToAvatar)
 	{
-		Vector3 cameraPosition = g_camera.target;
-		Vector3 playerPosition = g_objectList[g_NPCData[0]->m_objectID]->m_Pos;
+		// Prefer the player avatar object when available so the camera follows the avatar's actual vertical level
+		// (e.g., when the avatar moves to a second floor). Fall back to older g_NPCData[0] access only if needed.
+		Vector3 playerPosition = { 0.0f, 0.0f, 0.0f };
+		bool havePlayerPos = false;
 
-		if (cameraPosition.x != playerPosition.x || cameraPosition.y != playerPosition.y || cameraPosition.z != playerPosition.z)
+		if (g_Player)
 		{
-			g_camera.target = playerPosition;
-			g_CameraMoved = true;
+			U7Object* avatar = g_Player->GetAvatarObject();
+			if (avatar)
+			{
+				// Use the avatar center point (includes vertical offset of the model) so camera targets the same floor
+				playerPosition = avatar->m_Pos;
+				havePlayerPos = true;
+			}
+		}
+
+		// Fallback for older codepaths that expect g_NPCData[0]
+		if (!havePlayerPos)
+		{
+			if (!g_NPCData.empty() && g_NPCData.find(0) != g_NPCData.end() && g_NPCData[0])
+			{
+				int objId = g_NPCData[0]->m_objectID;
+				auto itObj = g_objectList.find(objId);
+				if (itObj != g_objectList.end() && itObj->second)
+				{
+					playerPosition = itObj->second->m_Pos;
+					havePlayerPos = true;
+				}
+			}
+		}
+
+
+		if (havePlayerPos)
+		{
+			Vector3 cameraPosition = g_camera.target;
+			if (cameraPosition.x != playerPosition.x || cameraPosition.y != playerPosition.y || cameraPosition.z != playerPosition.z)
+			{
+				g_camera.target = playerPosition;
+				g_CameraMoved = true;
+			}
 		}
 	}
 
@@ -1305,32 +1341,6 @@ bool g_hasCameraChanged = true;
 EngineModes g_engineMode = EngineModes::ENGINE_MODE_BLACK_GATE;
 
 std::string g_engineModeStrings[] = { "blackgate", "serpentisle", "NONE" };
-
-bool WasMouseButtonDoubleClicked(int button)
-{
-	static bool lmblastState = false;
-	static float lmblastTime = 0;
-
-	if (IsMouseButtonReleased(button))
-	{
-		if (lmblastState == false)
-		{
-			lmblastState = true;
-			lmblastTime = GetTime();
-		}
-	}
-	else if (IsMouseButtonPressed(button))  // if (IsMouseButtonPressed
-	{
-		if (GetTime() - lmblastTime < .25f)
-		{
-			lmblastState = false;
-			return true;
-		}
-		lmblastState = false;
-	}
-
-	return false;
-}
 
 void OpenURL(const std::string& url)
 {

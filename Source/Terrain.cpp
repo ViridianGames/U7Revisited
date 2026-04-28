@@ -79,8 +79,8 @@ void Terrain::CalculateLighting()
 	if (g_isDay)
 		return;
 
-	int softlightrange = 12;
-	int lightrange = 6;
+	int softlightrange = 14;
+	int lightrange = 3;
 	int lightrangesquared = lightrange * lightrange;
 	int softlightrangesquared = softlightrange * softlightrange;
 	for (auto object : g_sortedVisibleObjects)
@@ -100,29 +100,23 @@ void Terrain::CalculateLighting()
 					int cellx = (TILEWIDTH / 2) + i - int(g_camera.target.x);
 					int celly = (TILEHEIGHT / 2) + j - int(g_camera.target.z);
 
-					//  Already lit?  Continue.
-					// if (ColorToInt(m_cellLighting[cellx][celly]) != ColorToInt(g_dayNightColor))
-					// {
-					// 	continue; // This cell has already been processed.
-					// }
-
 					float distance = Vector2DistanceSqr({float(i), float(j)}, {object->m_Pos.x, object->m_Pos.z});
 
 					if (distance <= lightrangesquared)
 					{
-						m_cellLighting[cellx][celly] = WHITE;
+						m_cellLighting[cellx][celly] = {208, 208, 192, 255};
 					}
 					else if (distance <= softlightrangesquared)
 					{
 						Color thiscell = m_cellLighting[cellx][celly];
 						if (thiscell.r < 128 && thiscell.g < 128 && thiscell.b < 128)
 						{
-							m_cellLighting[cellx][celly] = {128, 128, 128, 255};
+							m_cellLighting[cellx][celly] = {144, 144, 128, 255};
 						}
-						else if (thiscell.r == 128 && thiscell.g == 128 && thiscell.b == 128)
-						{
-						 	m_cellLighting[cellx][celly] = WHITE;
-						}
+						// else if (thiscell.r == 128 && thiscell.g == 128 && thiscell.b == 128)
+						// {
+						//  	m_cellLighting[cellx][celly] = WHITE;
+						// }
 					}
 				}
 			}

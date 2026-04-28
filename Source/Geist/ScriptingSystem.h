@@ -11,8 +11,9 @@
 #include <memory>
 #include <map>
 #include <variant> // For flexible argument types
+#include <atomic>
 
-class Config;
+class Config; 
 
 class ScriptingSystem : public Object
 {
@@ -71,6 +72,30 @@ public:
 
     // Max time a script can run without yielding (in seconds)
     static constexpr float MAX_SCRIPT_TIME = 0.1f;  // 100ms
+
+    // Instrumentation: per-script call/resume counts and cumulative time (reset periodically)
+    std::unordered_map<std::string, int> m_instrumentCallCount;
+    std::unordered_map<std::string, int> m_instrumentResumeCount;
+    std::unordered_map<std::string, double> m_instrumentCallTime;
+    std::unordered_map<std::string, double> m_instrumentResumeTime;
+    float m_lastInstrumentDumpTime = 0.0f;
+
+    // Total script error counter (monotonic, used for telemetry delta)
+    std::atomic<uint64_t> m_totalScriptErrors{0};
+
+    // Per-script cooldown map: when a script errors, set cooldown until GetTime() reaches this value
+    std::unordered_map<std::string, float> m_scriptErrorCooldowns;
+
+    // Throttling: limit number of script start/resume operations performed on main thread per frame
+    int m_maxScriptStartsPerFrame = 8;    // allows up to 8 new script starts per frame
+    int m_maxScriptResumesPerFrame = 32;  // allows up to 16 resumes per frame
+    int m_scriptStartsThisFrame = 0;
+    int m_scriptResumesThisFrame = 0;
+
+    // Try to consume a script start/resume slot; return true if allowed
+    bool TryConsumeScriptStart();
+    bool TryConsumeScriptResume();
+    void ResetPerFrameScriptCounters();
 
 };
 

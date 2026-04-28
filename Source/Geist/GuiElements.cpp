@@ -9,6 +9,8 @@
 #include <Geist/Globals.h>
 #include <Geist/Logging.h>
 
+#include "InputSystem.h"
+
 using namespace std;
 
 
@@ -67,7 +69,7 @@ void GuiTextButton::Update()
 
 	if (m_Visible && m_Active)
 	{
-		if (IsMouseInRect((m_Gui->m_Pos.x + int(m_Pos.x)) * m_Gui->m_InputScale,
+		if (g_InputSystem->IsMouseInRegion((m_Gui->m_Pos.x + int(m_Pos.x)) * m_Gui->m_InputScale,
 			(m_Gui->m_Pos.y + int(m_Pos.y)) * m_Gui->m_InputScale,
 			m_Width * m_Gui->m_InputScale,
 			m_Height * m_Gui->m_InputScale))
@@ -75,7 +77,7 @@ void GuiTextButton::Update()
 			m_Hovered = true;
 		}
 
-		if (IsLeftButtonDownInRect((m_Gui->m_Pos.x + int(m_Pos.x)) * m_Gui->m_InputScale,
+		if (g_InputSystem->IsLButtonDownInRegion((m_Gui->m_Pos.x + int(m_Pos.x)) * m_Gui->m_InputScale,
 			(m_Gui->m_Pos.y + int(m_Pos.y)) * m_Gui->m_InputScale,
 			m_Width * m_Gui->m_InputScale,
 			m_Height * m_Gui->m_InputScale))
@@ -84,7 +86,7 @@ void GuiTextButton::Update()
 			m_Down = true;
 		}
 
-		else if (WasLeftButtonClickedInRect((m_Gui->m_Pos.x + int(m_Pos.x)) * m_Gui->m_InputScale,
+		else if (g_InputSystem->WasLButtonClickedInRegion((m_Gui->m_Pos.x + int(m_Pos.x)) * m_Gui->m_InputScale,
 			(m_Gui->m_Pos.y + int(m_Pos.y)) * m_Gui->m_InputScale,
 			m_Width * m_Gui->m_InputScale,
 			m_Height * m_Gui->m_InputScale))
@@ -283,7 +285,7 @@ void GuiIconButton::Update()
 
 	if (m_Visible && m_Active)
 	{
-		if (IsMouseInRect((m_Gui->m_Pos.x + int(m_Pos.x)) * m_Gui->m_InputScale,
+		if (g_InputSystem->IsMouseInRegion((m_Gui->m_Pos.x + int(m_Pos.x)) * m_Gui->m_InputScale,
 			(m_Gui->m_Pos.y + int(m_Pos.y)) * m_Gui->m_InputScale,
 			m_Width * m_Gui->m_InputScale * m_Scale,
 			m_Height * m_Gui->m_InputScale * m_Scale))
@@ -291,7 +293,7 @@ void GuiIconButton::Update()
 			m_Hovered = true;
 		}
 
-		if (IsLeftButtonDownInRect((m_Gui->m_Pos.x + int(m_Pos.x)) * m_Gui->m_InputScale,
+		if (g_InputSystem->IsLButtonDownInRegion((m_Gui->m_Pos.x + int(m_Pos.x)) * m_Gui->m_InputScale,
 			(m_Gui->m_Pos.y + int(m_Pos.y)) * m_Gui->m_InputScale,
 			m_Width * m_Gui->m_InputScale * m_Scale,
 			m_Height * m_Gui->m_InputScale * m_Scale))
@@ -304,7 +306,7 @@ void GuiIconButton::Update()
 			}
 		}
 
-		else if (WasLeftButtonClickedInRect((m_Gui->m_Pos.x + int(m_Pos.x)) * m_Gui->m_InputScale,
+		else if (g_InputSystem->WasLButtonClickedInRegion((m_Gui->m_Pos.x + int(m_Pos.x)) * m_Gui->m_InputScale,
 			(m_Gui->m_Pos.y + int(m_Pos.y)) * m_Gui->m_InputScale,
 			m_Width * m_Gui->m_InputScale * m_Scale,
 			m_Height * m_Gui->m_InputScale * m_Scale))
@@ -404,7 +406,7 @@ void GuiScrollBar::Update()
 	// 1. We were pressed this frame (no element was active last frame AND no other element claimed it this frame), OR
 	// 2. We were the active element last frame (continuing a drag)
 	bool anotherElementClaimedClick = (m_Gui->m_ActiveElement != -1 && m_Gui->m_ActiveElement != m_ID);
-	bool startingNewDrag = (m_Gui->m_LastElement == -1 && IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && !anotherElementClaimedClick);
+	bool startingNewDrag = (m_Gui->m_LastElement == -1 && g_InputSystem->IsLButtonDown() && !anotherElementClaimedClick);
 	bool continuingDrag = (m_Gui->m_LastElement == m_ID);
 
 	// Clear selection if another element claimed the click
@@ -415,8 +417,8 @@ void GuiScrollBar::Update()
 	}
 
 	// Check for click to make this scrollbar "selected" for keyboard input
-	bool inBounds = IsMouseInRect(adjustedx, adjustedy, adjustedx + adjustedw, adjustedy + adjustedh);
-	bool mousePressed = IsMouseButtonPressed(MOUSE_LEFT_BUTTON);
+	bool inBounds = g_InputSystem->IsMouseInRegion(adjustedx, adjustedy, adjustedx + adjustedw, adjustedy + adjustedh);
+	bool mousePressed = g_InputSystem->WasLButtonClicked();
 
 	if (inBounds && mousePressed)
 	{
@@ -428,7 +430,7 @@ void GuiScrollBar::Update()
 		}
 	}
 
-	if ((startingNewDrag || continuingDrag) && IsLeftButtonDownInRect(adjustedx, adjustedy, adjustedw, adjustedh))
+	if ((startingNewDrag || continuingDrag) && g_InputSystem->IsLButtonDownInRegion(adjustedx, adjustedy, adjustedw, adjustedh))
 	{
 		m_Gui->m_ActiveElement = m_ID;
 
@@ -481,7 +483,7 @@ void GuiScrollBar::Update()
 			}
 		}
 	}
-	else if (IsMouseInRect(adjustedx, adjustedy, adjustedx + adjustedw, adjustedy + adjustedh))
+	else if (g_InputSystem->IsMouseInRegion(adjustedx, adjustedy, adjustedx + adjustedw, adjustedy + adjustedh))
 	{
 		m_Hovered = true;
 	}
@@ -657,7 +659,7 @@ void GuiTextInput::Update()
 		return;
 
 	//  If the left button is clicked, we gain focus
-	if (WasLeftButtonClickedInRect(adjustedx * m_Gui->m_InputScale, adjustedy * m_Gui->m_InputScale, m_Width * m_Gui->m_InputScale, m_Height * m_Gui->m_InputScale))
+	if (g_InputSystem->WasLButtonClickedInRegion(adjustedx * m_Gui->m_InputScale, adjustedy * m_Gui->m_InputScale, m_Width * m_Gui->m_InputScale, m_Height * m_Gui->m_InputScale))
 	{
 		if (!m_HasFocus)
 		{
@@ -666,7 +668,7 @@ void GuiTextInput::Update()
 		m_HasFocus = true;
 	}
 	// If user clicks outside this text input, lose focus
-	else if (m_HasFocus && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+	else if (m_HasFocus && g_InputSystem->WasLButtonClicked())
 	{
 		Log("Text input " + to_string(m_ID) + " lost focus from clicking elsewhere");
 		m_HasFocus = false;
@@ -840,17 +842,17 @@ void GuiCheckBox::Update()
 
 	if (m_Visible)
 	{
-		m_Hovered = IsMouseInRect((m_Gui->m_Pos.x + int(m_Pos.x)) * m_Gui->m_InputScale,
+		m_Hovered = g_InputSystem->IsMouseInRegion((m_Gui->m_Pos.x + int(m_Pos.x)) * m_Gui->m_InputScale,
 			(m_Gui->m_Pos.y + int(m_Pos.y)) * m_Gui->m_InputScale,
 			m_Width * m_Gui->m_InputScale,
 			m_Height * m_Gui->m_InputScale);
 
-		m_Down = IsLeftButtonDownInRect((m_Gui->m_Pos.x + int(m_Pos.x)) * m_Gui->m_InputScale,
+		m_Down = g_InputSystem->IsLButtonDownInRegion((m_Gui->m_Pos.x + int(m_Pos.x)) * m_Gui->m_InputScale,
 			(m_Gui->m_Pos.y + int(m_Pos.y)) * m_Gui->m_InputScale,
 			m_Width * m_Gui->m_InputScale,
 			m_Height * m_Gui->m_InputScale);
 
-		if (WasLeftButtonClickedInRect((m_Gui->m_Pos.x + int(m_Pos.x)) * m_Gui->m_InputScale,
+		if (g_InputSystem->WasLButtonClickedInRegion((m_Gui->m_Pos.x + int(m_Pos.x)) * m_Gui->m_InputScale,
 			(m_Gui->m_Pos.y + int(m_Pos.y)) * m_Gui->m_InputScale,
 			m_Width * m_Gui->m_InputScale,
 			m_Height * m_Gui->m_InputScale))
@@ -985,7 +987,7 @@ void GuiRadioButton::Update()
 
 	if (m_Visible)
 	{
-		if (IsMouseInRect((m_Gui->m_Pos.x + int(m_Pos.x)) * m_Gui->m_InputScale,
+		if (g_InputSystem->IsMouseInRegion((m_Gui->m_Pos.x + int(m_Pos.x)) * m_Gui->m_InputScale,
 			(m_Gui->m_Pos.y + int(m_Pos.y)) * m_Gui->m_InputScale,
 			int(m_Width) * m_Gui->m_InputScale,
 			int(m_Height) * m_Gui->m_InputScale))
@@ -997,7 +999,7 @@ void GuiRadioButton::Update()
 			m_Hovered = false;
 		}
 
-		if (WasLeftButtonClickedInRect((m_Gui->m_Pos.x + int(m_Pos.x)) * m_Gui->m_InputScale,
+		if (g_InputSystem->WasLButtonClickedInRegion((m_Gui->m_Pos.x + int(m_Pos.x)) * m_Gui->m_InputScale,
 			(m_Gui->m_Pos.y + int(m_Pos.y)) * m_Gui->m_InputScale,
 			int(m_Width) * m_Gui->m_InputScale,
 			int(m_Height) * m_Gui->m_InputScale))
@@ -1268,7 +1270,7 @@ void GuiCycle::Update()
 		return;
 
 	// Check hover (match GuiIconButton's approach with m_InputScale)
-	if (IsMouseInRect((m_Gui->m_Pos.x + int(m_Pos.x)) * m_Gui->m_InputScale,
+	if (g_InputSystem->IsMouseInRegion((m_Gui->m_Pos.x + int(m_Pos.x)) * m_Gui->m_InputScale,
 					  (m_Gui->m_Pos.y + int(m_Pos.y)) * m_Gui->m_InputScale,
 					  m_Width * m_Gui->m_InputScale * m_ScaleX,
 					  m_Height * m_Gui->m_InputScale * m_ScaleY))
@@ -1277,7 +1279,7 @@ void GuiCycle::Update()
 	}
 
 	// Check button down
-	if (IsLeftButtonDownInRect((m_Gui->m_Pos.x + int(m_Pos.x)) * m_Gui->m_InputScale,
+	if (g_InputSystem->IsLButtonDownInRegion((m_Gui->m_Pos.x + int(m_Pos.x)) * m_Gui->m_InputScale,
 							   (m_Gui->m_Pos.y + int(m_Pos.y)) * m_Gui->m_InputScale,
 							   m_Width * m_Gui->m_InputScale * m_ScaleX,
 							   m_Height * m_Gui->m_InputScale * m_ScaleY))
@@ -1287,7 +1289,7 @@ void GuiCycle::Update()
 	}
 
 	// Check click release
-	else if (WasLeftButtonClickedInRect((m_Gui->m_Pos.x + int(m_Pos.x)) * m_Gui->m_InputScale,
+	else if (g_InputSystem->WasLButtonClickedInRegion((m_Gui->m_Pos.x + int(m_Pos.x)) * m_Gui->m_InputScale,
 										 (m_Gui->m_Pos.y + int(m_Pos.y)) * m_Gui->m_InputScale,
 										 m_Width * m_Gui->m_InputScale * m_ScaleX,
 										 m_Height * m_Gui->m_InputScale * m_ScaleY))
@@ -1569,7 +1571,7 @@ void GuiStretchButton::Update()
 	if (m_Visible && m_Active)
 	{
 		//  Stretch buttons activate on button down, so there is no "hot" state.
-		// if (IsLeftButtonDownInRect({ (m_Gui->m_Pos.x + int(m_Pos.x)) * m_Gui->m_InputScale,
+		// if (g_InputSystem->IsLButtonDownInRegion({ (m_Gui->m_Pos.x + int(m_Pos.x)) * m_Gui->m_InputScale,
 		// 	(m_Gui->m_Pos.y + int(m_Pos.y)) * m_Gui->m_InputScale,
 		// 	m_Width * m_Gui->m_InputScale,
 		// 	m_Height * m_Gui->m_InputScale }))
@@ -1581,23 +1583,23 @@ void GuiStretchButton::Update()
 		// }
 		// else
 		
-		if (WasLeftButtonClickedInRect(Rectangle{ (m_Gui->m_Pos.x + int(m_Pos.x)) * m_Gui->m_InputScale,
-			(m_Gui->m_Pos.y + int(m_Pos.y)) * m_Gui->m_InputScale,
-			m_Width * m_Gui->m_InputScale,
-			m_Height * m_Gui->m_InputScale }))
-		{
-			m_Hovered = false;
-			m_Down = false;
-			m_Clicked = true;
-			m_Gui->m_ActiveElement = m_ID;
-		}
-		else if (IsMouseInRect((m_Gui->m_Pos.x + m_Pos.x) * m_Gui->m_InputScale,
+		if (g_InputSystem->IsMouseInRegion((m_Gui->m_Pos.x + m_Pos.x) * m_Gui->m_InputScale,
 			(m_Gui->m_Pos.y + m_Pos.y) * m_Gui->m_InputScale,
 			m_Width * m_Gui->m_InputScale,
 			m_Height * m_Gui->m_InputScale))
 		{
-			m_Hovered = true;
-			m_Clicked = false;
+			if (g_InputSystem->WasLButtonClicked())
+			{
+				m_Hovered = false;
+				m_Down = false;
+				m_Clicked = true;
+				m_Gui->m_ActiveElement = m_ID;
+			}
+			else
+			{
+				m_Hovered = true;
+				m_Clicked = false;
+			}
 		}
 	}
 }
@@ -1644,7 +1646,7 @@ void GuiList::Update()
     }
 
     // Check for mouse clicks ONCE at the start
-    bool mouseClicked = IsMouseButtonPressed(MOUSE_LEFT_BUTTON);
+    bool mouseClicked = g_InputSystem->IsLButtonDown();
 
     // Handle selection in expanded list FIRST (before closing dropdown)
     bool clickedOnItem = false;
@@ -1772,7 +1774,7 @@ void GuiListBox::Update()
 	if (m_Hovered)
 	{
 		// Check for clicks on individual items
-		if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+		if (g_InputSystem->WasLButtonClicked())
 		{
 			// Calculate which item was clicked
 			float relativeY = scaledY - m_Pos.y;

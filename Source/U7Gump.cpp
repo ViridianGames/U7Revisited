@@ -4,6 +4,8 @@
 #include <algorithm>
 
 #include "U7Gump.h"
+
+#include "InputSystem.h"
 #include "Geist/Config.h"
 #include "Geist/Engine.h"
 #include "Geist/Globals.h"
@@ -153,7 +155,7 @@ void Gump::Update()
 	mousePos.x = int(mousePos.x /= g_DrawScale);
 	mousePos.y = int(mousePos.y /= g_DrawScale);
 
-	if (!IsMouseButtonDown(MOUSE_LEFT_BUTTON))
+	if (!g_InputSystem->IsLButtonDown())
 	{
 		m_dragStart = {0, 0};
 	}
@@ -164,7 +166,7 @@ void Gump::Update()
 		m_containerData.m_boxSize.x, m_containerData.m_boxSize.y }))
 	{
 		// Check for double-click on spellbook or map
-		if (WasMouseButtonDoubleClicked(MOUSE_BUTTON_LEFT))
+		if (g_InputSystem->WasLButtonDoubleClicked())
 		{
 			for (auto containerObjectId : m_containerObject->m_inventory)
 			{
@@ -229,7 +231,7 @@ void Gump::Update()
 			}
 		}
 
-		if (IsMouseButtonDown(MOUSE_LEFT_BUTTON))
+		if (g_InputSystem->IsLButtonDown())
 		{
 			if (m_dragStart.x == 0 && m_dragStart.y == 0)
 			{
@@ -287,8 +289,8 @@ void Gump::Update()
 U7Object* Gump::GetObjectUnderMousePointer()
 {
 	// Skip gumps without container objects (paperdolls, spellbooks, etc.)
-	//if (m_containerObject == nullptr)
-		//return nullptr;
+	if (m_containerObject == nullptr)
+		return nullptr;
 
 	Vector2 mousePos = GetMousePosition();
 	mousePos.x = int(mousePos.x /= g_DrawScale);
@@ -320,7 +322,7 @@ void Gump::Draw()
 			if (item != g_gumpManager->m_draggedObjectId) // Don't draw dragged object, GumpManager handles that.
 			{
 				auto object = GetObjectFromID(item);
-				DrawTextureEx(*object->m_shapeData->GetTexture(), Vector2{m_gui.m_Pos.x + m_containerData.m_boxOffset.x + object->m_InventoryPos.x, m_gui.m_Pos.y + m_containerData.m_boxOffset.y + object->m_InventoryPos.y}, 0, 1, Color{255, 255, 255, 255});
+				DrawTexture(*object->m_shapeData->GetTexture(), int(m_gui.m_Pos.x + m_containerData.m_boxOffset.x + object->m_InventoryPos.x), int(m_gui.m_Pos.y + m_containerData.m_boxOffset.y + object->m_InventoryPos.y), Color{ 255, 255, 255, 255 });
 			}
 		}
 	}

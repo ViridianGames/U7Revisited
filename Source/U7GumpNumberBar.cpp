@@ -4,6 +4,8 @@
 #include <algorithm>
 
 #include "U7GumpNumberBar.h"
+
+#include "InputSystem.h"
 #include "Geist/Config.h"
 #include "Geist/Engine.h"
 #include "Geist/Globals.h"
@@ -111,7 +113,7 @@ void GumpNumberBar::Update()
 		if (CheckCollisionPointRec(mousePos, Rectangle{ m_gui.m_Pos.x + 32, m_gui.m_Pos.y + 9,
 		60, 8 }))
 		{
-			if (IsMouseButtonDown(MOUSE_LEFT_BUTTON))
+			if (g_InputSystem->IsLButtonDown())
 			{
 				m_isDragging = true;
 			}
@@ -120,7 +122,7 @@ void GumpNumberBar::Update()
 
 	if (m_isDragging)
 	{
-		if (!IsMouseButtonDown(MOUSE_LEFT_BUTTON))
+		if (!g_InputSystem->IsLButtonDown())
 		{
 			m_isDragging = false;
 		}

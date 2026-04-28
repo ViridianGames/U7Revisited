@@ -8,6 +8,7 @@
 #include <sstream>
 #include <cstdint>
 #include <unordered_set>
+#include <deque>   // added for stable node storage
 // ============================================================================
 // PathfindingGrid Implementation
 // ============================================================================
@@ -22,10 +23,10 @@ PathfindingGrid::~PathfindingGrid()
 {
 }
 
-bool PathfindingGrid::IsPositionWalkable(int worldX, int worldZ) const
+bool PathfindingGrid::IsPositionWalkable(int worldX, int worldZ, float agentBaseY) const
 {
-	// Tile-level check
-	return CheckTileWalkable(worldX, worldZ);
+	// Tile-level check using agent-specific base Y
+	return CheckTileWalkable(worldX, worldZ, agentBaseY);
 }
 
 std::vector<PathfindingGrid::OverlappingObject> PathfindingGrid::GetOverlappingObjects(int worldX, int worldZ) const
@@ -53,6 +54,34 @@ std::vector<PathfindingGrid::OverlappingObject> PathfindingGrid::GetOverlappingO
 
 				if (obj->m_isContained)
 					continue;
+
+				if (obj->m_isEgg)
+					continue;
+
+				if (obj->m_shapeData->GetShape() == 257)//fortress gateway top
+					continue;
+
+				if (obj->m_shapeData->GetShape() == 292)//seat
+					continue;
+
+				if (obj->m_shapeData->GetShape() == 368)//floor
+					continue;
+
+				if (obj->m_shapeData->GetShape() == 607)//path
+					continue;
+
+				if (obj->m_shapeData->GetShape() == 678)//curtain
+					continue;
+
+				if (obj->m_shapeData->GetShape() == 657)//curtain
+					continue;
+
+				if (obj->m_shapeData->GetShape() == 873)//chair
+					continue;
+
+				if (obj->m_shapeData->GetShape() == 897)//seat
+					continue;
+
 
 				// Use object's world-space bounding box to determine tile overlap.
 				const BoundingBox& bbox = obj->m_boundingBox;
@@ -82,35 +111,74 @@ std::vector<PathfindingGrid::OverlappingObject> PathfindingGrid::GetOverlappingO
 }
 
 // Helper: Check if a shape ID is a walkable surface (floors, bridges, stairs)
-static bool IsWalkableSurface(int shapeID)
+inline bool PathfindingSystem::IsWalkableSurface(int shapeID)
 {
 	// Bridge/floor pieces: 367-370
-	if (shapeID >= 367 && shapeID <= 370)
+	if (shapeID >= 367 && shapeID <= 370)//floor
 		return true;
 
-	// Additional floor shapes
+	// Additional floor shapes//floor-roof 
 	if (shapeID == 1014)
 		return true;
 
 	// Stairs: 426-430
-	if (shapeID >= 426 && shapeID <= 430)
+	if (shapeID >= 426 && shapeID <= 430)//stairs
 		return true;
 
-	if (shapeID == 150)
+	if (shapeID == 150)//gangplank
 		return true;
 
-	if (shapeID == 193)
+	if (shapeID >= 186 && shapeID <= 193)//carpet, rug, floor, fortress
 		return true;
 
-	if (shapeID == 192)
+	if (shapeID == 257)//fortress gateway top
 		return true;
 
-	if (shapeID == 973 || shapeID == 974)
+	if (shapeID == 260)//fortress
 		return true;
 
-
-	if (shapeID >= 385 && shapeID <= 387)
+	if (shapeID == 263)//fortress
 		return true;
+
+	if (shapeID == 352)//fortress
+		return true;
+
+	if (shapeID == 367)//floor
+		return true;
+
+	if (shapeID == 369)//floor
+		return true;
+
+	if (shapeID >= 385 && shapeID <= 387)//stairs
+		return true;
+
+	if (shapeID == 483)//rug
+		return true;
+
+	if (shapeID == 607)//path
+		return true;
+
+	if (shapeID == 657)//curtain
+		return true;
+
+	if (shapeID == 678)//curtain
+		return true;
+
+	if (shapeID == 700)//deck
+		return true;
+
+	if (shapeID == 750)//carpet
+		return true;
+
+	if (shapeID == 758)//carpet
+		return true;
+
+	if (shapeID == 870)//drawbridge
+		return true;
+
+	if (shapeID == 973 || shapeID == 974)//stairs
+		return true;
+
 
 	// TODO: Add more walkable surface shape IDs as we discover them
 	// This might include stairs, platforms, etc.
@@ -120,8 +188,12 @@ static bool IsWalkableSurface(int shapeID)
 
 float PathfindingGrid::GetTileHeight(int worldX, int worldZ) const
 {
-	// Bounds check
-	if (worldX < 0 || worldX >= 3072 || worldZ < 0 || worldZ >= 3072)
+	// Protect against calling before world data exists
+	if (g_World.empty() || g_World.size() == 0)
+		return 0.0f;
+	if (worldZ < 0 || worldZ >= (int)g_World.size())
+		return 0.0f;
+	if (g_World[worldZ].empty() || worldX < 0 || worldX >= (int)g_World[worldZ].size())
 		return 0.0f;
 
 	// Get all objects at this tile
@@ -137,7 +209,8 @@ float PathfindingGrid::GetTileHeight(int worldX, int worldZ) const
 		U7Object* obj = ovObj.obj;
 		if (!obj || !obj->m_objectData || !obj->m_shapeData)
 			continue;
-
+		if (obj->m_isEgg)
+			continue;
 		int shapeID = obj->m_shapeData->GetShape();
 
 		// Skip very high objects (upper floors)
@@ -146,10 +219,10 @@ float PathfindingGrid::GetTileHeight(int worldX, int worldZ) const
 			continue;
 
 		// Check if this is a known walkable surface
-		if (IsWalkableSurface(shapeID))
+		if (PathfindingSystem::IsWalkableSurface(shapeID))
 		{
 			float surfaceHeight = obj->m_Pos.y + obj->m_objectData->m_height;
-			
+
 			// Keep the lowest walkable surface
 			if (!foundWalkableSurface || surfaceHeight < lowestHeight)
 			{
@@ -166,10 +239,16 @@ float PathfindingGrid::GetTileHeight(int worldX, int worldZ) const
 	return 0.0f;
 }
 
-bool PathfindingGrid::CheckTileWalkable(int worldX, int worldZ) const
+bool PathfindingGrid::CheckTileWalkable(int worldX, int worldZ, float agentBaseY) const
 {
-	// Bounds check
-	if (worldX < 0 || worldX >= 3072 || worldZ < 0 || worldZ >= 3072)
+	// Protect against calling before world data exists
+	if (g_World.empty() || g_World.size() == 0)
+		return false;
+
+	// Bounds check against actual world arrays
+	if (worldZ < 0 || worldZ >= (int)g_World.size())
+		return false;
+	if (g_World[worldZ].empty() || worldX < 0 || worldX >= (int)g_World[worldZ].size())
 		return false;
 
 	// 1. Check terrain tile
@@ -200,6 +279,8 @@ bool PathfindingGrid::CheckTileWalkable(int worldX, int worldZ) const
 	for (const auto& ovObj : overlappingObjects)
 	{
 		U7Object* obj = ovObj.obj;
+		if (!obj || !obj->m_objectData)
+			continue;
 
 		// Special case for doors: Check if this is the door's hinge tile (base position)
 		// The hinge tile is ALWAYS non-walkable
@@ -226,29 +307,28 @@ bool PathfindingGrid::CheckTileWalkable(int worldX, int worldZ) const
 			continue;
 
 		// Check if this is a walkable surface (floor, bridge, stairs)
-		if (obj->m_shapeData)
+		if (obj->m_shapeData && obj->m_objectData)
 		{
-			int shapeID = obj->m_shapeData->GetShape();
+			int objShapeID = obj->m_shapeData->GetShape();
 
-			// DEBUG: Log all floor shapes
-			if (shapeID >= 367 && shapeID <= 370)
+			// Compare surface top with agent base Y and MAX_CLIMBABLE_HEIGHT:
+			// if surface is above what the agent can reach, this tile is not walkable for that agent.
+			float surfaceTop = obj->m_Pos.y + obj->m_objectData->m_height;
+
+			// If this shape is a "walkable surface" but the top is too high for this agent, block it.
+			if (PathfindingSystem::IsWalkableSurface(objShapeID) && (surfaceTop - agentBaseY) > MAX_CLIMBABLE_HEIGHT)
 			{
-				std::stringstream ss;
-				ss << "CheckTileWalkable(" << worldX << "," << worldZ << "): Found floor shape "
-				   << shapeID << ", y=" << obj->m_Pos.y << ", IsWalkableSurface=" << (IsWalkableSurface(shapeID) ? 1 : 0);
-				//NPCDebugPrint(ss.str());
+				// Treat as blocked for this agent
+				return false;
 			}
 
-			if (IsWalkableSurface(shapeID))
+			// Existing logic: if it's a known walkable surface at reasonable height, allow tile
+			if (PathfindingSystem::IsWalkableSurface(objShapeID))
 			{
 				// Skip very high walkable surfaces (upper floors)
 				if (obj->m_Pos.y >= MAX_WALKABLE_SURFACE_HEIGHT)
 					continue;
-					
-				// This is a known walkable surface - clear terrain blocking and allow tile
-				std::stringstream ss;
-				ss << "  -> Allowing tile (" << worldX << "," << worldZ << ") with floor shape " << shapeID;
-				//NPCDebugPrint(ss.str());
+
 				terrainBlocks = false;  // Clear any terrain blocking below this walkable surface
 				continue;
 			}
@@ -259,7 +339,6 @@ bool PathfindingGrid::CheckTileWalkable(int worldX, int worldZ) const
 			continue;
 
 		// Any other ground-level blocking object blocks the tile
-		// (Height difference validation happens later in A* neighbor checking)
 		return false;
 	}
 
@@ -270,10 +349,10 @@ bool PathfindingGrid::CheckTileWalkable(int worldX, int worldZ) const
 	return true;  // Nothing blocks this position
 }
 
-
-void PathfindingGrid::DrawDebugOverlayTileLevel()
+void PathfindingGrid::DrawDebugOverlayTileLevel(float lowerY, float upperY)
 {
 	// Draw tile-level walkability using batched meshes (2 draw calls total!)
+	extern Camera g_camera;
 	extern Camera3D g_camera;
 
 	// Only draw tiles within 40 tiles of camera
@@ -282,59 +361,65 @@ void PathfindingGrid::DrawDebugOverlayTileLevel()
 	int range = 40;
 
 	// Check if camera has moved - if not, use cached tiles
-bool cameraMovedOrNeverCached = (centerX != m_lastCameraCenterX || centerZ != m_lastCameraCenterZ);
+	bool cameraMovedOrNeverCached = (centerX != m_lastCameraCenterX || centerZ != m_lastCameraCenterZ);
 
-if (cameraMovedOrNeverCached)
-{
-	// Regenerate tile cache
-	m_cachedGreenTiles.clear();
-	m_cachedRedTiles.clear();
-	m_cachedGreenTiles.reserve(6400);  // Pre-allocate for 80x80 area
-	m_cachedRedTiles.reserve(6400);
-
-	extern AStar* g_aStar;
-	for (int worldZ = centerZ - range; worldZ < centerZ + range; worldZ++)
+	if (cameraMovedOrNeverCached)
 	{
-		for (int worldX = centerX - range; worldX < centerX + range; worldX++)
+		// Regenerate tile cache
+		m_cachedGreenTiles.clear();
+		m_cachedRedTiles.clear();
+		m_cachedGreenTiles.reserve(6400);  // Pre-allocate for 80x80 area
+		m_cachedRedTiles.reserve(6400);
+
+		extern AStar* g_aStar;
+		for (int worldZ = centerZ - range; worldZ < centerZ + range; worldZ++)
 		{
-			// Bounds check
-			if (worldX < 0 || worldX >= 3072 || worldZ < 0 || worldZ >= 3072)
-				continue;
-
-			// Check if this specific tile is walkable
-			bool walkable = CheckTileWalkable(worldX, worldZ);
-
-			if (walkable)
+			for (int worldX = centerX - range; worldX < centerX + range; worldX++)
 			{
-				// Get tile height for walkable tiles only
-				float tileHeight = GetTileHeight(worldX, worldZ);
-				float displayHeight = tileHeight + 0.1f;  // Slightly above surface to avoid z-fighting
+				// Bounds check
+				if (worldX < 0 || worldX >= 3072 || worldZ < 0 || worldZ >= 3072)
+					continue;
 
-				float cost = g_pathfindingSystem->m_aStar ? g_pathfindingSystem->m_aStar->GetMovementCost(worldX, worldZ, this) : 1.0f;
-				// Check if on object to get actual movement cost
-				if (tileHeight > 0.1f)
-					cost = CLIMB_MOVEMENT_COST;  // Override with climbing cost
-
-				// Get all surface layers for this tile
+				// Always query all walkable surface heights for debug visualization.
 				auto heights = GetWalkableSurfaceHeights(worldX, worldZ);
 
-				// If no heights, ground only
+				// If no surfaces found, treat as ground only (and potentially blocked)
 				if (heights.empty())
 					heights.push_back(0.0f);
 
+				// If the tile only has ground (0.0) and tile is not considered walkable,
+				// mark as blocked (red). Otherwise draw every surface level returned.
+				bool onlyGround = (heights.size() == 1 && fabs(heights[0]) < 0.0001f);
+				bool tileIsWalkable = true;
+				if (onlyGround)
+				{
+					// Use the existing conservative tile check for determining blocked ground tiles.
+					tileIsWalkable = CheckTileWalkable(worldX, worldZ, 0.0f);
+				}
+
+				if (!tileIsWalkable)
+				{
+					// Blocked tiles always at ground level
+					m_cachedRedTiles.push_back({ (float)worldX, 0.1f, (float)worldZ });
+					continue;
+				}
+
+				// For walkable tiles: draw every surface height returned by GetWalkableSurfaceHeights,
+				// including high/upper floors so debug shows all walkable levels.
 				for (float h : heights)
 				{
 					float displayHeight = h + 0.05f;
 
 					TileWithCost t;
 					t.pos = { (float)worldX, displayHeight, (float)worldZ };
-					t.cost = g_pathfindingSystem->m_aStar ? g_pathfindingSystem->m_aStar->GetMovementCost(worldX, worldZ, this) : 1.0f;
 
-					// If this layer is an object surface, mark cost as climb cost
+					// If this layer represents a climbable surface, set climb cost.
 					if (h > 0.1f)
 						t.cost = CLIMB_MOVEMENT_COST;
+					else
+						t.cost = g_pathfindingSystem->m_aStar ? g_pathfindingSystem->m_aStar->GetMovementCost(worldX, worldZ, this) : 1.0f;
 
-					// Check debug markers
+					// Debug markers: visited / on final path at this exact surface height.
 					bool visited = false;
 					bool onPath = false;
 					if (g_pathfindingSystem && g_pathfindingSystem->m_aStar)
@@ -348,90 +433,91 @@ if (cameraMovedOrNeverCached)
 					m_cachedGreenTiles.push_back(t);
 				}
 			}
-			else
-			{
-				// Blocked tiles always at ground level
-				m_cachedRedTiles.push_back({ (float)worldX, 0.1f, (float)worldZ });
-			}
 		}
+
+		// Update cached camera position
+		m_lastCameraCenterX = centerX;
+		m_lastCameraCenterZ = centerZ;
 	}
 
-	// Update cached camera position
-	m_lastCameraCenterX = centerX;
-	m_lastCameraCenterZ = centerZ;
-}
+	// Draw all green tiles with color-coded costs (using cached data)
+	rlBegin(RL_TRIANGLES);
+	
+	float floorThreshold = 0.5f; // Allow for float imprecision
 
-// Draw all green tiles with color-coded costs (using cached data)
-rlBegin(RL_TRIANGLES);
-for (const auto& tile : m_cachedGreenTiles)
-{
-	Color costColor;
-	if (tile.onPath)
+	for (const auto& tile : m_cachedGreenTiles)
 	{
-		costColor = Color{ 255, 255, 0, 200 }; // Yellow = final path
-	}
-	else if (tile.visited)
-	{
-		costColor = Color{ 0, 150, 255, 160 }; // Blue-ish = visited by A*
-	}
-	else
-	{
-		// previous cost-based coloring
-		if (tile.cost < 0.75f)
-			costColor = Color{ 0, 255, 255, 128 };  // Cyan
-		else if (tile.cost < 1.25f)
-			costColor = Color{ 0, 255, 0, 128 };    // Green
-		else if (tile.cost < 1.75f)
-			costColor = Color{ 255, 255, 0, 128 };  // Yellow
-		else if (tile.cost < 2.5f)
-			costColor = Color{ 255, 165, 0, 128 };  // Orange
+		if (tile.pos.y < lowerY || tile.pos.y >= upperY)
+			continue;
+		Color costColor;
+		if (tile.onPath)
+		{
+			costColor = Color{ 255, 255, 0, 200 }; // Yellow = final path
+		}
+		else if (tile.visited)
+		{
+			costColor = Color{ 0, 150, 255, 160 }; // Blue-ish = visited by A*
+		}
 		else
-			costColor = Color{ 255, 100, 100, 128 }; // Light red
+		{
+			// previous cost-based coloring
+			if (tile.cost < 0.75f)
+				costColor = Color{ 0, 255, 255, 128 };  // Cyan
+			else if (tile.cost < 1.25f)
+				costColor = Color{ 0, 255, 0, 128 };    // Green
+			else if (tile.cost < 1.75f)
+				costColor = Color{ 255, 255, 0, 128 };  // Yellow
+			else if (tile.cost < 2.5f)
+				costColor = Color{ 255, 165, 0, 128 };  // Orange
+			else
+				costColor = Color{ 255, 100, 100, 128 }; // Light red
+		}
+
+		rlColor4ub(costColor.r, costColor.g, costColor.b, costColor.a);
+
+
+		// Two triangles forming a 1x1 quad
+		Vector3 v1 = { tile.pos.x, tile.pos.y, tile.pos.z };
+		Vector3 v2 = { tile.pos.x + 1.0f, tile.pos.y, tile.pos.z };
+		Vector3 v3 = { tile.pos.x + 1.0f, tile.pos.y, tile.pos.z + 1.0f };
+		Vector3 v4 = { tile.pos.x, tile.pos.y, tile.pos.z + 1.0f };
+
+		// Triangle 1
+		rlVertex3f(v1.x, v1.y, v1.z);
+		rlVertex3f(v2.x, v2.y, v2.z);
+		rlVertex3f(v3.x, v3.y, v3.z);
+
+		// Triangle 2
+		rlVertex3f(v1.x, v1.y, v1.z);
+		rlVertex3f(v3.x, v3.y, v3.z);
+		rlVertex3f(v4.x, v4.y, v4.z);
 	}
+	rlEnd();
+	
+	// Draw all red tiles in one call (using cached data)
+	rlBegin(RL_TRIANGLES);
+	rlColor4ub(255, 0, 0, 128);  // Red, semi-transparent
+	for (const auto& pos : m_cachedRedTiles)
+	{
+		if (pos.y < lowerY || pos.y >= upperY)
+			continue;
+		// Two triangles forming a 1x1 quad
+		Vector3 v1 = { pos.x, pos.y,pos.z };
+		Vector3 v2 = { pos.x + 1.0f, pos.y, pos.z };
+		Vector3 v3 = { pos.x + 1.0f, pos.y, pos.z + 1.0f };
+		Vector3 v4 = { pos.x, pos.y, pos.z + 1.0f };
 
-	rlColor4ub(costColor.r, costColor.g, costColor.b, costColor.a);
+		// Triangle 1
+		rlVertex3f(v1.x, v1.y, v1.z);
+		rlVertex3f(v2.x, v2.y, v2.z);
+		rlVertex3f(v3.x, v3.y, v3.z);
 
-
-	// Two triangles forming a 1x1 quad
-	Vector3 v1 = { tile.pos.x, tile.pos.y, tile.pos.z };
-	Vector3 v2 = { tile.pos.x + 1.0f, tile.pos.y, tile.pos.z };
-	Vector3 v3 = { tile.pos.x + 1.0f, tile.pos.y, tile.pos.z + 1.0f };
-	Vector3 v4 = { tile.pos.x, tile.pos.y, tile.pos.z + 1.0f };
-
-	// Triangle 1
-	rlVertex3f(v1.x, v1.y, v1.z);
-	rlVertex3f(v2.x, v2.y, v2.z);
-	rlVertex3f(v3.x, v3.y, v3.z);
-
-	// Triangle 2
-	rlVertex3f(v1.x, v1.y, v1.z);
-	rlVertex3f(v3.x, v3.y, v3.z);
-	rlVertex3f(v4.x, v4.y, v4.z);
-}
-rlEnd();
-
-// Draw all red tiles in one call (using cached data)
-rlBegin(RL_TRIANGLES);
-rlColor4ub(255, 0, 0, 128);  // Red, semi-transparent
-for (const auto& pos : m_cachedRedTiles)
-{
-	// Two triangles forming a 1x1 quad
-	Vector3 v1 = { pos.x, pos.y, pos.z };
-	Vector3 v2 = { pos.x + 1.0f, pos.y, pos.z };
-	Vector3 v3 = { pos.x + 1.0f, pos.y, pos.z + 1.0f };
-	Vector3 v4 = { pos.x, pos.y, pos.z + 1.0f };
-
-	// Triangle 1
-	rlVertex3f(v1.x, v1.y, v1.z);
-	rlVertex3f(v2.x, v2.y, v2.z);
-	rlVertex3f(v3.x, v3.y, v3.z);
-
-	// Triangle 2
-	rlVertex3f(v1.x, v1.y, v1.z);
-	rlVertex3f(v3.x, v3.y, v3.z);
-	rlVertex3f(v4.x, v4.y, v4.z);
-}
-rlEnd();
+		// Triangle 2
+		rlVertex3f(v1.x, v1.y, v1.z);
+		rlVertex3f(v3.x, v3.y, v3.z);
+		rlVertex3f(v4.x, v4.y, v4.z);
+	}
+	rlEnd();
 
 }
 
@@ -453,7 +539,7 @@ void PathfindingGrid::DebugPrintTileInfo(int worldX, int worldZ)
 		if (g_objectDataTable[shapeID].m_isDoor)
 		{
 			AddConsoleString("  -> Terrain is DOOR, frame=" + std::to_string(frameID) +
-			                 (frameID > 0 ? " (OPEN)" : " (CLOSED)"));
+				(frameID > 0 ? " (OPEN)" : " (CLOSED)"));
 			NPCDebugPrint("Tile (" + std::to_string(worldX) + "," + std::to_string(worldZ) + "): Terrain is DOOR, frame=" + std::to_string(frameID) +
 				(frameID > 0 ? " (OPEN)" : " (CLOSED)"));
 		}
@@ -482,10 +568,10 @@ void PathfindingGrid::DebugPrintTileInfo(int worldX, int worldZ)
 			skipReason = " [SKIPPED: above ground y=" + std::to_string(obj->m_Pos.y) + "]";
 
 		std::string msg = std::string("Object ") + (skipReason.empty() ? "BLOCKS" : "found") + ": " + obj->m_objectData->m_name +
-		                 " at (" + std::to_string(ovObj.tileX) + "," + std::to_string(ovObj.tileZ) + ")" +
-		                 " size=" + std::to_string(ovObj.width) + "x" + std::to_string(ovObj.depth) +
-		                 (obj->m_objectData->m_isDoor ? std::string(" [DOOR frame=") + std::to_string(obj->m_Frame) + "]" : "") +
-		                 skipReason;
+			" at (" + std::to_string(ovObj.tileX) + "," + std::to_string(ovObj.tileZ) + ")" +
+			" size=" + std::to_string(ovObj.width) + "x" + std::to_string(ovObj.depth) +
+			(obj->m_objectData->m_isDoor ? std::string(" [DOOR frame=") + std::to_string(obj->m_Frame) + "]" : "") +
+			skipReason;
 		AddConsoleString(msg);
 		NPCDebugPrint("Tile (" + std::to_string(worldX) + "," + std::to_string(worldZ) + "): " + msg);
 		if (skipReason.empty())
@@ -499,7 +585,7 @@ void PathfindingGrid::DebugPrintTileInfo(int worldX, int worldZ)
 	}
 
 	// Final verdict
-	bool walkable = CheckTileWalkable(worldX, worldZ);
+	bool walkable = CheckTileWalkable(worldX, worldZ, 0.0f);
 	AddConsoleString("RESULT: " + std::string(walkable ? "WALKABLE" : "BLOCKED"));
 	NPCDebugPrint("Tile (" + std::to_string(worldX) + "," + std::to_string(worldZ) + "): RESULT: " + std::string(walkable ? "WALKABLE" : "BLOCKED"));
 }
@@ -525,7 +611,7 @@ std::vector<float> PathfindingGrid::GetWalkableSurfaceHeights(int worldX, int wo
 			continue;
 
 		int shapeID = obj->m_shapeData->GetShape();
-		if (!IsWalkableSurface(shapeID))
+		if (!PathfindingSystem::IsWalkableSurface(shapeID))
 			continue;
 
 		// Compute surface top height
@@ -636,7 +722,7 @@ void AStar::LoadTerrainCosts(const std::string& filename)
 			if (cost <= 0.0f)
 			{
 				AddConsoleString("ERROR: Terrain shape " + std::to_string(shapeID) + " has invalid cost " +
-				                 std::to_string(cost) + " (must be > 0). Skipping.", RED);
+					std::to_string(cost) + " (must be > 0). Skipping.", RED);
 				continue;
 			}
 
@@ -663,485 +749,6 @@ std::string AStar::GetTerrainName(int shapeID) const
 		return it->second;
 	}
 	return "Unknown";
-}
-
-// Quantize y into an integer index (same scheme used by A*)
-// Packs yIndex (signed int) in the high bits, z in the middle, x in the low bits.
-// yIndex is expected to be a small integer (we quantize world Y into an index).
-static inline int QuantizeY(float y)
-{
-    return (int)roundf(y * 100.0f); // 0.01 precision
-}
-
-// Create 64-bit key from x,z,yIndex
-static inline int64_t MakeNodeKey(int x, int z, int yIndex)
-{
-    const int64_t xi = (int64_t)(x & 0xFFFFF);   // 20 bits
-    const int64_t zi = (int64_t)(z & 0xFFFFF);
-    const int64_t yi = (int64_t)(yIndex & 0xFFFFF);
-    return (yi << 40) | (zi << 20) | xi;
-}
-
-// Helper: choose best surface for a tile given preferredY (returns preferred if exact)
-// Uses PathfindingGrid::GetWalkableSurfaceHeights to gather candidates.
-static float PickClosestSurface(PathfindingGrid* grid, int tx, int tz, float preferredY)
-{
-	if (!grid)
-		return preferredY; // fallback
-
-	auto heights = grid->GetWalkableSurfaceHeights(tx, tz);
-	if (heights.empty())
-		return 0.0f;
-
-	float best = heights[0];
-	float bestDiff = fabsf(best - preferredY);
-	for (float h : heights)
-	{
-		float d = fabsf(h - preferredY);
-		if (d < bestDiff)
-		{
-			bestDiff = d;
-			best = h;
-		}
-	}
-	return best;
-}
-std::vector<Vector3> AStar::FindPath(Vector3 start, Vector3 goal, PathfindingGrid* grid)
-{
-	if (!grid)
-		return std::vector<Vector3>();  // No grid, can't pathfind
-
-	// Use tile coordinates directly
-	int startX = (int)start.x;
-	int startZ = (int)start.z;
-	int goalX = (int)goal.x;
-	int goalZ = (int)goal.z;
-
-	// Debug: Uncomment to see all pathfinding attempts
-	//AddConsoleString("A* pathfinding: Start tile (" + std::to_string(startX) + "," + std::to_string(startZ) +
-	//                 ") Goal tile (" + std::to_string(goalX) + "," + std::to_string(goalZ) + ")");
-
-	// Bounds check
-	if (startX < 0 || startX >= 3072 || startZ < 0 || startZ >= 3072 ||
-	    goalX < 0 || goalX >= 3072 || goalZ < 0 || goalZ >= 3072)
-	{
-		//AddConsoleString("  FAILED: Out of bounds!", RED);
-		return std::vector<Vector3>();  // Out of bounds
-	}
-
-	// Note: We don't check if start/goal are walkable - NPCs can spawn on blocked tiles
-	// (like sitting on chairs) and destinations might be blocked objects (like altars).
-	// Pathfinding will work around obstacles to get as close as possible.
-
-	// Limit search distance to avoid searching entire map (performance)
-	int distance = abs(goalX - startX) + abs(goalZ - startZ);
-	const int HIERARCHICAL_THRESHOLD = 100;
-	int maxDistance = HIERARCHICAL_THRESHOLD;  // Max 500 tiles
-	if (distance > maxDistance)
-	{
-		return std::vector<Vector3>();
-	}
-
-	// Cleanup any previous pathfinding data
-	CleanupNodes();
-
-	// Choose start surface closest to provided start.y
-	float startPrefY = start.y;
-	float startY = PickClosestSurface(grid, startX, startZ, startPrefY);
-	PathNode* startNode = new PathNode(startX, startZ, startY);
-	startNode->g = 0;
-	startNode->h = Heuristic(startX, startZ, goalX, goalZ);
-	startNode->f = startNode->g + startNode->h;
-	m_allocatedNodes.push_back(startNode);
-
-	// Priority queue comparator (min-heap by f)
-	auto cmp = [](PathNode* a, PathNode* b) { return a->f > b->f; };
-	std::priority_queue<PathNode*, std::vector<PathNode*>, decltype(cmp)> openSet(cmp);
-	std::unordered_map<int64_t, PathNode*> openSetLookup;  // key includes y index
-	std::unordered_map<int64_t, PathNode*> closedSet;
-
-	int startYIdx = QuantizeY(startY);
-	int64_t startKey64 = MakeNodeKey(startX, startZ, startYIdx);
-	openSet.push(startNode);
-	openSetLookup[startKey64] = startNode;
-
-	PathNode* goalNode = nullptr;
-	int nodesExplored = 0;
-	const int maxNodesToExplore = 40000;  // Limit iterations for performance
-
-	// Clear debug markers
-	m_visitedNodeKeys.clear();
-	m_finalPathKeys.clear();
-
-	// A* main loop
-	while (!openSet.empty() && nodesExplored < maxNodesToExplore)
-	{
-		nodesExplored++;
-
-		// Get node with lowest f cost (top of priority queue)
-		PathNode* current = openSet.top();
-		openSet.pop();
-
-		int curYIdx = QuantizeY(current->y);
-		int64_t currentKey64 = MakeNodeKey(current->x, current->z, curYIdx);
-
-		// Skip if this node is outdated (a better version was already added to queue)
-		auto lookupIt = openSetLookup.find(currentKey64);
-		if (lookupIt != openSetLookup.end() && lookupIt->second != current)
-		{
-			// This is an outdated duplicate, skip it
-			continue;
-		}
-		// Remove from open lookup now that we are processing it
-		openSetLookup.erase(currentKey64);
-
-		// Mark current as visited (for debug)
-		m_visitedNodeKeys.insert(currentKey64);
-
-		// For debug: log every 1000 nodes explored
-		float goalPreferredY = PickClosestSurface(grid, goalX, goalZ, goal.y);
-
-		// Check if we reached the goal (tile-level)
-		if (current->x == goalX && current->z == goalZ)
-		{
-			// If the caller requested a non-ground surface (goal.y > 0.1), require a node
-            // with matching surface Y (small epsilon). Otherwise accept any y (ground).
-            const float GOAL_EPS = 0.01f;
-            if (goalPreferredY <= 0.1f || fabsf(current->y - goalPreferredY) <= GOAL_EPS)
-            {
-                goalNode = current;
-#ifdef DEBUG_NPC_PATHFINDING
-                AddConsoleString("A*: reached goal tile with matching surface Y", GREEN);
-#endif
-                break;
-            }
-            // else: keep searching — do not accept ground node if caller wanted the upper surface
-		}
-
-		// Add to closed set
-		closedSet[currentKey64] = current;
-
-		// Get neighbors (they will be created with chosen reachable surface heights)
-		std::vector<PathNode*> neighbors = GetNeighbors(current, grid, goalX, goalZ);
-
-		for (PathNode* neighbor : neighbors)
-		{
-			// Build neighbor key (x,z,yIndex)
-			int neighYIdx = QuantizeY(neighbor->y);
-			int64_t neighborKey64 = MakeNodeKey(neighbor->x, neighbor->z, neighYIdx);
-
-			// Skip if in closed set
-			if (closedSet.find(neighborKey64) != closedSet.end())
-			{
-				delete neighbor;
-				continue;
-			}
-		
-			// Calculate tentative g cost
-			float neighborHeight = neighbor->y;
-			float moveCost;
-
-			if (neighborHeight > 0.1f)  // On an object, not ground
-			{
-				// Walking on an object (stairs, platform, etc.) - use climbing cost
-				moveCost = CLIMB_MOVEMENT_COST;
-			}
-			else
-			{
-				// Walking on ground - use terrain cost
-				moveCost = GetMovementCost(neighbor->x, neighbor->z, grid);
-			}
-
-			// If this neighbor is a diagonal (dx != 0 && dz != 0), apply diagonal multiplier
-			// This prevents diagonal shortcuts being cheaper than sequences of orthogonal moves.
-			int ddx = neighbor->x - current->x;
-			int ddz = neighbor->z - current->z;
-			const float DIAGONAL_COST = 1.41421356237f; // sqrt(2)
-			float dirMultiplier = ( (ddx != 0) && (ddz != 0) ) ? DIAGONAL_COST : 1.0f;
-
-			float tentativeG = current->g + moveCost * dirMultiplier;
-
-			// Check if neighbor is in open set
-			auto openIt = openSetLookup.find(neighborKey64);
-
-			if (openIt == openSetLookup.end())
-			{
-				// Not in open set, add it
-				neighbor->g = tentativeG;
-				neighbor->h = Heuristic(neighbor->x, neighbor->z, goalX, goalZ);
-				neighbor->f = neighbor->g + neighbor->h;
-				neighbor->parent = current;
-				openSet.push(neighbor);
-				openSetLookup[neighborKey64] = neighbor;
-				m_allocatedNodes.push_back(neighbor);
-			}
-			else
-			{
-				// Already in open set - check if this path is better
-				PathNode* existingNode = openIt->second;
-				if (tentativeG < existingNode->g)
-				{
-					// This path is better - add new node with better cost to queue
-					neighbor->g = tentativeG;
-					neighbor->h = Heuristic(neighbor->x, neighbor->z, goalX, goalZ);
-					neighbor->f = neighbor->g + neighbor->h;
-					neighbor->parent = current;
-					openSet.push(neighbor);
-					openSetLookup[neighborKey64] = neighbor;  // Update lookup to point to new better node
-					m_allocatedNodes.push_back(neighbor);
-				}
-				else
-				{
-					delete neighbor;  // This path is not better
-				}
-			}
-		}
-	}
-
-	// If we didn't find the exact goal, try fallback to closest point
-	if (goalNode == nullptr)
-	{
-		// Find the closest explored node to the goal
-		PathNode* furthest = nullptr;
-		float minDist = 9999999.0f;
-		for (const auto& pair : closedSet)
-		{
-			PathNode* node = pair.second;
-			float dist = sqrtf((float)((node->x - goalX) * (node->x - goalX) + (node->z - goalZ) * (node->z - goalZ)));
-			if (dist < minDist)
-			{
-				minDist = dist;
-				furthest = node;
-			}
-		}
-
-		if (furthest && minDist < 150.0f)  // Only use fallback if reasonably close
-		{
-			goalNode = furthest;  // Use this as the goal instead
-		}
-		else
-		{
-			if (nodesExplored >= maxNodesToExplore)
-			{
-				AddConsoleString("  FAILED: Search limit reached (" + std::to_string(maxNodesToExplore) + " nodes)", RED);
-			}
-			AddConsoleString("  FAILED: No reachable point found near goal", RED);
-		}
-	}
-
-	// Reconstruct path
-	std::vector<Vector3> path;
-	if (goalNode != nullptr)
-	{
-		// Collect final path keys for debug overlay
-		PathNode* walk = goalNode;
-		while (walk)
-		{
-			int yidx = QuantizeY(walk->y);
-			int64_t k = MakeNodeKey(walk->x, walk->z, yidx);
-			m_finalPathKeys.insert(k);
-			walk = walk->parent;
-		}
-
-		path = ReconstructPath(goalNode, grid);
-	}
-
-	return path;
-}
-
-float AStar::Heuristic(int x1, int z1, int x2, int z2)
-{
-	// Octile distance is admissible for 8-directional movement with diagonal cost = sqrt(2)
-	const float DIAGONAL_COST = 1.41421356237f; // sqrt(2)
-	int dx = abs(x2 - x1);
-	int dz = abs(z2 - z1);
-
-	int mn = std::min(dx, dz);
-	int mx = std::max(dx, dz);
-
-	// (mx - mn) orthogonal steps + DIAGONAL_COST * mn diagonal steps
-	return (float)((mx - mn) + DIAGONAL_COST * mn);
-}
-
-std::vector<PathNode*> AStar::GetNeighbors(PathNode* node, PathfindingGrid* grid, int goalX, int goalZ)
-{
-	std::vector<PathNode*> neighbors;
-
-	// 4-directional neighbors (N, S, E, W)
-	int directions[8][2] = {
-		{0, -1},  // North
-		{1, -1},  // Northeast
-		{-1, -1}, // Northwest
-		{0, 1},   // South
-		{1, 1},   // Southeast
-		{-1, 1},  // Southwest
-		{1, 0},   // East
-		{-1, 0}   // West
-	};
-
-	for (int i = 0; i < 8; i++)
-	{
-		int nx = node->x + directions[i][0];
-		int nz = node->z + directions[i][1];
-
-		// Bounds check (tile coordinates: 3072x3072)
-		if (nx < 0 || nx >= 3072 || nz < 0 || nz >= 3072)
-			continue;
-
-		// Allow goal tile even if not walkable (NPCs may need to reach blocked destinations like altars)
-		bool isGoal = (nx == goalX && nz == goalZ);
-
-		// Walkability check (tile-level) - skip for goal tile
-		if (!isGoal && !grid->IsPositionWalkable(nx, nz))
-		{
-			// DEBUG: Log rejected walkability near bridge
-			static int walkDebugCount = 0;
-			if (walkDebugCount < 10 && nx >= 955 && nx <= 970 && nz >= 1165 && nz <= 1195)
-			{
-				std::stringstream ss;
-				ss << "A* rejected tile (" << nx << "," << nz << ") as non-walkable from (" << node->x << "," << node->z << ")";
-				//NPCDebugPrint(ss.str());
-				walkDebugCount++;
-			}
-			continue;
-		}
-
-		// Height difference check - NPCs can only climb/descend a limited amount
-		float currentHeight = node->y; // use node's chosen surface
-
-		// Get all candidate surface heights for neighbor tile
-		auto neighborHeights = grid->GetWalkableSurfaceHeights(nx, nz);
-		if (neighborHeights.empty())
-			neighborHeights.push_back(0.0f);
-
-		// Try to find a neighbor height that is reachable from currentHeight.
-		// Prefer reachable non-ground surfaces (stairs/platforms) when available,
-		// otherwise fall back to the closest reachable surface (including ground).
-		float chosenNeighborH = NAN;
-
-		// 1) Prefer reachable positive (non-ground) heights (useful for stairs)
-		std::vector<float> reachablePos;
-		for (float nh : neighborHeights)
-		{
-			if (nh > 0.001f && fabs(nh - currentHeight) <= MAX_CLIMBABLE_HEIGHT)
-				reachablePos.push_back(nh);
-		}
-		if (!reachablePos.empty())
-		{
-			// Choose the reachable positive height closest to currentHeight (smallest step)
-			float best = reachablePos[0];
-			float bestd = fabs(best - currentHeight);
-			for (float nh : reachablePos)
-			{
-				float d = fabs(nh - currentHeight);
-				if (d < bestd) { bestd = d; best = nh; }
-			}
-			chosenNeighborH = best;
-		}
-		else
-		{
-			// 2) No reachable non-ground surfaces — pick the closest reachable (may be ground)
-			float bestDiff = 9999.0f;
-			for (float nh : neighborHeights)
-			{
-				float diff = fabs(nh - currentHeight);
-				if (diff <= MAX_CLIMBABLE_HEIGHT && diff < bestDiff)
-				{
-					bestDiff = diff;
-					chosenNeighborH = nh;
-				}
-			}
-		}
-
-		// If no reachable surface found yet, check for stairs bridging these tiles (existing fallback),
-		// but enforce symmetric climb/descent limits so descending cannot exceed MAX_CLIMBABLE_HEIGHT.
-		if (std::isnan(chosenNeighborH))
-		{
-			// Check overlapping objects on current and neighbor tile for stair shapes
-			auto checkHasStair = [](PathfindingGrid* g, int tx, int tz) -> bool {
-				auto objs = g->GetOverlappingObjects(tx, tz);
-				for (const auto& ov : objs)
-				{
-					if (!ov.obj || !ov.obj->m_shapeData || !ov.obj->m_objectData) continue;
-					int s = ov.obj->m_shapeData->GetShape();
-					// Prefer shape ID range, but also accept objects whose name contains "stair"
-					if ((s >= 426 && s <= 430))
-						return true;
-					std::string name = ov.obj->m_objectData->m_name;
-					std::transform(name.begin(), name.end(), name.begin(), ::tolower);
-					if (name.find("stair") != std::string::npos)
-						return true;
-				}
-				return false;
-			};
-
-			bool stairPresent = checkHasStair(grid, node->x, node->z) || checkHasStair(grid, nx, nz);
-
-			if (stairPresent)
-			{
-				// Only allow stair transitions that respect the MAX_CLIMBABLE_HEIGHT both up and down.
-				// Collect neighbors that are within climbable range.
-				std::vector<float> stairCandidates;
-				for (float nh : neighborHeights)
-				{
-					if (fabs(nh - currentHeight) <= MAX_CLIMBABLE_HEIGHT)
-						stairCandidates.push_back(nh);
-				}
-
-				if (!stairCandidates.empty())
-				{
-					// neighborHeights are sorted ascending in GetWalkableSurfaceHeights; stairCandidates will be too.
-					// Prefer monotonic stair movement:
-					// - if currentHeight is above all candidates, step to the highest candidate (descend one step)
-					// - if currentHeight is below all candidates, step to the lowest candidate (ascend one step)
-					// - otherwise pick the candidate closest to currentHeight
-					float best = stairCandidates[0];
-					float bestd = fabs(best - currentHeight);
-
-					float cand_min = stairCandidates.front();
-					float cand_max = stairCandidates.back();
-
-					if (currentHeight > cand_max)
-					{
-						best = cand_max;
-					}
-					else if (currentHeight < cand_min)
-					{
-						best = cand_min;
-					}
-					else
-					{
-						for (float nh : stairCandidates)
-						{
-							float d = fabs(nh - currentHeight);
-							if (d < bestd) { bestd = d; best = nh; }
-						}
-					}
-
-					chosenNeighborH = best;
-#ifdef DEBUG_NPC_PATHFINDING
-					{
-						std::stringstream ss;
-						ss << "GetNeighbors: stair fallback between (" << node->x << "," << node->z << ") and ("
-						   << nx << "," << nz << ") -> chosenH=" << chosenNeighborH << " currentH=" << currentHeight;
-						NPCDebugPrint(ss.str());
-					}
-#endif
-				}
-				// else: no stair candidate within climb limit -> do not allow this neighbor via stair fallback
-			}
-		}
-
-		// If still no reachable surface found, skip neighbor
-		if (std::isnan(chosenNeighborH))
-			continue;
-
-		// Create neighbor node with chosen height
-		PathNode* pn = new PathNode(nx, nz, chosenNeighborH);
-		neighbors.push_back(pn);
-	}
-
-	return neighbors;
 }
 
 float AStar::GetMovementCost(int worldX, int worldZ, PathfindingGrid* grid)
@@ -1198,7 +805,7 @@ float AStar::GetMovementCost(int worldX, int worldZ, PathfindingGrid* grid)
 
 				// Check if this tile overlaps door's footprint (excluding hinge)
 				bool overlaps = (worldX >= objTileX - objWidth + 1 && worldX <= objTileX &&
-				                 worldZ >= objTileZ - objDepth + 1 && worldZ <= objTileZ);
+					worldZ >= objTileZ - objDepth + 1 && worldZ <= objTileZ);
 
 				if (overlaps)
 				{
@@ -1212,29 +819,646 @@ float AStar::GetMovementCost(int worldX, int worldZ, PathfindingGrid* grid)
 	return baseCost;
 }
 
-std::vector<Vector3> AStar::ReconstructPath(PathNode* goal, PathfindingGrid* grid)
+// Quantize y into an integer index (same scheme used by A*)
+// Packs yIndex (signed int) in the high bits, z in the middle, x in the low bits.
+// yIndex is expected to be a small integer (we quantize world Y into an index).
+static inline int QuantizeY(float y)
 {
-	std::vector<Vector3> path;
-	PathNode* current = goal;
+	return (int)roundf(y * 50.0f); // 0.02 precision
+}
 
-	while (current != nullptr)
+// Create 64-bit key from x,z,yIndex
+static inline int64_t MakeNodeKey(int x, int z, int yIndex)
+{
+	const int64_t xi = (int64_t)(x & 0xFFFFF);   // 20 bits
+	const int64_t zi = (int64_t)(z & 0xFFFFF);
+	const int64_t yi = (int64_t)(yIndex & 0xFFFFF);
+	return (yi << 40) | (zi << 20) | xi;
+}
+
+// Helper: choose best surface for a tile given preferredY (returns preferred if exact)
+// Uses PathfindingGrid::GetWalkableSurfaceHeights to gather candidates.
+static float PickClosestSurface(PathfindingGrid* grid, int tx, int tz, float preferredY)
+{
+	if (!grid)
+		return preferredY; // fallback
+
+	auto heights = grid->GetWalkableSurfaceHeights(tx, tz);
+	if (heights.empty())
+		return 0.0f;
+
+	float best = heights[0];
+	float bestDiff = fabsf(best - preferredY);
+	for (float h : heights)
 	{
-		// Get the actual height of this waypoint tile
-		float tileHeight = grid ? grid->GetTileHeight(current->x, current->z) : 0.0f;
+		float d = fabsf(h - preferredY);
+		if (d < bestDiff)
+		{
+			bestDiff = d;
+			best = h;
+		}
+	}
+	return best;
+}
+std::vector<Vector3> AStar::FindPath(Vector3 start, Vector3 goal, PathfindingGrid* grid)
+{
+	if (!grid)
+		return {};
 
-		// Create waypoint with correct 3D position
-		Vector3 waypoint;
-		waypoint.x = (float)current->x;
-		waypoint.y = current->y;
-		waypoint.z = (float)current->z;
+	auto TileKey = [](int x, int z) -> int { return (x << 16) | (z & 0xFFFF); };
+	std::unordered_map<int, bool> walkableCache;
+	std::unordered_map<int, std::vector<float>> heightsCache;
 
-		path.push_back(waypoint);
-		current = current->parent;
+	const int maxNodesToExplore = 30000;
+	std::vector<PathNode> nodePool;
+	nodePool.reserve(maxNodesToExplore * 2); // keep contiguous memory
+
+	std::unordered_set<int64_t> localVisitedNodeKeys;
+	std::unordered_set<int64_t> localFinalPathKeys;
+
+	int startX = (int)start.x;
+	int startZ = (int)start.z;
+	int goalX = (int)goal.x;
+	int goalZ = (int)goal.z;
+
+	// Bounds check
+	if (startX < 0 || startX >= 3072 || startZ < 0 || startZ >= 3072 ||
+		goalX < 0 || goalX >= 3072 || goalZ < 0 || goalZ >= 3072)
+	{
+		return {};
 	}
 
-	// Reverse path (currently goal -> start, we want start -> goal)
-	std::reverse(path.begin(), path.end());
+	// Limit search distance to avoid searching entire map (performance)
+	int distance = abs(goalX - startX) + abs(goalZ - startZ);
+	// If distance is large, run chunk-level A* first (hierarchical)
+	const int HIERARCHICAL_THRESHOLD = 240;
+	if (distance > HIERARCHICAL_THRESHOLD)
+	{
+		// Chunk coords (192x192 chunks, chunk = 16 tiles)
+		auto toChunk = [](int tile) { return tile / 16; };
+		int startCx = toChunk(startX), startCz = toChunk(startZ);
+		int goalCx = toChunk(goalX), goalCz = toChunk(goalZ);
 
+		// Simple chunk-A* (uses g_pathfindingSystem->m_chunkInfoMap connectivity)
+		const int CHUNKS = 192;
+		const int dirOffsets[8][2] = {
+			{0,-1}, {1,-1}, {1,0}, {1,1},
+			{0,1}, {-1,1}, {-1,0}, {-1,-1}
+		};
+
+		auto encode = [](int cx, int cz) { return (cx << 16) | (cz & 0xFFFF); };
+		auto decode = [](int key) { return std::pair<int, int>((key >> 16) & 0xFFFF, key & 0xFFFF); };
+
+		// Chunk-A* structures
+		std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>, std::greater<std::pair<int, int>>> open;
+		std::unordered_map<int, int> chunkG;
+		std::unordered_map<int, int> chunkParent;
+
+		int startKey = encode(startCx, startCz);
+		int goalKey = encode(goalCx, goalCz);
+
+		open.push({ 0, startKey });
+		chunkG[startKey] = 0;
+		chunkParent[startKey] = -1;
+
+		auto chunkHeuristic = [&](int cx, int cz) {
+			return std::max(std::abs(cx - goalCx), std::abs(cz - goalCz));
+			};
+
+		bool chunkFound = false;
+		while (!open.empty())
+		{
+			auto top = open.top(); open.pop();
+			int curKey = top.second;
+			auto [ccx, ccz] = decode(curKey);
+			if (curKey == goalKey) { chunkFound = true; break; }
+
+			// neighbors by 8-dir, consult chunk connectivity
+			for (int d = 0; d < 8; ++d)
+			{
+				int ncx = ccx + dirOffsets[d][0];
+				int ncz = ccz + dirOffsets[d][1];
+				if (ncx < 0 || ncx >= CHUNKS || ncz < 0 || ncz >= CHUNKS) continue;
+
+				// require connectivity both directions for safety (optional)
+				if (!g_pathfindingSystem->m_chunkInfoMap[ccx][ccz].canReach[d]) continue;
+
+				int nKey = encode(ncx, ncz);
+				int tentativeG = chunkG[curKey] + 1;
+				auto itG = chunkG.find(nKey);
+				if (itG == chunkG.end() || tentativeG < itG->second)
+				{
+					chunkG[nKey] = tentativeG;
+					chunkParent[nKey] = curKey;
+					int f = tentativeG + chunkHeuristic(ncx, ncz);
+					open.push({ f, nKey });
+				}
+			}
+		}
+
+		std::vector<std::pair<int, int>> chunkPath;
+		if (chunkFound)
+		{
+			// Reconstruct chunk path
+			int cur = goalKey;
+			while (cur != -1)
+			{
+				auto pr = decode(cur);
+				chunkPath.push_back(pr);
+				cur = chunkParent[cur];
+			}
+			std::reverse(chunkPath.begin(), chunkPath.end());
+		}
+
+		if (!chunkFound || chunkPath.empty())
+		{
+			// No chunk path found — fall back to current behavior (attempt local search as before)
+			; // continue to normal A* below (we don't early-return)
+		}
+		else
+		{
+			// Convert chunk path to intermediate world targets (chunk centers)
+			std::vector<Vector3> intermediates;
+			for (const auto& pc : chunkPath)
+			{
+				int ccx = pc.first, ccz = pc.second;
+				float wx = float(ccx * 16 + 8);
+				float wz = float(ccz * 16 + 8);
+				intermediates.push_back(Vector3{ wx, 0.0f, wz });
+			}
+
+			// Stitch paths: for each intermediate (skipping the first if it's the same chunk as start),
+			// call FindPath recursively for the short segment (adjacent chunks -> short distances)
+			Vector3 curStart = start;
+			std::vector<Vector3> finalPath;
+			bool failed = false;
+
+			// If the first intermediate corresponds to the start chunk, skip it
+			size_t startIndex = 0;
+			if (!intermediates.empty())
+			{
+				int firstCx = (int)intermediates.front().x / 16;
+				int firstCz = (int)intermediates.front().z / 16;
+				if (firstCx == startCx && firstCz == startCz)
+					startIndex = 1;
+			}
+
+			for (size_t i = startIndex; i < intermediates.size(); ++i)
+			{
+				Vector3 segGoal = intermediates[i];
+				auto segPath = FindPath(curStart, segGoal, grid); // recursion — segment distances are small
+				if (segPath.empty())
+				{
+					failed = true;
+					break;
+				}
+				// Append segPath (avoid duplicate of curStart)
+				if (!finalPath.empty() && !segPath.empty() && finalPath.back().x == segPath.front().x && finalPath.back().z == segPath.front().z)
+				{
+					finalPath.insert(finalPath.end(), segPath.begin() + 1, segPath.end());
+				}
+				else
+				{
+					finalPath.insert(finalPath.end(), segPath.begin(), segPath.end());
+				}
+				curStart = finalPath.back();
+			}
+
+			if (!failed)
+			{
+				// Final segment to real goal (may be inside last chunk) — short distance
+				auto lastSeg = FindPath(curStart, goal, grid);
+				if (lastSeg.empty()) failed = true;
+				else
+				{
+					// Append lastSeg (avoid duplicate)
+					if (!finalPath.empty() && finalPath.back().x == lastSeg.front().x && finalPath.back().z == lastSeg.front().z)
+						finalPath.insert(finalPath.end(), lastSeg.begin() + 1, lastSeg.end());
+					else
+						finalPath.insert(finalPath.end(), lastSeg.begin(), lastSeg.end());
+				}
+			}
+
+			if (!failed)
+				return finalPath;
+
+			// else fall through to the regular tile-level A* fallback below
+		}
+	}
+
+	// Create start node in nodePool
+	float startPrefY = start.y;
+	float startY = PickClosestSurface(grid, startX, startZ, startPrefY);
+
+	nodePool.emplace_back(startX, startZ, startY);
+	int startIndex = (int)nodePool.size() - 1;
+	nodePool[startIndex].g = 0;
+	nodePool[startIndex].h = Heuristic(startX, startZ, goalX, goalZ);
+	nodePool[startIndex].f = nodePool[startIndex].g + nodePool[startIndex].h;
+	nodePool[startIndex].parent = -1;
+
+	// min-heap by f: store (f, index)
+	std::priority_queue<std::pair<float, int>, std::vector<std::pair<float, int>>, std::greater<std::pair<float, int>>> openSet;
+	std::unordered_map<int64_t, int> openSetLookup;  // key -> node index
+	std::unordered_map<int64_t, int> closedSet;     // key -> node index
+
+	int startYIdx = QuantizeY(startY);
+	int64_t startKey64 = MakeNodeKey(startX, startZ, startYIdx);
+	openSet.push({ nodePool[startIndex].f, startIndex });
+	openSetLookup[startKey64] = startIndex;
+
+	int goalIndex = -1;
+	int nodesExplored = 0;
+
+
+	// A* main loop
+	while (!openSet.empty() && nodesExplored < maxNodesToExplore)
+	{
+		nodesExplored++;
+
+		const int NODES_PER_TILE_FACTOR = 75;
+		if (distance > 0)
+		{
+			// Allow at most `distance * NODES_PER_TILE_FACTOR` nodes, but never exceed maxNodesToExplore.
+			int dynamicLimit = std::min(maxNodesToExplore, distance * NODES_PER_TILE_FACTOR);
+			if (nodesExplored > dynamicLimit)
+			{
+				//AddConsoleString("A*: aborting search - expanded too many nodes relative to distance", YELLOW);
+				break; // fall through to fallback logic that picks closest explored node
+			}
+		}
+		auto top = openSet.top();
+		openSet.pop();
+		int currentIndex = top.second;
+		// Defensive: bounds check index
+		if (currentIndex < 0 || currentIndex >= (int)nodePool.size())
+			continue;
+
+		PathNode current = nodePool[currentIndex];
+		int curYIdx = QuantizeY(current.y);
+		int64_t currentKey64 = MakeNodeKey(current.x, current.z, curYIdx);
+
+		// Outdated entry check
+		auto lookupIt = openSetLookup.find(currentKey64);
+		if (lookupIt != openSetLookup.end() && lookupIt->second != currentIndex)
+			continue;
+
+		openSetLookup.erase(currentKey64);
+
+		localVisitedNodeKeys.insert(currentKey64);
+
+		float goalPreferredY = PickClosestSurface(grid, goalX, goalZ, goal.y);
+
+		// Check if we reached the goal (tile-level)
+		if (current.x == goalX && current.z == goalZ)
+		{
+			const float GOAL_EPS = 0.01f;
+			if (goalPreferredY <= 0.1f || fabsf(current.y - goalPreferredY) <= GOAL_EPS)
+			{
+				goalIndex = currentIndex;
+				break;
+			}
+		}
+
+		closedSet[currentKey64] = currentIndex;
+
+		// Get neighbor indices
+		std::vector<int> neighborIndices = GetNeighbors(currentIndex, grid, goalX, goalZ, walkableCache, heightsCache, nodePool);
+
+		for (int neighborIndex : neighborIndices)
+		{
+			// Defensive index check
+			if (neighborIndex < 0 || neighborIndex >= (int)nodePool.size())
+				continue;
+
+			PathNode& neighbor = nodePool[neighborIndex];
+
+			int neighYIdx = QuantizeY(neighbor.y);
+			int64_t neighborKey64 = MakeNodeKey(neighbor.x, neighbor.z, neighYIdx);
+
+			if (closedSet.find(neighborKey64) != closedSet.end())
+				continue;
+
+			float moveCost;
+			if (neighbor.y > 0.1f)
+				moveCost = CLIMB_MOVEMENT_COST;
+			else
+				moveCost = GetMovementCost(neighbor.x, neighbor.z, grid);
+
+			int ddx = neighbor.x - current.x;
+			int ddz = neighbor.z - current.z;
+			const float DIAGONAL_COST = 1.41421356237f;
+			float dirMultiplier = ((ddx != 0) && (ddz != 0)) ? DIAGONAL_COST : 1.0f;
+
+			float tentativeG = current.g + moveCost * dirMultiplier;
+
+			auto openIt = openSetLookup.find(neighborKey64);
+			if (openIt == openSetLookup.end())
+			{
+				neighbor.g = tentativeG;
+				neighbor.h = Heuristic(neighbor.x, neighbor.z, goalX, goalZ);
+				neighbor.f = neighbor.g + neighbor.h;
+				neighbor.parent = currentIndex;
+				openSet.push({ neighbor.f, neighborIndex });
+				openSetLookup[neighborKey64] = neighborIndex;
+			}
+			else
+			{
+				int existingIndex = openIt->second;
+				if (existingIndex >= 0 && existingIndex < (int)nodePool.size())
+				{
+					PathNode& existingNode = nodePool[existingIndex];
+					if (tentativeG < existingNode.g)
+					{
+						neighbor.g = tentativeG;
+						neighbor.h = Heuristic(neighbor.x, neighbor.z, goalX, goalZ);
+						neighbor.f = neighbor.g + neighbor.h;
+						neighbor.parent = currentIndex;
+						openSet.push({ neighbor.f, neighborIndex });
+						openSetLookup[neighborKey64] = neighborIndex;
+					}
+				}
+				else
+				{
+					// If existingIndex is invalid for some reason, treat as not present
+					neighbor.g = tentativeG;
+					neighbor.h = Heuristic(neighbor.x, neighbor.z, goalX, goalZ);
+					neighbor.f = neighbor.g + neighbor.h;
+					neighbor.parent = currentIndex;
+					openSet.push({ neighbor.f, neighborIndex });
+					openSetLookup[neighborKey64] = neighborIndex;
+				}
+			}
+		}
+	}
+
+	// If we didn't find the exact goal, try fallback to closest point
+	if (goalIndex == -1)
+	{
+		// Find the closest explored node to the goal
+		PathNode* furthestNode = nullptr;
+		int furthestIndex = -1;
+		float minDist = 9999999.0f;
+		for (const auto& pair : closedSet)
+		{
+			int idx = pair.second;
+			if (idx < 0 || idx >= (int)nodePool.size()) continue;
+			PathNode& node = nodePool[idx];
+			float dist = sqrtf((float)((node.x - goalX) * (node.x - goalX) + (node.z - goalZ) * (node.z - goalZ)));
+			if (dist < minDist)
+			{
+				minDist = dist;
+				furthestIndex = idx;
+				furthestNode = &nodePool[idx];
+			}
+		}
+		if (furthestIndex != -1 && minDist < 150.0f)
+		{
+			goalIndex = furthestIndex;
+		}
+		else
+		{
+			if (nodesExplored >= maxNodesToExplore)
+			{
+				AddConsoleString("  FAILED: Search limit reached (" + std::to_string(maxNodesToExplore) + " nodes)", RED);
+			}
+
+			NPCDebugPrint("NPC Start location " + std::to_string(start.x) + "," + std::to_string(start.z) + " failed to find path to (" + std::to_string(goalX) + "," + std::to_string(goalZ) + ")");
+			AddConsoleString("NPC Start location " + std::to_string(start.x) + "," + std::to_string(start.z) + " failed to find path to (" + std::to_string(goalX) + "," + std::to_string(goalZ) + ")", RED);
+		}
+	}
+
+	std::vector<Vector3> path;
+	if (goalIndex != -1)
+	{
+		int walkIdx = goalIndex;
+		while (walkIdx != -1)
+		{
+			PathNode& walk = nodePool[walkIdx];
+			int yidx = QuantizeY(walk.y);
+			int64_t k = MakeNodeKey(walk.x, walk.z, yidx);
+			localFinalPathKeys.insert(k);
+			walkIdx = walk.parent;
+		}
+
+		path = ReconstructPath(goalIndex, grid, nodePool);
+	}
+
+	{
+		std::lock_guard<std::mutex> lk(m_findMutex);
+		m_visitedNodeKeys = std::move(localVisitedNodeKeys);
+		m_finalPathKeys = std::move(localFinalPathKeys);
+	}
+
+	return path;
+}
+
+float AStar::Heuristic(int x1, int z1, int x2, int z2)
+{
+	const float DIAGONAL_COST = 1.41421356237f;
+	int dx = abs(x2 - x1);
+	int dz = abs(z2 - z1);
+
+	int mn = std::min(dx, dz);
+	int mx = std::max(dx, dz);
+
+	// (mx - mn) orthogonal steps + DIAGONAL_COST * mn diagonal steps
+	return (float)((mx - mn) + DIAGONAL_COST * mn);
+}
+
+std::vector<int> AStar::GetNeighbors(int nodeIndex, PathfindingGrid* grid, int goalX, int goalZ,
+	std::unordered_map<int, bool>& walkableCache,
+	std::unordered_map<int, std::vector<float>>& heightsCache,
+	std::vector<PathNode>& nodePool)
+{
+	std::vector<int> neighbors;
+
+	if (nodeIndex < 0 || nodeIndex >= (int)nodePool.size())
+		return neighbors;
+
+	PathNode node = nodePool[nodeIndex];
+
+	int directions[8][2] = {
+		{0, -1},  {1, -1},  {-1, -1},
+		{0, 1},   {1, 1},   {-1, 1},
+		{1, 0},   {-1, 0}
+	};
+
+	for (int i = 0; i < 8; i++)
+	{
+		int nx = node.x + directions[i][0];
+		int nz = node.z + directions[i][1];
+		float currentHeight = node.y;
+
+		if (nx < 0 || nx >= 3072 || nz < 0 || nz >= 3072)
+			continue;
+
+		bool isGoal = (nx == goalX && nz == goalZ);
+
+		if (!isGoal)
+		{
+			int tkey = (nx << 16) | (nz & 0xFFFF);
+			auto itWalk = walkableCache.find(tkey);
+			bool tileWalkable = false;
+			if (itWalk == walkableCache.end())
+			{
+				// PASS the agent's current base Y so the tile check is agent-aware
+				tileWalkable = grid->IsPositionWalkable(nx, nz, currentHeight);
+				walkableCache[tkey] = tileWalkable;
+			}
+			else
+			{
+				tileWalkable = itWalk->second;
+			}
+			if (!tileWalkable)
+				continue;
+		}
+
+		int tileKey = (nx << 16) | (nz & 0xFFFF);
+		std::vector<float> neighborHeights;
+		auto itHe = heightsCache.find(tileKey);
+		if (itHe == heightsCache.end())
+		{
+			neighborHeights = grid->GetWalkableSurfaceHeights(nx, nz);
+			heightsCache[tileKey] = neighborHeights;
+		}
+		else
+		{
+			neighborHeights = itHe->second;
+		}
+		if (neighborHeights.empty())
+			neighborHeights.push_back(0.0f);
+
+		float chosenNeighborH = NAN;
+
+		std::vector<float> reachablePos;
+		for (float nh : neighborHeights)
+		{
+			if (nh > 0.001f && fabs(nh - currentHeight) <= MAX_CLIMBABLE_HEIGHT)
+				reachablePos.push_back(nh);
+		}
+		if (!reachablePos.empty())
+		{
+			// Choose the reachable positive height closest to currentHeight (smallest step)
+			float best = reachablePos[0];
+			float bestd = fabs(best - currentHeight);
+			for (float nh : reachablePos)
+			{
+				float d = fabs(nh - currentHeight);
+				if (d < bestd) { bestd = d; best = nh; }
+			}
+			chosenNeighborH = best;
+		}
+		else
+		{
+			// 2) No reachable non-ground surfaces — pick the closest reachable (may be ground)
+			float bestDiff = 9999.0f;
+			for (float nh : neighborHeights)
+			{
+				float diff = fabs(nh - currentHeight);
+				if (diff <= MAX_CLIMBABLE_HEIGHT && diff < bestDiff)
+				{
+					bestDiff = diff;
+					chosenNeighborH = nh;
+				}
+			}
+		}
+
+		if (std::isnan(chosenNeighborH))
+		{
+			// Check overlapping objects on current and neighbor tile for stair shapes
+			auto checkHasStair = [](PathfindingGrid* g, int tx, int tz) -> bool {
+				auto objs = g->GetOverlappingObjects(tx, tz);
+				for (const auto& ov : objs)
+				{
+					if (!ov.obj || !ov.obj->m_shapeData || !ov.obj->m_objectData) continue;
+					int s = ov.obj->m_shapeData->GetShape();
+					if ((s >= 426 && s <= 430))
+						return true;
+					std::string name = ov.obj->m_objectData->m_name;
+					std::transform(name.begin(), name.end(), name.begin(), ::tolower);
+					if (name.find("stair") != std::string::npos)
+						return true;
+				}
+				return false;
+				};
+
+			bool stairPresent = checkHasStair(grid, node.x, node.z) || checkHasStair(grid, nx, nz);
+
+			if (stairPresent)
+			{
+				// Only allow stair transitions that respect the MAX_CLIMBABLE_HEIGHT both up and down.
+				// Collect neighbors that are within climbable range.
+				std::vector<float> stairCandidates;
+				for (float nh : neighborHeights)
+				{
+					if (fabs(nh - currentHeight) <= MAX_CLIMBABLE_HEIGHT)
+						stairCandidates.push_back(nh);
+				}
+
+				if (!stairCandidates.empty())
+				{
+					float best = stairCandidates[0];
+					float bestd = fabs(best - currentHeight);
+
+					float cand_min = stairCandidates.front();
+					float cand_max = stairCandidates.back();
+
+					if (currentHeight > cand_max)
+					{
+						best = cand_max;
+					}
+					else if (currentHeight < cand_min)
+					{
+						best = cand_min;
+					}
+					else
+					{
+						for (float nh : stairCandidates)
+						{
+							float d = fabs(nh - currentHeight);
+							if (d < bestd) { bestd = d; best = nh; }
+						}
+					}
+
+					chosenNeighborH = best;
+				}
+			}
+		}
+
+		if (std::isnan(chosenNeighborH))
+			continue;
+
+		// Create neighbor node in nodePool
+		nodePool.emplace_back(nx, nz, chosenNeighborH);
+		int newIdx = (int)nodePool.size() - 1;
+		nodePool[newIdx].parent = -1;
+		neighbors.push_back(newIdx);
+	}
+
+	return neighbors;
+}
+
+std::vector<Vector3> AStar::ReconstructPath(int goalIndex, PathfindingGrid* grid, std::vector<PathNode>& nodePool)
+{
+	std::vector<Vector3> path;
+	int currentIndex = goalIndex;
+
+	while (currentIndex != -1)
+	{
+		if (currentIndex < 0 || currentIndex >= (int)nodePool.size()) break;
+		PathNode& current = nodePool[currentIndex];
+
+		Vector3 waypoint;
+		waypoint.x = (float)current.x;
+		waypoint.y = current.y;
+		waypoint.z = (float)current.z;
+
+		path.push_back(waypoint);
+		currentIndex = current.parent;
+	}
+
+	std::reverse(path.begin(), path.end());
 	return path;
 }
 
@@ -1256,7 +1480,6 @@ void AStar::CleanupNodes()
 //
 //  We'll still need A* to reach the final destination within a chunk.
 
-// 3D Line vs full AABB intersection (slab method)
 bool LineIntersectsAABB3D(Vector3 p1, Vector3 p2, Vector3 boxMin, Vector3 boxMax)
 {
 	Vector3 dir = Vector3Subtract(p2, p1);
@@ -1281,7 +1504,7 @@ bool LineIntersectsAABB3D(Vector3 p1, Vector3 p2, Vector3 boxMin, Vector3 boxMax
 
 			if (tmin > tmax) return false;
 		}
-		else if (p < (&boxMin.x)[i] || p > (&boxMax.x)[i])
+		else if (p < (&boxMin.x)[i] || p >(&boxMax.x)[i])
 		{
 			return false;
 		}
@@ -1322,7 +1545,10 @@ bool LineOfTilesIsWalkable3D(Vector3 start, Vector3 end)
 		{
 			if (obj == nullptr) continue;
 
-			Vector3 half = Vector3Multiply(obj->m_shapeData->m_Dims, {0.5f, 0.5f, 0.5f});
+			// Eggs are triggers - don't let them block 3D connectivity tests
+			if (obj->m_isEgg) continue;
+
+			Vector3 half = Vector3Multiply(obj->m_shapeData->m_Dims, { 0.5f, 0.5f, 0.5f });
 			Vector3 min = Vector3Subtract(obj->m_Pos, half);
 			Vector3 max = Vector3Add(obj->m_Pos, half);
 
@@ -1345,45 +1571,45 @@ bool AreAllTilesInDirectionWalkable(Vector2 start, Dir8 direction)
 
 	switch (direction)
 	{
-		case DIR_N:
-			destx = 0;
-			desty = -1;
-			break;
+	case DIR_N:
+		destx = 0;
+		desty = -1;
+		break;
 
-		case DIR_NW:
-			destx = -1;
-			desty = -1;
-			break;
+	case DIR_NW:
+		destx = -1;
+		desty = -1;
+		break;
 
-		case DIR_NE:
-			destx = 1;
-			desty = -1;
-			break;
+	case DIR_NE:
+		destx = 1;
+		desty = -1;
+		break;
 
-		case DIR_E:
-			destx = 1;
-			desty = 0;
-			break;
+	case DIR_E:
+		destx = 1;
+		desty = 0;
+		break;
 
-		case DIR_SE:
-			destx = 1;
-			desty = 1;
-			break;
+	case DIR_SE:
+		destx = 1;
+		desty = 1;
+		break;
 
-		case DIR_S:
-			destx = 0;
-			desty = 1;
-			break;
+	case DIR_S:
+		destx = 0;
+		desty = 1;
+		break;
 
-		case DIR_SW:
-			destx = -1;
-			desty = 1;
-			break;
+	case DIR_SW:
+		destx = -1;
+		desty = 1;
+		break;
 
-		case DIR_W:
-			destx = -1;
-			desty = 0;
-			break;
+	case DIR_W:
+		destx = -1;
+		desty = 0;
+		break;
 	}
 
 	for (int i = 0; i < 16; ++i)
@@ -1411,76 +1637,60 @@ void PathfindingSystem::Init(const std::string& configfile)
 {
 	m_aStar = std::make_unique<AStar>();
 	m_pathfindingGrid = std::make_unique<PathfindingGrid>();
+
+	// Precompute chunk connectivity for hierarchical pathfinding
 	PopulateChunkPathfindingGrid();
-}
-
-
-
-void PathfindingSystem::PopulateChunkPathfindingGrid()
-{
-	for (int cz = 0; cz < 192; ++cz)
-	{
-		for (int cx = 0; cx < 192; ++cx)
-		{
-			ChunkInfo& ci = m_chunkInfoMap[cz][cx];
-
-			Vector3 center = { cx * 16.0f + 8.0f, 0.0f, cz * 16.0f + 8.0f };
-			for(int i = 0; i < 8; ++i)
-			{
-				ci.canReach[i] = AreAllTilesInDirectionWalkable({center.x, center.z}, Dir8(i));
-			}
-
-			// North
-			if (ci.canReach[DIR_N]) //  Tiles passable?  Check for objects in the way.
-			{
-				ci.canReach[DIR_N] = LineOfTilesIsWalkable3D(center, { center.x, center.y, center.z - 16.0f });
-			}
-
-			// North-East
-			if (ci.canReach[DIR_NE]) //  Tiles passable?  Check for objects in the way.
-			{
-				ci.canReach[DIR_NE] = LineOfTilesIsWalkable3D(center, { center.x + 16.0f, center.y, center.z - 16.0f });
-			}
-
-			// East
-			if (ci.canReach[DIR_E]) //  Tiles passable?  Check for objects in the way.
-			{
-				ci.canReach[DIR_E] = LineOfTilesIsWalkable3D(center, { center.x + 16.0f, center.y, center.z });
-			}
-
-			// South-East
-			if (ci.canReach[DIR_SE]) //  Tiles passable?  Check for objects in the way.
-			{
-				ci.canReach[DIR_SE] = LineOfTilesIsWalkable3D(center, { center.x + 16.0f, center.y, center.z  + 16.0f });
-			}
-
-			// South
-			if (ci.canReach[DIR_S]) //  Tiles passable?  Check for objects in the way.
-			{
-				ci.canReach[DIR_S] = LineOfTilesIsWalkable3D(center, { center.x, center.y, center.z  + 16.0f });
-			}
-
-			// South-West
-			if (ci.canReach[DIR_SW]) //  Tiles passable?  Check for objects in the way.
-			{
-				ci.canReach[DIR_SW] = LineOfTilesIsWalkable3D(center, { center.x - 16.0f, center.y, center.z  + 16.0f });
-			}
-
-			// West
-			if (ci.canReach[DIR_W]) //  Tiles passable?  Check for objects in the way.
-			{
-				ci.canReach[DIR_W] = LineOfTilesIsWalkable3D(center, { center.x - 16.0f, center.y, center.z });
-			}
-		}
-	}
 }
 
 std::vector<Vector3> PathfindingSystem::FindPath(Vector3 start, Vector3 end)
 {
-	return m_aStar->FindPath(start, end, m_pathfindingGrid.get());
+	// Instrument A* runtime per call (ms)
+	float t0 = GetTime();
+	auto path = m_aStar->FindPath(start, end, m_pathfindingGrid.get());
+	float elapsed = GetTime() - t0;
+	uint64_t ms = static_cast<uint64_t>(elapsed * 1000.0f);
+	m_astarTotalCalls.fetch_add(1);
+	m_astarTotalMs.fetch_add(ms);
+	// update max
+	uint64_t prevMax = m_astarMaxMs.load();
+	while (ms > prevMax && !m_astarMaxMs.compare_exchange_weak(prevMax, ms))
+	{
+		// loop until swapped or prevMax updated
+	}
+
+	// Update an exponential moving average (EMA) for per-call latency so UI/telemetry can show trending.
+	{
+		std::lock_guard<std::mutex> lk(m_instrumentMutex);
+		double msd = static_cast<double>(ms);
+		if (m_astarEmaMs == 0.0)
+			m_astarEmaMs = msd;
+		else
+			m_astarEmaMs = m_astarEmaAlpha * msd + (1.0 - m_astarEmaAlpha) * m_astarEmaMs;
+	}
+
+	// Optional: log unusually slow A* runs for diagnostics
+	const uint64_t SLOW_ASTAR_MS = 400; // tunable threshold
+	if (ms >= SLOW_ASTAR_MS)
+	{
+		AddConsoleString(std::string("A* slow: ") + std::to_string(ms) + " ms", YELLOW);
+	}
+
+	return path;
 }
 
-// Implement debug helpers (must match declarations)
+// Record queue latency (ms) for workloads that are queued before being processed.
+// Useful when you later move pathfinding to worker threads: have the producer measure enqueue->dequeue time
+// and call this to aggregate queue wait telemetry.
+void PathfindingSystem::RecordQueueLatency(uint64_t ms)
+{
+	m_astarQueueTotalMs.fetch_add(ms);
+	m_astarQueueCalls.fetch_add(1);
+}
+
+// Implement debug helpers that were declared in the header but missing from the
+// previous commit. These must be defined with the exact signatures so the
+// linker can resolve calls from other translation units (debug drawing, etc.).
+
 void AStar::ClearDebugMarkers()
 {
 	m_visitedNodeKeys.clear();
@@ -1499,4 +1709,100 @@ bool AStar::IsNodeOnFinalPath(int x, int z, float y) const
 	int yidx = QuantizeY(y);
 	int64_t k = MakeNodeKey(x, z, yidx);
 	return m_finalPathKeys.find(k) != m_finalPathKeys.end();
+}
+
+void PathfindingSystem::PopulateChunkPathfindingGrid()
+{
+	const int CHUNKS = 192;
+	if (!m_pathfindingGrid)
+		return;
+
+	// Direction offsets (N, NE, E, SE, S, SW, W, NW)
+	const int dirOffsets[8][2] = {
+		{0, -1}, {1, -1}, {1, 0}, {1, 1},
+		{0, 1},  {-1, 1}, {-1, 0}, {-1, -1}
+	};
+
+	// Precompute per-chunk walkability and connectivity
+	for (int cx = 0; cx < CHUNKS; ++cx)
+	{
+		for (int cz = 0; cz < CHUNKS; ++cz)
+		{
+			ChunkInfo& info = m_chunkInfoMap[cx][cz];
+
+			// Reset roof info (we don't currently infer roof groups here)
+			info.hasRoof = false;
+			info.roofGroupID = -1;
+
+			// Fill per-tile walkable flags for this chunk (16x16)
+			int baseX = cx * 16;
+			int baseZ = cz * 16;
+			for (int tz = 0; tz < 16; ++tz)
+			{
+				for (int tx = 0; tx < 16; ++tx)
+				{
+					int wx = baseX + tx;
+					int wz = baseZ + tz;
+					// Safety clamp to world bounds
+					if (wx < 0 || wx >= 3072 || wz < 0 || wz >= 3072)
+					{
+						info.walkable[tx][tz] = false;
+					}
+					else
+					{
+						info.walkable[tx][tz] = m_pathfindingGrid->IsPositionWalkable(wx, wz, 0.0f);
+					}
+				}
+			}
+
+			// Compute connectivity to neighboring chunks using 3D line-of-sight considering object bounding boxes.
+			// Use chunk centers as endpoints for the test.
+			Vector3 start = { (float)(baseX + 8), 1.0f, (float)(baseZ + 8) };
+
+			for (int d = 0; d < 8; ++d)
+			{
+				int ncx = cx + dirOffsets[d][0];
+				int ncz = cz + dirOffsets[d][1];
+
+				// Out of range neighbor means not reachable
+				if (ncx < 0 || ncx >= CHUNKS || ncz < 0 || ncz >= CHUNKS)
+				{
+					info.canReach[d] = false;
+					continue;
+				}
+
+				int nBaseX = ncx * 16;
+				int nBaseZ = ncz * 16;
+				Vector3 end = { (float)(nBaseX + 8), 1.0f, (float)(nBaseZ + 8) };
+
+				// Fast sanity check: ensure there is at least one walkable tile along the edge between chunks
+				// This prevents marking connectivity through completely blocked chunks.
+				bool edgeHasWalkable = false;
+				// sample a small set of tiles along the bordering edge between the two chunks
+				for (int sx = 6; sx <= 10 && !edgeHasWalkable; ++sx)
+				{
+					for (int sz = 6; sz <= 10 && !edgeHasWalkable; ++sz)
+					{
+						// Map sample to world coords moving from this chunk towards neighbor
+						int sampleX = baseX + sx + dirOffsets[d][0] * 4;
+						int sampleZ = baseZ + sz + dirOffsets[d][1] * 4;
+						if (sampleX < 0 || sampleX >= 3072 || sampleZ < 0 || sampleZ >= 3072)
+							continue;
+						if (m_pathfindingGrid->IsPositionWalkable(sampleX, sampleZ, 0.0f))
+							edgeHasWalkable = true;
+					}
+				}
+
+				if (!edgeHasWalkable)
+				{
+					info.canReach[d] = false;
+					continue;
+				}
+
+				// Final test: ensure direct 3D corridor between chunk centers isn't blocked by large objects.
+				bool reachable = LineOfTilesIsWalkable3D(start, end);
+				info.canReach[d] = reachable;
+			}
+		}
+	}
 }

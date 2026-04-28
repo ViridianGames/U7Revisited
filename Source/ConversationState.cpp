@@ -16,6 +16,8 @@
 #include <fstream>
 #include <algorithm>
 
+#include "InputSystem.h"
+
 using namespace std;
 
 ConversationState::~ConversationState()
@@ -108,7 +110,7 @@ void ConversationState::Update()
 				{
 					m_waitingForAnswer = false; // Can't ask for an answer until dialogue is finished.
 				}
-				if (!m_waitingForAnswer && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+				if (!m_waitingForAnswer && g_InputSystem->WasLButtonClicked())
 				{
 					EraseTopStep();
 				}
@@ -124,7 +126,7 @@ void ConversationState::Update()
 			m_secondSpeakerFrame = m_steps[0].frame;
 			m_secondSpeakerDialogue = m_steps[0].dialog;
 			m_secondSpeakerActive = true;
-			if (!m_waitingForAnswer && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+			if (!m_waitingForAnswer && g_InputSystem->WasLButtonClicked())
 			{
 				EraseTopStep();
 			}
@@ -173,7 +175,7 @@ void ConversationState::Update()
 
 	if (m_secondSpeakerActive)
 	{
-		if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+		if (g_InputSystem->WasLButtonClicked())
 		{
 			m_secondSpeakerActive = false;
 		}
@@ -205,7 +207,7 @@ void ConversationState::Update()
 					Vector2 dims = MeasureTextEx(*fontToUse, adjustedAnswer.c_str(), fontToUse->baseSize, 1);
 
 					Vector2 mousePosition = GetMousePosition();
-					if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) &&
+					if (g_InputSystem->WasLButtonClicked() &&
 						CheckCollisionPointRec(mousePosition, {
 							                       190 * g_DrawScale,
 							                       float((135 + (i * fontToUse->baseSize * 2.1)) * g_DrawScale),
@@ -252,7 +254,7 @@ void ConversationState::Update()
 			}
 		}
 	}
-	else if (m_scriptFinished && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+	else if (m_scriptFinished && g_InputSystem->WasLButtonClicked())
 	{
 		// if (m_steps.empty())
 		// {
@@ -371,7 +373,7 @@ void ConversationState::Draw()
 
 			DrawTextureEx(*thisTexture, {100, 135}, 0, 2, WHITE);
 
-			float height = m_answers.size() * g_SmallFont.get()->baseSize * 2.1;
+			float height = m_answers.size() * g_SmallFont.get()->baseSize * 2;
 
 			float width = 0;
 
@@ -379,7 +381,7 @@ void ConversationState::Draw()
 
 			for (int i = 0; i < m_answers.size(); i++)
 			{
-				Vector2 textsize = MeasureTextEx(*g_SmallFont.get(), std::string("* " + m_answers[i]).c_str(), g_SmallFont.get()->baseSize * 2, 1);
+				Vector2 textsize = MeasureTextEx(*g_SmallFont.get(), std::string("* " + m_answers[i]).c_str(), g_SmallFont.get()->baseSize * 2.1, 1);
 				if (textsize.x > width)
 					width = textsize.x;
 			}
@@ -388,8 +390,16 @@ void ConversationState::Draw()
 
 			for (int i = 0; i < m_answers.size(); i++)
 			{
-				DrawOutlinedText(g_SmallFont, "* " + m_answers[i],
-								 {190, float(135 + (i * g_SmallFont.get()->baseSize * 2.1))}, g_SmallFont.get()->baseSize * 2,
+				// Check if first character is a letter and is lowercase
+				std::string capsAnswer = m_answers[i];
+				if (std::isalpha(static_cast<unsigned char>(capsAnswer[0])) &&
+					 std::islower(static_cast<unsigned char>(capsAnswer[0])))
+				{
+					capsAnswer[0] = std::toupper(static_cast<unsigned char>(capsAnswer[0]));
+				}
+
+				DrawOutlinedText(g_SmallFont, "* " + capsAnswer,
+								 {190, float(135 + (i * g_SmallFont.get()->baseSize * 2))}, g_SmallFont.get()->baseSize * 2,
 								 1, YELLOW);
 			}
 		}

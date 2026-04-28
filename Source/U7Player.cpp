@@ -1,13 +1,16 @@
 #include "U7Globals.h"
 #include "U7Player.h"
+#include "Geist/StateMachine.h"  
+#include "MainState.h"           
 #include "PathfindingSystem.h"
 #include "U7Object.h"
 
 #include <algorithm>
 #include <shared_mutex>
 #include <string>
+
 #include <vector>
-#include <sstream>  // Added to support std::stringstream used in DEBUG logs
+#include <sstream>  
 
 using namespace std;
 
@@ -33,6 +36,11 @@ U7Player::U7Player()
 	m_PlayerDirection = { 0.0f, 0.0f, 1.0f }; // Default direction facing forward
 
 	m_selectedPartyMember = 0;
+}
+
+Vector3 U7Player::GetPlayerPosition()
+{
+	return g_objectList[g_NPCData[0]->m_objectID]->m_Pos;
 }
 
 vector<string>& U7Player::GetPartyMemberNames()
@@ -89,13 +97,36 @@ void U7Player::AddPartyMember(int index)
 		m_PartyMemberIDs.push_back(index);
 		m_PartyMemberNames.push_back(g_NPCData[index]->name);
 		g_objectList[g_NPCData[index]->m_objectID]->m_speed = 5.0f; // Set speed to match avatar
+
+		// Ensure new party member does NOT follow schedules
+		if (g_StateMachine)
+		{
+			auto mainState = dynamic_cast<MainState*>(g_StateMachine->GetState(STATE_MAINSTATE));
+			if (mainState)
+				mainState->SetFollowingScheduleForNpc(index, false);
+		}
 	}
 }
 
 void U7Player::RemovePartyMember(int index)
 {
-	m_PartyMemberIDs.erase(std::find(m_PartyMemberIDs.begin(), m_PartyMemberIDs.end(), index));
-	m_PartyMemberNames.erase(std::find(m_PartyMemberNames.begin(), m_PartyMemberNames.end(), g_NPCData[index]->name));
+	auto itId = std::find(m_PartyMemberIDs.begin(), m_PartyMemberIDs.end(), index);
+	if (itId != m_PartyMemberIDs.end())
+		m_PartyMemberIDs.erase(itId);
+	auto itName = std::find(m_PartyMemberNames.begin(), m_PartyMemberNames.end(), g_NPCData[index]->name);
+	if (itName != m_PartyMemberNames.end())
+		m_PartyMemberNames.erase(itName);
+
+	// Restore schedule-following for this NPC if schedules are enabled
+	if (g_StateMachine)
+	{
+		auto mainState = dynamic_cast<MainState*>(g_StateMachine->GetState(STATE_MAINSTATE));
+		if (mainState)
+		{
+			bool enabled = mainState->IsNpcSchedulesEnabled();
+			mainState->SetFollowingScheduleForNpc(index, enabled && enabled /*explicit intent, keep readable*/);
+		}
+	}
 }
 
 // ============================================================================
@@ -205,17 +236,6 @@ bool U7Player::TryMove(const Vector3& desiredPos)
     if (destX < 0 || destX >= 3072 || destZ < 0 || destZ >= 3072)
         return false;
 
-    // Local walkable surface classifier (keeps in sync with PathfindingSystem::IsWalkableSurface)
-    auto IsWalkableSurfaceLocal = [](int shapeID) -> bool {
-        if (shapeID >= 367 && shapeID <= 370) return true; // Stairs
-        if (shapeID == 1014) return true;                 // Teleporter/Floor
-        if (shapeID >= 426 && shapeID <= 430) return true; // Bridges
-        if (shapeID == 150 || shapeID == 193 || shapeID == 192) return true; // Rugs/Wood Floors
-        if (shapeID == 973 || shapeID == 974) return true; // Stone floors
-        if (shapeID >= 385 && shapeID <= 387) return true; // Thatch/Dirt floors
-        return false;
-    };
-
     // Source height (feet)
     float srcH = avatar->m_Pos.y;
 
@@ -234,8 +254,11 @@ bool U7Player::TryMove(const Vector3& desiredPos)
     {
         if (!ov.obj || !ov.obj->m_shapeData) continue;
 
+        // Skip eggs/triggers — they should not affect climb/walkable surface decisions
+        if (ov.obj->m_isEgg) continue;
+
         int sID = ov.obj->m_shapeData->GetShape();
-        if (IsWalkableSurfaceLocal(sID))
+        if (PathfindingSystem::IsWalkableSurface(sID))
         {
             float walkableTop = ov.obj->m_Pos.y + (ov.obj->m_objectData ? ov.obj->m_objectData->m_height : 0.0f);
             float dist = fabs(walkableTop - srcH);
@@ -246,6 +269,14 @@ bool U7Player::TryMove(const Vector3& desiredPos)
                 bestFloorDist = dist;
                 foundReachableLayer = true;
             }
+        }
+
+        // Special case: allow walking under fortress gateway & curtains
+        if (sID == 257 || sID == 368 || sID == 657 || sID == 678)
+        {
+            foundReachableLayer = true;
+            destH = srcH; // Stay at current height
+            break;
         }
     }
 
@@ -265,7 +296,12 @@ bool U7Player::TryMove(const Vector3& desiredPos)
     bool doorCoversTile = false;
     for (const auto& ov : overlappingObjects)
     {
-        if (ov.obj && ov.obj->m_objectData && ov.obj->m_objectData->m_isDoor)
+        if (!ov.obj || !ov.obj->m_objectData) continue;
+
+        // Skip eggs — they are non-blocking, non-door triggers
+        if (ov.obj->m_isEgg) continue;
+
+        if (ov.obj->m_objectData && ov.obj->m_objectData->m_isDoor)
         {
             // If this door object is not centered on this tile, it may cover it (hinge check)
             if (destX != (int)floor(ov.obj->m_Pos.x) || destZ != (int)floor(ov.obj->m_Pos.z))
@@ -307,6 +343,10 @@ bool U7Player::TryMove(const Vector3& desiredPos)
             for (U7Object* obj : g_chunkObjectMap[cx][cz])
             {
                 if (!obj) continue;
+
+                // Allow walking through eggs/triggers: they should be interactive but non-blocking.
+                if (obj->m_isEgg) continue;
+
                 if (obj->m_isNPC) continue;
                 if (!obj->m_shapeData) continue;
                 if (obj->m_isContained) continue; // skip items in containers
@@ -319,20 +359,6 @@ bool U7Player::TryMove(const Vector3& desiredPos)
                 const float eps = 0.02f;
                 minObj.x -= eps; minObj.y -= eps; minObj.z -= eps;
                 maxObj.x += eps; maxObj.y += eps; maxObj.z += eps;
-
-#ifdef DEBUG_NPC_PATHFINDING
-                {
-                    std::stringstream ss;
-                    ss << "TryMove: checking objID=" << obj->m_ID
-                       << " name=\"" << (obj->m_objectData ? obj->m_objectData->m_name : std::string("unknown")) << "\""
-                       << " shape=" << (obj->m_shapeData ? obj->m_shapeData->GetShape() : -1)
-                       << " bboxmin=(" << minObj.x << "," << minObj.y << "," << minObj.z << ")"
-                       << " bboxmax=(" << maxObj.x << "," << maxObj.y << "," << maxObj.z << ")"
-                       << " playerAABBmin=(" << playerMin.x << "," << playerMin.y << "," << playerMin.z << ")"
-                       << " playerAABBmax=(" << playerMax.x << "," << playerMax.y << "," << playerMax.z << ")";
-                    NPCDebugPrint(ss.str());
-                }
-#endif
 
                 // Quick reject if AABBs don't overlap
                 if (!AABBIntersectsAABB(playerMin, playerMax, minObj, maxObj))
@@ -348,27 +374,15 @@ bool U7Player::TryMove(const Vector3& desiredPos)
                 if (obj->m_objectData)
                     walkableTop = obj->m_Pos.y + obj->m_objectData->m_height;
 
-#ifdef DEBUG_NPC_PATHFINDING
-                {
-                    std::stringstream ss;
-                    ss << "TryMove: AABB overlap -> objID=" << obj->m_ID << " top=" << objTop << " walkTop=" << walkableTop << " bottom=" << objBottom << " destH=" << destH << " srcH=" << srcH;
-                    NPCDebugPrint(ss.str());
-                }
-#endif
-
                 // 1) ignore very small ground clutter early
                 float objHeight = objTop - objBottom;
                 if (objHeight > 0.0f && objHeight < kSmallObstacleHeight)
                 {
                     if (!(obj->m_objectData && obj->m_objectData->m_isDoor))
                     {
-#ifdef DEBUG_NPC_PATHFINDING
-                        NPCDebugPrint("TryMove: ignoring small obstacle objID=" + std::to_string(obj->m_ID) + " height=" + std::to_string(objHeight));
-#endif
                         continue;
                     }
 
-                    // Added check for small obstacle footprint
                     float footprintX = maxObj.x - minObj.x;
                     float footprintZ = maxObj.z - minObj.z;
                     if (objHeight < kSmallObstacleHeight && footprintX < 1.0f && footprintZ < 1.0f) continue;
@@ -423,7 +437,7 @@ bool U7Player::TryMove(const Vector3& desiredPos)
 #ifdef DEBUG_NPC_PATHFINDING
                             {
                                 std::stringstream ss;
-                                ss << "TryMove: swept hit objID=" << obj->m_ID << " at t=" << t << " sampleY=" << sampleY;
+                                ss << "TryMove: swept hit objID=" << obj->m_shapeData->GetShape() << " at t=" << t << " sampleY=" << sampleY;
                                 NPCDebugPrint(ss.str());
                             }
 #endif
@@ -432,7 +446,7 @@ bool U7Player::TryMove(const Vector3& desiredPos)
                             // if any candidate surface is both reachable from our current feet (srcH) and within one-step climb
                             // from the sampled foot height. This helps multi-step stairs where bounding meshes/risers are taller
                             // than the usable surface.
-                            if (IsWalkableSurfaceLocal(shapeID))
+                            if (PathfindingSystem::IsWalkableSurface(shapeID))
                             {
                                 int tx = (int)floor(samplePos.x);
                                 int tz = (int)floor(samplePos.z);
@@ -473,7 +487,7 @@ bool U7Player::TryMove(const Vector3& desiredPos)
 #ifdef DEBUG_NPC_PATHFINDING
                         {
                             std::stringstream ss;
-                            ss << "TryMove BLOCKED (swept): objID=" << obj->m_ID
+                            ss << "TryMove BLOCKED (swept): objID=" << obj->m_shapeData->GetShape()
                                << " name=\"" << (obj->m_objectData ? obj->m_objectData->m_name : std::string("Object")) << "\""
                                << " objBottom=" << objBottom << " objTop=" << objTop;
                             NPCDebugPrint(ss.str());
@@ -487,7 +501,7 @@ bool U7Player::TryMove(const Vector3& desiredPos)
                 // Allow if this is a walkable surface and its canonical top is close to either src or dest feet (covers step climbing).
                 // Also check tile surfaces to allow cases where bounding-box geometry extends above the usable surface.
                 bool allowedBySurface = false;
-                if (IsWalkableSurfaceLocal(shapeID))
+                if (PathfindingSystem::IsWalkableSurface(shapeID))
                 {
                     // Canonical quick allow
                     if ((fabs(walkableTop - srcH) <= (MAX_CLIMBABLE_HEIGHT + climbEpsilon)) ||

@@ -9,6 +9,7 @@
 #include <sstream>
 #include <iostream>
 #include <algorithm>
+#include <U7Globals.h>
 
 using namespace std;
 
@@ -19,6 +20,36 @@ ScriptingSystem::ScriptingSystem()
 {
     m_luaState = luaL_newstate();
     luaL_openlibs(m_luaState);
+    // Initialize throttling counters
+    m_scriptStartsThisFrame = 0;
+    m_scriptResumesThisFrame = 0;
+}
+
+// Throttling helpers: try-consume and reset per-frame counters
+bool ScriptingSystem::TryConsumeScriptStart()
+{
+    if (m_scriptStartsThisFrame < m_maxScriptStartsPerFrame)
+    {
+        ++m_scriptStartsThisFrame;
+        return true;
+    }
+    return false;
+}
+
+bool ScriptingSystem::TryConsumeScriptResume()
+{
+    if (m_scriptResumesThisFrame < m_maxScriptResumesPerFrame)
+    {
+        ++m_scriptResumesThisFrame;
+        return true;
+    }
+    return false;
+}
+
+void ScriptingSystem::ResetPerFrameScriptCounters()
+{
+    m_scriptStartsThisFrame = 0;
+    m_scriptResumesThisFrame = 0;
 }
 
 ScriptingSystem::~ScriptingSystem()
@@ -53,6 +84,13 @@ void ScriptingSystem::Shutdown()
 
 void ScriptingSystem::Update()
 {
+    // Reset per-frame throttling so TryConsumeScriptStart/TryConsumeScriptResume
+    // works as intended and doesn't permanently block resumes.
+    ResetPerFrameScriptCounters();
+
+    // accumulator for diagnostics when developer logging is enabled
+    int deferredResumeCount = 0;
+
     // Collect coroutines that are no longer yielded (completed or errored)
     std::vector<std::string> to_cleanup;
     for (const auto& pair : m_activeCoroutines)
@@ -89,34 +127,23 @@ void ScriptingSystem::Update()
     // Resume all scripts whose wait timers expired
     for (const std::string& scriptKey : scriptsToResume)
     {
-        DebugPrint("RESUME: key=" + scriptKey);
-
         m_waitTimers.erase(scriptKey);
 
         // ONLY strip suffix for activity scripts (which start with "activity_")
-        // Other scripts like npc_* need to keep their full name including suffix
         std::string scriptName = scriptKey;
         int npc_id = 0;
         bool hasNpcId = false;
 
-        // Check if this is an activity script
         if (scriptKey.find("activity_") == 0)
         {
             size_t underscorePos = scriptKey.find_last_of('_');
             if (underscorePos != std::string::npos)
             {
-                // Check if everything after the underscore is a number (NPC ID)
                 bool isNumeric = true;
                 for (size_t i = underscorePos + 1; i < scriptKey.length(); i++)
                 {
-                    if (!isdigit(scriptKey[i]))
-                    {
-                        isNumeric = false;
-                        break;
-                    }
+                    if (!isdigit(scriptKey[i])) { isNumeric = false; break; }
                 }
-
-                // If it's a numeric suffix, extract both the base name and NPC ID
                 if (isNumeric && underscorePos > 0)
                 {
                     scriptName = scriptKey.substr(0, underscorePos);
@@ -126,15 +153,133 @@ void ScriptingSystem::Update()
             }
         }
 
-        // Only pass npc_id for activity scripts
+        // Distance-based defer: avoid resuming activity scripts for NPCs far from camera
+       // Tune threshold (tiles). Start with 50 and lower if needed.
+        const float RESUME_DISTANCE_THRESHOLD = 50.0f;
         if (hasNpcId)
         {
-            ResumeCoroutine(scriptName, {npc_id});
+            bool delay = false;
+            auto itNpcGlobal = g_NPCData.find(npc_id);
+            if (itNpcGlobal != g_NPCData.end() && itNpcGlobal->second)
+            {
+                int objId = itNpcGlobal->second->m_objectID;
+                auto itObj = g_objectList.find(objId);
+                if (itObj != g_objectList.end() && itObj->second)
+                {
+                    U7Object* obj = itObj->second.get();
+                    float dist = Vector2Distance({ obj->m_Pos.x, obj->m_Pos.z }, { g_camera.target.x, g_camera.target.z });
+                    if (dist > RESUME_DISTANCE_THRESHOLD)
+                        delay = true;
+
+                    if (delay)
+                    {
+                        ++deferredResumeCount;
+                        // Log deferred resume only when verbose Lua debug logging is enabled
+                        //if (g_LuaDebug)
+                        //{
+                        //    NPCDebugPrint("Defer resume: " + scriptKey + " npc=" + std::to_string(npc_id) +
+                        //        " dist=" + std::to_string(dist) +
+                        //        " thresh=" + std::to_string(RESUME_DISTANCE_THRESHOLD));
+                        //}
+                    }
+                }
+                else
+                {
+                    //// object not present - log only when verbose logging enabled
+                    //if (g_LuaDebug)
+                    //{
+                    //    NPCDebugPrint("Defer-check: NPC id found but no object: npc=" + std::to_string(npc_id) + " objId=" + std::to_string(objId));
+                    //}
+                }
+            }
+            else
+            {
+                // NPC id not present in map (avoid operator[]!). Log only if verbose logging enabled.
+                //if (g_LuaDebug)
+                //{
+                //    NPCDebugPrint("Defer-check: g_NPCData has no entry for npc=" + std::to_string(npc_id));
+                //}
+            }
+
+            if (delay)
+            {
+                // re-schedule a small delay so it will be retried later
+                m_waitTimers[scriptKey] = 0.05f; // 50ms
+                continue;
+            }
+        }
+
+        // Existing throttling logic unchanged (but now prioritized)
+        if (hasNpcId)
+        {
+            if (TryConsumeScriptResume())
+                ResumeCoroutine(scriptName, { npc_id });
+            else
+            {
+                // briefly requeue to try again next frame
+                m_waitTimers[scriptKey] = 0.01f;
+            }
         }
         else
         {
-            ResumeCoroutine(scriptKey, {});
+            if (TryConsumeScriptResume())
+                ResumeCoroutine(scriptKey, {});
+            else
+            {
+                // briefly requeue to try again next frame
+                m_waitTimers[scriptKey] = 0.01f;
+            }
         }
+    }
+
+    // Diagnostic: summarize deferred resumes this frame when developer logging enabled
+    //if (deferredResumeCount > 0 && g_LuaDebug)
+    //{
+    //    DebugPrint("SCRIPT: deferred resumes this frame=" + std::to_string(deferredResumeCount));
+    //}
+
+    // Periodically dump instrumentation summary (every 1s)
+    float now = GetTime();
+    if (now - m_lastInstrumentDumpTime >= 60.0f)
+    {
+        m_lastInstrumentDumpTime = now;
+        // Summarize top N scripts by cumulative time
+        std::vector<std::pair<std::string, double>> totals;
+        for (const auto& kv : m_instrumentCallTime)
+        {
+            double t = kv.second;
+            if (m_instrumentResumeTime.find(kv.first) != m_instrumentResumeTime.end())
+                t += m_instrumentResumeTime[kv.first];
+            totals.push_back({kv.first, t});
+        }
+        for (const auto& kv : m_instrumentResumeTime)
+        {
+            if (m_instrumentCallTime.find(kv.first) == m_instrumentCallTime.end())
+                totals.push_back({kv.first, kv.second});
+        }
+
+        if (!totals.empty())
+        {
+            std::sort(totals.begin(), totals.end(), [](auto &a, auto &b){ return a.second > b.second; });
+            int limit = std::min((size_t)8, totals.size());
+            std::stringstream ss;
+            ss << "SCRIPT INSTRUMENTATION: top " << limit << "\n";
+            for (int i = 0; i < limit; ++i)
+            {
+                const auto &p = totals[i];
+                const std::string &name = p.first;
+                double total = p.second;
+                int calls = m_instrumentCallCount[name];
+                int resumes = m_instrumentResumeCount[name];
+                ss << "  " << name << " calls=" << calls << " resumes=" << resumes << " total_ms=" << (total*1000.0) << "\n";
+            }
+            DebugPrint(ss.str());
+        }
+        // Reset instrumentation counters to avoid unbounded growth
+        m_instrumentCallCount.clear();
+        m_instrumentResumeCount.clear();
+        m_instrumentCallTime.clear();
+        m_instrumentResumeTime.clear();
     }
 }
 
@@ -234,7 +379,18 @@ void ScriptingSystem::AddScript(const std::string& func_name, const vector<LuaAr
 
 string ScriptingSystem::CallScript(const string& func_name, const vector<LuaArg>& args)
 {
-    // (mostly unchanged, but replace unref/erase with CleanupCoroutine)
+    // Check per-script error cooldown: if present and not expired, avoid calling broken script
+    auto cdIt = m_scriptErrorCooldowns.find(func_name);
+    if (cdIt != m_scriptErrorCooldowns.end())
+    {
+        float now = GetTime();
+        if (cdIt->second > now)
+        {
+            // On cooldown - avoid repeated failing calls
+            return "Script on error cooldown";
+        }
+    }
+
     // Extract base function name (strip per-NPC suffix like "_123" from "activity_loiter_123")
     // ONLY strip suffix for activity scripts (those starting with "activity_")
     string base_func_name = func_name;
@@ -352,6 +508,10 @@ string ScriptingSystem::CallScript(const string& func_name, const vector<LuaArg>
     float elapsed = GetTime() - startTime;
     m_scriptStartTime.erase(func_name);
 
+    // Instrumentation: record call count and cumulative time
+    m_instrumentCallCount[func_name]++;
+    m_instrumentCallTime[func_name] += elapsed;
+
     // Check if script took too long
     if (elapsed > MAX_SCRIPT_TIME)
     {
@@ -371,6 +531,9 @@ string ScriptingSystem::CallScript(const string& func_name, const vector<LuaArg>
         string errorMsg = error ? error : "Unknown error";
         DebugPrint("LUA ERROR in script '" + func_name + "': " + errorMsg);
         CleanupCoroutine(func_name); // Changed
+        // record error telemetry and set a short cooldown to avoid immediate retries
+        m_totalScriptErrors.fetch_add(1);
+        m_scriptErrorCooldowns[func_name] = GetTime() + 1.0f; // 1 second cooldown (tunable)
         return errorMsg;
     }
 
@@ -421,6 +584,18 @@ string ScriptingSystem::ResumeCoroutine(const string& func_name, const vector<Lu
         return "Script " + func_name + " is waiting (timer active)";
     }
 
+    // Check per-script error cooldown: if present and not expired, avoid resuming broken script
+    auto cdIt = m_scriptErrorCooldowns.find(func_name);
+    if (cdIt != m_scriptErrorCooldowns.end())
+    {
+        float now = GetTime();
+        if (cdIt->second > now)
+        {
+            // On cooldown - avoid repeated failing resumes
+            return "Script on error cooldown";
+        }
+    }
+
     auto it = m_activeCoroutines.find(func_name);
     if (it == m_activeCoroutines.end())
         return "No active coroutine for " + func_name;
@@ -458,6 +633,9 @@ string ScriptingSystem::ResumeCoroutine(const string& func_name, const vector<Lu
 
     float elapsed = GetTime() - startTime;
     m_scriptStartTime.erase(func_name);
+    // Instrumentation: record resume count and cumulative time
+    m_instrumentResumeCount[func_name]++;
+    m_instrumentResumeTime[func_name] += elapsed;
 
     // Check if script took too long
     if (elapsed > MAX_SCRIPT_TIME)
@@ -478,6 +656,8 @@ string ScriptingSystem::ResumeCoroutine(const string& func_name, const vector<Lu
         string errorMsg = error ? error : "Unknown error";
         DebugPrint("LUA ERROR in script '" + func_name + "': " + errorMsg);
         CleanupCoroutine(func_name); // Changed
+        m_totalScriptErrors.fetch_add(1);
+        m_scriptErrorCooldowns[func_name] = GetTime() + 1.0f; // 1 second cooldown
         return errorMsg;
     }
 

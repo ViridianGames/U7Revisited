@@ -14,6 +14,7 @@
 #include "U7GumpBook.h"
 #include "MainState.h"
 #include "PathfindingSystem.h"
+#include "SoundSystem.h"
 
 extern "C"
 {
@@ -67,7 +68,18 @@ static int LuaWait(lua_State *L)
 
         if (scriptKey.empty())
         {
-            scriptKey = "default";  // Fallback if we can't identify the coroutine
+            if (!g_ScriptingSystem->m_currentScript.empty())
+            {
+                scriptKey = g_ScriptingSystem->m_currentScript;
+                NPCDebugPrint("wait WARNING: GetFuncNameFromCo returned empty, using m_currentScript: " + scriptKey);
+            }
+            else
+            {
+                // last-resort unique key so the timer will be resumed deterministically
+                uintptr_t ptr = reinterpret_cast<uintptr_t>(L);
+                scriptKey = "co_ptr_" + std::to_string(ptr);
+                NPCDebugPrint("wait WARNING: GetFuncNameFromCo and m_currentScript empty, using fallback key: " + scriptKey);
+            }
         }
 
         g_ScriptingSystem->m_waitTimers[scriptKey] = (float)delay;
@@ -109,7 +121,18 @@ static int LuaNPCWait(lua_State *L)
 
         if (scriptKey.empty())
         {
-            scriptKey = "default";  // Fallback if we can't identify the coroutine
+            if (!g_ScriptingSystem->m_currentScript.empty())
+            {
+                scriptKey = g_ScriptingSystem->m_currentScript;
+                NPCDebugPrint("wait WARNING: GetFuncNameFromCo returned empty, using m_currentScript: " + scriptKey);
+            }
+            else
+            {
+                // last-resort unique key so the timer will be resumed deterministically
+                uintptr_t ptr = reinterpret_cast<uintptr_t>(L);
+                scriptKey = "co_ptr_" + std::to_string(ptr);
+                NPCDebugPrint("wait WARNING: GetFuncNameFromCo and m_currentScript empty, using fallback key: " + scriptKey);
+            }
         }
 
         g_ScriptingSystem->m_waitTimers[scriptKey] = (float)realSeconds;
@@ -814,6 +837,42 @@ static int LuaSetObjectPosition(lua_State *L)
 
 // NOTE: LuaFindNearbyObjects removed - not needed for single door implementation
 // Double door support can be added back later if needed
+static int LuaFindObjectTypeNearNPC(lua_State *L)
+{
+    int npc_id = luaL_checknumber(L, 1);
+    int shape = luaL_checknumber(L, 2);
+    int max_distance = luaL_checknumber(L, 3);
+
+    lua_newtable(L);  // Create result table
+
+    Vector3 npc_pos = g_objectList[g_NPCData[npc_id]->m_objectID]->m_Pos;
+    int table_index = 1;
+
+    // Search all objects for matches near the avatar
+    for (const auto& pair : g_objectList)
+    {
+        int candidate_id = pair.first;
+        U7Object* candidate = pair.second.get();
+
+        // Skip if shape doesn't match (or shape == -1 for any object)
+        if (shape != -1 && candidate->m_ObjectType != shape)
+            continue;
+
+        // Calculate distance from player
+        Vector3 candidate_pos = candidate->GetPos();
+        int dx = (int)abs(candidate_pos.x - npc_pos.x);
+        int dz = (int)abs(candidate_pos.z - npc_pos.z);
+        int distance = (dx > dz) ? dx : dz;  // Chebyshev distance
+
+        // Add to result table if within range
+        if (distance <= max_distance)
+        {
+            lua_pushinteger(L, pair.first);
+        }
+    }
+
+    return 1;
+}
 
 // Opcode 0014
 static int LuaGetObjectQuality(lua_State *L)
@@ -2620,6 +2679,9 @@ static int LuaFindNearbyAvatar(lua_State *L)
         int candidate_id = pair.first;
         U7Object* candidate = pair.second.get();
 
+        if (candidate == nullptr)
+            continue;
+
         // Skip if shape doesn't match (or shape == -1 for any object)
         if (shape != -1 && candidate->m_ObjectType != shape)
             continue;
@@ -2633,12 +2695,12 @@ static int LuaFindNearbyAvatar(lua_State *L)
         // Add to result table if within range
         if (distance <= max_distance)
         {
-            lua_pushinteger(L, table_index);
             lua_pushinteger(L, candidate_id);
-            lua_settable(L, -3);
-            table_index++;
+            return 1;
         }
     }
+
+    lua_pushnil(L);
 
     return 1;
 }
@@ -3627,10 +3689,10 @@ static int LuaIsWater(lua_State *L)
 // 0x000F | play_sound_effect
 static int LuaPlaySoundEffect(lua_State *L)
 {
-    // int sound_id = (int)lua_tointeger(L, 1);
+    int sound_id = (int)lua_tointeger(L, 1);
 
-    // Audio not yet implemented in U7Revisited
-    // In full implementation, would play audio file by ID
+    g_SoundSystem->PlaySound(g_soundEffectList[sound_id]);
+
     return 0;
 }
 
@@ -3714,7 +3776,7 @@ static int LuaIsBlocked(lua_State *L)
 	int z = (int)lua_tointeger(L, 3);
 
 	// Check if the tile is walkable
-	bool walkable = g_pathfindingSystem->IsPositionWalkable(x, z);
+	bool walkable = g_pathfindingSystem->IsPositionWalkable(x, z, y);
 	lua_pushboolean(L, !walkable); // Return true if blocked
 	return 1;
 }
@@ -4431,6 +4493,7 @@ static int LuaFindRandomWalkable(lua_State *L)
     Vector3 npcPos = npc->GetPos();
     int anchorX = (int)npcPos.x;
     int anchorZ = (int)npcPos.z;
+	int currentY = (int)npcPos.y;
 
     // Pick ONE random offset within radius (caller should retry with yields if needed)
     float offsetX = ((float)rand() / RAND_MAX * 2.0f - 1.0f) * radius;
@@ -4440,7 +4503,7 @@ static int LuaFindRandomWalkable(lua_State *L)
     int targetZ = anchorZ + (int)offsetZ;
 
     // Only check if position is walkable - NO pathfinding (too expensive)
-    bool isWalkable = g_pathfindingSystem->IsPositionWalkable(targetX, targetZ);
+    bool isWalkable = g_pathfindingSystem->IsPositionWalkable(targetX, targetZ, currentY);
 
     NPCDebugPrint("find_random_walkable: npc=" + std::to_string(npc_id) +
                    " from=(" + std::to_string(anchorX) + "," + std::to_string(anchorZ) + ")" +
@@ -4558,8 +4621,17 @@ static int LuaRequestPathfind(lua_State *L)
 
     // Stop movement while new path is being computed
     // (PathfindToDestTracked will clear waypoints and set m_pathfindingPending)
+    npc->m_isMoving = false;
 
     npc->PathfindToDest({x, y, z});
+    return 1;
+}
+
+// is_path_ready(request_id) -> bool
+// Step 2: Check if async pathfinding request is complete (consumes the result)
+static int LuaIsPathReady(lua_State *L)
+{
+    lua_pushboolean(L, true);
     return 1;
 }
 
@@ -4576,20 +4648,32 @@ static int LuaStartFollowingPath(lua_State *L)
     }
 
     U7Object* npc = g_objectList[g_NPCData[npc_id]->m_objectID].get();
-    if (npc && !npc->m_pathWaypoints.empty())
+    if (!npc)
     {
-        NPCDebugPrint("Lua: NPC " + std::to_string(npc_id) + " (request " + std::to_string(request_id) +
-                   ") starting to follow path with " + std::to_string(npc->m_pathWaypoints.size()) +
-                   " waypoints");
-        npc->SetDest(npc->m_pathWaypoints[0]);
-        NPCDebugPrint("Lua: NPC " + std::to_string(npc_id) + " SetDest to (" +
-                   std::to_string((int)npc->m_pathWaypoints[0].x) + "," +
-                   std::to_string((int)npc->m_pathWaypoints[0].z));
+        return 0;
     }
-    else if (npc)
+
+    if (!npc->m_pathWaypoints.empty())
+    {
+        // Ensure the current waypoint index is valid. PathfindToDest normally sets
+        // m_currentWaypointIndex (1 if there is an initial current-tile entry).
+        int idx = npc->m_currentWaypointIndex;
+        if (idx < 0 || idx >= static_cast<int>(npc->m_pathWaypoints.size()))
+        {
+            // Recover to a safe default (prefer 1 if path length > 1, else 0).
+            idx = (npc->m_pathWaypoints.size() > 1) ? 1 : 0;
+            npc->m_currentWaypointIndex = idx;
+        }
+
+        // Use the validated index (not hardcoded 0)
+        npc->SetDest(npc->m_pathWaypoints[idx]);
+        npc->m_isMoving = true;
+    }
+    else
     {
         NPCDebugPrint("Lua: NPC " + std::to_string(npc_id) + " (request " + std::to_string(request_id) +
-                   ") has NO waypoints to follow!");
+            ") has NO waypoints to follow! m_pathfindingPending=" +
+            std::to_string(npc->m_pathfindingPending));
     }
 
     return 0;
@@ -4606,7 +4690,7 @@ static int LuaIsNPCMoving(lua_State *L)
         return 1;
     }
 
-    bool is_moving = g_objectList[g_NPCData[npc_id]->m_objectID]->m_pathWaypoints.size() > 0;
+    bool is_moving = g_objectList[g_NPCData[npc_id]->m_objectID]->m_isMoving;
     lua_pushboolean(L, is_moving);
     return 1;
 }
@@ -4945,6 +5029,7 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction( "is_sleeping", LuaIsSleeping);
     g_ScriptingSystem->RegisterScriptFunction( "is_sitting", LuaIsSitting);
     g_ScriptingSystem->RegisterScriptFunction( "request_pathfind", LuaRequestPathfind);
+    g_ScriptingSystem->RegisterScriptFunction( "is_path_ready", LuaIsPathReady);
     g_ScriptingSystem->RegisterScriptFunction( "start_following_path", LuaStartFollowingPath);
     g_ScriptingSystem->RegisterScriptFunction( "is_npc_moving", LuaIsNPCMoving);
     g_ScriptingSystem->RegisterScriptFunction( "wait_move_end", LuaWaitMoveEnd);

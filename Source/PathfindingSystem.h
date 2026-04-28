@@ -7,10 +7,13 @@
 #include <queue>
 #include <string>
 #include <memory>
+#include <mutex>
+#include <deque>
 #include "raylib.h"
 #include "raymath.h"
 #include <cstdint>
 #include "Geist/Object.h"
+#include <atomic>
 
 // Forward declarations
 class U7Object;
@@ -49,10 +52,10 @@ public:
 	~PathfindingGrid();
 
 	// Query walkability
-	bool IsPositionWalkable(int worldX, int worldZ) const;  // Check if tile is walkable
+	bool IsPositionWalkable(int worldX, int worldZ, float agentBaseY) const;  // Check if tile is walkable
 
 	// Debug visualization
-	void DrawDebugOverlayTileLevel();                     // Tile-level visualization (3D with cost cubes)
+	void DrawDebugOverlayTileLevel(float lowerY, float upperY);                  // Tile-level visualization (3D with cost cubes)
 	void DebugPrintTileInfo(int worldX, int worldZ);      // Print why a tile is blocked
 
 	// Helper: Get all objects that overlap a tile (used by pathfinding and door opening)
@@ -73,7 +76,7 @@ public:
 
 private:
 	// Helper: Check if specific tile is walkable
-	bool CheckTileWalkable(int worldX, int worldZ) const;
+	bool CheckTileWalkable(int worldX, int worldZ, float agentBaseY) const;
 
 	// Cache for debug visualization
 	struct TileWithCost {
@@ -106,9 +109,9 @@ struct PathNode
 	float g;            // Cost from start
 	float h;            // Heuristic cost to goal
 	float f;            // Total cost (g + h)
-	PathNode* parent;   // For path reconstruction
+	int parent;         // Index into node pool for parent (-1 = none)
 
-	PathNode(int _x, int _z, float _y = 0.0f) : x(_x), z(_z), y(_y), g(0), h(0), f(0), parent(nullptr) {}
+	PathNode(int _x, int _z, float _y = 0.0f) : x(_x), z(_z), y(_y), g(0), h(0), f(0), parent(-1) {}
 };
 
 class AStar
@@ -142,19 +145,22 @@ public:
 	bool IsNodeOnFinalPath(int x, int z, float y) const;
 
 private:
-	// Heuristic function (Manhattan distance)
+	// Heuristic function (Manhattan/Octile distance)
 	float Heuristic(int x1, int z1, int x2, int z2);
 
-	// Get walkable neighbors of a node
-	std::vector<PathNode*> GetNeighbors(PathNode* node, PathfindingGrid* grid, int goalX, int goalZ);
+	// Get walkable neighbors of a node: now index-based (returns indices into nodePool)
+	std::vector<int> GetNeighbors(int nodeIndex, PathfindingGrid* grid, int goalX, int goalZ,
+		std::unordered_map<int, bool>& walkableCache,
+		std::unordered_map<int, std::vector<float>>& heightsCache,
+		std::vector<PathNode>& nodePool);
 
-	// Reconstruct path from goal to start
-	std::vector<Vector3> ReconstructPath(PathNode* goal, PathfindingGrid* grid);
+	// Reconstruct path from goal index
+	std::vector<Vector3> ReconstructPath(int goalIndex, PathfindingGrid* grid, std::vector<PathNode>& nodePool);
 
-	// Cleanup allocated nodes
+	// Cleanup allocated nodes (legacy)
 	void CleanupNodes();
 
-	// Temporary storage for nodes during pathfinding
+	// Temporary storage for nodes during pathfinding (legacy pointer storage not used)
 	std::vector<PathNode*> m_allocatedNodes;
 
 	// Terrain movement costs (shape ID -> cost multiplier)
@@ -162,6 +168,9 @@ private:
 
 	// Terrain names (shape ID -> name)
 	std::unordered_map<int, std::string> m_terrainNames;
+
+	// Mutex to make FindPath reentrant/thread-safe
+	std::mutex m_findMutex;
 };
 
 
@@ -178,9 +187,12 @@ public:
 
 	std::vector<Vector3> FindPath(Vector3 start, Vector3 goal);
 
+	// Guard to make FindPath reentrant/thread-safe
+	mutable std::mutex m_findMutex;
+
 	std::string GetTerrainName(int shapeID) const { return m_aStar->GetTerrainName(shapeID); }
 
-	bool IsPositionWalkable(int worldX, int worldZ) const { return m_pathfindingGrid->IsPositionWalkable(worldX, worldZ); }
+	bool IsPositionWalkable(int worldX, int worldZ, float agentBaseY) const { return m_pathfindingGrid->IsPositionWalkable(worldX, worldZ, agentBaseY); }
 
 	float GetMovementCost(int worldX, int worldZ) { return m_aStar->GetMovementCost(worldX, worldZ, m_pathfindingGrid.get());}
 
@@ -189,9 +201,31 @@ public:
 
 	ChunkInfo m_chunkInfoMap[192][192];
 
+	// Simple atomic telemetry counters for A* timing (monotonic totals)
+	std::atomic<uint64_t> m_astarTotalCalls{0};
+	std::atomic<uint64_t> m_astarTotalMs{0};
+	std::atomic<uint64_t> m_astarMaxMs{0};
+	// Queue/worker latency instrumentation (collected even if no worker yet)
+	std::atomic<uint64_t> m_astarQueueTotalMs{0};
+	std::atomic<uint64_t> m_astarQueueCalls{0};
+
+	// Moving-average of per-call A* duration (ms) for realtime telemetry
+	// Protected by m_instrumentMutex
+	double m_astarEmaMs = 0.0;
+	float  m_astarEmaAlpha = 0.10f; // EMA alpha (tunable)
+	std::mutex m_instrumentMutex;
+
+	// Record queue latency (ms) for a request that spent time waiting before worker handled it.
+	// Call from producer / worker when appropriate.
+	void RecordQueueLatency(uint64_t ms);
+
 	//  Since this looks both at the terrain and the objects, it needs to be called
 	//  after all loading is finished.
 	void PopulateChunkPathfindingGrid();
+
+	// Utility: determine whether a shape id represents a walkable surface (stairs/floors/bridges/etc.)
+	// Implemented inline below to keep header-only convenience for callers like U7Player.cpp.
+	static bool IsWalkableSurface(int shapeID);
 };
 
 #endif

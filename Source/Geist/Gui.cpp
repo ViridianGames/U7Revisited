@@ -11,6 +11,8 @@
 
 #include <raylib.h>
 
+#include "InputSystem.h"
+
 using namespace std;
 
 Gui::Gui()
@@ -115,7 +117,7 @@ void Gui::Update()
 				isValidDragArea = m_DragAreaValidationCallback(mousePos);
 			}
 
-			if (isValidDragArea && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+			if (isValidDragArea && g_InputSystem->IsLDragging())
 			{
 				m_IsDragging = true;
 				m_DragOffset.x = mousePos.x - m_Pos.x;
@@ -123,12 +125,12 @@ void Gui::Update()
 			}
 		}
 
-		if (m_IsDragging && IsMouseButtonReleased(MOUSE_LEFT_BUTTON))
+		if (m_IsDragging && !g_InputSystem->IsLButtonDown())
 		{
 			m_IsDragging = false;
 		}
 
-		if (m_IsDragging && IsMouseButtonDown(MOUSE_LEFT_BUTTON))
+		if (m_IsDragging && g_InputSystem->IsLButtonDown())
 		{
 			m_Pos.x = mousePos.x - m_DragOffset.x;
 			m_Pos.y = mousePos.y - m_DragOffset.y;
