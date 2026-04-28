@@ -183,6 +183,10 @@ void GumpManager::Update()
 				int backpackId = g_NPCData[0]->GetEquippedItem(EquipmentSlot::SLOT_BACKPACK);
 
 				AddObjectToContainer(m_draggedObjectId, backpackId);
+				if (draggedObject->m_shapeData->GetShape() == 641 && draggedObject->m_Quality == 253)
+				{
+					g_ScriptingSystem->SetFlag(60, 1);
+				}
 				g_SoundSystem->PlaySound("drag_drop.wav");
 				g_gumpManager->m_draggingObject = false;
 				g_gumpManager->m_draggedObjectId = -1;

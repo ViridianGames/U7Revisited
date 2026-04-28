@@ -149,7 +149,7 @@ public:
    int m_LastMouseZ;
 
    // Double click timing (in seconds)
-   float m_DoubleClickTime = 0.25f;   // 350ms is a good default
+   float m_DoubleClickTime = 0.35f;   // 350ms is a good default
 
    // Last click time for each button
    float m_LastLeftClickTime = 0.0f;

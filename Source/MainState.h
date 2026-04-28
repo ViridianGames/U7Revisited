@@ -291,6 +291,9 @@ private:
 	float   m_cameraDragSensitivity = 0.008f; // radians per pixel (tune as needed)
 
 	bool m_handledDoubleLeftClickThisFrame = false;
+
+	float m_barkTimer = 0.0f;
+	U7Object* m_previousObjectUnderMousePointer = nullptr;
 };
 
 #endif

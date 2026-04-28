@@ -930,7 +930,7 @@ void MainState::HandleLeftSingleClick()
 		}
 		else
 		{
-			Bark(g_objectUnderMousePointer, GetObjectDisplayName(g_objectUnderMousePointer), 1.0f);
+			//Bark(g_objectUnderMousePointer, GetObjectDisplayName(g_objectUnderMousePointer), 1.0f);
 
 			if (g_objectUnderMousePointer->m_isNPC && m_npcListWindow && m_npcListWindow->IsVisible())
 				m_npcListWindow->SelectNPC(g_objectUnderMousePointer->m_NPCID);
@@ -1539,6 +1539,21 @@ void MainState::Update()
 	if (int(g_terrainUnderMousePointer.x / 16) == 66 && int(g_terrainUnderMousePointer.z / 16 == 137) && g_ScriptingSystem->GetFlag(60) == false)
 	{
 		g_ScriptingSystem->SetFlag(60, true);
+	}
+
+	// Check if we've hovered over an object long enough to trigger a bark.
+	if (g_objectUnderMousePointer == m_previousObjectUnderMousePointer)
+	{
+		m_barkTimer -= GetFrameTime();
+		if (m_barkTimer <= 0)
+		{
+			Bark(g_objectUnderMousePointer, GetObjectDisplayName(g_objectUnderMousePointer), 1.0f);
+		}
+	}
+	else
+	{
+		m_previousObjectUnderMousePointer = g_objectUnderMousePointer;
+		m_barkTimer = 1.25f;
 	}
 }
 
