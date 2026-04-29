@@ -439,6 +439,13 @@ void TitleState::UpdateTitle()
 		// }
 	}
 
+	if (m_TitleGui->m_ActiveElement == GUI_TITLE_BUTTON_PATREON_VILLAGE)
+	{
+		//dynamic_cast<MainState*>(g_StateMachine->GetState(STATE_MAINSTATE))->m_gameMode = MainStateModes::MAIN_STATE_MODE_TRINSIC_DEMO;
+		//dynamic_cast<MainState*>(g_StateMachine->GetState(STATE_MAINSTATE))->m_loadOnEntry = true;
+		g_StateMachine->MakeStateTransition(STATE_PATREONVILLAGESTATE);
+	}
+
 
 	if (m_TitleGui->m_ActiveElement == GUI_TITLE_BUTTON_SHAPE_EDITOR)
 	{

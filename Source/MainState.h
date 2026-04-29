@@ -28,6 +28,23 @@ enum class MainStateModes
 	MAIN_STATE_MODE_LAST
 };
 
+enum GUI_SANDBOX_HELP
+{
+	GUI_SANDBOX_HELP_PANEL = 0,
+	GUI_SANDBOX_HELP_TITLE,
+	GUI_SANDBOX_HELP_BACK,
+	GUI_SANDBOX_HELP_LAST
+};
+
+enum GUI_DEMO_HELP
+{
+	GUI_DEMO_HELP_PANEL = 0,
+	GUI_DEMO_HELP_TITLE = 1000,
+	GUI_DEMO_HELP_BACK = 2000,
+	GUI_DEMO_HELP_LAST = 3000
+};
+
+
 class MainState : public State
 {
 public:
@@ -93,6 +110,9 @@ public:
    Gui* m_toolTipGui = nullptr;
 
 	Gui* m_numberBarGui = nullptr;
+
+	Gui* m_demoHelpScreen = nullptr;
+	Gui* m_sandboxHelpScreen = nullptr;
 
 	// Debug tools window (always visible in sandbox mode)
 	GhostWindow* m_debugToolsWindow = nullptr;
@@ -294,6 +314,8 @@ private:
 
 	float m_barkTimer = 0.0f;
 	U7Object* m_previousObjectUnderMousePointer = nullptr;
+
+	bool m_helpConsoleLineShown = false;
 };
 
 #endif

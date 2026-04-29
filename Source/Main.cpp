@@ -27,6 +27,7 @@
 #include "ScriptRenameState.h"
 #include "LoadSaveState.h"
 #include "AskState.h"
+#include "PatreonVillageState.h"
 #include "ShapeData.h"
 #include "GumpManager.h"
 #include <string>
@@ -396,6 +397,10 @@ int main(int argv, char** argc)
       // Callback will be set dynamically in LoadSaveState before pushing the state
       askSaveState->Init("engine.cfg");
       g_StateMachine->RegisterState(STATE_ASKSAVESTATE, askSaveState, "ASK_SAVE_STATE");
+
+      PatreonVillageState* patreonVillageState = new PatreonVillageState;
+      patreonVillageState->Init("engine.cfg");
+      g_StateMachine->RegisterState(STATE_PATREONVILLAGESTATE, patreonVillageState, "PATREON_VILLAGE_STATE");
 
       g_StateMachine->MakeStateTransition(STATE_LOADINGSTATE);
 

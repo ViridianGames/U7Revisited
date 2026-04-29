@@ -61,6 +61,9 @@ void MainState::Init(const string& configfile)
 	m_useCursor = g_ResourceManager->GetTexture("Images/usepointer.png");
 	m_errorCursor = g_ResourceManager->GetTexture("Images/error.png");
 
+	BuildDemoHelpGUI();
+	BuildSandboxHelpGUI();
+
 	m_Gui = new Gui();
 
 	m_Gui->SetLayout(0, 0, 138, 384, g_DrawScale, Gui::GUIP_UPPERRIGHT);
@@ -243,13 +246,7 @@ void MainState::OnEnter()
 			m_hasShownWelcomeMessages = true;
 			ClearConsole();
 			AddConsoleString(std::string("Welcome to Ultima VII: Revisited!"));
-			AddConsoleString(std::string("Move with WASD, rotate with Q and E."));
-			AddConsoleString(std::string("Zoom in and out with mousewheel."));
-			AddConsoleString(std::string("Left-click in the minimap to teleport."));
-			AddConsoleString(std::string("Press F1 to switch to the Object Viewer."));
-			AddConsoleString(std::string("Press KP ENTER to advance time an hour."));
-			AddConsoleString(std::string("Press SPACE to pause/unpause time."));
-			AddConsoleString(std::string("Press ESC to exit."));
+			AddConsoleString(std::string("Press H at any time for help."));
 		}
 	}
 }
@@ -395,7 +392,7 @@ void MainState::CalculateMouseOverUI()
 		overNpcList = CheckCollisionPointRec(mousePos, npcListRect);
 	}
 
-	g_mouseOverUI = overStats || overMinimap || overCharPanel || overDebugTools || overNpcList;
+	g_mouseOverUI = overStats || overMinimap || overCharPanel || overDebugTools || overNpcList || m_demoHelpScreen->m_Active || m_sandboxHelpScreen->m_Active;
 }
 
 void MainState::UpdateInput()
@@ -509,6 +506,18 @@ void MainState::HandleGameKeys()
 
 	if (IsKeyPressed(KEY_SPACE))
 		m_paused = !m_paused;
+
+	if (IsKeyPressed(KEY_H))
+	{
+		if (m_gameMode == MainStateModes::MAIN_STATE_MODE_TRINSIC_DEMO)
+		{
+			m_demoHelpScreen->m_Active = true;
+		}
+		else
+		{
+			m_sandboxHelpScreen->m_Active = true;
+		}
+	}
 
 	// Skip to next hour (Sandbox mode only)
 	if (IsKeyPressed(KEY_RIGHT) && m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX)
@@ -1145,6 +1154,25 @@ void MainState::Update()
 
 	UpdateTime();
 
+	if (MainStateModes::MAIN_STATE_MODE_TRINSIC_DEMO == m_gameMode && m_ranIntroScript && g_allowInput && !m_helpConsoleLineShown)
+	{
+		AddConsoleString("Welcome to Ultima VII Revisited!", WHITE);
+		AddConsoleString("Press H for help.", WHITE);
+		m_helpConsoleLineShown = true;
+	}
+
+	m_demoHelpScreen->Update();
+	if (m_demoHelpScreen->m_ActiveElement == GUI_DEMO_HELP_BACK)
+	{
+		m_demoHelpScreen->m_Active = false;
+	}
+
+	m_sandboxHelpScreen->Update();
+	if (m_sandboxHelpScreen->m_ActiveElement == GUI_SANDBOX_HELP_BACK)
+	{
+		m_sandboxHelpScreen->m_Active = false;
+	}
+
 	unsigned short currentTargetTile = g_World[(int)g_camera.target.z][(int)g_camera.target.x];
 	currentTargetTile = currentTargetTile & 0x3ff; // We just need the shape, not the frame.
 	if (MainStateModes::MAIN_STATE_MODE_SANDBOX != m_gameMode)
@@ -1542,7 +1570,7 @@ void MainState::Update()
 	}
 
 	// Check if we've hovered over an object long enough to trigger a bark.
-	if (g_objectUnderMousePointer == m_previousObjectUnderMousePointer)
+	if (g_objectUnderMousePointer == m_previousObjectUnderMousePointer && g_allowInput && g_mouseOverUI == false)
 	{
 		m_barkTimer -= GetFrameTime();
 		if (m_barkTimer <= 0)
@@ -1949,6 +1977,9 @@ void MainState::Draw()
 	// Restore default blend mode
 	rlSetBlendMode(BLEND_ALPHA);
 
+	m_demoHelpScreen->Draw();
+	m_sandboxHelpScreen->Draw();
+
 	EndTextureMode();
 
 	DrawTexturePro(g_guiRenderTarget.texture,
@@ -1956,7 +1987,7 @@ void MainState::Draw()
 		{ 0, float(g_Engine->m_ScreenHeight), float(g_Engine->m_ScreenWidth), -float(g_Engine->m_ScreenHeight) },
 		{ 0, 0 }, 0, WHITE);
 
-	if (!m_paused && m_showUIElements)
+	if (!m_paused && m_showUIElements  && !m_demoHelpScreen->m_Active && !m_sandboxHelpScreen->m_Active)
 	{
 		DrawTextureEx(*m_Minimap, { g_Engine->m_ScreenWidth - float(g_minimapSize * g_DrawScale), 0 }, 0, float(g_minimapSize * g_DrawScale) / float(m_Minimap->width), WHITE);
 
@@ -2099,7 +2130,7 @@ void MainState::SetupGame()
 	}
 
 	// Load optional configs
-	LoadSpellData();
+	//LoadSpellData();
 	LoadEquipmentSlotsConfig();
 }
 
@@ -2783,11 +2814,79 @@ void MainState::MaybeUpdatePartyFollowing()
 
 void MainState::BuildDemoHelpGUI()
 {
+    m_demoHelpScreen = new Gui();
+    m_demoHelpScreen->m_Font = g_SmallFont;
 
+    // Panel size adjusted to comfortably fit the new layout
+    m_demoHelpScreen->SetLayout(20, 30, 600, 300, g_DrawScale, Gui::GUIP_USE_XY);
+    m_demoHelpScreen->AddOctagonBox(GUI_DEMO_HELP_PANEL, 0, 0, 600, 300, g_Borders);
+
+    m_demoHelpScreen->AddTextArea(GUI_DEMO_HELP_TITLE, g_SmallFont.get(), "How to play Ultima VII Revisited", 320, 12, 0, 0,
+                              Color{255, 255, 255, 255}, GuiTextArea::CENTERED, 0, 1, true);
+
+	int idOffset = 1;
+	int textY = 18;
+
+	m_demoHelpScreen->AddTextArea(GUI_DEMO_HELP_TITLE + idOffset++, g_SmallFont.get(), "MOVEMENT:\nTo move the Avatar, you can:\n* Double-Right-Click to move to a location.\n* Use the WASD keys to move and Q and E to rotate the camera.\n* Hold the right mouse button to make the Avatar move towards the mouse cursor.", 10, textY,
+	                           0, 0, WHITE, GuiTextArea::LEFT, 0, 1, false);
+
+	textY += 76;
+
+	m_demoHelpScreen->AddTextArea(GUI_DEMO_HELP_TITLE + idOffset++, g_SmallFont.get(), "CHARACTER SCREENS:\nDouble-Click the Avatar to open the Avatar's character screen.\nDouble-click the backpack to open it. From here, you can drag items onto the Avatar or into the world.\nClick the heart icon on a character's screen to see that character's stats.\nClick the disk icon to bring up the Save/Load screen.\nClick the check mark to close any open screen.", 10, textY,
+									0, 0, WHITE, GuiTextArea::LEFT, 0, 1, false);
+
+	textY += 92;
+
+	m_demoHelpScreen->AddTextArea(GUI_DEMO_HELP_TITLE + idOffset++, g_SmallFont.get(), "INTERACTIONS:\nHold the mouse over an object to get a popup saying what it is.\nDrag objects and drop them on the Avatar or over an open backpack to add them to the Avatar's inventory.\nDouble-click objects in the world to interact with them. If you can use an object on another object (like a key),\n     you get a green target cursor. Use this to select the target.\nDouble-click NPCs to talk to them.\n", 10, textY,
+								0, 0, WHITE, GuiTextArea::LEFT, 0, 1, false);
+
+
+    // Back button at bottom center
+	 m_demoHelpScreen->AddStretchButtonCentered(GUI_DEMO_HELP_BACK, 280,
+	 	 "Back to Game",
+	 	 g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
+	 	 g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
+
+    m_demoHelpScreen->m_Active = false;
+    m_demoHelpScreen->m_Draggable = false;
 }
 
 
 void MainState::BuildSandboxHelpGUI()
 {
+    m_sandboxHelpScreen = new Gui();
+    m_sandboxHelpScreen->m_Font = g_SmallFont;
 
+    // Panel size adjusted to comfortably fit the new layout
+    m_sandboxHelpScreen->SetLayout(20, 30, 600, 300, g_DrawScale, Gui::GUIP_USE_XY);
+    m_sandboxHelpScreen->AddOctagonBox(GUI_DEMO_HELP_PANEL, 0, 0, 600, 300, g_Borders);
+
+    m_sandboxHelpScreen->AddTextArea(GUI_DEMO_HELP_TITLE, g_SmallFont.get(), "Welcome to Ultima VII Revisited Sandbox Mode!", 320, 12, 0, 0,
+                              Color{255, 255, 255, 255}, GuiTextArea::CENTERED, 0, 1, true);
+
+	int idOffset = 1;
+	int textY = 22;
+
+	m_sandboxHelpScreen->AddTextArea(GUI_DEMO_HELP_TITLE + idOffset++, g_SmallFont.get(), "In sandbox mode, you can pick the game apart and see how it works behind the scenes.", 10, textY,
+	                           0, 0, WHITE, GuiTextArea::LEFT, 0, 1, false);
+
+	textY += 16;
+
+	m_sandboxHelpScreen->AddTextArea(GUI_DEMO_HELP_TITLE + idOffset++, g_SmallFont.get(), "Click anywhere on the minimap to go there.\nTry out the debug menu on the right to turn NPC schedules on/off,\nfind specific NPCs and rename scripts.", 10, textY,
+									0, 0, WHITE, GuiTextArea::LEFT, 0, 1, false);
+
+	textY += 48;
+
+	m_sandboxHelpScreen->AddTextArea(GUI_DEMO_HELP_TITLE + idOffset++, g_SmallFont.get(), "F1 - Shape Editor\nF5 - Lock/Unlock the camera to the Avatar\nF6 - SUPER PIXELLATION MODE\nF7 - Allow hack moving (move anything)\nF8 - Lua script debug text\nF9 - Show object bounding boxes\nF10 - Show pathfinding info\nF11 - Highlight objects with scripts\nPageUp - Move the camera up one floor\nPageDown - Move the camera down one floor\nMinus Key - Speed up time\nPlus Key - Slow down time\nKeypad Enter - Jump time forward one hour.", 10, textY,
+								0, 0, WHITE, GuiTextArea::LEFT, 0, 1, false);
+
+
+    // Back button at bottom center
+	 m_sandboxHelpScreen->AddStretchButtonCentered(GUI_SANDBOX_HELP_BACK, 280,
+	 	 "Back to Game",
+	 	 g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
+	 	 g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
+
+    m_sandboxHelpScreen->m_Active = false;
+    m_sandboxHelpScreen->m_Draggable = false;
 }
