@@ -64,6 +64,7 @@ public:
 	void LoadFromJson(const json& j);
 
 	U7Object* GetAvatarObject();
+	void SetAvatarObject(U7Object* obj);
 
 	// Attempt to move avatar to desired position using collision and height checks.
 // Returns true if move was accepted (dest set), false if blocked.
@@ -89,6 +90,8 @@ public:
 	bool m_isWearingFellowshipMedallion = false;
 
 	int m_selectedPartyMember = 0; //  Avatar
+
+	U7Object* m_AvatarObject = nullptr;
 
 };
 

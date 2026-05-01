@@ -38,9 +38,14 @@ U7Player::U7Player()
 	m_selectedPartyMember = 0;
 }
 
+void U7Player::SetAvatarObject(U7Object* obj)
+{
+	m_AvatarObject = obj;
+}
+
 Vector3 U7Player::GetPlayerPosition()
 {
-	return g_objectList[g_NPCData[0]->m_objectID]->m_Pos;
+	return m_AvatarObject->m_Pos;
 }
 
 vector<string>& U7Player::GetPartyMemberNames()
@@ -87,7 +92,7 @@ bool U7Player::NPCNameInParty(std::string npc_name)
 
 U7Object* U7Player::GetAvatarObject()
 {
-	return g_objectList[g_NPCData[0]->m_objectID].get();
+	return m_AvatarObject;
 }
 
 void U7Player::AddPartyMember(int index)
@@ -96,7 +101,7 @@ void U7Player::AddPartyMember(int index)
 	{
 		m_PartyMemberIDs.push_back(index);
 		m_PartyMemberNames.push_back(g_NPCData[index]->name);
-		g_objectList[g_NPCData[index]->m_objectID]->m_speed = g_objectList[g_NPCData[0]->m_objectID]->m_speed; // Set speed to match avatar
+		g_objectList[g_NPCData[index]->m_objectID]->m_speed = m_AvatarObject->m_speed; // Set speed to match avatar
 
 		// Ensure new party member does NOT follow schedules
 		if (g_StateMachine)
@@ -244,6 +249,9 @@ bool U7Player::TryMove(const Vector3& desiredPos)
         if (shapeID == 150 || shapeID == 193 || shapeID == 192) return true; // Rugs/Wood Floors
         if (shapeID == 973 || shapeID == 974) return true; // Stone floors
         if (shapeID >= 385 && shapeID <= 387) return true; // Thatch/Dirt floors
+    	if (shapeID == 657 || shapeID == 678) return true; // Curtains
+    	if (shapeID == 415) return true; // Garbage
+    	if (shapeID == 257) return true; // fortress gateway
         return false;
     };
 

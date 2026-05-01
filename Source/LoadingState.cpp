@@ -206,6 +206,7 @@ void LoadingState::UpdateLoading()
 			DebugPrint(std::string("Loading Initial Game State..."));
 			m_loadingInitialGameState = true;
 
+			g_Player->SetAvatarObject(g_objectList[g_NPCData[0]->m_objectID].get());
 			//AnalyzeGlobalObjectList();
 			return;
 		}
