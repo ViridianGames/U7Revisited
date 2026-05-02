@@ -88,6 +88,8 @@ public:
    float m_fadeTime = 0;
    unsigned char m_currentFadeAlpha = 255;
    bool m_fadingOut = false;
+
+   int m_targetState = 0;
 };
 
 #endif

@@ -397,7 +397,7 @@ void TitleState::UpdateTitle()
 
 	if (m_fadingOut && int(m_currentFadeAlpha) > 250) // Fully faded
 	{
-		g_StateMachine->MakeStateTransition(STATE_MAINSTATE);
+		g_StateMachine->MakeStateTransition(m_targetState);
 	}
 
 	if (m_TitleGui->m_ActiveElement == GUI_TITLE_BUTTON_QUIT)
@@ -419,6 +419,7 @@ void TitleState::UpdateTitle()
 			FadeOut(1.5);
 			dynamic_cast<MainState*>(g_StateMachine->GetState(STATE_MAINSTATE))->m_gameMode = MainStateModes::MAIN_STATE_MODE_TRINSIC_DEMO;
 			m_TitleGui->m_AcceptingInput = false;
+			m_targetState = STATE_MAINSTATE;
 		}
 	}
 
@@ -441,11 +442,14 @@ void TitleState::UpdateTitle()
 
 	if (m_TitleGui->m_ActiveElement == GUI_TITLE_BUTTON_PATREON_VILLAGE)
 	{
-		//dynamic_cast<MainState*>(g_StateMachine->GetState(STATE_MAINSTATE))->m_gameMode = MainStateModes::MAIN_STATE_MODE_TRINSIC_DEMO;
-		//dynamic_cast<MainState*>(g_StateMachine->GetState(STATE_MAINSTATE))->m_loadOnEntry = true;
-		g_StateMachine->MakeStateTransition(STATE_PATREONVILLAGESTATE);
+		if (m_fadeState != FadeState::FADE_OUT)
+		{
+			m_fadingOut = true;
+			FadeOut(1.5);
+			m_TitleGui->m_AcceptingInput = false;
+			m_targetState = STATE_PATREONVILLAGESTATE;
+		}
 	}
-
 
 	if (m_TitleGui->m_ActiveElement == GUI_TITLE_BUTTON_SHAPE_EDITOR)
 	{

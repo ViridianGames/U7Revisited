@@ -311,6 +311,8 @@ void UnlockCamera();
 
 void CameraUpdate(bool forcemove = false);
 
+void CameraSetDestination(Vector3 destination);
+
 void CameraInput();
 
 void IsCellVisible(float x, float y);
@@ -480,7 +482,6 @@ extern bool g_pixelated;
 extern RenderTexture2D g_renderTarget;
 extern RenderTexture2D g_guiRenderTarget;
 
-
 //////////////////////////////////////////////////////////////////////////////
 ///  CAMERA SETTINGS AND RELATED FUNCTIONS
 //////////////////////////////////////////////////////////////////////////////
@@ -502,6 +503,9 @@ extern float g_firstPersonMoveSpeed; // Movement speed while in first-person
 extern float g_cameraDistance; // distance from target
 extern float g_cameraRotation; // angle around target
 extern float g_cameraRotationTarget;
+extern Vector3 g_cameraDestination; // When set, camera continually moves at g_cameraSpeed to this destination.
+extern float g_cameraSpeed;
+extern bool g_shouldCameraMoveToDestination;
 
 extern EngineModes g_engineMode;
 

@@ -105,6 +105,9 @@ std::vector<U7Object*> g_sortedVisibleObjects;
 float g_cameraDistance; // distance from target
 float g_cameraRotation = 0; // angle around target
 float g_cameraRotationTarget = 0;
+Vector3 g_cameraDestination = g_camera.target;
+float g_cameraSpeed = 25.0f;
+bool g_shouldCameraMoveToDestination = false;
 
 Shader g_alphaDiscard;
 
@@ -516,9 +519,18 @@ void CameraInput()
 	}
 }
 
+void CameraSetDestination(Vector3 destination)
+{
+	g_shouldCameraMoveToDestination = true;
+	g_cameraDestination = destination;
+}
+
 // --- Replace CameraUpdate() to honor first-person yaw when enabled ---
 void CameraUpdate(bool forcemove)
 {
+	bool moveDecay = false;
+	bool rotateDecay = false;
+
 	// First-person: position camera at avatar eye when locked, or keep X/Z and apply first-person angle/height when not locked
 	if (g_firstPersonEnabled && g_Player)
 	{
@@ -611,37 +623,38 @@ void CameraUpdate(bool forcemove)
 		}
 	}
 
-	// --- existing third-person CameraUpdate logic below (unchanged) ---
-	bool moveDecay = false;
-	bool rotateDecay = false;
-	if (!g_CameraMoved && (g_CameraMovementSpeed.x != 0 || g_CameraMovementSpeed.z != 0))
-	{
-		g_CameraMovementSpeed = Vector3{ g_CameraMovementSpeed.x * .75f, g_CameraMovementSpeed.y, g_CameraMovementSpeed.z * .75f };
 
-		if (abs(g_CameraMovementSpeed.x) < .01f)
+
+		// --- existing third-person CameraUpdate logic below (unchanged) ---
+
+		if (!g_CameraMoved && (g_CameraMovementSpeed.x != 0 || g_CameraMovementSpeed.z != 0))
 		{
-			g_CameraMovementSpeed.x = 0;
+			g_CameraMovementSpeed = Vector3{ g_CameraMovementSpeed.x * .75f, g_CameraMovementSpeed.y, g_CameraMovementSpeed.z * .75f };
+
+			if (abs(g_CameraMovementSpeed.x) < .01f)
+			{
+				g_CameraMovementSpeed.x = 0;
+			}
+
+			if (abs(g_CameraMovementSpeed.z) < .01f)
+			{
+				g_CameraMovementSpeed.z = 0;
+			}
+
+			moveDecay = true;
 		}
 
-		if (abs(g_CameraMovementSpeed.z) < .01f)
+		//  Make sure we eventually stop moving no matter what.
+		if (g_CameraRotateSpeed != 0)
 		{
-			g_CameraMovementSpeed.z = 0;
+			g_CameraRotateSpeed = g_CameraRotateSpeed * .75f;
+			if (abs(g_CameraRotateSpeed) < .01f)
+			{
+				g_CameraRotateSpeed = 0;
+			}
+
+			rotateDecay = true;
 		}
-
-		moveDecay = true;
-	}
-
-	//  Make sure we eventually stop moving no matter what.
-	if (g_CameraRotateSpeed != 0)
-	{
-		g_CameraRotateSpeed = g_CameraRotateSpeed * .75f;
-		if (abs(g_CameraRotateSpeed) < .01f)
-		{
-			g_CameraRotateSpeed = 0;
-		}
-
-		rotateDecay = true;
-	}
 
 	// The camera was manually moved.
 	if (g_CameraMoved || forcemove || g_autoRotate || rotateDecay || moveDecay)

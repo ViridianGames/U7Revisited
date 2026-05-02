@@ -17439,7 +17439,7 @@
 694 30 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 694 30 default 
 694 31 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 694 31 default 
 695 0 0 0 8 8 0 8 8 20 8 0 26 8 3 2.2 2.5 2.2 0.3 0 0.6 0 1 2 2 3 3 1 Models/3dmodels/grandfather_clock_695.gltf 1 0 695 0 object_clock_0695 
-695 1 0 0 8 8 0 8 8 20 8 0 26 8 3 1.5 2 1.5 0 0 0.5 0 1 2 2 3 3 1 Models/3dmodels/grandfather_clock_695.gltf 1 0 695 1 object_clock_0695 
+695 1 0 0 8 8 0 8 8 20 8 0 26 8 3 1.5 2 1.5 0.5 0 0.5 0 1 2 2 3 3 1 Models/3dmodels/grandfather_clock_695.gltf 1 0 695 1 object_clock_0695 
 695 2 0 0 8 8 0 8 8 20 8 0 26 8 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 695 2 object_clock_0695 
 695 3 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 695 3 default 
 695 4 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 695 4 default 
@@ -19166,10 +19166,10 @@
 748 29 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 748 29 default 
 748 30 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 748 30 default 
 748 31 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 748 31 default 
-749 0 0 0 8 8 0 8 8 1 8 0 6 8 3 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/alchemist_aparatus_749x00.gltf 1 0 749 0 default 
+749 0 0 0 8 8 0 8 8 1 8 0 6 8 3 1 1 1 0.75 0 0.5 0 1 2 2 3 3 1 Models/3dmodels/alchemist_aparatus_749x00.gltf 1 0 749 0 default 
 749 1 0 0 8 8 0 8 8 6 8 0 1 8 2 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/alchemist_aparatus_749x01.gltf 1 0 749 1 default 
 749 2 0 0 8 8 0 8 8 1 8 0 6 8 2 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/alchemist_aparatus_749x02.gltf 1 0 749 2 default 
-749 3 0 0 8 8 0 8 8 4 8 0 8 8 3 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/alchemist_aparatus_749x03.gltf 1 0 749 3 default 
+749 3 0 0 8 8 0 8 8 4 8 0 8 8 3 1 1 1 0.75 0 0.5 0 1 2 2 3 3 1 Models/3dmodels/alchemist_aparatus_749x03.gltf 1 0 749 3 default 
 749 4 0 0 8 8 0 8 8 8 8 0 4 8 2 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/alchemist_aparatus_749x04.gltf 1 0 749 4 default 
 749 5 0 0 8 8 0 8 8 4 8 0 11 8 2 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/alchemist_aparatus_749x05.gltf 1 0 749 5 default 
 749 6 0 0 8 8 0 8 8 1 8 0 6 8 3 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/alchemist_aparatus_749x06.gltf 1 0 749 6 default 
@@ -19187,7 +19187,7 @@
 749 18 0 0 8 8 0 8 8 2 8 0 6 8 2 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/alchemist_aparatus_749x18.gltf 1 0 749 18 default 
 749 19 0 0 8 8 0 8 8 6 8 0 2 8 2 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/alchemist_aparatus_749x19.gltf 1 0 749 19 default 
 749 20 0 0 8 8 0 8 8 1 8 0 7 8 2 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/alchemist_aparatus_749x20.gltf 1 0 749 20 default 
-749 21 0 0 8 8 0 8 8 4 8 0 8 8 2 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/alchemist_aparatus_749x21.gltf 1 0 749 21 default 
+749 21 0 0 8 8 0 8 8 4 8 0 8 8 3 1 1 1 0.5 0 0.5 0 1 2 2 3 3 1 Models/3dmodels/alchemist_aparatus_749x21.gltf 1 0 749 21 default 
 749 22 0 0 8 8 0 8 8 8 8 0 4 8 2 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/alchemist_aparatus_749x22.gltf 1 0 749 22 default 
 749 23 0 0 8 8 0 8 8 4 8 0 11 8 3 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/alchemist_aparatus_749x23.gltf 1 0 749 23 default 
 749 24 0 0 8 8 0 8 8 1 8 0 6 8 2 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/alchemist_aparatus_749x24.gltf 1 0 749 24 default 

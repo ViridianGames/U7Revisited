@@ -44,6 +44,17 @@ public:
    float m_fadeTime = 0;
    unsigned char m_currentFadeAlpha = 255;
    bool m_fadingOut = false;
+   float m_cameraTimer = 10.0f; // Ten seconds at each waypoint.
+   std::vector<Vector3> m_waypoints = {
+      {2247, 0, 1861}, // - North building
+      {2243, 0, 1911}, // - Alagnar's lab
+      {2027, 0, 2178}, // - Tavern
+      {2132, 0, 2164}, // - town hall
+      {2264, 0, 2407}, // - Greenhouse
+      {2262, 0, 2249} // - Kat & Lora
+   };
+
+   int m_currentWaypoint = 0;
 };
 
 #endif
