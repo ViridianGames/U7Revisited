@@ -431,6 +431,8 @@ public:
 		// Per-NPC contiguous index used for deterministic batching of activity script updates.
 		// Assigned at NPCInit time to guarantee a compact range [0..N).
 		int m_npcBatchIndex = -1;
+
+	std::string m_name;
 };
 
 #endif

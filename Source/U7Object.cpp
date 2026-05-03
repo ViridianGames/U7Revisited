@@ -369,6 +369,9 @@ void U7Object::NPCDraw()
 	int finalAngle = 0;
 	float billboardAngle = -45;
 
+	if (m_name == "Gret" || m_name == "Poutchouli" || m_name == "Mister Fisp")
+		billboardAngle = -75;
+
 	Vector3 cameraAngle = Vector3Subtract(g_camera.position, g_camera.target);
 	Vector3 cameraVector = Vector3{ cameraAngle.x, 0, cameraAngle.z };
 	cameraVector = Vector3Normalize(cameraVector);
@@ -403,6 +406,8 @@ void U7Object::NPCDraw()
 
 	int frameIndex = 0;
 
+	float straightenAngle = 75.0f;
+
 	// If not moving, use the current frame set via npc_frame()
 	if (!m_isMoving)
 	{
@@ -412,7 +417,7 @@ void U7Object::NPCDraw()
 			if (g_shapeTable[m_ObjectType][m_overrideFrame].m_texture != nullptr)
 			{
 				finalTexture = &g_shapeTable[m_ObjectType][m_overrideFrame].m_texture->m_Texture;
-				billboardAngle = m_overrideFrame % 2 ? 45.0f : 0.0f;
+				billboardAngle = m_overrideFrame % 2 ? straightenAngle : 0.0f;
 			}
 		}
 		else
@@ -424,14 +429,14 @@ void U7Object::NPCDraw()
 					break;
 				case 1: // North-West
 					finalTexture = m_NPCData->m_walkTextures[3][0];
-					billboardAngle = 45.0f;
+					billboardAngle = straightenAngle;
 					break;
 				case 2: // North-East
 					finalTexture = m_NPCData->m_walkTextures[2][0];
 					break;
 				case 3: // South-East
 					finalTexture = m_NPCData->m_walkTextures[1][0];
-					billboardAngle = 45.0f;
+					billboardAngle = straightenAngle;
 					break;
 				default:
 					int stopper = 0;
@@ -449,14 +454,14 @@ void U7Object::NPCDraw()
 				break;
 			case 1: // North-West
 				finalTexture = m_NPCData->m_walkTextures[3][m_isMoving ? thisTime : 0];
-				billboardAngle = 45.0f;
+				billboardAngle = straightenAngle;
 				break;
 			case 2: // North-East
 				finalTexture = m_NPCData->m_walkTextures[2][m_isMoving ? thisTime : 0];
 				break;
 			case 3: // South-East
 				finalTexture = m_NPCData->m_walkTextures[1][m_isMoving ? thisTime : 0];
-				billboardAngle = 45.0f;
+				billboardAngle = straightenAngle;
 				break;
 			default:
 				int stopper = 0;
@@ -1274,6 +1279,7 @@ void U7Object::NPCInit(NPCData* npcData)
 	m_UnitType = UnitTypes::UNIT_TYPE_NPC;
 	m_isContainer = true;
 	m_isContained = false;
+	m_name = npcData->name;
 	if (std::string(m_NPCData->name) == "Avatar")
 	{
 		m_speed = 20.0f;

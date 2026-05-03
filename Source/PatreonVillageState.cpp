@@ -49,11 +49,107 @@ void PatreonVillageState::OnEnter()
 	g_cameraRotation = 0;
 	g_CameraRotateSpeed = 0;
 	g_cameraSpeed = 50.0f;
+
+	Vector3 camPos = { g_cameraDistance, g_cameraDistance, g_cameraDistance };
+	camPos = Vector3RotateByAxisAngle(camPos, Vector3{ 0, 1, 0 }, g_cameraRotation);
+
+	g_camera.position = Vector3Add(g_camera.target, camPos);
+	g_camera.fovy = g_cameraDistance;
+
+	//  Move everyone out of New Magincia
+	g_objectList[g_NPCData[129].get()->m_objectID]->SetPos({ 0, 0, 0 });
+	g_objectList[g_NPCData[246].get()->m_objectID]->SetPos( { 0, 0, 0 });
+	g_objectList[g_NPCData[9].get()->m_objectID]->SetPos({ 0, 0, 0 });
+	g_objectList[g_NPCData[130].get()->m_objectID]->SetPos({ 0, 0, 0 });
+	g_objectList[g_NPCData[131].get()->m_objectID]->SetPos({ 0, 0, 0 });
+	g_objectList[g_NPCData[132].get()->m_objectID]->SetPos({ 0, 0, 0 });
+	g_objectList[g_NPCData[133].get()->m_objectID]->SetPos({ 0, 0, 0 });
+	g_objectList[g_NPCData[134].get()->m_objectID]->SetPos({ 0, 0, 0 });
+	g_objectList[g_NPCData[135].get()->m_objectID]->SetPos({ 0, 0, 0 });
+	g_objectList[g_NPCData[136].get()->m_objectID]->SetPos( { 0, 0, 0 });
+	g_objectList[g_NPCData[137].get()->m_objectID]->SetPos( { 0, 0, 0 });
+
+	//  Hack and move characters
+
+	// Horse's Conference - 2152, 2336
+	g_objectList[g_NPCData[254].get()->m_objectID]->SetPos( { 2157, 0, 2338 });
+	g_objectList[g_NPCData[254].get()->m_objectID]->m_name = "Gret";
+	g_objectList[g_NPCData[113].get()->m_objectID]->SetPos( { 2148, 0, 2334 });
+	g_objectList[g_NPCData[113].get()->m_objectID]->m_name = "Poutchouli";
+	g_objectList[g_NPCData[230].get()->m_objectID]->SetPos( { 2153, 0, 2342 } );
+	g_objectList[g_NPCData[230].get()->m_objectID]->m_name = "Mister Fisp";
+	g_NPCData[230]->m_walkTextures = g_NPCData[113]->m_walkTextures; // Make Mister Fisp a horse
+
+	// Lab - 2229, 1903
+	g_objectList[g_NPCData[16].get()->m_objectID]->SetPos({ 2229, 0, 1903 });
+	g_objectList[g_NPCData[16].get()->m_objectID]->m_name = "Nighthawk";
+
+	// Inn - 2032, 2178
+	g_objectList[g_NPCData[175].get()->m_objectID]->SetPos( { 2036, 1, 2185 });
+	g_objectList[g_NPCData[175].get()->m_objectID]->m_name = "Shokupan";
+	g_objectList[g_NPCData[197].get()->m_objectID]->SetPos( { 2036, 0, 2170 });
+	g_objectList[g_NPCData[197].get()->m_objectID]->m_name = "Hoythrixious";
+	g_objectList[g_NPCData[244].get()->m_objectID]->SetPos( { 2026, 0, 2180 });
+	g_objectList[g_NPCData[244].get()->m_objectID]->m_name = "Eric";
+	g_objectList[g_NPCData[141].get()->m_objectID]->SetPos( { 2036, 0, 2179 });
+	g_objectList[g_NPCData[141].get()->m_objectID]->m_name = "Tjaard";
+
+	// Lora & Kat's nook - 2211, 2187
+	g_objectList[g_NPCData[151].get()->m_objectID]->SetPos( { 2213, 0, 2185 });
+	g_objectList[g_NPCData[151].get()->m_objectID]->m_name = "Lora";
+	g_objectList[g_NPCData[204].get()->m_objectID]->SetPos( { 2209, 0, 2189 });
+	g_objectList[g_NPCData[204].get()->m_objectID]->m_name = "Kat";
+
+	// Majuular's shipwreck - 2262, 2253
+	g_objectList[g_NPCData[241].get()->m_objectID]->SetPos( { 2262, 0, 2253 });
+	g_objectList[g_NPCData[241].get()->m_objectID]->m_name = "Majuular";
+	g_objectList[g_NPCData[241].get()->m_objectID]->m_followingSchedule = true;
+
+	// Triscle's house - 2154, 2037
+	g_objectList[g_NPCData[115].get()->m_objectID]->SetPos( { 2154, 0, 2037 } );
+	g_objectList[g_NPCData[115].get()->m_objectID]->m_name = "Triscle";
+	g_objectList[g_NPCData[241].get()->m_objectID]->m_followingSchedule = true;
+
+	// Town Hall - 2132, 2167
+	g_objectList[g_NPCData[17].get()->m_objectID]->SetPos({ 2138, 0, 2175 });
+	g_objectList[g_NPCData[17].get()->m_objectID]->m_name = "Neil the Cave Dweller";
+	g_objectList[g_NPCData[23].get()->m_objectID]->SetPos( { 2135, 0, 2162 });
+	g_objectList[g_NPCData[23].get()->m_objectID]->m_name = "Gaul";
+	g_objectList[g_NPCData[218].get()->m_objectID]->SetPos( { 2128, 0, 2167 });
+	g_objectList[g_NPCData[218].get()->m_objectID]->m_name = "Furroy";
+
+	// Ship - 2292, 1881
+	g_objectList[g_NPCData[228].get()->m_objectID]->SetPos( { 2292, 1, 1869 });
+	g_objectList[g_NPCData[228].get()->m_objectID]->m_name = "Sam the Jack";
+	g_objectList[g_NPCData[241].get()->m_objectID]->m_followingSchedule = true;
+	g_objectList[g_NPCData[171].get()->m_objectID]->SetPos( { 2293, 1, 1885 });
+	g_objectList[g_NPCData[171].get()->m_objectID]->m_name = "Johnny";
+	g_objectList[g_NPCData[241].get()->m_objectID]->m_followingSchedule = true;
+	g_objectList[g_NPCData[103].get()->m_objectID]->SetPos( { 2292, 1, 1881 });
+	g_objectList[g_NPCData[103].get()->m_objectID]->m_name = "UrAnt";
+	g_objectList[g_NPCData[241].get()->m_objectID]->m_followingSchedule = true;
+	g_objectList[g_NPCData[251].get()->m_objectID]->SetPos( { 2294, 1, 1875 } );
+	g_objectList[g_NPCData[251].get()->m_objectID]->m_name = "Andrew";
+	g_objectList[g_NPCData[241].get()->m_objectID]->m_followingSchedule = true;
+
+	//  Greenhouse - 2272, 2405
+	g_objectList[g_NPCData[165].get()->m_objectID]->SetPos( { 2270, 0, 2390 });
+	g_objectList[g_NPCData[165].get()->m_objectID]->m_name = "Nathan";
+	g_objectList[g_NPCData[241].get()->m_objectID]->m_followingSchedule = true;
+	g_objectList[g_NPCData[142].get()->m_objectID]->SetPos( { 2263, 0, 2409 });
+	g_objectList[g_NPCData[142].get()->m_objectID]->m_name = "Tirith";
+	g_objectList[g_NPCData[241].get()->m_objectID]->m_followingSchedule = true;
+	g_objectList[g_NPCData[162].get()->m_objectID]->SetPos( { 2277, 0, 2408 });
+	g_objectList[g_NPCData[162].get()->m_objectID]->m_name = "Kevin";
+	g_objectList[g_NPCData[241].get()->m_objectID]->m_followingSchedule = true;
+
+	g_SoundSystem->PlayMusic("Audio/Music/29bg.ogg");
+
 }
 
 void PatreonVillageState::OnExit()
 {
-	//g_SoundSystem->StopMusic("Audio/Music/22bg.ogg");
+	g_SoundSystem->StopMusic("Audio/Music/29bg.ogg");
 }
 
 void PatreonVillageState::Shutdown()
@@ -63,6 +159,11 @@ void PatreonVillageState::Shutdown()
 void PatreonVillageState::Update()
 {
 	UpdateSortedVisibleObjects();
+
+	// for (int i = 0; i < g_sortedVisibleObjects.size(); i++)
+	// {
+	// 	g_sortedVisibleObjects[i]->Update();
+	// }
 
 	if (g_shouldCameraMoveToDestination)
 	{
@@ -216,8 +317,7 @@ void PatreonVillageState::Draw()
 		if (object->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC)
 		{
 			Vector3 textPos = { object->m_Pos.x, object->m_Pos.y + object->m_shapeData->m_Dims.y * 1.25f, object->m_Pos.z };
-			string barkText = object->m_NPCData->name;
-
+			string barkText = object->m_name;
 			// Convert 3D world position to 2D screen coordinates
 			Vector2 screenPos = GetWorldToScreen(textPos, g_camera);
 			screenPos.x /= g_DrawScale;
@@ -236,8 +336,8 @@ void PatreonVillageState::Draw()
 		}
 	}
 
-	DrawOutlinedText(g_SmallFont, "Camera Dest: " + to_string(m_waypoints[m_currentWaypoint].x) + " " + to_string(m_waypoints[m_currentWaypoint].z), { 4, 208 }, g_SmallFont->baseSize, 1, WHITE);
-	DrawOutlinedText(g_SmallFont, "Camera Pos: " + to_string(g_camera.target.x) + " " + to_string(g_camera.target.z), { 4, 220 }, g_SmallFont->baseSize, 1, WHITE);
+	// DrawOutlinedText(g_SmallFont, "Camera Dest: " + to_string(m_waypoints[m_currentWaypoint].x) + " " + to_string(m_waypoints[m_currentWaypoint].z), { 4, 208 }, g_SmallFont->baseSize, 1, WHITE);
+	// DrawOutlinedText(g_SmallFont, "Camera Pos: " + to_string(g_camera.target.x) + " " + to_string(g_camera.target.z), { 4, 220 }, g_SmallFont->baseSize, 1, WHITE);
 
 	if (m_mouseMoved)
 	{

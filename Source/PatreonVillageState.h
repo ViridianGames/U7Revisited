@@ -46,15 +46,24 @@ public:
    bool m_fadingOut = false;
    float m_cameraTimer = 10.0f; // Ten seconds at each waypoint.
    std::vector<Vector3> m_waypoints = {
-      {2247, 0, 1861}, // - North building
-      {2243, 0, 1911}, // - Alagnar's lab
-      {2027, 0, 2178}, // - Tavern
+
+
+
+      {2229, 0, 1903}, // - Alagnar's lab
+      {2154, 0, 2037}, // - Triscle's house
+{2027, 0, 2178}, // - Tavern
+{2152, 0, 2336}, // - Horse's conference
       {2132, 0, 2164}, // - town hall
+      {2262, 0, 2253}, // - Majuular's shipwreck
       {2264, 0, 2407}, // - Greenhouse
-      {2262, 0, 2249} // - Kat & Lora
+      {2211, 0, 2187}, // - Kat & Lora
+      {2292, 0, 1881} // - Pirate ship
+
    };
 
    int m_currentWaypoint = 0;
+
+   std::vector<U7Object*> m_customNPCs;
 };
 
 #endif
