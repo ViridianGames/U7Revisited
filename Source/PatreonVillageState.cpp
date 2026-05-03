@@ -73,7 +73,7 @@ void PatreonVillageState::OnEnter()
 
 	// Horse's Conference - 2152, 2336
 	g_objectList[g_NPCData[254].get()->m_objectID]->SetPos( { 2157, 0, 2338 });
-	g_objectList[g_NPCData[254].get()->m_objectID]->m_name = "Gret";
+	g_objectList[g_NPCData[254].get()->m_objectID]->m_name = "Greg";
 	g_objectList[g_NPCData[113].get()->m_objectID]->SetPos( { 2148, 0, 2334 });
 	g_objectList[g_NPCData[113].get()->m_objectID]->m_name = "Poutchouli";
 	g_objectList[g_NPCData[230].get()->m_objectID]->SetPos( { 2153, 0, 2342 } );
@@ -137,10 +137,10 @@ void PatreonVillageState::OnEnter()
 	g_objectList[g_NPCData[165].get()->m_objectID]->m_name = "Nathan";
 	g_objectList[g_NPCData[241].get()->m_objectID]->m_followingSchedule = true;
 	g_objectList[g_NPCData[142].get()->m_objectID]->SetPos( { 2263, 0, 2409 });
-	g_objectList[g_NPCData[142].get()->m_objectID]->m_name = "Tirith";
+	g_objectList[g_NPCData[142].get()->m_objectID]->m_name = "Thirith";
 	g_objectList[g_NPCData[241].get()->m_objectID]->m_followingSchedule = true;
 	g_objectList[g_NPCData[162].get()->m_objectID]->SetPos( { 2277, 0, 2408 });
-	g_objectList[g_NPCData[162].get()->m_objectID]->m_name = "Kevin";
+	g_objectList[g_NPCData[162].get()->m_objectID]->m_name = "Mystical One";
 	g_objectList[g_NPCData[241].get()->m_objectID]->m_followingSchedule = true;
 
 	g_SoundSystem->PlayMusic("Audio/Music/29bg.ogg");
@@ -159,6 +159,12 @@ void PatreonVillageState::Shutdown()
 void PatreonVillageState::Update()
 {
 	UpdateSortedVisibleObjects();
+
+	if (IsKeyPressed(KEY_ESCAPE) && !g_Engine->m_askedToExit)
+	{
+		g_Engine->m_askedToExit = true;
+		g_StateMachine->PushState(STATE_ASKEXITSTATE);
+	}
 
 	// for (int i = 0; i < g_sortedVisibleObjects.size(); i++)
 	// {
@@ -200,10 +206,10 @@ void PatreonVillageState::Update()
 	g_Terrain->CalculateLighting();
 	g_Terrain->Update();
 
-	if (IsKeyPressed(KEY_ESCAPE))
-	{
-		g_StateMachine->MakeStateTransition(STATE_TITLESTATE);
-	}
+	//if (IsKeyPressed(KEY_ESCAPE))
+	//{
+		//g_StateMachine->MakeStateTransition(STATE_TITLESTATE);
+	//}
 
 	if (abs(GetMouseDelta().x) > 25 || abs(GetMouseDelta().y) > 25)
 	{
@@ -339,12 +345,18 @@ void PatreonVillageState::Draw()
 	// DrawOutlinedText(g_SmallFont, "Camera Dest: " + to_string(m_waypoints[m_currentWaypoint].x) + " " + to_string(m_waypoints[m_currentWaypoint].z), { 4, 208 }, g_SmallFont->baseSize, 1, WHITE);
 	// DrawOutlinedText(g_SmallFont, "Camera Pos: " + to_string(g_camera.target.x) + " " + to_string(g_camera.target.z), { 4, 220 }, g_SmallFont->baseSize, 1, WHITE);
 
-	if (m_mouseMoved)
+	// if (m_mouseMoved)
+	// {
+	// 	DrawOutlinedText(g_SmallFont, "Press ESC to return to the main menu.", {4, 4}, g_SmallFont->baseSize, 1, WHITE);
+	// }
+
+	DrawOutlinedText(g_SmallFont, "Other Patrons:", {4, 4}, g_SmallFont->baseSize, 1, WHITE);
+
+	for (int i = 0; i < m_otherPatronNames.size(); i++)
 	{
-		DrawOutlinedText(g_SmallFont, "Press ESC to return to the main menu.", {4, 4}, g_SmallFont->baseSize, 1, WHITE);
+		DrawOutlinedText(g_SmallFont, m_otherPatronNames[i], {4, 6 + float(i + 1) * 12}, g_SmallFont->baseSize, 1, WHITE);
 	}
 
-	DrawOutlinedText(g_SmallFont, "Other Patrons:", {4, 300}, g_SmallFont->baseSize, 1, WHITE);
 
 	//  Draw any tooltips
 	EndTextureMode();

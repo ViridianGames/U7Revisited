@@ -277,6 +277,13 @@ bool U7Player::TryMove(const Vector3& desiredPos)
         if (ov.obj->m_isEgg) continue;
 
         int sID = ov.obj->m_shapeData->GetShape();
+    		if (sID == 257 || sID == 368 || sID == 657 || sID == 678 || sID == 415)
+    		{
+    			foundReachableLayer = true;
+    			destH = srcH; // Stay at current height
+    			break;
+    		}
+
         if (IsWalkableSurfaceLocal(sID))
         {
             float walkableTop = ov.obj->m_Pos.y + (ov.obj->m_objectData ? ov.obj->m_objectData->m_height : 0.0f);

@@ -369,7 +369,7 @@ void U7Object::NPCDraw()
 	int finalAngle = 0;
 	float billboardAngle = -45;
 
-	if (m_name == "Gret" || m_name == "Poutchouli" || m_name == "Mister Fisp")
+	if (m_name == "Greg" || m_name == "Poutchouli" || m_name == "Mister Fisp")
 		billboardAngle = -75;
 
 	Vector3 cameraAngle = Vector3Subtract(g_camera.position, g_camera.target);
@@ -406,8 +406,6 @@ void U7Object::NPCDraw()
 
 	int frameIndex = 0;
 
-	float straightenAngle = 75.0f;
-
 	// If not moving, use the current frame set via npc_frame()
 	if (!m_isMoving)
 	{
@@ -417,7 +415,7 @@ void U7Object::NPCDraw()
 			if (g_shapeTable[m_ObjectType][m_overrideFrame].m_texture != nullptr)
 			{
 				finalTexture = &g_shapeTable[m_ObjectType][m_overrideFrame].m_texture->m_Texture;
-				billboardAngle = m_overrideFrame % 2 ? straightenAngle : 0.0f;
+				billboardAngle = m_overrideFrame % 2 ? 45 : 0.0f;
 			}
 		}
 		else
@@ -429,14 +427,14 @@ void U7Object::NPCDraw()
 					break;
 				case 1: // North-West
 					finalTexture = m_NPCData->m_walkTextures[3][0];
-					billboardAngle = straightenAngle;
+					billboardAngle = 45;
 					break;
 				case 2: // North-East
 					finalTexture = m_NPCData->m_walkTextures[2][0];
 					break;
 				case 3: // South-East
 					finalTexture = m_NPCData->m_walkTextures[1][0];
-					billboardAngle = straightenAngle;
+					billboardAngle = 45;
 					break;
 				default:
 					int stopper = 0;
@@ -454,14 +452,14 @@ void U7Object::NPCDraw()
 				break;
 			case 1: // North-West
 				finalTexture = m_NPCData->m_walkTextures[3][m_isMoving ? thisTime : 0];
-				billboardAngle = straightenAngle;
+				billboardAngle = 45;
 				break;
 			case 2: // North-East
 				finalTexture = m_NPCData->m_walkTextures[2][m_isMoving ? thisTime : 0];
 				break;
 			case 3: // South-East
 				finalTexture = m_NPCData->m_walkTextures[1][m_isMoving ? thisTime : 0];
-				billboardAngle = straightenAngle;
+				billboardAngle = 45;
 				break;
 			default:
 				int stopper = 0;
