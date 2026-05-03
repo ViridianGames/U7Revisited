@@ -84,7 +84,7 @@ void ConversationState::Update()
 {
 	if (m_steps.empty() && m_answers.empty())
 	{
-		g_ScriptingSystem->ResumeCoroutine(m_luaFunction, {0}); // Lua arrays are 1-indexed
+		g_ScriptingSystem->ResumeCoroutine(m_luaFunction, {1}); // Lua arrays are 1-indexed
 		DebugPrint("No steps and no answers; conversation over.");
 		if (m_steps.empty() && m_answers.empty())
 		{
@@ -102,7 +102,7 @@ void ConversationState::Update()
 			if (!m_secondSpeakerActive)
 			{
 				m_currentDialogue = m_steps[0].dialog;
-				if (m_steps.size() == 1 && m_answers.size() > 0)
+				if (m_steps.size() == 0 && m_answers.size() > 0)
 				{
 					m_waitingForAnswer = true;
 				}
@@ -126,10 +126,7 @@ void ConversationState::Update()
 			m_secondSpeakerFrame = m_steps[0].frame;
 			m_secondSpeakerDialogue = m_steps[0].dialog;
 			m_secondSpeakerActive = true;
-			if (!m_waitingForAnswer && g_InputSystem->WasLButtonClicked())
-			{
-				EraseTopStep();
-			}
+			m_waitingForAnswer = false;
 			break;
 		case ConversationStepType::STEP_MULTIPLE_CHOICE:
 		case ConversationStepType::STEP_GET_PURCHASE_OPTION:
@@ -177,7 +174,9 @@ void ConversationState::Update()
 	{
 		if (g_InputSystem->WasLButtonClicked())
 		{
+			EraseTopStep();
 			m_secondSpeakerActive = false;
+			g_ScriptingSystem->ResumeCoroutine(m_luaFunction, {}); // Lua arrays are 1-indexed
 		}
 	}
 
