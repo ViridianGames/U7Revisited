@@ -1,6 +1,6 @@
 {
 	"asset":{
-		"generator":"Khronos glTF Blender I/O v4.4.55",
+		"generator":"Khronos glTF Blender I/O v5.1.18",
 		"version":"2.0"
 	},
 	"scene":0,
@@ -16,7 +16,7 @@
 	"nodes":[
 		{
 			"mesh":0,
-			"name":"lamp_post_889x07",
+			"name":"lamp_post_526x07",
 			"rotation":[
 				0,
 				0.7071068286895752,
@@ -121,20 +121,21 @@
 				{
 					"input":25,
 					"interpolation":"LINEAR",
-					"output":30
+					"output":27
 				},
 				{
 					"input":25,
 					"interpolation":"LINEAR",
-					"output":31
+					"output":28
 				}
 			]
 		}
 	],
 	"materials":[
 		{
+			"alphaMode":"BLEND",
 			"doubleSided":true,
-			"name":"Material.001",
+			"name":"lit",
 			"pbrMetallicRoughness":{
 				"baseColorTexture":{
 					"index":0
@@ -149,11 +150,14 @@
 			"name":"glass",
 			"pbrMetallicRoughness":{
 				"baseColorFactor":[
-					0.19056212902069092,
-					0.365405410528183,
-					0.8573880791664124,
+					1,
+					1,
+					1,
 					0.37272727489471436
 				],
+				"baseColorTexture":{
+					"index":1
+				},
 				"metallicFactor":0,
 				"roughnessFactor":0.5
 			}
@@ -164,7 +168,18 @@
 			"name":"Material",
 			"pbrMetallicRoughness":{
 				"baseColorTexture":{
-					"index":1
+					"index":2
+				},
+				"metallicFactor":0,
+				"roughnessFactor":0.5
+			}
+		},
+		{
+			"doubleSided":true,
+			"name":"Material.001",
+			"pbrMetallicRoughness":{
+				"baseColorTexture":{
+					"index":3
 				},
 				"metallicFactor":0,
 				"roughnessFactor":0.5
@@ -173,7 +188,7 @@
 	],
 	"meshes":[
 		{
-			"name":"Cylinder.006",
+			"name":"Cylinder.014",
 			"primitives":[
 				{
 					"attributes":{
@@ -227,7 +242,7 @@
 						"WEIGHTS_0":23
 					},
 					"indices":24,
-					"material":0
+					"material":3
 				}
 			]
 		}
@@ -239,19 +254,32 @@
 		},
 		{
 			"sampler":0,
+			"source":0
+		},
+		{
+			"sampler":0,
 			"source":1
+		},
+		{
+			"sampler":0,
+			"source":2
 		}
 	],
 	"images":[
 		{
 			"mimeType":"image/png",
-			"name":"889lamp_post",
-			"uri":"889lamp_post.png"
+			"name":"526lit_lamp",
+			"uri":"526lit_lamp.png"
 		},
 		{
 			"mimeType":"image/png",
 			"name":"shape198_0",
 			"uri":"shape198_0.png"
+		},
+		{
+			"mimeType":"image/png",
+			"name":"889lamp_post",
+			"uri":"889lamp_post.png"
 		}
 	],
 	"skins":[
@@ -268,7 +296,7 @@
 		{
 			"bufferView":0,
 			"componentType":5126,
-			"count":480,
+			"count":479,
 			"max":[
 				1,
 				7.352185249328613,
@@ -284,19 +312,19 @@
 		{
 			"bufferView":1,
 			"componentType":5126,
-			"count":480,
+			"count":479,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":2,
 			"componentType":5126,
-			"count":480,
+			"count":479,
 			"type":"VEC2"
 		},
 		{
 			"bufferView":3,
 			"componentType":5126,
-			"count":480,
+			"count":479,
 			"type":"VEC4"
 		},
 		{
@@ -490,80 +518,74 @@
 			"componentType":5126,
 			"count":21,
 			"type":"VEC3"
-		},
-		{
-			"bufferView":30,
-			"componentType":5126,
-			"count":21,
-			"type":"VEC4"
-		},
-		{
-			"bufferView":31,
-			"componentType":5126,
-			"count":21,
-			"type":"VEC3"
 		}
 	],
 	"bufferViews":[
 		{
 			"buffer":0,
-			"byteLength":5760,
+			"byteLength":5748,
 			"byteOffset":0,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":5760,
-			"byteOffset":5760,
+			"byteLength":5748,
+			"byteOffset":5748,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":3840,
-			"byteOffset":11520,
+			"byteLength":3832,
+			"byteOffset":11496,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":7680,
-			"byteOffset":15360,
+			"byteLength":7664,
+			"byteOffset":15328,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":1656,
-			"byteOffset":23040,
+			"byteOffset":22992,
 			"target":34963
 		},
 		{
 			"buffer":0,
 			"byteLength":192,
-			"byteOffset":24696,
+			"byteOffset":24648,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":192,
-			"byteOffset":24888,
+			"byteOffset":24840,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":128,
-			"byteOffset":25080,
+			"byteOffset":25032,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":256,
-			"byteOffset":25208,
+			"byteOffset":25160,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":48,
-			"byteOffset":25464,
+			"byteOffset":25416,
 			"target":34963
+		},
+		{
+			"buffer":0,
+			"byteLength":48,
+			"byteOffset":25464,
+			"target":34962
 		},
 		{
 			"buffer":0,
@@ -573,121 +595,105 @@
 		},
 		{
 			"buffer":0,
-			"byteLength":48,
+			"byteLength":32,
 			"byteOffset":25560,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":32,
-			"byteOffset":25608,
-			"target":34962
-		},
-		{
-			"buffer":0,
 			"byteLength":64,
-			"byteOffset":25640,
+			"byteOffset":25592,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":16,
-			"byteOffset":25704,
+			"byteOffset":25656,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":64,
-			"byteOffset":25720,
+			"byteOffset":25672,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":12,
-			"byteOffset":25784,
+			"byteOffset":25736,
 			"target":34963
 		},
 		{
 			"buffer":0,
 			"byteLength":128,
-			"byteOffset":25796
+			"byteOffset":25748
 		},
 		{
 			"buffer":0,
 			"byteLength":576,
-			"byteOffset":25924,
+			"byteOffset":25876,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":576,
-			"byteOffset":26500,
+			"byteOffset":26452,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":384,
-			"byteOffset":27076,
+			"byteOffset":27028,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":768,
-			"byteOffset":27460,
+			"byteOffset":27412,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":192,
-			"byteOffset":28228,
+			"byteOffset":28180,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":768,
-			"byteOffset":28420,
+			"byteOffset":28372,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":120,
-			"byteOffset":29188,
+			"byteOffset":29140,
 			"target":34963
 		},
 		{
 			"buffer":0,
 			"byteLength":84,
-			"byteOffset":29308
+			"byteOffset":29260
 		},
 		{
 			"buffer":0,
 			"byteLength":252,
-			"byteOffset":29392
+			"byteOffset":29344
 		},
 		{
 			"buffer":0,
 			"byteLength":336,
-			"byteOffset":29644
+			"byteOffset":29596
 		},
 		{
 			"buffer":0,
 			"byteLength":252,
-			"byteOffset":29980
+			"byteOffset":29932
 		},
 		{
 			"buffer":0,
 			"byteLength":252,
-			"byteOffset":30232
-		},
-		{
-			"buffer":0,
-			"byteLength":336,
-			"byteOffset":30484
-		},
-		{
-			"buffer":0,
-			"byteLength":252,
-			"byteOffset":30820
+			"byteOffset":30184
 		}
 	],
 	"samplers":[
@@ -698,7 +704,7 @@
 	],
 	"buffers":[
 		{
-			"byteLength":31072,
+			"byteLength":30436,
 			"uri":"lit_lamp_post_889x07.bin"
 		}
 	]

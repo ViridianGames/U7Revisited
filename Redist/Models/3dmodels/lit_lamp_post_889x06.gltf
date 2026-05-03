@@ -1,6 +1,6 @@
 {
 	"asset":{
-		"generator":"Khronos glTF Blender I/O v4.4.55",
+		"generator":"Khronos glTF Blender I/O v5.1.18",
 		"version":"2.0"
 	},
 	"scene":0,
@@ -16,7 +16,7 @@
 	"nodes":[
 		{
 			"mesh":0,
-			"name":"lamp_post_889x06",
+			"name":"lamp_post_526x06",
 			"rotation":[
 				0,
 				0.7071068286895752,
@@ -121,20 +121,21 @@
 				{
 					"input":25,
 					"interpolation":"LINEAR",
-					"output":30
+					"output":27
 				},
 				{
 					"input":25,
 					"interpolation":"LINEAR",
-					"output":31
+					"output":28
 				}
 			]
 		}
 	],
 	"materials":[
 		{
+			"alphaMode":"BLEND",
 			"doubleSided":true,
-			"name":"Material.001",
+			"name":"lit",
 			"pbrMetallicRoughness":{
 				"baseColorTexture":{
 					"index":0
@@ -149,11 +150,14 @@
 			"name":"glass",
 			"pbrMetallicRoughness":{
 				"baseColorFactor":[
-					0.19056212902069092,
-					0.365405410528183,
-					0.8573880791664124,
+					1,
+					1,
+					1,
 					0.37272727489471436
 				],
+				"baseColorTexture":{
+					"index":1
+				},
 				"metallicFactor":0,
 				"roughnessFactor":0.5
 			}
@@ -164,7 +168,18 @@
 			"name":"Material",
 			"pbrMetallicRoughness":{
 				"baseColorTexture":{
-					"index":1
+					"index":2
+				},
+				"metallicFactor":0,
+				"roughnessFactor":0.5
+			}
+		},
+		{
+			"doubleSided":true,
+			"name":"Material.001",
+			"pbrMetallicRoughness":{
+				"baseColorTexture":{
+					"index":3
 				},
 				"metallicFactor":0,
 				"roughnessFactor":0.5
@@ -173,7 +188,7 @@
 	],
 	"meshes":[
 		{
-			"name":"Cylinder.005",
+			"name":"Cylinder.013",
 			"primitives":[
 				{
 					"attributes":{
@@ -227,7 +242,7 @@
 						"WEIGHTS_0":23
 					},
 					"indices":24,
-					"material":0
+					"material":3
 				}
 			]
 		}
@@ -239,19 +254,32 @@
 		},
 		{
 			"sampler":0,
+			"source":0
+		},
+		{
+			"sampler":0,
 			"source":1
+		},
+		{
+			"sampler":0,
+			"source":2
 		}
 	],
 	"images":[
 		{
 			"mimeType":"image/png",
-			"name":"889lamp_post",
-			"uri":"889lamp_post.png"
+			"name":"526lit_lamp",
+			"uri":"526lit_lamp.png"
 		},
 		{
 			"mimeType":"image/png",
 			"name":"shape198_0",
 			"uri":"shape198_0.png"
+		},
+		{
+			"mimeType":"image/png",
+			"name":"889lamp_post",
+			"uri":"889lamp_post.png"
 		}
 	],
 	"skins":[
@@ -490,18 +518,6 @@
 			"componentType":5126,
 			"count":21,
 			"type":"VEC3"
-		},
-		{
-			"bufferView":30,
-			"componentType":5126,
-			"count":21,
-			"type":"VEC4"
-		},
-		{
-			"bufferView":31,
-			"componentType":5126,
-			"count":21,
-			"type":"VEC3"
 		}
 	],
 	"bufferViews":[
@@ -678,16 +694,6 @@
 			"buffer":0,
 			"byteLength":252,
 			"byteOffset":29656
-		},
-		{
-			"buffer":0,
-			"byteLength":336,
-			"byteOffset":29908
-		},
-		{
-			"buffer":0,
-			"byteLength":252,
-			"byteOffset":30244
 		}
 	],
 	"samplers":[
@@ -698,7 +704,7 @@
 	],
 	"buffers":[
 		{
-			"byteLength":30496,
+			"byteLength":29908,
 			"uri":"lit_lamp_post_889x06.bin"
 		}
 	]
