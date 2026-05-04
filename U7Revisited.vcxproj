@@ -404,6 +404,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClCompile Include="Source\Geist\Gui.cpp" />
     <ClCompile Include="Source\Geist\GuiElements.cpp" />
     <ClCompile Include="Source\Geist\GuiManager.cpp" />
+    <ClCompile Include="Source\Geist\InputSystem.cpp" />
     <ClCompile Include="Source\Geist\IO.cpp" />
     <ClCompile Include="Source\Geist\Logging.cpp" />
     <ClCompile Include="Source\Geist\ParticleSystem.cpp" />
@@ -427,6 +428,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClCompile Include="Source\NpcListWindow.cpp" />
     <ClCompile Include="Source\OptionsState.cpp" />
     <ClCompile Include="Source\PathfindingSystem.cpp" />
+    <ClCompile Include="Source\PatreonVillageState.cpp" />
     <ClCompile Include="Source\ScriptRenameState.cpp" />
     <ClCompile Include="Source\ShapeData.cpp" />
     <ClCompile Include="Source\ShapeEditorState.cpp" />
@@ -491,6 +493,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClInclude Include="Source\Geist\Gui.h" />
     <ClInclude Include="Source\Geist\GuiElements.h" />
     <ClInclude Include="Source\Geist\GuiManager.h" />
+    <ClInclude Include="Source\Geist\InputSystem.h" />
     <ClInclude Include="Source\Geist\IO.h" />
     <ClInclude Include="Source\Geist\Logging.h" />
     <ClInclude Include="Source\Geist\Object.h" />
@@ -515,6 +518,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClInclude Include="Source\NpcListWindow.h" />
     <ClInclude Include="Source\OptionsState.h" />
     <ClInclude Include="Source\PathfindingSystem.h" />
+    <ClInclude Include="Source\PatreonVillageState.h" />
     <ClInclude Include="Source\ScriptRenameState.h" />
     <ClInclude Include="Source\ShapeData.h" />
     <ClInclude Include="Source\ShapeEditorState.h" />

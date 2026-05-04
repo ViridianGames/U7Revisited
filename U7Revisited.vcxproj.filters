@@ -247,6 +247,12 @@
     <ClCompile Include="Source\PathfindingSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Geist\InputSystem.cpp">
+      <Filter>Geist</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\PatreonVillageState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Source\u7revisited.rc">
@@ -506,6 +512,12 @@
       <Filter>Geist</Filter>
     </ClInclude>
     <ClInclude Include="Source\PathfindingSystem.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Geist\InputSystem.h">
+      <Filter>Geist</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\PatreonVillageState.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
