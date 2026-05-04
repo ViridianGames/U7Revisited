@@ -529,7 +529,7 @@ void MainState::HandleGameKeys()
 		AddConsoleString("Time skipped to " + std::to_string(g_hour) + ":00");
 	}
 
-	if (IsKeyPressed(KEY_PAGE_UP))
+	if (IsKeyPressed(KEY_PAGE_UP) && m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX)
 	{
 		if (m_heightCutoff == 0.0f)
 		{
@@ -549,7 +549,7 @@ void MainState::HandleGameKeys()
 		}
 	}
 
-	if (IsKeyPressed(KEY_PAGE_DOWN))
+	if (IsKeyPressed(KEY_PAGE_DOWN) && m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX)
 	{
 		if (m_heightCutoff == 16.0f)
 		{

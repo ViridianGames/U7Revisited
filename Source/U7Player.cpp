@@ -17,10 +17,10 @@ using namespace std;
 U7Player::U7Player()
 {
 	m_PartyMemberNames.clear(); // Initialize with -1 (no party members)
-	m_isMale = true;
+	m_isMale = false;
 	if (m_isMale)
 	{
-		m_PlayerName = "Victor";
+		m_PlayerName = "Victoria";
 	}
 	else
 	{

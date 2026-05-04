@@ -1072,7 +1072,7 @@ static int LuaBarkNPC(lua_State *L)
 // Opcode 005A
 static int LuaIsAvatarFemale(lua_State *L)
 {
-    if (g_LuaDebug) NPCDebugPrint("LUA: is_avatar_female called");
+    if (g_LuaDebug) NPCDebugPrint("LUA: is_player_female called");
     bool is_female = !g_Player->GetIsMale();
     lua_pushboolean(L, is_female);
     return 1;

@@ -43,7 +43,7 @@ void AskState::OnEnter()
 	m_releaseFrameCount = 0;
 
 	// Disable input until mouse is released (prevents instant close from triggering click)
-	//m_gui.SetAcceptingInput(false);
+	m_gui.SetAcceptingInput(false);
 }
 
 void AskState::OnExit()
@@ -107,18 +107,24 @@ void AskState::Update()
 {
 	// Wait for mouse button to be released before accepting any input
 	// We wait until we see the button is NOT down (meaning it was released)
-	// Also accept if the button is simply not down anymore
-	// if (g_InputSystem->WasLButtonClicked())
-	// {
-	// 	// Wait one more frame to be sure
-	// 	m_releaseFrameCount++;
-	// 	if (m_releaseFrameCount > 1)
-	// 	{
-	// 		m_waitingForMouseRelease = false;
-	// 		m_gui.SetAcceptingInput(true);
-	// 		Log("AskState::Update - Mouse released, now accepting input");
-	// 	}
-	// }
+	if (m_waitingForMouseRelease)
+	{
+		// Check if button is released (IsMouseButtonReleased is more reliable than checking IsMouseButtonDown)
+		// Also accept if the button is simply not down anymore
+		if (IsMouseButtonReleased(MOUSE_LEFT_BUTTON) || !IsMouseButtonDown(MOUSE_LEFT_BUTTON))
+		{
+			// Wait one more frame to be sure
+			m_releaseFrameCount++;
+			if (m_releaseFrameCount > 1)
+			{
+				m_waitingForMouseRelease = false;
+				m_gui.SetAcceptingInput(true);
+				Log("AskState::Update - Mouse released, now accepting input");
+			}
+		}
+		// Do NOT call Update() while waiting - skip all input processing
+		return;
+	}
 
 	m_gui.Update();
 
@@ -132,7 +138,16 @@ void AskState::Update()
 	// Handle YES button click
 	if (m_gui.m_ActiveElement == m_yesButtonId)
 	{
-		g_Engine->m_Done = true;
+		Log("AskState::Update - YES button clicked");
+
+		// Call the callback if one is set
+		if (m_yesCallback)
+		{
+			m_yesCallback();
+		}
+
+		// Pop the state to close the dialog
+		g_StateMachine->PopState();
 	}
 }
 

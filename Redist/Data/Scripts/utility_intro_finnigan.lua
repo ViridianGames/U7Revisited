@@ -5,6 +5,7 @@ function utility_intro_finnigan()
     debug_print("Started Finnigan's conversation")
     set_flag(20, true)
     player_name = get_player_name()
+    player_female = is_player_female()
     start_conversation()
     switch_talk_to(12)
     add_dialogue("You see a middle-aged nobleman.")
@@ -13,10 +14,10 @@ function utility_intro_finnigan()
     second_speaker(1, 0,
         "\"Why, this is the Avatar!\" Iolo proudly proclaims. \"Canst thou believe it? May I introduce thee? This is Finnigan, the Town Mayor. And this is " ..
         player_name .. ", the Avatar!\"")
-    if is_player_female then
-        second_speaker(1, 0, "\"I simply cannot believe he is here!\"")
-    else
+    if player_female then
         second_speaker(1, 0, "\"I simply cannot believe she is here!\"")
+    else
+        second_speaker(1, 0, "\"I simply cannot believe he is here!\"")
     end
     add_dialogue("The Mayor looks you up and down, not sure if he believes Iolo or not. He looks at Iolo skeptically.")
     second_speaker(1, 0, "\"I swear to thee, it is the Avatar!\"")
