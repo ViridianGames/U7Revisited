@@ -450,7 +450,7 @@ void MainState::HandleEscapeKey()
 void MainState::HandleDebugKeys()
 {
 	if (IsKeyPressed(KEY_F1))
-		g_StateMachine->MakeStateTransition(STATE_SHAPEEDITORSTATE);
+		g_StateMachine->PushState(STATE_SHAPEEDITORSTATE, false);
 
 	if (IsKeyPressed(KEY_F5))
 		g_isCameraLockedToAvatar = !g_isCameraLockedToAvatar;
@@ -1844,7 +1844,12 @@ void MainState::Draw()
 	// Draw pathfinding debug overlay (tile-level - shows objects)
 	if (m_showPathfindingDebug)
 	{
-		g_pathfindingSystem->m_pathfindingGrid->DrawDebugOverlayTileLevel();
+		float lowerBound = 0.0f;
+		if (m_heightCutoff == 4.0f) lowerBound = 0.0f;
+		else if (m_heightCutoff == 10.0f) lowerBound = 4.0f;
+		else if (m_heightCutoff == 16.0f) lowerBound = 10.0f;
+
+		g_pathfindingSystem->m_pathfindingGrid->DrawDebugOverlayTileLevel(lowerBound, m_heightCutoff);
 	}
 
 	// Draw NPC paths as blue highlight tiles for NPCs with active waypoints
@@ -2130,7 +2135,7 @@ void MainState::SetupGame()
 	}
 
 	// Load optional configs
-	//LoadSpellData();
+	LoadSpellData();
 	LoadEquipmentSlotsConfig();
 }
 

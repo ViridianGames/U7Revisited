@@ -52,10 +52,10 @@ public:
 	~PathfindingGrid();
 
 	// Query walkability
-	bool IsPositionWalkable(int worldX, int worldZ) const;  // Check if tile is walkable
+	bool IsPositionWalkable(int worldX, int worldZ, float agentBaseY) const;  // Check if tile is walkable
 
 	// Debug visualization
-	void DrawDebugOverlayTileLevel();                     // Tile-level visualization (3D with cost cubes)
+	void DrawDebugOverlayTileLevel(float lowerY, float upperY);                  // Tile-level visualization (3D with cost cubes)
 	void DebugPrintTileInfo(int worldX, int worldZ);      // Print why a tile is blocked
 
 	// Helper: Get all objects that overlap a tile (used by pathfinding and door opening)
@@ -76,7 +76,7 @@ public:
 
 private:
 	// Helper: Check if specific tile is walkable
-	bool CheckTileWalkable(int worldX, int worldZ) const;
+	bool CheckTileWalkable(int worldX, int worldZ, float agentBaseY) const;
 
 	// Cache for debug visualization
 	struct TileWithCost {
@@ -192,7 +192,7 @@ public:
 
 	std::string GetTerrainName(int shapeID) const { return m_aStar->GetTerrainName(shapeID); }
 
-	bool IsPositionWalkable(int worldX, int worldZ) const { return m_pathfindingGrid->IsPositionWalkable(worldX, worldZ); }
+	bool IsPositionWalkable(int worldX, int worldZ, float agentBaseY) const { return m_pathfindingGrid->IsPositionWalkable(worldX, worldZ, agentBaseY); }
 
 	float GetMovementCost(int worldX, int worldZ) { return m_aStar->GetMovementCost(worldX, worldZ, m_pathfindingGrid.get());}
 
@@ -222,6 +222,10 @@ public:
 	//  Since this looks both at the terrain and the objects, it needs to be called
 	//  after all loading is finished.
 	void PopulateChunkPathfindingGrid();
+
+	// Utility: determine whether a shape id represents a walkable surface (stairs/floors/bridges/etc.)
+	// Implemented inline below to keep header-only convenience for callers like U7Player.cpp.
+	static bool IsWalkableSurface(int shapeID);
 };
 
 #endif

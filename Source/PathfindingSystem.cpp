@@ -23,10 +23,10 @@ PathfindingGrid::~PathfindingGrid()
 {
 }
 
-bool PathfindingGrid::IsPositionWalkable(int worldX, int worldZ) const
+bool PathfindingGrid::IsPositionWalkable(int worldX, int worldZ, float agentBaseY) const
 {
-	// Tile-level check
-	return CheckTileWalkable(worldX, worldZ);
+	// Tile-level check using agent-specific base Y
+	return CheckTileWalkable(worldX, worldZ, agentBaseY);
 }
 
 std::vector<PathfindingGrid::OverlappingObject> PathfindingGrid::GetOverlappingObjects(int worldX, int worldZ) const
@@ -55,18 +55,42 @@ std::vector<PathfindingGrid::OverlappingObject> PathfindingGrid::GetOverlappingO
 				if (obj->m_isContained)
 					continue;
 
-				// Skip eggs entirely for pathfinding (eggs are triggers only)
 				if (obj->m_isEgg)
 					continue;
+
+				if (obj->m_shapeData->GetShape() == 257)//fortress gateway top
+					continue;
+
+				if (obj->m_shapeData->GetShape() == 292)//seat
+					continue;
+
+				if (obj->m_shapeData->GetShape() == 368)//floor
+					continue;
+
+				if (obj->m_shapeData->GetShape() == 607)//path
+					continue;
+
+				if (obj->m_shapeData->GetShape() == 678)//curtain
+					continue;
+
+				if (obj->m_shapeData->GetShape() == 657)//curtain
+					continue;
+
+				if (obj->m_shapeData->GetShape() == 873)//chair
+					continue;
+
+				if (obj->m_shapeData->GetShape() == 897)//seat
+					continue;
+
 
 				// Use object's world-space bounding box to determine tile overlap.
 				const BoundingBox& bbox = obj->m_boundingBox;
 
 				// Convert bbox to tile extents (floor to include partial coverage)
 				int minTileX = (int)floor(bbox.min.x);
-				int maxTileX = (int)floor(bbox.max.x);
+				int maxTileX = (int)floor(bbox.max.x - 1);
 				int minTileZ = (int)floor(bbox.min.z);
-				int maxTileZ = (int)floor(bbox.max.z);
+				int maxTileZ = (int)floor(bbox.max.z - 1);
 
 				// Skip if this object's bbox doesn't cover requested tile
 				if (worldX < minTileX || worldX > maxTileX || worldZ < minTileZ || worldZ > maxTileZ)
@@ -87,59 +111,74 @@ std::vector<PathfindingGrid::OverlappingObject> PathfindingGrid::GetOverlappingO
 }
 
 // Helper: Check if a shape ID is a walkable surface (floors, bridges, stairs)
-static bool IsWalkableSurface(int shapeID)
+inline bool PathfindingSystem::IsWalkableSurface(int shapeID)
 {
 	// Bridge/floor pieces: 367-370
-	if (shapeID >= 367 && shapeID <= 370)
+	if (shapeID >= 367 && shapeID <= 370)//floor
 		return true;
 
-	// Additional floor shapes
+	// Additional floor shapes//floor-roof 
 	if (shapeID == 1014)
 		return true;
 
 	// Stairs: 426-430
-	if (shapeID >= 426 && shapeID <= 430)
+	if (shapeID >= 426 && shapeID <= 430)//stairs
 		return true;
 
-	if (shapeID == 150)
+	if (shapeID == 150)//gangplank
 		return true;
 
-	if (shapeID >= 186 && shapeID <= 193)
+	if (shapeID >= 186 && shapeID <= 193)//carpet, rug, floor, fortress
 		return true;
 
-	if (shapeID == 257)
+	if (shapeID == 257)//fortress gateway top
 		return true;
 
-	if (shapeID == 260)
+	if (shapeID == 260)//fortress
 		return true;
 
-	if (shapeID == 263)
+	if (shapeID == 263)//fortress
 		return true;
 
-	if (shapeID == 352)
+	if (shapeID == 352)//fortress
 		return true;
 
-	if (shapeID == 369)
+	if (shapeID == 367)//floor
 		return true;
 
-	if (shapeID == 483)
+	if (shapeID == 369)//floor
 		return true;
 
-	if (shapeID == 657)
+	if (shapeID >= 385 && shapeID <= 387)//stairs
 		return true;
 
-	if (shapeID == 678)
+	if (shapeID == 483)//rug
 		return true;
 
-	if (shapeID == 750)
+	if (shapeID == 607)//path
 		return true;
 
-	if (shapeID == 973 || shapeID == 974)
+	if (shapeID == 657)//curtain
 		return true;
 
-
-	if (shapeID >= 385 && shapeID <= 387)
+	if (shapeID == 678)//curtain
 		return true;
+
+	if (shapeID == 700)//deck
+		return true;
+
+	if (shapeID == 750)//carpet
+		return true;
+
+	if (shapeID == 758)//carpet
+		return true;
+
+	if (shapeID == 870)//drawbridge
+		return true;
+
+	if (shapeID == 973 || shapeID == 974)//stairs
+		return true;
+
 
 	// TODO: Add more walkable surface shape IDs as we discover them
 	// This might include stairs, platforms, etc.
@@ -180,7 +219,7 @@ float PathfindingGrid::GetTileHeight(int worldX, int worldZ) const
 			continue;
 
 		// Check if this is a known walkable surface
-		if (IsWalkableSurface(shapeID))
+		if (PathfindingSystem::IsWalkableSurface(shapeID))
 		{
 			float surfaceHeight = obj->m_Pos.y + obj->m_objectData->m_height;
 
@@ -200,13 +239,13 @@ float PathfindingGrid::GetTileHeight(int worldX, int worldZ) const
 	return 0.0f;
 }
 
-bool PathfindingGrid::CheckTileWalkable(int worldX, int worldZ) const
+bool PathfindingGrid::CheckTileWalkable(int worldX, int worldZ, float agentBaseY) const
 {
 	// Protect against calling before world data exists
 	if (g_World.empty() || g_World.size() == 0)
 		return false;
 
-	// Bounds check against actual world arrays (avoids dereferencing empty vectors)
+	// Bounds check against actual world arrays
 	if (worldZ < 0 || worldZ >= (int)g_World.size())
 		return false;
 	if (g_World[worldZ].empty() || worldX < 0 || worldX >= (int)g_World[worldZ].size())
@@ -240,6 +279,8 @@ bool PathfindingGrid::CheckTileWalkable(int worldX, int worldZ) const
 	for (const auto& ovObj : overlappingObjects)
 	{
 		U7Object* obj = ovObj.obj;
+		if (!obj || !obj->m_objectData)
+			continue;
 
 		// Special case for doors: Check if this is the door's hinge tile (base position)
 		// The hinge tile is ALWAYS non-walkable
@@ -266,45 +307,38 @@ bool PathfindingGrid::CheckTileWalkable(int worldX, int worldZ) const
 			continue;
 
 		// Check if this is a walkable surface (floor, bridge, stairs)
-		if (obj->m_shapeData)
+		if (obj->m_shapeData && obj->m_objectData)
 		{
-			int shapeID = obj->m_shapeData->GetShape();
+			int objShapeID = obj->m_shapeData->GetShape();
 
-			// DEBUG: Log all floor shapes
-			if (shapeID >= 367 && shapeID <= 370)
+			// Compare surface top with agent base Y and MAX_CLIMBABLE_HEIGHT:
+			// if surface is above what the agent can reach, this tile is not walkable for that agent.
+			float surfaceTop = obj->m_Pos.y + obj->m_objectData->m_height;
+
+			// If this shape is a "walkable surface" but the top is too high for this agent, block it.
+			if (PathfindingSystem::IsWalkableSurface(objShapeID) && (surfaceTop - agentBaseY) > MAX_CLIMBABLE_HEIGHT)
 			{
-				std::stringstream ss;
-				ss << "CheckTileWalkable(" << worldX << "," << worldZ << "): Found floor shape "
-					<< shapeID << ", y=" << obj->m_Pos.y << ", IsWalkableSurface=" << (IsWalkableSurface(shapeID) ? 1 : 0);
-				//NPCDebugPrint(ss.str());
+				// Treat as blocked for this agent
+				return false;
 			}
 
-			if (IsWalkableSurface(shapeID))
+			// Existing logic: if it's a known walkable surface at reasonable height, allow tile
+			if (PathfindingSystem::IsWalkableSurface(objShapeID))
 			{
 				// Skip very high walkable surfaces (upper floors)
 				if (obj->m_Pos.y >= MAX_WALKABLE_SURFACE_HEIGHT)
 					continue;
 
-				// This is a known walkable surface - clear terrain blocking and allow tile
-				std::stringstream ss;
-				ss << "  -> Allowing tile (" << worldX << "," << worldZ << ") with floor shape " << shapeID;
-				//NPCDebugPrint(ss.str());
 				terrainBlocks = false;  // Clear any terrain blocking below this walkable surface
 				continue;
 			}
 		}
-
-		//if (obj->m_Pos.y > MAX_CLIMBABLE_HEIGHT)
-		//{
-		//	return false;
-		//}
 
 		// Skip very high objects (upper floors)
 		if (obj->m_Pos.y >= MAX_WALKABLE_SURFACE_HEIGHT)
 			continue;
 
 		// Any other ground-level blocking object blocks the tile
-		// (Height difference validation happens later in A* neighbor checking)
 		return false;
 	}
 
@@ -315,7 +349,7 @@ bool PathfindingGrid::CheckTileWalkable(int worldX, int worldZ) const
 	return true;  // Nothing blocks this position
 }
 
-void PathfindingGrid::DrawDebugOverlayTileLevel()
+void PathfindingGrid::DrawDebugOverlayTileLevel(float lowerY, float upperY)
 {
 	// Draw tile-level walkability using batched meshes (2 draw calls total!)
 	extern Camera g_camera;
@@ -346,57 +380,57 @@ void PathfindingGrid::DrawDebugOverlayTileLevel()
 				if (worldX < 0 || worldX >= 3072 || worldZ < 0 || worldZ >= 3072)
 					continue;
 
-				// Check if this specific tile is walkable
-				bool walkable = CheckTileWalkable(worldX, worldZ);
+				// Always query all walkable surface heights for debug visualization.
+				auto heights = GetWalkableSurfaceHeights(worldX, worldZ);
 
-				if (walkable)
+				// If no surfaces found, treat as ground only (and potentially blocked)
+				if (heights.empty())
+					heights.push_back(0.0f);
+
+				// If the tile only has ground (0.0) and tile is not considered walkable,
+				// mark as blocked (red). Otherwise draw every surface level returned.
+				bool onlyGround = (heights.size() == 1 && fabs(heights[0]) < 0.0001f);
+				bool tileIsWalkable = true;
+				if (onlyGround)
 				{
-					// Get tile height for walkable tiles only
-					float tileHeight = GetTileHeight(worldX, worldZ);
-					float displayHeight = tileHeight + 0.1f;  // Slightly above surface to avoid z-fighting
-
-					float cost = g_pathfindingSystem->m_aStar ? g_pathfindingSystem->m_aStar->GetMovementCost(worldX, worldZ, this) : 1.0f;
-					// Check if on object to get actual movement cost
-					if (tileHeight > 0.1f)
-						cost = CLIMB_MOVEMENT_COST;  // Override with climbing cost
-
-					// Get all surface layers for this tile
-					auto heights = GetWalkableSurfaceHeights(worldX, worldZ);
-
-					// If no heights, ground only
-					if (heights.empty())
-						heights.push_back(0.0f);
-
-					for (float h : heights)
-					{
-						float displayHeight = h + 0.05f;
-
-						TileWithCost t;
-						t.pos = { (float)worldX, displayHeight, (float)worldZ };
-						t.cost = g_pathfindingSystem->m_aStar ? g_pathfindingSystem->m_aStar->GetMovementCost(worldX, worldZ, this) : 1.0f;
-
-						// If this layer is an object surface, mark cost as climb cost
-						if (h > 0.1f)
-							t.cost = CLIMB_MOVEMENT_COST;
-
-						// Check debug markers
-						bool visited = false;
-						bool onPath = false;
-						if (g_pathfindingSystem && g_pathfindingSystem->m_aStar)
-						{
-							visited = g_pathfindingSystem->m_aStar->IsNodeVisited(worldX, worldZ, h);
-							onPath = g_pathfindingSystem->m_aStar->IsNodeOnFinalPath(worldX, worldZ, h);
-						}
-						t.visited = visited;
-						t.onPath = onPath;
-
-						m_cachedGreenTiles.push_back(t);
-					}
+					// Use the existing conservative tile check for determining blocked ground tiles.
+					tileIsWalkable = CheckTileWalkable(worldX, worldZ, 0.0f);
 				}
-				else
+
+				if (!tileIsWalkable)
 				{
 					// Blocked tiles always at ground level
 					m_cachedRedTiles.push_back({ (float)worldX, 0.1f, (float)worldZ });
+					continue;
+				}
+
+				// For walkable tiles: draw every surface height returned by GetWalkableSurfaceHeights,
+				// including high/upper floors so debug shows all walkable levels.
+				for (float h : heights)
+				{
+					float displayHeight = h + 0.05f;
+
+					TileWithCost t;
+					t.pos = { (float)worldX, displayHeight, (float)worldZ };
+
+					// If this layer represents a climbable surface, set climb cost.
+					if (h > 0.1f)
+						t.cost = CLIMB_MOVEMENT_COST;
+					else
+						t.cost = g_pathfindingSystem->m_aStar ? g_pathfindingSystem->m_aStar->GetMovementCost(worldX, worldZ, this) : 1.0f;
+
+					// Debug markers: visited / on final path at this exact surface height.
+					bool visited = false;
+					bool onPath = false;
+					if (g_pathfindingSystem && g_pathfindingSystem->m_aStar)
+					{
+						visited = g_pathfindingSystem->m_aStar->IsNodeVisited(worldX, worldZ, h);
+						onPath = g_pathfindingSystem->m_aStar->IsNodeOnFinalPath(worldX, worldZ, h);
+					}
+					t.visited = visited;
+					t.onPath = onPath;
+
+					m_cachedGreenTiles.push_back(t);
 				}
 			}
 		}
@@ -408,8 +442,13 @@ void PathfindingGrid::DrawDebugOverlayTileLevel()
 
 	// Draw all green tiles with color-coded costs (using cached data)
 	rlBegin(RL_TRIANGLES);
+	
+	float floorThreshold = 0.5f; // Allow for float imprecision
+
 	for (const auto& tile : m_cachedGreenTiles)
 	{
+		if (tile.pos.y < lowerY || tile.pos.y >= upperY)
+			continue;
 		Color costColor;
 		if (tile.onPath)
 		{
@@ -454,14 +493,16 @@ void PathfindingGrid::DrawDebugOverlayTileLevel()
 		rlVertex3f(v4.x, v4.y, v4.z);
 	}
 	rlEnd();
-
+	
 	// Draw all red tiles in one call (using cached data)
 	rlBegin(RL_TRIANGLES);
 	rlColor4ub(255, 0, 0, 128);  // Red, semi-transparent
 	for (const auto& pos : m_cachedRedTiles)
 	{
+		if (pos.y < lowerY || pos.y >= upperY)
+			continue;
 		// Two triangles forming a 1x1 quad
-		Vector3 v1 = { pos.x, pos.y, pos.z };
+		Vector3 v1 = { pos.x, pos.y,pos.z };
 		Vector3 v2 = { pos.x + 1.0f, pos.y, pos.z };
 		Vector3 v3 = { pos.x + 1.0f, pos.y, pos.z + 1.0f };
 		Vector3 v4 = { pos.x, pos.y, pos.z + 1.0f };
@@ -544,7 +585,7 @@ void PathfindingGrid::DebugPrintTileInfo(int worldX, int worldZ)
 	}
 
 	// Final verdict
-	bool walkable = CheckTileWalkable(worldX, worldZ);
+	bool walkable = CheckTileWalkable(worldX, worldZ, 0.0f);
 	AddConsoleString("RESULT: " + std::string(walkable ? "WALKABLE" : "BLOCKED"));
 	NPCDebugPrint("Tile (" + std::to_string(worldX) + "," + std::to_string(worldZ) + "): RESULT: " + std::string(walkable ? "WALKABLE" : "BLOCKED"));
 }
@@ -570,7 +611,7 @@ std::vector<float> PathfindingGrid::GetWalkableSurfaceHeights(int worldX, int wo
 			continue;
 
 		int shapeID = obj->m_shapeData->GetShape();
-		if (!IsWalkableSurface(shapeID))
+		if (!PathfindingSystem::IsWalkableSurface(shapeID))
 			continue;
 
 		// Compute surface top height
@@ -828,7 +869,7 @@ std::vector<Vector3> AStar::FindPath(Vector3 start, Vector3 goal, PathfindingGri
 	std::unordered_map<int, bool> walkableCache;
 	std::unordered_map<int, std::vector<float>> heightsCache;
 
-	const int maxNodesToExplore = 30000;
+	const int maxNodesToExplore = 500;
 	std::vector<PathNode> nodePool;
 	nodePool.reserve(maxNodesToExplore * 2); // keep contiguous memory
 
@@ -1179,7 +1220,7 @@ std::vector<Vector3> AStar::FindPath(Vector3 start, Vector3 goal, PathfindingGri
 		{
 			if (nodesExplored >= maxNodesToExplore)
 			{
-				AddConsoleString("  FAILED: Search limit reached (" + std::to_string(maxNodesToExplore) + " nodes)", RED);
+				//AddConsoleString("  FAILED: Search limit reached (" + std::to_string(maxNodesToExplore) + " nodes)", RED);
 			}
 
 			//NPCDebugPrint("NPC Start location " + std::to_string(start.x) + "," + std::to_string(start.z) + " failed to find path to (" + std::to_string(goalX) + "," + std::to_string(goalZ) + ")");
@@ -1261,7 +1302,8 @@ std::vector<int> AStar::GetNeighbors(int nodeIndex, PathfindingGrid* grid, int g
 			bool tileWalkable = false;
 			if (itWalk == walkableCache.end())
 			{
-				tileWalkable = grid->IsPositionWalkable(nx, nz);
+				// PASS the agent's current base Y so the tile check is agent-aware
+				tileWalkable = grid->IsPositionWalkable(nx, nz, currentHeight);
 				walkableCache[tkey] = tileWalkable;
 			}
 			else
@@ -1708,7 +1750,7 @@ void PathfindingSystem::PopulateChunkPathfindingGrid()
 					}
 					else
 					{
-						info.walkable[tx][tz] = m_pathfindingGrid->IsPositionWalkable(wx, wz);
+						info.walkable[tx][tz] = m_pathfindingGrid->IsPositionWalkable(wx, wz, 0.0f);
 					}
 				}
 			}
@@ -1746,7 +1788,7 @@ void PathfindingSystem::PopulateChunkPathfindingGrid()
 						int sampleZ = baseZ + sz + dirOffsets[d][1] * 4;
 						if (sampleX < 0 || sampleX >= 3072 || sampleZ < 0 || sampleZ >= 3072)
 							continue;
-						if (m_pathfindingGrid->IsPositionWalkable(sampleX, sampleZ))
+						if (m_pathfindingGrid->IsPositionWalkable(sampleX, sampleZ, 0.0f))
 							edgeHasWalkable = true;
 					}
 				}
