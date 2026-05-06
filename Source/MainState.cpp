@@ -750,10 +750,10 @@ void MainState::HandleRightDoubleClick()
 			int shapeID = shapeframe & 0x3ff;
 			int frameID = (shapeframe >> 10) & 0x3f;
 			string terrainName = g_pathfindingSystem->GetTerrainName(shapeID);
-			AddConsoleString("=== " + terrainName + " (" + to_string(worldX) + ", " + to_string(worldZ) + ") ===", SKYBLUE);
-			AddConsoleString("  Shape ID: " + to_string(shapeID) + ", Frame: " + to_string(frameID), WHITE);
-			AddConsoleString("  Movement Cost: " + to_string(g_pathfindingSystem->GetMovementCost(worldX, worldZ)), GREEN);
-			AddConsoleString("  Walkable: YES", GREEN);
+			// AddConsoleString("=== " + terrainName + " (" + to_string(worldX) + ", " + to_string(worldZ) + ") ===", SKYBLUE);
+			// AddConsoleString("  Shape ID: " + to_string(shapeID) + ", Frame: " + to_string(frameID), WHITE);
+			// AddConsoleString("  Movement Cost: " + to_string(g_pathfindingSystem->GetMovementCost(worldX, worldZ)), GREEN);
+			// AddConsoleString("  Walkable: YES", GREEN);
 		}
 	}
 }
@@ -911,10 +911,10 @@ void MainState::HandleLeftDoubleClick()
 			int shapeID = shapeframe & 0x3ff;
 			int frameID = (shapeframe >> 10) & 0x3f;
 			string terrainName = g_pathfindingSystem->GetTerrainName(shapeID);
-			AddConsoleString("=== " + terrainName + " (" + to_string(worldX) + ", " + to_string(worldZ) + ") ===", SKYBLUE);
-			AddConsoleString("  Shape ID: " + to_string(shapeID) + ", Frame: " + to_string(frameID), WHITE);
-			AddConsoleString("  Movement Cost: " + to_string(g_pathfindingSystem->GetMovementCost(worldX, worldZ)), GREEN);
-			AddConsoleString("  Walkable: YES", GREEN);
+			// AddConsoleString("=== " + terrainName + " (" + to_string(worldX) + ", " + to_string(worldZ) + ") ===", SKYBLUE);
+			// AddConsoleString("  Shape ID: " + to_string(shapeID) + ", Frame: " + to_string(frameID), WHITE);
+			// AddConsoleString("  Movement Cost: " + to_string(g_pathfindingSystem->GetMovementCost(worldX, worldZ)), GREEN);
+			// AddConsoleString("  Walkable: YES", GREEN);
 		}
 	}
 }
