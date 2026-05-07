@@ -770,8 +770,7 @@ void ShapeEditorState::Update()
 
 	if (IsKeyPressed(KEY_F1) || IsKeyPressed(KEY_ESCAPE))
 	{
-		g_mainState->m_gameMode = MainStateModes::MAIN_STATE_MODE_SANDBOX;
-		g_StateMachine->MakeStateTransition(STATE_MAINSTATE);
+		g_StateMachine->PopState();
 	}
 
 	if (IsKeyPressed(KEY_F2))

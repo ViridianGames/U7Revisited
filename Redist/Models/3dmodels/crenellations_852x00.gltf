@@ -64,7 +64,7 @@
 		{
 			"bufferView":0,
 			"componentType":5126,
-			"count":76,
+			"count":78,
 			"max":[
 				1.0202248096466064,
 				3.021939754486084,
@@ -80,13 +80,13 @@
 		{
 			"bufferView":1,
 			"componentType":5126,
-			"count":76,
+			"count":78,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":2,
 			"componentType":5126,
-			"count":76,
+			"count":78,
 			"type":"VEC2"
 		},
 		{
@@ -99,26 +99,26 @@
 	"bufferViews":[
 		{
 			"buffer":0,
-			"byteLength":912,
+			"byteLength":936,
 			"byteOffset":0,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":912,
-			"byteOffset":912,
+			"byteLength":936,
+			"byteOffset":936,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":608,
-			"byteOffset":1824,
+			"byteLength":624,
+			"byteOffset":1872,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":312,
-			"byteOffset":2432,
+			"byteOffset":2496,
 			"target":34963
 		}
 	],
@@ -130,7 +130,7 @@
 	],
 	"buffers":[
 		{
-			"byteLength":2744,
+			"byteLength":2808,
 			"uri":"crenellations_852x00.bin"
 		}
 	]

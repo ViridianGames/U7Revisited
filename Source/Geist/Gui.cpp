@@ -88,7 +88,7 @@ void Gui::Update()
 		Vector2 mousePos = GetMousePosition();
 
 		// Clamp mouse to screen bounds while dragging by actually moving the cursor
-		if (m_IsDragging)
+		if (m_IsDragging && m_allowDragging)
 		{
 			int screenWidth = GetScreenWidth();
 			int screenHeight = GetScreenHeight();
@@ -117,7 +117,7 @@ void Gui::Update()
 				isValidDragArea = m_DragAreaValidationCallback(mousePos);
 			}
 
-			if (isValidDragArea && g_InputSystem->IsLDragging())
+			if (isValidDragArea && g_InputSystem->IsLDragging() && m_allowDragging)
 			{
 				m_IsDragging = true;
 				m_DragOffset.x = mousePos.x - m_Pos.x;
@@ -130,7 +130,7 @@ void Gui::Update()
 			m_IsDragging = false;
 		}
 
-		if (m_IsDragging && g_InputSystem->IsLButtonDown())
+		if (m_IsDragging && g_InputSystem->IsLButtonDown() && m_allowDragging)
 		{
 			m_Pos.x = mousePos.x - m_DragOffset.x;
 			m_Pos.y = mousePos.y - m_DragOffset.y;

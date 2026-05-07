@@ -1,9 +1,0 @@
-#!/bin/bash
-for file in *; do
-  if [ -f "$file" ]; then
-    newname=$(echo "$file" | tr '[:upper:]' '[:lower:]')
-    if [ "$file" != "$newname" ]; then
-      mv "$file" "$newname"
-    fi
-  fi
-done
