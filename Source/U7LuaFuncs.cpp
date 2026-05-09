@@ -1088,8 +1088,8 @@ static int LuaMove(lua_State *L)
     // In full implementation, would move object with pathfinding
     if (g_Player)
     {
-        Vector3 currentPos = g_Player->GetPlayerPosition();
-        g_Player->SetPlayerPosition({(float)x, currentPos.y, (float)y});
+        Vector3 currentPos = g_Player->GetAvatarObject()->GetPos();
+        g_Player->GetAvatarObject()->SetPos({(float)x, currentPos.y, (float)y});
     }
 
     return 0;
@@ -2671,7 +2671,7 @@ static int LuaFindNearbyAvatar(lua_State *L)
         return 1;  // Return empty table if no player
     }
 
-    Vector3 player_pos = g_Player->GetPlayerPosition();
+    Vector3 player_pos = g_Player->GetAvatarObject()->m_Pos;
     int table_index = 1;
 
     // Search all objects for matches near the avatar

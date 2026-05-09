@@ -10,17 +10,19 @@
 #include <string>
 
 #include <vector>
-#include <sstream>  
+#include <sstream>
+
+#include "ResourceManager.h"
 
 using namespace std;
 
 U7Player::U7Player()
 {
 	m_PartyMemberNames.clear(); // Initialize with -1 (no party members)
-	m_isMale = false;
+	m_isMale = true;
 	if (m_isMale)
 	{
-		m_PlayerName = "Victoria";
+		m_PlayerName = "Victor";
 	}
 	else
 	{
@@ -32,20 +34,12 @@ U7Player::U7Player()
 	m_PartyMemberNames.clear();
 	m_PartyMemberNames.push_back("Avatar");
 
-	m_PlayerPosition = { 0.0f, 0.0f, 0.0f };
-	m_PlayerDirection = { 0.0f, 0.0f, 1.0f }; // Default direction facing forward
-
 	m_selectedPartyMember = 0;
 }
 
 void U7Player::SetAvatarObject(U7Object* obj)
 {
 	m_AvatarObject = obj;
-}
-
-Vector3 U7Player::GetPlayerPosition()
-{
-	return m_AvatarObject->m_Pos;
 }
 
 vector<string>& U7Player::GetPartyMemberNames()
@@ -144,8 +138,8 @@ u7json U7Player::SaveToJson() const
 
 	j["name"] = m_PlayerName;
 	j["isMale"] = m_isMale;
-	j["position"] = { m_PlayerPosition.x, m_PlayerPosition.y, m_PlayerPosition.z };
-	j["direction"] = { m_PlayerDirection.x, m_PlayerDirection.y, m_PlayerDirection.z };
+	j["position"] = { m_AvatarObject->m_Pos.x, m_AvatarObject->m_Pos.y, m_AvatarObject->m_Pos.z };
+	j["direction"] = { m_AvatarObject->m_Direction.x, m_AvatarObject->m_Direction.y, m_AvatarObject->m_Direction.z };
 	j["gold"] = m_Gold;
 	j["str"] = m_str;
 	j["dex"] = m_dex;
@@ -168,16 +162,16 @@ void U7Player::LoadFromJson(const json& j)
 
 	if (j.contains("position") && j["position"].is_array() && j["position"].size() == 3)
 	{
-		m_PlayerPosition.x = j["position"][0];
-		m_PlayerPosition.y = j["position"][1];
-		m_PlayerPosition.z = j["position"][2];
+		m_AvatarObject->m_Pos.x = j["position"][0];
+		m_AvatarObject->m_Pos.y = j["position"][1];
+		m_AvatarObject->m_Pos.z = j["position"][2];
 	}
 
 	if (j.contains("direction") && j["direction"].is_array() && j["direction"].size() == 3)
 	{
-		m_PlayerDirection.x = j["direction"][0];
-		m_PlayerDirection.y = j["direction"][1];
-		m_PlayerDirection.z = j["direction"][2];
+		m_AvatarObject->m_Direction.x = j["direction"][0];
+		m_AvatarObject->m_Direction.y = j["direction"][1];
+		m_AvatarObject->m_Direction.z = j["direction"][2];
 	}
 
 	m_Gold = j.value("gold", 100);
@@ -195,6 +189,17 @@ void U7Player::LoadFromJson(const json& j)
 		m_PartyMemberIDs = j["partyMemberIDs"].get<std::vector<int>>();
 	}
 
+	g_NPCData[0]->m_objectID = j.value("avatarObject", 0);
+	m_AvatarObject = g_objectList[g_NPCData[0]->m_objectID].get();
+
+	if (m_isMale)
+	{
+		SetAvatarMale();
+	}
+	else
+	{
+		SetAvatarFemale();
+	}
 
 }
 
@@ -593,4 +598,164 @@ bool U7Player::TryMove(const Vector3& desiredPos)
     avatar->SetDest(finalDest);
     avatar->m_isMoving = true;
     return true;
+}
+
+void U7Player::SetAvatarMale()
+{
+	m_isMale = true;
+	m_PlayerName = "Victor";
+
+	int shapenum = 721;
+
+						Image image;
+
+					//  South-west
+					m_AvatarObject->m_NPCData->m_walkTextures[0][0] = &g_shapeTable[shapenum][16].m_texture->m_Texture;
+					g_NPCData[0]->m_walkTextures[0][1] = &g_shapeTable[shapenum][17].m_texture->m_Texture;
+
+					//  North-west
+
+					//  Frame 1
+					std::string texturename = to_string(shapenum) + "_NW_0";
+					if(g_ResourceManager->DoesTextureExist(texturename))
+					{
+						g_NPCData[0]->m_walkTextures[1][0] = g_ResourceManager->GetTexture(texturename);
+					}
+					else
+					{
+						image = ImageCopy(g_shapeTable[shapenum][16].m_texture->m_Image);
+						ImageFlipHorizontal(&image);
+						g_ResourceManager->AddTexture(image, texturename);
+						m_AvatarObject->m_NPCData->m_walkTextures[1][0] = g_ResourceManager->GetTexture(texturename);
+					}
+
+					//  Frame 2
+
+					texturename = to_string(shapenum) + "_NW_1";
+					if(g_ResourceManager->DoesTextureExist(texturename))
+					{
+						m_AvatarObject->m_NPCData->m_walkTextures[1][1] = g_ResourceManager->GetTexture(texturename);
+					}
+					else
+					{
+						image = ImageCopy(g_shapeTable[shapenum][17].m_texture->m_Image);
+						ImageFlipHorizontal(&image);
+						g_ResourceManager->AddTexture(image, texturename);
+						m_AvatarObject->m_NPCData->m_walkTextures[1][1] = g_ResourceManager->GetTexture(texturename);
+					}
+
+					//  North-east
+					m_AvatarObject->m_NPCData->m_walkTextures[2][0] = &g_shapeTable[shapenum][0].m_texture->m_Texture;
+					m_AvatarObject->m_NPCData->m_walkTextures[2][1] = &g_shapeTable[shapenum][1].m_texture->m_Texture;
+
+					//  South-east
+
+					//  Frame 1
+					texturename = to_string(shapenum) + "_SE_0";
+					if(g_ResourceManager->DoesTextureExist(texturename))
+					{
+						m_AvatarObject->m_NPCData->m_walkTextures[3][0] = g_ResourceManager->GetTexture(texturename);
+					}
+					else
+					{
+						image = ImageCopy(g_shapeTable[shapenum][1].m_texture->m_Image);
+						ImageFlipHorizontal(&image);
+						g_ResourceManager->AddTexture(image, texturename);
+						m_AvatarObject->m_NPCData->m_walkTextures[3][0] = g_ResourceManager->GetTexture(texturename);
+					}
+
+					//  Frame 2
+
+					texturename = to_string(shapenum) + "_SE_1";
+					if(g_ResourceManager->DoesTextureExist(texturename))
+					{
+						m_AvatarObject->m_NPCData->m_walkTextures[3][1] = g_ResourceManager->GetTexture(texturename);
+					}
+					else
+					{
+						image = ImageCopy(g_shapeTable[shapenum][2].m_texture->m_Image);
+						ImageFlipHorizontal(&image);
+						g_ResourceManager->AddTexture(image, texturename);
+						m_AvatarObject->m_NPCData->m_walkTextures[3][1] = g_ResourceManager->GetTexture(texturename);
+					}
+}
+
+void U7Player::SetAvatarFemale()
+{
+	m_isMale = false;
+	m_PlayerName = "Victoria";
+
+	int shapenum = 989;
+
+						Image image;
+
+					//  South-west
+					m_AvatarObject->m_NPCData->m_walkTextures[0][0] = &g_shapeTable[shapenum][16].m_texture->m_Texture;
+					g_NPCData[0]->m_walkTextures[0][1] = &g_shapeTable[shapenum][17].m_texture->m_Texture;
+
+					//  North-west
+
+					//  Frame 1
+					std::string texturename = to_string(shapenum) + "_NW_0";
+					if(g_ResourceManager->DoesTextureExist(texturename))
+					{
+						g_NPCData[0]->m_walkTextures[1][0] = g_ResourceManager->GetTexture(texturename);
+					}
+					else
+					{
+						image = ImageCopy(g_shapeTable[shapenum][16].m_texture->m_Image);
+						ImageFlipHorizontal(&image);
+						g_ResourceManager->AddTexture(image, texturename);
+						m_AvatarObject->m_NPCData->m_walkTextures[1][0] = g_ResourceManager->GetTexture(texturename);
+					}
+
+					//  Frame 2
+
+					texturename = to_string(shapenum) + "_NW_1";
+					if(g_ResourceManager->DoesTextureExist(texturename))
+					{
+						m_AvatarObject->m_NPCData->m_walkTextures[1][1] = g_ResourceManager->GetTexture(texturename);
+					}
+					else
+					{
+						image = ImageCopy(g_shapeTable[shapenum][17].m_texture->m_Image);
+						ImageFlipHorizontal(&image);
+						g_ResourceManager->AddTexture(image, texturename);
+						m_AvatarObject->m_NPCData->m_walkTextures[1][1] = g_ResourceManager->GetTexture(texturename);
+					}
+
+					//  North-east
+					m_AvatarObject->m_NPCData->m_walkTextures[2][0] = &g_shapeTable[shapenum][0].m_texture->m_Texture;
+					m_AvatarObject->m_NPCData->m_walkTextures[2][1] = &g_shapeTable[shapenum][1].m_texture->m_Texture;
+
+					//  South-east
+
+					//  Frame 1
+					texturename = to_string(shapenum) + "_SE_0";
+					if(g_ResourceManager->DoesTextureExist(texturename))
+					{
+						m_AvatarObject->m_NPCData->m_walkTextures[3][0] = g_ResourceManager->GetTexture(texturename);
+					}
+					else
+					{
+						image = ImageCopy(g_shapeTable[shapenum][1].m_texture->m_Image);
+						ImageFlipHorizontal(&image);
+						g_ResourceManager->AddTexture(image, texturename);
+						m_AvatarObject->m_NPCData->m_walkTextures[3][0] = g_ResourceManager->GetTexture(texturename);
+					}
+
+					//  Frame 2
+
+					texturename = to_string(shapenum) + "_SE_1";
+					if(g_ResourceManager->DoesTextureExist(texturename))
+					{
+						m_AvatarObject->m_NPCData->m_walkTextures[3][1] = g_ResourceManager->GetTexture(texturename);
+					}
+					else
+					{
+						image = ImageCopy(g_shapeTable[shapenum][2].m_texture->m_Image);
+						ImageFlipHorizontal(&image);
+						g_ResourceManager->AddTexture(image, texturename);
+						m_AvatarObject->m_NPCData->m_walkTextures[3][1] = g_ResourceManager->GetTexture(texturename);
+					}
 }

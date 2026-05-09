@@ -834,7 +834,6 @@ void MainState::HandleRightMouseHoldMovement()
 		if (Vector3Length(dir) > 0.0001f)
 		{
 			Vector3 flatDir = Vector3Normalize(dir);
-			g_Player->SetPlayerDirection(flatDir);
 			avatar->m_Direction = flatDir;
 		}
 	}
@@ -1050,7 +1049,6 @@ void MainState::HandleAvatarMovement()
 			Vector3 flatForDir = Vector3Normalize(flatForward);
 			if (Vector3Length(flatForDir) > 0.0001f)
 			{
-				g_Player->SetPlayerDirection(flatForDir);
 				g_Player->GetAvatarObject()->m_Direction = flatForDir;
 			}
 		}

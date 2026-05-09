@@ -33,6 +33,15 @@ enum GUIIDS
    GUI_TITLE_SCREEN_LAST
 };
 
+enum MALEFEMALEIDS
+{
+   GUI_MALEFEMALE_PANEL = 0,
+   GUI_MALEFEMALE_BUTTON_MALE,
+   GUI_MALEFEMALE_BUTTON_FEMALE,
+   GUI_MALEFEMALE_BUTTON_BACK,
+   GUI_MALEFEMALE_SCREEN_LAST = 1000
+};
+
 enum CREDITSIDS
 {
    GUI_CREDITS_PANEL = 0,
@@ -58,6 +67,7 @@ public:
    
    void CreateTitleGUI();
    void CreateCreditsGUI();
+   void CreateMaleFemaleGUI();
    void UpdateTitle();
 
    void FixObjectListForLoading();
@@ -70,6 +80,7 @@ public:
    
    std::shared_ptr<Gui> m_TitleGui;
    std::shared_ptr<Gui> m_CreditsGui;
+   std::shared_ptr<Gui> m_MaleFemaleGui;
 
    float m_LastUpdate;
 
@@ -90,6 +101,8 @@ public:
    bool m_fadingOut = false;
 
    int m_targetState = 0;
+
+
 };
 
 #endif

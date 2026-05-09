@@ -78,6 +78,10 @@ public:
    bool IsRButtonDown() { return m_IsRightButtonDown; }
    bool IsMButtonDown() { return m_IsMiddleButtonDown; }
 
+   bool IsLButtonJustDown() { return m_IsLeftButtonDown && !m_WasLeftButtonDown; }
+   bool IsRButtonJustDown() { return m_IsRightButtonDown && !m_WasRightButtonDown; }
+   bool IsMButtonJustDown() { return m_IsMiddleButtonDown && !m_WasMiddleButtonDown; }
+
    //  These functions handle mouse dragging (that is, pressing a button and then moving the mouse with the button down)
    bool WasDragStartedInRegion(int x, int y, int endx, int endy) { return (m_DownX >= x && m_DownX <= endx) && (m_DownY >= y && m_DownY <= endy); }
 

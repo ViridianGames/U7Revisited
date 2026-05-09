@@ -69,7 +69,7 @@ void GumpManager::Update()
 			m_gumpUnderMouse = topmostGumpUnderMouse;
 
 			// If mouse clicked on this gump, bring it to front (if not already at front)
-			if (g_InputSystem->IsLButtonDown() && !m_draggingObject)
+			if (g_InputSystem->IsLButtonJustDown() && !m_draggingObject && !m_GumpList.begin()->get()->m_gui.m_IsDragging)
 			{
 				gumpToMoveToFront = *it;
 			}
@@ -80,17 +80,11 @@ void GumpManager::Update()
 	// Second pass: Update all gumps, but only let topmost one receive input
 	for (vector<std::shared_ptr<Gump>>::iterator gump = m_GumpList.begin(); gump != m_GumpList.end();)
 	{
-		bool candrag = (*gump)->m_gui.m_IsDragging;
-		if (m_draggingObject) // DON'T allow GUI dragging when dragging an object, it makes a mess.
-		{
-			(*gump)->m_gui.SetAllowDragging(false);
-		}
-
 		// Temporarily disable ALL input (including buttons) for non-topmost gumps
 		// BUT: if a gump is already being dragged, keep it active (for smooth dragging)
 		bool wasActive = (*gump)->m_gui.m_Active;
-		bool isBeingDragged = (*gump)->m_gui.m_IsDragging;
-		if (topmostGumpUnderMouse != nullptr && (*gump).get() != topmostGumpUnderMouse && !isBeingDragged)
+		//bool isBeingDragged = (*gump)->m_gui.m_IsDragging;
+		if ((topmostGumpUnderMouse != nullptr && (*gump).get() != topmostGumpUnderMouse) || m_draggingObject)
 		{
 			(*gump)->m_gui.m_Active = false;
 		}
@@ -99,12 +93,6 @@ void GumpManager::Update()
 
 		// Restore active state
 		(*gump)->m_gui.m_Active = wasActive;
-
-		if (m_draggingObject) // DON'T allow GUI dragging when dragging an object, it makes a mess.
-		{
-			(*gump)->m_gui.SetAllowDragging(candrag);
-		}
-
 
 		if ((*gump).get()->GetIsDead())
 		{

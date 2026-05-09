@@ -33,6 +33,7 @@ void TitleState::Init(const string& configfile)
 {
 	CreateTitleGUI();
 	CreateCreditsGUI();
+	CreateMaleFemaleGUI();
 	m_title = g_ResourceManager->GetTexture("Images/title.png");
 	m_mouseMoved = false;
 }
@@ -183,6 +184,7 @@ void TitleState::Draw()
 	{
 		m_TitleGui->Draw();
 		m_CreditsGui->Draw();
+		m_MaleFemaleGui->Draw();
 	}
 
 	//  Draw any tooltips
@@ -394,6 +396,7 @@ void TitleState::UpdateTitle()
 {
 	m_TitleGui->Update();
 	m_CreditsGui->Update();
+	m_MaleFemaleGui->Update();
 
 	if (m_fadingOut && int(m_currentFadeAlpha) > 250) // Fully faded
 	{
@@ -413,14 +416,8 @@ void TitleState::UpdateTitle()
 
 	if (m_TitleGui->m_ActiveElement == GUI_TITLE_BUTTON_START_TRINSIC_DEMO)
 	{
-		if (m_fadeState != FadeState::FADE_OUT)
-		{
-			m_fadingOut = true;
-			FadeOut(1.5);
-			dynamic_cast<MainState*>(g_StateMachine->GetState(STATE_MAINSTATE))->m_gameMode = MainStateModes::MAIN_STATE_MODE_TRINSIC_DEMO;
-			m_TitleGui->m_AcceptingInput = false;
-			m_targetState = STATE_MAINSTATE;
-		}
+		m_TitleGui->m_Active = false;
+		m_MaleFemaleGui->m_Active = true;
 	}
 
 	if (m_TitleGui->m_ActiveElement == GUI_TITLE_BUTTON_LOAD_TRINSIC_DEMO)
@@ -461,6 +458,41 @@ void TitleState::UpdateTitle()
 		m_TitleGui->m_Active = true;
 		m_CreditsGui->m_Active = false;
 		m_CreditsGui->m_ActiveElement = -1;
+	}
+
+	if (m_MaleFemaleGui->m_ActiveElement == GUI_MALEFEMALE_BUTTON_MALE)
+	{
+		g_Player->SetAvatarMale();
+		if (m_fadeState != FadeState::FADE_OUT)
+		{
+			m_fadingOut = true;
+			FadeOut(1.5);
+			dynamic_cast<MainState*>(g_StateMachine->GetState(STATE_MAINSTATE))->m_gameMode = MainStateModes::MAIN_STATE_MODE_TRINSIC_DEMO;
+			m_TitleGui->m_AcceptingInput = false;
+			m_MaleFemaleGui->m_AcceptingInput = false;
+			m_targetState = STATE_MAINSTATE;
+		}
+	}
+
+	if (m_MaleFemaleGui->m_ActiveElement == GUI_MALEFEMALE_BUTTON_FEMALE)
+	{
+		g_Player->SetAvatarFemale();
+		if (m_fadeState != FadeState::FADE_OUT)
+		{
+			m_fadingOut = true;
+			FadeOut(1.5);
+			dynamic_cast<MainState*>(g_StateMachine->GetState(STATE_MAINSTATE))->m_gameMode = MainStateModes::MAIN_STATE_MODE_TRINSIC_DEMO;
+			m_TitleGui->m_AcceptingInput = false;
+			m_MaleFemaleGui->m_AcceptingInput = false;
+			m_targetState = STATE_MAINSTATE;
+		}
+	}
+
+	if (m_MaleFemaleGui->m_ActiveElement == GUI_MALEFEMALE_BUTTON_BACK)
+	{
+		m_TitleGui->m_Active = true;
+		 m_MaleFemaleGui->m_Active = false;
+		 m_MaleFemaleGui->m_ActiveElement = -1;
 	}
 
 	if (m_TitleGui->m_ActiveElement == GUI_TITLE_BUTTON_CREDITS)
@@ -559,4 +591,37 @@ void TitleState::TestUpdate()
 void TitleState::TestDraw()
 {
 	DrawTexture(g_shapeTable[150][0].m_texture->m_Texture, 0, 0, WHITE);
+}
+
+void TitleState::CreateMaleFemaleGUI()
+{
+	m_MaleFemaleGui = make_shared<Gui>();
+	m_MaleFemaleGui->m_Font = g_SmallFont;
+
+	m_MaleFemaleGui->SetLayout(0, 0, g_Engine->m_RenderWidth, g_Engine->m_RenderHeight, g_DrawScale, Gui::GUIP_USE_XY);
+	m_MaleFemaleGui->AddOctagonBox(GUI_MALEFEMALE_PANEL, 220, 180, 200, 160, g_Borders);
+
+	int y = 186;
+	int yoffset = 22;
+
+	m_MaleFemaleGui->AddStretchButtonCentered(GUI_MALEFEMALE_BUTTON_MALE, y, "Start As Male Avatar",
+	                                     g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
+	                                     g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
+
+	y += yoffset;
+
+	m_MaleFemaleGui->AddStretchButtonCentered(GUI_MALEFEMALE_BUTTON_FEMALE, y, "Start As Female Avatar",
+									 g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
+									 g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
+
+	y += yoffset;
+
+	m_MaleFemaleGui->AddStretchButtonCentered(GUI_MALEFEMALE_BUTTON_BACK, y, "Back",
+									 g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
+									 g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
+
+
+	m_MaleFemaleGui->m_Active = false;
+
+	m_MaleFemaleGui->m_Draggable = false;
 }

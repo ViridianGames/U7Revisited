@@ -139,10 +139,6 @@ public:
 
 	std::string GetString(int ID);
 
-	bool GetAllowDragging(bool allow) { return m_allowDragging; }
-	void SetAllowDragging(bool allow) { m_allowDragging = allow; }
-
-
 	std::map<int, std::shared_ptr<GuiElement> > m_GuiElementList;
 
 	int m_PositionFlag;
@@ -185,7 +181,6 @@ public:
 
 	bool m_Draggable = false;
 	bool m_IsDragging = false;
-	bool m_allowDragging = true; // Can turn off if necessary.
 	Vector2 m_DragOffset;
 	int m_DragAreaHeight = 20;
 	virtual bool IsMouseInDragArea() const;

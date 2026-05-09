@@ -12,6 +12,8 @@
 #include "Geist/GuiElements.h"
 #include <json.hpp>
 
+#include "U7Globals.h"
+
 using u7json = nlohmann::json;
 
 class U7Player
@@ -30,10 +32,6 @@ public:
 	void SetMale(bool isMale) { m_isMale = isMale; }
 	bool GetIsMale() { return m_isMale; }
 	std::string GetPlayerName() { return m_PlayerName; }
-	void SetPlayerPosition(Vector3 position) { m_PlayerPosition = position; }
-	Vector3 GetPlayerPosition();
-	void SetPlayerDirection(Vector3 direction) { m_PlayerDirection = direction; }
-	Vector3 GetPlayerDirection() { return m_PlayerDirection; }
 	std::vector<std::string>& GetPartyMemberNames();
 	std::vector<int>& GetPartyMemberIds() { return m_PartyMemberIDs; };
 	bool NPCIDInParty(int npc_id);
@@ -70,6 +68,9 @@ public:
 // Returns true if move was accepted (dest set), false if blocked.
 	bool TryMove(const Vector3& desiredPos);
 
+	void SetAvatarMale();
+	void SetAvatarFemale();
+
 	private:
 	int m_Gold = 100;
 	int m_str = 18;
@@ -82,8 +83,6 @@ public:
 	std::vector<std::string> m_PartyMemberNames;
 	std::vector<int> m_PartyMemberIDs;
 	std::string m_PlayerName;
-	Vector3 m_PlayerPosition;
-	Vector3 m_PlayerDirection;
 
 	bool m_isMale;
 

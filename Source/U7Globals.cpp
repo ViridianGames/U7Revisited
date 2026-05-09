@@ -234,7 +234,7 @@ void CameraInput()
 				// If camera is locked to the avatar, derive yaw from player/avatar direction as before
 				if (g_isCameraLockedToAvatar)
 				{
-					Vector3 dir = g_Player->GetPlayerDirection();
+					Vector3 dir = g_Player->GetAvatarObject()->GetPos();
 					if (Vector3Length(dir) < 0.001f && avatar)
 						dir = avatar->m_Direction;
 					if (Vector3Length(dir) >= 0.001f)
