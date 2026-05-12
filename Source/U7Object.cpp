@@ -71,6 +71,10 @@ void U7Object::Init(const string& configfile, int unitType, int frame)
 	m_hasConversationTree = false;
 	m_InventoryPos = Vector2{ 0, 0 };
 	m_isNPC = false;
+	m_isCustomMesh = false;
+	m_customMeshName = "Models/3dmodels/zzwrongcube.obj";
+	m_customMesh = nullptr;
+	m_meshOutline = true;
 	m_isMoving = false;
 	m_distanceFromCamera = 999999;
 
@@ -94,6 +98,10 @@ void U7Object::Draw()
 	if (m_isNPC)
 	{
 		NPCDraw();
+	}
+	else if (m_isCustomMesh)
+	{
+		CustomMeshDraw();
 	}
 	else
 	{
@@ -175,6 +183,28 @@ void U7Object::Update()
 	if (m_isEgg || m_UnitType == U7Object::UnitTypes::UNIT_TYPE_EGG)
 	{
 		EggUpdate();
+	}
+}
+
+void U7Object::Morph()
+{
+	m_isCustomMesh = true;
+	m_customMesh = g_ResourceManager->GetModel(m_customMeshName);
+}
+
+void U7Object::Hide()
+{
+	//m_Visible = false;
+	if (m_Visible != false) {
+		m_Visible = false;
+	}
+}
+
+void U7Object::Show()
+{
+	//m_Visible = true;
+	if (m_Visible != true) {
+		m_Visible = true;
 	}
 }
 
@@ -514,6 +544,80 @@ void U7Object::NPCDraw()
 		Vector2{ dims.x, dims.y }, Vector2{ 0, 0 }, billboardAngle, lighting);
 	EndShaderMode();
 
+}
+
+void U7Object::CustomMeshDraw()
+{
+	float m_rotation = 0.0f;
+	if (!m_Visible)
+	{
+		return;
+	}
+	Vector3 finalPos = Vector3Add(m_Pos, m_anchorPos);
+	m_customMesh->UpdateAnim("idle");
+
+	if (m_meshOutline && !g_pixelated)
+	{
+		/*
+		glClearStencil(0);
+		glClear(GL_STENCIL_BUFFER_BIT);
+		glEnable(GL_STENCIL_TEST);
+
+		// Step 1: Draw the original model, mark stencil with 1
+		glStencilFunc(GL_ALWAYS, 1, 0xFF);
+		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+		DrawModelEx(m_customMesh->GetModel(), finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, color);
+
+		// Step 2: Draw the outline where stencil is not 1
+		glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+
+		// Get the bounding box to find the model's center
+		BoundingBox boundingBox = GetModelBoundingBox(m_customMesh->GetModel());
+		Vector3 size = Vector3{
+			fabs(boundingBox.max.x - boundingBox.min.x),
+			fabs(boundingBox.max.y - boundingBox.min.y),
+			fabs(boundingBox.max.z - boundingBox.min.z) };
+		// Calculate the local center of the model (unscaled)
+		Vector3 localCenter = Vector3{
+			(boundingBox.min.x + boundingBox.max.x) / 2.0f,
+			(boundingBox.min.y + boundingBox.max.y) / 2.0f,
+			(boundingBox.min.z + boundingBox.max.z) / 2.0f };
+
+		// Fixed outline thickness in world space
+		float outlineThickness = 0.075f;
+
+		// Calculate the outline scale
+		Vector3 outlineScale = Vector3{
+			m_Scaling.x + (outlineThickness / size.x) * 2.0f,
+			m_Scaling.y + (outlineThickness / size.y) * 2.0f,
+			m_Scaling.z + (outlineThickness / size.z) * 2.0f };
+
+		// Adjust position to compensate for the pivot offset when scaling
+		Vector3 scaledCenter = Vector3{
+			localCenter.x * m_Scaling.x,
+			localCenter.y * m_Scaling.y,
+			localCenter.z * m_Scaling.z };
+		Vector3 outlineScaledCenter = Vector3{
+			localCenter.x * outlineScale.x,
+			localCenter.y * outlineScale.y,
+			localCenter.z * outlineScale.z };
+		Vector3 centerOffset = Vector3Subtract(scaledCenter, outlineScaledCenter);
+		Vector3 outlinePos = Vector3Add(finalPos, centerOffset);
+
+		// Draw the outline with the adjusted position
+		glDepthMask(GL_FALSE);
+		DrawModelEx(m_customMesh->GetModel(), outlinePos, { 0, 1, 0 }, m_rotation, outlineScale, BLACK);
+		glDepthMask(GL_TRUE);
+
+		glDisable(GL_STENCIL_TEST);
+		*/
+		DrawModelEx(m_customMesh->GetModel(), finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, WHITE);
+	}
+	else
+	{
+		DrawModelEx(m_customMesh->GetModel(), finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, WHITE);
+	}
 }
 
 // Helper function to convert activity ID to script name

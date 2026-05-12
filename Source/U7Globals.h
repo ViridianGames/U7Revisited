@@ -357,6 +357,10 @@ void AddObjectToContainer(int objectID, int containerID);
 
 unsigned int GetNextID();
 
+void HideObject(int shapenum, int framenum, float x, float y, float z);
+
+void MorphObject(int shapenum, int framenum, float x, float y, float z, const std::string& modelName);
+
 void OpenURL(const std::string& url);
 
 extern Vector3 g_terrainUnderMousePointer;

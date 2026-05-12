@@ -775,10 +775,15 @@ void UpdateSortedVisibleObjects()
 				continue; // Out of bounds
 			}
 
+			if (x == 4*16 && y == 8*16)
+			{
+				continue;
+			}
+
 			for (auto object : g_chunkObjectMap[x][y])
 			{
 				// Skip null, dead, or contained objects
-				if (!object || object->GetIsDead() || object->m_isContained)
+				if (!object || object->GetIsDead() || object->m_isContained || !object->m_Visible)
 				{
 					continue;
 				}
@@ -905,6 +910,110 @@ U7Object* AddObject(int shapenum, int framenum, int id, float x, float y, float 
 	}
 
 	return g_objectList[id].get();
+}
+
+void HideObject(int shapenum, int framenum, float x, float y, float z)
+{
+	//U7Object* temp = new U7Object();
+	//temp->Init("Data/Units/Walker.cfg", shapenum, framenum);
+	//temp->SetInitialPos(Vector3{ x, y, z });
+	//temp->m_Visible = false;
+	//AssignObjectChunk(temp);
+	int hideCount = 0;
+	int objId = 0;
+	int objMax = int(g_objectList.size());
+
+	while (objId < objMax)
+	{
+		//g_objectList[objId]->Hide();
+		//hideCount++;
+		
+		auto it = g_objectList.find(objId);
+		if (it != g_objectList.end())
+		{
+			U7Object* unit = it->second.get();
+			//if (unit->m_Pos.x >= 944 && unit->m_Pos.x <= 1104 && unit->m_Pos.z >= 2096 && unit->m_Pos.z <= 2336)
+			//{
+				//unit->Hide();
+				//hideCount++;
+			//}
+			if (unit->m_Pos.x == x && unit->m_Pos.y == y && unit->m_Pos.z == z)
+			{
+				unit->Hide();
+				hideCount++;
+			}
+		}
+		
+		objId++;
+	}
+
+	/*
+	int xPos = 0;
+	int yPos = 0;
+	int xMax = 192;
+	int yMax = 192;
+
+	while (yPos < yMax)
+	{
+		xPos = 0;
+		while (xPos < xMax)
+		{
+			for (auto object : g_chunkObjectMap[int(xPos)][int(yPos)])
+			{
+				//if (object->m_Pos.x >= 944 && object->m_Pos.x <= 1104 && object->m_Pos.z >= 2096 && object->m_Pos.z <= 2336)
+				if (object->m_Pos.x >= 944 && object->m_Pos.x <= 1104 && object->m_Pos.z >= 2096 && object->m_Pos.z <= 2336)
+				//if (object->m_Pos.x >= 0 && object->m_Pos.x <= 3072 && object->m_Pos.z >= 0 && object->m_Pos.z <= 3072)
+				{
+					//object->Hide();
+					//hideCount++;
+				}
+			}
+			xPos++;
+		}
+		yPos++;
+	}
+	*/
+
+	/*
+	for (auto& unit : g_objectList)
+	{
+		if (unit.second->m_Pos.x >= 944 && unit.second->m_Pos.x <= 1104 && unit.second->m_Pos.z >= 2096 && unit.second->m_Pos.z <= 2336)
+		{
+			unit.second->Hide();
+			hideCount++;
+		}
+	}
+	*/
+	AddConsoleString("Hid " + std::to_string(hideCount) + " objects in the Trinsic area.", GREEN);
+}
+
+void MorphObject(int shapenum, int framenum, float x, float y, float z, const std::string& modelName)
+{
+	//U7Object* temp = new U7Object();
+	//temp->Init("Data/Units/Walker.cfg", shapenum, framenum);
+	//temp->SetInitialPos(Vector3{ x, y, z });
+	//temp->m_Visible = false;
+	//AssignObjectChunk(temp);
+	int hideCount = 0;
+	int objId = 0;
+	int objMax = int(g_objectList.size());
+
+	while (objId < objMax)
+	{
+		auto it = g_objectList.find(objId);
+		if (it != g_objectList.end())
+		{
+			U7Object* unit = it->second.get();
+			if (unit->m_Pos.x == x && unit->m_Pos.y == y && unit->m_Pos.z == z)
+			{
+				unit->Morph();
+				hideCount++;
+			}
+		}
+
+		objId++;
+	}
+	AddConsoleString("Morphed " + std::to_string(hideCount) + " objects in the Trinsic area.", GREEN);
 }
 
 void UpdateObjectChunk(U7Object* object, Vector3 fromPos)

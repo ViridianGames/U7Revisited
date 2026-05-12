@@ -214,6 +214,10 @@ public:
 		  , m_terrainCenterPoint({0.0f, 0.0f, 0.0f})
 		  , m_centerPoint({0.0f, 0.0f, 0.0f})
 		  , m_isNPC(false)
+		  , m_isCustomMesh(false)
+		  //, m_customMeshName(nullptr)
+		  , m_customMesh(nullptr)
+		  , m_meshOutline(true)
 		  , m_isContainer(false)
 		  , m_isContained(false)
 		  , m_containingObjectId(-1)
@@ -234,6 +238,12 @@ public:
 	virtual void Update();
 
 	virtual void Draw();
+
+	virtual void Morph();
+
+	virtual void Hide();
+
+	virtual void Show();
 
 	virtual void Attack(int unitid);
 
@@ -274,6 +284,8 @@ public:
 	void NPCDraw();
 
 	void NPCInit(NPCData *npcData);
+
+	void CustomMeshDraw();
 
 	void TryOpenDoorAtCurrentPosition();
 
@@ -351,6 +363,8 @@ public:
 	bool m_ShouldDraw = true; // This is an override that can be set in a Lua script.
 	bool m_Selected;
 
+
+
 	float m_BaseSpeed;
 	float m_BaseMaxHP;
 	float m_BaseHP;
@@ -373,7 +387,11 @@ public:
 	Mesh *m_Mesh;
 	Texture *m_Texture;
 	Texture *m_DropShadow;
-	std::unique_ptr<Mesh> m_customMesh = nullptr;
+	//std::unique_ptr<Mesh> m_customMesh = nullptr;
+	bool m_isCustomMesh;
+	std::string m_customMeshName;
+	RaylibModel* m_customMesh = nullptr;
+	bool m_meshOutline = true;
 
 	Config *m_ObjectConfig;
 

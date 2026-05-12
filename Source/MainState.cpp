@@ -1403,7 +1403,7 @@ void MainState::Update()
 				}
 				else
 				{
-					if (!object->GetIsDead()) object->m_Visible = true;
+					//if (!object->GetIsDead()) object->m_Visible = true;
 				}
 			}
 		}

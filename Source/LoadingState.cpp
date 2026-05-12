@@ -211,6 +211,15 @@ void LoadingState::UpdateLoading()
 			return;
 		}
 
+		if (!m_loadingRoofs)
+		{
+			AddConsoleString(std::string("Loading Roofs..."));
+			DebugPrint(std::string("Loading Roofs..."));
+			LoadRoofs("Data/roofLoad.csv");
+			m_loadingRoofs = true;
+			return;
+		}
+
 		if (!m_loadingNPCSchedules)
 		{
 			AddConsoleString(std::string("Loading NPC Schedules..."));
@@ -502,6 +511,97 @@ void LoadingState::LoadIFIX()
 			fclose(u7thisifix);
 		}
 	}
+}
+
+void LoadingState::LoadRoofs(const std::string& filename)
+{
+	//std::string dataPath = g_Engine->m_EngineConfig.GetString("data_path");
+	//std::string loadingPath(dataPath);
+	//loadingPath.append("/STATIC/");
+
+	// initialize roof drawing system
+	//m_terrainCosts.clear();
+	//HideObject(956, 0, 1059, 5, 2183);
+	MorphObject(956, 0, 1059, 5, 2183, "");
+
+	std::ifstream file(filename);
+	if (!file.is_open())
+	{
+		AddConsoleString("WARNING: Could not open roofs file: " + filename, YELLOW);
+		return;
+	}
+	
+	std::string line;
+	std::getline(file, line);  // Skip header line
+
+	int loadedCount = 0;
+	int lineNum = 1;
+	/*
+	while (std::getline(file, line))
+	{
+		lineNum++;
+
+		// Skip empty lines
+		if (line.empty())
+			continue;
+
+		// Parse CSV: shape_id,name,suggested_cost
+		size_t firstComma = line.find(',');
+		if (firstComma == std::string::npos)
+			continue;
+
+		size_t secondComma = line.find(',', firstComma + 1);
+		if (secondComma == std::string::npos)
+			continue;
+
+		try
+		{
+			// Extract shape ID
+			std::string shapeIDStr = line.substr(0, firstComma);
+			if (shapeIDStr.empty())
+				continue;
+			int shapeID = std::stoi(shapeIDStr);
+
+			// Extract name (between first and second comma, remove quotes)
+			std::string name = line.substr(firstComma + 1, secondComma - firstComma - 1);
+			// Remove quotes if present
+			if (name.length() >= 2 && name.front() == '"' && name.back() == '"')
+			{
+				name = name.substr(1, name.length() - 2);
+			}
+
+			// Extract cost (after second comma, trim whitespace)
+			std::string costStr = line.substr(secondComma + 1);
+			costStr.erase(0, costStr.find_first_not_of(" \t\r\n"));
+			costStr.erase(costStr.find_last_not_of(" \t\r\n") + 1);
+
+			// Skip if no cost specified
+			if (costStr.empty())
+				continue;
+
+			float cost = std::stof(costStr);
+
+			// Reject zero or negative costs (breaks A* heuristic)
+			if (cost <= 0.0f)
+			{
+				AddConsoleString("ERROR: Terrain shape " + std::to_string(shapeID) + " has invalid cost " +
+					std::to_string(cost) + " (must be > 0). Skipping.", RED);
+				continue;
+			}
+
+			m_terrainCosts[shapeID] = cost;
+			m_terrainNames[shapeID] = name;
+			loadedCount++;
+		}
+		catch (const std::exception&)
+		{
+			AddConsoleString("WARNING: Failed to parse terrain cost on line " + std::to_string(lineNum) + ": " + line, YELLOW);
+			continue;
+		}
+	}
+	*/
+	file.close();
+	AddConsoleString("Loaded " + std::to_string(loadedCount) + " terrain movement costs from " + filename, GREEN);
 }
 
 void LoadingState::LoadFaces()
