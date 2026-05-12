@@ -446,23 +446,6 @@ bool GameSerializer::LoadFromStream(std::ifstream& stream)
 			g_scheduleTime = saveData["gameTime"].value("scheduleTime", 0);
 		}
 
-		// Restore player state
-		if (!saveData.contains("player"))
-		{
-			SetError("Save file is missing player data");
-			return false;
-		}
-
-		if (g_Player != nullptr)
-		{
-			g_Player->LoadFromJson(saveData["player"]);
-		}
-		else
-		{
-			SetError("Cannot load - player object is null");
-			return false;
-		}
-
 		// Clear dynamic objects from g_objectList
 		auto it = g_objectList.begin();
 		while (it != g_objectList.end())
@@ -498,6 +481,42 @@ bool GameSerializer::LoadFromStream(std::ifstream& stream)
 			{
 				g_objectList[obj->m_ID] = std::unique_ptr<U7Object>(obj);
 			}
+		}
+
+		// Restore global state
+		if (saveData.contains("nextObjectID"))
+		{
+			g_CurrentUnitID = saveData["nextObjectID"];
+		}
+
+		// Update NPCData mapping
+		for (const auto& [id, obj] : g_objectList)
+		{
+			if (obj != nullptr && obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC)
+			{
+				if (obj->m_NPCID >= 0 && obj->m_NPCID < g_NPCData.size())
+				{
+					g_NPCData[obj->m_NPCID]->m_objectID = obj->m_ID;
+				}
+			}
+		}
+
+		// Restore player state
+		// IMPORTANT: This must happen AFTER objects are loaded so g_Player can find its avatar
+		if (!saveData.contains("player"))
+		{
+			SetError("Save file is missing player data");
+			return false;
+		}
+
+		if (g_Player != nullptr)
+		{
+			g_Player->LoadFromJson(saveData["player"]);
+		}
+		else
+		{
+			SetError("Cannot load - player object is null");
+			return false;
 		}
 
 		// Second pass: Restore relationships (inventories, equipment, containers)
@@ -583,7 +602,6 @@ bool GameSerializer::LoadFromStream(std::ifstream& stream)
 					staticCount++;
 				else if (obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC)
 				{
-					g_NPCData[obj->m_NPCID]->m_objectID = obj->m_ID;
 					npcCount++;
 				}
 				else

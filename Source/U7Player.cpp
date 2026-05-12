@@ -160,20 +160,6 @@ void U7Player::LoadFromJson(const json& j)
 	m_PlayerName = j.value("name", "Avatar");
 	m_isMale = j.value("isMale", true);
 
-	if (j.contains("position") && j["position"].is_array() && j["position"].size() == 3)
-	{
-		m_AvatarObject->m_Pos.x = j["position"][0];
-		m_AvatarObject->m_Pos.y = j["position"][1];
-		m_AvatarObject->m_Pos.z = j["position"][2];
-	}
-
-	if (j.contains("direction") && j["direction"].is_array() && j["direction"].size() == 3)
-	{
-		m_AvatarObject->m_Direction.x = j["direction"][0];
-		m_AvatarObject->m_Direction.y = j["direction"][1];
-		m_AvatarObject->m_Direction.z = j["direction"][2];
-	}
-
 	m_Gold = j.value("gold", 100);
 	m_str = j.value("str", 18);
 	m_dex = j.value("dex", 18);
@@ -190,15 +176,35 @@ void U7Player::LoadFromJson(const json& j)
 	}
 
 	g_NPCData[0]->m_objectID = j.value("avatarObject", 0);
-	m_AvatarObject = g_objectList[g_NPCData[0]->m_objectID].get();
-
-	if (m_isMale)
+	if (g_objectList.find(g_NPCData[0]->m_objectID) != g_objectList.end())
 	{
-		SetAvatarMale();
+		m_AvatarObject = g_objectList[g_NPCData[0]->m_objectID].get();
 	}
-	else
+
+	if (m_AvatarObject)
 	{
-		SetAvatarFemale();
+		if (m_isMale)
+		{
+			SetAvatarMale();
+		}
+		else
+		{
+			SetAvatarFemale();
+		}
+
+		if (j.contains("position") && j["position"].is_array() && j["position"].size() == 3)
+		{
+			m_AvatarObject->m_Pos.x = j["position"][0];
+			m_AvatarObject->m_Pos.y = j["position"][1];
+			m_AvatarObject->m_Pos.z = j["position"][2];
+		}
+
+		if (j.contains("direction") && j["direction"].is_array() && j["direction"].size() == 3)
+		{
+			m_AvatarObject->m_Direction.x = j["direction"][0];
+			m_AvatarObject->m_Direction.y = j["direction"][1];
+			m_AvatarObject->m_Direction.z = j["direction"][2];
+		}
 	}
 
 }
