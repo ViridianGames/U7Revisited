@@ -174,6 +174,14 @@ private:
 };
 
 
+struct ObjectWalkability
+{
+	int shapeID;
+	std::string name;
+	std::string walkability; // walkable, blocking, climbable, door
+	float stepHeight;
+};
+
 class PathfindingSystem : public Object
 {
 public:
@@ -200,6 +208,10 @@ public:
 	std::unique_ptr<AStar> m_aStar;
 
 	ChunkInfo m_chunkInfoMap[192][192];
+
+	std::unordered_map<int, ObjectWalkability> m_objectWalkability;
+
+	void LoadObjectWalkability(const std::string& filename);
 
 	// Simple atomic telemetry counters for A* timing (monotonic totals)
 	std::atomic<uint64_t> m_astarTotalCalls{0};

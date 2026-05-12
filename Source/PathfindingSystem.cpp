@@ -1638,6 +1638,8 @@ void PathfindingSystem::Init(const std::string& configfile)
 	m_aStar = std::make_unique<AStar>();
 	m_pathfindingGrid = std::make_unique<PathfindingGrid>();
 
+	LoadObjectWalkability("Data/object_walkability.csv");
+
 	// Precompute chunk connectivity for hierarchical pathfinding
 	PopulateChunkPathfindingGrid();
 }
@@ -1709,6 +1711,53 @@ bool AStar::IsNodeOnFinalPath(int x, int z, float y) const
 	int yidx = QuantizeY(y);
 	int64_t k = MakeNodeKey(x, z, yidx);
 	return m_finalPathKeys.find(k) != m_finalPathKeys.end();
+}
+void PathfindingSystem::LoadObjectWalkability(const std::string& filename)
+{
+	std::ifstream file(filename);
+	if (!file.is_open())
+	{
+		AddConsoleString("WARNING: Could not open object walkability file: " + filename, YELLOW);
+		return;
+	}
+
+	std::string line;
+	while (std::getline(file, line))
+	{
+		if (line.empty() || line[0] == '#')
+		{
+			continue;
+		}
+
+		std::stringstream ss(line);
+		std::string item;
+		std::vector<std::string> tokens;
+		while (std::getline(ss, item, ','))
+		{
+			tokens.push_back(item);
+		}
+
+		if (tokens.size() >= 3)
+		{
+			ObjectWalkability ow;
+			try {
+				ow.shapeID = std::stoi(tokens[0]);
+				ow.name = tokens[1];
+				ow.walkability = tokens[2];
+				ow.stepHeight = 0.0f;
+				if (tokens.size() >= 4 && !tokens[3].empty())
+				{
+					ow.stepHeight = std::stof(tokens[3]);
+				}
+				m_objectWalkability[ow.shapeID] = ow;
+			}
+			catch (const std::exception&)
+			{
+				// Skip malformed lines
+			}
+		}
+	}
+	file.close();
 }
 
 void PathfindingSystem::PopulateChunkPathfindingGrid()
