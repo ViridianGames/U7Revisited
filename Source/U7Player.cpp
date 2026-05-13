@@ -254,15 +254,35 @@ bool U7Player::TryMove(const Vector3& desiredPos)
 
     // Local walkable surface classifier (keeps in sync with PathfindingSystem::IsWalkableSurface)
     auto IsWalkableSurfaceLocal = [](int shapeID) -> bool {
-        if (shapeID >= 367 && shapeID <= 370) return true; // Stairs
-        if (shapeID == 1014) return true;                 // Teleporter/Floor
-        if (shapeID >= 426 && shapeID <= 430) return true; // Bridges
-        if (shapeID == 150 || shapeID == 193 || shapeID == 192) return true; // Rugs/Wood Floors
-        if (shapeID == 973 || shapeID == 974) return true; // Stone floors
-        if (shapeID >= 385 && shapeID <= 387) return true; // Thatch/Dirt floors
-    	if (shapeID == 657 || shapeID == 678) return true; // Curtains
-    	if (shapeID == 415) return true; // Garbage
-    	if (shapeID == 257) return true; // fortress gateway
+        // Bridge/floor pieces: 367-370
+        if (shapeID >= 367 && shapeID <= 370) return true;
+        // Additional floor shapes//floor-roof
+        if (shapeID == 1014) return true;
+        // Stairs: 426-430
+        if (shapeID >= 426 && shapeID <= 430) return true;
+        if (shapeID == 150) return true; // gangplank
+        if (shapeID >= 186 && shapeID <= 193) return true; // carpet, rug, floor, fortress
+        if (shapeID == 257) return true; // fortress gateway top
+        if (shapeID >= 290 && shapeID <= 293) return true; // seats / floors
+        if (shapeID >= 310 && shapeID <= 313) return true; // wooden floor
+        if (shapeID >= 314 && shapeID <= 317) return true; // floor
+        if (shapeID >= 341 && shapeID <= 344) return true; // floor
+        if (shapeID == 368) return true; // floor
+        if (shapeID >= 385 && shapeID <= 387) return true; // thatch/dirt
+        if (shapeID >= 607 && shapeID <= 610) return true; // path
+        if (shapeID == 657 || shapeID == 678) return true; // curtains (walkable)
+        if (shapeID >= 973 && shapeID <= 974) return true; // stone floor
+        if (shapeID == 415) return true; // garbage
+        if (shapeID == 260) return true; // fortress
+        if (shapeID == 263) return true; // fortress
+        if (shapeID == 352) return true; // fortress
+        if (shapeID == 483) return true; // rug
+        if (shapeID == 700) return true; // deck
+        if (shapeID == 750) return true; // carpet
+        if (shapeID == 758) return true; // carpet
+        if (shapeID == 870) return true; // drawbridge
+        if (shapeID == 873) return true; // chair
+        if (shapeID == 897) return true; // seat
         return false;
     };
 
@@ -332,12 +352,16 @@ bool U7Player::TryMove(const Vector3& desiredPos)
 
         if (ov.obj->m_objectData && ov.obj->m_objectData->m_isDoor)
         {
-            // If this door object is not centered on this tile, it may cover it (hinge check)
-            if (destX != (int)floor(ov.obj->m_Pos.x) || destZ != (int)floor(ov.obj->m_Pos.z))
+            // If this is the hinge tile, it's always blocked (consistent with PathfindingGrid::CheckTileWalkable)
+            if (destX == (int)floor(ov.obj->m_Pos.x) && destZ == (int)floor(ov.obj->m_Pos.z))
             {
-                doorCoversTile = true;
-                break;
+                NPCDebugPrint("TryMove BLOCKED: Door hinge tile");
+                return false;
             }
+
+            // If this door object is not centered on this tile, it may cover it
+            doorCoversTile = true;
+            break;
         }
     }
 
@@ -594,10 +618,10 @@ bool U7Player::TryMove(const Vector3& desiredPos)
     finalDest.y = destH;
 
     // Instant step for stairs / small height changes
-    if (fabs(destH - srcH) > 0.05f)
+    if (fabs(destH - srcH) > 0.05f && fabs(destH - srcH) <= MAX_CLIMBABLE_HEIGHT)
     {
         Vector3 snapPos = avatar->m_Pos;
-        snapPos.y = destH + 0.1f;
+        snapPos.y = destH;
         avatar->SetPos(snapPos);
     }
 

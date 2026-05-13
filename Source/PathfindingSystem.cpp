@@ -111,10 +111,10 @@ std::vector<PathfindingGrid::OverlappingObject> PathfindingGrid::GetOverlappingO
 }
 
 // Helper: Check if a shape ID is a walkable surface (floors, bridges, stairs)
-inline bool PathfindingSystem::IsWalkableSurface(int shapeID)
+bool PathfindingSystem::IsWalkableSurface(int shapeID)
 {
 	// Bridge/floor pieces: 367-370
-	if (shapeID >= 367 && shapeID <= 370)//floor
+	if (shapeID >= 367 && shapeID <= 370)
 		return true;
 
 	// Additional floor shapes//floor-roof 
@@ -122,7 +122,7 @@ inline bool PathfindingSystem::IsWalkableSurface(int shapeID)
 		return true;
 
 	// Stairs: 426-430
-	if (shapeID >= 426 && shapeID <= 430)//stairs
+	if (shapeID >= 426 && shapeID <= 430)
 		return true;
 
 	if (shapeID == 150)//gangplank
@@ -134,6 +134,39 @@ inline bool PathfindingSystem::IsWalkableSurface(int shapeID)
 	if (shapeID == 257)//fortress gateway top
 		return true;
 
+	if (shapeID >= 290 && shapeID <= 293) // seats / floors
+		return true;
+
+	if (shapeID >= 310 && shapeID <= 313) // wooden floor
+		return true;
+
+	if (shapeID >= 314 && shapeID <= 317) // floor
+		return true;
+
+	if (shapeID >= 341 && shapeID <= 344) // floor
+		return true;
+
+	if (shapeID == 368)//floor
+		return true;
+
+	if (shapeID >= 385 && shapeID <= 387)//stairs
+		return true;
+
+	if (shapeID >= 607 && shapeID <= 610)//path
+		return true;
+
+	if (shapeID == 657)//curtain
+		return true;
+
+	if (shapeID == 678)//curtain
+		return true;
+
+	if (shapeID >= 973 && shapeID <= 974)//stairs
+		return true;
+
+	if (shapeID == 415)//garbage
+		return true;
+
 	if (shapeID == 260)//fortress
 		return true;
 
@@ -143,25 +176,7 @@ inline bool PathfindingSystem::IsWalkableSurface(int shapeID)
 	if (shapeID == 352)//fortress
 		return true;
 
-	if (shapeID == 367)//floor
-		return true;
-
-	if (shapeID == 369)//floor
-		return true;
-
-	if (shapeID >= 385 && shapeID <= 387)//stairs
-		return true;
-
 	if (shapeID == 483)//rug
-		return true;
-
-	if (shapeID == 607)//path
-		return true;
-
-	if (shapeID == 657)//curtain
-		return true;
-
-	if (shapeID == 678)//curtain
 		return true;
 
 	if (shapeID == 700)//deck
@@ -176,12 +191,11 @@ inline bool PathfindingSystem::IsWalkableSurface(int shapeID)
 	if (shapeID == 870)//drawbridge
 		return true;
 
-	if (shapeID == 973 || shapeID == 974)//stairs
+	if (shapeID == 873)//chair
 		return true;
 
-
-	// TODO: Add more walkable surface shape IDs as we discover them
-	// This might include stairs, platforms, etc.
+	if (shapeID == 897)//seat
+		return true;
 
 	return false;
 }

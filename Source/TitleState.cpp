@@ -599,7 +599,7 @@ void TitleState::CreateMaleFemaleGUI()
 	m_MaleFemaleGui->m_Font = g_SmallFont;
 
 	m_MaleFemaleGui->SetLayout(0, 0, g_Engine->m_RenderWidth, g_Engine->m_RenderHeight, g_DrawScale, Gui::GUIP_USE_XY);
-	m_MaleFemaleGui->AddOctagonBox(GUI_MALEFEMALE_PANEL, 220, 180, 200, 160, g_Borders);
+	m_MaleFemaleGui->AddOctagonBox(GUI_MALEFEMALE_PANEL, 230, 180, 180, 70, g_Borders);
 
 	int y = 186;
 	int yoffset = 22;

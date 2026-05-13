@@ -787,7 +787,7 @@ void U7Object::NPCUpdate()
 		// Previously this was gated by g_LuaDebug, so you saw nothing when that flag was false.
 
 		if (m_isMoving &&
-			fabs(m_Direction.x) < 0.001f && fabs(m_Direction.z) < 0.001f)
+			fabs(m_Direction.x) < 0.001f && fabs(m_Direction.y) < 0.001f && fabs(m_Direction.z) < 0.001f)
 		{
 			std::stringstream ss;
 			ss << "NPC walking-in-place detected id=" << m_NPCID
@@ -955,12 +955,12 @@ void U7Object::SetDest(Vector3 dest)
 {
 	m_Dest = dest;
 
-	if (m_Dest.x == m_Pos.x && m_Dest.z == m_Pos.z)
+	if (m_Dest.x == m_Pos.x && m_Dest.y == m_Pos.y && m_Dest.z == m_Pos.z)
 		return;
 
 	Vector3 newDirection = Vector3Subtract(m_Dest, m_Pos);
 	newDirection = Vector3Normalize(newDirection);
-	if (newDirection.x != 0 || newDirection.z != 0)
+	if (newDirection.x != 0 || newDirection.y != 0 || newDirection.z != 0)
 	{
 		m_Direction = newDirection;
 	}
