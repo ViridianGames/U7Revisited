@@ -131,7 +131,7 @@ int main(int argv, char** argc)
       g_VitalRNG = make_unique<RNG>();
       int seed = (unsigned int)time(NULL);
       g_VitalRNG->SeedRNG(seed);
-      int x = 2;//g_VitalRNG->Random(7);
+      int x = 10;//g_VitalRNG->Random(7);
 
       switch (x)
       {
@@ -165,6 +165,18 @@ int main(int argv, char** argc)
 
          case 7:
             g_camera.target = Vector3{ 965.0f, 0.0f, 2291.0f };
+            break;
+
+         case 8: // Greenhouse
+            g_camera.target = Vector3{ 2272.0f, 0.0f, 2406.0f };
+            break;
+
+         case 9: // Throne room
+            g_camera.target = Vector3{ 939.0f, 0.0f, 1147.0f };
+            break;
+
+         case 10: // Skara Brae Inn
+            g_camera.target = Vector3{ 389.0f, 0.0f, 1646.0f };
             break;
 
          default:

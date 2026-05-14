@@ -586,7 +586,7 @@ void PathfindingGrid::DebugPrintTileInfo(int worldX, int worldZ)
 			" size=" + std::to_string(ovObj.width) + "x" + std::to_string(ovObj.depth) +
 			(obj->m_objectData->m_isDoor ? std::string(" [DOOR frame=") + std::to_string(obj->m_Frame) + "]" : "") +
 			skipReason;
-		AddConsoleString(msg);
+		//AddConsoleString(msg);
 		NPCDebugPrint("Tile (" + std::to_string(worldX) + "," + std::to_string(worldZ) + "): " + msg);
 		if (skipReason.empty())
 			foundBlockingObject = true;
@@ -594,13 +594,13 @@ void PathfindingGrid::DebugPrintTileInfo(int worldX, int worldZ)
 
 	if (!foundBlockingObject)
 	{
-		AddConsoleString("No blocking objects found");
+		//AddConsoleString("No blocking objects found");
 		NPCDebugPrint("Tile (" + std::to_string(worldX) + "," + std::to_string(worldZ) + "): No blocking objects found");
 	}
 
 	// Final verdict
 	bool walkable = CheckTileWalkable(worldX, worldZ, 0.0f);
-	AddConsoleString("RESULT: " + std::string(walkable ? "WALKABLE" : "BLOCKED"));
+	//AddConsoleString("RESULT: " + std::string(walkable ? "WALKABLE" : "BLOCKED"));
 	NPCDebugPrint("Tile (" + std::to_string(worldX) + "," + std::to_string(worldZ) + "): RESULT: " + std::string(walkable ? "WALKABLE" : "BLOCKED"));
 }
 
