@@ -432,10 +432,10 @@ void MainState::HandleEscapeKey()
 
 	if (!g_gumpManager->m_GumpList.empty())
 		g_gumpManager->m_GumpList.back().get()->SetIsDead(true);
-	else if (!g_Engine->m_askedToExit)
+	else// if (!g_Engine->m_askedToExit)
 	{
-		g_Engine->m_askedToExit = true;
-		g_StateMachine->PushState(STATE_ASKEXITSTATE);
+		//g_Engine->m_askedToExit = true;
+		g_StateMachine->PushState(STATE_OPTIONSSTATE);
 	}
 
 	if (m_objectSelectionMode)
