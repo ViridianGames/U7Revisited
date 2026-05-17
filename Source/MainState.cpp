@@ -221,7 +221,7 @@ void MainState::OnEnter()
 		// Fade out.
 		else
 		{
-			g_SoundSystem->PlaySound("Audio/Music/35bg.ogg");
+			g_SoundSystem->PlayMusic("Audio/Music/35bg.ogg");
 
 			// Move camera to start position and rotation.
 			g_camera.target = Vector3{ 1068.0f, 0.0f, 2213.0f };
