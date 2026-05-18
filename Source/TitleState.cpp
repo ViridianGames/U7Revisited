@@ -42,12 +42,12 @@ void TitleState::OnEnter()
 	CreateMaleFemaleGUI();
 	ClearConsole();
 	m_LastUpdate = 0;
-	g_SoundSystem->PlayMusic("Audio/Music/22bg.ogg");
+	g_SoundSystem->PlayMusic(BuildU7MusicPath(22));
 }
 
 void TitleState::OnExit()
 {
-	g_SoundSystem->StopMusic("Audio/Music/22bg.ogg");
+	g_SoundSystem->StopMusic(BuildU7MusicPath(22));
 }
 
 void TitleState::Shutdown()

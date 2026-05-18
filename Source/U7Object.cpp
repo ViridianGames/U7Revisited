@@ -86,7 +86,7 @@ void U7Object::Init(const string& configfile, int unitType, int frame)
 
 void U7Object::Draw()
 {
-	if (!m_Visible || m_isContained || m_isEgg || !m_ShouldDraw)
+	if (!m_Visible || m_isContained || (m_isEgg && !g_showEggs) || !m_ShouldDraw)
 	{
 		return;
 	}
@@ -989,7 +989,7 @@ void U7Object::TryOpenDoorAtCurrentPosition()
 	{
 		U7Object* obj = ovObj.obj;
 
-		if (!obj->m_objectData->m_isDoor)
+		if (!obj || !obj->m_objectData || !obj->m_objectData->m_isDoor)
 			continue;
 
 		// If we're standing on any door tile, interact with it to open

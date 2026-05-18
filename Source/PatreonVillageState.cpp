@@ -38,7 +38,7 @@ void PatreonVillageState::OnEnter()
 {
 	ClearConsole();
 	m_LastUpdate = 0;
-	//g_SoundSystem->PlayMusic("Audio/Music/22bg.ogg");
+	//g_SoundSystem->PlayMusic(BuildU7MusicPath(22));
 	m_currentFadeAlpha = 0;
 	m_mouseMoved = false;
 	m_fadeState = FadeState::FADE_IN;
@@ -143,13 +143,13 @@ void PatreonVillageState::OnEnter()
 	g_objectList[g_NPCData[162].get()->m_objectID]->m_name = "Mystical One";
 	g_objectList[g_NPCData[241].get()->m_objectID]->m_followingSchedule = true;
 
-	g_SoundSystem->PlayMusic("Audio/Music/29bg.ogg");
+	g_SoundSystem->PlayMusic(BuildU7MusicPath(29));
 
 }
 
 void PatreonVillageState::OnExit()
 {
-	g_SoundSystem->StopMusic("Audio/Music/29bg.ogg");
+	g_SoundSystem->StopMusic(BuildU7MusicPath(29));
 }
 
 void PatreonVillageState::Shutdown()

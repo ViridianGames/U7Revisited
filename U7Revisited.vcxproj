@@ -211,14 +211,8 @@
     </Midl>
     <PostBuildEvent>
       <Message>Copying Release executable to Redist folder</Message>
-      <Command>copy "C:/repos/U7Revisited/Release/U7Revisited.exe" "C:/repos/U7Revisited/Redist/"
-if %errorlevel% neq 0 goto :cmEnd
-:cmEnd
-endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
-:cmErrorLevel
-exit /b %1
-:cmDone
-if %errorlevel% neq 0 goto :VCEnd</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
     <Link>
       <AdditionalDependencies>ThirdParty\raylib\lib\raylib.lib;winmm.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
@@ -446,6 +440,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClCompile Include="Source\U7Object.cpp" />
     <ClCompile Include="Source\U7Player.cpp" />
     <ClCompile Include="Source\U7ScriptUtils.cpp" />
+    <ClCompile Include="Source\U7SpriteEffects.cpp" />
     <ClCompile Include="ThirdParty\lua\src\lapi.c" />
     <ClCompile Include="ThirdParty\lua\src\lauxlib.c" />
     <ClCompile Include="ThirdParty\lua\src\lbaselib.c" />

@@ -14,6 +14,7 @@
 #include "U7GumpPaperdoll.h"
 #include "U7GumpSpellbook.h"
 #include "U7GumpMinimap.h"
+#include "U7SpriteEffects.h"
 #include "U7GumpStats.h"
 #include "ConversationState.h"
 #include "GumpManager.h"
@@ -21,6 +22,54 @@
 #include "Ghost/GhostWindow.h"
 #include "Ghost/GhostSerializer.h"
 #include "NpcListWindow.h"
+#include "SoundSystem.h"
+
+#include <unordered_set>
+
+namespace
+{
+	constexpr int kPoolShapeId = 893;
+
+	void UpdatePoolAmbientSounds()
+	{
+		static std::unordered_set<int> poolsInRange;
+
+		std::unordered_set<int> currentlyInRange;
+
+		for (U7Object* obj : g_sortedVisibleObjects)
+		{
+			if (!obj || obj->m_ObjectType != kPoolShapeId)
+			{
+				continue;
+			}
+
+			float dist = Vector2Distance(
+				{ obj->m_Pos.x, obj->m_Pos.z },
+				{ g_camera.target.x, g_camera.target.z }
+			);
+
+			const float poolAmbientRange = g_SoundSystem->GetSpatialDefaultRange();
+			if (dist <= poolAmbientRange)
+			{
+				currentlyInRange.insert(obj->m_ID);
+				if (poolsInRange.find(obj->m_ID) == poolsInRange.end())
+				{
+					obj->Interact(2);
+				}
+			}
+		}
+
+		for (int poolId : poolsInRange)
+		{
+			if (currentlyInRange.find(poolId) == currentlyInRange.end())
+			{
+				g_SoundSystem->StopLoopingSoundEffect(poolId);
+			}
+		}
+
+		poolsInRange = std::move(currentlyInRange);
+	}
+}
 
 #include <list>
 #include <string>
@@ -38,7 +87,6 @@
 
 #include "InputSystem.h"
 #include "LoadSaveState.h"
-#include "SoundSystem.h"
 
 using namespace std;
 
@@ -221,7 +269,7 @@ void MainState::OnEnter()
 		// Fade out.
 		else
 		{
-			g_SoundSystem->PlayMusic("Audio/Music/35bg.ogg");
+			g_SoundSystem->PlayMusic(BuildU7MusicPath(35));
 
 			// Move camera to start position and rotation.
 			g_camera.target = Vector3{ 1068.0f, 0.0f, 2213.0f };
@@ -486,6 +534,12 @@ void MainState::HandleDebugKeys()
 
 	if (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyPressed(KEY_L))
 		DumpNpcScheduleStats();
+
+	if (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyPressed(KEY_G))
+	{
+		g_showEggs = !g_showEggs;
+		AddConsoleString(g_showEggs ? "Egg display ON" : "Egg display OFF");
+	}
 
 	if (m_showPathfindingDebug && g_InputSystem->WasRButtonClicked())
 	{
@@ -1422,6 +1476,10 @@ void MainState::Update()
 				{
 					AddConsoleString("Cleanup: Removing dead object ID " + std::to_string(node->first));
 				}
+				if (g_SoundSystem)
+				{
+					g_SoundSystem->StopLoopingSoundEffect(node->first);
+				}
 				UnassignObjectChunk(node->second.get());
 				node = g_objectList.erase(node);
 				if (g_LuaDebug)
@@ -1500,6 +1558,16 @@ void MainState::Update()
 
 	// Process game input
 	UpdateInput();
+
+	if (g_SpriteEffectSystem)
+	{
+		g_SpriteEffectSystem->Update(GetFrameTime());
+	}
+
+	if (m_showObjects)
+	{
+		UpdatePoolAmbientSounds();
+	}
 
 	if (m_barkDuration > 0 && m_barkObject != nullptr)
 	{
@@ -1970,6 +2038,11 @@ void MainState::Draw()
 
 		DrawRectangleRounded({ screenPos.x, screenPos.y, width, height }, 5, 100, { 0, 0, 0, 192 });
 		DrawTextEx(*g_ConversationFont, m_barkText.c_str(), { float(screenPos.x) + xoffset / 2, float(screenPos.y) + (height * .1f) }, g_ConversationFont->baseSize, 1, YELLOW);
+	}
+
+	if (g_SpriteEffectSystem && m_showObjects)
+	{
+		g_SpriteEffectSystem->Draw(g_camera);
 	}
 
 	if (!m_paused && m_showUIElements)
