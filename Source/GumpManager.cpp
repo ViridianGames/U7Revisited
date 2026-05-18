@@ -349,7 +349,7 @@ void GumpManager::Update()
 				}
 				else
 				{
-					object->SetPos(g_terrainUnderMousePointer);
+					object->SetPos(m_dropPosition);
 					g_SoundSystem->PlaySound(BuildU7SfxPath(74));
 					Log("Dropped item to ground");
 

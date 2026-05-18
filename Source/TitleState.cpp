@@ -613,7 +613,7 @@ void TitleState::CreateMaleFemaleGUI()
 	m_MaleFemaleGui->m_Font = g_SmallFont;
 
 	m_MaleFemaleGui->SetLayout(0, 0, g_Engine->m_RenderWidth, g_Engine->m_RenderHeight, g_DrawScale, Gui::GUIP_USE_XY);
-	m_MaleFemaleGui->AddOctagonBox(GUI_MALEFEMALE_PANEL, 250, 100, 140, 120, g_Borders);
+	m_MaleFemaleGui->AddOctagonBox(GUI_MALEFEMALE_PANEL, 250, 100, 140, 128, g_Borders);
 
 	int y = 106;
 	int yoffset = 22;
@@ -631,7 +631,12 @@ void TitleState::CreateMaleFemaleGUI()
 	m_MaleFemaleGui->AddIconButton(GUI_MALEFEMALE_BUTTON_FEMALE, femaleAvatar,
 	330, y, 0, 0, femaleAvatar->width, femaleAvatar->height);
 
-	y += yoffset * 3;
+	y += yoffset * 2.5;
+
+	m_MaleFemaleGui->AddTextArea(GUI_MALEFEMALE_TEXTAREA_MALE, g_SmallFont.get(), "Male", 280, y, 0, 0);
+	m_MaleFemaleGui->AddTextArea(GUI_MALEFEMALE_TEXTAREA_FEMALE, g_SmallFont.get(), "Female", 336, y, 0, 0);
+
+	y += yoffset;
 
 	m_MaleFemaleGui->AddTextArea(GUI_MALEFEMALE_NAME_TEXT_AREA, g_SmallFont.get(), "Name:", 274, y, 0, 0);
 
