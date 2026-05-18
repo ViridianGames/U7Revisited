@@ -1000,7 +1000,7 @@ void U7Object::TryOpenDoorAtCurrentPosition()
 
 void U7Object::PathfindToDest(Vector3 dest)
 {
-	if (m_NPCID == 19)
+	if (m_NPCID == 18)
 	{
 		int stopper = 0;
 	}

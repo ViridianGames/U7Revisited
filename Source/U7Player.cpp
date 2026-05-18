@@ -283,6 +283,8 @@ bool U7Player::TryMove(const Vector3& desiredPos)
         if (shapeID == 870) return true; // drawbridge
         if (shapeID == 873) return true; // chair
         if (shapeID == 897) return true; // seat
+    	  if (shapeID == 804) return true;
+    	if (shapeID == 962) return true;
         return false;
     };
 

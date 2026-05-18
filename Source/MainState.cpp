@@ -1208,6 +1208,8 @@ void MainState::Update()
 			if (schedulesIt == g_NPCSchedules.end() || schedulesIt->second.empty())
 				continue;
 
+
+
 			U7Object* npcObj = nullptr;
 			auto objIt = g_objectList.find(npcData->m_objectID);
 			if (objIt != g_objectList.end())
@@ -1215,6 +1217,11 @@ void MainState::Update()
 
 			if (!npcObj) continue;
 			if (!npcObj->m_followingSchedule) continue;
+
+			if (npcID == 18)
+			{
+				int stopper = 0;
+			}
 
 			// Find an exact schedule entry for the current timeslot (g_scheduleTime)
 			const NPCSchedule* exactSchedule = nullptr;
@@ -1833,9 +1840,21 @@ void MainState::Draw()
 		if (draggedObject)
 		{
 			BoundingBox box = { Vector3{0, 0, 0}, Vector3{0, 0, 0} };
-			box.min = Vector3Subtract(g_terrainUnderMousePointer, { draggedObject->m_shapeData->m_Dims.x - 1, 0, draggedObject->m_shapeData->m_Dims.z - 1 });
+			box.min = Vector3Subtract(g_terrainUnderMousePointer, { draggedObject->m_shapeData->m_Dims.x, 0, draggedObject->m_shapeData->m_Dims.z });
 			box.max = Vector3Add(box.min, draggedObject->m_shapeData->m_Dims);
+
+			std::vector<U7Object*>& objects = g_chunkObjectMap[int(g_terrainUnderMousePointer.x / 16)][int(g_terrainUnderMousePointer.z / 16)];
+			for (U7Object* object : objects)
+			{
+				if (object != draggedObject && CheckCollisionBoxes(object->m_boundingBox, box))
+				{
+					box.min.y = object->m_boundingBox.max.y;
+					box.max.y = object->m_boundingBox.max.y + draggedObject->m_shapeData->m_Dims.y;
+				}
+			}
+
 			DrawBoundingBox(box, WHITE);
+			g_gumpManager->m_dropPosition = box.min;
 		}
 	}
 

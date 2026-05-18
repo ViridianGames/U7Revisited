@@ -63,7 +63,6 @@ void OptionsState::Update()
 		g_Engine->m_EngineConfig.SetNumber("sound_volume", g_SoundSystem->GetGlobalSoundVolume());
 		g_Engine->m_EngineConfig.Save();
 		g_StateMachine->PopState(); // Pop this state.
-		g_StateMachine->PopState(); // Pop this state.
 	}
 
 	if (m_Gui->GetActiveElementID() == GUI_OPTIONS_QUIT_GAME_BUTTON)

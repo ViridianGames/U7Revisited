@@ -197,6 +197,12 @@ bool PathfindingSystem::IsWalkableSurface(int shapeID)
 	if (shapeID == 897)//seat
 		return true;
 
+	if (shapeID == 804)//crate
+		return true;
+
+	if (shapeID == 962)
+		return true;
+
 	return false;
 }
 
