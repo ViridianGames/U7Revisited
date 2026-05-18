@@ -1,7 +1,13 @@
---- Best guess: Plays a specific music track (ID 58) when triggered, likely for an ambient or event-based sound effect.
+-- This script handles the lyre: when triggered, plays the lyre's instrument track (ID 58).
 function object_lyre_0691(eventid, objectref)
+
     if eventid == 1 then
-        play_music(objectref, 58)
+
+        play_instrument(objectref, 58)
+
     end
+
     return
+
 end
+

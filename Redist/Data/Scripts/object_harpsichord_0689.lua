@@ -1,7 +1,13 @@
---- Best guess: Plays a specific music track (ID 57) when triggered, likely for an ambient or event-based sound effect.
+-- This script handles the harpsichord: when triggered, plays the harpsichord's instrument track (ID 57).
 function object_harpsichord_0689(eventid, objectref)
+
     if eventid == 1 then
-        play_music(objectref, 57)
+
+        play_instrument(objectref, 57)
+
     end
+
     return
+
 end
+

@@ -1,4 +1,5 @@
---- Best guess: Toggles a music box to play music (ID 41) or stop (ID 255), setting a flag and calling an external function, likely for ambiance.
+-- This script handles the music box: when triggered, plays the music box's instrument track (ID 41).
+
 function object_musicbox_0752(eventid, objectref)
     local var_0000
 
@@ -6,7 +7,7 @@ function object_musicbox_0752(eventid, objectref)
         var_0000 = get_object_frame(objectref)
         if var_0000 == 0 then
             set_object_frame(objectref, 1)
-            play_music(objectref, 41)
+            play_instrument(objectref, 41)
             if not npc_id_in_party(-144) then
                 set_flag(423, true)
                 -- calle 0490H, 1168 (unmapped)
@@ -14,7 +15,7 @@ function object_musicbox_0752(eventid, objectref)
             end
         else
             set_object_frame(objectref, 0)
-            play_music(objectref, 255)
+            stop_instrument(objectref)
         end
     end
     return

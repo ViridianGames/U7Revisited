@@ -65,6 +65,7 @@ extern std::string g_objectDrawTypeStrings[];
 
 extern bool g_LuaDebug;
 extern bool g_showScriptedObjects;
+extern bool g_showEggs;
 
 // enum class ObjectTypes
 // {
@@ -105,7 +106,10 @@ inline Vector2 g_DirVectors[8] = {
 	{ 0, 1 }, { -1, 1 }, { -1, 0 }, { -1, -1 }
 };
 
-inline std::unordered_map<int, std::string> g_soundEffectList;
+// Audio path helpers (paths relative to Redist working directory)
+std::string BuildU7SfxPath(int soundId);    // Audio/SFX/<bank>/U7BG_SFX_<bank>_NNN.wav
+std::string BuildU7VoicePath(int voiceFileIndex);  // Audio/Voice/U7BG_voice_NNN.wav
+std::string BuildU7MusicPath(int trackId);  // Audio/Music/NNbg.ogg
 
 struct ObjectData
 {
@@ -276,6 +280,9 @@ struct SpriteFrame {
 };
 
 extern std::array<std::vector<SpriteFrame>, 32> g_spriteTable;  // 32 sprite shapes, each with multiple frames
+
+class U7SpriteEffectSystem;
+extern std::unique_ptr<U7SpriteEffectSystem> g_SpriteEffectSystem;
 
 extern std::vector<U7Object*> g_sortedVisibleObjects;
 

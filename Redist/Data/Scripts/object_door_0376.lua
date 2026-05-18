@@ -10,12 +10,14 @@ function object_door_0376(eventid, objectref)
     var_0000 = utility_unknown_0795(objectref)  -- Get frame % 4 (handle state)
     if var_0000 == 1 then
         -- Handle up state
+        play_sound_effect(31, objectref)
         if utility_position_0797(7, 0, 0, 0, 270, objectref) then
             utility_unknown_0798(1, 0, 3, 0, 432, 2, 1, 433, objectref)
             set_object_quality(objectref, 31)
         end
     elseif var_0000 == 0 then
         -- Handle down state
+        play_sound_effect(30, objectref)
         if utility_position_0797(7, 0, 0, 1, 270, objectref) then
             utility_unknown_0798(7, -3, 0, 1, 432, 1, 0, 433, objectref)
             set_object_quality(objectref, 30)
