@@ -1,4 +1,5 @@
 #include "U7Globals.h"
+#include "U7SpriteEffects.h"
 #include "U7Object.h"
 #include "Geist/Engine.h"
 #include "Geist/Logging.h"
@@ -20,7 +21,39 @@
 
 #include "InputSystem.h"
 #include "raylib.h"
+#include <cstdio>
 using namespace std;
+
+std::string BuildU7SfxPath(int soundId)
+{
+	string bank = "mt32";
+	if (g_Engine)
+	{
+		const string configured = g_Engine->m_EngineConfig.GetString("sfx_bank");
+		if (!configured.empty())
+		{
+			bank = configured;
+		}
+	}
+
+	char path[128];
+	snprintf(path, sizeof(path), "Audio/SFX/%s/U7BG_SFX_%s_%03d.wav", bank.c_str(), bank.c_str(), soundId);
+	return path;
+}
+
+std::string BuildU7VoicePath(int voiceId)
+{
+	char path[128];
+	snprintf(path, sizeof(path), "Audio/Voice/U7BG_voice_%03d.wav", voiceId);
+	return path;
+}
+
+std::string BuildU7MusicPath(int trackId)
+{
+	char path[128];
+	snprintf(path, sizeof(path), "Audio/Music/%02dbg.ogg", trackId);
+	return path;
+}
 
 std::string g_version;
 
@@ -54,6 +87,7 @@ std::array<ObjectData, 1024> g_objectDataTable;
 
 // Weather/effect sprite data
 std::array<std::vector<SpriteFrame>, 32> g_spriteTable;
+std::unique_ptr<U7SpriteEffectSystem> g_SpriteEffectSystem = std::make_unique<U7SpriteEffectSystem>();
 
 // Misc names from TEXT.FLX for frame-specific item names
 std::vector<std::string> g_miscNames;
@@ -119,6 +153,7 @@ std::unique_ptr<U7Player> g_Player;
 
 bool g_LuaDebug = false;  // Toggle with F8 key
 bool g_showScriptedObjects = false;  // Toggle with F11 key - highlights objects with scripts
+bool g_showEggs = false;  // Toggle with Ctrl+G
 
 std::unique_ptr<Model> g_CuboidModel;
 

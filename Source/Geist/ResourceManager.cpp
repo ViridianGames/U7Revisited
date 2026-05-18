@@ -113,9 +113,14 @@ void ResourceManager::AddSound(const std::string& soundName)
 {
 	std::string fullPath = s_audioPath + soundName;
 	Log("Loading sound " + fullPath);
-	Wave wave = LoadWave(soundName.c_str());
-	m_SoundList[soundName] = std::make_unique<Sound>(LoadSoundFromWave(wave));
-	UnloadWave(wave);
+	Sound sound = LoadSound(soundName.c_str());
+	if (sound.frameCount == 0)
+	{
+		Wave wave = LoadWave(soundName.c_str());
+		sound = LoadSoundFromWave(wave);
+		UnloadWave(wave);
+	}
+	m_SoundList[soundName] = std::make_unique<Sound>(sound);
 	Log("Load successful.");
 }
 

@@ -891,10 +891,10 @@ void LoadingState::ParseIREGFile(stringstream& ireg, int superchunkx, int superc
 					egg.usecodeFunc = entryBuffer[10] | (entryBuffer[11] << 8);
 				}
 
-				// Voice example
+				// Voice eggs: link each egg's specificValue to an audio file explicitly.
 				if (egg.type == EggType::Voice && egg.specificValue == 31)
 				{
-					egg.audioFile = "Audio/guardian-laugh.ogg";
+					egg.audioFile = BuildU7VoicePath(23);
 				}
 			}
 			else
