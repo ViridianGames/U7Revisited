@@ -174,12 +174,18 @@ private:
 };
 
 
+enum WalkabilityType
+{
+	WALKABLE = 0,
+	BLOCKING = 1,
+	CLIMBABLE = 2,
+	DOOR = 3
+};
+
 struct ObjectWalkability
 {
 	int shapeID;
-	std::string name;
-	std::string walkability; // walkable, blocking, climbable, door
-	float stepHeight;
+	WalkabilityType walkability;
 };
 
 class PathfindingSystem : public Object

@@ -207,13 +207,13 @@ bool PathfindingSystem::IsWalkableSurface(int shapeID)
 }
 
 // AABB vs AABB intersection helper (axis-aligned)
-static bool AABBIntersectsAABB(const Vector3& minA, const Vector3& maxA, const Vector3& minB, const Vector3& maxB)
-{
-	if (maxA.x < minB.x || minA.x > maxB.x) return false;
-	if (maxA.y < minB.y || minA.y > maxB.y) return false;
-	if (maxA.z < minB.z || minA.z > maxB.z) return false;
-	return true;
-}
+// static bool AABBIntersectsAABB(const Vector3& minA, const Vector3& maxA, const Vector3& minB, const Vector3& maxB)
+// {
+// 	if (maxA.x < minB.x || minA.x > maxB.x) return false;
+// 	if (maxA.y < minB.y || minA.y > maxB.y) return false;
+// 	if (maxA.z < minB.z || minA.z > maxB.z) return false;
+// 	return true;
+// }
 
 bool PathfindingSystem::ValidateMove(U7Object* agent, const Vector3& desiredPos, float& outDestH)
 {
@@ -335,7 +335,7 @@ bool PathfindingSystem::ValidateMove(U7Object* agent, const Vector3& desiredPos,
 				maxObj.x += eps; maxObj.y += eps; maxObj.z += eps;
 
 				// Quick reject if AABBs don't overlap
-				if (!AABBIntersectsAABB(playerMin, playerMax, minObj, maxObj))
+				if (!CheckCollisionBoxes({playerMin, playerMax}, {minObj, maxObj}))
 					continue;
 
 				// Now we have overlap — decide whether it should block movement
@@ -394,7 +394,7 @@ bool PathfindingSystem::ValidateMove(U7Object* agent, const Vector3& desiredPos,
 						float sampleY = srcH + (destH - srcH) * t;
 						Vector3 sampleMin = { samplePos.x - kPlayerRadius, sampleY, samplePos.z - kPlayerRadius };
 						Vector3 sampleMax = { samplePos.x + kPlayerRadius, sampleY + kPlayerHeight, samplePos.z + kPlayerRadius };
-						if (AABBIntersectsAABB(sampleMin, sampleMax, minObj, maxObj))
+						if (CheckCollisionBoxes({sampleMin, sampleMax}, {minObj, maxObj}))
 						{
 							hit = true;
 							if (IsWalkableSurface(shapeID))
@@ -2002,6 +2002,8 @@ void PathfindingSystem::LoadObjectWalkability(const std::string& filename)
 		return;
 	}
 
+	m_objectWalkability.clear();
+
 	std::string line;
 	while (std::getline(file, line))
 	{
@@ -2018,24 +2020,13 @@ void PathfindingSystem::LoadObjectWalkability(const std::string& filename)
 			tokens.push_back(item);
 		}
 
-		if (tokens.size() >= 3)
+		if (tokens.size() == 2)
 		{
 			ObjectWalkability ow;
-			try {
-				ow.shapeID = std::stoi(tokens[0]);
-				ow.name = tokens[1];
-				ow.walkability = tokens[2];
-				ow.stepHeight = 0.0f;
-				if (tokens.size() >= 4 && !tokens[3].empty())
-				{
-					ow.stepHeight = std::stof(tokens[3]);
-				}
-				m_objectWalkability[ow.shapeID] = ow;
-			}
-			catch (const std::exception&)
-			{
-				// Skip malformed lines
-			}
+			ow.shapeID = std::stoi(tokens[0]);
+			int walkVal = std::stoi(tokens[1]);
+			ow.walkability = static_cast<WalkabilityType>(walkVal);
+			m_objectWalkability[ow.shapeID] = ow;
 		}
 	}
 	file.close();
