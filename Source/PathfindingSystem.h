@@ -174,18 +174,13 @@ private:
 };
 
 
-enum WalkabilityType
+enum ObjectWalkability
 {
-	WALKABLE = 0,
-	BLOCKING = 1,
-	CLIMBABLE = 2,
-	DOOR = 3
-};
-
-struct ObjectWalkability
-{
-	int shapeID;
-	WalkabilityType walkability;
+	OW_WALKABLE = 0,
+	OW_BLOCKING,
+	OW_CLIMBABLE,
+	OW_DOOR,
+	OW_LASTWALKABILITYTYPE
 };
 
 class PathfindingSystem : public Object

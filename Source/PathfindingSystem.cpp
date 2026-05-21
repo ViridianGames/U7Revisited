@@ -1993,43 +1993,58 @@ bool AStar::IsNodeOnFinalPath(int x, int z, float y) const
 	int64_t k = MakeNodeKey(x, z, yidx);
 	return m_finalPathKeys.find(k) != m_finalPathKeys.end();
 }
+
 void PathfindingSystem::LoadObjectWalkability(const std::string& filename)
 {
 	std::ifstream file(filename);
 	if (!file.is_open())
 	{
-		AddConsoleString("WARNING: Could not open object walkability file: " + filename, YELLOW);
+		TraceLog(LOG_ERROR, "Failed to open walkability file: %s", filename.c_str());
 		return;
 	}
 
-	m_objectWalkability.clear();
-
 	std::string line;
+	int lineNumber = 0;
+
 	while (std::getline(file, line))
 	{
-		if (line.empty() || line[0] == '#')
-		{
+		lineNumber++;
+
+		// Skip empty lines
+		if (line.empty())
 			continue;
-		}
 
-		std::stringstream ss(line);
-		std::string item;
-		std::vector<std::string> tokens;
-		while (std::getline(ss, item, ','))
-		{
-			tokens.push_back(item);
-		}
+		// Skip lines starting with space or #
+		if (line[0] == ' ' || line[0] == '#')
+			continue;
 
-		if (tokens.size() == 2)
+		// Remove any trailing whitespace or comments
+		size_t commentPos = line.find('#');
+		if (commentPos != std::string::npos)
+			line = line.substr(0, commentPos);
+
+		// Trim trailing whitespace
+		line.erase(std::find_if(line.rbegin(), line.rend(), [](unsigned char ch) {
+			 return !std::isspace(ch);
+		}).base(), line.end());
+
+		if (line.empty())
+			continue;
+
+		// Parse two integers separated by comma
+		std::istringstream ss(line);
+		int shapeID, walkableValue;
+
+		if (ss >> shapeID)
 		{
-			ObjectWalkability ow;
-			ow.shapeID = std::stoi(tokens[0]);
-			int walkVal = std::stoi(tokens[1]);
-			ow.walkability = static_cast<WalkabilityType>(walkVal);
-			m_objectWalkability[ow.shapeID] = ow;
+			// Skip the comma and any whitespace
+			ss.ignore(1, ',');
+			if (ss >> walkableValue)
+			{
+				g_pathfindingSystem->m_objectWalkability[shapeID] = ObjectWalkability(walkableValue);
+			}
 		}
 	}
-	file.close();
 }
 
 void PathfindingSystem::PopulateChunkPathfindingGrid()
