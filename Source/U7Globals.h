@@ -549,6 +549,9 @@ struct NPCPathStats
 };
 extern std::unordered_map<int, NPCPathStats> g_npcMaxPathStats;
 void PrintNPCPathStats();
+
+void DrawPerfCounter(Font* font, int loc);
+
 #endif
 
 #endif

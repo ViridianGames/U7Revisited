@@ -2152,3 +2152,50 @@ void LoadGameFlagsFromJson(std::unordered_map<int, bool>& flags, const nlohmann:
 		}
 	}
 }
+
+void DrawPerfCounter(Font* font, int loc)
+{
+	int vpos = 0;
+	int hpos = 0;
+	int width = g_Engine->m_RenderWidth * .20f;
+	int height = g_Engine->m_RenderHeight * .20f;
+	switch (loc)
+	{
+		case 0: // Bottom-left
+			hpos = 0;
+			vpos = g_Engine->m_RenderHeight - height;
+			break;
+		case 1: // Top-left
+			hpos = 0;
+			vpos = 0;
+			break;
+		case 2: // Bottom-right
+			hpos = g_Engine->m_RenderWidth - width;
+			vpos = g_Engine->m_RenderHeight - height;
+			break;
+		case 3: // Top-right
+			hpos = g_Engine->m_RenderWidth - width;
+			vpos = 0;
+			break;
+	}
+	DrawRectangle(hpos, vpos, width, height, BLACK);
+	DrawRectangleLines(hpos, vpos, width, height, BLUE);
+
+	string perf_temp = to_string(int(1.0f / GetFrameTime())) + " fps (" + to_string(int(GetFrameTime() * 1000.0f)) + " mspf)";
+	DrawTextEx(*font, perf_temp.c_str(), {hpos + (width * .05f), vpos + height - (font->baseSize * 1.01f)}, font->baseSize, 1, WHITE);
+	// if (font)
+	// {
+	// 	DrawTextEx(*font, perf_temp.c_str(), {hpos + (width * .05f), vpos + height - (font->baseSize * 1.01f)}, font->baseSize, 1, WHITE);
+	// }
+	DrawTextEx(*font, "Draw", {hpos + (width * .05f), g_Engine->m_RenderHeight * .95f}, font->baseSize, 1, GREEN);
+	DrawTextEx(*font, "Update", {hpos + (width * .3f), g_Engine->m_RenderHeight * .95f}, font->baseSize, 1,  YELLOW);
+	DrawTextEx(*font, "Network", {hpos + (width * .65f), g_Engine->m_RenderHeight * .95f}, font->baseSize, 1, BLUE);
+	int perf_i;
+	for (perf_i = 0; perf_i < 50 - 1; perf_i++)
+	{
+		int h = std::max(1, int(g_Engine->m_UpdateFrames[perf_i] * 1000));
+		int h2 = std::max(1, int(g_Engine->m_DrawFrames[perf_i] * 1000));
+		DrawRectangle(hpos + 4 + (perf_i * 2), int(g_Engine->m_RenderHeight * .94f) - h, 2, h, GREEN);
+		DrawRectangle(hpos + 4 + (perf_i * 2), int(g_Engine->m_RenderHeight * .94f) - (h + h2), 2, h2, YELLOW);
+	}
+}

@@ -25,7 +25,6 @@ public:
 		: m_Done(false)
 		, m_CurrentFrame(0)
 		, m_FrameRate(0.0f)
-		, m_MillisecondsThisFrame(0.0f)
 		, m_Frames{0}
 		, m_DrawFrames{0}
 		, m_UpdateFrames{0}
@@ -55,13 +54,12 @@ public:
 	int m_Frames[50];
 	int m_CurrentFrame;
 	float m_FrameRate;
-	float m_MillisecondsThisFrame;
 
-	int m_DrawFrames[50];
-	int m_UpdateFrames[50];
+	double m_DrawFrames[50];
+	double m_UpdateFrames[50];
 
-	unsigned int m_DrawTime;
-	unsigned int m_UpdateTime;
+	double m_DrawTime;
+	double m_UpdateTime;
 
 	bool m_debugDrawing;
 

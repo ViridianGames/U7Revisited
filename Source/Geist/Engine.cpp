@@ -48,7 +48,7 @@ void Engine::Init(const std::string &configfile)
 	{
 		ToggleFullscreen();
 	}
-	SetTargetFPS(60);
+	//SetTargetFPS(120);
 
 	//  Relies on Raylib, so let's set it up after Raylib has started.
 	g_SoundSystem = make_unique<SoundSystem>();
@@ -69,11 +69,32 @@ void Engine::Shutdown()
 
 void Engine::Update()
 {
+	double time = GetFrameTime();
+	m_UpdateTime = GetTime();
+
 	g_InputSystem->Update();
 	g_ResourceManager->Update();
 	g_StateMachine->Update();
 	g_ScriptingSystem->Update();
 	g_SoundSystem->Update();
+
+	m_UpdateTime = GetTime() - m_UpdateTime;
+
+	//  Drawtime is updated in Draw()
+
+	for (int i = 1; i < 50; ++i)
+	{
+		m_UpdateFrames[i - 1] = m_UpdateFrames[i];
+	}
+	m_UpdateFrames[49] = m_UpdateTime;
+
+	// int _CurrentTime = int(GetTime() * 1000);
+	//
+	// m_Frames[m_CurrentFrame] = _CurrentTime;
+	// m_FrameRate = 1000.0f / ((float)(m_Frames[m_CurrentFrame] - m_Frames[(m_CurrentFrame + 1) % 50]) / 50);
+	// m_MillisecondsThisFrame = (float(m_Frames[m_CurrentFrame] - m_Frames[(m_CurrentFrame + 1) % 50]) / 50);
+	// m_CurrentFrame++;
+	// m_CurrentFrame %= 50;
 
 	if (WindowShouldClose())
 	{
@@ -97,6 +118,7 @@ void Engine::Update()
 
 void Engine::Draw()
 {
+	m_DrawTime = GetTime();
 	BeginDrawing();
 	ClearBackground(BLACK);
 	g_ResourceManager->Draw();
@@ -104,6 +126,13 @@ void Engine::Draw()
 	g_ScriptingSystem->Draw();
 	g_InputSystem->Draw();
 	EndDrawing();
+	m_DrawTime = GetTime() - m_DrawTime;
+
+	for (int i = 1; i < 50; ++i)
+	{
+		m_DrawFrames[i - 1] = m_DrawFrames[i];
+	}
+	m_DrawFrames[49] = m_DrawTime;
 }
 
 void Engine::CaptureScreenshot()

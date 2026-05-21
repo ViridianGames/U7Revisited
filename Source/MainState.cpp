@@ -2011,11 +2011,13 @@ void MainState::Draw()
 		//  Draw version number in lower-right
 		DrawOutlinedText(g_SmallFont, g_version.c_str(), Vector2{ 600, 340 }, g_SmallFont.get()->baseSize, 1, WHITE);
 
+		DrawOutlinedText(g_SmallFont, to_string(1000 * GetFrameTime()), Vector2{ 10, 240 }, g_SmallFont.get()->baseSize, 1, WHITE);
+
 		// Draw FPS counter next to version
-		int fps = GetFPS();
-		string fpsText = "FPS: " + to_string(fps);
-		Color fpsColor = fps >= 60 ? GREEN : (fps >= 30 ? YELLOW : RED);
-		DrawOutlinedText(g_SmallFont, fpsText.c_str(), Vector2{ 520, 340 }, g_SmallFont.get()->baseSize, 1, fpsColor);
+		//int fps = int(1.0f / GetFrameTime());
+		//string fpsText = "FPS: " + to_string(fps);
+		//Color fpsColor = fps >= 60 ? GREEN : (fps >= 30 ? YELLOW : RED);
+		//DrawOutlinedText(g_SmallFont, fpsText.c_str(), Vector2{ 520, 340 }, g_SmallFont.get()->baseSize, 1, fpsColor);
 
 		// Clamp camera coordinates to valid world bounds before accessing g_World
 		int worldX = int(g_camera.target.x);
@@ -2027,6 +2029,8 @@ void MainState::Draw()
 
 		unsigned short shapeframe = g_World[worldZ][worldX];
 		int shape = shapeframe & 0x3ff;
+
+		DrawPerfCounter(g_guiFont.get(), 0);
 	}
 
 	float xoffset = g_Engine->m_ScreenWidth - float(g_minimapSize * g_DrawScale);
