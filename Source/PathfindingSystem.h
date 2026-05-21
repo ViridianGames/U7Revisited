@@ -238,6 +238,11 @@ public:
 	// Utility: determine whether a shape id represents a walkable surface (stairs/floors/bridges/etc.)
 	// Implemented inline below to keep header-only convenience for callers like U7Player.cpp.
 	static bool IsWalkableSurface(int shapeID);
+
+	// Validates if an agent can move to a desired position.
+	// Returns true if reachable, false if blocked.
+	// If reachable, outDestH will contain the new Y coordinate (surface top).
+	static bool ValidateMove(U7Object* agent, const Vector3& desiredPos, float& outDestH);
 };
 
 #endif
