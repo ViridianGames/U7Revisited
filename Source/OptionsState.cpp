@@ -82,7 +82,10 @@ void OptionsState::Update()
 
 	if (m_Gui->GetActiveElementID() == GUI_OPTIONS_FULLSCREEN_CHECKBOX)
 	{
-		ToggleFullscreen();
+		GuiCheckBox* checkbox = static_cast<GuiCheckBox*>(m_Gui->GetElement(GUI_OPTIONS_FULLSCREEN_CHECKBOX).get());
+		g_Engine->m_EngineConfig.SetNumber("full_screen", checkbox->GetValue());
+		g_Engine->m_EngineConfig.Save();
+		m_Gui->GetElement(GUI_OPTIONS_CHANGE_RESOLUTION_NOTIFICATION_TEXT_AREA)->m_String = "Please restart to change resolution.";
 	}
 
 	if (m_Gui->GetActiveElementID() == GUI_OPTIONS_MUSIC_VOLUME_DOWN_BUTTON)
@@ -201,7 +204,7 @@ void OptionsState::CreateOptionsGUI()
    m_Gui->m_Font = g_SmallFont;
 
    m_Gui->SetLayout(0, 0, g_Engine->m_RenderWidth, g_Engine->m_RenderHeight, g_DrawScale, Gui::GUIP_USE_XY);
-   m_Gui->AddOctagonBox(GUI_OPTIONS_PANEL, 200, 80, 240, 140, g_Borders);
+   m_Gui->AddOctagonBox(GUI_OPTIONS_PANEL, 200, 80, 240, 160, g_Borders);
 
    int x = 210;
    int y = 90;
@@ -240,18 +243,20 @@ void OptionsState::CreateOptionsGUI()
 	m_Gui->AddIconButton(GUI_OPTIONS_NEXT_RESOLUTION_BUTTON, 400, y, g_RightArrow);
 
 	m_Gui->AddTextArea(GUI_OPTIONS_CURRENT_RESOLUTION_TEXT_AREA, g_SmallFont.get(), "0", 320, y, 0, 0);
+
+	y += yoffset;
+
+   m_Gui->AddTextArea(GUI_OPTIONS_FULLSCREEN_LABEL, g_SmallFont.get(), "Fullscreen:", x, y, 0, 0,
+                  Color{255, 255, 255, 255}, GuiTextArea::LEFT, 0, 1, true);
+
+   GuiCheckBox* fullscreenCheckBox = m_Gui->AddCheckBox(GUI_OPTIONS_FULLSCREEN_CHECKBOX, 320, y, 10, 10, 1, 1, GRAY, 0, true);
+	fullscreenCheckBox->m_Selected = g_Engine->m_EngineConfig.GetNumber("full_screen") == 1;
+
 	y += yoffset;
 	GuiTextArea* reso = m_Gui->AddTextArea(GUI_OPTIONS_CHANGE_RESOLUTION_NOTIFICATION_TEXT_AREA, g_SmallFont.get(), "", x, y, 0, 0);
 	reso->m_Active = false;
 
-	y += yoffset;
-
-   // m_Gui->AddTextArea(GUI_OPTIONS_FULLSCREEN_LABEL, g_SmallFont.get(), "Fullscreen:", x, y, 0, 0,
-   //               Color{255, 255, 255, 255}, GuiTextArea::LEFT, 0, 1, true);
-   //
-   // m_Gui->AddCheckBox(GUI_OPTIONS_FULLSCREEN_CHECKBOX, 320, y, 10, 10, 1, 1, GRAY, 0, true);
-
-	//y += yoffset + 10;
+	y += yoffset + 10;
 
    m_Gui->AddStretchButton(GUI_OPTIONS_SAVE_GAME_BUTTON, 224, y, 70, "Save/Load",
                                         g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,

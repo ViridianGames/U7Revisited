@@ -126,17 +126,6 @@ void MainState::Init(const string& configfile)
 
 	m_Gui->m_InputScale = float(g_Engine->m_RenderHeight) / float(g_Engine->m_ScreenHeight);
 
-	m_OptionsGui = new Gui();
-
-	m_OptionsGui->m_Active = false;
-
-	m_OptionsGui->SetLayout(0, 0, 250, 320, g_DrawScale, Gui::GUIP_CENTER);
-	m_OptionsGui->AddPanel(1000, 0, 0, 250, 320, Color{ 0, 0, 0, 192 });
-	m_OptionsGui->AddPanel(9999, 0, 0, 250, 320, Color{ 255, 255, 255, 255 }, false);
-	m_OptionsGui->AddTextArea(1001, g_Font.get(), "", 125, 100, 0, 0, Color{ 255, 255, 255, 255 }, GuiTextArea::CENTERED);
-	m_OptionsGui->AddTextButton(1002, 70, 98, "<-", g_Font.get(), Color{ 255, 255, 255, 255 }, Color{ 0, 0, 0, 192 }, Color{ 255, 255, 255, 255 });
-	m_OptionsGui->AddTextButton(1003, 170, 98, "->", g_Font.get(), Color{ 255, 255, 255, 255 }, Color{ 0, 0, 0, 192 }, Color{ 255, 255, 255, 255 });
-
 	m_LastUpdate = 0;
 
 	int stopper = 0;
@@ -2011,7 +2000,7 @@ void MainState::Draw()
 		//  Draw version number in lower-right
 		DrawOutlinedText(g_SmallFont, g_version.c_str(), Vector2{ 600, 340 }, g_SmallFont.get()->baseSize, 1, WHITE);
 
-		DrawOutlinedText(g_SmallFont, to_string(1000 * GetFrameTime()), Vector2{ 10, 240 }, g_SmallFont.get()->baseSize, 1, WHITE);
+		//DrawOutlinedText(g_SmallFont, to_string(1000 * GetFrameTime()), Vector2{ 10, 240 }, g_SmallFont.get()->baseSize, 1, WHITE);
 
 		// Draw FPS counter next to version
 		//int fps = int(1.0f / GetFrameTime());
@@ -2030,7 +2019,10 @@ void MainState::Draw()
 		unsigned short shapeframe = g_World[worldZ][worldX];
 		int shape = shapeframe & 0x3ff;
 
-		DrawPerfCounter(g_guiFont.get(), 0);
+		if (m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX)
+		{
+			DrawPerfCounter(g_guiFont.get(), 0);
+		}
 	}
 
 	float xoffset = g_Engine->m_ScreenWidth - float(g_minimapSize * g_DrawScale);

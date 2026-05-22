@@ -105,8 +105,6 @@ public:
 
    Gui* m_Gui = nullptr;
 
-   Gui* m_OptionsGui = nullptr;
-
    Gui* m_toolTipGui = nullptr;
 
 	Gui* m_numberBarGui = nullptr;

@@ -1999,7 +1999,6 @@ void PathfindingSystem::LoadObjectWalkability(const std::string& filename)
 	std::ifstream file(filename);
 	if (!file.is_open())
 	{
-		TraceLog(LOG_ERROR, "Failed to open walkability file: %s", filename.c_str());
 		return;
 	}
 
