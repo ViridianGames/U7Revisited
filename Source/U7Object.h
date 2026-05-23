@@ -78,7 +78,7 @@ struct NPCData
 	unsigned char food;
 	char soak5[7];
 	char name[16];
-	std::vector<int> m_schedule;
+	std::vector<NPCSchedule> m_schedule;
 	std::vector<std::vector<Texture *> > m_walkTextures;
 
 	int m_currentActivity;

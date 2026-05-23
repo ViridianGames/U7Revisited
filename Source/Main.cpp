@@ -37,6 +37,9 @@
 
 #include "rlgl.h"
 
+#define RLGL_IMPLEMENTATION
+#define RLGL_SOFT_RENDER
+
 #ifdef _WIN32
 // Forward declare Windows types and functions we need
 typedef void* HWND;

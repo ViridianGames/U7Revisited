@@ -623,6 +623,76 @@ void U7Object::NPCUpdate()
 	// IMPORTANT: skip activity/coroutines for party members, but continue with movement below
 	if (shouldUpdateActivity && m_followingSchedule && g_NPCData.find(m_NPCID) != g_NPCData.end() && !isInParty)
 	{
+		NPCData* npcData = g_NPCData[m_NPCID].get();
+
+		// Determine current schedule if time changed or if it hasn't been set yet
+		if (m_lastSchedule != (int)g_scheduleTime)
+		{
+			if (!npcData->m_schedule.empty())
+			{
+				// Find an exact schedule entry for the current timeslot (g_scheduleTime)
+				const NPCSchedule* exactSchedule = nullptr;
+				for (const auto& s : npcData->m_schedule)
+				{
+					if ((int)s.m_time == (int)g_scheduleTime)
+					{
+						exactSchedule = &s;
+						break;
+					}
+				}
+
+				if (exactSchedule)
+				{
+					// If activity or last-schedule time changed, apply update
+					bool activityChanged = (npcData->m_currentActivity != (int)exactSchedule->m_activity);
+					bool timeChanged = (m_lastSchedule != (int)g_scheduleTime);
+
+					if (activityChanged || timeChanged)
+					{
+						// Update NPC activity and last schedule marker
+						npcData->m_currentActivity = (int)exactSchedule->m_activity;
+						m_lastSchedule = (int)g_scheduleTime;
+
+						// Clear schedule-path flag; we'll set it when a path is applied.
+						m_isSchedulePath = false;
+
+						// Build destination
+						Vector3 dest = { float(exactSchedule->m_destX), 0.0f, float(exactSchedule->m_destY) };
+
+						// If pathfinding is enabled, enqueue path request via MainState.
+						if (g_mainState->IsNpcSchedulesEnabled() && g_mainState->m_npcPathfindingEnabled)
+						{
+							// Skip if we already have a pending path for this NPC or dest matches current dest
+							if (m_pathfindingPending)
+							{
+								// already pending -> skip
+							}
+							else if ((int)m_Dest.x == (int)dest.x && (int)m_Dest.z == (int)dest.z)
+							{
+								// already destined to same tile -> skip
+								m_isSchedulePath = true; // keep state consistent
+							}
+							else
+							{
+								// Mark pending AFTER we decide to enqueue to avoid races / duplicate pushes
+								m_pathfindingPending = true;
+								g_mainState->EnqueueSchedulePathRequest(m_NPCID, GetPos(), dest);
+							}
+						}
+						else
+						{
+							// Pathfinding disabled or schedules globally disabled: teleport NPC to scheduled location immediately.
+							SetPos(dest);
+							SetDest(dest);
+							m_isSchedulePath = false;
+							NPCDebugPrint("Schedule: NPC " + std::to_string(m_NPCID) + " teleported to (" +
+								std::to_string((int)dest.x) + "," + std::to_string((int)dest.z) + ") (pathfinding or schedules disabled)");
+						}
+					}
+				}
+			}
+		}
+
 		int currentActivity = g_NPCData[m_NPCID]->m_currentActivity;
 		int lastActivity = g_NPCData[m_NPCID]->m_lastActivity;
 

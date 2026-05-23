@@ -147,6 +147,8 @@ public:
 	std::deque<SchedulePathResult> m_scheduleResults;
 	std::mutex m_resultMutex;                   // protects m_scheduleResults
 
+	friend class U7Object;
+
 	// Worker loop entry
 	void PathfindingWorkerLoop();
 
@@ -251,6 +253,8 @@ public:
 
 	// NPC Pathfinding on schedule change toggle
 	bool m_npcPathfindingEnabled = false;  // Default disabled - NPCs stay in place when schedules change
+
+	void EnqueueSchedulePathRequest(int npcID, Vector3 start, Vector3 dest);
 
 	// Pathfinding debug visualization
 	bool m_showPathfindingDebug = false;  // F10: Tile-level visualization (shows objects)

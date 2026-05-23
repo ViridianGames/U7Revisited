@@ -264,9 +264,9 @@ void NpcListWindow::BuildNPCList()
 
 		// Check if this is a "continued" activity (not an exact schedule match for current time)
 		bool isContinued = false;
-		if (g_NPCSchedules.find(npcId) != g_NPCSchedules.end())
+		if (!npcData->m_schedule.empty())
 		{
-			const auto& schedules = g_NPCSchedules[npcId];
+			const auto& schedules = npcData->m_schedule;
 
 			// Check if there's an exact schedule match for current time
 			bool exactMatch = false;
