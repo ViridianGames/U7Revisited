@@ -144,6 +144,8 @@ float g_cameraSpeed = 25.0f;
 bool g_shouldCameraMoveToDestination = false;
 
 Shader g_alphaDiscard;
+Shader g_cuboidShader;
+int g_cuboidTexCoordsLoc;
 
 bool g_pixelated = false;
 RenderTexture2D g_renderTarget;
