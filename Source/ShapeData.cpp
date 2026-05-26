@@ -617,7 +617,6 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 		thisPos = Vector3Add(thisPos, Vector3{ -m_Dims.x + 1, 0, -m_Dims.z + 1 });
 
 		SetMaterialTexture(&g_CuboidModel.get()->materials[0], MATERIAL_MAP_DIFFUSE, m_cuboidTexture->m_Texture);
-        //Log(std::to_string(g_CuboidModel.get()->materials[0].shader.id));
 		UpdateTextureCoordinates();
 		DrawModelEx(*g_CuboidModel.get(), thisPos, Vector3{ 0, 1, 0 }, angle, { m_Dims.x * m_Scaling.x, m_Dims.y * m_Scaling.y, m_Dims.z * m_Scaling.z }, color);
 
