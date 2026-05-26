@@ -207,14 +207,10 @@ void MainState::OnEnter()
 {
 	g_lastTime = 0;
 	g_minute = 0;
-	g_hour = 7;
+	g_hour = 6;
 	g_scheduleTime = 2;
 
 	m_heightCutoff = 16.0f; // Draw everything unless the player is inside.
-
-	// Initialize NPC activities based on starting schedule time (for new games)
-	// This must happen AFTER g_scheduleTime is set, so NPCs get the correct activity for time slot 1
-	InitializeNPCActivitiesFromSchedules();
 
 	if (m_gameMode == MainStateModes::MAIN_STATE_MODE_TRINSIC_DEMO)
 	{
@@ -995,37 +991,38 @@ void MainState::HandleLeftSingleClick()
 void MainState::DebugPrintNpcSchedule(U7Object* npc)
 {
 	int npcID = npc->m_NPCID;
-
-	if (g_NPCSchedules.find(npcID) == g_NPCSchedules.end() || g_NPCSchedules[npcID].empty())
+	auto it = g_NPCData.find(npcID);
+	if (it == g_NPCData.end() || !it->second || it->second->m_schedule.empty())
 	{
 		AddConsoleString("  No schedule data for this NPC");
 	}
 	else
 	{
-		vector<int> sortedIndices(g_NPCSchedules[npcID].size());
+		NPCData* npcData = it->second.get();
+		vector<int> sortedIndices(npcData->m_schedule.size());
 		for (int i = 0; i < (int)sortedIndices.size(); i++)
 			sortedIndices[i] = i;
 
 		std::sort(sortedIndices.begin(), sortedIndices.end(),
-			[npcID](int a, int b) {
-				return g_NPCSchedules[npcID][a].m_time < g_NPCSchedules[npcID][b].m_time;
+			[npcData](int a, int b) {
+				return npcData->m_schedule[a].m_time < npcData->m_schedule[b].m_time;
 			});
 
 		// Find the currently active schedule block
 		int activeScheduleIndex = -1;
 		for (int idx : sortedIndices)
 		{
-			if (g_NPCSchedules[npcID][idx].m_time <= g_scheduleTime)
+			if (npcData->m_schedule[idx].m_time <= g_scheduleTime)
 				activeScheduleIndex = idx;
 			else
 				break;
 		}
-		if (activeScheduleIndex == -1 && !g_NPCSchedules[npcID].empty())
+		if (activeScheduleIndex == -1 && !npcData->m_schedule.empty())
 			activeScheduleIndex = sortedIndices.back();
 
 		for (int idx : sortedIndices)
 		{
-			const auto& schedule = g_NPCSchedules[npcID][idx];
+			const auto& schedule = npcData->m_schedule[idx];
 			string timeStr;
 			switch (schedule.m_time)
 			{
@@ -1185,6 +1182,20 @@ void MainState::Bark(U7Object* object, const std::string& text, float duration)
 	}
 }
 
+void MainState::EnqueueSchedulePathRequest(int npcID, Vector3 start, Vector3 dest)
+{
+	SchedulePathRequest req;
+	req.npcID = npcID;
+	req.start = start;
+	req.dest = dest;
+
+	{
+		std::lock_guard<std::mutex> lk(m_scheduleMutex);
+		m_schedulePathQueue.push_back(std::move(req));
+	}
+	m_scheduleCv.notify_one();
+}
+
 void MainState::Update()
 {
 	// Decrement error cursor frame counter
@@ -1239,108 +1250,7 @@ void MainState::Update()
 		// Update last-checked value immediately to avoid re-entrancy in this frame
 		g_lastScheduleTimeCheck = g_scheduleTime;
 
-		// Walk every NPC and update those that follow schedules
-		for (const auto& [npcID, npcDataPtr] : g_NPCData)
-		{
-			if (!npcDataPtr) continue;
-			NPCData* npcData = npcDataPtr.get();
-			if (npcData->m_objectID < 0) continue;
-
-			// Skip NPCs without schedules or that are not following schedules
-			auto schedulesIt = g_NPCSchedules.find(npcID);
-			if (schedulesIt == g_NPCSchedules.end() || schedulesIt->second.empty())
-				continue;
-
-
-
-			U7Object* npcObj = nullptr;
-			auto objIt = g_objectList.find(npcData->m_objectID);
-			if (objIt != g_objectList.end())
-				npcObj = objIt->second.get();
-
-			if (!npcObj) continue;
-			if (!npcObj->m_followingSchedule) continue;
-
-			if (npcID == 18)
-			{
-				int stopper = 0;
-			}
-
-			// Find an exact schedule entry for the current timeslot (g_scheduleTime)
-			const NPCSchedule* exactSchedule = nullptr;
-			for (const auto& s : schedulesIt->second)
-			{
-				if ((int)s.m_time == (int)g_scheduleTime)
-				{
-					exactSchedule = &s;
-					break;
-				}
-			}
-
-			// If there is no exact entry for this timeslot, do not change activity (preserve current).
-			if (!exactSchedule)
-				continue;
-
-			// If activity or last-schedule time changed, apply update
-			bool activityChanged = (npcData->m_currentActivity != (int)exactSchedule->m_activity);
-			bool timeChanged = (npcObj->m_lastSchedule != (int)g_scheduleTime);
-
-			if (activityChanged || timeChanged)
-			{
-				// Update NPC activity and last schedule marker
-				npcData->m_currentActivity = (int)exactSchedule->m_activity;
-				npcObj->m_lastSchedule = (int)g_scheduleTime;
-
-				// Clear schedule-path flag; we'll set it when a path is applied.
-				npcObj->m_isSchedulePath = false;
-
-				// Build destination
-				Vector3 dest = { float(exactSchedule->m_destX), 0.0f, float(exactSchedule->m_destY) };
-
-				// If pathfinding is enabled, enqueue path request for worker thread.
-				if (m_npcPathfindingEnabled)
-				{
-					// Skip if we already have a pending path for this NPC or dest matches current dest
-					if (npcObj->m_pathfindingPending)
-					{
-						// already pending -> skip
-					}
-					else if ((int)npcObj->m_Dest.x == (int)dest.x && (int)npcObj->m_Dest.z == (int)dest.z)
-					{
-						// already destined to same tile -> skip
-						npcObj->m_isSchedulePath = true; // keep state consistent
-					}
-					else
-					{
-						// Mark pending AFTER we decide to enqueue to avoid races / duplicate pushes
-						npcObj->m_pathfindingPending = true;
-
-						SchedulePathRequest req;
-						req.npcID = npcID;
-						req.start = npcObj->GetPos();  // snapshot start position now
-						req.dest = dest;
-
-						{
-							std::lock_guard<std::mutex> lk(m_scheduleMutex);
-							m_schedulePathQueue.push_back(std::move(req));
-						}
-						m_scheduleCv.notify_one();
-					}
-				}
-				else
-				{
-					// Pathfinding disabled: teleport NPC to scheduled location immediately.
-					npcObj->SetPos(dest);
-					npcObj->SetDest(dest);
-					npcObj->m_isSchedulePath = false;
-					NPCDebugPrint("Schedule: NPC " + std::to_string(npcID) + " teleported to (" +
-						std::to_string((int)dest.x) + "," + std::to_string((int)dest.z) + ") (pathfinding disabled)");
-				}
-
-				// Ensure activity coroutines will be restarted on next NPC updates
-				// (m_lastActivity is managed when coroutines are started/cleaned up inside U7Object::NPCUpdate)
-			}
-		}
+		// Moved schedule determination logic to U7Object::NPCUpdate
 	}
 
 	g_gumpManager->Update();
@@ -2270,10 +2180,6 @@ void MainState::RebuildWorldFromLoadedData()
 	}
 	Log("MainState::RebuildWorldFromLoadedData - Assigned to chunks: " + std::to_string(staticCount) + " static, " + std::to_string(dynamicCount) + " objects, " + std::to_string(npcCount) + " NPCs, " + std::to_string(containedCount) + " contained (skipped)");
 
-	// Initialize NPC activities based on current schedule time (after loading saved game)
-	Log("MainState::RebuildWorldFromLoadedData - Initializing NPC activities from schedules...");
-	InitializeNPCActivitiesFromSchedules();
-
 	// Force immediate update of visible objects after loading
 	Log("MainState::RebuildWorldFromLoadedData - Calling UpdateSortedVisibleObjects now...");
 	UpdateSortedVisibleObjects();
@@ -2460,7 +2366,7 @@ void MainState::DumpNpcScheduleStats()
 				continue;
 			}
 
-			bool hasSchedule = (g_NPCSchedules.find(npcId) != g_NPCSchedules.end() && !g_NPCSchedules[npcId].empty());
+			bool hasSchedule = (!kv.second->m_schedule.empty());
 			if (!hasSchedule) ++noSchedule;
 
 			if (obj->m_followingSchedule) ++following;

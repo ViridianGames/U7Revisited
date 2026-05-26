@@ -1665,7 +1665,7 @@
 202 0 0 0 40 40 0 40 40 13 40 0 21 40 3 1 1 1 -2 0 -2 0 1 2 2 3 3 1 Models/3dmodels/debris_202x00.gltf 1 0 202 0 default 
 202 1 0 0 40 40 0 40 40 7 40 0 20 40 3 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/debris_202x01.gltf 1 0 202 1 default 
 202 2 0 0 40 40 0 40 40 13 40 0 21 40 3 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/debris_202x02.gltf 1 0 202 2 default 
-202 3 0 0 40 40 0 40 40 7 40 0 20 40 3 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/debris_202x03.gltf 1 0 202 3 default 
+202 3 0 0 40 40 0 40 40 7 40 0 20 40 3 1 1 1 -0.5 0 -0.5 0 1 2 2 3 3 1 Models/3dmodels/debris_202x03.gltf 1 0 202 3 default 
 202 4 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 202 4 default 
 202 5 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 202 5 default 
 202 6 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 202 6 default 

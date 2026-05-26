@@ -161,7 +161,6 @@ std::unique_ptr<Model> g_CuboidModel;
 
 std::vector< std::vector<Texture> > g_walkFrames;
 
-std::unordered_map<int, std::vector<NPCSchedule> > g_NPCSchedules;
 
 Color g_dayNightColor = WHITE;
 bool g_isDay = true;
@@ -1962,74 +1961,6 @@ SpellData* GetSpellData(int spellId)
 		return it->second;
 	}
 	return nullptr;
-}
-
-// Initialize NPC activities based on current schedule time
-// This should be called after loading schedules OR after loading a saved game
-void InitializeNPCActivitiesFromSchedules()
-{
-	extern unsigned int g_scheduleTime;
-
-	NPCDebugPrint("  NPC: g_scheduleTime=" + std::to_string(g_scheduleTime));
-	NPCDebugPrint("  NPC: g_NPCSchedules size=" + std::to_string(g_NPCSchedules.size()));
-	NPCDebugPrint("  NPC: g_NPCData size=" + std::to_string(g_NPCData.size()));
-
-	for (const auto& [npcID, schedules] : g_NPCSchedules)
-	{
-		if (g_NPCData.find(npcID) == g_NPCData.end() || !g_NPCData[npcID])
-			continue;
-
-		// Find the most recent schedule <= current time (looking backwards)
-		int mostRecentTime = -1;
-		const NPCSchedule* mostRecentSchedule = nullptr;
-
-		for (const auto& schedule : schedules)
-		{
-			if ((int)schedule.m_time <= (int)g_scheduleTime && (int)schedule.m_time > mostRecentTime)
-			{
-				mostRecentTime = (int)schedule.m_time;
-				mostRecentSchedule = &schedule;
-			}
-		}
-
-		// If no schedule found <= current time, wrap around and look at end of day (time 21, 18, 15, etc)
-		if (!mostRecentSchedule)
-		{
-			for (const auto& schedule : schedules)
-			{
-				if ((int)schedule.m_time > mostRecentTime)
-				{
-					mostRecentTime = (int)schedule.m_time;
-					mostRecentSchedule = &schedule;
-				}
-			}
-		}
-
-		if (mostRecentSchedule)
-		{
-			g_NPCData[npcID]->m_currentActivity = mostRecentSchedule->m_activity;
-			// NPCDebugPrint("  NPC " + std::to_string(npcID) + " (" + std::string(g_NPCData[npcID]->name) +
-			//            ") set to activity " + std::to_string(mostRecentSchedule->m_activity) +
-			//            " from time " + std::to_string(mostRecentTime));
-			
-			// Also set m_lastSchedule on the NPC object so schedule checker knows initialization is done
-			if (g_NPCData[npcID]->m_objectID >= 0 && g_objectList[g_NPCData[npcID]->m_objectID])
-			{
-				g_objectList[g_NPCData[npcID]->m_objectID]->m_lastSchedule = mostRecentTime;
-				// NPCDebugPrint("  NPC m_lastSchedule=" + std::to_string(mostRecentTime) +
-				//            " on object " + std::to_string(g_NPCData[npcID]->m_objectID));
-			}
-			else
-			{
-				// NPCDebugPrint("  NPC: Could not set m_lastSchedule, objectID=" +
-				//            std::to_string(g_NPCData[npcID]->m_objectID));
-			}
-		}
-		else
-		{
-			// NPCDebugPrint("  NPC " + std::to_string(npcID) + " has no schedule entry!");
-		}
-	}
 }
 
 std::array<int, 1024> g_isObjectMoveable =

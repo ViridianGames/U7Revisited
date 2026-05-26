@@ -2384,7 +2384,10 @@ void LoadingState::LoadNPCSchedules()
 				thisEntry.m_activity = (timeAndActivity >> 3) & 0x1F;
 				thisEntry.m_time = timeAndActivity & 0x07;
 
-				g_NPCSchedules[i].push_back(thisEntry);
+				if (g_NPCData.find(i) != g_NPCData.end() && g_NPCData[i])
+				{
+					g_NPCData[i]->m_schedule.push_back(thisEntry);
+				}
 				location = file.tellg();
 			}
 		}
@@ -2428,9 +2431,9 @@ void LoadingState::LoadNPCSchedules()
 
 				// Find the schedule entry for this time block
 				bool found = false;
-				if (g_NPCSchedules.find(npcID) != g_NPCSchedules.end())
+				if (g_NPCData.find(npcID) != g_NPCData.end() && g_NPCData[npcID])
 				{
-					for (const auto& schedule : g_NPCSchedules[npcID])
+					for (const auto& schedule : g_NPCData[npcID]->m_schedule)
 					{
 						if (schedule.m_time == timeBlock)
 						{
