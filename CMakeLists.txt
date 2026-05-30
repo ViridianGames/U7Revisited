@@ -173,6 +173,7 @@ set(SOURCES
     Source/Ghost/GhostWindow.cpp
 
     Source/AskState.cpp
+    Source/CombatState.cpp
     Source/ConversationState.cpp
     Source/GameSerializer.cpp
     Source/GumpManager.cpp

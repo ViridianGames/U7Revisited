@@ -24,6 +24,7 @@
 #include "LoadingState.h"
 #include "ShapeEditorState.h"
 #include "ConversationState.h"
+#include "CombatState.h"
 #include "ScriptRenameState.h"
 #include "LoadSaveState.h"
 #include "AskState.h"
@@ -388,6 +389,11 @@ int main(int argv, char** argc)
       g_ConversationState = conversationState;
       conversationState->Init("engine.cfg");
       g_StateMachine->RegisterState(STATE_CONVERSATIONSTATE, conversationState, "CONVERSATION_STATE");
+
+      CombatState* combatState = new CombatState;
+      g_CombatState = combatState;
+      combatState->Init("engine.cfg");
+      g_StateMachine->RegisterState(STATE_COMBATSTATE, combatState, "COMBAT_STATE");
 
       ScriptRenameState* scriptRenameState = new ScriptRenameState;
       scriptRenameState->Init("engine.cfg");

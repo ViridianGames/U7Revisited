@@ -23,6 +23,7 @@
 #include "Geist/Primitives.h"
 #include "Geist/RNG.h"
 #include "ConversationState.h"
+#include "CombatState.h"
 #include "GumpManager.h"
 #include "MainState.h"
 #include "PathfindingSystem.h"
@@ -51,6 +52,7 @@ enum GameStates
 	STATE_SHAPEEDITORSTATE,
 	STATE_CREDITS,
 	STATE_CONVERSATIONSTATE,
+	STATE_COMBATSTATE,
 	STATE_SCRIPTRENAMESTATE,
 	STATE_LOADSAVESTATE,
 	STATE_ASKEXITSTATE,
@@ -404,6 +406,7 @@ void LoadGameFlagsFromJson(const json& j);
 //int l_add_dialogue(lua_State* L);
 
 extern ConversationState* g_ConversationState;
+extern CombatState* g_CombatState;
 extern MainState* g_mainState;
 
 extern bool g_autoRotate;
