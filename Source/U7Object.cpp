@@ -65,12 +65,10 @@ void U7Object::Init(const string& configfile, int unitType, int frame)
 	m_drawType = m_shapeData->GetDrawType();
 	m_isContainer = false;
 	m_isContained = false;
-	m_isEgg = false;
 	m_hasGump = false;
 	m_inventory.clear();
 	m_hasConversationTree = false;
 	m_InventoryPos = Vector2{ 0, 0 };
-	m_isNPC = false;
 	m_isMoving = false;
 	m_distanceFromCamera = 999999;
 
@@ -86,49 +84,40 @@ void U7Object::Init(const string& configfile, int unitType, int frame)
 
 void U7Object::Draw()
 {
-	if (!m_Visible || m_isContained || (m_isEgg && !g_showEggs) || !m_ShouldDraw)
+	// Common early-out checks
+	if (!m_Visible || m_isContained || (m_UnitType == UnitTypes::UNIT_TYPE_EGG && !g_showEggs) || !m_ShouldDraw)
 	{
 		return;
 	}
 
-	if (m_isNPC)
+	// Dispatch to type-specific drawing.
+	switch (m_UnitType)
 	{
-		NPCDraw();
-	}
-	else
-	{
-		int cellx = (TILEWIDTH / 2) + m_Pos.x - int(g_camera.target.x);
-		int celly = (TILEHEIGHT / 2) + m_Pos.z - int(g_camera.target.z);
+		case UnitTypes::UNIT_TYPE_STATIC:
+			StaticDraw();
+			break;
 
-		if(cellx < 0 || cellx >= TILEWIDTH || celly < 0 || celly >= TILEHEIGHT)
-		{
-			return; // Not on the screen.
-		}
+		case UnitTypes::UNIT_TYPE_OBJECT:
+			InteractiveDraw();
+			break;
 
-		Color renderColor = g_Terrain->m_cellLighting[cellx][celly];
+		case UnitTypes::UNIT_TYPE_NPC:
+			NPCDraw();
+			break;
 
-		// Apply green tint if F11 script debug is enabled and object has a non-default script
-		// Also check for conversation trees (NPCs with dialogue scripts)
-		if (g_showScriptedObjects &&
-		    ((m_shapeData->m_luaScript != "" && m_shapeData->m_luaScript != "default") || m_hasConversationTree))
-		{
-			// Blend with green to highlight scripted objects
-			renderColor.r = (renderColor.r + 0) / 2;
-			renderColor.g = (renderColor.g + 255) / 2;
-			renderColor.b = (renderColor.b + 0) / 2;
-		}
-		// Apply blue tint if F11 debug is enabled and object is walkable (isNotWalkable = false)
-		else if (g_showScriptedObjects && m_objectData && !m_objectData->m_isNotWalkable)
-		{
-			// Blend with blue to highlight walkable objects
-			renderColor.r = (renderColor.r + 0) / 2;
-			renderColor.g = (renderColor.g + 0) / 2;
-			renderColor.b = (renderColor.b + 255) / 2;
-		}
+		case UnitTypes::UNIT_TYPE_EGG:
+			EggDraw();
+			break;
 
-		m_shapeData->Draw(m_Pos, m_Angle, renderColor);
+		case UnitTypes::UNIT_TYPE_MONSTER:
+			MonsterDraw();
+			break;
+
+		default:
+			break;
 	}
 
+	// Shared debug drawing (applies to all types)
 	if (g_Engine->m_debugDrawing)
 	{
 		DrawBoundingBox(m_boundingBox, MAGENTA);
@@ -138,6 +127,126 @@ void U7Object::Draw()
 	{
 		DrawSphere(m_centerPoint, .15f, RED);
 	}
+}
+
+///////////////////////////////////////////////////////////////////////////
+//  TYPE-SPECIFIC UPDATE FUNCTIONS
+//  Called from U7Object::Update() via switch on m_UnitType
+///////////////////////////////////////////////////////////////////////////
+
+void U7Object::StaticUpdate()
+{
+	// Statics do nothing on update.
+}
+
+void U7Object::InteractiveUpdate()
+{
+	// Most interactive objects have very little per-frame logic here.
+	// Container behavior, scripts, etc. are usually event-driven via Interact().
+}
+
+void U7Object::EggUpdate()
+{
+	switch (m_eggData.type)
+	{
+		case EggType::MonsterSpawner:
+			HandleMonsterSpawnerEgg();
+			break;
+
+		case EggType::Jukebox:
+			HandleJukeboxEgg();
+			break;
+
+		case EggType::ProximitySound:
+			HandleProximitySoundEgg();
+			break;
+
+		case EggType::Voice:
+			HandleVoiceEgg();
+			break;
+
+		case EggType::Weather:
+			HandleWeatherEgg();
+			break;
+
+		case EggType::Teleporter:
+			HandleTeleporterEgg();
+			break;
+
+		case EggType::Path:
+			HandlePathEgg();
+			break;
+
+		case EggType::Usecode:
+			HandleUsecodeEgg();
+			break;
+	}
+}
+
+void U7Object::MonsterUpdate()
+{
+	// Placeholder for future monster AI / combat behavior.
+	// For now monsters behave like simple interactive objects.
+}
+
+///////////////////////////////////////////////////////////////////////////
+//  TYPE-SPECIFIC DRAW FUNCTIONS
+//  Called from U7Object::Draw() via switch on m_UnitType
+///////////////////////////////////////////////////////////////////////////
+
+void U7Object::StaticDraw()
+{
+	// Statics are drawn through the normal shapeData path below in InteractiveDraw
+	// for now. We can specialize later (e.g. instanced terrain).
+	InteractiveDraw();
+}
+
+void U7Object::InteractiveDraw()
+{
+	int cellx = (TILEWIDTH / 2) + m_Pos.x - int(g_camera.target.x);
+	int celly = (TILEHEIGHT / 2) + m_Pos.z - int(g_camera.target.z);
+
+	if (cellx < 0 || cellx >= TILEWIDTH || celly < 0 || celly >= TILEHEIGHT)
+	{
+		return; // Not on the screen.
+	}
+
+	Color renderColor = g_Terrain->m_cellLighting[cellx][celly];
+
+	// Apply green tint if F11 script debug is enabled and object has a non-default script
+	// Also check for conversation trees (NPCs with dialogue scripts)
+	if (g_showScriptedObjects &&
+	    ((m_shapeData->m_luaScript != "" && m_shapeData->m_luaScript != "default") || m_hasConversationTree))
+	{
+		// Blend with green to highlight scripted objects
+		renderColor.r = (renderColor.r + 0) / 2;
+		renderColor.g = (renderColor.g + 255) / 2;
+		renderColor.b = (renderColor.b + 0) / 2;
+	}
+	// Apply blue tint if F11 debug is enabled and object is walkable (isNotWalkable = false)
+	else if (g_showScriptedObjects && m_objectData && !m_objectData->m_isNotWalkable)
+	{
+		// Blend with blue to highlight walkable objects
+		renderColor.r = (renderColor.r + 0) / 2;
+		renderColor.g = (renderColor.g + 0) / 2;
+		renderColor.b = (renderColor.b + 255) / 2;
+	}
+
+	m_shapeData->Draw(m_Pos, m_Angle, renderColor);
+}
+
+void U7Object::EggDraw()
+{
+	// Eggs are invisible unless g_showEggs is enabled (handled in main Draw early-out).
+	// When visible for debug, we still want to draw their shape.
+	InteractiveDraw();
+}
+
+void U7Object::MonsterDraw()
+{
+	// For now monsters draw like normal objects.
+	// Later this can use different billboard / animation logic.
+	InteractiveDraw();
 }
 
 void U7Object::CheckLighting()
@@ -167,54 +276,36 @@ void U7Object::CheckLighting()
 
 void U7Object::Update()
 {
-	if (m_isNPC)
+	// Dispatch to the appropriate type-specific update function.
+	// m_UnitType should be the source of truth.
+	switch (m_UnitType)
 	{
-		NPCUpdate();
-	}
-
-	if (m_isEgg || m_UnitType == U7Object::UnitTypes::UNIT_TYPE_EGG)
-	{
-		EggUpdate();
-	}
-}
-
-void U7Object::EggUpdate()
-{
-	switch (m_eggData.type)
-	{
-		case EggType::MonsterSpawner:
-			HandleMonsterSpawnerEgg();
-			break; // Not implemented yet
-
-		case EggType::Jukebox:
-			HandleJukeboxEgg();
-			break; // Not implemented yet
-
-		case EggType::ProximitySound:
-			HandleProximitySoundEgg();
-			break; // Not implemented yet
-
-		case EggType::Voice:
-			HandleVoiceEgg();
+		case UnitTypes::UNIT_TYPE_STATIC:
+			StaticUpdate();
 			break;
 
-		case EggType::Weather:
-			HandleWeatherEgg();
+		case UnitTypes::UNIT_TYPE_OBJECT:
+			InteractiveUpdate();
 			break;
 
-		case EggType::Teleporter:
-			HandleTeleporterEgg();
+		case UnitTypes::UNIT_TYPE_NPC:
+			NPCUpdate();
 			break;
 
-		case EggType::Path:
-			HandlePathEgg();
+		case UnitTypes::UNIT_TYPE_EGG:
+			EggUpdate();
 			break;
 
-		case EggType::Usecode:
-			HandleUsecodeEgg();
+		case UnitTypes::UNIT_TYPE_MONSTER:   // New type for creatures spawned from eggs
+			MonsterUpdate();
+			break;
+
+		default:
 			break;
 	}
 }
+
+
 
 void U7Object::HandleMonsterSpawnerEgg()
 {
@@ -302,8 +393,7 @@ void U7Object::HandleMonsterSpawnerEgg()
 
 		if (spawned)
 		{
-			spawned->m_isNPC = true;           // Treat as creature for AI purposes
-			spawned->m_UnitType = UnitTypes::UNIT_TYPE_NPC;
+			spawned->m_UnitType = UnitTypes::UNIT_TYPE_MONSTER;
 			spawned->m_hp = 20 + (g_NonVitalRNG ? (int)g_NonVitalRNG->RandomRange(0, 15) : 5);
 			spawned->m_BaseAttack = 5.0f;
 			spawned->m_combat = 10.0f;
@@ -1076,7 +1166,7 @@ void U7Object::SetPos(Vector3 pos)
 
 	// Notify pathfinding grid if this is a non-walkable STATIC object (not NPCs!)
 	// NPCs don't block pathfinding grid, so no need to update when they move
-	if (m_objectData && m_objectData->m_isNotWalkable && !m_isNPC)
+	if (m_objectData && m_objectData->m_isNotWalkable && m_UnitType != UnitTypes::UNIT_TYPE_NPC)
 	{
 		// Update both old and new positions (object moved)
 		NotifyPathfindingGridUpdate((int)fromPos.x, (int)fromPos.z);
@@ -1434,7 +1524,7 @@ void U7Object::InvalidateWeightCache()
 float U7Object::GetRemainingCarryCapacity()
 {
 	// Only NPCs have carry capacity
-	if (!m_isNPC || m_NPCData == nullptr)
+	if (m_UnitType != UnitTypes::UNIT_TYPE_NPC || m_NPCData == nullptr)
 		return 0.0f;
 
 	float maxWeight = GetMaxWeightFromStrength(m_NPCData->str);
@@ -1456,7 +1546,6 @@ bool U7Object::IsLocked()
 void U7Object::NPCInit(NPCData* npcData)
 {
 	m_NPCData = npcData;
-	m_isNPC = true;
 	m_UnitType = UnitTypes::UNIT_TYPE_NPC;
 	m_isContainer = true;
 	m_isContained = false;
@@ -1543,13 +1632,18 @@ json U7Object::SaveToJson() const
 			j["shouldBeSorted"] = m_shouldBeSorted;
 	}
 
-	// NPC-specific fields
-	if (m_UnitType == UnitTypes::UNIT_TYPE_NPC && m_NPCData != nullptr)
+	// Creature combat stats (shared by NPCs and Monsters)
+	if (m_UnitType == UnitTypes::UNIT_TYPE_NPC || m_UnitType == UnitTypes::UNIT_TYPE_MONSTER)
 	{
 		j["hp"] = m_hp;
 		j["combat"] = m_combat;
 		j["magic"] = m_magic;
 		j["team"] = m_Team;
+	}
+
+	// Full NPC-specific fields
+	if (m_UnitType == UnitTypes::UNIT_TYPE_NPC && m_NPCData != nullptr)
+	{
 		j["npcID"] = m_NPCID;
 		j["currentFrameX"] = m_currentFrameX;
 		j["currentFrameY"] = m_currentFrameY;
@@ -1573,7 +1667,8 @@ json U7Object::SaveToJson() const
 
 		// Persist batch index so distribution is stable across loads
 		if (m_npcBatchIndex >= 0)
-		 j["npcBatchIndex"] = m_npcBatchIndex;
+			j["npcBatchIndex"] = m_npcBatchIndex;
+
 		// Equipment slots
 		json equipment;
 		equipment["HEAD"] = m_NPCData->GetEquippedItem(EquipmentSlot::SLOT_HEAD);
@@ -1618,7 +1713,6 @@ U7Object* U7Object::LoadFromJson(const json& j)
 	// Check if this is an egg object (same logic as LoadingState.cpp line 826)
 	if (obj->m_objectData->m_name == "Egg" || obj->m_objectData->m_name == "path")
 	{
-		obj->m_isEgg = true;
 		obj->m_isContainer = false;
 	}
 
@@ -1660,13 +1754,23 @@ U7Object* U7Object::LoadFromJson(const json& j)
 	if (j.contains("shouldBeSorted"))
 		obj->m_shouldBeSorted = j["shouldBeSorted"];
 
-	// NPC-specific fields
-	if (obj->m_UnitType == UnitTypes::UNIT_TYPE_NPC)
+	// Creature combat stats (NPCs and Monsters)
+	if (obj->m_UnitType == UnitTypes::UNIT_TYPE_NPC || obj->m_UnitType == UnitTypes::UNIT_TYPE_MONSTER)
 	{
 		obj->m_hp = j.value("hp", 25.0f);
 		obj->m_combat = j.value("combat", 10.0f);
 		obj->m_magic = j.value("magic", 0.0f);
 		obj->m_Team = j.value("team", 0);
+	}
+
+	if (obj->m_UnitType == UnitTypes::UNIT_TYPE_MONSTER)
+	{
+		// Nothing extra needed — m_UnitType is already set
+	}
+
+	// Full NPC-specific fields
+	if (obj->m_UnitType == UnitTypes::UNIT_TYPE_NPC)
+	{
 		obj->m_NPCID = j.value("npcID", 0);
 		obj->m_currentFrameX = j.value("currentFrameX", 0);
 		obj->m_currentFrameY = j.value("currentFrameY", 0);
@@ -1691,7 +1795,6 @@ U7Object* U7Object::LoadFromJson(const json& j)
 		if (obj->m_NPCID >= 0 && obj->m_NPCID < g_NPCData.size())
 		{
 			obj->m_NPCData = g_NPCData[obj->m_NPCID].get();
-			obj->m_isNPC = true;
 			obj->m_isContainer = true;
 		}
 

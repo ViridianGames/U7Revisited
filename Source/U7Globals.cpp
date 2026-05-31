@@ -767,7 +767,7 @@ U7Object* GetRootNPCFromContainer(U7Object* container)
 		return nullptr;
 
 	// If this container is already an NPC, return it
-	if (container->m_isNPC)
+	if (container->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC)
 		return container;
 
 	// Follow the parent chain up to find an NPC
@@ -778,7 +778,7 @@ U7Object* GetRootNPCFromContainer(U7Object* container)
 		if (parent == nullptr)
 			break;
 
-		if (parent->m_isNPC)
+		if (parent->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC)
 			return parent;
 
 		currentId = parent->m_containingObjectId;
@@ -1650,7 +1650,7 @@ std::string GetObjectScriptName(U7Object* object)
 		return "";
 
 	// NPCs with conversation trees use NPC ID-based scripts
-	if (object->m_isNPC && object->m_hasConversationTree)
+	if (object->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC && object->m_hasConversationTree)
 	{
 		return FindNPCScriptByID(object->m_NPCID);
 	}

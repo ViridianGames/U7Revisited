@@ -3035,7 +3035,7 @@ static int LuaSetToAttack(lua_State *L)
     }
 
     U7Object* attacker = g_objectList[attacker_id].get();
-    if (!attacker->m_isNPC || !attacker->m_NPCData)
+    if (attacker->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_NPC || !attacker->m_NPCData)
     {
         lua_pushinteger(L, 0);
         return 1;
@@ -3166,7 +3166,7 @@ static int LuaApplyDamage(lua_State *L)
         target->m_hp -= hit_points;
 
         // Check if target died
-        if (target->m_hp <= 0 && target->m_isNPC && target->m_NPCData)
+        if (target->m_hp <= 0 && target->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC && target->m_NPCData)
         {
             target->m_NPCData->status |= 0x0008;  // Set dead bit
             lua_pushboolean(L, 1);  // Target died
@@ -3192,7 +3192,7 @@ static int LuaReduceHealth(lua_State *L)
         target->m_hp -= hit_points;
 
         // Check if target died
-        if (target->m_hp <= 0 && target->m_isNPC && target->m_NPCData)
+        if (target->m_hp <= 0 && target->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC && target->m_NPCData)
         {
             target->m_NPCData->status |= 0x0008;  // Set dead bit
         }
@@ -3314,7 +3314,7 @@ static int LuaIsNPC(lua_State *L)
     }
 
     U7Object* obj = g_objectList[object_id].get();
-    bool is_npc = obj->m_isNPC || (obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC);
+    bool is_npc = obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC;
 
     lua_pushboolean(L, is_npc);
     return 1;
@@ -3333,7 +3333,7 @@ static int LuaIsDead(lua_State *L)
     }
 
     U7Object* obj = g_objectList[object_id].get();
-    if (!obj->m_isNPC || !obj->m_NPCData)
+    if (obj->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_NPC || !obj->m_NPCData)
     {
         lua_pushboolean(L, 0);
         return 1;
@@ -3358,7 +3358,7 @@ static int LuaGetNPCNumber(lua_State *L)
     }
 
     U7Object* obj = g_objectList[object_id].get();
-    if (obj->m_isNPC)
+    if (obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC)
     {
         lua_pushinteger(L, obj->m_NPCID);
     }
@@ -3552,7 +3552,7 @@ static int LuaGetDeadParty(lua_State *L)
             continue;
 
         U7Object* party_member = g_objectList[party_member_id].get();
-        if (!party_member->m_isNPC || !party_member->m_NPCData)
+        if (party_member->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_NPC || !party_member->m_NPCData)
             continue;
 
         // Check if dead (status bit 3)

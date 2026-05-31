@@ -897,8 +897,8 @@ void MainState::HandleLeftDoubleClick()
 
 	if (g_objectUnderMousePointer != nullptr)
 	{
-		bool isAvatar = g_objectUnderMousePointer->m_isNPC && g_objectUnderMousePointer->m_NPCID == 0;
-		bool isPartyMember = g_objectUnderMousePointer->m_isNPC &&
+		bool isAvatar = g_objectUnderMousePointer->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC && g_objectUnderMousePointer->m_NPCID == 0;
+		bool isPartyMember = g_objectUnderMousePointer->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC &&
 			g_Player->NPCIDInParty(g_objectUnderMousePointer->m_NPCID);
 
 		if (isAvatar || isPartyMember)
@@ -979,10 +979,10 @@ void MainState::HandleLeftSingleClick()
 		{
 			//Bark(g_objectUnderMousePointer, GetObjectDisplayName(g_objectUnderMousePointer), 1.0f);
 
-			if (g_objectUnderMousePointer->m_isNPC && m_npcListWindow && m_npcListWindow->IsVisible())
+			if (g_objectUnderMousePointer->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC && m_npcListWindow && m_npcListWindow->IsVisible())
 				m_npcListWindow->SelectNPC(g_objectUnderMousePointer->m_NPCID);
 
-			if (g_LuaDebug && g_objectUnderMousePointer->m_isNPC)
+			if (g_LuaDebug && g_objectUnderMousePointer->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC)
 				DebugPrintNpcSchedule(g_objectUnderMousePointer);
 		}
 	}
@@ -1841,7 +1841,7 @@ void MainState::Draw()
 	{
 		for (auto& object : g_sortedVisibleObjects)
 		{
-			if (object->m_isNPC && !object->m_pathWaypoints.empty())
+			if (object->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC && !object->m_pathWaypoints.empty())
 			{
 				// Check if NPC is on screen or near camera
 				float distToCamera = Vector2Distance(

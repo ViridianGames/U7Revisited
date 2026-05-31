@@ -933,7 +933,7 @@ void LoadingState::ParseIREGFile(stringstream& ireg, int superchunkx, int superc
 			}
 			if (shape == 275)
 			{
-				thisObject->m_isEgg = true;
+				thisObject->m_UnitType = U7Object::UnitTypes::UNIT_TYPE_EGG;
 				thisObject->m_Visible = false;
 				thisObject->m_Pos = {float(actualx), lift1, float(actualy)};
 
@@ -2157,7 +2157,7 @@ void LoadingState::LoadInitialGameState()
 					g_objectList[nextID].get()->m_drawType = ShapeDrawType::OBJECT_DRAW_FLAT;
 				}
 				//g_ObjectList[nextID].get()->m_NPCID = thisNPC.id;
-				//g_ObjectList[nextID]->m_isNPC = true;
+				//g_ObjectList[nextID]->m_UnitType = U7Object::UnitTypes::UNIT_TYPE_NPC; // commented out legacy
 
 
 				if (thisNPC.type != 0 && i != 139 && i != 148) // This NPC has an inventory

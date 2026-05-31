@@ -49,13 +49,13 @@ std::vector<PathfindingGrid::OverlappingObject> PathfindingGrid::GetOverlappingO
 
 			for (U7Object* obj : g_chunkObjectMap[cx][cz])
 			{
-				if (!obj || obj->m_isNPC)
+				if (!obj || obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC)
 					continue;
 
 				if (obj->m_isContained)
 					continue;
 
-				if (obj->m_isEgg)
+				if (obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_EGG)
 					continue;
 
 				if (obj->m_shapeData->GetShape() == 257)//fortress gateway top
@@ -253,7 +253,7 @@ bool PathfindingSystem::ValidateMove(U7Object* agent, const Vector3& desiredPos,
 		if (!ov.obj || !ov.obj->m_shapeData) continue;
 
 		// Skip eggs/triggers — they should not affect climb/walkable surface decisions
-		if (ov.obj->m_isEgg) continue;
+		if (ov.obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_EGG) continue;
 
 		int sID = ov.obj->m_shapeData->GetShape();
 		if (sID == 257 || sID == 368 || sID == 657 || sID == 678 || sID == 415)
@@ -319,9 +319,9 @@ bool PathfindingSystem::ValidateMove(U7Object* agent, const Vector3& desiredPos,
 				if (!obj) continue;
 
 				// Allow walking through eggs/triggers: they should be interactive but non-blocking.
-				if (obj->m_isEgg) continue;
+				if (obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_EGG) continue;
 
-				if (obj->m_isNPC) continue;
+				if (obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC) continue;
 				if (!obj->m_shapeData) continue;
 				if (obj->m_isContained) continue; // skip items in containers
 
@@ -490,7 +490,7 @@ float PathfindingGrid::GetTileHeight(int worldX, int worldZ) const
 		U7Object* obj = ovObj.obj;
 		if (!obj || !obj->m_objectData || !obj->m_shapeData)
 			continue;
-		if (obj->m_isEgg)
+		if (obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_EGG)
 			continue;
 		int shapeID = obj->m_shapeData->GetShape();
 
@@ -1827,7 +1827,7 @@ bool LineOfTilesIsWalkable3D(Vector3 start, Vector3 end)
 			if (obj == nullptr) continue;
 
 			// Eggs are triggers - don't let them block 3D connectivity tests
-			if (obj->m_isEgg) continue;
+			if (obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_EGG) continue;
 
 			Vector3 half = Vector3Multiply(obj->m_shapeData->m_Dims, { 0.5f, 0.5f, 0.5f });
 			Vector3 min = Vector3Subtract(obj->m_Pos, half);

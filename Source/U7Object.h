@@ -207,6 +207,8 @@ public:
 		// Non-player character, can move, can have schedules and conversations, and has an inventory.  May have an attached Lua script.  Monsters are considered NPCs.
 		UNIT_TYPE_EGG,
 		// "Eggs" are what would be called "triggers" in later games.  They are invisible, intangible objects that "hatch" and run scripts when the player interacts with them or enters their bounding box.
+		UNIT_TYPE_MONSTER,
+		// Hostile or neutral creatures spawned from monster eggs. These are intentionally lighter than NPCs (no schedules, no conversations).
 		UNIT_TYPE_LAST
 	};
 
@@ -248,13 +250,11 @@ public:
 		  , m_boundingBox({0})
 		  , m_terrainCenterPoint({0.0f, 0.0f, 0.0f})
 		  , m_centerPoint({0.0f, 0.0f, 0.0f})
-		  , m_isNPC(false)
 		  , m_isContainer(false)
 		  , m_isContained(false)
 		  , m_containingObjectId(-1)
 		  , m_hasConversationTree(false)
 		  , m_hasGump(false)
-		  , m_isEgg(false)
 		  , m_NPCID(-1)
 		  , m_InventoryPos({0.0f, 0.0f})
 	{
@@ -304,15 +304,32 @@ public:
 
 	bool IsInInventory(int shape, int frame = -1, int quality = -1);
 
-	void NPCUpdate();
+	// ---------------------------------------------------------------------
+	//  Type-specific Update / Draw functions
+	//  These are called from the main Update() / Draw() based on m_UnitType.
+	//  This structure makes it much easier to work on one category at a time
+	//  and is a stepping stone toward eventually splitting into separate
+	//  classes (U7Static, U7Interactive, U7NPC, U7Egg, U7Monster).
+	// ---------------------------------------------------------------------
 
+	void NPCUpdate();
 	void NPCDraw();
+
+	void StaticUpdate();
+	void StaticDraw();
+
+	void InteractiveUpdate();
+	void InteractiveDraw();
+
+	void EggUpdate();
+	void EggDraw();
+
+	void MonsterUpdate();
+	void MonsterDraw();
 
 	void NPCInit(NPCData *npcData);
 
 	void TryOpenDoorAtCurrentPosition();
-
-	void EggUpdate();
 
 	void HandleMonsterSpawnerEgg();
 
@@ -424,13 +441,11 @@ public:
 	Vector3 m_terrainCenterPoint;
 	Vector3 m_centerPoint;
 
-	bool m_isNPC;
 	bool m_isContainer;
 	bool m_isContained;
 	int m_containingObjectId;
 	bool m_hasConversationTree;
 	bool m_hasGump;
-	bool m_isEgg;
 
 	int m_NPCID;
 
