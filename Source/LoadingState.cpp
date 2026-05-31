@@ -29,6 +29,80 @@ using namespace std;
 using namespace std::filesystem;
 
 ////////////////////////////////////////////////////////////////////////////////
+//  Free helper functions (like LoadSpellData)
+////////////////////////////////////////////////////////////////////////////////
+
+void LoadMonsterData()
+{
+	g_monsterData.clear();
+
+	std::string dataPath = g_Engine->m_EngineConfig.GetString("data_path");
+	std::string monstersPath = dataPath + "/STATIC/MONSTERS.DAT";
+
+	std::ifstream file(monstersPath, std::ios::binary);
+	if (!file.good())
+	{
+		Log("WARNING: Could not open " + monstersPath + " - monster spawning will use defaults.");
+		AddConsoleString("WARNING: monsters.dat not found - monster data unavailable", RED);
+		return;
+	}
+
+	// monsters.dat contains 65 fixed 25-byte records (1625 bytes + 1 padding)
+	constexpr size_t RECORD_SIZE = 25;
+	constexpr size_t EXPECTED_RECORDS = 65;
+
+	g_monsterData.reserve(EXPECTED_RECORDS);
+
+	unsigned char buffer[RECORD_SIZE];
+	int loaded = 0;
+
+	while (file.read(reinterpret_cast<char*>(buffer), RECORD_SIZE))
+	{
+		MonsterData md;
+		std::memcpy(md.raw, buffer, RECORD_SIZE);
+
+		// Parse according to documented format
+		// https://wiki.ultimacodex.com/wiki/Ultima_VII_monster_file_format
+		md.shapeFrame   = *reinterpret_cast<unsigned short*>(&buffer[0]);
+
+		md.strength     = buffer[2];
+		md.dexterity    = buffer[3];
+		md.intelligence = buffer[4];
+		md.combat       = buffer[5];
+		md.magic        = buffer[6];
+		md.hitPoints    = buffer[7];
+		md.armor        = buffer[8];
+		md.damage       = buffer[9];
+
+		md.unknown0A      = buffer[10];
+		md.unknown0B      = buffer[11];
+		md.alignmentFlags = buffer[12];
+		md.monsterCategory = buffer[13];
+
+		g_monsterData.push_back(md);
+		loaded++;
+	}
+
+	file.close();
+
+	if (g_LuaDebug && !g_monsterData.empty())
+	{
+		DebugPrint("=== MonsterData sample (first 8) ===");
+		for (int i = 0; i < std::min(8, (int)g_monsterData.size()); ++i)
+		{
+			const auto& m = g_monsterData[i];
+			std::stringstream ss;
+			ss << "  [" << i << "] shape=" << (m.shapeFrame & 0x3ff)
+			   << " frame=" << ((m.shapeFrame >> 10) & 0x1f)
+			   << " str=" << (int)m.strength << " dex=" << (int)m.dexterity
+			   << " combat=" << (int)m.combat << " hp=" << (int)m.hitPoints
+			   << " cat=" << (int)m.monsterCategory;
+			DebugPrint(ss.str());
+		}
+	}
+}
+
+////////////////////////////////////////////////////////////////////////////////
 //  LoadingState
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -224,6 +298,14 @@ void LoadingState::UpdateLoading()
 			AddConsoleString(std::string("Loading spell data..."));
 			LoadSpellData();
 			m_loadingSpells = true;
+			return;
+		}
+
+		if (!m_loadingMonsters)
+		{
+			AddConsoleString(std::string("Loading monsters..."));
+			LoadMonsterData();
+			m_loadingMonsters = true;
 			return;
 		}
 
@@ -895,6 +977,26 @@ void LoadingState::ParseIREGFile(stringstream& ireg, int superchunkx, int superc
 				if (egg.type == EggType::Voice && egg.specificValue == 31)
 				{
 					egg.audioFile = BuildU7VoicePath(23);
+				}
+
+				// Monster spawner specific data (best-effort mapping from available bytes)
+				if (egg.type == EggType::MonsterSpawner)
+				{
+					// Many monster eggs repurpose the quality/quantity fields or specificValue
+					// for the creature shape and spawn count. This is a starting heuristic.
+					unsigned char quantity = entryBuffer[8];
+					egg.monsterShape = thisObject->m_Quality;   // Common place for shape hint
+					egg.spawnCount = (quantity > 0) ? quantity : 1;
+
+					// If specificValue looks like a plausible shape number, prefer it
+					if (specVal >= 100 && specVal < 1024)
+					{
+						egg.monsterShape = specVal;
+					}
+
+					// Basic sanity clamp
+					if (egg.monsterShape <= 0)
+						egg.monsterShape = 0; // Will fall back to a default creature at spawn time
 				}
 			}
 			else
@@ -2464,5 +2566,7 @@ void LoadingState::LoadNPCSchedules()
 		csvFile.close();
 		Log("Wrote schedules.csv with NPC schedule data");
 	}
+
+
 #endif
 }

@@ -107,6 +107,41 @@ struct NPCData
 };
 
 
+// MonsterData - Stats for monster types loaded from STATIC/MONSTERS.DAT (25 bytes per record).
+// Exact format: https://wiki.ultimacodex.com/wiki/Ultima_VII_monster_file_format
+// These are the *base definitions* for creatures spawned by eggs, etc.
+// Graphics are already loaded into g_shapeTable via normal shape parsing.
+struct MonsterData
+{
+	unsigned char raw[25];           // Exact 25-byte record (preserved for unmapped fields)
+
+	// === Documented layout (from Ultima Codex wiki) ===
+	unsigned short shapeFrame;       // 0x00-0x01 : Shape (bits 0-9) + Frame (bits 10-14)
+
+	// Primary stats (0x02-0x09)
+	unsigned char strength;          // 0x02
+	unsigned char dexterity;         // 0x03
+	unsigned char intelligence;      // 0x04
+	unsigned char combat;            // 0x05
+	unsigned char magic;             // 0x06
+	unsigned char hitPoints;         // 0x07
+	unsigned char armor;             // 0x08
+	unsigned char damage;            // 0x09
+
+	// Flags and category (starting at 0x0A)
+	unsigned char unknown0A;         // 0x0A
+	unsigned char unknown0B;         // 0x0B
+	unsigned char alignmentFlags;    // 0x0C - alignment + basic behavior bits
+	unsigned char monsterCategory;   // 0x0D - often used by monster eggs / spawners
+
+	// Bytes 0x0E-0x18 contain additional data (experience, treasure, immunities, sounds, etc.)
+	// Left in raw[] until specifically needed.
+
+	// === Runtime / convenience fields ===
+	std::string    name;             // Optional name for debugging / tools
+};
+
+
 // EggType - Main behavior of the egg
 enum class EggType
 {

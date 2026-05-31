@@ -261,6 +261,7 @@ extern std::vector<U7Object*> g_chunkObjectMap[192][192]; // The objects in each
 extern std::array<std::array<ShapeData, 32>, 1024> g_shapeTable;
 extern std::array<ObjectData, 1024> g_objectDataTable;
 extern std::unordered_map<int, std::unique_ptr<NPCData> > g_NPCData;
+extern std::vector<MonsterData> g_monsterData;   // Base stats for all 65 monster types (STATIC/MONSTERS.DAT, documented format)
 
 extern std::array<int, 1024> g_isObjectMoveable;        // Maps item shape ID to valid equipment slots
 

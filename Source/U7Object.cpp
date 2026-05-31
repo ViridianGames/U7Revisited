@@ -218,7 +218,120 @@ void U7Object::EggUpdate()
 
 void U7Object::HandleMonsterSpawnerEgg()
 {
+	EggData& egg = m_eggData;
 
+	// Once-only eggs that have already hatched do nothing
+	if (egg.onceOnly && egg.hasTriggered)
+	{
+		return;
+	}
+
+	// Nocturnal eggs only trigger at night (rough heuristic: hour 20-6)
+	if (egg.nocturnal)
+	{
+		if (g_hour < 20 && g_hour > 6)
+			return;
+	}
+
+	U7Object* avatar = nullptr;
+	if (g_Player)
+		avatar = g_Player->GetAvatarObject();
+
+	if (!avatar)
+		return;
+
+	float dist = Vector2Distance({ m_Pos.x, m_Pos.z }, { avatar->m_Pos.x, avatar->m_Pos.z });
+
+	// Check activation criteria
+	bool shouldActivate = false;
+	switch (egg.criteria)
+	{
+		case EggCriteria::AvatarNear:
+		case EggCriteria::PartyNear:
+			if (dist <= (float)egg.distance)
+				shouldActivate = true;
+			break;
+
+		case EggCriteria::AvatarFootpad:
+		case EggCriteria::PartyFootpad:
+			// Very close / standing on it
+			if (dist <= 1.5f)
+				shouldActivate = true;
+			break;
+
+		default:
+			// For CachedIn / other types, we can be more aggressive or skip for now
+			if (dist <= (float)egg.distance * 2.0f)
+				shouldActivate = true;
+			break;
+	}
+
+	if (!shouldActivate)
+		return;
+
+	// Probability roll (0-100)
+	if (egg.probability < 100)
+	{
+		int roll = g_NonVitalRNG ? (int)g_NonVitalRNG->RandomRange(0, 99) : (rand() % 100);
+		if (roll >= egg.probability)
+			return; // Didn't trigger this time
+	}
+
+	// We've decided to hatch. Spawn the monsters.
+	int count = std::max(1, egg.spawnCount);
+	int shapeToSpawn = egg.monsterShape;
+
+	// Fallback to a basic hostile creature if we have no good shape data yet
+	if (shapeToSpawn <= 0)
+	{
+		// Reasonable default monsters that should exist in the data
+		// (rats, snakes, etc. are common early spawns)
+		shapeToSpawn = 529; // Rat-like default; adjust per actual data as we discover it
+	}
+
+	for (int i = 0; i < count; ++i)
+	{
+		unsigned int newId = GetNextID();
+
+		// Spawn slightly offset around the egg so they don't stack perfectly
+		float offsetX = (i % 3 - 1) * 0.8f + (g_NonVitalRNG ? g_NonVitalRNG->RandomRangeFloat(-0.6f, 0.6f) : 0.0f);
+		float offsetZ = (i / 3 - 1) * 0.8f + (g_NonVitalRNG ? g_NonVitalRNG->RandomRangeFloat(-0.6f, 0.6f) : 0.0f);
+
+		U7Object* spawned = AddObject(shapeToSpawn, 0, newId,
+			m_Pos.x + offsetX, m_Pos.y + 0.1f, m_Pos.z + offsetZ);
+
+		if (spawned)
+		{
+			spawned->m_isNPC = true;           // Treat as creature for AI purposes
+			spawned->m_UnitType = UnitTypes::UNIT_TYPE_NPC;
+			spawned->m_hp = 20 + (g_NonVitalRNG ? (int)g_NonVitalRNG->RandomRange(0, 15) : 5);
+			spawned->m_BaseAttack = 5.0f;
+			spawned->m_combat = 10.0f;
+
+			// Mark as hostile to the player for future combat system
+			spawned->m_Team = 1; // 0 = neutral/player, 1 = hostile monsters (convention to be refined)
+
+			// Optional: give them a simple "attack player" activity later
+			// For now they exist in the world and can be clicked / pathfound to.
+
+			// Always give feedback in console when a monster actually appears
+			AddConsoleString("Monster egg hatched! (shape " + std::to_string(shapeToSpawn) + ")", YELLOW);
+
+			if (g_LuaDebug || g_showEggs)
+			{
+				DebugPrint("MonsterSpawnerEgg hatched @ (" + std::to_string(m_Pos.x) + "," + std::to_string(m_Pos.z) +
+					") -> spawned shape " + std::to_string(shapeToSpawn) + " id=" + std::to_string(newId));
+			}
+		}
+	}
+
+	egg.hasTriggered = true;
+
+	// If not auto-resetting and once-only, it stays triggered
+	if (!egg.autoReset && egg.onceOnly)
+	{
+		// It will stay dormant forever (or until save/load resets it)
+	}
 }
 
 void U7Object::HandleProximitySoundEgg()

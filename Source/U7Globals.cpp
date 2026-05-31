@@ -93,6 +93,7 @@ std::unique_ptr<U7SpriteEffectSystem> g_SpriteEffectSystem = std::make_unique<U7
 std::vector<std::string> g_miscNames;
 
 std::unordered_map<int, unique_ptr<NPCData>> g_NPCData;
+std::vector<MonsterData> g_monsterData;   // Loaded from STATIC/MONSTERS.DAT (65 entries, 25 bytes each) - see wiki for format
 
 // Spell system data
 std::vector<ReagentData> g_reagentData;
