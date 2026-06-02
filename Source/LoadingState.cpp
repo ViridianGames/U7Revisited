@@ -47,40 +47,80 @@ void LoadMonsterData()
 		return;
 	}
 
-	// monsters.dat contains 65 fixed 25-byte records (1625 bytes + 1 padding)
-	constexpr size_t RECORD_SIZE = 25;
-	constexpr size_t EXPECTED_RECORDS = 65;
+	// Format from Exult (matches original U7 MONSTERS.DAT):
+	// Leading byte: record count (usually 65).
+	// Each record: 25 bytes = u16 LE shapeID + 23 bytes packed data.
+	// The shape for the monster info is the u16 prefix (not embedded elsewhere).
+	// Stats are bit-packed starting at "byte 2" of the record (after shape u16).
+	// See shapes/shapeinf/monstinf.cc in Exult for exact parsing.
+	unsigned char recCount = 0;
+	file.read(reinterpret_cast<char*>(&recCount), 1);
+	if (recCount == 0) recCount = 65; // fallback
 
-	g_monsterData.reserve(EXPECTED_RECORDS);
+	g_monsterData.reserve(recCount);
 
-	unsigned char buffer[RECORD_SIZE];
-	int loaded = 0;
-
-	while (file.read(reinterpret_cast<char*>(buffer), RECORD_SIZE))
+	for (int i = 0; i < recCount; ++i)
 	{
+		unsigned short shapeID = 0;
+		file.read(reinterpret_cast<char*>(&shapeID), 2);
+
+		unsigned char dataPart[23];
+		file.read(reinterpret_cast<char*>(dataPart), 23);
+
 		MonsterData md;
-		std::memcpy(md.raw, buffer, RECORD_SIZE);
+		// Store full 25-byte record in raw for reference (shape + data)
+		md.raw[0] = shapeID & 0xFF;
+		md.raw[1] = (shapeID >> 8) & 0xFF;
+		std::memcpy(&md.raw[2], dataPart, 23);
 
-		// Parse according to documented format
-		// https://wiki.ultimacodex.com/wiki/Ultima_VII_monster_file_format
-		md.shapeFrame   = *reinterpret_cast<unsigned short*>(&buffer[0]);
+		md.m_shape = shapeID;
+		md.m_frame = 0;
 
-		md.strength     = buffer[2];
-		md.dexterity    = buffer[3];
-		md.intelligence = buffer[4];
-		md.combat       = buffer[5];
-		md.magic        = buffer[6];
-		md.hitPoints    = buffer[7];
-		md.armor        = buffer[8];
-		md.damage       = buffer[9];
+		// Parse the 23-byte dataPart exactly as Exult does (ptr[0] == original byte 2 of record).
+		// Main stats + alignment. Other fields (safes, flags, equip, sfx) left in raw or unknowns for now.
+		uint8_t* ptr = dataPart;
+		uint8_t value = *ptr++;  // Byte 2
+		md.strength = (value >> 2) & 63;
+		// (low bits: sleep_safe, charm_safe - not stored in current MonsterData bools)
 
-		md.unknown0A      = buffer[10];
-		md.unknown0B      = buffer[11];
-		md.alignmentFlags = buffer[12];
-		md.monsterCategory = buffer[13];
+		value = *ptr++;  // Byte 3
+		md.dexterity = (value >> 2) & 63;
+
+		value = *ptr++;  // Byte 4
+		md.intelligence = (value >> 2) & 63;
+
+		value = *ptr++;  // Byte 5
+		md.alignmentFlags = value & 3;  // alignment
+		md.combat = (value >> 2) & 63;
+
+		value = *ptr++;  // Byte 6
+		md.armor = (value >> 4) & 15;
+
+		ptr++;  // Byte 7: unknown
+
+		value = *ptr++;  // Byte 8: weapon/reach
+		md.damage = (value >> 4) & 15;  // weapon damage as proxy
+
+		ptr++;  // Byte 9: flags (fly etc) -> unknown0A for now
+		md.unknown0A = *ptr++;  // Byte 10: vulnerable
+		md.unknown0B = *ptr++;  // Byte 11: immune
+
+		ptr++;  // Byte 12
+		value = *ptr++;  // Byte 13
+		md.monsterCategory = value;  // includes attack mode low bits etc.
+
+		ptr++;  // Byte 14: equip_offset
+		ptr++;  // Byte 15: exult flags
+		ptr++;  // Byte 16: unknown
+		// Byte 17 would be sfx (ptr now at it)
+
+		// Approximations for fields not directly stored (hp often == strength in practice)
+		md.hitPoints = (md.strength > 0 ? md.strength : 10);
+		md.magic = 0;
+
+		md.m_name = (md.m_shape < 1024 ? g_objectDataTable[md.m_shape].m_name : "");
 
 		g_monsterData.push_back(md);
-		loaded++;
 	}
 
 	file.close();
@@ -92,12 +132,26 @@ void LoadMonsterData()
 		{
 			const auto& m = g_monsterData[i];
 			std::stringstream ss;
-			ss << "  [" << i << "] shape=" << (m.shapeFrame & 0x3ff)
-			   << " frame=" << ((m.shapeFrame >> 10) & 0x1f)
+			ss << "  [" << i << "] shape=" << (m.m_shape)
+			   << " frame=" << (int)m.m_frame
+			   << " name='" << m.m_name << "'"
 			   << " str=" << (int)m.strength << " dex=" << (int)m.dexterity
 			   << " combat=" << (int)m.combat << " hp=" << (int)m.hitPoints
 			   << " cat=" << (int)m.monsterCategory;
 			DebugPrint(ss.str());
+		}
+		// Also log the record for shape 514 (headless) if present
+		for (size_t k = 0; k < g_monsterData.size(); ++k)
+		{
+			if (g_monsterData[k].m_shape == 514)
+			{
+				const auto& m = g_monsterData[k];
+				std::stringstream ss;
+				ss << "  [dat#" << k << "] shape=514 (headless) name='" << m.m_name
+				   << "' str=" << (int)m.strength << " combat=" << (int)m.combat;
+				DebugPrint(ss.str());
+				break;
+			}
 		}
 	}
 }
@@ -326,6 +380,21 @@ void LoadingState::UpdateLoading()
 	{
 		return;
 	}
+
+	U7Object* pirate1 = AddObject(458, 0, GetNextID(), 982, 0, 2057);
+	pirate1->NPCInit(g_NPCData[138].get());
+	pirate1->m_currentActivity = -1;
+	pirate1->m_hostile = true;
+
+	U7Object* pirate2 = AddObject(458, 0, GetNextID(), 984, 0, 2055);
+	pirate2->NPCInit(g_NPCData[138].get());
+	pirate2->m_currentActivity = -1;
+	pirate2->m_hostile = true;
+
+	U7Object* pirate3 = AddObject(458, 0, GetNextID(), 982, 0, 2059);
+	pirate3->NPCInit(g_NPCData[138].get());
+	pirate3->m_currentActivity = -1;
+	pirate3->m_hostile = true;
 
 	g_StateMachine->MakeStateTransition(STATE_TITLESTATE);
 }
@@ -934,7 +1003,7 @@ void LoadingState::ParseIREGFile(stringstream& ireg, int superchunkx, int superc
 			if (shape == 275)
 			{
 				thisObject->m_UnitType = U7Object::UnitTypes::UNIT_TYPE_EGG;
-				thisObject->m_Visible = false;
+				thisObject->m_Visible = true;  // TEMP: make eggs visible for debugging
 				thisObject->m_Pos = {float(actualx), lift1, float(actualy)};
 
 				EggData& egg = thisObject->m_eggData;
@@ -979,24 +1048,74 @@ void LoadingState::ParseIREGFile(stringstream& ireg, int superchunkx, int superc
 					egg.audioFile = BuildU7VoicePath(23);
 				}
 
-				// Monster spawner specific data (best-effort mapping from available bytes)
+				// Monster spawner specific data 
 				if (egg.type == EggType::MonsterSpawner)
 				{
-					// Many monster eggs repurpose the quality/quantity fields or specificValue
-					// for the creature shape and spawn count. This is a starting heuristic.
-					unsigned char quantity = entryBuffer[8];
-					egg.monsterShape = thisObject->m_Quality;   // Common place for shape hint
-					egg.spawnCount = (quantity > 0) ? quantity : 1;
+					// Per u7tech.txt layout for monster eggs (type 1):
+					//   data1 (bytes 7-8): mode (align b0-1 + count b2-7), workType
+					//   data2 (bytes 10-11): creature shape+frame
+					uint8_t mode = entryBuffer[7];
+					uint8_t workType = entryBuffer[8];
+					egg.monsterAlignment = mode & 0x03;
+					egg.monsterWorkType = workType;
 
-					// If specificValue looks like a plausible shape number, prefer it
-					if (specVal >= 100 && specVal < 1024)
-					{
-						egg.monsterShape = specVal;
+					int countFromMode = (mode >> 2) & 0x3f;
+					egg.spawnCount = (countFromMode > 0) ? countFromMode : 1;
+
+					// Prefer creature shape directly from data2 when present (e.g. 0x0202 = 514 for headless)
+					unsigned short shapeWord = entryBuffer[10] | (entryBuffer[11] << 8);
+					int sh = shapeWord & 0x3ff;
+					int fr = (shapeWord >> 10) & 0x1f;
+					if (sh >= 1 && sh < 1024) {
+						egg.monsterShape = sh;
+						egg.monsterFrame = fr;
+					} else {
+						egg.monsterShape = thisObject->m_Quality;
 					}
 
-					// Basic sanity clamp
-					if (egg.monsterShape <= 0)
-						egg.monsterShape = 0; // Will fall back to a default creature at spawn time
+					// Capture monster type index (0-64) for MONSTERS.DAT stats lookup when provided
+					// (often the generic "quality" byte [7] numeric value was used by older code as index)
+					if (specVal > 0 && specVal < 65) {
+						egg.monsterTypeIndex = specVal;
+					} else if (sh > 0 && sh < 65) {
+						egg.monsterTypeIndex = sh;
+					}
+
+					// If we captured an index but monsterShape is still the small index, resolve it now
+					if (egg.monsterShape > 0 && egg.monsterShape < 65 && egg.monsterShape < (int)g_monsterData.size()) {
+						if (egg.monsterTypeIndex == 0) egg.monsterTypeIndex = egg.monsterShape;
+						egg.monsterShape = g_monsterData[egg.monsterShape].m_shape;
+					}
+
+					if (egg.monsterShape < 0 || egg.monsterShape > 1023)
+						egg.monsterShape = 0; 
+
+					// Resolve the true dat record index (0-64 file order) by shape for accurate stats lookup.
+					// (Eggs do not store a "type index"; data1's small value is packed count+align.
+					//  We search after shape is known so debug/handle always get the right record, e.g. 36 for headless 514.)
+					if (egg.monsterShape > 0)
+					{
+						egg.monsterTypeIndex = -1;
+						for (size_t k = 0; k < g_monsterData.size(); ++k)
+						{
+							if (g_monsterData[k].m_shape == egg.monsterShape)
+							{
+								egg.monsterTypeIndex = (int)k;
+								break;
+							}
+						}
+					}
+
+					if (actualx == 773 && actualy == 2087)
+					{
+						DebugPrint("MONSTER EGG @773,2087 parsed: typeIndex=" + std::to_string(egg.monsterTypeIndex) +
+							" shape=" + std::to_string(egg.monsterShape) +
+							" frame=" + std::to_string(egg.monsterFrame) +
+							" count=" + std::to_string(egg.spawnCount) +
+							" prob=" + std::to_string((int)egg.probability) +
+							" align=" + std::to_string((int)egg.monsterAlignment) +
+							" work=" + std::to_string((int)egg.monsterWorkType));
+					}
 				}
 			}
 			else

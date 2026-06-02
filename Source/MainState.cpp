@@ -207,7 +207,7 @@ void MainState::OnEnter()
 {
 	g_lastTime = 0;
 	g_minute = 0;
-	g_hour = 6;
+	g_hour = 7;
 	g_scheduleTime = 2;
 
 	m_heightCutoff = 16.0f; // Draw everything unless the player is inside.
@@ -984,6 +984,12 @@ void MainState::HandleLeftSingleClick()
 
 			if (g_LuaDebug && g_objectUnderMousePointer->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC)
 				DebugPrintNpcSchedule(g_objectUnderMousePointer);
+
+			// TEMP debug: Print context-sensitive egg info on click
+			if (g_objectUnderMousePointer->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_EGG)
+			{
+				g_objectUnderMousePointer->DebugPrintEggInfo();
+			}
 		}
 	}
 }

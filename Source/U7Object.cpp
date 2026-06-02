@@ -85,7 +85,8 @@ void U7Object::Init(const string& configfile, int unitType, int frame)
 void U7Object::Draw()
 {
 	// Common early-out checks
-	if (!m_Visible || m_isContained || (m_UnitType == UnitTypes::UNIT_TYPE_EGG && !g_showEggs) || !m_ShouldDraw)
+	// TEMP: Always draw eggs for debugging (ignore m_Visible and g_showEggs)
+	if (m_UnitType != UnitTypes::UNIT_TYPE_EGG && (!m_Visible || m_isContained || !m_ShouldDraw))
 	{
 		return;
 	}
@@ -371,13 +372,36 @@ void U7Object::HandleMonsterSpawnerEgg()
 	// We've decided to hatch. Spawn the monsters.
 	int count = std::max(1, egg.spawnCount);
 	int shapeToSpawn = egg.monsterShape;
+	int datIndex = egg.monsterTypeIndex;
 
-	// Fallback to a basic hostile creature if we have no good shape data yet
-	if (shapeToSpawn <= 0)
+	// If for some reason we only had an index, resolve shape (legacy safety).
+	if (datIndex >= 0 && datIndex < (int)g_monsterData.size() &&
+	    (shapeToSpawn == 0 || shapeToSpawn == datIndex))
 	{
-		// Reasonable default monsters that should exist in the data
-		// (rats, snakes, etc. are common early spawns)
-		shapeToSpawn = 529; // Rat-like default; adjust per actual data as we discover it
+		shapeToSpawn = g_monsterData[datIndex].m_shape;
+	}
+	if (shapeToSpawn <= 0 || shapeToSpawn > 1000)
+	{
+		shapeToSpawn = 529; // Rat-like default
+	}
+
+	// Find the matching MonsterData record (by datIndex if valid, else by shape) for real stats.
+	const MonsterData* monData = nullptr;
+	if (datIndex >= 0 && datIndex < (int)g_monsterData.size() &&
+	    g_monsterData[datIndex].m_shape == shapeToSpawn)
+	{
+		monData = &g_monsterData[datIndex];
+	}
+	else
+	{
+		for (const auto& md : g_monsterData)
+		{
+			if (md.m_shape == shapeToSpawn)
+			{
+				monData = &md;
+				break;
+			}
+		}
 	}
 
 	for (int i = 0; i < count; ++i)
@@ -394,9 +418,20 @@ void U7Object::HandleMonsterSpawnerEgg()
 		if (spawned)
 		{
 			spawned->m_UnitType = UnitTypes::UNIT_TYPE_MONSTER;
-			spawned->m_hp = 20 + (g_NonVitalRNG ? (int)g_NonVitalRNG->RandomRange(0, 15) : 5);
-			spawned->m_BaseAttack = 5.0f;
-			spawned->m_combat = 10.0f;
+
+			// Pull real stats from MONSTERS.DAT record when available (hp ~ strength, etc.)
+			if (monData)
+			{
+				spawned->m_hp = (monData->hitPoints > 0 ? monData->hitPoints : monData->strength);
+				spawned->m_BaseAttack = (monData->damage > 0 ? monData->damage : 5.0f);
+				spawned->m_combat = (monData->combat > 0 ? monData->combat : 10.0f);
+			}
+			else
+			{
+				spawned->m_hp = 20 + (g_NonVitalRNG ? (int)g_NonVitalRNG->RandomRange(0, 15) : 5);
+				spawned->m_BaseAttack = 5.0f;
+				spawned->m_combat = 10.0f;
+			}
 
 			// Mark as hostile to the player for future combat system
 			spawned->m_Team = 1; // 0 = neutral/player, 1 = hostile monsters (convention to be refined)
@@ -405,7 +440,10 @@ void U7Object::HandleMonsterSpawnerEgg()
 			// For now they exist in the world and can be clicked / pathfound to.
 
 			// Always give feedback in console when a monster actually appears
-			AddConsoleString("Monster egg hatched! (shape " + std::to_string(shapeToSpawn) + ")", YELLOW);
+			std::string hatchedMsg = "Monster egg hatched! (shape " + std::to_string(shapeToSpawn) + ")";
+			if (monData && !monData->m_name.empty())
+				hatchedMsg += " " + monData->m_name;
+			AddConsoleString(hatchedMsg, YELLOW);
 
 			if (g_LuaDebug || g_showEggs)
 			{
@@ -508,6 +546,137 @@ void U7Object::HandleUsecodeEgg()
 
 		//  Run it.
 		g_ScriptingSystem->CallScript(scriptname, {});
+	}
+}
+
+void U7Object::DebugPrintEggInfo() const
+{
+	const EggData& egg = m_eggData;
+
+	// Header line
+	int t = static_cast<int>(egg.type);
+	const char* typeName = (t >= 0 && t < (int)(sizeof(g_eggTypeStrings)/sizeof(g_eggTypeStrings[0])))
+		? g_eggTypeStrings[t] : "Unknown";
+
+	AddConsoleString("EGG clicked @ (" + std::to_string((int)m_Pos.x) + ", " + std::to_string((int)m_Pos.z) + ") - Type: " + typeName);
+
+	// Activation requirements - one per line
+	int c = static_cast<int>(egg.criteria);
+	const char* critName = (c >= 0 && c < (int)(sizeof(g_eggCriteriaStrings)/sizeof(g_eggCriteriaStrings[0])))
+		? g_eggCriteriaStrings[c] : "Unknown";
+
+	AddConsoleString("  Criteria: " + std::string(critName) + "   (distance: " + std::to_string((int)egg.distance) + ")");
+	AddConsoleString("  Probability: " + std::to_string((int)egg.probability) + "%");
+
+	// Flags
+	std::string flags;
+	if (egg.onceOnly)     flags += "OnceOnly ";
+	if (egg.nocturnal)    flags += "Nocturnal ";
+	if (egg.autoReset)    flags += "AutoReset ";
+	if (egg.hasTriggered) flags += "Triggered ";
+	AddConsoleString("  Flags: " + (flags.empty() ? std::string("none") : flags));
+
+	// Context-sensitive details - one field per line
+	switch (egg.type)
+	{
+		case EggType::MonsterSpawner:
+		{
+			int shape = egg.monsterShape ? egg.monsterShape : 0;
+			int datIdx = (egg.monsterTypeIndex >= 0 ? egg.monsterTypeIndex : -1);
+
+			if (datIdx >= 0)
+				AddConsoleString("  MonsterDatIndex (file record): " + std::to_string(datIdx));
+
+			std::string monsterName;
+			int resolvedShape = shape;
+			if (datIdx >= 0 && datIdx < (int)g_monsterData.size())
+			{
+				const auto& md = g_monsterData[datIdx];
+				if (md.m_shape) resolvedShape = md.m_shape;
+				monsterName = md.m_name;
+			}
+			// Fallback: try match by shape in g_monsterData or object table
+			if (resolvedShape && monsterName.empty())
+			{
+				for (const auto& md : g_monsterData)
+				{
+					if (md.m_shape == resolvedShape && !md.m_name.empty())
+					{
+						monsterName = md.m_name;
+						break;
+					}
+				}
+			}
+			if (resolvedShape && monsterName.empty() && resolvedShape < 1024)
+			{
+				monsterName = g_objectDataTable[resolvedShape].m_name;
+			}
+
+			AddConsoleString("  Shape: " + std::to_string(resolvedShape ? resolvedShape : shape));
+			if (!monsterName.empty())
+				AddConsoleString("  Monster: " + monsterName);
+
+			AddConsoleString("  SpawnCount: " + std::to_string(egg.spawnCount));
+
+			// Alignment and schedule/workType info
+			std::string alignStr = "unknown";
+			switch (egg.monsterAlignment)
+			{
+				case 0: alignStr = "neutral"; break;
+				case 1: alignStr = "good"; break;
+				case 2: alignStr = "evil"; break;
+				case 3: alignStr = "chaotic"; break;
+			}
+			AddConsoleString("  Alignment: " + alignStr);
+
+			std::string schedStr = std::to_string((int)egg.monsterWorkType);
+			if (egg.monsterWorkType == 0) schedStr += " (combat)";
+			AddConsoleString("  WorkType/Schedule: " + schedStr);
+			break;
+		}
+
+		case EggType::Usecode:
+			AddConsoleString("  UsecodeFunc: " + std::to_string(egg.usecodeFunc));
+			if (egg.usecodeFunc != 0)
+			{
+				int scriptNum = egg.usecodeFunc - 1280;
+				std::stringstream scriptSS;
+				scriptSS << "utility_unknown_0" << std::setfill('0') << std::setw(3) << scriptNum;
+				AddConsoleString("  Script: " + scriptSS.str());
+			}
+			break;
+
+		case EggType::Jukebox:
+			AddConsoleString("  Track: " + std::to_string((int)egg.specificValue));
+			break;
+
+		case EggType::Voice:
+			AddConsoleString("  SpecificValue: " + std::to_string((int)egg.specificValue));
+			if (!egg.audioFile.empty())
+				AddConsoleString("  AudioFile: " + egg.audioFile);
+			break;
+
+		case EggType::ProximitySound:
+			AddConsoleString("  SoundID: " + std::to_string((int)egg.specificValue));
+			break;
+
+		case EggType::Teleporter:
+			AddConsoleString("  Destination: (" + std::to_string((int)egg.teleportDest.x) + ", " + std::to_string((int)egg.teleportDest.z) + ")");
+			if (egg.destMap != 0)
+				AddConsoleString("  DestMap: " + std::to_string(egg.destMap));
+			break;
+
+		case EggType::Weather:
+			AddConsoleString("  WeatherType: " + std::to_string((int)egg.specificValue));
+			break;
+
+		case EggType::Path:
+			AddConsoleString("  PathID: " + std::to_string((int)egg.specificValue));
+			break;
+
+		default:
+			AddConsoleString("  SpecificValue: " + std::to_string((int)egg.specificValue));
+			break;
 	}
 }
 
@@ -820,6 +989,14 @@ void U7Object::NPCUpdate()
 	//	   << " currentDest=(" << m_Dest.x << "," << m_Dest.y << "," << m_Dest.z << ")";
 	//	NPCDebugPrint(ss.str());
 	//}
+
+	if (m_hostile)
+	{
+		if (Vector2DistanceSqr({m_Pos.x, m_Pos.z}, {g_Player->GetAvatarObject()->m_Pos.x, g_Player->GetAvatarObject()->m_Pos.z}) < 81.0f)
+		{
+			SetDest(g_Player->GetAvatarObject()->m_Pos);
+		}
+	}
 
 	// Activity coroutine management - check if activity has changed
 	// Only run activity scripts if schedules are enabled for this NPC
@@ -1805,7 +1982,7 @@ U7Object* U7Object::LoadFromJson(const json& j)
 
 	if (obj->m_UnitType == UnitTypes::UNIT_TYPE_EGG || obj->m_shapeData->m_shape == 275)
 	{
-		obj->m_Visible = false;
+		obj->m_Visible = true;  // TEMP: make eggs visible for debugging
 	}
 
 	return obj;

@@ -1848,6 +1848,14 @@ void NPCData::UnequipItem(EquipmentSlot slot)
 
 void LoadSpellData()
 {
+	static bool s_spellDataLoaded = false;
+
+	if (s_spellDataLoaded)
+	{
+		Log("LoadSpellData: Spell data already loaded, skipping reload.");
+		return;
+	}
+
 	Log("Loading spell data from spells.json...");
 
 	// Clear existing data
@@ -1941,6 +1949,8 @@ void LoadSpellData()
 		}
 		Log("Built spell lookup map with " + std::to_string(g_spellMap.size()) + " spells");
 		AddConsoleString("Loaded " + std::to_string(g_spellMap.size()) + " spells from spells.json", GREEN);
+
+		s_spellDataLoaded = true;
 	}
 	catch (const std::exception& e)
 	{

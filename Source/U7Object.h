@@ -116,7 +116,9 @@ struct MonsterData
 	unsigned char raw[25];           // Exact 25-byte record (preserved for unmapped fields)
 
 	// === Documented layout (from Ultima Codex wiki) ===
-	unsigned short shapeFrame;       // 0x00-0x01 : Shape (bits 0-9) + Frame (bits 10-14)
+	//unsigned short shapeFrame;       // 0x00-0x01 : Shape (bits 0-9) + Frame (bits 10-14)
+	unsigned short m_shape;
+	unsigned short m_frame;
 
 	// Primary stats (0x02-0x09)
 	unsigned char strength;          // 0x02
@@ -138,7 +140,7 @@ struct MonsterData
 	// Left in raw[] until specifically needed.
 
 	// === Runtime / convenience fields ===
-	std::string    name;             // Optional name for debugging / tools
+	std::string   m_name;             // Optional name for debugging / tools
 };
 
 
@@ -168,6 +170,29 @@ enum class EggCriteria : uint8_t
 	External = 7,
 };
 
+// String tables for debug output (temporary)
+inline const char* g_eggTypeStrings[] = {
+	"MonsterSpawner",
+	"ProximitySound",
+	"Jukebox",
+	"Voice",
+	"Weather",
+	"Teleporter",
+	"Path",
+	"Usecode"
+};
+
+inline const char* g_eggCriteriaStrings[] = {
+	"CachedIn",
+	"PartyNear",
+	"AvatarNear",
+	"AvatarFar",
+	"AvatarFootpad",
+	"PartyFootpad",
+	"SomethingOn",
+	"External"
+};
+
 struct EggData
 {
 	EggType type = EggType::MonsterSpawner;
@@ -188,6 +213,9 @@ struct EggData
 	int monsterFrame = 0;
 	int spawnCount = 1;
 	float spawnChance = 1.0f;
+	uint8_t monsterAlignment = 0;  // 0=neutral, 1=good, 2=evil, 3=chaotic (from mode bits 0-1)
+	uint8_t monsterWorkType = 0;   // workType / schedule hint (0 often combat for spawners)
+	int monsterTypeIndex = 0;      // 0-64 index into g_monsterData for stats (when egg provides it)
 
 	// Teleport extras
 	Vector3 teleportDest = {0, 0, 0};
@@ -347,6 +375,9 @@ public:
 
 	void HandleUsecodeEgg();
 
+	// Temporary debug helper - prints detailed, type-specific info about this egg
+	void DebugPrintEggInfo() const;
+
 	void SetOverrideFrame(int overrideFrame)
 	{
 		m_overrideFrame = overrideFrame;
@@ -483,6 +514,8 @@ public:
 		int m_npcBatchIndex = -1;
 
 	std::string m_name;
+
+	bool m_hostile = false;
 };
 
 #endif
