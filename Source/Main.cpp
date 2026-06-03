@@ -124,6 +124,8 @@ int main(int argv, char** argc)
       #endif
 
       g_alphaDiscard = LoadShader(NULL, "Data/Shaders/alphaDiscard.fs");
+      g_cuboidShader = LoadShader("Data/Shaders/cuboid.vs", NULL);
+      g_cuboidTexCoordsLoc = GetShaderLocation(g_cuboidShader, "cuboidTexCoords");
 
       rlDisableBackfaceCulling();
       rlEnableDepthTest();
