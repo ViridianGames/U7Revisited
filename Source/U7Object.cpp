@@ -27,6 +27,7 @@
 #include <string>
 #include <sstream>
 #include <iomanip>
+#include <algorithm>
 #include "raymath.h"
 #include "rlgl.h"
 #include <atomic>
@@ -148,7 +149,43 @@ void U7Object::InteractiveUpdate()
 
 void U7Object::EggUpdate()
 {
-	switch (m_eggData.type)
+	// Reset hasTriggered for proximity-style criteria when outside their area
+	// (if autoReset or for CachedIn). This allows re-triggering on re-entry.
+	// For CachedIn this simulates "caching out" (>64 tiles) and back in.
+	if (g_Player)
+	{
+		U7Object* avatar = g_Player->GetAvatarObject();
+		if (avatar)
+		{
+			float dist = Vector2Distance({ m_Pos.x, m_Pos.z }, { avatar->m_Pos.x, avatar->m_Pos.z });
+			if (m_eggData.m_criteria == EggCriteria::CachedIn)
+			{
+				if (dist > CACHED_IN_RADIUS && m_eggData.m_shouldReset)
+				{
+					m_eggData.m_hasTriggered = false;
+					m_eggData.m_shouldReset = false;
+				}
+			}
+			else if (m_eggData.m_criteria == EggCriteria::AvatarNear ||
+					 m_eggData.m_criteria == EggCriteria::PartyNear)
+			{
+				if (dist > (float)m_eggData.m_distance && m_eggData.m_autoReset)
+				{
+					m_eggData.m_hasTriggered = false;
+				}
+			}
+			else if (m_eggData.m_criteria == EggCriteria::AvatarFootpad ||
+					 m_eggData.m_criteria == EggCriteria::PartyFootpad)
+			{
+				if (dist > 1.5f && m_eggData.m_autoReset)
+				{
+					m_eggData.m_hasTriggered = false;
+				}
+			}
+		}
+	}
+
+	switch (m_eggData.m_type)
 	{
 		case EggType::MonsterSpawner:
 			HandleMonsterSpawnerEgg();
@@ -186,8 +223,33 @@ void U7Object::EggUpdate()
 
 void U7Object::MonsterUpdate()
 {
-	// Placeholder for future monster AI / combat behavior.
-	// For now monsters behave like simple interactive objects.
+	// Pursuit (hostile behavior) only for monsters whose activity is "combat" (0).
+	// Other monsters (e.g. foxes, deer spawned from eggs with non-combat workType) are not hostile
+	// even though they are UNIT_TYPE_MONSTER.
+	if (m_currentActivity == 0 && g_Player && g_Player->GetAvatarObject())
+	{
+		float distSqr = Vector2DistanceSqr({m_Pos.x, m_Pos.z}, {g_Player->GetAvatarObject()->m_Pos.x, g_Player->GetAvatarObject()->m_Pos.z});
+		if (distSqr < 81.0f)  // ~9 tiles, same as NPC hostile
+		{
+			SetDest(g_Player->GetAvatarObject()->m_Pos);
+			// In combat, pursue from farther away
+			if (g_StateMachine && g_StateMachine->GetCurrentState() == STATE_COMBATSTATE && distSqr < 400.0f)
+			{
+				// already set, or could set farther
+			}
+		}
+		else if (g_StateMachine && g_StateMachine->GetCurrentState() == STATE_COMBATSTATE)
+		{
+			// During combat, keep pursuing from longer range
+			if (distSqr < 400.0f) // 20 tiles
+			{
+				SetDest(g_Player->GetAvatarObject()->m_Pos);
+			}
+		}
+	}
+
+	// Shared movement (waypoints + direct dest following) now works for monsters too.
+	UpdateMovement();
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -313,13 +375,13 @@ void U7Object::HandleMonsterSpawnerEgg()
 	EggData& egg = m_eggData;
 
 	// Once-only eggs that have already hatched do nothing
-	if (egg.onceOnly && egg.hasTriggered)
+	if (egg.m_onceOnly && egg.m_hasTriggered)
 	{
 		return;
 	}
 
 	// Nocturnal eggs only trigger at night (rough heuristic: hour 20-6)
-	if (egg.nocturnal)
+	if (egg.m_nocturnal)
 	{
 		if (g_hour < 20 && g_hour > 6)
 			return;
@@ -336,24 +398,36 @@ void U7Object::HandleMonsterSpawnerEgg()
 
 	// Check activation criteria
 	bool shouldActivate = false;
-	switch (egg.criteria)
+	switch (egg.m_criteria)
 	{
 		case EggCriteria::AvatarNear:
 		case EggCriteria::PartyNear:
-			if (dist <= (float)egg.distance)
+			if (dist <= (float)egg.m_distance && !egg.m_hasTriggered)
 				shouldActivate = true;
 			break;
 
 		case EggCriteria::AvatarFootpad:
 		case EggCriteria::PartyFootpad:
 			// Very close / standing on it
-			if (dist <= 1.5f)
+			if (dist <= 1.5f && !egg.m_hasTriggered)
 				shouldActivate = true;
 			break;
 
+		case EggCriteria::CachedIn:
+			// Simulate original "chunk cached in" behavior: large radius around the egg.
+			// Original U7 only kept a few chunks (~6x 16x16) in memory, so this triggered on load-in.
+			// Here we treat it as AvatarNear with a fixed large radius.
+			// Activation only on entry ( ! hasTriggered ); re-armed on cache-out in EggUpdate.
+			if (dist <= CACHED_IN_RADIUS && !egg.m_hasTriggered)
+			{
+				shouldActivate = true;
+				m_eggData.m_shouldReset = true;
+			}
+			break;
+
 		default:
-			// For CachedIn / other types, we can be more aggressive or skip for now
-			if (dist <= (float)egg.distance * 2.0f)
+			// Other types (e.g. External) or unknown: use the egg's own distance (or 2x as fallback).
+			if (dist <= (float)egg.m_distance * 2.0f)
 				shouldActivate = true;
 			break;
 	}
@@ -362,17 +436,17 @@ void U7Object::HandleMonsterSpawnerEgg()
 		return;
 
 	// Probability roll (0-100)
-	if (egg.probability < 100)
+	if (egg.m_probability < 100)
 	{
 		int roll = g_NonVitalRNG ? (int)g_NonVitalRNG->RandomRange(0, 99) : (rand() % 100);
-		if (roll >= egg.probability)
+		if (roll >= egg.m_probability)
 			return; // Didn't trigger this time
 	}
 
 	// We've decided to hatch. Spawn the monsters.
-	int count = std::max(1, egg.spawnCount);
-	int shapeToSpawn = egg.monsterShape;
-	int datIndex = egg.monsterTypeIndex;
+	int count = std::max(1, egg.m_spawnCount);
+	int shapeToSpawn = egg.m_monsterShape;
+	int datIndex = egg.m_monsterTypeIndex;
 
 	// If for some reason we only had an index, resolve shape (legacy safety).
 	if (datIndex >= 0 && datIndex < (int)g_monsterData.size() &&
@@ -422,9 +496,9 @@ void U7Object::HandleMonsterSpawnerEgg()
 			// Pull real stats from MONSTERS.DAT record when available (hp ~ strength, etc.)
 			if (monData)
 			{
-				spawned->m_hp = (monData->hitPoints > 0 ? monData->hitPoints : monData->strength);
-				spawned->m_BaseAttack = (monData->damage > 0 ? monData->damage : 5.0f);
-				spawned->m_combat = (monData->combat > 0 ? monData->combat : 10.0f);
+				spawned->m_hp = (monData->m_hitPoints > 0 ? monData->m_hitPoints : monData->m_strength);
+				spawned->m_BaseAttack = (monData->m_damage > 0 ? monData->m_damage : 5.0f);
+				spawned->m_combat = (monData->m_combat > 0 ? monData->m_combat : 10.0f);
 			}
 			else
 			{
@@ -433,8 +507,33 @@ void U7Object::HandleMonsterSpawnerEgg()
 				spawned->m_combat = 10.0f;
 			}
 
-			// Mark as hostile to the player for future combat system
-			spawned->m_Team = 1; // 0 = neutral/player, 1 = hostile monsters (convention to be refined)
+			// Set the activity from the egg's workType (0 = combat). Non-combat monsters
+			// (e.g. foxes, deer from non-combat eggs) are not hostile.
+			spawned->m_currentActivity = egg.m_monsterWorkType;
+
+			if (egg.m_monsterWorkType == 0)
+			{
+				// Hostile (combat activity)
+				spawned->m_Team = 1; // 0 = neutral/player, 1 = hostile
+
+				// Add the newly spawned (hostile/combat) monster to the combat unit list (participants) now that
+				// the monster egg's requirements have been fulfilled and it has hatched.
+				if (g_CombatState)
+				{
+					auto& parts = g_CombatState->m_participants;
+					if (std::find(parts.begin(), parts.end(), (int)newId) == parts.end())
+					{
+						parts.push_back((int)newId);
+					}
+				}
+
+				// Automatically enter combat state when a monster egg fulfills its spawn requirements
+				// (for hostile/combat monsters).
+				if (g_StateMachine && g_StateMachine->GetCurrentState() != STATE_COMBATSTATE)
+				{
+					g_StateMachine->PushState(STATE_COMBATSTATE);
+				}
+			}
 
 			// Optional: give them a simple "attack player" activity later
 			// For now they exist in the world and can be clicked / pathfound to.
@@ -453,10 +552,10 @@ void U7Object::HandleMonsterSpawnerEgg()
 		}
 	}
 
-	egg.hasTriggered = true;
+	egg.m_hasTriggered = true;
 
 	// If not auto-resetting and once-only, it stays triggered
-	if (!egg.autoReset && egg.onceOnly)
+	if (!egg.m_autoReset && egg.m_onceOnly)
 	{
 		// It will stay dormant forever (or until save/load resets it)
 	}
@@ -475,21 +574,29 @@ void U7Object::HandleJukeboxEgg()
 void U7Object::HandleVoiceEgg()
 {
 	bool playing = false;
-	switch (m_eggData.criteria)
+	switch (m_eggData.m_criteria)
 	{
-		case EggCriteria::AvatarNear:
-		case EggCriteria::PartyNear:
-			if (!m_eggData.hasTriggered && Vector2Distance({m_Pos.x, m_Pos.z}, {g_Player->GetAvatarObject()->m_Pos.x, g_Player->GetAvatarObject()->m_Pos.z}) <= m_eggData.distance)
+		case EggCriteria::CachedIn:
+			// Large radius (simulating chunk load-in)
+			if (!m_eggData.m_hasTriggered && Vector2Distance({m_Pos.x, m_Pos.z}, {g_Player->GetAvatarObject()->m_Pos.x, g_Player->GetAvatarObject()->m_Pos.z}) <= CACHED_IN_RADIUS)
 			{
 				playing = true;
-				m_eggData.hasTriggered = true;
+				m_eggData.m_hasTriggered = true;
+			}
+			break;
+		case EggCriteria::AvatarNear:
+		case EggCriteria::PartyNear:
+			if (!m_eggData.m_hasTriggered && Vector2Distance({m_Pos.x, m_Pos.z}, {g_Player->GetAvatarObject()->m_Pos.x, g_Player->GetAvatarObject()->m_Pos.z}) <= m_eggData.m_distance)
+			{
+				playing = true;
+				m_eggData.m_hasTriggered = true;
 			}
 			break;
 	}
 
 	if (playing)
 	{
-		g_SoundSystem->PlaySound(m_eggData.audioFile);
+		g_SoundSystem->PlaySound(m_eggData.m_audioFile);
 	}
 }
 
@@ -512,36 +619,49 @@ void U7Object::HandleUsecodeEgg()
 {
 	U7Object* _avatar = g_Player->GetAvatarObject();
 
-	if (m_eggData.hasTriggered && !m_eggData.autoReset)
+	if (m_eggData.m_hasTriggered && !m_eggData.m_autoReset)
 	{
 		return;
 	}
 
-	switch (m_eggData.criteria)
+	bool justTriggered = false;
+
+	switch (m_eggData.m_criteria)
 	{
+		case EggCriteria::CachedIn:
+			// Large radius (simulating chunk load-in)
+			if (Vector2Distance({m_Pos.x, m_Pos.z}, {_avatar->m_Pos.x, _avatar->m_Pos.z}) <= CACHED_IN_RADIUS && !m_eggData.m_hasTriggered)
+			{
+				m_eggData.m_hasTriggered = true;
+				justTriggered = true;
+			}
+			break;
+
 		case EggCriteria::AvatarFootpad:
 		{
-			if (Vector3Equals(m_Pos, _avatar->m_Pos))
+			if (Vector3Equals(m_Pos, _avatar->m_Pos) && !m_eggData.m_hasTriggered)
 			{
-				m_eggData.hasTriggered = true;
+				m_eggData.m_hasTriggered = true;
+				justTriggered = true;
 			}
-
+			break;
 		}
 
 		case EggCriteria::AvatarNear:
 		case EggCriteria::PartyNear:
-			if (Vector2Distance({m_Pos.x, m_Pos.z}, {_avatar->m_Pos.x, _avatar->m_Pos.z}) <= m_eggData.distance)
+			if (Vector2Distance({m_Pos.x, m_Pos.z}, {_avatar->m_Pos.x, _avatar->m_Pos.z}) <= m_eggData.m_distance && !m_eggData.m_hasTriggered)
 			{
-				m_eggData.hasTriggered = true;
+				m_eggData.m_hasTriggered = true;
+				justTriggered = true;
 			}
 			break;
 	}
 
-	if (m_eggData.hasTriggered)
+	if (justTriggered)
 	{
 		int stopper = 0;
 		//  Get the script for this egg.
-		int scriptnumber = m_eggData.usecodeFunc - 1280;
+		int scriptnumber = m_eggData.m_usecodeFunc - 1280;
 		string scriptname = "utility_unknown_0"+(std::to_string(scriptnumber));
 
 		//  Run it.
@@ -554,35 +674,35 @@ void U7Object::DebugPrintEggInfo() const
 	const EggData& egg = m_eggData;
 
 	// Header line
-	int t = static_cast<int>(egg.type);
+	int t = static_cast<int>(egg.m_type);
 	const char* typeName = (t >= 0 && t < (int)(sizeof(g_eggTypeStrings)/sizeof(g_eggTypeStrings[0])))
 		? g_eggTypeStrings[t] : "Unknown";
 
 	AddConsoleString("EGG clicked @ (" + std::to_string((int)m_Pos.x) + ", " + std::to_string((int)m_Pos.z) + ") - Type: " + typeName);
 
 	// Activation requirements - one per line
-	int c = static_cast<int>(egg.criteria);
+	int c = static_cast<int>(egg.m_criteria);
 	const char* critName = (c >= 0 && c < (int)(sizeof(g_eggCriteriaStrings)/sizeof(g_eggCriteriaStrings[0])))
 		? g_eggCriteriaStrings[c] : "Unknown";
 
-	AddConsoleString("  Criteria: " + std::string(critName) + "   (distance: " + std::to_string((int)egg.distance) + ")");
-	AddConsoleString("  Probability: " + std::to_string((int)egg.probability) + "%");
+	AddConsoleString("  Criteria: " + std::string(critName) + "   (distance: " + std::to_string((int)egg.m_distance) + ")");
+	AddConsoleString("  Probability: " + std::to_string((int)egg.m_probability) + "%");
 
 	// Flags
 	std::string flags;
-	if (egg.onceOnly)     flags += "OnceOnly ";
-	if (egg.nocturnal)    flags += "Nocturnal ";
-	if (egg.autoReset)    flags += "AutoReset ";
-	if (egg.hasTriggered) flags += "Triggered ";
+	if (egg.m_onceOnly)     flags += "OnceOnly ";
+	if (egg.m_nocturnal)    flags += "Nocturnal ";
+	if (egg.m_autoReset)    flags += "AutoReset ";
+	if (egg.m_hasTriggered) flags += "Triggered ";
 	AddConsoleString("  Flags: " + (flags.empty() ? std::string("none") : flags));
 
 	// Context-sensitive details - one field per line
-	switch (egg.type)
+	switch (egg.m_type)
 	{
 		case EggType::MonsterSpawner:
 		{
-			int shape = egg.monsterShape ? egg.monsterShape : 0;
-			int datIdx = (egg.monsterTypeIndex >= 0 ? egg.monsterTypeIndex : -1);
+			int shape = egg.m_monsterShape ? egg.m_monsterShape : 0;
+			int datIdx = (egg.m_monsterTypeIndex >= 0 ? egg.m_monsterTypeIndex : -1);
 
 			if (datIdx >= 0)
 				AddConsoleString("  MonsterDatIndex (file record): " + std::to_string(datIdx));
@@ -616,11 +736,11 @@ void U7Object::DebugPrintEggInfo() const
 			if (!monsterName.empty())
 				AddConsoleString("  Monster: " + monsterName);
 
-			AddConsoleString("  SpawnCount: " + std::to_string(egg.spawnCount));
+			AddConsoleString("  SpawnCount: " + std::to_string(egg.m_spawnCount));
 
 			// Alignment and schedule/workType info
 			std::string alignStr = "unknown";
-			switch (egg.monsterAlignment)
+			switch (egg.m_monsterAlignment)
 			{
 				case 0: alignStr = "neutral"; break;
 				case 1: alignStr = "good"; break;
@@ -629,17 +749,17 @@ void U7Object::DebugPrintEggInfo() const
 			}
 			AddConsoleString("  Alignment: " + alignStr);
 
-			std::string schedStr = std::to_string((int)egg.monsterWorkType);
-			if (egg.monsterWorkType == 0) schedStr += " (combat)";
+			std::string schedStr = std::to_string((int)egg.m_monsterWorkType);
+			if (egg.m_monsterWorkType == 0) schedStr += " (combat)";
 			AddConsoleString("  WorkType/Schedule: " + schedStr);
 			break;
 		}
 
 		case EggType::Usecode:
-			AddConsoleString("  UsecodeFunc: " + std::to_string(egg.usecodeFunc));
-			if (egg.usecodeFunc != 0)
+			AddConsoleString("  UsecodeFunc: " + std::to_string(egg.m_usecodeFunc));
+			if (egg.m_usecodeFunc != 0)
 			{
-				int scriptNum = egg.usecodeFunc - 1280;
+				int scriptNum = egg.m_usecodeFunc - 1280;
 				std::stringstream scriptSS;
 				scriptSS << "utility_unknown_0" << std::setfill('0') << std::setw(3) << scriptNum;
 				AddConsoleString("  Script: " + scriptSS.str());
@@ -647,35 +767,35 @@ void U7Object::DebugPrintEggInfo() const
 			break;
 
 		case EggType::Jukebox:
-			AddConsoleString("  Track: " + std::to_string((int)egg.specificValue));
+			AddConsoleString("  Track: " + std::to_string((int)egg.m_specificValue));
 			break;
 
 		case EggType::Voice:
-			AddConsoleString("  SpecificValue: " + std::to_string((int)egg.specificValue));
-			if (!egg.audioFile.empty())
-				AddConsoleString("  AudioFile: " + egg.audioFile);
+			AddConsoleString("  SpecificValue: " + std::to_string((int)egg.m_specificValue));
+			if (!egg.m_audioFile.empty())
+				AddConsoleString("  AudioFile: " + egg.m_audioFile);
 			break;
 
 		case EggType::ProximitySound:
-			AddConsoleString("  SoundID: " + std::to_string((int)egg.specificValue));
+			AddConsoleString("  SoundID: " + std::to_string((int)egg.m_specificValue));
 			break;
 
 		case EggType::Teleporter:
-			AddConsoleString("  Destination: (" + std::to_string((int)egg.teleportDest.x) + ", " + std::to_string((int)egg.teleportDest.z) + ")");
-			if (egg.destMap != 0)
-				AddConsoleString("  DestMap: " + std::to_string(egg.destMap));
+			AddConsoleString("  Destination: (" + std::to_string((int)egg.m_teleportDest.x) + ", " + std::to_string((int)egg.m_teleportDest.z) + ")");
+			if (egg.m_destMap != 0)
+				AddConsoleString("  DestMap: " + std::to_string(egg.m_destMap));
 			break;
 
 		case EggType::Weather:
-			AddConsoleString("  WeatherType: " + std::to_string((int)egg.specificValue));
+			AddConsoleString("  WeatherType: " + std::to_string((int)egg.m_specificValue));
 			break;
 
 		case EggType::Path:
-			AddConsoleString("  PathID: " + std::to_string((int)egg.specificValue));
+			AddConsoleString("  PathID: " + std::to_string((int)egg.m_specificValue));
 			break;
 
 		default:
-			AddConsoleString("  SpecificValue: " + std::to_string((int)egg.specificValue));
+			AddConsoleString("  SpecificValue: " + std::to_string((int)egg.m_specificValue));
 			break;
 	}
 }
@@ -1195,8 +1315,14 @@ void U7Object::NPCUpdate()
 	}
 
 	// Schedule checking is now handled by MainState::Update() queue system
-	// This function only handles waypoint following and movement
+	// This function only handles waypoint following and movement via shared UpdateMovement()
 
+	UpdateMovement();
+}
+
+void U7Object::UpdateMovement()
+{
+	// Shared movement logic for NPCs and Monsters (and potentially others).
 	// Follow waypoints from pathfinding (only when actively moving)
 	if (m_isMoving && !m_pathfindingPending && !m_pathWaypoints.empty() && m_currentWaypointIndex < m_pathWaypoints.size())
 	{
@@ -1234,9 +1360,9 @@ void U7Object::NPCUpdate()
 		float deltav = m_speed * GetFrameTime();
 
 		// Detect "walking in place" and always log it for debugging.
-		// Previously this was gated by g_LuaDebug, so you saw nothing when that flag was false.
+		// (gated to avoid spam for non-NPCs like monsters)
 
-		if (m_isMoving &&
+		if (m_NPCID >= 0 && m_isMoving &&
 			fabs(m_Direction.x) < 0.001f && fabs(m_Direction.y) < 0.001f && fabs(m_Direction.z) < 0.001f)
 		{
 			std::stringstream ss;
@@ -1864,6 +1990,15 @@ json U7Object::SaveToJson() const
 		j["equipment"] = equipment;
 	}
 
+	// Egg runtime state (e.g. hasTriggered for onceOnly/CachedIn re-arm semantics). Use m_ keys per naming convention.
+	if (m_UnitType == UnitTypes::UNIT_TYPE_EGG)
+	{
+		j["m_hasTriggered"] = m_eggData.m_hasTriggered;
+		j["m_shouldReset"] = m_eggData.m_shouldReset;
+		// Config like m_type/m_monsterShape are re-established from world data on full loads;
+		// persisting minimal mutable state here keeps once-only and re-arm correct across saves.
+	}
+
 	return j;
 }
 
@@ -1983,6 +2118,15 @@ U7Object* U7Object::LoadFromJson(const json& j)
 	if (obj->m_UnitType == UnitTypes::UNIT_TYPE_EGG || obj->m_shapeData->m_shape == 275)
 	{
 		obj->m_Visible = true;  // TEMP: make eggs visible for debugging
+	}
+
+	// Restore egg runtime state (m_ names per naming convention)
+	if (obj->m_UnitType == UnitTypes::UNIT_TYPE_EGG)
+	{
+		if (j.contains("m_hasTriggered"))
+			obj->m_eggData.m_hasTriggered = j["m_hasTriggered"].get<bool>();
+		if (j.contains("m_shouldReset"))
+			obj->m_eggData.m_shouldReset = j["m_shouldReset"].get<bool>();
 	}
 
 	return obj;

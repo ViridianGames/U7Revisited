@@ -113,7 +113,7 @@ struct NPCData
 // Graphics are already loaded into g_shapeTable via normal shape parsing.
 struct MonsterData
 {
-	unsigned char raw[25];           // Exact 25-byte record (preserved for unmapped fields)
+	unsigned char m_raw[25];           // Exact 25-byte record (preserved for unmapped fields)
 
 	// === Documented layout (from Ultima Codex wiki) ===
 	//unsigned short shapeFrame;       // 0x00-0x01 : Shape (bits 0-9) + Frame (bits 10-14)
@@ -121,23 +121,23 @@ struct MonsterData
 	unsigned short m_frame;
 
 	// Primary stats (0x02-0x09)
-	unsigned char strength;          // 0x02
-	unsigned char dexterity;         // 0x03
-	unsigned char intelligence;      // 0x04
-	unsigned char combat;            // 0x05
-	unsigned char magic;             // 0x06
-	unsigned char hitPoints;         // 0x07
-	unsigned char armor;             // 0x08
-	unsigned char damage;            // 0x09
+	unsigned char m_strength;          // 0x02
+	unsigned char m_dexterity;         // 0x03
+	unsigned char m_intelligence;      // 0x04
+	unsigned char m_combat;            // 0x05
+	unsigned char m_magic;             // 0x06
+	unsigned char m_hitPoints;         // 0x07
+	unsigned char m_armor;             // 0x08
+	unsigned char m_damage;            // 0x09
 
 	// Flags and category (starting at 0x0A)
-	unsigned char unknown0A;         // 0x0A
-	unsigned char unknown0B;         // 0x0B
-	unsigned char alignmentFlags;    // 0x0C - alignment + basic behavior bits
-	unsigned char monsterCategory;   // 0x0D - often used by monster eggs / spawners
+	unsigned char m_unknown0A;         // 0x0A
+	unsigned char m_unknown0B;         // 0x0B
+	unsigned char m_alignmentFlags;    // 0x0C - alignment + basic behavior bits
+	unsigned char m_monsterCategory;   // 0x0D - often used by monster eggs / spawners
 
 	// Bytes 0x0E-0x18 contain additional data (experience, treasure, immunities, sounds, etc.)
-	// Left in raw[] until specifically needed.
+	// Left in m_raw[] until specifically needed.
 
 	// === Runtime / convenience fields ===
 	std::string   m_name;             // Optional name for debugging / tools
@@ -160,7 +160,7 @@ enum class EggType
 
 enum class EggCriteria : uint8_t
 {
-	CachedIn = 0, // Default / cached in memory (internal trigger)
+	CachedIn = 0, // Treated as AvatarNear with large radius (48-64 tiles) to simulate original chunk-caching behavior
 	PartyNear = 1,
 	AvatarNear = 2,
 	AvatarFar = 3,
@@ -169,6 +169,9 @@ enum class EggCriteria : uint8_t
 	SomethingOn = 6,
 	External = 7,
 };
+
+// Large radius used for CachedIn criteria (simulates original U7 "chunk cached in" behavior).
+constexpr float CACHED_IN_RADIUS = 64.0f;
 
 // String tables for debug output (temporary)
 inline const char* g_eggTypeStrings[] = {
@@ -195,31 +198,32 @@ inline const char* g_eggCriteriaStrings[] = {
 
 struct EggData
 {
-	EggType type = EggType::MonsterSpawner;
-	EggCriteria criteria = EggCriteria::CachedIn; // MUST have at least this
-	uint8_t distance = 8;
-	uint8_t probability = 100;
-	bool hasTriggered = false;
-	bool onceOnly = false;
-	bool nocturnal = false;
-	bool autoReset = false;
+	EggType m_type = EggType::MonsterSpawner;
+	EggCriteria m_criteria = EggCriteria::CachedIn; // MUST have at least this (see CachedIn handling in monster spawners)
+	uint8_t m_distance = 8;
+	uint8_t m_probability = 100;
+	bool m_hasTriggered = false;
+	bool m_onceOnly = false;
+	bool m_nocturnal = false;
+	bool m_autoReset = false;
+	bool m_shouldReset = false;
 
-	uint8_t specificValue = 0;
-	std::string audioFile;
-	int usecodeFunc = 0;
+	uint8_t m_specificValue = 0;
+	std::string m_audioFile;
+	int m_usecodeFunc = 0;
 
 	// Monster spawner extras (optional)
-	int monsterShape = 0;
-	int monsterFrame = 0;
-	int spawnCount = 1;
-	float spawnChance = 1.0f;
-	uint8_t monsterAlignment = 0;  // 0=neutral, 1=good, 2=evil, 3=chaotic (from mode bits 0-1)
-	uint8_t monsterWorkType = 0;   // workType / schedule hint (0 often combat for spawners)
-	int monsterTypeIndex = 0;      // 0-64 index into g_monsterData for stats (when egg provides it)
+	int m_monsterShape = 0;
+	int m_monsterFrame = 0;
+	int m_spawnCount = 1;
+	float m_spawnChance = 1.0f;
+	uint8_t m_monsterAlignment = 0;  // 0=neutral, 1=good, 2=evil, 3=chaotic (from mode bits 0-1)
+	uint8_t m_monsterWorkType = 0;   // workType / schedule hint (0 often combat for spawners)
+	int m_monsterTypeIndex = 0;      // 0-64 index into g_monsterData for stats (when egg provides it)
 
 	// Teleport extras
-	Vector3 teleportDest = {0, 0, 0};
-	int destMap = 0;
+	Vector3 m_teleportDest = {0, 0, 0};
+	int m_destMap = 0;
 };
 
 class U7Object : public Unit3D
@@ -354,6 +358,8 @@ public:
 
 	void MonsterUpdate();
 	void MonsterDraw();
+
+	void UpdateMovement();
 
 	void NPCInit(NPCData *npcData);
 

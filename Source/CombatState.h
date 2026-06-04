@@ -37,7 +37,7 @@ public:
 	std::vector<int> m_participants;
 
 	// GUI for combat-specific overlays (action bar, initiative order, etc.)
-	Gui* m_Gui = nullptr;
+	Gui* m_gui = nullptr;
 };
 
 #endif
