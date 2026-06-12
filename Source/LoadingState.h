@@ -42,6 +42,8 @@ public:
    void LoadModels();
    void LoadInitialGameState();
    void LoadNPCSchedules();
+   void LoadRoofImages(const std::string& filename);
+   void LoadRoofMorphs(const std::string& filename);
 
    unsigned char ReadU8(std::istream &buffer);
    unsigned short ReadU16(std::istream &buffer);
@@ -89,6 +91,7 @@ public:
    bool m_loadingNPCSchedules = false;
    bool m_buildingPathfindingGrid = false;
    bool m_loadingSpells = false;
+   bool m_loadingRoofs = false;
    bool m_loadingMonsters = false;   // monsters.dat base stats
 
    bool m_loadingFailed = false;

@@ -18,9 +18,11 @@
 #include <iostream>
 #include <cassert>
 #include <mutex>
+#include <vector>
 
 #include "InputSystem.h"
 #include "raylib.h"
+#include "rlgl.h"
 #include <cstdio>
 using namespace std;
 
@@ -816,7 +818,7 @@ void UpdateSortedVisibleObjects()
 			for (auto object : g_chunkObjectMap[x][y])
 			{
 				// Skip null, dead, or contained objects
-				if (!object || object->GetIsDead() || object->m_isContained)
+				if (!object || object->GetIsDead() || object->m_isContained || !object->m_Visible)
 				{
 					continue;
 				}
@@ -945,6 +947,181 @@ U7Object* AddObject(int shapenum, int framenum, int id, float x, float y, float 
 	return g_objectList[id].get();
 }
 
+void HideObject(int shapenum, int framenum, float x, float y, float z)
+{
+	int hideCount = 0;
+
+	bool matched = false;
+	int xInt = int(x);
+	int yInt = int(z);
+	int xPos = 0;
+	int yPos = 0;
+	int xMax = 192;
+	int yMax = 192;
+	xPos = (xInt - (xInt % 16)) / 16;
+	yPos = (yInt - (yInt % 16)) / 16;
+	if (xPos >= 0 && xPos < xMax && yPos >= 0 && yPos < yMax)
+	{
+		for (auto object : g_chunkObjectMap[int(xPos)][int(yPos)])
+		{
+			if (object->m_Pos.x == x && object->m_Pos.y == y && object->m_Pos.z == z)
+			{
+				object->Hide();
+				hideCount++;
+				matched = true;
+				break;
+			}
+		}
+	}
+}
+
+void MorphObject(int shapenum, int framenum, float x, float y, float z, float nux, float nuy, float nuz, const std::string& modelName, const std::string& imageName, ShapeDrawType drawType)
+{
+	int hideCount = 0;
+
+	bool matched = false;
+	int xInt = int(x);
+	int yInt = int(z);
+	int xPos = 0;
+	int yPos = 0;
+	int xMax = 192;
+	int yMax = 192;
+	xPos = (xInt - (xInt % 16)) / 16;
+	yPos = (yInt - (yInt % 16)) / 16;
+	if (xPos >= 0 && xPos < xMax && yPos >= 0 && yPos < yMax)
+	{
+		for (auto object : g_chunkObjectMap[int(xPos)][int(yPos)])
+		{
+			if (object->m_Pos.x == x && object->m_Pos.y == y && object->m_Pos.z == z)
+			{
+				object->m_customMeshName = modelName;
+				// draw pos of roof object is offset from the top left sooo I should fix that or something
+				object->m_anchorPos = Vector3{ -4.125f + nux, 0.0f + nuy, -4.125f - nuz };
+				object->Morph(ShapeDrawType::OBJECT_DRAW_CUSTOM_MESH_DEFER);
+				hideCount++;
+				matched = true;
+				break;
+			}
+		}
+	}
+	//AddConsoleString("Morphed " + std::to_string(hideCount) + " objects in the Trinsic area.", GREEN);
+}
+
+void MorphRoof(int roofId, int shapeNum, int frameNum, float x, float y, float z, float nux, float nuy, float nuz)
+{
+	int hideCount = 0;
+	bool matched = false;
+	int xInt = int(x);
+	int yInt = int(z);
+	int xPos = 0;
+	int yPos = 0;
+	int xMax = 192;
+	int yMax = 192;
+	xPos = (xInt - (xInt % 16)) / 16;
+	yPos = (yInt - (yInt % 16)) / 16;
+	if (xPos >= 0 && xPos < xMax && yPos >= 0 && yPos < yMax)
+	{
+		for (auto object : g_chunkObjectMap[int(xPos)][int(yPos)])
+		{
+			if (object->m_Pos.x == x && object->m_Pos.y == y && object->m_Pos.z == z)
+			{
+				object->m_customMeshName = "Models/3dmodels/roof_" + std::to_string(roofId) + ".glb";
+				std::string imagePath = "images/roof/roof_" + std::to_string(roofId) + ".png";
+				// draw pos of roof object is offset from the top left sooo I should fix that or something
+				object->m_anchorPos = Vector3{ -4.125f + nux, 0.0f + nuy, -4.125f - nuz };
+				object->Morph(imagePath.c_str(), ShapeDrawType::OBJECT_DRAW_CUSTOM_MESH_DEFER);
+				//AddConsoleString("It's morphing time! " + object->m_customMeshName, GREEN);
+				hideCount++;
+				matched = true;
+				break;
+			}
+		}
+	}
+	//AddConsoleString("Morphed " + std::to_string(hideCount) + " roof objects in the area.", GREEN);
+}
+
+void BakeImageRoof(int objId, int xOfs, float y, int tileSizeX, int tileSizeY, int borderSize, int tileCountX, int tileCountY) {
+	// This is a placeholder function to represent the process of baking roof images.
+	// In a real implementation, this would involve rendering the roof from above and saving the image.
+	//AddConsoleString("Baking roof images... ", GREEN);
+	std::string objType = "roof";
+	std::string s_objId = std::to_string(objId);
+	int posStart = objId + xOfs;
+	std::string objFolder = "Images/" + objType;
+	std::filesystem::create_directories(objFolder.c_str());
+	std::string imagePath = "Images/" + objType + "/" + objType + "_" + s_objId + ".png";
+	if (FileExists(imagePath.c_str())) {
+		Log("Roof image " + imagePath + " already exists, skipping generation.");
+	}
+	else {
+		Log("Roof image " + imagePath + " does not exist, generating.");
+		int imgSzeX = (tileSizeX * borderSize * tileCountX) + (borderSize * 2);
+		int imgSzeY = (tileSizeY * borderSize * tileCountY) + (borderSize * 2);
+		Image frameImage = GenImageColor(imgSzeX, imgSzeY, Color{ 0, 0, 0, 0 });
+
+		float x = float(posStart % 3072);
+		float z = float(posStart - int(x)) / 3072;
+		float thisx = x;
+		float thisz = z;
+
+		int hideCount = 0;
+
+		bool matched = false;
+		int xInt = int(x);
+		int yInt = int(z);
+		int xPos = 0;
+		int yPos = 0;
+		int xPx = 0;
+		int yPx = 0;
+		int xMax = 192;
+		int yMax = 192;
+		int j = 0;
+		int i = 0;
+		while (j < tileCountY) {
+			thisz = z + (j * tileSizeY);
+			i = 0;
+			while (i < tileCountX) {
+				thisx = x + (i * tileSizeX);
+				xInt = int(thisx);
+				yInt = int(thisz);
+				xPos = (xInt - (xInt % 16)) / 16;
+				yPos = (yInt - (yInt % 16)) / 16;
+				if (xPos >= 0 && xPos < xMax && yPos >= 0 && yPos < yMax)
+				{
+					for (auto object : g_chunkObjectMap[int(xPos)][int(yPos)])
+					{
+						if (object->m_Pos.x == thisx && object->m_Pos.y == y && object->m_Pos.z == thisz)
+						{
+							int shapenum = object->m_ObjectType;
+							int framenum = object->m_Frame;
+							ShapeData& m_shapeData = g_shapeTable[shapenum][framenum];
+							xPx = (i * tileSizeX * borderSize) + borderSize * (tileSizeX + 1);
+							yPx = (j * tileSizeY * borderSize) + borderSize * (tileSizeY + 1);
+							float dstPosX = float(xPx - m_shapeData.m_pixelOffsetX);
+							float dstPosY = float(yPx - m_shapeData.m_pixelOffsetY);
+							//Log("Loading shape frame " + std::to_string(xPx) + ", " + std::to_string(yPx) + " | " + std::to_string(dstPosX) + ", " + std::to_string(dstPosY) + " to roof image!" + std::to_string(m_shapeData.m_pixelOffsetX) + ", " + std::to_string(m_shapeData.m_pixelOffsetY) + " shapeFrame[" + std::to_string(shapenum) + ":" + std::to_string(framenum) + "]");
+							ImageDraw(&frameImage,
+								m_shapeData.m_texture->m_OriginalImage,
+								Rectangle{ 0, 0, float(m_shapeData.m_texture->width), float(m_shapeData.m_texture->height) },
+								Rectangle{
+									dstPosX,
+									dstPosY,
+									float(m_shapeData.m_texture->width),
+									float(m_shapeData.m_texture->height) },
+									WHITE);
+							//AddConsoleString("WARNING: Shape: " + std::to_string(shapenum) + ", Frame: " + std::to_string(framenum) + ", File: " + filename, YELLOW);
+							matched = true;
+						}
+					}
+				}
+				i++;
+			}
+			j++;
+		}
+		ExportImage(frameImage, imagePath.c_str());
+	}
+}
+
 void UpdateObjectChunk(U7Object* object, Vector3 fromPos)
 {
 	Vector2 fromChunkPos = Vector2{ floor(fromPos.x / 16), floor(fromPos.z / 16) };
@@ -996,6 +1173,31 @@ void AddObjectToInventory(int objectId, int containerId)
 	}
 
 	container->AddObjectToInventory(objectId);
+}
+
+//////////////////////////////////////////////////////////////////////////////
+//  CSV PARSING
+//////////////////////////////////////////////////////////////////////////////
+std::vector<size_t> findUnquotedCommas(const std::string& line) {
+	std::vector<size_t> positions;
+	bool inQuotes = false;
+
+	for (size_t i = 0; i < line.size(); ++i) {
+		char c = line[i];
+		if (c == '"') {
+			// Handle escaped quotes ("") inside a quoted field
+			if (inQuotes && i + 1 < line.size() && line[i + 1] == '"') {
+				++i; // skip the second quote of the pair
+			}
+			else {
+				inQuotes = !inQuotes;
+			}
+		}
+		else if (c == ',' && !inQuotes) {
+			positions.push_back(i);
+		}
+	}
+	return positions;
 }
 
 //////////////////////////////////////////////////////////////////////////////
