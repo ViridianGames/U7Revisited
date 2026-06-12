@@ -1342,9 +1342,6 @@ void DrawWorld()
 	// Draw 3D world - used by MainState and modal dialogs
 	BeginMode3D(g_camera);
 
-	//rlSetAlphaMode
-	//rlSetBlendMode(BLEND_ALPHA);
-
 	// Draw the terrain
 	g_Terrain->Draw();
 

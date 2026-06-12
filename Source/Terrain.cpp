@@ -51,9 +51,7 @@ void Terrain::UpdateTerrainTexture(Image img)
 
 void Terrain::Draw()
 {
-	BeginBlendMode(BLEND_ALPHA);
 	DrawModel(m_cellModel, {float(int(g_camera.target.x)), 0, float(int(g_camera.target.z))}, 1, WHITE);
-	EndBlendMode();
 }
 
 void Terrain::Shutdown()

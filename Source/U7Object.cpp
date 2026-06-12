@@ -102,7 +102,35 @@ void U7Object::Draw()
 	}
 	else if (m_isCustomMesh)
 	{
-		CustomMeshDraw();
+		int cellx = (TILEWIDTH / 2) + m_Pos.x - int(g_camera.target.x);
+		int celly = (TILEHEIGHT / 2) + m_Pos.z - int(g_camera.target.z);
+
+		if (cellx < 0 || cellx >= TILEWIDTH || celly < 0 || celly >= TILEHEIGHT)
+		{
+			return; // Not on the screen.
+		}
+
+		Color renderColor = g_Terrain->m_cellLighting[cellx][celly];
+
+		// Apply green tint if F11 script debug is enabled and object has a non-default script
+		// Also check for conversation trees (NPCs with dialogue scripts)
+		if (g_showScriptedObjects &&
+			((m_shapeData->m_luaScript != "" && m_shapeData->m_luaScript != "default") || m_hasConversationTree))
+		{
+			// Blend with green to highlight scripted objects
+			renderColor.r = (renderColor.r + 0) / 2;
+			renderColor.g = (renderColor.g + 255) / 2;
+			renderColor.b = (renderColor.b + 0) / 2;
+		}
+		// Apply blue tint if F11 debug is enabled and object is walkable (isNotWalkable = false)
+		else if (g_showScriptedObjects && m_objectData && !m_objectData->m_isNotWalkable)
+		{
+			// Blend with blue to highlight walkable objects
+			renderColor.r = (renderColor.r + 0) / 2;
+			renderColor.g = (renderColor.g + 0) / 2;
+			renderColor.b = (renderColor.b + 255) / 2;
+		}
+		CustomMeshDraw(renderColor);
 	}
 	else
 	{
@@ -595,7 +623,7 @@ void U7Object::NPCDraw()
 
 }
 
-void U7Object::CustomMeshDraw()
+void U7Object::CustomMeshDraw(Color color)
 {
 	float m_rotation = 0.0f;
 	if (!m_Visible)
@@ -607,60 +635,6 @@ void U7Object::CustomMeshDraw()
 
 	if (m_meshOutline && !g_pixelated)
 	{
-		/*
-		glClearStencil(0);
-		glClear(GL_STENCIL_BUFFER_BIT);
-		glEnable(GL_STENCIL_TEST);
-
-		// Step 1: Draw the original model, mark stencil with 1
-		glStencilFunc(GL_ALWAYS, 1, 0xFF);
-		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-		DrawModelEx(m_customMesh->GetModel(), finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, color);
-
-		// Step 2: Draw the outline where stencil is not 1
-		glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-
-		// Get the bounding box to find the model's center
-		BoundingBox boundingBox = GetModelBoundingBox(m_customMesh->GetModel());
-		Vector3 size = Vector3{
-			fabs(boundingBox.max.x - boundingBox.min.x),
-			fabs(boundingBox.max.y - boundingBox.min.y),
-			fabs(boundingBox.max.z - boundingBox.min.z) };
-		// Calculate the local center of the model (unscaled)
-		Vector3 localCenter = Vector3{
-			(boundingBox.min.x + boundingBox.max.x) / 2.0f,
-			(boundingBox.min.y + boundingBox.max.y) / 2.0f,
-			(boundingBox.min.z + boundingBox.max.z) / 2.0f };
-
-		// Fixed outline thickness in world space
-		float outlineThickness = 0.075f;
-
-		// Calculate the outline scale
-		Vector3 outlineScale = Vector3{
-			m_Scaling.x + (outlineThickness / size.x) * 2.0f,
-			m_Scaling.y + (outlineThickness / size.y) * 2.0f,
-			m_Scaling.z + (outlineThickness / size.z) * 2.0f };
-
-		// Adjust position to compensate for the pivot offset when scaling
-		Vector3 scaledCenter = Vector3{
-			localCenter.x * m_Scaling.x,
-			localCenter.y * m_Scaling.y,
-			localCenter.z * m_Scaling.z };
-		Vector3 outlineScaledCenter = Vector3{
-			localCenter.x * outlineScale.x,
-			localCenter.y * outlineScale.y,
-			localCenter.z * outlineScale.z };
-		Vector3 centerOffset = Vector3Subtract(scaledCenter, outlineScaledCenter);
-		Vector3 outlinePos = Vector3Add(finalPos, centerOffset);
-
-		// Draw the outline with the adjusted position
-		glDepthMask(GL_FALSE);
-		DrawModelEx(m_customMesh->GetModel(), outlinePos, { 0, 1, 0 }, m_rotation, outlineScale, BLACK);
-		glDepthMask(GL_TRUE);
-
-		glDisable(GL_STENCIL_TEST);
-		*/
 		DrawModelEx(m_customMesh->GetModel(), finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, WHITE);
 	}
 	else
@@ -1458,42 +1432,6 @@ void U7Object::NPCInit(NPCData* npcData)
 			// loop until swapped or cur updated
 		}
 	}
-}
-
-// ============================================================================
-// Texture management
-// ============================================================================
-void U7Object::SetDefaultTexture(Image image, const std::string& Texturename)
-{
-	if (m_Texture == nullptr)
-	{
-		//m_Texture = *g_ResourceManager->AddTexture(image, Texturename);
-		//m_Texture = std::make_unique<ModTexture>(image);
-	}
-	else
-	{
-		//m_Texture->AssignImage(image);
-	}
-	/*
-	if (m_texture == nullptr)
-	{
-		m_texture = std::make_unique<ModTexture>(image);
-	}
-	else
-	{
-		m_texture->AssignImage(image);
-	}
-	*/
-}
-
-void U7Object::CreateDefaultTexture()
-{
-	/*
-	if (m_texture == nullptr)
-	{
-		m_texture = std::make_unique<ModTexture>();
-	}
-	*/
 }
 
 // ============================================================================

@@ -794,10 +794,6 @@ void LoadingState::LoadFaces()
 		unsigned int height;
 		int xDrawOffset;
 		int yDrawOffset;
-		int xDrawLeft;
-		//int xDrawRight;
-		int yDrawAbove;
-		//int yDrawBelow;
 	};
 
 	stringstream shapes;
@@ -856,11 +852,6 @@ void LoadingState::LoadFaces()
 
 				frameOffsets[i].xDrawOffset = frameOffsets[i].W2;
 				frameOffsets[i].yDrawOffset = frameOffsets[i].H2;
-				//frameOffsets[i].xDrawRight = frameOffsets[i].W2;
-				frameOffsets[i].xDrawLeft = frameOffsets[i].W1;
-				frameOffsets[i].yDrawAbove = frameOffsets[i].H1;
-				//frameOffsets[i].yDrawBelow = frameOffsets[i].H2;
-				//shapeData.SetPixelOffset(frameOffsets[i].xDrawLeft, frameOffsets[i].yDrawAbove);
 
 				shapeData.CreateDefaultTexture();
 				Image tempImage = GenImageColor(frameOffsets[i].width, frameOffsets[i].height, Color{ 0, 0, 0, 0 });
@@ -1383,12 +1374,9 @@ void LoadingState::CreateShapeTable()
 
 				frameOffsets[i].xDrawOffset = frameOffsets[i].W2;
 				frameOffsets[i].yDrawOffset = frameOffsets[i].H2;
-				//frameOffsets[i].xDrawRight = frameOffsets[i].W2;
 				frameOffsets[i].xDrawLeft = frameOffsets[i].W1;
 				frameOffsets[i].yDrawAbove = frameOffsets[i].H1;
-				//frameOffsets[i].yDrawBelow = frameOffsets[i].H2;
-				Log("shapeData.SetPixelOffset Shape " + std::to_string(thisShape) + " Frame " + std::to_string(i) + " setting offset " + std::to_string(frameOffsets[i].xDrawLeft) + " " + std::to_string(frameOffsets[i].yDrawAbove) + " setting offset2 " + std::to_string(frameOffsets[i].xDrawOffset) + " " + std::to_string(frameOffsets[i].yDrawOffset));
-				//printf("shapeData.SetPixelOffset Shape %d Frame %d setting offset %d %d\n", thisShape, i, frameOffsets[i].xDrawLeft, frameOffsets[i].yDrawAbove);
+				//Log("shapeData.SetPixelOffset Shape " + std::to_string(thisShape) + " Frame " + std::to_string(i) + " setting offset " + std::to_string(frameOffsets[i].xDrawLeft) + " " + std::to_string(frameOffsets[i].yDrawAbove) + " setting offset2 " + std::to_string(frameOffsets[i].xDrawOffset) + " " + std::to_string(frameOffsets[i].yDrawOffset));
 				shapeData.SetPixelOffset(frameOffsets[i].xDrawLeft, frameOffsets[i].yDrawAbove);
 
 				shapeData.CreateDefaultTexture();
@@ -1512,10 +1500,6 @@ void LoadingState::LoadSprites()
 		unsigned int height;
 		int xDrawOffset;
 		int yDrawOffset;
-		int xDrawLeft;
-		//int xDrawRight;
-		int yDrawAbove;
-		//int yDrawBelow;
 	};
 
 	// Process each sprite shape (same format as SHAPES.VGA)
@@ -1712,10 +1696,6 @@ void LoadingState::ExtractGumps()
 		unsigned int height;
 		int xDrawOffset;
 		int yDrawOffset;
-		int xDrawLeft;
-		//int xDrawRight;
-		int yDrawAbove;
-		//int yDrawBelow;
 	};
 
 	// Process each gump shape (same format as SHAPES.VGA)

@@ -286,7 +286,7 @@ public:
 
 	void NPCInit(NPCData *npcData);
 
-	void CustomMeshDraw();
+	void CustomMeshDraw(Color color);
 
 	void TryOpenDoorAtCurrentPosition();
 
@@ -331,10 +331,6 @@ public:
 		m_currentFrameX = framex;
 		m_currentFrameY = framey;
 	}
-
-	// Texture work
-	void SetDefaultTexture(Image image, const std::string& Texturename);
-	void CreateDefaultTexture();
 
 	// Serialization
 	json SaveToJson() const;
