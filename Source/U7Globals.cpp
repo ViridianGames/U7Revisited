@@ -326,7 +326,7 @@ void CameraInput()
 		U7Object* avatar = g_Player->GetAvatarObject();
 		if (!avatar) return;
 
-		float dt = GetFrameTime();
+		float dt = g_Engine->LastFrameInSeconds();
 
 		// Rotation (Q/E) - Q = left, E = right
 		if (IsKeyDown(KEY_Q))
@@ -449,25 +449,25 @@ void CameraInput()
 	{
 		if (IsKeyDown(KEY_A))
 		{
-			direction = Vector3Add(direction, { -GetFrameTime() * frameTimeModifier, 0, GetFrameTime() * frameTimeModifier });
+			direction = Vector3Add(direction, { -g_Engine->LastFrameInSeconds() * frameTimeModifier, 0, g_Engine->LastFrameInSeconds() * frameTimeModifier });
 			g_CameraMoved = true;
 		}
 
 		if (IsKeyDown(KEY_D))
 		{
-			direction = Vector3Add(direction, { GetFrameTime() * frameTimeModifier, 0, -GetFrameTime() * frameTimeModifier });
+			direction = Vector3Add(direction, { g_Engine->LastFrameInSeconds() * frameTimeModifier, 0, -g_Engine->LastFrameInSeconds() * frameTimeModifier });
 			g_CameraMoved = true;
 		}
 
 		if (IsKeyDown(KEY_W))
 		{
-			direction = Vector3Add(direction, { -GetFrameTime() * frameTimeModifier, 0, -GetFrameTime() * frameTimeModifier });
+			direction = Vector3Add(direction, { -g_Engine->LastFrameInSeconds() * frameTimeModifier, 0, -g_Engine->LastFrameInSeconds() * frameTimeModifier });
 			g_CameraMoved = true;
 		}
 
 		if (IsKeyDown(KEY_S))
 		{
-			direction = Vector3Add(direction, { GetFrameTime() * frameTimeModifier, 0, GetFrameTime() * frameTimeModifier });
+			direction = Vector3Add(direction, { g_Engine->LastFrameInSeconds() * frameTimeModifier, 0, g_Engine->LastFrameInSeconds() * frameTimeModifier });
 			g_CameraMoved = true;
 		}
 	}
@@ -494,14 +494,14 @@ void CameraInput()
 	{
 		if (IsKeyDown(KEY_Q))
 		{
-			g_CameraRotateSpeed = GetFrameTime() * 5;
+			g_CameraRotateSpeed = g_Engine->LastFrameInSeconds() * 5;
 			g_CameraMoved = true;
 			cameraRotated = true;
 		}
 
 		if (IsKeyDown(KEY_E))
 		{
-			g_CameraRotateSpeed = -GetFrameTime() * 5;
+			g_CameraRotateSpeed = -g_Engine->LastFrameInSeconds() * 5;
 			g_CameraMoved = true;
 			cameraRotated = true;
 		}
@@ -724,7 +724,7 @@ void CameraUpdate(bool forcemove)
 			{
 				delta += 2 * PI;
 			}
-			g_CameraRotateSpeed = (delta > 0.0f) ? GetFrameTime() * 1 : GetFrameTime() * -1;
+			g_CameraRotateSpeed = (delta > 0.0f) ? g_Engine->LastFrameInSeconds() * 1 : g_Engine->LastFrameInSeconds() * -1;
 		}
 		else
 		{
@@ -2126,7 +2126,7 @@ void DrawPerfCounter(Font* font, int loc)
 	DrawRectangle(hpos, vpos, width, height, BLACK);
 	DrawRectangleLines(hpos, vpos, width, height, BLUE);
 
-	string perf_temp = to_string(int(1.0f / GetFrameTime())) + " fps (" + to_string(int(GetFrameTime() * 1000.0f)) + " mspf)";
+	string perf_temp = to_string(int(1.0f / g_Engine->LastFrameInSeconds())) + " fps (" + to_string(int(g_Engine->LastFrameInSeconds() * 1000.0f)) + " mspf)";
 	DrawTextEx(*font, perf_temp.c_str(), {hpos + (width * .05f), vpos + height - (font->baseSize * 1.01f)}, font->baseSize, 1, WHITE);
 	// if (font)
 	// {
@@ -2138,9 +2138,9 @@ void DrawPerfCounter(Font* font, int loc)
 	int perf_i;
 	for (perf_i = 0; perf_i < 50 - 1; perf_i++)
 	{
-		int h = std::max(1, int(g_Engine->m_UpdateFrames[perf_i] * 1000));
-		int h2 = std::max(1, int(g_Engine->m_DrawFrames[perf_i] * 1000));
-		DrawRectangle(hpos + 4 + (perf_i * 2), int(g_Engine->m_RenderHeight * .94f) - h, 2, h, GREEN);
-		DrawRectangle(hpos + 4 + (perf_i * 2), int(g_Engine->m_RenderHeight * .94f) - (h + h2), 2, h2, YELLOW);
+		int h = std::max(1, int(g_Engine->m_UpdateFrames[perf_i]));
+		int h2 = std::max(1, int(g_Engine->m_DrawFrames[perf_i]));
+		DrawRectangle(hpos + 4 + (perf_i * 2), int(g_Engine->m_RenderHeight * .94f) - h, 2, h, YELLOW);
+		DrawRectangle(hpos + 4 + (perf_i * 2), int(g_Engine->m_RenderHeight * .94f) - (h + h2), 2, h2, GREEN);
 	}
 }

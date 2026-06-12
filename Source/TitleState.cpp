@@ -93,7 +93,7 @@ void TitleState::Update()
 
 	if (m_fadeState == FadeState::FADE_OUT)
 	{
-		m_fadeTime += GetFrameTime();
+		m_fadeTime += g_Engine->LastFrameInSeconds();
 		if (m_fadeTime > m_fadeDuration)
 		{
 			m_fadeTime = m_fadeDuration;
@@ -104,7 +104,7 @@ void TitleState::Update()
 
 	else if (m_fadeState == FadeState::FADE_IN)
 	{
-		m_fadeTime -= GetFrameTime();
+		m_fadeTime -= g_Engine->LastFrameInSeconds();
 		if (m_fadeTime < 0)
 		{
 			m_fadeTime = 0;

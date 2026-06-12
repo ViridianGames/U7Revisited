@@ -381,21 +381,6 @@ void LoadingState::UpdateLoading()
 		return;
 	}
 
-	U7Object* pirate1 = AddObject(458, 0, GetNextID(), 982, 0, 2057);
-	pirate1->NPCInit(g_NPCData[138].get());
-	pirate1->m_currentActivity = -1;
-	pirate1->m_hostile = true;
-
-	U7Object* pirate2 = AddObject(458, 0, GetNextID(), 984, 0, 2055);
-	pirate2->NPCInit(g_NPCData[138].get());
-	pirate2->m_currentActivity = -1;
-	pirate2->m_hostile = true;
-
-	U7Object* pirate3 = AddObject(458, 0, GetNextID(), 982, 0, 2059);
-	pirate3->NPCInit(g_NPCData[138].get());
-	pirate3->m_currentActivity = -1;
-	pirate3->m_hostile = true;
-
 	g_StateMachine->MakeStateTransition(STATE_TITLESTATE);
 }
 
@@ -2105,7 +2090,7 @@ void LoadingState::LoadInitialGameState()
 				thisNPC.proba = ReadU8(subFiles);
 				thisNPC.data1 = ReadU16(subFiles);
 				thisNPC.lift = ReadU8(subFiles);
-				thisNPC.data2 = ReadU16(subFiles);
+				thisNPC.health = ReadU16(subFiles);
 
 				int chunkx = thisNPC.proba % 12;
 				int chunky = thisNPC.proba / 12;
@@ -2625,15 +2610,6 @@ void LoadingState::LoadNPCSchedules()
 	ofstream csvFile("schedules.csv");
 	if (csvFile.is_open())
 	{
-		// Activity names (from NpcListWindow.cpp)
-		static const char* ACTIVITY_NAMES[] = {
-			"Combat", "Horizontal Pace", "Vertical Pace", "Talk", "Dance", "Eat", "Farm",
-			"Tend Shop", "Miner", "Hound", "Stand", "Loiter", "Wander", "Blacksmith",
-			"Sleep", "Wait", "Major Sit", "Graze", "Bake", "Sew", "Shy", "Lab",
-			"Thief", "Waiter", "Special", "Kid Games", "Eat at Inn", "Duel", "Preach",
-			"Patrol", "Desk Work", "Follow Avatar"
-		};
-
 		// CSV header
 		csvFile << "npc_id,Name,0,3,6,9,12,15,18,21\n";
 
@@ -2661,7 +2637,7 @@ void LoadingState::LoadNPCSchedules()
 							int activityId = schedule.m_activity;
 							if (activityId >= 0 && activityId <= 31)
 							{
-								csvFile << ACTIVITY_NAMES[activityId];
+								csvFile << g_activityNames[activityId];
 							}
 							else
 							{

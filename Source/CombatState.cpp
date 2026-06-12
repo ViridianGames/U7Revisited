@@ -62,6 +62,8 @@ void CombatState::OnEnter()
 {
 	Log("CombatState::OnEnter() - Combat starting");
 
+	AddConsoleString("Entering combat mode!", RED);
+
 	// Reset per-combat state
 	m_participants.clear();
 
@@ -101,6 +103,8 @@ void CombatState::OnEnter()
 void CombatState::OnExit()
 {
 	Log("CombatState::OnExit() - Combat ending");
+
+	AddConsoleString("Exiting combat mode.", GREEN);
 
 	m_participants.clear();
 	m_isTurnBased = false;

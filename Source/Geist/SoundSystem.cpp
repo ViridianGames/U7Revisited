@@ -400,7 +400,7 @@ void SoundSystem::Init(const std::string& configfile)
 
 void SoundSystem::Update()
 {
-   const float dt = GetFrameTime();
+   const float dt = g_Engine->LastFrameInSeconds();
 
    if (!m_currentMusicName.empty())
    {

@@ -44,7 +44,7 @@ struct NPCData
 	unsigned char proba;
 	unsigned short data1;
 	unsigned char lift;
-	unsigned short data2;
+	unsigned short health;
 
 	unsigned short index;
 	unsigned short referent;
@@ -172,6 +172,12 @@ enum class EggCriteria : uint8_t
 
 // Large radius used for CachedIn criteria (simulates original U7 "chunk cached in" behavior).
 constexpr float CACHED_IN_RADIUS = 64.0f;
+
+// Small radius used before a monster egg spawns to check for existing live monsters
+// of the same shape near this egg. Kept deliberately small to avoid counting monsters
+// spawned by other nearby eggs. Only monsters inside this radius are considered
+// "still occupying the camp" for anti-stacking purposes.
+constexpr float MONSTER_SPAWN_CHECK_RADIUS = 12.0f;
 
 // String tables for debug output (temporary)
 inline const char* g_eggTypeStrings[] = {
@@ -362,6 +368,7 @@ public:
 	void UpdateMovement();
 
 	void NPCInit(NPCData *npcData);
+	void MonsterInit();
 
 	void TryOpenDoorAtCurrentPosition();
 
@@ -383,6 +390,9 @@ public:
 
 	// Temporary debug helper - prints detailed, type-specific info about this egg
 	void DebugPrintEggInfo() const;
+
+	// Temporary debug helper - prints info for a monster (name, activity, alignment, str/dex/int/health)
+	void DebugPrintMonsterInfo() const;
 
 	void SetOverrideFrame(int overrideFrame)
 	{
@@ -521,7 +531,11 @@ public:
 
 	std::string m_name;
 
-	bool m_hostile = false;
+	float m_attackRange;
+	float m_attackCooldown;
+	float m_cooldownTimer;
+
+	int m_monsterType;
 };
 
 #endif

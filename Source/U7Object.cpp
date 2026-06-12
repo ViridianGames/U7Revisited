@@ -229,7 +229,29 @@ void U7Object::MonsterUpdate()
 	if (m_currentActivity == 0 && g_Player && g_Player->GetAvatarObject())
 	{
 		float distSqr = Vector2DistanceSqr({m_Pos.x, m_Pos.z}, {g_Player->GetAvatarObject()->m_Pos.x, g_Player->GetAvatarObject()->m_Pos.z});
-		if (distSqr < 81.0f)  // ~9 tiles, same as NPC hostile
+
+		if (distSqr < m_attackRange * m_attackRange)
+		{
+			//  Time to attack!
+			if (m_cooldownTimer <= 0.0f)
+			{
+				m_cooldownTimer = m_attackCooldown;
+				g_Player->GetAvatarObject()->m_hp -= 1;
+
+				AddConsoleString(m_name + " attacks Avatar for 1!", RED);
+
+				if (g_Player->GetAvatarObject()->m_hp <= 0)
+				{
+					AddConsoleString("Avatar is dead!", RED);
+				}
+			}
+			else
+			{
+				m_cooldownTimer -= g_Engine->LastFrameInSeconds();
+			}
+		}
+
+		else if (distSqr < 81.0f)  // ~9 tiles, same as NPC hostile
 		{
 			SetDest(g_Player->GetAvatarObject()->m_Pos);
 			// In combat, pursue from farther away
@@ -380,6 +402,14 @@ void U7Object::HandleMonsterSpawnerEgg()
 		return;
 	}
 
+	// While the egg considers itself satisfied (hasTriggered), bail early.
+	// Re-arming happens in EggUpdate when the player leaves the activation radius.
+	// This prevents repeated work (and was part of the previous per-frame spawn issue).
+	if (egg.m_hasTriggered)
+	{
+		return;
+	}
+
 	// Nocturnal eggs only trigger at night (rough heuristic: hour 20-6)
 	if (egg.m_nocturnal)
 	{
@@ -443,8 +473,8 @@ void U7Object::HandleMonsterSpawnerEgg()
 			return; // Didn't trigger this time
 	}
 
-	// We've decided to hatch. Spawn the monsters.
-	int count = std::max(1, egg.m_spawnCount);
+	// Resolve the intended spawn shape early (this block used to live later).
+	// We need the shape before the liveness check.
 	int shapeToSpawn = egg.m_monsterShape;
 	int datIndex = egg.m_monsterTypeIndex;
 
@@ -478,7 +508,50 @@ void U7Object::HandleMonsterSpawnerEgg()
 		}
 	}
 
-	for (int i = 0; i < count; ++i)
+	// Spatial "area occupied" check (simple anti-stacking for monster eggs).
+	// Count live UNIT_TYPE_MONSTER objects of exactly this shape within a small radius
+	// of the egg. If the count is already at or above the egg's intended spawn count,
+	// skip spawning. The radius is kept small on purpose so we don't accidentally
+	// count monsters that came from a different egg nearby.
+	// If some of "our" previous spawns have died (or wandered outside this small radius),
+	// we will only spawn the missing number (delta).
+	int desiredCount = std::max(1, egg.m_spawnCount);
+	int existingCount = 0;
+
+	for (const auto& [id, objPtr] : g_objectList)
+	{
+		if (!objPtr)
+			continue;
+
+		U7Object* obj = objPtr.get();
+		if (obj->GetIsDead() ||
+		    obj->m_UnitType != UnitTypes::UNIT_TYPE_MONSTER ||
+		    obj->m_ObjectType != shapeToSpawn)
+			continue;
+
+		float dist = Vector2Distance({ m_Pos.x, m_Pos.z }, { obj->m_Pos.x, obj->m_Pos.z });
+		if (dist <= MONSTER_SPAWN_CHECK_RADIUS)
+			++existingCount;
+	}
+
+	if (existingCount >= desiredCount)
+	{
+		// Camp still has enough live monsters from previous spawns. Mark satisfied
+		// (so we don't re-evaluate every frame) and bail without spawning duplicates.
+		egg.m_hasTriggered = true;
+		return;
+	}
+
+	int toSpawn = std::max(0, desiredCount - existingCount);
+	if (toSpawn <= 0)
+	{
+		egg.m_hasTriggered = true;
+		return;
+	}
+
+	// We've decided to hatch. Spawn the (possibly reduced) number of monsters.
+
+	for (int i = 0; i < toSpawn; ++i)
 	{
 		unsigned int newId = GetNextID();
 
@@ -526,14 +599,9 @@ void U7Object::HandleMonsterSpawnerEgg()
 						parts.push_back((int)newId);
 					}
 				}
-
-				// Automatically enter combat state when a monster egg fulfills its spawn requirements
-				// (for hostile/combat monsters).
-				if (g_StateMachine && g_StateMachine->GetCurrentState() != STATE_COMBATSTATE)
-				{
-					g_StateMachine->PushState(STATE_COMBATSTATE);
-				}
 			}
+
+			spawned->MonsterInit();
 
 			// Optional: give them a simple "attack player" activity later
 			// For now they exist in the world and can be clicked / pathfound to.
@@ -569,6 +637,15 @@ void U7Object::HandleProximitySoundEgg()
 void U7Object::HandleJukeboxEgg()
 {
 
+}
+
+void U7Object::MonsterInit()
+{
+	m_speed = 7.5f;
+	m_attackRange = 2.0f;
+	m_attackCooldown = 3.0f;
+	m_cooldownTimer = 0.0;
+	m_name = g_objectDataTable[m_shapeData->m_shape].m_name;
 }
 
 void U7Object::HandleVoiceEgg()
@@ -801,6 +878,69 @@ void U7Object::DebugPrintEggInfo() const
 }
 
 
+
+void U7Object::DebugPrintMonsterInfo() const
+{
+	int shape = m_ObjectType;
+
+	// Header
+	AddConsoleString("MONSTER clicked @ (" + std::to_string((int)m_Pos.x) + ", " + std::to_string((int)m_Pos.z) + ") - Shape: " + std::to_string(shape));
+
+	// Name: prefer monster dat, fallback to object table
+	std::string name;
+	for (const auto& md : g_monsterData)
+	{
+		if (md.m_shape == shape)
+		{
+			name = md.m_name;
+			break;
+		}
+	}
+	if (name.empty() && shape >= 0 && shape < 1024)
+	{
+		name = g_objectDataTable[shape].m_name;
+	}
+	if (name.empty())
+		name = "Unknown";
+	AddConsoleString("  Name: " + name);
+
+	// Activity (using global names list)
+	std::string actStr = (m_currentActivity >= 0 && m_currentActivity < (int)(sizeof(g_activityNames)/sizeof(g_activityNames[0])))
+		? g_activityNames[m_currentActivity]
+		: std::to_string(m_currentActivity);
+	AddConsoleString("  Activity: " + actStr);
+
+	// Alignment and base stats from monster data
+	int alignment = -1;
+	int str = 0, dex = 0, iq = 0, baseHP = 0;
+	for (const auto& md : g_monsterData)
+	{
+		if (md.m_shape == shape)
+		{
+			alignment = md.m_alignmentFlags;
+			str = md.m_strength;
+			dex = md.m_dexterity;
+			iq = md.m_intelligence;
+			baseHP = md.m_hitPoints;
+			break;
+		}
+	}
+
+	std::string alignStr = "unknown";
+	switch (alignment & 3)
+	{
+		case 0: alignStr = "neutral"; break;
+		case 1: alignStr = "good"; break;
+		case 2: alignStr = "evil"; break;
+		case 3: alignStr = "chaotic"; break;
+	}
+	AddConsoleString("  Alignment: " + alignStr);
+
+	AddConsoleString("  Strength: " + std::to_string(str));
+	AddConsoleString("  Dexterity: " + std::to_string(dex));
+	AddConsoleString("  Intelligence: " + std::to_string(iq));
+	AddConsoleString("  Health: " + std::to_string((int)m_hp) + " (base " + std::to_string(baseHP) + ")");
+}
 
 void U7Object::Attack(int _UnitID)
 {
@@ -1110,14 +1250,6 @@ void U7Object::NPCUpdate()
 	//	NPCDebugPrint(ss.str());
 	//}
 
-	if (m_hostile)
-	{
-		if (Vector2DistanceSqr({m_Pos.x, m_Pos.z}, {g_Player->GetAvatarObject()->m_Pos.x, g_Player->GetAvatarObject()->m_Pos.z}) < 81.0f)
-		{
-			SetDest(g_Player->GetAvatarObject()->m_Pos);
-		}
-	}
-
 	// Activity coroutine management - check if activity has changed
 	// Only run activity scripts if schedules are enabled for this NPC
 	// IMPORTANT: skip activity/coroutines for party members, but continue with movement below
@@ -1357,7 +1489,7 @@ void U7Object::UpdateMovement()
 			stopper++;
 		}
 
-		float deltav = m_speed * GetFrameTime();
+		float deltav = m_speed * g_Engine->LastFrameInSeconds();
 
 		// Detect "walking in place" and always log it for debugging.
 		// (gated to avoid spam for non-NPCs like monsters)
@@ -1855,14 +1987,16 @@ void U7Object::NPCInit(NPCData* npcData)
 	m_name = npcData->name;
 	if (std::string(m_NPCData->name) == "Avatar")
 	{
-		m_speed = 20.0f;
+		m_speed = 10.0f;
 	}
 	else
 	{
-		m_speed = 10.0f;
+		m_speed = 7.5f;
 	}
 	m_NPCID = npcData->id;
 	m_anchorPos = m_Pos;
+	m_hp = npcData->health;
+	m_BaseMaxHP = npcData->health;
 
 	// Assign contiguous batch index if not already set (preserve any value restored from save)
 	if (m_npcBatchIndex < 0)

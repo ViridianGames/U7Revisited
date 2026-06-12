@@ -485,7 +485,7 @@ std::string NpcListWindow::GetActivityName(int activityId)
 	}
 	else if (activityId >= 0 && activityId <= 31)
 	{
-		return ACTIVITY_NAMES[activityId];
+		return g_activityNames[activityId];
 	}
 	else
 	{

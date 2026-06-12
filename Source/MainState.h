@@ -99,6 +99,8 @@ public:
 	void BuildDemoHelpGUI();
 	void BuildSandboxHelpGUI();
 
+	void SpawnMonster(int monsterType, int x, int y, int z);
+
   // void DrawDebugChunkPathfindingInfo();
 
    float m_waitTime = 0;

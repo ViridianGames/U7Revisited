@@ -8,6 +8,7 @@
 #include "Geist/Engine.h"
 #include "Geist/ScriptingSystem.h"
 #include "U7Globals.h"
+#include "U7Object.h"
 #include "MainState.h"
 #include "rlgl.h"
 #include "U7Gump.h"
@@ -272,6 +273,8 @@ void MainState::OnEnter()
 	{
 		m_paused = false;
 		g_Player->AddPartyMember(1);
+
+		SpawnMonster(14, 1044.0f, 0.0f, 2182.0f);
 
 		// Only show welcome messages on first OnEnter, not when returning from dialogs
 		if (!m_hasShownWelcomeMessages)
@@ -545,6 +548,18 @@ void MainState::HandleGameKeys()
 
 	if (IsKeyPressed(KEY_SPACE))
 		m_paused = !m_paused;
+
+	if (IsKeyPressed(KEY_C))
+	{
+		if (g_StateMachine && g_StateMachine->GetCurrentState() == STATE_COMBATSTATE)
+		{
+			g_StateMachine->PopState();
+		}
+		else
+		{
+			g_StateMachine->PushState(STATE_COMBATSTATE);
+		}
+	}
 
 	if (IsKeyPressed(KEY_H))
 	{
@@ -860,7 +875,7 @@ void MainState::HandleRightMouseHoldMovement()
 		float baseSpeed = avatar->GetSpeed();
 		if (baseSpeed <= 0.0f) baseSpeed = 3.0f;
 
-		float dt = GetFrameTime();
+		float dt = g_Engine->LastFrameInSeconds();
 		Vector3 desired = Vector3Add(avatar->GetPos(), Vector3Scale(dir, baseSpeed * speedMult * dt));
 		desired.x = std::fmax(0.0f, std::fmin(3072.0f, desired.x));
 		desired.z = std::fmax(0.0f, std::fmin(3072.0f, desired.z));
@@ -990,6 +1005,12 @@ void MainState::HandleLeftSingleClick()
 			{
 				g_objectUnderMousePointer->DebugPrintEggInfo();
 			}
+
+			// TEMP debug: Print monster stats on click
+			if (g_objectUnderMousePointer->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_MONSTER)
+			{
+				g_objectUnderMousePointer->DebugPrintMonsterInfo();
+			}
 		}
 	}
 }
@@ -1063,7 +1084,7 @@ void MainState::HandleAvatarMovement()
 		U7Object* avatar = g_Player->GetAvatarObject();
 		if (!avatar) return;
 
-		float dt = GetFrameTime();
+		float dt = g_Engine->LastFrameInSeconds();
 		Vector3 camForward = Vector3Subtract(g_camera.target, g_camera.position);
 		camForward.y = 0.0f;
 		if (Vector3Length(camForward) < 0.0001f)
@@ -1104,7 +1125,7 @@ void MainState::HandleAvatarMovement()
 		// Rotation-based movement
 		Vector3 direction = { 0, 0, 0 };
 		bool avatarMoved = false;
-		//float speed = g_Player->GetAvatarObject()->GetSpeed() * GetFrameTime();
+		//float speed = g_Player->GetAvatarObject()->GetSpeed() * g_Engine->LastUpdateInSeconds();
 
 		if (IsKeyDown(KEY_A)) { direction = Vector3Add(direction, { -1,  0, 1 }); avatarMoved = true; }
 		if (IsKeyDown(KEY_D)) { direction = Vector3Add(direction, {  1,  0, -1 }); avatarMoved = true; }
@@ -1261,8 +1282,6 @@ void MainState::Update()
 
 	g_gumpManager->Update();
 
-	if (GetTime() - m_LastUpdate > GetFrameTime())
-	{
 		g_CurrentUpdate++;
 
 		// Reset per-frame scripting counters to enforce throttling budgets
@@ -1284,7 +1303,7 @@ void MainState::Update()
 			int processed = 0;
 
 			// Adaptive budget: reduce work if frame time is high to avoid visible stalls.
-			float frameTime = GetFrameTime(); // current frame delta
+			float frameTime = g_Engine->LastFrameInSeconds(); // current frame delta
 			int budget = m_schedulePathBudgetPerFrame; // baseline
 			if (frameTime > 0.033f)            // worse than ~30 FPS
 				budget = 1;
@@ -1415,9 +1434,6 @@ void MainState::Update()
 			object->CheckLighting();
 		}
 
-		m_LastUpdate = GetTime();
-	}
-
 	if (!m_paused && g_allowInput)
 	{
 		CameraInput();
@@ -1425,10 +1441,10 @@ void MainState::Update()
 
 	CameraUpdate();
 
-	m_terrainUpdateTime = GetTime();
+	m_terrainUpdateTime = g_Engine->GameTimeInMS();
 	g_Terrain->CalculateLighting();
 
-	m_terrainUpdateTime = GetTime() - m_terrainUpdateTime;
+	m_terrainUpdateTime = g_Engine->GameTimeInMS() - m_terrainUpdateTime;
 
 	g_Terrain->Update();
 
@@ -1473,7 +1489,7 @@ void MainState::Update()
 
 	if (g_SpriteEffectSystem)
 	{
-		g_SpriteEffectSystem->Update(GetFrameTime());
+		g_SpriteEffectSystem->Update(g_Engine->LastFrameInSeconds());
 	}
 
 	if (m_showObjects)
@@ -1483,7 +1499,7 @@ void MainState::Update()
 
 	if (m_barkDuration > 0 && m_barkObject != nullptr)
 	{
-		m_barkDuration -= GetFrameTime();
+		m_barkDuration -= g_Engine->LastFrameInSeconds();
 		if (m_barkDuration <= 0)
 		{
 			m_barkDuration = 0;
@@ -1494,7 +1510,7 @@ void MainState::Update()
 
 	if (m_waitTime > 0)
 	{
-		m_waitTime -= GetFrameTime();
+		m_waitTime -= g_Engine->LastFrameInSeconds();
 		if (m_waitTime < 0)
 		{
 			m_waitTime = 0;
@@ -1504,7 +1520,7 @@ void MainState::Update()
 
 	if (m_fadeState == FadeState::FADE_OUT)
 	{
-		m_fadeTime += GetFrameTime();
+		m_fadeTime += g_Engine->LastFrameInSeconds();
 		if (m_fadeTime > m_fadeDuration)
 		{
 			m_fadeTime = m_fadeDuration;
@@ -1515,7 +1531,7 @@ void MainState::Update()
 
 	else if (m_fadeState == FadeState::FADE_IN)
 	{
-		m_fadeTime -= GetFrameTime();
+		m_fadeTime -= g_Engine->LastFrameInSeconds();
 		if (m_fadeTime < 0)
 		{
 			m_fadeTime = 0;
@@ -1550,7 +1566,7 @@ void MainState::Update()
 	// Check if we've hovered over an object long enough to trigger a bark.
 	if (g_objectUnderMousePointer == m_previousObjectUnderMousePointer && g_allowInput && g_mouseOverUI == false)
 	{
-		m_barkTimer -= GetFrameTime();
+		m_barkTimer -= g_Engine->LastFrameInSeconds();
 		if (m_barkTimer <= 0)
 		{
 			Bark(g_objectUnderMousePointer, GetObjectDisplayName(g_objectUnderMousePointer), 1.0f);
@@ -1916,10 +1932,10 @@ void MainState::Draw()
 		//  Draw version number in lower-right
 		DrawOutlinedText(g_SmallFont, g_version.c_str(), Vector2{ 600, 340 }, g_SmallFont.get()->baseSize, 1, WHITE);
 
-		//DrawOutlinedText(g_SmallFont, to_string(1000 * GetFrameTime()), Vector2{ 10, 240 }, g_SmallFont.get()->baseSize, 1, WHITE);
+		//DrawOutlinedText(g_SmallFont, to_string(1000 * g_Engine->LastUpdateInSeconds()), Vector2{ 10, 240 }, g_SmallFont.get()->baseSize, 1, WHITE);
 
 		// Draw FPS counter next to version
-		//int fps = int(1.0f / GetFrameTime());
+		//int fps = int(1.0f / g_Engine->LastUpdateInSeconds());
 		//string fpsText = "FPS: " + to_string(fps);
 		//Color fpsColor = fps >= 60 ? GREEN : (fps >= 30 ? YELLOW : RED);
 		//DrawOutlinedText(g_SmallFont, fpsText.c_str(), Vector2{ 520, 340 }, g_SmallFont.get()->baseSize, 1, fpsColor);
@@ -2892,4 +2908,53 @@ void MainState::BuildSandboxHelpGUI()
 
     m_sandboxHelpScreen->m_Active = false;
     m_sandboxHelpScreen->m_Draggable = false;
+}
+
+void MainState::SpawnMonster(int monsterType, int x, int y, int z)
+{
+		unsigned int newId = GetNextID();
+
+		MonsterData monData = g_monsterData[monsterType];
+
+		U7Object* spawned = AddObject(monData.m_shape, 0, newId,
+			x, y, z);
+
+		if (spawned)
+		{
+			spawned->m_UnitType = U7Object::UnitTypes::UNIT_TYPE_MONSTER;
+
+			// Pull real stats from MONSTERS.DAT record when available (hp ~ strength, etc.)
+			spawned->m_hp = monData.m_hitPoints;
+			spawned->m_BaseAttack = monData.m_damage;
+			spawned->m_combat = monData.m_combat;
+
+			spawned->m_currentActivity = 0; // Default to combat activity
+
+			// Hostile (combat activity)
+			spawned->m_Team = 1; // 0 = neutral/player, 1 = hostile
+
+			// Add the newly spawned (hostile/combat) monster to the combat unit list (participants) now that
+			// the monster egg's requirements have been fulfilled and it has hatched.
+			if (g_CombatState)
+			{
+				auto& parts = g_CombatState->m_participants;
+				if (std::find(parts.begin(), parts.end(), (int)newId) == parts.end())
+				{
+					parts.push_back((int)newId);
+				}
+			}
+
+			// Always give feedback in console when a monster actually appears
+			std::string hatchedMsg = "Monster egg hatched! (shape " + std::to_string(monData.m_shape) + ")";
+			hatchedMsg += " " + monData.m_name;
+			AddConsoleString(hatchedMsg, YELLOW);
+
+			if (g_LuaDebug || g_showEggs)
+			{
+				DebugPrint("MonsterSpawnerEgg hatched @ (" + std::to_string(x) + "," + std::to_string(z) +
+					") -> spawned shape " + std::to_string(monData.m_shape) + " id=" + std::to_string(newId));
+			}
+
+			spawned->MonsterInit();
+		}
 }

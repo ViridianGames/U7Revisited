@@ -14,7 +14,7 @@
 #define _ENGINE_H_
 
 #include <unordered_map>
-
+#include <chrono>
 #include "Object.h"
 #include "Config.h"
 
@@ -29,7 +29,6 @@ public:
 		, m_DrawFrames{0}
 		, m_UpdateFrames{0}
 		, m_DrawTime(0)
-		, m_UpdateTime(0)
 		, m_debugDrawing(false)
 		, m_RenderWidth(0.0f)
 		, m_RenderHeight(0.0f)
@@ -59,7 +58,6 @@ public:
 	double m_UpdateFrames[50];
 
 	double m_DrawTime;
-	double m_UpdateTime;
 
 	bool m_debugDrawing;
 
@@ -68,6 +66,31 @@ public:
 
 	float m_ScreenWidth;
 	float m_ScreenHeight;
+
+	// Time tracking
+	int64_t       GameTimeInMS(); // The master clock; everything else is derived from this.
+	double        GameTimeInSeconds() { return GameTimeInMS() / 1000.0f; }
+	double        LastFrameInSeconds() { return m_lastFrameInSecs; }
+	int64_t       LastFrameInMS() { return m_lastFrameInMS; }
+
+
+	unsigned int  GameUpdates();
+
+	std::chrono::time_point<std::chrono::steady_clock> m_startTime;         //  The start time of the game, in seconds.
+
+	double        m_gameTimeInSecs;
+
+	int64_t       m_lastFrameTimeStamp;
+
+	int64_t       m_lastFrameInMS;
+	double		  m_lastFrameInSecs;
+	int64_t       m_lastUpdateInMS;    //  Duration of the most recent update in MS.
+	double        m_lastUpdateInSecs;   //  Duration of the most recent update in seconds.
+
+	double        m_averageUpdate;     //  The average duration of an update, used to detect lag.
+
+
+
 };
 
 #endif

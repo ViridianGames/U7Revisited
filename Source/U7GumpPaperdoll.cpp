@@ -3,6 +3,8 @@
 #include "U7Object.h"
 #include "Geist/ResourceManager.h"
 #include "Geist/Logging.h"
+#include "Geist/StateMachine.h"
+#include "Geist/Engine.h"
 #include <filesystem>
 
 #include "InputSystem.h"
@@ -402,9 +404,31 @@ void GumpPaperdoll::Update()
 		lastActiveElement = m_gui.m_ActiveElement;
 	}
 
+	// Sync PEACE icon (dove/sword) with combat state: frame 0 = peace (dove), 1 = combat (sword)
+	if (peaceID != -1)
+	{
+		auto peaceElem = m_gui.GetElement(peaceID);
+		if (peaceElem && peaceElem->m_Type == GUI_CYCLE)
+		{
+			auto cycle = static_cast<GuiCycle*>(peaceElem.get());
+			bool inCombat = (g_StateMachine && g_StateMachine->GetCurrentState() == STATE_COMBATSTATE);
+			cycle->SetFrameIndex(inCombat ? 1 : 0);
+		}
+	}
+
 	if (m_gui.m_ActiveElement == peaceID)
 	{
-		Log("PEACE button clicked, frame: " + std::to_string(m_gui.GetElement(peaceID)->GetValue()));
+		// Toggle combat mode
+		bool inCombat = (g_StateMachine && g_StateMachine->GetCurrentState() == STATE_COMBATSTATE);
+		if (inCombat)
+		{
+			g_StateMachine->PopState();
+		}
+		else
+		{
+			g_StateMachine->PushState(STATE_COMBATSTATE);
+		}
+		m_gui.m_ActiveElement = -1; // Clear to prevent re-triggers
 	}
 	else if (m_gui.m_ActiveElement == haloID)
 	{
@@ -643,7 +667,7 @@ void GumpPaperdoll::Update()
 	// Update hover text timer
 	if (m_hoverTextDuration > 0.0f)
 	{
-		m_hoverTextDuration -= GetFrameTime();
+		m_hoverTextDuration -= g_Engine->LastFrameInSeconds();
 		if (m_hoverTextDuration <= 0.0f)
 		{
 			m_hoverText.clear();

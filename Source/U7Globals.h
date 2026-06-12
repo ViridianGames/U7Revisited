@@ -108,6 +108,15 @@ inline Vector2 g_DirVectors[8] = {
 	{ 0, 1 }, { -1, 1 }, { -1, 0 }, { -1, -1 }
 };
 
+// Activity names (from NpcListWindow.cpp)
+constexpr char* g_activityNames[] = {
+	"Combat", "Horizontal Pace", "Vertical Pace", "Talk", "Dance", "Eat", "Farm",
+	"Tend Shop", "Miner", "Hound", "Stand", "Loiter", "Wander", "Blacksmith",
+	"Sleep", "Wait", "Major Sit", "Graze", "Bake", "Sew", "Shy", "Lab",
+	"Thief", "Waiter", "Special", "Kid Games", "Eat at Inn", "Duel", "Preach",
+	"Patrol", "Desk Work", "Follow Avatar"
+};
+
 // Audio path helpers (paths relative to Redist working directory)
 std::string BuildU7SfxPath(int soundId);    // Audio/SFX/<bank>/U7BG_SFX_<bank>_NNN.wav
 std::string BuildU7VoicePath(int voiceFileIndex);  // Audio/Voice/U7BG_voice_NNN.wav
