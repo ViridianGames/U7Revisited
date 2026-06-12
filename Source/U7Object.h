@@ -239,7 +239,8 @@ public:
 
 	virtual void Draw();
 
-	virtual void Morph();
+	virtual void Morph(ShapeDrawType drawType);
+	virtual void Morph(const char* imagePath, ShapeDrawType drawType);
 
 	virtual void Hide();
 
@@ -331,6 +332,10 @@ public:
 		m_currentFrameY = framey;
 	}
 
+	// Texture work
+	void SetDefaultTexture(Image image, const std::string& Texturename);
+	void CreateDefaultTexture();
+
 	// Serialization
 	json SaveToJson() const;
 
@@ -392,6 +397,7 @@ public:
 	std::string m_customMeshName;
 	RaylibModel* m_customMesh = nullptr;
 	bool m_meshOutline = true;
+	//std::unique_ptr<ModTexture> m_texture = nullptr;
 
 	Config *m_ObjectConfig;
 

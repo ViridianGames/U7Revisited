@@ -10,6 +10,7 @@
 #include "U7Globals.h"
 #include "MainState.h"
 #include "rlgl.h"
+#include "glad.h"
 #include "U7Gump.h"
 #include "U7GumpPaperdoll.h"
 #include "U7GumpSpellbook.h"
@@ -1403,7 +1404,8 @@ void MainState::Update()
 				}
 				else
 				{
-					//if (!object->GetIsDead()) object->m_Visible = true;
+					if (!object->GetIsDead()) object->m_Visible = true;
+					if (object->m_drawType == ShapeDrawType::OBJECT_DRAW_DONT_DRAW) { object->m_Visible = false; }
 				}
 			}
 		}
@@ -1785,6 +1787,7 @@ void MainState::Draw()
 
 	BeginMode3D(g_camera);
 	//  Draw the terrain
+
 	g_Terrain->Draw();
 
 	// A* timing deltas
@@ -1803,16 +1806,48 @@ void MainState::Draw()
 
 	if (m_showObjects)
 	{
+		std::vector<U7Object> flats;
+		std::vector<U7Object> meshes;
+		//BeginBlendMode(BLEND_ALPHA);
 		for (auto object : g_sortedVisibleObjects)
 		{
-			if (object->m_drawType != ShapeDrawType::OBJECT_DRAW_FLAT)
+			//if ((object->m_drawType != ShapeDrawType::OBJECT_DRAW_FLAT) && (object->m_drawType != ShapeDrawType::OBJECT_DRAW_CUSTOM_MESH))
+			if (object->m_drawType == ShapeDrawType::OBJECT_DRAW_FLAT)
+			{
+				flats.push_back(*object);
+			}
+			else if (object->m_drawType == ShapeDrawType::OBJECT_DRAW_CUSTOM_MESH_DEFER)
+			{
+				meshes.push_back(*object);
+				//object->Draw();
+			}
+			else
 			{
 				object->Draw();
 			}
 		}
 
 		//  Flats require disabling the depth mask to draw correctly.
-		rlDisableDepthMask();
+		//rlDisableDepthMask();
+		glEnable(GL_POLYGON_OFFSET_FILL);
+		glPolygonOffset(-1.0f, -1.0f);
+		for (auto& object: flats)
+		{
+			object.Draw();
+		}
+		glDisable(GL_POLYGON_OFFSET_FILL);
+		//rlEnableDepthMask();
+		
+		//  Meshes after every thing else
+		BeginShaderMode(g_alphaDiscard);
+		for (auto& object : meshes)
+		{
+			object.Draw();
+		}
+		EndShaderMode();
+		
+		//rlDisableDepthMask();
+		/*
 		for (auto object : g_sortedVisibleObjects)
 		{
 			if (object->m_drawType == ShapeDrawType::OBJECT_DRAW_FLAT)
@@ -1820,7 +1855,25 @@ void MainState::Draw()
 				object->Draw();
 			}
 		}
-		rlEnableDepthMask();
+		rlEnableState(RL_POLYGON_OFFSET_FILL);
+		rlSetPolygonOffset(factor, units);
+		rlDisableState(RL_POLYGON_OFFSET_FILL);
+		//rlEnableDepthMask();
+		*/
+		
+
+		/*
+		for (auto object : g_sortedVisibleObjects)
+		{
+			if (object->m_drawType == ShapeDrawType::OBJECT_DRAW_CUSTOM_MESH)
+			{
+				object->Draw();
+			}
+		}
+		*/
+		meshes.clear();
+		flats.clear();
+		//EndBlendMode();
 	}
 
 	if (g_gumpManager->m_draggingObject && !g_gumpManager->m_isMouseOverGump && g_objectUnderMousePointer != g_Player->GetAvatarObject())

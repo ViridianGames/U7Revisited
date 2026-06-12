@@ -215,7 +215,8 @@ void LoadingState::UpdateLoading()
 		{
 			AddConsoleString(std::string("Loading Roofs..."));
 			DebugPrint(std::string("Loading Roofs..."));
-			LoadRoofs("Data/roofLoad.csv");
+			LoadRoofImages("Data/roofimages.csv");
+			LoadRoofMorphs("Data/roofload.csv");
 			m_loadingRoofs = true;
 			return;
 		}
@@ -513,30 +514,21 @@ void LoadingState::LoadIFIX()
 	}
 }
 
-void LoadingState::LoadRoofs(const std::string& filename)
+void LoadingState::LoadRoofImages(const std::string& filename)
 {
-	//std::string dataPath = g_Engine->m_EngineConfig.GetString("data_path");
-	//std::string loadingPath(dataPath);
-	//loadingPath.append("/STATIC/");
-
-	// initialize roof drawing system
-	//m_terrainCosts.clear();
-	//HideObject(956, 0, 1059, 5, 2183);
-	MorphObject(956, 0, 1059, 5, 2183, "");
+	// should generate any missing roofs
 
 	std::ifstream file(filename);
 	if (!file.is_open())
 	{
-		AddConsoleString("WARNING: Could not open roofs file: " + filename, YELLOW);
+		AddConsoleString("WARNING: Could not open roof images load file: " + filename, YELLOW);
 		return;
 	}
-	
 	std::string line;
 	std::getline(file, line);  // Skip header line
 
 	int loadedCount = 0;
 	int lineNum = 1;
-	/*
 	while (std::getline(file, line))
 	{
 		lineNum++;
@@ -545,52 +537,51 @@ void LoadingState::LoadRoofs(const std::string& filename)
 		if (line.empty())
 			continue;
 
-		// Parse CSV: shape_id,name,suggested_cost
-		size_t firstComma = line.find(',');
-		if (firstComma == std::string::npos)
+		std::vector<size_t> commaPositions = findUnquotedCommas(line);
+		std::vector<std::string> columns;
+		size_t start = 0;
+		for (size_t commaPos : commaPositions)
+		{
+			columns.push_back(line.substr(start, commaPos - start));
+			start = commaPos + 1;
+		}
+		columns.push_back(line.substr(start));  // Last column after last comma
+		if (columns.empty() || columns.size() < 11)
+		{
+			AddConsoleString("WARNING: Invalid format in roof images load file at line " + std::to_string(lineNum) + ": " + line, YELLOW);
 			continue;
-
-		size_t secondComma = line.find(',', firstComma + 1);
-		if (secondComma == std::string::npos)
-			continue;
+		}
 
 		try
 		{
-			// Extract shape ID
-			std::string shapeIDStr = line.substr(0, firstComma);
-			if (shapeIDStr.empty())
-				continue;
-			int shapeID = std::stoi(shapeIDStr);
+			int objId = std::stoi(columns[0]);
+			std::string action = columns[1];
+			std::string objtype = columns[2];
+			int offsetx = std::stoi(columns[3]);
+			int offsety = std::stoi(columns[4]);
+			int offsetz = std::stoi(columns[5]);
+			int tilesizex = std::stoi(columns[6]);
+			int tilesizez = std::stoi(columns[7]);
+			int bordersize = std::stoi(columns[8]);
+			int tilecountx = std::stoi(columns[9]);
+			int tilecountz = std::stoi(columns[10]);
 
-			// Extract name (between first and second comma, remove quotes)
-			std::string name = line.substr(firstComma + 1, secondComma - firstComma - 1);
-			// Remove quotes if present
-			if (name.length() >= 2 && name.front() == '"' && name.back() == '"')
+			if (action == "bakeimage")
 			{
-				name = name.substr(1, name.length() - 2);
+				if (objtype == "roof")
+				{
+					BakeImageRoof(objId, offsetx, float(offsety), tilesizex, tilesizez, bordersize, tilecountx, tilecountz);
+				}
+				//HideObject(shapeNum, frameNum, posX, posY, posZ);
 			}
-
-			// Extract cost (after second comma, trim whitespace)
-			std::string costStr = line.substr(secondComma + 1);
-			costStr.erase(0, costStr.find_first_not_of(" \t\r\n"));
-			costStr.erase(costStr.find_last_not_of(" \t\r\n") + 1);
-
-			// Skip if no cost specified
-			if (costStr.empty())
-				continue;
-
-			float cost = std::stof(costStr);
-
-			// Reject zero or negative costs (breaks A* heuristic)
-			if (cost <= 0.0f)
+			else if (action == "morphobj")
 			{
-				AddConsoleString("ERROR: Terrain shape " + std::to_string(shapeID) + " has invalid cost " +
-					std::to_string(cost) + " (must be > 0). Skipping.", RED);
-				continue;
+				//MorphObject(shapeNum, frameNum, posX, posY, posZ, nudgeX, 0.0, nudgeZ, modelPath, imagePath, ShapeDrawType::OBJECT_DRAW_CUSTOM_MESH);
 			}
-
-			m_terrainCosts[shapeID] = cost;
-			m_terrainNames[shapeID] = name;
+			else if (action == "morphroof")
+			{
+				//MorphRoof(roofID, shapeNum, frameNum, posX, posY, posZ, nudgeX, 0.0, nudgeZ);
+			}
 			loadedCount++;
 		}
 		catch (const std::exception&)
@@ -599,9 +590,183 @@ void LoadingState::LoadRoofs(const std::string& filename)
 			continue;
 		}
 	}
-	*/
+
 	file.close();
-	AddConsoleString("Loaded " + std::to_string(loadedCount) + " terrain movement costs from " + filename, GREEN);
+	AddConsoleString("Processed " + std::to_string(loadedCount) + " roof images commands from " + filename, GREEN);
+}
+
+void LoadingState::LoadRoofMorphs(const std::string& filename)
+{
+	// initialize roof drawing system
+
+	std::ifstream file(filename);
+	if (!file.is_open())
+	{
+		AddConsoleString("WARNING: Could not open roof load file: " + filename, YELLOW);
+		return;
+	}
+	std::string line;
+	std::getline(file, line);  // Skip header line
+
+	int loadedCount = 0;
+	int lineNum = 1;
+	while (std::getline(file, line))
+	{
+		lineNum++;
+
+		// Skip empty lines
+		if (line.empty())
+			continue;
+
+		// Parse CSV: roof_id,action,shapenum,framenum,posx,posy,posz,nudgex,nudgez
+		// roof_id, first comma
+		// action, second comma
+		// shapenum, third comma
+		// framenum, fourth comma
+		// posx, fifth comma
+		// posy, sixth comma
+		// posz, seventh comma
+		// nudgex, eighth comma
+		// nudgez, last column (no comma after)
+		size_t firstComma = line.find(',');
+		if (firstComma == std::string::npos)
+			continue;
+
+		size_t secondComma = line.find(',', firstComma + 1);
+		if (secondComma == std::string::npos)
+			continue;
+
+		size_t thirdComma = line.find(',', secondComma + 1);
+		if (thirdComma == std::string::npos)
+			continue;
+
+		size_t fourthComma = line.find(',', thirdComma + 1);
+		if (fourthComma == std::string::npos)
+			continue;
+
+		size_t fifthComma = line.find(',', fourthComma + 1);
+		if (fifthComma == std::string::npos)
+			continue;
+
+		size_t sixthComma = line.find(',', fifthComma + 1);
+		if (sixthComma == std::string::npos)
+			continue;
+
+		size_t seventhComma = line.find(',', sixthComma + 1);
+		if (seventhComma == std::string::npos)
+			continue;
+
+		size_t eighthComma = line.find(',', seventhComma + 1);
+		if (eighthComma == std::string::npos)
+			continue;
+
+		size_t ninthComma = line.find(',', eighthComma + 1);
+		if (ninthComma == std::string::npos)
+			continue;
+
+		size_t tenthComma = line.find(',', ninthComma + 1);
+		if (tenthComma == std::string::npos)
+			continue;
+
+		size_t eleventhComma = line.find(',', tenthComma + 1);
+		if (eleventhComma == std::string::npos)
+			continue;
+
+		try
+		{
+			// Extract shape ID
+			std::string roofIDStr = line.substr(0, firstComma);
+			if (roofIDStr.empty())
+				continue;
+			int roofID = std::stoi(roofIDStr);
+
+			// Extract name (between first and second comma, remove quotes)
+			std::string action = line.substr(firstComma + 1, secondComma - firstComma - 1);
+			// Remove quotes if present
+			if (action.length() >= 2 && action.front() == '"' && action.back() == '"')
+			{
+				action = action.substr(1, action.length() - 2);
+			}
+
+			// Extract shapeNum (after second comma, trim whitespace)
+			std::string shapeNumStr = line.substr(secondComma + 1, thirdComma - secondComma - 1);
+			if (shapeNumStr.empty())
+				continue;
+			int shapeNum = std::stoi(shapeNumStr);
+
+			// Extract frameNum (after third comma, trim whitespace)
+			std::string frameNumStr = line.substr(thirdComma + 1, fourthComma - thirdComma - 1);
+			if (frameNumStr.empty())
+				continue;
+			int frameNum = std::stoi(frameNumStr);
+
+			// Extract posx (after fourth comma, trim whitespace)
+			std::string posXStr = line.substr(fourthComma + 1, fifthComma - fourthComma - 1);
+			if (posXStr.empty())
+				continue;
+			float posX = std::stof(posXStr);
+
+			// Extract posy (after fifth comma, trim whitespace)
+			std::string posYStr = line.substr(fifthComma + 1, sixthComma - fifthComma - 1);
+			if (posYStr.empty())
+				continue;
+			float posY = std::stof(posYStr);
+
+			// Extract posz (after sixth comma, trim whitespace)
+			std::string posZStr = line.substr(sixthComma + 1, seventhComma - sixthComma - 1);
+			if (posZStr.empty())
+				continue;
+			float posZ = std::stof(posZStr);
+
+			// Extract nudgex (after seventh comma, trim whitespace)
+			std::string nudgeXStr = line.substr(seventhComma + 1, eighthComma - seventhComma - 1);
+			if (nudgeXStr.empty())
+				continue;
+			float nudgeX = std::stof(nudgeXStr);
+
+			// Extract nudgey (after eighth comma, trim whitespace)
+			std::string nudgeYStr = line.substr(eighthComma + 1, ninthComma - eighthComma - 1);
+			if (nudgeYStr.empty())
+				continue;
+			float nudgeY = std::stof(nudgeYStr);
+
+			// Extract nudgez (after ninth comma, trim whitespace)
+			std::string nudgeZStr = line.substr(ninthComma + 1, tenthComma - ninthComma - 1);
+			if (nudgeZStr.empty())
+				continue;
+			float nudgeZ = std::stof(nudgeZStr);
+
+			std::string modelPath = line.substr(tenthComma + 1, eleventhComma - tenthComma - 1);
+
+			std::string imagePath = line.substr(eleventhComma + 1);
+			// Extract imagePath (after eleventh comma, trim whitespace)
+			imagePath.erase(0, imagePath.find_first_not_of(" \t\r\n"));
+			imagePath.erase(imagePath.find_last_not_of(" \t\r\n") + 1);
+
+			if (action == "hide")
+			{
+				HideObject(shapeNum, frameNum, posX, posY, posZ);
+			}
+			else if (action == "morphobj")
+			{
+				MorphObject(shapeNum, frameNum, posX, posY, posZ, nudgeX, 0.0, nudgeZ, modelPath, imagePath, ShapeDrawType::OBJECT_DRAW_CUSTOM_MESH);
+			}
+			else if (action == "morphroof")
+			{
+				MorphRoof(roofID, shapeNum, frameNum, posX, posY, posZ, nudgeX, 0.0, nudgeZ);
+			}
+
+			loadedCount++;
+		}
+		catch (const std::exception&)
+		{
+			AddConsoleString("WARNING: Failed to parse terrain cost on line " + std::to_string(lineNum) + ": " + line, YELLOW);
+			continue;
+		}
+	}
+
+	file.close();
+	AddConsoleString("Processed " + std::to_string(loadedCount) + " roof load commands from " + filename, GREEN);
 }
 
 void LoadingState::LoadFaces()
@@ -629,6 +794,10 @@ void LoadingState::LoadFaces()
 		unsigned int height;
 		int xDrawOffset;
 		int yDrawOffset;
+		int xDrawLeft;
+		//int xDrawRight;
+		int yDrawAbove;
+		//int yDrawBelow;
 	};
 
 	stringstream shapes;
@@ -687,6 +856,11 @@ void LoadingState::LoadFaces()
 
 				frameOffsets[i].xDrawOffset = frameOffsets[i].W2;
 				frameOffsets[i].yDrawOffset = frameOffsets[i].H2;
+				//frameOffsets[i].xDrawRight = frameOffsets[i].W2;
+				frameOffsets[i].xDrawLeft = frameOffsets[i].W1;
+				frameOffsets[i].yDrawAbove = frameOffsets[i].H1;
+				//frameOffsets[i].yDrawBelow = frameOffsets[i].H2;
+				//shapeData.SetPixelOffset(frameOffsets[i].xDrawLeft, frameOffsets[i].yDrawAbove);
 
 				shapeData.CreateDefaultTexture();
 				Image tempImage = GenImageColor(frameOffsets[i].width, frameOffsets[i].height, Color{ 0, 0, 0, 0 });
@@ -1147,6 +1321,10 @@ void LoadingState::CreateShapeTable()
 		unsigned int height;
 		int xDrawOffset;
 		int yDrawOffset;
+		int xDrawLeft;
+		//int xDrawRight;
+		int yDrawAbove;
+		//int yDrawBelow;
 	};
 
 	float profilingTime = GetTime();
@@ -1205,6 +1383,13 @@ void LoadingState::CreateShapeTable()
 
 				frameOffsets[i].xDrawOffset = frameOffsets[i].W2;
 				frameOffsets[i].yDrawOffset = frameOffsets[i].H2;
+				//frameOffsets[i].xDrawRight = frameOffsets[i].W2;
+				frameOffsets[i].xDrawLeft = frameOffsets[i].W1;
+				frameOffsets[i].yDrawAbove = frameOffsets[i].H1;
+				//frameOffsets[i].yDrawBelow = frameOffsets[i].H2;
+				Log("shapeData.SetPixelOffset Shape " + std::to_string(thisShape) + " Frame " + std::to_string(i) + " setting offset " + std::to_string(frameOffsets[i].xDrawLeft) + " " + std::to_string(frameOffsets[i].yDrawAbove) + " setting offset2 " + std::to_string(frameOffsets[i].xDrawOffset) + " " + std::to_string(frameOffsets[i].yDrawOffset));
+				//printf("shapeData.SetPixelOffset Shape %d Frame %d setting offset %d %d\n", thisShape, i, frameOffsets[i].xDrawLeft, frameOffsets[i].yDrawAbove);
+				shapeData.SetPixelOffset(frameOffsets[i].xDrawLeft, frameOffsets[i].yDrawAbove);
 
 				shapeData.CreateDefaultTexture();
 				Image tempImage = GenImageColor(frameOffsets[i].width, frameOffsets[i].height, Color{ 0, 0, 0, 0 });
@@ -1327,6 +1512,10 @@ void LoadingState::LoadSprites()
 		unsigned int height;
 		int xDrawOffset;
 		int yDrawOffset;
+		int xDrawLeft;
+		//int xDrawRight;
+		int yDrawAbove;
+		//int yDrawBelow;
 	};
 
 	// Process each sprite shape (same format as SHAPES.VGA)
@@ -1523,6 +1712,10 @@ void LoadingState::ExtractGumps()
 		unsigned int height;
 		int xDrawOffset;
 		int yDrawOffset;
+		int xDrawLeft;
+		//int xDrawRight;
+		int yDrawAbove;
+		//int yDrawBelow;
 	};
 
 	// Process each gump shape (same format as SHAPES.VGA)

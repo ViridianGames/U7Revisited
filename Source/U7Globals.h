@@ -359,7 +359,11 @@ unsigned int GetNextID();
 
 void HideObject(int shapenum, int framenum, float x, float y, float z);
 
-void MorphObject(int shapenum, int framenum, float x, float y, float z, const std::string& modelName);
+//void MorphObject(int shapenum, int framenum, float x, float y, float z, const std::string& modelName);
+//void MorphObject(int shapenum, int framenum, float x, float y, float z, float nux, float nuy, float nuz, const std::string& modelName);
+void MorphObject(int shapenum, int framenum, float x, float y, float z, float nux, float nuy, float nuz, const std::string& modelName, const std::string& imageName, ShapeDrawType drawType);
+void MorphRoof(int roofId, int shapeNum, int frameNum, float x, float y, float z, float nux, float nuy, float nuz);
+void BakeImageRoof(int objId, int xOfs, float y, int tileSizeX, int tileSizeY, int borderSize, int tileCountX, int tileCountY);
 
 void OpenURL(const std::string& url);
 
@@ -371,6 +375,13 @@ extern U7Object* g_objectUnderMousePointer;
 extern bool g_mouseOverUI;  // True when mouse is over any UI element (blocks world interaction)
 
 extern U7Object* g_doubleClickedObject;
+
+
+//////////////////////////////////////////////////////////////////////////////
+//  UTIL - CSV PARSING
+//////////////////////////////////////////////////////////////////////////////
+
+std::vector<size_t> findUnquotedCommas(const std::string& line);
 
 //////////////////////////////////////////////////////////////////////////////
 //  CONSOLE

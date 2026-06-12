@@ -75,6 +75,7 @@ void U7Object::Init(const string& configfile, int unitType, int frame)
 	m_customMeshName = "Models/3dmodels/zzwrongcube.obj";
 	m_customMesh = nullptr;
 	m_meshOutline = true;
+	//m_texture = nullptr;
 	m_isMoving = false;
 	m_distanceFromCamera = 999999;
 
@@ -186,26 +187,74 @@ void U7Object::Update()
 	}
 }
 
-void U7Object::Morph()
+
+void U7Object::Morph(ShapeDrawType drawType)
 {
+	Morph(nullptr, drawType);
+}
+
+
+void U7Object::Morph(const char* imagePath, ShapeDrawType drawType)
+{
+	//AddConsoleString("Roof: Morph Init", WHITE);
 	m_isCustomMesh = true;
 	m_customMesh = g_ResourceManager->GetModel(m_customMeshName);
+	//AddConsoleString("Roof: Morph GetModel " + m_customMeshName, WHITE);
+	Model* customMeshModel = &m_customMesh->GetModel();
+	customMeshModel->materials[0].shader = g_alphaDiscard;
+
+	// if by some chance m_Texture is already loaded, we can skip this part.
+	if (m_Texture == nullptr)
+	{
+		//Image image = LoadImage("Images/GUI/gumps.png");
+		if (imagePath != nullptr)
+		{
+			if (FileExists(imagePath))
+			{
+				Image morphImage = LoadImage(imagePath);
+				//Image morphImage = GenImageColor(8, 8, Color{ 128, 128, 128, 128 });
+				m_Texture = new Texture(LoadTextureFromImage(morphImage));
+				//AddConsoleString("Roof: Morph IMG", WHITE);
+				UnloadImage(morphImage);
+			}
+			else {
+				AddConsoleString("Roof: Morph IMG FAIL", YELLOW);
+				//m_Texture = new Texture(GenTextureCubemap(8, 8, 1, Color{ 128, 128, 128, 128 }));
+				//AddConsoleString("Roof: Morph CUBEMAP", WHITE);
+				//CreateDefaultTexture();
+			}
+		}
+	}
+	//AddConsoleString("Roof: Morph A", WHITE);
+	//CreateDefaultTexture();
+	if (m_Texture != nullptr)
+	{
+		g_ResourceManager->UpdateModelTexture(m_customMeshName, *m_Texture);
+	}
+	
+	//AddConsoleString("Roof: Morph B", WHITE);
+	//SetMaterialTexture(&customMeshModel->materials[0], MATERIAL_MAP_DIFFUSE, *m_Texture);
+	m_drawType = drawType;
 }
 
 void U7Object::Hide()
 {
+	m_drawType = ShapeDrawType::OBJECT_DRAW_DONT_DRAW;
+	/*
 	//m_Visible = false;
 	if (m_Visible != false) {
 		m_Visible = false;
-	}
+	}*/
 }
 
 void U7Object::Show()
 {
 	//m_Visible = true;
+	/*
 	if (m_Visible != true) {
 		m_Visible = true;
 	}
+	*/
 }
 
 void U7Object::EggUpdate()
@@ -1409,6 +1458,42 @@ void U7Object::NPCInit(NPCData* npcData)
 			// loop until swapped or cur updated
 		}
 	}
+}
+
+// ============================================================================
+// Texture management
+// ============================================================================
+void U7Object::SetDefaultTexture(Image image, const std::string& Texturename)
+{
+	if (m_Texture == nullptr)
+	{
+		//m_Texture = *g_ResourceManager->AddTexture(image, Texturename);
+		//m_Texture = std::make_unique<ModTexture>(image);
+	}
+	else
+	{
+		//m_Texture->AssignImage(image);
+	}
+	/*
+	if (m_texture == nullptr)
+	{
+		m_texture = std::make_unique<ModTexture>(image);
+	}
+	else
+	{
+		m_texture->AssignImage(image);
+	}
+	*/
+}
+
+void U7Object::CreateDefaultTexture()
+{
+	/*
+	if (m_texture == nullptr)
+	{
+		m_texture = std::make_unique<ModTexture>();
+	}
+	*/
 }
 
 // ============================================================================

@@ -39,7 +39,8 @@ public:
    void LoadModels();
    void LoadInitialGameState();
    void LoadNPCSchedules();
-   void LoadRoofs(const std::string& filename);
+   void LoadRoofImages(const std::string& filename);
+   void LoadRoofMorphs(const std::string& filename);
 
    unsigned char ReadU8(std::istream &buffer);
    unsigned short ReadU16(std::istream &buffer);
