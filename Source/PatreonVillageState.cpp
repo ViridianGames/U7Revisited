@@ -38,7 +38,7 @@ void PatreonVillageState::OnEnter()
 {
 	ClearConsole();
 	m_LastUpdate = 0;
-	//g_SoundSystem->PlayMusic("Audio/Music/22bg.ogg");
+	//g_SoundSystem->PlayMusic(BuildU7MusicPath(22));
 	m_currentFadeAlpha = 0;
 	m_mouseMoved = false;
 	m_fadeState = FadeState::FADE_IN;
@@ -143,13 +143,13 @@ void PatreonVillageState::OnEnter()
 	g_objectList[g_NPCData[162].get()->m_objectID]->m_name = "Mystical One";
 	g_objectList[g_NPCData[241].get()->m_objectID]->m_followingSchedule = true;
 
-	g_SoundSystem->PlayMusic("Audio/Music/29bg.ogg");
+	g_SoundSystem->PlayMusic(BuildU7MusicPath(29));
 
 }
 
 void PatreonVillageState::OnExit()
 {
-	g_SoundSystem->StopMusic("Audio/Music/29bg.ogg");
+	g_SoundSystem->StopMusic(BuildU7MusicPath(29));
 }
 
 void PatreonVillageState::Shutdown()
@@ -177,7 +177,7 @@ void PatreonVillageState::Update()
 		{
 			Vector3 current = g_camera.target;
 			Vector3 thisdest = Vector3Subtract(g_cameraDestination, g_camera.target);
-			if (abs(Vector3Length(thisdest)) < (g_cameraSpeed * GetFrameTime()))
+			if (abs(Vector3Length(thisdest)) < (g_cameraSpeed * g_Engine->LastFrameInSeconds()))
 			{
 				current = g_cameraDestination;
 				g_shouldCameraMoveToDestination = false;
@@ -185,7 +185,7 @@ void PatreonVillageState::Update()
 			else
 			{
 				thisdest = Vector3Normalize(thisdest);
-				thisdest = Vector3Scale(thisdest, (g_cameraSpeed * GetFrameTime()));
+				thisdest = Vector3Scale(thisdest, (g_cameraSpeed * g_Engine->LastFrameInSeconds()));
 				current = Vector3Add(current, thisdest);
 			}
 
@@ -218,7 +218,7 @@ void PatreonVillageState::Update()
 
 	if (m_fadeState == FadeState::FADE_OUT)
 	{
-		m_fadeTime += GetFrameTime();
+		m_fadeTime += g_Engine->LastFrameInSeconds();
 		if (m_fadeTime > m_fadeDuration)
 		{
 			m_fadeTime = m_fadeDuration;
@@ -229,7 +229,7 @@ void PatreonVillageState::Update()
 
 	else if (m_fadeState == FadeState::FADE_IN)
 	{
-		m_fadeTime -= GetFrameTime();
+		m_fadeTime -= g_Engine->LastFrameInSeconds();
 		if (m_fadeTime < 0)
 		{
 			m_fadeTime = 0;
@@ -255,7 +255,7 @@ void PatreonVillageState::Update()
 	}
 	else if (!g_shouldCameraMoveToDestination)
 	{
-		m_cameraTimer -= GetFrameTime();
+		m_cameraTimer -= g_Engine->LastFrameInSeconds();
 	}
 }
 

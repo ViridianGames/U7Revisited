@@ -1,4 +1,5 @@
 #include "U7Globals.h"
+#include "U7SpriteEffects.h"
 #include "U7Object.h"
 #include "Geist/Engine.h"
 #include "Geist/Logging.h"
@@ -22,7 +23,39 @@
 #include "InputSystem.h"
 #include "raylib.h"
 #include "rlgl.h"
+#include <cstdio>
 using namespace std;
+
+std::string BuildU7SfxPath(int soundId)
+{
+	string bank = "mt32";
+	if (g_Engine)
+	{
+		const string configured = g_Engine->m_EngineConfig.GetString("sfx_bank");
+		if (!configured.empty())
+		{
+			bank = configured;
+		}
+	}
+
+	char path[128];
+	snprintf(path, sizeof(path), "Audio/SFX/%s/U7BG_SFX_%s_%03d.wav", bank.c_str(), bank.c_str(), soundId);
+	return path;
+}
+
+std::string BuildU7VoicePath(int voiceId)
+{
+	char path[128];
+	snprintf(path, sizeof(path), "Audio/Voice/U7BG_voice_%03d.wav", voiceId);
+	return path;
+}
+
+std::string BuildU7MusicPath(int trackId)
+{
+	char path[128];
+	snprintf(path, sizeof(path), "Audio/Music/%02dbg.ogg", trackId);
+	return path;
+}
 
 std::string g_version;
 
@@ -56,11 +89,13 @@ std::array<ObjectData, 1024> g_objectDataTable;
 
 // Weather/effect sprite data
 std::array<std::vector<SpriteFrame>, 32> g_spriteTable;
+std::unique_ptr<U7SpriteEffectSystem> g_SpriteEffectSystem = std::make_unique<U7SpriteEffectSystem>();
 
 // Misc names from TEXT.FLX for frame-specific item names
 std::vector<std::string> g_miscNames;
 
 std::unordered_map<int, unique_ptr<NPCData>> g_NPCData;
+std::vector<MonsterData> g_monsterData;   // Loaded from STATIC/MONSTERS.DAT (65 entries, 25 bytes each) - see wiki for format
 
 // Spell system data
 std::vector<ReagentData> g_reagentData;
@@ -70,6 +105,7 @@ std::unordered_map<int, SpellData*> g_spellMap;
 std::unique_ptr<PathfindingSystem> g_pathfindingSystem;
 
 ConversationState* g_ConversationState;
+CombatState* g_CombatState;
 MainState* g_mainState;
 
 bool g_CameraMoved;
@@ -112,6 +148,8 @@ float g_cameraSpeed = 25.0f;
 bool g_shouldCameraMoveToDestination = false;
 
 Shader g_alphaDiscard;
+Shader g_cuboidShader;
+int g_cuboidTexCoordsLoc;
 
 bool g_pixelated = false;
 RenderTexture2D g_renderTarget;
@@ -121,12 +159,12 @@ std::unique_ptr<U7Player> g_Player;
 
 bool g_LuaDebug = false;  // Toggle with F8 key
 bool g_showScriptedObjects = false;  // Toggle with F11 key - highlights objects with scripts
+bool g_showEggs = false;  // Toggle with Ctrl+G
 
 std::unique_ptr<Model> g_CuboidModel;
 
 std::vector< std::vector<Texture> > g_walkFrames;
 
-std::unordered_map<int, std::vector<NPCSchedule> > g_NPCSchedules;
 
 Color g_dayNightColor = WHITE;
 bool g_isDay = true;
@@ -290,7 +328,7 @@ void CameraInput()
 		U7Object* avatar = g_Player->GetAvatarObject();
 		if (!avatar) return;
 
-		float dt = GetFrameTime();
+		float dt = g_Engine->LastFrameInSeconds();
 
 		// Rotation (Q/E) - Q = left, E = right
 		if (IsKeyDown(KEY_Q))
@@ -413,25 +451,25 @@ void CameraInput()
 	{
 		if (IsKeyDown(KEY_A))
 		{
-			direction = Vector3Add(direction, { -GetFrameTime() * frameTimeModifier, 0, GetFrameTime() * frameTimeModifier });
+			direction = Vector3Add(direction, { -g_Engine->LastFrameInSeconds() * frameTimeModifier, 0, g_Engine->LastFrameInSeconds() * frameTimeModifier });
 			g_CameraMoved = true;
 		}
 
 		if (IsKeyDown(KEY_D))
 		{
-			direction = Vector3Add(direction, { GetFrameTime() * frameTimeModifier, 0, -GetFrameTime() * frameTimeModifier });
+			direction = Vector3Add(direction, { g_Engine->LastFrameInSeconds() * frameTimeModifier, 0, -g_Engine->LastFrameInSeconds() * frameTimeModifier });
 			g_CameraMoved = true;
 		}
 
 		if (IsKeyDown(KEY_W))
 		{
-			direction = Vector3Add(direction, { -GetFrameTime() * frameTimeModifier, 0, -GetFrameTime() * frameTimeModifier });
+			direction = Vector3Add(direction, { -g_Engine->LastFrameInSeconds() * frameTimeModifier, 0, -g_Engine->LastFrameInSeconds() * frameTimeModifier });
 			g_CameraMoved = true;
 		}
 
 		if (IsKeyDown(KEY_S))
 		{
-			direction = Vector3Add(direction, { GetFrameTime() * frameTimeModifier, 0, GetFrameTime() * frameTimeModifier });
+			direction = Vector3Add(direction, { g_Engine->LastFrameInSeconds() * frameTimeModifier, 0, g_Engine->LastFrameInSeconds() * frameTimeModifier });
 			g_CameraMoved = true;
 		}
 	}
@@ -458,14 +496,14 @@ void CameraInput()
 	{
 		if (IsKeyDown(KEY_Q))
 		{
-			g_CameraRotateSpeed = GetFrameTime() * 5;
+			g_CameraRotateSpeed = g_Engine->LastFrameInSeconds() * 5;
 			g_CameraMoved = true;
 			cameraRotated = true;
 		}
 
 		if (IsKeyDown(KEY_E))
 		{
-			g_CameraRotateSpeed = -GetFrameTime() * 5;
+			g_CameraRotateSpeed = -g_Engine->LastFrameInSeconds() * 5;
 			g_CameraMoved = true;
 			cameraRotated = true;
 		}
@@ -688,7 +726,7 @@ void CameraUpdate(bool forcemove)
 			{
 				delta += 2 * PI;
 			}
-			g_CameraRotateSpeed = (delta > 0.0f) ? GetFrameTime() * 1 : GetFrameTime() * -1;
+			g_CameraRotateSpeed = (delta > 0.0f) ? g_Engine->LastFrameInSeconds() * 1 : g_Engine->LastFrameInSeconds() * -1;
 		}
 		else
 		{
@@ -733,7 +771,7 @@ U7Object* GetRootNPCFromContainer(U7Object* container)
 		return nullptr;
 
 	// If this container is already an NPC, return it
-	if (container->m_isNPC)
+	if (container->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC)
 		return container;
 
 	// Follow the parent chain up to find an NPC
@@ -744,7 +782,7 @@ U7Object* GetRootNPCFromContainer(U7Object* container)
 		if (parent == nullptr)
 			break;
 
-		if (parent->m_isNPC)
+		if (parent->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC)
 			return parent;
 
 		currentId = parent->m_containingObjectId;
@@ -1816,7 +1854,7 @@ std::string GetObjectScriptName(U7Object* object)
 		return "";
 
 	// NPCs with conversation trees use NPC ID-based scripts
-	if (object->m_isNPC && object->m_hasConversationTree)
+	if (object->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC && object->m_hasConversationTree)
 	{
 		return FindNPCScriptByID(object->m_NPCID);
 	}
@@ -2014,6 +2052,14 @@ void NPCData::UnequipItem(EquipmentSlot slot)
 
 void LoadSpellData()
 {
+	static bool s_spellDataLoaded = false;
+
+	if (s_spellDataLoaded)
+	{
+		Log("LoadSpellData: Spell data already loaded, skipping reload.");
+		return;
+	}
+
 	Log("Loading spell data from spells.json...");
 
 	// Clear existing data
@@ -2107,6 +2153,8 @@ void LoadSpellData()
 		}
 		Log("Built spell lookup map with " + std::to_string(g_spellMap.size()) + " spells");
 		AddConsoleString("Loaded " + std::to_string(g_spellMap.size()) + " spells from spells.json", GREEN);
+
+		s_spellDataLoaded = true;
 	}
 	catch (const std::exception& e)
 	{
@@ -2127,74 +2175,6 @@ SpellData* GetSpellData(int spellId)
 		return it->second;
 	}
 	return nullptr;
-}
-
-// Initialize NPC activities based on current schedule time
-// This should be called after loading schedules OR after loading a saved game
-void InitializeNPCActivitiesFromSchedules()
-{
-	extern unsigned int g_scheduleTime;
-
-	NPCDebugPrint("  NPC: g_scheduleTime=" + std::to_string(g_scheduleTime));
-	NPCDebugPrint("  NPC: g_NPCSchedules size=" + std::to_string(g_NPCSchedules.size()));
-	NPCDebugPrint("  NPC: g_NPCData size=" + std::to_string(g_NPCData.size()));
-
-	for (const auto& [npcID, schedules] : g_NPCSchedules)
-	{
-		if (g_NPCData.find(npcID) == g_NPCData.end() || !g_NPCData[npcID])
-			continue;
-
-		// Find the most recent schedule <= current time (looking backwards)
-		int mostRecentTime = -1;
-		const NPCSchedule* mostRecentSchedule = nullptr;
-
-		for (const auto& schedule : schedules)
-		{
-			if ((int)schedule.m_time <= (int)g_scheduleTime && (int)schedule.m_time > mostRecentTime)
-			{
-				mostRecentTime = (int)schedule.m_time;
-				mostRecentSchedule = &schedule;
-			}
-		}
-
-		// If no schedule found <= current time, wrap around and look at end of day (time 21, 18, 15, etc)
-		if (!mostRecentSchedule)
-		{
-			for (const auto& schedule : schedules)
-			{
-				if ((int)schedule.m_time > mostRecentTime)
-				{
-					mostRecentTime = (int)schedule.m_time;
-					mostRecentSchedule = &schedule;
-				}
-			}
-		}
-
-		if (mostRecentSchedule)
-		{
-			g_NPCData[npcID]->m_currentActivity = mostRecentSchedule->m_activity;
-			// NPCDebugPrint("  NPC " + std::to_string(npcID) + " (" + std::string(g_NPCData[npcID]->name) +
-			//            ") set to activity " + std::to_string(mostRecentSchedule->m_activity) +
-			//            " from time " + std::to_string(mostRecentTime));
-			
-			// Also set m_lastSchedule on the NPC object so schedule checker knows initialization is done
-			if (g_NPCData[npcID]->m_objectID >= 0 && g_objectList[g_NPCData[npcID]->m_objectID])
-			{
-				g_objectList[g_NPCData[npcID]->m_objectID]->m_lastSchedule = mostRecentTime;
-				// NPCDebugPrint("  NPC m_lastSchedule=" + std::to_string(mostRecentTime) +
-				//            " on object " + std::to_string(g_NPCData[npcID]->m_objectID));
-			}
-			else
-			{
-				// NPCDebugPrint("  NPC: Could not set m_lastSchedule, objectID=" +
-				//            std::to_string(g_NPCData[npcID]->m_objectID));
-			}
-		}
-		else
-		{
-			// NPCDebugPrint("  NPC " + std::to_string(npcID) + " has no schedule entry!");
-		}
-	}
 }
 
 std::array<int, 1024> g_isObjectMoveable =
@@ -2317,5 +2297,52 @@ void LoadGameFlagsFromJson(std::unordered_map<int, bool>& flags, const nlohmann:
 			// Skip invalid entries (malformed key or non-bool value)
 			// Optional: log warning
 		}
+	}
+}
+
+void DrawPerfCounter(Font* font, int loc)
+{
+	int vpos = 0;
+	int hpos = 0;
+	int width = g_Engine->m_RenderWidth * .20f;
+	int height = g_Engine->m_RenderHeight * .20f;
+	switch (loc)
+	{
+		case 0: // Bottom-left
+			hpos = 0;
+			vpos = g_Engine->m_RenderHeight - height;
+			break;
+		case 1: // Top-left
+			hpos = 0;
+			vpos = 0;
+			break;
+		case 2: // Bottom-right
+			hpos = g_Engine->m_RenderWidth - width;
+			vpos = g_Engine->m_RenderHeight - height;
+			break;
+		case 3: // Top-right
+			hpos = g_Engine->m_RenderWidth - width;
+			vpos = 0;
+			break;
+	}
+	DrawRectangle(hpos, vpos, width, height, BLACK);
+	DrawRectangleLines(hpos, vpos, width, height, BLUE);
+
+	string perf_temp = to_string(int(1.0f / g_Engine->LastFrameInSeconds())) + " fps (" + to_string(int(g_Engine->LastFrameInSeconds() * 1000.0f)) + " mspf)";
+	DrawTextEx(*font, perf_temp.c_str(), {hpos + (width * .05f), vpos + height - (font->baseSize * 1.01f)}, font->baseSize, 1, WHITE);
+	// if (font)
+	// {
+	// 	DrawTextEx(*font, perf_temp.c_str(), {hpos + (width * .05f), vpos + height - (font->baseSize * 1.01f)}, font->baseSize, 1, WHITE);
+	// }
+	DrawTextEx(*font, "Draw", {hpos + (width * .05f), g_Engine->m_RenderHeight * .95f}, font->baseSize, 1, GREEN);
+	DrawTextEx(*font, "Update", {hpos + (width * .3f), g_Engine->m_RenderHeight * .95f}, font->baseSize, 1,  YELLOW);
+	DrawTextEx(*font, "Network", {hpos + (width * .65f), g_Engine->m_RenderHeight * .95f}, font->baseSize, 1, BLUE);
+	int perf_i;
+	for (perf_i = 0; perf_i < 50 - 1; perf_i++)
+	{
+		int h = std::max(1, int(g_Engine->m_UpdateFrames[perf_i]));
+		int h2 = std::max(1, int(g_Engine->m_DrawFrames[perf_i]));
+		DrawRectangle(hpos + 4 + (perf_i * 2), int(g_Engine->m_RenderHeight * .94f) - h, 2, h, YELLOW);
+		DrawRectangle(hpos + 4 + (perf_i * 2), int(g_Engine->m_RenderHeight * .94f) - (h + h2), 2, h2, GREEN);
 	}
 }

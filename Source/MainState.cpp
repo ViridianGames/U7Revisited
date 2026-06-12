@@ -8,6 +8,7 @@
 #include "Geist/Engine.h"
 #include "Geist/ScriptingSystem.h"
 #include "U7Globals.h"
+#include "U7Object.h"
 #include "MainState.h"
 #include "rlgl.h"
 #include "glad.h"
@@ -15,6 +16,7 @@
 #include "U7GumpPaperdoll.h"
 #include "U7GumpSpellbook.h"
 #include "U7GumpMinimap.h"
+#include "U7SpriteEffects.h"
 #include "U7GumpStats.h"
 #include "ConversationState.h"
 #include "GumpManager.h"
@@ -22,6 +24,54 @@
 #include "Ghost/GhostWindow.h"
 #include "Ghost/GhostSerializer.h"
 #include "NpcListWindow.h"
+#include "SoundSystem.h"
+
+#include <unordered_set>
+
+namespace
+{
+	constexpr int kPoolShapeId = 893;
+
+	void UpdatePoolAmbientSounds()
+	{
+		static std::unordered_set<int> poolsInRange;
+
+		std::unordered_set<int> currentlyInRange;
+
+		for (U7Object* obj : g_sortedVisibleObjects)
+		{
+			if (!obj || obj->m_ObjectType != kPoolShapeId)
+			{
+				continue;
+			}
+
+			float dist = Vector2Distance(
+				{ obj->m_Pos.x, obj->m_Pos.z },
+				{ g_camera.target.x, g_camera.target.z }
+			);
+
+			const float poolAmbientRange = g_SoundSystem->GetSpatialDefaultRange();
+			if (dist <= poolAmbientRange)
+			{
+				currentlyInRange.insert(obj->m_ID);
+				if (poolsInRange.find(obj->m_ID) == poolsInRange.end())
+				{
+					obj->Interact(2);
+				}
+			}
+		}
+
+		for (int poolId : poolsInRange)
+		{
+			if (currentlyInRange.find(poolId) == currentlyInRange.end())
+			{
+				g_SoundSystem->StopLoopingSoundEffect(poolId);
+			}
+		}
+
+		poolsInRange = std::move(currentlyInRange);
+	}
+}
 
 #include <list>
 #include <string>
@@ -39,7 +89,6 @@
 
 #include "InputSystem.h"
 #include "LoadSaveState.h"
-#include "SoundSystem.h"
 
 using namespace std;
 
@@ -78,17 +127,6 @@ void MainState::Init(const string& configfile)
 	m_Gui->AddPanel(1004, 18, 136, 100, 8, Color{ 255, 255, 255, 255 }, false);
 
 	m_Gui->m_InputScale = float(g_Engine->m_RenderHeight) / float(g_Engine->m_ScreenHeight);
-
-	m_OptionsGui = new Gui();
-
-	m_OptionsGui->m_Active = false;
-
-	m_OptionsGui->SetLayout(0, 0, 250, 320, g_DrawScale, Gui::GUIP_CENTER);
-	m_OptionsGui->AddPanel(1000, 0, 0, 250, 320, Color{ 0, 0, 0, 192 });
-	m_OptionsGui->AddPanel(9999, 0, 0, 250, 320, Color{ 255, 255, 255, 255 }, false);
-	m_OptionsGui->AddTextArea(1001, g_Font.get(), "", 125, 100, 0, 0, Color{ 255, 255, 255, 255 }, GuiTextArea::CENTERED);
-	m_OptionsGui->AddTextButton(1002, 70, 98, "<-", g_Font.get(), Color{ 255, 255, 255, 255 }, Color{ 0, 0, 0, 192 }, Color{ 255, 255, 255, 255 });
-	m_OptionsGui->AddTextButton(1003, 170, 98, "->", g_Font.get(), Color{ 255, 255, 255, 255 }, Color{ 0, 0, 0, 192 }, Color{ 255, 255, 255, 255 });
 
 	m_LastUpdate = 0;
 
@@ -176,10 +214,6 @@ void MainState::OnEnter()
 
 	m_heightCutoff = 16.0f; // Draw everything unless the player is inside.
 
-	// Initialize NPC activities based on starting schedule time (for new games)
-	// This must happen AFTER g_scheduleTime is set, so NPCs get the correct activity for time slot 1
-	InitializeNPCActivitiesFromSchedules();
-
 	if (m_gameMode == MainStateModes::MAIN_STATE_MODE_TRINSIC_DEMO)
 	{
 		g_Player->AddPartyMember(1);
@@ -222,7 +256,7 @@ void MainState::OnEnter()
 		// Fade out.
 		else
 		{
-			g_SoundSystem->PlaySound("Audio/Music/35bg.ogg");
+			g_SoundSystem->PlayMusic(BuildU7MusicPath(35));
 
 			// Move camera to start position and rotation.
 			g_camera.target = Vector3{ 1068.0f, 0.0f, 2213.0f };
@@ -240,6 +274,8 @@ void MainState::OnEnter()
 	{
 		m_paused = false;
 		g_Player->AddPartyMember(1);
+
+		SpawnMonster(14, 1044.0f, 0.0f, 2182.0f);
 
 		// Only show welcome messages on first OnEnter, not when returning from dialogs
 		if (!m_hasShownWelcomeMessages)
@@ -433,10 +469,10 @@ void MainState::HandleEscapeKey()
 
 	if (!g_gumpManager->m_GumpList.empty())
 		g_gumpManager->m_GumpList.back().get()->SetIsDead(true);
-	else if (!g_Engine->m_askedToExit)
+	else// if (!g_Engine->m_askedToExit)
 	{
-		g_Engine->m_askedToExit = true;
-		g_StateMachine->PushState(STATE_ASKEXITSTATE);
+		//g_Engine->m_askedToExit = true;
+		g_StateMachine->PushState(STATE_OPTIONSSTATE);
 	}
 
 	if (m_objectSelectionMode)
@@ -488,6 +524,12 @@ void MainState::HandleDebugKeys()
 	if (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyPressed(KEY_L))
 		DumpNpcScheduleStats();
 
+	if (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyPressed(KEY_G))
+	{
+		g_showEggs = !g_showEggs;
+		AddConsoleString(g_showEggs ? "Egg display ON" : "Egg display OFF");
+	}
+
 	if (m_showPathfindingDebug && g_InputSystem->WasRButtonClicked())
 	{
 		int worldX = (int)floor(g_terrainUnderMousePointer.x);
@@ -507,6 +549,18 @@ void MainState::HandleGameKeys()
 
 	if (IsKeyPressed(KEY_SPACE))
 		m_paused = !m_paused;
+
+	if (IsKeyPressed(KEY_C))
+	{
+		if (g_StateMachine && g_StateMachine->GetCurrentState() == STATE_COMBATSTATE)
+		{
+			g_StateMachine->PopState();
+		}
+		else
+		{
+			g_StateMachine->PushState(STATE_COMBATSTATE);
+		}
+	}
 
 	if (IsKeyPressed(KEY_H))
 	{
@@ -822,7 +876,7 @@ void MainState::HandleRightMouseHoldMovement()
 		float baseSpeed = avatar->GetSpeed();
 		if (baseSpeed <= 0.0f) baseSpeed = 3.0f;
 
-		float dt = GetFrameTime();
+		float dt = g_Engine->LastFrameInSeconds();
 		Vector3 desired = Vector3Add(avatar->GetPos(), Vector3Scale(dir, baseSpeed * speedMult * dt));
 		desired.x = std::fmax(0.0f, std::fmin(3072.0f, desired.x));
 		desired.z = std::fmax(0.0f, std::fmin(3072.0f, desired.z));
@@ -859,8 +913,8 @@ void MainState::HandleLeftDoubleClick()
 
 	if (g_objectUnderMousePointer != nullptr)
 	{
-		bool isAvatar = g_objectUnderMousePointer->m_isNPC && g_objectUnderMousePointer->m_NPCID == 0;
-		bool isPartyMember = g_objectUnderMousePointer->m_isNPC &&
+		bool isAvatar = g_objectUnderMousePointer->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC && g_objectUnderMousePointer->m_NPCID == 0;
+		bool isPartyMember = g_objectUnderMousePointer->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC &&
 			g_Player->NPCIDInParty(g_objectUnderMousePointer->m_NPCID);
 
 		if (isAvatar || isPartyMember)
@@ -941,11 +995,23 @@ void MainState::HandleLeftSingleClick()
 		{
 			//Bark(g_objectUnderMousePointer, GetObjectDisplayName(g_objectUnderMousePointer), 1.0f);
 
-			if (g_objectUnderMousePointer->m_isNPC && m_npcListWindow && m_npcListWindow->IsVisible())
+			if (g_objectUnderMousePointer->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC && m_npcListWindow && m_npcListWindow->IsVisible())
 				m_npcListWindow->SelectNPC(g_objectUnderMousePointer->m_NPCID);
 
-			if (g_LuaDebug && g_objectUnderMousePointer->m_isNPC)
+			if (g_LuaDebug && g_objectUnderMousePointer->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC)
 				DebugPrintNpcSchedule(g_objectUnderMousePointer);
+
+			// TEMP debug: Print context-sensitive egg info on click
+			if (g_objectUnderMousePointer->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_EGG)
+			{
+				g_objectUnderMousePointer->DebugPrintEggInfo();
+			}
+
+			// TEMP debug: Print monster stats on click
+			if (g_objectUnderMousePointer->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_MONSTER)
+			{
+				g_objectUnderMousePointer->DebugPrintMonsterInfo();
+			}
 		}
 	}
 }
@@ -953,37 +1019,38 @@ void MainState::HandleLeftSingleClick()
 void MainState::DebugPrintNpcSchedule(U7Object* npc)
 {
 	int npcID = npc->m_NPCID;
-
-	if (g_NPCSchedules.find(npcID) == g_NPCSchedules.end() || g_NPCSchedules[npcID].empty())
+	auto it = g_NPCData.find(npcID);
+	if (it == g_NPCData.end() || !it->second || it->second->m_schedule.empty())
 	{
 		AddConsoleString("  No schedule data for this NPC");
 	}
 	else
 	{
-		vector<int> sortedIndices(g_NPCSchedules[npcID].size());
+		NPCData* npcData = it->second.get();
+		vector<int> sortedIndices(npcData->m_schedule.size());
 		for (int i = 0; i < (int)sortedIndices.size(); i++)
 			sortedIndices[i] = i;
 
 		std::sort(sortedIndices.begin(), sortedIndices.end(),
-			[npcID](int a, int b) {
-				return g_NPCSchedules[npcID][a].m_time < g_NPCSchedules[npcID][b].m_time;
+			[npcData](int a, int b) {
+				return npcData->m_schedule[a].m_time < npcData->m_schedule[b].m_time;
 			});
 
 		// Find the currently active schedule block
 		int activeScheduleIndex = -1;
 		for (int idx : sortedIndices)
 		{
-			if (g_NPCSchedules[npcID][idx].m_time <= g_scheduleTime)
+			if (npcData->m_schedule[idx].m_time <= g_scheduleTime)
 				activeScheduleIndex = idx;
 			else
 				break;
 		}
-		if (activeScheduleIndex == -1 && !g_NPCSchedules[npcID].empty())
+		if (activeScheduleIndex == -1 && !npcData->m_schedule.empty())
 			activeScheduleIndex = sortedIndices.back();
 
 		for (int idx : sortedIndices)
 		{
-			const auto& schedule = g_NPCSchedules[npcID][idx];
+			const auto& schedule = npcData->m_schedule[idx];
 			string timeStr;
 			switch (schedule.m_time)
 			{
@@ -1018,7 +1085,7 @@ void MainState::HandleAvatarMovement()
 		U7Object* avatar = g_Player->GetAvatarObject();
 		if (!avatar) return;
 
-		float dt = GetFrameTime();
+		float dt = g_Engine->LastFrameInSeconds();
 		Vector3 camForward = Vector3Subtract(g_camera.target, g_camera.position);
 		camForward.y = 0.0f;
 		if (Vector3Length(camForward) < 0.0001f)
@@ -1059,7 +1126,7 @@ void MainState::HandleAvatarMovement()
 		// Rotation-based movement
 		Vector3 direction = { 0, 0, 0 };
 		bool avatarMoved = false;
-		//float speed = g_Player->GetAvatarObject()->GetSpeed() * GetFrameTime();
+		//float speed = g_Player->GetAvatarObject()->GetSpeed() * g_Engine->LastUpdateInSeconds();
 
 		if (IsKeyDown(KEY_A)) { direction = Vector3Add(direction, { -1,  0, 1 }); avatarMoved = true; }
 		if (IsKeyDown(KEY_D)) { direction = Vector3Add(direction, {  1,  0, -1 }); avatarMoved = true; }
@@ -1143,6 +1210,20 @@ void MainState::Bark(U7Object* object, const std::string& text, float duration)
 	}
 }
 
+void MainState::EnqueueSchedulePathRequest(int npcID, Vector3 start, Vector3 dest)
+{
+	SchedulePathRequest req;
+	req.npcID = npcID;
+	req.start = start;
+	req.dest = dest;
+
+	{
+		std::lock_guard<std::mutex> lk(m_scheduleMutex);
+		m_schedulePathQueue.push_back(std::move(req));
+	}
+	m_scheduleCv.notify_one();
+}
+
 void MainState::Update()
 {
 	// Decrement error cursor frame counter
@@ -1197,107 +1278,11 @@ void MainState::Update()
 		// Update last-checked value immediately to avoid re-entrancy in this frame
 		g_lastScheduleTimeCheck = g_scheduleTime;
 
-		// Walk every NPC and update those that follow schedules
-		for (const auto& [npcID, npcDataPtr] : g_NPCData)
-		{
-			if (!npcDataPtr) continue;
-			NPCData* npcData = npcDataPtr.get();
-			if (npcData->m_objectID < 0) continue;
-
-			// Skip NPCs without schedules or that are not following schedules
-			auto schedulesIt = g_NPCSchedules.find(npcID);
-			if (schedulesIt == g_NPCSchedules.end() || schedulesIt->second.empty())
-				continue;
-
-			U7Object* npcObj = nullptr;
-			auto objIt = g_objectList.find(npcData->m_objectID);
-			if (objIt != g_objectList.end())
-				npcObj = objIt->second.get();
-
-			if (!npcObj) continue;
-			if (!npcObj->m_followingSchedule) continue;
-
-			// Find an exact schedule entry for the current timeslot (g_scheduleTime)
-			const NPCSchedule* exactSchedule = nullptr;
-			for (const auto& s : schedulesIt->second)
-			{
-				if ((int)s.m_time == (int)g_scheduleTime)
-				{
-					exactSchedule = &s;
-					break;
-				}
-			}
-
-			// If there is no exact entry for this timeslot, do not change activity (preserve current).
-			if (!exactSchedule)
-				continue;
-
-			// If activity or last-schedule time changed, apply update
-			bool activityChanged = (npcData->m_currentActivity != (int)exactSchedule->m_activity);
-			bool timeChanged = (npcObj->m_lastSchedule != (int)g_scheduleTime);
-
-			if (activityChanged || timeChanged)
-			{
-				// Update NPC activity and last schedule marker
-				npcData->m_currentActivity = (int)exactSchedule->m_activity;
-				npcObj->m_lastSchedule = (int)g_scheduleTime;
-
-				// Clear schedule-path flag; we'll set it when a path is applied.
-				npcObj->m_isSchedulePath = false;
-
-				// Build destination
-				Vector3 dest = { float(exactSchedule->m_destX), 0.0f, float(exactSchedule->m_destY) };
-
-				// If pathfinding is enabled, enqueue path request for worker thread.
-				if (m_npcPathfindingEnabled)
-				{
-					// Skip if we already have a pending path for this NPC or dest matches current dest
-					if (npcObj->m_pathfindingPending)
-					{
-						// already pending -> skip
-					}
-					else if ((int)npcObj->m_Dest.x == (int)dest.x && (int)npcObj->m_Dest.z == (int)dest.z)
-					{
-						// already destined to same tile -> skip
-						npcObj->m_isSchedulePath = true; // keep state consistent
-					}
-					else
-					{
-						// Mark pending AFTER we decide to enqueue to avoid races / duplicate pushes
-						npcObj->m_pathfindingPending = true;
-
-						SchedulePathRequest req;
-						req.npcID = npcID;
-						req.start = npcObj->GetPos();  // snapshot start position now
-						req.dest = dest;
-
-						{
-							std::lock_guard<std::mutex> lk(m_scheduleMutex);
-							m_schedulePathQueue.push_back(std::move(req));
-						}
-						m_scheduleCv.notify_one();
-					}
-				}
-				else
-				{
-					// Pathfinding disabled: teleport NPC to scheduled location immediately.
-					npcObj->SetPos(dest);
-					npcObj->SetDest(dest);
-					npcObj->m_isSchedulePath = false;
-					NPCDebugPrint("Schedule: NPC " + std::to_string(npcID) + " teleported to (" +
-						std::to_string((int)dest.x) + "," + std::to_string((int)dest.z) + ") (pathfinding disabled)");
-				}
-
-				// Ensure activity coroutines will be restarted on next NPC updates
-				// (m_lastActivity is managed when coroutines are started/cleaned up inside U7Object::NPCUpdate)
-			}
-		}
+		// Moved schedule determination logic to U7Object::NPCUpdate
 	}
 
 	g_gumpManager->Update();
 
-	if (GetTime() - m_LastUpdate > GetFrameTime())
-	{
 		g_CurrentUpdate++;
 
 		// Reset per-frame scripting counters to enforce throttling budgets
@@ -1319,7 +1304,7 @@ void MainState::Update()
 			int processed = 0;
 
 			// Adaptive budget: reduce work if frame time is high to avoid visible stalls.
-			float frameTime = GetFrameTime(); // current frame delta
+			float frameTime = g_Engine->LastFrameInSeconds(); // current frame delta
 			int budget = m_schedulePathBudgetPerFrame; // baseline
 			if (frameTime > 0.033f)            // worse than ~30 FPS
 				budget = 1;
@@ -1424,6 +1409,10 @@ void MainState::Update()
 				{
 					AddConsoleString("Cleanup: Removing dead object ID " + std::to_string(node->first));
 				}
+				if (g_SoundSystem)
+				{
+					g_SoundSystem->StopLoopingSoundEffect(node->first);
+				}
 				UnassignObjectChunk(node->second.get());
 				node = g_objectList.erase(node);
 				if (g_LuaDebug)
@@ -1447,9 +1436,6 @@ void MainState::Update()
 			object->CheckLighting();
 		}
 
-		m_LastUpdate = GetTime();
-	}
-
 	if (!m_paused && g_allowInput)
 	{
 		CameraInput();
@@ -1457,10 +1443,10 @@ void MainState::Update()
 
 	CameraUpdate();
 
-	m_terrainUpdateTime = GetTime();
+	m_terrainUpdateTime = g_Engine->GameTimeInMS();
 	g_Terrain->CalculateLighting();
 
-	m_terrainUpdateTime = GetTime() - m_terrainUpdateTime;
+	m_terrainUpdateTime = g_Engine->GameTimeInMS() - m_terrainUpdateTime;
 
 	g_Terrain->Update();
 
@@ -1503,9 +1489,19 @@ void MainState::Update()
 	// Process game input
 	UpdateInput();
 
+	if (g_SpriteEffectSystem)
+	{
+		g_SpriteEffectSystem->Update(g_Engine->LastFrameInSeconds());
+	}
+
+	if (m_showObjects)
+	{
+		UpdatePoolAmbientSounds();
+	}
+
 	if (m_barkDuration > 0 && m_barkObject != nullptr)
 	{
-		m_barkDuration -= GetFrameTime();
+		m_barkDuration -= g_Engine->LastFrameInSeconds();
 		if (m_barkDuration <= 0)
 		{
 			m_barkDuration = 0;
@@ -1516,7 +1512,7 @@ void MainState::Update()
 
 	if (m_waitTime > 0)
 	{
-		m_waitTime -= GetFrameTime();
+		m_waitTime -= g_Engine->LastFrameInSeconds();
 		if (m_waitTime < 0)
 		{
 			m_waitTime = 0;
@@ -1526,7 +1522,7 @@ void MainState::Update()
 
 	if (m_fadeState == FadeState::FADE_OUT)
 	{
-		m_fadeTime += GetFrameTime();
+		m_fadeTime += g_Engine->LastFrameInSeconds();
 		if (m_fadeTime > m_fadeDuration)
 		{
 			m_fadeTime = m_fadeDuration;
@@ -1537,7 +1533,7 @@ void MainState::Update()
 
 	else if (m_fadeState == FadeState::FADE_IN)
 	{
-		m_fadeTime -= GetFrameTime();
+		m_fadeTime -= g_Engine->LastFrameInSeconds();
 		if (m_fadeTime < 0)
 		{
 			m_fadeTime = 0;
@@ -1572,7 +1568,7 @@ void MainState::Update()
 	// Check if we've hovered over an object long enough to trigger a bark.
 	if (g_objectUnderMousePointer == m_previousObjectUnderMousePointer && g_allowInput && g_mouseOverUI == false)
 	{
-		m_barkTimer -= GetFrameTime();
+		m_barkTimer -= g_Engine->LastFrameInSeconds();
 		if (m_barkTimer <= 0)
 		{
 			Bark(g_objectUnderMousePointer, GetObjectDisplayName(g_objectUnderMousePointer), 1.0f);
@@ -1886,9 +1882,21 @@ void MainState::Draw()
 		if (draggedObject)
 		{
 			BoundingBox box = { Vector3{0, 0, 0}, Vector3{0, 0, 0} };
-			box.min = Vector3Subtract(g_terrainUnderMousePointer, { draggedObject->m_shapeData->m_Dims.x - 1, 0, draggedObject->m_shapeData->m_Dims.z - 1 });
+			box.min = Vector3Subtract(g_terrainUnderMousePointer, { draggedObject->m_shapeData->m_Dims.x, 0, draggedObject->m_shapeData->m_Dims.z });
 			box.max = Vector3Add(box.min, draggedObject->m_shapeData->m_Dims);
+
+			std::vector<U7Object*>& objects = g_chunkObjectMap[int(g_terrainUnderMousePointer.x / 16)][int(g_terrainUnderMousePointer.z / 16)];
+			for (U7Object* object : objects)
+			{
+				if (object != draggedObject && CheckCollisionBoxes(object->m_boundingBox, box))
+				{
+					box.min.y = object->m_boundingBox.max.y;
+					box.max.y = object->m_boundingBox.max.y + draggedObject->m_shapeData->m_Dims.y;
+				}
+			}
+
 			DrawBoundingBox(box, WHITE);
+			g_gumpManager->m_dropPosition = box.min;
 		}
 	}
 
@@ -1908,7 +1916,7 @@ void MainState::Draw()
 	{
 		for (auto& object : g_sortedVisibleObjects)
 		{
-			if (object->m_isNPC && !object->m_pathWaypoints.empty())
+			if (object->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC && !object->m_pathWaypoints.empty())
 			{
 				// Check if NPC is on screen or near camera
 				float distToCamera = Vector2Distance(
@@ -1977,11 +1985,13 @@ void MainState::Draw()
 		//  Draw version number in lower-right
 		DrawOutlinedText(g_SmallFont, g_version.c_str(), Vector2{ 600, 340 }, g_SmallFont.get()->baseSize, 1, WHITE);
 
+		//DrawOutlinedText(g_SmallFont, to_string(1000 * g_Engine->LastUpdateInSeconds()), Vector2{ 10, 240 }, g_SmallFont.get()->baseSize, 1, WHITE);
+
 		// Draw FPS counter next to version
-		int fps = GetFPS();
-		string fpsText = "FPS: " + to_string(fps);
-		Color fpsColor = fps >= 60 ? GREEN : (fps >= 30 ? YELLOW : RED);
-		DrawOutlinedText(g_SmallFont, fpsText.c_str(), Vector2{ 520, 340 }, g_SmallFont.get()->baseSize, 1, fpsColor);
+		//int fps = int(1.0f / g_Engine->LastUpdateInSeconds());
+		//string fpsText = "FPS: " + to_string(fps);
+		//Color fpsColor = fps >= 60 ? GREEN : (fps >= 30 ? YELLOW : RED);
+		//DrawOutlinedText(g_SmallFont, fpsText.c_str(), Vector2{ 520, 340 }, g_SmallFont.get()->baseSize, 1, fpsColor);
 
 		// Clamp camera coordinates to valid world bounds before accessing g_World
 		int worldX = int(g_camera.target.x);
@@ -1993,6 +2003,11 @@ void MainState::Draw()
 
 		unsigned short shapeframe = g_World[worldZ][worldX];
 		int shape = shapeframe & 0x3ff;
+
+		if (m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX)
+		{
+			DrawPerfCounter(g_guiFont.get(), 0);
+		}
 	}
 
 	float xoffset = g_Engine->m_ScreenWidth - float(g_minimapSize * g_DrawScale);
@@ -2023,6 +2038,11 @@ void MainState::Draw()
 
 		DrawRectangleRounded({ screenPos.x, screenPos.y, width, height }, 5, 100, { 0, 0, 0, 192 });
 		DrawTextEx(*g_ConversationFont, m_barkText.c_str(), { float(screenPos.x) + xoffset / 2, float(screenPos.y) + (height * .1f) }, g_ConversationFont->baseSize, 1, YELLOW);
+	}
+
+	if (g_SpriteEffectSystem && m_showObjects)
+	{
+		g_SpriteEffectSystem->Draw(g_camera);
 	}
 
 	if (!m_paused && m_showUIElements)
@@ -2235,10 +2255,6 @@ void MainState::RebuildWorldFromLoadedData()
 	}
 	Log("MainState::RebuildWorldFromLoadedData - Assigned to chunks: " + std::to_string(staticCount) + " static, " + std::to_string(dynamicCount) + " objects, " + std::to_string(npcCount) + " NPCs, " + std::to_string(containedCount) + " contained (skipped)");
 
-	// Initialize NPC activities based on current schedule time (after loading saved game)
-	Log("MainState::RebuildWorldFromLoadedData - Initializing NPC activities from schedules...");
-	InitializeNPCActivitiesFromSchedules();
-
 	// Force immediate update of visible objects after loading
 	Log("MainState::RebuildWorldFromLoadedData - Calling UpdateSortedVisibleObjects now...");
 	UpdateSortedVisibleObjects();
@@ -2425,7 +2441,7 @@ void MainState::DumpNpcScheduleStats()
 				continue;
 			}
 
-			bool hasSchedule = (g_NPCSchedules.find(npcId) != g_NPCSchedules.end() && !g_NPCSchedules[npcId].empty());
+			bool hasSchedule = (!kv.second->m_schedule.empty());
 			if (!hasSchedule) ++noSchedule;
 
 			if (obj->m_followingSchedule) ++following;
@@ -2945,4 +2961,53 @@ void MainState::BuildSandboxHelpGUI()
 
     m_sandboxHelpScreen->m_Active = false;
     m_sandboxHelpScreen->m_Draggable = false;
+}
+
+void MainState::SpawnMonster(int monsterType, int x, int y, int z)
+{
+		unsigned int newId = GetNextID();
+
+		MonsterData monData = g_monsterData[monsterType];
+
+		U7Object* spawned = AddObject(monData.m_shape, 0, newId,
+			x, y, z);
+
+		if (spawned)
+		{
+			spawned->m_UnitType = U7Object::UnitTypes::UNIT_TYPE_MONSTER;
+
+			// Pull real stats from MONSTERS.DAT record when available (hp ~ strength, etc.)
+			spawned->m_hp = monData.m_hitPoints;
+			spawned->m_BaseAttack = monData.m_damage;
+			spawned->m_combat = monData.m_combat;
+
+			spawned->m_currentActivity = 0; // Default to combat activity
+
+			// Hostile (combat activity)
+			spawned->m_Team = 1; // 0 = neutral/player, 1 = hostile
+
+			// Add the newly spawned (hostile/combat) monster to the combat unit list (participants) now that
+			// the monster egg's requirements have been fulfilled and it has hatched.
+			if (g_CombatState)
+			{
+				auto& parts = g_CombatState->m_participants;
+				if (std::find(parts.begin(), parts.end(), (int)newId) == parts.end())
+				{
+					parts.push_back((int)newId);
+				}
+			}
+
+			// Always give feedback in console when a monster actually appears
+			std::string hatchedMsg = "Monster egg hatched! (shape " + std::to_string(monData.m_shape) + ")";
+			hatchedMsg += " " + monData.m_name;
+			AddConsoleString(hatchedMsg, YELLOW);
+
+			if (g_LuaDebug || g_showEggs)
+			{
+				DebugPrint("MonsterSpawnerEgg hatched @ (" + std::to_string(x) + "," + std::to_string(z) +
+					") -> spawned shape " + std::to_string(monData.m_shape) + " id=" + std::to_string(newId));
+			}
+
+			spawned->MonsterInit();
+		}
 }

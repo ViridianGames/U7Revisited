@@ -29,6 +29,134 @@ using namespace std;
 using namespace std::filesystem;
 
 ////////////////////////////////////////////////////////////////////////////////
+//  Free helper functions (like LoadSpellData)
+////////////////////////////////////////////////////////////////////////////////
+
+void LoadMonsterData()
+{
+	g_monsterData.clear();
+
+	std::string dataPath = g_Engine->m_EngineConfig.GetString("data_path");
+	std::string monstersPath = dataPath + "/STATIC/MONSTERS.DAT";
+
+	std::ifstream file(monstersPath, std::ios::binary);
+	if (!file.good())
+	{
+		Log("WARNING: Could not open " + monstersPath + " - monster spawning will use defaults.");
+		AddConsoleString("WARNING: monsters.dat not found - monster data unavailable", RED);
+		return;
+	}
+
+	// Format from Exult (matches original U7 MONSTERS.DAT):
+	// Leading byte: record count (usually 65).
+	// Each record: 25 bytes = u16 LE shapeID + 23 bytes packed data.
+	// The shape for the monster info is the u16 prefix (not embedded elsewhere).
+	// Stats are bit-packed starting at "byte 2" of the record (after shape u16).
+	// See shapes/shapeinf/monstinf.cc in Exult for exact parsing.
+	unsigned char recCount = 0;
+	file.read(reinterpret_cast<char*>(&recCount), 1);
+	if (recCount == 0) recCount = 65; // fallback
+
+	g_monsterData.reserve(recCount);
+
+	for (int i = 0; i < recCount; ++i)
+	{
+		unsigned short shapeID = 0;
+		file.read(reinterpret_cast<char*>(&shapeID), 2);
+
+		unsigned char dataPart[23];
+		file.read(reinterpret_cast<char*>(dataPart), 23);
+
+		MonsterData md;
+		// Store full 25-byte record in raw for reference (shape + data)
+		md.m_raw[0] = shapeID & 0xFF;
+		md.m_raw[1] = (shapeID >> 8) & 0xFF;
+		std::memcpy(&md.m_raw[2], dataPart, 23);
+
+		md.m_shape = shapeID;
+		md.m_frame = 0;
+
+		// Parse the 23-byte dataPart exactly as Exult does (ptr[0] == original byte 2 of record).
+		// Main stats + alignment. Other fields (safes, flags, equip, sfx) left in raw or unknowns for now.
+		uint8_t* ptr = dataPart;
+		uint8_t value = *ptr++;  // Byte 2
+		md.m_strength = (value >> 2) & 63;
+		// (low bits: sleep_safe, charm_safe - not stored in current MonsterData bools)
+
+		value = *ptr++;  // Byte 3
+		md.m_dexterity = (value >> 2) & 63;
+
+		value = *ptr++;  // Byte 4
+		md.m_intelligence = (value >> 2) & 63;
+
+		value = *ptr++;  // Byte 5
+		md.m_alignmentFlags = value & 3;  // alignment
+		md.m_combat = (value >> 2) & 63;
+
+		value = *ptr++;  // Byte 6
+		md.m_armor = (value >> 4) & 15;
+
+		ptr++;  // Byte 7: unknown
+
+		value = *ptr++;  // Byte 8: weapon/reach
+		md.m_damage = (value >> 4) & 15;  // weapon damage as proxy
+
+		ptr++;  // Byte 9: flags (fly etc) -> unknown0A for now
+		md.m_unknown0A = *ptr++;  // Byte 10: vulnerable
+		md.m_unknown0B = *ptr++;  // Byte 11: immune
+
+		ptr++;  // Byte 12
+		value = *ptr++;  // Byte 13
+		md.m_monsterCategory = value;  // includes attack mode low bits etc.
+
+		ptr++;  // Byte 14: equip_offset
+		ptr++;  // Byte 15: exult flags
+		ptr++;  // Byte 16: unknown
+		// Byte 17 would be sfx (ptr now at it)
+
+		// Approximations for fields not directly stored (hp often == strength in practice)
+		md.m_hitPoints = (md.m_strength > 0 ? md.m_strength : 10);
+		md.m_magic = 0;
+
+		md.m_name = (md.m_shape < 1024 ? g_objectDataTable[md.m_shape].m_name : "");
+
+		g_monsterData.push_back(md);
+	}
+
+	file.close();
+
+	if (g_LuaDebug && !g_monsterData.empty())
+	{
+		DebugPrint("=== MonsterData sample (first 8) ===");
+		for (int i = 0; i < std::min(8, (int)g_monsterData.size()); ++i)
+		{
+			const auto& m = g_monsterData[i];
+			std::stringstream ss;
+			ss << "  [" << i << "] shape=" << (m.m_shape)
+			   << " frame=" << (int)m.m_frame
+			   << " name='" << m.m_name << "'"
+			   << " str=" << (int)m.m_strength << " dex=" << (int)m.m_dexterity
+			   << " combat=" << (int)m.m_combat << " hp=" << (int)m.m_hitPoints
+			   << " cat=" << (int)m.m_monsterCategory;
+			DebugPrint(ss.str());
+		}
+		// Also log the record for shape 514 (headless) if present
+		for (size_t k = 0; k < g_monsterData.size(); ++k)
+		{
+			if (g_monsterData[k].m_shape == 514)
+			{
+				const auto& m = g_monsterData[k];
+				std::stringstream ss;
+				ss << "  [dat#" << k << "] shape=514 (headless) name='" << m.m_name
+				   << "' str=" << (int)m.m_strength << " combat=" << (int)m.m_combat;
+				DebugPrint(ss.str());
+				break;
+			}
+		}
+	}
+}
+
+////////////////////////////////////////////////////////////////////////////////
 //  LoadingState
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -234,6 +362,14 @@ void LoadingState::UpdateLoading()
 			AddConsoleString(std::string("Loading spell data..."));
 			LoadSpellData();
 			m_loadingSpells = true;
+			return;
+		}
+
+		if (!m_loadingMonsters)
+		{
+			AddConsoleString(std::string("Loading monsters..."));
+			LoadMonsterData();
+			m_loadingMonsters = true;
 			return;
 		}
 
@@ -1116,8 +1252,8 @@ void LoadingState::ParseIREGFile(stringstream& ireg, int superchunkx, int superc
 			}
 			if (shape == 275)
 			{
-				thisObject->m_isEgg = true;
-				thisObject->m_Visible = false;
+				thisObject->m_UnitType = U7Object::UnitTypes::UNIT_TYPE_EGG;
+				thisObject->m_Visible = true;  // TEMP: make eggs visible for debugging
 				thisObject->m_Pos = {float(actualx), lift1, float(actualy)};
 
 				EggData& egg = thisObject->m_eggData;
@@ -1128,38 +1264,108 @@ void LoadingState::ParseIREGFile(stringstream& ireg, int superchunkx, int superc
 				uint8_t specVal   = entryBuffer[7];
 
 				// Type from frame
-				egg.type = static_cast<EggType>(frame);
+				egg.m_type = static_cast<EggType>(frame);
 
 				// Probability
-				egg.probability = prob;
+				egg.m_probability = prob;
 
 				// Criterion: low 3 bits of byte 5
 				uint8_t criteriaRaw = criteriaDist & 0x07;  // Bits 0–2 (0–7)
-				egg.criteria = static_cast<EggCriteria>(criteriaRaw);
+				egg.m_criteria = static_cast<EggCriteria>(criteriaRaw);
 
 				// Distance: usually next 4 bits (bits 2–5 shifted)
-				egg.distance = (criteriaDist >> 2) & 0x0F;  // 0x09 >> 2 = 2 (matches your Guardian egg)
+				egg.m_distance = (criteriaDist >> 2) & 0x0F;  // 0x09 >> 2 = 2 (matches your Guardian egg)
 
 				// Once-Only: usually bit 6 in byte 4 (0x40)
 				// Once-Only: bit 3 of byte 5 (0x08)
-				egg.nocturnal = (typeByte >> 4 ) & 0x01;
-				egg.onceOnly = (typeByte >> 4) & 0x02;
-				egg.hasTriggered = (typeByte >> 4) & 0x04;
-				egg.autoReset = (typeByte >> 4) & 0x08;
+				egg.m_nocturnal = (typeByte >> 4 ) & 0x01;
+				egg.m_onceOnly = (typeByte >> 4) & 0x02;
+				egg.m_hasTriggered = (typeByte >> 4) & 0x04;
+				egg.m_autoReset = (typeByte >> 4) & 0x08;
 
 				// Specific value (speech #, usecode param, etc.)
-				egg.specificValue = specVal;
+				egg.m_specificValue = specVal;
 
 				// Usecode special case
-				if (egg.type == EggType::Usecode)
+				if (egg.m_type == EggType::Usecode)
 				{
-					egg.usecodeFunc = entryBuffer[10] | (entryBuffer[11] << 8);
+					egg.m_usecodeFunc = entryBuffer[10] | (entryBuffer[11] << 8);
 				}
 
-				// Voice example
-				if (egg.type == EggType::Voice && egg.specificValue == 31)
+				// Voice eggs: link each egg's specificValue to an audio file explicitly.
+				if (egg.m_type == EggType::Voice && egg.m_specificValue == 31)
 				{
-					egg.audioFile = "Audio/guardian-laugh.ogg";
+					egg.m_audioFile = BuildU7VoicePath(23);
+				}
+
+				// Monster spawner specific data 
+				if (egg.m_type == EggType::MonsterSpawner)
+				{
+					// Per u7tech.txt layout for monster eggs (type 1):
+					//   data1 (bytes 7-8): mode (align b0-1 + count b2-7), workType
+					//   data2 (bytes 10-11): creature shape+frame
+					uint8_t mode = entryBuffer[7];
+					uint8_t workType = entryBuffer[8];
+					egg.m_monsterAlignment = mode & 0x03;
+					egg.m_monsterWorkType = workType;
+
+					int countFromMode = (mode >> 2) & 0x3f;
+					egg.m_spawnCount = (countFromMode > 0) ? countFromMode : 1;
+
+					// Prefer creature shape directly from data2 when present (e.g. 0x0202 = 514 for headless)
+					unsigned short shapeWord = entryBuffer[10] | (entryBuffer[11] << 8);
+					int sh = shapeWord & 0x3ff;
+					int fr = (shapeWord >> 10) & 0x1f;
+					if (sh >= 1 && sh < 1024) {
+						egg.m_monsterShape = sh;
+						egg.m_monsterFrame = fr;
+					} else {
+						egg.m_monsterShape = thisObject->m_Quality;
+					}
+
+					// Capture monster type index (0-64) for MONSTERS.DAT stats lookup when provided
+					// (often the generic "quality" byte [7] numeric value was used by older code as index)
+					if (specVal > 0 && specVal < 65) {
+						egg.m_monsterTypeIndex = specVal;
+					} else if (sh > 0 && sh < 65) {
+						egg.m_monsterTypeIndex = sh;
+					}
+
+					// If we captured an index but monsterShape is still the small index, resolve it now
+					if (egg.m_monsterShape > 0 && egg.m_monsterShape < 65 && egg.m_monsterShape < (int)g_monsterData.size()) {
+						if (egg.m_monsterTypeIndex == 0) egg.m_monsterTypeIndex = egg.m_monsterShape;
+						egg.m_monsterShape = g_monsterData[egg.m_monsterShape].m_shape;
+					}
+
+					if (egg.m_monsterShape < 0 || egg.m_monsterShape > 1023)
+						egg.m_monsterShape = 0; 
+
+					// Resolve the true dat record index (0-64 file order) by shape for accurate stats lookup.
+					// (Eggs do not store a "type index"; data1's small value is packed count+align.
+					//  We search after shape is known so debug/handle always get the right record, e.g. 36 for headless 514.)
+					if (egg.m_monsterShape > 0)
+					{
+						egg.m_monsterTypeIndex = -1;
+						for (size_t k = 0; k < g_monsterData.size(); ++k)
+						{
+							if (g_monsterData[k].m_shape == egg.m_monsterShape)
+							{
+								egg.m_monsterTypeIndex = (int)k;
+								break;
+							}
+						}
+					}
+
+					if (actualx == 773 && actualy == 2087)
+					{
+						DebugPrint("MONSTER EGG @773,2087 parsed: typeIndex=" + std::to_string(egg.m_monsterTypeIndex) +
+							" shape=" + std::to_string(egg.m_monsterShape) +
+							" frame=" + std::to_string(egg.m_monsterFrame) +
+							" count=" + std::to_string(egg.m_spawnCount) +
+							" prob=" + std::to_string((int)egg.m_probability) +
+							" align=" + std::to_string((int)egg.m_monsterAlignment) +
+							" work=" + std::to_string((int)egg.m_monsterWorkType));
+					}
 				}
 			}
 			else
@@ -2155,7 +2361,7 @@ void LoadingState::LoadInitialGameState()
 				thisNPC.proba = ReadU8(subFiles);
 				thisNPC.data1 = ReadU16(subFiles);
 				thisNPC.lift = ReadU8(subFiles);
-				thisNPC.data2 = ReadU16(subFiles);
+				thisNPC.health = ReadU16(subFiles);
 
 				int chunkx = thisNPC.proba % 12;
 				int chunky = thisNPC.proba / 12;
@@ -2326,7 +2532,7 @@ void LoadingState::LoadInitialGameState()
 					g_objectList[nextID].get()->m_drawType = ShapeDrawType::OBJECT_DRAW_FLAT;
 				}
 				//g_ObjectList[nextID].get()->m_NPCID = thisNPC.id;
-				//g_ObjectList[nextID]->m_isNPC = true;
+				//g_ObjectList[nextID]->m_UnitType = U7Object::UnitTypes::UNIT_TYPE_NPC; // commented out legacy
 
 
 				if (thisNPC.type != 0 && i != 139 && i != 148) // This NPC has an inventory
@@ -2655,7 +2861,10 @@ void LoadingState::LoadNPCSchedules()
 				thisEntry.m_activity = (timeAndActivity >> 3) & 0x1F;
 				thisEntry.m_time = timeAndActivity & 0x07;
 
-				g_NPCSchedules[i].push_back(thisEntry);
+				if (g_NPCData.find(i) != g_NPCData.end() && g_NPCData[i])
+				{
+					g_NPCData[i]->m_schedule.push_back(thisEntry);
+				}
 				location = file.tellg();
 			}
 		}
@@ -2672,15 +2881,6 @@ void LoadingState::LoadNPCSchedules()
 	ofstream csvFile("schedules.csv");
 	if (csvFile.is_open())
 	{
-		// Activity names (from NpcListWindow.cpp)
-		static const char* ACTIVITY_NAMES[] = {
-			"Combat", "Horizontal Pace", "Vertical Pace", "Talk", "Dance", "Eat", "Farm",
-			"Tend Shop", "Miner", "Hound", "Stand", "Loiter", "Wander", "Blacksmith",
-			"Sleep", "Wait", "Major Sit", "Graze", "Bake", "Sew", "Shy", "Lab",
-			"Thief", "Waiter", "Special", "Kid Games", "Eat at Inn", "Duel", "Preach",
-			"Patrol", "Desk Work", "Follow Avatar"
-		};
-
 		// CSV header
 		csvFile << "npc_id,Name,0,3,6,9,12,15,18,21\n";
 
@@ -2699,16 +2899,16 @@ void LoadingState::LoadNPCSchedules()
 
 				// Find the schedule entry for this time block
 				bool found = false;
-				if (g_NPCSchedules.find(npcID) != g_NPCSchedules.end())
+				if (g_NPCData.find(npcID) != g_NPCData.end() && g_NPCData[npcID])
 				{
-					for (const auto& schedule : g_NPCSchedules[npcID])
+					for (const auto& schedule : g_NPCData[npcID]->m_schedule)
 					{
 						if (schedule.m_time == timeBlock)
 						{
 							int activityId = schedule.m_activity;
 							if (activityId >= 0 && activityId <= 31)
 							{
-								csvFile << ACTIVITY_NAMES[activityId];
+								csvFile << g_activityNames[activityId];
 							}
 							else
 							{
@@ -2732,5 +2932,7 @@ void LoadingState::LoadNPCSchedules()
 		csvFile.close();
 		Log("Wrote schedules.csv with NPC schedule data");
 	}
+
+
 #endif
 }

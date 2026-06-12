@@ -1,5 +1,6 @@
 #include <Geist/ParticleSystem.h>
 #include <Geist/Globals.h>
+#include <Geist/Engine.h>
 
 using namespace std;
 
@@ -26,9 +27,9 @@ void Emitter2D::Update()
 			Particle2D& temp = (*node);
 
 			temp.m_Angle += temp.m_AngularVelocity;
-			temp.m_Pos.x += temp.m_Speed.x * GetFrameTime();
-			temp.m_Pos.y += temp.m_Speed.y * GetFrameTime();
-			temp.m_Age += GetFrameTime();
+			temp.m_Pos.x += temp.m_Speed.x * g_Engine->LastFrameInSeconds();
+			temp.m_Pos.y += temp.m_Speed.y * g_Engine->LastFrameInSeconds();
+			temp.m_Age += g_Engine->LastFrameInMS();
 
 			if (temp.m_Age > temp.m_MaxAge)
 			{

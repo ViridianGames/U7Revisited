@@ -174,6 +174,15 @@ private:
 };
 
 
+enum ObjectWalkability
+{
+	OW_WALKABLE = 0,
+	OW_BLOCKING,
+	OW_CLIMBABLE,
+	OW_DOOR,
+	OW_LASTWALKABILITYTYPE
+};
+
 class PathfindingSystem : public Object
 {
 public:
@@ -201,6 +210,10 @@ public:
 
 	ChunkInfo m_chunkInfoMap[192][192];
 
+	std::unordered_map<int, ObjectWalkability> m_objectWalkability;
+
+	void LoadObjectWalkability(const std::string& filename);
+
 	// Simple atomic telemetry counters for A* timing (monotonic totals)
 	std::atomic<uint64_t> m_astarTotalCalls{0};
 	std::atomic<uint64_t> m_astarTotalMs{0};
@@ -226,6 +239,11 @@ public:
 	// Utility: determine whether a shape id represents a walkable surface (stairs/floors/bridges/etc.)
 	// Implemented inline below to keep header-only convenience for callers like U7Player.cpp.
 	static bool IsWalkableSurface(int shapeID);
+
+	// Validates if an agent can move to a desired position.
+	// Returns true if reachable, false if blocked.
+	// If reachable, outDestH will contain the new Y coordinate (surface top).
+	static bool ValidateMove(U7Object* agent, const Vector3& desiredPos, float& outDestH);
 };
 
 #endif

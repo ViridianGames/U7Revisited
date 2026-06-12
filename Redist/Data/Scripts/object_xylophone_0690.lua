@@ -1,7 +1,13 @@
---- Best guess: Xylopohone Plays a specific music track (ID 56) when triggered, likely for an ambient or event-based sound effect.
+-- This script handles the xylophone: when triggered, plays the xylophone's instrument track (ID 56).
 function object_xylophone_0690(eventid, objectref)
+
     if eventid == 1 then
-        play_music(objectref, 56)
+
+        play_instrument(objectref, 56)
+
     end
+
     return
+
 end
+

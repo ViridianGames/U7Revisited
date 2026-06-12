@@ -7,6 +7,9 @@
 #include <deque>
 #include <math.h>
 
+// Free function (parallel to LoadSpellData in U7Globals)
+void LoadMonsterData();
+
 class LoadingState : public State
 {
 public:
@@ -89,6 +92,7 @@ public:
    bool m_buildingPathfindingGrid = false;
    bool m_loadingSpells = false;
    bool m_loadingRoofs = false;
+   bool m_loadingMonsters = false;   // monsters.dat base stats
 
    bool m_loadingFailed = false;
 

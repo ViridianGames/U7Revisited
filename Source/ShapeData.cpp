@@ -551,47 +551,50 @@ void ShapeData::UpdateTextureCoordinates()
 	1.0f,	.75f,
 	};
 
+    float shaderUVCoords[72];
 	for (int i = 0; i < 6; ++i)
 	{
 		switch (GetTextureForSide(CuboidSides(i)))
 		{
 		case CuboidTexture::CUBOID_DRAW_TOP:
 		{
-			UpdateMeshBuffer(g_CuboidModel.get()->meshes[0], 1, topUVCoords, 6 * 2 * sizeof(float), i * 6 * 2 * sizeof(float));
+            memcpy(&shaderUVCoords[i * 6 * 2], topUVCoords, 6 * 2 * sizeof(float));
 			break;
 		}
 		case CuboidTexture::CUBOID_DRAW_FRONT:
 		{
-			UpdateMeshBuffer(g_CuboidModel.get()->meshes[0], 1, frontUVCoords, 6 * 2 * sizeof(float), i * 6 * 2 * sizeof(float));
+            memcpy(&shaderUVCoords[i * 6 * 2], frontUVCoords, 6 * 2 * sizeof(float));
 			break;
 		}
 		case CuboidTexture::CUBOID_DRAW_RIGHT:
 		{
-			UpdateMeshBuffer(g_CuboidModel.get()->meshes[0], 1, rightUVCoords, 6 * 2 * sizeof(float), i * 6 * 2 * sizeof(float));
+            memcpy(&shaderUVCoords[i * 6 * 2], rightUVCoords, 6 * 2 * sizeof(float));
 			break;
 		}
 		case CuboidTexture::CUBOID_DRAW_FRONT_INVERTED:
 		{
-			UpdateMeshBuffer(g_CuboidModel.get()->meshes[0], 1, frontInvertedUVCoords, 6 * 2 * sizeof(float), i * 6 * 2 * sizeof(float));
+            memcpy(&shaderUVCoords[i * 6 * 2], frontInvertedUVCoords, 6 * 2 * sizeof(float));
 			break;
 		}
 		case CuboidTexture::CUBOID_DRAW_RIGHT_INVERTED:
 		{
-			UpdateMeshBuffer(g_CuboidModel.get()->meshes[0], 1, rightInvertedUVCoords, 6 * 2 * sizeof(float), i * 6 * 2 * sizeof(float));
+            memcpy(&shaderUVCoords[i * 6 * 2], rightInvertedUVCoords, 6 * 2 * sizeof(float));
 			break;
 		}
 		case CuboidTexture::CUBOID_DRAW_TOP_INVERTED:
 		{
-			UpdateMeshBuffer(g_CuboidModel.get()->meshes[0], 1, topInvertedUVCoords, 6 * 2 * sizeof(float), i * 6 * 2 * sizeof(float));
+            memcpy(&shaderUVCoords[i * 6 * 2], topInvertedUVCoords, 6 * 2 * sizeof(float));
 			break;
 		}
 		case CuboidTexture::CUBOID_DONT_DRAW:
 		{
-			UpdateMeshBuffer(g_CuboidModel.get()->meshes[0], 1, dontdrawUVCoords, 6 * 2 * sizeof(float), i * 6 * 2 * sizeof(float));
+            memcpy(&shaderUVCoords[i * 6 * 2], dontdrawUVCoords, 6 * 2 * sizeof(float));
 			break;
 		}
 		}
 	}
+    SetShaderValueV(g_CuboidModel.get()->materials[0].shader, g_cuboidTexCoordsLoc, shaderUVCoords, SHADER_UNIFORM_VEC2, 36);
+    
 }
 
 void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scaling)
@@ -933,9 +936,8 @@ void ShapeData::BuildCuboidMesh()
 		mesh.texcoords[start + 10] = 1; mesh.texcoords[start + 11] = 0;
 	}
 
-	UploadMesh(&mesh, true);
+	UploadMesh(&mesh, false);
 
 	g_CuboidModel = make_unique<Model>(LoadModelFromMesh(mesh));
-
-	//UploadMesh(&g_CuboidModel.get()->meshes[0], false);
+    g_CuboidModel.get()->materials[0].shader = g_cuboidShader;
 }

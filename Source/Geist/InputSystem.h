@@ -59,20 +59,20 @@ public:
    bool WasRButtonDoubleClicked() { return m_WasRightButtonDoubleClicked; }
    bool WasMButtonDoubleClicked() { return m_WasMiddleButtonDoubleClicked; }
 
-   bool WasLButtonDoubleClickedInRegion(int x, int y, int endx, int endy) { return m_WasLeftButtonDoubleClicked && (m_MouseX >= x && m_MouseX <= endx) && (m_MouseY >= y && m_MouseY <= endy); }
-   bool WasRButtonDoubleClickedInRegion(int x, int y, int endx, int endy) { return m_WasRightButtonDoubleClicked && (m_MouseX >= x && m_MouseX <= endx) && (m_MouseY >= y && m_MouseY <= endy); }
-   bool WasMButtonDoubleClickedInRegion(int x, int y, int endx, int endy) { return m_WasMiddleButtonDoubleClicked && (m_MouseX >= x && m_MouseX <= endx) && (m_MouseY >= y && m_MouseY <= endy); }
+   bool WasLButtonDoubleClickedInRegion(int x, int y, int endx, int endy) { return m_WasLeftButtonDoubleClicked && IsMouseInRegion(x, y, endx, endy); }
+   bool WasRButtonDoubleClickedInRegion(int x, int y, int endx, int endy) { return m_WasRightButtonDoubleClicked && IsMouseInRegion(x, y, endx, endy); }
+   bool WasMButtonDoubleClickedInRegion(int x, int y, int endx, int endy) { return m_WasMiddleButtonDoubleClicked && IsMouseInRegion(x, y, endx, endy); }
 
 
    //  These functions return true if the corresponding mouse button was pushed down this update inside the given quad.
-   bool WasLButtonJustClickedInRegion(int x, int y, int endx, int endy) { return m_IsLeftButtonDown && !m_WasLeftButtonDown && (m_MouseX >= x && m_MouseX <= endx) && (m_MouseY >= y && m_MouseY <= endy); }
-   bool WasRButtonJustClickedInRegion(int x, int y, int endx, int endy) { return m_IsRightButtonDown && !m_WasRightButtonDown && (m_MouseX >= x && m_MouseX <= endx) && (m_MouseY >= y && m_MouseY <= endy); }
-   bool WasMButtonJustClickedInRegion(int x, int y, int endx, int endy) { return m_IsMiddleButtonDown && !m_WasMiddleButtonDown && (m_MouseX >= x && m_MouseX <= endx) && (m_MouseY >= y && m_MouseY <= endy); }
+   bool WasLButtonJustClickedInRegion(int x, int y, int endx, int endy) { return m_IsLeftButtonDown && !m_WasLeftButtonDown && IsMouseInRegion(x, y, endx, endy); }
+   bool WasRButtonJustClickedInRegion(int x, int y, int endx, int endy) { return m_IsRightButtonDown && !m_WasRightButtonDown && IsMouseInRegion(x, y, endx, endy); }
+   bool WasMButtonJustClickedInRegion(int x, int y, int endx, int endy) { return m_IsMiddleButtonDown && !m_WasMiddleButtonDown && IsMouseInRegion(x, y, endx, endy); }
 
    //  These functions return true when the corresponding mouse button is held down inside the given quad.
-   bool IsLButtonDownInRegion(int x, int y, int endx, int endy) { return m_IsLeftButtonDown && (m_MouseX >= x && m_MouseX <= endx) && (m_MouseY >= y && m_MouseY <= endy); }
-   bool IsRButtonDownInRegion(int x, int y, int endx, int endy) { return m_IsRightButtonDown && (m_MouseX >= x && m_MouseX <= endx) && (m_MouseY >= y && m_MouseY <= endy); }
-   bool IsMButtonDownInRegion(int x, int y, int endx, int endy) { return m_IsMiddleButtonDown && (m_MouseX >= x && m_MouseX <= endx) && (m_MouseY >= y && m_MouseY <= endy); }
+   bool IsLButtonDownInRegion(int x, int y, int endx, int endy) { return m_IsLeftButtonDown && IsMouseInRegion(x, y, endx, endy); }
+   bool IsRButtonDownInRegion(int x, int y, int endx, int endy) { return m_IsRightButtonDown && IsMouseInRegion(x, y, endx, endy); }
+   bool IsMButtonDownInRegion(int x, int y, int endx, int endy) { return m_IsMiddleButtonDown && IsMouseInRegion(x, y, endx, endy); }
 
    bool IsLButtonDown() { return m_IsLeftButtonDown; }
    bool IsRButtonDown() { return m_IsRightButtonDown; }

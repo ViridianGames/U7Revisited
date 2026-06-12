@@ -278,7 +278,7 @@ void Gump::Update()
 	// Update hover text timer
 	if (m_hoverTextDuration > 0.0f)
 	{
-		m_hoverTextDuration -= GetFrameTime();
+		m_hoverTextDuration -= g_Engine->LastFrameInSeconds();
 		if (m_hoverTextDuration <= 0.0f)
 		{
 			m_hoverText.clear();

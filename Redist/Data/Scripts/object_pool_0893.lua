@@ -1,6 +1,11 @@
---- Best guess: Modifies item properties based on quality and event ID, applying random or specific effects.
+--- Pool/Fountains: ambient water loop when avatar is near (event 2); drink effects on use (event 1).
 function object_pool_0893(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003
+
+    if eventid == 2 then
+        play_looping_sound_effect(objectref, 48)
+        return
+    end
 
     if eventid == 1 then
         -- pool's quality determines what happens when you drink

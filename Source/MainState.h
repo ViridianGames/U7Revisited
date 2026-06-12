@@ -99,13 +99,13 @@ public:
 	void BuildDemoHelpGUI();
 	void BuildSandboxHelpGUI();
 
+	void SpawnMonster(int monsterType, int x, int y, int z);
+
   // void DrawDebugChunkPathfindingInfo();
 
    float m_waitTime = 0;
 
    Gui* m_Gui = nullptr;
-
-   Gui* m_OptionsGui = nullptr;
 
    Gui* m_toolTipGui = nullptr;
 
@@ -148,6 +148,8 @@ public:
 	// Results produced by worker and consumed on main thread
 	std::deque<SchedulePathResult> m_scheduleResults;
 	std::mutex m_resultMutex;                   // protects m_scheduleResults
+
+	friend class U7Object;
 
 	// Worker loop entry
 	void PathfindingWorkerLoop();
@@ -253,6 +255,8 @@ public:
 
 	// NPC Pathfinding on schedule change toggle
 	bool m_npcPathfindingEnabled = false;  // Default disabled - NPCs stay in place when schedules change
+
+	void EnqueueSchedulePathRequest(int npcID, Vector3 start, Vector3 dest);
 
 	// Pathfinding debug visualization
 	bool m_showPathfindingDebug = false;  // F10: Tile-level visualization (shows objects)

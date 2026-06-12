@@ -44,7 +44,7 @@ struct NPCData
 	unsigned char proba;
 	unsigned short data1;
 	unsigned char lift;
-	unsigned short data2;
+	unsigned short health;
 
 	unsigned short index;
 	unsigned short referent;
@@ -78,7 +78,7 @@ struct NPCData
 	unsigned char food;
 	char soak5[7];
 	char name[16];
-	std::vector<int> m_schedule;
+	std::vector<NPCSchedule> m_schedule;
 	std::vector<std::vector<Texture *> > m_walkTextures;
 
 	int m_currentActivity;
@@ -107,6 +107,43 @@ struct NPCData
 };
 
 
+// MonsterData - Stats for monster types loaded from STATIC/MONSTERS.DAT (25 bytes per record).
+// Exact format: https://wiki.ultimacodex.com/wiki/Ultima_VII_monster_file_format
+// These are the *base definitions* for creatures spawned by eggs, etc.
+// Graphics are already loaded into g_shapeTable via normal shape parsing.
+struct MonsterData
+{
+	unsigned char m_raw[25];           // Exact 25-byte record (preserved for unmapped fields)
+
+	// === Documented layout (from Ultima Codex wiki) ===
+	//unsigned short shapeFrame;       // 0x00-0x01 : Shape (bits 0-9) + Frame (bits 10-14)
+	unsigned short m_shape;
+	unsigned short m_frame;
+
+	// Primary stats (0x02-0x09)
+	unsigned char m_strength;          // 0x02
+	unsigned char m_dexterity;         // 0x03
+	unsigned char m_intelligence;      // 0x04
+	unsigned char m_combat;            // 0x05
+	unsigned char m_magic;             // 0x06
+	unsigned char m_hitPoints;         // 0x07
+	unsigned char m_armor;             // 0x08
+	unsigned char m_damage;            // 0x09
+
+	// Flags and category (starting at 0x0A)
+	unsigned char m_unknown0A;         // 0x0A
+	unsigned char m_unknown0B;         // 0x0B
+	unsigned char m_alignmentFlags;    // 0x0C - alignment + basic behavior bits
+	unsigned char m_monsterCategory;   // 0x0D - often used by monster eggs / spawners
+
+	// Bytes 0x0E-0x18 contain additional data (experience, treasure, immunities, sounds, etc.)
+	// Left in m_raw[] until specifically needed.
+
+	// === Runtime / convenience fields ===
+	std::string   m_name;             // Optional name for debugging / tools
+};
+
+
 // EggType - Main behavior of the egg
 enum class EggType
 {
@@ -123,7 +160,7 @@ enum class EggType
 
 enum class EggCriteria : uint8_t
 {
-	CachedIn = 0, // Default / cached in memory (internal trigger)
+	CachedIn = 0, // Treated as AvatarNear with large radius (48-64 tiles) to simulate original chunk-caching behavior
 	PartyNear = 1,
 	AvatarNear = 2,
 	AvatarFar = 3,
@@ -133,30 +170,66 @@ enum class EggCriteria : uint8_t
 	External = 7,
 };
 
+// Large radius used for CachedIn criteria (simulates original U7 "chunk cached in" behavior).
+constexpr float CACHED_IN_RADIUS = 64.0f;
+
+// Small radius used before a monster egg spawns to check for existing live monsters
+// of the same shape near this egg. Kept deliberately small to avoid counting monsters
+// spawned by other nearby eggs. Only monsters inside this radius are considered
+// "still occupying the camp" for anti-stacking purposes.
+constexpr float MONSTER_SPAWN_CHECK_RADIUS = 12.0f;
+
+// String tables for debug output (temporary)
+inline const char* g_eggTypeStrings[] = {
+	"MonsterSpawner",
+	"ProximitySound",
+	"Jukebox",
+	"Voice",
+	"Weather",
+	"Teleporter",
+	"Path",
+	"Usecode"
+};
+
+inline const char* g_eggCriteriaStrings[] = {
+	"CachedIn",
+	"PartyNear",
+	"AvatarNear",
+	"AvatarFar",
+	"AvatarFootpad",
+	"PartyFootpad",
+	"SomethingOn",
+	"External"
+};
+
 struct EggData
 {
-	EggType type = EggType::MonsterSpawner;
-	EggCriteria criteria = EggCriteria::CachedIn; // MUST have at least this
-	uint8_t distance = 8;
-	uint8_t probability = 100;
-	bool hasTriggered = false;
-	bool onceOnly = false;
-	bool nocturnal = false;
-	bool autoReset = false;
+	EggType m_type = EggType::MonsterSpawner;
+	EggCriteria m_criteria = EggCriteria::CachedIn; // MUST have at least this (see CachedIn handling in monster spawners)
+	uint8_t m_distance = 8;
+	uint8_t m_probability = 100;
+	bool m_hasTriggered = false;
+	bool m_onceOnly = false;
+	bool m_nocturnal = false;
+	bool m_autoReset = false;
+	bool m_shouldReset = false;
 
-	uint8_t specificValue = 0;
-	std::string audioFile;
-	int usecodeFunc = 0;
+	uint8_t m_specificValue = 0;
+	std::string m_audioFile;
+	int m_usecodeFunc = 0;
 
 	// Monster spawner extras (optional)
-	int monsterShape = 0;
-	int monsterFrame = 0;
-	int spawnCount = 1;
-	float spawnChance = 1.0f;
+	int m_monsterShape = 0;
+	int m_monsterFrame = 0;
+	int m_spawnCount = 1;
+	float m_spawnChance = 1.0f;
+	uint8_t m_monsterAlignment = 0;  // 0=neutral, 1=good, 2=evil, 3=chaotic (from mode bits 0-1)
+	uint8_t m_monsterWorkType = 0;   // workType / schedule hint (0 often combat for spawners)
+	int m_monsterTypeIndex = 0;      // 0-64 index into g_monsterData for stats (when egg provides it)
 
 	// Teleport extras
-	Vector3 teleportDest = {0, 0, 0};
-	int destMap = 0;
+	Vector3 m_teleportDest = {0, 0, 0};
+	int m_destMap = 0;
 };
 
 class U7Object : public Unit3D
@@ -172,6 +245,8 @@ public:
 		// Non-player character, can move, can have schedules and conversations, and has an inventory.  May have an attached Lua script.  Monsters are considered NPCs.
 		UNIT_TYPE_EGG,
 		// "Eggs" are what would be called "triggers" in later games.  They are invisible, intangible objects that "hatch" and run scripts when the player interacts with them or enters their bounding box.
+		UNIT_TYPE_MONSTER,
+		// Hostile or neutral creatures spawned from monster eggs. These are intentionally lighter than NPCs (no schedules, no conversations).
 		UNIT_TYPE_LAST
 	};
 
@@ -223,7 +298,6 @@ public:
 		  , m_containingObjectId(-1)
 		  , m_hasConversationTree(false)
 		  , m_hasGump(false)
-		  , m_isEgg(false)
 		  , m_NPCID(-1)
 		  , m_InventoryPos({0.0f, 0.0f})
 	{
@@ -280,17 +354,38 @@ public:
 
 	bool IsInInventory(int shape, int frame = -1, int quality = -1);
 
-	void NPCUpdate();
+	// ---------------------------------------------------------------------
+	//  Type-specific Update / Draw functions
+	//  These are called from the main Update() / Draw() based on m_UnitType.
+	//  This structure makes it much easier to work on one category at a time
+	//  and is a stepping stone toward eventually splitting into separate
+	//  classes (U7Static, U7Interactive, U7NPC, U7Egg, U7Monster).
+	// ---------------------------------------------------------------------
 
+	void NPCUpdate();
 	void NPCDraw();
 
-	void NPCInit(NPCData *npcData);
+	void StaticUpdate();
+	void StaticDraw();
 
 	void CustomMeshDraw(Color color);
 
 	void TryOpenDoorAtCurrentPosition();
+	void InteractiveUpdate();
+	void InteractiveDraw();
 
 	void EggUpdate();
+	void EggDraw();
+
+	void MonsterUpdate();
+	void MonsterDraw();
+
+	void UpdateMovement();
+
+	void NPCInit(NPCData *npcData);
+	void MonsterInit();
+
+	void TryOpenDoorAtCurrentPosition();
 
 	void HandleMonsterSpawnerEgg();
 
@@ -307,6 +402,12 @@ public:
 	void HandlePathEgg();
 
 	void HandleUsecodeEgg();
+
+	// Temporary debug helper - prints detailed, type-specific info about this egg
+	void DebugPrintEggInfo() const;
+
+	// Temporary debug helper - prints info for a monster (name, activity, alignment, str/dex/int/health)
+	void DebugPrintMonsterInfo() const;
 
 	void SetOverrideFrame(int overrideFrame)
 	{
@@ -409,13 +510,11 @@ public:
 	Vector3 m_terrainCenterPoint;
 	Vector3 m_centerPoint;
 
-	bool m_isNPC;
 	bool m_isContainer;
 	bool m_isContained;
 	int m_containingObjectId;
 	bool m_hasConversationTree;
 	bool m_hasGump;
-	bool m_isEgg;
 
 	int m_NPCID;
 
@@ -453,6 +552,12 @@ public:
 		int m_npcBatchIndex = -1;
 
 	std::string m_name;
+
+	float m_attackRange;
+	float m_attackCooldown;
+	float m_cooldownTimer;
+
+	int m_monsterType;
 };
 
 #endif

@@ -15,6 +15,7 @@
 #include "MainState.h"
 #include "PathfindingSystem.h"
 #include "SoundSystem.h"
+#include "U7SpriteEffects.h"
 
 extern "C"
 {
@@ -1220,6 +1221,11 @@ static void DestroyObjectByID(int object_id)
     // Mark object as dead and invisible for deferred deletion
     // The main update loop will remove it from chunk map and delete it
     // This prevents iterator invalidation when called during object updates
+    if (g_SoundSystem)
+    {
+        g_SoundSystem->StopLoopingSoundEffect(object_id);
+    }
+
     obj->SetIsDead(true);
     obj->m_Visible = false;
 }
@@ -3029,7 +3035,7 @@ static int LuaSetToAttack(lua_State *L)
     }
 
     U7Object* attacker = g_objectList[attacker_id].get();
-    if (!attacker->m_isNPC || !attacker->m_NPCData)
+    if (attacker->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_NPC || !attacker->m_NPCData)
     {
         lua_pushinteger(L, 0);
         return 1;
@@ -3160,7 +3166,7 @@ static int LuaApplyDamage(lua_State *L)
         target->m_hp -= hit_points;
 
         // Check if target died
-        if (target->m_hp <= 0 && target->m_isNPC && target->m_NPCData)
+        if (target->m_hp <= 0 && target->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC && target->m_NPCData)
         {
             target->m_NPCData->status |= 0x0008;  // Set dead bit
             lua_pushboolean(L, 1);  // Target died
@@ -3186,7 +3192,7 @@ static int LuaReduceHealth(lua_State *L)
         target->m_hp -= hit_points;
 
         // Check if target died
-        if (target->m_hp <= 0 && target->m_isNPC && target->m_NPCData)
+        if (target->m_hp <= 0 && target->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC && target->m_NPCData)
         {
             target->m_NPCData->status |= 0x0008;  // Set dead bit
         }
@@ -3308,7 +3314,7 @@ static int LuaIsNPC(lua_State *L)
     }
 
     U7Object* obj = g_objectList[object_id].get();
-    bool is_npc = obj->m_isNPC || (obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC);
+    bool is_npc = obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC;
 
     lua_pushboolean(L, is_npc);
     return 1;
@@ -3327,7 +3333,7 @@ static int LuaIsDead(lua_State *L)
     }
 
     U7Object* obj = g_objectList[object_id].get();
-    if (!obj->m_isNPC || !obj->m_NPCData)
+    if (obj->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_NPC || !obj->m_NPCData)
     {
         lua_pushboolean(L, 0);
         return 1;
@@ -3352,7 +3358,7 @@ static int LuaGetNPCNumber(lua_State *L)
     }
 
     U7Object* obj = g_objectList[object_id].get();
-    if (obj->m_isNPC)
+    if (obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC)
     {
         lua_pushinteger(L, obj->m_NPCID);
     }
@@ -3546,7 +3552,7 @@ static int LuaGetDeadParty(lua_State *L)
             continue;
 
         U7Object* party_member = g_objectList[party_member_id].get();
-        if (!party_member->m_isNPC || !party_member->m_NPCData)
+        if (party_member->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_NPC || !party_member->m_NPCData)
             continue;
 
         // Check if dead (status bit 3)
@@ -3687,13 +3693,70 @@ static int LuaIsWater(lua_State *L)
     return 1;
 }
 
-// 0x000F | play_sound_effect
+// 0x000F | play_sound_effect(sound_id [, object_id [, max_range]])
 static int LuaPlaySoundEffect(lua_State *L)
 {
-    int sound_id = (int)lua_tointeger(L, 1);
+    int sound_id = (int)luaL_checkinteger(L, 1);
+    if (sound_id < 0)
+    {
+        return 0;
+    }
 
-    g_SoundSystem->PlaySound(g_soundEffectList[sound_id]);
+    std::string path = BuildU7SfxPath(sound_id);
+    if (lua_gettop(L) >= 2 && lua_isnumber(L, 2))
+    {
+        int objectId = (int)lua_tointeger(L, 2);
+        float maxRange = (float)luaL_optnumber(L, 3, g_SoundSystem->GetSpatialDefaultRange());
+        g_SoundSystem->PlaySoundAtObject(path, objectId, maxRange);
+    }
+    else
+    {
+        g_SoundSystem->PlaySound(path);
+    }
 
+    return 0;
+}
+
+// Instrument stinger: Audio/Music/NNbg.ogg via PlaySound (does not replace BGM stream).
+// play_instrument(object_id, track) — returns true if started, false if stopped (toggle).
+static int LuaPlayInstrument(lua_State *L)
+{
+    int objectId = (int)luaL_checkinteger(L, 1);
+    int track = (int)luaL_checkinteger(L, 2);
+    if (track < 0)
+    {
+        lua_pushboolean(L, 0);
+        return 1;
+    }
+
+    float maxRange = (float)luaL_optnumber(L, 3, g_SoundSystem->GetSpatialDefaultRange());
+    bool started = g_SoundSystem->PlayInstrument(objectId, BuildU7MusicPath(track), maxRange);
+    lua_pushboolean(L, started ? 1 : 0);
+    return 1;
+}
+
+static int LuaStopInstrument(lua_State *L)
+{
+    int objectId = (int)luaL_checkinteger(L, 1);
+    bool stopped = g_SoundSystem->StopInstrument(objectId);
+    lua_pushboolean(L, stopped ? 1 : 0);
+    return 1;
+}
+
+static int LuaPlayLoopingSoundEffect(lua_State *L)
+{
+    int objectId = (int)luaL_checkinteger(L, 1);
+    int soundId = (int)luaL_checkinteger(L, 2);
+    float maxRange = (float)luaL_optnumber(L, 3, g_SoundSystem->GetSpatialDefaultRange());
+    bool stopWhenNotVisible = lua_toboolean(L, 4) != 0;
+    g_SoundSystem->PlayLoopingSoundEffect(objectId, soundId, maxRange, stopWhenNotVisible);
+    return 0;
+}
+
+static int LuaStopLoopingSoundEffect(lua_State *L)
+{
+    int objectId = (int)luaL_checkinteger(L, 1);
+    g_SoundSystem->StopLoopingSoundEffect(objectId);
     return 0;
 }
 
@@ -3706,31 +3769,45 @@ static int LuaGetSpeechTrack(lua_State *L)
     return 1;
 }
 
-// 0x0053 | sprite_effect
+// 0x0053 | sprite_effect — Exult: (id, frame, dx, dy, world_z, world_x, sprite_num)
+// world_z/world_x are horizontal tile axes; height comes from the tile surface in original U7.
 static int LuaSpriteEffect(lua_State *L)
 {
-    // int effect_num = (int)lua_tointeger(L, 1);
-    // int x = (int)lua_tointeger(L, 2);
-    // int y = (int)lua_tointeger(L, 3);
-    // int dx = (int)lua_tointeger(L, 4);
-    // int dy = (int)lua_tointeger(L, 5);
+    if (!g_SpriteEffectSystem)
+    {
+        return 0;
+    }
 
-    // Visual effects not yet implemented
-    // Would spawn particle effect at world position
+    int spriteNum = (int)luaL_checkinteger(L, 7);
+    float worldZ = (float)luaL_checknumber(L, 5);
+    float worldX = (float)luaL_checknumber(L, 6);
+    float worldY = 0.0f;
+    if (lua_gettop(L) >= 8 && lua_isnumber(L, 8))
+    {
+        worldY = (float)lua_tonumber(L, 8);
+    }
+
+    g_SpriteEffectSystem->Spawn(spriteNum, Vector3{ worldX, worldY, worldZ });
     return 0;
 }
 
-// 0x007B | obj_sprite_effect
+// 0x007B | obj_sprite_effect — (object_id, sprite_num[, height_above_top])
 static int LuaObjSpriteEffect(lua_State *L)
 {
-    // int object_id = (int)lua_tointeger(L, 1);
-    // int effect_num = (int)lua_tointeger(L, 2);
-    // int dx = (int)lua_tointeger(L, 3);
-    // int dy = (int)lua_tointeger(L, 4);
-    // int delay = (int)lua_tointeger(L, 5);
+    if (!g_SpriteEffectSystem)
+    {
+        return 0;
+    }
 
-    // Visual effects not yet implemented
-    // Would spawn particle effect on object
+    int objectId = (int)luaL_checkinteger(L, 1);
+    int spriteNum = (int)luaL_checkinteger(L, 2);
+    float heightAboveTop = 1.0f;
+    if (lua_gettop(L) >= 3 && lua_isnumber(L, 3))
+    {
+        heightAboveTop = (float)lua_tonumber(L, 3);
+    }
+
+    g_SpriteEffectSystem->SpawnOnObject(objectId, spriteNum, heightAboveTop);
     return 0;
 }
 
@@ -4974,6 +5051,10 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction( "set_weather", LuaSetWeather);
     g_ScriptingSystem->RegisterScriptFunction( "is_water", LuaIsWater);
     g_ScriptingSystem->RegisterScriptFunction( "play_sound_effect", LuaPlaySoundEffect);
+    g_ScriptingSystem->RegisterScriptFunction( "play_instrument", LuaPlayInstrument);
+    g_ScriptingSystem->RegisterScriptFunction( "stop_instrument", LuaStopInstrument);
+    g_ScriptingSystem->RegisterScriptFunction( "play_looping_sound_effect", LuaPlayLoopingSoundEffect);
+    g_ScriptingSystem->RegisterScriptFunction( "stop_looping_sound_effect", LuaStopLoopingSoundEffect);
     g_ScriptingSystem->RegisterScriptFunction( "get_speech_track", LuaGetSpeechTrack);
     g_ScriptingSystem->RegisterScriptFunction( "sprite_effect", LuaSpriteEffect);
     g_ScriptingSystem->RegisterScriptFunction( "obj_sprite_effect", LuaObjSpriteEffect);
