@@ -75,7 +75,7 @@ void ScriptRenameState::OnEnter()
 	if (g_mainState && g_mainState->m_barkObject)
 	{
 		U7Object* obj = g_mainState->m_barkObject;
-		Log("ScriptRenameState::OnEnter - barkObject: isNPC=" + std::to_string(obj->m_isNPC) +
+		Log("ScriptRenameState::OnEnter - barkObject: unitType=" + std::to_string((int)obj->m_UnitType) +
 			", NPCID=" + std::to_string(obj->m_NPCID) +
 			", shape=" + std::to_string(obj->m_shapeData->GetShape()));
 

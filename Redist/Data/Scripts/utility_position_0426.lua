@@ -11,6 +11,7 @@ function utility_position_0426(eventid, objectref)
             var_0001[2] = var_0001[2] + 1
             var_0002 = update_last_created(var_0001)
             if var_0002 then
+                play_looping_sound_effect(var_0000, 77, -1, true)
                 var_0002 = execute_usecode_array(7981, {3, 1, 17419, 8016, 4, 8006, 5, 1, 17419, 8014, 4, 8006, 1560, 8021, 10, 1, 17419, 8014, 0, 7750}, var_0000)
             end
         end

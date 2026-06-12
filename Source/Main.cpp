@@ -24,6 +24,7 @@
 #include "LoadingState.h"
 #include "ShapeEditorState.h"
 #include "ConversationState.h"
+#include "CombatState.h"
 #include "ScriptRenameState.h"
 #include "LoadSaveState.h"
 #include "AskState.h"
@@ -36,6 +37,9 @@
 #include <filesystem>
 
 #include "rlgl.h"
+
+#define RLGL_IMPLEMENTATION
+#define RLGL_SOFT_RENDER
 
 #ifdef _WIN32
 // Forward declare Windows types and functions we need
@@ -120,6 +124,8 @@ int main(int argv, char** argc)
       #endif
 
       g_alphaDiscard = LoadShader(NULL, "Data/Shaders/alphaDiscard.fs");
+      g_cuboidShader = LoadShader("Data/Shaders/cuboid.vs", NULL);
+      g_cuboidTexCoordsLoc = GetShaderLocation(g_cuboidShader, "cuboidTexCoords");
 
       rlDisableBackfaceCulling();
       rlEnableDepthTest();
@@ -131,7 +137,7 @@ int main(int argv, char** argc)
       g_VitalRNG = make_unique<RNG>();
       int seed = (unsigned int)time(NULL);
       g_VitalRNG->SeedRNG(seed);
-      int x = 2;//g_VitalRNG->Random(7);
+      int x = 2;
 
       switch (x)
       {
@@ -165,6 +171,18 @@ int main(int argv, char** argc)
 
          case 7:
             g_camera.target = Vector3{ 965.0f, 0.0f, 2291.0f };
+            break;
+
+         case 8: // Greenhouse
+            g_camera.target = Vector3{ 2272.0f, 0.0f, 2406.0f };
+            break;
+
+         case 9: // Throne room
+            g_camera.target = Vector3{ 939.0f, 0.0f, 1147.0f };
+            break;
+
+         case 10: // Skara Brae Inn
+            g_camera.target = Vector3{ 389.0f, 0.0f, 1646.0f };
             break;
 
          default:
@@ -284,10 +302,6 @@ int main(int argv, char** argc)
 
       g_CuboidModel = nullptr;
 
-      g_soundEffectList[0] = "Audio/door_wooden_close.wav";
-      g_soundEffectList[31] = "Audio/guardian-laugh.ogg";
-      g_soundEffectList[28] = "Audio/open_chest.wav";
-
       //  Initialize scripts
 
       string directoryPath("Data/Scripts");
@@ -377,6 +391,11 @@ int main(int argv, char** argc)
       g_ConversationState = conversationState;
       conversationState->Init("engine.cfg");
       g_StateMachine->RegisterState(STATE_CONVERSATIONSTATE, conversationState, "CONVERSATION_STATE");
+
+      CombatState* combatState = new CombatState;
+      g_CombatState = combatState;
+      combatState->Init("engine.cfg");
+      g_StateMachine->RegisterState(STATE_COMBATSTATE, combatState, "COMBAT_STATE");
 
       ScriptRenameState* scriptRenameState = new ScriptRenameState;
       scriptRenameState->Init("engine.cfg");

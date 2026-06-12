@@ -253,6 +253,7 @@
     <ClCompile Include="Source\PatreonVillageState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\U7SpriteEffects.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Source\u7revisited.rc">

@@ -590,6 +590,32 @@ function get_schedule_type(npc_name) end
 ---@param loop integer Loop behavior (0=play once, 255=loop forever, other values TBD)
 function play_music(track, loop) end
 
+---Plays a short instrument clip from Audio/Music/NNbg.ogg (one-shot; ducks BGM while playing)
+---Double-click the same object again while playing to stop (toggle).
+---Multiple instruments may play at once (different objects); double-click toggles off this object only.
+---Stops when out of max_range or clip ends; spawns looping note sprites (sprite 24) automatically.
+---@param object_id integer Object that owns this playback
+---@param track integer Track number matching the bg file (e.g. 59 -> 59bg.ogg)
+---@param max_range number? Max hear distance in tiles (default from engine.cfg)
+---@return boolean true if playback started, false if stopped or failed
+function play_instrument(object_id, track, max_range) end
+
+---Stops instrument playback for this object if it is the one playing
+---@param object_id integer Object ID
+---@return boolean true if playback was stopped
+function stop_instrument(object_id) end
+
+---Starts a looping ambient SFX tied to this object (restarts when clip ends)
+---@param object_id integer Object ID
+---@param sound_id integer SFX bank index (e.g. 48 = pool water)
+---@param max_range number? Max hear distance in tiles (default from engine.cfg; use -1 for default)
+---@param stop_when_not_visible boolean? If true, stops when object leaves the visible set or is destroyed
+function play_looping_sound_effect(object_id, sound_id, max_range, stop_when_not_visible) end
+
+---Stops looping ambient SFX for this object
+---@param object_id integer Object ID
+function stop_looping_sound_effect(object_id) end
+
 -- ============================================================================
 -- UI / DISPLAY
 -- ============================================================================
@@ -1012,7 +1038,9 @@ function is_water(x, y) end
 
 ---[Exult 0x000F] Plays a sound effect
 ---@param sound_id integer Sound effect ID
-function play_sound_effect(sound_id) end
+---@param object_id integer? If set, applies distance attenuation and stereo pan at this object
+---@param max_range number? Max hear distance in tiles when object_id is set (default from engine.cfg)
+function play_sound_effect(sound_id, object_id, max_range) end
 
 ---[Exult 0x0069] Gets speech track number
 ---@param npc_id integer NPC ID
@@ -1031,9 +1059,10 @@ function get_speech_track(npc_id) end
 function sprite_effect(effect_id, x, y, z) end
 
 ---[Exult 0x007B] Creates sprite effect on object
----@param effect_id integer Effect type
----@param object_id integer Object to attach effect to
-function obj_sprite_effect(effect_id, object_id) end
+---@param object_id integer Object ID
+---@param sprite_num integer Sprite index in SPRITES.VGA (e.g. 24 = musical notes)
+---@param height_above_top number|nil Units above object top (engine Y axis); default 1
+function obj_sprite_effect(object_id, sprite_num, height_above_top) end
 
 ---[Exult 0x008C] Fades palette
 ---@param fade_type integer Fade type/color

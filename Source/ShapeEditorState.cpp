@@ -564,7 +564,7 @@ void ShapeEditorState::Update()
 	}
 	if (IsKeyDown(KEY_Q))
 	{
-		g_CameraRotateSpeed += GetFrameTime() * 50;
+		g_CameraRotateSpeed += g_Engine->LastFrameInSeconds() * 50;
 		if (g_CameraRotateSpeed > 8)
 		{
 			g_CameraRotateSpeed = 8;
@@ -574,7 +574,7 @@ void ShapeEditorState::Update()
 
 	if (IsKeyDown(KEY_E))
 	{
-		g_CameraRotateSpeed -= GetFrameTime() * 50;
+		g_CameraRotateSpeed -= g_Engine->LastFrameInSeconds() * 50;
 		if (g_CameraRotateSpeed < -8)
 		{
 			g_CameraRotateSpeed = -8;
@@ -715,7 +715,7 @@ void ShapeEditorState::Update()
 
 	if (IsKeyDown(KEY_Q))
 	{
-		g_cameraRotation += GetFrameTime() * 5;
+		g_cameraRotation += g_Engine->LastFrameInSeconds() * 5;
 		// Wrap angle to keep within 0 to 2*PI radians
 		while (g_cameraRotation >= 2.0f * PI) g_cameraRotation -= 2.0f * PI;
 		while (g_cameraRotation < 0) g_cameraRotation += 2.0f * PI;
@@ -724,7 +724,7 @@ void ShapeEditorState::Update()
 
 	if (IsKeyDown(KEY_E))
 	{
-		g_cameraRotation -= GetFrameTime() * 5;
+		g_cameraRotation -= g_Engine->LastFrameInSeconds() * 5;
 		// Wrap angle to keep within 0 to 2*PI radians
 		while (g_cameraRotation >= 2.0f * PI) g_cameraRotation -= 2.0f * PI;
 		while (g_cameraRotation < 0) g_cameraRotation += 2.0f * PI;
@@ -2654,7 +2654,7 @@ int ShapeEditorState::SetupCommonGui(Gui* gui)
 
 	out.str("");
 	out.precision(1);
-	gui->AddTextArea(GE_TWEAKROTATIONTITLEAREA, g_guiFont.get(), "Tweak Rot:", 2, y);
+	gui->AddTextArea(GE_TWEAKROTATIONTITLEAREA, g_guiFont.get(), "Rot:", 2, y);
 	gui->AddIconButton(GE_TWEAKROTATIONPLUSBUTTON, 62, y, g_LeftArrow, g_LeftArrow, g_LeftArrow, "", g_guiFont.get(), Color{ 255, 255, 255, 255 }, 1, 1, true, true);
 	gui->AddTextArea(GE_TWEAKROTATIONTEXTAREA, g_guiFont.get(), " ", 71, y);
 	gui->AddIconButton(GE_TWEAKROTATIONMINUSBUTTON, 110, y, g_RightArrow);

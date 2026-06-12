@@ -355,17 +355,17 @@ bool GameSerializer::SaveToStream(std::ofstream& stream, const std::string& save
 			return false;
 		}
 
-		// Save dynamic objects only (filter out UNIT_TYPE_STATIC)
+		// Save dynamic objects.
+		// We save OBJECT, NPC, EGG, and MONSTER types.
+		// We skip only UNIT_TYPE_STATIC (permanent world geometry).
 		json objectsArray = json::array();
 		for (const auto& [id, obj] : g_objectList)
 		{
-			if (obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_OBJECT || obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC)
-			{
-				int stopper = 0;
-			}
+			// Skip null, dead, or static objects
+			if (obj == nullptr || obj->GetIsDead())
+				continue;
 
-			// Skip null or dead objects
-			if (obj == nullptr || obj->GetIsDead() || obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_STATIC )
+			if (obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_STATIC)
 				continue;
 
 			objectsArray.push_back(obj->SaveToJson());
@@ -446,24 +446,9 @@ bool GameSerializer::LoadFromStream(std::ifstream& stream)
 			g_scheduleTime = saveData["gameTime"].value("scheduleTime", 0);
 		}
 
-		// Restore player state
-		if (!saveData.contains("player"))
-		{
-			SetError("Save file is missing player data");
-			return false;
-		}
-
-		if (g_Player != nullptr)
-		{
-			g_Player->LoadFromJson(saveData["player"]);
-		}
-		else
-		{
-			SetError("Cannot load - player object is null");
-			return false;
-		}
-
-		// Clear dynamic objects from g_objectList
+		// Clear dynamic objects from g_objectList before restoring from save.
+		// We keep only permanent static world objects.
+		// All other types (OBJECT, NPC, EGG, MONSTER) are restored from the save file.
 		auto it = g_objectList.begin();
 		while (it != g_objectList.end())
 		{
@@ -498,6 +483,42 @@ bool GameSerializer::LoadFromStream(std::ifstream& stream)
 			{
 				g_objectList[obj->m_ID] = std::unique_ptr<U7Object>(obj);
 			}
+		}
+
+		// Restore global state
+		if (saveData.contains("nextObjectID"))
+		{
+			g_CurrentUnitID = saveData["nextObjectID"];
+		}
+
+		// Update NPCData mapping
+		for (const auto& [id, obj] : g_objectList)
+		{
+			if (obj != nullptr && obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC)
+			{
+				if (obj->m_NPCID >= 0 && obj->m_NPCID < g_NPCData.size())
+				{
+					g_NPCData[obj->m_NPCID]->m_objectID = obj->m_ID;
+				}
+			}
+		}
+
+		// Restore player state
+		// IMPORTANT: This must happen AFTER objects are loaded so g_Player can find its avatar
+		if (!saveData.contains("player"))
+		{
+			SetError("Save file is missing player data");
+			return false;
+		}
+
+		if (g_Player != nullptr)
+		{
+			g_Player->LoadFromJson(saveData["player"]);
+		}
+		else
+		{
+			SetError("Cannot load - player object is null");
+			return false;
 		}
 
 		// Second pass: Restore relationships (inventories, equipment, containers)
@@ -583,7 +604,6 @@ bool GameSerializer::LoadFromStream(std::ifstream& stream)
 					staticCount++;
 				else if (obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC)
 				{
-					g_NPCData[obj->m_NPCID]->m_objectID = obj->m_ID;
 					npcCount++;
 				}
 				else

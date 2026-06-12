@@ -187,7 +187,7 @@ void GumpManager::Update()
 				{
 					g_ScriptingSystem->SetFlag(60, 1);
 				}
-				g_SoundSystem->PlaySound("drag_drop.wav");
+				g_SoundSystem->PlaySound(BuildU7SfxPath(74));
 				g_gumpManager->m_draggingObject = false;
 				g_gumpManager->m_draggedObjectId = -1;
 				g_gumpManager->m_sourceGump = nullptr;
@@ -211,7 +211,7 @@ void GumpManager::Update()
 
 			if (droppedOnPaperdoll)
 			{
-				g_SoundSystem->PlaySound("drag_drop.wav");
+				g_SoundSystem->PlaySound(BuildU7SfxPath(74));
 				g_gumpManager->m_draggingObject = false;
 				g_gumpManager->m_draggedObjectId = -1;
 				g_gumpManager->m_sourceGump = nullptr;
@@ -273,7 +273,7 @@ void GumpManager::Update()
 							g_ScriptingSystem->SetFlag(60, 1);
 						}
 
-						g_SoundSystem->PlaySound("drag_drop.wav");
+						g_SoundSystem->PlaySound(BuildU7SfxPath(74));
 						g_gumpManager->m_draggingObject = false;
 						g_gumpManager->m_draggedObjectId = -1;
 						g_gumpManager->m_sourceGump = nullptr;
@@ -319,7 +319,7 @@ void GumpManager::Update()
 							sourceNpcIt->second->SetEquippedItem(static_cast<EquipmentSlot>(m_sourceSlotIndex), object->m_ID);
 							Log("Returned item to source paperdoll slot " + std::to_string(m_sourceSlotIndex));
 						}
-						g_SoundSystem->PlaySound("error.wav");
+						g_SoundSystem->PlaySound(BuildU7SfxPath(76));
 						g_mainState->ShowErrorCursor();
 						returnedToSource = true;
 					}
@@ -328,7 +328,7 @@ void GumpManager::Update()
 				{
 					// Return to source container inventory
 					m_sourceGump->m_containerObject->AddObjectToInventory(object->m_ID);
-					g_SoundSystem->PlaySound("error.wav");
+					g_SoundSystem->PlaySound(BuildU7SfxPath(76));
 					g_mainState->ShowErrorCursor();
 					returnedToSource = true;
 					Log("Returned item to source container");
@@ -343,14 +343,14 @@ void GumpManager::Update()
 				if (m_sourceGump == nullptr && m_gumpUnderMouse != nullptr && m_draggedObjectOriginalPos.x != 0.0f)
 				{
 					object->SetPos(m_draggedObjectOriginalPos);
-					g_SoundSystem->PlaySound("error.wav");
+					g_SoundSystem->PlaySound(BuildU7SfxPath(76));
 					g_mainState->ShowErrorCursor();
 					Log("Returned item to original world position (drop failed)");
 				}
 				else
 				{
-					object->SetPos(g_terrainUnderMousePointer);
-					g_SoundSystem->PlaySound("drag_drop.wav");
+					object->SetPos(m_dropPosition);
+					g_SoundSystem->PlaySound(BuildU7SfxPath(74));
 					Log("Dropped item to ground");
 
 					// For NPCs: if they were stationary before drag (pos == dest), update dest to new pos
@@ -420,7 +420,7 @@ void GumpManager::AddGump(std::shared_ptr<Gump> Gump)
 	m_PendingGumps.push_back(Gump);
 
 	// Play gump open sound
-	g_SoundSystem->PlaySound("open_chest.wav");
+	g_SoundSystem->PlaySound(BuildU7SfxPath(14));
 }
 
 void GumpManager::CloseGumpForObject(int objectId)

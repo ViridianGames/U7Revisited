@@ -23,6 +23,7 @@
 #include "Geist/Primitives.h"
 #include "Geist/RNG.h"
 #include "ConversationState.h"
+#include "CombatState.h"
 #include "GumpManager.h"
 #include "MainState.h"
 #include "PathfindingSystem.h"
@@ -51,6 +52,7 @@ enum GameStates
 	STATE_SHAPEEDITORSTATE,
 	STATE_CREDITS,
 	STATE_CONVERSATIONSTATE,
+	STATE_COMBATSTATE,
 	STATE_SCRIPTRENAMESTATE,
 	STATE_LOADSAVESTATE,
 	STATE_ASKEXITSTATE,
@@ -65,6 +67,7 @@ extern std::string g_objectDrawTypeStrings[];
 
 extern bool g_LuaDebug;
 extern bool g_showScriptedObjects;
+extern bool g_showEggs;
 
 // enum class ObjectTypes
 // {
@@ -105,7 +108,19 @@ inline Vector2 g_DirVectors[8] = {
 	{ 0, 1 }, { -1, 1 }, { -1, 0 }, { -1, -1 }
 };
 
-inline std::unordered_map<int, std::string> g_soundEffectList;
+// Activity names (from NpcListWindow.cpp)
+constexpr char* g_activityNames[] = {
+	"Combat", "Horizontal Pace", "Vertical Pace", "Talk", "Dance", "Eat", "Farm",
+	"Tend Shop", "Miner", "Hound", "Stand", "Loiter", "Wander", "Blacksmith",
+	"Sleep", "Wait", "Major Sit", "Graze", "Bake", "Sew", "Shy", "Lab",
+	"Thief", "Waiter", "Special", "Kid Games", "Eat at Inn", "Duel", "Preach",
+	"Patrol", "Desk Work", "Follow Avatar"
+};
+
+// Audio path helpers (paths relative to Redist working directory)
+std::string BuildU7SfxPath(int soundId);    // Audio/SFX/<bank>/U7BG_SFX_<bank>_NNN.wav
+std::string BuildU7VoicePath(int voiceFileIndex);  // Audio/Voice/U7BG_voice_NNN.wav
+std::string BuildU7MusicPath(int trackId);  // Audio/Music/NNbg.ogg
 
 struct ObjectData
 {
@@ -167,11 +182,6 @@ struct NPCSchedule
 	unsigned int m_time;
 	unsigned int m_activity;
 };
-
-extern std::unordered_map<int, std::vector<NPCSchedule> > g_NPCSchedules;
-
-// Helper function to initialize NPC activities based on current schedule time
-void InitializeNPCActivitiesFromSchedules();
 
 //////////////////////////////////////////////////////////////////////////////
 //  SPELL SYSTEM
@@ -260,6 +270,7 @@ extern std::vector<U7Object*> g_chunkObjectMap[192][192]; // The objects in each
 extern std::array<std::array<ShapeData, 32>, 1024> g_shapeTable;
 extern std::array<ObjectData, 1024> g_objectDataTable;
 extern std::unordered_map<int, std::unique_ptr<NPCData> > g_NPCData;
+extern std::vector<MonsterData> g_monsterData;   // Base stats for all 65 monster types (STATIC/MONSTERS.DAT, documented format)
 
 extern std::array<int, 1024> g_isObjectMoveable;        // Maps item shape ID to valid equipment slots
 
@@ -276,6 +287,9 @@ struct SpriteFrame {
 };
 
 extern std::array<std::vector<SpriteFrame>, 32> g_spriteTable;  // 32 sprite shapes, each with multiple frames
+
+class U7SpriteEffectSystem;
+extern std::unique_ptr<U7SpriteEffectSystem> g_SpriteEffectSystem;
 
 extern std::vector<U7Object*> g_sortedVisibleObjects;
 
@@ -417,6 +431,7 @@ void LoadGameFlagsFromJson(const json& j);
 //int l_add_dialogue(lua_State* L);
 
 extern ConversationState* g_ConversationState;
+extern CombatState* g_CombatState;
 extern MainState* g_mainState;
 
 extern bool g_autoRotate;
@@ -492,6 +507,8 @@ extern int g_selectedShape;
 extern int g_selectedFrame;
 
 extern Shader g_alphaDiscard;
+extern Shader g_cuboidShader;
+extern int g_cuboidTexCoordsLoc;
 
 extern bool g_pixelated;
 extern RenderTexture2D g_renderTarget;
@@ -557,6 +574,9 @@ struct NPCPathStats
 };
 extern std::unordered_map<int, NPCPathStats> g_npcMaxPathStats;
 void PrintNPCPathStats();
+
+void DrawPerfCounter(Font* font, int loc);
+
 #endif
 
 #endif

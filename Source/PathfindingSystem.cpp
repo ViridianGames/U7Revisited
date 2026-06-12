@@ -49,13 +49,13 @@ std::vector<PathfindingGrid::OverlappingObject> PathfindingGrid::GetOverlappingO
 
 			for (U7Object* obj : g_chunkObjectMap[cx][cz])
 			{
-				if (!obj || obj->m_isNPC)
+				if (!obj || obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC)
 					continue;
 
 				if (obj->m_isContained)
 					continue;
 
-				if (obj->m_isEgg)
+				if (obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_EGG)
 					continue;
 
 				if (obj->m_shapeData->GetShape() == 257)//fortress gateway top
@@ -111,10 +111,10 @@ std::vector<PathfindingGrid::OverlappingObject> PathfindingGrid::GetOverlappingO
 }
 
 // Helper: Check if a shape ID is a walkable surface (floors, bridges, stairs)
-inline bool PathfindingSystem::IsWalkableSurface(int shapeID)
+bool PathfindingSystem::IsWalkableSurface(int shapeID)
 {
 	// Bridge/floor pieces: 367-370
-	if (shapeID >= 367 && shapeID <= 370)//floor
+	if (shapeID >= 367 && shapeID <= 370)
 		return true;
 
 	// Additional floor shapes//floor-roof 
@@ -122,7 +122,7 @@ inline bool PathfindingSystem::IsWalkableSurface(int shapeID)
 		return true;
 
 	// Stairs: 426-430
-	if (shapeID >= 426 && shapeID <= 430)//stairs
+	if (shapeID >= 426 && shapeID <= 430)
 		return true;
 
 	if (shapeID == 150)//gangplank
@@ -134,6 +134,39 @@ inline bool PathfindingSystem::IsWalkableSurface(int shapeID)
 	if (shapeID == 257)//fortress gateway top
 		return true;
 
+	if (shapeID >= 290 && shapeID <= 293) // seats / floors
+		return true;
+
+	if (shapeID >= 310 && shapeID <= 313) // wooden floor
+		return true;
+
+	if (shapeID >= 314 && shapeID <= 317) // floor
+		return true;
+
+	if (shapeID >= 341 && shapeID <= 344) // floor
+		return true;
+
+	if (shapeID == 368)//floor
+		return true;
+
+	if (shapeID >= 385 && shapeID <= 387)//stairs
+		return true;
+
+	if (shapeID >= 607 && shapeID <= 610)//path
+		return true;
+
+	if (shapeID == 657)//curtain
+		return true;
+
+	if (shapeID == 678)//curtain
+		return true;
+
+	if (shapeID >= 973 && shapeID <= 974)//stairs
+		return true;
+
+	if (shapeID == 415)//garbage
+		return true;
+
 	if (shapeID == 260)//fortress
 		return true;
 
@@ -143,25 +176,7 @@ inline bool PathfindingSystem::IsWalkableSurface(int shapeID)
 	if (shapeID == 352)//fortress
 		return true;
 
-	if (shapeID == 367)//floor
-		return true;
-
-	if (shapeID == 369)//floor
-		return true;
-
-	if (shapeID >= 385 && shapeID <= 387)//stairs
-		return true;
-
 	if (shapeID == 483)//rug
-		return true;
-
-	if (shapeID == 607)//path
-		return true;
-
-	if (shapeID == 657)//curtain
-		return true;
-
-	if (shapeID == 678)//curtain
 		return true;
 
 	if (shapeID == 700)//deck
@@ -176,14 +191,280 @@ inline bool PathfindingSystem::IsWalkableSurface(int shapeID)
 	if (shapeID == 870)//drawbridge
 		return true;
 
-	if (shapeID == 973 || shapeID == 974)//stairs
+	if (shapeID == 873)//chair
 		return true;
 
+	if (shapeID == 897)//seat
+		return true;
 
-	// TODO: Add more walkable surface shape IDs as we discover them
-	// This might include stairs, platforms, etc.
+	if (shapeID == 804)//crate
+		return true;
+
+	if (shapeID == 962)
+		return true;
 
 	return false;
+}
+
+// AABB vs AABB intersection helper (axis-aligned)
+// static bool AABBIntersectsAABB(const Vector3& minA, const Vector3& maxA, const Vector3& minB, const Vector3& maxB)
+// {
+// 	if (maxA.x < minB.x || minA.x > maxB.x) return false;
+// 	if (maxA.y < minB.y || minA.y > maxB.y) return false;
+// 	if (maxA.z < minB.z || minA.z > maxB.z) return false;
+// 	return true;
+// }
+
+bool PathfindingSystem::ValidateMove(U7Object* agent, const Vector3& desiredPos, float& outDestH)
+{
+	if (!agent) return false;
+
+	if (!g_pathfindingSystem || !g_pathfindingSystem->m_pathfindingGrid)
+	{
+		outDestH = desiredPos.y;
+		return true;
+	}
+
+	PathfindingGrid* grid = g_pathfindingSystem->m_pathfindingGrid.get();
+
+	int destX = (int)floor(desiredPos.x);
+	int destZ = (int)floor(desiredPos.z);
+
+	// Bounds check
+	if (destX < 0 || destX >= 3072 || destZ < 0 || destZ >= 3072)
+		return false;
+
+	// Source height (feet)
+	float srcH = agent->m_Pos.y;
+
+	// Query grid default roof/terrain height
+	float gridH = grid->GetTileHeight(destX, destZ);
+	float destH = gridH; // default
+
+	// Get overlapping world objects at tile
+	auto overlappingObjects = grid->GetOverlappingObjects(destX, destZ);
+
+	// Find best reachable floor/stair layer near our feet
+	float bestFloorDist = 999.0f;
+	bool foundReachableLayer = false;
+
+	for (const auto& ov : overlappingObjects)
+	{
+		if (!ov.obj || !ov.obj->m_shapeData) continue;
+
+		// Skip eggs/triggers — they should not affect climb/walkable surface decisions
+		if (ov.obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_EGG) continue;
+
+		int sID = ov.obj->m_shapeData->GetShape();
+		if (sID == 257 || sID == 368 || sID == 657 || sID == 678 || sID == 415)
+		{
+			foundReachableLayer = true;
+			destH = srcH; // Stay at current height
+			break;
+		}
+
+		if (IsWalkableSurface(sID))
+		{
+			float walkableTop = ov.obj->m_Pos.y + (ov.obj->m_objectData ? ov.obj->m_objectData->m_height : 0.0f);
+			float dist = fabs(walkableTop - srcH);
+
+			if (dist <= MAX_CLIMBABLE_HEIGHT && dist < bestFloorDist)
+			{
+				destH = walkableTop;
+				bestFloorDist = dist;
+				foundReachableLayer = true;
+			}
+		}
+	}
+
+	// If no reachable object floor layer found, consider the grid height if within climb range
+	if (!foundReachableLayer)
+	{
+		float gridDist = fabs(gridH - srcH);
+		if (gridDist > MAX_CLIMBABLE_HEIGHT)
+		{
+			return false;
+		}
+		destH = gridH;
+	}
+
+	// Collision detection using chunk object map
+	const float kPlayerRadius = 0.35f;     // current halfSize
+	const float kPlayerHeight = 1.6f;      // current playerHeight
+	const float kSmallObstacleHeight = 0.25f;
+	// Use swept vertical range between src and dest so tall stairs are handled
+	float footMinY = std::min(srcH, destH);
+	float footMaxY = std::max(srcH, destH);
+	Vector3 playerMin = { desiredPos.x - kPlayerRadius, footMinY, desiredPos.z - kPlayerRadius };
+	Vector3 playerMax = { desiredPos.x + kPlayerRadius, footMaxY + kPlayerHeight, desiredPos.z + kPlayerRadius };
+
+	int chunkX = destX / 16;
+	int chunkZ = destZ / 16;
+	const float climbEpsilon = 0.05f;
+
+	// Protect chunk map with shared lock if available
+	extern std::shared_mutex g_chunkMapMutex;
+	std::shared_lock lock(g_chunkMapMutex);
+
+	for (int dz = -1; dz <= 1; ++dz)
+	{
+		for (int dx = -1; dx <= 1; ++dx)
+		{
+			int cx = chunkX + dx;
+			int cz = chunkZ + dz;
+			if (cx < 0 || cx >= 192 || cz < 0 || cz >= 192) continue;
+
+			for (U7Object* obj : g_chunkObjectMap[cx][cz])
+			{
+				if (!obj) continue;
+
+				// Allow walking through eggs/triggers: they should be interactive but non-blocking.
+				if (obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_EGG) continue;
+
+				if (obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC) continue;
+				if (!obj->m_shapeData) continue;
+				if (obj->m_isContained) continue; // skip items in containers
+
+				// Use the object's world-space bounding box (more accurate than m_Pos + height)
+				Vector3 minObj = obj->m_boundingBox.min;
+				Vector3 maxObj = obj->m_boundingBox.max;
+
+				// conservative small expansion (very small, tune if needed)
+				const float eps = 0.02f;
+				minObj.x -= eps; minObj.y -= eps; minObj.z -= eps;
+				maxObj.x += eps; maxObj.y += eps; maxObj.z += eps;
+
+				// Quick reject if AABBs don't overlap
+				if (!CheckCollisionBoxes({playerMin, playerMax}, {minObj, maxObj}))
+					continue;
+
+				// Now we have overlap — decide whether it should block movement
+				float objBottom = minObj.y;
+				float objTop = maxObj.y;
+				int shapeID = obj->m_shapeData->GetShape();
+
+				// Compute canonical walkable surface top when object has objectData (stairs/floors).
+				float walkableTop = objTop;
+				if (obj->m_objectData)
+					walkableTop = obj->m_Pos.y + obj->m_objectData->m_height;
+
+				// 1) ignore very small ground clutter early
+				float objHeight = objTop - objBottom;
+				if (objHeight > 0.0f && objHeight < kSmallObstacleHeight)
+				{
+					if (!(obj->m_objectData && obj->m_objectData->m_isDoor))
+					{
+						continue;
+					}
+
+					float footprintX = maxObj.x - minObj.x;
+					float footprintZ = maxObj.z - minObj.z;
+					if (objHeight < kSmallObstacleHeight && footprintX < 1.0f && footprintZ < 1.0f) continue;
+				}
+
+				// 2) door hinge special-case
+				if (obj->m_objectData && obj->m_objectData->m_isDoor)
+				{
+					if (destX == (int)floor(obj->m_Pos.x) && destZ == (int)floor(obj->m_Pos.z))
+					{
+						return false;
+					}
+					continue;
+				}
+
+				// 3) ignore ceilings / upper floors
+				if (objBottom >= (footMaxY + kPlayerHeight))
+				{
+					continue;
+				}
+
+				// 4) swept collision: sample along movement from src -> desired
+				Vector3 srcPos = agent->m_Pos;
+				Vector3 moveDelta = Vector3Subtract(desiredPos, srcPos);
+				float distXZ = sqrtf(moveDelta.x * moveDelta.x + moveDelta.z * moveDelta.z);
+				if (distXZ > 0.0001f)
+				{
+					const float sampleStep = 0.25f;
+					int steps = (int)ceil(distXZ / sampleStep);
+					bool hit = false;
+					for (int s = 1; s <= steps; ++s)
+					{
+						float t = (float)s / (float)steps;
+						Vector3 samplePos = Vector3Add(srcPos, Vector3Scale(moveDelta, t));
+						float sampleY = srcH + (destH - srcH) * t;
+						Vector3 sampleMin = { samplePos.x - kPlayerRadius, sampleY, samplePos.z - kPlayerRadius };
+						Vector3 sampleMax = { samplePos.x + kPlayerRadius, sampleY + kPlayerHeight, samplePos.z + kPlayerRadius };
+						if (CheckCollisionBoxes({sampleMin, sampleMax}, {minObj, maxObj}))
+						{
+							hit = true;
+							if (IsWalkableSurface(shapeID))
+							{
+								int tx = (int)floor(samplePos.x);
+								int tz = (int)floor(samplePos.z);
+								bool allowWalkableHit = false;
+								if (tx >= 0 && tx < 3072 && tz >= 0 && tz < 3072)
+								{
+									auto heights = grid->GetWalkableSurfaceHeights(tx, tz);
+									for (float h : heights)
+									{
+										if ((h - srcH) <= (MAX_CLIMBABLE_HEIGHT + climbEpsilon) &&
+											(h - sampleY) <= (MAX_CLIMBABLE_HEIGHT + climbEpsilon) &&
+											(h + 0.001f) >= sampleY)
+										{
+											allowWalkableHit = true;
+											break;
+										}
+									}
+								}
+								if (allowWalkableHit) hit = false;
+							}
+							break;
+						}
+					}
+					if (hit) return false;
+				}
+
+				// 5) vertical-span overlap check (fallback)
+				bool allowedBySurface = false;
+				if (IsWalkableSurface(shapeID))
+				{
+					if ((fabs(walkableTop - srcH) <= (MAX_CLIMBABLE_HEIGHT + climbEpsilon)) ||
+						(fabs(walkableTop - destH) <= (MAX_CLIMBABLE_HEIGHT + climbEpsilon)))
+					{
+						allowedBySurface = true;
+					}
+					else
+					{
+						int tx = destX;
+						int tz = destZ;
+						if (tx >= 0 && tx < 3072 && tz >= 0 && tz < 3072)
+						{
+							auto heights = grid->GetWalkableSurfaceHeights(tx, tz);
+							for (float h : heights)
+							{
+								if ((h - srcH) <= (MAX_CLIMBABLE_HEIGHT + climbEpsilon) &&
+									(h - destH) <= (MAX_CLIMBABLE_HEIGHT + climbEpsilon))
+								{
+									allowedBySurface = true;
+									break;
+								}
+							}
+						}
+					}
+				}
+
+				if (allowedBySurface) continue;
+
+				if (!(objTop < playerMin.y || objBottom > playerMax.y))
+				{
+					return false;
+				}
+			}
+		}
+	}
+
+	outDestH = destH;
+	return true;
 }
 
 float PathfindingGrid::GetTileHeight(int worldX, int worldZ) const
@@ -209,7 +490,7 @@ float PathfindingGrid::GetTileHeight(int worldX, int worldZ) const
 		U7Object* obj = ovObj.obj;
 		if (!obj || !obj->m_objectData || !obj->m_shapeData)
 			continue;
-		if (obj->m_isEgg)
+		if (obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_EGG)
 			continue;
 		int shapeID = obj->m_shapeData->GetShape();
 
@@ -572,7 +853,7 @@ void PathfindingGrid::DebugPrintTileInfo(int worldX, int worldZ)
 			" size=" + std::to_string(ovObj.width) + "x" + std::to_string(ovObj.depth) +
 			(obj->m_objectData->m_isDoor ? std::string(" [DOOR frame=") + std::to_string(obj->m_Frame) + "]" : "") +
 			skipReason;
-		AddConsoleString(msg);
+		//AddConsoleString(msg);
 		NPCDebugPrint("Tile (" + std::to_string(worldX) + "," + std::to_string(worldZ) + "): " + msg);
 		if (skipReason.empty())
 			foundBlockingObject = true;
@@ -580,13 +861,13 @@ void PathfindingGrid::DebugPrintTileInfo(int worldX, int worldZ)
 
 	if (!foundBlockingObject)
 	{
-		AddConsoleString("No blocking objects found");
+		//AddConsoleString("No blocking objects found");
 		NPCDebugPrint("Tile (" + std::to_string(worldX) + "," + std::to_string(worldZ) + "): No blocking objects found");
 	}
 
 	// Final verdict
 	bool walkable = CheckTileWalkable(worldX, worldZ, 0.0f);
-	AddConsoleString("RESULT: " + std::string(walkable ? "WALKABLE" : "BLOCKED"));
+	//AddConsoleString("RESULT: " + std::string(walkable ? "WALKABLE" : "BLOCKED"));
 	NPCDebugPrint("Tile (" + std::to_string(worldX) + "," + std::to_string(worldZ) + "): RESULT: " + std::string(walkable ? "WALKABLE" : "BLOCKED"));
 }
 
@@ -1546,7 +1827,7 @@ bool LineOfTilesIsWalkable3D(Vector3 start, Vector3 end)
 			if (obj == nullptr) continue;
 
 			// Eggs are triggers - don't let them block 3D connectivity tests
-			if (obj->m_isEgg) continue;
+			if (obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_EGG) continue;
 
 			Vector3 half = Vector3Multiply(obj->m_shapeData->m_Dims, { 0.5f, 0.5f, 0.5f });
 			Vector3 min = Vector3Subtract(obj->m_Pos, half);
@@ -1638,6 +1919,8 @@ void PathfindingSystem::Init(const std::string& configfile)
 	m_aStar = std::make_unique<AStar>();
 	m_pathfindingGrid = std::make_unique<PathfindingGrid>();
 
+	LoadObjectWalkability("Data/object_walkability.csv");
+
 	// Precompute chunk connectivity for hierarchical pathfinding
 	PopulateChunkPathfindingGrid();
 }
@@ -1709,6 +1992,58 @@ bool AStar::IsNodeOnFinalPath(int x, int z, float y) const
 	int yidx = QuantizeY(y);
 	int64_t k = MakeNodeKey(x, z, yidx);
 	return m_finalPathKeys.find(k) != m_finalPathKeys.end();
+}
+
+void PathfindingSystem::LoadObjectWalkability(const std::string& filename)
+{
+	std::ifstream file(filename);
+	if (!file.is_open())
+	{
+		return;
+	}
+
+	std::string line;
+	int lineNumber = 0;
+
+	while (std::getline(file, line))
+	{
+		lineNumber++;
+
+		// Skip empty lines
+		if (line.empty())
+			continue;
+
+		// Skip lines starting with space or #
+		if (line[0] == ' ' || line[0] == '#')
+			continue;
+
+		// Remove any trailing whitespace or comments
+		size_t commentPos = line.find('#');
+		if (commentPos != std::string::npos)
+			line = line.substr(0, commentPos);
+
+		// Trim trailing whitespace
+		line.erase(std::find_if(line.rbegin(), line.rend(), [](unsigned char ch) {
+			 return !std::isspace(ch);
+		}).base(), line.end());
+
+		if (line.empty())
+			continue;
+
+		// Parse two integers separated by comma
+		std::istringstream ss(line);
+		int shapeID, walkableValue;
+
+		if (ss >> shapeID)
+		{
+			// Skip the comma and any whitespace
+			ss.ignore(1, ',');
+			if (ss >> walkableValue)
+			{
+				g_pathfindingSystem->m_objectWalkability[shapeID] = ObjectWalkability(walkableValue);
+			}
+		}
+	}
 }
 
 void PathfindingSystem::PopulateChunkPathfindingGrid()

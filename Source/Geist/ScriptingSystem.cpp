@@ -2,6 +2,7 @@
 #include <Geist/Config.h>
 #include <Geist/Logging.h>
 #include <Geist/Globals.h>
+#include <Geist/Engine.h>
 
 #include <raylib.h>
 #include <raymath.h>
@@ -112,7 +113,7 @@ void ScriptingSystem::Update()
     }
 
     // Update all wait timers and resume scripts that are done waiting
-    float frameTime = GetFrameTime();
+    float frameTime = g_Engine->LastFrameInSeconds();
     std::vector<std::string> scriptsToResume;
 
     for (auto& pair : m_waitTimers)

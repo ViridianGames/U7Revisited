@@ -1,9 +1,10 @@
---- Best guess: Plays music (ID 55) and cycles NPC frames (ID 534) for an animation or event trigger.
+-- This script handles the whistle: when triggered, plays the whistle's instrument track (ID 55).
+
 function object_whistle_0693(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003
 
     if eventid == 1 then
-        play_music(objectref, 55)
+        play_instrument(objectref, 55)
         if get_object_frame(objectref) == 1 then
             -- calli 007E, 0 (unmapped)
             close_gumps()

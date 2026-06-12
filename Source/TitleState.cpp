@@ -33,21 +33,21 @@ void TitleState::Init(const string& configfile)
 {
 	CreateTitleGUI();
 	CreateCreditsGUI();
-	CreateMaleFemaleGUI();
 	m_title = g_ResourceManager->GetTexture("Images/title.png");
 	m_mouseMoved = false;
 }
 
 void TitleState::OnEnter()
 {
+	CreateMaleFemaleGUI();
 	ClearConsole();
 	m_LastUpdate = 0;
-	g_SoundSystem->PlayMusic("Audio/Music/22bg.ogg");
+	g_SoundSystem->PlayMusic(BuildU7MusicPath(22));
 }
 
 void TitleState::OnExit()
 {
-	g_SoundSystem->StopMusic("Audio/Music/22bg.ogg");
+	g_SoundSystem->StopMusic(BuildU7MusicPath(22));
 }
 
 void TitleState::Shutdown()
@@ -93,7 +93,7 @@ void TitleState::Update()
 
 	if (m_fadeState == FadeState::FADE_OUT)
 	{
-		m_fadeTime += GetFrameTime();
+		m_fadeTime += g_Engine->LastFrameInSeconds();
 		if (m_fadeTime > m_fadeDuration)
 		{
 			m_fadeTime = m_fadeDuration;
@@ -104,7 +104,7 @@ void TitleState::Update()
 
 	else if (m_fadeState == FadeState::FADE_IN)
 	{
-		m_fadeTime -= GetFrameTime();
+		m_fadeTime -= g_Engine->LastFrameInSeconds();
 		if (m_fadeTime < 0)
 		{
 			m_fadeTime = 0;
@@ -185,6 +185,18 @@ void TitleState::Draw()
 		m_TitleGui->Draw();
 		m_CreditsGui->Draw();
 		m_MaleFemaleGui->Draw();
+
+		if (m_MaleFemaleGui->m_Active)
+		{
+			if (g_Player->GetIsMale())
+			{
+				DrawRectangleRoundedLines({270, 106, 40, 50}, .25, 100, 2, GOLD);
+			}
+			else
+			{
+				DrawRectangleRoundedLines({330, 106, 40, 50}, .25, 100, 2, GOLD);
+			}
+		}
 	}
 
 	//  Draw any tooltips
@@ -463,36 +475,35 @@ void TitleState::UpdateTitle()
 	if (m_MaleFemaleGui->m_ActiveElement == GUI_MALEFEMALE_BUTTON_MALE)
 	{
 		g_Player->SetAvatarMale();
-		if (m_fadeState != FadeState::FADE_OUT)
-		{
-			m_fadingOut = true;
-			FadeOut(1.5);
-			dynamic_cast<MainState*>(g_StateMachine->GetState(STATE_MAINSTATE))->m_gameMode = MainStateModes::MAIN_STATE_MODE_TRINSIC_DEMO;
-			m_TitleGui->m_AcceptingInput = false;
-			m_MaleFemaleGui->m_AcceptingInput = false;
-			m_targetState = STATE_MAINSTATE;
-		}
 	}
 
 	if (m_MaleFemaleGui->m_ActiveElement == GUI_MALEFEMALE_BUTTON_FEMALE)
 	{
 		g_Player->SetAvatarFemale();
-		if (m_fadeState != FadeState::FADE_OUT)
+	}
+
+	if (m_MaleFemaleGui->m_ActiveElement == GUI_MALEFEMALE_BUTTON_START)
+	{
+		string textInput = dynamic_cast<GuiTextInput*>(m_MaleFemaleGui->GetElement(GUI_MALEFEMALE_TEXT_INPUT).get())->m_String;
+
+		if (textInput != "")
 		{
-			m_fadingOut = true;
-			FadeOut(1.5);
-			dynamic_cast<MainState*>(g_StateMachine->GetState(STATE_MAINSTATE))->m_gameMode = MainStateModes::MAIN_STATE_MODE_TRINSIC_DEMO;
-			m_TitleGui->m_AcceptingInput = false;
-			m_MaleFemaleGui->m_AcceptingInput = false;
-			m_targetState = STATE_MAINSTATE;
+			g_Player->SetPlayerName(textInput);
 		}
+
+		m_fadingOut = true;
+		FadeOut(1.5);
+		dynamic_cast<MainState*>(g_StateMachine->GetState(STATE_MAINSTATE))->m_gameMode = MainStateModes::MAIN_STATE_MODE_TRINSIC_DEMO;
+		m_TitleGui->m_AcceptingInput = false;
+		m_MaleFemaleGui->m_AcceptingInput = false;
+		m_targetState = STATE_MAINSTATE;
 	}
 
 	if (m_MaleFemaleGui->m_ActiveElement == GUI_MALEFEMALE_BUTTON_BACK)
 	{
 		m_TitleGui->m_Active = true;
-		 m_MaleFemaleGui->m_Active = false;
-		 m_MaleFemaleGui->m_ActiveElement = -1;
+		m_MaleFemaleGui->m_Active = false;
+		m_MaleFemaleGui->m_ActiveElement = -1;
 	}
 
 	if (m_TitleGui->m_ActiveElement == GUI_TITLE_BUTTON_CREDITS)
@@ -595,33 +606,54 @@ void TitleState::TestDraw()
 
 void TitleState::CreateMaleFemaleGUI()
 {
+	if (m_MaleFemaleGui)
+		return; // Already made
+
 	m_MaleFemaleGui = make_shared<Gui>();
 	m_MaleFemaleGui->m_Font = g_SmallFont;
 
 	m_MaleFemaleGui->SetLayout(0, 0, g_Engine->m_RenderWidth, g_Engine->m_RenderHeight, g_DrawScale, Gui::GUIP_USE_XY);
-	m_MaleFemaleGui->AddOctagonBox(GUI_MALEFEMALE_PANEL, 220, 180, 200, 160, g_Borders);
+	m_MaleFemaleGui->AddOctagonBox(GUI_MALEFEMALE_PANEL, 250, 100, 140, 128, g_Borders);
 
-	int y = 186;
+	int y = 106;
 	int yoffset = 22;
 
-	m_MaleFemaleGui->AddStretchButtonCentered(GUI_MALEFEMALE_BUTTON_MALE, y, "Start As Male Avatar",
-	                                     g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
-	                                     g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
+	//DrawTextureEx(*g_ResourceManager->GetTexture("U7FACES" + to_string(m_npcId) + to_string(m_npcFrame)), {4, 10}, 0, 2,
+//				  WHITE);
+
+	Texture* maleAvatar = g_ResourceManager->GetTexture("U7FACES00");
+
+	m_MaleFemaleGui->AddIconButton(GUI_MALEFEMALE_BUTTON_MALE, maleAvatar,
+		270, y, 0, 0, maleAvatar->width, maleAvatar->height);
+
+	Texture* femaleAvatar = g_ResourceManager->GetTexture("U7FACES01");
+
+	m_MaleFemaleGui->AddIconButton(GUI_MALEFEMALE_BUTTON_FEMALE, femaleAvatar,
+	330, y, 0, 0, femaleAvatar->width, femaleAvatar->height);
+
+	y += yoffset * 2.5;
+
+	m_MaleFemaleGui->AddTextArea(GUI_MALEFEMALE_TEXTAREA_MALE, g_SmallFont.get(), "Male", 280, y, 0, 0);
+	m_MaleFemaleGui->AddTextArea(GUI_MALEFEMALE_TEXTAREA_FEMALE, g_SmallFont.get(), "Female", 336, y, 0, 0);
 
 	y += yoffset;
 
-	m_MaleFemaleGui->AddStretchButtonCentered(GUI_MALEFEMALE_BUTTON_FEMALE, y, "Start As Female Avatar",
-									 g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
-									 g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
+	m_MaleFemaleGui->AddTextArea(GUI_MALEFEMALE_NAME_TEXT_AREA, g_SmallFont.get(), "Name:", 274, y, 0, 0);
+
+	m_MaleFemaleGui->AddTextInput(GUI_MALEFEMALE_TEXT_INPUT,310, y, 50, g_SmallFont->baseSize,
+		g_SmallFont.get(), "", WHITE, BLACK, BLACK, 0, true);
 
 	y += yoffset;
 
-	m_MaleFemaleGui->AddStretchButtonCentered(GUI_MALEFEMALE_BUTTON_BACK, y, "Back",
+	m_MaleFemaleGui->AddStretchButton(GUI_MALEFEMALE_BUTTON_BACK, 270, y, 40, "Back",
+								 g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
+								 g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
+
+	m_MaleFemaleGui->AddStretchButton(GUI_MALEFEMALE_BUTTON_START, 330, y, 40,"Start",
 									 g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
 									 g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
 
-
-	m_MaleFemaleGui->m_Active = false;
+		m_MaleFemaleGui->m_Active = false;
 
 	m_MaleFemaleGui->m_Draggable = false;
 }

@@ -6,6 +6,7 @@
 #include <Geist/Primitives.h>
 #include <Geist/IO.h>
 #include <Geist/Globals.h>
+#include <Geist/Engine.h>
 
 using namespace std;
 
@@ -49,8 +50,8 @@ void Tween::Update()
 		Vector2 dir = Vector2Subtract(m_Dest, Vector2{ m_Pos.x, m_Pos.y });
 		dir = Vector2Normalize(dir);
 
-		dir.x *= (m_Speed * GetFrameTime());
-		dir.y *= (m_Speed * GetFrameTime());
+		dir.x *= (m_Speed * g_Engine->LastFrameInSeconds());
+		dir.y *= (m_Speed * g_Engine->LastFrameInSeconds());
 
 		Vector2 newPos = Vector2Add(m_Pos, dir);
 		Vector2 newDir = Vector2Subtract(m_Dest, newPos);
@@ -78,14 +79,14 @@ void Tween::Update()
 
 	case MOVE_BOUNCE:
 	{
-		m_Acceleration += m_AccelerationPerSecond * GetFrameTime();
-		m_Speed += m_Acceleration * GetFrameTime();
+		m_Acceleration += m_AccelerationPerSecond * g_Engine->LastFrameInSeconds();
+		m_Speed += m_Acceleration * g_Engine->LastFrameInSeconds();
 
 		Vector2 dir = Vector2Subtract(m_Dest, Vector2{ m_Pos.x, m_Pos.y });
 		dir = Vector2Normalize(dir);
 
-		dir.x *= (m_Speed * GetFrameTime());
-		dir.y *= (m_Speed * GetFrameTime());
+		dir.x *= (m_Speed * g_Engine->LastFrameInSeconds());
+		dir.y *= (m_Speed * g_Engine->LastFrameInSeconds());
 
 		Vector2 newPos = Vector2Add(m_Pos, dir);
 
@@ -110,14 +111,14 @@ void Tween::Update()
 
 	case MOVE_PARABOLIC:
 	{
-		m_Acceleration += m_AccelerationPerSecond * GetFrameTime();
-		m_Speed += m_Acceleration * GetFrameTime();
+		m_Acceleration += m_AccelerationPerSecond * g_Engine->LastFrameInSeconds();
+		m_Speed += m_Acceleration * g_Engine->LastFrameInSeconds();
 
 		Vector2 dir = Vector2Subtract(m_Dest, Vector2{ m_Pos.x, m_Pos.y });
 		dir = Vector2Normalize(dir);
 
-		dir.x *= (m_Speed * GetFrameTime());
-		dir.y *= (m_Speed * GetFrameTime());
+		dir.x *= (m_Speed * g_Engine->LastFrameInSeconds());
+		dir.y *= (m_Speed * g_Engine->LastFrameInSeconds());
 
 		Vector2 newPos = Vector2Add(m_Pos, dir);
 
@@ -160,8 +161,8 @@ void Tween::Update()
 		if (t > 1) t = 1;
 		float speedRatio = t;
 
-		dir.x *= (m_Speed * speedRatio * GetFrameTime());
-		dir.y *= (m_Speed * speedRatio * GetFrameTime());
+		dir.x *= (m_Speed * speedRatio * g_Engine->LastFrameInSeconds());
+		dir.y *= (m_Speed * speedRatio * g_Engine->LastFrameInSeconds());
 
 		Vector2 newPos = Vector2Add(m_Pos, dir);
 		Vector2 newDir = Vector2Subtract(m_Dest, newPos);
@@ -216,7 +217,7 @@ void MobileSprite::Draw()
 
 void Animation::Update()
 {
-	m_ElapsedTime += static_cast<int>(GetFrameTime() * 1000);
+	m_ElapsedTime += static_cast<int>(g_Engine->LastFrameInSeconds() * 1000);
 }
 
 void Animation::Play(std::string anim, int starttime, int elapsedtime)
