@@ -635,11 +635,11 @@ void U7Object::CustomMeshDraw(Color color)
 
 	if (m_meshOutline && !g_pixelated)
 	{
-		DrawModelEx(m_customMesh->GetModel(), finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, WHITE);
+		DrawModelEx(m_customMesh->GetModel(), finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, color);
 	}
 	else
 	{
-		DrawModelEx(m_customMesh->GetModel(), finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, WHITE);
+		DrawModelEx(m_customMesh->GetModel(), finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, color);
 	}
 }
 

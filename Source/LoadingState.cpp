@@ -1313,9 +1313,7 @@ void LoadingState::CreateShapeTable()
 		int xDrawOffset;
 		int yDrawOffset;
 		int xDrawLeft;
-		//int xDrawRight;
 		int yDrawAbove;
-		//int yDrawBelow;
 	};
 
 	float profilingTime = GetTime();
