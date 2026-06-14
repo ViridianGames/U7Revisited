@@ -38,6 +38,7 @@ enum class ShapeDrawType
 	OBJECT_DRAW_CUBOID,
 	OBJECT_DRAW_FLAT,
 	OBJECT_DRAW_CUSTOM_MESH,
+	OBJECT_DRAW_CUSTOM_MESH_DEFER,
 	OBJECT_DRAW_DONT_DRAW,
 	//OBJECT_DRAW_UPRIGHTFLAT,
 	OBJECT_DRAW_LAST
@@ -71,7 +72,7 @@ public:
 	void Draw(const Vector3& pos, float angle, Color color = Color{ 255, 255, 255, 255 }, Vector3 scaling =  Vector3{ 1, 1, 1 });
 
 	bool IsValid() { return m_isValid; }
-
+	void SetPixelOffset(int offsetX, int offsetY);
 	void CreateDefaultTexture();
 
 	void SetDefaultTexture(Image image);
@@ -102,6 +103,9 @@ public:
 	Rectangle m_topTextureRect;
 	Rectangle m_frontTextureRect;
 	Rectangle m_rightTextureRect;
+
+	int m_pixelOffsetX;
+	int m_pixelOffsetY;
 
 	bool m_isValid;
 

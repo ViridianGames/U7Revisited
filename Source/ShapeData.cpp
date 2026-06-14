@@ -102,6 +102,12 @@ void ShapeData::SetDefaultTexture(Image image)
 	}
 }
 
+void ShapeData::SetPixelOffset(int offsetX, int offsetY)
+{
+	m_pixelOffsetX = offsetX + 1;
+	m_pixelOffsetY = offsetY + 1;
+}
+
 void ShapeData::CreateDefaultTexture()
 {
 	if (m_texture == nullptr)
@@ -662,6 +668,7 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 	}
 
 	case ShapeDrawType::OBJECT_DRAW_CUSTOM_MESH:
+	case ShapeDrawType::OBJECT_DRAW_CUSTOM_MESH_DEFER:
 	{
 		m_customMesh->UpdateAnim("idle");
 
