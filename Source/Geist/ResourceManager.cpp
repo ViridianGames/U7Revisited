@@ -303,3 +303,25 @@ void ResourceManager::AddModel(RaylibModel&& model, const std::string& meshName)
 {
 	m_ModelList[meshName] = std::make_unique<RaylibModel>(std::move(model));
 }
+
+void ResourceManager::UpdateModelTexture(const std::string& modelName, Texture2D texture)
+{
+	map<std::string, unique_ptr<RaylibModel> >::iterator node;
+	node = m_ModelList.find(modelName);
+	if (node != m_ModelList.end())
+	{
+		Log("Updating Textures for Model " + modelName);
+		// Update the texture of the model here
+		// Note: Raylib's Model struct doesn't support dynamic texture updates out of the box.
+		int i = 0;
+		while (i < m_ModelList[modelName]->GetModel().materialCount && m_ModelList[modelName]->GetModel().materials[i].maps[MATERIAL_MAP_DIFFUSE].texture.id != texture.id)
+		{
+			m_ModelList[modelName]->GetModel().materials[i].maps[MATERIAL_MAP_DIFFUSE].texture = texture;
+			i++;
+		}
+	}
+	else
+	{
+		Log("WARNING: Cannot update texture for model '" + modelName + "' - model not currently loaded");
+	}
+}
