@@ -2062,7 +2062,7 @@ void LoadingState::LoadModels()
 		{
             std::string ext = entry.path().extension().string();
 
-            if (ext == ".obj" || ext == ".gltf")
+            if (ext == ".obj" || ext == ".gltf" || ext == ".glb")
 			{
                 std::string filepath = entry.path().generic_string();
 					g_ResourceManager->AddModel(filepath);

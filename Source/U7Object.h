@@ -288,7 +288,6 @@ public:
 		  , m_boundingBox({0})
 		  , m_terrainCenterPoint({0.0f, 0.0f, 0.0f})
 		  , m_centerPoint({0.0f, 0.0f, 0.0f})
-		  , m_isNPC(false)
 		  , m_isCustomMesh(false)
 		  //, m_customMeshName(nullptr)
 		  , m_customMesh(nullptr)
@@ -384,8 +383,6 @@ public:
 
 	void NPCInit(NPCData *npcData);
 	void MonsterInit();
-
-	void TryOpenDoorAtCurrentPosition();
 
 	void HandleMonsterSpawnerEgg();
 

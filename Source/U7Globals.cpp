@@ -1026,7 +1026,7 @@ void MorphRoof(int roofId, int shapeNum, int frameNum, float x, float y, float z
 			if (object->m_Pos.x == x && object->m_Pos.y == y && object->m_Pos.z == z)
 			{
 				object->m_customMeshName = "Models/3dmodels/roof_" + std::to_string(roofId) + ".glb";
-				std::string imagePath = "images/roof/roof_" + std::to_string(roofId) + ".png";
+				std::string imagePath = "Images/roof/roof_" + std::to_string(roofId) + ".png";
 				// draw pos of roof object is offset from the top left sooo I should fix that or something
 				object->m_anchorPos = Vector3{ -4.125f + nux, 0.0f + nuy, -4.125f - nuz };
 				object->Morph(imagePath.c_str(), ShapeDrawType::OBJECT_DRAW_CUSTOM_MESH_DEFER);
