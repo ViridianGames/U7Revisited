@@ -451,25 +451,25 @@ void CameraInput()
 	{
 		if (IsKeyDown(KEY_A))
 		{
-			direction = Vector3Add(direction, { -g_Engine->LastFrameInSeconds() * frameTimeModifier, 0, g_Engine->LastFrameInSeconds() * frameTimeModifier });
+			direction = Vector3Add(direction, { float(-g_Engine->LastFrameInSeconds()) * frameTimeModifier, 0, float(g_Engine->LastFrameInSeconds()) * frameTimeModifier});
 			g_CameraMoved = true;
 		}
 
 		if (IsKeyDown(KEY_D))
 		{
-			direction = Vector3Add(direction, { g_Engine->LastFrameInSeconds() * frameTimeModifier, 0, -g_Engine->LastFrameInSeconds() * frameTimeModifier });
+			direction = Vector3Add(direction, { float(g_Engine->LastFrameInSeconds()) * frameTimeModifier, 0, float(-g_Engine->LastFrameInSeconds()) * frameTimeModifier });
 			g_CameraMoved = true;
 		}
 
 		if (IsKeyDown(KEY_W))
 		{
-			direction = Vector3Add(direction, { -g_Engine->LastFrameInSeconds() * frameTimeModifier, 0, -g_Engine->LastFrameInSeconds() * frameTimeModifier });
+			direction = Vector3Add(direction, { float(-g_Engine->LastFrameInSeconds()) * frameTimeModifier, 0, float(-g_Engine->LastFrameInSeconds()) * frameTimeModifier });
 			g_CameraMoved = true;
 		}
 
 		if (IsKeyDown(KEY_S))
 		{
-			direction = Vector3Add(direction, { g_Engine->LastFrameInSeconds() * frameTimeModifier, 0, g_Engine->LastFrameInSeconds() * frameTimeModifier });
+			direction = Vector3Add(direction, { float(g_Engine->LastFrameInSeconds()) * frameTimeModifier, 0, float(g_Engine->LastFrameInSeconds()) * frameTimeModifier });
 			g_CameraMoved = true;
 		}
 	}

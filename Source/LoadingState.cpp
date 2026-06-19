@@ -684,7 +684,7 @@ void LoadingState::LoadRoofImages(const std::string& filename)
 		columns.push_back(line.substr(start));  // Last column after last comma
 		if (columns.empty() || columns.size() < 11)
 		{
-			AddConsoleString("WARNING: Invalid format in roof images load file at line " + std::to_string(lineNum) + ": " + line, YELLOW);
+			DebugPrint("WARNING: Invalid format in roof images load file at line " + std::to_string(lineNum) + ": " + line);
 			continue;
 		}
 
@@ -708,27 +708,17 @@ void LoadingState::LoadRoofImages(const std::string& filename)
 				{
 					BakeImageRoof(objId, offsetx, float(offsety), tilesizex, tilesizez, bordersize, tilecountx, tilecountz);
 				}
-				//HideObject(shapeNum, frameNum, posX, posY, posZ);
-			}
-			else if (action == "morphobj")
-			{
-				//MorphObject(shapeNum, frameNum, posX, posY, posZ, nudgeX, 0.0, nudgeZ, modelPath, imagePath, ShapeDrawType::OBJECT_DRAW_CUSTOM_MESH);
-			}
-			else if (action == "morphroof")
-			{
-				//MorphRoof(roofID, shapeNum, frameNum, posX, posY, posZ, nudgeX, 0.0, nudgeZ);
 			}
 			loadedCount++;
 		}
 		catch (const std::exception&)
 		{
-			AddConsoleString("WARNING: Failed to parse terrain cost on line " + std::to_string(lineNum) + ": " + line, YELLOW);
+			DebugPrint("WARNING: Failed to parse room image on line " + std::to_string(lineNum) + ": " + line);
 			continue;
 		}
 	}
-
 	file.close();
-	AddConsoleString("Processed " + std::to_string(loadedCount) + " roof images commands from " + filename, GREEN);
+	DebugPrint("Processed " + std::to_string(loadedCount) + " roof images commands from " + filename);
 }
 
 void LoadingState::LoadRoofMorphs(const std::string& filename)
@@ -754,130 +744,37 @@ void LoadingState::LoadRoofMorphs(const std::string& filename)
 		if (line.empty())
 			continue;
 
-		// Parse CSV: roof_id,action,shapenum,framenum,posx,posy,posz,nudgex,nudgez
-		// roof_id, first comma
-		// action, second comma
-		// shapenum, third comma
-		// framenum, fourth comma
-		// posx, fifth comma
-		// posy, sixth comma
-		// posz, seventh comma
-		// nudgex, eighth comma
-		// nudgez, last column (no comma after)
-		size_t firstComma = line.find(',');
-		if (firstComma == std::string::npos)
+		std::vector<size_t> commaPositions = findUnquotedCommas(line);
+		std::vector<std::string> columns;
+		size_t start = 0;
+		for (size_t commaPos : commaPositions)
+		{
+			columns.push_back(line.substr(start, commaPos - start));
+			start = commaPos + 1;
+		}
+		columns.push_back(line.substr(start));  // Last column after last comma
+		//AddConsoleString("WARNING: CSV Column Count " + std::to_string(columns.size()) + ": " + line, YELLOW);
+		if (columns.empty() || columns.size() < 12)
+		{
+			DebugPrint("WARNING: Invalid format in roof images load file at line " + std::to_string(lineNum) + ": " + line);
 			continue;
+		}
 
-		size_t secondComma = line.find(',', firstComma + 1);
-		if (secondComma == std::string::npos)
-			continue;
-
-		size_t thirdComma = line.find(',', secondComma + 1);
-		if (thirdComma == std::string::npos)
-			continue;
-
-		size_t fourthComma = line.find(',', thirdComma + 1);
-		if (fourthComma == std::string::npos)
-			continue;
-
-		size_t fifthComma = line.find(',', fourthComma + 1);
-		if (fifthComma == std::string::npos)
-			continue;
-
-		size_t sixthComma = line.find(',', fifthComma + 1);
-		if (sixthComma == std::string::npos)
-			continue;
-
-		size_t seventhComma = line.find(',', sixthComma + 1);
-		if (seventhComma == std::string::npos)
-			continue;
-
-		size_t eighthComma = line.find(',', seventhComma + 1);
-		if (eighthComma == std::string::npos)
-			continue;
-
-		size_t ninthComma = line.find(',', eighthComma + 1);
-		if (ninthComma == std::string::npos)
-			continue;
-
-		size_t tenthComma = line.find(',', ninthComma + 1);
-		if (tenthComma == std::string::npos)
-			continue;
-
-		size_t eleventhComma = line.find(',', tenthComma + 1);
-		if (eleventhComma == std::string::npos)
-			continue;
 
 		try
 		{
-			// Extract shape ID
-			std::string roofIDStr = line.substr(0, firstComma);
-			if (roofIDStr.empty())
-				continue;
-			int roofID = std::stoi(roofIDStr);
-
-			// Extract name (between first and second comma, remove quotes)
-			std::string action = line.substr(firstComma + 1, secondComma - firstComma - 1);
-			// Remove quotes if present
-			if (action.length() >= 2 && action.front() == '"' && action.back() == '"')
-			{
-				action = action.substr(1, action.length() - 2);
-			}
-
-			// Extract shapeNum (after second comma, trim whitespace)
-			std::string shapeNumStr = line.substr(secondComma + 1, thirdComma - secondComma - 1);
-			if (shapeNumStr.empty())
-				continue;
-			int shapeNum = std::stoi(shapeNumStr);
-
-			// Extract frameNum (after third comma, trim whitespace)
-			std::string frameNumStr = line.substr(thirdComma + 1, fourthComma - thirdComma - 1);
-			if (frameNumStr.empty())
-				continue;
-			int frameNum = std::stoi(frameNumStr);
-
-			// Extract posx (after fourth comma, trim whitespace)
-			std::string posXStr = line.substr(fourthComma + 1, fifthComma - fourthComma - 1);
-			if (posXStr.empty())
-				continue;
-			float posX = std::stof(posXStr);
-
-			// Extract posy (after fifth comma, trim whitespace)
-			std::string posYStr = line.substr(fifthComma + 1, sixthComma - fifthComma - 1);
-			if (posYStr.empty())
-				continue;
-			float posY = std::stof(posYStr);
-
-			// Extract posz (after sixth comma, trim whitespace)
-			std::string posZStr = line.substr(sixthComma + 1, seventhComma - sixthComma - 1);
-			if (posZStr.empty())
-				continue;
-			float posZ = std::stof(posZStr);
-
-			// Extract nudgex (after seventh comma, trim whitespace)
-			std::string nudgeXStr = line.substr(seventhComma + 1, eighthComma - seventhComma - 1);
-			if (nudgeXStr.empty())
-				continue;
-			float nudgeX = std::stof(nudgeXStr);
-
-			// Extract nudgey (after eighth comma, trim whitespace)
-			std::string nudgeYStr = line.substr(eighthComma + 1, ninthComma - eighthComma - 1);
-			if (nudgeYStr.empty())
-				continue;
-			float nudgeY = std::stof(nudgeYStr);
-
-			// Extract nudgez (after ninth comma, trim whitespace)
-			std::string nudgeZStr = line.substr(ninthComma + 1, tenthComma - ninthComma - 1);
-			if (nudgeZStr.empty())
-				continue;
-			float nudgeZ = std::stof(nudgeZStr);
-
-			std::string modelPath = line.substr(tenthComma + 1, eleventhComma - tenthComma - 1);
-
-			std::string imagePath = line.substr(eleventhComma + 1);
-			// Extract imagePath (after eleventh comma, trim whitespace)
-			imagePath.erase(0, imagePath.find_first_not_of(" \t\r\n"));
-			imagePath.erase(imagePath.find_last_not_of(" \t\r\n") + 1);
+			int objId = std::stoi(columns[0]);
+			std::string action = columns[1];
+			int shapeNum = std::stoi(columns[2]);
+			int frameNum = std::stoi(columns[3]);
+			float posX = std::stof(columns[4]);
+			float posY = std::stof(columns[5]);
+			float posZ = std::stof(columns[6]);
+			float nudgeX = std::stof(columns[7]);
+			float nudgeY = std::stof(columns[8]);
+			float nudgeZ = std::stof(columns[9]);
+			std::string modelPath = columns[10];
+			std::string imagePath = columns[11];
 
 			if (action == "hide")
 			{
@@ -889,20 +786,20 @@ void LoadingState::LoadRoofMorphs(const std::string& filename)
 			}
 			else if (action == "morphroof")
 			{
-				MorphRoof(roofID, shapeNum, frameNum, posX, posY, posZ, nudgeX, 0.0, nudgeZ);
+				MorphRoof(objId, shapeNum, frameNum, posX, posY, posZ, nudgeX, 0.0, nudgeZ);
 			}
 
 			loadedCount++;
 		}
 		catch (const std::exception&)
 		{
-			AddConsoleString("WARNING: Failed to parse terrain cost on line " + std::to_string(lineNum) + ": " + line, YELLOW);
+			AddConsoleString("WARNING: Failed to parse roof morphs on line " + std::to_string(lineNum) + ": " + line, YELLOW);
 			continue;
 		}
 	}
 
 	file.close();
-	AddConsoleString("Processed " + std::to_string(loadedCount) + " roof load commands from " + filename, GREEN);
+	DebugPrint("Processed " + std::to_string(loadedCount) + " roof load commands from " + filename);
 }
 
 void LoadingState::LoadFaces()
@@ -2062,7 +1959,9 @@ void LoadingState::LoadModels()
 		{
             std::string ext = entry.path().extension().string();
 
-            if (ext == ".obj" || ext == ".gltf" || ext == ".glb")
+            //if (ext == ".obj" || ext == ".gltf" || ext == ".glb")
+			//decentering the generated roof models causes misalignment issues with the roof placement, so only decenter non-roof models for now
+			if (ext == ".obj" || ext == ".gltf")
 			{
                 std::string filepath = entry.path().generic_string();
 					g_ResourceManager->AddModel(filepath);
