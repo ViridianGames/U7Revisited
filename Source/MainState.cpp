@@ -1807,7 +1807,6 @@ void MainState::Draw()
 		//BeginBlendMode(BLEND_ALPHA);
 		for (auto object : g_sortedVisibleObjects)
 		{
-			//if ((object->m_drawType != ShapeDrawType::OBJECT_DRAW_FLAT) && (object->m_drawType != ShapeDrawType::OBJECT_DRAW_CUSTOM_MESH))
 			if (object->m_drawType == ShapeDrawType::OBJECT_DRAW_FLAT)
 			{
 				flats.push_back(*object);
@@ -1815,7 +1814,6 @@ void MainState::Draw()
 			else if (object->m_drawType == ShapeDrawType::OBJECT_DRAW_CUSTOM_MESH_DEFER)
 			{
 				meshes.push_back(*object);
-				//object->Draw();
 			}
 			else
 			{

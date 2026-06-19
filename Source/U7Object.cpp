@@ -2305,7 +2305,7 @@ void U7Object::Morph(const char* imagePath, ShapeDrawType drawType)
 	//AddConsoleString("Roof: Morph Init", WHITE);
 	m_isCustomMesh = true;
 	m_customMesh = g_ResourceManager->GetModel(m_customMeshName);
-	AddConsoleString("Roof: Morph GetModel " + m_customMeshName, WHITE);
+	//AddConsoleString("Roof: Morph GetModel " + m_customMeshName, WHITE);
 	Model* customMeshModel = &m_customMesh->GetModel();
 	customMeshModel->materials[0].shader = g_alphaDiscard;
 
@@ -2324,9 +2324,8 @@ void U7Object::Morph(const char* imagePath, ShapeDrawType drawType)
 				UnloadImage(morphImage);
 			}
 			else {
-				AddConsoleString("Roof: Morph IMG FAIL", YELLOW);
+				Log("Roof: failed to load " + std::string(imagePath));
 				//m_Texture = new Texture(GenTextureCubemap(8, 8, 1, Color{ 128, 128, 128, 128 }));
-				//AddConsoleString("Roof: Morph CUBEMAP", WHITE);
 				//CreateDefaultTexture();
 			}
 		}

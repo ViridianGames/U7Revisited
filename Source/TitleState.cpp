@@ -6,6 +6,7 @@
 #include "TitleState.h"
 #include "MainState.h"
 #include "rlgl.h"
+#include "glad.h"
 
 #include <list>
 #include <string>
@@ -146,24 +147,44 @@ void TitleState::Draw()
 	g_Terrain->Draw();
 
 	//  Draw the objects
+	std::vector<U7Object> flats;
+	std::vector<U7Object> meshes;
 	for (auto object : g_sortedVisibleObjects)
 	{
-		if (object->m_Pos.y <= 4 && object->m_drawType != ShapeDrawType::OBJECT_DRAW_FLAT)
+		if (object->m_drawType == ShapeDrawType::OBJECT_DRAW_FLAT)
+		{
+			flats.push_back(*object);
+		}
+		else if (object->m_drawType == ShapeDrawType::OBJECT_DRAW_CUSTOM_MESH_DEFER)
+		{
+			meshes.push_back(*object);
+		}
+		else
 		{
 			object->Draw();
 		}
 	}
 
-	rlDisableDepthMask();
-	for (auto object : g_sortedVisibleObjects)
+	//  Flats require disabling the depth mask to draw correctly.
+	//rlDisableDepthMask();
+	glEnable(GL_POLYGON_OFFSET_FILL);
+	glPolygonOffset(-1.0f, -1.0f);
+	for (auto& object : flats)
 	{
-		if (object->m_Pos.y <= 4 && object->m_drawType == ShapeDrawType::OBJECT_DRAW_FLAT)
-		{
-			object->Draw();
-		}
+		object.Draw();
 	}
-	rlEnableDepthMask();
+	glDisable(GL_POLYGON_OFFSET_FILL);
+	//rlEnableDepthMask();
 
+	//  Meshes after every thing else
+	BeginShaderMode(g_alphaDiscard);
+	for (auto& object : meshes)
+	{
+		object.Draw();
+	}
+	EndShaderMode();
+	meshes.clear();
+	flats.clear();
 
 	EndMode3D();
 

@@ -722,14 +722,14 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 
 			// Draw the outline with the adjusted position
 			glDepthMask(GL_FALSE);
-			//DrawModelEx(m_customMesh->GetModel(), outlinePos, { 0, 1, 0 }, m_rotation, outlineScale, BLACK);
+			DrawModelEx(m_customMesh->GetModel(), outlinePos, { 0, 1, 0 }, m_rotation, outlineScale, BLACK);
 			glDepthMask(GL_TRUE);
 
 			glDisable(GL_STENCIL_TEST);
 		}
 		else
 		{
-			//DrawModelEx(m_customMesh->GetModel(), finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, color);
+			DrawModelEx(m_customMesh->GetModel(), finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, color);
 		}
 		break;
 	}
