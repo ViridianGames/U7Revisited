@@ -708,15 +708,6 @@ void LoadingState::LoadRoofImages(const std::string& filename)
 				{
 					BakeImageRoof(objId, offsetx, float(offsety), tilesizex, tilesizez, bordersize, tilecountx, tilecountz);
 				}
-				//HideObject(shapeNum, frameNum, posX, posY, posZ);
-			}
-			else if (action == "morphobj")
-			{
-				//MorphObject(shapeNum, frameNum, posX, posY, posZ, nudgeX, 0.0, nudgeZ, modelPath, imagePath, ShapeDrawType::OBJECT_DRAW_CUSTOM_MESH);
-			}
-			else if (action == "morphroof")
-			{
-				//MorphRoof(roofID, shapeNum, frameNum, posX, posY, posZ, nudgeX, 0.0, nudgeZ);
 			}
 			loadedCount++;
 		}
@@ -726,7 +717,6 @@ void LoadingState::LoadRoofImages(const std::string& filename)
 			continue;
 		}
 	}
-
 	file.close();
 	AddConsoleString("Processed " + std::to_string(loadedCount) + " roof images commands from " + filename, GREEN);
 }
@@ -2063,6 +2053,7 @@ void LoadingState::LoadModels()
             std::string ext = entry.path().extension().string();
 
             if (ext == ".obj" || ext == ".gltf" || ext == ".glb")
+			//if (ext == ".obj" || ext == ".gltf")
 			{
                 std::string filepath = entry.path().generic_string();
 					g_ResourceManager->AddModel(filepath);

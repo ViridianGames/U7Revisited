@@ -451,25 +451,25 @@ void CameraInput()
 	{
 		if (IsKeyDown(KEY_A))
 		{
-			direction = Vector3Add(direction, { -g_Engine->LastFrameInSeconds() * frameTimeModifier, 0, g_Engine->LastFrameInSeconds() * frameTimeModifier });
+			direction = Vector3Add(direction, { float(-g_Engine->LastFrameInSeconds()) * frameTimeModifier, 0, float(g_Engine->LastFrameInSeconds()) * frameTimeModifier});
 			g_CameraMoved = true;
 		}
 
 		if (IsKeyDown(KEY_D))
 		{
-			direction = Vector3Add(direction, { g_Engine->LastFrameInSeconds() * frameTimeModifier, 0, -g_Engine->LastFrameInSeconds() * frameTimeModifier });
+			direction = Vector3Add(direction, { float(g_Engine->LastFrameInSeconds()) * frameTimeModifier, 0, float(-g_Engine->LastFrameInSeconds()) * frameTimeModifier });
 			g_CameraMoved = true;
 		}
 
 		if (IsKeyDown(KEY_W))
 		{
-			direction = Vector3Add(direction, { -g_Engine->LastFrameInSeconds() * frameTimeModifier, 0, -g_Engine->LastFrameInSeconds() * frameTimeModifier });
+			direction = Vector3Add(direction, { float(-g_Engine->LastFrameInSeconds()) * frameTimeModifier, 0, float(-g_Engine->LastFrameInSeconds()) * frameTimeModifier });
 			g_CameraMoved = true;
 		}
 
 		if (IsKeyDown(KEY_S))
 		{
-			direction = Vector3Add(direction, { g_Engine->LastFrameInSeconds() * frameTimeModifier, 0, g_Engine->LastFrameInSeconds() * frameTimeModifier });
+			direction = Vector3Add(direction, { float(g_Engine->LastFrameInSeconds()) * frameTimeModifier, 0, float(g_Engine->LastFrameInSeconds()) * frameTimeModifier });
 			g_CameraMoved = true;
 		}
 	}
@@ -1030,7 +1030,7 @@ void MorphRoof(int roofId, int shapeNum, int frameNum, float x, float y, float z
 				// draw pos of roof object is offset from the top left sooo I should fix that or something
 				object->m_anchorPos = Vector3{ -4.125f + nux, 0.0f + nuy, -4.125f - nuz };
 				object->Morph(imagePath.c_str(), ShapeDrawType::OBJECT_DRAW_CUSTOM_MESH_DEFER);
-				//AddConsoleString("It's morphing time! " + object->m_customMeshName, GREEN);
+				AddConsoleString("It's morphing time! " + object->m_customMeshName, GREEN);
 				hideCount++;
 				matched = true;
 				break;

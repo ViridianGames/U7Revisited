@@ -70,6 +70,10 @@ void U7Object::Init(const string& configfile, int unitType, int frame)
 	m_inventory.clear();
 	m_hasConversationTree = false;
 	m_InventoryPos = Vector2{ 0, 0 };
+	m_isCustomMesh = false;
+	m_customMeshName = "Models/3dmodels/zzwrongcube.obj";
+	m_customMesh = nullptr;
+	m_meshOutline = true;
 	m_isMoving = false;
 	m_distanceFromCamera = 999999;
 
@@ -317,7 +321,11 @@ void U7Object::InteractiveDraw()
 		renderColor.b = (renderColor.b + 255) / 2;
 	}
 
-	m_shapeData->Draw(m_Pos, m_Angle, renderColor);
+	if (m_isCustomMesh) {
+		CustomMeshDraw(renderColor);
+	} else {
+		m_shapeData->Draw(m_Pos, m_Angle, renderColor);
+	}
 }
 
 void U7Object::EggDraw()
@@ -1146,6 +1154,26 @@ void U7Object::NPCDraw()
 		Vector2{ dims.x, dims.y }, Vector2{ 0, 0 }, billboardAngle, lighting);
 	EndShaderMode();
 
+}
+
+void U7Object::CustomMeshDraw(Color color)
+{
+	float m_rotation = 0.0f;
+	if (!m_Visible)
+	{
+		return;
+	}
+	Vector3 finalPos = Vector3Add(m_Pos, m_anchorPos);
+	m_customMesh->UpdateAnim("idle");
+
+	if (m_meshOutline && !g_pixelated)
+	{
+		DrawModelEx(m_customMesh->GetModel(), finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, color);
+	}
+	else
+	{
+		DrawModelEx(m_customMesh->GetModel(), finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, color);
+	}
 }
 
 // Helper function to convert activity ID to script name
@@ -2277,7 +2305,7 @@ void U7Object::Morph(const char* imagePath, ShapeDrawType drawType)
 	//AddConsoleString("Roof: Morph Init", WHITE);
 	m_isCustomMesh = true;
 	m_customMesh = g_ResourceManager->GetModel(m_customMeshName);
-	//AddConsoleString("Roof: Morph GetModel " + m_customMeshName, WHITE);
+	AddConsoleString("Roof: Morph GetModel " + m_customMeshName, WHITE);
 	Model* customMeshModel = &m_customMesh->GetModel();
 	customMeshModel->materials[0].shader = g_alphaDiscard;
 
