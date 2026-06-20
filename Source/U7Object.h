@@ -491,6 +491,7 @@ public:
 	std::string m_customMeshName;
 	RaylibModel* m_customMesh = nullptr;
 	bool m_meshOutline = true;
+	int m_animFrame = 0;
 	//std::unique_ptr<ModTexture> m_texture = nullptr;
 
 	Config *m_ObjectConfig;

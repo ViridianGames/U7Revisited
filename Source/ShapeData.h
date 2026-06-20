@@ -112,6 +112,8 @@ public:
 	int m_shape;
 	int m_frame;
 
+	//int m_animFrame;
+
 	int m_pointerShape;
 	int m_pointerFrame;
 	bool m_useShapePointer;
