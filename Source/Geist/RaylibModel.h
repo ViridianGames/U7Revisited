@@ -22,14 +22,11 @@ public:
 
 	void UpdateAnim(const std::string& animName);
 	bool SetAnimationFrame(const std::string& animName, int frame);
-	void SetTexAnimated(bool animated);
-	bool IsTexAnimated();
 
 private:
 	Model m_Model = {{ 0 }};
 	ModelAnimation* m_Anims = nullptr;
 	int m_AnimCount = 0;
-	bool m_TexAnimated = false;
 
 	unsigned int m_AnimFrame = 0;
 	std::string m_CurrentAnim = "";

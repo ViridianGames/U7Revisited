@@ -670,25 +670,9 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 	case ShapeDrawType::OBJECT_DRAW_CUSTOM_MESH:
 	case ShapeDrawType::OBJECT_DRAW_CUSTOM_MESH_DEFER:
 	{
-		/*
-		if (m_shape == 834)
-		{
-			if (m_frame == 0)
-			{
-				Log("Enabling texture animation for shape 834 frame 0", "anims.log");
-				m_customMesh->SetTexAnimated(true);
-			}
-		}
-		*/
-		if (m_customMesh->IsTexAnimated() == false)
-		{
-			//m_customMesh->SetTexAnimated(true);
-			m_customMesh->UpdateAnim("idle");
-		}
-		
-		//m_customMesh->SetAnimationFrame("idle", m_animFrame);
+		m_customMesh->UpdateAnim("idle");
 
-		if (m_meshOutline && !g_pixelated && m_customMesh->IsTexAnimated() == false)
+		if (m_meshOutline && !g_pixelated)
 		{
 			glClearStencil(0);
 			glClear(GL_STENCIL_BUFFER_BIT);
@@ -745,32 +729,7 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 		}
 		else
 		{
-			if (m_customMesh->IsTexAnimated() == false)
-			{
-				DrawModelEx(m_customMesh->GetModel(), finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, color);
-			}
-			else
-			{
-				Model model = m_customMesh->GetModel();
-				int currentFrame = 0;
-				double timePerFrame = 1.0 / 24.0;
-				currentFrame = static_cast<unsigned int>(GetTime() / timePerFrame) % 11;
-				Log("Drawing for shape 834 frame 0 ANIMFRAME " + std::to_string(currentFrame), "anims.log");
-				if (currentFrame >= model.meshCount)
-				{
-					Log("Current frame " + std::to_string(currentFrame) + " is out of bounds for model mesh count " + std::to_string(model.meshCount), "anims.log");
-					currentFrame = 0; // Reset to the first frame if out of bounds
-				}
-				/*if (currentFrame >= model.materialCount)
-				{
-					Log("Current frame " + std::to_string(currentFrame) + " is out of bounds for model material count " + std::to_string(model.materialCount), "anims.log");
-					currentFrame = 0; // Reset to the first frame if out of bounds
-				}*/
-
-				Matrix translation = MatrixTranslate(finalPos.x, finalPos.y, finalPos.z);
-				DrawMesh(model.meshes[currentFrame], model.materials[0], translation);
-				//DrawModelEx(m_customMesh->GetModel(), finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, color);
-			}
+			DrawModelEx(m_customMesh->GetModel(), finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, color);
 		}
 		break;
 	}

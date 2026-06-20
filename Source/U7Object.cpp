@@ -1199,16 +1199,7 @@ void U7Object::CustomMeshDraw(Color color)
 		return;
 	}
 	Vector3 finalPos = Vector3Add(m_Pos, m_anchorPos);
-	//m_customMesh->UpdateAnim("idle");
-	if (m_animFrame == 0)
-	{
-		m_animFrame = 1;
-	}
-	else
-	{
-		m_animFrame = 0;
-	}
-	m_customMesh->SetAnimationFrame("idle", m_animFrame);
+	m_customMesh->UpdateAnim("idle");
 
 	if (m_meshOutline && !g_pixelated)
 	{
