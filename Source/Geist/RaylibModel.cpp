@@ -85,6 +85,7 @@ RaylibModel& RaylibModel::Decenter()
 void RaylibModel::UpdateAnim(const std::string& animName) {
 	int animIdx = -1;
 	unsigned int currentFrame = 0;
+	double timePerFrame = 1.0 / 24.0;
 
 	// Look for the named animation in this model.
 	for (int i = 0; i < m_AnimCount; ++i) {
@@ -95,7 +96,8 @@ void RaylibModel::UpdateAnim(const std::string& animName) {
 		if (animName == m_Anims[i].name) {
 			animIdx = i;
 			// Standard movie animation, 24 frames per second.
-			currentFrame = static_cast<unsigned int>(GetTime() * 24.0f) % m_Anims[i].frameCount;
+			currentFrame = static_cast<unsigned int>(GetTime() / timePerFrame) % m_Anims[i].frameCount;
+			//currentFrame = static_cast<unsigned int>(GetTime() * 24.0f) % m_Anims[i].frameCount;
 			break;
 		}
 	}
