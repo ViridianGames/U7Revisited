@@ -3854,7 +3854,7 @@ static int LuaIsBlocked(lua_State *L)
 	int z = (int)lua_tointeger(L, 3);
 
 	// Check if the tile is walkable
-	bool walkable = g_pathfindingSystem->IsPositionWalkable(x, y, z);
+    bool walkable = g_pathfindingSystem->IsPositionWalkable(x, z, y);
 	lua_pushboolean(L, !walkable); // Return true if blocked
 	return 1;
 }
@@ -4581,7 +4581,7 @@ static int LuaFindRandomWalkable(lua_State *L)
     int targetZ = anchorZ + (int)offsetZ;
 
     // Only check if position is walkable - NO pathfinding (too expensive)
-    bool isWalkable = g_pathfindingSystem->IsPositionWalkable(targetX, currentY, targetZ);
+    bool isWalkable = g_pathfindingSystem->IsPositionWalkable(targetX, targetZ, currentY);
 
     NPCDebugPrint("find_random_walkable: npc=" + std::to_string(npc_id) +
                    " from=(" + std::to_string(anchorX) + "," + std::to_string(anchorZ) + ")" +

@@ -64,6 +64,8 @@ void CombatState::OnEnter()
 
 	AddConsoleString("Entering combat mode!", RED);
 
+	g_isCombatMode = true;
+
 	// Reset per-combat state
 	m_participants.clear();
 
@@ -75,10 +77,7 @@ void CombatState::OnEnter()
 	{
 		for (int pid : g_Player->GetPartyMemberIds())
 		{
-			if (std::find(m_participants.begin(), m_participants.end(), pid) == m_participants.end())
-			{
-				m_participants.push_back(pid);
-			}
+			m_participants.push_back(g_NPCData[pid]->m_objectID);
 		}
 	}
 
@@ -108,6 +107,7 @@ void CombatState::OnExit()
 
 	m_participants.clear();
 	m_isTurnBased = false;
+	g_isCombatMode = false;
 
 	// TODO: Clean up any temporary combat effects, restore normal AI schedules, etc.
 }
@@ -144,17 +144,20 @@ void CombatState::Update()
 	// This ensures hostile (combat-activity) monsters (added when egg requirements fulfilled) and other units
 	// continue to get AI/movement (MonsterUpdate/NPCUpdate etc.) even though main
 	// world update is suspended during the pushed combat state.
-	for (int pid : m_participants)
+	if (!m_paused)
 	{
-		auto objIt = g_objectList.find(pid);
-		if (objIt != g_objectList.end() && objIt->second)
+		for (int pid : m_participants)
 		{
-			U7Object* obj = objIt->second.get();
-			// Update monsters and NPCs in the combat; avatar/player may have special handling elsewhere.
-			if (obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_MONSTER ||
-			    obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC)
+			auto objIt = g_objectList.find(pid);
+			if (objIt != g_objectList.end() && objIt->second)
 			{
-				obj->Update();
+				U7Object* obj = objIt->second.get();
+				// Update monsters and NPCs in the combat; avatar/player may have special handling elsewhere.
+				if (obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_MONSTER ||
+					 obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC)
+				{
+					obj->Update();
+				}
 			}
 		}
 	}
@@ -165,6 +168,16 @@ void CombatState::Update()
 	{
 		// For now, just pop out of combat (development only)
 		g_StateMachine->PopState();
+	}
+
+	if (IsKeyPressed(KEY_SPACE))
+	{
+		m_paused = !m_paused;
+		if (m_paused)
+			AddConsoleString("Paused", GREEN);
+		else
+			AddConsoleString("Unpaused", GREEN);
+
 	}
 }
 

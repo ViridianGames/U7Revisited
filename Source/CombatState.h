@@ -38,6 +38,8 @@ public:
 
 	// GUI for combat-specific overlays (action bar, initiative order, etc.)
 	Gui* m_gui = nullptr;
+
+	bool m_paused = true;
 };
 
 #endif

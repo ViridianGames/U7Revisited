@@ -577,6 +577,8 @@ void PrintNPCPathStats();
 
 void DrawPerfCounter(Font* font, int loc);
 
+inline bool g_isCombatMode = false;
+
 #endif
 
 #endif

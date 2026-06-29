@@ -76,6 +76,7 @@ void U7Object::Init(const string& configfile, int unitType, int frame)
 	m_meshOutline = true;
 	m_isMoving = false;
 	m_distanceFromCamera = 999999;
+	m_target = 0;
 
 	if (!g_isObjectMoveable[unitType])
 	{
@@ -1266,6 +1267,62 @@ void U7Object::NPCUpdate()
 	// causing them to animate but never change position.  Instead mark the in-party state
 	// and skip only the activity/coroutine handling below.)
 	bool isInParty = (g_Player->NPCIDInParty(m_NPCID) && m_NPCID != 0);
+
+	// Pursuit (hostile behavior) only for monsters whose activity is "combat" (0).
+	// Other monsters (e.g. foxes, deer spawned from eggs with non-combat workType) are not hostile
+	// even though they are UNIT_TYPE_MONSTER.
+	if (isInParty && g_isCombatMode)
+	{
+		if (m_target == 0)
+		{
+			for (const auto& [id, objPtr] : g_objectList)
+			{
+				if (objPtr->m_UnitType == UnitTypes::UNIT_TYPE_MONSTER)
+				{
+					float distSqr = Vector2DistanceSqr({m_Pos.x, m_Pos.z}, {objPtr->m_Pos.x, objPtr->m_Pos.z});
+					if (distSqr < 100)
+					{
+						m_target = id;
+					}
+				}
+			}
+		}
+		else
+		{
+			U7Object* target = g_objectList[m_target].get();
+
+			float distSqr = Vector2DistanceSqr({m_Pos.x, m_Pos.z}, {target->m_Pos.x, target->m_Pos.z});
+
+			if (distSqr < 4)
+			{
+				//  Time to attack!
+				if (m_cooldownTimer <= 0.0f)
+				{
+					m_cooldownTimer = m_attackCooldown;
+					target->m_hp -= 1;
+
+					AddConsoleString(m_name + " attacks  " + target->m_name + " for 1!", RED);
+
+					if (target->m_hp <= 0)
+					{
+						AddConsoleString(target->m_name + " is dead!", RED);
+					}
+				}
+				else
+				{
+					m_cooldownTimer -= g_Engine->LastFrameInSeconds();
+				}
+			}
+			else
+			{
+				SetDest(target->m_Pos);
+			}
+		}
+
+		// Shared movement (waypoints + direct dest following) now works for monsters too.
+		UpdateMovement();
+		return;
+	}
 
 	// Increase batch size so fewer NPCs are checked per frame for starting/resuming activity scripts.
 	// This reduces the number of script starts/resumes per frame for background NPCs.

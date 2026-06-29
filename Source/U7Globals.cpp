@@ -229,26 +229,39 @@ void MakeAnimationFrameMeshes()
 
 bool g_isCameraLockedToAvatar = false;
 
-void LockCamera() { 
-	g_isCameraLockedToAvatar = true; 
+Vector3 GetScreenCenterWorldPoint()
+{
+	Ray ray = GetMouseRay({ (float)GetScreenWidth() / 2.0f, (float)GetScreenHeight() / 2.0f }, g_camera);
 
-	// Reset pitch & height to defaults when locking to avatar
-	g_firstPersonHeight = DEFAULT_FIRSTPERSON_HEIGHT;
-	g_firstPersonPitch = DEFAULT_FIRSTPERSON_PITCH;
+	float t = 0.0f;
+	bool hit = false;
 
-	// Force an immediate camera update so view reflects the change
-	CameraUpdate(true);
-}
 
-void UnlockCamera() { 
-	g_isCameraLockedToAvatar = false; 
+	U7Object* avatar = g_Player ? g_Player->GetAvatarObject() : nullptr;
+	float avatarY = avatar ? avatar->m_centerPoint.y : 0.0f;
 
-	// Reset pitch & height to defaults when unlocking from avatar
-	g_firstPersonHeight = DEFAULT_FIRSTPERSON_HEIGHT;
-	g_firstPersonPitch = DEFAULT_FIRSTPERSON_PITCH;
 
-	// Force an immediate camera update so view reflects the change
-	CameraUpdate(true);
+	if (ray.direction.y != 0.0f)
+	{
+		t = (avatarY - ray.position.y) / ray.direction.y;
+		if (t > 0.0f)
+			hit = true;
+	}
+
+	if (!hit || t < 0.5f)
+	{
+		if (ray.direction.y != 0.0f)
+		{
+			t = (0.0f - ray.position.y) / ray.direction.y;
+			if (t > 0.0f)
+				hit = true;
+		}
+	}
+
+	if (hit)
+		return Vector3Add(ray.position, Vector3Scale(ray.direction, t));
+
+	return g_camera.target; // ultimate fallback
 }
 
 void CameraInput()
@@ -282,16 +295,21 @@ void CameraInput()
 				}
 				else
 				{
-					// Camera is free: derive yaw from the current camera forward vector so orientation doesn't flip.
-					// IMPORTANT: flatten to XZ and only overwrite yaw if non-degenerate.
-					Vector3 camForward = Vector3Subtract(g_camera.target, g_camera.position); // target - position (true forward)
-					Vector3 flatForward = camForward;
-					flatForward.y = 0.0f;
+					Vector3 centerPoint = GetScreenCenterWorldPoint();
+					Vector3 camForward = Vector3Subtract(centerPoint, g_camera.position);
+					camForward.y = 0.0f;
+
+
 					const float EPS = 0.0005f;
-					if (Vector3Length(flatForward) >= EPS)
+					if (Vector3Length(camForward) >= EPS)
 					{
-						flatForward = Vector3Normalize(flatForward);
-						g_firstPersonYaw = atan2f(flatForward.z, flatForward.x);
+						Vector3 normalizedForward = Vector3Normalize(camForward);
+						g_firstPersonYaw = atan2f(normalizedForward.z, normalizedForward.x);
+
+						float backupDistance = 16.0F;
+
+						g_camera.position.x = centerPoint.x - (normalizedForward.x * backupDistance);
+						g_camera.position.z = centerPoint.z - (normalizedForward.z * backupDistance);
 					}
 					// else: keep existing yaw to avoid jumps
 				}
@@ -303,7 +321,8 @@ void CameraInput()
 				U7Object* avatar = g_Player->GetAvatarObject();
 				if (avatar)
 				{
-					avatar->m_ShouldDraw = !g_firstPersonEnabled;
+					if (g_isCameraLockedToAvatar)
+						avatar->m_ShouldDraw = !g_firstPersonEnabled;
 				}
 			}
 
@@ -331,11 +350,11 @@ void CameraInput()
 		float dt = g_Engine->LastFrameInSeconds();
 
 		// Rotation (Q/E) - Q = left, E = right
-		if (IsKeyDown(KEY_Q))
+		if (!IsKeyDown(KEY_LEFT_CONTROL) && IsKeyDown(KEY_Q))
 		{
 			g_firstPersonYaw -= dt * 3.5f; // rotate left
 		}
-		if (IsKeyDown(KEY_E))
+		if (!IsKeyDown(KEY_LEFT_CONTROL) && IsKeyDown(KEY_E))
 		{
 			g_firstPersonYaw += dt * 3.5f; // rotate right
 		}
@@ -353,12 +372,12 @@ void CameraInput()
 		if (!g_isCameraLockedToAvatar)
 		{
 			// Free first-person: change eye height
-			if (IsKeyDown(KEY_Z))
+			if (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyDown(KEY_Q))
 			{
 				g_firstPersonHeight -= heightSpeed * dt;
 				if (g_firstPersonHeight < minHeight) g_firstPersonHeight = minHeight;
 			}
-			if (IsKeyDown(KEY_C))
+			if (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyDown(KEY_E))
 			{
 				g_firstPersonHeight += heightSpeed * dt;
 				if (g_firstPersonHeight > maxHeight) g_firstPersonHeight = maxHeight;
@@ -370,12 +389,12 @@ void CameraInput()
 		else
 		{
 			// Locked-first-person: change pitch (look up/down) but keep eye height anchored to avatar
-			if (IsKeyDown(KEY_Z))
+			if (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyDown(KEY_Q))
 			{
 				g_firstPersonPitch -= pitchSpeed * dt; // look down
 				if (g_firstPersonPitch < minPitch) g_firstPersonPitch = minPitch;
 			}
-			if (IsKeyDown(KEY_C))
+			if (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyDown(KEY_E))
 			{
 				g_firstPersonPitch += pitchSpeed * dt; // look up
 				if (g_firstPersonPitch > maxPitch) g_firstPersonPitch = maxPitch;
@@ -581,7 +600,7 @@ void CameraUpdate(bool forcemove)
 			if (g_isCameraLockedToAvatar)
 			{
 				Vector3 basePos = avatar->m_Pos;
-				Vector3 eyePos = Vector3Add(basePos, Vector3{ 0.0f, g_firstPersonHeight, 0.0f });
+				Vector3 eyePos = Vector3Add(basePos, Vector3{ 0.0f, g_firstPersonHeight - 2.0f, 0.0f });
 
 				// forward now respects pitch
 				float cp = cosf(g_firstPersonPitch);
@@ -753,6 +772,7 @@ void CameraUpdate(bool forcemove)
 	g_camera.target = current;
 	g_camera.position = Vector3Add(current, camPos);
 	g_camera.fovy = g_cameraDistance;
+	g_camera.projection = CAMERA_ORTHOGRAPHIC;
 }
 
 U7Object* GetObjectFromID(int unitID)

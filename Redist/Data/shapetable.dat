@@ -17662,10 +17662,10 @@
 701 29 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 701 29 default 
 701 30 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 701 30 default 
 701 31 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 701 31 default 
-702 0 0 0 32 32 0 32 32 10 32 0 5 32 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 702 0 object_cannon_0702 
-702 1 0 0 32 32 0 32 32 5 32 0 14 32 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 702 1 object_cannon_0702 
-702 2 0 0 32 32 0 32 32 10 32 0 5 32 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 702 2 object_cannon_0702 
-702 3 0 0 32 32 0 32 32 5 32 0 14 32 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 702 3 object_cannon_0702 
+702 0 0 0 32 32 0 32 32 10 32 0 5 32 3 1.25 1.25 1.25 0 0 0 90 1 2 2 3 3 1 Models/3dmodels/cannon_702.gltf 1 0 702 0 object_cannon_0702 
+702 1 0 0 32 32 0 32 32 5 32 0 14 32 3 1.25 1.25 1.25 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/cannon_702.gltf 1 0 702 1 object_cannon_0702 
+702 2 0 0 32 32 0 32 32 10 32 0 5 32 3 1.25 1.25 1.25 0 0 0 270 1 2 2 3 3 1 Models/3dmodels/cannon_702.gltf 1 0 702 2 object_cannon_0702 
+702 3 0 0 32 32 0 32 32 5 32 0 14 32 3 1.25 1.25 1.25 0 0 0 180 1 2 2 3 3 1 Models/3dmodels/cannon_702.gltf 1 0 702 3 object_cannon_0702 
 702 4 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 702 4 default 
 702 5 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 702 5 default 
 702 6 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 702 6 default 
@@ -17694,7 +17694,7 @@
 702 29 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 702 29 default 
 702 30 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 702 30 default 
 702 31 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 702 31 default 
-703 0 0 0 6 6 0 5 6 1 5 0 1 6 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 703 0 default 
+703 0 0 0 6 6 0 5 6 1 5 0 1 6 3 1.25 1.25 1.25 0.5 0 0.5 360 1 2 2 3 3 1 Models/3dmodels/cannon_703.gltf 1 0 703 0 default 
 703 1 0 0 5 5 0 4 5 1 4 0 1 5 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 703 1 default 
 703 2 0 0 6 4 0 3 6 1 5 0 1 4 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 703 2 default 
 703 3 0 0 4 6 0 5 4 1 3 0 1 6 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 703 3 default 
@@ -17726,7 +17726,7 @@
 703 29 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 703 29 default 
 703 30 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 703 30 default 
 703 31 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 703 31 default 
-704 0 0 0 8 8 0 8 8 8 8 0 8 8 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 704 0 object_powderkeg_0704 
+704 0 0 0 8 8 0 8 8 8 8 0 8 8 3 1.25 1.25 1.25 0.5 0 0.5 0 1 2 2 3 3 1 Models/3dmodels/cannon_704.gltf 1 0 704 0 object_powderkeg_0704 
 704 1 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 704 1 default 
 704 2 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 704 2 default 
 704 3 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 704 3 default 
@@ -18718,7 +18718,7 @@
 734 29 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 734 29 default 
 734 30 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 734 30 default 
 734 31 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 734 31 default 
-735 0 0 0 8 32 0 32 8 7 8 0 15 32 1 1 1 1 0 0 0 0 1 2 3 3 5 6 Models/3dmodels/zzwrongcube.obj 1 0 735 0 object_archerytarget_0735 
+735 0 0 0 8 32 0 32 8 7 8 0 15 32 3 1 1 1 0 0 0 0 1 2 3 3 5 6 Models/3dmodels/archerytarget_735.gltf 1 0 735 0 object_archerytarget_0735 
 735 1 0 0 8 32 0 32 8 7 8 0 21 32 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 735 1 object_archerytarget_0735 
 735 2 0 0 8 32 0 32 8 7 8 0 21 32 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 735 2 object_archerytarget_0735 
 735 3 0 0 8 32 0 32 8 7 8 0 21 32 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 735 3 object_archerytarget_0735 
@@ -22718,7 +22718,7 @@
 859 29 0 0 1 1 0 1 1 0 1 0 0 1 2 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 859 29 default 
 859 30 0 0 1 1 0 1 1 0 1 0 0 1 2 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 859 30 default 
 859 31 0 0 1 1 0 1 1 0 1 0 0 1 2 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 859 31 default 
-860 0 0 0 32 8 0 8 32 22 32 0 21 8 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 860 0 default 
+860 0 0 0 32 8 0 8 32 22 32 0 21 8 3 1 1 1 2 0 0.5 0 1 2 2 3 3 1 Models/3dmodels/fencing_dummy_860.gltf 1 0 860 0 default 
 860 1 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 860 1 default 
 860 2 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 860 2 default 
 860 3 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 860 3 default 

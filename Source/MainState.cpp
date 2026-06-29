@@ -1191,6 +1191,7 @@ void MainState::EndCameraDrag()
 		m_cursorLocked = false;
 	}
 	m_cameraDragging = false;
+	SetMousePosition((int)m_cameraDragLockPos.x, (int)m_cameraDragLockPos.y);
 }
 void MainState::Bark(U7Object* object, const std::string& text, float duration)
 {
@@ -2878,6 +2879,10 @@ void MainState::MaybeUpdatePartyFollowing()
             member->PathfindToDest(desired);
         }
 
+		if (dist > 25)
+		{
+			member->SetDest(desired);
+		}
         ++counter;
     }
 }

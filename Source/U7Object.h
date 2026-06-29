@@ -550,11 +550,13 @@ public:
 
 	std::string m_name;
 
-	float m_attackRange;
-	float m_attackCooldown;
-	float m_cooldownTimer;
+	float m_attackRange = 2;
+	float m_attackCooldown = 3;
+	float m_cooldownTimer = 3;
 
 	int m_monsterType;
+
+	int m_target = 0; // Who we are currently pissed at.
 };
 
 #endif
