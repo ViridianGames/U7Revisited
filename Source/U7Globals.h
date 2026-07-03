@@ -29,6 +29,10 @@
 #include "PathfindingSystem.h"
 #include "Terrain.h"
 #include "ShapeData.h"
+
+// Melee combat engagement distance in world tiles (center-to-center)
+constexpr float MELEE_RANGE_TILES = 2.0f;
+
 #include "U7Object.h"
 #include "raylib.h"
 #include "raymath.h"
@@ -317,11 +321,16 @@ bool IsDistanceLessThan(float startX, float startZ, float endX, float endZ, floa
 
 void MakeAnimationFrameMeshes();
 
-extern bool g_isCameraLockedToAvatar;
+// Object ID the camera follows (-1 = free camera). Replaces the old avatar-only lock flag.
+extern int g_cameraLockObjectId;
 
-void LockCamera();
+bool IsCameraLocked();
+bool IsCameraLockedToAvatar();
 
+void LockCameraToObject(int objectId);
+void LockCameraToAvatar();
 void UnlockCamera();
+void LockCamera();  // Alias for LockCameraToAvatar()
 
 void CameraUpdate(bool forcemove = false);
 
@@ -555,6 +564,9 @@ const float CLIMB_MOVEMENT_COST = 2.0f;
 
 // Maximum height for walkable surface objects to be considered (filters out upper floors)
 const float MAX_WALKABLE_SURFACE_HEIGHT = 5.0f;
+
+// Position an attacker should move toward to stand at melee range from a target.
+Vector3 GetMeleeStandoffPosition(const Vector3& attackerPos, const Vector3& targetPos, float meleeRange = MELEE_RANGE_TILES);
 
 // Call this whenever ANY object changes position or state
 void NotifyPathfindingGridUpdate(int worldX, int worldZ, int radius = 1);

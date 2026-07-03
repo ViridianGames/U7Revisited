@@ -227,7 +227,78 @@ void MakeAnimationFrameMeshes()
 	//g_AnimationFrames->Init(vertices, indices);
 }
 
-bool g_isCameraLockedToAvatar = false;
+int g_cameraLockObjectId = -1;
+
+bool IsCameraLocked()
+{
+	return g_cameraLockObjectId >= 0;
+}
+
+bool IsCameraLockedToAvatar()
+{
+	if (!IsCameraLocked() || !g_Player)
+		return false;
+
+	U7Object* avatar = g_Player->GetAvatarObject();
+	return avatar && g_cameraLockObjectId == avatar->m_ID;
+}
+
+void LockCameraToObject(int objectId)
+{
+	auto it = g_objectList.find(objectId);
+	if (it == g_objectList.end() || !it->second || it->second->GetIsDead())
+	{
+		AddConsoleString("Cannot lock camera to that unit.", RED);
+		return;
+	}
+
+	g_cameraLockObjectId = objectId;
+	U7Object* obj = it->second.get();
+	AddConsoleString("Camera locked to " + obj->m_name + ".", SKYBLUE);
+}
+
+void LockCameraToAvatar()
+{
+	if (!g_Player)
+		return;
+
+	U7Object* avatar = g_Player->GetAvatarObject();
+	if (!avatar)
+		return;
+
+	g_cameraLockObjectId = avatar->m_ID;
+}
+
+void UnlockCamera()
+{
+	if (!IsCameraLocked())
+		return;
+
+	g_cameraLockObjectId = -1;
+	AddConsoleString("Camera unlocked.", SKYBLUE);
+}
+
+void LockCamera()
+{
+	LockCameraToAvatar();
+}
+
+Vector3 GetMeleeStandoffPosition(const Vector3& attackerPos, const Vector3& targetPos, float meleeRange)
+{
+	Vector3 delta = Vector3Subtract(attackerPos, targetPos);
+	delta.y = 0.0f;
+
+	float dist = Vector3Length(delta);
+	if (dist < 0.001f)
+		return attackerPos;
+
+	Vector3 dir = Vector3Scale(delta, 1.0f / dist);
+	return Vector3{
+		targetPos.x + dir.x * meleeRange,
+		attackerPos.y,
+		targetPos.z + dir.z * meleeRange
+	};
+}
 
 Vector3 GetScreenCenterWorldPoint()
 {
@@ -285,7 +356,7 @@ void CameraInput()
 				U7Object* avatar = g_Player->GetAvatarObject();
 
 				// If camera is locked to the avatar, derive yaw from player/avatar direction as before
-				if (g_isCameraLockedToAvatar)
+				if (IsCameraLockedToAvatar())
 				{
 					Vector3 dir = g_Player->GetAvatarObject()->GetPos();
 					if (Vector3Length(dir) < 0.001f && avatar)
@@ -321,7 +392,7 @@ void CameraInput()
 				U7Object* avatar = g_Player->GetAvatarObject();
 				if (avatar)
 				{
-					if (g_isCameraLockedToAvatar)
+					if (IsCameraLockedToAvatar())
 						avatar->m_ShouldDraw = !g_firstPersonEnabled;
 				}
 			}
@@ -369,7 +440,7 @@ void CameraInput()
 		const float maxPitch = PI * 0.45f; // ~81 deg limit
 		const float minPitch = -PI * 0.45f;
 
-		if (!g_isCameraLockedToAvatar)
+		if (!IsCameraLocked())
 		{
 			// Free first-person: change eye height
 			if (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyDown(KEY_Q))
@@ -431,7 +502,7 @@ void CameraInput()
 
 		if (move.x != 0.0f || move.z != 0.0f)
 		{
-			if (!g_isCameraLockedToAvatar)
+			if (!IsCameraLocked())
 			{
 				// Free camera: move both camera position and target by the same vector
 				Vector3 newCamPos = Vector3Add(g_camera.position, move);
@@ -466,7 +537,7 @@ void CameraInput()
 
 	float frameTimeModifier = 30;
 
-	if (!g_isCameraLockedToAvatar && g_allowInput)
+	if (!IsCameraLocked() && g_allowInput)
 	{
 		if (IsKeyDown(KEY_A))
 		{
@@ -597,9 +668,10 @@ void CameraUpdate(bool forcemove)
 		if (avatar)
 		{
 			// If camera is locked to avatar, use avatar center as base (previous behavior)
-			if (g_isCameraLockedToAvatar)
+			if (IsCameraLocked())
 			{
-				Vector3 basePos = avatar->m_Pos;
+				U7Object* lockObj = GetObjectFromID(g_cameraLockObjectId);
+				Vector3 basePos = lockObj ? lockObj->m_Pos : avatar->m_Pos;
 				Vector3 eyePos = Vector3Add(basePos, Vector3{ 0.0f, g_firstPersonHeight - 2.0f, 0.0f });
 
 				// forward now respects pitch
@@ -637,48 +709,22 @@ void CameraUpdate(bool forcemove)
 		return; // skip third-person updates
 	}
 
-	if (g_isCameraLockedToAvatar)
+	if (IsCameraLocked())
 	{
-		// Prefer the player avatar object when available so the camera follows the avatar's actual vertical level
-		// (e.g., when the avatar moves to a second floor). Fall back to older g_NPCData[0] access only if needed.
-		Vector3 playerPosition = { 0.0f, 0.0f, 0.0f };
-		bool havePlayerPos = false;
-
-		if (g_Player)
+		U7Object* lockObj = GetObjectFromID(g_cameraLockObjectId);
+		if (lockObj && !lockObj->GetIsDead())
 		{
-			U7Object* avatar = g_Player->GetAvatarObject();
-			if (avatar)
-			{
-				// Use the avatar center point (includes vertical offset of the model) so camera targets the same floor
-				playerPosition = avatar->m_Pos;
-				havePlayerPos = true;
-			}
-		}
-
-		// Fallback for older codepaths that expect g_NPCData[0]
-		if (!havePlayerPos)
-		{
-			if (!g_NPCData.empty() && g_NPCData.find(0) != g_NPCData.end() && g_NPCData[0])
-			{
-				int objId = g_NPCData[0]->m_objectID;
-				auto itObj = g_objectList.find(objId);
-				if (itObj != g_objectList.end() && itObj->second)
-				{
-					playerPosition = itObj->second->m_Pos;
-					havePlayerPos = true;
-				}
-			}
-		}
-
-
-		if (havePlayerPos)
-		{
+			Vector3 lockPosition = lockObj->m_Pos;
 			Vector3 cameraPosition = g_camera.target;
-			if (cameraPosition.x != playerPosition.x || cameraPosition.y != playerPosition.y || cameraPosition.z != playerPosition.z)
+			if (cameraPosition.x != lockPosition.x || cameraPosition.y != lockPosition.y || cameraPosition.z != lockPosition.z)
 			{
-				g_camera.target = playerPosition;
+				g_camera.target = lockPosition;
 				g_CameraMoved = true;
 			}
+		}
+		else
+		{
+			UnlockCamera();
 		}
 	}
 

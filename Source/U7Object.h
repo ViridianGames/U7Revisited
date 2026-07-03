@@ -381,6 +381,15 @@ public:
 
 	void UpdateMovement();
 
+	// Combat: pursue/attack m_target. Returns true when a valid target was engaged.
+	bool EngageCombatTarget();
+
+	// Called when this unit takes damage — hostile units retaliate against the attacker.
+	void NotifyAttackedBy(U7Object* attacker);
+
+	// Shared hostile AI during CombatState (monsters and hostile NPCs).
+	void HostileCombatUpdate();
+
 	void NPCInit(NPCData *npcData);
 	void MonsterInit();
 
@@ -550,13 +559,16 @@ public:
 
 	std::string m_name;
 
-	float m_attackRange = 2;
+	float m_attackRange = MELEE_RANGE_TILES;
 	float m_attackCooldown = 3;
 	float m_cooldownTimer = 3;
 
 	int m_monsterType;
 
 	int m_target = 0; // Who we are currently pissed at.
+
+	// Player-issued combat reposition order; suppresses auto-targeting until destination reached.
+	bool m_combatMoveOrder = false;
 };
 
 #endif

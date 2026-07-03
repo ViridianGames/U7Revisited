@@ -226,60 +226,160 @@ void U7Object::EggUpdate()
 	}
 }
 
+static bool IsHostileCombatant(const U7Object* unit)
+{
+	if (!unit || unit->m_hp <= 0.0f)
+		return false;
+
+	return (unit->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_MONSTER && unit->m_Team == 1)
+		|| (unit->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC && unit->m_Team == 1);
+}
+
+static bool IsPartyCombatant(const U7Object* unit)
+{
+	return unit
+		&& unit->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC
+		&& g_Player
+		&& g_Player->NPCIDInParty(unit->m_NPCID);
+}
+
+void U7Object::NotifyAttackedBy(U7Object* attacker)
+{
+	if (!attacker || attacker->m_ID == m_ID || attacker->m_hp <= 0.0f)
+		return;
+
+	if (!IsHostileCombatant(this) || !IsPartyCombatant(attacker))
+		return;
+
+	// Switch to whoever just hit us and drop any movement toward a previous target.
+	m_target = attacker->m_ID;
+	m_combatMoveOrder = false;
+	m_pathWaypoints.clear();
+	m_currentWaypointIndex = 0;
+	m_pathfindingPending = false;
+	m_isSchedulePath = false;
+
+	if (g_isCombatMode)
+		EngageCombatTarget();
+}
+
+bool U7Object::EngageCombatTarget()
+{
+	if (m_target == 0)
+		return false;
+
+	auto targetIt = g_objectList.find(m_target);
+	if (targetIt == g_objectList.end() || !targetIt->second || targetIt->second->GetIsDead())
+	{
+		m_target = 0;
+		return false;
+	}
+
+	U7Object* target = targetIt->second.get();
+	m_combatMoveOrder = false;
+
+	float distSqr = Vector2DistanceSqr({ m_Pos.x, m_Pos.z }, { target->m_Pos.x, target->m_Pos.z });
+	float meleeRangeSqr = m_attackRange * m_attackRange;
+
+	if (distSqr <= meleeRangeSqr)
+	{
+		// Hold position while in melee range so we don't keep walking toward a stale destination.
+		SetDest(m_Pos);
+
+		if (m_cooldownTimer <= 0.0f)
+		{
+			m_cooldownTimer = m_attackCooldown;
+			target->m_hp -= 1;
+			target->NotifyAttackedBy(this);
+
+			AddConsoleString(m_name + " attacks " + target->m_name + " for 1!", RED);
+
+			if (target->m_hp <= 0)
+				AddConsoleString(target->m_name + " is dead!", RED);
+		}
+		else
+		{
+			m_cooldownTimer -= g_Engine->LastFrameInSeconds();
+		}
+	}
+	else
+	{
+		SetDest(GetMeleeStandoffPosition(m_Pos, target->m_Pos, m_attackRange));
+	}
+
+	return true;
+}
+
+void U7Object::HostileCombatUpdate()
+{
+	if (g_CombatState && g_CombatState->m_paused)
+		return;
+
+	if (!g_isCombatMode || !g_Player)
+		return;
+
+	U7Object* avatar = g_Player->GetAvatarObject();
+	if (!avatar)
+		return;
+
+	if (m_target == 0)
+		m_target = avatar->m_ID;
+
+	EngageCombatTarget();
+	UpdateMovement();
+}
+
 void U7Object::MonsterUpdate()
 {
+	if (g_CombatState && g_CombatState->m_paused)
+		return;
+
 	// Pursuit (hostile behavior) only for monsters whose activity is "combat" (0).
 	// Other monsters (e.g. foxes, deer spawned from eggs with non-combat workType) are not hostile
 	// even though they are UNIT_TYPE_MONSTER.
-	if (m_currentActivity == 0 && g_Player && g_Player->GetAvatarObject())
+	if (m_currentActivity == 0 && g_Player)
 	{
-		float distSqr = Vector2DistanceSqr({m_Pos.x, m_Pos.z}, {g_Player->GetAvatarObject()->m_Pos.x, g_Player->GetAvatarObject()->m_Pos.z});
+		U7Object* avatar = g_Player->GetAvatarObject();
 
-		if (distSqr < m_attackRange * m_attackRange)
+		if (g_isCombatMode && avatar)
 		{
-			//  Time to attack!
-			if (m_cooldownTimer <= 0.0f)
+			HostileCombatUpdate();
+			return;
+		}
+
+		if (avatar)
+		{
+			float distSqr = Vector2DistanceSqr({ m_Pos.x, m_Pos.z }, { avatar->m_Pos.x, avatar->m_Pos.z });
+
+			if (distSqr < m_attackRange * m_attackRange)
 			{
-				m_cooldownTimer = m_attackCooldown;
-				g_Player->GetAvatarObject()->m_hp -= 1;
-
-				AddConsoleString(m_name + " attacks Avatar for 1!", RED);
-
-				if (g_Player->GetAvatarObject()->m_hp <= 0)
+				if (m_cooldownTimer <= 0.0f)
 				{
-					AddConsoleString("Avatar is dead!", RED);
+					m_cooldownTimer = m_attackCooldown;
+					avatar->m_hp -= 1;
+					avatar->NotifyAttackedBy(this);
+
+					AddConsoleString(m_name + " attacks Avatar for 1!", RED);
+
+					if (avatar->m_hp <= 0)
+						AddConsoleString("Avatar is dead!", RED);
+				}
+				else
+				{
+					m_cooldownTimer -= g_Engine->LastFrameInSeconds();
 				}
 			}
-			else
+			else if (distSqr < 81.0f)
 			{
-				m_cooldownTimer -= g_Engine->LastFrameInSeconds();
+				SetDest(GetMeleeStandoffPosition(m_Pos, avatar->m_Pos, m_attackRange));
 			}
-		}
-
-		else if (distSqr < 81.0f)  // ~9 tiles, same as NPC hostile
-		{
-			Vector3 directiontoAvatar = Vector3Subtract(m_Pos, g_Player->GetAvatarObject()->m_Pos);
-			Vector3 direction = Vector3Normalize(directiontoAvatar);
-			SetDest(Vector3Add(g_Player->GetAvatarObject()->m_Pos, direction));
-			// In combat, pursue from farther away
-			if (g_StateMachine && g_StateMachine->GetCurrentState() == STATE_COMBATSTATE && distSqr < 400.0f)
+			else if (g_StateMachine && g_StateMachine->GetCurrentState() == STATE_COMBATSTATE && distSqr < 400.0f)
 			{
-				// already set, or could set farther
-			}
-		}
-		else if (g_StateMachine && g_StateMachine->GetCurrentState() == STATE_COMBATSTATE)
-		{
-			// During combat, keep pursuing from longer range
-			if (distSqr < 400.0f) // 20 tiles
-			{
-				Vector3 directiontoAvatar = Vector3Subtract(m_Pos, g_Player->GetAvatarObject()->m_Pos);
-				Vector3 direction = Vector3Normalize(directiontoAvatar);
-				SetDest(Vector3Add(g_Player->GetAvatarObject()->m_Pos, direction));
+				SetDest(GetMeleeStandoffPosition(m_Pos, avatar->m_Pos, m_attackRange));
 			}
 		}
 	}
 
-	// Shared movement (waypoints + direct dest following) now works for monsters too.
 	UpdateMovement();
 }
 
@@ -690,7 +790,7 @@ void U7Object::HandleJukeboxEgg()
 void U7Object::MonsterInit()
 {
 	m_speed = 7.5f;
-	m_attackRange = 2.0f;
+	m_attackRange = MELEE_RANGE_TILES;
 	m_attackCooldown = 3.0f;
 	m_cooldownTimer = 0.0;
 	m_name = g_objectDataTable[m_shapeData->m_shape].m_name;
@@ -1270,60 +1370,57 @@ void U7Object::NPCUpdate()
 	// (Note: previously we returned early here which also prevented movement for party members,
 	// causing them to animate but never change position.  Instead mark the in-party state
 	// and skip only the activity/coroutine handling below.)
-	bool isInParty = (g_Player->NPCIDInParty(m_NPCID) && m_NPCID != 0);
+	bool isCompanionInParty = (g_Player && g_Player->NPCIDInParty(m_NPCID) && m_NPCID != 0);
+	bool isPartyMember = (g_Player && g_Player->NPCIDInParty(m_NPCID));
 
-	// Pursuit (hostile behavior) only for monsters whose activity is "combat" (0).
-	// Other monsters (e.g. foxes, deer spawned from eggs with non-combat workType) are not hostile
-	// even though they are UNIT_TYPE_MONSTER.
-	if (isInParty && g_isCombatMode)
+	if (!isPartyMember && m_Team == 1 && g_isCombatMode)
 	{
-		if (m_target == 0)
+		HostileCombatUpdate();
+		return;
+	}
+
+	if (isPartyMember && g_isCombatMode)
+	{
+		if (g_CombatState && g_CombatState->m_paused)
+			return;
+
+		if (m_combatMoveOrder)
+		{
+			UpdateMovement();
+
+			bool atDestination = !m_isMoving && m_pathWaypoints.empty();
+			if (atDestination)
+			{
+				float distSqr = Vector2DistanceSqr({ m_Pos.x, m_Pos.z }, { m_Dest.x, m_Dest.z });
+				if (distSqr < 1.0f)
+					m_combatMoveOrder = false;
+			}
+
+			return;
+		}
+
+		// Companions auto-acquire nearby hostiles; Avatar only fights assigned targets.
+		if (m_NPCID != 0 && m_target == 0)
 		{
 			for (const auto& [id, objPtr] : g_objectList)
 			{
-				if (objPtr->m_UnitType == UnitTypes::UNIT_TYPE_MONSTER)
+				if (!objPtr || objPtr->GetIsDead())
+					continue;
+
+				if (objPtr->m_UnitType == UnitTypes::UNIT_TYPE_MONSTER && objPtr->m_Team == 1)
 				{
 					float distSqr = Vector2DistanceSqr({m_Pos.x, m_Pos.z}, {objPtr->m_Pos.x, objPtr->m_Pos.z});
 					if (distSqr < 100)
 					{
 						m_target = id;
+						break;
 					}
 				}
 			}
 		}
-		else
-		{
-			U7Object* target = g_objectList[m_target].get();
 
-			float distSqr = Vector2DistanceSqr({m_Pos.x, m_Pos.z}, {target->m_Pos.x, target->m_Pos.z});
+		EngageCombatTarget();
 
-			if (distSqr < 4)
-			{
-				//  Time to attack!
-				if (m_cooldownTimer <= 0.0f)
-				{
-					m_cooldownTimer = m_attackCooldown;
-					target->m_hp -= 1;
-
-					AddConsoleString(m_name + " attacks  " + target->m_name + " for 1!", RED);
-
-					if (target->m_hp <= 0)
-					{
-						AddConsoleString(target->m_name + " is dead!", RED);
-					}
-				}
-				else
-				{
-					m_cooldownTimer -= g_Engine->LastFrameInSeconds();
-				}
-			}
-			else
-			{
-				SetDest(target->m_Pos);
-			}
-		}
-
-		// Shared movement (waypoints + direct dest following) now works for monsters too.
 		UpdateMovement();
 		return;
 	}
@@ -1377,7 +1474,7 @@ void U7Object::NPCUpdate()
 	// Activity coroutine management - check if activity has changed
 	// Only run activity scripts if schedules are enabled for this NPC
 	// IMPORTANT: skip activity/coroutines for party members, but continue with movement below
-	if (shouldUpdateActivity && m_followingSchedule && g_NPCData.find(m_NPCID) != g_NPCData.end() && !isInParty)
+	if (shouldUpdateActivity && m_followingSchedule && g_NPCData.find(m_NPCID) != g_NPCData.end() && !isCompanionInParty)
 	{
 		NPCData* npcData = g_NPCData[m_NPCID].get();
 
@@ -1644,6 +1741,15 @@ void U7Object::UpdateMovement()
 
 		Vector3 newPos = Vector3Add(m_Pos, Vector3Scale(m_Direction, deltav));
 
+		float destH = newPos.y;
+		if (g_pathfindingSystem && !PathfindingSystem::ValidateMove(this, newPos, destH))
+		{
+			m_isMoving = false;
+			SetDest(m_Pos);
+			return;
+		}
+		newPos.y = destH;
+
 		if (Vector3DistanceSqr(newPos, m_Dest) > Vector3DistanceSqr(m_Pos, m_Dest))
 		{
 			SetPos(m_Dest);
@@ -1842,7 +1948,7 @@ void U7Object::PathfindToDest(Vector3 dest)
 	m_currentWaypointIndex = 0;
 	m_pathfindingPending = true;
 
-	m_pathWaypoints = g_pathfindingSystem->FindPath(m_Pos, dest);
+	m_pathWaypoints = g_pathfindingSystem->FindPath(m_Pos, dest, this);
 
 	// If path found, store waypoints
 	if (!m_pathWaypoints.empty())
@@ -2118,6 +2224,7 @@ void U7Object::NPCInit(NPCData* npcData)
 		m_speed = 7.5f;
 	}
 	m_NPCID = npcData->id;
+	m_attackRange = MELEE_RANGE_TILES;
 	m_anchorPos = m_Pos;
 	m_hp = npcData->health;
 	m_BaseMaxHP = npcData->health;
