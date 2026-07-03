@@ -130,6 +130,7 @@ void CombatState::Update()
 	while (it != m_participants.end())
 	{
 		auto objIt = g_objectList.find(*it);
+		U7Object* thisobj = objIt->second.get();
 		if (objIt == g_objectList.end() || !objIt->second || objIt->second->GetIsDead())
 		{
 			it = m_participants.erase(it);

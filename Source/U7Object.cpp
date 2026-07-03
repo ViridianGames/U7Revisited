@@ -258,7 +258,9 @@ void U7Object::MonsterUpdate()
 
 		else if (distSqr < 81.0f)  // ~9 tiles, same as NPC hostile
 		{
-			SetDest(g_Player->GetAvatarObject()->m_Pos);
+			Vector3 directiontoAvatar = Vector3Subtract(m_Pos, g_Player->GetAvatarObject()->m_Pos);
+			Vector3 direction = Vector3Normalize(directiontoAvatar);
+			SetDest(Vector3Add(g_Player->GetAvatarObject()->m_Pos, direction));
 			// In combat, pursue from farther away
 			if (g_StateMachine && g_StateMachine->GetCurrentState() == STATE_COMBATSTATE && distSqr < 400.0f)
 			{
@@ -270,7 +272,9 @@ void U7Object::MonsterUpdate()
 			// During combat, keep pursuing from longer range
 			if (distSqr < 400.0f) // 20 tiles
 			{
-				SetDest(g_Player->GetAvatarObject()->m_Pos);
+				Vector3 directiontoAvatar = Vector3Subtract(m_Pos, g_Player->GetAvatarObject()->m_Pos);
+				Vector3 direction = Vector3Normalize(directiontoAvatar);
+				SetDest(Vector3Add(g_Player->GetAvatarObject()->m_Pos, direction));
 			}
 		}
 	}
