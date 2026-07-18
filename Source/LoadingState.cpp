@@ -753,174 +753,6 @@ void LoadingState::LoadRoofImages(const std::string& filename)
 			continue;
 		}
 	}
-	/*
-	//(int shapeNum, int startFrame, int maxFrames, int tileSizeX, int tileSizeY)
-	// 179 is something ethereal, has 0-7 frames
-	BakeImageShapeFrames(179, 0, 8, 32, 32);
-	// 334 is green swamp bubbles, has 0-7 frames
-	BakeImageShapeFrames(334, 0, 8, 16, 16);
-	// 335 is green swamp bubbles, has 0-7 frames
-	BakeImageShapeFrames(335, 0, 8, 16, 16);
-	// 780 is blue bubbles, has 0-7 frames
-	BakeImageShapeFrames(780, 0, 8, 16, 16);
-	// 256 is ocean meeting land, has 0-10 frames
-	BakeImageShapeFrames(256, 0, 11, 64, 64);
-	// 419 is ocean meeting land, has 0-10 frames
-	BakeImageShapeFrames(419, 0, 11, 64, 64);
-	// 516 is ocean meeting land, has 0-10 frames
-	BakeImageShapeFrames(516, 0, 11, 64, 64);
-	// 610 is ocean meeting land, has 0-10 frames
-	BakeImageShapeFrames(610, 0, 11, 64, 64);
-	// 926 is ocean meeting land, has 0-10 frames
-	BakeImageShapeFrames(926, 0, 11, 64, 64);
-	// 927 is ocean meeting land, has 0-10 frames
-	BakeImageShapeFrames(927, 0, 11, 64, 64);
-	// 930 is ocean meeting land, has 0-10 frames
-	BakeImageShapeFrames(930, 0, 11, 64, 64);
-	// 938 is ocean meeting land, has 0-10 frames
-	BakeImageShapeFrames(938, 0, 11, 64, 64);
-
-	// 612 is ocean meeting beach, has 0-10 frames
-	BakeImageShapeFrames(612, 0, 11, 64, 64);
-	// 613 is ocean meeting beach, has 0-10 frames
-	BakeImageShapeFrames(613, 0, 11, 64, 64);
-	// 632 is ocean meeting beach, has 0-10 frames
-	BakeImageShapeFrames(632, 0, 11, 64, 64);
-	// 699 is ocean meeting beach, has 0-10 frames
-	BakeImageShapeFrames(699, 0, 11, 64, 64);
-	// 736 is ocean meeting beach, has 0-10 frames
-	BakeImageShapeFrames(736, 0, 11, 64, 64);
-	// 737 is ocean meeting beach, has 0-10 frames
-	BakeImageShapeFrames(737, 0, 11, 64, 64);
-	// 751 is ocean meeting beach, has 0-10 frames
-	BakeImageShapeFrames(751, 0, 11, 64, 64);
-	// 808 is ocean meeting beach, has 0-10 frames
-	BakeImageShapeFrames(808, 0, 11, 64, 64);
-	// 834 is ocean meeting beach, has 0-10 frames
-	BakeImageShapeFrames(834, 0, 11, 64, 64);
-	// 875 is ocean meeting beach, has 0-10 frames
-	BakeImageShapeFrames(875, 0, 11, 64, 64);
-	// 907 is ocean meeting beach, has 0-10 frames
-	BakeImageShapeFrames(907, 0, 11, 64, 64);
-	// 911 is ocean meeting beach, has 0-10 frames
-	BakeImageShapeFrames(911, 0, 11, 64, 64);
-	// 918 is ocean meeting beach, has 0-10 frames
-	BakeImageShapeFrames(918, 0, 11, 64, 64);
-	// 1012 is ocean meeting beach, has 0-10 frames
-	BakeImageShapeFrames(1012, 0, 11, 64, 64);
-	// 1020 is ocean meeting beach, has 0-10 frames
-	BakeImageShapeFrames(1020, 0, 11, 64, 64);
-	// 1022 is ocean meeting beach, has 0-10 frames
-	BakeImageShapeFrames(1022, 0, 11, 64, 64);
-
-	//BakeImageShapePalette(794, 0, 8, 26, 23);
-	MorphAnimFlat(794, 0, 8);
-
-	//BakeImageShapePalette(794, 1, 8, 28, 23);
-	MorphAnimFlat(794, 1, 8);
-
-	//BakeImageShapePalette(794, 2, 8, 26, 28);
-	MorphAnimFlat(794, 2, 8);
-
-	//BakeImageShapePalette(794, 3, 8, 26, 22);
-	MorphAnimFlat(794, 3, 8);
-
-	//BakeImageShapePalette(794, 4, 8, 30, 29);
-	MorphAnimFlat(794, 4, 8);
-
-	//BakeImageShapePalette(794, 5, 8, 29, 30);
-	MorphAnimFlat(794, 5, 8);
-
-	//BakeImageShapePalette(794, 6, 8, 30, 29);
-	MorphAnimFlat(794, 6, 8);
-
-	//BakeImageShapePalette(794, 7, 8, 29, 30);
-	MorphAnimFlat(794, 7, 8);
-
-	//BakeImageShapePalette(794, 8, 8, 31, 29);
-	MorphAnimFlat(794, 8, 8);
-
-	//BakeImageShapePalette(794, 9, 8, 27, 31);
-	MorphAnimFlat(794, 9, 8);
-
-	//BakeImageShapePalette(794, 10, 8, 25, 27);
-	MorphAnimFlat(794, 10, 8);
-
-	//BakeImageShapePalette(794, 11, 8, 27, 31);
-	MorphAnimFlat(794, 11, 8);
-
-	//BakeImageShapePalette(794, 12, 8, 29, 32);
-	MorphAnimFlat(794, 12, 8);
-
-	//BakeImageShapePalette(794, 13, 8, 31, 23);
-	MorphAnimFlat(794, 13, 8);
-
-	//BakeImageShapePalette(794, 14, 8, 23, 31);
-	MorphAnimFlat(794, 14, 8);
-
-	//BakeImageShapePalette(794, 15, 8, 30, 31);
-	MorphAnimFlat(794, 15, 8);
-
-	//BakeImageShapePalette(794, 16, 8, 24, 25);
-	MorphAnimFlat(794, 16, 8);
-
-	//BakeImageShapePalette(794, 17, 8, 26, 21);
-	MorphAnimFlat(794, 17, 8);
-
-	//BakeImageShapePalette(794, 18, 8, 26, 26);
-	MorphAnimFlat(794, 18, 8);
-
-	//BakeImageShapePalette(794, 19, 8, 25, 24);
-	MorphAnimFlat(794, 19, 8);
-
-	MorphAnimFlat(256, 0, 11);
-	// 419 is ocean meeting land, has 0-10 frames
-	MorphAnimFlat(419, 0, 11);
-	// 516 is ocean meeting land, has 0-10 frames
-	MorphAnimFlat(516, 0, 11);
-	// 610 is ocean meeting land, has 0-10 frames
-	MorphAnimFlat(610, 0, 11);
-	// 926 is ocean meeting land, has 0-10 frames
-	MorphAnimFlat(926, 0, 11);
-	// 927 is ocean meeting land, has 0-10 frames
-	MorphAnimFlat(927, 0, 11);
-	// 930 is ocean meeting land, has 0-10 frames
-	MorphAnimFlat(930, 0, 11);
-	// 938 is ocean meeting land, has 0-10 frames
-	MorphAnimFlat(938, 0, 11);
-	// 612 is ocean meeting beach, has 0-10 frames
-	MorphAnimFlat(612, 0, 11);
-	// 613 is ocean meeting beach, has 0-10 frames
-	MorphAnimFlat(613, 0, 11);
-	// 632 is ocean meeting beach, has 0-10 frames
-	MorphAnimFlat(632, 0, 11);
-	// 699 is ocean meeting beach, has 0-10 frames
-	MorphAnimFlat(699, 0, 11);
-	// 736 is ocean meeting beach, has 0-10 frames
-	MorphAnimFlat(736, 0, 11);
-	// 737 is ocean meeting beach, has 0-10 frames
-	MorphAnimFlat(737, 0, 11);
-	// 751 is ocean meeting beach, has 0-10 frames
-	MorphAnimFlat(751, 0, 11);
-	// 808 is ocean meeting beach, has 0-10 frames
-	MorphAnimFlat(808, 0, 11);
-	// 834 is ocean meeting beach, has 0-10 frames
-	MorphAnimFlat(834, 0, 11);
-	// 875 is ocean meeting beach, has 0-10 frames
-	MorphAnimFlat(875, 0, 11);
-	// 907 is ocean meeting beach, has 0-10 frames
-	MorphAnimFlat(907, 0, 11);
-	// 911 is ocean meeting beach, has 0-10 frames
-	MorphAnimFlat(911, 0, 11);
-	// 918 is ocean meeting beach, has 0-10 frames
-	MorphAnimFlat(918, 0, 11);
-	// 1012 is ocean meeting beach, has 0-10 frames
-	MorphAnimFlat(1012, 0, 11);
-	// 1020 is ocean meeting beach, has 0-10 frames
-	MorphAnimFlat(1020, 0, 11);
-	// 1022 is ocean meeting beach, has 0-10 frames
-	MorphAnimFlat(1022, 0, 11);
-	*/
 	
 	file.close();
 	DebugPrint("Processed " + std::to_string(loadedCount) + " roof images commands from " + filename);
@@ -1296,19 +1128,6 @@ void LoadingState::MakeMap()
 											//ImageDrawPixel(&tempImage, int(dstPosX) + pX, int(dstPosY) + pY, RED);
 											pixelCt += 1;
 										}
-										//ImageDrawPixel(&tempImage, l * 8, k * 8, BLACK);
-										/*
-										ImageDraw(&tempImage,
-											m_shapeData.m_texture->m_OriginalImage,
-											Rectangle{ 0, 0, 8.0f, 8.0f },
-											Rectangle{
-												dstPosX,
-												dstPosY,
-												8.0f,
-												8.0f },
-												WHITE);
-										*/
-							
 									//  check if this shape has a morph animation
 									//Log("Map[" + std::to_string(i) + "," + std::to_string(j) + "] Shape " + std::to_string(shapenum) + " frame " + std::to_string(framenum) + " has pixels, checking for morph animation.", "anims.log");
 									}
@@ -1325,7 +1144,6 @@ void LoadingState::MakeMap()
 					{
 						Log("Map[" + std::to_string(i) + "," + std::to_string(j) + "] Chunk " + std::to_string(chunkid) + " has " + std::to_string(pixelCt) + " pixels drawn at " + std::to_string(frameCt) + " frames.", "anims.log");
 						//std::string filename = "Debug/Chunks/chunk_X" + std::to_string(j) + "_Y" + std::to_string(i) + ".png";
-
 
 						std::string objType = "chunksprite";
 						std::string objFolder = "Images/" + objType;

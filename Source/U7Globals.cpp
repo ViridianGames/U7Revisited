@@ -1139,13 +1139,10 @@ void MorphRoof(int roofId, int shapeNum, int frameNum, float x, float y, float z
 }
 
 void BakeImageShapeFrames(int shapeNum, int startFrame, int maxFrames, int tileSizeX, int tileSizeY) {
-	// This is a placeholder function to represent the process of baking sprite images.
-	// In a real implementation, this would involve rendering the sprite from above and saving the image.
 	//AddConsoleString("Baking sprite images... ", GREEN);
 	std::string objType = "shapesprite";
 	std::string s_objId = std::to_string(shapeNum);
 	std::string s_objFrame = std::to_string(startFrame);
-	//int posStart = objId + xOfs;
 	std::string objFolder = "Images/" + objType;
 	std::filesystem::create_directories(objFolder.c_str());
 	std::string imagePath = "Images/" + objType + "/" + objType + "_" + s_objId + "_" + s_objFrame + ".png";
@@ -1160,108 +1157,50 @@ void BakeImageShapeFrames(int shapeNum, int startFrame, int maxFrames, int tileS
 		int imgSzeX = (tileSizeX * tileCountX);
 		int imgSzeY = (tileSizeY * tileCountY);
 		Image frameImage = GenImageColor(imgSzeX, imgSzeY, Color{ 0, 0, 0, 0 });
-		/*
-		float x = float(posStart % 3072);
-		float z = float(posStart - int(x)) / 3072;
-		float thisx = x;
-		float thisz = z;
-
-		int hideCount = 0;
-
-		bool matched = false;
-		int xInt = int(x);
-		int yInt = int(z);
-		int xPos = 0;
-		int yPos = 0;
-		int xPx = 0;
-		int yPx = 0;
-		int xMax = 192;
-		int yMax = 192;
-		*/
 		float x = 0.0f;
 		float z = 0.0f;
 		float thisx = x;
 		float thisz = z;
 		int xInt = int(x);
 		int yInt = int(z);
-		//int xPos = 0;
-		//int yPos = 0;
 		int xPx = 0;
 		int yPx = 0;
 		int j = 0;
 		int i = startFrame;
-		//while (j < tileCountY) {
-			thisz = z + (j * tileSizeY);
-			i = 0;
-			while (i < maxFrames) {
-				thisx = x + ((i-startFrame) * tileSizeX);
-				xInt = int(thisx);
-				yInt = int(thisz);
-				int framenum = i;
-				ShapeData& m_shapeData = g_shapeTable[shapeNum][framenum];
-				//xPx = (i * tileSizeX * borderSize) + borderSize * (tileSizeX + 1);
-				//yPx = (j * tileSizeY * borderSize) + borderSize * (tileSizeY + 1);
-				xPx = (i * tileSizeX) + (tileSizeX);
-				yPx = (j * tileSizeY) + (tileSizeY);
-				//float dstPosX = float(xPx - m_shapeData.m_pixelOffsetX);
-				//float dstPosY = float(yPx - m_shapeData.m_pixelOffsetY);
-				float dstPosX = float(xPx - m_shapeData.m_pixelOffsetX);
-				float dstPosY = float(yPx - m_shapeData.m_pixelOffsetY);
-				Log("Loading shape palette " + std::to_string(xPx) + ", " + std::to_string(yPx) + " | " + std::to_string(dstPosX) + ", " + std::to_string(dstPosY) + " to sprite image!" + std::to_string(m_shapeData.m_pixelOffsetX) + ", " + std::to_string(m_shapeData.m_pixelOffsetY) + " shapeFrame[" + std::to_string(shapeNum) + ":" + std::to_string(framenum) + "]", "anims.log");
-				ImageDraw(&frameImage,
-					m_shapeData.m_texture->m_OriginalImage,
-					Rectangle{ 0, 0, float(m_shapeData.m_texture->width), float(m_shapeData.m_texture->height) },
-					Rectangle{
-						dstPosX,
-						dstPosY,
-						float(m_shapeData.m_texture->width),
-						float(m_shapeData.m_texture->height) },
-						WHITE);
-				//AddConsoleString("WARNING: Shape: " + std::to_string(shapenum) + ", Frame: " + std::to_string(framenum) + ", File: " + filename, YELLOW);
-				//matched = true;
-				/*
-				xPos = (xInt - (xInt % 16)) / 16;
-				yPos = (yInt - (yInt % 16)) / 16;
-				if (xPos >= 0 && xPos < xMax && yPos >= 0 && yPos < yMax)
-				{
-					for (auto object : g_chunkObjectMap[int(xPos)][int(yPos)])
-					{
-						if (object->m_Pos.x == thisx && object->m_Pos.y == y && object->m_Pos.z == thisz)
-						{
-							int shapenum = object->m_ObjectType;
-							int framenum = object->m_Frame;
-							ShapeData& m_shapeData = g_shapeTable[shapenum][framenum];
-							xPx = (i * tileSizeX * borderSize) + borderSize * (tileSizeX + 1);
-							yPx = (j * tileSizeY * borderSize) + borderSize * (tileSizeY + 1);
-							float dstPosX = float(xPx - m_shapeData.m_pixelOffsetX);
-							float dstPosY = float(yPx - m_shapeData.m_pixelOffsetY);
-							//Log("Loading shape frame " + std::to_string(xPx) + ", " + std::to_string(yPx) + " | " + std::to_string(dstPosX) + ", " + std::to_string(dstPosY) + " to roof image!" + std::to_string(m_shapeData.m_pixelOffsetX) + ", " + std::to_string(m_shapeData.m_pixelOffsetY) + " shapeFrame[" + std::to_string(shapenum) + ":" + std::to_string(framenum) + "]");
-							ImageDraw(&frameImage,
-								m_shapeData.m_texture->m_OriginalImage,
-								Rectangle{ 0, 0, float(m_shapeData.m_texture->width), float(m_shapeData.m_texture->height) },
-								Rectangle{
-									dstPosX,
-									dstPosY,
-									float(m_shapeData.m_texture->width),
-									float(m_shapeData.m_texture->height) },
-									WHITE);
-							//AddConsoleString("WARNING: Shape: " + std::to_string(shapenum) + ", Frame: " + std::to_string(framenum) + ", File: " + filename, YELLOW);
-							matched = true;
-						}
-					}
-				}*/
-				i++;
-			}
-		//	j++;
-		//}
+		thisz = z + (j * tileSizeY);
+		i = 0;
+		while (i < maxFrames) {
+			thisx = x + ((i-startFrame) * tileSizeX);
+			xInt = int(thisx);
+			yInt = int(thisz);
+			int framenum = i;
+			ShapeData& m_shapeData = g_shapeTable[shapeNum][framenum];
+			//xPx = (i * tileSizeX * borderSize) + borderSize * (tileSizeX + 1);
+			//yPx = (j * tileSizeY * borderSize) + borderSize * (tileSizeY + 1);
+			xPx = (i * tileSizeX) + (tileSizeX);
+			yPx = (j * tileSizeY) + (tileSizeY);
+			//float dstPosX = float(xPx - m_shapeData.m_pixelOffsetX);
+			//float dstPosY = float(yPx - m_shapeData.m_pixelOffsetY);
+			float dstPosX = float(xPx - m_shapeData.m_pixelOffsetX);
+			float dstPosY = float(yPx - m_shapeData.m_pixelOffsetY);
+			Log("Loading shape palette " + std::to_string(xPx) + ", " + std::to_string(yPx) + " | " + std::to_string(dstPosX) + ", " + std::to_string(dstPosY) + " to sprite image!" + std::to_string(m_shapeData.m_pixelOffsetX) + ", " + std::to_string(m_shapeData.m_pixelOffsetY) + " shapeFrame[" + std::to_string(shapeNum) + ":" + std::to_string(framenum) + "]", "anims.log");
+			ImageDraw(&frameImage,
+				m_shapeData.m_texture->m_OriginalImage,
+				Rectangle{ 0, 0, float(m_shapeData.m_texture->width), float(m_shapeData.m_texture->height) },
+				Rectangle{
+					dstPosX,
+					dstPosY,
+					float(m_shapeData.m_texture->width),
+					float(m_shapeData.m_texture->height) },
+					WHITE);
+			i++;
+		}
 		Log("Exporting sprite image to " + imagePath, "anims.log");
 		ExportImage(frameImage, imagePath.c_str());
 	}
 }
 
 void BakeImageShapePalette(int shapeNum, int startFrame, int maxFrames, int tileSizeX, int tileSizeY) {
-	// This is a placeholder function to represent the process of baking sprite images.
-	// In a real implementation, this would involve rendering the sprite from above and saving the image.
 	//AddConsoleString("Baking sprite images... ", GREEN);
 	std::string objType = "shapesprite";
 	std::string s_objId = std::to_string(shapeNum);
@@ -1400,8 +1339,6 @@ void BakeImageShapePalette(int shapeNum, int startFrame, int maxFrames, int tile
 }
 
 void BakeImageRoof(int objId, int xOfs, float y, int tileSizeX, int tileSizeY, int borderSize, int tileCountX, int tileCountY) {
-	// This is a placeholder function to represent the process of baking roof images.
-	// In a real implementation, this would involve rendering the roof from above and saving the image.
 	//AddConsoleString("Baking roof images... ", GREEN);
 	std::string objType = "roof";
 	std::string s_objId = std::to_string(objId);

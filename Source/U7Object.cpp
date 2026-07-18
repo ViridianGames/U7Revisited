@@ -382,36 +382,7 @@ void U7Object::InteractiveDraw()
 		// Handle frame switching logic here if needed
 		float timePerFrame = 1.0f / 8.0f;
 		int currentFrame = static_cast<unsigned int>(float(GetTime()) / timePerFrame) % maxFrames;
-		//if (m_ObjectType == 335) {
-		//	if (currentFrame == 0) {
-		//		currentFrame = 7;
-		//	}
-		//}
-		
-		//if (m_ObjectType == 335)
-		//{
-			//Log("Current frame for object " + std::to_string(m_ObjectType) + ": " + std::to_string(currentFrame), "anims.log");
-		//}
 		SetFrame(currentFrame);
-	}
-	else if (randomlyActive)
-	{
-		//Hide();
-		
-		//int probability = 50;
-		//Log("Launching Activate() for object " + std::to_string(m_ObjectType) + " with probability " + std::to_string(probability), "anims.log");
-		//Activate(float(GetTime()), maxFrames, probability);
-		//Log("Current frame for object " + std::to_string(m_ObjectType) + ": " + std::to_string(m_isActivated), "anims.log");
-		//Log("Current frame for object " + std::to_string(m_ObjectType) + ": " + std::to_string(currentFrame), "anims.log");
-		//SetFrame(currentFrame);
-		
-		/*
-		if (m_ObjectType == 334)
-		{
-			
-		}*/
-		
-		//return;
 	}
 
 	Color renderColor = g_Terrain->m_cellLighting[cellx][celly];
@@ -2458,6 +2429,7 @@ void U7Object::Morph(const char* imagePath, ShapeDrawType drawType)
 
 void U7Object::Activate(float timeNow, int maxFrames, int probability)
 {
+	// fixme, needs cleaned up and possibly a good chunk needs rewritten
 	int currentFrame = 0;
 	float dilationParam = 1.0f / g_secsPerMinute;
 	double timePerFrame = (1.0 / 8.0) * dilationParam;
@@ -2491,7 +2463,7 @@ void U7Object::Activate(float timeNow, int maxFrames, int probability)
 				}
 				else
 				{
-					Log("Activate[" + std::to_string(timeNow) + "]: probability check passed. roll: " + std::to_string(roll) + " probability: " + std::to_string(probability), "anims.log");
+					//Log("Activate[" + std::to_string(timeNow) + "]: probability check passed. roll: " + std::to_string(roll) + " probability: " + std::to_string(probability), "anims.log");
 					//if (m_isActivated == false) {
 						m_isActivated = true;
 						m_activationTimer = float(timeNow);
@@ -2500,7 +2472,7 @@ void U7Object::Activate(float timeNow, int maxFrames, int probability)
 				}
 			}
 			else {
-				Log("Activate[" + std::to_string(timeNow) + "]: probability check passed (100%). m_activeElapsed: " + std::to_string(m_activeElapsed) + " m_actCooldown: " + std::to_string(m_actCooldown) + " fullTime: " + std::to_string(fullTime), "anims.log");
+				//Log("Activate[" + std::to_string(timeNow) + "]: probability check passed (100%). m_activeElapsed: " + std::to_string(m_activeElapsed) + " m_actCooldown: " + std::to_string(m_actCooldown) + " fullTime: " + std::to_string(fullTime), "anims.log");
 				//if (m_isActivated == false)
 				//{
 					m_isActivated = true;
@@ -2518,15 +2490,15 @@ void U7Object::Activate(float timeNow, int maxFrames, int probability)
 	if (m_isActivated == true)
 	{
 		currentFrame = static_cast<unsigned int>(m_activeElapsed / timePerFrame);
-		Log("Activate[" + std::to_string(timeNow) + "|" + std::to_string(m_activationTimer) + "]: m_activeElapsed: " + std::to_string(m_activeElapsed) + " timePerFrame: " + std::to_string(timePerFrame) + " currentFrame: " + std::to_string(currentFrame) + " maxFrames: " + std::to_string(maxFrames), "anims.log");
+		//Log("Activate[" + std::to_string(timeNow) + "|" + std::to_string(m_activationTimer) + "]: m_activeElapsed: " + std::to_string(m_activeElapsed) + " timePerFrame: " + std::to_string(timePerFrame) + " currentFrame: " + std::to_string(currentFrame) + " maxFrames: " + std::to_string(maxFrames), "anims.log");
 		if (currentFrame >= maxFrames)
 		{
-			Log("Activate[" + std::to_string(timeNow) + "]: animation finished. Resetting m_isActivated and currentFrame.", "anims.log");
+			//Log("Activate[" + std::to_string(timeNow) + "]: animation finished. Resetting m_isActivated and currentFrame.", "anims.log");
 			m_isActivated = false;
 			m_activationTimer = 0.0f;
 			currentFrame = 0;
 		}
-		Log("Activate[" + std::to_string(timeNow) + "|" + std::to_string(m_activationTimer) + "]: " + std::to_string(m_isActivated) + " currentFrame: " + std::to_string(currentFrame) + " m_activeElapsed: " + std::to_string(m_activeElapsed) + " timePerFrame: " + std::to_string(timePerFrame) + " maxFrames: " + std::to_string(maxFrames), "anims.log");
+		//Log("Activate[" + std::to_string(timeNow) + "|" + std::to_string(m_activationTimer) + "]: " + std::to_string(m_isActivated) + " currentFrame: " + std::to_string(currentFrame) + " m_activeElapsed: " + std::to_string(m_activeElapsed) + " timePerFrame: " + std::to_string(timePerFrame) + " maxFrames: " + std::to_string(maxFrames), "anims.log");
 		SetFrame(currentFrame);
 	}
 	else

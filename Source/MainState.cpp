@@ -1792,11 +1792,9 @@ void MainState::Draw()
 	RaylibModel* m_flatModel = g_ResourceManager->GetModel("Models/3dmodels/flat.obj");
 	int m_numFrames = 8;
 	Vector3 m_TweakPos = Vector3{ 0.0f, 0, 16.0f };
-	//Vector3 finalPos = Vector3Add(finalPos, m_TweakPos);
 	Vector3 flatScaling = Vector3{ 16.0f, 1.0f, 16.0f };
 	float timePerFrame = 1.0f / 8.0f;
 	int currentFrame = static_cast<unsigned int>(float(GetTime()) / timePerFrame) % m_numFrames;
-	//int currentFrame = 0;
 	float uvPerFrame = 1.0f / static_cast<float>(m_numFrames);
 	float frameUV = uvPerFrame * static_cast<float>(currentFrame);
 	m_flatModel->UpdateFlatUV(frameUV, frameUV + uvPerFrame, 0.0f, 1.0f);
@@ -1807,18 +1805,13 @@ void MainState::Draw()
 		int chId = std::get<2>(visChunk);   // Third integer in tuple
 		if (g_chunkAnimTexture[chId] != nullptr)
 		{
-			//if (chId == 2958) {
-			Log("  Drawing chunk animation for chunk ID: " + std::to_string(chId) + " at position (" + std::to_string(chX) + ", " + std::to_string(chY) + ")", "anims.log");
+			//Log("  Drawing chunk animation for chunk ID: " + std::to_string(chId) + " at position (" + std::to_string(chX) + ", " + std::to_string(chY) + ")", "anims.log");
 			//Draw a flat with the texture on it to see if the animation is working
 			Vector3 thisPos = Vector3Add(m_TweakPos, Vector3{ (float(chX) * 16.0f), 0.0f, (float(chY) * 16.0f) });
-			Log("    Flat position: (" + std::to_string(thisPos.x) + ", " + std::to_string(thisPos.y) + ", " + std::to_string(thisPos.z) + ")", "anims.log");
-			//SetMaterialTexture(&g_ResourceManager->GetModel("Models/3dmodels/flat.obj")->GetModel().materials[0], MATERIAL_MAP_DIFFUSE, *g_ResourceManager->GetTexture("Images/dropshadow.png"));
+			//Log("    Flat position: (" + std::to_string(thisPos.x) + ", " + std::to_string(thisPos.y) + ", " + std::to_string(thisPos.z) + ")", "anims.log");
 			SetMaterialTexture(&m_flatModel->GetModel().materials[0], MATERIAL_MAP_DIFFUSE, *g_chunkAnimTexture[chId]);
-			//SetMaterialTexture(&m_flatModel->GetModel().materials[0], MATERIAL_MAP_DIFFUSE, *g_ResourceManager->GetTexture("Images/error.png"));
-			//DrawModelEx(m_flatModel->GetModel(), thisPos, { 0, 1, 0 }, 0, flatScaling, WHITE);
+			// fixme, need to change WHITE to daytime color, but for now just use WHITE
 			DrawModelEx(m_flatModel->GetModel(), thisPos, { 0, 1, 0 }, 0, flatScaling, WHITE);
-			//}
-
 		}
 	}
 	glDisable(GL_POLYGON_OFFSET_FILL);

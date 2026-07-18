@@ -1,5 +1,6 @@
 #include <Geist/RaylibModel.h>
-#include <Geist/Logging.h>
+// would be needed if we need to print vertex order
+//#include <Geist/Logging.h>
 #include <cassert>
 #include <raymath.h>
 
@@ -85,20 +86,12 @@ RaylibModel& RaylibModel::Decenter()
 
 RaylibModel& RaylibModel::UpdateFlatUV(float uvXmin, float uvXmax, float uvYmin, float uvYmax)
 {
-	/*
-	BoundingBox bounds = GetModelBoundingBox(m_Model);
-	Vector3 center = Vector3{
-		(bounds.min.x + bounds.max.x) / 2.0f,
-			(bounds.min.y + bounds.max.y) / 2.0f,
-			(bounds.min.z + bounds.max.z) / 2.0f
-	};
-
-	Matrix translation = MatrixTranslate(-center.x, 0, -center.z);
-	m_Model.transform = MatrixMultiply(m_Model.transform, translation);
-	*/
 	Mesh mesh = m_Model.meshes[0];
-	//int vertNum = 0;
+	
+	// here is the dirty secret to how I can do UV updates, I had to get the vertex order and print it out so that I'd know.
+	//   if flat.obj changes, we'd need to re-run this to get the new vertex order.  Potentially could be done programattically, but this works.
 	/*
+	int vertNum = 0;
 	int vertMax = mesh.vertexCount;
 	for (int i = 0; i < vertMax; ++i) {
 		// Update UV coordinates here
