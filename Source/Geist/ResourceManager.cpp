@@ -325,3 +325,31 @@ void ResourceManager::UpdateModelTexture(const std::string& modelName, Texture2D
 		Log("WARNING: Cannot update texture for model '" + modelName + "' - model not currently loaded");
 	}
 }
+
+void ResourceManager::UpdateModelUVFrame(const std::string& modelName, int frameNum, int maxFrames)
+{
+	map<std::string, unique_ptr<RaylibModel> >::iterator node;
+	float uvSpaceX = 1.0 / float(maxFrames);
+	float uvLeft = float(frameNum) * uvSpaceX;
+	float uvRight = uvLeft + uvSpaceX;
+	node = m_ModelList.find(modelName);
+	if (node != m_ModelList.end())
+	{
+		Log("Updating UV Coords for Model " + modelName);
+		//&m_ModelList[modelName]->GetModel()->UpdateFlatUV(uvLeft, uvRight, 0.0f, 1.0f);
+		// Update the texture of the model here
+		// Note: Raylib's Model struct doesn't support dynamic texture updates out of the box.
+		/*
+		int i = 0;
+		while (i < m_ModelList[modelName]->GetModel().materialCount && m_ModelList[modelName]->GetModel().materials[i].maps[MATERIAL_MAP_DIFFUSE].texture.id != texture.id)
+		{
+			m_ModelList[modelName]->GetModel().materials[i].maps[MATERIAL_MAP_DIFFUSE].texture = texture;
+			i++;
+		}
+		*/
+	}
+	else
+	{
+		Log("WARNING: Cannot update UV for model '" + modelName + "' - model not currently loaded");
+	}
+}

@@ -23,6 +23,9 @@ ShapeData::ShapeData()
 	m_isValid = false;
 	m_shape = 150;
 	m_frame = 0;
+	m_numFrames = 1;
+	m_paletteFPS = 1;
+	m_isAnimated = false;
 
 	for (int i = 0; i < 6; ++i)
 	{
@@ -106,6 +109,72 @@ void ShapeData::SetPixelOffset(int offsetX, int offsetY)
 {
 	m_pixelOffsetX = offsetX + 1;
 	m_pixelOffsetY = offsetY + 1;
+}
+
+void ShapeData::CaptureSpecialPaletteReferences(int posX, int posY, int paletteRef)
+{
+	size_t prelength = m_palettePixels.size();
+	if (paletteRef >= 224 && paletteRef < 232)
+	{
+		if (m_paletteFPS < 8)
+		{
+			m_paletteFPS = 8;
+		}
+		m_palettePixels.push_back({ posX, posY, paletteRef });
+	}
+	else if (paletteRef >= 232 && paletteRef < 240)
+	{
+		if (m_paletteFPS < 8)
+		{
+			m_paletteFPS = 8;
+		}
+		m_palettePixels.push_back({ posX, posY, paletteRef });
+	}
+	else if (paletteRef >= 232 && paletteRef < 240)
+	{
+		if (m_paletteFPS < 8)
+		{
+			m_paletteFPS = 8;
+		}
+		m_palettePixels.push_back({ posX, posY, paletteRef });
+	}
+	else if (paletteRef >= 240 && paletteRef < 244)
+	{
+		if (m_paletteFPS < 4)
+		{
+			m_paletteFPS = 4;
+		}
+		m_palettePixels.push_back({ posX, posY, paletteRef });
+	}
+	else if (paletteRef >= 244 && paletteRef < 248)
+	{
+		if (m_paletteFPS < 4)
+		{
+			m_paletteFPS = 4;
+		}
+		m_palettePixels.push_back({ posX, posY, paletteRef });
+	}
+	else if (paletteRef >= 248 && paletteRef < 252)
+	{
+		if (m_paletteFPS < 4)
+		{
+			m_paletteFPS = 4;
+		}
+		m_palettePixels.push_back({ posX, posY, paletteRef });
+	}
+	else if (paletteRef >= 252 && paletteRef < 254)
+	{
+		if (m_paletteFPS < 3)
+		{
+			m_paletteFPS = 3;
+		}
+		m_palettePixels.push_back({ posX, posY, paletteRef });
+	}
+	size_t postlength = m_palettePixels.size();
+	if (postlength > prelength)
+	{
+		Log("Captured special palette reference: " + std::to_string(paletteRef) + " at (" + std::to_string(posX) + ", " + std::to_string(posY) + ")", "anims.log");
+	}
 }
 
 void ShapeData::CreateDefaultTexture()
@@ -342,6 +411,11 @@ void ShapeData::SetupDrawTypes()
 	else if (m_drawType == ShapeDrawType::OBJECT_DRAW_FLAT)
 	{
 		m_Dims = Vector3{ float(m_texture->width) / 8.0f, 0, float(m_texture->height) / 8.0f };
+	}
+	else if (m_drawType == ShapeDrawType::OBJECT_DRAW_ANIMFLAT)
+	{
+		//m_Dims = Vector3{ float(m_texture->width) / 8.0f, 0, float(m_texture->height) / 8.0f };
+		m_Dims.y = 0.0f;
 	}
 	else
 	{
@@ -629,6 +703,38 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 		break;
 	}
 
+	case ShapeDrawType::OBJECT_DRAW_ANIMFLAT:
+	{
+		finalPos = pos;
+		if (pos.y == 0)
+		{
+			finalPos.y = .01f; //  Otherwise, z-fighting.
+		}
+		else
+		{
+			finalPos.y = pos.y * 1.01f;
+		}
+
+		finalPos = Vector3Add(finalPos, m_TweakPos);
+		finalPos = Vector3Add(finalPos, Vector3{ -m_Dims.x + 1, 0, 1 });
+
+		Vector3 flatScaling = Vector3{ m_Dims.x, 1, m_Dims.z };
+		
+		float timePerFrame = 1.0f / 8.0f;
+		int currentFrame = static_cast<unsigned int>(float(GetTime()) / timePerFrame) % m_numFrames;
+		float uvPerFrame = 1.0f / static_cast<float>(m_numFrames);
+		float frameUV = uvPerFrame * static_cast<float>(currentFrame);
+
+		//BeginShaderMode(g_alphaDiscard);
+		//we would update the UV coords for the flat model here
+		SetMaterialTexture(&m_flatModel->GetModel().materials[0], MATERIAL_MAP_DIFFUSE, m_texture->m_Texture);
+		m_flatModel->UpdateFlatUV(frameUV, frameUV + uvPerFrame, 0.0f, 1.0f);
+		DrawModelEx(m_flatModel->GetModel(), finalPos, { 0, 1, 0 }, 0, flatScaling, color);
+		//m_flatModel->UpdateFlatUV(0.0, 1.0, 0.0, 1.0);
+		//EndShaderMode();
+		break;
+	}
+
 	case ShapeDrawType::OBJECT_DRAW_FLAT:
 	{
 		finalPos = pos;
@@ -648,6 +754,7 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 
 		//BeginShaderMode(g_alphaDiscard);
 		SetMaterialTexture(&m_flatModel->GetModel().materials[0], MATERIAL_MAP_DIFFUSE, m_texture->m_Texture);
+		m_flatModel->UpdateFlatUV(0.0, 1.0, 0.0, 1.0);
 		DrawModelEx(m_flatModel->GetModel(), finalPos, { 0, 1, 0 }, 0, flatScaling, color);
 		//EndShaderMode();
 		break;

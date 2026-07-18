@@ -708,6 +708,42 @@ void LoadingState::LoadRoofImages(const std::string& filename)
 				{
 					BakeImageRoof(objId, offsetx, float(offsety), tilesizex, tilesizez, bordersize, tilecountx, tilecountz);
 				}
+				else if (objtype == "shapeframes")
+				{
+					//offsetx is frameStart
+					//tilecountx is frameCount
+					BakeImageShapeFrames(objId, offsetx, tilecountx, tilesizex, tilesizez);
+				}
+				else if (objtype == "shapepalette")
+				{
+					//offsetx is frameStart
+					//tilecountx is frameCount
+					BakeImageShapePalette(objId, offsetx, tilecountx, tilesizex, tilesizez);
+				}
+				else
+				{
+					//DebugPrint("WARNING: Unknown object type in roof images load file at line " + std::to_string(lineNum) + ": " + objtype);
+					continue;
+				}
+			}
+			else if (action == "morphanim")
+			{
+				if (objtype == "flat")
+				{
+					//offsetx is frameStart
+					//tilecountx is frameCount
+					MorphAnimFlat(objId, offsetx, tilecountx);
+				}
+				else
+				{
+					//DebugPrint("WARNING: Unknown object type in roof images load file at line " + std::to_string(lineNum) + ": " + objtype);
+					continue;
+				}
+			}
+			else
+			{
+				//DebugPrint("WARNING: Unknown action in roof images load file at line " + std::to_string(lineNum) + ": " + action);
+				continue;
 			}
 			loadedCount++;
 		}
@@ -717,6 +753,175 @@ void LoadingState::LoadRoofImages(const std::string& filename)
 			continue;
 		}
 	}
+	/*
+	//(int shapeNum, int startFrame, int maxFrames, int tileSizeX, int tileSizeY)
+	// 179 is something ethereal, has 0-7 frames
+	BakeImageShapeFrames(179, 0, 8, 32, 32);
+	// 334 is green swamp bubbles, has 0-7 frames
+	BakeImageShapeFrames(334, 0, 8, 16, 16);
+	// 335 is green swamp bubbles, has 0-7 frames
+	BakeImageShapeFrames(335, 0, 8, 16, 16);
+	// 780 is blue bubbles, has 0-7 frames
+	BakeImageShapeFrames(780, 0, 8, 16, 16);
+	// 256 is ocean meeting land, has 0-10 frames
+	BakeImageShapeFrames(256, 0, 11, 64, 64);
+	// 419 is ocean meeting land, has 0-10 frames
+	BakeImageShapeFrames(419, 0, 11, 64, 64);
+	// 516 is ocean meeting land, has 0-10 frames
+	BakeImageShapeFrames(516, 0, 11, 64, 64);
+	// 610 is ocean meeting land, has 0-10 frames
+	BakeImageShapeFrames(610, 0, 11, 64, 64);
+	// 926 is ocean meeting land, has 0-10 frames
+	BakeImageShapeFrames(926, 0, 11, 64, 64);
+	// 927 is ocean meeting land, has 0-10 frames
+	BakeImageShapeFrames(927, 0, 11, 64, 64);
+	// 930 is ocean meeting land, has 0-10 frames
+	BakeImageShapeFrames(930, 0, 11, 64, 64);
+	// 938 is ocean meeting land, has 0-10 frames
+	BakeImageShapeFrames(938, 0, 11, 64, 64);
+
+	// 612 is ocean meeting beach, has 0-10 frames
+	BakeImageShapeFrames(612, 0, 11, 64, 64);
+	// 613 is ocean meeting beach, has 0-10 frames
+	BakeImageShapeFrames(613, 0, 11, 64, 64);
+	// 632 is ocean meeting beach, has 0-10 frames
+	BakeImageShapeFrames(632, 0, 11, 64, 64);
+	// 699 is ocean meeting beach, has 0-10 frames
+	BakeImageShapeFrames(699, 0, 11, 64, 64);
+	// 736 is ocean meeting beach, has 0-10 frames
+	BakeImageShapeFrames(736, 0, 11, 64, 64);
+	// 737 is ocean meeting beach, has 0-10 frames
+	BakeImageShapeFrames(737, 0, 11, 64, 64);
+	// 751 is ocean meeting beach, has 0-10 frames
+	BakeImageShapeFrames(751, 0, 11, 64, 64);
+	// 808 is ocean meeting beach, has 0-10 frames
+	BakeImageShapeFrames(808, 0, 11, 64, 64);
+	// 834 is ocean meeting beach, has 0-10 frames
+	BakeImageShapeFrames(834, 0, 11, 64, 64);
+	// 875 is ocean meeting beach, has 0-10 frames
+	BakeImageShapeFrames(875, 0, 11, 64, 64);
+	// 907 is ocean meeting beach, has 0-10 frames
+	BakeImageShapeFrames(907, 0, 11, 64, 64);
+	// 911 is ocean meeting beach, has 0-10 frames
+	BakeImageShapeFrames(911, 0, 11, 64, 64);
+	// 918 is ocean meeting beach, has 0-10 frames
+	BakeImageShapeFrames(918, 0, 11, 64, 64);
+	// 1012 is ocean meeting beach, has 0-10 frames
+	BakeImageShapeFrames(1012, 0, 11, 64, 64);
+	// 1020 is ocean meeting beach, has 0-10 frames
+	BakeImageShapeFrames(1020, 0, 11, 64, 64);
+	// 1022 is ocean meeting beach, has 0-10 frames
+	BakeImageShapeFrames(1022, 0, 11, 64, 64);
+
+	//BakeImageShapePalette(794, 0, 8, 26, 23);
+	MorphAnimFlat(794, 0, 8);
+
+	//BakeImageShapePalette(794, 1, 8, 28, 23);
+	MorphAnimFlat(794, 1, 8);
+
+	//BakeImageShapePalette(794, 2, 8, 26, 28);
+	MorphAnimFlat(794, 2, 8);
+
+	//BakeImageShapePalette(794, 3, 8, 26, 22);
+	MorphAnimFlat(794, 3, 8);
+
+	//BakeImageShapePalette(794, 4, 8, 30, 29);
+	MorphAnimFlat(794, 4, 8);
+
+	//BakeImageShapePalette(794, 5, 8, 29, 30);
+	MorphAnimFlat(794, 5, 8);
+
+	//BakeImageShapePalette(794, 6, 8, 30, 29);
+	MorphAnimFlat(794, 6, 8);
+
+	//BakeImageShapePalette(794, 7, 8, 29, 30);
+	MorphAnimFlat(794, 7, 8);
+
+	//BakeImageShapePalette(794, 8, 8, 31, 29);
+	MorphAnimFlat(794, 8, 8);
+
+	//BakeImageShapePalette(794, 9, 8, 27, 31);
+	MorphAnimFlat(794, 9, 8);
+
+	//BakeImageShapePalette(794, 10, 8, 25, 27);
+	MorphAnimFlat(794, 10, 8);
+
+	//BakeImageShapePalette(794, 11, 8, 27, 31);
+	MorphAnimFlat(794, 11, 8);
+
+	//BakeImageShapePalette(794, 12, 8, 29, 32);
+	MorphAnimFlat(794, 12, 8);
+
+	//BakeImageShapePalette(794, 13, 8, 31, 23);
+	MorphAnimFlat(794, 13, 8);
+
+	//BakeImageShapePalette(794, 14, 8, 23, 31);
+	MorphAnimFlat(794, 14, 8);
+
+	//BakeImageShapePalette(794, 15, 8, 30, 31);
+	MorphAnimFlat(794, 15, 8);
+
+	//BakeImageShapePalette(794, 16, 8, 24, 25);
+	MorphAnimFlat(794, 16, 8);
+
+	//BakeImageShapePalette(794, 17, 8, 26, 21);
+	MorphAnimFlat(794, 17, 8);
+
+	//BakeImageShapePalette(794, 18, 8, 26, 26);
+	MorphAnimFlat(794, 18, 8);
+
+	//BakeImageShapePalette(794, 19, 8, 25, 24);
+	MorphAnimFlat(794, 19, 8);
+
+	MorphAnimFlat(256, 0, 11);
+	// 419 is ocean meeting land, has 0-10 frames
+	MorphAnimFlat(419, 0, 11);
+	// 516 is ocean meeting land, has 0-10 frames
+	MorphAnimFlat(516, 0, 11);
+	// 610 is ocean meeting land, has 0-10 frames
+	MorphAnimFlat(610, 0, 11);
+	// 926 is ocean meeting land, has 0-10 frames
+	MorphAnimFlat(926, 0, 11);
+	// 927 is ocean meeting land, has 0-10 frames
+	MorphAnimFlat(927, 0, 11);
+	// 930 is ocean meeting land, has 0-10 frames
+	MorphAnimFlat(930, 0, 11);
+	// 938 is ocean meeting land, has 0-10 frames
+	MorphAnimFlat(938, 0, 11);
+	// 612 is ocean meeting beach, has 0-10 frames
+	MorphAnimFlat(612, 0, 11);
+	// 613 is ocean meeting beach, has 0-10 frames
+	MorphAnimFlat(613, 0, 11);
+	// 632 is ocean meeting beach, has 0-10 frames
+	MorphAnimFlat(632, 0, 11);
+	// 699 is ocean meeting beach, has 0-10 frames
+	MorphAnimFlat(699, 0, 11);
+	// 736 is ocean meeting beach, has 0-10 frames
+	MorphAnimFlat(736, 0, 11);
+	// 737 is ocean meeting beach, has 0-10 frames
+	MorphAnimFlat(737, 0, 11);
+	// 751 is ocean meeting beach, has 0-10 frames
+	MorphAnimFlat(751, 0, 11);
+	// 808 is ocean meeting beach, has 0-10 frames
+	MorphAnimFlat(808, 0, 11);
+	// 834 is ocean meeting beach, has 0-10 frames
+	MorphAnimFlat(834, 0, 11);
+	// 875 is ocean meeting beach, has 0-10 frames
+	MorphAnimFlat(875, 0, 11);
+	// 907 is ocean meeting beach, has 0-10 frames
+	MorphAnimFlat(907, 0, 11);
+	// 911 is ocean meeting beach, has 0-10 frames
+	MorphAnimFlat(911, 0, 11);
+	// 918 is ocean meeting beach, has 0-10 frames
+	MorphAnimFlat(918, 0, 11);
+	// 1012 is ocean meeting beach, has 0-10 frames
+	MorphAnimFlat(1012, 0, 11);
+	// 1020 is ocean meeting beach, has 0-10 frames
+	MorphAnimFlat(1020, 0, 11);
+	// 1022 is ocean meeting beach, has 0-10 frames
+	MorphAnimFlat(1022, 0, 11);
+	*/
+	
 	file.close();
 	DebugPrint("Processed " + std::to_string(loadedCount) + " roof images commands from " + filename);
 }
@@ -970,20 +1175,38 @@ void LoadingState::MakeMap()
 		g_World[i].resize(3072);
 	}
 
+	g_chunkAnimTexture.resize(3046);
+	for (int i = 0; i < 3046; ++i)
+	{
+		//g_chunkAnimTexture[i] = g_ResourceManager->GetTexture("Images/error.png");
+		g_chunkAnimTexture[i] = nullptr;
+	}
 	//  Now, finally, we can create the world map.
+	int floorRef = 224;
 	for (int i = 0; i < 192; ++i)
 	{
 		for (int j = 0; j < 192; ++j)
 		{
 			int chunkid = g_chunkTypeMap[i][j];
+			Image tempImage = GenImageColor(128 * 8, 128, Color{ 0, 128, 255, 0 });
+			unsigned int frameCt = 1;
+			unsigned int pixelCt = 0;
+			std::string filename = "Images/chunksprite/chunk_ID" + std::to_string(chunkid) + ".png";
+			bool makeShapesprite = true;
+			if (FileExists(filename.c_str())) {
+				if (g_chunkAnimTexture.size() <= chunkid) {
+					g_chunkAnimTexture.resize(chunkid + 1);
+				}
+				g_chunkAnimTexture[chunkid] = g_ResourceManager->GetTexture(filename);
+				makeShapesprite = false;
+			}
 			for (int k = 0; k < 16; ++k)
 			{
 				for (int l = 0; l < 16; ++l)
 				{
 					unsigned int thisdata = g_ChunkTypeList[chunkid][l][k];
 					g_World[j * 16 + l][i * 16 + k] = g_ChunkTypeList[chunkid][l][k];
-
-
+					
 					unsigned short shapenum = thisdata & 0x3ff;
 					unsigned short framenum = (thisdata >> 10) & 0x1f;
 
@@ -992,8 +1215,130 @@ void LoadingState::MakeMap()
 						int nextId = GetNextID();
 						AddObject(shapenum, framenum, nextId, (i * 16 + k), 0, (j * 16 + l));
 					}
+					else if (shapenum < 150)
+					{
+						if (makeShapesprite == true) {
+							//  figure out if this referenced shape is animated
+							ShapeData& m_shapeData = g_shapeTable[shapenum][framenum];
+							size_t pixelsLength = m_shapeData.m_palettePixels.size();
+							if (pixelsLength > 0)
+							{
+								for (int m = 0; m < 8; ++m)
+								{
+									if (chunkid >= 0) {
+										float dstPosX = float(k * 8);
+										float dstPosY = float(l * 8);
+										for (const auto& pixel : m_shapeData.m_palettePixels)
+										{
+											// Access tuple elements - assuming it's std::tuple<int, int, int> for RGB or similar
+											int pX = std::get<0>(pixel);   // First integer in tuple
+											int pY = std::get<1>(pixel);  // Second integer in tuple
+											int pRef = std::get<2>(pixel);   // Third integer in tuple
+											int gRef = pRef - floorRef;
+											int baseRef = 224;
+											unsigned int baseCount = frameCt;
+											if (pRef >= 224 && pRef < 232) {
+												baseCount = 8;
+												if (baseCount > frameCt) {
+													frameCt = baseCount;
+												}
+												baseRef = 224;
+											}
+											else if (pRef >= 232 && pRef < 240) {
+												baseCount = 8;
+												if (baseCount > frameCt) {
+													frameCt = baseCount;
+												}
+												baseRef = 232;
+											}
+											else if (pRef >= 240 && pRef < 244) {
+												baseCount = 4;
+												if (baseCount > frameCt) {
+													frameCt = baseCount;
+												}
+												baseRef = 240;
+											}
+											else if (pRef >= 244 && pRef < 248) {
+												baseCount = 4;
+												if (baseCount > frameCt) {
+													frameCt = baseCount;
+												}
+												baseRef = 244;
+											}
+											else if (pRef >= 248 && pRef < 252) {
+												baseCount = 4;
+												if (baseCount > frameCt) {
+													frameCt = baseCount;
+												}
+												baseRef = 248;
+											}
+											else if (pRef >= 252 && pRef < 255) {
+												baseCount = 3;
+												if (baseCount > frameCt) {
+													frameCt = baseCount;
+												}
+												baseRef = 252;
+											}
+											int pDiff = baseRef - floorRef;
+											int frameRef = pRef - baseRef;
+											frameRef -= m;
+											while (frameRef < 0) {
+												frameRef += baseCount;
+											}
+											gRef = frameRef + pDiff;
+											const auto& refPalette = g_paletteTransforms[gRef];
+											//int val = g_paletteTransforms[gRef][0];
+											Color pColor = Color{ std::get<0>(refPalette), std::get<1>(refPalette), std::get<2>(refPalette), std::get<3>(refPalette) };
+											//Color pColor = Color{ std::get<0>(refPalette), std::get<1>(refPalette), std::get<2>(refPalette), std::get<3>(refPalette) };
+											//Log("Drawing pixel at [" + std::to_string(dstPosX) + ", " + std::to_string(dstPosY) + "] (" + std::to_string(float(pX)) + ", " + std::to_string(float(pY)) + ") with palette reference " + std::to_string(pRef), "anims.log");
+											pX += 128 * m;
+											ImageDrawPixel(&tempImage, int(dstPosX) + pX, int(dstPosY) + pY, pColor);
+											//ImageDrawPixel(&tempImage, int(dstPosX) + pX, int(dstPosY) + pY, RED);
+											pixelCt += 1;
+										}
+										//ImageDrawPixel(&tempImage, l * 8, k * 8, BLACK);
+										/*
+										ImageDraw(&tempImage,
+											m_shapeData.m_texture->m_OriginalImage,
+											Rectangle{ 0, 0, 8.0f, 8.0f },
+											Rectangle{
+												dstPosX,
+												dstPosY,
+												8.0f,
+												8.0f },
+												WHITE);
+										*/
+							
+									//  check if this shape has a morph animation
+									//Log("Map[" + std::to_string(i) + "," + std::to_string(j) + "] Shape " + std::to_string(shapenum) + " frame " + std::to_string(framenum) + " has pixels, checking for morph animation.", "anims.log");
+									}
+								}
+							}
+						}
+					}
 				}
 			}
+			if (makeShapesprite == true) {
+				if (chunkid >= 0)
+				{
+					if (pixelCt > 0)
+					{
+						Log("Map[" + std::to_string(i) + "," + std::to_string(j) + "] Chunk " + std::to_string(chunkid) + " has " + std::to_string(pixelCt) + " pixels drawn at " + std::to_string(frameCt) + " frames.", "anims.log");
+						//std::string filename = "Debug/Chunks/chunk_X" + std::to_string(j) + "_Y" + std::to_string(i) + ".png";
+						std::string filename = "Images/chunksprite/chunk_ID" + std::to_string(chunkid) + ".png";
+						ExportImage(tempImage, filename.c_str());
+						if (g_chunkAnimTexture.size() <= chunkid) {
+							g_chunkAnimTexture.resize(chunkid + 1);
+						}
+						g_chunkAnimTexture[chunkid] = g_ResourceManager->GetTexture(filename);
+					}
+					else
+					{
+						Log("Map[" + std::to_string(i) + "," + std::to_string(j) + "] Chunk " + std::to_string(chunkid) + " has no pixels drawn at " + std::to_string(frameCt) + " frames.", "anims.log");
+					}
+				}
+			}
+			UnloadImage(tempImage);
 		}
 	}
 }
@@ -1344,6 +1689,21 @@ void LoadingState::CreateShapeTable()
 			thisPalette[j].a = 255;
 		}
 
+		//  Stash transforming palettes for later use
+		if (i == 0)
+		{
+			size_t g_paletteTransformsSize = g_paletteTransforms.size();
+			if (g_paletteTransformsSize == 0) {
+				for (int j = 224; j < 256; ++j)
+				{
+					g_paletteTransforms.push_back({ thisPalette[j].r, thisPalette[j].g, thisPalette[j].b, thisPalette[j].a });
+				}
+			}
+			g_paletteTransformsSize = g_paletteTransforms.size();
+			Log("Loaded palette " + std::to_string(i) + " with " + std::to_string(g_paletteTransformsSize) + " transform colors.", "anims.log");
+		}
+		
+
 		//  Fix for translucent blood
 		thisPalette[244] = Color{ 144, 40, 192, 128 };
 		thisPalette[245] = Color{ 96, 40, 16, 128 };
@@ -1386,14 +1746,20 @@ void LoadingState::CreateShapeTable()
 		int numFrames = shapeEntryMap[thisShape].length / 64;
 		for (int thisFrame = 0; thisFrame < numFrames; ++thisFrame)
 		{
+			ShapeData& shapeData = g_shapeTable[thisShape][thisFrame];
 			if (thisShape == 12 && thisFrame == 0)
 				continue;
+			Log("Processing Shape " + std::to_string(thisShape) + " Frame " + std::to_string(thisFrame), "anims.log");
 			for (int i = 0; i < 8; ++i)
 			{
 				for (int j = 0; j < 8; ++j)
 				{
 					unsigned char Value = ReadU8(shapes);
 					ImageDrawPixel(&tempImage, (thisShape * 8) + j, (thisFrame * 8) + i, m_palettes[0][Value]);
+					if (Value >= 224 && Value < 254)
+					{
+						shapeData.CaptureSpecialPaletteReferences(j, i, int(Value));
+					}
 				}
 			}
 		}
@@ -1445,9 +1811,13 @@ void LoadingState::CreateShapeTable()
 				frameOffsets[i].fileOffset = ReadU32(shapes);
 			}
 
+			Log("Shape " + std::to_string(thisShape) + " has " + std::to_string(frameCount) + " frames.", "anims.log");
+
+
 			//  Read the frame data.
 			for (unsigned int i = 0; i < frameCount; ++i)
 			{
+				Log("Processing Shape " + std::to_string(thisShape) + " Frame " + std::to_string(i), "anims.log");
 				int paletteNumber = 0;
 				// if(thisShape == 508 || thisShape == 512 || (thisShape == 732 && (i == 4 || i == 5))) // Stained glass
 				// {
@@ -1505,6 +1875,7 @@ void LoadingState::CreateShapeTable()
 						{
 							unsigned char Value = ReadU8(shapes);
 							ImageDrawPixel(&tempImage, xStart + i, yStart, m_palettes[paletteNumber][Value]);
+							shapeData.CaptureSpecialPaletteReferences(xStart + i, yStart, Value);
 						}
 					}
 					else // RLE.
@@ -1523,6 +1894,7 @@ void LoadingState::CreateShapeTable()
 								{
 									unsigned char Value = ReadU8(shapes);
 									ImageDrawPixel(&tempImage, xStart + i, yStart, m_palettes[paletteNumber][Value]);
+									shapeData.CaptureSpecialPaletteReferences(xStart + i, yStart, Value);
 								}
 							}
 							else
@@ -1531,6 +1903,7 @@ void LoadingState::CreateShapeTable()
 								for (int i = 0; i < runLength; ++i)
 								{
 									ImageDrawPixel(&tempImage, xStart + i, yStart, m_palettes[paletteNumber][Value]);
+									shapeData.CaptureSpecialPaletteReferences(xStart + i, yStart, Value);
 								}
 							}
 							xStart += runLength;
@@ -2835,3 +3208,20 @@ void LoadingState::LoadNPCSchedules()
 
 #endif
 }
+
+/*Color LoadingState::GetPaletteColor(int paletteId, int colorIndex)
+{
+	if (paletteId < 0 || paletteId >= static_cast<int>(m_palettes.size()))
+	{
+		Log("Error: Invalid palette ID " + std::to_string(paletteId));
+		return (0, 0, 0, 255);
+	}
+	const auto& palette = m_palettes[paletteId];
+	if (colorIndex < 0 || colorIndex >= static_cast<int>(palette.size()))
+	{
+		Log("Error: Invalid color index " + std::to_string(colorIndex) + " for palette ID " + std::to_string(paletteId));
+		return (0, 0, 0, 255);
+	}
+	return palette[colorIndex];
+}
+*/

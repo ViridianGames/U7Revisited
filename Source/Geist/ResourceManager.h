@@ -46,6 +46,7 @@ public:
 	void AddMusic(const std::string& musicName);
 	void AddConfig(const std::string& configName);
 	void UpdateModelTexture(const std::string& modelName, Texture2D texture);
+	void ResourceManager::UpdateModelUVFrame(const std::string& modelName, int frameNum, int maxFrames);
 
 	//  The pointers that these functions hand out are for access ONLY.  Do not
 	//  delete them.  You didn't make these resources, you have no business

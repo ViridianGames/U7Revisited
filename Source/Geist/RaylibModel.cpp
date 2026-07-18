@@ -1,4 +1,5 @@
 #include <Geist/RaylibModel.h>
+#include <Geist/Logging.h>
 #include <cassert>
 #include <raymath.h>
 
@@ -79,6 +80,54 @@ RaylibModel& RaylibModel::Decenter()
 	Matrix translation = MatrixTranslate(-center.x, 0, -center.z);
 	m_Model.transform = MatrixMultiply(m_Model.transform, translation);
 
+	return *this;
+}
+
+RaylibModel& RaylibModel::UpdateFlatUV(float uvXmin, float uvXmax, float uvYmin, float uvYmax)
+{
+	/*
+	BoundingBox bounds = GetModelBoundingBox(m_Model);
+	Vector3 center = Vector3{
+		(bounds.min.x + bounds.max.x) / 2.0f,
+			(bounds.min.y + bounds.max.y) / 2.0f,
+			(bounds.min.z + bounds.max.z) / 2.0f
+	};
+
+	Matrix translation = MatrixTranslate(-center.x, 0, -center.z);
+	m_Model.transform = MatrixMultiply(m_Model.transform, translation);
+	*/
+	Mesh mesh = m_Model.meshes[0];
+	//int vertNum = 0;
+	/*
+	int vertMax = mesh.vertexCount;
+	for (int i = 0; i < vertMax; ++i) {
+		// Update UV coordinates here
+		//mesh.texcoords[i * 2]     = 0.5f;
+		//mesh.texcoords[i * 2 + 1] = 1.0f;
+		//Log("Vertex " + std::to_string(i) + " UV " + std::to_string(mesh.texcoords[i * 2]) + ", " + std::to_string(mesh.texcoords[i * 2 + 1]) + ".", "anims.log");
+	}
+	*/
+	int i = 0;
+	mesh.texcoords[i * 2] = uvXmin;
+	mesh.texcoords[i * 2 + 1] = uvYmin;
+	i = 3;
+	mesh.texcoords[i * 2] = uvXmin;
+	mesh.texcoords[i * 2 + 1] = uvYmin;
+	i = 2;
+	mesh.texcoords[i * 2] = uvXmax;
+	mesh.texcoords[i * 2 + 1] = uvYmax;
+	i = 4;
+	mesh.texcoords[i * 2] = uvXmax;
+	mesh.texcoords[i * 2 + 1] = uvYmax;
+	i = 1;
+	mesh.texcoords[i * 2] = uvXmax;
+	mesh.texcoords[i * 2 + 1] = uvYmin;
+	i = 5;
+	mesh.texcoords[i * 2] = uvXmin;
+	mesh.texcoords[i * 2 + 1] = uvYmax;
+
+	int bufferId = 1;
+	UpdateMeshBuffer(mesh, bufferId, mesh.texcoords, mesh.vertexCount * 2 * sizeof(float), 0);
 	return *this;
 }
 

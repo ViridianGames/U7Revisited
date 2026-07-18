@@ -263,6 +263,9 @@ public:
 		  , m_Quality(0)
 		  , m_Visible(false)
 		  , m_Selected(false)
+		  , m_isActivated(false)
+		  , m_activationTimer(0.0f)
+	      , m_actCooldown(0.125f)
 		  , m_BaseSpeed(0.0f)
 		  , m_BaseMaxHP(0.0f)
 		  , m_BaseHP(0.0f)
@@ -336,6 +339,7 @@ public:
 	int PathfindToDestTracked(Vector3 dest); // Returns request ID for tracking (used by Lua)
 	virtual void SetSpeed(float speed) { m_speed = speed; }
 
+	void Activate(float timeNow, int maxFrames, int probability);
 	void SetFrame(int frame); // Change object frame (e.g., for doors)
 
 	void Interact(int event);
@@ -462,6 +466,9 @@ public:
 	bool m_ShouldDraw = true; // This is an override that can be set in a Lua script.
 	bool m_Selected;
 
+	bool m_isActivated;
+	float m_activationTimer;
+	float m_actCooldown; // Minimum time between activations (seconds)
 
 
 	float m_BaseSpeed;

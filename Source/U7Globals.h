@@ -265,10 +265,13 @@ extern bool g_CameraMoved;
 
 extern std::unordered_map<int, int[16][16] > g_ChunkTypeList;  // The 16x16 tiles for each chunk type
 extern int g_chunkTypeMap[192][192]; // The type of each chunk in the map
+extern std::vector<Texture*> g_chunkAnimTexture; //animated chunk texture
+extern std::vector<std::tuple<int, int, int>> g_chunkVisible;
 extern std::vector<U7Object*> g_chunkObjectMap[192][192]; // The objects in each chunk
 
 extern std::array<std::array<ShapeData, 32>, 1024> g_shapeTable;
 extern std::array<ObjectData, 1024> g_objectDataTable;
+extern std::vector<std::tuple<unsigned char, unsigned char, unsigned char, unsigned char>> g_paletteTransforms;
 extern std::unordered_map<int, std::unique_ptr<NPCData> > g_NPCData;
 extern std::vector<MonsterData> g_monsterData;   // Base stats for all 65 monster types (STATIC/MONSTERS.DAT, documented format)
 
@@ -377,7 +380,10 @@ void HideObject(int shapenum, int framenum, float x, float y, float z);
 //void MorphObject(int shapenum, int framenum, float x, float y, float z, float nux, float nuy, float nuz, const std::string& modelName);
 void MorphObject(int shapenum, int framenum, float x, float y, float z, float nux, float nuy, float nuz, const std::string& modelName, const std::string& imageName, ShapeDrawType drawType);
 void MorphRoof(int roofId, int shapeNum, int frameNum, float x, float y, float z, float nux, float nuy, float nuz);
+void MorphAnimFlat(int shapeNum, int frameNum, int numFrames);
 void BakeImageRoof(int objId, int xOfs, float y, int tileSizeX, int tileSizeY, int borderSize, int tileCountX, int tileCountY);
+void BakeImageShapeFrames(int shapeNum, int startFrame, int maxFrames, int tileSizeX, int tileSizeY);
+void BakeImageShapePalette(int shapeNum, int startFrame, int maxFrames, int tileSizeX, int tileSizeY);
 
 void OpenURL(const std::string& url);
 

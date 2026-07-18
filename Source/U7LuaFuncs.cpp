@@ -795,7 +795,7 @@ static int LuaSetObjectFrame(lua_State *L)
     U7Object *object = GetObjectFromID(object_id);
     if (object)
     {
-        object->SetFrame(frame);  // Now includes pathfinding grid update for doors
+        //object->SetFrame(frame);  // Now includes pathfinding grid update for doors
     }
     return 0;
 }
