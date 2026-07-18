@@ -173,7 +173,7 @@ void ShapeData::CaptureSpecialPaletteReferences(int posX, int posY, int paletteR
 	size_t postlength = m_palettePixels.size();
 	if (postlength > prelength)
 	{
-		Log("Captured special palette reference: " + std::to_string(paletteRef) + " at (" + std::to_string(posX) + ", " + std::to_string(posY) + ")", "anims.log");
+		//Log("Captured special palette reference: " + std::to_string(paletteRef) + " at (" + std::to_string(posX) + ", " + std::to_string(posY) + ")", "anims.log");
 	}
 }
 
@@ -414,7 +414,6 @@ void ShapeData::SetupDrawTypes()
 	}
 	else if (m_drawType == ShapeDrawType::OBJECT_DRAW_ANIMFLAT)
 	{
-		//m_Dims = Vector3{ float(m_texture->width) / 8.0f, 0, float(m_texture->height) / 8.0f };
 		m_Dims.y = 0.0f;
 	}
 	else
@@ -728,9 +727,9 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 		//BeginShaderMode(g_alphaDiscard);
 		//we would update the UV coords for the flat model here
 		SetMaterialTexture(&m_flatModel->GetModel().materials[0], MATERIAL_MAP_DIFFUSE, m_texture->m_Texture);
+		// we could batch these so there's less UV updates
 		m_flatModel->UpdateFlatUV(frameUV, frameUV + uvPerFrame, 0.0f, 1.0f);
 		DrawModelEx(m_flatModel->GetModel(), finalPos, { 0, 1, 0 }, 0, flatScaling, color);
-		//m_flatModel->UpdateFlatUV(0.0, 1.0, 0.0, 1.0);
 		//EndShaderMode();
 		break;
 	}
@@ -754,6 +753,7 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 
 		//BeginShaderMode(g_alphaDiscard);
 		SetMaterialTexture(&m_flatModel->GetModel().materials[0], MATERIAL_MAP_DIFFUSE, m_texture->m_Texture);
+		// we could batch these so there's less UV updates
 		m_flatModel->UpdateFlatUV(0.0, 1.0, 0.0, 1.0);
 		DrawModelEx(m_flatModel->GetModel(), finalPos, { 0, 1, 0 }, 0, flatScaling, color);
 		//EndShaderMode();

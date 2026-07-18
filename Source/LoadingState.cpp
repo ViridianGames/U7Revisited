@@ -1325,6 +1325,12 @@ void LoadingState::MakeMap()
 					{
 						Log("Map[" + std::to_string(i) + "," + std::to_string(j) + "] Chunk " + std::to_string(chunkid) + " has " + std::to_string(pixelCt) + " pixels drawn at " + std::to_string(frameCt) + " frames.", "anims.log");
 						//std::string filename = "Debug/Chunks/chunk_X" + std::to_string(j) + "_Y" + std::to_string(i) + ".png";
+
+
+						std::string objType = "chunksprite";
+						std::string objFolder = "Images/" + objType;
+						std::filesystem::create_directories(objFolder.c_str());
+						
 						std::string filename = "Images/chunksprite/chunk_ID" + std::to_string(chunkid) + ".png";
 						ExportImage(tempImage, filename.c_str());
 						if (g_chunkAnimTexture.size() <= chunkid) {
@@ -3208,20 +3214,3 @@ void LoadingState::LoadNPCSchedules()
 
 #endif
 }
-
-/*Color LoadingState::GetPaletteColor(int paletteId, int colorIndex)
-{
-	if (paletteId < 0 || paletteId >= static_cast<int>(m_palettes.size()))
-	{
-		Log("Error: Invalid palette ID " + std::to_string(paletteId));
-		return (0, 0, 0, 255);
-	}
-	const auto& palette = m_palettes[paletteId];
-	if (colorIndex < 0 || colorIndex >= static_cast<int>(palette.size()))
-	{
-		Log("Error: Invalid color index " + std::to_string(colorIndex) + " for palette ID " + std::to_string(paletteId));
-		return (0, 0, 0, 255);
-	}
-	return palette[colorIndex];
-}
-*/

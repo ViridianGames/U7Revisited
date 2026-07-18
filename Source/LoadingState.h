@@ -42,7 +42,6 @@ public:
    void LoadModels();
    void LoadInitialGameState();
    void LoadNPCSchedules();
-   Color GetPaletteColor(int paletteId, int colorIndex);
    void LoadRoofImages(const std::string& filename);
    void LoadRoofMorphs(const std::string& filename);
 

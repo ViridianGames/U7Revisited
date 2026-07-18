@@ -307,6 +307,7 @@ void U7Object::InteractiveDraw()
 	bool frameSwitch = false;
 	bool randomlyActive = false;
 
+	// fix me, move to something like g_objectDataTable or g_shapeTable, so we don't have to hardcode this here
 	switch (m_ObjectType)
 	{
 		case 179:

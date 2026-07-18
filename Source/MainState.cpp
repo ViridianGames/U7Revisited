@@ -1429,7 +1429,6 @@ void MainState::Update()
 		// Calculate g_mouseOverUI RIGHT BEFORE UpdateSortedVisibleObjects
 		CalculateMouseOverUI();
 
-		Log("Updating sorted visible objects...", "anims.log");
 		UpdateSortedVisibleObjects();
 
 		for (auto& object : g_sortedVisibleObjects)

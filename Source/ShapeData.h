@@ -108,7 +108,6 @@ public:
 
 	int m_pixelOffsetX;
 	int m_pixelOffsetY;
-	//std::vector<int> m_palettePixels;
 	std::vector<std::tuple<int, int, int>> m_palettePixels;
 	int m_paletteFPS;
 

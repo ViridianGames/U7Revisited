@@ -1102,7 +1102,6 @@ void MorphAnimFlat(int shapeNum, int frameNum, int numFrames) {
 		m_shapeData.m_isAnimated = true;
 		Image image = LoadImage(imagePath.c_str());
 		m_shapeData.SetDefaultTexture(image);
-		//m_shapeData.m_customImageName = imagePath;
 	}
 }
 
@@ -1294,20 +1293,14 @@ void BakeImageShapePalette(int shapeNum, int startFrame, int maxFrames, int tile
 		int yPx = 0;
 		int j = 0;
 		int i = 0;
-		//while (j < tileCountY) {
-		//thisz = z + (j * tileSizeY);
 		while (i < maxFrames) {
-			//thisx = x + ((i - startFrame) * tileSizeX);
-			//xInt = int(thisx);
-			//yInt = int(thisz);
-			//Log("Shape Frame Palette thisX=" + std::to_string(thisx) + ", xInt=" + std::to_string(xInt) + ", yInt=" + std::to_string(yInt), "anims.log");
 			int framenum = startFrame;
 			ShapeData& m_shapeData = g_shapeTable[shapeNum][framenum];
 			xPx = (i * tileSizeX) + (tileSizeX);
 			yPx = (j * tileSizeY) + (tileSizeY);
 			float dstPosX = float(xPx - tileSizeX);// - m_shapeData.m_pixelOffsetX);
 			float dstPosY = float(yPx - m_shapeData.m_pixelOffsetY);
-			Log("Loading shape framepalette " + std::to_string(xPx) + ", " + std::to_string(yPx) + " | " + std::to_string(dstPosX) + ", " + std::to_string(dstPosY) + " to sprite image! " + std::to_string(m_shapeData.m_pixelOffsetX) + ", " + std::to_string(m_shapeData.m_pixelOffsetY) + " shapeFrame[" + std::to_string(shapeNum) + ":" + std::to_string(framenum) + "]", "anims.log");
+			//Log("Loading shape framepalette " + std::to_string(xPx) + ", " + std::to_string(yPx) + " | " + std::to_string(dstPosX) + ", " + std::to_string(dstPosY) + " to sprite image! " + std::to_string(m_shapeData.m_pixelOffsetX) + ", " + std::to_string(m_shapeData.m_pixelOffsetY) + " shapeFrame[" + std::to_string(shapeNum) + ":" + std::to_string(framenum) + "]", "anims.log");
 			ImageDraw(&frameImage,
 				m_shapeData.m_texture->m_OriginalImage,
 				Rectangle{ 0, 0, float(m_shapeData.m_texture->width), float(m_shapeData.m_texture->height) },
@@ -1320,7 +1313,7 @@ void BakeImageShapePalette(int shapeNum, int startFrame, int maxFrames, int tile
 			//now iterate m_shapeData.m_palettePixels
 			int floorRef = 224;
 			size_t pixelsLength = m_shapeData.m_palettePixels.size();
-			Log("  Shape Frame Palette has " + std::to_string(pixelsLength) + " pixels to draw.", "anims.log");
+			//Log("  Shape Frame Palette has " + std::to_string(pixelsLength) + " pixels to draw.", "anims.log");
 			for (const auto& pixel : m_shapeData.m_palettePixels)
 			{
 				// Access tuple elements - assuming it's std::tuple<int, int, int> for RGB or similar
@@ -1396,13 +1389,12 @@ void BakeImageShapePalette(int shapeNum, int startFrame, int maxFrames, int tile
 					ImageDrawPixel(&frameImage, dstPosX + pX, dstPosY + pY, pColor);
 
 					// Example: Log the pixel values
-					Log("Pixel values: " + std::to_string(pX) + ", " +
-						std::to_string(pY) + ", " + std::to_string(pRef), "anims.log");
+					//Log("Pixel values: " + std::to_string(pX) + ", " + std::to_string(pY) + ", " + std::to_string(pRef), "anims.log");
 				}
 			}
 			i++;
 		}
-		Log("Exporting sprite image to " + imagePath, "anims.log");
+		//Log("Exporting sprite image to " + imagePath, "anims.log");
 		ExportImage(frameImage, imagePath.c_str());
 	}
 }
