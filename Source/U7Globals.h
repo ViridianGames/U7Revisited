@@ -566,7 +566,7 @@ const float CLIMB_MOVEMENT_COST = 2.0f;
 const float MAX_WALKABLE_SURFACE_HEIGHT = 5.0f;
 
 // Position an attacker should move toward to stand at melee range from a target.
-Vector3 GetMeleeStandoffPosition(const Vector3& attackerPos, const Vector3& targetPos, float meleeRange = MELEE_RANGE_TILES);
+Vector3 GetStandoffPosition(const Vector3& attackerPos, const Vector3& targetPos, float meleeRange = MELEE_RANGE_TILES);
 
 // Call this whenever ANY object changes position or state
 void NotifyPathfindingGridUpdate(int worldX, int worldZ, int radius = 1);

@@ -279,9 +279,9 @@ bool U7Object::EngageCombatTarget()
 	m_combatMoveOrder = false;
 
 	float distSqr = Vector2DistanceSqr({ m_Pos.x, m_Pos.z }, { target->m_Pos.x, target->m_Pos.z });
-	float meleeRangeSqr = m_attackRange * m_attackRange;
+	float combatRangeSqr = m_attackRange * m_attackRange;
 
-	if (distSqr <= meleeRangeSqr)
+	if (distSqr <= combatRangeSqr)
 	{
 		// Hold position while in melee range so we don't keep walking toward a stale destination.
 		SetDest(m_Pos);
@@ -304,7 +304,7 @@ bool U7Object::EngageCombatTarget()
 	}
 	else
 	{
-		SetDest(GetMeleeStandoffPosition(m_Pos, target->m_Pos, m_attackRange));
+		SetDest(GetStandoffPosition(m_Pos, target->m_Pos, m_attackRange));
 	}
 
 	return true;
@@ -371,11 +371,11 @@ void U7Object::MonsterUpdate()
 			}
 			else if (distSqr < 81.0f)
 			{
-				SetDest(GetMeleeStandoffPosition(m_Pos, avatar->m_Pos, m_attackRange));
+				SetDest(GetStandoffPosition(m_Pos, avatar->m_Pos, m_attackRange));
 			}
 			else if (g_StateMachine && g_StateMachine->GetCurrentState() == STATE_COMBATSTATE && distSqr < 400.0f)
 			{
-				SetDest(GetMeleeStandoffPosition(m_Pos, avatar->m_Pos, m_attackRange));
+				SetDest(GetStandoffPosition(m_Pos, avatar->m_Pos, m_attackRange));
 			}
 		}
 	}
@@ -1381,6 +1381,16 @@ void U7Object::NPCUpdate()
 
 	if (isPartyMember && g_isCombatMode)
 	{
+
+		if (m_NPCData->m_equipment[EquipmentSlot::SLOT_RIGHT_HAND] != -1)
+		{
+			U7Object* weapon = g_objectList[m_NPCData->m_equipment[EquipmentSlot::SLOT_RIGHT_HAND]].get();
+			if (weapon->m_shapeData->m_shape == 598 || weapon->m_shapeData->m_shape == 474)
+			{
+				m_attackRange = 9;
+			}
+		}
+
 		if (g_CombatState && g_CombatState->m_paused)
 			return;
 

@@ -217,6 +217,7 @@ void MainState::OnEnter()
 	if (m_gameMode == MainStateModes::MAIN_STATE_MODE_TRINSIC_DEMO)
 	{
 		g_Player->AddPartyMember(1);
+		g_Player->AddPartyMember(2);
 		// Enable schedules and pathfinding for demo mode so NPCs behave like sandbox
 		m_npcSchedulesEnabled = true;
 		m_npcPathfindingEnabled = true;
@@ -276,6 +277,9 @@ void MainState::OnEnter()
 		g_Player->AddPartyMember(1);
 
 		SpawnMonster(14, 1044.0f, 0.0f, 2182.0f);
+		SpawnMonster(14, 1042.0f, 0.0f, 2180.0f);
+		SpawnMonster(14, 1048.0f, 0.0f, 2181.0f);
+		SpawnMonster(14, 1050.0f, 0.0f, 2183.0f);
 
 		// Only show welcome messages on first OnEnter, not when returning from dialogs
 		if (!m_hasShownWelcomeMessages)
@@ -1424,36 +1428,36 @@ void MainState::Update()
 			}
 		}
 
-		for (unordered_map<int, std::unique_ptr<U7Object> >::iterator node = g_objectList.begin(); node != g_objectList.end();)
-		{
-			if (!node->second)
-			{
-				++node;
-				continue;
-			}
-
-			if (node->second->GetIsDead())
-			{
-				if (g_LuaDebug)
-				{
-					AddConsoleString("Cleanup: Removing dead object ID " + std::to_string(node->first));
-				}
-				if (g_SoundSystem)
-				{
-					g_SoundSystem->StopLoopingSoundEffect(node->first);
-				}
-				UnassignObjectChunk(node->second.get());
-				node = g_objectList.erase(node);
-				if (g_LuaDebug)
-				{
-					AddConsoleString("Cleanup: Object erased from g_objectList");
-				}
-			}
-			else
-			{
-				++node;
-			}
-		}
+		// for (unordered_map<int, std::unique_ptr<U7Object> >::iterator node = g_objectList.begin(); node != g_objectList.end();)
+		// {
+		// 	if (!node->second)
+		// 	{
+		// 		++node;
+		// 		continue;
+		// 	}
+		//
+		// 	if (node->second->GetIsDead())
+		// 	{
+		// 		if (g_LuaDebug)
+		// 		{
+		// 			AddConsoleString("Cleanup: Removing dead object ID " + std::to_string(node->first));
+		// 		}
+		// 		if (g_SoundSystem)
+		// 		{
+		// 			g_SoundSystem->StopLoopingSoundEffect(node->first);
+		// 		}
+		// 		UnassignObjectChunk(node->second.get());
+		// 		node = g_objectList.erase(node);
+		// 		if (g_LuaDebug)
+		// 		{
+		// 			AddConsoleString("Cleanup: Object erased from g_objectList");
+		// 		}
+		// 	}
+		// 	else
+		// 	{
+		// 		++node;
+		// 	}
+		// }
 
 		// Calculate g_mouseOverUI RIGHT BEFORE UpdateSortedVisibleObjects
 		CalculateMouseOverUI();

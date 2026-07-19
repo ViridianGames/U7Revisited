@@ -569,6 +569,8 @@ public:
 
 	// Player-issued combat reposition order; suppresses auto-targeting until destination reached.
 	bool m_combatMoveOrder = false;
+
+
 };
 
 #endif

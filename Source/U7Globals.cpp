@@ -283,7 +283,7 @@ void LockCamera()
 	LockCameraToAvatar();
 }
 
-Vector3 GetMeleeStandoffPosition(const Vector3& attackerPos, const Vector3& targetPos, float meleeRange)
+Vector3 GetStandoffPosition(const Vector3& attackerPos, const Vector3& targetPos, float standOffRange)
 {
 	Vector3 delta = Vector3Subtract(attackerPos, targetPos);
 	delta.y = 0.0f;
@@ -294,9 +294,9 @@ Vector3 GetMeleeStandoffPosition(const Vector3& attackerPos, const Vector3& targ
 
 	Vector3 dir = Vector3Scale(delta, 1.0f / dist);
 	return Vector3{
-		targetPos.x + dir.x * meleeRange,
+		targetPos.x + dir.x * standOffRange,
 		attackerPos.y,
-		targetPos.z + dir.z * meleeRange
+		targetPos.z + dir.z * standOffRange
 	};
 }
 
