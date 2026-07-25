@@ -1811,7 +1811,7 @@ void MainState::Draw()
 			//Log("    Flat position: (" + std::to_string(thisPos.x) + ", " + std::to_string(thisPos.y) + ", " + std::to_string(thisPos.z) + ")", "anims.log");
 			SetMaterialTexture(&m_flatModel->GetModel().materials[0], MATERIAL_MAP_DIFFUSE, *g_chunkAnimTexture[chId]);
 			// fixme, need to change WHITE to daytime color, but for now just use WHITE
-			DrawModelEx(m_flatModel->GetModel(), thisPos, { 0, 1, 0 }, 0, flatScaling, WHITE);
+			DrawModelEx(m_flatModel->GetModel(), thisPos, { 0, 1, 0 }, 0, flatScaling, g_dayNightColor);
 		}
 	}
 	glDisable(GL_POLYGON_OFFSET_FILL);

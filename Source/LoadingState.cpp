@@ -1142,7 +1142,7 @@ void LoadingState::MakeMap()
 				{
 					if (pixelCt > 0)
 					{
-						Log("Map[" + std::to_string(i) + "," + std::to_string(j) + "] Chunk " + std::to_string(chunkid) + " has " + std::to_string(pixelCt) + " pixels drawn at " + std::to_string(frameCt) + " frames.", "anims.log");
+						//Log("Map[" + std::to_string(i) + "," + std::to_string(j) + "] Chunk " + std::to_string(chunkid) + " has " + std::to_string(pixelCt) + " pixels drawn at " + std::to_string(frameCt) + " frames.", "anims.log");
 						//std::string filename = "Debug/Chunks/chunk_X" + std::to_string(j) + "_Y" + std::to_string(i) + ".png";
 
 						std::string objType = "chunksprite";
@@ -1158,7 +1158,7 @@ void LoadingState::MakeMap()
 					}
 					else
 					{
-						Log("Map[" + std::to_string(i) + "," + std::to_string(j) + "] Chunk " + std::to_string(chunkid) + " has no pixels drawn at " + std::to_string(frameCt) + " frames.", "anims.log");
+						//Log("Map[" + std::to_string(i) + "," + std::to_string(j) + "] Chunk " + std::to_string(chunkid) + " has no pixels drawn at " + std::to_string(frameCt) + " frames.", "anims.log");
 					}
 				}
 			}
@@ -1524,7 +1524,7 @@ void LoadingState::CreateShapeTable()
 				}
 			}
 			g_paletteTransformsSize = g_paletteTransforms.size();
-			Log("Loaded palette " + std::to_string(i) + " with " + std::to_string(g_paletteTransformsSize) + " transform colors.", "anims.log");
+			//Log("Loaded palette " + std::to_string(i) + " with " + std::to_string(g_paletteTransformsSize) + " transform colors.", "anims.log");
 		}
 		
 
@@ -1573,7 +1573,7 @@ void LoadingState::CreateShapeTable()
 			ShapeData& shapeData = g_shapeTable[thisShape][thisFrame];
 			if (thisShape == 12 && thisFrame == 0)
 				continue;
-			Log("Processing Shape " + std::to_string(thisShape) + " Frame " + std::to_string(thisFrame), "anims.log");
+			//Log("Processing Shape " + std::to_string(thisShape) + " Frame " + std::to_string(thisFrame), "anims.log");
 			for (int i = 0; i < 8; ++i)
 			{
 				for (int j = 0; j < 8; ++j)
@@ -1635,13 +1635,13 @@ void LoadingState::CreateShapeTable()
 				frameOffsets[i].fileOffset = ReadU32(shapes);
 			}
 
-			Log("Shape " + std::to_string(thisShape) + " has " + std::to_string(frameCount) + " frames.", "anims.log");
+			//Log("Shape " + std::to_string(thisShape) + " has " + std::to_string(frameCount) + " frames.", "anims.log");
 
 
 			//  Read the frame data.
 			for (unsigned int i = 0; i < frameCount; ++i)
 			{
-				Log("Processing Shape " + std::to_string(thisShape) + " Frame " + std::to_string(i), "anims.log");
+				//Log("Processing Shape " + std::to_string(thisShape) + " Frame " + std::to_string(i), "anims.log");
 				int paletteNumber = 0;
 				// if(thisShape == 508 || thisShape == 512 || (thisShape == 732 && (i == 4 || i == 5))) // Stained glass
 				// {
@@ -2445,6 +2445,7 @@ void LoadingState::LoadInitialGameState()
 
 				unsigned int shapenum = thisNPC.shapeId & 0x3ff;
 				unsigned int framenum = thisNPC.shapeId >> 10;
+				Log("NPC " + std::to_string(i) + ": shapeId=" + std::to_string(thisNPC.shapeId) + " shapenum=" + std::to_string(shapenum) + " framenum=" + std::to_string(framenum), "anims.log");
 				if (shapenum == 721)
 				{
 					if (!g_Player->GetIsMale())

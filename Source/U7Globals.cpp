@@ -1183,7 +1183,7 @@ void BakeImageShapeFrames(int shapeNum, int startFrame, int maxFrames, int tileS
 			//float dstPosY = float(yPx - m_shapeData.m_pixelOffsetY);
 			float dstPosX = float(xPx - m_shapeData.m_pixelOffsetX);
 			float dstPosY = float(yPx - m_shapeData.m_pixelOffsetY);
-			Log("Loading shape palette " + std::to_string(xPx) + ", " + std::to_string(yPx) + " | " + std::to_string(dstPosX) + ", " + std::to_string(dstPosY) + " to sprite image!" + std::to_string(m_shapeData.m_pixelOffsetX) + ", " + std::to_string(m_shapeData.m_pixelOffsetY) + " shapeFrame[" + std::to_string(shapeNum) + ":" + std::to_string(framenum) + "]", "anims.log");
+			//Log("Loading shape palette " + std::to_string(xPx) + ", " + std::to_string(yPx) + " | " + std::to_string(dstPosX) + ", " + std::to_string(dstPosY) + " to sprite image!" + std::to_string(m_shapeData.m_pixelOffsetX) + ", " + std::to_string(m_shapeData.m_pixelOffsetY) + " shapeFrame[" + std::to_string(shapeNum) + ":" + std::to_string(framenum) + "]", "anims.log");
 			ImageDraw(&frameImage,
 				m_shapeData.m_texture->m_OriginalImage,
 				Rectangle{ 0, 0, float(m_shapeData.m_texture->width), float(m_shapeData.m_texture->height) },
@@ -1195,7 +1195,7 @@ void BakeImageShapeFrames(int shapeNum, int startFrame, int maxFrames, int tileS
 					WHITE);
 			i++;
 		}
-		Log("Exporting sprite image to " + imagePath, "anims.log");
+		//Log("Exporting sprite image to " + imagePath, "anims.log");
 		ExportImage(frameImage, imagePath.c_str());
 	}
 }
