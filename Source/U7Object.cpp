@@ -80,7 +80,7 @@ void U7Object::Init(const string& configfile, int unitType, int frame)
 	m_actCooldown = 0.125f;
 	m_distanceFromCamera = 999999;
 	//Log("U7Object::Init() - unitType: " + std::to_string(unitType) + ", frame: " + std::to_string(frame), "anims.log");
-	m_target=0;
+	//m_target=0;
 	if (!g_isObjectMoveable[unitType])
 	{
 		m_UnitType = U7Object::UnitTypes::UNIT_TYPE_STATIC;
