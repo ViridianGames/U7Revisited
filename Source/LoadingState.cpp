@@ -2445,7 +2445,7 @@ void LoadingState::LoadInitialGameState()
 
 				unsigned int shapenum = thisNPC.shapeId & 0x3ff;
 				unsigned int framenum = thisNPC.shapeId >> 10;
-				Log("NPC " + std::to_string(i) + ": shapeId=" + std::to_string(thisNPC.shapeId) + " shapenum=" + std::to_string(shapenum) + " framenum=" + std::to_string(framenum), "anims.log");
+				//Log("NPC " + std::to_string(i) + ": shapeId=" + std::to_string(thisNPC.shapeId) + " shapenum=" + std::to_string(shapenum) + " framenum=" + std::to_string(framenum), "anims.log");
 				if (shapenum == 721)
 				{
 					if (!g_Player->GetIsMale())
