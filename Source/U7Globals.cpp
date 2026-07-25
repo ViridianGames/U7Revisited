@@ -840,57 +840,35 @@ void UpdateSortedVisibleObjects()
 				switch (object->m_ObjectType)
 				{
 					case 179:
+						// 179 is something ethereal, has 0-7 frames
 						maxFrames = 8;
 						frameSwitch = false;
 						randomlyActive = true;
 						break;
 					case 334:
+						// 334 is green swamp bubbles, has 0-7 frames
 						maxFrames = 8;
 						frameSwitch = false;
 						randomlyActive = true;
 						break;
 					case 335:
+						// 335 is green swamp bubbles, has 0-7 frames
 						maxFrames = 8;
 						frameSwitch = false;
 						randomlyActive = true;
 						break;
 					case 780:
-						// 179 is something ethereal, has 0-7 frames
-						// 334 is green swamp bubbles, has 0-7 frames
-						// 335 is green swamp bubbles, has 0-7 frames
 						// 700 is blue bubbles, has 0-7 frames
 						maxFrames = 8;
 						frameSwitch = false;
 						randomlyActive = true;
 						break;
-					case 256:
-					case 419:
-					case 516:
-					case 610:
-					case 612:
-					case 613:
-					case 632:
-					case 699:
-					case 736:
-					case 737:
-					case 751:
-					case 808:
-					case 834:
-					case 875:
-					case 907:
-					case 911:
-					case 918:
-					case 926:
-					case 927:
-					case 930:
-					case 938:
-					case 1012:
-					case 1020:
-					case 1022:
-						maxFrames = 11;
-						frameSwitch = true;
-						randomlyActive = false;
-						break;
+					//case 1022:
+					//	// 1022 is something, has 0-11 frames
+					//	maxFrames = 11;
+					//	frameSwitch = true;
+					//	randomlyActive = false;
+					//	break;
 					case 384:
 					case 985:
 					case 1008:

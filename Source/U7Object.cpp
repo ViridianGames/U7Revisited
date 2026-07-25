@@ -311,24 +311,24 @@ void U7Object::InteractiveDraw()
 	switch (m_ObjectType)
 	{
 		case 179:
+			// 179 is something ethereal, has 0-7 frames
 			maxFrames = 8;
 			frameSwitch = false;
 			randomlyActive = false;
 			break;
 		case 334:
+			// 334 is green swamp bubbles, has 0-7 frames
 			maxFrames = 8;
 			frameSwitch = false;
 			randomlyActive = false;
 			break;
 		case 335:
+			// 335 is green swamp bubbles, has 0-7 frames
 			maxFrames = 8;
 			frameSwitch = false;
 			randomlyActive = true;
 			break;
 		case 780:
-			// 179 is something ethereal, has 0-7 frames
-			// 334 is green swamp bubbles, has 0-7 frames
-			// 335 is green swamp bubbles, has 0-7 frames
 			// 780 is blue bubbles, has 0-7 frames
 			maxFrames = 8;
 			frameSwitch = false;
@@ -366,9 +366,9 @@ void U7Object::InteractiveDraw()
 		case 985:
 		case 1008:
 		case 1009:
-			//maxFrames = 17;
-			//frameSwitch = true;
-			//randomlyActive = true;
+			maxFrames = 17;
+			frameSwitch = true;
+			randomlyActive = true;
 			break;
 		default:
 			maxFrames = 1;
