@@ -77,6 +77,8 @@ public:
    void UpdateStats();
 	void CalculateMouseOverUI();  // Sets g_mouseOverUI based on UI element positions
 	void UpdateInput();
+	// Camera rotation/zoom only (used by CombatState while the world state is underneath).
+	void ProcessCameraInput();
 	void UpdateTime();
 
 	void SetLuaFunction(const std::string& func_name) { m_luaFunction = func_name; }

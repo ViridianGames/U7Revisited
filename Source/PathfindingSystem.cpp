@@ -9,6 +9,110 @@
 #include <cstdint>
 #include <unordered_set>
 #include <deque>   // added for stable node storage
+#include <shared_mutex>
+
+// ============================================================================
+// Hostile-unit blocking helpers
+// ============================================================================
+
+static bool IsPartyMemberUnit(const U7Object* unit)
+{
+	return unit
+		&& unit->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC
+		&& g_Player
+		&& g_Player->NPCIDInParty(unit->m_NPCID);
+}
+
+static bool IsPathfindingAgentUnit(const U7Object* unit)
+{
+	return unit
+		&& (unit->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC
+			|| unit->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_MONSTER)
+		&& unit->m_hp > 0.0f
+		&& !unit->m_isContained;
+}
+
+bool PathfindingSystem::AreUnitsHostile(const U7Object* agent, const U7Object* other)
+{
+	if (!IsPathfindingAgentUnit(agent) || !IsPathfindingAgentUnit(other))
+		return false;
+
+	if (agent->m_ID == other->m_ID)
+		return false;
+
+	bool agentParty = IsPartyMemberUnit(agent);
+	bool otherParty = IsPartyMemberUnit(other);
+
+	// Friendly party members can share space (Avatar + Iolo, etc.)
+	if (agentParty && otherParty)
+		return false;
+
+	// Party vs hostile team, and vice versa
+	if (agentParty && other->m_Team == 1)
+		return true;
+	if (otherParty && agent->m_Team == 1)
+		return true;
+
+	return false;
+}
+
+static bool UnitOccupiesTileAtHeight(const U7Object* unit, int worldX, int worldZ, float agentBaseY)
+{
+	if (!unit)
+		return false;
+
+	const BoundingBox& bbox = unit->m_boundingBox;
+	int minTileX = (int)floor(bbox.min.x);
+	int maxTileX = (int)floor(bbox.max.x);
+	int minTileZ = (int)floor(bbox.min.z);
+	int maxTileZ = (int)floor(bbox.max.z);
+
+	if (worldX < minTileX || worldX > maxTileX || worldZ < minTileZ || worldZ > maxTileZ)
+		return false;
+
+	if (fabs(unit->m_Pos.y - agentBaseY) > (MAX_CLIMBABLE_HEIGHT + 0.5f))
+		return false;
+
+	return true;
+}
+
+static bool IsTileBlockedByHostileUnit(int worldX, int worldZ, float agentBaseY, const U7Object* agent)
+{
+	if (!agent)
+		return false;
+
+	int chunkX = worldX / 16;
+	int chunkZ = worldZ / 16;
+
+	extern std::shared_mutex g_chunkMapMutex;
+	std::shared_lock lock(g_chunkMapMutex);
+
+	for (int dz = -1; dz <= 1; ++dz)
+	{
+		for (int dx = -1; dx <= 1; ++dx)
+		{
+			int cx = chunkX + dx;
+			int cz = chunkZ + dz;
+			if (cx < 0 || cx >= 192 || cz < 0 || cz >= 192)
+				continue;
+
+			for (U7Object* obj : g_chunkObjectMap[cx][cz])
+			{
+				if (!IsPathfindingAgentUnit(obj))
+					continue;
+
+				if (!PathfindingSystem::AreUnitsHostile(agent, obj))
+					continue;
+
+				if (UnitOccupiesTileAtHeight(obj, worldX, worldZ, agentBaseY))
+					return true;
+			}
+		}
+	}
+
+	return false;
+}
+
 // ============================================================================
 // PathfindingGrid Implementation
 // ============================================================================
@@ -23,10 +127,10 @@ PathfindingGrid::~PathfindingGrid()
 {
 }
 
-bool PathfindingGrid::IsPositionWalkable(int worldX, int worldZ, float agentBaseY) const
+bool PathfindingGrid::IsPositionWalkable(int worldX, int worldZ, float agentBaseY, const U7Object* agent) const
 {
 	// Tile-level check using agent-specific base Y
-	return CheckTileWalkable(worldX, worldZ, agentBaseY);
+	return CheckTileWalkable(worldX, worldZ, agentBaseY, agent);
 }
 
 std::vector<PathfindingGrid::OverlappingObject> PathfindingGrid::GetOverlappingObjects(int worldX, int worldZ) const
@@ -321,7 +425,14 @@ bool PathfindingSystem::ValidateMove(U7Object* agent, const Vector3& desiredPos,
 				// Allow walking through eggs/triggers: they should be interactive but non-blocking.
 				if (obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_EGG) continue;
 
-				if (obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC) continue;
+				if (obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC
+					|| obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_MONSTER)
+				{
+					if (!PathfindingSystem::AreUnitsHostile(agent, obj))
+						continue;
+					// Hostile unit — fall through to collision checks below
+				}
+
 				if (!obj->m_shapeData) continue;
 				if (obj->m_isContained) continue; // skip items in containers
 
@@ -520,7 +631,7 @@ float PathfindingGrid::GetTileHeight(int worldX, int worldZ) const
 	return 0.0f;
 }
 
-bool PathfindingGrid::CheckTileWalkable(int worldX, int worldZ, float agentBaseY) const
+bool PathfindingGrid::CheckTileWalkable(int worldX, int worldZ, float agentBaseY, const U7Object* agent) const
 {
 	// Protect against calling before world data exists
 	if (g_World.empty() || g_World.size() == 0)
@@ -625,6 +736,10 @@ bool PathfindingGrid::CheckTileWalkable(int worldX, int worldZ, float agentBaseY
 
 	// Final check: if terrain blocks and no door cleared it, return false
 	if (terrainBlocks)
+		return false;
+
+	// Hostile NPCs/monsters occupy tiles and cannot be walked through
+	if (IsTileBlockedByHostileUnit(worldX, worldZ, agentBaseY, agent))
 		return false;
 
 	return true;  // Nothing blocks this position
@@ -1141,7 +1256,7 @@ static float PickClosestSurface(PathfindingGrid* grid, int tx, int tz, float pre
 	}
 	return best;
 }
-std::vector<Vector3> AStar::FindPath(Vector3 start, Vector3 goal, PathfindingGrid* grid)
+std::vector<Vector3> AStar::FindPath(Vector3 start, Vector3 goal, PathfindingGrid* grid, const U7Object* agent)
 {
 	if (!grid)
 		return {};
@@ -1287,7 +1402,7 @@ std::vector<Vector3> AStar::FindPath(Vector3 start, Vector3 goal, PathfindingGri
 			for (size_t i = startIndex; i < intermediates.size(); ++i)
 			{
 				Vector3 segGoal = intermediates[i];
-				auto segPath = FindPath(curStart, segGoal, grid); // recursion — segment distances are small
+				auto segPath = FindPath(curStart, segGoal, grid, agent); // recursion — segment distances are small
 				if (segPath.empty())
 				{
 					failed = true;
@@ -1308,7 +1423,7 @@ std::vector<Vector3> AStar::FindPath(Vector3 start, Vector3 goal, PathfindingGri
 			if (!failed)
 			{
 				// Final segment to real goal (may be inside last chunk) — short distance
-				auto lastSeg = FindPath(curStart, goal, grid);
+				auto lastSeg = FindPath(curStart, goal, grid, agent);
 				if (lastSeg.empty()) failed = true;
 				else
 				{
@@ -1404,7 +1519,7 @@ std::vector<Vector3> AStar::FindPath(Vector3 start, Vector3 goal, PathfindingGri
 		closedSet[currentKey64] = currentIndex;
 
 		// Get neighbor indices
-		std::vector<int> neighborIndices = GetNeighbors(currentIndex, grid, goalX, goalZ, walkableCache, heightsCache, nodePool);
+		std::vector<int> neighborIndices = GetNeighbors(currentIndex, grid, goalX, goalZ, walkableCache, heightsCache, nodePool, agent);
 
 		for (int neighborIndex : neighborIndices)
 		{
@@ -1550,7 +1665,8 @@ float AStar::Heuristic(int x1, int z1, int x2, int z2)
 std::vector<int> AStar::GetNeighbors(int nodeIndex, PathfindingGrid* grid, int goalX, int goalZ,
 	std::unordered_map<int, bool>& walkableCache,
 	std::unordered_map<int, std::vector<float>>& heightsCache,
-	std::vector<PathNode>& nodePool)
+	std::vector<PathNode>& nodePool,
+	const U7Object* agent)
 {
 	std::vector<int> neighbors;
 
@@ -1583,8 +1699,8 @@ std::vector<int> AStar::GetNeighbors(int nodeIndex, PathfindingGrid* grid, int g
 			bool tileWalkable = false;
 			if (itWalk == walkableCache.end())
 			{
-				// PASS the agent's current base Y so the tile check is agent-aware
-				tileWalkable = grid->IsPositionWalkable(nx, nz, currentHeight);
+				// PASS the agent's current base Y and identity so hostile units block this tile
+				tileWalkable = grid->IsPositionWalkable(nx, nz, currentHeight, agent);
 				walkableCache[tkey] = tileWalkable;
 			}
 			else
@@ -1925,11 +2041,11 @@ void PathfindingSystem::Init(const std::string& configfile)
 	PopulateChunkPathfindingGrid();
 }
 
-std::vector<Vector3> PathfindingSystem::FindPath(Vector3 start, Vector3 end)
+std::vector<Vector3> PathfindingSystem::FindPath(Vector3 start, Vector3 end, U7Object* agent)
 {
 	// Instrument A* runtime per call (ms)
 	float t0 = GetTime();
-	auto path = m_aStar->FindPath(start, end, m_pathfindingGrid.get());
+	auto path = m_aStar->FindPath(start, end, m_pathfindingGrid.get(), agent);
 	float elapsed = GetTime() - t0;
 	uint64_t ms = static_cast<uint64_t>(elapsed * 1000.0f);
 	m_astarTotalCalls.fetch_add(1);

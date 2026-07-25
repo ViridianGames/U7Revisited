@@ -7,6 +7,7 @@
 
 class Gui;
 class GuiElement;
+class U7Object;
 
 // CombatState handles both real-time and turn-based combat modes in Ultima VII.
 // It is entered either manually (via the combat toggle on the character sheet)
@@ -25,11 +26,6 @@ public:
 	virtual void OnEnter() override;
 	virtual void OnExit() override;
 
-	// Future: methods to control combat mode
-	// void StartCombat(bool turnBased = false);
-	// void EndCombat();
-	// bool IsTurnBased() const;
-
 	// Whether combat is currently in turn-based mode (vs real-time)
 	bool m_isTurnBased = false;
 
@@ -38,6 +34,22 @@ public:
 
 	// GUI for combat-specific overlays (action bar, initiative order, etc.)
 	Gui* m_gui = nullptr;
+
+	// Planning phase: paused until the player presses Space
+	bool m_paused = true;
+
+	// Party member currently receiving a target assignment (object ID)
+	int m_selectedPartyMemberObjectId = -1;
+
+private:
+	void HandleCombatInput();
+	void HandleCombatClick();
+	bool IsPartyMemberObject(const U7Object* obj) const;
+	bool IsEnemyObject(const U7Object* obj) const;
+	void ClearPartyTargets();
+	void BeginCombat();
+	void PauseForOrders();
+	void IssueMoveOrder(U7Object* member, const Vector3& dest);
 };
 
 #endif

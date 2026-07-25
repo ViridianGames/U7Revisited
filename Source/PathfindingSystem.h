@@ -51,8 +51,8 @@ public:
 	PathfindingGrid();
 	~PathfindingGrid();
 
-	// Query walkability
-	bool IsPositionWalkable(int worldX, int worldZ, float agentBaseY) const;  // Check if tile is walkable
+	// Query walkability (agent-aware: hostile NPCs/monsters block tiles for that agent)
+	bool IsPositionWalkable(int worldX, int worldZ, float agentBaseY, const U7Object* agent = nullptr) const;
 
 	// Debug visualization
 	void DrawDebugOverlayTileLevel(float lowerY, float upperY);                  // Tile-level visualization (3D with cost cubes)
@@ -76,7 +76,7 @@ public:
 
 private:
 	// Helper: Check if specific tile is walkable
-	bool CheckTileWalkable(int worldX, int worldZ, float agentBaseY) const;
+	bool CheckTileWalkable(int worldX, int worldZ, float agentBaseY, const U7Object* agent = nullptr) const;
 
 	// Cache for debug visualization
 	struct TileWithCost {
@@ -124,7 +124,7 @@ public:
 	void LoadTerrainCosts(const std::string& filename);
 
 	// Find path from start to goal (returns waypoints in world coordinates)
-	std::vector<Vector3> FindPath(Vector3 start, Vector3 goal, PathfindingGrid* grid);
+	std::vector<Vector3> FindPath(Vector3 start, Vector3 goal, PathfindingGrid* grid, const U7Object* agent = nullptr);
 
 	// Get movement cost for a tile (for debug visualization)
 	float GetMovementCost(int worldX, int worldZ, PathfindingGrid* grid);
@@ -152,7 +152,8 @@ private:
 	std::vector<int> GetNeighbors(int nodeIndex, PathfindingGrid* grid, int goalX, int goalZ,
 		std::unordered_map<int, bool>& walkableCache,
 		std::unordered_map<int, std::vector<float>>& heightsCache,
-		std::vector<PathNode>& nodePool);
+		std::vector<PathNode>& nodePool,
+		const U7Object* agent = nullptr);
 
 	// Reconstruct path from goal index
 	std::vector<Vector3> ReconstructPath(int goalIndex, PathfindingGrid* grid, std::vector<PathNode>& nodePool);
@@ -194,14 +195,20 @@ public:
 	virtual void Update(){};
 	void Draw() {};
 
-	std::vector<Vector3> FindPath(Vector3 start, Vector3 goal);
+	std::vector<Vector3> FindPath(Vector3 start, Vector3 goal, U7Object* agent = nullptr);
 
 	// Guard to make FindPath reentrant/thread-safe
 	mutable std::mutex m_findMutex;
 
 	std::string GetTerrainName(int shapeID) const { return m_aStar->GetTerrainName(shapeID); }
 
-	bool IsPositionWalkable(int worldX, int worldZ, float agentBaseY) const { return m_pathfindingGrid->IsPositionWalkable(worldX, worldZ, agentBaseY); }
+	bool IsPositionWalkable(int worldX, int worldZ, float agentBaseY, const U7Object* agent = nullptr) const
+	{
+		return m_pathfindingGrid->IsPositionWalkable(worldX, worldZ, agentBaseY, agent);
+	}
+
+	// Returns true if two NPCs/monsters should block each other's movement/pathing.
+	static bool AreUnitsHostile(const U7Object* agent, const U7Object* other);
 
 	float GetMovementCost(int worldX, int worldZ) { return m_aStar->GetMovementCost(worldX, worldZ, m_pathfindingGrid.get());}
 

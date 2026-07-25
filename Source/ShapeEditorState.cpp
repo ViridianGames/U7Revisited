@@ -875,7 +875,7 @@ void ShapeEditorState::Update()
 				g_camera.target = (*node).second->m_Pos;
 				g_camera.position = Vector3Add(g_camera.target, Vector3{ 0, g_cameraDistance, g_cameraDistance });
 				g_CameraMoved = true;
-				g_StateMachine->MakeStateTransition(STATE_MAINSTATE);  // Close shape editor after jumping
+				g_StateMachine->PopState();  // Close shape editor after jumping
 				foundInstance = true;
 				break;
 			}

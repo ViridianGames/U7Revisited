@@ -141,13 +141,13 @@
 		{
 			"alphaMode":"BLEND",
 			"doubleSided":true,
-			"name":"glass",
+			"name":"glass.001",
 			"pbrMetallicRoughness":{
 				"baseColorFactor":[
 					1,
 					1,
 					1,
-					0.37272727489471436
+					0.5272729992866516
 				],
 				"baseColorTexture":{
 					"index":1

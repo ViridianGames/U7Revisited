@@ -217,6 +217,7 @@ void MainState::OnEnter()
 	if (m_gameMode == MainStateModes::MAIN_STATE_MODE_TRINSIC_DEMO)
 	{
 		g_Player->AddPartyMember(1);
+		g_Player->AddPartyMember(2);
 		// Enable schedules and pathfinding for demo mode so NPCs behave like sandbox
 		m_npcSchedulesEnabled = true;
 		m_npcPathfindingEnabled = true;
@@ -243,7 +244,7 @@ void MainState::OnEnter()
 			m_loadOnEntry = false;
 			m_ranIntroScript = true;
 			m_introScriptRunning = false;
-			g_isCameraLockedToAvatar = true;
+			LockCameraToAvatar();
 			g_allowInput = true;
 			dynamic_cast<LoadSaveState*>(g_StateMachine->GetState(STATE_LOADSAVESTATE))->SetAllowSaving(false);
 			OpenLoadSaveGump();
@@ -262,7 +263,7 @@ void MainState::OnEnter()
 			g_camera.target = Vector3{ 1068.0f, 0.0f, 2213.0f };
 			g_cameraRotation = 0;
 			g_cameraDistance = 22.0f;
-			g_isCameraLockedToAvatar = true;
+			LockCameraToAvatar();
 			CameraUpdate();
 
 			// Hack-move Petre and put him in the proper position.
@@ -276,6 +277,9 @@ void MainState::OnEnter()
 		g_Player->AddPartyMember(1);
 
 		SpawnMonster(14, 1044.0f, 0.0f, 2182.0f);
+		SpawnMonster(14, 1042.0f, 0.0f, 2180.0f);
+		SpawnMonster(14, 1048.0f, 0.0f, 2181.0f);
+		SpawnMonster(14, 1050.0f, 0.0f, 2183.0f);
 
 		// Only show welcome messages on first OnEnter, not when returning from dialogs
 		if (!m_hasShownWelcomeMessages)
@@ -490,7 +494,26 @@ void MainState::HandleDebugKeys()
 		g_StateMachine->PushState(STATE_SHAPEEDITORSTATE, false);
 
 	if (IsKeyPressed(KEY_F5))
-		g_isCameraLockedToAvatar = !g_isCameraLockedToAvatar;
+	{
+		if (g_objectUnderMousePointer &&
+			(g_objectUnderMousePointer->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC ||
+			 g_objectUnderMousePointer->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_MONSTER))
+		{
+			if (g_cameraLockObjectId == g_objectUnderMousePointer->m_ID)
+				UnlockCamera();
+			else
+				LockCameraToObject(g_objectUnderMousePointer->m_ID);
+		}
+		else if (IsCameraLocked())
+		{
+			UnlockCamera();
+		}
+		else
+		{
+			LockCameraToAvatar();
+			AddConsoleString("Camera locked to Avatar.", SKYBLUE);
+		}
+	}
 
 	if (IsKeyPressed(KEY_F7))
 	{
@@ -848,7 +871,7 @@ void MainState::HandleMouseHoldTimers()
 
 void MainState::HandleRightMouseHoldMovement()
 {
-	if (!m_rightMouseHeld || g_mouseOverUI || g_gumpManager->m_isMouseOverGump || !g_isCameraLockedToAvatar)
+	if (!m_rightMouseHeld || g_mouseOverUI || g_gumpManager->m_isMouseOverGump || !IsCameraLockedToAvatar())
 	{
 		if (m_cameraDragging)
 			EndCameraDrag();
@@ -864,7 +887,7 @@ void MainState::HandleRightMouseHoldMovement()
 	float dist = Vector3Length(toMouse);
 
 	const float DEADZONE = 0.25f;
-	if (dist > DEADZONE)
+	if (!g_isCombatMode && dist > DEADZONE)
 	{
 		Vector3 dir = Vector3Normalize(toMouse);
 
@@ -1077,7 +1100,7 @@ void MainState::DebugPrintNpcSchedule(U7Object* npc)
 
 void MainState::HandleAvatarMovement()
 {
-	if (!g_isCameraLockedToAvatar)
+	if (!IsCameraLockedToAvatar())
 		return;
 
 	if (g_firstPersonEnabled)
@@ -1148,6 +1171,15 @@ void MainState::HandleAvatarMovement()
 }
 
 
+void MainState::ProcessCameraInput()
+{
+	if (!g_allowInput)
+		return;
+
+	CameraInput();
+	HandleMouseHoldTimers();
+}
+
 void MainState::StartCameraDrag()
 {
 	// Record lock point (use current mouse pos by default)
@@ -1191,6 +1223,7 @@ void MainState::EndCameraDrag()
 		m_cursorLocked = false;
 	}
 	m_cameraDragging = false;
+	SetMousePosition((int)m_cameraDragLockPos.x, (int)m_cameraDragLockPos.y);
 }
 void MainState::Bark(U7Object* object, const std::string& text, float duration)
 {
@@ -1395,36 +1428,36 @@ void MainState::Update()
 			}
 		}
 
-		for (unordered_map<int, std::unique_ptr<U7Object> >::iterator node = g_objectList.begin(); node != g_objectList.end();)
-		{
-			if (!node->second)
-			{
-				++node;
-				continue;
-			}
-
-			if (node->second->GetIsDead())
-			{
-				if (g_LuaDebug)
-				{
-					AddConsoleString("Cleanup: Removing dead object ID " + std::to_string(node->first));
-				}
-				if (g_SoundSystem)
-				{
-					g_SoundSystem->StopLoopingSoundEffect(node->first);
-				}
-				UnassignObjectChunk(node->second.get());
-				node = g_objectList.erase(node);
-				if (g_LuaDebug)
-				{
-					AddConsoleString("Cleanup: Object erased from g_objectList");
-				}
-			}
-			else
-			{
-				++node;
-			}
-		}
+		// for (unordered_map<int, std::unique_ptr<U7Object> >::iterator node = g_objectList.begin(); node != g_objectList.end();)
+		// {
+		// 	if (!node->second)
+		// 	{
+		// 		++node;
+		// 		continue;
+		// 	}
+		//
+		// 	if (node->second->GetIsDead())
+		// 	{
+		// 		if (g_LuaDebug)
+		// 		{
+		// 			AddConsoleString("Cleanup: Removing dead object ID " + std::to_string(node->first));
+		// 		}
+		// 		if (g_SoundSystem)
+		// 		{
+		// 			g_SoundSystem->StopLoopingSoundEffect(node->first);
+		// 		}
+		// 		UnassignObjectChunk(node->second.get());
+		// 		node = g_objectList.erase(node);
+		// 		if (g_LuaDebug)
+		// 		{
+		// 			AddConsoleString("Cleanup: Object erased from g_objectList");
+		// 		}
+		// 	}
+		// 	else
+		// 	{
+		// 		++node;
+		// 	}
+		// }
 
 		// Calculate g_mouseOverUI RIGHT BEFORE UpdateSortedVisibleObjects
 		CalculateMouseOverUI();
@@ -1613,7 +1646,16 @@ void MainState::PathfindingWorkerLoop()
 		{
 			if (g_pathfindingSystem)
 			{
-				path = g_pathfindingSystem->FindPath(req.start, req.dest);
+				U7Object* agent = nullptr;
+				auto itNpc = g_NPCData.find(req.npcID);
+				if (itNpc != g_NPCData.end() && itNpc->second)
+				{
+					auto itObj = g_objectList.find(itNpc->second->m_objectID);
+					if (itObj != g_objectList.end() && itObj->second)
+						agent = itObj->second.get();
+				}
+
+				path = g_pathfindingSystem->FindPath(req.start, req.dest, agent);
 				success = !path.empty();
 			}
 		}
@@ -1971,6 +2013,17 @@ void MainState::Draw()
 					}
 				}
 			}
+		}
+	}
+
+	if (g_CombatState && g_CombatState->m_paused && g_CombatState->m_selectedPartyMemberObjectId >= 0)
+	{
+		auto selIt = g_objectList.find(g_CombatState->m_selectedPartyMemberObjectId);
+		if (selIt != g_objectList.end() && selIt->second)
+		{
+			Vector3 pos = selIt->second->m_centerPoint;
+			pos.y += 1.5f;
+			DrawCircle3D(pos, 0.8f, Vector3{ 0.0f, 1.0f, 0.0f }, 360.0f, SKYBLUE);
 		}
 	}
 
@@ -2823,7 +2876,7 @@ bool MainState::IsNpcSchedulesEnabled() const
 void MainState::MaybeUpdatePartyFollowing()
 {
     // Only run when camera is locked and input is allowed and player exists
-    if (!g_Player || !g_isCameraLockedToAvatar || !g_allowInput)
+    if (!g_Player || !IsCameraLockedToAvatar() || !g_allowInput)
         return;
 
     U7Object* avatar = g_Player->GetAvatarObject();
@@ -2909,6 +2962,10 @@ void MainState::MaybeUpdatePartyFollowing()
             member->PathfindToDest(desired);
         }
 
+		if (dist > 25)
+		{
+			member->SetDest(desired);
+		}
         ++counter;
     }
 }
@@ -2978,7 +3035,7 @@ void MainState::BuildSandboxHelpGUI()
 
 	textY += 48;
 
-	m_sandboxHelpScreen->AddTextArea(GUI_DEMO_HELP_TITLE + idOffset++, g_SmallFont.get(), "F1 - Shape Editor\nF5 - Lock/Unlock the camera to the Avatar\nF6 - SUPER PIXELLATION MODE\nF7 - Allow hack moving (move anything)\nF8 - Lua script debug text\nF9 - Show object bounding boxes\nF10 - Show pathfinding info\nF11 - Highlight objects with scripts\nPageUp - Move the camera up one floor\nPageDown - Move the camera down one floor\nMinus Key - Speed up time\nPlus Key - Slow down time\nKeypad Enter - Jump time forward one hour.", 10, textY,
+	m_sandboxHelpScreen->AddTextArea(GUI_DEMO_HELP_TITLE + idOffset++, g_SmallFont.get(), "F1 - Shape Editor\nF5 - Lock camera to unit under cursor (or Avatar)\nF6 - SUPER PIXELLATION MODE\nF7 - Allow hack moving (move anything)\nF8 - Lua script debug text\nF9 - Show object bounding boxes\nF10 - Show pathfinding info\nF11 - Highlight objects with scripts\nPageUp - Move the camera up one floor\nPageDown - Move the camera down one floor\nMinus Key - Speed up time\nPlus Key - Slow down time\nKeypad Enter - Jump time forward one hour.", 10, textY,
 								0, 0, WHITE, GuiTextArea::LEFT, 0, 1, false);
 
 
