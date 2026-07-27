@@ -86,6 +86,7 @@ std::unique_ptr<Terrain> g_Terrain;
 
 std::array<std::array<ShapeData, 32>, 1024> g_shapeTable;
 std::array<ObjectData, 1024> g_objectDataTable;
+std::vector<std::tuple<unsigned char, unsigned char, unsigned char, unsigned char>> g_paletteTransforms;
 
 // Weather/effect sprite data
 std::array<std::vector<SpriteFrame>, 32> g_spriteTable;
@@ -136,6 +137,8 @@ int g_selectedFrame = 0;
 
 std::unordered_map<int, int[16][16]> g_ChunkTypeList;  // The 16x16 tiles for each chunk type
 int g_chunkTypeMap[192][192]; // The type of each chunk in the map
+std::vector<Texture *> g_chunkAnimTexture;
+std::vector<std::tuple<int, int, int>> g_chunkVisible;
 std::vector<U7Object*> g_chunkObjectMap[192][192]; // The objects in each chunk
 
 std::vector<U7Object*> g_sortedVisibleObjects;
@@ -871,6 +874,7 @@ void UpdateSortedVisibleObjects()
 	int beforeCount = static_cast<int>(g_sortedVisibleObjects.size());
 
 	g_sortedVisibleObjects.clear();
+	g_chunkVisible.clear();
 
 	for (int x = cameraChunkX - 2; x <= cameraChunkX + 2; x++)
 	{
@@ -880,6 +884,11 @@ void UpdateSortedVisibleObjects()
 			{
 				continue; // Out of bounds
 			}
+
+			// let's draw the texture shape in this chunk
+			//x y chunkid
+			int chunkid = g_chunkTypeMap[x][y];
+			g_chunkVisible.push_back({x, y, chunkid});
 
 			for (auto object : g_chunkObjectMap[x][y])
 			{
@@ -891,6 +900,60 @@ void UpdateSortedVisibleObjects()
 
 				object->m_distanceFromCamera = Vector3DistanceSqr(object->m_centerPoint, g_camera.position);
 				g_sortedVisibleObjects.push_back(object);
+				int maxFrames = 1;
+				bool frameSwitch = false;
+				bool randomlyActive = false;
+				switch (object->m_ObjectType)
+				{
+					case 179:
+						// 179 is something ethereal, has 0-7 frames
+						maxFrames = 8;
+						frameSwitch = false;
+						randomlyActive = true;
+						break;
+					case 334:
+						// 334 is green swamp bubbles, has 0-7 frames
+						maxFrames = 8;
+						frameSwitch = false;
+						randomlyActive = true;
+						break;
+					case 335:
+						// 335 is green swamp bubbles, has 0-7 frames
+						maxFrames = 8;
+						frameSwitch = false;
+						randomlyActive = true;
+						break;
+					case 780:
+						// 700 is blue bubbles, has 0-7 frames
+						maxFrames = 8;
+						frameSwitch = false;
+						randomlyActive = true;
+						break;
+					//case 1022:
+					//	// 1022 is something, has 0-11 frames
+					//	maxFrames = 11;
+					//	frameSwitch = true;
+					//	randomlyActive = false;
+					//	break;
+					case 384:
+					case 985:
+					case 1008:
+					case 1009:
+						maxFrames = 17;
+						frameSwitch = false;
+						randomlyActive = true;
+						break;
+					default:
+						maxFrames = 1;
+						frameSwitch = false;
+						randomlyActive = false;
+						break;
+				}
+				if (randomlyActive == true)
+				{
+					int probability = 5;
+					object->Activate(float(GetTime()), maxFrames, probability);
+				}
 			}
 		}
 	}
@@ -1073,6 +1136,19 @@ void MorphObject(int shapenum, int framenum, float x, float y, float z, float nu
 	//AddConsoleString("Morphed " + std::to_string(hideCount) + " objects in the Trinsic area.", GREEN);
 }
 
+void MorphAnimFlat(int shapeNum, int frameNum, int numFrames) {
+	ShapeData& m_shapeData = g_shapeTable[shapeNum][frameNum];
+	std::string imagePath = "Images/shapesprite/shapesprite_" + std::to_string(shapeNum) + "_" + std::to_string(frameNum) + ".png";
+	if (FileExists(imagePath.c_str())) {
+		// if sprite does not exist, leave this alone
+		m_shapeData.m_drawType = ShapeDrawType::OBJECT_DRAW_ANIMFLAT;
+		m_shapeData.m_numFrames = numFrames;
+		m_shapeData.m_isAnimated = true;
+		Image image = LoadImage(imagePath.c_str());
+		m_shapeData.SetDefaultTexture(image);
+	}
+}
+
 void MorphRoof(int roofId, int shapeNum, int frameNum, float x, float y, float z, float nux, float nuy, float nuz)
 {
 	int hideCount = 0;
@@ -1106,9 +1182,207 @@ void MorphRoof(int roofId, int shapeNum, int frameNum, float x, float y, float z
 	//AddConsoleString("Morphed " + std::to_string(hideCount) + " roof objects in the area.", GREEN);
 }
 
+void BakeImageShapeFrames(int shapeNum, int startFrame, int maxFrames, int tileSizeX, int tileSizeY) {
+	//AddConsoleString("Baking sprite images... ", GREEN);
+	std::string objType = "shapesprite";
+	std::string s_objId = std::to_string(shapeNum);
+	std::string s_objFrame = std::to_string(startFrame);
+	std::string objFolder = "Images/" + objType;
+	std::filesystem::create_directories(objFolder.c_str());
+	std::string imagePath = "Images/" + objType + "/" + objType + "_" + s_objId + "_" + s_objFrame + ".png";
+	int borderSize = 0;
+	int tileCountX = maxFrames - startFrame;
+	int tileCountY = 1;
+	if (FileExists(imagePath.c_str())) {
+		Log("sprite image " + imagePath + " already exists, skipping generation.");
+	}
+	else {
+		Log("sprite image " + imagePath + " does not exist, generating.");
+		int imgSzeX = (tileSizeX * tileCountX);
+		int imgSzeY = (tileSizeY * tileCountY);
+		Image frameImage = GenImageColor(imgSzeX, imgSzeY, Color{ 0, 0, 0, 0 });
+		float x = 0.0f;
+		float z = 0.0f;
+		float thisx = x;
+		float thisz = z;
+		int xInt = int(x);
+		int yInt = int(z);
+		int xPx = 0;
+		int yPx = 0;
+		int j = 0;
+		int i = startFrame;
+		thisz = z + (j * tileSizeY);
+		i = 0;
+		while (i < maxFrames) {
+			thisx = x + ((i-startFrame) * tileSizeX);
+			xInt = int(thisx);
+			yInt = int(thisz);
+			int framenum = i;
+			ShapeData& m_shapeData = g_shapeTable[shapeNum][framenum];
+			//xPx = (i * tileSizeX * borderSize) + borderSize * (tileSizeX + 1);
+			//yPx = (j * tileSizeY * borderSize) + borderSize * (tileSizeY + 1);
+			xPx = (i * tileSizeX) + (tileSizeX);
+			yPx = (j * tileSizeY) + (tileSizeY);
+			//float dstPosX = float(xPx - m_shapeData.m_pixelOffsetX);
+			//float dstPosY = float(yPx - m_shapeData.m_pixelOffsetY);
+			float dstPosX = float(xPx - m_shapeData.m_pixelOffsetX);
+			float dstPosY = float(yPx - m_shapeData.m_pixelOffsetY);
+			//Log("Loading shape palette " + std::to_string(xPx) + ", " + std::to_string(yPx) + " | " + std::to_string(dstPosX) + ", " + std::to_string(dstPosY) + " to sprite image!" + std::to_string(m_shapeData.m_pixelOffsetX) + ", " + std::to_string(m_shapeData.m_pixelOffsetY) + " shapeFrame[" + std::to_string(shapeNum) + ":" + std::to_string(framenum) + "]", "anims.log");
+			ImageDraw(&frameImage,
+				m_shapeData.m_texture->m_OriginalImage,
+				Rectangle{ 0, 0, float(m_shapeData.m_texture->width), float(m_shapeData.m_texture->height) },
+				Rectangle{
+					dstPosX,
+					dstPosY,
+					float(m_shapeData.m_texture->width),
+					float(m_shapeData.m_texture->height) },
+					WHITE);
+			i++;
+		}
+		//Log("Exporting sprite image to " + imagePath, "anims.log");
+		ExportImage(frameImage, imagePath.c_str());
+	}
+}
+
+void BakeImageShapePalette(int shapeNum, int startFrame, int maxFrames, int tileSizeX, int tileSizeY) {
+	//AddConsoleString("Baking sprite images... ", GREEN);
+	std::string objType = "shapesprite";
+	std::string s_objId = std::to_string(shapeNum);
+	std::string s_objFrame = std::to_string(startFrame);
+	//int posStart = objId + xOfs;
+	std::string objFolder = "Images/" + objType;
+	std::filesystem::create_directories(objFolder.c_str());
+	std::string imagePath = "Images/" + objType + "/" + objType + "_" + s_objId + "_" + s_objFrame + ".png";
+	int borderSize = 0;
+	int tileCountX = maxFrames;
+	int tileCountY = 1;
+	if (FileExists(imagePath.c_str())) {
+		Log("sprite image " + imagePath + " already exists, skipping generation.");
+	}
+	else {
+		Log("sprite image " + imagePath + " does not exist, generating.");
+		int imgSzeX = (tileSizeX * tileCountX);
+		int imgSzeY = (tileSizeY * tileCountY);
+		Image frameImage = GenImageColor(imgSzeX, imgSzeY, Color{ 0, 0, 0, 0 });
+		float x = 0.0f;
+		float z = 0.0f;
+		//float thisx = x;
+		//float thisz = z;
+		int xInt = int(x);
+		int yInt = int(z);
+		//int xPos = 0;
+		//int yPos = 0;
+		int xPx = 0;
+		int yPx = 0;
+		int j = 0;
+		int i = 0;
+		while (i < maxFrames) {
+			int framenum = startFrame;
+			ShapeData& m_shapeData = g_shapeTable[shapeNum][framenum];
+			xPx = (i * tileSizeX) + (tileSizeX);
+			yPx = (j * tileSizeY) + (tileSizeY);
+			float dstPosX = float(xPx - tileSizeX);// - m_shapeData.m_pixelOffsetX);
+			float dstPosY = float(yPx - m_shapeData.m_pixelOffsetY);
+			//Log("Loading shape framepalette " + std::to_string(xPx) + ", " + std::to_string(yPx) + " | " + std::to_string(dstPosX) + ", " + std::to_string(dstPosY) + " to sprite image! " + std::to_string(m_shapeData.m_pixelOffsetX) + ", " + std::to_string(m_shapeData.m_pixelOffsetY) + " shapeFrame[" + std::to_string(shapeNum) + ":" + std::to_string(framenum) + "]", "anims.log");
+			ImageDraw(&frameImage,
+				m_shapeData.m_texture->m_OriginalImage,
+				Rectangle{ 0, 0, float(m_shapeData.m_texture->width), float(m_shapeData.m_texture->height) },
+				Rectangle{
+					dstPosX,
+					dstPosY,
+					float(m_shapeData.m_texture->width),
+					float(m_shapeData.m_texture->height) },
+					WHITE);
+			//now iterate m_shapeData.m_palettePixels
+			int floorRef = 224;
+			size_t pixelsLength = m_shapeData.m_palettePixels.size();
+			//Log("  Shape Frame Palette has " + std::to_string(pixelsLength) + " pixels to draw.", "anims.log");
+			for (const auto& pixel : m_shapeData.m_palettePixels)
+			{
+				// Access tuple elements - assuming it's std::tuple<int, int, int> for RGB or similar
+				int pX = std::get<0>(pixel);   // First integer in tuple
+				int pY = std::get<1>(pixel);  // Second integer in tuple
+				int pRef = std::get<2>(pixel);   // Third integer in tuple
+				if (pRef >= 224 && pRef <= 255) {
+					int gRef = pRef - floorRef;
+					if (pRef >= 224 && pRef < 232) {
+						int baseRef = 224;
+						int baseCount = 8;
+						int pDiff = baseRef - floorRef;
+						int frameRef = pRef - baseRef;
+						frameRef -= i;
+						while(frameRef < 0) {
+							frameRef += baseCount;
+						}
+						gRef = frameRef + pDiff;
+					} else if (pRef >= 232 && pRef < 240) {
+						int baseRef = 232;
+						int baseCount = 8;
+						int pDiff = baseRef - floorRef;
+						int frameRef = pRef - baseRef;
+						frameRef -= i;
+						while (frameRef < 0) {
+							frameRef += baseCount;
+						}
+						gRef = frameRef + pDiff;
+					} else if (pRef >= 240 && pRef < 244) {
+						int baseRef = 240;
+						int baseCount = 4;
+						int pDiff = baseRef - floorRef;
+						int frameRef = pRef - baseRef;
+						frameRef -= i;
+						while (frameRef < 0) {
+							frameRef += baseCount;
+						}
+						gRef = frameRef + pDiff;
+					} else if (pRef >= 244 && pRef < 248) {
+						int baseRef = 244;
+						int baseCount = 4;
+						int pDiff = baseRef - floorRef;
+						int frameRef = pRef - baseRef;
+						frameRef -= i;
+						while (frameRef < 0) {
+							frameRef += baseCount;
+						}
+						gRef = frameRef + pDiff;
+					} else if (pRef >= 248 && pRef < 252) {
+						int baseRef = 248;
+						int baseCount = 4;
+						int pDiff = baseRef - floorRef;
+						int frameRef = pRef - baseRef;
+						frameRef -= i;
+						while (frameRef < 0) {
+							frameRef += baseCount;
+						}
+						gRef = frameRef + pDiff;
+					} else if (pRef >= 252 && pRef < 255) {
+						int baseRef = 252;
+						int baseCount = 3;
+						int pDiff = baseRef - floorRef;
+						int frameRef = pRef - baseRef;
+						frameRef -= i;
+						while (frameRef < 0) {
+							frameRef += baseCount;
+						}
+						gRef = frameRef + pDiff;
+					}
+					const auto& refPalette = g_paletteTransforms[gRef];
+					//int val = g_paletteTransforms[gRef][0];
+					Color pColor = Color{ std::get<0>(refPalette), std::get<1>(refPalette), std::get<2>(refPalette), std::get<3>(refPalette) };
+					ImageDrawPixel(&frameImage, dstPosX + pX, dstPosY + pY, pColor);
+
+					// Example: Log the pixel values
+					//Log("Pixel values: " + std::to_string(pX) + ", " + std::to_string(pY) + ", " + std::to_string(pRef), "anims.log");
+				}
+			}
+			i++;
+		}
+		//Log("Exporting sprite image to " + imagePath, "anims.log");
+		ExportImage(frameImage, imagePath.c_str());
+	}
+}
+
 void BakeImageRoof(int objId, int xOfs, float y, int tileSizeX, int tileSizeY, int borderSize, int tileCountX, int tileCountY) {
-	// This is a placeholder function to represent the process of baking roof images.
-	// In a real implementation, this would involve rendering the roof from above and saving the image.
 	//AddConsoleString("Baking roof images... ", GREEN);
 	std::string objType = "roof";
 	std::string s_objId = std::to_string(objId);

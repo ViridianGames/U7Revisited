@@ -39,6 +39,7 @@ enum class ShapeDrawType
 	OBJECT_DRAW_FLAT,
 	OBJECT_DRAW_CUSTOM_MESH,
 	OBJECT_DRAW_CUSTOM_MESH_DEFER,
+	OBJECT_DRAW_ANIMFLAT,
 	OBJECT_DRAW_DONT_DRAW,
 	//OBJECT_DRAW_UPRIGHTFLAT,
 	OBJECT_DRAW_LAST
@@ -59,7 +60,7 @@ class ShapeData
 {
 public:
 	ShapeData();
-	~ShapeData() {};
+	~ShapeData() { m_palettePixels.clear(); };
 
 	void Init(int shape, int frame, bool shouldreset = true);
 
@@ -73,6 +74,7 @@ public:
 
 	bool IsValid() { return m_isValid; }
 	void SetPixelOffset(int offsetX, int offsetY);
+	void CaptureSpecialPaletteReferences(int posX, int posY, int paletteRef);
 	void CreateDefaultTexture();
 
 	void SetDefaultTexture(Image image);
@@ -106,11 +108,15 @@ public:
 
 	int m_pixelOffsetX;
 	int m_pixelOffsetY;
+	std::vector<std::tuple<int, int, int>> m_palettePixels;
+	int m_paletteFPS;
 
 	bool m_isValid;
 
 	int m_shape;
 	int m_frame;
+	int m_numFrames;
+	bool m_isAnimated;
 
 	int m_pointerShape;
 	int m_pointerFrame;
