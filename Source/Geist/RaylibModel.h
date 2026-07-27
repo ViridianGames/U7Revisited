@@ -19,6 +19,7 @@ public:
 
 	/// Displace model to northwest quadrant from origin.
 	RaylibModel& Decenter();
+	RaylibModel& UpdateFlatUV(float uvXmin, float uvXmax, float uvYmin, float uvYmax);
 
 	void UpdateAnim(const std::string& animName);
 	bool SetAnimationFrame(const std::string& animName, int frame);
