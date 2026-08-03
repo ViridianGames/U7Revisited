@@ -2,46 +2,50 @@
 function npc_camille_0177(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009
 
+    start_conversation()
     if eventid == 1 then
-        switch_talk_to(177)
+        switch_talk_to(NPC_CAMILLE)
         var_0000 = get_lord_or_lady()
-        if get_flag(531) and not get_flag(564) then
+        if get_flag(FLAG_FERIDWYN_ACCUSED_TOBIAS) and not get_flag(FLAG_CAMILLE_BEGGED_CLEAR_TOBIAS) then
             add_dialogue("\"Avatar! My son Tobias has been wrongly accused! He is no thief! And I cannot believe a vial of venom was found in his possession. I truly believe it was planted there! Please -- I beg thee! Please clear my son's name. He has done no wrong!\"")
             add_dialogue("\"I know my son Tobias has suffered for not having a father. I have tried my best on mine own to raise him well, but this farm requires so much work that I fear I do not have enough time to devote to him. But I know in mine heart that my son is not a thief.\"")
             add_dialogue("\"Might I suggest that thou speak with Morfin again. He may have recognized signs of usage of this foul substance in other members of the village.\"")
-            set_schedule_type(get_npc_name(177), 11)
-            set_flag(564, true)
+            set_schedule_type(NPC_CAMILLE, 11)
+            set_flag(FLAG_CAMILLE_BEGGED_CLEAR_TOBIAS, true)
             return
         end
-        start_conversation()
         add_answer({"bye", "job", "name"})
-        if not get_flag(530) then
+        -- usecode: thief if already heard of theft (530)
+        if get_flag(FLAG_STOLEN_VENOM) then
             add_answer("thief")
         end
-        if get_flag(531) then
+        -- usecode: Feridwyn topic after he framed Tobias (531)
+        if get_flag(FLAG_FERIDWYN_ACCUSED_TOBIAS) then
             add_answer("Feridwyn")
         end
-        if get_flag(536) then
+        -- usecode: cleared after case solved (536)
+        if get_flag(FLAG_VENOM_CASE_SOLVED) then
             add_answer("Tobias cleared")
             remove_answer({"thief", "Feridwyn"})
         end
-        if not get_flag(554) then
+        if not get_flag(FLAG_MET_CAMILLE) then
             add_dialogue("You see a farm woman. She rubs her hands, which are covered with dirt and lines drawn by toil.")
             add_dialogue("\"My dreams have become reality. Thou art the Avatar, art thou not? I recognized thee immediately!\"")
-            set_flag(554, true)
+            set_flag(FLAG_MET_CAMILLE, true)
         else
             add_dialogue("\"How art thou, " .. var_0000 .. "?\" Camille asks.")
         end
         while true do
+            coroutine.yield()
             local answer = get_answer()
             if answer == "name" then
                 add_dialogue("\"My name is Camille, Avatar. It is an honor to meet thee.\"")
-                set_flag(554, true)
+                set_flag(FLAG_MET_CAMILLE, true)
                 remove_answer("name")
             elseif answer == "job" then
                 add_dialogue("\"I run a small farm here in Paws with my son, Tobias. I am a widow.\"")
                 add_answer({"Tobias", "Paws"})
-                if not get_flag(538) then
+                if not get_flag(FLAG_CAMILLE_GAVE_WHEAT) then
                     add_answer("farm")
                 end
             elseif answer == "farm" then
@@ -78,7 +82,7 @@ function npc_camille_0177(eventid, objectref)
                 else
                     add_dialogue("\"If that is thy wish, Avatar, but they are quite good!\"")
                 end
-                remove_answer("carrot")
+                remove_answer("carrots")
             elseif answer == "wheat" then
                 add_dialogue("\"That reminds me. This package needs to be taken to the mill today. If thou canst deliver it for me, Thurston will pay thee for it. Wilt thou?\"")
                 var_0008 = ask_yes_no()
@@ -86,7 +90,7 @@ function npc_camille_0177(eventid, objectref)
                     var_0009 = add_party_items(true, 359, 677, 359, 1)
                     if var_0009 then
                         add_dialogue("\"Be sure and take this to Thurston, the mill owner. He shall pay thee for thy trouble.\"")
-                        set_flag(538, true)
+                        set_flag(FLAG_CAMILLE_GAVE_WHEAT, true)
                     else
                         add_dialogue("\"Thou art carrying too much! Go put something down and I will give it to thee then.\"")
                     end
@@ -99,7 +103,7 @@ function npc_camille_0177(eventid, objectref)
                 add_answer({"Fellowship", "ills"})
                 remove_answer("Paws")
             elseif answer == "Tobias" then
-                if get_flag(531) then
+                if get_flag(FLAG_FERIDWYN_ACCUSED_TOBIAS) then
                     add_dialogue("\"I know my son. I know that he is growing up unhappy. But I cannot believe that he would steal things.\"")
                 end
                 add_dialogue("\"He is basically a good boy. He works hard and misses his father.\"")
@@ -112,9 +116,9 @@ function npc_camille_0177(eventid, objectref)
                 add_answer("thief")
                 remove_answer("ills")
             elseif answer == "thief" then
-                if not get_flag(531) then
+                if not get_flag(FLAG_FERIDWYN_ACCUSED_TOBIAS) then
                     add_dialogue("\"Some silver serpent venom was stolen from the merchant Morfin who operates the slaughterhouse.\"")
-                    set_flag(530, true)
+                    set_flag(FLAG_STOLEN_VENOM, true)
                 else
                     add_dialogue("\"I do not care what Feridwyn says! My son is no thief!\"")
                 end
@@ -127,11 +131,11 @@ function npc_camille_0177(eventid, objectref)
                 remove_answer("Tobias cleared")
             elseif answer == "bye" then
                 add_dialogue("\"Pleasant journey, Avatar.\"")
+                clear_answers()
                 break
             end
         end
     elseif eventid == 0 then
-        utility_unknown_1070(177)
+        utility_unknown_1070(NPC_CAMILLE)
     end
-    return
 end

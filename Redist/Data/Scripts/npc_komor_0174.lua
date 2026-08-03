@@ -2,19 +2,20 @@
 function npc_komor_0174(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008
 
+    start_conversation()
     if eventid == 1 then
-        switch_talk_to(174)
+        switch_talk_to(NPC_KOMOR)
         var_0000 = get_lord_or_lady()
-        var_0001 = npc_id_in_party(175)
-        start_conversation()
+        var_0001 = npc_id_in_party(NPC_FENN)
         add_answer({"bye", "job", "name"})
-        if not get_flag(551) then
+        if not get_flag(FLAG_MET_KOMOR) then
             add_dialogue("You see a beggar leaning on a crutch. His eyes shine like diamonds with sheer bitterness.")
-            set_flag(551, true)
+            set_flag(FLAG_MET_KOMOR, true)
         else
             add_dialogue("\"Happy days, " .. var_0000 .. "?\" Komor asks.")
         end
         while true do
+            coroutine.yield()
             local answer = get_answer()
             if answer == "name" then
                 add_dialogue("\"My name is Komor.\"")
@@ -23,10 +24,10 @@ function npc_komor_0174(eventid, objectref)
                 add_dialogue("\"I am a dancer, " .. var_0000 .. ".\" He cannot keep a straight face and almost falls off his crutches.")
                 add_answer("beggar")
                 if var_0001 then
-                    switch_talk_to(175)
+                    switch_talk_to(NPC_FENN)
                     add_dialogue("\"Ha! Ha! Ha! Ha! Ha! Ha! 'Tis a ripe one, Komor!\"")
-                    hide_npc(175)
-                    switch_talk_to(174)
+                    hide_npc(NPC_FENN)
+                    switch_talk_to(NPC_KOMOR)
                 end
             elseif answer == "beggar" then
                 add_dialogue("\"I was not always a beggar. Like Fenn and Merrick, I used to be a farmer, too. But times got worse, and times are always bad in Paws.\"")
@@ -37,19 +38,19 @@ function npc_komor_0174(eventid, objectref)
                 remove_answer("Fenn")
                 add_answer({"wealth", "chums"})
                 if var_0001 then
-                    switch_talk_to(175)
+                    switch_talk_to(NPC_FENN)
                     add_dialogue("\"Ha! Ha! Ha! Ha! With thy wit thou shouldst be on stage!\"")
-                    hide_npc(175)
-                    switch_talk_to(174)
+                    hide_npc(NPC_FENN)
+                    switch_talk_to(NPC_KOMOR)
                 end
             elseif answer == "chums" then
                 add_dialogue("\"Fenn and me have been friends since we were little tiny babies.\"")
                 if var_0001 then
                     add_dialogue("\"I would bet thee that thou didst not think we would end up like this. Eh, Fenn?\"")
-                    switch_talk_to(175)
+                    switch_talk_to(NPC_FENN)
                     add_dialogue("\"Not in me wildest dreams, Komor.\"")
-                    hide_npc(175)
-                    switch_talk_to(174)
+                    hide_npc(NPC_FENN)
+                    switch_talk_to(NPC_KOMOR)
                 end
                 remove_answer("chums")
             elseif answer == "wealth" then
@@ -80,9 +81,10 @@ function npc_komor_0174(eventid, objectref)
                 if ask_yes_no() then
                     add_dialogue("How much?")
                     save_answers()
-                    var_0002 = utility_unknown_1035("5", "4", "3", "2", "1", "0")
-                    var_0003 = count_objects(359, 644, 357)
-                    if var_0003 >= var_0002 and var_0002 ~= "0" then
+                    var_0002 = ask_multiple_choice({"How much?", "5", "4", "3", "2", "1", "0"})
+                    var_0002 = tonumber(var_0002) or 0
+                    var_0003 = count_objects(359, 644, 359, 357)
+                    if var_0003 >= var_0002 and var_0002 ~= 0 then
                         var_0004 = remove_party_items(true, 359, 644, 359, var_0002)
                         if var_0004 then
                             add_dialogue("\"Thank thee, " .. var_0000 .. ".\"")
@@ -99,11 +101,12 @@ function npc_komor_0174(eventid, objectref)
                 remove_answer("give")
             elseif answer == "bye" then
                 add_dialogue("\"Hold thine head high, " .. var_0000 .. ".\"")
+                clear_answers()
                 break
             end
         end
     elseif eventid == 0 then
-        var_0006 = get_schedule_type(get_npc_name(174))
+        var_0006 = get_schedule_type(get_npc_name(NPC_KOMOR))
         var_0007 = random2(4, 1)
         if var_0006 == 11 then
             if var_0007 == 1 then
@@ -115,10 +118,9 @@ function npc_komor_0174(eventid, objectref)
             elseif var_0007 == 4 then
                 var_0008 = "@Any money for me, friend?@"
             end
-            bark(174, var_0008)
+            bark(NPC_KOMOR, var_0008)
         else
-            utility_unknown_1070(174)
+            utility_unknown_1070(NPC_KOMOR)
         end
     end
-    return
 end

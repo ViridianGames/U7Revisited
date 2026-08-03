@@ -2,53 +2,82 @@
 function npc_morfin_0172(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E, var_000F, var_0010, var_0011, var_0012, var_0013, var_0014, var_0015, var_0016, var_0017, var_0018, var_0019, var_001A
 
+    start_conversation()
     if eventid == 1 then
-        switch_talk_to(172)
+        switch_talk_to(NPC_MORFIN)
         var_0000 = get_player_name()
         var_0001 = get_lord_or_lady()
-        var_0004 = get_schedule(172)
-        var_0005 = get_schedule_type(get_npc_name(172))
+        var_0004 = get_schedule(NPC_MORFIN)
+        -- Schedule type is only needed for shop hours; keep lookup safe.
+        var_0005 = 0
+        do
+            local ok, name = pcall(get_npc_name, NPC_MORFIN)
+            if ok and name then
+                local ok2, sched = pcall(get_schedule_type, name)
+                if ok2 and type(sched) == "number" then
+                    var_0005 = sched
+                end
+            end
+        end
         var_0002 = "Avatar"
         var_0003 = "None of thy concern"
-        start_conversation()
-        add_answer({"bye", "job", "name"})
-        if not get_flag(559) then
-            add_answer("apology")
+        var_0006 = var_0001
+        -- usecode name restoration from first-meeting choices
+        if get_flag(FLAG_MORFIN_KNOWS_PLAYER_NAME) then
+            var_0006 = var_0000
         end
-        if get_flag(531) and not get_flag(536) then
-            add_answer("Tobias stole venom")
+        if get_flag(FLAG_MORFIN_REFUSED_NAME) then
+            var_0006 = var_0001
         end
-        if not get_flag(563) then
-            add_answer("ledger")
+        if get_flag(FLAG_MORFIN_TAUNTED_AVATAR) then
+            var_0006 = var_0001
         end
-        var_0007 = utility_unknown_1073(1, 357, 649, 359, 1)
-        if var_0007 then
-            add_answer("return venom")
-        end
-        if not get_flag(549) then
+
+        -- Greeting first so the dialogue box always has text even if later probes fail.
+        if not get_flag(FLAG_MET_MORFIN) then
             add_dialogue("You see a man whose eyes slowly shift back and forth as a crooked smile curls his lips. He walks up to you, looks you up and down. \"Oh, there must be a travelling show in town!\" he says sniggering. \"That is a very nice clown costume! Who art thou?\"")
-            var_0008 = utility_unknown_1035(var_0000, var_0002, var_0003)
+            var_0008 = ask_multiple_choice({"Who art thou?", var_0000, var_0002, var_0003})
             if var_0008 == var_0000 then
                 add_dialogue("\"Very well, " .. var_0000 .. ". What dost thou want?\"")
-                set_flag(559, true)
+                set_flag(FLAG_MORFIN_KNOWS_PLAYER_NAME, true)
                 var_0006 = var_0000
             elseif var_0008 == var_0003 then
                 add_dialogue("\"Rude dog!\"")
-                set_flag(560, true)
-                set_flag(549, true)
+                set_flag(FLAG_MORFIN_REFUSED_NAME, true)
+                set_flag(FLAG_MET_MORFIN, true)
+                clear_answers()
                 return
             elseif var_0008 == var_0002 then
                 add_dialogue("\"Thou art a vile fool, desperate for others to like thee. I would pity thee, were it not that I loathe thee even more!\"")
-                set_flag(532, true)
+                set_flag(FLAG_MORFIN_TAUNTED_AVATAR, true)
                 var_0006 = var_0002
-                set_flag(549, true)
+                set_flag(FLAG_MET_MORFIN, true)
+                clear_answers()
                 return
             end
-            set_flag(549, true)
+            set_flag(FLAG_MET_MORFIN, true)
         else
             add_dialogue("\"Greetings, " .. var_0006 .. ",\" says Morfin.")
         end
+
+        add_answer({"bye", "job", "name"})
+        -- usecode: apology if Avatar-insult path and not yet apologized
+        if get_flag(FLAG_MORFIN_TAUNTED_AVATAR) and not get_flag(FLAG_MORFIN_APOLOGIZED) then
+            add_answer("apology")
+        end
+        -- usecode: Tobias accusation path if framed and not solved
+        if get_flag(FLAG_FERIDWYN_ACCUSED_TOBIAS) and not get_flag(FLAG_VENOM_CASE_SOLVED) then
+            add_answer("Tobias stole venom")
+        end
+        -- usecode: ledger only after reading Morfin's venom sales ledger
+        if get_flag(FLAG_READ_MORFIN_LEDGER) then
+            add_answer("ledger")
+        end
+        if is_object_in_party_inventory(SHAPE_SILVER_SERPENT_VENOM) then
+            add_answer("return venom")
+        end
         while true do
+            coroutine.yield()
             local answer = get_answer()
             if answer == "name" then
                 add_dialogue("\"My name is Morfin.\"")
@@ -74,7 +103,7 @@ function npc_morfin_0172(eventid, objectref)
                 add_dialogue("\"I do suppose my ventures are profitable enough for me to afford to move to Britain, but things are so much less expensive here. Of course, the theft has me a bit wary.\"")
                 add_dialogue("\"If thou dost wish to know more about the people here, speak to the couple who run the Fellowship shelter, Feridwyn and Brita.\"")
                 remove_answer("Paws")
-                if not get_flag(536) then
+                if not get_flag(FLAG_VENOM_CASE_SOLVED) then
                     add_answer("theft")
                 end
             elseif answer == "slaughterhouse" then
@@ -162,7 +191,7 @@ function npc_morfin_0172(eventid, objectref)
                 remove_answer("ham")
             elseif answer == "venom" then
                 add_dialogue("\"A terrible crime, causing me no small amount of monetary distress. It has caused the surrounding community to worry about their possessions as well.\"")
-                if not get_flag(536) then
+                if not get_flag(FLAG_VENOM_CASE_SOLVED) then
                     add_dialogue("\"I would be thine humble servant shouldst thou help investigate the matter. Wilt thou?\"")
                     var_0018 = ask_yes_no()
                     if var_0018 then
@@ -176,13 +205,13 @@ function npc_morfin_0172(eventid, objectref)
                 remove_answer("venom")
             elseif answer == "theft" then
                 add_dialogue("\"Thou art a stranger in Paws. Beware the thief who roams this town! The culprit has stolen a quantity of my valuable silver serpent venom!\"")
-                set_flag(530, true)
+                set_flag(FLAG_STOLEN_VENOM, true)
                 remove_answer("theft")
                 add_answer("venom")
             elseif answer == "apology" then
                 add_dialogue("\"I do apologize for my rudeness earlier, " .. var_0006 .. ". I have since realized that thou art an honest person. Please forgive mine insults.\" He bows, dripping insincerity.")
                 remove_answer("apology")
-                set_flag(563, true)
+                set_flag(FLAG_MORFIN_APOLOGIZED, true)
             elseif answer == "ledger" then
                 add_dialogue("You tell Morfin that you have seen his ledger. \"Wait, " .. var_0006 .. "! I admit I do sell Silver Serpent Venom to other places besides the Apothecary. But what I am doing is not -precisely- against the law!\"")
                 add_answer({"law", "sell"})
@@ -203,9 +232,9 @@ function npc_morfin_0172(eventid, objectref)
                 remove_answer("effects")
                 add_answer("user")
             elseif answer == "user" or answer == "Tobias stole venom" then
-                if get_flag(531) then
+                if get_flag(FLAG_FERIDWYN_ACCUSED_TOBIAS) then
                     add_dialogue("\"I am not so sure Tobias was the one who stole the venom. I have not seen any of the signs of venom use in Tobias and I am quite familiar with its symptoms. But, now that I think about it, I have noticed that Garritt has appeared very tired lately. He seems hyperactive one moment and unhealthy the next.\"")
-                    if not get_flag(567) then
+                    if not get_flag(FLAG_GOT_GARRITT_KEY) then
                         add_answer("Garritt")
                     end
                     remove_answer("Tobias stole venom")
@@ -218,7 +247,7 @@ function npc_morfin_0172(eventid, objectref)
                 var_0019 = add_party_items(false, 6, 224, 641, 1)
                 if var_0019 then
                     add_dialogue("\"Here it is.\"")
-                    set_flag(567, true)
+                    set_flag(FLAG_GOT_GARRITT_KEY, true)
                 else
                     add_dialogue("\"I shall give it to thee when thine hands are not so full.\"")
                 end
@@ -227,7 +256,7 @@ function npc_morfin_0172(eventid, objectref)
                 var_001A = remove_party_items(true, 359, 649, 359, 1)
                 if var_001A then
                     add_dialogue("\"I thank thee for ferreting out the thief and returning my snake venom.\"")
-                    if not get_flag(536) then
+                    if not get_flag(FLAG_VENOM_CASE_SOLVED) then
                         add_dialogue("\"So Garritt was the culprit, eh? I am not surprised now that I think about it. I must keep closer tabs on my venom from now on.\"")
                     end
                 else
@@ -236,11 +265,11 @@ function npc_morfin_0172(eventid, objectref)
                 remove_answer("return venom")
             elseif answer == "bye" then
                 add_dialogue("\"Good day to thee.\"")
+                clear_answers()
                 break
             end
         end
     elseif eventid == 0 then
-        utility_unknown_1070(172)
+        utility_unknown_1070(NPC_MORFIN)
     end
-    return
 end

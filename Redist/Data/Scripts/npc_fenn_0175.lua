@@ -2,33 +2,35 @@
 function npc_fenn_0175(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008
 
+    start_conversation()
     if eventid == 1 then
-        switch_talk_to(175)
+        switch_talk_to(NPC_FENN)
         var_0000 = get_lord_or_lady()
-        start_conversation()
         add_answer({"bye", "job", "name"})
-        if get_flag(530) then
+        -- usecode: thief if already heard of theft (530)
+        if get_flag(FLAG_STOLEN_VENOM) then
             add_answer("thief")
         end
-        if not get_flag(552) then
+        if not get_flag(FLAG_MET_FENN) then
             add_dialogue("You see a beggar. You cannot tell from the look on his face whether he is about to laugh or cry.")
-            set_flag(552, true)
+            set_flag(FLAG_MET_FENN, true)
         else
             add_dialogue("\"Beg thy pardon, " .. var_0000 .. ",\" Fenn says.")
         end
         while true do
+            coroutine.yield()
             local answer = get_answer()
             if answer == "name" then
                 add_dialogue("\"My name is Fenn, " .. var_0000 .. ".\"")
                 remove_answer("name")
             elseif answer == "thief" then
-                if get_flag(536) then
+                if get_flag(FLAG_VENOM_CASE_SOLVED) then
                     add_dialogue("After you tell him about finding the venom vial, he says, \"Thou didst our town a service when thou didst uncover that no good brat Garritt as the thief! Perhaps now some people will start to realize the hypocrisy of the Fellowship!\"")
-                elseif get_flag(531) then
+                elseif get_flag(FLAG_FERIDWYN_ACCUSED_TOBIAS) then
                     add_dialogue("\"I know that boy Tobias is innocent of any wrong doing, no matter what Feridwyn and his Fellowship says.\"")
                 else
                     add_dialogue("\"Be wary for there is a thief in this town! Some silver serpent venom was stolen from the merchant Morfin, who runs the slaughterhouse.\"")
-                    set_flag(530, true)
+                    set_flag(FLAG_STOLEN_VENOM, true)
                 end
                 remove_answer("thief")
             elseif answer == "job" then
@@ -40,13 +42,13 @@ function npc_fenn_0175(eventid, objectref)
                 remove_answer("none")
             elseif answer == "Komor" then
                 add_dialogue("\"He is my best friend and the bravest man I know.\"")
-                var_0001 = npc_id_in_party(174)
+                var_0001 = npc_id_in_party(NPC_KOMOR)
                 if var_0001 then
                     add_dialogue("*")
-                    switch_talk_to(174)
+                    switch_talk_to(NPC_KOMOR)
                     add_dialogue("\"Oh, please! Thou art making mine eyes leak!\"")
-                    hide_npc(174)
-                    switch_talk_to(175)
+                    hide_npc(NPC_KOMOR)
+                    switch_talk_to(NPC_FENN)
                 end
                 remove_answer("Komor")
             elseif answer == "Merrick" then
@@ -77,7 +79,7 @@ function npc_fenn_0175(eventid, objectref)
                 remove_answer("Camille")
             elseif answer == "Tobias" then
                 add_dialogue("\"He is a fine lad, always willing to give us a hand. Unlike that rude urchin, Garritt.\"")
-                if get_flag(531) then
+                if get_flag(FLAG_FERIDWYN_ACCUSED_TOBIAS) then
                     add_answer("venom")
                 end
                 add_answer("Garritt")
@@ -95,13 +97,13 @@ function npc_fenn_0175(eventid, objectref)
                 remove_answer("Andrew")
             elseif answer == "Garritt" then
                 add_dialogue("\"He is the son of Feridwyn and Brita, who run the shelter. Garritt crosses the road to avoid us.\"")
-                var_0001 = npc_id_in_party(174)
+                var_0001 = npc_id_in_party(NPC_KOMOR)
                 if var_0001 then
                     add_dialogue("*")
-                    switch_talk_to(174)
+                    switch_talk_to(NPC_KOMOR)
                     add_dialogue("\"We would not want the likes of him walking down our side of the road anyway!\"")
-                    hide_npc(174)
-                    switch_talk_to(175)
+                    hide_npc(NPC_KOMOR)
+                    switch_talk_to(NPC_FENN)
                 end
                 remove_answer("Garritt")
             elseif answer == "give" then
@@ -109,9 +111,10 @@ function npc_fenn_0175(eventid, objectref)
                 if ask_yes_no() then
                     add_dialogue("How much?")
                     save_answers()
-                    var_0002 = utility_unknown_1035("5", "4", "3", "2", "1", "0")
-                    var_0003 = count_objects(359, 644, 357)
-                    if var_0003 >= var_0002 and var_0002 ~= "0" then
+                    var_0002 = ask_multiple_choice({"How much?", "5", "4", "3", "2", "1", "0"})
+                    var_0002 = tonumber(var_0002) or 0
+                    var_0003 = count_objects(359, 644, 359, 357)
+                    if var_0003 >= var_0002 and var_0002 ~= 0 then
                         var_0004 = remove_party_items(true, 359, 644, 359, var_0002)
                         add_dialogue("\"Thank thee, " .. var_0000 .. ".\"")
                     else
@@ -127,12 +130,13 @@ function npc_fenn_0175(eventid, objectref)
                 remove_answer("give")
             elseif answer == "bye" then
                 add_dialogue("\"Good fortune to ye, " .. var_0000 .. ".\"")
+                clear_answers()
                 break
             end
         end
     elseif eventid == 0 then
-        var_0005 = get_schedule(175)
-        var_0006 = get_schedule_type(get_npc_name(175))
+        var_0005 = get_schedule(NPC_FENN)
+        var_0006 = get_schedule_type(get_npc_name(NPC_FENN))
         var_0007 = random2(4, 1)
         if var_0006 == 11 then
             if var_0007 == 1 then
@@ -144,10 +148,9 @@ function npc_fenn_0175(eventid, objectref)
             elseif var_0007 == 4 then
                 var_0008 = "@Help one less fortunate!@"
             end
-            bark(175, var_0008)
+            bark(NPC_FENN, var_0008)
         else
-            utility_unknown_1070(175)
+            utility_unknown_1070(NPC_FENN)
         end
     end
-    return
 end

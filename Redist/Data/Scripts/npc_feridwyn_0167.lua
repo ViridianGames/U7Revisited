@@ -2,54 +2,62 @@
 function npc_feridwyn_0167(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007
 
+    start_conversation()
     if eventid == 1 then
-        switch_talk_to(167)
+        switch_talk_to(NPC_FERIDWYN)
         var_0000 = get_lord_or_lady()
         var_0001 = is_player_wearing_fellowship_medallion()
         var_0002 = false
-        var_0003 = utility_unknown_1073(1, 357, 649, 359, 1)
-        if not get_flag(566) and not get_flag(531) then
-            if not get_flag(530) then
+        -- Inventory probe is safe (never throws); done after greeting setup below.
+        var_0003 = false
+
+        -- usecode: framing cutscene after met key townsfolk and not yet accused Tobias
+        if get_flag(FLAG_PAWS_FRAME_READY) and not get_flag(FLAG_FERIDWYN_ACCUSED_TOBIAS) then
+            if not get_flag(FLAG_STOLEN_VENOM) then
                 add_dialogue("\"Avatar! Didst thou know that the merchant Morfin had a quantity of silver serpent venom stolen? This theft has caused the community no small amount of distress.\"")
             else
                 add_dialogue("\"Avatar! Oh Avatar! I have news!\"")
             end
             add_dialogue("\"Garritt, my son, told me that Tobias was in possession of some silver snake venom. I went to investigate and found Tobias with it!\"")
-            var_0004 = npc_id_in_party(170)
+            var_0004 = npc_id_in_party(NPC_MERRICK)
             if var_0004 then
-                switch_talk_to(170)
+                switch_talk_to(NPC_MERRICK)
                 add_dialogue("\"That is correct! I am a witness that what Feridwyn has said is the truth!\"")
-                hide_npc(170)
-                switch_talk_to(167)
+                hide_npc(NPC_MERRICK)
+                switch_talk_to(NPC_FERIDWYN)
             end
             add_dialogue("\"I have often said that Tobias was no good. Now here is proof. He is the thief that has been praying upon one of our honest merchants! And to think I let him come into contact with my son! I hope he shall be dealt with in a manner appropriate to one who is leading youth astray from the way of The Fellowship.\"")
             add_dialogue("\"I suggest that thou go and speak with his mother at once! Camille should keep a tighter rein on her offspring!\"")
-            set_flag(531, true)
-            set_flag(540, true)
-            set_schedule_type(get_npc_name(177), 3)
-            set_schedule_type(get_npc_name(167), 11)
+            set_flag(FLAG_FERIDWYN_ACCUSED_TOBIAS, true)
+            set_flag(FLAG_TOBIAS_FRAMED, true)
+            set_schedule_type(NPC_CAMILLE, 3)
+            set_schedule_type(NPC_FERIDWYN, 11)
+            clear_answers()
             return
         end
-        start_conversation()
+
+        if not get_flag(FLAG_MET_FERIDWYN) then
+            add_dialogue("You see a small man with twisted, sloped posture. He looks you up and down before deciding he will speak to you.")
+            add_dialogue("\"I had gotten word that thou wert coming to our town. I have been expecting thee. I must admit, though, that I find it difficult to believe that thou art truly the Avatar.\"")
+            set_flag(FLAG_MET_FERIDWYN, true)
+        else
+            add_dialogue("\"Thou dost wish to speak with me again, Avatar?\" says Feridwyn.")
+        end
+
         add_answer({"bye", "job", "name"})
-        if get_flag(261) then
+        if get_flag(FLAG_HEARD_ELIZABETH_ABRAHAM) then
             add_answer("Elizabeth and Abraham")
         end
+        var_0003 = is_object_in_party_inventory(SHAPE_SILVER_SERPENT_VENOM)
         if var_0003 then
             var_0002 = true
             add_answer({"case solved", "found venom"})
         end
-        if get_flag(536) then
+        if get_flag(FLAG_VENOM_CASE_SOLVED) then
             add_answer({"case solved", "Tobias", "take action", "Garritt caught", "found venom"})
         end
-        if not get_flag(544) then
-            add_dialogue("You see a small man with twisted, sloped posture. He looks you up and down before deciding he will speak to you.")
-            add_dialogue("\"I had gotten word that thou wert coming to our town. I have been expecting thee. I must admit, though, that I find it difficult to believe that thou art truly the Avatar.\"")
-            set_flag(544, true)
-        else
-            add_dialogue("\"Thou dost wish to speak with me again, Avatar?\" says Feridwyn.")
-        end
         while true do
+            coroutine.yield()
             local answer = get_answer()
             if answer == "name" then
                 add_dialogue("\"My name is Feridwyn.\"")
@@ -74,14 +82,14 @@ function npc_feridwyn_0167(eventid, objectref)
                 add_dialogue("\"This is the only place in all of Britannia designed for the aid and care of the poor. It is hard work, but then one strives to be worthy of that which we wish to receive.\"")
                 remove_answer("shelter")
             elseif answer == "Brita" then
-                if not get_flag(545) then
+                if not get_flag(FLAG_MET_BRITA) then
                     add_dialogue("\"A wonderful woman. Thou shouldst meet her.\"")
-                    var_0006 = npc_id_in_party(168)
+                    var_0006 = npc_id_in_party(NPC_BRITA)
                     if var_0006 then
-                        switch_talk_to(168)
+                        switch_talk_to(NPC_BRITA)
                         add_dialogue("\"Mine husband is such a flatterer. The truth is that our work for The Fellowship has brought us closer together.\"")
-                        hide_npc(168)
-                        switch_talk_to(167)
+                        hide_npc(NPC_BRITA)
+                        switch_talk_to(NPC_FERIDWYN)
                     end
                 else
                     add_dialogue("\"As thou dost already know my wife Brita, I am certain thou wilt agree that thou couldst not find a more dedicated practitioner of The Fellowship's teachings.\"")
@@ -121,9 +129,9 @@ function npc_feridwyn_0167(eventid, objectref)
                 add_dialogue("\"Her husband is currently in Britain somewhere. I do not know the details. She has a small child.\"")
                 remove_answer("Alina")
             elseif answer == "Elizabeth and Abraham" then
-                if not get_flag(363) then
+                if not get_flag(FLAG_EA_LEFT_JHELOM) then
                     add_dialogue("\"I am so sorry! Thou hast just missed them! Elizabeth and Abraham were here delivering funds, but they have gone now to Jhelom. There is currently no Fellowship branch there, so they are taking the Triad of Inner Strength to lands west!\"")
-                    set_flag(535, true)
+                    set_flag(FLAG_EA_LEFT_PAWS_FOR_JHELOM, true)
                 else
                     add_dialogue("\"I have not seen Elizabeth and Abraham for many days now.\"")
                 end
@@ -145,7 +153,7 @@ function npc_feridwyn_0167(eventid, objectref)
                 add_dialogue("\"Andrew is such a happy young man. He doth not notice the myriad of personal problems that he is afflicted with.\"")
                 remove_answer("Andrew")
             elseif answer == "Tobias" then
-                if not get_flag(536) then
+                if not get_flag(FLAG_VENOM_CASE_SOLVED) then
                     add_dialogue("\"A local rascal. I normally would not allow Garritt to associate with such a troublemaker, but The Fellowship has taught me to be a tolerant parent. Besides, associating with my son might do the lad some good. Who knows?\"")
                 else
                     add_dialogue("\"No matter that Tobias did not personally steal the venom himself. He caused the theft by means of his corrupting influence on my son. While his actions are just short of criminal, I still blame Tobias.\"")
@@ -158,7 +166,7 @@ function npc_feridwyn_0167(eventid, objectref)
                 add_dialogue("\"Komor is the most hateful man I have ever met. He is a bundle of bitterness. In all the time I have known him, Komor has never spoken a word to me that was not at best a thinly veiled insult.\"")
                 remove_answer("Komor")
             elseif answer == "case solved" then
-                if get_flag(536) or var_0002 then
+                if get_flag(FLAG_VENOM_CASE_SOLVED) or var_0002 then
                     add_dialogue("\"Thankfully we can now put this business of snake venom thefts behind us, thanks to thy thorough efforts. I shall deal with my son. Let us speak of this no more.\"")
                 else
                     add_dialogue("\"Thank goodness Garritt, my sharp eyed boy, got to the bottom of this business of the snake venom thefts. Frankly, I had my suspicions about Tobias myself.\"")
@@ -166,13 +174,13 @@ function npc_feridwyn_0167(eventid, objectref)
                 remove_answer("case solved")
             elseif answer == "snake venom" then
                 add_dialogue("\"Morfin, the local merchant, informs me that a quantity of silver serpent venom was stolen from him. The thief is still at large, so be wary! Of course, I do not know why anyone would want the vile substance. It is surely not good for one's health.\"")
-                set_flag(530, true)
+                set_flag(FLAG_STOLEN_VENOM, true)
                 remove_answer("snake venom")
             elseif answer == "take action" then
                 add_dialogue("\"I promise thee, I shall apply the necessary discipline to my son to ensure that this bad habit he has picked up from the local riffraff will not trouble this community again.\"")
                 remove_answer("take action")
             elseif answer == "found venom" then
-                if not get_flag(536) then
+                if not get_flag(FLAG_VENOM_CASE_SOLVED) then
                     add_dialogue("\"Thou didst find the venom vial in Garritt's belongings? I am amazed! I am astonished! I am-- sorry.\"")
                 else
                     add_dialogue("\"Thou art a resourceful person. Unfortunately, thy discovery has upset me a great deal.\"")
@@ -186,11 +194,11 @@ function npc_feridwyn_0167(eventid, objectref)
                 if var_0003 then
                     add_dialogue("You realize that the Cube did not bring out anything that Feridwyn did not actually believe himself. He is one of the innocent followers of The Guardian.")
                 end
+                clear_answers()
                 break
             end
         end
     elseif eventid == 0 then
-        utility_unknown_1070(167)
+        utility_unknown_1070(NPC_FERIDWYN)
     end
-    return
 end

@@ -2,35 +2,40 @@
 function npc_polly_0179(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B
 
+    start_conversation()
     if eventid == 1 then
-        switch_talk_to(179)
+        switch_talk_to(NPC_POLLY)
         var_0000 = get_lord_or_lady()
-        var_0001 = get_schedule(179)
-        var_0002 = get_schedule_type(get_npc_name(179))
-        start_conversation()
+        var_0001 = get_schedule(NPC_POLLY)
+        var_0002 = get_schedule_type(get_npc_name(NPC_POLLY))
         add_answer({"bye", "job", "name"})
-        if not get_flag(530) then
+        -- usecode: thief if already heard of theft (530); remove if solved (536)
+        if get_flag(FLAG_STOLEN_VENOM) then
             add_answer("thief")
         end
-        if get_flag(536) then
+        if get_flag(FLAG_VENOM_CASE_SOLVED) then
             remove_answer("thief")
         end
-        if get_flag(533) then
+        -- usecode: Merrick after Avatar/Merrick insult path (533)
+        if get_flag(FLAG_MERRICK_TAUNTED_AVATAR) then
             add_answer("Merrick")
         end
-        if get_flag(532) then
+        -- usecode: Morfin after Morfin insult path (532)
+        if get_flag(FLAG_MORFIN_TAUNTED_AVATAR) then
             add_answer("Morfin")
         end
-        if get_flag(534) then
+        -- usecode: Thurston after he mentioned Salty Dog feelings (534)
+        if get_flag(FLAG_THURSTON_LOVES_POLLY) then
             add_answer("Thurston")
         end
-        if not get_flag(556) then
+        if not get_flag(FLAG_MET_POLLY) then
             add_dialogue("You see the town bartender. She looks very busy, but she obviously takes pride in her work.")
-            set_flag(556, true)
+            set_flag(FLAG_MET_POLLY, true)
         else
             add_dialogue("Polly smiles. \"What can I do for thee, " .. var_0000 .. "?\"")
         end
         while true do
+            coroutine.yield()
             local answer = get_answer()
             if answer == "name" then
                 add_dialogue("\"I am Polly. It is a pleasure to meet thee.\"")
@@ -51,13 +56,17 @@ function npc_polly_0179(eventid, objectref)
                 if ask_yes_no() then
                     var_0003 = get_party_list2()
                     var_0004 = 0
-                    for i = 1, var_0003 do
-                        var_0004 = var_0004 + 1
+                    if type(var_0003) == "table" then
+                        for _ in pairs(var_0003) do
+                            var_0004 = var_0004 + 1
+                        end
+                    else
+                        var_0004 = 1
                     end
                     var_0008 = var_0004 * 5
-                    var_0009 = count_objects(359, 644, 357)
+                    var_0009 = count_objects(359, 644, 359, 357)
                     if var_0009 >= var_0008 then
-                        var_000A = add_party_items(true, 255, 641, 1)
+                        var_000A = add_party_items(true, 359, 255, 641, 1)
                         if var_000A then
                             add_dialogue("\"Here is thy key for this inn. 'Twill only work once.\"")
                             var_000B = remove_party_items(true, 359, 644, 359, var_0008)
@@ -76,7 +85,7 @@ function npc_polly_0179(eventid, objectref)
                 remove_answer("Paws")
             elseif answer == "thief" then
                 add_dialogue("\"There is a thief in this town! Silver serpent venom was stolen from Morfin, the merchant who operates the slaughterhouse.\"")
-                set_flag(530, true)
+                set_flag(FLAG_STOLEN_VENOM, true)
                 remove_answer("thief")
             elseif answer == "Merrick" then
                 add_dialogue("\"He used to be a farmer. He is not a bad sort. He has just had a bad run of luck. Now he is a devout Fellowship member.\"")
@@ -87,15 +96,15 @@ function npc_polly_0179(eventid, objectref)
                 remove_answer("Morfin")
             elseif answer == "Thurston" then
                 add_dialogue("You relate to Polly what you heard Thurston say about her. She is taken completely by surprise. \"Thurston really said that about me! I have always liked him, but in truth I have always thought I was not good enough for him!\"")
-                set_flag(539, true)
+                set_flag(FLAG_POLLY_TOLD_ABOUT_THURSTON, true)
                 remove_answer("Thurston")
             elseif answer == "bye" then
                 add_dialogue("\"Good day to thee, " .. var_0000 .. ".\"")
+                clear_answers()
                 break
             end
         end
     elseif eventid == 0 then
-        utility_unknown_1070(179)
+        utility_unknown_1070(NPC_POLLY)
     end
-    return
 end

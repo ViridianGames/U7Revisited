@@ -2,33 +2,37 @@
 function npc_tobias_0178(eventid, objectref)
     local var_0000, var_0001, var_0002
 
+    start_conversation()
     if eventid == 1 then
-        switch_talk_to(178)
+        switch_talk_to(NPC_TOBIAS)
         var_0000 = get_lord_or_lady()
-        var_0001 = get_schedule_type(get_npc_name(178))
-        start_conversation()
+        var_0001 = get_schedule_type(get_npc_name(NPC_TOBIAS))
         add_answer({"bye", "job", "name"})
-        if not get_flag(530) and not get_flag(536) then
+        -- usecode: thief if heard of theft (530) and not solved (536)
+        if get_flag(FLAG_STOLEN_VENOM) and not get_flag(FLAG_VENOM_CASE_SOLVED) then
             add_answer("thief")
         end
-        if get_flag(536) and not get_flag(540) then
+        -- usecode: venom if framed by Feridwyn (540) and not solved (536)
+        if get_flag(FLAG_TOBIAS_FRAMED) and not get_flag(FLAG_VENOM_CASE_SOLVED) then
             add_answer("venom")
         end
-        if not get_flag(555) then
+        if not get_flag(FLAG_MET_TOBIAS) then
             add_dialogue("You see a sulking lad, who doesn't seem to want to look you in the eye.")
             add_dialogue("\"Just what I need. Another Avatar,\" he mumbles under his breath.")
-            set_flag(555, true)
+            set_flag(FLAG_MET_TOBIAS, true)
         else
-            if not get_flag(536) then
+            -- usecode: after case solved (536) he greets you as Avatar
+            if get_flag(FLAG_VENOM_CASE_SOLVED) then
                 add_dialogue("\"Yes, Avatar?\" Tobias asks.")
             else
                 add_dialogue("\"What dost thou want?\" Tobias asks.")
             end
         end
         while true do
+            coroutine.yield()
             local answer = get_answer()
             if answer == "name" then
-                if get_flag(536) then
+                if get_flag(FLAG_VENOM_CASE_SOLVED) then
                     add_dialogue("\"I am still Tobias!\"")
                 else
                     add_dialogue("\"I am Tobias. I suppose I am to believe thou art someone important.\"")
@@ -39,10 +43,10 @@ function npc_tobias_0178(eventid, objectref)
                 add_answer({"farm", "mother"})
             elseif answer == "mother" then
                 add_dialogue("\"Her name is Camille. She speaks of thee. Or rather she speaks of the Avatar, is what I meant to say. Some people in town think she is mad because she still believes in the Eight Virtues.\"")
-                if get_flag(554) then
+                if get_flag(FLAG_MET_CAMILLE) then
                     add_dialogue("\"Thou hast already met her.\"")
                 end
-                if get_flag(536) then
+                if get_flag(FLAG_VENOM_CASE_SOLVED) then
                     add_dialogue("\"But thanks to thee I have more respect for her beliefs.\"")
                 end
                 remove_answer("mother")
@@ -51,13 +55,13 @@ function npc_tobias_0178(eventid, objectref)
                 add_dialogue("\"Art thou truly the Avatar?\"")
                 var_0002 = ask_yes_no()
                 if var_0002 then
-                    if get_flag(536) then
+                    if get_flag(FLAG_VENOM_CASE_SOLVED) then
                         add_dialogue("\"Yes, I do believe thou art the true Avatar.\" Tobias smiles briefly.")
                     else
                         add_dialogue("\"Thou art no Avatar!\" Tobias frowns.")
                     end
                 else
-                    if get_flag(536) then
+                    if get_flag(FLAG_VENOM_CASE_SOLVED) then
                         add_dialogue("\"I think that thou mayest have a little bit of the way of the Avatar about thee. There is a little bit of the Avatar in everyone, or so my mother says.\"")
                     else
                         add_dialogue("\"I knew that thou wert nothing but an imposter.\"")
@@ -78,7 +82,7 @@ function npc_tobias_0178(eventid, objectref)
                 if var_0001 == 26 then
                     add_dialogue("\"Surely thou canst find the farm. It is just north of the shelter.\"")
                 end
-                if not get_flag(536) then
+                if not get_flag(FLAG_VENOM_CASE_SOLVED) then
                     add_dialogue("Tobias looks at you as if he thinks you are a bit dim.")
                 end
                 remove_answer("farm")
@@ -106,7 +110,7 @@ function npc_tobias_0178(eventid, objectref)
                 remove_answer("mother join?")
             elseif answer == "thief" then
                 add_dialogue("\"There is a thief running free in Paws! He stole silver serpent venom from Morfin, owner of the slaughterhouse. No one knows who he is.\"")
-                set_flag(530, true)
+                set_flag(FLAG_STOLEN_VENOM, true)
                 remove_answer("thief")
             elseif answer == "venom" then
                 add_dialogue("\"I do not know anything about the stolen venom. I am falsely accused!\"")
@@ -116,25 +120,25 @@ function npc_tobias_0178(eventid, objectref)
                 add_dialogue("\"That is right! Garritt did it. I just know it. He was in my room the other day when I came in from the fields. He said he was looking for a ball, but I do not believe him. Thou canst believe me or not, I do not care. But if thou art truly the Avatar, thou wilt know I am telling the truth.\"")
                 remove_answer("falsely accused")
             elseif answer == "Garritt" then
-                if get_flag(536) then
+                if get_flag(FLAG_VENOM_CASE_SOLVED) then
                     add_dialogue("You tell Tobias how you discovered that Garritt was the thief. \"Thank thee, " .. var_0000 .. ", for not believing I was the guilty one. I am not sure if thou art truly the real Avatar but thou dost certainly have the way of the Avatar about thee.\"")
-                elseif not get_flag(531) then
+                elseif not get_flag(FLAG_FERIDWYN_ACCUSED_TOBIAS) then
                     add_dialogue("\"He is the only other boy in town anywhere near mine age. His parents do not want him playing with me because they think that 'associating with those kind of people' will 'hamper his education' or some such rubbish. I cannot stand the little bastard. And I hate the way he plays those stinking whistle panpipes!\"")
                 else
                     add_dialogue("\"That spoiled brat Garritt must have planted the venom in my room! He is usually lounging about, even if his parents disapprove of him playing with me. I know he is up to something no good! Thou shouldst look in HIS room!\"")
                 end
                 remove_answer("Garritt")
             elseif answer == "bye" then
-                if get_flag(536) then
+                if get_flag(FLAG_VENOM_CASE_SOLVED) then
                     add_dialogue("\"Goodbye, Avatar. Good luck to thee.\"")
                 else
                     add_dialogue("\"Be on thy way then, o great and wise Avatar.\"")
                 end
+                clear_answers()
                 break
             end
         end
     elseif eventid == 0 then
-        utility_unknown_1070(178)
+        utility_unknown_1070(NPC_TOBIAS)
     end
-    return
 end

@@ -2,21 +2,22 @@
 function npc_beverlea_0173(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E, var_000F, var_0010, var_0011, var_0012, var_0013
 
+    start_conversation()
     if eventid == 1 then
-        switch_talk_to(173)
+        switch_talk_to(NPC_BEVERLEA)
         var_0000 = get_lord_or_lady()
-        var_0001 = get_schedule(173)
-        var_0002 = get_schedule_type(get_npc_name(173))
+        var_0001 = get_schedule(NPC_BEVERLEA)
+        var_0002 = get_schedule_type(get_npc_name(NPC_BEVERLEA))
         var_0003 = find_nearest(-1, 839, 356)
-        start_conversation()
         add_answer({"bye", "job", "name"})
-        if not get_flag(550) then
+        if not get_flag(FLAG_MET_BEVERLEA) then
             add_dialogue("You see an old woman who gives you a smile of grandmotherly sweetness. You can see immediately that her vision is poor.")
-            set_flag(550, true)
+            set_flag(FLAG_MET_BEVERLEA, true)
         else
             add_dialogue("\"Why, hello again, " .. var_0000 .. ". It is so good to see thee!\" says Beverlea.")
         end
         while true do
+            coroutine.yield()
             local answer = get_answer()
             if answer == "name" then
                 add_dialogue("\"My name is Beverlea.\"")
@@ -93,7 +94,7 @@ function npc_beverlea_0173(eventid, objectref)
                         var_000B = remove_party_items(true, 359, 644, 359, 5)
                         if var_000B then
                             add_dialogue("\"I thank thee. Thou mayest take thy glass.\"")
-                            set_flag(529, true)
+                            set_flag(FLAG_GOT_HOURGLASS, true)
                         else
                             add_dialogue("\"Thou dost not have enough money.\"")
                         end
@@ -113,6 +114,7 @@ function npc_beverlea_0173(eventid, objectref)
                         add_dialogue("\"I thank thee! Now thou canst go and please do not forget to take it with thee when thou dost leave!\"")
                     else
                         add_dialogue("\"Thou dost not even have a single gold piece! Nor the decency to inform me that I was wasting my time in talking with thee.\"")
+                        clear_answers()
                         return
                     end
                 else
@@ -149,11 +151,12 @@ function npc_beverlea_0173(eventid, objectref)
                 remove_answer("sextant")
             elseif answer == "bye" then
                 add_dialogue("\"A good day to thee, " .. var_0000 .. ".\"")
+                clear_answers()
                 break
             end
         end
     elseif eventid == 0 then
-        var_0002 = get_schedule_type(get_npc_name(173))
+        var_0002 = get_schedule_type(get_npc_name(NPC_BEVERLEA))
         var_0012 = random2(4, 1)
         if var_0002 == 7 then
             if var_0012 == 1 then
@@ -165,10 +168,9 @@ function npc_beverlea_0173(eventid, objectref)
             elseif var_0012 == 4 then
                 var_0013 = "@Collectibles? Antiques?@"
             end
-            bark(173, var_0013)
+            bark(NPC_BEVERLEA, var_0013)
         else
-            utility_unknown_1070(173)
+            utility_unknown_1070(NPC_BEVERLEA)
         end
     end
-    return
 end

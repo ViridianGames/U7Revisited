@@ -182,11 +182,21 @@ function random2(min, max) end
 ---@usage find_nearby(objectref, 176, 4, 0) -- Find shape 176 within 4 tiles
 function find_nearby(objectref, shape, distance, mask) end
 
----Checks if an object is in an NPC's inventory
----@param object_id integer The object to check for
+---Checks if an NPC has an item of the given shape in inventory
 ---@param npc_id integer The NPC to check
----@return boolean found True if object is in NPC inventory
-function is_object_in_npc_inventory(object_id, npc_id) end
+---@param shape integer The object shape/type to look for
+---@param frame? integer Optional frame (-1 / omit for any; default 0 in engine)
+---@param quality? integer Optional quality (-1 / omit for any)
+---@return boolean found True if a matching item is in the NPC's inventory
+function is_object_in_npc_inventory(npc_id, shape, frame, quality) end
+
+---Checks if any party member (including Avatar) has an item of the given shape
+---@param shape integer The object shape/type to look for (e.g. 649 = silver serpent venom)
+---@param frame? integer Optional frame (-1, 359, or omit = any)
+---@param quality? integer Optional quality (-1, 359, or omit = any)
+---@param min_quantity? integer Minimum total quantity required (default 1)
+---@return boolean found True if the party carries at least min_quantity matching items
+function is_object_in_party_inventory(shape, frame, quality, min_quantity) end
 
 ---Checks if an object is in a container
 ---@param object_id integer The object to check for

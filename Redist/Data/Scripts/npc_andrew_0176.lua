@@ -1,29 +1,31 @@
---- Best guess: Manages Andrew’s dialogue in Paws, a dairy owner selling milk and cheese, providing clues about the venom theft and Morfin’s slaughterhouse.
+--- Best guess: Manages Andrew's dialogue in Paws, a dairy owner selling milk and cheese, providing clues about the venom theft and Morfin's slaughterhouse.
 function npc_andrew_0176(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C
 
+    start_conversation()
     if eventid == 1 then
-        switch_talk_to(176)
+        switch_talk_to(NPC_ANDREW)
         var_0000 = get_lord_or_lady()
-        var_0001 = get_schedule(176)
-        var_0002 = get_schedule_type(get_npc_name(176))
+        var_0001 = get_schedule(NPC_ANDREW)
+        var_0002 = get_schedule_type(get_npc_name(NPC_ANDREW))
         var_0003 = false
-        start_conversation()
         add_answer({"bye", "job", "name"})
-        if not get_flag(530) then
+        -- usecode: thief if already heard of theft (530)
+        if get_flag(FLAG_STOLEN_VENOM) then
             add_answer("thief")
         end
-        if get_flag(536) then
-            remove_answer("thief")
+        -- usecode: theft solved if case closed (536)
+        if get_flag(FLAG_VENOM_CASE_SOLVED) then
             add_answer("theft solved")
         end
-        if not get_flag(553) then
+        if not get_flag(FLAG_MET_ANDREW) then
             add_dialogue("You see a cheerful, handsome young man who gives you a friendly wave as you approach.")
-            set_flag(553, true)
+            set_flag(FLAG_MET_ANDREW, true)
         else
             add_dialogue("\"Greetings, " .. var_0000 .. ",\" says Andrew.")
         end
         while true do
+            coroutine.yield()
             local answer = get_answer()
             if answer == "name" then
                 add_dialogue("\"My name is Andrew. How art thou, " .. var_0000 .. "?\"")
@@ -37,28 +39,32 @@ function npc_andrew_0176(eventid, objectref)
                 add_answer({"cheese", "milk", "slaughterhouse", "Camille"})
             elseif answer == "milk" then
                 if var_0002 == 7 then
-                    add_dialogue("\"A gallon will cost thee 3 gold. Art thou interested in buying some?\"")
-                    if ask_yes_no() then
-                        var_0004 = remove_party_items(true, 359, 644, 359, 3)
-                        if var_0004 then
-                            var_0005 = add_party_items(true, 7, 359, 616, 1)
-                            if var_0005 then
-                                add_dialogue("\"Here it is,\" he says, handing you the jug. \"Wouldst thou like another?\"")
-                                var_0006 = ask_yes_no()
-                                if var_0006 then
-                                    goto milk_purchase
+                    local buy_more = true
+                    while buy_more do
+                        add_dialogue("\"A gallon will cost thee 3 gold. Art thou interested in buying some?\"")
+                        if ask_yes_no() then
+                            var_0004 = remove_party_items(true, 359, 644, 359, 3)
+                            if var_0004 then
+                                var_0005 = add_party_items(true, 7, 359, 616, 1)
+                                if var_0005 then
+                                    add_dialogue("\"Here it is,\" he says, handing you the jug. \"Wouldst thou like another?\"")
+                                    var_0006 = ask_yes_no()
+                                    if not var_0006 then
+                                        buy_more = false
+                                    end
                                 else
-                                    break
+                                    add_dialogue("\"Thou hast not the room for the jug.\"")
+                                    var_0007 = add_party_items(true, 359, 644, 359, 3)
+                                    buy_more = false
                                 end
                             else
-                                add_dialogue("\"Thou hast not the room for the jug.\"")
-                                var_0007 = add_party_items(true, 359, 644, 359, 3)
+                                add_dialogue("\"Thou hast not the gold for this, " .. var_0000 .. ". Perhaps some other time.\"")
+                                buy_more = false
                             end
                         else
-                            add_dialogue("\"Thou hast not the gold for this, " .. var_0000 .. ". Perhaps some other time.\"")
+                            add_dialogue("\"Perhaps next time, " .. var_0000 .. ".\"")
+                            buy_more = false
                         end
-                    else
-                        add_dialogue("\"Perhaps next time, " .. var_0000 .. ".\"")
                     end
                 else
                     add_dialogue("\"I would be more than happy to sell thee a jug of milk, but for now the dairy is closed.\"")
@@ -71,7 +77,7 @@ function npc_andrew_0176(eventid, objectref)
                         add_dialogue("\"How many dost thou want?\"")
                         var_0008 = input_numeric_value(1, 1, 20, 1)
                         var_0009 = var_0008 * 2
-                        var_000A = count_objects(359, 644, 357)
+                        var_000A = count_objects(359, 644, 359, 357)
                         if var_000A >= var_0009 then
                             var_000B = add_party_items(true, 27, 359, 377, var_0008)
                             if var_000B then
@@ -105,7 +111,7 @@ function npc_andrew_0176(eventid, objectref)
                 remove_answer("venom")
             elseif answer == "thief" then
                 add_dialogue("\"Be wary, for there is a thief in this town! Some silver serpent venom was stolen from Morfin.\"")
-                set_flag(530, true)
+                set_flag(FLAG_STOLEN_VENOM, true)
                 remove_answer("thief")
                 add_answer("venom")
                 if not var_0003 then
@@ -130,12 +136,11 @@ function npc_andrew_0176(eventid, objectref)
                 remove_answer("previous owner")
             elseif answer == "bye" then
                 add_dialogue("\"I hope I was of some assistance to thee, " .. var_0000 .. ".\"")
+                clear_answers()
                 break
             end
-        ::milk_purchase::
         end
     elseif eventid == 0 then
-        utility_unknown_1070(176)
+        utility_unknown_1070(NPC_ANDREW)
     end
-    return
 end

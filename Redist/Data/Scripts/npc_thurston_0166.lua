@@ -2,30 +2,34 @@
 function npc_thurston_0166(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009
 
+    start_conversation()
     if eventid == 1 then
-        switch_talk_to(166)
+        switch_talk_to(NPC_THURSTON)
         var_0000 = get_lord_or_lady()
-        var_0001 = get_schedule(166)
-        var_0002 = get_schedule_type(get_npc_name(166))
+        var_0001 = get_schedule(NPC_THURSTON)
+        var_0002 = get_schedule_type(get_npc_name(NPC_THURSTON))
         var_0003 = is_player_wearing_fellowship_medallion()
-        start_conversation()
         add_answer({"bye", "job", "name"})
-        if not get_flag(530) and not get_flag(536) then
+        -- usecode: thief if already heard of theft (530) and not solved (536)
+        if get_flag(FLAG_STOLEN_VENOM) and not get_flag(FLAG_VENOM_CASE_SOLVED) then
             add_answer("thief")
         end
-        if not get_flag(538) and not get_flag(541) then
+        -- usecode: delivery only after Camille gave wheat (538) and not yet paid (541)
+        if get_flag(FLAG_CAMILLE_GAVE_WHEAT) and not get_flag(FLAG_THURSTON_PAID_DELIVERY) then
             add_answer("delivery")
         end
-        if not get_flag(539) then
+        -- usecode: Polly only after she set 539 (told about Thurston)
+        if get_flag(FLAG_POLLY_TOLD_ABOUT_THURSTON) then
             add_answer("Polly")
         end
-        if not get_flag(543) then
+        if not get_flag(FLAG_MET_THURSTON) then
             add_dialogue("You see a man covered in the sweat of a hard day's work.")
-            set_flag(543, true)
+            set_flag(FLAG_MET_THURSTON, true)
         else
             add_dialogue("\"Greetings, " .. var_0000 .. ",\" says Thurston.")
         end
         while true do
+            coroutine.yield()
             local answer = get_answer()
             if answer == "name" then
                 add_dialogue("\"I am Thurston.\"")
@@ -39,28 +43,33 @@ function npc_thurston_0166(eventid, objectref)
                 remove_answer("mill")
             elseif answer == "flour" then
                 if var_0002 == 7 then
-                    add_dialogue("\"A sack will cost thee 12 gold. Art thou interested in purchasing some?\"")
-                    var_0004 = ask_yes_no()
-                    if var_0004 then
-                        var_0005 = count_objects(359, 644, 359, 357)
-                        if var_0005 >= 12 then
-                            var_0006 = add_party_items(true, 359, 863, 14, 1)
-                            if var_0006 then
-                                add_dialogue("\"Here it is,\" he says, handing you the sack. \"Wouldst thou wish another?\"")
-                                var_0007 = ask_yes_no()
-                                if var_0007 then
-                                    -- Loop back to purchase another sack
+                    local buy_more = true
+                    while buy_more do
+                        add_dialogue("\"A sack will cost thee 12 gold. Art thou interested in purchasing some?\"")
+                        var_0004 = ask_yes_no()
+                        if var_0004 then
+                            var_0005 = count_objects(359, 644, 359, 357)
+                            if var_0005 >= 12 then
+                                var_0006 = add_party_items(true, 359, 863, 14, 1)
+                                if var_0006 then
+                                    var_0008 = remove_party_items(true, 359, 644, 359, 12)
+                                    add_dialogue("\"Here it is,\" he says, handing you the sack. \"Wouldst thou wish another?\"")
+                                    var_0007 = ask_yes_no()
+                                    if not var_0007 then
+                                        buy_more = false
+                                    end
                                 else
-                                    break
+                                    add_dialogue("\"Thou hast not the room for this sack.\"")
+                                    buy_more = false
                                 end
                             else
-                                add_dialogue("\"Thou hast not the room for this sack.\"")
+                                add_dialogue("\"Thou hast not the gold for this, " .. var_0000 .. ". Perhaps some other time.\"")
+                                buy_more = false
                             end
                         else
-                            add_dialogue("\"Thou hast not the gold for this, " .. var_0000 .. ". Perhaps some other time.\"")
+                            add_dialogue("\"Perhaps next time, " .. var_0000 .. ".\"")
+                            buy_more = false
                         end
-                    else
-                        add_dialogue("\"Perhaps next time, " .. var_0000 .. ".\"")
                     end
                 else
                     add_dialogue("\"The mill is closed at present. If thou wouldst please return when it is open again I would gladly sell thee all the flour thou canst carry.\"")
@@ -69,19 +78,19 @@ function npc_thurston_0166(eventid, objectref)
             elseif answer == "Paws" then
                 add_dialogue("\"In case thou hadst not noticed, the people who live here are not so well off as their cousins who live in Britain. In fact, we have even had a theft recently.\"")
                 remove_answer("Paws")
-                if not get_flag(536) then
+                if not get_flag(FLAG_VENOM_CASE_SOLVED) then
                     add_answer("theft")
                 end
             elseif answer == "theft" or answer == "thief" then
                 add_dialogue("\"Indeed, thou shouldst be wary, " .. var_0000 .. ". There is a thief in this town! Morfin, a merchant, had several vials of valuable silver snake venom stolen.\"")
-                set_flag(530, true)
+                set_flag(FLAG_STOLEN_VENOM, true)
                 remove_answer({"thief", "theft"})
                 add_answer("snake venom")
             elseif answer == "snake venom" then
                 add_dialogue("\"It is procured from the Silver Serpent. I believe Gargoyles used it habitually in the old days. I am not so sure what it might do to a human. Perhaps Morfin can tell thee more.\"")
                 remove_answer("snake venom")
             elseif answer == "delivery" then
-                if get_flag(541) then
+                if get_flag(FLAG_THURSTON_PAID_DELIVERY) then
                     add_dialogue("\"I have paid thee once for thy delivery. I shall not do so again.\"")
                 else
                     var_0008 = remove_party_items(true, 359, 677, 359, 1)
@@ -90,7 +99,7 @@ function npc_thurston_0166(eventid, objectref)
                         var_0009 = add_party_items(true, 359, 644, 359, 10)
                         if var_0009 then
                             add_dialogue("\"This should compensate thee for thy trouble.\" He hands you ten gold pieces.")
-                            set_flag(541, true)
+                            set_flag(FLAG_THURSTON_PAID_DELIVERY, true)
                         end
                     else
                         add_dialogue("\"'Tis a puzzlement! Camille promised to make a delivery of wheat to me sometime today and it is late. I wonder where it could be.\"")
@@ -108,28 +117,28 @@ function npc_thurston_0166(eventid, objectref)
                 end
                 remove_answer("Fellowship")
             elseif answer == "Salty Dog" then
-                if not get_flag(534) then
+                if not get_flag(FLAG_THURSTON_LOVES_POLLY) then
                     add_dialogue("\"In truth, I go there more to be near Polly, the innkeeper, than for the wine. But she is always busy tending bar and has no time for me, I am sure.\"")
-                    set_flag(534, true)
+                    set_flag(FLAG_THURSTON_LOVES_POLLY, true)
                 else
                     add_dialogue("\"I should go to the Salty Dog and see Polly.\" Thurston stares off into space for a few moments, his eyes are big and he has a moony expression on his face. Suddenly, he snaps back to reality. \"Excuse me, thou wert saying something?\"")
                 end
                 remove_answer("Salty Dog")
             elseif answer == "Polly" then
-                if not get_flag(561) then
+                if not get_flag(FLAG_THURSTON_COURTING_POLLY) then
                     add_dialogue("You relate to Thurston what Polly had said about him. He looks at you with joyous surprise. \"Did Polly really say these things?! It is ridiculous that she believes I am too good for her!\" Suddenly he forgets his work and starts hurrying around in excitement. \"For years I have loved this woman from afar. I will begin courting her immediately!\"")
-                    set_flag(561, true)
+                    set_flag(FLAG_THURSTON_COURTING_POLLY, true)
                 else
                     add_dialogue("\"I want to thank thee for telling me the truth about Polly's feelings about me. I can be such a stick in the mud running this bloody mill all of the time that I would never have noticed it if she were wearing a sign on her back! This is just what I needed to help me start enjoying my life!\"")
                 end
                 remove_answer("Polly")
             elseif answer == "bye" then
                 add_dialogue("\"Good day to thee, " .. var_0000 .. ".\"")
+                clear_answers()
                 break
             end
         end
     elseif eventid == 0 then
-        utility_unknown_1070(166)
+        utility_unknown_1070(NPC_THURSTON)
     end
-    return
 end

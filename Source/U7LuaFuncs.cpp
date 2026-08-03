@@ -1692,6 +1692,111 @@ static int LuaIsObjectInNPCInventory(lua_State *L)
     }
 }
 
+// Does any party member (including the Avatar) carry an item of this shape?
+//   is_object_in_party_inventory(shape)
+//   is_object_in_party_inventory(shape, frame, quality)
+//   is_object_in_party_inventory(shape, frame, quality, min_quantity)
+// frame/quality: omit, -1, -359, or 359 = wildcard (any). min_quantity defaults to 1.
+static int LuaIsObjectInPartyInventory(lua_State *L)
+{
+    int shape = (int)luaL_checkinteger(L, 1);
+
+    int frame = -1;
+    if (lua_gettop(L) >= 2 && !lua_isnil(L, 2))
+        frame = (int)lua_tointeger(L, 2);
+
+    int quality = -1;
+    if (lua_gettop(L) >= 3 && !lua_isnil(L, 3))
+        quality = (int)lua_tointeger(L, 3);
+
+    int min_quantity = 1;
+    if (lua_gettop(L) >= 4 && !lua_isnil(L, 4))
+    {
+        min_quantity = (int)lua_tointeger(L, 4);
+        if (min_quantity < 1)
+            min_quantity = 1;
+    }
+
+    // Exult-style 359 wildcards
+    if (frame == 359 || frame == -359)
+        frame = -1;
+    if (quality == 359 || quality == -359)
+        quality = -1;
+
+    if (g_LuaDebug)
+    {
+        NPCDebugPrint("LUA: is_object_in_party_inventory shape " + to_string(shape) +
+                      " frame " + to_string(frame) +
+                      " quality " + to_string(quality) +
+                      " min_qty " + to_string(min_quantity));
+    }
+
+    if (!g_Player)
+    {
+        lua_pushboolean(L, 0);
+        return 1;
+    }
+
+    int found = 0;
+    std::vector<int>& party_ids = g_Player->GetPartyMemberIds();
+
+    auto countInObjectInventory = [&](U7Object* carrier) {
+        if (!carrier)
+            return;
+        for (int item_id : carrier->m_inventory)
+        {
+            if (g_objectList.find(item_id) == g_objectList.end())
+                continue;
+            U7Object* item = g_objectList[item_id].get();
+            if (!item)
+                continue;
+            if (shape != -1 && item->m_ObjectType != shape)
+                continue;
+            if (frame != -1 && item->m_Frame != frame)
+                continue;
+            // When quality is specified as a filter, match it; otherwise accept any.
+            // (Stack quantities are not used as a quality filter here.)
+            if (quality != -1 && item->m_Quality != quality)
+                continue;
+            // Count one per inventory entry for presence checks; stack size is m_Quality
+            // for some items, but for vials/etc. presence of the entry is what matters.
+            found += 1;
+            if (found >= min_quantity)
+                return;
+        }
+    };
+
+    for (int party_member_id : party_ids)
+    {
+        // NPC party members: resolve via NPCData -> world object inventory
+        if (g_NPCData.find(party_member_id) != g_NPCData.end() && g_NPCData[party_member_id])
+        {
+            U7Object* npc_obj = GetObjectFromID(g_NPCData[party_member_id]->m_objectID);
+            countInObjectInventory(npc_obj);
+            if (found >= min_quantity)
+            {
+                lua_pushboolean(L, 1);
+                return 1;
+            }
+            continue;
+        }
+
+        // Fallback: party id is already an object id
+        if (g_objectList.find(party_member_id) != g_objectList.end())
+        {
+            countInObjectInventory(g_objectList[party_member_id].get());
+            if (found >= min_quantity)
+            {
+                lua_pushboolean(L, 1);
+                return 1;
+            }
+        }
+    }
+
+    lua_pushboolean(L, (found >= min_quantity) ? 1 : 0);
+    return 1;
+}
+
 // Does the container contain this specific object?
 static int LuaIsObjectInContainer(lua_State *L)
 {
@@ -4895,6 +5000,7 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction("random2", LuaRandom); // Alias for random()
     g_ScriptingSystem->RegisterScriptFunction("find_nearby", LuaFindNearby);
     g_ScriptingSystem->RegisterScriptFunction("is_object_in_npc_inventory", LuaIsObjectInNPCInventory);
+    g_ScriptingSystem->RegisterScriptFunction("is_object_in_party_inventory", LuaIsObjectInPartyInventory);
     g_ScriptingSystem->RegisterScriptFunction("is_object_in_container", LuaIsObjectInContainer);
     g_ScriptingSystem->RegisterScriptFunction("has_object_of_type", LuaHasObjectOfType);
     g_ScriptingSystem->RegisterScriptFunction("add_object_to_container", LuaAddObjectToContainer);
