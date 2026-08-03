@@ -1851,7 +1851,10 @@ void MainState::Draw()
 			//Draw a flat with the texture on it to see if the animation is working
 			Vector3 thisPos = Vector3Add(m_TweakPos, Vector3{ (float(chX) * 16.0f), 0.0f, (float(chY) * 16.0f) });
 			//Log("    Flat position: (" + std::to_string(thisPos.x) + ", " + std::to_string(thisPos.y) + ", " + std::to_string(thisPos.z) + ")", "anims.log");
-			SetMaterialTexture(&m_flatModel->GetModel().materials[0], MATERIAL_MAP_DIFFUSE, *g_chunkAnimTexture[chId]);
+			if (chId < g_chunkAnimTexture.size())
+			{
+				SetMaterialTexture(&m_flatModel->GetModel().materials[0], MATERIAL_MAP_DIFFUSE, *g_chunkAnimTexture[chId]);
+			}
 			// fixme, need to change WHITE to daytime color, but for now just use WHITE
 			DrawModelEx(m_flatModel->GetModel(), thisPos, { 0, 1, 0 }, 0, flatScaling, g_dayNightColor);
 		}
