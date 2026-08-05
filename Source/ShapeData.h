@@ -60,7 +60,15 @@ class ShapeData
 {
 public:
 	ShapeData();
-	~ShapeData() { m_palettePixels.clear(); };
+	~ShapeData()
+	{
+		m_palettePixels.clear();
+		if (m_indexTexture.id > 0)
+		{
+			UnloadTexture(m_indexTexture);
+			m_indexTexture = { 0 };
+		}
+	}
 
 	void Init(int shape, int frame, bool shouldreset = true);
 
@@ -78,6 +86,9 @@ public:
 	void CreateDefaultTexture();
 
 	void SetDefaultTexture(Image image);
+	void SetIndexTexture(Image indexImage);
+	bool HasPaletteAnimation() const { return m_hasPaletteAnim; }
+	Texture2D* GetIndexTexture() { return m_hasPaletteAnim ? &m_indexTexture : nullptr; }
 
 	Image GetDefaultTextureImage() { return m_texture->m_Image; }
 	void SetupTextures();
@@ -108,15 +119,14 @@ public:
 
 	int m_pixelOffsetX;
 	int m_pixelOffsetY;
+	// Sparse list of cycling-palette pixels (for terrain/cuboid CPU recolor); full index map is m_indexTexture
 	std::vector<std::tuple<int, int, int>> m_palettePixels;
-	int m_paletteFPS;
 
 	bool m_isValid;
 
 	int m_shape;
 	int m_frame;
 	int m_numFrames;
-	bool m_isAnimated;
 
 	int m_pointerShape;
 	int m_pointerFrame;
@@ -137,6 +147,10 @@ public:
 	//  Texture for billboard/flat mode; base texture for cuboid mode
 	std::unique_ptr<ModTexture> m_texture;
 	std::unique_ptr<ModTexture> m_cuboidTexture;
+
+	// Palette-index map (R = index, A = opacity) for GPU palette animation
+	Texture2D m_indexTexture = { 0 };
+	bool m_hasPaletteAnim = false;
 
 	std::vector<coords> m_topFaceMods;
 	std::vector<coords> m_frontFaceMods;

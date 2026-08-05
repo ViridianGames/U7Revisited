@@ -61,8 +61,6 @@ std::string g_version;
 
 std::unordered_map<int, std::unique_ptr<U7Object>> g_objectList;
 
-Mesh* g_AnimationFrames;
-
 extern Texture* g_Cursor; // Defined in StateMachine.cpp
 Texture* g_objectSelectCursor;
 Texture* g_EmptyTexture;
@@ -86,7 +84,7 @@ std::unique_ptr<Terrain> g_Terrain;
 
 std::array<std::array<ShapeData, 32>, 1024> g_shapeTable;
 std::array<ObjectData, 1024> g_objectDataTable;
-std::vector<std::tuple<unsigned char, unsigned char, unsigned char, unsigned char>> g_paletteTransforms;
+
 
 // Weather/effect sprite data
 std::array<std::vector<SpriteFrame>, 32> g_spriteTable;
@@ -137,8 +135,7 @@ int g_selectedFrame = 0;
 
 std::unordered_map<int, int[16][16]> g_ChunkTypeList;  // The 16x16 tiles for each chunk type
 int g_chunkTypeMap[192][192]; // The type of each chunk in the map
-std::vector<Texture *> g_chunkAnimTexture;
-std::vector<std::tuple<int, int, int>> g_chunkVisible;
+
 std::vector<U7Object*> g_chunkObjectMap[192][192]; // The objects in each chunk
 
 std::vector<U7Object*> g_sortedVisibleObjects;
@@ -153,6 +150,160 @@ bool g_shouldCameraMoveToDestination = false;
 Shader g_alphaDiscard;
 Shader g_cuboidShader;
 int g_cuboidTexCoordsLoc;
+
+std::array<Color, 256> g_basePalette{};
+std::array<Color, 256> g_runtimePalette{};
+Texture2D g_paletteTexture{};
+Shader g_paletteShader{};
+int g_paletteSamplerLoc = -1;
+bool g_paletteSystemReady = false;
+
+namespace
+{
+	void RotatePaletteBand(int start, int count, int step)
+	{
+		if (count <= 0)
+		{
+			return;
+		}
+		step %= count;
+		if (step < 0)
+		{
+			step += count;
+		}
+		// Pixel at offset k shows color from (k - step) mod count (U7 band rotation)
+		for (int i = 0; i < count; ++i)
+		{
+			int src = start + ((i - step) % count + count) % count;
+			g_runtimePalette[start + i] = g_basePalette[src];
+		}
+	}
+}
+
+void InitRuntimePalette(const std::array<Color, 256>& basePalette)
+{
+	g_basePalette = basePalette;
+	g_runtimePalette = basePalette;
+
+	Image paletteImage = GenImageColor(256, 1, BLACK);
+	for (int i = 0; i < 256; ++i)
+	{
+		ImageDrawPixel(&paletteImage, i, 0, g_runtimePalette[i]);
+	}
+
+	if (g_paletteTexture.id > 0)
+	{
+		UnloadTexture(g_paletteTexture);
+	}
+	g_paletteTexture = LoadTextureFromImage(paletteImage);
+	SetTextureFilter(g_paletteTexture, TEXTURE_FILTER_POINT);
+	SetTextureWrap(g_paletteTexture, TEXTURE_WRAP_CLAMP);
+	UnloadImage(paletteImage);
+
+	g_paletteSystemReady = (g_paletteShader.id > 0 && g_paletteTexture.id > 0);
+}
+
+void UpdateRuntimePalette()
+{
+	if (!g_paletteSystemReady)
+	{
+		return;
+	}
+
+	// Water bands cycle at 8 steps/sec; shorter bands still advance with the same clock
+	// so they stay in phase with the original multi-frame bake.
+	const int step = static_cast<int>(GetTime() * 8.0) % 8;
+
+	g_runtimePalette = g_basePalette;
+	RotatePaletteBand(224, 8, step);
+	RotatePaletteBand(232, 8, step);
+	RotatePaletteBand(240, 4, step);
+	RotatePaletteBand(244, 4, step);
+	RotatePaletteBand(248, 4, step);
+	RotatePaletteBand(252, 3, step);
+
+	// Preserve special translucent overrides baked into base palette for 244-255
+	// (blood etc.) — re-apply alpha from base after rotation for those that use it.
+	// Rotation already pulled from g_basePalette which has the translucent colors.
+
+	UpdateTexture(g_paletteTexture, g_runtimePalette.data());
+
+	if (g_Terrain)
+	{
+		g_Terrain->ApplyPaletteToTerrainAtlas();
+	}
+
+	// Cuboids still sample RGB face atlases; recolor their cycling pixels from the LUT.
+	// Flats/billboards use the GPU index+palette path instead.
+	static int lastCuboidPaletteStep = -1;
+	if (step != lastCuboidPaletteStep)
+	{
+		lastCuboidPaletteStep = step;
+		for (int shape = 150; shape < 1024; ++shape)
+		{
+			for (int frame = 0; frame < 32; ++frame)
+			{
+				ShapeData& shapeData = g_shapeTable[shape][frame];
+				if (!shapeData.IsValid() || shapeData.m_palettePixels.empty())
+				{
+					continue;
+				}
+				if (shapeData.GetDrawType() != ShapeDrawType::OBJECT_DRAW_CUBOID)
+				{
+					continue;
+				}
+				if (shapeData.m_texture == nullptr || shapeData.m_texture->m_Image.data == nullptr)
+				{
+					continue;
+				}
+
+				for (const auto& pixel : shapeData.m_palettePixels)
+				{
+					const int pX = std::get<0>(pixel);
+					const int pY = std::get<1>(pixel);
+					const int pRef = std::get<2>(pixel);
+					if (pRef < 0 || pRef > 255)
+					{
+						continue;
+					}
+					if (pX < 0 || pY < 0 || pX >= shapeData.m_texture->width || pY >= shapeData.m_texture->height)
+					{
+						continue;
+					}
+					ImageDrawPixel(&shapeData.m_texture->m_Image, pX, pY, g_runtimePalette[pRef]);
+				}
+				// In-place GPU update (avoids leaking a new texture each tick)
+				::UpdateTexture(shapeData.m_texture->m_Texture, shapeData.m_texture->m_Image.data);
+				shapeData.UpdateTextures();
+			}
+		}
+	}
+}
+
+void BindPaletteShader()
+{
+	if (!g_paletteSystemReady)
+	{
+		return;
+	}
+	// Bind palette LUT to texture1 for BeginShaderMode paths (billboards).
+	// Model draws also set MATERIAL_MAP_SPECULAR so DrawMesh rebinds it.
+	if (g_paletteSamplerLoc >= 0)
+	{
+		SetShaderValueTexture(g_paletteShader, g_paletteSamplerLoc, g_paletteTexture);
+	}
+}
+
+void BindPaletteMaterial(Material* material, Texture2D indexTexture)
+{
+	if (!g_paletteSystemReady || material == nullptr)
+	{
+		return;
+	}
+	material->shader = g_paletteShader;
+	SetMaterialTexture(material, MATERIAL_MAP_DIFFUSE, indexTexture);
+	SetMaterialTexture(material, MATERIAL_MAP_SPECULAR, g_paletteTexture);
+}
 
 bool g_pixelated = false;
 RenderTexture2D g_renderTarget;
@@ -197,38 +348,6 @@ bool g_mouseOverUI = false;
 U7Object* g_doubleClickedObject;
 
 bool g_allowInput = true;
-
-//  This makes an animation
-void MakeAnimationFrameMeshes()
-{
-	g_AnimationFrames = new Mesh();
-	vector<Vertex> vertices;
-	vector<unsigned int> indices;
-	for (int i = 0; i < 8; ++i)
-	{
-		for (int j = 0; j < 8; ++j)
-		{
-			vertices.push_back(CreateVertex(-.5, 0, 0, 1, 1, 1, 1, (i + 1) * 0.1250, (j + 1) * 0.1250));
-			vertices.push_back(CreateVertex(.5, 0, 0, 1, 1, 1, 1, i * 0.1250, (j + 1) * 0.1250));
-			vertices.push_back(CreateVertex(-.5, 1, 0, 1, 1, 1, 1, (i + 1) * 0.1250, j * 0.1250));
-			vertices.push_back(CreateVertex(.5, 1, 0, 1, 1, 1, 1, i * 0.1250, j * 0.1250));
-		}
-	}
-
-	for (int i = 0; i < 256; )
-	{
-		indices.push_back(i);
-		indices.push_back(i + 1);
-		indices.push_back(i + 2);
-		indices.push_back(i + 3);
-		indices.push_back(i + 2);
-		indices.push_back(i + 1);
-
-		i += 4;
-	}
-
-	//g_AnimationFrames->Init(vertices, indices);
-}
 
 int g_cameraLockObjectId = -1;
 
@@ -874,7 +993,6 @@ void UpdateSortedVisibleObjects()
 	int beforeCount = static_cast<int>(g_sortedVisibleObjects.size());
 
 	g_sortedVisibleObjects.clear();
-	g_chunkVisible.clear();
 
 	for (int x = cameraChunkX - 2; x <= cameraChunkX + 2; x++)
 	{
@@ -884,11 +1002,6 @@ void UpdateSortedVisibleObjects()
 			{
 				continue; // Out of bounds
 			}
-
-			// let's draw the texture shape in this chunk
-			//x y chunkid
-			int chunkid = g_chunkTypeMap[x][y];
-			g_chunkVisible.push_back({x, y, chunkid});
 
 			for (auto object : g_chunkObjectMap[x][y])
 			{
@@ -1138,12 +1251,17 @@ void MorphObject(int shapenum, int framenum, float x, float y, float z, float nu
 
 void MorphAnimFlat(int shapeNum, int frameNum, int numFrames) {
 	ShapeData& m_shapeData = g_shapeTable[shapeNum][frameNum];
+
+	// Palette-cycled shapes use the runtime LUT; do not replace with UV frame strips.
+	if (!m_shapeData.m_palettePixels.empty() || m_shapeData.HasPaletteAnimation())
+	{
+		return;
+	}
+
 	std::string imagePath = "Images/shapesprite/shapesprite_" + std::to_string(shapeNum) + "_" + std::to_string(frameNum) + ".png";
 	if (FileExists(imagePath.c_str())) {
-		// if sprite does not exist, leave this alone
 		m_shapeData.m_drawType = ShapeDrawType::OBJECT_DRAW_ANIMFLAT;
 		m_shapeData.m_numFrames = numFrames;
-		m_shapeData.m_isAnimated = true;
 		Image image = LoadImage(imagePath.c_str());
 		m_shapeData.SetDefaultTexture(image);
 	}
@@ -1237,144 +1355,6 @@ void BakeImageShapeFrames(int shapeNum, int startFrame, int maxFrames, int tileS
 					float(m_shapeData.m_texture->width),
 					float(m_shapeData.m_texture->height) },
 					WHITE);
-			i++;
-		}
-		//Log("Exporting sprite image to " + imagePath, "anims.log");
-		ExportImage(frameImage, imagePath.c_str());
-	}
-}
-
-void BakeImageShapePalette(int shapeNum, int startFrame, int maxFrames, int tileSizeX, int tileSizeY) {
-	//AddConsoleString("Baking sprite images... ", GREEN);
-	std::string objType = "shapesprite";
-	std::string s_objId = std::to_string(shapeNum);
-	std::string s_objFrame = std::to_string(startFrame);
-	//int posStart = objId + xOfs;
-	std::string objFolder = "Images/" + objType;
-	std::filesystem::create_directories(objFolder.c_str());
-	std::string imagePath = "Images/" + objType + "/" + objType + "_" + s_objId + "_" + s_objFrame + ".png";
-	int borderSize = 0;
-	int tileCountX = maxFrames;
-	int tileCountY = 1;
-	if (FileExists(imagePath.c_str())) {
-		Log("sprite image " + imagePath + " already exists, skipping generation.");
-	}
-	else {
-		Log("sprite image " + imagePath + " does not exist, generating.");
-		int imgSzeX = (tileSizeX * tileCountX);
-		int imgSzeY = (tileSizeY * tileCountY);
-		Image frameImage = GenImageColor(imgSzeX, imgSzeY, Color{ 0, 0, 0, 0 });
-		float x = 0.0f;
-		float z = 0.0f;
-		//float thisx = x;
-		//float thisz = z;
-		int xInt = int(x);
-		int yInt = int(z);
-		//int xPos = 0;
-		//int yPos = 0;
-		int xPx = 0;
-		int yPx = 0;
-		int j = 0;
-		int i = 0;
-		while (i < maxFrames) {
-			int framenum = startFrame;
-			ShapeData& m_shapeData = g_shapeTable[shapeNum][framenum];
-			xPx = (i * tileSizeX) + (tileSizeX);
-			yPx = (j * tileSizeY) + (tileSizeY);
-			float dstPosX = float(xPx - tileSizeX);// - m_shapeData.m_pixelOffsetX);
-			float dstPosY = float(yPx - m_shapeData.m_pixelOffsetY);
-			//Log("Loading shape framepalette " + std::to_string(xPx) + ", " + std::to_string(yPx) + " | " + std::to_string(dstPosX) + ", " + std::to_string(dstPosY) + " to sprite image! " + std::to_string(m_shapeData.m_pixelOffsetX) + ", " + std::to_string(m_shapeData.m_pixelOffsetY) + " shapeFrame[" + std::to_string(shapeNum) + ":" + std::to_string(framenum) + "]", "anims.log");
-			ImageDraw(&frameImage,
-				m_shapeData.m_texture->m_OriginalImage,
-				Rectangle{ 0, 0, float(m_shapeData.m_texture->width), float(m_shapeData.m_texture->height) },
-				Rectangle{
-					dstPosX,
-					dstPosY,
-					float(m_shapeData.m_texture->width),
-					float(m_shapeData.m_texture->height) },
-					WHITE);
-			//now iterate m_shapeData.m_palettePixels
-			int floorRef = 224;
-			size_t pixelsLength = m_shapeData.m_palettePixels.size();
-			//Log("  Shape Frame Palette has " + std::to_string(pixelsLength) + " pixels to draw.", "anims.log");
-			for (const auto& pixel : m_shapeData.m_palettePixels)
-			{
-				// Access tuple elements - assuming it's std::tuple<int, int, int> for RGB or similar
-				int pX = std::get<0>(pixel);   // First integer in tuple
-				int pY = std::get<1>(pixel);  // Second integer in tuple
-				int pRef = std::get<2>(pixel);   // Third integer in tuple
-				if (pRef >= 224 && pRef <= 255) {
-					int gRef = pRef - floorRef;
-					if (pRef >= 224 && pRef < 232) {
-						int baseRef = 224;
-						int baseCount = 8;
-						int pDiff = baseRef - floorRef;
-						int frameRef = pRef - baseRef;
-						frameRef -= i;
-						while(frameRef < 0) {
-							frameRef += baseCount;
-						}
-						gRef = frameRef + pDiff;
-					} else if (pRef >= 232 && pRef < 240) {
-						int baseRef = 232;
-						int baseCount = 8;
-						int pDiff = baseRef - floorRef;
-						int frameRef = pRef - baseRef;
-						frameRef -= i;
-						while (frameRef < 0) {
-							frameRef += baseCount;
-						}
-						gRef = frameRef + pDiff;
-					} else if (pRef >= 240 && pRef < 244) {
-						int baseRef = 240;
-						int baseCount = 4;
-						int pDiff = baseRef - floorRef;
-						int frameRef = pRef - baseRef;
-						frameRef -= i;
-						while (frameRef < 0) {
-							frameRef += baseCount;
-						}
-						gRef = frameRef + pDiff;
-					} else if (pRef >= 244 && pRef < 248) {
-						int baseRef = 244;
-						int baseCount = 4;
-						int pDiff = baseRef - floorRef;
-						int frameRef = pRef - baseRef;
-						frameRef -= i;
-						while (frameRef < 0) {
-							frameRef += baseCount;
-						}
-						gRef = frameRef + pDiff;
-					} else if (pRef >= 248 && pRef < 252) {
-						int baseRef = 248;
-						int baseCount = 4;
-						int pDiff = baseRef - floorRef;
-						int frameRef = pRef - baseRef;
-						frameRef -= i;
-						while (frameRef < 0) {
-							frameRef += baseCount;
-						}
-						gRef = frameRef + pDiff;
-					} else if (pRef >= 252 && pRef < 255) {
-						int baseRef = 252;
-						int baseCount = 3;
-						int pDiff = baseRef - floorRef;
-						int frameRef = pRef - baseRef;
-						frameRef -= i;
-						while (frameRef < 0) {
-							frameRef += baseCount;
-						}
-						gRef = frameRef + pDiff;
-					}
-					const auto& refPalette = g_paletteTransforms[gRef];
-					//int val = g_paletteTransforms[gRef][0];
-					Color pColor = Color{ std::get<0>(refPalette), std::get<1>(refPalette), std::get<2>(refPalette), std::get<3>(refPalette) };
-					ImageDrawPixel(&frameImage, dstPosX + pX, dstPosY + pY, pColor);
-
-					// Example: Log the pixel values
-					//Log("Pixel values: " + std::to_string(pX) + ", " + std::to_string(pY) + ", " + std::to_string(pRef), "anims.log");
-				}
-			}
 			i++;
 		}
 		//Log("Exporting sprite image to " + imagePath, "anims.log");

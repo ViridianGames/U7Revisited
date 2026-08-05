@@ -28,6 +28,12 @@ public:
    Texture m_terrainTiles;
 	RenderTexture m_currentTerrain;
 
+	// Full terrain atlas kept on CPU so palette-cycling water pixels can be recolored
+	Image m_terrainColorImage = { 0 };
+	Image m_terrainIndexImage = { 0 };
+	bool m_terrainHasPaletteAnim = false;
+	int m_lastTerrainPaletteStep = -1;
+
 	Terrain();
 	virtual ~Terrain();
 
@@ -40,6 +46,10 @@ public:
 
 	void CalculateLighting();
    void UpdateTerrainTexture(Image img);
+	void SetTerrainIndexImage(Image indexImage);
+
+	// Recolor water/fire pixels in the terrain atlas from the runtime palette LUT
+	void ApplyPaletteToTerrainAtlas();
 
 	void UpdateTerrainTiles();
 

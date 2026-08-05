@@ -24,8 +24,6 @@ ShapeData::ShapeData()
 	m_shape = 150;
 	m_frame = 0;
 	m_numFrames = 1;
-	m_paletteFPS = 1;
-	m_isAnimated = false;
 
 	for (int i = 0; i < 6; ++i)
 	{
@@ -105,6 +103,19 @@ void ShapeData::SetDefaultTexture(Image image)
 	}
 }
 
+void ShapeData::SetIndexTexture(Image indexImage)
+{
+	if (m_indexTexture.id > 0)
+	{
+		UnloadTexture(m_indexTexture);
+		m_indexTexture = { 0 };
+	}
+	m_indexTexture = LoadTextureFromImage(indexImage);
+	SetTextureFilter(m_indexTexture, TEXTURE_FILTER_POINT);
+	m_hasPaletteAnim = (m_indexTexture.id > 0);
+	UnloadImage(indexImage);
+}
+
 void ShapeData::SetPixelOffset(int offsetX, int offsetY)
 {
 	m_pixelOffsetX = offsetX + 1;
@@ -113,67 +124,10 @@ void ShapeData::SetPixelOffset(int offsetX, int offsetY)
 
 void ShapeData::CaptureSpecialPaletteReferences(int posX, int posY, int paletteRef)
 {
-	size_t prelength = m_palettePixels.size();
-	if (paletteRef >= 224 && paletteRef < 232)
+	// U7 cycling bands: 224-231, 232-239 (8), 240-251 (4), 252-254 (3)
+	if (paletteRef >= 224 && paletteRef < 255)
 	{
-		if (m_paletteFPS < 8)
-		{
-			m_paletteFPS = 8;
-		}
 		m_palettePixels.push_back({ posX, posY, paletteRef });
-	}
-	else if (paletteRef >= 232 && paletteRef < 240)
-	{
-		if (m_paletteFPS < 8)
-		{
-			m_paletteFPS = 8;
-		}
-		m_palettePixels.push_back({ posX, posY, paletteRef });
-	}
-	else if (paletteRef >= 232 && paletteRef < 240)
-	{
-		if (m_paletteFPS < 8)
-		{
-			m_paletteFPS = 8;
-		}
-		m_palettePixels.push_back({ posX, posY, paletteRef });
-	}
-	else if (paletteRef >= 240 && paletteRef < 244)
-	{
-		if (m_paletteFPS < 4)
-		{
-			m_paletteFPS = 4;
-		}
-		m_palettePixels.push_back({ posX, posY, paletteRef });
-	}
-	else if (paletteRef >= 244 && paletteRef < 248)
-	{
-		if (m_paletteFPS < 4)
-		{
-			m_paletteFPS = 4;
-		}
-		m_palettePixels.push_back({ posX, posY, paletteRef });
-	}
-	else if (paletteRef >= 248 && paletteRef < 252)
-	{
-		if (m_paletteFPS < 4)
-		{
-			m_paletteFPS = 4;
-		}
-		m_palettePixels.push_back({ posX, posY, paletteRef });
-	}
-	else if (paletteRef >= 252 && paletteRef < 254)
-	{
-		if (m_paletteFPS < 3)
-		{
-			m_paletteFPS = 3;
-		}
-		m_palettePixels.push_back({ posX, posY, paletteRef });
-	}
-	size_t postlength = m_palettePixels.size();
-	if (postlength > prelength)
-	{
-		//Log("Captured special palette reference: " + std::to_string(paletteRef) + " at (" + std::to_string(posX) + ", " + std::to_string(posY) + ")", "anims.log");
 	}
 }
 
@@ -414,7 +368,16 @@ void ShapeData::SetupDrawTypes()
 	}
 	else if (m_drawType == ShapeDrawType::OBJECT_DRAW_ANIMFLAT)
 	{
-		m_Dims.y = 0.0f;
+		// Palette-animated ANIMFLAT uses a single frame (index map), so size from that texture.
+		// Multi-frame UV strips keep objectData width/depth and only force y flat.
+		if (m_hasPaletteAnim && m_texture != nullptr)
+		{
+			m_Dims = Vector3{ float(m_texture->width) / 8.0f, 0, float(m_texture->height) / 8.0f };
+		}
+		else
+		{
+			m_Dims.y = 0.0f;
+		}
 	}
 	else
 	{
@@ -704,6 +667,34 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 
 	case ShapeDrawType::OBJECT_DRAW_ANIMFLAT:
 	{
+		// Palette-animated shapes use the live palette LUT instead of UV frame strips.
+		if (m_hasPaletteAnim && g_paletteSystemReady)
+		{
+			finalPos = pos;
+			if (pos.y == 0)
+			{
+				finalPos.y = .01f;
+			}
+			else
+			{
+				finalPos.y = pos.y * 1.01f;
+			}
+
+			finalPos = Vector3Add(finalPos, m_TweakPos);
+			finalPos = Vector3Add(finalPos, Vector3{ -m_Dims.x + 1, 0, 1 });
+
+			Vector3 flatScaling = Vector3{ m_Dims.x, 1, m_Dims.z };
+			Material& mat = m_flatModel->GetModel().materials[0];
+			Shader prevShader = mat.shader;
+			Texture prevSpecular = mat.maps[MATERIAL_MAP_SPECULAR].texture;
+			BindPaletteMaterial(&mat, m_indexTexture);
+			m_flatModel->UpdateFlatUV(0.0f, 1.0f, 0.0f, 1.0f);
+			DrawModelEx(m_flatModel->GetModel(), finalPos, { 0, 1, 0 }, 0, flatScaling, color);
+			mat.shader = prevShader;
+			SetMaterialTexture(&mat, MATERIAL_MAP_SPECULAR, prevSpecular);
+			break;
+		}
+
 		finalPos = pos;
 		if (pos.y == 0)
 		{
@@ -724,13 +715,9 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 		float uvPerFrame = 1.0f / static_cast<float>(m_numFrames);
 		float frameUV = uvPerFrame * static_cast<float>(currentFrame);
 
-		//BeginShaderMode(g_alphaDiscard);
-		//we would update the UV coords for the flat model here
 		SetMaterialTexture(&m_flatModel->GetModel().materials[0], MATERIAL_MAP_DIFFUSE, m_texture->m_Texture);
-		// we could batch these so there's less UV updates
 		m_flatModel->UpdateFlatUV(frameUV, frameUV + uvPerFrame, 0.0f, 1.0f);
 		DrawModelEx(m_flatModel->GetModel(), finalPos, { 0, 1, 0 }, 0, flatScaling, color);
-		//EndShaderMode();
 		break;
 	}
 
@@ -751,12 +738,23 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 
 		Vector3 flatScaling = Vector3{ m_Dims.x, 1, m_Dims.z };
 
-		//BeginShaderMode(g_alphaDiscard);
-		SetMaterialTexture(&m_flatModel->GetModel().materials[0], MATERIAL_MAP_DIFFUSE, m_texture->m_Texture);
-		// we could batch these so there's less UV updates
-		m_flatModel->UpdateFlatUV(0.0, 1.0, 0.0, 1.0);
-		DrawModelEx(m_flatModel->GetModel(), finalPos, { 0, 1, 0 }, 0, flatScaling, color);
-		//EndShaderMode();
+		if (m_hasPaletteAnim && g_paletteSystemReady)
+		{
+			Material& mat = m_flatModel->GetModel().materials[0];
+			Shader prevShader = mat.shader;
+			Texture prevSpecular = mat.maps[MATERIAL_MAP_SPECULAR].texture;
+			BindPaletteMaterial(&mat, m_indexTexture);
+			m_flatModel->UpdateFlatUV(0.0, 1.0, 0.0, 1.0);
+			DrawModelEx(m_flatModel->GetModel(), finalPos, { 0, 1, 0 }, 0, flatScaling, color);
+			mat.shader = prevShader;
+			SetMaterialTexture(&mat, MATERIAL_MAP_SPECULAR, prevSpecular);
+		}
+		else
+		{
+			SetMaterialTexture(&m_flatModel->GetModel().materials[0], MATERIAL_MAP_DIFFUSE, m_texture->m_Texture);
+			m_flatModel->UpdateFlatUV(0.0, 1.0, 0.0, 1.0);
+			DrawModelEx(m_flatModel->GetModel(), finalPos, { 0, 1, 0 }, 0, flatScaling, color);
+		}
 		break;
 	}
 
@@ -767,10 +765,21 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 		finalPos.z += .5f;
 		finalPos.y += m_Dims.y * .60f;
 
-		BeginShaderMode(g_alphaDiscard);
-		DrawBillboardPro(g_camera, m_texture->m_Texture, Rectangle{ 0, 0, float(m_texture->m_Texture.width), float(m_texture->m_Texture.height) }, finalPos, Vector3{ 0, 1, 0 },
-			Vector2{ m_Dims.x, m_Dims.y }, Vector2{ 0, 0 }, -45, color);
-		EndShaderMode();
+		if (m_hasPaletteAnim && g_paletteSystemReady)
+		{
+			BeginShaderMode(g_paletteShader);
+			BindPaletteShader();
+			DrawBillboardPro(g_camera, m_indexTexture, Rectangle{ 0, 0, float(m_indexTexture.width), float(m_indexTexture.height) }, finalPos, Vector3{ 0, 1, 0 },
+				Vector2{ m_Dims.x, m_Dims.y }, Vector2{ 0, 0 }, -45, color);
+			EndShaderMode();
+		}
+		else
+		{
+			BeginShaderMode(g_alphaDiscard);
+			DrawBillboardPro(g_camera, m_texture->m_Texture, Rectangle{ 0, 0, float(m_texture->m_Texture.width), float(m_texture->m_Texture.height) }, finalPos, Vector3{ 0, 1, 0 },
+				Vector2{ m_Dims.x, m_Dims.y }, Vector2{ 0, 0 }, -45, color);
+			EndShaderMode();
+		}
 		break;
 	}
 

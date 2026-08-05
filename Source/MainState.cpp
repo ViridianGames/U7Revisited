@@ -1476,6 +1476,9 @@ void MainState::Update()
 
 	CameraUpdate();
 
+	// Rotate U7 palette bands (water/fire glisten) and refresh terrain atlas
+	UpdateRuntimePalette();
+
 	m_terrainUpdateTime = g_Engine->GameTimeInMS();
 	g_Terrain->CalculateLighting();
 
@@ -1827,40 +1830,6 @@ void MainState::Draw()
 	//  Draw the terrain
 
 	g_Terrain->Draw();
-	//  OK here we would draw the animated flats hovering above the terrain?
-
-	glEnable(GL_POLYGON_OFFSET_FILL);
-	glPolygonOffset(-1.0f, -1.0f);
-	RaylibModel* m_flatModel = g_ResourceManager->GetModel("Models/3dmodels/flat.obj");
-	int m_numFrames = 8;
-	Vector3 m_TweakPos = Vector3{ 0.0f, 0, 16.0f };
-	Vector3 flatScaling = Vector3{ 16.0f, 1.0f, 16.0f };
-	float timePerFrame = 1.0f / 8.0f;
-	int currentFrame = static_cast<unsigned int>(float(GetTime()) / timePerFrame) % m_numFrames;
-	float uvPerFrame = 1.0f / static_cast<float>(m_numFrames);
-	float frameUV = uvPerFrame * static_cast<float>(currentFrame);
-	m_flatModel->UpdateFlatUV(frameUV, frameUV + uvPerFrame, 0.0f, 1.0f);
-	for (auto& visChunk : g_chunkVisible)
-	{
-		int chX = std::get<0>(visChunk);   // First integer in tuple
-		int chY = std::get<1>(visChunk);  // Second integer in tuple
-		int chId = std::get<2>(visChunk);   // Third integer in tuple
-		if (g_chunkAnimTexture[chId] != nullptr)
-		{
-			//Log("  Drawing chunk animation for chunk ID: " + std::to_string(chId) + " at position (" + std::to_string(chX) + ", " + std::to_string(chY) + ")", "anims.log");
-			//Draw a flat with the texture on it to see if the animation is working
-			Vector3 thisPos = Vector3Add(m_TweakPos, Vector3{ (float(chX) * 16.0f), 0.0f, (float(chY) * 16.0f) });
-			//Log("    Flat position: (" + std::to_string(thisPos.x) + ", " + std::to_string(thisPos.y) + ", " + std::to_string(thisPos.z) + ")", "anims.log");
-			if (chId < g_chunkAnimTexture.size())
-			{
-				SetMaterialTexture(&m_flatModel->GetModel().materials[0], MATERIAL_MAP_DIFFUSE, *g_chunkAnimTexture[chId]);
-			}
-			// fixme, need to change WHITE to daytime color, but for now just use WHITE
-			DrawModelEx(m_flatModel->GetModel(), thisPos, { 0, 1, 0 }, 0, flatScaling, g_dayNightColor);
-		}
-	}
-	glDisable(GL_POLYGON_OFFSET_FILL);
-	m_flatModel->UpdateFlatUV(0.0f, 1.0f, 0.0, 1.0);
 
 	// A* timing deltas
 	uint64_t totalCalls = g_pathfindingSystem ? g_pathfindingSystem->m_astarTotalCalls.load() : 0;

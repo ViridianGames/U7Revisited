@@ -169,8 +169,6 @@ void LoadingState::Init(const string& configfile)
 {
 	g_minimapSize = g_Engine->m_RenderWidth / 4.5f;
 
-	MakeAnimationFrameMeshes();
-
 	m_red = 1.0;
 	m_angle = 0.0;
 
@@ -714,12 +712,6 @@ void LoadingState::LoadRoofImages(const std::string& filename)
 					//tilecountx is frameCount
 					BakeImageShapeFrames(objId, offsetx, tilecountx, tilesizex, tilesizez);
 				}
-				else if (objtype == "shapepalette")
-				{
-					//offsetx is frameStart
-					//tilecountx is frameCount
-					BakeImageShapePalette(objId, offsetx, tilecountx, tilesizex, tilesizez);
-				}
 				else
 				{
 					//DebugPrint("WARNING: Unknown object type in roof images load file at line " + std::to_string(lineNum) + ": " + objtype);
@@ -1007,31 +999,12 @@ void LoadingState::MakeMap()
 		g_World[i].resize(3072);
 	}
 
-	g_chunkAnimTexture.resize(3046);
-	for (int i = 0; i < 3046; ++i)
-	{
-		//g_chunkAnimTexture[i] = g_ResourceManager->GetTexture("Images/error.png");
-		g_chunkAnimTexture[i] = nullptr;
-	}
 	//  Now, finally, we can create the world map.
-	int floorRef = 224;
 	for (int i = 0; i < 192; ++i)
 	{
 		for (int j = 0; j < 192; ++j)
 		{
 			int chunkid = g_chunkTypeMap[i][j];
-			Image tempImage = GenImageColor(128 * 8, 128, Color{ 0, 128, 255, 0 });
-			unsigned int frameCt = 1;
-			unsigned int pixelCt = 0;
-			std::string filename = "Images/chunksprite/chunk_ID" + std::to_string(chunkid) + ".png";
-			bool makeShapesprite = true;
-			if (FileExists(filename.c_str())) {
-				if (g_chunkAnimTexture.size() <= chunkid) {
-					g_chunkAnimTexture.resize(chunkid + 1);
-				}
-				g_chunkAnimTexture[chunkid] = g_ResourceManager->GetTexture(filename);
-				makeShapesprite = false;
-			}
 			for (int k = 0; k < 16; ++k)
 			{
 				for (int l = 0; l < 16; ++l)
@@ -1047,122 +1020,8 @@ void LoadingState::MakeMap()
 						int nextId = GetNextID();
 						AddObject(shapenum, framenum, nextId, (i * 16 + k), 0, (j * 16 + l));
 					}
-					else if (shapenum < 150)
-					{
-						if (makeShapesprite == true) {
-							//  figure out if this referenced shape is animated
-							ShapeData& m_shapeData = g_shapeTable[shapenum][framenum];
-							size_t pixelsLength = m_shapeData.m_palettePixels.size();
-							if (pixelsLength > 0)
-							{
-								for (int m = 0; m < 8; ++m)
-								{
-									if (chunkid >= 0) {
-										float dstPosX = float(k * 8);
-										float dstPosY = float(l * 8);
-										for (const auto& pixel : m_shapeData.m_palettePixels)
-										{
-											// Access tuple elements - assuming it's std::tuple<int, int, int> for RGB or similar
-											int pX = std::get<0>(pixel);   // First integer in tuple
-											int pY = std::get<1>(pixel);  // Second integer in tuple
-											int pRef = std::get<2>(pixel);   // Third integer in tuple
-											int gRef = pRef - floorRef;
-											int baseRef = 224;
-											unsigned int baseCount = frameCt;
-											if (pRef >= 224 && pRef < 232) {
-												baseCount = 8;
-												if (baseCount > frameCt) {
-													frameCt = baseCount;
-												}
-												baseRef = 224;
-											}
-											else if (pRef >= 232 && pRef < 240) {
-												baseCount = 8;
-												if (baseCount > frameCt) {
-													frameCt = baseCount;
-												}
-												baseRef = 232;
-											}
-											else if (pRef >= 240 && pRef < 244) {
-												baseCount = 4;
-												if (baseCount > frameCt) {
-													frameCt = baseCount;
-												}
-												baseRef = 240;
-											}
-											else if (pRef >= 244 && pRef < 248) {
-												baseCount = 4;
-												if (baseCount > frameCt) {
-													frameCt = baseCount;
-												}
-												baseRef = 244;
-											}
-											else if (pRef >= 248 && pRef < 252) {
-												baseCount = 4;
-												if (baseCount > frameCt) {
-													frameCt = baseCount;
-												}
-												baseRef = 248;
-											}
-											else if (pRef >= 252 && pRef < 255) {
-												baseCount = 3;
-												if (baseCount > frameCt) {
-													frameCt = baseCount;
-												}
-												baseRef = 252;
-											}
-											int pDiff = baseRef - floorRef;
-											int frameRef = pRef - baseRef;
-											frameRef -= m;
-											while (frameRef < 0) {
-												frameRef += baseCount;
-											}
-											gRef = frameRef + pDiff;
-											const auto& refPalette = g_paletteTransforms[gRef];
-											//int val = g_paletteTransforms[gRef][0];
-											Color pColor = Color{ std::get<0>(refPalette), std::get<1>(refPalette), std::get<2>(refPalette), std::get<3>(refPalette) };
-											//Color pColor = Color{ std::get<0>(refPalette), std::get<1>(refPalette), std::get<2>(refPalette), std::get<3>(refPalette) };
-											//Log("Drawing pixel at [" + std::to_string(dstPosX) + ", " + std::to_string(dstPosY) + "] (" + std::to_string(float(pX)) + ", " + std::to_string(float(pY)) + ") with palette reference " + std::to_string(pRef), "anims.log");
-											pX += 128 * m;
-											ImageDrawPixel(&tempImage, int(dstPosX) + pX, int(dstPosY) + pY, pColor);
-											//ImageDrawPixel(&tempImage, int(dstPosX) + pX, int(dstPosY) + pY, RED);
-											pixelCt += 1;
-										}
-									//  check if this shape has a morph animation
-									//Log("Map[" + std::to_string(i) + "," + std::to_string(j) + "] Shape " + std::to_string(shapenum) + " frame " + std::to_string(framenum) + " has pixels, checking for morph animation.", "anims.log");
-									}
-								}
-							}
-						}
-					}
 				}
 			}
-			if (makeShapesprite == true) {
-				if (chunkid >= 0)
-				{
-					if (pixelCt > 0)
-					{
-						//Log("Map[" + std::to_string(i) + "," + std::to_string(j) + "] Chunk " + std::to_string(chunkid) + " has " + std::to_string(pixelCt) + " pixels drawn at " + std::to_string(frameCt) + " frames.", "anims.log");
-						//std::string filename = "Debug/Chunks/chunk_X" + std::to_string(j) + "_Y" + std::to_string(i) + ".png";
-
-						std::string objType = "chunksprite";
-						std::string objFolder = "Images/" + objType;
-						std::filesystem::create_directories(objFolder.c_str());
-						
-						std::string filename = "Images/chunksprite/chunk_ID" + std::to_string(chunkid) + ".png";
-						ExportImage(tempImage, filename.c_str());
-						if (g_chunkAnimTexture.size() <= chunkid) {
-							g_chunkAnimTexture.resize(chunkid + 1);
-						}
-						g_chunkAnimTexture[chunkid] = g_ResourceManager->GetTexture(filename);
-					}
-					else
-					{
-						//Log("Map[" + std::to_string(i) + "," + std::to_string(j) + "] Chunk " + std::to_string(chunkid) + " has no pixels drawn at " + std::to_string(frameCt) + " frames.", "anims.log");
-					}
-				}
-			}
-			UnloadImage(tempImage);
 		}
 	}
 }
@@ -1513,21 +1372,6 @@ void LoadingState::CreateShapeTable()
 			thisPalette[j].a = 255;
 		}
 
-		//  Stash transforming palettes for later use
-		if (i == 0)
-		{
-			size_t g_paletteTransformsSize = g_paletteTransforms.size();
-			if (g_paletteTransformsSize == 0) {
-				for (int j = 224; j < 256; ++j)
-				{
-					g_paletteTransforms.push_back({ thisPalette[j].r, thisPalette[j].g, thisPalette[j].b, thisPalette[j].a });
-				}
-			}
-			g_paletteTransformsSize = g_paletteTransforms.size();
-			//Log("Loaded palette " + std::to_string(i) + " with " + std::to_string(g_paletteTransformsSize) + " transform colors.", "anims.log");
-		}
-		
-
 		//  Fix for translucent blood
 		thisPalette[244] = Color{ 144, 40, 192, 128 };
 		thisPalette[245] = Color{ 96, 40, 16, 128 };
@@ -1543,6 +1387,12 @@ void LoadingState::CreateShapeTable()
 		thisPalette[255] = Color{ 0, 0, 0, 0 };
 
 		m_palettes.push_back(thisPalette);
+
+		// Runtime palette LUT is driven from the base game palette (entry 0)
+		if (i == 0)
+		{
+			InitRuntimePalette(thisPalette);
+		}
 	}
 
 
@@ -1563,7 +1413,9 @@ void LoadingState::CreateShapeTable()
 
 		//  The first 150 entries (0-149) are terrain textures.  They are not
 	//  rle-encoded.  Splat them directly to the terrain texture.
+	//  Also build a parallel index atlas (R = palette index) for live palette animation.
 	Image tempImage = GenImageColor(2048, 256, WHITE);
+	Image terrainIndexImage = GenImageColor(2048, 256, Color{ 0, 0, 0, 0 });
 	for (int thisShape = 0; thisShape < 150; ++thisShape)
 	{
 		shapes.seekg(shapeEntryMap[thisShape].offset);
@@ -1580,6 +1432,7 @@ void LoadingState::CreateShapeTable()
 				{
 					unsigned char Value = ReadU8(shapes);
 					ImageDrawPixel(&tempImage, (thisShape * 8) + j, (thisFrame * 8) + i, m_palettes[0][Value]);
+					ImageDrawPixel(&terrainIndexImage, (thisShape * 8) + j, (thisFrame * 8) + i, Color{ Value, 0, 0, 255 });
 					if (Value >= 224 && Value < 254)
 					{
 						shapeData.CaptureSpecialPaletteReferences(j, i, int(Value));
@@ -1590,6 +1443,7 @@ void LoadingState::CreateShapeTable()
 	}
 
 	g_Terrain->UpdateTerrainTexture(tempImage);
+	g_Terrain->SetTerrainIndexImage(terrainIndexImage);
 	g_Terrain->Init();
 	Log("Done creating terrain.");
 	UnloadImage(tempImage);
@@ -1676,6 +1530,8 @@ void LoadingState::CreateShapeTable()
 
 				shapeData.CreateDefaultTexture();
 				Image tempImage = GenImageColor(frameOffsets[i].width, frameOffsets[i].height, Color{ 0, 0, 0, 0 });
+				Image indexImage = GenImageColor(frameOffsets[i].width, frameOffsets[i].height, Color{ 0, 0, 0, 0 });
+				bool wrotePaletteIndex = false;
 				//  Read each span.  Spans can be either RLE or raw pixel data.
 				while (true)
 				{
@@ -1699,6 +1555,11 @@ void LoadingState::CreateShapeTable()
 						{
 							unsigned char Value = ReadU8(shapes);
 							ImageDrawPixel(&tempImage, xStart + i, yStart, m_palettes[paletteNumber][Value]);
+							ImageDrawPixel(&indexImage, xStart + i, yStart, Color{ Value, 0, 0, 255 });
+							if (Value >= 224 && Value < 255)
+							{
+								wrotePaletteIndex = true;
+							}
 							shapeData.CaptureSpecialPaletteReferences(xStart + i, yStart, Value);
 						}
 					}
@@ -1718,6 +1579,11 @@ void LoadingState::CreateShapeTable()
 								{
 									unsigned char Value = ReadU8(shapes);
 									ImageDrawPixel(&tempImage, xStart + i, yStart, m_palettes[paletteNumber][Value]);
+									ImageDrawPixel(&indexImage, xStart + i, yStart, Color{ Value, 0, 0, 255 });
+									if (Value >= 224 && Value < 255)
+									{
+										wrotePaletteIndex = true;
+									}
 									shapeData.CaptureSpecialPaletteReferences(xStart + i, yStart, Value);
 								}
 							}
@@ -1727,6 +1593,11 @@ void LoadingState::CreateShapeTable()
 								for (int i = 0; i < runLength; ++i)
 								{
 									ImageDrawPixel(&tempImage, xStart + i, yStart, m_palettes[paletteNumber][Value]);
+									ImageDrawPixel(&indexImage, xStart + i, yStart, Color{ Value, 0, 0, 255 });
+									if (Value >= 224 && Value < 255)
+									{
+										wrotePaletteIndex = true;
+									}
 									shapeData.CaptureSpecialPaletteReferences(xStart + i, yStart, Value);
 								}
 							}
@@ -1735,6 +1606,15 @@ void LoadingState::CreateShapeTable()
 					}
 				}
 				shapeData.SetDefaultTexture(tempImage);
+				// Full index map only kept for shapes that use cycling palette bands
+				if (wrotePaletteIndex || !shapeData.m_palettePixels.empty())
+				{
+					shapeData.SetIndexTexture(indexImage);
+				}
+				else
+				{
+					UnloadImage(indexImage);
+				}
 			}
 
 			continue;

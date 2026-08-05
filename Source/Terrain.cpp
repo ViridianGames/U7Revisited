@@ -37,6 +37,21 @@ Terrain::~Terrain()
 {
 	UnloadModel(m_cellModel);
 	UnloadRenderTexture(m_currentTerrain);
+	if (m_terrainColorImage.data != nullptr)
+	{
+		UnloadImage(m_terrainColorImage);
+		m_terrainColorImage = { 0 };
+	}
+	if (m_terrainIndexImage.data != nullptr)
+	{
+		UnloadImage(m_terrainIndexImage);
+		m_terrainIndexImage = { 0 };
+	}
+	if (m_terrainTiles.id > 0)
+	{
+		UnloadTexture(m_terrainTiles);
+		m_terrainTiles = { 0 };
+	}
 }
 
 void Terrain::Init()
@@ -46,7 +61,89 @@ void Terrain::Init()
 
 void Terrain::UpdateTerrainTexture(Image img)
 {
-	m_terrainTiles = LoadTextureFromImage(img);
+	if (m_terrainColorImage.data != nullptr)
+	{
+		UnloadImage(m_terrainColorImage);
+	}
+	// Keep a CPU copy so palette cycling can rewrite water pixels
+	m_terrainColorImage = ImageCopy(img);
+
+	if (m_terrainTiles.id > 0)
+	{
+		UnloadTexture(m_terrainTiles);
+	}
+	m_terrainTiles = LoadTextureFromImage(m_terrainColorImage);
+	SetTextureFilter(m_terrainTiles, TEXTURE_FILTER_POINT);
+}
+
+void Terrain::SetTerrainIndexImage(Image indexImage)
+{
+	if (m_terrainIndexImage.data != nullptr)
+	{
+		UnloadImage(m_terrainIndexImage);
+	}
+	m_terrainIndexImage = indexImage;
+	m_terrainHasPaletteAnim = (m_terrainIndexImage.data != nullptr);
+	m_lastTerrainPaletteStep = -1;
+}
+
+void Terrain::ApplyPaletteToTerrainAtlas()
+{
+	if (!m_terrainHasPaletteAnim || m_terrainColorImage.data == nullptr || m_terrainIndexImage.data == nullptr)
+	{
+		return;
+	}
+
+	const int step = static_cast<int>(GetTime() * 8.0) % 8;
+	if (step == m_lastTerrainPaletteStep)
+	{
+		return;
+	}
+	m_lastTerrainPaletteStep = step;
+
+	// Only rewrite tiles that capture special palette indices (water/fire glisten)
+	for (int shape = 0; shape < 150; ++shape)
+	{
+		for (int frame = 0; frame < 32; ++frame)
+		{
+			ShapeData& shapeData = g_shapeTable[shape][frame];
+			if (shapeData.m_palettePixels.empty())
+			{
+				continue;
+			}
+
+			const int baseX = shape * 8;
+			const int baseY = frame * 8;
+			for (const auto& pixel : shapeData.m_palettePixels)
+			{
+				const int pX = std::get<0>(pixel);
+				const int pY = std::get<1>(pixel);
+				const int pRef = std::get<2>(pixel);
+				if (pRef < 0 || pRef > 255)
+				{
+					continue;
+				}
+
+				const int atlasX = baseX + pX;
+				const int atlasY = baseY + pY;
+				if (atlasX < 0 || atlasY < 0 || atlasX >= m_terrainColorImage.width || atlasY >= m_terrainColorImage.height)
+				{
+					continue;
+				}
+
+				// Index map is source of truth; color comes from the rotating LUT
+				Color idxSample = GetImageColor(m_terrainIndexImage, atlasX, atlasY);
+				if (idxSample.a < 128)
+				{
+					continue;
+				}
+				const int idx = idxSample.r;
+				ImageDrawPixel(&m_terrainColorImage, atlasX, atlasY, g_runtimePalette[idx]);
+			}
+		}
+	}
+
+	UpdateTexture(m_terrainTiles, m_terrainColorImage.data);
 }
 
 void Terrain::Draw()

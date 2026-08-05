@@ -84,6 +84,7 @@ void TitleState::Update()
 	UpdateTitle();
 	TestUpdate();
 
+	UpdateRuntimePalette();
 	g_Terrain->CalculateLighting();
 	g_Terrain->Update();
 

@@ -126,6 +126,13 @@ int main(int argv, char** argc)
       g_alphaDiscard = LoadShader(NULL, "Data/Shaders/alphaDiscard.fs");
       g_cuboidShader = LoadShader("Data/Shaders/cuboid.vs", NULL);
       g_cuboidTexCoordsLoc = GetShaderLocation(g_cuboidShader, "cuboidTexCoords");
+      g_paletteShader = LoadShader(NULL, "Data/Shaders/paletteLookup.fs");
+      // texture1 is auto-bound as SHADER_LOC_MAP_SPECULAR by LoadShader; keep explicit loc for billboards
+      g_paletteSamplerLoc = g_paletteShader.locs[SHADER_LOC_MAP_SPECULAR];
+      if (g_paletteSamplerLoc < 0)
+      {
+         g_paletteSamplerLoc = GetShaderLocation(g_paletteShader, "texture1");
+      }
 
       rlDisableBackfaceCulling();
       rlEnableDepthTest();
