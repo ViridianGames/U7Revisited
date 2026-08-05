@@ -389,6 +389,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Source\AskState.cpp" />
+    <ClCompile Include="Source\CombatState.cpp" />
     <ClCompile Include="Source\ConversationState.cpp" />
     <ClCompile Include="Source\GameSerializer.cpp" />
     <ClCompile Include="Source\Geist\BaseUnits.cpp" />
@@ -477,6 +478,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\AskState.h" />
+    <ClInclude Include="Source\CombatState.h" />
     <ClInclude Include="Source\ConversationState.h" />
     <ClInclude Include="Source\GameSerializer.h" />
     <ClInclude Include="Source\Geist\BaseUnits.h" />
