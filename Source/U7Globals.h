@@ -384,8 +384,10 @@ void HideObject(int shapenum, int framenum, float x, float y, float z);
 //void MorphObject(int shapenum, int framenum, float x, float y, float z, float nux, float nuy, float nuz, const std::string& modelName);
 void MorphObject(int shapenum, int framenum, float x, float y, float z, float nux, float nuy, float nuz, const std::string& modelName, const std::string& imageName, ShapeDrawType drawType);
 void MorphRoof(int roofId, int shapeNum, int frameNum, float x, float y, float z, float nux, float nuy, float nuz);
+// Legacy CSV hook; animation is native SetFrame for TFA isAnimated shapes (no sprite strips).
 void MorphAnimFlat(int shapeNum, int frameNum, int numFrames);
 void BakeImageRoof(int objId, int xOfs, float y, int tileSizeX, int tileSizeY, int borderSize, int tileCountX, int tileCountY);
+// Legacy shapesprite bake (unused; multi-frame anim uses native shape frames).
 void BakeImageShapeFrames(int shapeNum, int startFrame, int maxFrames, int tileSizeX, int tileSizeY);
 
 void OpenURL(const std::string& url);

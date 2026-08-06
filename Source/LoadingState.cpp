@@ -708,9 +708,9 @@ void LoadingState::LoadRoofImages(const std::string& filename)
 				}
 				else if (objtype == "shapeframes")
 				{
-					//offsetx is frameStart
-					//tilecountx is frameCount
-					BakeImageShapeFrames(objId, offsetx, tilecountx, tilesizex, tilesizez);
+					// Legacy: multi-frame anim uses native SHAPES.VGA frames + TFA isAnimated.
+					// No longer bake Images/shapesprite strips.
+					continue;
 				}
 				else
 				{
@@ -722,8 +722,7 @@ void LoadingState::LoadRoofImages(const std::string& filename)
 			{
 				if (objtype == "flat")
 				{
-					//offsetx is frameStart
-					//tilecountx is frameCount
+					// Optional: reinforce frame count from CSV (animation is SetFrame, not UV strips).
 					MorphAnimFlat(objId, offsetx, tilecountx);
 				}
 				else
@@ -1614,6 +1613,13 @@ void LoadingState::CreateShapeTable()
 				}
 			}
 
+			// Native multi-frame animation cycles 0..frameCount-1 via SetFrame.
+			const int animFrameCount = static_cast<int>(std::min(frameCount, 32u));
+			for (int f = 0; f < animFrameCount; ++f)
+			{
+				g_shapeTable[thisShape][f].m_numFrames = animFrameCount;
+			}
+
 			continue;
 		}
 		else  //  This entry is not encoded.
@@ -1634,6 +1640,25 @@ void LoadingState::CreateShapeTable()
 			}
 		}
 		file.close();
+	}
+
+	// Legacy ANIMFLAT was for UV sprite strips. Multi-frame anim is native SetFrame now.
+	// Keep ANIMFLAT only when the shape uses the palette LUT path on a single texture.
+	for (int i = 150; i < 1024; ++i)
+	{
+		for (int j = 0; j < 32; ++j)
+		{
+			ShapeData& shapeData = g_shapeTable[i][j];
+			if (shapeData.GetDrawType() == ShapeDrawType::OBJECT_DRAW_ANIMFLAT
+				&& !shapeData.HasPaletteAnimation())
+			{
+				shapeData.SetDrawType(ShapeDrawType::OBJECT_DRAW_FLAT);
+				if (shapeData.IsValid())
+				{
+					shapeData.SetupDrawTypes();
+				}
+			}
+		}
 	}
 
 	profilingTime = GetTime() - profilingTime;

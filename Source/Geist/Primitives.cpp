@@ -451,11 +451,39 @@ void ModTexture::MoveImageColumnDown(int column)
 
 void ModTexture::UpdateTexture()
 {
+	// Prefer in-place GPU upload so palette/cuboid refresh does not leak textures.
+	if (m_Texture.id > 0 && m_Image.data != nullptr
+		&& m_Texture.width == m_Image.width && m_Texture.height == m_Image.height)
+	{
+		::UpdateTexture(m_Texture, m_Image.data);
+		return;
+	}
+
+	if (m_Texture.id > 0)
+	{
+		UnloadTexture(m_Texture);
+		m_Texture = { 0 };
+	}
+	if (m_Image.data == nullptr)
+	{
+		return;
+	}
 	m_Texture = LoadTextureFromImage(m_Image);
+	SetTextureFilter(m_Texture, TEXTURE_FILTER_POINT);
 }
 
 void ModTexture::AssignImage(char* image)
 {
+	if (m_Texture.id > 0)
+	{
+		UnloadTexture(m_Texture);
+		m_Texture = { 0 };
+	}
+	// Replace CPU image (caller-owned path load).
+	if (m_Image.data != nullptr && m_Image.data != m_OriginalImage.data)
+	{
+		UnloadImage(m_Image);
+	}
 	m_Image = LoadImage(image);
 	m_OriginalImage = m_Image;
 	m_Texture = LoadTextureFromImage(m_Image);
@@ -466,6 +494,11 @@ void ModTexture::AssignImage(char* image)
 
 void ModTexture::AssignImage(Image img)
 {
+	if (m_Texture.id > 0)
+	{
+		UnloadTexture(m_Texture);
+		m_Texture = { 0 };
+	}
 	m_Image = img;
 	m_OriginalImage = m_Image;
 	m_Texture = LoadTextureFromImage(m_Image);
@@ -487,7 +520,8 @@ void ModTexture::ResizeImage(float newWidth, float newHeight)
 void ModTexture::Reset()
 {
 	m_Image = m_OriginalImage;
-	m_Texture = LoadTextureFromImage(m_Image);
+	// Reuse GPU texture when dimensions match (no LoadTextureFromImage leak).
+	UpdateTexture();
 	width = m_Image.width;
 	height = m_Image.height;
 }

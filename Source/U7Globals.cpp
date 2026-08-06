@@ -1053,60 +1053,7 @@ void UpdateSortedVisibleObjects()
 
 				object->m_distanceFromCamera = Vector3DistanceSqr(object->m_centerPoint, g_camera.position);
 				g_sortedVisibleObjects.push_back(object);
-				int maxFrames = 1;
-				bool frameSwitch = false;
-				bool randomlyActive = false;
-				switch (object->m_ObjectType)
-				{
-					case 179:
-						// 179 is something ethereal, has 0-7 frames
-						maxFrames = 8;
-						frameSwitch = false;
-						randomlyActive = true;
-						break;
-					case 334:
-						// 334 is green swamp bubbles, has 0-7 frames
-						maxFrames = 8;
-						frameSwitch = false;
-						randomlyActive = true;
-						break;
-					case 335:
-						// 335 is green swamp bubbles, has 0-7 frames
-						maxFrames = 8;
-						frameSwitch = false;
-						randomlyActive = true;
-						break;
-					case 780:
-						// 700 is blue bubbles, has 0-7 frames
-						maxFrames = 8;
-						frameSwitch = false;
-						randomlyActive = true;
-						break;
-					//case 1022:
-					//	// 1022 is something, has 0-11 frames
-					//	maxFrames = 11;
-					//	frameSwitch = true;
-					//	randomlyActive = false;
-					//	break;
-					case 384:
-					case 985:
-					case 1008:
-					case 1009:
-						maxFrames = 17;
-						frameSwitch = false;
-						randomlyActive = true;
-						break;
-					default:
-						maxFrames = 1;
-						frameSwitch = false;
-						randomlyActive = false;
-						break;
-				}
-				if (randomlyActive == true)
-				{
-					int probability = 5;
-					object->Activate(float(GetTime()), maxFrames, probability);
-				}
+				// Multi-frame FX use TFA isAnimated + native SetFrame cycling in InteractiveDraw.
 			}
 		}
 	}
@@ -1290,20 +1237,24 @@ void MorphObject(int shapenum, int framenum, float x, float y, float z, float nu
 }
 
 void MorphAnimFlat(int shapeNum, int frameNum, int numFrames) {
-	ShapeData& m_shapeData = g_shapeTable[shapeNum][frameNum];
-
-	// Palette-cycled shapes use the runtime LUT; do not replace with UV frame strips.
-	if (!m_shapeData.m_palettePixels.empty() || m_shapeData.HasPaletteAnimation())
+	// Legacy entry point from roofimages.csv morphanim rows.
+	// Animation is native SetFrame cycling for TFA isAnimated shapes — no shapesprite strips.
+	(void)frameNum;
+	if (shapeNum < 0 || shapeNum >= 1024 || numFrames < 2)
 	{
 		return;
 	}
-
-	std::string imagePath = "Images/shapesprite/shapesprite_" + std::to_string(shapeNum) + "_" + std::to_string(frameNum) + ".png";
-	if (FileExists(imagePath.c_str())) {
-		m_shapeData.m_drawType = ShapeDrawType::OBJECT_DRAW_ANIMFLAT;
-		m_shapeData.m_numFrames = numFrames;
-		Image image = LoadImage(imagePath.c_str());
-		m_shapeData.SetDefaultTexture(image);
+	// Ensure frame count is available if load-time count was missing.
+	if (g_shapeTable[shapeNum][0].m_numFrames < numFrames)
+	{
+		const int count = std::min(numFrames, 32);
+		for (int f = 0; f < count; ++f)
+		{
+			if (g_shapeTable[shapeNum][f].m_texture != nullptr)
+			{
+				g_shapeTable[shapeNum][f].m_numFrames = count;
+			}
+		}
 	}
 }
 

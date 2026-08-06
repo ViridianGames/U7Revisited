@@ -196,6 +196,19 @@ public:
 	{ }
 	ModTexture(char* image) { AssignImage(image); }
 	ModTexture(Image img) { AssignImage(img); }
+	~ModTexture()
+	{
+		// GPU texture only; CPU images are often aliased (m_Image == m_OriginalImage)
+		// or still owned by the shape table for the process lifetime.
+		if (m_Texture.id > 0)
+		{
+			UnloadTexture(m_Texture);
+			m_Texture = { 0 };
+		}
+	}
+	// Non-copyable: owns a GPU texture id.
+	ModTexture(const ModTexture&) = delete;
+	ModTexture& operator=(const ModTexture&) = delete;
 	void AssignImage(char* image);
 	void AssignImage(Image img);
 

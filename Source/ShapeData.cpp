@@ -118,8 +118,56 @@ void ShapeData::SetIndexTexture(Image indexImage)
 
 void ShapeData::SetPixelOffset(int offsetX, int offsetY)
 {
+	m_xleft = offsetX;
+	m_yabove = offsetY;
+	// Bake/strip path historically used origin+1 for placement into a tile cell.
 	m_pixelOffsetX = offsetX + 1;
 	m_pixelOffsetY = offsetY + 1;
+	m_hasHotspot = true;
+}
+
+Vector3 ShapeData::GetFlatModelPosition(const Vector3& objectPos) const
+{
+	// flat.obj: local XY origin is texture bottom-left; texture top is at local z = -1.
+	// DrawModelEx(finalPos, scale) covers:
+	//   x: [finalPos.x, finalPos.x + m_Dims.x]
+	//   z: [finalPos.z - m_Dims.z, finalPos.z]
+	// so texture top-left is (finalPos.x, finalPos.z - m_Dims.z).
+
+	float y = objectPos.y;
+	if (y == 0)
+	{
+		y = .01f; // avoid z-fighting with terrain
+	}
+	else
+	{
+		y = y * 1.01f;
+	}
+	y += m_TweakPos.y;
+
+	if (!m_hasHotspot)
+	{
+		// Legacy size-based anchor (shifts when frame canvas size changes).
+		return Vector3{
+			objectPos.x + m_TweakPos.x + (-m_Dims.x + 1.0f),
+			y,
+			objectPos.z + m_TweakPos.z + 1.0f
+		};
+	}
+
+	// Hotspot-stable upper-left: same xleft/yabove => same texture top-left in world XZ.
+	// Calibrated so common flats (xright=ybelow=0) match the legacy (-dims.x+1, +1) placement.
+	constexpr float kPx = 1.0f / 8.0f;
+	const float hotWorldX = objectPos.x + m_TweakPos.x + (1.0f - kPx);
+	const float hotWorldZ = objectPos.z + m_TweakPos.z + (1.0f - kPx);
+	const float topLeftX = hotWorldX - static_cast<float>(m_xleft) * kPx;
+	const float topLeftZ = hotWorldZ - static_cast<float>(m_yabove) * kPx;
+
+	return Vector3{
+		topLeftX,
+		y,
+		topLeftZ + m_Dims.z // model origin is texture bottom-left
+	};
 }
 
 void ShapeData::CaptureSpecialPaletteReferences(int posX, int posY, int paletteRef)
@@ -670,19 +718,7 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 		// Palette-animated shapes use the live palette LUT instead of UV frame strips.
 		if (m_hasPaletteAnim && g_paletteSystemReady)
 		{
-			finalPos = pos;
-			if (pos.y == 0)
-			{
-				finalPos.y = .01f;
-			}
-			else
-			{
-				finalPos.y = pos.y * 1.01f;
-			}
-
-			finalPos = Vector3Add(finalPos, m_TweakPos);
-			finalPos = Vector3Add(finalPos, Vector3{ -m_Dims.x + 1, 0, 1 });
-
+			finalPos = GetFlatModelPosition(pos);
 			Vector3 flatScaling = Vector3{ m_Dims.x, 1, m_Dims.z };
 			Material& mat = m_flatModel->GetModel().materials[0];
 			Shader prevShader = mat.shader;
@@ -695,21 +731,10 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 			break;
 		}
 
-		finalPos = pos;
-		if (pos.y == 0)
-		{
-			finalPos.y = .01f; //  Otherwise, z-fighting.
-		}
-		else
-		{
-			finalPos.y = pos.y * 1.01f;
-		}
-
-		finalPos = Vector3Add(finalPos, m_TweakPos);
-		finalPos = Vector3Add(finalPos, Vector3{ -m_Dims.x + 1, 0, 1 });
-
+		// Legacy UV-strip path (rarely used); still hotspot-anchor the plane.
+		finalPos = GetFlatModelPosition(pos);
 		Vector3 flatScaling = Vector3{ m_Dims.x, 1, m_Dims.z };
-		
+
 		float timePerFrame = 1.0f / 8.0f;
 		int currentFrame = static_cast<unsigned int>(float(GetTime()) / timePerFrame) % m_numFrames;
 		float uvPerFrame = 1.0f / static_cast<float>(m_numFrames);
@@ -723,19 +748,9 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 
 	case ShapeDrawType::OBJECT_DRAW_FLAT:
 	{
-		finalPos = pos;
-		if (pos.y == 0)
-		{
-			finalPos.y = .01f; //  Otherwise, z-fighting.
-		}
-		else
-		{
-			finalPos.y = pos.y * 1.01f;
-		}
-
-		finalPos = Vector3Add(finalPos, m_TweakPos);
-		finalPos = Vector3Add(finalPos, Vector3{ -m_Dims.x + 1, 0, 1 });
-
+		// Hotspot-stable placement: frames with the same xleft/yabove share one upper-left,
+		// even when canvas size differs (e.g. shape 699/737 frame 5).
+		finalPos = GetFlatModelPosition(pos);
 		Vector3 flatScaling = Vector3{ m_Dims.x, 1, m_Dims.z };
 
 		if (m_hasPaletteAnim && g_paletteSystemReady)

@@ -407,86 +407,34 @@ void U7Object::InteractiveDraw()
 	{
 		return; // Not on the screen.
 	}
-	int maxFrames = 1;
-	bool frameSwitch = false;
-	bool randomlyActive = false;
 
-	// fix me, move to something like g_objectDataTable or g_shapeTable, so we don't have to hardcode this here
-	switch (m_ObjectType)
+	// Multi-frame shapes: pick the right frame before drawing.
+	// NPCs/monsters drive frames themselves; doors use scripted SetFrame.
+	if (m_objectData
+		&& m_UnitType != UnitTypes::UNIT_TYPE_NPC
+		&& m_UnitType != UnitTypes::UNIT_TYPE_MONSTER
+		&& !m_isCustomMesh
+		&& !(m_objectData->m_isDoor))
 	{
-		case 179:
-			// 179 is something ethereal, has 0-7 frames
-			maxFrames = 8;
-			frameSwitch = false;
-			randomlyActive = false;
-			break;
-		case 334:
-			// 334 is green swamp bubbles, has 0-7 frames
-			maxFrames = 8;
-			frameSwitch = false;
-			randomlyActive = false;
-			break;
-		case 335:
-			// 335 is green swamp bubbles, has 0-7 frames
-			maxFrames = 8;
-			frameSwitch = false;
-			randomlyActive = true;
-			break;
-		case 780:
-			// 780 is blue bubbles, has 0-7 frames
-			maxFrames = 8;
-			frameSwitch = false;
-			randomlyActive = false;
-			break;
-		case 256:
-		case 419:
-		case 516:
-		case 610:
-		case 612:
-		case 613:
-		case 632:
-		case 699:
-		case 736:
-		case 737:
-		case 751:
-		case 808:
-		case 834:
-		case 875:
-		case 907:
-		case 911:
-		case 918:
-		case 926:
-		case 927:
-		case 930:
-		case 938:
-		case 1012:
-		case 1020:
-		case 1022:
-			//maxFrames = 11;
-			//frameSwitch = true;
-			//randomlyActive = false;
-			break;
-		case 384:
-		case 985:
-		case 1008:
-		case 1009:
-			maxFrames = 17;
-			frameSwitch = true;
-			randomlyActive = true;
-			break;
-		default:
-			maxFrames = 1;
-			frameSwitch = false;
-			randomlyActive = false;
-			break;
-	}
+		const int animFrames = g_shapeTable[m_ObjectType][0].m_numFrames;
+		int currentFrame = m_Frame;
 
-	if (frameSwitch)
-	{
-		// Handle frame switching logic here if needed
-		float timePerFrame = 1.0f / 8.0f;
-		int currentFrame = static_cast<unsigned int>(float(GetTime()) / timePerFrame) % maxFrames;
-		SetFrame(currentFrame);
+		if (m_ObjectType == 284 && animFrames > 1)
+		{
+			// Sundial: 24 frames, one per game hour (not a looping FX cycle).
+			currentFrame = static_cast<int>(g_hour) % animFrames;
+		}
+		else if (m_objectData->m_isAnimated && animFrames > 1)
+		{
+			// TFA "animated" shapes: cycle native SHAPES.VGA frames (no sprite strips).
+			const float timePerFrame = 1.0f / 8.0f;
+			currentFrame = static_cast<unsigned int>(float(GetTime()) / timePerFrame) % animFrames;
+		}
+
+		if (currentFrame != m_Frame)
+		{
+			SetFrame(currentFrame);
+		}
 	}
 
 	Color renderColor = g_Terrain->m_cellLighting[cellx][celly];
@@ -1900,6 +1848,22 @@ void U7Object::SetPos(Vector3 pos)
 
 void U7Object::SetFrame(int frame)
 {
+	if (frame < 0 || frame >= 32)
+	{
+		return;
+	}
+
+	// Prefer declared anim length; fall back to accepting any loaded texture.
+	const int animFrames = g_shapeTable[m_ObjectType][0].m_numFrames;
+	if (animFrames > 1 && frame >= animFrames)
+	{
+		return;
+	}
+	if (g_shapeTable[m_ObjectType][frame].m_texture == nullptr)
+	{
+		return;
+	}
+
 	// Store old frame to check if it actually changed
 	int oldFrame = m_Frame;
 

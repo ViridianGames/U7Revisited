@@ -80,6 +80,9 @@ public:
 
 	void Draw(const Vector3& pos, float angle, Color color = Color{ 255, 255, 255, 255 }, Vector3 scaling =  Vector3{ 1, 1, 1 });
 
+	// Flat mesh origin for DrawModelEx so texture top-left stays hotspot-stable across frames.
+	Vector3 GetFlatModelPosition(const Vector3& objectPos) const;
+
 	bool IsValid() { return m_isValid; }
 	void SetPixelOffset(int offsetX, int offsetY);
 	void CaptureSpecialPaletteReferences(int posX, int posY, int paletteRef);
@@ -117,8 +120,13 @@ public:
 	Rectangle m_frontTextureRect;
 	Rectangle m_rightTextureRect;
 
-	int m_pixelOffsetX;
-	int m_pixelOffsetY;
+	// U7 frame hotspot extents (pixels from origin toward left/above of the bitmap).
+	// Stored as passed from SHAPES.VGA (xleft / yabove); bake path uses +1 via m_pixelOffset*.
+	int m_xleft = 0;
+	int m_yabove = 0;
+	int m_pixelOffsetX = 0;
+	int m_pixelOffsetY = 0;
+	bool m_hasHotspot = false;
 	// Sparse list of glisten/cycle pixels 224-243 (terrain/cuboid CPU recolor); full index map is m_indexTexture
 	std::vector<std::tuple<int, int, int>> m_palettePixels;
 
