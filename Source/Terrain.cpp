@@ -101,7 +101,7 @@ void Terrain::ApplyPaletteToTerrainAtlas()
 	}
 	m_lastTerrainPaletteStep = step;
 
-	// Only rewrite tiles that capture special palette indices (water/fire glisten)
+	// Only rewrite tiles that capture glisten/cycle indices (224-243)
 	for (int shape = 0; shape < 150; ++shape)
 	{
 		for (int frame = 0; frame < 32; ++frame)

@@ -119,7 +119,7 @@ public:
 
 	int m_pixelOffsetX;
 	int m_pixelOffsetY;
-	// Sparse list of cycling-palette pixels (for terrain/cuboid CPU recolor); full index map is m_indexTexture
+	// Sparse list of glisten/cycle pixels 224-243 (terrain/cuboid CPU recolor); full index map is m_indexTexture
 	std::vector<std::tuple<int, int, int>> m_palettePixels;
 
 	bool m_isValid;

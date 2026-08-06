@@ -1361,6 +1361,9 @@ void LoadingState::CreateShapeTable()
 
 		std::array<Color, 256> thisPalette;
 		//  Currently only loading the base palette.  Other palettes are for lighting effects.
+		//  Keep original RGB for 244-254 so opaque glisten (gems) can use the runtime LUT.
+		//  Translucent blood/glass get xform bake colors only when shape TFA says translucent
+		//  (see GetU7ShapePixelColor) — do not overwrite the game palette here.
 		for (int j = 0; j < 256; ++j)
 		{
 			unsigned char r = paletteData[j * 3];
@@ -1371,19 +1374,6 @@ void LoadingState::CreateShapeTable()
 			thisPalette[j].b = b * 4;
 			thisPalette[j].a = 255;
 		}
-
-		//  Fix for translucent blood
-		thisPalette[244] = Color{ 144, 40, 192, 128 };
-		thisPalette[245] = Color{ 96, 40, 16, 128 };
-		thisPalette[246] = Color{ 100, 108, 116, 192 };
-		thisPalette[247] = Color{ 68, 132, 28, 128 };
-		thisPalette[248] = Color{ 255, 208, 48, 64 };
-		thisPalette[249] = Color{ 28, 52, 255, 128 };
-		thisPalette[250] = Color{ 8, 68, 0, 128 };
-		thisPalette[251] = Color{ 255, 8, 8, 118 };
-		thisPalette[252] = Color{ 255, 244, 248, 128 };
-		thisPalette[253] = Color{ 56, 40, 32, 128 };
-		thisPalette[254] = Color{ 228, 224, 214, 82 };
 		thisPalette[255] = Color{ 0, 0, 0, 0 };
 
 		m_palettes.push_back(thisPalette);
@@ -1433,7 +1423,8 @@ void LoadingState::CreateShapeTable()
 					unsigned char Value = ReadU8(shapes);
 					ImageDrawPixel(&tempImage, (thisShape * 8) + j, (thisFrame * 8) + i, m_palettes[0][Value]);
 					ImageDrawPixel(&terrainIndexImage, (thisShape * 8) + j, (thisFrame * 8) + i, Color{ Value, 0, 0, 255 });
-					if (Value >= 224 && Value < 254)
+					// Track glisten pixels only (224-243); xform 244-254 stay fixed in the LUT.
+					if (IsU7PaletteCycleIndex(Value))
 					{
 						shapeData.CaptureSpecialPaletteReferences(j, i, int(Value));
 					}
@@ -1532,6 +1523,9 @@ void LoadingState::CreateShapeTable()
 				Image tempImage = GenImageColor(frameOffsets[i].width, frameOffsets[i].height, Color{ 0, 0, 0, 0 });
 				Image indexImage = GenImageColor(frameOffsets[i].width, frameOffsets[i].height, Color{ 0, 0, 0, 0 });
 				bool wrotePaletteIndex = false;
+				// TFA translucent: 244-254 bake as fixed xform colors, no GPU glisten for those indices.
+				// Opaque (gems): 244-254 use original palette + runtime LUT rotation.
+				const bool shapeIsTranslucent = g_objectDataTable[thisShape].m_isTranslucent;
 				//  Read each span.  Spans can be either RLE or raw pixel data.
 				while (true)
 				{
@@ -1554,13 +1548,14 @@ void LoadingState::CreateShapeTable()
 						for (int i = 0; i < spanLength; ++i)
 						{
 							unsigned char Value = ReadU8(shapes);
-							ImageDrawPixel(&tempImage, xStart + i, yStart, m_palettes[paletteNumber][Value]);
+							Color bakeColor = GetU7ShapePixelColor(m_palettes[paletteNumber], Value, shapeIsTranslucent);
+							ImageDrawPixel(&tempImage, xStart + i, yStart, bakeColor);
 							ImageDrawPixel(&indexImage, xStart + i, yStart, Color{ Value, 0, 0, 255 });
-							if (Value >= 224 && Value < 255)
+							if (IsU7PaletteGlistenIndex(Value, shapeIsTranslucent))
 							{
 								wrotePaletteIndex = true;
+								shapeData.CaptureSpecialPaletteReferences(xStart + i, yStart, Value);
 							}
-							shapeData.CaptureSpecialPaletteReferences(xStart + i, yStart, Value);
 						}
 					}
 					else // RLE.
@@ -1578,13 +1573,14 @@ void LoadingState::CreateShapeTable()
 								for (int i = 0; i < runLength; ++i)
 								{
 									unsigned char Value = ReadU8(shapes);
-									ImageDrawPixel(&tempImage, xStart + i, yStart, m_palettes[paletteNumber][Value]);
+									Color bakeColor = GetU7ShapePixelColor(m_palettes[paletteNumber], Value, shapeIsTranslucent);
+									ImageDrawPixel(&tempImage, xStart + i, yStart, bakeColor);
 									ImageDrawPixel(&indexImage, xStart + i, yStart, Color{ Value, 0, 0, 255 });
-									if (Value >= 224 && Value < 255)
+									if (IsU7PaletteGlistenIndex(Value, shapeIsTranslucent))
 									{
 										wrotePaletteIndex = true;
+										shapeData.CaptureSpecialPaletteReferences(xStart + i, yStart, Value);
 									}
-									shapeData.CaptureSpecialPaletteReferences(xStart + i, yStart, Value);
 								}
 							}
 							else
@@ -1592,13 +1588,14 @@ void LoadingState::CreateShapeTable()
 								unsigned char Value = ReadU8(shapes);
 								for (int i = 0; i < runLength; ++i)
 								{
-									ImageDrawPixel(&tempImage, xStart + i, yStart, m_palettes[paletteNumber][Value]);
+									Color bakeColor = GetU7ShapePixelColor(m_palettes[paletteNumber], Value, shapeIsTranslucent);
+									ImageDrawPixel(&tempImage, xStart + i, yStart, bakeColor);
 									ImageDrawPixel(&indexImage, xStart + i, yStart, Color{ Value, 0, 0, 255 });
-									if (Value >= 224 && Value < 255)
+									if (IsU7PaletteGlistenIndex(Value, shapeIsTranslucent))
 									{
 										wrotePaletteIndex = true;
+										shapeData.CaptureSpecialPaletteReferences(xStart + i, yStart, Value);
 									}
-									shapeData.CaptureSpecialPaletteReferences(xStart + i, yStart, Value);
 								}
 							}
 							xStart += runLength;
@@ -1606,7 +1603,7 @@ void LoadingState::CreateShapeTable()
 					}
 				}
 				shapeData.SetDefaultTexture(tempImage);
-				// Full index map only kept for shapes that use cycling palette bands
+				// GPU index map for shapes with glisten pixels (opaque gems include 244-254).
 				if (wrotePaletteIndex || !shapeData.m_palettePixels.empty())
 				{
 					shapeData.SetIndexTexture(indexImage);

@@ -1476,7 +1476,7 @@ void MainState::Update()
 
 	CameraUpdate();
 
-	// Rotate U7 palette bands (water/fire glisten) and refresh terrain atlas
+	// Rotate U7 glisten bands (224-254); translucent shapes use static xform bake colors
 	UpdateRuntimePalette();
 
 	m_terrainUpdateTime = g_Engine->GameTimeInMS();

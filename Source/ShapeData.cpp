@@ -124,8 +124,8 @@ void ShapeData::SetPixelOffset(int offsetX, int offsetY)
 
 void ShapeData::CaptureSpecialPaletteReferences(int posX, int posY, int paletteRef)
 {
-	// U7 cycling bands: 224-231, 232-239 (8), 240-251 (4), 252-254 (3)
-	if (paletteRef >= 224 && paletteRef < 255)
+	// Caller decides which indices are glisten for this shape (see IsU7PaletteGlistenIndex).
+	if (paletteRef >= kU7PaletteCycleMin && paletteRef <= kU7PaletteXformMaxInclusive)
 	{
 		m_palettePixels.push_back({ posX, posY, paletteRef });
 	}

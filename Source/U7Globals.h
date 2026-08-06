@@ -520,6 +520,44 @@ extern Shader g_cuboidShader;
 extern int g_cuboidTexCoordsLoc;
 
 // Runtime palette animation (U7-style index cycling via GPU LUT)
+//
+// High palette roles (Ultima VII):
+//   224-243  Always glisten — rotated in the runtime LUT (water, fire, gem sparkle, …)
+//   244-254  Original colors also glisten on opaque shapes (e.g. gem frames 7-11).
+//            Translucent shapes (TFA) use fixed xform bake colors instead (blood/glass)
+//            and do not enter the GPU palette path for these indices alone.
+//   255      Fully transparent
+constexpr int kU7PaletteCycleMin = 224;
+constexpr int kU7PaletteCycleMaxExclusive = 244; // 224-243 inclusive
+constexpr int kU7PaletteXformMin = 244;
+constexpr int kU7PaletteXformMaxInclusive = 254;
+
+// True glisten bands that always cycle (224-243).
+inline bool IsU7PaletteCycleIndex(int idx)
+{
+	return idx >= kU7PaletteCycleMin && idx < kU7PaletteCycleMaxExclusive;
+}
+
+// Indices that should drive palette animation for a given shape.
+// Opaque shapes: full 224-254. Translucent shapes: only 224-243 (xform stays fixed bake).
+inline bool IsU7PaletteGlistenIndex(int idx, bool shapeIsTranslucent)
+{
+	if (IsU7PaletteCycleIndex(idx))
+	{
+		return true;
+	}
+	if (!shapeIsTranslucent && idx >= kU7PaletteXformMin && idx <= kU7PaletteXformMaxInclusive)
+	{
+		return true;
+	}
+	return false;
+}
+
+// Xform bake colors for translucent shapes only (blood/glass alpha blend).
+// Runtime LUT keeps original game RGB so opaque gems can sparkle correctly.
+Color GetU7XformBakeColor(int paletteIndex);
+Color GetU7ShapePixelColor(const std::array<Color, 256>& palette, int paletteIndex, bool shapeIsTranslucent);
+
 extern std::array<Color, 256> g_basePalette;
 extern std::array<Color, 256> g_runtimePalette;
 extern Texture2D g_paletteTexture;

@@ -178,6 +178,49 @@ namespace
 			g_runtimePalette[start + i] = g_basePalette[src];
 		}
 	}
+
+	// Baked RGBA for translucent (TFA) shapes only — not used in the runtime LUT.
+	const Color kU7XformBakeColors[11] = {
+		Color{ 144, 40, 192, 128 }, // 244
+		Color{ 96, 40, 16, 128 },   // 245
+		Color{ 100, 108, 116, 192 },// 246
+		Color{ 68, 132, 28, 128 },  // 247
+		Color{ 255, 208, 48, 64 },  // 248
+		Color{ 28, 52, 255, 128 },  // 249
+		Color{ 8, 68, 0, 128 },     // 250
+		Color{ 255, 8, 8, 118 },    // 251
+		Color{ 255, 244, 248, 128 },// 252
+		Color{ 56, 40, 32, 128 },   // 253
+		Color{ 228, 224, 214, 82 }, // 254
+	};
+}
+
+Color GetU7XformBakeColor(int paletteIndex)
+{
+	if (paletteIndex < kU7PaletteXformMin || paletteIndex > kU7PaletteXformMaxInclusive)
+	{
+		return Color{ 0, 0, 0, 0 };
+	}
+	return kU7XformBakeColors[paletteIndex - kU7PaletteXformMin];
+}
+
+Color GetU7ShapePixelColor(const std::array<Color, 256>& palette, int paletteIndex, bool shapeIsTranslucent)
+{
+	if (paletteIndex < 0 || paletteIndex > 255)
+	{
+		return Color{ 0, 0, 0, 0 };
+	}
+	if (paletteIndex == 255)
+	{
+		return Color{ 0, 0, 0, 0 };
+	}
+	// Translucent shapes use fixed xform bake colors for 244-254 (blood/glass).
+	// Opaque shapes (gems, etc.) keep original palette RGB so glisten looks correct.
+	if (shapeIsTranslucent && paletteIndex >= kU7PaletteXformMin && paletteIndex <= kU7PaletteXformMaxInclusive)
+	{
+		return GetU7XformBakeColor(paletteIndex);
+	}
+	return palette[paletteIndex];
 }
 
 void InitRuntimePalette(const std::array<Color, 256>& basePalette)
@@ -210,21 +253,18 @@ void UpdateRuntimePalette()
 		return;
 	}
 
-	// Water bands cycle at 8 steps/sec; shorter bands still advance with the same clock
-	// so they stay in phase with the original multi-frame bake.
+	// Glisten bands cycle at 8 steps/sec; shorter bands share the same clock.
+	// Includes 244-254 so opaque gems (shape 760 frames 7-11) sparkle with original colors.
+	// Translucent shapes never sample this LUT for 244-254 — they use static xform bake colors.
 	const int step = static_cast<int>(GetTime() * 8.0) % 8;
 
 	g_runtimePalette = g_basePalette;
-	RotatePaletteBand(224, 8, step);
-	RotatePaletteBand(232, 8, step);
-	RotatePaletteBand(240, 4, step);
-	RotatePaletteBand(244, 4, step);
-	RotatePaletteBand(248, 4, step);
-	RotatePaletteBand(252, 3, step);
-
-	// Preserve special translucent overrides baked into base palette for 244-255
-	// (blood etc.) — re-apply alpha from base after rotation for those that use it.
-	// Rotation already pulled from g_basePalette which has the translucent colors.
+	RotatePaletteBand(224, 8, step); // 224-231
+	RotatePaletteBand(232, 8, step); // 232-239
+	RotatePaletteBand(240, 4, step); // 240-243
+	RotatePaletteBand(244, 4, step); // 244-247 (opaque gem glisten; translucent shapes use bake path)
+	RotatePaletteBand(248, 4, step); // 248-251
+	RotatePaletteBand(252, 3, step); // 252-254
 
 	UpdateTexture(g_paletteTexture, g_runtimePalette.data());
 
