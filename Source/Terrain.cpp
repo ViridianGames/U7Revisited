@@ -260,15 +260,14 @@ void Terrain::UpdateTerrainTiles()
 
 void Terrain::SetupChunkData()
 {
-	//  There are two major elements to the chunk data.
+	// Chunk building/pathfinding data is filled after the world object list exists:
+	// PathfindingSystem::PopulateChunkPathfindingGrid() → BuildChunkBuildingData().
 	//
-	//  The first is pathfinding.  A lot of chunks are simply clear and can be freely walked through.
-	//  Some chunks have obstructions that need a little pathfinding (like forest chunks)
-	//  Some chunks have buildings and will need full pathfinding.
+	// ChunkInfo (per 16x16 world chunk) tracks:
+	//   - walkable[][] / canReach[]   hierarchical pathfinding
+	//   - hasRoof / roofGroupID       multi-chunk buildings for roof pop-off
+	//   - roofTypeID / roofMaterial   gabled roof type catalog
+	//   - interior[][]                under-roof tiles for lighting
 	//
-	//  The second is roof data.  Some chunks have roofs that need to be linked together so that when you enter one
-	//  building, all roofs in associated chunks are hidden.  We simply need to check the roof IDs of nearby chunks
-	//  and if the avatar is in a chunk with a roof, hide all roofs with the same roof ID.
-
-
+	// Terrain::Init runs before IFIX, so this is intentionally a no-op placeholder.
 }

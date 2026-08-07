@@ -18,12 +18,32 @@
 // Forward declarations
 class U7Object;
 
+// Material family for gabled roof typing (from roof shape IDs).
+enum class RoofMaterial : int
+{
+	None = 0,
+	Wood = 1,
+	Slate = 2,
+	Tile = 3,
+	Other = 4
+};
+
 struct ChunkInfo
 {
+	// Pathfinding: per-tile walkability within this 16x16 chunk.
 	bool walkable[16][16] = { false };
 
+	// Building / roof map (filled by BuildChunkBuildingData).
+	// interior[][]: under-roof tiles (for future lighting).
+	// roofGroupTile[][]: connected-building id per tile (-1 = no roof). Built from
+	// contiguous roof footprints so neighboring buildings do not share a group.
+	// hasRoof / roofGroupID: chunk-level rollup (any roof / primary group in chunk).
+	bool interior[16][16] = { false };
+	int  roofGroupTile[16][16];     // filled with -1 in BuildChunkBuildingData
 	bool hasRoof = false;
-	int  roofGroupID = -1;          // -1 = no roof / no building
+	int  roofGroupID = -1;          // primary group for this chunk (-1 = none)
+	int  roofTypeID = -1;           // geometry/type catalog id (-1 = untyped)
+	RoofMaterial roofMaterial = RoofMaterial::None;
 
 	// Connectivity flags for 8 directions (0 = North, 1 = NE, 2 = E, etc.)
 	bool canReach[8] = { false };
@@ -212,10 +232,35 @@ public:
 
 	float GetMovementCost(int worldX, int worldZ) { return m_aStar->GetMovementCost(worldX, worldZ, m_pathfindingGrid.get());}
 
+	// Build / refresh per-chunk building data (roofs, groups, interior tiles).
+	// Call after the world object list is populated (and after reload).
+	void BuildChunkBuildingData();
+	void PopulateChunkPathfindingGrid();
+
+	// Hide/show roof pieces for the building under the avatar (chunk data).
+	// active group = roofGroupTile at the avatar's tile; hide roof objects whose
+	// placement tile shares that group (multi-chunk buildings stay open together).
+	void UpdateBuildingRoofVisibility(float avatarWorldX, float avatarWorldZ);
+
+	// Queries (world tile coords, 0..3071)
+	bool IsInteriorTile(int worldX, int worldZ) const;
+	// Roof group under this specific tile (-1 if none). Prefer over chunk rollup for pop.
+	int GetRoofGroupAt(int worldX, int worldZ) const;
+	int GetRoofTypeAt(int worldX, int worldZ) const;
+	const ChunkInfo* GetChunkInfo(int chunkX, int chunkZ) const;
+
+	// True if shape is a world roof piece (wood/slate/tile/etc.).
+	static bool IsRoofShape(int shapeId);
+	static RoofMaterial GetRoofMaterial(int shapeId);
+
 	std::unique_ptr<PathfindingGrid> m_pathfindingGrid;
 	std::unique_ptr<AStar> m_aStar;
 
 	ChunkInfo m_chunkInfoMap[192][192];
+
+	// How many roof groups / types were assigned by the last BuildChunkBuildingData.
+	int m_roofGroupCount = 0;
+	int m_roofTypeCount = 0;
 
 	std::unordered_map<int, ObjectWalkability> m_objectWalkability;
 
@@ -238,10 +283,6 @@ public:
 	// Record queue latency (ms) for a request that spent time waiting before worker handled it.
 	// Call from producer / worker when appropriate.
 	void RecordQueueLatency(uint64_t ms);
-
-	//  Since this looks both at the terrain and the objects, it needs to be called
-	//  after all loading is finished.
-	void PopulateChunkPathfindingGrid();
 
 	// Utility: determine whether a shape id represents a walkable surface (stairs/floors/bridges/etc.)
 	// Implemented inline below to keep header-only convenience for callers like U7Player.cpp.

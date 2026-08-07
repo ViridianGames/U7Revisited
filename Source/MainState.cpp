@@ -1428,36 +1428,17 @@ void MainState::Update()
 			}
 		}
 
-		// for (unordered_map<int, std::unique_ptr<U7Object> >::iterator node = g_objectList.begin(); node != g_objectList.end();)
-		// {
-		// 	if (!node->second)
-		// 	{
-		// 		++node;
-		// 		continue;
-		// 	}
-		//
-		// 	if (node->second->GetIsDead())
-		// 	{
-		// 		if (g_LuaDebug)
-		// 		{
-		// 			AddConsoleString("Cleanup: Removing dead object ID " + std::to_string(node->first));
-		// 		}
-		// 		if (g_SoundSystem)
-		// 		{
-		// 			g_SoundSystem->StopLoopingSoundEffect(node->first);
-		// 		}
-		// 		UnassignObjectChunk(node->second.get());
-		// 		node = g_objectList.erase(node);
-		// 		if (g_LuaDebug)
-		// 		{
-		// 			AddConsoleString("Cleanup: Object erased from g_objectList");
-		// 		}
-		// 	}
-		// 	else
-		// 	{
-		// 		++node;
-		// 	}
-		// }
+		// Roof pop-off must run AFTER the global m_Visible=true pass above and BEFORE
+		// UpdateSortedVisibleObjects (which builds the pick list). Otherwise invisible
+		// roofs still catch mouse rays and bark as "wood roof" / "slate roof".
+		if (g_pathfindingSystem && g_Player)
+		{
+			if (U7Object* avatar = g_Player->GetAvatarObject())
+			{
+				const Vector3 apos = avatar->GetPos();
+				g_pathfindingSystem->UpdateBuildingRoofVisibility(apos.x, apos.z);
+			}
+		}
 
 		// Calculate g_mouseOverUI RIGHT BEFORE UpdateSortedVisibleObjects
 		CalculateMouseOverUI();
@@ -2308,6 +2289,12 @@ void MainState::RebuildWorldFromLoadedData()
 		}
 	}
 	Log("MainState::RebuildWorldFromLoadedData - Assigned to chunks: " + std::to_string(staticCount) + " static, " + std::to_string(dynamicCount) + " objects, " + std::to_string(npcCount) + " NPCs, " + std::to_string(containedCount) + " contained (skipped)");
+
+	// Rebuild roof groups / interior map against the restored object list.
+	if (g_pathfindingSystem)
+	{
+		g_pathfindingSystem->BuildChunkBuildingData();
+	}
 
 	// Force immediate update of visible objects after loading
 	Log("MainState::RebuildWorldFromLoadedData - Calling UpdateSortedVisibleObjects now...");

@@ -1,9 +1,13 @@
 #include "PathfindingSystem.h"
 #include "U7Globals.h"
 #include "U7Object.h"
+#include "ShapeData.h"
+#include "Geist/Logging.h"
 #include "rlgl.h"
 #include <algorithm>
+#include <array>
 #include <cmath>
+#include <cstring>
 #include <fstream>
 #include <sstream>
 #include <cstdint>
@@ -2162,6 +2166,471 @@ void PathfindingSystem::LoadObjectWalkability(const std::string& filename)
 	}
 }
 
+bool PathfindingSystem::IsRoofShape(int shapeId)
+{
+	switch (shapeId)
+	{
+	// Tile roofs
+	case 156: case 161: case 162: case 908: case 966:
+	// Slate roofs
+	case 164: case 165: case 166: case 167: case 169: case 962: case 963:
+	// Wood roofs
+	case 170: case 171: case 172: case 173: case 174: case 175: case 176: case 891: case 956:
+	// Greenhouse / broken / wagon (still roofs for group/interior purposes)
+	case 223: case 853: case 954: case 979:
+		return true;
+	default:
+		return false;
+	}
+}
+
+RoofMaterial PathfindingSystem::GetRoofMaterial(int shapeId)
+{
+	switch (shapeId)
+	{
+	case 170: case 171: case 172: case 173: case 174: case 175: case 176: case 891: case 956:
+		return RoofMaterial::Wood;
+	case 164: case 165: case 166: case 167: case 169: case 962: case 963:
+		return RoofMaterial::Slate;
+	case 156: case 161: case 162: case 908: case 966:
+		return RoofMaterial::Tile;
+	case 223: case 853: case 954: case 979:
+		return RoofMaterial::Other;
+	default:
+		return RoofMaterial::None;
+	}
+}
+
+const ChunkInfo* PathfindingSystem::GetChunkInfo(int chunkX, int chunkZ) const
+{
+	if (chunkX < 0 || chunkX >= 192 || chunkZ < 0 || chunkZ >= 192)
+	{
+		return nullptr;
+	}
+	return &m_chunkInfoMap[chunkX][chunkZ];
+}
+
+bool PathfindingSystem::IsInteriorTile(int worldX, int worldZ) const
+{
+	if (worldX < 0 || worldX >= 3072 || worldZ < 0 || worldZ >= 3072)
+	{
+		return false;
+	}
+	const ChunkInfo& info = m_chunkInfoMap[worldX / 16][worldZ / 16];
+	return info.interior[worldX % 16][worldZ % 16];
+}
+
+int PathfindingSystem::GetRoofGroupAt(int worldX, int worldZ) const
+{
+	if (worldX < 0 || worldX >= 3072 || worldZ < 0 || worldZ >= 3072)
+	{
+		return -1;
+	}
+	const ChunkInfo& info = m_chunkInfoMap[worldX / 16][worldZ / 16];
+	return info.roofGroupTile[worldX % 16][worldZ % 16];
+}
+
+int PathfindingSystem::GetRoofTypeAt(int worldX, int worldZ) const
+{
+	if (worldX < 0 || worldX >= 3072 || worldZ < 0 || worldZ >= 3072)
+	{
+		return -1;
+	}
+	return m_chunkInfoMap[worldX / 16][worldZ / 16].roofTypeID;
+}
+
+void PathfindingSystem::BuildChunkBuildingData()
+{
+	const int CHUNKS = 192;
+	const int dir4[4][2] = { {0, -1}, {1, 0}, {0, 1}, {-1, 0} };
+
+	// Reset building fields (leave walkable/canReach alone if already filled).
+	for (int cx = 0; cx < CHUNKS; ++cx)
+	{
+		for (int cz = 0; cz < CHUNKS; ++cz)
+		{
+			ChunkInfo& info = m_chunkInfoMap[cx][cz];
+			info.hasRoof = false;
+			info.roofGroupID = -1;
+			info.roofTypeID = -1;
+			info.roofMaterial = RoofMaterial::None;
+			for (int tz = 0; tz < 16; ++tz)
+			{
+				for (int tx = 0; tx < 16; ++tx)
+				{
+					info.interior[tx][tz] = false;
+					info.roofGroupTile[tx][tz] = -1;
+				}
+			}
+		}
+	}
+
+	// Pass 1: mark roof coverage tiles + per-tile material (for typing).
+	// materialGrid: only written where roof present; 0 = none.
+	static thread_local std::array<std::array<uint8_t, 3072>, 3072>* s_matGrid = nullptr;
+	static thread_local std::array<std::array<uint8_t, 3072>, 3072>* s_roofMask = nullptr;
+	if (!s_matGrid)
+	{
+		s_matGrid = new std::array<std::array<uint8_t, 3072>, 3072>();
+		s_roofMask = new std::array<std::array<uint8_t, 3072>, 3072>();
+	}
+	// Clear only as we write (full clear is expensive); use a generation stamp instead.
+	// Full clear of 3072^2 is ~9MB — acceptable once at load.
+	for (int z = 0; z < 3072; ++z)
+	{
+		std::memset((*s_roofMask)[z].data(), 0, 3072);
+		std::memset((*s_matGrid)[z].data(), 0, 3072);
+	}
+
+	for (const auto& pair : g_objectList)
+	{
+		U7Object* obj = pair.second.get();
+		if (!obj || obj->GetIsDead() || !obj->m_objectData)
+		{
+			continue;
+		}
+		const int shape = obj->m_ObjectType;
+		if (!IsRoofShape(shape))
+		{
+			continue;
+		}
+
+		const RoofMaterial mat = GetRoofMaterial(shape);
+		const uint8_t matByte = static_cast<uint8_t>(mat);
+
+		// Same tile footprint as SetPos / pathfinding for FLAT/CUBOID.
+		const BoundingBox& bbox = obj->m_boundingBox;
+		int minTileX = static_cast<int>(std::floor(bbox.min.x));
+		int maxTileX = static_cast<int>(std::floor(bbox.max.x - 1.0f));
+		int minTileZ = static_cast<int>(std::floor(bbox.min.z));
+		int maxTileZ = static_cast<int>(std::floor(bbox.max.z - 1.0f));
+
+		if (maxTileX < minTileX || maxTileZ < minTileZ)
+		{
+			const int width = std::max(1, static_cast<int>(obj->m_objectData->m_width));
+			const int depth = std::max(1, static_cast<int>(obj->m_objectData->m_depth));
+			minTileX = static_cast<int>(std::floor(obj->m_Pos.x));
+			minTileZ = static_cast<int>(std::floor(obj->m_Pos.z));
+			maxTileX = minTileX + width - 1;
+			maxTileZ = minTileZ + depth - 1;
+		}
+
+		for (int wz = minTileZ; wz <= maxTileZ; ++wz)
+		{
+			for (int wx = minTileX; wx <= maxTileX; ++wx)
+			{
+				if (wx < 0 || wx >= 3072 || wz < 0 || wz >= 3072)
+				{
+					continue;
+				}
+				(*s_roofMask)[wz][wx] = 1;
+				// Prefer non-Other materials when overlapping.
+				uint8_t& cellMat = (*s_matGrid)[wz][wx];
+				if (cellMat == 0 || cellMat == static_cast<uint8_t>(RoofMaterial::Other))
+				{
+					cellMat = matByte;
+				}
+				else if (matByte != static_cast<uint8_t>(RoofMaterial::Other) && matByte != 0)
+				{
+					cellMat = matByte;
+				}
+
+				const int cx = wx / 16;
+				const int cz = wz / 16;
+				ChunkInfo& info = m_chunkInfoMap[cx][cz];
+				info.hasRoof = true;
+				info.interior[wx % 16][wz % 16] = true;
+			}
+		}
+	}
+
+	// Pass 2: flood-fill *tiles* that have roof coverage into building groups.
+	// Adjacent chunks only share a group if their roof tiles actually touch.
+	// This prevents an entire town from becoming one roofGroupID.
+	struct GroupStats
+	{
+		RoofMaterial material = RoofMaterial::None;
+		int minX = 3072, minZ = 3072, maxX = -1, maxZ = -1;
+		int tileCount = 0;
+	};
+	std::vector<GroupStats> groups;
+	int nextGroup = 0;
+
+	// visited: reuse roof mask destruction — copy mask bits we need via group stamp in roofGroupTile
+	// Use a separate visited grid.
+	static thread_local std::array<std::array<uint8_t, 3072>, 3072>* s_visited = nullptr;
+	if (!s_visited)
+	{
+		s_visited = new std::array<std::array<uint8_t, 3072>, 3072>();
+	}
+	for (int z = 0; z < 3072; ++z)
+	{
+		std::memset((*s_visited)[z].data(), 0, 3072);
+	}
+
+	for (int wz = 0; wz < 3072; ++wz)
+	{
+		for (int wx = 0; wx < 3072; ++wx)
+		{
+			if (!(*s_roofMask)[wz][wx] || (*s_visited)[wz][wx])
+			{
+				continue;
+			}
+
+			const int groupId = nextGroup++;
+			GroupStats stats;
+			std::deque<std::pair<int, int>> q;
+			q.push_back({ wx, wz });
+			(*s_visited)[wz][wx] = 1;
+
+			while (!q.empty())
+			{
+				const auto [x, z] = q.front();
+				q.pop_front();
+
+				const int cx = x / 16;
+				const int cz = z / 16;
+				const int tx = x % 16;
+				const int tz = z % 16;
+				m_chunkInfoMap[cx][cz].roofGroupTile[tx][tz] = groupId;
+
+				stats.tileCount++;
+				stats.minX = std::min(stats.minX, x);
+				stats.minZ = std::min(stats.minZ, z);
+				stats.maxX = std::max(stats.maxX, x);
+				stats.maxZ = std::max(stats.maxZ, z);
+				const auto mat = static_cast<RoofMaterial>((*s_matGrid)[z][x]);
+				if (mat != RoofMaterial::None)
+				{
+					if (stats.material == RoofMaterial::None || stats.material == RoofMaterial::Other)
+					{
+						stats.material = mat;
+					}
+					if (mat != RoofMaterial::Other)
+					{
+						stats.material = mat;
+					}
+				}
+
+				for (int d = 0; d < 4; ++d)
+				{
+					const int nx = x + dir4[d][0];
+					const int nz = z + dir4[d][1];
+					if (nx < 0 || nx >= 3072 || nz < 0 || nz >= 3072)
+					{
+						continue;
+					}
+					if (!(*s_roofMask)[nz][nx] || (*s_visited)[nz][nx])
+					{
+						continue;
+					}
+					(*s_visited)[nz][nx] = 1;
+					q.push_back({ nx, nz });
+				}
+			}
+			groups.push_back(stats);
+		}
+	}
+	m_roofGroupCount = nextGroup;
+
+	// Pass 3: roll up per-chunk primary group / material / type.
+	// Primary group = most common roofGroupTile value in the chunk.
+	std::unordered_map<uint64_t, int> typeMap;
+	int nextType = 0;
+	std::vector<int> groupToType(groups.size(), -1);
+
+	for (size_t gi = 0; gi < groups.size(); ++gi)
+	{
+		const GroupStats& g = groups[gi];
+		if (g.maxX < 0)
+		{
+			continue;
+		}
+		int w = g.maxX - g.minX + 1;
+		int d = g.maxZ - g.minZ + 1;
+		int wq = ((w + 3) / 4) * 4;
+		int dq = ((d + 3) / 4) * 4;
+		int orient = 0;
+		if (wq > dq * 6 / 5)
+		{
+			orient = 1;
+		}
+		else if (dq > wq * 6 / 5)
+		{
+			orient = 2;
+		}
+		if (orient == 2)
+		{
+			std::swap(wq, dq);
+			orient = 1;
+		}
+
+		const uint64_t key =
+			(static_cast<uint64_t>(static_cast<int>(g.material)) << 40) |
+			(static_cast<uint64_t>(wq & 0xFFF) << 28) |
+			(static_cast<uint64_t>(dq & 0xFFF) << 16) |
+			(static_cast<uint64_t>(orient & 0xF) << 12);
+
+		auto it = typeMap.find(key);
+		if (it == typeMap.end())
+		{
+			typeMap[key] = nextType;
+			groupToType[gi] = nextType;
+			++nextType;
+		}
+		else
+		{
+			groupToType[gi] = it->second;
+		}
+	}
+	m_roofTypeCount = nextType;
+
+	for (int cx = 0; cx < CHUNKS; ++cx)
+	{
+		for (int cz = 0; cz < CHUNKS; ++cz)
+		{
+			ChunkInfo& info = m_chunkInfoMap[cx][cz];
+			if (!info.hasRoof)
+			{
+				continue;
+			}
+
+			// Count group frequency within chunk.
+			std::unordered_map<int, int> freq;
+			int bestGroup = -1;
+			int bestCount = 0;
+			RoofMaterial bestMat = RoofMaterial::None;
+			for (int tz = 0; tz < 16; ++tz)
+			{
+				for (int tx = 0; tx < 16; ++tx)
+				{
+					const int g = info.roofGroupTile[tx][tz];
+					if (g < 0)
+					{
+						continue;
+					}
+					const int c = ++freq[g];
+					if (c > bestCount)
+					{
+						bestCount = c;
+						bestGroup = g;
+					}
+				}
+			}
+			info.roofGroupID = bestGroup;
+			if (bestGroup >= 0 && bestGroup < static_cast<int>(groups.size()))
+			{
+				info.roofMaterial = groups[bestGroup].material;
+				if (bestGroup < static_cast<int>(groupToType.size()))
+				{
+					info.roofTypeID = groupToType[bestGroup];
+				}
+			}
+			(void)bestMat;
+		}
+	}
+
+	Log("BuildChunkBuildingData: " + std::to_string(m_roofGroupCount) + " roof groups, " +
+		std::to_string(m_roofTypeCount) + " roof types");
+}
+
+void PathfindingSystem::UpdateBuildingRoofVisibility(float avatarWorldX, float avatarWorldZ)
+{
+	// Active building = roof group under the avatar's tile (from chunk roofGroupTile data).
+	// Only that group's roof pieces hide — not every roofed chunk nearby.
+	const int ax = static_cast<int>(std::floor(avatarWorldX));
+	const int az = static_cast<int>(std::floor(avatarWorldZ));
+	const int activeGroup = GetRoofGroupAt(ax, az);
+
+	const int acx = ax / 16;
+	const int acz = az / 16;
+	const int radius = 4; // chunks
+
+	for (int cz = acz - radius; cz <= acz + radius; ++cz)
+	{
+		for (int cx = acx - radius; cx <= acx + radius; ++cx)
+		{
+			if (cx < 0 || cx >= 192 || cz < 0 || cz >= 192)
+			{
+				continue;
+			}
+			const ChunkInfo& info = m_chunkInfoMap[cx][cz];
+			if (!info.hasRoof)
+			{
+				continue;
+			}
+
+			// Does this chunk contain any tiles of the active group?
+			bool chunkHasActiveGroup = false;
+			if (activeGroup >= 0)
+			{
+				for (int tz = 0; tz < 16 && !chunkHasActiveGroup; ++tz)
+				{
+					for (int tx = 0; tx < 16; ++tx)
+					{
+						if (info.roofGroupTile[tx][tz] == activeGroup)
+						{
+							chunkHasActiveGroup = true;
+							break;
+						}
+					}
+				}
+			}
+
+			for (U7Object* obj : g_chunkObjectMap[cx][cz])
+			{
+				if (!obj || !obj->m_objectData)
+				{
+					continue;
+				}
+				if (!IsRoofShape(obj->m_ObjectType))
+				{
+					continue;
+				}
+				// Respect permanent DONT_DRAW (e.g. morphroof hide list).
+				if (obj->m_drawType == ShapeDrawType::OBJECT_DRAW_DONT_DRAW)
+				{
+					obj->m_Visible = false;
+					continue;
+				}
+
+				if (activeGroup < 0)
+				{
+					obj->m_Visible = true;
+					continue;
+				}
+
+				// Hide only if this roof piece's footprint overlaps the active building group.
+				bool sameBuilding = false;
+				const BoundingBox& bbox = obj->m_boundingBox;
+				int minTX = static_cast<int>(std::floor(bbox.min.x));
+				int maxTX = static_cast<int>(std::floor(bbox.max.x - 1.0f));
+				int minTZ = static_cast<int>(std::floor(bbox.min.z));
+				int maxTZ = static_cast<int>(std::floor(bbox.max.z - 1.0f));
+				if (maxTX < minTX || maxTZ < minTZ)
+				{
+					minTX = maxTX = static_cast<int>(std::floor(obj->m_Pos.x));
+					minTZ = maxTZ = static_cast<int>(std::floor(obj->m_Pos.z));
+				}
+				for (int tz = minTZ; tz <= maxTZ && !sameBuilding; ++tz)
+				{
+					for (int tx = minTX; tx <= maxTX; ++tx)
+					{
+						if (GetRoofGroupAt(tx, tz) == activeGroup)
+						{
+							sameBuilding = true;
+							break;
+						}
+					}
+				}
+				obj->m_Visible = !sameBuilding;
+			}
+
+			(void)chunkHasActiveGroup;
+		}
+	}
+}
+
 void PathfindingSystem::PopulateChunkPathfindingGrid()
 {
 	const int CHUNKS = 192;
@@ -2180,10 +2649,6 @@ void PathfindingSystem::PopulateChunkPathfindingGrid()
 		for (int cz = 0; cz < CHUNKS; ++cz)
 		{
 			ChunkInfo& info = m_chunkInfoMap[cx][cz];
-
-			// Reset roof info (we don't currently infer roof groups here)
-			info.hasRoof = false;
-			info.roofGroupID = -1;
 
 			// Fill per-tile walkable flags for this chunk (16x16)
 			int baseX = cx * 16;
@@ -2256,4 +2721,7 @@ void PathfindingSystem::PopulateChunkPathfindingGrid()
 			}
 		}
 	}
+
+	// Roof groups, types, and interior tiles (needs world objects present).
+	BuildChunkBuildingData();
 }
