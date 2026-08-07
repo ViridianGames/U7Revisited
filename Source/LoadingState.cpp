@@ -339,10 +339,13 @@ void LoadingState::UpdateLoading()
 
 		if (!m_loadingRoofs)
 		{
-			AddConsoleString(std::string("Loading Roofs..."));
-			DebugPrint(std::string("Loading Roofs..."));
+			// Flat roof tiles only for now. Morph/GLB roofs (roofload.csv, roof_*.glb,
+			// baked Images/roof composites) are disabled — they UV-skewed iso art and
+			// hid the underlying tiles. We'll fix z-fighting/gaps/clipping on flats first.
+			AddConsoleString(std::string("Loading Roofs (flat tiles only)..."));
+			DebugPrint(std::string("Loading Roofs (flat tiles only; 3D morph roofs disabled)..."));
 			LoadRoofImages("Data/roofimages.csv");
-			LoadRoofMorphs("Data/roofload.csv");
+			// LoadRoofMorphs("Data/roofload.csv"); // disabled: hide+morphroof 3D path
 			m_loadingRoofs = true;
 			return;
 		}
@@ -704,7 +707,8 @@ void LoadingState::LoadRoofImages(const std::string& filename)
 			{
 				if (objtype == "roof")
 				{
-					BakeImageRoof(objId, offsetx, float(offsety), tilesizex, tilesizez, bordersize, tilecountx, tilecountz);
+					// Disabled with morph roofs — composites of iso tiles for GLB UVs.
+					continue;
 				}
 				else if (objtype == "shapeframes")
 				{

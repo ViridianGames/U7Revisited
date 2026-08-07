@@ -18,14 +18,16 @@
 // Forward declarations
 class U7Object;
 
-// Material family for gabled roof typing (from roof shape IDs).
+// Material family for roof typing (from roof shape IDs).
+// Shapes 161/162 have empty TEXT.FLX names but are thatch in-game (not clay tile).
 enum class RoofMaterial : int
 {
 	None = 0,
 	Wood = 1,
 	Slate = 2,
-	Tile = 3,
-	Other = 4
+	Tile = 3,    // clay / red tile (156, 908, 966, …)
+	Thatch = 4,  // shapes 161, 162 (unnamed in TEXT.FLX)
+	Other = 5    // greenhouse, broken, wagon, …
 };
 
 struct ChunkInfo

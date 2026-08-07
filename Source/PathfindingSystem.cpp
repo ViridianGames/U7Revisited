@@ -2170,8 +2170,10 @@ bool PathfindingSystem::IsRoofShape(int shapeId)
 {
 	switch (shapeId)
 	{
-	// Tile roofs
-	case 156: case 161: case 162: case 908: case 966:
+	// Clay / red tile roofs
+	case 156: case 908: case 966:
+	// Thatch (TEXT.FLX has no names for these — still roofs)
+	case 161: case 162:
 	// Slate roofs
 	case 164: case 165: case 166: case 167: case 169: case 962: case 963:
 	// Wood roofs
@@ -2192,8 +2194,11 @@ RoofMaterial PathfindingSystem::GetRoofMaterial(int shapeId)
 		return RoofMaterial::Wood;
 	case 164: case 165: case 166: case 167: case 169: case 962: case 963:
 		return RoofMaterial::Slate;
-	case 156: case 161: case 162: case 908: case 966:
+	case 156: case 908: case 966:
 		return RoofMaterial::Tile;
+	// Unnamed in TEXT.FLX; in-game thatch (cottage west of Trinsic, etc.)
+	case 161: case 162:
+		return RoofMaterial::Thatch;
 	case 223: case 853: case 954: case 979:
 		return RoofMaterial::Other;
 	default:

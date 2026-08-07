@@ -1847,18 +1847,17 @@ void MainState::Draw()
 			}
 		}
 
-		//  Flats require disabling the depth mask to draw correctly.
-		//rlDisableDepthMask();
+		// Flats: slight polygon offset reduces coplanar z-fighting between neighboring tiles.
+		// (No solid underlays — those showed as solid bars on the empty +1 hotspot pixel edge.)
 		glEnable(GL_POLYGON_OFFSET_FILL);
 		glPolygonOffset(-1.0f, -1.0f);
-		for (auto& object: flats)
+		for (auto& object : flats)
 		{
 			object.Draw();
 		}
 		glDisable(GL_POLYGON_OFFSET_FILL);
-		//rlEnableDepthMask();
-		
-		//  Meshes after every thing else
+
+		// Legacy morph / custom meshes after everything else (empty with morph roofs off).
 		BeginShaderMode(g_alphaDiscard);
 		for (auto& object : meshes)
 		{

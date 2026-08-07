@@ -156,10 +156,12 @@ Vector3 ShapeData::GetFlatModelPosition(const Vector3& objectPos) const
 	}
 
 	// Hotspot-stable upper-left: same xleft/yabove => same texture top-left in world XZ.
-	// Calibrated so common flats (xright=ybelow=0) match the legacy (-dims.x+1, +1) placement.
+	// Anchor matches the legacy flat offset of +1 tile (no extra 1-pixel world nudge).
+	// Frame canvas size is still W1+W2+1 / H1+H2+1 from SHAPES.VGA (standard U7); that +1
+	// is the hotspot pixel itself, not an extra drawn column we should shift in world space.
 	constexpr float kPx = 1.0f / 8.0f;
-	const float hotWorldX = objectPos.x + m_TweakPos.x + (1.0f - kPx);
-	const float hotWorldZ = objectPos.z + m_TweakPos.z + (1.0f - kPx);
+	const float hotWorldX = objectPos.x + m_TweakPos.x + 1.0f;
+	const float hotWorldZ = objectPos.z + m_TweakPos.z + 1.0f;
 	const float topLeftX = hotWorldX - static_cast<float>(m_xleft) * kPx;
 	const float topLeftZ = hotWorldZ - static_cast<float>(m_yabove) * kPx;
 
