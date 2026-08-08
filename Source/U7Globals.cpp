@@ -1435,36 +1435,68 @@ void BakeImageRoof(int objId, int xOfs, float y, int tileSizeX, int tileSizeY, i
 
 void UpdateObjectChunk(U7Object* object, Vector3 fromPos)
 {
-	Vector2 fromChunkPos = Vector2{ floor(fromPos.x / 16), floor(fromPos.z / 16) };
+	if (object == nullptr)
+		return;
 
-	if (object->GetChunkPos().x == fromChunkPos.x && object->GetChunkPos().y == fromChunkPos.y)
+	Vector2 fromChunkPos = Vector2{ floor(fromPos.x / 16), floor(fromPos.z / 16) };
+	Vector2 toChunkPos = object->GetChunkPos();
+
+	const int fromX = static_cast<int>(fromChunkPos.x);
+	const int fromY = static_cast<int>(fromChunkPos.y);
+	const int toX = static_cast<int>(toChunkPos.x);
+	const int toY = static_cast<int>(toChunkPos.y);
+
+	auto inBounds = [](int x, int y) { return x >= 0 && x < 192 && y >= 0 && y < 192; };
+
+	if (toX == fromX && toY == fromY)
 	{
-		// Object hasn't moved chunk
+		// Same chunk: still ensure we are registered (e.g. after a full map clear + SetPos).
+		if (inBounds(toX, toY))
+		{
+			auto& chunk = g_chunkObjectMap[toX][toY];
+			if (std::find(chunk.begin(), chunk.end(), object) == chunk.end())
+				chunk.push_back(object);
+		}
 		return;
 	}
 
-	auto& fromChunk = g_chunkObjectMap[int(fromChunkPos.x)][int(fromChunkPos.y)];
-	auto fromChunknode = std::find(fromChunk.begin(), fromChunk.end(), object);
-	if (fromChunknode != fromChunk.end()) {
-		fromChunk.erase(fromChunknode);
+	if (inBounds(fromX, fromY))
+	{
+		auto& fromChunk = g_chunkObjectMap[fromX][fromY];
+		auto fromChunknode = std::find(fromChunk.begin(), fromChunk.end(), object);
+		if (fromChunknode != fromChunk.end())
+			fromChunk.erase(fromChunknode);
 	}
 
-	auto& toChunk = g_chunkObjectMap[int(object->GetChunkPos().x)][int(object->GetChunkPos().y)];
-	toChunk.push_back(object);
+	if (inBounds(toX, toY))
+	{
+		auto& toChunk = g_chunkObjectMap[toX][toY];
+		toChunk.push_back(object);
+	}
 }
 
 void AssignObjectChunk(U7Object* object)
 {
+	if (object == nullptr)
+		return;
+
 	int i = static_cast<int>(object->m_Pos.x / 16);
 	int j = static_cast<int>(object->m_Pos.z / 16);
+	if (i < 0 || i >= 192 || j < 0 || j >= 192)
+		return;
 
 	g_chunkObjectMap[i][j].push_back(object);
 }
 
 void UnassignObjectChunk(U7Object* object)
 {
+	if (object == nullptr)
+		return;
+
 	int i = static_cast<int>(object->m_Pos.x / 16);
 	int j = static_cast<int>(object->m_Pos.z / 16);
+	if (i < 0 || i >= 192 || j < 0 || j >= 192)
+		return;
 
 	auto fromChunkPos = std::find(g_chunkObjectMap[i][j].begin(), g_chunkObjectMap[i][j].end(), object);
 	if (fromChunkPos != g_chunkObjectMap[i][j].end())

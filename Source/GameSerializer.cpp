@@ -8,6 +8,9 @@
 #include <filesystem>
 #include <sstream>
 #include <iomanip>
+#include <unordered_map>
+#include <vector>
+#include <memory>
 
 using u7json = nlohmann::json;
 namespace fs = std::filesystem;
@@ -231,37 +234,61 @@ bool GameSerializer::SaveGame(int slotNumber, const std::string& saveName)
 			fs::create_directories(saveDir);
 		}
 
-		// Delete any existing save file for this slot
-		std::string existingFile = GetSaveFilePath(slotNumber);
-		if (!existingFile.empty() && fs::exists(existingFile))
-		{
-			fs::remove(existingFile);
-		}
-
-		// Build new save file path
+		// Atomic save: write to temp, then rename over the slot (crash-safe).
 		std::string filePath = BuildSaveFilePath(slotNumber, saveName);
+		std::string tempPath = filePath + ".tmp";
 
-		// Open file for writing
-		std::ofstream file(filePath);
-		if (!file.is_open())
 		{
-			SetError("Cannot write to save folder - check permissions");
-			return false;
-		}
-
-		// Write save data
-		if (!SaveToStream(file, saveName))
-		{
-			file.close();
-			// Try to clean up failed save file
-			if (fs::exists(filePath))
+			std::ofstream file(tempPath, std::ios::binary | std::ios::trunc);
+			if (!file.is_open())
 			{
-				fs::remove(filePath);
+				SetError("Cannot write to save folder - check permissions");
+				return false;
 			}
-			return false;
+
+			if (!SaveToStream(file, saveName))
+			{
+				file.close();
+				std::error_code ec;
+				fs::remove(tempPath, ec);
+				return false;
+			}
+			file.flush();
+			if (!file.good())
+			{
+				file.close();
+				std::error_code ec;
+				fs::remove(tempPath, ec);
+				SetError("Failed to write complete save file");
+				return false;
+			}
+			file.close();
 		}
 
-		file.close();
+		// Remove any other file occupying this slot (different save name).
+		std::string existingFile = GetSaveFilePath(slotNumber);
+		if (!existingFile.empty() && existingFile != filePath && fs::exists(existingFile))
+		{
+			std::error_code ec;
+			fs::remove(existingFile, ec);
+		}
+
+		// Replace destination with temp (rename is atomic on same filesystem).
+		std::error_code ec;
+		fs::remove(filePath, ec); // ignore if missing
+		fs::rename(tempPath, filePath, ec);
+		if (ec)
+		{
+			// Fallback: copy then remove temp
+			fs::copy_file(tempPath, filePath, fs::copy_options::overwrite_existing, ec);
+			fs::remove(tempPath, ec);
+			if (ec)
+			{
+				SetError("Failed to finalize save file - " + ec.message());
+				return false;
+			}
+		}
+
 		Log("GameSerializer::SaveGame - Successfully saved to " + filePath);
 		return true;
 	}
@@ -344,6 +371,15 @@ bool GameSerializer::SaveToStream(std::ofstream& stream, const std::string& save
 		saveData["gameTime"]["minute"] = g_minute;
 		saveData["gameTime"]["scheduleTime"] = g_scheduleTime;
 
+		// Session / camera (optional restore for continuity)
+		saveData["session"]["combatMode"] = g_isCombatMode;
+		saveData["session"]["camera"] = {
+			{"target", { g_camera.target.x, g_camera.target.y, g_camera.target.z }},
+			{"position", { g_camera.position.x, g_camera.position.y, g_camera.position.z }},
+			{"distance", g_cameraDistance},
+			{"rotation", g_cameraRotation}
+		};
+
 		// Player state
 		if (g_Player != nullptr)
 		{
@@ -355,13 +391,13 @@ bool GameSerializer::SaveToStream(std::ofstream& stream, const std::string& save
 			return false;
 		}
 
-		// Save dynamic objects.
-		// We save OBJECT, NPC, EGG, and MONSTER types.
-		// We skip only UNIT_TYPE_STATIC (permanent world geometry).
+		// Save dynamic objects: anything that is not permanent scenery.
+		// UNIT_TYPE_STATIC = immovable + unusable scenery only (see U7Object::Init).
+		// Doors, scripted fixtures, pickups, NPCs, eggs, monsters are all saved.
 		json objectsArray = json::array();
 		for (const auto& [id, obj] : g_objectList)
 		{
-			// Skip null, dead, or static objects
+			// Skip null, dead, or static scenery
 			if (obj == nullptr || obj->GetIsDead())
 				continue;
 
@@ -379,14 +415,10 @@ bool GameSerializer::SaveToStream(std::ofstream& stream, const std::string& save
 		json flagsArray = json::array();
 		if (g_ScriptingSystem != nullptr)
 		{
-			Log("GameSerializer::SaveToStream - Saving " + std::to_string(g_ScriptingSystem->m_flags.size()) + " total flags");
 			for (const auto& [flagId, value] : g_ScriptingSystem->m_flags)
 			{
 				if (value)  // Only save flags that are set to true
-				{
 					flagsArray.push_back(flagId);
-					Log("GameSerializer::SaveToStream - Saving flag " + std::to_string(flagId) + " = true");
-				}
 			}
 		}
 		else
@@ -394,7 +426,7 @@ bool GameSerializer::SaveToStream(std::ofstream& stream, const std::string& save
 			Log("GameSerializer::SaveToStream - WARNING: g_ScriptingSystem is null!");
 		}
 		saveData["flags"] = flagsArray;
-		Log("GameSerializer::SaveToStream - Saved " + std::to_string(flagsArray.size()) + " flags that are set to true");
+		Log("GameSerializer::SaveToStream - Saved " + std::to_string(flagsArray.size()) + " true flags");
 
 		//  Save NPCData structure
 
@@ -421,10 +453,9 @@ bool GameSerializer::LoadFromStream(std::ifstream& stream)
 {
 	try
 	{
-		// Parse JSON
+		// Parse and validate fully BEFORE mutating live world state.
 		json saveData = json::parse(stream);
 
-		// Validate version
 		if (!saveData.contains("version"))
 		{
 			SetError("Save file is incomplete or corrupted");
@@ -432,13 +463,105 @@ bool GameSerializer::LoadFromStream(std::ifstream& stream)
 		}
 
 		std::string version = saveData["version"];
-		if (version != "1.0.0")
+		// Accept 1.0.0 and future 1.x with optional new fields.
+		if (version != "1.0.0" && version.rfind("1.", 0) != 0)
 		{
-			SetError("Save file is from a different version of the game");
+			SetError("Save file is from a different version of the game (" + version + ")");
 			return false;
 		}
 
-		// Restore game time
+		if (!saveData.contains("objects") || !saveData["objects"].is_array())
+		{
+			SetError("Save file is missing objects data");
+			return false;
+		}
+		if (!saveData.contains("player"))
+		{
+			SetError("Save file is missing player data");
+			return false;
+		}
+		if (g_Player == nullptr)
+		{
+			SetError("Cannot load - player object is null");
+			return false;
+		}
+
+		// Stage objects off-world first so a failed create does not wipe the live game.
+		std::vector<std::unique_ptr<U7Object>> staged;
+		staged.reserve(saveData["objects"].size());
+		std::unordered_map<int, U7Object*> stagedById;
+
+		// Snapshot egg configs from the live world before wipe. Older saves only stored
+		// hasTriggered/shouldReset; monster shape and criteria came from FIXED.DAT at
+		// world load. Matching by object id restores that config for incomplete saves.
+		std::unordered_map<int, EggData> liveEggConfigById;
+		for (const auto& [id, obj] : g_objectList)
+		{
+			if (obj && obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_EGG)
+				liveEggConfigById[id] = obj->m_eggData;
+		}
+
+		for (const auto& objData : saveData["objects"])
+		{
+			U7Object* raw = U7Object::LoadFromJson(objData);
+			if (raw == nullptr)
+			{
+				SetError("Save file contains an object that failed to load");
+				return false;
+			}
+			if (stagedById.count(raw->m_ID))
+			{
+				delete raw;
+				SetError("Save file has duplicate object id " + std::to_string(raw->m_ID));
+				return false;
+			}
+
+			// Back-fill egg config when the save lacked full egg fields.
+			if (raw->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_EGG &&
+			    !objData.contains("m_monsterShape") &&
+			    !objData.contains("m_eggType"))
+			{
+				auto eggIt = liveEggConfigById.find(raw->m_ID);
+				if (eggIt != liveEggConfigById.end())
+				{
+					const bool hasTriggered = raw->m_eggData.m_hasTriggered;
+					const bool shouldReset = raw->m_eggData.m_shouldReset;
+					raw->m_eggData = eggIt->second;
+					raw->m_eggData.m_hasTriggered = hasTriggered;
+					raw->m_eggData.m_shouldReset = shouldReset;
+				}
+			}
+
+			stagedById[raw->m_ID] = raw;
+			staged.emplace_back(raw);
+		}
+
+		// ---- Commit point: mutate live world ----
+
+		// Stop scripts before destroying objects they may reference.
+		if (g_ScriptingSystem)
+			g_ScriptingSystem->ClearAllCoroutines();
+
+		// Clear dynamic objects; keep permanent static scenery.
+		auto it = g_objectList.begin();
+		while (it != g_objectList.end())
+		{
+			if (it->second == nullptr || it->second->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_STATIC)
+				it = g_objectList.erase(it);
+			else
+				++it;
+		}
+
+		// Insert staged objects
+		for (auto& up : staged)
+		{
+			int id = up->m_ID;
+			g_objectList[id] = std::move(up);
+		}
+		staged.clear();
+		stagedById.clear();
+
+		// Game time
 		if (saveData.contains("gameTime"))
 		{
 			g_hour = saveData["gameTime"].value("hour", 0);
@@ -446,174 +569,130 @@ bool GameSerializer::LoadFromStream(std::ifstream& stream)
 			g_scheduleTime = saveData["gameTime"].value("scheduleTime", 0);
 		}
 
-		// Clear dynamic objects from g_objectList before restoring from save.
-		// We keep only permanent static world objects.
-		// All other types (OBJECT, NPC, EGG, MONSTER) are restored from the save file.
-		auto it = g_objectList.begin();
-		while (it != g_objectList.end())
-		{
-			// Skip null entries
-			if (it->second == nullptr)
-			{
-				it = g_objectList.erase(it);
-				continue;
-			}
-
-			if (it->second->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_STATIC)
-			{
-				it = g_objectList.erase(it);
-			}
-			else
-			{
-				++it;
-			}
-		}
-
-		// First pass: Create all objects
-		if (!saveData.contains("objects") || !saveData["objects"].is_array())
-		{
-			SetError("Save file is missing objects data");
-			return false;
-		}
-
-		for (const auto& objData : saveData["objects"])
-		{
-			U7Object* obj = U7Object::LoadFromJson(objData);
-			if (obj != nullptr)
-			{
-				g_objectList[obj->m_ID] = std::unique_ptr<U7Object>(obj);
-			}
-		}
-
-		// Restore global state
 		if (saveData.contains("nextObjectID"))
-		{
 			g_CurrentUnitID = saveData["nextObjectID"];
-		}
 
-		// Update NPCData mapping
+		// Rewire NPCData -> object ID (map lookup, not size()).
 		for (const auto& [id, obj] : g_objectList)
 		{
-			if (obj != nullptr && obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC)
-			{
-				if (obj->m_NPCID >= 0 && obj->m_NPCID < g_NPCData.size())
-				{
-					g_NPCData[obj->m_NPCID]->m_objectID = obj->m_ID;
-				}
-			}
+			if (!obj || obj->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_NPC)
+				continue;
+			auto npcIt = g_NPCData.find(obj->m_NPCID);
+			if (npcIt != g_NPCData.end() && npcIt->second)
+				npcIt->second->m_objectID = obj->m_ID;
 		}
 
-		// Restore player state
-		// IMPORTANT: This must happen AFTER objects are loaded so g_Player can find its avatar
-		if (!saveData.contains("player"))
-		{
-			SetError("Save file is missing player data");
-			return false;
-		}
+		// Player (uses SetPos for avatar; rebuilds party names)
+		g_Player->LoadFromJson(saveData["player"]);
 
-		if (g_Player != nullptr)
-		{
-			g_Player->LoadFromJson(saveData["player"]);
-		}
-		else
-		{
-			SetError("Cannot load - player object is null");
-			return false;
-		}
-
-		// Second pass: Restore relationships (inventories, equipment, containers)
+		// Second pass: inventories + equipment (validate IDs exist)
 		for (const auto& objData : saveData["objects"])
 		{
 			int objId = objData.value("id", -1);
-			if (objId == -1 || g_objectList.find(objId) == g_objectList.end())
+			auto oit = g_objectList.find(objId);
+			if (objId == -1 || oit == g_objectList.end() || !oit->second)
 				continue;
 
-			U7Object* obj = g_objectList[objId].get();
+			U7Object* obj = oit->second.get();
 
-			// Restore inventory
 			if (objData.contains("inventoryIds") && objData["inventoryIds"].is_array())
 			{
 				obj->m_inventory.clear();
 				for (int itemId : objData["inventoryIds"])
 				{
-					obj->m_inventory.push_back(itemId);
+					if (g_objectList.find(itemId) != g_objectList.end())
+						obj->m_inventory.push_back(itemId);
+					else
+						Log("LoadFromStream: dropping missing inventory id " + std::to_string(itemId) +
+							" from container " + std::to_string(objId));
 				}
 			}
 
-			// Restore equipment for NPCs
 			if (obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC &&
 			    obj->m_NPCData != nullptr &&
 			    objData.contains("equipment"))
 			{
 				const auto& equipment = objData["equipment"];
-				if (equipment.contains("HEAD")) obj->m_NPCData->SetEquippedItem(EquipmentSlot::SLOT_HEAD, equipment["HEAD"]);
-				if (equipment.contains("NECK")) obj->m_NPCData->SetEquippedItem(EquipmentSlot::SLOT_NECK, equipment["NECK"]);
-				if (equipment.contains("TORSO")) obj->m_NPCData->SetEquippedItem(EquipmentSlot::SLOT_TORSO, equipment["TORSO"]);
-				if (equipment.contains("LEGS")) obj->m_NPCData->SetEquippedItem(EquipmentSlot::SLOT_LEGS, equipment["LEGS"]);
-				if (equipment.contains("HANDS")) obj->m_NPCData->SetEquippedItem(EquipmentSlot::SLOT_HANDS, equipment["HANDS"]);
-				if (equipment.contains("FEET")) obj->m_NPCData->SetEquippedItem(EquipmentSlot::SLOT_FEET, equipment["FEET"]);
-				if (equipment.contains("LEFT_HAND")) obj->m_NPCData->SetEquippedItem(EquipmentSlot::SLOT_LEFT_HAND, equipment["LEFT_HAND"]);
-				if (equipment.contains("RIGHT_HAND")) obj->m_NPCData->SetEquippedItem(EquipmentSlot::SLOT_RIGHT_HAND, equipment["RIGHT_HAND"]);
-				if (equipment.contains("AMMO")) obj->m_NPCData->SetEquippedItem(EquipmentSlot::SLOT_AMMO, equipment["AMMO"]);
-				if (equipment.contains("LEFT_RING")) obj->m_NPCData->SetEquippedItem(EquipmentSlot::SLOT_LEFT_RING, equipment["LEFT_RING"]);
-				if (equipment.contains("RIGHT_RING")) obj->m_NPCData->SetEquippedItem(EquipmentSlot::SLOT_RIGHT_RING, equipment["RIGHT_RING"]);
-				if (equipment.contains("BELT")) obj->m_NPCData->SetEquippedItem(EquipmentSlot::SLOT_BELT, equipment["BELT"]);
-				if (equipment.contains("BACKPACK")) obj->m_NPCData->SetEquippedItem(EquipmentSlot::SLOT_BACKPACK, equipment["BACKPACK"]);
+				auto setEq = [&](const char* key, EquipmentSlot slot)
+				{
+					if (!equipment.contains(key)) return;
+					int itemId = equipment[key].get<int>();
+					if (itemId == -1 || g_objectList.find(itemId) != g_objectList.end())
+						obj->m_NPCData->SetEquippedItem(slot, itemId);
+				};
+				setEq("HEAD", EquipmentSlot::SLOT_HEAD);
+				setEq("NECK", EquipmentSlot::SLOT_NECK);
+				setEq("TORSO", EquipmentSlot::SLOT_TORSO);
+				setEq("LEGS", EquipmentSlot::SLOT_LEGS);
+				setEq("HANDS", EquipmentSlot::SLOT_HANDS);
+				setEq("FEET", EquipmentSlot::SLOT_FEET);
+				setEq("LEFT_HAND", EquipmentSlot::SLOT_LEFT_HAND);
+				setEq("RIGHT_HAND", EquipmentSlot::SLOT_RIGHT_HAND);
+				setEq("AMMO", EquipmentSlot::SLOT_AMMO);
+				setEq("LEFT_RING", EquipmentSlot::SLOT_LEFT_RING);
+				setEq("RIGHT_RING", EquipmentSlot::SLOT_RIGHT_RING);
+				setEq("BELT", EquipmentSlot::SLOT_BELT);
+				setEq("BACKPACK", EquipmentSlot::SLOT_BACKPACK);
 			}
 		}
 
-		// Restore global state
-		if (saveData.contains("nextObjectID"))
-		{
-			g_CurrentUnitID = saveData["nextObjectID"];
-		}
-
-		// Restore global flags
+		// Flags (only trues are stored)
 		if (g_ScriptingSystem != nullptr)
 		{
-			g_ScriptingSystem->m_flags.clear();  // Clear all flags first
+			g_ScriptingSystem->m_flags.clear();
 			if (saveData.contains("flags") && saveData["flags"].is_array())
 			{
-				Log("GameSerializer::LoadFromStream - Loading " + std::to_string(saveData["flags"].size()) + " flags");
 				for (int flagId : saveData["flags"])
-				{
 					g_ScriptingSystem->m_flags[flagId] = true;
-					Log("GameSerializer::LoadFromStream - Loaded flag " + std::to_string(flagId) + " = true");
-				}
-			}
-			else
-			{
-				Log("GameSerializer::LoadFromStream - No flags found in save file");
+				Log("GameSerializer::LoadFromStream - Restored " +
+					std::to_string(saveData["flags"].size()) + " flags");
 			}
 		}
-		else
+
+		// Session / camera
+		if (saveData.contains("session"))
 		{
-			Log("GameSerializer::LoadFromStream - WARNING: g_ScriptingSystem is null!");
+			const auto& session = saveData["session"];
+			if (session.contains("combatMode"))
+				g_isCombatMode = session["combatMode"].get<bool>();
+			if (session.contains("camera"))
+			{
+				const auto& cam = session["camera"];
+				if (cam.contains("target") && cam["target"].is_array() && cam["target"].size() == 3)
+				{
+					g_camera.target.x = cam["target"][0];
+					g_camera.target.y = cam["target"][1];
+					g_camera.target.z = cam["target"][2];
+				}
+				if (cam.contains("position") && cam["position"].is_array() && cam["position"].size() == 3)
+				{
+					g_camera.position.x = cam["position"][0];
+					g_camera.position.y = cam["position"][1];
+					g_camera.position.z = cam["position"][2];
+				}
+				if (cam.contains("distance"))
+					g_cameraDistance = cam["distance"].get<float>();
+				if (cam.contains("rotation"))
+					g_cameraRotation = cam["rotation"].get<float>();
+			}
 		}
 
-		Log("GameSerializer::LoadFromStream - Loaded " + std::to_string(saveData["objects"].size()) + " objects");
-
-		// Debug: Count objects by type in g_objectList after loading
 		int staticCount = 0, objectCount = 0, npcCount = 0, totalCount = 0;
 		for (const auto& [id, obj] : g_objectList)
 		{
-			if (obj != nullptr)
-			{
-				totalCount++;
-				if (obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_STATIC)
-					staticCount++;
-				else if (obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC)
-				{
-					npcCount++;
-				}
-				else
-					objectCount++;
-			}
+			if (!obj) continue;
+			totalCount++;
+			if (obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_STATIC)
+				staticCount++;
+			else if (obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC)
+				npcCount++;
+			else
+				objectCount++;
 		}
 
-		Log("GameSerializer::LoadFromStream - g_objectList now has " + std::to_string(totalCount) +
-		    " total objects: " + std::to_string(staticCount) + " static, " +
-		    std::to_string(objectCount) + " objects, " + std::to_string(npcCount) + " NPCs");
+		Log("GameSerializer::LoadFromStream - g_objectList: " + std::to_string(totalCount) +
+		    " (" + std::to_string(staticCount) + " static, " +
+		    std::to_string(objectCount) + " objects, " + std::to_string(npcCount) + " NPCs)");
 
 		return true;
 	}

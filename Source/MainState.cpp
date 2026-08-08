@@ -2249,8 +2249,29 @@ void MainState::RebuildWorldFromLoadedData()
 {
 	Log("MainState::RebuildWorldFromLoadedData - Rebuilding world after load");
 
-	// Clear visible objects list (contains dangling pointers to deleted objects)
+	// ---- OnLoadReset: clear transient runtime state ----
 	g_sortedVisibleObjects.clear();
+	if (g_ScriptingSystem)
+		g_ScriptingSystem->ClearAllCoroutines();
+	// Drop any in-flight pathfind / schedule path queues
+	{
+		std::lock_guard<std::mutex> lk(m_scheduleMutex);
+		m_schedulePathQueue.clear();
+	}
+	// Pending NPC path flags were cleared on objects during LoadFromJson; double-clear paths.
+	for (auto& [id, obj] : g_objectList)
+	{
+		if (!obj) continue;
+		if (obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC ||
+		    obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_MONSTER)
+		{
+			obj->m_pathWaypoints.clear();
+			obj->m_currentWaypointIndex = 0;
+			obj->m_pathfindingPending = false;
+			obj->m_isMoving = false;
+			obj->SetDest(obj->m_Pos);
+		}
+	}
 
 	// Clear chunk object map (contains dangling pointers to deleted objects)
 	for (int x = 0; x < 192; x++)
@@ -2262,7 +2283,9 @@ void MainState::RebuildWorldFromLoadedData()
 	}
 
 	// Repopulate chunk object map with ALL objects (static and dynamic)
-	// BUT skip contained objects (they're in inventories, not in the world)
+	// BUT skip contained objects (they're in inventories, not in the world).
+	// SetPos refreshes bbox/center and re-registers via UpdateObjectChunk (which also
+	// ensures membership when the chunk index did not change — critical after a full clear).
 	int staticCount = 0;
 	int dynamicCount = 0;
 	int containedCount = 0;
@@ -2284,7 +2307,7 @@ void MainState::RebuildWorldFromLoadedData()
 				else
 					dynamicCount++;
 
-				AssignObjectChunk(obj.get());
+				obj->SetPos(obj->m_Pos);
 			}
 		}
 	}
@@ -2294,6 +2317,28 @@ void MainState::RebuildWorldFromLoadedData()
 	if (g_pathfindingSystem)
 	{
 		g_pathfindingSystem->BuildChunkBuildingData();
+		// Refresh walkability around avatar (doors/items may have moved vs pristine world).
+		if (g_Player && g_Player->GetAvatarObject())
+		{
+			const Vector3& p = g_Player->GetAvatarObject()->GetPos();
+			NotifyPathfindingGridUpdate((int)p.x, (int)p.z, 8);
+		}
+	}
+
+	// Camera: if session restore did not set a target, snap to avatar.
+	if (g_Player && g_Player->GetAvatarObject())
+	{
+		U7Object* avatar = g_Player->GetAvatarObject();
+		// If camera is nowhere near the avatar, re-home (missing session camera data).
+		float dx = g_camera.target.x - avatar->m_Pos.x;
+		float dz = g_camera.target.z - avatar->m_Pos.z;
+		if ((dx * dx + dz * dz) > (64.0f * 64.0f))
+		{
+			g_camera.target = avatar->m_Pos;
+			Vector3 camPos = { g_cameraDistance, g_cameraDistance, g_cameraDistance };
+			camPos = Vector3RotateByAxisAngle(camPos, Vector3{ 0, 1, 0 }, g_cameraRotation);
+			g_camera.position = Vector3Add(g_camera.target, camPos);
+		}
 	}
 
 	// Force immediate update of visible objects after loading
@@ -2301,7 +2346,6 @@ void MainState::RebuildWorldFromLoadedData()
 	UpdateSortedVisibleObjects();
 	Log("MainState::RebuildWorldFromLoadedData - UpdateSortedVisibleObjects returned, g_sortedVisibleObjects.size() = " + std::to_string(g_sortedVisibleObjects.size()));
 
-	// Debug: Verify objects are still in g_objectList after rebuild
 	int finalStatic = 0, finalObjects = 0, finalNpcs = 0, finalTotal = 0;
 	for (const auto& [id, obj] : g_objectList)
 	{

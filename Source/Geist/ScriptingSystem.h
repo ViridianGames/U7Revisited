@@ -38,6 +38,8 @@ public:
     bool IsCoroutineYielded(const std::string& func_name) const;
     std::string ResumeCoroutine(const std::string& func_name, const std::vector<LuaArg>& args);
     void CleanupCoroutine(const std::string& func_name);
+    /// Stop all active coroutines and clear waiters/timers (call on load).
+    void ClearAllCoroutines();
 
     void AddScript(const std::string& func_name, const std::vector<LuaArg>& args );
     void SetBlockingScript(const std::string& func_name);

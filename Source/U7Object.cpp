@@ -80,8 +80,18 @@ void U7Object::Init(const string& configfile, int unitType, int frame)
 	m_actCooldown = 0.125f;
 	m_distanceFromCamera = 999999;
 	m_target = 0;
-  
-	if (!g_isObjectMoveable[unitType])
+
+	// STATIC = permanent scenery only: immovable, unusable, and not otherwise special.
+	// g_isObjectMoveable means "can pick up / drag" — doors and other fixtures are
+	// not moveable but ARE usable, so they must be UNIT_TYPE_OBJECT (saved, frame
+	// state, scripts). Otherwise open doors revert on load.
+	const bool canPickUp = (unitType >= 0 && unitType < 1024 && g_isObjectMoveable[unitType] != 0);
+	const bool isDoor = (m_objectData != nullptr && m_objectData->m_isDoor);
+	const bool hasUseScript = (m_shapeData != nullptr
+		&& !m_shapeData->m_luaScript.empty()
+		&& m_shapeData->m_luaScript != "default");
+
+	if (!canPickUp && !isDoor && !hasUseScript)
 	{
 		m_UnitType = U7Object::UnitTypes::UNIT_TYPE_STATIC;
 	}
@@ -2381,13 +2391,36 @@ json U7Object::SaveToJson() const
 		j["equipment"] = equipment;
 	}
 
-	// Egg runtime state (e.g. hasTriggered for onceOnly/CachedIn re-arm semantics). Use m_ keys per naming convention.
+	// Full egg config + runtime state. Eggs are wiped and recreated on load (not re-parsed
+	// from FIXED.DAT), so monster shape / criteria / etc. must live in the save.
 	if (m_UnitType == UnitTypes::UNIT_TYPE_EGG)
 	{
-		j["m_hasTriggered"] = m_eggData.m_hasTriggered;
-		j["m_shouldReset"] = m_eggData.m_shouldReset;
-		// Config like m_type/m_monsterShape are re-established from world data on full loads;
-		// persisting minimal mutable state here keeps once-only and re-arm correct across saves.
+		const EggData& e = m_eggData;
+		j["m_eggType"] = static_cast<int>(e.m_type);
+		j["m_eggCriteria"] = static_cast<int>(e.m_criteria);
+		j["m_eggDistance"] = e.m_distance;
+		j["m_eggProbability"] = e.m_probability;
+		j["m_hasTriggered"] = e.m_hasTriggered;
+		j["m_onceOnly"] = e.m_onceOnly;
+		j["m_nocturnal"] = e.m_nocturnal;
+		j["m_autoReset"] = e.m_autoReset;
+		j["m_shouldReset"] = e.m_shouldReset;
+		j["m_specificValue"] = e.m_specificValue;
+		if (!e.m_audioFile.empty())
+			j["m_audioFile"] = e.m_audioFile;
+		if (e.m_usecodeFunc != 0)
+			j["m_usecodeFunc"] = e.m_usecodeFunc;
+		j["m_monsterShape"] = e.m_monsterShape;
+		j["m_monsterFrame"] = e.m_monsterFrame;
+		j["m_spawnCount"] = e.m_spawnCount;
+		j["m_spawnChance"] = e.m_spawnChance;
+		j["m_monsterAlignment"] = e.m_monsterAlignment;
+		j["m_monsterWorkType"] = e.m_monsterWorkType;
+		j["m_monsterTypeIndex"] = e.m_monsterTypeIndex;
+		if (e.m_teleportDest.x != 0.0f || e.m_teleportDest.y != 0.0f || e.m_teleportDest.z != 0.0f)
+			j["m_teleportDest"] = { e.m_teleportDest.x, e.m_teleportDest.y, e.m_teleportDest.z };
+		if (e.m_destMap != 0)
+			j["m_destMap"] = e.m_destMap;
 	}
 
 	return j;
@@ -2457,8 +2490,46 @@ U7Object* U7Object::LoadFromJson(const json& j)
 	if (j.contains("shouldBeSorted"))
 		obj->m_shouldBeSorted = j["shouldBeSorted"];
 
-	// Creature combat stats (NPCs and Monsters)
-	if (obj->m_UnitType == UnitTypes::UNIT_TYPE_NPC || obj->m_UnitType == UnitTypes::UNIT_TYPE_MONSTER)
+	// Full NPC-specific fields: NPCInit first (sets defaults from NPCData), then apply
+	// saved runtime stats so HP/combat/magic survive load.
+	if (obj->m_UnitType == UnitTypes::UNIT_TYPE_NPC)
+	{
+		obj->m_NPCID = j.value("npcID", 0);
+		obj->m_currentFrameX = j.value("currentFrameX", 0);
+		obj->m_currentFrameY = j.value("currentFrameY", 0);
+
+		obj->m_hasConversationTree = j.value("hasConversationTree", false);
+		obj->m_isMoving = j.value("isMoving", false);
+		obj->m_followingSchedule = j.value("followingSchedule", false);
+		obj->m_lastSchedule = j.value("lastSchedule", -1);
+		obj->m_npcBatchIndex = j.value("npcBatchIndex", -1);
+
+		// Clear any mid-path state; stay at saved position until schedule system runs.
+		obj->m_pathWaypoints.clear();
+		obj->m_currentWaypointIndex = 0;
+		obj->m_pathfindingPending = false;
+		obj->SetDest(obj->m_Pos);
+
+		auto npcIt = g_NPCData.find(obj->m_NPCID);
+		if (npcIt != g_NPCData.end() && npcIt->second)
+		{
+			obj->m_NPCData = npcIt->second.get();
+			obj->m_isContainer = true;
+			obj->NPCInit(obj->m_NPCData);
+		}
+		else
+		{
+			Log("LoadFromJson: WARNING - no NPCData for npcID " + std::to_string(obj->m_NPCID));
+		}
+
+		// Apply saved combat stats AFTER NPCInit (which sets template HP).
+		obj->m_hp = j.value("hp", obj->m_hp);
+		obj->m_combat = j.value("combat", obj->m_combat);
+		obj->m_magic = j.value("magic", obj->m_magic);
+		obj->m_Team = j.value("team", obj->m_Team);
+		// Equipment restored in second pass by GameSerializer
+	}
+	else if (obj->m_UnitType == UnitTypes::UNIT_TYPE_MONSTER)
 	{
 		obj->m_hp = j.value("hp", 25.0f);
 		obj->m_combat = j.value("combat", 10.0f);
@@ -2466,58 +2537,75 @@ U7Object* U7Object::LoadFromJson(const json& j)
 		obj->m_Team = j.value("team", 0);
 	}
 
-	if (obj->m_UnitType == UnitTypes::UNIT_TYPE_MONSTER)
+	if (obj->m_UnitType == UnitTypes::UNIT_TYPE_EGG ||
+	    (obj->m_shapeData && obj->m_shapeData->m_shape == 275))
 	{
-		// Nothing extra needed — m_UnitType is already set
-	}
-
-	// Full NPC-specific fields
-	if (obj->m_UnitType == UnitTypes::UNIT_TYPE_NPC)
-	{
-		obj->m_NPCID = j.value("npcID", 0);
-		obj->m_currentFrameX = j.value("currentFrameX", 0);
-		obj->m_currentFrameY = j.value("currentFrameY", 0);
-
-		// Restore conversation tree flag
-		obj->m_hasConversationTree = j.value("hasConversationTree", false);
-
-		// Restore movement state (defaults to false)
-		obj->m_isMoving = j.value("isMoving", false);
-
-		// Restore schedule state
-		obj->m_followingSchedule = j.value("followingSchedule", false);
-		obj->m_lastSchedule = j.value("lastSchedule", -1);
-		// Restore persisted batch index (optional)
-		obj->m_npcBatchIndex = j.value("npcBatchIndex", -1);
-		// DON'T restore destination - set it to current position so NPC doesn't walk back
-		// If NPC was moved by player in sandbox mode, we want them to stay at their saved position
-		// If they need to move for a schedule, the schedule system will set a new destination
-		obj->SetDest(obj->m_Pos);
-
-		// Get NPCData (should already be loaded from original data files)
-		if (obj->m_NPCID >= 0 && obj->m_NPCID < g_NPCData.size())
-		{
-			obj->m_NPCData = g_NPCData[obj->m_NPCID].get();
-			obj->m_isContainer = true;
-		}
-
-		obj->NPCInit(obj->m_NPCData);
-
-		// Equipment slots will be restored in second pass by GameSerializer
-	}
-
-	if (obj->m_UnitType == UnitTypes::UNIT_TYPE_EGG || obj->m_shapeData->m_shape == 275)
-	{
+		obj->m_UnitType = UnitTypes::UNIT_TYPE_EGG;
 		obj->m_Visible = true;  // TEMP: make eggs visible for debugging
 	}
 
-	// Restore egg runtime state (m_ names per naming convention)
+	// Restore full egg config + runtime state (see SaveToJson).
 	if (obj->m_UnitType == UnitTypes::UNIT_TYPE_EGG)
 	{
+		EggData& e = obj->m_eggData;
+
+		// Prefer explicit saved config. Fall back to frame-as-type for older saves
+		// that only stored hasTriggered/shouldReset (those loads still lose monster shape).
+		if (j.contains("m_eggType"))
+			e.m_type = static_cast<EggType>(j["m_eggType"].get<int>());
+		else
+			e.m_type = static_cast<EggType>(obj->m_Frame);
+
+		if (j.contains("m_eggCriteria"))
+			e.m_criteria = static_cast<EggCriteria>(j["m_eggCriteria"].get<int>());
+		if (j.contains("m_eggDistance"))
+			e.m_distance = static_cast<uint8_t>(j["m_eggDistance"].get<int>());
+		if (j.contains("m_eggProbability"))
+			e.m_probability = static_cast<uint8_t>(j["m_eggProbability"].get<int>());
+
 		if (j.contains("m_hasTriggered"))
-			obj->m_eggData.m_hasTriggered = j["m_hasTriggered"].get<bool>();
+			e.m_hasTriggered = j["m_hasTriggered"].get<bool>();
 		if (j.contains("m_shouldReset"))
-			obj->m_eggData.m_shouldReset = j["m_shouldReset"].get<bool>();
+			e.m_shouldReset = j["m_shouldReset"].get<bool>();
+		if (j.contains("m_onceOnly"))
+			e.m_onceOnly = j["m_onceOnly"].get<bool>();
+		if (j.contains("m_nocturnal"))
+			e.m_nocturnal = j["m_nocturnal"].get<bool>();
+		if (j.contains("m_autoReset"))
+			e.m_autoReset = j["m_autoReset"].get<bool>();
+
+		if (j.contains("m_specificValue"))
+			e.m_specificValue = static_cast<uint8_t>(j["m_specificValue"].get<int>());
+		if (j.contains("m_audioFile") && j["m_audioFile"].is_string())
+			e.m_audioFile = j["m_audioFile"].get<std::string>();
+		if (j.contains("m_usecodeFunc"))
+			e.m_usecodeFunc = j["m_usecodeFunc"].get<int>();
+
+		if (j.contains("m_monsterShape"))
+			e.m_monsterShape = j["m_monsterShape"].get<int>();
+		if (j.contains("m_monsterFrame"))
+			e.m_monsterFrame = j["m_monsterFrame"].get<int>();
+		if (j.contains("m_spawnCount"))
+			e.m_spawnCount = j["m_spawnCount"].get<int>();
+		if (j.contains("m_spawnChance"))
+			e.m_spawnChance = j["m_spawnChance"].get<float>();
+		if (j.contains("m_monsterAlignment"))
+			e.m_monsterAlignment = static_cast<uint8_t>(j["m_monsterAlignment"].get<int>());
+		if (j.contains("m_monsterWorkType"))
+			e.m_monsterWorkType = static_cast<uint8_t>(j["m_monsterWorkType"].get<int>());
+		if (j.contains("m_monsterTypeIndex"))
+			e.m_monsterTypeIndex = j["m_monsterTypeIndex"].get<int>();
+
+		if (j.contains("m_teleportDest") && j["m_teleportDest"].is_array() && j["m_teleportDest"].size() == 3)
+		{
+			e.m_teleportDest = {
+				j["m_teleportDest"][0].get<float>(),
+				j["m_teleportDest"][1].get<float>(),
+				j["m_teleportDest"][2].get<float>()
+			};
+		}
+		if (j.contains("m_destMap"))
+			e.m_destMap = j["m_destMap"].get<int>();
 	}
 
 	return obj;

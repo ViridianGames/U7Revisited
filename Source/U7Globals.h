@@ -276,7 +276,9 @@ extern std::array<ObjectData, 1024> g_objectDataTable;
 extern std::unordered_map<int, std::unique_ptr<NPCData> > g_NPCData;
 extern std::vector<MonsterData> g_monsterData;   // Base stats for all 65 monster types (STATIC/MONSTERS.DAT, documented format)
 
-extern std::array<int, 1024> g_isObjectMoveable;        // Maps item shape ID to valid equipment slots
+// Per-shape "can pick up / drag into inventory" (not the same as UnitType).
+// Doors and other fixtures are often 0 here but still UNIT_TYPE_OBJECT if usable.
+extern std::array<int, 1024> g_isObjectMoveable;
 
 extern std::unique_ptr<PathfindingSystem> g_pathfindingSystem;
 

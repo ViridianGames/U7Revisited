@@ -225,7 +225,7 @@ struct EggData
 	float m_spawnChance = 1.0f;
 	uint8_t m_monsterAlignment = 0;  // 0=neutral, 1=good, 2=evil, 3=chaotic (from mode bits 0-1)
 	uint8_t m_monsterWorkType = 0;   // workType / schedule hint (0 often combat for spawners)
-	int m_monsterTypeIndex = 0;      // 0-64 index into g_monsterData for stats (when egg provides it)
+	int m_monsterTypeIndex = -1;     // 0-64 index into g_monsterData for stats; -1 = unset
 
 	// Teleport extras
 	Vector3 m_teleportDest = {0, 0, 0};

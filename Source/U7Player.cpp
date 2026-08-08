@@ -1,7 +1,8 @@
 #include "U7Globals.h"
 #include "U7Player.h"
-#include "Geist/StateMachine.h"  
-#include "MainState.h"           
+#include "Geist/StateMachine.h"
+#include "Geist/Logging.h"
+#include "MainState.h"
 #include "PathfindingSystem.h"
 #include "U7Object.h"
 
@@ -173,28 +174,60 @@ void U7Player::LoadFromJson(const json& j)
 		m_PartyMemberIDs = j["partyMemberIDs"].get<std::vector<int>>();
 	}
 
-	g_NPCData[0]->m_objectID = j.value("avatarObject", 0);
-	if (g_objectList.find(g_NPCData[0]->m_objectID) != g_objectList.end())
+	// Rebuild display names from IDs (names were not always saved).
+	m_PartyMemberNames.clear();
+	for (int npcId : m_PartyMemberIDs)
 	{
-		m_AvatarObject = g_objectList[g_NPCData[0]->m_objectID].get();
+		auto it = g_NPCData.find(npcId);
+		if (it != g_NPCData.end() && it->second)
+			m_PartyMemberNames.push_back(it->second->name);
+		else if (npcId == 0)
+			m_PartyMemberNames.push_back(m_PlayerName.empty() ? "Avatar" : m_PlayerName);
+		else
+			m_PartyMemberNames.push_back("Unknown");
+	}
+	if (m_PartyMemberNames.empty())
+	{
+		m_PartyMemberNames.push_back(m_PlayerName.empty() ? "Avatar" : m_PlayerName);
+		if (m_PartyMemberIDs.empty())
+			m_PartyMemberIDs.push_back(0);
+	}
+
+	const int avatarObjId = j.value("avatarObject", 0);
+	auto avNpc = g_NPCData.find(0);
+	if (avNpc != g_NPCData.end() && avNpc->second)
+		avNpc->second->m_objectID = avatarObjId;
+
+	if (g_objectList.find(avatarObjId) != g_objectList.end())
+	{
+		m_AvatarObject = g_objectList[avatarObjId].get();
+	}
+	else
+	{
+		m_AvatarObject = nullptr;
+		Log("U7Player::LoadFromJson - WARNING: avatar object id " + std::to_string(avatarObjId) + " not in object list");
 	}
 
 	if (m_AvatarObject)
 	{
 		if (m_isMale)
-		{
 			SetAvatarMale();
-		}
 		else
-		{
 			SetAvatarFemale();
-		}
 
+		// Prefer position already restored on the object via objects[] + SetPos.
+		// Player JSON may override if present (use SetPos so bbox/chunk stay valid).
 		if (j.contains("position") && j["position"].is_array() && j["position"].size() == 3)
 		{
-			m_AvatarObject->m_Pos.x = j["position"][0];
-			m_AvatarObject->m_Pos.y = j["position"][1];
-			m_AvatarObject->m_Pos.z = j["position"][2];
+			Vector3 pos = {
+				j["position"][0].get<float>(),
+				j["position"][1].get<float>(),
+				j["position"][2].get<float>()
+			};
+			m_AvatarObject->SetPos(pos);
+			m_AvatarObject->SetDest(pos);
+			m_AvatarObject->m_isMoving = false;
+			m_AvatarObject->m_pathWaypoints.clear();
 		}
 
 		if (j.contains("direction") && j["direction"].is_array() && j["direction"].size() == 3)
@@ -204,7 +237,6 @@ void U7Player::LoadFromJson(const json& j)
 			m_AvatarObject->m_Direction.z = j["direction"][2];
 		}
 	}
-
 }
 
 bool U7Player::IsWearingFellowshipMedallion()

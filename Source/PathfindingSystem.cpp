@@ -2307,14 +2307,18 @@ void PathfindingSystem::BuildChunkBuildingData()
 		// Use logical TFA width/depth, NOT the FLAT draw bounding box.
 		// Iso roof sprites are large diamonds: SetPos builds bbox from texture size
 		// with origin at bottom-right of the art, so the box extends several tiles
-		// west/north of m_Pos. That marked outdoor tiles along left/top walls as
-		// "under roof" and popped roofs when hugging the building from outside.
+		// west/north of m_Pos and over-pops when hugging exterior walls.
+		//
+		// U7 object coords are the SE (max X / max Z) corner of the footprint; size
+		// extends west/north. Same convention as door cost footprints above.
+		// Painting +X/+Z from m_Pos was one tile (or more) past the true south/east
+		// edge and caused false pop-off when standing just outside bottom/right.
 		const int width = std::max(1, static_cast<int>(obj->m_objectData->m_width));
 		const int depth = std::max(1, static_cast<int>(obj->m_objectData->m_depth));
-		const int minTileX = static_cast<int>(std::floor(obj->m_Pos.x));
-		const int minTileZ = static_cast<int>(std::floor(obj->m_Pos.z));
-		const int maxTileX = minTileX + width - 1;
-		const int maxTileZ = minTileZ + depth - 1;
+		const int maxTileX = static_cast<int>(std::floor(obj->m_Pos.x));
+		const int maxTileZ = static_cast<int>(std::floor(obj->m_Pos.z));
+		const int minTileX = maxTileX - width + 1;
+		const int minTileZ = maxTileZ - depth + 1;
 
 		for (int wz = minTileZ; wz <= maxTileZ; ++wz)
 		{
@@ -2602,18 +2606,16 @@ void PathfindingSystem::UpdateBuildingRoofVisibility(float avatarWorldX, float a
 					continue;
 				}
 
-				// Hide only if this roof piece's footprint overlaps the active building group.
+				// Hide only if this roof piece's logical TFA footprint (SE-origin)
+				// overlaps the active building group — same region used when building
+				// roofGroupTile. Do not use the iso draw bbox (oversize diamond).
 				bool sameBuilding = false;
-				const BoundingBox& bbox = obj->m_boundingBox;
-				int minTX = static_cast<int>(std::floor(bbox.min.x));
-				int maxTX = static_cast<int>(std::floor(bbox.max.x - 1.0f));
-				int minTZ = static_cast<int>(std::floor(bbox.min.z));
-				int maxTZ = static_cast<int>(std::floor(bbox.max.z - 1.0f));
-				if (maxTX < minTX || maxTZ < minTZ)
-				{
-					minTX = maxTX = static_cast<int>(std::floor(obj->m_Pos.x));
-					minTZ = maxTZ = static_cast<int>(std::floor(obj->m_Pos.z));
-				}
+				const int width = std::max(1, static_cast<int>(obj->m_objectData->m_width));
+				const int depth = std::max(1, static_cast<int>(obj->m_objectData->m_depth));
+				const int maxTX = static_cast<int>(std::floor(obj->m_Pos.x));
+				const int maxTZ = static_cast<int>(std::floor(obj->m_Pos.z));
+				const int minTX = maxTX - width + 1;
+				const int minTZ = maxTZ - depth + 1;
 				for (int tz = minTZ; tz <= maxTZ && !sameBuilding; ++tz)
 				{
 					for (int tx = minTX; tx <= maxTX; ++tx)
