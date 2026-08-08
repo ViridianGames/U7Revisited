@@ -1850,10 +1850,11 @@ std::vector<Vector3> AStar::ReconstructPath(int goalIndex, PathfindingGrid* grid
 		if (currentIndex < 0 || currentIndex >= (int)nodePool.size()) break;
 		PathNode& current = nodePool[currentIndex];
 
+		// Tile centers so NPC m_Pos matches draw position (no +0.5 billboard offset).
 		Vector3 waypoint;
-		waypoint.x = (float)current.x;
+		waypoint.x = (float)current.x + 0.5f;
 		waypoint.y = current.y;
-		waypoint.z = (float)current.z;
+		waypoint.z = (float)current.z + 0.5f;
 
 		path.push_back(waypoint);
 		currentIndex = current.parent;
@@ -2303,22 +2304,17 @@ void PathfindingSystem::BuildChunkBuildingData()
 		const RoofMaterial mat = GetRoofMaterial(shape);
 		const uint8_t matByte = static_cast<uint8_t>(mat);
 
-		// Same tile footprint as SetPos / pathfinding for FLAT/CUBOID.
-		const BoundingBox& bbox = obj->m_boundingBox;
-		int minTileX = static_cast<int>(std::floor(bbox.min.x));
-		int maxTileX = static_cast<int>(std::floor(bbox.max.x - 1.0f));
-		int minTileZ = static_cast<int>(std::floor(bbox.min.z));
-		int maxTileZ = static_cast<int>(std::floor(bbox.max.z - 1.0f));
-
-		if (maxTileX < minTileX || maxTileZ < minTileZ)
-		{
-			const int width = std::max(1, static_cast<int>(obj->m_objectData->m_width));
-			const int depth = std::max(1, static_cast<int>(obj->m_objectData->m_depth));
-			minTileX = static_cast<int>(std::floor(obj->m_Pos.x));
-			minTileZ = static_cast<int>(std::floor(obj->m_Pos.z));
-			maxTileX = minTileX + width - 1;
-			maxTileZ = minTileZ + depth - 1;
-		}
+		// Use logical TFA width/depth, NOT the FLAT draw bounding box.
+		// Iso roof sprites are large diamonds: SetPos builds bbox from texture size
+		// with origin at bottom-right of the art, so the box extends several tiles
+		// west/north of m_Pos. That marked outdoor tiles along left/top walls as
+		// "under roof" and popped roofs when hugging the building from outside.
+		const int width = std::max(1, static_cast<int>(obj->m_objectData->m_width));
+		const int depth = std::max(1, static_cast<int>(obj->m_objectData->m_depth));
+		const int minTileX = static_cast<int>(std::floor(obj->m_Pos.x));
+		const int minTileZ = static_cast<int>(std::floor(obj->m_Pos.z));
+		const int maxTileX = minTileX + width - 1;
+		const int maxTileZ = minTileZ + depth - 1;
 
 		for (int wz = minTileZ; wz <= maxTileZ; ++wz)
 		{
@@ -2543,6 +2539,7 @@ void PathfindingSystem::UpdateBuildingRoofVisibility(float avatarWorldX, float a
 {
 	// Active building = roof group under the avatar's tile (from chunk roofGroupTile data).
 	// Only that group's roof pieces hide — not every roofed chunk nearby.
+	// Avatar m_Pos is the standing center (same as draw); floor() is the tile they occupy.
 	const int ax = static_cast<int>(std::floor(avatarWorldX));
 	const int az = static_cast<int>(std::floor(avatarWorldZ));
 	const int activeGroup = GetRoofGroupAt(ax, az);

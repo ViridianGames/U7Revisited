@@ -2374,7 +2374,11 @@ void LoadingState::LoadInitialGameState()
 				thisNPC.status = ReadU16(subFiles);
 
             unsigned int nextID = GetNextID();
-				AddObject(shapenum, 16, nextID, chunkx * 16 * 16 + thisNPC.x, thisNPC.lift >> 4, chunky * 16 * 16 + thisNPC.y);
+				// Place NPCs at tile centers so m_Pos matches draw position.
+			AddObject(shapenum, 16, nextID,
+				float(chunkx * 16 * 16 + thisNPC.x) + 0.5f,
+				thisNPC.lift >> 4,
+				float(chunky * 16 * 16 + thisNPC.y) + 0.5f);
             g_objectList[nextID].get()->m_isContainer = true;
             g_objectList[nextID].get()->m_hasConversationTree = true;
 

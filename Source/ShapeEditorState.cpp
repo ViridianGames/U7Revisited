@@ -812,23 +812,37 @@ void ShapeEditorState::Update()
 
 	bool somethingChanged = false;
 
+	// Cycle only draw types that have a shape-editor GUI. Skip CUSTOM_MESH_DEFER and
+	// ANIMFLAT (no SwitchToGuiForDrawType cases — left the UI stuck on "Mesh").
+	auto isEditableDrawType = [](ShapeDrawType t)
+	{
+		return t != ShapeDrawType::OBJECT_DRAW_CUSTOM_MESH_DEFER
+			&& t != ShapeDrawType::OBJECT_DRAW_ANIMFLAT;
+	};
+
 	if (m_currentGui->GetActiveElementID() == GE_PREVDRAWTYPE)
 	{
-		shapeData.m_drawType = static_cast<ShapeDrawType>(static_cast<int>(shapeData.m_drawType) - 1);
-		if (shapeData.m_drawType < ShapeDrawType::OBJECT_DRAW_BILLBOARD)
+		do
 		{
-			shapeData.m_drawType = ShapeDrawType(int(ShapeDrawType::OBJECT_DRAW_LAST) - 1);
-		}
+			shapeData.m_drawType = static_cast<ShapeDrawType>(static_cast<int>(shapeData.m_drawType) - 1);
+			if (shapeData.m_drawType < ShapeDrawType::OBJECT_DRAW_BILLBOARD)
+			{
+				shapeData.m_drawType = ShapeDrawType(int(ShapeDrawType::OBJECT_DRAW_LAST) - 1);
+			}
+		} while (!isEditableDrawType(shapeData.m_drawType));
 		SwitchToGuiForDrawType(shapeData.m_drawType);
 	}
 
 	else if (m_currentGui->GetActiveElementID() == GE_NEXTDRAWTYPE)
 	{
-		shapeData.m_drawType = static_cast<ShapeDrawType>(static_cast<int>(shapeData.m_drawType) + 1);
-		if (shapeData.m_drawType == ShapeDrawType::OBJECT_DRAW_LAST)
+		do
 		{
-			shapeData.m_drawType = ShapeDrawType::OBJECT_DRAW_BILLBOARD;
-		}
+			shapeData.m_drawType = static_cast<ShapeDrawType>(static_cast<int>(shapeData.m_drawType) + 1);
+			if (shapeData.m_drawType == ShapeDrawType::OBJECT_DRAW_LAST)
+			{
+				shapeData.m_drawType = ShapeDrawType::OBJECT_DRAW_BILLBOARD;
+			}
+		} while (!isEditableDrawType(shapeData.m_drawType));
 		SwitchToGuiForDrawType(shapeData.m_drawType);
 	}
 

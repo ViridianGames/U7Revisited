@@ -4286,8 +4286,8 @@
 283 29 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 283 29 default 
 283 30 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 283 30 default 
 283 31 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 283 31 default 
-284 0 0 0 8 8 0 8 8 17 8 0 21 8 3 1.25 0.8 1.25 0.5 0 0.5 0 1 2 2 3 3 1 Models/3dmodels/sundial_284x00.gltf 1 0 284 0 object_sundial_0284 
-284 1 0 0 8 8 0 8 8 17 8 0 21 8 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 284 1 object_sundial_0284 
+284 0 0 0 8 8 0 8 8 17 8 0 21 8 3 2 1 2 0.5 0 0.5 0 1 2 2 3 3 1 Models/3dmodels/sundial_284x00.gltf 1 0 284 0 object_sundial_0284 
+284 1 0 0 8 8 0 8 8 17 8 0 21 8 3 2 1 2 0.5 0 0.5 0 1 2 2 3 3 1 Models/3dmodels/sundial_284x00.gltf 1 0 284 1 object_sundial_0284 
 284 2 0 0 8 8 0 8 8 17 8 0 21 8 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 284 2 object_sundial_0284 
 284 3 0 0 8 8 0 8 8 17 8 0 21 8 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 284 3 object_sundial_0284 
 284 4 0 0 8 8 0 8 8 17 8 0 21 8 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 284 4 object_sundial_0284 

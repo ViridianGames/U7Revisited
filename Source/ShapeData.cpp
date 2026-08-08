@@ -716,61 +716,79 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 	}
 
 	case ShapeDrawType::OBJECT_DRAW_ANIMFLAT:
+	case ShapeDrawType::OBJECT_DRAW_FLAT:
 	{
-		// Palette-animated shapes use the live palette LUT instead of UV frame strips.
-		if (m_hasPaletteAnim && g_paletteSystemReady)
+		// Hotspot-stable placement (includes m_TweakPos). Frames with the same xleft/yabove
+		// share one upper-left even when canvas size differs (e.g. shape 699/737 frame 5).
+		finalPos = GetFlatModelPosition(pos);
+
+		// Planar size: texture dims × shape tweak scale × per-draw scale.
+		// Y scale is unused for thickness (plane stays flat); editor W→X, D→Z.
+		const Vector3 flatScaling = Vector3{
+			m_Dims.x * m_Scaling.x * scaling.x,
+			1.0f,
+			m_Dims.z * m_Scaling.z * scaling.z
+		};
+		// flat.obj spans z in [-scale.z, 0] from the model origin (texture bottom-left).
+		// GetFlatModelPosition places that origin using unscaled m_Dims.z, so increasing D
+		// would grow toward -Z (texture top / screen "up"). Re-anchor so the texture
+		// top-left stays fixed and depth grows in +Z (texture bottom / "down"), matching
+		// width which already grows +X (to the right) from a fixed left edge.
+		finalPos.z += (flatScaling.z - m_Dims.z);
+		// Shape-editor rotation (degrees) plus object angle (usually 0 for statics).
+		const float flatRotation = m_rotation + angle;
+
+		if (m_drawType == ShapeDrawType::OBJECT_DRAW_ANIMFLAT
+			&& m_hasPaletteAnim && g_paletteSystemReady)
 		{
-			finalPos = GetFlatModelPosition(pos);
-			Vector3 flatScaling = Vector3{ m_Dims.x, 1, m_Dims.z };
 			Material& mat = m_flatModel->GetModel().materials[0];
 			Shader prevShader = mat.shader;
 			Texture prevSpecular = mat.maps[MATERIAL_MAP_SPECULAR].texture;
 			BindPaletteMaterial(&mat, m_indexTexture);
 			m_flatModel->UpdateFlatUV(0.0f, 1.0f, 0.0f, 1.0f);
-			DrawModelEx(m_flatModel->GetModel(), finalPos, { 0, 1, 0 }, 0, flatScaling, color);
+			DrawModelEx(m_flatModel->GetModel(), finalPos, { 0, 1, 0 }, flatRotation, flatScaling, color);
 			mat.shader = prevShader;
 			SetMaterialTexture(&mat, MATERIAL_MAP_SPECULAR, prevSpecular);
 			break;
 		}
 
-		// Legacy UV-strip path (rarely used); still hotspot-anchor the plane.
-		finalPos = GetFlatModelPosition(pos);
-		Vector3 flatScaling = Vector3{ m_Dims.x, 1, m_Dims.z };
+		if (m_drawType == ShapeDrawType::OBJECT_DRAW_ANIMFLAT)
+		{
+			// Legacy UV-strip path (rarely used).
+			float timePerFrame = 1.0f / 8.0f;
+			int currentFrame = static_cast<unsigned int>(float(GetTime()) / timePerFrame) % m_numFrames;
+			float uvPerFrame = 1.0f / static_cast<float>(m_numFrames);
+			float frameUV = uvPerFrame * static_cast<float>(currentFrame);
 
-		float timePerFrame = 1.0f / 8.0f;
-		int currentFrame = static_cast<unsigned int>(float(GetTime()) / timePerFrame) % m_numFrames;
-		float uvPerFrame = 1.0f / static_cast<float>(m_numFrames);
-		float frameUV = uvPerFrame * static_cast<float>(currentFrame);
+			BeginShaderMode(g_alphaDiscard);
+			SetMaterialTexture(&m_flatModel->GetModel().materials[0], MATERIAL_MAP_DIFFUSE, m_texture->m_Texture);
+			m_flatModel->UpdateFlatUV(frameUV, frameUV + uvPerFrame, 0.0f, 1.0f);
+			DrawModelEx(m_flatModel->GetModel(), finalPos, { 0, 1, 0 }, flatRotation, flatScaling, color);
+			EndShaderMode();
+			break;
+		}
 
-		SetMaterialTexture(&m_flatModel->GetModel().materials[0], MATERIAL_MAP_DIFFUSE, m_texture->m_Texture);
-		m_flatModel->UpdateFlatUV(frameUV, frameUV + uvPerFrame, 0.0f, 1.0f);
-		DrawModelEx(m_flatModel->GetModel(), finalPos, { 0, 1, 0 }, 0, flatScaling, color);
-		break;
-	}
-
-	case ShapeDrawType::OBJECT_DRAW_FLAT:
-	{
-		// Hotspot-stable placement: frames with the same xleft/yabove share one upper-left,
-		// even when canvas size differs (e.g. shape 699/737 frame 5).
-		finalPos = GetFlatModelPosition(pos);
-		Vector3 flatScaling = Vector3{ m_Dims.x, 1, m_Dims.z };
-
+		// OBJECT_DRAW_FLAT
 		if (m_hasPaletteAnim && g_paletteSystemReady)
 		{
+			// paletteLookup.fs already discards low-alpha index samples.
 			Material& mat = m_flatModel->GetModel().materials[0];
 			Shader prevShader = mat.shader;
 			Texture prevSpecular = mat.maps[MATERIAL_MAP_SPECULAR].texture;
 			BindPaletteMaterial(&mat, m_indexTexture);
 			m_flatModel->UpdateFlatUV(0.0, 1.0, 0.0, 1.0);
-			DrawModelEx(m_flatModel->GetModel(), finalPos, { 0, 1, 0 }, 0, flatScaling, color);
+			DrawModelEx(m_flatModel->GetModel(), finalPos, { 0, 1, 0 }, flatRotation, flatScaling, color);
 			mat.shader = prevShader;
 			SetMaterialTexture(&mat, MATERIAL_MAP_SPECULAR, prevSpecular);
 		}
 		else
 		{
+			// Same as billboards: discard transparent texels (roofs, floors, etc.).
+			BeginShaderMode(g_alphaDiscard);
 			SetMaterialTexture(&m_flatModel->GetModel().materials[0], MATERIAL_MAP_DIFFUSE, m_texture->m_Texture);
 			m_flatModel->UpdateFlatUV(0.0, 1.0, 0.0, 1.0);
-			DrawModelEx(m_flatModel->GetModel(), finalPos, { 0, 1, 0 }, 0, flatScaling, color);
+			DrawModelEx(m_flatModel->GetModel(), finalPos, { 0, 1, 0 }, flatRotation, flatScaling, color);
+			EndShaderMode();
 		}
 		break;
 	}

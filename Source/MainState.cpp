@@ -1958,7 +1958,8 @@ void MainState::Draw()
 					{
 						const auto& waypoint = object->m_pathWaypoints[i];
 						// Waypoint already contains correct Y coordinate from pathfinding
-						Vector3 tilePos = { waypoint.x + 0.5f, waypoint.y + 0.05f, waypoint.z + 0.5f };
+						// Waypoints are already tile centers.
+						Vector3 tilePos = { waypoint.x, waypoint.y + 0.05f, waypoint.z };
 						// First tile is black, rest use the path color (orange/blue)
 						Color tileColor = (i == 0) ? Color{ 0, 0, 0, 255 } : pathColor;
 						DrawCube(tilePos, 1.0f, 0.1f, 1.0f, tileColor);
@@ -2905,9 +2906,9 @@ void MainState::MaybeUpdatePartyFollowing()
         // Desired position: behind avatar along dir, offset by spacing * counter
         float offset = m_partySpacing * float(counter);
         Vector3 desired = Vector3Subtract(avatarPos, Vector3Scale(dir, offset));
-        // Snap to tile center to match other pathfind usage
-        desired.x = floorf(desired.x + 0.5f);
-        desired.z = floorf(desired.z + 0.5f);
+        // Snap to center of the tile containing this point (NPCs stand/draw at *.5, *.5)
+        desired.x = floorf(desired.x) + 0.5f;
+        desired.z = floorf(desired.z) + 0.5f;
         desired.y = 0.0f; // let A*/TryMove resolve proper height
 
         // Only issue pathfind if the member is sufficiently far from desired

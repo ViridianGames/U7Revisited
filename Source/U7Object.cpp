@@ -1131,10 +1131,9 @@ void U7Object::NPCDraw()
 	}
 
 
-	//  Custom NPC drawing
+	// Draw at m_Pos (feet/world position). NPCs are stored at tile centers so
+	// logical position matches what you see — no +0.5 draw hack.
 	Vector3 finalPos = m_Pos;
-	finalPos.x += .5f;
-	finalPos.z += .5f;
 	finalPos.y += m_shapeData->m_Dims.y * .62f;
 
 	if (abs(finalPos.x - g_camera.target.x) > 64 || abs(finalPos.z - g_camera.target.z) > 64)
@@ -1516,8 +1515,12 @@ void U7Object::NPCUpdate()
 						// Clear schedule-path flag; we'll set it when a path is applied.
 						m_isSchedulePath = false;
 
-						// Build destination
-						Vector3 dest = { float(exactSchedule->m_destX), 0.0f, float(exactSchedule->m_destY) };
+						// Build destination at tile center (matches NPC standing/draw position).
+						Vector3 dest = {
+							float(exactSchedule->m_destX) + 0.5f,
+							0.0f,
+							float(exactSchedule->m_destY) + 0.5f
+						};
 
 						// If pathfinding is enabled, enqueue path request via MainState.
 						if (g_mainState->IsNpcSchedulesEnabled() && g_mainState->m_npcPathfindingEnabled)
