@@ -370,6 +370,11 @@ void UpdateObjectChunk(U7Object* object, Vector3 fromPos);
 void AssignObjectChunk(U7Object* object);
 void UnassignObjectChunk(U7Object* object);
 
+/// Inclusive chunk range currently covered by the camera frustum (ground + tall-object pad).
+/// Used by object visibility; falls back to a distance-based radius if unprojection fails.
+void GetCameraVisibleChunkRange(int& outMinCX, int& outMaxCX, int& outMinCZ, int& outMaxCZ);
+
+/// Rebuild g_sortedVisibleObjects from chunks overlapping the camera frustum.
 void UpdateSortedVisibleObjects();
 
 Vector3 GetRadialVector(float partitions, float thispartition);

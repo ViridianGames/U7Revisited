@@ -3087,9 +3087,9 @@ void MainState::SpawnMonster(int monsterType, int x, int y, int z)
 			}
 
 			// Always give feedback in console when a monster actually appears
-			std::string hatchedMsg = "Monster egg hatched! (shape " + std::to_string(monData.m_shape) + ")";
-			hatchedMsg += " " + monData.m_name;
-			AddConsoleString(hatchedMsg, YELLOW);
+			//std::string hatchedMsg = "Monster egg hatched! (shape " + std::to_string(monData.m_shape) + ")";
+			//hatchedMsg += " " + monData.m_name;
+			//AddConsoleString(hatchedMsg, YELLOW);
 
 			if (g_LuaDebug || g_showEggs)
 			{

@@ -1024,25 +1024,107 @@ float GetMaxWeightFromStrength(int strength)
 	return 2.0f * strength;
 }
 
+// Intersect a ray with a horizontal plane at planeY. Returns false if ray is parallel.
+static bool RayHitPlaneY(const Ray& ray, float planeY, Vector3& outHit)
+{
+	if (fabsf(ray.direction.y) < 1e-8f)
+		return false;
+	const float t = (planeY - ray.position.y) / ray.direction.y;
+	outHit = Vector3Add(ray.position, Vector3Scale(ray.direction, t));
+	return true;
+}
+
+void GetCameraVisibleChunkRange(int& outMinCX, int& outMaxCX, int& outMinCZ, int& outMaxCZ)
+{
+	// Unproject the four screen corners onto horizontal planes through the world.
+	// Using ground (y=0) plus a tall-object plane expands the range so rooftops and
+	// multi-story walls near the frustum edge still pull in their home chunks.
+	// This tracks zoom, aspect ratio, and camera rotation — unlike a fixed ±N radius
+	// around the look-at point, which drops objects when zoomed out.
+
+	const float screenW = static_cast<float>(GetScreenWidth());
+	const float screenH = static_cast<float>(GetScreenHeight());
+	const Vector2 corners[4] = {
+		{ 0.0f, 0.0f },
+		{ screenW, 0.0f },
+		{ screenW, screenH },
+		{ 0.0f, screenH }
+	};
+
+	// m_heightCutoff for "inside" drawing is 16; sample a bit above for safety.
+	const float planes[] = { 0.0f, 8.0f, 16.0f };
+
+	float minX = 1e9f, maxX = -1e9f, minZ = 1e9f, maxZ = -1e9f;
+	int hitCount = 0;
+
+	for (float planeY : planes)
+	{
+		for (const Vector2& c : corners)
+		{
+			const Ray ray = GetMouseRay(c, g_camera);
+			Vector3 hit{};
+			if (!RayHitPlaneY(ray, planeY, hit))
+				continue;
+
+			// Discard absurd hits (e.g. looking nearly parallel to the ground).
+			if (hit.x < -512.0f || hit.x > 3072.0f + 512.0f ||
+			    hit.z < -512.0f || hit.z > 3072.0f + 512.0f)
+				continue;
+
+			minX = std::min(minX, hit.x);
+			maxX = std::max(maxX, hit.x);
+			minZ = std::min(minZ, hit.z);
+			maxZ = std::max(maxZ, hit.z);
+			++hitCount;
+		}
+	}
+
+	// Pad for multi-tile objects whose m_Pos chunk is outside the pure ground AABB
+	// but whose art still reaches into the frustum (SE-origin footprints, billboards).
+	const float padTiles = 12.0f;
+
+	if (hitCount < 4)
+	{
+		// Fallback: distance-based radius (ortho fovy ≈ world height in tiles).
+		const float halfExtent = std::max(g_cameraDistance, 18.0f) * 1.25f + padTiles;
+		minX = g_camera.target.x - halfExtent;
+		maxX = g_camera.target.x + halfExtent;
+		minZ = g_camera.target.z - halfExtent;
+		maxZ = g_camera.target.z + halfExtent;
+	}
+	else
+	{
+		minX -= padTiles;
+		maxX += padTiles;
+		minZ -= padTiles;
+		maxZ += padTiles;
+	}
+
+	auto toChunk = [](float world) -> int {
+		return static_cast<int>(std::floor(world / 16.0f));
+	};
+
+	outMinCX = std::max(0, toChunk(minX));
+	outMaxCX = std::min(191, toChunk(maxX));
+	outMinCZ = std::max(0, toChunk(minZ));
+	outMaxCZ = std::min(191, toChunk(maxZ));
+
+	// Safety: never return an inverted range.
+	if (outMinCX > outMaxCX) std::swap(outMinCX, outMaxCX);
+	if (outMinCZ > outMaxCZ) std::swap(outMinCZ, outMaxCZ);
+}
+
 void UpdateSortedVisibleObjects()
 {
-	int cameraChunkX = static_cast<int>(g_camera.target.x / 16);
-	int cameraChunkY = static_cast<int>(g_camera.target.z / 16);
-
-	// DEBUG: Log before clearing
-	int beforeCount = static_cast<int>(g_sortedVisibleObjects.size());
+	int minCX = 0, maxCX = 0, minCZ = 0, maxCZ = 0;
+	GetCameraVisibleChunkRange(minCX, maxCX, minCZ, maxCZ);
 
 	g_sortedVisibleObjects.clear();
 
-	for (int x = cameraChunkX - 2; x <= cameraChunkX + 2; x++)
+	for (int x = minCX; x <= maxCX; x++)
 	{
-		for (int y = cameraChunkY - 2; y <= cameraChunkY + 2; y++)
+		for (int y = minCZ; y <= maxCZ; y++)
 		{
-			if (x < 0 || x >= 192 || y < 0 || y >= 192)
-			{
-				continue; // Out of bounds
-			}
-
 			for (auto object : g_chunkObjectMap[x][y])
 			{
 				// Skip null, dead, or contained objects
@@ -1057,20 +1139,6 @@ void UpdateSortedVisibleObjects()
 			}
 		}
 	}
-
-	// DEBUG: Log count after populating
-	// DISABLED: This was causing lag by writing to disk on every camera movement
-	// int afterCount = static_cast<int>(g_sortedVisibleObjects.size());
-	// static int lastLoggedCount = -1;
-	// // Always log when called from RebuildWorldFromLoadedData, otherwise only log on changes
-	// static bool forceNextLog = false;
-	// if (afterCount != lastLoggedCount || forceNextLog)
-	// {
-	// 	Log("UpdateSortedVisibleObjects: Camera chunk (" + std::to_string(cameraChunkX) + "," + std::to_string(cameraChunkY) +
-	// 		"), found " + std::to_string(afterCount) + " visible objects (was " + std::to_string(beforeCount) + ")");
-	// 	lastLoggedCount = afterCount;
-	// 	forceNextLog = false;
-	// }
 
 	std::sort(g_sortedVisibleObjects.begin(), g_sortedVisibleObjects.end(), [](U7Object* a, U7Object* b) { return a->m_distanceFromCamera > b->m_distanceFromCamera; });
 

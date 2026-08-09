@@ -253,30 +253,79 @@ bool U7Player::IsWearingFellowshipMedallion()
 
 bool U7Player::TryMove(const Vector3& desiredPos)
 {
-    U7Object* avatar = GetAvatarObject();
-    if (!avatar) return false;
+	U7Object* avatar = GetAvatarObject();
+	if (!avatar) return false;
 
-    float destH = avatar->m_Pos.y;
-    if (!PathfindingSystem::ValidateMove(avatar, desiredPos, destH))
-    {
-        return false;
-    }
+	const Vector3 pos = avatar->m_Pos;
+	float destH = pos.y;
+	Vector3 candidate = desiredPos;
 
-    // Finalize: snap avatar for small vertical steps, and set dest
-    Vector3 finalDest = desiredPos;
-    finalDest.y = destH;
+	// Full diagonal / combined step first.
+	bool accepted = PathfindingSystem::ValidateMove(avatar, candidate, destH);
 
-    // Instant step for stairs / small height changes
-    if (fabs(destH - avatar->m_Pos.y) > 0.05f && fabs(destH - avatar->m_Pos.y) <= MAX_CLIMBABLE_HEIGHT)
-    {
-        Vector3 snapPos = avatar->m_Pos;
-        snapPos.y = destH;
-        avatar->SetPos(snapPos);
-    }
+	// Wall slide: if blocked, try each horizontal axis alone so we keep the free
+	// component of movement instead of stopping cold against a wall.
+	if (!accepted)
+	{
+		const float eps = 1e-5f;
+		const bool wantX = fabsf(desiredPos.x - pos.x) > eps;
+		const bool wantZ = fabsf(desiredPos.z - pos.z) > eps;
 
-    avatar->SetDest(finalDest);
-    avatar->m_isMoving = true;
-    return true;
+		Vector3 slideX = { desiredPos.x, pos.y, pos.z };
+		Vector3 slideZ = { pos.x, pos.y, desiredPos.z };
+		float hX = pos.y;
+		float hZ = pos.y;
+		const bool okX = wantX && PathfindingSystem::ValidateMove(avatar, slideX, hX);
+		const bool okZ = wantZ && PathfindingSystem::ValidateMove(avatar, slideZ, hZ);
+
+		if (okX && okZ)
+		{
+			// Both axes free alone but combined blocked (corner): keep the larger
+			// intended component so feel stays responsive to input direction.
+			if (fabsf(desiredPos.x - pos.x) >= fabsf(desiredPos.z - pos.z))
+			{
+				candidate = slideX;
+				destH = hX;
+			}
+			else
+			{
+				candidate = slideZ;
+				destH = hZ;
+			}
+			accepted = true;
+		}
+		else if (okX)
+		{
+			candidate = slideX;
+			destH = hX;
+			accepted = true;
+		}
+		else if (okZ)
+		{
+			candidate = slideZ;
+			destH = hZ;
+			accepted = true;
+		}
+	}
+
+	if (!accepted)
+		return false;
+
+	// Finalize: snap avatar for small vertical steps, and set dest
+	Vector3 finalDest = candidate;
+	finalDest.y = destH;
+
+	// Instant step for stairs / small height changes
+	if (fabs(destH - pos.y) > 0.05f && fabs(destH - pos.y) <= MAX_CLIMBABLE_HEIGHT)
+	{
+		Vector3 snapPos = pos;
+		snapPos.y = destH;
+		avatar->SetPos(snapPos);
+	}
+
+	avatar->SetDest(finalDest);
+	avatar->m_isMoving = true;
+	return true;
 }
 
 void U7Player::SetAvatarMale()

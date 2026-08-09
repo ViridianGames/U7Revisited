@@ -762,10 +762,10 @@ void U7Object::HandleMonsterSpawnerEgg()
 			// For now they exist in the world and can be clicked / pathfound to.
 
 			// Always give feedback in console when a monster actually appears
-			std::string hatchedMsg = "Monster egg hatched! (shape " + std::to_string(shapeToSpawn) + ")";
-			if (monData && !monData->m_name.empty())
-				hatchedMsg += " " + monData->m_name;
-			AddConsoleString(hatchedMsg, YELLOW);
+			//std::string hatchedMsg = "Monster egg hatched! (shape " + std::to_string(shapeToSpawn) + ")";
+			//if (monData && !monData->m_name.empty())
+			//	hatchedMsg += " " + monData->m_name;
+			//AddConsoleString(hatchedMsg, YELLOW);
 
 			if (g_LuaDebug || g_showEggs)
 			{
@@ -1764,18 +1764,75 @@ void U7Object::UpdateMovement()
 		float destH = newPos.y;
 		if (g_pathfindingSystem && !PathfindingSystem::ValidateMove(this, newPos, destH))
 		{
-			m_isMoving = false;
-			SetDest(m_Pos);
-			return;
+			// Wall slide: keep the free horizontal axis instead of stopping cold.
+			// (Diagonal into a wall often blocks the combined step while one axis is open.)
+			const float eps = 1e-5f;
+			const Vector3 step = Vector3Scale(m_Direction, deltav);
+			Vector3 slideX = { m_Pos.x + step.x, m_Pos.y, m_Pos.z };
+			Vector3 slideZ = { m_Pos.x, m_Pos.y, m_Pos.z + step.z };
+			float hX = m_Pos.y;
+			float hZ = m_Pos.y;
+			const bool wantX = fabsf(step.x) > eps;
+			const bool wantZ = fabsf(step.z) > eps;
+			const bool okX = wantX && PathfindingSystem::ValidateMove(this, slideX, hX);
+			const bool okZ = wantZ && PathfindingSystem::ValidateMove(this, slideZ, hZ);
+
+			if (okX && okZ)
+			{
+				// Corner case: both axes free alone, combined blocked — prefer larger component.
+				if (fabsf(step.x) >= fabsf(step.z))
+				{
+					newPos = slideX;
+					destH = hX;
+				}
+				else
+				{
+					newPos = slideZ;
+					destH = hZ;
+				}
+			}
+			else if (okX)
+			{
+				newPos = slideX;
+				destH = hX;
+			}
+			else if (okZ)
+			{
+				newPos = slideZ;
+				destH = hZ;
+			}
+			else
+			{
+				m_isMoving = false;
+				SetDest(m_Pos);
+				return;
+			}
 		}
 		newPos.y = destH;
 
+		// Overshoot snap only when Dest is still a valid stand position. During wall
+		// slide Dest may still point into the obstacle; snapping there would re-stick.
 		if (Vector3DistanceSqr(newPos, m_Dest) > Vector3DistanceSqr(m_Pos, m_Dest))
 		{
-			SetPos(m_Dest);
-			if (m_pathWaypoints.empty())
+			float destSnapH = m_Dest.y;
+			const bool destOk = !g_pathfindingSystem ||
+				PathfindingSystem::ValidateMove(this, m_Dest, destSnapH);
+			if (destOk)
 			{
-				m_isMoving = false;
+				m_Dest.y = destSnapH;
+				SetPos(m_Dest);
+				if (m_pathWaypoints.empty())
+				{
+					m_isMoving = false;
+				}
+			}
+			else
+			{
+				// Sliding past a blocked Dest: keep sliding, retarget Dest to current step.
+				m_isMoving = true;
+				SetPos(newPos);
+				SetDest(newPos);
+				TryOpenDoorAtCurrentPosition();
 			}
 		}
 		else
