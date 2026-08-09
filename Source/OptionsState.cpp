@@ -145,37 +145,10 @@ void OptionsState::Update()
 
 void OptionsState::Draw()
 {
-		//rlSetBlendFactors(RL_SRC_ALPHA, RL_ONE_MINUS_SRC_ALPHA, RL_MIN);
 	rlSetBlendMode(BLEND_ALPHA);
 
-	ClearBackground(Color{0, 0, 0, 255});
-
-	BeginMode3D(g_camera);
-
-	//  Draw the terrain
-	g_Terrain->Draw();
-
-	//  Draw the objects
-	for (auto object : g_sortedVisibleObjects)
-	{
-		if (object->m_Pos.y <= 4 && object->m_drawType != ShapeDrawType::OBJECT_DRAW_FLAT)
-		{
-			object->Draw();
-		}
-	}
-
-	rlDisableDepthMask();
-	for (auto object : g_sortedVisibleObjects)
-	{
-		if (object->m_Pos.y <= 4 && object->m_drawType == ShapeDrawType::OBJECT_DRAW_FLAT)
-		{
-			object->Draw();
-		}
-	}
-	rlEnableDepthMask();
-
-
-	EndMode3D();
+	// Same world path as MainState (was a reduced y<=4 pass that looked wrong).
+	DrawGameWorldFrame(true);
 
 	//  Draw GUI overlay
 	BeginTextureMode(g_guiRenderTarget);
@@ -193,9 +166,6 @@ void OptionsState::Draw()
 	               {0, 0}, 0, WHITE);
 
 	DrawTextureEx(*g_Cursor, {float(GetMouseX()), float(GetMouseY())}, 0, g_DrawScale, WHITE);
-
-	//DrawRectangle(0, 0, g_Engine->m_ScreenWidth, g_Engine->m_ScreenHeight, { 0, 0, 0, m_currentFadeAlpha });
-
 }
 
 void OptionsState::CreateOptionsGUI()

@@ -377,6 +377,14 @@ void GetCameraVisibleChunkRange(int& outMinCX, int& outMaxCX, int& outMinCZ, int
 /// Rebuild g_sortedVisibleObjects from chunks overlapping the camera frustum.
 void UpdateSortedVisibleObjects();
 
+/// Draw terrain + g_sortedVisibleObjects with the standard MainState path
+/// (flat polygon-offset, deferred meshes + alpha discard). Call inside BeginMode3D.
+void DrawGameWorld(bool drawObjects = true);
+
+/// Clear + 3D world frame matching MainState (pixelated RT when enabled).
+/// Does not draw any HUD/GUI. Call before overlay UI states.
+void DrawGameWorldFrame(bool drawObjects = true);
+
 Vector3 GetRadialVector(float partitions, float thispartition);
 
 U7Object* AddObject(int shapenum, int framenum, int id, float x, float y, float z);

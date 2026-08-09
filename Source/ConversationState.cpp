@@ -297,36 +297,9 @@ void ConversationState::Update()
 
 void ConversationState::Draw()
 {
-	// (Unchanged, as it's unrelated to coroutines)
-	ClearBackground(Color{0, 0, 0, 255});
-
-	BeginMode3D(g_camera);
-
-	//  Draw the terrain
-	g_Terrain->Draw();
-
-	for (auto object : g_sortedVisibleObjects)
-	{
-		if (object->m_drawType != ShapeDrawType::OBJECT_DRAW_FLAT)
-		{
-			object->Draw();
-		}
-	}
-
-	//  Flats require disabling the depth mask to draw correctly.
-	rlDisableDepthMask();
-	for (auto object : g_sortedVisibleObjects)
-	{
-		if (object->m_drawType == ShapeDrawType::OBJECT_DRAW_FLAT)
-		{
-			object->Draw();
-		}
-	}
-	rlEnableDepthMask();
-
-	EndMode3D();
-
-	float ratio = float(g_Engine->m_ScreenWidth) / float(g_Engine->m_RenderWidth);
+	// Same world path as MainState so conversation overlays match in-game look
+	// (flats / deferred meshes / pixelated mode).
+	DrawGameWorldFrame(true);
 
 	BeginTextureMode(g_guiRenderTarget);
 	ClearBackground({0, 0, 0, 0});

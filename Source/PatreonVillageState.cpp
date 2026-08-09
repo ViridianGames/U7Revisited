@@ -276,36 +276,10 @@ void PatreonVillageState::FadeOut(float fadeTime)
 
 void PatreonVillageState::Draw()
 {
-	//rlSetBlendFactors(RL_SRC_ALPHA, RL_ONE_MINUS_SRC_ALPHA, RL_MIN);
 	rlSetBlendMode(BLEND_ALPHA);
 
-	ClearBackground(Color{0, 0, 0, 255});
-
-	BeginMode3D(g_camera);
-
-	//  Draw the terrain
-	g_Terrain->Draw();
-
-	//  Draw the objects
-	for (auto object : g_sortedVisibleObjects)
-	{
-		if (object->m_Pos.y <= 4 && object->m_drawType != ShapeDrawType::OBJECT_DRAW_FLAT)
-		{
-			object->Draw();
-		}
-	}
-
-	rlDisableDepthMask();
-	for (auto object : g_sortedVisibleObjects)
-	{
-		if (object->m_Pos.y <= 4 && object->m_drawType == ShapeDrawType::OBJECT_DRAW_FLAT)
-		{
-			object->Draw();
-		}
-	}
-	rlEnableDepthMask();
-
-	EndMode3D();
+	// Shared world path (was a reduced y<=4 pass).
+	DrawGameWorldFrame(true);
 
 	//  Draw GUI overlay
 	BeginTextureMode(g_guiRenderTarget);

@@ -137,57 +137,10 @@ void TitleState::FadeOut(float fadeTime)
 
 void TitleState::Draw()
 {
-	//rlSetBlendFactors(RL_SRC_ALPHA, RL_ONE_MINUS_SRC_ALPHA, RL_MIN);
 	rlSetBlendMode(BLEND_ALPHA);
 
-	ClearBackground(Color{0, 0, 0, 255});
-
-	BeginMode3D(g_camera);
-
-	//  Draw the terrain
-	g_Terrain->Draw();
-
-	//  Draw the objects
-	std::vector<U7Object> flats;
-	std::vector<U7Object> meshes;
-	for (auto object : g_sortedVisibleObjects)
-	{
-		if (object->m_drawType == ShapeDrawType::OBJECT_DRAW_FLAT)
-		{
-			flats.push_back(*object);
-		}
-		else if (object->m_drawType == ShapeDrawType::OBJECT_DRAW_CUSTOM_MESH_DEFER)
-		{
-			meshes.push_back(*object);
-		}
-		else
-		{
-			object->Draw();
-		}
-	}
-
-	//  Flats require disabling the depth mask to draw correctly.
-	//rlDisableDepthMask();
-	glEnable(GL_POLYGON_OFFSET_FILL);
-	glPolygonOffset(-1.0f, -1.0f);
-	for (auto& object : flats)
-	{
-		object.Draw();
-	}
-	glDisable(GL_POLYGON_OFFSET_FILL);
-	//rlEnableDepthMask();
-
-	//  Meshes after every thing else
-	BeginShaderMode(g_alphaDiscard);
-	for (auto& object : meshes)
-	{
-		object.Draw();
-	}
-	EndShaderMode();
-	meshes.clear();
-	flats.clear();
-
-	EndMode3D();
+	// Shared with MainState / Conversation / Options for consistent world look.
+	DrawGameWorldFrame(true);
 
 	//  Draw GUI overlay
 	BeginTextureMode(g_guiRenderTarget);

@@ -23,6 +23,7 @@
 #include "InputSystem.h"
 #include "raylib.h"
 #include "rlgl.h"
+#include "glad.h"
 #include <cstdio>
 using namespace std;
 
@@ -1205,7 +1206,68 @@ void UpdateSortedVisibleObjects()
 	g_terrainUnderMousePointer.x = roundf(g_terrainUnderMousePointer.x);
 	g_terrainUnderMousePointer.y = roundf(g_terrainUnderMousePointer.y);
 	g_terrainUnderMousePointer.z = roundf(g_terrainUnderMousePointer.z);
+}
 
+void DrawGameWorld(bool drawObjects)
+{
+	if (g_Terrain)
+		g_Terrain->Draw();
+
+	if (!drawObjects)
+		return;
+
+	// Same object pass as MainState: non-flats first, flats with polygon offset
+	// (reduces coplanar z-fight), then deferred custom meshes with alpha discard.
+	std::vector<U7Object> flats;
+	std::vector<U7Object> meshes;
+	flats.reserve(64);
+	meshes.reserve(16);
+
+	for (U7Object* object : g_sortedVisibleObjects)
+	{
+		if (!object)
+			continue;
+		if (object->m_drawType == ShapeDrawType::OBJECT_DRAW_FLAT)
+			flats.push_back(*object);
+		else if (object->m_drawType == ShapeDrawType::OBJECT_DRAW_CUSTOM_MESH_DEFER)
+			meshes.push_back(*object);
+		else
+			object->Draw();
+	}
+
+	glEnable(GL_POLYGON_OFFSET_FILL);
+	glPolygonOffset(-1.0f, -1.0f);
+	for (U7Object& object : flats)
+		object.Draw();
+	glDisable(GL_POLYGON_OFFSET_FILL);
+
+	if (!meshes.empty())
+	{
+		BeginShaderMode(g_alphaDiscard);
+		for (U7Object& object : meshes)
+			object.Draw();
+		EndShaderMode();
+	}
+}
+
+void DrawGameWorldFrame(bool drawObjects)
+{
+	if (g_pixelated)
+		BeginTextureMode(g_renderTarget);
+
+	ClearBackground(Color{ 0, 0, 0, 255 });
+	BeginMode3D(g_camera);
+	DrawGameWorld(drawObjects);
+	EndMode3D();
+
+	if (g_pixelated)
+	{
+		EndTextureMode();
+		DrawTexturePro(g_renderTarget.texture,
+			{ 0, 0, float(g_renderTarget.texture.width), float(g_renderTarget.texture.height) },
+			{ 0, float(g_Engine->m_ScreenHeight), float(g_Engine->m_ScreenWidth), -float(g_Engine->m_ScreenHeight) },
+			{ 0, 0 }, 0, WHITE);
+	}
 }
 
 Vector3 GetRadialVector(float partitions, float thispartition)

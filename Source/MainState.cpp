@@ -1808,92 +1808,19 @@ void MainState::Draw()
 	ClearBackground(Color{ 0, 0, 0, 255 });
 
 	BeginMode3D(g_camera);
-	//  Draw the terrain
 
-	g_Terrain->Draw();
-
-	// A* timing deltas
+	// A* timing deltas (telemetry; does not affect draw)
 	uint64_t totalCalls = g_pathfindingSystem ? g_pathfindingSystem->m_astarTotalCalls.load() : 0;
 	uint64_t totalMs = g_pathfindingSystem ? g_pathfindingSystem->m_astarTotalMs.load() : 0;
 	uint64_t callsDelta = totalCalls - m_lastAstarTotalCalls;
 	uint64_t msDelta = totalMs - m_lastAstarTotalMs;
 	double avgAstarMs = callsDelta ? (double)msDelta / (double)callsDelta : 0.0;
+	(void)avgAstarMs;
 	m_lastAstarTotalCalls = totalCalls;
 	m_lastAstarTotalMs = totalMs;
 
-	if (m_showPathfindingDebug)
-	{
-		//DrawDebugChunkPathfindingInfo();
-	}
-
-	if (m_showObjects)
-	{
-		std::vector<U7Object> flats;
-		std::vector<U7Object> meshes;
-		//BeginBlendMode(BLEND_ALPHA);
-		for (auto object : g_sortedVisibleObjects)
-		{
-			if (object->m_drawType == ShapeDrawType::OBJECT_DRAW_FLAT)
-			{
-				flats.push_back(*object);
-			}
-			else if (object->m_drawType == ShapeDrawType::OBJECT_DRAW_CUSTOM_MESH_DEFER)
-			{
-				meshes.push_back(*object);
-			}
-			else
-			{
-				object->Draw();
-			}
-		}
-
-		// Flats: slight polygon offset reduces coplanar z-fighting between neighboring tiles.
-		// (No solid underlays — those showed as solid bars on the empty +1 hotspot pixel edge.)
-		glEnable(GL_POLYGON_OFFSET_FILL);
-		glPolygonOffset(-1.0f, -1.0f);
-		for (auto& object : flats)
-		{
-			object.Draw();
-		}
-		glDisable(GL_POLYGON_OFFSET_FILL);
-
-		// Legacy morph / custom meshes after everything else (empty with morph roofs off).
-		BeginShaderMode(g_alphaDiscard);
-		for (auto& object : meshes)
-		{
-			object.Draw();
-		}
-		EndShaderMode();
-		
-		//rlDisableDepthMask();
-		/*
-		for (auto object : g_sortedVisibleObjects)
-		{
-			if (object->m_drawType == ShapeDrawType::OBJECT_DRAW_FLAT)
-			{
-				object->Draw();
-			}
-		}
-		rlEnableState(RL_POLYGON_OFFSET_FILL);
-		rlSetPolygonOffset(factor, units);
-		rlDisableState(RL_POLYGON_OFFSET_FILL);
-		//rlEnableDepthMask();
-		*/
-		
-
-		/*
-		for (auto object : g_sortedVisibleObjects)
-		{
-			if (object->m_drawType == ShapeDrawType::OBJECT_DRAW_CUSTOM_MESH)
-			{
-				object->Draw();
-			}
-		}
-		*/
-		meshes.clear();
-		flats.clear();
-		//EndBlendMode();
-	}
+	// Shared terrain + object path (same as Conversation/Options overlays).
+	DrawGameWorld(m_showObjects);
 
 	if (g_gumpManager->m_draggingObject && !g_gumpManager->m_isMouseOverGump && g_objectUnderMousePointer != g_Player->GetAvatarObject())
 	{
@@ -3038,7 +2965,7 @@ void MainState::BuildSandboxHelpGUI()
 
 	textY += 48;
 
-	m_sandboxHelpScreen->AddTextArea(GUI_DEMO_HELP_TITLE + idOffset++, g_SmallFont.get(), "F1 - Shape Editor\nF5 - Lock camera to unit under cursor (or Avatar)\nF6 - SUPER PIXELLATION MODE\nF7 - Allow hack moving (move anything)\nF8 - Lua script debug text\nF9 - Show object bounding boxes\nF10 - Show pathfinding info\nF11 - Highlight objects with scripts\nPageUp - Move the camera up one floor\nPageDown - Move the camera down one floor\nMinus Key - Speed up time\nPlus Key - Slow down time\nKeypad Enter - Jump time forward one hour.", 10, textY,
+	m_sandboxHelpScreen->AddTextArea(GUI_DEMO_HELP_TITLE + idOffset++, g_SmallFont.get(), "F1 - Shape Editor\nF5 - Lock camera to unit under cursor (or Avatar)\nF6 - SUPER PIXELLATION MODE\nF7 - Allow hack moving (move anything)\nF8 - Lua script debug text\nF9 - Show object bounding boxes\nF10 - Show pathfinding info\nF11 - Highlight objects with scripts\nPageUp - Move the camera up one floor\nPageDown - Move the camera down one floor\nMinus Key - Speed up time\nPlus Key - Slow down time\nKeypad Enter - Jump time forward one hour.\nCtrl-p - ???", 10, textY,
 								0, 0, WHITE, GuiTextArea::LEFT, 0, 1, false);
 
 

@@ -239,9 +239,10 @@ public:
 	void BuildChunkBuildingData();
 	void PopulateChunkPathfindingGrid();
 
-	// Hide/show roof pieces for the building under the avatar (chunk data).
-	// active group = roofGroupTile at the avatar's tile; hide roof objects whose
-	// placement tile shares that group (multi-chunk buildings stay open together).
+	// Hide roof pieces for the building under the avatar (chunk data).
+	// active group = roofGroupTile at the avatar's tile; only hides roofs that
+	// share that group. Never forces roofs visible — height cutoff (sandbox
+	// PGUP/PGDOWN floor view) stays authoritative for show/hide by storey.
 	void UpdateBuildingRoofVisibility(float avatarWorldX, float avatarWorldZ);
 
 	// Queries (world tile coords, 0..3071)

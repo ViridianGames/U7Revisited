@@ -2600,9 +2600,12 @@ void PathfindingSystem::UpdateBuildingRoofVisibility(float avatarWorldX, float a
 					continue;
 				}
 
+				// Roof pop only HIDES roofs of the building under the avatar.
+				// Do not force m_Visible = true: the caller's height-cutoff pass
+				// (sandbox PGUP/PGDOWN "view floor") may have already hidden upper
+				// storeys and roofs. Un-hiding them here made floor view useless.
 				if (activeGroup < 0)
 				{
-					obj->m_Visible = true;
 					continue;
 				}
 
@@ -2627,7 +2630,10 @@ void PathfindingSystem::UpdateBuildingRoofVisibility(float avatarWorldX, float a
 						}
 					}
 				}
-				obj->m_Visible = !sameBuilding;
+				if (sameBuilding)
+				{
+					obj->m_Visible = false;
+				}
 			}
 
 			(void)chunkHasActiveGroup;
