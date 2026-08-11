@@ -68,6 +68,11 @@ public:
 			UnloadTexture(m_indexTexture);
 			m_indexTexture = { 0 };
 		}
+		if (m_modelIndexTexture.id > 0)
+		{
+			UnloadTexture(m_modelIndexTexture);
+			m_modelIndexTexture = { 0 };
+		}
 	}
 
 	void Init(int shape, int frame, bool shouldreset = true);
@@ -156,9 +161,18 @@ public:
 	std::unique_ptr<ModTexture> m_texture;
 	std::unique_ptr<ModTexture> m_cuboidTexture;
 
-	// Palette-index map (R = index, A = opacity) for GPU palette animation
+	// Palette-index map (R = index, A = opacity) for GPU palette animation (2D flats/billboards)
 	Texture2D m_indexTexture = { 0 };
 	bool m_hasPaletteAnim = false;
+
+	// Same idea for CUSTOM_MESH diffuse atlases (e.g. water trough): RGB PNG remapped to
+	// palette indices so g_runtimePalette glisten (224-243) animates on the model.
+	Texture2D m_modelIndexTexture = { 0 };
+	bool m_hasModelPaletteAnim = false;
+	bool m_modelPaletteIndexAttempted = false;
+
+	// Build m_modelIndexTexture from the mesh's .png (if it contains glisten indices).
+	bool EnsureModelPaletteIndexTexture();
 
 	std::vector<coords> m_topFaceMods;
 	std::vector<coords> m_frontFaceMods;

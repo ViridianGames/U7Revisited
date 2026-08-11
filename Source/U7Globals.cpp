@@ -346,6 +346,27 @@ void BindPaletteMaterial(Material* material, Texture2D indexTexture)
 	SetMaterialTexture(material, MATERIAL_MAP_SPECULAR, g_paletteTexture);
 }
 
+int FindNearestU7PaletteIndex(unsigned char r, unsigned char g, unsigned char b)
+{
+	int best = 0;
+	int bestDist = 0x7fffffff;
+	for (int i = 0; i < 255; ++i)
+	{
+		const int dr = int(r) - int(g_basePalette[i].r);
+		const int dg = int(g) - int(g_basePalette[i].g);
+		const int db = int(b) - int(g_basePalette[i].b);
+		const int dist = dr * dr + dg * dg + db * db;
+		if (dist < bestDist)
+		{
+			bestDist = dist;
+			best = i;
+			if (dist == 0)
+				break;
+		}
+	}
+	return best;
+}
+
 bool g_pixelated = false;
 RenderTexture2D g_renderTarget;
 RenderTexture2D g_guiRenderTarget;
@@ -1216,12 +1237,35 @@ void DrawGameWorld(bool drawObjects)
 	if (!drawObjects)
 		return;
 
-	// Non-flats first (write depth), then flats, then deferred meshes.
-	// Flats (roofs/floors) are coplanar with each other: camera-distance sort
-	// makes their draw order flip when you rotate, which shows as z-fight flicker.
-	// Sort flats by fixed world keys so the whole roof paints consistently at any angle.
+	// Flats are coplanar: camera-distance sort makes draw order flip when you rotate
+	// (z-fight flicker). Use fixed world keys for a stable order at any angle.
+	// Rugs (object name "rug") must sit under everything else, so they draw first
+	// after terrain; other flats still draw after non-flats.
+	auto stableFlatLess = [](const U7Object* a, const U7Object* b) {
+		if (a->m_Pos.y != b->m_Pos.y)
+			return a->m_Pos.y < b->m_Pos.y;
+		if (a->m_Pos.z != b->m_Pos.z)
+			return a->m_Pos.z < b->m_Pos.z;
+		if (a->m_Pos.x != b->m_Pos.x)
+			return a->m_Pos.x < b->m_Pos.x;
+		return a->m_ID < b->m_ID;
+	};
+
+	auto isRugFlat = [](const U7Object* object) {
+		if (!object || !object->m_objectData)
+			return false;
+		// TEXT.FLX labels these "rug" (shapes 188, 483, …).
+		const std::string& name = object->m_objectData->m_name;
+		return name.size() == 3 &&
+			(name[0] == 'r' || name[0] == 'R') &&
+			(name[1] == 'u' || name[1] == 'U') &&
+			(name[2] == 'g' || name[2] == 'G');
+	};
+
+	std::vector<U7Object*> rugs;
 	std::vector<U7Object*> flats;
 	std::vector<U7Object*> meshes;
+	rugs.reserve(16);
 	flats.reserve(64);
 	meshes.reserve(16);
 
@@ -1230,28 +1274,39 @@ void DrawGameWorld(bool drawObjects)
 		if (!object)
 			continue;
 		if (object->m_drawType == ShapeDrawType::OBJECT_DRAW_FLAT)
-			flats.push_back(object);
+		{
+			if (isRugFlat(object))
+				rugs.push_back(object);
+			else
+				flats.push_back(object);
+		}
 		else if (object->m_drawType == ShapeDrawType::OBJECT_DRAW_CUSTOM_MESH_DEFER)
 			meshes.push_back(object);
-		else
-			object->Draw();
 	}
 
-	std::sort(flats.begin(), flats.end(), [](const U7Object* a, const U7Object* b) {
-		// Camera-independent order: lower storeys first, then SE-ish tile order, then id.
-		if (a->m_Pos.y != b->m_Pos.y)
-			return a->m_Pos.y < b->m_Pos.y;
-		if (a->m_Pos.z != b->m_Pos.z)
-			return a->m_Pos.z < b->m_Pos.z;
-		if (a->m_Pos.x != b->m_Pos.x)
-			return a->m_Pos.x < b->m_Pos.x;
-		return a->m_ID < b->m_ID;
-	});
+	std::sort(rugs.begin(), rugs.end(), stableFlatLess);
+	std::sort(flats.begin(), flats.end(), stableFlatLess);
 
-	// Polygon offset vs terrain; depth-write off so coplanar flats do not fight each other
-	// in the depth buffer (painter's algorithm with the stable sort above).
+	// Rugs first (under furniture, other flats, etc.). Write depth so later
+	// geometry occludes them correctly.
 	glEnable(GL_POLYGON_OFFSET_FILL);
 	glPolygonOffset(-1.0f, -1.0f);
+	for (U7Object* object : rugs)
+		object->Draw();
+
+	// Non-flats (write depth).
+	for (U7Object* object : g_sortedVisibleObjects)
+	{
+		if (!object)
+			continue;
+		if (object->m_drawType == ShapeDrawType::OBJECT_DRAW_FLAT)
+			continue;
+		if (object->m_drawType == ShapeDrawType::OBJECT_DRAW_CUSTOM_MESH_DEFER)
+			continue;
+		object->Draw();
+	}
+
+	// Other flats: depth-write off so coplanar roofs/floors do not fight each other.
 	rlDisableDepthMask();
 	for (U7Object* object : flats)
 		object->Draw();

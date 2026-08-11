@@ -116,6 +116,72 @@ void ShapeData::SetIndexTexture(Image indexImage)
 	UnloadImage(indexImage);
 }
 
+bool ShapeData::EnsureModelPaletteIndexTexture()
+{
+	if (m_modelPaletteIndexAttempted)
+		return m_hasModelPaletteAnim;
+	m_modelPaletteIndexAttempted = true;
+
+	if (!g_paletteSystemReady || m_customMeshName.empty())
+		return false;
+
+	// Companion PNG next to the mesh (water_trough_719x00.obj → .png)
+	std::string pngPath = m_customMeshName;
+	const size_t dot = pngPath.find_last_of('.');
+	if (dot == std::string::npos)
+		return false;
+	pngPath = pngPath.substr(0, dot) + ".png";
+	if (!FileExists(pngPath.c_str()))
+		return false;
+
+	Image rgbImage = LoadImage(pngPath.c_str());
+	if (rgbImage.data == nullptr || rgbImage.width <= 0 || rgbImage.height <= 0)
+		return false;
+
+	ImageFormat(&rgbImage, PIXELFORMAT_UNCOMPRESSED_R8G8B8A8);
+	Image indexImage = GenImageColor(rgbImage.width, rgbImage.height, Color{ 0, 0, 0, 0 });
+
+	const bool shapeIsTranslucent =
+		(m_shape >= 0 && m_shape < 1024 && g_objectDataTable[m_shape].m_isTranslucent);
+
+	bool anyGlisten = false;
+	auto* src = static_cast<Color*>(rgbImage.data);
+	const int count = rgbImage.width * rgbImage.height;
+	for (int i = 0; i < count; ++i)
+	{
+		const Color c = src[i];
+		if (c.a < 128)
+		{
+			ImageDrawPixel(&indexImage, i % rgbImage.width, i / rgbImage.width, Color{ 0, 0, 0, 0 });
+			continue;
+		}
+		const int idx = FindNearestU7PaletteIndex(c.r, c.g, c.b);
+		ImageDrawPixel(&indexImage, i % rgbImage.width, i / rgbImage.width,
+			Color{ static_cast<unsigned char>(idx), 0, 0, 255 });
+		if (IsU7PaletteGlistenIndex(idx, shapeIsTranslucent))
+			anyGlisten = true;
+	}
+
+	UnloadImage(rgbImage);
+
+	if (!anyGlisten)
+	{
+		// No cycling water/fire/etc. — keep baked RGB path (wood-only models).
+		UnloadImage(indexImage);
+		m_hasModelPaletteAnim = false;
+		return false;
+	}
+
+	if (m_modelIndexTexture.id > 0)
+		UnloadTexture(m_modelIndexTexture);
+	m_modelIndexTexture = LoadTextureFromImage(indexImage);
+	SetTextureFilter(m_modelIndexTexture, TEXTURE_FILTER_POINT);
+	SetTextureWrap(m_modelIndexTexture, TEXTURE_WRAP_CLAMP);
+	UnloadImage(indexImage);
+	m_hasModelPaletteAnim = (m_modelIndexTexture.id > 0);
+	return m_hasModelPaletteAnim;
+}
+
 void ShapeData::SetPixelOffset(int offsetX, int offsetY)
 {
 	m_xleft = offsetX;
@@ -822,6 +888,42 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 	case ShapeDrawType::OBJECT_DRAW_CUSTOM_MESH_DEFER:
 	{
 		m_customMesh->UpdateAnim("idle");
+		Model& model = m_customMesh->GetModel();
+
+		// Remap authored model PNG → palette index map so water/fire glisten via
+		// the same runtime LUT as 2D flats (shape 719 trough, etc.).
+		const bool usePalette = EnsureModelPaletteIndexTexture();
+
+		// Save material state so we can restore after palette bind / outline.
+		struct MatBackup
+		{
+			Shader shader{};
+			Texture2D diffuse{};
+			Texture2D specular{};
+		};
+		std::vector<MatBackup> matBackup;
+		if (usePalette && model.materialCount > 0)
+		{
+			matBackup.resize(model.materialCount);
+			for (int mi = 0; mi < model.materialCount; ++mi)
+			{
+				matBackup[mi].shader = model.materials[mi].shader;
+				matBackup[mi].diffuse = model.materials[mi].maps[MATERIAL_MAP_DIFFUSE].texture;
+				matBackup[mi].specular = model.materials[mi].maps[MATERIAL_MAP_SPECULAR].texture;
+				BindPaletteMaterial(&model.materials[mi], m_modelIndexTexture);
+			}
+		}
+
+		auto restoreMaterials = [&]() {
+			if (matBackup.empty())
+				return;
+			for (int mi = 0; mi < model.materialCount; ++mi)
+			{
+				model.materials[mi].shader = matBackup[mi].shader;
+				SetMaterialTexture(&model.materials[mi], MATERIAL_MAP_DIFFUSE, matBackup[mi].diffuse);
+				SetMaterialTexture(&model.materials[mi], MATERIAL_MAP_SPECULAR, matBackup[mi].specular);
+			}
+		};
 
 		if (m_meshOutline && !g_pixelated)
 		{
@@ -832,14 +934,17 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 			// Step 1: Draw the original model, mark stencil with 1
 			glStencilFunc(GL_ALWAYS, 1, 0xFF);
 			glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-			DrawModelEx(m_customMesh->GetModel(), finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, color);
+			DrawModelEx(model, finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, color);
+
+			// Outline uses solid black — must not use palette index sampling.
+			restoreMaterials();
 
 			// Step 2: Draw the outline where stencil is not 1
 			glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
 			glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
 			// Get the bounding box to find the model's center
-			BoundingBox boundingBox = GetModelBoundingBox(m_customMesh->GetModel());
+			BoundingBox boundingBox = GetModelBoundingBox(model);
 			Vector3 size = Vector3{
 				fabs(boundingBox.max.x - boundingBox.min.x),
 				fabs(boundingBox.max.y - boundingBox.min.y),
@@ -873,14 +978,15 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 
 			// Draw the outline with the adjusted position
 			glDepthMask(GL_FALSE);
-			DrawModelEx(m_customMesh->GetModel(), outlinePos, { 0, 1, 0 }, m_rotation, outlineScale, BLACK);
+			DrawModelEx(model, outlinePos, { 0, 1, 0 }, m_rotation, outlineScale, BLACK);
 			glDepthMask(GL_TRUE);
 
 			glDisable(GL_STENCIL_TEST);
 		}
 		else
 		{
-			DrawModelEx(m_customMesh->GetModel(), finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, color);
+			DrawModelEx(model, finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, color);
+			restoreMaterials();
 		}
 		break;
 	}
