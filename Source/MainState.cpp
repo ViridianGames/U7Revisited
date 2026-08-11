@@ -276,10 +276,10 @@ void MainState::OnEnter()
 		m_paused = false;
 		g_Player->AddPartyMember(1);
 
-		SpawnMonster(14, 1044.0f, 0.0f, 2182.0f);
-		SpawnMonster(14, 1042.0f, 0.0f, 2180.0f);
-		SpawnMonster(14, 1048.0f, 0.0f, 2181.0f);
-		SpawnMonster(14, 1050.0f, 0.0f, 2183.0f);
+		// SpawnMonster(14, 1044.0f, 0.0f, 2182.0f);
+		// SpawnMonster(14, 1042.0f, 0.0f, 2180.0f);
+		// SpawnMonster(14, 1048.0f, 0.0f, 2181.0f);
+		// SpawnMonster(14, 1050.0f, 0.0f, 2183.0f);
 
 		// Only show welcome messages on first OnEnter, not when returning from dialogs
 		if (!m_hasShownWelcomeMessages)

@@ -1216,10 +1216,12 @@ void DrawGameWorld(bool drawObjects)
 	if (!drawObjects)
 		return;
 
-	// Same object pass as MainState: non-flats first, flats with polygon offset
-	// (reduces coplanar z-fight), then deferred custom meshes with alpha discard.
-	std::vector<U7Object> flats;
-	std::vector<U7Object> meshes;
+	// Non-flats first (write depth), then flats, then deferred meshes.
+	// Flats (roofs/floors) are coplanar with each other: camera-distance sort
+	// makes their draw order flip when you rotate, which shows as z-fight flicker.
+	// Sort flats by fixed world keys so the whole roof paints consistently at any angle.
+	std::vector<U7Object*> flats;
+	std::vector<U7Object*> meshes;
 	flats.reserve(64);
 	meshes.reserve(16);
 
@@ -1228,28 +1230,42 @@ void DrawGameWorld(bool drawObjects)
 		if (!object)
 			continue;
 		if (object->m_drawType == ShapeDrawType::OBJECT_DRAW_FLAT)
-			flats.push_back(*object);
+			flats.push_back(object);
 		else if (object->m_drawType == ShapeDrawType::OBJECT_DRAW_CUSTOM_MESH_DEFER)
-			meshes.push_back(*object);
+			meshes.push_back(object);
 		else
 			object->Draw();
 	}
 
+	std::sort(flats.begin(), flats.end(), [](const U7Object* a, const U7Object* b) {
+		// Camera-independent order: lower storeys first, then SE-ish tile order, then id.
+		if (a->m_Pos.y != b->m_Pos.y)
+			return a->m_Pos.y < b->m_Pos.y;
+		if (a->m_Pos.z != b->m_Pos.z)
+			return a->m_Pos.z < b->m_Pos.z;
+		if (a->m_Pos.x != b->m_Pos.x)
+			return a->m_Pos.x < b->m_Pos.x;
+		return a->m_ID < b->m_ID;
+	});
+
+	// Polygon offset vs terrain; depth-write off so coplanar flats do not fight each other
+	// in the depth buffer (painter's algorithm with the stable sort above).
 	glEnable(GL_POLYGON_OFFSET_FILL);
 	glPolygonOffset(-1.0f, -1.0f);
-	for (U7Object& object : flats)
-		object.Draw();
+	rlDisableDepthMask();
+	for (U7Object* object : flats)
+		object->Draw();
+	rlEnableDepthMask();
 	glDisable(GL_POLYGON_OFFSET_FILL);
 
 	if (!meshes.empty())
 	{
 		BeginShaderMode(g_alphaDiscard);
-		for (U7Object& object : meshes)
-			object.Draw();
+		for (U7Object* object : meshes)
+			object->Draw();
 		EndShaderMode();
 	}
 }
-
 void DrawGameWorldFrame(bool drawObjects)
 {
 	if (g_pixelated)
@@ -1850,35 +1866,11 @@ void AnalyzeTrinsicObjectList()
 }
 void DrawWorld()
 {
-	// Draw 3D world - used by MainState and modal dialogs
+	// Legacy entry point — same path as MainState / overlays.
 	BeginMode3D(g_camera);
-
-	// Draw the terrain
-	g_Terrain->Draw();
-
-	// Draw objects (non-flats first)
-	for (auto object : g_sortedVisibleObjects)
-	{
-		if (object->m_drawType != ShapeDrawType::OBJECT_DRAW_FLAT)
-		{
-			object->Draw();
-		}
-	}
-
-	// Flats require disabling the depth mask to draw correctly
-	rlDisableDepthMask();
-	for (auto object : g_sortedVisibleObjects)
-	{
-		if (object->m_drawType == ShapeDrawType::OBJECT_DRAW_FLAT)
-		{
-			object->Draw();
-		}
-	}
-	rlEnableDepthMask();
-
+	DrawGameWorld(true);
 	EndMode3D();
 }
-
 void DrawConsole()
 {
 	int counter = 0;
