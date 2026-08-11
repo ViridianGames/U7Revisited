@@ -587,6 +587,10 @@ void UpdateRuntimePalette();
 void BindPaletteShader();
 void BindPaletteMaterial(Material* material, Texture2D indexTexture);
 
+// Nearest entry in g_basePalette (0-254). Used when converting authored RGB
+// model textures into palette index maps for glisten.
+int FindNearestU7PaletteIndex(unsigned char r, unsigned char g, unsigned char b);
+
 extern bool g_pixelated;
 extern RenderTexture2D g_renderTarget;
 extern RenderTexture2D g_guiRenderTarget;
