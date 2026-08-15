@@ -839,7 +839,195 @@ void U7Object::HandleWeatherEgg()
 
 void U7Object::HandleTeleporterEgg()
 {
+	if (!g_Player)
+	{
+		return;
+	}
+	U7Object* avatar = g_Player->GetAvatarObject();
+	if (!avatar)
+	{
+		return;
+	}
 
+	// Once-only / already hatched (unless auto-reset re-arms after leaving radius).
+	if (m_eggData.m_hasTriggered && !m_eggData.m_autoReset)
+	{
+		return;
+	}
+	if (m_eggData.m_hasTriggered)
+	{
+		return; // auto-reset clears hasTriggered in EggUpdate when player leaves
+	}
+
+	// Nocturnal eggs only trigger at night (same heuristic as monster eggs).
+	if (m_eggData.m_nocturnal)
+	{
+		if (g_hour < 20 && g_hour > 6)
+		{
+			return;
+		}
+	}
+
+	const float distXZ = Vector2Distance(
+		Vector2{ m_Pos.x, m_Pos.z },
+		Vector2{ avatar->m_Pos.x, avatar->m_Pos.z });
+	// Same-lift check: Exult wants deltaz == 0, but the avatar often stands on a
+	// surface ~1 unit above the egg's placement Y (roof walk / standable tops).
+	const float deltaY = fabsf(avatar->m_Pos.y - m_Pos.y);
+	const bool sameLift = deltaY <= 1.0f;
+
+	bool justTriggered = false;
+	switch (m_eggData.m_criteria)
+	{
+	case EggCriteria::CachedIn:
+		if (sameLift && distXZ <= CACHED_IN_RADIUS)
+		{
+			justTriggered = true;
+			m_eggData.m_shouldReset = true;
+		}
+		break;
+
+	case EggCriteria::AvatarFootpad:
+	case EggCriteria::PartyFootpad:
+		// On the egg tile (footpad).
+		if (sameLift && distXZ <= 1.5f)
+		{
+			justTriggered = true;
+		}
+		break;
+
+	case EggCriteria::AvatarNear:
+	case EggCriteria::PartyNear:
+	default:
+		// Default: proximity radius (Exult: any tile in area, exact lift).
+		{
+			const float radius = (m_eggData.m_distance > 0)
+				? static_cast<float>(m_eggData.m_distance)
+				: 2.0f;
+			if (sameLift && distXZ <= radius)
+			{
+				justTriggered = true;
+			}
+		}
+		break;
+	}
+
+	if (!justTriggered)
+	{
+		return;
+	}
+
+	// Probability 1-100 (100 = always).
+	if (m_eggData.m_probability < 100)
+	{
+		const int roll = 1 + (rand() % 100);
+		if (roll > static_cast<int>(m_eggData.m_probability))
+		{
+			// Still mark hatched so we don't re-roll every frame until reset.
+			m_eggData.m_hasTriggered = true;
+			return;
+		}
+	}
+
+	m_eggData.m_hasTriggered = true;
+
+	// Resolve destination (Exult Teleport_egg::hatch_now).
+	// quality 255 → absolute coords in m_teleportDest.
+	// otherwise → path egg (frame/type Path) with matching quality.
+	Vector3 dest = m_eggData.m_teleportDest;
+	const int eggnum = m_Quality & 0xff;
+	bool haveDest = false;
+
+	if (eggnum == 255)
+	{
+		haveDest = true;
+	}
+	else
+	{
+		// Prefer path egg with this quality id.
+		for (const auto& [id, objPtr] : g_objectList)
+		{
+			U7Object* obj = objPtr.get();
+			if (!obj || obj->m_UnitType != UnitTypes::UNIT_TYPE_EGG)
+			{
+				continue;
+			}
+			if (obj->m_ObjectType != 275)
+			{
+				continue;
+			}
+			if (obj->m_eggData.m_type != EggType::Path)
+			{
+				continue;
+			}
+			if ((obj->m_Quality & 0xff) != eggnum)
+			{
+				continue;
+			}
+			dest = obj->m_Pos;
+			haveDest = true;
+			break;
+		}
+		// Fallback to packed coords if no path egg found.
+		if (!haveDest && (dest.x != 0.0f || dest.z != 0.0f))
+		{
+			haveDest = true;
+		}
+	}
+
+	if (!haveDest)
+	{
+		AddConsoleString("Teleporter egg: no destination (path id " + std::to_string(eggnum) + ")");
+		return;
+	}
+
+	// Snap party to destination (avatar + party members).
+	auto teleportObject = [&](U7Object* who, float ox, float oz) {
+		if (!who)
+		{
+			return;
+		}
+		Vector3 p = dest;
+		p.x += ox;
+		p.z += oz;
+		who->m_pathWaypoints.clear();
+		who->m_currentWaypointIndex = 0;
+		who->m_pathfindingPending = false;
+		who->m_isMoving = false;
+		who->SetPos(p);
+		who->SetDest(p);
+	};
+
+	teleportObject(avatar, 0.0f, 0.0f);
+
+	const auto& partyIds = g_Player->GetPartyMemberIds();
+	float offset = 0.5f;
+	for (int npcId : partyIds)
+	{
+		if (npcId <= 0 || npcId == avatar->m_NPCID)
+		{
+			continue;
+		}
+		auto itNpc = g_NPCData.find(npcId);
+		if (itNpc == g_NPCData.end() || !itNpc->second)
+		{
+			continue;
+		}
+		const int objId = itNpc->second->m_objectID;
+		auto itObj = g_objectList.find(objId);
+		if (itObj == g_objectList.end() || !itObj->second)
+		{
+			continue;
+		}
+		teleportObject(itObj->second.get(), offset, 0.0f);
+		offset += 0.5f;
+	}
+
+	// Snap camera to avatar (RecalculateCamera is declared but not defined).
+	g_camera.target = Vector3{ dest.x, 0.0f, dest.z };
+	g_camera.position = Vector3Add(g_camera.target, Vector3{ 0.0f, g_cameraDistance, g_cameraDistance });
+	AddConsoleString("Teleported to (" + std::to_string(static_cast<int>(dest.x))
+		+ ", " + std::to_string(static_cast<int>(dest.z)) + ")");
 }
 
 void U7Object::HandlePathEgg()
@@ -1695,81 +1883,129 @@ void U7Object::NPCUpdate()
 
 void U7Object::UpdateMovement()
 {
-	// Shared movement logic for NPCs and Monsters (and potentially others).
-	// Follow waypoints from pathfinding (only when actively moving)
-	if (m_isMoving && !m_pathfindingPending && !m_pathWaypoints.empty() && m_currentWaypointIndex < m_pathWaypoints.size())
-	{
-		float distToWaypoint = Vector3Distance(m_Pos, m_pathWaypoints[m_currentWaypointIndex]);
-		bool isLastWaypoint = (m_currentWaypointIndex == m_pathWaypoints.size() - 1);
-		float threshold = isLastWaypoint ? 0.1f : 0.5f;
+	// Shared movement for NPCs, monsters, and avatar path-follow.
+	// Arrival is XZ-based; climb/drop snaps to waypoint Y.
+	// All units wall-slide when blocked so they don't stop cold on corners.
 
-		if (distToWaypoint < threshold)
+	auto advanceWaypoint = [this]() {
+		const bool isLast = (m_currentWaypointIndex >= static_cast<int>(m_pathWaypoints.size()) - 1);
+		if (isLast)
 		{
-			if (isLastWaypoint)
-			{
-				m_pathWaypoints.clear();
-				m_currentWaypointIndex = 0;
-				m_isMoving = false;
-				m_isSchedulePath = false;
-				SetDest(m_Pos);
-			}
-			else
-			{
-				// Advance to next waypoint
-				m_currentWaypointIndex++;
-				SetDest(m_pathWaypoints[m_currentWaypointIndex]);
-			}
+			m_pathWaypoints.clear();
+			m_currentWaypointIndex = 0;
+			m_isMoving = false;
+			m_isSchedulePath = false;
+			m_moveStuckFrames = 0;
+			SetDest(m_Pos);
+		}
+		else
+		{
+			m_currentWaypointIndex++;
+			SetDest(m_pathWaypoints[m_currentWaypointIndex]);
+			m_isMoving = true;
+			m_moveStuckFrames = 0;
+		}
+	};
+
+	if (m_isMoving && !m_pathfindingPending && !m_pathWaypoints.empty() &&
+	    m_currentWaypointIndex < static_cast<int>(m_pathWaypoints.size()))
+	{
+		const Vector3& wp = m_pathWaypoints[m_currentWaypointIndex];
+		const float distXZ = Vector2Distance({ m_Pos.x, m_Pos.z }, { wp.x, wp.z });
+		const bool isLastWaypoint = (m_currentWaypointIndex == static_cast<int>(m_pathWaypoints.size()) - 1);
+		const float threshold = isLastWaypoint ? 0.15f : 0.45f;
+
+		if (distXZ < threshold)
+		{
+			SetPos(wp);
+			SetDest(wp);
+			advanceWaypoint();
 		}
 	}
 
-	if (m_Pos.x != m_Dest.x || m_Pos.y != m_Dest.y  || m_Pos.z != m_Dest.z)
+	if (m_Pos.x != m_Dest.x || m_Pos.y != m_Dest.y || m_Pos.z != m_Dest.z)
 	{
-		if (m_NPCID == 0)
+		float deltav = m_speed * g_Engine->LastFrameInSeconds();
+		if (deltav < 1e-6f)
+			deltav = 0.001f;
+
+		Vector3 toDest = Vector3Subtract(m_Dest, m_Pos);
+		toDest.y = 0.0f;
+		const float distXZ = Vector3Length(toDest);
+		if (distXZ < 1e-5f)
 		{
-			int stopper = 0;
-			stopper++;
+			float destH = m_Dest.y;
+			if (!g_pathfindingSystem || PathfindingSystem::ValidateMove(this, m_Dest, destH))
+			{
+				Vector3 landed = m_Dest;
+				landed.y = destH;
+				SetPos(landed);
+				SetDest(landed);
+				m_moveStuckFrames = 0;
+			}
+			return;
 		}
 
-		float deltav = m_speed * g_Engine->LastFrameInSeconds();
-
-		// Detect "walking in place" and always log it for debugging.
-		// (gated to avoid spam for non-NPCs like monsters)
-
-		if (m_NPCID >= 0 && m_isMoving &&
-			fabs(m_Direction.x) < 0.001f && fabs(m_Direction.y) < 0.001f && fabs(m_Direction.z) < 0.001f)
+		// Discrete climb/drop onto a path waypoint (same idea as avatar TryMove).
+		// Continuous collision mid-step often rejects stepping onto crates/stairs.
+		const float climbDelta = m_Dest.y - m_Pos.y;
+		if (fabsf(climbDelta) > 0.05f && fabsf(climbDelta) <= MAX_CLIMBABLE_HEIGHT + 0.05f &&
+		    distXZ < 1.15f && g_pathfindingSystem)
 		{
-			std::stringstream ss;
-			ss << "NPC walking-in-place detected id=" << m_NPCID
-			   << " pos=(" << m_Pos.x << "," << m_Pos.y << "," << m_Pos.z << ")"
-			   << " dest=(" << m_Dest.x << "," << m_Dest.y << "," << m_Dest.z << ")"
-			   << " dir=(" << m_Direction.x << "," << m_Direction.y << "," << m_Direction.z << ")"
-			   << " deltav=" << deltav
-			   << " speed=" << m_speed
-			   << " waypointCount=" << m_pathWaypoints.size()
-			   << " waypointIndex=" << m_currentWaypointIndex;
-			NPCDebugPrint(ss.str());
-
-			// Dump the current waypoint list (helps verify whether waypoints actually advance in X/Z)
-			for (size_t i = 0; i < m_pathWaypoints.size(); ++i)
+			const int tx = (int)floorf(m_Dest.x);
+			const int tz = (int)floorf(m_Dest.z);
+			Vector3 landed = { tx + 0.5f, m_Dest.y, tz + 0.5f };
+			float landH = m_Dest.y;
+			if (PathfindingSystem::ValidateMove(this, landed, landH))
 			{
-				const Vector3& wp = m_pathWaypoints[i];
-				std::stringstream s2;
-				s2 << "  wp[" << i << "] = (" << wp.x << ", " << wp.y << ", " << wp.z << ")";
-				NPCDebugPrint(s2.str());
+				landed.y = landH;
+				const Vector3 landDir = Vector3{ m_Dest.x - m_Pos.x, 0.0f, m_Dest.z - m_Pos.z };
+				SetPos(landed);
+				m_moveStuckFrames = 0;
+				m_isMoving = true;
+				if (Vector3LengthSqr(landDir) > 1e-8f)
+					m_Direction = Vector3Normalize(landDir);
+				if (!m_pathWaypoints.empty())
+					advanceWaypoint();
+				else
+				{
+					SetDest(landed);
+					m_isMoving = false;
+				}
+				return;
 			}
 		}
 
-		Vector3 newPos = Vector3Add(m_Pos, Vector3Scale(m_Direction, deltav));
+		Vector3 flatDir = Vector3Scale(toDest, 1.0f / distXZ);
+		m_Direction = flatDir;
 
-		float destH = newPos.y;
-		if (g_pathfindingSystem && !PathfindingSystem::ValidateMove(this, newPos, destH))
-		{
-			// Wall slide: keep the free horizontal axis instead of stopping cold.
-			// (Diagonal into a wall often blocks the combined step while one axis is open.)
+		// Wall-slide helper used at full step and micro-steps.
+		// Prefer the axis that still approaches dest; any free axis is better than stop.
+		auto trySlide = [&](float stepLen, Vector3& outPos, float& outH) -> bool {
+			if (!g_pathfindingSystem)
+			{
+				outPos = Vector3Add(m_Pos, Vector3Scale(flatDir, stepLen));
+				outPos.y = m_Dest.y;
+				outH = outPos.y;
+				return true;
+			}
+
 			const float eps = 1e-5f;
-			const Vector3 step = Vector3Scale(m_Direction, deltav);
-			Vector3 slideX = { m_Pos.x + step.x, m_Pos.y, m_Pos.z };
-			Vector3 slideZ = { m_Pos.x, m_Pos.y, m_Pos.z + step.z };
+			const Vector3 step = Vector3Scale(flatDir, stepLen);
+
+			// Full vector first.
+			Vector3 full = Vector3Add(m_Pos, step);
+			full.y = m_Dest.y;
+			float hFull = m_Pos.y;
+			if (PathfindingSystem::ValidateMove(this, full, hFull))
+			{
+				outPos = full;
+				outH = hFull;
+				return true;
+			}
+
+			Vector3 slideX = { m_Pos.x + step.x, m_Dest.y, m_Pos.z };
+			Vector3 slideZ = { m_Pos.x, m_Dest.y, m_Pos.z + step.z };
 			float hX = m_Pos.y;
 			float hZ = m_Pos.y;
 			const bool wantX = fabsf(step.x) > eps;
@@ -1777,72 +2013,157 @@ void U7Object::UpdateMovement()
 			const bool okX = wantX && PathfindingSystem::ValidateMove(this, slideX, hX);
 			const bool okZ = wantZ && PathfindingSystem::ValidateMove(this, slideZ, hZ);
 
+			auto distToDest2 = [&](float x, float z) {
+				const float dx = x - m_Dest.x;
+				const float dz = z - m_Dest.z;
+				return dx * dx + dz * dz;
+			};
+			const float curD2 = distToDest2(m_Pos.x, m_Pos.z);
+
 			if (okX && okZ)
 			{
-				// Corner case: both axes free alone, combined blocked — prefer larger component.
-				if (fabsf(step.x) >= fabsf(step.z))
+				if (distToDest2(slideX.x, slideX.z) <= distToDest2(slideZ.x, slideZ.z))
 				{
-					newPos = slideX;
-					destH = hX;
+					outPos = slideX;
+					outH = hX;
 				}
 				else
 				{
-					newPos = slideZ;
-					destH = hZ;
+					outPos = slideZ;
+					outH = hZ;
+				}
+				return true;
+			}
+			if (okX && distToDest2(slideX.x, slideX.z) <= curD2 + 0.01f)
+			{
+				outPos = slideX;
+				outH = hX;
+				return true;
+			}
+			if (okZ && distToDest2(slideZ.x, slideZ.z) <= curD2 + 0.01f)
+			{
+				outPos = slideZ;
+				outH = hZ;
+				return true;
+			}
+			if (okX)
+			{
+				outPos = slideX;
+				outH = hX;
+				return true;
+			}
+			if (okZ)
+			{
+				outPos = slideZ;
+				outH = hZ;
+				return true;
+			}
+			return false;
+		};
+
+		Vector3 newPos = m_Pos;
+		float destH = m_Pos.y;
+		// Try full step, then half, then quarter — micro-slides peel around corners
+		// that reject a full deltav into a wall.
+		bool moved = trySlide(deltav, newPos, destH);
+		if (!moved && deltav > 0.02f)
+			moved = trySlide(deltav * 0.5f, newPos, destH);
+		if (!moved && deltav > 0.04f)
+			moved = trySlide(deltav * 0.25f, newPos, destH);
+
+		if (!moved)
+		{
+			// Fully blocked this frame.
+			m_moveStuckFrames++;
+
+			// Snap onto dest if we're close enough in XZ (climb ledge).
+			const float nearXZ = Vector2Distance({ m_Pos.x, m_Pos.z }, { m_Dest.x, m_Dest.z });
+			if (nearXZ < 0.55f && g_pathfindingSystem)
+			{
+				float snapH = m_Dest.y;
+				if (PathfindingSystem::ValidateMove(this, m_Dest, snapH))
+				{
+					Vector3 landed = m_Dest;
+					landed.y = snapH;
+					SetPos(landed);
+					m_moveStuckFrames = 0;
+					if (!m_pathWaypoints.empty())
+						advanceWaypoint();
+					return;
 				}
 			}
-			else if (okX)
+
+			// Path-follow: skip ahead after a short stuck period so NPCs peel around corners.
+			if (!m_pathWaypoints.empty() && m_moveStuckFrames >= 10)
 			{
-				newPos = slideX;
-				destH = hX;
+				if (m_currentWaypointIndex < static_cast<int>(m_pathWaypoints.size()) - 1)
+				{
+					m_currentWaypointIndex++;
+					SetDest(m_pathWaypoints[m_currentWaypointIndex]);
+					m_moveStuckFrames = 0;
+					m_isMoving = true;
+					return;
+				}
 			}
-			else if (okZ)
+
+			// After longer stuck with a path remaining, repath to the final goal
+			// instead of freezing in place (handles dynamic blockers / bad corners).
+			if (!m_pathWaypoints.empty() && m_moveStuckFrames >= 28 &&
+			    g_pathfindingSystem && !m_pathfindingPending)
 			{
-				newPos = slideZ;
-				destH = hZ;
-			}
-			else
-			{
-				m_isMoving = false;
-				SetDest(m_Pos);
+				const Vector3 finalGoal = m_pathWaypoints.back();
+				const bool wasSchedule = m_isSchedulePath;
+				m_moveStuckFrames = 0;
+				PathfindToDest(finalGoal);
+				m_isSchedulePath = wasSchedule;
 				return;
 			}
+
+			// Give up after longer stuck (avoids infinite shuffle).
+			if (m_moveStuckFrames >= 60)
+			{
+				m_pathWaypoints.clear();
+				m_currentWaypointIndex = 0;
+				m_isMoving = false;
+				m_isSchedulePath = false;
+				m_moveStuckFrames = 0;
+				SetDest(m_Pos);
+			}
+			return;
 		}
+
+		m_moveStuckFrames = 0;
 		newPos.y = destH;
 
-		// Overshoot snap only when Dest is still a valid stand position. During wall
-		// slide Dest may still point into the obstacle; snapping there would re-stick.
-		if (Vector3DistanceSqr(newPos, m_Dest) > Vector3DistanceSqr(m_Pos, m_Dest))
+		// Don't overshoot dest in XZ
+		const float newDistXZ = Vector2Distance({ newPos.x, newPos.z }, { m_Dest.x, m_Dest.z });
+		if (newDistXZ > distXZ)
 		{
 			float destSnapH = m_Dest.y;
-			const bool destOk = !g_pathfindingSystem ||
-				PathfindingSystem::ValidateMove(this, m_Dest, destSnapH);
-			if (destOk)
+			if (!g_pathfindingSystem || PathfindingSystem::ValidateMove(this, m_Dest, destSnapH))
 			{
-				m_Dest.y = destSnapH;
-				SetPos(m_Dest);
+				Vector3 landed = m_Dest;
+				landed.y = destSnapH;
+				SetPos(landed);
 				if (m_pathWaypoints.empty())
-				{
 					m_isMoving = false;
-				}
 			}
 			else
 			{
-				// Sliding past a blocked Dest: keep sliding, retarget Dest to current step.
 				m_isMoving = true;
 				SetPos(newPos);
-				SetDest(newPos);
-				TryOpenDoorAtCurrentPosition();
 			}
 		}
 		else
 		{
 			m_isMoving = true;
 			SetPos(newPos);
-
-			// Check for doors after moving to new position
 			TryOpenDoorAtCurrentPosition();
 		}
+	}
+	else
+	{
+		m_moveStuckFrames = 0;
 	}
 }
 
@@ -2039,7 +2360,14 @@ void U7Object::PathfindToDest(Vector3 dest)
 	// Clear previous path and mark as pending
 	m_pathWaypoints.clear();
 	m_currentWaypointIndex = 0;
+	m_moveStuckFrames = 0;
 	m_pathfindingPending = true;
+
+	if (!g_pathfindingSystem)
+	{
+		m_pathfindingPending = false;
+		return;
+	}
 
 	m_pathWaypoints = g_pathfindingSystem->FindPath(m_Pos, dest, this);
 

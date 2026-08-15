@@ -1186,38 +1186,75 @@ void LoadingState::ParseIREGFile(stringstream& ireg, int superchunkx, int superc
 
 				EggData& egg = thisObject->m_eggData;
 
-				uint8_t typeByte  = entryBuffer[4];
-				uint8_t criteriaDist = entryBuffer[5];   // This byte holds criteria + distance
-				uint8_t prob      = entryBuffer[6];
-				uint8_t specVal   = entryBuffer[7];
+				// Exult itype word: bytes 4-5
+				//  bits 0-3 type, 4-6 criteria, 7 nocturnal, 8 once, 9 hatched,
+				//  10-14 distance, 15 auto_reset
+				const uint16_t itype = static_cast<uint16_t>(entryBuffer[4])
+					| (static_cast<uint16_t>(entryBuffer[5]) << 8);
+				const uint8_t prob = entryBuffer[6];
+				const uint16_t data1 = static_cast<uint16_t>(entryBuffer[7])
+					| (static_cast<uint16_t>(entryBuffer[8]) << 8);
+				const uint16_t data2 = static_cast<uint16_t>(entryBuffer[10])
+					| (static_cast<uint16_t>(entryBuffer[11]) << 8);
+				const uint8_t specVal = entryBuffer[7];
 
-				// Type from frame
+				// Display frame maps to our EggType enum (teleporter=frame 5, path=6, …).
+				// Exult stores type in itype&0xf (teleport=7); frame stays the visual id.
 				egg.m_type = static_cast<EggType>(frame);
+				const int itypeType = itype & 0x0f;
+				if (itypeType == 7 || itypeType == 11) // teleport / intermap
+				{
+					egg.m_type = EggType::Teleporter;
+				}
+				else if (itypeType == 9 || (itypeType == 7 && frame == 6))
+				{
+					egg.m_type = EggType::Path;
+				}
+				// Path eggs are shape 275 frame 6 (Exult remaps teleport+frame6 → path).
+				if (shape == 275 && frame == 6)
+				{
+					egg.m_type = EggType::Path;
+				}
 
-				// Probability
 				egg.m_probability = prob;
+				egg.m_criteria = static_cast<EggCriteria>((itype >> 4) & 0x07);
+				egg.m_distance = static_cast<uint8_t>((itype >> 10) & 0x1f);
+				egg.m_nocturnal = ((itype >> 7) & 1) != 0;
+				egg.m_onceOnly = ((itype >> 8) & 1) != 0;
+				egg.m_hasTriggered = ((itype >> 9) & 1) != 0;
+				egg.m_autoReset = ((itype >> 15) & 1) != 0;
 
-				// Criterion: low 3 bits of byte 5
-				uint8_t criteriaRaw = criteriaDist & 0x07;  // Bits 0–2 (0–7)
-				egg.m_criteria = static_cast<EggCriteria>(criteriaRaw);
-
-				// Distance: usually next 4 bits (bits 2–5 shifted)
-				egg.m_distance = (criteriaDist >> 2) & 0x0F;  // 0x09 >> 2 = 2 (matches your Guardian egg)
-
-				// Once-Only: usually bit 6 in byte 4 (0x40)
-				// Once-Only: bit 3 of byte 5 (0x08)
-				egg.m_nocturnal = (typeByte >> 4 ) & 0x01;
-				egg.m_onceOnly = (typeByte >> 4) & 0x02;
-				egg.m_hasTriggered = (typeByte >> 4) & 0x04;
-				egg.m_autoReset = (typeByte >> 4) & 0x08;
-
-				// Specific value (speech #, usecode param, etc.)
+				// Specific value (speech #, usecode param, path/teleport quality, etc.)
 				egg.m_specificValue = specVal;
 
 				// Usecode special case
 				if (egg.m_type == EggType::Usecode)
 				{
-					egg.m_usecodeFunc = entryBuffer[10] | (entryBuffer[11] << 8);
+					egg.m_usecodeFunc = data2;
+				}
+
+				// Path eggs: quality is the destination id teleporters jump to.
+				if (egg.m_type == EggType::Path)
+				{
+					thisObject->m_Quality = data1 & 0xff;
+					egg.m_specificValue = static_cast<uint8_t>(data1 & 0xff);
+				}
+
+				// Teleporter eggs: quality 255 → jump to absolute coords; else path egg id.
+				// Superchunk is 256 tiles in this engine (12 schunks * 256 = 3072).
+				if (egg.m_type == EggType::Teleporter)
+				{
+					thisObject->m_Quality = data1 & 0xff;
+					egg.m_specificValue = static_cast<uint8_t>(data1 & 0xff);
+					if (itypeType == 11)
+					{
+						egg.m_destMap = data1 & 0xff; // intermap map number
+					}
+					const int schunk = (data1 >> 8) & 0xff;
+					const float destX = static_cast<float>((schunk % 12) * 256 + (data2 & 0xff));
+					const float destZ = static_cast<float>((schunk / 12) * 256 + (data2 >> 8));
+					// 12-byte IREG has no data3; dest lift stays 0 unless extended later.
+					egg.m_teleportDest = Vector3{ destX, 0.0f, destZ };
 				}
 
 				// Voice eggs: link each egg's specificValue to an audio file explicitly.

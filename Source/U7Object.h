@@ -459,6 +459,7 @@ public:
 	int m_currentWaypointIndex = 0; // Which waypoint we're moving toward
 	bool m_isSchedulePath = false; // True for C++ schedule paths, false for Lua activity paths
 	bool m_pathfindingPending = false; // True while waiting for pathfinding to complete
+	int m_moveStuckFrames = 0; // Consecutive frames movement was fully blocked (slide failed)
 
 	Vector3 m_ExternalForce;
 

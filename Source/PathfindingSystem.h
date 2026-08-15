@@ -93,8 +93,11 @@ public:
 	// Get the effective walkable height at a tile (obj.y + obj.height if object present, else 0.0)
 	float GetTileHeight(int worldX, int worldZ) const;
 
-	// New helper: collect all walkable surface heights (including ground 0.0)
+	// Collect all walkable surface heights (including ground 0.0).
+	// Prefer the overload with pre-fetched objects when available (avoids a second chunk scan).
 	std::vector<float> GetWalkableSurfaceHeights(int worldX, int worldZ) const;
+	std::vector<float> GetWalkableSurfaceHeightsFromObjects(
+		const std::vector<OverlappingObject>& objects) const;
 
 private:
 	// Helper: Check if specific tile is walkable
@@ -171,14 +174,20 @@ private:
 	float Heuristic(int x1, int z1, int x2, int z2);
 
 	// Get walkable neighbors of a node: now index-based (returns indices into nodePool)
+	// closedSet/openSetLookup avoid allocating duplicate nodes for already-seen (x,z,y) keys.
 	std::vector<int> GetNeighbors(int nodeIndex, PathfindingGrid* grid, int goalX, int goalZ,
-		std::unordered_map<int, bool>& walkableCache,
+		std::unordered_map<int64_t, bool>& walkableCache,
 		std::unordered_map<int, std::vector<float>>& heightsCache,
 		std::vector<PathNode>& nodePool,
+		const std::unordered_map<int64_t, int>* closedSet = nullptr,
+		const std::unordered_map<int64_t, int>* openSetLookup = nullptr,
 		const U7Object* agent = nullptr);
 
 	// Reconstruct path from goal index
 	std::vector<Vector3> ReconstructPath(int goalIndex, PathfindingGrid* grid, std::vector<PathNode>& nodePool);
+
+	// Remove redundant waypoints via direct walkability checks (fewer micro-turns / stuck corners).
+	std::vector<Vector3> SmoothPath(const std::vector<Vector3>& path, PathfindingGrid* grid, const U7Object* agent);
 
 	// Cleanup allocated nodes (legacy)
 	void CleanupNodes();
@@ -241,9 +250,11 @@ public:
 
 	// Hide roof pieces for the building under the avatar (chunk data).
 	// active group = roofGroupTile at the avatar's tile; only hides roofs that
-	// share that group. Never forces roofs visible — height cutoff (sandbox
-	// PGUP/PGDOWN floor view) stays authoritative for show/hide by storey.
-	void UpdateBuildingRoofVisibility(float avatarWorldX, float avatarWorldZ);
+	// share that group AND are above the avatar (inside under the roof).
+	// When standing on/above a roof surface, that roof stays visible.
+	// Never forces roofs visible — height cutoff (sandbox PGUP/PGDOWN floor
+	// view) stays authoritative for show/hide by storey.
+	void UpdateBuildingRoofVisibility(float avatarWorldX, float avatarWorldZ, float avatarWorldY);
 
 	// Queries (world tile coords, 0..3071)
 	bool IsInteriorTile(int worldX, int worldZ) const;
@@ -287,9 +298,22 @@ public:
 	// Call from producer / worker when appropriate.
 	void RecordQueueLatency(uint64_t ms);
 
-	// Utility: determine whether a shape id represents a walkable surface (stairs/floors/bridges/etc.)
-	// Implemented inline below to keep header-only convenience for callers like U7Player.cpp.
+	// Built-in floors/stairs/bridges/rugs (shape allowlist).
 	static bool IsWalkableSurface(int shapeID);
+
+	// Soft props you walk through (curtains): never block, never a stand surface.
+	static bool IsPassThroughObject(int shapeID);
+
+	// Floors/stairs/rugs: provide stand surfaces but their volume must not block
+	// the body (unlike crates/boxes, which block sides).
+	static bool IsNonBlockingWalkSurface(int shapeID);
+
+	// True if this object can be stood on (floors/stairs OR any solid top with height).
+	// Used for crate/box stacking climbs (U7 chimney stairs).
+	static bool IsStandableObjectTop(const U7Object* obj);
+
+	// Surface Y of a standable object (obj.y + TFA height).
+	static float GetObjectSurfaceY(const U7Object* obj);
 
 	// Validates if an agent can move to a desired position.
 	// Returns true if reachable, false if blocked.

@@ -256,15 +256,25 @@ bool U7Player::TryMove(const Vector3& desiredPos)
 	U7Object* avatar = GetAvatarObject();
 	if (!avatar) return false;
 
+	// Manual steer owns the avatar — cancel any click-path so it cannot fight us.
+	avatar->m_pathWaypoints.clear();
+	avatar->m_currentWaypointIndex = 0;
+	avatar->m_pathfindingPending = false;
+	avatar->m_isSchedulePath = false;
+
 	const Vector3 pos = avatar->m_Pos;
-	float destH = pos.y;
+	// Horizontal intent: keep feet Y so ValidateMove may step up onto platforms.
 	Vector3 candidate = desiredPos;
+	candidate.y = pos.y;
+	float destH = pos.y;
 
-	// Full diagonal / combined step first.
-	bool accepted = PathfindingSystem::ValidateMove(avatar, candidate, destH);
+	auto tryCandidate = [&](const Vector3& c, float& outH) -> bool {
+		return PathfindingSystem::ValidateMove(avatar, c, outH);
+	};
 
-	// Wall slide: if blocked, try each horizontal axis alone so we keep the free
-	// component of movement instead of stopping cold against a wall.
+	bool accepted = tryCandidate(candidate, destH);
+
+	// Wall slide: keep free axis; re-validate so climb height is recomputed.
 	if (!accepted)
 	{
 		const float eps = 1e-5f;
@@ -275,13 +285,11 @@ bool U7Player::TryMove(const Vector3& desiredPos)
 		Vector3 slideZ = { pos.x, pos.y, desiredPos.z };
 		float hX = pos.y;
 		float hZ = pos.y;
-		const bool okX = wantX && PathfindingSystem::ValidateMove(avatar, slideX, hX);
-		const bool okZ = wantZ && PathfindingSystem::ValidateMove(avatar, slideZ, hZ);
+		const bool okX = wantX && tryCandidate(slideX, hX);
+		const bool okZ = wantZ && tryCandidate(slideZ, hZ);
 
 		if (okX && okZ)
 		{
-			// Both axes free alone but combined blocked (corner): keep the larger
-			// intended component so feel stays responsive to input direction.
 			if (fabsf(desiredPos.x - pos.x) >= fabsf(desiredPos.z - pos.z))
 			{
 				candidate = slideX;
@@ -311,18 +319,51 @@ bool U7Player::TryMove(const Vector3& desiredPos)
 	if (!accepted)
 		return false;
 
-	// Finalize: snap avatar for small vertical steps, and set dest
 	Vector3 finalDest = candidate;
 	finalDest.y = destH;
 
-	// Instant step for stairs / small height changes
-	if (fabs(destH - pos.y) > 0.05f && fabs(destH - pos.y) <= MAX_CLIMBABLE_HEIGHT)
+	const float climbDelta = destH - pos.y;
+	const bool isClimbOrDrop = fabsf(climbDelta) > 0.05f && fabsf(climbDelta) <= MAX_CLIMBABLE_HEIGHT + 0.05f;
+
+	if (isClimbOrDrop)
 	{
-		Vector3 snapPos = pos;
-		snapPos.y = destH;
-		avatar->SetPos(snapPos);
+		// Discrete step onto/off the platform. Continuous collision was fighting the
+		// crate volume mid-step and dropping the climb inconsistently.
+		// Snap XZ to the dest tile center so we land fully on the standable footprint
+		// (important for multi-tile crates).
+		const int tx = (int)floorf(finalDest.x);
+		const int tz = (int)floorf(finalDest.z);
+		Vector3 landed = { tx + 0.5f, destH, tz + 0.5f };
+		float landH = destH;
+		if (tryCandidate(landed, landH))
+		{
+			landed.y = landH;
+			avatar->SetPos(landed);
+			avatar->SetDest(landed);
+			avatar->m_isMoving = false;
+			avatar->m_Direction = Vector3{
+				finalDest.x - pos.x, 0.0f, finalDest.z - pos.z
+			};
+			if (Vector3Length(avatar->m_Direction) > 1e-5f)
+				avatar->m_Direction = Vector3Normalize(avatar->m_Direction);
+			return true;
+		}
+		// Fallback: snap at the raw candidate XZ
+		landed = { finalDest.x, destH, finalDest.z };
+		landH = destH;
+		if (tryCandidate(landed, landH))
+		{
+			landed.y = landH;
+			avatar->SetPos(landed);
+			avatar->SetDest(landed);
+			avatar->m_isMoving = false;
+			return true;
+		}
+		// Could not land the climb — refuse rather than half-apply.
+		return false;
 	}
 
+	// Flat walk: UpdateMovement interpolates toward dest.
 	avatar->SetDest(finalDest);
 	avatar->m_isMoving = true;
 	return true;

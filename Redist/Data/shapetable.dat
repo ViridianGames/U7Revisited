@@ -20416,7 +20416,7 @@
 787 31 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 787 31 default 
 788 0 0 0 8 8 0 8 8 7 8 0 18 8 3 1 1.2 1 0 0 0.15 0 1 2 2 3 3 1 Models/3dmodels/lever_788x00.gltf 1 0 788 0 object_lever_0788 
 788 1 0 0 8 8 0 8 8 5 8 0 18 8 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 788 1 object_lever_0788 
-788 2 0 0 8 8 0 8 8 18 8 0 7 8 3 1 1.2 1 0.2 0 0 90 1 2 2 3 3 1 Models/3dmodels/lever_788x00.gltf 1 0 788 2 object_lever_0788 
+788 2 0 0 8 8 0 8 8 18 8 0 7 8 3 1.5 2 1 1.1 0.25 0.5 90 1 2 2 3 3 1 Models/3dmodels/lever_788x00.gltf 1 0 788 2 object_lever_0788 
 788 3 0 0 8 8 0 8 8 18 8 0 5 8 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 788 3 object_lever_0788 
 788 4 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 788 4 default 
 788 5 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 788 5 default 

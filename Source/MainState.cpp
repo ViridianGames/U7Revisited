@@ -767,58 +767,82 @@ void MainState::HandleRightDoubleClick()
 
 	if (g_objectUnderMousePointer != nullptr)
 	{
-		// Pathfind onto walkable surfaces (stairs, rooftops, etc.) — skip interactive objects
-		if (g_objectUnderMousePointer->m_isContainer ||
-			g_objectUnderMousePointer->m_objectData->m_isDoor ||
-			g_objectUnderMousePointer->m_hasConversationTree ||
-			g_objectUnderMousePointer->m_shapeData->m_luaScript != "default")
+		// Pathfind onto standable tops (crates, stairs, floors). Skip only true interactables
+		// that should not be "walk onto" targets (doors, talkers, scripted use).
+		if (g_objectUnderMousePointer->m_objectData && g_objectUnderMousePointer->m_objectData->m_isDoor)
+			return;
+		if (g_objectUnderMousePointer->m_hasConversationTree)
+			return;
+		if (g_objectUnderMousePointer->m_shapeData &&
+		    g_objectUnderMousePointer->m_shapeData->m_luaScript != "default" &&
+		    !PathfindingSystem::IsStandableObjectTop(g_objectUnderMousePointer))
 			return;
 
-		int objTileX = (int)floor(g_objectUnderMousePointer->m_Pos.x);
-		int objTileZ = (int)floor(g_objectUnderMousePointer->m_Pos.z);
+		const int objTileX = (int)floor(g_objectUnderMousePointer->m_Pos.x);
+		const int objTileZ = (int)floor(g_objectUnderMousePointer->m_Pos.z);
 
 		float surfaceY = g_objectUnderMousePointer->m_Pos.y;
-		if (g_objectUnderMousePointer->m_objectData)
+		if (PathfindingSystem::IsStandableObjectTop(g_objectUnderMousePointer))
+			surfaceY = PathfindingSystem::GetObjectSurfaceY(g_objectUnderMousePointer);
+		else if (g_objectUnderMousePointer->m_objectData)
 			surfaceY += g_objectUnderMousePointer->m_objectData->m_height;
 
-		bool hasWalkableLayer = false;
 		if (g_pathfindingSystem && g_pathfindingSystem->m_pathfindingGrid)
 		{
 			g_pathfindingSystem->m_pathfindingGrid->DebugPrintTileInfo(objTileX, objTileZ);
 			auto heights = g_pathfindingSystem->m_pathfindingGrid->GetWalkableSurfaceHeights(objTileX, objTileZ);
+			// Prefer the standable height nearest the object's top.
 			if (!heights.empty())
 			{
+				float best = heights[0];
+				float bestD = fabsf(best - surfaceY);
 				for (float h : heights)
 				{
-					if (h > 0.1f) { hasWalkableLayer = true; surfaceY = h; break; }
+					const float d = fabsf(h - surfaceY);
+					if (d < bestD) { bestD = d; best = h; }
 				}
-				if (heights.size() > 1) hasWalkableLayer = true;
+				surfaceY = best;
 			}
 		}
 
-		if (hasWalkableLayer)
-		{
-			U7Object* avatar = g_objectList[g_NPCData[0]->m_objectID].get();
-			if (avatar)
-				avatar->PathfindToDest({ (float)objTileX, surfaceY, (float)objTileZ });
-		}
+		U7Object* avatar = g_objectList[g_NPCData[0]->m_objectID].get();
+		if (avatar)
+			avatar->PathfindToDest({ objTileX + 0.5f, surfaceY, objTileZ + 0.5f });
 	}
 	else if (!g_mouseOverUI && !g_gumpManager->m_isMouseOverGump)
 	{
 		int worldX = (int)floor(g_terrainUnderMousePointer.x);
 		int worldZ = (int)floor(g_terrainUnderMousePointer.z);
 
+		float goalY = 0.0f;
+		if (g_pathfindingSystem && g_pathfindingSystem->m_pathfindingGrid)
+		{
+			auto heights = g_pathfindingSystem->m_pathfindingGrid->GetWalkableSurfaceHeights(worldX, worldZ);
+			U7Object* av = g_objectList[g_NPCData[0]->m_objectID].get();
+			const float prefer = av ? av->m_Pos.y : 0.0f;
+			if (!heights.empty())
+			{
+				goalY = heights[0];
+				float bestD = fabsf(goalY - prefer);
+				for (float h : heights)
+				{
+					const float d = fabsf(h - prefer);
+					if (d < bestD) { bestD = d; goalY = h; }
+				}
+			}
+		}
+
 		U7Object* avatar = g_objectList[g_NPCData[0]->m_objectID].get();
-		avatar->PathfindToDest({ float(worldX), 0, float(worldZ) });
+		avatar->PathfindToDest({ worldX + 0.5f, goalY, worldZ + 0.5f });
 
 		int counter = 1;
 		for (int id : g_Player->GetPartyMemberIds())
 		{
 			U7Object* partyMember = g_objectList[g_NPCData[id]->m_objectID].get();
 			if (id % 2 == 0)
-				partyMember->PathfindToDest({ float(worldX + counter), 0, float(worldZ + counter) });
+				partyMember->PathfindToDest({ worldX + counter + 0.5f, goalY, worldZ + counter + 0.5f });
 			else
-				partyMember->PathfindToDest({ float(worldX + counter), 0, float(worldZ - counter) });
+				partyMember->PathfindToDest({ worldX + counter + 0.5f, goalY, worldZ - counter + 0.5f });
 			counter++;
 		}
 
@@ -903,6 +927,8 @@ void MainState::HandleRightMouseHoldMovement()
 		Vector3 desired = Vector3Add(avatar->GetPos(), Vector3Scale(dir, baseSpeed * speedMult * dt));
 		desired.x = std::fmax(0.0f, std::fmin(3072.0f, desired.x));
 		desired.z = std::fmax(0.0f, std::fmin(3072.0f, desired.z));
+		// Horizontal intent — TryMove/ValidateMove choose climb surfaces.
+		desired.y = avatar->GetPos().y;
 
 		if (g_Player)
 			g_Player->TryMove(desired);
@@ -1159,11 +1185,22 @@ void MainState::HandleAvatarMovement()
 		if (avatarMoved)
 		{
 			direction = Vector3Normalize(direction);
-			//direction = Vector3Multiply(direction, {speed, speed, speed} );
 			direction = Vector3RotateByAxisAngle(direction, Vector3{ 0, 1, 0 }, g_cameraRotation);
-			Vector3 desired = Vector3Add(g_Player->GetAvatarObject()->GetPos(), direction);
+
+			// Match mouse-steer: move by speed*dt, not a full tile per frame.
+			U7Object* avatar = g_Player->GetAvatarObject();
+			float speed = avatar->GetSpeed();
+			if (speed <= 0.0f) speed = 3.0f;
+			const float dt = g_Engine->LastFrameInSeconds();
+			Vector3 desired = Vector3Add(avatar->GetPos(), Vector3Scale(direction, speed * dt));
+			desired.x = std::fmax(0.0f, std::fmin(3072.0f, desired.x));
+			desired.z = std::fmax(0.0f, std::fmin(3072.0f, desired.z));
+			// Keep Y as feet; ValidateMove / TryMove pick climb surfaces (crates, etc.).
+			desired.y = avatar->GetPos().y;
 
 			g_Player->TryMove(desired);
+			if (Vector3Length(direction) > 0.0001f)
+				avatar->m_Direction = direction;
 		}
 	}
 
@@ -1436,7 +1473,7 @@ void MainState::Update()
 			if (U7Object* avatar = g_Player->GetAvatarObject())
 			{
 				const Vector3 apos = avatar->GetPos();
-				g_pathfindingSystem->UpdateBuildingRoofVisibility(apos.x, apos.z);
+				g_pathfindingSystem->UpdateBuildingRoofVisibility(apos.x, apos.z, apos.y);
 			}
 		}
 
@@ -1829,24 +1866,62 @@ void MainState::Draw()
 			auto it = g_objectList.find(g_gumpManager->m_draggedObjectId);
 			if (it != g_objectList.end()) draggedObject = it->second.get();
 		}
-		if (draggedObject)
+		if (draggedObject && draggedObject->m_objectData && draggedObject->m_shapeData)
 		{
-			BoundingBox box = { Vector3{0, 0, 0}, Vector3{0, 0, 0} };
-			box.min = Vector3Subtract(g_terrainUnderMousePointer, { draggedObject->m_shapeData->m_Dims.x, 0, draggedObject->m_shapeData->m_Dims.z });
-			box.max = Vector3Add(box.min, draggedObject->m_shapeData->m_Dims);
+			// SE-origin placement (matches SetPos / pathfinding footprints):
+			// m_Pos is the SE corner tile; box extends west/north by TFA width/depth.
+			const float w = std::max(1.0f, draggedObject->m_objectData->m_width);
+			const float d = std::max(1.0f, draggedObject->m_objectData->m_depth);
+			const float h = std::max(0.1f, draggedObject->m_objectData->m_height);
 
-			std::vector<U7Object*>& objects = g_chunkObjectMap[int(g_terrainUnderMousePointer.x / 16)][int(g_terrainUnderMousePointer.z / 16)];
-			for (U7Object* object : objects)
+			const int seTileX = (int)floorf(g_terrainUnderMousePointer.x);
+			const int seTileZ = (int)floorf(g_terrainUnderMousePointer.z);
+			const int minTileX = seTileX - (int)w + 1;
+			const int minTileZ = seTileZ - (int)d + 1;
+
+			// Stack on highest standable top under the footprint (crates, etc.).
+			float stackY = 0.0f;
+			if (g_pathfindingSystem && g_pathfindingSystem->m_pathfindingGrid)
 			{
-				if (object != draggedObject && CheckCollisionBoxes(object->m_boundingBox, box))
+				for (int tz = minTileZ; tz <= seTileZ; ++tz)
 				{
-					box.min.y = object->m_boundingBox.max.y;
-					box.max.y = object->m_boundingBox.max.y + draggedObject->m_shapeData->m_Dims.y;
+					for (int tx = minTileX; tx <= seTileX; ++tx)
+					{
+						if (tx < 0 || tz < 0 || tx >= 3072 || tz >= 3072)
+							continue;
+						auto heights = g_pathfindingSystem->m_pathfindingGrid->GetWalkableSurfaceHeights(tx, tz);
+						for (float hy : heights)
+						{
+							if (hy > stackY)
+								stackY = hy;
+						}
+						// Also consider object tops that may not be "walkable" for pathing
+						// but still support stacking (use overlapping solids).
+						auto ov = g_pathfindingSystem->m_pathfindingGrid->GetOverlappingObjects(tx, tz);
+						for (const auto& o : ov)
+						{
+							if (!o.obj || o.obj == draggedObject || !o.obj->m_objectData)
+								continue;
+							if (o.obj->m_isContained)
+								continue;
+							const float top = o.obj->m_Pos.y + o.obj->m_objectData->m_height;
+							if (top > stackY)
+								stackY = top;
+						}
+					}
 				}
 			}
 
+			// Drop SE corner = mouse tile at stack height (what SetPos expects).
+			Vector3 sePos = { (float)seTileX, stackY, (float)seTileZ };
+
+			// Ghost box matches U7Object::SetPos bbox: anchor = pos + (-w+1, 0, -d+1).
+			BoundingBox box;
+			box.min = Vector3{ sePos.x + (-w + 1.0f), sePos.y, sePos.z + (-d + 1.0f) };
+			box.max = Vector3{ box.min.x + w, sePos.y + h, box.min.z + d };
+
 			DrawBoundingBox(box, WHITE);
-			g_gumpManager->m_dropPosition = box.min;
+			g_gumpManager->m_dropPosition = sePos;
 		}
 	}
 
