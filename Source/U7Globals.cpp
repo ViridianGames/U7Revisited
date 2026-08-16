@@ -898,13 +898,41 @@ void CameraUpdate(bool forcemove)
 		U7Object* lockObj = GetObjectFromID(g_cameraLockObjectId);
 		if (lockObj && !lockObj->GetIsDead())
 		{
-			Vector3 lockPosition = lockObj->m_Pos;
-			Vector3 cameraPosition = g_camera.target;
-			if (cameraPosition.x != lockPosition.x || cameraPosition.y != lockPosition.y || cameraPosition.z != lockPosition.z)
+			const Vector3 lockPosition = lockObj->m_Pos;
+
+			// Follow XZ tightly so pan still feels locked to the unit.
+			g_camera.target.x = lockPosition.x;
+			g_camera.target.z = lockPosition.z;
+
+			// Smooth vertical follow so stepping onto crates/stairs does not pop the ortho camera.
+			// forcemove snaps (teleport / mode toggles / scripted camera).
+			if (forcemove)
 			{
-				g_camera.target = lockPosition;
-				g_CameraMoved = true;
+				g_camera.target.y = lockPosition.y;
 			}
+			else
+			{
+				float dt = g_Engine->LastFrameInSeconds();
+				if (dt < 1e-4f)
+				{
+					dt = 1e-4f;
+				}
+				// Higher = snappier. ~5-8 feels like existing rotate/pan decay.
+				constexpr float kCameraYSmoothSpeed = 6.0f;
+				const float dy = lockPosition.y - g_camera.target.y;
+				if (fabsf(dy) < 0.005f)
+				{
+					g_camera.target.y = lockPosition.y;
+				}
+				else
+				{
+					const float t = 1.0f - expf(-kCameraYSmoothSpeed * dt);
+					g_camera.target.y += dy * t;
+				}
+			}
+
+			// Always refresh camera pose while locked (Y may still be lerping).
+			g_CameraMoved = true;
 		}
 		else
 		{

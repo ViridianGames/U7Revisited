@@ -85,6 +85,10 @@ public:
 
 	void Draw(const Vector3& pos, float angle, Color color = Color{ 255, 255, 255, 255 }, Vector3 scaling =  Vector3{ 1, 1, 1 });
 
+	// 2D inventory / gump icon (screen-space). Uses palette index + runtime LUT when
+	// the shape has glisten pixels so gems/fire/water cycle like world flats/models.
+	void DrawInventoryIcon(int x, int y, Color tint = Color{ 255, 255, 255, 255 });
+
 	// Flat mesh origin for DrawModelEx so texture top-left stays hotspot-stable across frames.
 	Vector3 GetFlatModelPosition(const Vector3& objectPos) const;
 

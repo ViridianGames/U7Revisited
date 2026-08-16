@@ -749,6 +749,30 @@ void ShapeData::UpdateTextureCoordinates()
     
 }
 
+void ShapeData::DrawInventoryIcon(int x, int y, Color tint)
+{
+	if (m_isValid == false)
+	{
+		return;
+	}
+
+	// GPU palette path: index map R channel + g_paletteTexture LUT (same as flats/billboards).
+	// Covers gems, fire, water, etc. even when world draw type is cuboid/mesh.
+	if (m_hasPaletteAnim && g_paletteSystemReady && m_indexTexture.id > 0)
+	{
+		BeginShaderMode(g_paletteShader);
+		BindPaletteShader();
+		DrawTexture(m_indexTexture, x, y, tint);
+		EndShaderMode();
+		return;
+	}
+
+	if (m_texture != nullptr)
+	{
+		DrawTexture(m_texture->m_Texture, x, y, tint);
+	}
+}
+
 void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scaling)
 {
 	if (m_isValid == false)

@@ -325,12 +325,11 @@ bool U7Player::TryMove(const Vector3& desiredPos)
 	const float climbDelta = destH - pos.y;
 	const bool isClimbOrDrop = fabsf(climbDelta) > 0.05f && fabsf(climbDelta) <= MAX_CLIMBABLE_HEIGHT + 0.05f;
 
+	// Climb/drop and flat walk both go through UpdateMovement so 3D speed
+	// (XZ + height) is applied consistently — no instant vertical snaps.
 	if (isClimbOrDrop)
 	{
-		// Discrete step onto/off the platform. Continuous collision was fighting the
-		// crate volume mid-step and dropping the climb inconsistently.
-		// Snap XZ to the dest tile center so we land fully on the standable footprint
-		// (important for multi-tile crates).
+		// Prefer tile-center footprint for multi-tile crates/stairs.
 		const int tx = (int)floorf(finalDest.x);
 		const int tz = (int)floorf(finalDest.z);
 		Vector3 landed = { tx + 0.5f, destH, tz + 0.5f };
@@ -338,29 +337,21 @@ bool U7Player::TryMove(const Vector3& desiredPos)
 		if (tryCandidate(landed, landH))
 		{
 			landed.y = landH;
-			avatar->SetPos(landed);
 			avatar->SetDest(landed);
-			avatar->m_isMoving = false;
-			avatar->m_Direction = Vector3{
-				finalDest.x - pos.x, 0.0f, finalDest.z - pos.z
-			};
-			if (Vector3Length(avatar->m_Direction) > 1e-5f)
-				avatar->m_Direction = Vector3Normalize(avatar->m_Direction);
-			return true;
 		}
-		// Fallback: snap at the raw candidate XZ
-		landed = { finalDest.x, destH, finalDest.z };
-		landH = destH;
-		if (tryCandidate(landed, landH))
+		else
 		{
-			landed.y = landH;
-			avatar->SetPos(landed);
-			avatar->SetDest(landed);
-			avatar->m_isMoving = false;
-			return true;
+			// Fallback: raw candidate XZ at resolved height.
+			finalDest.y = destH;
+			avatar->SetDest(finalDest);
 		}
-		// Could not land the climb — refuse rather than half-apply.
-		return false;
+		avatar->m_Direction = Vector3{
+			finalDest.x - pos.x, 0.0f, finalDest.z - pos.z
+		};
+		if (Vector3Length(avatar->m_Direction) > 1e-5f)
+			avatar->m_Direction = Vector3Normalize(avatar->m_Direction);
+		avatar->m_isMoving = true;
+		return true;
 	}
 
 	// Flat walk: UpdateMovement interpolates toward dest.

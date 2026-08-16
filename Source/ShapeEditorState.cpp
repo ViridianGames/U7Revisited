@@ -880,21 +880,39 @@ void ShapeEditorState::Update()
 
 	if (m_currentGui->GetActiveElementID() == GE_JUMPTOINSTANCE)
 	{
-		bool foundInstance = false;
+		// Prefer the instance nearest the camera look-at (world focus when the editor opened).
+		U7Object* closest = nullptr;
+		float bestDistSqr = 0.0f;
+		const Vector3 cameraLoc = g_camera.target;
+
 		for (unordered_map<int, unique_ptr<U7Object>>::iterator node = g_objectList.begin(); node != g_objectList.end(); ++node)
 		{
-			if ((*node).second == nullptr) continue;
-			if((*node).second->m_shapeData->m_shape == m_currentShape && (*node).second->m_shapeData->m_frame == m_currentFrame && !(*node).second->m_isContained)
+			U7Object* obj = (*node).second.get();
+			if (obj == nullptr || obj->m_shapeData == nullptr || obj->m_isContained)
 			{
-				g_camera.target = (*node).second->m_Pos;
-				g_camera.position = Vector3Add(g_camera.target, Vector3{ 0, g_cameraDistance, g_cameraDistance });
-				g_CameraMoved = true;
-				g_StateMachine->PopState();  // Close shape editor after jumping
-				foundInstance = true;
-				break;
+				continue;
+			}
+			if (obj->m_shapeData->m_shape != m_currentShape || obj->m_shapeData->m_frame != m_currentFrame)
+			{
+				continue;
+			}
+
+			const float distSqr = Vector3DistanceSqr(obj->m_Pos, cameraLoc);
+			if (closest == nullptr || distSqr < bestDistSqr)
+			{
+				closest = obj;
+				bestDistSqr = distSqr;
 			}
 		}
-		if (!foundInstance)
+
+		if (closest != nullptr)
+		{
+			g_camera.target = closest->m_Pos;
+			g_camera.position = Vector3Add(g_camera.target, Vector3{ 0, g_cameraDistance, g_cameraDistance });
+			g_CameraMoved = true;
+			g_StateMachine->PopState();  // Close shape editor after jumping
+		}
+		else
 		{
 			AddConsoleString("No instance of shape " + to_string(m_currentShape) + " frame " + to_string(m_currentFrame) + " found in world", RED);
 		}

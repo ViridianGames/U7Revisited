@@ -1,12 +1,33 @@
 #include <Geist/RaylibModel.h>
-// would be needed if we need to print vertex order
-//#include <Geist/Logging.h>
+#include <Geist/Logging.h>
 #include <cassert>
 #include <raymath.h>
+#include <string>
 
 using namespace std;
 
+bool RaylibModel::ModelMeshesAreFullySkinned(const Model& model)
+{
+	if (model.meshCount <= 0 || model.boneCount <= 0 || model.bones == nullptr)
+	{
+		return false;
+	}
+
+	// raylib's UpdateModelAnimation logs
+	//   "Mesh N has no connection to bones"
+	// for every mesh with null boneIds. Only apply anims when every mesh is skinned.
+	for (int i = 0; i < model.meshCount; ++i)
+	{
+		if (model.meshes[i].boneIds == nullptr || model.meshes[i].boneWeights == nullptr)
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
 RaylibModel::RaylibModel(const std::string& filename)
+	: m_Filename(filename)
 {
 	m_Model = LoadModel(filename.c_str());
 	if (!m_Model.meshCount) {
@@ -33,6 +54,34 @@ RaylibModel::RaylibModel(const std::string& filename)
 	if (!is_obj) {
 		m_Anims = LoadModelAnimations(filename.c_str(), &m_AnimCount);
 	}
+
+	m_CanApplySkeletalAnim = (m_Anims != nullptr && m_AnimCount > 0
+		&& ModelMeshesAreFullySkinned(m_Model));
+
+	// Anim clips without per-vertex bone data: raylib would spam warnings every
+	// frame when ShapeData calls UpdateAnim("idle"). Log once and drop the clips.
+	if (m_Anims != nullptr && m_AnimCount > 0 && !m_CanApplySkeletalAnim)
+	{
+		int meshesMissingBones = 0;
+		for (int i = 0; i < m_Model.meshCount; ++i)
+		{
+			if (m_Model.meshes[i].boneIds == nullptr || m_Model.meshes[i].boneWeights == nullptr)
+			{
+				++meshesMissingBones;
+			}
+		}
+
+		Log("MODEL ANIM SKIP (no bone skinning on mesh): " + filename
+			+ " | anims=" + std::to_string(m_AnimCount)
+			+ " | modelBones=" + std::to_string(m_Model.boneCount)
+			+ " | meshes=" + std::to_string(m_Model.meshCount)
+			+ " | meshesWithoutBoneIds=" + std::to_string(meshesMissingBones)
+			+ " | firstAnim=\"" + std::string(m_Anims[0].name ? m_Anims[0].name : "") + "\"");
+
+		UnloadModelAnimations(m_Anims, m_AnimCount);
+		m_Anims = nullptr;
+		m_AnimCount = 0;
+	}
 }
 
 RaylibModel::~RaylibModel()
@@ -57,13 +106,21 @@ RaylibModel& RaylibModel::operator=(RaylibModel&& other)
 {
 	if (this != &other)
 	{
+		m_Filename = std::move(other.m_Filename);
 		m_Model = other.m_Model;
 		m_Anims = other.m_Anims;
 		m_AnimCount = other.m_AnimCount;
+		m_CanApplySkeletalAnim = other.m_CanApplySkeletalAnim;
+		m_AnimFrame = other.m_AnimFrame;
+		m_CurrentAnim = std::move(other.m_CurrentAnim);
 
 		other.m_Model = {{ 0 }};
 		other.m_Anims = nullptr;
 		other.m_AnimCount = 0;
+		other.m_CanApplySkeletalAnim = false;
+		other.m_AnimFrame = 0;
+		other.m_CurrentAnim.clear();
+		other.m_Filename.clear();
 	}
 
 	return *this;
@@ -125,6 +182,11 @@ RaylibModel& RaylibModel::UpdateFlatUV(float uvXmin, float uvXmax, float uvYmin,
 }
 
 void RaylibModel::UpdateAnim(const std::string& animName) {
+	// Unskinned models (or models whose anims were dropped at load) are a no-op.
+	if (!m_CanApplySkeletalAnim || !m_Anims || m_AnimCount <= 0) {
+		return;
+	}
+
 	int animIdx = -1;
 	unsigned int currentFrame = 0;
 	double timePerFrame = 1.0 / 24.0;
@@ -160,6 +222,11 @@ void RaylibModel::UpdateAnim(const std::string& animName) {
 
 bool RaylibModel::SetAnimationFrame(const std::string& animName, int frame)
 {
+	if (!m_CanApplySkeletalAnim || !m_Anims || m_AnimCount <= 0)
+	{
+		return false;
+	}
+
 	// Look for the named animation in this model.
 	bool animValid = false;
 	int i = 0;

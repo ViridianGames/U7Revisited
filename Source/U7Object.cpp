@@ -1925,29 +1925,58 @@ void U7Object::UpdateMovement()
 
 	if (m_Pos.x != m_Dest.x || m_Pos.y != m_Dest.y || m_Pos.z != m_Dest.z)
 	{
+		// Speed budget is along the 3D path (XZ + climb/drop), not XZ alone —
+		// otherwise stairs/crates feel like a teleport because Y is free.
 		float deltav = m_speed * g_Engine->LastFrameInSeconds();
 		if (deltav < 1e-6f)
 			deltav = 0.001f;
 
-		Vector3 toDest = Vector3Subtract(m_Dest, m_Pos);
-		toDest.y = 0.0f;
-		const float distXZ = Vector3Length(toDest);
+		const float dyToDest = m_Dest.y - m_Pos.y;
+		Vector3 toDestXZ = Vector3Subtract(m_Dest, m_Pos);
+		toDestXZ.y = 0.0f;
+		const float distXZ = Vector3Length(toDestXZ);
+		const float dist3D = sqrtf(distXZ * distXZ + dyToDest * dyToDest);
+
+		// Pure vertical adjust (same tile XZ): spend budget on Y only.
 		if (distXZ < 1e-5f)
 		{
-			float destH = m_Dest.y;
-			if (!g_pathfindingSystem || PathfindingSystem::ValidateMove(this, m_Dest, destH))
+			if (fabsf(dyToDest) <= deltav)
 			{
-				Vector3 landed = m_Dest;
-				landed.y = destH;
-				SetPos(landed);
-				SetDest(landed);
-				m_moveStuckFrames = 0;
+				float destH = m_Dest.y;
+				if (!g_pathfindingSystem || PathfindingSystem::ValidateMove(this, m_Dest, destH))
+				{
+					Vector3 landed = m_Dest;
+					landed.y = destH;
+					SetPos(landed);
+					SetDest(landed);
+					m_moveStuckFrames = 0;
+					if (!m_pathWaypoints.empty())
+						advanceWaypoint();
+					else
+						m_isMoving = false;
+				}
+			}
+			else
+			{
+				Vector3 mid = m_Pos;
+				mid.y += (dyToDest > 0.0f ? deltav : -deltav);
+				float midH = mid.y;
+				if (!g_pathfindingSystem || PathfindingSystem::ValidateMove(this, mid, midH))
+				{
+					mid.y = midH;
+					SetPos(mid);
+					m_isMoving = true;
+					m_moveStuckFrames = 0;
+				}
 			}
 			return;
 		}
 
-		// Discrete climb/drop onto a path waypoint (same idea as avatar TryMove).
-		// Continuous collision mid-step often rejects stepping onto crates/stairs.
+		// Horizontal step length along the slope (shorter when |dy| is large).
+		const float stepXZBudget = deltav * (distXZ / std::max(dist3D, 1e-5f));
+
+		// Prefer climbing toward a validated landing when near a height change
+		// (crates/stairs): move along 3D toward the tile center, never instant snap.
 		const float climbDelta = m_Dest.y - m_Pos.y;
 		if (fabsf(climbDelta) > 0.05f && fabsf(climbDelta) <= MAX_CLIMBABLE_HEIGHT + 0.05f &&
 		    distXZ < 1.15f && g_pathfindingSystem)
@@ -1959,48 +1988,70 @@ void U7Object::UpdateMovement()
 			if (PathfindingSystem::ValidateMove(this, landed, landH))
 			{
 				landed.y = landH;
-				const Vector3 landDir = Vector3{ m_Dest.x - m_Pos.x, 0.0f, m_Dest.z - m_Pos.z };
-				SetPos(landed);
-				m_moveStuckFrames = 0;
-				m_isMoving = true;
+				Vector3 delta = Vector3Subtract(landed, m_Pos);
+				const float dist = Vector3Length(delta);
+				const Vector3 landDir = Vector3{ landed.x - m_Pos.x, 0.0f, landed.z - m_Pos.z };
 				if (Vector3LengthSqr(landDir) > 1e-8f)
 					m_Direction = Vector3Normalize(landDir);
-				if (!m_pathWaypoints.empty())
-					advanceWaypoint();
+
+				if (dist <= deltav)
+				{
+					SetPos(landed);
+					m_moveStuckFrames = 0;
+					m_isMoving = true;
+					if (!m_pathWaypoints.empty())
+						advanceWaypoint();
+					else
+					{
+						SetDest(landed);
+						m_isMoving = false;
+					}
+				}
 				else
 				{
-					SetDest(landed);
-					m_isMoving = false;
+					Vector3 step = Vector3Scale(Vector3Normalize(delta), deltav);
+					Vector3 mid = Vector3Add(m_Pos, step);
+					float midH = mid.y;
+					// Keep feet on a valid surface under the mid-step XZ when possible.
+					if (PathfindingSystem::ValidateMove(this, mid, midH))
+						mid.y = midH;
+					SetPos(mid);
+					m_isMoving = true;
+					m_moveStuckFrames = 0;
 				}
 				return;
 			}
 		}
 
-		Vector3 flatDir = Vector3Scale(toDest, 1.0f / distXZ);
+		Vector3 flatDir = Vector3Scale(toDestXZ, 1.0f / distXZ);
 		m_Direction = flatDir;
 
 		// Wall-slide helper used at full step and micro-steps.
 		// Prefer the axis that still approaches dest; any free axis is better than stop.
-		auto trySlide = [&](float stepLen, Vector3& outPos, float& outH) -> bool {
+		// stepLen is the XZ step (already slope-scaled by caller).
+		auto trySlide = [&](float stepLen, Vector3& outPos, float& outSurfaceH) -> bool {
 			if (!g_pathfindingSystem)
 			{
 				outPos = Vector3Add(m_Pos, Vector3Scale(flatDir, stepLen));
-				outPos.y = m_Dest.y;
-				outH = outPos.y;
+				// Progress Y proportionally along the path to dest.
+				const float t = distXZ > 1e-5f ? std::min(1.0f, stepLen / distXZ) : 1.0f;
+				outPos.y = m_Pos.y + dyToDest * t;
+				outSurfaceH = outPos.y;
 				return true;
 			}
 
 			const float eps = 1e-5f;
 			const Vector3 step = Vector3Scale(flatDir, stepLen);
 
-			// Full vector first.
+			// Probe at dest height so ValidateMove can resolve the surface, then
+			// we ease Y toward that surface below (not snap in one frame).
 			Vector3 full = Vector3Add(m_Pos, step);
 			full.y = m_Dest.y;
 			float hFull = m_Pos.y;
 			if (PathfindingSystem::ValidateMove(this, full, hFull))
 			{
 				outPos = full;
-				outH = hFull;
+				outSurfaceH = hFull;
 				return true;
 			}
 
@@ -2025,58 +2076,84 @@ void U7Object::UpdateMovement()
 				if (distToDest2(slideX.x, slideX.z) <= distToDest2(slideZ.x, slideZ.z))
 				{
 					outPos = slideX;
-					outH = hX;
+					outSurfaceH = hX;
 				}
 				else
 				{
 					outPos = slideZ;
-					outH = hZ;
+					outSurfaceH = hZ;
 				}
 				return true;
 			}
 			if (okX && distToDest2(slideX.x, slideX.z) <= curD2 + 0.01f)
 			{
 				outPos = slideX;
-				outH = hX;
+				outSurfaceH = hX;
 				return true;
 			}
 			if (okZ && distToDest2(slideZ.x, slideZ.z) <= curD2 + 0.01f)
 			{
 				outPos = slideZ;
-				outH = hZ;
+				outSurfaceH = hZ;
 				return true;
 			}
 			if (okX)
 			{
 				outPos = slideX;
-				outH = hX;
+				outSurfaceH = hX;
 				return true;
 			}
 			if (okZ)
 			{
 				outPos = slideZ;
-				outH = hZ;
+				outSurfaceH = hZ;
 				return true;
 			}
 			return false;
 		};
 
+		// Ease feet Y toward a surface without exceeding remaining 3D budget after XZ step.
+		auto applySmoothedY = [&](Vector3& pos, float surfaceH, float appliedStepXZ) {
+			const float dy = surfaceH - m_Pos.y;
+			if (fabsf(dy) < 0.001f)
+			{
+				pos.y = surfaceH;
+				return;
+			}
+			// Remaining budget for vertical after horizontal travel this frame.
+			float maxYStep = 0.0f;
+			if (appliedStepXZ < deltav)
+			{
+				const float rem = deltav * deltav - appliedStepXZ * appliedStepXZ;
+				maxYStep = rem > 0.0f ? sqrtf(rem) : 0.0f;
+			}
+			// Also cap by proportional progress along the slope to dest (avoids Y racing ahead).
+			if (dist3D > 1e-5f)
+			{
+				const float propCap = deltav * (fabsf(dyToDest) / dist3D);
+				maxYStep = std::min(maxYStep, propCap + 0.001f);
+			}
+			if (fabsf(dy) <= maxYStep)
+				pos.y = surfaceH;
+			else
+				pos.y = m_Pos.y + (dy > 0.0f ? maxYStep : -maxYStep);
+		};
+
 		Vector3 newPos = m_Pos;
-		float destH = m_Pos.y;
-		// Try full step, then half, then quarter — micro-slides peel around corners
-		// that reject a full deltav into a wall.
-		bool moved = trySlide(deltav, newPos, destH);
-		if (!moved && deltav > 0.02f)
-			moved = trySlide(deltav * 0.5f, newPos, destH);
-		if (!moved && deltav > 0.04f)
-			moved = trySlide(deltav * 0.25f, newPos, destH);
+		float surfaceH = m_Pos.y;
+		// Try full slope-scaled step, then half, then quarter.
+		bool moved = trySlide(stepXZBudget, newPos, surfaceH);
+		if (!moved && stepXZBudget > 0.02f)
+			moved = trySlide(stepXZBudget * 0.5f, newPos, surfaceH);
+		if (!moved && stepXZBudget > 0.04f)
+			moved = trySlide(stepXZBudget * 0.25f, newPos, surfaceH);
 
 		if (!moved)
 		{
 			// Fully blocked this frame.
 			m_moveStuckFrames++;
 
-			// Snap onto dest if we're close enough in XZ (climb ledge).
+			// Ease onto dest if close in XZ (climb ledge) — still 3D-budget limited.
 			const float nearXZ = Vector2Distance({ m_Pos.x, m_Pos.z }, { m_Dest.x, m_Dest.z });
 			if (nearXZ < 0.55f && g_pathfindingSystem)
 			{
@@ -2085,10 +2162,21 @@ void U7Object::UpdateMovement()
 				{
 					Vector3 landed = m_Dest;
 					landed.y = snapH;
-					SetPos(landed);
-					m_moveStuckFrames = 0;
-					if (!m_pathWaypoints.empty())
-						advanceWaypoint();
+					Vector3 delta = Vector3Subtract(landed, m_Pos);
+					const float dist = Vector3Length(delta);
+					if (dist <= deltav)
+					{
+						SetPos(landed);
+						m_moveStuckFrames = 0;
+						if (!m_pathWaypoints.empty())
+							advanceWaypoint();
+					}
+					else
+					{
+						SetPos(Vector3Add(m_Pos, Vector3Scale(Vector3Normalize(delta), deltav)));
+						m_isMoving = true;
+						m_moveStuckFrames = 0;
+					}
 					return;
 				}
 			}
@@ -2133,7 +2221,8 @@ void U7Object::UpdateMovement()
 		}
 
 		m_moveStuckFrames = 0;
-		newPos.y = destH;
+		const float appliedStepXZ = Vector2Distance({ m_Pos.x, m_Pos.z }, { newPos.x, newPos.z });
+		applySmoothedY(newPos, surfaceH, appliedStepXZ);
 
 		// Don't overshoot dest in XZ
 		const float newDistXZ = Vector2Distance({ newPos.x, newPos.z }, { m_Dest.x, m_Dest.z });
@@ -2143,9 +2232,18 @@ void U7Object::UpdateMovement()
 			if (!g_pathfindingSystem || PathfindingSystem::ValidateMove(this, m_Dest, destSnapH))
 			{
 				Vector3 landed = m_Dest;
-				landed.y = destSnapH;
+				// Still ease Y if a large climb remains.
+				const float remainY = destSnapH - m_Pos.y;
+				if (fabsf(remainY) <= deltav)
+					landed.y = destSnapH;
+				else
+				{
+					landed.x = m_Dest.x;
+					landed.z = m_Dest.z;
+					landed.y = m_Pos.y + (remainY > 0.0f ? deltav : -deltav);
+				}
 				SetPos(landed);
-				if (m_pathWaypoints.empty())
+				if (m_pathWaypoints.empty() && fabsf(landed.y - destSnapH) < 0.05f)
 					m_isMoving = false;
 			}
 			else

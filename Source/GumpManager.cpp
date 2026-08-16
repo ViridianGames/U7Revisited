@@ -410,7 +410,7 @@ void GumpManager::Draw()
 		//mousePos = Vector2Add(mousePos, m_draggedObjectOffset);
 		mousePos = Vector2Subtract(mousePos, {float(object->m_shapeData->m_texture->m_Image.width) * .75f, float(object->m_shapeData->m_texture->m_Image.height) * .75f });
 
-		DrawTexture(*object->m_shapeData->GetTexture(), int(mousePos.x), int(mousePos.y), Color{ 255, 255, 255, 255 });
+		object->m_shapeData->DrawInventoryIcon(int(mousePos.x), int(mousePos.y));
 	}
 }
 
