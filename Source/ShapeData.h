@@ -171,12 +171,15 @@ public:
 
 	// Same idea for CUSTOM_MESH diffuse atlases (e.g. water trough): RGB PNG remapped to
 	// palette indices so g_runtimePalette glisten (224-243) animates on the model.
+	// Shape editor can disable per shape/frame when nearest-index remap looks wrong.
 	Texture2D m_modelIndexTexture = { 0 };
 	bool m_hasModelPaletteAnim = false;
 	bool m_modelPaletteIndexAttempted = false;
+	bool m_modelPaletteCycle = true; // false = always use baked RGB mesh texture
 
 	// Build m_modelIndexTexture from the mesh's .png (if it contains glisten indices).
 	bool EnsureModelPaletteIndexTexture();
+	void ResetModelPaletteIndexCache();
 
 	std::vector<coords> m_topFaceMods;
 	std::vector<coords> m_frontFaceMods;

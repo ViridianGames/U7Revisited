@@ -116,8 +116,22 @@ void ShapeData::SetIndexTexture(Image indexImage)
 	UnloadImage(indexImage);
 }
 
+void ShapeData::ResetModelPaletteIndexCache()
+{
+	m_modelPaletteIndexAttempted = false;
+	m_hasModelPaletteAnim = false;
+	if (m_modelIndexTexture.id > 0)
+	{
+		UnloadTexture(m_modelIndexTexture);
+		m_modelIndexTexture = { 0 };
+	}
+}
+
 bool ShapeData::EnsureModelPaletteIndexTexture()
 {
+	if (!m_modelPaletteCycle)
+		return false;
+
 	if (m_modelPaletteIndexAttempted)
 		return m_hasModelPaletteAnim;
 	m_modelPaletteIndexAttempted = true;
@@ -299,6 +313,8 @@ void ShapeData::Serialize(ofstream& outStream)
 	outStream << m_pointerShape << " ";
 	outStream << m_pointerFrame << " ";
 	outStream << m_luaScript << " ";
+	// Optional trailing field (older shapetable.dat lines omit this; default true).
+	outStream << (m_modelPaletteCycle ? 1 : 0) << " ";
 	outStream << endl;
 
 	outStream.flush();
@@ -367,6 +383,19 @@ void ShapeData::Deserialize(ifstream& inStream)
 	inStream >> m_pointerFrame;
 
 	inStream >> m_luaScript;
+
+	// Optional: model palette cycle (default true for pre-flag shapetable lines).
+	m_modelPaletteCycle = true;
+	{
+		std::string trailing;
+		std::getline(inStream, trailing);
+		std::istringstream rest(trailing);
+		int flag = 1;
+		if (rest >> flag)
+		{
+			m_modelPaletteCycle = (flag != 0);
+		}
+	}
 
 	Init(m_shape, m_frame, false);
 }
@@ -916,6 +945,7 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 
 		// Remap authored model PNG → palette index map so water/fire glisten via
 		// the same runtime LUT as 2D flats (shape 719 trough, etc.).
+		// Shape editor can disable m_modelPaletteCycle when remap looks wrong.
 		const bool usePalette = EnsureModelPaletteIndexTexture();
 
 		// Save material state so we can restore after palette bind / outline.

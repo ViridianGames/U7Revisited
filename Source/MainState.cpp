@@ -1325,13 +1325,39 @@ void MainState::Update()
 
 	unsigned short currentTargetTile = g_World[(int)g_camera.target.z][(int)g_camera.target.x];
 	currentTargetTile = currentTargetTile & 0x3ff; // We just need the shape, not the frame.
+	U7Object* avatarForCutoff = (g_Player ? g_Player->GetAvatarObject() : nullptr);
+
+	// Dungeon view: avatar under a mountain-top ceiling (Exult in_dungeon + skip_above).
+	// Hide mountain roofs (height cutoff at ceiling) and exterior world (tile mask).
+	g_dungeonViewActive = false;
+	float dungeonCeilingY = -1.0f;
+	if (avatarForCutoff && g_pathfindingSystem)
+	{
+		const int ax = static_cast<int>(std::floor(avatarForCutoff->m_Pos.x));
+		const int az = static_cast<int>(std::floor(avatarForCutoff->m_Pos.z));
+		const int ceilLift = g_pathfindingSystem->GetDungeonCeilingAt(ax, az);
+		if (ceilLift >= 0 && avatarForCutoff->m_Pos.y < static_cast<float>(ceilLift) - 0.15f)
+		{
+			g_dungeonViewActive = true;
+			dungeonCeilingY = static_cast<float>(ceilLift);
+		}
+	}
+
 	if (MainStateModes::MAIN_STATE_MODE_SANDBOX != m_gameMode)
 	{
-		U7Object* avatar = (g_Player ? g_Player->GetAvatarObject() : nullptr);
-		if (currentTargetTile == 0 || currentTargetTile == 5 || currentTargetTile == 17 || currentTargetTile == 18 ||
-			currentTargetTile == 21 || currentTargetTile == 23 || currentTargetTile == 27 || currentTargetTile == 47 || currentTargetTile >= 149)
+		if (g_dungeonViewActive)
 		{
-			float avatarY = avatar->m_Pos.y;
+			// Skip drawing at and above the mountain ceiling (tops + surface world above).
+			// Slightly under ceiling so y == ceiling (mountain tops) fail the y > cutoff test.
+			m_heightCutoff = dungeonCeilingY - 0.001f;
+		}
+		else if (currentTargetTile == 0 || currentTargetTile == 5 || currentTargetTile == 17 || currentTargetTile == 18 ||
+			currentTargetTile == 21 || currentTargetTile == 23 || currentTargetTile == 27 || currentTargetTile == 47 ||
+			// Cavefloors 49-63 (only shape 5 was listed before)
+			(currentTargetTile >= 49 && currentTargetTile <= 63) ||
+			currentTargetTile >= 149)
+		{
+			float avatarY = avatarForCutoff ? avatarForCutoff->m_Pos.y : 0.0f;
 			if (avatarY < 3.5f) m_heightCutoff = 4.0f;
 			else if (avatarY < 11.0f) m_heightCutoff = 10.0f;
 			else m_heightCutoff = 16.0f;
@@ -1461,6 +1487,25 @@ void MainState::Update()
 				{
 					if (!object->GetIsDead()) object->m_Visible = true;
 					if (object->m_drawType == ShapeDrawType::OBJECT_DRAW_DONT_DRAW) { object->m_Visible = false; }
+				}
+
+				// Dungeon: hide mountain-top ceilings and anything not under a mountain.
+				// (Exult: skip_lift + paint_blackness over non-dungeon tiles.)
+				if (g_dungeonViewActive && object->m_Visible && g_pathfindingSystem)
+				{
+					if (PathfindingSystem::IsMountainTopShape(object->m_ObjectType))
+					{
+						object->m_Visible = false;
+					}
+					else
+					{
+						const int ox = static_cast<int>(std::floor(object->m_Pos.x));
+						const int oz = static_cast<int>(std::floor(object->m_Pos.z));
+						if (!g_pathfindingSystem->IsDungeonTile(ox, oz))
+						{
+							object->m_Visible = false;
+						}
+					}
 				}
 			}
 		}

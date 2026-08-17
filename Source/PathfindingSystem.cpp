@@ -2261,6 +2261,19 @@ bool PathfindingSystem::IsRoofShape(int shapeId)
 	}
 }
 
+bool PathfindingSystem::IsMountainTopShape(int shapeId)
+{
+	// Exult data/bg/shape_info.txt section mountain_tops (val=1 normal tops).
+	// These mark dungeon ceilings; their footprints are "dungeon tiles".
+	switch (shapeId)
+	{
+	case 180: case 182: case 183: case 324: case 969: case 983:
+		return true;
+	default:
+		return false;
+	}
+}
+
 RoofMaterial PathfindingSystem::GetRoofMaterial(int shapeId)
 {
 	switch (shapeId)
@@ -2319,6 +2332,21 @@ int PathfindingSystem::GetRoofTypeAt(int worldX, int worldZ) const
 	return m_chunkInfoMap[worldX / 16][worldZ / 16].roofTypeID;
 }
 
+int PathfindingSystem::GetDungeonCeilingAt(int worldX, int worldZ) const
+{
+	if (worldX < 0 || worldX >= 3072 || worldZ < 0 || worldZ >= 3072)
+	{
+		return -1;
+	}
+	const unsigned char ceil = m_chunkInfoMap[worldX / 16][worldZ / 16].dungeonCeiling[worldX % 16][worldZ % 16];
+	return (ceil == 0) ? -1 : static_cast<int>(ceil);
+}
+
+bool PathfindingSystem::IsDungeonTile(int worldX, int worldZ) const
+{
+	return GetDungeonCeilingAt(worldX, worldZ) >= 0;
+}
+
 void PathfindingSystem::BuildChunkBuildingData()
 {
 	const int CHUNKS = 192;
@@ -2334,12 +2362,14 @@ void PathfindingSystem::BuildChunkBuildingData()
 			info.roofGroupID = -1;
 			info.roofTypeID = -1;
 			info.roofMaterial = RoofMaterial::None;
+			info.hasDungeon = false;
 			for (int tz = 0; tz < 16; ++tz)
 			{
 				for (int tx = 0; tx < 16; ++tx)
 				{
 					info.interior[tx][tz] = false;
 					info.roofGroupTile[tx][tz] = -1;
+					info.dungeonCeiling[tx][tz] = 0;
 				}
 			}
 		}
@@ -2421,6 +2451,70 @@ void PathfindingSystem::BuildChunkBuildingData()
 				info.interior[wx % 16][wz % 16] = true;
 			}
 		}
+	}
+
+	// Pass 1b: mountain tops mark dungeon ceilings (Exult Map_chunk::setup_dungeon_levels).
+	// Footprint tiles get the mountain's placement Y as ceiling lift; max wins on overlap.
+	int dungeonTileCount = 0;
+	for (const auto& pair : g_objectList)
+	{
+		U7Object* obj = pair.second.get();
+		if (!obj || obj->GetIsDead() || !obj->m_objectData)
+		{
+			continue;
+		}
+		if (!IsMountainTopShape(obj->m_ObjectType))
+		{
+			continue;
+		}
+
+		// Ceiling lift: object placement Y (U7 lift units). Clamp 1..31 so 0 stays "not dungeon".
+		int ceiling = static_cast<int>(std::lround(obj->m_Pos.y));
+		if (ceiling < 1)
+		{
+			ceiling = 1;
+		}
+		if (ceiling > 31)
+		{
+			ceiling = 31;
+		}
+
+		const int width = std::max(1, static_cast<int>(obj->m_objectData->m_width));
+		const int depth = std::max(1, static_cast<int>(obj->m_objectData->m_depth));
+		const int maxTileX = static_cast<int>(std::floor(obj->m_Pos.x));
+		const int maxTileZ = static_cast<int>(std::floor(obj->m_Pos.z));
+		const int minTileX = maxTileX - width + 1;
+		const int minTileZ = maxTileZ - depth + 1;
+
+		for (int wz = minTileZ; wz <= maxTileZ; ++wz)
+		{
+			for (int wx = minTileX; wx <= maxTileX; ++wx)
+			{
+				if (wx < 0 || wx >= 3072 || wz < 0 || wz >= 3072)
+				{
+					continue;
+				}
+				const int cx = wx / 16;
+				const int cz = wz / 16;
+				ChunkInfo& info = m_chunkInfoMap[cx][cz];
+				unsigned char& cell = info.dungeonCeiling[wx % 16][wz % 16];
+				const unsigned char ceilByte = static_cast<unsigned char>(ceiling);
+				if (cell == 0)
+				{
+					cell = ceilByte;
+					info.hasDungeon = true;
+					++dungeonTileCount;
+				}
+				else if (ceilByte > cell)
+				{
+					cell = ceilByte;
+				}
+			}
+		}
+	}
+	if (dungeonTileCount > 0)
+	{
+		Log("BuildChunkBuildingData: " + std::to_string(dungeonTileCount) + " dungeon tiles under mountain tops");
 	}
 
 	// Pass 2: flood-fill *tiles* that have roof coverage into building groups.

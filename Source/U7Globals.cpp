@@ -410,6 +410,7 @@ bool g_mouseOverUI = false;
 U7Object* g_doubleClickedObject;
 
 bool g_allowInput = true;
+bool g_dungeonViewActive = false;
 
 int g_cameraLockObjectId = -1;
 

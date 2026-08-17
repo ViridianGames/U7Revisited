@@ -479,7 +479,10 @@ void U7Object::EggDraw()
 {
 	// Eggs are invisible unless g_showEggs is enabled (handled in main Draw early-out).
 	// When visible for debug, we still want to draw their shape.
-	//InteractiveDraw();
+	if (g_showEggs)
+	{
+		InteractiveDraw();
+	}
 }
 
 void U7Object::MonsterDraw()

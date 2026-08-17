@@ -239,6 +239,16 @@ void Terrain::UpdateTerrainTiles()
 
 			int cellx = (TILEWIDTH / 2) + i - int(g_camera.target.x);
 			int celly = TILEHEIGHT - ((TILEHEIGHT / 2) + j - int(g_camera.target.z));
+
+			// Exult dungeon blackness: exterior tiles under the camera go black so
+			// only the cave under the mountain shows.
+			if (g_dungeonViewActive && g_pathfindingSystem
+				&& !g_pathfindingSystem->IsDungeonTile(i, j))
+			{
+				DrawRectangle(cellx * 8, (celly - 1) * 8, 8, 8, BLACK);
+				continue;
+			}
+
 			unsigned short shapenum = g_World[j][i] & 0x3ff;
 			unsigned short framenum = (g_World[j][i] >> 10) & 0x1f;
 			if (shapenum >= 150 || framenum >= 32)

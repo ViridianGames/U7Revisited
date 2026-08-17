@@ -1484,6 +1484,12 @@ void ShapeEditorState::Update()
 		shapeData.m_meshOutline = m_currentGui->GetActiveElement()->m_Selected;
 	}
 
+	if (m_currentGui->GetActiveElementID() == GE_MODELPALETTECYCLECHECKBOX)
+	{
+		somethingChanged = true;
+		shapeData.m_modelPaletteCycle = m_currentGui->GetActiveElement()->m_Selected;
+	}
+
 	// Tweak Rotation
 	if (m_currentGui->GetActiveElementID() == GE_TWEAKROTATIONPLUSBUTTON)
 	{
@@ -1536,6 +1542,7 @@ void ShapeEditorState::Update()
 
 		g_shapeTable[m_currentShape][m_currentFrame].m_customMesh = (*m_modelIndex).second.get();
 		g_shapeTable[m_currentShape][m_currentFrame].m_customMeshName = (*m_modelIndex).first;
+		g_shapeTable[m_currentShape][m_currentFrame].ResetModelPaletteIndexCache();
 	}
 
 	if (m_currentGui->GetActiveElementID() == GE_PREVMODELBUTTON)
@@ -1573,6 +1580,7 @@ void ShapeEditorState::Update()
 
 		g_shapeTable[m_currentShape][m_currentFrame].m_customMeshName = (*m_modelIndex).first;
 		g_shapeTable[m_currentShape][m_currentFrame].m_customMesh = (*m_modelIndex).second.get();
+		g_shapeTable[m_currentShape][m_currentFrame].ResetModelPaletteIndexCache();
 	}
 
 	if (m_currentGui->GetActiveElementID() == GE_NEXTLUASCRIPTBUTTON)
@@ -2016,10 +2024,7 @@ void ShapeEditorState::Update()
 	if (m_currentGui == m_meshGui.get())
 	{
 		m_currentGui->GetElement(GE_MESHOUTLINECHECKBOX)->m_Selected = shapeData.m_meshOutline;
-	}
-
-	if (m_currentGui == m_meshGui.get())
-	{
+		m_currentGui->GetElement(GE_MODELPALETTECYCLECHECKBOX)->m_Selected = shapeData.m_modelPaletteCycle;
 		std::string newStr = g_shapeTable[m_currentShape][m_currentFrame].m_customMeshName.substr(16);
 		m_currentGui->GetElement(GE_MODELNAMETEXTAREA)->m_String = newStr;
 	}
@@ -2547,6 +2552,12 @@ void ShapeEditorState::SetupMeshGui()
 	m_meshGui->AddCheckBox(GE_MESHOUTLINECHECKBOX, 4, y, g_guiFont->baseSize, g_guiFont->baseSize);
 	m_meshGui->GetElement(GE_MESHOUTLINECHECKBOX)->m_Selected = shapeData.m_meshOutline;
 	m_meshGui->AddTextArea(GE_MESHOUTLINETEXTAREA, g_guiFont.get(), "Use Mesh Outline", 22, y);
+
+	y += yoffset;
+
+	m_meshGui->AddCheckBox(GE_MODELPALETTECYCLECHECKBOX, 4, y, g_guiFont->baseSize, g_guiFont->baseSize);
+	m_meshGui->GetElement(GE_MODELPALETTECYCLECHECKBOX)->m_Selected = shapeData.m_modelPaletteCycle;
+	m_meshGui->AddTextArea(GE_MODELPALETTECYCLETEXTAREA, g_guiFont.get(), "Palette Cycle", 22, y);
 
 }
 

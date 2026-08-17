@@ -645,6 +645,10 @@ void NotifyPathfindingGridUpdate(int worldX, int worldZ, int radius = 1);
 
 extern bool g_allowInput;
 
+// True while the avatar is under a mountain ceiling (dungeon interior).
+// Terrain blacks out exterior tiles; object culling hides mountain tops + outside.
+extern bool g_dungeonViewActive;
+
 //void AnalyzeTrinsicObjectList();
 
 #ifdef DEBUG_NPC_PATHFINDING

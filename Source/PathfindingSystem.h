@@ -47,6 +47,11 @@ struct ChunkInfo
 	int  roofTypeID = -1;           // geometry/type catalog id (-1 = untyped)
 	RoofMaterial roofMaterial = RoofMaterial::None;
 
+	// Dungeon map (Exult mountain-top footprints). 0 = not under a mountain;
+	// otherwise the mountain ceiling lift (Y) for that tile. Built with roofs.
+	unsigned char dungeonCeiling[16][16] = {};
+	bool hasDungeon = false;
+
 	// Connectivity flags for 8 directions (0 = North, 1 = NE, 2 = E, etc.)
 	bool canReach[8] = { false };
 };
@@ -263,9 +268,16 @@ public:
 	int GetRoofTypeAt(int worldX, int worldZ) const;
 	const ChunkInfo* GetChunkInfo(int chunkX, int chunkZ) const;
 
+	// Dungeon tiles = under mountain-top footprints (Exult setup_dungeon_levels).
+	// Returns ceiling Y (lift), or -1 if the tile is not a dungeon tile.
+	int GetDungeonCeilingAt(int worldX, int worldZ) const;
+	bool IsDungeonTile(int worldX, int worldZ) const;
+
 	// True if shape is a world roof piece (wood/slate/tile/etc.).
 	static bool IsRoofShape(int shapeId);
 	static RoofMaterial GetRoofMaterial(int shapeId);
+	// Exult BG mountain tops (shape_info mountain_tops) — mark dungeon ceilings.
+	static bool IsMountainTopShape(int shapeId);
 
 	std::unique_ptr<PathfindingGrid> m_pathfindingGrid;
 	std::unique_ptr<AStar> m_aStar;
