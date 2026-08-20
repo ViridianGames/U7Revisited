@@ -1,15 +1,39 @@
---- Best guess: Filters party members to find a valid NPC, defaulting to 356 if none found.
----@return integer npc_id The NPC ID found, or 356 as default
-function utility_unknown_1025()
-    local var_0000, var_0001, var_0002
+--- Pick a party companion NPC id (not the Avatar), or Avatar ref 356 if alone.
+--- Used by various usecode helpers; decompiled filter_party_members call was incomplete.
 
-    var_0000 = filter_party_members(get_party_members(), get_object_owner(356)) --- Guess: Filters party members
-    var_0001 = #var_0000 --- Guess: Gets array size
-    if var_0001 ~= 0 then
-        var_0002 = get_party_member(var_0001) --- Guess: Gets party member
-        if not npc_id_in_party(var_0002) then --- Guess: Checks if NPC is in party
-            return var_0002
+function filter_party_members(party_list, exclude)
+    local out = {}
+    if type(party_list) ~= "table" then
+        return out
+    end
+    for _, member in ipairs(party_list) do
+        if member ~= nil and member ~= exclude then
+            table.insert(out, member)
         end
     end
-    return 356
+    return out
+end
+
+function utility_unknown_1025()
+    -- Prefer numeric party NPC ids when available
+    local party_ids = (get_party_list2 and get_party_list2()) or {}
+    for _, id in ipairs(party_ids) do
+        if type(id) == "number" and id ~= 0 and id ~= 356 and id ~= -356 then
+            return id
+        end
+    end
+
+    -- Fallback: names from get_party_members → resolve to ids
+    local names = (get_party_members and get_party_members()) or {}
+    local avatar_name = get_player_name and get_player_name() or nil
+    for _, name in ipairs(names) do
+        if name and name ~= avatar_name and get_npc_id_from_name then
+            local id = get_npc_id_from_name(name)
+            if id and id ~= 0 then
+                return id
+            end
+        end
+    end
+
+    return 356 -- Avatar usecode ref
 end

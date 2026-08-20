@@ -1,0 +1,2808 @@
+{
+  "bounds": {
+    "x": [
+      944,
+      1104
+    ],
+    "z": [
+      2096,
+      2336
+    ]
+  },
+  "total_instances": 2116,
+  "unique_shapes": 182,
+  "status_counts": {
+    "default": 134,
+    "has_script": 43,
+    "special_egg": 1,
+    "stub_empty": 2,
+    "thin": 2
+  },
+  "needs_work_non_scenery": 76,
+  "needs_work_non_scenery_instances": 255,
+  "priority_interactive": [
+    {
+      "shape": 211,
+      "name": "broken door",
+      "count": 2,
+      "frames": [
+        2,
+        3
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 257,
+      "name": "fortress gateway",
+      "count": 3,
+      "frames": [
+        0,
+        1
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 271,
+      "name": "portcullis",
+      "count": 1,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 272,
+      "name": "portcullis",
+      "count": 2,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 415,
+      "name": "garbage",
+      "count": 38,
+      "frames": [
+        19,
+        20
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 535,
+      "name": "spent sconce",
+      "count": 5,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 542,
+      "name": "crested helm",
+      "count": 1,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 546,
+      "name": "broken dish",
+      "count": 6,
+      "frames": [
+        2,
+        3,
+        4,
+        10,
+        11,
+        15
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 561,
+      "name": "great dagger",
+      "count": 1,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 569,
+      "name": "leather armour",
+      "count": 3,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 572,
+      "name": "wooden shield",
+      "count": 3,
+      "frames": [
+        0,
+        1
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 579,
+      "name": "leather gloves",
+      "count": 3,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 587,
+      "name": "boots",
+      "count": 8,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 588,
+      "name": "swamp boots",
+      "count": 1,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 594,
+      "name": "/dagger//s",
+      "count": 6,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 599,
+      "name": "sword",
+      "count": 4,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 659,
+      "name": "mace",
+      "count": 3,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 677,
+      "name": "sack of wheat",
+      "count": 3,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 724,
+      "name": "Fellowship Icon",
+      "count": 1,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 740,
+      "name": "well",
+      "count": 4,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 800,
+      "name": "chest",
+      "count": 8,
+      "frames": [
+        0,
+        1
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 801,
+      "name": "backpack",
+      "count": 1,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 802,
+      "name": "bag",
+      "count": 11,
+      "frames": [
+        0,
+        1
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 804,
+      "name": "crate",
+      "count": 30,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 885,
+      "name": "Fellowship Staff",
+      "count": 1,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 994,
+      "name": "tongs",
+      "count": 3,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 1004,
+      "name": "leather helm",
+      "count": 3,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    }
+  ],
+  "shapes": [
+    {
+      "shape": 156,
+      "name": "tile roof",
+      "count": 9,
+      "frames": [
+        0,
+        1,
+        3,
+        4,
+        5,
+        16
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 164,
+      "name": "slate roof",
+      "count": 2,
+      "frames": [
+        6,
+        7
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 165,
+      "name": "slate roof",
+      "count": 1,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 166,
+      "name": "slate roof",
+      "count": 12,
+      "frames": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 167,
+      "name": "slate roof",
+      "count": 3,
+      "frames": [
+        9,
+        10
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 170,
+      "name": "wood roof",
+      "count": 118,
+      "frames": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 174,
+      "name": "wood roof",
+      "count": 25,
+      "frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 176,
+      "name": "wood roof",
+      "count": 3,
+      "frames": [
+        0,
+        1,
+        2
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 188,
+      "name": "rug",
+      "count": 2,
+      "frames": [
+        0,
+        1
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 211,
+      "name": "broken door",
+      "count": 2,
+      "frames": [
+        2,
+        3
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 249,
+      "name": "top",
+      "count": 1,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 257,
+      "name": "fortress gateway",
+      "count": 3,
+      "frames": [
+        0,
+        1
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 264,
+      "name": "iron bars",
+      "count": 2,
+      "frames": [
+        0,
+        2
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 268,
+      "name": "mirror",
+      "count": 2,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 270,
+      "name": "door",
+      "count": 11,
+      "frames": [
+        0,
+        2,
+        8,
+        16
+      ],
+      "primary_script": "object_door_0270",
+      "best_status": "has_script",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 271,
+      "name": "portcullis",
+      "count": 1,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 272,
+      "name": "portcullis",
+      "count": 2,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 275,
+      "name": "Egg",
+      "count": 37,
+      "frames": [
+        0,
+        2,
+        3,
+        4,
+        7
+      ],
+      "primary_script": "default",
+      "best_status": "special_egg",
+      "category": "egg",
+      "note": "Usecode eggs use egg func id, not shape script"
+    },
+    {
+      "shape": 276,
+      "name": "crossbeam",
+      "count": 1,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 277,
+      "name": "crossbeam",
+      "count": 2,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 282,
+      "name": "painting",
+      "count": 3,
+      "frames": [
+        0,
+        1,
+        3
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 285,
+      "name": "cloak",
+      "count": 2,
+      "frames": [
+        2
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 290,
+      "name": "closed shutters",
+      "count": 8,
+      "frames": [
+        0,
+        1
+      ],
+      "primary_script": "object_shutters_0290",
+      "best_status": "has_script",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 291,
+      "name": "closed shutters",
+      "count": 12,
+      "frames": [
+        0,
+        1
+      ],
+      "primary_script": "object_shutters_0291",
+      "best_status": "has_script",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 292,
+      "name": "seat",
+      "count": 18,
+      "frames": [
+        8,
+        10,
+        11
+      ],
+      "primary_script": "object_chair_0292",
+      "best_status": "has_script",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 293,
+      "name": "tapestry",
+      "count": 9,
+      "frames": [
+        0,
+        1,
+        2
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 322,
+      "name": "open shutters",
+      "count": 6,
+      "frames": [
+        0,
+        1
+      ],
+      "primary_script": "object_shutters_0322",
+      "best_status": "has_script",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 336,
+      "name": "light source",
+      "count": 30,
+      "frames": [
+        4,
+        6,
+        11,
+        12,
+        13
+      ],
+      "primary_script": "object_light_0336",
+      "best_status": "has_script",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 338,
+      "name": "lit light source",
+      "count": 10,
+      "frames": [
+        6,
+        9,
+        15
+      ],
+      "primary_script": "object_light_0338",
+      "best_status": "has_script",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 340,
+      "name": "/potion//s",
+      "count": 4,
+      "frames": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "primary_script": "object_potion_0340",
+      "best_status": "has_script",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 361,
+      "name": "sign",
+      "count": 2,
+      "frames": [
+        7,
+        9
+      ],
+      "primary_script": "utility_spell_0361",
+      "best_status": "has_script",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 367,
+      "name": "floor",
+      "count": 7,
+      "frames": [
+        0,
+        2,
+        3
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 368,
+      "name": "floor",
+      "count": 8,
+      "frames": [
+        0,
+        26,
+        27,
+        28
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 369,
+      "name": "floor",
+      "count": 3,
+      "frames": [
+        22,
+        23,
+        24
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 370,
+      "name": "floor",
+      "count": 3,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 372,
+      "name": "open shutters",
+      "count": 9,
+      "frames": [
+        0,
+        1
+      ],
+      "primary_script": "object_shutters_0372",
+      "best_status": "has_script",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 376,
+      "name": "door",
+      "count": 16,
+      "frames": [
+        0,
+        8,
+        9,
+        16
+      ],
+      "primary_script": "object_door_0376",
+      "best_status": "has_script",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 377,
+      "name": "/food item//s",
+      "count": 6,
+      "frames": [
+        0,
+        1,
+        4,
+        8
+      ],
+      "primary_script": "object_fooditem_0377",
+      "best_status": "has_script",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 378,
+      "name": "fence",
+      "count": 15,
+      "frames": [
+        0,
+        3
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 379,
+      "name": "sign",
+      "count": 23,
+      "frames": [
+        0,
+        1,
+        2,
+        3,
+        7,
+        8,
+        9,
+        10
+      ],
+      "primary_script": "object_sign_0379",
+      "best_status": "has_script",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 385,
+      "name": "stairs",
+      "count": 3,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 386,
+      "name": "stairs",
+      "count": 3,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 387,
+      "name": "stairs",
+      "count": 3,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 388,
+      "name": "eating utensils",
+      "count": 1,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 407,
+      "name": "desk",
+      "count": 2,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 414,
+      "name": "body",
+      "count": 1,
+      "frames": [
+        26
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 415,
+      "name": "garbage",
+      "count": 38,
+      "frames": [
+        19,
+        20
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 416,
+      "name": "drawers",
+      "count": 1,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 420,
+      "name": "fence",
+      "count": 112,
+      "frames": [
+        0,
+        2,
+        4,
+        5
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 421,
+      "name": "fence",
+      "count": 37,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 422,
+      "name": "fence",
+      "count": 22,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 426,
+      "name": "stairs",
+      "count": 7,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 427,
+      "name": "stairs",
+      "count": 6,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 428,
+      "name": "stairs",
+      "count": 4,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 429,
+      "name": "stairs",
+      "count": 4,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 430,
+      "name": "stairs",
+      "count": 4,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 431,
+      "name": "bellows",
+      "count": 1,
+      "frames": [
+        0
+      ],
+      "primary_script": "object_bellows_0431",
+      "best_status": "has_script",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 435,
+      "name": "lit sconce",
+      "count": 11,
+      "frames": [
+        0,
+        1
+      ],
+      "primary_script": "object_sconce_0435",
+      "best_status": "has_script",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 438,
+      "name": "window",
+      "count": 33,
+      "frames": [
+        0,
+        1,
+        4
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 444,
+      "name": "hood",
+      "count": 2,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 470,
+      "name": "well",
+      "count": 4,
+      "frames": [
+        0
+      ],
+      "primary_script": "object_chest_0470",
+      "best_status": "has_script",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 483,
+      "name": "rug",
+      "count": 2,
+      "frames": [
+        0,
+        1
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 522,
+      "name": "locked chest",
+      "count": 2,
+      "frames": [
+        0
+      ],
+      "primary_script": "object_chestlocked_0522",
+      "best_status": "has_script",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 535,
+      "name": "spent sconce",
+      "count": 5,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 538,
+      "name": "fence",
+      "count": 7,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 542,
+      "name": "crested helm",
+      "count": 1,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 543,
+      "name": "buckler",
+      "count": 2,
+      "frames": [
+        0,
+        1
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 546,
+      "name": "broken dish",
+      "count": 6,
+      "frames": [
+        2,
+        3,
+        4,
+        10,
+        11,
+        15
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 561,
+      "name": "great dagger",
+      "count": 1,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 569,
+      "name": "leather armour",
+      "count": 3,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 572,
+      "name": "wooden shield",
+      "count": 3,
+      "frames": [
+        0,
+        1
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 574,
+      "name": "leather leggings",
+      "count": 1,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 579,
+      "name": "leather gloves",
+      "count": 3,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 587,
+      "name": "boots",
+      "count": 8,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 588,
+      "name": "swamp boots",
+      "count": 1,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 589,
+      "name": "pitchfork",
+      "count": 1,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 590,
+      "name": "club",
+      "count": 1,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 591,
+      "name": "main gauche",
+      "count": 2,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 594,
+      "name": "/dagger//s",
+      "count": 6,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 596,
+      "name": "morning star",
+      "count": 2,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 599,
+      "name": "sword",
+      "count": 4,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 601,
+      "name": "two handed axe",
+      "count": 1,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 607,
+      "name": "path",
+      "count": 26,
+      "frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 615,
+      "name": "/kni/fe/ves",
+      "count": 4,
+      "frames": [
+        0,
+        1
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 616,
+      "name": "bottle",
+      "count": 7,
+      "frames": [
+        3,
+        4,
+        5,
+        9,
+        14
+      ],
+      "primary_script": "object_bottle_0616",
+      "best_status": "stub_empty",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 620,
+      "name": "rake",
+      "count": 1,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 623,
+      "name": "/hammer//s",
+      "count": 1,
+      "frames": [
+        0
+      ],
+      "primary_script": "object_hammer_0623",
+      "best_status": "has_script",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 625,
+      "name": "shovel",
+      "count": 1,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 628,
+      "name": "cup",
+      "count": 16,
+      "frames": [
+        0,
+        2,
+        4
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 633,
+      "name": "table",
+      "count": 36,
+      "frames": [
+        0,
+        1,
+        4
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 641,
+      "name": "/key//s",
+      "count": 1,
+      "frames": [
+        0
+      ],
+      "primary_script": "object_doorkey_0641",
+      "best_status": "has_script",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 642,
+      "name": "book",
+      "count": 20,
+      "frames": [
+        0,
+        1,
+        2,
+        14,
+        17,
+        22,
+        26
+      ],
+      "primary_script": "object_book_0642",
+      "best_status": "has_script",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 644,
+      "name": "/gold coin//s",
+      "count": 3,
+      "frames": [
+        0,
+        1,
+        7
+      ],
+      "primary_script": "object_coins_0644",
+      "best_status": "has_script",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 657,
+      "name": "curtain",
+      "count": 5,
+      "frames": [
+        0,
+        2,
+        6
+      ],
+      "primary_script": "object_curtains_0657",
+      "best_status": "has_script",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 659,
+      "name": "mace",
+      "count": 3,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 668,
+      "name": "sword blank",
+      "count": 1,
+      "frames": [
+        0
+      ],
+      "primary_script": "object_swordblank_0668",
+      "best_status": "has_script",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 675,
+      "name": "desk item",
+      "count": 10,
+      "frames": [
+        0,
+        1,
+        2,
+        10,
+        13,
+        16
+      ],
+      "primary_script": "object_deskitem_0675",
+      "best_status": "has_script",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 677,
+      "name": "sack of wheat",
+      "count": 3,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 678,
+      "name": "curtain",
+      "count": 3,
+      "frames": [
+        6,
+        10
+      ],
+      "primary_script": "object_curtain_0678",
+      "best_status": "has_script",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 687,
+      "name": "pillar",
+      "count": 6,
+      "frames": [
+        2
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 696,
+      "name": "bed",
+      "count": 15,
+      "frames": [
+        0,
+        2,
+        5,
+        7,
+        9,
+        11,
+        13,
+        14,
+        15
+      ],
+      "primary_script": "object_bed_0696",
+      "best_status": "has_script",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 697,
+      "name": "podium",
+      "count": 1,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 713,
+      "name": "post",
+      "count": 15,
+      "frames": [
+        1
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 717,
+      "name": "plate",
+      "count": 18,
+      "frames": [
+        3,
+        4,
+        5
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 718,
+      "name": "pedestal",
+      "count": 1,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 719,
+      "name": "water trough",
+      "count": 2,
+      "frames": [
+        0,
+        2
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 724,
+      "name": "Fellowship Icon",
+      "count": 1,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 732,
+      "name": "window",
+      "count": 28,
+      "frames": [
+        0,
+        1,
+        4
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 739,
+      "name": "firepit",
+      "count": 1,
+      "frames": [
+        0
+      ],
+      "primary_script": "object_firepit_0739",
+      "best_status": "stub_empty",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 740,
+      "name": "well",
+      "count": 4,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 787,
+      "name": "lever",
+      "count": 2,
+      "frames": [
+        0,
+        2
+      ],
+      "primary_script": "object_lever_0787",
+      "best_status": "has_script",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 797,
+      "name": "scroll",
+      "count": 10,
+      "frames": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "primary_script": "object_book_0797",
+      "best_status": "has_script",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 798,
+      "name": "sealed box",
+      "count": 1,
+      "frames": [
+        0
+      ],
+      "primary_script": "object_sealedbox_0798",
+      "best_status": "has_script",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 799,
+      "name": "unsealed box",
+      "count": 1,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 800,
+      "name": "chest",
+      "count": 8,
+      "frames": [
+        0,
+        1
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 801,
+      "name": "backpack",
+      "count": 1,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 802,
+      "name": "bag",
+      "count": 11,
+      "frames": [
+        0,
+        1
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 803,
+      "name": "basket",
+      "count": 1,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 804,
+      "name": "crate",
+      "count": 30,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 810,
+      "name": "bucket",
+      "count": 5,
+      "frames": [
+        0,
+        2
+      ],
+      "primary_script": "object_bucket_0810",
+      "best_status": "has_script",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 821,
+      "name": "painting",
+      "count": 1,
+      "frames": [
+        1
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 823,
+      "name": "artist's equipment",
+      "count": 2,
+      "frames": [
+        1,
+        2
+      ],
+      "primary_script": "object_artist_0823",
+      "best_status": "has_script",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 824,
+      "name": "pitcher",
+      "count": 1,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 828,
+      "name": "wall",
+      "count": 1,
+      "frames": [
+        0
+      ],
+      "primary_script": "object_unknown_0828",
+      "best_status": "thin",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 837,
+      "name": "easel",
+      "count": 3,
+      "frames": [
+        0,
+        2,
+        15
+      ],
+      "primary_script": "object_easel_0837",
+      "best_status": "has_script",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 845,
+      "name": "wall",
+      "count": 2,
+      "frames": [
+        0,
+        16
+      ],
+      "primary_script": "object_unknown_0845",
+      "best_status": "thin",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 847,
+      "name": "table",
+      "count": 7,
+      "frames": [
+        0,
+        6,
+        9,
+        12
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 848,
+      "name": "mirror",
+      "count": 1,
+      "frames": [
+        0
+      ],
+      "primary_script": "object_mirror_0848",
+      "best_status": "has_script",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 849,
+      "name": "tapestry",
+      "count": 14,
+      "frames": [
+        0,
+        1,
+        2
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 851,
+      "name": "cloth",
+      "count": 3,
+      "frames": [
+        1,
+        3,
+        5
+      ],
+      "primary_script": "object_cloth_0851",
+      "best_status": "has_script",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 852,
+      "name": "crenellations",
+      "count": 69,
+      "frames": [
+        0,
+        2,
+        3,
+        4
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 854,
+      "name": "statue",
+      "count": 1,
+      "frames": [
+        4
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 863,
+      "name": "kitchen items",
+      "count": 1,
+      "frames": [
+        0
+      ],
+      "primary_script": "object_unknown_0863",
+      "best_status": "has_script",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 867,
+      "name": "victim",
+      "count": 1,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 872,
+      "name": "stove",
+      "count": 1,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 873,
+      "name": "chair",
+      "count": 43,
+      "frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        10,
+        16,
+        17,
+        19,
+        21
+      ],
+      "primary_script": "object_chair_0873",
+      "best_status": "has_script",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 878,
+      "name": "crenellations",
+      "count": 13,
+      "frames": [
+        0,
+        1
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 879,
+      "name": "wall",
+      "count": 19,
+      "frames": [
+        2,
+        16
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 885,
+      "name": "Fellowship Staff",
+      "count": 1,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 889,
+      "name": "lamp post",
+      "count": 36,
+      "frames": [
+        0
+      ],
+      "primary_script": "object_lamppost_0889",
+      "best_status": "has_script",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 890,
+      "name": "table",
+      "count": 8,
+      "frames": [
+        0,
+        1
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 891,
+      "name": "wood roof",
+      "count": 4,
+      "frames": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 893,
+      "name": "pool of water",
+      "count": 2,
+      "frames": [
+        0
+      ],
+      "primary_script": "object_pool_0893",
+      "best_status": "has_script",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 896,
+      "name": "crenellations",
+      "count": 67,
+      "frames": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 897,
+      "name": "seat",
+      "count": 20,
+      "frames": [
+        2,
+        4,
+        5,
+        10,
+        12,
+        13
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 899,
+      "name": "wall",
+      "count": 2,
+      "frames": [
+        3
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 901,
+      "name": "crenellations",
+      "count": 92,
+      "frames": [
+        0,
+        1,
+        2,
+        4,
+        5,
+        6,
+        7
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 903,
+      "name": "crenellations",
+      "count": 14,
+      "frames": [
+        1
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 904,
+      "name": "wall",
+      "count": 2,
+      "frames": [
+        3
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 908,
+      "name": "tile roof",
+      "count": 45,
+      "frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        11
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 909,
+      "name": "wall",
+      "count": 4,
+      "frames": [
+        3
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 910,
+      "name": "wall",
+      "count": 4,
+      "frames": [
+        3
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 912,
+      "name": "blood",
+      "count": 38,
+      "frames": [
+        0,
+        1,
+        2,
+        3,
+        24,
+        25,
+        26,
+        27,
+        28
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 913,
+      "name": "pillar",
+      "count": 2,
+      "frames": [
+        2
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 920,
+      "name": "pillar",
+      "count": 10,
+      "frames": [
+        2,
+        3
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 937,
+      "name": "Gargoyle jewelry",
+      "count": 1,
+      "frames": [
+        6
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 944,
+      "name": "pot",
+      "count": 5,
+      "frames": [
+        1,
+        5
+      ],
+      "primary_script": "object_pot_0944",
+      "best_status": "has_script",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 949,
+      "name": "winch",
+      "count": 1,
+      "frames": [
+        0
+      ],
+      "primary_script": "object_winch_0949",
+      "best_status": "has_script",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 950,
+      "name": "winch",
+      "count": 2,
+      "frames": [
+        0
+      ],
+      "primary_script": "object_winch_0950",
+      "best_status": "has_script",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 955,
+      "name": "amulet",
+      "count": 1,
+      "frames": [
+        1
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 956,
+      "name": "wood roof",
+      "count": 103,
+      "frames": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 962,
+      "name": "slate roof",
+      "count": 217,
+      "frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 963,
+      "name": "slate roof",
+      "count": 30,
+      "frames": [
+        3,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 966,
+      "name": "tile roof",
+      "count": 6,
+      "frames": [
+        9,
+        10,
+        11
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 971,
+      "name": "table",
+      "count": 14,
+      "frames": [
+        0,
+        1
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 973,
+      "name": "stairs",
+      "count": 3,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 974,
+      "name": "stairs",
+      "count": 4,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 982,
+      "name": "chimney",
+      "count": 1,
+      "frames": [
+        1
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 986,
+      "name": "stove top",
+      "count": 1,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 991,
+      "name": "anvil",
+      "count": 1,
+      "frames": [
+        0
+      ],
+      "primary_script": "object_anvil_0991",
+      "best_status": "has_script",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 994,
+      "name": "tongs",
+      "count": 3,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 995,
+      "name": "cauldron",
+      "count": 1,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 997,
+      "name": "spent light source",
+      "count": 1,
+      "frames": [
+        2
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 998,
+      "name": "horseshoe",
+      "count": 11,
+      "frames": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 999,
+      "name": "plant",
+      "count": 17,
+      "frames": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 1000,
+      "name": "table",
+      "count": 1,
+      "frames": [
+        1
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 1003,
+      "name": "table",
+      "count": 2,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 1004,
+      "name": "leather helm",
+      "count": 3,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 1011,
+      "name": "bed",
+      "count": 36,
+      "frames": [
+        0,
+        3,
+        5,
+        7,
+        9,
+        10,
+        13,
+        15
+      ],
+      "primary_script": "object_bed_1011",
+      "best_status": "has_script",
+      "category": "other",
+      "note": ""
+    },
+    {
+      "shape": 1014,
+      "name": "floor",
+      "count": 14,
+      "frames": [
+        0,
+        1,
+        2
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 1018,
+      "name": "table",
+      "count": 4,
+      "frames": [
+        0
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "scenery",
+      "note": ""
+    },
+    {
+      "shape": 1023,
+      "name": "haystack",
+      "count": 2,
+      "frames": [
+        4,
+        5
+      ],
+      "primary_script": "default",
+      "best_status": "default",
+      "category": "other",
+      "note": ""
+    }
+  ]
+}

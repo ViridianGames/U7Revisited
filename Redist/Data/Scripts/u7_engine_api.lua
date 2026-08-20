@@ -180,7 +180,16 @@ function random2(min, max) end
 ---@param mask integer Filter mask (typically 0, may be used for quality/frame filtering)
 ---@return integer|nil objectref The found object reference, or nil if not found
 ---@usage find_nearby(objectref, 176, 4, 0) -- Find shape 176 within 4 tiles
-function find_nearby(objectref, shape, distance, mask) end
+---[Exult 0x0035] Find nearby objects.
+--- Exult order: (objectref, shape, distance, mask)
+--- Decompiler reversed (common): (mask, distance, shape, objectref)
+--- shape 0 / 359 / -359 = any. Avatar ref: -356.
+---@param a integer objectref-or-mask
+---@param b integer shape-or-distance
+---@param c integer distance-or-shape
+---@param d integer mask-or-objectref
+---@return integer[] object_ids 1-based array (may be empty)
+function find_nearby(a, b, c, d) end
 
 ---Checks if an NPC has an item of the given shape in inventory
 ---@param npc_id integer The NPC to check
@@ -491,9 +500,11 @@ function add_to_party(npc_id) end
 ---@return boolean success True if NPC was removed
 function remove_from_party(npc_id) end
 
----Gets an NPC's name from their ID
----@param npc_id integer The NPC ID
----@return string name The NPC's name
+---Resolve NPC id → world object id (itemref). Despite the name, decompiled BG scripts
+---use this as a ref getter (bark, execute_usecode_array, find_nearest, containers).
+---Accepts usecode sentinels: -356/356 = Avatar (NPC 0); -N = NPC N.
+---@param npc_id integer NPC id or ±usecode ref
+---@return integer|nil object_id World object id, or nil if unknown
 function get_npc_name(npc_id) end
 
 ---Gets an NPC's ID from their name
@@ -757,12 +768,24 @@ function console_log(message) end
 ---@return integer|nil object_id The nearest matching object, or nil if not found
 function find_nearest(object_id, shape, distance) end
 
----[Exult 0x0029] Finds an object by shape and frame
----@param shape integer Shape ID to find
----@param frame integer Frame number to match
----@param quality integer Quality value to match
+---[Exult 0x002A] get_cont_items — items in a container matching filters.
+--- Decompiler Lua order (common): (frame, quality, shape, container)
+--- Exult order also accepted: (container, shape, quality, frame)
+--- Wildcards: -359 / 359 / -1. Container 356=avatar, 357=party.
+---@param a integer frame-or-container
+---@param b integer quality-or-shape
+---@param c integer shape-or-quality
+---@param d? integer container-or-frame
+---@return integer[]|nil object_ids 1-based array, or nil if none (falsy)
+function get_container_objects(a, b, c, d) end
+
+---Alias for get_container_objects (Exult name).
+function get_cont_items(a, b, c, d) end
+
+---[Exult 0x0029] Finds first matching object in a container (nil if none).
+--- Same Exult/reversed layouts as get_container_objects.
 ---@return integer|nil object_id The found object, or nil if not found
-function find_object(shape, frame, quality) end
+function find_object(a, b, c, d) end
 
 ---[Exult 0x0019] Gets the distance between two objects
 ---@param obj1 integer First object ID

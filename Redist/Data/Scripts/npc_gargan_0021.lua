@@ -6,7 +6,8 @@ function npc_gargan_0021(eventid, objectref)
     if eventid == 1 then
         switch_talk_to(21)
         var_0000 = get_lord_or_lady()
-        var_0001 = 0 --get_schedule_type(21) --- Guess: Gets object state
+        -- Shop is "open" when Gargan is on Desk Work (activity 30).
+        var_0001 = get_schedule_type(21)
         var_0002 = 0
 
         if not get_flag(85) then
@@ -66,11 +67,14 @@ function npc_gargan_0021(eventid, objectref)
                     if var_0004 then
                         var_0003 = get_party_gold()
                         if var_0003 >= 80 then
-                            add_dialogue("\"Here ye are!\"")
-                            var_0004 = add_object_to_npc_inventory(0, 650, 1)
+                            -- Exult: add_party_items(1, 650, -359, -359, true) — sextant
+                            var_0004 = add_party_items(1, 650, -359, -359, true)
                             if not var_0004 then
                                 add_dialogue("\"Thine arms are too full to carry the sextant!\"")
                                 add_dialogue("Gargan sneezes.")
+                            else
+                                add_dialogue("\"Here ye are!\"")
+                                remove_party_items(80, 644, -359, -359)
                             end
                         else
                             add_dialogue("\"Thou dost not have enough gold, sailor.\"")
@@ -107,11 +111,12 @@ function npc_gargan_0021(eventid, objectref)
                         if var_0005 then
                             var_0003 = get_party_gold() --- Guess: Checks gold amount
                             if var_0003 >= 600 then
-                                var_0006 = add_party_items(true, 359, 797, 1) --- Guess: Adds item to inventory
+                                -- Deed (shape 797); Exult order (count, shape, quality, frame)
+                                var_0006 = add_party_items(1, 797, -359, -359, true)
                                 if var_0006 then
                                     add_dialogue("\"All right, then!\" the sailor replies. He hands you the deed and takes your gold.")
                                     add_dialogue("Gargan sneezes.")
-                                    var_0007 = remove_party_items(359, 359, 644, 600) --- Guess: Removes gold
+                                    var_0007 = remove_party_items(600, 644, -359, -359)
                                     set_flag(88, true)
                                 else
                                     add_dialogue("\"Thou'rt already carrying enough to sink a galleon, " .. var_0000 .. "! If thou wilt leave something behind, mayhaps thou wilt be able to sail, and I will be glad, indeed, to sell thee the deed.\"")

@@ -60,6 +60,10 @@ void U7Object::Init(const string& configfile, int unitType, int frame)
 	m_ObjectType = unitType;
 	SetIsDead(false);
 	m_UnitConfig = g_ResourceManager->GetConfig(configfile);
+	// g_shapeTable is [1024][32] — out-of-range frames (e.g. usecode "any" sentinel
+	// 359 treated as a literal) walk into neighboring shapes (641+11 → cart 652).
+	if (frame < 0 || frame >= 32)
+		frame = 0;
 	m_Frame = frame;
 	m_shapeData = &g_shapeTable[m_ObjectType][m_Frame];
 	m_objectData = &g_objectDataTable[m_ObjectType];
@@ -81,6 +85,11 @@ void U7Object::Init(const string& configfile, int unitType, int frame)
 	m_distanceFromCamera = 999999;
 	m_target = 0;
 
+	// WGTVOL capacity: chests/crates/bags/etc. Double-click opens a gump when
+	// unlocked (MainState). Threshold skips tiny volumes (coins, food, garbage).
+	if (m_objectData && m_objectData->m_volume >= 50.0f)
+		m_isContainer = true;
+
 	// STATIC = permanent scenery only: immovable, unusable, and not otherwise special.
 	// g_isObjectMoveable means "can pick up / drag" — doors and other fixtures are
 	// not moveable but ARE usable, so they must be UNIT_TYPE_OBJECT (saved, frame
@@ -91,7 +100,7 @@ void U7Object::Init(const string& configfile, int unitType, int frame)
 		&& !m_shapeData->m_luaScript.empty()
 		&& m_shapeData->m_luaScript != "default");
 
-	if (!canPickUp && !isDoor && !hasUseScript)
+	if (!canPickUp && !isDoor && !hasUseScript && !m_isContainer)
 	{
 		m_UnitType = U7Object::UnitTypes::UNIT_TYPE_STATIC;
 	}
@@ -1073,8 +1082,13 @@ void U7Object::HandleUsecodeEgg()
 
 		char numBuf[16];
 		snprintf(numBuf, sizeof(numBuf), "%04d", scriptnumber);
-		const std::string eventName = std::string("utility_event_") + numBuf;
-		const std::string unknownName = std::string("utility_unknown_") + numBuf;
+		// Decompiler split egg scripts across several prefixes.
+		const std::string candidates[] = {
+			std::string("utility_event_") + numBuf,
+			std::string("utility_unknown_") + numBuf,
+			std::string("utility_clock_") + numBuf,
+			std::string("utility_ship_") + numBuf,
+		};
 
 		auto scriptLoaded = [](const std::string& name) -> bool {
 			if (!g_ScriptingSystem) return false;
@@ -1086,13 +1100,15 @@ void U7Object::HandleUsecodeEgg()
 			return false;
 		};
 
-		std::string scriptname;
-		if (scriptLoaded(eventName))
-			scriptname = eventName;
-		else if (scriptLoaded(unknownName))
-			scriptname = unknownName;
-		else
-			scriptname = eventName; // prefer event name in error message
+		std::string scriptname = candidates[0];
+		for (const auto& name : candidates)
+		{
+			if (scriptLoaded(name))
+			{
+				scriptname = name;
+				break;
+			}
+		}
 
 		// Exult hatches usecode eggs with event 3 (egg) and the egg as itemref.
 		NPCDebugPrint("Usecode egg @" + std::to_string((int)m_Pos.x) + "," +
@@ -1576,12 +1592,13 @@ static std::string GetActivityScriptName(int activityId)
 
 void U7Object::NPCUpdate()
 {
-	// Don't do schedules while in the party
-	// (Note: previously we returned early here which also prevented movement for party members,
-	// causing them to animate but never change position.  Instead mark the in-party state
-	// and skip only the activity/coroutine handling below.)
+	// Don't run schedule activity scripts while in the party (including the Avatar).
+	// Avatar was previously excluded from this skip (m_NPCID != 0), so Talk/Combat
+	// activities could run on NPC 0 — self-Interact / npc_frame flicker at game start.
+	// Movement for party members still runs below.
 	bool isCompanionInParty = (g_Player && g_Player->NPCIDInParty(m_NPCID) && m_NPCID != 0);
-	bool isPartyMember = (g_Player && g_Player->NPCIDInParty(m_NPCID));
+	bool isPartyMember = (m_NPCID == 0) || (g_Player && g_Player->NPCIDInParty(m_NPCID));
+	bool skipScheduleActivities = isPartyMember; // Avatar + companions
 
 	if (!isPartyMember && m_Team == 1 && g_isCombatMode)
 	{
@@ -1691,10 +1708,26 @@ void U7Object::NPCUpdate()
 	//	NPCDebugPrint(ss.str());
 	//}
 
+	// Kill leftover Avatar/party activity coroutines (e.g. activity_talk_0 from before this fix).
+	if (skipScheduleActivities && g_NPCData.find(m_NPCID) != g_NPCData.end() && g_NPCData[m_NPCID])
+	{
+		int lastActivity = g_NPCData[m_NPCID]->m_lastActivity;
+		if (lastActivity >= 0)
+		{
+			std::string old_script = GetActivityScriptName(lastActivity) + "_" + std::to_string(m_NPCID);
+			if (g_ScriptingSystem->IsCoroutineActive(old_script))
+			{
+				NPCDebugPrint("Stopping party/Avatar activity coroutine: " + old_script);
+				g_ScriptingSystem->CleanupCoroutine(old_script);
+			}
+			g_NPCData[m_NPCID]->m_lastActivity = -1;
+		}
+	}
+
 	// Activity coroutine management - check if activity has changed
 	// Only run activity scripts if schedules are enabled for this NPC
-	// IMPORTANT: skip activity/coroutines for party members, but continue with movement below
-	if (shouldUpdateActivity && m_followingSchedule && g_NPCData.find(m_NPCID) != g_NPCData.end() && !isCompanionInParty)
+	// IMPORTANT: skip activity/coroutines for Avatar + party, but continue with movement below
+	if (shouldUpdateActivity && m_followingSchedule && g_NPCData.find(m_NPCID) != g_NPCData.end() && !skipScheduleActivities)
 	{
 		NPCData* npcData = g_NPCData[m_NPCID].get();
 
@@ -2377,15 +2410,27 @@ void U7Object::SetFrame(int frame)
 		return;
 	}
 
-	// Prefer declared anim length; fall back to accepting any loaded texture.
-	const int animFrames = g_shapeTable[m_ObjectType][0].m_numFrames;
-	if (animFrames > 1 && frame >= animFrames)
+	if (m_ObjectType < 0 || m_ObjectType >= 1024)
 	{
 		return;
 	}
-	if (g_shapeTable[m_ObjectType][frame].m_texture == nullptr)
+
+	const bool isDoor = (m_objectData && m_objectData->m_isDoor);
+
+	// Animated props: prefer declared anim length. Doors use frame%4 lock/open
+	// states across the full 0–31 range and must not be clipped by anim length.
+	if (!isDoor)
 	{
-		return;
+		const int animFrames = g_shapeTable[m_ObjectType][0].m_numFrames;
+		if (animFrames > 1 && frame >= animFrames)
+		{
+			return;
+		}
+		// Non-door shapes still require a usable texture frame.
+		if (g_shapeTable[m_ObjectType][frame].m_texture == nullptr)
+		{
+			return;
+		}
 	}
 
 	// Store old frame to check if it actually changed
@@ -2396,8 +2441,8 @@ void U7Object::SetFrame(int frame)
 	m_shapeData = &g_shapeTable[m_ObjectType][m_Frame];
 
 	// Notify pathfinding grid if this is a door (frame change affects walkability)
-	// Doors: frame 0 = closed (not walkable), frame > 0 = open (walkable)
-	if (m_objectData && m_objectData->m_isDoor && oldFrame != frame)
+	// Doors: frame%4 == 0/2/3 closed-ish, == 1 open (scripts drive the exact swap).
+	if (isDoor && oldFrame != frame)
 	{
 		NotifyPathfindingGridUpdate((int)m_Pos.x, (int)m_Pos.z);
 	}
@@ -3209,9 +3254,19 @@ float U7Object::GetRemainingCarryCapacity()
 
 bool U7Object::IsLocked()
 {
+	if (!m_shapeData)
+		return false;
+
+	// Locked chest shape
 	if (m_shapeData->m_shape == 522)
-	{
 		return true;
+
+	// Door pieces: frame % 4 == 2 is locked (3 = magically locked).
+	if (m_objectData && m_objectData->m_isDoor)
+	{
+		const int state = m_Frame % 4;
+		if (state == 2 || state == 3)
+			return true;
 	}
 
 	return false;

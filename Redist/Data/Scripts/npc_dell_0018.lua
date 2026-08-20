@@ -74,11 +74,11 @@ function npc_dell_0018(eventid, objectref)
             elseif var_0007 == "weapons" then
                 utility_shopweapons_0882()
             elseif var_0007 == "armour" then
-                func_0873()
+                utility_shoparmor_0873()
             elseif var_0007 == "provisions" then
-                func_0874()
+                utility_shopprovisions_0874()
             elseif var_0007 == "nothing" then
-                --restore_answers()
+                restore_answers()
             elseif var_0007 == "bye" then
                 break
             end

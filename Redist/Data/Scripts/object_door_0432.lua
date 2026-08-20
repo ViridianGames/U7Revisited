@@ -18,5 +18,11 @@ function object_door_0432(eventid, objectref)
             utility_unknown_0798(7, 0, 0, 1, 376, 2, 0, 270, objectref)
             set_object_quality(objectref, 30)
         end
+    elseif var_0000 == 2 then
+        -- Locked — do not open
+        utility_unknown_0793(objectref)
+    elseif var_0000 == 3 then
+        -- Magically locked
+        utility_unknown_0794(objectref)
     end
 end

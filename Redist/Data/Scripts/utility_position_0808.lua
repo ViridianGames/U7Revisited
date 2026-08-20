@@ -1,40 +1,45 @@
---- Func0828 / 0x828: walk Avatar to a stand point near an object, then run usecode.
+--- Func0828 / 0x828: walk Avatar next to an object, then run usecode on a (possibly different) item.
 ---
---- Original: try nearby (dx,dy,dz) offsets via path_run_usecode(loc, fun, item, event).
---- Classic usecode offsets are (dtx, dty, dtz); our positions are engine (x, height, z),
---- so ground-plane offsets map to x/z and lift is left to the pathfinder surface snap.
+--- Classic: Func0828(stand_near_item, dx, dy, dz, fun_shape, usecode_item, event)
+--- Walk near stand_near_item; on arrival call usecode_item's script with event
+--- (fun_shape is the original usecode # / shape — informational for us).
+---
+--- dx/dy may be a number or parallel offset tables (bucket/well style).
 
 function utility_position_0808(event_or_item, a2, a3, a4, a5, a6, a7)
-    -- Support both usecode order Func0828(item, dx, dy, dz, fun, item2, event)
-    -- and the reversed Lua call utility_position_0808(7, item, 788, -3, -1, -1, item)
-    local item, dx, dy, dz, fun_shape, eventid
+    local stand_near, dx, dy, dz, fun_shape, usecode_item, eventid
     if type(event_or_item) == "number" and event_or_item <= 16 and a2 ~= nil then
-        -- Reversed Lua form (event, item, fun, dz, dy, dx [, item])
+        -- Reversed Lua form (event, item, fun, dz, dy, dx [, usecode_item])
         eventid = event_or_item
-        item = a2
+        stand_near = a2
         fun_shape = a3
         dz = a4
         dy = a5
         dx = a6
+        usecode_item = a7 or stand_near
     else
-        item = event_or_item
+        -- Classic: (stand_near, dx, dy, dz, fun, usecode_item, event)
+        stand_near = event_or_item
         dx, dy, dz = a2, a3, a4
         fun_shape = a5
+        usecode_item = a6 or stand_near
         eventid = a7 or 7
     end
 
-    if not item then
+    if not stand_near then
         return false
     end
 
-    if get_object_container(item) then
+    -- Only block if the *usecode* item is locked in a container we can't reach.
+    -- Standing near a world object (well) is fine even if the bucket is already carried.
+    if usecode_item and get_object_container(usecode_item) and usecode_item == stand_near then
         flash_mouse(0)
         return false
     end
 
     halt_scheduled(get_avatar_ref() or -356)
 
-    local pos = get_object_position(item)
+    local pos = get_object_position(stand_near)
     if not pos then
         return false
     end
@@ -42,37 +47,42 @@ function utility_position_0808(event_or_item, a2, a3, a4, a5, a6, a7)
     local x = pos[1] or pos.x
     local y = pos[2] or pos.y
     local z = pos[3] or pos.z
-    dx = tonumber(dx) or -1
-    dy = tonumber(dy) or -1
     dz = tonumber(dz) or -3
 
-    -- Classic (dtx, dty, dtz) → engine (x + dtx, height, z + dty).
-    -- Stand on tile centers so pathfinding/arrival thresholds line up.
+    local dx_list, dy_list
+    if type(dx) == "table" then
+        dx_list = dx
+    else
+        dx_list = { tonumber(dx) or -1 }
+    end
+    if type(dy) == "table" then
+        dy_list = dy
+    else
+        dy_list = { tonumber(dy) or -1 }
+    end
+
     local function tile_center(wx, wz)
         return math.floor(wx) + 0.5, math.floor(wz) + 0.5
     end
 
-    local fun = fun_shape or get_object_shape(item)
+    local fun = fun_shape or get_object_shape(usecode_item or stand_near)
     local ev = eventid or 7
-    local cx, cz = tile_center(x + dx, z + dy)
-    local cx2, cz2 = tile_center(x - dx, z + dy)
-    local cx3, cz3 = tile_center(x + dx, z - dy)
-    local cx4, cz4 = tile_center(x - dx, z - dy)
-    local cx5, cz5 = tile_center(x + dx, z)
-    local cx6, cz6 = tile_center(x, z + dy)
-    local cx7, cz7 = tile_center(x, z)
-    local candidates = {
-        { cx, y, cz },
-        { cx2, y, cz2 },
-        { cx3, y, cz3 },
-        { cx4, y, cz4 },
-        { cx5, y, cz5 },
-        { cx6, y, cz6 },
-        { cx7, y, cz7 },
-    }
+    local fire_on = usecode_item or stand_near
+
+    local n = math.max(#dx_list, #dy_list)
+    local candidates = {}
+    for i = 1, n do
+        local ddx = dx_list[((i - 1) % #dx_list) + 1] or -1
+        local ddy = dy_list[((i - 1) % #dy_list) + 1] or -1
+        local cx, cz = tile_center(x + ddx, z + ddy)
+        candidates[#candidates + 1] = { cx, y, cz }
+    end
+    local cx0, cz0 = tile_center(x, z)
+    candidates[#candidates + 1] = { cx0, y, cz0 }
 
     for _, dest in ipairs(candidates) do
-        local ok = path_run_usecode(dest, fun, item, ev)
+        -- Walk near stand_near; on arrival run usecode on fire_on (e.g. bucket event 9).
+        local ok = path_run_usecode(dest, fun, fire_on, ev)
         if ok then
             return true
         end

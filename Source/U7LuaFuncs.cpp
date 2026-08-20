@@ -4,6 +4,7 @@
 #include <fstream>
 
 #include "U7Globals.h"
+#include "U7UsecodeArgs.h"
 #include "Geist/ScriptingSystem.h"
 #include "Geist/StateMachine.h"
 #include "ConversationState.h"
@@ -762,6 +763,8 @@ static int LuaSetObjectShape(lua_State *L)
     int object_id = luaL_checkinteger(L, 1);
     int shape = luaL_checkinteger(L, 2);
     U7Object *object = GetObjectFromID(object_id);
+    if (!object || shape < 0 || shape >= 1024)
+        return 0;
 
     // Clear any active bark referencing this object to prevent crash when shapeData changes
     if (g_mainState && g_mainState->m_barkObject == object)
@@ -772,9 +775,15 @@ static int LuaSetObjectShape(lua_State *L)
 
     // If the current object is a door, mark the new shape as a door too
     // This fixes doors that change shape when opened/closed
-    bool wasDoor = object->m_objectData->m_isDoor;
+    bool wasDoor = object->m_objectData && object->m_objectData->m_isDoor;
 
-    int currentFrame = object->m_shapeData->GetFrame();
+    // Keep the object's live frame (not shapetable metadata) and update m_ObjectType.
+    int currentFrame = object->m_Frame;
+    if (currentFrame < 0 || currentFrame >= 32)
+        currentFrame = 0;
+
+    object->m_ObjectType = shape;
+    object->m_Frame = currentFrame;
     object->m_shapeData = &g_shapeTable[shape][currentFrame];
     object->m_objectData = &g_objectDataTable[shape];
     object->SetPos(object->GetPos());
@@ -793,9 +802,14 @@ static int LuaGetObjectShape(lua_State *L)
 {
     if (g_LuaDebug) NPCDebugPrint("LUA: get_object_shape called");
     int object_id = luaL_checkinteger(L, 1);
-    int shape = GetObjectFromID(object_id)->m_shapeData->GetShape();
-    //DebugPrint("ID: " + to_string(object_id) +  " Shape: " + to_string(shape));
-    lua_pushinteger(L, shape);
+    U7Object *object = GetObjectFromID(object_id);
+    if (!object)
+    {
+        lua_pushinteger(L, 0);
+        return 1;
+    }
+    // Prefer live object type — shapeData metadata can desync after frame/shape changes.
+    lua_pushinteger(L, object->m_ObjectType);
     return 1;
 }
 
@@ -804,9 +818,14 @@ static int LuaGetObjectFrame(lua_State *L)
 {
     if (g_LuaDebug) NPCDebugPrint("LUA: get_object_frame called");
     int object_id = luaL_checkinteger(L, 1);
-    int frame = GetObjectFromID(object_id)->m_shapeData->GetFrame();
-    //DebugPrint("ID: " + to_string(object_id) +  " Frame: " + to_string(frame));
-    lua_pushinteger(L, frame);
+    U7Object *object = GetObjectFromID(object_id);
+    if (!object)
+    {
+        lua_pushinteger(L, 0);
+        return 1;
+    }
+    // Must use m_Frame (runtime lock/open state), not ShapeData::m_frame from shapetable.dat.
+    lua_pushinteger(L, object->m_Frame);
     return 1;
 }
 
@@ -1019,15 +1038,120 @@ static int LuaGetPlayerName(lua_State *L)
 }
 
 // Opcode 002A
+// Forward decls used by get_container_objects (defined with party-item helpers below).
+static U7Object* ResolvePartyMemberObject(int partyNpcId);
+static U7Object* GetPartyMemberBackpack(int partyNpcId);
+
+// Resolve a container ref from usecode: world object id, or NPC id → backpack/NPC.
+// 356/-356 = avatar; 357/-357 = party (search avatar backpack as primary — callers that
+// need every party member should iterate; count_objects/get_container_objects use this).
+static U7Object* ResolveContainerForSearch(int containerId)
+{
+    int absId = containerId < 0 ? -containerId : containerId;
+    if (absId == 356 || absId == 357)
+    {
+        // Party / avatar → prefer Avatar backpack.
+        U7Object* backpack = GetPartyMemberBackpack(0);
+        if (backpack)
+            return backpack;
+        return ResolvePartyMemberObject(0);
+    }
+
+    if (containerId < 0)
+    {
+        // Usecode NPC id: -N = NPC N
+        int npcId = -containerId;
+        U7Object* backpack = GetPartyMemberBackpack(npcId);
+        if (backpack)
+            return backpack;
+        return ResolvePartyMemberObject(npcId);
+    }
+
+    // Prefer equipped backpack when the id is a party NPC.
+    if (containerId <= 255)
+    {
+        U7Object* backpack = GetPartyMemberBackpack(containerId);
+        if (backpack)
+            return backpack;
+        U7Object* npcObj = ResolvePartyMemberObject(containerId);
+        if (npcObj)
+            return npcObj;
+    }
+
+    return GetObjectFromID(containerId);
+}
+
+static bool IsPartyContainerRef(int containerId)
+{
+    const int absId = containerId < 0 ? -containerId : containerId;
+    return absId == 357;
+}
+
+static void CollectMatchingFromContainer(U7Object* container, const ContItemsArgs& args,
+                                         std::vector<int>& outIds)
+{
+    if (!container)
+        return;
+    for (int item_id : container->m_inventory)
+    {
+        U7Object* item = GetObjectFromID(item_id);
+        if (!item)
+            continue;
+        if (!MatchesShapeQualityFrame(item->m_ObjectType, item->m_Quality, item->m_Frame,
+                                     args.shape, args.quality, args.frame))
+            continue;
+        outIds.push_back(item_id);
+    }
+}
+
+static void CollectMatchingFromParty(const ContItemsArgs& args, std::vector<int>& outIds)
+{
+    if (!g_Player)
+        return;
+    // Avatar first, then companions.
+    std::vector<int> order = {0};
+    for (int id : g_Player->GetPartyMemberIds())
+    {
+        if (id != 0)
+            order.push_back(id);
+    }
+    for (int npcId : order)
+    {
+        U7Object* backpack = GetPartyMemberBackpack(npcId);
+        CollectMatchingFromContainer(backpack, args, outIds);
+    }
+}
+
+// Exult get_cont_items / Lua get_container_objects.
+// Decompiler order (all current call sites): (frame, quality, shape, container)
+// Exult order: (container, shape, quality, frame)
+// Returns nil if no matches (falsy); else 1-based array of object ids (truthy).
 static int LuaGetContainerObjects(lua_State *L)
 {
-    if (g_LuaDebug) NPCDebugPrint("LUA: get_container_objects called");
-    int container_id = luaL_checkinteger(L, 1);
-    int type = luaL_checkinteger(L, 2);
-    int x = luaL_checkinteger(L, 3);
-    int y = luaL_checkinteger(L, 4);
+    ContItemsArgs args = ParseContItemsArgs(L);
+    if (g_LuaDebug || args.containerId < 0)
+    {
+        NPCDebugPrint(std::string("LUA: get_container_objects ") + ContItemsArgsToString(args));
+    }
+
+    std::vector<int> matches;
+    if (IsPartyContainerRef(args.containerId))
+        CollectMatchingFromParty(args, matches);
+    else
+        CollectMatchingFromContainer(ResolveContainerForSearch(args.containerId), args, matches);
+
+    if (matches.empty())
+    {
+        lua_pushnil(L);
+        return 1;
+    }
+
     lua_newtable(L);
-    // TODO: Push list of object IDs
+    for (size_t i = 0; i < matches.size(); ++i)
+    {
+        lua_pushinteger(L, matches[i]);
+        lua_rawseti(L, -2, (int)i + 1);
+    }
     return 1;
 }
 
@@ -1441,31 +1565,50 @@ static int LuaFindObjects(lua_State *L)
     return 1;
 }
 
+// Resolve usecode NPC/avatar refs to a world object id for spatial search.
+static int ResolveFindNearbyRef(int ref)
+{
+    if (ref == 356 || ref == -356)
+    {
+        if (g_Player && g_Player->GetAvatarObject())
+            return g_Player->GetAvatarObject()->m_ID;
+        return -1;
+    }
+    if (ref < 0 && ref > -256)
+        ref = -ref;
+    // NPC id → world object id
+    if (ref >= 0 && ref <= 255 && g_NPCData.find(ref) != g_NPCData.end() && g_NPCData[ref])
+        return g_NPCData[ref]->m_objectID;
+    return ref;
+}
+
 // Exult intrinsic 0x35: find_nearby
 // Finds objects near a reference object, filtered by shape and distance.
+// Accepts Exult (ref, shape, dist, mask) or reversed (mask, dist, shape, ref).
 // Returns a 1-based Lua array of matching object IDs (empty table if none).
 static int LuaFindNearby(lua_State *L)
 {
-    if (g_LuaDebug) NPCDebugPrint("LUA: find_nearby called");
+    FindNearbyArgs args = ParseFindNearbyArgs(L);
+    if (g_LuaDebug)
+        NPCDebugPrint(std::string("LUA: find_nearby ") + FindNearbyArgsToString(args));
 
-    int objectref = luaL_checkinteger(L, 1);  // Reference object to search near
-    int shape = luaL_checkinteger(L, 2);       // Shape ID to find (0 / -359 = any)
-    int distance = luaL_checkinteger(L, 3);    // Search radius in tiles
-    int mask = luaL_checkinteger(L, 4);        // Filter mask (unused for now)
+    const int objectref = ResolveFindNearbyRef(args.objectRef);
+    const int distance = args.distance;
+    const bool anyShape = args.anyShape;
+    const int shape = args.shape;
+    (void)args.mask;
 
     lua_newtable(L);
     int tableIndex = 1;
 
-    auto refIt = g_objectList.find(objectref);
-    if (refIt == g_objectList.end() || !refIt->second)
+    U7Object* refObj = GetObjectFromID(objectref);
+    if (!refObj)
     {
         if (g_LuaDebug) NPCDebugPrint("LUA: find_nearby - reference object not found");
         return 1; // empty table
     }
 
-    U7Object* refObj = refIt->second.get();
     Vector3 refPos = refObj->GetPos();
-    (void)mask;
 
     for (const auto& pair : g_objectList)
     {
@@ -1476,8 +1619,7 @@ static int LuaFindNearby(lua_State *L)
         if (obj->m_isContained)
             continue;
 
-        int objShape = obj->m_ObjectType;
-        if (shape != 0 && shape != -359 && objShape != shape)
+        if (!anyShape && obj->m_ObjectType != shape)
             continue;
 
         // Chebyshev distance on horizontal XZ (U7 tile distance)
@@ -1732,11 +1874,10 @@ static int LuaIsObjectInPartyInventory(lua_State *L)
             min_quantity = 1;
     }
 
-    // Exult-style 359 wildcards
-    if (frame == 359 || frame == -359)
-        frame = -1;
-    if (quality == 359 || quality == -359)
-        quality = -1;
+    frame = IsUsecodeAny(frame) ? -1 : NormalizeUsecodeAny(frame);
+    quality = IsUsecodeAny(quality) ? -1 : NormalizeUsecodeAny(quality);
+    // shape 0 is not "any" here — callers pass a real shape for presence checks.
+    shape = NormalizeUsecodeAny(shape);
 
     if (g_LuaDebug)
     {
@@ -1927,72 +2068,99 @@ static int LuaHasObjectOfType(lua_State *L)
     }
 }
 
-static int LuaGetSchedule(lua_State *L)
+// Shared: resolve NPC id/name/ref and push current activity (schedule type).
+static int PushNpcCurrentActivity(lua_State *L)
 {
-    if (g_LuaDebug) NPCDebugPrint("LUA: get_schedule called");
-    int npc_id = luaL_checkinteger(L, 1);
+    int npc_id = -1;
 
-    // Bounds check: verify NPC exists in g_NPCData
-    auto it = g_NPCData.find(npc_id);
-    if (it == g_NPCData.end() || !it->second)
+    if (lua_isnumber(L, 1))
     {
-        Log("ERROR: LuaGetSchedule - Invalid NPC ID: " + std::to_string(npc_id));
-        lua_pushinteger(L, 0);  // Return 0 as default schedule
-        return 1;
+        npc_id = (int)lua_tointeger(L, 1);
+        if (npc_id == 356 || npc_id == -356)
+            npc_id = 0;
+        else if (npc_id < 0 && npc_id > -256)
+            npc_id = -npc_id;
+
+        // Object ref → NPC id when the object is an NPC.
+        if (g_NPCData.find(npc_id) == g_NPCData.end())
+        {
+            U7Object* obj = GetObjectFromID(npc_id);
+            if (obj && obj->m_NPCID >= 0)
+                npc_id = obj->m_NPCID;
+        }
+    }
+    else if (lua_isstring(L, 1))
+    {
+        const char* npc_name = lua_tostring(L, 1);
+        if (g_Player && npc_name == g_Player->GetPlayerName())
+        {
+            npc_id = 0;
+        }
+        else
+        {
+            for (auto& pair : g_NPCData)
+            {
+                if (pair.second && npc_name == pair.second->name)
+                {
+                    npc_id = pair.second->id;
+                    break;
+                }
+            }
+        }
     }
 
-    int schedule = it->second->m_currentActivity;
-    lua_pushinteger(L, schedule);
+    if (npc_id >= 0 && g_NPCData.find(npc_id) != g_NPCData.end() && g_NPCData[npc_id])
+        lua_pushinteger(L, g_NPCData[npc_id]->m_currentActivity);
+    else
+        lua_pushinteger(L, -1);
+
     return 1;
+}
+
+static int LuaGetSchedule(lua_State *L)
+{
+    // Decompiled scripts use get_schedule(npc) for activity checks (often == 7 Tend Shop).
+    // Accept id/name/ref like get_schedule_type.
+    if (g_LuaDebug) NPCDebugPrint("LUA: get_schedule called");
+    return PushNpcCurrentActivity(L);
 }
 
 static int LuaGetScheduleType(lua_State *L)
 {
     if (g_LuaDebug) NPCDebugPrint("LUA: get_schedule_type called");
-
-    // Takes NPC name, looks up ID
-    string npc_name = luaL_checkstring(L, 1);
-    int npc_id = -1;
-
-    if (npc_name == g_Player->GetPlayerName())
-    {
-        npc_id = 0;
-    }
-    else
-    {
-        for (auto& pair : g_NPCData)
-        {
-            if (npc_name == pair.second->name)
-            {
-                npc_id = pair.second->id;
-                break;
-            }
-        }
-    }
-
-    if (npc_id >= 0 && g_NPCData.find(npc_id) != g_NPCData.end())
-    {
-        int schedule_type = g_NPCData[npc_id]->m_currentActivity;
-        lua_pushinteger(L, schedule_type);
-    }
-    else
-    {
-        lua_pushinteger(L, -1); // Invalid NPC
-    }
-
-    return 1;
+    return PushNpcCurrentActivity(L);
 }
 
+// Despite the name, decompiled BG Lua uses get_npc_name(npc_id) as
+// "resolve NPC id → world object id" (itemref). Call sites pass the result to
+// bark/item_say, execute_usecode_array, find_nearest, get_cont_items, etc.
+// Avatar usecode sentinel is -356 / 356.
 static int LuaGetNPCNameFromId(lua_State *L)
 {
     if (g_LuaDebug) NPCDebugPrint("LUA: get_npc_name called");
-    int npc_id = luaL_checkinteger(L, 1);
-    string npc_name = "NPC";
-    npc_name = g_NPCData[npc_id]->name;
-    if (g_LuaDebug) DebugPrint("NPC name: " + npc_name);
-    cout << "NPC name: " << npc_name << "\n";
+    int npc_id = (int)luaL_checkinteger(L, 1);
 
-    lua_pushstring(L, npc_name.c_str());
+    if (npc_id == 356 || npc_id == -356)
+        npc_id = 0;
+    else if (npc_id < 0 && npc_id > -256)
+        npc_id = -npc_id;
+
+    auto it = g_NPCData.find(npc_id);
+    if (it == g_NPCData.end() || !it->second)
+    {
+        if (g_LuaDebug)
+            NPCDebugPrint("get_npc_name: unknown npc_id " + std::to_string(npc_id));
+        lua_pushnil(L);
+        return 1;
+    }
+
+    const int objectId = it->second->m_objectID;
+    if (g_LuaDebug)
+        NPCDebugPrint("get_npc_name: npc " + std::to_string(npc_id) +
+                      " (" + std::string(it->second->name) + ") → object " +
+                      std::to_string(objectId));
+
+    lua_pushinteger(L, objectId);
     return 1;
 }
 
@@ -2546,11 +2714,34 @@ static int LuaAbort(lua_State *L)
 // ============================================================================
 
 // 0x000E | find_nearest
+// Exult/engine: (objectref, shape, max_distance)
+// Decompiler often: (max_distance, shape, objectref)
 static int LuaFindNearest(lua_State *L)
 {
-    int object_id = (int)lua_tointeger(L, 1);
-    int shape = (int)lua_tointeger(L, 2);
-    int max_distance = (int)lua_tointeger(L, 3);
+    int a1 = (int)lua_tointeger(L, 1);
+    int a2 = (int)lua_tointeger(L, 2);
+    int a3 = (int)lua_tointeger(L, 3);
+
+    int object_id = a1;
+    int shape = a2;
+    int max_distance = a3;
+
+    // Reversed: small distance first, shape in middle, ref last (npc/object id).
+    const bool reversed = (a1 >= 0 && a1 <= 256) &&
+        (a2 > 1 && a2 < 1024) &&
+        (a3 < 0 || a3 > 256 || GetObjectFromID(a3) != nullptr);
+    if (reversed && GetObjectFromID(a1) == nullptr)
+    {
+        max_distance = a1;
+        shape = a2;
+        object_id = a3;
+    }
+
+    if (object_id == 356 || object_id == -356)
+    {
+        if (g_NPCData.find(0) != g_NPCData.end() && g_NPCData[0])
+            object_id = g_NPCData[0]->m_objectID;
+    }
 
     // Validate source object exists
     if (g_objectList.find(object_id) == g_objectList.end())
@@ -2603,49 +2794,34 @@ static int LuaFindNearest(lua_State *L)
     return 1;
 }
 
-// 0x0029 | find_object
+// 0x0029 | find_object — first matching item in a container (nil if none).
+// Accepts Exult (container, shape, quality, frame) or reversed decompiler order.
 static int LuaFindObject(lua_State *L)
 {
-    int container_id = (int)lua_tointeger(L, 1);
-    int shape = (int)lua_tointeger(L, 2);
-    int quality = (int)lua_tointeger(L, 3);
-    int frame = (int)lua_tointeger(L, 4);
+    ContItemsArgs args = ParseFindObjectArgs(L);
+    if (g_LuaDebug)
+        NPCDebugPrint(std::string("LUA: find_object ") + ContItemsArgsToString(args));
 
-    // Check if container exists
-    if (g_objectList.find(container_id) == g_objectList.end())
+    U7Object* container = ResolveContainerForSearch(args.containerId);
+    if (!container)
     {
         lua_pushnil(L);
         return 1;
     }
 
-    U7Object* container = g_objectList[container_id].get();
-
-    // Search through container's inventory
     for (int item_id : container->m_inventory)
     {
-        if (g_objectList.find(item_id) == g_objectList.end())
+        U7Object* item = GetObjectFromID(item_id);
+        if (!item)
+            continue;
+        if (!MatchesShapeQualityFrame(item->m_ObjectType, item->m_Quality, item->m_Frame,
+                                     args.shape, args.quality, args.frame))
             continue;
 
-        U7Object* item = g_objectList[item_id].get();
-
-        // Check shape match (or -1/-359 for any shape)
-        if (shape != -1 && shape != -359 && item->m_ObjectType != shape)
-            continue;
-
-        // Check quality match (or -1/-359 for any quality)
-        if (quality != -1 && quality != -359 && item->m_Quality != quality)
-            continue;
-
-        // Check frame match (or -1/-359 for any frame)
-        if (frame != -1 && frame != -359 && item->m_Frame != frame)
-            continue;
-
-        // Found a match!
         lua_pushinteger(L, item_id);
         return 1;
     }
 
-    // No match found
     lua_pushnil(L);
     return 1;
 }
@@ -2742,43 +2918,24 @@ static int LuaDirectionFrom(lua_State *L)
 // 0x0028 | count_objects
 static int LuaCountObjects(lua_State *L)
 {
-    int container_id = (int)lua_tointeger(L, 1);
-    int shape = (int)lua_tointeger(L, 2);
-    int quality = (int)lua_tointeger(L, 3);
-    int frame = (int)lua_tointeger(L, 4);
+    // Same Exult/reversed layouts as find_object / get_container_objects.
+    ContItemsArgs args = ParseFindObjectArgs(L);
 
-    // Check if container exists
-    if (g_objectList.find(container_id) == g_objectList.end())
-    {
-        lua_pushinteger(L, 0);
-        return 1;
-    }
+    std::vector<int> matches;
+    if (IsPartyContainerRef(args.containerId))
+        CollectMatchingFromParty(args, matches);
+    else
+        CollectMatchingFromContainer(ResolveContainerForSearch(args.containerId), args, matches);
 
-    U7Object* container = g_objectList[container_id].get();
     int count = 0;
-
-    // Count matching objects in container's inventory
-    for (int item_id : container->m_inventory)
+    for (int item_id : matches)
     {
-        if (g_objectList.find(item_id) == g_objectList.end())
+        U7Object* item = GetObjectFromID(item_id);
+        if (!item)
             continue;
-
-        U7Object* item = g_objectList[item_id].get();
-
-        // Check shape match (or -1/-359 for any shape)
-        if (shape != -1 && shape != -359 && item->m_ObjectType != shape)
-            continue;
-
-        // Check quality match (or -1/-359 for any quality)
-        if (quality != -1 && quality != -359 && item->m_Quality != quality)
-            continue;
-
-        // Check frame match (or -1/-359 for any frame)
-        if (frame != -1 && frame != -359 && item->m_Frame != frame)
-            continue;
-
-        // This item matches - count it (and add its quantity if stackable)
-        count += (item->m_Quality > 0 ? item->m_Quality : 1);
+        // Count stackable quantity when quality looks like a stack size; keys etc. count as 1.
+        // Prefer one-per-entry for presence-style counts (gold often uses get_party_gold).
+        count += 1;
     }
 
     lua_pushinteger(L, count);
@@ -2808,7 +2965,7 @@ static int LuaFindNearbyAvatar(lua_State *L)
         if (candidate == nullptr || candidate->m_isContained)
             continue;
 
-        if (shape != -1 && shape != 0 && shape != -359 && candidate->m_ObjectType != shape)
+        if (!IsUsecodeAny(shape) && shape != 0 && candidate->m_ObjectType != shape)
             continue;
 
         Vector3 candidate_pos = candidate->GetPos();
@@ -2887,23 +3044,6 @@ static int LuaSetItemQuantity(lua_State *L)
 }
 
 // 0x002B | remove_party_items
-// Exult "any" sentinels: -359 / 0xFE99
-static int NormalizeUsecodeAny(int v)
-{
-    if (v == -359 || v == 0xFE99 || v == 65113)
-        return -359;
-    // Sign-extend 16-bit usecode constants
-    if (v >= 0x8000 && v <= 0xFFFF)
-        return (int)(int16_t)(uint16_t)v;
-    return v;
-}
-
-static bool IsUsecodeAny(int v)
-{
-    int n = NormalizeUsecodeAny(v);
-    return n == -1 || n == -359;
-}
-
 // Party member list stores NPC ids; resolve to world object.
 static U7Object* ResolvePartyMemberObject(int partyNpcId)
 {
@@ -2930,47 +3070,10 @@ static U7Object* GetPartyMemberBackpack(int partyNpcId)
     return GetObjectFromID(backpackId);
 }
 
-// Parse add/remove_party_items args.
-// Exult: (count, shape, quality, frame [, bool])
-// Lua decompiler often reverses: (bool, frame, quality, shape, count)
-static void ParsePartyItemsArgs(lua_State *L, int& count, int& shape, int& quality, int& frame)
-{
-    const int n = lua_gettop(L);
-    count = 1;
-    shape = -359;
-    quality = -359;
-    frame = -359;
-
-    if (n >= 5 && (lua_isboolean(L, 1) ||
-                   (lua_isnumber(L, 1) && lua_tointeger(L, 1) <= 1 &&
-                    lua_isnumber(L, 5) && lua_tointeger(L, 5) > 0 &&
-                    lua_tointeger(L, 5) < 256 &&
-                    lua_tointeger(L, 4) > 1 && lua_tointeger(L, 4) < 1024 &&
-                    lua_tointeger(L, 2) >= 0 && lua_tointeger(L, 2) < 64)))
-    {
-        // Reversed: (bool/flag, frame, quality, shape, count)
-        frame = NormalizeUsecodeAny((int)lua_tointeger(L, 2));
-        quality = NormalizeUsecodeAny((int)lua_tointeger(L, 3));
-        shape = NormalizeUsecodeAny((int)lua_tointeger(L, 4));
-        count = (int)lua_tointeger(L, 5);
-    }
-    else
-    {
-        // Exult: (count, shape, quality, frame [, bool])
-        count = n >= 1 ? (int)lua_tointeger(L, 1) : 1;
-        shape = n >= 2 ? NormalizeUsecodeAny((int)lua_tointeger(L, 2)) : -359;
-        quality = n >= 3 ? NormalizeUsecodeAny((int)lua_tointeger(L, 3)) : -359;
-        frame = n >= 4 ? NormalizeUsecodeAny((int)lua_tointeger(L, 4)) : -359;
-    }
-
-    if (count < 1)
-        count = 1;
-}
-
 static int LuaRemovePartyItems(lua_State *L)
 {
-    int count = 1, shape = -359, quality = -359, frame = -359;
-    ParsePartyItemsArgs(L, count, shape, quality, frame);
+    PartyItemsArgs args = ParsePartyItemsArgs(L);
+    NPCDebugPrint(std::string("remove_party_items: ") + PartyItemsArgsToString(args));
 
     if (!g_Player)
     {
@@ -2978,7 +3081,7 @@ static int LuaRemovePartyItems(lua_State *L)
         return 1;
     }
 
-    int remaining_to_remove = count;
+    int remaining_to_remove = args.count;
     std::vector<int>& party_ids = g_Player->GetPartyMemberIds();
 
     for (int party_member_id : party_ids)
@@ -3004,16 +3107,8 @@ static int LuaRemovePartyItems(lua_State *L)
             }
 
             U7Object* item = g_objectList[item_id].get();
-
-            bool matches = true;
-            if (!IsUsecodeAny(shape) && item->m_ObjectType != shape)
-                matches = false;
-            if (!IsUsecodeAny(quality) && item->m_Quality != quality)
-                matches = false;
-            if (!IsUsecodeAny(frame) && item->m_Frame != frame)
-                matches = false;
-
-            if (matches)
+            if (MatchesShapeQualityFrame(item->m_ObjectType, item->m_Quality, item->m_Frame,
+                                        args.shape, args.quality, args.frame))
             {
                 // One matching object per removal (quality on keys is key-id, not stack size).
                 remaining_to_remove -= 1;
@@ -3038,19 +3133,20 @@ static int LuaRemovePartyItems(lua_State *L)
 // Returns a non-empty table of recipients on success (truthy); false if no backpack / full.
 static int LuaAddPartyItems(lua_State *L)
 {
-    int count = 1, shape = -359, quality = -359, frame = -359;
-    ParsePartyItemsArgs(L, count, shape, quality, frame);
+    PartyItemsArgs args = ParsePartyItemsArgs(L);
+    NPCDebugPrint(std::string("add_party_items: ") + PartyItemsArgsToString(args));
 
-    if (!g_Player || count <= 0 || IsUsecodeAny(shape) || shape <= 0)
+    if (!g_Player || args.count <= 0 || IsUsecodeAny(args.shape) || args.shape <= 0)
     {
-        NPCDebugPrint("add_party_items: bad args count=" + std::to_string(count) +
-            " shape=" + std::to_string(shape));
+        NPCDebugPrint("add_party_items: bad args " + PartyItemsArgsToString(args));
         lua_pushboolean(L, 0);
         return 1;
     }
 
-    int frameToUse = IsUsecodeAny(frame) ? 0 : frame;
-    int qualityToUse = IsUsecodeAny(quality) ? 0 : quality;
+    const int frameToUse = ClampShapeFrame(args.frame);
+    const int qualityToUse = IsUsecodeAny(args.quality) ? 0 : args.quality;
+    const int count = args.count;
+    const int shape = args.shape;
 
     std::vector<int>& party_ids = g_Player->GetPartyMemberIds();
     // Prefer Avatar (NPC 0), then other party members
@@ -3299,6 +3395,72 @@ static U7Object* ResolveRecipientContainer(int recipient_id)
             return oit->second.get();
     }
     return nullptr;
+}
+
+// Move an existing world/inventory object into a container (prefers party backpack
+// when recipient is Avatar/NPC). Used by bucket pickup, etc.
+static int LuaMoveObjectToContainer(lua_State *L)
+{
+    int object_id = (int)luaL_checkinteger(L, 1);
+    int recipient_id = (int)luaL_checkinteger(L, 2);
+
+    U7Object* obj = GetObjectFromID(object_id);
+    if (!obj)
+    {
+        lua_pushboolean(L, 0);
+        return 1;
+    }
+
+    // Avatar / party NPC → equipped backpack (party loot rule).
+    int npc_id = recipient_id;
+    if (npc_id == 356 || npc_id == -356)
+        npc_id = 0;
+    else if (npc_id < 0 && npc_id > -256)
+        npc_id = -npc_id;
+
+    U7Object* dest = nullptr;
+    if (npc_id >= 0 && npc_id <= 255 && g_NPCData.find(npc_id) != g_NPCData.end() && g_NPCData[npc_id])
+    {
+        int backpackId = g_NPCData[npc_id]->GetEquippedItem(EquipmentSlot::SLOT_BACKPACK);
+        if (backpackId >= 0)
+            dest = GetObjectFromID(backpackId);
+        if (!dest)
+        {
+            auto oit = g_objectList.find(g_NPCData[npc_id]->m_objectID);
+            if (oit != g_objectList.end())
+                dest = oit->second.get();
+        }
+    }
+    if (!dest)
+        dest = ResolveRecipientContainer(recipient_id);
+    if (!dest)
+    {
+        lua_pushboolean(L, 0);
+        return 1;
+    }
+
+    if (!dest->m_isContainer)
+        dest->m_isContainer = true;
+
+    // Detach from previous container/world.
+    if (obj->m_isContained && obj->m_containingObjectId != -1)
+    {
+        U7Object* prev = GetObjectFromID(obj->m_containingObjectId);
+        if (prev)
+            prev->RemoveObjectFromInventory(object_id);
+    }
+    UnassignObjectChunk(obj);
+    obj->m_Visible = false;
+
+    bool success = dest->AddObjectToInventory(object_id);
+    if (g_LuaDebug)
+    {
+        NPCDebugPrint("move_object_to_container obj=" + std::to_string(object_id) +
+                      " dest=" + std::to_string(dest->m_ID) +
+                      " ok=" + (success ? "1" : "0"));
+    }
+    lua_pushboolean(L, success ? 1 : 0);
+    return 1;
 }
 
 // 0x0036 | give_last_created(container) — move last-created into a container/NPC
@@ -3905,6 +4067,13 @@ static int LuaNpcInteract(lua_State *L)
         npc_id = 0;
     if (npc_id < 0 && npc_id > -256)
         npc_id = -npc_id;
+
+    // Never start a conversation as/on the Avatar from schedule Talk.
+    if (npc_id == 0)
+    {
+        NPCDebugPrint("npc_interact: ignoring Avatar (npc 0)");
+        return 0;
+    }
 
     if (g_NPCData.find(npc_id) == g_NPCData.end() || !g_NPCData[npc_id])
         return 0;
@@ -4734,19 +4903,22 @@ static int LuaBookMode(lua_State *L)
     return 0;
 }
 
-// 0x0033 | click_on_item
+// 0x0033 | click_on_item — Exult: enter use-cursor mode and return the chosen object.
+// Same behavior as object_select_modal (green usepointer); optional arg ignored.
 static int LuaClickOnItem(lua_State *L)
 {
-    int object_id = (int)lua_tointeger(L, 1);
-
-    // Would simulate user clicking on object
-    // Could trigger object's usecode/script
-    if (g_objectList.find(object_id) != g_objectList.end())
+    (void)L;
+    if (g_LuaDebug) NPCDebugPrint("LUA: click_on_item → object selection mode");
+    if (g_StateMachine && g_StateMachine->GetCurrentState() == STATE_MAINSTATE)
     {
-        // In full implementation, would trigger object interaction
+        auto* main = dynamic_cast<MainState*>(g_StateMachine->GetState(STATE_MAINSTATE));
+        if (main)
+        {
+            main->StartObjectSelectionMode();
+            main->SetLuaFunction(g_ScriptingSystem->m_currentScript);
+        }
     }
-
-    return 0;
+    return lua_yield(L, 0);
 }
 
 // 0x000C | input_numeric_value
@@ -5794,6 +5966,8 @@ void RegisterAllLuaFunctions()
     // Exult Intrinsics - HIGH PRIORITY
     g_ScriptingSystem->RegisterScriptFunction( "find_nearest", LuaFindNearest);
     g_ScriptingSystem->RegisterScriptFunction( "find_object", LuaFindObject);
+    g_ScriptingSystem->RegisterScriptFunction( "get_container_objects", LuaGetContainerObjects);
+    g_ScriptingSystem->RegisterScriptFunction( "get_cont_items", LuaGetContainerObjects); // Exult name
     g_ScriptingSystem->RegisterScriptFunction( "get_distance", LuaGetDistanceBetween);
     g_ScriptingSystem->RegisterScriptFunction( "find_direction", LuaFindDirectionBetween);
     g_ScriptingSystem->RegisterScriptFunction( "direction_from", LuaDirectionFrom);
@@ -5808,6 +5982,8 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction( "set_last_created", LuaSetLastCreated);
     g_ScriptingSystem->RegisterScriptFunction( "update_last_created", LuaUpdateLastCreated);
     g_ScriptingSystem->RegisterScriptFunction( "give_last_created", LuaGiveLastCreated);
+    g_ScriptingSystem->RegisterScriptFunction( "move_object_to_container", LuaMoveObjectToContainer);
+    g_ScriptingSystem->RegisterScriptFunction( "give_to_avatar", LuaMoveObjectToContainer); // (obj, 0/-356)
     g_ScriptingSystem->RegisterScriptFunction( "remove_item", LuaRemoveItem);
     g_ScriptingSystem->RegisterScriptFunction( "get_container", LuaGetContainerOf);
     g_ScriptingSystem->RegisterScriptFunction( "set_to_attack", LuaSetToAttack);

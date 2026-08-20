@@ -5,14 +5,22 @@ function utility_unknown_0820()
     debug_print("Utility_unknown_0820 - raising portcullis")
     if not get_flag(87) then
         set_flag(87, true)
-        end
-    var_0000 = find_nearby_avatar(272, 6)
-    if var_0000 ~= 0 then
-            debug_print("Portcullis found at object " .. var_0000)
-        var_0001 = get_object_position(var_0000)
-        debug_print("Object " .. var_0000 .. " at location " .. var_0001.x .. ", " .. var_0001.y .. ", " .. var_0001.z)
-        set_object_position(var_0000, var_0001.x, var_0001.y + 4, var_0001.z)
+    end
+    -- Find nearby portcullis pieces (shape 272, and 271 if present).
+    local avatar = get_avatar_ref and get_avatar_ref() or 356
+    local found = find_nearby(0, 25, 272, avatar)
+    if type(found) ~= "table" or not found[1] then
+        found = find_nearby(0, 25, 271, avatar)
+    end
+    if type(found) == "table" then
+        for _, id in ipairs(found) do
+            local pos = get_object_position(id)
+            if pos then
+                debug_print("Raising portcullis object " .. tostring(id))
+                set_object_position(id, pos[1] or pos.x, (pos[2] or pos.y) + 4, pos[3] or pos.z)
             end
+        end
+    end
     --if var_0000  0
     --var_0001 = create_array(find_nearby(0, 25, 271, 356), find_nearby(0, 25, 272, 356)) --- Guess: Sets NPC location
     --for i = 1, 5 do

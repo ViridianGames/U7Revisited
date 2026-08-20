@@ -43,6 +43,12 @@ local function walk_toward(npc_id, x, y, z)
 end
 
 function activity_talk(npc_id)
+    -- Avatar must never run Talk (would Interact with self / flicker frames).
+    if npc_id == nil or npc_id == 0 or npc_id == 356 or npc_id == -356 then
+        debug_print("activity_talk: refusing Avatar/invalid npc_id=" .. tostring(npc_id))
+        return
+    end
+
     debug_npc(npc_id, "talking (approach Avatar)")
     debug_print("activity_talk: started for NPC " .. tostring(npc_id))
     npc_frame(npc_id, 0)

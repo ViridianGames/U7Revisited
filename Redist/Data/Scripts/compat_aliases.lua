@@ -219,21 +219,19 @@ function set_npc_prop(a, b, c)
 end
 
 ------------------------------------------------------------------------
--- WRAP: find_nearby arg order
--- Engine: find_nearby(objectref, shape, distance, mask)
--- Decompiler often: find_nearby(mask, distance, shape, objectref)
+-- find_nearby: arg-order handling lives in C++ (U7UsecodeArgs::ParseFindNearbyArgs).
+-- Do not re-wrap here — double-flipping breaks Exult-order callers.
+-- Engine accepts both:
+--   Exult:    find_nearby(objectref, shape, distance, mask)
+--   Reversed: find_nearby(mask, distance, shape, objectref)
 ------------------------------------------------------------------------
 
-local _engine_find_nearby = find_nearby
-
-function find_nearby(a, b, c, d)
-    -- Decompiler form: small mask, small dist, shape, objectref
-    if type(a) == "number" and type(d) == "number"
-        and a >= 0 and a <= 255 and b ~= nil and b <= 64
-        and looks_like_npc_ref(d) then
-        return _engine_find_nearby(d, c or 0, b or 0, a)
-    end
-    return _engine_find_nearby(a, b, c, d)
+-- Dell shop helpers (func_0873/0874 were lost in the massive rename)
+if utility_shoparmor_0873 then
+    func_0873 = utility_shoparmor_0873
+end
+if utility_shopprovisions_0874 then
+    func_0874 = utility_shopprovisions_0874
 end
 
 ------------------------------------------------------------------------
@@ -327,6 +325,20 @@ end
 
 function get_object_owner(objectref)
     return get_container(objectref)
+end
+
+--- filter_party_members(list, exclude) — drop exclude from a party list (names or ids)
+function filter_party_members(party_list, exclude)
+    local out = {}
+    if type(party_list) ~= "table" then
+        return out
+    end
+    for _, member in ipairs(party_list) do
+        if member ~= nil and member ~= exclude then
+            table.insert(out, member)
+        end
+    end
+    return out
 end
 
 function set_object_owner(objectref, owner)

@@ -8,17 +8,7 @@ function npc_morfin_0172(eventid, objectref)
         var_0000 = get_player_name()
         var_0001 = get_lord_or_lady()
         var_0004 = get_schedule(NPC_MORFIN)
-        -- Schedule type is only needed for shop hours; keep lookup safe.
-        var_0005 = 0
-        do
-            local ok, name = pcall(get_npc_name, NPC_MORFIN)
-            if ok and name then
-                local ok2, sched = pcall(get_schedule_type, name)
-                if ok2 and type(sched) == "number" then
-                    var_0005 = sched
-                end
-            end
-        end
+        var_0005 = get_schedule_type(NPC_MORFIN)
         var_0002 = "Avatar"
         var_0003 = "None of thy concern"
         var_0006 = var_0001

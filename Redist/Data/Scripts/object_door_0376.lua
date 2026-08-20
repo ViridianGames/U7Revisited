@@ -23,16 +23,10 @@ function object_door_0376(eventid, objectref)
             set_object_quality(objectref, 30)
         end
     elseif var_0000 == 2 then
-        -- Handle locked state (same as state 0)
-        if utility_position_0797(7, 0, 0, 1, 270, objectref) then
-            utility_unknown_0798(7, -3, 0, 1, 432, 1, 0, 433, objectref)
-            set_object_quality(objectref, 30)
-        end
+        -- Locked — do not open
+        utility_unknown_0793(objectref)
     elseif var_0000 == 3 then
-        -- Handle glowing state (same as state 1)
-        if utility_position_0797(7, 0, 0, 0, 270, objectref) then
-            utility_unknown_0798(1, 0, 3, 0, 432, 2, 1, 433, objectref)
-            set_object_quality(objectref, 31)
-        end
+        -- Magically locked
+        utility_unknown_0794(objectref)
     end
 end

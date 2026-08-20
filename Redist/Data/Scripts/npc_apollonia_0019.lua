@@ -67,12 +67,15 @@ function npc_apollonia_0019(eventid, objectref)
                     var_000B = var_0009 * 6
                     var_000C = get_party_gold()
                     if var_000C >= var_000B then
-                        var_000D = add_party_items(true, 359, 255, 641, 1) --- Guess: Adds item to inventory
+                        -- Exult order: (count, shape, quality, frame [, temporary])
+                        -- shape 641 = key, quality 255 = KEY_INN, frame any
+                        var_000D = add_party_items(1, 641, 255, -359, true)
                         if not var_000D then
                             add_dialogue("\"Oh dear. Thou art carrying too much to take the room key.\"")
                         else
                             add_dialogue("\"Here is thy room key. It is good only until thou dost leave.\"")
-                            var_000E = remove_party_items(359, 359, 644, var_000B) --- Guess: Removes gold
+                            -- Exult: remove_party_items(amount, gold_shape 644, any, any)
+                            var_000E = remove_party_items(var_000B, 644, -359, -359)
                         end
                     else
                         add_dialogue("\"Thou dost not have enough gold, " .. var_0002 .. ".\"")
