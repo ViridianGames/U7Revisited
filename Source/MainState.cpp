@@ -27,6 +27,7 @@
 #include "SoundSystem.h"
 
 #include <unordered_set>
+#include <fstream>
 
 namespace
 {
@@ -1472,43 +1473,67 @@ void MainState::Update()
 			// leave remainder for next frame if any
 		}
 
-		for (const auto& [id, object] : g_objectList)
+		// Interest spheres (Option A): only sim-tick objects near players / camera.
+		// Multiplayer later: AddInterestCenter per remote player; same path.
+		//
+		// IMPORTANT: snapshot pointers first. object->Update() / SetPos can reassign
+		// chunks (UpdateObjectChunk erases from g_chunkObjectMap), and eggs can spawn
+		// into the same chunk — iterating the live vector crashes.
+		const double tObjects0 = GetTime();
+		g_interestObjectsUpdated = 0;
+		if (!m_paused)
 		{
-			if (!object) continue;
+			RebuildInterestCentersFromLocalPlayers();
+			RebuildInterestChunkSet();
 
-			if (!m_paused)
+			static std::vector<U7Object*> interestSnapshot;
+			interestSnapshot.clear();
+			interestSnapshot.reserve(8192);
+
+			// Only walk stamped interest chunks (not a full 192×192 scan).
+			for (int packed : g_interestChunkList)
 			{
-				object->Update();
-				if (object->m_Pos.y > m_heightCutoff)
+				const int cx = packed & 0xffff;
+				const int cz = (packed >> 16) & 0xffff;
+				if (cx < 0 || cx >= 192 || cz < 0 || cz >= 192)
 				{
-					object->m_Visible = false;
+					continue;
 				}
-				else
+				for (U7Object* object : g_chunkObjectMap[cx][cz])
 				{
-					if (!object->GetIsDead()) object->m_Visible = true;
-					if (object->m_drawType == ShapeDrawType::OBJECT_DRAW_DONT_DRAW) { object->m_Visible = false; }
-				}
-
-				// Dungeon: hide mountain-top ceilings and anything not under a mountain.
-				// (Exult: skip_lift + paint_blackness over non-dungeon tiles.)
-				if (g_dungeonViewActive && object->m_Visible && g_pathfindingSystem)
-				{
-					if (PathfindingSystem::IsMountainTopShape(object->m_ObjectType))
+					if (!object || object->m_isContained || object->GetIsDead())
 					{
-						object->m_Visible = false;
+						continue;
 					}
-					else
-					{
-						const int ox = static_cast<int>(std::floor(object->m_Pos.x));
-						const int oz = static_cast<int>(std::floor(object->m_Pos.z));
-						if (!g_pathfindingSystem->IsDungeonTile(ox, oz))
-						{
-							object->m_Visible = false;
-						}
-					}
+					interestSnapshot.push_back(object);
 				}
 			}
+
+			for (U7Object* object : interestSnapshot)
+			{
+				// Object may have been destroyed mid-pass (rare); skip null/dead.
+				if (!object || object->GetIsDead())
+				{
+					continue;
+				}
+
+				// Statics have no per-frame sim; still refresh draw visibility.
+				if (object->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_STATIC)
+				{
+					object->Update();
+				}
+				// Re-check after Update (destroy/contain during hatch scripts).
+				if (!object || object->GetIsDead() || object->m_isContained)
+				{
+					continue;
+				}
+				ApplyObjectDrawVisibility(object, m_heightCutoff);
+				++g_interestObjectsUpdated;
+			}
 		}
+		const double objMs = (GetTime() - tObjects0) * 1000.0;
+		m_msObjectsThisSec += objMs;
+		if (objMs > m_maxMsObjects) m_maxMsObjects = objMs;
 
 		// Roof pop-off must run AFTER the global m_Visible=true pass above and BEFORE
 		// UpdateSortedVisibleObjects (which builds the pick list). Otherwise invisible
@@ -1525,12 +1550,14 @@ void MainState::Update()
 		// Calculate g_mouseOverUI RIGHT BEFORE UpdateSortedVisibleObjects
 		CalculateMouseOverUI();
 
+		const double tSort0 = GetTime();
 		UpdateSortedVisibleObjects();
+		const double sortMs = (GetTime() - tSort0) * 1000.0;
+		m_msSortThisSec += sortMs;
+		if (sortMs > m_maxMsSort) m_maxMsSort = sortMs;
 
-		for (auto& object : g_sortedVisibleObjects)
-		{
-			object->CheckLighting();
-		}
+		// Object lighting uses g_Terrain->m_cellLighting in InteractiveDraw/NPCDraw.
+		// The old per-object CheckLighting (O(visible × lights)) was unused for draw.
 
 	if (!m_paused && g_allowInput)
 	{
@@ -1540,14 +1567,27 @@ void MainState::Update()
 	CameraUpdate();
 
 	// Rotate U7 glisten bands (224-254); translucent shapes use static xform bake colors
+	const double tPal0 = GetTime();
 	UpdateRuntimePalette();
+	const double palMs = (GetTime() - tPal0) * 1000.0;
+	m_msPaletteThisSec += palMs;
+	if (palMs > m_maxMsPalette) m_maxMsPalette = palMs;
 
-	m_terrainUpdateTime = g_Engine->GameTimeInMS();
-	g_Terrain->CalculateLighting();
+	// Terrain::Update rebuilds lighting + ground RT only when dirty (camera tile,
+	// day/night, dungeon view, palette step, nearby lights).
+	const double tTer0 = GetTime();
+	if (g_Terrain)
+	{
+		g_Terrain->Update();
+	}
+	const double terMs = (GetTime() - tTer0) * 1000.0;
+	m_msTerrainThisSec += terMs;
+	if (terMs > m_maxMsTerrain) m_maxMsTerrain = terMs;
+	m_terrainUpdateTime = static_cast<int>(terMs);
 
-	m_terrainUpdateTime = g_Engine->GameTimeInMS() - m_terrainUpdateTime;
-
-	g_Terrain->Update();
+	const double sectionSum = objMs + sortMs + palMs + terMs;
+	if (sectionSum > m_maxMsFrameSections) m_maxMsFrameSections = sectionSum;
+	++m_framesThisSec;
 
 	UpdateStats();
 	// Show/hide debug tools window based on game mode
@@ -2248,15 +2288,74 @@ void MainState::Draw()
 			int resultsApplied = m_resultsAppliedThisSecond;
 			m_resultsAppliedThisSecond = 0;
 
+			const int frames = std::max(1, m_framesThisSec);
+			const int terrainRebuilds = g_Terrain ? g_Terrain->m_rebuildsThisSecond : 0;
+			const int terrainSkips = g_Terrain ? g_Terrain->m_skipsThisSecond : 0;
+			const double terrainRebuildMs = g_Terrain ? g_Terrain->m_rebuildMsThisSecond : 0.0;
+			const char* dirtyReason = g_Terrain ? g_Terrain->m_lastDirtyReason : "n/a";
+
+			// A* peak this second (main-thread path spikes cause hitch even at high avg fps).
+			uint64_t astarMaxMs = g_pathfindingSystem ? g_pathfindingSystem->m_astarMaxMs.load() : 0;
+			// Note: m_astarMaxMs is lifetime max; report delta via exchange if we only want per-sec.
+			// Use totalMs/calls for avg; max is process lifetime — still useful when large.
+
 			std::ostringstream ss;
-			ss << "TELEMETRY: reqQ=" << reqQueueSize
-				<< " resQ=" << resQueueSize
-				<< " resultsApplied/sec=" << resultsApplied
-				<< " AStarCalls/sec=" << callsDelta
+			ss << std::fixed << std::setprecision(2);
+			ss << "TELEMETRY: fps~" << frames
+				<< " avg objects=" << (m_msObjectsThisSec / frames)
+				<< " sort=" << (m_msSortThisSec / frames)
+				<< " palette=" << (m_msPaletteThisSec / frames)
+				<< " terrain=" << (m_msTerrainThisSec / frames)
+				<< " | max objects=" << m_maxMsObjects
+				<< " sort=" << m_maxMsSort
+				<< " palette=" << m_maxMsPalette
+				<< " terrain=" << m_maxMsTerrain
+				<< " sections=" << m_maxMsFrameSections
+				<< " | terrain rebuilds/s=" << terrainRebuilds
+				<< " skips/s=" << terrainSkips
+				<< " rebuildMs/s=" << (int)terrainRebuildMs
+				<< " lastDirty=" << dirtyReason
+				<< " visible=" << g_sortedVisibleObjects.size()
+				<< " interestObj=" << g_interestObjectsUpdated
+				<< " interestChunks=" << g_interestChunkCount
+				<< " centers=" << g_interestCenterCount
+				<< " | AStar/s=" << callsDelta
 				<< " avgAstarMs=" << (int)avgAstarMs
-				<< " syncFindMain/sec=" << syncFinds
-				<< " luaErrors/sec=" << scriptErrorsDelta;
-			DebugPrint(ss.str());
+				<< " lifetimeAstarMaxMs=" << astarMaxMs
+				<< " syncFind/s=" << syncFinds;
+			const std::string line = ss.str();
+			// debuglog.txt (existing)
+			//DebugPrint(line);
+			// runlog.txt (main engine log, with timestamp via Log())
+			Log(line);
+			// telemetry.txt — clean lines only, flushed every write for easy paste-back
+			{
+				std::ofstream tel("telemetry.txt", std::ios::app);
+				if (tel)
+				{
+					tel << line << '\n';
+					tel.flush();
+				}
+			}
+			// Also surface in-game so it's obvious without reading logs.
+			//AddConsoleString(line, YELLOW);
+
+			m_msObjectsThisSec = 0.0;
+			m_msSortThisSec = 0.0;
+			m_msPaletteThisSec = 0.0;
+			m_msTerrainThisSec = 0.0;
+			m_maxMsObjects = 0.0;
+			m_maxMsSort = 0.0;
+			m_maxMsPalette = 0.0;
+			m_maxMsTerrain = 0.0;
+			m_maxMsFrameSections = 0.0;
+			m_framesThisSec = 0;
+			if (g_Terrain)
+			{
+				g_Terrain->m_rebuildsThisSecond = 0;
+				g_Terrain->m_skipsThisSecond = 0;
+				g_Terrain->m_rebuildMsThisSecond = 0.0;
+			}
 		}
 	}
 }

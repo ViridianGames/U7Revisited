@@ -377,6 +377,41 @@ void GetCameraVisibleChunkRange(int& outMinCX, int& outMaxCX, int& outMinCZ, int
 /// Rebuild g_sortedVisibleObjects from chunks overlapping the camera frustum.
 void UpdateSortedVisibleObjects();
 
+//////////////////////////////////////////////////////////////////////////////
+//  INTEREST SPHERES (Option A — multiplayer-ready update regions)
+//
+//  Only objects whose home chunk lies inside at least one interest region are
+//  sim-ticked each frame. Centers today: avatar, party, camera look-at.
+//  Multiplayer later: one center per remote player (AddInterestCenter).
+//  Camera frustum chunks are always unioned in so freecam still sim-ticks what you see.
+//////////////////////////////////////////////////////////////////////////////
+
+/// Radius in world tiles around each interest center (default ~6 chunks).
+extern float g_interestRadiusTiles;
+
+/// Clear and rebuild centers from avatar + party, then call AddInterestCenter as needed.
+void ClearInterestCenters();
+void AddInterestCenter(Vector3 worldPos);
+void RebuildInterestCentersFromLocalPlayers();
+
+/// Stamp interest chunks from centers + camera frustum. Call once per frame before updates.
+void RebuildInterestChunkSet();
+
+/// True if chunk (0..191) is in this frame's interest set.
+bool IsChunkInInterest(int chunkX, int chunkZ);
+
+/// Height/dungeon visibility for a single object (used by interest update pass).
+void ApplyObjectDrawVisibility(U7Object* object, float heightCutoff);
+
+/// Stats from the last RebuildInterestChunkSet / interest update pass (telemetry).
+extern int g_interestCenterCount;
+extern int g_interestChunkCount;
+extern int g_interestObjectsUpdated;
+
+/// Packed chunk coords in this frame's interest set (cx | (cz << 16)). Prefer this
+/// over scanning all 192×192 stamps when iterating interest objects.
+extern std::vector<int> g_interestChunkList;
+
 /// Draw terrain + g_sortedVisibleObjects with the standard MainState path
 /// (flat polygon-offset, deferred meshes + alpha discard). Call inside BeginMode3D.
 void DrawGameWorld(bool drawObjects = true);
@@ -406,6 +441,10 @@ void BakeImageRoof(int objId, int xOfs, float y, int tileSizeX, int tileSizeY, i
 void BakeImageShapeFrames(int shapeNum, int startFrame, int maxFrames, int tileSizeX, int tileSizeY);
 
 void OpenURL(const std::string& url);
+
+// CPU Image cache for GUI textures (gump solid-pixel hit tests). Loads once from
+// GPU texture on first use; never call LoadImageFromTexture per frame.
+const Image* GetCachedGuiImage(const std::string& resourcePath);
 
 extern Vector3 g_terrainUnderMousePointer;
 

@@ -405,35 +405,22 @@ void Gump::SortContainer()
 
 bool Gump::IsMouseOverSolidPixel(Vector2 mousePos)
 {
-	// Get the biggumps texture (used for container gump backgrounds)
-	Texture* backgroundTexture = g_ResourceManager->GetTexture("Images/GUI/biggumps.png");
-
-	// If no texture, default to solid (always block input)
-	if (!backgroundTexture)
+	static constexpr const char* kBigGumpsPath = "Images/GUI/biggumps.png";
+	const Image* img = GetCachedGuiImage(kBigGumpsPath);
+	// If no image, default to solid (always block input)
+	if (!img || img->data == nullptr)
 		return true;
 
 	// Convert mouse position to local gump coordinates
-	float localX = mousePos.x - m_gui.m_Pos.x;
-	float localY = mousePos.y - m_gui.m_Pos.y;
+	const float localX = mousePos.x - m_gui.m_Pos.x;
+	const float localY = mousePos.y - m_gui.m_Pos.y;
 
 	// Calculate pixel position in the source texture
-	int texX = int(m_containerData.m_texturePos.x + localX);
-	int texY = int(m_containerData.m_texturePos.y + localY);
+	const int texX = int(m_containerData.m_texturePos.x + localX);
+	const int texY = int(m_containerData.m_texturePos.y + localY);
 
-	// Load the texture as an image to check pixel alpha
-	Image img = LoadImageFromTexture(*backgroundTexture);
-
-	// Check bounds
-	if (texX < 0 || texY < 0 || texX >= img.width || texY >= img.height)
-	{
-		UnloadImage(img);
+	if (texX < 0 || texY < 0 || texX >= img->width || texY >= img->height)
 		return false;
-	}
 
-	// Get the pixel color at the position
-	Color pixelColor = GetImageColor(img, texX, texY);
-	UnloadImage(img);
-
-	// Return true if alpha > 0 (non-transparent)
-	return pixelColor.a > 0;
+	return GetImageColor(*img, texX, texY).a > 0;
 }

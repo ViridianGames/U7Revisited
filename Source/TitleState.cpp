@@ -85,7 +85,6 @@ void TitleState::Update()
 	TestUpdate();
 
 	UpdateRuntimePalette();
-	g_Terrain->CalculateLighting();
 	g_Terrain->Update();
 
 	if (IsKeyPressed(KEY_F1))

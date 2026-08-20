@@ -216,6 +216,19 @@ public:
 
    int m_terrainUpdateTime = 0;
 
+	// Per-second frame-section timings (ms accumulated; dumped in TELEMETRY).
+	double m_msObjectsThisSec = 0.0;
+	double m_msSortThisSec = 0.0;
+	double m_msPaletteThisSec = 0.0;
+	double m_msTerrainThisSec = 0.0;
+	// Peak single-frame cost in the last second (hitch detection; averages hide spikes).
+	double m_maxMsObjects = 0.0;
+	double m_maxMsSort = 0.0;
+	double m_maxMsPalette = 0.0;
+	double m_maxMsTerrain = 0.0;
+	double m_maxMsFrameSections = 0.0; // objects+sort+palette+terrain peak sum
+	int m_framesThisSec = 0;
+
 	bool m_doingObjectSelection = false;
 
    unsigned int m_terrainDrawHeight = 0;

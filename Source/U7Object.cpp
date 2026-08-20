@@ -494,27 +494,9 @@ void U7Object::MonsterDraw()
 
 void U7Object::CheckLighting()
 {
-	if (g_isDay)
-	{
-		m_isLit = true;
-	}
-	else
-	{
-		//  Run through list of nearby objects.  If any are light sources and are close enough, this object is lit.
-		m_isLit = false;
-		for (auto object : g_sortedVisibleObjects)
-		{
-			if (object->m_objectData->m_isLightSource)
-			{
-				//  If any point in the bounding box is near enough, the object is lit.
-				if (Vector2DistanceSqr({object->m_Pos.x, object->m_Pos.z}, {m_Pos.x, m_Pos.z}) <= 64 ||
-					Vector2DistanceSqr({object->m_Pos.x + object->m_boundingBox.max.x, object->m_Pos.z + object->m_boundingBox.max.z}, {m_Pos.x, m_Pos.z}) <= 64)
-				{
-					m_isLit = true;
-				}
-			}
-		}
-	}
+	// Legacy no-op. Object draw samples g_Terrain->m_cellLighting; the old
+	// O(visible × lights) m_isLit scan was not used for rendering.
+	m_isLit = true;
 }
 
 void U7Object::Update()

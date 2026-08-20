@@ -3,6 +3,7 @@
 #include "U7Object.h"
 #include "Geist/Engine.h"
 #include "Geist/Logging.h"
+#include "Geist/ResourceManager.h"
 #include "Geist/ScriptingSystem.h"
 #include "ConversationState.h"
 #include "PathfindingSystem.h"
@@ -19,6 +20,10 @@
 #include <cassert>
 #include <mutex>
 #include <vector>
+#include <memory>
+#include <unordered_map>
+#include <cmath>
+#include <cstring>
 
 #include "InputSystem.h"
 #include "raylib.h"
@@ -140,6 +145,176 @@ int g_chunkTypeMap[192][192]; // The type of each chunk in the map
 std::vector<U7Object*> g_chunkObjectMap[192][192]; // The objects in each chunk
 
 std::vector<U7Object*> g_sortedVisibleObjects;
+
+// Interest spheres (see U7Globals.h)
+float g_interestRadiusTiles = 96.0f; // ~6 chunks; multiplayer: per-player sphere size
+int g_interestCenterCount = 0;
+int g_interestChunkCount = 0;
+int g_interestObjectsUpdated = 0;
+std::vector<int> g_interestChunkList;
+
+namespace
+{
+	std::vector<Vector3> g_interestCenters;
+	// Generation stamp so overlapping spheres don't double-process chunks.
+	uint32_t g_interestChunkStamp[192][192] = {};
+	uint32_t g_interestGeneration = 1;
+}
+
+void ClearInterestCenters()
+{
+	g_interestCenters.clear();
+	g_interestCenterCount = 0;
+}
+
+void AddInterestCenter(Vector3 worldPos)
+{
+	g_interestCenters.push_back(worldPos);
+	g_interestCenterCount = static_cast<int>(g_interestCenters.size());
+}
+
+void RebuildInterestCentersFromLocalPlayers()
+{
+	ClearInterestCenters();
+
+	if (g_Player)
+	{
+		if (U7Object* avatar = g_Player->GetAvatarObject())
+		{
+			AddInterestCenter(avatar->GetPos());
+		}
+		// Party members each get a sphere (multiplayer-ready: remote players use AddInterestCenter).
+		for (int npcId : g_Player->GetPartyMemberIds())
+		{
+			if (npcId == 0)
+			{
+				continue; // avatar already added
+			}
+			auto npcIt = g_NPCData.find(npcId);
+			if (npcIt == g_NPCData.end() || !npcIt->second)
+			{
+				continue;
+			}
+			U7Object* member = GetObjectFromID(npcIt->second->m_objectID);
+			if (member)
+			{
+				AddInterestCenter(member->GetPos());
+			}
+		}
+	}
+
+	// Freecam / follow-cam: always sim what the local view is pointed at.
+	AddInterestCenter(g_camera.target);
+}
+
+void RebuildInterestChunkSet()
+{
+	++g_interestGeneration;
+	if (g_interestGeneration == 0)
+	{
+		// Wrap: clear stamps (rare).
+		std::memset(g_interestChunkStamp, 0, sizeof(g_interestChunkStamp));
+		g_interestGeneration = 1;
+	}
+
+	g_interestChunkCount = 0;
+	g_interestChunkList.clear();
+	g_interestChunkList.reserve(256);
+	const float radius = std::max(16.0f, g_interestRadiusTiles);
+	const int radiusChunks = static_cast<int>(std::ceil(radius / 16.0f)) + 1;
+
+	auto stampChunk = [](int cx, int cz) {
+		if (cx < 0 || cx >= 192 || cz < 0 || cz >= 192)
+		{
+			return;
+		}
+		if (g_interestChunkStamp[cx][cz] != g_interestGeneration)
+		{
+			g_interestChunkStamp[cx][cz] = g_interestGeneration;
+			++g_interestChunkCount;
+			g_interestChunkList.push_back(cx | (cz << 16));
+		}
+	};
+
+	for (const Vector3& c : g_interestCenters)
+	{
+		const int ccx = static_cast<int>(std::floor(c.x / 16.0f));
+		const int ccz = static_cast<int>(std::floor(c.z / 16.0f));
+		for (int dz = -radiusChunks; dz <= radiusChunks; ++dz)
+		{
+			for (int dx = -radiusChunks; dx <= radiusChunks; ++dx)
+			{
+				// Circle test in chunk space (approx).
+				if (dx * dx + dz * dz > radiusChunks * radiusChunks)
+				{
+					continue;
+				}
+				stampChunk(ccx + dx, ccz + dz);
+			}
+		}
+	}
+
+	// Union camera frustum so zoomed-out views still tick everything on screen.
+	int minCX = 0, maxCX = 0, minCZ = 0, maxCZ = 0;
+	GetCameraVisibleChunkRange(minCX, maxCX, minCZ, maxCZ);
+	for (int cz = minCZ; cz <= maxCZ; ++cz)
+	{
+		for (int cx = minCX; cx <= maxCX; ++cx)
+		{
+			stampChunk(cx, cz);
+		}
+	}
+}
+
+bool IsChunkInInterest(int chunkX, int chunkZ)
+{
+	if (chunkX < 0 || chunkX >= 192 || chunkZ < 0 || chunkZ >= 192)
+	{
+		return false;
+	}
+	return g_interestChunkStamp[chunkX][chunkZ] == g_interestGeneration;
+}
+
+void ApplyObjectDrawVisibility(U7Object* object, float heightCutoff)
+{
+	if (!object)
+	{
+		return;
+	}
+
+	if (object->m_Pos.y > heightCutoff)
+	{
+		object->m_Visible = false;
+		return;
+	}
+
+	if (!object->GetIsDead())
+	{
+		object->m_Visible = true;
+	}
+	if (object->m_drawType == ShapeDrawType::OBJECT_DRAW_DONT_DRAW)
+	{
+		object->m_Visible = false;
+	}
+
+	// Dungeon: hide mountain tops and exterior (Exult skip_lift + blackness).
+	if (g_dungeonViewActive && object->m_Visible && g_pathfindingSystem)
+	{
+		if (PathfindingSystem::IsMountainTopShape(object->m_ObjectType))
+		{
+			object->m_Visible = false;
+		}
+		else
+		{
+			const int ox = static_cast<int>(std::floor(object->m_Pos.x));
+			const int oz = static_cast<int>(std::floor(object->m_Pos.z));
+			if (!g_pathfindingSystem->IsDungeonTile(ox, oz))
+			{
+				object->m_Visible = false;
+			}
+		}
+	}
+}
 
 float g_cameraDistance; // distance from target
 float g_cameraRotation = 0; // angle around target
@@ -274,49 +449,72 @@ void UpdateRuntimePalette()
 		g_Terrain->ApplyPaletteToTerrainAtlas();
 	}
 
-	// Cuboids still sample RGB face atlases; recolor their cycling pixels from the LUT.
-	// Flats/billboards use the GPU index+palette path instead.
+	// Cuboids still sample RGB face atlases; recolor cycling pixels from the LUT.
+	// Only touch shape/frames that are actually on-screen — full 150–1023×32 scans
+	// plus UpdateTextures() (full face-atlas rebuild) were a major hitch at 8 Hz.
 	static int lastCuboidPaletteStep = -1;
 	if (step != lastCuboidPaletteStep)
 	{
 		lastCuboidPaletteStep = step;
-		for (int shape = 150; shape < 1024; ++shape)
-		{
-			for (int frame = 0; frame < 32; ++frame)
-			{
-				ShapeData& shapeData = g_shapeTable[shape][frame];
-				if (!shapeData.IsValid() || shapeData.m_palettePixels.empty())
-				{
-					continue;
-				}
-				if (shapeData.GetDrawType() != ShapeDrawType::OBJECT_DRAW_CUBOID)
-				{
-					continue;
-				}
-				if (shapeData.m_texture == nullptr || shapeData.m_texture->m_Image.data == nullptr)
-				{
-					continue;
-				}
 
-				for (const auto& pixel : shapeData.m_palettePixels)
-				{
-					const int pX = std::get<0>(pixel);
-					const int pY = std::get<1>(pixel);
-					const int pRef = std::get<2>(pixel);
-					if (pRef < 0 || pRef > 255)
-					{
-						continue;
-					}
-					if (pX < 0 || pY < 0 || pX >= shapeData.m_texture->width || pY >= shapeData.m_texture->height)
-					{
-						continue;
-					}
-					ImageDrawPixel(&shapeData.m_texture->m_Image, pX, pY, g_runtimePalette[pRef]);
-				}
-				// In-place GPU update (avoids leaking a new texture each tick)
-				::UpdateTexture(shapeData.m_texture->m_Texture, shapeData.m_texture->m_Image.data);
-				shapeData.UpdateTextures();
+		// Collect unique (shape, frame) pairs for visible cuboids with glisten pixels.
+		// Key: shape * 32 + frame (shape < 1024, frame < 32).
+		static thread_local std::vector<int> visibleCuboidKeys;
+		visibleCuboidKeys.clear();
+		for (U7Object* obj : g_sortedVisibleObjects)
+		{
+			if (!obj || !obj->m_shapeData)
+			{
+				continue;
 			}
+			ShapeData* sd = obj->m_shapeData;
+			if (sd->GetDrawType() != ShapeDrawType::OBJECT_DRAW_CUBOID || sd->m_palettePixels.empty())
+			{
+				continue;
+			}
+			const int key = sd->GetShape() * 32 + sd->GetFrame();
+			visibleCuboidKeys.push_back(key);
+		}
+		std::sort(visibleCuboidKeys.begin(), visibleCuboidKeys.end());
+		visibleCuboidKeys.erase(std::unique(visibleCuboidKeys.begin(), visibleCuboidKeys.end()), visibleCuboidKeys.end());
+
+		for (int key : visibleCuboidKeys)
+		{
+			const int shape = key / 32;
+			const int frame = key % 32;
+			if (shape < 150 || shape >= 1024 || frame < 0 || frame >= 32)
+			{
+				continue;
+			}
+			ShapeData& shapeData = g_shapeTable[shape][frame];
+			if (!shapeData.IsValid() || shapeData.m_palettePixels.empty())
+			{
+				continue;
+			}
+			if (shapeData.m_texture == nullptr || shapeData.m_texture->m_Image.data == nullptr)
+			{
+				continue;
+			}
+
+			for (const auto& pixel : shapeData.m_palettePixels)
+			{
+				const int pX = std::get<0>(pixel);
+				const int pY = std::get<1>(pixel);
+				const int pRef = std::get<2>(pixel);
+				if (pRef < 0 || pRef > 255)
+				{
+					continue;
+				}
+				if (pX < 0 || pY < 0 || pX >= shapeData.m_texture->width || pY >= shapeData.m_texture->height)
+				{
+					continue;
+				}
+				ImageDrawPixel(&shapeData.m_texture->m_Image, pX, pY, g_runtimePalette[pRef]);
+			}
+			// In-place GPU update (avoids leaking a new texture each tick)
+			::UpdateTexture(shapeData.m_texture->m_Texture, shapeData.m_texture->m_Image.data);
+			// Rebuild cuboid face atlas so world draws see the new colors.
+			shapeData.UpdateTextures();
 		}
 	}
 }
@@ -413,6 +611,44 @@ bool g_allowInput = true;
 bool g_dungeonViewActive = false;
 
 int g_cameraLockObjectId = -1;
+
+namespace
+{
+	// Stable storage so returned Image* stays valid across calls (unique_ptr, not map-by-value).
+	std::unordered_map<std::string, std::unique_ptr<Image>> g_guiImageCache;
+}
+
+const Image* GetCachedGuiImage(const std::string& resourcePath)
+{
+	auto it = g_guiImageCache.find(resourcePath);
+	if (it != g_guiImageCache.end() && it->second && it->second->data != nullptr)
+	{
+		return it->second.get();
+	}
+
+	if (!g_ResourceManager)
+	{
+		return nullptr;
+	}
+
+	Texture* tex = g_ResourceManager->GetTexture(resourcePath, false);
+	if (tex == nullptr || tex->id == 0)
+	{
+		return nullptr;
+	}
+
+	// One GPU→CPU read per texture for the lifetime of the process.
+	Image img = LoadImageFromTexture(*tex);
+	if (img.data == nullptr)
+	{
+		return nullptr;
+	}
+
+	auto stored = std::make_unique<Image>(img);
+	Image* raw = stored.get();
+	g_guiImageCache[resourcePath] = std::move(stored);
+	return raw;
+}
 
 bool IsCameraLocked()
 {

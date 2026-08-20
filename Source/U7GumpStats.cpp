@@ -337,36 +337,24 @@ void GumpStats::Draw()
 bool GumpStats::IsMouseOverSolidPixel(Vector2 mousePos)
 {
 	// Check if over solid background pixel (transparent areas let world clicks through)
-	if (!m_backgroundTexture)
+	const Image* img = GetCachedGuiImage("Images/GUI/gumps.png");
+	if (!img || img->data == nullptr)
 		return true;
 
 	// Convert mouse position to local stats gump coordinates
-	float localX = mousePos.x - m_gui.m_Pos.x;
-	float localY = mousePos.y - m_gui.m_Pos.y;
+	const float localX = mousePos.x - m_gui.m_Pos.x;
+	const float localY = mousePos.y - m_gui.m_Pos.y;
 
 	// Check bounds
 	if (localX < 0 || localY < 0 || localX >= 135 || localY >= 135)
 		return false;
 
-	// Calculate pixel position in the source texture
 	// Stats gump sprite is at (232, 437) in gumps.png, size 135x135
-	int texX = int(232 + localX);
-	int texY = int(437 + localY);
+	const int texX = int(232 + localX);
+	const int texY = int(437 + localY);
 
-	// Load the texture as an image to check pixel alpha
-	Image img = LoadImageFromTexture(*m_backgroundTexture);
-
-	// Bounds check in texture
-	if (texX < 0 || texY < 0 || texX >= img.width || texY >= img.height)
-	{
-		UnloadImage(img);
+	if (texX < 0 || texY < 0 || texX >= img->width || texY >= img->height)
 		return false;
-	}
 
-	// Get pixel color at position
-	Color pixel = GetImageColor(img, texX, texY);
-	UnloadImage(img);
-
-	// Check if pixel is opaque (alpha > 128)
-	return pixel.a > 128;
+	return GetImageColor(*img, texX, texY).a > 128;
 }

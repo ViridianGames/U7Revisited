@@ -203,7 +203,6 @@ void PatreonVillageState::Update()
 		}
 	}
 
-	g_Terrain->CalculateLighting();
 	g_Terrain->Update();
 
 	//if (IsKeyPressed(KEY_ESCAPE))

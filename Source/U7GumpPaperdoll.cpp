@@ -941,33 +941,21 @@ bool GumpPaperdoll::IsOverSlot(Vector2 mousePos)
 bool GumpPaperdoll::IsMouseOverSolidPixel(Vector2 mousePos)
 {
 	// Check if over solid background pixel (transparent areas let world clicks through)
-	if (!m_backgroundTexture)
+	const Image* img = GetCachedGuiImage(GUMPS_TEXTURE_PATH);
+	if (!img || img->data == nullptr)
 		return true;
 
 	// Convert mouse position to local paperdoll coordinates
-	float localX = mousePos.x - m_gui.m_Pos.x;
-	float localY = mousePos.y - m_gui.m_Pos.y;
+	const float localX = mousePos.x - m_gui.m_Pos.x;
+	const float localY = mousePos.y - m_gui.m_Pos.y;
 
-	// Calculate pixel position in the source texture
-	int texX = int(m_data.m_texturePos.x + localX);
-	int texY = int(m_data.m_texturePos.y + localY);
+	const int texX = int(m_data.m_texturePos.x + localX);
+	const int texY = int(m_data.m_texturePos.y + localY);
 
-	// Load the texture as an image to check pixel alpha
-	Image img = LoadImageFromTexture(*m_backgroundTexture);
-
-	// Check bounds
-	if (texX < 0 || texY < 0 || texX >= img.width || texY >= img.height)
-	{
-		UnloadImage(img);
+	if (texX < 0 || texY < 0 || texX >= img->width || texY >= img->height)
 		return false;
-	}
 
-	// Get the pixel color at the position
-	Color pixelColor = GetImageColor(img, texX, texY);
-	UnloadImage(img);
-
-	// Return true if alpha > 0 (non-transparent)
-	return pixelColor.a > 0;
+	return GetImageColor(*img, texX, texY).a > 0;
 }
 
 bool GumpPaperdoll::HandleDrop(U7Object* object, Vector2 mousePos)

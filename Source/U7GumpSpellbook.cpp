@@ -679,35 +679,21 @@ void GumpSpellbook::Draw()
 
 bool GumpSpellbook::IsMouseOverSolidPixel(Vector2 mousePos)
 {
-	// Get the gumps texture (used for spellbook background)
-	Texture* backgroundTexture = g_ResourceManager->GetTexture("Images/GUI/gumps.png");
-
-	// If no texture, default to solid (always block input)
-	if (!backgroundTexture)
+	const Image* img = GetCachedGuiImage("Images/GUI/gumps.png");
+	// If no image, default to solid (always block input)
+	if (!img || img->data == nullptr)
 		return true;
 
 	// Convert mouse position to local gump coordinates
-	float localX = mousePos.x - m_gui.m_Pos.x;
-	float localY = mousePos.y - m_gui.m_Pos.y;
+	const float localX = mousePos.x - m_gui.m_Pos.x;
+	const float localY = mousePos.y - m_gui.m_Pos.y;
 
 	// Spellbook sprite is at x=18, y=451, w=160, h=90 in gumps.png
-	int texX = int(18 + localX);
-	int texY = int(451 + localY);
+	const int texX = int(18 + localX);
+	const int texY = int(451 + localY);
 
-	// Load the texture as an image to check pixel alpha
-	Image img = LoadImageFromTexture(*backgroundTexture);
-
-	// Check bounds
-	if (texX < 0 || texY < 0 || texX >= img.width || texY >= img.height)
-	{
-		UnloadImage(img);
+	if (texX < 0 || texY < 0 || texX >= img->width || texY >= img->height)
 		return false;
-	}
 
-	// Get the pixel color at the position
-	Color pixelColor = GetImageColor(img, texX, texY);
-	UnloadImage(img);
-
-	// Return true if alpha > 0 (non-transparent)
-	return pixelColor.a > 0;
+	return GetImageColor(*img, texX, texY).a > 0;
 }

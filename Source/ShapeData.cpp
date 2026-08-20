@@ -953,7 +953,7 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 		{
 			Shader shader{};
 			Texture2D diffuse{};
-			Texture2D specular{};
+			//Texture2D specular{};
 		};
 		std::vector<MatBackup> matBackup;
 		if (usePalette && model.materialCount > 0)
@@ -963,7 +963,7 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 			{
 				matBackup[mi].shader = model.materials[mi].shader;
 				matBackup[mi].diffuse = model.materials[mi].maps[MATERIAL_MAP_DIFFUSE].texture;
-				matBackup[mi].specular = model.materials[mi].maps[MATERIAL_MAP_SPECULAR].texture;
+				//matBackup[mi].specular = model.materials[mi].maps[MATERIAL_MAP_SPECULAR].texture;
 				BindPaletteMaterial(&model.materials[mi], m_modelIndexTexture);
 			}
 		}
@@ -975,7 +975,7 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 			{
 				model.materials[mi].shader = matBackup[mi].shader;
 				SetMaterialTexture(&model.materials[mi], MATERIAL_MAP_DIFFUSE, matBackup[mi].diffuse);
-				SetMaterialTexture(&model.materials[mi], MATERIAL_MAP_SPECULAR, matBackup[mi].specular);
+				//SetMaterialTexture(&model.materials[mi], MATERIAL_MAP_SPECULAR, matBackup[mi].specular);
 			}
 		};
 
