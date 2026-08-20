@@ -11,6 +11,7 @@ function npc_garritt_0171(eventid, objectref)
         if not get_flag(FLAG_MET_GARRITT) then
             add_dialogue("You see a jovial young man who gives you a friendly greeting.")
             set_flag(FLAG_MET_GARRITT, true)
+            utility_paws_check_frame_ready()
         else
             add_dialogue("\"A pleasant day to thee, " .. var_0000 .. ",\" says Garritt.")
         end

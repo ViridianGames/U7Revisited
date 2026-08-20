@@ -20,6 +20,7 @@ function npc_tobias_0178(eventid, objectref)
             add_dialogue("You see a sulking lad, who doesn't seem to want to look you in the eye.")
             add_dialogue("\"Just what I need. Another Avatar,\" he mumbles under his breath.")
             set_flag(FLAG_MET_TOBIAS, true)
+            utility_paws_check_frame_ready()
         else
             -- usecode: after case solved (536) he greets you as Avatar
             if get_flag(FLAG_VENOM_CASE_SOLVED) then

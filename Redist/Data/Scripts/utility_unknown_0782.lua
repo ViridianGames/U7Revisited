@@ -1,25 +1,44 @@
---- Best guess: Checks for bridge-blocking items (ID 870) within a radius, displaying a message if blocked, and creates items (ID 1553) with specific properties.
----@param objectref integer The object reference to check
----@return boolean success True if not blocked, false if bridge is blocked
-function utility_unknown_0782(objectref)
-    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E
+--- Func080E / 0x80E: check bridge clearance, then animate matched pieces.
+---
+--- Original runs execute_usecode_array frame scripts on each bridge.
+--- Until that interpreter exists, we only do the blocked check here; the
+--- caller (object_lever_0788) toggles frames itself after we return true.
 
-    for var_0000 in ipairs(get_party_members()) do
-        if get_object_shape(var_0003) == 870 then
-            var_0004 = get_object_position(var_0003)
-            var_0005 = var_0004[1]
-            var_0006 = var_0004[2]
-            var_0007 = var_0004[3]
-            var_0008 = find_nearby(0, 10, -359, var_0003)
-            for var_0009 in ipairs(var_0008) do
-                var_0004 = get_object_position(var_000B)
-                if var_0004[3] > var_0007 and var_0004[1] <= var_0005 and var_0004[1] >= var_0005 - 3 and var_0004[2] <= var_0006 and var_0004[2] >= var_0006 - 6 then
-                    utility_unknown_1023("I believe the bridge is blocked.")
-                    return false
+function utility_unknown_0782(object_list)
+    if type(object_list) ~= "table" then
+        return false
+    end
+
+    for _, bridge in ipairs(object_list) do
+        if bridge and get_object_shape(bridge) == 870 then
+            local bp = get_object_position(bridge)
+            if bp then
+                local bx, by, bz = bp[1] or bp.x, bp[2] or bp.y, bp[3] or bp.z
+                -- Anything standing on the bridge deck?
+                local nearby = find_nearby(bridge, 0, 10, 0) or {}
+                for _, obj in ipairs(nearby) do
+                    if obj and obj ~= bridge then
+                        local p = get_object_position(obj)
+                        if p then
+                            local x, y, z = p[1] or p.x, p[2] or p.y, p[3] or p.z
+                            -- usecode: z > bridge_z and within a small XY footprint
+                            if z and bz and z > bz
+                                and x <= bx and x >= bx - 3
+                                and y <= by and y >= by - 6 then
+                                -- Prefer bark helper if present
+                                if utility_unknown_1023 then
+                                    utility_unknown_1023("I believe the bridge is blocked.")
+                                else
+                                    bark(get_avatar_ref() or bridge, "@I believe the bridge is blocked.@")
+                                end
+                                return false
+                            end
+                        end
+                    end
                 end
             end
         end
-        var_000E = execute_usecode_array(var_0003, {34, 17496, 7937, 0, 8006, 34, 17496, 7937, 1, 17478, 1553, 8021, 34, 17496, 7937, 0, 7750})
     end
-    return #var_0000 == 0
+
+    return #object_list > 0
 end

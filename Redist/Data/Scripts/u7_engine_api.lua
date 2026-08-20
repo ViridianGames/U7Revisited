@@ -827,16 +827,30 @@ function add_party_items(shape, quantity, quality, frame, temporary) end
 
 ---[Exult 0x0025] Sets the "last created" object reference
 ---@param object_id integer Object to mark as last created
+---[Exult 0x0024] Creates a new object in the Ethereal Void and sets last_created
+---@param shape integer Shape number to create
+---@return integer|nil object_id New object id, or nil on failure
+function create_new_object(shape) end
+
+---Alias for create_new_object
+---@param shape integer Shape number to create
+---@return integer|nil object_id New object id, or nil on failure
+function create_object(shape) end
+
+---[Exult 0x0025] Moves an existing object into the void and sets last_created
+---@param object_id integer Object to take off the map
+---@return integer|nil object_id Same id, or nil if missing
 function set_last_created(object_id) end
 
----[Exult 0x0026] Updates the position of the last created object
----@param position table Position array {x, y, z}
+---[Exult 0x0026] Places the last created object into the world at {x,y,z}
+---@param position table Position array {x, y, z} or {x=,y=,z=}
 ---@return boolean success True if successful, false if no object exists
 function update_last_created(position) end
 
----[Exult 0x0036] Gives the last created object to an NPC
----@param npc_id integer NPC to give object to
-function give_last_created(npc_id) end
+---[Exult 0x0036] Gives the last created object to an NPC or container
+---@param recipient_id integer Object id, NPC id, or ±356 for Avatar
+---@return boolean success True if added to inventory
+function give_last_created(recipient_id) end
 
 ---[Exult 0x006F] Removes/destroys an item
 ---@param object_id integer The item to remove
@@ -972,10 +986,26 @@ function summon(shape, x, y, z) end
 ---@param chair_id integer Chair object to sit in
 function sit_down(npc_id, chair_id) end
 
----[Exult 0x001D] Sets NPC schedule type
+---[Exult 0x001D] Sets NPC schedule/activity type and restarts that activity immediately
+---(clears path so Talk can approach without waiting on an old schedule walk).
 ---@param npc_id integer NPC to modify
----@param schedule integer Schedule type
+---@param schedule integer Schedule type (3=Talk, 11=Loiter, …)
 function set_schedule_type(npc_id, schedule) end
+
+---Start NPC interaction (same as double-click). event 1 opens conversation.
+---@param npc_id integer NPC id
+---@param event integer|nil Event id (default 1)
+function npc_interact(npc_id, event) end
+
+---Turn an NPC to face another NPC (or object id).
+---@param npc_id integer NPC to turn
+---@param target_npc_id integer Target NPC id (0 = Avatar)
+function face_npc(npc_id, target_npc_id) end
+
+---World object id for an NPC (for find_direction, etc.).
+---@param npc_id integer NPC id
+---@return integer object_id
+function get_npc_object_id(npc_id) end
 
 ---[Exult 0x0022] Gets Avatar object reference
 ---@return integer object_id The Avatar's object ID
@@ -993,28 +1023,35 @@ function get_dead_party() end
 -- EXULT INTRINSICS - USECODE & SCRIPTING
 -- ============================================================================
 
----[Exult 0x0001] Executes usecode function with array of params (NOT FULLY IMPLEMENTED - returns 0)
----@param object_id integer Object ID to execute script on
----@param script_array table Array of animation/movement commands
----@return integer event_id Event ID (currently always returns 0)
+---[Exult 0x0001] Run a usecode script array on an object (frame/delay/face/bark/repeat/sfx/…).
+---Also accepts reversed (table, obj). Lua arrays are reversed internally to match Exult order.
+---@param object_id integer|table Object ID (or script table if reversed)
+---@param script_array table|integer Script commands (or object id if reversed)
+---@return integer event_id
 function execute_usecode_array(object_id, script_array) end
 
----[Exult 0x0002] Delayed execution of usecode function (NOT FULLY IMPLEMENTED - returns 0)
----@param object_id integer Object ID to execute script on
----@param script_array table Array of animation/movement commands
----@param delay integer Delay in ticks
----@return integer event_id Event ID (currently always returns 0)
+---[Exult 0x0002] Same as execute_usecode_array with an initial delay.
+---Delay is in usecode ticks (~0.05s). Also accepts (delay, table, obj) decompiler order.
+---@param object_id integer|number Object ID or delay
+---@param script_array table Script commands
+---@param delay integer|nil Delay in ticks (or object id if first arg was delay)
+---@return integer event_id
 function delayed_execute_usecode_array(object_id, script_array, delay) end
 
----[Exult 0x0079] Checks if object is currently executing usecode (NOT FULLY IMPLEMENTED - always returns false)
+---[Exult 0x0079] True while a usecode script array is running on this object.
 ---@param object_id integer Object ID to check
----@return boolean in_usecode True if object is executing usecode (currently always returns false)
+---@return boolean in_usecode
 function in_usecode(object_id) end
 
----[Exult 0x007D] Runs usecode when path complete
----@param npc_id integer NPC to wait for
----@param usecode_num integer Usecode to run
-function path_run_usecode(npc_id, usecode_num) end
+---[Exult 0x007D] Walk Avatar to loc, then run the item's script with eventid.
+---Exult form: path_run_usecode(dest_table, usecode_or_shape, item_id, eventid [, simode])
+---Also accepts reversed decompiler forms with dest as the 4th arg.
+---@param dest table|{x:number,y:number,z:number}|integer Destination (or event if reversed)
+---@param usecode_or_shape integer|nil Usecode/shape (informational; item's script is used)
+---@param item_id integer|nil Object to Interact on arrival
+---@param eventid integer|nil Event id (usually 7)
+---@return boolean ok True if walk started or already near and usecode ran
+function path_run_usecode(dest, usecode_or_shape, item_id, eventid) end
 
 ---[Exult 0x005C] Halts scheduled activity
 ---@param npc_id integer NPC to halt

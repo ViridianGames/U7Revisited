@@ -32,6 +32,7 @@ function npc_camille_0177(eventid, objectref)
             add_dialogue("You see a farm woman. She rubs her hands, which are covered with dirt and lines drawn by toil.")
             add_dialogue("\"My dreams have become reality. Thou art the Avatar, art thou not? I recognized thee immediately!\"")
             set_flag(FLAG_MET_CAMILLE, true)
+            utility_paws_check_frame_ready()
         else
             add_dialogue("\"How art thou, " .. var_0000 .. "?\" Camille asks.")
         end
@@ -41,6 +42,7 @@ function npc_camille_0177(eventid, objectref)
             if answer == "name" then
                 add_dialogue("\"My name is Camille, Avatar. It is an honor to meet thee.\"")
                 set_flag(FLAG_MET_CAMILLE, true)
+                utility_paws_check_frame_ready()
                 remove_answer("name")
             elseif answer == "job" then
                 add_dialogue("\"I run a small farm here in Paws with my son, Tobias. I am a widow.\"")

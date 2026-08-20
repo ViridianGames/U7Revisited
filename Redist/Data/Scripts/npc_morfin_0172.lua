@@ -45,6 +45,7 @@ function npc_morfin_0172(eventid, objectref)
                 add_dialogue("\"Rude dog!\"")
                 set_flag(FLAG_MORFIN_REFUSED_NAME, true)
                 set_flag(FLAG_MET_MORFIN, true)
+                utility_paws_check_frame_ready()
                 clear_answers()
                 return
             elseif var_0008 == var_0002 then
@@ -52,10 +53,12 @@ function npc_morfin_0172(eventid, objectref)
                 set_flag(FLAG_MORFIN_TAUNTED_AVATAR, true)
                 var_0006 = var_0002
                 set_flag(FLAG_MET_MORFIN, true)
+                utility_paws_check_frame_ready()
                 clear_answers()
                 return
             end
             set_flag(FLAG_MET_MORFIN, true)
+            utility_paws_check_frame_ready()
         else
             add_dialogue("\"Greetings, " .. var_0006 .. ",\" says Morfin.")
         end
@@ -234,7 +237,8 @@ function npc_morfin_0172(eventid, objectref)
             elseif answer == "user" or answer == "Tobias stole venom" then
                 if get_flag(FLAG_FERIDWYN_ACCUSED_TOBIAS) then
                     add_dialogue("\"I am not so sure Tobias was the one who stole the venom. I have not seen any of the signs of venom use in Tobias and I am quite familiar with its symptoms. But, now that I think about it, I have noticed that Garritt has appeared very tired lately. He seems hyperactive one moment and unhealthy the next.\"")
-                    if not get_flag(FLAG_GOT_GARRITT_KEY) then
+                    -- Re-offer if flag was set by a failed give (stub) but key isn't in inventory.
+                    if not get_flag(FLAG_GOT_GARRITT_KEY) or not is_object_in_party_inventory(641) then
                         add_answer("Garritt")
                     end
                     remove_answer("Tobias stole venom")
@@ -244,12 +248,15 @@ function npc_morfin_0172(eventid, objectref)
                 remove_answer("user")
             elseif answer == "Garritt" then
                 add_dialogue("\"Perhaps thou shouldst make a search of Garritt's belongings! Which reminds me-- I saw him earlier playing near the slaughterhouse. He dropped this key. Perhaps it opens something... significant.\"")
+                -- Exult: add_party_items(1, 641, 224, 6, false); Lua decompiler reversed args.
                 var_0019 = add_party_items(false, 6, 224, 641, 1)
                 if var_0019 then
                     add_dialogue("\"Here it is.\"")
                     set_flag(FLAG_GOT_GARRITT_KEY, true)
                 else
                     add_dialogue("\"I shall give it to thee when thine hands are not so full.\"")
+                    -- Don't leave the topic locked if the give failed.
+                    set_flag(FLAG_GOT_GARRITT_KEY, false)
                 end
                 remove_answer("Garritt")
             elseif answer == "return venom" then

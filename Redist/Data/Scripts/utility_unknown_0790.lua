@@ -1,138 +1,178 @@
---- Best guess: Handles door locking/unlocking based on quality and flag states, with item spawning.
-function utility_unknown_0790(objectref)
-    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E, var_000F, var_0010, var_0011, var_0012, var_0013, var_0014, var_0015, var_0016, var_0017, var_0018, var_0019, var_001A, var_001B, var_001C, var_001D, var_001E, var_001F, var_0020, var_0021
+--- Func0816 / 0x816: effect for shape-787 levers, keyed by lever quality.
+---
+--- quality 0:          toggle street lamps (526 <-> 889) and their lights (440)
+--- quality 1..250:     lock/unlock doors 845/828 that share this quality
+--- quality 251/253:    cycle special door-flag sets (Func0817)
+--- quality 252:        more complex dungeon door set (partial support)
+---
+--- On success: toggle lever frame + click sound. On failure: flash_mouse.
 
-    var_0000 = objectref
-    var_0001 = false
-    var_0002 = get_object_quality(var_0000) --- Guess: Gets item quality
-    if var_0002 == 0 then
-        var_0003 = create_array(526) --- Guess: Creates array
-        -- Guess: sloop sets item types
-        for i = 1, 5 do
-            var_0006 = ({4, 5, 6, 3, 138})[i]
-            set_object_shape(889, var_0006) --- Guess: Sets item type
-            var_0007 = find_nearby(128, 10, 440, var_0006) --- Guess: Sets NPC location
-            var_0008 = get_object_position(var_0006) --- Guess: Gets position data
-            var_0009 = {var_0008[3], var_0008[2] + 3, var_0008[1] + 3}
-            -- Guess: sloop checks item positions
-            for i = 1, 5 do
-                var_000C = ({10, 11, 12, 7, 52})[i]
-                var_000D = get_object_position(var_000C) --- Guess: Gets position data
-                if var_0009[1] == var_000D[1] and var_0009[2] == var_000D[2] then
-                    destroy_object_silent(var_000C) --- Guess: Destroys item silently
+--- Unlock door piece: transform toward shape 845 (Func081F)
+function unlock_door(door)
+    local state = utility_unknown_0795(door) -- frame % 4
+    if state == 1 then
+        if utility_position_0797(7, 0, 0, 0, 845, door) then
+            play_sound_effect(31)
+            return true
+        end
+        utility_unknown_0792(door)
+        return false
+    elseif state == 0 then
+        if utility_position_0797(7, 0, 0, 1, 845, door) then
+            play_sound_effect(30)
+            return true
+        end
+        utility_unknown_0792(door)
+        return false
+    end
+    return true
+end
+
+--- Lock door piece: transform toward shape 828 (Func0820)
+function lock_door(door)
+    local state = utility_unknown_0795(door)
+    if state == 1 then
+        if utility_position_0797(7, 0, 0, 0, 828, door) then
+            play_sound_effect(31)
+            return true
+        end
+        utility_unknown_0792(door)
+        return false
+    elseif state == 0 then
+        if utility_position_0797(7, 0, 0, 1, 828, door) then
+            play_sound_effect(30)
+            return true
+        end
+        utility_unknown_0792(door)
+        return false
+    end
+    return true
+end
+
+local function toggle_lamps()
+    -- 526 (0x20E) lit post <-> 889 (0x379) unlit, light source 440 (0x1B8)
+    local posts = find_nearby_avatar(526) or {}
+    for _, post in ipairs(posts) do
+        set_object_shape(post, 889)
+        local lights = find_nearby(post, 440, 10, 0) or {}
+        local pp = get_object_position(post)
+        if pp then
+            local tx = (pp[1] or pp.x) + 3
+            local ty = (pp[2] or pp.y) + 3
+            local tz = pp[3] or pp.z
+            for _, light in ipairs(lights) do
+                local lp = get_object_position(light)
+                if lp then
+                    local lx, ly = lp[1] or lp.x, lp[2] or lp.y
+                    if lx == tx and ly == ty then
+                        destroy_object_silent(light)
+                    end
                 end
             end
         end
-        var_0003 = create_array(889) --- Guess: Creates array
-        -- Guess: sloop creates items
-        for i = 1, 5 do
-            var_0006 = ({14, 15, 6, 3, 75})[i]
-            set_object_shape(526, var_0006) --- Guess: Sets item type
-            var_0007 = get_object_status(440) --- Guess: Gets item status
-            if not var_0007 then
-                var_0008 = get_object_position(var_0006) --- Guess: Gets position data
-                var_0001 = update_last_created({var_0008[3], var_0008[2] + 3, var_0008[1] + 3}) --- Guess: Updates position
-            end
-        end
-        var_0001 = true
     end
-    if var_0002 >= 1 and var_0002 < 251 then
-        var_0010 = find_nearby(0, 80, 845, var_0000) --- Guess: Sets NPC location
-        var_0010 = find_nearby(0, 80, 828, var_0000) --- Guess: Sets NPC location
-        -- Guess: sloop handles door locking/unlocking
-        for i = 1, 5 do
-            var_0013 = ({17, 18, 19, 16, 52})[i]
-            if get_object_quality(var_0013) == var_0002 then
-                if get_object_shape(var_0013) == 845 then
-                    var_0001 = lock_door(var_0013) --- Guess: Locks door
-                else
-                    var_0001 = unlock_door(var_0013) --- Guess: Unlocks door
-                end
+
+    posts = find_nearby_avatar(889) or {}
+    for _, post in ipairs(posts) do
+        set_object_shape(post, 526)
+        local light = create_new_object(440)
+        if light then
+            local pp = get_object_position(post)
+            if pp then
+                update_last_created({
+                    (pp[1] or pp.x) + 3,
+                    (pp[2] or pp.y) + 3,
+                    pp[3] or pp.z
+                })
             end
-        end
-    elseif var_0002 == 251 then
-        if not get_flag(740) then
-            var_0014 = {1, 0, 0}
-        end
-        if not get_flag(741) then
-            var_0014 = {0, 0, 1}
-        end
-        if not get_flag(742) then
-            var_0014 = {0, 1, 0}
-        end
-        if not get_flag(740) and not get_flag(741) and not get_flag(742) then
-            var_0014 = {1, 0, 0}
-        end
-        utility_unknown_0791(var_0014) --- External call to update door states
-        var_0001 = true
-    elseif var_0002 == 253 then
-        if not get_flag(740) then
-            var_0014 = {1, 0, 0}
-        end
-        if not get_flag(741) then
-            var_0014 = {0, 0, 1}
-        end
-        if not get_flag(742) then
-            var_0014 = {0, 1, 0}
-        end
-        if not get_flag(740) and not get_flag(741) and not get_flag(742) then
-            var_0014 = {0, 0, 1}
-        end
-        utility_unknown_0791(var_0014) --- External call to update door states
-        var_0001 = true
-    elseif var_0002 == 252 then
-        var_0001 = false
-        var_0015 = 0
-        if not get_flag(740) then
-            var_0015 = 230
-        end
-        if not get_flag(741) then
-            var_0015 = 220
-        end
-        if not get_flag(742) then
-            var_0015 = 210
-        end
-        var_0010 = find_nearby(0, 60, 828, var_0000) --- Guess: Sets NPC location
-        -- Guess: sloop checks door qualities
-        for i = 1, 5 do
-            var_0013 = ({22, 23, 19, 16, 57})[i]
-            var_0018 = get_object_quality(var_0013) --- Guess: Gets item quality
-            if var_0018 == 230 or var_0018 == 220 or var_0018 == 210 or var_0018 ~= var_0015 then
-                var_0001 = unlock_door(var_0013) --- Guess: Unlocks door
-            end
-        end
-        var_0019 = get_object_position(var_0000) --- Guess: Gets position data
-        var_0010 = find_nearby(0, 60, 845, var_0019) --- Guess: Sets NPC location
-        var_001A = find_nearby(0, 60, 949, var_0019) --- Guess: Sets NPC location
-        -- Guess: sloop handles door locking
-        for i = 1, 5 do
-            var_0013 = ({27, 28, 19, 16, 26})[i]
-            if get_object_quality(var_0013) == var_0015 then
-                var_0001 = lock_door(var_0013) --- Guess: Locks door
-            end
-        end
-        -- Guess: sloop adds items for effect
-        for i = 1, 5 do
-            var_001F = ({29, 30, 31, 26, 54})[i]
-            if get_object_quality(var_001F) == var_0015 then
-                var_0001 = add_containerobject_s(var_001F, {6, -1, 17419, 8014, 1, 8006, 32, 7768})
-                var_0001 = true
-            end
-        end
-        var_0020 = find_nearby(0, 12, 270, var_0000) --- Guess: Sets NPC location
-        if var_0020 then
-            object_door_0270(var_0020) --- External call to unknown function
         end
     end
-    if not var_0001 then
-        var_0021 = get_object_frame(var_0000) --- Guess: Gets item frame
-        if var_0021 % 2 == 0 then
-            set_object_frame(var_0000, var_0021 + 1) --- Guess: Sets item frame
+    return true
+end
+
+local function toggle_linked_doors(lever)
+    local quality = get_object_quality(lever)
+    local doors_a = find_nearby(lever, 845, 80, 0) or {}
+    local doors_b = find_nearby(lever, 828, 80, 0) or {}
+    local doors = {}
+    for _, d in ipairs(doors_a) do table.insert(doors, d) end
+    for _, d in ipairs(doors_b) do table.insert(doors, d) end
+
+    local ok = false
+    for _, door in ipairs(doors) do
+        if get_object_quality(door) == quality then
+            if get_object_shape(door) == 845 then
+                if lock_door(door) then ok = true end
+            else
+                if unlock_door(door) then ok = true end
+            end
+        end
+    end
+    return ok
+end
+
+function utility_unknown_0790(objectref)
+    local success = false
+    local quality = get_object_quality(objectref) or 0
+
+    if quality == 0 then
+        success = toggle_lamps()
+    elseif quality >= 1 and quality < 251 then
+        success = toggle_linked_doors(objectref)
+    elseif quality == 251 or quality == 253 then
+        -- Cycle which door-bank is active (usecode Func0817 flag triple).
+        -- Each "if flag set" overwrites; last matching flag wins, matching original.
+        local flags
+        if quality == 251 then
+            flags = {0, 0, 1} -- default when none set
+            if get_flag(740) then flags = {0, 1, 0} end
+            if get_flag(741) then flags = {0, 0, 1} end
+            if get_flag(742) then flags = {1, 0, 0} end
+        else -- 253
+            flags = {1, 0, 0}
+            if get_flag(740) then flags = {0, 0, 1} end
+            if get_flag(741) then flags = {1, 0, 0} end
+            if get_flag(742) then flags = {0, 1, 0} end
+        end
+        utility_unknown_0791(flags)
+        success = true
+    elseif quality == 252 then
+        -- Partial: unlock non-selected bank doors, lock selected set
+        local selected = 0
+        if get_flag(740) then selected = 230 end
+        if get_flag(741) then selected = 220 end
+        if get_flag(742) then selected = 210 end
+
+        local doors = find_nearby(objectref, 828, 60, 0) or {}
+        for _, door in ipairs(doors) do
+            local q = get_object_quality(door)
+            if (q == 230 or q == 220 or q == 210) and q ~= selected then
+                if unlock_door(door) then success = true end
+            end
+        end
+        doors = find_nearby(objectref, 845, 60, 0) or {}
+        for _, door in ipairs(doors) do
+            if get_object_quality(door) == selected then
+                if lock_door(door) then success = true end
+            end
+        end
+        -- Also poke nearby regular doors (shape 270)
+        local plain = find_nearby(objectref, 270, 12, 0) or {}
+        if #plain > 0 and object_door_0270 then
+            object_door_0270(1, plain[1])
+            success = true
+        end
+    end
+
+    if success then
+        local fr = get_object_frame(objectref) or 0
+        if fr % 2 == 0 then
+            set_object_frame(objectref, fr + 1)
         else
-            set_object_frame(var_0000, var_0021 - 1) --- Guess: Sets item frame
+            set_object_frame(objectref, math.max(0, fr - 1))
         end
-        set_object_behavior(objectref, 28) --- Guess: Sets item behavior
+        play_sound_effect(28)
     else
-        trigger_explosion(0) --- Guess: Triggers explosion
+        flash_mouse(0)
     end
 end

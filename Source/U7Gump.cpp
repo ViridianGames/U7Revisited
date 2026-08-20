@@ -165,7 +165,8 @@ void Gump::Update()
 	if (isTopmostGump && CheckCollisionPointRec(mousePos, Rectangle{ m_gui.m_Pos.x + (m_containerData.m_boxOffset.x), m_gui.m_Pos.y + (m_containerData.m_boxOffset.y),
 		m_containerData.m_boxSize.x, m_containerData.m_boxSize.y }))
 	{
-		// Check for double-click on spellbook or map
+		// Double-click inventory items: special gumps, otherwise run the item's usecode
+		// (keys → green use cursor via object_select_modal, etc.).
 		if (g_InputSystem->WasLButtonDoubleClicked())
 		{
 			for (auto containerObjectId : m_containerObject->m_inventory)
@@ -194,6 +195,15 @@ void Gump::Update()
 								g_mainState->OpenMinimapGump(0); // Use Avatar's map (NPC ID 0)
 							}
 							return; // Exit Update to prevent drag handling
+						}
+						else
+						{
+							// Keys and other usable inventory items
+							Log("Container - Double-click on item shape " +
+								std::to_string(object->m_shapeData->m_shape) +
+								" id=" + std::to_string(object->m_ID) + ", Interact(1)");
+							object->Interact(1);
+							return;
 						}
 					}
 				}

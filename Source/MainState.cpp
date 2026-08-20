@@ -808,7 +808,10 @@ void MainState::HandleRightDoubleClick()
 
 		U7Object* avatar = g_objectList[g_NPCData[0]->m_objectID].get();
 		if (avatar)
+		{
+			avatar->ClearPendingUsecode(); // cancel walk-to-use
 			avatar->PathfindToDest({ objTileX + 0.5f, surfaceY, objTileZ + 0.5f });
+		}
 	}
 	else if (!g_mouseOverUI && !g_gumpManager->m_isMouseOverGump)
 	{
@@ -834,6 +837,7 @@ void MainState::HandleRightDoubleClick()
 		}
 
 		U7Object* avatar = g_objectList[g_NPCData[0]->m_objectID].get();
+		avatar->ClearPendingUsecode(); // cancel walk-to-use
 		avatar->PathfindToDest({ worldX + 0.5f, goalY, worldZ + 0.5f });
 
 		int counter = 1;
@@ -1277,7 +1281,12 @@ void MainState::Bark(U7Object* object, const std::string& text, float duration)
 	else
 	{
 		m_barkAutoUpdate = false;
+		// Usecode barks are delimited with @...@; the markers are not drawn.
 		m_barkText = text;
+		while (!m_barkText.empty() && m_barkText.front() == '@')
+			m_barkText.erase(m_barkText.begin());
+		while (!m_barkText.empty() && m_barkText.back() == '@')
+			m_barkText.pop_back();
 	}
 }
 

@@ -2271,19 +2271,16 @@ void LoadingState::CreateObjectTable()
 				g_objectDataTable[i].m_isNotWalkable = true;
 			}
 
-		// NOTE: Door workaround no longer needed - TFA parsing was fixed to read isDoor flag correctly
-		// Previously the bit shift was wrong (buffer[1] >> 9 instead of buffer[1] >> 5)
-		/*
-		string lowerName = g_objectDataTable[i].m_name;
-		transform(lowerName.begin(), lowerName.end(), lowerName.begin(), ::tolower);
-		if (lowerName.find("door") != string::npos)
+		// Secret doors (828 closed / 845 open) look like walls in TFA and often
+		// lack the door bit — force it so double-click + pathfinding treat them
+		// like normal doors when opened/closed via set_object_shape.
+		if (i == 828 || i == 845)
 		{
 			g_objectDataTable[i].m_isDoor = true;
 		}
-		*/
 	}
 
-	// Door flags are now correctly parsed from TFA data (bit 5 of byte 1)
+	// Door flags are parsed from TFA data (bit 5 of byte 1); 828/845 forced above.
 
 	wgtvolfile.close();
 	tfafile.close();

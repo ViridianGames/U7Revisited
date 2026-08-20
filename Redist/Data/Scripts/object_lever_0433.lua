@@ -8,15 +8,20 @@ function object_lever_0433(eventid, objectref)
     var_0000 = utility_unknown_0795(objectref)
     if var_0000 == 1 then
         play_sound_effect(28)
+        -- usecode: if Func081D succeeds, also run Func081E on paired piece
         if utility_position_0797(1, 0, 3, 0, 432, objectref) then
             utility_unknown_0798(7, 0, 0, 0, 270, 2, 1, 376, objectref)
             set_object_quality(objectref, 31)
+        else
+            utility_unknown_0792(objectref)
         end
     elseif var_0000 == 0 then
         play_sound_effect(28)
         if utility_position_0797(7, 3, 0, 1, 432, objectref) then
             utility_unknown_0798(7, 0, 0, 1, 270, 1, 0, 376, objectref)
             set_object_quality(objectref, 30)
+        else
+            utility_unknown_0792(objectref)
         end
     end
 end

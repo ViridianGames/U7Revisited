@@ -257,6 +257,7 @@ bool U7Player::TryMove(const Vector3& desiredPos)
 	if (!avatar) return false;
 
 	// Manual steer owns the avatar — cancel any click-path so it cannot fight us.
+	avatar->ClearPendingUsecode();
 	avatar->m_pathWaypoints.clear();
 	avatar->m_currentWaypointIndex = 0;
 	avatar->m_pathfindingPending = false;

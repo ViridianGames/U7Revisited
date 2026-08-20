@@ -32,6 +32,7 @@ function npc_feridwyn_0167(eventid, objectref)
             set_flag(FLAG_TOBIAS_FRAMED, true)
             set_schedule_type(NPC_CAMILLE, 3)
             set_schedule_type(NPC_FERIDWYN, 11)
+            utility_paws_check_frame_ready()
             clear_answers()
             return
         end
@@ -40,6 +41,7 @@ function npc_feridwyn_0167(eventid, objectref)
             add_dialogue("You see a small man with twisted, sloped posture. He looks you up and down before deciding he will speak to you.")
             add_dialogue("\"I had gotten word that thou wert coming to our town. I have been expecting thee. I must admit, though, that I find it difficult to believe that thou art truly the Avatar.\"")
             set_flag(FLAG_MET_FERIDWYN, true)
+            utility_paws_check_frame_ready()
         else
             add_dialogue("\"Thou dost wish to speak with me again, Avatar?\" says Feridwyn.")
         end

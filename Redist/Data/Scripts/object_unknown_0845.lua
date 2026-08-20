@@ -1,10 +1,13 @@
---- Best guess: Triggers an action for an item with quality 0 when event ID is not 1, likely for another specific item interaction.
-function object_unknown_0845(eventid, objectref)
-    local var_0000
+--- Shape 845: secret door (open).
+--- usecode Func034D: on double-click (event 1), if quality == 0, close via Func0820 → shape 828.
 
+function object_unknown_0845(eventid, objectref)
     if eventid ~= 1 then
-        if get_object_quality(objectref) == 0 then
-            var_0000 = utility_unknown_0800(objectref)
-        end
+        return
+    end
+
+    if get_object_quality(objectref) == 0 then
+        -- Close: transform 845 → 828 (lock_door / Func0820)
+        lock_door(objectref)
     end
 end

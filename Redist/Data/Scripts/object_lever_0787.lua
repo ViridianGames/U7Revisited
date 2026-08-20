@@ -1,18 +1,21 @@
---- Best guess: Manages an item's interaction, likely a switch or lever, toggling its state and applying effects.
-function object_lever_0787(eventid, objectref)
-    local var_0000, var_0001, var_0002, var_0003, var_0004
+--- Shape 787 lever / switch (usecode Func0313).
+---
+--- event 1: walk Avatar to the lever, then event 7 runs Func0816
+--- (utility_unknown_0790) to lock/unlock linked doors or toggle lamps.
 
+local function do_lever_effect(objectref)
+    utility_unknown_0790(objectref)
+end
+
+function object_lever_0787(eventid, objectref)
     if eventid == 1 then
         close_gumps()
-        var_0000 = -1
-        var_0001 = -1
-        var_0002 = -3
-        utility_position_0808(7, objectref, 787, var_0002, var_0001, var_0000, objectref)
+        -- Func0313: Func0828(item, -1, -1, -3, 0x0313, item, 7)
+        utility_position_0808(objectref, -1, -1, -3, 787, objectref, 7)
     elseif eventid == 7 then
-        var_0003 = utility_unknown_0807(objectref, -356)
-        var_0004 = execute_usecode_array(-356, {17505, 17516, 8449, var_0003, 7769})
-        utility_unknown_0790(objectref)
+        utility_unknown_0807(-356, objectref)
+        do_lever_effect(objectref)
     elseif eventid == 2 then
-        utility_unknown_0790(objectref)
+        do_lever_effect(objectref)
     end
 end

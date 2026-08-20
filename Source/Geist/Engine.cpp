@@ -52,7 +52,7 @@ void Engine::Init(const std::string &configfile)
 	{
 		ToggleFullscreen();
 	}
-	SetTargetFPS(300);
+	SetTargetFPS(60);
 
 	//  Relies on Raylib, so let's set it up after Raylib has started.
 	g_SoundSystem = make_unique<SoundSystem>();

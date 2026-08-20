@@ -326,9 +326,11 @@ int main(int argv, char** argc)
                std::string filepath = entry.path().string();
                std::string filename = entry.path().filename().string();
 
-               // Skip files we already loaded explicitly
+               // Skip files we already loaded explicitly (compat_aliases is
+               // loaded after RegisterAllLuaFunctions so wrappers stick).
                if (filename == "global_flags_and_constants.lua" ||
-                  filename == "u7_engine_api.lua")
+                  filename == "u7_engine_api.lua" ||
+                  filename == "compat_aliases.lua")
                {
                   continue;
                }
@@ -341,6 +343,9 @@ int main(int argv, char** argc)
       g_ScriptingSystem->SortScripts();
 
       RegisterAllLuaFunctions();
+
+      // Decompiled-script name/arity compatibility (must load after C++ registrations).
+      g_ScriptingSystem->LoadScript(directoryPath + "/compat_aliases.lua");
 
       //  Make walk frames
 		//g_ResourceManager->GetTexture("Images/VillagerWalkFixed.png", false);

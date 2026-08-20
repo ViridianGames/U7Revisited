@@ -5,6 +5,8 @@
 #include "Geist/BaseUnits.h"
 #include <string>
 #include <list>
+#include <vector>
+#include <variant>
 #include "lua.h"
 #include "U7Globals.h"
 #include "../ThirdParty/nlohmann/json.hpp"
@@ -460,6 +462,36 @@ public:
 	bool m_isSchedulePath = false; // True for C++ schedule paths, false for Lua activity paths
 	bool m_pathfindingPending = false; // True while waiting for pathfinding to complete
 	int m_moveStuckFrames = 0; // Consecutive frames movement was fully blocked (slide failed)
+
+	// path_run_usecode: after Avatar finishes walking, Interact(event) on the target object.
+	bool m_hasPendingUsecode = false;
+	int m_pendingUsecodeObjectId = -1;
+	int m_pendingUsecodeEvent = 7;
+	// How close (XZ Chebyshev tiles) counts as "close enough to use" for walk-to-use.
+	// Generous enough that furniture blocking the stand tile still allows activation.
+	static constexpr float kPathRunUseRange = 4.0f;
+	void ClearPendingUsecode();
+	void SetPendingUsecode(int objectId, int eventId);
+	void FirePendingUsecodeIfAny();
+	// If within use-range of the pending target, cancel pathfinding and fire.
+	bool TryCompletePendingUsecodeByProximity(float maxDistXZ = kPathRunUseRange);
+
+	// execute_usecode_array / delayed_execute_usecode_array (Exult Usecode_script).
+	// Lua decompiler stores arrays reversed; elems may be int or string (say).
+	using UsecodeScriptElem = std::variant<int, std::string>;
+	struct UsecodeScriptState
+	{
+		std::vector<UsecodeScriptElem> code;
+		int ip = 0;
+		float delayRemaining = 0.0f;
+		bool noHalt = false;
+		bool active = false;
+	};
+	UsecodeScriptState m_usecodeScript;
+	void StartUsecodeScript(std::vector<UsecodeScriptElem> code, float initialDelaySec = 0.0f);
+	void HaltUsecodeScript(bool force = false);
+	bool IsInUsecodeScript() const { return m_usecodeScript.active; }
+	void UpdateUsecodeScript();
 
 	Vector3 m_ExternalForce;
 

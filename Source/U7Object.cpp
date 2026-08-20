@@ -163,6 +163,7 @@ void U7Object::InteractiveUpdate()
 {
 	// Most interactive objects have very little per-frame logic here.
 	// Container behavior, scripts, etc. are usually event-driven via Interact().
+	UpdateUsecodeScript();
 }
 
 void U7Object::EggUpdate()
@@ -1064,13 +1065,42 @@ void U7Object::HandleUsecodeEgg()
 
 	if (justTriggered)
 	{
-		int stopper = 0;
-		//  Get the script for this egg.
-		int scriptnumber = m_eggData.m_usecodeFunc - 1280;
-		string scriptname = "utility_unknown_0"+(std::to_string(scriptnumber));
+		// Egg usecode funcs are stored as 0x500+N (1280+N). Scripts are named
+		// utility_event_0NNN.lua or utility_unknown_0NNN.lua (decompiler split).
+		int scriptnumber = m_eggData.m_usecodeFunc;
+		if (scriptnumber >= 1280)
+			scriptnumber -= 1280;
 
-		//  Run it.
-		g_ScriptingSystem->CallScript(scriptname, {});
+		char numBuf[16];
+		snprintf(numBuf, sizeof(numBuf), "%04d", scriptnumber);
+		const std::string eventName = std::string("utility_event_") + numBuf;
+		const std::string unknownName = std::string("utility_unknown_") + numBuf;
+
+		auto scriptLoaded = [](const std::string& name) -> bool {
+			if (!g_ScriptingSystem) return false;
+			for (const auto& script : g_ScriptingSystem->m_scriptFiles)
+			{
+				if (script.first == name)
+					return true;
+			}
+			return false;
+		};
+
+		std::string scriptname;
+		if (scriptLoaded(eventName))
+			scriptname = eventName;
+		else if (scriptLoaded(unknownName))
+			scriptname = unknownName;
+		else
+			scriptname = eventName; // prefer event name in error message
+
+		// Exult hatches usecode eggs with event 3 (egg) and the egg as itemref.
+		NPCDebugPrint("Usecode egg @" + std::to_string((int)m_Pos.x) + "," +
+			std::to_string((int)m_Pos.z) + " → " + scriptname +
+			" (func=" + std::to_string(m_eggData.m_usecodeFunc) + ")");
+		std::string result = g_ScriptingSystem->CallScript(scriptname, { 3, m_ID });
+		if (!result.empty())
+			NPCDebugPrint("Usecode egg script error: " + result);
 	}
 }
 
@@ -1164,9 +1194,10 @@ void U7Object::DebugPrintEggInfo() const
 			AddConsoleString("  UsecodeFunc: " + std::to_string(egg.m_usecodeFunc));
 			if (egg.m_usecodeFunc != 0)
 			{
-				int scriptNum = egg.m_usecodeFunc - 1280;
+				int scriptNum = egg.m_usecodeFunc >= 1280 ? egg.m_usecodeFunc - 1280 : egg.m_usecodeFunc;
 				std::stringstream scriptSS;
-				scriptSS << "utility_unknown_0" << std::setfill('0') << std::setw(3) << scriptNum;
+				scriptSS << "utility_event_" << std::setfill('0') << std::setw(4) << scriptNum
+					<< " / utility_unknown_" << std::setfill('0') << std::setw(4) << scriptNum;
 				AddConsoleString("  Script: " + scriptSS.str());
 			}
 			break;
@@ -1863,6 +1894,7 @@ void U7Object::NPCUpdate()
 	// Schedule checking is now handled by MainState::Update() queue system
 	// This function only handles waypoint following and movement via shared UpdateMovement()
 
+	UpdateUsecodeScript();
 	UpdateMovement();
 }
 
@@ -1871,6 +1903,11 @@ void U7Object::UpdateMovement()
 	// Shared movement for NPCs, monsters, and avatar path-follow.
 	// Arrival is XZ-based; climb/drop snaps to waypoint Y.
 	// All units wall-slide when blocked so they don't stop cold on corners.
+
+	// Walk-to-use: close enough to operate → cancel pathfinding and fire.
+	// (Stand tiles between furniture are often unreachable; don't wait for exact arrival.)
+	if (m_hasPendingUsecode && TryCompletePendingUsecodeByProximity(kPathRunUseRange))
+		return;
 
 	auto advanceWaypoint = [this]() {
 		const bool isLast = (m_currentWaypointIndex >= static_cast<int>(m_pathWaypoints.size()) - 1);
@@ -1882,6 +1919,8 @@ void U7Object::UpdateMovement()
 			m_isSchedulePath = false;
 			m_moveStuckFrames = 0;
 			SetDest(m_Pos);
+			// Exult path_run_usecode: run target usecode when the walk finishes.
+			FirePendingUsecodeIfAny();
 		}
 		else
 		{
@@ -1898,7 +1937,10 @@ void U7Object::UpdateMovement()
 		const Vector3& wp = m_pathWaypoints[m_currentWaypointIndex];
 		const float distXZ = Vector2Distance({ m_Pos.x, m_Pos.z }, { wp.x, wp.z });
 		const bool isLastWaypoint = (m_currentWaypointIndex == static_cast<int>(m_pathWaypoints.size()) - 1);
-		const float threshold = isLastWaypoint ? 0.15f : 0.45f;
+		// Pending usecode walks: slightly looser final snap (furniture often blocks the exact tile).
+		const float threshold = isLastWaypoint
+			? (m_hasPendingUsecode ? 0.55f : 0.15f)
+			: 0.45f;
 
 		if (distXZ < threshold)
 		{
@@ -2192,6 +2234,11 @@ void U7Object::UpdateMovement()
 				return;
 			}
 
+			// Walk-to-use stuck against furniture: if in use range, fire instead of shuffling.
+			if (m_hasPendingUsecode && m_moveStuckFrames >= 12 &&
+			    TryCompletePendingUsecodeByProximity(kPathRunUseRange))
+				return;
+
 			// Give up after longer stuck (avoids infinite shuffle).
 			if (m_moveStuckFrames >= 60)
 			{
@@ -2201,6 +2248,9 @@ void U7Object::UpdateMovement()
 				m_isSchedulePath = false;
 				m_moveStuckFrames = 0;
 				SetDest(m_Pos);
+				// Last chance: still near enough to use?
+				if (!TryCompletePendingUsecodeByProximity(kPathRunUseRange))
+					ClearPendingUsecode();
 			}
 			return;
 		}
@@ -2433,12 +2483,451 @@ void U7Object::TryOpenDoorAtCurrentPosition()
 	}
 }
 
+// Exult Ucscript opcodes (ucscriptop.h). Lua decompiler stores them as
+// 0x1Exx / 0x1Fxx / 0x44xx with the real opcode in the low byte.
+namespace {
+	enum UsecodeScriptOp : int {
+		UC_CONT = 0x01,
+		UC_NOP1 = 0x02,
+		UC_RESET = 0x0a,
+		UC_REPEAT = 0x0b,
+		UC_REPEAT2 = 0x0c,
+		UC_NOP2 = 0x21,
+		UC_DONT_HALT = 0x23,
+		UC_WAIT_NEAR = 0x24,
+		UC_DELAY_TICKS = 0x27,
+		UC_DELAY_MINUTES = 0x28,
+		UC_DELAY_HOURS = 0x29,
+		UC_WAIT_FAR = 0x2b,
+		UC_FINISH = 0x2c,
+		UC_REMOVE = 0x2d,
+		UC_FRAME = 0x46,
+		UC_NEXT_FRAME_MAX = 0x4d,
+		UC_NEXT_FRAME = 0x4e,
+		UC_PREV_FRAME_MIN = 0x4f,
+		UC_PREV_FRAME = 0x50,
+		UC_SAY = 0x52,
+		UC_STEP = 0x53,
+		UC_MUSIC = 0x54,
+		UC_USECODE = 0x55,
+		UC_SPEECH = 0x56,
+		UC_SFX = 0x58,
+		UC_FACE_DIR = 0x59,
+		UC_WEATHER = 0x5A,
+		UC_NPC_FRAME_BASE = 0x61, // 0x61-0x70
+	};
+
+	constexpr float kUsecodeTickSec = 0.05f; // ~Exult std delay (~1/20s)
+
+	int DecodeScriptOpcode(int raw)
+	{
+		if (raw >= 0 && raw <= 0x81)
+			return raw;
+		// Lua-encoded: opcode in low byte (0x1E46, 0x440B, …)
+		if (raw > 255 || raw < -255)
+			return raw & 0xff;
+		return raw;
+	}
+
+	bool ScriptElemIsInt(const U7Object::UsecodeScriptElem& e)
+	{
+		return std::holds_alternative<int>(e);
+	}
+
+	int ScriptElemInt(const U7Object::UsecodeScriptElem& e, int fallback = 0)
+	{
+		return std::holds_alternative<int>(e) ? std::get<int>(e) : fallback;
+	}
+}
+
+void U7Object::StartUsecodeScript(std::vector<UsecodeScriptElem> code, float initialDelaySec)
+{
+	if (code.empty())
+		return;
+
+	// Replace any existing halt-able script on this object (Exult terminate unless dont_halt).
+	if (m_usecodeScript.active && !m_usecodeScript.noHalt)
+		HaltUsecodeScript(true);
+
+	// Peek leading dont_halt / finish flags (Exult start()).
+	bool noHalt = false;
+	for (const auto& elem : code)
+	{
+		if (!ScriptElemIsInt(elem))
+			break;
+		const int op = DecodeScriptOpcode(ScriptElemInt(elem));
+		if (op == UC_DONT_HALT)
+			noHalt = true;
+		else if (op == UC_FINISH)
+			continue;
+		else
+			break;
+	}
+
+	if (m_usecodeScript.active && m_usecodeScript.noHalt && !noHalt)
+	{
+		// Existing no_halt script wins; drop the new one.
+		return;
+	}
+
+	m_usecodeScript.code = std::move(code);
+	m_usecodeScript.ip = 0;
+	m_usecodeScript.delayRemaining = initialDelaySec;
+	m_usecodeScript.noHalt = noHalt;
+	m_usecodeScript.active = true;
+
+	NPCDebugPrint("usecode_script: start on object " + std::to_string(m_ID) +
+		" len=" + std::to_string(m_usecodeScript.code.size()) +
+		" delay=" + std::to_string(initialDelaySec));
+}
+
+void U7Object::HaltUsecodeScript(bool force)
+{
+	if (!m_usecodeScript.active)
+		return;
+	if (!force && m_usecodeScript.noHalt)
+		return;
+	m_usecodeScript.active = false;
+	m_usecodeScript.code.clear();
+	m_usecodeScript.ip = 0;
+	m_usecodeScript.delayRemaining = 0;
+	m_usecodeScript.noHalt = false;
+}
+
+void U7Object::UpdateUsecodeScript()
+{
+	if (!m_usecodeScript.active)
+		return;
+
+	float& delay = m_usecodeScript.delayRemaining;
+	if (delay > 0.0f)
+	{
+		delay -= g_Engine->LastFrameInSeconds();
+		if (delay > 0.0f)
+			return;
+		delay = 0.0f;
+	}
+
+	auto& code = m_usecodeScript.code;
+	int& ip = m_usecodeScript.ip;
+	const int cnt = (int)code.size();
+
+	// Process one instruction (or keep going on cont / finish flags).
+	bool doAnother = true;
+	float nextDelay = kUsecodeTickSec;
+
+	while (ip < cnt && doAnother)
+	{
+		doAnother = false;
+		const UsecodeScriptElem& cur = code[ip];
+
+		// String with no preceding say — treat as bark (decompiler quirk).
+		if (std::holds_alternative<std::string>(cur))
+		{
+			std::string text = std::get<std::string>(cur);
+			while (!text.empty() && text.front() == '@') text.erase(text.begin());
+			while (!text.empty() && text.back() == '@') text.pop_back();
+			if (g_StateMachine && g_StateMachine->GetCurrentState() == STATE_MAINSTATE)
+			{
+				auto* main = dynamic_cast<MainState*>(g_StateMachine->GetState(STATE_MAINSTATE));
+				if (main) main->Bark(this, text, 3.0f);
+			}
+			++ip;
+			break;
+		}
+
+		const int raw = ScriptElemInt(cur);
+		const int opcode = DecodeScriptOpcode(raw);
+		++ip;
+
+		switch (opcode)
+		{
+		case UC_CONT:
+			doAnother = true;
+			break;
+		case UC_NOP1:
+		case UC_NOP2:
+			doAnother = true;
+			break;
+		case UC_DONT_HALT:
+			m_usecodeScript.noHalt = true;
+			doAnother = true;
+			break;
+		case UC_FINISH:
+			doAnother = true;
+			break;
+		case UC_RESET:
+			ip = 0;
+			doAnother = true;
+			break;
+		case UC_DELAY_TICKS:
+		{
+			int ticks = 1;
+			if (ip < cnt && ScriptElemIsInt(code[ip]))
+				ticks = ScriptElemInt(code[ip++]);
+			if (ticks < 1) ticks = 1;
+			nextDelay = kUsecodeTickSec * (float)ticks;
+			break;
+		}
+		case UC_DELAY_MINUTES:
+		{
+			int mins = 1;
+			if (ip < cnt && ScriptElemIsInt(code[ip]))
+				mins = ScriptElemInt(code[ip++]);
+			nextDelay = (float)mins * 60.0f * kUsecodeTickSec; // coarse stand-in
+			break;
+		}
+		case UC_DELAY_HOURS:
+		{
+			int hours = 1;
+			if (ip < cnt && ScriptElemIsInt(code[ip]))
+				hours = ScriptElemInt(code[ip++]);
+			nextDelay = (float)hours * 3600.0f * kUsecodeTickSec;
+			break;
+		}
+		case UC_FRAME:
+		{
+			int fr = 0;
+			if (ip < cnt && ScriptElemIsInt(code[ip]))
+				fr = ScriptElemInt(code[ip++]);
+			SetFrame(fr);
+			break;
+		}
+		case UC_NEXT_FRAME:
+		case UC_NEXT_FRAME_MAX:
+		{
+			int fr = m_Frame + 1;
+			if (opcode == UC_NEXT_FRAME)
+				fr = fr; // wrap unknown max — bump one
+			SetFrame(fr);
+			break;
+		}
+		case UC_PREV_FRAME:
+		case UC_PREV_FRAME_MIN:
+		{
+			int fr = m_Frame - 1;
+			if (fr < 0) fr = (opcode == UC_PREV_FRAME_MIN) ? 0 : 0;
+			SetFrame(fr);
+			break;
+		}
+		case UC_FACE_DIR:
+		{
+			int dir = 0;
+			if (ip < cnt && ScriptElemIsInt(code[ip]))
+				dir = ScriptElemInt(code[ip++]) & 7;
+			// 0=N … map to engine yaw roughly (45° steps). NPCs use m_Angle.
+			m_Angle = (float)dir * 45.0f;
+			// Also set facing direction vector (0=north → -Z in our XZ).
+			static const Vector3 kDirs[8] = {
+				{ 0, 0, -1 }, { 1, 0, -1 }, { 1, 0, 0 }, { 1, 0, 1 },
+				{ 0, 0, 1 }, { -1, 0, 1 }, { -1, 0, 0 }, { -1, 0, -1 }
+			};
+			m_Direction = Vector3Normalize(kDirs[dir]);
+			break;
+		}
+		case UC_SFX:
+		{
+			int sfx = 0;
+			if (ip < cnt && ScriptElemIsInt(code[ip]))
+				sfx = ScriptElemInt(code[ip++]);
+			if (g_SoundSystem && sfx >= 0)
+				g_SoundSystem->PlaySoundAtObject(BuildU7SfxPath(sfx), m_ID);
+			break;
+		}
+		case UC_SAY:
+		{
+			std::string text;
+			if (ip < cnt && std::holds_alternative<std::string>(code[ip]))
+				text = std::get<std::string>(code[ip++]);
+			else if (ip < cnt && ScriptElemIsInt(code[ip]))
+				++ip; // skip non-string param
+			while (!text.empty() && text.front() == '@') text.erase(text.begin());
+			while (!text.empty() && text.back() == '@') text.pop_back();
+			if (!text.empty() && g_StateMachine && g_StateMachine->GetCurrentState() == STATE_MAINSTATE)
+			{
+				auto* main = dynamic_cast<MainState*>(g_StateMachine->GetState(STATE_MAINSTATE));
+				if (main) main->Bark(this, text, 3.0f);
+			}
+			break;
+		}
+		case UC_USECODE:
+		{
+			int fun = 0;
+			if (ip < cnt && ScriptElemIsInt(code[ip]))
+				fun = ScriptElemInt(code[ip++]);
+			// Event 2 is Exult's internal_exec for scripted usecode calls.
+			(void)fun;
+			Interact(2);
+			break;
+		}
+		case UC_REMOVE:
+			// Soft-remove: hide / mark dead if available
+			m_ShouldDraw = false;
+			m_Visible = false;
+			ip = cnt;
+			break;
+		case UC_REPEAT:
+		case UC_REPEAT2:
+		{
+			// After opcode: offset, count [, reset]. ip already past opcode.
+			if (ip + 1 >= cnt)
+				break;
+			const int opcodeIndex = ip - 1;
+			const int offset = ScriptElemInt(code[ip]);
+			const int countIdx = ip + 1;
+			int repeats = ScriptElemInt(code[countIdx]);
+			if (repeats <= 0)
+			{
+				if (opcode == UC_REPEAT2 && ip + 2 < cnt)
+				{
+					code[countIdx] = ScriptElemInt(code[ip + 2]); // restore
+					ip += 3;
+				}
+				else
+					ip += 2;
+				doAnother = true;
+			}
+			else
+			{
+				if (repeats != 255)
+					code[countIdx] = repeats - 1;
+				// Exult: landing = opcodeIndex + offset
+				ip = opcodeIndex + offset;
+				if (ip < 0) ip = 0;
+				doAnother = true;
+			}
+			break;
+		}
+		case UC_WAIT_NEAR:
+		case UC_WAIT_FAR:
+		{
+			int dist = 5;
+			if (ip < cnt && ScriptElemIsInt(code[ip]))
+				dist = ScriptElemInt(code[ip++]);
+			U7Object* av = g_Player ? g_Player->GetAvatarObject() : nullptr;
+			if (av)
+			{
+				const float dx = fabsf(m_Pos.x - av->m_Pos.x);
+				const float dz = fabsf(m_Pos.z - av->m_Pos.z);
+				const float d = (dx > dz) ? dx : dz;
+				const bool near = d <= (float)dist;
+				if ((opcode == UC_WAIT_NEAR && near) || (opcode == UC_WAIT_FAR && !near))
+				{
+					ip -= 2; // stay on this opcode
+					if (ip < 0) ip = 0;
+				}
+			}
+			break;
+		}
+		default:
+			if (opcode >= UC_NPC_FRAME_BASE && opcode <= UC_NPC_FRAME_BASE + 15)
+			{
+				// NPC frame-by-type: approximate by setting low nibble of frame
+				int fr = (m_Frame & ~0x0f) | (opcode - UC_NPC_FRAME_BASE);
+				SetFrame(fr);
+			}
+			else if (opcode >= 0x30 && opcode <= 0x37)
+			{
+				// Step N/NE/... — skip movement for now (path_run covers most walks)
+			}
+			else
+			{
+				// Unknown / param-looking value that was treated as opcode — ignore
+			}
+			break;
+		}
+	}
+
+	if (ip >= cnt)
+	{
+		HaltUsecodeScript(true);
+		return;
+	}
+
+	m_usecodeScript.delayRemaining = nextDelay;
+}
+
+void U7Object::ClearPendingUsecode()
+{
+	m_hasPendingUsecode = false;
+	m_pendingUsecodeObjectId = -1;
+	m_pendingUsecodeEvent = 7;
+}
+
+void U7Object::SetPendingUsecode(int objectId, int eventId)
+{
+	m_hasPendingUsecode = true;
+	m_pendingUsecodeObjectId = objectId;
+	m_pendingUsecodeEvent = eventId;
+}
+
+void U7Object::FirePendingUsecodeIfAny()
+{
+	if (!m_hasPendingUsecode)
+		return;
+
+	const int objectId = m_pendingUsecodeObjectId;
+	const int eventId = m_pendingUsecodeEvent;
+	ClearPendingUsecode();
+
+	// Stop any remaining path so we don't keep walking after the use.
+	m_pathWaypoints.clear();
+	m_currentWaypointIndex = 0;
+	m_isMoving = false;
+	m_moveStuckFrames = 0;
+	SetDest(m_Pos);
+
+	U7Object* target = GetObjectFromID(objectId);
+	if (target)
+	{
+		NPCDebugPrint("path_run_usecode: arrived, Interact(" + std::to_string(eventId) +
+			") on object " + std::to_string(objectId));
+		target->Interact(eventId);
+	}
+	else
+	{
+		NPCDebugPrint("path_run_usecode: arrived but target object " +
+			std::to_string(objectId) + " is gone");
+	}
+}
+
+bool U7Object::TryCompletePendingUsecodeByProximity(float maxDistXZ)
+{
+	if (!m_hasPendingUsecode)
+		return false;
+
+	U7Object* target = GetObjectFromID(m_pendingUsecodeObjectId);
+	if (!target)
+	{
+		ClearPendingUsecode();
+		return false;
+	}
+
+	// Chebyshev matches U7 find_nearby / "adjacent enough to use" feel better than
+	// Euclidean when furniture blocks the exact stand point.
+	const float dx = fabsf(m_Pos.x - target->m_Pos.x);
+	const float dz = fabsf(m_Pos.z - target->m_Pos.z);
+	const float chebyshev = (dx > dz) ? dx : dz;
+	if (chebyshev > maxDistXZ)
+		return false;
+
+	NPCDebugPrint("path_run_usecode: within chebyshev " + std::to_string(chebyshev) +
+		" of target " + std::to_string(m_pendingUsecodeObjectId) +
+		" — cancelling path and firing");
+	FirePendingUsecodeIfAny();
+	return true;
+}
+
 void U7Object::PathfindToDest(Vector3 dest)
 {
 	if (m_NPCID == 19)
 	{
 		int stopper = 0;
 	}
+
+	// Note: do NOT clear m_hasPendingUsecode here — stuck-repath must keep the
+	// path_run_usecode callback. Callers that mean "cancel walk-to-use"
+	// (click-to-walk, halt_scheduled) should ClearPendingUsecode() themselves.
 
 	// Clear previous path and mark as pending
 	m_pathWaypoints.clear();
@@ -2616,12 +3105,28 @@ void U7Object::Interact(int event)
 	}
 	else
 	{
-		// If there's a script for this object type, call it
-		if (m_shapeData->m_luaScript != "")
+		// Original U7 usecode is per-shape; our shapetable is per-frame. Many key
+		// frames (e.g. 641/6 Garritt's key) still say "default" while frame 0 has
+		// the real script — fall back to frame 0 when needed.
+		std::string scriptName;
+		if (m_shapeData && !m_shapeData->m_luaScript.empty() &&
+		    m_shapeData->m_luaScript != "default")
 		{
-			//dynamic_cast<MainState*>(g_StateMachine->GetState(STATE_MAINSTATE))->SetLuaFunction(m_shapeData->m_luaScript);
-			NPCDebugPrint("Calling Lua function: " + m_shapeData->m_luaScript + " event: " + to_string(event) + " ID: " + to_string(m_ID) + " (Shape: " + to_string(m_ObjectType) + ", Frame: " + to_string(m_Frame) + ")");
-			NPCDebugPrint(g_ScriptingSystem->CallScript(m_shapeData->m_luaScript, { event, m_ID }));
+			scriptName = m_shapeData->m_luaScript;
+		}
+		else if (m_ObjectType >= 0 && m_ObjectType < (int)g_shapeTable.size())
+		{
+			const std::string& frame0 = g_shapeTable[m_ObjectType][0].m_luaScript;
+			if (!frame0.empty() && frame0 != "default")
+				scriptName = frame0;
+		}
+
+		if (!scriptName.empty())
+		{
+			NPCDebugPrint("Calling Lua function: " + scriptName + " event: " + to_string(event) +
+				" ID: " + to_string(m_ID) + " (Shape: " + to_string(m_ObjectType) +
+				", Frame: " + to_string(m_Frame) + ")");
+			NPCDebugPrint(g_ScriptingSystem->CallScript(scriptName, { event, m_ID }));
 		}
 	}
 }
