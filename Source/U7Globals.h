@@ -113,7 +113,7 @@ inline Vector2 g_DirVectors[8] = {
 };
 
 // Activity names (from NpcListWindow.cpp)
-constexpr char* g_activityNames[] = {
+constexpr const char* g_activityNames[] = {
 	"Combat", "Horizontal Pace", "Vertical Pace", "Talk", "Dance", "Eat", "Farm",
 	"Tend Shop", "Miner", "Hound", "Stand", "Loiter", "Wander", "Blacksmith",
 	"Sleep", "Wait", "Major Sit", "Graze", "Bake", "Sew", "Shy", "Lab",
