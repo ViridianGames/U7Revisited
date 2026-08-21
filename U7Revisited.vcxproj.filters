@@ -257,6 +257,9 @@
     <ClCompile Include="Source\CombatState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\U7UsecodeArgs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Source\u7revisited.rc">
@@ -525,6 +528,12 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\CombatState.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\U7SpriteEffects.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\U7UsecodeArgs.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -442,6 +442,7 @@
     <ClCompile Include="Source\U7Player.cpp" />
     <ClCompile Include="Source\U7ScriptUtils.cpp" />
     <ClCompile Include="Source\U7SpriteEffects.cpp" />
+    <ClCompile Include="Source\U7UsecodeArgs.cpp" />
     <ClCompile Include="ThirdParty\lua\src\lapi.c" />
     <ClCompile Include="ThirdParty\lua\src\lauxlib.c" />
     <ClCompile Include="ThirdParty\lua\src\lbaselib.c" />
@@ -533,6 +534,8 @@
     <ClInclude Include="Source\U7Object.h" />
     <ClInclude Include="Source\U7Player.h" />
     <ClInclude Include="Source\U7ScriptUtils.h" />
+    <ClInclude Include="Source\U7SpriteEffects.h" />
+    <ClInclude Include="Source\U7UsecodeArgs.h" />
     <ClInclude Include="ThirdParty\lua\src\lapi.h" />
     <ClInclude Include="ThirdParty\lua\src\lauxlib.h" />
     <ClInclude Include="ThirdParty\lua\src\lcode.h" />
