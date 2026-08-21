@@ -308,24 +308,12 @@ float PathfindingSystem::GetObjectSurfaceY(const U7Object* obj)
 	if (!obj || !obj->m_objectData)
 		return obj ? obj->m_Pos.y : 0.0f;
 
-	const int shapeID = obj->m_shapeData ? obj->m_shapeData->GetShape() : obj->m_ObjectType;
-
-	// Roof flats are drawn as a plane at m_Pos.y — that is the walk surface.
-	// Using y+height put the walk plane one unit above the visual roof, so the
-	// last crate step (top at roof lift) could never connect within MAX_CLIMBABLE.
-	if (IsRoofShape(shapeID))
-		return obj->m_Pos.y;
-
-	// FLAT floors/rugs: same — plane is at placement Y.
-	if (obj->m_shapeData)
-	{
-		const ShapeDrawType dt = obj->m_shapeData->GetDrawType();
-		if (dt == ShapeDrawType::OBJECT_DRAW_FLAT ||
-		    dt == ShapeDrawType::OBJECT_DRAW_ANIMFLAT)
-			return obj->m_Pos.y;
-	}
-
-	// Solid props (crates, chests, stairs meshes): stand on top of volume.
+	// Exult: standing lift = object_lift + 3d_height
+	// (Chunk_cache::is_blocked → get_highest_blocked(lift) + 1).
+	// Roofs/flats are *drawn* as a plane at m_Pos.y, but gameplay lift still
+	// includes TFA height (roofs are height 1 → stand one above placement).
+	// Returning placement Y alone left the Avatar one lift low vs Exult, so
+	// same-lift eggs on roofs (e.g. Trinsic blacksmith at lift 6) never fired.
 	return obj->m_Pos.y + obj->m_objectData->m_height;
 }
 
@@ -354,24 +342,35 @@ bool PathfindingSystem::IsStandableObjectTop(const U7Object* obj)
 	if (IsRoofShape(shapeID))
 		return true;
 
-	// Do not use the old ground-only MAX_WALKABLE_SURFACE_HEIGHT filter here —
-	// multi-layer pathfinding needs upper floors and roofs as valid surfaces.
 	// Absurd heights only:
 	if (obj->m_Pos.y > 32.0f)
 		return false;
 
+	// Explicit floors / stairs / crates / chairs / …
 	if (IsWalkableSurface(shapeID))
 		return true;
 
-	// Any solid with positive TFA height can be stood on (crates, boxes, chests, …).
-	// Step limit (MAX_CLIMBABLE_HEIGHT) still restricts how far you climb per tile.
+	// Decorative flats (signs, paintings, wall hangings) are never floors, even
+	// when raised and TFA-height 1 — otherwise hanging signs become walk planes.
+	{
+		const ShapeDrawType dt = obj->m_shapeData->GetDrawType();
+		if (dt == ShapeDrawType::OBJECT_DRAW_FLAT ||
+		    dt == ShapeDrawType::OBJECT_DRAW_ANIMFLAT)
+			return false;
+	}
+
+	// Climbable solid tops: crates/chests/boxes — one step tall only.
+	// Tall blockers (signposts, pillars, walls with height 2+) remain volume
+	// blockers; they must NOT invent intermediate "rungs" to walk up.
 	const float h = obj->m_objectData->m_height;
 	if (h <= 0.001f)
 		return false;
-	if (obj->m_objectData->m_isNotWalkable)
-		return true;
+	if (h > MAX_CLIMBABLE_HEIGHT + 0.05f)
+		return false;
+	if (!obj->m_objectData->m_isNotWalkable)
+		return false;
 
-	return false;
+	return true;
 }
 
 // AABB vs AABB intersection helper (axis-aligned)
@@ -711,10 +710,9 @@ static bool CanStandOnSurface(const PathfindingGrid* grid, int worldX, int world
 		if (standH >= surfaceY - 0.05f)
 			continue;
 
-		// Standing on an intermediate climb step of this object.
+		// Standing exactly on a standable top (crate, floor mesh, …).
 		if (PathfindingSystem::IsStandableObjectTop(obj)
-			&& standH >= baseY - 0.05f
-			&& standH <= surfaceY + 0.05f)
+			&& fabsf(standH - surfaceY) <= 0.05f)
 		{
 			continue;
 		}
@@ -1013,27 +1011,17 @@ std::vector<float> PathfindingGrid::GetWalkableSurfaceHeightsFromObjects(
 	// Ground always present
 	heights.push_back(0.0f);
 
-	// Floors/stairs (allowlist) AND solid tops (crates, boxes, chests, fences, …).
-	// Tall solids also emit 1-tile intermediate steps so you can climb them one
-	// unit at a time (designer pattern: stair of height 1 stacked on a height-2 fence).
+	// Floors/stairs (allowlist) AND short solid tops (crates, boxes, chests).
+	// Tall solids are NOT standable (see IsStandableObjectTop) — no synthetic
+	// intermediate rungs up posts/pillars. Stacked height-1 props each contribute
+	// their own top instead.
 	for (const auto& ov : objects)
 	{
 		U7Object* obj = ov.obj;
 		if (!PathfindingSystem::IsStandableObjectTop(obj))
 			continue;
 
-		const float surfaceY = PathfindingSystem::GetObjectSurfaceY(obj);
-		const float baseY = obj->m_Pos.y;
-		heights.push_back(surfaceY);
-
-		// Intermediate rungs every 1 tile between base and top (exclusive of top).
-		if (surfaceY - baseY > MAX_CLIMBABLE_HEIGHT + 0.05f)
-		{
-			for (float h = baseY + MAX_CLIMBABLE_HEIGHT; h + 0.05f < surfaceY; h += MAX_CLIMBABLE_HEIGHT)
-			{
-				heights.push_back(h);
-			}
-		}
+		heights.push_back(PathfindingSystem::GetObjectSurfaceY(obj));
 	}
 
 	// sort and deduplicate (small epsilon)
@@ -2802,7 +2790,7 @@ void PathfindingSystem::UpdateBuildingRoofVisibility(float avatarWorldX, float a
 				}
 				if (sameBuilding)
 				{
-					// Walk surface of roof flats is m_Pos.y (see GetObjectSurfaceY).
+					// Standing surface includes TFA height (see GetObjectSurfaceY).
 					const float roofSurfaceY = GetObjectSurfaceY(obj);
 					// Small margin so climbing onto the plane doesn't flicker.
 					if (avatarWorldY < roofSurfaceY - 0.15f)

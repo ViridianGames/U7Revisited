@@ -866,10 +866,11 @@ void U7Object::HandleTeleporterEgg()
 	const float distXZ = Vector2Distance(
 		Vector2{ m_Pos.x, m_Pos.z },
 		Vector2{ avatar->m_Pos.x, avatar->m_Pos.z });
-	// Same-lift check: Exult wants deltaz == 0, but the avatar often stands on a
-	// surface ~1 unit above the egg's placement Y (roof walk / standable tops).
+	// Exult: hatch requires deltaz == 0 (same lift). A 1.0 allowance was wrongly
+	// letting ground (Y=0) trigger eggs at lift 1 (e.g. Trinsic crate-teleport egg
+	// at 1049,1,2267). Keep a tiny epsilon for surface-snap float noise only.
 	const float deltaY = fabsf(avatar->m_Pos.y - m_Pos.y);
-	const bool sameLift = deltaY <= 1.0f;
+	const bool sameLift = deltaY <= 0.15f;
 
 	bool justTriggered = false;
 	switch (m_eggData.m_criteria)
@@ -1129,7 +1130,7 @@ void U7Object::DebugPrintEggInfo() const
 	const char* typeName = (t >= 0 && t < (int)(sizeof(g_eggTypeStrings)/sizeof(g_eggTypeStrings[0])))
 		? g_eggTypeStrings[t] : "Unknown";
 
-	AddConsoleString("EGG clicked @ (" + std::to_string((int)m_Pos.x) + ", " + std::to_string((int)m_Pos.z) + ") - Type: " + typeName);
+	AddConsoleString("EGG clicked @ (" + std::to_string((int)m_Pos.x) + ", " + std::to_string((int)m_Pos.y) + ", " + std::to_string((int)m_Pos.z) + ") - Type: " + typeName);
 
 	// Activation requirements - one per line
 	int c = static_cast<int>(egg.m_criteria);
@@ -2897,6 +2898,9 @@ void U7Object::ClearPendingUsecode()
 	m_hasPendingUsecode = false;
 	m_pendingUsecodeObjectId = -1;
 	m_pendingUsecodeEvent = 7;
+	m_pendingUsecodeHasProx = false;
+	m_pendingUsecodeProxX = 0.0f;
+	m_pendingUsecodeProxZ = 0.0f;
 }
 
 void U7Object::SetPendingUsecode(int objectId, int eventId)
@@ -2904,6 +2908,17 @@ void U7Object::SetPendingUsecode(int objectId, int eventId)
 	m_hasPendingUsecode = true;
 	m_pendingUsecodeObjectId = objectId;
 	m_pendingUsecodeEvent = eventId;
+	m_pendingUsecodeHasProx = false;
+}
+
+void U7Object::SetPendingUsecode(int objectId, int eventId, float proxX, float proxZ)
+{
+	m_hasPendingUsecode = true;
+	m_pendingUsecodeObjectId = objectId;
+	m_pendingUsecodeEvent = eventId;
+	m_pendingUsecodeProxX = proxX;
+	m_pendingUsecodeProxZ = proxZ;
+	m_pendingUsecodeHasProx = true;
 }
 
 void U7Object::FirePendingUsecodeIfAny()
@@ -2948,17 +2963,37 @@ bool U7Object::TryCompletePendingUsecodeByProximity(float maxDistXZ)
 		return false;
 	}
 
-	// Chebyshev matches U7 find_nearby / "adjacent enough to use" feel better than
-	// Euclidean when furniture blocks the exact stand point.
-	const float dx = fabsf(m_Pos.x - target->m_Pos.x);
-	const float dz = fabsf(m_Pos.z - target->m_Pos.z);
-	const float chebyshev = (dx > dz) ? dx : dz;
+	auto chebyshevXZ = [](float ax, float az, float bx, float bz) {
+		const float dx = fabsf(ax - bx);
+		const float dz = fabsf(az - bz);
+		return (dx > dz) ? dx : dz;
+	};
+
+	// Prefer stand-point proximity when set (carried tools: bucket in backpack is at 0,0,0).
+	float chebyshev = 1.0e9f;
+	const char* nearWhat = "target";
+	if (m_pendingUsecodeHasProx)
+	{
+		chebyshev = chebyshevXZ(m_Pos.x, m_Pos.z, m_pendingUsecodeProxX, m_pendingUsecodeProxZ);
+		nearWhat = "stand";
+	}
+	// World items (not contained): also allow proximity to the item itself.
+	if (!target->m_isContained)
+	{
+		const float toItem = chebyshevXZ(m_Pos.x, m_Pos.z, target->m_Pos.x, target->m_Pos.z);
+		if (toItem < chebyshev)
+		{
+			chebyshev = toItem;
+			nearWhat = "target";
+		}
+	}
+
 	if (chebyshev > maxDistXZ)
 		return false;
 
-	NPCDebugPrint("path_run_usecode: within chebyshev " + std::to_string(chebyshev) +
-		" of target " + std::to_string(m_pendingUsecodeObjectId) +
-		" — cancelling path and firing");
+	NPCDebugPrint(std::string("path_run_usecode: within chebyshev ") + std::to_string(chebyshev) +
+		" of " + nearWhat + " (usecode obj " + std::to_string(m_pendingUsecodeObjectId) +
+		") — cancelling path and firing");
 	FirePendingUsecodeIfAny();
 	return true;
 }

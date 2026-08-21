@@ -21,10 +21,23 @@ local function bucket_fill_from_well(bucket, well)
         end
     end
 
-    -- Walk next to the well, then run bucket event 9 (fill). Fun=810, usecode item=bucket.
-    local ok = utility_position_0808(target, {-5, -5, -1, 1, -2, -1}, {-1, -1, 0, 1, -2, 1}, 0, 810, bucket, 9)
+    -- Already next to the well? Fill immediately (avoids pathing into blocked inn tiles).
+    local av = get_npc_name(-356)
+    local apos = av and get_object_position(av)
+    local wpos = get_object_position(target)
+    if apos and wpos then
+        local ax, az = apos[1] or apos.x, apos[3] or apos.z
+        local wx, wz = wpos[1] or wpos.x, wpos[3] or wpos.z
+        local dx, dz = math.abs(ax - wx), math.abs(az - wz)
+        if (dx > dz and dx or dz) <= 4 then
+            object_bucket_0810(9, bucket)
+            return
+        end
+    end
+
+    -- Prefer short adjacent stands first; large offsets often land inside buildings.
+    local ok = utility_position_0808(target, {-1, 1, 0, -1, 1, -2, 2, -5}, {0, 0, -1, 1, -1, 1, 0, -1}, 0, 810, bucket, 9)
     if not ok then
-        -- path_run rejected all stands — try fill if already adjacent.
         object_bucket_0810(9, bucket)
     end
 end

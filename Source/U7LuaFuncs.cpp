@@ -4518,18 +4518,27 @@ static int LuaPathRunUsecode(lua_State *L)
         return (dx > dz) ? dx : dz;
     };
 
-    // Close enough to the *item* to use it? Don't walk into an unreachable gap —
-    // cancel any path and fire immediately (tables/furniture often block the stand tile).
     U7Object* itemObj = GetObjectFromID(itemId);
-    if (itemObj && chebyshevTo(avatar->m_Pos, itemObj->m_Pos) <= U7Object::kPathRunUseRange)
+    const bool itemCarried = itemObj && itemObj->m_isContained;
+
+    // Close enough already? For carried tools (bucket in pack @ 0,0,0), measure
+    // against the stand destination; for world items, against the item.
+    const float toDest = chebyshevTo(avatar->m_Pos, dest);
+    const float toItem = (itemObj && !itemCarried)
+        ? chebyshevTo(avatar->m_Pos, itemObj->m_Pos)
+        : 1.0e9f;
+    const float alreadyClose = (toDest < toItem) ? toDest : toItem;
+
+    if (itemObj && alreadyClose <= U7Object::kPathRunUseRange)
     {
         avatar->ClearPendingUsecode();
         avatar->m_pathWaypoints.clear();
         avatar->m_currentWaypointIndex = 0;
         avatar->m_isMoving = false;
         avatar->SetDest(avatar->m_Pos);
-        NPCDebugPrint("path_run_usecode: already in use-range of item " +
-            std::to_string(itemId) + ", Interact(" + std::to_string(eventId) + ")");
+        NPCDebugPrint("path_run_usecode: already in use-range (dest=" +
+            std::to_string(toDest) + " item=" + std::to_string(toItem) +
+            "), Interact(" + std::to_string(eventId) + ") on " + std::to_string(itemId));
         itemObj->Interact(eventId);
         lua_pushboolean(L, 1);
         return 1;
@@ -4540,8 +4549,8 @@ static int LuaPathRunUsecode(lua_State *L)
 
     if (avatar->m_pathWaypoints.empty())
     {
-        // No path — still use if we're close enough to the item.
-        if (itemObj && chebyshevTo(avatar->m_Pos, itemObj->m_Pos) <= U7Object::kPathRunUseRange)
+        // No path — use if already near stand point (or world item).
+        if (itemObj && alreadyClose <= U7Object::kPathRunUseRange)
         {
             NPCDebugPrint("path_run_usecode: no path but in use-range, Interact(" +
                 std::to_string(eventId) + ") on " + std::to_string(itemId));
@@ -4557,7 +4566,8 @@ static int LuaPathRunUsecode(lua_State *L)
         return 1;
     }
 
-    avatar->SetPendingUsecode(itemId, eventId);
+    // Always remember stand point so proximity works for carried usecode items.
+    avatar->SetPendingUsecode(itemId, eventId, dest.x, dest.z);
     NPCDebugPrint("path_run_usecode: walking to (" +
         std::to_string(dest.x) + "," + std::to_string(dest.y) + "," +
         std::to_string(dest.z) + ") then event " + std::to_string(eventId) +

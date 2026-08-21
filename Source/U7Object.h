@@ -467,13 +467,19 @@ public:
 	bool m_hasPendingUsecode = false;
 	int m_pendingUsecodeObjectId = -1;
 	int m_pendingUsecodeEvent = 7;
+	// Stand point we path toward — used for proximity when the usecode item is
+	// carried (inventory items sit at 0,0,0 and must not drive "in range" checks).
+	float m_pendingUsecodeProxX = 0.0f;
+	float m_pendingUsecodeProxZ = 0.0f;
+	bool m_pendingUsecodeHasProx = false;
 	// How close (XZ Chebyshev tiles) counts as "close enough to use" for walk-to-use.
 	// Generous enough that furniture blocking the stand tile still allows activation.
 	static constexpr float kPathRunUseRange = 4.0f;
 	void ClearPendingUsecode();
 	void SetPendingUsecode(int objectId, int eventId);
+	void SetPendingUsecode(int objectId, int eventId, float proxX, float proxZ);
 	void FirePendingUsecodeIfAny();
-	// If within use-range of the pending target, cancel pathfinding and fire.
+	// If within use-range of the pending target (or stand point), cancel path and fire.
 	bool TryCompletePendingUsecodeByProximity(float maxDistXZ = kPathRunUseRange);
 
 	// execute_usecode_array / delayed_execute_usecode_array (Exult Usecode_script).

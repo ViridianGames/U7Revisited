@@ -80,11 +80,28 @@ function utility_position_0808(event_or_item, a2, a3, a4, a5, a6, a7)
     local cx0, cz0 = tile_center(x, z)
     candidates[#candidates + 1] = { cx0, y, cz0 }
 
+    -- Try stands closest to the Avatar first so we don't commit to a long path
+    -- into a blocked building tile when a nearer offset would work.
+    local av = get_avatar_ref and get_avatar_ref() or get_npc_name(-356)
+    local apos = av and get_object_position(av)
+    if apos then
+        local ax, az = apos[1] or apos.x, apos[3] or apos.z
+        table.sort(candidates, function(a, b)
+            local da = math.max(math.abs(a[1] - ax), math.abs(a[3] - az))
+            local db = math.max(math.abs(b[1] - ax), math.abs(b[3] - az))
+            return da < db
+        end)
+    end
+
     for _, dest in ipairs(candidates) do
-        -- Walk near stand_near; on arrival run usecode on fire_on (e.g. bucket event 9).
-        local ok = path_run_usecode(dest, fun, fire_on, ev)
-        if ok then
-            return true
+        -- Skip obviously blocked stand tiles when the intrinsic exists.
+        if is_blocked and is_blocked(dest[1], dest[2] or 0, dest[3]) then
+            -- try next
+        else
+            local ok = path_run_usecode(dest, fun, fire_on, ev)
+            if ok then
+                return true
+            end
         end
     end
 
