@@ -1553,13 +1553,16 @@ void DrawGameWorld(bool drawObjects)
 	std::sort(flats.begin(), flats.end(), stableFlatLess);
 
 	// Rugs first (under furniture, other flats, etc.). Write depth so later
-	// geometry occludes them correctly.
+	// geometry occludes them correctly. Polygon offset is for flats only —
+	// leaving it on for cuboids/meshes opened seam cracks in-game that the
+	// Shape Editor never showed (it does not use DrawGameWorld).
 	glEnable(GL_POLYGON_OFFSET_FILL);
 	glPolygonOffset(-1.0f, -1.0f);
 	for (U7Object* object : rugs)
 		object->Draw();
+	glDisable(GL_POLYGON_OFFSET_FILL);
 
-	// Non-flats (write depth).
+	// Non-flats (write depth) — no polygon offset.
 	for (U7Object* object : g_sortedVisibleObjects)
 	{
 		if (!object)
@@ -1572,6 +1575,8 @@ void DrawGameWorld(bool drawObjects)
 	}
 
 	// Other flats: depth-write off so coplanar roofs/floors do not fight each other.
+	glEnable(GL_POLYGON_OFFSET_FILL);
+	glPolygonOffset(-1.0f, -1.0f);
 	rlDisableDepthMask();
 	for (U7Object* object : flats)
 		object->Draw();
