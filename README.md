@@ -6,6 +6,7 @@ Welcome to Ultima VII: Revisited, my attempt to write a replacement engine for U
 If you like this project, please consider supporting me!
 
 https://ko-fi.com/viridiangames
+
 https://www.patreon.com/c/viridiangames
 
 <a href="https://www.youtube.com/watch?v=iDK5f3IkmrQ">
