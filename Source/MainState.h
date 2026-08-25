@@ -84,7 +84,8 @@ public:
 	void SetLuaFunction(const std::string& func_name) { m_luaFunction = func_name; }
 	void StartObjectSelectionMode() { m_objectSelectionMode = true; m_doingObjectSelection = true; }
 
-	void Bark(U7Object* object, const std::string& text, float duration = 3.0f);
+	void Bark(U7Object* object, const std::string& text, float duration = 1.5f);
+	void ClearBarks();
 
 	// Single-click object info (name / weight / volume) shown left of the party UI.
 	void ShowObjectInfoTooltip(U7Object* object);
@@ -172,11 +173,23 @@ public:
 
 	std::string m_luaFunction;
 
-	//  Bark variables.
+	//  Bark variables (one on-screen bark + queue for sequential says).
+	struct PendingBark
+	{
+		U7Object* object = nullptr;
+		std::string text;
+		float duration = 1.5f;
+		bool autoUpdate = false;
+	};
 	U7Object* m_barkObject = nullptr;
 	std::string m_barkText = "";
 	float m_barkDuration = 0;
 	bool m_barkAutoUpdate = false;  // True if bark should regenerate from object name each frame
+	std::deque<PendingBark> m_barkQueue;
+	static constexpr float kDefaultBarkSeconds = 1.5f;
+
+	void ShowBarkNow(U7Object* object, const std::string& text, float duration, bool autoUpdate);
+	void AdvanceBarkQueue();
    
    float m_LastUpdate = 0.0f;
    
@@ -279,6 +292,7 @@ public:
 
 	// Pathfinding debug visualization
 	bool m_showPathfindingDebug = false;  // F10: Tile-level visualization (shows objects)
+	int m_pathDebugNpcObjectId = -1;   // Sticky: NPC whose path to draw (click to select)
 
 	// Debug: Allow moving static objects
 	bool m_allowMovingStaticObjects = false;  // F7: Toggle moving static objects

@@ -768,10 +768,7 @@ static int LuaSetObjectShape(lua_State *L)
 
     // Clear any active bark referencing this object to prevent crash when shapeData changes
     if (g_mainState && g_mainState->m_barkObject == object)
-    {
-        g_mainState->m_barkObject = nullptr;
-        g_mainState->m_barkDuration = 0;
-    }
+        g_mainState->ClearBarks();
 
     // If the current object is a door, mark the new shape as a door too
     // This fixes doors that change shape when opened/closed
@@ -1208,7 +1205,7 @@ static int LuaBark(lua_State *L)
     if (g_LuaDebug) NPCDebugPrint("LUA: bark called with object " + to_string(objectref) + " text: " + string(text));
     if (g_StateMachine->GetCurrentState() == STATE_MAINSTATE)
     {
-        dynamic_cast<MainState*>(g_StateMachine->GetState(STATE_MAINSTATE))->Bark(GetObjectFromID(objectref), text, 3.0f);
+        dynamic_cast<MainState*>(g_StateMachine->GetState(STATE_MAINSTATE))->Bark(GetObjectFromID(objectref), text);
     }
     return 0;
 }
@@ -1220,7 +1217,7 @@ static int LuaBarkNPC(lua_State *L)
     if (g_LuaDebug) NPCDebugPrint("LUA: bark_npc called with NPC " + string(g_NPCData[npc_id]->name) + " text: " + string(text));
     if (g_StateMachine->GetCurrentState() == STATE_MAINSTATE)
     {
-        dynamic_cast<MainState*>(g_StateMachine->GetState(STATE_MAINSTATE))->Bark(GetObjectFromID(g_NPCData[npc_id]->m_objectID), text, 3.0f);
+        dynamic_cast<MainState*>(g_StateMachine->GetState(STATE_MAINSTATE))->Bark(GetObjectFromID(g_NPCData[npc_id]->m_objectID), text);
     }
     return 0;
 }
@@ -1368,10 +1365,7 @@ static void DestroyObjectByID(int object_id)
 
     // Clear any active bark referencing this object to prevent crash when drawing
     if (g_mainState && g_mainState->m_barkObject == obj)
-    {
-        g_mainState->m_barkObject = nullptr;
-        g_mainState->m_barkDuration = 0;
-    }
+        g_mainState->ClearBarks();
 
     // Mark object as dead and invisible for deferred deletion
     // The main update loop will remove it from chunk map and delete it
@@ -4265,6 +4259,52 @@ static void ReverseUsecodeArray(std::vector<U7Object::UsecodeScriptElem>& code)
     std::reverse(code.begin(), code.end());
 }
 
+// Decompiler often embeds start-delay ticks as table[1]:
+//   delayed_execute_usecode_array(obj, {16, "@text@", {17490, 7715}})
+//   execute_usecode_array(obj, {0, "@text@", {17490, 7715}})
+// Peel that leading delay when the caller did not already supply one.
+// Do not peel when delaySec was set from a 3-arg form, or when the leading
+// int is a usecode function id (e.g. {617, 17493, 7715} with explicit delay).
+static void PeelLeadingUsecodeDelay(std::vector<U7Object::UsecodeScriptElem>& code, float& delaySec)
+{
+    if (delaySec > 0.0f || code.size() < 2)
+        return;
+    if (!std::holds_alternative<int>(code[0]))
+        return;
+
+    const int n = std::get<int>(code[0]);
+    if (n < 0 || n > 255)
+        return;
+
+    bool looksLikeDelayPrefix = false;
+    if (std::holds_alternative<std::string>(code[1]))
+    {
+        looksLikeDelayPrefix = true;
+    }
+    else
+    {
+        for (size_t i = 1; i < code.size(); ++i)
+        {
+            if (std::holds_alternative<int>(code[i]) && std::get<int>(code[i]) > 255)
+            {
+                looksLikeDelayPrefix = true;
+                break;
+            }
+            if (std::holds_alternative<std::string>(code[i]))
+            {
+                looksLikeDelayPrefix = true;
+                break;
+            }
+        }
+    }
+
+    if (!looksLikeDelayPrefix)
+        return;
+
+    delaySec = (float)n * 0.05f;
+    code.erase(code.begin());
+}
+
 static bool ParseExecuteUsecodeArgs(lua_State *L, int& outObjId, int& outTableIdx, float& outDelaySec)
 {
     outDelaySec = 0.0f;
@@ -4336,6 +4376,7 @@ static int LuaExecuteUsecodeArray(lua_State *L)
 
     std::vector<U7Object::UsecodeScriptElem> code;
     FlattenUsecodeArray(L, tableIdx, code);
+    PeelLeadingUsecodeDelay(code, delaySec);
     ReverseUsecodeArray(code);
     obj->StartUsecodeScript(std::move(code), delaySec);
 

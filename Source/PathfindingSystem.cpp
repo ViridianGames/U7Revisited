@@ -346,31 +346,14 @@ bool PathfindingSystem::IsStandableObjectTop(const U7Object* obj)
 	if (obj->m_Pos.y > 32.0f)
 		return false;
 
-	// Explicit floors / stairs / crates / chairs / …
+	// Explicit floors / stairs / crates / chairs / … (allowlist only).
+	// Do NOT treat every short not-walkable solid as a climbable top — that made
+	// height-1 walls/fences into "crates", so A* walked onto them and the F10
+	// overlay never painted those tiles red (multi-height skipped the check).
 	if (IsWalkableSurface(shapeID))
 		return true;
 
-	// Decorative flats (signs, paintings, wall hangings) are never floors, even
-	// when raised and TFA-height 1 — otherwise hanging signs become walk planes.
-	{
-		const ShapeDrawType dt = obj->m_shapeData->GetDrawType();
-		if (dt == ShapeDrawType::OBJECT_DRAW_FLAT ||
-		    dt == ShapeDrawType::OBJECT_DRAW_ANIMFLAT)
-			return false;
-	}
-
-	// Climbable solid tops: crates/chests/boxes — one step tall only.
-	// Tall blockers (signposts, pillars, walls with height 2+) remain volume
-	// blockers; they must NOT invent intermediate "rungs" to walk up.
-	const float h = obj->m_objectData->m_height;
-	if (h <= 0.001f)
-		return false;
-	if (h > MAX_CLIMBABLE_HEIGHT + 0.05f)
-		return false;
-	if (!obj->m_objectData->m_isNotWalkable)
-		return false;
-
-	return true;
+	return false;
 }
 
 // AABB vs AABB intersection helper (axis-aligned)
@@ -749,14 +732,14 @@ bool PathfindingGrid::CheckTileWalkable(int worldX, int worldZ, float agentBaseY
 
 	// Approachable from agentBaseY if any standable surface is within one step
 	// and the body fits there. Multi-layer: a high floor no longer poisons ground.
-	const float step = MAX_CLIMBABLE_HEIGHT + 0.05f;
-	for (float h : heights)
-	{
-		if (fabsf(h - agentBaseY) > step)
-			continue;
-		if (CanStandOnSurface(this, worldX, worldZ, h, agent, overlapping))
-			return true;
-	}
+	// const float step = MAX_CLIMBABLE_HEIGHT + 0.05f;
+	// for (float h : heights)
+	// {
+	// 	if (fabsf(h - agentBaseY) > step)
+	// 		continue;
+	// 	if (CanStandOnSurface(this, worldX, worldZ, h, agent, overlapping))
+	// 		return true;
+	// }
 	return false;
 }
 
@@ -791,46 +774,30 @@ void PathfindingGrid::DrawDebugOverlayTileLevel(float lowerY, float upperY)
 				if (worldX < 0 || worldX >= 3072 || worldZ < 0 || worldZ >= 3072)
 					continue;
 
-				// Always query all walkable surface heights for debug visualization.
-				auto heights = GetWalkableSurfaceHeights(worldX, worldZ);
-
-				// If no surfaces found, treat as ground only (and potentially blocked)
+				const auto overlapping = GetOverlappingObjects(worldX, worldZ);
+				auto heights = GetWalkableSurfaceHeightsFromObjects(overlapping);
 				if (heights.empty())
 					heights.push_back(0.0f);
 
-				// If the tile only has ground (0.0) and tile is not considered walkable,
-				// mark as blocked (red). Otherwise draw every surface level returned.
-				bool onlyGround = (heights.size() == 1 && fabs(heights[0]) < 0.0001f);
-				bool tileIsWalkable = true;
-				if (onlyGround)
-				{
-					// Use the existing conservative tile check for determining blocked ground tiles.
-					tileIsWalkable = CheckTileWalkable(worldX, worldZ, 0.0f);
-				}
-
-				if (!tileIsWalkable)
-				{
-					// Blocked tiles always at ground level
-					m_cachedRedTiles.push_back({ (float)worldX, 0.1f, (float)worldZ });
-					continue;
-				}
-
-				// For walkable tiles: draw every surface height returned by GetWalkableSurfaceHeights,
-				// including high/upper floors so debug shows all walkable levels.
+				// Per-surface standability (same rules as pathfinding). Wall tiles
+				// with no standable surface become red at ground.
+				bool anyStandable = false;
 				for (float h : heights)
 				{
+					if (!CanStandOnSurface(this, worldX, worldZ, h, nullptr, overlapping))
+						continue;
+
+					anyStandable = true;
 					float displayHeight = h + 0.05f;
 
 					TileWithCost t;
 					t.pos = { (float)worldX, displayHeight, (float)worldZ };
 
-					// If this layer represents a climbable surface, set climb cost.
 					if (h > 0.1f)
 						t.cost = CLIMB_MOVEMENT_COST;
 					else
 						t.cost = g_pathfindingSystem->m_aStar ? g_pathfindingSystem->m_aStar->GetMovementCost(worldX, worldZ, this) : 1.0f;
 
-					// Debug markers: visited / on final path at this exact surface height.
 					bool visited = false;
 					bool onPath = false;
 					if (g_pathfindingSystem && g_pathfindingSystem->m_aStar)
@@ -843,6 +810,9 @@ void PathfindingGrid::DrawDebugOverlayTileLevel(float lowerY, float upperY)
 
 					m_cachedGreenTiles.push_back(t);
 				}
+
+				if (!anyStandable)
+					m_cachedRedTiles.push_back({ (float)worldX, 0.1f, (float)worldZ });
 			}
 		}
 
@@ -1011,10 +981,7 @@ std::vector<float> PathfindingGrid::GetWalkableSurfaceHeightsFromObjects(
 	// Ground always present
 	heights.push_back(0.0f);
 
-	// Floors/stairs (allowlist) AND short solid tops (crates, boxes, chests).
-	// Tall solids are NOT standable (see IsStandableObjectTop) — no synthetic
-	// intermediate rungs up posts/pillars. Stacked height-1 props each contribute
-	// their own top instead.
+	// Floors/stairs/crates/etc. from IsWalkableSurface / roofs only.
 	for (const auto& ov : objects)
 	{
 		U7Object* obj = ov.obj;

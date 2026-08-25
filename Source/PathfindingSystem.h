@@ -83,6 +83,7 @@ public:
 
 	// Debug visualization
 	void DrawDebugOverlayTileLevel(float lowerY, float upperY);                  // Tile-level visualization (3D with cost cubes)
+	void InvalidateDebugTileCache() { m_lastCameraCenterX = -9999; m_lastCameraCenterZ = -9999; }
 	void DebugPrintTileInfo(int worldX, int worldZ);      // Print why a tile is blocked
 
 	// Helper: Get all objects that overlap a tile (used by pathfinding and door opening)

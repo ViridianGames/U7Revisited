@@ -484,6 +484,7 @@ public:
 
 	// execute_usecode_array / delayed_execute_usecode_array (Exult Usecode_script).
 	// Lua decompiler stores arrays reversed; elems may be int or string (say).
+	// Multiple scripts may be pending on one object (sequential delayed barks, etc.).
 	using UsecodeScriptElem = std::variant<int, std::string>;
 	struct UsecodeScriptState
 	{
@@ -493,10 +494,10 @@ public:
 		bool noHalt = false;
 		bool active = false;
 	};
-	UsecodeScriptState m_usecodeScript;
+	std::vector<UsecodeScriptState> m_usecodeScripts;
 	void StartUsecodeScript(std::vector<UsecodeScriptElem> code, float initialDelaySec = 0.0f);
 	void HaltUsecodeScript(bool force = false);
-	bool IsInUsecodeScript() const { return m_usecodeScript.active; }
+	bool IsInUsecodeScript() const;
 	void UpdateUsecodeScript();
 
 	Vector3 m_ExternalForce;

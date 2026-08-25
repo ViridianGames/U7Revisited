@@ -2586,14 +2586,20 @@ namespace {
 	}
 }
 
+bool U7Object::IsInUsecodeScript() const
+{
+	for (const auto& s : m_usecodeScripts)
+	{
+		if (s.active)
+			return true;
+	}
+	return false;
+}
+
 void U7Object::StartUsecodeScript(std::vector<UsecodeScriptElem> code, float initialDelaySec)
 {
 	if (code.empty())
 		return;
-
-	// Replace any existing halt-able script on this object (Exult terminate unless dont_halt).
-	if (m_usecodeScript.active && !m_usecodeScript.noHalt)
-		HaltUsecodeScript(true);
 
 	// Peek leading dont_halt / finish flags (Exult start()).
 	bool noHalt = false;
@@ -2610,287 +2616,323 @@ void U7Object::StartUsecodeScript(std::vector<UsecodeScriptElem> code, float ini
 			break;
 	}
 
-	if (m_usecodeScript.active && m_usecodeScript.noHalt && !noHalt)
+	// Exult: starting a new script terminates existing halt-able scripts on this object.
+	// dont_halt scripts are left alone so delayed sequential barks can coexist.
+	for (auto it = m_usecodeScripts.begin(); it != m_usecodeScripts.end(); )
 	{
-		// Existing no_halt script wins; drop the new one.
-		return;
+		if (!it->active)
+		{
+			it = m_usecodeScripts.erase(it);
+			continue;
+		}
+		if (!it->noHalt)
+			it = m_usecodeScripts.erase(it);
+		else
+			++it;
 	}
 
-	m_usecodeScript.code = std::move(code);
-	m_usecodeScript.ip = 0;
-	m_usecodeScript.delayRemaining = initialDelaySec;
-	m_usecodeScript.noHalt = noHalt;
-	m_usecodeScript.active = true;
+	UsecodeScriptState script;
+	script.code = std::move(code);
+	script.ip = 0;
+	script.delayRemaining = initialDelaySec;
+	script.noHalt = noHalt;
+	script.active = true;
+	m_usecodeScripts.push_back(std::move(script));
 
 	NPCDebugPrint("usecode_script: start on object " + std::to_string(m_ID) +
-		" len=" + std::to_string(m_usecodeScript.code.size()) +
-		" delay=" + std::to_string(initialDelaySec));
+		" len=" + std::to_string(m_usecodeScripts.back().code.size()) +
+		" delay=" + std::to_string(initialDelaySec) +
+		" pending=" + std::to_string(m_usecodeScripts.size()));
 }
 
 void U7Object::HaltUsecodeScript(bool force)
 {
-	if (!m_usecodeScript.active)
+	if (m_usecodeScripts.empty())
 		return;
-	if (!force && m_usecodeScript.noHalt)
-		return;
-	m_usecodeScript.active = false;
-	m_usecodeScript.code.clear();
-	m_usecodeScript.ip = 0;
-	m_usecodeScript.delayRemaining = 0;
-	m_usecodeScript.noHalt = false;
+
+	for (auto it = m_usecodeScripts.begin(); it != m_usecodeScripts.end(); )
+	{
+		if (!it->active)
+		{
+			it = m_usecodeScripts.erase(it);
+			continue;
+		}
+		if (!force && it->noHalt)
+		{
+			++it;
+			continue;
+		}
+		it = m_usecodeScripts.erase(it);
+	}
 }
 
 void U7Object::UpdateUsecodeScript()
 {
-	if (!m_usecodeScript.active)
+	if (m_usecodeScripts.empty())
 		return;
 
-	float& delay = m_usecodeScript.delayRemaining;
-	if (delay > 0.0f)
+	const float dt = g_Engine->LastFrameInSeconds();
+
+	for (size_t si = 0; si < m_usecodeScripts.size(); ++si)
 	{
-		delay -= g_Engine->LastFrameInSeconds();
+		UsecodeScriptState& script = m_usecodeScripts[si];
+		if (!script.active)
+			continue;
+
+		float& delay = script.delayRemaining;
 		if (delay > 0.0f)
-			return;
-		delay = 0.0f;
-	}
-
-	auto& code = m_usecodeScript.code;
-	int& ip = m_usecodeScript.ip;
-	const int cnt = (int)code.size();
-
-	// Process one instruction (or keep going on cont / finish flags).
-	bool doAnother = true;
-	float nextDelay = kUsecodeTickSec;
-
-	while (ip < cnt && doAnother)
-	{
-		doAnother = false;
-		const UsecodeScriptElem& cur = code[ip];
-
-		// String with no preceding say — treat as bark (decompiler quirk).
-		if (std::holds_alternative<std::string>(cur))
 		{
-			std::string text = std::get<std::string>(cur);
-			while (!text.empty() && text.front() == '@') text.erase(text.begin());
-			while (!text.empty() && text.back() == '@') text.pop_back();
-			if (g_StateMachine && g_StateMachine->GetCurrentState() == STATE_MAINSTATE)
+			delay -= dt;
+			if (delay > 0.0f)
+				continue;
+			delay = 0.0f;
+		}
+
+		auto& code = script.code;
+		int& ip = script.ip;
+		const int cnt = (int)code.size();
+
+		// Process one instruction (or keep going on cont / finish flags).
+		bool doAnother = true;
+		float nextDelay = kUsecodeTickSec;
+
+		while (ip < cnt && doAnother)
+		{
+			doAnother = false;
+			const UsecodeScriptElem& cur = code[ip];
+
+			// String with no preceding say — treat as bark (decompiler quirk).
+			if (std::holds_alternative<std::string>(cur))
 			{
-				auto* main = dynamic_cast<MainState*>(g_StateMachine->GetState(STATE_MAINSTATE));
-				if (main) main->Bark(this, text, 3.0f);
-			}
-			++ip;
-			break;
-		}
-
-		const int raw = ScriptElemInt(cur);
-		const int opcode = DecodeScriptOpcode(raw);
-		++ip;
-
-		switch (opcode)
-		{
-		case UC_CONT:
-			doAnother = true;
-			break;
-		case UC_NOP1:
-		case UC_NOP2:
-			doAnother = true;
-			break;
-		case UC_DONT_HALT:
-			m_usecodeScript.noHalt = true;
-			doAnother = true;
-			break;
-		case UC_FINISH:
-			doAnother = true;
-			break;
-		case UC_RESET:
-			ip = 0;
-			doAnother = true;
-			break;
-		case UC_DELAY_TICKS:
-		{
-			int ticks = 1;
-			if (ip < cnt && ScriptElemIsInt(code[ip]))
-				ticks = ScriptElemInt(code[ip++]);
-			if (ticks < 1) ticks = 1;
-			nextDelay = kUsecodeTickSec * (float)ticks;
-			break;
-		}
-		case UC_DELAY_MINUTES:
-		{
-			int mins = 1;
-			if (ip < cnt && ScriptElemIsInt(code[ip]))
-				mins = ScriptElemInt(code[ip++]);
-			nextDelay = (float)mins * 60.0f * kUsecodeTickSec; // coarse stand-in
-			break;
-		}
-		case UC_DELAY_HOURS:
-		{
-			int hours = 1;
-			if (ip < cnt && ScriptElemIsInt(code[ip]))
-				hours = ScriptElemInt(code[ip++]);
-			nextDelay = (float)hours * 3600.0f * kUsecodeTickSec;
-			break;
-		}
-		case UC_FRAME:
-		{
-			int fr = 0;
-			if (ip < cnt && ScriptElemIsInt(code[ip]))
-				fr = ScriptElemInt(code[ip++]);
-			SetFrame(fr);
-			break;
-		}
-		case UC_NEXT_FRAME:
-		case UC_NEXT_FRAME_MAX:
-		{
-			int fr = m_Frame + 1;
-			if (opcode == UC_NEXT_FRAME)
-				fr = fr; // wrap unknown max — bump one
-			SetFrame(fr);
-			break;
-		}
-		case UC_PREV_FRAME:
-		case UC_PREV_FRAME_MIN:
-		{
-			int fr = m_Frame - 1;
-			if (fr < 0) fr = (opcode == UC_PREV_FRAME_MIN) ? 0 : 0;
-			SetFrame(fr);
-			break;
-		}
-		case UC_FACE_DIR:
-		{
-			int dir = 0;
-			if (ip < cnt && ScriptElemIsInt(code[ip]))
-				dir = ScriptElemInt(code[ip++]) & 7;
-			// 0=N … map to engine yaw roughly (45° steps). NPCs use m_Angle.
-			m_Angle = (float)dir * 45.0f;
-			// Also set facing direction vector (0=north → -Z in our XZ).
-			static const Vector3 kDirs[8] = {
-				{ 0, 0, -1 }, { 1, 0, -1 }, { 1, 0, 0 }, { 1, 0, 1 },
-				{ 0, 0, 1 }, { -1, 0, 1 }, { -1, 0, 0 }, { -1, 0, -1 }
-			};
-			m_Direction = Vector3Normalize(kDirs[dir]);
-			break;
-		}
-		case UC_SFX:
-		{
-			int sfx = 0;
-			if (ip < cnt && ScriptElemIsInt(code[ip]))
-				sfx = ScriptElemInt(code[ip++]);
-			if (g_SoundSystem && sfx >= 0)
-				g_SoundSystem->PlaySoundAtObject(BuildU7SfxPath(sfx), m_ID);
-			break;
-		}
-		case UC_SAY:
-		{
-			std::string text;
-			if (ip < cnt && std::holds_alternative<std::string>(code[ip]))
-				text = std::get<std::string>(code[ip++]);
-			else if (ip < cnt && ScriptElemIsInt(code[ip]))
-				++ip; // skip non-string param
-			while (!text.empty() && text.front() == '@') text.erase(text.begin());
-			while (!text.empty() && text.back() == '@') text.pop_back();
-			if (!text.empty() && g_StateMachine && g_StateMachine->GetCurrentState() == STATE_MAINSTATE)
-			{
-				auto* main = dynamic_cast<MainState*>(g_StateMachine->GetState(STATE_MAINSTATE));
-				if (main) main->Bark(this, text, 3.0f);
-			}
-			break;
-		}
-		case UC_USECODE:
-		{
-			int fun = 0;
-			if (ip < cnt && ScriptElemIsInt(code[ip]))
-				fun = ScriptElemInt(code[ip++]);
-			// Event 2 is Exult's internal_exec for scripted usecode calls.
-			(void)fun;
-			Interact(2);
-			break;
-		}
-		case UC_REMOVE:
-			// Soft-remove: hide / mark dead if available
-			m_ShouldDraw = false;
-			m_Visible = false;
-			ip = cnt;
-			break;
-		case UC_REPEAT:
-		case UC_REPEAT2:
-		{
-			// After opcode: offset, count [, reset]. ip already past opcode.
-			if (ip + 1 >= cnt)
-				break;
-			const int opcodeIndex = ip - 1;
-			const int offset = ScriptElemInt(code[ip]);
-			const int countIdx = ip + 1;
-			int repeats = ScriptElemInt(code[countIdx]);
-			if (repeats <= 0)
-			{
-				if (opcode == UC_REPEAT2 && ip + 2 < cnt)
+				std::string text = std::get<std::string>(cur);
+				while (!text.empty() && text.front() == '@') text.erase(text.begin());
+				while (!text.empty() && text.back() == '@') text.pop_back();
+				if (g_StateMachine && g_StateMachine->GetCurrentState() == STATE_MAINSTATE)
 				{
-					code[countIdx] = ScriptElemInt(code[ip + 2]); // restore
-					ip += 3;
+					auto* main = dynamic_cast<MainState*>(g_StateMachine->GetState(STATE_MAINSTATE));
+					if (main) main->Bark(this, text);
+				}
+				++ip;
+				break;
+			}
+
+			const int raw = ScriptElemInt(cur);
+			const int opcode = DecodeScriptOpcode(raw);
+			++ip;
+
+			switch (opcode)
+			{
+			case UC_CONT:
+				doAnother = true;
+				break;
+			case UC_NOP1:
+			case UC_NOP2:
+				doAnother = true;
+				break;
+			case UC_DONT_HALT:
+				script.noHalt = true;
+				doAnother = true;
+				break;
+			case UC_FINISH:
+				doAnother = true;
+				break;
+			case UC_RESET:
+				ip = 0;
+				doAnother = true;
+				break;
+			case UC_DELAY_TICKS:
+			{
+				int ticks = 1;
+				if (ip < cnt && ScriptElemIsInt(code[ip]))
+					ticks = ScriptElemInt(code[ip++]);
+				if (ticks < 1) ticks = 1;
+				nextDelay = kUsecodeTickSec * (float)ticks;
+				break;
+			}
+			case UC_DELAY_MINUTES:
+			{
+				int mins = 1;
+				if (ip < cnt && ScriptElemIsInt(code[ip]))
+					mins = ScriptElemInt(code[ip++]);
+				nextDelay = (float)mins * 60.0f * kUsecodeTickSec; // coarse stand-in
+				break;
+			}
+			case UC_DELAY_HOURS:
+			{
+				int hours = 1;
+				if (ip < cnt && ScriptElemIsInt(code[ip]))
+					hours = ScriptElemInt(code[ip++]);
+				nextDelay = (float)hours * 3600.0f * kUsecodeTickSec;
+				break;
+			}
+			case UC_FRAME:
+			{
+				int fr = 0;
+				if (ip < cnt && ScriptElemIsInt(code[ip]))
+					fr = ScriptElemInt(code[ip++]);
+				SetFrame(fr);
+				break;
+			}
+			case UC_NEXT_FRAME:
+			case UC_NEXT_FRAME_MAX:
+			{
+				int fr = m_Frame + 1;
+				if (opcode == UC_NEXT_FRAME)
+					fr = fr; // wrap unknown max — bump one
+				SetFrame(fr);
+				break;
+			}
+			case UC_PREV_FRAME:
+			case UC_PREV_FRAME_MIN:
+			{
+				int fr = m_Frame - 1;
+				if (fr < 0) fr = (opcode == UC_PREV_FRAME_MIN) ? 0 : 0;
+				SetFrame(fr);
+				break;
+			}
+			case UC_FACE_DIR:
+			{
+				int dir = 0;
+				if (ip < cnt && ScriptElemIsInt(code[ip]))
+					dir = ScriptElemInt(code[ip++]) & 7;
+				// 0=N … map to engine yaw roughly (45° steps). NPCs use m_Angle.
+				m_Angle = (float)dir * 45.0f;
+				// Also set facing direction vector (0=north → -Z in our XZ).
+				static const Vector3 kDirs[8] = {
+					{ 0, 0, -1 }, { 1, 0, -1 }, { 1, 0, 0 }, { 1, 0, 1 },
+					{ 0, 0, 1 }, { -1, 0, 1 }, { -1, 0, 0 }, { -1, 0, -1 }
+				};
+				m_Direction = Vector3Normalize(kDirs[dir]);
+				break;
+			}
+			case UC_SFX:
+			{
+				int sfx = 0;
+				if (ip < cnt && ScriptElemIsInt(code[ip]))
+					sfx = ScriptElemInt(code[ip++]);
+				if (g_SoundSystem && sfx >= 0)
+					g_SoundSystem->PlaySoundAtObject(BuildU7SfxPath(sfx), m_ID);
+				break;
+			}
+			case UC_SAY:
+			{
+				std::string text;
+				if (ip < cnt && std::holds_alternative<std::string>(code[ip]))
+					text = std::get<std::string>(code[ip++]);
+				else if (ip < cnt && ScriptElemIsInt(code[ip]))
+					++ip; // skip non-string param
+				while (!text.empty() && text.front() == '@') text.erase(text.begin());
+				while (!text.empty() && text.back() == '@') text.pop_back();
+				if (!text.empty() && g_StateMachine && g_StateMachine->GetCurrentState() == STATE_MAINSTATE)
+				{
+					auto* main = dynamic_cast<MainState*>(g_StateMachine->GetState(STATE_MAINSTATE));
+					if (main) main->Bark(this, text);
+				}
+				break;
+			}
+			case UC_USECODE:
+			{
+				int fun = 0;
+				if (ip < cnt && ScriptElemIsInt(code[ip]))
+					fun = ScriptElemInt(code[ip++]);
+				// Event 2 is Exult's internal_exec for scripted usecode calls.
+				(void)fun;
+				Interact(2);
+				break;
+			}
+			case UC_REMOVE:
+				// Soft-remove: hide / mark dead if available
+				m_ShouldDraw = false;
+				m_Visible = false;
+				ip = cnt;
+				break;
+			case UC_REPEAT:
+			case UC_REPEAT2:
+			{
+				// After opcode: offset, count [, reset]. ip already past opcode.
+				if (ip + 1 >= cnt)
+					break;
+				const int opcodeIndex = ip - 1;
+				const int offset = ScriptElemInt(code[ip]);
+				const int countIdx = ip + 1;
+				int repeats = ScriptElemInt(code[countIdx]);
+				if (repeats <= 0)
+				{
+					if (opcode == UC_REPEAT2 && ip + 2 < cnt)
+					{
+						code[countIdx] = ScriptElemInt(code[ip + 2]); // restore
+						ip += 3;
+					}
+					else
+						ip += 2;
+					doAnother = true;
 				}
 				else
-					ip += 2;
-				doAnother = true;
-			}
-			else
-			{
-				if (repeats != 255)
-					code[countIdx] = repeats - 1;
-				// Exult: landing = opcodeIndex + offset
-				ip = opcodeIndex + offset;
-				if (ip < 0) ip = 0;
-				doAnother = true;
-			}
-			break;
-		}
-		case UC_WAIT_NEAR:
-		case UC_WAIT_FAR:
-		{
-			int dist = 5;
-			if (ip < cnt && ScriptElemIsInt(code[ip]))
-				dist = ScriptElemInt(code[ip++]);
-			U7Object* av = g_Player ? g_Player->GetAvatarObject() : nullptr;
-			if (av)
-			{
-				const float dx = fabsf(m_Pos.x - av->m_Pos.x);
-				const float dz = fabsf(m_Pos.z - av->m_Pos.z);
-				const float d = (dx > dz) ? dx : dz;
-				const bool near = d <= (float)dist;
-				if ((opcode == UC_WAIT_NEAR && near) || (opcode == UC_WAIT_FAR && !near))
 				{
-					ip -= 2; // stay on this opcode
+					if (repeats != 255)
+						code[countIdx] = repeats - 1;
+					// Exult: landing = opcodeIndex + offset
+					ip = opcodeIndex + offset;
 					if (ip < 0) ip = 0;
+					doAnother = true;
 				}
+				break;
 			}
-			break;
+			case UC_WAIT_NEAR:
+			case UC_WAIT_FAR:
+			{
+				int dist = 5;
+				if (ip < cnt && ScriptElemIsInt(code[ip]))
+					dist = ScriptElemInt(code[ip++]);
+				U7Object* av = g_Player ? g_Player->GetAvatarObject() : nullptr;
+				if (av)
+				{
+					const float dx = fabsf(m_Pos.x - av->m_Pos.x);
+					const float dz = fabsf(m_Pos.z - av->m_Pos.z);
+					const float d = (dx > dz) ? dx : dz;
+					const bool near = d <= (float)dist;
+					if ((opcode == UC_WAIT_NEAR && near) || (opcode == UC_WAIT_FAR && !near))
+					{
+						ip -= 2; // stay on this opcode
+						if (ip < 0) ip = 0;
+					}
+				}
+				break;
+			}
+			default:
+				if (opcode >= UC_NPC_FRAME_BASE && opcode <= UC_NPC_FRAME_BASE + 15)
+				{
+					// NPC frame-by-type: approximate by setting low nibble of frame
+					int fr = (m_Frame & ~0x0f) | (opcode - UC_NPC_FRAME_BASE);
+					SetFrame(fr);
+				}
+				else if (opcode >= 0x30 && opcode <= 0x37)
+				{
+					// Step N/NE/... — skip movement for now (path_run covers most walks)
+				}
+				else
+				{
+					// Unknown / param-looking value that was treated as opcode — ignore
+				}
+				break;
+			}
 		}
-		default:
-			if (opcode >= UC_NPC_FRAME_BASE && opcode <= UC_NPC_FRAME_BASE + 15)
-			{
-				// NPC frame-by-type: approximate by setting low nibble of frame
-				int fr = (m_Frame & ~0x0f) | (opcode - UC_NPC_FRAME_BASE);
-				SetFrame(fr);
-			}
-			else if (opcode >= 0x30 && opcode <= 0x37)
-			{
-				// Step N/NE/... — skip movement for now (path_run covers most walks)
-			}
-			else
-			{
-				// Unknown / param-looking value that was treated as opcode — ignore
-			}
-			break;
+
+		if (ip >= cnt)
+		{
+			// This script finished — deactivate only this entry (others keep running).
+			script.active = false;
+			continue;
 		}
+
+		script.delayRemaining = nextDelay;
 	}
 
-	if (ip >= cnt)
-	{
-		HaltUsecodeScript(true);
-		return;
-	}
-
-	m_usecodeScript.delayRemaining = nextDelay;
+	// Compact finished scripts.
+	m_usecodeScripts.erase(
+		std::remove_if(m_usecodeScripts.begin(), m_usecodeScripts.end(),
+			[](const UsecodeScriptState& s) { return !s.active; }),
+		m_usecodeScripts.end());
 }
 
 void U7Object::ClearPendingUsecode()

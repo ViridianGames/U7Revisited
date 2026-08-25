@@ -536,7 +536,13 @@ void MainState::HandleDebugKeys()
 	if (IsKeyPressed(KEY_F10))
 	{
 		m_showPathfindingDebug = !m_showPathfindingDebug;
-		AddConsoleString(m_showPathfindingDebug ? "Pathfinding Debug ON - showing tile walkability with objects" : "Pathfinding Debug OFF");
+		if (!m_showPathfindingDebug)
+			m_pathDebugNpcObjectId = -1;
+		else if (g_pathfindingSystem && g_pathfindingSystem->m_pathfindingGrid)
+			g_pathfindingSystem->m_pathfindingGrid->InvalidateDebugTileCache();
+		AddConsoleString(m_showPathfindingDebug
+			? "Pathfinding Debug ON - tile walkability; click an NPC to show their path"
+			: "Pathfinding Debug OFF");
 	}
 
 	if (IsKeyPressed(KEY_F11) && m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX)
@@ -1010,7 +1016,7 @@ void MainState::HandleLeftDoubleClick()
 		else if (g_objectUnderMousePointer->m_isContainer)
 		{
 			m_handledDoubleLeftClickThisFrame = true;
-			Bark(g_objectUnderMousePointer, "Locked", 3.0f);
+			Bark(g_objectUnderMousePointer, "Locked");
 		}
 	}
 	else if (!g_mouseOverUI && !g_gumpManager->m_isMouseOverGump)
@@ -1059,6 +1065,34 @@ void MainState::HandleLeftSingleClick()
 
 			if (g_objectUnderMousePointer->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC && m_npcListWindow && m_npcListWindow->IsVisible())
 				m_npcListWindow->SelectNPC(g_objectUnderMousePointer->m_NPCID);
+
+			// F10 path debug: sticky-select this NPC's current waypoint path.
+			if (m_showPathfindingDebug &&
+				(g_objectUnderMousePointer->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC ||
+				 g_objectUnderMousePointer->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_MONSTER))
+			{
+				m_pathDebugNpcObjectId = g_objectUnderMousePointer->m_ID;
+				const auto& wps = g_objectUnderMousePointer->m_pathWaypoints;
+				std::string name = GetObjectDisplayName(g_objectUnderMousePointer);
+				if (wps.empty())
+				{
+					AddConsoleString("Path debug: " + name + " (id " + std::to_string(m_pathDebugNpcObjectId) +
+						") — no active path" +
+						(g_objectUnderMousePointer->m_pathfindingPending ? " (pathfinding pending)" : "") +
+						(g_objectUnderMousePointer->m_isMoving ? ", isMoving" : ""), YELLOW);
+				}
+				else
+				{
+					const Vector3& dest = wps.back();
+					AddConsoleString("Path debug: " + name + " (id " + std::to_string(m_pathDebugNpcObjectId) +
+						") — " + std::to_string(wps.size()) + " waypoints, idx " +
+						std::to_string(g_objectUnderMousePointer->m_currentWaypointIndex) +
+						", dest (" + std::to_string((int)dest.x) + ", " +
+						std::to_string(dest.y) + ", " + std::to_string((int)dest.z) + ")" +
+						(g_objectUnderMousePointer->m_isSchedulePath ? " [schedule]" : " [activity]"),
+						SKYBLUE);
+				}
+			}
 
 			if (g_LuaDebug && g_objectUnderMousePointer->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC)
 				DebugPrintNpcSchedule(g_objectUnderMousePointer);
@@ -1279,27 +1313,85 @@ void MainState::EndCameraDrag()
 	m_cameraDragging = false;
 	SetMousePosition((int)m_cameraDragLockPos.x, (int)m_cameraDragLockPos.y);
 }
+void MainState::ClearBarks()
+{
+	m_barkObject = nullptr;
+	m_barkText.clear();
+	m_barkDuration = 0;
+	m_barkAutoUpdate = false;
+	m_barkQueue.clear();
+}
+
+void MainState::ShowBarkNow(U7Object* object, const std::string& text, float duration, bool autoUpdate)
+{
+	m_barkObject = object;
+	m_barkDuration = (duration > 0.0f) ? duration : kDefaultBarkSeconds;
+	m_barkAutoUpdate = autoUpdate;
+	m_barkText = text;
+	if (autoUpdate && object)
+		m_barkText = GetObjectDisplayName(object);
+}
+
+void MainState::AdvanceBarkQueue()
+{
+	m_barkObject = nullptr;
+	m_barkText.clear();
+	m_barkDuration = 0;
+	m_barkAutoUpdate = false;
+
+	while (!m_barkQueue.empty())
+	{
+		PendingBark next = std::move(m_barkQueue.front());
+		m_barkQueue.pop_front();
+		// Skip entries whose object was destroyed while queued.
+		if (next.object == nullptr && !next.autoUpdate && next.text.empty())
+			continue;
+		if (next.object != nullptr)
+		{
+			auto it = g_objectList.find(next.object->m_ID);
+			if (it == g_objectList.end() || it->second.get() != next.object)
+				continue;
+		}
+		ShowBarkNow(next.object, next.text, next.duration, next.autoUpdate);
+		return;
+	}
+}
+
 void MainState::Bark(U7Object* object, const std::string& text, float duration)
 {
-	m_barkDuration = duration;
-	m_barkObject = object;
+	const float showDuration = (duration > 0.0f) ? duration : kDefaultBarkSeconds;
 
-	// If text is empty, auto-generate it from object's shape/frame/quantity each frame
+	bool autoUpdate = false;
+	std::string cleaned = text;
 	if (text.empty() && object)
 	{
-		m_barkAutoUpdate = true;
-		m_barkText = GetObjectDisplayName(object);
+		autoUpdate = true;
+		cleaned = GetObjectDisplayName(object);
 	}
 	else
 	{
-		m_barkAutoUpdate = false;
 		// Usecode barks are delimited with @...@; the markers are not drawn.
-		m_barkText = text;
-		while (!m_barkText.empty() && m_barkText.front() == '@')
-			m_barkText.erase(m_barkText.begin());
-		while (!m_barkText.empty() && m_barkText.back() == '@')
-			m_barkText.pop_back();
+		while (!cleaned.empty() && cleaned.front() == '@')
+			cleaned.erase(cleaned.begin());
+		while (!cleaned.empty() && cleaned.back() == '@')
+			cleaned.pop_back();
 	}
+
+	// Nothing on screen — show immediately.
+	if (m_barkDuration <= 0.0f || m_barkObject == nullptr)
+	{
+		m_barkQueue.clear();
+		ShowBarkNow(object, cleaned, showDuration, autoUpdate);
+		return;
+	}
+
+	// Already showing a bark — queue so sequential says stay readable (~1.5s each).
+	PendingBark pending;
+	pending.object = object;
+	pending.text = cleaned;
+	pending.duration = showDuration;
+	pending.autoUpdate = autoUpdate;
+	m_barkQueue.push_back(std::move(pending));
 }
 
 void MainState::ShowObjectInfoTooltip(U7Object* object)
@@ -1579,13 +1671,16 @@ void MainState::Update()
 				}
 				else
 				{
-					// No path found: teleport as fallback and clear pending flag.
-					npcObj->SetPos(res.dest);
-					npcObj->SetDest(res.dest);
+					// No path found: stay put (do not teleport). Retry on next schedule tick.
+					npcObj->m_pathWaypoints.clear();
+					npcObj->m_currentWaypointIndex = 0;
+					npcObj->m_isMoving = false;
 					npcObj->m_isSchedulePath = false;
 					npcObj->m_pathfindingPending = false;
-					NPCDebugPrint("Schedule: NPC " + std::to_string(res.npcID) + " had no path, teleported (" +
-						std::to_string((int)res.dest.x) + "," + std::to_string((int)res.dest.z) + ")");
+					npcObj->SetDest(npcObj->m_Pos);
+					NPCDebugPrint("Schedule: NPC " + std::to_string(res.npcID) + " had no path to (" +
+						std::to_string((int)res.dest.x) + "," + std::to_string((int)res.dest.z) +
+						") — staying put");
 				}
 			}
 
@@ -1768,11 +1863,11 @@ void MainState::Update()
 	{
 		m_barkDuration -= g_Engine->LastFrameInSeconds();
 		if (m_barkDuration <= 0)
-		{
-			m_barkDuration = 0;
-			m_barkObject = nullptr;
-			m_barkText = "";
-		}
+			AdvanceBarkQueue();
+	}
+	else if (m_barkDuration <= 0 && !m_barkQueue.empty())
+	{
+		AdvanceBarkQueue();
 	}
 
 	if (m_waitTime > 0)
@@ -2150,36 +2245,60 @@ void MainState::Draw()
 		g_pathfindingSystem->m_pathfindingGrid->DrawDebugOverlayTileLevel(lowerBound, m_heightCutoff);
 	}
 
-	// Draw NPC paths as blue highlight tiles for NPCs with active waypoints
-	if (m_showPathfindingDebug)
+	// F10: draw the sticky-selected NPC/monster path (click an NPC to select).
+	if (m_showPathfindingDebug && m_pathDebugNpcObjectId >= 0)
 	{
-		for (auto& object : g_sortedVisibleObjects)
+		U7Object* debugNpc = nullptr;
+		auto it = g_objectList.find(m_pathDebugNpcObjectId);
+		if (it != g_objectList.end())
+			debugNpc = it->second.get();
+
+		if (!debugNpc)
 		{
-			if (object->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC && !object->m_pathWaypoints.empty())
+			m_pathDebugNpcObjectId = -1;
+		}
+		else
+		{
+			// Highlight the selected unit.
+			Vector3 selPos = debugNpc->m_centerPoint;
+			selPos.y += 1.2f;
+			DrawCircle3D(selPos, 0.7f, Vector3{ 0.0f, 1.0f, 0.0f }, 360.0f, MAGENTA);
+
+			const auto& wps = debugNpc->m_pathWaypoints;
+			if (!wps.empty())
 			{
-				// Check if NPC is on screen or near camera
-				float distToCamera = Vector2Distance(
-					{ object->m_Pos.x, object->m_Pos.z },
-					{ g_camera.target.x, g_camera.target.z }
-				);
+				const Color pathColor = debugNpc->m_isSchedulePath
+					? Color{ 255, 140, 0, 255 }   // Orange = schedule
+					: Color{ 50, 120, 255, 255 }; // Blue = activity
+				const Color currentColor = Color{ 255, 255, 0, 255 }; // Yellow = current target wp
+				const Color destColor = Color{ 0, 255, 80, 255 };     // Green = final dest
 
-				if (distToCamera < 50.0f)  // Within 50 tiles of camera
+				// Line from NPC to current waypoint, then along remaining path.
+				Vector3 prev = debugNpc->m_Pos;
+				prev.y += 0.15f;
+				for (size_t i = 0; i < wps.size(); ++i)
 				{
-					// Draw waypoints: Orange for C++ schedule paths, Blue for Lua activity paths
-					Color pathColor = object->m_isSchedulePath ?
-						Color{ 255, 128, 0, 255 } :   // Orange for schedule paths
-						Color{ 50, 50, 255, 255 };     // Blue for Lua paths
+					Vector3 wp = wps[i];
+					wp.y += 0.15f;
 
-					for (size_t i = 0; i < object->m_pathWaypoints.size(); i++)
-					{
-						const auto& waypoint = object->m_pathWaypoints[i];
-						// Waypoint already contains correct Y coordinate from pathfinding
-						// Waypoints are already tile centers.
-						Vector3 tilePos = { waypoint.x, waypoint.y + 0.05f, waypoint.z };
-						// First tile is black, rest use the path color (orange/blue)
-						Color tileColor = (i == 0) ? Color{ 0, 0, 0, 255 } : pathColor;
-						DrawCube(tilePos, 1.0f, 0.1f, 1.0f, tileColor);
-					}
+					Color lineColor = pathColor;
+					if ((int)i == debugNpc->m_currentWaypointIndex)
+						lineColor = currentColor;
+					else if (i + 1 == wps.size())
+						lineColor = destColor;
+
+					DrawLine3D(prev, wp, lineColor);
+
+					Color cubeColor = pathColor;
+					if ((int)i < debugNpc->m_currentWaypointIndex)
+						cubeColor = Color{ 80, 80, 80, 200 }; // Already-passed waypoints
+					else if ((int)i == debugNpc->m_currentWaypointIndex)
+						cubeColor = currentColor;
+					else if (i + 1 == wps.size())
+						cubeColor = destColor;
+
+					DrawCube(Vector3{ wp.x, wp.y, wp.z }, 0.85f, 0.12f, 0.85f, cubeColor);
+					prev = wp;
 				}
 			}
 		}
