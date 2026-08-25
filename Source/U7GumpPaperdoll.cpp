@@ -25,7 +25,6 @@ GumpPaperdoll::GumpPaperdoll()
 	, m_data{}
 	, m_backgroundTexture(nullptr)
 {
-	// m_hoverText, m_hoverTextDuration, m_hoverTextPos inherited from Gump base class
 }
 
 GumpPaperdoll::~GumpPaperdoll()
@@ -143,8 +142,6 @@ void GumpPaperdoll::OnExit()
 	// Clear any cached state to prevent accessing stale data
 	m_npcId = -1;
 	m_highlightedSlots.clear();
-	m_hoverText.clear();
-	m_hoverTextDuration = 0.0f;
 	m_backgroundTexture = nullptr;
 }
 
@@ -514,6 +511,7 @@ void GumpPaperdoll::Update()
 									// Open the backpack gump
 									if (g_mainState)
 									{
+										g_mainState->ClearObjectInfoTooltip();
 										Log("Paperdoll - Calling g_mainState->OpenGump(" + std::to_string(objectId) + ")");
 										g_mainState->OpenGump(objectId);
 										Log("Paperdoll - OpenGump returned successfully");
@@ -522,7 +520,7 @@ void GumpPaperdoll::Update()
 									{
 										Log("Paperdoll - ERROR: g_mainState is null!");
 									}
-									break; // Don't process bark after opening gump
+									break; // Don't process identify after opening gump
 								}
 							}
 
@@ -538,13 +536,14 @@ void GumpPaperdoll::Update()
 										// Open the spellbook gump
 										if (g_mainState)
 										{
+											g_mainState->ClearObjectInfoTooltip();
 											g_mainState->OpenSpellbookGump(m_npcId);
 										}
 										else
 										{
 											Log("Paperdoll - ERROR: g_mainState is null!");
 										}
-										break; // Don't process bark after opening gump
+										break; // Don't process identify after opening gump
 									}
 								}
 								// Check for double-click on map (shape 178)
@@ -556,13 +555,14 @@ void GumpPaperdoll::Update()
 										// Open the minimap gump
 										if (g_mainState)
 										{
+											g_mainState->ClearObjectInfoTooltip();
 											g_mainState->OpenMinimapGump(m_npcId);
 										}
 										else
 										{
 											Log("Paperdoll - ERROR: g_mainState is null!");
 										}
-										break; // Don't process bark after opening gump
+										break; // Don't process identify after opening gump
 									}
 								}
 							}
@@ -630,30 +630,14 @@ void GumpPaperdoll::Update()
 								}
 							}
 
-							// Single click (without drag): show item name
-							if (objectId != -1 && g_InputSystem->WasLButtonClicked())
+							// Single click (without drag): shared object info tooltip
+							if (objectId != -1 && g_InputSystem->WasLButtonClicked() && !g_gumpManager->m_draggingObject)
 							{
 								Log("Paperdoll - Single click on slot " + std::to_string(i) + ", objectId=" + std::to_string(objectId));
 								auto objIt = g_objectList.find(objectId);
-								if (objIt != g_objectList.end() && objIt->second)
+								if (objIt != g_objectList.end() && objIt->second && g_mainState)
 								{
-									U7Object* obj = objIt->second.get();
-									if (obj->m_shapeData)
-									{
-										m_hoverText = GetObjectDisplayName(obj);
-										Log("Paperdoll - Showing hover text: " + m_hoverText);
-										m_hoverTextDuration = 2.0f;
-
-										// Calculate screen position from GUI coordinates
-										float screenX = (m_gui.m_Pos.x + slotSprite->m_Pos.x + slotSprite->m_Sprite->m_sourceRect.width / 2.0f);
-										float screenY = (m_gui.m_Pos.y + slotSprite->m_Pos.y);
-										m_hoverTextPos.x = screenX;
-										m_hoverTextPos.y = screenY;
-
-										Log("Hover text position: screen(" + std::to_string(screenX) + ", " + std::to_string(screenY) +
-											") gui.pos(" + std::to_string(m_gui.m_Pos.x) + ", " + std::to_string(m_gui.m_Pos.y) +
-											") slot.pos(" + std::to_string(slotSprite->m_Pos.x) + ", " + std::to_string(slotSprite->m_Pos.y) + ")");
-									}
+									g_mainState->ShowObjectInfoTooltip(objIt->second.get());
 								}
 								break; // Don't process multiple slots
 							}
@@ -661,16 +645,6 @@ void GumpPaperdoll::Update()
 					}
 				}
 			}
-		}
-	}
-
-	// Update hover text timer
-	if (m_hoverTextDuration > 0.0f)
-	{
-		m_hoverTextDuration -= g_Engine->LastFrameInSeconds();
-		if (m_hoverTextDuration <= 0.0f)
-		{
-			m_hoverText.clear();
 		}
 	}
 
@@ -864,27 +838,6 @@ void GumpPaperdoll::Draw()
 		}
 	}
 
-	// Draw hover text if active (uses same style as bark text)
-	if (!m_hoverText.empty() && m_hoverTextDuration > 0.0f)
-	{
-		// Measure text with conversation font
-		float width = MeasureTextEx(*g_ConversationFont, m_hoverText.c_str(), g_ConversationFont->baseSize, 1).x * 1.2f;
-		float height = g_ConversationFont->baseSize * 1.2f;
-
-		// Center text horizontally at stored slot position, slightly above
-		Vector2 textPos = {
-			m_hoverTextPos.x - width / 2.0f,
-			m_hoverTextPos.y - height - 5.0f  // Above slot
-		};
-
-		// Draw rounded rectangle background (pill-shaped, semi-transparent)
-		DrawRectangleRounded({ textPos.x, textPos.y, width, height }, 5.0f, 10, Color{ 0, 0, 0, 192 });
-
-		// Draw text in yellow (same as bark)
-		DrawTextEx(*g_ConversationFont, m_hoverText.c_str(),
-			{ textPos.x + (width * 0.1f), textPos.y + (height * 0.1f) },
-			g_ConversationFont->baseSize, 1, YELLOW);
-	}
 }
 
 bool GumpPaperdoll::IsOverSlot(Vector2 mousePos)

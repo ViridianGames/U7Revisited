@@ -967,6 +967,10 @@ void MainState::HandleLeftDoubleClick()
 
 	if (g_objectUnderMousePointer != nullptr)
 	{
+		// First click of a double-click may have shown the info tooltip; dismiss it
+		// when the second click successfully uses/opens the object.
+		ClearObjectInfoTooltip();
+
 		bool isAvatar = g_objectUnderMousePointer->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC && g_objectUnderMousePointer->m_NPCID == 0;
 		bool isPartyMember = g_objectUnderMousePointer->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC &&
 			g_Player->NPCIDInParty(g_objectUnderMousePointer->m_NPCID);
@@ -1035,6 +1039,10 @@ void MainState::HandleLeftSingleClick()
 	if (g_gumpManager->m_isMouseOverGump || g_gumpManager->m_draggingObject || g_mouseOverUI)
 		return;
 
+	// Double-click use/open already handled this frame — don't show info.
+	if (m_handledDoubleLeftClickThisFrame)
+		return;
+
 	if (g_objectUnderMousePointer != nullptr)
 	{
 		if (m_objectSelectionMode)
@@ -1047,7 +1055,7 @@ void MainState::HandleLeftSingleClick()
 		}
 		else
 		{
-			//Bark(g_objectUnderMousePointer, GetObjectDisplayName(g_objectUnderMousePointer), 1.0f);
+			ShowObjectInfoTooltip(g_objectUnderMousePointer);
 
 			if (g_objectUnderMousePointer->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC && m_npcListWindow && m_npcListWindow->IsVisible())
 				m_npcListWindow->SelectNPC(g_objectUnderMousePointer->m_NPCID);
@@ -1067,6 +1075,10 @@ void MainState::HandleLeftSingleClick()
 				g_objectUnderMousePointer->DebugPrintMonsterInfo();
 			}
 		}
+	}
+	else
+	{
+		ClearObjectInfoTooltip();
 	}
 }
 
@@ -1290,6 +1302,110 @@ void MainState::Bark(U7Object* object, const std::string& text, float duration)
 	}
 }
 
+void MainState::ShowObjectInfoTooltip(U7Object* object)
+{
+	if (!object)
+	{
+		ClearObjectInfoTooltip();
+		return;
+	}
+
+	m_objectInfoTooltipName = GetObjectDisplayName(object);
+	m_objectInfoTooltipWeight.clear();
+	m_objectInfoTooltipVolume.clear();
+
+	// Weight/volume only for items that can be picked up / dragged into inventory.
+	const int shapeId = (object->m_shapeData) ? object->m_shapeData->m_shape : -1;
+	const bool canPickUp = (shapeId >= 0 && shapeId < 1024 && g_isObjectMoveable[shapeId] != 0);
+	if (canPickUp)
+	{
+		float weight = object->GetWeight();
+		std::ostringstream weightStream;
+		weightStream << std::fixed << std::setprecision(weight >= 10.0f ? 0 : 1) << weight;
+		m_objectInfoTooltipWeight = "Weight: " + weightStream.str();
+
+		float volume = (object->m_objectData) ? object->m_objectData->m_volume : 0.0f;
+		std::ostringstream volumeStream;
+		volumeStream << "Volume: " << static_cast<int>(volume);
+		m_objectInfoTooltipVolume = volumeStream.str();
+	}
+
+	m_objectInfoTooltipVisible = true;
+	m_objectInfoTooltipDuration = kObjectInfoTooltipSeconds;
+}
+
+void MainState::ClearObjectInfoTooltip()
+{
+	m_objectInfoTooltipVisible = false;
+	m_objectInfoTooltipDuration = 0.0f;
+	m_objectInfoTooltipName.clear();
+	m_objectInfoTooltipWeight.clear();
+	m_objectInfoTooltipVolume.clear();
+}
+
+void MainState::UpdateObjectInfoTooltip()
+{
+	if (!m_objectInfoTooltipVisible)
+		return;
+
+	m_objectInfoTooltipDuration -= g_Engine->LastFrameInSeconds();
+	if (m_objectInfoTooltipDuration <= 0.0f)
+		ClearObjectInfoTooltip();
+}
+
+void MainState::DrawObjectInfoTooltip()
+{
+	if (!m_objectInfoTooltipVisible || m_objectInfoTooltipName.empty())
+		return;
+
+	Font* font = g_SmallFont.get();
+	if (!font)
+		return;
+
+	const float fontSize = static_cast<float>(font->baseSize);
+	const float lineGap = 2.0f;
+	const int padX = 6;
+	const int padY = 4;
+
+	std::vector<std::pair<std::string, Color>> lines;
+	lines.push_back({ m_objectInfoTooltipName, YELLOW });
+	if (!m_objectInfoTooltipWeight.empty())
+		lines.push_back({ m_objectInfoTooltipWeight, WHITE });
+	if (!m_objectInfoTooltipVolume.empty())
+		lines.push_back({ m_objectInfoTooltipVolume, WHITE });
+
+	float maxTextWidth = 0.0f;
+	for (const auto& line : lines)
+	{
+		float w = MeasureTextEx(*font, line.first.c_str(), fontSize, 1).x;
+		if (w > maxTextWidth)
+			maxTextWidth = w;
+	}
+
+	const int lineCount = static_cast<int>(lines.size());
+	const float boxWidth = maxTextWidth + padX * 2;
+	const float boxHeight = fontSize * lineCount + lineGap * (lineCount - 1) + padY * 2;
+
+	// Party portraits start at render X 498 (538 - 40). Sit just left of that,
+	// bottom-aligned in the playable area (above the version string at y=340).
+	constexpr float kPartyColumnLeft = 498.0f;
+	constexpr float kTooltipGap = 8.0f;
+	const float boxX = kPartyColumnLeft - kTooltipGap - boxWidth;
+	const float boxY = 336.0f - boxHeight;
+
+	DrawRectangle(static_cast<int>(boxX), static_cast<int>(boxY),
+		static_cast<int>(boxWidth), static_cast<int>(boxHeight), Color{ 0, 0, 0, 220 });
+	DrawRectangleLines(static_cast<int>(boxX), static_cast<int>(boxY),
+		static_cast<int>(boxWidth), static_cast<int>(boxHeight), Color{ 220, 220, 200, 255 });
+
+	float textY = boxY + padY;
+	for (size_t i = 0; i < lines.size(); ++i)
+	{
+		DrawTextEx(*font, lines[i].first.c_str(), { boxX + padX, textY }, fontSize, 1, lines[i].second);
+		textY += fontSize + lineGap;
+	}
+}
+
 void MainState::EnqueueSchedulePathRequest(int npcID, Vector3 start, Vector3 dest)
 {
 	SchedulePathRequest req;
@@ -1377,6 +1493,7 @@ void MainState::Update()
 			m_heightCutoff = 16.0f;
 		}
 	}
+
 
 	// Check if schedule time has changed and populate pathfinding queue
 	if (g_scheduleTime != g_lastScheduleTimeCheck)
@@ -1713,20 +1830,23 @@ void MainState::Update()
 		g_ScriptingSystem->SetFlag(60, true);
 	}
 
-	// Check if we've hovered over an object long enough to trigger a bark.
-	if (g_objectUnderMousePointer == m_previousObjectUnderMousePointer && g_allowInput && g_mouseOverUI == false)
-	{
-		m_barkTimer -= g_Engine->LastFrameInSeconds();
-		if (m_barkTimer <= 0)
-		{
-			Bark(g_objectUnderMousePointer, GetObjectDisplayName(g_objectUnderMousePointer), 1.0f);
-		}
-	}
-	else
-	{
-		m_previousObjectUnderMousePointer = g_objectUnderMousePointer;
-		m_barkTimer = 1.25f;
-	}
+	// Hover-bark disabled: it interfered with using objects. Object info is
+	// shown via single-click tooltip instead (ShowObjectInfoTooltip).
+	// if (g_objectUnderMousePointer == m_previousObjectUnderMousePointer && g_allowInput && g_mouseOverUI == false)
+	// {
+	// 	m_barkTimer -= g_Engine->LastFrameInSeconds();
+	// 	if (m_barkTimer <= 0)
+	// 	{
+	// 		Bark(g_objectUnderMousePointer, GetObjectDisplayName(g_objectUnderMousePointer), 1.0f);
+	// 	}
+	// }
+	// else
+	// {
+	// 	m_previousObjectUnderMousePointer = g_objectUnderMousePointer;
+	// 	m_barkTimer = 1.25f;
+	// }
+
+	UpdateObjectInfoTooltip();
 }
 
 void MainState::PathfindingWorkerLoop()
@@ -2112,6 +2232,9 @@ void MainState::Draw()
 
 		// Draw character panel below xy/time
 		DrawStats();
+
+		// Object info tooltip sits just left of the party column.
+		DrawObjectInfoTooltip();
 
 		//  Draw version number in lower-right
 		DrawOutlinedText(g_SmallFont, g_version.c_str(), Vector2{ 600, 340 }, g_SmallFont.get()->baseSize, 1, WHITE);

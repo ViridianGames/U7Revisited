@@ -95,7 +95,7 @@ private:
 	PaperdollData m_data;      // Cached paperdoll data
 	Texture* m_backgroundTexture; // Pointer to biggumps.png texture for pixel checking
 	std::vector<std::shared_ptr<Font>> m_loadedFonts; // Keep fonts alive
-	// Note: m_gui and m_hoverText/m_hoverTextDuration/m_hoverTextPos are inherited from Gump base class
+	// Note: m_gui is inherited from Gump base class
 };
 
 #endif

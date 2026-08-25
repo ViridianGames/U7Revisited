@@ -1590,6 +1590,7 @@ void DrawGameWorld(bool drawObjects)
 			object->Draw();
 		EndShaderMode();
 	}
+
 }
 void DrawGameWorldFrame(bool drawObjects)
 {

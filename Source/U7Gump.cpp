@@ -176,6 +176,9 @@ void Gump::Update()
 				{
 					if (CheckCollisionPointRec(mousePos, Rectangle{ m_gui.m_Pos.x + (m_containerData.m_boxOffset.x * 1) + object->m_InventoryPos.x, m_gui.m_Pos.y + (m_containerData.m_boxOffset.y * 1) + object->m_InventoryPos.y, float(object->m_shapeData->GetDefaultTextureImage().width), float(object->m_shapeData->GetDefaultTextureImage().height) }))
 					{
+						if (g_mainState)
+							g_mainState->ClearObjectInfoTooltip();
+
 						// Check for spellbook (shape 761)
 						if (object->m_shapeData->m_shape == 761)
 						{
@@ -210,8 +213,8 @@ void Gump::Update()
 			}
 		}
 
-		// Handle single click to show item name
-		if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+		// Single click: show shared object info tooltip (name / weight / volume).
+		if (g_InputSystem->WasLButtonClicked() && !g_gumpManager->m_draggingObject && g_mainState)
 		{
 			for (auto it = m_containerObject->m_inventory.begin(); it != m_containerObject->m_inventory.end(); ++it)
 			{
@@ -228,13 +231,7 @@ void Gump::Update()
 
 					if (CheckCollisionPointRec(mousePos, itemRect))
 					{
-					// Show item name
-					m_hoverText = GetObjectDisplayName(object);
-						m_hoverTextDuration = 2.0f;
-
-						// Position text above the item
-						m_hoverTextPos.x = itemRect.x + itemRect.width / 2.0f;
-						m_hoverTextPos.y = itemRect.y;
+						g_mainState->ShowObjectInfoTooltip(object);
 						break;
 					}
 				}
@@ -285,15 +282,6 @@ void Gump::Update()
 		}
 	}
 
-	// Update hover text timer
-	if (m_hoverTextDuration > 0.0f)
-	{
-		m_hoverTextDuration -= g_Engine->LastFrameInSeconds();
-		if (m_hoverTextDuration <= 0.0f)
-		{
-			m_hoverText.clear();
-		}
-	}
 }
 
 U7Object* Gump::GetObjectUnderMousePointer()
@@ -337,28 +325,6 @@ void Gump::Draw()
 					int(m_gui.m_Pos.y + m_containerData.m_boxOffset.y + object->m_InventoryPos.y));
 			}
 		}
-	}
-
-	// Draw hover text if active (uses same style as bark text)
-	if (!m_hoverText.empty() && m_hoverTextDuration > 0.0f)
-	{
-		// Measure text with conversation font
-		float width = MeasureTextEx(*g_ConversationFont, m_hoverText.c_str(), g_ConversationFont->baseSize, 1).x * 1.2f;
-		float height = g_ConversationFont->baseSize * 1.2f;
-
-		// Center text horizontally at stored position, slightly above
-		Vector2 textPos = {
-			m_hoverTextPos.x - width / 2.0f,
-			m_hoverTextPos.y - height - 5.0f  // Above item
-		};
-
-		// Draw rounded rectangle background (pill-shaped, semi-transparent)
-		DrawRectangleRounded({textPos.x, textPos.y, width, height}, 5.0f, 10, Color{0, 0, 0, 192});
-
-		// Draw text in yellow (same as bark)
-		DrawTextEx(*g_ConversationFont, m_hoverText.c_str(),
-			{ textPos.x + (width * 0.1f), textPos.y + (height * 0.1f) },
-			g_ConversationFont->baseSize, 1, YELLOW);
 	}
 }
 

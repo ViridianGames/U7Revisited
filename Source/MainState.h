@@ -86,6 +86,10 @@ public:
 
 	void Bark(U7Object* object, const std::string& text, float duration = 3.0f);
 
+	// Single-click object info (name / weight / volume) shown left of the party UI.
+	void ShowObjectInfoTooltip(U7Object* object);
+	void ClearObjectInfoTooltip();
+
 	void ShowErrorCursor() { m_errorCursorFramesRemaining = 5; }  // Show error cursor for 5 frames
 
 	// Debug tools window button handlers
@@ -333,6 +337,17 @@ private:
 
 	float m_barkTimer = 0.0f;
 	U7Object* m_previousObjectUnderMousePointer = nullptr;
+
+	// Bottom-right object info tooltip (replaces single-click bark).
+	bool m_objectInfoTooltipVisible = false;
+	std::string m_objectInfoTooltipName;
+	std::string m_objectInfoTooltipWeight;
+	std::string m_objectInfoTooltipVolume;
+	float m_objectInfoTooltipDuration = 0.0f;
+	static constexpr float kObjectInfoTooltipSeconds = 5.0f;
+
+	void DrawObjectInfoTooltip();
+	void UpdateObjectInfoTooltip();
 
 	bool m_helpConsoleLineShown = false;
 };

@@ -2803,6 +2803,7 @@ void PathfindingSystem::UpdateBuildingRoofVisibility(float avatarWorldX, float a
 			(void)chunkHasActiveGroup;
 		}
 	}
+
 }
 
 void PathfindingSystem::PopulateChunkPathfindingGrid()
