@@ -3,7 +3,13 @@
 
 Welcome to Ultima VII: Revisited, my attempt to write a replacement engine for Ultima VII: The Black Gate.
 
-<a href="https://www.youtube.com/watch?v=2mbJcOEwKJ4">
+If you like this project, please consider supporting me!
+
+https://ko-fi.com/viridiangames
+
+https://www.patreon.com/c/viridiangames
+
+<a href="https://www.youtube.com/watch?v=iDK5f3IkmrQ">
   <img width="1280" height="720" alt="image" src="https://github.com/user-attachments/assets/c85f4858-9468-4a19-8698-f62361a0df4a" />
 </a>
 (Click for a preview of coming attractions.)
