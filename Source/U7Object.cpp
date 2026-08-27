@@ -327,7 +327,8 @@ bool U7Object::EngageCombatTarget()
 	}
 	else
 	{
-		SetDest(GetStandoffPosition(m_Pos, target->m_Pos, m_attackRange));
+		// Pathfind — do not crow-fly (UpdateMovement requires waypoints for NPCs/monsters).
+		PathfindToDest(GetStandoffPosition(m_Pos, target->m_Pos, m_attackRange));
 	}
 
 	return true;
@@ -394,11 +395,11 @@ void U7Object::MonsterUpdate()
 			}
 			else if (distSqr < 81.0f)
 			{
-				SetDest(GetStandoffPosition(m_Pos, avatar->m_Pos, m_attackRange));
+				PathfindToDest(GetStandoffPosition(m_Pos, avatar->m_Pos, m_attackRange));
 			}
 			else if (g_StateMachine && g_StateMachine->GetCurrentState() == STATE_COMBATSTATE && distSqr < 400.0f)
 			{
-				SetDest(GetStandoffPosition(m_Pos, avatar->m_Pos, m_attackRange));
+				PathfindToDest(GetStandoffPosition(m_Pos, avatar->m_Pos, m_attackRange));
 			}
 		}
 	}
@@ -1750,55 +1751,77 @@ void U7Object::NPCUpdate()
 
 				if (exactSchedule)
 				{
-					// If activity or last-schedule time changed, apply update
-					bool activityChanged = (npcData->m_currentActivity != (int)exactSchedule->m_activity);
-					bool timeChanged = (m_lastSchedule != (int)g_scheduleTime);
+					npcData->m_currentActivity = (int)exactSchedule->m_activity;
 
-					if (activityChanged || timeChanged)
+					// Build destination at tile center (matches NPC standing/draw position).
+					Vector3 dest = {
+						float(exactSchedule->m_destX) + 0.5f,
+						0.0f,
+						float(exactSchedule->m_destY) + 0.5f
+					};
+
+					// Schedule coords often land on tables/chairs — snap to nearest ground-walkable.
+					if (g_pathfindingSystem)
 					{
-						// Update NPC activity and last schedule marker
-						npcData->m_currentActivity = (int)exactSchedule->m_activity;
+						const int gx = (int)floorf(dest.x);
+						const int gz = (int)floorf(dest.z);
+						if (!g_pathfindingSystem->GetCachedGroundWalkable(gx, gz))
+						{
+							bool found = false;
+							for (int r = 1; r <= 8 && !found; ++r)
+							{
+								for (int dz = -r; dz <= r && !found; ++dz)
+								{
+									for (int dx = -r; dx <= r && !found; ++dx)
+									{
+										if (abs(dx) != r && abs(dz) != r)
+											continue;
+										const int tx = gx + dx;
+										const int tz = gz + dz;
+										if (g_pathfindingSystem->GetCachedGroundWalkable(tx, tz))
+										{
+											dest = { tx + 0.5f, 0.0f, tz + 0.5f };
+											found = true;
+										}
+									}
+								}
+							}
+						}
+					}
+
+					const float distToSched = Vector2Distance({ m_Pos.x, m_Pos.z }, { dest.x, dest.z });
+
+					// Already at (or next to) schedule destination — commit slot, allow activity.
+					if (distToSched <= 2.5f)
+					{
 						m_lastSchedule = (int)g_scheduleTime;
-
-						// Clear schedule-path flag; we'll set it when a path is applied.
+						m_pendingScheduleTime = -1;
 						m_isSchedulePath = false;
-
-						// Build destination at tile center (matches NPC standing/draw position).
-						Vector3 dest = {
-							float(exactSchedule->m_destX) + 0.5f,
-							0.0f,
-							float(exactSchedule->m_destY) + 0.5f
-						};
-
-						// If pathfinding is enabled, enqueue path request via MainState.
-						if (g_mainState->IsNpcSchedulesEnabled() && g_mainState->m_npcPathfindingEnabled)
+						m_pathfindingPending = false;
+					}
+					else if (g_mainState->IsNpcSchedulesEnabled() && g_mainState->m_npcPathfindingEnabled)
+					{
+						// Don't commit m_lastSchedule until a path succeeds — otherwise a single
+						// failure (Spark→inn) never retries and eat_at_inn paths to a house chair.
+						const float now = GetTime();
+						if (!m_pathfindingPending && !m_isSchedulePath && now >= m_schedulePathRetryAt)
 						{
-							// Skip if we already have a pending path for this NPC or dest matches current dest
-							if (m_pathfindingPending)
-							{
-								// already pending -> skip
-							}
-							else if ((int)m_Dest.x == (int)dest.x && (int)m_Dest.z == (int)dest.z)
-							{
-								// already destined to same tile -> skip
-								m_isSchedulePath = true; // keep state consistent
-							}
-							else
-							{
-								// Mark pending AFTER we decide to enqueue to avoid races / duplicate pushes
-								m_pathfindingPending = true;
-								g_mainState->EnqueueSchedulePathRequest(m_NPCID, GetPos(), dest);
-							}
+							m_pathfindingPending = true;
+							m_pendingScheduleTime = (int)g_scheduleTime;
+							m_schedulePathRetryAt = now + 2.0f;
+							g_mainState->EnqueueSchedulePathRequest(m_NPCID, GetPos(), dest);
 						}
-						else
-						{
-							// Pathfinding disabled or schedules globally disabled: teleport NPC to scheduled location immediately.
-							SetPos(dest);
-							SetDest(dest);
-							m_isSchedulePath = false;
-							NPCDebugPrint("Schedule: NPC " + std::to_string(m_NPCID) + " teleported to (" +
-								std::to_string((int)dest.x) + "," + std::to_string((int)dest.z) + ") (pathfinding or schedules disabled)");
-						}
+					}
+					else
+					{
+						// Pathfinding disabled: teleport and commit.
+						SetPos(dest);
+						SetDest(dest);
+						m_lastSchedule = (int)g_scheduleTime;
+						m_pendingScheduleTime = -1;
+						m_isSchedulePath = false;
+						NPCDebugPrint("Schedule: NPC " + std::to_string(m_NPCID) + " teleported to (" +
+							std::to_string((int)dest.x) + "," + std::to_string((int)dest.z) + ") (pathfinding or schedules disabled)");
 					}
 				}
 			}
@@ -1830,9 +1853,25 @@ void U7Object::NPCUpdate()
 				}
 			}
 
-			// Only start activity script if not following a schedule path
-			// Block if: pathfinding pending OR currently on schedule path (orange)
-			if (!m_pathfindingPending && !m_isSchedulePath)
+			// Only start activity once near the schedule destination. Otherwise
+			// eat_at_inn finds a chair in the NPC's house (west of Spark) instead of the inn.
+			bool nearScheduleDest = false;
+			bool hasScheduleSlot = false;
+			for (const auto& s : npcData->m_schedule)
+			{
+				if ((int)s.m_time != (int)g_scheduleTime)
+					continue;
+				hasScheduleSlot = true;
+				Vector3 schedDest = {
+					float(s.m_destX) + 0.5f, 0.0f, float(s.m_destY) + 0.5f
+				};
+				nearScheduleDest = Vector2Distance({ m_Pos.x, m_Pos.z }, { schedDest.x, schedDest.z }) <= 10.0f;
+				break;
+			}
+			if (!hasScheduleSlot)
+				nearScheduleDest = true;
+
+			if (!m_pathfindingPending && !m_isSchedulePath && nearScheduleDest)
 			{
 				// Start new activity script
 				std::string new_script = GetActivityScriptName(currentActivity) + "_" + std::to_string(m_NPCID);
@@ -1879,29 +1918,47 @@ void U7Object::NPCUpdate()
 			}
 		}
 
-		// Activity hasn't changed - resume if not on schedule path
+		// Activity hasn't changed - resume if not on schedule path and near dest
 		else if (currentActivity >= 0 && !m_pathfindingPending && !m_isSchedulePath)
 		{
-			std::string script_name = GetActivityScriptName(currentActivity) + "_" + std::to_string(m_NPCID);
-			bool yielded = g_ScriptingSystem->IsCoroutineYielded(script_name);
-
-			// --- when resuming a yielded activity coroutine ---
-			if (yielded)
+			bool nearForResume = false;
+			bool hasSlot = false;
+			for (const auto& s : npcData->m_schedule)
 			{
-			    if (g_ScriptingSystem->TryConsumeScriptResume())
-			    {
-			        std::vector<ScriptingSystem::LuaArg> args = { m_NPCID };
-			        g_ScriptingSystem->ResumeCoroutine(script_name, args);
+				if ((int)s.m_time != (int)g_scheduleTime)
+					continue;
+				hasSlot = true;
+				Vector3 schedDest = {
+					float(s.m_destX) + 0.5f, 0.0f, float(s.m_destY) + 0.5f
+				};
+				nearForResume = Vector2Distance({ m_Pos.x, m_Pos.z }, { schedDest.x, schedDest.z }) <= 10.0f;
+				break;
+			}
+			if (!hasSlot)
+				nearForResume = true;
+			if (nearForResume)
+			{
+				std::string script_name = GetActivityScriptName(currentActivity) + "_" + std::to_string(m_NPCID);
+				bool yielded = g_ScriptingSystem->IsCoroutineYielded(script_name);
 
-			        if (m_NPCID == 75 && g_LuaDebug)
-			        {
-			            NPCDebugPrint("NPCResume Debug: called ResumeCoroutine for " + script_name);
-			        }
-			    }
-			    else
-			    {
-			        if (m_NPCID == 75 && g_LuaDebug) NPCDebugPrint("Throttled resume for " + script_name + " (deferred)");
-			    }
+				// --- when resuming a yielded activity coroutine ---
+				if (yielded)
+				{
+					if (g_ScriptingSystem->TryConsumeScriptResume())
+					{
+						std::vector<ScriptingSystem::LuaArg> args = { m_NPCID };
+						g_ScriptingSystem->ResumeCoroutine(script_name, args);
+
+						if (m_NPCID == 75 && g_LuaDebug)
+						{
+							NPCDebugPrint("NPCResume Debug: called ResumeCoroutine for " + script_name);
+						}
+					}
+					else
+					{
+						if (m_NPCID == 75 && g_LuaDebug) NPCDebugPrint("Throttled resume for " + script_name + " (deferred)");
+					}
+				}
 			}
 		}
 	}
@@ -1982,6 +2039,23 @@ void U7Object::UpdateMovement()
 			SetDest(wp);
 			advanceWaypoint();
 		}
+	}
+
+	// NPCs/monsters must follow A* waypoints — never crow-fly toward a bare m_Dest
+	// (that walked Spark into his house wall when schedule pathfinding failed and
+	// Dest was still pointed at the inn / a leftover goal).
+	// Exception: the Avatar — WASD / right-mouse steer uses TryMove → SetDest with
+	// no waypoints. Treating the Avatar like other NPCs cancelled Dest every frame
+	// (walk anim, zero movement).
+	const bool isAvatar = (g_Player && g_Player->GetAvatarObject() == this);
+	if (!isAvatar &&
+	    (m_UnitType == UnitTypes::UNIT_TYPE_NPC || m_UnitType == UnitTypes::UNIT_TYPE_MONSTER) &&
+	    m_pathWaypoints.empty())
+	{
+		if (m_Dest.x != m_Pos.x || m_Dest.y != m_Pos.y || m_Dest.z != m_Pos.z)
+			SetDest(m_Pos);
+		m_isMoving = false;
+		return;
 	}
 
 	if (m_Pos.x != m_Dest.x || m_Pos.y != m_Dest.y || m_Pos.z != m_Dest.z)
@@ -2499,8 +2573,8 @@ void U7Object::SetDest(Vector3 dest)
 
 void U7Object::TryOpenDoorAtCurrentPosition()
 {
-	int worldX = (int)m_Pos.x;
-	int worldZ = (int)m_Pos.z;
+	int worldX = (int)floorf(m_Pos.x);
+	int worldZ = (int)floorf(m_Pos.z);
 
 	// Cache to avoid checking the same position multiple times per tile
 	static std::unordered_map<int, std::pair<int, int>> lastCheckedPos;  // npcID -> (x, z)
@@ -2512,20 +2586,26 @@ void U7Object::TryOpenDoorAtCurrentPosition()
 	}
 	lastCheckedPos[m_NPCID] = {worldX, worldZ};
 
-	// Use the pathfinding grid's helper to get overlapping objects at current position
-	auto overlappingObjects = g_pathfindingSystem->m_pathfindingGrid->GetOverlappingObjects(worldX, worldZ);
-
-	// Check if any of the overlapping objects is a door
-	for (const auto& ovObj : overlappingObjects)
-	{
-		U7Object* obj = ovObj.obj;
-
-		if (!obj || !obj->m_objectData || !obj->m_objectData->m_isDoor)
-			continue;
-
-		// If we're standing on any door tile, interact with it to open
-		obj->Interact(1);  // Event 1 = double-click interaction
+	if (!g_pathfindingSystem)
 		return;
+
+	// Standing on a door tile, or adjacent (approach). Closed doors block the
+	// opening; pathfinding plans through them and we open on contact.
+	for (int dz = -1; dz <= 1; ++dz)
+	{
+		for (int dx = -1; dx <= 1; ++dx)
+		{
+			auto overlappingObjects =
+				g_pathfindingSystem->GetOverlappingObjects(worldX + dx, worldZ + dz);
+			for (const auto& ovObj : overlappingObjects)
+			{
+				U7Object* obj = ovObj.obj;
+				if (!obj || !obj->m_objectData || !obj->m_objectData->m_isDoor)
+					continue;
+				obj->Interact(1);  // Event 1 = double-click / open
+				return;
+			}
+		}
 	}
 }
 
@@ -3040,7 +3120,7 @@ bool U7Object::TryCompletePendingUsecodeByProximity(float maxDistXZ)
 	return true;
 }
 
-void U7Object::PathfindToDest(Vector3 dest)
+void U7Object::PathfindToDest(Vector3 dest, bool allowHierarchical)
 {
 	if (m_NPCID == 19)
 	{
@@ -3063,11 +3143,14 @@ void U7Object::PathfindToDest(Vector3 dest)
 		return;
 	}
 
-	m_pathWaypoints = g_pathfindingSystem->FindPath(m_Pos, dest, this);
+	m_pathWaypoints = g_pathfindingSystem->FindPath(m_Pos, dest, this, allowHierarchical);
 
 	// If path found, store waypoints
 	if (!m_pathWaypoints.empty())
 	{
+		// Successful path: clear any frozen failure graph for this unit.
+		if (g_pathfindingSystem->GetFrozenSearchObjectId() == m_ID)
+			g_pathfindingSystem->ClearFrozenSearchGraph();
 		// Pathfinding completed synchronously
 		m_pathfindingPending = false;
 
@@ -3154,7 +3237,13 @@ void U7Object::PathfindToDest(Vector3 dest)
 	else
 	{
 		m_pathfindingPending = false;  // No path found, done trying
-		// No path found, don't move at all
+		// No path found, don't move at all.
+		// F10: freeze the A* visited graph only for the sticky-selected unit.
+		if (g_mainState && g_mainState->m_showPathfindingDebug &&
+			g_mainState->m_pathDebugNpcObjectId == m_ID)
+		{
+			g_pathfindingSystem->FreezeFailedSearchGraph(m_ID);
+		}
 	}
 }
 

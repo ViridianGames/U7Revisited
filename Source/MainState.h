@@ -11,6 +11,8 @@
 #include <mutex>
 #include <condition_variable>
 #include <atomic>
+#include <unordered_set>
+#include <cstdint>
 #include "U7Globals.h"
 
 class ParticleSystem;
@@ -141,6 +143,15 @@ public:
 		std::vector<Vector3> path;
 		bool success = false;
 		Vector3 dest = { 0.0f, 0.0f, 0.0f };
+		std::string failReason; // filled when success == false
+		float closestDist = 1e9f;
+		int closestX = 0;
+		int closestZ = 0;
+		int startX = 0;
+		int startZ = 0;
+		int goalX = 0;
+		int goalZ = 0;
+		std::unordered_set<int64_t> visitedKeys; // A* explored nodes on failure
 	};
 	
 	std::deque<SchedulePathRequest> m_schedulePathQueue; // enqueued schedule pathfinding requests

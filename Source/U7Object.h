@@ -337,7 +337,8 @@ public:
 
 	virtual void SetDest(Vector3 pos);
 
-	void PathfindToDest(Vector3 dest); // Use A* pathfinding to reach dest (fire-and-forget)
+	// allowHierarchical: false = flat tile A* only (walk-to-use / levers).
+	void PathfindToDest(Vector3 dest, bool allowHierarchical = true);
 	int PathfindToDestTracked(Vector3 dest); // Returns request ID for tracking (used by Lua)
 	virtual void SetSpeed(float speed) { m_speed = speed; }
 
@@ -462,6 +463,8 @@ public:
 	bool m_isSchedulePath = false; // True for C++ schedule paths, false for Lua activity paths
 	bool m_pathfindingPending = false; // True while waiting for pathfinding to complete
 	int m_moveStuckFrames = 0; // Consecutive frames movement was fully blocked (slide failed)
+	float m_schedulePathRetryAt = 0.0f; // GetTime() gate so failed schedule paths retry without spamming
+	int m_pendingScheduleTime = -1; // schedule slot we're pathing for (commit m_lastSchedule on success)
 
 	// path_run_usecode: after Avatar finishes walking, Interact(event) on the target object.
 	bool m_hasPendingUsecode = false;
@@ -474,7 +477,7 @@ public:
 	bool m_pendingUsecodeHasProx = false;
 	// How close (XZ Chebyshev tiles) counts as "close enough to use" for walk-to-use.
 	// Generous enough that furniture blocking the stand tile still allows activation.
-	static constexpr float kPathRunUseRange = 4.0f;
+	static constexpr float kPathRunUseRange = 2.0f;
 	void ClearPendingUsecode();
 	void SetPendingUsecode(int objectId, int eventId);
 	void SetPendingUsecode(int objectId, int eventId, float proxX, float proxZ);

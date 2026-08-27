@@ -30,32 +30,6 @@ enum class RoofMaterial : int
 	Other = 5    // greenhouse, broken, wagon, …
 };
 
-struct ChunkInfo
-{
-	// Pathfinding: per-tile walkability within this 16x16 chunk.
-	bool walkable[16][16] = { false };
-
-	// Building / roof map (filled by BuildChunkBuildingData).
-	// interior[][]: under-roof tiles (for future lighting).
-	// roofGroupTile[][]: connected-building id per tile (-1 = no roof). Built from
-	// contiguous roof footprints so neighboring buildings do not share a group.
-	// hasRoof / roofGroupID: chunk-level rollup (any roof / primary group in chunk).
-	bool interior[16][16] = { false };
-	int  roofGroupTile[16][16];     // filled with -1 in BuildChunkBuildingData
-	bool hasRoof = false;
-	int  roofGroupID = -1;          // primary group for this chunk (-1 = none)
-	int  roofTypeID = -1;           // geometry/type catalog id (-1 = untyped)
-	RoofMaterial roofMaterial = RoofMaterial::None;
-
-	// Dungeon map (Exult mountain-top footprints). 0 = not under a mountain;
-	// otherwise the mountain ceiling lift (Y) for that tile. Built with roofs.
-	unsigned char dungeonCeiling[16][16] = {};
-	bool hasDungeon = false;
-
-	// Connectivity flags for 8 directions (0 = North, 1 = NE, 2 = E, etc.)
-	bool canReach[8] = { false };
-};
-
 // Direction constants for readability
 enum Dir8
 {
@@ -70,65 +44,66 @@ enum Dir8
 };
 
 // ============================================================================
-// PathfindingGrid: Tile-level walkability checking
+// ChunkInfo: per-chunk visibility / connectivity (16×16 world chunk)
 // ============================================================================
-class PathfindingGrid
+class ChunkInfo
 {
 public:
-	PathfindingGrid();
-	~PathfindingGrid();
+	ChunkInfo()
+	{
+		for (int z = 0; z < 16; ++z)
+			for (int x = 0; x < 16; ++x)
+				roofGroupTile[x][z] = -1;
+	}
 
-	// Query walkability (agent-aware: hostile NPCs/monsters block tiles for that agent)
-	bool IsPositionWalkable(int worldX, int worldZ, float agentBaseY, const U7Object* agent = nullptr) const;
+	// Building / roof map (filled by PathfindingSystem::BuildChunkBuildingData).
+	// interior[][]: under-roof tiles (for future lighting).
+	// roofGroupTile[][]: connected-building id per tile (-1 = no roof).
+	bool interior[16][16] = { false };
+	int  roofGroupTile[16][16];
+	bool hasRoof = false;
+	int  roofGroupID = -1;
+	int  roofTypeID = -1;
+	RoofMaterial roofMaterial = RoofMaterial::None;
 
-	// Debug visualization
-	void DrawDebugOverlayTileLevel(float lowerY, float upperY);                  // Tile-level visualization (3D with cost cubes)
-	void InvalidateDebugTileCache() { m_lastCameraCenterX = -9999; m_lastCameraCenterZ = -9999; }
-	void DebugPrintTileInfo(int worldX, int worldZ);      // Print why a tile is blocked
+	// Dungeon map (Exult mountain-top footprints). 0 = not under a mountain;
+	// otherwise the mountain ceiling lift (Y) for that tile.
+	unsigned char dungeonCeiling[16][16] = {};
+	bool hasDungeon = false;
 
-	// Helper: Get all objects that overlap a tile (used by pathfinding and door opening)
-	struct OverlappingObject {
-		U7Object* obj;
-		int tileX;
-		int tileZ;
-		int width;
-		int depth;
-	};
-	std::vector<OverlappingObject> GetOverlappingObjects(int worldX, int worldZ) const;
+	// Connectivity flags for 8 directions (0 = North, 1 = NE, 2 = E, etc.)
+	// True = center→center straight shot to that neighbor is clear.
+	bool canReach[8] = { false };
 
-	// Get the effective walkable height at a tile (obj.y + obj.height if object present, else 0.0)
-	float GetTileHeight(int worldX, int worldZ) const;
+	// Local tile queries (tx/tz in 0..15).
+	bool IsInteriorTile(int tx, int tz) const
+	{
+		if (tx < 0 || tx >= 16 || tz < 0 || tz >= 16) return false;
+		return interior[tx][tz];
+	}
 
-	// Collect all walkable surface heights (including ground 0.0).
-	// Prefer the overload with pre-fetched objects when available (avoids a second chunk scan).
-	std::vector<float> GetWalkableSurfaceHeights(int worldX, int worldZ) const;
-	std::vector<float> GetWalkableSurfaceHeightsFromObjects(
-		const std::vector<OverlappingObject>& objects) const;
+	int GetRoofGroupAt(int tx, int tz) const
+	{
+		if (tx < 0 || tx >= 16 || tz < 0 || tz >= 16) return -1;
+		return roofGroupTile[tx][tz];
+	}
 
-private:
-	// Helper: Check if specific tile is walkable
-	bool CheckTileWalkable(int worldX, int worldZ, float agentBaseY, const U7Object* agent = nullptr) const;
+	int GetRoofTypeAt() const { return roofTypeID; }
 
-	// Cache for debug visualization
-	struct TileWithCost {
-		Vector3 pos;
-		float cost;
-		bool visited;   // visited by A*
-		bool onPath;    // on final path
-	};
-	mutable std::vector<TileWithCost> m_cachedGreenTiles;
-	mutable std::vector<Vector3> m_cachedRedTiles;
-	mutable std::vector<Vector3> m_cachedBlueTiles;  // NPC waypoints
-	mutable int m_lastCameraCenterX = -9999;
-	mutable int m_lastCameraCenterZ = -9999;
+	RoofMaterial GetRoofMaterial() const { return roofMaterial; }
+
+	int GetDungeonCeilingAt(int tx, int tz) const
+	{
+		if (tx < 0 || tx >= 16 || tz < 0 || tz >= 16) return -1;
+		const unsigned char ceil = dungeonCeiling[tx][tz];
+		return ceil == 0 ? -1 : (int)ceil;
+	}
+
+	bool IsDungeonTile(int tx, int tz) const
+	{
+		return GetDungeonCeilingAt(tx, tz) >= 0;
+	}
 };
-
-
-
-
-// ============================================================================
-// AStar: Pathfinding algorithm
-// ============================================================================
 
 // ============================================================================
 // PathNode: Used by A* algorithm
@@ -145,73 +120,6 @@ struct PathNode
 	PathNode(int _x, int _z, float _y = 0.0f) : x(_x), z(_z), y(_y), g(0), h(0), f(0), parent(-1) {}
 };
 
-class AStar
-{
-public:
-	AStar();
-	~AStar();
-
-	// Load terrain movement costs from CSV file
-	void LoadTerrainCosts(const std::string& filename);
-
-	// Find path from start to goal (returns waypoints in world coordinates)
-	std::vector<Vector3> FindPath(Vector3 start, Vector3 goal, PathfindingGrid* grid, const U7Object* agent = nullptr);
-
-	// Get movement cost for a tile (for debug visualization)
-	float GetMovementCost(int worldX, int worldZ, PathfindingGrid* grid);
-
-	// Get terrain name by shape ID (for debug)
-	std::string GetTerrainName(int shapeID) const;
-
-	// Debug markers recorded during FindPath()
-	// These are public so debug drawing code can query them.
-	std::unordered_set<int64_t> m_visitedNodeKeys; // quantized x/z/y keys visited during search
-	std::unordered_set<int64_t> m_finalPathKeys;   // quantized keys on the reconstructed final path
-
-	// Clear markers
-	void ClearDebugMarkers();
-
-	// Query markers (helpers for debug drawing)
-	bool IsNodeVisited(int x, int z, float y) const;
-	bool IsNodeOnFinalPath(int x, int z, float y) const;
-
-private:
-	// Heuristic function (Manhattan/Octile distance)
-	float Heuristic(int x1, int z1, int x2, int z2);
-
-	// Get walkable neighbors of a node: now index-based (returns indices into nodePool)
-	// closedSet/openSetLookup avoid allocating duplicate nodes for already-seen (x,z,y) keys.
-	std::vector<int> GetNeighbors(int nodeIndex, PathfindingGrid* grid, int goalX, int goalZ,
-		std::unordered_map<int64_t, bool>& walkableCache,
-		std::unordered_map<int, std::vector<float>>& heightsCache,
-		std::vector<PathNode>& nodePool,
-		const std::unordered_map<int64_t, int>* closedSet = nullptr,
-		const std::unordered_map<int64_t, int>* openSetLookup = nullptr,
-		const U7Object* agent = nullptr);
-
-	// Reconstruct path from goal index
-	std::vector<Vector3> ReconstructPath(int goalIndex, PathfindingGrid* grid, std::vector<PathNode>& nodePool);
-
-	// Remove redundant waypoints via direct walkability checks (fewer micro-turns / stuck corners).
-	std::vector<Vector3> SmoothPath(const std::vector<Vector3>& path, PathfindingGrid* grid, const U7Object* agent);
-
-	// Cleanup allocated nodes (legacy)
-	void CleanupNodes();
-
-	// Temporary storage for nodes during pathfinding (legacy pointer storage not used)
-	std::vector<PathNode*> m_allocatedNodes;
-
-	// Terrain movement costs (shape ID -> cost multiplier)
-	std::unordered_map<int, float> m_terrainCosts;
-
-	// Terrain names (shape ID -> name)
-	std::unordered_map<int, std::string> m_terrainNames;
-
-	// Mutex to make FindPath reentrant/thread-safe
-	std::mutex m_findMutex;
-};
-
-
 enum ObjectWalkability
 {
 	OW_WALKABLE = 0,
@@ -221,117 +129,217 @@ enum ObjectWalkability
 	OW_LASTWALKABILITYTYPE
 };
 
+// ============================================================================
+// PathfindingSystem: ground cost map, live walkability, A*, chunk connectivity/roofs
+// ============================================================================
 class PathfindingSystem : public Object
 {
 public:
-	PathfindingSystem(){};
-	~PathfindingSystem(){};
+	static constexpr float kImpassableTerrainCost = 99.0f;
+	static constexpr int kWorldSize = 3072;
+
+	struct OverlappingObject {
+		U7Object* obj;
+		int tileX;
+		int tileZ;
+		int width;
+		int depth;
+	};
+
+	struct PathDiag
+	{
+		bool success = false;
+		bool startWalkable = false;
+		bool goalWalkable = false;
+		bool hitNodeBudget = false;
+		int nodesExplored = 0;
+		int nodeBudget = 0;
+		int manhattan = 0;
+		float closestDistToGoal = 1e9f;
+		int closestX = 0;
+		int closestZ = 0;
+		int startX = 0, startZ = 0;
+		int goalX = 0, goalZ = 0;
+	};
+
+	PathfindingSystem() = default;
+	~PathfindingSystem() = default;
 
 	virtual void Init(const std::string& configfile);
 	virtual void Shutdown(){};
 	virtual void Update(){};
 	void Draw() {};
 
-	std::vector<Vector3> FindPath(Vector3 start, Vector3 goal, U7Object* agent = nullptr);
+	// --- Pathfinding ---
+	// allowHierarchical: false forces flat tile A* (better for short walk-to-use
+	// targets when chunk centers sit inside buildings).
+	std::vector<Vector3> FindPath(Vector3 start, Vector3 goal, U7Object* agent = nullptr,
+		bool allowHierarchical = true);
 
-	// Guard to make FindPath reentrant/thread-safe
-	mutable std::mutex m_findMutex;
+	bool IsPositionWalkable(int worldX, int worldZ, float agentBaseY, const U7Object* agent = nullptr) const;
+	bool EvaluateTileWalkable(int worldX, int worldZ, float agentBaseY, const U7Object* agent = nullptr) const;
 
-	std::string GetTerrainName(int shapeID) const { return m_aStar->GetTerrainName(shapeID); }
+	std::string GetTerrainName(int shapeID) const;
+	float GetMovementCost(int worldX, int worldZ);
 
-	bool IsPositionWalkable(int worldX, int worldZ, float agentBaseY, const U7Object* agent = nullptr) const
-	{
-		return m_pathfindingGrid->IsPositionWalkable(worldX, worldZ, agentBaseY, agent);
-	}
+	// Ground cost map: terrain_walkable.csv + tall ground solids (height >= 2, not walkable).
+	// cost >= 99 = impassable. Doors / walkable / climbable surfaces / raised objects ignored.
+	float GetGroundCost(int worldX, int worldZ) const;
+	bool IsGroundTerrainWalkable(int worldX, int worldZ) const;
 
-	// Returns true if two NPCs/monsters should block each other's movement/pathing.
+	// Nearest walkable stand near a (possibly blocked) dest — for path_run_usecode.
+	// Returns false if none within maxRadius Chebyshev tiles.
+	bool FindNearestWalkableStand(Vector3 nearPos, float preferY, const U7Object* agent,
+		Vector3& outStand, int maxRadius = 2) const;
+
+	// object_walkability.csv lookup (not used for ground bake currently; kept for later).
+	ObjectWalkability GetObjectWalkability(int shapeID, const U7Object* obj = nullptr) const;
+
+	// Legacy name used by callers; now means ground cost < 99.
+	bool GetCachedGroundWalkable(int worldX, int worldZ) const { return IsGroundTerrainWalkable(worldX, worldZ); }
+
 	static bool AreUnitsHostile(const U7Object* agent, const U7Object* other);
 
-	float GetMovementCost(int worldX, int worldZ) { return m_aStar->GetMovementCost(worldX, worldZ, m_pathfindingGrid.get());}
+	// Overlap / surface helpers (former PathfindingGrid)
+	std::vector<OverlappingObject> GetOverlappingObjects(int worldX, int worldZ) const;
+	float GetTileHeight(int worldX, int worldZ) const;
+	std::vector<float> GetWalkableSurfaceHeights(int worldX, int worldZ) const;
+	std::vector<float> GetWalkableSurfaceHeightsFromObjects(
+		const std::vector<OverlappingObject>& objects) const;
 
-	// Build / refresh per-chunk building data (roofs, groups, interior tiles).
-	// Call after the world object list is populated (and after reload).
+	// Debug visualization
+	void DrawDebugOverlayTileLevel(float lowerY, float upperY);
+	void InvalidateDebugTileCache() { m_lastCameraCenterX = -9999; m_lastCameraCenterZ = -9999; }
+	void DebugPrintTileInfo(int worldX, int worldZ);
+
+	// Build / refresh pathfinding + chunk building data (after world load).
 	void BuildChunkBuildingData();
 	void PopulateChunkPathfindingGrid();
 
-	// Hide roof pieces for the building under the avatar (chunk data).
-	// active group = roofGroupTile at the avatar's tile; only hides roofs that
-	// share that group AND are above the avatar (inside under the roof).
-	// When standing on/above a roof surface, that roof stays visible.
-	// Never forces roofs visible — height cutoff (sandbox PGUP/PGDOWN floor
-	// view) stays authoritative for show/hide by storey.
 	void UpdateBuildingRoofVisibility(float avatarWorldX, float avatarWorldZ, float avatarWorldY);
 
-	// Queries (world tile coords, 0..3071)
+	// World-coord wrappers → ChunkInfo local queries
 	bool IsInteriorTile(int worldX, int worldZ) const;
-	// Roof group under this specific tile (-1 if none). Prefer over chunk rollup for pop.
 	int GetRoofGroupAt(int worldX, int worldZ) const;
 	int GetRoofTypeAt(int worldX, int worldZ) const;
 	const ChunkInfo* GetChunkInfo(int chunkX, int chunkZ) const;
 
-	// Dungeon tiles = under mountain-top footprints (Exult setup_dungeon_levels).
-	// Returns ceiling Y (lift), or -1 if the tile is not a dungeon tile.
 	int GetDungeonCeilingAt(int worldX, int worldZ) const;
 	bool IsDungeonTile(int worldX, int worldZ) const;
 
-	// True if shape is a world roof piece (wood/slate/tile/etc.).
 	static bool IsRoofShape(int shapeId);
 	static RoofMaterial GetRoofMaterial(int shapeId);
-	// Exult BG mountain tops (shape_info mountain_tops) — mark dungeon ceilings.
 	static bool IsMountainTopShape(int shapeId);
-
-	std::unique_ptr<PathfindingGrid> m_pathfindingGrid;
-	std::unique_ptr<AStar> m_aStar;
 
 	ChunkInfo m_chunkInfoMap[192][192];
 
-	// How many roof groups / types were assigned by the last BuildChunkBuildingData.
+	// True after ground cost map is filled.
+	bool m_groundCostValid = false;
+	bool m_walkableCacheValid = false; // alias kept for older call sites; mirrors m_groundCostValid
+
+	// A* debug / diagnostics (former AStar public state)
+	std::unordered_set<int64_t> m_visitedNodeKeys;
+	std::unordered_set<int64_t> m_finalPathKeys;
+	PathDiag m_lastPathDiag;
+	std::unordered_set<int64_t> CopyVisitedKeys();
+	void ClearDebugMarkers();
+	bool IsNodeVisited(int x, int z, float y) const;
+	bool IsNodeOnFinalPath(int x, int z, float y) const;
+
+	// F10: freeze A* visited graph for a selected NPC after a failed path.
+	void FreezeFailedSearchGraph(int objectId);
+	void FreezeFailedSearchGraph(int objectId, const std::unordered_set<int64_t>& keys,
+		int startX = -1, int startZ = -1, int goalX = -1, int goalZ = -1,
+		int closestX = -1, int closestZ = -1);
+	void ClearFrozenSearchGraph();
+	bool HasFrozenSearchGraph() const { return !m_frozenSearchVisited.empty(); }
+	int GetFrozenSearchObjectId() const { return m_frozenSearchObjectId; }
+	const std::vector<Vector3>& GetFrozenSearchVisited() const { return m_frozenSearchVisited; }
+	bool HasFrozenSearchMarkers() const { return m_frozenSearchHasMarkers; }
+	Vector3 GetFrozenSearchStart() const { return m_frozenSearchStart; }
+	Vector3 GetFrozenSearchGoal() const { return m_frozenSearchGoal; }
+	Vector3 GetFrozenSearchClosest() const { return m_frozenSearchClosest; }
+
+	std::vector<Vector3> m_frozenSearchVisited;
+	int m_frozenSearchObjectId = -1;
+	bool m_frozenSearchHasMarkers = false;
+	Vector3 m_frozenSearchStart = { 0, 0, 0 };
+	Vector3 m_frozenSearchGoal = { 0, 0, 0 };
+	Vector3 m_frozenSearchClosest = { 0, 0, 0 };
+
 	int m_roofGroupCount = 0;
 	int m_roofTypeCount = 0;
 
 	std::unordered_map<int, ObjectWalkability> m_objectWalkability;
-
 	void LoadObjectWalkability(const std::string& filename);
 
-	// Simple atomic telemetry counters for A* timing (monotonic totals)
 	std::atomic<uint64_t> m_astarTotalCalls{0};
 	std::atomic<uint64_t> m_astarTotalMs{0};
 	std::atomic<uint64_t> m_astarMaxMs{0};
-	// Queue/worker latency instrumentation (collected even if no worker yet)
 	std::atomic<uint64_t> m_astarQueueTotalMs{0};
 	std::atomic<uint64_t> m_astarQueueCalls{0};
 
-	// Moving-average of per-call A* duration (ms) for realtime telemetry
-	// Protected by m_instrumentMutex
 	double m_astarEmaMs = 0.0;
-	float  m_astarEmaAlpha = 0.10f; // EMA alpha (tunable)
+	float  m_astarEmaAlpha = 0.10f;
 	std::mutex m_instrumentMutex;
 
-	// Record queue latency (ms) for a request that spent time waiting before worker handled it.
-	// Call from producer / worker when appropriate.
 	void RecordQueueLatency(uint64_t ms);
 
-	// Built-in floors/stairs/bridges/rugs (shape allowlist).
 	static bool IsWalkableSurface(int shapeID);
-
-	// Soft props you walk through (curtains): never block, never a stand surface.
 	static bool IsPassThroughObject(int shapeID);
-
-	// Floors/stairs/rugs: provide stand surfaces but their volume must not block
-	// the body (unlike crates/boxes, which block sides).
 	static bool IsNonBlockingWalkSurface(int shapeID);
-
-	// True if this object can be stood on (floors/stairs OR any solid top with height).
-	// Used for crate/box stacking climbs (U7 chimney stairs).
 	static bool IsStandableObjectTop(const U7Object* obj);
-
-	// Surface Y of a standable object (obj.y + TFA height).
 	static float GetObjectSurfaceY(const U7Object* obj);
-
-	// Validates if an agent can move to a desired position.
-	// Returns true if reachable, false if blocked.
-	// If reachable, outDestH will contain the new Y coordinate (surface top).
 	static bool ValidateMove(U7Object* agent, const Vector3& desiredPos, float& outDestH);
+
+	// Guard for FindPath / visited snapshot
+	mutable std::mutex m_findMutex;
+
+private:
+	void LoadTerrainCosts(const std::string& filename);
+	void PopulateGroundCostMap();
+	void BakeBlockingObjectsIntoGroundCost();
+
+	bool CheckTileWalkable(int worldX, int worldZ, float agentBaseY, const U7Object* agent = nullptr) const;
+
+	float Heuristic(int x1, int z1, int x2, int z2);
+	std::vector<int> GetNeighbors(int nodeIndex, int goalX, int goalZ,
+		std::unordered_map<int64_t, bool>& walkableCache,
+		std::unordered_map<int, std::vector<float>>& heightsCache,
+		std::vector<PathNode>& nodePool,
+		const std::unordered_map<int64_t, int>* closedSet = nullptr,
+		const std::unordered_map<int64_t, int>* openSetLookup = nullptr,
+		const U7Object* agent = nullptr,
+		float floorBandMin = -1e9f,
+		float floorBandMax = 1e9f);
+
+	std::vector<Vector3> ReconstructPath(int goalIndex, std::vector<PathNode>& nodePool);
+	std::vector<Vector3> SmoothPath(const std::vector<Vector3>& path, const U7Object* agent);
+	std::vector<Vector3> FindPathInternal(Vector3 start, Vector3 goal, const U7Object* agent,
+		bool allowHierarchical = true);
+
+	void CleanupNodes();
+
+	// Ground terrain costs: m_groundCost[z][x], size 3072×3072. 99 = impassable.
+	std::vector<std::vector<float>> m_groundCost;
+
+	std::unordered_map<int, float> m_terrainCosts;
+	std::unordered_map<int, std::string> m_terrainNames;
+
+	std::vector<PathNode*> m_allocatedNodes;
+
+	// Debug overlay cache
+	struct TileWithCost {
+		Vector3 pos;
+		float cost;
+		bool visited;
+		bool onPath;
+	};
+	mutable std::vector<TileWithCost> m_cachedGreenTiles;
+	mutable std::vector<Vector3> m_cachedRedTiles;
+	mutable std::vector<Vector3> m_cachedBlueTiles;
+	mutable int m_lastCameraCenterX = -9999;
+	mutable int m_lastCameraCenterZ = -9999;
 };
 
 #endif

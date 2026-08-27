@@ -1463,7 +1463,9 @@ static int LuaSetNPCDest(lua_State *L)
     int y = luaL_checkinteger(L, 3);
     int z = luaL_checkinteger(L, 4);
     cout << "set_npc_dest called, setting " << npc_id << " destination to (" << x << ", " << y << ", " << z << ")\n";
-    g_objectList[g_NPCData[npc_id]->m_objectID]->SetDest( {float(x), float(y), float(z)} );
+    U7Object* npc = GetObjectFromID(g_NPCData[npc_id]->m_objectID);
+    if (npc)
+        npc->PathfindToDest({ float(x), float(y), float(z) });
     return 0;
 }
 
@@ -4440,12 +4442,12 @@ static bool LuaReadDestTable(lua_State *L, int idx, float& outX, float& outY, fl
 // Snap dest Y to nearest walkable surface at (floor(x), floor(z)), preferring near preferY.
 static float SnapDestSurfaceY(float worldX, float worldZ, float preferY)
 {
-    if (!g_pathfindingSystem || !g_pathfindingSystem->m_pathfindingGrid)
+    if (!g_pathfindingSystem || !g_pathfindingSystem)
         return preferY;
 
     const int tx = (int)floorf(worldX);
     const int tz = (int)floorf(worldZ);
-    auto heights = g_pathfindingSystem->m_pathfindingGrid->GetWalkableSurfaceHeights(tx, tz);
+    auto heights = g_pathfindingSystem->GetWalkableSurfaceHeights(tx, tz);
     if (heights.empty())
         return preferY;
 
@@ -4553,6 +4555,27 @@ static int LuaPathRunUsecode(lua_State *L)
     destY = SnapDestSurfaceY(destX, destZ, avatar->m_Pos.y);
     Vector3 dest{ destX, destY, destZ };
 
+    // Tall solids bake their tiles as impassable. Walk-to-use often targets the
+    // object tile or a blocked offset — retarget to nearest walkable stand (r<=2).
+    if (g_pathfindingSystem)
+    {
+        const int gx = (int)floorf(dest.x);
+        const int gz = (int)floorf(dest.z);
+        if (!g_pathfindingSystem->IsPositionWalkable(gx, gz, avatar->m_Pos.y, avatar))
+        {
+            Vector3 stand{};
+            if (g_pathfindingSystem->FindNearestWalkableStand(dest, avatar->m_Pos.y, avatar, stand, 2))
+            {
+                NPCDebugPrint("path_run_usecode: dest (" +
+                    std::to_string(gx) + "," + std::to_string(gz) +
+                    ") blocked — standing at (" +
+                    std::to_string((int)floorf(stand.x)) + "," +
+                    std::to_string((int)floorf(stand.z)) + ")");
+                dest = stand;
+            }
+        }
+    }
+
     auto chebyshevTo = [](const Vector3& a, const Vector3& b) {
         const float dx = fabsf(a.x - b.x);
         const float dz = fabsf(a.z - b.z);
@@ -4586,7 +4609,73 @@ static int LuaPathRunUsecode(lua_State *L)
     }
 
     avatar->ClearPendingUsecode();
-    avatar->PathfindToDest(dest);
+    // Flat tile A* for walk-to-use — chunk hierarchy often fails when centers
+    // sit inside buildings even though a tile path exists around them.
+    avatar->PathfindToDest(dest, /*allowHierarchical=*/false);
+
+    auto logPathDiag = [&](const char* tag) {
+        if (!g_pathfindingSystem)
+            return;
+        const auto& d = g_pathfindingSystem->m_lastPathDiag;
+        std::ostringstream ss;
+        ss << "path_run_usecode " << tag
+           << " avatar=(" << (int)avatar->m_Pos.x << "," << (int)avatar->m_Pos.z << ")"
+           << " start=(" << d.startX << "," << d.startZ << ") walk=" << (d.startWalkable ? "Y" : "N")
+           << " goal=(" << d.goalX << "," << d.goalZ << ") walk=" << (d.goalWalkable ? "Y" : "N")
+           << " manh=" << d.manhattan
+           << " nodes=" << d.nodesExplored << "/" << d.nodeBudget
+           << (d.hitNodeBudget ? " BUDGET" : "")
+           << " closest=" << d.closestDistToGoal << " @(" << d.closestX << "," << d.closestZ << ")";
+        NPCDebugPrint(ss.str());
+    };
+
+    // PathfindToDest clears a trivial "already on tile" path — treat as arrived.
+    if (avatar->m_pathWaypoints.empty() &&
+        chebyshevTo(avatar->m_Pos, dest) <= U7Object::kPathRunUseRange)
+    {
+        if (itemObj)
+        {
+            NPCDebugPrint("path_run_usecode: trivial/empty path but in range, Interact(" +
+                std::to_string(eventId) + ") on " + std::to_string(itemId));
+            itemObj->Interact(eventId);
+            lua_pushboolean(L, 1);
+            return 1;
+        }
+    }
+
+    if (avatar->m_pathWaypoints.empty())
+    {
+        logPathDiag("FAIL");
+        // Try every walkable stand in r<=2 (not just the nearest).
+        if (g_pathfindingSystem)
+        {
+            const int gx = (int)floorf(dest.x);
+            const int gz = (int)floorf(dest.z);
+            for (int r = 0; r <= 2 && avatar->m_pathWaypoints.empty(); ++r)
+            {
+                for (int dz = -r; dz <= r && avatar->m_pathWaypoints.empty(); ++dz)
+                {
+                    for (int dx = -r; dx <= r && avatar->m_pathWaypoints.empty(); ++dx)
+                    {
+                        if (std::max(std::abs(dx), std::abs(dz)) != r && r > 0)
+                            continue;
+                        const int tx = gx + dx;
+                        const int tz = gz + dz;
+                        if (!g_pathfindingSystem->IsPositionWalkable(tx, tz, avatar->m_Pos.y, avatar))
+                            continue;
+                        Vector3 stand{ tx + 0.5f, SnapDestSurfaceY((float)tx, (float)tz, avatar->m_Pos.y), tz + 0.5f };
+                        avatar->PathfindToDest(stand, /*allowHierarchical=*/false);
+                        if (!avatar->m_pathWaypoints.empty())
+                        {
+                            dest = stand;
+                            NPCDebugPrint("path_run_usecode: alt stand (" +
+                                std::to_string(tx) + "," + std::to_string(tz) + ") OK");
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     if (avatar->m_pathWaypoints.empty())
     {
@@ -4600,6 +4689,7 @@ static int LuaPathRunUsecode(lua_State *L)
             return 1;
         }
 
+        logPathDiag("FAIL-final");
         NPCDebugPrint("path_run_usecode: no path to (" +
             std::to_string(dest.x) + "," + std::to_string(dest.y) + "," +
             std::to_string(dest.z) + ")");
@@ -4862,14 +4952,23 @@ static int LuaResetConvFace(lua_State *L)
 }
 
 // 0x0085 | is_blocked
+// Args are world x, elevation y, world z. Callers often pass tile centers
+// (e.g. 970.5) — must use tonumber+floor; lua_tointeger rejects non-integrals
+// in Lua 5.3+ and returns 0, which marked every stand tile blocked and skipped
+// path_run_usecode entirely (levers/wells flash-fail with no walk).
 static int LuaIsBlocked(lua_State *L)
 {
-	int x = (int)lua_tointeger(L, 1);
-	int y = (int)lua_tointeger(L, 2);  // Y is elevation, but we need it for completeness
-	int z = (int)lua_tointeger(L, 3);
+	const int x = (int)floor(luaL_optnumber(L, 1, 0));
+	const float elev = (float)luaL_optnumber(L, 2, 0);  // elevation / feet Y
+	const int z = (int)floor(luaL_optnumber(L, 3, 0));
 
-	// Check if the tile is walkable
-    bool walkable = g_pathfindingSystem->IsPositionWalkable(x, z, y);
+	if (!g_pathfindingSystem)
+	{
+		lua_pushboolean(L, 1);
+		return 1;
+	}
+
+	const bool walkable = g_pathfindingSystem->IsPositionWalkable(x, z, elev);
 	lua_pushboolean(L, !walkable); // Return true if blocked
 	return 1;
 }
@@ -5454,6 +5553,11 @@ static int LuaFindNearestChair(lua_State *L)
             {
                 Vector3 objPos = obj->GetPos();
                 float distance = Vector3Distance(npcPos, objPos);
+                // Must be near the NPC (inn/workplace). Without this, Spark's
+                // eat_at_inn grabbed a chair in his house (often west of him).
+                constexpr float kMaxChairSearchTiles = 40.0f;
+                if (distance > kMaxChairSearchTiles)
+                    continue;
                 if (distance < minDistance)
                 {
                     minDistance = distance;

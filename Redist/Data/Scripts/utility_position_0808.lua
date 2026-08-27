@@ -93,15 +93,14 @@ function utility_position_0808(event_or_item, a2, a3, a4, a5, a6, a7)
         end)
     end
 
+    -- Always try path_run_usecode — do NOT pre-skip with is_blocked.
+    -- Tall-solid bake marks many object tiles impassable; path_run_usecode
+    -- retargets to a nearby walkable stand (r<=2). Skipping here meant levers
+    -- never walked at all.
     for _, dest in ipairs(candidates) do
-        -- Skip obviously blocked stand tiles when the intrinsic exists.
-        if is_blocked and is_blocked(dest[1], dest[2] or 0, dest[3]) then
-            -- try next
-        else
-            local ok = path_run_usecode(dest, fun, fire_on, ev)
-            if ok then
-                return true
-            end
+        local ok = path_run_usecode(dest, fun, fire_on, ev)
+        if ok then
+            return true
         end
     end
 

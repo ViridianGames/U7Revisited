@@ -537,11 +537,15 @@ void MainState::HandleDebugKeys()
 	{
 		m_showPathfindingDebug = !m_showPathfindingDebug;
 		if (!m_showPathfindingDebug)
+		{
 			m_pathDebugNpcObjectId = -1;
-		else if (g_pathfindingSystem && g_pathfindingSystem->m_pathfindingGrid)
-			g_pathfindingSystem->m_pathfindingGrid->InvalidateDebugTileCache();
+			if (g_pathfindingSystem)
+				g_pathfindingSystem->ClearFrozenSearchGraph();
+		}
+		else if (g_pathfindingSystem)
+			g_pathfindingSystem->InvalidateDebugTileCache();
 		AddConsoleString(m_showPathfindingDebug
-			? "Pathfinding Debug ON - tile walkability; click an NPC to show their path"
+			? "Pathfinding Debug ON - tiles, chunk canReach (cyan), click NPC for path / failed A*"
 			: "Pathfinding Debug OFF");
 	}
 
@@ -564,7 +568,7 @@ void MainState::HandleDebugKeys()
 	{
 		int worldX = (int)floor(g_terrainUnderMousePointer.x);
 		int worldZ = (int)floor(g_terrainUnderMousePointer.z);
-		g_pathfindingSystem->m_pathfindingGrid->DebugPrintTileInfo(worldX, worldZ);
+		g_pathfindingSystem->DebugPrintTileInfo(worldX, worldZ);
 	}
 }
 
@@ -794,10 +798,10 @@ void MainState::HandleRightDoubleClick()
 		else if (g_objectUnderMousePointer->m_objectData)
 			surfaceY += g_objectUnderMousePointer->m_objectData->m_height;
 
-		if (g_pathfindingSystem && g_pathfindingSystem->m_pathfindingGrid)
+		if (g_pathfindingSystem)
 		{
-			g_pathfindingSystem->m_pathfindingGrid->DebugPrintTileInfo(objTileX, objTileZ);
-			auto heights = g_pathfindingSystem->m_pathfindingGrid->GetWalkableSurfaceHeights(objTileX, objTileZ);
+			g_pathfindingSystem->DebugPrintTileInfo(objTileX, objTileZ);
+			auto heights = g_pathfindingSystem->GetWalkableSurfaceHeights(objTileX, objTileZ);
 			// Prefer the standable height nearest the object's top.
 			if (!heights.empty())
 			{
@@ -825,9 +829,9 @@ void MainState::HandleRightDoubleClick()
 		int worldZ = (int)floor(g_terrainUnderMousePointer.z);
 
 		float goalY = 0.0f;
-		if (g_pathfindingSystem && g_pathfindingSystem->m_pathfindingGrid)
+		if (g_pathfindingSystem)
 		{
-			auto heights = g_pathfindingSystem->m_pathfindingGrid->GetWalkableSurfaceHeights(worldX, worldZ);
+			auto heights = g_pathfindingSystem->GetWalkableSurfaceHeights(worldX, worldZ);
 			U7Object* av = g_objectList[g_NPCData[0]->m_objectID].get();
 			const float prefer = av ? av->m_Pos.y : 0.0f;
 			if (!heights.empty())
@@ -1071,15 +1075,23 @@ void MainState::HandleLeftSingleClick()
 				(g_objectUnderMousePointer->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC ||
 				 g_objectUnderMousePointer->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_MONSTER))
 			{
-				m_pathDebugNpcObjectId = g_objectUnderMousePointer->m_ID;
+				const int newId = g_objectUnderMousePointer->m_ID;
+				if (m_pathDebugNpcObjectId != newId && g_pathfindingSystem)
+					g_pathfindingSystem->ClearFrozenSearchGraph();
+				m_pathDebugNpcObjectId = newId;
 				const auto& wps = g_objectUnderMousePointer->m_pathWaypoints;
 				std::string name = GetObjectDisplayName(g_objectUnderMousePointer);
+				const bool hasFrozen = g_pathfindingSystem &&
+					g_pathfindingSystem->GetFrozenSearchObjectId() == m_pathDebugNpcObjectId &&
+					g_pathfindingSystem->HasFrozenSearchGraph();
 				if (wps.empty())
 				{
 					AddConsoleString("Path debug: " + name + " (id " + std::to_string(m_pathDebugNpcObjectId) +
 						") — no active path" +
 						(g_objectUnderMousePointer->m_pathfindingPending ? " (pathfinding pending)" : "") +
-						(g_objectUnderMousePointer->m_isMoving ? ", isMoving" : ""), YELLOW);
+						(g_objectUnderMousePointer->m_isMoving ? ", isMoving" : "") +
+						(hasFrozen ? (" [frozen A* " + std::to_string(g_pathfindingSystem->GetFrozenSearchVisited().size()) + " nodes]") : ""),
+						YELLOW);
 				}
 				else
 				{
@@ -1652,6 +1664,12 @@ void MainState::Update()
 					npcObj->m_pathWaypoints = std::move(res.path);
 					npcObj->m_pathfindingPending = false;
 					npcObj->m_isSchedulePath = true;
+					if (g_pathfindingSystem && g_pathfindingSystem->GetFrozenSearchObjectId() == objId)
+						g_pathfindingSystem->ClearFrozenSearchGraph();
+					// Commit schedule slot only on success so failures can retry.
+					if (npcObj->m_pendingScheduleTime >= 0)
+						npcObj->m_lastSchedule = npcObj->m_pendingScheduleTime;
+					npcObj->m_pendingScheduleTime = -1;
 
 					// Determine starting index (mirror PathfindToDest logic)
 					if (npcObj->m_pathWaypoints.size() > 1)
@@ -1665,22 +1683,94 @@ void MainState::Update()
 						npcObj->m_isMoving = true;
 					}
 
-					// Keep a concise debug print (can be gated by a flag)
 					NPCDebugPrint("Schedule: NPC " + std::to_string(res.npcID) + " assigned path to (" +
-						std::to_string((int)res.dest.x) + "," + std::to_string((int)res.dest.z) + ") (background)");
+						std::to_string((int)res.dest.x) + "," + std::to_string((int)res.dest.z) +
+						") len=" + std::to_string(npcObj->m_pathWaypoints.size()) + " (background)");
 				}
 				else
 				{
-					// No path found: stay put (do not teleport). Retry on next schedule tick.
+					// No path found: stay put and retry (do not commit m_lastSchedule).
 					npcObj->m_pathWaypoints.clear();
 					npcObj->m_currentWaypointIndex = 0;
 					npcObj->m_isMoving = false;
 					npcObj->m_isSchedulePath = false;
 					npcObj->m_pathfindingPending = false;
 					npcObj->SetDest(npcObj->m_Pos);
+					// F10: freeze A* visited graph when this is the sticky-selected unit.
+					// Only capture once so schedule retries don't thrash/realloc the overlay.
+					if (g_pathfindingSystem && m_showPathfindingDebug &&
+						m_pathDebugNpcObjectId == objId && !res.visitedKeys.empty() &&
+						!(g_pathfindingSystem->GetFrozenSearchObjectId() == objId &&
+						  g_pathfindingSystem->HasFrozenSearchGraph()))
+					{
+						g_pathfindingSystem->FreezeFailedSearchGraph(objId, res.visitedKeys,
+							res.startX, res.startZ,
+							res.goalX, res.goalZ, res.closestX, res.closestZ);
+						AddConsoleString("Path debug: froze A* visited graph (" +
+							std::to_string(res.visitedKeys.size()) + " nodes) for id " +
+							std::to_string(objId) + " closest=(" +
+							std::to_string(res.closestX) + "," + std::to_string(res.closestZ) +
+							") goal=(" + std::to_string(res.goalX) + "," +
+							std::to_string(res.goalZ) + ")", ORANGE);
+					}
 					NPCDebugPrint("Schedule: NPC " + std::to_string(res.npcID) + " had no path to (" +
 						std::to_string((int)res.dest.x) + "," + std::to_string((int)res.dest.z) +
-						") — staying put");
+						") — staying put, will retry"
+						+ (res.failReason.empty() ? "" : (" | " + res.failReason)));
+
+					// Near-miss: dump walkability + overlapping objects along closest→goal.
+					if (res.closestDist <= 16.0f && g_pathfindingSystem)
+					{
+												NPCDebugPrint("PathApproachStrip npc=" + std::to_string(res.npcID) +
+							" from closest=(" + std::to_string(res.closestX) + "," + std::to_string(res.closestZ) +
+							") to goal=(" + std::to_string(res.goalX) + "," + std::to_string(res.goalZ) + ")");
+
+						int x0 = res.closestX, z0 = res.closestZ;
+						int x1 = res.goalX, z1 = res.goalZ;
+						const int dx = abs(x1 - x0), dz = abs(z1 - z0);
+						const int sx = x0 < x1 ? 1 : -1;
+						const int sz = z0 < z1 ? 1 : -1;
+						int err = dx - dz;
+						int x = x0, z = z0;
+						int guard = 0;
+						while (guard++ < 64)
+						{
+							const bool cacheOk = g_pathfindingSystem->GetCachedGroundWalkable(x, z);
+							const bool liveOk = g_pathfindingSystem->EvaluateTileWalkable(x, z, 0.0f);
+							std::ostringstream line;
+							line << "  tile=(" << x << "," << z << ") cache=" << (cacheOk ? "Y" : "N")
+								 << " live=" << (liveOk ? "Y" : "N");
+							auto ov = g_pathfindingSystem->GetOverlappingObjects(x, z);
+							if (ov.empty())
+								line << " objs=(none)";
+							else
+							{
+								line << " objs=";
+								for (size_t i = 0; i < ov.size(); ++i)
+								{
+									U7Object* o = ov[i].obj;
+									if (!o || !o->m_objectData)
+										continue;
+									if (i) line << "; ";
+									const int shape = o->m_shapeData ? o->m_shapeData->m_shape : -1;
+									line << "'" << o->m_objectData->m_name << "'#" << shape
+										 << " fr=" << o->m_Frame
+										 << " door=" << (o->m_objectData->m_isDoor ? 1 : 0)
+										 << " solid=" << (o->m_objectData->m_isNotWalkable ? 1 : 0)
+										 << " pos=(" << (int)floorf(o->m_Pos.x) << "," << (int)floorf(o->m_Pos.z) << ")"
+										 << " " << (int)o->m_objectData->m_width << "x" << (int)o->m_objectData->m_depth
+										 << "h" << (int)o->m_objectData->m_height;
+								}
+							}
+							NPCDebugPrint(line.str());
+
+							if (x == x1 && z == z1)
+								break;
+							const int e2 = 2 * err;
+							if (e2 > -dz) { err -= dz; x += sx; }
+							if (e2 < dx) { err += dx; z += sz; }
+						}
+					}
 				}
 			}
 
@@ -2000,6 +2090,27 @@ void MainState::PathfindingWorkerLoop()
 		result.path = std::move(path);
 		result.success = success;
 		result.dest = req.dest;
+		if (!success && g_pathfindingSystem)
+		{
+			const auto& d = g_pathfindingSystem->m_lastPathDiag;
+			result.closestDist = d.closestDistToGoal;
+			result.closestX = d.closestX;
+			result.closestZ = d.closestZ;
+			result.startX = d.startX;
+			result.startZ = d.startZ;
+			result.goalX = d.goalX;
+			result.goalZ = d.goalZ;
+			result.visitedKeys = g_pathfindingSystem->CopyVisitedKeys();
+			std::ostringstream ss;
+			ss << "start=(" << d.startX << "," << d.startZ << ") walkable=" << (d.startWalkable ? "Y" : "N")
+			   << " goal=(" << d.goalX << "," << d.goalZ << ") walkable=" << (d.goalWalkable ? "Y" : "N")
+			   << " manhattan=" << d.manhattan
+			   << " nodes=" << d.nodesExplored << "/" << d.nodeBudget
+			   << (d.hitNodeBudget ? " BUDGET" : "")
+			   << " closest=" << d.closestDistToGoal << " @(" << d.closestX << "," << d.closestZ << ")"
+			   << " visited=" << result.visitedKeys.size();
+			result.failReason = ss.str();
+		}
 
 		{
 			std::lock_guard<std::mutex> lk(m_resultMutex);
@@ -2190,7 +2301,7 @@ void MainState::Draw()
 
 			// Stack on highest standable top under the footprint (crates, etc.).
 			float stackY = 0.0f;
-			if (g_pathfindingSystem && g_pathfindingSystem->m_pathfindingGrid)
+			if (g_pathfindingSystem)
 			{
 				for (int tz = minTileZ; tz <= seTileZ; ++tz)
 				{
@@ -2198,7 +2309,7 @@ void MainState::Draw()
 					{
 						if (tx < 0 || tz < 0 || tx >= 3072 || tz >= 3072)
 							continue;
-						auto heights = g_pathfindingSystem->m_pathfindingGrid->GetWalkableSurfaceHeights(tx, tz);
+						auto heights = g_pathfindingSystem->GetWalkableSurfaceHeights(tx, tz);
 						for (float hy : heights)
 						{
 							if (hy > stackY)
@@ -2206,7 +2317,7 @@ void MainState::Draw()
 						}
 						// Also consider object tops that may not be "walkable" for pathing
 						// but still support stacking (use overlapping solids).
-						auto ov = g_pathfindingSystem->m_pathfindingGrid->GetOverlappingObjects(tx, tz);
+						auto ov = g_pathfindingSystem->GetOverlappingObjects(tx, tz);
 						for (const auto& o : ov)
 						{
 							if (!o.obj || o.obj == draggedObject || !o.obj->m_objectData)
@@ -2242,7 +2353,63 @@ void MainState::Draw()
 		else if (m_heightCutoff == 10.0f) lowerBound = 4.0f;
 		else if (m_heightCutoff == 16.0f) lowerBound = 10.0f;
 
-		g_pathfindingSystem->m_pathfindingGrid->DrawDebugOverlayTileLevel(lowerBound, m_heightCutoff);
+		g_pathfindingSystem->DrawDebugOverlayTileLevel(lowerBound, m_heightCutoff);
+	}
+
+	// F10: chunk canReach graph — center→center lines on the ground near the camera.
+	if (m_showPathfindingDebug && g_pathfindingSystem)
+	{
+		constexpr int kChunkRadius = 10; // chunks around camera target
+		constexpr float kLineY = 0.12f;
+		const int camCx = std::clamp((int)g_camera.target.x / 16, 0, 191);
+		const int camCz = std::clamp((int)g_camera.target.z / 16, 0, 191);
+		const Color reachColor = Color{ 0, 220, 255, 220 }; // Cyan = clear center hop
+
+		for (int cz = camCz - kChunkRadius; cz <= camCz + kChunkRadius; ++cz)
+		{
+			for (int cx = camCx - kChunkRadius; cx <= camCx + kChunkRadius; ++cx)
+			{
+				if (cx < 0 || cx >= 192 || cz < 0 || cz >= 192)
+					continue;
+
+				const ChunkInfo& chunk = g_pathfindingSystem->m_chunkInfoMap[cx][cz];
+				const Vector3 from = {
+					(float)(cx * 16 + 8),
+					kLineY,
+					(float)(cz * 16 + 8)
+				};
+
+				// Small marker at chunk center so isolated nodes are still visible.
+				DrawCube(from, 0.9f, 0.08f, 0.9f, Color{ 255, 255, 255, 180 });
+
+				for (int dir = 0; dir < 8; ++dir)
+				{
+					if (!chunk.canReach[dir])
+						continue;
+
+					const Vector2 d = g_DirVectors[dir];
+					const int ncx = cx + (int)d.x;
+					const int ncz = cz + (int)d.y;
+					if (ncx < 0 || ncx >= 192 || ncz < 0 || ncz >= 192)
+						continue;
+
+					// Draw to the midpoint so asymmetric edges still show without
+					// fully double-drawing reciprocal canReach pairs.
+					const Vector3 to = {
+						(float)(ncx * 16 + 8),
+						kLineY,
+						(float)(ncz * 16 + 8)
+					};
+					const Vector3 mid = {
+						(from.x + to.x) * 0.5f,
+						kLineY,
+						(from.z + to.z) * 0.5f
+					};
+					// Cylinder instead of DrawLine3D — GL lines are 1px and hard to see.
+					DrawCylinderEx(from, mid, 0.35f, 0.35f, 6, reachColor);
+				}
+			}
+		}
 	}
 
 	// F10: draw the sticky-selected NPC/monster path (click an NPC to select).
@@ -2256,6 +2423,8 @@ void MainState::Draw()
 		if (!debugNpc)
 		{
 			m_pathDebugNpcObjectId = -1;
+			if (g_pathfindingSystem)
+				g_pathfindingSystem->ClearFrozenSearchGraph();
 		}
 		else
 		{
@@ -2263,6 +2432,56 @@ void MainState::Draw()
 			Vector3 selPos = debugNpc->m_centerPoint;
 			selPos.y += 1.2f;
 			DrawCircle3D(selPos, 0.7f, Vector3{ 0.0f, 1.0f, 0.0f }, 360.0f, MAGENTA);
+
+			// Failed A* visited graph (frozen until success / reselect / F10 off).
+			// Cap + camera-cull draws — full 5k+ DrawCube/frame was crashing/hanging.
+			if (g_pathfindingSystem &&
+				g_pathfindingSystem->GetFrozenSearchObjectId() == m_pathDebugNpcObjectId &&
+				g_pathfindingSystem->HasFrozenSearchGraph())
+			{
+				const auto& visited = g_pathfindingSystem->GetFrozenSearchVisited();
+				const Color visitColor = Color{ 180, 60, 255, 200 }; // Purple = explored
+				const Vector3 cam = g_camera.target;
+				constexpr float kCullRadius = 96.0f;
+				constexpr float kCullRadiusSq = kCullRadius * kCullRadius;
+				constexpr size_t kMaxDraw = 1800;
+
+				const size_t n = visited.size();
+				const size_t stride = (n > kMaxDraw) ? ((n + kMaxDraw - 1) / kMaxDraw) : 1;
+				size_t drawn = 0;
+				for (size_t i = 0; i < n; i += stride)
+				{
+					const Vector3& v = visited[i];
+					const float dx = v.x - cam.x;
+					const float dz = v.z - cam.z;
+					if (dx * dx + dz * dz > kCullRadiusSq)
+						continue;
+					DrawCube(Vector3{ v.x, v.y + 0.08f, v.z }, 0.55f, 0.06f, 0.55f, visitColor);
+					++drawn;
+					if (drawn >= kMaxDraw)
+						break;
+				}
+
+				// Always draw start / closest / goal so the sink is obvious even when culled.
+				if (g_pathfindingSystem->HasFrozenSearchMarkers())
+				{
+					const Vector3 start = g_pathfindingSystem->GetFrozenSearchStart();
+					const Vector3 closest = g_pathfindingSystem->GetFrozenSearchClosest();
+					const Vector3 goal = g_pathfindingSystem->GetFrozenSearchGoal();
+
+					DrawCube(Vector3{ start.x, start.y + 0.4f, start.z }, 1.1f, 0.5f, 1.1f, YELLOW);
+					DrawCube(Vector3{ closest.x, closest.y + 0.5f, closest.z }, 1.2f, 0.6f, 1.2f, RED);
+					DrawCube(Vector3{ goal.x, goal.y + 0.4f, goal.z }, 1.1f, 0.5f, 1.1f, GREEN);
+					DrawLine3D(
+						Vector3{ start.x, start.y + 0.5f, start.z },
+						Vector3{ closest.x, closest.y + 0.5f, closest.z },
+						ORANGE);
+					DrawLine3D(
+						Vector3{ closest.x, closest.y + 0.5f, closest.z },
+						Vector3{ goal.x, goal.y + 0.5f, goal.z },
+						RED);
+				}
+			}
 
 			const auto& wps = debugNpc->m_pathWaypoints;
 			if (!wps.empty())
@@ -2486,26 +2705,6 @@ void MainState::Draw()
 		}
 	}
 
-	if (m_showPathfindingDebug)
-	{
-		float length = 2.225;
-		for (int y = 0; y < 192; ++y)
-		{
-			for (int x = 0; x < 192; ++x)
-			{
-				ChunkInfo& chunk = g_pathfindingSystem->m_chunkInfoMap[x][y];
-				for (int dir = 0; dir < 8; ++dir)
-				{
-					if (chunk.canReach[dir])
-					{
-						Vector2 dirVector = g_DirVectors[dir];
-						DrawLine(xoffset + x * length, y * length, xoffset + (x + dirVector.x) * length, (y + dirVector.y) * length, WHITE);
-					}
-				}
-			}
-		}
-	}
-
 	DrawRectangle(0, 0, g_Engine->m_ScreenWidth, g_Engine->m_ScreenHeight, { 0, 0, 0, m_currentFadeAlpha });
 
 	// Telemetry summary (per-second aggregation)
@@ -2575,21 +2774,21 @@ void MainState::Draw()
 				<< " lifetimeAstarMaxMs=" << astarMaxMs
 				<< " syncFind/s=" << syncFinds;
 			const std::string line = ss.str();
-			// debuglog.txt (existing)
-			//DebugPrint(line);
-			// runlog.txt (main engine log, with timestamp via Log())
-			Log(line);
-			// telemetry.txt — clean lines only, flushed every write for easy paste-back
+			// Telemetry dump suppressed for now (still accumulate/reset counters above).
+			constexpr bool kDumpTelemetry = false;
+			if (kDumpTelemetry)
 			{
+				//DebugPrint(line);
+				Log(line);
 				std::ofstream tel("telemetry.txt", std::ios::app);
 				if (tel)
 				{
 					tel << line << '\n';
 					tel.flush();
 				}
+				//AddConsoleString(line, YELLOW);
 			}
-			// Also surface in-game so it's obvious without reading logs.
-			//AddConsoleString(line, YELLOW);
+			(void)line;
 
 			m_msObjectsThisSec = 0.0;
 			m_msSortThisSec = 0.0;
@@ -2618,12 +2817,6 @@ void MainState::SetupGame()
 	{
 		g_gumpManager = std::make_unique<GumpManager>();
 		g_gumpManager->Init(std::string(""));
-	}
-
-	if (!g_pathfindingSystem)
-	{
-		g_pathfindingSystem = std::make_unique<PathfindingSystem>();
-		g_pathfindingSystem->Init(std::string(""));
 	}
 
 	// Ensure chunk mapping is consistent

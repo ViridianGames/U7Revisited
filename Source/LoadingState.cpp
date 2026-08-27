@@ -380,9 +380,11 @@ void LoadingState::UpdateLoading()
 			AddConsoleString(std::string("Pathfinding thread pool initialized with 4 workers"));
 
 			//  Start Pathfinding system
-			g_pathfindingSystem = make_unique<PathfindingSystem>();
-			g_pathfindingSystem->Init("");
-			//AnalyzeTrinsicObjectList();
+			if (!g_pathfindingSystem)
+			{
+				g_pathfindingSystem = std::make_unique<PathfindingSystem>();
+				g_pathfindingSystem->Init(std::string(""));
+			}
 
 			m_buildingPathfindingGrid = true;
 		}
@@ -2254,22 +2256,9 @@ void LoadingState::CreateObjectTable()
 		g_objectDataTable[i].m_isTranslucent = (buffer[2] >> 7) & 0x01;
 		g_objectDataTable[i].m_name = shapeNames[i];
 
-		if (g_objectDataTable[i].m_shapeType < 150)
-		{
-			g_objectDataTable[i].m_isNotWalkable = false;
-		}
-
-		if (g_objectDataTable[i].m_shapeType == 2 ||
-			g_objectDataTable[i].m_shapeType == 19 ||
-			g_objectDataTable[i].m_shapeType == 20 ||
-			g_objectDataTable[i].m_shapeType == 26 ||
-			g_objectDataTable[i].m_shapeType == 30 ||
-			g_objectDataTable[i].m_shapeType == 64 ||
-			g_objectDataTable[i].m_shapeType == 65
-			)
-			{
-				g_objectDataTable[i].m_isNotWalkable = true;
-			}
+		// Trust TFA NotWalkable (Exult is_solid). Do not wipe it based on
+		// shapeType — that field is only 0–15, so a "< 150" clear wiped walls
+		// and made pathfinding treat them as air while movement still collided.
 
 		// Secret doors (828 closed / 845 open) look like walls in TFA and often
 		// lack the door bit — force it so double-click + pathfinding treat them
