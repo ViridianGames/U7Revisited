@@ -1283,10 +1283,12 @@ std::vector<Vector3> PathfindingSystem::FindPathInternal(Vector3 start, Vector3 
 		int goalCx = toChunk(goalX), goalCz = toChunk(goalZ);
 
 		const int CHUNKS = 192;
+		// Chunk graph experiment: cardinal hops only (no diagonal canReach).
 		const int dirOffsets[8][2] = {
 			{0,-1}, {1,-1}, {1,0}, {1,1},
 			{0,1}, {-1,1}, {-1,0}, {-1,-1}
 		};
+		const int cardinalDirs[4] = { DIR_N, DIR_E, DIR_S, DIR_W };
 
 		auto encode = [](int cx, int cz) { return (cx << 16) | (cz & 0xFFFF); };
 		auto decode = [](int key) { return std::pair<int, int>((key >> 16) & 0xFFFF, key & 0xFFFF); };
@@ -1339,8 +1341,9 @@ std::vector<Vector3> PathfindingSystem::FindPathInternal(Vector3 start, Vector3 
 		chunkG[startKey] = 0;
 		chunkParent[startKey] = -1;
 
+		// Manhattan heuristic — admissible for 4-connected chunk graph.
 		auto chunkHeuristic = [&](int cx, int cz) {
-			return std::max(std::abs(cx - goalCx), std::abs(cz - goalCz));
+			return std::abs(cx - goalCx) + std::abs(cz - goalCz);
 		};
 
 		bool chunkFound = false;
@@ -1351,8 +1354,9 @@ std::vector<Vector3> PathfindingSystem::FindPathInternal(Vector3 start, Vector3 
 			auto [ccx, ccz] = decode(curKey);
 			if (curKey == goalKey) { chunkFound = true; break; }
 
-			for (int d = 0; d < 8; ++d)
+			for (int di = 0; di < 4; ++di)
 			{
+				const int d = cardinalDirs[di];
 				int ncx = ccx + dirOffsets[d][0];
 				int ncz = ccz + dirOffsets[d][1];
 				if (ncx < 0 || ncx >= CHUNKS || ncz < 0 || ncz >= CHUNKS) continue;
@@ -3074,11 +3078,13 @@ void PathfindingSystem::PopulateChunkPathfindingGrid()
 	// Terrain costs + static OW_BLOCKING bake (before canReach samples the map).
 	PopulateGroundCostMap();
 
-	// Direction offsets (N, NE, E, SE, S, SW, W, NW)
+	// Direction offsets indexed by Dir8 (N, NE, E, SE, S, SW, W, NW).
 	const int dirOffsets[8][2] = {
 		{0, -1}, {1, -1}, {1, 0}, {1, 1},
 		{0, 1},  {-1, 1}, {-1, 0}, {-1, -1}
 	};
+	// Experiment: chunk graph is 4-connected (NSEW only). Diagonals stay false.
+	const int cardinalDirs[4] = { DIR_N, DIR_E, DIR_S, DIR_W };
 
 	// Connectivity: center→center is walkable iff every ground tile on the line is.
 	for (int cx = 0; cx < CHUNKS; ++cx)
@@ -3086,19 +3092,20 @@ void PathfindingSystem::PopulateChunkPathfindingGrid()
 		for (int cz = 0; cz < CHUNKS; ++cz)
 		{
 			ChunkInfo& info = m_chunkInfoMap[cx][cz];
+			for (int d = 0; d < 8; ++d)
+				info.canReach[d] = false;
+
 			const int x0 = cx * 16 + 8;
 			const int z0 = cz * 16 + 8;
 
-			for (int d = 0; d < 8; ++d)
+			for (int di = 0; di < 4; ++di)
 			{
+				const int d = cardinalDirs[di];
 				const int ncx = cx + dirOffsets[d][0];
 				const int ncz = cz + dirOffsets[d][1];
 
 				if (ncx < 0 || ncx >= CHUNKS || ncz < 0 || ncz >= CHUNKS)
-				{
-					info.canReach[d] = false;
 					continue;
-				}
 
 				const int x1 = ncx * 16 + 8;
 				const int z1 = ncz * 16 + 8;
