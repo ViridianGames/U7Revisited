@@ -488,6 +488,13 @@ bool PathfindingSystem::ValidateMove(U7Object* agent, const Vector3& desiredPos,
 				// Allow walking through eggs/triggers: they should be interactive but non-blocking.
 				if (obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_EGG) continue;
 
+				// Furniture the agent is sitting/sleeping on must not block standing up.
+				if (agent && agent->GetFurnitureObjectId() >= 0 &&
+					obj->m_ID == agent->GetFurnitureObjectId())
+				{
+					continue;
+				}
+
 				if (obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC
 					|| obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_MONSTER)
 				{
@@ -671,6 +678,13 @@ static bool CanStandOnSurface(int worldX, int worldZ, float standH,
 		U7Object* obj = ov.obj;
 		if (!obj || !obj->m_objectData)
 			continue;
+
+		// Chair/bed the agent is currently occupying — don't trap them in it.
+		if (agent && agent->GetFurnitureObjectId() >= 0 &&
+			obj->m_ID == agent->GetFurnitureObjectId())
+		{
+			continue;
+		}
 
 		if (obj->m_objectData->m_isDoor)
 		{

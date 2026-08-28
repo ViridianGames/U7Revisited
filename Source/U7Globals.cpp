@@ -327,6 +327,15 @@ Shader g_alphaDiscard;
 Shader g_cuboidShader;
 int g_cuboidTexCoordsLoc;
 
+Shader g_meshIdShader{};
+Shader g_meshOutlineShader{};
+int g_meshOutlineIdSamplerLoc = -1;
+int g_meshOutlineResolutionLoc = -1;
+int g_meshOutlineThicknessLoc = -1;
+float g_meshOutlineThickness = 0.75f;
+RenderTexture2D g_meshIdTarget{};
+bool g_meshOutlineSystemReady = false;
+
 std::array<Color, 256> g_basePalette{};
 std::array<Color, 256> g_runtimePalette{};
 Texture2D g_paletteTexture{};
@@ -566,8 +575,16 @@ int FindNearestU7PaletteIndex(unsigned char r, unsigned char g, unsigned char b)
 }
 
 bool g_pixelated = false;
+// Default: screen-space outlines (F6 falls back to stencil inflate).
+bool g_useScreenSpaceMeshOutline = true;
 RenderTexture2D g_renderTarget;
+RenderTexture2D g_pixelRenderTarget;
 RenderTexture2D g_guiRenderTarget;
+
+RenderTexture2D& GetWorldRenderTarget()
+{
+	return g_pixelated ? g_pixelRenderTarget : g_renderTarget;
+}
 
 std::unique_ptr<U7Player> g_Player;
 
@@ -1592,23 +1609,127 @@ void DrawGameWorld(bool drawObjects)
 	}
 
 }
+Color MakeMeshOutlineIdColor(int objectId)
+{
+	// Reserve RGB(0,0,0) as "no mesh" in the ID buffer.
+	unsigned id = static_cast<unsigned>(objectId) + 1u;
+	if (id == 0 || id > 0x00FFFFFFu)
+		id = (id % 0x00FFFFFFu) + 1u;
+	return Color{
+		static_cast<unsigned char>(id & 0xFFu),
+		static_cast<unsigned char>((id >> 8) & 0xFFu),
+		static_cast<unsigned char>((id >> 16) & 0xFFu),
+		255
+	};
+}
+
+bool ObjectWantsScreenSpaceOutline(U7Object* object)
+{
+	if (!object || !object->m_shapeData || g_pixelated || !g_meshOutlineSystemReady)
+		return false;
+	if (!g_useScreenSpaceMeshOutline)
+		return false;
+	if (!object->m_shapeData->m_meshOutline)
+		return false;
+	const ShapeDrawType dt = object->m_drawType;
+	return dt == ShapeDrawType::OBJECT_DRAW_CUSTOM_MESH ||
+		dt == ShapeDrawType::OBJECT_DRAW_CUSTOM_MESH_DEFER;
+}
+
+void DrawMeshOutlineIdPass(bool drawObjects)
+{
+	if (!g_meshOutlineSystemReady || g_pixelated || !g_useScreenSpaceMeshOutline || !drawObjects)
+		return;
+
+	BeginTextureMode(g_meshIdTarget);
+	ClearBackground(BLANK); // ID 0
+	BeginMode3D(g_camera);
+
+	// Depth occluders so outlines don't bleed through nearer non-outlined geometry.
+	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+	if (g_Terrain)
+		g_Terrain->Draw();
+	for (U7Object* object : g_sortedVisibleObjects)
+	{
+		if (!object || ObjectWantsScreenSpaceOutline(object))
+			continue;
+		object->Draw();
+	}
+	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+
+	for (U7Object* object : g_sortedVisibleObjects)
+	{
+		if (!object || !ObjectWantsScreenSpaceOutline(object))
+			continue;
+		object->DrawMeshId();
+	}
+
+	EndMode3D();
+	EndTextureMode();
+}
+
+void BlitWorldWithMeshOutline()
+{
+	RenderTexture2D& worldRT = GetWorldRenderTarget();
+	const Rectangle src{
+		0, 0,
+		float(worldRT.texture.width),
+		float(worldRT.texture.height)
+	};
+	const Rectangle dest{
+		0, float(g_Engine->m_ScreenHeight),
+		float(g_Engine->m_ScreenWidth),
+		-float(g_Engine->m_ScreenHeight)
+	};
+
+	const bool doScreenSpace = g_meshOutlineSystemReady && g_useScreenSpaceMeshOutline && !g_pixelated;
+	if (!doScreenSpace)
+	{
+		DrawTexturePro(worldRT.texture, src, dest, { 0, 0 }, 0, WHITE);
+		return;
+	}
+
+	const float res[2] = {
+		float(worldRT.texture.width),
+		float(worldRT.texture.height)
+	};
+	// Thickness = base × drawScale at closest zoom; shrinks as camera zooms out
+	// so borders don't look heavier in screen space when the world shrinks.
+	float closeLimit = 18.0f;
+	if (g_Engine)
+	{
+		const float cfgClose = g_Engine->m_EngineConfig.GetNumber("camera_close_limit");
+		if (cfgClose > 0.0f)
+			closeLimit = cfgClose;
+	}
+	const float zoomFactor = closeLimit / std::max(g_cameraDistance, closeLimit);
+	const float scaledThickness = g_meshOutlineThickness * g_DrawScale * zoomFactor;
+	SetShaderValue(g_meshOutlineShader, g_meshOutlineResolutionLoc, res, SHADER_UNIFORM_VEC2);
+	SetShaderValue(g_meshOutlineShader, g_meshOutlineThicknessLoc, &scaledThickness, SHADER_UNIFORM_FLOAT);
+
+	BeginShaderMode(g_meshOutlineShader);
+	if (g_meshOutlineIdSamplerLoc >= 0)
+		SetShaderValueTexture(g_meshOutlineShader, g_meshOutlineIdSamplerLoc, g_meshIdTarget.texture);
+	DrawTexturePro(worldRT.texture, src, dest, { 0, 0 }, 0, WHITE);
+	EndShaderMode();
+}
+
 void DrawGameWorldFrame(bool drawObjects)
 {
-	if (g_pixelated)
-		BeginTextureMode(g_renderTarget);
+	const bool worldToRT = g_useScreenSpaceMeshOutline || g_pixelated;
+	if (worldToRT)
+		BeginTextureMode(GetWorldRenderTarget());
 
 	ClearBackground(Color{ 0, 0, 0, 255 });
 	BeginMode3D(g_camera);
 	DrawGameWorld(drawObjects);
 	EndMode3D();
 
-	if (g_pixelated)
+	if (worldToRT)
 	{
 		EndTextureMode();
-		DrawTexturePro(g_renderTarget.texture,
-			{ 0, 0, float(g_renderTarget.texture.width), float(g_renderTarget.texture.height) },
-			{ 0, float(g_Engine->m_ScreenHeight), float(g_Engine->m_ScreenWidth), -float(g_Engine->m_ScreenHeight) },
-			{ 0, 0 }, 0, WHITE);
+		DrawMeshOutlineIdPass(drawObjects);
+		BlitWorldWithMeshOutline();
 	}
 }
 

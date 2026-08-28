@@ -50,7 +50,11 @@ function activity_sew(npc_id)
 
     -- Sit down to sew
     debug_npc(npc_id, "sitting down to sew")
-    npc_frame(npc_id, 26)  -- Frame 26 = sitting
+    if sit_down then
+        sit_down(npc_id, chair)
+    else
+        npc_frame(npc_id, 26)
+    end
 
     -- Stay sewing (yield forever until activity changes)
     while true do

@@ -134,6 +134,17 @@ int main(int argv, char** argc)
          g_paletteSamplerLoc = GetShaderLocation(g_paletteShader, "texture1");
       }
 
+      g_meshIdShader = LoadShader(NULL, "Data/Shaders/meshId.fs");
+      g_meshOutlineShader = LoadShader(NULL, "Data/Shaders/meshOutline.fs");
+      // Same binding path as paletteLookup (texture1 → MAP_SPECULAR).
+      g_meshOutlineIdSamplerLoc = g_meshOutlineShader.locs[SHADER_LOC_MAP_SPECULAR];
+      if (g_meshOutlineIdSamplerLoc < 0)
+         g_meshOutlineIdSamplerLoc = GetShaderLocation(g_meshOutlineShader, "texture1");
+      g_meshOutlineResolutionLoc = GetShaderLocation(g_meshOutlineShader, "resolution");
+      g_meshOutlineThicknessLoc = GetShaderLocation(g_meshOutlineShader, "outlineThickness");
+      g_meshOutlineThickness = 0.75f;
+      g_meshOutlineSystemReady = (g_meshIdShader.id > 0 && g_meshOutlineShader.id > 0);
+
       rlDisableBackfaceCulling();
       rlEnableDepthTest();
 
@@ -240,9 +251,20 @@ int main(int argv, char** argc)
       g_guiFont = make_shared<Font>(guiFont);
 
 
-      g_renderTarget = LoadRenderTexture(g_Engine->m_RenderWidth, g_Engine->m_RenderHeight);
+      // World renders at native window resolution for detail + thin screen-space outlines.
+      // GUI stays at virtual renderres (typically 640×360).
+      const int worldW = (int)g_Engine->m_ScreenWidth;
+      const int worldH = (int)g_Engine->m_ScreenHeight;
+      const int guiW = (int)g_Engine->m_RenderWidth;
+      const int guiH = (int)g_Engine->m_RenderHeight;
+
+      g_renderTarget = LoadRenderTexture(worldW, worldH);
       SetTextureFilter(g_renderTarget.texture, RL_TEXTURE_FILTER_ANISOTROPIC_4X);
-      g_guiRenderTarget = LoadRenderTexture(g_Engine->m_RenderWidth, g_Engine->m_RenderHeight);
+      g_meshIdTarget = LoadRenderTexture(worldW, worldH);
+      SetTextureFilter(g_meshIdTarget.texture, TEXTURE_FILTER_POINT);
+      g_pixelRenderTarget = LoadRenderTexture(guiW, guiH);
+      SetTextureFilter(g_pixelRenderTarget.texture, TEXTURE_FILTER_POINT);
+      g_guiRenderTarget = LoadRenderTexture(guiW, guiH);
       SetTextureFilter(g_guiRenderTarget.texture, RL_TEXTURE_FILTER_ANISOTROPIC_4X);
 
       g_VitalRNG = make_unique<RNG>();

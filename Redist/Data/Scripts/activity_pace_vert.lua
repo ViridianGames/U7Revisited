@@ -1,68 +1,57 @@
--- Activity 2: Vertical Pace
--- NPCs walk back and forth vertically (north-south)
+-- Activity 2: Vertical Pace (north-south)
+-- Exult-style: one tile step at a time; about-face when the next tile is blocked.
 function activity_pace_vert(npc_id)
-    
     debug_npc(npc_id, "pacing vertically")
-    
-    -- Stand up first (in case sitting/laying down from previous activity)
-    npc_frame(npc_id, 0)
+    npc_frame(npc_id, 0)  -- leave any sit/sleep pose
 
     local going_south = true
 
-    while true do
-        -- Get current position
-        local curr_x, curr_y, curr_z = get_npc_position(npc_id)
+    local function try_step(dir_south)
+        local x, y, z = get_npc_position(npc_id)
+        local tx = math.floor(x)
+        local tz = math.floor(z)
+        local elev = y
+        local step = dir_south and 1 or -1
+        local nz = tz + step
 
-        -- Convert to integer tile coordinates
-        curr_x = math.floor(curr_x)
-        curr_y = math.floor(curr_y)
-        curr_z = math.floor(curr_z)
-
-        -- Find how far we can walk in current direction
-        local dest_z = curr_z
-        local step = going_south and 1 or -1
-
-        -- Walk ahead until we hit a blocked tile (max 30 tiles to prevent infinite loop)
-        local max_check = 30
-        while max_check > 0 and not is_blocked(curr_x, curr_y, dest_z + step) do
-            dest_z = dest_z + step
-            max_check = max_check - 1
+        if is_blocked(tx, elev, nz) then
+            return false
         end
 
-        -- Walk to destination if we found somewhere to go
-        if dest_z ~= curr_z then
-            local request_id = request_pathfind(npc_id, curr_x, curr_y, dest_z)
+        local request_id = request_pathfind(npc_id, tx + 0.5, elev, nz + 0.5)
+        while not is_path_ready(request_id) do
+            coroutine.yield()
+        end
+        start_following_path(npc_id)
 
-            -- Wait for path to be computed
-            while not is_path_ready(request_id) do
-                coroutine.yield()
+        -- Path failed (no waypoints / never started) → treat as blocked.
+        if not is_npc_moving(npc_id) then
+            local ax, _, az = get_npc_position(npc_id)
+            if math.floor(ax) == tx and math.floor(az) == nz then
+                return true
             end
+            return false
+        end
 
-            -- Start following the path
-            start_following_path(npc_id)
-
-            -- Wait until movement completes
-            while not wait_move_end(npc_id) do
-                coroutine.yield()
-            end
-
-            -- Check where we actually ended up
-            local _, _, final_z = get_npc_position(npc_id)
-            final_z = math.floor(final_z)
-
-            -- Turn around after reaching the wall (or getting stuck)
-            going_south = not going_south
-
-            -- Pause when turning around
-            local wait_minutes = 1 + (math.random() * 4)
-            npc_wait(wait_minutes)
-        else
-            -- Blocked immediately, just turn around and try other direction
-            going_south = not going_south
+        while not wait_move_end(npc_id) do
             coroutine.yield()
         end
 
-        -- Safety yield
+        local ax, _, az = get_npc_position(npc_id)
+        return math.floor(ax) == tx and math.floor(az) == nz
+    end
+
+    while true do
+        if not try_step(going_south) then
+            going_south = not going_south
+            -- Short about-face pause (Exult uses a couple of frame delays).
+            wait(0.35)
+            -- If the other direction is also blocked, idle briefly so we don't spin.
+            if not try_step(going_south) then
+                going_south = not going_south
+                wait(0.75)
+            end
+        end
         coroutine.yield()
     end
 end

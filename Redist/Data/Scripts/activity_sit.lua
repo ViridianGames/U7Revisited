@@ -46,9 +46,13 @@ function activity_sit(npc_id)
         end
     end
 
-    -- At chair but not sitting - sit down
+    -- At chair but not sitting - sit down (stops pathing + sets Exult sit frame)
     debug_npc(npc_id, "sitting down")
-    npc_frame(npc_id, 26)  -- Frame 26 = sitting
+    if sit_down then
+        sit_down(npc_id, chair)
+    else
+        npc_frame(npc_id, 26)
+    end
 
     -- Stay sitting (yield forever until activity changes)
     while true do

@@ -49,7 +49,11 @@ function activity_eat(npc_id)
 
     -- Sit down at table to eat
     debug_npc(npc_id, "sitting down to eat")
-    npc_frame(npc_id, 26)  -- Frame 26 = sitting
+    if sit_down then
+        sit_down(npc_id, chair)
+    else
+        npc_frame(npc_id, 26)
+    end
 
     -- Stay eating (yield forever until activity changes)
     while true do

@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <fstream>
+#include <unordered_set>
 
 #include "U7Globals.h"
 #include "U7UsecodeArgs.h"
@@ -926,11 +927,17 @@ static int LuaFindObjectTypeNearNPC(lua_State *L)
 // Opcode 0014
 static int LuaGetObjectQuality(lua_State *L)
 {
-    if (g_LuaDebug) NPCDebugPrint("LUA: get_object_quality called");
     int object_id = luaL_checkinteger(L, 1);
-    int quality = GetObjectFromID(object_id)->m_Quality;
-    DebugPrint("ID: " + to_string(object_id) +  " Quality: " + to_string(quality));
-    lua_pushinteger(L, quality);
+    U7Object* object = GetObjectFromID(object_id);
+    if (!object)
+    {
+        lua_pushinteger(L, 0);
+        return 1;
+    }
+    if (g_LuaDebug)
+        NPCDebugPrint("LUA: get_object_quality id=" + to_string(object_id) +
+            " quality=" + to_string(object->m_Quality));
+    lua_pushinteger(L, object->m_Quality);
     return 1;
 }
 
@@ -2663,11 +2670,29 @@ static int LuaSetNPCFrame(lua_State *L)
     }
 
     U7Object* npc = g_objectList[g_NPCData[npc_id]->m_objectID].get();
-    if (npc)
+    if (!npc)
+        return 0;
+
+    // Sit/sleep frames must go through the pose override (halts pathing + draws
+    // Exult sit/sleep art). Plain SetFrame alone would be overwritten by walk anim.
+    if (frame == 10 || frame == 26)
     {
-        npc->SetFrame(frame);
+        npc->SetOverrideFrame(npc->GetSitFrameForFacing());
+        return 0;
+    }
+    if (frame == 13 || frame == 29)
+    {
+        npc->SetOverrideFrame(npc->GetSleepFrameForFacing());
+        return 0;
     }
 
+    // Standing / walk frames: leave furniture immediately. Activity scripts call
+    // npc_frame(0) when switching to stand/wander — without this they stay seated
+    // until a later schedule path clears the override (noticeable stand-up lag).
+    if (npc->IsSittingPose() || npc->IsSleepingPose() || npc->GetFurnitureObjectId() >= 0)
+        npc->ClearOverrideFrame();
+
+    npc->SetFrame(frame);
     return 0;
 }
 
@@ -3988,27 +4013,57 @@ static int LuaSummon(lua_State *L)
     return 1;
 }
 
-// 0x0046 | sit_down
+// 0x0046 | sit_down(npc, chair)  — Exult: npc sits on chair object.
+// Args may be NPC id (0–255 / ±356) or object id; chair is always an object id.
 static int LuaSitDown(lua_State *L)
 {
-    int npc_id = (int)lua_tointeger(L, 1);
-    int chair_id = (int)lua_tointeger(L, 2);
+    int a1 = (int)luaL_checkinteger(L, 1);
+    int a2 = (int)luaL_checkinteger(L, 2);
 
-    // In full implementation, would:
-    // 1. Move NPC to chair position
-    // 2. Change NPC animation to sitting
-    // 3. Set NPC state to sitting
+    auto resolveNpc = [](int id) -> U7Object* {
+        if (id == 356 || id == -356)
+            id = 0;
+        if (id < 0 && id > -256)
+            id = -id;
+        if (g_NPCData.find(id) != g_NPCData.end() && g_NPCData[id])
+        {
+            auto it = g_objectList.find(g_NPCData[id]->m_objectID);
+            if (it != g_objectList.end())
+                return it->second.get();
+        }
+        // Some scripts pass the NPC's world object id.
+        auto it = g_objectList.find(id);
+        if (it != g_objectList.end() && it->second &&
+            it->second->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC)
+            return it->second.get();
+        return nullptr;
+    };
 
-    if (g_objectList.find(npc_id) != g_objectList.end() &&
-        g_objectList.find(chair_id) != g_objectList.end())
+    U7Object* npc = resolveNpc(a1);
+    U7Object* chair = nullptr;
+    auto chairIt = g_objectList.find(a2);
+    if (chairIt != g_objectList.end())
+        chair = chairIt->second.get();
+
+    // Decompiler sometimes swaps args: sit_down(chair, npc).
+    if ((!npc || !chair) || (chair && chair->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC))
     {
-        U7Object* npc = g_objectList[npc_id].get();
-        U7Object* chair = g_objectList[chair_id].get();
-
-        // Move NPC to chair position
-        npc->SetPos(chair->GetPos());
+        U7Object* maybeNpc = resolveNpc(a2);
+        U7Object* maybeChair = nullptr;
+        auto it = g_objectList.find(a1);
+        if (it != g_objectList.end())
+            maybeChair = it->second.get();
+        if (maybeNpc && maybeChair)
+        {
+            npc = maybeNpc;
+            chair = maybeChair;
+        }
     }
 
+    if (!npc || !chair)
+        return 0;
+
+    npc->SitOnObject(chair);
     return 0;
 }
 
@@ -5441,6 +5496,29 @@ static int LuaFindNearestObjectOfShape(lua_State *L)
     return 1;
 }
 
+// Build the set of furniture object IDs currently reserved/occupied by other NPCs.
+// One pass over ~256 NPCs — never scan the full world object list per candidate.
+static std::unordered_set<int> CollectClaimedFurnitureIds(int selfObjectId)
+{
+    std::unordered_set<int> claimed;
+    for (const auto& pair : g_NPCData)
+    {
+        if (!pair.second)
+            continue;
+        auto it = g_objectList.find(pair.second->m_objectID);
+        if (it == g_objectList.end() || !it->second)
+            continue;
+        U7Object* other = it->second.get();
+        if (other->m_ID == selfObjectId)
+            continue;
+        if (other->m_furnitureObjectId >= 0)
+            claimed.insert(other->m_furnitureObjectId);
+        if (other->m_claimedFurnitureId >= 0)
+            claimed.insert(other->m_claimedFurnitureId);
+    }
+    return claimed;
+}
+
 // find_nearest_bed(npc_id) -> object_id or nil
 // Beds are shapes 696, 1011 in Ultima 7
 static int LuaFindNearestBed(lua_State *L)
@@ -5460,44 +5538,55 @@ static int LuaFindNearestBed(lua_State *L)
         return 1;
     }
 
-    Vector3 npcPos = npc->GetPos();
-    float minDistance = 999999.0f;
-    int nearestObjectId = -1;
-
     // Check for multiple bed shapes
     const int bedShapes[] = {696, 1011};
+    constexpr float kMaxBedSearchTiles = 40.0f;
+    constexpr float kMaxBedSearchTilesSq = kMaxBedSearchTiles * kMaxBedSearchTiles;
+
+    auto isBedShape = [&](int shape) {
+        for (int bedShape : bedShapes)
+            if (shape == bedShape) return true;
+        return false;
+    };
+
+    // Already occupying a bed — keep that claim instead of grabbing a second one.
+    if (npc->GetFurnitureObjectId() >= 0)
+    {
+        auto it = g_objectList.find(npc->GetFurnitureObjectId());
+        if (it != g_objectList.end() && it->second && isBedShape(it->second->m_ObjectType))
+        {
+            npc->ClaimFurniture(it->second->m_ID);
+            lua_pushinteger(L, it->second->m_ID);
+            return 1;
+        }
+    }
+
+    const std::unordered_set<int> claimed = CollectClaimedFurnitureIds(npc->m_ID);
+    Vector3 npcPos = npc->GetPos();
+    float minDistanceSq = 1e30f;
+    int nearestObjectId = -1;
 
     for (auto& objPair : g_objectList)
     {
         U7Object* obj = objPair.second.get();
-        if (obj)
-        {
-            // Check if this object is any of the bed shapes
-            bool isBed = false;
-            for (int bedShape : bedShapes)
-            {
-                if (obj->m_ObjectType == bedShape)
-                {
-                    isBed = true;
-                    break;
-                }
-            }
-
-            if (isBed)
-            {
-                Vector3 objPos = obj->GetPos();
-                float distance = Vector3Distance(npcPos, objPos);
-                if (distance < minDistance)
-                {
-                    minDistance = distance;
-                    nearestObjectId = obj->m_ID;
-                }
-            }
-        }
+        if (!obj || !isBedShape(obj->m_ObjectType))
+            continue;
+        if (claimed.count(obj->m_ID))
+            continue;
+        Vector3 objPos = obj->GetPos();
+        const float dx = objPos.x - npcPos.x;
+        const float dz = objPos.z - npcPos.z;
+        const float distSq = dx * dx + dz * dz;
+        if (distSq > kMaxBedSearchTilesSq || distSq >= minDistanceSq)
+            continue;
+        minDistanceSq = distSq;
+        nearestObjectId = obj->m_ID;
     }
 
     if (nearestObjectId >= 0)
     {
+        // Soft-claim immediately so a second NPC's find_nearest won't pick the same bed.
+        npc->ClaimFurniture(nearestObjectId);
         lua_pushinteger(L, nearestObjectId);
     }
     else
@@ -5526,49 +5615,58 @@ static int LuaFindNearestChair(lua_State *L)
         return 1;
     }
 
-    Vector3 npcPos = npc->GetPos();
-    float minDistance = 999999.0f;
-    int nearestObjectId = -1;
-
     // Check for multiple chair shapes (add more as needed)
     const int chairShapes[] = {873, 897};
+    // Must be near the NPC (inn/workplace). Without this, Spark's
+    // eat_at_inn grabbed a chair in his house (often west of him).
+    constexpr float kMaxChairSearchTiles = 40.0f;
+    constexpr float kMaxChairSearchTilesSq = kMaxChairSearchTiles * kMaxChairSearchTiles;
+
+    auto isChairShape = [&](int shape) {
+        for (int chairShape : chairShapes)
+            if (shape == chairShape) return true;
+        return false;
+    };
+
+    // Already occupying a chair — keep that claim instead of grabbing a second one.
+    if (npc->GetFurnitureObjectId() >= 0)
+    {
+        auto it = g_objectList.find(npc->GetFurnitureObjectId());
+        if (it != g_objectList.end() && it->second && isChairShape(it->second->m_ObjectType))
+        {
+            npc->ClaimFurniture(it->second->m_ID);
+            lua_pushinteger(L, it->second->m_ID);
+            return 1;
+        }
+    }
+
+    // One cheap NPC pass, then O(1) claim checks while scanning chairs.
+    const std::unordered_set<int> claimed = CollectClaimedFurnitureIds(npc->m_ID);
+    Vector3 npcPos = npc->GetPos();
+    float minDistanceSq = 1e30f;
+    int nearestObjectId = -1;
 
     for (auto& objPair : g_objectList)
     {
         U7Object* obj = objPair.second.get();
-        if (obj)
-        {
-            // Check if this object is any of the chair shapes
-            bool isChair = false;
-            for (int chairShape : chairShapes)
-            {
-                if (obj->m_ObjectType == chairShape)
-                {
-                    isChair = true;
-                    break;
-                }
-            }
-
-            if (isChair)
-            {
-                Vector3 objPos = obj->GetPos();
-                float distance = Vector3Distance(npcPos, objPos);
-                // Must be near the NPC (inn/workplace). Without this, Spark's
-                // eat_at_inn grabbed a chair in his house (often west of him).
-                constexpr float kMaxChairSearchTiles = 40.0f;
-                if (distance > kMaxChairSearchTiles)
-                    continue;
-                if (distance < minDistance)
-                {
-                    minDistance = distance;
-                    nearestObjectId = obj->m_ID;
-                }
-            }
-        }
+        if (!obj || !isChairShape(obj->m_ObjectType))
+            continue;
+        if (claimed.count(obj->m_ID))
+            continue;
+        Vector3 objPos = obj->GetPos();
+        const float dx = objPos.x - npcPos.x;
+        const float dz = objPos.z - npcPos.z;
+        const float distSq = dx * dx + dz * dz;
+        if (distSq > kMaxChairSearchTilesSq || distSq >= minDistanceSq)
+            continue;
+        minDistanceSq = distSq;
+        nearestObjectId = obj->m_ID;
     }
 
     if (nearestObjectId >= 0)
     {
+        // Soft-claim immediately so a second NPC's find_nearest won't pick the same chair.
+        npc->ClaimFurniture(nearestObjectId);
         lua_pushinteger(L, nearestObjectId);
     }
     else
@@ -5670,14 +5768,16 @@ static int LuaFindNearestShape(lua_State *L)
 }
 
 // find_random_walkable(npc_id, radius) -> x, y, z or nil
-// Finds a random walkable position within radius tiles of the NPC
-// Ensures the position is walkable AND pathfinding can reach it
+// Exult-style: pick a random offset, then find_spot a free standable tile near it
+// (Map_chunk::find_spot radius 4). No A* here — callers pathfind afterward.
 static int LuaFindRandomWalkable(lua_State *L)
 {
     int npc_id = luaL_checkinteger(L, 1);
     float radius = (float)luaL_checknumber(L, 2);
+    if (radius < 1.0f)
+        radius = 1.0f;
 
-    if (g_NPCData.find(npc_id) == g_NPCData.end())
+    if (g_NPCData.find(npc_id) == g_NPCData.end() || !g_pathfindingSystem)
     {
         lua_pushnil(L);
         return 1;
@@ -5690,39 +5790,60 @@ static int LuaFindRandomWalkable(lua_State *L)
         return 1;
     }
 
-    Vector3 npcPos = npc->GetPos();
-    int anchorX = (int)npcPos.x;
-    int anchorZ = (int)npcPos.z;
-	int currentY = (int)npcPos.y;
+    const Vector3 npcPos = npc->GetPos();
+    const int curX = (int)floorf(npcPos.x);
+    const int curZ = (int)floorf(npcPos.z);
+    // Exult Wander uses find_spot(..., 4, ...). Keep a small local search.
+    constexpr int kSpotSearchRadius = 3;
+    constexpr int kMaxAttempts = 12;
+    const float maxDist = radius + (float)kSpotSearchRadius + 0.75f;
+    const float maxDistSq = maxDist * maxDist;
 
-    // Pick ONE random offset within radius (caller should retry with yields if needed)
-    float offsetX = ((float)rand() / RAND_MAX * 2.0f - 1.0f) * radius;
-    float offsetZ = ((float)rand() / RAND_MAX * 2.0f - 1.0f) * radius;
-
-    int targetX = anchorX + (int)offsetX;
-    int targetZ = anchorZ + (int)offsetZ;
-
-    // Only check if position is walkable - NO pathfinding (too expensive)
-    bool isWalkable = g_pathfindingSystem->IsPositionWalkable(targetX, targetZ, currentY);
-
-    NPCDebugPrint("find_random_walkable: npc=" + std::to_string(npc_id) +
-                   " from=(" + std::to_string(anchorX) + "," + std::to_string(anchorZ) + ")" +
-                   " to=(" + std::to_string(targetX) + "," + std::to_string(targetZ) + ")" +
-                   " radius=" + std::to_string(radius) +
-                   " offset=(" + std::to_string((int)offsetX) + "," + std::to_string((int)offsetZ) + ")" +
-                   " walkable=" + (isWalkable ? "YES" : "NO"));
-
-    if (!isWalkable)
+    for (int attempt = 0; attempt < kMaxAttempts; ++attempt)
     {
-        lua_pushnil(L);
-        return 1;
+        // Uniform-ish sample in a square of side 2*radius (matches Exult loiter/wander).
+        const float offsetX = ((float)rand() / (float)RAND_MAX * 2.0f - 1.0f) * radius;
+        const float offsetZ = ((float)rand() / (float)RAND_MAX * 2.0f - 1.0f) * radius;
+        const int targetX = (int)floorf(npcPos.x + offsetX);
+        const int targetZ = (int)floorf(npcPos.z + offsetZ);
+
+        Vector3 nearPos{ targetX + 0.5f, npcPos.y, targetZ + 0.5f };
+        Vector3 stand{};
+        if (!g_pathfindingSystem->FindNearestWalkableStand(
+                nearPos, npcPos.y, npc, stand, kSpotSearchRadius))
+            continue;
+
+        const int sx = (int)floorf(stand.x);
+        const int sz = (int)floorf(stand.z);
+        // Don't return the tile we're already on.
+        if (sx == curX && sz == curZ)
+            continue;
+
+        const float dx = stand.x - npcPos.x;
+        const float dz = stand.z - npcPos.z;
+        if (dx * dx + dz * dz > maxDistSq)
+            continue;
+
+        // Double-check with the agent so we don't hand scripts a solid/furniture tile.
+        if (!g_pathfindingSystem->IsPositionWalkable(sx, sz, stand.y, npc))
+            continue;
+
+        if (g_LuaDebug)
+        {
+            NPCDebugPrint("find_random_walkable: npc=" + std::to_string(npc_id) +
+                " from=(" + std::to_string(curX) + "," + std::to_string(curZ) + ")" +
+                " to=(" + std::to_string(sx) + "," + std::to_string(sz) + ")" +
+                " radius=" + std::to_string(radius));
+        }
+
+        lua_pushnumber(L, stand.x);
+        lua_pushnumber(L, stand.y);
+        lua_pushnumber(L, stand.z);
+        return 3;
     }
 
-    // Position is walkable, return it
-    lua_pushnumber(L, (float)targetX);
-    lua_pushnumber(L, npcPos.y);
-    lua_pushnumber(L, (float)targetZ);
-    return 3;
+    lua_pushnil(L);
+    return 1;
 }
 
 // get_current_animation(npc_id) -> frameX, frameY
@@ -5751,53 +5872,39 @@ static int LuaGetCurrentAnimation(lua_State *L)
 }
 
 
-// is_sleeping(npc_id) -> boolean
-// Checks if NPC frame is set to 16 (used by activity_sleep.lua)
-// NOTE: Frame 16 is NOT a standard sleeping frame - it's actually a walk frame!
-// This function only exists for backwards compatibility
+// is_sleeping(npc_id) -> boolean — Exult sleep frames 13 / 29
 static int LuaIsSleeping(lua_State *L)
 {
     int npc_id = luaL_checkinteger(L, 1);
+    if (npc_id == 356 || npc_id == -356) npc_id = 0;
+    if (npc_id < 0 && npc_id > -256) npc_id = -npc_id;
 
-    if (g_NPCData.find(npc_id) == g_NPCData.end())
+    if (g_NPCData.find(npc_id) == g_NPCData.end() || !g_NPCData[npc_id])
     {
         lua_pushboolean(L, 0);
         return 1;
     }
 
     U7Object* npc = g_objectList[g_NPCData[npc_id]->m_objectID].get();
-    if (!npc)
-    {
-        lua_pushboolean(L, 0);
-        return 1;
-    }
-
-    // Check if frame 16 is set (which activity_sleep.lua uses)
-    lua_pushboolean(L, npc->m_Frame == 16);
+    lua_pushboolean(L, npc && npc->IsSleepingPose());
     return 1;
 }
 
-// is_sitting(npc_id) -> boolean
-// Checks if NPC frame is set to 26 (used by activity_sit.lua and others)
+// is_sitting(npc_id) -> boolean — Exult sit frames 10 / 26
 static int LuaIsSitting(lua_State *L)
 {
     int npc_id = luaL_checkinteger(L, 1);
+    if (npc_id == 356 || npc_id == -356) npc_id = 0;
+    if (npc_id < 0 && npc_id > -256) npc_id = -npc_id;
 
-    if (g_NPCData.find(npc_id) == g_NPCData.end())
+    if (g_NPCData.find(npc_id) == g_NPCData.end() || !g_NPCData[npc_id])
     {
         lua_pushboolean(L, 0);
         return 1;
     }
 
     U7Object* npc = g_objectList[g_NPCData[npc_id]->m_objectID].get();
-    if (!npc)
-    {
-        lua_pushboolean(L, 0);
-        return 1;
-    }
-
-    // Check if frame 26 is set
-    lua_pushboolean(L, npc->m_Frame == 26);
+    lua_pushboolean(L, npc && npc->IsSittingPose());
     return 1;
 }
 
@@ -5936,21 +6043,39 @@ static int LuaGetCurrentMinute(lua_State *L)
 
 static int LuaSetNPCOverrideFrame(lua_State *L)
 {
-
     int npc_id = luaL_checkinteger(L, 1);
     int npc_frame = luaL_checkinteger(L, 2);
+    if (npc_id == 356 || npc_id == -356) npc_id = 0;
+    if (npc_id < 0 && npc_id > -256) npc_id = -npc_id;
 
-    DebugPrint("SetNPCOverrideFrame called with npc_id: " + std::to_string(npc_id) + "npc_frame: " + std::to_string(npc_frame) );
+    if (g_NPCData.find(npc_id) == g_NPCData.end() || !g_NPCData[npc_id])
+        return 0;
 
     U7Object* npc = g_objectList[g_NPCData[npc_id]->m_objectID].get();
     if (!npc)
+        return 0;
+
+    // Map semantic sit/sleep requests to a facing-appropriate Exult frame
+    // if the caller passed the "other facing" number (scripts often hardcode 26/29).
+    if (npc_frame == 10 || npc_frame == 26)
+        npc_frame = npc->GetSitFrameForFacing();
+    else if (npc_frame == 13 || npc_frame == 29)
+        npc_frame = npc->GetSleepFrameForFacing();
+
+    // Prefer a frame that actually has art; fall back within the pose pair.
+    if (npc->m_ObjectType >= 0 && npc->m_ObjectType < 1024)
     {
-        return 1;
+        if (g_shapeTable[npc->m_ObjectType][npc_frame].m_texture == nullptr)
+        {
+            if (npc_frame == 26) npc_frame = 10;
+            else if (npc_frame == 10) npc_frame = 26;
+            else if (npc_frame == 29) npc_frame = 13;
+            else if (npc_frame == 13) npc_frame = 29;
+        }
     }
 
     npc->SetOverrideFrame(npc_frame);
-
-    return 1;
+    return 0;
 }
 
 static int LuaClearNPCOverrideFrame(lua_State *L)

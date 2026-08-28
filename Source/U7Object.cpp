@@ -1533,15 +1533,17 @@ void U7Object::CustomMeshDraw(Color color)
 	}
 	Vector3 finalPos = Vector3Add(m_Pos, m_anchorPos);
 	m_customMesh->UpdateAnim("idle");
+	DrawModelEx(m_customMesh->GetModel(), finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, color);
+}
 
-	if (m_meshOutline && !g_pixelated)
-	{
-		DrawModelEx(m_customMesh->GetModel(), finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, color);
-	}
-	else
-	{
-		DrawModelEx(m_customMesh->GetModel(), finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, color);
-	}
+void U7Object::DrawMeshId()
+{
+	if (!m_Visible || m_isContained || !m_ShouldDraw || !m_shapeData)
+		return;
+	if (!ObjectWantsScreenSpaceOutline(this))
+		return;
+	// Match InteractiveDraw → ShapeData::Draw (shape scale, not object m_Scaling).
+	m_shapeData->DrawMeshId(m_Pos, m_Angle, MakeMeshOutlineIdColor(m_ID));
 }
 
 // Helper function to convert activity ID to script name
@@ -1806,6 +1808,11 @@ void U7Object::NPCUpdate()
 						const float now = GetTime();
 						if (!m_pathfindingPending && !m_isSchedulePath && now >= m_schedulePathRetryAt)
 						{
+							// Stand up immediately toward the new schedule dest — don't wait for
+							// the background path result (that delay looked like stand-up lag).
+							if (IsSittingPose() || IsSleepingPose() || m_furnitureObjectId >= 0)
+								ClearOverrideFrame(&dest);
+
 							m_pathfindingPending = true;
 							m_pendingScheduleTime = (int)g_scheduleTime;
 							m_schedulePathRetryAt = now + 2.0f;
@@ -1994,6 +2001,9 @@ void U7Object::UpdateMovement()
 	// Shared movement for NPCs, monsters, and avatar path-follow.
 	// Arrival is XZ-based; climb/drop snaps to waypoint Y.
 	// All units wall-slide when blocked so they don't stop cold on corners.
+
+	// After standing up, drop the furniture collision-ignore once clear of the seat.
+	ReleaseFurnitureIfClear();
 
 	// Walk-to-use: close enough to operate → cancel pathfinding and fire.
 	// (Stand tiles between furniture are often unreachable; don't wait for exact arrival.)
@@ -2476,6 +2486,249 @@ void U7Object::SetPos(Vector3 pos)
 		NotifyPathfindingGridUpdate((int)fromPos.x, (int)fromPos.z);
 		NotifyPathfindingGridUpdate((int)pos.x, (int)pos.z);
 	}
+}
+
+void U7Object::SetOverrideFrame(int overrideFrame)
+{
+	m_overrideFrame = overrideFrame;
+	m_isFrameOverridden = true;
+	// Pose frames are only drawn when not walking — halt pathing immediately.
+	m_isMoving = false;
+	m_pathWaypoints.clear();
+	m_currentWaypointIndex = 0;
+	m_pathfindingPending = false;
+	SetDest(m_Pos);
+}
+
+void U7Object::ClearOverrideFrame(const Vector3* toward)
+{
+	const bool wasPosed = m_isFrameOverridden;
+	m_isFrameOverridden = false;
+	m_overrideFrame = 0;
+	if (wasPosed || m_furnitureObjectId >= 0)
+		UnstickFromFurniture(toward);
+}
+
+bool U7Object::IsSittingPose() const
+{
+	// Exult sit_frame = 10; +16 = 26 for opposite facing.
+	return m_isFrameOverridden && (m_overrideFrame == 10 || m_overrideFrame == 26);
+}
+
+bool U7Object::IsSleepingPose() const
+{
+	// Exult sleep_frame = 13; +16 = 29 for opposite facing.
+	return m_isFrameOverridden && (m_overrideFrame == 13 || m_overrideFrame == 29);
+}
+
+int U7Object::GetSitFrameForFacing() const
+{
+	// Exult: frames 0–15 one facing set, 16–31 the other. SW/SE → 26, NE/NW → 10.
+	if (m_Direction.z >= 0.0f) // facing southish
+		return 26;
+	return 10;
+}
+
+int U7Object::GetSleepFrameForFacing() const
+{
+	if (m_Direction.z >= 0.0f)
+		return 29;
+	return 13;
+}
+
+bool U7Object::IsFurnitureClaimedByOther(int furnitureObjectId, int selfObjectId)
+{
+	if (furnitureObjectId < 0)
+		return false;
+	// Only NPCs claim furniture — never scan g_objectList (tens of thousands of props).
+	for (const auto& pair : g_NPCData)
+	{
+		if (!pair.second)
+			continue;
+		auto it = g_objectList.find(pair.second->m_objectID);
+		if (it == g_objectList.end() || !it->second)
+			continue;
+		U7Object* other = it->second.get();
+		if (other->m_ID == selfObjectId)
+			continue;
+		if (other->m_furnitureObjectId == furnitureObjectId ||
+			other->m_claimedFurnitureId == furnitureObjectId)
+			return true;
+	}
+	return false;
+}
+
+void U7Object::ClaimFurniture(int objectId)
+{
+	if (objectId < 0)
+		return;
+	// Drop any previous soft claim.
+	if (m_claimedFurnitureId >= 0 && m_claimedFurnitureId != objectId)
+		m_claimedFurnitureId = -1;
+	m_claimedFurnitureId = objectId;
+}
+
+void U7Object::ReleaseFurnitureClaim()
+{
+	m_claimedFurnitureId = -1;
+}
+
+void U7Object::SitOnObject(U7Object* chair)
+{
+	if (!chair)
+		return;
+	if (IsFurnitureClaimedByOther(chair->m_ID, m_ID))
+	{
+		// Lost the race — don't keep a soft-claim that blocks everyone else.
+		if (m_claimedFurnitureId == chair->m_ID)
+			ReleaseFurnitureClaim();
+		return;
+	}
+	ClearPendingUsecode();
+	m_claimedFurnitureId = chair->m_ID;
+	m_furnitureObjectId = chair->m_ID;
+	// Snap to chair tile center (same convention as path destinations).
+	Vector3 sitPos = chair->GetPos();
+	sitPos.x = floorf(sitPos.x) + 0.5f;
+	sitPos.z = floorf(sitPos.z) + 0.5f;
+	// Keep NPC feet Y; chairs are ground furniture.
+	sitPos.y = m_Pos.y;
+	SetPos(sitPos);
+	SetOverrideFrame(GetSitFrameForFacing());
+}
+
+void U7Object::LieOnObject(U7Object* bed)
+{
+	if (!bed)
+		return;
+	if (IsFurnitureClaimedByOther(bed->m_ID, m_ID))
+	{
+		if (m_claimedFurnitureId == bed->m_ID)
+			ReleaseFurnitureClaim();
+		return;
+	}
+	ClearPendingUsecode();
+	m_claimedFurnitureId = bed->m_ID;
+	m_furnitureObjectId = bed->m_ID;
+	Vector3 liePos = bed->GetPos();
+	liePos.x = floorf(liePos.x) + 0.5f;
+	liePos.z = floorf(liePos.z) + 0.5f;
+	liePos.y = m_Pos.y;
+	SetPos(liePos);
+	SetOverrideFrame(GetSleepFrameForFacing());
+}
+
+void U7Object::UnstickFromFurniture(const Vector3* toward)
+{
+	// Soft claim can drop immediately — the seat is free for others once we stand.
+	// Keep m_furnitureObjectId until we've stepped clear so ValidateMove still
+	// ignores the chair/bed AABB (otherwise the first path step fights the seat).
+	m_claimedFurnitureId = -1;
+
+	if (!g_pathfindingSystem)
+	{
+		m_furnitureObjectId = -1;
+		return;
+	}
+
+	const int curX = (int)floorf(m_Pos.x);
+	const int curZ = (int)floorf(m_Pos.z);
+
+	auto scoreTile = [&](int tx, int tz) -> float {
+		if (!g_pathfindingSystem->IsPositionWalkable(tx, tz, m_Pos.y, this))
+			return 1e30f;
+		float score = (float)(std::abs(tx - curX) + std::abs(tz - curZ));
+		if (toward)
+		{
+			const int gx = (int)floorf(toward->x);
+			const int gz = (int)floorf(toward->z);
+			// Prefer tiles that reduce Chebyshev distance to the next destination.
+			const float before = (float)std::max(std::abs(curX - gx), std::abs(curZ - gz));
+			const float after = (float)std::max(std::abs(tx - gx), std::abs(tz - gz));
+			score += (after - before) * 10.0f; // strong bias toward goal
+		}
+		return score;
+	};
+
+	auto makeStand = [&](int tx, int tz) -> Vector3 {
+		Vector3 stand{ tx + 0.5f, m_Pos.y, tz + 0.5f };
+		auto heights = g_pathfindingSystem->GetWalkableSurfaceHeights(tx, tz);
+		if (!heights.empty())
+		{
+			float best = heights[0];
+			float bestD = fabsf(best - m_Pos.y);
+			for (float h : heights)
+			{
+				const float d = fabsf(h - m_Pos.y);
+				if (d < bestD) { bestD = d; best = h; }
+			}
+			stand.y = best;
+		}
+		return stand;
+	};
+
+	// Always try to step off the seat tile onto the best neighbor (toward goal if any).
+	float bestScore = 1e30f;
+	int bestX = curX, bestZ = curZ;
+	bool foundNeighbor = false;
+	for (int r = 1; r <= 2; ++r)
+	{
+		for (int dz = -r; dz <= r; ++dz)
+		{
+			for (int dx = -r; dx <= r; ++dx)
+			{
+				if (std::max(std::abs(dx), std::abs(dz)) != r)
+					continue;
+				const int tx = curX + dx;
+				const int tz = curZ + dz;
+				const float s = scoreTile(tx, tz);
+				if (s < bestScore)
+				{
+					bestScore = s;
+					bestX = tx;
+					bestZ = tz;
+					foundNeighbor = true;
+				}
+			}
+		}
+		if (foundNeighbor)
+			break; // Prefer immediate adjacency when available.
+	}
+
+	if (foundNeighbor)
+		SetPos(makeStand(bestX, bestZ));
+	else
+	{
+		Vector3 stand{};
+		if (g_pathfindingSystem->FindNearestWalkableStand(m_Pos, m_Pos.y, this, stand, 2))
+		{
+			if ((int)floorf(stand.x) != curX || (int)floorf(stand.z) != curZ)
+				SetPos(stand);
+		}
+	}
+
+	SetDest(m_Pos);
+	// m_furnitureObjectId retained until ReleaseFurnitureIfClear() — see UpdateMovement.
+}
+
+void U7Object::ReleaseFurnitureIfClear()
+{
+	if (m_furnitureObjectId < 0 || m_isFrameOverridden)
+		return; // Still posed, or nothing to release.
+
+	auto it = g_objectList.find(m_furnitureObjectId);
+	if (it == g_objectList.end() || !it->second)
+	{
+		m_furnitureObjectId = -1;
+		return;
+	}
+
+	const Vector3 furnPos = it->second->GetPos();
+	const int dx = std::abs((int)floorf(m_Pos.x) - (int)floorf(furnPos.x));
+	const int dz = std::abs((int)floorf(m_Pos.z) - (int)floorf(furnPos.z));
+	// One tile away is enough — seat is free and collision ignore can drop.
+	if (std::max(dx, dz) > 1)
+		m_furnitureObjectId = -1;
 }
 
 void U7Object::SetFrame(int frame)
@@ -3141,6 +3394,27 @@ void U7Object::PathfindToDest(Vector3 dest, bool allowHierarchical)
 	{
 		m_pathfindingPending = false;
 		return;
+	}
+
+	// Leaving a sit/sleep pose: step off furniture toward the new destination
+	// immediately so the first path step isn't trapped in the chair AABB.
+	if (m_isFrameOverridden || m_furnitureObjectId >= 0)
+		ClearOverrideFrame(&dest);
+	else if (m_claimedFurnitureId >= 0)
+	{
+		// Soft-claimed a chair/bed but pathing elsewhere (schedule change, wander) —
+		// drop the reservation so another NPC can take it.
+		auto it = g_objectList.find(m_claimedFurnitureId);
+		bool goingToClaim = false;
+		if (it != g_objectList.end() && it->second)
+		{
+			const Vector3 fp = it->second->GetPos();
+			const int dx = std::abs((int)floorf(dest.x) - (int)floorf(fp.x));
+			const int dz = std::abs((int)floorf(dest.z) - (int)floorf(fp.z));
+			goingToClaim = (std::max(dx, dz) <= 2);
+		}
+		if (!goingToClaim)
+			ReleaseFurnitureClaim();
 	}
 
 	m_pathWaypoints = g_pathfindingSystem->FindPath(m_Pos, dest, this, allowHierarchical);

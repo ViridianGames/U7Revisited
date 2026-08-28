@@ -778,6 +778,41 @@ void ShapeData::UpdateTextureCoordinates()
     
 }
 
+void ShapeData::DrawMeshId(const Vector3& pos, float angle, Color idColor, Vector3 scaling)
+{
+	if (!m_isValid || !m_customMesh)
+		return;
+	if (m_drawType != ShapeDrawType::OBJECT_DRAW_CUSTOM_MESH &&
+		m_drawType != ShapeDrawType::OBJECT_DRAW_CUSTOM_MESH_DEFER)
+		return;
+	if (!g_meshOutlineSystemReady)
+		return;
+
+	Vector3 finalPos = Vector3Add(pos, m_TweakPos);
+	// Match the color-pass custom-mesh draw (uses shape m_rotation / m_Scaling).
+	(void)angle;
+	Vector3 finalScale = Vector3{
+		m_Scaling.x * scaling.x,
+		m_Scaling.y * scaling.y,
+		m_Scaling.z * scaling.z
+	};
+
+	Model& model = m_customMesh->GetModel();
+	m_customMesh->UpdateAnim("idle");
+	struct MatBackup { Shader shader{}; };
+	std::vector<MatBackup> backup(static_cast<size_t>(std::max(0, model.materialCount)));
+	for (int mi = 0; mi < model.materialCount; ++mi)
+	{
+		backup[static_cast<size_t>(mi)].shader = model.materials[mi].shader;
+		model.materials[mi].shader = g_meshIdShader;
+	}
+
+	DrawModelEx(model, finalPos, { 0, 1, 0 }, m_rotation, finalScale, idColor);
+
+	for (int mi = 0; mi < model.materialCount; ++mi)
+		model.materials[mi].shader = backup[static_cast<size_t>(mi)].shader;
+}
+
 void ShapeData::DrawInventoryIcon(int x, int y, Color tint)
 {
 	if (m_isValid == false)
@@ -979,7 +1014,8 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 			}
 		};
 
-		if (m_meshOutline && !g_pixelated)
+		// F6 toggles screen-space post outlines vs legacy stencil inflate.
+		if (m_meshOutline && !g_pixelated && !g_useScreenSpaceMeshOutline)
 		{
 			glClearStencil(0);
 			glClear(GL_STENCIL_BUFFER_BIT);
@@ -997,28 +1033,25 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 			glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
 			glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
-			// Get the bounding box to find the model's center
 			BoundingBox boundingBox = GetModelBoundingBox(model);
 			Vector3 size = Vector3{
-				fabs(boundingBox.max.x - boundingBox.min.x),
-				fabs(boundingBox.max.y - boundingBox.min.y),
-				fabs(boundingBox.max.z - boundingBox.min.z) };
-			// Calculate the local center of the model (unscaled)
+				fabsf(boundingBox.max.x - boundingBox.min.x),
+				fabsf(boundingBox.max.y - boundingBox.min.y),
+				fabsf(boundingBox.max.z - boundingBox.min.z) };
+			size.x = std::max(size.x, 0.001f);
+			size.y = std::max(size.y, 0.001f);
+			size.z = std::max(size.z, 0.001f);
 			Vector3 localCenter = Vector3{
 				(boundingBox.min.x + boundingBox.max.x) / 2.0f,
 				(boundingBox.min.y + boundingBox.max.y) / 2.0f,
 				(boundingBox.min.z + boundingBox.max.z) / 2.0f };
 
-			// Fixed outline thickness in world space
-			float outlineThickness = 0.075f;
-
-			// Calculate the outline scale
+			const float outlineThickness = 0.075f;
 			Vector3 outlineScale = Vector3{
 				m_Scaling.x + (outlineThickness / size.x) * 2.0f,
 				m_Scaling.y + (outlineThickness / size.y) * 2.0f,
 				m_Scaling.z + (outlineThickness / size.z) * 2.0f };
 
-			// Adjust position to compensate for the pivot offset when scaling
 			Vector3 scaledCenter = Vector3{
 				localCenter.x * m_Scaling.x,
 				localCenter.y * m_Scaling.y,
@@ -1030,7 +1063,6 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 			Vector3 centerOffset = Vector3Subtract(scaledCenter, outlineScaledCenter);
 			Vector3 outlinePos = Vector3Add(finalPos, centerOffset);
 
-			// Draw the outline with the adjusted position
 			glDepthMask(GL_FALSE);
 			DrawModelEx(model, outlinePos, { 0, 1, 0 }, m_rotation, outlineScale, BLACK);
 			glDepthMask(GL_TRUE);
@@ -1039,6 +1071,7 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 		}
 		else
 		{
+			// Screen-space mode: fill only; borders come from the ID post-pass.
 			DrawModelEx(model, finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, color);
 			restoreMaterials();
 		}

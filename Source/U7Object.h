@@ -375,6 +375,8 @@ public:
 	void StaticDraw();
 
 	void CustomMeshDraw(Color color);
+	// Write this object's ID into the mesh-outline mask (custom meshes only).
+	void DrawMeshId();
 
 	void TryOpenDoorAtCurrentPosition();
 	void InteractiveUpdate();
@@ -422,17 +424,29 @@ public:
 	// Temporary debug helper - prints info for a monster (name, activity, alignment, str/dex/int/health)
 	void DebugPrintMonsterInfo() const;
 
-	void SetOverrideFrame(int overrideFrame)
-	{
-		m_overrideFrame = overrideFrame;
-		m_isFrameOverridden = true;
-	}
-
-	void ClearOverrideFrame()
-	{
-		m_isFrameOverridden = false;
-		m_overrideFrame = 0;
-	}
+	// Pose frames (Exult): 0–15 one facing set, 16–31 the opposite.
+	// sit=10/26, sleep=13/29. Setting a pose stops pathing so NPCDraw uses it.
+	void SetOverrideFrame(int overrideFrame);
+	void ClearOverrideFrame(const Vector3* toward = nullptr);
+	bool IsSittingPose() const;
+	bool IsSleepingPose() const;
+	int GetSitFrameForFacing() const;
+	int GetSleepFrameForFacing() const;
+	void SitOnObject(U7Object* chair);
+	void LieOnObject(U7Object* bed);
+	// After sitting/sleeping, step to a walkable tile so pathfinding isn't trapped
+	// inside the furniture footprint / AABB. If toward is set, prefer a tile that
+	// progresses toward that destination (faster schedule handoff).
+	void UnstickFromFurniture(const Vector3* toward = nullptr);
+	// Drop m_furnitureObjectId once the NPC has stepped clear of the seat tile
+	// (keeps ValidateMove ignoring the chair AABB during the stand-up step).
+	void ReleaseFurnitureIfClear();
+	int GetFurnitureObjectId() const { return m_furnitureObjectId; }
+	int GetClaimedFurnitureId() const { return m_claimedFurnitureId; }
+	void ClaimFurniture(int objectId);
+	void ReleaseFurnitureClaim();
+	// True if another NPC has claimed/occupied this chair/bed.
+	static bool IsFurnitureClaimedByOther(int furnitureObjectId, int selfObjectId);
 
 	void CheckLighting();
 
@@ -514,6 +528,12 @@ public:
 
 	bool m_isFrameOverridden = false;
 	int m_overrideFrame = 0;
+	// Chair/bed object id while sitting/sleeping (-1 = none). Ignored by ValidateMove
+	// collision so the NPC can stand up and walk away.
+	int m_furnitureObjectId = -1;
+	// Soft claim while walking to furniture (find_nearest_*), so two NPCs don't
+	// target the same chair. Cleared on sit convert, unstick, or new claim.
+	int m_claimedFurnitureId = -1;
 	bool m_Visible; // This is set to false for objects that are out of range or otherwise not visible
 	bool m_ShouldDraw = true; // This is an override that can be set in a Lua script.
 	bool m_Selected;

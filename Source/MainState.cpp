@@ -329,6 +329,10 @@ void MainState::Shutdown()
 
 	UnloadRenderTexture(g_guiRenderTarget);
 	UnloadRenderTexture(g_renderTarget);
+	if (g_pixelRenderTarget.id > 0)
+		UnloadRenderTexture(g_pixelRenderTarget);
+	if (g_meshIdTarget.id > 0)
+		UnloadRenderTexture(g_meshIdTarget);
 }
 
 void MainState::UpdateTime()
@@ -522,9 +526,18 @@ void MainState::HandleDebugKeys()
 		AddConsoleString(m_allowMovingStaticObjects ? "DEBUG: Can now move static objects" : "DEBUG: Static objects locked");
 	}
 
-	if (IsKeyPressed(KEY_F6))
+	if (IsKeyPressed(KEY_F4))
 	{
 		g_pixelated = !g_pixelated;
+		AddConsoleString(g_pixelated ? "Pixelated world ON (virtual res)" : "Pixelated world OFF (native res)");
+	}
+
+	if (IsKeyPressed(KEY_F6))
+	{
+		g_useScreenSpaceMeshOutline = !g_useScreenSpaceMeshOutline;
+		AddConsoleString(g_useScreenSpaceMeshOutline
+			? "Mesh outlines: screen-space (0.75×drawScale×zoom)"
+			: "Mesh outlines: stencil inflate (fallback)");
 	}
 
 	if (IsKeyPressed(KEY_F8))
@@ -1660,8 +1673,27 @@ void MainState::Update()
 
 				if (res.success && !res.path.empty())
 				{
-					// Assign waypoints computed by worker
-					npcObj->m_pathWaypoints = std::move(res.path);
+					// Stand up / leave chair before applying the path so they don't
+					// spend a beat colliding with furniture on the seat tile.
+					// (Often already cleared when the schedule path was enqueued.)
+					const bool wasPosed = npcObj->IsSittingPose() || npcObj->IsSleepingPose();
+					if (wasPosed || npcObj->GetFurnitureObjectId() >= 0)
+						npcObj->ClearOverrideFrame(&res.dest);
+
+					// Assign waypoints computed by worker. If they were still seated
+					// when this result arrived, the worker path started from the seat
+					// — repath from the new stand tile so the first step is clean.
+					if (wasPosed && g_pathfindingSystem)
+					{
+						npcObj->m_pathWaypoints = g_pathfindingSystem->FindPath(
+							npcObj->GetPos(), res.dest, npcObj);
+						if (npcObj->m_pathWaypoints.empty())
+							npcObj->m_pathWaypoints = std::move(res.path);
+					}
+					else
+					{
+						npcObj->m_pathWaypoints = std::move(res.path);
+					}
 					npcObj->m_pathfindingPending = false;
 					npcObj->m_isSchedulePath = true;
 					if (g_pathfindingSystem && g_pathfindingSystem->GetFrozenSearchObjectId() == objId)
@@ -1676,6 +1708,14 @@ void MainState::Update()
 						npcObj->m_currentWaypointIndex = 1;
 					else
 						npcObj->m_currentWaypointIndex = 0;
+
+					// Skip waypoints that match current XZ (common after unstick).
+					while (npcObj->m_currentWaypointIndex < static_cast<int>(npcObj->m_pathWaypoints.size()) &&
+						(int)npcObj->m_pathWaypoints[npcObj->m_currentWaypointIndex].x == (int)npcObj->m_Pos.x &&
+						(int)npcObj->m_pathWaypoints[npcObj->m_currentWaypointIndex].z == (int)npcObj->m_Pos.z)
+					{
+						npcObj->m_currentWaypointIndex++;
+					}
 
 					if (npcObj->m_currentWaypointIndex >= 0 && npcObj->m_currentWaypointIndex < static_cast<int>(npcObj->m_pathWaypoints.size()))
 					{
@@ -2257,10 +2297,11 @@ void MainState::OpenLoadSaveGump()
 
 void MainState::Draw()
 {
-	if (g_pixelated)
-	{
-		BeginTextureMode(g_renderTarget);
-	}
+	// Legacy stencil outlines need the default framebuffer (RenderTextures often
+	// lack a working stencil). Screen-space / pixelated modes use a world RT.
+	const bool worldToRT = g_useScreenSpaceMeshOutline || g_pixelated;
+	if (worldToRT)
+		BeginTextureMode(GetWorldRenderTarget());
 
 	ClearBackground(Color{ 0, 0, 0, 255 });
 
@@ -2536,15 +2577,14 @@ void MainState::Draw()
 
 	EndMode3D();
 
-	float ratio = float(g_Engine->m_ScreenWidth) / float(g_Engine->m_RenderWidth);
-	if (g_pixelated)
+	if (worldToRT)
 	{
 		EndTextureMode();
-		DrawTexturePro(g_renderTarget.texture,
-			{ 0, 0, float(g_renderTarget.texture.width), float(g_renderTarget.texture.height) },
-			{ 0, float(g_Engine->m_ScreenHeight), float(g_Engine->m_ScreenWidth), -float(g_Engine->m_ScreenHeight) },
-			{ 0, 0 }, 0, WHITE);
+		DrawMeshOutlineIdPass(m_showObjects);
+		BlitWorldWithMeshOutline();
 	}
+
+	float ratio = float(g_Engine->m_ScreenWidth) / float(g_Engine->m_RenderWidth);
 
 	//  Draw the GUI
 	BeginTextureMode(g_guiRenderTarget);

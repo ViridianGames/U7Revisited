@@ -50,7 +50,11 @@ function activity_desk_work(npc_id)
 
     -- Sit down at desk
     debug_npc(npc_id, "sitting down at desk")
-    npc_frame(npc_id, 26)  -- Frame 26 = sitting
+    if sit_down then
+        sit_down(npc_id, chair)
+    else
+        npc_frame(npc_id, 26)
+    end
 
     -- Stay working (yield forever until activity changes)
     while true do

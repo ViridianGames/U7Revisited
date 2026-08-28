@@ -416,8 +416,8 @@ extern std::vector<int> g_interestChunkList;
 /// (flat polygon-offset, deferred meshes + alpha discard). Call inside BeginMode3D.
 void DrawGameWorld(bool drawObjects = true);
 
-/// Clear + 3D world frame matching MainState (pixelated RT when enabled).
-/// Does not draw any HUD/GUI. Call before overlay UI states.
+/// Clear + 3D world frame matching MainState (always via g_renderTarget,
+/// then mesh-ID outline composite / blit). No HUD/GUI.
 void DrawGameWorldFrame(bool drawObjects = true);
 
 Vector3 GetRadialVector(float partitions, float thispartition);
@@ -575,6 +575,22 @@ extern Shader g_alphaDiscard;
 extern Shader g_cuboidShader;
 extern int g_cuboidTexCoordsLoc;
 
+// Screen-space mesh outline (constant pixel thickness).
+extern Shader g_meshIdShader;       // Flat ID write for outlined custom meshes
+extern Shader g_meshOutlineShader;  // Fullscreen ID edge → black border composite
+extern int g_meshOutlineIdSamplerLoc;
+extern int g_meshOutlineResolutionLoc;
+extern int g_meshOutlineThicknessLoc;
+// Virtual-res base thickness; at blit: base × g_DrawScale × (closeLimit / cameraDistance).
+extern float g_meshOutlineThickness;
+extern RenderTexture2D g_meshIdTarget;
+extern bool g_meshOutlineSystemReady;
+
+Color MakeMeshOutlineIdColor(int objectId);
+bool ObjectWantsScreenSpaceOutline(U7Object* object);
+void DrawMeshOutlineIdPass(bool drawObjects);
+void BlitWorldWithMeshOutline();
+
 // Runtime palette animation (U7-style index cycling via GPU LUT)
 //
 // High palette roles (Ultima VII):
@@ -631,8 +647,14 @@ void BindPaletteMaterial(Material* material, Texture2D indexTexture);
 int FindNearestU7PaletteIndex(unsigned char r, unsigned char g, unsigned char b);
 
 extern bool g_pixelated;
-extern RenderTexture2D g_renderTarget;
-extern RenderTexture2D g_guiRenderTarget;
+// true = screen-space ID outline post-pass; false = legacy per-mesh stencil inflate.
+extern bool g_useScreenSpaceMeshOutline;
+extern RenderTexture2D g_renderTarget;       // Native-resolution world color
+extern RenderTexture2D g_pixelRenderTarget;  // Virtual-res world color (F4 pixelated)
+extern RenderTexture2D g_guiRenderTarget;    // Virtual-res UI
+
+// Active world color RT (native, or virtual when pixelated).
+RenderTexture2D& GetWorldRenderTarget();
 
 //////////////////////////////////////////////////////////////////////////////
 ///  CAMERA SETTINGS AND RELATED FUNCTIONS

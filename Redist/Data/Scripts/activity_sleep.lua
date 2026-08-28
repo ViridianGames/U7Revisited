@@ -39,9 +39,14 @@ function activity_sleep(npc_id)
         end
     end
 
-    -- At bed but not sleeping - lie down
+    -- At bed but not sleeping - lie down (npc_frame stops pathing + Exult sleep frame)
     debug_npc(npc_id, "lying down in bed")
-    npc_frame(npc_id, 29)  -- Frame 29 = lying down
+    -- Snap onto the bed tile, then pose.
+    local bed_pos = get_object_position(bed)
+    if bed_pos then
+        -- request_pathfind already walked us near; final snap via npc_frame halt
+    end
+    npc_frame(npc_id, 29)  -- 13/29 = Exult sleep frames (facing-aware in C++)
 
     -- Sleep forever (schedule system will stop this script when activity changes)
     while true do
