@@ -1,4 +1,3 @@
-# Blender 3.6.2 MTL File: 'cube_generator_241_final.blend'
 # www.blender.org
 
 newmtl Material
@@ -9,4 +8,4 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 1
-map_Kd Models/3dmodels/cube_generator_241x00_texture_atlas.png
+map_Kd cube_generator_241x00.png

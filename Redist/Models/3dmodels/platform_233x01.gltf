@@ -1,137 +1,137 @@
 {
-	"asset":{
-		"generator":"Khronos glTF Blender I/O v4.4.55",
-		"version":"2.0"
+	"asset": {
+		"generator": "Khronos glTF Blender I/O v4.4.55",
+		"version": "2.0"
 	},
-	"scene":0,
-	"scenes":[
+	"scene": 0,
+	"scenes": [
 		{
-			"name":"Scene",
-			"nodes":[
+			"name": "Scene",
+			"nodes": [
 				0
 			]
 		}
 	],
-	"nodes":[
+	"nodes": [
 		{
-			"mesh":0,
-			"name":"platform_233x01"
+			"mesh": 0,
+			"name": "platform_233x01"
 		}
 	],
-	"materials":[
+	"materials": [
 		{
-			"doubleSided":true,
-			"name":"Material",
-			"pbrMetallicRoughness":{
-				"baseColorTexture":{
-					"index":0
+			"doubleSided": true,
+			"name": "Material",
+			"pbrMetallicRoughness": {
+				"baseColorTexture": {
+					"index": 0
 				},
-				"metallicFactor":0,
-				"roughnessFactor":0.5
+				"metallicFactor": 0,
+				"roughnessFactor": 0.5
 			}
 		}
 	],
-	"meshes":[
+	"meshes": [
 		{
-			"name":"Plane.001",
-			"primitives":[
+			"name": "Plane.001",
+			"primitives": [
 				{
-					"attributes":{
-						"POSITION":0,
-						"NORMAL":1,
-						"TEXCOORD_0":2
+					"attributes": {
+						"POSITION": 0,
+						"NORMAL": 1,
+						"TEXCOORD_0": 2
 					},
-					"indices":3,
-					"material":0
+					"indices": 3,
+					"material": 0
 				}
 			]
 		}
 	],
-	"textures":[
+	"textures": [
 		{
-			"sampler":0,
-			"source":0
+			"sampler": 0,
+			"source": 0
 		}
 	],
-	"images":[
+	"images": [
 		{
-			"mimeType":"image/png",
-			"name":"233platform",
-			"uri":"233platform.png"
+			"mimeType": "image/png",
+			"name": "platform_233x01",
+			"uri": "platform_233x01.png"
 		}
 	],
-	"accessors":[
+	"accessors": [
 		{
-			"bufferView":0,
-			"componentType":5126,
-			"count":82,
-			"max":[
+			"bufferView": 0,
+			"componentType": 5126,
+			"count": 82,
+			"max": [
 				2,
 				0.9761443734169006,
 				2
 			],
-			"min":[
+			"min": [
 				-2,
 				0,
 				-2
 			],
-			"type":"VEC3"
+			"type": "VEC3"
 		},
 		{
-			"bufferView":1,
-			"componentType":5126,
-			"count":82,
-			"type":"VEC3"
+			"bufferView": 1,
+			"componentType": 5126,
+			"count": 82,
+			"type": "VEC3"
 		},
 		{
-			"bufferView":2,
-			"componentType":5126,
-			"count":82,
-			"type":"VEC2"
+			"bufferView": 2,
+			"componentType": 5126,
+			"count": 82,
+			"type": "VEC2"
 		},
 		{
-			"bufferView":3,
-			"componentType":5123,
-			"count":240,
-			"type":"SCALAR"
+			"bufferView": 3,
+			"componentType": 5123,
+			"count": 240,
+			"type": "SCALAR"
 		}
 	],
-	"bufferViews":[
+	"bufferViews": [
 		{
-			"buffer":0,
-			"byteLength":984,
-			"byteOffset":0,
-			"target":34962
+			"buffer": 0,
+			"byteLength": 984,
+			"byteOffset": 0,
+			"target": 34962
 		},
 		{
-			"buffer":0,
-			"byteLength":984,
-			"byteOffset":984,
-			"target":34962
+			"buffer": 0,
+			"byteLength": 984,
+			"byteOffset": 984,
+			"target": 34962
 		},
 		{
-			"buffer":0,
-			"byteLength":656,
-			"byteOffset":1968,
-			"target":34962
+			"buffer": 0,
+			"byteLength": 656,
+			"byteOffset": 1968,
+			"target": 34962
 		},
 		{
-			"buffer":0,
-			"byteLength":480,
-			"byteOffset":2624,
-			"target":34963
+			"buffer": 0,
+			"byteLength": 480,
+			"byteOffset": 2624,
+			"target": 34963
 		}
 	],
-	"samplers":[
+	"samplers": [
 		{
-			"magFilter":9728,
-			"minFilter":9984
+			"magFilter": 9728,
+			"minFilter": 9984
 		}
 	],
-	"buffers":[
+	"buffers": [
 		{
-			"byteLength":3104,
-			"uri":"platform_233x01.bin"
+			"byteLength": 3104,
+			"uri": "platform_233x01.bin"
 		}
 	]
 }
