@@ -644,6 +644,8 @@ void BindPaletteMaterial(Material* material, Texture2D indexTexture);
 
 // Nearest entry in g_basePalette (0-254). Used when converting authored RGB
 // model textures into palette index maps for glisten.
+// Exact matches and distance ties prefer glisten bands (224-254) so duplicated
+// colors like #FCFCFC resolve to water/fire indices instead of static early entries.
 int FindNearestU7PaletteIndex(unsigned char r, unsigned char g, unsigned char b);
 
 extern bool g_pixelated;

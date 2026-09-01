@@ -555,6 +555,23 @@ void BindPaletteMaterial(Material* material, Texture2D indexTexture)
 
 int FindNearestU7PaletteIndex(unsigned char r, unsigned char g, unsigned char b)
 {
+	// Custom-mesh PNGs often reuse the same RGB at a static index and again in the
+	// glisten bands (e.g. #FCFCFC at 15 and water cycle 224). Prefer animated
+	// indices so palette cycling is not lost (GitHub #74).
+	auto exactMatch = [&](int lo, int hiExclusive) -> int {
+		for (int i = lo; i < hiExclusive; ++i)
+		{
+			if (g_basePalette[i].r == r && g_basePalette[i].g == g && g_basePalette[i].b == b)
+				return i;
+		}
+		return -1;
+	};
+
+	if (const int hit = exactMatch(kU7PaletteCycleMin, kU7PaletteCycleMaxExclusive); hit >= 0)
+		return hit;
+	if (const int hit = exactMatch(kU7PaletteXformMin, kU7PaletteXformMaxInclusive + 1); hit >= 0)
+		return hit;
+
 	int best = 0;
 	int bestDist = 0x7fffffff;
 	for (int i = 0; i < 255; ++i)
@@ -563,11 +580,20 @@ int FindNearestU7PaletteIndex(unsigned char r, unsigned char g, unsigned char b)
 		const int dg = int(g) - int(g_basePalette[i].g);
 		const int db = int(b) - int(g_basePalette[i].b);
 		const int dist = dr * dr + dg * dg + db * db;
-		if (dist < bestDist)
+		if (dist > bestDist)
+			continue;
+
+		const bool iGlisten = IsU7PaletteCycleIndex(i)
+			|| (i >= kU7PaletteXformMin && i <= kU7PaletteXformMaxInclusive);
+		const bool bestGlisten = IsU7PaletteCycleIndex(best)
+			|| (best >= kU7PaletteXformMin && best <= kU7PaletteXformMaxInclusive);
+
+		// Strictly closer always wins; on a tie prefer glisten indices.
+		if (dist < bestDist || (dist == bestDist && iGlisten && !bestGlisten))
 		{
 			bestDist = dist;
 			best = i;
-			if (dist == 0)
+			if (dist == 0 && iGlisten)
 				break;
 		}
 	}
