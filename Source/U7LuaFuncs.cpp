@@ -11,6 +11,7 @@
 #include "ConversationState.h"
 #include <iostream>
 #include <cstring>
+#include <sstream>
 
 #include "Logging.h"
 #include "U7GumpBook.h"
