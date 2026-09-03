@@ -290,6 +290,10 @@ bool PathfindingSystem::IsWalkableSurface(int shapeID)
 	if (shapeID == 804)//crate
 		return true;
 
+	// Teleport / dungeon platform (CSV climbable) — stand on it to use.
+	if (shapeID == 233)
+		return true;
+
 	if (shapeID == 962)
 		return true;
 
@@ -305,8 +309,8 @@ bool PathfindingSystem::IsPassThroughObject(int shapeID)
 
 bool PathfindingSystem::IsNonBlockingWalkSurface(int shapeID)
 {
-	// Crates are standable tops with solid sides — they still block volume.
-	if (shapeID == 804)
+	// Crates / platforms: standable tops with solid sides — still block volume.
+	if (shapeID == 804 || shapeID == 233)
 		return false;
 	// Pass-through handled separately.
 	if (IsPassThroughObject(shapeID))
@@ -363,6 +367,13 @@ bool PathfindingSystem::IsStandableObjectTop(const U7Object* obj)
 	// overlay never painted those tiles red (multi-height skipped the check).
 	if (IsWalkableSurface(shapeID))
 		return true;
+
+	// object_walkability.csv climbable (2) — e.g. teleport platform 233.
+	if (g_pathfindingSystem &&
+		g_pathfindingSystem->GetObjectWalkability(shapeID, obj) == OW_CLIMBABLE)
+	{
+		return true;
+	}
 
 	return false;
 }
@@ -558,6 +569,21 @@ bool PathfindingSystem::ValidateMove(U7Object* agent, const Vector3& desiredPos,
 				if (obj->m_objectData && obj->m_objectData->m_isDoor)
 					continue;
 
+				// Open/sunk barriers listed as walkable in object_walkability.csv
+				// (metal wall 876 closed → 935 open) must not keep blocking.
+				{
+					const ObjectWalkability walk = sys->GetObjectWalkability(shapeID, obj);
+					if (walk == OW_WALKABLE || walk == OW_DOOR)
+						continue;
+				}
+
+				// Fully sunk into the floor: top at/below destination feet.
+				if (PathfindingSystem::GetObjectSurfaceY(obj) <= destH + 0.05f &&
+					obj->m_Pos.y < destH - 0.05f)
+				{
+					continue;
+				}
+
 				// Curtains / soft props: always passable.
 				if (IsPassThroughObject(shapeID))
 					continue;
@@ -695,6 +721,24 @@ static bool CanStandOnSurface(int worldX, int worldZ, float standH,
 		}
 
 		const int shapeID = obj->m_shapeData ? obj->m_shapeData->GetShape() : -1;
+
+		// CSV / door-like open states (e.g. sunk metal wall 935) are walk-through
+		// even when TFA still has the not-walkable bit set.
+		if (shapeID >= 0)
+		{
+			const ObjectWalkability walk = g_pathfindingSystem
+				? g_pathfindingSystem->GetObjectWalkability(shapeID, obj)
+				: OW_WALKABLE;
+			if (walk == OW_WALKABLE || walk == OW_DOOR)
+				continue;
+		}
+
+		// Fully sunk / flush with terrain (open portcullis resting in the floor).
+		if (PathfindingSystem::GetObjectSurfaceY(obj) <= standH + 0.05f &&
+			obj->m_Pos.y < standH - 0.05f)
+		{
+			continue;
+		}
 
 		// Curtains etc. never obstruct standing/pathing.
 		if (shapeID >= 0 && PathfindingSystem::IsPassThroughObject(shapeID))
@@ -2983,6 +3027,103 @@ ObjectWalkability PathfindingSystem::GetObjectWalkability(int shapeID, const U7O
 	return OW_WALKABLE;
 }
 
+float PathfindingSystem::TerrainCostAt(int worldX, int worldZ) const
+{
+	if (worldX < 0 || worldX >= kWorldSize || worldZ < 0 || worldZ >= kWorldSize)
+		return kImpassableTerrainCost;
+	if (worldZ >= (int)g_World.size() || worldX >= (int)g_World[worldZ].size())
+		return 1.0f;
+	const unsigned short shapeframe = g_World[worldZ][worldX];
+	const int shapeID = shapeframe & 0x3ff;
+	auto it = m_terrainCosts.find(shapeID);
+	return (it != m_terrainCosts.end()) ? it->second : 1.0f;
+}
+
+bool PathfindingSystem::ShouldStampObjectAsGroundBlocker(const U7Object* obj) const
+{
+	if (!obj || !obj->m_objectData || !obj->m_shapeData)
+		return false;
+	if (const_cast<U7Object*>(obj)->GetIsDead() || obj->m_isContained)
+		return false;
+	if (obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC ||
+		obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_MONSTER ||
+		obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_EGG)
+	{
+		return false;
+	}
+
+	// Fully sunk / flush barriers (open metal wall / portcullis) sit at or below
+	// the terrain plane — do not keep their old upright footprint blocked.
+	if (GetObjectSurfaceY(obj) <= 0.05f)
+		return false;
+
+	// Only objects sitting on (or barely above) the terrain plane.
+	if (obj->m_Pos.y > 0.05f)
+		return false;
+
+	// Short props (height < 2) do not block the ground map (open 935 is height 0).
+	if (obj->m_objectData->m_height < 2.0f)
+		return false;
+
+	const int shapeID = obj->m_shapeData->GetShape();
+	const ObjectWalkability walk = GetObjectWalkability(shapeID, obj);
+	if (walk == OW_WALKABLE || walk == OW_DOOR)
+		return false;
+	if (obj->m_objectData->m_isDoor)
+		return false;
+	if (IsPassThroughObject(shapeID))
+		return false;
+	if (!obj->m_objectData->m_isNotWalkable && walk != OW_BLOCKING)
+		return false;
+
+	return true;
+}
+
+void PathfindingSystem::InvalidateGroundCostMap()
+{
+	m_groundCostValid = false;
+	m_walkableCacheValid = false;
+}
+
+void PathfindingSystem::RefreshGroundCostAround(int worldX, int worldZ, int radius)
+{
+	if (radius < 0)
+		radius = 0;
+
+	if (!m_groundCostValid || m_groundCost.empty())
+	{
+		PopulateGroundCostMap();
+		return;
+	}
+
+	const int x0 = worldX - radius;
+	const int x1 = worldX + radius;
+	const int z0 = worldZ - radius;
+	const int z1 = worldZ + radius;
+
+	for (int z = z0; z <= z1; ++z)
+	{
+		if (z < 0 || z >= kWorldSize)
+			continue;
+		for (int x = x0; x <= x1; ++x)
+		{
+			if (x < 0 || x >= kWorldSize)
+				continue;
+
+			m_groundCost[z][x] = TerrainCostAt(x, z);
+
+			auto overlapping = GetOverlappingObjects(x, z);
+			for (const auto& ov : overlapping)
+			{
+				if (!ShouldStampObjectAsGroundBlocker(ov.obj))
+					continue;
+				m_groundCost[z][x] = kImpassableTerrainCost;
+				break;
+			}
+		}
+	}
+}
+
 void PathfindingSystem::PopulateGroundCostMap()
 {
 	m_groundCostValid = false;
@@ -2995,18 +3136,10 @@ void PathfindingSystem::PopulateGroundCostMap()
 	{
 		const int worldXMax = std::min(kWorldSize, (int)g_World[z].size());
 		for (int x = 0; x < worldXMax; ++x)
-		{
-			const unsigned short shapeframe = g_World[z][x];
-			const int shapeID = shapeframe & 0x3ff;
-			float cost = 1.0f;
-			auto it = m_terrainCosts.find(shapeID);
-			if (it != m_terrainCosts.end())
-				cost = it->second;
-			m_groundCost[z][x] = cost;
-		}
+			m_groundCost[z][x] = TerrainCostAt(x, z);
 	}
 
-	// Stamp tall ground solids (walls, etc.). Ignores object_walkability.csv for now.
+	// Stamp tall ground solids (walls, closed metal barriers, etc.).
 	BakeBlockingObjectsIntoGroundCost();
 
 	m_groundCostValid = true;
@@ -3026,34 +3159,7 @@ void PathfindingSystem::BakeBlockingObjectsIntoGroundCost()
 	for (const auto& pair : g_objectList)
 	{
 		U7Object* obj = pair.second.get();
-		if (!obj || !obj->m_objectData || !obj->m_shapeData)
-			continue;
-		if (obj->GetIsDead())
-			continue;
-		if (obj->m_isContained)
-			continue;
-		if (obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC ||
-			obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_MONSTER ||
-			obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_EGG)
-		{
-			continue;
-		}
-
-		// Only objects sitting on the terrain plane.
-		if (obj->m_Pos.y > 0.05f)
-			continue;
-
-		// Short props (height < 2) do not block the ground map.
-		if (obj->m_objectData->m_height < 2.0f)
-			continue;
-
-		// Walkable / door / pass-through: leave terrain cost alone.
-		if (obj->m_objectData->m_isDoor)
-			continue;
-		if (!obj->m_objectData->m_isNotWalkable)
-			continue;
-		const int shapeID = obj->m_shapeData->GetShape();
-		if (IsPassThroughObject(shapeID))
+		if (!ShouldStampObjectAsGroundBlocker(obj))
 			continue;
 
 		const int w = std::max(1, static_cast<int>(obj->m_objectData->m_width));

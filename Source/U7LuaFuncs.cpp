@@ -792,6 +792,14 @@ static int LuaSetObjectShape(lua_State *L)
         g_objectDataTable[shape].m_isDoor = true;
     }
 
+    // Always refresh ground-cost stamps around the footprint. Metal walls (876)
+    // bake as impassable; when they open/sink to 935 the old stamps must clear
+    // or drive + pathfinding still treat the doorway as blocked.
+    {
+        const int radius = 4;
+        NotifyPathfindingGridUpdate((int)object->m_Pos.x, (int)object->m_Pos.z, radius);
+    }
+
     return 0;
 }
 

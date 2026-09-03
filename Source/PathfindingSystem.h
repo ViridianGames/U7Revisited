@@ -192,8 +192,12 @@ public:
 	bool FindNearestWalkableStand(Vector3 nearPos, float preferY, const U7Object* agent,
 		Vector3& outStand, int maxRadius = 2) const;
 
-	// object_walkability.csv lookup (not used for ground bake currently; kept for later).
+	// object_walkability.csv lookup (also used by ground bake + live collision).
 	ObjectWalkability GetObjectWalkability(int shapeID, const U7Object* obj = nullptr) const;
+
+	// Recompute ground-cost stamps near a world tile (doors/walls that open, sink, or change shape).
+	void RefreshGroundCostAround(int worldX, int worldZ, int radius = 2);
+	void InvalidateGroundCostMap();
 
 	// Legacy name used by callers; now means ground cost < 99.
 	bool GetCachedGroundWalkable(int worldX, int worldZ) const { return IsGroundTerrainWalkable(worldX, worldZ); }
@@ -299,6 +303,8 @@ private:
 	void LoadTerrainCosts(const std::string& filename);
 	void PopulateGroundCostMap();
 	void BakeBlockingObjectsIntoGroundCost();
+	bool ShouldStampObjectAsGroundBlocker(const U7Object* obj) const;
+	float TerrainCostAt(int worldX, int worldZ) const;
 
 	bool CheckTileWalkable(int worldX, int worldZ, float agentBaseY, const U7Object* agent = nullptr) const;
 

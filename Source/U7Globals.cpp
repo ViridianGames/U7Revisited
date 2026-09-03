@@ -2550,8 +2550,11 @@ void OpenURL(const std::string& url)
 // Pathfinding grid update notification
 void NotifyPathfindingGridUpdate(int worldX, int worldZ, int radius)
 {
-	// No longer needed - tile-based pathfinding checks walkability dynamically during A* search
-	// Keeping this function as a no-op to avoid breaking existing code
+	// Tall ground solids are baked into m_groundCost. When a metal wall / door
+	// opens, sinks, or changes shape, those stamps must be refreshed or the
+	// old footprint stays impassable for both drive and pathfinding (#876).
+	if (g_pathfindingSystem)
+		g_pathfindingSystem->RefreshGroundCostAround(worldX, worldZ, radius);
 }
 
 #ifdef DEBUG_NPC_PATHFINDING

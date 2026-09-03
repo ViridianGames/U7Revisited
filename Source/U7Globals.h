@@ -704,7 +704,8 @@ const float MAX_WALKABLE_SURFACE_HEIGHT = 5.0f;
 Vector3 GetStandoffPosition(const Vector3& attackerPos, const Vector3& targetPos, float meleeRange = MELEE_RANGE_TILES);
 
 // Call this whenever ANY object changes position or state
-void NotifyPathfindingGridUpdate(int worldX, int worldZ, int radius = 1);
+// radius covers multi-tile footprints (metal walls are 4 wide).
+void NotifyPathfindingGridUpdate(int worldX, int worldZ, int radius = 4);
 
 extern bool g_allowInput;
 
