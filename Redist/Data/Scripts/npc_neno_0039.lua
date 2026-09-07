@@ -23,6 +23,7 @@ function npc_neno_0039(eventid, objectref)
             add_dialogue("\"Hello,\" Neno says.")
         end
         while true do
+            coroutine.yield()
             var_0000 = get_answer()
             if var_0000 == "name" then
                 add_dialogue("The musician nods at you. \"I am Neno.\"")

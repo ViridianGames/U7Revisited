@@ -16,6 +16,7 @@ function npc_sherry_0066(eventid, objectref)
             add_dialogue("\"Hello, " .. var_0000 .. "!\" Sherry the Mouse exclaims.")
         end
         while true do
+            coroutine.yield()
             var_0002 = get_answer()
             if var_0002 == "name" then
                 add_dialogue("\"Why, dost thou not remember Sherry, " .. var_0000 .. "?\"")

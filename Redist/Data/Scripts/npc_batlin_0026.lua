@@ -129,48 +129,50 @@ function npc_batlin_0026(eventid, objectref)
         end
     end
     while true do
-        if cmps("name") then
+        coroutine.yield()
+        local answer = get_answer()
+        if answer == "name" then
             add_dialogue("\"My name, good friend, is Batlin. And indeed it is truly a privilege to meet the Avatar in the flesh.\"")
             remove_answer("name")
-        elseif cmps("job") then
+        elseif answer == "job" then
             add_dialogue("\"I was once a druid. Now I am the leader and the originator of The Fellowship. It is rapidly growing throughout Britannia and keeps me very busy, as thou canst well imagine. Ha! Ha! Ha!\"")
             add_answer("Fellowship")
-        elseif cmps("Fellowship") then
+        elseif answer == "Fellowship" then
             add_dialogue("\"The Fellowship was formed twenty years ago with the full approval and support of Lord British. It is a society of spiritual seekers who strive to reach the highest levels of human potential and to share this knowledge freely with all people.\"")
             remove_answer("Fellowship")
             add_answer("spiritual")
-        elseif cmps("spiritual") then
+        elseif answer == "spiritual" then
             add_dialogue("\"The Fellowship advances the philosophy of sanguine cognition, a way to apply a positive order of thought to one's life through what is called the Triad of Inner Strength.\"")
             remove_answer("spiritual")
             add_answer({"Triad", "sanguine cognition"})
-        elseif cmps("sanguine cognition") then
+        elseif answer == "sanguine cognition" then
             add_dialogue("\"We strive to avoid the mistakes made by mystics and sages since the dawn of time. They apply the standards of the past, such as the virtues, for example, to qualify the present, and thus they do not perceive it correctly. We seek to examine our present lives each on our own terms and see the world the way it is.\"")
             remove_answer("sanguine cognition")
             add_answer("virtues")
-        elseif cmps("virtues") then
+        elseif answer == "virtues" then
             add_dialogue("\"They are perfectly adequate for those who feel that they still need them for whatever reason. But no one, not even thyself, thou must admit, Avatar, can fulfill them perfectly. Therefore they are a philosophy that is ultimately based upon failure. We have never claimed that our teachings are a substitute for the virtues. However, ours is a belief that is based upon success, not failure.\"")
             remove_answer("virtues")
-        elseif cmps("Triad") then
+        elseif answer == "Triad" then
             add_dialogue("\"The Triad of Inner Strength is simply three basic values that, when applied in unison, enable one to be more creative, satisfied and successful in life.\"")
             remove_answer("Triad")
             add_answer("values")
-        elseif cmps("values") then
+        elseif answer == "values" then
             add_dialogue("\"The three values of the Triad of Inner Strength are Strive For Unity, Trust Thy Brother and Worthiness Precedes Reward.\"")
             remove_answer("values")
             add_answer({"Worthiness", "Trust", "Unity"})
-        elseif cmps("Unity") then
+        elseif answer == "Unity" then
             add_dialogue("\"When we say Strive For Unity, it is simply our way of expressing how the people of Britannia should all cooperate and work together. A worthwhile sentiment, I am certain thou wouldst concur.\"")
             remove_answer("Unity")
             add_answer("join")
-        elseif cmps("Trust") then
+        elseif answer == "Trust" then
             add_dialogue("\"What The Fellowship means by this is that people are all the same and the world is, generally speaking, a supportive, nurturing place. The trust we place in each other is like the pinions that hold our society together. Quite true, wouldst thou not say?\"")
             remove_answer("Trust")
             add_answer("join")
-        elseif cmps("Worthiness") then
+        elseif answer == "Worthiness" then
             add_dialogue("\"Allow me to explain the meaning of Worthiness Precedes Reward. Each one of us seeks something which we desire from life and we must strive to be worthy of that which we seek. It would be difficult for thee to disagree I am quite sure.\"")
             remove_answer("Worthiness")
             add_answer("join")
-        elseif cmps("Elizabeth and Abraham") then
+        elseif answer == "Elizabeth and Abraham" then
             if not get_flag(261) then
                 add_dialogue("\"Ah, my good colleagues Elizabeth and Abraham were just here. They left this morning for Minoc on Fellowship business. They deal with the distribution and collection of funds.\"")
                 set_flag(135, true)
@@ -185,7 +187,7 @@ function npc_batlin_0026(eventid, objectref)
                 add_dialogue("\"I have not seen my colleagues since they were last here. They are busy folk.\"")
             end
             remove_answer("Elizabeth and Abraham")
-        elseif cmps("join") then
+        elseif answer == "join" then
             if get_flag(6) then
                 add_dialogue("\"But thou art already a member, Avatar! One can only join once!\"")
             elseif get_flag(150) and not get_flag(151) then
@@ -194,7 +196,7 @@ function npc_batlin_0026(eventid, objectref)
                 utility_ship_0845()
             end
             remove_answer("join")
-        elseif cmps("package") then
+        elseif answer == "package" then
             if get_flag(215) and not get_flag(143) then
                 add_dialogue("\"Ah! I do hope thine hands are not too full to take the package.\"")
                 var_0008 = find_object(359, 359, 798, 26)
@@ -212,11 +214,11 @@ function npc_batlin_0026(eventid, objectref)
             else
                 utility_unknown_0849()
             end
-        elseif cmps("delivered package") then
+        elseif answer == "delivered package" then
             add_dialogue("\"Congratulations, Avatar, and our thanks to thee for successfully delivering our package to Elynor of Minoc. Now we have another task at hand before thou canst join The Fellowship. Because thou didst deliver the package thou hast proven thyself worthy of performing another mission.\"")
             remove_answer("delivered package")
             add_answer("mission")
-        elseif cmps("package delivered") then
+        elseif answer == "package delivered" then
             add_dialogue("\"Avatar, didst thou deliver the package to Elynor of Minoc?\"")
             var_000B = ask_yes_no()
             if var_000B then
@@ -246,33 +248,33 @@ function npc_batlin_0026(eventid, objectref)
                 end
             end
             remove_answer("package delivered")
-        elseif cmps("mission") then
+        elseif answer == "mission" then
             add_dialogue("\"Thou shalt visit the dungeon of Destard, which is in the mountains just west of Trinsic. Do not worry, it is completely deserted. There thou shalt find a chest of Fellowship funds which was hidden for safekeeping just a few days ago. Thou wilt know the chest because it will contain not only gold but two Fellowship medallions. The site is also most likely marked with a Fellowship staff. Bring these funds back to us without losing a single coin and thou wilt have successfully completed thy mission. No need to bring the chest, just the gold. Now, thou must be on thy way!\"")
             set_flag(142, true)
             utility_unknown_1041(100)
             remove_answer("mission")
             return
-        elseif cmps("chest") then
+        elseif answer == "chest" then
             add_dialogue("\"Ah yes, thou hast returned from Dungeon Destard! But wait! I do not see the Fellowship funds that thou wast to bring back! What has happened?!\"")
             add_answer({"ship sunk", "pirates", "monsters", "a highwayman"})
             remove_answer("chest")
-        elseif cmps("a highwayman") then
+        elseif answer == "a highwayman" then
             add_dialogue("\"Why, thy tale is outlandish! I refuse to believe it!\" Batlin sniffs in irritation.")
             remove_answer("a highwayman")
             add_answer("join")
-        elseif cmps("monsters") then
+        elseif answer == "monsters" then
             add_dialogue("\"Monsters! There are monsters lurking in dungeon Destard?! Well then, I do apologize for thine inconvenience.\"")
             remove_answer({"pirates", "ship sunk", "a highwayman", "monsters"})
             add_answer("join")
-        elseif cmps("pirates") then
+        elseif answer == "pirates" then
             add_dialogue("\"Surely thou canst do better than that! If thou simply dost not wish to answer my question why dost thou not say so?\"")
             remove_answer("pirates")
             add_answer("join")
-        elseif cmps("ship sunk") then
+        elseif answer == "ship sunk" then
             add_dialogue("Batlin slowly rolls his eyes. \"Thou ought to have been a bard, thou dost regale me with such stories!\"")
             remove_answer("ship sunk")
             add_answer("join")
-        elseif cmps("medallion") then
+        elseif answer == "medallion" then
             var_0002 = add_party_items(false, 1, 359, 955, 1)
             if var_0002 then
                 add_dialogue("\"Allow me to present thee with thy Fellowship medallion.\" Batlin gives you the medallion. \"Please -- wear the medallion at all times. Ready it to thy neck immediately! Oh, and... welcome to The Fellowship, Avatar.\"")
@@ -281,10 +283,10 @@ function npc_batlin_0026(eventid, objectref)
             else
                 add_dialogue("\"Thou cannot receive thy Fellowship medallion. Thou art too encumbered!\"")
             end
-        elseif cmps("apples") then
+        elseif answer == "apples" then
             add_dialogue("\"While thou art here, please feel free to enjoy an apple. The finest in all of Britannia, I am certain thou wilt find. They are provided to The Fellowship by the Royal Orchards.\"")
             remove_answer("apples")
-        elseif cmps("voice") then
+        elseif answer == "voice" then
             if get_flag(150) then
                 add_dialogue("\"Once a person has walked with The Fellowship long enough and applied the Triad of Inner Strength to his life, he has cleared his mind of all conflicting, counterproductive thoughts to the point where he may actually hear his internal voice of reason. This voice of reason is the core of thine inner mind which guides thee through pure instinct, wisdom and irreproachable logic. Once one starts to listen to it and follow its guidance, one has achieved the height of enlightenment. Perhaps thou shalt hear it one day.\"")
                 utility_unknown_1041(20)
@@ -293,7 +295,7 @@ function npc_batlin_0026(eventid, objectref)
                 add_answer("test")
             end
             remove_answer("voice")
-        elseif cmps("test") then
+        elseif answer == "test" then
             add_dialogue("\"Oh, art thou ready to join The Fellowship?\"")
             if ask_yes_no() then
                 utility_ship_0845()
@@ -302,10 +304,10 @@ function npc_batlin_0026(eventid, objectref)
                 add_answer("join")
             end
             remove_answer("test")
-        elseif cmps("Meditation Retreat") then
+        elseif answer == "Meditation Retreat" then
             add_dialogue("\"It is a retreat from the pressures and distractions of everyday life where new members of The Fellowship may go and study the philosophies of The Fellowship. It is located on an island east of Serpent's Hold.\"")
             remove_answer("Meditation Retreat")
-        elseif cmps("bye") then
+        elseif answer == "bye" then
             break
         end
     end

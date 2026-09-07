@@ -20,6 +20,7 @@ function npc_kessler_0237(eventid, objectref)
             add_dialogue("\"I am very glad thou hast come to see me again,\" says Kessler.")
         end
         while true do
+            coroutine.yield()
             local answer = get_answer()
             if answer == "name" then
                 add_dialogue("\"My name is Kessler.\"")

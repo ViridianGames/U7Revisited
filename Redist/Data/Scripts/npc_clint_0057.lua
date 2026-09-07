@@ -20,6 +20,7 @@ function npc_clint_0057(eventid, objectref)
             add_dialogue("\"And what be thy business with me this time, " .. var_0002 .. "?\" says Clint.")
         end
         while true do
+            coroutine.yield()
             var_0004 = get_answer()
             if var_0004 == "name" then
                 add_dialogue("\"I be Clint.\"")

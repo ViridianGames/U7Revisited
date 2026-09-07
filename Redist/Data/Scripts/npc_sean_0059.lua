@@ -52,24 +52,26 @@ function npc_sean_0059(eventid, objectref)
         add_dialogue("\"And what may I do for thee, " .. var_0000 .. "?\" asks Sean.")
     end
     while true do
-        if cmps("name") then
+        coroutine.yield()
+        local answer = get_answer()
+        if answer == "name" then
             add_dialogue("\"My name is Sean.\"")
             remove_answer("name")
-        elseif cmps("job") then
+        elseif answer == "job" then
             add_dialogue("\"When not tending to Fellowship affairs, I am a jeweller here in Britain. If thou dost wish to buy something, say so!\"")
             add_answer({"buy", "Britain", "jeweller", "Fellowship"})
-        elseif cmps("jeweller") then
+        elseif answer == "jeweller" then
             add_dialogue("\"It is very delicate work. It requires a special touch that only a few have. Thou must know precisely how to handle precious materials. Only the finest of craftsmen become jewellers and they receive the highest compensation.\"")
             remove_answer("jeweller")
             add_answer({"finest craftsmen", "precious materials"})
-        elseif cmps("precious materials") then
+        elseif answer == "precious materials" then
             add_dialogue("\"I constantly require new materials with which to create my very special jewelry. I am always in the market to buy gems. If thou dost ever come across any, I am the man to come to if thou shouldst want to sell them and make money.\"")
             remove_answer("precious materials")
             add_answer("gems")
-        elseif cmps("finest craftsmen") then
+        elseif answer == "finest craftsmen" then
             add_dialogue("\"As I have told thee, only the finest of craftsmen become jewellers, and I am the finest of jewellers. Does that not tell thee something?\" Sean sniffs. \"My business makes more money than the mint!\" He laughs forcibly.")
             remove_answer("finest craftsmen")
-        elseif cmps("gems") then
+        elseif answer == "gems" then
             if var_0002 ~= 7 then
                 add_dialogue("\"The jeweller's shop is currently closed for business. Come back later!\"")
             else
@@ -117,7 +119,7 @@ function npc_sean_0059(eventid, objectref)
                 end
             end
             remove_answer("gems")
-        elseif cmps("Fellowship") then
+        elseif answer == "Fellowship" then
             if var_0003 then
                 add_dialogue("\"I see thou art a member!\" Sean suddenly looks at you with a bit more respect. \"I am sure The Fellowship will do thee a world of good in the future.\" He smiles condescendingly.")
             else
@@ -127,7 +129,7 @@ function npc_sean_0059(eventid, objectref)
             end
             remove_answer("Fellowship")
             add_answer("philosophy")
-        elseif cmps("philosophy") then
+        elseif answer == "philosophy" then
             add_dialogue("\"Thou art really interested in hearing more?\"")
             var_0010 = ask_yes_no()
             if var_0010 then
@@ -136,11 +138,11 @@ function npc_sean_0059(eventid, objectref)
                 add_dialogue("\"I thought I was wasting my breath on thee.\"")
             end
             remove_answer("philosophy")
-        elseif cmps("Britain") then
+        elseif answer == "Britain" then
             add_dialogue("\"I moved mine entire business here to Britain to be near the main branch of The Fellowship. Thou hast no idea how much my business improved after I joined The Fellowship.\"")
             remove_answer("Britain")
             add_answer("Fellowship")
-        elseif cmps("buy") then
+        elseif answer == "buy" then
             if var_0002 == 7 then
                 add_dialogue("\"Wouldst thou like to buy something?\"")
                 if ask_yes_no() then
@@ -152,7 +154,7 @@ function npc_sean_0059(eventid, objectref)
                 add_dialogue("\"Please come to the shop during normal business hours.\"")
             end
             remove_answer("buy")
-        elseif cmps("bye") then
+        elseif answer == "bye" then
             break
         end
     end

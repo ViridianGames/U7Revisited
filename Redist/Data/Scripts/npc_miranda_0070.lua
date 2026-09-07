@@ -19,6 +19,7 @@ function npc_miranda_0070(eventid, objectref)
             add_dialogue("\"Hello, " .. var_0000 .. ",\" Miranda says. \"Nice to see thee again.\"")
         end
         while true do
+            coroutine.yield()
             var_0002 = get_answer()
             if var_0002 == "name" then
                 add_dialogue("\"I am Miranda.\"")

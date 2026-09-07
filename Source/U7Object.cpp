@@ -112,9 +112,8 @@ void U7Object::Init(const string& configfile, int unitType, int frame)
 
 void U7Object::Draw()
 {
-	// Common early-out checks
-	// TEMP: Always draw eggs for debugging (ignore m_Visible and g_showEggs)
-	if (m_UnitType != UnitTypes::UNIT_TYPE_EGG && (!m_Visible || m_isContained || !m_ShouldDraw))
+	// Common early-out checks. Eggs still reach EggDraw when visible so g_showEggs can gate art.
+	if (!m_Visible || m_isContained || !m_ShouldDraw)
 	{
 		return;
 	}
@@ -1026,6 +1025,10 @@ void U7Object::HandleTeleporterEgg()
 	// Snap camera to avatar (RecalculateCamera is declared but not defined).
 	g_camera.target = Vector3{ dest.x, 0.0f, dest.z };
 	g_camera.position = Vector3Add(g_camera.target, Vector3{ 0.0f, g_cameraDistance, g_cameraDistance });
+	// Refresh interest immediately so destination NPCs start scheduling this frame
+	// (object Update pass already started against the old region).
+	RebuildInterestCentersFromLocalPlayers();
+	RebuildInterestChunkSet();
 	AddConsoleString("Teleported to (" + std::to_string(static_cast<int>(dest.x))
 		+ ", " + std::to_string(static_cast<int>(dest.z)) + ")");
 }
@@ -1607,6 +1610,17 @@ void U7Object::NPCUpdate()
 	bool isPartyMember = (m_NPCID == 0) || (g_Player && g_Player->NPCIDInParty(m_NPCID));
 	bool skipScheduleActivities = isPartyMember; // Avatar + companions
 
+	// Dormant = missed updates while outside the Avatar interest sphere (or first tick).
+	// Schedule snap is deferred via m_scheduleWakeSnapPending because activity work is
+	// batched and may not run on the exact wake frame.
+	constexpr unsigned int kDormantUpdateGap = 90; // ~1.5s at 60fps
+	if (m_lastNpcUpdateFrame == 0 ||
+	    g_CurrentUpdate > m_lastNpcUpdateFrame + kDormantUpdateGap)
+	{
+		m_scheduleWakeSnapPending = true;
+	}
+	m_lastNpcUpdateFrame = g_CurrentUpdate;
+
 	if (!isPartyMember && m_Team == 1 && g_isCombatMode)
 	{
 		HostileCombatUpdate();
@@ -1803,23 +1817,47 @@ void U7Object::NPCUpdate()
 						m_pendingScheduleTime = -1;
 						m_isSchedulePath = false;
 						m_pathfindingPending = false;
+						m_scheduleWakeSnapPending = false;
 					}
 					else if (g_mainState->IsNpcSchedulesEnabled() && g_mainState->m_npcPathfindingEnabled)
 					{
-						// Don't commit m_lastSchedule until a path succeeds — otherwise a single
-						// failure (Spark→inn) never retries and eat_at_inn paths to a house chair.
-						const float now = GetTime();
-						if (!m_pathfindingPending && !m_isSchedulePath && now >= m_schedulePathRetryAt)
+						// Snap only on wake from outside the interest sphere (Avatar teleported
+						// in, etc.). Continuously-simulated NPCs must pathfind — a flat distance
+						// threshold was teleporting Spark to the inn at lunch.
+						constexpr float kScheduleSnapTiles = 16.0f;
+						if (m_scheduleWakeSnapPending && distToSched > kScheduleSnapTiles)
 						{
-							// Stand up immediately toward the new schedule dest — don't wait for
-							// the background path result (that delay looked like stand-up lag).
 							if (IsSittingPose() || IsSleepingPose() || m_furnitureObjectId >= 0)
 								ClearOverrideFrame(&dest);
+							SetPos(dest);
+							SetDest(dest);
+							m_lastSchedule = (int)g_scheduleTime;
+							m_pendingScheduleTime = -1;
+							m_isSchedulePath = false;
+							m_pathfindingPending = false;
+							m_pathWaypoints.clear();
+							m_currentWaypointIndex = 0;
+							m_isMoving = false;
+							m_scheduleWakeSnapPending = false;
+						}
+						// Don't commit m_lastSchedule until a path succeeds — otherwise a single
+						// failure (Spark→inn) never retries and eat_at_inn paths to a house chair.
+						else
+						{
+							m_scheduleWakeSnapPending = false;
+							const float now = GetTime();
+							if (!m_pathfindingPending && !m_isSchedulePath && now >= m_schedulePathRetryAt)
+							{
+								// Stand up immediately toward the new schedule dest — don't wait for
+								// the background path result (that delay looked like stand-up lag).
+								if (IsSittingPose() || IsSleepingPose() || m_furnitureObjectId >= 0)
+									ClearOverrideFrame(&dest);
 
-							m_pathfindingPending = true;
-							m_pendingScheduleTime = (int)g_scheduleTime;
-							m_schedulePathRetryAt = now + 2.0f;
-							g_mainState->EnqueueSchedulePathRequest(m_NPCID, GetPos(), dest);
+								m_pathfindingPending = true;
+								m_pendingScheduleTime = (int)g_scheduleTime;
+								m_schedulePathRetryAt = now + 2.0f;
+								g_mainState->EnqueueSchedulePathRequest(m_NPCID, GetPos(), dest);
+							}
 						}
 					}
 					else
@@ -3551,16 +3589,21 @@ bool U7Object::AddObjectToInventory(int objectid)
 {
 	if (m_isContainer)
 	{
+		auto childIt = g_objectList.find(objectid);
+		if (childIt == g_objectList.end() || !childIt->second)
+			return false;
+
 		m_inventory.push_back(objectid);
 
 		// Set the child's containing object ID to point back to this container
-		U7Object* child = g_objectList[objectid].get();
-		if (child)
-		{
-			child->m_containingObjectId = m_ID;
-			child->m_isContained = true;  // Mark as contained
-			child->SetPos(Vector3{0, 0, 0});  // Clear world position
-		}
+		U7Object* child = childIt->second.get();
+		child->m_containingObjectId = m_ID;
+		child->m_isContained = true;  // Mark as contained
+		// Do NOT SetPos(0,0,0) — that registers the item into chunk (0,0) via
+		// UpdateObjectChunk. Pull it out of the world map and park in the void.
+		UnassignObjectChunk(child);
+		child->m_Pos = Vector3{ -1000.0f, 0.0f, -1000.0f };
+		child->m_Visible = false;
 
 		InvalidateWeightCache();
 		return true;

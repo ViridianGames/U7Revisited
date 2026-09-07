@@ -41,47 +41,49 @@ function npc_figg_0045(eventid, objectref)
         add_dialogue("\"Thou dost wish words with me, " .. var_0001 .. "?\" asks Figg.")
     end
     while true do
-        if cmps("name") then
+        coroutine.yield()
+        local answer = get_answer()
+        if answer == "name" then
             add_dialogue("\"I am Figg.\"")
             remove_answer("name")
-        elseif cmps("job") then
+        elseif answer == "job" then
             add_dialogue("\"I am the caretaker of the Royal Orchards here in Britain.\"")
             add_answer({"Royal Orchards", "caretaker"})
-        elseif cmps("caretaker") then
+        elseif answer == "caretaker" then
             add_dialogue("\"My responsibilities include caring for the trees, watching over the pickers at harvest time and protecting the Royal Orchard from thieves.\"")
             add_answer({"thieves", "pickers", "trees"})
             remove_answer("caretaker")
-        elseif cmps("trees") then
+        elseif answer == "trees" then
             add_dialogue("\"Apple trees require constant care. I must make sure the trees all have enough water but not too much. I must keep all trees properly trimmed and be watchful so that the crop does not get infested by bugs or worms. I am also required to pick up all of the fallen apples, which is a job in itself.\"")
             remove_answer("trees")
-        elseif cmps("pickers") then
+        elseif answer == "pickers" then
             add_dialogue("\"Most of them are migrant farmers from Paws. Because they were once farmers, they are convinced they know more about the upkeep of the orchard than I! Of course that is preposterous. Also the pickers do not take orders very well.\"")
             remove_answer("pickers")
-        elseif cmps("thieves") then
+        elseif answer == "thieves" then
             add_dialogue("\"They would rob us down to the last twig if I gave them the chance! I should be awarded a medal from Lord British himself the way I risk my very life and limb protecting this orchard. Why, I just caught another thief recently. His name was Weston.\"")
             remove_answer("thieves")
             add_answer("Weston")
-        elseif cmps("Royal Orchards") then
+        elseif answer == "Royal Orchards" then
             add_dialogue("\"Here are grown the finest apples in all of Britannia. I would let thee sample one but it would be against the law as thou art obviously not of noble stock.\"")
             remove_answer("Royal Orchards")
-        elseif cmps("Weston") then
+        elseif answer == "Weston" then
             add_dialogue("\"He now resides in the prison, thanks to me! I knew what he was up to from the moment I saw him! He had the look of a hardened apple thief so I had him nicked by the town guard.\"")
             add_answer({"apple thief", "prison"})
             if not get_flag(148) then
                 add_answer("Fellowship")
             end
             remove_answer("Weston")
-        elseif cmps("prison") then
+        elseif answer == "prison" then
             add_dialogue("\"Yes, Weston is now living in our local prison. If thou dost not believe me, thou canst go there and see for thyself!\"")
             remove_answer("prison")
-        elseif cmps("apple thief") then
+        elseif answer == "apple thief" then
             add_dialogue("\"Oh, he came here with some sob story. But when one is as astute an observer of human behavior as I am, one can tell the true intent of people, which is often contrary to what they will say to thee!\"")
             remove_answer("apple thief")
             add_answer({"observer", "sob story"})
-        elseif cmps("sob story") then
+        elseif answer == "sob story" then
             add_dialogue("\"I do not recall, exactly. Something about his impoverished wife and family starving to death in Paws or some load of rubbish.\"")
             remove_answer("sob story")
-        elseif cmps("observer") then
+        elseif answer == "observer" then
             add_dialogue("\"Yes, I do consider myself to be a more than passable judge of character. And dost thou know how I became so?\"")
             var_0004 = ask_yes_no()
             if var_0004 then
@@ -91,10 +93,10 @@ function npc_figg_0045(eventid, objectref)
                 utility_ship_1049()
             end
             remove_answer("observer")
-        elseif cmps("philosophy") then
+        elseif answer == "philosophy" then
             utility_ship_1050()
             remove_answer("philosophy")
-        elseif cmps("Fellowship") then
+        elseif answer == "Fellowship" then
             add_dialogue("\"I am a member of the Fellowship, yes. But it would be a crime for me to give apples from the Royal Orchard to The Fellowship, and it would be a violation of my sacred duty. While selling apples is also a violation, I was only trying to do this man Weston a favor. And I suppose these accusations are the thanks I get? Hmph!\"")
             if var_0002 then
                 add_dialogue("He leans in close to you and speaks lower. \"Thou art also a member of The Fellowship, after all. Am I not thy brother? Shouldst thou not trust me?\" He gives you a crooked wink.")
@@ -109,7 +111,7 @@ function npc_figg_0045(eventid, objectref)
                 add_answer("buy")
             end
             remove_answer("Fellowship")
-        elseif cmps("buy") then
+        elseif answer == "buy" then
             add_dialogue("\"I can do thee a favor as well. Wouldst thou like to buy one of these beautiful apples for the merest pittance of five gold coins?\"")
             var_0006 = ask_yes_no()
             if var_0006 then
@@ -136,7 +138,7 @@ function npc_figg_0045(eventid, objectref)
                 end
             end
             remove_answer("buy")
-        elseif cmps("bye") then
+        elseif answer == "bye" then
             break
         end
     end

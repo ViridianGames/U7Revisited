@@ -66,6 +66,15 @@ local function bucket_use_on_target(bucket, target)
         return
     end
 
+    if shape == 658 then
+        if fr == 0 then
+            item_say("@The bucket is empty.@", get_npc_name(-356))
+        else
+            set_object_frame(target, 2)
+        end
+        return
+    end
+
     if fr == 0 then
         item_say("@The bucket is empty.@", get_npc_name(-356))
     else

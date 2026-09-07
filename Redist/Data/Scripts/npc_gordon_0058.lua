@@ -52,13 +52,15 @@ function npc_gordon_0058(eventid, objectref)
         add_dialogue("\"How art thou this fine day, " .. var_0000 .. "?\" asks Gordon.")
     end
     while true do
-        if cmps("name") then
+        coroutine.yield()
+        local answer = get_answer()
+        if answer == "name" then
             add_dialogue("\"My name is Gordon.\"")
             remove_answer("name")
-        elseif cmps("job") then
+        elseif answer == "job" then
             add_dialogue("\"I sell fish and chips from my wagon.\"")
             add_answer({"wagon", "fish and chips"})
-        elseif cmps("fish and chips") then
+        elseif answer == "fish and chips" then
             if var_0003 ~= 7 then
                 add_dialogue("\"Come back later when I am open for business.\"")
                 return
@@ -83,18 +85,18 @@ function npc_gordon_0058(eventid, objectref)
                 end
             end
             remove_answer("fish and chips")
-        elseif cmps("wagon") then
+        elseif answer == "wagon" then
             add_dialogue("\"I just painted my wagon recently. It receives more attention. Business is much better now. I am saving my money to travel to Buccaneer's Den.\"")
             remove_answer("wagon")
             add_answer({"Buccaneer's Den", "business"})
-        elseif cmps("business") then
+        elseif answer == "business" then
             add_dialogue("\"Ever since I became a member of The Fellowship, business has been increasing steadily. I have refined and improved the recipe for my fish batter and it has since become a favorite meal of nearly everyone in Britain. I have even served my fish and chips to Lord British himself.\"")
             add_answer({"Lord British", "Fellowship"})
             remove_answer("business")
-        elseif cmps("Lord British") then
+        elseif answer == "Lord British" then
             add_dialogue("\"Thou dost know-- the bloke who wears a crown and acts like a king.\"")
             remove_answer("Lord British")
-        elseif cmps("Fellowship") then
+        elseif answer == "Fellowship" then
             if var_0001 then
                 add_dialogue("\"I am glad to see that thou art a member. Will I see thee at the next meeting?\"")
                 var_0008 = ask_yes_no()
@@ -107,23 +109,23 @@ function npc_gordon_0058(eventid, objectref)
                 utility_ship_1049()
             end
             remove_answer("Fellowship")
-        elseif cmps("philosophy") then
+        elseif answer == "philosophy" then
             utility_ship_1050()
             remove_answer("philosophy")
-        elseif cmps("Buccaneer's Den") then
+        elseif answer == "Buccaneer's Den" then
             add_dialogue("\"I wish to win some money at Buccaneer's Den. It is a pirate resort and they have a fabulous House of Games there.\"")
             add_answer({"House of Games", "pirate resort"})
             remove_answer("Buccaneer's Den")
-        elseif cmps("pirate resort") then
+        elseif answer == "pirate resort" then
             add_dialogue("\"As I am certain thou knowest, Buccaneer's Den was once a den of thieves and villains. As such, it held a romantic appeal for those who longed for a taste of such an adventurous existence. I confess, I am one of those people. When thou dost spend thy life selling fish from a wagon, thou art in need of excitement. The pirates eventually realized just how much they are secretly envied, and so they have turned their island into a place of thrilling amusements.\"")
             remove_answer("pirate resort")
-        elseif cmps("House of Games") then
+        elseif answer == "House of Games" then
             add_dialogue("\"It is said they have several games of chance there! Gold can be won wagering on the outcome of a race of fine stallions.\"")
             remove_answer("House of Games")
-        elseif cmps("Fellowship") then
+        elseif answer == "Fellowship" then
             add_dialogue("\"I saw thee receive thy medallion. I can certainly say the Fellowship has done wonders for my life and I know it will be the same for thee as well.\" He gives thee a knowing grin.")
             remove_answer("Fellowship")
-        elseif cmps("bye") then
+        elseif answer == "bye" then
             break
         end
     end

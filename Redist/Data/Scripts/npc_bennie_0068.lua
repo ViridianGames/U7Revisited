@@ -19,6 +19,7 @@ function npc_bennie_0068(eventid, objectref)
             add_dialogue("\"Yes, Avatar?\" Bennie asks with authority.")
         end
         while true do
+            coroutine.yield()
             var_0003 = get_answer()
             if var_0003 == "name" then
                 add_dialogue("\"All my friends call me Bennie.\"")

@@ -3538,30 +3538,14 @@ static int LuaGiveLastCreated(lua_State *L)
 }
 
 // 0x006F | remove_item
+// Soft-delete via DestroyObjectByID so chunk maps / visible lists never hold
+// dangling pointers. Hard erase here used to crash (e.g. waiter plate cleanup).
 static int LuaRemoveItem(lua_State *L)
 {
     int object_id = (int)lua_tointeger(L, 1);
-
-    if (g_objectList.find(object_id) == g_objectList.end())
-    {
+    if (object_id < 0)
         return 0;
-    }
-
-    U7Object* obj = g_objectList[object_id].get();
-
-    // If contained in another object, remove from that container's inventory
-    if (obj->m_isContained && obj->m_containingObjectId != -1)
-    {
-        if (g_objectList.find(obj->m_containingObjectId) != g_objectList.end())
-        {
-            U7Object* container = g_objectList[obj->m_containingObjectId].get();
-            container->RemoveObjectFromInventory(object_id);
-        }
-    }
-
-    // Remove from world (erase from object list)
-    g_objectList.erase(object_id);
-
+    DestroyObjectByID(object_id);
     return 0;
 }
 
@@ -5627,8 +5611,8 @@ static int LuaFindNearestChair(lua_State *L)
         return 1;
     }
 
-    // Check for multiple chair shapes (add more as needed)
-    const int chairShapes[] = {873, 897};
+    // Exult Sit / Eat_at_inn: 873 and 292. Keep 897 as an extra BG chair variant.
+    const int chairShapes[] = {873, 292, 897};
     // Must be near the NPC (inn/workplace). Without this, Spark's
     // eat_at_inn grabbed a chair in his house (often west of him).
     constexpr float kMaxChairSearchTiles = 40.0f;
@@ -5918,6 +5902,76 @@ static int LuaIsSitting(lua_State *L)
     U7Object* npc = g_objectList[g_NPCData[npc_id]->m_objectID].get();
     lua_pushboolean(L, npc && npc->IsSittingPose());
     return 1;
+}
+
+// find_nearby_npcs(npc_id, distance [, activity]) -> {npc_id, ...}
+// Exult Waiter_schedule::find_customer style: NPCs within Chebyshev dist on same floor.
+// If activity is provided (>= 0), only include NPCs whose current schedule activity matches.
+static int LuaFindNearbyNpcs(lua_State *L)
+{
+    int npc_id = luaL_checkinteger(L, 1);
+    int distance = (int)luaL_checkinteger(L, 2);
+    const bool filterActivity = (lua_gettop(L) >= 3 && lua_isnumber(L, 3));
+    const int activity = filterActivity ? (int)lua_tointeger(L, 3) : -1;
+
+    lua_newtable(L);
+    int tableIndex = 1;
+
+    if (g_NPCData.find(npc_id) == g_NPCData.end() || !g_NPCData[npc_id])
+        return 1;
+
+    U7Object* refNpc = GetObjectFromID(g_NPCData[npc_id]->m_objectID);
+    if (!refNpc)
+        return 1;
+
+    const Vector3 refPos = refNpc->GetPos();
+    const int refFloor = (int)refPos.y / 5;
+
+    for (const auto& pair : g_NPCData)
+    {
+        const int otherId = pair.first;
+        NPCData* data = pair.second.get();
+        if (!data || otherId == npc_id)
+            continue;
+        if (filterActivity && data->m_currentActivity != activity)
+            continue;
+
+        U7Object* other = GetObjectFromID(data->m_objectID);
+        if (!other || other->m_isContained)
+            continue;
+
+        const Vector3 otherPos = other->GetPos();
+        if ((int)otherPos.y / 5 != refFloor)
+            continue;
+
+        const int dx = (int)std::abs(otherPos.x - refPos.x);
+        const int dz = (int)std::abs(otherPos.z - refPos.z);
+        const int dist = (dx > dz) ? dx : dz;
+        if (dist > distance)
+            continue;
+
+        lua_pushinteger(L, otherId);
+        lua_rawseti(L, -2, tableIndex++);
+    }
+
+    return 1;
+}
+
+// get_object_dimensions(object_id) -> width, height, depth (world units) or nil
+static int LuaGetObjectDimensions(lua_State *L)
+{
+    int object_id = (int)luaL_checkinteger(L, 1);
+    U7Object* obj = GetObjectFromID(object_id);
+    if (!obj || !obj->m_objectData)
+    {
+        lua_pushnil(L);
+        return 1;
+    }
+
+    lua_pushnumber(L, obj->m_objectData->m_width);
+    lua_pushnumber(L, obj->m_objectData->m_height);
+    lua_pushnumber(L, obj->m_objectData->m_depth);
+    return 3;
 }
 
 
@@ -6375,6 +6429,8 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction( "find_nearest_bed", LuaFindNearestBed);
     g_ScriptingSystem->RegisterScriptFunction( "find_nearest_chair", LuaFindNearestChair);
     g_ScriptingSystem->RegisterScriptFunction( "find_nearest_shape", LuaFindNearestShape);
+    g_ScriptingSystem->RegisterScriptFunction( "find_nearby_npcs", LuaFindNearbyNpcs);
+    g_ScriptingSystem->RegisterScriptFunction( "get_object_dimensions", LuaGetObjectDimensions);
     g_ScriptingSystem->RegisterScriptFunction( "find_random_walkable", LuaFindRandomWalkable);
     g_ScriptingSystem->RegisterScriptFunction( "get_current_animation", LuaGetCurrentAnimation);
     g_ScriptingSystem->RegisterScriptFunction( "is_sleeping", LuaIsSleeping);

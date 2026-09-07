@@ -36,46 +36,41 @@ function npc_stuart_0029(eventid, objectref)
         add_dialogue("Stuart looks down his nose at you. \"Yes?\"")
     end
     while true do
-        if cmps("name") then
+        coroutine.yield()
+        local answer = get_answer()
+        if answer == "name" then
             add_dialogue("\"My real name is Stuart. My stage name is Laurence.\"")
             remove_answer("name")
             add_answer("Laurence")
-        elseif cmps("job") then
+        elseif answer == "job" then
             add_dialogue("\"I am the greatest actor who ever lived,\" he proclaims with absolutely no modesty. \"I am playing the character 'Iolo' in the new play.\"")
             add_answer("Iolo")
-        elseif cmps("Laurence") then
+        elseif answer == "Laurence" then
             add_dialogue("\"'Tis the name of a particular hero of mine.\"")
             remove_answer("Laurence")
-        elseif cmps("Iolo") then
+        elseif answer == "Iolo" then
             add_dialogue("Stuart's feathers are obviously ruffled. \"Yes. I have been cast as second banana yet again! I am much more suited to play the Avatar, but did Raymundo cast me? Noooo!\"")
             var_0000 = npc_id_in_party(-1)
             if var_0000 then
-                switch_talk_to(-1)
-                add_dialogue("\"But thou art nothing like me!\"")
-                switch_talk_to(-29)
+                second_speaker(1, 0, "\"But thou art nothing like me!\"")
                 add_dialogue("\"And who art thou, pray tell?\"")
-                switch_talk_to(-1)
-                add_dialogue("\"Why, I am the -real- Iolo!\"")
-                switch_talk_to(-29)
+                second_speaker(1, 0, "\"Why, I am the -real- Iolo!\"")
                 add_dialogue("\"Of course thou art. And I am really Lord British. Thou must take me for an ass to think I would believe that.\"")
-                switch_talk_to(-1)
-                add_dialogue("Your friend whispers to you. \"These actor types. A touchy bunch, eh?\"")
-                --syntax error hide_npc1)
-                switch_talk_to(-29)
+                second_speaker(1, 0, "Your friend whispers to you. \"These actor types. A touchy bunch, eh?\"")
             end
             add_answer({"Avatar", "Raymundo"})
             remove_answer("Iolo")
-        elseif cmps("Raymundo") then
+        elseif answer == "Raymundo" then
             add_dialogue("\"I suppose he's a good director. He never casts me in the right roles, though. And to think I went to school with him! We were on our first stage crew together!\"")
             remove_answer("Raymundo")
-        elseif cmps("Avatar") then
+        elseif answer == "Avatar" then
             add_dialogue("Stuart whispers to you, \"Jesse is all wrong! Why, -thou- wouldst make a better Avatar than he! And -thou- probably couldst not act thy way out of a reagent bag! That is not a reflection on thee, but on Jesse.\"")
             add_answer("act")
             remove_answer("Avatar")
-        elseif cmps("act") then
+        elseif answer == "act" then
             add_dialogue("\"Acting is the highest form of art. It allows one to step outside oneself and become another person. 'Tis like a game!\"")
             remove_answer("act")
-        elseif cmps("bye") then
+        elseif answer == "bye" then
             break
         end
     end

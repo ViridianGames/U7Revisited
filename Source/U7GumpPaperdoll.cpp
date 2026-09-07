@@ -582,6 +582,7 @@ void GumpPaperdoll::Update()
 									// Start dragging this equipped item
 									g_gumpManager->m_draggedObjectId = objectId;
 									g_gumpManager->m_draggingObject = true;
+									g_gumpManager->m_dropValid = true;
 									g_gumpManager->m_sourceGump = this;
 									g_gumpManager->m_sourceSlotIndex = i;  // Remember which slot we dragged from
 

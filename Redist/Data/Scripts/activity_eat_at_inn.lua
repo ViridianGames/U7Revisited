@@ -1,62 +1,133 @@
 -- Activity 26: Eat at Inn
--- NPCs find nearest chair at inn and sit to eat (same as regular eat)
-function activity_eat_at_inn(npc_id)
-    
-    local chair = find_nearest_chair(npc_id)
+-- Port of Exult Eat_at_inn_schedule: sit at a chair and wait to be served.
+-- Unlike activity_eat, does NOT create plates/food — the waiter does that.
+-- Barks "More food!" / "Service!" when hungry with no food nearby.
 
-    if not chair then
-        -- No chair/table nearby - just stand
-        debug_npc(npc_id, "has no table for eat at inn activity, standing")
-        npc_frame(npc_id, 0)  -- Frame 0 = standing
-        while true do
-            coroutine.yield()
-        end
-        return
+local FOOD_SHAPE = 377
+
+local MUNCH = {
+    "Mmmm, tasty!",
+    "Burp!",
+    "Mmmm...",
+    "Who made this slop?",
+}
+
+local MORE_FOOD = {
+    "More food!",
+    "Service!",
+    "Barkeeper!",
+    "Ale!",
+}
+
+local function bark_random(npc_id, lines)
+    if lines and #lines > 0 then
+        bark_npc(npc_id, lines[math.random(#lines)])
     end
+end
 
-    -- STATE CHECK: Already sitting at table?
-    if is_sitting(npc_id) and distance_to(npc_id, chair) < 2.0 then
-        -- Already sitting and eating - stay here
-        debug_npc(npc_id, "already eating at inn, continuing")
-        while true do
-            coroutine.yield()
-        end
-        return
+local function walk_to_object(npc_id, object_id, arrive_dist)
+    arrive_dist = arrive_dist or 1.5
+    local pos = get_object_position(object_id)
+    if not pos then
+        return false
     end
+    local request_id = request_pathfind(npc_id, pos.x, pos.y, pos.z)
+    while not is_path_ready(request_id) do
+        coroutine.yield()
+    end
+    start_following_path(npc_id)
+    while distance_to(npc_id, object_id) > arrive_dist do
+        if wait_move_end and wait_move_end(npc_id) then
+            break
+        end
+        coroutine.yield()
+    end
+    return true
+end
 
-    -- Walk to chair/table if not already there
-    if distance_to(npc_id, chair) > 2.0 then
-        debug_npc(npc_id, "walking to inn table")
-
-        local obj_pos = get_object_position(chair)
-        if obj_pos then
-            local request_id = request_pathfind(npc_id, obj_pos.x, obj_pos.y, obj_pos.z)
-
-            -- Wait for path to be computed
-            while not is_path_ready(request_id) do
-                coroutine.yield()
+local function closest_nearby_food(npc_id)
+    local npc_obj = get_npc_object_id(npc_id)
+    local foods = find_nearby(npc_obj, FOOD_SHAPE, 2, 0) or {}
+    local best, best_dist = nil, 9999
+    for i = 1, #foods do
+        local fid = foods[i]
+        if get_object_position(fid) then
+            local d = distance_to(npc_id, fid)
+            if d < best_dist then
+                best_dist = d
+                best = fid
             end
-
-            -- Start following the path
-            start_following_path(npc_id)
-        end
-
-        -- Wait until we reach the chair
-        while distance_to(npc_id, chair) > 2.0 do
-            coroutine.yield()
         end
     end
+    return best
+end
 
-    -- Sit down at table to eat
+local function ensure_sitting(npc_id)
+    if is_sitting(npc_id) then
+        return true
+    end
+
+    local chair = find_nearest_chair(npc_id)
+    if not chair then
+        local npc_obj = get_npc_object_id(npc_id)
+        local chairs = find_nearby(npc_obj, 292, 8, 0) or {}
+        if #chairs > 0 then
+            chair = chairs[1]
+        end
+    end
+    if not chair then
+        return false
+    end
+
+    if distance_to(npc_id, chair) > 1.5 then
+        debug_npc(npc_id, "walking to inn table")
+        walk_to_object(npc_id, chair, 1.5)
+    end
+
     debug_npc(npc_id, "sitting down to eat at inn")
     if sit_down then
         sit_down(npc_id, chair)
     else
         npc_frame(npc_id, 26)
     end
+    return is_sitting(npc_id)
+end
 
-    -- Stay eating (yield forever until activity changes)
+function activity_eat_at_inn(npc_id)
+    debug_npc(npc_id, "eating at inn (Exult eat_at_inn)")
+
+    -- Keep trying to sit; if no chair, stand and wait (schedule dest should
+    -- already have put us near the inn).
+    while not ensure_sitting(npc_id) do
+        debug_npc(npc_id, "has no chair for eat at inn, standing")
+        npc_frame(npc_id, 0)
+        npc_wait(5)
+        coroutine.yield()
+    end
+
     while true do
+        -- Re-sit if something stood us up
+        if not is_sitting(npc_id) then
+            ensure_sitting(npc_id)
+        end
+
+        local food = closest_nearby_food(npc_id)
+        if food then
+            -- ~20% chance to take a bite
+            if math.random(5) == 1 then
+                destroy_object(food)
+            end
+            if math.random(4) ~= 1 then
+                bark_random(npc_id, MUNCH)
+            end
+        else
+            -- Call for the waiter
+            if math.random(4) ~= 1 then
+                bark_random(npc_id, MORE_FOOD)
+            end
+        end
+
+        npc_wait(5 + math.random() * 12)
         coroutine.yield()
     end
 end

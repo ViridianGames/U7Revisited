@@ -29,6 +29,8 @@ end
 
 -- Fellowship conversation helpers (files were renamed; many NPCs still call old names)
 utility_ship_1049 = utility_fellowship_intro_1049
+object_unknown_0658 = object_dough_0658
+utility_unknown_0309 = utility_bake_bread_0309
 utility_ship_1050 = utility_fellowship_philosophy_1050
 utility_unknown_1056 = utility_select_party_member_for_training_1056
 
@@ -38,6 +40,38 @@ utility_unknown_1056 = utility_select_party_member_for_training_1056
 
 get_dialogue_choice = get_answer
 unknown_XXXXH = get_answer
+
+
+------------------------------------------------------------------------
+-- Dialogue helpers (Britain / Trinsic conversation style)
+------------------------------------------------------------------------
+
+--- Split BG verse markers into separate add_dialogue bubbles.
+--- Accepts both " ~~" (space-tilde-tilde) and bare "~~".
+function add_verses(text)
+    if type(text) ~= "string" or text == "" then
+        return
+    end
+    -- Normalize bare ~~ (not already preceded by space) to spaced form
+    text = text:gsub("([^%s])~~", "%1 ~~")
+    local start = 1
+    while true do
+        local i, j = string.find(text, " ~~", start, true)
+        if not i then
+            local part = text:sub(start):match("^%s*(.-)%s*$")
+            if part and part ~= "" then
+                add_dialogue(part)
+            end
+            break
+        end
+        local part = text:sub(start, i - 1):match("^%s*(.-)%s*$")
+        if part and part ~= "" then
+            add_dialogue(part)
+        end
+        start = j + 1
+    end
+end
+
 
 npc_in_party = npc_id_in_party
 start_endgame = run_endgame

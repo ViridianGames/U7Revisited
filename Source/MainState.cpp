@@ -725,6 +725,7 @@ void MainState::HandleObjectDrag()
 	{
 		g_gumpManager->m_draggedObjectId = g_objectUnderMousePointer->m_ID;
 		g_gumpManager->m_draggingObject = true;
+		g_gumpManager->m_dropValid = true;
 		g_gumpManager->m_sourceGump = nullptr;
 		g_gumpManager->m_sourceSlotIndex = -1;
 		g_gumpManager->m_draggedObjectOriginalPos = g_objectUnderMousePointer->m_Pos;
@@ -1827,6 +1828,16 @@ void MainState::Update()
 		// Interest spheres (Option A): only sim-tick objects near players / camera.
 		// Multiplayer later: AddInterestCenter per remote player; same path.
 		//
+		// Camera/teleport input MUST run before interest rebuild. Minimap party
+		// teleport lives in CameraInput; if it runs after object updates, the
+		// interest set stays on the old town for a frame (and feels stuck if you
+		// expect Britain NPCs to pick up schedules immediately).
+		if (!m_paused && g_allowInput)
+		{
+			CameraInput();
+		}
+		CameraUpdate();
+
 		// IMPORTANT: snapshot pointers first. object->Update() / SetPos can reassign
 		// chunks (UpdateObjectChunk erases from g_chunkObjectMap), and eggs can spawn
 		// into the same chunk — iterating the live vector crashes.
@@ -1910,11 +1921,9 @@ void MainState::Update()
 		// Object lighting uses g_Terrain->m_cellLighting in InteractiveDraw/NPCDraw.
 		// The old per-object CheckLighting (O(visible × lights)) was unused for draw.
 
-	if (!m_paused && g_allowInput)
-	{
-		CameraInput();
-	}
-
+	// CameraInput already ran before the interest update pass (so teleports
+	// rebuild the sim region same-frame). Follow-cam still needs a late update
+	// after NPCs/Avatar move during object->Update().
 	CameraUpdate();
 
 	// Rotate U7 glisten bands (224-254); translucent shapes use static xform bake colors
@@ -2340,8 +2349,32 @@ void MainState::Draw()
 			const int minTileX = seTileX - (int)w + 1;
 			const int minTileZ = seTileZ - (int)d + 1;
 
-			// Stack on highest standable top under the footprint (crates, etc.).
-			float stackY = 0.0f;
+			// Prefer the Avatar's floor so indoor drops don't jump onto roofs /
+			// upper stories (same idea as click-to-walk surface selection).
+			U7Object* avatar = g_Player ? g_Player->GetAvatarObject() : nullptr;
+			float preferY = 0.0f;
+			if (avatar)
+				preferY = avatar->m_Pos.y;
+			else
+			{
+				const float origY = g_gumpManager->m_draggedObjectOriginalPos.y;
+				if (origY > -100.0f)
+					preferY = origY;
+			}
+
+			// Same-floor band: not the next story/roof (U7 story spacing ~4+).
+			constexpr float kFloorBandUp = 3.5f;
+			constexpr float kFloorBandDown = 0.5f;
+			const float bandMin = preferY - kFloorBandDown;
+			const float bandMax = preferY + kFloorBandUp;
+
+			float stackY = preferY;
+
+			// Gather candidate support tops + overhead clearance in the footprint.
+			std::vector<float> supportTops;
+			float overheadMin = bandMax + 1.0f; // lowest base of something above us
+			supportTops.push_back(preferY); // bare floor / feet level always allowed
+
 			if (g_pathfindingSystem)
 			{
 				for (int tz = minTileZ; tz <= seTileZ; ++tz)
@@ -2350,39 +2383,185 @@ void MainState::Draw()
 					{
 						if (tx < 0 || tz < 0 || tx >= 3072 || tz >= 3072)
 							continue;
-						auto heights = g_pathfindingSystem->GetWalkableSurfaceHeights(tx, tz);
-						for (float hy : heights)
+						for (float hy : g_pathfindingSystem->GetWalkableSurfaceHeights(tx, tz))
 						{
-							if (hy > stackY)
-								stackY = hy;
+							if (hy >= bandMin && hy <= bandMax)
+								supportTops.push_back(hy);
 						}
-						// Also consider object tops that may not be "walkable" for pathing
-						// but still support stacking (use overlapping solids).
-						auto ov = g_pathfindingSystem->GetOverlappingObjects(tx, tz);
-						for (const auto& o : ov)
+						for (const auto& o : g_pathfindingSystem->GetOverlappingObjects(tx, tz))
 						{
-							if (!o.obj || o.obj == draggedObject || !o.obj->m_objectData)
+							U7Object* obj = o.obj;
+							if (!obj || obj == draggedObject || !obj->m_objectData || obj->m_isContained)
 								continue;
-							if (o.obj->m_isContained)
+							if (obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC ||
+							    obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_MONSTER ||
+							    obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_EGG)
 								continue;
-							const float top = o.obj->m_Pos.y + o.obj->m_objectData->m_height;
-							if (top > stackY)
-								stackY = top;
+
+							const float top = PathfindingSystem::GetObjectSurfaceY(obj);
+							const float base = obj->m_Pos.y;
+							if (top >= bandMin && top <= bandMax)
+								supportTops.push_back(top);
+							// Something sitting above avatar floor — limits how tall we can stack.
+							if (base > preferY + 0.4f && base < overheadMin)
+								overheadMin = base;
 						}
 					}
 				}
 			}
 
-			// Drop SE corner = mouse tile at stack height (what SetPos expects).
+			// Object under cursor wins when it's a valid support (hearth vs mantle).
+			U7Object* hover = g_objectUnderMousePointer;
+			bool haveStackY = false;
+			if (hover && hover != draggedObject && hover->m_objectData &&
+			    hover->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_NPC &&
+			    hover->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_MONSTER &&
+			    hover->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_EGG &&
+			    !hover->m_isContained)
+			{
+				const float top = PathfindingSystem::GetObjectSurfaceY(hover);
+				// Must fit under any overhang (1-tile gap between hearth and mantle).
+				if (top >= bandMin && top <= bandMax && top + h <= overheadMin + 0.05f)
+				{
+					stackY = top;
+					haveStackY = true;
+				}
+			}
+
+			// Otherwise pick the highest support that still fits under overhangs.
+			// (Fits dough on the hearth under the mantle; won't pick the mantle itself
+			// unless the cursor is on it and clearance allows.)
+			if (!haveStackY)
+			{
+				float best = preferY;
+				bool found = false;
+				for (float hy : supportTops)
+				{
+					if (hy + h > overheadMin + 0.05f)
+						continue; // object would intersect the overhang
+					if (!found || hy > best)
+					{
+						best = hy;
+						found = true;
+					}
+				}
+				stackY = found ? best : preferY;
+			}
+
 			Vector3 sePos = { (float)seTileX, stackY, (float)seTileZ };
 
-			// Ghost box matches U7Object::SetPos bbox: anchor = pos + (-w+1, 0, -d+1).
+			// --- Placement validity: only wall-like solids block (not furniture) ---
+			bool dropValid = true;
+			const float bodyMin = stackY + 0.05f;
+			const float bodyMax = stackY + h;
+
+			// Tall vertical blockers (walls/columns). Short furniture/hearths/tables
+			// must not forbid placing beside or under a shelf gap.
+			auto isWallLikeBlocker = [&](U7Object* obj) -> bool
+			{
+				if (!obj || !obj->m_objectData || obj == draggedObject)
+					return false;
+				if (obj->m_isContained)
+					return false;
+				if (obj->m_objectData->m_isDoor)
+					return false;
+				const int shapeID = obj->m_shapeData ? obj->m_shapeData->GetShape() : -1;
+				if (shapeID >= 0 && PathfindingSystem::IsPassThroughObject(shapeID))
+					return false;
+				if (shapeID >= 0 && PathfindingSystem::IsNonBlockingWalkSurface(shapeID))
+					return false;
+				if (shapeID >= 0 && PathfindingSystem::IsRoofShape(shapeID))
+					return false;
+				if (g_pathfindingSystem)
+				{
+					const ObjectWalkability walk = g_pathfindingSystem->GetObjectWalkability(shapeID, obj);
+					if (walk == OW_WALKABLE || walk == OW_DOOR || walk == OW_CLIMBABLE)
+						return false;
+				}
+				if (!obj->m_objectData->m_isNotWalkable)
+					return false;
+
+				const float surfaceY = PathfindingSystem::GetObjectSurfaceY(obj);
+				const float baseY = obj->m_Pos.y;
+				const float volH = surfaceY - baseY;
+
+				// Short counters/hearths/mantle slabs — not walls.
+				if (volH < 2.25f)
+					return false;
+
+				// Resting on this object's top.
+				if (fabsf(surfaceY - stackY) <= 0.08f)
+					return false;
+
+				// Need real vertical overlap with the dropped object (not a hairline touch).
+				constexpr float kEps = 0.12f;
+				return surfaceY > bodyMin + kEps && baseY < bodyMax - kEps;
+			};
+
+			if (g_pathfindingSystem)
+			{
+				for (int tz = minTileZ; tz <= seTileZ && dropValid; ++tz)
+				{
+					for (int tx = minTileX; tx <= seTileX && dropValid; ++tx)
+					{
+						if (tx < 0 || tz < 0 || tx >= 3072 || tz >= 3072)
+						{
+							dropValid = false;
+							break;
+						}
+						for (const auto& o : g_pathfindingSystem->GetOverlappingObjects(tx, tz))
+						{
+							if (isWallLikeBlocker(o.obj))
+							{
+								dropValid = false;
+								break;
+							}
+						}
+					}
+				}
+
+				// LOS through walls only (furniture must not block).
+				if (dropValid && avatar)
+				{
+					const int ax = (int)floorf(avatar->m_Pos.x);
+					const int az = (int)floorf(avatar->m_Pos.z);
+					const int dx = seTileX - ax;
+					const int dz = seTileZ - az;
+					const int steps = std::max(std::abs(dx), std::abs(dz));
+					// Skip LOS for adjacent drops — same-room furniture clutter.
+					if (steps > 2)
+					{
+						for (int i = 1; i < steps && dropValid; ++i) // exclude endpoints
+						{
+							const int tx = ax + (dx * i) / steps;
+							const int tz = az + (dz * i) / steps;
+							for (const auto& o : g_pathfindingSystem->GetOverlappingObjects(tx, tz))
+							{
+								if (isWallLikeBlocker(o.obj))
+								{
+									dropValid = false;
+									break;
+								}
+							}
+						}
+					}
+
+					// Indoor → outdoor leak: only when dropping farther away.
+					if (dropValid && steps > 3 && g_pathfindingSystem->IsInteriorTile(ax, az))
+					{
+						if (!g_pathfindingSystem->IsInteriorTile(seTileX, seTileZ))
+							dropValid = false;
+					}
+				}
+			}
+
 			BoundingBox box;
 			box.min = Vector3{ sePos.x + (-w + 1.0f), sePos.y, sePos.z + (-d + 1.0f) };
 			box.max = Vector3{ box.min.x + w, sePos.y + h, box.min.z + d };
 
-			DrawBoundingBox(box, WHITE);
+			DrawBoundingBox(box, dropValid ? WHITE : RED);
 			g_gumpManager->m_dropPosition = sePos;
+			g_gumpManager->m_dropValid = dropValid;
 		}
 	}
 

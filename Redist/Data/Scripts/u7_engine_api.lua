@@ -429,6 +429,21 @@ function find_nearest_chair(npc_id) end
 ---@return integer|nil object_id The object ID of the nearest matching object, or nil if none found
 function find_nearest_shape(npc_id, shape_ids) end
 
+---Find NPCs near another NPC (Chebyshev, same floor). Optional activity filter.
+---Used by Waiter_schedule-style scripts (e.g. customers on Eat at Inn).
+---@param npc_id integer Reference NPC
+---@param distance integer Max tile distance
+---@param activity? integer If set, only NPCs whose current schedule activity matches
+---@return integer[] npc_ids 1-based array (may be empty)
+function find_nearby_npcs(npc_id, distance, activity) end
+
+---Object footprint dimensions from ObjectData (world units).
+---@param object_id integer
+---@return number|nil width
+---@return number|nil height
+---@return number|nil depth
+function get_object_dimensions(object_id) end
+
 ---Finds a random walkable position within radius of an NPC
 ---Ensures the position is both walkable and pathfinding can reach it
 ---@param npc_id integer The NPC to search from

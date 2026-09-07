@@ -147,7 +147,9 @@ std::vector<U7Object*> g_chunkObjectMap[192][192]; // The objects in each chunk
 std::vector<U7Object*> g_sortedVisibleObjects;
 
 // Interest spheres (see U7Globals.h)
-float g_interestRadiusTiles = 96.0f; // ~6 chunks; multiplayer: per-player sphere size
+// ~12 chunks. Must cover a whole town from an edge spawn (Spark's house is
+// ~127 tiles from the Trinsic demo start — the old 96-tile radius left him frozen).
+float g_interestRadiusTiles = 192.0f;
 int g_interestCenterCount = 0;
 int g_interestChunkCount = 0;
 int g_interestObjectsUpdated = 0;
@@ -1099,13 +1101,96 @@ void CameraInput()
 		g_CameraMoved = true;
 	}
 
-	if (g_allowInput)
+	if (g_allowInput && g_gumpManager && !g_gumpManager->IsAnyGumpBeingDragged())
 	{
-		if (g_InputSystem->IsLButtonDownInRegion(g_Engine->m_ScreenWidth - (g_minimapSize * g_DrawScale), 0, g_Engine->m_ScreenWidth, g_minimapSize * g_DrawScale)
-			&& !g_gumpManager->IsAnyGumpBeingDragged())
+		const int miniX0 = g_Engine->m_ScreenWidth - (int)(g_minimapSize * g_DrawScale);
+		const int miniY0 = 0;
+		const int miniX1 = g_Engine->m_ScreenWidth;
+		const int miniY1 = (int)(g_minimapSize * g_DrawScale);
+		const float miniW = float(g_minimapSize * g_DrawScale);
+
+		const bool sandboxLocked =
+			g_mainState &&
+			g_mainState->m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX &&
+			IsCameraLockedToAvatar();
+
+		if (sandboxLocked)
 		{
-			float minimapx = float(GetMouseX() - (g_Engine->m_ScreenWidth - (g_minimapSize * g_DrawScale))) / float(g_minimapSize * g_DrawScale) * 3072;
-			float minimapy = float(GetMouseY()) / float(g_minimapSize * g_DrawScale) * 3072;
+			// Sandbox + camera locked to Avatar: click minimap to teleport the party.
+			if (g_InputSystem->WasLButtonClickedInRegion(miniX0, miniY0, miniX1, miniY1) &&
+			    g_Player && miniW > 0.0f)
+			{
+				const float worldX = float(GetMouseX() - miniX0) / miniW * 3072.0f;
+				const float worldZ = float(GetMouseY() - miniY0) / miniW * 3072.0f;
+				const int tileX = (int)floorf(worldX);
+				const int tileZ = (int)floorf(worldZ);
+
+				float goalY = 0.0f;
+				if (g_pathfindingSystem &&
+				    tileX >= 0 && tileX < 3072 && tileZ >= 0 && tileZ < 3072)
+				{
+					auto heights = g_pathfindingSystem->GetWalkableSurfaceHeights(tileX, tileZ);
+					if (!heights.empty())
+						goalY = heights.front(); // lowest surface (ground preference)
+				}
+
+				auto teleportUnit = [](U7Object* unit, Vector3 pos)
+				{
+					if (!unit)
+						return;
+					unit->ClearPendingUsecode();
+					unit->m_pathWaypoints.clear();
+					unit->m_currentWaypointIndex = 0;
+					unit->m_pathfindingPending = false;
+					unit->m_isMoving = false;
+					unit->m_isSchedulePath = false;
+					unit->SetPos(pos);
+					unit->SetDest(pos);
+				};
+
+				U7Object* avatar = g_Player->GetAvatarObject();
+				const Vector3 avatarPos{ tileX + 0.5f, goalY, tileZ + 0.5f };
+				teleportUnit(avatar, avatarPos);
+
+				int counter = 1;
+				for (int id : g_Player->GetPartyMemberIds())
+				{
+					if (id == 0)
+						continue; // Avatar already placed
+					auto nit = g_NPCData.find(id);
+					if (nit == g_NPCData.end() || !nit->second)
+						continue;
+					U7Object* member = GetObjectFromID(nit->second->m_objectID);
+					if (!member)
+						continue;
+					Vector3 memberPos = avatarPos;
+					if (id % 2 == 0)
+					{
+						memberPos.x += float(counter);
+						memberPos.z += float(counter);
+					}
+					else
+					{
+						memberPos.x += float(counter);
+						memberPos.z -= float(counter);
+					}
+					teleportUnit(member, memberPos);
+					++counter;
+				}
+
+				AddConsoleString(
+					"Teleported party to (" + std::to_string(tileX) + ", " +
+					std::to_string(tileZ) + ").", SKYBLUE);
+				g_CameraMoved = true; // snap follow on next CameraUpdate
+				// Interest rebuild runs after CameraInput in MainState::Update, so the
+				// same frame's sim pass already uses the new avatar/party centers.
+			}
+		}
+		else if (g_InputSystem->IsLButtonDownInRegion(miniX0, miniY0, miniX1, miniY1) &&
+		         miniW > 0.0f)
+		{
+			float minimapx = float(GetMouseX() - miniX0) / miniW * 3072.0f;
+			float minimapy = float(GetMouseY() - miniY0) / miniW * 3072.0f;
 
 			g_camera.target = Vector3{ minimapx, 0, minimapy };
 			g_CameraMoved = true;
@@ -1494,6 +1579,12 @@ void UpdateSortedVisibleObjects()
 				continue;
 			}
 
+			// Hidden eggs (Ctrl+G off) must not steal clicks from objects on top of them.
+			if ((*node)->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_EGG && !g_showEggs)
+			{
+				continue;
+			}
+
 			Vector3 pos = { 0, 0, 0 };
 			float picked = (*node)->PickXYZ(pos);
 
@@ -1780,8 +1871,11 @@ U7Object* AddObject(int shapenum, int framenum, int id, float x, float y, float 
 	g_objectList.emplace(id, make_unique<U7Object>());
 
 	U7Object* temp = g_objectList[id].get();
-	temp->Init("Data/Units/Walker.cfg", shapenum, framenum);
+	// Object base class defaults m_ID to -1. Set the real id BEFORE Init/SetPos
+	// so any code that reads m_ID during setup never sees the sentinel.
 	temp->m_ID = id;
+	temp->Init("Data/Units/Walker.cfg", shapenum, framenum);
+	temp->m_ID = id; // Init must not clear it; keep explicit in case subclasses change
 	temp->SetInitialPos(Vector3{ x, y, z });
 	AssignObjectChunk(temp);
 	//UpdateModelAnimation(temp->m_shapeData->m_customMesh->GetModel(), temp->m_shapeData->m_customMesh->GetModel()-> ->   0);

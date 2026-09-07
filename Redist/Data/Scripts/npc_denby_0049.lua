@@ -15,6 +15,7 @@ function npc_denby_0049(eventid, objectref)
             add_dialogue("\"Yes, Avatar?\" Denby asks.")
         end
         while true do
+            coroutine.yield()
             var_0000 = get_answer()
             if var_0000 == "name" then
                 add_dialogue("\"I am Denby.\"")

@@ -51,10 +51,12 @@ function npc_carrocio_0044(eventid, objectref)
         end
     end
     while true do
-        if cmps("name") then
+        coroutine.yield()
+        local answer = get_answer()
+        if answer == "name" then
             add_dialogue("\"From out the dawn, when sun doth rise, Until next morn when moon must go, I answer to thy beck and cries, thine humble servant, Carrocio!\"")
             remove_answer("name")
-        elseif cmps("job") then
+        elseif answer == "job" then
             add_dialogue("\"The puppet's curtain I unfurl, And from mine hands the story's told, For pleasure of a boy or girl, To see doth cost one coin of gold.")
             add_dialogue("To take good measure of thy power, Forged in fire of virtue's heart, To ring the bell this very hour, Do test thy strength 'til thy muscles smart.\"")
             if not var_0003 then
@@ -62,50 +64,50 @@ function npc_carrocio_0044(eventid, objectref)
             end
             add_dialogue("\"Or dost thou wish to be a king? Yonder sticks a sword in stone. If thou canst only pull it out Thou wilt be the next upon the throne!\"")
             add_answer({"strength test", "see", "puppet show"})
-        elseif cmps("puppet show") then
+        elseif answer == "puppet show" then
             add_dialogue("\"My childhood's eye spied father's toil, A puppet's show of splendor royal. Time's breeze has blown, My father's gone, His child has grown, Regrets anon, Gears and wheels move the moppets now, in need of no one, And so I keep his carnival song playing on and on alone.\"")
             remove_answer("puppet show")
             add_answer({"gears and wheels", "regrets"})
-        elseif cmps("strength test") then
+        elseif answer == "strength test" then
             if var_0002 ~= 7 then
                 add_dialogue("\"I am sorry to say I have called it a day. Come to the grounds to test thy fitness when I am, yea verily, open for business.\"")
             else
                 add_dialogue("\"Take the hammer in thine hands and strike a blow upon the ground, If thine arms be possessed of might then thou shalt hear a ringing sound. Once thou hast struck if thou hearest naught then thou dost know thy strength is flagging. But if thou dost win the strength test game thou shalt receive a stuffed dragon.\"")
             end
             remove_answer("strength test")
-        elseif cmps("gears and wheels") then
+        elseif answer == "gears and wheels" then
             add_dialogue("\"I fear an end to my family craft, where the show is run by human heart, But bones do age, not so machines, and we cannot simply replace a part. I carry on as best I can, A machine to play my father's role, Control the marionettes unseen, struggling to imbue them with a soul.\"")
             remove_answer("gears and wheels")
-        elseif cmps("regrets") then
+        elseif answer == "regrets" then
             add_dialogue("\"The faces pressed before me, fleeting moments chance of glee, From the lowly mongrel beggar to the resident of throne, Each know their place and gave me chase to find the one for me, Woman whom my life may share, this heart that waits alone.\"")
             remove_answer("regrets")
             add_answer({"woman", "resident of throne", "mongrel beggar"})
-        elseif cmps("mongrel beggar") then
+        elseif answer == "mongrel beggar" then
             add_dialogue("\"A beggar man called Snaz will come to watch my show, to steal and sell all my best jokes, mine own personal foe.\"")
             remove_answer("mongrel beggar")
-        elseif cmps("resident of throne") then
+        elseif answer == "resident of throne" then
             add_dialogue("\"Thine ignorance doth make me skittish, surely thou hast heard of wise Lord British.\"")
             remove_answer("resident of throne")
-        elseif cmps("woman") then
+        elseif answer == "woman" then
             add_dialogue("\"The awakening of mine heart's idyll, Lies 'neath me for I see her still, No bard could e'er describe nor tell, the tenderness of my fair Nell.\"")
             remove_answer("woman")
             add_answer("Nell")
-        elseif cmps("Nell") then
+        elseif answer == "Nell" then
             add_dialogue("\"'Tis said love is a fiery angel, Riding soft silk wings of pure redemption, My puppet's heart still as an anvil, At the wicked thrill of her attention. By mine angel Nell I am anointed, Humble cowardice felled by Passion's blade, As her beloved I was hence appointed, Perchance through destiny a marriage made.\"")
             remove_answer("Nell")
             add_answer({"marriage", "wicked thrill"})
-        elseif cmps("wicked thrill") then
+        elseif answer == "wicked thrill" then
             add_dialogue("Carrocio looks as if he is lost in a memory. After a moment he returns to reality.")
             add_dialogue("\"I would not be a gentleman if I spoke of this more, Forgive me the candor of mine heart's open door.\"")
             add_dialogue("He appears somewhat embarrassed and clears his throat loudly several times.")
             remove_answer("wicked thrill")
-        elseif cmps("marriage") then
+        elseif answer == "marriage" then
             add_dialogue("\"My coins are arrows rushing to make good, 'Til the day when the jeweller sells his ring, For my sure heart is not but carved from wood, And she doth tend to the bed of a king.\"")
             remove_answer("marriage")
             if not get_flag(122) then
                 add_answer("Nell with child")
             end
-        elseif cmps("Nell with child") then
+        elseif answer == "Nell with child" then
             add_dialogue("Carrocio gives you a shocked look and drops to his knees before you. \"I beseech thee, " .. var_0000 .. ", Keep still thy tongue, My Nell has ne'er harmed anyone, It would cause grievous injury to her reputation, Through the town's wagging lips our secret to spread, 'Twould make a permanent end of mine occupation, And kill our hope of a happy life dead.\" He looks you in the eyes, pleadingly. \"In thee I must place mine hope and trust, Part, parcel and whole. To ne'er again speak of the spoils of my lust, Thou must not tell a soul!\"")
             if not get_flag(137) then
                 add_dialogue("He looks at you awaiting some sort of indication. Will you keep his secret?")
@@ -117,10 +119,10 @@ function npc_carrocio_0044(eventid, objectref)
                 end
             end
             remove_answer("Nell with child")
-        elseif cmps("Charles is angry") then
+        elseif answer == "Charles is angry" then
             add_dialogue("\"I am grateful for thine honesty about thy lack of care, But why hast thou placed thyself in the center of our affair? For Nell's sake I could not bring myself to cause harm to her brother, I shall convince him of mine intentions, I love Nell and no other. Leave me now for I must use this time to properly prepare.\"")
             return
-        elseif cmps("see") then
+        elseif answer == "see" then
             if var_0002 ~= 7 then
                 add_dialogue("\"I am sorry to say I have called it a day. Come to the grounds at daybreak when the puppets are, yea verily, up and awake.\"")
             else
@@ -131,7 +133,7 @@ function npc_carrocio_0044(eventid, objectref)
             end
             remove_answer("see")
             return
-        elseif cmps("bye") then
+        elseif answer == "bye" then
             break
         end
     end

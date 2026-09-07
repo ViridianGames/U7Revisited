@@ -41,6 +41,7 @@ function npc_candice_0041(eventid, objectref)
             end
         end
         while true do
+            coroutine.yield()
             var_0005 = get_answer()
             if var_0005 == "name" then
                 add_dialogue("\"My name is Candice,\" she says brightly. \"I must say I am honored to meet the Avatar!\" She curtsies.")
@@ -73,10 +74,7 @@ function npc_candice_0041(eventid, objectref)
                 add_dialogue("\"Well, thou surely must recognize them. They are supposed to be authentic! Things like the Silver Horn and the eight stones. I understand the stones were used for teleportation, and if mages were not so sick in the head these days, they could cast a 'Recall' spell on them to teleport to specific places around Britannia. I believe if one casts a 'Mark' spell on one, thou canst re-assign the teleportation location! But I suppose none of that works anymore.\"")
                 var_0005 = npc_id_in_party(1) --- Guess: Checks player status
                 if var_0005 then
-                    switch_talk_to(1)
-                    add_dialogue("Iolo whispers to you, \"Er, Avatar, thou dost know that I do not condone stealing. But, er, I do believe these stones may be useful to us. Perhaps we should come back later when the museum is closed, if thou dost know what I mean? After all, these items technically belong to thee!\"")
-                    hide_npc(1)
-                    switch_talk_to(41)
+                    second_speaker(1, 0, "Iolo whispers to you, \"Er, Avatar, thou dost know that I do not condone stealing. But, er, I do believe these stones may be useful to us. Perhaps we should come back later when the museum is closed, if thou dost know what I mean? After all, these items technically belong to thee!\"")
                 end
                 remove_answer("Avatar artifacts")
             elseif var_0005 == "works of art" then

@@ -17,6 +17,7 @@ function npc_greg_0038(eventid, objectref)
             add_dialogue("\"Why, what can I do for thee, " .. var_0000 .. "?\" asks Greg.")
         end
         while true do
+            coroutine.yield()
             var_0004 = get_answer()
             if var_0004 == "name" then
                 add_dialogue("\"Why, my name is Greg. It is good to see thee.\"")

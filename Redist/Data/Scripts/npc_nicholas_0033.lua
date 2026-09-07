@@ -14,6 +14,7 @@ function npc_nicholas_0033(eventid, objectref)
             add_dialogue("\"Whee! Yoooo!\" intones Nicholas.")
         end
         while true do
+            coroutine.yield()
             var_0001 = get_answer()
             if var_0001 == "name" then
                 if var_0000 then

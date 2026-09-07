@@ -15,6 +15,7 @@ function npc_wislem_0065(eventid, objectref)
             add_dialogue("\"To greet thee again,\" Wislem says.")
         end
         while true do
+            coroutine.yield()
             var_0000 = get_answer()
             if var_0000 == "name" then
                 add_dialogue("\"To be known as Wislem.\"")

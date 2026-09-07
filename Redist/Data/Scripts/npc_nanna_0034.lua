@@ -29,6 +29,7 @@ function npc_nanna_0034(eventid, objectref)
             add_dialogue("\"Yes, may I help thee?\" Nanna asks.")
         end
         while true do
+            coroutine.yield()
             var_0004 = get_answer()
             if var_0004 == "name" then
                 add_dialogue("\"Oh, everyone simply calls me 'Nanna'.\"")
@@ -41,18 +42,13 @@ function npc_nanna_0034(eventid, objectref)
                 remove_answer("Royal Nursery")
                 add_answer("luxury")
                 if var_0001 == 7 then
-                    if var_0004 then
-                        switch_talk_to(2)
-                        add_dialogue("\"Whew! Dost thou smell what I smell, Avatar?\"")
-                        hide_npc(2)
+                    if npc_id_in_party(2) then
+                        second_speaker(2, 0, "\"Whew! Dost thou smell what I smell, Avatar?\"")
                     end
                     var_0005 = npc_id_in_party(1) --- Guess: Checks player status
                     if var_0005 then
-                        switch_talk_to(1)
-                        add_dialogue("\"I believe that is the smell of diapers, boy. When thou art a father one day, thou wilt come to know that smell quite well.\"")
-                        hide_npc(1)
+                        second_speaker(1, 0, "\"I believe that is the smell of diapers, boy. When thou art a father one day, thou wilt come to know that smell quite well.\"")
                     end
-                    switch_talk_to(34)
                 end
                 remove_answer("Royal Nursery")
             elseif var_0004 == "nanny" then

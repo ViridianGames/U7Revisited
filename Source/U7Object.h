@@ -604,6 +604,10 @@ public:
 
 	bool m_followingSchedule = false;
 	int m_lastSchedule = -1;
+	// g_CurrentUpdate when NPCUpdate last ran. Gap ⇒ was outside interest (dormant).
+	unsigned int m_lastNpcUpdateFrame = 0;
+	// Set on wake from dormancy; consumed when schedule slot is applied (snap or path).
+	bool m_scheduleWakeSnapPending = false;
 	int m_currentFrameX = 0;
 	int m_currentFrameY = 0;
 

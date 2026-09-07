@@ -59,6 +59,7 @@ public:
 	Vector3		m_draggedObjectOriginalPos = { 0, 0, 0 };  // Original world position (for returning to world)
 	Vector3		m_draggedObjectOriginalDest = { 0, 0, 0 };  // Original destination (for NPCs)
 	Vector3		m_dropPosition = { 0, 0, 0 };
+	bool			m_dropValid = true; // false = ghost red; release returns to source/original
 	Vector2		m_draggedObjectOffset = { 0, 0 };
 	bool			m_isMouseOverGump;
 	Gump*			m_gumpUnderMouse;

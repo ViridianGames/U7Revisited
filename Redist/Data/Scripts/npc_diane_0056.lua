@@ -19,6 +19,7 @@ function npc_diane_0056(eventid, objectref)
             add_dialogue("\"Greetings to thee, " .. var_0000 .. ",\" says Diane.")
         end
         while true do
+            coroutine.yield()
             var_0003 = get_answer()
             if var_0003 == "name" then
                 add_dialogue("\"My name is Diane.\"")

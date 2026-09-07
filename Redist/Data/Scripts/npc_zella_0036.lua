@@ -15,6 +15,7 @@ function npc_zella_0036(eventid, objectref)
             add_dialogue("\"Hello again!\" Zella says.")
         end
         while true do
+            coroutine.yield()
             var_0000 = get_answer()
             if var_0000 == "name" then
                 add_dialogue("\"My name is Zella.\"")

@@ -54,13 +54,15 @@ function npc_millie_0063(eventid, objectref)
         add_dialogue("\"It is good to speak with thee, again,\" says Millie.")
     end
     while true do
-        if cmps("name") then
+        coroutine.yield()
+        local answer = get_answer()
+        if answer == "name" then
             add_dialogue("\"My name is Millie,\" she giggles coyly.")
             remove_answer("name")
-        elseif cmps("job") then
+        elseif answer == "job" then
             add_dialogue("\"I suppose I have no job, but is that really so bad? I am a member of The Fellowship and I talk to people about them all day long.\"")
             add_answer({"talk", "Fellowship"})
-        elseif cmps("Fellowship") then
+        elseif answer == "Fellowship" then
             if var_0001 then
                 add_dialogue("\"I see we have the same job!\" She laughs at her own joke. \"Dost thou spend all thy time talking to people about The Fellowship? For if that is what thou dost do, thou must get thyself another corner!\" Millie's face wrinkles in displeasure.")
             else
@@ -77,27 +79,27 @@ function npc_millie_0063(eventid, objectref)
                     add_answer("philosophy")
                 end
             end
-        elseif cmps("philosophy") then
+        elseif answer == "philosophy" then
             utility_ship_1050()
             add_dialogue("\"If thou dost wish, thou mayest attend tonight's meeting at the Fellowship Hall. It begins at nine o'clock sharp. Just tell them that thou art my guest. I shall see thee there, I hope.\" Millie giggles and looks away shyly.")
             remove_answer("philosophy")
-        elseif cmps("talk") then
+        elseif answer == "talk" then
             add_dialogue("\"I spend all my time trying to recruit, er... spread the word of The Fellowship. It is better than having a job! I learned how to do this at the Meditation Retreat.\"")
             remove_answer("talk")
             add_answer("Meditation Retreat")
-        elseif cmps("Meditation Retreat") then
+        elseif answer == "Meditation Retreat" then
             add_dialogue("\"'Tis located on an island in south Britannia near Serpent's Hold. Most new Fellowship members spend some time down there learning the tenets of the group. One can also learn to hear 'the voice' at the retreat.\"")
             add_answer("the voice")
             remove_answer("Meditation Retreat")
             set_flag(139, true)
-        elseif cmps("the voice") then
+        elseif answer == "the voice" then
             add_dialogue("\"Fellowship members have an inner voice which speaks to them. I have not heard it yet, but I am working toward it. I may need to spend another few days at the Meditation Retreat in order to do so. Batlin tells me not to be discouraged, though. He says I will hear it when I have made myself worthy.\"")
             remove_answer("the voice")
             set_flag(138, true)
-        elseif cmps("Thad") then
+        elseif answer == "Thad" then
             add_dialogue("Millie rolls her eyes. \"Thou hast met my brother? Thou poor thing! He is really a candidate for the asylum, I wouldst say! He believes The Fellowship kidnapped me and charmed me into following them. Well, I joined of mine own free will, without a second thought, and it was a pure lark! No one coerced me! Thad can go hang! Mama always said he was the impulsive one in the family!\"")
             remove_answer("Thad")
-        elseif cmps("bye") then
+        elseif answer == "bye" then
             break
         end
     end

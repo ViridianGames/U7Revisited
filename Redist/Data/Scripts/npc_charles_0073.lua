@@ -22,6 +22,7 @@ function npc_charles_0073(eventid, objectref)
             add_dialogue("\"Hello, Avatar.\"")
         end
         while true do
+            coroutine.yield()
             var_0000 = get_answer()
             if var_0000 == "name" then
                 add_dialogue("\"I am Charles.\"")

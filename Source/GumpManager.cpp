@@ -288,64 +288,60 @@ void GumpManager::Update()
 		{
 			bool returnedToSource = false;
 
-			// Return to source if mouse is over a gump (failed drop attempt)
-			// If mouse is over world, user wants to drop to ground
-			if (m_sourceGump != nullptr && m_gumpUnderMouse != nullptr)
+			// Return to source when: over a gump (failed container drop), or world drop is invalid.
+			const bool wantReturnToSource =
+				m_sourceGump != nullptr &&
+				(m_gumpUnderMouse != nullptr || !m_dropValid);
+
+			if (wantReturnToSource)
 			{
 				GumpPaperdoll* sourcePaperdoll = dynamic_cast<GumpPaperdoll*>(m_sourceGump);
 				if (sourcePaperdoll)
 				{
-					// Re-equip to the exact slot(s) we dragged from
 					auto sourceNpcIt = g_NPCData.find(sourcePaperdoll->GetNpcId());
 					if (sourceNpcIt != g_NPCData.end() && m_sourceSlotIndex >= 0)
 					{
 						int shape = object->m_shapeData->GetShape();
 						std::vector<EquipmentSlot> fillSlots = GetEquipmentSlotsFilled(shape);
-
-						// Re-equip to the same slot(s) we removed from
 						if (!fillSlots.empty())
 						{
-							// Multi-slot item - re-equip to all fill slots
 							for (EquipmentSlot fillSlot : fillSlots)
-							{
 								sourceNpcIt->second->SetEquippedItem(fillSlot, object->m_ID);
-							}
-							Log("Returned multi-slot item to source paperdoll slot " + std::to_string(m_sourceSlotIndex) +
-								" (filled " + std::to_string(fillSlots.size()) + " slots)");
 						}
 						else
 						{
-							// Single-slot item - re-equip to the exact slot
-							sourceNpcIt->second->SetEquippedItem(static_cast<EquipmentSlot>(m_sourceSlotIndex), object->m_ID);
-							Log("Returned item to source paperdoll slot " + std::to_string(m_sourceSlotIndex));
+							sourceNpcIt->second->SetEquippedItem(
+								static_cast<EquipmentSlot>(m_sourceSlotIndex), object->m_ID);
 						}
 						g_SoundSystem->PlaySound(BuildU7SfxPath(76));
-						g_mainState->ShowErrorCursor();
+						if (g_mainState) g_mainState->ShowErrorCursor();
 						returnedToSource = true;
 					}
 				}
 				else if (m_sourceGump->m_containerObject != nullptr)
 				{
-					// Return to source container inventory
 					m_sourceGump->m_containerObject->AddObjectToInventory(object->m_ID);
 					g_SoundSystem->PlaySound(BuildU7SfxPath(76));
-					g_mainState->ShowErrorCursor();
+					if (g_mainState) g_mainState->ShowErrorCursor();
 					returnedToSource = true;
-					Log("Returned item to source container");
+					Log(!m_dropValid
+						? "Returned item to source container (blocked placement)"
+						: "Returned item to source container");
 				}
 			}
 
-			// If we couldn't return to source, drop to ground
 			if (!returnedToSource)
 			{
-				// If dragged from world and drop failed (mouse over gump), return to original position
-				// Otherwise, drop at mouse position (successful world drop)
-				if (m_sourceGump == nullptr && m_gumpUnderMouse != nullptr && m_draggedObjectOriginalPos.x != 0.0f)
+				// World-origin drag with invalid/failed drop → original world pos.
+				if (!m_dropValid || m_gumpUnderMouse != nullptr)
 				{
 					object->SetPos(m_draggedObjectOriginalPos);
+					object->SetDest(m_draggedObjectOriginalDest);
 					g_SoundSystem->PlaySound(BuildU7SfxPath(76));
-					g_mainState->ShowErrorCursor();
-					Log("Returned item to original world position (drop failed)");
+					if (g_mainState) g_mainState->ShowErrorCursor();
+					Log(!m_dropValid
+						? "Returned item to original world position (blocked placement)"
+						: "Returned item to original world position (drop failed)");
 				}
 				else
 				{
@@ -353,16 +349,19 @@ void GumpManager::Update()
 					g_SoundSystem->PlaySound(BuildU7SfxPath(74));
 					Log("Dropped item to ground");
 
-					// For NPCs: if they were stationary before drag (pos == dest), update dest to new pos
-					// If they were moving (pos != dest), keep the original dest so they continue moving
 					if (m_draggedObjectOriginalPos.x == m_draggedObjectOriginalDest.x &&
 						m_draggedObjectOriginalPos.y == m_draggedObjectOriginalDest.y &&
 						m_draggedObjectOriginalPos.z == m_draggedObjectOriginalDest.z)
 					{
-						// NPC was stationary - update dest to match new pos
 						object->SetDest(object->m_Pos);
 					}
-					// Otherwise, dest is unchanged and NPC will continue moving to original destination
+
+					// Dough dropped onto a baking hearth → start bake timer (event 3).
+					if (object->m_ObjectType == 658 && g_ScriptingSystem)
+					{
+						g_ScriptingSystem->CallScript("object_dough_0658",
+							{ static_cast<lua_Integer>(3), static_cast<lua_Integer>(object->m_ID) });
+					}
 				}
 				object->m_isContained = false;
 			}

@@ -28,17 +28,19 @@ function npc_cynthia_0042(eventid, objectref)
         add_dialogue("\"How may I help thee?\" asks Cynthia.")
     end
     while true do
-        if cmps("name") then
+        coroutine.yield()
+        local answer = get_answer()
+        if answer == "name" then
             add_dialogue("\"My name is Cynthia.\"")
             remove_answer("name")
-        elseif cmps("job") then
+        elseif answer == "job" then
             add_dialogue("\"I am the teller at the Mint. I am also a member of the Britannian Tax Council.\"")
             add_answer({"Britannian Tax Council", "Mint"})
-        elseif cmps("Mint") then
+        elseif answer == "Mint" then
             add_dialogue("\"Here at the Mint we store gold, oversee production of coins and keep an accurate count of how much money the kingdom has available for such things as farming, building the roads, developing sources of fresh water, seeing to the health of the citizenry, maintaining the estates of nobles, raising the guard militia and carrying out the decrees of Lord British.\"")
             remove_answer("Mint")
             add_answer({"guards", "estates", "health", "water", "roads", "farms", "money"})
-        elseif cmps("Britannian Tax Council") then
+        elseif answer == "Britannian Tax Council" then
             add_dialogue("\"The Britannian Tax Council is in charge of the accounting, assessment and collection of the taxes. If thou wilt be earning any money here in Britannia thou wilt need to take this paper.\"")
             var_0002 = add_party_items(true, 359, 12, 797, 1)
             if var_0002 then
@@ -47,34 +49,34 @@ function npc_cynthia_0042(eventid, objectref)
                 add_dialogue("\"Thou art carrying too much. Come back and I will give thee thy paper when thou art not so greatly encumbered.\"")
             end
             remove_answer("Britannian Tax Council")
-        elseif cmps("money") then
+        elseif answer == "money" then
             add_dialogue("\"In order to keep the standard of money constant, we also operate as an exchange for those who possess quantities of gold.")
             add_dialogue("We supply the equivalent value of their gold in spendable coin of the realm and then transform the gold we receive into more money. So, as thou canst see, it is a very efficient system.\"")
             set_flag(220, true)
             remove_answer("money")
             add_answer({"system", "exchange"})
-        elseif cmps("farms") then
+        elseif answer == "farms" then
             add_dialogue("\"As I am certain thou dost know, the seven year drought, which thankfully ended several years ago, has left much of the farming in the Kingdom in disarray. That is why the cost of food is so expensive. But without the support of the Royal Treasury, the prices would be even higher.\"")
             remove_answer("farms")
-        elseif cmps("roads") then
+        elseif answer == "roads" then
             add_dialogue("\"The increased use of wagons has caused many of the roads throughout Britannia to rapidly deteriorate. It costs a lot of money to build new roads and keep them all repaired.\"")
             remove_answer("roads")
-        elseif cmps("water") then
+        elseif answer == "water" then
             add_dialogue("\"It is of the utmost importance to the Kingdom to insure its populous a clean water supply, and that requires a regular supply of new and fresh wells.\"")
             remove_answer("water")
-        elseif cmps("health") then
+        elseif answer == "health" then
             add_dialogue("\"As Britannia's population has greatly increased in the last two hundred years, so has the risk of infectious diseases, such as the mysterious skin deterioration that afflicts those who partake in the venom of the silver serpent. The number of healers that the Kingdom needs has risen dramatically.\"")
             remove_answer("health")
-        elseif cmps("estates") then
+        elseif answer == "estates" then
             add_dialogue("\"The local Lords and Mayors all have residences that are maintained through the auspices of the Kingdom.\"")
             remove_answer("estates")
-        elseif cmps("guards") then
+        elseif answer == "guards" then
             add_dialogue("\"The military training is conducted at Serpent's Hold, where the guards that protect all of the towns and cities of Britannia are instructed. 'Tis funded by the Royal Treasury.\"")
             remove_answer("guards")
-        elseif cmps("system") then
+        elseif answer == "system" then
             add_dialogue("\"It not only applies to gold but it also applies to all minerals. We oversee the sale and rate of exchange for precious ores extracted by the Britannian Mining Company. But we do not handle the sale of gems. There is a jeweler in town who handles that.\"")
             remove_answer("system")
-        elseif cmps("exchange") then
+        elseif answer == "exchange" then
             var_0003 = get_schedule_type(get_npc_name(42))
             if var_0003 == 30 then
                 add_dialogue("\"Dost thou have some gold that thou wouldst like to exchange?\"")
@@ -108,11 +110,11 @@ function npc_cynthia_0042(eventid, objectref)
                 add_dialogue("\"Please come to The Mint during regular daytime hours.\"")
             end
             remove_answer("exchange")
-        elseif cmps("James") then
+        elseif answer == "James" then
             add_dialogue("\"James is mine husband and I am very worried about him. I know he is feeling very unhappy lately and he dislikes his job. If thou dost speak to him please tell him that even though we have not been speaking very much lately, that I am still thinking of him and that I still care about him.\"")
             remove_answer("James")
             set_flag(146, true)
-        elseif cmps("bye") then
+        elseif answer == "bye" then
             break
         end
     end

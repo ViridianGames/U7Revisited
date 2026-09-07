@@ -24,10 +24,7 @@ function npc_lucy_0037(eventid, objectref)
                     set_flag(132, true)
                     var_0007 = npc_id_in_party(4) --- Guess: Checks player status
                     if var_0007 then
-                        switch_talk_to(4)
-                        add_dialogue("\"Damn! How did she know?\"")
-                        hide_npc(4)
-                        switch_talk_to(37)
+                        second_speaker(4, 0, "\"Damn! How did she know?\"")
                     end
                 else
                     add_dialogue("\"Oh, really?\" she says in mock surprise. \"Why, I have always wanted to meet the Avatar!\"")
@@ -48,6 +45,7 @@ function npc_lucy_0037(eventid, objectref)
             add_answer({"buy", "food", "drink"})
         end
         while true do
+            coroutine.yield()
             var_0004 = get_answer()
             if var_0004 == "name" then
                 add_dialogue("\"I'm Lucy!\"")
@@ -60,10 +58,7 @@ function npc_lucy_0037(eventid, objectref)
                     var_0007 = npc_id_in_party(4) --- Guess: Checks player status
                     if var_0007 then
                         add_dialogue("She addresses Dupre. \"How about thou, handsome? Want something to eat?\" She bats her eyelashes.")
-                        switch_talk_to(4)
-                        add_dialogue("\"My dear, thou wouldst make any man hungry!\"")
-                        hide_npc(4)
-                        switch_talk_to(37)
+                        second_speaker(4, 0, "\"My dear, thou wouldst make any man hungry!\"")
                         add_dialogue("\"I like thy friends, " .. var_0005 .. ".\"")
                     end
                 else

@@ -34,7 +34,9 @@ function npc_kristy_0031(eventid, objectref)
         add_dialogue("\"Hi!\" Kristy exclaims.")
     end
     while true do
-        if cmps("name") then
+        coroutine.yield()
+        local answer = get_answer()
+        if answer == "name" then
             add_dialogue("\"Kwisty.\"")
             if var_0000 then
                 switch_talk_to(-34)
@@ -43,7 +45,7 @@ function npc_kristy_0031(eventid, objectref)
                 switch_talk_to(-31)
             end
             remove_answer("name")
-        elseif cmps("job") then
+        elseif answer == "job" then
             var_0001 = get_schedule_type(-31)
             if var_0001 == 25 then
                 add_dialogue("\"Tag! Playing tag!\"")
@@ -53,16 +55,16 @@ function npc_kristy_0031(eventid, objectref)
                 add_dialogue("Kristy looks confused. \"Sing. Horsey. Rosa. Winner.\"")
                 add_answer({"winner", "Rosa", "horsey", "sing"})
             end
-        elseif cmps("sing") then
+        elseif answer == "sing" then
             add_dialogue("Kristy is more than happy to do so. \"A-B-C-D-E-F-G! H-I-K-M-M-M-O-P! Q-T-W-Y-X-Z!\" She is proud of her song, although she didn't get it quite right.")
             remove_answer("sing")
-        elseif cmps("horsey") then
+        elseif answer == "horsey" then
             add_dialogue("\"I love horsey!\" She rocks hard on the rocking horse.")
             remove_answer("horsey")
-        elseif cmps("Rosa") then
+        elseif answer == "Rosa" then
             add_dialogue("Kristy hugs her baby doll tight. \"Rosa!\"")
             remove_answer("Rosa")
-        elseif cmps("winner") then
+        elseif answer == "winner" then
             add_dialogue("\"I am winner!\" she proclaims loudly.")
             if var_0000 then
                 switch_talk_to(-34)
@@ -71,7 +73,7 @@ function npc_kristy_0031(eventid, objectref)
                 switch_talk_to(-31)
             end
             remove_answer("winner")
-        elseif cmps("bye") then
+        elseif answer == "bye" then
             break
         end
     end

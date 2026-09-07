@@ -386,7 +386,7 @@ void UpdateSortedVisibleObjects();
 //  Camera frustum chunks are always unioned in so freecam still sim-ticks what you see.
 //////////////////////////////////////////////////////////////////////////////
 
-/// Radius in world tiles around each interest center (default ~6 chunks).
+/// Radius in world tiles around each interest center (default ~12 chunks / town-sized).
 extern float g_interestRadiusTiles;
 
 /// Clear and rebuild centers from avatar + party, then call AddInterestCenter as needed.

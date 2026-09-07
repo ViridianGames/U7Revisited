@@ -13,6 +13,7 @@ function npc_max_0032(eventid, objectref)
             add_dialogue("\"Hi!\" Max grins at you.")
         end
         while true do
+            coroutine.yield()
             var_0000 = get_answer()
             if var_0000 == "name" then
                 add_dialogue("\"Makth.\"")

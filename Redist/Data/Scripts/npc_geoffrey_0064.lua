@@ -17,6 +17,7 @@ function npc_geoffrey_0064(eventid, objectref)
             add_dialogue("\"Yes, " .. var_0000 .. "?\" Geoffrey asks.")
         end
         while true do
+            coroutine.yield()
             var_0000 = get_answer()
             if var_0000 == "name" then
                 add_dialogue("Geoffrey chuckles. \"Art thou joking? I am Geoffrey!\"")

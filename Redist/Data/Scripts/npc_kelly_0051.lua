@@ -16,6 +16,7 @@ function npc_kelly_0051(eventid, objectref)
             add_dialogue("\"What brings us the pleasure of having thee back on this day, " .. var_0000 .. "?\" says Kelly.")
         end
         while true do
+            coroutine.yield()
             var_0003 = get_answer()
             if var_0003 == "name" then
                 add_dialogue("\"Iolecules called Kelly, " .. var_0000 .. ".\"")

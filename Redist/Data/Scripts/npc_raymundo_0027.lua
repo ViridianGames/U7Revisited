@@ -44,10 +44,12 @@ function npc_raymundo_0027(eventid, objectref)
         add_dialogue("\"Yes, yes?\" Raymundo snaps. \"What dost thou want? I'm busy!\"")
     end
     while true do
-        if cmps("name") then
+        coroutine.yield()
+        local answer = get_answer()
+        if answer == "name" then
             add_dialogue("\"I am Raymundo.\"")
             remove_answer("name")
-        elseif cmps("job") then
+        elseif answer == "job" then
             add_dialogue("\"Why, I am famous throughout the land! Hast thou not heard of me?\"")
             var_0002 = ask_yes_no()
             if not var_0002 then
@@ -62,7 +64,7 @@ function npc_raymundo_0027(eventid, objectref)
                 add_dialogue("\"Come by the theatre during the day and watch the rehearsals for our play.\"")
             end
             add_answer({"play", "Royal Theatre"})
-        elseif cmps("play") then
+        elseif answer == "play" then
             add_dialogue("\"It's a little something I wrote entitled 'The Trials of the Avatar'. It's about a legendary figure in Britannian history.\" The artist looks you up and down.")
             add_dialogue("\"Hmmm. Thou dost have a certain quality... hast thou ever acted on stage?\"")
             var_0003 = ask_yes_no()
@@ -81,11 +83,11 @@ function npc_raymundo_0027(eventid, objectref)
                 add_dialogue("\"No? Thou hast never dreamed of performing on the stage? Seeing thy name in torches? Donning the olde grease paint and wig? Bowing to thunderous applause? Well, begone then, I have not the time for chatting with the public.\"")
                 return
             end
-        elseif cmps("Royal Theatre") then
+        elseif answer == "Royal Theatre" then
             add_dialogue("\"'Tis a wonderful space, dost thou not think? 'Twas opened only last year, thanks to the sponsorship of a few wealthy citizens of our great city.\"")
             remove_answer("Royal Theatre")
             add_answer({"citizens", "sponsorship"})
-        elseif cmps("sponsorship") then
+        elseif answer == "sponsorship" then
             add_dialogue("\"The construction of the actual theatre building was paid for by the Royal Mint, but the theatre company relies solely on the support of individuals such as thyself. Wouldst thou like to make a modest contribution of, say, ten gold pieces to our theatre company?\"")
             var_0005 = ask_yes_no()
             if var_0005 then
@@ -99,7 +101,7 @@ function npc_raymundo_0027(eventid, objectref)
                 add_dialogue("\"Give a man a loaf of bread and thou hast fed him for a day, give a man a play and perhaps thou hast fed his soul for a lifetime! Once thou hast seen one of our productions I am certain thou shalt reconsider.\"")
             end
             remove_answer("sponsorship")
-        elseif cmps("audition") then
+        elseif answer == "audition" then
             if var_0001 == 7 then
                 var_0007 = utility_unknown_1073(359, 359, 838, 1, -356)
                 if var_0007 then
@@ -113,26 +115,26 @@ function npc_raymundo_0027(eventid, objectref)
                 add_dialogue("\"Come to the theatre during rehearsal hours, wouldst thou?\"")
                 return
             end
-        elseif cmps("Miranda") then
+        elseif answer == "Miranda" then
             add_dialogue("Raymundo takes a deep breath and smiles.")
             add_dialogue("\"Ah, lovely woman. 'Tis a pity she is more interested in politics than the stage. But I must say that we get along famously!\"")
             remove_answer("Miranda")
-        elseif cmps("Max") then
+        elseif answer == "Max" then
             add_dialogue("\"He is quite a character, is he not?\" Raymundo's face fills with pride.")
             add_dialogue("\"Takes after his old man, I must say. He is sure to be a great actor. Or writer. Or director. Or producer.\"")
             remove_answer("Max")
-        elseif cmps("citizens") then
+        elseif answer == "citizens" then
             add_dialogue("\"Well, I am really not at liberty to divulge the names of our patrons. But most of them belong to The Fellowship.\"")
             remove_answer("citizens")
             add_answer({"Fellowship", "patrons"})
-        elseif cmps("patrons") then
+        elseif answer == "patrons" then
             add_dialogue("\"These are people who contribute to our theatre. They come from all walks of life and have little in common besides a love of fine theatre.\"")
             remove_answer("patrons")
-        elseif cmps("Fellowship") then
+        elseif answer == "Fellowship" then
             add_dialogue("\"For non-artists, they have given generous contributions to the theatre. They are -fine- people in my book!\" He rubs his hands with glee.")
             add_dialogue("\"I am not a member, though.\"")
             remove_answer("Fellowship")
-        elseif cmps("bye") then
+        elseif answer == "bye" then
             break
         end
     end

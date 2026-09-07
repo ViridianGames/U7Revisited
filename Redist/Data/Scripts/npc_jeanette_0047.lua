@@ -25,48 +25,46 @@ function npc_jeanette_0047(eventid, objectref)
         add_dialogue("\"Hello again!\" bubbly Jeanette says.")
     end
     while true do
-        if cmps("name") then
+        coroutine.yield()
+        local answer = get_answer()
+        if answer == "name" then
             add_dialogue("\"Jeanette, at thy service!\"")
             remove_answer("name")
-        elseif cmps("job") then
+        elseif answer == "job" then
             add_dialogue("\"I work for Lucy at the Blue Boar. I serve food and drinks.\"")
             if var_0001 == 23 then
                 add_dialogue("\"If there is anything thou wouldst like, please say so! And, er, I shall give thee a discount if thou dost buy from me!\"")
-                var_0002 = npc_id_in_party(-4)
+                var_0002 = npc_id_in_party(4)
                 if var_0002 then
                     add_dialogue("\"Why, Sir Dupre! How good to see thee again!\"")
-                    switch_talk_to(-4)
-                    add_dialogue("\"Hello milady! I thought I might re-sample The Blue Boar's fine beverages!\"")
-                    switch_talk_to(47)
+                    second_speaker(4, 0, "\"Hello milady! I thought I might re-sample The Blue Boar's fine beverages!\"")
                     add_dialogue("\"Any time, milord! Any time!\"")
-                    --syntax error hide_npc4)
-                    switch_talk_to(47)
                 end
                 add_answer({"buy", "drink", "food"})
             else
                 add_dialogue("\"I work during the day and evening hours. Thou shouldst come by the pub then and we shall talk more!\"")
             end
-        elseif cmps("food") then
+        elseif answer == "food" then
             add_dialogue("\"Lucy is a good cook. I recommend everything. Especially Silverleaf.\"")
             add_answer("Silverleaf")
             remove_answer("food")
-        elseif cmps("Silverleaf") then
+        elseif answer == "Silverleaf" then
             add_dialogue("\"Wonderful dish. Try it!\"")
             remove_answer("Silverleaf")
-        elseif cmps("drink") then
+        elseif answer == "drink" then
             add_dialogue("\"Thou dost look like thou dost need a good drink!\"")
             remove_answer("drink")
-        elseif cmps("buy") then
+        elseif answer == "buy" then
             utility_shopfood_0928()
-        elseif cmps("Charles") then
+        elseif answer == "Charles" then
             add_dialogue("\"He spoke of me, did he? Well, he may think again! I cannot bring myself to socialize with the upper class. Those bourgeoisie rich men are obnoxious and egotistical. Besides, I am in love with another.\"")
             set_flag(125, true)
             remove_answer("Charles")
             add_answer({"another", "upper class"})
-        elseif cmps("upper class") then
+        elseif answer == "upper class" then
             add_dialogue("\"They are all alike. They work in castles and have piles of gold and can have any woman they want! On the other hand, a humble merchant is the perfect man.\"")
             remove_answer("upper class")
-        elseif cmps("another") then
+        elseif answer == "another" then
             add_dialogue("\"'Tis Willy the Baker! But he does not know it yet!\" she giggles.")
             set_flag(133, true)
             var_0003 = npc_id_in_party(-37)
@@ -82,7 +80,7 @@ function npc_jeanette_0047(eventid, objectref)
             set_flag(126, true)
             utility_unknown_1041(20)
             remove_answer("another")
-        elseif cmps("bye") then
+        elseif answer == "bye" then
             break
         end
     end

@@ -29,6 +29,7 @@ function npc_willy_0052(eventid, objectref)
             add_dialogue("\"Ah, hello there! Good to see thee again!\" says Willy.")
         end
         while true do
+            coroutine.yield()
             var_0007 = get_answer()
             if var_0007 == "name" then
                 add_dialogue("\"My given name is Wilhelm, although no one calls me that. I prefer to be addressed as Willy. Thank thee very much.\"")
@@ -45,14 +46,9 @@ function npc_willy_0052(eventid, objectref)
                             add_dialogue("\"Ha! Thou dost see, then? Everyone agrees! That should be proof enough!\"")
                             var_0004 = npc_id_in_party(2) --- Guess: Checks player status
                             if var_0004 then
-                                switch_talk_to(2)
-                                add_dialogue("\"I want some!\"")
-                                switch_talk_to(52)
+                                second_speaker(2, 0, "\"I want some!\"")
                                 add_dialogue("\"Here thou art, laddie.\" Willy hands Spark a pastry and the boy devours it in one gulp.")
-                                switch_talk_to(2)
-                                add_dialogue("\"Mmmmm! I say, " .. var_0001 .. ", I think we need a lot of this for the road. We had best buy some, all right?\"")
-                                hide_npc(2)
-                                switch_talk_to(52)
+                                second_speaker(2, 0, "\"Mmmmm! I say, " .. var_0001 .. ", I think we need a lot of this for the road. We had best buy some, all right?\"")
                             end
                         else
                             add_dialogue("\"Thou dost not?! Why, do not be ridiculous! Of course thou dost!\"")

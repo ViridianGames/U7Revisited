@@ -16,6 +16,7 @@ function npc_boots_0067(eventid, objectref)
             add_dialogue("\"Hello, again!\" Boots says.")
         end
         while true do
+            coroutine.yield()
             var_0000 = get_answer()
             if var_0000 == "name" then
                 add_dialogue("\"All my brothers and sisters called me 'Boots' when I was a baby, and it hath remained my name ever since.\"")

@@ -39,6 +39,7 @@ function npc_nell_0072(eventid, objectref)
         end
         add_answer({"bye", "job", "name"})
         while true do
+            coroutine.yield()
             var_0004 = get_answer()
             if var_0004 == "name" then
                 add_dialogue("\"I told thee my name is Nell.\"")

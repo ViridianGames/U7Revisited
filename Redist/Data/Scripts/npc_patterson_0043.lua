@@ -38,17 +38,14 @@ function npc_patterson_0043(eventid, objectref)
         set_flag(172, true)
     elseif var_0000 == 0 or var_0000 == 1 or var_0000 == 2 then
         var_0002 = npc_id_in_party(41)
-        var_0003 = npc_id_in_party(-1)
+        var_0003 = npc_id_in_party(1)
         if var_0002 then
             add_dialogue("\"Avatar! Er, uhm, how art thee? Oh, dost thou know Candice, the curator at the Royal Museum? She is a 'brother' at The Fellowship. I was, er, just seeing her home!\"")
             if var_0003 then
-                switch_talk_to(-1)
-                add_dialogue("\"Hmmm. And does thy wife know thou art seeing Candice home?\"")
-                --syntax error hide_npc1)
+                second_speaker(1, 0, "\"Hmmm. And does thy wife know thou art seeing Candice home?\"")
             else
                 add_dialogue("You ask if Judith knows about this.")
             end
-            switch_talk_to(43)
             add_dialogue("\"Why, she doth not need to know! It does not matter! 'Tis nothing, really!\"")
             add_dialogue("The Mayor is sweating profusely. He looks at you with beady eyes. He knows he has been found out. His body slumps. He is mortified and ashamed.")
             add_dialogue("\"Thou hast discovered my... our secret. Please do not tell Judith. I... will end this. I swear. Candice -- we must stop meeting. I... I'm sorry.\"")
@@ -62,24 +59,26 @@ function npc_patterson_0043(eventid, objectref)
         add_dialogue("\"How may I help thee?\" Patterson asks.")
     end
     while true do
-        if cmps("name") then
+        coroutine.yield()
+        local answer = get_answer()
+        if answer == "name" then
             add_dialogue("\"I am Patterson. Named after my father.\" He holds his hand out, takes yours, and shakes it firmly. \"It is such a pleasure to meet the Avatar!\"")
             remove_answer("name")
-        elseif cmps("job") then
+        elseif answer == "job" then
             add_dialogue("\"Why, I am the Town Mayor! The Town Mayor of Britain, that is! I would have thee know that mine election was an overwhelming victory! Mine opponent never had a chance!\"")
             add_dialogue("\"I am also President of the Britannian Tax Council.\"")
             add_answer({"Tax Council", "opponent", "election"})
-        elseif cmps("election") then
+        elseif answer == "election" then
             add_dialogue("\"It was held two years ago. I received 84 percent of the votes. It was an impressive victory, I must admit.\"")
             add_dialogue("\"Of course, when one has a group like The Fellowship behind them...\"")
             remove_answer("election")
             add_answer("Fellowship")
-        elseif cmps("opponent") then
+        elseif answer == "opponent" then
             add_dialogue("\"He was an old farmer named Brownie. Didn't have much money to put into a campaign. Even the peasants didn't support him.\"")
             remove_answer("opponent")
             add_answer("peasants")
             set_flag(127, true)
-        elseif cmps("Fellowship") then
+        elseif answer == "Fellowship" then
             add_dialogue("\"My life has improved greatly since I joined. I find that mine honesty is impeccable, my leadership is unchallengeable, and my love for my wife is irreproachable.\"")
             if not get_flag(6) then
                 add_dialogue("\"Thou shouldst consider attending one of our meetings in the evening.\"")
@@ -88,56 +87,53 @@ function npc_patterson_0043(eventid, objectref)
             end
             remove_answer("Fellowship")
             add_answer({"wife", "honesty"})
-        elseif cmps("peasants") then
+        elseif answer == "peasants" then
             add_dialogue("\"Did I say that? I certainly did not mean it. There is no class system in Britain anymore, nor in the entire country, for that matter! What I meant is that the 'peasantry', that is, those people who are not of superior lineage -- which is the type of man Brownie is -- -they- did not support him either. They knew who would be the best leader!\"")
             remove_answer("peasants")
             add_answer("superior")
-        elseif cmps("superior") then
+        elseif answer == "superior" then
             add_dialogue("\"Did I say that? I do not think I really meant that the way it sounded. What I meant to say was that there are people who come from families of better standing than others. And Brownie is not one of them! But do not misunderstand me -- I still maintain that the class system in Britannia has been abolished!\"")
             remove_answer("superior")
-        elseif cmps("Nanna") then
+        elseif answer == "Nanna" then
             add_dialogue("\"She said what? Well, she's wrong! And to think she is a 'brother'. One of The Fellowship! I shall have to speak to Batlin about her.\"")
             add_dialogue("You notice that Patterson seems ill-at-ease.")
             remove_answer("Nanna")
-        elseif cmps("honesty") then
+        elseif answer == "honesty" then
             add_dialogue("\"I am obviously the most honest person in Britain! Perhaps I should move to Moonglow! Ha!\"")
             remove_answer("honesty")
-        elseif cmps("Judith suspicious") then
+        elseif answer == "Judith suspicious" then
             add_dialogue("\"Why, I do not know what she is talking about! I work late, that is all!\"")
-            var_0003 = npc_id_in_party(-1)
+            var_0003 = npc_id_in_party(1)
             if var_0003 then
-                switch_talk_to(-1)
-                add_dialogue("Iolo whispers to you, \"This man seems very defensive, dost thou not think? I say we should observe him and see where he goes after The Fellowship meeting tonight.\"")
-                --syntax error hide_npc1)
-                switch_talk_to(43)
+                second_speaker(1, 0, "Iolo whispers to you, \"This man seems very defensive, dost thou not think? I say we should observe him and see where he goes after The Fellowship meeting tonight.\"")
             end
             remove_answer("Judith suspicious")
-        elseif cmps("wife") then
+        elseif answer == "wife" then
             add_dialogue("\"Her name is Judith. She's the music teacher at The Music Hall. Perhaps thou hast met her. We have a wonderful relationship.\"")
             remove_answer("wife")
-        elseif cmps("Tax Council") then
+        elseif answer == "Tax Council" then
             add_dialogue("\"The land must have some way of generating income. Taxes are the only solution. Every merchant and farmer is taxed. Anyone who works for a living is taxed.\"")
             add_dialogue("\"The Britannian Tax Council has its main office in the Royal Mint.\"")
             remove_answer("Tax Council")
-        elseif cmps("Candice") then
+        elseif answer == "Candice" then
             add_dialogue("Patterson's eyes widen and for a moment looks very nervous. But very quickly he regains his composure.")
             add_dialogue("\"Candice? Why, she is a friend! A 'brother' at The Fellowship! That is all!\"")
             remove_answer("Candice")
-        elseif cmps("body") then
+        elseif answer == "body" then
             add_dialogue("You relate what Lord British said about the murder in Britain a few years ago. Patterson nods.")
             add_dialogue("\"I remember it well. Quite gruesome, it was. There was a man named Finster who was running for public office. He was quite outspoken in his opinions, and I suppose this got him into trouble.\"")
             remove_answer("body")
             add_answer("opinions")
-        elseif cmps("opinions") then
+        elseif answer == "opinions" then
             add_dialogue("\"He was trying to make many social changes. He wanted more power for the Great Council and the Britannian Tax Council, and he wanted to disband The Fellowship. Finster was a nobleman with too much ambition. Anyway, his beliefs must have provided him with a few enemies.\"")
             remove_answer("opinions")
             add_answer("enemies")
-        elseif cmps("enemies") then
+        elseif answer == "enemies" then
             add_dialogue("\"How should I know? Anyway, his body was found in an abandoned building which is no longer standing. It used to be a storehouse of some kind, up near the castle. It was torn down a couple of years ago. The body was mutilated beyond belief. It was as if someone tied the poor man down with stakes and cut off all of his limbs. Finster was then beheaded. It was almost... what is the word... ritualistic!\"")
             add_dialogue("\"And that is all I remember. No one was ever arrested for the crime.\"")
             utility_unknown_1041(20)
             remove_answer("enemies")
-        elseif cmps("bye") then
+        elseif answer == "bye" then
             break
         end
     end
