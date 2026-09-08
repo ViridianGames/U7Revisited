@@ -579,11 +579,24 @@ extern int g_selectedShape;
 extern int g_selectedFrame;
 
 extern Shader g_alphaDiscard;
+extern int g_alphaDiscardCutoffLoc;
 extern Shader g_cuboidShader;
 extern int g_cuboidTexCoordsLoc;
+// Saturated alpha tint for TFA meshes that contain xform/glass pixels.
+extern Shader g_u7GlassShader;
+extern int g_u7GlassSaturationLoc;
+extern int g_u7GlassCoverageLoc;
+extern int g_u7GlassBrightnessLoc;
+// Near-solid only; mid-alpha panes (window 438) go to the glass pass.
+constexpr float kU7GlassOpaqueCutoff = 0.98f;
+// Tunables — rebuild/restart after changing.
+constexpr float kU7GlassSaturation = 2.4f;
+constexpr float kU7GlassCoverage = 0.16f; // lower = more translucent
+constexpr float kU7GlassBrightness = 1.45f; // multiplies pane RGB before blend
 
 // Screen-space mesh outline (constant pixel thickness).
 extern Shader g_meshIdShader;       // Flat ID write for outlined custom meshes
+extern int g_meshIdAlphaCutoffLoc;  // Silhouette alpha discard threshold
 extern Shader g_meshOutlineShader;  // Fullscreen ID edge → black border composite
 extern int g_meshOutlineIdSamplerLoc;
 extern int g_meshOutlineResolutionLoc;

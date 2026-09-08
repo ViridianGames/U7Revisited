@@ -807,7 +807,19 @@ void ShapeData::DrawMeshId(const Vector3& pos, float angle, Color idColor, Vecto
 		model.materials[mi].shader = g_meshIdShader;
 	}
 
+	// Translucent/glass: fill ID across low-alpha panes so the outline doesn't
+	// trace every lead-came hole as black lines through the window.
+	const bool translucent =
+		(m_shape >= 0 && m_shape < 1024 && g_objectDataTable[m_shape].m_isTranslucent);
+	float cutoff = translucent ? 0.01f : 0.5f;
+	if (g_meshIdAlphaCutoffLoc >= 0)
+		SetShaderValue(g_meshIdShader, g_meshIdAlphaCutoffLoc, &cutoff, SHADER_UNIFORM_FLOAT);
+
 	DrawModelEx(model, finalPos, { 0, 1, 0 }, m_rotation, finalScale, idColor);
+
+	cutoff = 0.5f;
+	if (g_meshIdAlphaCutoffLoc >= 0)
+		SetShaderValue(g_meshIdShader, g_meshIdAlphaCutoffLoc, &cutoff, SHADER_UNIFORM_FLOAT);
 
 	for (int mi = 0; mi < model.materialCount; ++mi)
 		model.materials[mi].shader = backup[static_cast<size_t>(mi)].shader;
@@ -1061,6 +1073,146 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 			}
 		};
 
+		const bool translucent =
+			(m_shape >= 0 && m_shape < 1024 && g_objectDataTable[m_shape].m_isTranslucent);
+
+		// glTF lamps/cases often mark glass via material baseColor alpha (<1), while
+		// the texture itself stays opaque. Windows usually use texture alpha instead.
+		auto materialHasGlassFactor = [](const Material& mat) {
+			return mat.maps[MATERIAL_MAP_DIFFUSE].color.a < 250;
+		};
+		bool hasGlassFactorMat = false;
+		for (int mi = 0; mi < model.materialCount; ++mi)
+		{
+			if (materialHasGlassFactor(model.materials[mi]))
+			{
+				hasGlassFactorMat = true;
+				break;
+			}
+		}
+
+		const bool useGlassPipeline =
+			g_u7GlassShader.id > 0 && g_alphaDiscard.id > 0 &&
+			(translucent || hasGlassFactorMat);
+
+		auto setGlassUniforms = [&]() {
+			if (g_u7GlassSaturationLoc >= 0)
+			{
+				float sat = kU7GlassSaturation;
+				SetShaderValue(g_u7GlassShader, g_u7GlassSaturationLoc, &sat, SHADER_UNIFORM_FLOAT);
+			}
+			if (g_u7GlassCoverageLoc >= 0)
+			{
+				float cov = kU7GlassCoverage;
+				SetShaderValue(g_u7GlassShader, g_u7GlassCoverageLoc, &cov, SHADER_UNIFORM_FLOAT);
+			}
+			if (g_u7GlassBrightnessLoc >= 0)
+			{
+				float bright = kU7GlassBrightness;
+				SetShaderValue(g_u7GlassShader, g_u7GlassBrightnessLoc, &bright, SHADER_UNIFORM_FLOAT);
+			}
+		};
+
+		// Model-space transform matching DrawModelEx(finalPos, +Y, m_rotation, m_Scaling).
+		auto makeModelTransform = [&]() {
+			Matrix matScale = MatrixScale(m_Scaling.x, m_Scaling.y, m_Scaling.z);
+			Matrix matRotation = MatrixRotate(Vector3{ 0, 1, 0 }, m_rotation * DEG2RAD);
+			Matrix matTranslation = MatrixTranslate(finalPos.x, finalPos.y, finalPos.z);
+			Matrix local = MatrixMultiply(MatrixMultiply(matScale, matRotation), matTranslation);
+			return MatrixMultiply(model.transform, local);
+		};
+
+		auto drawMeshFill = [&]() {
+			if (!useGlassPipeline)
+			{
+				DrawModelEx(model, finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, color);
+				restoreMaterials();
+				return;
+			}
+
+			// Use authored albedo, not palette index map (alpha must be real).
+			restoreMaterials();
+			struct GlassBackup { Shader shader{}; };
+			std::vector<GlassBackup> glassBackup(static_cast<size_t>(std::max(0, model.materialCount)));
+			for (int mi = 0; mi < model.materialCount; ++mi)
+				glassBackup[static_cast<size_t>(mi)].shader = model.materials[mi].shader;
+
+			if (hasGlassFactorMat)
+			{
+				// Lamp / display-case style: separate glass materials (factor alpha).
+				const Matrix transform = makeModelTransform();
+
+				// Solid materials first (depth write on).
+				for (int i = 0; i < model.meshCount; ++i)
+				{
+					const int mi = model.meshMaterial[i];
+					if (mi < 0 || mi >= model.materialCount)
+						continue;
+					if (materialHasGlassFactor(model.materials[mi]))
+						continue;
+					model.materials[mi].shader = g_alphaDiscard;
+					if (g_alphaDiscardCutoffLoc >= 0)
+					{
+						float solidCutoff = kU7GlassOpaqueCutoff;
+						SetShaderValue(g_alphaDiscard, g_alphaDiscardCutoffLoc, &solidCutoff, SHADER_UNIFORM_FLOAT);
+					}
+					DrawMesh(model.meshes[i], model.materials[mi], transform);
+				}
+
+				// Glass materials: u7Glass tint (depth write off).
+				setGlassUniforms();
+				rlDisableDepthMask();
+				BeginBlendMode(BLEND_ALPHA);
+				for (int i = 0; i < model.meshCount; ++i)
+				{
+					const int mi = model.meshMaterial[i];
+					if (mi < 0 || mi >= model.materialCount)
+						continue;
+					if (!materialHasGlassFactor(model.materials[mi]))
+						continue;
+					model.materials[mi].shader = g_u7GlassShader;
+					DrawMesh(model.meshes[i], model.materials[mi], transform);
+				}
+				EndBlendMode();
+				rlEnableDepthMask();
+
+				if (g_alphaDiscardCutoffLoc >= 0)
+				{
+					float defaultCutoff = 0.5f;
+					SetShaderValue(g_alphaDiscard, g_alphaDiscardCutoffLoc, &defaultCutoff, SHADER_UNIFORM_FLOAT);
+				}
+			}
+			else
+			{
+				// Window style: one material, glass is low/mid texture alpha.
+				for (int mi = 0; mi < model.materialCount; ++mi)
+					model.materials[mi].shader = g_alphaDiscard;
+				if (g_alphaDiscardCutoffLoc >= 0)
+				{
+					float solidCutoff = kU7GlassOpaqueCutoff;
+					SetShaderValue(g_alphaDiscard, g_alphaDiscardCutoffLoc, &solidCutoff, SHADER_UNIFORM_FLOAT);
+				}
+				DrawModelEx(model, finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, color);
+				if (g_alphaDiscardCutoffLoc >= 0)
+				{
+					float defaultCutoff = 0.5f;
+					SetShaderValue(g_alphaDiscard, g_alphaDiscardCutoffLoc, &defaultCutoff, SHADER_UNIFORM_FLOAT);
+				}
+
+				for (int mi = 0; mi < model.materialCount; ++mi)
+					model.materials[mi].shader = g_u7GlassShader;
+				setGlassUniforms();
+				rlDisableDepthMask();
+				BeginBlendMode(BLEND_ALPHA);
+				DrawModelEx(model, finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, WHITE);
+				EndBlendMode();
+				rlEnableDepthMask();
+			}
+
+			for (int mi = 0; mi < model.materialCount; ++mi)
+				model.materials[mi].shader = glassBackup[static_cast<size_t>(mi)].shader;
+		};
+
 		// F6 toggles screen-space post outlines vs legacy stencil inflate.
 		if (m_meshOutline && !g_pixelated && !g_useScreenSpaceMeshOutline)
 		{
@@ -1071,7 +1223,7 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 			// Step 1: Draw the original model, mark stencil with 1
 			glStencilFunc(GL_ALWAYS, 1, 0xFF);
 			glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-			DrawModelEx(model, finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, color);
+			drawMeshFill();
 
 			// Outline uses solid black — must not use palette index sampling.
 			restoreMaterials();
@@ -1119,8 +1271,7 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 		else
 		{
 			// Screen-space mode: fill only; borders come from the ID post-pass.
-			DrawModelEx(model, finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, color);
-			restoreMaterials();
+			drawMeshFill();
 		}
 		break;
 	}

@@ -377,10 +377,16 @@ float g_cameraSpeed = 25.0f;
 bool g_shouldCameraMoveToDestination = false;
 
 Shader g_alphaDiscard;
+int g_alphaDiscardCutoffLoc = -1;
+Shader g_u7GlassShader{};
+int g_u7GlassSaturationLoc = -1;
+int g_u7GlassCoverageLoc = -1;
+int g_u7GlassBrightnessLoc = -1;
 Shader g_cuboidShader;
 int g_cuboidTexCoordsLoc;
 
 Shader g_meshIdShader{};
+int g_meshIdAlphaCutoffLoc = -1;
 Shader g_meshOutlineShader{};
 int g_meshOutlineIdSamplerLoc = -1;
 int g_meshOutlineResolutionLoc = -1;

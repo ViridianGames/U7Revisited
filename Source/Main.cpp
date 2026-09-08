@@ -124,6 +124,28 @@ int main(int argv, char** argc)
       #endif
 
       g_alphaDiscard = LoadShader(NULL, "Data/Shaders/alphaDiscard.fs");
+      g_alphaDiscardCutoffLoc = GetShaderLocation(g_alphaDiscard, "alphaCutoff");
+      {
+         float defaultCutoff = 0.5f;
+         if (g_alphaDiscardCutoffLoc >= 0)
+            SetShaderValue(g_alphaDiscard, g_alphaDiscardCutoffLoc, &defaultCutoff, SHADER_UNIFORM_FLOAT);
+      }
+      {
+         // Resolve next to the executable so CLion/cwd quirks don't silently
+         // leave g_u7GlassShader.id == 0 (which skips the glass pass entirely).
+         const std::string glassPath =
+            std::string(GetApplicationDirectory()) + "Data/Shaders/u7Glass.fs";
+         g_u7GlassShader = LoadShader(NULL, glassPath.c_str());
+         if (g_u7GlassShader.id == 0)
+            g_u7GlassShader = LoadShader(NULL, "Data/Shaders/u7Glass.fs");
+         g_u7GlassSaturationLoc = GetShaderLocation(g_u7GlassShader, "glassSaturation");
+         g_u7GlassCoverageLoc = GetShaderLocation(g_u7GlassShader, "glassCoverage");
+         g_u7GlassBrightnessLoc = GetShaderLocation(g_u7GlassShader, "glassBrightness");
+         if (g_u7GlassShader.id == 0)
+            Log("ERROR: Failed to load u7Glass.fs — translucent windows will skip gel pass");
+         else
+            Log("u7Glass shader loaded (id=" + std::to_string(g_u7GlassShader.id) + ")");
+      }
       g_cuboidShader = LoadShader("Data/Shaders/cuboid.vs", NULL);
       g_cuboidTexCoordsLoc = GetShaderLocation(g_cuboidShader, "cuboidTexCoords");
       g_paletteShader = LoadShader(NULL, "Data/Shaders/paletteLookup.fs");
@@ -135,6 +157,12 @@ int main(int argv, char** argc)
       }
 
       g_meshIdShader = LoadShader(NULL, "Data/Shaders/meshId.fs");
+      g_meshIdAlphaCutoffLoc = GetShaderLocation(g_meshIdShader, "alphaCutoff");
+      {
+         float defaultCutoff = 0.5f;
+         if (g_meshIdAlphaCutoffLoc >= 0)
+            SetShaderValue(g_meshIdShader, g_meshIdAlphaCutoffLoc, &defaultCutoff, SHADER_UNIFORM_FLOAT);
+      }
       g_meshOutlineShader = LoadShader(NULL, "Data/Shaders/meshOutline.fs");
       // Same binding path as paletteLookup (texture1 → MAP_SPECULAR).
       g_meshOutlineIdSamplerLoc = g_meshOutlineShader.locs[SHADER_LOC_MAP_SPECULAR];
