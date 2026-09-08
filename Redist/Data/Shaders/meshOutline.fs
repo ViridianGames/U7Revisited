@@ -1,16 +1,19 @@
 #version 330
 
-// Screen-space outline: presence silhouette on mesh pixels only.
+// Screen-space outline: per-object borders + exterior ring.
 // texture0 = scene color
 // texture1 = ID mask:
 //   a ≈ 0          → true empty (clear / sky / terrain gap)
 //   a ≈ 0.5        → flat sprite cover (do NOT outline against these)
 //   a ≈ 1, rgb≠0   → outlined custom mesh object ID
 //
-// Mesh↔mesh: no outline (lanterns/clusters).
-// Mesh↔flat: no outline (flats already have baked U7 borders).
-// Mesh↔true empty: outline on BOTH sides of the edge (exterior ring + mesh rim)
-// so objects keep their visual size instead of looking "eaten" by an inward stroke.
+// Edges:
+//   mesh ↔ true empty     → outer silhouette (both sides of the stroke)
+//   mesh ↔ other mesh ID  → per-object borders (fence posts, props)
+//   mesh ↔ flat           → ignored (flats already have baked borders)
+//
+// Lanterns stay clean because each object writes one solid ID footprint
+// (translucent shapes use a low meshId alpha cutoff — no glass holes).
 
 in vec2 fragTexCoord;
 in vec4 fragColor;
@@ -35,7 +38,9 @@ bool isTrueEmpty(vec4 c)
 
 bool isFlatCover(vec4 c)
 {
-	return c.a >= 0.25 && c.a < 0.75;
+	// Flat sentinel is rgb=0, a≈0.5. Require near-black RGB so glass mesh IDs
+	// that somehow carry mid alpha are never mistaken for flats.
+	return c.a >= 0.25 && c.a < 0.75 && (c.r + c.g + c.b) < 0.004;
 }
 
 bool isMesh(vec4 c)
@@ -43,14 +48,38 @@ bool isMesh(vec4 c)
 	return c.a >= 0.75 && (c.r + c.g + c.b) > 0.001;
 }
 
-// Distance to nearest mesh↔true-empty edge (ignores flats and other meshes).
-float presenceEdgeDistance(vec2 uv, float radius)
+ivec3 meshId(vec4 c)
+{
+	return ivec3(c.rgb * 255.0 + 0.5);
+}
+
+// True outline edge: mesh↔empty or mesh↔different mesh. Never involving flats.
+bool isOutlineEdge(vec4 a, vec4 b)
+{
+	if (isFlatCover(a) || isFlatCover(b))
+		return false;
+
+	bool aMesh = isMesh(a);
+	bool bMesh = isMesh(b);
+	bool aEmpty = isTrueEmpty(a);
+	bool bEmpty = isTrueEmpty(b);
+
+	if (aMesh && bEmpty)
+		return true;
+	if (bMesh && aEmpty)
+		return true;
+	if (aMesh && bMesh && meshId(a) != meshId(b))
+		return true;
+	return false;
+}
+
+float outlineEdgeDistance(vec2 uv, float radius)
 {
 	vec4 center = rawAt(uv);
-	bool centerMesh = isMesh(center);
-	bool centerEmpty = isTrueEmpty(center);
-	if (!centerMesh && !centerEmpty)
-		return 1e6; // flat cover — never an outline seed
+	if (isFlatCover(center))
+		return 1e6;
+	if (!isMesh(center) && !isTrueEmpty(center))
+		return 1e6;
 
 	vec2 texel = 1.0 / resolution;
 	float r = max(radius, 0.5);
@@ -64,9 +93,7 @@ float presenceEdgeDistance(vec2 uv, float radius)
 			if (dist < 0.001 || dist > r + 0.001)
 				continue;
 			vec4 n = rawAt(uv + vec2(dx, dy) * texel);
-			bool nMesh = isMesh(n);
-			bool nEmpty = isTrueEmpty(n);
-			if ((centerMesh && nEmpty) || (centerEmpty && nMesh))
+			if (isOutlineEdge(center, n))
 				best = min(best, dist);
 		}
 	}
@@ -78,8 +105,7 @@ void main()
 	vec4 scene = texture(texture0, fragTexCoord) * fragColor * colDiffuse;
 	vec4 center = rawAt(fragTexCoord);
 
-	// Never ink flat sprites (baked borders). Allow true-empty so the ring
-	// can sit outside the mesh, and mesh so the inner half of the stroke exists.
+	// Never ink flats. Ink mesh rim + true-empty exterior ring.
 	if (isFlatCover(center) || (!isMesh(center) && !isTrueEmpty(center)))
 	{
 		finalColor = scene;
@@ -87,7 +113,7 @@ void main()
 	}
 
 	float thickness = max(outlineThickness, 0.5);
-	float d = presenceEdgeDistance(fragTexCoord, thickness + 0.5);
+	float d = outlineEdgeDistance(fragTexCoord, thickness + 0.5);
 
 	float cover = 1.0 - smoothstep(thickness - 0.25, thickness + 0.25, d);
 	finalColor = mix(scene, vec4(0.0, 0.0, 0.0, 1.0), clamp(cover, 0.0, 1.0));

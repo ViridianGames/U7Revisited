@@ -306,7 +306,7 @@ public:
 	int m_pathDebugNpcObjectId = -1;   // Sticky: NPC whose path to draw (click to select)
 
 	// Debug: Allow moving static objects
-	bool m_allowMovingStaticObjects = false;  // F7: Toggle moving static objects
+	bool m_allowMovingStaticObjects = false;  // F7: hack moving — drag anything, drop anywhere
 
 	bool m_loadOnEntry = false;
 

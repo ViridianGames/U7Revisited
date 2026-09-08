@@ -1,9 +1,10 @@
 #version 330
 
 // Flat object-ID output for screen-space mesh outlines.
-// Ignores texture RGB; alphaCutoff controls silhouette holes.
-// Translucent/glass shapes use a low cutoff so pane holes don't get
-// presence-outlined as black lines through the glass.
+// Texture alpha only controls discard (silhouette holes).
+// Output alpha is always 1 — glTF glass materials often carry baseColor
+// alpha ~0.3; if that leaked into the ID buffer, the outline shader treated
+// glass as "flat cover" and only opaque caps got borders.
 
 in vec2 fragTexCoord;
 in vec4 fragColor;
@@ -20,6 +21,7 @@ void main()
 	float cutoff = alphaCutoff > 0.0 ? alphaCutoff : 0.5;
 	if (texel.a < cutoff)
 		discard;
-	// ID is carried in colDiffuse / vertex tint — do not multiply by texel RGB.
-	finalColor = fragColor * colDiffuse;
+	// ID from tint × material RGB only; never inherit material/texture alpha.
+	vec3 id = fragColor.rgb * colDiffuse.rgb;
+	finalColor = vec4(id, 1.0);
 }

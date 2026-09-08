@@ -523,7 +523,9 @@ void MainState::HandleDebugKeys()
 	if (IsKeyPressed(KEY_F7))
 	{
 		m_allowMovingStaticObjects = !m_allowMovingStaticObjects;
-		AddConsoleString(m_allowMovingStaticObjects ? "DEBUG: Can now move static objects" : "DEBUG: Static objects locked");
+		AddConsoleString(m_allowMovingStaticObjects
+			? "DEBUG: Hack moving ON — drag anything, drop anywhere"
+			: "DEBUG: Hack moving OFF — normal drag restrictions");
 	}
 
 	if (IsKeyPressed(KEY_F4))
@@ -2351,6 +2353,8 @@ void MainState::Draw()
 
 			// Prefer the Avatar's floor so indoor drops don't jump onto roofs /
 			// upper stories (same idea as click-to-walk surface selection).
+			// F7 hack moving: ignore floor band so you can place on any story.
+			const bool hackMove = m_allowMovingStaticObjects;
 			U7Object* avatar = g_Player ? g_Player->GetAvatarObject() : nullptr;
 			float preferY = 0.0f;
 			if (avatar)
@@ -2365,8 +2369,8 @@ void MainState::Draw()
 			// Same-floor band: not the next story/roof (U7 story spacing ~4+).
 			constexpr float kFloorBandUp = 3.5f;
 			constexpr float kFloorBandDown = 0.5f;
-			const float bandMin = preferY - kFloorBandDown;
-			const float bandMax = preferY + kFloorBandUp;
+			const float bandMin = hackMove ? -1000.0f : (preferY - kFloorBandDown);
+			const float bandMax = hackMove ? 1000.0f : (preferY + kFloorBandUp);
 
 			float stackY = preferY;
 
@@ -2451,90 +2455,67 @@ void MainState::Draw()
 			Vector3 sePos = { (float)seTileX, stackY, (float)seTileZ };
 
 			// --- Placement validity: only wall-like solids block (not furniture) ---
+			// F7 hack moving: skip blockers / LOS / indoor-outdoor — drop anywhere.
 			bool dropValid = true;
 			const float bodyMin = stackY + 0.05f;
 			const float bodyMax = stackY + h;
 
-			// Tall vertical blockers (walls/columns). Short furniture/hearths/tables
-			// must not forbid placing beside or under a shelf gap.
-			auto isWallLikeBlocker = [&](U7Object* obj) -> bool
+			if (!hackMove)
 			{
-				if (!obj || !obj->m_objectData || obj == draggedObject)
-					return false;
-				if (obj->m_isContained)
-					return false;
-				if (obj->m_objectData->m_isDoor)
-					return false;
-				const int shapeID = obj->m_shapeData ? obj->m_shapeData->GetShape() : -1;
-				if (shapeID >= 0 && PathfindingSystem::IsPassThroughObject(shapeID))
-					return false;
-				if (shapeID >= 0 && PathfindingSystem::IsNonBlockingWalkSurface(shapeID))
-					return false;
-				if (shapeID >= 0 && PathfindingSystem::IsRoofShape(shapeID))
-					return false;
+				// Tall vertical blockers (walls/columns). Short furniture/hearths/tables
+				// must not forbid placing beside or under a shelf gap.
+				auto isWallLikeBlocker = [&](U7Object* obj) -> bool
+				{
+					if (!obj || !obj->m_objectData || obj == draggedObject)
+						return false;
+					if (obj->m_isContained)
+						return false;
+					if (obj->m_objectData->m_isDoor)
+						return false;
+					const int shapeID = obj->m_shapeData ? obj->m_shapeData->GetShape() : -1;
+					if (shapeID >= 0 && PathfindingSystem::IsPassThroughObject(shapeID))
+						return false;
+					if (shapeID >= 0 && PathfindingSystem::IsNonBlockingWalkSurface(shapeID))
+						return false;
+					if (shapeID >= 0 && PathfindingSystem::IsRoofShape(shapeID))
+						return false;
+					if (g_pathfindingSystem)
+					{
+						const ObjectWalkability walk = g_pathfindingSystem->GetObjectWalkability(shapeID, obj);
+						if (walk == OW_WALKABLE || walk == OW_DOOR || walk == OW_CLIMBABLE)
+							return false;
+					}
+					if (!obj->m_objectData->m_isNotWalkable)
+						return false;
+
+					const float surfaceY = PathfindingSystem::GetObjectSurfaceY(obj);
+					const float baseY = obj->m_Pos.y;
+					const float volH = surfaceY - baseY;
+
+					// Short counters/hearths/mantle slabs — not walls.
+					if (volH < 2.25f)
+						return false;
+
+					// Resting on this object's top.
+					if (fabsf(surfaceY - stackY) <= 0.08f)
+						return false;
+
+					// Need real vertical overlap with the dropped object (not a hairline touch).
+					constexpr float kEps = 0.12f;
+					return surfaceY > bodyMin + kEps && baseY < bodyMax - kEps;
+				};
+
 				if (g_pathfindingSystem)
 				{
-					const ObjectWalkability walk = g_pathfindingSystem->GetObjectWalkability(shapeID, obj);
-					if (walk == OW_WALKABLE || walk == OW_DOOR || walk == OW_CLIMBABLE)
-						return false;
-				}
-				if (!obj->m_objectData->m_isNotWalkable)
-					return false;
-
-				const float surfaceY = PathfindingSystem::GetObjectSurfaceY(obj);
-				const float baseY = obj->m_Pos.y;
-				const float volH = surfaceY - baseY;
-
-				// Short counters/hearths/mantle slabs — not walls.
-				if (volH < 2.25f)
-					return false;
-
-				// Resting on this object's top.
-				if (fabsf(surfaceY - stackY) <= 0.08f)
-					return false;
-
-				// Need real vertical overlap with the dropped object (not a hairline touch).
-				constexpr float kEps = 0.12f;
-				return surfaceY > bodyMin + kEps && baseY < bodyMax - kEps;
-			};
-
-			if (g_pathfindingSystem)
-			{
-				for (int tz = minTileZ; tz <= seTileZ && dropValid; ++tz)
-				{
-					for (int tx = minTileX; tx <= seTileX && dropValid; ++tx)
+					for (int tz = minTileZ; tz <= seTileZ && dropValid; ++tz)
 					{
-						if (tx < 0 || tz < 0 || tx >= 3072 || tz >= 3072)
+						for (int tx = minTileX; tx <= seTileX && dropValid; ++tx)
 						{
-							dropValid = false;
-							break;
-						}
-						for (const auto& o : g_pathfindingSystem->GetOverlappingObjects(tx, tz))
-						{
-							if (isWallLikeBlocker(o.obj))
+							if (tx < 0 || tz < 0 || tx >= 3072 || tz >= 3072)
 							{
 								dropValid = false;
 								break;
 							}
-						}
-					}
-				}
-
-				// LOS through walls only (furniture must not block).
-				if (dropValid && avatar)
-				{
-					const int ax = (int)floorf(avatar->m_Pos.x);
-					const int az = (int)floorf(avatar->m_Pos.z);
-					const int dx = seTileX - ax;
-					const int dz = seTileZ - az;
-					const int steps = std::max(std::abs(dx), std::abs(dz));
-					// Skip LOS for adjacent drops — same-room furniture clutter.
-					if (steps > 2)
-					{
-						for (int i = 1; i < steps && dropValid; ++i) // exclude endpoints
-						{
-							const int tx = ax + (dx * i) / steps;
-							const int tz = az + (dz * i) / steps;
 							for (const auto& o : g_pathfindingSystem->GetOverlappingObjects(tx, tz))
 							{
 								if (isWallLikeBlocker(o.obj))
@@ -2546,11 +2527,38 @@ void MainState::Draw()
 						}
 					}
 
-					// Indoor → outdoor leak: only when dropping farther away.
-					if (dropValid && steps > 3 && g_pathfindingSystem->IsInteriorTile(ax, az))
+					// LOS through walls only (furniture must not block).
+					if (dropValid && avatar)
 					{
-						if (!g_pathfindingSystem->IsInteriorTile(seTileX, seTileZ))
-							dropValid = false;
+						const int ax = (int)floorf(avatar->m_Pos.x);
+						const int az = (int)floorf(avatar->m_Pos.z);
+						const int dx = seTileX - ax;
+						const int dz = seTileZ - az;
+						const int steps = std::max(std::abs(dx), std::abs(dz));
+						// Skip LOS for adjacent drops — same-room furniture clutter.
+						if (steps > 2)
+						{
+							for (int i = 1; i < steps && dropValid; ++i) // exclude endpoints
+							{
+								const int tx = ax + (dx * i) / steps;
+								const int tz = az + (dz * i) / steps;
+								for (const auto& o : g_pathfindingSystem->GetOverlappingObjects(tx, tz))
+								{
+									if (isWallLikeBlocker(o.obj))
+									{
+										dropValid = false;
+										break;
+									}
+								}
+							}
+						}
+
+						// Indoor → outdoor leak: only when dropping farther away.
+						if (dropValid && steps > 3 && g_pathfindingSystem->IsInteriorTile(ax, az))
+						{
+							if (!g_pathfindingSystem->IsInteriorTile(seTileX, seTileZ))
+								dropValid = false;
+						}
 					}
 				}
 			}

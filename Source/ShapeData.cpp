@@ -808,10 +808,21 @@ void ShapeData::DrawMeshId(const Vector3& pos, float angle, Color idColor, Vecto
 	}
 
 	// Translucent/glass: fill ID across low-alpha panes so the outline doesn't
-	// trace every lead-came hole as black lines through the window.
+	// trace every lead-came hole as black lines through the window. Also treat
+	// glTF glass materials (baseColor alpha < 1, e.g. potions) like translucent
+	// for cutoff purposes when their textures are fully opaque.
 	const bool translucent =
 		(m_shape >= 0 && m_shape < 1024 && g_objectDataTable[m_shape].m_isTranslucent);
-	float cutoff = translucent ? 0.01f : 0.5f;
+	bool hasGlassFactorMat = false;
+	for (int mi = 0; mi < model.materialCount; ++mi)
+	{
+		if (model.materials[mi].maps[MATERIAL_MAP_DIFFUSE].color.a < 250)
+		{
+			hasGlassFactorMat = true;
+			break;
+		}
+	}
+	float cutoff = (translucent || hasGlassFactorMat) ? 0.01f : 0.5f;
 	if (g_meshIdAlphaCutoffLoc >= 0)
 		SetShaderValue(g_meshIdShader, g_meshIdAlphaCutoffLoc, &cutoff, SHADER_UNIFORM_FLOAT);
 
