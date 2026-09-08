@@ -1033,25 +1033,89 @@ void LoadingState::MakeMap()
 
 void LoadingState::ParseIREGFile(stringstream& ireg, int superchunkx, int superchunky)
 {
-	unsigned char entryBuffer[20];
-	unsigned char entryLength = 0;    // Gets entry length.
-	vector<int> containerStack; //  Stack of container IDs.
+	// Exult Game_map::read_ireg_objects — entry length byte then payload.
+	// Critical fixes vs the old parser:
+	//  - Length 0/1 end a nested container (or no-op at top level); previously
+	//    every non-6/12/18 length popped the stack AND skipped no payload bytes,
+	//    which desynced the stream after padding zeros.
+	//  - Length 18 is a spellbook and must be *created*. The old code read it
+	//    into a buffer then read another 18 bytes (dropping the cheat-room
+	//    spellbook and the objects that followed).
+	//  - Lengths 10/13/14 are valid object records (flags / bodies).
+	unsigned char entryBuffer[32];
+	unsigned char entryLength = 0;
+	vector<int> containerStack;
+
+	auto readLift = [](unsigned char zByte) -> float {
+		// Standard U7: high nibble is lift (Exult nibble_swap then & 0xf for
+		// non-extended entries yields the same high nibble).
+		return static_cast<float>((zByte >> 4) & 0x0f);
+	};
+
+	// Shape 961 = barge (carts, wagons, ships). Children are cart parts / props that
+	// must stay visible in the world — not hidden as m_isContained inventory.
+	// Do NOT call AddObjectToInventory for these: that helper voids the child
+	// (UnassignObjectChunk, park at -1000, m_Visible=false, m_isContained=true).
+	auto isBargeShape = [](int shapenum) -> bool {
+		return shapenum == 961;
+	};
+
+	auto parentIsBarge = [&]() -> U7Object* {
+		if (containerStack.empty())
+			return nullptr;
+		U7Object* parent = GetObjectFromID(containerStack.back());
+		if (parent && isBargeShape(parent->m_ObjectType))
+			return parent;
+		return nullptr;
+	};
+
+	auto attachBargeMember = [](U7Object* barge, U7Object* member, int memberId) {
+		if (!barge || !member)
+			return;
+		barge->m_isContainer = true;
+		barge->m_inventory.push_back(memberId);
+		member->m_containingObjectId = barge->m_ID;
+		member->m_isContained = false;
+		// Keep world chunk assignment and visibility from AddObject().
+		barge->InvalidateWeightCache();
+	};
 
 	for (entryLength = ReadU8(ireg); !ireg.eof(); entryLength = ReadU8(ireg))
 	{
-		if (entryLength != 6 && entryLength != 12 && entryLength != 18)
+		// --- Markers (Exult: !entlen || entlen == 1) ---
+		// Inside a container both 0 and 1 end the nested list. At top level,
+		// bare 0 bytes are padding between entries (common in INITGAME ireg).
+		if (entryLength == 0 || entryLength == 1)
 		{
 			if (!containerStack.empty())
-			{
-				//string logstring;
-				//for (int i = 0; i < containerStack.size(); ++i)
-				//{
-					//logstring.append(">");
-				//}
-				//logstring.append("Closing container " + std::to_string(containerStack.back()));
-				//DebugPrint(logstring);
 				containerStack.pop_back();
-			}
+			continue;
+		}
+		if (entryLength == 2)
+		{
+			// Ready-slot index id (equipment); soak and ignore for now.
+			ReadU8(ireg);
+			ReadU8(ireg);
+			continue;
+		}
+
+		// Known object payloads. Length 10 = simple object + flag byte (rare in
+		// BG INITGAME but required for save compatibility). 13/14 = bodies.
+		const bool knownLen =
+			entryLength == 6 || entryLength == 10 || entryLength == 12 ||
+			entryLength == 13 || entryLength == 14 || entryLength == 18;
+		if (!knownLen)
+		{
+			// Unknown — skip exactly entryLength bytes so the stream stays synced.
+			for (unsigned int i = 0; i < entryLength && !ireg.eof(); ++i)
+				ReadU8(ireg);
+			continue;
+		}
+
+		if (entryLength > sizeof(entryBuffer))
+		{
+			for (unsigned int i = 0; i < entryLength && !ireg.eof(); ++i)
+				ReadU8(ireg);
 			continue;
 		}
 
@@ -1070,8 +1134,19 @@ void LoadingState::ParseIREGFile(stringstream& ireg, int superchunkx, int superc
 
 		int actualx = 0;
 		int actualy = 0;
-		if (!containerStack.empty())
+		U7Object* bargeParent = parentIsBarge();
+		if (bargeParent)
 		{
+			// Barge members store the low 8 bits of absolute world X/Z; the high
+			// bits come from the barge's own position (Exult barge nesting).
+			const int bx = static_cast<int>(floorf(bargeParent->m_Pos.x));
+			const int bz = static_cast<int>(floorf(bargeParent->m_Pos.z));
+			actualx = (bx & ~0xff) | (x & 0xff);
+			actualy = (bz & ~0xff) | (y & 0xff);
+		}
+		else if (!containerStack.empty())
+		{
+			// True inventory / gump coords (chest, bag, etc.).
 			actualx = x;
 			actualy = y;
 		}
@@ -1097,30 +1172,24 @@ void LoadingState::ParseIREGFile(stringstream& ireg, int superchunkx, int superc
 		}
 
 
-		unsigned short shapeData = *(unsigned short*)&entryBuffer[2];
-		int shape = shapeData & 0x3ff;
-		int frame = (shapeData >> 10) & 0x1f;
+		// Exult: shnum = entry[2] + 256*(entry[3]&3); frnum = entry[3]>>2
+		const int shape = entryBuffer[2] + 256 * (entryBuffer[3] & 3);
+		const int frame = entryBuffer[3] >> 2;
 
-		if (entryLength == 6) //  Object.
+		if (entryLength == 6 || entryLength == 10 ||
+		    entryLength == 13 || entryLength == 14)
 		{
-			int z = entryBuffer[4];
+			// Simple object (6/10) or body (13/14). Lift is high nibble of the
+			// lift byte — index 4 for 6/10, index 9/10 for bodies.
+			unsigned char zByte = entryBuffer[4];
+			if (entryLength == 13)
+				zByte = entryBuffer[9];
+			else if (entryLength == 14)
+				zByte = entryBuffer[10];
+			const float lift1 = readLift(zByte);
+			const int quality = entryBuffer[5];
 
-			float lift1 = 0;
-			float lift2 = 0;
-			if (z != 0)
-			{
-				lift1 = z >> 4;
-				lift2 = z & 0x0f;
-				//z *= 8;
-			}
-
-			int quality = entryBuffer[5];
-
-			int objectId = GetNextID();
-			if (objectId == 231164)
-			{
-				int stopper = 0;
-			}
+			const int objectId = GetNextID();
 			U7Object* newObject = AddObject(shape, frame, objectId, actualx, lift1, actualy);
 			newObject->m_Quality = quality;
 
@@ -1129,42 +1198,48 @@ void LoadingState::ParseIREGFile(stringstream& ireg, int superchunkx, int superc
 				newObject->m_Visible = false;
 			}
 
-			if (!containerStack.empty())
+			if (bargeParent)
+			{
+				// Cart/wagon/ship parts: live in the world on the barge footprint.
+				attachBargeMember(bargeParent, newObject, objectId);
+			}
+			else if (!containerStack.empty())
 			{
 				newObject->m_InventoryPos = { static_cast<float>(actualx), static_cast<float>(actualy)};
 				newObject->m_isContained = true;
 				newObject->m_containingObjectId = containerStack.back();
 				GetObjectFromID(containerStack.back())->AddObjectToInventory(objectId);
 			}
-			string logstring;
-			for (int i = 0; i < containerStack.size(); ++i)
+			continue;
+		}
+		else if (entryLength == 18)
+		{
+			// Spellbook (shape 761). Circles occupy bytes 4-8 and 10-13; lift at 9.
+			const float lift1 = readLift(entryBuffer[9]);
+			const int objectId = GetNextID();
+			U7Object* newObject = AddObject(shape, frame, objectId, actualx, lift1, actualy);
+			// Full circle/bookmark parse can come later; object must exist in-world.
+			if (bargeParent)
 			{
-				logstring.append(">");
+				attachBargeMember(bargeParent, newObject, objectId);
 			}
-			//logstring.append("Object: " + std::to_string(objectId) + " named " + g_objectDataTable[shape].m_name + " at " + std::to_string(actualx) + ", " + std::to_string(actualy));
-			//DebugPrint(logstring);
+			else if (!containerStack.empty())
+			{
+				newObject->m_InventoryPos = { static_cast<float>(actualx), static_cast<float>(actualy)};
+				newObject->m_isContained = true;
+				newObject->m_containingObjectId = containerStack.back();
+				GetObjectFromID(containerStack.back())->AddObjectToInventory(objectId);
+			}
 			continue;
 		}
 		else if (entryLength == 12) //  Container or Egg
 		{
-			unsigned char type = entryBuffer[4]; // Byte 5
-			unsigned char proba1 = entryBuffer[5];
-			unsigned char proba2 = entryBuffer[6]; // Byte 7
+			// Exult: type = entry[4] + 256*entry[5]; type==0 means empty.
+			const unsigned int type = entryBuffer[4] + 256u * entryBuffer[5];
 			unsigned char quality = entryBuffer[7]; // Byte 8
-			unsigned char quantity = entryBuffer[8]; // Byte 9
 			unsigned char z = entryBuffer[9]; // Byte 10
-			unsigned char resistance = entryBuffer[10]; // Byte 11
-			unsigned char flags = entryBuffer[11]; // Byte 12
 
-			float lift1 = 0;
-			float lift2 = 0;
-			float lift3 = 0;
-			if (z != 0)
-			{
-				lift1 = z >> 4;
-				lift2 = z & 0x0f;
-				lift3 = z / 8;
-			}
+			const float lift1 = readLift(z);
 
 			int id = GetNextID();
 			if (id == 231164)
@@ -1338,38 +1413,29 @@ void LoadingState::ParseIREGFile(stringstream& ireg, int superchunkx, int superc
 			else
 			{
 				thisObject->m_isContainer = true;
-				if (!containerStack.empty()) //  Container is contained.
+				if (bargeParent)
+				{
+					// Chest/crate sitting on a barge: world-visible, barge-owned.
+					attachBargeMember(bargeParent, thisObject, id);
+				}
+				else if (!containerStack.empty()) // Nested in a normal container.
 				{
 					thisObject->m_InventoryPos = { static_cast<float>(actualx), static_cast<float>(actualy)};
 					thisObject->m_isContained = true;
 					thisObject->m_containingObjectId = containerStack.back();
 					GetObjectFromID(containerStack.back())->AddObjectToInventory(id);
 				}
-				//string logstring;
-				//for (int i = 0; i < containerStack.size(); ++i)
-				//{
-					//logstring.append(">");
-				//}
-				//logstring.append("Object " + std::to_string(id) + " of type " + std::to_string(type) + " named " +  g_objectDataTable[shape].m_name + " located at " + std::to_string(actualx) + ", " + std::to_string(actualy) + " is a container");
-				//DebugPrint(logstring);
-				unsigned char emptytest = ireg.peek(); //  Next byte is either 6, 12, or 18 if there are objects in this container.
-				if (type == 0 || emptytest != 6 && emptytest != 12 && emptytest != 18)
-				{
-					//DebugPrint(">Container is empty.");
-					continue;
-				}
-				else
+				// Exult: type != 0 means the container has nested entries until a
+				// length-0/1 terminator. Also accept a peek of a known object length
+				// so we don't push when the file has already moved on.
+				const int emptytest = ireg.peek();
+				const bool nextLooksLikeObject =
+					emptytest == 6 || emptytest == 10 || emptytest == 12 ||
+					emptytest == 13 || emptytest == 14 || emptytest == 18;
+				if (type != 0 && nextLooksLikeObject)
 				{
 					containerStack.push_back(id);
 				}
-			}
-		}
-		else if (entryLength == 18)
-		{
-			//  Soak all 18 bytes, we're not handling this right now.
-			for (int i = 0; i < 18; ++i)
-			{
-				unsigned char throwaway = ReadU8(ireg);
 			}
 		}
 	}

@@ -187,6 +187,12 @@ struct NPCSchedule
 	unsigned int m_activity;
 };
 
+/// Active schedule slot for a timeslot (0–7). Exact match if present; otherwise the
+/// most recent entry at or before `scheduleTime`, wrapping past midnight. Many NPCs
+/// (e.g. Paul/Meryl/Dustin) only list a few of the eight slots.
+const NPCSchedule* FindActiveScheduleEntry(
+	const std::vector<NPCSchedule>& schedules, int scheduleTime);
+
 //////////////////////////////////////////////////////////////////////////////
 //  SPELL SYSTEM
 //////////////////////////////////////////////////////////////////////////////
@@ -381,15 +387,16 @@ void UpdateSortedVisibleObjects();
 //  INTEREST SPHERES (Option A — multiplayer-ready update regions)
 //
 //  Only objects whose home chunk lies inside at least one interest region are
-//  sim-ticked each frame. Centers today: avatar, party, camera look-at.
-//  Multiplayer later: one center per remote player (AddInterestCenter).
-//  Camera frustum chunks are always unioned in so freecam still sim-ticks what you see.
+//  sim-ticked each frame. The bubble follows the Avatar (and party). Freecam
+//  also centers on the camera look-at when unlocked. Multiplayer later: one
+//  center per remote player (AddInterestCenter). Camera frustum chunks are
+//  always unioned in so zoomed-out views still tick what's on screen.
 //////////////////////////////////////////////////////////////////////////////
 
-/// Radius in world tiles around each interest center (default ~12 chunks / town-sized).
+/// Radius in world tiles around each interest center (default ~16 chunks / town + outskirts).
 extern float g_interestRadiusTiles;
 
-/// Clear and rebuild centers from avatar + party, then call AddInterestCenter as needed.
+/// Clear and rebuild centers from avatar + party (camera only when freecam).
 void ClearInterestCenters();
 void AddInterestCenter(Vector3 worldPos);
 void RebuildInterestCentersFromLocalPlayers();

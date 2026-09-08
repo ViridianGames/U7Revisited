@@ -1610,14 +1610,32 @@ void U7Object::NPCUpdate()
 	bool isPartyMember = (m_NPCID == 0) || (g_Player && g_Player->NPCIDInParty(m_NPCID));
 	bool skipScheduleActivities = isPartyMember; // Avatar + companions
 
-	// Dormant = missed updates while outside the Avatar interest sphere (or first tick).
-	// Schedule snap is deferred via m_scheduleWakeSnapPending because activity work is
-	// batched and may not run on the exact wake frame.
+	// Entering the Avatar interest bubble after being out of range (or first tick):
+	// force a fresh "most recent schedule slot" apply on the next activity batch.
 	constexpr unsigned int kDormantUpdateGap = 90; // ~1.5s at 60fps
-	if (m_lastNpcUpdateFrame == 0 ||
-	    g_CurrentUpdate > m_lastNpcUpdateFrame + kDormantUpdateGap)
+	const bool wakingIntoInterest =
+		(m_lastNpcUpdateFrame == 0) ||
+		(g_CurrentUpdate > m_lastNpcUpdateFrame + kDormantUpdateGap);
+	if (wakingIntoInterest)
 	{
 		m_scheduleWakeSnapPending = true;
+		// Re-resolve schedule even if the clock slot hasn't changed since we last ran.
+		m_lastSchedule = -1;
+		// Restart activity scripts when coming back online (stale coroutines from
+		// before we left range shouldn't keep us stuck with "No Schedule").
+		if (!skipScheduleActivities &&
+		    g_NPCData.find(m_NPCID) != g_NPCData.end() && g_NPCData[m_NPCID])
+		{
+			NPCData* wakeData = g_NPCData[m_NPCID].get();
+			if (wakeData->m_lastActivity >= 0)
+			{
+				std::string old_script =
+					GetActivityScriptName(wakeData->m_lastActivity) + "_" + std::to_string(m_NPCID);
+				if (g_ScriptingSystem && g_ScriptingSystem->IsCoroutineActive(old_script))
+					g_ScriptingSystem->CleanupCoroutine(old_script);
+				wakeData->m_lastActivity = -1;
+			}
+		}
 	}
 	m_lastNpcUpdateFrame = g_CurrentUpdate;
 
@@ -1745,38 +1763,32 @@ void U7Object::NPCUpdate()
 		}
 	}
 
-	// Activity coroutine management - check if activity has changed
-	// Only run activity scripts if schedules are enabled for this NPC
-	// IMPORTANT: skip activity/coroutines for Avatar + party, but continue with movement below
-	if (shouldUpdateActivity && m_followingSchedule && g_NPCData.find(m_NPCID) != g_NPCData.end() && !skipScheduleActivities)
+	// Schedule slot apply runs every in-range frame (not activity-batched) so NPCs
+	// that just entered the Avatar bubble pick up their active activity immediately.
+	// Activity *script* start/resume stays batched below.
+	if (m_followingSchedule && g_NPCData.find(m_NPCID) != g_NPCData.end() && !skipScheduleActivities)
 	{
 		NPCData* npcData = g_NPCData[m_NPCID].get();
 
-		// Determine current schedule if time changed or if it hasn't been set yet
+		// Time changed, first apply, or wake-into-range (m_lastSchedule forced to -1).
 		if (m_lastSchedule != (int)g_scheduleTime)
 		{
 			if (!npcData->m_schedule.empty())
 			{
-				// Find an exact schedule entry for the current timeslot (g_scheduleTime)
-				const NPCSchedule* exactSchedule = nullptr;
-				for (const auto& s : npcData->m_schedule)
-				{
-					if ((int)s.m_time == (int)g_scheduleTime)
-					{
-						exactSchedule = &s;
-						break;
-					}
-				}
+				// Exact slot if listed; else continue the most recent earlier slot
+				// (Paul/Meryl/Dustin only define times 0 and 2).
+				const NPCSchedule* activeSchedule =
+					FindActiveScheduleEntry(npcData->m_schedule, (int)g_scheduleTime);
 
-				if (exactSchedule)
+				if (activeSchedule)
 				{
-					npcData->m_currentActivity = (int)exactSchedule->m_activity;
+					npcData->m_currentActivity = (int)activeSchedule->m_activity;
 
 					// Build destination at tile center (matches NPC standing/draw position).
 					Vector3 dest = {
-						float(exactSchedule->m_destX) + 0.5f,
+						float(activeSchedule->m_destX) + 0.5f,
 						0.0f,
-						float(exactSchedule->m_destY) + 0.5f
+						float(activeSchedule->m_destY) + 0.5f
 					};
 
 					// Schedule coords often land on tables/chairs — snap to nearest ground-walkable.
@@ -1821,9 +1833,8 @@ void U7Object::NPCUpdate()
 					}
 					else if (g_mainState->IsNpcSchedulesEnabled() && g_mainState->m_npcPathfindingEnabled)
 					{
-						// Snap only on wake from outside the interest sphere (Avatar teleported
-						// in, etc.). Continuously-simulated NPCs must pathfind — a flat distance
-						// threshold was teleporting Spark to the inn at lunch.
+						// Snap on wake into the Avatar bubble (or teleport-in). Continuously
+						// simulated NPCs pathfind — don't teleport Spark to lunch mid-walk.
 						constexpr float kScheduleSnapTiles = 16.0f;
 						if (m_scheduleWakeSnapPending && distToSched > kScheduleSnapTiles)
 						{
@@ -1872,8 +1883,27 @@ void U7Object::NPCUpdate()
 							std::to_string((int)dest.x) + "," + std::to_string((int)dest.z) + ") (pathfinding or schedules disabled)");
 					}
 				}
+				else
+				{
+					// Empty/unusable schedule list — don't retry every frame.
+					m_lastSchedule = (int)g_scheduleTime;
+					m_scheduleWakeSnapPending = false;
+				}
+			}
+			else
+			{
+				m_lastSchedule = (int)g_scheduleTime;
+				m_scheduleWakeSnapPending = false;
 			}
 		}
+	}
+
+	// Activity coroutine management - check if activity has changed
+	// Only run activity scripts if schedules are enabled for this NPC
+	// IMPORTANT: skip activity/coroutines for Avatar + party, but continue with movement below
+	if (shouldUpdateActivity && m_followingSchedule && g_NPCData.find(m_NPCID) != g_NPCData.end() && !skipScheduleActivities)
+	{
+		NPCData* npcData = g_NPCData[m_NPCID].get();
 
 		int currentActivity = g_NPCData[m_NPCID]->m_currentActivity;
 		int lastActivity = g_NPCData[m_NPCID]->m_lastActivity;
@@ -1903,21 +1933,16 @@ void U7Object::NPCUpdate()
 
 			// Only start activity once near the schedule destination. Otherwise
 			// eat_at_inn finds a chair in the NPC's house (west of Spark) instead of the inn.
-			bool nearScheduleDest = false;
-			bool hasScheduleSlot = false;
-			for (const auto& s : npcData->m_schedule)
+			bool nearScheduleDest = true;
+			if (const NPCSchedule* active =
+					FindActiveScheduleEntry(npcData->m_schedule, (int)g_scheduleTime))
 			{
-				if ((int)s.m_time != (int)g_scheduleTime)
-					continue;
-				hasScheduleSlot = true;
 				Vector3 schedDest = {
-					float(s.m_destX) + 0.5f, 0.0f, float(s.m_destY) + 0.5f
+					float(active->m_destX) + 0.5f, 0.0f, float(active->m_destY) + 0.5f
 				};
-				nearScheduleDest = Vector2Distance({ m_Pos.x, m_Pos.z }, { schedDest.x, schedDest.z }) <= 10.0f;
-				break;
+				nearScheduleDest =
+					Vector2Distance({ m_Pos.x, m_Pos.z }, { schedDest.x, schedDest.z }) <= 10.0f;
 			}
-			if (!hasScheduleSlot)
-				nearScheduleDest = true;
 
 			if (!m_pathfindingPending && !m_isSchedulePath && nearScheduleDest)
 			{
@@ -1969,21 +1994,16 @@ void U7Object::NPCUpdate()
 		// Activity hasn't changed - resume if not on schedule path and near dest
 		else if (currentActivity >= 0 && !m_pathfindingPending && !m_isSchedulePath)
 		{
-			bool nearForResume = false;
-			bool hasSlot = false;
-			for (const auto& s : npcData->m_schedule)
+			bool nearForResume = true;
+			if (const NPCSchedule* active =
+					FindActiveScheduleEntry(npcData->m_schedule, (int)g_scheduleTime))
 			{
-				if ((int)s.m_time != (int)g_scheduleTime)
-					continue;
-				hasSlot = true;
 				Vector3 schedDest = {
-					float(s.m_destX) + 0.5f, 0.0f, float(s.m_destY) + 0.5f
+					float(active->m_destX) + 0.5f, 0.0f, float(active->m_destY) + 0.5f
 				};
-				nearForResume = Vector2Distance({ m_Pos.x, m_Pos.z }, { schedDest.x, schedDest.z }) <= 10.0f;
-				break;
+				nearForResume =
+					Vector2Distance({ m_Pos.x, m_Pos.z }, { schedDest.x, schedDest.z }) <= 10.0f;
 			}
-			if (!hasSlot)
-				nearForResume = true;
 			if (nearForResume)
 			{
 				std::string script_name = GetActivityScriptName(currentActivity) + "_" + std::to_string(m_NPCID);

@@ -262,25 +262,14 @@ void NpcListWindow::BuildNPCList()
 			           " activityName=" + entry.activityName);
 		}
 
-		// Check if this is a "continued" activity (not an exact schedule match for current time)
+		// "cont" when the active slot is carried forward from an earlier timeslot
+		// (sparse schedules like Paul/Meryl/Dustin: only times 0 and 2 listed).
 		bool isContinued = false;
 		if (!npcData->m_schedule.empty())
 		{
-			const auto& schedules = npcData->m_schedule;
-
-			// Check if there's an exact schedule match for current time
-			bool exactMatch = false;
-			for (const auto& schedule : schedules)
-			{
-				if (schedule.m_time == g_scheduleTime)
-				{
-					exactMatch = true;
-					break;
-				}
-			}
-
-			// If no exact match and we have a valid activity, it's continued from previous
-			if (!exactMatch && npcData->m_currentActivity >= 0)
+			const NPCSchedule* active =
+				FindActiveScheduleEntry(npcData->m_schedule, (int)g_scheduleTime);
+			if (active && active->m_time != g_scheduleTime && npcData->m_currentActivity >= 0)
 			{
 				isContinued = true;
 			}

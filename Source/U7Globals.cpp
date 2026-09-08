@@ -146,10 +146,56 @@ std::vector<U7Object*> g_chunkObjectMap[192][192]; // The objects in each chunk
 
 std::vector<U7Object*> g_sortedVisibleObjects;
 
+const NPCSchedule* FindActiveScheduleEntry(
+	const std::vector<NPCSchedule>& schedules, int scheduleTime)
+{
+	if (schedules.empty())
+	{
+		return nullptr;
+	}
+
+	const int slot = ((scheduleTime % 8) + 8) % 8;
+
+	const NPCSchedule* exact = nullptr;
+	const NPCSchedule* bestAtOrBefore = nullptr;
+	const NPCSchedule* latestOverall = nullptr;
+
+	for (const auto& s : schedules)
+	{
+		const int t = static_cast<int>(s.m_time) % 8;
+		if (t == slot)
+		{
+			exact = &s;
+			break;
+		}
+		if (t <= slot &&
+		    (bestAtOrBefore == nullptr ||
+		     static_cast<int>(bestAtOrBefore->m_time) % 8 < t))
+		{
+			bestAtOrBefore = &s;
+		}
+		if (latestOverall == nullptr ||
+		    static_cast<int>(latestOverall->m_time) % 8 < t)
+		{
+			latestOverall = &s;
+		}
+	}
+
+	if (exact)
+	{
+		return exact;
+	}
+	if (bestAtOrBefore)
+	{
+		return bestAtOrBefore;
+	}
+	return latestOverall;
+}
+
 // Interest spheres (see U7Globals.h)
-// ~12 chunks. Must cover a whole town from an edge spawn (Spark's house is
-// ~127 tiles from the Trinsic demo start — the old 96-tile radius left him frozen).
-float g_interestRadiusTiles = 192.0f;
+// ~16 chunks. Covers Trinsic plus the passion-play stage just north (~204 tiles
+// from the demo start — 192 left Paul/Meryl/Dustin frozen until you walked up).
+float g_interestRadiusTiles = 256.0f;
 int g_interestCenterCount = 0;
 int g_interestChunkCount = 0;
 int g_interestObjectsUpdated = 0;
@@ -183,6 +229,7 @@ void RebuildInterestCentersFromLocalPlayers()
 	{
 		if (U7Object* avatar = g_Player->GetAvatarObject())
 		{
+			// Primary bubble: moves with the Avatar as they walk the world.
 			AddInterestCenter(avatar->GetPos());
 		}
 		// Party members each get a sphere (multiplayer-ready: remote players use AddInterestCenter).
@@ -205,8 +252,12 @@ void RebuildInterestCentersFromLocalPlayers()
 		}
 	}
 
-	// Freecam / follow-cam: always sim what the local view is pointed at.
-	AddInterestCenter(g_camera.target);
+	// Freecam only: also sim around the look-at. When the camera is locked to the
+	// Avatar the bubble must stay on the party, not drift with scroll/zoom target.
+	if (!IsCameraLockedToAvatar())
+	{
+		AddInterestCenter(g_camera.target);
+	}
 }
 
 void RebuildInterestChunkSet()

@@ -1331,8 +1331,8 @@ std::vector<Vector3> PathfindingSystem::FindPathInternal(Vector3 start, Vector3 
 	}
 
 	int distance = abs(goalX - startX) + abs(goalZ - startZ);
-	// Hierarchical: chunk-walk the long haul, then tile A* from the goal-chunk
-	// border portal so last-mile has a fresh node budget (east door vs west wall).
+	// Hierarchical: chunk-walk the long haul, then tile A* once the goal is in
+	// the next chunk (fresh node budget for the last mile through doors/walls).
 	const int HIERARCHICAL_THRESHOLD = 48;
 	if (allowHierarchical && distance > HIERARCHICAL_THRESHOLD)
 	{
@@ -1350,43 +1350,6 @@ std::vector<Vector3> PathfindingSystem::FindPathInternal(Vector3 start, Vector3 
 
 		auto encode = [](int cx, int cz) { return (cx << 16) | (cz & 0xFFFF); };
 		auto decode = [](int key) { return std::pair<int, int>((key >> 16) & 0xFFFF, key & 0xFFFF); };
-
-		// Entry portal: walkable tile JUST OUTSIDE the goal chunk where the step
-		// INTO the chunk is also walkable. Search all four sides so we prefer an
-		// east door over a sealed west window-wall (Spark→inn).
-		auto findGoalChunkEntryPortal = [&]() -> Vector3 {
-			const int gBaseX = goalCx * 16;
-			const int gBaseZ = goalCz * 16;
-
-			struct Cand { int x, z; float score; };
-			Cand best{ -1, -1, 1e30f };
-
-			auto consider = [&](int exteriorX, int exteriorZ, int interiorX, int interiorZ) {
-				if (exteriorX < 0 || exteriorX >= 3072 || exteriorZ < 0 || exteriorZ >= 3072)
-					return;
-				if (interiorX < 0 || interiorX >= 3072 || interiorZ < 0 || interiorZ >= 3072)
-					return;
-				if (!this->IsPositionWalkable(exteriorX, exteriorZ, start.y, agent))
-					return;
-				if (!this->IsPositionWalkable(interiorX, interiorZ, start.y, agent))
-					return; // sealed face (west half-wall under window)
-				const float distGoal = (float)(abs(exteriorX - goalX) + abs(exteriorZ - goalZ));
-				if (distGoal < best.score)
-					best = { exteriorX, exteriorZ, distGoal };
-			};
-
-			for (int i = 0; i < 16; ++i)
-			{
-				consider(gBaseX - 1, gBaseZ + i, gBaseX, gBaseZ + i);           // west
-				consider(gBaseX + 16, gBaseZ + i, gBaseX + 15, gBaseZ + i);     // east
-				consider(gBaseX + i, gBaseZ - 1, gBaseX + i, gBaseZ);           // north
-				consider(gBaseX + i, gBaseZ + 16, gBaseX + i, gBaseZ + 15);     // south
-			}
-
-			if (best.x < 0)
-				return Vector3{ float(gBaseX + 8), start.y, float(gBaseZ + 8) };
-			return Vector3{ best.x + 0.5f, start.y, best.z + 0.5f };
-		};
 
 		std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>, std::greater<std::pair<int, int>>> open;
 		std::unordered_map<int, int> chunkG;
@@ -1447,41 +1410,25 @@ std::vector<Vector3> PathfindingSystem::FindPathInternal(Vector3 start, Vector3 
 
 		if (chunkFound && chunkPath.size() >= 2)
 		{
-			// Transit: chunk centers for all but last hop. Final hop uses border portal.
+			// Chunk centers only while the goal is still more than one chunk away.
+			// As soon as the goal lies in the *next* chunk, tile A* takes over to the
+			// real destination (no portal / goal-chunk-center stop on the way).
+			//
+			// Example chunkPath [A, B, C, D] (D = goal):
+			//   intermediates = B center, C center; then tile A* C→goal.
+			// Example [A, B] (goal adjacent): no intermediates; tile A* start→goal.
 			std::vector<Vector3> intermediates;
-			for (size_t ci = 0; ci + 1 < chunkPath.size(); ++ci)
+			for (size_t ci = 1; ci + 1 < chunkPath.size(); ++ci)
 			{
-				// Last transit target = portal into goal chunk (not goal-chunk center).
-				if (ci + 2 == chunkPath.size())
-				{
-					intermediates.push_back(findGoalChunkEntryPortal());
-				}
-				else
-				{
-					int ccx = chunkPath[ci].first, ccz = chunkPath[ci].second;
-					intermediates.push_back(Vector3{
-						float(ccx * 16 + 8), start.y, float(ccz * 16 + 8) });
-				}
+				const int ccx = chunkPath[ci].first;
+				const int ccz = chunkPath[ci].second;
+				intermediates.push_back(Vector3{
+					float(ccx * 16 + 8), start.y, float(ccz * 16 + 8) });
 			}
 
 			Vector3 curStart = start;
 			std::vector<Vector3> finalPath;
 			bool failed = false;
-
-			// Skip only a start-chunk *center* waypoint. Never skip the final
-			// border portal (often still in the start/penultimate chunk).
-			size_t segStart = 0;
-			if (intermediates.size() >= 2)
-			{
-				const int fx = (int)floorf(intermediates.front().x);
-				const int fz = (int)floorf(intermediates.front().z);
-				const bool isStartCenter =
-					fx / 16 == startCx && fz / 16 == startCz &&
-					abs(fx - (startCx * 16 + 8)) <= 1 &&
-					abs(fz - (startCz * 16 + 8)) <= 1;
-				if (isStartCenter)
-					segStart = 1;
-			}
 
 			auto appendSeg = [&](const std::vector<Vector3>& segPath) {
 				if (segPath.empty())
@@ -1498,7 +1445,7 @@ std::vector<Vector3> PathfindingSystem::FindPathInternal(Vector3 start, Vector3 
 				}
 			};
 
-			for (size_t i = segStart; i < intermediates.size(); ++i)
+			for (size_t i = 0; i < intermediates.size(); ++i)
 			{
 				auto segPath = FindPathInternal(curStart, intermediates[i], agent, false);
 				if (segPath.empty())
@@ -1512,7 +1459,7 @@ std::vector<Vector3> PathfindingSystem::FindPathInternal(Vector3 start, Vector3 
 
 			if (!failed)
 			{
-				// Fresh tile A* inside/around the goal chunk from the border portal.
+				// Goal is in the next chunk (or we had no transit hops): tile A* to dest.
 				auto lastSeg = FindPathInternal(curStart, goal, agent, false);
 				if (lastSeg.empty())
 				{
