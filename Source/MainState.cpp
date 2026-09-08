@@ -2346,11 +2346,6 @@ void MainState::Draw()
 			const float d = std::max(1.0f, draggedObject->m_objectData->m_depth);
 			const float h = std::max(0.1f, draggedObject->m_objectData->m_height);
 
-			const int seTileX = (int)floorf(g_terrainUnderMousePointer.x);
-			const int seTileZ = (int)floorf(g_terrainUnderMousePointer.z);
-			const int minTileX = seTileX - (int)w + 1;
-			const int minTileZ = seTileZ - (int)d + 1;
-
 			// Prefer the Avatar's floor so indoor drops don't jump onto roofs /
 			// upper stories (same idea as click-to-walk surface selection).
 			// F7 hack moving: ignore floor band so you can place on any story.
@@ -2366,17 +2361,76 @@ void MainState::Draw()
 					preferY = origY;
 			}
 
-			// Same-floor band: not the next story/roof (U7 story spacing ~4+).
-			constexpr float kFloorBandUp = 3.5f;
+			// Placement XZ must NOT use the y=0 ground pick alone: aiming at the top
+			// of a crate stack makes that ray hit ground beside the stack, so the
+			// ghost never sits on the upper crate. Intersect a horizontal plane at
+			// the hovered support top (or Avatar feet) instead.
+			U7Object* hoverForPick = g_objectUnderMousePointer;
+			if (hoverForPick == draggedObject || hoverForPick == avatar ||
+			    (hoverForPick && (hoverForPick->m_isContained ||
+			     hoverForPick->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC ||
+			     hoverForPick->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_MONSTER ||
+			     hoverForPick->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_EGG)))
+			{
+				hoverForPick = nullptr;
+			}
+			float pickPlaneY = preferY;
+			if (hoverForPick && hoverForPick->m_objectData)
+				pickPlaneY = PathfindingSystem::GetObjectSurfaceY(hoverForPick);
+
+			int seTileX = (int)floorf(g_terrainUnderMousePointer.x);
+			int seTileZ = (int)floorf(g_terrainUnderMousePointer.z);
+			{
+				Ray ray = GetMouseRay(GetMousePosition(), g_camera);
+				const float denom = ray.direction.y;
+				if (fabsf(denom) > 0.0001f)
+				{
+					const float t = (pickPlaneY - ray.position.y) / denom;
+					if (t >= 0.0f)
+					{
+						const Vector3 hit = Vector3Add(ray.position, Vector3Scale(ray.direction, t));
+						if (hit.x >= 0.0f && hit.x < 3072.0f && hit.z >= 0.0f && hit.z < 3072.0f)
+						{
+							seTileX = (int)floorf(hit.x);
+							seTileZ = (int)floorf(hit.z);
+						}
+					}
+				}
+			}
+			// Stacking same-size crates: snap SE to the hovered object's SE so the
+			// ghost locks on instead of sliding off the footprint.
+			if (hoverForPick)
+			{
+				const float hw = std::max(1.0f, hoverForPick->m_objectData->m_width);
+				const float hd = std::max(1.0f, hoverForPick->m_objectData->m_depth);
+				if (fabsf(hw - w) < 0.1f && fabsf(hd - d) < 0.1f)
+				{
+					seTileX = (int)floorf(hoverForPick->m_Pos.x);
+					seTileZ = (int)floorf(hoverForPick->m_Pos.z);
+				}
+			}
+
+			const int minTileX = seTileX - (int)w + 1;
+			const int minTileZ = seTileZ - (int)d + 1;
+
+			// Floor band (floors/roofs): stay near the Avatar's story indoors so
+			// drops don't jump onto roofs. Object-stack band: allow crate stairs
+			// (~5 high) even when the tile is flagged interior (cheat-room climb).
+			const bool outdoorDrop = g_pathfindingSystem &&
+				!g_pathfindingSystem->IsInteriorTile(seTileX, seTileZ);
+			const float kFloorBandUp = outdoorDrop ? 8.0f : 3.5f;
+			constexpr float kStackOnObjectUp = 8.0f; // ~5 crate-heights from feet
 			constexpr float kFloorBandDown = 0.5f;
 			const float bandMin = hackMove ? -1000.0f : (preferY - kFloorBandDown);
 			const float bandMax = hackMove ? 1000.0f : (preferY + kFloorBandUp);
+			const float stackBandMax = hackMove ? 1000.0f : (preferY + kStackOnObjectUp);
 
 			float stackY = preferY;
 
-			// Gather candidate support tops + overhead clearance in the footprint.
+			// Gather candidate support tops + objects in the footprint (for overhangs).
 			std::vector<float> supportTops;
-			float overheadMin = bandMax + 1.0f; // lowest base of something above us
+			struct FootprintObj { float base; float top; };
+			std::vector<FootprintObj> footprintObjs;
 			supportTops.push_back(preferY); // bare floor / feet level always allowed
 
 			if (g_pathfindingSystem)
@@ -2387,6 +2441,7 @@ void MainState::Draw()
 					{
 						if (tx < 0 || tz < 0 || tx >= 3072 || tz >= 3072)
 							continue;
+						// Walkable floors/roofs: tighter story band.
 						for (float hy : g_pathfindingSystem->GetWalkableSurfaceHeights(tx, tz))
 						{
 							if (hy >= bandMin && hy <= bandMax)
@@ -2404,15 +2459,27 @@ void MainState::Draw()
 
 							const float top = PathfindingSystem::GetObjectSurfaceY(obj);
 							const float base = obj->m_Pos.y;
-							if (top >= bandMin && top <= bandMax)
+							footprintObjs.push_back({ base, top });
+							// Object tops (crates, tables): allow taller stacks.
+							if (top >= bandMin && top <= stackBandMax)
 								supportTops.push_back(top);
-							// Something sitting above avatar floor — limits how tall we can stack.
-							if (base > preferY + 0.4f && base < overheadMin)
-								overheadMin = base;
 						}
 					}
 				}
 			}
+
+			// Overhang above a support top = lowest object *base* above that top
+			// (mantle over hearth). Stacked crates are NOT overhangs: their bases
+			// sit below the top you're stacking on.
+			auto overheadAbove = [&](float supportTop) -> float {
+				float oh = stackBandMax + 10.0f;
+				for (const FootprintObj& fo : footprintObjs)
+				{
+					if (fo.base > supportTop + 0.05f && fo.base < oh)
+						oh = fo.base;
+				}
+				return oh;
+			};
 
 			// Object under cursor wins when it's a valid support (hearth vs mantle).
 			U7Object* hover = g_objectUnderMousePointer;
@@ -2424,8 +2491,8 @@ void MainState::Draw()
 			    !hover->m_isContained)
 			{
 				const float top = PathfindingSystem::GetObjectSurfaceY(hover);
-				// Must fit under any overhang (1-tile gap between hearth and mantle).
-				if (top >= bandMin && top <= bandMax && top + h <= overheadMin + 0.05f)
+				if (top >= bandMin && top <= stackBandMax &&
+				    top + h <= overheadAbove(top) + 0.05f)
 				{
 					stackY = top;
 					haveStackY = true;
@@ -2441,7 +2508,9 @@ void MainState::Draw()
 				bool found = false;
 				for (float hy : supportTops)
 				{
-					if (hy + h > overheadMin + 0.05f)
+					if (hy < bandMin || hy > stackBandMax)
+						continue;
+					if (hy + h > overheadAbove(hy) + 0.05f)
 						continue; // object would intersect the overhang
 					if (!found || hy > best)
 					{

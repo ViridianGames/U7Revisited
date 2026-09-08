@@ -1148,6 +1148,19 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 			for (int mi = 0; mi < model.materialCount; ++mi)
 				glassBackup[static_cast<size_t>(mi)].shader = model.materials[mi].shader;
 
+			// DrawMesh has no tint arg — bake tile lighting into material RGB
+			// (keep alpha so glass factor / coverage still work).
+			auto tintMaterialLighting = [&](Material& mat) -> Color {
+				const Color prev = mat.maps[MATERIAL_MAP_DIFFUSE].color;
+				mat.maps[MATERIAL_MAP_DIFFUSE].color = Color{
+					static_cast<unsigned char>((int)prev.r * color.r / 255),
+					static_cast<unsigned char>((int)prev.g * color.g / 255),
+					static_cast<unsigned char>((int)prev.b * color.b / 255),
+					prev.a
+				};
+				return prev;
+			};
+
 			if (hasGlassFactorMat)
 			{
 				// Lamp / display-case style: separate glass materials (factor alpha).
@@ -1167,10 +1180,12 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 						float solidCutoff = kU7GlassOpaqueCutoff;
 						SetShaderValue(g_alphaDiscard, g_alphaDiscardCutoffLoc, &solidCutoff, SHADER_UNIFORM_FLOAT);
 					}
+					const Color prevCol = tintMaterialLighting(model.materials[mi]);
 					DrawMesh(model.meshes[i], model.materials[mi], transform);
+					model.materials[mi].maps[MATERIAL_MAP_DIFFUSE].color = prevCol;
 				}
 
-				// Glass materials: u7Glass tint (depth write off).
+				// Glass materials: u7Glass tint (depth write off), same tile lighting.
 				setGlassUniforms();
 				rlDisableDepthMask();
 				BeginBlendMode(BLEND_ALPHA);
@@ -1182,7 +1197,9 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 					if (!materialHasGlassFactor(model.materials[mi]))
 						continue;
 					model.materials[mi].shader = g_u7GlassShader;
+					const Color prevCol = tintMaterialLighting(model.materials[mi]);
 					DrawMesh(model.meshes[i], model.materials[mi], transform);
+					model.materials[mi].maps[MATERIAL_MAP_DIFFUSE].color = prevCol;
 				}
 				EndBlendMode();
 				rlEnableDepthMask();
@@ -1215,7 +1232,8 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 				setGlassUniforms();
 				rlDisableDepthMask();
 				BeginBlendMode(BLEND_ALPHA);
-				DrawModelEx(model, finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, WHITE);
+				// Same cell lighting as the opaque pass (was WHITE — ignored night).
+				DrawModelEx(model, finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, color);
 				EndBlendMode();
 				rlEnableDepthMask();
 			}
