@@ -1809,17 +1809,41 @@ void DrawMeshOutlineIdPass(bool drawObjects)
 	if (!g_meshOutlineSystemReady || g_pixelated || !g_useScreenSpaceMeshOutline || !drawObjects)
 		return;
 
+	auto isRugFlat = [](const U7Object* object) {
+		if (!object || !object->m_objectData)
+			return false;
+		const std::string& name = object->m_objectData->m_name;
+		return name.size() == 3 &&
+			(name[0] == 'r' || name[0] == 'R') &&
+			(name[1] == 'u' || name[1] == 'U') &&
+			(name[2] == 'g' || name[2] == 'G');
+	};
+
+	auto isFlatDraw = [](const U7Object* object) {
+		if (!object)
+			return false;
+		return object->m_drawType == ShapeDrawType::OBJECT_DRAW_FLAT ||
+			object->m_drawType == ShapeDrawType::OBJECT_DRAW_ANIMFLAT;
+	};
+
 	BeginTextureMode(g_meshIdTarget);
-	ClearBackground(BLANK); // ID 0
+	ClearBackground(BLANK); // true empty (a=0)
 	BeginMode3D(g_camera);
 
+	// ID buffer must replace, not alpha-blend — flat sentinel a=128 has to overwrite
+	// mesh a=255, and mesh IDs must not soft-blend into each other.
+	rlDisableColorBlend();
+
 	// Depth occluders so outlines don't bleed through nearer non-outlined geometry.
+	// Skip flats here: the color pass draws non-rug flats with depth-write off +
+	// polygon offset *after* meshes, so treating them as solid occluders here
+	// leaves mesh IDs under pixels that actually show flat art.
 	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
 	if (g_Terrain)
 		g_Terrain->Draw();
 	for (U7Object* object : g_sortedVisibleObjects)
 	{
-		if (!object || ObjectWantsScreenSpaceOutline(object))
+		if (!object || ObjectWantsScreenSpaceOutline(object) || isFlatDraw(object))
 			continue;
 		object->Draw();
 	}
@@ -1831,6 +1855,24 @@ void DrawMeshOutlineIdPass(bool drawObjects)
 			continue;
 		object->DrawMeshId();
 	}
+
+	// Mark non-rug flat coverage with mid-alpha sentinel (not true empty). Presence
+	// edges ignore mesh↔flat so we don't double-ink sprites that already have borders.
+	glDepthMask(GL_FALSE);
+	glEnable(GL_POLYGON_OFFSET_FILL);
+	glPolygonOffset(-1.0f, -1.0f);
+	for (U7Object* object : g_sortedVisibleObjects)
+	{
+		if (!object || !object->m_shapeData || !isFlatDraw(object) || isRugFlat(object))
+			continue;
+		if (!object->m_Visible || object->m_isContained || !object->m_ShouldDraw)
+			continue;
+		object->m_shapeData->DrawFlatIdClear(object->m_Pos, object->m_Angle);
+	}
+	glDisable(GL_POLYGON_OFFSET_FILL);
+	glDepthMask(GL_TRUE);
+
+	rlEnableColorBlend();
 
 	EndMode3D();
 	EndTextureMode();
@@ -1871,6 +1913,7 @@ void BlitWorldWithMeshOutline()
 			closeLimit = cfgClose;
 	}
 	const float zoomFactor = closeLimit / std::max(g_cameraDistance, closeLimit);
+	// Two-sided ring (mesh rim + true-empty exterior); flat sentinel blocks flat pixels.
 	const float scaledThickness = g_meshOutlineThickness * g_DrawScale * zoomFactor;
 	SetShaderValue(g_meshOutlineShader, g_meshOutlineResolutionLoc, res, SHADER_UNIFORM_VEC2);
 	SetShaderValue(g_meshOutlineShader, g_meshOutlineThicknessLoc, &scaledThickness, SHADER_UNIFORM_FLOAT);

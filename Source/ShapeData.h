@@ -88,6 +88,10 @@ public:
 	// Flat object-ID draw for the screen-space outline mask pass (custom meshes only).
 	void DrawMeshId(const Vector3& pos, float angle, Color idColor, Vector3 scaling = Vector3{ 1, 1, 1 });
 
+	// Mark flat sprite coverage in the ID mask (rgb=0, a=128 sentinel) after mesh
+	// ID writes. Outline ignores mesh↔flat edges; flats keep their baked U7 borders.
+	void DrawFlatIdClear(const Vector3& pos, float angle, Vector3 scaling = Vector3{ 1, 1, 1 });
+
 	// 2D inventory / gump icon (screen-space). Uses palette index + runtime LUT when
 	// the shape has glisten pixels so gems/fire/water cycle like world flats/models.
 	void DrawInventoryIcon(int x, int y, Color tint = Color{ 255, 255, 255, 255 });

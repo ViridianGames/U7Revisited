@@ -4222,8 +4222,8 @@
 281 29 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 281 29 default 1 
 281 30 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 281 30 default 1 
 281 31 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 281 31 default 1 
-282 0 0 0 32 8 0 0 35 10 32 0 10 8 3 1.7 2.7 1 -1 2.5 1.15 0 0 2 0 0 0 0 Models/3dmodels/painting_282x00.gltf 1 0 282 0 default 1 
-282 1 0 0 32 8 0 0 27 10 32 0 2 8 3 2.5 2.2 1 -1 2 1.15 0 0 2 0 0 0 0 Models/3dmodels/painting_282x01.gltf 1 0 282 1 default 1 
+282 0 0 0 32 8 0 0 35 10 32 0 10 8 3 1.7 2.7 1 -1 2.5 1.05 0 0 2 0 0 0 0 Models/3dmodels/painting_282x00.gltf 1 0 282 0 default 1 
+282 1 0 0 32 8 0 0 27 10 32 0 2 8 3 2.5 2.2 1 -1 2 1.05 0 0 2 0 0 0 0 Models/3dmodels/painting_282x01.gltf 1 0 282 1 default 1 
 282 2 0 0 32 8 0 0 41 13 29 0 9 8 3 1.65 2.4 1 -1.9 3 0.25 0 0 2 0 0 0 0 Models/3dmodels/painting_282x02.gltf 1 0 282 2 default 1 
 282 3 0 0 31 8 0 0 31 13 30 0 1 8 3 1.6 2.5 1 0 2.6 1.2 0 0 2 0 0 0 0 Models/3dmodels/painting_282x03.gltf 1 0 282 3 default 1 
 282 4 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 282 4 default 1 

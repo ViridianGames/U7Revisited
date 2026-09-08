@@ -813,6 +813,53 @@ void ShapeData::DrawMeshId(const Vector3& pos, float angle, Color idColor, Vecto
 		model.materials[mi].shader = backup[static_cast<size_t>(mi)].shader;
 }
 
+void ShapeData::DrawFlatIdClear(const Vector3& pos, float angle, Vector3 scaling)
+{
+	if (!m_isValid || !m_flatModel || !g_meshOutlineSystemReady)
+		return;
+	if (m_drawType != ShapeDrawType::OBJECT_DRAW_FLAT &&
+		m_drawType != ShapeDrawType::OBJECT_DRAW_ANIMFLAT)
+		return;
+
+	// Match ShapeData::Draw flat placement / scale / rotation.
+	Vector3 finalPos = GetFlatModelPosition(pos);
+	const Vector3 flatScaling = Vector3{
+		m_Dims.x * m_Scaling.x * scaling.x,
+		1.0f,
+		m_Dims.z * m_Scaling.z * scaling.z
+	};
+	finalPos.z += (flatScaling.z - m_Dims.z);
+	const float flatRotation = m_rotation + angle;
+
+	Texture2D* alphaTex = nullptr;
+	if (m_hasPaletteAnim && m_indexTexture.id > 0)
+		alphaTex = &m_indexTexture;
+	else if (m_texture)
+		alphaTex = &m_texture->m_Texture;
+	if (!alphaTex || alphaTex->id == 0)
+		return;
+
+	Model& model = m_flatModel->GetModel();
+	if (model.materialCount <= 0)
+		return;
+
+	Material& mat = model.materials[0];
+	const Shader prevShader = mat.shader;
+	const Texture2D prevDiffuse = mat.maps[MATERIAL_MAP_DIFFUSE].texture;
+
+	mat.shader = g_meshIdShader;
+	SetMaterialTexture(&mat, MATERIAL_MAP_DIFFUSE, *alphaTex);
+	m_flatModel->UpdateFlatUV(0.0f, 1.0f, 0.0f, 1.0f);
+	// Flat sentinel: rgb=0, a=128. Outline shader treats mid-alpha as "flat cover"
+	// and will not draw presence edges against it (flats already have baked borders).
+	// meshId.fs discards transparent texels so only the sprite silhouette is marked.
+	constexpr Color kFlatIdSentinel{ 0, 0, 0, 128 };
+	DrawModelEx(model, finalPos, { 0, 1, 0 }, flatRotation, flatScaling, kFlatIdSentinel);
+
+	mat.shader = prevShader;
+	SetMaterialTexture(&mat, MATERIAL_MAP_DIFFUSE, prevDiffuse);
+}
+
 void ShapeData::DrawInventoryIcon(int x, int y, Color tint)
 {
 	if (m_isValid == false)
