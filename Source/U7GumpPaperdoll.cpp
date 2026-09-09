@@ -472,10 +472,12 @@ void GumpPaperdoll::Update()
 		mousePos.x /= g_DrawScale;
 		mousePos.y /= g_DrawScale;
 
-		// Reset drag start if mouse button is released
+		// Reset pending item-drag if mouse button is released
 		if (!g_InputSystem->IsLButtonDown())
 		{
 			m_dragStart = { 0, 0 };
+			m_pendingDragObjectId = -1;
+			m_pendingDragSlotIndex = -1;
 		}
 
 		for (int i = 0; i < static_cast<int>(EquipmentSlot::SLOT_COUNT); i++)
@@ -508,7 +510,6 @@ void GumpPaperdoll::Update()
 								if (g_InputSystem->WasLButtonDoubleClicked())
 								{
 									Log("Paperdoll - Double-click on backpack, opening gump for objectId=" + std::to_string(objectId));
-									// Open the backpack gump
 									if (g_mainState)
 									{
 										g_mainState->ClearObjectInfoTooltip();
@@ -520,7 +521,7 @@ void GumpPaperdoll::Update()
 									{
 										Log("Paperdoll - ERROR: g_mainState is null!");
 									}
-									break; // Don't process identify after opening gump
+									break;
 								}
 							}
 
@@ -533,7 +534,6 @@ void GumpPaperdoll::Update()
 									if (g_InputSystem->WasLButtonDoubleClicked())
 									{
 										Log("Paperdoll - Double-click on spellbook, opening spellbook gump for NPC=" + std::to_string(m_npcId));
-										// Open the spellbook gump
 										if (g_mainState)
 										{
 											g_mainState->ClearObjectInfoTooltip();
@@ -543,7 +543,7 @@ void GumpPaperdoll::Update()
 										{
 											Log("Paperdoll - ERROR: g_mainState is null!");
 										}
-										break; // Don't process identify after opening gump
+										break;
 									}
 								}
 								// Check for double-click on map (shape 178)
@@ -552,7 +552,6 @@ void GumpPaperdoll::Update()
 									if (g_InputSystem->WasLButtonDoubleClicked())
 									{
 										Log("Paperdoll - Double-click on map, opening minimap gump for NPC=" + std::to_string(m_npcId));
-										// Open the minimap gump
 										if (g_mainState)
 										{
 											g_mainState->ClearObjectInfoTooltip();
@@ -562,73 +561,17 @@ void GumpPaperdoll::Update()
 										{
 											Log("Paperdoll - ERROR: g_mainState is null!");
 										}
-										break; // Don't process identify after opening gump
+										break;
 									}
 								}
 							}
 
-							// Handle drag start for equipped items
-							if (objectId != -1 && g_InputSystem->IsLButtonDown())
+							// Capture equipped item at press time (not when move threshold hits)
+							if (objectId != -1 && g_InputSystem->IsLButtonJustDown() && !g_gumpManager->m_draggingObject)
 							{
-								// Track drag start position
-								if (m_dragStart.x == 0 && m_dragStart.y == 0)
-								{
-									m_dragStart = mousePos;
-								}
-
-								// If mouse moved enough, start dragging
-								if (Vector2DistanceSqr(m_dragStart, mousePos) > 4 && !g_gumpManager->m_draggingObject)
-								{
-									// Start dragging this equipped item
-									g_gumpManager->m_draggedObjectId = objectId;
-									g_gumpManager->m_draggingObject = true;
-									g_gumpManager->m_dropValid = true;
-									g_gumpManager->m_sourceGump = this;
-									g_gumpManager->m_sourceSlotIndex = i;  // Remember which slot we dragged from
-
-									// Close any gump associated with this object to prevent dragging into itself
-									g_gumpManager->CloseGumpForObject(objectId);
-
-									// Unequip from ALL slots this item fills
-									auto objIt = g_objectList.find(objectId);
-									// Center the drag image on the cursor
-									if (objIt != g_objectList.end() && objIt->second && objIt->second->m_shapeData)
-									{
-										const auto& img = objIt->second->m_shapeData->GetDefaultTextureImage();
-										g_gumpManager->m_draggedObjectOffset = { -img.width / 2.0f, -img.height / 2.0f };
-									}
-									if (objIt != g_objectList.end() && objIt->second && objIt->second->m_shapeData)
-									{
-										int shape = objIt->second->m_shapeData->GetShape();
-
-										// If it's a spellbook (shape 761), close the spellbook gump
-										if (shape == 761)
-										{
-											g_gumpManager->CloseSpellbookForNpc(m_npcId);
-										}
-										std::vector<EquipmentSlot> fillSlots = GetEquipmentSlotsFilled(shape);
-
-										// If item has explicit fills, clear all those slots
-										// Otherwise just clear the clicked slot
-										if (!fillSlots.empty())
-										{
-											for (EquipmentSlot fillSlot : fillSlots)
-											{
-												npcData->UnequipItem(fillSlot);
-											}
-											Log("Started dragging equipped item from slot " + std::to_string(i) + ", objectId=" + std::to_string(objectId) +
-												" (cleared " + std::to_string(fillSlots.size()) + " fills slots)");
-										}
-										else
-										{
-											// Single-slot item - just clear the clicked slot
-											npcData->UnequipItem(static_cast<EquipmentSlot>(i));
-											Log("Started dragging equipped item from slot " + std::to_string(i) + ", objectId=" + std::to_string(objectId));
-										}
-									}
-
-									break;
-								}
+								m_pendingDragObjectId = objectId;
+								m_pendingDragSlotIndex = i;
+								m_dragStart = mousePos;
 							}
 
 							// Single click (without drag): shared object info tooltip
@@ -640,10 +583,55 @@ void GumpPaperdoll::Update()
 								{
 									g_mainState->ShowObjectInfoTooltip(objIt->second.get());
 								}
-								break; // Don't process multiple slots
+								break;
 							}
 						}
 					}
+				}
+			}
+		}
+
+		// Promote press-time capture to a real drag once the mouse moves a bit,
+		// even if the cursor has already left the original slot.
+		if (m_pendingDragObjectId != -1 && m_pendingDragSlotIndex >= 0 &&
+			!g_gumpManager->m_draggingObject && g_InputSystem->IsLButtonDown() &&
+			Vector2DistanceSqr(m_dragStart, mousePos) > 4)
+		{
+			const int objectId = m_pendingDragObjectId;
+			const int slotIndex = m_pendingDragSlotIndex;
+			m_pendingDragObjectId = -1;
+			m_pendingDragSlotIndex = -1;
+
+			g_gumpManager->m_draggedObjectId = objectId;
+			g_gumpManager->m_draggingObject = true;
+			g_gumpManager->m_dropValid = true;
+			g_gumpManager->m_sourceGump = this;
+			g_gumpManager->m_sourceSlotIndex = slotIndex;
+
+			g_gumpManager->CloseGumpForObject(objectId);
+
+			auto objIt = g_objectList.find(objectId);
+			if (objIt != g_objectList.end() && objIt->second && objIt->second->m_shapeData)
+			{
+				const auto& img = objIt->second->m_shapeData->GetDefaultTextureImage();
+				g_gumpManager->m_draggedObjectOffset = { -img.width / 2.0f, -img.height / 2.0f };
+
+				int shape = objIt->second->m_shapeData->GetShape();
+				if (shape == 761)
+					g_gumpManager->CloseSpellbookForNpc(m_npcId);
+
+				std::vector<EquipmentSlot> fillSlots = GetEquipmentSlotsFilled(shape);
+				if (!fillSlots.empty())
+				{
+					for (EquipmentSlot fillSlot : fillSlots)
+						npcData->UnequipItem(fillSlot);
+					Log("Started dragging equipped item from slot " + std::to_string(slotIndex) + ", objectId=" + std::to_string(objectId) +
+						" (cleared " + std::to_string(fillSlots.size()) + " fills slots)");
+				}
+				else
+				{
+					npcData->UnequipItem(static_cast<EquipmentSlot>(slotIndex));
+					Log("Started dragging equipped item from slot " + std::to_string(slotIndex) + ", objectId=" + std::to_string(objectId));
 				}
 			}
 		}

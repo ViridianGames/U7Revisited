@@ -181,6 +181,7 @@ public:
 
 	bool m_Draggable = false;
 	bool m_IsDragging = false;
+	bool m_DragPressCaptured = false;  // LMB went down on a valid drag area of THIS gui
 	Vector2 m_DragOffset;
 	int m_DragAreaHeight = 20;
 	virtual bool IsMouseInDragArea() const;

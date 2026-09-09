@@ -98,6 +98,7 @@ void ShapeEditorState::Init(const string& configfile)
 	SetupCharacterGui();
 	SetupShapePointerGui();
 	SetupDontDrawGui();
+	BuildHelpGUI();
 
 	ChangeGui(m_bboardGui.get());
 }
@@ -481,6 +482,33 @@ void ShapeEditorState::Update()
 		m_pendingRenameNewName.clear();
 	}
 
+	// Help overlay: H opens, Okay / Esc / H dismisses. Blocks other editor input while open.
+	if (m_helpScreen && m_helpScreen->m_Active)
+	{
+		m_helpScreen->Update();
+		if (m_helpScreen->m_ActiveElement == GE_HELP_OKAY ||
+			IsKeyPressed(KEY_ESCAPE) || IsKeyPressed(KEY_H) || IsKeyPressed(KEY_ENTER))
+		{
+			m_helpScreen->m_Active = false;
+			m_helpScreen->m_ActiveElement = -1;
+			if (m_currentGui)
+				m_currentGui->m_AcceptingInput = true;
+		}
+		return;
+	}
+
+	if (IsKeyPressed(KEY_H))
+	{
+		if (m_helpScreen)
+		{
+			m_helpScreen->m_Active = true;
+			m_helpScreen->m_ActiveElement = -1;
+			if (m_currentGui)
+				m_currentGui->m_AcceptingInput = false;
+		}
+		return;
+	}
+
 	// If modal window is visible, only handle modal window input and return early
 	if (m_renameScriptWindow && m_renameScriptWindow->IsVisible())
 	{
@@ -848,33 +876,68 @@ void ShapeEditorState::Update()
 
 	if (m_currentGui->GetActiveElementID() == GE_COPYPARAMSFROMFRAME0)
 	{
-		if (m_currentFrame != 0)
+		if (m_currentFrame == 0)
+		{
+			AddConsoleString("Already on frame 0 — nothing to copy", YELLOW);
+		}
+		else
 		{
 			ShapeData& frame0Data = g_shapeTable[m_currentShape][0];
-			shapeData.m_rotation = frame0Data.m_rotation;
-			shapeData.m_Scaling = frame0Data.m_Scaling;
-			shapeData.m_TweakPos = frame0Data.m_TweakPos;
-			shapeData.m_topTextureRect.x = frame0Data.m_topTextureRect.x;
-			shapeData.m_topTextureRect.y = frame0Data.m_topTextureRect.y;
-			shapeData.m_topTextureRect.width = frame0Data.m_topTextureRect.width;
-			shapeData.m_topTextureRect.height = frame0Data.m_topTextureRect.height;
-			shapeData.m_frontTextureRect.x = frame0Data.m_frontTextureRect.x;
-			shapeData.m_frontTextureRect.y = frame0Data.m_frontTextureRect.y;
-			shapeData.m_frontTextureRect.width = frame0Data.m_frontTextureRect.width;
-			shapeData.m_frontTextureRect.height = frame0Data.m_frontTextureRect.height;
-			shapeData.m_rightTextureRect.x = frame0Data.m_rightTextureRect.x;
-			shapeData.m_rightTextureRect.y = frame0Data.m_rightTextureRect.y;
-			shapeData.m_rightTextureRect.width = frame0Data.m_rightTextureRect.width;
-			shapeData.m_rightTextureRect.height = frame0Data.m_rightTextureRect.height;
+			if (shapeData.m_drawType != frame0Data.m_drawType)
+			{
+				AddConsoleString("Frame 0 draw type differs from current frame — copy skipped", RED);
+			}
+			else
+			{
+				// Copy all per-frame editor/serialization params from frame 0.
+				// Leave identity (shape/frame) and per-frame VGA bitmaps alone.
+				shapeData.m_rotation = frame0Data.m_rotation;
+				shapeData.m_Scaling = frame0Data.m_Scaling;
+				shapeData.m_TweakPos = frame0Data.m_TweakPos;
 
-			shapeData.m_sideTextures[int(CuboidSides::CUBOID_TOP)] = frame0Data.m_sideTextures[int(CuboidSides::CUBOID_TOP)];
-			shapeData.m_sideTextures[int(CuboidSides::CUBOID_FRONT)] = frame0Data.m_sideTextures[int(CuboidSides::CUBOID_FRONT)];
-			shapeData.m_sideTextures[int(CuboidSides::CUBOID_RIGHT)] = frame0Data.m_sideTextures[int(CuboidSides::CUBOID_RIGHT)];
-			shapeData.m_sideTextures[int(CuboidSides::CUBOID_BOTTOM)] = frame0Data.m_sideTextures[int(CuboidSides::CUBOID_BOTTOM)];
-			shapeData.m_sideTextures[int(CuboidSides::CUBOID_BACK)] = frame0Data.m_sideTextures[int(CuboidSides::CUBOID_BACK)];
-			shapeData.m_sideTextures[int(CuboidSides::CUBOID_LEFT)] = frame0Data.m_sideTextures[int(CuboidSides::CUBOID_LEFT)];
+				shapeData.m_topTextureRect = frame0Data.m_topTextureRect;
+				shapeData.m_frontTextureRect = frame0Data.m_frontTextureRect;
+				shapeData.m_rightTextureRect = frame0Data.m_rightTextureRect;
 
-			somethingChanged = true;
+				for (int side = 0; side < static_cast<int>(CuboidSides::CUBOID_LAST); ++side)
+					shapeData.m_sideTextures[side] = frame0Data.m_sideTextures[side];
+
+				shapeData.m_customMeshName = frame0Data.m_customMeshName;
+				shapeData.m_customMesh = frame0Data.m_customMesh;
+				if (shapeData.m_customMesh == nullptr && !shapeData.m_customMeshName.empty())
+					shapeData.m_customMesh = g_ResourceManager->GetModel(shapeData.m_customMeshName);
+				shapeData.m_meshOutline = frame0Data.m_meshOutline;
+				shapeData.m_modelPaletteCycle = frame0Data.m_modelPaletteCycle;
+				shapeData.ResetModelPaletteIndexCache();
+
+				shapeData.m_useShapePointer = frame0Data.m_useShapePointer;
+				shapeData.m_pointerShape = frame0Data.m_pointerShape;
+				shapeData.m_pointerFrame = frame0Data.m_pointerFrame;
+				shapeData.m_luaScript = frame0Data.m_luaScript;
+
+				// Keep editor model/script iterators in sync so Next/Prev stay correct.
+				for (auto node = g_ResourceManager->m_ModelList.begin();
+					node != g_ResourceManager->m_ModelList.end(); ++node)
+				{
+					if (node->first == shapeData.m_customMeshName)
+					{
+						m_modelIndex = node;
+						break;
+					}
+				}
+				m_luaScriptIndex = 0;
+				for (int i = 0; i < static_cast<int>(g_ScriptingSystem->m_scriptFiles.size()); ++i)
+				{
+					if (g_ScriptingSystem->m_scriptFiles[i].first == shapeData.m_luaScript)
+					{
+						m_luaScriptIndex = i;
+						break;
+					}
+				}
+
+				somethingChanged = true;
+				AddConsoleString("Copied all frame 0 params to frame " + to_string(m_currentFrame), GREEN);
+			}
 		}
 	}
 
@@ -2260,6 +2323,9 @@ void ShapeEditorState::Draw()
 		m_renameScriptWindow->Draw();
 	}
 
+	if (m_helpScreen && m_helpScreen->m_Active)
+		m_helpScreen->Draw();
+
 	EndTextureMode();
 	DrawTexturePro(g_guiRenderTarget.texture,
 		{ 0, 0, float(g_guiRenderTarget.texture.width), float(g_guiRenderTarget.texture.height) },
@@ -2341,6 +2407,53 @@ void ShapeEditorState::Draw()
 
 	// Draw angle value (larger font for readability)
 	DrawTextEx(*g_guiFont.get(), TextFormat("%d deg", currentAngle), {(float)(sliderX + sliderWidth + 10), (float)(sliderY)}, labelFontSize, 1, WHITE);
+}
+
+void ShapeEditorState::BuildHelpGUI()
+{
+	m_helpScreen = make_unique<Gui>();
+	m_helpScreen->m_Font = g_SmallFont;
+
+	constexpr int panelW = 560;
+	constexpr int panelH = 300;
+	const int panelX = (g_Engine->m_RenderWidth - panelW) / 2;
+	const int panelY = (g_Engine->m_RenderHeight - panelH) / 2;
+
+	m_helpScreen->SetLayout(panelX, panelY, panelW, panelH, g_DrawScale, Gui::GUIP_USE_XY);
+	m_helpScreen->AddOctagonBox(GE_HELP_PANEL, 0, 0, panelW, panelH, g_Borders);
+
+	m_helpScreen->AddTextArea(GE_HELP_TITLE, g_SmallFont.get(), "Shape Editor — Keyboard Shortcuts",
+		panelW / 2, 10, 0, 0, WHITE, GuiTextArea::CENTERED, 0, 1, true);
+
+	const char* body =
+		"NAVIGATION\n"
+		"  A / D          Previous / next shape\n"
+		"  Shift+A/D      Jump 10 shapes\n"
+		"  Ctrl+A/D       Jump 100 shapes\n"
+		"  W / S          Next / previous frame\n"
+		"  Q / E          Rotate camera\n"
+		"\n"
+		"GENERAL\n"
+		"  H              Show this help\n"
+		"  F1 / Esc       Exit shape editor\n"
+		"  F2             Refresh current frame textures\n"
+		"\n"
+		"UI ADJUSTMENTS (buttons)\n"
+		"  Shift          Larger tweak / model / script steps\n"
+		"  Ctrl           Even larger model steps (Prev/Next Model)\n"
+		"\n"
+		"Bottom slider: drag to set view angle around the shape.";
+
+	m_helpScreen->AddTextArea(GE_HELP_BODY, g_SmallFont.get(), body,
+		12, 28, 0, 0, WHITE, GuiTextArea::LEFT, 0, 1, false);
+
+	m_helpScreen->AddStretchButtonCentered(GE_HELP_OKAY, panelH - 28,
+		"Okay",
+		g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
+		g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
+
+	m_helpScreen->m_Active = false;
+	m_helpScreen->m_Draggable = false;
 }
 
 void ShapeEditorState::SetupBboardGui()

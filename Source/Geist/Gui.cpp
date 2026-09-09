@@ -28,6 +28,7 @@ Gui::Gui()
 	m_Font = make_shared<Font>(GetFontDefault());
 	m_Draggable = false;
 	m_IsDragging = false;
+	m_DragPressCaptured = false;
 	m_DragOffset = { 0, 0 };
 	m_DragAreaHeight = 20;
 	m_isDone = false;
@@ -108,33 +109,38 @@ void Gui::Update()
 		mousePos.x /= m_InputScale;
 		mousePos.y /= m_InputScale;
 
-		if (IsMouseInDragArea())
-		{
-			// Check pixel-perfect validation if callback is set
-			bool isValidDragArea = true;
-			if (m_DragAreaValidationCallback != nullptr)
-			{
-				isValidDragArea = m_DragAreaValidationCallback(mousePos);
-			}
-
-			if (isValidDragArea && g_InputSystem->IsLDragging())
-			{
-				m_IsDragging = true;
-				m_DragOffset.x = mousePos.x - m_Pos.x;
-				m_DragOffset.y = mousePos.y - m_Pos.y;
-			}
-		}
-
-		if (m_IsDragging && !g_InputSystem->IsLButtonDown())
+		if (!g_InputSystem->IsLButtonDown())
 		{
 			m_IsDragging = false;
+			m_DragPressCaptured = false;
 		}
-
-		if (m_IsDragging && g_InputSystem->IsLButtonDown())
+		else
 		{
-			m_Pos.x = mousePos.x - m_DragOffset.x;
-			m_Pos.y = mousePos.y - m_DragOffset.y;
-			m_PositionFlag = GUIP_USE_XY;
+			// Capture press only on THIS gui's valid drag area. Do not steal an
+			// in-progress drag that started on another gui (IsLDragging is global).
+			if (g_InputSystem->IsLButtonJustDown() && !m_IsDragging && IsMouseInDragArea())
+			{
+				bool isValidDragArea = true;
+				if (m_DragAreaValidationCallback != nullptr)
+					isValidDragArea = m_DragAreaValidationCallback(mousePos);
+
+				if (isValidDragArea)
+				{
+					m_DragPressCaptured = true;
+					m_DragOffset.x = mousePos.x - m_Pos.x;
+					m_DragOffset.y = mousePos.y - m_Pos.y;
+				}
+			}
+
+			if (m_DragPressCaptured && g_InputSystem->IsLDragging())
+				m_IsDragging = true;
+
+			if (m_IsDragging)
+			{
+				m_Pos.x = mousePos.x - m_DragOffset.x;
+				m_Pos.y = mousePos.y - m_DragOffset.y;
+				m_PositionFlag = GUIP_USE_XY;
+			}
 		}
 	}
 }

@@ -50,6 +50,18 @@ void GumpManager::Update()
 	std::shared_ptr<Gump> gumpToMoveToFront = nullptr;
 	Gump* topmostGumpUnderMouse = nullptr;
 
+	// While a gump window is being dragged, that gump owns input for the whole press
+	// (even if the cursor leaves its solid pixels or overlaps another gump).
+	Gump* draggingGump = nullptr;
+	for (const auto& gump : m_GumpList)
+	{
+		if (gump->m_gui.m_IsDragging || gump->m_gui.m_DragPressCaptured)
+		{
+			draggingGump = gump.get();
+			break;
+		}
+	}
+
 	// First pass: Find topmost gump under mouse (iterate backwards to find last one)
 	for (auto it = m_GumpList.rbegin(); it != m_GumpList.rend(); ++it)
 	{
@@ -69,7 +81,7 @@ void GumpManager::Update()
 			m_gumpUnderMouse = topmostGumpUnderMouse;
 
 			// If mouse clicked on this gump, bring it to front (if not already at front)
-			if (g_InputSystem->IsLButtonJustDown() && !m_draggingObject && !m_GumpList.begin()->get()->m_gui.m_IsDragging)
+			if (g_InputSystem->IsLButtonJustDown() && !m_draggingObject && draggingGump == nullptr)
 			{
 				gumpToMoveToFront = *it;
 			}
@@ -77,14 +89,25 @@ void GumpManager::Update()
 		}
 	}
 
+	// While window-dragging, force hit-test / mouse-over to the dragged gump so
+	// it stays "topmost" for input and stays visually treated as the active window.
+	if (draggingGump != nullptr && !m_draggingObject)
+	{
+		topmostGumpUnderMouse = draggingGump;
+		m_isMouseOverGump = true;
+		m_gumpUnderMouse = draggingGump;
+	}
+
 	// Second pass: Update all gumps, but only let topmost one receive input
 	for (vector<std::shared_ptr<Gump>>::iterator gump = m_GumpList.begin(); gump != m_GumpList.end();)
 	{
-		// Temporarily disable ALL input (including buttons) for non-topmost gumps
-		// BUT: if a gump is already being dragged, keep it active (for smooth dragging)
+		// Temporarily disable ALL input (including buttons) for non-topmost gumps.
+		// Keep the window-drag owner active so it continues to follow the mouse and
+		// can clear IsDragging on release even if the cursor left its pixels.
 		bool wasActive = (*gump)->m_gui.m_Active;
-		//bool isBeingDragged = (*gump)->m_gui.m_IsDragging;
-		if ((topmostGumpUnderMouse != nullptr && (*gump).get() != topmostGumpUnderMouse) || m_draggingObject)
+		const bool isDragOwner = (draggingGump != nullptr && (*gump).get() == draggingGump);
+		if (m_draggingObject ||
+			(!isDragOwner && topmostGumpUnderMouse != nullptr && (*gump).get() != topmostGumpUnderMouse))
 		{
 			(*gump)->m_gui.m_Active = false;
 		}
@@ -120,7 +143,31 @@ void GumpManager::Update()
 		}
 	}
 
-	// Bring clicked gump to front by moving it to the end of the list
+	// After updates, re-find the window-drag owner (may have just started this frame).
+	draggingGump = nullptr;
+	for (const auto& gump : m_GumpList)
+	{
+		if (gump->m_gui.m_IsDragging || gump->m_gui.m_DragPressCaptured)
+		{
+			draggingGump = gump.get();
+			break;
+		}
+	}
+
+	// Keep the drag owner drawn on top for the whole drag.
+	if (draggingGump != nullptr)
+	{
+		for (const auto& gump : m_GumpList)
+		{
+			if (gump.get() == draggingGump)
+			{
+				gumpToMoveToFront = gump;
+				break;
+			}
+		}
+	}
+
+	// Bring clicked / drag-owner gump to front by moving it to the end of the list
 	if (gumpToMoveToFront)
 	{
 		auto it = std::find(m_GumpList.begin(), m_GumpList.end(), gumpToMoveToFront);
@@ -128,6 +175,17 @@ void GumpManager::Update()
 		{
 			m_GumpList.erase(it);
 			m_GumpList.push_back(gumpToMoveToFront);
+		}
+	}
+
+	// Safety: if LMB is up, force-clear window-drag state on every gump so a
+	// previously-deactivated owner cannot leave m_IsDragging stuck.
+	if (!g_InputSystem->IsLButtonDown())
+	{
+		for (auto& gump : m_GumpList)
+		{
+			gump->m_gui.m_IsDragging = false;
+			gump->m_gui.m_DragPressCaptured = false;
 		}
 	}
 
@@ -471,7 +529,7 @@ bool GumpManager::IsAnyGumpBeingDragged()
 {
 	for (const auto& gump : m_GumpList)
 	{
-		if (gump->m_gui.m_IsDragging)
+		if (gump->m_gui.m_IsDragging || gump->m_gui.m_DragPressCaptured)
 		{
 			return true;
 		}

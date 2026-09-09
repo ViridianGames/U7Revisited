@@ -270,6 +270,8 @@ public:
    bool m_paused = false;
 
 	Vector2 m_dragStart = {0, 0};
+	int m_pendingDragObjectId = -1;  // World object under cursor when LMB went down
+	bool m_worldDragPressIgnored = false;  // Press started off a draggable world object
 
 	MainStateModes m_gameMode = MainStateModes::MAIN_STATE_MODE_SANDBOX;
 

@@ -170,7 +170,7 @@ int main(int argv, char** argc)
          g_meshOutlineIdSamplerLoc = GetShaderLocation(g_meshOutlineShader, "texture1");
       g_meshOutlineResolutionLoc = GetShaderLocation(g_meshOutlineShader, "resolution");
       g_meshOutlineThicknessLoc = GetShaderLocation(g_meshOutlineShader, "outlineThickness");
-      g_meshOutlineThickness = 0.75f;
+      g_meshOutlineThickness = 1.0f;
       g_meshOutlineSystemReady = (g_meshIdShader.id > 0 && g_meshOutlineShader.id > 0);
 
       rlDisableBackfaceCulling();

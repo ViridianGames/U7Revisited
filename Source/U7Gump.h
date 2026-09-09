@@ -116,11 +116,8 @@ public:
 	U7Object* m_containerObject;
 
 	Vector2 m_dragStart;
-
-	//int m_draggedObjectId = -1;
-	//bool m_draggingObject = false;
-	//Vector2 m_dragOffset;
-	//float m_scale = 1.0f;
+	int m_pendingDragObjectId = -1;   // Object under cursor when LMB went down (item drag)
+	int m_pendingDragSlotIndex = -1;  // Paperdoll slot at press time (-1 for containers)
 
 };
 

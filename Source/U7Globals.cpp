@@ -391,7 +391,7 @@ Shader g_meshOutlineShader{};
 int g_meshOutlineIdSamplerLoc = -1;
 int g_meshOutlineResolutionLoc = -1;
 int g_meshOutlineThicknessLoc = -1;
-float g_meshOutlineThickness = 0.75f;
+float g_meshOutlineThickness = 1.0f;
 RenderTexture2D g_meshIdTarget{};
 bool g_meshOutlineSystemReady = false;
 

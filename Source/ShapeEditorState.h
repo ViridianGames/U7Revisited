@@ -32,6 +32,7 @@ public:
    void SetupCharacterGui();
    void SetupShapePointerGui();
    void SetupDontDrawGui();
+   void BuildHelpGUI();
 
    void ChangeGui(Gui* newGui);
    void SwitchToGuiForDrawType(ShapeDrawType drawType);
@@ -60,6 +61,7 @@ public:
    std::unique_ptr<Gui> m_characterGui;
    std::unique_ptr<Gui> m_shapePointerGui;
    std::unique_ptr<Gui> m_dontDrawGui;
+   std::unique_ptr<Gui> m_helpScreen;
 
    Gui* m_currentGui = nullptr;
 
@@ -238,7 +240,13 @@ public:
 
       GE_VIEWANGLESLIDER,
 
-      GE_LASTGUIELEMENT
+      GE_LASTGUIELEMENT,
+
+      // Help overlay (separate Gui; IDs kept distinct from the side panels)
+      GE_HELP_PANEL = 9000,
+      GE_HELP_TITLE,
+      GE_HELP_BODY,
+      GE_HELP_OKAY
    };
 
 };

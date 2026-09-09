@@ -538,8 +538,27 @@ void MainState::HandleDebugKeys()
 	{
 		g_useScreenSpaceMeshOutline = !g_useScreenSpaceMeshOutline;
 		AddConsoleString(g_useScreenSpaceMeshOutline
-			? "Mesh outlines: screen-space (0.75×drawScale×zoom)"
+			? "Mesh outlines: screen-space (thickness×drawScale×zoom)"
 			: "Mesh outlines: stencil inflate (fallback)");
+	}
+
+	// [ ] nudge screen-space outline thickness (live; artists use this to tune).
+	if (IsKeyPressed(KEY_LEFT_BRACKET) || IsKeyPressed(KEY_RIGHT_BRACKET))
+	{
+		constexpr float kStep = 0.1f;
+		constexpr float kMin = 0.25f;
+		constexpr float kMax = 4.0f;
+		if (IsKeyPressed(KEY_LEFT_BRACKET))
+			g_meshOutlineThickness -= kStep;
+		else
+			g_meshOutlineThickness += kStep;
+		if (g_meshOutlineThickness < kMin)
+			g_meshOutlineThickness = kMin;
+		if (g_meshOutlineThickness > kMax)
+			g_meshOutlineThickness = kMax;
+		stringstream ss;
+		ss << fixed << setprecision(2) << "Outline width now " << g_meshOutlineThickness;
+		AddConsoleString(ss.str());
 	}
 
 	if (IsKeyPressed(KEY_F8))
@@ -697,45 +716,65 @@ void MainState::HandleObjectDrag()
 	if (!g_InputSystem->IsLButtonDown())
 	{
 		m_dragStart = { 0, 0 };
+		m_pendingDragObjectId = -1;
+		m_worldDragPressIgnored = false;
 		return;
 	}
 
-	if (g_objectUnderMousePointer == nullptr || g_gumpManager->m_isMouseOverGump ||
-		g_gumpManager->m_draggingObject || g_gumpManager->IsAnyGumpBeingDragged() || g_mouseOverUI)
+	if (g_gumpManager->m_draggingObject || g_gumpManager->IsAnyGumpBeingDragged())
 		return;
 
-	// Keep shape editor in sync with whatever object is under the cursor
-	g_selectedShape = g_objectUnderMousePointer->m_shapeData->m_shape;
-	g_selectedFrame = g_objectUnderMousePointer->m_shapeData->m_frame;
-
-	// if (m_doingObjectSelection)
-	// {
-	// 	g_ScriptingSystem->ResumeCoroutine(m_luaFunction, { g_objectUnderMousePointer->m_ID });
-	// 	m_doingObjectSelection = false;
-	// 	m_objectSelectionMode = false;
-	// 	m_luaFunction.clear();
-	// }
-
-	if (!m_allowMovingStaticObjects && g_objectUnderMousePointer->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_STATIC)
-		return;
-
-	if (m_dragStart.x == 0 && m_dragStart.y == 0)
+	// Only the object under the cursor on the press frame can be dragged.
+	// Pressing empty space / UI / a gump and then sweeping onto a world object
+	// must not pick that object up.
+	if (m_pendingDragObjectId == -1 && !m_worldDragPressIgnored)
 	{
+		if (!g_InputSystem->IsLButtonJustDown())
+			return;
+
+		if (g_objectUnderMousePointer == nullptr || g_gumpManager->m_isMouseOverGump || g_mouseOverUI)
+		{
+			m_worldDragPressIgnored = true;
+			return;
+		}
+
+		if (!m_allowMovingStaticObjects &&
+			g_objectUnderMousePointer->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_STATIC)
+		{
+			m_worldDragPressIgnored = true;
+			return;
+		}
+
+		// Keep shape editor in sync with whatever object is under the cursor
+		g_selectedShape = g_objectUnderMousePointer->m_shapeData->m_shape;
+		g_selectedFrame = g_objectUnderMousePointer->m_shapeData->m_frame;
+
+		m_pendingDragObjectId = g_objectUnderMousePointer->m_ID;
 		m_dragStart = GetMousePosition();
+		return;
 	}
-	else if (Vector2DistanceSqr(m_dragStart, GetMousePosition()) > 4 * g_DrawScale)
-	{
-		g_gumpManager->m_draggedObjectId = g_objectUnderMousePointer->m_ID;
-		g_gumpManager->m_draggingObject = true;
-		g_gumpManager->m_dropValid = true;
-		g_gumpManager->m_sourceGump = nullptr;
-		g_gumpManager->m_sourceSlotIndex = -1;
-		g_gumpManager->m_draggedObjectOriginalPos = g_objectUnderMousePointer->m_Pos;
-		g_gumpManager->m_draggedObjectOriginalDest = g_objectUnderMousePointer->m_Dest;
-		g_objectUnderMousePointer->m_isContained = true;
-		Log("Removed object " + std::to_string(g_objectUnderMousePointer->m_ID) + " from world on drag start");
-		g_gumpManager->CloseGumpForObject(g_objectUnderMousePointer->m_ID);
-	}
+
+	if (m_pendingDragObjectId == -1)
+		return;
+
+	if (Vector2DistanceSqr(m_dragStart, GetMousePosition()) <= 4 * g_DrawScale)
+		return;
+
+	U7Object* object = GetObjectFromID(m_pendingDragObjectId);
+	m_pendingDragObjectId = -1;
+	if (object == nullptr)
+		return;
+
+	g_gumpManager->m_draggedObjectId = object->m_ID;
+	g_gumpManager->m_draggingObject = true;
+	g_gumpManager->m_dropValid = true;
+	g_gumpManager->m_sourceGump = nullptr;
+	g_gumpManager->m_sourceSlotIndex = -1;
+	g_gumpManager->m_draggedObjectOriginalPos = object->m_Pos;
+	g_gumpManager->m_draggedObjectOriginalDest = object->m_Dest;
+	object->m_isContained = true;
+	Log("Removed object " + std::to_string(object->m_ID) + " from world on drag start");
+	g_gumpManager->CloseGumpForObject(object->m_ID);
 }
 
 void MainState::HandleMiddleClick()
