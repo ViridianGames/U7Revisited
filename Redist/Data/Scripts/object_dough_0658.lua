@@ -24,14 +24,19 @@ local function place_dough_on_hearth(dough_id, hearth_id)
     end
 
     local w, h, d = get_object_dimensions(hearth_id)
-    w = w or 1
-    h = h or 1
-    d = d or 1
+    w = math.max(1, w or 1)
+    h = math.max(0, h or 1)
+    d = math.max(1, d or 1)
 
-    local min_x = hx - w + 1
-    local min_z = hz - d + 1
-    local spot_x = min_x + 0.35 + math.random() * math.max(0.1, w - 0.7)
-    local spot_z = min_z + 0.35 + math.random() * math.max(0.1, d - 0.7)
+    -- SE-origin footprint: stay INSIDE [hx-(w-1), hx] × [hz-(d-1), hz].
+    local min_x = hx - (w - 1)
+    local min_z = hz - (d - 1)
+    local tx = math.floor(min_x + math.random() * w)
+    local tz = math.floor(min_z + math.random() * d)
+    if tx > math.floor(hx) then tx = math.floor(hx) end
+    if tz > math.floor(hz) then tz = math.floor(hz) end
+    local spot_x = math.min(hx - 0.05, math.max(min_x + 0.05, tx + 0.5))
+    local spot_z = math.min(hz - 0.05, math.max(min_z + 0.05, tz + 0.5))
     local spot_y = hy + h
 
     if not set_last_created(dough_id) then

@@ -25,25 +25,7 @@ local function bark_random(npc_id, lines)
     end
 end
 
-local function walk_to_object(npc_id, object_id, arrive_dist)
-    arrive_dist = arrive_dist or 1.5
-    local pos = get_object_position(object_id)
-    if not pos then
-        return false
-    end
-    local request_id = request_pathfind(npc_id, pos.x, pos.y, pos.z)
-    while not is_path_ready(request_id) do
-        coroutine.yield()
-    end
-    start_following_path(npc_id)
-    while distance_to(npc_id, object_id) > arrive_dist do
-        if wait_move_end and wait_move_end(npc_id) then
-            break
-        end
-        coroutine.yield()
-    end
-    return true
-end
+-- walk_to_object from activity_common.lua stands beside targets (not on them).
 
 local function closest_nearby_food(npc_id)
     local npc_obj = get_npc_object_id(npc_id)

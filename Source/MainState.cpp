@@ -545,7 +545,7 @@ void MainState::HandleDebugKeys()
 	// [ ] nudge screen-space outline thickness (live; artists use this to tune).
 	if (IsKeyPressed(KEY_LEFT_BRACKET) || IsKeyPressed(KEY_RIGHT_BRACKET))
 	{
-		constexpr float kStep = 0.1f;
+		constexpr float kStep = 0.05f;
 		constexpr float kMin = 0.25f;
 		constexpr float kMax = 4.0f;
 		if (IsKeyPressed(KEY_LEFT_BRACKET))
@@ -1728,7 +1728,7 @@ void MainState::Update()
 					if (wasPosed && g_pathfindingSystem)
 					{
 						npcObj->m_pathWaypoints = g_pathfindingSystem->FindPath(
-							npcObj->GetPos(), res.dest, npcObj);
+							npcObj->GetPos(), res.dest, npcObj, /*allowHierarchical=*/false);
 						if (npcObj->m_pathWaypoints.empty())
 							npcObj->m_pathWaypoints = std::move(res.path);
 					}
@@ -2165,7 +2165,9 @@ void MainState::PathfindingWorkerLoop()
 						agent = itObj->second.get();
 				}
 
-				path = g_pathfindingSystem->FindPath(req.start, req.dest, agent);
+				// Flat tile A* for schedule destinations (Exult has no chunk layer).
+				path = g_pathfindingSystem->FindPath(req.start, req.dest, agent,
+					/*allowHierarchical=*/false);
 				success = !path.empty();
 			}
 		}

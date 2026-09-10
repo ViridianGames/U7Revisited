@@ -27,38 +27,7 @@ local CLOTHES_B = 249 -- top / garment
 
 local QUAL_OURS = 60 -- mark items we created so cleanup is safe
 
-local function walk_to_pos(npc_id, x, y, z, arrive_dist)
-    arrive_dist = arrive_dist or 2.0
-    local request_id = request_pathfind(npc_id, x, y, z)
-    while not is_path_ready(request_id) do
-        coroutine.yield()
-    end
-    start_following_path(npc_id)
-    while true do
-        local ax, ay, az = get_npc_position(npc_id)
-        if not ax then
-            break
-        end
-        local dx = ax - x
-        local dz = az - z
-        if (dx * dx + dz * dz) <= (arrive_dist * arrive_dist) then
-            break
-        end
-        if wait_move_end and wait_move_end(npc_id) then
-            break
-        end
-        coroutine.yield()
-    end
-end
-
-local function walk_to_object(npc_id, object_id, arrive_dist)
-    local pos = get_object_position(object_id)
-    if not pos then
-        return false
-    end
-    walk_to_pos(npc_id, pos.x, pos.y, pos.z, arrive_dist or 2.0)
-    return true
-end
+-- walk_to_pos / walk_to_object come from activity_common.lua (stand beside targets).
 
 local function object_exists(id)
     return id and get_object_position(id) ~= nil

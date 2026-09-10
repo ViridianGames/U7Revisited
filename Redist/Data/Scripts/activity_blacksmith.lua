@@ -7,27 +7,10 @@ function activity_blacksmith(npc_id)
     local anvil = find_nearest_shape(npc_id, {991, 992})  -- PLACEHOLDER shape IDs
 
     if anvil then
-        -- Walk to anvil if not already there
+        -- Stand beside the anvil (not on it).
         if distance_to(npc_id, anvil) > 2.0 then
             debug_npc(npc_id, "walking to anvil")
-
-            local obj_pos = get_object_position(anvil)
-            if obj_pos then
-                local request_id = request_pathfind(npc_id, obj_pos.x, obj_pos.y, obj_pos.z)
-
-                -- Wait for path to be computed
-                while not is_path_ready(request_id) do
-                    coroutine.yield()
-                end
-
-                -- Start following the path
-                start_following_path(npc_id)
-            end
-
-            -- Wait until we reach the anvil
-            while distance_to(npc_id, anvil) > 2.0 do
-                coroutine.yield()
-            end
+            walk_to_object(npc_id, anvil, 1.25)
         end
     end
 

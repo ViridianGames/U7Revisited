@@ -7,6 +7,7 @@
 
 local DOUGH_SHAPE = 658
 local HEARTH_SHAPE = 831 -- "baking hearth"
+local STOVE_SHAPE = 664
 local BREAD_SHAPE = 377
 local BAKE_TICKS = 60 -- ~3s at 0.05s/tick
 local HEARTH_FIND_DIST = 5 -- hearths are multi-tile; SE corner can be far from dough
@@ -28,33 +29,43 @@ local function bark_bake(msg)
     end
 end
 
---- True if dough is sitting on/near a baking hearth top (not merely beside it on the floor).
+local function surface_covers_dough(surface_id, dx, dy, dz)
+    local hx, hy, hz = pos_xyz(surface_id)
+    if not hx then
+        return false
+    end
+    local w, h, d = get_object_dimensions(surface_id)
+    w = w or 1
+    h = h or 1
+    d = d or 1
+    local min_x = hx - w + 1
+    local min_z = hz - d + 1
+    local max_x = hx + 0.99
+    local max_z = hz + 0.99
+    local top_y = hy + h
+    -- Horizontally over the footprint, and near its top surface.
+    return dx >= min_x - 0.25 and dx <= max_x + 0.25 and
+           dz >= min_z - 0.25 and dz <= max_z + 0.25 and
+           dy >= top_y - 0.75 and dy <= top_y + 0.75
+end
+
+--- True if dough is sitting on/near a baking hearth or stove top.
 function dough_is_on_hearth(dough_id)
     local dx, dy, dz = pos_xyz(dough_id)
     if not dx then
         return false, nil
     end
 
-    local hearths = find_nearby(dough_id, HEARTH_SHAPE, HEARTH_FIND_DIST, 0) or {}
-    for i = 1, #hearths do
-        local hid = hearths[i]
-        local hx, hy, hz = pos_xyz(hid)
-        if hx then
-            local w, h, d = get_object_dimensions(hid)
-            w = w or 1
-            h = h or 1
-            d = d or 1
-            local min_x = hx - w + 1
-            local min_z = hz - d + 1
-            local max_x = hx + 0.99
-            local max_z = hz + 0.99
-            local top_y = hy + h
-            -- Horizontally over the hearth footprint, and near its top surface.
-            if dx >= min_x - 0.25 and dx <= max_x + 0.25 and
-               dz >= min_z - 0.25 and dz <= max_z + 0.25 and
-               dy >= top_y - 0.75 and dy <= top_y + 0.75 then
-                return true, hid
-            end
+    local surfaces = find_nearby(dough_id, HEARTH_SHAPE, HEARTH_FIND_DIST, 0) or {}
+    local stoves = find_nearby(dough_id, STOVE_SHAPE, HEARTH_FIND_DIST, 0) or {}
+    for i = 1, #stoves do
+        surfaces[#surfaces + 1] = stoves[i]
+    end
+
+    for i = 1, #surfaces do
+        local hid = surfaces[i]
+        if surface_covers_dough(hid, dx, dy, dz) then
+            return true, hid
         end
     end
     return false, nil
@@ -66,11 +77,21 @@ function bake_dough_into_bread(dough_id)
         return false
     end
 
+    -- Schedule may have already morph'd this object to bread before the timer fired.
+    local shp = get_object_shape and get_object_shape(dough_id)
+    if shp == BREAD_SHAPE then
+        return true
+    end
+    if shp and shp ~= DOUGH_SHAPE then
+        return false
+    end
+
     local on_hearth = dough_is_on_hearth(dough_id)
     if not on_hearth then
-        -- Fallback: any hearth within range (scripted place may sit slightly off the top).
+        -- Fallback: any hearth/stove within range (scripted place may sit slightly off the top).
         local hearths = find_nearby(dough_id, HEARTH_SHAPE, HEARTH_FIND_DIST, 0) or {}
-        if #hearths == 0 then
+        local stoves = find_nearby(dough_id, STOVE_SHAPE, HEARTH_FIND_DIST, 0) or {}
+        if #hearths == 0 and #stoves == 0 then
             return false
         end
     end

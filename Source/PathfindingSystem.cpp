@@ -1281,12 +1281,12 @@ std::vector<Vector3> PathfindingSystem::FindPathInternal(Vector3 start, Vector3 
 	heightsCache.reserve(2048);
 	moveCostCache.reserve(2048);
 
-	// Budget scales with distance. Schedule walks (e.g. Spark house→inn) are
-	// often 100–250 Manhattan tiles through town; 4000 was too tight once walls
-	// block properly and hierarchy is off.
+	// Hard node cap scales with distance. Soft limit / Exult-style max_cost
+	// below decide when to give up; hierarchy is optional and off for most
+	// schedule/Lua walks (Exult is flat tile A* only).
 	int distanceGuess = abs((int)floorf(goal.x) - (int)floorf(start.x))
 		+ abs((int)floorf(goal.z) - (int)floorf(start.z));
-	const int maxNodesToExplore = std::min(20000, std::max(4000, distanceGuess * 40 + 500));
+	const int maxNodesToExplore = std::min(25000, std::max(6000, distanceGuess * 60 + 1000));
 	std::vector<PathNode> nodePool;
 	nodePool.reserve(std::min(maxNodesToExplore + 64, 8192));
 
@@ -1514,16 +1514,21 @@ std::vector<Vector3> PathfindingSystem::FindPathInternal(Vector3 start, Vector3 
 	float bestGoalHeightDiff = 1e9f;
 	int nodesExplored = 0;
 
+	// Exult: max_cost ≈ 3× estimate (with a multi-screen floor). We use ~4×
+	// octile estimate so room-scale detours survive, while impossible goals
+	// still fail without burning the hard node cap.
+	const float pathEstimate = Heuristic(startX, startZ, goalX, goalZ);
+	const float maxPathCost = std::max(pathEstimate * 4.0f, 128.0f);
+	// Soft node ceiling (backup if f-score pruning is slow to kick in).
+	const int softNodeLimit = std::min(maxNodesToExplore, std::max(4000, distance * 100 + 1000));
+	diag.nodeBudget = softNodeLimit;
+
 	// A* main loop
 	while (!openSet.empty() && nodesExplored < maxNodesToExplore)
 	{
 		nodesExplored++;
 
-		// Soft cap: scales with range (pre-10k floor). Closed-door passability
-		// is what unblocks inn approaches, not a larger budget.
-		const int dynamicLimit = std::min(maxNodesToExplore, std::max(600, distance * 35 + 250));
-		diag.nodeBudget = dynamicLimit;
-		if (nodesExplored > dynamicLimit)
+		if (nodesExplored > softNodeLimit)
 		{
 			diag.hitNodeBudget = true;
 			break;
@@ -1545,6 +1550,14 @@ std::vector<Vector3> PathfindingSystem::FindPathInternal(Vector3 start, Vector3 
 			continue;
 
 		openSetLookup.erase(currentKey64);
+
+		// Exult-style: open set is ordered by f — once the best remaining node
+		// exceeds maxPathCost, no cheaper path to the goal exists within budget.
+		if (current.f > maxPathCost)
+		{
+			diag.hitNodeBudget = true;
+			break;
+		}
 
 		localVisitedNodeKeys.insert(currentKey64);
 

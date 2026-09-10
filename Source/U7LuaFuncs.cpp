@@ -5975,6 +5975,138 @@ static int LuaGetObjectDimensions(lua_State *L)
 }
 
 
+// find_approach_spot(npc_id, object_id [, ring]) -> x, y, z or nil
+// Walkable stand tile just OUTSIDE the object's footprint so workers don't
+// path onto flour bags, customers, tables, etc. ring = max chebyshev distance
+// outside the footprint to search (default 2).
+static int LuaFindApproachSpot(lua_State *L)
+{
+	int npc_id = (int)luaL_checkinteger(L, 1);
+	int object_id = (int)luaL_checkinteger(L, 2);
+	int ring = (int)luaL_optinteger(L, 3, 2);
+	if (ring < 1)
+		ring = 1;
+	if (ring > 4)
+		ring = 4;
+
+	if (g_NPCData.find(npc_id) == g_NPCData.end() || !g_pathfindingSystem)
+	{
+		lua_pushnil(L);
+		return 1;
+	}
+
+	U7Object* npc = g_objectList[g_NPCData[npc_id]->m_objectID].get();
+	U7Object* target = GetObjectFromID(object_id);
+	if (!npc || !target || !target->m_objectData)
+	{
+		lua_pushnil(L);
+		return 1;
+	}
+
+	const float w = std::max(1.0f, target->m_objectData->m_width);
+	const float d = std::max(1.0f, target->m_objectData->m_depth);
+	// U7 SE-origin footprint: [pos.x-(w-1), pos.x] × [pos.z-(d-1), pos.z]
+	const int minX = (int)floorf(target->m_Pos.x - (w - 1.0f));
+	const int maxX = (int)floorf(target->m_Pos.x);
+	const int minZ = (int)floorf(target->m_Pos.z - (d - 1.0f));
+	const int maxZ = (int)floorf(target->m_Pos.z);
+
+	auto distToFootprint = [&](int tx, int tz) -> int {
+		int dx = 0;
+		if (tx < minX)
+			dx = minX - tx;
+		else if (tx > maxX)
+			dx = tx - maxX;
+		int dz = 0;
+		if (tz < minZ)
+			dz = minZ - tz;
+		else if (tz > maxZ)
+			dz = tz - maxZ;
+		return std::max(dx, dz);
+	};
+
+	const Vector3 npcPos = npc->GetPos();
+	const float preferY = npcPos.y;
+	bool found = false;
+	Vector3 bestStand{};
+
+	auto standAtTile = [&](int tx, int tz, Vector3& outStand) -> bool {
+		if (!g_pathfindingSystem->IsPositionWalkable(tx, tz, preferY, npc))
+			return false;
+		float y = preferY;
+		auto heights = g_pathfindingSystem->GetWalkableSurfaceHeights(tx, tz);
+		if (!heights.empty())
+		{
+			y = heights[0];
+			float bestD = fabsf(y - preferY);
+			for (float h : heights)
+			{
+				const float dd = fabsf(h - preferY);
+				if (dd < bestD)
+				{
+					bestD = dd;
+					y = h;
+				}
+			}
+		}
+		outStand = Vector3{tx + 0.5f, y, tz + 0.5f};
+		return true;
+	};
+
+	// Prefer the innermost ring outside the footprint; within a ring, closest to NPC.
+	for (int r = 1; r <= ring; ++r)
+	{
+		bool ringFound = false;
+		Vector3 ringBest{};
+		float ringBestDistSq = 1e30f;
+		for (int tz = minZ - r; tz <= maxZ + r; ++tz)
+		{
+			for (int tx = minX - r; tx <= maxX + r; ++tx)
+			{
+				if (distToFootprint(tx, tz) != r)
+					continue;
+				Vector3 stand{};
+				if (!standAtTile(tx, tz, stand))
+					continue;
+				const float dx = stand.x - npcPos.x;
+				const float dz = stand.z - npcPos.z;
+				const float distSq = dx * dx + dz * dz;
+				if (!ringFound || distSq < ringBestDistSq)
+				{
+					ringFound = true;
+					ringBest = stand;
+					ringBestDistSq = distSq;
+				}
+			}
+		}
+		if (ringFound)
+		{
+			found = true;
+			bestStand = ringBest;
+			break;
+		}
+	}
+
+	if (!found)
+	{
+		lua_pushnil(L);
+		return 1;
+	}
+
+	if (g_LuaDebug)
+	{
+		NPCDebugPrint("find_approach_spot: npc=" + std::to_string(npc_id) +
+			" obj=" + std::to_string(object_id) +
+			" stand=(" + std::to_string(bestStand.x) + "," +
+			std::to_string(bestStand.y) + "," + std::to_string(bestStand.z) + ")");
+	}
+
+	lua_pushnumber(L, bestStand.x);
+	lua_pushnumber(L, bestStand.y);
+	lua_pushnumber(L, bestStand.z);
+	return 3;
+}
+
 // request_pathfind(npc_id, x, y, z) -> request_id
 // Step 1: Submit pathfinding request, returns ID for tracking
 static int LuaRequestPathfind(lua_State *L)
@@ -5991,12 +6123,24 @@ static int LuaRequestPathfind(lua_State *L)
     }
 
     U7Object* npc = g_objectList[g_NPCData[npc_id]->m_objectID].get();
+	if (!npc)
+	{
+		lua_pushinteger(L, 0);
+		return 1;
+	}
 
     // Stop movement while new path is being computed
     // (PathfindToDestTracked will clear waypoints and set m_pathfindingPending)
     npc->m_isMoving = false;
 
-    npc->PathfindToDest({x, y, z});
+	// Activity/script walks: flat tile A* only (Exult-style). Hierarchical
+	// chunk routing fights indoor geometry and is not needed for schedule loops.
+    npc->PathfindToDest({x, y, z}, /*allowHierarchical=*/false);
+	static int s_nextPathRequestId = 1;
+	const int requestId = s_nextPathRequestId++;
+	if (s_nextPathRequestId <= 0)
+		s_nextPathRequestId = 1;
+	lua_pushinteger(L, requestId);
     return 1;
 }
 
@@ -6432,6 +6576,7 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction( "find_nearby_npcs", LuaFindNearbyNpcs);
     g_ScriptingSystem->RegisterScriptFunction( "get_object_dimensions", LuaGetObjectDimensions);
     g_ScriptingSystem->RegisterScriptFunction( "find_random_walkable", LuaFindRandomWalkable);
+    g_ScriptingSystem->RegisterScriptFunction( "find_approach_spot", LuaFindApproachSpot);
     g_ScriptingSystem->RegisterScriptFunction( "get_current_animation", LuaGetCurrentAnimation);
     g_ScriptingSystem->RegisterScriptFunction( "is_sleeping", LuaIsSleeping);
     g_ScriptingSystem->RegisterScriptFunction( "is_sitting", LuaIsSitting);

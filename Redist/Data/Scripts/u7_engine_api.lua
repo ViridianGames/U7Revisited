@@ -361,44 +361,107 @@ function is_path_ready(request_id) end
 ---@param npc_id integer The NPC to start moving
 function start_following_path(npc_id) end
 
----Walks an NPC to an object using A* pathfinding (avoids obstacles)
----ASYNC: Returns immediately, path computed in background
+---Walks an NPC to a world position and waits until within arrive_dist (XZ).
+---Bails out if the NPC is not moving and not getting closer (failed/stuck path),
+---so activity scripts cannot hang forever after a bad pathfind.
 ---@param npc_id integer The NPC to move
----@param object_id integer The target object ID
-function walk_to_object(npc_id, object_id)
-    local obj_pos = get_object_position(object_id)
-    if not obj_pos then return end
-
-    -- Step 1: Request pathfind
-    local request_id = request_pathfind(npc_id, obj_pos.x, obj_pos.y, obj_pos.z)
-
-    -- Step 2: Wait for path
+---@param x number Target X
+---@param y number Target Y
+---@param z number Target Z
+---@param arrive_dist number|nil Stop distance (default 1.5)
+function walk_to_pos(npc_id, x, y, z, arrive_dist)
+    arrive_dist = arrive_dist or 1.5
+    local request_id = request_pathfind(npc_id, x, y, z)
     while not is_path_ready(request_id) do
         coroutine.yield()
     end
-
-    -- Step 3: Start moving
     start_following_path(npc_id)
+
+    local idle_frames = 0
+    local best_dist_sq = nil
+    while true do
+        local ax, ay, az = get_npc_position(npc_id)
+        if not ax then
+            break
+        end
+        local dx = ax - x
+        local dz = az - z
+        local dist_sq = dx * dx + dz * dz
+        if dist_sq <= (arrive_dist * arrive_dist) then
+            break
+        end
+        -- wait_move_end is true when waypoints are empty (arrived OR path failed).
+        if wait_move_end and wait_move_end(npc_id) then
+            break
+        end
+        if best_dist_sq == nil or dist_sq < best_dist_sq - 0.01 then
+            best_dist_sq = dist_sq
+            idle_frames = 0
+        else
+            idle_frames = idle_frames + 1
+        end
+        local moving = is_npc_moving and is_npc_moving(npc_id)
+        if (not moving) and idle_frames > 45 then
+            break -- stuck / no path progress
+        end
+        if idle_frames > 600 then
+            break -- hard timeout (~10s at 60fps resume)
+        end
+        coroutine.yield()
+    end
+end
+
+---Walks an NPC beside an object (stand just outside its footprint), not on top of it.
+---@param npc_id integer The NPC to move
+---@param object_id integer The target object ID
+---@param arrive_dist number|nil Stop distance once near the approach spot (default 1.25)
+---@return boolean ok
+function walk_beside_object(npc_id, object_id, arrive_dist)
+    arrive_dist = arrive_dist or 1.25
+    if not object_id then
+        return false
+    end
+    local sx, sy, sz = find_approach_spot(npc_id, object_id, 2)
+    if sx then
+        walk_to_pos(npc_id, sx, sy, sz, arrive_dist)
+        return true
+    end
+    local obj_pos = get_object_position(object_id)
+    if not obj_pos then
+        return false
+    end
+    -- Fallback: path toward the object but stop farther away.
+    walk_to_pos(npc_id, obj_pos.x, obj_pos.y, obj_pos.z, math.max(arrive_dist, 2.0))
+    return true
+end
+
+---Walks an NPC to interact with an object (stands beside it, not on it).
+---@param npc_id integer The NPC to move
+---@param object_id integer The target object ID
+---@param arrive_dist number|nil optional
+---@return boolean|nil ok
+function walk_to_object(npc_id, object_id, arrive_dist)
+    return walk_beside_object(npc_id, object_id, arrive_dist)
 end
 
 ---Walks an NPC to a position using A* pathfinding (avoids obstacles)
----ASYNC: Returns immediately, path computed in background
+---Waits until movement finishes (or arrive_dist reached via walk_to_pos).
 ---@param npc_id integer The NPC to move
 ---@param x number Target X coordinate
 ---@param y number Target Y coordinate
 ---@param z number Target Z coordinate
 function walk_to_position(npc_id, x, y, z)
-    -- Step 1: Request pathfind
-    local request_id = request_pathfind(npc_id, x, y, z)
-
-    -- Step 2: Wait for path
-    while not is_path_ready(request_id) do
-        coroutine.yield()
-    end
-
-    -- Step 3: Start moving
-    start_following_path(npc_id)
+    walk_to_pos(npc_id, x, y, z, 1.5)
 end
+
+---Find a walkable stand tile just outside an object's footprint.
+---@param npc_id integer NPC who will stand there (walkability uses their agent)
+---@param object_id integer Target object
+---@param ring integer|nil Max chebyshev ring outside footprint (default 2)
+---@return number|nil x
+---@return number|nil y
+---@return number|nil z
+function find_approach_spot(npc_id, object_id, ring) end
 
 ---Checks if an NPC is currently moving/walking
 ---Use this to wait for an NPC to reach their destination after calling walk_to_position()
