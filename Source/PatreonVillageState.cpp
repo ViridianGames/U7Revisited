@@ -79,6 +79,7 @@ void PatreonVillageState::OnEnter()
 	g_objectList[g_NPCData[230].get()->m_objectID]->SetPos( { 2153, 0, 2342 } );
 	g_objectList[g_NPCData[230].get()->m_objectID]->m_name = "Mister Fisp";
 	g_NPCData[230]->m_walkTextures = g_NPCData[113]->m_walkTextures; // Make Mister Fisp a horse
+	g_NPCData[230]->m_walkTexturesUpright = g_NPCData[113]->m_walkTexturesUpright;
 
 	// Lab - 2229, 1903
 	g_objectList[g_NPCData[16].get()->m_objectID]->SetPos({ 2229, 0, 1903 });

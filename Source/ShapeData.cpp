@@ -355,6 +355,13 @@ void ShapeData::Deserialize(ifstream& inStream)
 	inStream >> m_TweakPos.z;
 	if (abs(m_TweakPos.z) < .01f) { m_TweakPos.z = 0; }
 	inStream >> m_rotation;
+	// Legacy billboards stored 0 while Draw used a hardcoded -45 (= 315°).
+	// Migrate once on load so draw can treat 0 as a real angle.
+	if (m_drawType == ShapeDrawType::OBJECT_DRAW_BILLBOARD &&
+		(fabsf(m_rotation) < 0.001f || fabsf(m_rotation + 45.0f) < 0.001f))
+	{
+		m_rotation = 315.0f;
+	}
 	int sideTexture;
 	inStream >> sideTexture;
 	m_sideTextures[0] = static_cast<CuboidTexture>(sideTexture);
@@ -1019,24 +1026,37 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 
 	case ShapeDrawType::OBJECT_DRAW_BILLBOARD:
 	{
-		finalPos = Vector3Add(pos, m_TweakPos);
+		// Base placement, then per-shape/frame tweak (same m_TweakPos as meshes/flats).
+		finalPos = pos;
 		finalPos.x += .5f;
 		finalPos.z += .5f;
 		finalPos.y += m_Dims.y * .60f;
+		finalPos = Vector3Add(finalPos, m_TweakPos);
+
+		// Per shape/frame spin (Shape Editor "Rot:"). Default for new/legacy
+		// billboards is 315° (seeded on load / in the editor) — do NOT remap 0
+		// here or scrubbing through 0 jumps to 315 for a frame.
+		const float billboardAngle = m_rotation;
+
+		// W/H scale tweaks (D unused for upright billboards).
+		const Vector2 billboardSize = {
+			m_Dims.x * m_Scaling.x * scaling.x,
+			m_Dims.y * m_Scaling.y * scaling.y
+		};
 
 		if (m_hasPaletteAnim && g_paletteSystemReady)
 		{
 			BeginShaderMode(g_paletteShader);
 			BindPaletteShader();
 			DrawBillboardPro(g_camera, m_indexTexture, Rectangle{ 0, 0, float(m_indexTexture.width), float(m_indexTexture.height) }, finalPos, Vector3{ 0, 1, 0 },
-				Vector2{ m_Dims.x, m_Dims.y }, Vector2{ 0, 0 }, -45, color);
+				billboardSize, Vector2{ 0, 0 }, billboardAngle, color);
 			EndShaderMode();
 		}
 		else
 		{
 			BeginShaderMode(g_alphaDiscard);
 			DrawBillboardPro(g_camera, m_texture->m_Texture, Rectangle{ 0, 0, float(m_texture->m_Texture.width), float(m_texture->m_Texture.height) }, finalPos, Vector3{ 0, 1, 0 },
-				Vector2{ m_Dims.x, m_Dims.y }, Vector2{ 0, 0 }, -45, color);
+				billboardSize, Vector2{ 0, 0 }, billboardAngle, color);
 			EndShaderMode();
 		}
 		break;

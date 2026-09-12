@@ -140,6 +140,15 @@ void ShapeEditorState::ChangeGui(Gui* newGui)
 
 void ShapeEditorState::SwitchToGuiForDrawType(ShapeDrawType drawType)
 {
+	// Billboard Rot: was hardcoded -45 (= 315°) in Draw(); seed 315 when unset
+	// (or still stored as -45) so Rot: stays in 0–360 and matches the draw.
+	if (drawType == ShapeDrawType::OBJECT_DRAW_BILLBOARD)
+	{
+		ShapeData& sd = g_shapeTable[m_currentShape][m_currentFrame];
+		if (fabsf(sd.m_rotation) < 0.001f || fabsf(sd.m_rotation + 45.0f) < 0.001f)
+			sd.m_rotation = 315.0f;
+	}
+
 	switch (drawType)
 	{
 	case ShapeDrawType::OBJECT_DRAW_BILLBOARD:
@@ -1553,21 +1562,36 @@ void ShapeEditorState::Update()
 		shapeData.m_modelPaletteCycle = m_currentGui->GetActiveElement()->m_Selected;
 	}
 
-	// Tweak Rotation
-	if (m_currentGui->GetActiveElementID() == GE_TWEAKROTATIONPLUSBUTTON)
+	// Tweak Rotation: click = ±1°; Shift+hold = keep changing while the arrow is down.
 	{
-		somethingChanged = true;
-		shapeData.m_rotation += 1.0f;
-		if (shapeData.m_rotation > 360) shapeData.m_rotation = 0;
-		if (shapeData.m_rotation < 0) shapeData.m_rotation = 360;
-	}
+		auto wrapRotation = [&]() {
+			while (shapeData.m_rotation >= 360.0f) shapeData.m_rotation -= 360.0f;
+			while (shapeData.m_rotation < 0.0f) shapeData.m_rotation += 360.0f;
+		};
+		auto applyRot = [&](float delta) {
+			somethingChanged = true;
+			shapeData.m_rotation += delta;
+			wrapRotation();
+		};
 
-	if (m_currentGui->GetActiveElementID() == GE_TWEAKROTATIONMINUSBUTTON)
-	{
-		somethingChanged = true;
-		shapeData.m_rotation -= 1.0f;
-		if (shapeData.m_rotation > 360) shapeData.m_rotation = 0;
-		if (shapeData.m_rotation < 0) shapeData.m_rotation = 360;
+		const bool shiftHeld = IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT);
+		auto plusBtn = m_currentGui->GetElement(GE_TWEAKROTATIONPLUSBUTTON);
+		auto minusBtn = m_currentGui->GetElement(GE_TWEAKROTATIONMINUSBUTTON);
+
+		if (shiftHeld)
+		{
+			if (plusBtn && plusBtn->m_Down)
+				applyRot(+1.0f);
+			if (minusBtn && minusBtn->m_Down)
+				applyRot(-1.0f);
+		}
+		else
+		{
+			if (m_currentGui->GetActiveElementID() == GE_TWEAKROTATIONPLUSBUTTON)
+				applyRot(+1.0f);
+			if (m_currentGui->GetActiveElementID() == GE_TWEAKROTATIONMINUSBUTTON)
+				applyRot(-1.0f);
+		}
 	}
 
 	if (m_currentGui->GetActiveElementID() == GE_NEXTMODELBUTTON)
@@ -2198,7 +2222,10 @@ void ShapeEditorState::Draw()
 	cuboidScaling.y *= 2.5;
 	cuboidScaling.z *= 2.5;
 
-	Vector3 finalPos = Vector3Add(Vector3Add(g_camera.target, shapeData->m_TweakPos), Vector3{ shapeData->m_Dims.x / 2 - 1, 0, shapeData->m_Dims.z / 2 - 1 });
+	// Do NOT pre-add m_TweakPos here — ShapeData::Draw applies it once (same as the
+	// world). Pre-adding made the editor preview move 2× vs in-game.
+	Vector3 finalPos = Vector3Add(g_camera.target,
+		Vector3{ shapeData->m_Dims.x / 2 - 1, 0, shapeData->m_Dims.z / 2 - 1 });
 
 	shapeData->Draw(finalPos, g_cameraRotation, Color{255, 255, 255, 255}, cuboidScaling);
 
@@ -2811,7 +2838,8 @@ int ShapeEditorState::SetupCommonGui(Gui* gui)
 	out.str("");
 	out.precision(1);
 	gui->AddTextArea(GE_TWEAKROTATIONTITLEAREA, g_guiFont.get(), "Rot:", 2, y);
-	gui->AddIconButton(GE_TWEAKROTATIONPLUSBUTTON, 62, y, g_LeftArrow, g_LeftArrow, g_LeftArrow, "", g_guiFont.get(), Color{ 255, 255, 255, 255 }, 1, 1, true, true);
+	// Click = single step; Shift+hold repeats (handled in Update).
+	gui->AddIconButton(GE_TWEAKROTATIONPLUSBUTTON, 62, y, g_LeftArrow);
 	gui->AddTextArea(GE_TWEAKROTATIONTEXTAREA, g_guiFont.get(), " ", 71, y);
 	gui->AddIconButton(GE_TWEAKROTATIONMINUSBUTTON, 110, y, g_RightArrow);
 

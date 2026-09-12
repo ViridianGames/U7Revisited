@@ -738,16 +738,20 @@ void MainState::HandleObjectDrag()
 			return;
 		}
 
+		// Always sync Shape Editor selection on press — including statics.
+		// (Drag permission for statics is separate and still gated by F7.)
+		if (g_objectUnderMousePointer->m_shapeData)
+		{
+			g_selectedShape = g_objectUnderMousePointer->m_shapeData->m_shape;
+			g_selectedFrame = g_objectUnderMousePointer->m_shapeData->m_frame;
+		}
+
 		if (!m_allowMovingStaticObjects &&
 			g_objectUnderMousePointer->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_STATIC)
 		{
 			m_worldDragPressIgnored = true;
 			return;
 		}
-
-		// Keep shape editor in sync with whatever object is under the cursor
-		g_selectedShape = g_objectUnderMousePointer->m_shapeData->m_shape;
-		g_selectedFrame = g_objectUnderMousePointer->m_shapeData->m_frame;
 
 		m_pendingDragObjectId = g_objectUnderMousePointer->m_ID;
 		m_dragStart = GetMousePosition();

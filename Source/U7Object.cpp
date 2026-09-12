@@ -21,6 +21,7 @@
 #include "ShapeData.h"
 #include "LoadingState.h"
 #include "MainState.h"
+#include "CombatState.h"
 #include "PathfindingSystem.h"
 
 #include <iostream>
@@ -250,11 +251,7 @@ void U7Object::EggUpdate()
 
 static bool IsHostileCombatant(const U7Object* unit)
 {
-	if (!unit || unit->m_hp <= 0.0f)
-		return false;
-
-	return (unit->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_MONSTER && unit->m_Team == 1)
-		|| (unit->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC && unit->m_Team == 1);
+	return IsHostileCombatUnit(unit);
 }
 
 static bool IsPartyCombatant(const U7Object* unit)
@@ -280,6 +277,9 @@ void U7Object::NotifyAttackedBy(U7Object* attacker)
 	m_currentWaypointIndex = 0;
 	m_pathfindingPending = false;
 	m_isSchedulePath = false;
+
+	if (g_isCombatMode && g_CombatState)
+		g_CombatState->EnsureParticipant(static_cast<int>(m_ID));
 
 	if (g_isCombatMode)
 		EngageCombatTarget();
@@ -335,7 +335,7 @@ bool U7Object::EngageCombatTarget()
 
 void U7Object::HostileCombatUpdate()
 {
-	if (g_CombatState && g_CombatState->m_paused)
+	if (g_isCombatMode && g_CombatState && g_CombatState->m_paused)
 		return;
 
 	if (!g_isCombatMode || !g_Player)
@@ -344,6 +344,15 @@ void U7Object::HostileCombatUpdate()
 	U7Object* avatar = g_Player->GetAvatarObject();
 	if (!avatar)
 		return;
+
+	// Same on-screen leash as aggro — don't A* across the whole map during combat.
+	const float distSqr = Vector2DistanceSqr({ m_Pos.x, m_Pos.z }, { avatar->m_Pos.x, avatar->m_Pos.z });
+	if (distSqr > kHostileAggroRangeSqr)
+	{
+		m_target = 0;
+		UpdateMovement();
+		return;
+	}
 
 	if (m_target == 0)
 		m_target = avatar->m_ID;
@@ -354,51 +363,37 @@ void U7Object::HostileCombatUpdate()
 
 void U7Object::MonsterUpdate()
 {
-	if (g_CombatState && g_CombatState->m_paused)
-		return;
-
-	// Pursuit (hostile behavior) only for monsters whose activity is "combat" (0).
-	// Other monsters (e.g. foxes, deer spawned from eggs with non-combat workType) are not hostile
-	// even though they are UNIT_TYPE_MONSTER.
-	if (m_currentActivity == 0 && g_Player)
+	// Hostiles are Team 1 (combat eggs). Non-combat fauna stay Team 0.
+	if (m_Team == 1 && g_Player)
 	{
 		U7Object* avatar = g_Player->GetAvatarObject();
-
-		if (g_isCombatMode && avatar)
-		{
-			HostileCombatUpdate();
-			return;
-		}
-
 		if (avatar)
 		{
-			float distSqr = Vector2DistanceSqr({ m_Pos.x, m_Pos.z }, { avatar->m_Pos.x, avatar->m_Pos.z });
+			const float distSqr = Vector2DistanceSqr({ m_Pos.x, m_Pos.z }, { avatar->m_Pos.x, avatar->m_Pos.z });
 
-			if (distSqr < m_attackRange * m_attackRange)
+			if (distSqr < kHostileAggroRangeSqr)
 			{
-				if (m_cooldownTimer <= 0.0f)
+				if (!g_isCombatMode)
 				{
-					m_cooldownTimer = m_attackCooldown;
-					avatar->m_hp -= 1;
-					avatar->NotifyAttackedBy(this);
-
-					AddConsoleString(m_name + " attacks Avatar for 1!", RED);
-
-					if (avatar->m_hp <= 0)
-						AddConsoleString("Avatar is dead!", RED);
+					// Starts combat using the *nearest* hostile for the approach message.
+					TryBeginCombatFromHostileAggro(this);
 				}
-				else
+				else if (g_CombatState)
 				{
-					m_cooldownTimer -= g_Engine->LastFrameInSeconds();
+					// Enroll even while paused — otherwise nearer Headlesses never join
+					// if a farther Dragon triggered combat first.
+					g_CombatState->EnsureParticipant(static_cast<int>(m_ID));
 				}
 			}
-			else if (distSqr < 81.0f)
+
+			// Only skip chase/attack AI while combat is paused for orders.
+			if (g_isCombatMode && g_CombatState && g_CombatState->m_paused)
+				return;
+
+			if (g_isCombatMode)
 			{
-				PathfindToDest(GetStandoffPosition(m_Pos, avatar->m_Pos, m_attackRange));
-			}
-			else if (g_StateMachine && g_StateMachine->GetCurrentState() == STATE_COMBATSTATE && distSqr < 400.0f)
-			{
-				PathfindToDest(GetStandoffPosition(m_Pos, avatar->m_Pos, m_attackRange));
+				HostileCombatUpdate();
+				return;
 			}
 		}
 	}
@@ -497,8 +492,14 @@ void U7Object::EggDraw()
 
 void U7Object::MonsterDraw()
 {
-	// For now monsters draw like normal objects.
-	// Later this can use different billboard / animation logic.
+	// Same 8-way walk billboards as NPCs when walk frames exist for this shape.
+	if (m_walkTextures.size() >= 8)
+	{
+		DrawWalkBillboard(m_walkTextures, m_walkTexturesUpright);
+		return;
+	}
+
+	// Shapes without SW/NE walk frames fall back to ordinary shape drawing.
 	InteractiveDraw();
 }
 
@@ -734,21 +735,17 @@ void U7Object::HandleMonsterSpawnerEgg()
 			// (e.g. foxes, deer from non-combat eggs) are not hostile.
 			spawned->m_currentActivity = egg.m_monsterWorkType;
 
-			if (egg.m_monsterWorkType == 0)
+			// Hostile if combat schedule OR evil/chaotic egg alignment (2/3).
+			const bool hostile =
+				egg.m_monsterWorkType == 0 ||
+				egg.m_monsterAlignment == 2 ||
+				egg.m_monsterAlignment == 3;
+			if (hostile)
 			{
-				// Hostile (combat activity)
 				spawned->m_Team = 1; // 0 = neutral/player, 1 = hostile
 
-				// Add the newly spawned (hostile/combat) monster to the combat unit list (participants) now that
-				// the monster egg's requirements have been fulfilled and it has hatched.
-				if (g_CombatState)
-				{
-					auto& parts = g_CombatState->m_participants;
-					if (std::find(parts.begin(), parts.end(), (int)newId) == parts.end())
-					{
-						parts.push_back((int)newId);
-					}
-				}
+				if (g_isCombatMode && g_CombatState)
+					g_CombatState->EnsureParticipant(static_cast<int>(newId));
 			}
 
 			spawned->MonsterInit();
@@ -796,6 +793,18 @@ void U7Object::MonsterInit()
 	m_attackCooldown = 3.0f;
 	m_cooldownTimer = 0.0;
 	m_name = g_objectDataTable[m_shapeData->m_shape].m_name;
+
+	// Build 8-way walk textures from this shape (cardinals duplicate diagonals for now).
+	m_walkTexturesUpright = false;
+	if (!FillWalkTextures(m_walkTextures, m_ObjectType))
+	{
+		m_walkTextures.clear();
+		if (g_LuaDebug || g_showEggs)
+		{
+			DebugPrint("MonsterInit: shape " + std::to_string(m_ObjectType) +
+				" missing walk frames; falling back to InteractiveDraw");
+		}
+	}
 
 	// Same as NPCInit: refresh pick box now that UnitType is MONSTER.
 	SetPos(m_Pos);
@@ -1337,150 +1346,126 @@ void U7Object::Shutdown()
 
 void U7Object::NPCDraw()
 {
-	if (!m_Visible)
-	{
-		//return;
-	}
-
-	// Check if this object has NPC data and properly initialized walk textures
 	if (m_NPCData == nullptr)
 	{
 		return;
 	}
 
-	if (m_drawType == ShapeDrawType::OBJECT_DRAW_FLAT )
+	if (m_drawType == ShapeDrawType::OBJECT_DRAW_FLAT)
 	{
-
 		return; // Xorinia the wisp is the only flat type, we'll handle her later.
 	}
 
-	// Verify all directional animation vectors are properly sized
-	for (int i = 0; i < 4; i++)
+	DrawWalkBillboard(m_NPCData->m_walkTextures, m_NPCData->m_walkTexturesUpright);
+}
+
+void U7Object::DrawWalkBillboard(const std::vector<std::vector<Texture*>>& walkTextures, bool uprightSheet)
+{
+	// Verify all 8 directional animation vectors are properly sized (N frames OK).
+	if (walkTextures.size() < 8)
 	{
-		if (m_NPCData->m_walkTextures[i].size() < 2)
+		return;
+	}
+	for (int i = 0; i < 8; i++)
+	{
+		if (walkTextures[i].empty() || walkTextures[i][0] == nullptr)
 		{
 			return;
 		}
 	}
 
-	if (m_NPCID == 0)
-	{
-		int stopper = 0; // Should be avatar;
-	}
-
-
-	// Draw at m_Pos (feet/world position). NPCs are stored at tile centers so
+	// Draw at m_Pos (feet/world position). NPCs/monsters are stored at tile centers so
 	// logical position matches what you see — no +0.5 draw hack.
-	Vector3 finalPos = m_Pos;
-	finalPos.y += m_shapeData->m_Dims.y * .62f;
-
-	if (abs(finalPos.x - g_camera.target.x) > 64 || abs(finalPos.z - g_camera.target.z) > 64)
+	if (abs(m_Pos.x - g_camera.target.x) > 64 || abs(m_Pos.z - g_camera.target.z) > 64)
 	{
 		return; // Not on the screen.
 	}
 
-	Texture* finalTexture = m_NPCData->m_walkTextures[0][0];
-	int finalAngle = 0;
-	float billboardAngle = -45;
+	// Billboard tilt per direction: SW/W/NE/E use -45; NW/N/SE/S (flipped art) use +45.
+	static const float kBillboardAngle[8] = {
+		-45.0f, -45.0f, // SW, W
+		45.0f, 45.0f,   // NW, N
+		-45.0f, -45.0f, // NE, E
+		45.0f, 45.0f    // SE, S
+	};
 
-	if (m_name == "Greg" || m_name == "Poutchouli" || m_name == "Mister Fisp")
-		billboardAngle = -75;
+	Texture* finalTexture = walkTextures[0][0];
+	float billboardAngle = -45.0f;
+	bool drawingUprightSheet = false;
 
 	Vector3 cameraAngle = Vector3Subtract(g_camera.position, g_camera.target);
 	Vector3 cameraVector = Vector3{ cameraAngle.x, 0, cameraAngle.z };
 	cameraVector = Vector3Normalize(cameraVector);
 	float cameraAtan2 = atan2(cameraVector.x, cameraVector.z);
 
-	//float unitAngle;
-
-	Vector3 unitVector;
-	unitVector = m_Direction;
 	float unitAtan2 = atan2(m_Direction.x, m_Direction.z);
 
 	float angle = cameraAtan2 - unitAtan2;
 
+	// Half of an 8-way sector so sector boundaries sit between compass points.
 	angle += ((1.0 / 16.0) * (2 * PI));
 
 	while (angle < 0) { angle += (2 * PI); }
 	while (angle > (2 * PI)) { angle -= (2 * PI); }
 
-	int thisTime = GetTime() * 1000;
+	angle /= ((1.0 / 8.0) * (2 * PI));
+	// One-sector correction: without this, away-from-camera showed NE instead of N
+	// (and toward-camera SE instead of S).
+	int finalAngle = (int(angle) + 7) % 8;
 
-	int framerate = 200;
-
-	Vector3 dims = { 1, 1, 1 };
-
-	angle /= ((1.0 / 4.0) * (2 * PI));
-
-	finalAngle = int(angle);
-	framerate = 350;
-	thisTime = (thisTime / framerate) % 2;
-
+	const int framerate = 200; // ms per walk frame (was 350; a bit snappier for sheet cycles)
+	const int frameCount = int(walkTextures[finalAngle].size());
+	int thisTime = (int(GetTime() * 1000) / framerate) % frameCount;
 	if (!m_isMoving || g_mainState->m_paused) thisTime = 0;
 
-	int frameIndex = 0;
-
-	// If not moving, use the current frame set via npc_frame()
-	if (!m_isMoving)
+	// Pose override (sleeping, sitting, etc.) when standing still.
+	if (!m_isMoving && m_isFrameOverridden)
 	{
-		if (m_isFrameOverridden)
+		if (g_shapeTable[m_ObjectType][m_overrideFrame].m_texture != nullptr)
 		{
-			// Use the frame that was explicitly set (sleeping, sitting, etc.)
-			if (g_shapeTable[m_ObjectType][m_overrideFrame].m_texture != nullptr)
-			{
-				finalTexture = &g_shapeTable[m_ObjectType][m_overrideFrame].m_texture->m_Texture;
-				billboardAngle = m_overrideFrame % 2 ? 45 : 0.0f;
-			}
-		}
-		else
-		{
-			switch(finalAngle)
-			{
-				case 0: // South-West
-					finalTexture = m_NPCData->m_walkTextures[0][0];
-					break;
-				case 1: // North-West
-					finalTexture = m_NPCData->m_walkTextures[3][0];
-					billboardAngle = 45;
-					break;
-				case 2: // North-East
-					finalTexture = m_NPCData->m_walkTextures[2][0];
-					break;
-				case 3: // South-East
-					finalTexture = m_NPCData->m_walkTextures[1][0];
-					billboardAngle = 45;
-					break;
-				default:
-					int stopper = 0;
-					break;
-			}
+			finalTexture = &g_shapeTable[m_ObjectType][m_overrideFrame].m_texture->m_Texture;
+			billboardAngle = m_overrideFrame % 2 ? 45.0f : 0.0f;
 		}
 	}
 	else
 	{
-		// Normal walking animation (or standing if frame 0)
-		switch(finalAngle)
+		// 0=SW, 1=W, 2=NW, 3=N, 4=NE, 5=E, 6=SE, 7=S
+		finalTexture = walkTextures[finalAngle][thisTime];
+		if (uprightSheet)
 		{
-			case 0: // South-West
-				finalTexture = m_NPCData->m_walkTextures[0][m_isMoving ? thisTime : 0];
-				break;
-			case 1: // North-West
-				finalTexture = m_NPCData->m_walkTextures[3][m_isMoving ? thisTime : 0];
-				billboardAngle = 45;
-				break;
-			case 2: // North-East
-				finalTexture = m_NPCData->m_walkTextures[2][m_isMoving ? thisTime : 0];
-				break;
-			case 3: // South-East
-				finalTexture = m_NPCData->m_walkTextures[1][m_isMoving ? thisTime : 0];
-				billboardAngle = 45;
-				break;
-			default:
-				int stopper = 0;
-				break;
+			// Replacement sheets are drawn upright; no U7 isometric slant.
+			billboardAngle = 0.0f;
+			drawingUprightSheet = true;
+		}
+		else
+		{
+			billboardAngle = kBillboardAngle[finalAngle];
+			if ((m_name == "Greg" || m_name == "Poutchouli" || m_name == "Mister Fisp") && billboardAngle < 0.0f)
+			{
+				billboardAngle = -75.0f;
+			}
 		}
 	}
-	dims = Vector3{ float(finalTexture->width) / 8.0f, float(finalTexture->height) / 8.0f, 1 };
+
+	// U7 shape frames: 8 pixels = 1 tile. Replacement sheets are upright art at
+	// arbitrary resolution — scale to a fixed 4-tile character height instead.
+	Vector3 dims;
+	Vector3 finalPos = m_Pos;
+	if (drawingUprightSheet)
+	{
+		constexpr float kUprightWorldHeight = 4.5f;
+		constexpr float kUprightWidthScale = 1.5f; // WalkSheet art reads thin; fatten width only.
+		const float aspect = float(finalTexture->width) / float(finalTexture->height);
+		dims = { kUprightWorldHeight * aspect * kUprightWidthScale, kUprightWorldHeight, 1.0f };
+		// DrawBillboardPro origin {0,0} is the billboard center; lift by half height
+		// so the bottom of the sprite sits on the ground at m_Pos.
+		finalPos.y += dims.y * 0.5f;
+	}
+	else
+	{
+		dims = { float(finalTexture->width) / 8.0f, float(finalTexture->height) / 8.0f, 1 };
+		finalPos.y += m_shapeData->m_Dims.y * .62f;
+	}
 
 	Vector3 shadowPos = Vector3{ m_Pos.x - .5f, 0.02f, m_Pos.z + 1 };
 	SetMaterialTexture(&g_ResourceManager->GetModel("Models/3dmodels/flat.obj")->GetModel().materials[0], MATERIAL_MAP_DIFFUSE, *g_ResourceManager->GetTexture("Images/dropshadow.png"));
@@ -1495,30 +1480,22 @@ void U7Object::NPCDraw()
 
 	if (offset.x < 0 || offset.z < 0 || offset.x > 100 || offset.z > 100)
 	{
-		return; // This NPC is off the screen
+		return; // Off screen
 	}
 
 	Color lighting = g_Terrain->m_cellLighting[int(offset.x)][int(offset.z)];
 
-
-
-	//if (m_isLit)
-		//lighting = WHITE;
-
-	// Apply green tint if F11 script debug is enabled and NPC has a non-default script
+	// Apply green tint if F11 script debug is enabled and unit has a non-default script
 	// Also check for conversation trees (NPCs with dialogue scripts)
 	if (g_showScriptedObjects &&
 	    ((m_shapeData->m_luaScript != "" && m_shapeData->m_luaScript != "default") || m_hasConversationTree))
 	{
-		// Blend with green to highlight scripted NPCs
 		lighting.r = (lighting.r + 0) / 2;
 		lighting.g = (lighting.g + 255) / 2;
 		lighting.b = (lighting.b + 0) / 2;
 	}
-	// Apply blue tint if F11 debug is enabled and object is walkable (isNotWalkable = false)
 	else if (g_showScriptedObjects && m_objectData && !m_objectData->m_isNotWalkable)
 	{
-		// Blend with blue to highlight walkable objects
 		lighting.r = (lighting.r + 0) / 2;
 		lighting.g = (lighting.g + 0) / 2;
 		lighting.b = (lighting.b + 255) / 2;
@@ -1527,7 +1504,6 @@ void U7Object::NPCDraw()
 	DrawBillboardPro(g_camera, *finalTexture, Rectangle{ 0, 0, float(finalTexture->width), float(finalTexture->height) }, finalPos, Vector3{ 0, 1, 0 },
 		Vector2{ dims.x, dims.y }, Vector2{ 0, 0 }, billboardAngle, lighting);
 	EndShaderMode();
-
 }
 
 void U7Object::CustomMeshDraw(Color color)
@@ -1657,7 +1633,7 @@ void U7Object::NPCUpdate()
 			}
 		}
 
-		if (g_CombatState && g_CombatState->m_paused)
+		if (g_isCombatMode && g_CombatState && g_CombatState->m_paused)
 			return;
 
 		if (m_combatMoveOrder)
@@ -2524,7 +2500,10 @@ void U7Object::SetPos(Vector3 pos)
 	else if (m_drawType == ShapeDrawType::OBJECT_DRAW_BILLBOARD)
 	{
 		dims = Vector3{ objectData->m_width, objectData->m_height, objectData->m_depth };
-		boundingBoxAnchorPoint = Vector3Add(m_Pos, Vector3{ 0, 0, 0 });
+		// Match ShapeData::Draw billboard offset so picks follow the visible sprite.
+		boundingBoxAnchorPoint = Vector3Add(m_Pos, Vector3{ 0.5f, 0, 0.5f });
+		if (m_shapeData)
+			boundingBoxAnchorPoint = Vector3Add(boundingBoxAnchorPoint, m_shapeData->m_TweakPos);
 	}
 	else if (m_drawType == ShapeDrawType::OBJECT_DRAW_FLAT)
 	{
@@ -4091,6 +4070,8 @@ U7Object* U7Object::LoadFromJson(const json& j)
 	}
 	else if (obj->m_UnitType == UnitTypes::UNIT_TYPE_MONSTER)
 	{
+		// Rebuild walk textures / combat defaults, then apply saved stats.
+		obj->MonsterInit();
 		obj->m_hp = j.value("hp", 25.0f);
 		obj->m_combat = j.value("combat", 10.0f);
 		obj->m_magic = j.value("magic", 0.0f);

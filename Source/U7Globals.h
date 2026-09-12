@@ -249,6 +249,8 @@ extern std::string g_version;
 extern Vector3 g_Gravity;
 
 extern Texture* g_Cursor;
+extern Texture* g_defaultCursor; // Images/pointer.png
+extern Texture* g_combatCursor;  // Images/combatpointer.png
 extern Texture* g_objectSelectCursor;
 extern Texture* g_EmptyTexture; // Empty 4x4 texture for hidden/empty slots
 
@@ -395,6 +397,10 @@ void UpdateSortedVisibleObjects();
 
 /// Radius in world tiles around each interest center (default ~16 chunks / town + outskirts).
 extern float g_interestRadiusTiles;
+
+/// Hostile aggro / combat chase leash (on-screen-ish). Keep pathfinding inside this.
+constexpr float kHostileAggroRangeTiles = 32.0f;
+constexpr float kHostileAggroRangeSqr = kHostileAggroRangeTiles * kHostileAggroRangeTiles;
 
 /// Clear and rebuild centers from avatar + party (camera only when freecam).
 void ClearInterestCenters();

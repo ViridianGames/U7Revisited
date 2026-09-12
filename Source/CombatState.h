@@ -4,6 +4,7 @@
 #include "Geist/State.h"
 #include <vector>
 #include <memory>
+#include <string>
 
 class Gui;
 class GuiElement;
@@ -41,6 +42,14 @@ public:
 	// Party member currently receiving a target assignment (object ID)
 	int m_selectedPartyMemberObjectId = -1;
 
+	// Set before PushState when auto-entering from hostile aggro (e.g. "Headlesses approach!").
+	std::string m_approachMessage;
+
+	// Add object id to participants if missing.
+	void EnsureParticipant(int objectId);
+	// Enroll every Team-1 monster/NPC within aggro range of the Avatar.
+	void EnrollNearbyHostiles();
+
 private:
 	void HandleCombatInput();
 	void HandleCombatClick();
@@ -51,5 +60,15 @@ private:
 	void PauseForOrders();
 	void IssueMoveOrder(U7Object* member, const Vector3& dest);
 };
+
+// True for Team-1 monsters/NPCs that should fight the party.
+bool IsHostileCombatUnit(const U7Object* unit);
+
+// Find nearest hostile within aggro range of the Avatar (or null).
+U7Object* FindNearestHostileInAggroRange();
+
+// If any hostile is in aggro range and combat is not active, start combat using the nearest.
+// Returns true when combat was newly started.
+bool TryBeginCombatFromHostileAggro(U7Object* hintHostile);
 
 #endif

@@ -81,7 +81,12 @@ struct NPCData
 	char soak5[7];
 	char name[16];
 	std::vector<NPCSchedule> m_schedule;
+	// Walk anim: [direction][frame]. 8 directions:
+	// 0=SW, 1=W, 2=NW, 3=N, 4=NE, 5=E, 6=SE, 7=S.
+	// Until dedicated cardinal art exists, W/N/E/S duplicate the adjacent diagonal.
 	std::vector<std::vector<Texture *> > m_walkTextures;
+	// True when textures came from an upright WalkSheet (no ±45° billboard tilt).
+	bool m_walkTexturesUpright = false;
 
 	int m_currentActivity;
 	int m_lastActivity = -1; // Track last activity to detect changes
@@ -106,7 +111,31 @@ struct NPCData
 		auto it = m_equipment.find(slot);
 		return (it != m_equipment.end() && it->second != -1);
 	}
+
+	// Prefer Images/WalkSheets/<sanitized_name>.png when present; else shape frames.
+	// Avatar (id 0) uses avatar_male / avatar_female instead of "avatar.png".
+	bool BuildWalkTextures(int shapenum, bool avatarMale = true);
 };
+
+// Fill 8-direction walk textures for NPCs or monsters from a shape's frames.
+// Layout: 0=SW, 1=W, 2=NW, 3=N, 4=NE, 5=E, 6=SE, 7=S.
+bool FillWalkTextures(std::vector<std::vector<Texture*>>& outTextures, int shapenum);
+
+// Load an external walk sheet PNG into outTextures.
+// Layout: 8 rows × N columns (walk frames). Row order top→bottom:
+// S, SE, E, NE, N, NW, W, SW. Square cells: cellH = height/8,
+// cellW = cellH, frameCount = width/cellW.
+// Returns false if the file is missing or dimensions are invalid.
+bool LoadWalkSheet(std::vector<std::vector<Texture*>>& outTextures, const std::string& path);
+
+// Sanitize NPC name → WalkSheet file stem: lowercase, spaces/hyphens → underscores.
+std::string WalkSheetStemFromNpcName(const char* name, size_t maxLen = 16);
+
+// Prefer WalkSheet for this NPC (or avatar_male/female for Avatar), else shape frames.
+bool ApplyNPCWalkTextures(NPCData* npc, int shapenum, bool avatarMale = true);
+
+// Avatar: prefer Images/WalkSheets/avatar_{male|female}.png, else shape 721/989.
+bool ApplyAvatarWalkTextures(NPCData* npc, bool male);
 
 
 // MonsterData - Stats for monster types loaded from STATIC/MONSTERS.DAT (25 bytes per record).
@@ -388,6 +417,10 @@ public:
 	void MonsterUpdate();
 	void MonsterDraw();
 
+	// Shared 8-way walk billboard draw used by NPCs and monsters.
+	// uprightSheet: replacement sheets are axis-aligned; skip the U7 isometric tilt.
+	void DrawWalkBillboard(const std::vector<std::vector<Texture*>>& walkTextures, bool uprightSheet = false);
+
 	void UpdateMovement();
 
 	// Combat: pursue/attack m_target. Returns true when a valid target was engaged.
@@ -601,6 +634,11 @@ public:
 	bool m_shouldBeSorted = true;
 
 	NPCData *m_NPCData = nullptr;
+
+	// Monster walk anim (same 8-dir layout as NPCData::m_walkTextures).
+	// Built in MonsterInit; empty ⇒ MonsterDraw falls back to InteractiveDraw.
+	std::vector<std::vector<Texture*>> m_walkTextures;
+	bool m_walkTexturesUpright = false;
 
 	bool m_followingSchedule = false;
 	int m_lastSchedule = -1;

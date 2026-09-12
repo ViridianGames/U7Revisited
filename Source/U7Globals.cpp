@@ -24,6 +24,7 @@
 #include <unordered_map>
 #include <cmath>
 #include <cstring>
+#include <cctype>
 
 #include "InputSystem.h"
 #include "raylib.h"
@@ -68,6 +69,8 @@ std::string g_version;
 std::unordered_map<int, std::unique_ptr<U7Object>> g_objectList;
 
 extern Texture* g_Cursor; // Defined in StateMachine.cpp
+Texture* g_defaultCursor = nullptr;
+Texture* g_combatCursor = nullptr;
 Texture* g_objectSelectCursor;
 Texture* g_EmptyTexture;
 Texture* g_Minimap;
@@ -391,7 +394,7 @@ Shader g_meshOutlineShader{};
 int g_meshOutlineIdSamplerLoc = -1;
 int g_meshOutlineResolutionLoc = -1;
 int g_meshOutlineThicknessLoc = -1;
-float g_meshOutlineThickness = 1.0f;
+float g_meshOutlineThickness = 0.85f;
 RenderTexture2D g_meshIdTarget{};
 bool g_meshOutlineSystemReady = false;
 
@@ -3179,6 +3182,343 @@ void NPCData::UnequipItem(EquipmentSlot slot)
 			npcObject->RemoveObjectFromInventory(objectId);
 		}
 	}
+}
+
+bool FillWalkTextures(std::vector<std::vector<Texture*>>& outTextures, int shapenum)
+{
+	// 0=SW, 1=W, 2=NW, 3=N, 4=NE, 5=E, 6=SE, 7=S
+	outTextures.resize(8);
+	for (int d = 0; d < 8; d++)
+	{
+		outTextures[d].assign(2, nullptr);
+	}
+
+	if (g_shapeTable[shapenum][0].m_texture == nullptr ||
+	    g_shapeTable[shapenum][1].m_texture == nullptr ||
+	    g_shapeTable[shapenum][16].m_texture == nullptr ||
+	    g_shapeTable[shapenum][17].m_texture == nullptr)
+	{
+		return false;
+	}
+
+	auto getFlipped = [shapenum](int frame, const std::string& name) -> Texture*
+	{
+		if (g_ResourceManager->DoesTextureExist(name))
+		{
+			return g_ResourceManager->GetTexture(name);
+		}
+		Image image = ImageCopy(g_shapeTable[shapenum][frame].m_texture->m_Image);
+		ImageFlipHorizontal(&image);
+		g_ResourceManager->AddTexture(image, name);
+		return g_ResourceManager->GetTexture(name);
+	};
+
+	// SW from shape frames 16/17
+	outTextures[0][0] = &g_shapeTable[shapenum][16].m_texture->m_Texture;
+	outTextures[0][1] = &g_shapeTable[shapenum][17].m_texture->m_Texture;
+
+	// NE from shape frames 0/1
+	outTextures[4][0] = &g_shapeTable[shapenum][0].m_texture->m_Texture;
+	outTextures[4][1] = &g_shapeTable[shapenum][1].m_texture->m_Texture;
+
+	// SE = horizontal flip of SW; NW = horizontal flip of NE.
+	// Use "_walk_*" cache keys so we don't reuse older mislabeled flip textures.
+	outTextures[6][0] = getFlipped(16, to_string(shapenum) + "_walk_SE_0");
+	outTextures[6][1] = getFlipped(17, to_string(shapenum) + "_walk_SE_1");
+	outTextures[2][0] = getFlipped(0, to_string(shapenum) + "_walk_NW_0");
+	outTextures[2][1] = getFlipped(1, to_string(shapenum) + "_walk_NW_1");
+
+	// Cardinals: duplicate adjacent diagonals until dedicated art exists.
+	outTextures[1] = outTextures[0]; // W ← SW
+	outTextures[3] = outTextures[2]; // N ← NW
+	outTextures[5] = outTextures[4]; // E ← NE
+	outTextures[7] = outTextures[6]; // S ← SE
+
+	return true;
+}
+
+bool NPCData::BuildWalkTextures(int shapenum, bool avatarMale)
+{
+	return ApplyNPCWalkTextures(this, shapenum, avatarMale);
+}
+
+// Opaque content bounds for a cell (cells are often padded, e.g. ~100px in 128x128).
+static bool FindOpaqueBounds(const Image& img, int& minX, int& minY, int& maxX, int& maxY)
+{
+	minX = img.width;
+	minY = img.height;
+	maxX = -1;
+	maxY = -1;
+	if (img.data == nullptr || img.width <= 0 || img.height <= 0)
+	{
+		return false;
+	}
+
+	for (int y = 0; y < img.height; y++)
+	{
+		for (int x = 0; x < img.width; x++)
+		{
+			if (GetImageColor(img, x, y).a > 0)
+			{
+				if (x < minX) minX = x;
+				if (y < minY) minY = y;
+				if (x > maxX) maxX = x;
+				if (y > maxY) maxY = y;
+			}
+		}
+	}
+	return maxX >= minX;
+}
+
+static void TrimToOpaqueBounds(Image& img)
+{
+	int minX, minY, maxX, maxY;
+	ImageFormat(&img, PIXELFORMAT_UNCOMPRESSED_R8G8B8A8);
+	if (!FindOpaqueBounds(img, minX, minY, maxX, maxY))
+	{
+		return;
+	}
+
+	Image cropped = ImageFromImage(img, Rectangle{
+		float(minX), float(minY),
+		float(maxX - minX + 1), float(maxY - minY + 1)
+	});
+	UnloadImage(img);
+	img = cropped;
+}
+
+// Place trimmed content on a shared canvas (bottom-centered) so every frame
+// has identical pixel dimensions and world scale stays stable across the walk cycle.
+static Image MakeUniformCell(const Image& content, int canvasW, int canvasH)
+{
+	Image canvas = GenImageColor(canvasW, canvasH, BLANK);
+	ImageFormat(&canvas, PIXELFORMAT_UNCOMPRESSED_R8G8B8A8);
+	if (content.data == nullptr || content.width <= 0 || content.height <= 0)
+	{
+		return canvas;
+	}
+
+	const int dstX = (canvasW - content.width) / 2;
+	const int dstY = canvasH - content.height; // bottom-align so feet stay planted
+	ImageDraw(&canvas, content,
+		Rectangle{ 0, 0, float(content.width), float(content.height) },
+		Rectangle{ float(dstX), float(dstY), float(content.width), float(content.height) },
+		WHITE);
+	return canvas;
+}
+
+bool LoadWalkSheet(std::vector<std::vector<Texture*>>& outTextures, const std::string& path)
+{
+	if (!g_ResourceManager || !g_ResourceManager->DoesFileExist(path))
+	{
+		return false;
+	}
+
+	Image sheet = LoadImage(path.c_str());
+	if (sheet.data == nullptr || sheet.width <= 0 || sheet.height <= 0)
+	{
+		Log("LoadWalkSheet: failed to load " + path);
+		if (sheet.data != nullptr)
+		{
+			UnloadImage(sheet);
+		}
+		return false;
+	}
+
+	if ((sheet.height % 8) != 0)
+	{
+		Log("LoadWalkSheet: " + path + " height " + to_string(sheet.height) + " not divisible by 8");
+		UnloadImage(sheet);
+		return false;
+	}
+
+	const int cellH = sheet.height / 8;
+	const int cellW = cellH; // v1: square cells
+	if (cellW <= 0 || (sheet.width % cellW) != 0)
+	{
+		Log("LoadWalkSheet: " + path + " width " + to_string(sheet.width) +
+			" not divisible by cell size " + to_string(cellW));
+		UnloadImage(sheet);
+		return false;
+	}
+
+	// Sheet rows top→bottom: S, SE, E, NE, N, NW, W, SW.
+	// Runtime slots:           0=SW, 1=W, 2=NW, 3=N, 4=NE, 5=E, 6=SE, 7=S.
+	static const int kSheetRowToDir[8] = { 7, 6, 5, 4, 3, 2, 1, 0 };
+
+	const int srcFrames = sheet.width / cellW;
+	// 8+ frame sheets: use every other column so an 8-frame sheet plays as 4.
+	const int frameStep = (srcFrames >= 8) ? 2 : 1;
+	const int frameCount = srcFrames / frameStep;
+	outTextures.resize(8);
+	for (int d = 0; d < 8; d++)
+	{
+		outTextures[d].assign(frameCount, nullptr);
+	}
+
+	auto cellName = [&](int row, int srcFrame) {
+		// ":uni" = trimmed then padded to shared max content size across the sheet.
+		return "walksheet:" + path + ":r" + to_string(row) + ":" + to_string(srcFrame) + ":uni";
+	};
+
+	// Fast path: all uniform cells already cached.
+	bool allCached = true;
+	for (int row = 0; row < 8 && allCached; row++)
+	{
+		for (int f = 0; f < frameCount; f++)
+		{
+			if (!g_ResourceManager->DoesTextureExist(cellName(row, f * frameStep)))
+			{
+				allCached = false;
+				break;
+			}
+		}
+	}
+	if (allCached)
+	{
+		for (int row = 0; row < 8; row++)
+		{
+			const int dir = kSheetRowToDir[row];
+			for (int f = 0; f < frameCount; f++)
+			{
+				outTextures[dir][f] = g_ResourceManager->GetTexture(cellName(row, f * frameStep));
+			}
+		}
+		UnloadImage(sheet);
+		return true;
+	}
+
+	// Pass 1: trim each used cell and find the shared canvas size.
+	std::vector<Image> trimmed;
+	trimmed.resize(8 * frameCount);
+	int maxW = 1;
+	int maxH = 1;
+	for (int row = 0; row < 8; row++)
+	{
+		for (int f = 0; f < frameCount; f++)
+		{
+			const int srcFrame = f * frameStep;
+			const int idx = row * frameCount + f;
+			trimmed[idx] = ImageFromImage(sheet, Rectangle{
+				float(srcFrame * cellW), float(row * cellH),
+				float(cellW), float(cellH)
+			});
+			TrimToOpaqueBounds(trimmed[idx]);
+			if (trimmed[idx].width > maxW) maxW = trimmed[idx].width;
+			if (trimmed[idx].height > maxH) maxH = trimmed[idx].height;
+		}
+	}
+
+	// Pass 2: pad every cell to maxW×maxH (bottom-centered) so draw scale is stable.
+	for (int row = 0; row < 8; row++)
+	{
+		const int dir = kSheetRowToDir[row];
+		for (int f = 0; f < frameCount; f++)
+		{
+			const int srcFrame = f * frameStep;
+			const int idx = row * frameCount + f;
+			const std::string name = cellName(row, srcFrame);
+			if (!g_ResourceManager->DoesTextureExist(name))
+			{
+				Image uniform = MakeUniformCell(trimmed[idx], maxW, maxH);
+				g_ResourceManager->AddTexture(uniform, name);
+				UnloadImage(uniform);
+			}
+			UnloadImage(trimmed[idx]);
+			trimmed[idx] = { 0 };
+			outTextures[dir][f] = g_ResourceManager->GetTexture(name);
+		}
+	}
+
+	UnloadImage(sheet);
+	Log("LoadWalkSheet: loaded " + path + " (" + to_string(frameCount) + " of " +
+		to_string(srcFrames) + " frames, step " + to_string(frameStep) + ", " +
+		to_string(cellW) + "x" + to_string(cellH) + " cells, uniform " +
+		to_string(maxW) + "x" + to_string(maxH) + ")");
+	return true;
+}
+
+std::string WalkSheetStemFromNpcName(const char* name, size_t maxLen)
+{
+	std::string out;
+	if (name == nullptr || maxLen == 0)
+	{
+		return out;
+	}
+
+	for (size_t i = 0; i < maxLen && name[i] != '\0'; i++)
+	{
+		const unsigned char c = static_cast<unsigned char>(name[i]);
+		if (std::isalnum(c))
+		{
+			out.push_back(static_cast<char>(std::tolower(c)));
+		}
+		else if (c == ' ' || c == '-' || c == '_')
+		{
+			if (!out.empty() && out.back() != '_')
+			{
+				out.push_back('_');
+			}
+		}
+		// Drop other punctuation (apostrophes, periods, etc.)
+	}
+
+	while (!out.empty() && out.back() == '_')
+	{
+		out.pop_back();
+	}
+	return out;
+}
+
+bool ApplyNPCWalkTextures(NPCData* npc, int shapenum, bool avatarMale)
+{
+	if (npc == nullptr)
+	{
+		return false;
+	}
+
+	// Avatar keeps gendered sheet names (avatar_male / avatar_female).
+	const bool isAvatar = (npc->id == 0) || (WalkSheetStemFromNpcName(npc->name, 16) == "avatar");
+	if (isAvatar)
+	{
+		return ApplyAvatarWalkTextures(npc, avatarMale);
+	}
+
+	const std::string stem = WalkSheetStemFromNpcName(npc->name, 16);
+	if (!stem.empty())
+	{
+		const std::string path = "Images/WalkSheets/" + stem + ".png";
+		if (LoadWalkSheet(npc->m_walkTextures, path))
+		{
+			npc->m_walkTexturesUpright = true;
+			return true;
+		}
+	}
+
+	npc->m_walkTexturesUpright = false;
+	return FillWalkTextures(npc->m_walkTextures, shapenum);
+}
+
+bool ApplyAvatarWalkTextures(NPCData* npc, bool male)
+{
+	if (npc == nullptr)
+	{
+		return false;
+	}
+
+	const std::string path = male
+		? "Images/WalkSheets/avatar_male.png"
+		: "Images/WalkSheets/avatar_female.png";
+	const int shapeFallback = male ? 721 : 989;
+
+	if (LoadWalkSheet(npc->m_walkTextures, path))
+	{
+		npc->m_walkTexturesUpright = true;
+		return true;
+	}
+
+	npc->m_walkTexturesUpright = false;
+	return FillWalkTextures(npc->m_walkTextures, shapeFallback);
 }
 
 //////////////////////////////////////////////////////////////////////////////

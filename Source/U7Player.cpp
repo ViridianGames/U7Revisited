@@ -366,79 +366,10 @@ void U7Player::SetAvatarMale()
 	m_isMale = true;
 	m_PlayerName = "Victor";
 
-	int shapenum = 721;
-
-						Image image;
-
-					//  South-west
-					m_AvatarObject->m_NPCData->m_walkTextures[0][0] = &g_shapeTable[shapenum][16].m_texture->m_Texture;
-					g_NPCData[0]->m_walkTextures[0][1] = &g_shapeTable[shapenum][17].m_texture->m_Texture;
-
-					//  North-west
-
-					//  Frame 1
-					std::string texturename = to_string(shapenum) + "_NW_0";
-					if(g_ResourceManager->DoesTextureExist(texturename))
-					{
-						g_NPCData[0]->m_walkTextures[1][0] = g_ResourceManager->GetTexture(texturename);
-					}
-					else
-					{
-						image = ImageCopy(g_shapeTable[shapenum][16].m_texture->m_Image);
-						ImageFlipHorizontal(&image);
-						g_ResourceManager->AddTexture(image, texturename);
-						m_AvatarObject->m_NPCData->m_walkTextures[1][0] = g_ResourceManager->GetTexture(texturename);
-					}
-
-					//  Frame 2
-
-					texturename = to_string(shapenum) + "_NW_1";
-					if(g_ResourceManager->DoesTextureExist(texturename))
-					{
-						m_AvatarObject->m_NPCData->m_walkTextures[1][1] = g_ResourceManager->GetTexture(texturename);
-					}
-					else
-					{
-						image = ImageCopy(g_shapeTable[shapenum][17].m_texture->m_Image);
-						ImageFlipHorizontal(&image);
-						g_ResourceManager->AddTexture(image, texturename);
-						m_AvatarObject->m_NPCData->m_walkTextures[1][1] = g_ResourceManager->GetTexture(texturename);
-					}
-
-					//  North-east
-					m_AvatarObject->m_NPCData->m_walkTextures[2][0] = &g_shapeTable[shapenum][0].m_texture->m_Texture;
-					m_AvatarObject->m_NPCData->m_walkTextures[2][1] = &g_shapeTable[shapenum][1].m_texture->m_Texture;
-
-					//  South-east
-
-					//  Frame 1
-					texturename = to_string(shapenum) + "_SE_0";
-					if(g_ResourceManager->DoesTextureExist(texturename))
-					{
-						m_AvatarObject->m_NPCData->m_walkTextures[3][0] = g_ResourceManager->GetTexture(texturename);
-					}
-					else
-					{
-						image = ImageCopy(g_shapeTable[shapenum][1].m_texture->m_Image);
-						ImageFlipHorizontal(&image);
-						g_ResourceManager->AddTexture(image, texturename);
-						m_AvatarObject->m_NPCData->m_walkTextures[3][0] = g_ResourceManager->GetTexture(texturename);
-					}
-
-					//  Frame 2
-
-					texturename = to_string(shapenum) + "_SE_1";
-					if(g_ResourceManager->DoesTextureExist(texturename))
-					{
-						m_AvatarObject->m_NPCData->m_walkTextures[3][1] = g_ResourceManager->GetTexture(texturename);
-					}
-					else
-					{
-						image = ImageCopy(g_shapeTable[shapenum][2].m_texture->m_Image);
-						ImageFlipHorizontal(&image);
-						g_ResourceManager->AddTexture(image, texturename);
-						m_AvatarObject->m_NPCData->m_walkTextures[3][1] = g_ResourceManager->GetTexture(texturename);
-					}
+	if (m_AvatarObject && m_AvatarObject->m_NPCData)
+	{
+		ApplyAvatarWalkTextures(m_AvatarObject->m_NPCData, true);
+	}
 }
 
 void U7Player::SetAvatarFemale()
@@ -446,77 +377,8 @@ void U7Player::SetAvatarFemale()
 	m_isMale = false;
 	m_PlayerName = "Victoria";
 
-	int shapenum = 989;
-
-						Image image;
-
-					//  South-west
-					m_AvatarObject->m_NPCData->m_walkTextures[0][0] = &g_shapeTable[shapenum][16].m_texture->m_Texture;
-					g_NPCData[0]->m_walkTextures[0][1] = &g_shapeTable[shapenum][17].m_texture->m_Texture;
-
-					//  North-west
-
-					//  Frame 1
-					std::string texturename = to_string(shapenum) + "_NW_0";
-					if(g_ResourceManager->DoesTextureExist(texturename))
-					{
-						g_NPCData[0]->m_walkTextures[1][0] = g_ResourceManager->GetTexture(texturename);
-					}
-					else
-					{
-						image = ImageCopy(g_shapeTable[shapenum][16].m_texture->m_Image);
-						ImageFlipHorizontal(&image);
-						g_ResourceManager->AddTexture(image, texturename);
-						m_AvatarObject->m_NPCData->m_walkTextures[1][0] = g_ResourceManager->GetTexture(texturename);
-					}
-
-					//  Frame 2
-
-					texturename = to_string(shapenum) + "_NW_1";
-					if(g_ResourceManager->DoesTextureExist(texturename))
-					{
-						m_AvatarObject->m_NPCData->m_walkTextures[1][1] = g_ResourceManager->GetTexture(texturename);
-					}
-					else
-					{
-						image = ImageCopy(g_shapeTable[shapenum][17].m_texture->m_Image);
-						ImageFlipHorizontal(&image);
-						g_ResourceManager->AddTexture(image, texturename);
-						m_AvatarObject->m_NPCData->m_walkTextures[1][1] = g_ResourceManager->GetTexture(texturename);
-					}
-
-					//  North-east
-					m_AvatarObject->m_NPCData->m_walkTextures[2][0] = &g_shapeTable[shapenum][0].m_texture->m_Texture;
-					m_AvatarObject->m_NPCData->m_walkTextures[2][1] = &g_shapeTable[shapenum][1].m_texture->m_Texture;
-
-					//  South-east
-
-					//  Frame 1
-					texturename = to_string(shapenum) + "_SE_0";
-					if(g_ResourceManager->DoesTextureExist(texturename))
-					{
-						m_AvatarObject->m_NPCData->m_walkTextures[3][0] = g_ResourceManager->GetTexture(texturename);
-					}
-					else
-					{
-						image = ImageCopy(g_shapeTable[shapenum][1].m_texture->m_Image);
-						ImageFlipHorizontal(&image);
-						g_ResourceManager->AddTexture(image, texturename);
-						m_AvatarObject->m_NPCData->m_walkTextures[3][0] = g_ResourceManager->GetTexture(texturename);
-					}
-
-					//  Frame 2
-
-					texturename = to_string(shapenum) + "_SE_1";
-					if(g_ResourceManager->DoesTextureExist(texturename))
-					{
-						m_AvatarObject->m_NPCData->m_walkTextures[3][1] = g_ResourceManager->GetTexture(texturename);
-					}
-					else
-					{
-						image = ImageCopy(g_shapeTable[shapenum][2].m_texture->m_Image);
-						ImageFlipHorizontal(&image);
-						g_ResourceManager->AddTexture(image, texturename);
-						m_AvatarObject->m_NPCData->m_walkTextures[3][1] = g_ResourceManager->GetTexture(texturename);
-					}
+	if (m_AvatarObject && m_AvatarObject->m_NPCData)
+	{
+		ApplyAvatarWalkTextures(m_AvatarObject->m_NPCData, false);
+	}
 }
