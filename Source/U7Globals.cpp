@@ -1632,11 +1632,21 @@ void UpdateSortedVisibleObjects()
 	}
 	else
 	{
+		const bool skipLockedObject = g_firstPersonEnabled && IsCameraLocked();
+		U7Object* avatar = (g_Player) ? g_Player->GetAvatarObject() : nullptr;
+
 		for (auto node = g_sortedVisibleObjects.rbegin(); node != g_sortedVisibleObjects.rend(); ++node)
 		{
-			if (*node == nullptr || !(*node)->m_Visible)
-			{
+			U7Object* obj = *node;
+			if (obj == nullptr || !obj->m_Visible)
 				continue;
+
+			if (skipLockedObject)
+			{
+				if (obj->m_ID == g_cameraLockObjectId)
+					continue;
+				if (avatar && obj == avatar)
+					continue;
 			}
 
 			// Hidden eggs (Ctrl+G off) must not steal clicks from objects on top of them.
@@ -1650,39 +1660,39 @@ void UpdateSortedVisibleObjects()
 
 			if (picked != -1)
 			{
-				g_objectUnderMousePointer = *node;
-				break;
+				g_objectUnderMousePointer = obj;
+				break; // closest visible non-skipped object
 			}
 		}
 	}
 
 	// Pick cell under mouse pointer
 	Ray ray = GetMouseRay(GetMousePosition(), g_camera);
-	float pickx = 0;
-	float picky = 0;
+	float pickx = 0.0f;
+	float picky = 0.0f;
 
 	Vector3 planeNormal = { 0.0f, 1.0f, 0.0f };
 	Vector3 planePoint = { 0.0f, 0.0f, 0.0f };
 	float denominator = Vector3DotProduct(ray.direction, planeNormal);
 
-	if (fabs(denominator) > 0.0001f)
+	if (fabsf(denominator) > 0.0001f)
 	{
 		Vector3 pointToPlane = Vector3Subtract(planePoint, ray.position);
 		float t = Vector3DotProduct(pointToPlane, planeNormal) / denominator;
-		if (t >= 0.0f) {
+		if (t >= 0.0f)
+		{
 			Vector3 hitPoint = Vector3Add(ray.position, Vector3Scale(ray.direction, t));
-			int x = static_cast<int>(floor(hitPoint.x));
-			int y = static_cast<int>(floor(hitPoint.z));
+			int x = static_cast<int>(floorf(hitPoint.x));
+			int y = static_cast<int>(floorf(hitPoint.z));
 			if (x >= 0 && x < 3072 && y >= 0 && y < 3072)
 			{
-				pickx = x;
-				picky = y;
+				pickx = static_cast<float>(x);
+				picky = static_cast<float>(y);
 			}
 		}
 	}
 
-	g_terrainUnderMousePointer = { pickx, 0, picky };
-
+	g_terrainUnderMousePointer = { pickx, 0.0f, picky };
 	g_terrainUnderMousePointer.x = roundf(g_terrainUnderMousePointer.x);
 	g_terrainUnderMousePointer.y = roundf(g_terrainUnderMousePointer.y);
 	g_terrainUnderMousePointer.z = roundf(g_terrainUnderMousePointer.z);
@@ -3403,7 +3413,7 @@ bool LoadWalkSheet(std::vector<std::vector<Texture*>>& outTextures, const std::s
 				float(srcFrame * cellW), float(row * cellH),
 				float(cellW), float(cellH)
 			});
-			TrimToOpaqueBounds(trimmed[idx]);
+			//TrimToOpaqueBounds(trimmed[idx]);
 			if (trimmed[idx].width > maxW) maxW = trimmed[idx].width;
 			if (trimmed[idx].height > maxH) maxH = trimmed[idx].height;
 		}

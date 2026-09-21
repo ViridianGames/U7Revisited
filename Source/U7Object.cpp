@@ -1459,7 +1459,7 @@ void U7Object::DrawWalkBillboard(const std::vector<std::vector<Texture*>>& walkT
 		dims = { kUprightWorldHeight * aspect * kUprightWidthScale, kUprightWorldHeight, 1.0f };
 		// DrawBillboardPro origin {0,0} is the billboard center; lift by half height
 		// so the bottom of the sprite sits on the ground at m_Pos.
-		finalPos.y += dims.y * 0.5f;
+		finalPos.y += dims.y * 0.6f;
 	}
 	else
 	{
@@ -1502,7 +1502,7 @@ void U7Object::DrawWalkBillboard(const std::vector<std::vector<Texture*>>& walkT
 	}
 
 	DrawBillboardPro(g_camera, *finalTexture, Rectangle{ 0, 0, float(finalTexture->width), float(finalTexture->height) }, finalPos, Vector3{ 0, 1, 0 },
-		Vector2{ dims.x, dims.y }, Vector2{ 0, 0 }, billboardAngle, lighting);
+		Vector2{ dims.x * .70f, dims.y * 1.2f }, Vector2{ 0, 0 }, billboardAngle, lighting);
 	EndShaderMode();
 }
 
