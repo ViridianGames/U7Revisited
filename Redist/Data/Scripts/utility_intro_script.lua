@@ -6,15 +6,17 @@ function utility_intro_script()
     set_flag(20, true)
     hide_ui_elements()
     jump_camera_angle(315)
-    stop_npc_schedule(11)
-    stop_npc_schedule(12)
+    -- Intro cast must not wander on schedules until this script finishes.
+    stop_npc_schedule(1)  -- Iolo (also kept off via party)
+    stop_npc_schedule(11) -- Petre
+    stop_npc_schedule(12) -- Finnigan
     --set_npc_pos(12, 1065, 0, 2215)
     set_npc_dest(11, 1068, 0, 2215)
     set_npc_override_frame(11, 12)
     set_npc_visibility(0, false)
     --set_npc_pos(0, 16, 0, 16)
     block_input()
-    fade_in(3)
+    -- Fade-in + music are handled by MainState after the title fades out.
     wait(2)
     bark_npc(1, "\"There, there...\"")
     wait(2)
@@ -50,14 +52,31 @@ function utility_intro_script()
     add_to_party(1)
     set_camera_destination_angle(0)
     set_npc_dest(12, 1065, 0, 2215)
-    wait(1)
+    wait(0.25) -- let pathfinding start before we poll arrival
     bark_npc(12, "I would have words with thee.")
-    while get_npc_position(12) ~= 1065 do
-       wait(0.5)
+    -- get_npc_position returns x,y,z as floats; comparing to 1065 never matched and hung the intro
+    -- (input stayed blocked). Wait for path end / proximity instead.
+    local timeout = 40
+    while timeout > 0 do
+        local fx, fy, fz = get_npc_position(12)
+        if math.abs(fx - 1065) < 1.25 and math.abs(fz - 2215) < 1.25 then
+            break
+        end
+        if wait_move_end(12) and not is_npc_moving(12) then
+            break
+        end
+        wait(0.25)
+        timeout = timeout - 0.25
     end
+    -- Snap so conversation starts even if pathfinding stopped short.
+    set_npc_pos(12, 1065, 0, 2215)
     debug_print("About to start finnigan's conversation")
     utility_intro_finnigan()
     debug_print("Back from finnigan's conversation")
+    -- Intro over: Petre and Finnigan may resume normal schedules.
+    -- Iolo stays schedule-off while in the party.
+    start_npc_schedule(11)
+    start_npc_schedule(12)
     resume_input()
     show_ui_elements()
 end

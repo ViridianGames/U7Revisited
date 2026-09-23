@@ -290,6 +290,11 @@ public:
 	bool m_ranIntroScript = false;
 	bool m_introScriptRunning = false;
 
+	// Trinsic fresh start: stay black until initial schedule pathfinds finish, then fade+music.
+	bool m_awaitingInitialScheduleSettle = false;
+	int m_initialScheduleQuietFrames = 0;
+	float m_initialScheduleTimeout = 0.0f;
+
 	bool m_showUIElements = true;
 
 	// Track if we've shown the initial welcome messages (only show once, not on every OnEnter)
@@ -344,6 +349,8 @@ private:
 	void HandleLeftSingleClick();
 	void DebugPrintNpcSchedule(U7Object* npc);
 	void HandleAvatarMovement();
+	// After UpdateMovement may clear isMoving on same-frame Dest arrival.
+	void KeepAvatarWalkAnimIfSteering();
 
 	// Mouse-hold detection (prevents quick clicks from triggering hold movement)
 	float m_rightMouseHoldStart = 0.0f;

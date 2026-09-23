@@ -1594,7 +1594,11 @@ void U7Object::NPCUpdate()
 		(g_CurrentUpdate > m_lastNpcUpdateFrame + kDormantUpdateGap);
 	if (wakingIntoInterest)
 	{
-		m_scheduleWakeSnapPending = true;
+		// Only arm wake-snap when actually schedule-following. Otherwise a later
+		// start_npc_schedule (e.g. Petre/Finnigan after the intro) inherits a stale
+		// snap flag and teleports across town instead of pathfinding.
+		if (m_followingSchedule && !skipScheduleActivities)
+			m_scheduleWakeSnapPending = true;
 		// Re-resolve schedule even if the clock slot hasn't changed since we last ran.
 		m_lastSchedule = -1;
 		// Restart activity scripts when coming back online (stale coroutines from
@@ -2105,20 +2109,53 @@ void U7Object::UpdateMovement()
 		return;
 	}
 
-	if (m_Pos.x != m_Dest.x || m_Pos.y != m_Dest.y || m_Pos.z != m_Dest.z)
+	// Speed budget is along the 3D path (XZ + climb/drop), not XZ alone —
+	// otherwise stairs/crates feel like a teleport because Y is free.
+	float deltav = m_speed * g_Engine->LastFrameInSeconds();
+	if (deltav < 1e-6f)
+		deltav = 0.001f;
+
+	const float dyToDest = m_Dest.y - m_Pos.y;
+	Vector3 toDestXZ = Vector3Subtract(m_Dest, m_Pos);
+	toDestXZ.y = 0.0f;
+	const float distXZ = Vector3Length(toDestXZ);
+	const float dist3D = sqrtf(distXZ * distXZ + dyToDest * dyToDest);
+
+	// Residue snap (scaled by this frame's step so high-FPS WASD Dest —
+	// roughly one deltav ahead — is never cancelled as "already there").
+	// Exact float Pos==Dest previously left units micro-stepping (stuck walk
+	// cycle) and flipped facing 180° after a slight overshoot.
+	const float arriveXZ = std::max(0.001f, std::min(0.05f, deltav * 0.35f));
+	const float arriveY = arriveXZ;
+	constexpr float kFaceMinXZ = 0.05f;
+
+	if (distXZ <= arriveXZ && fabsf(dyToDest) <= arriveY)
 	{
-		// Speed budget is along the 3D path (XZ + climb/drop), not XZ alone —
-		// otherwise stairs/crates feel like a teleport because Y is free.
-		float deltav = m_speed * g_Engine->LastFrameInSeconds();
-		if (deltav < 1e-6f)
-			deltav = 0.001f;
+		m_moveStuckFrames = 0;
+		if (m_pathWaypoints.empty() && !m_pathfindingPending)
+		{
+			if (distXZ > 1e-6f || fabsf(dyToDest) > 1e-6f)
+			{
+				Vector3 landed = m_Dest;
+				float landH = m_Dest.y;
+				if (!g_pathfindingSystem || PathfindingSystem::ValidateMove(this, landed, landH))
+				{
+					landed.y = landH;
+					SetPos(landed);
+				}
+				SetDest(m_Pos);
+			}
+			m_isMoving = false;
+		}
+		else if (!m_pathWaypoints.empty())
+		{
+			advanceWaypoint();
+		}
+		return;
+	}
 
-		const float dyToDest = m_Dest.y - m_Pos.y;
-		Vector3 toDestXZ = Vector3Subtract(m_Dest, m_Pos);
-		toDestXZ.y = 0.0f;
-		const float distXZ = Vector3Length(toDestXZ);
-		const float dist3D = sqrtf(distXZ * distXZ + dyToDest * dyToDest);
-
+	if (distXZ > arriveXZ || fabsf(dyToDest) > arriveY)
+	{
 		// Pure vertical adjust (same tile XZ): spend budget on Y only.
 		if (distXZ < 1e-5f)
 		{
@@ -2206,7 +2243,10 @@ void U7Object::UpdateMovement()
 		}
 
 		Vector3 flatDir = Vector3Scale(toDestXZ, 1.0f / distXZ);
-		m_Direction = flatDir;
+		// Skip facing updates on tiny remaining deltas — those often point
+		// backward after an overshoot and pop the sprite 180°.
+		if (distXZ >= kFaceMinXZ)
+			m_Direction = flatDir;
 
 		// Wall-slide helper used at full step and micro-steps.
 		// Prefer the axis that still approaches dest; any free axis is better than stop.
@@ -2451,7 +2491,10 @@ void U7Object::UpdateMovement()
 	}
 	else
 	{
+		// Already at Dest with no remaining delta — stop the walk cycle.
 		m_moveStuckFrames = 0;
+		if (m_pathWaypoints.empty() && !m_pathfindingPending)
+			m_isMoving = false;
 	}
 }
 
@@ -2876,15 +2919,15 @@ void U7Object::SetDest(Vector3 dest)
 {
 	m_Dest = dest;
 
-	if (m_Dest.x == m_Pos.x && m_Dest.y == m_Pos.y && m_Dest.z == m_Pos.z)
+	Vector3 delta = Vector3Subtract(m_Dest, m_Pos);
+	delta.y = 0.0f;
+	const float distXZ = Vector3Length(delta);
+	// Ignore tiny/zero XZ deltas — they jitter facing (often a 180° flip when
+	// Dest ends up slightly behind after an overshoot or key-release stop).
+	if (distXZ < 0.05f)
 		return;
 
-	Vector3 newDirection = Vector3Subtract(m_Dest, m_Pos);
-	newDirection = Vector3Normalize(newDirection);
-	if (newDirection.x != 0 || newDirection.y != 0 || newDirection.z != 0)
-	{
-		m_Direction = newDirection;
-	}
+	m_Direction = Vector3Normalize(delta);
 }
 
 void U7Object::TryOpenDoorAtCurrentPosition()

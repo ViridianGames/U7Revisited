@@ -81,28 +81,16 @@ void TitleState::Update()
 	g_camera.position = Vector3Add(current, camPos);
 	g_camera.fovy = g_cameraDistance;
 
-	UpdateTitle();
-	TestUpdate();
-
-	UpdateRuntimePalette();
-	g_Terrain->Update();
-
-	if (IsKeyPressed(KEY_F1))
-	{
-		g_StateMachine->MakeStateTransition(STATE_SHAPEEDITORSTATE);
-	}
-
+	// Fade before UpdateTitle so the transition check sees this frame's alpha.
 	if (m_fadeState == FadeState::FADE_OUT)
 	{
 		m_fadeTime += g_Engine->LastFrameInSeconds();
 		if (m_fadeTime > m_fadeDuration)
-		{
 			m_fadeTime = m_fadeDuration;
-			m_fadeState = FadeState::FADE_NONE;
-		}
+		// Stay fully black until MakeStateTransition; don't clear to FADE_NONE (that
+		// would drop alpha to 0 for a frame before MainState takes over).
 		m_currentFadeAlpha = int(255 * (m_fadeTime / m_fadeDuration));
 	}
-
 	else if (m_fadeState == FadeState::FADE_IN)
 	{
 		m_fadeTime -= g_Engine->LastFrameInSeconds();
@@ -113,9 +101,20 @@ void TitleState::Update()
 		}
 		m_currentFadeAlpha = int(255 * (m_fadeTime / m_fadeDuration));
 	}
-	else
+	else if (!m_fadingOut)
 	{
 		m_currentFadeAlpha = 0;
+	}
+
+	UpdateTitle();
+	TestUpdate();
+
+	UpdateRuntimePalette();
+	g_Terrain->Update();
+
+	if (IsKeyPressed(KEY_F1))
+	{
+		g_StateMachine->MakeStateTransition(STATE_SHAPEEDITORSTATE);
 	}
 }
 
@@ -123,7 +122,8 @@ void TitleState::FadeIn(float fadeTime)
 {
 	m_fadeState = FadeState::FADE_IN;
 	m_fadeDuration = fadeTime;
-	m_fadeTime = 0;
+	m_fadeTime = fadeTime;
+	m_currentFadeAlpha = 255;
 }
 
 void TitleState::FadeOut(float fadeTime)
@@ -131,6 +131,7 @@ void TitleState::FadeOut(float fadeTime)
 	m_fadeState = FadeState::FADE_OUT;
 	m_fadeDuration = fadeTime;
 	m_fadeTime = 0;
+	m_currentFadeAlpha = 0;
 }
 
 
@@ -384,8 +385,11 @@ void TitleState::UpdateTitle()
 	m_CreditsGui->Update();
 	m_MaleFemaleGui->Update();
 
-	if (m_fadingOut && int(m_currentFadeAlpha) > 250) // Fully faded
+	if (m_fadingOut && int(m_currentFadeAlpha) >= 255) // Fully faded out — then leave title
 	{
+		m_fadingOut = false;
+		m_fadeState = FadeState::FADE_NONE;
+		m_currentFadeAlpha = 255; // hand off black to the next state
 		g_StateMachine->MakeStateTransition(m_targetState);
 	}
 

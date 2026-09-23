@@ -217,19 +217,22 @@ void MainState::OnEnter()
 
 	if (m_gameMode == MainStateModes::MAIN_STATE_MODE_TRINSIC_DEMO)
 	{
-		g_Player->AddPartyMember(1);
-		g_Player->AddPartyMember(2);
+		g_Player->AddPartyMember(1); // Iolo only; Spark is NPC 2 and must not auto-join
 		// Enable schedules and pathfinding for demo mode so NPCs behave like sandbox
 		m_npcSchedulesEnabled = true;
 		m_npcPathfindingEnabled = true;
 
-		// Mark loaded NPC objects to follow schedules, except party members
+		// Mark loaded NPC objects to follow schedules, except party members.
+		// Fresh intro: Petre (11) and Finnigan (12) stay off until utility_intro_script ends.
 		for (const auto& [id, npcData] : g_NPCData)
 		{
 			if (!npcData) continue;
 			if (npcData->m_objectID < 0) continue;
 			// Skip NPCs in player's party so they stay under player control
 			if (g_Player && g_Player->NPCIDInParty(id))
+				continue;
+			// Intro cast — do not schedule until after the cutscene (load-from-save skips intro).
+			if (!m_loadOnEntry && (id == 11 || id == 12))
 				continue;
 			auto itObj = g_objectList.find(npcData->m_objectID);
 			if (itObj != g_objectList.end() && itObj->second)
@@ -251,25 +254,58 @@ void MainState::OnEnter()
 			OpenLoadSaveGump();
 
 			m_fadeState = FadeState::FADE_IN;
-			m_fadeTime = 1.0;
-			m_currentFadeAlpha = 0.0f;
 			m_fadeDuration = 1.0f;
+			m_fadeTime = 1.0f;
+			m_currentFadeAlpha = 255;
 		}
-		// Fade out.
+		// Fresh Trinsic start: enter black (title already faded out), set up the
+		// intro camera/cast while still black, wait for schedule settle, then fade+music.
 		else
 		{
-			g_SoundSystem->PlayMusic(BuildU7MusicPath(35));
-
-			// Move camera to start position and rotation.
+			// Intro opening shot (matches utility_intro_script jump_camera_angle(315)).
 			g_camera.target = Vector3{ 1068.0f, 0.0f, 2213.0f };
-			g_cameraRotation = 0;
+			g_cameraRotation = 315.0f * DEG2RAD;
 			g_cameraDistance = 22.0f;
 			LockCameraToAvatar();
-			CameraUpdate();
+			CameraUpdate(true);
 
-			// Hack-move Petre and put him in the proper position.
-			g_objectList[g_NPCData[11]->m_objectID]->m_Angle = 2 * (PI / 2);
-			g_objectList[g_NPCData[11]->m_objectID]->Update();
+			m_showUIElements = false;
+
+			// Hide Avatar until the moongate arrival (set_npc_visibility(0, false)).
+			if (g_NPCData.count(0) && g_NPCData[0] && g_NPCData[0]->m_objectID >= 0)
+			{
+				auto itAvatar = g_objectList.find(g_NPCData[0]->m_objectID);
+				if (itAvatar != g_objectList.end() && itAvatar->second)
+					itAvatar->second->m_ShouldDraw = false;
+			}
+
+			// Intro cast: keep Petre/Finnigan pinned (Iolo is already party / schedule-off).
+			if (g_NPCData.count(11) && g_NPCData[11] && g_NPCData[11]->m_objectID >= 0)
+			{
+				auto itPetre = g_objectList.find(g_NPCData[11]->m_objectID);
+				if (itPetre != g_objectList.end() && itPetre->second)
+				{
+					itPetre->second->m_followingSchedule = false;
+					itPetre->second->m_Angle = 2 * (PI / 2);
+					itPetre->second->SetOverrideFrame(12);
+					itPetre->second->PathfindToDest({ 1068.0f, 0.0f, 2215.0f });
+					itPetre->second->Update();
+				}
+			}
+			if (g_NPCData.count(12) && g_NPCData[12] && g_NPCData[12]->m_objectID >= 0)
+			{
+				auto itFinn = g_objectList.find(g_NPCData[12]->m_objectID);
+				if (itFinn != g_objectList.end() && itFinn->second)
+					itFinn->second->m_followingSchedule = false;
+			}
+
+			// Stay black until the first schedule/pathfinding burst finishes so
+			// music doesn't hitch when hundreds of NPCs enqueue paths.
+			m_fadeState = FadeState::FADE_NONE;
+			m_currentFadeAlpha = 255;
+			m_awaitingInitialScheduleSettle = true;
+			m_initialScheduleQuietFrames = 0;
+			m_initialScheduleTimeout = 0.0f;
 		}
 	}
 	else
@@ -464,7 +500,9 @@ void MainState::UpdateInput()
 	HandleMouseHoldTimers();
 	HandleLeftDoubleClick();
 	HandleLeftSingleClick();
-	HandleAvatarMovement();
+	// WASD Dest is applied before UpdateMovement (facing stop). Re-assert the
+	// walk flag here so same-frame Dest arrival does not idle the sprite.
+	KeepAvatarWalkAnimIfSteering();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1291,6 +1329,12 @@ void MainState::HandleAvatarMovement()
 				g_Player->GetAvatarObject()->m_Direction = flatForDir;
 			}
 		}
+		else if (U7Object* avatar = g_Player->GetAvatarObject())
+		{
+			// Stop in place on key release — don't keep a Dest that can pull facing 180°.
+			avatar->SetDest(avatar->GetPos());
+			avatar->m_isMoving = false;
+		}
 	}
 	else
 	{
@@ -1324,11 +1368,31 @@ void MainState::HandleAvatarMovement()
 			if (Vector3Length(direction) > 0.0001f)
 				avatar->m_Direction = direction;
 		}
+		else if (U7Object* avatar = g_Player->GetAvatarObject())
+		{
+			// Stop in place on key release — don't keep a Dest that can pull facing 180°.
+			avatar->SetDest(avatar->GetPos());
+			avatar->m_isMoving = false;
+		}
 	}
 
 	MaybeUpdatePartyFollowing();
 }
 
+void MainState::KeepAvatarWalkAnimIfSteering()
+{
+	if (!IsCameraLockedToAvatar() || !g_Player)
+		return;
+	U7Object* avatar = g_Player->GetAvatarObject();
+	if (!avatar)
+		return;
+
+	const bool steering =
+		IsKeyDown(KEY_W) || IsKeyDown(KEY_A) || IsKeyDown(KEY_S) || IsKeyDown(KEY_D) ||
+		m_rightMouseHeld;
+	if (steering)
+		avatar->m_isMoving = true;
+}
 
 void MainState::ProcessCameraInput()
 {
@@ -1877,9 +1941,12 @@ void MainState::Update()
 		// teleport lives in CameraInput; if it runs after object updates, the
 		// interest set stays on the old town for a frame (and feels stuck if you
 		// expect Britain NPCs to pick up schedules immediately).
+		// Avatar WASD stop must also run before object UpdateMovement — otherwise
+		// a leftover Dest behind the feet can flip facing 180° for one frame.
 		if (!m_paused && g_allowInput)
 		{
 			CameraInput();
+			HandleAvatarMovement();
 		}
 		CameraUpdate();
 
@@ -2085,9 +2152,63 @@ void MainState::Update()
 		}
 		m_currentFadeAlpha = int(255 * (m_fadeTime / m_fadeDuration));
 	}
-	else
+	else if (!m_awaitingInitialScheduleSettle)
 	{
 		m_currentFadeAlpha = 0;
+	}
+	// else: hold black (alpha 255) while initial schedule pathfinds drain
+
+	if (m_awaitingInitialScheduleSettle)
+	{
+		m_currentFadeAlpha = 255;
+		m_initialScheduleTimeout += g_Engine->LastFrameInSeconds();
+
+		const bool schedulePassDone = (g_lastScheduleTimeCheck == static_cast<int>(g_scheduleTime));
+		size_t queueSize = 0;
+		size_t resultsSize = 0;
+		{
+			std::lock_guard<std::mutex> lk(m_scheduleMutex);
+			queueSize = m_schedulePathQueue.size();
+		}
+		{
+			std::lock_guard<std::mutex> lk(m_resultMutex);
+			resultsSize = m_scheduleResults.size();
+		}
+		bool anyPending = false;
+		if (schedulePassDone && queueSize == 0 && resultsSize == 0)
+		{
+			for (const auto& [id, npcData] : g_NPCData)
+			{
+				(void)id;
+				if (!npcData || npcData->m_objectID < 0)
+					continue;
+				auto it = g_objectList.find(npcData->m_objectID);
+				if (it != g_objectList.end() && it->second && it->second->m_pathfindingPending)
+				{
+					anyPending = true;
+					break;
+				}
+			}
+		}
+
+		const bool quiet = schedulePassDone && queueSize == 0 && resultsSize == 0 && !anyPending;
+		if (quiet)
+			++m_initialScheduleQuietFrames;
+		else
+			m_initialScheduleQuietFrames = 0;
+
+		constexpr int kQuietFramesNeeded = 3;
+		constexpr float kTimeoutSec = 5.0f;
+		if (m_initialScheduleQuietFrames >= kQuietFramesNeeded
+			|| m_initialScheduleTimeout >= kTimeoutSec)
+		{
+			m_awaitingInitialScheduleSettle = false;
+			m_fadeState = FadeState::FADE_IN;
+			m_fadeDuration = 1.5f;
+			m_fadeTime = 1.5f;
+			m_currentFadeAlpha = 255;
+			g_SoundSystem->PlayMusic(BuildU7MusicPath(35));
+		}
 	}
 
 	if (m_gameMode == MainStateModes::MAIN_STATE_MODE_TRINSIC_DEMO)
@@ -2096,11 +2217,14 @@ void MainState::Update()
 		{
 			m_introScriptRunning = true;
 		}
-		else if (!m_ranIntroScript)
+		else if (!m_ranIntroScript
+			&& !m_awaitingInitialScheduleSettle
+			&& m_fadeState != FadeState::FADE_IN
+			&& m_currentFadeAlpha == 0)
 		{
+			// Start the cutscene only after the title→game fade-in has finished.
 			m_ranIntroScript = true;
 			NPCDebugPrint(g_ScriptingSystem->CallScript("utility_intro_script", { 1, 0 }));
-			//g_objectList[g_NPCData[1]->m_objectID]->Interact(3);
 		}
 	}
 
@@ -3800,6 +3924,12 @@ void MainState::SetFollowingScheduleForNpc(int npcId, bool follow)
 	auto itObj = g_objectList.find(objId);
 	if (itObj == g_objectList.end() || !itObj->second) return;
 	itObj->second->m_followingSchedule = follow;
+	if (follow)
+	{
+		// Enabling mid-scene: pathfind to dest, don't teleport via a stale wake-snap.
+		itObj->second->m_scheduleWakeSnapPending = false;
+		itObj->second->m_lastSchedule = -1;
+	}
 }
 
 bool MainState::IsNpcSchedulesEnabled() const

@@ -1459,8 +1459,15 @@ static int LuaStopNPCSchedule(lua_State *L)
 static int LuaStartNPCSchedule(lua_State *L)
 {
     int npc_id = luaL_checkinteger(L, 1);
-    DebugPrint("stop_npc_schedule called, NPC ID " + to_string(npc_id));
-    g_objectList[g_NPCData[npc_id].get()->m_objectID]->m_followingSchedule = true;
+    DebugPrint("start_npc_schedule called, NPC ID " + to_string(npc_id));
+    U7Object* npc = g_objectList[g_NPCData[npc_id].get()->m_objectID].get();
+    if (npc)
+    {
+        npc->m_followingSchedule = true;
+        // Re-enable mid-scene: pathfind to the schedule dest, don't inherit a wake-snap teleport.
+        npc->m_scheduleWakeSnapPending = false;
+        npc->m_lastSchedule = -1;
+    }
     return 0;
 }
 
