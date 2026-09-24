@@ -788,7 +788,7 @@ void U7Object::HandleJukeboxEgg()
 
 void U7Object::MonsterInit()
 {
-	m_speed = 7.5f;
+	m_speed = 5.0f;
 	m_attackRange = MELEE_RANGE_TILES;
 	m_attackCooldown = 3.0f;
 	m_cooldownTimer = 0.0;
@@ -2095,11 +2095,12 @@ void U7Object::UpdateMovement()
 	// NPCs/monsters must follow A* waypoints — never crow-fly toward a bare m_Dest
 	// (that walked Spark into his house wall when schedule pathfinding failed and
 	// Dest was still pointed at the inn / a leftover goal).
-	// Exception: the Avatar — WASD / right-mouse steer uses TryMove → SetDest with
-	// no waypoints. Treating the Avatar like other NPCs cancelled Dest every frame
-	// (walk anim, zero movement).
+	// Exceptions: Avatar (WASD / mouse steer) and party followers (continuous
+	// formation steering via SetDest).
 	const bool isAvatar = (g_Player && g_Player->GetAvatarObject() == this);
-	if (!isAvatar &&
+	const bool isPartyFollower = (!isAvatar && g_Player && m_NPCID >= 0 &&
+	                              g_Player->NPCIDInParty(m_NPCID));
+	if (!isAvatar && !isPartyFollower &&
 	    (m_UnitType == UnitTypes::UNIT_TYPE_NPC || m_UnitType == UnitTypes::UNIT_TYPE_MONSTER) &&
 	    m_pathWaypoints.empty())
 	{
@@ -3832,11 +3833,11 @@ void U7Object::NPCInit(NPCData* npcData)
 	m_name = npcData->name;
 	if (std::string(m_NPCData->name) == "Avatar")
 	{
-		m_speed = 10.0f;
+		m_speed = 7.5f;
 	}
 	else
 	{
-		m_speed = 7.5f;
+		m_speed = 5.0f;
 	}
 	m_NPCID = npcData->id;
 	m_attackRange = MELEE_RANGE_TILES;

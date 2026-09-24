@@ -323,12 +323,9 @@ public:
 
 	void MaybeUpdatePartyFollowing();
 
-	Vector3 m_lastPartyAnchorPos = { 0.0f, 0.0f, 0.0f };
-	float  m_lastPartyFollowTime = 0.0f;
-	float  m_partyFollowCooldown = 0.5f;        // seconds
-	float  m_partyAnchorThreshold = 3.0f;       // tiles moved since last anchor -> update
-	float  m_partyMemberFollowThreshold = 2.0f; // distance per member to trigger pathfind
 	float  m_partySpacing = 1.0f;               // tiles between members in the line
+	float  m_partyFollowStopDistance = 1.5f;    // idle when this close to formation slot
+	float  m_partyFollowWarpDistance = 25.0f;   // teleport if farther than this from Avatar
 
 	// Camera-drag while holding left+right: state & helpers
 	void StartCameraDrag();

@@ -3939,99 +3939,103 @@ bool MainState::IsNpcSchedulesEnabled() const
 
 void MainState::MaybeUpdatePartyFollowing()
 {
-    // Only run when camera is locked and input is allowed and player exists
-    if (!g_Player || !IsCameraLockedToAvatar() || !g_allowInput)
-        return;
+	// Continuous formation steering: each frame, retarget Dest toward a slot
+	// behind the Avatar so followers keep walking while you move (no arrive-and-stop).
+	if (!g_Player || !IsCameraLockedToAvatar() || !g_allowInput)
+		return;
 
-    U7Object* avatar = g_Player->GetAvatarObject();
-    if (!avatar) return;
+	U7Object* avatar = g_Player->GetAvatarObject();
+	if (!avatar) return;
 
-    float now = GetTime();
-    if (now - m_lastPartyFollowTime < m_partyFollowCooldown)
-        return;
+	Vector3 avatarPos = avatar->GetPos();
 
-    Vector3 avatarPos = avatar->GetPos();
-    // measure horizontal distance
-    Vector3 delta = Vector3Subtract(avatarPos, m_lastPartyAnchorPos);
-    delta.y = 0.0f;
-    float moved = Vector3Length(delta);
+	Vector3 dir = avatar->m_Direction;
+	dir.y = 0.0f;
+	if (Vector3Length(dir) < 0.0001f)
+	{
+		Vector3 camForward = Vector3Subtract(g_camera.target, g_camera.position);
+		camForward.y = 0.0f;
+		if (Vector3Length(camForward) > 0.0001f)
+			dir = Vector3Normalize(camForward);
+		else
+			dir = Vector3{ 0.0f, 0.0f, 1.0f };
+	}
+	dir = Vector3Normalize(dir);
 
-    if (m_lastPartyAnchorPos.x == 0.0f && m_lastPartyAnchorPos.z == 0.0f)
-    {
-        // initialize anchor on first run
-        m_lastPartyAnchorPos = avatarPos;
-        m_lastPartyFollowTime = now;
-        return;
-    }
+	const auto& party = g_Player->GetPartyMemberIds();
+	int counter = 1;
+	for (int npcId : party)
+	{
+		if (npcId == 0) { ++counter; continue; }
 
-    if (moved < m_partyAnchorThreshold)
-        return;
+		auto itNpc = g_NPCData.find(npcId);
+		if (itNpc == g_NPCData.end() || !itNpc->second) { ++counter; continue; }
+		int objId = itNpc->second->m_objectID;
+		auto itObj = g_objectList.find(objId);
+		if (itObj == g_objectList.end() || !itObj->second) { ++counter; continue; }
+		U7Object* member = itObj->second.get();
 
-    // commit
-    m_lastPartyAnchorPos = avatarPos;
-    m_lastPartyFollowTime = now;
-
-    // Compute formation direction (behind avatar)
-    Vector3 dir = avatar->m_Direction;
-    dir.y = 0.0f;
-    if (Vector3Length(dir) < 0.0001f)
-    {
-        // fallback to camera-facing horizontal if avatar direction degenerate
-        Vector3 camForward = Vector3Subtract(g_camera.target, g_camera.position);
-        camForward.y = 0.0f;
-        if (Vector3Length(camForward) > 0.0001f)
-            dir = Vector3Normalize(camForward);
-        else
-            dir = Vector3{0.0f, 0.0f, 1.0f};
-    }
-    dir = Vector3Normalize(dir);
-
-    // For each party member (skip avatar id 0)
-    const auto& party = g_Player->GetPartyMemberIds();
-    int counter = 1;
-    for (int npcId : party)
-    {
-        if (npcId == 0) { ++counter; continue; } // avatar
-
-        // Guard: ensure NPC data & object
-        auto itNpc = g_NPCData.find(npcId);
-        if (itNpc == g_NPCData.end() || !itNpc->second) { ++counter; continue; }
-        int objId = itNpc->second->m_objectID;
-        auto itObj = g_objectList.find(objId);
-        if (itObj == g_objectList.end() || !itObj->second) { ++counter; continue; }
-        U7Object* member = itObj->second.get();
-
-        // Skip if it already has a pending schedule/pathfinding request
-        if (member->m_pathfindingPending)
-        {
-            ++counter;
-            continue;
-        }
-
-        // Desired position: behind avatar along dir, offset by spacing * counter
-        float offset = m_partySpacing * float(counter);
-        Vector3 desired = Vector3Subtract(avatarPos, Vector3Scale(dir, offset));
-        // Snap to center of the tile containing this point (NPCs stand/draw at *.5, *.5)
-        desired.x = floorf(desired.x) + 0.5f;
-        desired.z = floorf(desired.z) + 0.5f;
-        desired.y = 0.0f; // let A*/TryMove resolve proper height
-
-        // Only issue pathfind if the member is sufficiently far from desired
-        Vector3 diff = Vector3Subtract(member->GetPos(), desired);
-        diff.y = 0.0f;
-        float dist = Vector3Length(diff);
-        if (dist > m_partyMemberFollowThreshold)
-        {
-            // Use pathfind (fire-and-forget) to desired tile
-            member->PathfindToDest(desired);
-        }
-
-		if (dist > 25)
+		if (member->m_pathfindingPending)
 		{
-			member->SetDest(desired);
+			++counter;
+			continue;
 		}
-        ++counter;
-    }
+
+		float offset = m_partySpacing * float(counter);
+		Vector3 desired = Vector3Subtract(avatarPos, Vector3Scale(dir, offset));
+		// Keep current feet height; UpdateMovement / ValidateMove resolve climbs.
+		desired.y = member->GetPos().y;
+
+		Vector3 memberPos = member->GetPos();
+		Vector3 toSlot = Vector3Subtract(memberPos, desired);
+		toSlot.y = 0.0f;
+		const float distSlot = Vector3Length(toSlot);
+
+		Vector3 toAvatar = Vector3Subtract(memberPos, avatarPos);
+		toAvatar.y = 0.0f;
+		const float distAvatar = Vector3Length(toAvatar);
+
+		if (distAvatar > m_partyFollowWarpDistance)
+		{
+			desired.x = floorf(desired.x) + 0.5f;
+			desired.z = floorf(desired.z) + 0.5f;
+			member->m_pathWaypoints.clear();
+			member->m_currentWaypointIndex = 0;
+			member->SetPos(desired);
+			member->SetDest(desired);
+			member->m_isMoving = false;
+			++counter;
+			continue;
+		}
+
+		if (distSlot <= m_partyFollowStopDistance)
+		{
+			member->m_pathWaypoints.clear();
+			member->m_currentWaypointIndex = 0;
+			member->SetDest(memberPos);
+			member->m_isMoving = false;
+			++counter;
+			continue;
+		}
+
+		// Mid A* catch-up around an obstacle: let it finish unless badly stuck.
+		if (!member->m_pathWaypoints.empty())
+		{
+			if (member->m_moveStuckFrames >= 28)
+				member->PathfindToDest(desired);
+			++counter;
+			continue;
+		}
+
+		// Soft steer toward the live formation slot (party followers may crow-fly).
+		member->SetDest(desired);
+		member->m_isMoving = true;
+
+		if (member->m_moveStuckFrames >= 20)
+			member->PathfindToDest(desired);
+
+		++counter;
+	}
 }
 
 void MainState::BuildDemoHelpGUI()
