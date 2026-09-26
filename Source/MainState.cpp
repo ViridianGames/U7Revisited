@@ -217,13 +217,13 @@ void MainState::OnEnter()
 
 	if (m_gameMode == MainStateModes::MAIN_STATE_MODE_TRINSIC_DEMO)
 	{
-		g_Player->AddPartyMember(1); // Iolo only; Spark is NPC 2 and must not auto-join
 		// Enable schedules and pathfinding for demo mode so NPCs behave like sandbox
 		m_npcSchedulesEnabled = true;
 		m_npcPathfindingEnabled = true;
 
 		// Mark loaded NPC objects to follow schedules, except party members.
-		// Fresh intro: Petre (11) and Finnigan (12) stay off until utility_intro_script ends.
+		// Fresh intro: Iolo (1), Petre (11), Finnigan (12) stay off until the cutscene
+		// finishes (Iolo joins via utility_intro_script add_to_party after his talk).
 		for (const auto& [id, npcData] : g_NPCData)
 		{
 			if (!npcData) continue;
@@ -232,7 +232,7 @@ void MainState::OnEnter()
 			if (g_Player && g_Player->NPCIDInParty(id))
 				continue;
 			// Intro cast — do not schedule until after the cutscene (load-from-save skips intro).
-			if (!m_loadOnEntry && (id == 11 || id == 12))
+			if (!m_loadOnEntry && (id == 1 || id == 11 || id == 12))
 				continue;
 			auto itObj = g_objectList.find(npcData->m_objectID);
 			if (itObj != g_objectList.end() && itObj->second)
@@ -245,6 +245,8 @@ void MainState::OnEnter()
 		g_lastScheduleTimeCheck = -1;
 		if (m_loadOnEntry)
 		{
+			// Load-from-save: ensure Iolo is in the party (save may already list him).
+			g_Player->AddPartyMember(1);
 			m_loadOnEntry = false;
 			m_ranIntroScript = true;
 			m_introScriptRunning = false;
@@ -262,6 +264,10 @@ void MainState::OnEnter()
 		// intro camera/cast while still black, wait for schedule settle, then fade+music.
 		else
 		{
+			// Do NOT AddPartyMember(1) here — party follow would pull Iolo to the
+			// Avatar during settle. utility_intro_script add_to_party(1) after Iolo's talk.
+			g_allowInput = false;
+
 			// Intro opening shot (matches utility_intro_script jump_camera_angle(315)).
 			g_camera.target = Vector3{ 1068.0f, 0.0f, 2213.0f };
 			g_cameraRotation = 315.0f * DEG2RAD;
@@ -279,7 +285,19 @@ void MainState::OnEnter()
 					itAvatar->second->m_ShouldDraw = false;
 			}
 
-			// Intro cast: keep Petre/Finnigan pinned (Iolo is already party / schedule-off).
+			// Intro cast: keep Iolo/Petre/Finnigan schedule-off at the murder scene.
+			if (g_NPCData.count(1) && g_NPCData[1] && g_NPCData[1]->m_objectID >= 0)
+			{
+				auto itIolo = g_objectList.find(g_NPCData[1]->m_objectID);
+				if (itIolo != g_objectList.end() && itIolo->second)
+				{
+					itIolo->second->m_followingSchedule = false;
+					itIolo->second->m_pathWaypoints.clear();
+					itIolo->second->m_currentWaypointIndex = 0;
+					itIolo->second->SetDest(itIolo->second->GetPos());
+					itIolo->second->m_isMoving = false;
+				}
+			}
 			if (g_NPCData.count(11) && g_NPCData[11] && g_NPCData[11]->m_objectID >= 0)
 			{
 				auto itPetre = g_objectList.find(g_NPCData[11]->m_objectID);

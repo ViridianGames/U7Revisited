@@ -12,17 +12,17 @@ function npc_klog_0016(eventid, objectref)
             utility_ship_0939() 
         end
         add_answer({"bye", "murder", "job", "name"})
-        if not get_flag(63) then
+        if get_flag(63) then
             add_answer({"test", "argument"})
             var_0002 = true
         end
-        if not get_flag(67) then
+        if get_flag(67) then
             add_answer("Hook")
         end
-        if not get_flag(62) then
+        if get_flag(62) then
             add_answer({"scroll", "medallion", "gold"})
         end
-        if not get_flag(64) then
+        if get_flag(64) then
             add_answer("Crown Jewel")
         end
         switch_talk_to(16)

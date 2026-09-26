@@ -28,7 +28,10 @@ function npc_johnson_0014(eventid, objectref)
         add_answer("murder")
     end
     if get_flag(63) then
-        add_answer({"Hook", "Klog", "Fellowship"})
+        add_answer({"Klog", "Fellowship"})
+    end
+    if get_flag(67) then
+        add_answer("Hook")
     end
     if get_flag(64) then
         add_answer("Crown Jewel")

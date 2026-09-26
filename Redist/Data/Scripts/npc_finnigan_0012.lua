@@ -143,7 +143,7 @@ function npc_finnigan_0012(eventid, objectref)
     if get_flag(91) then
         add_answer("report")
     end
-    if not get_flag(63) then
+    if get_flag(63) then
         add_answer({"Klog", "Fellowship"})
     end
     if get_flag(66) and get_flag(61) then
