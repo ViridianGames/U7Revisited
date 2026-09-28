@@ -1368,21 +1368,24 @@ void MainState::HandleAvatarMovement()
 
 		if (avatarMoved)
 		{
-			direction = Vector3Normalize(direction);
 			direction = Vector3RotateByAxisAngle(direction, Vector3{ 0, 1, 0 }, g_cameraRotation);
-
+			direction = Vector3Normalize(direction);
 			// Match mouse-steer: move by speed*dt, not a full tile per frame.
 			U7Object* avatar = g_Player->GetAvatarObject();
-			float speed = avatar->GetSpeed();
-			if (speed <= 0.0f) speed = 3.0f;
-			const float dt = g_Engine->LastFrameInSeconds();
-			Vector3 desired = Vector3Add(avatar->GetPos(), Vector3Scale(direction, speed * dt));
+			//  TODO: Figure out why we have to make this 2x speed.
+			float speed = avatar->GetSpeed() * 2;
+			double dt = g_Engine->LastFrameInSeconds();
+			Vector3 finalMovementVector = Vector3Scale(direction, speed * dt);
+			Vector3 desired = Vector3Add(avatar->GetPos(), finalMovementVector);
 			desired.x = std::fmax(0.0f, std::fmin(3072.0f, desired.x));
 			desired.z = std::fmax(0.0f, std::fmin(3072.0f, desired.z));
 			// Keep Y as feet; ValidateMove / TryMove pick climb surfaces (crates, etc.).
 			desired.y = avatar->GetPos().y;
 
-			g_Player->TryMove(desired);
+			bool moved = g_Player->TryMove(desired);
+			if (!moved) {
+				int breaker = 0; // CCCCCCOMBO BREAKER
+			}
 			if (Vector3Length(direction) > 0.0001f)
 				avatar->m_Direction = direction;
 		}
