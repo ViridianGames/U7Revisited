@@ -15,10 +15,134 @@
 #include <cmath>
 #include <fstream>
 #include <algorithm>
+#include <cctype>
 
 #include "InputSystem.h"
 
 using namespace std;
+
+namespace
+{
+	constexpr int kMaxAnswersPerColumn = 8;
+	constexpr float kAnswerTextX0 = 190.f;
+	constexpr float kAnswerTextY0 = 135.f;
+	constexpr float kAnswerBoxXPad = 6.f; // text at 190, box historically at 184
+	constexpr float kAnswerBoxYPad = 5.f; // text at 135, box historically at 130
+	constexpr float kColumnGap = 16.f;
+
+	struct AnswerDrawInfo
+	{
+		std::string displayText;
+		float x = 0.f;
+		float y = 0.f;
+		Rectangle hitRect{};
+	};
+
+	struct AnswerBackdrop
+	{
+		Rectangle box{};
+		float roundness = 0.5f;
+		bool valid = false;
+	};
+
+	std::string CapitalizeAnswer(const std::string& answer)
+	{
+		std::string capsAnswer = answer;
+		if (!capsAnswer.empty() &&
+		    std::isalpha(static_cast<unsigned char>(capsAnswer[0])) &&
+		    std::islower(static_cast<unsigned char>(capsAnswer[0])))
+		{
+			capsAnswer[0] = static_cast<char>(std::toupper(static_cast<unsigned char>(capsAnswer[0])));
+		}
+		return capsAnswer;
+	}
+
+	// Shared by Draw and hit-testing so click boxes always match on-screen text.
+	void BuildAnswerLayout(const std::vector<std::string>& answers,
+	                       std::vector<AnswerDrawInfo>& outItems,
+	                       AnswerBackdrop* outBackdrop = nullptr)
+	{
+		outItems.clear();
+		if (outBackdrop != nullptr)
+		{
+			*outBackdrop = {};
+		}
+
+		Font* font = g_SmallFont.get();
+		if (font == nullptr || answers.empty())
+		{
+			return;
+		}
+
+		const float fontSize = font->baseSize * 2.f;
+		const float lineSpacing = font->baseSize * 2.f;
+		const int count = static_cast<int>(answers.size());
+		const int columnCount = (count + kMaxAnswersPerColumn - 1) / kMaxAnswersPerColumn;
+		const int rowsInFirstColumn = std::min(count, kMaxAnswersPerColumn);
+
+		outItems.resize(count);
+
+		float columnX = kAnswerTextX0;
+		float contentLeft = kAnswerTextX0;
+		float contentRight = kAnswerTextX0;
+		float contentBottom = kAnswerTextY0;
+
+		for (int col = 0; col < columnCount; ++col)
+		{
+			const int startIdx = col * kMaxAnswersPerColumn;
+			const int endIdx = std::min(startIdx + kMaxAnswersPerColumn, count);
+
+			float maxWidth = 0.f;
+			for (int i = startIdx; i < endIdx; ++i)
+			{
+				const std::string display = "* " + CapitalizeAnswer(answers[i]);
+				const Vector2 size = MeasureTextEx(*font, display.c_str(), fontSize, 1);
+				if (size.x > maxWidth)
+				{
+					maxWidth = size.x;
+				}
+
+				const float y = kAnswerTextY0 + static_cast<float>(i - startIdx) * lineSpacing;
+				outItems[i].displayText = display;
+				outItems[i].x = columnX;
+				outItems[i].y = y;
+				// Use full line spacing for height so rows neither gap nor overlap.
+				outItems[i].hitRect = {columnX, y, size.x, lineSpacing};
+
+				const float rowBottom = y + lineSpacing;
+				if (rowBottom > contentBottom)
+				{
+					contentBottom = rowBottom;
+				}
+			}
+
+			contentRight = columnX + maxWidth;
+			columnX += maxWidth + kColumnGap;
+		}
+
+		if (outBackdrop != nullptr)
+		{
+			const float padX = kAnswerBoxXPad;
+			const float padY = kAnswerBoxYPad;
+			outBackdrop->box = {
+				contentLeft - padX,
+				kAnswerTextY0 - padY,
+				(contentRight - contentLeft) + padX * 2.f,
+				(contentBottom - kAnswerTextY0) + padY * 2.f
+			};
+
+			// Soften corners a bit as the panel gets taller / wider.
+			float roundness = 0.55f - 0.03f * static_cast<float>(rowsInFirstColumn)
+			                  - 0.04f * static_cast<float>(columnCount - 1);
+			if (roundness < 0.12f)
+			{
+				roundness = 0.12f;
+			}
+			outBackdrop->roundness = roundness;
+			outBackdrop->valid = true;
+		}
+	}
+}
 
 ConversationState::~ConversationState()
 {
@@ -193,62 +317,57 @@ void ConversationState::Update()
 					ReturnAmountFromNumberBar(m_GumpNumberBar->m_currentAmount);
 				}
 			}
-			else
+			else if (g_InputSystem->WasLButtonClicked())
 			{
-				Font* fontToUse = g_ConversationFont.get();
-				float fontsize = 2.8f;
-				fontToUse = g_SmallFont.get();
+				std::vector<AnswerDrawInfo> answerItems;
+				BuildAnswerLayout(m_answers, answerItems);
 
-				for (int i = 0; i < m_answers.size(); i++)
+				const Vector2 mousePosition = GetMousePosition();
+				for (int i = 0; i < static_cast<int>(answerItems.size()); i++)
 				{
-					std::string adjustedAnswer = std::string("* ") + m_answers[i];
+					const Rectangle& guiRect = answerItems[i].hitRect;
+					const Rectangle screenRect = {
+						guiRect.x * g_DrawScale,
+						guiRect.y * g_DrawScale,
+						guiRect.width * g_DrawScale,
+						guiRect.height * g_DrawScale
+					};
 
-					Vector2 dims = MeasureTextEx(*fontToUse, adjustedAnswer.c_str(), fontToUse->baseSize, 1);
-
-					Vector2 mousePosition = GetMousePosition();
-					if (g_InputSystem->WasLButtonClicked() &&
-						CheckCollisionPointRec(mousePosition, {
-							                       190 * g_DrawScale,
-							                       float((135 + (i * fontToUse->baseSize * 2.1)) * g_DrawScale),
-							                       dims.x * 2 * g_DrawScale,
-							                       float((fontToUse->baseSize * 2) * g_DrawScale)
-						                       }))
+					if (!CheckCollisionPointRec(mousePosition, screenRect))
 					{
-						if (m_steps.size() == 0)
-						{
-							SetAnswer(m_luaFunction, m_answers[i]);
-							m_answerPending = true;
-							m_waitingForAnswer = false;
-						}
-						else
-						{
-							if (m_steps[0].type == ConversationStepType::STEP_MULTIPLE_CHOICE)
-							{
-								if (m_answers[i] == "Yes" || m_answers[i] == "No")
-								{
-									bool yes = (m_answers[i] == "Yes");
-									SelectYesNo(yes);
-									return;
-								}
-								else
-								{
-									ReturnMultipleChoice(m_answers[i]);
-								}
-							}
-							//  Instead of the string, GET_PURCHASE_OPTION returns the index of the selected option
-							else if (m_steps[0].type == ConversationStepType::STEP_GET_PURCHASE_OPTION)
-							{
-								ReturnGetPurchaseOption(i);
-							}
-							else
-							{
-								SetAnswer(m_luaFunction, m_answers[i]);
-								m_answerPending = true;
-								m_waitingForAnswer = false;
-								EraseTopStep();
-							}
-						}
+						continue;
 					}
+
+					if (m_steps.size() == 0)
+					{
+						SetAnswer(m_luaFunction, m_answers[i]);
+						m_answerPending = true;
+						m_waitingForAnswer = false;
+					}
+					else if (m_steps[0].type == ConversationStepType::STEP_MULTIPLE_CHOICE)
+					{
+						if (m_answers[i] == "Yes" || m_answers[i] == "No")
+						{
+							bool yes = (m_answers[i] == "Yes");
+							SelectYesNo(yes);
+							return;
+						}
+
+						ReturnMultipleChoice(m_answers[i]);
+					}
+					// Instead of the string, GET_PURCHASE_OPTION returns the index of the selected option
+					else if (m_steps[0].type == ConversationStepType::STEP_GET_PURCHASE_OPTION)
+					{
+						ReturnGetPurchaseOption(i);
+					}
+					else
+					{
+						SetAnswer(m_luaFunction, m_answers[i]);
+						m_answerPending = true;
+						m_waitingForAnswer = false;
+						EraseTopStep();
+					}
+					break;
 				}
 			}
 		}
@@ -345,34 +464,19 @@ void ConversationState::Draw()
 
 			DrawTextureEx(*thisTexture, {100, 135}, 0, 2, WHITE);
 
-			float height = m_answers.size() * g_SmallFont.get()->baseSize * 2;
+			std::vector<AnswerDrawInfo> answerItems;
+			AnswerBackdrop answerBackdrop;
+			BuildAnswerLayout(m_answers, answerItems, &answerBackdrop);
 
-			float width = 0;
-
-			float roundness = .55 - .04f * m_answers.size();
-
-			for (int i = 0; i < m_answers.size(); i++)
+			if (answerBackdrop.valid)
 			{
-				Vector2 textsize = MeasureTextEx(*g_SmallFont.get(), std::string("* " + m_answers[i]).c_str(), g_SmallFont.get()->baseSize * 2.1, 1);
-				if (textsize.x > width)
-					width = textsize.x;
+				DrawRectangleRounded(answerBackdrop.box, answerBackdrop.roundness, 100, {0, 0, 0, 224});
 			}
 
-			DrawRectangleRounded({184, 130, width * 1.08f, height * 1.08f}, roundness, 100, {0, 0, 0, 224});
-
-			for (int i = 0; i < m_answers.size(); i++)
+			const float fontSize = g_SmallFont.get()->baseSize * 2.f;
+			for (const AnswerDrawInfo& item : answerItems)
 			{
-				// Check if first character is a letter and is lowercase
-				std::string capsAnswer = m_answers[i];
-				if (std::isalpha(static_cast<unsigned char>(capsAnswer[0])) &&
-					 std::islower(static_cast<unsigned char>(capsAnswer[0])))
-				{
-					capsAnswer[0] = std::toupper(static_cast<unsigned char>(capsAnswer[0]));
-				}
-
-				DrawOutlinedText(g_SmallFont, "* " + capsAnswer,
-								 {190, float(135 + (i * g_SmallFont.get()->baseSize * 2))}, g_SmallFont.get()->baseSize * 2,
-								 1, YELLOW);
+				DrawOutlinedText(g_SmallFont, item.displayText, {item.x, item.y}, fontSize, 1, YELLOW);
 			}
 		}
 	}

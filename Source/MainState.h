@@ -322,8 +322,11 @@ public:
 	bool IsNpcSchedulesEnabled() const;
 
 	void MaybeUpdatePartyFollowing();
+	// Drop companions' independent A* so they resume formation follow behind the Avatar.
+	void ClearPartyFollowPaths();
 
-	float  m_partySpacing = 1.0f;               // tiles between members in the line
+	float  m_partyBackSpacing = 1.5f;           // tiles behind Avatar per formation row
+	float  m_partySideSpacing = 1.25f;          // tiles left/right of Avatar facing
 	float  m_partyFollowStopDistance = 1.5f;    // idle when this close to formation slot
 	float  m_partyFollowWarpDistance = 25.0f;   // teleport if farther than this from Avatar
 
@@ -348,6 +351,8 @@ private:
 	void HandleAvatarMovement();
 	// After UpdateMovement may clear isMoving on same-frame Dest arrival.
 	void KeepAvatarWalkAnimIfSteering();
+	// Clear WASD Dest on key release without cancelling mouse-steer / click-paths.
+	void StopAvatarKeyboardSteer(U7Object* avatar);
 
 	// Mouse-hold detection (prevents quick clicks from triggering hold movement)
 	float m_rightMouseHoldStart = 0.0f;

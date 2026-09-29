@@ -936,6 +936,8 @@ void MainState::HandleRightDoubleClick()
 		{
 			avatar->ClearPendingUsecode(); // cancel walk-to-use
 			avatar->PathfindToDest({ objTileX + 0.5f, surfaceY, objTileZ + 0.5f });
+			// Party stays on formation follow (MaybeUpdatePartyFollowing), not their own click-paths.
+			ClearPartyFollowPaths();
 		}
 	}
 	else if (!g_mouseOverUI && !g_gumpManager->m_isMouseOverGump)
@@ -964,17 +966,8 @@ void MainState::HandleRightDoubleClick()
 		U7Object* avatar = g_objectList[g_NPCData[0]->m_objectID].get();
 		avatar->ClearPendingUsecode(); // cancel walk-to-use
 		avatar->PathfindToDest({ worldX + 0.5f, goalY, worldZ + 0.5f });
-
-		int counter = 1;
-		for (int id : g_Player->GetPartyMemberIds())
-		{
-			U7Object* partyMember = g_objectList[g_NPCData[id]->m_objectID].get();
-			if (id % 2 == 0)
-				partyMember->PathfindToDest({ worldX + counter + 0.5f, goalY, worldZ + counter + 0.5f });
-			else
-				partyMember->PathfindToDest({ worldX + counter + 0.5f, goalY, worldZ - counter + 0.5f });
-			counter++;
-		}
+		// Followers trail the Avatar via formation steering while he pathfinds.
+		ClearPartyFollowPaths();
 
 		if (worldX >= 0 && worldX < 3072 && worldZ >= 0 && worldZ < 3072)
 		{
@@ -1050,11 +1043,10 @@ void MainState::HandleRightMouseHoldMovement()
 		const float MAX_SPEED_MULT = 1.50f;
 		float t = std::fmin(std::fmax(dist / MAX_EFFECT_DISTANCE, 0.0f), 1.0f);
 		float speedMult = MIN_SPEED_MULT + (MAX_SPEED_MULT - MIN_SPEED_MULT) * t;
-		float baseSpeed = avatar->GetSpeed();
-		if (baseSpeed <= 0.0f) baseSpeed = 3.0f;
 
-		float dt = g_Engine->LastFrameInSeconds();
-		Vector3 desired = Vector3Add(avatar->GetPos(), Vector3Scale(dir, baseSpeed * speedMult * dt));
+		// Look-ahead Dest (scaled by hold distance); UpdateMovement rate-limits.
+		const float lookAhead = std::max(0.5f, 1.0f * speedMult);
+		Vector3 desired = Vector3Add(avatar->GetPos(), Vector3Scale(dir, lookAhead));
 		desired.x = std::fmax(0.0f, std::fmin(3072.0f, desired.x));
 		desired.z = std::fmax(0.0f, std::fmin(3072.0f, desired.z));
 		// Horizontal intent — TryMove/ValidateMove choose climb surfaces.
@@ -1312,7 +1304,6 @@ void MainState::HandleAvatarMovement()
 		U7Object* avatar = g_Player->GetAvatarObject();
 		if (!avatar) return;
 
-		float dt = g_Engine->LastFrameInSeconds();
 		Vector3 camForward = Vector3Subtract(g_camera.target, g_camera.position);
 		camForward.y = 0.0f;
 		if (Vector3Length(camForward) < 0.0001f)
@@ -1323,35 +1314,32 @@ void MainState::HandleAvatarMovement()
 		Vector3 flatForward = Vector3Normalize(camForward);
 		Vector3 right = Vector3Normalize(Vector3{ flatForward.z, 0.0f, -flatForward.x });
 
-		float speed = g_Player->GetAvatarObject()->GetSpeed();
 		Vector3 move = { 0.0f, 0.0f, 0.0f };
-		if (IsKeyDown(KEY_W)) move = Vector3Add(move, Vector3Scale(flatForward,  speed * dt));
-		if (IsKeyDown(KEY_S)) move = Vector3Add(move, Vector3Scale(flatForward, -speed * dt));
-		if (IsKeyDown(KEY_D)) move = Vector3Add(move, Vector3Scale(right,       -speed * dt));
-		if (IsKeyDown(KEY_A)) move = Vector3Add(move, Vector3Scale(right,        speed * dt));
+		if (IsKeyDown(KEY_W)) move = Vector3Add(move, flatForward);
+		if (IsKeyDown(KEY_S)) move = Vector3Add(move, Vector3Negate(flatForward));
+		if (IsKeyDown(KEY_D)) move = Vector3Add(move, Vector3Negate(right));
+		if (IsKeyDown(KEY_A)) move = Vector3Add(move, right);
 
 		if (move.x != 0.0f || move.z != 0.0f)
 		{
-			Vector3 finalDest = Vector3Add(g_Player->GetAvatarObject()->GetPos(), move);
+			move = Vector3Normalize(move);
+			// Look-ahead Dest; UpdateMovement rate-limits with m_speed*dt.
+			Vector3 finalDest = Vector3Add(avatar->GetPos(), Vector3Scale(move, 1.0f));
 			finalDest.x = std::fmax(0.0f, std::fmin(3072.0f, finalDest.x));
 			finalDest.z = std::fmax(0.0f, std::fmin(3072.0f, finalDest.z));
+			finalDest.y = avatar->GetPos().y;
 
 			if (g_Player)
 				g_Player->TryMove(finalDest);
 			else
-				g_Player->GetAvatarObject()->SetDest(finalDest);
+				avatar->SetDest(finalDest);
 
-			Vector3 flatForDir = Vector3Normalize(flatForward);
-			if (Vector3Length(flatForDir) > 0.0001f)
-			{
-				g_Player->GetAvatarObject()->m_Direction = flatForDir;
-			}
+			if (Vector3Length(move) > 0.0001f)
+				avatar->m_Direction = move;
 		}
-		else if (U7Object* avatar = g_Player->GetAvatarObject())
+		else
 		{
-			// Stop in place on key release — don't keep a Dest that can pull facing 180°.
-			avatar->SetDest(avatar->GetPos());
-			avatar->m_isMoving = false;
+			StopAvatarKeyboardSteer(avatar);
 		}
 	}
 	else
@@ -1359,45 +1347,52 @@ void MainState::HandleAvatarMovement()
 		// Rotation-based movement
 		Vector3 direction = { 0, 0, 0 };
 		bool avatarMoved = false;
-		//float speed = g_Player->GetAvatarObject()->GetSpeed() * g_Engine->LastUpdateInSeconds();
 
 		if (IsKeyDown(KEY_A)) { direction = Vector3Add(direction, { -1,  0, 1 }); avatarMoved = true; }
 		if (IsKeyDown(KEY_D)) { direction = Vector3Add(direction, {  1,  0, -1 }); avatarMoved = true; }
 		if (IsKeyDown(KEY_W)) { direction = Vector3Add(direction, { -1,  0, -1 }); avatarMoved = true; }
 		if (IsKeyDown(KEY_S)) { direction = Vector3Add(direction, {  1,  0,  1 }); avatarMoved = true; }
 
+		U7Object* avatar = g_Player->GetAvatarObject();
+		if (!avatar) return;
+
 		if (avatarMoved)
 		{
 			direction = Vector3RotateByAxisAngle(direction, Vector3{ 0, 1, 0 }, g_cameraRotation);
 			direction = Vector3Normalize(direction);
-			// Match mouse-steer: move by speed*dt, not a full tile per frame.
-			U7Object* avatar = g_Player->GetAvatarObject();
-			//  TODO: Figure out why we have to make this 2x speed.
-			float speed = avatar->GetSpeed() * 2;
-			double dt = g_Engine->LastFrameInSeconds();
-			Vector3 finalMovementVector = Vector3Scale(direction, speed * dt);
-			Vector3 desired = Vector3Add(avatar->GetPos(), finalMovementVector);
+			// Look-ahead goal only — UpdateMovement applies m_speed*dt toward Dest.
+			// Dest = Pos + speed*dt made the goal one frame away; same-frame arrival /
+			// ValidateMove then under-delivered travel (felt like ~half speed; *2 was a hack).
+			const float lookAhead = 1.0f;
+			Vector3 desired = Vector3Add(avatar->GetPos(), Vector3Scale(direction, lookAhead));
 			desired.x = std::fmax(0.0f, std::fmin(3072.0f, desired.x));
 			desired.z = std::fmax(0.0f, std::fmin(3072.0f, desired.z));
 			// Keep Y as feet; ValidateMove / TryMove pick climb surfaces (crates, etc.).
 			desired.y = avatar->GetPos().y;
 
-			bool moved = g_Player->TryMove(desired);
-			if (!moved) {
-				int breaker = 0; // CCCCCCOMBO BREAKER
-			}
+			g_Player->TryMove(desired);
 			if (Vector3Length(direction) > 0.0001f)
 				avatar->m_Direction = direction;
 		}
-		else if (U7Object* avatar = g_Player->GetAvatarObject())
+		else
 		{
-			// Stop in place on key release — don't keep a Dest that can pull facing 180°.
-			avatar->SetDest(avatar->GetPos());
-			avatar->m_isMoving = false;
+			StopAvatarKeyboardSteer(avatar);
 		}
 	}
 
 	MaybeUpdatePartyFollowing();
+}
+
+void MainState::StopAvatarKeyboardSteer(U7Object* avatar)
+{
+	if (!avatar)
+		return;
+	// WASD stop must not wipe right-hold Dest or double-click waypoints — that ran
+	// every frame with no keys and cancelled mouse move (turn in place, no walk).
+	if (m_rightMouseHeld || !avatar->m_pathWaypoints.empty() || avatar->m_pathfindingPending)
+		return;
+	avatar->SetDest(avatar->GetPos());
+	avatar->m_isMoving = false;
 }
 
 void MainState::KeepAvatarWalkAnimIfSteering()
@@ -1410,7 +1405,9 @@ void MainState::KeepAvatarWalkAnimIfSteering()
 
 	const bool steering =
 		IsKeyDown(KEY_W) || IsKeyDown(KEY_A) || IsKeyDown(KEY_S) || IsKeyDown(KEY_D) ||
-		m_rightMouseHeld;
+		m_rightMouseHeld ||
+		!avatar->m_pathWaypoints.empty() ||
+		avatar->m_pathfindingPending;
 	if (steering)
 		avatar->m_isMoving = true;
 }
@@ -3958,6 +3955,29 @@ bool MainState::IsNpcSchedulesEnabled() const
 	return m_npcSchedulesEnabled;
 }
 
+void MainState::ClearPartyFollowPaths()
+{
+	if (!g_Player)
+		return;
+	for (int npcId : g_Player->GetPartyMemberIds())
+	{
+		if (npcId == 0)
+			continue;
+		auto itNpc = g_NPCData.find(npcId);
+		if (itNpc == g_NPCData.end() || !itNpc->second)
+			continue;
+		auto itObj = g_objectList.find(itNpc->second->m_objectID);
+		if (itObj == g_objectList.end() || !itObj->second)
+			continue;
+		U7Object* member = itObj->second.get();
+		member->m_pathWaypoints.clear();
+		member->m_currentWaypointIndex = 0;
+		member->m_pathfindingPending = false;
+		member->m_isSchedulePath = false;
+		member->ClearPendingUsecode();
+	}
+}
+
 void MainState::MaybeUpdatePartyFollowing()
 {
 	// Continuous formation steering: each frame, retarget Dest toward a slot
@@ -3982,28 +4002,38 @@ void MainState::MaybeUpdatePartyFollowing()
 			dir = Vector3{ 0.0f, 0.0f, 1.0f };
 	}
 	dir = Vector3Normalize(dir);
+	// Right relative to facing (XZ): fan companions left/right behind the Avatar.
+	Vector3 right = Vector3{ dir.z, 0.0f, -dir.x };
 
 	const auto& party = g_Player->GetPartyMemberIds();
-	int counter = 1;
+	int companionSlot = 0;
 	for (int npcId : party)
 	{
-		if (npcId == 0) { ++counter; continue; }
+		if (npcId == 0)
+			continue;
 
 		auto itNpc = g_NPCData.find(npcId);
-		if (itNpc == g_NPCData.end() || !itNpc->second) { ++counter; continue; }
+		if (itNpc == g_NPCData.end() || !itNpc->second)
+			continue;
 		int objId = itNpc->second->m_objectID;
 		auto itObj = g_objectList.find(objId);
-		if (itObj == g_objectList.end() || !itObj->second) { ++counter; continue; }
+		if (itObj == g_objectList.end() || !itObj->second)
+			continue;
 		U7Object* member = itObj->second.get();
 
 		if (member->m_pathfindingPending)
 		{
-			++counter;
+			++companionSlot;
 			continue;
 		}
 
-		float offset = m_partySpacing * float(counter);
-		Vector3 desired = Vector3Subtract(avatarPos, Vector3Scale(dir, offset));
+		// Staggered V: slot0 left-back, slot1 right-back, slot2 further left-back, ...
+		const int row = companionSlot / 2;
+		const float back = m_partyBackSpacing * (1.0f + float(row));
+		const float side = m_partySideSpacing * ((companionSlot % 2 == 0) ? -1.0f : 1.0f);
+		Vector3 desired = Vector3Add(
+			Vector3Subtract(avatarPos, Vector3Scale(dir, back)),
+			Vector3Scale(right, side));
 		// Keep current feet height; UpdateMovement / ValidateMove resolve climbs.
 		desired.y = member->GetPos().y;
 
@@ -4025,7 +4055,7 @@ void MainState::MaybeUpdatePartyFollowing()
 			member->SetPos(desired);
 			member->SetDest(desired);
 			member->m_isMoving = false;
-			++counter;
+			++companionSlot;
 			continue;
 		}
 
@@ -4035,7 +4065,7 @@ void MainState::MaybeUpdatePartyFollowing()
 			member->m_currentWaypointIndex = 0;
 			member->SetDest(memberPos);
 			member->m_isMoving = false;
-			++counter;
+			++companionSlot;
 			continue;
 		}
 
@@ -4044,7 +4074,7 @@ void MainState::MaybeUpdatePartyFollowing()
 		{
 			if (member->m_moveStuckFrames >= 28)
 				member->PathfindToDest(desired);
-			++counter;
+			++companionSlot;
 			continue;
 		}
 
@@ -4055,7 +4085,7 @@ void MainState::MaybeUpdatePartyFollowing()
 		if (member->m_moveStuckFrames >= 20)
 			member->PathfindToDest(desired);
 
-		++counter;
+		++companionSlot;
 	}
 }
 

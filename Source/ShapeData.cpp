@@ -214,15 +214,15 @@ Vector3 ShapeData::GetFlatModelPosition(const Vector3& objectPos) const
 	//   z: [finalPos.z - m_Dims.z, finalPos.z]
 	// so texture top-left is (finalPos.x, finalPos.z - m_Dims.z).
 
+	// Lift flats above coplanar wall-tops/floors. The old y*1.01 lift was only
+	// ~0.04 at roof height and still lost depth tests along alpha-tested edges
+	// in locked isometric view (see-through cracks that shift while orbiting).
 	float y = objectPos.y;
-	if (y == 0)
+	if (y <= 0.0f)
 	{
-		y = .01f; // avoid z-fighting with terrain
+		y = 0.02f; // avoid z-fighting with terrain
 	}
-	else
-	{
-		y = y * 1.01f;
-	}
+	y += 0.12f;
 	y += m_TweakPos.y;
 
 	if (!m_hasHotspot)
@@ -250,6 +250,29 @@ Vector3 ShapeData::GetFlatModelPosition(const Vector3& objectPos) const
 		y,
 		topLeftZ + m_Dims.z // model origin is texture bottom-left
 	};
+}
+
+void ShapeData::GetFlatDrawTransform(const Vector3& pos, float angle, Vector3 scaling,
+                                     Vector3& outPos, Vector3& outScale, float& outRotation) const
+{
+	outPos = GetFlatModelPosition(pos);
+
+	// Planar size: texture dims × shape tweak scale × per-draw scale.
+	// Y scale is unused for thickness (plane stays flat); editor W→X, D→Z.
+	outScale = Vector3{
+		m_Dims.x * m_Scaling.x * scaling.x,
+		1.0f,
+		m_Dims.z * m_Scaling.z * scaling.z
+	};
+
+	// flat.obj spans z in [-scale.z, 0] from the model origin (texture bottom-left).
+	// GetFlatModelPosition places that origin using unscaled m_Dims.z, so increasing D
+	// would grow toward -Z (texture top / screen "up"). Re-anchor so the texture
+	// top-left stays fixed and depth grows in +Z (texture bottom / "down"), matching
+	// width which already grows +X (to the right) from a fixed left edge.
+	outPos.z += (outScale.z - m_Dims.z);
+
+	outRotation = m_rotation + angle;
 }
 
 void ShapeData::CaptureSpecialPaletteReferences(int posX, int posY, int paletteRef)
@@ -851,15 +874,11 @@ void ShapeData::DrawFlatIdClear(const Vector3& pos, float angle, Vector3 scaling
 		m_drawType != ShapeDrawType::OBJECT_DRAW_ANIMFLAT)
 		return;
 
-	// Match ShapeData::Draw flat placement / scale / rotation.
-	Vector3 finalPos = GetFlatModelPosition(pos);
-	const Vector3 flatScaling = Vector3{
-		m_Dims.x * m_Scaling.x * scaling.x,
-		1.0f,
-		m_Dims.z * m_Scaling.z * scaling.z
-	};
-	finalPos.z += (flatScaling.z - m_Dims.z);
-	const float flatRotation = m_rotation + angle;
+	// Match ShapeData::Draw flat placement / scale / rotation (incl. seam overlap).
+	Vector3 finalPos{};
+	Vector3 flatScaling{};
+	float flatRotation = 0.f;
+	GetFlatDrawTransform(pos, angle, scaling, finalPos, flatScaling, flatRotation);
 
 	Texture2D* alphaTex = nullptr;
 	if (m_hasPaletteAnim && m_indexTexture.id > 0)
@@ -949,25 +968,9 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 	case ShapeDrawType::OBJECT_DRAW_ANIMFLAT:
 	case ShapeDrawType::OBJECT_DRAW_FLAT:
 	{
-		// Hotspot-stable placement (includes m_TweakPos). Frames with the same xleft/yabove
-		// share one upper-left even when canvas size differs (e.g. shape 699/737 frame 5).
-		finalPos = GetFlatModelPosition(pos);
-
-		// Planar size: texture dims × shape tweak scale × per-draw scale.
-		// Y scale is unused for thickness (plane stays flat); editor W→X, D→Z.
-		const Vector3 flatScaling = Vector3{
-			m_Dims.x * m_Scaling.x * scaling.x,
-			1.0f,
-			m_Dims.z * m_Scaling.z * scaling.z
-		};
-		// flat.obj spans z in [-scale.z, 0] from the model origin (texture bottom-left).
-		// GetFlatModelPosition places that origin using unscaled m_Dims.z, so increasing D
-		// would grow toward -Z (texture top / screen "up"). Re-anchor so the texture
-		// top-left stays fixed and depth grows in +Z (texture bottom / "down"), matching
-		// width which already grows +X (to the right) from a fixed left edge.
-		finalPos.z += (flatScaling.z - m_Dims.z);
-		// Shape-editor rotation (degrees) plus object angle (usually 0 for statics).
-		const float flatRotation = m_rotation + angle;
+		Vector3 flatScaling{};
+		float flatRotation = 0.f;
+		GetFlatDrawTransform(pos, angle, scaling, finalPos, flatScaling, flatRotation);
 
 		if (m_drawType == ShapeDrawType::OBJECT_DRAW_ANIMFLAT
 			&& m_hasPaletteAnim && g_paletteSystemReady)

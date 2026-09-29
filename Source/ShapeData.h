@@ -99,6 +99,10 @@ public:
 	// Flat mesh origin for DrawModelEx so texture top-left stays hotspot-stable across frames.
 	Vector3 GetFlatModelPosition(const Vector3& objectPos) const;
 
+	// Final flat DrawModelEx transform: hotspot placement + scaling re-anchor.
+	void GetFlatDrawTransform(const Vector3& pos, float angle, Vector3 scaling,
+	                          Vector3& outPos, Vector3& outScale, float& outRotation) const;
+
 	bool IsValid() { return m_isValid; }
 	void SetPixelOffset(int offsetX, int offsetY);
 	void CaptureSpecialPaletteReferences(int posX, int posY, int paletteRef);

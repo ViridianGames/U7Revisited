@@ -1720,6 +1720,17 @@ void DrawGameWorld(bool drawObjects)
 		return a->m_ID < b->m_ID;
 	};
 
+	auto isFlatDraw = [](const U7Object* object) {
+		if (!object)
+			return false;
+		// Prefer the shape's draw type so sorting matches ShapeData::Draw.
+		const ShapeDrawType t = object->m_shapeData
+			? object->m_shapeData->GetDrawType()
+			: object->m_drawType;
+		return t == ShapeDrawType::OBJECT_DRAW_FLAT ||
+			t == ShapeDrawType::OBJECT_DRAW_ANIMFLAT;
+	};
+
 	auto isRugFlat = [](const U7Object* object) {
 		if (!object || !object->m_objectData)
 			return false;
@@ -1742,7 +1753,7 @@ void DrawGameWorld(bool drawObjects)
 	{
 		if (!object)
 			continue;
-		if (object->m_drawType == ShapeDrawType::OBJECT_DRAW_FLAT)
+		if (isFlatDraw(object))
 		{
 			if (isRugFlat(object))
 				rugs.push_back(object);
@@ -1771,19 +1782,25 @@ void DrawGameWorld(bool drawObjects)
 	{
 		if (!object)
 			continue;
-		if (object->m_drawType == ShapeDrawType::OBJECT_DRAW_FLAT)
+		if (isFlatDraw(object))
 			continue;
 		if (object->m_drawType == ShapeDrawType::OBJECT_DRAW_CUSTOM_MESH_DEFER)
 			continue;
 		object->Draw();
 	}
 
-	// Other flats: depth-write off so coplanar roofs/floors do not fight each other.
+	// Other flats: painter's algorithm over the already-drawn scene.
+	// Depth-write off keeps coplanar roofs from fighting each other; depth-test
+	// off stops wall-tops/floors from punching see-through cracks through
+	// alpha-tested diamond edges (especially visible in locked isometric view).
+	// Stable world sort above keeps flat-vs-flat order camera-independent.
 	glEnable(GL_POLYGON_OFFSET_FILL);
-	glPolygonOffset(-1.0f, -1.0f);
+	glPolygonOffset(-2.0f, -8.0f);
 	rlDisableDepthMask();
+	rlDisableDepthTest();
 	for (U7Object* object : flats)
 		object->Draw();
+	rlEnableDepthTest();
 	rlEnableDepthMask();
 	glDisable(GL_POLYGON_OFFSET_FILL);
 
