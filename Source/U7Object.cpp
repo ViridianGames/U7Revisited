@@ -3846,6 +3846,8 @@ void U7Object::NPCInit(NPCData* npcData)
 	m_anchorPos = m_Pos;
 	m_hp = npcData->health;
 	m_BaseMaxHP = npcData->health;
+	// Max mana equals Magic; start fully topped up.
+	m_mana = float(npcData->magic);
 
 	// Assign contiguous batch index if not already set (preserve any value restored from save)
 	if (m_npcBatchIndex < 0)
@@ -3925,6 +3927,7 @@ json U7Object::SaveToJson() const
 	if (m_UnitType == UnitTypes::UNIT_TYPE_NPC || m_UnitType == UnitTypes::UNIT_TYPE_MONSTER)
 	{
 		j["hp"] = m_hp;
+		j["mana"] = m_mana;
 		j["combat"] = m_combat;
 		j["magic"] = m_magic;
 		j["team"] = m_Team;
@@ -4107,8 +4110,9 @@ U7Object* U7Object::LoadFromJson(const json& j)
 			Log("LoadFromJson: WARNING - no NPCData for npcID " + std::to_string(obj->m_NPCID));
 		}
 
-		// Apply saved combat stats AFTER NPCInit (which sets template HP).
+		// Apply saved combat stats AFTER NPCInit (which sets template HP/mana).
 		obj->m_hp = j.value("hp", obj->m_hp);
+		obj->m_mana = j.value("mana", obj->m_mana);
 		obj->m_combat = j.value("combat", obj->m_combat);
 		obj->m_magic = j.value("magic", obj->m_magic);
 		obj->m_Team = j.value("team", obj->m_Team);
@@ -4119,6 +4123,7 @@ U7Object* U7Object::LoadFromJson(const json& j)
 		// Rebuild walk textures / combat defaults, then apply saved stats.
 		obj->MonsterInit();
 		obj->m_hp = j.value("hp", 25.0f);
+		obj->m_mana = j.value("mana", 0.0f);
 		obj->m_combat = j.value("combat", 10.0f);
 		obj->m_magic = j.value("magic", 0.0f);
 		obj->m_Team = j.value("team", 0);

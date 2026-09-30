@@ -325,8 +325,8 @@ public:
 	// Drop companions' independent A* so they resume formation follow behind the Avatar.
 	void ClearPartyFollowPaths();
 
-	float  m_partyBackSpacing = 1.5f;           // tiles behind Avatar per formation row
-	float  m_partySideSpacing = 1.25f;          // tiles left/right of Avatar facing
+	float  m_partyBackSpacing = 2.25f;          // tiles behind Avatar per pyramid row
+	float  m_partySideSpacing = 1.75f;          // lateral unit for pyramid outer half-width
 	float  m_partyFollowStopDistance = 1.5f;    // idle when this close to formation slot
 	float  m_partyFollowWarpDistance = 25.0f;   // teleport if farther than this from Avatar
 

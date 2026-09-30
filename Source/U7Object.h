@@ -305,6 +305,7 @@ public:
 		  , m_BaseTeam(0.0f)
 		  , m_speed(0.0f)
 		  , m_hp(0.0f)
+		  , m_mana(0.0f)
 		  , m_combat(0.0f)
 		  , m_magic(0.0f)
 		  , m_Team(0)
@@ -585,6 +586,7 @@ public:
 
 	float m_speed;
 	float m_hp;
+	float m_mana; // Current mana; max is Magic (NPCData::magic / player magic)
 	float m_combat;
 	float m_magic;
 	int m_Team;

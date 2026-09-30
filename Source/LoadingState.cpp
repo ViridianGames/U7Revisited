@@ -2471,16 +2471,39 @@ void LoadingState::LoadInitialGameState()
             g_objectList[nextID].get()->m_isContainer = true;
             g_objectList[nextID].get()->m_hasConversationTree = true;
 
+				// Property block matches Exult Actor::read (original BG layout):
+				//   str, dex, iq, combat, schedule_type, attack_mode,
+				//   charmalign, unk0, unk1, then magic_val|mana_val as u16.
+				// Only NPC 0 (Avatar) stores Magic/Mana in those last bytes;
+				// other NPCs use them for ident/flags — Magic and Mana are 0.
 				thisNPC.str = ReadU8(subFiles);
 				thisNPC.dex = ReadU8(subFiles);
 				thisNPC.iq = ReadU8(subFiles);
 				thisNPC.combat = ReadU8(subFiles);
-				thisNPC.magic = ReadU8(subFiles);
-				thisNPC.DAM = ReadU8(subFiles);
+				const unsigned char scheduleType = ReadU8(subFiles); // not Magic
+				thisNPC.DAM = ReadU8(subFiles); // attack mode
 
-				subFiles.read(thisNPC.soak1, 3);
+				subFiles.read(thisNPC.soak1, 3); // charmalign, unk0, unk1
 
 				thisNPC.status2 = ReadU16(subFiles);
+				const unsigned char magic_val = thisNPC.status2 & 0xFF;
+				const unsigned char mana_val = (thisNPC.status2 >> 8) & 0xFF;
+				unsigned char initialMana = 0;
+				if (i == 0)
+				{
+					// Avatar: Magic = max mana; current mana clamped to max.
+					thisNPC.magic = magic_val & 0x1f;
+					initialMana = mana_val & 0x1f;
+					if (initialMana > thisNPC.magic)
+						initialMana = thisNPC.magic;
+				}
+				else
+				{
+					thisNPC.magic = 0;
+					initialMana = 0;
+				}
+				(void)scheduleType; // current schedule; activity comes from schedule.dat / acty
+
 				thisNPC.id = ReadU8(subFiles);
 				thisNPC.id = i;
 
@@ -2537,6 +2560,8 @@ void LoadingState::LoadInitialGameState()
 				g_NPCData[thisNPC.id]->m_lastActivity = -1;
 
 				g_objectList[nextID].get()->NPCInit(g_NPCData[thisNPC.id].get());
+				// NPCInit tops mana to Magic; apply the file's current mana (0 for non-Avatar).
+				g_objectList[nextID].get()->m_mana = float(initialMana);
 				if (!_is8Way)
 				{
 					g_objectList[nextID].get()->m_drawType = ShapeDrawType::OBJECT_DRAW_FLAT;

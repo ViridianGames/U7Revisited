@@ -156,7 +156,7 @@ void GumpStats::OnEnter()
 				}
 			}
 
-			// Update HITS
+			// Update HITS (current/max; max = Strength)
 			int hitsTextID = m_serializer->GetElementID("HITS");
 			if (hitsTextID != -1)
 			{
@@ -164,12 +164,15 @@ void GumpStats::OnEnter()
 				if (hitsElement && hitsElement->m_Type == GUI_TEXTAREA)
 				{
 					auto hitsText = static_cast<GuiTextArea*>(hitsElement.get());
-					// TODO: Get actual health from NPC properties
-					hitsText->m_String = "?";
+					int hitsCurrent = 0;
+					U7Object* npcObject = g_objectList[npcData->m_objectID].get();
+					if (npcObject)
+						hitsCurrent = static_cast<int>(npcObject->m_hp);
+					hitsText->m_String = std::to_string(hitsCurrent) + "/" + std::to_string(static_cast<int>(npcData->str));
 				}
 			}
 
-			// Update MANA
+			// Update MANA (current/max; max = Magic)
 			int manaTextID = m_serializer->GetElementID("MANA");
 			if (manaTextID != -1)
 			{
@@ -177,8 +180,11 @@ void GumpStats::OnEnter()
 				if (manaElement && manaElement->m_Type == GUI_TEXTAREA)
 				{
 					auto manaText = static_cast<GuiTextArea*>(manaElement.get());
-					// TODO: Get actual mana from NPC properties
-					manaText->m_String = "?";
+					int manaCurrent = 0;
+					U7Object* npcObject = g_objectList[npcData->m_objectID].get();
+					if (npcObject)
+						manaCurrent = static_cast<int>(npcObject->m_mana);
+					manaText->m_String = std::to_string(manaCurrent) + "/" + std::to_string(static_cast<int>(npcData->magic));
 				}
 			}
 
@@ -194,7 +200,7 @@ void GumpStats::OnEnter()
 				}
 			}
 
-			// Update LVL
+			// Update LVL (Exult: 1 + floor(log2(exp / 50)))
 			int lvlTextID = m_serializer->GetElementID("LVL");
 			if (lvlTextID != -1)
 			{
@@ -202,8 +208,18 @@ void GumpStats::OnEnter()
 				if (lvlElement && lvlElement->m_Type == GUI_TEXTAREA)
 				{
 					auto lvlText = static_cast<GuiTextArea*>(lvlElement.get());
-					// TODO: Calculate level from XP or add level field to NPCData
-					lvlText->m_String = "?";
+					unsigned int xp = npcData->xp;
+					int level = 1;
+					if (xp >= 50)
+					{
+						unsigned int n = xp / 50;
+						while (n > 1)
+						{
+							n >>= 1;
+							++level;
+						}
+					}
+					lvlText->m_String = std::to_string(level);
 				}
 			}
 

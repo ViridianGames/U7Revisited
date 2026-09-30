@@ -39,8 +39,11 @@ void GumpPaperdoll::Init(const std::string& data)
 void GumpPaperdoll::Setup(int npcId)
 {
 	m_npcId = npcId;
-	// Map NPC ID to paperdoll type
-	// NPC IDs: 0=Avatar, 1=Iolo, 2=Shamino, 3=Dupre, 4=Spark, 5=Sentri, 6=Tseramed, 7=Jaana, 8=Katrina, 9=Julia
+	// Map NPC ID to paperdoll type. IDs match npc_*.lua / npc.dat order
+	// (npc_spark_0002, npc_shamino_0003, npc_dupre_0004, …) — not Exult's
+	// alternate companion ordering.
+	// 0=Avatar, 1=Iolo, 2=Spark, 3=Shamino, 4=Dupre, 5=Jaana,
+	// 7=Sentri, 8=Julia, 9=Katrina, 10=Tseramed
 	switch (npcId)
 	{
 	case 0:  // Avatar
@@ -52,29 +55,29 @@ void GumpPaperdoll::Setup(int npcId)
 	case 1:  // Iolo
 		m_paperdollType = static_cast<int>(PaperdollType::PAPERDOLL_IOLO);
 		break;
-	case 2:  // Shamino
-		m_paperdollType = static_cast<int>(PaperdollType::PAPERDOLL_SHAMINO);
-		break;
-	case 3:  // Dupre
-		m_paperdollType = static_cast<int>(PaperdollType::PAPERDOLL_DUPRE);
-		break;
-	case 4:  // Spark
+	case 2:  // Spark
 		m_paperdollType = static_cast<int>(PaperdollType::PAPERDOLL_SPARK);
 		break;
-	case 5:  // Sentri
-		m_paperdollType = static_cast<int>(PaperdollType::PAPERDOLL_SENTRI);
+	case 3:  // Shamino
+		m_paperdollType = static_cast<int>(PaperdollType::PAPERDOLL_SHAMINO);
 		break;
-	case 6:  // Tseramed
-		m_paperdollType = static_cast<int>(PaperdollType::PAPERDOLL_TSERAMED);
+	case 4:  // Dupre
+		m_paperdollType = static_cast<int>(PaperdollType::PAPERDOLL_DUPRE);
 		break;
-	case 7:  // Jaana
+	case 5:  // Jaana
 		m_paperdollType = static_cast<int>(PaperdollType::PAPERDOLL_JAANA);
 		break;
-	case 8:  // Katrina
+	case 7:  // Sentri
+		m_paperdollType = static_cast<int>(PaperdollType::PAPERDOLL_SENTRI);
+		break;
+	case 8:  // Julia
+		m_paperdollType = static_cast<int>(PaperdollType::PAPERDOLL_JULIA);
+		break;
+	case 9:  // Katrina
 		m_paperdollType = static_cast<int>(PaperdollType::PAPERDOLL_KATRINA);
 		break;
-	case 9:  // Julia
-		m_paperdollType = static_cast<int>(PaperdollType::PAPERDOLL_JULIA);
+	case 10: // Tseramed
+		m_paperdollType = static_cast<int>(PaperdollType::PAPERDOLL_TSERAMED);
 		break;
 	default:
 		// Unknown NPC, default to Iolo paperdoll

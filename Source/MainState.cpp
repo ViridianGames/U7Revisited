@@ -72,6 +72,117 @@ namespace
 
 		poolsInRange = std::move(currentlyInRange);
 	}
+
+	// Party selector: vertical stretchbuttons left of the stats panel.
+	// Stats texture is drawn at 512,200; the main box body starts ~25px in
+	// (a gray tab protrudes left near the bottom). Align buttons to the box.
+	constexpr float kStatsPanelX = 512.0f;
+	constexpr float kStatsPanelBoxLeftInset = 25.0f;
+	// +2 nudges the column slightly into the box edge for a tighter visual fit.
+	constexpr float kStatsPanelBoxLeft = kStatsPanelX + kStatsPanelBoxLeftInset + 2.0f;
+	constexpr float kPartyNameBtnTop = 200.0f;
+	constexpr float kPartyNameBtnHeight = 12.0f; // matches Active/Inactive stretchbutton sprites
+	constexpr float kPartyNameBtnMinWidth = 56.0f;
+	constexpr float kPartyNameBtnMaxWidth = 88.0f;
+
+	std::string PartyMemberDisplayName(int npcId)
+	{
+		if (!g_Player)
+			return "Unknown";
+		if (npcId == 0)
+		{
+			const std::string name = g_Player->GetPlayerName();
+			return name.empty() ? "Avatar" : name;
+		}
+		auto it = g_NPCData.find(npcId);
+		if (it != g_NPCData.end() && it->second)
+			return it->second->name;
+		return "Unknown";
+	}
+
+	// Fixed width for every party name stretchbutton (widest label + cap padding).
+	float MeasurePartyNameColumnWidth()
+	{
+		if (!g_Player || !g_SmallFont)
+			return kPartyNameBtnMinWidth;
+
+		Font* font = g_SmallFont.get();
+		const float fontSize = float(font->baseSize);
+		const float capPad = 8.0f; // left+right stretch caps are 4px each
+		float maxW = kPartyNameBtnMinWidth;
+		for (int npcId : g_Player->GetPartyMemberIds())
+		{
+			const std::string name = PartyMemberDisplayName(npcId);
+			const float textW = MeasureTextEx(*font, name.c_str(), fontSize, 1).x;
+			const float btnW = textW + capPad + 4.0f;
+			if (btnW > maxW)
+				maxW = btnW;
+		}
+		if (maxW > kPartyNameBtnMaxWidth)
+			maxW = kPartyNameBtnMaxWidth;
+		return maxW;
+	}
+
+	// Unscaled render-space rect for party-member slot index (0 = top).
+	// Right edge sits flush against the stats box body (not the bottom tab).
+	Rectangle PartyNameButtonRect(int slotIndex, float columnWidth)
+	{
+		return Rectangle{
+			kStatsPanelBoxLeft - columnWidth,
+			kPartyNameBtnTop + float(slotIndex) * kPartyNameBtnHeight,
+			columnWidth,
+			kPartyNameBtnHeight
+		};
+	}
+
+	void DrawPartyNameStretchButton(float x, float y, float width, const std::string& label, bool selected)
+	{
+		std::shared_ptr<Sprite> left = selected ? g_ActiveButtonL : g_InactiveButtonL;
+		std::shared_ptr<Sprite> mid = selected ? g_ActiveButtonM : g_InactiveButtonM;
+		std::shared_ptr<Sprite> right = selected ? g_ActiveButtonR : g_InactiveButtonR;
+		if (!left || !mid || !right)
+			return;
+
+		const float leftW = left->m_sourceRect.width;
+		const float rightW = right->m_sourceRect.width;
+		const float height = left->m_sourceRect.height;
+		const float centerW = width - leftW - rightW;
+		const Color tint = selected ? WHITE : Color{ 128, 128, 128, 255 };
+
+		left->DrawScaled(Rectangle{ x, y, leftW, height }, Vector2{ 0, 0 }, 0, tint);
+		if (centerW > 0.0f)
+			mid->DrawScaled(Rectangle{ x + leftW, y, centerW, height }, Vector2{ 0, 0 }, 0, tint);
+		right->DrawScaled(Rectangle{ x + leftW + centerW, y, rightW, height }, Vector2{ 0, 0 }, 0, tint);
+
+		DrawStringCentered(g_SmallFont.get(), g_SmallFont->baseSize, label,
+			Vector2{ x + width * 0.5f, y + height * 0.6f },
+			selected ? WHITE : Color{ 180, 180, 180, 255 });
+	}
+
+	// Exult: level = 1 + floor(log2(exp / 50)); exp < 50 → level 1.
+	int LevelFromExperience(unsigned int xp)
+	{
+		if (xp < 50)
+			return 1;
+		unsigned int n = xp / 50;
+		int level = 1;
+		while (n > 1)
+		{
+			n >>= 1;
+			++level;
+		}
+		return level;
+	}
+
+	// Right-justify a stats-panel value against the panel's inner right edge.
+	constexpr float kStatsValueRight = 638.0f;
+
+	void DrawStatsValueRight(const std::string& text, float y)
+	{
+		const float fontSize = float(g_SmallFont.get()->baseSize);
+		const float width = MeasureTextEx(*g_SmallFont, text.c_str(), fontSize, 1).x;
+		DrawOutlinedText(g_SmallFont, text, { kStatsValueRight - width, y }, fontSize, 1, WHITE);
+	}
 }
 
 #include <list>
@@ -329,7 +440,7 @@ void MainState::OnEnter()
 	else
 	{
 		m_paused = false;
-		g_Player->AddPartyMember(1);
+		g_Player->AddPartyMember(1); // Iolo only; Spark is NPC 2 and must not auto-join
 
 		// SpawnMonster(14, 1044.0f, 0.0f, 2182.0f);
 		// SpawnMonster(14, 1042.0f, 0.0f, 2180.0f);
@@ -455,6 +566,16 @@ void MainState::CalculateMouseOverUI()
 	// Stats panel (right side) - drawn at (512, 200), background is 133x136
 	Rectangle statsPanelRect = { 512 * g_DrawScale, 200 * g_DrawScale, 133 * g_DrawScale, 136 * g_DrawScale };
 
+	// Party name stretchbuttons flush against the stats box body (not the bottom tab)
+	const float partyColW = MeasurePartyNameColumnWidth();
+	const int partyCount = g_Player ? int(g_Player->GetPartyMemberIds().size()) : 0;
+	Rectangle partyNamesRect = {
+		(kStatsPanelBoxLeft - partyColW) * g_DrawScale,
+		kPartyNameBtnTop * g_DrawScale,
+		partyColW * g_DrawScale,
+		float(partyCount) * kPartyNameBtnHeight * g_DrawScale
+	};
+
 	// Minimap (top-right corner)
 	Rectangle minimapRect = {
 		g_Engine->m_ScreenWidth - (g_minimapSize * g_DrawScale),
@@ -473,6 +594,7 @@ void MainState::CalculateMouseOverUI()
 
 	Vector2 mousePos = GetMousePosition();
 	bool overStats = g_InputSystem->IsMouseInRegion(statsPanelRect);
+	bool overPartyNames = partyCount > 0 && g_InputSystem->IsMouseInRegion(partyNamesRect);
 	bool overMinimap = g_InputSystem->IsMouseInRegion(minimapRect);
 	bool overCharPanel = g_InputSystem->IsMouseInRegion(charPanelRect);
 
@@ -492,7 +614,7 @@ void MainState::CalculateMouseOverUI()
 		overNpcList = CheckCollisionPointRec(mousePos, npcListRect);
 	}
 
-	g_mouseOverUI = overStats || overMinimap || overCharPanel || overDebugTools || overNpcList || m_demoHelpScreen->m_Active || m_sandboxHelpScreen->m_Active;
+	g_mouseOverUI = overStats || overPartyNames || overMinimap || overCharPanel || overDebugTools || overNpcList || m_demoHelpScreen->m_Active || m_sandboxHelpScreen->m_Active;
 }
 
 void MainState::UpdateInput()
@@ -1631,11 +1753,10 @@ void MainState::DrawObjectInfoTooltip()
 	const float boxWidth = maxTextWidth + padX * 2;
 	const float boxHeight = fontSize * lineCount + lineGap * (lineCount - 1) + padY * 2;
 
-	// Party portraits start at render X 498 (538 - 40). Sit just left of that,
-	// bottom-aligned in the playable area (above the version string at y=340).
-	constexpr float kPartyColumnLeft = 498.0f;
+	// Sit just left of the party name stretchbutton column, bottom-aligned above the version string.
+	const float partyColumnLeft = kStatsPanelBoxLeft - MeasurePartyNameColumnWidth();
 	constexpr float kTooltipGap = 8.0f;
-	const float boxX = kPartyColumnLeft - kTooltipGap - boxWidth;
+	const float boxX = partyColumnLeft - kTooltipGap - boxWidth;
 	const float boxY = 336.0f - boxHeight;
 
 	DrawRectangle(static_cast<int>(boxX), static_cast<int>(boxY),
@@ -3452,8 +3573,10 @@ void MainState::DrawStats()
 	int combat;
 	int magic;
 	int trainingpoints;
+	unsigned int xp = 0;
+	const int selectedNpcId = g_Player->GetSelectedPartyMember();
 
-	if (g_Player->GetSelectedPartyMember() == 0) // Avatar
+	if (selectedNpcId == 0) // Avatar
 	{
 		str = g_Player->GetStr();
 		dex = g_Player->GetDex();
@@ -3466,70 +3589,97 @@ void MainState::DrawStats()
 	}
 	else
 	{
-		str = g_NPCData[g_Player->GetSelectedPartyMember()]->str;
-		dex = g_NPCData[g_Player->GetSelectedPartyMember()]->dex;
-		iq = g_NPCData[g_Player->GetSelectedPartyMember()]->iq;
-		combat = g_NPCData[g_Player->GetSelectedPartyMember()]->combat;
-		magic = g_NPCData[g_Player->GetSelectedPartyMember()]->magic;
-		trainingpoints = g_NPCData[g_Player->GetSelectedPartyMember()]->training;
+		str = g_NPCData[selectedNpcId]->str;
+		dex = g_NPCData[selectedNpcId]->dex;
+		iq = g_NPCData[selectedNpcId]->iq;
+		combat = g_NPCData[selectedNpcId]->combat;
+		magic = g_NPCData[selectedNpcId]->magic;
+		trainingpoints = g_NPCData[selectedNpcId]->training;
 
-		DrawOutlinedText(g_SmallFont, g_NPCData[g_Player->GetSelectedPartyMember()]->name, { 546, 206 }, g_SmallFont.get()->baseSize, 1, WHITE);
+		DrawOutlinedText(g_SmallFont, g_NPCData[selectedNpcId]->name, { 546, 206 }, g_SmallFont.get()->baseSize, 1, WHITE);
 	}
 
-	int yoffset = g_SmallFont.get()->baseSize;
-	DrawOutlinedText(g_SmallFont, to_string(str), { 622, 208.0f + yoffset }, g_SmallFont.get()->baseSize, 1, WHITE);
-	DrawOutlinedText(g_SmallFont, to_string(dex), { 622, 208.0f + 2 * yoffset }, g_SmallFont.get()->baseSize, 1, WHITE);
-	DrawOutlinedText(g_SmallFont, to_string(iq), { 622, 208.0f + 3 * yoffset }, g_SmallFont.get()->baseSize, 1, WHITE);
-	DrawOutlinedText(g_SmallFont, to_string(combat), { 622, 208.0f + 4 * yoffset + 2 }, g_SmallFont.get()->baseSize, 1, WHITE);
-	DrawOutlinedText(g_SmallFont, to_string(magic), { 622, 208.0f + 5 * yoffset + 2 }, g_SmallFont.get()->baseSize, 1, WHITE);
-	DrawOutlinedText(g_SmallFont, to_string(trainingpoints), { 622, 208.0f + 10 * yoffset + 6 }, g_SmallFont.get()->baseSize, 1, WHITE);
-
-	//  Draw party members
-	int counter = 0;
-	for (int i = 0; i < g_Player->GetPartyMemberIds().size(); ++i)
+	int hitsCurrent = 0;
+	int manaCurrent = 0;
+	auto selectedNpcIt = g_NPCData.find(selectedNpcId);
+	if (selectedNpcIt != g_NPCData.end() && selectedNpcIt->second)
 	{
-		Texture* thisTexture = nullptr;
-		if (i == 0 && !g_Player->GetIsMale()) // Avatar is always a special case
+		xp = selectedNpcIt->second->xp;
+		auto selectedObjIt = g_objectList.find(selectedNpcIt->second->m_objectID);
+		if (selectedObjIt != g_objectList.end() && selectedObjIt->second)
 		{
-			thisTexture = g_ResourceManager->GetTexture("U7FACES" + to_string(i) + to_string(1));
+			hitsCurrent = int(selectedObjIt->second->m_hp);
+			manaCurrent = int(selectedObjIt->second->m_mana);
 		}
-		else
-		{
-			thisTexture = g_ResourceManager->GetTexture("U7FACES" + to_string(i) + to_string(0));
-		}
+	}
+	// U7: max Hits = Strength, max Mana = Magic.
+	const int hitsMax = str;
+	const int manaMax = magic;
+	const int level = LevelFromExperience(xp);
 
-		DrawTexturePro(*thisTexture, { float(thisTexture->width - 40) / 2.0f, float(thisTexture->height - 40) / 2.0f, 40, 40 }, { 538.0f - 40, 200.0f + 40.0f * counter, 40, 40 }, { 0, 0 }, 0, WHITE);
-		if (g_Player->GetPartyMemberIds()[i] != g_Player->GetSelectedPartyMember())
-		{
-			DrawRectangle(538.0f - 40, 200.0f + 40.0f * counter, 40, 40, { 0, 0, 0, 128 });
-		}
-		++counter;
+	int yoffset = g_SmallFont.get()->baseSize;
+	DrawStatsValueRight(to_string(str), 208.0f + yoffset);
+	DrawStatsValueRight(to_string(dex), 208.0f + 2 * yoffset);
+	DrawStatsValueRight(to_string(iq), 208.0f + 3 * yoffset);
+	DrawStatsValueRight(to_string(combat), 208.0f + 4 * yoffset + 2);
+	DrawStatsValueRight(to_string(magic), 208.0f + 5 * yoffset + 2);
+	DrawStatsValueRight(to_string(hitsCurrent) + "/" + to_string(hitsMax), 208.0f + 6 * yoffset + 3);
+	DrawStatsValueRight(to_string(manaCurrent) + "/" + to_string(manaMax), 208.0f + 7 * yoffset + 4);
+	DrawStatsValueRight(to_string(xp), 208.0f + 8 * yoffset + 5);
+	DrawStatsValueRight(to_string(level), 208.0f + 9 * yoffset + 5);
+	DrawStatsValueRight(to_string(trainingpoints), 208.0f + 10 * yoffset + 6);
+
+	// Party member name stretchbuttons — fixed-width column flush to the stats box body.
+	const float partyColW = MeasurePartyNameColumnWidth();
+	for (int i = 0; i < int(g_Player->GetPartyMemberIds().size()); ++i)
+	{
+		const int npcId = g_Player->GetPartyMemberIds()[i];
+		const Rectangle btn = PartyNameButtonRect(i, partyColW);
+		const bool selected = (npcId == g_Player->GetSelectedPartyMember());
+		DrawPartyNameStretchButton(btn.x, btn.y, btn.width, PartyMemberDisplayName(npcId), selected);
 	}
 
 	DrawOutlinedText(g_SmallFont, "Gold: " + to_string(g_Player->GetGold()), { 542, 208.0f + 11 * yoffset + 8 }, g_SmallFont.get()->baseSize, 1, WHITE);
-	U7Object* avatarObject = g_objectList[g_NPCData[0]->m_objectID].get();
-	DrawOutlinedText(g_SmallFont, "Weight: " + to_string(int(avatarObject->GetWeight())) + "/" + to_string(int(g_Player->GetMaxWeight())), { 542, 208.0f + 12 * yoffset + 9 }, g_SmallFont.get()->baseSize, 1, WHITE);
+
+	// Weight for the currently selected party member (current / max from their strength).
+	int currentWeight = 0;
+	int maxWeight = int(GetMaxWeightFromStrength(str));
+	if (selectedNpcIt != g_NPCData.end() && selectedNpcIt->second)
+	{
+		auto selectedObjIt = g_objectList.find(selectedNpcIt->second->m_objectID);
+		if (selectedObjIt != g_objectList.end() && selectedObjIt->second)
+			currentWeight = int(selectedObjIt->second->GetWeight());
+	}
+	DrawOutlinedText(g_SmallFont, "Weight: " + to_string(currentWeight) + "/" + to_string(maxWeight), { 542, 208.0f + 12 * yoffset + 9 }, g_SmallFont.get()->baseSize, 1, WHITE);
+
+	// Backpack icon — click handled in UpdateStats (opens selected member's inventory).
+	if (Texture* backpackTex = g_shapeTable[801][0].GetTexture())
+		DrawTextureEx(*backpackTex, Vector2{ 610, 314 }, 0, 1, WHITE);
 }
 
 void MainState::UpdateStats()
 {
-	int counter = 0;
-	for (int i = 0; i < g_Player->GetPartyMemberIds().size(); ++i)
+	const float partyColW = MeasurePartyNameColumnWidth();
+	for (int i = 0; i < int(g_Player->GetPartyMemberIds().size()); ++i)
 	{
-		Texture* thisTexture = g_ResourceManager->GetTexture("U7FACES" + to_string(i) + to_string(0));
-		Rectangle portraitRect = { (538.0f - thisTexture->width) * g_DrawScale, (200.0f + 40.0f * counter) * g_DrawScale, thisTexture->width * g_DrawScale, thisTexture->height * g_DrawScale };
+		const int npcId = g_Player->GetPartyMemberIds()[i];
+		const Rectangle logical = PartyNameButtonRect(i, partyColW);
+		const Rectangle hitRect = {
+			logical.x * g_DrawScale,
+			logical.y * g_DrawScale,
+			logical.width * g_DrawScale,
+			logical.height * g_DrawScale
+		};
 
-		// Check for double-click to toggle paperdoll
-		if (g_InputSystem->WasLButtonDoubleClicked() && CheckCollisionPointRec(GetMousePosition(), portraitRect))
+		// Double-click still opens/closes that member's paperdoll.
+		if (g_InputSystem->WasLButtonDoubleClicked() && CheckCollisionPointRec(GetMousePosition(), hitRect))
 		{
-			TogglePaperdoll(g_Player->GetPartyMemberIds()[i]);
+			TogglePaperdoll(npcId);
 		}
-		// Check for single click to select party member
-		else if (g_InputSystem->WasLButtonClickedInRegion(portraitRect.x, portraitRect.y, portraitRect.width, portraitRect.height))
+		else if (g_InputSystem->WasLButtonClickedInRegion(hitRect.x, hitRect.y, hitRect.width, hitRect.height))
 		{
-			g_Player->SetSelectedPartyMember(g_Player->GetPartyMemberIds()[i]);
+			g_Player->SetSelectedPartyMember(npcId);
 		}
-		++counter;
 	}
 
 	if (g_InputSystem->WasLButtonClickedInRegion(610 * g_DrawScale, 314 * g_DrawScale, 16 * g_DrawScale, 10 * g_DrawScale ))
@@ -4005,6 +4155,25 @@ void MainState::MaybeUpdatePartyFollowing()
 	// Right relative to facing (XZ): fan companions left/right behind the Avatar.
 	Vector3 right = Vector3{ dir.z, 0.0f, -dir.x };
 
+	// Pyramid behind Avatar (companion slots only): 2, then 3, then 4, then 5...
+	// Each deeper row is wider: outer half-width = 1 + 0.5*row so the trio
+	// spreads past Iolo/Spark and the quartet past the trio.
+	auto pyramidSlot = [](int companionSlot, int& outRow, int& outIndexInRow, int& outRowWidth)
+	{
+		int remaining = companionSlot;
+		int row = 0;
+		int width = 2;
+		while (remaining >= width)
+		{
+			remaining -= width;
+			++row;
+			++width; // 2, 3, 4, 5...
+		}
+		outRow = row;
+		outIndexInRow = remaining;
+		outRowWidth = width;
+	};
+
 	const auto& party = g_Player->GetPartyMemberIds();
 	int companionSlot = 0;
 	for (int npcId : party)
@@ -4027,10 +4196,20 @@ void MainState::MaybeUpdatePartyFollowing()
 			continue;
 		}
 
-		// Staggered V: slot0 left-back, slot1 right-back, slot2 further left-back, ...
-		const int row = companionSlot / 2;
+		int row = 0;
+		int indexInRow = 0;
+		int rowWidth = 2;
+		pyramidSlot(companionSlot, row, indexInRow, rowWidth);
+
 		const float back = m_partyBackSpacing * (1.0f + float(row));
-		const float side = m_partySideSpacing * ((companionSlot % 2 == 0) ? -1.0f : 1.0f);
+		float sideFactor = 0.0f;
+		if (rowWidth > 1)
+		{
+			const float outer = 1.0f + 0.5f * float(row); // 1, 1.5, 2, ...
+			sideFactor = -outer + (2.0f * outer) * float(indexInRow) / float(rowWidth - 1);
+		}
+		const float side = m_partySideSpacing * sideFactor;
+
 		Vector3 desired = Vector3Add(
 			Vector3Subtract(avatarPos, Vector3Scale(dir, back)),
 			Vector3Scale(right, side));

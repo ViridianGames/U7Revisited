@@ -977,10 +977,20 @@ static int LuaGetNPCProperty(lua_State *L)
             case 0: value = npc->str; break;           // strength
             case 1: value = npc->dex; break;           // dexterity
             case 2: value = npc->iq; break;            // intelligence
-            case 3: value = npc->str; break;           // health (uses strength)
+            case 3:                                    // health (current HP on the NPC object)
+            {
+                auto it = g_objectList.find(npc->m_objectID);
+                value = (it != g_objectList.end() && it->second) ? int(it->second->m_hp) : npc->str;
+                break;
+            }
             case 4: value = npc->combat; break;        // combat
-            case 5: value = npc->magic; break;         // mana (uses magic)
-            case 6: value = npc->magic; break;         // magic
+            case 5:                                    // mana (current; max is magic)
+            {
+                auto it = g_objectList.find(npc->m_objectID);
+                value = (it != g_objectList.end() && it->second) ? int(it->second->m_mana) : 0;
+                break;
+            }
+            case 6: value = npc->magic; break;         // magic (max mana)
             case 7: value = npc->training; break;      // training
             case 8: value = npc->xp; break;            // experience
             case 9: value = npc->food; break;          // food level
@@ -1009,10 +1019,22 @@ static int LuaSetNPCProperty(lua_State *L)
             case 0: npc->str = value; break;           // strength
             case 1: npc->dex = value; break;           // dexterity
             case 2: npc->iq = value; break;            // intelligence
-            case 3: npc->str = value; break;           // health (uses strength)
+            case 3:                                    // health (current HP)
+            {
+                auto it = g_objectList.find(npc->m_objectID);
+                if (it != g_objectList.end() && it->second)
+                    it->second->m_hp = float(value);
+                break;
+            }
             case 4: npc->combat = value; break;        // combat
-            case 5: npc->magic = value; break;         // mana (uses magic)
-            case 6: npc->magic = value; break;         // magic
+            case 5:                                    // mana (current)
+            {
+                auto it = g_objectList.find(npc->m_objectID);
+                if (it != g_objectList.end() && it->second)
+                    it->second->m_mana = float(value);
+                break;
+            }
+            case 6: npc->magic = value; break;         // magic (max mana)
             case 7: npc->training = value; break;      // training
             case 8: npc->xp = value; break;            // experience
             case 9: npc->food = value; break;          // food level
@@ -1516,9 +1538,24 @@ static int LuaSpendGold(lua_State *L)
 
 static int LuaGetPartyMember(lua_State *L)
 {
+    // BG usecode often passes a negated NPC id (e.g. -2 for Spark). Positive
+    // values are treated as 1-based party-slot index when in range.
     int index = luaL_checkinteger(L, 1);
-    int npc_id = 0; // TODO: Return NPC ID for party member at index (e.g., 2=Shamino)
-    cout << "Getting party member at index: " << index << "\n";
+    int npc_id = 0;
+    if (index < 0)
+    {
+        npc_id = -index;
+    }
+    else
+    {
+        const auto& ids = g_Player->GetPartyMemberIds();
+        if (index >= 1 && index <= static_cast<int>(ids.size()))
+            npc_id = ids[static_cast<size_t>(index - 1)];
+        else if (index >= 0 && index < static_cast<int>(ids.size()))
+            npc_id = ids[static_cast<size_t>(index)];
+    }
+    if (g_LuaDebug)
+        NPCDebugPrint("LUA: get_party_member(" + std::to_string(index) + ") → " + std::to_string(npc_id));
     lua_pushinteger(L, npc_id);
     return 1;
 }
