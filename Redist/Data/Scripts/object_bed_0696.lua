@@ -2,7 +2,7 @@
 function object_bed_0696(eventid, objectref)
     if eventid == 1 then
         -- call [0000] (0800H, unmapped)
-        utility_unknown_0768(objectref)
+        item_bed_rest_0768(objectref)
     end
     return
 end

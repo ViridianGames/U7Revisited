@@ -1,5 +1,5 @@
 --- Best guess: Manages a merchant transaction, allowing the player to buy items with quantity and weight checks, using dialogue for negotiation.
-function utility_unknown_0890()
+function utility_merchant_transaction_0890()
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C
 
     start_conversation()
@@ -15,7 +15,7 @@ function utility_unknown_0890()
     var_0008 = {1, 1, 1, 1, 1, 1, 1, 12, 1, 0}
     add_dialogue("@What can I sell to thee?@")
     while var_0000 do
-        var_0009 = utility_unknown_1036(var_0001) --- External call to select item
+        var_0009 = utility_select_option_index_1036(var_0001) --- External call to select item
         if var_0009 == 1 then
             add_dialogue("@Very good.@")
             var_0000 = false

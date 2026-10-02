@@ -37,7 +37,7 @@ function npc_gargan_0021(eventid, objectref)
                 remove_answer("name")
                 var_0002 = var_0002 + 1
                 if var_0002 == 6 then
-                    utility_unknown_0909()
+                    npc_gargan_pipe_0909()
                 end
             elseif var_0003 == "job" then
                 add_dialogue("\"I am the Trinsic shipwright. If thou wouldst like to know about a ship or a sextant, just say so.\"")
@@ -45,7 +45,7 @@ function npc_gargan_0021(eventid, objectref)
                 add_answer({"sextant", "ship"})
                 var_0002 = var_0002 + 1
                 if var_0002 == 6 then
-                    utility_unknown_0909()
+                    npc_gargan_pipe_0909()
                 end
             elseif var_0003 == "ship" then
                 add_dialogue("\"Thou dost want to buy a ship?\" the old man asks, smiling. (Apparently not too many folks buy ships these days.)")
@@ -55,7 +55,7 @@ function npc_gargan_0021(eventid, objectref)
                 add_answer({"deed", "Owen"})
                 var_0002 = var_0002 + 1
                 if var_0002 == 6 then
-                    utility_unknown_0909()
+                    npc_gargan_pipe_0909()
                 end
             elseif var_0003 == "sextant" then
                 if var_0001 ~= 30 then
@@ -88,7 +88,7 @@ function npc_gargan_0021(eventid, objectref)
                 remove_answer("sextant")
                 var_0002 = var_0002 + 1
                 if var_0002 == 6 then
-                    utility_unknown_0909() --- Guess: Checks shop hours
+                    npc_gargan_pipe_0909() --- Guess: Checks shop hours
                 end
             elseif var_0003 == "Owen" then
                 add_dialogue("\"Thou hast not heard of Owen? Finest shipwright in the land. He lives in Minoc.\"")
@@ -96,7 +96,7 @@ function npc_gargan_0021(eventid, objectref)
                 remove_answer("Owen")
                 var_0002 = var_0002 + 1
                 if var_0002 == 6 then
-                    utility_unknown_0909() --- Guess: Checks shop hours
+                    npc_gargan_pipe_0909() --- Guess: Checks shop hours
                 end
             elseif var_0003 == "deed" then
                 if var_0001 ~= 30 then
@@ -135,7 +135,7 @@ function npc_gargan_0021(eventid, objectref)
                 remove_answer("deed")
                 var_0002 = var_0002 + 1
                 if var_0002 == 6 then
-                    utility_unknown_0909()
+                    npc_gargan_pipe_0909()
                 end
             elseif var_0003 == "murder" then
                 add_dialogue("\"I heard about that. Terrible thing to happen. Can't say I saw or heard anything, though.\"")
@@ -147,7 +147,7 @@ function npc_gargan_0021(eventid, objectref)
                 remove_answer("murder")
                 var_0002 = var_0002 + 1
                 if var_0002 == 6 then
-                    utility_unknown_0909()
+                    npc_gargan_pipe_0909()
                 end
             elseif var_0003 == "Crown Jewel" then
                 add_dialogue("\"Yes, that ship was docked overnight.\" He consults his log. \"She sailed for Britain at sunrise. I do not recall seeing anyone get on or off.\"")
@@ -155,7 +155,7 @@ function npc_gargan_0021(eventid, objectref)
                 remove_answer("Crown Jewel")
                 var_0002 = var_0002 + 1
                 if var_0002 == 6 then
-                    utility_unknown_0909()
+                    npc_gargan_pipe_0909()
                 end
             elseif var_0003 == "Hook" then
                 add_dialogue(
@@ -170,7 +170,7 @@ function npc_gargan_0021(eventid, objectref)
                 remove_answer("Hook")
                 var_0002 = var_0002 + 1
                 if var_0002 == 6 then
-                    utility_unknown_0909()
+                    npc_gargan_pipe_0909()
                 end
             elseif var_0003 == "Fellowship" then
                 add_dialogue("\"I am too old to pay attention to them.\"")
@@ -178,7 +178,7 @@ function npc_gargan_0021(eventid, objectref)
                 remove_answer("Fellowship")
                 var_0002 = var_0002 + 1
                 if var_0002 == 6 then
-                    utility_unknown_0909()
+                    npc_gargan_pipe_0909()
                 end
             elseif var_0003 == "bye" then
                 add_dialogue("\"May thy day have smooth sailing,\" the sailor starts to say, but a coughing spasm interrupts him.")

@@ -14,7 +14,7 @@ function utility_shopreagents_0994()
     var_0007 = {" per use", " per use", " per use", " per spell use", ""}
     var_0008 = 1
     while var_0000 do
-        var_0009 = utility_unknown_1036(var_0001)
+        var_0009 = utility_select_option_index_1036(var_0001)
         if var_0009 == 1 then
             add_dialogue("\"To be acceptable.\"")
             var_0000 = false

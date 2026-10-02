@@ -1,5 +1,5 @@
 --- Best guess: Increments a counter up to 13 and returns the final value, likely used for tracking or timing.
-function utility_unknown_1067(P0)
+function utility_counter_to_13_1067(P0)
     local var_0000
 
     var_0000 = 0

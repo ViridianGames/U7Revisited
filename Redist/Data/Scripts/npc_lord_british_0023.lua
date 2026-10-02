@@ -236,7 +236,7 @@ function npc_lord_british_0023(eventid, objectref)
                 add_dialogue("The ruler leans forward and speaks quietly.")
                 add_dialogue("There is a mad mage in Cove by the name of Rudyom. Dost  Dost thou remember him? Rudyom was working with a magical substance called 'blackrock'. Before he went mad, he claimed that this mineral could solve the problems of the Moongates. I suggest that thou shouldst go to Cove and find him. Try to learn what it was he was doing with this blackrock material. It could be our only hope.")
                 set_flag(101, true)
-                utility_unknown_1041(20) --- Guess: Adds item or triggers quest
+                utility_set_party_quest_prop8_1041(20) --- Guess: Adds item or triggers quest
                 remove_answer("mad mage")
                 add_answer("Rudyom")
             elseif var_0009 == "Rudyom" then
@@ -267,14 +267,14 @@ function npc_lord_british_0023(eventid, objectref)
                 add_dialogue("\"'Tis in the western end of the castle.\"")
                 remove_answer("study")
             elseif var_0009 == "heal" then
-                utility_unknown_0948(0, 0, 0) --- Guess: Heals player
+                utility_free_healer_services_0948(0, 0, 0) --- Guess: Heals player
                 var_0006 = true
             elseif var_0009 == "Weston" then
                 add_dialogue("Lord British listens to your story about Weston. He looks concerned.")
                 add_dialogue("I do not recall this case. Let me check... Hmmm...")
                 add_dialogue("Imprisoned for the theft of one apple from the Royal Orchards... Ludicrous! Someone must have usurped mine authority. Thou mayest consider this man pardoned. An investigation will commence immediately into the circumstances surrounding his arrest, and into this fellow, Figg. My thanks to thee, Avatar.")
                 set_flag(204, true)
-                utility_unknown_1041(20) --- Guess: Adds item or triggers quest
+                utility_set_party_quest_prop8_1041(20) --- Guess: Adds item or triggers quest
                 remove_npc(69) --- Guess: Triggers quest event
                 remove_answer("Weston")
             elseif var_0009 == "rumble" then
@@ -326,10 +326,10 @@ function npc_lord_british_0023(eventid, objectref)
             abort()
         end
     else
-        utility_unknown_1070(23) --- Guess: Triggers a game event
+        utility_npc_random_bark_1070(23) --- Guess: Triggers a game event
     end
     if var_0000 == true then
-        var_000B = utility_unknown_1069(objectref) --- Guess: Gets randomized response index
+        var_000B = utility_direction_to_target_1069(objectref) --- Guess: Gets randomized response index
         var_000C = (var_000B + 4) % 8
         var_000D = {1047, 8021, 11, 7975, 2, 7975, 3, 7975, 1047, 8021, 3, 7975, 2, 7975, 1, 8487, var_000C, 7769}
         var_000D = execute_usecode_array(objectref, var_000D) --- Guess: Sets object position

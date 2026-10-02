@@ -35,7 +35,7 @@ function object_vial_0754(eventid, objectref)
         start_conversation()
         add_dialogue("As the Soul Cage dissolves into dust, a great transformation comes upon the Liche. Where the evil spirit was caged you see the form of a familiar person. It's Horance! He's a ghost, but he much more resembles a man than an undead terror.")
         -- call [0000] (08ADH, unmapped)
-        utility_unknown_0941()
+        npc_horance_dialogue_0941()
     end
     return
 end

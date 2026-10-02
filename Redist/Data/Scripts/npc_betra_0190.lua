@@ -86,7 +86,7 @@ function npc_betra_0190(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        utility_unknown_1071(190)
+        utility_gargoyle_random_bark_1071(190)
     end
     return
 end

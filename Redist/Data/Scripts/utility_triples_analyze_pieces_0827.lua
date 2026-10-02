@@ -1,5 +1,5 @@
 --- Best guess: Analyzes Triples game items (ID 809), counting frame-based states (1, 2, 3) and checking for winning conditions (all same state).
-function utility_unknown_0827()
+function utility_triples_analyze_pieces_0827()
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B
 
     var_0000 = 0

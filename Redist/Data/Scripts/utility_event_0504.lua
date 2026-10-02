@@ -63,19 +63,19 @@ function utility_event_0504(eventid, objectref)
                     end
                 end
                 if var_000D == 2 then
-                    utility_unknown_0893()
+                    utility_frame_by_gender_0893()
                     var_0013 = get_object_position(get_npc_name(356))
                     if var_0013[2] > var_0005[2] then
                         if is_player_female() then
-                            set_object_frame(20, utility_event_0897())
+                            set_object_frame(20, utility_find_items_frames_18_21_0897())
                         else
-                            set_object_frame(18, utility_event_0897())
+                            set_object_frame(18, utility_find_items_frames_18_21_0897())
                         end
                     else
                         if is_player_female() then
-                            set_object_frame(21, utility_event_0897())
+                            set_object_frame(21, utility_find_items_frames_18_21_0897())
                         else
-                            set_object_frame(19, utility_event_0897())
+                            set_object_frame(19, utility_find_items_frames_18_21_0897())
                         end
                     end
                     var_0014 = create_new_object(955)
@@ -91,13 +91,13 @@ function utility_event_0504(eventid, objectref)
     elseif eventid == 2 then
         if not get_flag(780) then
             if not get_flag(750) then
-                utility_unknown_1023("@'Tis sad that Erethian's lust for power has brought him to this evil pass.@")
-                utility_unknown_1023("@Perhaps, at last, he is at rest.@")
+                utility_apply_value_action_alt_1023("@'Tis sad that Erethian's lust for power has brought him to this evil pass.@")
+                utility_apply_value_action_alt_1023("@Perhaps, at last, he is at rest.@")
             end
             if not is_dead(23) then
-                utility_unknown_1023("@I am sure that Lord British even now awaits news of Exodus' exile.@")
+                utility_apply_value_action_alt_1023("@I am sure that Lord British even now awaits news of Exodus' exile.@")
             end
-            utility_unknown_1023("@It is time to leave this barren island behind.@")
+            utility_apply_value_action_alt_1023("@It is time to leave this barren island behind.@")
             return
         end
         var_0005 = get_object_position(objectref)
@@ -111,7 +111,7 @@ function utility_event_0504(eventid, objectref)
                     var_001C = var_0019[i]
                     if not get_cont_items(4, 240, 797, var_001C) and not (get_distance(objectref, var_001C) < 8) then
                         sprite_effect(-1, 0, 0, 0, get_object_position(var_001C)[2] - 1, get_object_position(var_001C)[1] - 1, 13)
-                        utility_event_0998(var_001C)
+                        utility_golem_body_cleanup_0998(var_001C)
                     else
                         var_0017 = var_001C
                     end
@@ -166,7 +166,7 @@ function utility_event_0504(eventid, objectref)
                 var_001C = find_nearest(10, 528, objectref)
                 var_0027 = get_object_frame(var_001C)
                 var_0028 = get_object_position(var_001C)
-                utility_event_0998(var_001C)
+                utility_golem_body_cleanup_0998(var_001C)
                 var_0029 = create_new_object(892)
                 set_item_flag(18, var_0029)
                 if var_0027 == 12 then
@@ -205,7 +205,7 @@ function utility_event_0504(eventid, objectref)
                 end
             end
             clear_item_flag(16, 356)
-            delayed_execute_usecode_array(14, 17453, {7724}, utility_event_0897())
+            delayed_execute_usecode_array(14, 17453, {7724}, utility_find_items_frames_18_21_0897())
             execute_usecode_array(get_npc_name(356), {1693, 8021, 12, 7719})
             var_0030 = find_nearest(10, 726, objectref)
             if var_0030 then

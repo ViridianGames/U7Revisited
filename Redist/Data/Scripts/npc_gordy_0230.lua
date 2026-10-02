@@ -31,7 +31,7 @@ function npc_gordy_0230(eventid, objectref)
                 if var_0000 == 5 or var_0000 == 6 or var_0000 == 7 or var_0000 == 0 then
                     add_dialogue("\"Enter and enjoy! But first thou must register. Please sign the book so that we may verify thy proclaimed worth.\" Which name do you sign?")
                     var_0006 = {var_0005, var_0004, var_0003}
-                    var_0007 = utility_unknown_1035(var_0006)
+                    var_0007 = utility_select_option_string_1035(var_0006)
                     if var_0007 == var_0003 then
                         add_dialogue("You sign your name. \"Very good, " .. var_0003 .. ". Welcome to the House of Games!\" Gordy spreads his arms in an expansive gesture, obviously pleased to welcome your money to his gambling parlour.")
                     elseif var_0007 == var_0004 then
@@ -75,7 +75,7 @@ function npc_gordy_0230(eventid, objectref)
                 add_dialogue("\"Well, Buccaneer's Den is not in the jurisdiction of the Britannian Tax Council. We are not subject to Britannia's taxes.\" Gordy smiles wickedly. \"And that... is very profitable!\"")
                 remove_answer("profitable")
             elseif answer == "Hook" then
-                var_0008 = utility_unknown_1073(1, 359, 981, 1, 357)
+                var_0008 = utility_party_has_items_1073(1, 359, 981, 1, 357)
                 if var_0008 then
                     add_dialogue("The Cube vibrates a moment. \"Yes, I know Hook very well. He lives beneath the House of Games. Talk to Sintag. He can direct thee.\"")
                 else
@@ -83,7 +83,7 @@ function npc_gordy_0230(eventid, objectref)
                 end
                 remove_answer("Hook")
             elseif answer == "party" then
-                var_0008 = utility_unknown_1073(1, 359, 981, 1, 357)
+                var_0008 = utility_party_has_items_1073(1, 359, 981, 1, 357)
                 if var_0008 then
                     add_dialogue("The Cube vibrates a moment. \"That would be The Fellowship, of course.\"")
                 else
@@ -97,7 +97,7 @@ function npc_gordy_0230(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        utility_unknown_1070(230)
+        utility_npc_random_bark_1070(230)
     end
     return
 end

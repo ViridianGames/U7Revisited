@@ -17,7 +17,7 @@ function npc_trellek_0006(eventid, objectref)
                 add_dialogue("The creature ignores you.")
                 abort()
             else
-                utility_unknown_1006() --- Guess: Checks Emp-specific status
+                npc_ape_honey_request_1006() --- Guess: Checks Emp-specific status
             end
         end
         add_answer({"bye", "job", "name"})
@@ -131,7 +131,7 @@ function npc_trellek_0006(eventid, objectref)
                 var_000B = add_party_items(false, 1, 359, 693, 1) --- Guess: Adds item to inventory
                 if var_000B then
                     add_dialogue("\"Here is your whistle.\"")
-                    utility_unknown_1041(50) --- Guess: Adds whistle item to inventory
+                    utility_set_party_quest_prop8_1041(50) --- Guess: Adds whistle item to inventory
                     set_flag(342, true)
                 else
                     add_dialogue("\"Fewer items must be carried by you to take this whistle.\"")

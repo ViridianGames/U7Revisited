@@ -18,7 +18,7 @@ function npc_sir_richter_0196(eventid, objectref)
         if not get_flag(623) then
             add_dialogue("You see a dashing young man, who turns to greet you.")
             add_dialogue("\"I am Richter, a knight of the Hold. Who wouldst thou be?\"")
-            var_0005 = utility_unknown_1035({var_0002, var_0001})
+            var_0005 = utility_select_option_string_1035({var_0002, var_0001})
             if var_0005 == var_0001 then
                 add_dialogue("\"I am happy to meet thee, \" .. var_0001 .. \".\"")
                 var_0004 = var_0001
@@ -148,7 +148,7 @@ function npc_sir_richter_0196(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        utility_unknown_1070(196)
+        utility_npc_random_bark_1070(196)
     end
     return
 end

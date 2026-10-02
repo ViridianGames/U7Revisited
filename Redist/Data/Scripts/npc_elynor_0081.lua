@@ -107,7 +107,7 @@ function npc_elynor_0081(eventid, objectref)
                             if var_000A then
                                 add_dialogue("She hands you 50 gold coins.")
                                 set_flag(265, true)
-                                utility_unknown_1041(500) --- Guess: Submits item or advances quest
+                                utility_set_party_quest_prop8_1041(500) --- Guess: Submits item or advances quest
                                 remove_item(var_0009) --- Guess: Deducts item
                                 remove_item(var_0007)
                             else
@@ -119,13 +119,13 @@ function npc_elynor_0081(eventid, objectref)
                             add_dialogue("She looks you up and down. \"It is quite possible that thou wilt still learn to be a worthy member of our illustrious Membership. We shall see.\"")
                             remove_item(var_0009) --- Guess: Deducts item
                             set_flag(258, true)
-                            utility_unknown_1041(500) --- Guess: Submits item or advances quest
+                            utility_set_party_quest_prop8_1041(500) --- Guess: Submits item or advances quest
                         else
                             add_dialogue("She inspects the inside of the box.")
                             add_dialogue("\"I see that the contents of the box are missing. Either thou art a thief, or, at the least, not very diligent in thy duty as messenger. One way or the other, " .. var_0002 .. ", the box hath been robbed!\"")
                             add_dialogue("She looks you up and down. \"Batlin will be informed of this... development.\"")
                             set_flag(286, true)
-                            utility_unknown_1041(500) --- Guess: Submits item or advances quest
+                            utility_set_party_quest_prop8_1041(500) --- Guess: Submits item or advances quest
                             remove_item(var_0008)
                         end
                     else
@@ -135,7 +135,7 @@ function npc_elynor_0081(eventid, objectref)
                                 add_dialogue("Elynor takes the package from your hands.")
                                 add_dialogue("\"Thou hast done very well. Now as promised, here is thy payment.\"")
                                 set_flag(265, true)
-                                utility_unknown_1041(500) --- Guess: Submits item or advances quest
+                                utility_set_party_quest_prop8_1041(500) --- Guess: Submits item or advances quest
                                 remove_item(var_0009)
                                 remove_item(var_0007)
                             else
@@ -151,12 +151,12 @@ function npc_elynor_0081(eventid, objectref)
                                 add_dialogue("She sniffs. \"This will, of course, be reported to Batlin.\"")
                                 remove_item(var_0009) --- Guess: Deducts item
                                 set_flag(258, true)
-                                utility_unknown_1041(500) --- Guess: Submits item or advances quest
+                                utility_set_party_quest_prop8_1041(500) --- Guess: Submits item or advances quest
                             else
                                 add_dialogue("Peering inside, she is beset by a fit of anger. \"It would appear thou hast been robbed. Obviously, as thou hast failed in the responsibility entrusted to thee by Batlin, thou shalt not receive any payment.\"")
                                 add_dialogue("\"Batlin will be informed of this indiscretion.\"")
                                 set_flag(286, true)
-                                utility_unknown_1041(500) --- Guess: Submits item or advances quest
+                                utility_set_party_quest_prop8_1041(500) --- Guess: Submits item or advances quest
                                 remove_item(var_0008)
                             end
                         end
@@ -223,6 +223,6 @@ function npc_elynor_0081(eventid, objectref)
         end
         add_dialogue("\"I have a feeling that we shall see each other again.\"")
     elseif eventid == 0 then
-        utility_unknown_1070(81) --- Guess: Triggers a game event
+        utility_npc_random_bark_1070(81) --- Guess: Triggers a game event
     end
 end

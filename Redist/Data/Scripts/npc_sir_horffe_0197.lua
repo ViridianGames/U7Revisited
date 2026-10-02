@@ -24,7 +24,7 @@ function npc_sir_horffe_0197(eventid, objectref)
                 var_0001 = "."
             end
             add_dialogue("You see a gargoyle with a very stern expression on his face" .. var_0001)
-            var_0002 = npc_id_in_party(-195)
+            var_0002 = npc_id_in_party(195)
             set_flag(622, true)
         else
             add_dialogue("\"To ask how to be of assistance.\" His eyes narrow.")
@@ -83,7 +83,7 @@ function npc_sir_horffe_0197(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        utility_unknown_1071(197)
+        utility_gargoyle_random_bark_1071(197)
     end
     return
 end

@@ -1,5 +1,5 @@
 --- Best guess: Implements the mass protection spell (Vas Sact Lor), applying protection to party members based on distance.
-function utility_spell_0387(eventid, objectref)
+function spell_vas_sact_lor_0387(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007
 
     if eventid == 1 then

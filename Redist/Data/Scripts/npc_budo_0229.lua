@@ -6,7 +6,7 @@ function npc_budo_0229(eventid, objectref)
         switch_talk_to(229)
         var_0000 = get_schedule(229)
         var_0001 = get_schedule_type(get_npc_name(229))
-        var_0002 = utility_unknown_1073(1, 359, 981, 1, 357)
+        var_0002 = utility_party_has_items_1073(1, 359, 981, 1, 357)
         start_conversation()
         add_answer({"bye", "job", "name"})
         if get_flag(309) or get_flag(260) then
@@ -138,7 +138,7 @@ function npc_budo_0229(eventid, objectref)
             end
             bark(229, var_000C)
         else
-            utility_unknown_1070(229)
+            utility_npc_random_bark_1070(229)
         end
     end
     return

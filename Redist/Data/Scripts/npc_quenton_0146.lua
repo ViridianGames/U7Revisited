@@ -33,31 +33,17 @@ function npc_quenton_0146(eventid, objectref)
                 end
             end
         end
-        var_0006 = get_party_members()
-        var_0007 = get_npc_name(144) --- Guess: Gets object ref
-        var_0008 = get_npc_name(147) --- Guess: Gets object ref
-        if is_int_in_array(var_0007, var_0006) or is_int_in_array(var_0008, var_0006) then
-            if is_int_in_array(var_0007, var_0006) then
-                switch_talk_to(144)
-                add_dialogue("\"Hello, Quenton. I hope thou art doing well.\" Rowena gives the pale ghost a winning smile.")
-                hide_npc(144)
-                switch_talk_to(146)
+        if npc_id_in_party(144) or npc_id_in_party(147) then
+            if npc_id_in_party(144) then
+                second_speaker(144, 0, "\"Hello, Quenton. I hope thou art doing well.\" Rowena gives the pale ghost a winning smile.")
                 add_dialogue("\"Yes, milady. I am doing as well as can be expected. It gladdens mine heart to see that thou art once again free. Hast thou been to see Trent yet?\"")
-                switch_talk_to(144)
-                add_dialogue("\"Alas, no. This kind person is taking me to him.\" She indicates you.")
-                hide_npc(144)
-                switch_talk_to(146)
+                second_speaker(144, 0, "\"Alas, no. This kind person is taking me to him.\" She indicates you.")
                 add_dialogue("\"These are glad tidings, for he misses thee so.\"")
             end
-            if is_int_in_array(var_0008, var_0006) then
-                switch_talk_to(147)
-                add_dialogue("\"Well met, Quenton.\" The Mayor's mustache spreads as he smiles.")
-                hide_npc(147)
-                switch_talk_to(146)
+            if npc_id_in_party(147) then
+                second_speaker(147, 0, "\"Well met, Quenton.\" The Mayor's mustache spreads as he smiles.")
                 add_dialogue("\"Hello, Mayor. How dost thou fare, milord?\"")
-                switch_talk_to(147)
-                add_dialogue("Forsythe seems taken aback by Quenton's sincere sounding query. \"Why, I fare well, Quenton. I thank thee for thy concern.\"")
-                hide_npc(147)
+                second_speaker(147, 0, "Forsythe seems taken aback by Quenton's sincere sounding query. \"Why, I fare well, Quenton. I thank thee for thy concern.\"")
                 switch_talk_to(146)
                 add_dialogue("He smiles in acknowledgement of the Mayor's thanks.")
             end

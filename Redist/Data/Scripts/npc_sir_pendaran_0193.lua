@@ -77,7 +77,7 @@ function npc_sir_pendaran_0193(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        utility_unknown_1070(193)
+        utility_npc_random_bark_1070(193)
     end
     return
 end

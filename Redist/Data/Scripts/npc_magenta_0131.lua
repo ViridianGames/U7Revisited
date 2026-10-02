@@ -122,6 +122,6 @@ function npc_magenta_0131(eventid, objectref)
         end
         add_dialogue("\"I look forward to the next time when I will see thee.\"")
     elseif eventid == 0 then
-        utility_unknown_1070(131) --- Guess: Triggers a game event
+        utility_npc_random_bark_1070(131) --- Guess: Triggers a game event
     end
 end

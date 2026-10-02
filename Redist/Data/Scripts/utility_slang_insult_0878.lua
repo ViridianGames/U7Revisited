@@ -1,5 +1,5 @@
 --- Best guess: Generates a random slang or insult term from a list, likely for dynamic dialogue or NPC interactions.
-function utility_unknown_0878()
+function utility_slang_insult_0878()
     local var_0000, var_0001, var_0002
 
     var_0000 = {

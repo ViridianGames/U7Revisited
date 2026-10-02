@@ -17,7 +17,7 @@ function object_bed_0583(eventid, objectref)
                     utility_position_0808(7, objectref, 583, -1, var_0004, var_0003, objectref)
                 else
                     var_0000[2] = var_0000[2] - 5
-                    utility_unknown_1023("@There is no room for thy bedroll there.@")
+                    utility_apply_value_action_alt_1023("@There is no room for thy bedroll there.@")
                 end
             end
         end

@@ -1,5 +1,5 @@
 --- Best guess: Prompts the user to select a party member or “Nobody”, returning the selected member's ID or 0.
-function utility_unknown_1038()
+function utility_select_party_member_1038()
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
     var_0000 = get_player_name(get_party_list2())

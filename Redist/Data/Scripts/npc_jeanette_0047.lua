@@ -4,7 +4,7 @@ function npc_jeanette_0047(eventid, objectref)
 
     if eventid ~= 1 then
         if eventid == 0 then
-            utility_unknown_1070(47)
+            utility_npc_random_bark_1070(47)
         end
         add_dialogue("\"Farewell!\"")
         return
@@ -67,9 +67,9 @@ function npc_jeanette_0047(eventid, objectref)
         elseif answer == "another" then
             add_dialogue("\"'Tis Willy the Baker! But he does not know it yet!\" she giggles.")
             set_flag(133, true)
-            var_0003 = npc_id_in_party(-37)
+            var_0003 = npc_id_in_party(37)
             if var_0003 then
-                switch_talk_to(-37)
+                switch_talk_to(37)
                 add_dialogue("\"A moment, Jeanette! Thou hast it all wrong! Charles is a -servant-! Thou art an ignoramus! Charles is not 'upper class'! He is as working class as thee! 'Tis Willy who is the rich merchant! If thou dost ask me, 'tis Willy who is obnoxious and egotistical. Charles is a dream!\"")
                 --syntax error hide_npc37)
                 switch_talk_to(47)
@@ -78,7 +78,7 @@ function npc_jeanette_0047(eventid, objectref)
             end
             add_dialogue("Jeanette thinks about what was said. \"Thou art right! I cannot believe I have been so blind! Oh, Charles! I can actually consider Charles! And he is... so handsome!\" Jeanette squeals with delight. \"I shall have to flirt with him in earnest next time he is in the pub!\"")
             set_flag(126, true)
-            utility_unknown_1041(20)
+            utility_set_party_quest_prop8_1041(20)
             remove_answer("another")
         elseif answer == "bye" then
             break

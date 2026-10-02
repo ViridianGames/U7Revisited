@@ -9,7 +9,7 @@ function npc_eiko_0015(eventid, objectref)
     start_conversation()
     switch_talk_to(15)
     var_0000 = get_lord_or_lady()
-    var_0001 = get_flag(-48)
+    var_0001 = utility_npc_in_party_no_status_1015(48)
     if get_flag(708) and not get_flag(709) then
         add_answer("Stay thine hand!")
     end
@@ -21,10 +21,17 @@ function npc_eiko_0015(eventid, objectref)
         add_dialogue("\"Thou dost wish to speak with me again?\" asks Eiko.")
     end
     while true do
-        if cmps("name") then
+        local answer = get_answer()
+        if type(answer) ~= "string" then
+            answer = get_answer()
+        end
+        if type(answer) ~= "string" then
+            break
+        end
+        if answer == "name" then
             add_dialogue("\"My name is Eiko.\"")
             remove_answer("name")
-        elseif cmps("job") then
+        elseif answer == "job" then
             if not get_flag(709) then
                 add_dialogue("\"I have no job. I have a quest. My quest is shared with mine half-sister, Amanda.\"")
                 add_answer("quest")
@@ -32,12 +39,12 @@ function npc_eiko_0015(eventid, objectref)
                 add_dialogue("\"We are leaving this dungeon now that our quest is over.\"")
             end
             add_answer("Amanda")
-        elseif cmps("quest") then
+        elseif answer == "quest" then
             add_dialogue("\"Eighteen years ago my father was murdered by a cyclops called Iskander Ironheart. Mine half-sister Amanda and I are his only surviving kin and we have vowed to avenge him.\"")
             set_flag(731, true)
             remove_answer("quest")
             add_answer({"Iskander", "father"})
-        elseif cmps("father") then
+        elseif answer == "father" then
             add_dialogue("\"Our father was a mage named Kalideth. He was working to find a cause of the disturbances of the ethereal waves that have been preventing magic from working for the past twenty years and more, as well as the madness that has afflicted all mages since then.\"")
             if var_0001 then
                 switch_talk_to(48)
@@ -45,34 +52,34 @@ function npc_eiko_0015(eventid, objectref)
                 if not get_flag(709) then
                     add_dialogue("\"His killer deserves to die.\"")
                 end
-                hide_npc(-48)
+                hide_npc(48)
                 switch_talk_to(15)
             end
             remove_answer("father")
-        elseif cmps("Amanda") then
+        elseif answer == "Amanda" then
             add_dialogue("\"Neither one of us knew that the other existed until after the death of our father.\"")
             if var_0001 then
                 switch_talk_to(48)
                 add_dialogue("\"I had always felt like I had a sister somewhere. But I attributed those feelings to the natural loneliness a child feels upon losing a father. Learning about each other has been the only good thing that has happened to me since father's death.\"")
-                hide_npc(-48)
+                hide_npc(48)
                 switch_talk_to(15)
             end
             remove_answer("Amanda")
-        elseif cmps("Iskander") then
+        elseif answer == "Iskander" then
             add_dialogue("\"Yes, I know I am not pronouncing it correctly. I understand he has a more human nickname that is actually a translation from the ancient cyclops language. But I do not know what it is.\"")
             remove_answer("Iskander")
-        elseif cmps("Stay thine hand!") then
+        elseif answer == "Stay thine hand!" then
             add_dialogue("You explain to Eiko what you have learned. Kalideth had gone mad when he fought with Iskander and the source of what is causing the problems with magic and the mage's minds was the thing that really killed Kalideth!")
             add_dialogue("\"Then if thou hast discovered the true force that killed my father, my vengeance against Kalideth would be unjust.\"")
             if var_0001 and not get_flag(734) then
                 switch_talk_to(48)
                 add_dialogue("\"How canst thou say that? I thought that thou wert my sister? Thou art a traitor!\"")
-                hide_npc(-48)
+                hide_npc(48)
                 switch_talk_to(15)
                 set_flag(709, true)
             end
             remove_answer("Stay thine hand!")
-        elseif cmps("bye") then
+        elseif answer == "bye" then
             break
         end
     end

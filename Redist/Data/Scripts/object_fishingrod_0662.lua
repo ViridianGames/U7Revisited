@@ -28,29 +28,29 @@ function object_fishingrod_0662(eventid, objectref)
                 var_0001 = update_last_created(var_0002)
                 var_0009 = random2(3, 1)
                 if var_0009 == 1 then
-                    utility_unknown_1022("@Indded, a whopper!@")
+                    utility_apply_value_action_1022("@Indded, a whopper!@")
                     if not npc_nearby(-2) then
-                        utility_unknown_1075(16, "@I have seen bigger.@", -2)
+                        utility_check_status_add_container_1075(16, "@I have seen bigger.@", -2)
                     end
                 elseif var_0009 == 2 then
-                    utility_unknown_1022("@What a meal!@")
+                    utility_apply_value_action_1022("@What a meal!@")
                 elseif var_0009 == 3 then
-                    utility_unknown_1022({"@That fish does not", "look right.@"})
+                    utility_apply_value_action_1022({"@That fish does not", "look right.@"})
                 end
             end
         else
             var_0009 = random2(4, 1)
             if var_0009 == 1 then
-                utility_unknown_1075(0, "@Not even a bite!@", -356)
+                utility_check_status_add_container_1075(0, "@Not even a bite!@", -356)
             elseif var_0009 == 2 then
-                utility_unknown_1075(0, "@It got away!@", -356)
+                utility_check_status_add_container_1075(0, "@It got away!@", -356)
                 if not npc_nearby(-1) then
-                    utility_unknown_1075(16, "@It was the Big One!@", -1)
+                    utility_check_status_add_container_1075(16, "@It was the Big One!@", -1)
                 end
             elseif var_0009 == 3 then
-                utility_unknown_1075(0, "@I've lost my bait.@", -356)
+                utility_check_status_add_container_1075(0, "@I've lost my bait.@", -356)
             elseif var_0009 == 4 then
-                utility_unknown_1075(0, "@I felt a nibble.@", -356)
+                utility_check_status_add_container_1075(0, "@I felt a nibble.@", -356)
             end
         end
     end

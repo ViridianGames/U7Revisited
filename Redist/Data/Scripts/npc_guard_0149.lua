@@ -35,7 +35,7 @@ function npc_guard_0149(eventid, objectref)
     else
         add_dialogue("\"We are not talking to thee! We are trying to eat thee!\"")
         set_alignment(2, get_npc_name(149)) --- Guess: Sets object state
-        set_schedule_type(0, get_npc_name(149)) --- Guess: Sets object behavior
+        set_schedule_type(149, 0) --- Guess: Sets object behavior
         abort()
     end
     while true do
@@ -172,7 +172,7 @@ function npc_guard_0149(eventid, objectref)
             switch_talk_to(280)
             add_dialogue("\"Very well! Let's eat it!\"")
             set_alignment(2, get_npc_name(149)) --- Guess: Sets object state
-            set_schedule_type(0, get_npc_name(149)) --- Guess: Sets object behavior
+            set_schedule_type(149, 0) --- Guess: Sets object behavior
             abort()
         elseif var_0003 == "bye" then
             add_dialogue("\"Thou cannot say 'bye' to us! How rude!\"")

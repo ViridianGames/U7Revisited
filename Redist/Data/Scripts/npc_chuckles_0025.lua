@@ -28,7 +28,7 @@ function npc_chuckles_0025(eventid, objectref)
                     add_dialogue("\"Art thou sure thou canst play The Game?\"")
                     var_0000 = select_option()
                     if var_0000 then
-                        utility_unknown_0866() --- Guess: Initiates gameplay with Chuckles
+                        npc_chuckles_scroll_0866() --- Guess: Initiates gameplay with Chuckles
                     else
                         add_dialogue("\"Thou must play The Game to get the clue!\"")
                     end
@@ -43,10 +43,10 @@ function npc_chuckles_0025(eventid, objectref)
                 remove_answer("Game")
                 set_flag(115, true)
             elseif var_0000 == "I don't understand" then
-                utility_unknown_0865() --- Guess: Explains rules of The Game
+                utility_game_rules_warning_0865() --- Guess: Explains rules of The Game
                 remove_answer("I don't understand")
             elseif var_0000 == "Explain it" then
-                utility_unknown_0865() --- Guess: Explains rules of The Game
+                utility_game_rules_warning_0865() --- Guess: Explains rules of The Game
                 remove_answer("Explain it")
             elseif var_0000 == "What are the rules?" then
                 add_dialogue("\"Thou must just learn The Game and then jump in and play it!\"")
@@ -61,13 +61,13 @@ function npc_chuckles_0025(eventid, objectref)
                     save_answers()
                     add_answer({"a joke", "thou", "Lord British", "the weather"})
                 else
-                    utility_unknown_0865() --- Guess: Explains rules of The Game
+                    utility_game_rules_warning_0865() --- Guess: Explains rules of The Game
                 end
             elseif var_0000 == "the weather" then
-                utility_unknown_0865() --- Guess: Explains rules of The Game
+                utility_game_rules_warning_0865() --- Guess: Explains rules of The Game
                 remove_answer("weather")
             elseif var_0000 == "Lord British" then
-                utility_unknown_0865() --- Guess: Explains rules of The Game
+                utility_game_rules_warning_0865() --- Guess: Explains rules of The Game
                 remove_answer("Lord British")
             elseif var_0000 == "thou" then
                 add_dialogue("\"Why dost thou want to speak of me? Canst thou not think of a thing much more fun of which to speak?\"")
@@ -78,7 +78,7 @@ function npc_chuckles_0025(eventid, objectref)
                 add_dialogue("\"I do not think I can tell a good joke whilst I play The Game! 'Twould be hard! Hmm. Ah! I have one! Why did the hen cross the road? To get to the side she was not on!\"")
                 remove_answer("a joke")
             elseif var_0000 == "women" then
-                utility_unknown_0865() --- Guess: Explains rules of The Game
+                utility_game_rules_warning_0865() --- Guess: Explains rules of The Game
                 remove_answer("women")
             elseif var_0000 == "girls" then
                 add_dialogue("\"There be a lot of fine girls in our fair town! Or is it 'fair girls in our fine town'?\" Chuckles shrugs his shoulders.")
@@ -92,10 +92,10 @@ function npc_chuckles_0025(eventid, objectref)
                     save_answers()
                     add_answer({"bye", "job", "clue"})
                 else
-                    utility_unknown_0865() --- Guess: Explains rules of The Game
+                    utility_game_rules_warning_0865() --- Guess: Explains rules of The Game
                 end
             elseif var_0000 == "supper" then
-                utility_unknown_0865() --- Guess: Explains rules of The Game
+                utility_game_rules_warning_0865() --- Guess: Explains rules of The Game
                 remove_answer("supper")
             elseif var_0000 == "bye" then
                 break

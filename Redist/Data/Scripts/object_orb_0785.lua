@@ -4,8 +4,8 @@ function object_orb_0785(eventid, objectref)
 
     if eventid == 1 then
         if get_flag(4) then
-            utility_unknown_1022({"@It work before.@", "@How odd!@"})
-        elseif not get_flag(57) and not utility_unknown_1086() then
+            utility_apply_value_action_1022({"@It work before.@", "@How odd!@"})
+        elseif not get_flag(57) and not utility_location_coords_1086() then
             var_0000 = object_select_modal()
             var_0001 = utility_position_0802(var_0000)
             var_0002 = find_direction(var_0001, -356)
@@ -69,21 +69,21 @@ function object_orb_0785(eventid, objectref)
                         var_000A = add_party_items(false, 0, 0, 785, 1)
                     end
                 else
-                    utility_event_0801(var_0009)
+                    utility_add_container_items_0801(var_0009)
                 end
             else
-                utility_event_0801(var_0009)
+                utility_add_container_items_0801(var_0009)
             end
         end
     elseif eventid == 8 then
-        if not utility_unknown_0806(objectref) then
-            utility_event_0801(objectref)
-            utility_unknown_1022({"@Let thyself enter.@", "@No, Avatar.@"})
+        if not utility_item_type_in_set_0806(objectref) then
+            utility_add_container_items_0801(objectref)
+            utility_apply_value_action_1022({"@Let thyself enter.@", "@No, Avatar.@"})
         end
     elseif eventid == 7 then
-        if not utility_unknown_0806(objectref) then
-            utility_event_0801(objectref)
-            utility_unknown_0804(objectref)
+        if not utility_item_type_in_set_0806(objectref) then
+            utility_add_container_items_0801(objectref)
+            mech_party_damage_by_item_0804(objectref)
         end
     end
 end

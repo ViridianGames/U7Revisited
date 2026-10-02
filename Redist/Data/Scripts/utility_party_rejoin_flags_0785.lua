@@ -1,5 +1,5 @@
 --- Best guess: Adds party members to the party with flag settings, likely for event initialization.
-function utility_event_0785(eventid, objectref)
+function utility_party_rejoin_flags_0785(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003
 
     var_0000 = remove_from_party(get_party_members(), 356) --- Guess: Removes from party

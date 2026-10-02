@@ -4,7 +4,7 @@ function object_blacksword_0707(eventid, objectref)
 
     if eventid == 1 then
         -- calle 06F6H, 1782 (unmapped)
-        utility_unknown_0502(objectref)
+        npc_arcadion_dialogue_0502(objectref)
     elseif eventid == 2 then
         if get_object_shape(objectref) == 990 then
             -- calli 008C, 3 (unmapped)

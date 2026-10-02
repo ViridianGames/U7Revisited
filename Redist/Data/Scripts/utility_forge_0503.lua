@@ -18,7 +18,7 @@ function utility_forge_0503(eventid, objectref)
             var_0007 = create_new_object(get_object_shape(var_0001))
             set_item_frame_rot(var_0001, var_0007)
             var_0008 = update_last_created(get_object_position(var_0001))
-            utility_event_0998(var_0001)
+            utility_golem_body_cleanup_0998(var_0001)
         end
     elseif var_0000 == 241 then
         var_0009 = false
@@ -34,7 +34,7 @@ function utility_forge_0503(eventid, objectref)
             var_0012 = create_new_object(414)
             set_object_frame(4, var_0012)
             var_0008 = update_last_created(get_object_position(var_0009))
-            utility_event_0998(var_0009)
+            utility_golem_body_cleanup_0998(var_0009)
             set_flag(753, true)
         end
     elseif var_0000 == 243 then
@@ -52,7 +52,7 @@ function utility_forge_0503(eventid, objectref)
             var_0012 = create_new_object(414)
             set_object_frame(4, var_0012)
             var_0008 = update_last_created(get_object_position(var_0015))
-            utility_event_0998(var_0015)
+            utility_golem_body_cleanup_0998(var_0015)
         end
     elseif var_0000 == 244 then
         var_0016 = false
@@ -69,7 +69,7 @@ function utility_forge_0503(eventid, objectref)
             var_0012 = create_new_object(414)
             set_object_frame(4, var_0012)
             var_0008 = update_last_created(get_object_position(var_0016))
-            utility_event_0998(var_0016)
+            utility_golem_body_cleanup_0998(var_0016)
         end
     elseif var_0000 == 245 then
         var_0017 = false
@@ -86,7 +86,7 @@ function utility_forge_0503(eventid, objectref)
             set_object_frame(4, var_0012)
             var_0008 = update_last_created(get_object_position(var_0017))
             set_flag(755, true)
-            utility_event_0998(var_0017)
+            utility_golem_body_cleanup_0998(var_0017)
         end
     elseif var_0000 == 246 then
         var_0018 = false
@@ -103,7 +103,7 @@ function utility_forge_0503(eventid, objectref)
             var_0012 = create_new_object(414)
             set_object_frame(4, var_0012)
             var_0008 = update_last_created(get_object_position(var_0018))
-            utility_event_0998(var_0018)
+            utility_golem_body_cleanup_0998(var_0018)
         end
     elseif var_0000 == 247 then
         var_0019 = false
@@ -120,7 +120,7 @@ function utility_forge_0503(eventid, objectref)
             var_0012 = create_new_object(414)
             set_object_frame(4, var_0012)
             var_0008 = update_last_created(get_object_position(var_0019))
-            utility_event_0998(var_0019)
+            utility_golem_body_cleanup_0998(var_0019)
         end
     elseif var_0000 == 248 then
         var_0020 = false
@@ -137,7 +137,7 @@ function utility_forge_0503(eventid, objectref)
             var_0012 = create_new_object(414)
             set_object_frame(4, var_0012)
             var_0008 = update_last_created(get_object_position(var_0020))
-            utility_event_0998(var_0020)
+            utility_golem_body_cleanup_0998(var_0020)
         end
     elseif var_0000 == 249 then
         var_0021 = false
@@ -154,7 +154,7 @@ function utility_forge_0503(eventid, objectref)
             var_0012 = create_new_object(414)
             set_object_frame(4, var_0012)
             var_0008 = update_last_created(get_object_position(var_0021))
-            utility_event_0998(var_0021)
+            utility_golem_body_cleanup_0998(var_0021)
         end
     elseif var_0000 == 250 then
         var_0022 = false
@@ -171,7 +171,7 @@ function utility_forge_0503(eventid, objectref)
             var_0012 = create_new_object(414)
             set_object_frame(4, var_0012)
             var_0008 = update_last_created(get_object_position(var_0022))
-            utility_event_0998(var_0022)
+            utility_golem_body_cleanup_0998(var_0022)
         end
     elseif var_0000 == 251 then
         var_0023 = false
@@ -188,7 +188,7 @@ function utility_forge_0503(eventid, objectref)
             var_0012 = create_new_object(414)
             set_object_frame(4, var_0012)
             var_0008 = update_last_created(get_object_position(var_0023))
-            utility_event_0998(var_0023)
+            utility_golem_body_cleanup_0998(var_0023)
         end
     elseif var_0000 == 252 then
         var_0024 = false
@@ -205,7 +205,7 @@ function utility_forge_0503(eventid, objectref)
             var_0012 = create_new_object(414)
             set_object_frame(4, var_0012)
             var_0008 = update_last_created(get_object_position(var_0024))
-            utility_event_0998(var_0024)
+            utility_golem_body_cleanup_0998(var_0024)
         end
     elseif var_0000 == 253 then
         var_0025 = false
@@ -222,7 +222,7 @@ function utility_forge_0503(eventid, objectref)
             var_0012 = create_new_object(414)
             set_object_frame(4, var_0012)
             var_0008 = update_last_created(get_object_position(var_0025))
-            utility_event_0998(var_0025)
+            utility_golem_body_cleanup_0998(var_0025)
         end
     elseif var_0000 == 254 then
         var_0026 = false
@@ -239,7 +239,7 @@ function utility_forge_0503(eventid, objectref)
             var_0012 = create_new_object(414)
             set_object_frame(4, var_0012)
             var_0008 = update_last_created(get_object_position(var_0026))
-            utility_event_0998(var_0026)
+            utility_golem_body_cleanup_0998(var_0026)
         end
     end
     halt_scheduled(objectref)

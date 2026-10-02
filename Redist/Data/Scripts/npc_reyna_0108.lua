@@ -15,7 +15,7 @@ function npc_reyna_0108(eventid, objectref)
     var_0002 = 108
     var_0003 = false
     var_0004 = false
-    var_0005 = utility_unknown_1073(4, 359, 999, 1, 357)
+    var_0005 = utility_party_has_items_1073(4, 359, 999, 1, 357)
     add_answer({"bye", "job", "name"})
     if not get_flag(326) then
         add_dialogue("The woman greets you with shining eyes.")
@@ -35,10 +35,17 @@ function npc_reyna_0108(eventid, objectref)
         var_0004 = true
     end
     while true do
-        if cmps("name") then
+        local answer = get_answer()
+        if type(answer) ~= "string" then
+            answer = get_answer()
+        end
+        if type(answer) ~= "string" then
+            break
+        end
+        if answer == "name" then
             add_dialogue("\"I am Reyna,\" she says, brushing the hair out of her face.")
             remove_answer("name")
-        elseif cmps("job") then
+        elseif answer == "job" then
             add_dialogue("\"I am a healer. I have chosen to set up shop here near the forest.\"")
             set_flag(355, true)
             if not var_0004 then
@@ -48,20 +55,20 @@ function npc_reyna_0108(eventid, objectref)
             if not get_flag(315) then
                 add_answer("animals")
             end
-        elseif cmps("forest") then
+        elseif answer == "forest" then
             add_dialogue("\"I wanted to live and work here because the land is very beautiful. I have found many things to do and see. Unfortunately, the forest is so spread out that I have yet to meet many of the others who live in this area. I do know that the Abbey is just across the way from mine house.~~\"And somewhere nearby is a scholar.\" She appears thoughtful for a moment. \"Also, I believe there is a prison just east of the Abbey.\"")
             remove_answer("forest")
             add_answer({"prison", "scholar", "Abbey"})
-        elseif cmps("prison") then
+        elseif answer == "prison" then
             add_dialogue("\"I've never actually seen it,\" she laughs, \"but rumor has it that the cells are located right next to the court, for quick, easy imprisonment after the trial.\"")
             remove_answer("prison")
-        elseif cmps("scholar") then
+        elseif answer == "scholar" then
             add_dialogue("\"From Aimi I have heard that he is brilliant, and... also a bit overzealous to instruct those interested in increasing their knowledge.\"")
             if not var_0003 then
                 add_answer("Aimi")
             end
             remove_answer("scholar")
-        elseif cmps("Aimi") then
+        elseif answer == "Aimi" then
             var_0003 = true
             if not get_flag(346) then
                 add_dialogue("\"She is the monk who tends the garden at the Abbey.\"")
@@ -69,24 +76,24 @@ function npc_reyna_0108(eventid, objectref)
                 add_dialogue("\"She is one of the monks who lives at the Abbey. At this time, she is the only other person I have actually met here in the forest.\"")
             end
             remove_answer("Aimi")
-        elseif cmps("Abbey") then
+        elseif answer == "Abbey" then
             add_dialogue("\"That is how this area -- Empath Abbey -- got its name, from the monks who live at the abbey of the Brotherhood of the Rose. They are said to make delicious wine. One of the monks cares for a beautiful garden in her spare time. In fact, I often buy flowers from her.~~ But,\" she grins, \"as for the other monks, all that I ever see them do is make wine and wander the countryside.\"")
             set_flag(346, true)
             remove_answer("Abbey")
             add_answer({"others", "flowers"})
-        elseif cmps("others") then
+        elseif answer == "others" then
             add_dialogue("\"Aimi is the only one I have met, but I know there are one or two others who make wine there.\"")
             if not var_0003 then
                 add_answer("Aimi")
             end
             remove_answer("others")
-        elseif cmps("flowers") then
+        elseif answer == "flowers" then
             add_dialogue("\"Yes, I get them for my mother.\"")
             if not get_flag(296) then
                 add_answer("mother")
             end
             remove_answer("flowers")
-        elseif cmps({"cemetery", "mother"}) then
+        elseif (answer == "cemetery" or answer == "mother") then
             set_flag(296, true)
             if var_0006 == 0 then
                 var_0007 = ""
@@ -102,7 +109,7 @@ function npc_reyna_0108(eventid, objectref)
             if var_0005 then
                 add_answer("have flowers")
             end
-        elseif cmps({"have flowers", "brought flowers"}) then
+        elseif (answer == "have flowers" or answer == "brought flowers") then
             add_dialogue("Her eyes light up as she sees the bouquet of flowers.~~ \"They are lovely! Thou art too kind, " .. var_0000 .. ", to bring flowers for my mother! I cannot wait to set them by her grave.\"")
             var_000C = remove_party_items(true, 4, 359, 999, 1)
             var_000D = random2(6, 1)
@@ -113,24 +120,24 @@ function npc_reyna_0108(eventid, objectref)
             elseif var_000D == 6 then
                 var_000E = 90
             end
-            utility_unknown_1041(var_000E)
+            utility_set_party_quest_prop8_1041(var_000E)
             set_flag(313, true)
             remove_answer({"brought flowers", "have flowers"})
-        elseif cmps("heal") then
+        elseif answer == "heal" then
             if var_0001 == 3 or var_0001 == 4 or var_0001 == 5 then
                 set_flag(314, true)
                 if get_flag(313) then
                     var_000F = true
                     add_dialogue("\"For thy kindly gift of flowers, I will aid thee for half price.\" She smiles at you.")
-                    utility_unknown_0978(200, 5, 15)
+                    utility_healer_resurrect_dialogue_0978(200, 5, 15)
                 else
-                    utility_unknown_0978(400, 10, 30)
+                    utility_healer_resurrect_dialogue_0978(400, 10, 30)
                 end
             else
                 add_dialogue("\"I am sorry, " .. var_0000 .. ", but, unless this is an emergency, I would prefer to wait until my shop is open.\"")
                 add_answer("emergency")
             end
-        elseif cmps("emergency") then
+        elseif answer == "emergency" then
             var_0010 = get_party_members()
             var_0011 = 0
             var_0012 = false
@@ -159,10 +166,10 @@ function npc_reyna_0108(eventid, objectref)
                 add_dialogue("\"I am sorry, but thy wounds are not mortal. Perhaps thou canst visit me when my shop is open.\"")
             end
             remove_answer("emergency")
-        elseif cmps("animals") then
+        elseif answer == "animals" then
             add_dialogue("She smiles shyly.~~\"I very much love animals. When I was very young, I found an ailing dove that I was unable to nurse back to health. Since that time, I began to study the healing arts, so that I would be able to help other animals who might need healing.~~ \"Of course,\" she laughs, \"now that I have the skills, I use them to help people, too.\"")
             remove_answer("animals")
-        elseif cmps("bye") then
+        elseif answer == "bye" then
             break
         end
     end

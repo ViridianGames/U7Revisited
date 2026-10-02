@@ -1,5 +1,5 @@
 --- Best guess: Implements the weather control spell (Bet Lor), toggling weather states (e.g., rain) with visual effects.
-function utility_spell_0324(eventid, objectref)
+function spell_weather_bet_lor_0324(eventid, objectref)
     local var_0000
 
     if eventid == 1 then

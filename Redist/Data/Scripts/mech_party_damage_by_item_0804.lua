@@ -1,5 +1,5 @@
 --- Best guess: Applies damage to the party or sets game state based on item type and quality, likely for traps or hazards.
-function utility_unknown_0804(eventid, objectref)
+function mech_party_damage_by_item_0804(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
     var_0000 = objectref

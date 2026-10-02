@@ -1,12 +1,12 @@
 --- Set an NPC's schedule/activity type.
---- Callers: utility_unknown_1087(activity, npc_ref)
----   e.g. utility_unknown_1087(3, NPC_CAMILLE)  → Talk
----        utility_unknown_1087(11, npc)         → Loiter
+--- Callers: utility_remove_npc_from_party_1087(activity, npc_ref)
+---   e.g. utility_remove_npc_from_party_1087(3, NPC_CAMILLE)  → Talk
+---        utility_remove_npc_from_party_1087(11, npc)         → Loiter
 ---
 --- The decompiled body was corrupt (party/flag checks, swapped args).
 --- Exult equivalent: UI_set_schedule_type(npc, activity).
 
-function utility_unknown_1087(activity, npc_ref)
+function utility_remove_npc_from_party_1087(activity, npc_ref)
     if activity == nil or npc_ref == nil then
         return
     end
@@ -37,7 +37,7 @@ function utility_unknown_1087(activity, npc_ref)
         return
     end
 
-    debug_print("utility_unknown_1087: set_schedule_type(npc=" ..
+    debug_print("utility_remove_npc_from_party_1087: set_schedule_type(npc=" ..
         tostring(npc_id) .. ", activity=" .. tostring(activity) .. ")")
     set_schedule_type(npc_id, activity)
 end

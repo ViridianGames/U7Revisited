@@ -8,7 +8,7 @@ function npc_zorn_0087(eventid, objectref)
         var_0000 = get_lord_or_lady()
         var_0001 = get_schedule(87) --- Guess: Checks game state or timer
         var_0002 = get_schedule_type(87) --- Guess: Gets object state
-        var_0003 = utility_unknown_1073(359, 359, 728, 1, 357) --- Guess: Checks item in inventory
+        var_0003 = utility_party_has_items_1073(359, 359, 728, 1, 357) --- Guess: Checks item in inventory
         if var_0003 then
             add_answer("Caddellite")
         end
@@ -54,14 +54,14 @@ function npc_zorn_0087(eventid, objectref)
                     add_dialogue("\"The smithy is currently closed for outside business. Thou shalt have to return some other time.\"")
                 else
                     add_dialogue("\"I have an assortment of very lethal weapons to show thee.\"")
-                    utility_unknown_1106() --- Guess: Purchases weapons
+                    utility_weapon_purchase_1106() --- Guess: Purchases weapons
                 end
             elseif var_0004 == "buy armour" then
                 if var_0002 ~= 13 then
                     add_dialogue("\"The smithy is currently closed for outside business. Thou shalt have to return some other time.\"")
                 else
                     add_dialogue("\"Thou mayest buy fine armour from me.\"")
-                    utility_unknown_1107() --- Guess: Purchases armour
+                    utility_armor_purchase_1107() --- Guess: Purchases armour
                 end
             elseif var_0004 == "squabble" then
                 add_dialogue("\"This noise over Owen's monument, for instance. People ought to tend to their own business and let others handle their own, foolish or not.\"")
@@ -105,7 +105,7 @@ function npc_zorn_0087(eventid, objectref)
                     var_0007 = add_party_items(false, 359, 359, 638, var_0005) --- Guess: Checks inventory space
                     if var_0007 then
                         set_flag(262, true)
-                        utility_unknown_1041(200) --- Guess: Submits item or advances quest
+                        utility_set_party_quest_prop8_1041(200) --- Guess: Submits item or advances quest
                         add_dialogue("\"Here, I have met thy request to thy precise specifications.\"")
                         if var_0005 == 1 then
                             add_dialogue("He hands you the helmet.")
@@ -137,7 +137,7 @@ function npc_zorn_0087(eventid, objectref)
             end
             bark(87, var_0009)
         else
-            utility_unknown_1070(87) --- Guess: Triggers a game event
+            utility_npc_random_bark_1070(87) --- Guess: Triggers a game event
         end
     end
 end

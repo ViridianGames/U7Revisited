@@ -71,6 +71,6 @@ function npc_alina_0169(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        utility_unknown_1070(NPC_ALINA)
+        utility_npc_random_bark_1070(NPC_ALINA)
     end
 end

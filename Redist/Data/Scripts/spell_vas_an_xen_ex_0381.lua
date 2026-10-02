@@ -1,5 +1,5 @@
 --- Best guess: Manages the "Vas An Xen Ex" spell, freeing a creature or entity (ID 1661) within a radius, with random placement and a fallback effect if the spell fails.
-function utility_spell_0381(eventid, objectref)
+function spell_vas_an_xen_ex_0381(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008
 
     if eventid ~= 1 then
@@ -19,12 +19,12 @@ function utility_spell_0381(eventid, objectref)
 
     halt_scheduled(objectref)
     bark(objectref, "@Vas An Xen Ex@")
-    if not utility_unknown_1030() then
+    if not utility_condition_0044_1030() then
         var_0000 = execute_usecode_array(objectref, {1661, 17493, 17514, 17519, 17520, 8047, 65, 7768})
         var_0001 = get_object_position(objectref)
         sprite_effect(-1, 0, 0, 0, var_0001[2] - 2, var_0001[1] - 2, 7)
         var_0002 = 25
-        var_0003 = utility_unknown_1076(var_0002)
+        var_0003 = utility_filter_party_by_flag_1076(var_0002)
         for var_0004 in ipairs(var_0003) do
             var_0006 = get_distance(var_0006, objectref)
             var_0002 = var_0006 // 4 + 4

@@ -78,6 +78,6 @@ function npc_diane_0056(eventid, objectref)
         end
         add_dialogue("\"Good day to thee, " .. var_0000 .. ".\"")
     elseif eventid == 0 then
-        utility_unknown_1070(56) --- Guess: Triggers a game event
+        utility_npc_random_bark_1070(56) --- Guess: Triggers a game event
     end
 end

@@ -1,5 +1,5 @@
 --- Best guess: Implements the fire field spell (Vas Flam), creating a damaging fire field at a target location.
-function utility_spell_0338(eventid, objectref)
+function spell_vas_flam_0338(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003
 
     if eventid == 1 or eventid == 4 then

@@ -1,5 +1,5 @@
 --- Best guess: Spawns items and applies sprite effects at a specific location, possibly for environmental or visual interactions.
-function utility_unknown_0306(eventid, objectref)
+function utility_spawn_sprite_fx_0306(eventid, objectref)
     local var_0000, var_0001
 
     if eventid == 1 then

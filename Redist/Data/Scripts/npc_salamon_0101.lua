@@ -4,14 +4,14 @@ function npc_salamon_0101(eventid, objectref)
 
     start_conversation()
     if eventid == 1 then
-        var_0000 = utility_unknown_1073(359, 359, 772, 1, 357) --- Guess: Checks item in inventory
+        var_0000 = utility_party_has_items_1073(359, 359, 772, 1, 357) --- Guess: Checks item in inventory
         switch_talk_to(101)
         if not get_flag(340) then
             if not var_0000 then
                 add_dialogue("The creature ignores you.")
                 abort()
             end
-            utility_unknown_0991() --- Guess: Interacts with Emp leader
+            npc_ape_honey_request_0991() --- Guess: Interacts with Emp leader
         end
         if not get_flag(319) then
             if not get_flag(316) then
@@ -67,7 +67,7 @@ function npc_salamon_0101(eventid, objectref)
                     add_dialogue("\"More honey will be given by you?\"")
                     var_0002 = select_option()
                     if var_0002 then
-                        var_0003 = utility_unknown_1073(359, 359, 772, 1, 357) --- Guess: Checks item in inventory
+                        var_0003 = utility_party_has_items_1073(359, 359, 772, 1, 357) --- Guess: Checks item in inventory
                         if var_0003 then
                             add_dialogue("\"You are thanked,\" she says, taking the honey.")
                         else
@@ -95,7 +95,7 @@ function npc_salamon_0101(eventid, objectref)
             elseif var_0001 == "Trellek" then
                 if get_flag(304) then
                     if not get_flag(299) then
-                        var_0004 = utility_unknown_1073(359, 3, 797, 1, 357) --- Guess: Checks item in inventory
+                        var_0004 = utility_party_has_items_1073(359, 3, 797, 1, 357) --- Guess: Checks item in inventory
                         if var_0004 then
                             add_dialogue("She takes the document from you, smiling when she sees Ben's signature. \"Trellek is permitted to join you. You are wished luck and speed.\"")
                             var_0005 = remove_party_items(false, 359, 3, 797, 1) --- Guess: Deducts item and adds item

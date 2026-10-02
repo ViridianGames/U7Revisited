@@ -4,6 +4,6 @@ function object_easel_0837(eventid, objectref)
 
     if eventid == 1 then
         var_0000 = "@Thou shouldst use the brush and pigments, " .. get_player_name() .. ".@"
-        utility_unknown_1023(var_0000)
+        utility_apply_value_action_alt_1023(var_0000)
     end
 end

@@ -1,5 +1,5 @@
 --- Best guess: Implements the lock spell (Ex Por), locking specific item types (e.g., doors, chests) with frame adjustments.
-function utility_spell_0359(eventid, objectref)
+function spell_lock_ex_por_0359(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007
 
     if eventid == 1 then

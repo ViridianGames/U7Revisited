@@ -40,7 +40,7 @@ function npc_de_maria_0080(eventid, objectref)
                 if var_0001 then
                     add_dialogue("\"Very well, then!\"")
                     save_answers()
-                    utility_unknown_0887() --- Guess: Performs a song or tale
+                    npc_nastassia_story_0887() --- Guess: Performs a song or tale
                     restore_answers()
                 else
                     add_dialogue("\"'Tis thy choice... and thy mistake!\"")
@@ -52,7 +52,7 @@ function npc_de_maria_0080(eventid, objectref)
                 if var_0001 then
                     add_dialogue("\"Very well, then!\"")
                     save_answers()
-                    utility_unknown_0887() --- Guess: Performs a song or tale
+                    npc_nastassia_story_0887() --- Guess: Performs a song or tale
                     restore_answers()
                     remove_answer("Nastassia")
                 else
@@ -76,6 +76,6 @@ function npc_de_maria_0080(eventid, objectref)
         end
         add_dialogue("\"Do take care of thyself!\"")
     elseif eventid == 0 then
-        utility_unknown_1070(80) --- Guess: Triggers a game event
+        utility_npc_random_bark_1070(80) --- Guess: Triggers a game event
     end
 end

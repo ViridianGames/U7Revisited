@@ -75,6 +75,6 @@ function npc_xanthia_0086(eventid, objectref)
         end
         add_dialogue("\"Farewell, " .. var_0000 .. ". I hope I was of some assistance to thee.\"")
     elseif eventid == 0 then
-        utility_unknown_1070(86) --- Guess: Triggers a game event
+        utility_npc_random_bark_1070(86) --- Guess: Triggers a game event
     end
 end

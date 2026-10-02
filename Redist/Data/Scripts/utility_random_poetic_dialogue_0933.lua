@@ -1,5 +1,5 @@
 --- Best guess: Displays random poetic dialogue for an item (likely a statue or book) based on a random selection, possibly for ambiance or lore.
-function utility_unknown_0933()
+function utility_random_poetic_dialogue_0933()
     local var_0000, var_0001, var_0002, var_0003
 
     var_0000 = get_npc_name(252)

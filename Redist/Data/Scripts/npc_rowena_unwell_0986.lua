@@ -1,5 +1,5 @@
 --- Best guess: Manages a dialogue with a ghost (likely Rowena) who is unwell and requests to postpone conversation.
-function utility_unknown_0986()
+function npc_rowena_unwell_0986()
     start_conversation()
     local var_0000
 

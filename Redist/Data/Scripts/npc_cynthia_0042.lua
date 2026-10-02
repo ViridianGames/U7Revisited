@@ -4,7 +4,7 @@ function npc_cynthia_0042(eventid, objectref)
 
     if eventid ~= 1 then
         if eventid == 0 then
-            utility_unknown_1070(42)
+            utility_npc_random_bark_1070(42)
         end
         add_dialogue("\"Good day, " .. get_lord_or_lady() .. ".\"")
         return
@@ -82,8 +82,8 @@ function npc_cynthia_0042(eventid, objectref)
                 add_dialogue("\"Dost thou have some gold that thou wouldst like to exchange?\"")
                 var_0004 = ask_yes_no()
                 if var_0004 then
-                    var_0005 = utility_unknown_1073(359, 359, 645, 1, 357)
-                    var_0006 = utility_unknown_1073(359, 359, 646, 1, 357)
+                    var_0005 = utility_party_has_items_1073(359, 359, 645, 1, 357)
+                    var_0006 = utility_party_has_items_1073(359, 359, 646, 1, 357)
                     var_0007 = var_0005 or var_0006
                     if not var_0007 then
                         add_dialogue("\"I can see thou hast no nuggets or bars of gold. Whatever gold thou mayest possess is already the coin of the realm. I cannot help thee anymore than that.\"")

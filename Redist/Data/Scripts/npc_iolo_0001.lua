@@ -34,10 +34,10 @@ function npc_iolo_0001(eventid, objectref)
             if not get_flag(87) then
                 add_answer("Trinsic")
             end
-            if is_string_in_array(party_member_1_name, player_member_names) then
+            if npc_id_in_party(1) then
                 add_answer("leave")
             end
-            if not is_string_in_array(party_member_1_name, player_member_names) then
+            if not npc_id_in_party(1) then
                 add_answer("join")
             end
             if get_flag(63) then
@@ -177,12 +177,12 @@ function npc_iolo_0001(eventid, objectref)
                         if var_000E == "wait here" then
                             add_dialogue("\"Very well. I shall wait here until thou dost return and ask me to rejoin.\"")
                             remove_from_party(1) --- Guess: Sets object state (e.g., active/inactive)
-                            set_schedule_type(15, 1) --- Guess: Sets a generic object property
+                            set_schedule_type(1, 15) --- Guess: Sets a generic object property
                             abort()
                         else
                             add_dialogue("\"Farewell, then. I shall always rejoin if thou dost so desire.\" Iolo turns away from you.")
                             remove_from_party(1) --- Guess: Sets object state (e.g., active/inactive)
-                            set_schedule_type(11, 1) --- Guess: Sets a generic object property
+                            set_schedule_type(1, 11) --- Guess: Sets a generic object property
                             abort()
                         end
                     else
@@ -190,16 +190,14 @@ function npc_iolo_0001(eventid, objectref)
                     end
                 elseif var_000C == "join" then
                     add_dialogue("\"I was waiting until thou didst ask me!\"")
-                    var_000F = 0
-                    for var_0010 = 1, 8 do
-                        var_000F = var_000F + 1
-                    end
-                    if var_000F < 8 then
-                        add_dialogue("\"It seems that thou hast enough members travelling with thee already! I shall wait until someone leaves the group.\"")
-                    else
+                    local party = get_party_members()
+                    local party_size = (type(party) == "table") and #party or 0
+                    if party_size < 8 then
                         add_to_party(1) --- Guess: Removes object from game
                         remove_answer("join")
                         add_answer("leave")
+                    else
+                        add_dialogue("\"It seems that thou hast enough members travelling with thee already! I shall wait until someone leaves the group.\"")
                     end
                 elseif var_000C == "gargoyles" then
                     add_dialogue("\"Since thou wert last in Britannia, the Gargoyles have begun to integrate with the humans. Most of them live on Sutek's old island, which was renamed 'Terfin'. However, thou mayest see one here and there throughout the land.\"")
@@ -216,6 +214,6 @@ function npc_iolo_0001(eventid, objectref)
                 end
             end
             elseif eventid == 0 then
-                utility_unknown_1070(1) --- Guess: Triggers a game event
+                utility_npc_random_bark_1070(1) --- Guess: Triggers a game event
             end
         end

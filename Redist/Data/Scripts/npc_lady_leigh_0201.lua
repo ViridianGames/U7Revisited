@@ -31,7 +31,7 @@ function npc_lady_leigh_0201(eventid, objectref)
                 end
             elseif answer == "heal" then
                 if var_0001 == 7 then
-                    utility_unknown_0940(385, 8, 25)
+                    utility_healer_services_dialogue_0940(385, 8, 25)
                 else
                     add_dialogue("\"I am sorry, but I have too many other patients to help thee now. Perhaps when I next open my shop.\"")
                 end
@@ -58,7 +58,7 @@ function npc_lady_leigh_0201(eventid, objectref)
                 add_dialogue("\"He is the tavern keeper at the Hallowed Dock, just inside the Hold's doors. He is wonderful at remembering and discussing important facts.\"")
                 remove_answer("Denton")
             elseif answer == "examine chips" then
-                var_0002 = utility_unknown_1073(4, 359, 815, 1, 357)
+                var_0002 = utility_party_has_items_1073(4, 359, 815, 1, 357)
                 if var_0002 then
                     if get_flag(616) then
                         add_dialogue("She looks at you, puzzled. \"Did I not do that already?\"")
@@ -82,7 +82,7 @@ function npc_lady_leigh_0201(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        utility_unknown_1070(201)
+        utility_npc_random_bark_1070(201)
     end
     return
 end

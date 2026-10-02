@@ -70,7 +70,7 @@ function npc_caroline_0022(eventid, objectref)
             end
             bark(22, var_0004)
         else
-            utility_unknown_1070(22) --- Guess: Triggers a game event
+            utility_npc_random_bark_1070(22) --- Guess: Triggers a game event
         end
     end
 end

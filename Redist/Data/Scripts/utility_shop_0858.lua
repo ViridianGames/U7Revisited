@@ -25,7 +25,7 @@ function utility_shop_0858()
     end
     add_dialogue("\"What wouldst thou like to buy?\"")
     while var_0000 do
-        var_0009 = utility_unknown_1036(var_0001)
+        var_0009 = utility_select_option_index_1036(var_0001)
         if var_0009 == 1 then
             add_dialogue("\"Tsk tsk... I am broken-hearted...\"")
             var_0000 = false

@@ -1,5 +1,5 @@
 --- Best guess: Implements the time acceleration spell (An Tym), speeding up game time.
-function utility_spell_0391(eventid, objectref)
+function spell_an_tym_0391(eventid, objectref)
     local var_0000
 
     if eventid == 1 then

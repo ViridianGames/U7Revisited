@@ -1,5 +1,5 @@
 --- Best guess: Manages the "Vas Mani" spell, healing a selected target's health (ID 64) by restoring their hit points, with a fallback effect if the spell fails.
-function utility_spell_0364(eventid, objectref)
+function spell_vas_mani_0364(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     if eventid ~= 1 then
@@ -8,9 +8,9 @@ function utility_spell_0364(eventid, objectref)
 
     var_0000 = object_select_modal()
     halt_scheduled(var_0000)
-    var_0001 = utility_unknown_1069(var_0000)
+    var_0001 = utility_direction_to_target_1069(var_0000)
     bark(objectref, "@Vas Mani@")
-    if not utility_unknown_1030() then
+    if not utility_condition_0044_1030() then
         var_0002 = execute_usecode_array(objectref, {64, 17496, 17511, 17509, 8550, var_0001, 7769})
         if not is_npc(var_0000) then
             var_0003 = get_npc_quality(var_0000, 0)

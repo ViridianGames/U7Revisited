@@ -10,7 +10,7 @@ function npc_phearcy_0163(eventid, objectref)
         var_0003 = get_schedule(163)
         var_0004 = false
         if var_0003 == 7 then
-            var_0005 = utility_unknown_1020(250, 163)
+            var_0005 = utility_distance_under_20_1020(250, 163)
             if var_0005 then
                 add_dialogue("\"Sorry, " .. var_0001 .. ", I may talk to thee later. But now I wish to pay attention to the meeting.\"")
                 return
@@ -171,7 +171,7 @@ function npc_phearcy_0163(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        utility_unknown_1070(163)
+        utility_npc_random_bark_1070(163)
     end
     return
 end

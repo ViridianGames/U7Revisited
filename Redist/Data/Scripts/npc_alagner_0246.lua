@@ -25,7 +25,7 @@ function npc_alagner_0246(eventid, objectref)
             if answer == "name" then
                 add_dialogue("The sage smiles and nods his head. \"My name is Alagner. And who art thou?\"")
                 save_answers()
-                var_0002 = utility_unknown_1035({"Avatar", var_0000})
+                var_0002 = utility_select_option_string_1035({"Avatar", var_0000})
                 if var_0002 == var_0000 then
                     add_dialogue("\"I see. Nice to meet thee. Go away. I am busy.\"")
                     return
@@ -96,7 +96,7 @@ function npc_alagner_0246(eventid, objectref)
                 var_0003 = ask_yes_no()
                 if var_0003 then
                     if get_flag(406) then
-                        utility_unknown_0832()
+                        npc_sage_notebook_key_0832()
                     else
                         add_dialogue("\"I do not believe thou dost.\"")
                     end
@@ -121,7 +121,7 @@ function npc_alagner_0246(eventid, objectref)
                 var_0004 = ask_yes_no()
                 if var_0004 then
                     add_dialogue("\"Then what are the answers?\"")
-                    utility_unknown_0832()
+                    npc_sage_notebook_key_0832()
                 else
                     add_dialogue("\"Do not return until thou hast done so.\"")
                 end
@@ -132,7 +132,7 @@ function npc_alagner_0246(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        utility_unknown_1070(246)
+        utility_npc_random_bark_1070(246)
     end
     return
 end

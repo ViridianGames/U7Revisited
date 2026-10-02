@@ -1,5 +1,5 @@
 --- Best guess: Searches for nearby items with specific quality and frame attributes, processes them, and triggers explosions, likely for inventory or environmental effects.
-function utility_unknown_0895(objectref)
+function mech_nearby_item_explosion_0895(objectref)
     local var_0000, var_0001, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000C, var_000D, var_000E, var_000F, var_0012, var_0013, var_0014, var_0015
 
     var_0001 = find_nearbyobject_s(16, 15, 275, objectref) --- Guess: Finds nearby items

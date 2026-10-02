@@ -66,7 +66,7 @@ function npc_ben_0116(eventid, objectref)
                 remove_answer("Emps")
             elseif var_0001 == "sign contract" then
                 add_dialogue("\"Why, o' course I'll sign. No more Silverleaf trees for me.\"")
-                var_0003 = utility_unknown_1073(359, 3, 797, 1, 357) --- Guess: Checks item in inventory
+                var_0003 = utility_party_has_items_1073(359, 3, 797, 1, 357) --- Guess: Checks item in inventory
                 if var_0003 then
                     add_dialogue("He takes the contract from you and signs it.")
                     var_0004 = npc_id_in_party(6) --- Guess: Checks player status
@@ -77,7 +77,7 @@ function npc_ben_0116(eventid, objectref)
                         add_dialogue("\"And please apologize to the Emps for me, " .. var_0000 .. ". I never meant to destroy their 'omes.\"")
                     end
                     set_flag(299, true)
-                    utility_unknown_1041(500) --- Guess: Submits item or advances quest
+                    utility_set_party_quest_prop8_1041(500) --- Guess: Submits item or advances quest
                 else
                     add_dialogue("\"Well, I would sign it, but it seems thou hast lost it. If thou dost find it again I will be more than happy to help thee and the Emps.\"")
                 end

@@ -1,5 +1,5 @@
 --- Best guess: Manages a dialogue with a healer offering resurrection, curing, or healing services, with gold checks and party member selection.
-function utility_unknown_0978(var_0000, var_0001, var_0002)
+function utility_healer_resurrect_dialogue_0978(var_0000, var_0001, var_0002)
     start_conversation()
     local var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_0010, var_0011, var_0012, var_0013
 
@@ -14,7 +14,7 @@ function utility_unknown_0978(var_0000, var_0001, var_0002)
     end
     add_dialogue("\"What is thy need?\"")
     var_0005 = {"resurrection", "curing", "healing"}
-    var_0006 = utility_unknown_1035(var_0005)
+    var_0006 = utility_select_option_string_1035(var_0005)
     if var_0006 == "healing" or var_0006 == "curing" then
         if var_0006 == "healing" then
             var_0007 = "healed"
@@ -24,7 +24,7 @@ function utility_unknown_0978(var_0000, var_0001, var_0002)
             var_0008 = var_0001
         end
         add_dialogue("\"Who needs to be " .. var_0007 .. "?\"")
-        var_0009 = utility_unknown_1038()
+        var_0009 = utility_select_party_member_1038()
         if var_0009 == 0 then
             add_dialogue("\"None of you seem to require mine aid.\"~~She appears pleased.")
             restore_answers()
@@ -49,11 +49,11 @@ function utility_unknown_0978(var_0000, var_0001, var_0002)
         var_0013 = get_party_gold()
         if var_0013 >= var_0008 then
             if var_0006 == "healing" then
-                utility_unknown_1053(var_0008, var_0009)
+                utility_heal_wounds_1053(var_0008, var_0009)
             elseif var_0006 == "curing" then
-                utility_unknown_1054(var_0008, var_0009)
+                utility_cure_poison_1054(var_0008, var_0009)
             elseif var_0006 == "resurrection" then
-                utility_unknown_1055(var_0008, var_0011)
+                utility_resurrect_1055(var_0008, var_0011)
             end
         else
             add_dialogue("\"I am sorry, " .. var_0003 .. ", but thou dost not have enough gold. Perhaps, I will be able to aid thee next time.\"")

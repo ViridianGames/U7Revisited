@@ -1,5 +1,5 @@
 --- Best guess: Searches party members' inventories for a specific item (ankh), returning the item if found or zero if not.
-function utility_unknown_1000(var_0000)
+function utility_find_party_ankh_1000(var_0000)
     local var_0001, var_0002, var_0003, var_0004, var_0005
 
     var_0001 = get_party_list2()

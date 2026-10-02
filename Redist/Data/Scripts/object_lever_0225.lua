@@ -6,36 +6,36 @@ function object_lever_0225(eventid, objectref)
         return
     end
     -- call [0000] (081BH, unmapped)
-    var_0000 = utility_unknown_0795(objectref)
+    var_0000 = utility_frame_mod4_0795(objectref)
     if var_0000 == 1 then
         -- call [0001] (081DH, unmapped)
         play_sound_effect(28)
         -- usecode: if (!Func081D) fail; else Func081E — success when 0797 returns true
         if utility_position_0797(7, 0, 0, 0, 392, objectref) then
             -- call [0002] (081EH, unmapped)
-            utility_unknown_0798(5, 3, 0, 0, 250, 1, 1, 246, objectref)
+            door_paired_stub_0798(5, 3, 0, 0, 250, 1, 1, 246, objectref)
             set_object_quality(objectref, 31)
         else
             -- call [0003] (0818H, unmapped)
-            utility_unknown_0792(objectref)
+            utility_msg_door_blocked_0792(objectref)
         end
     elseif var_0000 == 0 then
         -- call [0001] (081DH, unmapped)
         play_sound_effect(28)
         if utility_position_0797(7, 0, 0, 1, 392, objectref) then
             -- call [0002] (081EH, unmapped)
-            utility_unknown_0798(7, 0, 3, 1, 250, 2, 0, 246, objectref)
+            door_paired_stub_0798(7, 0, 3, 1, 250, 2, 0, 246, objectref)
             set_object_quality(objectref, 30)
         else
             -- call [0003] (0818H, unmapped)
-            utility_unknown_0792(objectref)
+            utility_msg_door_blocked_0792(objectref)
         end
     elseif var_0000 == 2 then
         -- call [0004] (0819H, unmapped)
-        utility_unknown_0793(objectref)
+        utility_msg_door_locked_0793(objectref)
     elseif var_0000 == 3 then
         -- call [0005] (081AH, unmapped)
-        utility_unknown_0794(objectref)
+        utility_msg_magically_locked_0794(objectref)
     end
     return
 end

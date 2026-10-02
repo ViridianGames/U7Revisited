@@ -19,7 +19,7 @@ local function toggle_linked_bridges(lever_ref)
     end
 
     -- Func080E: if a 870 bridge is blocked, skip raising/lowering it
-    local clear = utility_unknown_0782(matched)
+    local clear = mech_bridge_blocked_check_0782(matched)
     if clear then
         for _, obj in ipairs(matched) do
             local fr = get_object_frame(obj) or 0
@@ -32,7 +32,7 @@ local function toggle_linked_bridges(lever_ref)
     end
 
     -- Func0836 always runs in the original (even when 080E returns false)
-    utility_unknown_0822(lever_ref, -359)
+    mech_item_type_by_quality_0822(lever_ref, -359)
     return clear
 end
 
@@ -54,7 +54,7 @@ function object_lever_0788(eventid, objectref)
         utility_position_0808(objectref, -1, -1, -3, 788, objectref, 7)
     elseif eventid == 7 or eventid == 2 then
         if eventid ~= 2 then
-            utility_unknown_0807(-356, objectref)
+            utility_array_set_index_0807(-356, objectref)
         end
         do_lever_toggle(objectref)
     end

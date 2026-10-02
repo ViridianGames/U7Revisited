@@ -1,6 +1,6 @@
 --- Best guess: Handles Horance's response to the player's decision regarding the Well of Souls quest, setting flags based on acceptance or refusal.
 ---@param player_title string The player's title or form of address (e.g., "Avatar")
-function utility_unknown_0942(player_title)
+function npc_horance_response_0942(player_title)
     start_conversation()
     local var_0001
 

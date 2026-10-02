@@ -4,7 +4,7 @@ function npc_figg_0045(eventid, objectref)
 
     if eventid ~= 1 then
         if eventid == 0 then
-            utility_unknown_1070(45)
+            utility_npc_random_bark_1070(45)
         end
         add_dialogue("\"I can see that thou shouldst be on thy way.\"")
         return
@@ -15,7 +15,7 @@ function npc_figg_0045(eventid, objectref)
     var_0000 = get_schedule(45)
     var_0001 = get_lord_or_lady()
     var_0002 = is_player_wearing_fellowship_medallion()
-    var_0003 = utility_unknown_1020(26, 45)
+    var_0003 = utility_distance_under_20_1020(26, 45)
     if var_0000 == 7 then
         if var_0003 then
             add_dialogue("Figg is too intent on listening to the Fellowship meeting to acknowledge your attempts to converse with him.")

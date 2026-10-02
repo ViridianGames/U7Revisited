@@ -23,10 +23,10 @@ function utility_music_0270(eventid, objectref)
     var_0006 = get_object_position(objectref)
     set_flag(57, false)
     if get_flag(87) then
-        set_flag(58, utility_unknown_1017(get_object_position(-356), {[0]=1791, [1595]=899, [753]=-356}))
+        set_flag(58, utility_array_bounds_check_1017(get_object_position(-356), {[0]=1791, [1595]=899, [753]=-356}))
         if not get_flag(58) then
             var_0007 = find_nearby(4, 90, 359, -356)
-            var_0007 = utility_unknown_1084(get_npc_name(-356), var_0007)
+            var_0007 = utility_array_exclude_element_1084(get_npc_name(-356), var_0007)
             for var_000A in ipairs(var_0007) do
                 if get_schedule_type(var_000A) == 0 then
                     var_000B = get_alignment(var_000A)
@@ -65,11 +65,11 @@ function utility_music_0270(eventid, objectref)
             end
             var_001A = var_0017
             if get_schedule_type(-167) == 0 or get_schedule_type(-168) == 0 then
-                if not utility_unknown_1080(-167) then
+                if not utility_npc_any_condition_1080(-167) then
                     var_001A = table.insert(var_001A, get_npc_name(-167))
                     set_schedule_type(-167, 11)
                 end
-                if not utility_unknown_1080(-168) then
+                if not utility_npc_any_condition_1080(-168) then
                     var_001A = table.insert(var_001A, get_npc_name(-168))
                     set_schedule_type(-168, 11)
                 end

@@ -1,5 +1,5 @@
 --- Best guess: Implements the unlock spell (An Jux), unlocking containers (e.g., chests) with visual effects.
-function utility_spell_0336(eventid, objectref)
+function spell_unlock_an_jux_0336(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008
 
     if eventid == 1 then

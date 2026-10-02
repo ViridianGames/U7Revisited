@@ -76,7 +76,7 @@ function npc_unknown_0112(eventid, objectref)
                 add_dialogue("\"Yeah, I know Hook. Lookin' for him, are ye? He be from Buccaneer's Den. He usually travels with some gargoyle named Forskis or something like that. If ye see him, give him my... hello, for me.\" He gestures to his clenched fist.")
                 remove_answer("Hook")
                 set_flag(309, true)
-                utility_unknown_1041(10) --- Guess: Submits item or advances quest
+                utility_set_party_quest_prop8_1041(10) --- Guess: Submits item or advances quest
             elseif var_0005 == "bye" then
                 break
             end

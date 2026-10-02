@@ -4,7 +4,7 @@ function npc_cubolt_0155(eventid, objectref)
 
     if eventid ~= 1 then
         if eventid == 0 then
-            utility_unknown_1070(155)
+            utility_npc_random_bark_1070(155)
         end
         return
     end
@@ -27,47 +27,54 @@ function npc_cubolt_0155(eventid, objectref)
         add_dialogue("Cubolt looks up. \"Yes, " .. var_0001 .. "?\"")
     end
     while true do
-        if cmps("name") then
+        local answer = get_answer()
+        if type(answer) ~= "string" then
+            answer = get_answer()
+        end
+        if type(answer) ~= "string" then
+            break
+        end
+        if answer == "name" then
             add_dialogue("\"I am Cubolt of Moonglow.\"")
             add_answer("Moonglow")
             remove_answer("name")
-        elseif cmps("job") then
+        elseif answer == "job" then
             add_dialogue("\"I am a farmer, " .. var_0001 .. ". I manage my farm with the help of Tolemac, my brother, and Morz, our family friend.\"")
             add_answer({"Morz", "Tolemac"})
-        elseif cmps("Moonglow") then
+        elseif answer == "Moonglow" then
             add_dialogue("\"The city occupies the entire island now, including the Lycaeum. Most of the residents still live south, though. We are due east of Britain proper.\"")
             add_answer("residents")
             remove_answer("Moonglow")
-        elseif cmps("Morz") then
+        elseif answer == "Morz" then
             add_dialogue("\"My brother and I have known Morz for most of our lives. He is very friendly when he is not too busy worrying about his stutter. Unfortunately, he listens to Tolemac too often.\"")
             add_answer("stutter")
             remove_answer("Morz")
-        elseif cmps("stutter") then
+        elseif answer == "stutter" then
             add_dialogue("Cubolt looks down at the ground, shaking his head sadly. \"He started when he was five years old. He and my brother were wrestling in the back of a wagon driven by his parents. They hit a bump and he fell out -- and landed on his head. Ever since, he hath had his stutter.\" He looks back up at you. \"The odd thing is, neither he nor Tolemac remember the accident. Or at least, Tolemac doth not. I cannot convince Morz to talk about it.\"")
             remove_answer("stutter")
-        elseif cmps("residents") then
+        elseif answer == "residents" then
             add_dialogue("\"Zelda, the clerk at the Lycaeum, would be the best person to talk to about Moonglow's residents. Or the bartender, though I do not know his name. I know that the Observatory head and the Lycaeum head are twins, but I have never met either of them. I do know that thou dost not want to talk to Rankin or Balayna at The Fellowship. They are ill news to our once-pleasant city.\"")
             if not var_0002 then
                 add_answer("Fellowship")
             end
             remove_answer("residents")
-        elseif cmps("Tolemac") then
+        elseif answer == "Tolemac" then
             add_dialogue("\"He is my younger brother. Need I say more? I am a little concerned about him though. I am used to his rebellious behavior, but recently he has joined The Fellowship. That frightens me. They frighten me. I have tried to get him to come to his senses, but he is too busy enjoying making me worry to listen. Also, he is trying to get Morz to join. I wish I could get him to reconsider.\"")
             if not var_0002 then
                 add_answer("Fellowship")
             end
             add_answer("reconsider")
             remove_answer("Tolemac")
-        elseif cmps("Fellowship") then
+        elseif answer == "Fellowship" then
             add_dialogue("He spits on the ground. \"A bane to Britannia is what The Fellowship is. They have some odd philosophy that teaches thee to forget who thou art and follow them. The process is dehumanizing, and I think it meshes poorly with the eight virtues. Not only that, but their leader here in Moonglow has persuaded Tolemac to join.\"")
             var_0002 = true
             remove_answer("Fellowship")
-        elseif cmps("reconsider") then
+        elseif answer == "reconsider" then
             add_dialogue("\"Unfortunately, Tolemac will not listen to me. However,\" he begins to smile hopefully, \"he just might listen to thee, " .. var_0001 .. ". Perhaps thou couldst talk him into reconverting. I would very much appreciate that! Perhaps,\" he adds, \"thou couldst also ask Morz not to join.\"")
             set_flag(470, true)
             set_flag(471, true)
             remove_answer("reconsider")
-        elseif cmps("bye") then
+        elseif answer == "bye" then
             break
         end
     end

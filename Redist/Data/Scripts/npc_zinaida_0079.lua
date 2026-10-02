@@ -4,7 +4,7 @@ function npc_zinaida_0079(eventid, objectref)
 
     if eventid ~= 1 then
         if eventid == 0 then
-            utility_unknown_1070(79)
+            utility_npc_random_bark_1070(79)
         end
         add_dialogue("\"Come again soon!\"")
         return
@@ -28,10 +28,17 @@ function npc_zinaida_0079(eventid, objectref)
     end
     set_flag(241, true)
     while true do
-        if cmps("name") then
+        local answer = get_answer()
+        if type(answer) ~= "string" then
+            answer = get_answer()
+        end
+        if type(answer) ~= "string" then
+            break
+        end
+        if answer == "name" then
             add_dialogue("\"I am Zinaida,\" she says with a curtsey.")
             remove_answer("name")
-        elseif cmps("job") then
+        elseif answer == "job" then
             add_dialogue("\"I am the owner and manager of The Emerald.\"")
             if var_0000 == 23 then
                 add_dialogue("\"If I can help thee with food or drink, please say so. I have never had a dissatisfied customer.\"")
@@ -39,24 +46,24 @@ function npc_zinaida_0079(eventid, objectref)
             else
                 add_dialogue("\"Please come to the pub when it is open and I shall be happy to serve thee!\"")
             end
-        elseif cmps("food") then
+        elseif answer == "food" then
             add_dialogue("\"The Emerald is pleased to serve thee the finest cuisine this side of Britain. Thou mightest wish to try the special -- Silverleaf.\"")
             add_answer("Silverleaf")
-        elseif cmps("Silverleaf") then
+        elseif answer == "Silverleaf" then
             add_dialogue("She winks at you. \"Some say it is a powerful aphrodisiac... It is delicious, regardless. It comes from the root of an exotic tree growing somewhere in Britannia.\"")
             remove_answer("Silverleaf")
-        elseif cmps("drink") then
+        elseif answer == "drink" then
             add_dialogue("\"The Emerald serves only the best wine and ale. I cannot recommend the water, however. Thanks to Lock Lake.\"")
             add_answer("Lock Lake")
-        elseif cmps("buy") then
-            utility_unknown_1105()
-        elseif cmps("De Maria") then
+        elseif answer == "buy" then
+            utility_tavern_item_purchase_1105()
+        elseif answer == "De Maria" then
             add_dialogue("\"He is the light of my life. A finer man does not exist.\" She beams.")
             remove_answer("De Maria")
-        elseif cmps("Lock Lake") then
+        elseif answer == "Lock Lake" then
             add_dialogue("\"The stench has made our water taste terrible. That mining company must cease pouring their sewage into what was once a fine lake!\"")
             remove_answer("Lock Lake")
-        elseif cmps("bye") then
+        elseif answer == "bye" then
             break
         end
     end

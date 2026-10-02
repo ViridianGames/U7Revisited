@@ -1,15 +1,15 @@
 --- Best guess: Manages a combat training session with Sentri, teaching sword techniques, potentially increasing dexterity, with gold and experience checks.
-function utility_unknown_0997(var_0000, var_0001)
+function utility_combat_training_sentri_0997(var_0000, var_0001)
     start_conversation()
     local var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_0010, var_0011, var_0012, var_0013, var_0014
 
-    var_0002 = utility_unknown_1057()
+    var_0002 = utility_select_training_member_1057()
     var_0003 = (var_0002 == -8 or var_0002 == -5 or var_0002 == -9)
     if var_0002 == 0 then
         return
     end
     var_0004 = 1
-    var_0005 = utility_unknown_1058(var_0004, var_0002, var_0000, var_0001)
+    var_0005 = utility_check_training_okay_1058(var_0004, var_0002, var_0000, var_0001)
     if var_0005 == 0 then
         add_dialogue("\"I am sorry, but thou dost not have enough practical experience to train at this time. Return another day after thou hast slain a few more creatures.\"")
         return
@@ -48,9 +48,9 @@ function utility_unknown_0997(var_0000, var_0001)
     end
     add_dialogue("\"On guard!\" Sentri cries as he draws his sword. " .. var_0008 .. " " .. var_0009 .. " forced to respond with the most easily readied weapon " .. var_0008 .. ". Without a word, Sentri advances upon " .. var_0011 .. ", swinging his blade in a seemingly wild, yet entirely controlled manner. " .. var_0008 .. " " .. var_0009 .. " forced to block his blows to the best of " .. var_0012 .. " ability. Luckily, Sentri stops just short of striking " .. var_0011 .. ", which he is often able to do. Slowly but surely, over the course of the training session, " .. var_0012 .. " blocking improves and " .. var_0008 .. " " .. var_0013 .. " to get in a few thrusts of " .. var_0012 .. " own. " .. var_0012 .. " agility improves, and the improvement is tangibly perceptible.")
     add_dialogue("\"I enjoyed that!\" Sentri exclaims after it is all over.")
-    var_0014 = utility_unknown_1040(1, var_0002)
+    var_0014 = utility_get_training_level_1040(1, var_0002)
     if var_0014 < 30 then
-        utility_unknown_1045(1, var_0002)
+        utility_train_dexterity_1045(1, var_0002)
     end
     return
 end

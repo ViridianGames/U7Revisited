@@ -152,7 +152,7 @@ function npc_teregus_0183(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        utility_unknown_1071(183)
+        utility_gargoyle_random_bark_1071(183)
     end
     return
 end

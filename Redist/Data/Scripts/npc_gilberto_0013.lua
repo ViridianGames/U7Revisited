@@ -83,9 +83,9 @@ function npc_gilberto_0013(eventid, objectref)
             if get_flag(61) then
                 var_0001 = {"Please", "Long live the king", "Uhh, I don't know", "Blackbird"}
             end
-            var_0002 = utility_unknown_1035(var_0001)
+            var_0002 = utility_select_option_string_1035(var_0001)
             if var_0002 == "Blackbird" then
-                var_0003 = utility_unknown_0820()
+                var_0003 = door_portcullis_password_raise_0820()
                 if var_0003 then
                     add_dialogue("\"All right. Thou mayest pass.\"")
                 else

@@ -1,5 +1,5 @@
 --- Best guess: Manages the "Vas Zu" spell, putting multiple targets (ID -1) within a radius to sleep, with a fallback effect if the spell fails.
-function utility_spell_0367(eventid, objectref)
+function spell_vas_zu_0367(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007
 
     if eventid ~= 1 then
@@ -20,7 +20,7 @@ function utility_spell_0367(eventid, objectref)
     halt_scheduled(objectref)
     var_0000 = get_object_position(objectref)
     bark(objectref, "@Vas Zu@")
-    if not utility_unknown_1030() then
+    if not utility_condition_0044_1030() then
         sprite_effect(-1, 0, 0, 0, var_0000[2] - 2, var_0000[1] - 2, 7)
         var_0001 = execute_usecode_array(objectref, {1647, 17493, 17514, 17511, 17519, 17509, 8033, 65, 7768})
     else

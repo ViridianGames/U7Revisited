@@ -1,5 +1,5 @@
 --- Best guess: Manages the golem ritual, checking blood-covered rocks and displaying scroll instructions.
-function utility_unknown_0528(eventid, objectref)
+function mech_golem_ritual_0528(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E, var_000F, var_0010, var_0011, var_0012, var_0013, var_0014
 
     start_conversation()
@@ -24,7 +24,7 @@ function utility_unknown_0528(eventid, objectref)
             return
         end
         var_0006 = false
-        var_0007 = utility_unknown_0788() --- External call to unknown function
+        var_0007 = utility_check_items_414_area_0788() --- External call to unknown function
         if not var_0007 then
             bark(objectref, "@The golem must be centered in the pentacle of stones.@")
         else
@@ -60,7 +60,7 @@ function utility_unknown_0528(eventid, objectref)
     elseif eventid == 2 then
         set_flag(796, true)
         var_0010 = get_object_position(objectref) --- Guess: Gets position data
-        utility_event_0998(objectref) --- External call to activate object
+        utility_golem_body_cleanup_0998(objectref) --- External call to activate object
         var_0011 = get_object_status(414) --- Guess: Gets item status
         set_object_frame(var_0011, 5) --- Guess: Sets item frame
         var_0012 = update_last_created(var_0010) --- Guess: Updates position

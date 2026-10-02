@@ -1,5 +1,5 @@
 --- Best guess: Implements the mass summon spell (Kal Vas Xen), spawning multiple random creatures with weighted probabilities.
-function utility_spell_0389(eventid, objectref)
+function spell_kal_vas_xen_0389(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009
 
     if eventid == 1 then

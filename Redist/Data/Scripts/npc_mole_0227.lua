@@ -82,7 +82,7 @@ function npc_mole_0227(eventid, objectref)
                 add_dialogue("\"Thou must be kidding me! Blackie misses me? I thought he hated mine innards! I shall have to go for a little walk and maybe I will run across that old dog! I thank thee, stranger, for imparting this information to me.\"")
                 add_dialogue("With that, Mole turns away from you, doing a little jaunt.")
                 remove_answer("He misses thee")
-                set_schedule_type(12, var_0002)
+                set_schedule_type(227, 12)
                 return
             elseif answer == "bye" then
                 add_dialogue("\"Goodbye, stranger.\"")
@@ -104,7 +104,7 @@ function npc_mole_0227(eventid, objectref)
             end
             bark(227, var_0006)
         else
-            utility_unknown_1070(227)
+            utility_npc_random_bark_1070(227)
         end
     end
     return

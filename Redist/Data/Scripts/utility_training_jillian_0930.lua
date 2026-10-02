@@ -1,14 +1,14 @@
 --- Best guess: Manages a training session dialogue with Jillian, checking player stats and gold, and applying stat increases upon successful payment.
-function utility_unknown_0930(var_0000, var_0001)
+function utility_training_jillian_0930(var_0000, var_0001)
     local var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_0010, var_0011, var_0012
 
-    var_0002 = utility_unknown_1056()
+    var_0002 = utility_select_party_member_for_training_1056()
     var_0003 = get_npc_name(var_0002)
     if var_0002 == 0 then
         return
     end
     var_0004 = 2
-    var_0005 = utility_unknown_1058(var_0004, var_0002, var_0000, var_0001)
+    var_0005 = utility_check_training_okay_1058(var_0004, var_0002, var_0000, var_0001)
     if var_0005 == 0 then
         add_dialogue("\"I am sorry, but it appears thou dost not have enough knowledge of elementary studies to train at this time. If thou couldst return at a future date, I could instruct thee then.\"")
         return
@@ -35,13 +35,13 @@ function utility_unknown_0930(var_0000, var_0001)
         var_0010 = "s"
     end
     add_dialogue(var_0008 .. " and Jillian study for some time. In addition, she teaches a little on the theory of magic. Afterwards, " .. var_0009 .. " notice" .. var_0010 .. " an increase in knowledge and magical understanding.")
-    var_0011 = utility_unknown_1040(6, var_0002)
+    var_0011 = utility_get_training_level_1040(6, var_0002)
     if var_0011 < 30 then
-        utility_unknown_1048(1, var_0002)
+        utility_train_intelligence_1048(1, var_0002)
     end
-    var_0012 = utility_unknown_1040(2, var_0002)
+    var_0012 = utility_get_training_level_1040(2, var_0002)
     if var_0012 < 30 then
-        utility_unknown_1046(1, var_0002)
+        utility_init_training_2_7_1046(1, var_0002)
     end
     return
 end

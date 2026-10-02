@@ -8,7 +8,7 @@ function npc_rankin_0250(eventid, objectref)
         var_0001 = false
         var_0002 = npc_id_in_party(156)
         var_0003 = get_schedule(250)
-        var_0004 = utility_unknown_1073(1, 359, 981, 1, 357)
+        var_0004 = utility_party_has_items_1073(1, 359, 981, 1, 357)
         if var_0003 == 7 then
             if not get_flag(508) then
                 add_dialogue("Rankin is unable to speak with you now, for he is conducting the Fellowship meeting.")
@@ -59,7 +59,7 @@ function npc_rankin_0250(eventid, objectref)
                 end
                 add_answer({"Moonglow", "new"})
             elseif answer == "Balayna" then
-                utility_unknown_1041(50)
+                utility_set_party_quest_prop8_1041(50)
                 if not get_flag(525) then
                     add_dialogue("\"What dost thou want to know about her, " .. var_0000 .. "?\"")
                     add_answer("liqueur")
@@ -223,7 +223,7 @@ function npc_rankin_0250(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        utility_unknown_1070(250)
+        utility_npc_random_bark_1070(250)
     end
     return
 end

@@ -17,7 +17,7 @@ function npc_julia_0008(eventid, objectref)
         if var_0004 and not get_flag(289) then
             add_answer("Spark")
         end
-        if is_int_in_array(var_0002, var_0001) then
+        if npc_id_in_party(8) then
             add_answer("leave")
         end
         if not get_flag(257) then
@@ -42,7 +42,7 @@ function npc_julia_0008(eventid, objectref)
                 else
                     add_dialogue("\"Since accompanying thee on thine adventures when thou wast last in Britannia, I have become the tinker of Minoc. I repair things for the people of the town. But my duties and obligations are not so pressing as to prevent me from joining thee again shouldst thou wish it. After all, when thou art in Britannia, thou hast usually come to repair very important things and help put the world to rights.\"")
                     add_answer({"Minoc", "tinker"})
-                    if not is_int_in_array(var_0002, var_0001) then
+                    if not npc_id_in_party(8) then
                         add_answer("join")
                     end
                 end
@@ -50,12 +50,9 @@ function npc_julia_0008(eventid, objectref)
                 add_dialogue("\"It is not really what I wish to do with the rest of my life. I do not have the patience to be a proper tinkerer. If thou didst ask me, I would say I have sacrificed enough!\"")
                 remove_answer("tinker")
             elseif var_0005 == "join" then
-                var_0006 = 0
-                var_0001 = get_party_members()
-                for var_0007 = 1, 8 do
-                    var_0006 = var_0006 + 1
-                end
-                if var_0006 < 6 then
+                local party = get_party_members()
+                local party_size = (type(party) == "table") and #party or 0
+                if party_size < 6 then
                     if get_flag(257) then
                         add_dialogue("\"Well... All right. But I did not like thee telling me to leave!\"")
                     else
@@ -81,14 +78,14 @@ function npc_julia_0008(eventid, objectref)
                         set_flag(257, true)
                         set_flag(264, false)
                         remove_from_party(8) --- Guess: Sets object state (e.g., active/inactive)
-                        set_schedule_type(15, get_npc_name(8)) --- Guess: Sets a generic object property
+                        set_schedule_type(8, 15) --- Guess: Sets a generic object property
                         abort()
                     else
                         add_dialogue("\"Well! Fine, if that is thy wish, I shall leave!\"")
                         set_flag(257, true)
                         set_flag(264, false)
                         remove_from_party(8) --- Guess: Sets object state (e.g., active/inactive)
-                        set_schedule_type(11, get_npc_name(8)) --- Guess: Sets a generic object property
+                        set_schedule_type(8, 11) --- Guess: Sets a generic object property
                         abort()
                     end
                 else
@@ -191,6 +188,6 @@ function npc_julia_0008(eventid, objectref)
         end
         add_dialogue("\"Goodbye, " .. var_0003 .. ".\"")
     elseif eventid == 0 then
-        utility_unknown_1070(8) --- Guess: Triggers a game event
+        utility_npc_random_bark_1070(8) --- Guess: Triggers a game event
     end
 end

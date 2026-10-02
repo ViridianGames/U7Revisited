@@ -1,5 +1,5 @@
 --- Best guess: Prompts the user with a Yes/No choice, returning true for “Yes” and false for “No”.
-function utility_unknown_1034()
+function utility_ask_yes_no_1034()
     local var_0000
 
     save_answers()

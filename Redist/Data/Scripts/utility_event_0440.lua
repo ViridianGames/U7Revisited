@@ -10,15 +10,15 @@ function utility_event_0440(eventid, objectref)
             var_0005 = get_npc_property(0, var_0004)
             if not roll_to_win(15, var_0005) then
                 var_0006 = get_npc_name(var_0004)
-                utility_unknown_0288(var_0006)
+                utility_set_item_flag15_0288(var_0006)
                 var_0007 = delayed_execute_usecode_array(var_0001, 1567, {7765}, var_0006)
                 halt_scheduled(var_0004)
-                utility_unknown_1087(4, var_0004)
+                utility_remove_npc_from_party_1087(4, var_0004)
                 var_0007 = delayed_execute_usecode_array(var_0001, 1720, {17493, 7715}, var_0004)
             end
         end
     elseif eventid == 2 then
-        utility_unknown_1087(31, objectref)
+        utility_remove_npc_from_party_1087(31, objectref)
     end
     return
 end

@@ -129,6 +129,6 @@ function npc_leavell_0136(eventid, objectref)
         end
         add_dialogue("With that Leavell goes back to playing with his dagger.")
     elseif eventid == 0 then
-        utility_unknown_1070(136) --- Guess: Triggers a game event
+        utility_npc_random_bark_1070(136) --- Guess: Triggers a game event
     end
 end

@@ -76,8 +76,8 @@ function object_spindle_0654(eventid, objectref)
     end
 
     if get_object_shape(target) ~= LOOM then
-        if utility_unknown_1023 then
-            utility_unknown_1023(
+        if utility_apply_value_action_alt_1023 then
+            utility_apply_value_action_alt_1023(
                 "@Why dost thou not weave cloth with that thread on the loom?@")
         else
             item_say(

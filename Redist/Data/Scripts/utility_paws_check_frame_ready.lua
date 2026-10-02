@@ -33,12 +33,12 @@ function utility_paws_check_frame_ready()
 
     if get_flag(FLAG_PAWS_FRAME_READY) and not get_flag(FLAG_TOBIAS_FRAMED) then
         debug_print("paws_frame: putting Feridwyn on Talk (activity 3)")
-        utility_unknown_1087(3, NPC_FERIDWYN)
+        utility_remove_npc_from_party_1087(3, NPC_FERIDWYN)
     end
 
     if get_flag(FLAG_FERIDWYN_ACCUSED_TOBIAS) and not get_flag(FLAG_CAMILLE_BEGGED_CLEAR_TOBIAS) then
         debug_print("paws_frame: putting Camille on Talk")
-        utility_unknown_1087(3, NPC_CAMILLE)
+        utility_remove_npc_from_party_1087(3, NPC_CAMILLE)
     end
 
     return true

@@ -62,7 +62,7 @@ function npc_bradman_0104(eventid, objectref)
             elseif var_0001 == "train" then
                 add_dialogue("\"If thou wantest to train, my charge is 30 gold. Art thou still interested?\"")
                 if select_option() then
-                    utility_unknown_0854(30, 1) --- Guess: Trains player
+                    utility_archery_training_bradman_0854(30, 1) --- Guess: Trains player
                 else
                     add_dialogue("\"I understand, " .. var_0000 .. ".\"")
                 end
@@ -75,6 +75,6 @@ function npc_bradman_0104(eventid, objectref)
         end
         add_dialogue("\"May the trees part around thee, " .. var_0000 .. ".\"")
     elseif eventid == 0 then
-        utility_unknown_1070(104) --- Guess: Triggers a game event
+        utility_npc_random_bark_1070(104) --- Guess: Triggers a game event
     end
 end

@@ -1,5 +1,5 @@
 --- Best guess: Implements the heal spell (Mani), restoring NPC health based on property checks.
-function utility_spell_0345(eventid, objectref)
+function spell_heal_mani_0345(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     if eventid == 1 then

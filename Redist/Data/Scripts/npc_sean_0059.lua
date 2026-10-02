@@ -19,7 +19,7 @@ function npc_sean_0059(eventid, objectref)
                 end
                 bark(59, var_0012)
             else
-                utility_unknown_1070(59)
+                utility_npc_random_bark_1070(59)
             end
         end
         add_dialogue("\"I am sure thou must be on thy way.\" Sean smiles.")
@@ -33,7 +33,7 @@ function npc_sean_0059(eventid, objectref)
     var_0002 = get_schedule_type(get_npc_name(59))
     var_0003 = is_player_wearing_fellowship_medallion()
     if var_0001 == 7 then
-        var_0004 = utility_unknown_1020(26, 59)
+        var_0004 = utility_distance_under_20_1020(26, 59)
         if var_0004 then
             add_dialogue("Sean is deep in concentration, listening to the Fellowship meeting.")
             return

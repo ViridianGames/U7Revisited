@@ -1,5 +1,5 @@
 --- Best guess: Triggers a game-ending event for cheating, displaying accusatory dialogue, applying penalties to the player's stats, and initiating combat or death.
-function utility_event_0318(eventid, objectref)
+function mech_cheat_penalty_end_0318(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     if eventid == 3 then
@@ -20,7 +20,7 @@ function utility_event_0318(eventid, objectref)
         var_0000 = set_npc_quality(-356, 0, 7)
         var_0000 = set_npc_quality(-356, 0, 8)
     elseif eventid == 2 then
-        switch_talk_to(-23)
+        switch_talk_to(23)
         add_dialogue("Busted, you thieving scoundrel bastard! Perhaps the only thing more ridiculous than your pathetic attempt to destroy the black gate without paying proper dues is your inevitably embarrassing explanation to the friend to whom you are, no doubt, showing this!")
         add_dialogue("For the atrocious crime of cheating against the virtues of Britannia, I find you guilty.")
         play_sound_effect(15)

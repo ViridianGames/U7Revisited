@@ -59,7 +59,7 @@ function npc_master_de_snel_0119(eventid, objectref)
             elseif var_0008 == "weaponry" then
                 add_dialogue("He unsheathes his own sword and shows it to you. The sword has an elaborate serpentine pattern engraved in it. \"Thou mayest recognize a weapon of the Library of Scars by its engraving. It is the sign of the snake. Striking quick, silent, deadly, as are we!\"")
                 remove_answer("weaponry")
-                var_0008 = utility_unknown_1073(359, 359, 636, 1, 357) --- Guess: Checks item in inventory
+                var_0008 = utility_party_has_items_1073(359, 359, 636, 1, 357) --- Guess: Checks item in inventory
                 if var_0008 then
                     add_answer("dagger")
                 end
@@ -84,7 +84,7 @@ function npc_master_de_snel_0119(eventid, objectref)
                 remove_answer("dagger")
                 add_answer("demonstration")
                 set_flag(364, true)
-                utility_unknown_1041(50) --- Guess: Submits item or advances quest
+                utility_set_party_quest_prop8_1041(50) --- Guess: Submits item or advances quest
             elseif var_0008 == "demonstration" then
                 if get_flag(364) then
                     add_dialogue("\"Very well. Let us begin!\"")
@@ -94,7 +94,7 @@ function npc_master_de_snel_0119(eventid, objectref)
                 else
                     add_dialogue("\"I must apologize for the discourtesy, but mine unequaled talents demand that I charge thee 40 gold for a training demonstration. Wilt thou accept?\"")
                     if select_option() then
-                        utility_unknown_0888(40, 4) --- Guess: Trains player
+                        utility_combat_training_feints_0888(40, 4) --- Guess: Trains player
                     else
                         add_dialogue("\"Very well, then!\" His scowl indicates his displeasure. \"If thou dost not like it, perhaps the Library of Scars is not the place for thee.\"")
                         remove_answer("demonstration")
@@ -131,6 +131,6 @@ function npc_master_de_snel_0119(eventid, objectref)
             add_dialogue("\"May thy stay in Jhelom be a memorable one,\" De Snel laughs as he turns and walks away.")
         end
     elseif eventid == 0 then
-        utility_unknown_1070(119) --- Guess: Triggers a game event
+        utility_npc_random_bark_1070(119) --- Guess: Triggers a game event
     end
 end

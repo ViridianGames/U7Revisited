@@ -1,5 +1,5 @@
 --- Best guess: Generates verb conjugations (e.g., "collate", "collating"), possibly for event triggers.
-function utility_event_0873(eventid, objectref)
+function utility_verb_conjugation_gen_0873(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
     var_0000 = {

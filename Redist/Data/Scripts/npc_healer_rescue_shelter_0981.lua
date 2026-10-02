@@ -1,5 +1,5 @@
 --- Best guess: Manages a dialogue with a healer explaining how the player was rescued and brought to their shelter, with location-specific details based on flags.
-function utility_unknown_0981()
+function npc_healer_rescue_shelter_0981()
     start_conversation()
     local var_0000
 

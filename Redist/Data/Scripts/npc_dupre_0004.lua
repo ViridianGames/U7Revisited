@@ -98,13 +98,13 @@ function npc_dupre_0004(eventid, objectref)
                     add_dialogue("\"Very well. I shall await thy return.\"")
                     remove_from_party(4)
                     set_flag(365, false)
-                    set_schedule_type(15, get_npc_name(4))
+                    set_schedule_type(4, 15)
                     abort()
                 else
                     add_dialogue("\"I shall depart thy company if that is truly thy wish. If thou shouldst ever need me again, thou hast only to ask.\" He turns away from you, obviously disappointed.")
                     remove_from_party(4)
                     set_flag(365, false)
-                    set_schedule_type(11, get_npc_name(4))
+                    set_schedule_type(4, 11)
                     abort()
                 end
             elseif var_000F == "Jhelom" then
@@ -199,6 +199,6 @@ function npc_dupre_0004(eventid, objectref)
         end
         add_dialogue("\"I shall speak with thee later, then.\"")
     elseif eventid == 0 then
-        utility_unknown_1070(4)
+        utility_npc_random_bark_1070(4)
     end
 end

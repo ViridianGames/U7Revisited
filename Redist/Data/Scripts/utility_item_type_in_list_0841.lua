@@ -1,5 +1,5 @@
 --- Best guess: Checks if an item type matches a list (e.g., 519, 354), returning true if found, likely for validation.
-function utility_unknown_0841(objectref)
+function utility_item_type_in_list_0841(objectref)
     local var_0000
 
     var_0000 = objectref

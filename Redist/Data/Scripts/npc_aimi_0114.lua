@@ -66,7 +66,7 @@ function npc_aimi_0114(eventid, objectref)
                             add_dialogue("\"Good. 'Tis always best to have someone to receive flowers. The flowers will cost 10 gold. Dost thou still want them?\"")
                             var_0003 = select_option()
                             if var_0003 then
-                                var_0006 = utility_unknown_1073(359, 359, 644, 10, 357) --- Guess: Checks item in inventory
+                                var_0006 = utility_party_has_items_1073(359, 359, 644, 10, 357) --- Guess: Checks item in inventory
                                 var_0007 = add_party_items(true, 4, 359, 999, 1) --- Guess: Checks inventory space
                                 if var_0006 then
                                     if var_0007 then
@@ -99,6 +99,6 @@ function npc_aimi_0114(eventid, objectref)
         add_dialogue("\"Fare thee well, " .. var_0000 .. ". May the sweet scent of beauty never pass thee by.\"")
         abort()
     elseif eventid == 0 then
-        utility_unknown_1070(114) --- Guess: Triggers a game event
+        utility_npc_random_bark_1070(114) --- Guess: Triggers a game event
     end
 end

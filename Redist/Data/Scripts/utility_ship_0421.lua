@@ -2,8 +2,8 @@
 function utility_ship_0421(eventid, objectref)
     if eventid == 3 then
         if get_flag(6) then
-            set_schedule_type(0, get_npc_name(103))
-            utility_unknown_1028(103, "@Fellowship scum!@")
+            set_schedule_type(103, 0)
+            npc_pig_oink_item_1028(103, "@Fellowship scum!@")
         else
             npc_thad_0103(get_npc_name(103))
         end

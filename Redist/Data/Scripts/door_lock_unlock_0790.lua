@@ -9,20 +9,20 @@
 
 --- Unlock door piece: transform toward shape 845 (Func081F)
 function unlock_door(door)
-    local state = utility_unknown_0795(door) -- frame % 4
+    local state = utility_frame_mod4_0795(door) -- frame % 4
     if state == 1 then
         if utility_position_0797(7, 0, 0, 0, 845, door) then
             play_sound_effect(31)
             return true
         end
-        utility_unknown_0792(door)
+        utility_msg_door_blocked_0792(door)
         return false
     elseif state == 0 then
         if utility_position_0797(7, 0, 0, 1, 845, door) then
             play_sound_effect(30)
             return true
         end
-        utility_unknown_0792(door)
+        utility_msg_door_blocked_0792(door)
         return false
     end
     return true
@@ -30,20 +30,20 @@ end
 
 --- Lock door piece: transform toward shape 828 (Func0820)
 function lock_door(door)
-    local state = utility_unknown_0795(door)
+    local state = utility_frame_mod4_0795(door)
     if state == 1 then
         if utility_position_0797(7, 0, 0, 0, 828, door) then
             play_sound_effect(31)
             return true
         end
-        utility_unknown_0792(door)
+        utility_msg_door_blocked_0792(door)
         return false
     elseif state == 0 then
         if utility_position_0797(7, 0, 0, 1, 828, door) then
             play_sound_effect(30)
             return true
         end
-        utility_unknown_0792(door)
+        utility_msg_door_blocked_0792(door)
         return false
     end
     return true
@@ -111,7 +111,7 @@ local function toggle_linked_doors(lever)
     return ok
 end
 
-function utility_unknown_0790(objectref)
+function door_lock_unlock_0790(objectref)
     local success = false
     local quality = get_object_quality(objectref) or 0
 
@@ -134,7 +134,7 @@ function utility_unknown_0790(objectref)
             if get_flag(741) then flags = {1, 0, 0} end
             if get_flag(742) then flags = {0, 1, 0} end
         end
-        utility_unknown_0791(flags)
+        door_flag_state_update_0791(flags)
         success = true
     elseif quality == 252 then
         -- Partial: unlock non-selected bank doors, lock selected set

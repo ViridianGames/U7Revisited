@@ -1,5 +1,5 @@
 --- Best guess: Manages the placement of prisms by the Black Gate, checking for beams (ID 168) and pedestals (ID 577), aligning prisms (ID 981) and updating frames.
-function utility_unknown_0814(eventid, objectref)
+function mech_black_gate_prisms_0814(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E, var_000F
 
     close_gumps()
@@ -24,7 +24,7 @@ function utility_unknown_0814(eventid, objectref)
                 remove_item(var_000D)
             end
             if var_000D then
-                utility_unknown_1088(14)
+                utility_npc_speech_init_1088(14)
             end
         else
             for var_000E in ipairs(var_0001) do

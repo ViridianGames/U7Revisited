@@ -2,7 +2,7 @@
 --- usecode: return UI_find_direction(from, to)
 --- Decompiler named this poorly; callers pass (avatar_ref, lever) or similar.
 
-function utility_unknown_0807(from_ref, to_ref)
+function utility_array_set_index_0807(from_ref, to_ref)
     -- Resolve usecode NPC numbers (±356 = Avatar object)
     local function resolve(id)
         if id == nil then return nil end

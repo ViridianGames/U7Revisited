@@ -35,7 +35,7 @@ function npc_tseramed_0010(eventid, objectref)
 
     -- Still angry from a prior deception and identity never cleared.
     if not get_flag(29) and get_flag(349) then
-        utility_unknown_1010(player_name, fellowship_leader)
+        npc_deception_apology_1010(player_name, fellowship_leader)
         abort()
     end
 
@@ -53,7 +53,7 @@ function npc_tseramed_0010(eventid, objectref)
     local leaving = false
 
     if in_party then
-        utility_unknown_1012(party_size, player_name)
+        npc_shamino_forgiveness_1012(party_size, player_name)
         if not hermits_present then
             add_answer("hermits")
         end
@@ -161,7 +161,7 @@ function npc_tseramed_0010(eventid, objectref)
                 local tarnish = get_flag(353) and "thou dost tarnish the title of Avatar!" or ""
                 add_dialogue("\"Knave, " .. tarnish .. " I have not forgotten thy wrong doing, nor the evil crime that followed it.")
                 add_dialogue("Oh soul as black as pitch!\"")
-                utility_unknown_1010(player_name, fellowship_leader)
+                npc_deception_apology_1010(player_name, fellowship_leader)
                 abort()
             end
         elseif answer == "Lady M." then
@@ -184,7 +184,7 @@ function npc_tseramed_0010(eventid, objectref)
             end
         elseif answer == "introduce" then
             remove_answer("introduce")
-            party_names = utility_unknown_1013(party_names, nil)
+            party_names = npc_party_greet_avatar_1013(party_names, nil)
             in_party = npc_id_in_party(10)
             if type(party_names) == "table" then
                 party_size = #party_names
@@ -447,7 +447,7 @@ function npc_tseramed_0010(eventid, objectref)
 
         -- After Avatar title is known and he is not yet in the party, ask combat preference once.
         if get_flag(353) and not in_party and not get_flag(354) then
-            utility_unknown_1011(party_names)
+            npc_shamino_combat_prefs_1011(party_names)
             set_flag(354, true)
         end
 

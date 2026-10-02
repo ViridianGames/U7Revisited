@@ -67,7 +67,7 @@ function npc_ian_0202(eventid, objectref)
                         var_0001 = add_party_items(false, 7, 249, 641, 1)
                         if var_0001 then
                             add_dialogue("\"Then here is thy key. Be happy! Oh, one more thing. There is a rule which must be followed.\"")
-                            set_schedule_type(11, get_npc_name(202))
+                            set_schedule_type(202, 11)
                             add_answer("rule")
                         else
                             add_dialogue("\"Oh. Then I cannot give thee a key.\"")
@@ -94,7 +94,7 @@ function npc_ian_0202(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        utility_unknown_1070(202)
+        utility_npc_random_bark_1070(202)
     end
     return
 end

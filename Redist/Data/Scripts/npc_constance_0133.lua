@@ -136,6 +136,6 @@ function npc_constance_0133(eventid, objectref)
         end
         add_dialogue("\"It was a pleasure speaking with thee, " .. var_0000 .. ".\"")
     elseif eventid == 0 then
-        utility_unknown_1070(133) --- Guess: Triggers a game event
+        utility_npc_random_bark_1070(133) --- Guess: Triggers a game event
     end
 end

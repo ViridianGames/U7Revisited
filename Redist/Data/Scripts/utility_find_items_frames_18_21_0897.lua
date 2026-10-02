@@ -1,5 +1,5 @@
 --- Best guess: Searches for items with specific frames (18–21), possibly for event triggers.
-function utility_event_0897(eventid, objectref)
+function utility_find_items_frames_18_21_0897(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
     var_0000 = set_npc_location(0, 0, 854, 356) --- Guess: Sets NPC location

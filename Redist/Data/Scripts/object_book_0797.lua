@@ -3,7 +3,7 @@ function object_book_0797(eventid, objectref)
 
     var_0000 = get_object_quality(objectref)
     if var_0000 == 45 then
-        --utility_unknown_0528(objectref)
+        --mech_golem_ritual_0528(objectref)
     end
     --set_object_quality(objectref, 14)
     --book_mode(objectref)

@@ -7,7 +7,7 @@ function object_sign_0820(eventid, objectref)
     if eventid == 3 then
         if get_object_shape(var_0000) ~= 820 then
             var_0000 = find_nearby(176, 5, 820, var_0000)
-            var_0000 = utility_unknown_1085(var_0000)
+            var_0000 = utility_bubble_sort_distances_1085(var_0000)
             if not var_0000 then
                 abort()
             end
@@ -72,7 +72,7 @@ function object_sign_0820(eventid, objectref)
         var_000A = {"enter", "to", "here", "hammer"}
     elseif var_0001 == 8 then
         var_000A = {"goi*", "to k)p", "carefully", "pick item"}
-        utility_unknown_1023({"Look at it now!", "The sign appears to have changed!", "By Jove, I think thou art on the right track!"})
+        utility_apply_value_action_alt_1023({"Look at it now!", "The sign appears to have changed!", "By Jove, I think thou art on the right track!"})
     elseif var_0001 == 9 then
         var_000A = {"faces ()", "tru(", "ring of", "a golden"}
     elseif var_0001 == 10 then
@@ -157,7 +157,7 @@ function object_sign_0820(eventid, objectref)
         if math.abs(var_0008[1] - var_000B[1]) <= 2 and math.abs(var_0008[2] - var_000B[2]) <= 2 then
             var_0007 = execute_usecode_array(var_0000, {7981, 1545, 8021, 1545, 8021, 1545, 7765})
             var_0007 = execute_usecode_array(-23, {820, 17493, 17518, 7937, 86, 17496, 17517, 8033, 19, 8024, 3, 7719})
-            utility_unknown_1022({"@Yancey-Hausman will pay!@", "@He's dead, Avatar!@", ""})
+            utility_apply_value_action_1022({"@Yancey-Hausman will pay!@", "@He's dead, Avatar!@", ""})
             var_0007 = execute_usecode_array(-356, {17494, 26, 7715})
         else
             var_000A = {"BRITISH", "LORD", "OF", "ROOM", "THRONE", "THE"}

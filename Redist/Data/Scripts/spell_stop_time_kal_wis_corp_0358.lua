@@ -1,5 +1,5 @@
 --- Best guess: Implements the stop time spell (Kal Wis Corp), freezing time for a duration based on game time with multiple flags.
-function utility_spell_0358(eventid, objectref)
+function spell_stop_time_kal_wis_corp_0358(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006
 
     if eventid == 1 then

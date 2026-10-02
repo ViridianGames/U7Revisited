@@ -43,7 +43,7 @@ function npc_martine_0223(eventid, objectref)
             end
         end
         add_dialogue("\"What is thy name?\"")
-        var_0009 = utility_unknown_1035({var_0003, var_0002})
+        var_0009 = utility_select_option_string_1035({var_0003, var_0002})
         if var_0009 == var_0002 then
             if not var_0004 then
                 add_dialogue("\"How art thou, " .. var_0002 .. "? I am so happy to meet thee!\"")

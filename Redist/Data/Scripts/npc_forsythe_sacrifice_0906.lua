@@ -1,5 +1,5 @@
 --- Best guess: Manages Forsythe's decision to sacrifice himself, checking party size and leading him to a well, updating flags and dialogue.
-function utility_unknown_0906()
+function npc_forsythe_sacrifice_0906()
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007
 
     var_0000 = get_lord_or_lady()
@@ -15,7 +15,7 @@ function utility_unknown_0906()
     end
     if var_0001 < 8 then
         add_dialogue("He steps in line and motions for you to lead on.")
-        add_to_party(-147)
+        add_to_party(147)
         set_flag(408, false)
         abort()
     else

@@ -1,5 +1,5 @@
 --- Best guess: Damages an NPC based on property checks, likely a combat helper function.
-function utility_unknown_0393(eventid, objectref)
+function utility_damage_npc_0393(eventid, objectref)
     local var_0000, var_0001
 
     var_0000 = get_npc_property(2, objectref) --- Guess: Gets NPC property

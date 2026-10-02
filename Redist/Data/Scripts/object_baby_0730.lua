@@ -15,10 +15,10 @@ function object_baby_0730(eventid, objectref)
             elseif var_0002 == 992 then
                 set_object_shape(var_0001, 987)
                 -- call [0001] (0925H, unmapped)
-                utility_unknown_1061(objectref)
+                utility_item_quantity_adjust_1061(objectref)
             else
                 -- call [0002] (08FDH, unmapped)
-                utility_unknown_1021(60)
+                utility_item_prop76_action_1021(60)
             end
         end
     end

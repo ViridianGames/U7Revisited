@@ -8,7 +8,7 @@ function utility_shop_0987()
     var_0001 = {185, 155, 135, 115, 85, 65, 45, 25}
     while var_0000 do
         add_dialogue("\"In which circle dost thou wish to study?\"")
-        var_0002 = utility_unknown_1036({"Eighth", "Seventh", "Sixth", "Fifth", "Fourth", "Third", "Second", "First", "none"})
+        var_0002 = utility_select_option_index_1036({"Eighth", "Seventh", "Sixth", "Fifth", "Fourth", "Third", "Second", "First", "none"})
         var_0002 = var_0002 - 1
         if var_0002 == 0 then
             break
@@ -38,7 +38,7 @@ function utility_shop_0987()
             var_0004 = {70, 69, 68, 64, 0}
         end
         add_dialogue("\"What spell wouldst thou like to buy?\"")
-        var_0005 = utility_unknown_1036(var_0003)
+        var_0005 = utility_select_option_index_1036(var_0003)
         if var_0005 == 1 then
             add_dialogue("\"Fine.\"")
             break
@@ -47,7 +47,7 @@ function utility_shop_0987()
         var_0007 = var_0001[var_0002]
         var_0008 = var_0003[var_0005]
         add_dialogue("\"The " .. var_0008 .. " spell will cost " .. var_0007 .. " gold.\"")
-        var_0009 = utility_spell_1059(var_0007, var_0006)
+        var_0009 = spell_declined_1059(var_0007, var_0006)
         if var_0009 == 1 then
             add_dialogue("\"Done!\"")
         elseif var_0009 == 2 then

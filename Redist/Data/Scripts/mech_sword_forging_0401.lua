@@ -1,5 +1,5 @@
 --- Best guess: Manages sword forging with random quality checks and dialogue feedback for the player.
-function utility_unknown_0401(eventid, objectref)
+function mech_sword_forging_0401(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003
 
     start_conversation()

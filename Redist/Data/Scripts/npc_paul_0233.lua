@@ -108,7 +108,7 @@ function npc_paul_0233(eventid, objectref)
             end
             bark(233, var_000C)
         else
-            utility_unknown_1070(233)
+            utility_npc_random_bark_1070(233)
         end
     end
 end

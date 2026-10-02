@@ -13,7 +13,7 @@ local doorOriginalPositions = {}
 function utility_position_0797(P0, P1, P2, P3, P4, P5)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007
 
-    utility_unknown_0796(P3, P5)
+    utility_frame_add_mod4_0796(P3, P5)
     set_object_shape(P5, P4)
 
     -- Position adjustment to keep door rotating around hinge

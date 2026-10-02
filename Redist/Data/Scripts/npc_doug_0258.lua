@@ -31,7 +31,7 @@ function npc_doug_0258(eventid, objectref)
             end
             var_0002 = ask_multiple_choice(var_0001)
             if var_0002 == "Blackbird" then
-                var_0003 = utility_unknown_0820()
+                var_0003 = door_portcullis_password_raise_0820()
                 set_flag(61, true)
                 if var_0003 then
                     add_dialogue("\"Very well, thou mayest pass.\"")

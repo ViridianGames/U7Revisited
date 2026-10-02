@@ -124,7 +124,7 @@ function npc_clint_0057(eventid, objectref)
             end
             bark(57, var_000B)
         else
-            utility_unknown_1070(57) --- Guess: Triggers a game event
+            utility_npc_random_bark_1070(57) --- Guess: Triggers a game event
         end
     end
 end

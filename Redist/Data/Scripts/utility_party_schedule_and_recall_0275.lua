@@ -1,5 +1,5 @@
 --- Best guess: Updates party member states and clears item states, possibly for quest progression.
-function utility_unknown_0275(eventid, objectref)
+function utility_party_schedule_and_recall_0275(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003
 
     set_flag(57, false)

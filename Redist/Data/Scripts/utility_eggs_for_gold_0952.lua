@@ -1,5 +1,5 @@
 --- Best guess: Manages a dialogue for exchanging eggs for gold, checking the player's inventory and handling payment or rejection.
-function utility_unknown_0952()
+function utility_eggs_for_gold_0952()
     start_conversation()
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006
 

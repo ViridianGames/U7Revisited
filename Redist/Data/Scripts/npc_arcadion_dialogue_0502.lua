@@ -1,5 +1,5 @@
 --- Best guess: Manages dialogue with Arcadion in the mirror or sword, handling multiple conversation paths and flag updates based on player choices.
-function utility_unknown_0502(objectref)
+function npc_arcadion_dialogue_0502(objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_0010, var_0011, var_0012, var_0013, var_0014, var_0015, var_0016, var_0017, var_0018, var_0019, var_0020, var_0021, var_0022, var_0023, var_0024, var_0025, var_0026, var_0027, var_0028, var_0029, var_0030
 
     if not get_flag(815) then
@@ -22,21 +22,21 @@ function utility_unknown_0502(objectref)
             add_dialogue("Suprised, " .. var_0005 .. " looks around and says, \"I don't recall summoning thee. Nevermind, I have no need of thee at the current time. Begone!\" The old man waves his hand, negligently.")
             switch_talk_to(290)
             add_dialogue("Through a tightly clenched smile, the figure replies, \"Very well...\" And after a significant pause, \"Master.\"*")
-            utility_event_0835()
+            utility_hide_npc290_add_items_0835()
         else
             if not get_flag(819) then
                 add_dialogue("Arcadion appears truly astonished, \"For what dost thou wait?! I beg of thee! Release me!\"")
-                utility_event_0835()
+                utility_hide_npc290_add_items_0835()
             else
                 var_0006 = find_nearby(0, 15, 760, objectref)
                 if not var_0006 then
                     add_dialogue("\"There is a gem nearby that can free me! It is a small blue stone. Take it, quickly, and use it to free me of this accursed mirror!\" The large daemon seethes with pent up frustration.*")
                     add_answer({"bye", "release", "job", "name"})
-                    utility_unknown_0836()
+                    utility_find_item_frame12_0836()
                 else
                     add_dialogue("\"Thou hast within thy possessions a small blue gem. It can be used to free me! Crack this accursed mirror with it! I'll enter it as I am freed!\" Arcadion looks prepared to burst from the mirror.*")
                     add_answer({"bye", "release", "job", "name"})
-                    utility_unknown_0836()
+                    utility_find_item_frame12_0836()
                 end
             end
         end
@@ -89,7 +89,7 @@ function utility_unknown_0502(objectref)
             elseif player_says("Magic") then
                 var_0016 = get_schedule(292)
                 if var_0016 == 7 or var_0016 == 0 or var_0016 == 1 then
-                    utility_unknown_0837(true)
+                    npc_daemon_mana_restore_0837(true)
                 else
                     add_dialogue("The blade croons quietly, \"Alas, master. My energies seem a trifle low. Perhaps if thou were to find some creature to slay, my power would be sufficient. After all, I have needs just as thou dost.\"")
                 end
@@ -139,7 +139,7 @@ function utility_unknown_0502(objectref)
                     add_dialogue("The Shade Blade lets out a harsh whisper. \"Move a little closer to him, and I'll perform this task for thee, master.\"")
                 end
             elseif player_says("Return") then
-                if not utility_event_0999() then
+                if not utility_check_position_bounds_0999() then
                     add_dialogue("\"Ah... home again. I never tire of rocky little islands. Dost thou truly wish to go to the forsaken Isle of Fire?\"")
                     if ask_yes_no() then
                         add_dialogue("\"I see. Very well, master. But let us not forget this little favor...\" The gem in the hilt of the sword glows brightly then everything dims.*")
@@ -168,11 +168,11 @@ function utility_unknown_0502(objectref)
         execute_usecode_array(objectref, {1785, 8021, 1, 7719})
     end
     if var_0014 then
-        var_001B = utility_unknown_1069(var_0011)
+        var_001B = utility_direction_to_target_1069(var_0011)
         execute_usecode_array(var_0011, {8033, 2, 17447, 8042, 1, 17447, 8041, 1, 17447, 8040, 1, 17447, 8548, var_001B, 7769})
     end
     if var_0015 then
-        var_001B = utility_unknown_1069(var_0011)
+        var_001B = utility_direction_to_target_1069(var_0011)
         execute_usecode_array(var_0011, {8033, 2, 17447, 8042, 1, 17447, 8041, 1, 17447, 8040, 1, 17447, 8036, 2, 8487, var_001B, 7769})
     end
     return

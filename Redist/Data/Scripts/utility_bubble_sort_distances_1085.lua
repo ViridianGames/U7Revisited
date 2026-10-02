@@ -1,5 +1,5 @@
 --- Best guess: Sorts an array of distances using bubble sort, returning the sorted array.
-function utility_unknown_1085(P0, P1)
+function utility_bubble_sort_distances_1085(P0, P1)
     local var_0000, var_0001, var_0002
 
     var_0000 = #P1

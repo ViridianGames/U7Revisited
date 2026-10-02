@@ -16,10 +16,10 @@ function npc_shamino_0003(eventid, objectref)
         if get_flag(749) then
             add_answer("settle down")
         end
-        if is_int_in_array(var_0002, var_0001) then
+        if npc_id_in_party(3) then
             add_answer("leave")
         end
-        if not is_int_in_array(var_0002, var_0001) then
+        if not npc_id_in_party(3) then
             add_answer("join")
         end
         if not get_flag(22) then
@@ -133,19 +133,16 @@ function npc_shamino_0003(eventid, objectref)
                 end
                 remove_answer("Dupre")
             elseif var_0004 == "join" then
-                var_0007 = 0
-                var_0001 = get_party_members()
-                for var_0008 = 1, 8 do
-                    var_0007 = var_0007 + 1
-                end
-                if var_0007 < 8 then
-                    add_dialogue("\"Hmmm. I do not like big crowds. I shall wait until thy group is smaller before joining.\"")
-                else
+                local party = get_party_members()
+                local party_size = (type(party) == "table") and #party or 0
+                if party_size < 8 then
                     add_dialogue("Shamino looks relieved. \"I am -so- glad thou didst ask me that.\" He gathers his gear and prepares to follow you.")
                     add_to_party(3) --- Guess: Removes object from game
+                    add_answer("leave")
+                    remove_answer("join")
+                else
+                    add_dialogue("\"Hmmm. I do not like big crowds. I shall wait until thy group is smaller before joining.\"")
                 end
-                add_answer("leave")
-                remove_answer("join")
             elseif var_0004 == "leave" then
                 add_dialogue("\"Hmmm. Dost thou merely want me to wait here or dost thou want me to go home?\"")
                 save_answers()
@@ -153,12 +150,12 @@ function npc_shamino_0003(eventid, objectref)
                 if var_000B == "wait here" then
                     add_dialogue("\"Very well. I shall await thy return.\"")
                     remove_from_party(3) --- Guess: Sets object state (e.g., active/inactive)
-                    set_schedule_type(15, 3) --- Guess: Sets a generic object property
+                    set_schedule_type(3, 15) --- Guess: Sets a generic object property
                     abort()
                 else
                     add_dialogue("\"I really hate to, but if thou dost insist.\" Shamino grudgingly gathers his belongings.")
                     remove_from_party(3) --- Guess: Sets object state (e.g., active/inactive)
-                    set_schedule_type(11, 3) --- Guess: Sets a generic object property
+                    set_schedule_type(3, 11) --- Guess: Sets a generic object property
                     abort()
                 end
             elseif var_0004 == "murder in Trinsic" then
@@ -197,6 +194,6 @@ function npc_shamino_0003(eventid, objectref)
         end
         add_dialogue("Shamino bows slightly.")
     elseif eventid == 0 then
-        utility_unknown_1070(3) --- Guess: Triggers a game event
+        utility_npc_random_bark_1070(3) --- Guess: Triggers a game event
     end
 end

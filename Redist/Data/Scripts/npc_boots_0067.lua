@@ -54,7 +54,7 @@ function npc_boots_0067(eventid, objectref)
                 remove_answer("short")
             elseif var_0000 == "mutton" then
                 add_dialogue("\"Splendid! Let's see, we agreed on 5 gold per portion, if I remember correctly.\"")
-                utility_unknown_0852() --- Guess: Submits mutton
+                utility_butcher_meat_sale_0852() --- Guess: Submits mutton
                 remove_answer("mutton")
             elseif var_0000 == "bye" then
                 break
@@ -62,6 +62,6 @@ function npc_boots_0067(eventid, objectref)
         end
         add_dialogue("\"Bye now!\"")
     elseif eventid == 0 then
-        utility_unknown_1070(67) --- Guess: Triggers a game event
+        utility_npc_random_bark_1070(67) --- Guess: Triggers a game event
     end
 end

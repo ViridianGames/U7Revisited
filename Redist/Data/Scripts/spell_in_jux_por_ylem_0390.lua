@@ -1,5 +1,5 @@
 --- Best guess: Implements the trap spell (In Jux Por Ylem), creating a trap at a target location.
-function utility_spell_0390(eventid, objectref)
+function spell_in_jux_por_ylem_0390(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003
 
     if eventid == 1 or eventid == 4 then

@@ -9,14 +9,14 @@ function utility_event_0443(eventid, objectref)
             var_0004 = var_0001[i]
             if var_0004 ~= 356 and not roll_to_win(15, get_npc_property(2, var_0004)) then
                 halt_scheduled(var_0004)
-                utility_unknown_1087(0, var_0004)
+                utility_remove_npc_from_party_1087(0, var_0004)
                 set_attack_mode(7, var_0004)
                 set_oppressor(356, var_0004)
                 var_0005 = delayed_execute_usecode_array(var_0000, 1723, {17493, 7715}, var_0004)
             end
         end
     elseif eventid == 2 then
-        utility_unknown_1087(31, objectref)
+        utility_remove_npc_from_party_1087(31, objectref)
     end
     return
 end

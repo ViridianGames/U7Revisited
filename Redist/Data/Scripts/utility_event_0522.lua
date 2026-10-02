@@ -134,7 +134,7 @@ function utility_event_0522(eventid, objectref)
             var_0003 = find_nearby(0, 10, 400, objectref)
             for var_0014 in ipairs(var_0003) do
                 if get_object_frame(var_0001) == 29 then
-                    utility_event_0998(var_0001)
+                    utility_golem_body_cleanup_0998(var_0001)
                 end
             end
             var_0003 = find_nearby(16, 0, 275, objectref)
@@ -145,7 +145,7 @@ function utility_event_0522(eventid, objectref)
             end
             var_0003 = find_nearby(8, 1, 154, objectref)
             for var_0018 in ipairs(var_0003) do
-                utility_event_0998(var_0001)
+                utility_golem_body_cleanup_0998(var_0001)
             end
             remove_item(objectref)
         end

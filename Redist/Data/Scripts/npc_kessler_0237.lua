@@ -7,7 +7,7 @@ function npc_kessler_0237(eventid, objectref)
         var_0000 = get_schedule(237)
         var_0001 = get_schedule_type(get_npc_name(237))
         var_0002 = get_lord_or_lady()
-        var_0003 = utility_unknown_1073(359, 359, 649, 1, 357)
+        var_0003 = utility_party_has_items_1073(359, 359, 649, 1, 357)
         start_conversation()
         add_answer({"bye", "job", "name"})
         if var_0003 then
@@ -126,7 +126,7 @@ function npc_kessler_0237(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        utility_unknown_1070(237)
+        utility_npc_random_bark_1070(237)
     end
     return
 end

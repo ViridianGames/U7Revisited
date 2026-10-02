@@ -1,5 +1,5 @@
 --- Best guess: Checks item type (668) and triggers explosions, possibly for a trap or ritual effect.
-function utility_unknown_0535(objectref)
+function mech_item668_explosion_0535(objectref)
     local var_0000, var_0001, var_0002, var_0003
 
     if get_object_shape(objectref) == 668 then --- Guess: Gets item type
@@ -18,5 +18,5 @@ function utility_unknown_0535(objectref)
             trigger_explosion(5) --- Guess: Triggers explosion
         end
     end
-    utility_event_0824(objectref) --- External call to unknown function
+    utility_add_container_by_frame_0824(objectref) --- External call to unknown function
 end

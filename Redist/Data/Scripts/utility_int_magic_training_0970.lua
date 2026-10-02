@@ -1,14 +1,14 @@
 --- Best guess: Manages an intelligence and magic training session with Perrin, teaching theoretical concepts, potentially increasing intelligence and mana, with gold and experience checks.
-function utility_unknown_0970(var_0000, var_0001)
+function utility_int_magic_training_0970(var_0000, var_0001)
     start_conversation()
     local var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_0010, var_0011, var_0012, var_0013
 
-    var_0002 = utility_unknown_1056()
+    var_0002 = utility_select_party_member_for_training_1056()
     if var_0002 == 0 then
         return
     end
     var_0003 = 3
-    var_0004 = utility_unknown_1058(var_0003, var_0002, var_0000, var_0001)
+    var_0004 = utility_check_training_okay_1058(var_0003, var_0002, var_0000, var_0001)
     if var_0004 == 0 then
         add_dialogue("After a few moments of questioning, he says, \"I am sorry, but thou dost not have a strong enough grasp of my theories for me to be able to instruct thee. Perhaps when thou hast had more time to study...\"")
         return
@@ -38,13 +38,13 @@ function utility_unknown_0970(var_0000, var_0001)
         var_0011 = "has"
     end
     add_dialogue(var_0008 .. " and Perrin dive excitedly into the pages of several tomes. Following an intensive study session, " .. var_0009 .. " find" .. var_0010 .. " the ability to comprehend and disseminate much more information than ever before. In addition, " .. var_0009 .. " " .. var_0011 .. " a better grasp of the theory behind spellcasting.")
-    var_0012 = utility_unknown_1040(2, var_0002)
+    var_0012 = utility_get_training_level_1040(2, var_0002)
     if var_0012 < 30 then
-        utility_unknown_1046(2, var_0002)
+        utility_init_training_2_7_1046(2, var_0002)
     end
-    var_0013 = utility_unknown_1040(6, var_0002)
+    var_0013 = utility_get_training_level_1040(6, var_0002)
     if var_0013 < 30 then
-        utility_unknown_1048(1, var_0002)
+        utility_train_intelligence_1048(1, var_0002)
     end
     return
 end

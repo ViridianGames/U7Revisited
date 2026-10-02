@@ -1,5 +1,5 @@
 --- Best guess: Manages a meat-selling transaction with a butcher, checking inventory and gold, part of the game's economy system.
-function utility_unknown_0852()
+function utility_butcher_meat_sale_0852()
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     start_conversation()

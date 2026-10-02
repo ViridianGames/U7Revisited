@@ -106,6 +106,6 @@ function npc_lucy_0037(eventid, objectref)
         end
         add_dialogue("\"Talk to thee later!\"")
     elseif eventid == 0 then
-        utility_unknown_1070(37) --- Guess: Triggers a game event
+        utility_npc_random_bark_1070(37) --- Guess: Triggers a game event
     end
 end

@@ -11,7 +11,7 @@ function utility_shopreagents_0964()
     var_0004 = {5, 5, 3, 3, 2, 0}
     add_dialogue("\"What wouldst thou like to buy?\"")
     while var_0000 do
-        var_0005 = utility_unknown_1036(var_0001)
+        var_0005 = utility_select_option_index_1036(var_0001)
         if var_0005 == 1 then
             add_dialogue("\"Fine.\"")
             var_0000 = false

@@ -83,6 +83,6 @@ function npc_nell_0072(eventid, objectref)
         end
         add_dialogue("\"Goodbye, " .. var_0002 .. ".\"")
     elseif eventid == 0 then
-        utility_unknown_1070(72) --- Guess: Triggers a game event
+        utility_npc_random_bark_1070(72) --- Guess: Triggers a game event
     end
 end

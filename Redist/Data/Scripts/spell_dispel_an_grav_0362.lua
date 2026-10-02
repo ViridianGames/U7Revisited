@@ -1,5 +1,5 @@
 --- Best guess: Manages the "An Grav" spell, dispelling electrical or trap effects (IDs 902, 900, 895, 768) on a selected target, with a fallback effect if the spell fails.
-function utility_spell_0362(eventid, objectref)
+function spell_dispel_an_grav_0362(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006
 
     if eventid ~= 1 then
@@ -7,11 +7,11 @@ function utility_spell_0362(eventid, objectref)
     end
 
     var_0000 = object_select_modal()
-    var_0001 = utility_unknown_1069(var_0000)
+    var_0001 = utility_direction_to_target_1069(var_0000)
     halt_scheduled(objectref)
     var_0002 = {902, 900, 895, 768}
     bark(objectref, "@An Grav@")
-    if not utility_unknown_1030() then
+    if not utility_condition_0044_1030() then
         var_0003 = execute_usecode_array(objectref, {17514, 17520, 8559, var_0001, 8025, 65, 7768})
         for var_0004 in ipairs(var_0002) do
             if var_0006 == get_object_shape(var_0000) then

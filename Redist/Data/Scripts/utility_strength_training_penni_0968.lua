@@ -1,15 +1,15 @@
 --- Best guess: Manages a strength training session with Penni, teaching physical exercises, potentially increasing strength and combat ability, with gold and experience checks.
-function utility_unknown_0968(var_0000, var_0001)
+function utility_strength_training_penni_0968(var_0000, var_0001)
     start_conversation()
     local var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_0010, var_0011, var_0012
 
-    var_0002 = utility_unknown_1056()
+    var_0002 = utility_select_party_member_for_training_1056()
     var_0003 = get_npc_name(var_0002)
     if var_0002 == 0 then
         return
     end
     var_0004 = 2
-    var_0005 = utility_unknown_1058(var_0004, var_0002, var_0000, var_0001)
+    var_0005 = utility_check_training_okay_1058(var_0004, var_0002, var_0000, var_0001)
     if var_0005 == 0 then
         add_dialogue("\"I am sorry, but thou hast overextended thy muscles. If thou couldst return at a later date, I would be quite willing to train thee.\"")
         return
@@ -36,13 +36,13 @@ function utility_unknown_0968(var_0000, var_0001)
         var_0010 = "s"
     end
     add_dialogue(var_0008 .. " and Penni work out and spar for some time. After stretching, " .. var_0009 .. " feel" .. var_0010 .. " a335 little stronger and a bit more skilled in combat.")
-    var_0011 = utility_unknown_1040(0, var_0002)
+    var_0011 = utility_get_training_level_1040(0, var_0002)
     if var_0011 < 30 then
-        utility_unknown_1044(1, var_0002)
+        utility_init_training_0_3_1044(1, var_0002)
     end
-    var_0012 = utility_unknown_1040(4, var_0002)
+    var_0012 = utility_get_training_level_1040(4, var_0002)
     if var_0012 < 30 then
-        utility_unknown_1047(1, var_0002)
+        utility_train_combat_skill_1047(1, var_0002)
     end
     return
 end

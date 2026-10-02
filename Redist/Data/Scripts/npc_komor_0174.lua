@@ -120,7 +120,7 @@ function npc_komor_0174(eventid, objectref)
             end
             bark(NPC_KOMOR, var_0008)
         else
-            utility_unknown_1070(NPC_KOMOR)
+            utility_npc_random_bark_1070(NPC_KOMOR)
         end
     end
 end

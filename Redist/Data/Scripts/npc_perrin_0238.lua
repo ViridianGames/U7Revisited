@@ -26,7 +26,7 @@ function npc_perrin_0238(eventid, objectref)
                     add_dialogue("\"My price is 45 gold for each training session, but I will also teach thee what little I know about magic. Is this acceptable?\"")
                     var_0003 = ask_yes_no()
                     if var_0003 then
-                        utility_unknown_0970(45, {6, 2})
+                        utility_int_magic_training_0970(45, {6, 2})
                     else
                         add_dialogue("\"Very well, " .. var_0001 .. ".\"")
                     end
@@ -63,7 +63,7 @@ function npc_perrin_0238(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        utility_unknown_1070(238)
+        utility_npc_random_bark_1070(238)
     end
     return
 end

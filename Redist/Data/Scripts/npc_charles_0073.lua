@@ -94,6 +94,6 @@ function npc_charles_0073(eventid, objectref)
         end
         add_dialogue("Charles nods his head at you, then goes about his business.")
     elseif eventid == 0 then
-        utility_unknown_1070(73) --- Guess: Triggers a game event
+        utility_npc_random_bark_1070(73) --- Guess: Triggers a game event
     end
 end

@@ -171,7 +171,7 @@ function npc_mandy_0231(eventid, objectref)
                 add_dialogue("\"Brrrr! He is a scary man. Thou canst tell that he has killed. He is the guard at the House of Games. Thou dost not want to be caught cheating by him!\"")
                 remove_answer("Sintag")
             elseif answer == "Hook" then
-                var_000E = utility_unknown_1073(1, 359, 981, 1, 357)
+                var_000E = utility_party_has_items_1073(1, 359, 981, 1, 357)
                 if var_000E then
                     add_dialogue("You feel your Cube vibrate, but somehow you know that Mandy would have told you the truth without it.")
                 end
@@ -199,7 +199,7 @@ function npc_mandy_0231(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        utility_unknown_1070(231)
+        utility_npc_random_bark_1070(231)
     end
     return
 end

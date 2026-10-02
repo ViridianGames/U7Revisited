@@ -3,7 +3,7 @@
 --- IMPORTANT: do NOT call start_conversation() for bark-only lines — that opened
 --- an empty conversation UI (flicker) whenever these eggs fired at game start.
 
-function utility_event_0289(eventid, objectref)
+function utility_party_location_banter_0289(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
     if eventid ~= 3 then
@@ -182,7 +182,7 @@ function utility_event_0289(eventid, objectref)
         var_0002 = 357
         var_0003 = 0
     elseif var_0001 == 41 then
-        if not utility_unknown_1073(0, 359, 981, 1, 357) and get_flag(4) then
+        if not utility_party_has_items_1073(0, 359, 981, 1, 357) and get_flag(4) then
             var_0000 = "You left the small sphere!"
             var_0002 = 357
             var_0003 = 1
@@ -190,7 +190,7 @@ function utility_event_0289(eventid, objectref)
             return
         end
     elseif var_0001 == 42 then
-        if not utility_unknown_1073(1, 359, 981, 1, 357) and get_flag(5) then
+        if not utility_party_has_items_1073(1, 359, 981, 1, 357) and get_flag(5) then
             var_0000 = "You left the small cube!"
             var_0002 = 357
             var_0003 = 1
@@ -198,7 +198,7 @@ function utility_event_0289(eventid, objectref)
             return
         end
     elseif var_0001 == 43 then
-        if not utility_unknown_1073(2, 359, 981, 1, 357) and get_flag(3) then
+        if not utility_party_has_items_1073(2, 359, 981, 1, 357) and get_flag(3) then
             var_0000 = "You left the small tetrahedron!"
             var_0002 = 357
             var_0003 = 1

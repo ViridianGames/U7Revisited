@@ -14,7 +14,7 @@ function utility_shopfood_0908()
     var_0008 = {10, 1, 1, 1, 1, 1, 1, 1, 0}
     add_dialogue("\"What wouldst thou like to buy?\"")
     while var_0000 do
-        var_0009 = utility_unknown_1036(var_0001)
+        var_0009 = utility_select_option_index_1036(var_0001)
         if var_0009 == 1 then
             add_dialogue("\"Fine.\"")
             var_0000 = false

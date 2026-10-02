@@ -157,7 +157,7 @@ function npc_sam_0137(eventid, objectref)
             end
             bark(137, var_000F)
         else
-            utility_unknown_1070(137) --- Guess: Triggers a game event
+            utility_npc_random_bark_1070(137) --- Guess: Triggers a game event
         end
     end
 end

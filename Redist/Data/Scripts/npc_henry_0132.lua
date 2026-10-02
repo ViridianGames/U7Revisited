@@ -86,7 +86,7 @@ function npc_henry_0132(eventid, objectref)
                 add_dialogue("\"Thou hast found the locket!\"")
                 var_0004 = remove_party_items(true, 2, 359, 955, 1) --- Guess: Deducts item and adds item
                 if var_0004 then
-                    utility_unknown_1041(50) --- Guess: Submits item or advances quest
+                    utility_set_party_quest_prop8_1041(50) --- Guess: Submits item or advances quest
                     add_dialogue("You hand the locket to Henry. \"Now I may give it to Constance and keep my promise to her! I cannot thank thee enough, Avatar!\"")
                     set_flag(461, true)
                     var_0004 = npc_id_in_party(9) --- Guess: Checks player status
@@ -108,6 +108,6 @@ function npc_henry_0132(eventid, objectref)
         end
         add_dialogue("\"Travel safely and be well.\"")
     elseif eventid == 0 then
-        utility_unknown_1070(132) --- Guess: Triggers a game event
+        utility_npc_random_bark_1070(132) --- Guess: Triggers a game event
     end
 end

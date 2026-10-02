@@ -104,7 +104,7 @@ function npc_dell_0018(eventid, objectref)
             end
             bark(18, var_0009)
         else
-            utility_unknown_1070(18) --- Guess: Triggers a game event
+            utility_npc_random_bark_1070(18) --- Guess: Triggers a game event
         end
     end
 end

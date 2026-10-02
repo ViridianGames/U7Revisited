@@ -150,7 +150,7 @@ function npc_fenn_0175(eventid, objectref)
             end
             bark(NPC_FENN, var_0008)
         else
-            utility_unknown_1070(NPC_FENN)
+            utility_npc_random_bark_1070(NPC_FENN)
         end
     end
 end

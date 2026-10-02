@@ -53,11 +53,11 @@ function npc_iriale_silvermist_0128(eventid, objectref)
             add_dialogue("\"Wilt thou leave?\"")
             if select_option() then
                 add_dialogue("\"Do so and I shall spare thee!\" She watches as you turn away.")
-                set_schedule_type(7, get_npc_name(128)) --- Guess: Sets object behavior
+                set_schedule_type(128, 7) --- Guess: Sets object behavior
                 abort()
             else
                 add_dialogue("She sees your jaw set with determination and nods her head. \"Then die, foolish one!\"")
-                set_schedule_type(0, get_npc_name(128)) --- Guess: Sets object behavior
+                set_schedule_type(128, 0) --- Guess: Sets object behavior
                 abort()
             end
         elseif var_0001 == "bye" then
@@ -65,5 +65,5 @@ function npc_iriale_silvermist_0128(eventid, objectref)
         end
     end
     add_dialogue("\"Away with thee!\"")
-    set_schedule_type(7, get_npc_name(128)) --- Guess: Sets object behavior
+    set_schedule_type(128, 7) --- Guess: Sets object behavior
 end

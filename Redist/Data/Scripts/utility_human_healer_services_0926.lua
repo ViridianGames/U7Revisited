@@ -2,7 +2,7 @@
 ---@param resurrect_cost integer The gold cost for resurrection service
 ---@param cure_poison_cost integer The gold cost for cure poison service
 ---@param heal_cost integer The gold cost for healing service
-function utility_unknown_0926(resurrect_cost, cure_poison_cost, heal_cost)
+function utility_human_healer_services_0926(resurrect_cost, cure_poison_cost, heal_cost)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E, var_000F, var_0010, var_0011, var_0012, var_0013, var_0014, var_0015, var_0016, var_0017
 
     var_0003 = get_npc_name(-5)
@@ -32,7 +32,7 @@ function utility_unknown_0926(resurrect_cost, cure_poison_cost, heal_cost)
             var_0011 = {0, 0}
             var_0012 = _SelectIndex(table.insert(var_000C, "Nobody"))
             var_0013 = var_0011[var_0012]
-            var_0014 = var_0013 == 0 and 0 or func_003AH(var_0013)
+            var_0014 = var_0013 == 0 and 0 or get_npc_number(var_0013)
             if var_0014 == 0 then
                 add_dialogue("\"Avatar! Thou dost tell me to prepare to heal and then thou dost tell me 'Nobody'! Is this thine idea of a joke? Healing is a serious business!\"")
                 restore_answers()

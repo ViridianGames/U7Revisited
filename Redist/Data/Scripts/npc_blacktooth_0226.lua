@@ -22,7 +22,7 @@ function npc_blacktooth_0226(eventid, objectref)
         if not get_flag(687) then
             add_dialogue("This tall, middle-aged pirate looks at you with suspicion.")
             add_dialogue("\"Before I will look twice at thee, I must know who thou art.\" His voice is menacing.")
-            var_0005 = utility_unknown_1035({var_0002, var_0000})
+            var_0005 = utility_select_option_string_1035({var_0002, var_0000})
             if var_0005 == var_0000 then
                 add_dialogue("The pirate chews on something in his mouth before replying. \"Hi,\" he finally says.")
                 set_flag(675, true)
@@ -104,8 +104,8 @@ function npc_blacktooth_0226(eventid, objectref)
                 add_dialogue("\"I must go take a look for him. I thank thee, " .. var_0004 .. ", for considering my feelings in this matter.\" Blacktooth gives you a big hug, then turns away to look for Mole.")
                 remove_answer("Mole says...")
                 set_flag(678, true)
-                utility_unknown_1041(20)
-                set_schedule_type(12, var_0003)
+                utility_set_party_quest_prop8_1041(20)
+                set_schedule_type(226, 12)
                 return
             elseif answer == "bye" then
                 if get_flag(678) or not get_flag(677) then
@@ -131,7 +131,7 @@ function npc_blacktooth_0226(eventid, objectref)
             end
             bark(226, var_000B)
         else
-            utility_unknown_1070(226)
+            utility_npc_random_bark_1070(226)
         end
     end
     return

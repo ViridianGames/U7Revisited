@@ -105,6 +105,6 @@ function npc_polly_0179(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        utility_unknown_1070(NPC_POLLY)
+        utility_npc_random_bark_1070(NPC_POLLY)
     end
 end

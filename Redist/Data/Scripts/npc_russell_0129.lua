@@ -70,7 +70,7 @@ function npc_russell_0129(eventid, objectref)
                     add_dialogue("\"Thou wishest to purchase one of my fine sextants? 'Twill cost thee 40 gold.\"")
                     var_0009 = select_option()
                     if var_0009 then
-                        var_000A = utility_unknown_1073(359, 359, 644, 40, 357) --- Guess: Checks item in inventory
+                        var_000A = utility_party_has_items_1073(359, 359, 644, 40, 357) --- Guess: Checks item in inventory
                         if var_000A then
                             add_dialogue("\"'Tis thine, " .. var_0000 .. ". Enjoy the waters.\"")
                             var_000B = remove_party_items(true, 359, 359, 644, 40) --- Guess: Deducts item and adds item
@@ -144,6 +144,6 @@ function npc_russell_0129(eventid, objectref)
         end
         add_dialogue("\"Fare thee well, " .. var_0000 .. ".\"")
     elseif eventid == 0 then
-        utility_unknown_1070(129) --- Guess: Triggers a game event
+        utility_npc_random_bark_1070(129) --- Guess: Triggers a game event
     end
 end

@@ -1,5 +1,5 @@
 --- Best guess: Implements the dance spell (Por Xen), causing nearby NPCs to dance with random exclamations.
-function utility_spell_0361(eventid, objectref)
+function spell_dance_por_xen_0361(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A
 
     if eventid == 1 then

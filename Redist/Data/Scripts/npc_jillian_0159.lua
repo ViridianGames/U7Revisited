@@ -4,7 +4,7 @@ function npc_jillian_0159(eventid, objectref)
 
     if eventid ~= 1 then
         if eventid == 0 then
-            utility_unknown_1070(159)
+            utility_npc_random_bark_1070(159)
         end
         return
     end
@@ -22,34 +22,41 @@ function npc_jillian_0159(eventid, objectref)
         add_dialogue("\"Greetings, " .. var_0000 .. ". As usual, I have much to do. However, I can spare a moment for thee if necessary.\"")
     end
     while true do
-        if cmps("name") then
+        local answer = get_answer()
+        if type(answer) ~= "string" then
+            answer = get_answer()
+        end
+        if type(answer) ~= "string" then
+            break
+        end
+        if answer == "name" then
             add_dialogue("\"I am Jillian, " .. var_0001 .. ".\"")
             remove_answer("name")
-        elseif cmps("job") then
+        elseif answer == "job" then
             add_dialogue("\"I am a scholar, " .. var_0001 .. ". I also tutor and train those who seek knowledge here in Moonglow.\"")
             add_answer({"tutor", "Moonglow"})
             if not get_flag(502) then
                 add_answer("North East sea")
             end
-        elseif cmps("Moonglow") then
+        elseif answer == "Moonglow" then
             add_dialogue("\"The town occupies almost the entire island of the same name. The island is located due east and a few degrees south of the city of Britain.\"")
             remove_answer("Moonglow")
-        elseif cmps("North East sea") then
+        elseif answer == "North East sea" then
             add_dialogue("\"Long ago there was a small continent -- an island really -- called Ambrosia. However, meteorites struck it, destroying its primary city. The island was located in the North East sea. I suppose the ruins still lie far beneath the rubble.\"")
             remove_answer("North East sea")
-        elseif cmps("tutor") then
+        elseif answer == "tutor" then
             var_0002 = get_schedule(159)
             if var_0002 >= 3 or var_0002 <= 6 then
                 add_dialogue("\"My price is 35 gold for each training session. Art thou willing to pay that?\"")
                 if ask_yes_no() then
-                    utility_unknown_0930(35, {2, 6})
+                    utility_training_jillian_0930(35, {2, 6})
                 else
                     add_dialogue("\"Then I really should return to my studies.\"")
                 end
             else
                 add_dialogue("\"A better time to train thee would be when I am in my study.\"")
             end
-        elseif cmps("bye") then
+        elseif answer == "bye" then
             break
         end
     end

@@ -26,7 +26,7 @@ function object_pool_0893(eventid, objectref)
         elseif var_0000 == 2 then
             var_0002 = random2(10, 1)
             var_0003 = 13 - var_0002
-            utility_unknown_1066(var_0001, var_0003)
+            utility_adjust_health_1066(var_0001, var_0003)
         elseif var_0000 == 3 then
             -- clears all status effects
             -- i think status 0 is invisibility, 1 sleep, 8 poison

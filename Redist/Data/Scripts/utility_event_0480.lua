@@ -8,9 +8,9 @@ function utility_event_0480(eventid, objectref)
             var_0000 = {var_0000, unpack(find_nearby(16, 10, 777, objectref))}
             for i = 1, #var_0000 do
                 var_0003 = var_0000[i]
-                utility_unknown_1061(var_0003)
+                utility_item_quantity_adjust_1061(var_0003)
             end
-            utility_unknown_1061(objectref)
+            utility_item_quantity_adjust_1061(objectref)
         end
     end
     return

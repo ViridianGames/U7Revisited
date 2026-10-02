@@ -2,7 +2,7 @@
 function utility_event_0471(eventid, objectref)
     if eventid == 3 then
         if not get_flag(468) then
-            utility_unknown_1088(5)
+            utility_npc_speech_init_1088(5)
             remove_item(objectref)
         end
     end

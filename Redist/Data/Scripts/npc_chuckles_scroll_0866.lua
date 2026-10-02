@@ -1,5 +1,5 @@
 --- Best guess: Manages a dialogue with Chuckles, providing a scroll (item 797) if conditions are met.
-function utility_unknown_0866()
+function npc_chuckles_scroll_0866()
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007
 
     start_conversation()
@@ -16,7 +16,7 @@ function utility_unknown_0866()
         var_0001 = true
         clear_answers() --- Guess: Clears conversation answers
     else
-        utility_unknown_0865() --- External call to rule warning
+        utility_game_rules_warning_0865() --- External call to rule warning
     end
     if var_0001 then
         var_0005 = show_dialogue_options({"I need answers", "many problems", "too much", "trouble"}) --- Guess: Shows dialogue options
@@ -25,7 +25,7 @@ function utility_unknown_0866()
             var_0002 = true
             clear_answers() --- Guess: Clears conversation answers
         else
-            utility_unknown_0865() --- External call to rule warning
+            utility_game_rules_warning_0865() --- External call to rule warning
         end
     end
     if var_0002 then
@@ -41,7 +41,7 @@ function utility_unknown_0866()
             var_0003 = true
             clear_answers() --- Guess: Clears conversation answers
         else
-            utility_unknown_0865() --- External call to rule warning
+            utility_game_rules_warning_0865() --- External call to rule warning
         end
     end
     if var_0003 then
@@ -51,7 +51,7 @@ function utility_unknown_0866()
             var_0004 = true
             clear_answers() --- Guess: Clears conversation answers
         else
-            utility_unknown_0865() --- External call to rule warning
+            utility_game_rules_warning_0865() --- External call to rule warning
         end
     end
     if var_0004 then
@@ -79,7 +79,7 @@ function utility_unknown_0866()
                 add_dialogue("@Oh! Thou dost not have room for the scroll!...@")
             end
         elseif var_0005 == "I shan't murder thee" or var_0005 == "my friendship" or var_0005 == "nothing" then
-            utility_unknown_0865() --- External call to rule warning
+            utility_game_rules_warning_0865() --- External call to rule warning
         end
     end
 end

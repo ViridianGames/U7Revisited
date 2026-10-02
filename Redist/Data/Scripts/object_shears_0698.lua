@@ -16,8 +16,8 @@ function object_shears_0698(eventid, objectref)
     end
 
     if get_object_shape(target) ~= CLOTH then
-        if utility_unknown_1023 then
-            utility_unknown_1023(
+        if utility_apply_value_action_alt_1023 then
+            utility_apply_value_action_alt_1023(
                 "@Might not those come in handy for cutting cloth into bandages?@")
         else
             item_say(

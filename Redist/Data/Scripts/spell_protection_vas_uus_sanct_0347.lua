@@ -1,5 +1,5 @@
 --- Best guess: Manages the "Vas Uus Sanct" spell, applying a protective effect (ID 109) to party members, with a fallback effect if the spell fails.
-function utility_spell_0347(eventid, objectref)
+function spell_protection_vas_uus_sanct_0347(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     if eventid ~= 1 then
@@ -17,7 +17,7 @@ function utility_spell_0347(eventid, objectref)
     end
 
     bark(objectref, "@Vas Uus Sanct@")
-    if not utility_unknown_1030() then
+    if not utility_condition_0044_1030() then
         halt_scheduled(objectref)
         var_0000 = execute_usecode_array(objectref, {1627, 17493, 17514, 17519, 17520, 7791})
     else

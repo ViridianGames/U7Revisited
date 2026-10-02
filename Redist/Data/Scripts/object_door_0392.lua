@@ -5,26 +5,26 @@ function object_door_0392(eventid, objectref)
     if eventid ~= 1 then
         return
     end
-    var_0000 = utility_unknown_0795(objectref)
+    var_0000 = utility_frame_mod4_0795(objectref)
     if var_0000 == 1 then
         play_sound_effect(31, objectref)
         if utility_position_0797(7, 0, 0, 0, 225, objectref) then
-            utility_unknown_0798(1, 0, 3, 0, 246, 2, 1, 250, objectref)
+            door_paired_stub_0798(1, 0, 3, 0, 246, 2, 1, 250, objectref)
             set_object_quality(objectref, 31)
         else
-            utility_unknown_0792(objectref)
+            utility_msg_door_blocked_0792(objectref)
         end
     elseif var_0000 == 0 then
         play_sound_effect(30, objectref)
         if utility_position_0797(7, 0, 0, 1, 225, objectref) then
-            utility_unknown_0798(7, -3, 0, 1, 246, 1, 0, 250, objectref)
+            door_paired_stub_0798(7, -3, 0, 1, 246, 1, 0, 250, objectref)
             set_object_quality(objectref, 30)
         else
-            utility_unknown_0792(objectref)
+            utility_msg_door_blocked_0792(objectref)
         end
     elseif var_0000 == 2 then
-        utility_unknown_0793(objectref)
+        utility_msg_door_locked_0793(objectref)
     elseif var_0000 == 3 then
-        utility_unknown_0794(objectref)
+        utility_msg_magically_locked_0794(objectref)
     end
 end

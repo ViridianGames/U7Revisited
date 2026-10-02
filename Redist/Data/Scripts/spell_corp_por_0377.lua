@@ -1,5 +1,5 @@
 --- Best guess: Implements the death bolt spell (Corp Por), dealing high damage to a target, with special handling for the Avatar (356).
-function utility_spell_0377(eventid, objectref)
+function spell_corp_por_0377(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     if eventid == 1 or (eventid == 4 and get_object_owner(objectref) == 356) then

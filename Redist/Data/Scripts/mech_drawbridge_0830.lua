@@ -1,5 +1,5 @@
 -- Handles using a winch to raise/lower a drawbridge (objects 870 and 515)
-function utility_event_0830(P0, P1)
+function mech_drawbridge_0830(P0, P1)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008
 
     if P0 == 1 then
@@ -18,12 +18,12 @@ function utility_event_0830(P0, P1)
                 table.insert(var_0004, var_0007)
             end
         end
-        if utility_unknown_0782(var_0004) then
+        if mech_bridge_blocked_check_0782(var_0004) then
             var_0008 = execute_usecode_array(objectref, {4, -1, 17419, 8014, 1, 7750})
         elseif not get_flag(61) then
             return false
         else
-            utility_unknown_0820()
+            door_portcullis_password_raise_0820()
         end
     end
 end

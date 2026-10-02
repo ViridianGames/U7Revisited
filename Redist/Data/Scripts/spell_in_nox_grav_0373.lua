@@ -1,5 +1,5 @@
 --- Best guess: Implements the poison field spell (In Nox Grav), creating a poison field at a target location.
-function utility_spell_0373(eventid, objectref)
+function spell_in_nox_grav_0373(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008
 
     if eventid == 1 then

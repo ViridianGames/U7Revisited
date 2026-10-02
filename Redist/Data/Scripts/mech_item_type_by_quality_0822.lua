@@ -5,8 +5,8 @@
 --- when their quality matches the lever's quality.
 ---
 --- Call convention in scripts is messy; support both:
----   utility_unknown_0822(lever, mode)   -- usecode order
----   utility_unknown_0822(mode, lever)   -- older Lua call sites
+---   mech_item_type_by_quality_0822(lever, mode)   -- usecode order
+---   mech_item_type_by_quality_0822(mode, lever)   -- older Lua call sites
 
 local SWAP = {
     [303] = 936,
@@ -15,7 +15,7 @@ local SWAP = {
     [935] = 876,
 }
 
-function utility_unknown_0822(a, b)
+function mech_item_type_by_quality_0822(a, b)
     local lever, mode
     if type(a) == "number" and (a == 0 or a == 1 or a == -359 or a == 359) and b ~= nil then
         mode, lever = a, b

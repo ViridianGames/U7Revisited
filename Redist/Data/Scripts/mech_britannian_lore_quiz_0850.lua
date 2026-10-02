@@ -1,5 +1,5 @@
 --- Best guess: Implements a quiz system testing Britannian lore, setting flags for correct answers and rewarding completion.
-function utility_unknown_0850()
+function mech_britannian_lore_quiz_0850()
     local var_0000, var_0001, var_0002, var_0005, var_0006, var_0015, var_0016, var_0019, var_001A
 
     start_conversation()

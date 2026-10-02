@@ -4,8 +4,8 @@ function npc_raymundo_0027(eventid, objectref)
 
     if eventid ~= 1 then
         if eventid == 0 then
-            var_0000 = get_schedule(-27)
-            var_0001 = get_schedule_type(get_npc_name(-27))
+            var_0000 = get_schedule(27)
+            var_0001 = get_schedule_type(get_npc_name(27))
             var_0008 = random2(4, 1)
             if var_0001 == 7 then
                 if var_0008 == 1 then
@@ -19,7 +19,7 @@ function npc_raymundo_0027(eventid, objectref)
                 end
                 bark(-27, var_0009)
             else
-                utility_unknown_1070(-27)
+                utility_npc_random_bark_1070(27)
             end
         end
         add_dialogue("\"Leaving? Sorry, I do not give autographs.\"")
@@ -27,9 +27,9 @@ function npc_raymundo_0027(eventid, objectref)
     end
 
     start_conversation()
-    switch_talk_to(-27)
-    var_0000 = get_schedule(-27)
-    var_0001 = get_schedule_type(get_npc_name(-27))
+    switch_talk_to(27)
+    var_0000 = get_schedule(27)
+    var_0001 = get_schedule_type(get_npc_name(27))
     add_answer({"bye", "job", "name"})
     if not get_flag(104) then
         add_answer("audition")
@@ -103,10 +103,10 @@ function npc_raymundo_0027(eventid, objectref)
             remove_answer("sponsorship")
         elseif answer == "audition" then
             if var_0001 == 7 then
-                var_0007 = utility_unknown_1073(359, 359, 838, 1, -356)
+                var_0007 = utility_party_has_items_1073(359, 359, 838, 1, -356)
                 if var_0007 then
                     add_dialogue("\"I see thou art ready? Very well. Take center stage, wouldst thou?\"")
-                    utility_unknown_0977()
+                    npc_raymundo_audition_0977()
                 else
                     add_dialogue("\"Where is thy costume? Thou cannot audition without a costume!\"")
                     return

@@ -1,5 +1,5 @@
 --- Best guess: Manages Trent's dialogue in Skara Brae, progressing the Soul Cage quest, handling Rowena's return, iron bar delivery, and cage completion, with topic selection.
-function utility_unknown_1007()
+function npc_trent_dialogue_1007()
     start_conversation()
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
@@ -18,8 +18,8 @@ function utility_unknown_1007()
             var_0002 = get_party_list2()
             if get_npc_name(-144) and table.contains(var_0002, get_npc_name(-144)) then
                 add_dialogue("The starcrossed lovers rush into each other's ghostly embrace. For a time it's hard to see where one spirit begins and the other ends. You barely make out the image of Trent replacing Rowena's ring on her finger.~~Then the two slowly turn to face you. \"Thou hast done so much for us, I hope that in helping us, thou hast been assisted in thine own quest.\" Trent bows to you then turns to regard his lovely wife.")
-                remove_from_party(-144)
-                set_schedule_type(15, get_npc_name(-144))
+                remove_from_party(144)
+                set_schedule_type(144, 15)
                 set_flag(422, true)
                 return
             else
@@ -32,10 +32,18 @@ function utility_unknown_1007()
         add_answer({"free", "Soul Cage"})
     end
     while true do
-        if string.lower(unknown_XXXXH()) == "soul cage" then
+        local answer = get_answer()
+        if type(answer) ~= "string" then
+            answer = get_answer()
+        end
+        if type(answer) ~= "string" then
+            break
+        end
+        local lower = string.lower(answer)
+        if lower == "soul cage" then
             add_dialogue("\"This is a special cage, made to fit the shape of a man. Mistress Mordra says that it will contain the Liche, Horance, once it has been lowered into his Well of Souls.\" His voice seems much softer than before.")
             remove_answer("Soul Cage")
-        elseif string.lower(unknown_XXXXH()) == "free" then
+        elseif lower == "free" then
             add_dialogue("\"Yes, thou wilt help me free her, wilt thou not?\" A tinge of the edge comes back to his voice.")
             var_0003 = ask_yes_no()
             if var_0003 then
@@ -45,8 +53,8 @@ function utility_unknown_1007()
                 return
             end
             remove_answer("free")
-        elseif string.lower(unknown_XXXXH()) == "what next?" then
-            var_0004 = utility_unknown_1073(359, 359, 264, 1, 357)
+        elseif lower == "what next?" then
+            var_0004 = utility_party_has_items_1073(359, 359, 264, 1, 357)
             if get_flag(424) then
                 add_dialogue("\"Why, I beg thee to please help in the return my lovely Rowena to me,\" he pleads.")
             elseif not var_0004 then
@@ -58,13 +66,13 @@ function utility_unknown_1007()
                 add_dialogue("\"With this, I will finish it shortly. Wait here whilst I tend to the cage.\"")
                 add_dialogue("\"Take the cage to Mistress Mordra and she will tell thee more about it and its use.\"")
                 set_flag(463, true)
-                utility_unknown_0279(1, objectref)
+                item_hourglass_quest_0279(1, objectref)
                 return
             end
-        elseif string.lower(unknown_XXXXH()) == "sacrifice" then
+        elseif lower == "sacrifice" then
             add_dialogue("\"I cannot even consider that until I am reunited with my love.\" He seems very adamant about this.")
             remove_answer("sacrifice")
-        elseif string.lower(unknown_XXXXH()) == "bye" then
+        elseif lower == "bye" then
             add_dialogue("\"Please, hurry. Every second my love must endure Horance's foul presence is like a knife in my side.\" He begins to pace about his shop.")
             return
         end

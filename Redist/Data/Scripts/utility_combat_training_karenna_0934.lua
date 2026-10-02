@@ -1,13 +1,13 @@
 --- Best guess: Manages a combat training session with Karenna, checking player stats and gold, and applying stat increases upon successful payment.
-function utility_unknown_0934(var_0000, var_0001)
+function utility_combat_training_karenna_0934(var_0000, var_0001)
     local var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_0010, var_0011, var_0012, var_0013
 
-    var_0002 = utility_unknown_1056()
+    var_0002 = utility_select_party_member_for_training_1056()
     var_0003 = get_player_name()
     if var_0002 == 0 then
         return
     end
-    var_0004 = utility_unknown_1039(var_0002)
+    var_0004 = utility_get_character_name_1039(var_0002)
     if var_0004 == var_0003 then
         var_0004 = "you"
         var_0005 = "you"
@@ -24,7 +24,7 @@ function utility_unknown_0934(var_0000, var_0001)
         end
     end
     var_0008 = 3
-    var_0009 = utility_unknown_1058(var_0008, var_0002, var_0000, var_0001)
+    var_0009 = utility_check_training_okay_1058(var_0008, var_0002, var_0000, var_0001)
     if var_0009 == 0 then
         add_dialogue("Karenna looks at " .. var_0004 .. " and gives a small laugh. \"Thou art not without skill, but thou art not ready yet.\"")
         return
@@ -43,13 +43,13 @@ function utility_unknown_0934(var_0000, var_0001)
     add_dialogue("You pay " .. var_0000 .. " gold, and the training session begins.")
     add_dialogue("Karenna leaps like a panther around the padded mat of the training ring. Her movements are so fast, they are a blur. She attacks. At first she lands her blows at will, causing stings of pain that send " .. var_0004 .. " reeling, but as the session progresses, " .. var_0005 .. " " .. var_0007 .. " " .. var_0006 .. " reflexes have been sharpened noticeably.")
     add_dialogue("\"I thank thee for a fine practice session. Thou wilt be back.\" She grins confidently.")
-    var_0012 = utility_unknown_1040(1, var_0002)
-    var_0013 = utility_unknown_1040(4, var_0002)
+    var_0012 = utility_get_training_level_1040(1, var_0002)
+    var_0013 = utility_get_training_level_1040(4, var_0002)
     if var_0012 < 30 then
-        utility_unknown_1045(2, var_0002)
+        utility_train_dexterity_1045(2, var_0002)
     end
     if var_0013 < 30 then
-        utility_unknown_1047(1, var_0002)
+        utility_train_combat_skill_1047(1, var_0002)
     end
     return
 end

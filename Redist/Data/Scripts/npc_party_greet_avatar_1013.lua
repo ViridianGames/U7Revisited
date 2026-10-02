@@ -2,7 +2,7 @@
 --- Presents each non-Avatar / non-Tseramed party member until the player picks "nobody".
 ---@param party_members table Array of party member names from get_party_members()
 ---@return table party_members Unchanged party name list
-function utility_unknown_1013(party_members, _unused)
+function npc_party_greet_avatar_1013(party_members, _unused)
     save_answers()
 
     local remaining = {}
@@ -55,7 +55,7 @@ function utility_unknown_1013(party_members, _unused)
             end
             if quipper then
                 second_speaker(quipper, 0, "\"Oh, please.\"")
-                second_speaker(1, 0, "\"Hush, " .. utility_unknown_1039(quipper) .. ".\"")
+                second_speaker(1, 0, "\"Hush, " .. utility_get_character_name_1039(quipper) .. ".\"")
             end
             greeted = true
             heard_avatar_title = true

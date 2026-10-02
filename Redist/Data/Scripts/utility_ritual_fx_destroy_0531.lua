@@ -1,5 +1,5 @@
 --- Best guess: Applies visual effects and destroys items, likely for a ritual or trap effect.
-function utility_unknown_0531(eventid, objectref)
+function utility_ritual_fx_destroy_0531(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     var_0000 = objectref

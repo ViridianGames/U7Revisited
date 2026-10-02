@@ -87,8 +87,8 @@ function object_kitchen_items_0863(eventid, objectref)
             if get_object_shape(target) == DOUGH_SHAPE and get_object_frame(target) == 2 then
                 set_object_frame(target, 1)
             end
-            if utility_unknown_1075 then
-                utility_unknown_1075("@Hey! That really hurt!@", target, 0)
+            if utility_check_status_add_container_1075 then
+                utility_check_status_add_container_1075("@Hey! That really hurt!@", target, 0)
             end
         end
 

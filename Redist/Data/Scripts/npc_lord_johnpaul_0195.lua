@@ -6,7 +6,7 @@ function npc_lord_johnpaul_0195(eventid, objectref)
         switch_talk_to(195)
         var_0000 = get_player_name()
         var_0001 = get_lord_or_lady()
-        var_0002 = npc_id_in_party(-197)
+        var_0002 = npc_id_in_party(197)
         var_0003 = false
         start_conversation()
         add_answer({"bye", "job", "name"})
@@ -77,10 +77,10 @@ function npc_lord_johnpaul_0195(eventid, objectref)
             elseif answer == "Sir Horffe" then
                 add_dialogue("\"He is the captain of the guards. I would have no other for his position. He is the most honorable warrior I have ever met.\"")
                 if var_0002 then
-                    switch_talk_to(-197)
+                    switch_talk_to(197)
                     add_dialogue("\"To thank you, Sir!\"")
                     hide_npc(197)
-                    switch_talk_to(-195)
+                    switch_talk_to(195)
                 end
                 if not var_0003 then
                     add_dialogue("\"He seems to have taken a dislike for The Fellowship, however. I have noticed he is reluctant to mention this around Sir Richter.\" He shrugs.")
@@ -129,17 +129,17 @@ function npc_lord_johnpaul_0195(eventid, objectref)
                 add_answer("Lady Jehanne")
                 remove_answer("Sir Pendaran responsible")
             elseif answer == "Lady Jehanne" then
-                utility_unknown_1041(100)
+                utility_set_party_quest_prop8_1041(100)
                 add_dialogue("He smiles and extends his hand.")
                 add_dialogue("\"Excellent job, \" .. var_0000 .. \". I cannot adequately express my gratitude. I will see that Sir Pendaran is properly reprimanded. I thank thee, \" .. var_0000 .. \".\"")
                 if not get_flag(610) then
                     add_dialogue("\"Now I must apologize to Sir Horffe!\"")
                     if var_0002 then
                         add_dialogue("*")
-                        switch_talk_to(-197)
+                        switch_talk_to(197)
                         add_dialogue("\"To have no need! To be happy the true vandal is discovered.\"")
                         hide_npc(197)
-                        switch_talk_to(-195)
+                        switch_talk_to(195)
                     end
                 end
                 set_flag(609, true)

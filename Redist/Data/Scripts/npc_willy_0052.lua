@@ -17,8 +17,8 @@ function npc_willy_0052(eventid, objectref)
         if not get_flag(203) then
             add_answer("made bread")
         end
-        var_0005 = utility_unknown_1073(14, 359, 863, 1, 357) --- Guess: Verifies Avatar identity
-        var_0006 = utility_unknown_1073(15, 359, 863, 1, 357) --- Guess: Verifies Avatar identity
+        var_0005 = utility_party_has_items_1073(14, 359, 863, 1, 357) --- Guess: Verifies Avatar identity
+        var_0006 = utility_party_has_items_1073(15, 359, 863, 1, 357) --- Guess: Verifies Avatar identity
         if var_0005 or var_0006 then
             add_answer("sell flour")
         end
@@ -112,7 +112,7 @@ function npc_willy_0052(eventid, objectref)
                     add_dialogue("\"I not only have bread for sale, but pastries, cakes and rolls as well. The most delicious baked goods thou couldst ever wish to pop into thy mouth! Wouldst thou like to buy some?\"")
                     var_000A = select_option()
                     if var_000A then
-                        utility_unknown_1094() --- Guess: Processes bread purchase
+                        utility_bakery_purchase_1094() --- Guess: Processes bread purchase
                     else
                         add_dialogue("\"If thou wert a person of truly refined taste, thou wouldst buy some!\"")
                     end
@@ -142,10 +142,10 @@ function npc_willy_0052(eventid, objectref)
                 end
                 remove_answer("hire")
             elseif var_0007 == "made bread" then
-                utility_unknown_1095() --- Guess: Submits player-made bread
+                utility_bread_delivery_reward_1095() --- Guess: Submits player-made bread
                 remove_answer("made bread")
             elseif var_0007 == "sell flour" then
-                utility_unknown_1096() --- Guess: Sells flour to Willy
+                utility_flour_delivery_reward_1096() --- Guess: Sells flour to Willy
                 remove_answer("sell flour")
             elseif var_0007 == "bye" then
                 break
@@ -168,7 +168,7 @@ function npc_willy_0052(eventid, objectref)
             end
             bark(52, var_000E)
         else
-            utility_unknown_1070(52) --- Guess: Triggers a game event
+            utility_npc_random_bark_1070(52) --- Guess: Triggers a game event
         end
     end
 end

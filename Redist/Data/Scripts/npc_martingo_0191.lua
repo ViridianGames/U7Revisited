@@ -14,7 +14,7 @@ function npc_martingo_0191(eventid, objectref)
         if not get_flag(598) then
             add_dialogue("You see a nobleman, all alone, with a demented gleam in his eye.")
             add_dialogue("\"Who in blazes art thou?\" the man asks. His attitude is that of someone who was just interrupted from something terribly important.")
-            var_0002 = utility_unknown_1035({"I am the Avatar", var_0001})
+            var_0002 = utility_select_option_string_1035({"I am the Avatar", var_0001})
             if var_0002 == var_0001 then
                 add_dialogue("Martingo shakes your hand but acts thoroughly disinterested. \"I'm thrilled.\"")
                 add_dialogue("He turns to his right and speaks to no one.")
@@ -72,9 +72,9 @@ function npc_martingo_0191(eventid, objectref)
             elseif answer == "Spektran" then
                 add_dialogue("\"'Tis the island thou dost stand upon!\" He turns to the invisible person on his left and whispers, \"Thou art correct -- this person really is a fool!\"")
                 add_dialogue("Martingo turns back to you. \"As I said, I am the Sultan here. I am the master of all of these subjects.\" He gestures around the room.")
-                var_0005 = npc_id_in_party(-1)
+                var_0005 = npc_id_in_party(1)
                 if var_0005 then
-                    switch_talk_to(-1)
+                    switch_talk_to(1)
                     add_dialogue("Iolo whispers to you. \"This fellow is quite daft. Be careful.\"")
                     hide_npc(1)
                     switch_talk_to(191)
@@ -133,7 +133,7 @@ function npc_martingo_0191(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        utility_unknown_1070(191)
+        utility_npc_random_bark_1070(191)
     end
     return
 end

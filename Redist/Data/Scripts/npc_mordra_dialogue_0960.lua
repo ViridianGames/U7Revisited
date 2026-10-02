@@ -1,5 +1,5 @@
 --- Best guess: Manages Mordra's dialogue in Skara Brae, providing information about NPCs, the Liche, and the Well of Souls, with flag-based progression and topic selection.
-function utility_unknown_0960()
+function npc_mordra_dialogue_0960()
     start_conversation()
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006
 
@@ -32,7 +32,14 @@ function utility_unknown_0960()
         end
         add_answer("no one")
         add_dialogue("\"Very well, then. Of whom wouldst thou speak?\"")
-        local response = unknown_XXXXH() -- Placeholder for answer selection
+        local answer = get_answer()
+        if type(answer) ~= "string" then
+            answer = get_answer()
+        end
+        if type(answer) ~= "string" then
+            break
+        end
+        local response = answer
         if response == "Forsythe" then
             add_dialogue("She glowers at you for a moment. \"I have nothing to say about -that- bumbling clod!\"")
             remove_answer("Forsythe")

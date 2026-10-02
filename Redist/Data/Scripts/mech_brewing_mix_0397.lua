@@ -1,5 +1,5 @@
 --- Best guess: Manages a brewing or mixing mechanic, checking item frame (3 or 7) and container items (ID 668), creating a new item (ID 1678) if water is present, or displaying an error message otherwise.
-function utility_unknown_0397(eventid, objectref)
+function mech_brewing_mix_0397(eventid, objectref)
     local var_0000, var_0001, var_0002
 
     var_0000 = _GetItemFrame(objectref)

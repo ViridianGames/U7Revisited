@@ -105,6 +105,6 @@ function npc_joseph_0120(eventid, objectref)
         end
         add_dialogue("\"Enjoy thy stay in my city. But if thou hast no stomach for fighting thou shouldst not stay long.\"")
     elseif eventid == 0 then
-        utility_unknown_1070(120) --- Guess: Triggers a game event
+        utility_npc_random_bark_1070(120) --- Guess: Triggers a game event
     end
 end

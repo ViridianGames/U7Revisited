@@ -141,6 +141,6 @@ function npc_andrew_0176(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        utility_unknown_1070(NPC_ANDREW)
+        utility_npc_random_bark_1070(NPC_ANDREW)
     end
 end

@@ -11,7 +11,7 @@ function object_chest_0434(eventid, objectref)
             add_dialogue("@It is about time!@")
         else
             -- calle 0629H, 1577 (unmapped)
-            utility_unknown_0297(objectref)
+            mech_beer_barrel_0297(objectref)
         end
     elseif eventid == 8 then
         var_0000 = get_object_position(objectref)

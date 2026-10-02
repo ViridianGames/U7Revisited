@@ -1,5 +1,5 @@
 --- Best guess: Implements the freedom spell (An Xen Ex), granting freedom or removing effects from a target with spell effects.
-function utility_spell_0360(eventid, objectref)
+function spell_charm_freedom_an_xen_ex_0360(eventid, objectref)
     local var_0000, var_0001, var_0002
 
     if eventid == 1 then

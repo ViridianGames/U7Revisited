@@ -14,7 +14,7 @@ function npc_anton_0240(eventid, objectref)
             return
         end
         var_0005 = get_npc_name(240)
-        set_schedule_type(15, var_0005)
+        set_schedule_type(240, 15)
         if not get_flag(707) then
             add_dialogue("You are greeted by a man with a sour expression.")
             set_flag(707, true)

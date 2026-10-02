@@ -45,8 +45,8 @@ function object_triplesgame_0809(eventid, objectref)
 
     local hour = get_time_hour()
     if not (hour >= 15 or hour <= 3) then
-        if utility_unknown_1075 then
-            utility_unknown_1075(0, "@The House of Games is closed.@", -356)
+        if utility_check_status_add_container_1075 then
+            utility_check_status_add_container_1075(0, "@The House of Games is closed.@", -356)
         end
         return
     end
@@ -81,8 +81,8 @@ function object_triplesgame_0809(eventid, objectref)
     if set_schedule_type then
         set_schedule_type(9, -232) -- Smithy: dealing
     end
-    if utility_unknown_1075 then
-        utility_unknown_1075(0, "@Spin baby!@", -356)
+    if utility_check_status_add_container_1075 then
+        utility_check_status_add_container_1075(0, "@Spin baby!@", -356)
     end
 
     for _, wheel in ipairs(to_spin) do

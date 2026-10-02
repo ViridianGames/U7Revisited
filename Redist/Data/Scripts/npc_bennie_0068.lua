@@ -77,6 +77,6 @@ function npc_bennie_0068(eventid, objectref)
         end
         add_dialogue("\"Safe journeys, " .. var_0000 .. ".\"")
     elseif eventid == 0 then
-        utility_unknown_1070(68) --- Guess: Triggers a game event
+        utility_npc_random_bark_1070(68) --- Guess: Triggers a game event
     end
 end

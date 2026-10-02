@@ -13,7 +13,7 @@ function npc_katrina_0009(eventid, objectref)
         var_0005 = npc_id_in_party(1) --- Guess: Checks player status
         var_0006 = npc_id_in_party(4) --- Guess: Checks player status
         add_answer({"bye", "job", "name"})
-        if is_int_in_array(var_0002, var_0001) then
+        if npc_id_in_party(9) then
             add_answer("leave")
         end
         if not get_flag(397) then
@@ -46,10 +46,10 @@ function npc_katrina_0009(eventid, objectref)
                 add_dialogue("\"Although there is a vast difference in how time passes in our world and in this one, I am certain I have aged at least a bit,\" she says pleasantly.")
                 remove_answer("time")
             elseif var_0007 == "job" then
-                if not is_int_in_array(var_0002, var_0001) then
+                if not npc_id_in_party(9) then
                     add_dialogue("\"Why, after last accompanying thee on thine adventures I settled down to the peaceful life of a shepherd in New Magincia.\"")
                     add_answer({"New Magincia", "shepherd"})
-                    if not is_int_in_array(var_0002, var_0001) then
+                    if not npc_id_in_party(9) then
                         add_dialogue("\"If thou dost have need of me I could join thy party again.\"")
                         add_answer("join")
                     end
@@ -61,12 +61,9 @@ function npc_katrina_0009(eventid, objectref)
                 add_dialogue("\"I watch over my flock, and the townspeople as well, when they need me.\"")
                 remove_answer("shepherd")
             elseif var_0007 == "join" then
-                var_0008 = 0
-                var_0001 = get_party_members()
-                for var_0009 = 1, 8 do
-                    var_0008 = var_0008 + 1
-                end
-                if var_0008 < 6 then
+                local party = get_party_members()
+                local party_size = (type(party) == "table") and #party or 0
+                if party_size < 6 then
                     add_dialogue("\"It would be an honor, " .. var_0000 .. "!\"")
                     add_to_party(9) --- Guess: Removes object from game
                     add_answer("leave")
@@ -82,12 +79,12 @@ function npc_katrina_0009(eventid, objectref)
                 if var_000B == "wait here" then
                     add_dialogue("\"I shall be happy to wait here until thou dost return.\"")
                     remove_from_party(9) --- Guess: Sets object state (e.g., active/inactive)
-                    set_schedule_type(15, get_npc_name(9)) --- Guess: Sets a generic object property
+                    set_schedule_type(9, 15) --- Guess: Sets a generic object property
                     abort()
                 else
                     add_dialogue("\"If thou dost think it best, I shall. If thou dost need me again thou dost have but to ask.\"")
                     remove_from_party(9) --- Guess: Sets object state (e.g., active/inactive)
-                    set_schedule_type(11, get_npc_name(9)) --- Guess: Sets a generic object property
+                    set_schedule_type(9, 11) --- Guess: Sets a generic object property
                     abort()
                 end
             elseif var_0007 == "New Magincia" then
@@ -170,6 +167,6 @@ function npc_katrina_0009(eventid, objectref)
         end
         add_dialogue("\"Pleasant days, " .. var_0003 .. ".\"")
     elseif eventid == 0 then
-        utility_unknown_1070(9) --- Guess: Triggers a game event
+        utility_npc_random_bark_1070(9) --- Guess: Triggers a game event
     end
 end

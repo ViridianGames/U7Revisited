@@ -5,7 +5,7 @@ function utility_event_0479(eventid, objectref)
     if eventid == 3 then
         if not get_flag(3) and not is_readied(759, 6, 356, 1) and not is_readied(759, 7, 356, 1) then
             var_0000 = {2663, 845}
-            utility_event_0785(var_0000)
+            utility_party_rejoin_flags_0785(var_0000)
             move_object(356, var_0000)
         end
     end

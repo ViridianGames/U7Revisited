@@ -9,7 +9,7 @@ function npc_robin_0134(eventid, objectref)
         var_0001 = get_npc_name(134) --- Guess: Gets object ref
         var_0002 = get_npc_name(136) --- Guess: Gets object ref
         var_0003 = get_npc_name(135) --- Guess: Gets object ref
-        var_0004 = utility_unknown_1073(2, 359, 955, 1, 356) --- Guess: Checks item in inventory
+        var_0004 = utility_party_has_items_1073(2, 359, 955, 1, 356) --- Guess: Checks item in inventory
         var_0005 = is_player_wearing_fellowship_medallion() --- Guess: Checks Fellowship membership
         add_answer({"bye", "job", "name"})
         if not get_flag(381) then
@@ -134,7 +134,7 @@ function npc_robin_0134(eventid, objectref)
                 remove_answer("bringing back")
             elseif var_0006 == "show locket" then
                 add_dialogue("\"Now that I know I can trust thee, I can let thee in on our plan. I intend to take another passenger in thy boat back with us to Buccaneer's Den. Her name is Constance and she should fetch a goodly price from Glenno, operator of the baths. Enough to pay my debts, pay thee for passage and still have plenty left over for another go at the House of Games!\"")
-                utility_unknown_1041(100) --- Guess: Submits item or advances quest
+                utility_set_party_quest_prop8_1041(100) --- Guess: Submits item or advances quest
                 set_flag(388, true)
                 add_answer("boat")
                 remove_answer("show locket")
@@ -156,6 +156,6 @@ function npc_robin_0134(eventid, objectref)
         end
         add_dialogue("\"It has been a pleasure speaking with thee, " .. var_0000 .. ".\"")
     elseif eventid == 0 then
-        utility_unknown_1070(134) --- Guess: Triggers a game event
+        utility_npc_random_bark_1070(134) --- Guess: Triggers a game event
     end
 end

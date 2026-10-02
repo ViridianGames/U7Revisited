@@ -1,5 +1,5 @@
 --- Best guess: Triggers explosions based on item state, possibly for traps or environmental hazards.
-function utility_unknown_0402(eventid, objectref)
+function mech_explosion_trap_0402(eventid, objectref)
     local var_0000, var_0001, var_0002
 
     var_0000 = get_container(objectref) --- Guess: Gets item state

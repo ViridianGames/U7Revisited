@@ -23,7 +23,7 @@ function npc_unknown_0235(eventid, objectref)
             end
             bark(235, var_0003)
         else
-            utility_unknown_1070(235)
+            utility_npc_random_bark_1070(235)
         end
     end
 end

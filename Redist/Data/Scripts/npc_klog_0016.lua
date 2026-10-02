@@ -124,6 +124,6 @@ function npc_klog_0016(eventid, objectref)
         end
         add_dialogue("\"If there is anything else I may help thee with, " .. var_0000 .. ", let me know.\"")
     elseif eventid == 0 then
-        utility_unknown_1070(16) --- Guess: Triggers a game event
+        utility_npc_random_bark_1070(16) --- Guess: Triggers a game event
     end
 end

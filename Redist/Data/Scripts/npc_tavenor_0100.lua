@@ -4,14 +4,14 @@ function npc_tavenor_0100(eventid, objectref)
 
     start_conversation()
     if eventid == 1 then
-        var_0000 = utility_unknown_1073(359, 359, 772, 1, 357) --- Guess: Checks item in inventory
+        var_0000 = utility_party_has_items_1073(359, 359, 772, 1, 357) --- Guess: Checks item in inventory
         switch_talk_to(100)
         if not get_flag(340) then
             if not var_0000 then
                 add_dialogue("The creature ignores you.")
                 abort()
             end
-            utility_unknown_1005() --- Guess: Interacts with Emp
+            npc_ape_honey_request_1005() --- Guess: Interacts with Emp
         end
         if not get_flag(318) then
             if not get_flag(316) then

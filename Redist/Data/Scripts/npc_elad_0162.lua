@@ -39,7 +39,7 @@ function npc_elad_0162(eventid, objectref)
             elseif answer == "services" then
                 var_0002 = get_schedule(162)
                 if var_0002 == 2 or var_0002 == 3 or var_0002 == 4 or var_0002 == 6 then
-                    utility_unknown_0889(425, 10, 25)
+                    utility_healer_services_0889(425, 10, 25)
                 else
                     add_dialogue("\"Perhaps thou couldst come for healing when I am working in my shop.\"")
                 end
@@ -75,7 +75,7 @@ function npc_elad_0162(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        utility_unknown_1070(162)
+        utility_npc_random_bark_1070(162)
     end
     return
 end

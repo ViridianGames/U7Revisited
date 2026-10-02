@@ -80,7 +80,7 @@ function npc_fred_0050(eventid, objectref)
             end
             bark(50, var_0005)
         else
-            utility_unknown_1070(50) --- Guess: Triggers a game event
+            utility_npc_random_bark_1070(50) --- Guess: Triggers a game event
         end
     end
 end

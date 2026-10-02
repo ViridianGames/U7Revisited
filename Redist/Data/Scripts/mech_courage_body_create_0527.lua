@@ -1,5 +1,5 @@
 --- Best guess: Manages a mechanic for item type 466, creating a body (ID 414) and items (IDs 797, 1783) with environmental effects, or handling container items (ID 797) with quality checks.
-function utility_unknown_0527(objectref)
+function mech_courage_body_create_0527(objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E, var_000F, var_0010, var_0011, var_0012, var_0013, var_0014, var_0015, var_0016, var_0017, var_0018
 
     var_0000 = get_object_shape(objectref)
@@ -57,7 +57,7 @@ function utility_unknown_0527(objectref)
                 get_item_frame_rot(objectref)
                 set_item_frame_rot(var_0011, objectref)
                 get_object_frame(var_0011, 22)
-                utility_event_0998(objectref)
+                utility_golem_body_cleanup_0998(objectref)
                 var_0009 = update_last_created(var_0012)
             elseif var_0010 == 241 then
                 set_flag(751, true)
@@ -66,7 +66,7 @@ function utility_unknown_0527(objectref)
                 get_item_frame_rot(objectref)
                 set_item_frame_rot(var_0011, objectref)
                 get_object_frame(var_0011, 7)
-                utility_event_0998(objectref)
+                utility_golem_body_cleanup_0998(objectref)
                 var_0009 = update_last_created(var_0012)
             end
             var_0013 = create_new_object(797)

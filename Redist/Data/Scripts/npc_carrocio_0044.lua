@@ -19,7 +19,7 @@ function npc_carrocio_0044(eventid, objectref)
                 end
                 bark(44, var_0009)
             else
-                utility_unknown_1070(44)
+                utility_npc_random_bark_1070(44)
             end
         end
         add_dialogue("\"Perchance to find in mercy's ear, A voice to know as gentle friend, I bid thee well, but hark return, If thou wouldst see the puppet's play or test thy strength again.\"")
@@ -32,7 +32,7 @@ function npc_carrocio_0044(eventid, objectref)
     var_0001 = get_schedule(44)
     var_0002 = get_schedule_type(get_npc_name(44))
     var_0003 = is_player_female()
-    var_0004 = npc_id_in_party(-2)
+    var_0004 = npc_id_in_party(2)
     add_answer({"bye", "job", "name"})
     if not get_flag(122) then
         add_answer("Nell with child")

@@ -4,7 +4,7 @@ function npc_james_0046(eventid, objectref)
 
     if eventid ~= 1 then
         if eventid == 0 then
-            utility_unknown_1070(46)
+            utility_npc_random_bark_1070(46)
         end
         add_dialogue("\"Oh, thou shalt just come back again wanting something else from me! I just know it!\"")
         return

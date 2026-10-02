@@ -1,5 +1,5 @@
 --- Best guess: Creates and positions an item (ID 377) randomly near an object if conditions are met, likely for spawning resources or loot.
-function object_unknown_0210(eventid, objectref)
+function object_spawn_item_377_0210(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006
 
     if eventid == 1 then

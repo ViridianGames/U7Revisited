@@ -139,6 +139,6 @@ function npc_thurston_0166(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        utility_unknown_1070(NPC_THURSTON)
+        utility_npc_random_bark_1070(NPC_THURSTON)
     end
 end

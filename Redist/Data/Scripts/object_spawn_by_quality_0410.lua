@@ -1,5 +1,5 @@
 --- Best guess: Spawns items or objects based on item quality, likely for dynamic environmental or quest interactions, with specific coordinates and types.
-function object_unknown_0410(eventid, objectref)
+function object_spawn_by_quality_0410(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
     if eventid == 1 then

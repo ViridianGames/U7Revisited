@@ -8,7 +8,7 @@ function object_crystalball_0729(eventid, objectref)
         var_0000 = get_object_quality(objectref)
         if var_0000 == 0 or var_0000 > 7 then
             -- call [0000] (0940H, unmapped)
-            utility_unknown_1088(25)
+            utility_npc_speech_init_1088(25)
             return
         end
         if var_0000 == 1 then

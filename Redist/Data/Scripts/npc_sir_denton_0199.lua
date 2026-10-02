@@ -6,7 +6,7 @@ function npc_sir_denton_0199(eventid, objectref)
         switch_talk_to(199)
         var_0000 = get_player_name()
         var_0001 = get_lord_or_lady()
-        var_0002 = npc_id_in_party(-4)
+        var_0002 = npc_id_in_party(4)
         start_conversation()
         add_answer({"bye", "job", "name"})
         if get_flag(606) and not get_flag(609) then
@@ -19,10 +19,10 @@ function npc_sir_denton_0199(eventid, objectref)
         end
         if var_0002 then
             add_dialogue("\"Greetings to thee, Sir Dupre. Art thou back again for thy study of wines for Brommer?\"")
-            switch_talk_to(-4)
+            switch_talk_to(4)
             add_dialogue("\"Why, ah, yes, my good friend, Denton. I am, uh, still conducting that study.\" He turns to you and shrugs, grinning sheepishly.")
             hide_npc(4)
-            switch_talk_to(-199)
+            switch_talk_to(199)
         end
         if not get_flag(624) then
             add_dialogue("The man before you seems to stare at you blankly.")
@@ -47,7 +47,7 @@ function npc_sir_denton_0199(eventid, objectref)
                 add_answer({"residents", "Menion", "Lady Leigh", "Lady Tory", "Lady Jehanne"})
                 remove_answer("knights")
             elseif answer == "sell" then
-                utility_unknown_0886()
+                utility_provisions_purchase_0886()
             elseif answer == "Serpent's Hold" then
                 add_dialogue("\"Serpent's Hold is located at precisely 53 degrees east and 165 degrees south.\"")
                 remove_answer("Serpent's Hold")
@@ -98,20 +98,20 @@ function npc_sir_denton_0199(eventid, objectref)
                 var_0003 = ask_yes_no()
                 if var_0003 then
                     add_dialogue("\"Why did the chicken cross the road?\"")
-                    var_0004 = npc_id_in_party(-1)
-                    var_0005 = npc_id_in_party(-2)
+                    var_0004 = npc_id_in_party(1)
+                    var_0005 = npc_id_in_party(2)
                     if var_0005 then
-                        switch_talk_to(-2)
+                        switch_talk_to(2)
                         add_dialogue("\"To get to the other side! Oh, that joke is new,\" he says sarcastically.")
                         hide_npc(2)
                     end
                     if var_0004 then
-                        switch_talk_to(-1)
+                        switch_talk_to(1)
                         add_dialogue("Iolo whispers in your ear.")
                         add_dialogue("\"" .. var_0000 .. "\", we have heard that one before. 'Tis best we leave him before he indulges in another joke.\"")
                         hide_npc(1)
                     end
-                    switch_talk_to(-199)
+                    switch_talk_to(199)
                     save_answers()
                     add_answer({"I don't know", "to get to the other side"})
                 else
@@ -138,12 +138,12 @@ function npc_sir_denton_0199(eventid, objectref)
                 remove_answer({"to get to the other side", "I don't know"})
             elseif answer == "Fellowship" then
                 add_dialogue("\"The Fellowship is a twenty-year-old organization that holds many festivals, parades, and celebrations. In addition, they maintain a shelter in the town of Paws. They have an underlying philosophy called the Triad of Inner Strength. This triad is broken into the three principles known as `strive for unity,' `trust thy brother,' and `worthiness precedes reward.'I will now explain the meaning of each principple.\"")
-                var_0005 = npc_id_in_party(-2)
+                var_0005 = npc_id_in_party(2)
                 if var_0005 then
-                    switch_talk_to(-2)
+                    switch_talk_to(2)
                     add_dialogue("\"This Denton fellow is really long-winded.\"")
                     hide_npc(2)
-                    switch_talk_to(-199)
+                    switch_talk_to(199)
                 end
                 add_dialogue("\"Strive for unity seems to mean that The Fellowship wants others to work together for the weal of society. Trust thy brother implies that each person should not question the actions of others. Worthiness precedes reward indicates that The Fellowship's attitude towards reward is that one must do well to be rewarded.\"")
                 var_0007 = is_player_wearing_fellowship_medallion()
@@ -176,7 +176,7 @@ function npc_sir_denton_0199(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        utility_unknown_1070(199)
+        utility_npc_random_bark_1070(199)
     end
     return
 end

@@ -1,7 +1,7 @@
 --- Best guess: Calculates a value based on an NPC's property, dividing it by 100 and iteratively halving until below 1, returning the iteration count.
 ---@param npc_id integer The NPC ID to calculate the value for
 ---@return integer level The calculated level based on experience property
-function utility_unknown_1014(npc_id)
+function utility_npc_prop_halve_calc_1014(npc_id)
     local var_0001, var_0002, var_0003
 
     var_0001 = get_npc_name(npc_id)

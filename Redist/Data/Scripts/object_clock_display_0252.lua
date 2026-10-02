@@ -1,5 +1,5 @@
 --- Best guess: Displays the current time (hour:minute) above a clock object, using a 12-hour format with leading zero for minutes.
-function object_unknown_0252(eventid, objectref)
+function object_clock_display_0252(eventid, objectref)
     local var_0000, var_0001, var_0002
 
     if eventid == 1 then

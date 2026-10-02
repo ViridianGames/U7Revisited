@@ -7,9 +7,9 @@ function npc_penumbra_0150(eventid, objectref)
         abort()
     end
     switch_talk_to(150)
-    set_flag(482, utility_unknown_0969()) --- Guess: Checks ether status
+    set_flag(482, mech_blackrock_pieces_check_0969()) --- Guess: Checks ether status
     var_0000 = get_player_name() --- Guess: Gets player info
-    var_0001 = utility_unknown_1073(359, 359, 759, 1, 357) --- Guess: Checks inventory items
+    var_0001 = utility_party_has_items_1073(359, 359, 759, 1, 357) --- Guess: Checks inventory items
     var_0002 = get_lord_or_lady()
     add_answer({"bye", "job", "name"})
     if not get_flag(479) then
@@ -22,10 +22,10 @@ function npc_penumbra_0150(eventid, objectref)
         add_dialogue("The mage, having been asleep for 200 years, looks just as she did upon your last visit to Britannia.")
         add_dialogue("\"Avatar! I cannot believe 'tis thee! Thou didst come and wake me! I knew thee would!\"")
         add_dialogue("Suddenly, Penumbra grabs her head in pain. \"Oh!\" she cries. \"Mine head! The pain! What is happening? What didst thou do to me?\" She closes her eyes and concentrates. \"There is a disturbance in the ether! I can feel my magical powers fading! Help me, " .. var_0000 .. "! Help me!!\"")
-        set_schedule_type(11, get_npc_name(150)) --- Guess: Sets object behavior
+        set_schedule_type(150, 11) --- Guess: Sets object behavior
         add_answer("ether")
         set_flag(504, true)
-        utility_unknown_1041(800) --- Guess: Triggers quest event
+        utility_set_party_quest_prop8_1041(800) --- Guess: Triggers quest event
     else
         if not get_flag(3) then
             if not get_flag(482) then
@@ -120,7 +120,7 @@ function npc_penumbra_0150(eventid, objectref)
         elseif var_0003 == "blackrock" then
             if not get_flag(3) then
                 if not get_flag(482) then
-                    var_0006 = utility_unknown_1073(359, 359, 914, 4, 357) --- Guess: Checks inventory items
+                    var_0006 = utility_party_has_items_1073(359, 359, 914, 4, 357) --- Guess: Checks inventory items
                     if var_0006 then
                         add_dialogue("\"Thou hast brought the blackrock! I did not think I could manage much longer! Hurry! Place the pieces on the pedestals at the north, south, east, and west ends of the room! I shall wait here!\"")
                         abort()
@@ -139,14 +139,14 @@ function npc_penumbra_0150(eventid, objectref)
         elseif var_0003 == "ring" then
             if not get_flag(3) then
                 if not get_flag(481) then
-                    var_0001 = utility_unknown_1073(359, 359, 759, 1, 357) --- Guess: Checks inventory items
+                    var_0001 = utility_party_has_items_1073(359, 359, 759, 1, 357) --- Guess: Checks inventory items
                     if var_0001 then
                         add_dialogue("\"Thou hast the ethereal ring? Good! I must enchant it! Quickly!\"")
                         add_dialogue("Penumbra takes the ring from you and intones a few magical words upon it. After a moment, she hands it back to you.")
                         remove_party_items(false, 0, 359, 759, 1) --- Guess: Deducts item and adds item
                         add_party_items(false, 1, 359, 759, 1) --- Guess: Deducts item and checks inventory
                         set_flag(481, true)
-                        utility_unknown_1041(200) --- Guess: Triggers quest event
+                        utility_set_party_quest_prop8_1041(200) --- Guess: Triggers quest event
                         add_dialogue("\"Now thou must go to the generator. Be sure thou art wearing the ring! It should now protect thee from the ethereal attacks. Be aware that it is functional only near the Tetrahedron. And tell thy companions to wait out of range. Thou must enter the generator alone!\"")
                         add_dialogue("Penumbra thinks a moment. \"By the way. How didst thou happen to know to come to me about this problem?\"")
                         var_0005 = ask_answer({"Time Lord", "Nicodemus"})

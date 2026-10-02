@@ -1,5 +1,5 @@
 --- Best guess: Implements the summon spell (Kal Lor), spawning creatures and setting party flags for combat.
-function utility_spell_0325(eventid, objectref)
+function spell_summon_kal_lor_0325(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     if eventid == 1 then

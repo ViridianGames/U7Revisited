@@ -4,7 +4,7 @@ function npc_william_0093(eventid, objectref)
 
     if eventid ~= 1 then
         if eventid == 0 then
-            utility_unknown_1070(93)
+            utility_npc_random_bark_1070(93)
         end
         add_dialogue("As soon as he has dismissed you, the overwrought William hides his face in his hands.")
         return
@@ -15,7 +15,7 @@ function npc_william_0093(eventid, objectref)
     var_0000 = get_schedule_type(get_npc_name(93))
     var_0001 = get_schedule(93)
     if var_0001 == 7 and var_0000 ~= 16 then
-        var_0002 = utility_unknown_1020(81, 93)
+        var_0002 = utility_distance_under_20_1020(81, 93)
         if var_0002 then
             add_dialogue("William does not want to avert his attention from the Fellowship meeting.")
             return
@@ -33,10 +33,17 @@ function npc_william_0093(eventid, objectref)
         add_dialogue("\"Avatar! What is it? Why dost thou want to talk to me again? What is wrong now?!\" says William.")
     end
     while true do
-        if cmps("name") then
+        local answer = get_answer()
+        if type(answer) ~= "string" then
+            answer = get_answer()
+        end
+        if type(answer) ~= "string" then
+            break
+        end
+        if answer == "name" then
             add_dialogue("\"I am called William, " .. var_0004 .. ".\"")
             remove_answer("name")
-        elseif cmps("job") then
+        elseif answer == "job" then
             if not get_flag(287) then
                 add_dialogue("\"I work in the sawmill here in Minoc.\"")
                 add_answer({"Minoc", "sawmill"})
@@ -45,14 +52,14 @@ function npc_william_0093(eventid, objectref)
                 set_flag(287, true)
                 add_answer("murders")
             end
-        elseif cmps("sawmill") then
+        elseif answer == "sawmill" then
             add_dialogue("\"I take the logs that are made from all the trees that are cut down by the logger in Yew, and cut them into planks in the local sawmill. Then I sell the planks - mostly to Owen the shipwright, and some to the Artist's Guild as well.\"")
             remove_answer("sawmill")
-        elseif cmps("Minoc") then
+        elseif answer == "Minoc" then
             add_dialogue("\"It was such a quiet town until these murders happened. I cannot believe it.\"")
             remove_answer("Minoc")
             add_answer("murders")
-        elseif cmps("murders") then
+        elseif answer == "murders" then
             if not get_flag(266) then
                 add_dialogue("\"I found the bodies first thing this morning when I went to open the sawmill. It took all of the discipline I have gained from the Triad of Inner Strength and the teachings of The Fellowship to keep from going mad at the sight of it. It must have happened sometime last night but I swear to thee I never heard a thing!\"")
                 set_flag(266, true)
@@ -61,7 +68,7 @@ function npc_william_0093(eventid, objectref)
             end
             remove_answer("murders")
             add_answer("Fellowship")
-        elseif cmps("Fellowship") then
+        elseif answer == "Fellowship" then
             add_dialogue("\"I have been a member of The Fellowship for only a short time. I have only of late begun attending Elynor's meetings. Only since they announced the monument was to be built.\"")
             if var_0003 then
                 add_dialogue("\"I am so glad thou art my brother in The Fellowship; I know I may trust thee. It is all of the others in this town that I worry about.\"")
@@ -76,13 +83,13 @@ function npc_william_0093(eventid, objectref)
             end
             remove_answer("Fellowship")
             add_answer("monument")
-        elseif cmps("philosophy") then
+        elseif answer == "philosophy" then
             utility_ship_1050()
             remove_answer("philosophy")
-        elseif cmps("monument") then
+        elseif answer == "monument" then
             add_dialogue("\"Thou dost know! The monument of Owen the shipwright standing on the bow of a tall ship. Everyone in town doth know of it!\"")
             remove_answer("monument")
-        elseif cmps("bye") then
+        elseif answer == "bye" then
             break
         end
     end

@@ -1,5 +1,5 @@
 --- Best guess: Implements the dispel fire spell (An Flam), extinguishing fires of specific item types with spell effects.
-function utility_spell_0322(eventid, objectref)
+function spell_dispel_fire_an_flam_0322(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003
 
     if eventid == 1 then

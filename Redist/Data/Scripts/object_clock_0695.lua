@@ -2,7 +2,7 @@
 function object_clock_0695(eventid, objectref)
     if eventid == 1 then
         -- calle 00FCH, 252 (unmapped)
-        object_unknown_0252(objectref)
+        object_clock_display_0252(objectref)
     end
     return
 end

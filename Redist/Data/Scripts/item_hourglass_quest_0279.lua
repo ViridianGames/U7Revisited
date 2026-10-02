@@ -1,7 +1,7 @@
 --- Best guess: Handles dialogue and item manipulation for a quest item (possibly an hourglass), instructing the Avatar to take it to Mordra.
 ---@param eventid integer The eventid reference to process
 ---@param objectref integer The object reference to process
-function utility_unknown_0279(eventid, objectref)
+function item_hourglass_quest_0279(eventid, objectref)
     local var_0000, var_0001
 
     set_flag(424, true)

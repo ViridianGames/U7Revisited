@@ -4,7 +4,7 @@ function object_pickaxe_0624(eventid, objectref)
 
     if eventid == 1 then
         if not is_readied(-359, 624, 1, -356) then
-            utility_unknown_1023("@Thou must hold that in thine hand.@")
+            utility_apply_value_action_alt_1023("@Thou must hold that in thine hand.@")
             return
         end
         var_0000 = object_select_modal()
@@ -17,17 +17,17 @@ function object_pickaxe_0624(eventid, objectref)
                 utility_position_0808(7, objectref, 624, var_0004, var_0003, var_0002, var_0000)
                 close_gumps()
             else
-                utility_unknown_1023("It seems the tree will yield nothing of value.")
+                utility_apply_value_action_alt_1023("It seems the tree will yield nothing of value.")
             end
         else
-            utility_unknown_1023("It seems that a pick is not needed for that.")
+            utility_apply_value_action_alt_1023("It seems that a pick is not needed for that.")
         end
     elseif eventid == 7 then
         var_0005 = find_nearby(0, 3, 932, -356)
         for var_0006 in ipairs(var_0005) do
             var_0009 = get_object_frame(var_0008)
             if var_0009 == 2 or var_0009 == 3 then
-                var_000A = utility_unknown_1069(var_0008)
+                var_000A = utility_direction_to_target_1069(var_0008)
             end
         end
         var_000B = execute_usecode_array(-356, {624, 8021, 1, 17447, 8039, 2, 17447, 8037, 2, 17447, 8039, 2, 17447, 8549, var_000A, 7769})

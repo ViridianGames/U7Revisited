@@ -65,6 +65,6 @@ function npc_inwisloklem_0071(eventid, objectref)
         end
         add_dialogue("\"To say farewell.\"")
     elseif eventid == 0 then
-        utility_unknown_1071(71) --- Guess: Triggers gargoyle-specific event
+        utility_gargoyle_random_bark_1071(71) --- Guess: Triggers gargoyle-specific event
     end
 end

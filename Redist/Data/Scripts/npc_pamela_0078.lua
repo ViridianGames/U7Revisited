@@ -4,7 +4,7 @@ function npc_pamela_0078(eventid, objectref)
 
     if eventid ~= 1 then
         if eventid == 0 then
-            utility_unknown_1070(78)
+            utility_npc_random_bark_1070(78)
         end
         add_dialogue("\"See thee soon!\"")
         return
@@ -25,14 +25,21 @@ function npc_pamela_0078(eventid, objectref)
     end
     add_answer("Out'n Inn")
     while true do
-        if cmps("name") then
+        local answer = get_answer()
+        if type(answer) ~= "string" then
+            answer = get_answer()
+        end
+        if type(answer) ~= "string" then
+            break
+        end
+        if answer == "name" then
             add_dialogue("\"I am Pamela!\"")
             remove_answer("name")
             if not get_flag(228) then
                 add_answer("Rayburt")
             end
             set_flag(240, true)
-        elseif cmps("job") then
+        elseif answer == "job" then
             add_dialogue("\"I am the Innkeeper at the Out'n'Inn.\"")
             if var_0000 == 16 or var_0000 == 11 then
                 add_dialogue("\"If thou wouldst like a room, just say so!\"")
@@ -40,7 +47,7 @@ function npc_pamela_0078(eventid, objectref)
             elseif var_0000 == 26 then
                 add_dialogue("\"Please come by if thou wouldst like to rest thy weary feet for the night!\"")
             end
-        elseif cmps("room") then
+        elseif answer == "room" then
             add_dialogue("\"The room is quite inexpensive. Only 8 gold per person. Want one?\"")
             if ask_yes_no() then
                 var_0001 = get_party_members()
@@ -65,17 +72,17 @@ function npc_pamela_0078(eventid, objectref)
                 add_dialogue("\"Another night, then.\"")
             end
             remove_answer("room")
-        elseif cmps("Out'n Inn") then
+        elseif answer == "Out'n Inn" then
             add_dialogue("\"Well... Cove is the city of Love and Passion, didst thou not know? Thou must be careful. If thou dost stay too long in Cove, thou wilt fall in love with someone! Mark my words!\"")
             remove_answer("Out'n Inn")
-        elseif cmps("Rayburt") then
+        elseif answer == "Rayburt" then
             add_dialogue("\"Oooh, he is such a wonderful man, dost thou not think? He is so intense and serious. Handsome, too! Oh, and I like Regal as well.\"")
             remove_answer("Rayburt")
             add_answer("Regal")
-        elseif cmps("Regal") then
+        elseif answer == "Regal" then
             add_dialogue("\"As far as dogs go, he is handsome, too!\"")
             remove_answer("Regal")
-        elseif cmps("bye") then
+        elseif answer == "bye" then
             break
         end
     end

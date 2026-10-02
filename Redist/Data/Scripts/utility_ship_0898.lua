@@ -6,7 +6,7 @@ function utility_ship_0898(eventid, objectref)
         var_0001 = set_npc_location(16, 10, 961, objectref) --- Guess: Sets NPC location
         if var_0001 then
             if is_sitting(objectref) and get_object_owner(356) then --- Guess: Checks sitting status
-                utility_unknown_0284(var_0001) --- External call to unknown function
+                mech_ferry_toggle_0284(var_0001) --- External call to unknown function
             else
                 var_0002 = sit_down(objectref) --- Guess: Initiates sitting
                 set_quest_flag(10, 356, true) --- Guess: Sets quest flag

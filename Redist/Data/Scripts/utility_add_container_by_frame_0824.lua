@@ -1,5 +1,5 @@
 --- Best guess: Adds items to a container based on item frame (8–12), likely for visual or event effects.
-function utility_event_0824(eventid, objectref)
+function utility_add_container_by_frame_0824(eventid, objectref)
     local var_0000, var_0001, var_0002
 
     var_0000 = objectref

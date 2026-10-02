@@ -71,13 +71,13 @@ function npc_csil_0035(eventid, objectref)
                 add_dialogue("\"They have a doctrine which outlines their beliefs. They believe if one is faced with pain, then he has no choice but to go through it in order to be a 'better person'. I do not agree with this. No one should ever go through needless pain. But... they are entitled to their own opinions.\"")
                 remove_answer("Fellowship")
             elseif var_0001 == "services" then
-                utility_unknown_0880(450, 30, 40) --- Guess: Performs healing, curing, or resurrection
+                utility_healer_services_0880(450, 30, 40) --- Guess: Performs healing, curing, or resurrection
             elseif var_0001 == "bye" then
                 break
             end
         end
         add_dialogue("\"Goodbye, Avatar.\"")
     elseif eventid == 0 then
-        utility_unknown_1070(35) --- Guess: Triggers a game event
+        utility_npc_random_bark_1070(35) --- Guess: Triggers a game event
     end
 end

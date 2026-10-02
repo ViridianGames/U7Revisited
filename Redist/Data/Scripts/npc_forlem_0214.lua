@@ -57,7 +57,7 @@ function npc_forlem_0214(eventid, objectref)
                     add_dialogue("\"To be making a mistake.\" He appears disappointed. \"To have the girl punished now because of me.\" He shakes his head.")
                     add_dialogue("\"To feel responsible. To be very sad.\"")
                 end
-                utility_unknown_1041(50)
+                utility_set_party_quest_prop8_1041(50)
                 set_flag(637, true)
                 remove_answer("girl")
             elseif answer == "bye" then
@@ -66,7 +66,7 @@ function npc_forlem_0214(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        utility_unknown_1071(214)
+        utility_gargoyle_random_bark_1071(214)
     end
     return
 end

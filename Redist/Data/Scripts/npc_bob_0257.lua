@@ -48,7 +48,7 @@ function npc_bob_0257(eventid, objectref)
         if var_0003 then
             add_dialogue("\"Very well, thou mayest pass.\"")
             clear_answers()
-            utility_unknown_0820()
+            door_portcullis_password_raise_0820()
         else
             add_dialogue("\"Goodbye.\"")
             clear_answers()

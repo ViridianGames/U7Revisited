@@ -1,7 +1,7 @@
 --- Best guess: Destroys items in a container, possibly for ritual cleanup or object removal.
 ---@param eventid integer The event ID that triggered this function
 ---@param objectref integer The object reference to process
-function utility_unknown_0530(eventid, objectref)
+function utility_destroy_container_items_0530(eventid, objectref)
     local var_0000, var_0003
 
     if eventid == 3 then
@@ -11,7 +11,7 @@ function utility_unknown_0530(eventid, objectref)
             -- Guess: sloop destroys items in array
             for i = 1, 5 do
                 var_0003 = ({1, 2, 3, 0, 9})[i]
-                utility_event_0998(var_0003) --- External call to activate object
+                utility_golem_body_cleanup_0998(var_0003) --- External call to activate object
             end
             destroy_object_silent(objectref) --- Guess: Destroys item silently
         end

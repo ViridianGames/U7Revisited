@@ -7,6 +7,6 @@ function object_metalwall_0876(eventid, objectref)
         flash_mouse(0)
         -- Note: Unrecognized instruction '2c' at address 0020, treated as no-op
     end
-    utility_event_0819(objectref, 935)
+    utility_add_container_items_0819(objectref, 935)
     return
 end

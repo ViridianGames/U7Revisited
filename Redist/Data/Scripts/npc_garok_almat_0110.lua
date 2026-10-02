@@ -24,7 +24,14 @@ function npc_garok_almat_0110(eventid, objectref)
         add_dialogue("\"Thou art talking to me?\" Garok asks, suspiciously.")
     end
     while true do
-        if cmps("name") then
+        local answer = get_answer()
+        if type(answer) ~= "string" then
+            answer = get_answer()
+        end
+        if type(answer) ~= "string" then
+            break
+        end
+        if answer == "name" then
             add_dialogue("The mage stares at you a moment. \"Art thou from the Britannian Tax Council?\"")
             var_0000 = ask_yes_no()
             if var_0000 then
@@ -39,7 +46,7 @@ function npc_garok_almat_0110(eventid, objectref)
             end
             remove_answer("name")
             add_answer("Tax Council")
-        elseif cmps("job") then
+        elseif answer == "job" then
             if not get_flag(3) then
                 add_dialogue("Garok looks as if he might suddenly tear out his hair, but he restrains himself.~~\"I am... -was-... a mage. Until it all went wrong. I am attempting to correct things.\"")
                 add_answer({"correct", "mage"})
@@ -47,7 +54,7 @@ function npc_garok_almat_0110(eventid, objectref)
                 add_dialogue("\"I am, and always have been, a mage. I was down here trying to locate what was amiss with the ethereal waves, but they seem to be all right now.\"")
                 add_answer({"ethereal waves", "mage"})
             end
-        elseif cmps("mage") then
+        elseif answer == "mage" then
             if not get_flag(3) then
                 add_dialogue("Garok suddenly hits himself on the side of the head.~~ \"Get out! Damn thee! Out of there! No one invited thee into mine head! Away with thee!\"~~Garok hits himself again, shakes his head like a wet dog and makes a blubbering sound with his lips.~~Garok looks at you and smiles. \"That's better. Now, what was it... oh yes, I remember. Thou dost not believe I am a mage? Well, I am. I live in the mountains. But now I am lost in this wretched dungeon.\"")
                 add_answer({"lost", "thine head"})
@@ -56,7 +63,7 @@ function npc_garok_almat_0110(eventid, objectref)
                 add_answer("lost")
             end
             remove_answer("mage")
-        elseif cmps({"ethereal waves", "correct"}) then
+        elseif (answer == "ethereal waves" or answer == "correct") then
             if not get_flag(3) then
                 add_dialogue("\"My magic is not working!")
             else
@@ -64,14 +71,14 @@ function npc_garok_almat_0110(eventid, objectref)
             end
             add_dialogue("\"I attributed it to a disturbance in the ethereal waves! I had to find out what was happening. So here I am!\"")
             remove_answer({"ethereal waves", "correct"})
-        elseif cmps("thine head") then
+        elseif answer == "thine head" then
             add_dialogue("\"There is a voice in mine head. Some demon of some sort. It is always congratulating me on things. And then other times it scolds me for things. I -know- it is not my conscience. I -know- what -he- sounds like! This is... someone else.\"")
             remove_answer("thine head")
             add_answer("voice")
-        elseif cmps("voice") then
+        elseif answer == "voice" then
             add_dialogue("\"I started hearing it around the time my magic began to fail. I do not find it amusing.\"")
             remove_answer("voice")
-        elseif cmps("lost") then
+        elseif answer == "lost" then
             if not get_flag(3) then
                 add_dialogue("\"My crystal ball told me that the source of my problems was in a dungeon, but it did not say which one. This was the first dungeon I had ever explored. I have not found anything that might help me, and I cannot find my way out!\"")
             else
@@ -82,10 +89,10 @@ function npc_garok_almat_0110(eventid, objectref)
                 add_answer("wrong dungeon")
             end
             add_answer("way out")
-        elseif cmps("wrong dungeon") then
+        elseif answer == "wrong dungeon" then
             add_dialogue("You explain to Garok that the Tetrahedron Generator is located in Dungeon Deceit.~~\"Hmmmm. Correct idea. Wrong dungeon.\"")
             remove_answer("wrong dungeon")
-        elseif cmps("way out") then
+        elseif answer == "way out" then
             add_dialogue("\"Dost thou know the way out?\"")
             var_0001 = ask_yes_no()
             if var_0001 then
@@ -109,19 +116,19 @@ function npc_garok_almat_0110(eventid, objectref)
                     add_dialogue("Garok shrugs. \"Suit thyself. Thanks anyway.\"")
                 end
                 add_dialogue("You watch as Garok turns, intones a spell, and vanishes.")
-                utility_unknown_0306(objectref)
+                utility_spawn_sprite_fx_0306(objectref)
                 return
             else
                 add_dialogue("\"Oh. Thou art as lost as I, eh? Then we shall surely die in here.\"")
             end
             remove_answer("way out")
-        elseif cmps("Tax Council") then
+        elseif answer == "Tax Council" then
             add_dialogue("\"Grrrr! They are a thorn in my side! They have been seeking me for the past three years! I neglected to report a certain amount of income for reagent distribution, and somehow they found me out. By the way, if thou shouldst ever care to visit me in the mountains, I can sell thee reagents at reduced prices!\"")
             remove_answer("Tax Council")
-        elseif cmps("Brother Wayne") then
+        elseif answer == "Brother Wayne" then
             add_dialogue("\"Yes, I remember him! He is lost, too! Dost thou know if he found his way out? Give him my best when thou dost speak to him.\"")
             remove_answer("Brother Wayne")
-        elseif cmps("bye") then
+        elseif answer == "bye" then
             break
         end
     end

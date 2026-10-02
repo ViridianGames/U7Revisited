@@ -1,5 +1,5 @@
 --- Best guess: Manages the "Tym Vas Flam" spell, igniting a target (ID 621) with a fiery effect, applying status effects and creating visual items, with a fallback effect if the spell fails.
-function utility_spell_0378(eventid, objectref)
+function spell_tym_vas_flam_0378(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     var_0000 = false
@@ -9,10 +9,10 @@ function utility_spell_0378(eventid, objectref)
 
     halt_scheduled(objectref)
     var_0001 = object_select_modal()
-    var_0002 = utility_unknown_1069(var_0001)
+    var_0002 = utility_direction_to_target_1069(var_0001)
     var_0003 = {var_0001[2], var_0001[3], var_0001[4]}
     bark(objectref, "@Tym Vas Flam@")
-    if not utility_unknown_1030() then
+    if not utility_condition_0044_1030() then
         var_0004 = create_new_object(621)
         if not var_0004 then
             set_item_flag(18, var_0004)

@@ -71,7 +71,7 @@ function npc_cairbre_0244(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        utility_unknown_0859()
+        utility_npc_ambient_dialogue_0859()
     end
     return
 end

@@ -1,5 +1,5 @@
 --- Best guess: Implements the shape-shift spell (Rel Ylem), transforming an item (type 915) with visual effects.
-function utility_spell_0376(eventid, objectref)
+function spell_rel_ylem_0376(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     if eventid == 1 then

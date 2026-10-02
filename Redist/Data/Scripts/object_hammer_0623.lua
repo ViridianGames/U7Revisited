@@ -7,7 +7,7 @@ function object_hammer_0623(eventid, objectref)
             flash_mouse(2)
         end
         close_gumps()
-        utility_unknown_0400(objectref)
+        mech_blacksmith_check_0400(objectref)
     elseif eventid == 2 then
         var_0000 = false
         var_0001 = get_object_shape(objectref)
@@ -33,7 +33,7 @@ function object_hammer_0623(eventid, objectref)
         var_0006 = find_nearest(3, 668, get_npc_name(-356))
         var_0005 = get_object_frame(var_0006)
         var_0007 = get_npc_name(-356)
-        var_0008 = utility_unknown_1069(objectref)
+        var_0008 = utility_direction_to_target_1069(objectref)
         if var_0005 >= 13 and var_0005 <= 15 then
             item_say("@The sword is not heated.@", var_0007)
             var_0009 = execute_usecode_array(var_0008, 7769, var_0007)

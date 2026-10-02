@@ -3,12 +3,12 @@ function utility_ship_0939()
     start_conversation()
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
-    var_0000 = npc_id_in_party(-14)
-    var_0001 = npc_id_in_party(-236)
-    var_0002 = npc_id_in_party(-18)
-    var_0003 = npc_id_in_party(-22)
-    var_0004 = npc_id_in_party(-1)
-    var_0005 = npc_id_in_party(-2)
+    var_0000 = npc_id_in_party(14)
+    var_0001 = npc_id_in_party(236)
+    var_0002 = npc_id_in_party(18)
+    var_0003 = npc_id_in_party(22)
+    var_0004 = npc_id_in_party(1)
+    var_0005 = npc_id_in_party(2)
     switch_talk_to(16)
     add_dialogue("Klog is leading the town members in a Fellowship meeting.")
     add_dialogue("\"Thank you, Fellowship members of Trinsic, for attending our meeting this evening.\"~~\"I am certain you are all sorely aware of the crimes that have been committed in our city. Now is a time to mourn those whom we have lost. We will always remember Christopher, our blacksmith, as a valuable citizen of our town as well as a dear friend. Inamo was an amiable and hard-working gargoyle. As their deaths show us, Britannia needs The Fellowship now more than ever.\"")
@@ -21,34 +21,34 @@ function utility_ship_0939()
     if var_0001 then
         switch_talk_to(236)
         add_dialogue("\"The Fellowship has enabled me to reach out and help people where before I have been too preoccupied.\"")
-        hide_npc(-236)
+        hide_npc(236)
     end
     if var_0000 then
         switch_talk_to(14)
         add_dialogue("\"The Fellowship has made me more alert and thorough in the execution of my job as a Trinsic guard.\"")
-        hide_npc(-14)
+        hide_npc(14)
     end
     if var_0002 then
         switch_talk_to(18)
         add_dialogue("\"The Fellowship has made me a happier, more agreeable person.\"")
         switch_talk_to(16)
         add_dialogue("\"Thank thee for sharing, brother!\"")
-        hide_npc(-18)
+        hide_npc(18)
     end
     if var_0003 then
         switch_talk_to(22)
         add_dialogue("\"As a Fellowship member, I feel as if I am doing some good for Britannia.\"")
-        hide_npc(-22)
+        hide_npc(22)
     end
     if var_0005 then
         switch_talk_to(2)
         add_dialogue("Spark whispers to no one in particular, \"This is the most boring pile of horse manure in which I have ever had the pleasure to wallow!\"")
-        hide_npc(-2)
+        hide_npc(2)
     end
     if var_0004 then
         switch_talk_to(1)
         add_dialogue("Iolo slaps his own cheek to keep himself from dozing off. ~~\"Avatar, I do believe that we have heard enough of this.\"")
-        hide_npc(-1)
+        hide_npc(1)
     end
     switch_talk_to(16)
     add_dialogue("It is apparent that the meeting will be continuing for some time... You decide you have more important matters to attend to.")

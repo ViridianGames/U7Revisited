@@ -1,9 +1,9 @@
 --- Best guess: Makes an NPC randomly say a context-specific phrase based on their state (e.g., working, eating, playing tag), tailored to human NPCs.
-function utility_unknown_1070(P0)
+function utility_npc_random_bark_1070(P0)
     local var_0000, var_0001, var_0002, var_0003
 
     var_0000 = get_npc_name(P0)
-    if not utility_unknown_1079(var_0000) then
+    if not utility_npc_eligibility_check_1079(var_0000) then
         return
     end
     var_0001 = get_schedule_type(var_0000)

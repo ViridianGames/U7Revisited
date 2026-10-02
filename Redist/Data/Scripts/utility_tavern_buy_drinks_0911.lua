@@ -1,5 +1,5 @@
 --- Best guess: Manages a tavern interaction, allowing the purchase of ale or wine with price validation, handling inventory and gold checks.
-function utility_unknown_0911()
+function utility_tavern_buy_drinks_0911()
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C
 
     save_answers()
@@ -14,7 +14,7 @@ function utility_unknown_0911()
     var_0008 = 1
     add_dialogue("\"What wouldst thou like to whet thy palate?\"")
     while var_0000 do
-        var_0009 = utility_unknown_1036(var_0001)
+        var_0009 = utility_select_option_index_1036(var_0001)
         if var_0009 == 1 then
             add_dialogue("\"Fine choice.\"")
             var_0000 = false

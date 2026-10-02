@@ -8,7 +8,7 @@ function object_gem_0760(eventid, objectref)
             start_conversation()
             add_dialogue("@Those are beautiful. I am sure that they would fetch a high price at the jewelers' in Britain.@")
         elseif var_0000 == 14 then
-            if not utility_event_0999() then
+            if not utility_check_position_bounds_0999() then
                 var_0002 = {6, 1552, 2191}
                 -- calli 004F, 1 (unmapped)
                 display_area(var_0002)
@@ -20,11 +20,11 @@ function object_gem_0760(eventid, objectref)
             end
         elseif get_flag(815) ~= true and get_flag(816) ~= true then
             -- calle 06F6H, 1782 (unmapped)
-            utility_unknown_0502(objectref)
+            npc_arcadion_dialogue_0502(objectref)
         elseif get_flag(819) ~= true then
             if var_0000 == 13 then
                 -- calle 06F6H, 1782 (unmapped)
-                utility_unknown_0502(objectref)
+                npc_arcadion_dialogue_0502(objectref)
             elseif var_0000 == 12 then
                 if not is_readied(12, 760, 1, 356) then
                     start_conversation()
@@ -47,7 +47,7 @@ function object_gem_0760(eventid, objectref)
         end
     elseif eventid == 7 then
         -- call [0004] (092DH, unmapped)
-        var_0007 = utility_unknown_1069(objectref)
+        var_0007 = utility_direction_to_target_1069(objectref)
         var_0003 = execute_usecode_array(356, {37, 17496, 8039, 2, 17447, 8038, 2, 17447, 8037, 2, 8487, var_0007, 7769})
         var_0003 = execute_usecode_array(objectref, {9, 8006, 10, 7719})
         var_0008 = get_container_objects(12, 359, 760, 356)

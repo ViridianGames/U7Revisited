@@ -1,5 +1,5 @@
 --- Best guess: Generates a random singular/plural noun pair from a list of animals and biological categories, appending "s" to the singular form if the plural is "*".
-function utility_unknown_0876()
+function utility_animal_noun_pair_0876()
     local var_0000, var_0001, var_0002, var_0003
 
     var_0000 = {

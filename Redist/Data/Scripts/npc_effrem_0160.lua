@@ -37,7 +37,7 @@ function npc_effrem_0160(eventid, objectref)
                 add_dialogue("\"I am Effrem, " .. var_0001 .. ". I am but a simple resident of Moonglow.\"")
                 if not get_flag(500) then
                     add_dialogue("\"What is thy name?\"")
-                    var_0009 = utility_unknown_1035(var_0001, var_0002, var_0000)
+                    var_0009 = utility_select_option_string_1035(var_0001, var_0002, var_0000)
                     if var_0009 == var_0000 then
                         add_dialogue("\"Hello, " .. var_0000 .. ".\" He turns to the baby. \"Say `hello' to " .. var_0000 .. ", Mikhail.\"")
                         set_flag(500, true)
@@ -84,7 +84,7 @@ function npc_effrem_0160(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        utility_unknown_1070(160)
+        utility_npc_random_bark_1070(160)
     end
     return
 end

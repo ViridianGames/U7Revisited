@@ -9,8 +9,8 @@ function utility_event_0470(eventid, objectref)
             var_0004 = var_0000[i]
             var_0001 = get_distance(var_0001, objectref, var_0004)
         end
-        var_0000 = utility_unknown_1085(var_0001, var_0000)
-        if utility_unknown_0814(var_0000[1]) then
+        var_0000 = utility_bubble_sort_distances_1085(var_0001, var_0000)
+        if mech_black_gate_prisms_0814(var_0000[1]) then
             var_0005 = find_nearby(16, 20, 275, objectref)
             for i = 1, #var_0005 do
                 var_0008 = var_0005[i]

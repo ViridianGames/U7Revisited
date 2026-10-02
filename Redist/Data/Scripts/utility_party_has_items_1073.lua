@@ -1,11 +1,11 @@
 --- Inventory presence helper used by converted NPC scripts.
 ---
 --- Prefer is_object_in_party_inventory() for new code. This wrapper remains so
---- older call sites (utility_unknown_1073 / check_object_ownership) keep working.
+--- older call sites (utility_party_has_items_1073 / check_object_ownership) keep working.
 ---
 --- For silver serpent venom (shape 649), scripts historically called:
----   utility_unknown_1073(1, 357, 649, 359, 1)
----   utility_unknown_1073(1, 359, 649, 1, 357)
+---   utility_party_has_items_1073(1, 357, 649, 359, 1)
+---   utility_party_has_items_1073(1, 359, 649, 1, 357)
 
 SHAPE_SILVER_SERPENT_VENOM = 649
 
@@ -32,7 +32,7 @@ end
 
 --- Returns true if the party has at least the requested quantity of an item.
 --- Accepts the 4- and 5-arg Exult-style forms from converted scripts.
-function utility_unknown_1073(arg1, arg2, arg3, arg4, arg5)
+function utility_party_has_items_1073(arg1, arg2, arg3, arg4, arg5)
     local shape = nil
     local quantity = 1
 

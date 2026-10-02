@@ -1,5 +1,5 @@
 --- Best guess: Negates values in an array (P1) at specified indices, returning the modified array.
-function utility_unknown_0811(P0, P1)
+function utility_array_negate_indices_0811(P0, P1)
     local var_0000, var_0001, var_0002
 
     var_0002 = 0

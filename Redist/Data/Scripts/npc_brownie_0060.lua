@@ -4,7 +4,7 @@ function npc_brownie_0060(eventid, objectref)
 
     if eventid ~= 1 then
         if eventid == 0 then
-            utility_unknown_1070(60)
+            utility_npc_random_bark_1070(60)
         end
         add_dialogue("\"Good day, " .. get_lord_or_lady() .. ".\"")
         return
@@ -96,7 +96,7 @@ function npc_brownie_0060(eventid, objectref)
             remove_answer("help")
         elseif answer == "pumpkins" then
             if not get_flag(206) then
-                utility_unknown_0855()
+                utility_pumpkin_sale_0855()
             else
                 add_dialogue("\"Thou shouldst simply go to the north end of the field and bring back as many pumpkins as thou can carry!\"")
             end

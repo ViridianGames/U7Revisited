@@ -54,7 +54,7 @@ function utility_position_0268(eventid, objectref)
                         set_item_flag(11, var_0010)
                         var_0014 = math.abs(var_0005[2] - var_0011[2]) - 4
                         var_0015 = "@A winnah in lane " .. var_0014 .. "!@"
-                        utility_unknown_1075(1, var_0015, 232)
+                        utility_check_status_add_container_1075(1, var_0015, 232)
                     end
                     remove_item(var_0010)
                 end

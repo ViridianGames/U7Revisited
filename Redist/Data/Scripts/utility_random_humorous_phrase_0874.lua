@@ -1,6 +1,6 @@
 --- Best guess: Generates a random humorous phrase from a predefined list, likely for NPC dialogue or a comedic effect.
 ---@return string phrase A randomly selected humorous phrase
-function utility_unknown_0874()
+function utility_random_humorous_phrase_0874()
     local var_0000, var_0001, var_0002
 
     var_0000 = {"between the sheets", "with a melon", "assuredly", "above your house", "below the ground"}

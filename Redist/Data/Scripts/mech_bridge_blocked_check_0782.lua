@@ -4,7 +4,7 @@
 --- Until that interpreter exists, we only do the blocked check here; the
 --- caller (object_lever_0788) toggles frames itself after we return true.
 
-function utility_unknown_0782(object_list)
+function mech_bridge_blocked_check_0782(object_list)
     if type(object_list) ~= "table" then
         return false
     end
@@ -26,8 +26,8 @@ function utility_unknown_0782(object_list)
                                 and x <= bx and x >= bx - 3
                                 and y <= by and y >= by - 6 then
                                 -- Prefer bark helper if present
-                                if utility_unknown_1023 then
-                                    utility_unknown_1023("I believe the bridge is blocked.")
+                                if utility_apply_value_action_alt_1023 then
+                                    utility_apply_value_action_alt_1023("I believe the bridge is blocked.")
                                 else
                                     bark(get_avatar_ref() or bridge, "@I believe the bridge is blocked.@")
                                 end

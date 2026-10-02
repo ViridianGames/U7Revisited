@@ -1,5 +1,5 @@
 --- Best guess: Clears specific items (IDs 867, 338, 336, 810, 912, 636, 168) within a radius when triggered by event 3.
-function utility_event_0783(eventid, objectref)
+function utility_clear_nearby_items_0783(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A
 
     if eventid == 3 then

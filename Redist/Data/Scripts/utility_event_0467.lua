@@ -5,7 +5,7 @@ function utility_event_0467(eventid, objectref)
     if eventid == 3 then
         var_0000 = 1
         var_0001 = 1
-        utility_unknown_0784(var_0001, var_0000)
+        mech_cube_puzzle_floors_0784(var_0001, var_0000)
     end
     return
 end

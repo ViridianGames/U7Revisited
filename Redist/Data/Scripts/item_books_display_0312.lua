@@ -1,5 +1,5 @@
 --- Best guess: Displays contents of various books (e.g., Dragon Compendium, Alagner's Book), with special handling for specific book qualities.
-function utility_unknown_0312(eventid, objectref)
+function item_books_display_0312(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006
 
     var_0000 = get_object_quality(objectref) --- Guess: Gets item quality

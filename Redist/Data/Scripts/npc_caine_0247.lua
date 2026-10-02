@@ -155,7 +155,7 @@ function npc_caine_0247(eventid, objectref)
                         add_dialogue("The Tortured One looks hard at you. Then, smiling, he shakes his head. \"I have no secrets, my foolish friend. Thou art a fool. There are -no- answers. Only questions.\"")
                         add_dialogue("He looks as if he might cry out in pain. And then Caine turns away from you. \"Go away now. Leave me to mine eternity.\"")
                         set_flag(406, true)
-                        utility_unknown_1041(700)
+                        utility_set_party_quest_prop8_1041(700)
                         return
                     else
                         add_dialogue("\"Then why hast thou wasted thy time? Go away, fool!\"")

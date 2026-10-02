@@ -10,7 +10,7 @@ function npc_grayson_0055(eventid, objectref)
         var_0002 = get_schedule_type(55) --- Guess: Gets object state
         var_0004 = get_lord_or_lady()
         if var_0001 == 7 then
-            var_0003 = utility_unknown_1020(26, 55) --- Guess: Checks time for Fellowship meeting
+            var_0003 = utility_distance_under_20_1020(26, 55) --- Guess: Checks time for Fellowship meeting
             if var_0003 then
                 add_dialogue("Grayson shushes you, as you are disturbing the Fellowship meeting.")
                 abort()
@@ -42,7 +42,7 @@ function npc_grayson_0055(eventid, objectref)
             elseif var_0003 == "armour" then
                 add_dialogue("Grayson looks you up and down. \"Dost thou truly believe that thou art sufficiently protected in what thou art wearing? In truth I fear for thy safety if thou shouldst become involved in combat. Are thou interested in buying something today?\"")
                 if select_option() then
-                    utility_unknown_0919() --- Guess: Processes armour purchase
+                    utility_armor_purchase_0919() --- Guess: Processes armour purchase
                 else
                     add_dialogue("\"Another time, then.\"")
                     restore_answers()
@@ -51,7 +51,7 @@ function npc_grayson_0055(eventid, objectref)
             elseif var_0003 == "weapons" then
                 add_dialogue("After looking at you, Grayson says, \"I can see that thou art in sore need of weaponry. Dost thou want to buy something today?\"")
                 if select_option() then
-                    utility_unknown_0920() --- Guess: Processes weapon purchase
+                    utility_weapon_purchase_0920() --- Guess: Processes weapon purchase
                 else
                     add_dialogue("\"Another time, then.\"")
                     restore_answers()
@@ -104,7 +104,7 @@ function npc_grayson_0055(eventid, objectref)
             end
             bark(55, var_0006)
         else
-            utility_unknown_1070(55) --- Guess: Triggers a game event
+            utility_npc_random_bark_1070(55) --- Guess: Triggers a game event
         end
     end
 end

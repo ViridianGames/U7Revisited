@@ -1,5 +1,5 @@
 --- Best guess: Wakes the Avatar from a bedroll, addressing them by name and updating party member states.
-function utility_unknown_0291(eventid, objectref)
+function utility_wake_from_bedroll_0291(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     if eventid == 2 then
@@ -14,12 +14,12 @@ function utility_unknown_0291(eventid, objectref)
         -- Guess: sloop updates party member states
         for i = 1, 4 do
             var_0005 = ({3, 4, 5, 2})[i]
-            utility_unknown_1087(31, var_0005) --- Guess: Updates object state
+            utility_remove_npc_from_party_1087(31, var_0005) --- Guess: Updates object state
         end
         set_item_flag(1, 356) --- Guess: Sets item flag
         clear_item_flag(1, 356) --- Guess: Sets quest flag
         if get_object_shape(objectref) == 1011 and get_object_frame(objectref) == 17 then
-            utility_event_0292(objectref, 1) --- External call to retrieve bedroll
+            utility_retrieve_bedroll_0292(objectref, 1) --- External call to retrieve bedroll
         end
     end
 end

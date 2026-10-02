@@ -1,5 +1,5 @@
 --- Best guess: Implements the summon spell (Vas Kal), spawning a creature with visual effects.
-function utility_spell_0327(eventid, objectref)
+function spell_summon_vas_kal_0327(eventid, objectref)
     local var_0000
 
     if eventid == 1 then

@@ -44,7 +44,7 @@ function npc_wench_0221(eventid, objectref)
             end
         end
         add_dialogue("Who art thou?")
-        var_0009 = utility_unknown_1035({var_0003, var_0002})
+        var_0009 = utility_select_option_string_1035({var_0003, var_0002})
         if var_0009 == var_0002 then
             if not var_0004 then
                 add_dialogue("\"Well, I am very pleased to meet thee, " .. var_0002 .. ".\"")

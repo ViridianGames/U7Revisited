@@ -9,7 +9,7 @@ function npc_jaana_0005(eventid, objectref)
         var_0001 = get_npc_name(5) --- Guess: Retrieves object reference from ID
         var_0002 = get_player_name()
         add_answer({"bye", "job", "name"})
-        if is_int_in_array(var_0001, get_party_members()) then
+        if npc_id_in_party(5) then
             add_answer("leave")
         elseif not get_flag(24) then
             add_answer("join")
@@ -39,11 +39,11 @@ function npc_jaana_0005(eventid, objectref)
                 add_dialogue("\"I have been the Cove Healer for some time now, and can provide thee with mine healing services. Since magic is not reliable, I have been yearning to join a party of adventurers, such as mine old friends. I miss the old life!\"")
                 add_answer({"magic", "friends", "heal"})
                 set_flag(40, true)
-                if not is_int_in_array(var_0001, get_party_members()) then
+                if not npc_id_in_party(5) then
                     add_answer("join")
                 end
             elseif var_0003 == "heal" then
-                if is_int_in_array(var_0001, get_party_members()) then
+                if npc_id_in_party(5) then
                     if get_flag(41) then
                         var_0004 = get_timer(10) --- Guess: Checks party status or conditions
                     else
@@ -52,22 +52,19 @@ function npc_jaana_0005(eventid, objectref)
                     if var_0004 < 4 then
                         add_dialogue("\"I am sorry, I must wait a while before I can heal again.\"")
                     else
-                        utility_unknown_0926(0, 0, 0) --- Guess: Heals party member
+                        utility_human_healer_services_0926(0, 0, 0) --- Guess: Heals party member
                     end
                 else
-                    utility_unknown_0926(400, 15, 30) --- Guess: Heals party member
+                    utility_human_healer_services_0926(400, 15, 30) --- Guess: Heals party member
                 end
             elseif var_0003 == "friends" then
                 add_dialogue("\"Our old friends -- Iolo, Shamino, and Dupre. The men who conquer evil in the name of Lord British!\"")
                 remove_answer("friends")
                 add_answer({"Lord British", "Dupre", "Shamino", "Iolo"})
             elseif var_0003 == "join" then
-                var_0005 = 0
-                var_0006 = get_party_members()
-                for var_0007 = 1, 8 do
-                    var_0005 = var_0005 + 1
-                end
-                if var_0005 < 8 then
+                local party = get_party_members()
+                local party_size = (type(party) == "table") and #party or 0
+                if party_size < 8 then
                     add_dialogue("\"I would be honored to join thee, " .. var_0000 .. "!\"")
                     add_to_party(5) --- Guess: Removes object from game
                     add_answer("leave")
@@ -82,12 +79,12 @@ function npc_jaana_0005(eventid, objectref)
                 if var_0009 == "wait here" then
                     add_dialogue("\"Very well. I shall wait until thou dost return.\"")
                     remove_from_party(5) --- Guess: Sets object state (e.g., active/inactive)
-                    set_schedule_type(15, get_npc_name(5)) --- Guess: Sets a generic object property
+                    set_schedule_type(5, 15) --- Guess: Sets a generic object property
                     abort()
                 else
                     add_dialogue("\"I shall obey thy wish. I would be happy to re-join if thou shouldst ask. Goodbye.\"")
                     remove_from_party(5) --- Guess: Sets object state (e.g., active/inactive)
-                    set_schedule_type(11, get_npc_name(5)) --- Guess: Sets a generic object property
+                    set_schedule_type(5, 11) --- Guess: Sets a generic object property
                     abort()
                 end
             elseif var_0003 == "magic" then
@@ -172,6 +169,6 @@ function npc_jaana_0005(eventid, objectref)
         end
         add_dialogue("\"Goodbye, " .. var_0000 .. ".\"")
     elseif eventid == 0 then
-        utility_unknown_1070(5) --- Guess: Triggers a game event
+        utility_npc_random_bark_1070(5) --- Guess: Triggers a game event
     end
 end

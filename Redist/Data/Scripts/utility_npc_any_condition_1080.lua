@@ -1,8 +1,8 @@
 --- Best guess: Similar to func_0937, checks NPC flags and properties, returning true if any condition is met.
-function utility_unknown_1080(arg1)
+function utility_npc_any_condition_1080(arg1)
     local var_0000
 
-    var_0000 = utility_unknown_1081(arg1) --- External call to func_0939
+    var_0000 = utility_validate_npc_id_1081(arg1) --- External call to func_0939
     if check_object_flag(var_0000, 1) or --- Guess: Checks item flag
        check_object_flag(var_0000, 7) or --- Guess: Checks item flag
        check_object_flag(var_0000, 4) or --- Guess: Checks item flag

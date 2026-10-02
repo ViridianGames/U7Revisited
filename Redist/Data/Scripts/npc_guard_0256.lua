@@ -13,7 +13,7 @@ function npc_guard_0256(eventid, objectref)
         abort()
     end
     add_answer({"bye", "job", "name"})
-    var_0002 = utility_unknown_1073(359, 2, 642, 1, 357) --- Guess: Checks inventory items
+    var_0002 = utility_party_has_items_1073(359, 2, 642, 1, 357) --- Guess: Checks inventory items
     if var_0002 then
         add_answer("notebook")
     end
@@ -27,7 +27,7 @@ function npc_guard_0256(eventid, objectref)
         add_dialogue("The Wisp glows brightly a second or two.")
         add_dialogue("\"'Xorinia' wishes to exchange information with the human entity.\"")
         set_flag(336, true)
-        utility_unknown_1041(500) --- Guess: Triggers quest event
+        utility_set_party_quest_prop8_1041(500) --- Guess: Triggers quest event
     else
         add_dialogue("\"Once again a local manifestation addresses the Xorinite dimension.\"")
     end
@@ -80,7 +80,7 @@ function npc_guard_0256(eventid, objectref)
             add_dialogue("\"'I' have completed my absorption of the information. 'You' may now return the item 'notebook' to the entity 'Alagner'.\"")
             add_dialogue("\"And now for the exchange of information and delivery of a message.\"")
             set_flag(343, true)
-            utility_unknown_1041(700) --- Guess: Triggers quest event
+            utility_set_party_quest_prop8_1041(700) --- Guess: Triggers quest event
             remove_answer("notebook")
             add_answer({"message", "exchange"})
         elseif var_0003 == "message" then

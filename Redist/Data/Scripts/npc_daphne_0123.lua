@@ -4,7 +4,7 @@ function npc_daphne_0123(eventid, objectref)
 
     if eventid ~= 1 then
         if eventid == 0 then
-            utility_unknown_1070(123)
+            utility_npc_random_bark_1070(123)
         end
         return
     end
@@ -30,14 +30,14 @@ function npc_daphne_0123(eventid, objectref)
     if not get_flag(373) then
         add_dialogue("You see a disgruntled, obviously overworked barmaid. She gives you a perfunctory grunt of a hello.")
         set_flag(373, true)
-        var_0009 = npc_id_in_party(-4)
+        var_0009 = npc_id_in_party(4)
         if var_0009 then
             add_dialogue("\"Art thou still here?\" she asks Dupre.")
-            switch_talk_to(-4)
+            switch_talk_to(4)
             add_dialogue("\"I have not finished making mine assessment of thy fine drinking establishment!\"")
             switch_talk_to(123)
             add_dialogue("\"What? Art thou working for Brommer's Britannia travel guides?\"")
-            switch_talk_to(-4)
+            switch_talk_to(4)
             add_dialogue("\"No, my dear. This research is strictly for mine own digestion!\"")
             -- syntax error, why was this here? hide_npc4)
             switch_talk_to(123)
@@ -46,31 +46,38 @@ function npc_daphne_0123(eventid, objectref)
         add_dialogue("\"Good day to thee, " .. var_0000 .. ". Rest and take a load off.\"")
     end
     while true do
-        if cmps("name") then
+        local answer = get_answer()
+        if type(answer) ~= "string" then
+            answer = get_answer()
+        end
+        if type(answer) ~= "string" then
+            break
+        end
+        if answer == "name" then
             add_dialogue("\"I am Daphne.\"")
             remove_answer("name")
-        elseif cmps("job") then
+        elseif answer == "job" then
             add_dialogue("\"That is an easy one. I am the workhorse in residence of the Bunk and Stool. While our resident princess flirts with the customers I do all the cooking, cleaning and serving.\"")
             add_answer({"room", "Bunk and Stool", "buy", "princess", "workhorse"})
-        elseif cmps("buy") then
+        elseif answer == "buy" then
             if var_0002 == 23 then
-                utility_unknown_0881()
+                utility_food_drink_purchase_0881()
             else
                 add_dialogue("\"Sorry, " .. var_0000 .. ", I do not sell food and drink at this time.\"")
             end
             remove_answer("buy")
-        elseif cmps("workhorse") then
+        elseif answer == "workhorse" then
             add_dialogue("\"Ever since the owner, Sprellic, got himself into trouble with the Library of Scars, there hath been no one else to run the place. Ohh, mine aching back!\"")
             remove_answer("workhorse")
             add_answer({"Library of Scars", "Sprellic"})
-        elseif cmps("princess") then
+        elseif answer == "princess" then
             add_dialogue("\"Hmmph! That would be Ophelia.\"")
             remove_answer("princess")
             add_answer("Ophelia")
-        elseif cmps("room") then
+        elseif answer == "room" then
             add_dialogue("\"Thou shalt have to ask Ophelia about that. My domain is the kitchen!\"")
             remove_answer("room")
-        elseif cmps("Ophelia") then
+        elseif answer == "Ophelia" then
             add_dialogue("\"Ophelia this! Ophelia that! That is all I ever hear all bloody day! If all thou dost want to talk about is her, talk to someone else!\"")
             if var_0003 then
                 switch_talk_to(122)
@@ -85,18 +92,18 @@ function npc_daphne_0123(eventid, objectref)
                 switch_talk_to(123)
             end
             remove_answer("Ophelia")
-        elseif cmps("Bunk and Stool") then
+        elseif answer == "Bunk and Stool" then
             add_dialogue("\"The Bunk and Stool is where the fighters and ruffians come to drink in Jhelom. 'Tis not an easy job keeping such a lot happy with all their drinking and duelling and gambling.\"")
             remove_answer("Bunk and Stool")
             add_answer("gambling")
-        elseif cmps("Sprellic") then
+        elseif answer == "Sprellic" then
             add_dialogue("\"The fool was caught stealing the honor flag from the wall of the Library of Scars! Now the three students who challenged him will kill him on the duelling field. 'Tis a tragedy.\"")
             set_flag(366, true)
             remove_answer("Sprellic")
-        elseif cmps("Library of Scars") then
+        elseif answer == "Library of Scars" then
             add_dialogue("\"That is the fighting club in Jhelom which produces perhaps the toughest fighters in all Britannia. Sprellic has never fought before in his entire life.\"")
             remove_answer("Library of Scars")
-        elseif cmps("gambling") then
+        elseif answer == "gambling" then
             if var_0004 then
                 add_dialogue("\"I am sorry. All bets are off since the matter has been resolved.\"")
             else
@@ -134,7 +141,7 @@ function npc_daphne_0123(eventid, objectref)
                 end
             end
             remove_answer("gambling")
-        elseif cmps("winnings") then
+        elseif answer == "winnings" then
             var_0011 = count_objects(1, 359, 921, 357)
             var_0012 = var_0011 * 20
             var_0013 = add_party_items(true, 359, 359, 644, var_0012)
@@ -146,7 +153,7 @@ function npc_daphne_0123(eventid, objectref)
                 add_dialogue("\"Thou cannot possibly carry all that gold. Thou must come back when I can give thee the proper amount of gold!\"")
             end
             remove_answer("winnings")
-        elseif cmps("bye") then
+        elseif answer == "bye" then
             break
         end
     end

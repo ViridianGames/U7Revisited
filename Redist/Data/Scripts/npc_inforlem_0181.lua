@@ -45,14 +45,14 @@ function npc_inforlem_0181(eventid, objectref)
             elseif answer == "warrior" then
                 add_dialogue("\"To charge 50 gold for each training session. To be all right?\"")
                 if ask_yes_no() then
-                    utility_unknown_0923(50, 4, 1, 0)
+                    utility_gargoyle_combat_training_0923(50, 4, 1, 0)
                 else
                     add_dialogue("\"To apologize, but I must charge that amount!\"")
                 end
             elseif answer == "mage" then
                 add_dialogue("\"To charge 50 gold for each training session. To be acceptable?\"")
                 if ask_yes_no() then
-                    utility_unknown_0922(50, 2, 6)
+                    utility_gargoyle_magic_training_0922(50, 2, 6)
                 else
                     add_dialogue("\"To apologize, but I must charge that amount!\"")
                 end
@@ -80,7 +80,7 @@ function npc_inforlem_0181(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        utility_unknown_1071(181)
+        utility_gargoyle_random_bark_1071(181)
     end
     return
 end

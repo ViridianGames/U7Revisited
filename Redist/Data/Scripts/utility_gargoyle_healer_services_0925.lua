@@ -2,7 +2,7 @@
 ---@param resurrect_cost integer The gold cost for resurrection service
 ---@param cure_poison_cost integer The gold cost for cure poison service
 ---@param heal_cost integer The gold cost for healing service
-function utility_unknown_0925(resurrect_cost, cure_poison_cost, heal_cost)
+function utility_gargoyle_healer_services_0925(resurrect_cost, cure_poison_cost, heal_cost)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E, var_000F, var_0010, var_0011, var_0012
 
     add_dialogue("\"To be able to heal, cure poison, and resurrect. To be interested in one of these services?\"")
@@ -11,12 +11,12 @@ function utility_unknown_0925(resurrect_cost, cure_poison_cost, heal_cost)
     if var_0003 then
         add_dialogue("\"To need which of my services?\"")
         var_0004 = {"resurrect", "cure poison", "heal"}
-        var_0005 = var_0004[utility_unknown_1035(var_0004)]
+        var_0005 = var_0004[utility_select_option_string_1035(var_0004)]
         if var_0005 == "heal" or var_0005 == "cure poison" then
             var_0006 = var_0005 == "heal" and "healed" or "cured of poison"
             var_0007 = var_0005 == "heal" and heal_cost or cure_poison_cost
             add_dialogue("\"To want to " .. var_0006 .. " whom?\"")
-            var_0008 = utility_unknown_1038()
+            var_0008 = utility_select_party_member_1038()
             if var_0008 == 0 then
                 add_dialogue("\"To have no need for my healing.\"")
                 restore_answers()
@@ -42,11 +42,11 @@ function utility_unknown_0925(resurrect_cost, cure_poison_cost, heal_cost)
             var_000C = count_objects(-359, -359, 644, -357)
             if var_000C >= var_0007 then
                 if var_0005 == "heal" then
-                    var_000D = utility_unknown_1040(0, var_0008)
-                    var_000E = utility_unknown_1040(3, var_0008)
+                    var_000D = utility_get_training_level_1040(0, var_0008)
+                    var_000E = utility_get_training_level_1040(3, var_0008)
                     if var_000D > var_000E then
                         var_000F = var_000D - var_000E
-                        utility_unknown_1042(var_000F, 3, var_0008)
+                        utility_set_training_level_1042(var_000F, 3, var_0008)
                         var_0010 = remove_party_items(true, -359, -359, 644, var_0007)
                         add_dialogue("\"To have healed the wounds.\"")
                     elseif var_0008 == -356 then

@@ -1,5 +1,5 @@
 --- Best guess: Manages Margareta's fortune-telling dialogue, providing quest-related prophecies for 20 gold, with gender-specific dialogue and flag progression.
-function utility_unknown_0954()
+function npc_margareta_fortune_0954()
     start_conversation()
     local var_0000, var_0001, var_0002
 
@@ -45,7 +45,7 @@ function utility_unknown_0954()
     add_dialogue("Margareta looks up at you and says, \"Thou dost face many dangers ahead. Take care.\"")
     add_dialogue("With those words, Margareta slumps and closes her eyes to rest. She is obviously exhausted.")
     if not get_flag(256) then
-        utility_unknown_1041(50)
+        utility_set_party_quest_prop8_1041(50)
     end
     set_flag(256, true)
     return

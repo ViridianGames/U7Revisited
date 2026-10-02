@@ -1,5 +1,5 @@
 --- Best guess: Adds items to a container with different parameters, likely for inventory or event effects.
-function utility_event_0819(eventid, objectref, arg1)
+function utility_add_container_items_0819(eventid, objectref, arg1)
     local var_0000, var_0001, var_0002
 
     var_0000 = eventid

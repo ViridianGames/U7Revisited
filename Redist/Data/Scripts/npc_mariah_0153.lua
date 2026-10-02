@@ -123,7 +123,7 @@ function npc_mariah_0153(eventid, objectref)
                 end
                 bark(153, var_0005)
             else
-                utility_unknown_1070(153) --- Guess: Triggers game event
+                utility_npc_random_bark_1070(153) --- Guess: Triggers game event
             end
         end
     end

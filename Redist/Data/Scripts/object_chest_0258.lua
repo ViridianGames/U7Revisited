@@ -5,9 +5,9 @@ function object_chest_0258(eventid, objectref)
     if eventid == 1 then
         if not in_usecode(objectref) then
             halt_scheduled(objectref)
-            utility_unknown_1022("@It is about time!@")
+            utility_apply_value_action_1022("@It is about time!@")
         else
-            utility_unknown_0296(objectref)
+            mech_beer_barrel_0296(objectref)
         end
     elseif eventid == 8 then
         var_0000 = get_object_position(objectref)

@@ -4,7 +4,7 @@ function utility_clock_0450(eventid, objectref)
 
     if eventid == 3 then
         if not get_flag(87) then
-            utility_event_0783()
+            utility_clear_nearby_items_0783()
             var_0000 = find_nearby(176, 60, 912, objectref)
             for i = 1, #var_0000 do
                 var_0003 = var_0000[i]

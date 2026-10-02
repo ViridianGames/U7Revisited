@@ -6,10 +6,10 @@ function object_prism_0968(eventid, objectref)
         var_0000 = get_object_frame(objectref)
         if var_0000 == 0 then
             -- call [0000] (0805H, unmapped)
-            utility_event_0773(objectref)
+            utility_spawn_destroy_fx_items_0773(objectref)
         elseif var_0000 == 1 then
             -- call [0001] (0807H, unmapped)
-            utility_event_0775(objectref)
+            utility_spawn_fx_item_981_0775(objectref)
         elseif var_0000 == 2 then
             -- call [0002] (0803H, unmapped)
             utility_event_0771(objectref)

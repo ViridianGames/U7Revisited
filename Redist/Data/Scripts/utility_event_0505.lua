@@ -27,7 +27,7 @@ function utility_event_0505(eventid, objectref)
                             var_0003 = var_0007
                         end
                     end
-                    object_unknown_0854(4, var_0003)
+                    object_shrines_truth_love_courage_0854(4, var_0003)
                 end
             end
         end
@@ -67,7 +67,7 @@ function utility_event_0505(eventid, objectref)
             var_0000 = {1591, 2312}
             var_0001 = 0
         elseif var_0008 == 7 then
-            if not utility_unknown_1000(8) then
+            if not utility_find_party_ankh_1000(8) then
                 var_0000 = {1483, 2191}
                 var_0001 = 0
                 set_flag(793, true)
@@ -84,7 +84,7 @@ function utility_event_0505(eventid, objectref)
                 end
             end
         elseif var_0008 == 8 then
-            if not utility_unknown_1000(9) then
+            if not utility_find_party_ankh_1000(9) then
                 var_0000 = {1487, 2195}
                 var_0001 = 2
                 set_flag(834, true)
@@ -103,7 +103,7 @@ function utility_event_0505(eventid, objectref)
         elseif var_0008 == 9 then
             var_0012 = find_nearest(0, 955, objectref)
             if var_0012 and get_object_frame(var_0012) == 11 then
-                if not utility_unknown_1000(11) then
+                if not utility_find_party_ankh_1000(11) then
                     remove_item(var_0012)
                     var_0014 = get_object_position(objectref)
                     sprite_effect(-1, 0, 0, 0, var_0014[2] - 2, var_0014[1] - 2, 7)
@@ -163,7 +163,7 @@ function utility_event_0505(eventid, objectref)
             var_0012 = find_nearest(0, 955, objectref)
             if var_0012 and get_object_frame(var_0012) == 11 then
                 set_flag(832, true)
-                if not utility_unknown_1000(11) then
+                if not utility_find_party_ankh_1000(11) then
                     remove_item(var_0012)
                     var_0014 = get_object_position(objectref)
                     sprite_effect(-1, 0, 0, 0, var_0014[2] - 2, var_0014[1] - 2, 7)
@@ -236,22 +236,22 @@ function utility_event_0505(eventid, objectref)
             fade_palette(0, 1, 12)
             move_object(var_0000, 357)
             if get_flag(793) and not get_flag(792) then
-                if not utility_unknown_1000(8) then
-                    var_000C = utility_unknown_1000(8)
+                if not utility_find_party_ankh_1000(8) then
+                    var_000C = utility_find_party_ankh_1000(8)
                     set_flag(791, true)
                     var_002F = execute_usecode_array(var_000C, {1785, 8021, 2, 7719})
                     var_0030 = execute_usecode_array(356, {2, 8487, var_0001, 7769})
                 end
             elseif get_flag(808) and not get_flag(807) then
-                if not utility_unknown_1000(10) then
-                    var_000C = utility_unknown_1000(10)
+                if not utility_find_party_ankh_1000(10) then
+                    var_000C = utility_find_party_ankh_1000(10)
                     set_flag(791, true)
                     var_002F = execute_usecode_array(var_000C, {1785, 8021, 2, 7719})
                     var_0030 = execute_usecode_array(356, {2, 8487, var_0001, 7769})
                 end
             elseif get_flag(834) and not get_flag(833) then
-                if not utility_unknown_1000(9) then
-                    var_000C = utility_unknown_1000(9)
+                if not utility_find_party_ankh_1000(9) then
+                    var_000C = utility_find_party_ankh_1000(9)
                     set_flag(791, true)
                     var_002F = execute_usecode_array(var_000C, {1785, 8021, 2, 7719})
                     var_0030 = execute_usecode_array(356, {2, 8487, var_0001, 7769})

@@ -24,7 +24,7 @@ function utility_event_0508(eventid, objectref)
         set_item_flag(18, var_0004)
         var_0005 = set_object_quality(150, var_0004)
         var_0005 = update_last_created(var_0002)
-        var_0006 = utility_unknown_1069(var_0004)
+        var_0006 = utility_direction_to_target_1069(var_0004)
         var_0007 = execute_usecode_array(get_npc_name(356), {7769, var_0006})
         if var_0002[1] ~= var_0003[1] then
             if var_0002[1] < var_0003[1] then

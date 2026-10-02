@@ -38,14 +38,14 @@ function npc_lady_tory_0200(eventid, objectref)
                     add_dialogue("\"Hast thou found my child?\"")
                     var_0003 = ask_yes_no()
                     if var_0003 then
-                        var_0004 = utility_unknown_1073(2, 359, 730, 1, 357)
+                        var_0004 = utility_party_has_items_1073(2, 359, 730, 1, 357)
                         if var_0004 then
-                            utility_unknown_1041(100)
+                            utility_set_party_quest_prop8_1041(100)
                             add_dialogue("\"I cannot begin to express my gratitude, \" .. var_0001 .. \". Thank thee ever so much!\"")
                             add_dialogue("She begins sobbing for joy. \"Pl-please set him back gently in the cradle.\"")
                             set_flag(632, true)
                         else
-                            var_0005 = utility_unknown_1073(359, 359, 730, 1, 357)
+                            var_0005 = utility_party_has_items_1073(359, 359, 730, 1, 357)
                             if var_0005 then
                                 add_dialogue("\"Why, that's not my little Riky, \" .. var_0001 .. \". Thou hast someone else's child. Oh, where could my boy have been taken?\" she says, crying.")
                             else
@@ -126,13 +126,13 @@ function npc_lady_tory_0200(eventid, objectref)
             elseif answer == "Sir Jordan" then
                 add_dialogue("\"He is a wonder. Despite his blindness, he fights with amazing deftness. In fact, he also enjoys toying with mechanical items, and his loss of eyesight does not seem to affect that, either.\"")
                 add_dialogue("\"However, I sense in him a very recent change, remarkably like that in Sir Richter. He would be an interesting one to speak with. Thou mayest find him at Iolo's South.\"")
-                var_0008 = npc_id_in_party(-1)
+                var_0008 = npc_id_in_party(1)
                 if var_0008 then
-                    switch_talk_to(-1)
+                    switch_talk_to(1)
                     add_dialogue("Iolo smiles proudly.")
                     add_dialogue("\"My shop has, er, grown a bit since thou wert here last, \" .. var_0000 .. \".\"")
                     hide_npc(1)
-                    switch_talk_to(-200)
+                    switch_talk_to(200)
                 end
                 remove_answer("Sir Jordan")
             elseif answer == "bye" then
@@ -141,7 +141,7 @@ function npc_lady_tory_0200(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        utility_unknown_1070(200)
+        utility_npc_random_bark_1070(200)
     end
     return
 end

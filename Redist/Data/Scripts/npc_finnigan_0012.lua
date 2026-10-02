@@ -18,7 +18,7 @@ function npc_finnigan_0012(eventid, objectref)
                 end
                 bark(12, var_000E)
             else
-                utility_unknown_1070(12)
+                utility_npc_random_bark_1070(12)
             end
         end
         add_dialogue("The Mayor nods his head at you and goes on about his business.")
@@ -62,7 +62,7 @@ function npc_finnigan_0012(eventid, objectref)
         if(ask_yes_no("\"Hmmm. Hast thou reconsidered mine offer to investigate the murder?\"")) then
             add_dialogue("\"Splendid. Then thou must really be the Avatar after all!\"")
             set_flag(89, false)
-            utility_unknown_0899()
+            quest_murder_investigation_0899()
         else
             add_dialogue("\"Then leave our people to work it out for themselves.\"")
             if(npc_id_in_party(1)) then
@@ -260,11 +260,11 @@ function npc_finnigan_0012(eventid, objectref)
             if get_flag(68) and not get_flag(61) then
                 add_dialogue("\"Oh, dost thou want the password now?\"")
                 if ask_yes_no() then
-                    if utility_unknown_0902() then
+                    if quest_geography_identity_quiz_0902() then
                         add_dialogue("\"Excellent! I have no doubts now that thou art the one true Avatar!\"")
                         add_dialogue("\"Oh-- I almost forgot! The password to leave or enter the town is 'Blackbird'!\"")
                         set_flag(61, true)
-                        utility_unknown_1041(100)
+                        utility_set_party_quest_prop8_1041(100)
                         return
                     else
                         add_dialogue("\"Hmmm. I am afraid that I still have my doubts about thou being the Avatar. My public duty disallows me to give thee the password. I am sorry.\"")

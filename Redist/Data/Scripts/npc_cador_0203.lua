@@ -33,7 +33,7 @@ function npc_cador_0203(eventid, objectref)
                 add_dialogue("The man shakes your hand. \"I am Cador.\"")
                 if var_0006 == 26 then
                     add_dialogue("\"And thy name is?\"")
-                    var_0008 = utility_unknown_1035({var_0000, var_0002, var_0001})
+                    var_0008 = utility_select_option_string_1035({var_0000, var_0002, var_0001})
                     if var_0008 == var_0002 then
                         add_dialogue("\"What? Dost thou mean to tell me that thou art the one who brought those gargoyles to our precious land?\" He turns quite angry.")
                         add_dialogue("\"Daemon lover!\"")

@@ -164,7 +164,7 @@ function npc_garritt_0171(eventid, objectref)
             end
             bark(NPC_GARRITT, var_0008)
         else
-            utility_unknown_1070(NPC_GARRITT)
+            utility_npc_random_bark_1070(NPC_GARRITT)
         end
     end
 end

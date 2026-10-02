@@ -16,7 +16,7 @@ function utility_shopweapons_0979()
     var_0009 = 359
     add_dialogue("\"What weapon wouldst thou like to buy?\"")
     while var_0001 do
-        var_0010 = utility_unknown_1036(var_0002)
+        var_0010 = utility_select_option_index_1036(var_0002)
         if var_0010 == 1 then
             add_dialogue("\"I completely understand, " .. var_0000 .. ". Ever since the Britannian Tax Council set such outrageous taxes, prices have risen throughout the land.\"")
             var_0001 = false

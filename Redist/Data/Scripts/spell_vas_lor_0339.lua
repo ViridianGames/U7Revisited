@@ -1,5 +1,5 @@
 --- Best guess: Implements the great light spell (Vas Lor), illuminating a large area with weather-like effects.
-function utility_spell_0339(eventid, objectref)
+function spell_vas_lor_0339(eventid, objectref)
     local var_0000
 
     if eventid == 1 then

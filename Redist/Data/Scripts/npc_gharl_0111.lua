@@ -19,27 +19,34 @@ function npc_gharl_0111(eventid, objectref)
         add_dialogue("\"What you want?\" growls Gharl.")
     end
     while true do
-        if cmps("name") then
+        local answer = get_answer()
+        if type(answer) ~= "string" then
+            answer = get_answer()
+        end
+        if type(answer) ~= "string" then
+            break
+        end
+        if answer == "name" then
             add_dialogue("\"I Gharl.\"")
             remove_answer("name")
-        elseif cmps("job") then
+        elseif answer == "job" then
             add_dialogue("He shakes his head. \"No job. Hunt. Eat. Sleep. Now,\" he gestures around the cell, \"no hunt, no eat, just sleep.\"")
             add_answer({"sleep", "eat", "hunt"})
-        elseif cmps("hunt") then
+        elseif answer == "hunt" then
             add_dialogue("\"I good hunter. Catch many things.\"")
             remove_answer("hunt")
-        elseif cmps("sleep") then
+        elseif answer == "sleep" then
             add_dialogue("\"I still do that,\" he says, shrugging. \"But not as good as when home.\"")
             remove_answer("sleep")
             add_answer("home")
-        elseif cmps("home") then
+        elseif answer == "home" then
             add_dialogue("He stares at you oddly and says, \"With other trolls, fleshface! Under bridges.\"")
             remove_answer("home")
-        elseif cmps("eat") then
+        elseif answer == "eat" then
             add_dialogue("\"No eat.\" He shakes his head. \"Not feed. Hate jailer!\" he growls.")
             remove_answer("eat")
             add_answer("offer food")
-        elseif cmps("offer food") then
+        elseif answer == "offer food" then
             add_dialogue("\"You give me food?\" His face displays a mixture of surprise and hope. \"You give me food, I tell you secret. Yes?\"")
             var_0002 = ask_yes_no()
             if var_0002 then
@@ -56,10 +63,10 @@ function npc_gharl_0111(eventid, objectref)
                 return
             end
             remove_answer("offer food")
-        elseif cmps("secret") then
+        elseif answer == "secret" then
             add_dialogue("\"Trolls have powerful ally. He warn us in head when trouble around corner.\"")
             remove_answer("secret")
-        elseif cmps("bye") then
+        elseif answer == "bye" then
             break
         end
     end

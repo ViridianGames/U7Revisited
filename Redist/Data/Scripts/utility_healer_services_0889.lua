@@ -1,5 +1,5 @@
 --- Best guess: Offers healing, poison curing, or resurrection services, with cost checks and party member selection.
-function utility_unknown_0889(eventid, objectref, arg1, arg2)
+function utility_healer_services_0889(eventid, objectref, arg1, arg2)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C
 
     start_conversation()

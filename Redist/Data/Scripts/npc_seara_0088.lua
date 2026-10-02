@@ -86,6 +86,6 @@ function npc_seara_0088(eventid, objectref)
         end
         add_dialogue("\"A pleasant day to thee, " .. var_0000 .. ". Do come see us again.\"")
     elseif eventid == 0 then
-        utility_unknown_1070(88) --- Guess: Triggers a game event
+        utility_npc_random_bark_1070(88) --- Guess: Triggers a game event
     end
 end

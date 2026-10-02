@@ -1,5 +1,5 @@
 --- Best guess: Manages the "In Nox" spell, curing poison (ID 424) on a selected target, with a fallback effect if the spell fails.
-function utility_spell_0350(eventid, objectref)
+function spell_poison_in_nox_0350(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003
 
     if eventid ~= 1 and eventid ~= 4 then
@@ -7,10 +7,10 @@ function utility_spell_0350(eventid, objectref)
     end
 
     var_0000 = object_select_modal()
-    var_0001 = utility_unknown_1069(var_0000)
+    var_0001 = utility_direction_to_target_1069(var_0000)
     halt_scheduled(objectref)
     bark(objectref, "@In Nox@")
-    if utility_unknown_1030() and var_0000[1] ~= 0 then
+    if utility_condition_0044_1030() and var_0000[1] ~= 0 then
         var_0002 = set_to_attack(424, var_0000, objectref)
         var_0003 = execute_usecode_array(objectref, {17505, 17530, 17511, 17511, 8037, 110, 8536, var_0001, 7769})
     else

@@ -1,7 +1,7 @@
 --- Party greeting for Tseramed: forgive past deception if needed, then offer help.
 ---@param party_size integer The number of party members
 ---@param player_name string The player's name or title
-function utility_unknown_1012(party_size, player_name)
+function npc_shamino_forgiveness_1012(party_size, player_name)
     local whom = "thee"
     if party_size > 2 then
         whom = "the party"

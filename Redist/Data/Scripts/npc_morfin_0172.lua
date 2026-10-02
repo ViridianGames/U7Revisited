@@ -267,6 +267,6 @@ function npc_morfin_0172(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        utility_unknown_1070(NPC_MORFIN)
+        utility_npc_random_bark_1070(NPC_MORFIN)
     end
 end

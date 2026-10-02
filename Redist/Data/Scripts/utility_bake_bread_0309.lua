@@ -1,4 +1,4 @@
---- Oven / bake-bread timer (was utility_unknown_0309).
+--- Oven / bake-bread timer (was mech_oven_bake_bread_0309).
 ---
 --- event 3: find dough (658) on/near this object and start a short bake timer.
 --- event 2: if still next to a baking hearth (831), turn dough into bread (377).
@@ -162,4 +162,4 @@ function utility_bake_bread_0309(eventid, objectref)
     end
 end
 
-utility_unknown_0309 = utility_bake_bread_0309
+mech_oven_bake_bread_0309 = utility_bake_bread_0309

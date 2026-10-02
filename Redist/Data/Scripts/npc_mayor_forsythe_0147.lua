@@ -12,9 +12,7 @@ function npc_mayor_forsythe_0147(eventid, objectref)
             add_dialogue("You see a ghostly man cowering in the corner. Holding up an ankh in a protective fashion, he looks around the room frantically, but takes no notice of you.")
             abort()
         end
-        var_0003 = get_party_members()
-        var_0004 = get_npc_name(147) --- Guess: Gets object ref
-        if is_int_in_array(var_0004, var_0003) then
+        if npc_id_in_party(147) then
             add_answer("leave")
             var_0005 = find_nearby(0, 30, 748, 356) --- Guess: Checks well interaction
             if var_0005 then
@@ -24,7 +22,7 @@ function npc_mayor_forsythe_0147(eventid, objectref)
                 add_dialogue("\"Well then, this is it.\" He moves toward the well. \"I suppose I didn't make a very good Mayor in life.\" Forsythe's jowls droop.")
                 add_dialogue("\"Well, at least in death, I'll make a name for myself and do the job right.\" With that, he's gone.")
                 add_dialogue("The souls of the well rush out of their confinement, leaving the blackened remains of the powerful artifact.")
-                utility_event_0907() --- Guess: Frees souls from well
+                mech_sacrifice_well_0907() --- Guess: Frees souls from well
             else
                 add_dialogue("\"Thou must merely lead me to the well, and I shall do my duty.\" He seems quite resigned to his fate.")
             end
@@ -163,14 +161,14 @@ function npc_mayor_forsythe_0147(eventid, objectref)
                         add_dialogue("\"Oh, goodness no. I do not think I'm the one thou wantest for that job. No, I should think not. Maybe thou shouldst ask all of the townsfolk first. If none of them will do it, I might just think about it. Yes, that's right, thou shouldst just ask the others, then come back here to tell me who the poor soul is.\" He smiles at his own cleverness.")
                         set_flag(415, true)
                     else
-                        utility_unknown_0906() --- Guess: Progresses quest
+                        npc_forsythe_sacrifice_0906() --- Guess: Progresses quest
                     end
                 else
                     if not get_flag(418) then
                         add_dialogue("The Mayor's eyes dart back and forth as you ask him to sacrifice himself for the good of his people. \"There is still one thou hast neglected to ask. Go and find " .. var_0007 .. ". Then come back and we'll see.\" Spectral sweat drips from his ghostly forehead.")
                         add_answer(var_0008)
                     else
-                        utility_unknown_0906() --- Guess: Progresses quest
+                        npc_forsythe_sacrifice_0906() --- Guess: Progresses quest
                     end
                 end
                 remove_answer("sacrifice")
@@ -183,7 +181,7 @@ function npc_mayor_forsythe_0147(eventid, objectref)
             elseif var_0009 == "leave" then
                 add_dialogue("\"As thou wishest!\"")
                 remove_from_party(147) --- Guess: Sets object state
-                set_schedule_type(11, 147) --- Guess: Sets object behavior
+                set_schedule_type(147, 11) --- Guess: Sets object behavior
             elseif var_0009 == "Trent" then
                 add_dialogue("\"Trent is in the smithy, not far from here, across the road.\"")
                 remove_answer(var_0008)

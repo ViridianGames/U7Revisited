@@ -26,7 +26,7 @@ function npc_eldroth_0206(eventid, objectref)
                 remove_answer("buy")
                 if var_0001 == 7 then
                     add_dialogue("\"Thou wishest to make a purchase. Excellent. But remember, a gold piece saved is a gold piece not spent.\"")
-                    utility_unknown_0890()
+                    utility_merchant_transaction_0890()
                 else
                     add_dialogue("\"Perhaps thou couldst wait until my shop is open, \" .. var_0000 .. \".\"")
                 end

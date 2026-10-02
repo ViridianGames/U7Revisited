@@ -11,10 +11,10 @@ function object_diaper_0822(eventid, objectref)
                 get_object_frame(1, objectref)
             elseif var_0002 == 822 then
                 if get_object_frame(var_0001) == 2 then
-                    utility_unknown_1061(objectref)
+                    utility_item_quantity_adjust_1061(objectref)
                 end
             else
-                utility_unknown_1022("@Those are for babies.@")
+                utility_apply_value_action_1022("@Those are for babies.@")
             end
         elseif var_0000 == 1 then
             var_0001 = object_select_modal()
@@ -22,14 +22,14 @@ function object_diaper_0822(eventid, objectref)
                 set_schedule_type(0, var_0001)
                 set_attack_mode(7, var_0001)
                 set_oppressor(-356, var_0001)
-                utility_unknown_1061(objectref)
+                utility_item_quantity_adjust_1061(objectref)
             elseif get_object_shape(var_0001) == 822 then
                 if get_object_frame(var_0001) == 2 then
-                    utility_unknown_1061(objectref)
+                    utility_item_quantity_adjust_1061(objectref)
                 end
             end
         elseif var_0000 == 2 then
-            utility_unknown_1022("@That is for dirty diapers.@")
+            utility_apply_value_action_1022("@That is for dirty diapers.@")
         end
     end
 end

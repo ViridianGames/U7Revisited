@@ -1,5 +1,5 @@
 --- Best guess: Initializes Avatar appearance via moongate, adding items to inventory and setting quest flags.
-function utility_unknown_0280(eventid, objectref)
+function utility_moongate_avatar_init_0280(eventid, objectref)
     local var_0000
 
     if not get_item_flag(16, 356) then --- Guess: Checks NPC status

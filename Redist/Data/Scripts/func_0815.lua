@@ -28,7 +28,7 @@ end
 
 -- Compat aliases used by decompiled scripts
 utility_unknown_0815 = func_0815
-utility_unknown_081B = utility_unknown_0795 -- frame % 4
+utility_unknown_081B = utility_frame_mod4_0795 -- frame % 4
 function utility_unknown_081C(door, new_state)
     local fr = get_object_frame(door) or 0
     local state = fr % 4

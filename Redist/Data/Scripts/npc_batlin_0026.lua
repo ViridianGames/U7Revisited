@@ -4,7 +4,7 @@ function npc_batlin_0026(eventid, objectref)
 
     if eventid ~= 1 then
         if eventid == 0 then
-            utility_unknown_1070(26)
+            utility_npc_random_bark_1070(26)
         end
         add_dialogue("\"Until we meet again, Avatar.\"")
         return
@@ -12,7 +12,7 @@ function npc_batlin_0026(eventid, objectref)
 
     start_conversation()
     switch_talk_to(26)
-    var_0000 = utility_unknown_1073(1, 981, 1, 357, 359)
+    var_0000 = utility_party_has_items_1073(1, 981, 1, 357, 359)
     if var_0000 then
         add_dialogue("Batlin's eyes narrow to red slits as he peers practically through you.")
         add_dialogue("\"Thou hast the Cube! Thou cannot use it against -me-!\"")
@@ -29,7 +29,7 @@ function npc_batlin_0026(eventid, objectref)
     if not get_flag(56) then
         add_dialogue("\"Art thou ready to answer questions from the Book of Fellowship?\"")
         if ask_yes_no() then
-            utility_unknown_0850()
+            mech_britannian_lore_quiz_0850()
             if not get_flag(56) then
                 if var_0000 == 28 then
                     add_dialogue("\"Excellent, Avatar!\"")
@@ -41,7 +41,7 @@ function npc_batlin_0026(eventid, objectref)
                 var_0002 = add_party_items(false, 1, 359, 955, 1)
                 set_flag(145, true)
                 set_flag(6, true)
-                utility_unknown_1041(500)
+                utility_set_party_quest_prop8_1041(500)
                 if var_0002 then
                     add_dialogue("\"Allow me to present thee with thy Fellowship medallion.\" Batlin gives you the medallion. \"Please -- wear thy medallion at all times for it shall be a symbol to all who see it that thou dost walk with the Fellowship. Ready it to thy neck immediately! Oh, and... welcome to The Fellowship, Avatar.\"")
                     set_flag(144, true)
@@ -212,7 +212,7 @@ function npc_batlin_0026(eventid, objectref)
                     return
                 end
             else
-                utility_unknown_0849()
+                quest_package_to_elynor_0849()
             end
         elseif answer == "delivered package" then
             add_dialogue("\"Congratulations, Avatar, and our thanks to thee for successfully delivering our package to Elynor of Minoc. Now we have another task at hand before thou canst join The Fellowship. Because thou didst deliver the package thou hast proven thyself worthy of performing another mission.\"")
@@ -251,7 +251,7 @@ function npc_batlin_0026(eventid, objectref)
         elseif answer == "mission" then
             add_dialogue("\"Thou shalt visit the dungeon of Destard, which is in the mountains just west of Trinsic. Do not worry, it is completely deserted. There thou shalt find a chest of Fellowship funds which was hidden for safekeeping just a few days ago. Thou wilt know the chest because it will contain not only gold but two Fellowship medallions. The site is also most likely marked with a Fellowship staff. Bring these funds back to us without losing a single coin and thou wilt have successfully completed thy mission. No need to bring the chest, just the gold. Now, thou must be on thy way!\"")
             set_flag(142, true)
-            utility_unknown_1041(100)
+            utility_set_party_quest_prop8_1041(100)
             remove_answer("mission")
             return
         elseif answer == "chest" then
@@ -289,7 +289,7 @@ function npc_batlin_0026(eventid, objectref)
         elseif answer == "voice" then
             if get_flag(150) then
                 add_dialogue("\"Once a person has walked with The Fellowship long enough and applied the Triad of Inner Strength to his life, he has cleared his mind of all conflicting, counterproductive thoughts to the point where he may actually hear his internal voice of reason. This voice of reason is the core of thine inner mind which guides thee through pure instinct, wisdom and irreproachable logic. Once one starts to listen to it and follow its guidance, one has achieved the height of enlightenment. Perhaps thou shalt hear it one day.\"")
-                utility_unknown_1041(20)
+                utility_set_party_quest_prop8_1041(20)
             else
                 add_dialogue("\"Only active or potential Fellowship members are privy to the concept of 'the voice'. I can tell thee more when thou dost take the Fellowship test.\"")
                 add_answer("test")

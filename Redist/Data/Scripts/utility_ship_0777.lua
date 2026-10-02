@@ -14,12 +14,12 @@ function utility_ship_0777(eventid, objectref)
             if not var_0002 then
                 var_0003 = check_object_ownership(359, 797, 796, 10) --- Guess: Checks item ownership
                 if not var_0003 then
-                    if utility_unknown_0781() then --- External call to check sitting
+                    if utility_check_party_seated_0781() then --- External call to check sitting
                         set_object_flag(var_0000, 10) --- Guess: Sets item flag
                         set_object_flag(var_0001, 26) --- Guess: Sets item flag
                         cast_multiple_spells({"@Giddy-up!@"}, 356) --- Guess: Casts multiple spells
                     else
-                        var_0004 = utility_unknown_0947(var_0000) --- External call to sit down
+                        var_0004 = utility_party_member_interactions_0947(var_0000) --- External call to sit down
                     end
                 else
                     if #get_party_members() == 1 then

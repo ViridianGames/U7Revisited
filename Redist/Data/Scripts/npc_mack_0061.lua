@@ -4,7 +4,7 @@ function npc_mack_0061(eventid, objectref)
 
     if eventid ~= 1 then
         if eventid == 0 then
-            utility_unknown_1070(61)
+            utility_npc_random_bark_1070(61)
         end
         add_dialogue("\"I thank thee for thy decency and consideration.\"")
         return
@@ -130,7 +130,7 @@ function npc_mack_0061(eventid, objectref)
             end
             remove_answer("work")
         elseif answer == "picked eggs" then
-            utility_unknown_0952()
+            utility_eggs_for_gold_0952()
             remove_answer("picked eggs")
         elseif answer == "bye" then
             break

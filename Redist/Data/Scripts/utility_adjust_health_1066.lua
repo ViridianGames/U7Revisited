@@ -1,7 +1,7 @@
 --- Best guess: Adjusts a character's health (NPC property 3) by adding or subtracting damage, ensuring it stays within bounds.
 ---@param amount integer The amount to adjust health by (positive for healing, negative for damage)
 ---@param npc_id integer The NPC ID to adjust health for
-function utility_unknown_1066(amount, npc_id)
+function utility_adjust_health_1066(amount, npc_id)
     local var_0000, var_0001, var_0002
 
     if not is_npc(npc_id) then

@@ -11,7 +11,7 @@ function utility_spellteleport_0382(eventid, objectref)
 
     halt_scheduled(objectref)
     bark(objectref, "@In Vas Por@")
-    if not utility_unknown_1030() then
+    if not utility_condition_0044_1030() then
         var_0000 = execute_usecode_array(objectref, {1662, 17493, 17514, 17519, 8048, 64, 17496, 7791})
         var_0001 = get_object_position(objectref)
         sprite_effect(-1, 0, 0, 0, var_0001[2] - 2, var_0001[1] - 2, 7)

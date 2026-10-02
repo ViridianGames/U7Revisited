@@ -82,7 +82,7 @@ function npc_kallibrus_0252(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        utility_unknown_0933()
+        utility_random_poetic_dialogue_0933()
     end
     return
 end

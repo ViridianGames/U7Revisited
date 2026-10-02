@@ -19,7 +19,7 @@ function npc_millie_0063(eventid, objectref)
                 end
                 bark(63, var_0007)
             else
-                utility_unknown_1070(63)
+                utility_npc_random_bark_1070(63)
             end
         end
         add_dialogue("\"I shall see thee later! Maybe even at tonight's Fellowship meeting!\"")
@@ -32,7 +32,7 @@ function npc_millie_0063(eventid, objectref)
     var_0001 = is_player_wearing_fellowship_medallion()
     var_0002 = get_schedule(63)
     if var_0002 == 7 then
-        var_0003 = utility_unknown_1020(26, 63)
+        var_0003 = utility_distance_under_20_1020(26, 63)
         if var_0003 then
             add_dialogue("Millie ignores your attempts to get her attention and goes back to intently watching the Fellowship ceremony.")
             return

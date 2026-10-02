@@ -1,5 +1,5 @@
 --- Best guess: Hides an NPC (290) and adds items to a container, likely for an event or cleanup.
-function utility_event_0835(eventid, objectref)
+function utility_hide_npc290_add_items_0835(eventid, objectref)
     local var_0000
 
     hide_npc(290) --- Guess: Hides NPC

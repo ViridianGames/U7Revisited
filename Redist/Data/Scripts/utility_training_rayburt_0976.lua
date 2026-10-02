@@ -1,10 +1,10 @@
 --- Best guess: Manages a training session with Rayburt, teaching meditation and combat techniques, potentially increasing dexterity, intelligence, and combat ability, with gold and experience checks.
-function utility_unknown_0976(var_0000, var_0001)
+function utility_training_rayburt_0976(var_0000, var_0001)
     start_conversation()
     local var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_0010, var_0011, var_0012, var_0013
 
-    var_0002 = utility_unknown_1056()
-    var_0003 = utility_unknown_1039(var_0002)
+    var_0002 = utility_select_party_member_for_training_1056()
+    var_0003 = utility_get_character_name_1039(var_0002)
     var_0004 = "feels"
     var_0005 = get_player_name()
     if var_0003 == var_0005 then
@@ -20,7 +20,7 @@ function utility_unknown_0976(var_0000, var_0001)
         return
     end
     var_0007 = 3
-    var_0008 = utility_unknown_1058(var_0007, var_0002, var_0000, var_0001)
+    var_0008 = utility_check_training_okay_1058(var_0007, var_0002, var_0000, var_0001)
     if var_0008 == 0 then
         add_dialogue("\"I am sorry, but thou dost not have enough experience to train at this time. Return at a later date and I would be most happy to lead a session.\"")
         return
@@ -39,17 +39,17 @@ function utility_unknown_0976(var_0000, var_0001)
     add_dialogue("Rayburt first instructs " .. var_0003 .. " to lie on the floor and relax. He teaches " .. var_0006 .. " breathing exercises and techniques with which to cleanse the mind of all thoughts.")
     add_dialogue("After a while, he asks " .. var_0006 .. " to stand up and illustrates balance and control, relating it to meditation and concentration.")
     add_dialogue("Finally, he demonstrates several good moves involving hand-to-hand combat, and combat using a sword. By the end of the hour, " .. var_0003 .. " " .. var_0004 .. " much more knowledgeable and proficient in this unusual form of fighting.")
-    var_0011 = utility_unknown_1040(1, var_0002)
-    var_0012 = utility_unknown_1040(2, var_0002)
-    var_0013 = utility_unknown_1040(4, var_0002)
+    var_0011 = utility_get_training_level_1040(1, var_0002)
+    var_0012 = utility_get_training_level_1040(2, var_0002)
+    var_0013 = utility_get_training_level_1040(4, var_0002)
     if var_0011 < 30 then
-        utility_unknown_1045(1, var_0002)
+        utility_train_dexterity_1045(1, var_0002)
     end
     if var_0012 < 30 then
-        utility_unknown_1046(1, var_0002)
+        utility_init_training_2_7_1046(1, var_0002)
     end
     if var_0013 < 30 then
-        utility_unknown_1047(1, var_0002)
+        utility_train_combat_skill_1047(1, var_0002)
     end
     return
 end

@@ -59,7 +59,7 @@ function npc_aurvidlem_0219(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        utility_unknown_1071(219)
+        utility_gargoyle_random_bark_1071(219)
     end
     return
 end

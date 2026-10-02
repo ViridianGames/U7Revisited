@@ -1,5 +1,5 @@
 --- Best guess: Implements the lightning spell (Ort Grav), dealing damage to a target area with spell effects.
-function utility_spell_0353(eventid, objectref)
+function spell_lightning_ort_grav_0353(eventid, objectref)
     local var_0000, var_0001, var_0002
 
     if eventid == 1 or eventid == 4 then

@@ -8,6 +8,6 @@ function object_porcullis_0935(eventid, objectref)
         flash_mouse(0)
     end
     -- call [0000] (0832H, unmapped)
-    utility_event_0818(876, objectref)
+    utility_add_container_items_0818(876, objectref)
     return
 end

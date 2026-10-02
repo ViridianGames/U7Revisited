@@ -1,5 +1,5 @@
 --- Best guess: Implements the summon creature spell (Kal Xen), spawning a random creature from a predefined list.
-function utility_spell_0352(eventid, objectref)
+function spell_summon_creature_kal_xen_0352(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008
 
     if eventid == 1 then

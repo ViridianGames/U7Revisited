@@ -3,7 +3,7 @@ function object_flamingoil_0782(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     if eventid == 1 then
-        utility_unknown_1023("@Perhaps thou shouldst attack with it.@", objectref)
+        utility_apply_value_action_alt_1023("@Perhaps thou shouldst attack with it.@", objectref)
     elseif eventid == 4 then
         var_0000 = click_on_item()
         var_0001 = {var_0000[2], var_0000[3], var_0000[4]}
@@ -23,7 +23,7 @@ function object_flamingoil_0782(eventid, objectref)
         end
         var_0005 = find_nearby(0, 2, 782, var_0000)
         if not var_0005 then
-            utility_unknown_1061(var_0005)
+            utility_item_quantity_adjust_1061(var_0005)
         end
     end
     return

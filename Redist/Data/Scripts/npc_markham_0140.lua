@@ -61,7 +61,14 @@ function npc_markham_0140(eventid, objectref)
     end
     add_answer({"bye", "job", "name"})
     while true do
-        if cmps("name") then
+        local answer = get_answer()
+        if type(answer) ~= "string" then
+            answer = get_answer()
+        end
+        if type(answer) ~= "string" then
+            break
+        end
+        if answer == "name" then
             add_dialogue("The heavy-set zombie wipes his mouth off on the back of his hand. \"I be Markham. Markham o' the Keg.\" He pats the large keg of wine he carries.")
             var_0007 = npc_id_in_party(145)
             if var_0007 and get_flag(441) then
@@ -75,10 +82,10 @@ function npc_markham_0140(eventid, objectref)
                 add_dialogue("\"That's enough of that!\" Markham smacks the pretty young woman on her ghostly posterior.~~ \"Make yerself useful and fetch me a haunch o' venison.\" She turns away, giggling. He looks at you with a mirthful expression, \"I just don't know what I'm goin' ta do with that girl.\"")
             end
             remove_answer("name")
-        elseif cmps("job") then
+        elseif answer == "job" then
             add_dialogue("\"Why, I run this fine establishment, the Keg O' Spirits.\" For a moment he becomes serious. \"This place once drew folk from all across Britannia, gargoyle and human alike. Until the fire, that is.\"")
             add_answer({"fire", "Keg O' Spirits"})
-        elseif cmps("fire") then
+        elseif answer == "fire" then
             add_dialogue("He looks uncomfortable, \"Caine blew the town to the four winds, and now we're all trapped here, slaves of that bastard Horance.\" Tiny blue flames appear in the pupils of his glazed eyes, then go out as he regains his composure.")
             add_answer({"Horance", "Caine"})
             var_0008 = npc_id_in_party(146)
@@ -92,18 +99,18 @@ function npc_markham_0140(eventid, objectref)
             end
             add_dialogue("\"Oh, I suppose " .. var_0001 .. " he was tryin' ta help us when he called the proverbial fires o' Hell down on us. It just rankles me to have died in my prime.\" His roguish smile once again lightens his ghostly visage.")
             remove_answer("fire")
-        elseif cmps("Caine") then
+        elseif answer == "Caine" then
             add_dialogue("A look of disgust comes to his disfigured features. \"That tortured soul haunts the crater made by his foolish mistake. I wouldn't go near him though, he's a bit daft, ya know.\" He refills his mug from the cask at his side and swigs down most of the wine in one swallow.")
             add_answer("tortured soul")
             remove_answer("Caine")
-        elseif cmps("tortured soul") then
+        elseif answer == "tortured soul" then
             add_dialogue("\"That's just the name the rest of us in Skara Brae call him -- the Tortured One,\" he grins, embarrassed.")
             remove_answer("tortured soul")
             add_answer("Skara Brae")
-        elseif cmps("Skara Brae") then
+        elseif answer == "Skara Brae" then
             add_dialogue("\"That's the name o' the island yer on.\" He shakes his head.")
             remove_answer("Skara Brae")
-        elseif cmps("Horance") then
+        elseif answer == "Horance" then
             add_dialogue("\"For all the years I've been in Skara Brae, he's been a raving lunatic. What with all o' them silly rhymes and his crazy laughter.~~\"Then one night, we all hears thunder when there isn't a cloud in the starry sky, and I seem to recall a full moon...\" He gets a thoughtful look on his face. \"But as I was sayin', there was this thunder, then this deep, dark laughter coming from the tower on the northern point -- Horance's Dark Tower.\" After this he falls silent for a moment.")
             if not var_0002 then
                 switch_talk_to(146)
@@ -113,10 +120,10 @@ function npc_markham_0140(eventid, objectref)
             end
             add_dialogue("After a brief swig, he continues, \"Then, even worse... I'm out checkin' on the cows when I hears a sound like moanin'. It's off to the east, so I look that way, into the graveyard y'know, and what do I see?~~\"I'll tell ya what I seen. The graves, rippin' open like the people in 'em got a place to go.\" Eyes wide, he tips back another sip.")
             remove_answer("Horance")
-        elseif cmps("Keg O' Spirits") then
+        elseif answer == "Keg O' Spirits" then
             add_dialogue("He truly looks sad as he says, \"This place was once my pride and joy. The Keg was known all 'round Britannia, and a few other places, too. Well, now it don't look like too much, but in it's heyday, it saw the likes of nobles, knights, minstrels, and merchants. And o' course, a bit o' riff raff to be sure.\" He winks at you. His spirit seems indomitable.")
             remove_answer("Keg O' Spirits")
-        elseif cmps("sacrifice") then
+        elseif answer == "sacrifice" then
             if not get_flag(410) then
                 add_dialogue("You relate the need for a sacrifice to enter the Well of Souls. Afterwards, Markham seems to think long and hard.~~\"So, yer wantin' me to go mad as a March hare, an' jump right into this... Well O' Souls?\" He looks at you incredulously.~~\"Listen now. I haven't had courage like that since I were a young lad. Since then I got some sense, too. You'll have to look elsewhere fer yer sacrifice.\"")
                 set_flag(410, true)
@@ -125,7 +132,7 @@ function npc_markham_0140(eventid, objectref)
                 return
             end
             remove_answer("sacrifice")
-        elseif cmps("bye") then
+        elseif answer == "bye" then
             add_dialogue("\"Oh, are ya leavin' then? Well, ya take care now. And watch out for those walkin' dead. Some o' them aren't too happy about their state, and none too picky about who they complain to, neither.\"")
             return
         end

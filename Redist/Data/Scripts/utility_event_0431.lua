@@ -9,7 +9,7 @@ function utility_event_0431(eventid, objectref)
             var_0003 = var_0000[i]
             if not roll_to_win(get_npc_property(0, var_0003), get_object_quality(objectref)) then
                 var_0004 = get_npc_name(var_0003)
-                utility_unknown_0288(var_0004)
+                utility_set_item_flag15_0288(var_0004)
                 set_item_flag(1, var_0004)
                 var_0005 = delayed_execute_usecode_array(100, 1567, {17493, 7715}, var_0004)
             end

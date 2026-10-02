@@ -1,7 +1,7 @@
 --- Func0817 / 0x817: set door-bank flags and pulse matching winch/gear pieces.
 --- var0000 is a 1-based flag triple written to flags 740/741/742.
 
-function utility_unknown_0791(flag_triple)
+function door_flag_state_update_0791(flag_triple)
     if type(flag_triple) ~= "table" then
         return
     end

@@ -3,6 +3,6 @@ function object_winch_0949(eventid, objectref)
     -- calli 007E, 0 (unmapped)
     close_gumps()
     -- call [0000] (083EH, unmapped)
-    utility_event_0830(eventid, objectref)
+    mech_drawbridge_0830(eventid, objectref)
     return
 end

@@ -4,7 +4,7 @@ function utility_ship_0264(eventid, objectref)
 
     start_conversation()
     if eventid == 3 then
-        utility_unknown_1089(13) --- Guess: Triggers event
+        utility_npc_speech_check_1089(13) --- Guess: Triggers event
         var_0000 = is_player_female()
         switch_talk_to(26)
         add_dialogue("\"Avatar! Stop where thou art! Thou shalt not succeed in thy quest to destroy the Black Gate! Art thou mad??! The Guardian is much too powerful for thee! He shall crush thee like an insect! The fate of Britannia now belongs to him and to The Fellowship! The Guardian is the land's true ruler! Bow down to him, Avatar, and perhaps he shall give thee a place at his side. Bow down to him -now-!\"")
@@ -45,6 +45,6 @@ function utility_ship_0264(eventid, objectref)
             var_000B = var_0004[i]
             set_schedule_type(0, var_000B) --- Guess: Sets object behavior
         end
-        utility_unknown_1041(10000) --- Guess: Triggers quest event
+        utility_set_party_quest_prop8_1041(10000) --- Guess: Triggers quest event
     end
 end

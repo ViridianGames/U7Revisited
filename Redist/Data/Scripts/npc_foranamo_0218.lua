@@ -26,7 +26,7 @@ function npc_foranamo_0218(eventid, objectref)
                 if answer == "name" then
                     add_dialogue("\"To have no desire to tell you. To demand to know who you are!\"")
                     remove_answer("name")
-                    var_0007 = utility_unknown_1035({var_0003, var_0004, var_0002})
+                    var_0007 = utility_select_option_string_1035({var_0003, var_0004, var_0002})
                     if var_0007 == var_0004 then
                         var_0008 = 0
                         var_0009 = get_party_list2()

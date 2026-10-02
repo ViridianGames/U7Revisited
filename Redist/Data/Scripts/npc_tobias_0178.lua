@@ -140,6 +140,6 @@ function npc_tobias_0178(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        utility_unknown_1070(NPC_TOBIAS)
+        utility_npc_random_bark_1070(NPC_TOBIAS)
     end
 end

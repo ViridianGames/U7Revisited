@@ -101,8 +101,8 @@ function object_chest_0653(eventid, objectref)
     end
 
     if get_object_shape(target) ~= SPINWHEEL then
-        if utility_unknown_1023 then
-            utility_unknown_1023("@Why dost thou not spin that wool into thread?@")
+        if utility_apply_value_action_alt_1023 then
+            utility_apply_value_action_alt_1023("@Why dost thou not spin that wool into thread?@")
         else
             item_say("@Why dost thou not spin that wool into thread?@", objectref)
         end

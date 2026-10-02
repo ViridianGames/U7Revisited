@@ -120,6 +120,6 @@ function npc_brita_0168(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        utility_unknown_1070(NPC_BRITA)
+        utility_npc_random_bark_1070(NPC_BRITA)
     end
 end

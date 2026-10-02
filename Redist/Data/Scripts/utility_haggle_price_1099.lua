@@ -1,5 +1,5 @@
 --- Best guess: Manages a haggling interaction for an item's price, allowing the player to counter-offer and returning the final agreed price.
-function utility_unknown_1099(P0, P1)
+function utility_haggle_price_1099(P0, P1)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B
 
     var_0000 = 0
@@ -52,7 +52,7 @@ function utility_unknown_1099(P0, P1)
         if var_0001 >= var_000B[4] then
             if var_0005 >= 90 then
                 var_0004 = true
-                var_000D = utility_unknown_1074((var_0001 - var_0002) * 2)
+                var_000D = utility_normalize_positive_1074((var_0001 - var_0002) * 2)
                 var_000D = get_random(var_000D)
                 if var_0001 - var_000D <= var_0001 then
                     var_0001 = var_0001 + 1
@@ -60,7 +60,7 @@ function utility_unknown_1099(P0, P1)
                     var_0001 = var_0001 - var_000D
                 end
             elseif var_0005 >= 30 then
-                var_000D = utility_unknown_1074((var_0001 - var_0002) * 2)
+                var_000D = utility_normalize_positive_1074((var_0001 - var_0002) * 2)
                 var_000D = get_random(var_000D)
                 if var_0001 - var_000D <= var_0001 then
                     var_0001 = var_0001 + 1
@@ -74,7 +74,7 @@ function utility_unknown_1099(P0, P1)
         elseif var_0001 >= var_000B[3] then
             if var_0005 >= 40 then
                 var_0004 = true
-                var_000D = utility_unknown_1074((var_0001 - var_0002) * 2)
+                var_000D = utility_normalize_positive_1074((var_0001 - var_0002) * 2)
                 var_000D = get_random(var_000D)
                 if var_0001 - var_000D <= var_0001 then
                     var_0001 = var_0001 + 1

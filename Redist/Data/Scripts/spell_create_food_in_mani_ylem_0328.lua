@@ -1,5 +1,5 @@
 --- Best guess: Implements the create food spell (In Mani Ylem), generating food items for party members.
-function utility_spell_0328(eventid, objectref)
+function spell_create_food_in_mani_ylem_0328(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007
 
     if eventid == 1 then

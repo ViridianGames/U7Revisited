@@ -44,7 +44,7 @@ function npc_zella_0036(eventid, objectref)
                 if var_0001 == 29 then
                     add_dialogue("\"My price for training is 45 gold. Is this all right?\"")
                     if select_option() then
-                        utility_unknown_1104(45, 4) --- Guess: Trains boxing skill
+                        utility_boxing_training_zella_1104(45, 4) --- Guess: Trains boxing skill
                     else
                         add_dialogue("\"Then mayest thou find more inexpensive training elsewhere.\"")
                     end
@@ -58,6 +58,6 @@ function npc_zella_0036(eventid, objectref)
         end
         add_dialogue("\"Good day to thee.\"")
     elseif eventid == 0 then
-        utility_unknown_1070(36) --- Guess: Triggers a game event
+        utility_npc_random_bark_1070(36) --- Guess: Triggers a game event
     end
 end

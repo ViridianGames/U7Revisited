@@ -13,7 +13,7 @@ function npc_gregor_0082(eventid, objectref)
                 abort()
             end
         end
-        var_0002 = utility_unknown_1020(81, 82) --- Guess: Checks NPC time interaction
+        var_0002 = utility_distance_under_20_1020(81, 82) --- Guess: Checks NPC time interaction
         if var_0002 then
             add_dialogue("\"No time for idle chatter! I must get to the Fellowship Meeting! I am late!\"")
             abort()
@@ -92,6 +92,6 @@ function npc_gregor_0082(eventid, objectref)
         end
         add_dialogue("\"Be on thy way then.\"")
     elseif eventid == 0 then
-        utility_unknown_1070(82) --- Guess: Triggers a game event
+        utility_npc_random_bark_1070(82) --- Guess: Triggers a game event
     end
 end

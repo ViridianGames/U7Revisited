@@ -17,7 +17,7 @@ function object_sextant_0650(eventid, objectref)
         end
         if not is_pc_inside() then
             bark(objectref, var_0004 .. var_0003)
-        elseif utility_unknown_1079(-1) then
+        elseif utility_npc_eligibility_check_1079(-1) then
             bark(objectref, "@'Twill not function under a roof!@")
         end
     end

@@ -6,7 +6,7 @@ function npc_quan_0185(eventid, objectref)
         switch_talk_to(185)
         var_0000 = get_player_name()
         var_0001 = get_schedule(185)
-        var_0002 = utility_unknown_1073(1, 359, 981, 1, 357)
+        var_0002 = utility_party_has_items_1073(1, 359, 981, 1, 357)
         if var_0001 == 7 then
             add_dialogue("The gargoyle seems to be too busy conducting the Fellowship meeting to speak with you now.")
             utility_ship_0974()
@@ -135,7 +135,7 @@ function npc_quan_0185(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        utility_unknown_1071(185)
+        utility_gargoyle_random_bark_1071(185)
     end
     return
 end

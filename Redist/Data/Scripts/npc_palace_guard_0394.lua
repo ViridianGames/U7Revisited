@@ -1,5 +1,5 @@
 --- Best guess: Manages a palace guard's dialogue, providing minimal responses about name and job, with random movement commands when idle, emphasizing authority.
-function object_unknown_0394(eventid, objectref)
+function npc_palace_guard_0394(eventid, objectref)
     start_conversation()
     local var_0000, var_0001, var_0002, var_0003
 
@@ -9,7 +9,14 @@ function object_unknown_0394(eventid, objectref)
         add_answer({"bye", "job", "name"})
         add_dialogue("You see a tough-looking palace guard who takes his job -very- seriously.")
         while true do
-            local response = string.lower(unknown_XXXXH())
+            local answer = get_answer()
+            if type(answer) ~= "string" then
+                answer = get_answer()
+            end
+            if type(answer) ~= "string" then
+                break
+            end
+            local response = string.lower(answer)
             if response == "name" then
                 add_dialogue("\"I am a guard.\"")
                 remove_answer("name")

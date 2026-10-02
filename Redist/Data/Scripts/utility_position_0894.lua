@@ -12,7 +12,7 @@ function utility_position_0894(objectref, arg1, arg2, arg3)
                var_0009[2] <= arg1[2] and var_0009[2] >= arg3[2] and
                var_0009[3] < 5 and var_0008 ~= 189 then
                 if not check_object_flag(var_0007) then --- Guess: Checks item flag
-                    utility_unknown_0895(var_0007) --- External call to process item
+                    mech_nearby_item_explosion_0895(var_0007) --- External call to process item
                 else
                     utility_position_0896(arg1, var_0007) --- External call to alternative processing
                 end

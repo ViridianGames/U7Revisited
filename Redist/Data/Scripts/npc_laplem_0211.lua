@@ -12,7 +12,7 @@ function npc_laplem_0211(eventid, objectref)
         else
             add_dialogue("\"To be pleased to again see you, human.\" Lap-Lem smiles.")
         end
-        var_0000 = utility_unknown_1073(3, 359, 955, 1, 357)
+        var_0000 = utility_party_has_items_1073(3, 359, 955, 1, 357)
         if get_flag(641) or var_0000 then
             if not get_flag(735) then
                 add_answer("give amulet")
@@ -69,7 +69,7 @@ function npc_laplem_0211(eventid, objectref)
                 add_dialogue("\"To have returned with amulet?\"")
                 var_0002 = remove_party_items(false, 3, 359, 955, 1)
                 if var_0002 then
-                    utility_unknown_1041(50)
+                    utility_set_party_quest_prop8_1041(50)
                     add_dialogue("He grins widely as you return the jewelry to him.")
                     add_dialogue("\"To thank you, human! To be an example for your race!\"")
                     set_flag(735, true)
@@ -83,7 +83,7 @@ function npc_laplem_0211(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        utility_unknown_1071(211)
+        utility_gargoyle_random_bark_1071(211)
     end
     return
 end

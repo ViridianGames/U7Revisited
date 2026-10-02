@@ -12,7 +12,7 @@ function utility_event_0444(eventid, objectref)
         for i = 1, #var_0001 do
             var_0004 = var_0001[i]
             if not get_item_flag(6, var_0004) then
-                utility_unknown_1087(0, var_0004)
+                utility_remove_npc_from_party_1087(0, var_0004)
                 set_item_flag(1, var_0004)
             end
         end

@@ -33,7 +33,7 @@ function npc_wissur_0216(eventid, objectref)
                     add_dialogue("\"To want to buy something?\" He looks at you carefully, as if he is unsure whether to sell to you.")
                     add_dialogue("\"To be possible,\" he says, nodding. \"To ask what you need?\"")
                     var_0000 = {"potions", "reagents", "spells", "nothing"}
-                    var_0001 = utility_unknown_1035(var_0000)
+                    var_0001 = utility_select_option_string_1035(var_0000)
                     if var_0001 == "nothing" then
                         add_dialogue("\"To suspect you are wasting my time!\"")
                     elseif var_0001 == "spells" then
@@ -41,7 +41,7 @@ function npc_wissur_0216(eventid, objectref)
                     elseif var_0001 == "reagents" then
                         utility_shopreagents_1098()
                     elseif var_0001 == "potions" then
-                        utility_unknown_1097()
+                        utility_potion_purchase_1097()
                     end
                 elseif answer == "bye" then
                     add_dialogue("\"To be good that you leave.\"")
@@ -66,7 +66,7 @@ function npc_wissur_0216(eventid, objectref)
                 elseif answer == "reagents" then
                     utility_shopreagents_1098()
                 elseif answer == "potions" then
-                    utility_unknown_1097()
+                    utility_potion_purchase_1097()
                 elseif answer == "others" then
                     add_dialogue("\"To be familiar with only the other gargoyles in Vesper. To tell you to ask Ansikart, who knows all other gargoyles here. To tell you about one of the following?\"")
                     remove_answer("others")

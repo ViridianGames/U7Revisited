@@ -170,7 +170,7 @@ function npc_beverlea_0173(eventid, objectref)
             end
             bark(NPC_BEVERLEA, var_0013)
         else
-            utility_unknown_1070(NPC_BEVERLEA)
+            utility_npc_random_bark_1070(NPC_BEVERLEA)
         end
     end
 end

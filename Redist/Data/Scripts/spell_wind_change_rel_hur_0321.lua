@@ -1,5 +1,5 @@
 --- Best guess: Implements the wind change spell (Rel Hur), randomly altering wind direction based on spell conditions.
-function utility_spell_0321(eventid, objectref)
+function spell_wind_change_rel_hur_0321(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003
 
     if eventid == 1 then

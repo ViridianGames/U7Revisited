@@ -1,5 +1,5 @@
 --- Best guess: Implements the death vortex spell (Vas Corp Hur), creating a damaging vortex at a target location.
-function utility_spell_0385(eventid, objectref)
+function spell_vas_corp_hur_0385(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003
 
     if eventid == 1 then

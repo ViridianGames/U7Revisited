@@ -52,7 +52,7 @@ function npc_penni_0115(eventid, objectref)
                 if var_0004 == 7 then
                     add_dialogue("\"Art thou interested in training? My price is 35 gold for each training session.\"")
                     if select_option() then
-                        utility_unknown_0968(35, {4, 0}) --- Guess: Trains player
+                        utility_strength_training_penni_0968(35, {4, 0}) --- Guess: Trains player
                     else
                         add_dialogue("\"Perhaps next time.\"")
                     end
@@ -95,6 +95,6 @@ function npc_penni_0115(eventid, objectref)
         end
         add_dialogue("\"Good journeying, " .. var_0001 .. ".\"")
     elseif eventid == 0 then
-        utility_unknown_1070(115) --- Guess: Triggers a game event
+        utility_npc_random_bark_1070(115) --- Guess: Triggers a game event
     end
 end

@@ -1,10 +1,10 @@
 --- Best guess: Manages a combat training session with Jakher, checking player intelligence and gold, enhancing tactical skills if conditions are met.
 ---@param training_cost integer The gold cost for the training session
 ---@param max_stat_value integer The maximum stat value allowed for training
-function utility_unknown_0927(training_cost, max_stat_value)
+function utility_combat_training_jakher_0927(training_cost, max_stat_value)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A
 
-    var_0002 = utility_unknown_1056()
+    var_0002 = utility_select_party_member_for_training_1056()
     var_0003 = get_player_name(var_0002)
     var_0004 = get_player_name()
     if var_0003 == var_0004 then
@@ -14,7 +14,7 @@ function utility_unknown_0927(training_cost, max_stat_value)
         return
     end
     var_0005 = 2
-    var_0006 = utility_unknown_1058(var_0005, var_0002, training_cost, max_stat_value)
+    var_0006 = utility_check_training_okay_1058(var_0005, var_0002, training_cost, max_stat_value)
     if var_0006 == 0 then
         add_dialogue("Jakher looks into your eyes, sizing you up intellectually. \"Thou dost need to learn more on the field of battle. If we spoke now I would be wasting my breath. Thou wouldst not understand a word I said.\"")
     elseif var_0006 == 1 then
@@ -31,13 +31,13 @@ function utility_unknown_0927(training_cost, max_stat_value)
     var_0008 = remove_party_items(true, -359, -359, 644, training_cost)
     add_dialogue("You pay " .. training_cost .. " gold, and the training session begins.")
     add_dialogue("Jakher's eyes glow bright as he begins to explain some of the strategies used by great military leaders in awesome battles fought in ages past. He whispers to " .. var_0003 .. " conspiratorially as he draws maps in the dirt. After some time, " .. var_0003 .. " can practically feel some of his shrewdness starting to be absorbed.")
-    var_0009 = utility_unknown_1040(2, var_0002)
-    var_000A = utility_unknown_1040(0, var_0002)
+    var_0009 = utility_get_training_level_1040(2, var_0002)
+    var_000A = utility_get_training_level_1040(0, var_0002)
     if var_0009 < 30 then
-        utility_unknown_1046(1, var_0002)
+        utility_init_training_2_7_1046(1, var_0002)
     end
     if var_000A < 30 then
-        utility_unknown_1044(1, var_0002)
+        utility_init_training_0_3_1044(1, var_0002)
     end
     add_dialogue("\"I look forward to thy return.\"")
 end

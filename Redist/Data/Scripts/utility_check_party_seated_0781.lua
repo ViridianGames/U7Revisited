@@ -1,5 +1,5 @@
 --- Best guess: Checks if all party members are seated (frame 10 or 26), returning true if all are seated, false otherwise.
-function utility_unknown_0781()
+function utility_check_party_seated_0781()
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
     var_0000 = get_party_members()

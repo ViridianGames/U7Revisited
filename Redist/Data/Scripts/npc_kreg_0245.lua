@@ -37,7 +37,7 @@ function npc_kreg_0245(eventid, objectref)
                 add_answer({"Abbey", "mixture"})
             elseif answer == "Thief!" then
                 add_dialogue("\"Ah! Found me out, didst thou? 'Tis too bad... for thee!\"")
-                utility_unknown_1041(100)
+                utility_set_party_quest_prop8_1041(100)
                 var_0003 = count_objects(359, 359, 561, 245)
                 if var_0003 >= 1 then
                     var_0004 = create_new_object(561)
@@ -96,7 +96,7 @@ function npc_kreg_0245(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        utility_unknown_1070(245)
+        utility_npc_random_bark_1070(245)
     end
     return
 end

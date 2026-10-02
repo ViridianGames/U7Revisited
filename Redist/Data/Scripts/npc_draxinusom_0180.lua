@@ -50,7 +50,7 @@ function npc_draxinusom_0180(eventid, objectref)
                 add_dialogue("\"To have seemed nice enough, for a human. To be a bit mad, he is, even for a human. To tell you he lives on an island just to the west of us. To know, at least, that my prized possessions would be safe in his hands.\"")
                 add_answer("safe")
                 set_flag(571, true)
-                utility_unknown_1041(50)
+                utility_set_party_quest_prop8_1041(50)
                 remove_answer("Sultan")
             elseif answer == "safe" then
                 add_dialogue("He nods his head. \"To be rumored to have one of the best-guarded vaults in all of Britannia. To be supposedly enchanted. To know not details.\"")
@@ -98,7 +98,7 @@ function npc_draxinusom_0180(eventid, objectref)
                 remove_answer("leaders")
             elseif answer == "Runeb" then
                 add_dialogue("\"To mean, in your language, `Red Mist'. To have been given that name because that is all he leaves behind of an adversary in battle. Before his conversion by The Fellowship, to have been known as a particularly cruel and dangerous gargoyle.\"")
-                var_0002 = is_dead(get_npc_name(-184))
+                var_0002 = is_dead(get_npc_name(184))
                 if var_0002 then
                     add_dialogue("\"To be gone -- dead -- now.\"")
                 end

@@ -1,5 +1,5 @@
 --- Best guess: Performs a heart placement ritual with Bollux's sacrifice and incantations for golem creation.
-function utility_unknown_0532(eventid, objectref)
+function mech_golem_heart_ritual_0532(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E, var_000F, var_0010, var_0011, var_0012
 
     start_conversation()
@@ -20,7 +20,7 @@ function utility_unknown_0532(eventid, objectref)
     end
     if eventid == 2 then
         var_0007 = false
-        var_0008 = utility_unknown_0788() --- External call to unknown function
+        var_0008 = utility_check_items_414_area_0788() --- External call to unknown function
         -- Guess: sloop checks for heart item
         for i = 1, 5 do
             var_000B = ({9, 10, 11, 8, 31})[i]
@@ -32,7 +32,7 @@ function utility_unknown_0532(eventid, objectref)
         if not var_0007 then
             var_000C = get_object_position(356, 10, 359) --- Guess: Gets position data with array dimensions
             var_0000 = find_nearby(0, 30, 203, var_000C) --- Guess: Sets NPC location
-            if var_0000 or utility_unknown_1073(357, 1) then --- External call to unknown function
+            if var_0000 or utility_party_has_items_1073(357, 1) then --- External call to unknown function
                 bark(objectref, "@The heart must be placed in the body.@")
                 return
             end
@@ -60,7 +60,7 @@ function utility_unknown_0532(eventid, objectref)
             end
         else
             cast_multiple_spells({"@Vas Flam Uus...@", "@Kal Por...@", "@In Mani...@", "@In Grav...@", "@In Ylem...@"}, 356) --- Guess: Casts multiple spells
-            var_0010 = utility_unknown_1069(var_0007) --- External call to select spell target
+            var_0010 = utility_direction_to_target_1069(var_0007) --- External call to select spell target
             var_0012 = add_containerobject_s(356, {8033, 1, 17447, 8044, 1, 17447, 8039, 2, 17447, 8047, 1, 7947, 2, 17447, 8033, 3, 17447, 8047, 3, 17447, 8033, 3, 17447, 8048, 3, 17447, 8033, 3, 17447, 8045, 1, 8487, var_0010, 7769})
             var_0012 = add_containerobject_s_at(var_0007, {76, 7938, 1580, 7765})
         end

@@ -35,7 +35,7 @@ function npc_smithy_0232(eventid, objectref)
                 add_dialogue("\"There are three games that thou canst play. The first is Virtue Roulette. The second is The Rat Race. The third is Triples. Wouldst thou like to hear any rules?\"")
                 if ask_yes_no() then
                     add_dialogue("\"For which game dost thou want to hear the rules?\"")
-                    var_0003 = utility_unknown_1035({"Triples", "The Rat Race", "Virtue Roulette", "None"})
+                    var_0003 = utility_select_option_string_1035({"Triples", "The Rat Race", "Virtue Roulette", "None"})
                     if var_0003 == "None" then
                         add_dialogue("\"That is all right.\"")
                         break
@@ -70,7 +70,7 @@ function npc_smithy_0232(eventid, objectref)
             end
             bark(232, var_0005)
         else
-            utility_unknown_1070(232)
+            utility_npc_random_bark_1070(232)
         end
     end
     return

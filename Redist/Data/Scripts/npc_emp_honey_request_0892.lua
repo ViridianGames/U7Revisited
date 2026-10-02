@@ -1,5 +1,5 @@
 --- Best guess: Handles an interaction with an Emp requesting honey, with dialogue and inventory checks, tying into a quest or environmental interaction.
-function utility_unknown_0892()
+function npc_emp_honey_request_0892()
     local var_0000, var_0001
 
     start_conversation()

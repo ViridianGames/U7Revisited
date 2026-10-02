@@ -41,7 +41,7 @@ function npc_menion_0192(eventid, objectref)
                 if var_0001 == 7 then
                     add_dialogue("\"I will train thee for 45 gold. Wilt thou pay?\"")
                     if ask_yes_no() then
-                        utility_unknown_0958(45, 4, 0)
+                        utility_strength_training_0958(45, 4, 0)
                     else
                         add_dialogue("\"Fine.\"")
                     end
@@ -73,7 +73,7 @@ function npc_menion_0192(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        utility_unknown_1070(192)
+        utility_npc_random_bark_1070(192)
     end
     return
 end

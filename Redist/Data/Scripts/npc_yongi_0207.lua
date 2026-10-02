@@ -34,7 +34,7 @@ function npc_yongi_0207(eventid, objectref)
                 remove_answer("name")
                 if not var_0006 then
                     add_dialogue("\"And ye are?\"")
-                    var_0007 = utility_unknown_1035({var_0001, var_0002, var_0000})
+                    var_0007 = utility_select_option_string_1035({var_0001, var_0002, var_0000})
                     if var_0007 == var_0002 then
                         add_dialogue("\"Aye, \" .. var_0001 .. \". Right ye are. If ye dinna care ta tell me, I don't mind a bit.\" He winks.")
                     elseif var_0007 == var_0000 then
@@ -101,7 +101,7 @@ function npc_yongi_0207(eventid, objectref)
                 utility_shopfood_1101()
                 remove_answer("food")
             elseif answer == "drink" then
-                utility_unknown_1102()
+                utility_tavern_buy_drinks_1102()
                 remove_answer("drink")
             elseif answer == "bye" then
                 add_dialogue("\"May the road rise up ta meet ye!\"")

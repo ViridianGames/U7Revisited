@@ -116,7 +116,7 @@ function npc_boris_0130(eventid, objectref)
                 remove_answer("Magenta")
             elseif var_0006 == "eat or drink" then
                 add_dialogue("\"I am certain thou wilt enjoy our food and drink.\"")
-                utility_unknown_0853() --- Guess: Serves food or drink
+                utility_tavern_food_drink_0853() --- Guess: Serves food or drink
             elseif var_0006 == "room" then
                 add_dialogue("\"Why dost thou not stay the night? For but 3 gold thou canst let one of our rooms. Dost thou wish to stay the night?\"")
                 if select_option() then
@@ -218,6 +218,6 @@ function npc_boris_0130(eventid, objectref)
         end
         add_dialogue("\"Good journey!\"")
     elseif eventid == 0 then
-        utility_unknown_1070(130) --- Guess: Triggers a game event
+        utility_npc_random_bark_1070(130) --- Guess: Triggers a game event
     end
 end

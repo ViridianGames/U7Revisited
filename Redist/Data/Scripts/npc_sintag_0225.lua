@@ -6,7 +6,7 @@ function npc_sintag_0225(eventid, objectref)
         switch_talk_to(225)
         var_0000 = get_schedule(225)
         var_0001 = get_schedule_type(get_npc_name(225))
-        var_0002 = utility_unknown_1073(1, 359, 981, 1, 357)
+        var_0002 = utility_party_has_items_1073(1, 359, 981, 1, 357)
         start_conversation()
         add_answer({"bye", "job", "name"})
         if get_flag(260) or get_flag(309) then
@@ -77,7 +77,7 @@ function npc_sintag_0225(eventid, objectref)
                     var_0003 = add_party_items(false, 10, 234, 641, 1)
                     if var_0003 then
                         add_dialogue("\"Here it is.\"")
-                        utility_unknown_1041(300)
+                        utility_set_party_quest_prop8_1041(300)
                     else
                         add_dialogue("\"Thou art carrying too much!\"")
                     end

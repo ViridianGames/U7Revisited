@@ -1,5 +1,5 @@
 --- Best guess: Applies status effects to party members with sufficient mana, updating their properties and transforming specific items in a radius.
-function utility_unknown_1082(P0, P1)
+function utility_party_mana_status_fx_1082(P0, P1)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007
 
     var_0000 = get_party_list2()

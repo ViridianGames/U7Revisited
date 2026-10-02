@@ -1,5 +1,5 @@
 --- Best guess: Applies sprite effects and fades the palette, likely for visual transitions or effects.
-function utility_unknown_0310(eventid, objectref)
+function utility_sprite_fade_0310(eventid, objectref)
     local var_0000
 
     set_game_state(1, 1, 12) --- Guess: Sets game state

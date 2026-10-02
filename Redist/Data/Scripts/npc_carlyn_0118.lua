@@ -40,7 +40,7 @@ function npc_carlyn_0118(eventid, objectref)
                 restore_answers()
                 remove_answer("food")
             elseif var_0003 == "drink" then
-                utility_unknown_0862() --- Guess: Purchases drink
+                utility_tavern_buy_drinks_0862() --- Guess: Purchases drink
                 restore_answers()
                 remove_answer("drink")
             elseif var_0003 == "Phearcy" then
@@ -96,6 +96,6 @@ function npc_carlyn_0118(eventid, objectref)
         add_dialogue("\"Fare thee well, " .. var_0000 .. ".\"")
         abort()
     elseif eventid == 0 then
-        utility_unknown_1070(118) --- Guess: Triggers a game event
+        utility_npc_random_bark_1070(118) --- Guess: Triggers a game event
     end
 end

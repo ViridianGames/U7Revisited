@@ -28,7 +28,7 @@ function utility_shopreagents_1098()
                 var_000B = var_0004[var_000A]
                 var_000C = _FormatPrice(var_0006, var_000B, var_0007, var_0001[var_000A], var_0008)
             else
-                var_000B = utility_unknown_1099(-216, var_000B)
+                var_000B = utility_haggle_price_1099(-216, var_000B)
                 var_000C = _FormatPrice(var_0006, var_000B, var_0007, var_0001[var_000A], var_0008)
                 if var_000B == 0 then
                     goto continue

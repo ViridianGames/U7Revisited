@@ -10,7 +10,7 @@ function utility_event_0451(eventid, objectref)
         end
         var_0000 = get_timer(5)
         if var_0000 >= 24 then
-            utility_event_0783()
+            utility_clear_nearby_items_0783()
             remove_item(objectref)
         end
     end

@@ -24,30 +24,30 @@ function object_lockpick_0627(eventid, objectref)
                     bark(var_0000, "Unlocked")
                 else
                     bark(var_0000, "Pick broke")
-                    utility_unknown_1061(objectref)
+                    utility_item_quantity_adjust_1061(objectref)
                 end
             else
                 bark(var_0000, "Pick broke")
-                utility_unknown_1061(objectref)
+                utility_item_quantity_adjust_1061(objectref)
             end
         else
             var_0006 = {433, 432, 270, 376}
             for var_0007 in ipairs(var_0006) do
                 if var_0001 == var_0009 then
                     if var_0002 == 0 then
-                        if var_0003 and utility_unknown_0795(var_0000) == 2 then
-                            utility_unknown_0796(0, var_0000)
+                        if var_0003 and utility_frame_mod4_0795(var_0000) == 2 then
+                            utility_frame_add_mod4_0796(0, var_0000)
                             bark(var_0000, "Unlocked")
                         else
                             bark(var_0000, "Pick broke")
-                            utility_unknown_1061(objectref)
+                            utility_item_quantity_adjust_1061(objectref)
                         end
                     else
-                        utility_unknown_1022("@Strange that did not work.@")
+                        utility_apply_value_action_1022("@Strange that did not work.@")
                     end
                 end
             end
-            utility_unknown_1023("@Try those on a locked chest or door.@")
+            utility_apply_value_action_alt_1023("@Try those on a locked chest or door.@")
         end
     end
 end

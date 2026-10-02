@@ -16,7 +16,7 @@ function npc_sullivan_0220(eventid, objectref)
             return
         end
         var_0005 = get_npc_name(220)
-        set_schedule_type(15, var_0005)
+        set_schedule_type(220, 15)
         if not get_flag(706) then
             add_dialogue("The man in the prison greets you with a rather large smile.")
             set_flag(706, true)
@@ -28,7 +28,7 @@ function npc_sullivan_0220(eventid, objectref)
             if answer == "name" then
                 add_dialogue("\"I am Sullivan, " .. var_0000 .. ",\" he says pleasantly. \"Who wouldst thou be?\"")
                 var_0006 = "the Avatar"
-                var_0007 = utility_unknown_1035({var_0000, var_0006, var_0001})
+                var_0007 = utility_select_option_string_1035({var_0000, var_0006, var_0001})
                 if var_0007 == var_0001 then
                     add_dialogue("\"Pleased to meet thee, " .. var_0001 .. ".\" He moves his hand to shake yours but is prevented by the bars.")
                     add_dialogue("\"Ah, well, sorry, " .. var_0000 .. ". Consider thyself well shaken.\"")
@@ -127,7 +127,7 @@ function npc_sullivan_0220(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        utility_unknown_1070(220)
+        utility_npc_random_bark_1070(220)
     end
     return
 end

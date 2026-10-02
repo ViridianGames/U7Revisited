@@ -1,31 +1,31 @@
 --- Best guess: Generates dynamic dialogue by combining random noun pairs from external functions, creating humorous or dramatic phrases for NPC interactions.
-function utility_unknown_0879()
+function utility_dynamic_dialogue_combo_0879()
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E, var_000F, var_0010, var_0011, var_0012, var_0013
 
     start_conversation()
     if random(0, 3) == 0 then
-        var_0000 = random(0, 1) == 0 and utility_unknown_0869() or utility_unknown_0870() --- External call to noun generator
+        var_0000 = random(0, 1) == 0 and utility_word_pair_soup_0869() or utility_noun_pair_generator_0870() --- External call to noun generator
     else
-        var_0000 = random(0, 1) == 0 and utility_unknown_0876() or utility_unknown_0877() --- External call to noun generator
+        var_0000 = random(0, 1) == 0 and utility_animal_noun_pair_0876() or utility_bio_noun_pair_0877() --- External call to noun generator
     end
     var_0001 = var_0000[1] --- Guess: Singular noun
     var_0002 = var_0000[2] --- Guess: Plural noun
-    var_0003 = random(0, 1) == 0 and utility_unknown_0869() or utility_unknown_0870() --- External call to noun generator
-    var_0004 = random(0, 1) == 0 and utility_unknown_0869() or utility_unknown_0870() --- External call to noun generator
-    var_0005 = random(0, 1) == 0 and utility_unknown_0869() or utility_unknown_0870() --- External call to noun generator
+    var_0003 = random(0, 1) == 0 and utility_word_pair_soup_0869() or utility_noun_pair_generator_0870() --- External call to noun generator
+    var_0004 = random(0, 1) == 0 and utility_word_pair_soup_0869() or utility_noun_pair_generator_0870() --- External call to noun generator
+    var_0005 = random(0, 1) == 0 and utility_word_pair_soup_0869() or utility_noun_pair_generator_0870() --- External call to noun generator
     var_0005 = var_0005[2] --- Guess: Plural noun
-    var_0000 = utility_unknown_0871() --- External call to noun generator
+    var_0000 = utility_adjective_pair_generator_0871() --- External call to noun generator
     var_0006 = var_0000[1] --- Guess: Singular noun
     var_0007 = var_0000[2] --- Guess: Plural noun
-    var_0000 = random(0, 1) == 0 and utility_unknown_0872() or utility_event_0873() --- External call to noun generator
+    var_0000 = random(0, 1) == 0 and utility_verb_conjugation_generator_0872() or utility_verb_conjugation_gen_0873() --- External call to noun generator
     var_0008 = var_0000[1] --- Guess: Singular noun
     var_0009 = var_0000[2] --- Guess: Plural noun
     var_000A = var_0000[3] --- Guess: Additional noun
-    var_000B = random(0, 1) == 0 and utility_unknown_0874() or utility_unknown_0875() --- External call to noun generator
-    var_0000 = random(0, 1) == 0 and utility_unknown_0876() or utility_unknown_0877() --- External call to noun generator
+    var_000B = random(0, 1) == 0 and utility_random_humorous_phrase_0874() or utility_random_phrase_0875() --- External call to noun generator
+    var_0000 = random(0, 1) == 0 and utility_animal_noun_pair_0876() or utility_bio_noun_pair_0877() --- External call to noun generator
     var_000C = var_0000[1] --- Guess: Singular noun
     var_000D = var_0000[2] --- Guess: Plural noun
-    var_000E = utility_unknown_0878() --- External call to insult generator
+    var_000E = utility_slang_insult_0878() --- External call to insult generator
     var_0000 = random(0, 36) --- Guess: Selects dialogue template
     if var_0000 == 0 then
         var_000F = "I'll show you my " .. var_0006 .. " " .. var_0001 .. " if you show me yours."

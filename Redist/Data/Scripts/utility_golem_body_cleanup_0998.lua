@@ -1,5 +1,5 @@
 --- Best guess: Removes items from a golem's body, likely cleaning up inventory after a quest or event.
-function utility_event_0998(var_0000)
+function utility_golem_body_cleanup_0998(var_0000)
     local var_0001, var_0002, var_0003, var_0004
 
     while true do

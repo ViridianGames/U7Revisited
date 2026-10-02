@@ -1,5 +1,5 @@
 --- Best guess: Plays music and adds items if music is not playing, possibly for ambiance or event trigger.
-function utility_event_0786(eventid, objectref)
+function utility_play_music_if_silent_0786(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003
 
     var_0000 = objectref

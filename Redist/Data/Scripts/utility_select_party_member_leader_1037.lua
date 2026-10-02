@@ -1,5 +1,5 @@
 --- Best guess: Prompts the user to select a party member or “Nobody”, returning the selected member's ID or 0, starting with the party leader.
-function utility_unknown_1037()
+function utility_select_party_member_leader_1037()
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
     var_0000 = get_party_leader()
@@ -10,5 +10,5 @@ function utility_unknown_1037()
     if var_0004 == 0 then
         return 0
     end
-    return unknown_003AH(var_0004)
+    return get_npc_number(var_0004)
 end

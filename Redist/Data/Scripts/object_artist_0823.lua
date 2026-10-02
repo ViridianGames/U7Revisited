@@ -5,7 +5,7 @@ function object_artist_0823(eventid, objectref)
     if eventid == 1 then
         var_0000 = get_object_frame(objectref)
         if var_0000 < 2 then
-            utility_unknown_1022("@Finger-painting again?@")
+            utility_apply_value_action_1022("@Finger-painting again?@")
         else
             var_0001 = object_select_modal()
             var_0002 = get_object_shape(var_0001)
@@ -26,18 +26,18 @@ function object_artist_0823(eventid, objectref)
                         elseif var_0004 == 5 then
                             var_0005 = "@What is it?@"
                         end
-                        utility_unknown_1022(var_0005)
+                        utility_apply_value_action_1022(var_0005)
                         if var_0003 < 7 then
                             get_object_frame(get_object_frame(var_0001) + 1, var_0001)
                         end
                     elseif is_npc(var_0001) then
-                        utility_unknown_1022("@Tattooing?@")
+                        utility_apply_value_action_1022("@Tattooing?@")
                     else
-                        utility_unknown_1022({"@The stain will", "never come out.@"})
+                        utility_apply_value_action_1022({"@The stain will", "never come out.@"})
                     end
                 end
             else
-                utility_unknown_1022("@Use pigments!@")
+                utility_apply_value_action_1022("@Use pigments!@")
             end
         end
     end

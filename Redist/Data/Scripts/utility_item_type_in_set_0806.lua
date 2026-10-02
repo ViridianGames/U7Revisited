@@ -1,5 +1,5 @@
 --- Best guess: Checks if an item type is in a specific set (157, 779), likely for validation.
-function utility_unknown_0806(objectref)
+function utility_item_type_in_set_0806(objectref)
     local var_0001
 
     var_0001 = {157, 779}

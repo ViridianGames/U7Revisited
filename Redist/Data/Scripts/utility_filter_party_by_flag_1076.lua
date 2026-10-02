@@ -1,5 +1,5 @@
 --- Best guess: Filters party members based on a flag check, returning a list of matching NPCs.
-function utility_unknown_1076(arg1)
+function utility_filter_party_by_flag_1076(arg1)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006
 
     var_0001 = set_npc_location(8, 0, 359, arg1) --- Guess: Sets NPC location

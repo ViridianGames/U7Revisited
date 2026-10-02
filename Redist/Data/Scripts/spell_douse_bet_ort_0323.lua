@@ -1,5 +1,5 @@
 --- Best guess: Implements the magic light spell (Bet Ort), creating a light source with sprite effects at the caster's location.
-function utility_spell_0323(eventid, objectref)
+function spell_douse_bet_ort_0323(eventid, objectref)
     local var_0000, var_0001
 
     if eventid == 1 then

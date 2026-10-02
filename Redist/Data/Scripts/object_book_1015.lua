@@ -7,14 +7,14 @@ function object_book_1015(eventid, objectref)
             switch_talk_to(288)
             if not get_flag(808) then
                 -- call [0000] (0893H, unmapped)
-                utility_unknown_0915()
+                npc_adjhar_final_0915()
             end
             if not get_flag(796) then
                 -- call [0001] (0892H, unmapped)
-                utility_unknown_0914()
+                npc_adjhar_talisman_love_0914()
             end
             if not get_flag(799) then
-                var_0000 = utility_unknown_1073(359, 144, 642, 1, 357)
+                var_0000 = utility_party_has_items_1073(359, 144, 642, 1, 357)
                 if not var_0000 then
                     start_conversation()
                     add_dialogue("\"Hast thou in thy possession the book on the Stone of Castambre?\"")
@@ -40,7 +40,7 @@ function object_book_1015(eventid, objectref)
                         if var_0005 == 4 or var_0005 == 5 then
                             add_dialogue("The recently raised golem stares down at the prone, lifeless body of Bollux. Quickly he looks up at you. \"Wh-what has happened?\"")
                             -- call [0005] (0890H, unmapped)
-                            utility_unknown_0912()
+                            npc_adjhar_dialogue_0912()
                         end
                         if not var_0004 then
                             break
@@ -55,7 +55,7 @@ function object_book_1015(eventid, objectref)
                 start_conversation()
                 add_dialogue("\"Hail, friend. I hope that I may assist thee in some way.\"")
                 -- call [0005] (0890H, unmapped)
-                utility_unknown_0912()
+                npc_adjhar_dialogue_0912()
             else
                 start_conversation()
                 add_dialogue("\"Art thou here to aid me in healing my brother?\"")
@@ -63,7 +63,7 @@ function object_book_1015(eventid, objectref)
                     add_dialogue("\"Very good. I am pleased to call thee friend.\"")
                     set_flag(798, true)
                     -- call [0005] (0890H, unmapped)
-                    utility_unknown_0912()
+                    npc_adjhar_dialogue_0912()
                 else
                     add_dialogue("\"Then begone, for I have work to do!\"")
                     return

@@ -1,5 +1,5 @@
 --- Best guess: Manages Horance's dialogue in Skara Brae, guiding the player through a quest to destroy the Well of Souls, with flag-based progression and NPC interactions.
-function utility_unknown_0941()
+function npc_horance_dialogue_0941()
     start_conversation()
     local var_0000, var_0001, var_0002, var_0003
 
@@ -22,14 +22,14 @@ function utility_unknown_0941()
     end
     if get_flag(465) then
         var_0003 = "Ah, I see. No matter"
-        utility_unknown_0942(var_0003)
+        npc_horance_response_0942(var_0003)
     end
     if not get_flag(428) then
         if not get_flag(465) then
             add_dialogue("\"Now, " .. var_0000 .. ". I must ask this favor of thee. The Well of Souls, at the bottom of this tower, holds many tormented souls within it and binds the spirits of Skara Brae to this island. It must be destroyed.\" Horance looks at you intently.~~\"I can only hope that thou wilt try to free them.\"")
             add_dialogue("\"Well, wilt thou?\" He looks at you expectantly.")
             var_0003 = "I understand. Fear not"
-            utility_unknown_0942(var_0003)
+            npc_horance_response_0942(var_0003)
         end
     end
     if not get_flag(430) then
@@ -38,7 +38,7 @@ function utility_unknown_0941()
     elseif not get_flag(422) then
         add_dialogue("\"But please, " .. var_0000 .. ", I beg thee make haste. Take Rowena to Trent! Time is short! Talk to her and take her to her husband! The souls in the well are constantly in pain, and some become so drained that they are snuffed out of existence like the flame of a candle.\" He looks as if he feels the pain himself.")
     elseif get_flag(408) then
-        utility_unknown_0943()
+        npc_horance_well_of_souls_0943()
     else
         add_dialogue("\"Good, now we can get on with freeing the rest of Skara Brae. The destruction of the Well of Souls can only be brought about by the selfless sacrifice of a spirit. A living being will not do, because the soul is tied to the body.\"~~\"Go out into the town and find a spirit willing to make the sacrifice for the sake of all Skara Brae. I suggest that thou shouldst ask Mayor Forsythe first, as it is his right to be considered before the others.\" He strokes his chin thoughtfully as you leave.")
         set_flag(408, true)

@@ -1,5 +1,5 @@
 --- Best guess: Implements the resurrection spell (In Mani Corp), reviving a dead NPC with specific type and quality checks.
-function utility_spell_0388(eventid, objectref)
+function spell_in_mani_corp_0388(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008
 
     if eventid == 1 then

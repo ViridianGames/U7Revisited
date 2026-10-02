@@ -1,5 +1,5 @@
 --- Best guess: Introduces a murder investigation, switching dialogue to an NPC (Petre) and prompting a search.
-function utility_unknown_0899()
+function quest_murder_investigation_0899()
     local var_0000, var_0001
 
     start_conversation()
@@ -16,5 +16,5 @@ function utility_unknown_0899()
     end
     switch_talk_to(12) --- Guess: Initiates dialogue
     add_dialogue("@The Mayor continues. 'Hast thou searched the stables?'@")
-    utility_unknown_0901() --- External call to evidence discussion
+    quest_murder_evidence_discuss_0901() --- External call to evidence discussion
 end

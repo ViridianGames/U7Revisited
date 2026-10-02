@@ -1,5 +1,5 @@
 --- Best guess: Manages a ring of invisibility, toggling invisibility status for the wearer based on equip/unequip events.
-function object_unknown_0296(eventid, objectref)
+function object_ring_invisibility_0296(eventid, objectref)
     local var_0000
 
     if eventid == 5 or eventid == 6 then

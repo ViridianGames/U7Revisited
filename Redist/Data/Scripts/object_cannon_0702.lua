@@ -19,14 +19,14 @@ function object_cannon_0702(eventid, objectref)
             return
         end
         -- call [0001] (0925H, unmapped)
-        utility_unknown_1061(aidx(var_0000, 1))
+        utility_item_quantity_adjust_1061(aidx(var_0000, 1))
         -- call [0001] (0925H, unmapped)
-        utility_unknown_1061(aidx(var_0001, 1))
+        utility_item_quantity_adjust_1061(aidx(var_0001, 1))
         var_0002 = object_select_modal()
         var_0003 = get_object_position(objectref)
         var_0004 = aidx(var_0002, 2) - aidx(var_0003, 1)
         var_0005 = aidx(var_0002, 3) - aidx(var_0003, 2)
-        if utility_unknown_1074(var_0004) > utility_unknown_1074(var_0005) then
+        if utility_normalize_positive_1074(var_0004) > utility_normalize_positive_1074(var_0005) then
             if var_0004 > 0 then
                 var_0006 = 2
             else

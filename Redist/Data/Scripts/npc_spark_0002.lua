@@ -168,19 +168,17 @@ function npc_spark_0002(eventid, objectref)
                 remove_answer("hook")
             elseif var_000C == "join" then
                 add_dialogue("\"'Tis about time thou didst ask again!\"")
-                var_000D = 0
-                for var_000E = 1, 8 do
-                    var_000D = var_000D + 1
-                end
-                if var_000D < 8 then
-                    add_dialogue("\"Well, on second thought, it looks like too big of a crowd. I do not like crowds.\"")
-                else
+                local party = get_party_members()
+                local party_size = (type(party) == "table") and #party or 0
+                if party_size < 8 then
                     hide_npc(2)
                     switch_talk_to(2)
                     add_dialogue("\"Hooray!\"")
                     remove_answer("join")
                     add_answer("leave")
                     add_to_party(2) --- Guess: Removes object from game
+                else
+                    add_dialogue("\"Well, on second thought, it looks like too big of a crowd. I do not like crowds.\"")
                 end
             elseif var_000C == "leave" then
                 var_0011 = ask_yes_no("\"Don't make me go!\" Spark cries. \"Dost thou really want me to go?\" He looks at you with puppy-dog eyes.")
@@ -193,12 +191,12 @@ function npc_spark_0002(eventid, objectref)
                     if var_000A == "wait here" then
                         add_dialogue("\"All right. I shall wait here until thou dost return and ask me to rejoin.\"")
                         remove_from_party(2) --- Guess: Sets object state (e.g., active/inactive)
-                        set_schedule_type(15, 2) --- Guess: Sets a generic object property
+                        set_schedule_type(2, 15) --- Guess: Sets a generic object property
                         abort()
                     else
                         add_dialogue("Spark bows his head and murmurs, \"Goodbye, then.\"")
                         remove_from_party(2) --- Guess: Sets object state (e.g., active/inactive)
-                        set_schedule_type(11, 2) --- Guess: Sets a generic object property
+                        set_schedule_type(2, 11) --- Guess: Sets a generic object property
                         abort()
                     end
                 else

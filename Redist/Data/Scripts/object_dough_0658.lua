@@ -84,4 +84,4 @@ function object_dough_0658(eventid, objectref)
     end
 end
 
-object_unknown_0658 = object_dough_0658
+object_cook_dough_bread_0658 = object_dough_0658

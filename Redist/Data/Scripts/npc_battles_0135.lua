@@ -102,6 +102,6 @@ function npc_battles_0135(eventid, objectref)
         end
         add_dialogue("\"Be seein' ye.\"")
     elseif eventid == 0 then
-        utility_unknown_1070(135) --- Guess: Triggers a game event
+        utility_npc_random_bark_1070(135) --- Guess: Triggers a game event
     end
 end

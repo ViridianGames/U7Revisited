@@ -1,7 +1,7 @@
 --- Best guess: Initializes multiple training levels for an NPC (properties 2 and 7).
 ---@param amount integer The number of training iterations to apply
 ---@param npc_id integer The NPC ID to apply training to
-function utility_unknown_1046(amount, npc_id)
+function utility_init_training_2_7_1046(amount, npc_id)
     local var_0000, var_0001, var_0002, var_0003
 
     var_0002 = 0

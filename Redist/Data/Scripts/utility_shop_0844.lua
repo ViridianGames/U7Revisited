@@ -13,7 +13,7 @@ function utility_shop_0844()
     var_0007 = {1, 1, 1, 1, 1, 12, 1, 0}
     add_dialogue("\"To purchase what item?\"")
     while var_0000 do
-        var_0008 = utility_unknown_1036(var_0001)
+        var_0008 = utility_select_option_index_1036(var_0001)
         if var_0008 == 1 then
             add_dialogue("\"To be fine.\"")
             var_0000 = false

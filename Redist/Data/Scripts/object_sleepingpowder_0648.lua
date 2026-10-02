@@ -7,8 +7,8 @@ function object_sleepingpowder_0648(eventid, objectref)
         if is_npc(var_0000) then
             set_item_flag(1, var_0000)
         else
-            utility_unknown_1022("@Do not waste that!@")
+            utility_apply_value_action_1022("@Do not waste that!@")
         end
-        utility_unknown_1061(objectref)
+        utility_item_quantity_adjust_1061(objectref)
     end
 end

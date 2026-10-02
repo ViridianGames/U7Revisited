@@ -1,5 +1,5 @@
 --- Best guess: Spawns ammo (ID 581) near giant bones at a specific time, likely for a timed resource generation mechanic.
-function object_unknown_0418(eventid, objectref)
+function object_giant_bones_ammo_0418(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
     if eventid == 1 then

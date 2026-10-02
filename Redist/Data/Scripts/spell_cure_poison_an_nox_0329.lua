@@ -1,5 +1,5 @@
 --- Best guess: Implements the cure poison spell (An Nox), removing poison status from a selected target.
-function utility_spell_0329(eventid, objectref)
+function spell_cure_poison_an_nox_0329(eventid, objectref)
     local var_0000, var_0001, var_0002
 
     if eventid == 1 then

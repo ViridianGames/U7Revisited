@@ -9,7 +9,7 @@ function npc_quaeven_0186(eventid, objectref)
         start_conversation()
         add_answer({"bye", "Fellowship", "job", "name"})
         if var_0000 == 7 then
-            var_0002 = utility_unknown_1020(185, 186)
+            var_0002 = utility_distance_under_20_1020(185, 186)
             if var_0002 then
                 add_dialogue("\"To have not the time to speak now. To talk after meeting.\"")
             else
@@ -102,7 +102,7 @@ function npc_quaeven_0186(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        utility_unknown_1071(186)
+        utility_gargoyle_random_bark_1071(186)
     end
     return
 end

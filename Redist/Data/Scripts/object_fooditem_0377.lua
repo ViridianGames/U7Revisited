@@ -1,6 +1,6 @@
 --- Best guess: Manages consumption of food items by mapping item frames to quantities and processing the item, likely for hunger or gameplay effects.
 function object_fooditem_0377(eventid, objectref)
-    -- i suspect this script should really call utility_unknown_0787
+    -- i suspect this script should really call utility_npc_feed_garlic_0787
     -- but that script is a disaster atm, so this is a placeholder for now
     local var_0000, var_0001, eater_object
 

@@ -1,7 +1,7 @@
 --- Best guess: Resurrects a character, deducting gold if successful, and displays a success or failure message.
 ---@param cost integer The gold cost for the resurrection service
 ---@param npc_id integer The NPC ID to resurrect
-function utility_unknown_1055(cost, npc_id)
+function utility_resurrect_1055(cost, npc_id)
     local var_0000, var_0001
 
     var_0000 = resurrect(npc_id)

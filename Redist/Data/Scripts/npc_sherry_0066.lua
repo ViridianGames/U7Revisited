@@ -44,8 +44,8 @@ function npc_sherry_0066(eventid, objectref)
                 add_dialogue("\"Well, cheese is my favorite. If thou dost ever have cheese to give away, I will gladly eat it. But I will generally eat most anything. Dost thou have any cheese for me?\"")
                 var_0003 = select_option()
                 if var_0003 then
-                    var_0004 = utility_unknown_1073(26, 359, 377, 1, 357) --- Guess: Checks for cheese in inventory
-                    var_0005 = utility_unknown_1073(27, 359, 377, 1, 357) --- Guess: Checks for cheese in inventory
+                    var_0004 = utility_party_has_items_1073(26, 359, 377, 1, 357) --- Guess: Checks for cheese in inventory
+                    var_0005 = utility_party_has_items_1073(27, 359, 377, 1, 357) --- Guess: Checks for cheese in inventory
                     if var_0004 or var_0005 then
                         add_dialogue("\"Want to give me some?\"")
                         var_0006 = select_option()
@@ -73,7 +73,7 @@ function npc_sherry_0066(eventid, objectref)
                 if var_0007 then
                     add_dialogue("Sherry stands on her hind legs, takes a deep breath, and then recites -- from memory -- very, very fast:")
                     save_answers()
-                    utility_unknown_1004() --- Guess: Recites "Hubert's Hair-Raising Adventure"
+                    utility_poem_hubert_lion_1004() --- Guess: Recites "Hubert's Hair-Raising Adventure"
                 else
                     add_dialogue("\"Some other time, then!\"")
                 end

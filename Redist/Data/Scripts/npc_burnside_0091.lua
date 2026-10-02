@@ -4,7 +4,7 @@ function npc_burnside_0091(eventid, objectref)
 
     if eventid ~= 1 then
         if eventid == 0 then
-            utility_unknown_1070(91)
+            utility_npc_random_bark_1070(91)
         end
         add_dialogue("\"A pleasure, friend Avatar. A pleasure.\"")
         return
@@ -15,7 +15,7 @@ function npc_burnside_0091(eventid, objectref)
     var_0000 = get_schedule_type(get_npc_name(91))
     var_0001 = get_schedule(91)
     if var_0001 == 7 and var_0000 ~= 16 then
-        var_0002 = utility_unknown_1020(81, 91)
+        var_0002 = utility_distance_under_20_1020(81, 91)
         if var_0002 then
             add_dialogue("The Fellowship meeting is in progress, and Burnside will not speak with you now.")
             return
@@ -38,10 +38,17 @@ function npc_burnside_0091(eventid, objectref)
         add_dialogue("\"Ahh, Avatar. Good to see thee again.\" says Burnside.")
     end
     while true do
-        if cmps("name") then
+        local answer = get_answer()
+        if type(answer) ~= "string" then
+            answer = get_answer()
+        end
+        if type(answer) ~= "string" then
+            break
+        end
+        if answer == "name" then
             add_dialogue("\"Burnside is my name.\"")
             remove_answer("name")
-        elseif cmps("job") then
+        elseif answer == "job" then
             if not get_flag(287) then
                 add_dialogue("\"I am Mayor of Minoc and have been lo these past twenty years and more.\"")
                 add_answer("Minoc")
@@ -50,14 +57,14 @@ function npc_burnside_0091(eventid, objectref)
                 set_flag(287, true)
                 add_answer("murders")
             end
-        elseif cmps("Minoc") then
+        elseif answer == "Minoc" then
             add_dialogue("\"Apart from this business of the murders we are a town run by commerce. Gold runs this town. As goes the money, so goes Minoc. Take this monument affair, for instance.\"")
             remove_answer("Minoc")
             add_answer({"monument", "murders"})
-        elseif cmps("murders") then
+        elseif answer == "murders" then
             add_dialogue("\"As Frederico and Tania were not actually residents of Minoc there is little I can do as Mayor other than increase the town guard. The investigation falls somewhat beyond my jurisdiction. It would appear the killer or killers were from out of town and are probably long gone by now. Thank goodness.\"")
             remove_answer("murders")
-        elseif cmps("monument") then
+        elseif answer == "monument" then
             if not get_flag(247) then
                 add_dialogue("\"I am sure thou art aware of the plans for a monument of Owen, the shipwright. He is paying for it himself. I am usually against such public vanity but The Fellowship is very much in favor of it.\"")
                 add_answer({"Fellowship", "vanity"})
@@ -65,14 +72,14 @@ function npc_burnside_0091(eventid, objectref)
                 add_dialogue("\"This town would have been ruined if I had allowed that monument to be built, so I immediately forbade it, of course.\"")
             end
             remove_answer("monument")
-        elseif cmps("vanity") then
+        elseif answer == "vanity" then
             add_dialogue("\"But in this special case it does immeasurable good for the town. It increases our prestige. People will come from all over Britannia for the unveiling.\"")
             remove_answer("vanity")
             add_answer("unveiling")
-        elseif cmps("unveiling") then
+        elseif answer == "unveiling" then
             add_dialogue("\"Why, even Lord British himself will be in attendance! It is a special opportunity when one gets a private audience.\"")
             remove_answer("unveiling")
-        elseif cmps("Fellowship") then
+        elseif answer == "Fellowship" then
             if var_0004 then
                 add_dialogue("\"Ah, I see thou art wearing thy Fellowship medallion. I received mine from Elynor when The Fellowship branch was first opened here a few years ago.\"")
             else
@@ -80,7 +87,7 @@ function npc_burnside_0091(eventid, objectref)
             end
             remove_answer("Fellowship")
             add_answer("Elynor")
-        elseif cmps("Elynor") then
+        elseif answer == "Elynor" then
             if var_0004 then
                 add_dialogue("\"Elynor tells me The Fellowship will be doing good works here in the future. I am proud to be a member of thy society although I must confess to being fairly ignorant concerning thy, umm, our philosophy.\"")
                 add_answer("member")
@@ -89,7 +96,7 @@ function npc_burnside_0091(eventid, objectref)
                 add_answer("feelings")
             end
             remove_answer("Elynor")
-        elseif cmps("member") then
+        elseif answer == "member" then
             add_dialogue("\"I was given an honorary membership when the Fellowship branch was first opened in Minoc. I do not attend regular meetings. I hope thou'rt not disappointed in me?\"")
             var_0005 = ask_yes_no()
             if var_0005 then
@@ -99,7 +106,7 @@ function npc_burnside_0091(eventid, objectref)
                 add_answer("feelings")
             end
             remove_answer("member")
-        elseif cmps("feelings") then
+        elseif answer == "feelings" then
             add_dialogue("\"Avatar, may I tell thee a secret?\"")
             var_0005 = ask_yes_no()
             if var_0005 then
@@ -108,23 +115,23 @@ function npc_burnside_0091(eventid, objectref)
                 add_dialogue("\"Hrmph! Well, then, kindly forget mine ill-considered words!\"")
             end
             remove_answer("feelings")
-        elseif cmps("plans") then
+        elseif answer == "plans" then
             add_dialogue("You show the Mayor the plans Owen had drawn, making sure to carefully point out the flaws discovered by Julia. The Mayor is aghast.~~\"This is terrible! No one must see this! It would ruin Owen and cause irreparable damage to our town if it became known that our shipwright caused those deaths!\"")
             remove_answer("plans")
             add_answer({"deaths", "damage"})
-        elseif cmps("damage") then
+        elseif answer == "damage" then
             add_dialogue("\"But very few suspect the deaths are attributable to Owen's shipbuilding! We can destroy the plans and the truth would never get out! It would save the town from disgrace and possible ruin!\"")
             remove_answer("damage")
-        elseif cmps("deaths") then
+        elseif answer == "deaths" then
             add_dialogue("\"Then again, the ships Owen builds will continue to sink. It would harm Minoc even more if it were to become known as the place where the \"death ships\" are made. A town that built a monument to an incompetent.\"")
             remove_answer({"damage", "deaths"})
             add_answer("statue")
-        elseif cmps("statue") then
+        elseif answer == "statue" then
             add_dialogue("\"There are no two ways about it. The statue must be stopped. I am hereby cancelling the erection of the statue.\"")
             add_dialogue("\"Oh, and...er, Avatar... couldst thou please go inform Owen of this bad news for me? I am a bit busy at the moment. Besides, I think he will take it much better hearing it from thee.\"")
             set_flag(247, true)
             remove_answer("statue")
-        elseif cmps("bye") then
+        elseif answer == "bye" then
             break
         end
     end

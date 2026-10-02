@@ -78,7 +78,7 @@ function npc_margareta_0083(eventid, objectref)
             end
             remove_answer("Fellowship")
         elseif var_0002 == "destiny" then
-            utility_unknown_0954() --- Guess: Tells the player's destiny
+            npc_margareta_fortune_0954() --- Guess: Tells the player's destiny
             remove_answer("destiny")
         elseif var_0002 == "bye" then
             break

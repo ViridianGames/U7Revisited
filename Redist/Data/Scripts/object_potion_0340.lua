@@ -3,7 +3,7 @@ function object_potion_0340(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     if eventid == 1 then
-        utility_unknown_1018(objectref)
+        utility_item_props_11_23_action_1018(objectref)
         var_0000 = get_object_frame(objectref)
         var_0001 = object_select_modal()
         var_0002 = is_npc(var_0001)
@@ -14,7 +14,7 @@ function object_potion_0340(eventid, objectref)
                 set_item_flag(1, var_0001)
             elseif var_0000 == 1 then
                 var_0003 = random2(12, 3)
-                utility_unknown_1066(var_0003, var_0001)
+                utility_adjust_health_1066(var_0003, var_0001)
             elseif var_0000 == 2 then
                 clear_item_flag(8, var_0001)
                 clear_item_flag(7, var_0001)
@@ -35,7 +35,7 @@ function object_potion_0340(eventid, objectref)
             elseif var_0000 == 7 then
                 set_item_flag(0, var_0001)
             elseif var_0000 >= 8 then
-                utility_unknown_1023("@What is this!@")
+                utility_apply_value_action_alt_1023("@What is this!@")
                 abort()
             end
         else
@@ -43,11 +43,11 @@ function object_potion_0340(eventid, objectref)
             if var_0003 == 1 then
                 var_0004 = get_lord_or_lady()
                 var_0005 = "@Those are expensive, " .. var_0004 .. "! Plese waste them not!@"
-                utility_unknown_1023(var_0005)
+                utility_apply_value_action_alt_1023(var_0005)
             else
-                utility_unknown_1021(60)
+                utility_item_prop76_action_1021(60)
             end
         end
-        utility_unknown_1061(objectref)
+        utility_item_quantity_adjust_1061(objectref)
     end
 end

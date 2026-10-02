@@ -1,5 +1,5 @@
 --- Best guess: Implements the summon item spell (Kal Por Ylem), summoning a specific item (type 330) with restrictions.
-function utility_spell_0354(eventid, objectref)
+function spell_summon_item_kal_por_ylem_0354(eventid, objectref)
     local var_0000, var_0001, var_0002
 
     if eventid == 1 then

@@ -19,7 +19,7 @@ function npc_gordon_0058(eventid, objectref)
                 end
                 bark(58, var_000A)
             else
-                utility_unknown_1070(58)
+                utility_npc_random_bark_1070(58)
             end
         end
         add_dialogue("\"Have a pleasant day, " .. get_lord_or_lady() .. ".\"")
@@ -33,7 +33,7 @@ function npc_gordon_0058(eventid, objectref)
     var_0002 = get_schedule(58)
     var_0003 = get_schedule_type(get_npc_name(58))
     if var_0002 == 7 then
-        var_0004 = utility_unknown_1020(26, 58)
+        var_0004 = utility_distance_under_20_1020(26, 58)
         if var_0004 then
             add_dialogue("Gordon is too involved in listening to the Fellowship meeting to hear you.")
             return

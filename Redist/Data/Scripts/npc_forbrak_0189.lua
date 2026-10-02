@@ -6,25 +6,25 @@ function npc_forbrak_0189(eventid, objectref)
         switch_talk_to(189)
         var_0000 = false
         var_0001 = false
-        var_0002 = npc_id_in_party(-4)
+        var_0002 = npc_id_in_party(4)
         start_conversation()
         add_answer({"bye", "job", "name"})
         if var_0002 then
             add_dialogue("\"To greet you, human,\" the gargoyle says to Dupre. \"To ask how well the study is progressing?\"")
-            switch_talk_to(-4)
+            switch_talk_to(4)
             add_dialogue("\"Why 'tis progressing nicely, friend Forbrak.\"")
-            var_0003 = npc_id_in_party(-3)
+            var_0003 = npc_id_in_party(3)
             if var_0003 and not get_flag(590) then
                 hide_npc(189)
-                switch_talk_to(-3)
+                switch_talk_to(3)
                 add_dialogue("\"-What- study?\"")
-                switch_talk_to(-4)
+                switch_talk_to(4)
                 add_dialogue("\"Why, er, surely thou hast heard of the famous guides compiled for Brommer!\"")
-                switch_talk_to(-3)
+                switch_talk_to(3)
                 add_dialogue("\"Aye, I have. But I'll be tarred if there is one detailing various drinking establishments!\"")
-                switch_talk_to(-4)
+                switch_talk_to(4)
                 add_dialogue("\"Well, yes, er, 'tis, ah, something new. Now, how about a drink!\"")
-                switch_talk_to(-3)
+                switch_talk_to(3)
                 add_dialogue("\"New? 'Tis about as new as my backside...,\" mutters Shamino.")
                 hide_npc(3)
             end
@@ -54,7 +54,7 @@ function npc_forbrak_0189(eventid, objectref)
             elseif answer == "buy" then
                 var_0004 = get_schedule_type(get_npc_name(189))
                 if var_0004 == 7 then
-                    utility_unknown_0905()
+                    utility_provisions_purchase_0905()
                 else
                     add_dialogue("\"To ask you to please come back when my shop is open.\"")
                 end
@@ -144,7 +144,7 @@ function npc_forbrak_0189(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        utility_unknown_1071(189)
+        utility_gargoyle_random_bark_1071(189)
     end
     return
 end

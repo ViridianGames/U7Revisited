@@ -80,7 +80,7 @@ function npc_cosmo_0253(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        utility_unknown_0868()
+        utility_npc_ambient_dialogue_0868()
     end
     return
 end

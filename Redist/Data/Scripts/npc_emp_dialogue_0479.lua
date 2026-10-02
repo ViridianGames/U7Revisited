@@ -1,11 +1,11 @@
 --- Best guess: Manages an Emp NPC's dialogue, greeting the player, discussing food preferences (fruits, milk, cheese), and handling honey offers, with gender-specific names.
-function object_unknown_0479(eventid, objectref)
+function npc_emp_dialogue_0479(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006
     local var_0007, var_0008, var_0009
 
     if eventid == 1 then
         -- call [0000] (0931H, unmapped)
-        var_0000 = utility_unknown_1073(359, 359, 772, 1, 357)
+        var_0000 = utility_party_has_items_1073(359, 359, 772, 1, 357)
         switch_talk_to(283)
         if get_flag(340) ~= true then
             if not var_0000 then
@@ -14,7 +14,7 @@ function object_unknown_0479(eventid, objectref)
                 return
             else
                 -- call [0001] (087CH, unmapped)
-                utility_unknown_0892()
+                npc_emp_honey_request_0892()
             end
             start_conversation()
             if get_flag(316) ~= true then
@@ -29,7 +29,7 @@ function object_unknown_0479(eventid, objectref)
             if not var_0001 then
                 if var_0000 then
                     -- call [0001] (087CH, unmapped)
-                    utility_unknown_0892()
+                    npc_emp_honey_request_0892()
                 else
                     add_dialogue("\"No honey is had by you,\" says the Emp, obviously disappointed.")
                 end
@@ -51,7 +51,7 @@ function object_unknown_0479(eventid, objectref)
                             var_0007 = var_0006
                             var_0008 = get_npc_property(objectref, 5)
                             if is_int_in_array(var_0008, var_0003) then
-                                var_0003 = utility_unknown_1084(var_0003, var_0008)
+                                var_0003 = utility_array_exclude_element_1084(var_0003, var_0008)
                             end
                             if var_0003 then
                                 var_0002 = random2(4, 1)

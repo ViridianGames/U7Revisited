@@ -1,5 +1,5 @@
 --- Best guess: Manages NPC health and combat status, updating stats and destroying items if needed.
-function utility_unknown_0867()
+function utility_npc_health_combat_status_0867()
     local var_0001, var_0002, var_0003, var_0004, var_0005, var_0006
 
     var_0001 = get_combat_status() --- Guess: Checks combat status

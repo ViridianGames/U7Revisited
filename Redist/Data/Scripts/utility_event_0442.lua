@@ -9,11 +9,11 @@ function utility_event_0442(eventid, objectref)
             if not roll_to_win(get_npc_property(0, var_0003), get_object_quality(objectref)) then
                 var_0004 = get_npc_name(var_0003)
                 halt_scheduled(var_0004)
-                utility_unknown_0288(var_0004)
+                utility_set_item_flag15_0288(var_0004)
                 var_0005 = delayed_execute_usecode_array(25, 1567, {17493, 7715}, var_0004)
                 var_0005 = execute_usecode_array(var_0004, {8033, 4, 17447, 8046, 4, 17447, 8045, 4, 17447, 8044, 5, 17447, 7715})
-                if not utility_unknown_1079(var_0004) then
-                    utility_unknown_1028(var_0004, {"@Yuk!@", "@Oh no!@", "@Eeehhh!@", "@Ohh!@"})
+                if not utility_npc_eligibility_check_1079(var_0004) then
+                    npc_pig_oink_item_1028(var_0004, {"@Yuk!@", "@Oh no!@", "@Eeehhh!@", "@Ohh!@"})
                 end
                 var_0005 = delayed_execute_usecode_array(17, 1722, {17493, 7715}, var_0004)
             end

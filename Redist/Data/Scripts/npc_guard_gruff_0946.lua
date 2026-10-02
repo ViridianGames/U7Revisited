@@ -1,5 +1,5 @@
 --- Best guess: Manages a guard NPC's dialogue, responding gruffly to name and job queries, likely for immersion or quest interaction.
-function object_unknown_0946(eventid, objectref)
+function npc_guard_gruff_0946(eventid, objectref)
     local var_0000
 
     var_0000 = get_schedule_type(get_npc_name(objectref))

@@ -1,9 +1,9 @@
 --- Best guess: Handles tavern item purchases (e.g., ale, wine, Silverleaf), with a flag-based unavailability message for Silverleaf.
-function utility_unknown_1105()
+function utility_tavern_item_purchase_1105()
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E
 
     start_conversation()
-    var_0000 = utility_unknown_1033() --- External call to get lord or lady title
+    var_0000 = utility_milord_milady_1033() --- External call to get lord or lady title
     save_answers() --- Guess: Saves dialogue answers
     var_0001 = true
     var_0002 = {"ale", "wine", "cake", "Silverleaf", "trout", "mead", "bread", "mutton", "nothing"}

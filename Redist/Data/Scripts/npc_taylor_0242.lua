@@ -92,7 +92,7 @@ function npc_taylor_0242(eventid, objectref)
                 remove_answer("honey")
             elseif answer == "Bee Cave" then
                 add_dialogue("\"Bee Cave is located to the southwest of the Abbey. But if thou art planning a trip there, beware the giant bees that live in the caves. Their venom is very poisonous.\"")
-                var_0003 = utility_unknown_1073(359, 359, 769, 1, 357)
+                var_0003 = utility_party_has_items_1073(359, 359, 769, 1, 357)
                 if not var_0003 then
                     add_dialogue("\"If thou wishest, I can give thee a smoke bomb that will repel the bees for a short time. Dost thou want it?\"")
                     var_0004 = ask_yes_no()

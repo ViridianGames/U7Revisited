@@ -1,5 +1,5 @@
 --- Best guess: Implements the untrap spell (Des Sanct), disarming traps on a selected target with spell effects.
-function utility_spell_0344(eventid, objectref)
+function spell_untrap_des_sanct_0344(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003
 
     if eventid == 1 then

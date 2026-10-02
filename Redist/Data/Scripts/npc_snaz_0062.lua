@@ -19,7 +19,7 @@ function npc_snaz_0062(eventid, objectref)
                 end
                 bark(62, var_0012)
             else
-                utility_unknown_1070(62)
+                utility_npc_random_bark_1070(62)
             end
         end
         add_dialogue("\"I do hope I did amuse thee.\"")

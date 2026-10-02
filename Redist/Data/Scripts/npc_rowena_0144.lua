@@ -17,7 +17,7 @@ function npc_rowena_0144(eventid, objectref)
         var_0001 = get_lord_or_lady()
         if not get_flag(422) then
             switch_talk_to(144, 1)
-            utility_unknown_0982() --- Guess: Initiates follow behavior
+            npc_trent_rowena_no_sacrifice_0982() --- Guess: Initiates follow behavior
         end
         if not get_flag(426) then
             switch_talk_to(144, 1)
@@ -25,17 +25,17 @@ function npc_rowena_0144(eventid, objectref)
         end
         if not get_flag(423) and not get_flag(425) then
             switch_talk_to(144, 1)
-            utility_unknown_0984() --- Guess: Checks ring status
+            npc_rowena_escort_trent_0984() --- Guess: Checks ring status
         end
         var_0002 = get_schedule(144) --- Guess: Checks game state
         var_0003 = get_schedule_type(144) --- Guess: Gets schedule
         if var_0002 == 0 or var_0002 == 1 then
             if var_0003 == 14 then
                 switch_talk_to(144)
-                utility_unknown_0985() --- Guess: Triggers sleep event
+                npc_rowena_unresponsive_0985() --- Guess: Triggers sleep event
             elseif var_0003 ~= 16 then
                 switch_talk_to(144)
-                utility_unknown_0986() --- Guess: Triggers other event
+                npc_rowena_unwell_0986() --- Guess: Triggers other event
             end
         end
         switch_talk_to(144)

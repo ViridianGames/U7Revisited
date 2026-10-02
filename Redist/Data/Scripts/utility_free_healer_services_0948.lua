@@ -2,7 +2,7 @@
 ---@param resurrect_cost integer The gold cost for resurrection service (free in this case)
 ---@param cure_poison_cost integer The gold cost for cure poison service (free in this case)
 ---@param heal_cost integer The gold cost for healing service (free in this case)
-function utility_unknown_0948(resurrect_cost, cure_poison_cost, heal_cost)
+function utility_free_healer_services_0948(resurrect_cost, cure_poison_cost, heal_cost)
     start_conversation()
     local var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_0010, var_0011
 
@@ -12,7 +12,7 @@ function utility_unknown_0948(resurrect_cost, cure_poison_cost, heal_cost)
     if not var_0003 then
         add_dialogue("\"Of which service dost thou have need?\"")
         var_0004 = {"resurrect", "cure poison", "heal"}
-        var_0005 = utility_unknown_1035(var_0004)
+        var_0005 = utility_select_option_string_1035(var_0004)
         if var_0005 == "heal" or var_0005 == "cure poison" then
             if var_0005 == "heal" then
                 var_0006 = "healed"
@@ -22,7 +22,7 @@ function utility_unknown_0948(resurrect_cost, cure_poison_cost, heal_cost)
                 var_0007 = cure_poison_cost
             end
             add_dialogue("\"Who dost thou wish to be " .. var_0006 .. "?\"")
-            var_0008 = utility_unknown_1038()
+            var_0008 = utility_select_party_member_1038()
             if var_0008 == 0 then
                 add_dialogue("\"'Tis good to hear that thou art well. Do not hesitate to come and see me if thou dost need healing of any kind.\"")
                 return
@@ -43,13 +43,13 @@ function utility_unknown_0948(resurrect_cost, cure_poison_cost, heal_cost)
         end
         add_dialogue("\"Of course, it will never cost thee anything to use mine healing services.\"")
         if var_0005 == "heal" then
-            utility_unknown_1053(var_0007, var_0008)
+            utility_heal_wounds_1053(var_0007, var_0008)
             add_dialogue("\"Done!\"")
         elseif var_0005 == "cure poison" then
-            utility_unknown_1054(var_0007, var_0008)
+            utility_cure_poison_1054(var_0007, var_0008)
             add_dialogue("\"Done!\"")
         elseif var_0005 == "resurrect" then
-            utility_unknown_1055(var_0007, var_0011)
+            utility_resurrect_1055(var_0007, var_0011)
             add_dialogue("\"Done!\"")
         else
             add_dialogue("\"If thou hast need of my services later, I will be here.\"")

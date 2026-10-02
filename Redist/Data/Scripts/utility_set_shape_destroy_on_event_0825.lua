@@ -1,5 +1,5 @@
 --- Best guess: Sets item type and state based on event ID, destroying items for specific events.
-function utility_event_0825(eventid, objectref, arg1, arg2)
+function utility_set_shape_destroy_on_event_0825(eventid, objectref, arg1, arg2)
     local var_0000, var_0001, var_0002
 
     var_0000 = eventid

@@ -1,5 +1,5 @@
 --- Best guess: Spawns and destroys items (type 981, 776) with positioning, likely for an event or effect.
-function utility_event_0773(eventid, objectref)
+function utility_spawn_destroy_fx_items_0773(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006
 
     var_0000 = objectref
@@ -9,7 +9,7 @@ function utility_event_0773(eventid, objectref)
         move_object(var_0001, var_0000) --- Guess: Sets NPC target
         var_0001[2] = var_0001[2] + 2
         move_object(var_0001, 356) --- Guess: Sets NPC target
-        utility_event_0776() --- External call to party management
+        utility_party_remove_reset_flags_0776() --- External call to party management
         var_0002 = find_nearby(16, 10, 776, 356) --- Guess: Sets NPC location
         -- Guess: sloop destroys items
         for i = 1, 5 do

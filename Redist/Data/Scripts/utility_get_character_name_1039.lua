@@ -1,5 +1,5 @@
 --- Best guess: Returns a display name for an NPC id / usecode ref / name string.
-function utility_unknown_1039(npc_ref)
+function utility_get_character_name_1039(npc_ref)
     if type(npc_ref) == "string" then
         return npc_ref
     end

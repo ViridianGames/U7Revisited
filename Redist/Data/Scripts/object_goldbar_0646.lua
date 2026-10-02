@@ -4,6 +4,6 @@ function object_goldbar_0646(eventid, objectref)
 
     if eventid == 1 then
         var_0000 = "@I believe the current exchange rate is one hundred crowns per bar at the Britannian mint.@"
-        utility_unknown_1023(var_0000)
+        utility_apply_value_action_alt_1023(var_0000)
     end
 end

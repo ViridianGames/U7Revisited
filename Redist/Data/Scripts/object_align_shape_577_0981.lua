@@ -1,5 +1,5 @@
 --- Best guess: Aligns an object (shape 577) with another's frame and position, possibly for a puzzle or placement mechanic.
-function object_unknown_0981(eventid, objectref)
+function object_align_shape_577_0981(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003
 
     if eventid == 1 then
@@ -17,7 +17,7 @@ function object_unknown_0981(eventid, objectref)
             flash_mouse(0)
         end
         -- call [0000] (082EH, unmapped)
-        var_0003 = utility_unknown_0814(objectref)
+        var_0003 = mech_black_gate_prisms_0814(objectref)
     end
     return
 end

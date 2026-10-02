@@ -1,5 +1,5 @@
 --- Best guess: Manages a tavern interaction, allowing the purchase of drinks (ale, wine, mead) with price and inventory validation.
-function utility_unknown_1102()
+function utility_tavern_buy_drinks_1102()
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C
 
     save_answers()

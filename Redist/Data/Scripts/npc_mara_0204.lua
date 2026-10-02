@@ -30,7 +30,7 @@ function npc_mara_0204(eventid, objectref)
                 add_dialogue("The woman grabs your hand and shakes vigorously. \"Hello. M'name's Mara.\"")
                 if var_0006 == 26 then
                     add_dialogue("\"What is thine?\"")
-                    var_0008 = utility_unknown_1035({var_0000, var_0002, var_0001})
+                    var_0008 = utility_select_option_string_1035({var_0000, var_0002, var_0001})
                     if var_0008 == var_0002 then
                         add_dialogue("\"The Avatar!\" she shouts angrily. \"Why thou art the one responsible for bringing those wretched gargoyles into our fine land!\"")
                         set_schedule_type(0, var_0003)
@@ -79,7 +79,7 @@ function npc_mara_0204(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        utility_unknown_1070(204)
+        utility_npc_random_bark_1070(204)
     end
     return
 end

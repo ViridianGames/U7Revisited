@@ -1,7 +1,7 @@
 --- Best guess: Manages party member interactions, updating the party list based on item qualities and conditions, likely for quest or dialogue purposes.
 ---@param objectref integer The object reference used as a reference point for finding nearby objects
 ---@return boolean success True if party members were seated, false otherwise
-function utility_unknown_0947(objectref)
+function utility_party_member_interactions_0947(objectref)
     local var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_0010, var_0011, var_0012, var_0013, var_0014
 
     var_0001 = 1
@@ -17,7 +17,7 @@ function utility_unknown_0947(objectref)
         if get_barge(var_0011) == var_0005 then
             if not var_0003 and get_object_quality(var_0011) == 255 then
                 sit_down(var_0011, 356)
-                var_0004 = utility_unknown_1084(get_npc_name(356), var_0004)
+                var_0004 = utility_array_exclude_element_1084(get_npc_name(356), var_0004)
                 var_0003 = true
             else
                 table.insert(var_0008, get_distance(356, var_0011))
@@ -26,7 +26,7 @@ function utility_unknown_0947(objectref)
         end
     end
     var_0012 = #var_0004
-    var_0007 = utility_unknown_1085(var_0007, var_0008)
+    var_0007 = utility_bubble_sort_distances_1085(var_0007, var_0008)
     for i = 1, #var_0007 do
         var_0011 = var_0007[i]
         if var_0012 >= var_0001 then

@@ -12,7 +12,7 @@ function npc_sentri_0007(eventid, objectref)
         var_0004 = get_player_name()
         var_0005 = get_schedule(7) --- Guess: Gets object state
         add_answer({"bye", "job", "name"})
-        if is_string_in_array(var_0003, var_0002) then
+        if npc_id_in_party(7) then
             add_answer("leave")
         end
         if not get_flag(26) then
@@ -28,7 +28,7 @@ function npc_sentri_0007(eventid, objectref)
                 remove_answer("name")
             elseif var_0006 == "job" then
                 add_dialogue("\"When I am not adventuring with old friends, I am a trainer in Britain. I specialize in combat involving swordsmanship. I am quite good at that, as thou dost remember.\"")
-                if not is_string_in_array(var_0003, var_0002) then
+                if not npc_id_in_party(7) then
                     add_dialogue("\"But I would drop everything to join thy group if thou art not too encumbered.\"")
                     add_answer("join")
                 end
@@ -41,12 +41,9 @@ function npc_sentri_0007(eventid, objectref)
                 add_dialogue("Sentri draws his sword so quickly it is like a flash of lightning. He does a few fancy moves, slashing the air with the blade. \"No foe shall stand after I am finished with him!\"")
                 remove_answer("swordsmanship")
             elseif var_0006 == "join" then
-                var_0007 = 0
-                var_0002 = get_party_members()
-                for var_0008 = 1, 8 do
-                    var_0007 = var_0007 + 1
-                end
-                if var_0007 < 6 then
+                local party = get_party_members()
+                local party_size = (type(party) == "table") and #party or 0
+                if party_size < 6 then
                     add_dialogue("Sentri bows. \"I am very pleased to join thy group.\"")
                     set_flag(219, true)
                     add_to_party(7) --- Guess: Removes object from game
@@ -87,7 +84,7 @@ function npc_sentri_0007(eventid, objectref)
                         add_dialogue("\"My fee is 30 gold for a training session. Is this all right?\"")
                         var_000B = select_option()
                         if var_000B then
-                            utility_unknown_0997(30, 1) --- Guess: Trains a skill
+                            utility_combat_training_sentri_0997(30, 1) --- Guess: Trains a skill
                         else
                             add_dialogue("\"Then I shall rob someone else!\" Sentri laughs aloud.")
                         end
@@ -97,7 +94,7 @@ function npc_sentri_0007(eventid, objectref)
                     end
                 else
                     add_dialogue("\"Since I am a member of thy group, I shall train thee for free!\"")
-                    utility_unknown_0997(0, 1) --- Guess: Trains a skill
+                    utility_combat_training_sentri_0997(0, 1) --- Guess: Trains a skill
                 end
             elseif var_0006 == "Iolo" then
                 var_000C = npc_id_in_party(1) --- Guess: Checks player status
@@ -162,6 +159,6 @@ function npc_sentri_0007(eventid, objectref)
         end
         add_dialogue("\"Until later.\"")
     elseif eventid == 0 then
-        utility_unknown_1070(7) --- Guess: Triggers a game event
+        utility_npc_random_bark_1070(7) --- Guess: Triggers a game event
     end
 end

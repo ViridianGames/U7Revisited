@@ -44,7 +44,7 @@ function utility_shop_1100()
         var_0007 = var_0001[var_0002]
         var_0008 = var_0003[var_0005]
         add_dialogue("\"To cost " .. var_0007 .. " gold for " .. var_0008 .. " spell.\"")
-        var_0009 = utility_spell_1060(var_0007, var_0006)
+        var_0009 = spell_similar_to_func_0923_handles_s_1060(var_0007, var_0006)
         if var_0009 == 1 then
             add_dialogue("\"To agree!\"")
         elseif var_0009 == 2 then

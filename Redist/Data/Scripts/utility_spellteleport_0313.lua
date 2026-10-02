@@ -8,7 +8,7 @@ function utility_spellteleport_0313(eventid, objectref)
     elseif eventid == 2 then
         var_0001 = get_object_position(objectref) --- Guess: Gets position data
         apply_sprite_effect(-1, 2, 0, 0, var_0001[2], var_0001[1], 7) --- Guess: Applies sprite effect
-        utility_event_0271(objectref) --- External call to teleportation function
+        mech_endgame_trigger_0271(objectref) --- External call to teleportation function
         set_schedule_type(15, objectref) --- Guess: Sets object behavior
         move_object(objectref, {0, 1280, 1450}) --- Guess: Sets NPC target
     end

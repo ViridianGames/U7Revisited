@@ -3,7 +3,7 @@
 ---@param min_bounds table Array of minimum values for each index
 ---@param values table Array of values to check against bounds
 ---@return boolean in_bounds True if all values are within bounds, false otherwise
-function utility_unknown_1017(max_bounds, min_bounds, values)
+function utility_array_bounds_check_1017(max_bounds, min_bounds, values)
     local var_0003, var_0004, var_0005, var_0006
 
     var_0003 = {3, 2, 1}

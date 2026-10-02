@@ -10,10 +10,10 @@ function object_chair_0292(eventid, objectref)
                     if var_0000 == 652 then
                         object_unknown_0652(objectref)
                     elseif var_0000 == 840 then
-                        object_unknown_0840(objectref)
+                        object_flying_carpet_0840(objectref)
                     end
                 else
-                    var_0001 = utility_unknown_0947(objectref)
+                    var_0001 = utility_party_member_interactions_0947(objectref)
                 end
             end
         else

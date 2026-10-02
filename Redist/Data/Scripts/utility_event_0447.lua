@@ -8,7 +8,7 @@ function utility_event_0447(eventid, objectref)
         for i = 1, #var_0000 do
             var_0004 = var_0000[i]
             var_0005 = die_roll(var_0001, 1)
-            utility_unknown_1078(var_0004, var_0005)
+            utility_reduce_health_1078(var_0004, var_0005)
         end
     end
     return

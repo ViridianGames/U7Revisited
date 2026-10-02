@@ -7,7 +7,7 @@ function npc_runeb_0184(eventid, objectref)
         var_0000 = get_schedule(184)
         var_0001 = get_npc_name(184)
         if var_0000 == 7 then
-            var_0002 = utility_unknown_1020(185, 184)
+            var_0002 = utility_distance_under_20_1020(185, 184)
             if var_0002 then
                 add_dialogue("The gargoyle turns to you, frowning. He moves his massive hand to his mouth and use one finger to cross his lips. The Fellowship meeting is in progress.")
             else
@@ -56,7 +56,7 @@ function npc_runeb_0184(eventid, objectref)
                 end
                 remove_answer("Fellowship")
             elseif answer == "frame Quan" or answer == "altar destruction" then
-                utility_unknown_1041(100)
+                utility_set_party_quest_prop8_1041(100)
                 add_dialogue("\"To be sorry you know that. To need now to kill Sarpling.\" He grins at you.")
                 add_dialogue("\"To need now to kill you!\"")
                 set_schedule_type(0, var_0001)

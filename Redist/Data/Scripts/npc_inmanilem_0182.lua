@@ -31,7 +31,7 @@ function npc_inmanilem_0182(eventid, objectref)
             elseif answer == "heal" then
                 var_0001 = get_schedule(182)
                 if var_0001 == 2 or var_0001 == 3 or var_0001 == 4 or var_0001 == 5 then
-                    utility_unknown_0925(430, 10, 25)
+                    utility_gargoyle_healer_services_0925(430, 10, 25)
                 else
                     add_dialogue("\"To feel sorry, but to be busy with other things now. To ask you to come back when I have the time to heal you.\"")
                 end
@@ -79,7 +79,7 @@ function npc_inmanilem_0182(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        utility_unknown_1071(182)
+        utility_gargoyle_random_bark_1071(182)
     end
     return
 end

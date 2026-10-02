@@ -1,7 +1,7 @@
 --- Best guess: Handles pig NPC dialogue, saying "Oink" or performing actions based on flags.
 ---@param npc_id integer The NPC ID to check and perform actions on
 ---@param message string|table The message or data to process (can be string or table)
-function utility_unknown_1027(npc_id, message)
+function npc_pig_oink_1027(npc_id, message)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     if not npc_id_in_party(npc_id) then --- Guess: Checks if NPC is in party

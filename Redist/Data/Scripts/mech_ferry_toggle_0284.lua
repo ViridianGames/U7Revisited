@@ -1,5 +1,5 @@
 --- Best guess: Manages a ferry mechanic, toggling between two destinations (likely ports) using flag 407 to determine the route, updating the ferry's state with predefined coordinates.
-function utility_unknown_0284(eventid, objectref)
+function mech_ferry_toggle_0284(eventid, objectref)
     local var_0000, var_0001
 
     set_item_flag(26, objectref)

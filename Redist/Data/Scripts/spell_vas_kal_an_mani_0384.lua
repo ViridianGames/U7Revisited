@@ -1,5 +1,5 @@
 --- Best guess: Implements the Armageddon spell (Vas Kal An Mani), triggering catastrophic game state changes with a follow-up incantation.
-function utility_spell_0384(eventid, objectref)
+function spell_vas_kal_an_mani_0384(eventid, objectref)
     local var_0000, var_0001
 
     if eventid == 1 then

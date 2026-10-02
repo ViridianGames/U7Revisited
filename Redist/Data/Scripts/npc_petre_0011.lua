@@ -4,7 +4,7 @@ function npc_petre_0011(eventid, objectref)
 
     if eventid ~= 1 then
         if eventid == 0 then
-            utility_unknown_1070(-11)
+            utility_npc_random_bark_1070(-11)
         end
         add_dialogue("\"Goodbye,\" the man sniffs.")
         return

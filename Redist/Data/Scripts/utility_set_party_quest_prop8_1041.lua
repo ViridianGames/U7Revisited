@@ -1,6 +1,6 @@
 --- Best guess: Sets a quest-related property (ID 8) for all party members.
 ---@param value integer The value to set for property 8 (experience)
-function utility_unknown_1041(value)
+function utility_set_party_quest_prop8_1041(value)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     var_0001 = get_party_members() --- Guess: Gets party members

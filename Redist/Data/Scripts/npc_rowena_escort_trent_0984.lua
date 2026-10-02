@@ -1,5 +1,5 @@
 --- Best guess: Manages a dialogue with Rowena in Skara Brae, where she asks to be escorted to Trent, joining the party if space is available, with options to discuss Trent or end the conversation.
-function utility_unknown_0984()
+function npc_rowena_escort_trent_0984()
     start_conversation()
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009
 
@@ -7,26 +7,32 @@ function utility_unknown_0984()
     var_0001 = get_party_list2()
     var_0002 = get_npc_name(-144)
     if var_0002 and table.contains(var_0001, var_0002) then
-        remove_from_party(-144)
+        remove_from_party(144)
         add_dialogue("The starcrossed lovers rush into each other's ghostly embrace. For a time it's hard to see where one spirit ends and the other begins, then the two slowly turn to face you. \"Thou hast done so much for us, I hope that in helping us, thou hast been assisted in thine own quest.\" Rowena performs a curtsey then turns to regard her handsome husband.")
-        set_schedule_type(15, get_npc_name(-144))
+        set_schedule_type(144, 15)
         set_flag(422, true)
         return
     end
     add_dialogue("\"How can I help thee, " .. var_0000 .. "? I must get to Trent quickly.\" She looks impatient to be with her husband.")
     while true do
         add_answer({"bye", "Trent"})
-        if not unknown_XXXXH() then
-            if string.lower(unknown_XXXXH()) == "trent" then
-                add_dialogue("Her face lights up as you say her husband's name. \"He is the town smith. He hand crafted that music box thou didst use to awaken me from Horance's dark power.\"")
-                remove_answer("Trent")
-            elseif string.lower(unknown_XXXXH()) == "sacrifice" then
-                add_dialogue("\"I cannot do that to my poor Trent, at least not without seeing him one more time.\" She shakes her head in negation.")
-                set_flag(413, true)
-            elseif string.lower(unknown_XXXXH()) == "bye" then
-                add_dialogue("\"Yes, we must be getting to the smithy. Trent will be worrying about me.\"")
-                return
-            end
+        local answer = get_answer()
+        if type(answer) ~= "string" then
+            answer = get_answer()
+        end
+        if type(answer) ~= "string" then
+            break
+        end
+        local lower = string.lower(answer)
+        if lower == "trent" then
+            add_dialogue("Her face lights up as you say her husband's name. \"He is the town smith. He hand crafted that music box thou didst use to awaken me from Horance's dark power.\"")
+            remove_answer("Trent")
+        elseif lower == "sacrifice" then
+            add_dialogue("\"I cannot do that to my poor Trent, at least not without seeing him one more time.\" She shakes her head in negation.")
+            set_flag(413, true)
+        elseif lower == "bye" then
+            add_dialogue("\"Yes, we must be getting to the smithy. Trent will be worrying about me.\"")
+            return
         end
     end
     add_dialogue("\"This place is horrible. Wouldst thou be so kind as to take me to mine husband, Trent? He has a tendency to worry about me.\"")
@@ -41,7 +47,7 @@ function utility_unknown_0984()
         end
         if var_0006 < 8 then
             add_dialogue("She steps in line and motions for you to lead on.")
-            add_to_party(-144)
+            add_to_party(144)
             var_0005 = true
             return
         else

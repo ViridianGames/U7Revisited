@@ -1,5 +1,5 @@
 --- Best guess: Retrieves a bedroll, adjusting game state and inventory, with conditional item placement based on eventid.
-function utility_event_0292(eventid, objectref)
+function utility_retrieve_bedroll_0292(eventid, objectref)
     local var_0000, var_0001, var_0002
 
     if eventid == 1 then

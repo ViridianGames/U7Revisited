@@ -126,7 +126,7 @@ function npc_zelda_0152(eventid, objectref)
             elseif var_0004 == "Nelson's feelings" then
                 add_dialogue("\"Nelson? I never really thought about him.\" She shrugs. \"Hmm, I suppose he is not a bad second best. I will try,\" she says, smiling.")
                 set_flag(483, true)
-                utility_unknown_1041(20) --- Guess: Triggers quest event
+                utility_set_party_quest_prop8_1041(20) --- Guess: Triggers quest event
                 remove_answer("Nelson's feelings")
                 if not get_flag(474) then
                     add_answer("second best?")

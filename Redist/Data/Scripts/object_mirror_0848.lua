@@ -9,6 +9,6 @@ function object_mirror_0848(eventid, objectref)
         end
     elseif eventid == 2 then
         set_flag(815, true)
-        utility_unknown_0502(objectref)
+        npc_arcadion_dialogue_0502(objectref)
     end
 end

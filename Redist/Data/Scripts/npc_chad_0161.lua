@@ -26,7 +26,7 @@ function npc_chad_0161(eventid, objectref)
             if answer == "name" then
                 add_dialogue("\"Chad, at thy service, " .. var_0001 .. ". And what is thy name?\"")
                 remove_answer("name")
-                var_0004 = utility_unknown_1035({var_0001, var_0002, var_0000})
+                var_0004 = utility_select_option_string_1035({var_0001, var_0002, var_0000})
                 if var_0004 == var_0000 then
                     add_dialogue("\"Greetings, " .. var_0000 .. ". I am at thy service.\"")
                     set_flag(497, true)
@@ -41,7 +41,7 @@ function npc_chad_0161(eventid, objectref)
                     hide_npc(3)
                     switch_talk_to(161)
                     add_dialogue("\"Yes, yes! I can see that,\" he laughs. \"Then I must be Iolo!\"")
-                    var_0006 = npc_id_in_party(-1)
+                    var_0006 = npc_id_in_party(1)
                     switch_talk_to(3)
                     if var_0006 then
                         add_dialogue("\"No, rogue! He is Iolo!\" He nods to Iolo. \"Thou... art a blind idiot!\"")
@@ -74,7 +74,7 @@ function npc_chad_0161(eventid, objectref)
                 else
                     add_dialogue("\"Wilt thou pay the 45 gold for the training session?\"")
                     if ask_yes_no() then
-                        utility_unknown_0863(45, 4, {1})
+                        utility_training_chad_0863(45, 4, {1})
                     else
                         add_dialogue("\"Well, mayhap next time thou wilt be willing.\"")
                     end
@@ -85,7 +85,7 @@ function npc_chad_0161(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        utility_unknown_1070(161)
+        utility_npc_random_bark_1070(161)
     end
     return
 end

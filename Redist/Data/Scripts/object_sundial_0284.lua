@@ -13,7 +13,7 @@ function object_sundial_0284(eventid, objectref)
             item_say(" " .. var_0000 .. " o'clock", objectref)
         else
             var_0001 = get_player_name()
-            utility_unknown_1023("@^" .. var_0001 .. ", I believe the key word in sundial is `sun'.@", objectref)
+            utility_apply_value_action_alt_1023("@^" .. var_0001 .. ", I believe the key word in sundial is `sun'.@", objectref)
         end
     end
     return

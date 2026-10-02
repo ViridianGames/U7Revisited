@@ -14,7 +14,7 @@ function utility_shopweapons_0924()
     var_0008 = 1
     add_dialogue("\"To purchase what item?\"")
     while var_0000 do
-        var_0009 = utility_unknown_1036(var_0001)
+        var_0009 = utility_select_option_index_1036(var_0001)
         if var_0009 == 1 then
             add_dialogue("\"To be accepted.\"")
             var_0000 = false

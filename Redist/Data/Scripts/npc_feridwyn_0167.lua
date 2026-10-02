@@ -201,6 +201,6 @@ function npc_feridwyn_0167(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        utility_unknown_1070(NPC_FERIDWYN)
+        utility_npc_random_bark_1070(NPC_FERIDWYN)
     end
 end

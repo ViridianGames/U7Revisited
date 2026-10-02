@@ -1,5 +1,5 @@
 --- Best guess: Implements the mass untrap spell (Vas Des Sanct), disarming traps for nearby party members with visual effects.
-function utility_spell_0355(eventid, objectref)
+function spell_mass_untrap_vas_des_sanct_0355(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007
 
     if eventid == 1 then

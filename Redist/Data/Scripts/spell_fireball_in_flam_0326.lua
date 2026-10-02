@@ -1,5 +1,5 @@
 --- Best guess: Implements the fireball spell (In Flam), targeting and damaging specific item types with spell effects.
-function utility_spell_0326(eventid, objectref)
+function spell_fireball_in_flam_0326(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003
 
     if eventid == 1 then

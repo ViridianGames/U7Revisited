@@ -31,7 +31,7 @@ function npc_chantu_0017(eventid, objectref)
                 remove_answer("murder")
             elseif var_0002 == "services" then
                 add_dialogue("\"CALL GENERIC HEALER SCRIPT\"")
-                --utility_unknown_0864(400, 50, 30) --- Guess: Performs healing, curing, or resurrection
+                --utility_healer_services_0864(400, 50, 30) --- Guess: Performs healing, curing, or resurrection
             elseif var_0002 == "Fellowship" then
                 add_dialogue("The healer frowns. \"The Fellowship does not appreciate the efforts of healers in Britannia. Although they do admirable things,")
                 add_dialogue("The Fellowship is short-sighted when evaluating the need for healers. They believe that our work can be done through their so-called 'Triad of Inner Strength'.\"")
@@ -65,7 +65,7 @@ function npc_chantu_0017(eventid, objectref)
             end
             bark(17, var_0004)
         else
-            utility_unknown_1070(17) --- Guess: Triggers a game event
+            utility_npc_random_bark_1070(17) --- Guess: Triggers a game event
         end
     end
 end

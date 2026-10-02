@@ -4,14 +4,14 @@ function npc_saralek_0098(eventid, objectref)
 
     start_conversation()
     if eventid == 1 then
-        var_0000 = utility_unknown_1073(359, 359, 772, 1, 357) --- Guess: Checks inventory items
+        var_0000 = utility_party_has_items_1073(359, 359, 772, 1, 357) --- Guess: Checks inventory items
         switch_talk_to(98)
         if not get_flag(340) then
             if not var_0000 then
                 add_dialogue("The creature ignores you.")
                 abort()
             end
-            utility_unknown_0992() --- Guess: Checks Emp interaction
+            npc_ape_honey_request_0992() --- Guess: Checks Emp interaction
         end
         if not get_flag(317) then
             if not get_flag(316) then

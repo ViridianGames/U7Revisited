@@ -8,10 +8,10 @@ function utility_shop_0916(eventid, objectref)
             add_dialogue("@I -must- return his life to him. He -will- have a new heart!...@")
         end
         if not get_flag(808) then
-            utility_unknown_0918() --- External call to Bollux dialogue
+            npc_bollux_lost_duty_0918() --- External call to Bollux dialogue
         end
         if not get_flag(795) then
-            utility_unknown_0917() --- External call to Bollux dialogue
+            npc_bollux_restored_0917() --- External call to Bollux dialogue
         end
         if not get_flag(789) then
             set_flag(789, true)

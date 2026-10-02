@@ -1,17 +1,17 @@
 --- Best guess: Manages a gargoyle-led combat training session, checking player strength and gold, enhancing physical prowess if conditions are met.
 ---@param training_cost integer The gold cost for the training session
 ---@param max_stat_value integer The maximum stat value allowed for training
-function utility_unknown_0923(training_cost, max_stat_value)
+function utility_gargoyle_combat_training_0923(training_cost, max_stat_value)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C
 
-    var_0002 = utility_unknown_1056()
+    var_0002 = utility_select_party_member_for_training_1056()
     var_0003 = get_player_name(var_0002)
     var_0004 = var_0002 == -356 and "your" or "their"
     if var_0002 == 0 then
         return
     end
     var_0005 = 3
-    var_0006 = utility_unknown_1058(var_0005, var_0002, training_cost, max_stat_value)
+    var_0006 = utility_check_training_okay_1058(var_0005, var_0002, training_cost, max_stat_value)
     if var_0006 == 0 then
         add_dialogue("\"To be without the practical experience required to train at this time.\"")
     elseif var_0006 == 1 then
@@ -29,16 +29,16 @@ function utility_unknown_0923(training_cost, max_stat_value)
     add_dialogue("You pay " .. training_cost .. " gold, and the training session begins.")
     var_0009 = var_0002 == -356 and "you begin" or var_0003 .. " begins"
     add_dialogue("The gargoyle begins with some intense weight-lifting which eventually leads to target practice with throwing axes. At the end, " .. var_0009 .. " to notice a change in physical prowess and hand-eye coordination.")
-    var_000A = utility_unknown_1040(0, var_0002)
+    var_000A = utility_get_training_level_1040(0, var_0002)
     if var_000A < 30 then
-        utility_unknown_1044(1, var_0002)
+        utility_init_training_0_3_1044(1, var_0002)
     end
-    var_000B = utility_unknown_1040(1, var_0002)
+    var_000B = utility_get_training_level_1040(1, var_0002)
     if var_000B < 30 then
-        utility_unknown_1045(1, var_0002)
+        utility_train_dexterity_1045(1, var_0002)
     end
-    var_000C = utility_unknown_1040(4, var_0002)
+    var_000C = utility_get_training_level_1040(4, var_0002)
     if var_000C < 30 then
-        utility_unknown_1047(1, var_0002)
+        utility_train_combat_skill_1047(1, var_0002)
     end
 end

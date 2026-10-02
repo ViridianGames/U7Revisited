@@ -5,8 +5,8 @@ function utility_event_0439(eventid, objectref)
     if eventid == 3 then
         play_sound_effect(28)
         var_0000 = get_party_list2()
-        var_0001 = die_roll(utility_unknown_1067(var_0000), 1)
-        utility_event_0271(var_0000[var_0001])
+        var_0001 = die_roll(utility_counter_to_13_1067(var_0000), 1)
+        mech_endgame_trigger_0271(var_0000[var_0001])
     end
     return
 end

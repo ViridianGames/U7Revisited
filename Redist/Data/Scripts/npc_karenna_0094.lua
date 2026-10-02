@@ -4,7 +4,7 @@ function npc_karenna_0094(eventid, objectref)
 
     if eventid ~= 1 then
         if eventid == 0 then
-            utility_unknown_1070(94)
+            utility_npc_random_bark_1070(94)
         end
         add_dialogue("\"Farewell. May all thy journeys be interesting ones.\"")
         return
@@ -29,10 +29,17 @@ function npc_karenna_0094(eventid, objectref)
         add_dialogue("\"How good to see thee again,\" says Karenna.")
     end
     while true do
-        if cmps("name") then
+        local answer = get_answer()
+        if type(answer) ~= "string" then
+            answer = get_answer()
+        end
+        if type(answer) ~= "string" then
+            break
+        end
+        if answer == "name" then
             add_dialogue("\"I answer to Karenna, and to nothing else.\"")
             remove_answer("name")
-        elseif cmps("job") then
+        elseif answer == "job" then
             if not get_flag(287) then
                 add_dialogue("\"I am a teacher in Minoc, along with Jakher.\"")
                 add_answer({"Jakher", "Minoc", "teacher"})
@@ -41,18 +48,18 @@ function npc_karenna_0094(eventid, objectref)
                 set_flag(287, true)
                 add_answer("murders")
             end
-        elseif cmps("Minoc") then
+        elseif answer == "Minoc" then
             add_dialogue("\"Minoc was usually busy, but quiet. Then our town was bothered by this nonsense over Owen's monument, and now these murders.\"")
             add_answer({"murders", "monument"})
             remove_answer("Minoc")
-        elseif cmps("murders") then
+        elseif answer == "murders" then
             add_dialogue("\"Shocking! Such things do not normally happen here. It well proves the value of knowing how to defend oneself.\"")
             remove_answer("murders")
-        elseif cmps("Jakher") then
+        elseif answer == "Jakher" then
             add_dialogue("\"He is quite an able trainer in his own right. Not as skilled as myself, obviously. But I do think he is cute, though I bid thee, do not tell him that I spoke of this. It will only encourage him.\"")
-            var_0003 = npc_id_in_party(-95)
+            var_0003 = npc_id_in_party(95)
             if var_0003 then
-                switch_talk_to(-95)
+                switch_talk_to(95)
                 add_dialogue("\"Art thou speaking about me? Mine ears are burning!\"")
                 switch_talk_to(94)
                 add_dialogue("\"Nothing thou shouldst be concerned about, Jakher.\" She winks at you.")
@@ -61,11 +68,11 @@ function npc_karenna_0094(eventid, objectref)
             end
             set_flag(246, true)
             remove_answer("Jakher")
-        elseif cmps("teacher") then
+        elseif answer == "teacher" then
             if var_0002 == 27 then
                 add_dialogue("\"I teach that singular skill which enables one to learn all the lessons of life without losing it in the process. Combat!~~\"I would charge thee 20 gold for each training session. Art thou still interested?\"")
                 if ask_yes_no() then
-                    utility_unknown_0934(20, 4, {1})
+                    utility_combat_training_karenna_0934(20, 4, {1})
                 else
                     add_dialogue("\"Very well. If thou art fortunate thou wilt not have cause to regret it.\"")
                     remove_answer("teacher")
@@ -74,22 +81,22 @@ function npc_karenna_0094(eventid, objectref)
                 add_dialogue("\"Our establishment is now closed. Please come by during business hours.\"")
                 remove_answer("teacher")
             end
-        elseif cmps("monument") then
+        elseif answer == "monument" then
             add_dialogue("\"I understand it is to be thirty feet high and will display our local shipwright as he holds aloft a sextant. Thou wouldst not believe a thing as benign as this could create such trouble.\"")
             remove_answer("monument")
             add_answer("trouble")
-        elseif cmps("trouble") then
+        elseif answer == "trouble" then
             add_dialogue("\"It would seem the increase in hostilities amongst the fair citizenry over our shipwright's monument has filled much of the local populace with a burning desire to acquire combative skills. Business has never been better!\"")
             remove_answer("trouble")
             add_answer("hostilities")
-        elseif cmps("hostilities") then
+        elseif answer == "hostilities" then
             add_dialogue("\"Everyone in town is all up in arms about this and that. But surely others would know more of these local politics. I care not.\"")
             remove_answer("hostilities")
-        elseif cmps("attractive") then
+        elseif answer == "attractive" then
             add_dialogue("\"Jakher told thee he doth find me attractive? He denies it, of course, but I have known for years that he doth have feelings for me.\"")
-            var_0003 = npc_id_in_party(-95)
+            var_0003 = npc_id_in_party(95)
             if var_0003 then
-                switch_talk_to(-95)
+                switch_talk_to(95)
                 add_dialogue("\"What? What didst thou say?\"")
                 switch_talk_to(94)
                 add_dialogue("\"Nothing, Jakher. Go away.\" She giggles conspiratorially at you.")
@@ -97,14 +104,14 @@ function npc_karenna_0094(eventid, objectref)
                 switch_talk_to(94)
             end
             remove_answer("attractive")
-        elseif cmps("gypsies") then
+        elseif answer == "gypsies" then
             add_dialogue("\"Frederico, the leader of the Gypsies, and his wife, Tania, were good people. Why, the worst thing I ever knew either of them to do was a simple prank.\"")
             remove_answer("gypsies")
             add_answer("prank")
-        elseif cmps("prank") then
+        elseif answer == "prank" then
             add_dialogue("\"Once Frederico threw a rock through the window of the local Fellowship branch... Oh, well, I thought it was amusing!\"")
             remove_answer("prank")
-        elseif cmps("bye") then
+        elseif answer == "bye" then
             break
         end
     end

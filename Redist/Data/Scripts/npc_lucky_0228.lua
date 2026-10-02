@@ -36,7 +36,7 @@ function npc_lucky_0228(eventid, objectref)
                 if var_0001 == 7 then
                     add_dialogue("\"I charge 35 gold for a training session. Doth this meet with thine approval?\"")
                     if ask_yes_no() then
-                        utility_unknown_0950(35, 2)
+                        utility_training_lucky_sleight_0950(35, 2)
                     else
                         add_dialogue("Lucky shrugs. \"Thou wilt not find another trainer on the island!\"")
                         remove_answer("train")
@@ -65,7 +65,7 @@ function npc_lucky_0228(eventid, objectref)
             end
             bark(228, var_0003)
         else
-            utility_unknown_1070(228)
+            utility_npc_random_bark_1070(228)
         end
     end
     return

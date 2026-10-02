@@ -59,12 +59,9 @@ function npc_apollonia_0019(eventid, objectref)
                 add_dialogue("\"Our rooms are cheap. Only 6 gold per person per night. Want a room?\"")
                 var_0007 = select_option()
                 if var_0007 then
-                    var_0008 = get_party_members()
-                    var_0009 = 0
-                    for var_000A = 1, 8 do
-                        var_0009 = var_0009 + 1
-                    end
-                    var_000B = var_0009 * 6
+                    local party = get_party_members()
+                    local party_size = (type(party) == "table") and #party or 0
+                    var_000B = party_size * 6
                     var_000C = get_party_gold()
                     if var_000C >= var_000B then
                         -- Exult order: (count, shape, quality, frame [, temporary])
@@ -105,6 +102,6 @@ function npc_apollonia_0019(eventid, objectref)
             clear_answers()
         end
     elseif eventid == 0 then
-        utility_unknown_1070(19)
+        utility_npc_random_bark_1070(19)
     end
 end

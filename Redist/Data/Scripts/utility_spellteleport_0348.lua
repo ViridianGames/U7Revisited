@@ -7,10 +7,10 @@ function utility_spellteleport_0348(eventid, objectref)
     end
 
     var_0000 = object_select_modal()
-    var_0001 = utility_unknown_1069(var_0000)
+    var_0001 = utility_direction_to_target_1069(var_0000)
     halt_scheduled(objectref)
     bark(objectref, "@An Por@")
-    if utility_unknown_1030() and var_0000[1] ~= 0 then
+    if utility_condition_0044_1030() and var_0000[1] ~= 0 then
         var_0002 = set_to_attack(408, var_0000, objectref)
         var_0003 = execute_usecode_array(objectref, {17505, 17530, 17511, 17511, 8549, var_0001, 7769})
     else

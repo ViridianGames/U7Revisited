@@ -93,12 +93,12 @@ function npc_miranda_0070(eventid, objectref)
                 if var_0006 then
                     add_dialogue("\"Excellent! Let me see it.\"")
                     if not get_flag(222) then
-                        var_0007 = utility_unknown_1073(359, 4, 797, 1, 357) --- Guess: Checks for signed bill
+                        var_0007 = utility_party_has_items_1073(359, 4, 797, 1, 357) --- Guess: Checks for signed bill
                         if var_0007 then
                             var_0005 = remove_party_items(true, 359, 4, 797, 1) --- Guess: Deducts signed bill
                             if var_0005 then
                                 add_dialogue("\"It looks in order! We thank thee, Avatar!\"")
-                                utility_unknown_1041(20) --- Guess: Submits signed bill
+                                utility_set_party_quest_prop8_1041(20) --- Guess: Submits signed bill
                             else
                                 add_dialogue("\"Wait, where is it? Thou dost not have it. I hope thou hast not lost it. Thou shouldst go and find it. 'Tis an important document!\"")
                             end
@@ -118,6 +118,6 @@ function npc_miranda_0070(eventid, objectref)
         end
         add_dialogue("\"We shall see thee again soon, I hope, Avatar.\"")
     elseif eventid == 0 then
-        utility_unknown_1070(70) --- Guess: Triggers a game event
+        utility_npc_random_bark_1070(70) --- Guess: Triggers a game event
     end
 end

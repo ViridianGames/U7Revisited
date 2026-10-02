@@ -4,7 +4,7 @@ function npc_kristy_0031(eventid, objectref)
 
     if eventid ~= 1 then
         if eventid == 0 then
-            var_0001 = get_schedule_type(get_npc_name(-31))
+            var_0001 = get_schedule_type(get_npc_name(31))
             if var_0001 == 25 then
                 var_0002 = random2(4, 1)
                 if var_0002 == 1 then
@@ -24,8 +24,8 @@ function npc_kristy_0031(eventid, objectref)
     end
 
     start_conversation()
-    switch_talk_to(-31)
-    var_0000 = npc_id_in_party(-34)
+    switch_talk_to(31)
+    var_0000 = npc_id_in_party(34)
     add_answer({"bye", "job", "name"})
     if not get_flag(160) then
         add_dialogue("This is a cute toddler holding a baby doll.")
@@ -39,14 +39,14 @@ function npc_kristy_0031(eventid, objectref)
         if answer == "name" then
             add_dialogue("\"Kwisty.\"")
             if var_0000 then
-                switch_talk_to(-34)
+                switch_talk_to(34)
                 add_dialogue("\"Kristy, like Nicholas, is one of our orphans. She was found in an abandoned home in Paws by one of the Great Council members.\"")
                 --syntax error hide_npc34)
-                switch_talk_to(-31)
+                switch_talk_to(31)
             end
             remove_answer("name")
         elseif answer == "job" then
-            var_0001 = get_schedule_type(-31)
+            var_0001 = get_schedule_type(31)
             if var_0001 == 25 then
                 add_dialogue("\"Tag! Playing tag!\"")
                 add_dialogue("The toddler runs off in search of a nursery-mate.")
@@ -67,10 +67,10 @@ function npc_kristy_0031(eventid, objectref)
         elseif answer == "winner" then
             add_dialogue("\"I am winner!\" she proclaims loudly.")
             if var_0000 then
-                switch_talk_to(-34)
+                switch_talk_to(34)
                 add_dialogue("\"She keeps saying that. I am not sure what it means. Something to do with a competition.\"")
                 --syntax error hide_npc34)
-                switch_talk_to(-31)
+                switch_talk_to(31)
             end
             remove_answer("winner")
         elseif answer == "bye" then

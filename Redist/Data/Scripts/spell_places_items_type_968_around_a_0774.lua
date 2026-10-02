@@ -1,5 +1,5 @@
 --- Best guess: Places items (type 968) around a position, setting a spell duration, likely for an area effect.
-function utility_spell_0774(eventid, objectref, arg1)
+function spell_places_items_type_968_around_a_0774(eventid, objectref, arg1)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007
 
     var_0000 = objectref

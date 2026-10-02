@@ -1,6 +1,6 @@
 --- Best guess: Manages a newly lit torch, destroying it and setting properties.
 ---@param objectref integer The object reference ID to destroy and modify
-function utility_unknown_1029(objectref)
+function item_lit_torch_cleanup_1029(objectref)
     local var_0000, var_0001
 
     destroy_object(objectref) --- Guess: Destroys item

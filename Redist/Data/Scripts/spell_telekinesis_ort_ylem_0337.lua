@@ -1,5 +1,5 @@
 --- Best guess: Implements the telekinesis spell (Ort Ylem), manipulating specific item types (e.g., levers, switches).
-function utility_spell_0337(eventid, objectref)
+function spell_telekinesis_ort_ylem_0337(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009
 
     var_0000 = {723, 722}

@@ -1,7 +1,7 @@
 --- Best guess: Cures poison for a character, checking if they are poisoned, deducting gold, and displaying a success or failure message.
 ---@param cost integer The gold cost for the cure service
 ---@param npc_id integer The NPC ID to cure
-function utility_unknown_1054(cost, npc_id)
+function utility_cure_poison_1054(cost, npc_id)
     local var_0000, var_0001
 
     var_0000 = get_npc_name(npc_id)

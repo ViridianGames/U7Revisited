@@ -92,7 +92,7 @@ function npc_coop_0054(eventid, objectref)
                 add_dialogue("\"We sell all kinds of bows, along with arrows and bolts. If thou dost wish to buy something, please say so!\"")
                 remove_answer("bows and arrows")
             elseif var_0007 == "buy" then
-                utility_unknown_0867() --- Guess: Processes archery equipment purchase
+                utility_npc_health_combat_status_0867() --- Guess: Processes archery equipment purchase
             elseif var_0007 == "bye" then
                 break
             end
@@ -114,7 +114,7 @@ function npc_coop_0054(eventid, objectref)
             end
             bark(54, var_0008)
         else
-            utility_unknown_1070(54) --- Guess: Triggers a game event
+            utility_npc_random_bark_1070(54) --- Guess: Triggers a game event
         end
     end
 end

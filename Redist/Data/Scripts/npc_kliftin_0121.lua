@@ -146,7 +146,7 @@ function npc_kliftin_0121(eventid, objectref)
             end
             item_say(var_0007, 121) --- Guess: Item says message
         else
-            utility_unknown_1070(121) --- Guess: Triggers a game event
+            utility_npc_random_bark_1070(121) --- Guess: Triggers a game event
         end
     end
 end

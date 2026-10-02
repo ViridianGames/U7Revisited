@@ -5,10 +5,10 @@
 --- that shares a coordinate axis with the clicked piece, then runs 0797 on it.
 ---
 --- Lua arg order is reversed from the original usecode call (decompiler convention):
----   utility_unknown_0798(p8, y_off, x_off, frame_adj, other_shape, pos_idx, frame_need, shape_find, item)
+---   door_paired_stub_0798(p8, y_off, x_off, frame_adj, other_shape, pos_idx, frame_need, shape_find, item)
 --- Original: Func081E(item, shape_find, frame_need, pos_idx, other_shape, frame_adj, x_off, y_off, p8)
 
-function utility_unknown_0798(P0, P1, P2, P3, P4, P5, P6, P7, P8)
+function door_paired_stub_0798(P0, P1, P2, P3, P4, P5, P6, P7, P8)
     local y_off = P1 or 0
     local x_off = P2 or 0
     local frame_adj = P3 or 0
@@ -45,7 +45,7 @@ function utility_unknown_0798(P0, P1, P2, P3, P4, P5, P6, P7, P8)
     local match = nil
     for _, obj in ipairs(nearby) do
         if obj and obj ~= item then
-            local fr = utility_unknown_0795(obj)
+            local fr = utility_frame_mod4_0795(obj)
             if fr == frame_need then
                 local p = get_object_position(obj)
                 if p then

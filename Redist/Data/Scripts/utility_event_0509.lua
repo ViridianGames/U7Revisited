@@ -16,7 +16,7 @@ function utility_event_0509(eventid, objectref)
             end
         end
         var_0008 = get_object_position(objectref)
-        var_0009 = utility_unknown_0903(var_0000, var_0001, var_0008)
+        var_0009 = mech_item_explosion_create_0903(var_0000, var_0001, var_0008)
         if not var_0009 then
             remove_item(var_0000)
         end
@@ -43,7 +43,7 @@ function utility_event_0509(eventid, objectref)
         end
         var_0013 = delayed_execute_usecode_array(9, {17493, 7715, 1800}, var_0010)
         var_0008 = get_object_position(var_0010)
-        var_0009 = utility_unknown_0903(var_0000, var_0001, var_0008)
+        var_0009 = mech_item_explosion_create_0903(var_0000, var_0001, var_0008)
         if not var_0009 then
             remove_item(var_0000)
         end

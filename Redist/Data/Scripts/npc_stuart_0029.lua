@@ -4,8 +4,8 @@ function npc_stuart_0029(eventid, objectref)
 
     if eventid ~= 1 then
         if eventid == 0 then
-            var_0001 = get_schedule(-29)
-            var_0002 = get_schedule_type(get_npc_name(-29))
+            var_0001 = get_schedule(29)
+            var_0002 = get_schedule_type(get_npc_name(29))
             var_0003 = random2(4, 1)
             if var_0002 == 29 then
                 if var_0003 == 1 then
@@ -19,7 +19,7 @@ function npc_stuart_0029(eventid, objectref)
                 end
                 bark(-29, var_0004)
             else
-                utility_unknown_1070(-29)
+                utility_npc_random_bark_1070(29)
             end
         end
         add_dialogue("\"Goodbye. Be sure to come to the show when it opens!\"")
@@ -27,7 +27,7 @@ function npc_stuart_0029(eventid, objectref)
     end
 
     start_conversation()
-    switch_talk_to(-29)
+    switch_talk_to(29)
     add_answer({"bye", "job", "name"})
     if not get_flag(158) then
         add_dialogue("This actor has much stage presence and a booming voice.")
@@ -50,7 +50,7 @@ function npc_stuart_0029(eventid, objectref)
             remove_answer("Laurence")
         elseif answer == "Iolo" then
             add_dialogue("Stuart's feathers are obviously ruffled. \"Yes. I have been cast as second banana yet again! I am much more suited to play the Avatar, but did Raymundo cast me? Noooo!\"")
-            var_0000 = npc_id_in_party(-1)
+            var_0000 = npc_id_in_party(1)
             if var_0000 then
                 second_speaker(1, 0, "\"But thou art nothing like me!\"")
                 add_dialogue("\"And who art thou, pray tell?\"")

@@ -4,7 +4,7 @@ function npc_patterson_0043(eventid, objectref)
 
     if eventid ~= 1 then
         if eventid == 0 then
-            utility_unknown_1070(43)
+            utility_npc_random_bark_1070(43)
         end
         add_dialogue("Patterson nods his head at you.")
         return
@@ -14,7 +14,7 @@ function npc_patterson_0043(eventid, objectref)
     switch_talk_to(43)
     var_0000 = get_schedule(43)
     if var_0000 == 7 then
-        var_0001 = utility_unknown_1020(26, 43)
+        var_0001 = utility_distance_under_20_1020(26, 43)
         if var_0001 then
             add_dialogue("Patterson is concentrating on the Fellowship meeting and does not wish to speak.")
             return
@@ -50,7 +50,7 @@ function npc_patterson_0043(eventid, objectref)
             add_dialogue("The Mayor is sweating profusely. He looks at you with beady eyes. He knows he has been found out. His body slumps. He is mortified and ashamed.")
             add_dialogue("\"Thou hast discovered my... our secret. Please do not tell Judith. I... will end this. I swear. Candice -- we must stop meeting. I... I'm sorry.\"")
             add_dialogue("You decide to leave Patterson and Candice to work out what has happened, and you hope that the Mayor has learned something about honesty.")
-            utility_unknown_1041(20)
+            utility_set_party_quest_prop8_1041(20)
             return
         else
             add_dialogue("\"How may I help thee?\" Patterson asks.")
@@ -131,7 +131,7 @@ function npc_patterson_0043(eventid, objectref)
         elseif answer == "enemies" then
             add_dialogue("\"How should I know? Anyway, his body was found in an abandoned building which is no longer standing. It used to be a storehouse of some kind, up near the castle. It was torn down a couple of years ago. The body was mutilated beyond belief. It was as if someone tied the poor man down with stakes and cut off all of his limbs. Finster was then beheaded. It was almost... what is the word... ritualistic!\"")
             add_dialogue("\"And that is all I remember. No one was ever arrested for the crime.\"")
-            utility_unknown_1041(20)
+            utility_set_party_quest_prop8_1041(20)
             remove_answer("enemies")
         elseif answer == "bye" then
             break

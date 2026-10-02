@@ -31,11 +31,11 @@ function utility_ship_0272(eventid, objectref)
     end
     if var_0006 then
         switch_talk_to(167)
-        utility_unknown_0981() --- Guess: Displays NPC dialogue
+        npc_healer_rescue_shelter_0981() --- Guess: Displays NPC dialogue
         hide_npc(167)
     elseif var_0007 then
         switch_talk_to(168)
-        utility_unknown_0981() --- Guess: Displays NPC dialogue
+        npc_healer_rescue_shelter_0981() --- Guess: Displays NPC dialogue
         hide_npc(168)
     end
     if var_0008 then

@@ -55,6 +55,6 @@ function npc_ellen_0236(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        utility_unknown_1070(236)
+        utility_npc_random_bark_1070(236)
     end
 end

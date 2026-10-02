@@ -1,5 +1,5 @@
 --- Best guess: Manages post-quest dialogue with Adjhar, offering the Talisman of Love.
-function utility_unknown_0914(eventid, objectref)
+function npc_adjhar_talisman_love_0914(eventid, objectref)
     local var_0000, var_0001, var_0002
 
     start_conversation()

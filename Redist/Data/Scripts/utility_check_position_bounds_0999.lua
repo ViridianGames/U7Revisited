@@ -1,5 +1,5 @@
 --- Best guess: Checks if the player's position is within specific coordinate bounds, likely for triggering a quest or event.
-function utility_event_0999()
+function utility_check_position_bounds_0999()
     local var_0000, var_0001, var_0002
 
     var_0000 = get_object_position(-356)

@@ -162,7 +162,7 @@ function npc_brion_0248(eventid, objectref)
                 end
                 remove_answer("crystals")
             elseif answer == "have crystal" then
-                var_000F = utility_unknown_1073(359, 359, 746, 1, 357)
+                var_000F = utility_party_has_items_1073(359, 359, 746, 1, 357)
                 if var_000F then
                     add_dialogue("\"Thou hast the crystal? Excellent.\" He takes the crystal that you got from the adventurer and begins attaching it to his orrery viewer. Shortly he is finished.")
                     set_flag(493, false)
@@ -185,7 +185,7 @@ function npc_brion_0248(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        utility_unknown_1070(248)
+        utility_npc_random_bark_1070(248)
     end
     return
 end

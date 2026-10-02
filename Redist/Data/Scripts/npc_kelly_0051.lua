@@ -85,7 +85,7 @@ function npc_kelly_0051(eventid, objectref)
             end
             bark(51, var_0005)
         else
-            utility_unknown_1070(51) --- Guess: Triggers a game event
+            utility_npc_random_bark_1070(51) --- Guess: Triggers a game event
         end
     end
 end

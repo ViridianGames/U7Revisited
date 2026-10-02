@@ -140,7 +140,7 @@ function npc_nicodemus_0102(eventid, objectref)
                     var_000A = remove_party_items(false, 0, 359, 839, 1) --- Guess: Deducts item and adds item
                     var_000B = add_party_items(false, 1, 359, 839, 1) --- Guess: Checks inventory space
                     set_flag(301, true)
-                    utility_unknown_1041(100) --- Guess: Submits item or advances quest
+                    utility_set_party_quest_prop8_1041(100) --- Guess: Submits item or advances quest
                 else
                     add_dialogue("\"Where is it? Thou dost not have the hourglass!\"")
                 end

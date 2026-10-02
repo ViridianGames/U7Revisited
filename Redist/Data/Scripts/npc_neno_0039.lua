@@ -51,6 +51,6 @@ function npc_neno_0039(eventid, objectref)
         end
         add_dialogue("\"Farewell! Thou must watch the postings for our performance dates!\"")
     elseif eventid == 0 then
-        utility_unknown_1070(39) --- Guess: Triggers a game event
+        utility_npc_random_bark_1070(39) --- Guess: Triggers a game event
     end
 end

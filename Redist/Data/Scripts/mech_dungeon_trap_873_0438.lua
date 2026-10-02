@@ -1,5 +1,5 @@
 --- Best guess: Triggers effects on nearby items (type 873, within 20 units) based on their frame, cycling through specific sequences in a dungeon trap.
-function utility_unknown_0438(eventid, objectref)
+function mech_dungeon_trap_873_0438(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007
 
     debug_print("STARTED FUNCTION 0438")

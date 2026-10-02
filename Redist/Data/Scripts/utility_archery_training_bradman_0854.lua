@@ -1,5 +1,5 @@
 --- Best guess: Manages archery training with Bradman, checking gold and skill levels, and improving hand-eye coordination.
-function utility_unknown_0854(arg_0000, arg_0001)
+function utility_archery_training_bradman_0854(arg_0000, arg_0001)
     local var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B
 
     start_conversation()

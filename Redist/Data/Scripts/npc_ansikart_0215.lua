@@ -27,7 +27,7 @@ function npc_ansikart_0215(eventid, objectref)
             elseif answer == "buy" then
                 var_0000 = get_schedule_type(get_npc_name(215))
                 if var_0000 == 7 then
-                    utility_unknown_0833()
+                    utility_food_drink_purchase_0833()
                 else
                     add_dialogue("\"To apologize, but to ask you to return when I am open.\"")
                 end
@@ -91,7 +91,7 @@ function npc_ansikart_0215(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        utility_unknown_1071(215)
+        utility_gargoyle_random_bark_1071(215)
     end
     return
 end

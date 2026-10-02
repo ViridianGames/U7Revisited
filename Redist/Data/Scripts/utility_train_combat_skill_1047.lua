@@ -1,7 +1,7 @@
 --- Best guess: Improves an NPC's combat skill training level based on strength and dexterity.
 ---@param iterations integer The number of training iterations to perform
 ---@param npc_id integer The NPC ID to train
-function utility_unknown_1047(iterations, npc_id)
+function utility_train_combat_skill_1047(iterations, npc_id)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     var_0002 = 0

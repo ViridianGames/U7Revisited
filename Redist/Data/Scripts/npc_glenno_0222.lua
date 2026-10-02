@@ -79,7 +79,7 @@ function npc_glenno_0222(eventid, objectref)
                 remove_answer("The Baths")
                 add_answer({"fine artwork", "Community Room", "hosts or hostesses", "spring pools"})
             elseif answer == "drink" then
-                utility_unknown_0911()
+                utility_tavern_buy_drinks_0911()
             elseif answer == "hosts or hostesses" then
                 add_dialogue("\"They have come from all over Britannia to serve thine every wish! I, Glenno, have assured them that The Baths is the most prestigious establishment of its kind anywhere in the known world. It is probably the only establishment of its kind in the known world!\"")
                 remove_answer("hosts or hostesses")
@@ -121,7 +121,7 @@ function npc_glenno_0222(eventid, objectref)
             end
             bark(222, var_0009)
         else
-            utility_unknown_1070(222)
+            utility_npc_random_bark_1070(222)
         end
     end
     return

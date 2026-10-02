@@ -1,5 +1,5 @@
 --- Best guess: Initiates a quest to deliver a sealed package to Elynor in Minoc, checking inventory and setting quest flags.
-function utility_unknown_0849()
+function quest_package_to_elynor_0849()
     local var_0000, var_0001, var_0002, var_0003
 
     start_conversation()

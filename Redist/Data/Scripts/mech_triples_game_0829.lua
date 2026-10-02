@@ -1,12 +1,12 @@
 --- Best guess: Manages a Triples game, evaluating game state (via 083BH), determining outcomes, and distributing rewards based on money items (via 083CH).
-function utility_unknown_0829()
+function mech_triples_game_0829()
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E, var_000F, var_0010, var_0011, var_0012, var_0013, var_0014, var_0015, var_0016
 
     if get_schedule_type(-232) == 9 then
         set_schedule_type(10, -232)
     end
-    var_0000 = utility_unknown_0826()
-    var_0001 = utility_unknown_0827()
+    var_0000 = utility_triples_game_location_0826()
+    var_0001 = utility_triples_analyze_pieces_0827()
     var_0002 = var_0001[1]
     var_0003 = var_0001[2]
     var_0004 = utility_position_0828(0, var_0000)
@@ -17,7 +17,7 @@ function utility_unknown_0829()
     end
     var_0008 = "@Too bad...@"
     if #var_0004 == 0 then
-        utility_unknown_1075(0, var_0008, -232)
+        utility_check_status_add_container_1075(0, var_0008, -232)
     end
     if var_0002 == 6 then
         if var_0003 == 0 then
@@ -97,5 +97,5 @@ function utility_unknown_0829()
         end
         remove_item(var_0007)
     end
-    utility_unknown_1075(0, var_0008, -232)
+    utility_check_status_add_container_1075(0, var_0008, -232)
 end

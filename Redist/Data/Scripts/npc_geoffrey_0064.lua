@@ -55,6 +55,6 @@ function npc_geoffrey_0064(eventid, objectref)
         end
         add_dialogue("\"Have courage. Have faith. Be strong. Be wise.\"")
     elseif eventid == 0 then
-        utility_unknown_1070(64) --- Guess: Triggers a game event
+        utility_npc_random_bark_1070(64) --- Guess: Triggers a game event
     end
 end

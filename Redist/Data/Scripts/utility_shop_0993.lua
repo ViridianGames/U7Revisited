@@ -15,7 +15,7 @@ function utility_shop_0993()
     var_0008 = 1
     add_dialogue("\"To want to buy what item?\"")
     while var_0000 do
-        var_0009 =-pod utility_unknown_1036(var_0001)
+        var_0009 =-pod utility_select_option_index_1036(var_0001)
         if var_0009 == 1 then
             add_dialogue("\"To be acceptable.\"")
             var_0000 = false

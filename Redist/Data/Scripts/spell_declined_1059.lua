@@ -1,5 +1,5 @@
 --- Best guess: Handles spell purchase, checking gold and spellbook space, returning 0 (declined), 1 (success), 2 (no spellbook), 3 (insufficient gold), or 4 (no space).
-function utility_spell_1059(eventid, objectref, arg1, arg2)
+function spell_declined_1059(eventid, objectref, arg1, arg2)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     start_conversation()

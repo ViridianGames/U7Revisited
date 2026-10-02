@@ -4,7 +4,7 @@ function npc_amber_0030(eventid, objectref)
 
     if eventid ~= 1 then
         if eventid == 0 then
-            var_0002 = get_schedule_type(get_npc_name(-30))
+            var_0002 = get_schedule_type(get_npc_name(30))
             var_0003 = random2(4, 1)
             if var_0002 == 29 then
                 if var_0003 == 1 then
@@ -18,7 +18,7 @@ function npc_amber_0030(eventid, objectref)
                 end
                 bark(-30, var_0004)
             else
-                utility_unknown_1070(-30)
+                utility_npc_random_bark_1070(30)
             end
         end
         add_dialogue("\"Adieu!\"")
@@ -26,10 +26,10 @@ function npc_amber_0030(eventid, objectref)
     end
 
     start_conversation()
-    switch_talk_to(-30)
-    var_0000 = get_schedule(-30)
+    switch_talk_to(30)
+    var_0000 = get_schedule(30)
     add_answer({"bye", "job", "name"})
-    var_0001 = npc_id_in_party(-3)
+    var_0001 = npc_id_in_party(3)
     if get_flag(107) or var_0001 then
         add_answer("Shamino")
     end
@@ -72,7 +72,7 @@ function npc_amber_0030(eventid, objectref)
             add_dialogue("\"I asked Raymundo about this and he threw a tantrum. He said that it would not be historically accurate. Ha! As if that were something of any significance!\"")
             remove_answer("queen")
         elseif answer == "Shamino" then
-            var_0001 = npc_id_in_party(-3)
+            var_0001 = npc_id_in_party(3)
             if var_0001 then
                 add_dialogue("\"Poo Poo Head!\" she cries. She then rushes to him and kisses him full on the mouth. Shamino turns red and shuffles his feet.")
                 second_speaker(3, 0, "\"Not in front of the Avatar, Poo!\"")

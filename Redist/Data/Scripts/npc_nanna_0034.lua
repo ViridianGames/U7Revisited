@@ -9,7 +9,7 @@ function npc_nanna_0034(eventid, objectref)
         var_0001 = get_schedule_type(34) --- Guess: Gets object state
         var_0002 = is_player_wearing_fellowship_medallion() --- Guess: Checks Fellowship membership
         if var_0000 == 7 then
-            var_0003 = utility_unknown_1020(26, 34) --- Guess: Checks time for Fellowship meeting
+            var_0003 = utility_distance_under_20_1020(26, 34) --- Guess: Checks time for Fellowship meeting
             if var_0003 then
                 add_dialogue("Nanna gives you a stern look for bothering her during The Fellowship meeting, much like the look of an elementary school teacher you once had.")
             else
@@ -102,6 +102,6 @@ function npc_nanna_0034(eventid, objectref)
         end
         add_dialogue("\"Good day! Do come back and visit again soon!\"")
     elseif eventid == 0 then
-        utility_unknown_1070(34) --- Guess: Triggers a game event
+        utility_npc_random_bark_1070(34) --- Guess: Triggers a game event
     end
 end

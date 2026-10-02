@@ -9,7 +9,7 @@ function npc_mikos_0097(eventid, objectref)
     switch_talk_to(97)
     var_0000 = get_schedule(97) --- Guess: Checks game state or timer
     if var_0000 == 7 then
-        var_0001 = utility_unknown_1020(81, 97) --- Guess: Checks NPC time interaction
+        var_0001 = utility_distance_under_20_1020(81, 97) --- Guess: Checks NPC time interaction
         if var_0001 then
             add_dialogue("Mikos is lost in meditation at the Fellowship meeting and does not hear you.")
         else

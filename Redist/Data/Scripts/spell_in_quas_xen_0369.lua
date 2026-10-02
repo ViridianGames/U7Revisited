@@ -1,5 +1,5 @@
 --- Best guess: Implements the clone spell (In Quas Xen), duplicating a valid item with specific status checks.
-function utility_spell_0369(eventid, objectref)
+function spell_in_quas_xen_0369(eventid, objectref)
     local var_0000, var_0001, var_0002
 
     if eventid == 1 then

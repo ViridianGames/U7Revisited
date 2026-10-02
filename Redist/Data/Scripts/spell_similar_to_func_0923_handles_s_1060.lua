@@ -1,5 +1,5 @@
 --- Best guess: Similar to func_0923, handles spell purchase with slight dialogue variation.
-function utility_spell_1060(eventid, objectref, arg1, arg2)
+function spell_similar_to_func_0923_handles_s_1060(eventid, objectref, arg1, arg2)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     start_conversation()

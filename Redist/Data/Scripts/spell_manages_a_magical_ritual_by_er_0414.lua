@@ -1,5 +1,5 @@
 --- Best guess: Manages a magical ritual by Erethian, involving dialogue, ether surge effects, container item additions, and explosions, likely for a significant spell or quest event.
-function utility_spell_0414(eventid, objectref, arg1)
+function spell_manages_a_magical_ritual_by_er_0414(eventid, objectref, arg1)
     local var_0000, var_0001
 
     start_conversation()

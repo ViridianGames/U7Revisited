@@ -1,5 +1,5 @@
 --- Best guess: Implements the protection spell (Uus Sanct), applying a protective effect to a target with visual effects.
-function utility_spell_0341(eventid, objectref)
+function spell_uus_sanct_0341(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
     if eventid == 1 then

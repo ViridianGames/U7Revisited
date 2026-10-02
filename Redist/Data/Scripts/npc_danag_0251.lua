@@ -6,7 +6,7 @@ function npc_danag_0251(eventid, objectref)
         switch_talk_to(251)
         var_0000 = get_schedule(251)
         var_0001 = is_player_wearing_fellowship_medallion()
-        var_0002 = utility_unknown_1073(1, 359, 981, 1, 357)
+        var_0002 = utility_party_has_items_1073(1, 359, 981, 1, 357)
         if var_0000 == 7 then
             add_dialogue("Danag nods his head at you. \"I do not mean to be impolite, but I am concentrating on the games. I wish to win a bundle tonight!\"")
             add_dialogue("He rubs his hand with glee.")
@@ -122,7 +122,7 @@ function npc_danag_0251(eventid, objectref)
                     add_dialogue("The Cube vibrates.")
                     add_dialogue("\"Man with a Hook? That's his name! 'Hook'! He lives here on the island! In fact, his quarters are in the secret catacombs behind the House of Games! Thou canst reach it by asking Sintag the guard about Hook. Of course, thou dost know that Hook is The Fellowship's chief executioner... along with his assistant, the gargoyle Forskis.\"")
                     add_answer({"Forskis", "executioner"})
-                    utility_unknown_1041(100)
+                    utility_set_party_quest_prop8_1041(100)
                 else
                     add_dialogue("\"A pirate with a hook for a hand? No... I do not believe I know him. There are many pirates on this island. Many of them are missing appendages, too!\"")
                 end
@@ -147,7 +147,7 @@ function npc_danag_0251(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        utility_unknown_1070(251)
+        utility_npc_random_bark_1070(251)
     end
     return
 end

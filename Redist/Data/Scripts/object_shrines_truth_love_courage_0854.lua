@@ -1,5 +1,5 @@
 --- Best guess: Manages interaction with the Shrines of Truth, Love, and Courage, providing dialogue and boons based on quest progress and flags.
-function object_unknown_0854(eventid, objectref)
+function object_shrines_truth_love_courage_0854(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006
 
     if eventid == 1 then
@@ -71,7 +71,7 @@ function object_unknown_0854(eventid, objectref)
             switch_talk_to(287, 2)
             add_dialogue("\"Well done, mighty warrior! The unsurpassed Courage which flows through thy veins could be none other than that of the Avatar. Thou hast proven thyself worthy of the reward of Courage with Valor, Sacrifice, Honor, and Spirituality... Receive it now in Humility.\"")
         end
-        hide_npc(-287)
+        hide_npc(287)
         var_0002 = execute_usecode_array(-356, {8033, 2, 17447, 8044, 10, 17447, 8045, 2, 17447, 8044, 2, 7719})
         var_0001 = execute_usecode_array(objectref, {854, 8021, 8, 7719})
     elseif eventid == 2 then

@@ -1,5 +1,5 @@
 --- Best guess: Implements the sleep spell (An Zu), targeting a party member and applying a sleep effect with animation.
-function utility_spell_0320(eventid, objectref)
+function spell_sleep_an_zu_0320(eventid, objectref)
     local var_0000, var_0001, var_0002
 
     if eventid == 1 then

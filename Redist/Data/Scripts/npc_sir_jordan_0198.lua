@@ -7,8 +7,8 @@ function npc_sir_jordan_0198(eventid, objectref)
         var_0000 = get_lord_or_lady()
         var_0001 = get_player_name()
         var_0002 = "Avatar"
-        var_0003 = npc_id_in_party(-1)
-        var_0004 = npc_id_in_party(-3)
+        var_0003 = npc_id_in_party(1)
+        var_0004 = npc_id_in_party(3)
         start_conversation()
         add_answer({"bye", "job", "name"})
         if get_flag(606) and not get_flag(609) then
@@ -17,7 +17,7 @@ function npc_sir_jordan_0198(eventid, objectref)
         if not get_flag(623) then
             add_dialogue("You see a man who, despite being blind, quickly acknowledges you.")
             add_dialogue("\"I am Jordan. Sir Jordan. And thou art?\"")
-            var_0006 = utility_unknown_1035({var_0002, var_0001})
+            var_0006 = utility_select_option_string_1035({var_0002, var_0001})
             if var_0006 == var_0001 then
                 add_dialogue("\"My pleasure, \" .. var_0001 .. \".\" He shakes your hand.")
                 var_0005 = var_0001
@@ -27,21 +27,21 @@ function npc_sir_jordan_0198(eventid, objectref)
                 var_0005 = var_0002
                 set_flag(603, true)
                 if not var_0003 then
-                    switch_talk_to(-1)
+                    switch_talk_to(1)
                     add_dialogue("\"'Tis true, Sir Jordan. He is the Avatar.\"")
                     hide_npc(1)
-                    switch_talk_to(-198)
+                    switch_talk_to(198)
                     add_dialogue("Jordan smiles. \"I see. And who wouldst thou be? Shamino?\"")
                     if var_0004 then
-                        switch_talk_to(-1)
+                        switch_talk_to(1)
                         add_dialogue("\"No.\" He points to Shamino. \"He is. I am Iolo!\"")
                         hide_npc(1)
-                        switch_talk_to(-198)
+                        switch_talk_to(198)
                     else
-                        switch_talk_to(-1)
+                        switch_talk_to(1)
                         add_dialogue("\"No. I am Iolo, not Shamino!\"")
                         hide_npc(1)
-                        switch_talk_to(-198)
+                        switch_talk_to(198)
                     end
                     add_dialogue("\"Of course!\" He says, patronizingly. \"How could I not recognize the great Iolo.\"")
                 end
@@ -76,13 +76,13 @@ function npc_sir_jordan_0198(eventid, objectref)
                 add_dialogue("\"The great archer himself, Iolo, started that branch more than two hundred years ago.\"")
                 if var_0003 then
                     add_dialogue("*")
-                    switch_talk_to(-1)
+                    switch_talk_to(1)
                     add_dialogue("\"I, er, thank thee for thy compliment.\"")
-                    switch_talk_to(-198)
+                    switch_talk_to(198)
                     add_dialogue("\"'Twould mean more wert thou Iolo!\"")
-                    switch_talk_to(-1)
+                    switch_talk_to(1)
                     add_dialogue("\"Listen, here, rogue, I truly -am-...\"")
-                    switch_talk_to(-198)
+                    switch_talk_to(198)
                     add_dialogue("\"Yes, yes, I know. Thou really -art- Iolo... And I am Lord British!\"")
                     hide_npc(1)
                 end
@@ -119,7 +119,7 @@ function npc_sir_jordan_0198(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        utility_unknown_1070(198)
+        utility_npc_random_bark_1070(198)
     end
     return
 end

@@ -1,6 +1,6 @@
 --- Ask the Avatar about combat preferences (enchantment vs valor, melee vs ranged).
 --- Sets flag 350 when the Avatar prefers mystical enchantment.
-function utility_unknown_1011(party_members)
+function npc_shamino_combat_prefs_1011(party_members)
     save_answers()
     clear_answers()
     add_answer({"bye", "valor in arms", "enchantment"})

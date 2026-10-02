@@ -14,7 +14,7 @@ function filter_party_members(party_list, exclude)
     return out
 end
 
-function utility_unknown_1025()
+function utility_find_valid_npc_default_356_1025()
     -- Prefer numeric party NPC ids when available
     local party_ids = (get_party_list2 and get_party_list2()) or {}
     for _, id in ipairs(party_ids) do

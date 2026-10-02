@@ -32,12 +32,12 @@ function object_book_0251(eventid, objectref)
             end
         end
         -- call [0001] (080DH, unmapped)
-        if not utility_unknown_0781() then
+        if not utility_check_party_seated_0781() then
             -- call [0002] (0831H, unmapped)
             utility_gangplank_0817(objectref)
         else
             -- call [0003] (08B3H, unmapped)
-            var_0004 = utility_unknown_0947(aidx(var_0000, 1))
+            var_0004 = utility_party_member_interactions_0947(aidx(var_0000, 1))
             -- calli 0089, 2 (unmapped)
             set_item_flag(20, objectref)
         end

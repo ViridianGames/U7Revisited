@@ -36,7 +36,7 @@ function npc_denby_0049(eventid, objectref)
                 if var_0001 == 7 then
                     add_dialogue("\"My fee for training is 75 gold. Does this meet with the approval of thy purse strings?\"")
                     if select_option() then
-                        utility_unknown_0885(75, 6, 2) --- Guess: Trains magic-enhanced combat skill
+                        utility_stat_training_str_dex_int_0885(75, 6, 2) --- Guess: Trains magic-enhanced combat skill
                     else
                         add_dialogue("Denby bows. \"I am sorry my fee is too high for thee. Perhaps at another time thou wilt realize the value of my services.\"")
                     end
@@ -50,6 +50,6 @@ function npc_denby_0049(eventid, objectref)
         end
         add_dialogue("Denby puts his palms together and bows.")
     elseif eventid == 0 then
-        utility_unknown_1070(49) --- Guess: Triggers a game event
+        utility_npc_random_bark_1070(49) --- Guess: Triggers a game event
     end
 end

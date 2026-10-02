@@ -1,5 +1,5 @@
 --- Best guess: Processes a pumpkin-selling transaction, checking inventory and rewarding gold.
-function utility_unknown_0855()
+function utility_pumpkin_sale_0855()
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008
 
     start_conversation()

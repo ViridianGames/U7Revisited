@@ -13,15 +13,15 @@ function object_labburner_0307(eventid, objectref)
             var_0007 = get_object_position(var_0008)
             var_000A = get_object_frame(var_0008)
             if var_0007[1] == var_0000[1] - 3 and var_0007[2] == var_0000[2] and var_0007[3] == var_0000[3] and table.contains(var_0005, var_000A) then
-                var_0005 = utility_unknown_0770(var_0005, var_000A)
+                var_0005 = utility_array_exclude_value_0770(var_0005, var_000A)
                 var_0002 = var_0008
             end
             if var_0007[1] == var_0000[1] and var_0007[2] == var_0000[2] - 2 and var_0007[3] == var_0000[3] and table.contains(var_0005, var_000A) then
-                var_0005 = utility_unknown_0770(var_0005, var_000A)
+                var_0005 = utility_array_exclude_value_0770(var_0005, var_000A)
                 var_0003 = var_0008
             end
             if var_0007[1] == var_0000[1] and var_0007[2] == var_0000[2] and var_0007[3] == var_0000[3] and table.contains(var_0005, var_000A) then
-                var_0005 = utility_unknown_0770(var_0005, var_000A)
+                var_0005 = utility_array_exclude_value_0770(var_0005, var_000A)
                 var_0004 = var_0008
             end
         end

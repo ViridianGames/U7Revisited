@@ -1,5 +1,5 @@
 --- Best guess: Generates random NPC dialogue for an NPC (ID -244) in a specific state (ID 11), expressing frustration or confusion.
-function utility_unknown_0859()
+function utility_npc_ambient_dialogue_0859()
     local var_0000, var_0001, var_0002, var_0003
 
     var_0000 = get_npc_name(-244)

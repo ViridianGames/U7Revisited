@@ -1,5 +1,5 @@
 --- Best guess: Adjusts an item's frame based on player gender and current frame, likely for visual customization.
-function utility_unknown_0893()
+function utility_frame_by_gender_0893()
     local var_0000, var_0001, var_0002
 
     var_0000 = create_object(854) --- Guess: Creates item

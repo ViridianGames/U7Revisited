@@ -24,7 +24,7 @@ function npc_yvella_0212(eventid, objectref)
         if not get_flag(657) then
             add_dialogue("The matronly woman you see has a look of concern on her face.")
             add_dialogue("\"Good day, \" .. var_0001 .. \". I am Yvella.\" She curtseys. \"Might I know thy name?\"")
-            var_0006 = utility_unknown_1035({var_0004, var_0000})
+            var_0006 = utility_select_option_string_1035({var_0004, var_0000})
             if var_0006 == var_0000 then
                 add_dialogue("\"Pleased to meet thee, \" .. var_0000 .. \".\"")
                 set_flag(646, true)
@@ -136,7 +136,7 @@ function npc_yvella_0212(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        utility_unknown_1070(212)
+        utility_npc_random_bark_1070(212)
     end
     return
 end

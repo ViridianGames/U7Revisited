@@ -6,7 +6,7 @@ function utility_event_0455(eventid, objectref)
         var_0000 = {90, 82, 81, 91, 93}
         for i = 1, #var_0000 do
             var_0003 = var_0000[i]
-            utility_unknown_1087(11, var_0003)
+            utility_remove_npc_from_party_1087(11, var_0003)
         end
     end
     return

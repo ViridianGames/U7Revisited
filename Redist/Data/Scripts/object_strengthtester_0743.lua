@@ -12,7 +12,7 @@ function object_strengthtester_0743(eventid, objectref)
         utility_position_0808(7, objectref, 743, var_0002, var_0001, var_0000, objectref)
     elseif eventid == 7 then
         -- call [0001] (0827H, unmapped)
-        var_0003 = utility_unknown_0807(objectref, 356)
+        var_0003 = utility_array_set_index_0807(objectref, 356)
         var_0004 = execute_usecode_array(356, {17505, 17516, 8449, var_0003, 7769})
         var_0005 = get_npc_property(356, 0)
         if var_0005 >= 0 and var_0005 < 4 then
@@ -40,7 +40,7 @@ function object_strengthtester_0743(eventid, objectref)
         end
         if var_0005 > 7 then
             var_0004 = delayed_execute_usecode_array(objectref, {var_0005 + 1, 24, 7715})
-            if not npc_id_in_party(44) and not utility_unknown_1079(44) then
+            if not npc_id_in_party(44) and not utility_npc_eligibility_check_1079(44) then
                 bark(44, "@Avatar wins a Dragon!@")
                 var_0004 = add_party_items(false, 0, 359, 742, 1)
             end

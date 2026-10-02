@@ -1,9 +1,9 @@
 --- Confrontational dialogue when Tseramed believes the Avatar lied about identity.
-function utility_unknown_1010(player_name, fellowship_leader)
+function npc_deception_apology_1010(player_name, fellowship_leader)
     save_answers()
     local confessed = false
     local demand_blood = true
-    local insult = utility_unknown_1009("")
+    local insult = utility_random_insult_1009("")
     add_dialogue("\"" .. player_name .. "! Thou " .. insult .. "!\"")
     local stakes = {"life", "head", "blood"}
     local stake = stakes[math.random(1, #stakes)]
@@ -25,7 +25,7 @@ function utility_unknown_1010(player_name, fellowship_leader)
         local lower = string.lower(answer)
 
         if lower == string.lower(forgive) then
-            insult = utility_unknown_1009("")
+            insult = utility_random_insult_1009("")
             add_dialogue("\"Forgive thee! What might I forgive in one such as thee, " .. insult .. "?\"")
             remove_answer(wrath)
             remove_answer(forgive)
@@ -36,7 +36,7 @@ function utility_unknown_1010(player_name, fellowship_leader)
             remove_answer({"My crime", "My deed", "My lie"})
             add_dialogue("\"Of what lie speakest thou? Art thou not " .. player_name .. "?\"")
             if ask_yes_no() then
-                insult = utility_unknown_1009("")
+                insult = utility_random_insult_1009("")
                 add_dialogue("\"Perhaps thou art not " .. player_name .. ", for I have never seen the " .. insult .. ". Confess now thy true identity!\"")
                 add_answer(fellowship_leader)
                 if not get_flag(353) then
@@ -58,8 +58,8 @@ function utility_unknown_1010(player_name, fellowship_leader)
             confessed = true
             set_flag(353, true)
         elseif lower == string.lower(fellowship_leader) then
-            insult = utility_unknown_1009("")
-            local insult2 = utility_unknown_1009(insult)
+            insult = utility_random_insult_1009("")
+            local insult2 = utility_random_insult_1009(insult)
             add_dialogue("\"" .. fellowship_leader .. "! Perhaps honesty shall lift thee above the " .. insult .. " " .. player_name .. "...\"")
             confessed = true
             break
@@ -67,8 +67,8 @@ function utility_unknown_1010(player_name, fellowship_leader)
     end
 
     if not confessed then
-        insult = utility_unknown_1009("")
-        local insult2 = utility_unknown_1009(insult)
+        insult = utility_random_insult_1009("")
+        local insult2 = utility_random_insult_1009(insult)
         if demand_blood then
             add_dialogue("^" .. insult .. "! ^" .. insult2 .. "! Thy soul shall wail in the catacombs of the netherworld!")
             set_schedule_type(10, 0)

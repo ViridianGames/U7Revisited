@@ -72,6 +72,6 @@ function npc_judith_0040(eventid, objectref)
         end
         add_dialogue("Judith goes back to her instrument after a smile and a wave.")
     elseif eventid == 0 then
-        utility_unknown_1070(40) --- Guess: Triggers a game event
+        utility_npc_random_bark_1070(40) --- Guess: Triggers a game event
     end
 end

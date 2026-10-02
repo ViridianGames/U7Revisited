@@ -1,10 +1,10 @@
 --- Best guess: Advances Horance's Well of Souls quest dialogue, checking party members and flags to guide the player toward finding a sacrificial spirit.
-function utility_unknown_0943()
+function npc_horance_well_of_souls_0943()
     start_conversation()
     local var_0001, var_0002, var_0003
 
     switch_talk_to(141, 1)
-    if not npc_id_in_party(-147) then
+    if not npc_id_in_party(147) then
         add_dialogue("\"Is there a problem? Art thou confounded by thy task?\"")
         var_0001 = ask_yes_no()
         if not var_0001 then
@@ -23,7 +23,7 @@ function utility_unknown_0943()
         end
     elseif not get_flag(419) then
         add_dialogue("\"Very good, now thou shalt take the Mayor to the well and he must enter it of his own free will. When he does that, the souls of the island and the well will be free to go on to their destiny. Unfortunately, Mayor Forsythe will be lost for all time.\"")
-        var_0003 = npc_id_in_party(-147)
+        var_0003 = npc_id_in_party(147)
         if var_0003 then
             add_dialogue(" He looks sadly at the ghostly gentleman.")
         end
@@ -31,7 +31,7 @@ function utility_unknown_0943()
     elseif not get_flag(427) then
         utility_shop_0945()
     else
-        utility_unknown_0946()
+        npc_horance_post_quest_0946()
     end
     return
 end

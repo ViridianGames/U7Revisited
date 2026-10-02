@@ -5,7 +5,7 @@ function object_chair_0873(eventid, objectref)
     if eventid == 1 then
         var_0000 = get_container(objectref)
         if var_0000 then
-            utility_unknown_0778(873, objectref)
+            utility_party_seating_0778(873, objectref)
         end
     end
 end

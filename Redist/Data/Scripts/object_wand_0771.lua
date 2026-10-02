@@ -11,7 +11,7 @@ function object_wand_0771(eventid, objectref)
         close_gumps()
         var_0001 = get_object_shape(var_0000)
         if var_0001 == 914 then
-            var_0002 = utility_unknown_1069(var_0000)
+            var_0002 = utility_direction_to_target_1069(var_0000)
             var_0003 = execute_usecode_array(var_0000, {7981, 5, 7719})
             var_0003 = set_to_attack(704, var_0000, -356)
             var_0003 = execute_usecode_array(-356, {17530, 17505, 17511, 8449, var_0002, 7769})
@@ -23,7 +23,7 @@ function object_wand_0771(eventid, objectref)
             else
                 switch_talk_to(26)
                 add_dialogue("The wand glows faintly. Batlin smirks. \"Not yet, Avatar.\"")
-                hide_npc(-26)
+                hide_npc(26)
                 abort()
             end
         end

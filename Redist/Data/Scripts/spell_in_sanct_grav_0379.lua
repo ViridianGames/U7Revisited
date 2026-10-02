@@ -1,5 +1,5 @@
 --- Best guess: Manages the "In Sanct Grav" spell, creating a protective wall or barrier (ID 768) at a selected location, with a fallback effect if the spell fails.
-function utility_spell_0379(eventid, objectref)
+function spell_in_sanct_grav_0379(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A
 
     var_0000 = false
@@ -15,7 +15,7 @@ function utility_spell_0379(eventid, objectref)
     var_0004 = var_0001[4]
     var_0005 = {var_0002, var_0003, var_0004}
     var_0006 = is_not_blocked(0, 768, var_0005)
-    if utility_unknown_1030() and var_0006 then
+    if utility_condition_0044_1030() and var_0006 then
         var_0007 = execute_usecode_array(objectref, {17511, 17510, 7781})
         var_0008 = create_new_object(768)
         if not var_0008 then

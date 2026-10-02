@@ -1,5 +1,5 @@
 --- Best guess: Manages a state counter, adjusting its value based on comparisons and flag 743, returning the final state.
-function utility_unknown_0779()
+function utility_state_counter_0779()
     local var_0000
 
     if var_0000 < 5 then

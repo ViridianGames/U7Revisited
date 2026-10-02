@@ -52,7 +52,7 @@ function npc_greg_0038(eventid, objectref)
                 remove_answer("saved his life")
             elseif var_0004 == "Lord British" then
                 add_dialogue("\"This is Lord British's favorite provisionary shop. He told me so himself. All sorts of famous adventurers pass through these doors. Why, just last week, we had the Avatar himself in this, my very own store!\"")
-                var_0004 = utility_unknown_1073(359, 359, 838, 1, 356) --- Guess: Verifies Avatar identity
+                var_0004 = utility_party_has_items_1073(359, 359, 838, 1, 356) --- Guess: Verifies Avatar identity
                 if var_0004 then
                     add_dialogue("\"Why, now that I mention it, he was dressed a lot like thou art. Yes, he was.\"")
                     add_answer("dressed like Avatar")
@@ -81,7 +81,7 @@ function npc_greg_0038(eventid, objectref)
                     add_dialogue("\"I am dreadfully sorry but the Provisioner's Shop is currently closed. Do return at noon when it shall be open once again.\"")
                 else
                     add_dialogue("\"As I say, we have everything thou dost need to have a jolly splendid adventure!\"")
-                    utility_unknown_0921() --- Guess: Processes provision purchase
+                    utility_tools_purchase_0921() --- Guess: Processes provision purchase
                 end
                 remove_answer("buy")
             elseif var_0004 == "bye" then
@@ -105,7 +105,7 @@ function npc_greg_0038(eventid, objectref)
             end
             bark(38, var_0006)
         else
-            utility_unknown_1070(38) --- Guess: Triggers a game event
+            utility_npc_random_bark_1070(38) --- Guess: Triggers a game event
         end
     end
 end

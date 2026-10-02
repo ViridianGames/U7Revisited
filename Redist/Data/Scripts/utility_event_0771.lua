@@ -14,11 +14,11 @@ function utility_event_0771(eventid, objectref)
         move_object(var_0002, var_0000) --- Guess: Sets NPC target
         var_0002[2] = var_0002[2] + 2
         move_object(var_0002, 356) --- Guess: Sets NPC target
-        utility_event_0776() --- External call to party management
+        utility_party_remove_reset_flags_0776() --- External call to party management
         var_0003 = 200
         var_0004 = 1
         var_0005 = 359
-        utility_unknown_0772(var_0003, var_0004, var_0005) --- External call to item search
+        utility_find_and_destroy_item_0772(var_0003, var_0004, var_0005) --- External call to item search
         var_0006 = add_containerobject_s_at(356, {8, 1566, 17493, 7715})
     end
 end

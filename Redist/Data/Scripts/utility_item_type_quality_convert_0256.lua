@@ -1,5 +1,5 @@
 --- Best guess: Manipulates item type and quality, converting specific items (e.g., type 338 to 997) and adjusting quality.
-function utility_unknown_0256(eventid, objectref)
+function utility_item_type_quality_convert_0256(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003
 
     var_0000 = get_object_quality(objectref) - 1 --- Guess: Gets item quality

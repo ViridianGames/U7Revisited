@@ -10,7 +10,7 @@ function npc_gaye_0053(eventid, objectref)
         var_0002 = get_schedule(53) --- Guess: Checks game state or timer
         var_0003 = get_schedule_type(53) --- Guess: Gets object state
         if var_0002 == 7 then
-            var_0004 = utility_unknown_1020(26, 53) --- Guess: Checks time for Fellowship meeting
+            var_0004 = utility_distance_under_20_1020(26, 53) --- Guess: Checks time for Fellowship meeting
             if var_0004 then
                 add_dialogue("Gaye is watching the Fellowship meeting. She turns to you brusquely and puts a finger to her lips, gesturing for you to be silent.")
                 abort()
@@ -115,7 +115,7 @@ function npc_gaye_0053(eventid, objectref)
             end
             bark(53, var_000B)
         else
-            utility_unknown_1070(53) --- Guess: Triggers a game event
+            utility_npc_random_bark_1070(53) --- Guess: Triggers a game event
         end
     end
 end

@@ -4,7 +4,7 @@ function npc_ophelia_0122(eventid, objectref)
 
     if eventid ~= 1 then
         if eventid == 0 then
-            utility_unknown_1070(122)
+            utility_npc_random_bark_1070(122)
         end
         return
     end
@@ -41,18 +41,25 @@ function npc_ophelia_0122(eventid, objectref)
         remove_answer("Sprellic")
     end
     while true do
-        if cmps("name") then
+        local answer = get_answer()
+        if type(answer) ~= "string" then
+            answer = get_answer()
+        end
+        if type(answer) ~= "string" then
+            break
+        end
+        if answer == "name" then
             add_dialogue("\"My name is Ophelia, " .. var_0000 .. ".\"")
             remove_answer("name")
-        elseif cmps("job") then
+        elseif answer == "job" then
             add_dialogue("\"I am a barmaid. I do most of the work at The Bunk and Stool here in Jhelom.\"")
             add_answer({"Jhelom", "Bunk and Stool", "work"})
-        elseif cmps("work") then
+        elseif answer == "work" then
             add_dialogue("\"Ever since Sprellic, the owner, was challenged to those duels by the three students at the Library of Scars, he has been busy preparing himself. I have been running the place all by myself... although Daphne has been helping me, I suppose.\"")
             set_flag(366, true)
             remove_answer("work")
             add_answer({"Daphne", "Library", "Sprellic"})
-        elseif cmps("Daphne") then
+        elseif answer == "Daphne" then
             add_dialogue("\"Honestly, I cannot imagine why thou wouldst be interested in her.\" She lets out a throaty laugh.")
             var_0004 = npc_id_in_party(123)
             if var_0004 then
@@ -66,20 +73,20 @@ function npc_ophelia_0122(eventid, objectref)
                 switch_talk_to(122)
             end
             remove_answer("Daphne")
-        elseif cmps("Bunk and Stool") then
+        elseif answer == "Bunk and Stool" then
             add_dialogue("\"'Tis said that indeed many strange things happen at this bar. As of late, in addition to being an inn and a pub, where thou mayest buy fine food and drink, it has become a betting parlor.\"")
             remove_answer("Bunk and Stool")
             add_answer({"betting", "room", "food", "strange"})
-        elseif cmps("Jhelom") then
+        elseif answer == "Jhelom" then
             add_dialogue("\"It is a pretty rough place to work, but,\" she whispers to you in confidence, \"I must confess I find myself attracted to the type of men that live here.\"")
             remove_answer("Jhelom")
-        elseif cmps("Library") then
+        elseif answer == "Library" then
             add_dialogue("\"Surely thou hast heard of our famous school for fighters by now! What kind of a world traveller art thou? Do not answer. 'Twas a rhetorical question,\" she sniffs.")
             remove_answer("Library")
-        elseif cmps("food") then
+        elseif answer == "food" then
             add_dialogue("\"Thou shalt have to see Daphne about that. Thou wouldst not expect me to have to go into the kitchen?\" Ophelia laughs.")
             remove_answer("food")
-        elseif cmps("room") then
+        elseif answer == "room" then
             if var_0003 == 16 then
                 add_dialogue("\"For naught more than 5 gold thou canst get a lovely room. Dost thou wish to stay the night?\"")
                 if ask_yes_no() then
@@ -108,29 +115,29 @@ function npc_ophelia_0122(eventid, objectref)
                 add_dialogue("\"Right now I am not at work so please do not address me as if I were.\"")
             end
             remove_answer("room")
-        elseif cmps("Sprellic") then
+        elseif answer == "Sprellic" then
             add_dialogue("\"No one knows old Sprellic better than myself. Although he does not look it, he may well be the deadliest fighting master in all of Britannia.\"")
             remove_answer("Sprellic")
             add_answer("master")
-        elseif cmps("master") then
+        elseif answer == "master" then
             add_dialogue("\"After he defeats the fighters of the Library of Scars, he may open his own school teaching his own unique style of fighting.\"")
             remove_answer("master")
             add_answer("school")
-        elseif cmps("school") then
+        elseif answer == "school" then
             add_dialogue("\"It will be a great fighting school. Already, fighting men and women are coming to Jhelom to become Sprellic's students. They all long to know the secret that I can tell thee right now.\"")
             remove_answer("school")
             add_answer("secret")
-        elseif cmps("secret") then
+        elseif answer == "secret" then
             if not var_0001 then
                 add_dialogue("Ophelia motions you closer to her. She whispers to you. \"Sprellic is really the Avatar returned to us after all these years.\" She nods solemnly.")
             else
                 add_dialogue("Ophelia motions you closer to her. She whispers to you. \"Sprellic can call upon the Avatar to come and be his champion.\" She nods solemnly.")
             end
             remove_answer("secret")
-        elseif cmps("strange") then
+        elseif answer == "strange" then
             add_dialogue("\"In case thou hast not noticed, this is a rough town. We see all types of odd characters in this place.\" She looks you over carefully.")
             remove_answer("strange")
-        elseif cmps("betting") then
+        elseif answer == "betting" then
             if var_0006 or var_0005 or var_0007 or var_0008 then
                 add_dialogue("\"Sorry, all bets are off, due to the... er, unfortunate passing on of one or more of the parties involved.\"")
             else
@@ -168,7 +175,7 @@ function npc_ophelia_0122(eventid, objectref)
                 end
             end
             remove_answer("betting")
-        elseif cmps("winnings") then
+        elseif answer == "winnings" then
             if not get_flag(367) then
                 var_0016 = count_objects(0, 359, 921, 357)
                 var_0017 = var_0016 * 20
@@ -184,7 +191,7 @@ function npc_ophelia_0122(eventid, objectref)
                 add_dialogue("\"Thou hast already collected thy winnings!\"")
             end
             remove_answer("winnings")
-        elseif cmps("Cosmo") then
+        elseif answer == "Cosmo" then
             add_dialogue("\"Who? Oh, he is a local boy who comes in here and moons over me on occasion. Do not concern thyself with him. I do not.\"")
             if var_0004 then
                 switch_talk_to(123)
@@ -197,12 +204,12 @@ function npc_ophelia_0122(eventid, objectref)
                 switch_talk_to(122)
             end
             remove_answer("Cosmo")
-        elseif cmps("Sprellic dead") then
+        elseif answer == "Sprellic dead" then
             add_dialogue("\"Hmpf! If thou didst bet against him, then I suppose thou shalt be rich! I wouldst bet that thou wert the one who killed him, too!\"")
             add_dialogue("She turns away from you with a sneer.")
             remove_answer("Sprellic dead")
             return
-        elseif cmps("bye") then
+        elseif answer == "bye" then
             break
         end
     end

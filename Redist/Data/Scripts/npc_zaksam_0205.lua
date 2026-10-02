@@ -54,7 +54,7 @@ function npc_zaksam_0205(eventid, objectref)
                 if var_0002 == 7 then
                     add_dialogue("\"I can train thee for 40 gold. Is this all right?\"")
                     if ask_yes_no() then
-                        utility_unknown_1103(40, 4, 0)
+                        utility_combat_training_1103(40, 4, 0)
                     else
                         add_dialogue("\"Perhaps next time, \" .. var_0001 .. \".\"")
                     end

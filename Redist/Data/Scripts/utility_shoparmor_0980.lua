@@ -16,7 +16,7 @@ function utility_shoparmor_0980()
     var_0009 = 1
     add_dialogue("\"What form of protection wouldst thou like to buy?\"")
     while var_0001 do
-        var_0010 = utility_unknown_1036(var_0002)
+        var_0010 = utility_select_option_index_1036(var_0002)
         if var_0010 == 1 then
             add_dialogue("\"Very well.\"")
             var_0011 = false

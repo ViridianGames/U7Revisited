@@ -8,7 +8,7 @@ function utility_event_0448(eventid, objectref)
             var_0003 = var_0000[i]
             var_0004 = get_schedule_type(var_0003)
             if var_0004 ~= 0 then
-                utility_unknown_1087(0, var_0003)
+                utility_remove_npc_from_party_1087(0, var_0003)
             end
         end
     end

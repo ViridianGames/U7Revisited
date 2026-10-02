@@ -1,5 +1,5 @@
 --- Best guess: Manages the "Vas In Flam" spell (stronger variant), creating fire-related items (e.g., explosions, IDs 481, 336, 889, 595) at calculated positions, with a fallback effect if the spell fails.
-function utility_spell_0332(eventid, objectref)
+function spell_great_fireball_vas_in_flam_0332(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B
 
     if eventid ~= 1 then
@@ -8,7 +8,7 @@ function utility_spell_0332(eventid, objectref)
 
     halt_scheduled(objectref)
     bark(objectref, "@Vas In Flam@")
-    if not utility_unknown_1030() then
+    if not utility_condition_0044_1030() then
         var_0000 = execute_usecode_array(objectref, {17511, 17510, 7781})
         var_0001 = 25
         var_0002 = {481, 336, 889, 595}

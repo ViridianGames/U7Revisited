@@ -7,7 +7,7 @@ function npc_sarpling_0188(eventid, objectref)
         var_0000 = get_schedule(188)
         var_0001 = get_schedule_type(get_npc_name(188))
         if var_0000 == 7 then
-            var_0002 = utility_unknown_1020(185, 188)
+            var_0002 = utility_distance_under_20_1020(185, 188)
             if var_0002 then
                 add_dialogue("The gargoyle is too involved with the Fellowship meeting to talk to you at this moment.")
             else
@@ -103,7 +103,7 @@ function npc_sarpling_0188(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        utility_unknown_1071(188)
+        utility_gargoyle_random_bark_1071(188)
     end
     return
 end
