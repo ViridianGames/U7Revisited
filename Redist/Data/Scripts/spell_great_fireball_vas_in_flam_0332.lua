@@ -1,26 +1,40 @@
---- Best guess: Manages the "Vas In Flam" spell (stronger variant), creating fire-related items (e.g., explosions, IDs 481, 336, 889, 595) at calculated positions, with a fallback effect if the spell fails.
-function spell_great_fireball_vas_in_flam_0332(eventid, objectref)
-    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B
+--- Great Ignite (Vas In Flam). Oracle: usecode.dc Func064C object#(0x64C).
+--- Lights nearby unlit lights within range 25.
+--- Unlit shapes → lit: 595→701, 889→526, 336→338, 481→435.
+--- Filename keeps scriptId 0332 for spellbook lookup (spells.json).
 
+local IGNITE_MAP = {
+    [595] = 701, -- unlit torch → lit
+    [889] = 526, -- unlit lamppost → lit
+    [336] = 338, -- unlit candle → lit
+    [481] = 435, -- unlit sconce → lit
+}
+
+function spell_great_fireball_vas_in_flam_0332(eventid, objectref)
     if eventid ~= 1 then
         return
     end
 
     halt_scheduled(objectref)
     bark(objectref, "@Vas In Flam@")
-    if not utility_condition_0044_1030() then
-        var_0000 = execute_usecode_array(objectref, {17511, 17510, 7781})
-        var_0001 = 25
-        var_0002 = {481, 336, 889, 595}
-        for var_0003 in ipairs(var_0002) do
-            var_0006 = find_nearby(0, var_0001, var_0005, objectref)
-            for var_0007 in ipairs(var_0006) do
-                var_000A = get_object_shape(var_0009)
-                var_000B = get_distance(var_0009, objectref) // 3 + 2
-                var_0000 = delayed_execute_usecode_array(telekenesis(var_000A), var_000B, {var_000A, 17493, 7715}, var_0009)
-            end
+    if not check_spell_requirements() then
+        execute_usecode_array(objectref, {17511, 17510, 7781})
+        return
+    end
+
+    execute_usecode_array(objectref, {17511, 17510, 7768})
+
+    local range = 25
+    local lit = 0
+    for unlit_shape, lit_shape in pairs(IGNITE_MAP) do
+        local found = find_nearby(objectref, unlit_shape, range, 0) or {}
+        for _, obj in ipairs(found) do
+            set_object_shape(obj, lit_shape)
+            lit = lit + 1
         end
-    else
-        var_0000 = execute_usecode_array(objectref, {1542, 17493, 17511, 17510, 7781})
+    end
+
+    if lit > 0 then
+        play_sound_effect(46, objectref)
     end
 end

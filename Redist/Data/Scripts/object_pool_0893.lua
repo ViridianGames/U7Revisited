@@ -1,52 +1,57 @@
---- Pool/Fountains: ambient water loop when avatar is near (event 2); drink effects on use (event 1).
+--- Pool/Fountains (shape 893). Oracle: usecode.dc Func037D shape#(0x37D).
+--- Quality selects the drink effect. Trinsic mayor's office:
+---   north 998x2199 quality 4 → poison (flag 8)
+---   south 998x2234 quality 3 → cure status (clears poison and related flags)
 function object_pool_0893(eventid, objectref)
-    local var_0000, var_0001, var_0002, var_0003
-
     if eventid == 2 then
         play_looping_sound_effect(objectref, 48)
         return
     end
 
-    if eventid == 1 then
-        -- pool's quality determines what happens when you drink
-        var_0000 = get_object_quality(objectref)
-        -- allow player to pick who drinks
-        var_0001 = object_select_modal()
-        local npc_number = get_npc_number(var_0001)
-        if not npc_id_in_party(npc_number) then
-            -- i added this check here because it doesn't make
-            -- sense to allow non party members to drink from pool
-            -- or things like a lamppost
-            console_log("Pool only works on party members.")
-            return
-        end
-        -- set_object_quality(objectref, 90)
-        if var_0000 == 1 then
-            set_item_flag(var_0001, 1)
-        elseif var_0000 == 2 then
-            var_0002 = random2(10, 1)
-            var_0003 = 13 - var_0002
-            utility_adjust_health_1066(var_0001, var_0003)
-        elseif var_0000 == 3 then
-            -- clears all status effects
-            -- i think status 0 is invisibility, 1 sleep, 8 poison
-            clear_item_flag(var_0001, 8)
-            clear_item_flag(var_0001, 7)
-            clear_item_flag(var_0001, 1)
-            clear_item_flag(var_0001, 2)
-            clear_item_flag(var_0001, 3)
-        elseif var_0000 == 4 then
-            -- poison whoever drinks it
-            set_item_flag(var_0001, 8)
-        elseif var_0000 == 5 then
-            clear_item_flag(var_0001, 1)
-        elseif var_0000 == 6 then
-            set_item_flag(var_0001, 9)
-        elseif var_0000 == 7 then
-            cause_light(100)
-        elseif var_0000 == 8 then
-            set_item_flag(var_0001, 0)
-        end
+    if eventid ~= 1 then
+        return
     end
-    return
+
+    local quality = get_object_quality(objectref)
+    local target = object_select_modal()
+    if not target or target == 0 then
+        return
+    end
+
+    -- usecode: UI_play_sound_effect2(0x005A, item)
+    play_sound_effect(90, objectref)
+
+    local npc_number = get_npc_number(target)
+    if npc_number < 0 or not npc_id_in_party(npc_number) then
+        -- Engine-only guard (original usecode had none); avoid poisoning scenery.
+        return
+    end
+
+    if quality == 1 then
+        set_item_flag(target, 1)
+    elseif quality == 2 then
+        -- usecode: die_roll(1,10); heal/hurt by (13 - roll)
+        local roll = die_roll(1, 10)
+        utility_adjust_health_1066(13 - roll, target)
+        bark(target, "@Ahh...@")
+    elseif quality == 3 then
+        -- Cure fountain / red potion clears
+        clear_item_flag(target, 8) -- poison
+        clear_item_flag(target, 7) -- paralysis
+        clear_item_flag(target, 1)
+        clear_item_flag(target, 2)
+        clear_item_flag(target, 3)
+        bark(target, "@Ahh...@")
+    elseif quality == 4 then
+        set_item_flag(target, 8) -- poison
+        bark(target, "@Yuck!@")
+    elseif quality == 5 then
+        clear_item_flag(target, 1)
+    elseif quality == 6 then
+        set_item_flag(target, 9)
+    elseif quality == 7 then
+        cause_light(100)
+    elseif quality == 8 then
+        set_item_flag(target, 0) -- invisible
+    end
 end

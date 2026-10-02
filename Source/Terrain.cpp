@@ -194,6 +194,19 @@ uint64_t Terrain::ComputeLightHash() const
 		const uint64_t tz = static_cast<uint64_t>(static_cast<uint32_t>(static_cast<int>(object->m_Pos.z)));
 		h ^= (id * 0x9E3779B97F4A7C15ull) ^ (tx << 20) ^ (tz << 1);
 	}
+
+	// Spell light: active bit + avatar tile so appear/expire/move dirty the RT.
+	if (g_spellLightRemaining > 0.f)
+	{
+		h ^= 0xC0117E55ull;
+		U7Object* avatar = g_Player ? g_Player->GetAvatarObject() : nullptr;
+		if (avatar)
+		{
+			const uint64_t tx = static_cast<uint64_t>(static_cast<uint32_t>(static_cast<int>(avatar->m_Pos.x)));
+			const uint64_t tz = static_cast<uint64_t>(static_cast<uint32_t>(static_cast<int>(avatar->m_Pos.z)));
+			h ^= (tx << 20) ^ (tz << 1);
+		}
+	}
 	return h;
 }
 
@@ -281,16 +294,8 @@ void Terrain::CalculateLighting()
 	const Color hardLight = { 208, 208, 192, 255 };
 	const Color softLight = { 144, 144, 128, 255 };
 
-	for (U7Object* object : g_sortedVisibleObjects)
+	auto stampLight = [&](int lightX, int lightZ)
 	{
-		if (!object || !object->m_objectData || !object->m_objectData->m_isLightSource)
-		{
-			continue;
-		}
-
-		const int lightX = static_cast<int>(object->m_Pos.x);
-		const int lightZ = static_cast<int>(object->m_Pos.z);
-
 		const int worldMinX = lightX - softLightRange;
 		const int worldMaxX = lightX + softLightRange;
 		const int worldMinZ = lightZ - softLightRange;
@@ -330,6 +335,24 @@ void Terrain::CalculateLighting()
 					}
 				}
 			}
+		}
+	};
+
+	for (U7Object* object : g_sortedVisibleObjects)
+	{
+		if (!object || !object->m_objectData || !object->m_objectData->m_isLightSource)
+		{
+			continue;
+		}
+		stampLight(static_cast<int>(object->m_Pos.x), static_cast<int>(object->m_Pos.z));
+	}
+
+	if (g_spellLightRemaining > 0.f)
+	{
+		U7Object* avatar = g_Player ? g_Player->GetAvatarObject() : nullptr;
+		if (avatar)
+		{
+			stampLight(static_cast<int>(avatar->m_Pos.x), static_cast<int>(avatar->m_Pos.z));
 		}
 	}
 }

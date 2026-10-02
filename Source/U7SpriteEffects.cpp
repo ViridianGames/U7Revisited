@@ -69,17 +69,23 @@ void U7SpriteEffectSystem::SpawnOnObject(int objectId, int spriteIndex, float he
 		return;
 	}
 
-	float topY = object->m_Pos.y;
+	// Exult obj_sprite_effect anchors at the object tile. Flats are drawn with the
+	// GetFlatModelPosition +1,+1 hotspot, so match that for on-object FX (Detect Trap).
+	Vector3 worldPos = object->m_Pos;
 	if (object->m_shapeData)
 	{
-		topY += object->m_shapeData->m_Dims.y;
+		const Vector3& dims = object->m_shapeData->m_Dims;
+		if (dims.y <= 0.01f)
+		{
+			worldPos.x += 1.0f;
+			worldPos.z += 1.0f;
+		}
+		else
+		{
+			worldPos.y += dims.y;
+		}
 	}
-
-	Vector3 worldPos = {
-		object->m_Pos.x,
-		topY + heightAboveTop,
-		object->m_Pos.z
-	};
+	worldPos.y += heightAboveTop;
 	Spawn(spriteIndex, worldPos);
 }
 
@@ -226,19 +232,37 @@ void U7SpriteEffectSystem::Draw(Camera camera)
 			continue;
 		}
 
+		// Screen-space size of 1 world unit → match SHAPES.VGA (8 px = 1 unit) in the 3D view.
 		Vector2 screenPos = GetWorldToScreen(effect.worldPos, camera);
+		Vector2 screenPosRight = GetWorldToScreen(
+			Vector3{ effect.worldPos.x + 1.0f, effect.worldPos.y, effect.worldPos.z }, camera);
+		float pixelsPerUnit = Vector2Distance(screenPos, screenPosRight);
+		if (pixelsPerUnit < 1.0f)
+		{
+			pixelsPerUnit = 1.0f;
+		}
+
+		// Drawn into g_guiRenderTarget (virtual res); divide screen coords by g_DrawScale.
 		if (g_DrawScale > 0.0f)
 		{
 			screenPos.x /= g_DrawScale;
 			screenPos.y /= g_DrawScale;
+			pixelsPerUnit /= g_DrawScale;
 		}
 
-		// U7 sprite offsets: anchor at bottom-center of the frame in world space.
-		float drawX = screenPos.x - static_cast<float>(frame.xOffset);
-		float drawY = screenPos.y - static_cast<float>(frame.yOffset) - static_cast<float>(frame.height);
+		// 8 sprite pixels = 1 world unit (same as shape textures).
+		const float scale = pixelsPerUnit / 8.0f;
+
+		// Exult paint_shape: hotspot at (x,y). xOffset/yOffset store W2/H2 (xright/ybelow).
+		const float xleft = static_cast<float>(frame.width - frame.xOffset - 1);
+		const float yabove = static_cast<float>(frame.height - frame.yOffset - 1);
+		const float drawW = static_cast<float>(frame.width) * scale;
+		const float drawH = static_cast<float>(frame.height) * scale;
+		const float drawX = screenPos.x - xleft * scale;
+		const float drawY = screenPos.y - yabove * scale;
 
 		Rectangle source = { 0.0f, 0.0f, static_cast<float>(frame.width), static_cast<float>(frame.height) };
-		Rectangle dest = { drawX, drawY, static_cast<float>(frame.width), static_cast<float>(frame.height) };
+		Rectangle dest = { drawX, drawY, drawW, drawH };
 		DrawTexturePro(frame.texture, source, dest, { 0.0f, 0.0f }, 0.0f, WHITE);
 	}
 }

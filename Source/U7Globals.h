@@ -107,6 +107,16 @@ extern int g_lastScheduleTimeCheck;          // Last schedule time we checked
 extern Color g_dayNightColor;
 extern bool g_isDay;
 
+// Temporary avatar light from cause_light (In Lor / potions); game minutes remaining.
+// Exult: add_special_light(units) adds units/20 game minutes (In Lor 500 → 25 min).
+extern float g_spellLightRemaining;
+
+// Wizard Eye freecam: wall-clock deadline from GetTime(); 0 = inactive.
+extern float g_wizardEyeUntil;
+extern bool g_wizardEyeWasLockedToAvatar;
+void StartWizardEye(int ticks);
+void UpdateWizardEye();
+
 inline Vector2 g_DirVectors[8] = {
 	{ 0, -1 }, { 1, -1 }, { 1, 0 }, { 1, 1 },
 	{ 0, 1 }, { -1, 1 }, { -1, 0 }, { -1, -1 }
@@ -215,20 +225,20 @@ struct SpellData
 	int scriptId;                     // Script shape ID (320-391)
 	std::vector<std::string> reagents; // Reagent names: "Ginseng", "Garlic", etc.
 	std::string desc;                 // Spell description
-	int circle;                       // Which circle this spell belongs to (1-8)
+	int circle;                       // Circle number (0=Linear, 1-8=First-Eighth)
 };
 
-/// @brief Circle data structure (8 circles, each with 8 spells)
+/// @brief Circle data structure (Linear + 8 circles, each with 8 spells)
 struct SpellCircle
 {
-	int circle;                       // Circle number (1-8)
+	int circle;                       // Circle number (0=Linear, 1-8=First-Eighth)
 	std::string name;                 // "First Circle", "Second Circle", etc.
 	std::vector<SpellData> spells;    // 8 spells in this circle
 };
 
 // Spell data loaded from spells.json
 extern std::vector<ReagentData> g_reagentData;        // 8 reagents
-extern std::vector<SpellCircle> g_spellCircles;       // 8 circles with 8 spells each
+extern std::vector<SpellCircle> g_spellCircles;       // Linear (0) + 8 circles; index == circle number
 extern std::unordered_map<int, SpellData*> g_spellMap; // Quick lookup by spell ID
 
 // Load spell data from Redist/Data/spells.json

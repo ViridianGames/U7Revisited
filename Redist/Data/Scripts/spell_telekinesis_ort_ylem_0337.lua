@@ -1,29 +1,53 @@
---- Best guess: Implements the telekinesis spell (Ort Ylem), manipulating specific item types (e.g., levers, switches).
-function spell_telekinesis_ort_ylem_0337(eventid, objectref)
-    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009
+--- Enchant (Ort Ylem). Oracle: usecode.dc Func0651 object#(0x651).
+--- Turns mundane arrows (722) / bolts (723) into enchanted 556 / 417.
+--- Do not destroy the caster.
 
-    var_0000 = {723, 722}
-    var_0001 = {417, 556}
-    if eventid == 1 then
-        destroy_object(objectref)
-        var_0002 = object_select_modal() --- Guess: Selects spell target
-        var_0003 = get_object_shape(var_0002)
-        var_0004 = select_spell_target(var_0002) --- Guess: Gets selected target
-        bark(objectref, "@Ort Ylem@")
-        if check_spell_requirements() and (var_0003 == var_0000[1] or var_0003 == var_0000[2]) then
-            var_0005 = add_containerobject_s(objectref, {17511, 17509, 8038, 67, 8536, var_0004, 7769})
-            var_0005 = add_containerobject_s(var_0002, {4, 1617, 17493, 7715})
-        else
-            var_0005 = add_containerobject_s(objectref, {1542, 17493, 17511, 17509, 8550, var_0004, 7769})
+local MUNDANE = {722, 723}
+local ENCHANTED = {
+    [722] = 556, -- arrows → magic arrows
+    [723] = 417, -- bolts → magic bolts
+}
+
+local function is_mundane_missile(shape)
+    return shape == 722 or shape == 723
+end
+
+function spell_telekinesis_ort_ylem_0337(eventid, objectref)
+    if eventid == 2 then
+        -- Delayed transform on the target pile (oracle event 2).
+        local shape = get_object_shape(objectref)
+        local enchanted = ENCHANTED[shape]
+        if enchanted then
+            set_object_shape(objectref, enchanted)
+            obj_sprite_effect(objectref, 13)
         end
-    elseif eventid == 2 then
-        var_0006 = 0
-        -- Guess: sloop transforms item types
-        for i = 1, 5 do
-            var_0006 = var_0006 + 1
-            if var_0009 == get_object_shape(objectref) then
-                set_object_shape(objectref, var_0001[var_0006]) --- Guess: Sets item type
-            end
-        end
+        return
+    end
+
+    if eventid ~= 1 then
+        return
+    end
+
+    halt_scheduled(objectref)
+    bark(objectref, "@Ort Ylem@")
+    if not check_spell_requirements() then
+        execute_usecode_array(objectref, {17511, 17509, 7781})
+        return
+    end
+
+    local target = click_on_item()
+    if not target or target == 0 then
+        return
+    end
+
+    local shape = get_object_shape(target)
+    if is_mundane_missile(shape) then
+        execute_usecode_array(objectref, {17511, 17509, 8038, 67, 7769})
+        set_object_shape(target, ENCHANTED[shape])
+        obj_sprite_effect(target, 13)
+        bark(objectref, "@Enchanted!@")
+    else
+        execute_usecode_array(objectref, {17511, 17509, 7781})
+        bark(objectref, "@Must be arrows or bolts@")
     end
 end

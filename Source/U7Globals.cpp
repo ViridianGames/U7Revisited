@@ -687,6 +687,10 @@ std::vector< std::vector<Texture> > g_walkFrames;
 
 Color g_dayNightColor = WHITE;
 bool g_isDay = true;
+float g_spellLightRemaining = 0.f;
+
+float g_wizardEyeUntil = 0.f;
+bool g_wizardEyeWasLockedToAvatar = false;
 
 float g_lastTime;
 unsigned int g_hour;
@@ -807,6 +811,31 @@ void UnlockCamera()
 void LockCamera()
 {
 	LockCameraToAvatar();
+}
+
+void StartWizardEye(int ticks)
+{
+	// Exult: ticks * (3 * std_delay) / 2 with std_delay≈200 → ticks * 0.3 seconds.
+	const float secs = static_cast<float>(ticks > 0 ? ticks : 45) * 0.30f;
+	g_wizardEyeWasLockedToAvatar = IsCameraLockedToAvatar();
+	UnlockCamera();
+	g_wizardEyeUntil = GetTime() + secs;
+	AddConsoleString("Wizard Eye — WASD to scout, Esc to end", SKYBLUE);
+}
+
+void UpdateWizardEye()
+{
+	if (g_wizardEyeUntil <= 0.f)
+		return;
+
+	if (IsKeyPressed(KEY_ESCAPE) || GetTime() >= g_wizardEyeUntil)
+	{
+		g_wizardEyeUntil = 0.f;
+		if (g_wizardEyeWasLockedToAvatar)
+			LockCameraToAvatar();
+		CameraUpdate(true);
+		AddConsoleString("Wizard Eye ends.", SKYBLUE);
+	}
 }
 
 Vector3 GetStandoffPosition(const Vector3& attackerPos, const Vector3& targetPos, float standOffRange)

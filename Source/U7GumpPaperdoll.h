@@ -74,7 +74,7 @@ public:
 	virtual void Init(const std::string& data) override;
 	virtual void OnExit() override;
 	virtual void OnEnter();
-	virtual U7Object* GetObjectUnderMousePointer() override { return nullptr; }  // Paperdolls don't show container inventory
+	virtual U7Object* GetObjectUnderMousePointer() override;
 	virtual bool IsMouseOverSolidPixel(Vector2 mousePos) override;  // Pixel-perfect collision detection
 	bool IsOverSlot(Vector2 mousePos);  // Check if mouse is over equipment slot or button
 

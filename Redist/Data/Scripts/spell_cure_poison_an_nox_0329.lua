@@ -1,24 +1,25 @@
---- Best guess: Implements the cure poison spell (An Nox), removing poison status from a selected target.
+--- Cure (An Nox). Oracle: usecode.dc Func0649 object#(0x649).
+--- Clears poison (flag 8) and paralysis (flag 7) on a selected NPC.
+--- Do not destroy the caster — earlier decompile used destroy_object(objectref).
 function spell_cure_poison_an_nox_0329(eventid, objectref)
-    local var_0000, var_0001, var_0002
-
     if eventid == 1 then
-        var_0000 = object_select_modal() --- Guess: Selects spell target
-        destroy_object(objectref)
-        var_0001 = select_spell_target(var_0000) --- Guess: Gets selected target
+        local target = object_select_modal()
+        halt_scheduled(objectref)
+        local dir = select_spell_target(target)
         bark(objectref, "@An Nox@")
-        if check_spell_requirements() then
-            if is_object_valid(var_0000) then
-                var_0002 = add_containerobject_s(objectref, {17511, 17509, 8038, 64, 8536, var_0001, 7769})
-                var_0002 = add_containerobject_s(var_0000, {6, 1609, 17493, 7715})
-            else
-                var_0002 = add_containerobject_s(objectref, {1542, 17493, 17511, 17509, 8550, var_0001, 7769})
-            end
+        if check_spell_requirements() and target and target ~= 0 and is_npc(target) then
+            -- Cast FX only. Stripped delayed UC_USECODE+0x649: engine UC_USECODE
+            -- path calls Interact(2) on the caster, not this spell / target.
+            execute_usecode_array(objectref, {17511, 17509, 8038, 64, 8536, dir, 7769})
+            clear_item_flag(target, 8)
+            clear_item_flag(target, 7)
+            bark(target, "@Cured!@")
         else
-            var_0002 = add_containerobject_s(objectref, {1542, 17493, 17511, 17509, 8550, var_0001, 7769})
+            execute_usecode_array(objectref, {1542, 17493, 17511, 17509, 8550, dir, 7769})
         end
     elseif eventid == 2 then
-        clear_item_flag(8, objectref) --- Guess: Sets quest flag
-        clear_item_flag(7, objectref) --- Guess: Sets quest flag
+        -- Kept for any delayed/scheduled re-entry that still targets the patient.
+        clear_item_flag(objectref, 8)
+        clear_item_flag(objectref, 7)
     end
 end

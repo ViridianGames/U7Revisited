@@ -1,26 +1,36 @@
---- Best guess: Implements the dispel fire spell (An Flam), extinguishing fires of specific item types with spell effects.
-function spell_dispel_fire_an_flam_0322(eventid, objectref)
-    local var_0000, var_0001, var_0002, var_0003
+--- Douse (An Flam). Oracle: usecode.dc Func0642 object#(0x642).
+--- Linear spell: extinguish a targeted lit light (torch/lamp/candle/sconce).
 
-    if eventid == 1 then
-        destroy_object(objectref)
-        var_0000 = object_select_modal() --- Guess: Selects spell target
-        var_0001 = select_spell_target(var_0000) --- Guess: Gets selected target
-        bark(objectref, "@An Flam@")
-        if check_spell_requirements() then
-            var_0002 = apply_spell_effect(540, var_0000, objectref) --- Guess: Applies spell effect
-            var_0002 = add_containerobject_s(objectref, {17530, 17511, 8549, var_0001, 7769})
-        else
-            var_0002 = add_containerobject_s(objectref, {1542, 17493, 17511, 8549, var_0001, 7769})
-        end
-    elseif eventid == 4 then
-        var_0003 = get_object_shape(objectref)
-        if var_0003 == 435 or var_0003 == 338 or var_0003 == 526 or var_0003 == 701 then
-            consume_reagents(var_0003) --- Guess: Consumes reagents
-            var_0002 = add_containerobject_s(objectref, {var_0003, 7765})
-            play_sound_effect(46) --- Guess: Unknown spell operation
-        else
-            play_spell_animation(60) --- Guess: Plays spell animation
-        end
+local DOUSE_MAP = {
+    [701] = 595, -- lit torch → unlit
+    [526] = 889, -- lit lamppost → unlit
+    [338] = 336, -- lit candle → unlit
+    [435] = 481, -- lit sconce → unlit
+}
+
+function spell_dispel_fire_an_flam_0322(eventid, objectref)
+    if eventid ~= 1 then
+        return
+    end
+
+    halt_scheduled(objectref)
+    bark(objectref, "@An Flam@")
+    if not check_spell_requirements() then
+        execute_usecode_array(objectref, {17511, 7781})
+        return
+    end
+
+    execute_usecode_array(objectref, {17511, 17509, 7768})
+
+    local target = click_on_item()
+    if not target or target == 0 then
+        return
+    end
+
+    local shape = get_object_shape(target)
+    local unlit = DOUSE_MAP[shape]
+    if unlit then
+        set_object_shape(target, unlit)
+        play_sound_effect(46, target)
     end
 end

@@ -29,10 +29,9 @@ end
 
 -- Fellowship conversation helpers (files were renamed; many NPCs still call old names)
 utility_ship_1049 = utility_fellowship_intro_1049
-object_unknown_0658 = object_dough_0658
-utility_unknown_0309 = utility_bake_bread_0309
+object_cook_dough_bread_0658 = object_dough_0658
+mech_oven_bake_bread_0309 = utility_bake_bread_0309
 utility_ship_1050 = utility_fellowship_philosophy_1050
-utility_unknown_1056 = utility_select_party_member_for_training_1056
 
 ------------------------------------------------------------------------
 -- SAFE renames (exact or near-exact engine bindings)
@@ -412,12 +411,20 @@ function heal_character(npc_id, amount)
 end
 
 function cure_poison(npc_id)
-    -- No dedicated binding yet; clear a common poison-related item flag if present.
-    if clear_item_flag and npc_id then
-        -- Best-effort; real poison status lives in NPC status bits.
-        return true
+    -- Clear poison / paralysis item flags (Exult Obj_flags poisoned=8, paralyzed=7).
+    if not npc_id then
+        return false
     end
-    return false
+    local obj = npc_id
+    if get_npc_object_id then
+        local resolved = get_npc_object_id(npc_id)
+        if resolved and resolved ~= -1 then
+            obj = resolved
+        end
+    end
+    clear_item_flag(obj, 8)
+    clear_item_flag(obj, 7)
+    return true
 end
 
 --- is_not_blocked — inverse of is_blocked; arg layouts vary in decompiler output

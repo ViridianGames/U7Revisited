@@ -1,22 +1,29 @@
---- Best guess: Implements the wind change spell (Rel Hur), randomly altering wind direction based on spell conditions.
-function spell_wind_change_rel_hur_0321(eventid, objectref)
-    local var_0000, var_0001, var_0002, var_0003
+--- Weather (Rel Hur). Oracle: usecode.dc Func0641 object#(0x641).
+--- Linear spell: if clear, start rain/snow; otherwise clear (unless sparkles/weather 3).
 
-    if eventid == 1 then
-        destroy_object(objectref)
-        bark(objectref, "@Rel Hur@")
-        if check_spell_requirements() then
-            var_0000 = add_containerobject_s(objectref, {68, 17496, 17511, 7781})
-            var_0001 = {1, 2, 0}
-            if check_spell_conditions() == 0 then --- Guess: Checks spell conditions
-                var_0002 = random(2, 3)
-                var_0003 = var_0001[var_0002]
-                cast_spell(var_0003) --- Guess: Casts spell
-            else
-                cast_spell(0) --- Guess: Casts spell
-            end
+function spell_wind_change_rel_hur_0321(eventid, objectref)
+    if eventid ~= 1 then
+        return
+    end
+
+    halt_scheduled(objectref)
+    bark(objectref, "@Rel Hur@")
+    if not check_spell_requirements() then
+        execute_usecode_array(objectref, {17511, 7781})
+        return
+    end
+
+    execute_usecode_array(objectref, {17511, 8037, 68, 7768})
+
+    local weather = get_weather() or 0
+    if weather == 0 then
+        -- Oracle: 1-based index 2 or 3 into {0,1,2} → rain(1) or snow(2)
+        if die_roll(1, 2) == 1 then
+            set_weather(1)
         else
-            var_0000 = add_containerobject_s(objectref, {1542, 17493, 17511, 7781})
+            set_weather(2)
         end
+    elseif weather ~= 3 then
+        set_weather(0)
     end
 end

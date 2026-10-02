@@ -1,13 +1,18 @@
 #include <fstream>
 #include <string>
 #include <algorithm>
+#include <cstdio>
+#include <cstring>
+#include <functional>
 
 #include "U7Gump.h"
 #include "U7GumpSpellbook.h"
 #include "Geist/Config.h"
 #include "Geist/Globals.h"
+#include "Geist/InputSystem.h"
 #include "Geist/ResourceManager.h"
 #include "Geist/Logging.h"
+#include "Geist/ScriptingSystem.h"
 #include "U7Globals.h"
 #include "U7Object.h"
 
@@ -16,8 +21,110 @@
 
 using namespace std;
 
-const int BOOKMARK_LEFT_X = 78;
-const int BOOKMARK_RIGHT_X = 125;
+namespace
+{
+	constexpr int kReagentShape = 842;
+
+	int ReagentFrameForName(const std::string& name)
+	{
+		for (const ReagentData& reagent : g_reagentData)
+		{
+			if (reagent.name == name)
+				return reagent.frame;
+		}
+		return -1;
+	}
+
+	int GetStackQuantity(U7Object* obj)
+	{
+		if (!obj)
+			return 0;
+		if (obj->m_shapeData)
+		{
+			const int shape = obj->m_shapeData->GetShape();
+			if (shape >= 0 && shape < 1024 && g_objectDataTable[shape].m_shapeType == 3)
+			{
+				int quantity = obj->m_Quality & 0x7f;
+				return quantity == 0 ? 1 : quantity;
+			}
+		}
+		return 1;
+	}
+
+	void SetStackQuantity(U7Object* obj, int quantity)
+	{
+		if (!obj || !obj->m_shapeData)
+			return;
+		const int shape = obj->m_shapeData->GetShape();
+		if (shape >= 0 && shape < 1024 && g_objectDataTable[shape].m_shapeType == 3)
+			obj->m_Quality = (quantity & 0x7f) | (obj->m_Quality & 0x80);
+	}
+
+	// Walk backpack (and nested bags) looking for shape/frame. visitor returns true to stop.
+	bool ForEachPartyInventoryItem(const std::function<bool(U7Object*, U7Object*)>& visitor)
+	{
+		if (!g_Player)
+			return false;
+
+		std::function<bool(U7Object*)> walk = [&](U7Object* container) -> bool {
+			if (!container)
+				return false;
+			// Copy ids in case visitor mutates inventory
+			std::vector<int> ids = container->m_inventory;
+			for (int itemId : ids)
+			{
+				U7Object* item = GetObjectFromID(itemId);
+				if (!item)
+					continue;
+				if (visitor(container, item))
+					return true;
+				if (!item->m_inventory.empty() && walk(item))
+					return true;
+			}
+			return false;
+		};
+
+		std::vector<int> partyIds = g_Player->GetPartyMemberIds();
+		// Prefer Avatar first
+		std::vector<int> order;
+		order.push_back(0);
+		for (int id : partyIds)
+		{
+			if (id != 0)
+				order.push_back(id);
+		}
+
+		for (int npcId : order)
+		{
+			if (g_NPCData.find(npcId) == g_NPCData.end() || !g_NPCData[npcId])
+				continue;
+			const int backpackId = g_NPCData[npcId]->GetEquippedItem(EquipmentSlot::SLOT_BACKPACK);
+			if (backpackId < 0)
+				continue;
+			if (walk(GetObjectFromID(backpackId)))
+				return true;
+		}
+		return false;
+	}
+
+	U7Object* FindReagentInParty(int frame, U7Object** outContainer)
+	{
+		U7Object* found = nullptr;
+		U7Object* foundContainer = nullptr;
+		ForEachPartyInventoryItem([&](U7Object* container, U7Object* item) {
+			if (item->m_ObjectType == kReagentShape && item->m_Frame == frame)
+			{
+				found = item;
+				foundContainer = container;
+				return true;
+			}
+			return false;
+		});
+		if (outContainer)
+			*outContainer = foundContainer;
+		return found;
+	}
+}
 
 // Static storage for bookmark state (persists between spellbook opens)
 // TODO: Move this to NPC data structure when that system is implemented
@@ -26,7 +133,7 @@ static int s_savedBookmarkedSpellIndex = -1;
 
 GumpSpellbook::GumpSpellbook()
 	: m_npcId(-1)
-	, m_currentCircle(1)
+	, m_currentCircle(0)
 	, m_selectedSpellId(-1)
 	, m_isDragging(false)
 	, m_dragStart({ 0, 0 })
@@ -56,64 +163,28 @@ void GumpSpellbook::OnEnter()
 		if (!this->IsMouseOverSolidPixel(mousePos))
 			return false;
 
-		// Don't allow dragging from CLOSE button
+		auto blocksDrag = [&](const std::shared_ptr<GuiElement>& element) {
+			if (!element)
+				return false;
+			Rectangle btnRect = GetScaledElementBounds(element);
+			btnRect.x += m_gui.m_Pos.x;
+			btnRect.y += m_gui.m_Pos.y;
+			return CheckCollisionPointRec(mousePos, btnRect);
+		};
+
+		// Don't allow dragging from CLOSE / PREV / NEXT / spell icons
 		int closeButtonID = m_serializer->GetElementID("CLOSE");
-		if (closeButtonID != -1)
-		{
-			auto element = m_gui.GetElement(closeButtonID);
-			if (element)
-			{
-				Rectangle btnRect = element->GetBounds();
-				btnRect.x += m_gui.m_Pos.x;
-				btnRect.y += m_gui.m_Pos.y;
-				if (CheckCollisionPointRec(mousePos, btnRect))
-					return false;
-			}
-		}
+		if (closeButtonID != -1 && blocksDrag(m_gui.GetElement(closeButtonID)))
+			return false;
+		if (m_prevButtonId != -1 && blocksDrag(m_gui.GetElement(m_prevButtonId)))
+			return false;
+		if (m_nextButtonId != -1 && blocksDrag(m_gui.GetElement(m_nextButtonId)))
+			return false;
 
-		// Don't allow dragging from PREV button
-		if (m_prevButtonId != -1)
-		{
-			auto element = m_gui.GetElement(m_prevButtonId);
-			if (element)
-			{
-				Rectangle btnRect = element->GetBounds();
-				btnRect.x += m_gui.m_Pos.x;
-				btnRect.y += m_gui.m_Pos.y;
-				if (CheckCollisionPointRec(mousePos, btnRect))
-					return false;
-			}
-		}
-
-		// Don't allow dragging from NEXT button
-		if (m_nextButtonId != -1)
-		{
-			auto element = m_gui.GetElement(m_nextButtonId);
-			if (element)
-			{
-				Rectangle btnRect = element->GetBounds();
-				btnRect.x += m_gui.m_Pos.x;
-				btnRect.y += m_gui.m_Pos.y;
-				if (CheckCollisionPointRec(mousePos, btnRect))
-					return false;
-			}
-		}
-
-		// Don't allow dragging from spell sprites (1-8)
 		for (int i = 0; i < 8; i++)
 		{
-			if (m_spellSpriteIds[i] != -1)
-			{
-				auto element = m_gui.GetElement(m_spellSpriteIds[i]);
-				if (element)
-				{
-					Rectangle spriteRect = element->GetBounds();
-					spriteRect.x += m_gui.m_Pos.x;
-					spriteRect.y += m_gui.m_Pos.y;
-					if (CheckCollisionPointRec(mousePos, spriteRect))
-						return false;
-				}
-			}
+			if (m_spellSpriteIds[i] != -1 && blocksDrag(m_gui.GetElement(m_spellSpriteIds[i])))
+				return false;
 		}
 
 		return true;
@@ -132,8 +203,14 @@ void GumpSpellbook::Init(const std::string& data)
 		// Keep loaded fonts alive
 		m_loadedFonts = m_serializer->GetLoadedFonts();
 
-		// Center the GUI on screen
-		m_serializer->CenterLoadedGUI(&m_gui, g_DrawScale);
+		// Render at 2x design size; spell icon hitboxes scale with the same ratio
+		ApplyDisplayScale(kDisplayScale);
+
+		// Center using the scaled panel size (ghost stays at design 160x90)
+		m_gui.SetLayout(0, 0,
+			int(kDesignWidth * kDisplayScale),
+			int(kDesignHeight * kDisplayScale),
+			g_DrawScale, Gui::GUIP_CENTER);
 
 		m_Pos.x = m_gui.m_Pos.x;
 		m_Pos.y = m_gui.m_Pos.y;
@@ -219,7 +296,7 @@ void GumpSpellbook::Setup(int npcId)
 	m_bookmarkedCircle = s_savedBookmarkedCircle;
 	m_bookmarkedSpellIndex = s_savedBookmarkedSpellIndex;
 
-	// If there's a bookmarked spell, start on that circle; otherwise start on circle 1
+	// If there's a bookmarked spell, start on that circle; otherwise Linear (Exult page 0)
 	if (m_bookmarkedCircle != -1)
 	{
 		m_currentCircle = m_bookmarkedCircle;
@@ -227,8 +304,8 @@ void GumpSpellbook::Setup(int npcId)
 	}
 	else
 	{
-		m_currentCircle = 1;
-		Log("GumpSpellbook::Setup() - Opening to First circle (no bookmark)");
+		m_currentCircle = 0;
+		Log("GumpSpellbook::Setup() - Opening to Linear (no bookmark)");
 	}
 
 	// Update the circle display
@@ -244,6 +321,7 @@ std::string GumpSpellbook::GetCircleName(int circle)
 {
 	switch (circle)
 	{
+	case 0: return "Linear";
 	case 1: return "First";
 	case 2: return "Second";
 	case 3: return "Third";
@@ -322,69 +400,176 @@ void GumpSpellbook::UpdateBookmark()
 		bookmark->m_CurrentFrame = 0;
 	}
 
-	// Set X position based on left (0-3) or right (4-7) column
+	// Set X position based on left (0-3) or right (4-7) column (design coords * display scale)
 	if (m_bookmarkedSpellIndex < 4)
 	{
-		// Left page
-		bookmark->m_Pos.x = BOOKMARK_LEFT_X;
-		// Log("GumpSpellbook::UpdateBookmark - On bookmarked circle, LEFT page, frame=" + std::to_string(row) + " x=200");
+		bookmark->m_Pos.x = kDesignBookmarkLeftX * kDisplayScale;
 	}
 	else
 	{
-		// Right page
-		bookmark->m_Pos.x = BOOKMARK_RIGHT_X;
-		// Log("GumpSpellbook::UpdateBookmark - On bookmarked circle, RIGHT page, frame=" + std::to_string(row) + " x=400");
+		bookmark->m_Pos.x = kDesignBookmarkRightX * kDisplayScale;
 	}
 }
 
 bool GumpSpellbook::IsSpellLearned(int spellId)
 {
-	// TODO: Check if NPC has learned this spell
-	// For now, return true for all First Circle spells as a placeholder
-	if (spellId >= 0 && spellId < 8)
+	// TODO: Check spellbook flags / scrolls for learned spells
+	// All circles unlocked for sandbox testing (Linear 0–7 … Eighth 64–71)
+	if (spellId >= 0 && spellId < 72)
 		return true;
 
 	return false;
 }
 
-bool GumpSpellbook::HasReagents(int spellId)
+bool GumpSpellbook::HasReagents(int spellId, std::string* missingReagentName)
 {
-	// TODO: Check if NPC has the required reagents in inventory
-	// Look up spell data from g_spellData
-	// Check NPC's inventory for each required reagent (shape 842, specific frames)
-
-	if (spellId < 0 || spellId >= 64)
+	SpellData* spell = GetSpellData(spellId);
+	if (!spell)
 		return false;
 
-	// For now, always return true as placeholder
+	for (const std::string& reagentName : spell->reagents)
+	{
+		const int frame = ReagentFrameForName(reagentName);
+		if (frame < 0 || !FindReagentInParty(frame, nullptr))
+		{
+			if (missingReagentName)
+				*missingReagentName = reagentName;
+			return false;
+		}
+	}
+	return true;
+}
+
+U7Object* GumpSpellbook::GetCasterObject() const
+{
+	auto npcIt = g_NPCData.find(m_npcId);
+	if (npcIt == g_NPCData.end() || !npcIt->second)
+		return nullptr;
+	return GetObjectFromID(npcIt->second->m_objectID);
+}
+
+std::string GumpSpellbook::FindSpellScriptName(int scriptId) const
+{
+	if (!g_ScriptingSystem)
+		return {};
+
+	char suffix[16];
+	snprintf(suffix, sizeof(suffix), "_%04d", scriptId);
+	const size_t suffixLen = strlen(suffix);
+
+	std::string fallback;
+	for (const auto& script : g_ScriptingSystem->m_scriptFiles)
+	{
+		const std::string& name = script.first;
+		if (name.size() < suffixLen)
+			continue;
+		if (name.compare(name.size() - suffixLen, suffixLen, suffix) != 0)
+			continue;
+		if (name.rfind("spell_", 0) == 0)
+			return name;
+		if (fallback.empty())
+			fallback = name;
+	}
+	return fallback;
+}
+
+bool GumpSpellbook::ConsumeReagents(int spellId)
+{
+	SpellData* spell = GetSpellData(spellId);
+	if (!spell)
+		return false;
+
+	for (const std::string& reagentName : spell->reagents)
+	{
+		const int frame = ReagentFrameForName(reagentName);
+		U7Object* container = nullptr;
+		U7Object* item = FindReagentInParty(frame, &container);
+		if (!item || !container)
+			return false;
+
+		const int quantity = GetStackQuantity(item);
+		if (quantity > 1)
+		{
+			SetStackQuantity(item, quantity - 1);
+		}
+		else
+		{
+			const int itemId = item->m_ID;
+			container->RemoveObjectFromInventory(itemId);
+			auto it = g_objectList.find(itemId);
+			if (it != g_objectList.end())
+				g_objectList.erase(it);
+		}
+	}
 	return true;
 }
 
 void GumpSpellbook::CastSpell(int spellId)
 {
-	if (spellId < 0 || spellId >= 64)
+	SpellData* spell = GetSpellData(spellId);
+	if (!spell)
 	{
-		Log("GumpSpellbook::CastSpell() - Invalid spell ID: " + std::to_string(spellId));
+		AddConsoleString("Can't cast spell: Unknown spell", RED);
 		return;
 	}
+
+	const std::string& spellName = spell->name;
 
 	if (!IsSpellLearned(spellId))
 	{
-		Log("GumpSpellbook::CastSpell() - Spell not learned: " + std::to_string(spellId));
+		AddConsoleString("Can't cast " + spellName + ": Spell not learned", RED);
 		return;
 	}
 
-	if (!HasReagents(spellId))
+	U7Object* caster = GetCasterObject();
+	if (!caster)
 	{
-		Log("GumpSpellbook::CastSpell() - Missing reagents for spell: " + std::to_string(spellId));
+		AddConsoleString("Can't cast " + spellName + ": No caster", RED);
 		return;
 	}
 
-	// TODO: Consume reagents from NPC inventory
-	// TODO: Execute spell script (utility_spell_*.lua)
-	// TODO: Close spellbook after casting
+	// Mana cost equals circle (Linear 0; First–Eighth = 1–8)
+	const int manaCost = spell->circle;
+	if (caster->m_mana < manaCost)
+	{
+		AddConsoleString("Can't cast " + spellName + ": Not enough mana", RED);
+		return;
+	}
 
-	Log("GumpSpellbook::CastSpell() - Casting spell ID: " + std::to_string(spellId));
+	std::string missingReagent;
+	if (!HasReagents(spellId, &missingReagent))
+	{
+		AddConsoleString("Can't cast " + spellName + ": Missing reagent " + missingReagent, RED);
+		return;
+	}
+
+	const std::string scriptName = FindSpellScriptName(spell->scriptId);
+	if (scriptName.empty() || !g_ScriptingSystem)
+	{
+		AddConsoleString("Can't cast " + spellName + ": Spell script missing", RED);
+		return;
+	}
+
+	if (!ConsumeReagents(spellId))
+	{
+		AddConsoleString("Can't cast " + spellName + ": Missing reagent", RED);
+		return;
+	}
+
+	caster->m_mana -= static_cast<float>(manaCost);
+	if (caster->m_mana < 0.0f)
+		caster->m_mana = 0.0f;
+
+	// Pass the caster as objectref (spell scripts bark / schedule on this id).
+	const std::string result = g_ScriptingSystem->CallScript(
+		scriptName,
+		{ static_cast<lua_Integer>(1), static_cast<lua_Integer>(caster->m_ID) });
+
+	Log("GumpSpellbook::CastSpell - " + spellName + " via " + scriptName +
+		" result='" + result + "' mana left=" + std::to_string(caster->m_mana));
+
+	// Close the spellbook after a successful cast attempt (script ran)
+	m_IsDead = true;
 }
 
 void GumpSpellbook::Update()
@@ -408,8 +593,8 @@ void GumpSpellbook::Update()
 		return;
 	}
 
-	// Handle PREV button click - trigger page turn animation
-	if (m_gui.m_ActiveElement == m_prevButtonId && m_currentCircle > 1 && !m_isAnimating)
+	// Handle PREV button click - trigger page turn animation (Linear=0 .. Eighth=8)
+	if (m_gui.m_ActiveElement == m_prevButtonId && m_currentCircle > 0 && !m_isAnimating)
 	{
 		// Start PREV animation (1,2,3,4)
 		m_isAnimating = true;
@@ -526,8 +711,8 @@ void GumpSpellbook::Update()
 		}
 	}
 
-	// Handle circle navigation (1-8 keys or left/right arrows)
-	if (IsKeyPressed(KEY_LEFT) && m_currentCircle > 1)
+	// Handle circle navigation (0=Linear via 0 key; 1-8 keys; left/right arrows)
+	if (IsKeyPressed(KEY_LEFT) && m_currentCircle > 0)
 	{
 		m_currentCircle--;
 		m_selectedSpellId = -1;
@@ -538,6 +723,12 @@ void GumpSpellbook::Update()
 	{
 		m_currentCircle++;
 		m_selectedSpellId = -1;
+		UpdateCircleDisplay();
+		UpdateBookmark();
+	}
+	else if (IsKeyPressed(KEY_ZERO))
+	{
+		m_currentCircle = 0;
 		UpdateCircleDisplay();
 		UpdateBookmark();
 	}
@@ -590,42 +781,71 @@ void GumpSpellbook::Update()
 		UpdateBookmark();
 	}
 
-	// Handle spell clicks - spell icons are now interactive iconbuttons
+	// Handle spell clicks - single click bookmarks; double-click tries to cast.
+	// Important: InputSystem treats the second release of a double-click as
+	// WasLButtonDoubleClicked only (WasLButtonClicked is false), so GuiIconButton
+	// never sets m_ActiveElement on that frame. Detect double-clicks by region.
+	auto bookmarkSpell = [&](int spellIndex) {
+		m_bookmarkedCircle = m_currentCircle;
+		m_bookmarkedSpellIndex = spellIndex;
+		s_savedBookmarkedCircle = m_bookmarkedCircle;
+		s_savedBookmarkedSpellIndex = m_bookmarkedSpellIndex;
+		Log("GumpSpellbook::Update - Bookmarked spell " + std::to_string(spellIndex) +
+			" in circle " + std::to_string(m_currentCircle));
+		UpdateBookmark();
+	};
+
+	auto tryCastSpellIndex = [&](int spellIndex) {
+		if (m_currentCircle < 0 || m_currentCircle >= static_cast<int>(g_spellCircles.size()))
+			return;
+		const auto& circleSpells = g_spellCircles[m_currentCircle].spells;
+		if (spellIndex < 0 || spellIndex >= static_cast<int>(circleSpells.size()))
+			return;
+		CastSpell(circleSpells[spellIndex].id);
+	};
+
+	if (g_InputSystem && g_InputSystem->WasLButtonDoubleClicked())
+	{
+		for (int i = 0; i < 8; i++)
+		{
+			if (m_spellSpriteIds[i] == -1)
+				continue;
+			std::shared_ptr<GuiElement> element = m_gui.GetElement(m_spellSpriteIds[i]);
+			if (!element)
+				continue;
+
+			Rectangle bounds = GetScaledElementBounds(element);
+			const float scale = m_gui.m_InputScale;
+			const int x = int((m_gui.m_Pos.x + bounds.x) * scale);
+			const int y = int((m_gui.m_Pos.y + bounds.y) * scale);
+			const int w = int(bounds.width * scale);
+			const int h = int(bounds.height * scale);
+
+			if (g_InputSystem->WasLButtonDoubleClickedInRegion(x, y, w, h))
+			{
+				bookmarkSpell(i);
+				tryCastSpellIndex(i);
+				return;
+			}
+		}
+	}
+
 	for (int i = 0; i < 8; i++)
 	{
-		if (m_spellSpriteIds[i] != -1)
+		if (m_spellSpriteIds[i] != -1 && m_gui.m_ActiveElement == m_spellSpriteIds[i])
 		{
-			// Check if this spell button was clicked
-			if (m_gui.m_ActiveElement == m_spellSpriteIds[i])
-			{
-				// Spell clicked - update bookmark to this spell
-				m_bookmarkedCircle = m_currentCircle;
-				m_bookmarkedSpellIndex = i;
-
-				// Save to static storage so it persists between spellbook opens
-				s_savedBookmarkedCircle = m_bookmarkedCircle;
-				s_savedBookmarkedSpellIndex = m_bookmarkedSpellIndex;
-				Log("GumpSpellbook::Update - Saved to static: circle=" + std::to_string(s_savedBookmarkedCircle) + 
-					" index=" + std::to_string(s_savedBookmarkedSpellIndex));
-
-				Log("GumpSpellbook::Update - Bookmarked spell " + std::to_string(i) +
-					" in circle " + std::to_string(m_currentCircle));
-
-				// Update bookmark position and frame
-				UpdateBookmark();
-				break;
-			}
+			bookmarkSpell(i);
+			break;
 		}
 	}
 }
 
 void GumpSpellbook::Draw()
 {
-	// Update spell sprites for the current circle before drawing
-	if (m_currentCircle >= 1 && m_currentCircle <= 8)
+	// Update spell sprites for the current circle before drawing (0=Linear .. 8=Eighth)
+	if (m_currentCircle >= 0 && m_currentCircle < static_cast<int>(g_spellCircles.size()))
 	{
-		// Get the spells for the current circle
-		const auto& circleSpells = g_spellCircles[m_currentCircle - 1].spells;
+		const auto& circleSpells = g_spellCircles[m_currentCircle].spells;
 
 		// Get the gumps texture
 		Texture* gumpsTexture = g_ResourceManager->GetTexture("Images/GUI/gumps.png");
@@ -684,16 +904,114 @@ bool GumpSpellbook::IsMouseOverSolidPixel(Vector2 mousePos)
 	if (!img || img->data == nullptr)
 		return true;
 
-	// Convert mouse position to local gump coordinates
-	const float localX = mousePos.x - m_gui.m_Pos.x;
-	const float localY = mousePos.y - m_gui.m_Pos.y;
+	// Convert mouse position to local gump coordinates, then into design-space atlas coords
+	const float localX = (mousePos.x - m_gui.m_Pos.x) / kDisplayScale;
+	const float localY = (mousePos.y - m_gui.m_Pos.y) / kDisplayScale;
 
 	// Spellbook sprite is at x=18, y=451, w=160, h=90 in gumps.png
-	const int texX = int(18 + localX);
-	const int texY = int(451 + localY);
+	const int texX = int(kTexOriginX + localX);
+	const int texY = int(kTexOriginY + localY);
 
 	if (texX < 0 || texY < 0 || texX >= img->width || texY >= img->height)
 		return false;
 
 	return GetImageColor(*img, texX, texY).a > 0;
+}
+
+void GumpSpellbook::ApplyDisplayScale(float scale)
+{
+	if (scale == 1.0f)
+		return;
+
+	for (auto& pair : m_gui.m_GuiElementList)
+	{
+		std::shared_ptr<GuiElement>& element = pair.second;
+		if (!element)
+			continue;
+
+		element->m_Pos.x *= scale;
+		element->m_Pos.y *= scale;
+
+		switch (element->m_Type)
+		{
+		case GUI_ICONBUTTON:
+		{
+			GuiIconButton* button = static_cast<GuiIconButton*>(element.get());
+			button->m_Scale *= scale;
+			break;
+		}
+		case GUI_SPRITE:
+		{
+			GuiSprite* sprite = static_cast<GuiSprite*>(element.get());
+			sprite->m_ScaleX *= scale;
+			sprite->m_ScaleY *= scale;
+			break;
+		}
+		case GUI_CYCLE:
+		{
+			GuiCycle* cycle = static_cast<GuiCycle*>(element.get());
+			cycle->m_ScaleX *= scale;
+			cycle->m_ScaleY *= scale;
+			break;
+		}
+		case GUI_PANEL:
+		case GUI_TEXTAREA:
+			element->m_Width *= scale;
+			element->m_Height *= scale;
+			break;
+		default:
+			break;
+		}
+	}
+
+	// Reload circle/level labels at 2x font size so text matches the larger book
+	const int scaledFontSize = int(kDesignFontSize * scale);
+	const char* fontPath = "Data/Fonts/babyblocks.ttf";
+	auto scaledFont = std::make_shared<Font>(LoadFontEx(fontPath, scaledFontSize, 0, 0));
+	m_loadedFonts.push_back(scaledFont);
+
+	auto assignScaledFont = [&](int elementId) {
+		if (elementId == -1)
+			return;
+		std::shared_ptr<GuiElement> element = m_gui.GetElement(elementId);
+		if (element && element->m_Type == GUI_TEXTAREA)
+		{
+			GuiTextArea* text = static_cast<GuiTextArea*>(element.get());
+			text->m_Font = scaledFont.get();
+		}
+	};
+
+	// LEVEL / CIRCLE ids are resolved later in Init; scale any textarea found by name now if present
+	assignScaledFont(m_serializer->GetElementID("LEVEL"));
+	assignScaledFont(m_serializer->GetElementID("CIRCLE"));
+}
+
+Rectangle GumpSpellbook::GetScaledElementBounds(const std::shared_ptr<GuiElement>& element) const
+{
+	if (!element)
+		return Rectangle{ 0, 0, 0, 0 };
+
+	float width = element->m_Width;
+	float height = element->m_Height;
+
+	if (element->m_Type == GUI_ICONBUTTON)
+	{
+		GuiIconButton* button = static_cast<GuiIconButton*>(element.get());
+		width *= button->m_Scale;
+		height *= button->m_Scale;
+	}
+	else if (element->m_Type == GUI_SPRITE)
+	{
+		GuiSprite* sprite = static_cast<GuiSprite*>(element.get());
+		width *= sprite->m_ScaleX;
+		height *= sprite->m_ScaleY;
+	}
+	else if (element->m_Type == GUI_CYCLE)
+	{
+		GuiCycle* cycle = static_cast<GuiCycle*>(element.get());
+		width *= cycle->m_ScaleX;
+		height *= cycle->m_ScaleY;
+	}
+
+	return Rectangle{ element->m_Pos.x, element->m_Pos.y, width, height };
 }

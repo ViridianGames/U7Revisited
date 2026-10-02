@@ -3761,28 +3761,38 @@ static int LuaInCombat(lua_State *L)
     return 1;
 }
 
-// 0x0061 | apply_damage
+// 0x0061 | apply_damage(base, hit_points, damage_type, target_id [, attacker_id])
 static int LuaApplyDamage(lua_State *L)
 {
     int base_damage = (int)lua_tointeger(L, 1);
     int hit_points = (int)lua_tointeger(L, 2);
     int damage_type = (int)lua_tointeger(L, 3);
     int target_id = (int)lua_tointeger(L, 4);
+    int attacker_id = (lua_gettop(L) >= 5) ? (int)lua_tointeger(L, 5) : -1;
+    (void)base_damage;
+    (void)damage_type;
 
-    // Simplified damage application
-    if (g_objectList.find(target_id) != g_objectList.end())
+    if (g_objectList.find(target_id) == g_objectList.end())
     {
-        U7Object* target = g_objectList[target_id].get();
-        // Reduce HP (simplified - full implementation would use combat system)
-        target->m_hp -= hit_points;
+        lua_pushboolean(L, 0);
+        return 1;
+    }
 
-        // Check if target died
-        if (target->m_hp <= 0 && target->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC && target->m_NPCData)
-        {
-            target->m_NPCData->status |= 0x0008;  // Set dead bit
-            lua_pushboolean(L, 1);  // Target died
-            return 1;
-        }
+    U7Object* target = g_objectList[target_id].get();
+    target->m_hp -= hit_points;
+
+    if (attacker_id >= 0)
+    {
+        auto it = g_objectList.find(attacker_id);
+        if (it != g_objectList.end() && it->second)
+            target->NotifyAttackedBy(it->second.get());
+    }
+
+    if (target->m_hp <= 0 && target->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC && target->m_NPCData)
+    {
+        target->m_NPCData->status |= 0x0008;  // Set dead bit
+        lua_pushboolean(L, 1);  // Target died
+        return 1;
     }
 
     lua_pushboolean(L, 0);  // Target survived
@@ -4853,26 +4863,20 @@ static int LuaSetPathFailure(lua_State *L)
     return 0;
 }
 
+// Shared weather state for get_weather / set_weather (0=clear, 1=rain, 2=snow, 3=sparkles).
+static int g_luaWeather = 0;
+
 // 0x0044 | get_weather
 static int LuaGetWeather(lua_State *L)
 {
-    // Simple weather system using static variable
-    // 0 = clear, 1 = rain, 2 = snow, etc.
-    static int g_currentWeather = 0;
-
-    lua_pushinteger(L, g_currentWeather);
+    lua_pushinteger(L, g_luaWeather);
     return 1;
 }
 
 // 0x0045 | set_weather
 static int LuaSetWeather(lua_State *L)
 {
-    int weather_type = (int)lua_tointeger(L, 1);
-
-    // Simple weather system using static variable
-    static int g_currentWeather = 0;
-    g_currentWeather = weather_type;
-
+    g_luaWeather = (int)lua_tointeger(L, 1);
     return 0;
 }
 
@@ -5013,7 +5017,8 @@ static int LuaObjSpriteEffect(lua_State *L)
 
     int objectId = (int)luaL_checkinteger(L, 1);
     int spriteNum = (int)luaL_checkinteger(L, 2);
-    float heightAboveTop = 1.0f;
+    // Exult obj_sprite_effect anchors at the object tile; optional lift above top.
+    float heightAboveTop = 0.0f;
     if (lua_gettop(L) >= 3 && lua_isnumber(L, 3))
     {
         heightAboveTop = (float)lua_tonumber(L, 3);
@@ -5220,33 +5225,97 @@ static int LuaArmageddon(lua_State *L)
     return 0;
 }
 
-// 0x0050 | wizard_eye
+// 0x0050 | wizard_eye(ticks [, unused]) — temporary freecam (Exult ShowWizardEye).
 static int LuaWizardEye(lua_State *L)
 {
-    // bool enable = lua_toboolean(L, 1);
-
-    // Free camera mode not yet implemented
-    // Would detach camera from player for exploration
+    const int ticks = (int)luaL_optinteger(L, 1, 45);
+    (void)luaL_optinteger(L, 2, 200);
+    StartWizardEye(ticks);
     return 0;
 }
 
-// 0x0095 | telekenesis
+// Exult stores a usecode fun# for the next remote use; we keep the value for
+// parity but spells call use_object() directly.
+static int g_telekenesisFun = -1;
+
+// 0x0095 | telekenesis(fun#)
 static int LuaTelekenesis(lua_State *L)
 {
-    // callback function
-
-    // Remote object manipulation not yet implemented
-    // Would allow moving objects from distance
+    g_telekenesisFun = (int)luaL_checkinteger(L, 1);
     return 0;
 }
 
-// 0x0057 | cause_light
+// use_object(object_id) — remote double-click / Telekinesis use.
+// Levers/winches (787,788,949,950) use Interact(2); other scripts Interact(1);
+// unlocked containers OpenGump. Returns true on success.
+static int LuaUseObject(lua_State *L)
+{
+    const int object_id = (int)luaL_checkinteger(L, 1);
+    U7Object* obj = GetObjectFromID(object_id);
+    if (!obj || obj->GetIsDead())
+    {
+        lua_pushboolean(L, 0);
+        return 1;
+    }
+
+    if (obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC)
+    {
+        lua_pushboolean(L, 0);
+        return 1;
+    }
+
+    const int shape = obj->m_ObjectType;
+    // Oracle Telekinesis lever/winch shapes — event 2 toggles without walk-to.
+    if (shape == 787 || shape == 788 || shape == 949 || shape == 950)
+    {
+        obj->Interact(2);
+        lua_pushboolean(L, 1);
+        return 1;
+    }
+
+    const bool hasScript = obj->m_shapeData &&
+        !obj->m_shapeData->m_luaScript.empty() &&
+        obj->m_shapeData->m_luaScript != "default";
+    const bool isDoor = obj->m_objectData && obj->m_objectData->m_isDoor;
+
+    if (isDoor || obj->m_hasConversationTree || hasScript)
+    {
+        obj->Interact(1);
+        lua_pushboolean(L, 1);
+        return 1;
+    }
+
+    if (obj->m_isContainer)
+    {
+        if (obj->IsLocked())
+        {
+            if (g_mainState)
+                g_mainState->Bark(obj, "Locked");
+            lua_pushboolean(L, 0);
+            return 1;
+        }
+        if (g_mainState)
+        {
+            g_mainState->OpenGump(object_id);
+            lua_pushboolean(L, 1);
+            return 1;
+        }
+    }
+
+    lua_pushboolean(L, 0);
+    return 1;
+}
+
+// 0x0057 | cause_light — Exult add_special_light(units): += units/20 game minutes.
 static int LuaCauseLight(lua_State *L)
 {
-    // int light_level = (int)lua_tointeger(L, 1);
-
-    // Lighting effects not yet implemented
-    // Would create temporary light source
+    const int light_level = static_cast<int>(lua_tointeger(L, 1));
+    // In Lor 500 → 25 min; Great Light 5000 → 250; potion/fountain 100 → 5.
+    g_spellLightRemaining += static_cast<float>(light_level) / 20.f;
+    if (g_Terrain)
+    {
+        g_Terrain->MarkDirty();
+    }
     return 0;
 }
 
@@ -6601,6 +6670,7 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction( "armageddon", LuaArmageddon);
     g_ScriptingSystem->RegisterScriptFunction( "wizard_eye", LuaWizardEye);
     g_ScriptingSystem->RegisterScriptFunction( "telekenesis", LuaTelekenesis);
+    g_ScriptingSystem->RegisterScriptFunction( "use_object", LuaUseObject);
     g_ScriptingSystem->RegisterScriptFunction( "cause_light", LuaCauseLight);
     g_ScriptingSystem->RegisterScriptFunction( "display_map", LuaDisplayMap);
     g_ScriptingSystem->RegisterScriptFunction( "display_area", LuaDisplayArea);

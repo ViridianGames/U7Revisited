@@ -1,17 +1,18 @@
---- Best guess: Implements the magic light spell (Bet Ort), creating a light source with sprite effects at the caster's location.
-function spell_douse_bet_ort_0323(eventid, objectref)
-    local var_0000, var_0001
+--- Fireworks (Bet Ort). Oracle: usecode.dc Func0643 object#(0x643).
+--- Linear spell: colorful sparkles around the caster (sprite effect 12).
 
-    if eventid == 1 then
-        destroy_object(objectref)
-        bark(objectref, "@Bet Ort@")
-        if check_spell_requirements() then
-            var_0000 = add_containerobject_s(objectref, {1603, 8021, 36, 17496, 17519, 7792})
-        else
-            var_0000 = add_containerobject_s(objectref, {1542, 17493, 17519, 7792})
-        end
-    elseif eventid == 2 then
-        var_0001 = get_object_position(objectref) --- Guess: Gets position data
-        apply_sprite_effect(-1, 0, 0, 0, var_0001[2] - 2, var_0001[1] - 2, 12) --- Guess: Applies sprite effect
+function spell_douse_bet_ort_0323(eventid, objectref)
+    if eventid ~= 1 then
+        return
     end
+
+    halt_scheduled(objectref)
+    bark(objectref, "@Bet Ort@")
+    if not check_spell_requirements() then
+        execute_usecode_array(objectref, {17511, 7781})
+        return
+    end
+
+    execute_usecode_array(objectref, {17511, 8037, 36, 7768})
+    obj_sprite_effect(objectref, 12)
 end

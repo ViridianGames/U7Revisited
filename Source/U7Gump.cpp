@@ -228,7 +228,8 @@ void Gump::Update()
 
 	// Are we the topmost gump?
 	bool isTopmostGump = (g_gumpManager->m_gumpUnderMouse == this);
-	if (isTopmostGump && CheckCollisionPointRec(mousePos, inventoryBox))
+	const bool selectingTarget = g_mainState && g_mainState->m_objectSelectionMode;
+	if (isTopmostGump && CheckCollisionPointRec(mousePos, inventoryBox) && !selectingTarget)
 	{
 		// Double-click inventory items: special gumps, otherwise run the item's usecode
 		// (keys → green use cursor via object_select_modal, etc.).

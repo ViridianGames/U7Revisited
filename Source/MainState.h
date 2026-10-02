@@ -107,6 +107,7 @@ public:
 
 	void BuildDemoHelpGUI();
 	void BuildSandboxHelpGUI();
+	void GiveSandboxReagentBag();
 
 	void SpawnMonster(int monsterType, int x, int y, int z);
 

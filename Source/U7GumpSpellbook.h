@@ -35,17 +35,18 @@ public:
 	void Setup(int npcId);
 
 	/// @brief Check if the player has learned a specific spell
-	/// @param spellId The spell ID to check (0-63)
+	/// @param spellId The spell ID to check (0-71; Linear 0-7, Circles 8-71)
 	/// @return true if the spell is learned
 	bool IsSpellLearned(int spellId);
 
-	/// @brief Check if the player has the required reagents for a spell
-	/// @param spellId The spell ID to check (0-63)
+	/// @brief Check if the party has the required reagents for a spell
+	/// @param spellId The spell ID to check (0-71)
+	/// @param missingReagentName If non-null and a reagent is missing, set to that reagent's name
 	/// @return true if all reagents are available
-	bool HasReagents(int spellId);
+	bool HasReagents(int spellId, std::string* missingReagentName = nullptr);
 
-	/// @brief Cast a spell
-	/// @param spellId The spell ID to cast (0-63)
+	/// @brief Cast a spell (mana/reagent gates, consume, run script, close book)
+	/// @param spellId The spell ID to cast (0-71)
 	void CastSpell(int spellId);
 
 	/// @brief Get the NPC ID who owns this spellbook
@@ -58,8 +59,18 @@ public:
 	bool IsMouseOverSolidPixel(Vector2 mousePos) override;
 
 private:
+	// Design-space size of spell_book.ghost (before display scale)
+	static constexpr int kDesignWidth = 160;
+	static constexpr int kDesignHeight = 90;
+	static constexpr int kDesignBookmarkLeftX = 78;
+	static constexpr int kDesignBookmarkRightX = 125;
+	static constexpr int kTexOriginX = 18;   // spellbook atlas rect in gumps.png
+	static constexpr int kTexOriginY = 451;
+	static constexpr float kDisplayScale = 2.0f;
+	static constexpr int kDesignFontSize = 8;
+
 	int m_npcId;                      // Owner of this spellbook (usually Avatar)
-	int m_currentCircle;              // Currently displayed circle (1-8)
+	int m_currentCircle;              // Currently displayed circle (0=Linear, 1-8=First-Eighth)
 	int m_selectedSpellId;            // Currently selected spell (-1 = none)
 	bool m_isDragging;                // Is the gump being dragged?
 	Vector2 m_dragStart;              // Where the drag started
@@ -86,8 +97,8 @@ private:
 	int m_frameCounter = 0;           // Counts updates for current frame
 	const int m_updatesPerFrame = 2;  // How many Update() calls per animation frame
 
-	/// @brief Get the name of a circle (e.g., "First", "Second", etc.)
-	/// @param circle Circle number (1-8)
+	/// @brief Get the name of a circle (e.g., "Linear", "First", "Second", etc.)
+	/// @param circle Circle number (0-8)
 	/// @return Circle name
 	std::string GetCircleName(int circle);
 
@@ -96,6 +107,21 @@ private:
 
 	/// @brief Update the bookmark position and frame based on bookmarked spell
 	void UpdateBookmark();
+
+	/// @brief Scale all loaded ghost elements from design space to display size
+	void ApplyDisplayScale(float scale);
+
+	/// @brief Element bounds including draw/hit scale (iconbutton/sprite/cycle)
+	Rectangle GetScaledElementBounds(const std::shared_ptr<GuiElement>& element) const;
+
+	/// @brief Resolve caster U7Object for the spellbook owner
+	U7Object* GetCasterObject() const;
+
+	/// @brief Find Lua function name for a spell scriptId (prefers spell_* suffix match)
+	std::string FindSpellScriptName(int scriptId) const;
+
+	/// @brief Remove one unit of each required reagent from party backpacks
+	bool ConsumeReagents(int spellId);
 };
 
 #endif

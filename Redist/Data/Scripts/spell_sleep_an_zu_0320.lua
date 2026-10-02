@@ -1,22 +1,34 @@
---- Best guess: Implements the sleep spell (An Zu), targeting a party member and applying a sleep effect with animation.
-function spell_sleep_an_zu_0320(eventid, objectref)
-    local var_0000, var_0001, var_0002
+--- Awaken (An Zu). Oracle: usecode.dc Func0640 object#(0x640).
+--- Linear spell: click a sleeping NPC to clear FLAG_ASLEEP (1).
 
-    if eventid == 1 then
-        destroy_object(objectref)
-        var_0000 = object_select_modal() --- Guess: Selects spell target
-        var_0001 = select_spell_target(var_0000) --- Guess: Gets selected target
-        bark(objectref, "@An Zu@")
-        if check_spell_requirements() and var_0000[1] ~= 0 then
-            var_0002 = add_containerobject_s(objectref, {17511, 8037, 64, 8536, var_0001, 7769})
-        else
-            var_0002 = add_containerobject_s(objectref, {1542, 17493, 17511, 8549, var_0001, 7769})
+function spell_sleep_an_zu_0320(eventid, objectref)
+    if eventid == 2 then
+        if is_npc(objectref) then
+            clear_item_flag(objectref, 1) -- FLAG_ASLEEP
         end
-    elseif eventid == 2 then
-        if is_object_valid(objectref) then --- Guess: Checks item validity
-            clear_item_flag(1, objectref) --- Guess: Sets quest flag
-        else
-            play_spell_animation(60) --- Guess: Plays spell animation
+        return
+    end
+
+    if eventid ~= 1 then
+        return
+    end
+
+    halt_scheduled(objectref)
+    bark(objectref, "@An Zu@")
+    if not check_spell_requirements() then
+        execute_usecode_array(objectref, {17511, 7781})
+        return
+    end
+
+    execute_usecode_array(objectref, {17511, 8037, 64, 7768})
+
+    -- Green use-cursor; resumes with selected object id (0 if cancelled).
+    local target = click_on_item()
+    if target and target ~= 0 then
+        if is_npc(target) then
+            halt_scheduled(target)
+            clear_item_flag(target, 1)
+            obj_sprite_effect(target, 7)
         end
     end
 end

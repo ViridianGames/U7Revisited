@@ -465,8 +465,9 @@ void GumpPaperdoll::Update()
 
 	// Handle equipment slot clicks (only if we're the topmost gump)
 	bool isTopmostGump = (g_gumpManager->m_gumpUnderMouse == this);
+	const bool selectingTarget = g_mainState && g_mainState->m_objectSelectionMode;
 	auto npcIt = g_NPCData.find(m_npcId);
-	if (isTopmostGump && npcIt != g_NPCData.end() && npcIt->second)
+	if (isTopmostGump && !selectingTarget && npcIt != g_NPCData.end() && npcIt->second)
 	{
 		NPCData* npcData = npcIt->second.get();
 
@@ -881,6 +882,57 @@ bool GumpPaperdoll::IsOverSlot(Vector2 mousePos)
 	}
 
 	return false;
+}
+
+U7Object* GumpPaperdoll::GetObjectUnderMousePointer()
+{
+	auto npcIt = g_NPCData.find(m_npcId);
+	if (npcIt == g_NPCData.end() || !npcIt->second || !m_serializer)
+		return nullptr;
+
+	NPCData* npcData = npcIt->second.get();
+	static const char* slotNames[] = {
+		"SLOT_HEAD", "SLOT_NECK", "SLOT_TORSO", "SLOT_LEGS", "SLOT_HANDS", "SLOT_FEET",
+		"SLOT_LEFT_HAND", "SLOT_RIGHT_HAND", "SLOT_AMMO", "SLOT_LEFT_RING", "SLOT_RIGHT_RING",
+		"SLOT_BELT", "SLOT_BACKPACK"
+	};
+
+	Vector2 mousePos = GetMousePosition();
+	mousePos.x = int(mousePos.x / g_DrawScale);
+	mousePos.y = int(mousePos.y / g_DrawScale);
+
+	for (int i = 0; i < static_cast<int>(EquipmentSlot::SLOT_COUNT); i++)
+	{
+		const int slotID = m_serializer->GetElementID(slotNames[i]);
+		if (slotID == -1)
+			continue;
+
+		auto element = m_gui.GetElement(slotID);
+		if (!element)
+			continue;
+
+		GuiSprite* slotSprite = dynamic_cast<GuiSprite*>(element.get());
+		if (!slotSprite || !slotSprite->m_Sprite)
+			continue;
+
+		Rectangle slotRect = {
+			m_gui.m_Pos.x + slotSprite->m_Pos.x,
+			m_gui.m_Pos.y + slotSprite->m_Pos.y,
+			slotSprite->m_Sprite->m_sourceRect.width,
+			slotSprite->m_Sprite->m_sourceRect.height
+		};
+
+		if (!CheckCollisionPointRec(mousePos, slotRect))
+			continue;
+
+		const int objectId = npcData->GetEquippedItem(static_cast<EquipmentSlot>(i));
+		if (objectId == -1)
+			return nullptr;
+
+		return GetObjectFromID(objectId);
+	}
+
+	return nullptr;
 }
 
 bool GumpPaperdoll::IsMouseOverSolidPixel(Vector2 mousePos)

@@ -1,28 +1,42 @@
---- Best guess: Implements the create food spell (In Mani Ylem), generating food items for party members.
-function spell_create_food_in_mani_ylem_0328(eventid, objectref)
-    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007
+--- Create Food (In Mani Ylem). Oracle: usecode.dc Func0648 / object#0x648.
+--- Spawns shape 377 with random frame 1..30 at each party member's feet.
 
-    if eventid == 1 then
-        destroy_object(objectref)
-        bark(objectref, "@In Mani Ylem@")
-        if check_spell_requirements() then
-            var_0000 = add_containerobject_s(objectref, {1608, 17493, 17511, 17509, 8038, 68, 7768})
-        else
-            var_0000 = add_containerobject_s(objectref, {1542, 17493, 17511, 17509, 7782})
-        end
-    elseif eventid == 2 then
-        var_0001 = get_party_members()
-        -- Guess: sloop generates food for party members
-        for i = 1, 5 do
-            var_0004 = ({2, 3, 4, 1, 72})[i]
-            var_0005 = get_object_position(var_0004) --- Guess: Gets position data
-            var_0006 = get_object_status(377) --- Guess: Gets item status
-            if var_0006 then
-                var_0007 = random(1, 30)
-                set_object_frame(var_0006, var_0007)
-                set_object_flag(var_0006, 18)
-                var_0000 = update_last_created(var_0005) --- Guess: Updates position
+local function spawn_create_food_meals()
+    local party = get_party_list2()
+    if type(party) ~= "table" then
+        return
+    end
+
+    for _, npc_id in ipairs(party) do
+        local obj_id = get_npc_object_id(npc_id)
+        if obj_id and obj_id ~= -1 then
+            local pos = get_object_position(obj_id)
+            if pos then
+                local food = create_new_object(377)
+                if food then
+                    -- usecode: UI_die_roll(1, 0x1E) → frames 1..30
+                    set_object_frame(food, die_roll(1, 30))
+                    set_item_flag(food, 18) -- FLAG_OK_TO_TAKE
+                    update_last_created(pos)
+                end
             end
         end
+    end
+end
+
+function spell_create_food_in_mani_ylem_0328(eventid, objectref)
+    if eventid == 1 then
+        -- Spellbook passes the mage as objectref; do not destroy them.
+        bark(objectref, "@In Mani Ylem@")
+        if check_spell_requirements() then
+            -- Cast FX only (SFX + delays). Stripped UC_USECODE+0x648: the engine's
+            -- UC_USECODE path calls Interact(2) on the caster, not this spell.
+            execute_usecode_array(objectref, {17511, 17509, 8038, 68, 7768})
+            spawn_create_food_meals()
+        else
+            execute_usecode_array(objectref, {1542, 17493, 17511, 17509, 7782})
+        end
+    elseif eventid == 2 then
+        spawn_create_food_meals()
     end
 end

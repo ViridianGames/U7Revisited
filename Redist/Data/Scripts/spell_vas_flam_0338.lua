@@ -1,17 +1,35 @@
---- Best guess: Implements the fire field spell (Vas Flam), creating a damaging fire field at a target location.
-function spell_vas_flam_0338(eventid, objectref)
-    local var_0000, var_0001, var_0002, var_0003
+--- Fire Blast (Vas Flam). Oracle: usecode.dc Func0652 object#(0x652).
+--- Second Circle. Weapon shape 856 deals 10 fire damage (WEAPONS.DAT).
+--- Do not destroy the caster — earlier decompile used destroy_object(objectref).
+--- Projectile / set_to_attack path is unimplemented; apply damage immediately.
 
-    if eventid == 1 or eventid == 4 then
-        destroy_object(objectref)
-        var_0000 = object_select_modal() --- Guess: Selects spell target
-        var_0001 = select_spell_target(var_0000) --- Guess: Gets selected target
-        bark(objectref, "@Vas Flam@")
-        if check_spell_requirements() then
-            var_0002 = apply_spell_effect(856, var_0000, objectref) --- Guess: Applies spell effect
-            var_0003 = add_containerobject_s(objectref, {17505, 17530, 17514, 17514, 17520, 8047, 65, 8536, var_0001, 7769})
-        else
-            var_0003 = add_containerobject_s(objectref, {1542, 17493, 17514, 17520, 8559, var_0001, 7769})
-        end
+function spell_vas_flam_0338(eventid, objectref)
+    if eventid ~= 1 and eventid ~= 4 then
+        return
     end
+
+    halt_scheduled(objectref)
+    bark(objectref, "@Vas Flam@")
+    if not check_spell_requirements() then
+        execute_usecode_array(objectref, {17514, 17520, 7781})
+        return
+    end
+
+    local target = click_on_item()
+    if not target or target == 0 then
+        return
+    end
+
+    -- Cast FX only (no UC_USECODE / attack opcode).
+    execute_usecode_array(objectref, {17505, 17530, 17514, 17514, 17520, 8047, 65, 7769})
+
+    if not is_npc(target) or is_dead(target) then
+        return
+    end
+
+    -- apply_damage(base, hit_points, damage_type, target_id [, attacker_id])
+    -- damage_type 1 = fire; 10 HP matches weapon 856.
+    apply_damage(10, 10, 1, target, objectref)
+    obj_sprite_effect(target, 1)
+    play_sound_effect(13, target)
 end

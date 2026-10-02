@@ -15,7 +15,8 @@ public:
 	static constexpr float kInstrumentRisePerFrame = 0.2f;
 
 	void Spawn(int spriteIndex, Vector3 worldPos);
-	void SpawnOnObject(int objectId, int spriteIndex, float heightAboveTop = 1.0f);
+	// heightAboveTop: lift above object top (0 = Exult tile/hotspot anchor).
+	void SpawnOnObject(int objectId, int spriteIndex, float heightAboveTop = 0.0f);
 
 	// Rising note sprite (24) loops until the instrument on this object stops.
 	void StartInstrumentNotesOnObject(int objectId, float heightAboveTop = 1.0f);

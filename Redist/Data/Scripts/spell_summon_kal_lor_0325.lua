@@ -1,29 +1,35 @@
---- Best guess: Implements the summon spell (Kal Lor), spawning creatures and setting party flags for combat.
-function spell_summon_kal_lor_0325(eventid, objectref)
-    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
+--- Help (Kal Lor). Oracle: usecode.dc Func0645 object#(0x645).
+--- Linear spell: teleport party to Lord British's castle (usecode tile 936,1146).
 
-    if eventid == 1 then
-        destroy_object(objectref)
-        if get_flag(39) == false then
-            bark(objectref, "@Kal Lor@")
-            if check_spell_requirements() then
-                set_flag(39, true)
-                var_0000 = add_containerobject_s(objectref, {1605, 17493, 17519, 17505, 17517, 17516, 17505, 8047, 64, 7768})
-                var_0001 = get_party_members()
-                -- Guess: sloop applies flags to party members
-                for i = 1, 5 do
-                    var_0004 = ({2, 3, 4, 1, 43})[i]
-                    clear_item_flag(8, var_0004) --- Guess: Sets quest flag
-                    clear_item_flag(3, var_0004) --- Guess: Sets quest flag
-                    clear_item_flag(2, var_0004) --- Guess: Sets quest flag
-                    clear_item_flag(7, var_0004) --- Guess: Sets quest flag
-                end
-            else
-                var_0000 = add_containerobject_s(objectref, {1542, 17493, 17519, 17505, 17517, 17516, 17505, 7791})
-            end
+local HELP_X = 936
+local HELP_Z = 1146
+
+function spell_summon_kal_lor_0325(eventid, objectref)
+    if eventid ~= 1 then
+        return
+    end
+
+    halt_scheduled(objectref)
+    bark(objectref, "@Kal Lor@")
+    if not check_spell_requirements() then
+        execute_usecode_array(objectref, {17511, 7781})
+        return
+    end
+
+    execute_usecode_array(objectref, {17511, 8037, 64, 7768})
+
+    local party = get_party_list2() or {}
+    for _, npc_id in ipairs(party) do
+        -- Clear common status flags (asleep, poisoned, etc.) then warp.
+        local obj_id = get_npc_object_id(npc_id)
+        if obj_id and obj_id ~= -1 then
+            clear_item_flag(obj_id, 1)
+            clear_item_flag(obj_id, 2)
+            clear_item_flag(obj_id, 3)
+            clear_item_flag(obj_id, 7)
+            clear_item_flag(obj_id, 8)
         end
-    elseif eventid == 2 then
-        var_0005 = {0, 1146, 936}
-        move_object(357, var_0005) --- Guess: Sets NPC target
+        -- Engine pos: x, height y, map z. Usecode [936, 1146, 0] → (936, 0, 1146).
+        set_npc_pos(npc_id, HELP_X, 0, HELP_Z)
     end
 end

@@ -1310,8 +1310,8 @@ function wizard_eye(x, y) end
 ---@param object_id integer Object to move
 function telekenesis(object_id) end
 
----[Exult 0x0057] Creates light effect (stub - not yet implemented)
----@param light_level integer Intensity of light to create
+---[Exult 0x0057] Avatar light spell; adds light_level/20 game minutes (In Lor 500 → 25).
+---@param light_level integer Exult cause_light units (duration minutes = units/20)
 function cause_light(light_level) end
 
 ---[Exult 0x0048] Displays map

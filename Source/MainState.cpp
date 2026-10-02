@@ -454,8 +454,61 @@ void MainState::OnEnter()
 			ClearConsole();
 			AddConsoleString(std::string("Welcome to Ultima VII: Revisited!"));
 			AddConsoleString(std::string("Press H at any time for help."));
+			GiveSandboxReagentBag();
 		}
 	}
+}
+
+void MainState::GiveSandboxReagentBag()
+{
+	constexpr int kBagShape = 802;
+	constexpr int kReagentShape = 842;
+	constexpr int kReagentQty = 100;
+	constexpr int kReagentFrames = 8; // frames 0–7: pearl through sulfurous ash
+
+	if (!g_Player || g_NPCData.find(0) == g_NPCData.end() || !g_NPCData[0])
+		return;
+
+	NPCData* avatarNpc = g_NPCData[0].get();
+	U7Object* avatar = GetObjectFromID(avatarNpc->m_objectID);
+	if (!avatar)
+		return;
+
+	const int backpackId = avatarNpc->GetEquippedItem(EquipmentSlot::SLOT_BACKPACK);
+	U7Object* backpack = GetObjectFromID(backpackId);
+	if (!backpack)
+	{
+		AddConsoleString("Sandbox reagents: Avatar has no backpack", RED);
+		Log("GiveSandboxReagentBag: no backpack equipped on Avatar");
+		return;
+	}
+
+	const unsigned int bagId = GetNextID();
+	U7Object* bag = AddObject(kBagShape, 0, static_cast<int>(bagId),
+		avatar->m_Pos.x, avatar->m_Pos.y, avatar->m_Pos.z);
+	if (!bag)
+	{
+		Log("GiveSandboxReagentBag: failed to create bag");
+		return;
+	}
+	bag->m_isContainer = true;
+	AddObjectToContainer(static_cast<int>(bagId), backpackId);
+
+	for (int frame = 0; frame < kReagentFrames; ++frame)
+	{
+		const unsigned int reagentId = GetNextID();
+		U7Object* reagent = AddObject(kReagentShape, frame, static_cast<int>(reagentId),
+			avatar->m_Pos.x, avatar->m_Pos.y, avatar->m_Pos.z);
+		if (!reagent)
+			continue;
+		// Stack quantity lives in quality low 7 bits (shapeType 3); 100 fits.
+		reagent->m_Quality = kReagentQty;
+		AddObjectToContainer(static_cast<int>(reagentId), static_cast<int>(bagId));
+	}
+
+	AddConsoleString("Sandbox: reagent bag (100 of each) added to backpack");
+	Log("GiveSandboxReagentBag: bag id=" + std::to_string(bagId) +
+		" in backpack id=" + std::to_string(backpackId));
 }
 
 void MainState::OnExit()
@@ -505,10 +558,12 @@ void MainState::UpdateTime()
 	if (!m_paused)
 	{
 		float thisTime = GetTime();
+		bool minuteAdvanced = false;
 		if (thisTime - g_lastTime >= g_secsPerMinute)
 		{
 			g_lastTime = thisTime;
 			++g_minute;
+			minuteAdvanced = true;
 		}
 
 		if (g_minute >= 60)
@@ -523,6 +578,20 @@ void MainState::UpdateTime()
 		}
 
 		g_scheduleTime = g_hour / 3;
+
+		// Exult special_light expires in game minutes (cause_light units/20).
+		if (minuteAdvanced && g_spellLightRemaining > 0.f)
+		{
+			g_spellLightRemaining -= 1.f;
+			if (g_spellLightRemaining <= 0.f)
+			{
+				g_spellLightRemaining = 0.f;
+				if (g_Terrain)
+				{
+					g_Terrain->MarkDirty();
+				}
+			}
+		}
 	}
 
 	unsigned char darklevel = 64;
@@ -654,20 +723,22 @@ void MainState::HandleEscapeKey()
 	if (!IsKeyPressed(KEY_ESCAPE))
 		return;
 
-	if (!g_gumpManager->m_GumpList.empty())
-		g_gumpManager->m_GumpList.back().get()->SetIsDead(true);
-	else// if (!g_Engine->m_askedToExit)
-	{
-		//g_Engine->m_askedToExit = true;
-		g_StateMachine->PushState(STATE_OPTIONSSTATE);
-	}
-
+	// Cancel spell/key targeting first so Esc does not also close the open bag.
 	if (m_objectSelectionMode)
 	{
 		g_ScriptingSystem->ResumeCoroutine(m_luaFunction, {0});
 		m_doingObjectSelection = false;
 		m_objectSelectionMode = false;
 		m_luaFunction.clear();
+		return;
+	}
+
+	if (!g_gumpManager->m_GumpList.empty())
+		g_gumpManager->m_GumpList.back().get()->SetIsDead(true);
+	else// if (!g_Engine->m_askedToExit)
+	{
+		//g_Engine->m_askedToExit = true;
+		g_StateMachine->PushState(STATE_OPTIONSSTATE);
 	}
 }
 
@@ -1275,80 +1346,92 @@ void MainState::HandleLeftSingleClick()
 	if (!g_InputSystem->WasLButtonClicked())
 		return;
 
-	if (g_gumpManager->m_isMouseOverGump || g_gumpManager->m_draggingObject || g_mouseOverUI)
+	if (g_gumpManager->m_draggingObject || g_mouseOverUI)
 		return;
 
 	// Double-click use/open already handled this frame — don't show info.
 	if (m_handledDoubleLeftClickThisFrame)
 		return;
 
+	// Spell/key targeting: world objects and items inside open gumps.
+	if (m_objectSelectionMode)
+	{
+		U7Object* selected = nullptr;
+		if (g_gumpManager->m_isMouseOverGump && g_gumpManager->m_gumpUnderMouse)
+			selected = g_gumpManager->m_gumpUnderMouse->GetObjectUnderMousePointer();
+		else if (!g_gumpManager->m_isMouseOverGump)
+			selected = g_objectUnderMousePointer;
+
+		if (selected && g_ScriptingSystem->IsCoroutineYielded(m_luaFunction))
+		{
+			m_objectSelectionMode = false;
+			m_doingObjectSelection = false;
+			ClearObjectInfoTooltip();
+			g_ScriptingSystem->ResumeCoroutine(m_luaFunction, { selected->m_ID });
+			m_luaFunction.clear();
+		}
+		return;
+	}
+
+	if (g_gumpManager->m_isMouseOverGump)
+		return;
+
 	if (g_objectUnderMousePointer != nullptr)
 	{
-		if (m_objectSelectionMode)
+		ShowObjectInfoTooltip(g_objectUnderMousePointer);
+
+		if (g_objectUnderMousePointer->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC && m_npcListWindow && m_npcListWindow->IsVisible())
+			m_npcListWindow->SelectNPC(g_objectUnderMousePointer->m_NPCID);
+
+		// F10 path debug: sticky-select this NPC's current waypoint path.
+		if (m_showPathfindingDebug &&
+			(g_objectUnderMousePointer->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC ||
+			 g_objectUnderMousePointer->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_MONSTER))
 		{
-			if (g_ScriptingSystem->IsCoroutineYielded(m_luaFunction))
+			const int newId = g_objectUnderMousePointer->m_ID;
+			if (m_pathDebugNpcObjectId != newId && g_pathfindingSystem)
+				g_pathfindingSystem->ClearFrozenSearchGraph();
+			m_pathDebugNpcObjectId = newId;
+			const auto& wps = g_objectUnderMousePointer->m_pathWaypoints;
+			std::string name = GetObjectDisplayName(g_objectUnderMousePointer);
+			const bool hasFrozen = g_pathfindingSystem &&
+				g_pathfindingSystem->GetFrozenSearchObjectId() == m_pathDebugNpcObjectId &&
+				g_pathfindingSystem->HasFrozenSearchGraph();
+			if (wps.empty())
 			{
-				m_objectSelectionMode = false;
-				g_ScriptingSystem->ResumeCoroutine(m_luaFunction, { g_objectUnderMousePointer->m_ID });
+				AddConsoleString("Path debug: " + name + " (id " + std::to_string(m_pathDebugNpcObjectId) +
+					") — no active path" +
+					(g_objectUnderMousePointer->m_pathfindingPending ? " (pathfinding pending)" : "") +
+					(g_objectUnderMousePointer->m_isMoving ? ", isMoving" : "") +
+					(hasFrozen ? (" [frozen A* " + std::to_string(g_pathfindingSystem->GetFrozenSearchVisited().size()) + " nodes]") : ""),
+					YELLOW);
+			}
+			else
+			{
+				const Vector3& dest = wps.back();
+				AddConsoleString("Path debug: " + name + " (id " + std::to_string(m_pathDebugNpcObjectId) +
+					") — " + std::to_string(wps.size()) + " waypoints, idx " +
+					std::to_string(g_objectUnderMousePointer->m_currentWaypointIndex) +
+					", dest (" + std::to_string((int)dest.x) + ", " +
+					std::to_string(dest.y) + ", " + std::to_string((int)dest.z) + ")" +
+					(g_objectUnderMousePointer->m_isSchedulePath ? " [schedule]" : " [activity]"),
+					SKYBLUE);
 			}
 		}
-		else
+
+		if (g_LuaDebug && g_objectUnderMousePointer->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC)
+			DebugPrintNpcSchedule(g_objectUnderMousePointer);
+
+		// TEMP debug: Print context-sensitive egg info on click
+		if (g_objectUnderMousePointer->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_EGG)
 		{
-			ShowObjectInfoTooltip(g_objectUnderMousePointer);
+			g_objectUnderMousePointer->DebugPrintEggInfo();
+		}
 
-			if (g_objectUnderMousePointer->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC && m_npcListWindow && m_npcListWindow->IsVisible())
-				m_npcListWindow->SelectNPC(g_objectUnderMousePointer->m_NPCID);
-
-			// F10 path debug: sticky-select this NPC's current waypoint path.
-			if (m_showPathfindingDebug &&
-				(g_objectUnderMousePointer->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC ||
-				 g_objectUnderMousePointer->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_MONSTER))
-			{
-				const int newId = g_objectUnderMousePointer->m_ID;
-				if (m_pathDebugNpcObjectId != newId && g_pathfindingSystem)
-					g_pathfindingSystem->ClearFrozenSearchGraph();
-				m_pathDebugNpcObjectId = newId;
-				const auto& wps = g_objectUnderMousePointer->m_pathWaypoints;
-				std::string name = GetObjectDisplayName(g_objectUnderMousePointer);
-				const bool hasFrozen = g_pathfindingSystem &&
-					g_pathfindingSystem->GetFrozenSearchObjectId() == m_pathDebugNpcObjectId &&
-					g_pathfindingSystem->HasFrozenSearchGraph();
-				if (wps.empty())
-				{
-					AddConsoleString("Path debug: " + name + " (id " + std::to_string(m_pathDebugNpcObjectId) +
-						") — no active path" +
-						(g_objectUnderMousePointer->m_pathfindingPending ? " (pathfinding pending)" : "") +
-						(g_objectUnderMousePointer->m_isMoving ? ", isMoving" : "") +
-						(hasFrozen ? (" [frozen A* " + std::to_string(g_pathfindingSystem->GetFrozenSearchVisited().size()) + " nodes]") : ""),
-						YELLOW);
-				}
-				else
-				{
-					const Vector3& dest = wps.back();
-					AddConsoleString("Path debug: " + name + " (id " + std::to_string(m_pathDebugNpcObjectId) +
-						") — " + std::to_string(wps.size()) + " waypoints, idx " +
-						std::to_string(g_objectUnderMousePointer->m_currentWaypointIndex) +
-						", dest (" + std::to_string((int)dest.x) + ", " +
-						std::to_string(dest.y) + ", " + std::to_string((int)dest.z) + ")" +
-						(g_objectUnderMousePointer->m_isSchedulePath ? " [schedule]" : " [activity]"),
-						SKYBLUE);
-				}
-			}
-
-			if (g_LuaDebug && g_objectUnderMousePointer->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC)
-				DebugPrintNpcSchedule(g_objectUnderMousePointer);
-
-			// TEMP debug: Print context-sensitive egg info on click
-			if (g_objectUnderMousePointer->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_EGG)
-			{
-				g_objectUnderMousePointer->DebugPrintEggInfo();
-			}
-
-			// TEMP debug: Print monster stats on click
-			if (g_objectUnderMousePointer->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_MONSTER)
-			{
-				g_objectUnderMousePointer->DebugPrintMonsterInfo();
-			}
+		// TEMP debug: Print monster stats on click
+		if (g_objectUnderMousePointer->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_MONSTER)
+		{
+			g_objectUnderMousePointer->DebugPrintMonsterInfo();
 		}
 	}
 	else
@@ -1795,6 +1878,7 @@ void MainState::Update()
 	}
 
 	UpdateTime();
+	UpdateWizardEye();
 
 	if (MainStateModes::MAIN_STATE_MODE_TRINSIC_DEMO == m_gameMode && m_ranIntroScript && g_allowInput && !m_helpConsoleLineShown)
 	{

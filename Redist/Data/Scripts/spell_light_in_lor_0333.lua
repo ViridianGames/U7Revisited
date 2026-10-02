@@ -1,14 +1,15 @@
---- Best guess: Manages the "In Lor" spell, creating a light source (ID 500) with specific properties, with a fallback effect if the spell fails.
+--- Light (In Lor). Oracle: usecode.dc Func064D object#(0x64D).
+--- Temporary magical light via cause_light(500).
 function spell_light_in_lor_0333(eventid, objectref)
-    local var_0000
-
     if eventid == 1 then
         halt_scheduled(objectref)
         bark(objectref, "@In Lor@")
-        if not utility_condition_0044_1030() then
-            var_0000 = execute_usecode_array(objectref, {1613, 17493, 17511, 8037, 68, 17496, 7715})
+        if check_spell_requirements() then
+            -- Cast FX only. Apply light immediately (UC_USECODE would miss event 2).
+            execute_usecode_array(objectref, {17511, 8037, 68, 7768})
+            cause_light(500)
         else
-            var_0000 = execute_usecode_array(objectref, {1542, 17493, 17511, 7781})
+            execute_usecode_array(objectref, {17511, 7781})
         end
     elseif eventid == 2 then
         cause_light(500)
