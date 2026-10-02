@@ -69,6 +69,22 @@ void U7Object::Init(const string& configfile, int unitType, int frame)
 	m_shapeData = &g_shapeTable[m_ObjectType][m_Frame];
 	m_objectData = &g_objectDataTable[m_ObjectType];
 	m_drawType = m_shapeData->GetDrawType();
+	// Desync looping FX so every instance does not pop on the same frame.
+	m_animFrameOffset = 0;
+	// TFA ambient props loop; everything else starts Frozen (craft tools, casino
+	// wheels, doors) until a usecode script drives frames.
+	m_animMode = ObjectAnimMode::Frozen;
+	if (m_objectData && m_objectData->m_isAnimated)
+	{
+		m_animMode = ObjectAnimMode::Auto;
+		const int animFrames = g_shapeTable[m_ObjectType][0].m_numFrames;
+		if (animFrames > 1)
+		{
+			m_animFrameOffset = g_NonVitalRNG
+				? (int)g_NonVitalRNG->RandomRange(0, (unsigned)animFrames - 1)
+				: (rand() % animFrames);
+		}
+	}
 	m_isContainer = false;
 	m_isContained = false;
 	m_hasGump = false;
@@ -425,6 +441,7 @@ void U7Object::InteractiveDraw()
 
 	// Multi-frame shapes: pick the right frame before drawing.
 	// NPCs/monsters drive frames themselves; doors use scripted SetFrame.
+	// Auto mode only: Scripted/Frozen leave m_Frame alone (usecode / rest pose).
 	if (m_objectData
 		&& m_UnitType != UnitTypes::UNIT_TYPE_NPC
 		&& m_UnitType != UnitTypes::UNIT_TYPE_MONSTER
@@ -439,11 +456,14 @@ void U7Object::InteractiveDraw()
 			// Sundial: 24 frames, one per game hour (not a looping FX cycle).
 			currentFrame = static_cast<int>(g_hour) % animFrames;
 		}
-		else if (m_objectData->m_isAnimated && animFrames > 1)
+		else if (m_animMode == ObjectAnimMode::Auto
+			&& m_objectData->m_isAnimated && animFrames > 1)
 		{
 			// TFA "animated" shapes: cycle native SHAPES.VGA frames (no sprite strips).
+			// m_animFrameOffset (set in Init) keeps neighboring instances out of lockstep.
 			const float timePerFrame = 1.0f / 8.0f;
-			currentFrame = static_cast<unsigned int>(float(GetTime()) / timePerFrame) % animFrames;
+			currentFrame = (static_cast<unsigned int>(float(GetTime()) / timePerFrame)
+				+ (unsigned)m_animFrameOffset) % (unsigned)animFrames;
 		}
 
 		if (currentFrame != m_Frame)
@@ -476,7 +496,10 @@ void U7Object::InteractiveDraw()
 	if (m_isCustomMesh) {
 		CustomMeshDraw(renderColor);
 	} else {
-		m_shapeData->Draw(m_Pos, m_Angle, renderColor);
+		// Skeletal custom meshes: play while Auto/Scripted, rest pose while Frozen.
+		const bool playMeshAnim = (m_animMode != ObjectAnimMode::Frozen);
+		m_shapeData->Draw(m_Pos, m_Angle, renderColor, Vector3{ 1, 1, 1 },
+			playMeshAnim, 0);
 	}
 }
 
@@ -2840,6 +2863,43 @@ void U7Object::ReleaseFurnitureIfClear()
 		m_furnitureObjectId = -1;
 }
 
+int U7Object::GetShapeAnimFrameCount() const
+{
+	if (m_ObjectType < 0 || m_ObjectType >= 1024)
+		return 1;
+
+	int declared = g_shapeTable[m_ObjectType][0].m_numFrames;
+	if (declared < 1)
+		declared = 1;
+	if (declared > 32)
+		declared = 32;
+
+	// Prefer declared length when textures exist; otherwise walk back from
+	// declared-1 to the last frame with a usable texture (skips empty high slots).
+	int lastGood = 0;
+	for (int i = 0; i < declared; ++i)
+	{
+		if (g_shapeTable[m_ObjectType][i].m_texture != nullptr
+			|| g_shapeTable[m_ObjectType][i].IsValid())
+		{
+			lastGood = i;
+		}
+	}
+	const int count = lastGood + 1;
+	return count > 0 ? count : 1;
+}
+
+void U7Object::RestoreAnimModeAfterScript()
+{
+	if (IsInUsecodeScript())
+		return;
+
+	if (m_objectData && m_objectData->m_isAnimated)
+		m_animMode = ObjectAnimMode::Auto;
+	else
+		m_animMode = ObjectAnimMode::Frozen;
+}
+
 void U7Object::SetFrame(int frame)
 {
 	if (frame < 0 || frame >= 32)
@@ -3043,19 +3103,36 @@ void U7Object::StartUsecodeScript(std::vector<UsecodeScriptElem> code, float ini
 	if (code.empty())
 		return;
 
-	// Peek leading dont_halt / finish flags (Exult start()).
+	// Peek leading dont_halt / finish flags (Exult start()), and whether any
+	// opcode will change frames (enter Scripted mode for the spin/craft).
 	bool noHalt = false;
+	bool touchesFrames = false;
+	bool stillInLeadingFlags = true;
 	for (const auto& elem : code)
 	{
 		if (!ScriptElemIsInt(elem))
-			break;
-		const int op = DecodeScriptOpcode(ScriptElemInt(elem));
-		if (op == UC_DONT_HALT)
-			noHalt = true;
-		else if (op == UC_FINISH)
+		{
+			stillInLeadingFlags = false;
 			continue;
-		else
-			break;
+		}
+		const int op = DecodeScriptOpcode(ScriptElemInt(elem));
+		if (stillInLeadingFlags)
+		{
+			if (op == UC_DONT_HALT)
+			{
+				noHalt = true;
+				continue;
+			}
+			if (op == UC_FINISH)
+				continue;
+			stillInLeadingFlags = false;
+		}
+		if (op == UC_FRAME || op == UC_NEXT_FRAME || op == UC_NEXT_FRAME_MAX
+			|| op == UC_PREV_FRAME || op == UC_PREV_FRAME_MIN
+			|| (op >= UC_NPC_FRAME_BASE && op <= UC_NPC_FRAME_BASE + 15))
+		{
+			touchesFrames = true;
+		}
 	}
 
 	// Exult: starting a new script terminates existing halt-able scripts on this object.
@@ -3072,6 +3149,9 @@ void U7Object::StartUsecodeScript(std::vector<UsecodeScriptElem> code, float ini
 		else
 			++it;
 	}
+
+	if (touchesFrames)
+		m_animMode = ObjectAnimMode::Scripted;
 
 	UsecodeScriptState script;
 	script.code = std::move(code);
@@ -3106,6 +3186,8 @@ void U7Object::HaltUsecodeScript(bool force)
 		}
 		it = m_usecodeScripts.erase(it);
 	}
+
+	RestoreAnimModeAfterScript();
 }
 
 void U7Object::UpdateUsecodeScript()
@@ -3218,17 +3300,30 @@ void U7Object::UpdateUsecodeScript()
 			case UC_NEXT_FRAME:
 			case UC_NEXT_FRAME_MAX:
 			{
+				const int nframes = GetShapeAnimFrameCount();
 				int fr = m_Frame + 1;
 				if (opcode == UC_NEXT_FRAME)
-					fr = fr; // wrap unknown max — bump one
+					fr = (nframes > 0) ? (fr % nframes) : 0;
+				else if (fr >= nframes)
+					fr = nframes - 1;
+				if (fr < 0) fr = 0;
 				SetFrame(fr);
 				break;
 			}
 			case UC_PREV_FRAME:
 			case UC_PREV_FRAME_MIN:
 			{
+				const int nframes = GetShapeAnimFrameCount();
 				int fr = m_Frame - 1;
-				if (fr < 0) fr = (opcode == UC_PREV_FRAME_MIN) ? 0 : 0;
+				if (opcode == UC_PREV_FRAME_MIN)
+				{
+					if (fr < 0) fr = 0;
+				}
+				else
+				{
+					if (fr < 0)
+						fr = (nframes > 0) ? (nframes - 1) : 0;
+				}
 				SetFrame(fr);
 				break;
 			}
@@ -3375,6 +3470,9 @@ void U7Object::UpdateUsecodeScript()
 		std::remove_if(m_usecodeScripts.begin(), m_usecodeScripts.end(),
 			[](const UsecodeScriptState& s) { return !s.active; }),
 		m_usecodeScripts.end());
+
+	// Craft tools / Triples: leave Frozen (or restore Auto for TFA ambient).
+	RestoreAnimModeAfterScript();
 }
 
 void U7Object::ClearPendingUsecode()

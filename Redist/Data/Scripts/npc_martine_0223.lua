@@ -46,9 +46,9 @@ function npc_martine_0223(eventid, objectref)
         var_0009 = utility_unknown_1035({var_0003, var_0002})
         if var_0009 == var_0002 then
             if not var_0004 then
-                add_dialogue("\"How art thou, \" .. var_0002 .. \"? I am so happy to meet thee!\"")
+                add_dialogue("\"How art thou, " .. var_0002 .. "? I am so happy to meet thee!\"")
             else
-                add_dialogue("\"Hello, \" .. var_0002 .. \".\"")
+                add_dialogue("\"Hello, " .. var_0002 .. ".\"")
             end
             var_0005 = var_0002
             set_flag(666, true)
@@ -63,7 +63,7 @@ function npc_martine_0223(eventid, objectref)
         end
         set_flag(684, true)
     else
-        add_dialogue("\"Hello again, \" .. var_0005 .. \",\" Martine says.")
+        add_dialogue("\"Hello again, " .. var_0005 .. ",\" Martine says.")
     end
     while true do
         local answer = get_answer()

@@ -37,6 +37,17 @@ enum class EquipmentSlot
 	SLOT_COUNT
 };
 
+// Shape-frame / skeletal playback for non-NPC props.
+// Auto: TFA ambient loop (bubbles, etc.).
+// Scripted: frames only from usecode scripts / SetFrame (spins, craft tools in use).
+// Frozen: hold current frame / rest pose (idle loom, post-spin Triples wheel).
+enum class ObjectAnimMode : uint8_t
+{
+	Auto = 0,
+	Scripted = 1,
+	Frozen = 2
+};
+
 struct NPCData
 {
 	unsigned char x;
@@ -375,6 +386,13 @@ public:
 	void Activate(float timeNow, int maxFrames, int probability);
 	void SetFrame(int frame); // Change object frame (e.g., for doors)
 
+	void SetAnimMode(ObjectAnimMode mode) { m_animMode = mode; }
+	ObjectAnimMode GetAnimMode() const { return m_animMode; }
+	// Valid shape-frame count for wrap/clamp (skips empty high frames when possible).
+	int GetShapeAnimFrameCount() const;
+	// After usecode scripts that touch frames finish: Auto if TFA-animated, else Frozen.
+	void RestoreAnimModeAfterScript();
+
 	void Interact(int event);
 
 	bool GetIsMoving() { return m_isMoving; }
@@ -558,6 +576,9 @@ public:
 	UnitTypes m_UnitType = UnitTypes::UNIT_TYPE_OBJECT;
 	int m_ObjectType;
 	int m_Frame;
+	// Phase offset so TFA-animated props (swamp bubbles, etc.) do not all sync to frame 0.
+	int m_animFrameOffset = 0;
+	ObjectAnimMode m_animMode = ObjectAnimMode::Frozen;
 	int m_Quality;
 
 	bool m_isFrameOverridden = false;

@@ -15,7 +15,8 @@ function npc_blacktooth_0226(eventid, objectref)
         end
         start_conversation()
         add_answer({"bye", "job", "name"})
-        if not get_flag(677) and not get_flag(679) then
+        -- Offer Mole's message only after Mole has confessed (679) and before reconciliation (678).
+        if get_flag(679) and not get_flag(678) then
             add_answer("Mole says...")
         end
         if not get_flag(687) then
@@ -35,7 +36,7 @@ function npc_blacktooth_0226(eventid, objectref)
             end
             set_flag(687, true)
         elseif get_flag(678) or not get_flag(677) then
-            add_dialogue("\"What dost thou want?\" Blacktooth asks in a threatening voice. \"Oh, 'tis thee, \" .. var_0004 .. \".\"")
+            add_dialogue("\"What dost thou want?\" Blacktooth asks in a threatening voice. \"Oh, 'tis thee, " .. var_0004 .. ".\"")
         else
             add_dialogue("\"I thought thou didst not want to be my friend!\" Blacktooth grumbles.")
         end
@@ -95,12 +96,12 @@ function npc_blacktooth_0226(eventid, objectref)
                 add_dialogue("\"I shall just remain here alone and destitute! Where is my dagger? I shall slit my throat!!\"")
                 remove_answer("changed")
                 set_flag(677, true)
-                if not get_flag(679) then
+                if get_flag(679) and not get_flag(678) then
                     add_answer("Mole says...")
                 end
             elseif answer == "Mole says..." then
                 add_dialogue("\"He said that? Really?\" Blacktooth looks as if he may cry again.")
-                add_dialogue("\"I must go take a look for him. I thank thee, \" .. var_0004 .. \", for considering my feelings in this matter.\" Blacktooth gives you a big hug, then turns away to look for Mole.")
+                add_dialogue("\"I must go take a look for him. I thank thee, " .. var_0004 .. ", for considering my feelings in this matter.\" Blacktooth gives you a big hug, then turns away to look for Mole.")
                 remove_answer("Mole says...")
                 set_flag(678, true)
                 utility_unknown_1041(20)

@@ -249,7 +249,8 @@ bool RaylibModel::SetAnimationFrame(const std::string& animName, int frame)
 		return false;
 	}
 
+	m_CurrentAnim = animName;
+	m_AnimFrame = static_cast<unsigned int>(frame);
 	UpdateModelAnimation(m_Model, m_Anims[i], frame);
-	UpdateAnim(animName);
 	return true;
 }

@@ -81,7 +81,7 @@ function npc_mandy_0231(eventid, objectref)
                             var_000D = remove_party_items(true, 359, 359, 644, var_000A)
                         end
                     else
-                        add_dialogue("\"It doth seem that thou art a trifle short, \" .. var_0002 .. \".\"")
+                        add_dialogue("\"It doth seem that thou art a trifle short, " .. var_0002 .. ".\"")
                     end
                 else
                     add_dialogue("\"All right. Some other time.\"")

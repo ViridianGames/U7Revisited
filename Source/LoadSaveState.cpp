@@ -36,6 +36,7 @@ LoadSaveState::~LoadSaveState()
 void LoadSaveState::OnEnter()
 {
 	Log("LoadSaveState::OnEnter()");
+	SetFirstPersonMouseLook(false);
 
 	// Disable dragging - modal system dialog should stay centered
 	m_gui.m_Draggable = false;

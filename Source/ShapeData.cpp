@@ -828,7 +828,7 @@ void ShapeData::DrawMeshId(const Vector3& pos, float angle, Color idColor, Vecto
 	};
 
 	Model& model = m_customMesh->GetModel();
-	m_customMesh->UpdateAnim("idle");
+	// ID pass: do not advance skeletal time — pose was set by the color Draw.
 	struct MatBackup { Shader shader{}; };
 	std::vector<MatBackup> backup(static_cast<size_t>(std::max(0, model.materialCount)));
 	for (int mi = 0; mi < model.materialCount; ++mi)
@@ -933,7 +933,8 @@ void ShapeData::DrawInventoryIcon(int x, int y, Color tint)
 	}
 }
 
-void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scaling)
+void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scaling,
+	bool playSkeletalAnim, int freezeFrame)
 {
 	if (m_isValid == false)
 	{
@@ -988,9 +989,13 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 
 		if (m_drawType == ShapeDrawType::OBJECT_DRAW_ANIMFLAT)
 		{
-			// Legacy UV-strip path (rarely used).
+			// Legacy UV-strip path (rarely used). Phase from world pos so tiles desync.
 			float timePerFrame = 1.0f / 8.0f;
-			int currentFrame = static_cast<unsigned int>(float(GetTime()) / timePerFrame) % m_numFrames;
+			const unsigned ix = (unsigned)floorf(pos.x);
+			const unsigned iz = (unsigned)floorf(pos.z);
+			const unsigned phase = (ix * 73856093u ^ iz * 19349663u) % (unsigned)m_numFrames;
+			int currentFrame = (static_cast<unsigned int>(float(GetTime()) / timePerFrame)
+				+ phase) % (unsigned)m_numFrames;
 			float uvPerFrame = 1.0f / static_cast<float>(m_numFrames);
 			float frameUV = uvPerFrame * static_cast<float>(currentFrame);
 
@@ -1068,7 +1073,13 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 	case ShapeDrawType::OBJECT_DRAW_CUSTOM_MESH:
 	case ShapeDrawType::OBJECT_DRAW_CUSTOM_MESH_DEFER:
 	{
-		m_customMesh->UpdateAnim("idle");
+		if (m_customMesh->CanApplySkeletalAnimation())
+		{
+			if (playSkeletalAnim)
+				m_customMesh->UpdateAnim("idle");
+			else
+				m_customMesh->SetAnimationFrame("idle", freezeFrame < 0 ? 0 : freezeFrame);
+		}
 		Model& model = m_customMesh->GetModel();
 
 		// Remap authored model PNG → palette index map so water/fire glisten via

@@ -83,7 +83,10 @@ public:
 	void Serialize(std::ofstream& outputStream );
 	void Deserialize(std::ifstream& inputStream);
 
-	void Draw(const Vector3& pos, float angle, Color color = Color{ 255, 255, 255, 255 }, Vector3 scaling =  Vector3{ 1, 1, 1 });
+	// playSkeletalAnim: when false, custom meshes with idle clips hold freezeFrame
+	// (use-while-busy rest pose / Triples stop). Default true keeps editor/preview looping.
+	void Draw(const Vector3& pos, float angle, Color color = Color{ 255, 255, 255, 255 },
+		Vector3 scaling = Vector3{ 1, 1, 1 }, bool playSkeletalAnim = true, int freezeFrame = 0);
 
 	// Flat object-ID draw for the screen-space outline mask pass (custom meshes only).
 	void DrawMeshId(const Vector3& pos, float angle, Color idColor, Vector3 scaling = Vector3{ 1, 1, 1 });

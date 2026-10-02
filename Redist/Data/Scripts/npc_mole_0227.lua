@@ -9,7 +9,8 @@ function npc_mole_0227(eventid, objectref)
         var_0002 = get_npc_name(227)
         start_conversation()
         add_answer({"bye", "job", "name"})
-        if not get_flag(679) and not get_flag(677) then
+        -- Offer Blacktooth's confession once he has confessed (677).
+        if get_flag(677) then
             add_answer("He misses thee")
         end
         if not get_flag(688) then
@@ -33,10 +34,7 @@ function npc_mole_0227(eventid, objectref)
                     add_dialogue("\"All right. I was born in a cave. So my mother named me Mole.\"")
                     var_0003 = npc_id_in_party(1)
                     if var_0003 then
-                        switch_talk_to(1)
-                        add_dialogue("\"I thought thou said it was a long story.\"")
-                        hide_npc(1)
-                        switch_talk_to(227)
+                        second_speaker(1, 0, "\"I thought thou said it was a long story.\"")
                     end
                 else
                     add_dialogue("\"Very well. How 'bout if I just say that I was born in a cave, so my mother named me Mole.\"")
@@ -76,12 +74,8 @@ function npc_mole_0227(eventid, objectref)
                 add_dialogue("\"Yes, it was a different life in those days...\" Mole reflects on some past memory as his eyes glaze over temporarily. Finally he says, \"I may have dwelt too strongly on my Fellowship business. Perhaps I pushed him too hard. I am sorry. If he would give me another chance I would probably leave The Fellowship. They are not as wonderful as I made them sound. They are more crooked than the pirates I used to sail with!\" Mole frowns. \"Thou hast put me in a foul mood.\"")
                 remove_answer("life")
                 set_flag(679, true)
-                if not get_flag(677) then
+                if get_flag(677) then
                     add_answer("He misses thee")
-                    remove_answer("life")
-                else
-                    add_dialogue("*")
-                    return
                 end
             elseif answer == "He misses thee" then
                 add_dialogue("You tell Mole what Blacktooth said. A change comes over the salty pirate, as if you had just given him a bouquet of flowers.")

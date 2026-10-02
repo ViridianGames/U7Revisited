@@ -42,6 +42,29 @@ local function wool_in_avatar_inventory(wool_ref)
     return false
 end
 
+-- Engine ReverseUsecodeArray expects decompiler order (reversed natural).
+-- Natural: frame 0, delay, delay, …, frame 0 → Scripted while delays run (skeletal
+-- idle plays), then Frozen on rest frame when the script ends.
+local function play_use_animation(obj, delay_ticks, repeats)
+    local FRAME = 0x46
+    local DELAY = 0x27
+    local natural = { FRAME, 0 }
+    for _ = 1, repeats do
+        natural[#natural + 1] = DELAY
+        natural[#natural + 1] = delay_ticks
+    end
+    natural[#natural + 1] = FRAME
+    natural[#natural + 1] = 0
+    local rev = {}
+    for i = #natural, 1, -1 do
+        rev[#rev + 1] = natural[i]
+    end
+    if halt_scheduled then
+        halt_scheduled(obj)
+    end
+    execute_usecode_array(obj, rev)
+end
+
 local function create_spindle_near_wheel(wheel_id)
     local wx, wy, wz = pos_xyz(wheel_id)
     if not wx then
@@ -90,6 +113,9 @@ function object_chest_0653(eventid, objectref)
     if wool_in_avatar_inventory(objectref) then
         remove_item(objectref)
     end
+
+    -- ~2s spin (40 ticks × 0.05s): skeletal idle plays only while Scripted.
+    play_use_animation(target, 20, 2)
 
     if not create_spindle_near_wheel(target) then
         item_say("@Nothing happens.@", target)

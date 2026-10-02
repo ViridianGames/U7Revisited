@@ -5,40 +5,44 @@ function npc_dupre_0004(eventid, objectref)
     start_conversation()
     if eventid == 1 then
         switch_talk_to(4)
-        if not get_flag(747) then
-            if get_timer(11) < 1 then --- Guess: Checks party status or conditions
+        -- Flag 747: Dupre left the party after catching the Avatar stealing.
+        -- (Inverted `not get_flag` made this fire on every normal greeting.)
+        if get_flag(747) then
+            if get_timer(11) < 1 then
                 add_dialogue("\"I am sorry, I do not join thieves.\"")
                 abort()
             else
                 add_dialogue("\"All right, I suppose thou hast learned thy lesson. I shall rejoin.\"")
-                add_to_party(4) --- Guess: Removes object from game
+                add_to_party(4)
                 set_flag(747, false)
+                set_flag(365, true)
                 abort()
             end
         end
         var_0000 = get_lord_or_lady()
         var_0001 = get_party_members()
-        var_0002 = get_npc_name(4) --- Guess: Retrieves object reference from ID
+        var_0002 = get_npc_name(4)
         var_0003 = get_player_name()
-        var_0004 = npc_id_in_party(1) --- Guess: Checks player status
-        var_0005 = npc_id_in_party(3) --- Guess: Checks player status
-        var_0006 = npc_id_in_party(2) --- Guess: Checks player status
-        var_0007 = is_dead(get_npc_name(1)) --- Guess: Checks object-specific property
-        var_0008 = is_dead(get_npc_name(3)) --- Guess: Checks object-specific property
-        var_0009 = is_dead(get_npc_name(2)) --- Guess: Checks object-specific property
-        var_000A = is_dead(get_npc_name(124)) --- Guess: Checks object-specific property
-        var_000B = is_dead(get_npc_name(125)) --- Guess: Checks object-specific property
-        var_000C = is_dead(get_npc_name(126)) --- Guess: Checks object-specific property
-        var_000D = is_dead(get_npc_name(127)) --- Guess: Checks object-specific property
-        var_000E = is_player_wearing_fellowship_medallion() --- Guess: Checks Fellowship membership
+        var_0004 = npc_id_in_party(1) -- Iolo
+        var_0005 = npc_id_in_party(3) -- Shamino
+        var_0006 = npc_id_in_party(2) -- Spark
+        var_0007 = is_dead(get_npc_name(1))
+        var_0008 = is_dead(get_npc_name(3))
+        var_0009 = is_dead(get_npc_name(2))
+        var_000A = is_dead(get_npc_name(124)) -- Sprellic
+        var_000B = is_dead(get_npc_name(125)) -- fighters
+        var_000C = is_dead(get_npc_name(126))
+        var_000D = is_dead(get_npc_name(127))
+        var_000E = is_player_wearing_fellowship_medallion()
         add_answer({"bye", "job", "name"})
-        if is_int_in_array(var_0002, var_0001) then
+        if npc_id_in_party(4) then
             add_answer("leave")
         end
-        if not get_flag(6) then
+        -- Berate joining The Fellowship only if the Avatar actually joined / wears the medallion.
+        if get_flag(6) or var_000E then
             add_answer("Fellowship")
         end
-        if not var_0006 then
+        if var_0006 then
             add_answer("Spark")
         end
         if not get_flag(23) then
@@ -52,21 +56,15 @@ function npc_dupre_0004(eventid, objectref)
             if var_000F == "name" then
                 add_dialogue("\"Why, dost thou not recognize me? It is I, Lord British!\" he laughs. \"Dost thou not know thy friend Dupre when thou seest him, " .. var_0003 .. "?\"")
                 if var_0005 then
-                    switch_talk_to(3)
-                    add_dialogue("\"Do not be so modest, Sir Dupre. Thou shouldst tell the Avatar that thou hast been knighted since last you met.\"")
-                    hide_npc(3)
-                    switch_talk_to(4)
+                    second_speaker(3, 0, "\"Do not be so modest, Sir Dupre. Thou shouldst tell the Avatar that thou hast been knighted since last you met.\"")
                     add_dialogue("Sir Dupre looks quite embarrassed. \"Well, yes, I would have gotten around to that.\"")
                 elseif var_0004 then
-                    switch_talk_to(1)
-                    add_dialogue("\"Do not be so modest, Sir Dupre. Thou shouldst tell the Avatar that thou hast been knighted since last you met.\"")
-                    hide_npc(1)
-                    switch_talk_to(4)
+                    second_speaker(1, 0, "\"Do not be so modest, Sir Dupre. Thou shouldst tell the Avatar that thou hast been knighted since last you met.\"")
                     add_dialogue("Sir Dupre looks quite embarrassed. \"Well, yes, I would have gotten around to that.\"")
                 end
                 remove_answer("name")
             elseif var_000F == "job" then
-                if not get_flag(365) then
+                if not get_flag(365) and not npc_id_in_party(4) then
                     add_dialogue("\"I have not seen our old friends in some time. Currently I am conducting a study of all of the various drinking establishments of Britannia. At present I am about halfway through. But it is nothing that could keep me from adventuring with thee, " .. var_0003 .. ".\"")
                     add_answer({"join", "Jhelom", "friends"})
                 else
@@ -78,15 +76,15 @@ function npc_dupre_0004(eventid, objectref)
                 remove_answer("friends")
                 add_answer({"Shamino", "Iolo"})
             elseif var_000F == "join" then
-                var_0010 = 0
                 var_0001 = get_party_members()
-                for var_0011 = 1, 8 do
-                    var_0010 = var_0010 + 1
+                var_0010 = 0
+                if type(var_0001) == "table" then
+                    var_0010 = #var_0001
                 end
                 if var_0010 < 8 then
                     add_dialogue("\"It would be both an honor and a pleasure to join thee on thine adventures once again.\"")
                     set_flag(365, true)
-                    add_to_party(4) --- Guess: Removes object from game
+                    add_to_party(4)
                     add_answer("leave")
                 else
                     add_dialogue("\"Hmm. Too crowded for my liking. Come back if thou shouldst diminish thy group by a member or two.\"")
@@ -98,18 +96,16 @@ function npc_dupre_0004(eventid, objectref)
                 var_0013 = ask_answer({"go home", "wait here"})
                 if var_0013 == "wait here" then
                     add_dialogue("\"Very well. I shall await thy return.\"")
-                    remove_from_party(4) --- Guess: Sets object state (e.g., active/inactive)
+                    remove_from_party(4)
                     set_flag(365, false)
-                    set_schedule_type(15, get_npc_name(4)) --- Guess: Sets a generic object property
+                    set_schedule_type(15, get_npc_name(4))
                     abort()
                 else
                     add_dialogue("\"I shall depart thy company if that is truly thy wish. If thou shouldst ever need me again, thou hast only to ask.\" He turns away from you, obviously disappointed.")
-                    remove_from_party(4) --- Guess: Sets object state (e.g., active/inactive)
+                    remove_from_party(4)
                     set_flag(365, false)
-                    set_schedule_type(11, get_npc_name(4)) --- Guess: Sets a generic object property
+                    set_schedule_type(11, get_npc_name(4))
                     abort()
-                    add_answer("join")
-                    remove_answer("leave")
                 end
             elseif var_000F == "Jhelom" then
                 add_dialogue("\"It is something like the old times of Britannia, during the days of thy last visit, only more bloodthirsty. The local sport in Jhelom is duelling.\"")
@@ -145,7 +141,8 @@ function npc_dupre_0004(eventid, objectref)
             elseif var_000F == "foolhardy" then
                 add_dialogue("\"To this Sprellic fellow, foolhardy would be a compliment! He looks like he has never been in a fight in his entire life. I do not know why he would provoke someone into a duel. It is a puzzlement.\"")
                 remove_answer("foolhardy")
-                if not get_flag(390) then
+                -- Flag 390: Avatar has heard Sprellic's side (needed to tell Dupre).
+                if get_flag(390) then
                     add_answer("misunderstanding")
                 end
             elseif var_000F == "misunderstanding" then
@@ -163,12 +160,8 @@ function npc_dupre_0004(eventid, objectref)
                     add_dialogue("\"Terrible what happened to our poor friend Iolo. We must try and get his body to a healer while there may still be time to revive him. I do miss him so.\"")
                 elseif var_0004 then
                     add_dialogue("\"" .. var_0003 .. ", there is a strange old man following thee, and he bears a vague resemblance to Iolo! It is most odd.\"")
-                    switch_talk_to(1)
-                    add_dialogue("\"Thy drinking must have blurred thy vision, Sir Dupre.\"")
-                    switch_talk_to(4)
+                    second_speaker(1, 0, "\"Thy drinking must have blurred thy vision, Sir Dupre.\"")
                     add_dialogue("\"Then thou hadst better join me for one later. It will give thee the chance to catch up to me.\"")
-                    hide_npc(1)
-                    switch_talk_to(4)
                 else
                     add_dialogue("\"We should find that rascal Iolo and have him join us as well.\"")
                 end
@@ -181,12 +174,8 @@ function npc_dupre_0004(eventid, objectref)
                     add_dialogue("\"A sad fate to befall our fine comrade Shamino. He will be sorely missed. We must try and get his remains to a healer. Perhaps he may still be revived.\"")
                 elseif var_0005 then
                     add_dialogue("Sir Dupre snorts, \"From what I had heard Shamino was all but settled down and retired from the adventuring life.\"")
-                    switch_talk_to(3)
-                    add_dialogue("\"I still have a few wild oats left to sow, thank thee very much.\"")
-                    switch_talk_to(4)
+                    second_speaker(3, 0, "\"I still have a few wild oats left to sow, thank thee very much.\"")
                     add_dialogue("\"Then it is good to see another member of our old sowing circle once again!\"")
-                    hide_npc(3)
-                    switch_talk_to(4)
                 else
                     add_dialogue("\"Let us go and find Shamino and make this a proper reunion!\"")
                 end
@@ -210,6 +199,6 @@ function npc_dupre_0004(eventid, objectref)
         end
         add_dialogue("\"I shall speak with thee later, then.\"")
     elseif eventid == 0 then
-        utility_unknown_1070(4) --- Guess: Triggers a game event
+        utility_unknown_1070(4)
     end
 end

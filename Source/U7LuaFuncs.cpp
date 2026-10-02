@@ -481,20 +481,32 @@ static int LuaCmps(lua_State *L)
     const char *selected_answer = lua_tostring(L, -1);
     lua_pop(L, 1);
 
-    // Compare (case-insensitive)
-	 // The function _stricmp() is not standard C/C++, but strcasecmp()
-    // isn't supported on Windows, so we have to write it ourselves.
+    // Compare (case-insensitive). Also match any additional string args
+    // so cmps("a", "b", "c") is true when the answer equals any of them.
     bool matches = false;
-    if (selected_answer && compare_str)
+    if (selected_answer)
     {
-       std::string saString = selected_answer;
-       std::string csString = compare_str;
-       std::transform(saString.begin(), saString.end(), saString.begin(),
-          [](unsigned char c) { return std::tolower(c); });
-       std::transform(csString.begin(), csString.end(), csString.begin(),
-          [](unsigned char c) { return std::tolower(c); });
+        std::string saString = selected_answer;
+        std::transform(saString.begin(), saString.end(), saString.begin(),
+            [](unsigned char c) { return std::tolower(c); });
 
-       return csString.compare(saString);
+        const int nargs = lua_gettop(L);
+        for (int i = 1; i <= nargs; ++i)
+        {
+            if (!lua_isstring(L, i))
+                continue;
+            const char* candidate = lua_tostring(L, i);
+            if (!candidate)
+                continue;
+            std::string csString = candidate;
+            std::transform(csString.begin(), csString.end(), csString.begin(),
+                [](unsigned char c) { return std::tolower(c); });
+            if (csString == saString)
+            {
+                matches = true;
+                break;
+            }
+        }
     }
 
     lua_pushboolean(L, matches);

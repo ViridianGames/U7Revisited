@@ -20,6 +20,27 @@ local function avatar_object_id()
     return nil
 end
 
+-- See object_chest_0653: engine reverses arrays; pass decompiler (reversed) order.
+local function play_use_animation(obj, delay_ticks, repeats)
+    local FRAME = 0x46
+    local DELAY = 0x27
+    local natural = { FRAME, 0 }
+    for _ = 1, repeats do
+        natural[#natural + 1] = DELAY
+        natural[#natural + 1] = delay_ticks
+    end
+    natural[#natural + 1] = FRAME
+    natural[#natural + 1] = 0
+    local rev = {}
+    for i = #natural, 1, -1 do
+        rev[#rev + 1] = natural[i]
+    end
+    if halt_scheduled then
+        halt_scheduled(obj)
+    end
+    execute_usecode_array(obj, rev)
+end
+
 local function create_cloth_near_loom(loom_id)
     local lx, ly, lz = pos_xyz(loom_id)
     if not lx then
@@ -68,6 +89,9 @@ function object_spindle_0654(eventid, objectref)
 
     -- Consume the spindle of thread.
     remove_item(objectref)
+
+    -- ~2s weave animation; loom rests on frame 0 when the script ends.
+    play_use_animation(target, 20, 2)
 
     if not create_cloth_near_loom(target) then
         item_say("@Nothing happens.@", target)

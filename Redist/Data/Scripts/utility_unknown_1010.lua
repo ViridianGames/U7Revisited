@@ -1,77 +1,87 @@
---- Best guess: Manages a confrontational dialogue accusing the player of deception, demanding an apology or confession, with escalating consequences based on responses.
-function utility_unknown_1010(var_0000, var_0001)
-    start_conversation()
-    local var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009
-
+--- Confrontational dialogue when Tseramed believes the Avatar lied about identity.
+function utility_unknown_1010(player_name, fellowship_leader)
     save_answers()
-    var_0002 = false
-    var_0003 = true
-    var_0004 = utility_unknown_1009("")
-    add_dialogue("\"" .. var_0000 .. "! Thou " .. var_0004 .. "!\"")
-    var_0005 = {"life", "head", "blood"}
-    var_0006 = var_0005[math.random(1, #var_0005)]
-    add_dialogue("\"Shall I have my apology, or thy " .. var_0006 .. "?\"")
-    var_0007 = "Forgive me"
-    var_0008 = "Suffer my wrath"
-    add_answer({var_0008, var_0007})
+    local confessed = false
+    local demand_blood = true
+    local insult = utility_unknown_1009("")
+    add_dialogue("\"" .. player_name .. "! Thou " .. insult .. "!\"")
+    local stakes = {"life", "head", "blood"}
+    local stake = stakes[math.random(1, #stakes)]
+    add_dialogue("\"Shall I have my apology, or thy " .. stake .. "?\"")
+    local forgive = "Forgive me"
+    local wrath = "Suffer my wrath"
+    clear_answers()
+    add_answer({wrath, forgive})
+
     while true do
-        if string.lower(unknown_XXXXH()) == string.lower(var_0007) then
-            var_0004 = utility_unknown_1009("")
-            add_dialogue("\"Forgive thee! What might I forgive in one such as thee, " .. var_0004 .. "?\"")
-            remove_answer(var_0008)
-            remove_answer(var_0007)
-            add_answer({"My crime", "My deed", "My lie"})
-        elseif string.lower(unknown_XXXXH()) == string.lower(var_0008) then
+        local answer = get_answer()
+        if type(answer) ~= "string" then
+            -- Resume after yield can hand back a non-string once; re-read global.
+            answer = get_answer()
+        end
+        if type(answer) ~= "string" then
             break
-        elseif string.lower(unknown_XXXXH()) == "my lie" then
+        end
+        local lower = string.lower(answer)
+
+        if lower == string.lower(forgive) then
+            insult = utility_unknown_1009("")
+            add_dialogue("\"Forgive thee! What might I forgive in one such as thee, " .. insult .. "?\"")
+            remove_answer(wrath)
+            remove_answer(forgive)
+            add_answer({"My crime", "My deed", "My lie"})
+        elseif lower == string.lower(wrath) then
+            break
+        elseif lower == "my lie" then
             remove_answer({"My crime", "My deed", "My lie"})
-            add_dialogue("\"Of what lie speakest thou? Art thou not " .. var_0000 .. "?\"")
+            add_dialogue("\"Of what lie speakest thou? Art thou not " .. player_name .. "?\"")
             if ask_yes_no() then
-                var_0004 = utility_unknown_1009("")
-                add_dialogue("\"Perhaps thou art not " .. var_0000 .. ", for I have never seen the " .. var_0004 .. ". Confess now thy true identity!\"")
-                add_answer(var_0001)
+                insult = utility_unknown_1009("")
+                add_dialogue("\"Perhaps thou art not " .. player_name .. ", for I have never seen the " .. insult .. ". Confess now thy true identity!\"")
+                add_answer(fellowship_leader)
                 if not get_flag(353) then
                     add_answer("Avatar")
                 end
             else
                 break
             end
-        elseif string.lower(unknown_XXXXH()) == "my deed" then
+        elseif lower == "my deed" then
             add_dialogue("\"Speak not of thy deed! Such deeds must deeds receive to equal their merit.\"")
             break
-        elseif string.lower(unknown_XXXXH()) == "my crime" then
+        elseif lower == "my crime" then
             add_dialogue("\"Crime most foul, most horrible!\"")
-            var_0003 = false
+            demand_blood = false
             break
-        elseif string.lower(unknown_XXXXH()) == "avatar" then
+        elseif lower == "avatar" then
             remove_answer("Avatar")
             add_dialogue("\"I doubt but thou deceivest me further. If true, thou dost shame the title. Admit now thy true name!\"")
-            var_0002 = true
+            confessed = true
             set_flag(353, true)
-        elseif string.lower(unknown_XXXXH()) == string.lower(var_0001) then
-            var_0004 = utility_unknown_1009("")
-            var_0009 = utility_unknown_1009(var_0004)
-            add_dialogue("\"" .. var_0001 .. "! Perhaps honesty shall lift thee above the " .. var_0004 .. " " .. var_0000 .. "...\"")
-            var_0002 = true
+        elseif lower == string.lower(fellowship_leader) then
+            insult = utility_unknown_1009("")
+            local insult2 = utility_unknown_1009(insult)
+            add_dialogue("\"" .. fellowship_leader .. "! Perhaps honesty shall lift thee above the " .. insult .. " " .. player_name .. "...\"")
+            confessed = true
             break
         end
     end
-    if not var_0002 then
-        var_0004 = utility_unknown_1009("")
-        var_0009 = utility_unknown_1009(var_0004)
-        if var_0003 then
-            add_dialogue("^" .. var_0004 .. "! ^" .. var_0009 .. "! Thy soul shall wail in the catacombs of the netherworld!")
-            set_schedule_type(0, -10)
-            set_alignment(2, -10)
+
+    if not confessed then
+        insult = utility_unknown_1009("")
+        local insult2 = utility_unknown_1009(insult)
+        if demand_blood then
+            add_dialogue("^" .. insult .. "! ^" .. insult2 .. "! Thy soul shall wail in the catacombs of the netherworld!")
+            set_schedule_type(10, 0)
+            set_alignment(10, 2)
         else
-            add_dialogue("^" .. var_0004 .. "! Fly from this place at once! I shall provide escort for thee with my bow. Return at thy peril, " .. var_0009 .. ".")
-            set_schedule_type(9, -10)
-            set_alignment(0, -10)
+            add_dialogue("^" .. insult .. "! Fly from this place at once! I shall provide escort for thee with my bow. Return at thy peril, " .. insult2 .. ".")
+            set_schedule_type(10, 9)
+            set_alignment(10, 0)
         end
     else
         add_dialogue("\"I shall not take this deception lightly.\"")
         set_flag(29, true)
-        set_alignment(0, -10)
+        set_alignment(10, 0)
     end
-    return
+    restore_answers()
 end

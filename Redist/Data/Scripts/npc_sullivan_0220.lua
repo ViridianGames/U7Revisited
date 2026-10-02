@@ -19,29 +19,30 @@ function npc_sullivan_0220(eventid, objectref)
         set_schedule_type(15, var_0005)
         if not get_flag(706) then
             add_dialogue("The man in the prison greets you with a rather large smile.")
+            set_flag(706, true)
         else
-            add_dialogue("\"Why, hello, \" .. var_0000 .. \". In what way could I help thee this fine day?\"")
+            add_dialogue("\"Why, hello, " .. var_0000 .. ". In what way could I help thee this fine day?\"")
         end
         while true do
             local answer = get_answer()
             if answer == "name" then
-                add_dialogue("\"I am Sullivan, \" .. var_0000 .. \",\" he says pleasantly. \"Who wouldst thou be?\"")
+                add_dialogue("\"I am Sullivan, " .. var_0000 .. ",\" he says pleasantly. \"Who wouldst thou be?\"")
                 var_0006 = "the Avatar"
                 var_0007 = utility_unknown_1035({var_0000, var_0006, var_0001})
                 if var_0007 == var_0001 then
-                    add_dialogue("\"Pleased to meet thee, \" .. var_0001 .. \".\" He moves his hand to shake yours but is prevented by the bars.")
-                    add_dialogue("\"Ah, well, sorry, \" .. var_0000 .. \". Consider thyself well shaken.\"")
+                    add_dialogue("\"Pleased to meet thee, " .. var_0001 .. ".\" He moves his hand to shake yours but is prevented by the bars.")
+                    add_dialogue("\"Ah, well, sorry, " .. var_0000 .. ". Consider thyself well shaken.\"")
                 elseif var_0007 == var_0000 then
-                    add_dialogue("\"Of course, \" .. var_0000 .. \". I understand.\" He smiles.")
+                    add_dialogue("\"Of course, " .. var_0000 .. ". I understand.\" He smiles.")
                 elseif var_0007 == var_0006 then
                     add_dialogue("\"Oh, I see. Oops...\" He shrugs.")
                     add_answer("Oops")
                 end
             elseif answer == "job" then
-                add_dialogue("\"Well, in all honesty, \" .. var_0000 .. \", I have no job. Although, for a time, I was a thieving scoundrel.\"")
+                add_dialogue("\"Well, in all honesty, " .. var_0000 .. ", I have no job. Although, for a time, I was a thieving scoundrel.\"")
                 add_answer("scoundrel")
             elseif answer == "Fellowship" then
-                add_dialogue("\"'Tis truly a fantastic group of people, \" .. var_0000 .. \". We spread guidance and prosperity to the people who reside in our fair land. Of course, at the moment, my fellow members are a bit... displeased with me.\"")
+                add_dialogue("\"'Tis truly a fantastic group of people, " .. var_0000 .. ". We spread guidance and prosperity to the people who reside in our fair land. Of course, at the moment, my fellow members are a bit... displeased with me.\"")
                 if var_0002 then
                     add_dialogue("*")
                     switch_talk_to(240)
@@ -93,11 +94,11 @@ function npc_sullivan_0220(eventid, objectref)
                 end
                 remove_answer("Oops")
             elseif answer == "scoundrel" then
-                add_dialogue("\"Well, until I was caught, I would go from shop to shop all across Britannia, posing as `the Avatar.' The owners were all too happy to supply me with numerous gifts. Thou truly hast a good life, \" .. var_0000 .. \".\"")
+                add_dialogue("\"Well, until I was caught, I would go from shop to shop all across Britannia, posing as `the Avatar.' The owners were all too happy to supply me with numerous gifts. Thou truly hast a good life, " .. var_0000 .. ".\"")
                 if var_0002 then
                     add_dialogue("*")
                     switch_talk_to(240)
-                    add_dialogue("\"Ask him about his taxes, \" .. var_0000 .. \".\"")
+                    add_dialogue("\"Ask him about his taxes, " .. var_0000 .. ".\"")
                     hide_npc(240)
                     switch_talk_to(220)
                     add_answer("taxes")
@@ -121,7 +122,7 @@ function npc_sullivan_0220(eventid, objectref)
                 var_0004 = true
                 remove_answer("racks")
             elseif answer == "bye" then
-                add_dialogue("\"Pleasant days, \" .. var_0000 .. \". See thee soon on the surface world!\"")
+                add_dialogue("\"Pleasant days, " .. var_0000 .. ". See thee soon on the surface world!\"")
                 break
             end
         end

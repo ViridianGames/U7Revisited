@@ -33,7 +33,7 @@ function npc_gordy_0230(eventid, objectref)
                     var_0006 = {var_0005, var_0004, var_0003}
                     var_0007 = utility_unknown_1035(var_0006)
                     if var_0007 == var_0003 then
-                        add_dialogue("You sign your name. \"Very good, \" .. var_0003 .. \". Welcome to the House of Games!\" Gordy spreads his arms in an expansive gesture, obviously pleased to welcome your money to his gambling parlour.")
+                        add_dialogue("You sign your name. \"Very good, " .. var_0003 .. ". Welcome to the House of Games!\" Gordy spreads his arms in an expansive gesture, obviously pleased to welcome your money to his gambling parlour.")
                     elseif var_0007 == var_0004 then
                         add_dialogue("Gordy frowns when he sees what you wrote. \"Avatar, eh? We just had one of them a week ago. He was caught cheating at the tables!\" He takes a step back and glowers. \"Art thou going to give us trouble?\"")
                         if not ask_yes_no() then
@@ -43,7 +43,7 @@ function npc_gordy_0230(eventid, objectref)
                             add_dialogue("\"We shall see about that!\"")
                         end
                     elseif var_0007 == var_0005 then
-                        add_dialogue("You sign in a false name. \"Fine, \" .. var_0002 .. \". I be glad to welcome thee!\" Gordy spreads his arms in an expansive gesture, obviously pleased to welcome your money to his gambling parlour.")
+                        add_dialogue("You sign in a false name. \"Fine, " .. var_0002 .. ". I be glad to welcome thee!\" Gordy spreads his arms in an expansive gesture, obviously pleased to welcome your money to his gambling parlour.")
                     end
                 else
                     add_dialogue("\"I hope to see thee there during business hours.\"")

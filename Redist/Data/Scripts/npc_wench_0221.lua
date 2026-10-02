@@ -11,7 +11,8 @@ function npc_wench_0221(eventid, objectref)
     var_0002 = get_player_name()
     var_0003 = "Avatar"
     var_0004 = is_player_female()
-    if not get_flag(668) then
+    -- 671 = gave real name (668 is Martine's Community Room flag — do not reuse).
+    if not get_flag(671) then
         var_0005 = var_0002
     elseif not get_flag(672) then
         var_0005 = var_0003
@@ -46,12 +47,12 @@ function npc_wench_0221(eventid, objectref)
         var_0009 = utility_unknown_1035({var_0003, var_0002})
         if var_0009 == var_0002 then
             if not var_0004 then
-                add_dialogue("\"Well, I am very pleased to meet thee, \" .. var_0002 .. \".\"")
+                add_dialogue("\"Well, I am very pleased to meet thee, " .. var_0002 .. ".\"")
             else
-                add_dialogue("\"Hello, \" .. var_0002 .. \".\"")
+                add_dialogue("\"Hello, " .. var_0002 .. ".\"")
             end
             var_0005 = var_0002
-            set_flag(668, true)
+            set_flag(671, true)
         elseif var_0009 == var_0003 then
             add_dialogue("\"Oh ho! A real live Avatar?\"")
             if not var_0004 then
@@ -64,7 +65,7 @@ function npc_wench_0221(eventid, objectref)
         end
         set_flag(682, true)
     else
-        add_dialogue("\"Hello again, \" .. var_0005 .. \",\" Wench says.")
+        add_dialogue("\"Hello again, " .. var_0005 .. ",\" Wench says.")
     end
     while true do
         local answer = get_answer()
@@ -98,7 +99,7 @@ function npc_wench_0221(eventid, objectref)
                 set_flag(669, true)
                 set_timer(4)
             else
-                add_dialogue("\"'Tis not a problem, \" .. var_0005 .. \".\"")
+                add_dialogue("\"'Tis not a problem, " .. var_0005 .. ".\"")
             end
             remove_answer("Community Room")
         elseif answer == "swim" then
@@ -117,7 +118,7 @@ function npc_wench_0221(eventid, objectref)
             add_dialogue("You and Wench speak of a number of other subjects when you realize that you are spending too much time in the spa. There is a quest to fulfill!")
             remove_answer("talk")
         elseif answer == "bye" then
-            add_dialogue("\"Oh, please come again soon, \" .. var_0005 .. \"!\"")
+            add_dialogue("\"Oh, please come again soon, " .. var_0005 .. "!\"")
             if not var_0004 then
                 add_dialogue("Wench blows you a kiss.")
             else

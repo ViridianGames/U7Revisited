@@ -4,7 +4,7 @@ function npc_glenno_0222(eventid, objectref)
 
     if eventid == 1 then
         switch_talk_to(222)
-        var_0000 = get_schedule(122)
+        var_0000 = get_schedule(222)
         var_0001 = is_player_wearing_fellowship_medallion()
         start_conversation()
         add_answer({"bye", "job", "name"})

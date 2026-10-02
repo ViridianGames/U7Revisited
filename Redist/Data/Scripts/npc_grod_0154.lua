@@ -23,7 +23,8 @@ function npc_grod_0154(eventid, objectref)
         add_dialogue("\"What you want?\" asks Grod.")
     end
     while true do
-        if cmps("name") then
+        local answer = get_answer()
+        if answer == "name" then
             var_0006 = is_player_wearing_fellowship_medallion()
             if var_0006 then
                 add_dialogue("\"I Grod. Why you want know? Is voice unhappy?\"")
@@ -32,20 +33,20 @@ function npc_grod_0154(eventid, objectref)
                     add_dialogue("He seems truly worried.~~\"I will do job better. I promise! I beat harder and more often!\"")
                     if var_0002 then
                         add_dialogue("*")
-                        switch_talk_to(-240)
+                        switch_talk_to(240)
                         if not get_flag(707) then
                             var_0008 = "Anton,"
                         else
                             var_0008 = "a prisoner,"
                         end
                         add_dialogue("\"Thank thee ever so much, " .. var_0004 .. ",\" says " .. var_0008 .. " sarcastically.")
-                        --syntax error hide_npc240)
+                        hide_npc(240)
                         switch_talk_to(154)
                     end
                     if var_0002 and var_0003 then
-                        switch_talk_to(-220)
+                        switch_talk_to(220)
                         add_dialogue("\"Now, now, Anton, the nice person was simply answering a question.\"")
-                        --syntax error hide_npc220)
+                        hide_npc(220)
                         switch_talk_to(154)
                     end
                 else
@@ -65,12 +66,12 @@ function npc_grod_0154(eventid, objectref)
                 end
             end
             remove_answer("name")
-        elseif cmps("job") then
+        elseif answer == "job" then
             add_dialogue("\"I torture prisoners,\" he says, thumping his chest proudly.")
             if var_0001 then
-                switch_talk_to(-2)
+                switch_talk_to(2)
                 add_dialogue("Spark's eyes light up.~~\"Torture? Wow!\" He quickly looks at you and changes expressions.~~ \"I, er, mean, that is very awful.\"")
-                --syntax error hide_npc2)
+                hide_npc(2)
                 switch_talk_to(154)
             end
             var_000B = is_player_wearing_fellowship_medallion()
@@ -80,15 +81,15 @@ function npc_grod_0154(eventid, objectref)
                 if var_000C then
                     if var_0003 and var_0002 then
                         add_dialogue("He points to one of the prisoners.~~\"He not fun like the other. Torture other first.\"")
-                        switch_talk_to(-220)
+                        switch_talk_to(220)
                         add_dialogue("\"What? No, that's all right, " .. var_0004 .. ". Torture me, first.\"")
-                        --syntax error hide_npc220)
-                        switch_talk_to(-240)
+                        hide_npc(220)
+                        switch_talk_to(240)
                         add_dialogue("\"Yes, " .. var_0004 .. ". Torture him first.\"")
-                        --syntax error hide_npc240)
-                        switch_talk_to(-220)
+                        hide_npc(240)
+                        switch_talk_to(220)
                         add_dialogue("\"I thank thee,\" he says to the other.")
-                        --syntax error hide_npc220)
+                        hide_npc(220)
                         switch_talk_to(154)
                         add_dialogue("\"Go ahead,\" says Grod.")
                         var_000D = add_party_items(true, 359, 359, 622, 1)
@@ -107,7 +108,7 @@ function npc_grod_0154(eventid, objectref)
                 end
             end
             add_answer({"prisoners", "torture"})
-        elseif cmps("Fellowship") then
+        elseif answer == "Fellowship" then
             var_000E = is_player_wearing_fellowship_medallion()
             if var_000E then
                 add_dialogue("\"Yes,\" he nods. \"I belong, too. I strive for unity. I be worthy for my reward. And I trust my brother.\"~~ He smiles, obviously pleased with himself.\"")
@@ -117,35 +118,35 @@ function npc_grod_0154(eventid, objectref)
                 add_answer("join")
             end
             remove_answer("Fellowship")
-        elseif cmps({"trust", "worthy", "strive"}) then
+        elseif (answer == "trust" or answer == "worthy" or answer == "strive") then
             add_dialogue("\"You don't know?\" He frowns.~~ \"You should learn before the voice become angry!\"")
             remove_answer({"trust", "worthy", "strive"})
-        elseif cmps("join") then
+        elseif answer == "join" then
             add_dialogue("\"Good, join. See Abraham or Danag about join.\"")
             remove_answer("join")
-        elseif cmps("prisoners") then
+        elseif answer == "prisoners" then
             if get_flag(738) and get_flag(737) then
                 add_dialogue("\"None here at the moment...\" he appears truly disconcerted.")
             else
                 add_dialogue("\"There one!\" he says, pointing to a man.")
                 if not get_flag(737) and get_flag(738) then
                     add_dialogue("\"There another one!\" he says, indicating the other man.")
-                    switch_talk_to(-220)
+                    switch_talk_to(220)
                     add_dialogue("\"How art thou today, " .. var_0004 .. "?\" he says, smiling.")
-                    --syntax error hide_npc220)
+                    hide_npc(220)
                     switch_talk_to(154)
                 end
             end
             remove_answer("prisoners")
-        elseif cmps("torture") then
+        elseif answer == "torture" then
             add_dialogue("\"Much fun! Prisoners scream loudly.\"")
             if var_0003 then
                 add_dialogue("\"Except that one. He not scream. He just talk. And talk. I get so bored I get mad. So I torture more. And,\" he throws up his hands, \"he just talk more! I no know what to do.\"")
             end
             if var_0000 then
-                switch_talk_to(-1)
+                switch_talk_to(1)
                 add_dialogue("\"That is terrible, " .. var_0005 .. ". We must command him to stop!\"")
-                --syntax error hide_npc1)
+                hide_npc(1)
                 switch_talk_to(154)
                 if var_0003 then
                     add_dialogue("\"I try make him stop. But he talk and talk. You try? Maybe he stop.\"")
@@ -153,10 +154,10 @@ function npc_grod_0154(eventid, objectref)
                 add_answer("stop torturing")
             end
             remove_answer("torture")
-        elseif cmps("stop torturing") then
+        elseif answer == "stop torturing" then
             add_dialogue("\"Oh, no! Grod love job! Grod never stop. You go away now.\"")
             return
-        elseif cmps("bye") then
+        elseif answer == "bye" then
             break
         end
     end

@@ -50,7 +50,7 @@ function npc_smithy_0232(eventid, objectref)
                     add_dialogue("\"Fine then. Thou art on thine own.\"")
                 end
             elseif answer == "bye" then
-                add_dialogue("\"See thee again, \" .. var_0000 .. \".\"")
+                add_dialogue("\"See thee again, " .. var_0000 .. ".\"")
                 break
             end
         end

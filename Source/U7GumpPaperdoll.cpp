@@ -418,13 +418,13 @@ void GumpPaperdoll::Update()
 
 	if (m_gui.m_ActiveElement == peaceID)
 	{
-		// Toggle combat mode
+		// Toggle combat mode (entry gated until CombatState is re-enabled)
 		bool inCombat = (g_StateMachine && g_StateMachine->GetCurrentState() == STATE_COMBATSTATE);
 		if (inCombat)
 		{
 			g_StateMachine->PopState();
 		}
-		else
+		else if (kCombatStateEnabled)
 		{
 			g_StateMachine->PushState(STATE_COMBATSTATE);
 		}

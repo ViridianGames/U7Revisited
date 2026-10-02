@@ -33,6 +33,8 @@ void OptionsState::Init(const string& configfile)
 void OptionsState::OnEnter()
 {
 	m_newDrawScale = g_DrawScale;
+	// FP mouselook locks the cursor; free it so options UI is clickable.
+	SetFirstPersonMouseLook(false);
 }
 
 void OptionsState::OnExit()

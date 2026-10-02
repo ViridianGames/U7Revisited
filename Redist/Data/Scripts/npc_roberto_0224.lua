@@ -26,7 +26,7 @@ function npc_roberto_0224(eventid, objectref)
     var_0007 = get_timer(2)
     var_0008 = get_timer(3)
     if get_flag(668) and var_0007 <= 2 and get_flag(669) and var_0006 <= 2 and get_flag(670) and var_0008 <= 2 then
-        add_dialogue("The man looks at you with surprise and says, \"Hold, \" .. var_0004 .. \"! Thou didst just enjoy thyself, didst thou not? Please come back when thou art rested!\"")
+        add_dialogue("The man looks at you with surprise and says, \"Hold, " .. get_lord_or_lady() .. "! Thou didst just enjoy thyself, didst thou not? Please come back when thou art rested!\"")
         return
     end
     if not get_flag(685) then
@@ -46,9 +46,9 @@ function npc_roberto_0224(eventid, objectref)
         var_0009 = utility_unknown_1035({var_0003, var_0002})
         if var_0009 == var_0002 then
             if var_0004 then
-                add_dialogue("\"Well, I am very pleased to meet thee, \" .. var_0002 .. \".\"")
+                add_dialogue("\"Well, I am very pleased to meet thee, " .. var_0002 .. ".\"")
             else
-                add_dialogue("\"Hello, \" .. var_0002 .. \".\"")
+                add_dialogue("\"Hello, " .. var_0002 .. ".\"")
             end
             var_0005 = var_0002
             set_flag(673, true)
@@ -59,7 +59,7 @@ function npc_roberto_0224(eventid, objectref)
         end
         set_flag(685, true)
     else
-        add_dialogue("\"Hello again, \" .. var_0005 .. \",\" Roberto says.")
+        add_dialogue("\"Hello again, " .. var_0005 .. ",\" Roberto says.")
     end
     while true do
         local answer = get_answer()
@@ -78,7 +78,7 @@ function npc_roberto_0224(eventid, objectref)
             else
                 var_000A = "handsome men"
             end
-            add_dialogue("\"Nice place, is it not? I certainly enjoy working here! It brings me much wealth, and I have many opportunities to meet \" .. var_000A .. \" such as thyself!\"")
+            add_dialogue("\"Nice place, is it not? I certainly enjoy working here! It brings me much wealth, and I have many opportunities to meet " .. var_000A .. " such as thyself!\"")
             remove_answer("The Baths")
         elseif answer == "comfortable" then
             add_dialogue("\"What would suit thee? We could swim in the spring pools, or I could give thee a massage. If thou dost prefer to converse, we could simply talk. Or if thou wouldst like, we could wander into the Community Room and... communicate!\"")
@@ -94,7 +94,7 @@ function npc_roberto_0224(eventid, objectref)
                 set_timer(3)
                 var_000B = remove_party_items(true, 359, 359, 644, 50)
             else
-                add_dialogue("\"Do not worry about it, \" .. var_0005 .. \". We can do something else.\"")
+                add_dialogue("\"Do not worry about it, " .. var_0005 .. ". We can do something else.\"")
             end
             remove_answer("Community Room")
         elseif answer == "swim" then
@@ -109,7 +109,7 @@ function npc_roberto_0224(eventid, objectref)
             add_dialogue("You and Roberto speak of a number of other subjects until you realize that you are spending far too much time in the spa. There is a quest to fulfill!")
             remove_answer("talk")
         elseif answer == "bye" then
-            add_dialogue("\"I hope to see thee again, \" .. var_0005 .. \".\"")
+            add_dialogue("\"I hope to see thee again, " .. var_0005 .. ".\"")
             break
         end
     end

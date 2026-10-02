@@ -802,7 +802,7 @@ void MainState::HandleGameKeys()
 		{
 			g_StateMachine->PopState();
 		}
-		else
+		else if (kCombatStateEnabled)
 		{
 			g_StateMachine->PushState(STATE_COMBATSTATE);
 		}
@@ -1186,8 +1186,8 @@ void MainState::HandleRightMouseHoldMovement()
 		}
 	}
 
-	// Hold Left+Right together to drag the camera
-	if (m_leftMouseHeld)
+	// Hold Left+Right together to drag the camera (third-person only; FP uses mouselook).
+	if (!g_firstPersonEnabled && m_leftMouseHeld)
 	{
 		if (!m_cameraDragging)
 			StartCameraDrag();
@@ -2151,7 +2151,8 @@ void MainState::Update()
 		// Roof pop-off must run AFTER the global m_Visible=true pass above and BEFORE
 		// UpdateSortedVisibleObjects (which builds the pick list). Otherwise invisible
 		// roofs still catch mouse rays and bark as "wood roof" / "slate roof".
-		if (g_pathfindingSystem && g_Player)
+		// First-person keeps roofs drawn — perspective already handles occlusion.
+		if (!g_firstPersonEnabled && g_pathfindingSystem && g_Player)
 		{
 			if (U7Object* avatar = g_Player->GetAvatarObject())
 			{
@@ -3291,8 +3292,8 @@ void MainState::Draw()
 		m_npcListWindow->Draw();
 	}
 
-	// Draw cursor AFTER dialog so it appears on top
-	if (!m_paused && m_showUIElements)
+	// Draw cursor AFTER dialog so it appears on top (skip while FP mouselook owns the mouse).
+	if (!m_paused && m_showUIElements && !g_firstPersonMouseLookActive)
 	{
 		if (m_errorCursorFramesRemaining > 0 && m_errorCursor != nullptr)
 		{
@@ -3307,6 +3308,15 @@ void MainState::Draw()
 		{
 			DrawTextureEx(*g_Cursor, { float(GetMouseX()), float(GetMouseY()) }, 0, g_DrawScale, WHITE);
 		}
+	}
+	else if (!m_paused && g_firstPersonMouseLookActive)
+	{
+		// Simple center crosshair while looking.
+		const float cx = GetScreenWidth() * 0.5f;
+		const float cy = GetScreenHeight() * 0.5f;
+		const float arm = 6.0f * g_DrawScale;
+		DrawLineEx({ cx - arm, cy }, { cx + arm, cy }, 2.0f, Fade(WHITE, 0.7f));
+		DrawLineEx({ cx, cy - arm }, { cx, cy + arm }, 2.0f, Fade(WHITE, 0.7f));
 	}
 
 	DrawRectangle(0, 0, g_Engine->m_ScreenWidth, g_Engine->m_ScreenHeight, { 0, 0, 0, m_currentFadeAlpha });

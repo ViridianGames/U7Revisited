@@ -865,6 +865,10 @@ void CameraInput()
 {
 	g_CameraMoved = false;
 
+	// Drop mouselook when FP is off or input is blocked (cutscenes, etc.).
+	if ((!g_firstPersonEnabled || !g_allowInput) && g_firstPersonMouseLookActive)
+		SetFirstPersonMouseLook(false);
+
 	// Toggle first-person: Left Ctrl + P
 	if (g_allowInput)
 	{
@@ -925,6 +929,9 @@ void CameraInput()
 
 			AddConsoleString(std::string("First-person view ") + (g_firstPersonEnabled ? "enabled" : "disabled"), WHITE);
 
+			// Mouselook locks the cursor while FP is active; release on exit.
+			SetFirstPersonMouseLook(g_firstPersonEnabled);
+
 			// Update camera once so position/target reflect the new first-person yaw/height without changing X/Z
 			CameraUpdate(true);
 
@@ -945,8 +952,29 @@ void CameraInput()
 		if (!avatar) return;
 
 		float dt = g_Engine->LastFrameInSeconds();
+		const float maxPitch = PI * 0.45f; // ~81 deg limit
+		const float minPitch = -PI * 0.45f;
 
-		// Rotation (Q/E) - Q = left, E = right
+		// Pause mouselook while gumps are open so inventory/UI stays clickable.
+		const bool gumpsOpen = g_gumpManager && !g_gumpManager->m_GumpList.empty();
+		if (gumpsOpen)
+		{
+			SetFirstPersonMouseLook(false);
+		}
+		else
+		{
+			if (!g_firstPersonMouseLookActive)
+				SetFirstPersonMouseLook(true);
+
+			Vector2 mouseDelta = GetMouseDelta();
+			g_firstPersonYaw += mouseDelta.x * g_firstPersonMouseSensitivity;
+			// Screen Y increases downward; mouse-up should look up.
+			g_firstPersonPitch += -mouseDelta.y * g_firstPersonMouseSensitivity;
+			if (g_firstPersonPitch > maxPitch) g_firstPersonPitch = maxPitch;
+			if (g_firstPersonPitch < minPitch) g_firstPersonPitch = minPitch;
+		}
+
+		// Keyboard look (Q/E yaw; Ctrl+Q/E pitch when locked, height when free)
 		if (!IsKeyDown(KEY_LEFT_CONTROL) && IsKeyDown(KEY_Q))
 		{
 			g_firstPersonYaw -= dt * 3.5f; // rotate left
@@ -956,15 +984,10 @@ void CameraInput()
 			g_firstPersonYaw += dt * 3.5f; // rotate right
 		}
 
-		// Z / C behavior:
-		// - When NOT locked to avatar: Z lowers the camera (decrease eye height), C raises it (increase eye height).
-		// - When locked to avatar: Z looks down (decrease pitch), C looks up (increase pitch) while keeping eye height at avatar head.
 		const float heightSpeed = 2.5f;    // units per second for raising/lowering
 		const float pitchSpeed = 1.5f;     // radians per second for looking up/down
 		const float minHeight = 1.0f;
 		const float maxHeight = 20.0f;
-		const float maxPitch = PI * 0.45f; // ~81 deg limit
-		const float minPitch = -PI * 0.45f;
 
 		if (!IsCameraLocked())
 		{
@@ -979,13 +1002,10 @@ void CameraInput()
 				g_firstPersonHeight += heightSpeed * dt;
 				if (g_firstPersonHeight > maxHeight) g_firstPersonHeight = maxHeight;
 			}
-
-			// When free, keep pitch neutral to avoid accidental tilt
-			g_firstPersonPitch = 0.0f;
 		}
 		else
 		{
-			// Locked-first-person: change pitch (look up/down) but keep eye height anchored to avatar
+			// Locked-first-person: Ctrl+Q/E still nudge pitch (mouselook is primary)
 			if (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyDown(KEY_Q))
 			{
 				g_firstPersonPitch -= pitchSpeed * dt; // look down
@@ -1298,13 +1318,13 @@ void CameraUpdate(bool forcemove)
 			else
 			{
 				// Camera not locked to avatar: preserve current X/Z, set Y to avatar height + eye offset,
-				// then orient by first-person yaw (no center-of-screen focus logic).
+				// then orient by first-person yaw/pitch (mouselook).
 				Vector3 prevPos = g_camera.position; // preserve X/Z
 				Vector3 eyePos = prevPos;
 				eyePos.y = avatar->m_centerPoint.y + g_firstPersonHeight;
 
-				// For free camera we keep horizontal forward (no pitch) so the view remains level.
-				Vector3 forward = { cosf(g_firstPersonYaw), 0.0f, sinf(g_firstPersonYaw) };
+				float cp = cosf(g_firstPersonPitch);
+				Vector3 forward = { cosf(g_firstPersonYaw) * cp, sinf(g_firstPersonPitch), sinf(g_firstPersonYaw) * cp };
 				Vector3 target = Vector3Add(eyePos, Vector3Scale(forward, 10.0f));
 
 				g_camera.position = eyePos;
@@ -1742,11 +1762,33 @@ void DrawGameWorld(bool drawObjects)
 			(name[2] == 'g' || name[2] == 'G');
 	};
 
+	// TEXT.FLX: "wood roof", "slate roof", "tile roof", "broken roof", etc.
+	auto isRoofFlat = [](const U7Object* object) {
+		if (!object || !object->m_objectData)
+			return false;
+		const std::string& name = object->m_objectData->m_name;
+		for (size_t i = 0; i + 3 < name.size(); ++i)
+		{
+			const char c0 = name[i];
+			const char c1 = name[i + 1];
+			const char c2 = name[i + 2];
+			const char c3 = name[i + 3];
+			if ((c0 == 'r' || c0 == 'R') &&
+				(c1 == 'o' || c1 == 'O') &&
+				(c2 == 'o' || c2 == 'O') &&
+				(c3 == 'f' || c3 == 'F'))
+				return true;
+		}
+		return false;
+	};
+
 	std::vector<U7Object*> rugs;
-	std::vector<U7Object*> flats;
+	std::vector<U7Object*> roofFlats;
+	std::vector<U7Object*> otherFlats;
 	std::vector<U7Object*> meshes;
 	rugs.reserve(16);
-	flats.reserve(64);
+	roofFlats.reserve(64);
+	otherFlats.reserve(64);
 	meshes.reserve(16);
 
 	for (U7Object* object : g_sortedVisibleObjects)
@@ -1757,15 +1799,20 @@ void DrawGameWorld(bool drawObjects)
 		{
 			if (isRugFlat(object))
 				rugs.push_back(object);
+			else if (isRoofFlat(object) && !g_firstPersonEnabled)
+				// Third-person: roofs use a separate painter pass (depth-test off).
+				// First-person: treat roofs like other flats so depth order is correct.
+				roofFlats.push_back(object);
 			else
-				flats.push_back(object);
+				otherFlats.push_back(object);
 		}
 		else if (object->m_drawType == ShapeDrawType::OBJECT_DRAW_CUSTOM_MESH_DEFER)
 			meshes.push_back(object);
 	}
 
 	std::sort(rugs.begin(), rugs.end(), stableFlatLess);
-	std::sort(flats.begin(), flats.end(), stableFlatLess);
+	std::sort(otherFlats.begin(), otherFlats.end(), stableFlatLess);
+	std::sort(roofFlats.begin(), roofFlats.end(), stableFlatLess);
 
 	// Rugs first (under furniture, other flats, etc.). Write depth so later
 	// geometry occludes them correctly. Polygon offset is for flats only —
@@ -1789,20 +1836,31 @@ void DrawGameWorld(bool drawObjects)
 		object->Draw();
 	}
 
-	// Other flats: painter's algorithm over the already-drawn scene.
-	// Depth-write off keeps coplanar roofs from fighting each other; depth-test
-	// off stops wall-tops/floors from punching see-through cracks through
-	// alpha-tested diamond edges (especially visible in locked isometric view).
-	// Stable world sort above keeps flat-vs-flat order camera-independent.
+	// Non-roof flats (floors, tables, etc.): depth-test ON so walls/buildings
+	// correctly occlude them; depth-write OFF so coplanar flats don't fight.
 	glEnable(GL_POLYGON_OFFSET_FILL);
-	glPolygonOffset(-2.0f, -8.0f);
+	glPolygonOffset(-1.0f, -1.0f);
 	rlDisableDepthMask();
-	rlDisableDepthTest();
-	for (U7Object* object : flats)
+	for (U7Object* object : otherFlats)
 		object->Draw();
-	rlEnableDepthTest();
 	rlEnableDepthMask();
 	glDisable(GL_POLYGON_OFFSET_FILL);
+
+	// Third-person roofs only: painter's algorithm (depth-test off). Wall-top
+	// depth tests punch see-through cracks through alpha-tested diamond edges
+	// in isometric view. In first-person, roofs already went into otherFlats.
+	if (!roofFlats.empty())
+	{
+		glEnable(GL_POLYGON_OFFSET_FILL);
+		glPolygonOffset(-2.0f, -8.0f);
+		rlDisableDepthMask();
+		rlDisableDepthTest();
+		for (U7Object* object : roofFlats)
+			object->Draw();
+		rlEnableDepthTest();
+		rlEnableDepthMask();
+		glDisable(GL_POLYGON_OFFSET_FILL);
+	}
 
 	if (!meshes.empty())
 	{
@@ -1871,9 +1929,9 @@ void DrawMeshOutlineIdPass(bool drawObjects)
 	rlDisableColorBlend();
 
 	// Depth occluders so outlines don't bleed through nearer non-outlined geometry.
-	// Skip flats here: the color pass draws non-rug flats with depth-write off +
-	// polygon offset *after* meshes, so treating them as solid occluders here
-	// leaves mesh IDs under pixels that actually show flat art.
+	// Skip flats here: the color pass draws flats after meshes (roofs with depth
+	// bypass), so treating them as solid occluders here leaves mesh IDs under
+	// pixels that actually show flat art.
 	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
 	if (g_Terrain)
 		g_Terrain->Draw();
@@ -3750,12 +3808,36 @@ std::array<int, 1024> g_isObjectMoveable =
 
 bool g_firstPersonEnabled = false;
 float g_firstPersonHeight = DEFAULT_FIRSTPERSON_HEIGHT;   // eye height above avatar center (tweak)
-float g_firstPersonFOV = 60.0f;
+float g_firstPersonFOV = 75.0f;
 float g_firstPersonYaw = 0.0f;
 float g_firstPersonPitch = DEFAULT_FIRSTPERSON_PITCH;
 float g_firstPersonMoveSpeed = 5.0f; // units per second
+float g_firstPersonMouseSensitivity = 0.003f; // radians per pixel
+bool g_firstPersonMouseLookActive = false;
 bool g_firstPersonPreserveCenter = false;
 Vector3 g_firstPersonFocus = { 0.0f, 0.0f, 0.0f };
+
+void SetFirstPersonMouseLook(bool enabled)
+{
+	if (enabled == g_firstPersonMouseLookActive)
+		return;
+
+	if (enabled)
+	{
+		DisableCursor();
+		SetMousePosition(GetScreenWidth() / 2, GetScreenHeight() / 2);
+		// Consume residual delta so the first frame after lock does not jerk.
+		GetMouseDelta();
+		g_firstPersonMouseLookActive = true;
+	}
+	else
+	{
+		EnableCursor();
+		// Engine draws a custom cursor; keep the OS cursor hidden.
+		HideCursor();
+		g_firstPersonMouseLookActive = false;
+	}
+}
 
 // -----------------------------------------------------------------------------
 // Serialize m_flags to a JSON object

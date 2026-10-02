@@ -167,6 +167,8 @@ void ConversationState::OnEnter()
 	m_waitingForAnswer = false;
 	m_scriptFinished = false;
 	m_conversationActive = true;
+	// FP mouselook locks the cursor; free it for dialogue answers.
+	SetFirstPersonMouseLook(false);
 }
 
 void ConversationState::OnExit()

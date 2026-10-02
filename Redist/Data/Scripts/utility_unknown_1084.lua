@@ -1,12 +1,14 @@
---- Best guess: Creates a new array from an input array, excluding a specified element.
-function utility_unknown_1084(P0, P1)
-    local var_0000
-
-    var_0000 = {}
-    for var_0001 in ipairs(P0) do
-        if var_0002 ~= P1 then
-            table.insert(var_0000, var_0002)
+--- Filter a 1-based array, returning a new table with `exclude` removed.
+--- Used by party-introduction and a few object scripts.
+function utility_unknown_1084(list, exclude)
+    local result = {}
+    if type(list) ~= "table" then
+        return result
+    end
+    for _, value in ipairs(list) do
+        if value ~= exclude then
+            table.insert(result, value)
         end
     end
-    return var_0000
+    return result
 end

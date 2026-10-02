@@ -14,10 +14,12 @@ function npc_danag_0251(eventid, objectref)
         end
         start_conversation()
         add_answer({"bye", "job", "name"})
-        if not get_flag(260) and not get_flag(309) then
+        -- Unlock Hook after learning about him (same as Sintag/Mandy/Gordy).
+        if get_flag(260) or get_flag(309) then
             add_answer("Hook")
         end
-        if not get_flag(612) then
+        -- Unlock E&A after Ian sends them to Buccaneer's Den (flag 612).
+        if get_flag(612) then
             add_answer("Elizabeth and Abraham")
         end
         if not get_flag(681) then

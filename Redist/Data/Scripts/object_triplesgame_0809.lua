@@ -1,31 +1,98 @@
---- Best guess: Simulates a roulette game, checking time and casino state to determine outcomes and trigger effects.
-function object_triplesgame_0809(eventid, objectref)
-    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B
+--- Triples wheels (shape 809). Double-click a wheel to spin all nearby wheels.
+--- Faces: frames 0–7 = 1, 8–15 = 2, 16–23 = 3  (face = floor(frame/8)+1).
 
-    if eventid == 1 and not in_usecode(objectref) then
-        close_gumps()
-        var_0000 = utility_position_0828()
-        var_0000 = utility_unknown_0826()
-        if get_time_hour() >= 15 or get_time_hour() <= 3 then
-            for var_0001 in ipairs(var_0000) do
-                clear_item_flag(11, var_0003)
-            end
-            set_schedule_type(9, -232)
+local WHEEL = 809
+local TABLE = 814
+local FRAME = 0x46
+local DELAY = 0x27
+local NEXT = 0x4e
+
+-- Engine ReverseUsecodeArray expects decompiler order (reversed natural).
+local function run_script_forward(obj, natural)
+    local rev = {}
+    for i = #natural, 1, -1 do
+        rev[#rev + 1] = natural[i]
+    end
+    if halt_scheduled then
+        halt_scheduled(obj)
+    end
+    execute_usecode_array(obj, rev)
+end
+
+-- Spin for a bit, then land on a face base frame (0, 8, or 16).
+local function spin_wheel(obj, land_frame)
+    local natural = { FRAME, 0 }
+    -- ~1.5s of cycling frames (30 ticks × 0.05s), then snap to result face.
+    for _ = 1, 30 do
+        natural[#natural + 1] = NEXT
+        natural[#natural + 1] = DELAY
+        natural[#natural + 1] = 1
+    end
+    natural[#natural + 1] = FRAME
+    natural[#natural + 1] = land_frame
+    run_script_forward(obj, natural)
+end
+
+function object_triplesgame_0809(eventid, objectref)
+    if eventid ~= 1 then
+        return
+    end
+    if in_usecode(objectref) then
+        return
+    end
+
+    close_gumps()
+
+    local hour = get_time_hour()
+    if not (hour >= 15 or hour <= 3) then
+        if utility_unknown_1075 then
+            utility_unknown_1075(0, "@The House of Games is closed.@", -356)
         end
-        var_0004 = find_nearby_avatar(814)
-        var_0005 = find_nearby_avatar(809)
-        var_0006 = find_nearby_avatar(818)
-        if #var_0006 > 0 or #var_0005 ~= 3 or #var_0004 < 1 then
-            return
+        return
+    end
+
+    -- Original decompile aborted when any shape 818 was nearby; those are
+    -- permanent table props here, so that guard always fired and nothing spun.
+    local tables = find_nearby_avatar(TABLE)
+    local wheels = find_nearby_avatar(WHEEL)
+    if not wheels or #wheels == 0 then
+        wheels = { objectref }
+    end
+
+    -- Use up to three nearby wheels (House layout has three).
+    local to_spin = {}
+    for i, id in ipairs(wheels) do
+        if i <= 3 then
+            to_spin[#to_spin + 1] = id
         end
-        set_flag(31, false)
-        set_flag(32, false)
-        set_flag(33, false)
+    end
+    -- Always include the clicked wheel.
+    local clicked = false
+    for _, id in ipairs(to_spin) do
+        if id == objectref then
+            clicked = true
+            break
+        end
+    end
+    if not clicked then
+        to_spin[#to_spin + 1] = objectref
+    end
+
+    if set_schedule_type then
+        set_schedule_type(9, -232) -- Smithy: dealing
+    end
+    if utility_unknown_1075 then
         utility_unknown_1075(0, "@Spin baby!@", -356)
-        for var_0007 in ipairs(var_0005) do
-            var_000A = random2(2, 0) * 8
-            halt_scheduled(var_0009)
-            var_000B = execute_usecode_array(var_0009, {1547, 8533, var_000A, -3, 7947, 29, 17496, 8014, 22, -3, 7947, 29, 17496, 7758})
+    end
+
+    for _, wheel in ipairs(to_spin) do
+        -- random2(2, 0) → 0..2 in original; land on face bases 0 / 8 / 16.
+        local face = 0
+        if random2 then
+            face = random2(2, 0)
+        else
+            face = math.random(0, 2)
         end
+        spin_wheel(wheel, face * 8)
     end
 end

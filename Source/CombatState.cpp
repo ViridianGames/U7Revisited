@@ -111,6 +111,7 @@ void CombatState::ClearPartyTargets()
 void CombatState::OnEnter()
 {
 	Log("CombatState::OnEnter() - Combat starting");
+	SetFirstPersonMouseLook(false);
 
 	g_isCombatMode = true;
 	m_paused = true;
@@ -264,6 +265,9 @@ void CombatState::EnrollNearbyHostiles()
 
 bool TryBeginCombatFromHostileAggro(U7Object* hintHostile)
 {
+	if (!kCombatStateEnabled)
+		return false;
+
 	if (!g_StateMachine)
 		return false;
 
