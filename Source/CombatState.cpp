@@ -20,6 +20,7 @@
 #include "U7Player.h"
 #include "CombatState.h"
 #include "MainState.h"
+#include "PerfTelemetry.h"
 
 #include <string>
 #include <algorithm>
@@ -150,6 +151,7 @@ void CombatState::OnEnter()
 	}
 	AddConsoleString("Click a party member, then click an enemy or the ground to assign orders.", WHITE);
 	AddConsoleString("Press Space to begin. Press Space again during combat to pause and reissue orders.", WHITE);
+	AddConsoleString("Press C or Escape to leave combat.", WHITE);
 
 	LockCameraToAvatar();
 
@@ -274,19 +276,26 @@ bool TryBeginCombatFromHostileAggro(U7Object* hintHostile)
 	if (g_isCombatMode || g_StateMachine->GetCurrentState() == STATE_COMBATSTATE)
 		return false;
 
-	// One scan per frame — first hostile to notice still triggers, but message uses nearest.
+	// One scan per frame.
 	static unsigned int s_lastAggroScanFrame = 0;
 	if (s_lastAggroScanFrame == g_CurrentUpdate)
 		return false;
 	s_lastAggroScanFrame = g_CurrentUpdate;
 
+	// Do not auto-enter combat. Warn once per encounter; player presses C to engage.
+	static bool s_warnedThisEncounter = false;
+
 	U7Object* nearest = FindNearestHostileInAggroRange();
 	if (!nearest)
 		nearest = hintHostile;
 	if (!nearest || !IsHostileCombatUnit(nearest))
+	{
+		s_warnedThisEncounter = false;
 		return false;
+	}
 
 	// Confirm the nearest is actually in range (hint alone is not enough).
+	bool inRange = false;
 	if (g_Player)
 	{
 		if (U7Object* avatar = g_Player->GetAvatarObject())
@@ -294,19 +303,25 @@ bool TryBeginCombatFromHostileAggro(U7Object* hintHostile)
 			const float distSqr = Vector2DistanceSqr(
 				{ nearest->m_Pos.x, nearest->m_Pos.z },
 				{ avatar->m_Pos.x, avatar->m_Pos.z });
-			if (distSqr > kHostileAggroRangeSqr)
-				return false;
+			inRange = (distSqr <= kHostileAggroRangeSqr);
 		}
 	}
-
-	if (g_CombatState)
+	if (!inRange)
 	{
-		const std::string label = PluralizeCreatureName(nearest->m_name);
-		g_CombatState->m_approachMessage = label + " approach!";
+		s_warnedThisEncounter = false;
+		return false;
 	}
 
-	g_StateMachine->PushState(STATE_COMBATSTATE);
-	return true;
+	if (!s_warnedThisEncounter)
+	{
+		s_warnedThisEncounter = true;
+		const std::string label = PluralizeCreatureName(nearest->m_name);
+		AddConsoleString(label + " approach! Press C to enter combat.", YELLOW);
+		if (g_CombatState)
+			g_CombatState->m_approachMessage = label + " approach!";
+	}
+
+	return false;
 }
 
 void CombatState::BeginCombat()
@@ -337,7 +352,8 @@ void CombatState::IssueMoveOrder(U7Object* member, const Vector3& dest)
 
 	member->m_target = 0;
 	member->m_combatMoveOrder = true;
-	member->PathfindToDest(moveDest);
+	// Explicit ground order may need stairs/crates — Full climb-aware A*.
+	member->PathfindToDest(moveDest, /*allowHierarchical=*/true, PathCallerTag::AvatarParty);
 
 	AddConsoleString(
 		member->m_name + " moving to ("
@@ -403,9 +419,13 @@ void CombatState::HandleCombatInput()
 		return;
 	}
 
-	// Development escape hatch
-	if (IsKeyPressed(KEY_ESCAPE))
+	// C / Escape end combat (MainState::Update does not run while we are on top,
+	// so C must be handled here — previously only Escape worked and felt like a trap).
+	if (IsKeyPressed(KEY_C) || IsKeyPressed(KEY_ESCAPE))
+	{
+		AddConsoleString("Leaving combat.", GREEN);
 		g_StateMachine->PopState();
+	}
 }
 
 void CombatState::Update()
@@ -415,15 +435,18 @@ void CombatState::Update()
 	// black voids where chunks were never re-stamped this frame.
 	g_mouseOverUI = false;
 
+	const double tCam0 = GetTime();
 	if (g_mainState)
 		g_mainState->ProcessCameraInput();
-
 	CameraUpdate();
+	g_perf.msCamera += (GetTime() - tCam0) * 1000.0;
 
+	const double tInterest0 = GetTime();
 	RebuildInterestCentersFromLocalPlayers();
 	RebuildInterestChunkSet();
 
 	const float heightCutoff = g_mainState ? g_mainState->m_heightCutoff : 16.0f;
+	int interestVis = 0;
 	for (int packed : g_interestChunkList)
 	{
 		const int cx = packed & 0xffff;
@@ -435,14 +458,26 @@ void CombatState::Update()
 			if (!object || object->m_isContained || object->GetIsDead())
 				continue;
 			ApplyObjectDrawVisibility(object, heightCutoff);
+			++interestVis;
 		}
 	}
+	g_interestObjectsUpdated = interestVis;
+	g_perf.AddMs(g_perf.msInterest, g_perf.maxMsInterest, (GetTime() - tInterest0) * 1000.0);
 
+	const double tTer0 = GetTime();
 	if (g_Terrain)
 		g_Terrain->Update();
-	UpdateRuntimePalette();
-	UpdateSortedVisibleObjects();
+	g_perf.AddMs(g_perf.msTerrainUp, g_perf.maxMsTerrainUp, (GetTime() - tTer0) * 1000.0);
 
+	const double tPal0 = GetTime();
+	UpdateRuntimePalette();
+	g_perf.msPalette += (GetTime() - tPal0) * 1000.0;
+
+	const double tSort0 = GetTime();
+	UpdateSortedVisibleObjects();
+	g_perf.AddMs(g_perf.msSort, g_perf.maxMsSort, (GetTime() - tSort0) * 1000.0);
+
+	const double tOther0 = GetTime();
 	// Keep enrolling hostiles that walk into range (or were nearer than the trigger).
 	EnrollNearbyHostiles();
 
@@ -461,10 +496,12 @@ void CombatState::Update()
 		else
 			++it;
 	}
+	g_perf.msCombatOther += (GetTime() - tOther0) * 1000.0;
 
 	// Drive updates for participants while combat is running.
 	if (!m_paused)
 	{
+		const double tCombat0 = GetTime();
 		for (int pid : m_participants)
 		{
 			auto objIt = g_objectList.find(pid);
@@ -474,10 +511,15 @@ void CombatState::Update()
 				if (obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_MONSTER ||
 				    obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC)
 				{
+					if (obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_MONSTER)
+						++g_perf.monsterUpdates;
+					else
+						++g_perf.npcUpdates;
 					obj->Update();
 				}
 			}
 		}
+		g_perf.AddMs(g_perf.msCombatUpdate, g_perf.maxMsCombatUpdate, (GetTime() - tCombat0) * 1000.0);
 
 		// End combat when all hostiles are defeated
 		bool anyHostiles = false;

@@ -89,3 +89,28 @@ A couple NPCs have crazy longs paths and the astar gives up before a path is fou
 2. Place height-1 crates as steps (offset each level).
 3. Double-right-click ground → crate → higher crate / roof ledge.
 4. 1-tile hallways should path orthogonally without wall clips.
+
+# 2026-10 three-tier pathfinding (combat FPS)
+
+Policy matching Exult / original Black Gate cost model:
+
+| Who / situation | API | Budget |
+|---|---|---|
+| Monsters (combat chase) | `FindMonsterChasePath` | Straight line if clear → greedy slide → tiny Monster Fast (`max_cost` clamp 2×est, 18..48). Never Full A*. |
+| NPC schedules | `FindFastPath` | Exult Fast: current-floor A*, `max_cost` clamp(2×est, 8..64). Async workers unchanged. |
+| Avatar + party unknown→unknown | `FindPath` (Full) | Climb-aware; Actor-like `max_cost` ~3× estimate (floor 96). Soft concurrency cap 6. |
+
+Combat chase (`EngageCombatTarget`) repaths only when path missing, stuck, target changed, goal drifted ≳2.5 tiles, or cooldown (~0.35 s) — never every frame.
+
+Telemetry (`Redist/telemetry.txt`): per-second `#FindPath` by tag (`Monster`, `ScheduleFast`, `AvatarParty`, `StuckRepath`, `Other`) with call count / ms / nodes.
+
+`kCombatStateEnabled` re-enabled after this policy landed.
+
+# 2026-10 swamp walkability
+
+- Swamp shapes 22 and 113–117 are **impassable** in `terrain_walkable.csv` (cost 99),
+  matching Exult (you cannot walk into swamps).
+- Earlier pass briefly set them to cost 5 and trusted CSV over TFA so key-drive
+  could enter; reverted once Exult behavior was confirmed.
+- `CanStandOnSurface` still trusts a warm ground-cost map over TFA when CSV says
+  walkable, so F10 overlay and ValidateMove stay aligned for other tiles.

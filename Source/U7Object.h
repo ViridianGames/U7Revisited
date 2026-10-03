@@ -379,7 +379,11 @@ public:
 	virtual void SetDest(Vector3 pos);
 
 	// allowHierarchical: false = flat tile A* only (walk-to-use / levers).
-	void PathfindToDest(Vector3 dest, bool allowHierarchical = true);
+	// tag: telemetry / policy (AvatarParty for player paths; StuckRepath for recovery).
+	void PathfindToDest(Vector3 dest, bool allowHierarchical = true,
+		PathCallerTag tag = PathCallerTag::Other);
+	// Apply a precomputed waypoint list (combat chase / schedule apply).
+	void ApplyPathWaypoints(std::vector<Vector3> waypoints);
 	int PathfindToDestTracked(Vector3 dest); // Returns request ID for tracking (used by Lua)
 	virtual void SetSpeed(float speed) { m_speed = speed; }
 
@@ -667,6 +671,9 @@ public:
 	int m_lastSchedule = -1;
 	// g_CurrentUpdate when NPCUpdate last ran. Gap ⇒ was outside interest (dormant).
 	unsigned int m_lastNpcUpdateFrame = 0;
+	// g_CurrentUpdate when U7Object::Update last ran — blocks double-sim if the
+	// unit appears twice in the interest snapshot (stale chunk ghost).
+	unsigned int m_lastInterestUpdateFrame = 0;
 	// Set on wake from dormancy; consumed when schedule slot is applied (snap or path).
 	bool m_scheduleWakeSnapPending = false;
 	int m_currentFrameX = 0;
@@ -705,6 +712,12 @@ public:
 	// Player-issued combat reposition order; suppresses auto-targeting until destination reached.
 	bool m_combatMoveOrder = false;
 
+	// Combat chase repath throttle (avoids per-frame full A*).
+	float m_combatRepathAt = 0.0f;       // GetTime() when next repath is allowed
+	Vector3 m_combatPathGoal = { 0, 0, 0 }; // last chase standoff goal
+	int m_combatPathTargetId = 0;        // target id when last path was built
+	static constexpr float kCombatRepathCooldownSec = 0.35f;
+	static constexpr float kCombatRepathGoalSlopTiles = 2.5f;
 
 };
 

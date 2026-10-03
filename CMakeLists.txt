@@ -183,6 +183,7 @@ set(SOURCES
     Source/NpcListWindow.cpp
     Source/OptionsState.cpp
     Source/PathfindingSystem.cpp
+    Source/PerfTelemetry.cpp
     Source/PatreonVillageState.cpp
     Source/ShapeData.cpp
     Source/ShapeEditorState.cpp

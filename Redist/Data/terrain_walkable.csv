@@ -21,7 +21,7 @@
 19,"",99
 20,"",99
 21,"stone floor",1
-22,"swamp",5
+22,"swamp",99
 23,"dirt",2
 24,"cobblestone",1
 25,"rut",1
@@ -112,11 +112,11 @@
 110,"",99
 111,"sandy ground",2
 112,"ford",2
-113,"swamp",5
-114,"swamp",5
-115,"swamp",5
-116,"swamp",5
-117,"swamp",5
+113,"swamp",99
+114,"swamp",99
+115,"swamp",99
+116,"swamp",99
+117,"swamp",99
 118,"sandy grass",2
 119,"sandy grass",2
 120,"sandy grass",2

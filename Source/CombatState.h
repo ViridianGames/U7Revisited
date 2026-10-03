@@ -10,9 +10,9 @@ class Gui;
 class GuiElement;
 class U7Object;
 
-// Temporary kill-switch: combat entry is broken and blocks normal play.
-// Flip to true when CombatState is ready to be re-enabled.
-constexpr bool kCombatStateEnabled = false;
+// Combat entry: re-enabled after three-tier pathfinding (monster chase / Fast
+// schedules / Full A* for Avatar+party only). Flip to false to disable again.
+constexpr bool kCombatStateEnabled = true;
 
 // CombatState handles both real-time and turn-based combat modes in Ultima VII.
 // It is entered either manually (via the combat toggle on the character sheet)

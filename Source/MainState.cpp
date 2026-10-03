@@ -21,6 +21,7 @@
 #include "ConversationState.h"
 #include "GumpManager.h"
 #include "PathfindingSystem.h"
+#include "PerfTelemetry.h"
 #include "Ghost/GhostWindow.h"
 #include "Ghost/GhostSerializer.h"
 #include "NpcListWindow.h"
@@ -326,6 +327,18 @@ void MainState::OnEnter()
 
 	m_heightCutoff = 16.0f; // Draw everything unless the player is inside.
 
+	// Loading finishes after MainState::Init/SetupGame, so chunk membership from
+	// AddObject can still carry spawn-chunk duplicates. Rebuild once on entry so
+	// Avatar/NPC Update cannot run twice from a stale ghost registration.
+	for (int cx = 0; cx < 192; ++cx)
+		for (int cz = 0; cz < 192; ++cz)
+			g_chunkObjectMap[cx][cz].clear();
+	for (const auto& p : g_objectList)
+	{
+		if (p.second && !p.second->m_isContained)
+			AssignObjectChunk(p.second.get());
+	}
+
 	if (m_gameMode == MainStateModes::MAIN_STATE_MODE_TRINSIC_DEMO)
 	{
 		// Enable schedules and pathfinding for demo mode so NPCs behave like sandbox
@@ -440,6 +453,9 @@ void MainState::OnEnter()
 	else
 	{
 		m_paused = false;
+		// Sandbox playtesting uses the female Avatar (walk sheet + shape 989).
+		if (g_Player)
+			g_Player->SetAvatarFemale();
 		g_Player->AddPartyMember(1); // Iolo only; Spark is NPC 2 and must not auto-join
 
 		// SpawnMonster(14, 1044.0f, 0.0f, 2182.0f);
@@ -2018,8 +2034,8 @@ void MainState::Update()
 					// — repath from the new stand tile so the first step is clean.
 					if (wasPosed && g_pathfindingSystem)
 					{
-						npcObj->m_pathWaypoints = g_pathfindingSystem->FindPath(
-							npcObj->GetPos(), res.dest, npcObj, /*allowHierarchical=*/false);
+						npcObj->m_pathWaypoints = g_pathfindingSystem->FindFastPath(
+							npcObj->GetPos(), res.dest, npcObj, PathCallerTag::ScheduleFast);
 						if (npcObj->m_pathWaypoints.empty())
 							npcObj->m_pathWaypoints = std::move(res.path);
 					}
@@ -2176,13 +2192,19 @@ void MainState::Update()
 		// IMPORTANT: snapshot pointers first. object->Update() / SetPos can reassign
 		// chunks (UpdateObjectChunk erases from g_chunkObjectMap), and eggs can spawn
 		// into the same chunk — iterating the live vector crashes.
-		const double tObjects0 = GetTime();
+		const double tInterest0 = GetTime();
 		g_interestObjectsUpdated = 0;
 		if (!m_paused)
 		{
 			RebuildInterestCentersFromLocalPlayers();
 			RebuildInterestChunkSet();
+		}
+		const double interestMs = (GetTime() - tInterest0) * 1000.0;
+		g_perf.AddMs(g_perf.msInterest, g_perf.maxMsInterest, interestMs);
 
+		const double tObjects0 = GetTime();
+		if (!m_paused)
+		{
 			static std::vector<U7Object*> interestSnapshot;
 			interestSnapshot.clear();
 			interestSnapshot.reserve(8192);
@@ -2217,6 +2239,13 @@ void MainState::Update()
 				// Statics have no per-frame sim; still refresh draw visibility.
 				if (object->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_STATIC)
 				{
+					switch (object->m_UnitType)
+					{
+					case U7Object::UnitTypes::UNIT_TYPE_NPC: ++g_perf.npcUpdates; break;
+					case U7Object::UnitTypes::UNIT_TYPE_MONSTER: ++g_perf.monsterUpdates; break;
+					case U7Object::UnitTypes::UNIT_TYPE_EGG: ++g_perf.eggUpdates; break;
+					default: ++g_perf.otherUpdates; break;
+					}
 					object->Update();
 				}
 				// Re-check after Update (destroy/contain during hatch scripts).
@@ -2231,6 +2260,7 @@ void MainState::Update()
 		const double objMs = (GetTime() - tObjects0) * 1000.0;
 		m_msObjectsThisSec += objMs;
 		if (objMs > m_maxMsObjects) m_maxMsObjects = objMs;
+		g_perf.AddMs(g_perf.msObjects, g_perf.maxMsObjects, objMs);
 
 		// Roof pop-off must run AFTER the global m_Visible=true pass above and BEFORE
 		// UpdateSortedVisibleObjects (which builds the pick list). Otherwise invisible
@@ -2253,6 +2283,7 @@ void MainState::Update()
 		const double sortMs = (GetTime() - tSort0) * 1000.0;
 		m_msSortThisSec += sortMs;
 		if (sortMs > m_maxMsSort) m_maxMsSort = sortMs;
+		g_perf.AddMs(g_perf.msSort, g_perf.maxMsSort, sortMs);
 
 		// Object lighting uses g_Terrain->m_cellLighting in InteractiveDraw/NPCDraw.
 		// The old per-object CheckLighting (O(visible × lights)) was unused for draw.
@@ -2268,6 +2299,7 @@ void MainState::Update()
 	const double palMs = (GetTime() - tPal0) * 1000.0;
 	m_msPaletteThisSec += palMs;
 	if (palMs > m_maxMsPalette) m_maxMsPalette = palMs;
+	g_perf.msPalette += palMs;
 
 	// Terrain::Update rebuilds lighting + ground RT only when dirty (camera tile,
 	// day/night, dungeon view, palette step, nearby lights).
@@ -2280,9 +2312,11 @@ void MainState::Update()
 	m_msTerrainThisSec += terMs;
 	if (terMs > m_maxMsTerrain) m_maxMsTerrain = terMs;
 	m_terrainUpdateTime = static_cast<int>(terMs);
+	g_perf.AddMs(g_perf.msTerrainUp, g_perf.maxMsTerrainUp, terMs);
 
-	const double sectionSum = objMs + sortMs + palMs + terMs;
+	const double sectionSum = interestMs + objMs + sortMs + palMs + terMs;
 	if (sectionSum > m_maxMsFrameSections) m_maxMsFrameSections = sectionSum;
+	if (sectionSum > g_perf.maxMsFrameSections) g_perf.maxMsFrameSections = sectionSum;
 	++m_framesThisSec;
 
 	UpdateStats();
@@ -2517,9 +2551,9 @@ void MainState::PathfindingWorkerLoop()
 						agent = itObj->second.get();
 				}
 
-				// Flat tile A* for schedule destinations (Exult has no chunk layer).
-				path = g_pathfindingSystem->FindPath(req.start, req.dest, agent,
-					/*allowHierarchical=*/false);
+				// Exult Fast A* for schedule destinations (tight max_cost, current floor).
+				path = g_pathfindingSystem->FindFastPath(req.start, req.dest, agent,
+					PathCallerTag::ScheduleFast);
 				success = !path.empty();
 			}
 		}
@@ -3405,107 +3439,22 @@ void MainState::Draw()
 
 	DrawRectangle(0, 0, g_Engine->m_ScreenWidth, g_Engine->m_ScreenHeight, { 0, 0, 0, m_currentFadeAlpha });
 
-	// Telemetry summary (per-second aggregation)
-	{
-		float now = GetTime();
-		if (now - m_lastTelemetryDumpTime >= 1.0f)
-		{
-			m_lastTelemetryDumpTime = now;
+	// Per-second subsystem dump (also runs during combat — Draw still executes).
+	PerfTelemetryOnFrame();
 
-			// Queue sizes (sample under locks)
-			size_t reqQueueSize = 0;
-			{
-				std::lock_guard<std::mutex> lk(m_scheduleMutex);
-				reqQueueSize = m_schedulePathQueue.size();
-			}
-			size_t resQueueSize = 0;
-			{
-				std::lock_guard<std::mutex> lk(m_resultMutex);
-				resQueueSize = m_scheduleResults.size();
-			}
-
-			// Script errors delta
-			uint64_t totalScriptErrors = g_ScriptingSystem ? g_ScriptingSystem->m_totalScriptErrors.load() : 0;
-			uint64_t scriptErrorsDelta = totalScriptErrors - m_lastScriptErrorTotal;
-			m_lastScriptErrorTotal = totalScriptErrors;
-
-			// Synchronous FindPath calls observed on main thread
-			uint64_t syncFinds = m_syncFindPathCalls.exchange(0);
-
-			// Results applied this second (accumulated)
-			int resultsApplied = m_resultsAppliedThisSecond;
-			m_resultsAppliedThisSecond = 0;
-
-			const int frames = std::max(1, m_framesThisSec);
-			const int terrainRebuilds = g_Terrain ? g_Terrain->m_rebuildsThisSecond : 0;
-			const int terrainSkips = g_Terrain ? g_Terrain->m_skipsThisSecond : 0;
-			const double terrainRebuildMs = g_Terrain ? g_Terrain->m_rebuildMsThisSecond : 0.0;
-			const char* dirtyReason = g_Terrain ? g_Terrain->m_lastDirtyReason : "n/a";
-
-			// A* peak this second (main-thread path spikes cause hitch even at high avg fps).
-			uint64_t astarMaxMs = g_pathfindingSystem ? g_pathfindingSystem->m_astarMaxMs.load() : 0;
-			// Note: m_astarMaxMs is lifetime max; report delta via exchange if we only want per-sec.
-			// Use totalMs/calls for avg; max is process lifetime — still useful when large.
-
-			std::ostringstream ss;
-			ss << std::fixed << std::setprecision(2);
-			ss << "TELEMETRY: fps~" << frames
-				<< " avg objects=" << (m_msObjectsThisSec / frames)
-				<< " sort=" << (m_msSortThisSec / frames)
-				<< " palette=" << (m_msPaletteThisSec / frames)
-				<< " terrain=" << (m_msTerrainThisSec / frames)
-				<< " | max objects=" << m_maxMsObjects
-				<< " sort=" << m_maxMsSort
-				<< " palette=" << m_maxMsPalette
-				<< " terrain=" << m_maxMsTerrain
-				<< " sections=" << m_maxMsFrameSections
-				<< " | terrain rebuilds/s=" << terrainRebuilds
-				<< " skips/s=" << terrainSkips
-				<< " rebuildMs/s=" << (int)terrainRebuildMs
-				<< " lastDirty=" << dirtyReason
-				<< " visible=" << g_sortedVisibleObjects.size()
-				<< " interestObj=" << g_interestObjectsUpdated
-				<< " interestChunks=" << g_interestChunkCount
-				<< " centers=" << g_interestCenterCount
-				<< " | AStar/s=" << callsDelta
-				<< " avgAstarMs=" << (int)avgAstarMs
-				<< " lifetimeAstarMaxMs=" << astarMaxMs
-				<< " syncFind/s=" << syncFinds;
-			const std::string line = ss.str();
-			// Telemetry dump suppressed for now (still accumulate/reset counters above).
-			constexpr bool kDumpTelemetry = false;
-			if (kDumpTelemetry)
-			{
-				//DebugPrint(line);
-				Log(line);
-				std::ofstream tel("telemetry.txt", std::ios::app);
-				if (tel)
-				{
-					tel << line << '\n';
-					tel.flush();
-				}
-				//AddConsoleString(line, YELLOW);
-			}
-			(void)line;
-
-			m_msObjectsThisSec = 0.0;
-			m_msSortThisSec = 0.0;
-			m_msPaletteThisSec = 0.0;
-			m_msTerrainThisSec = 0.0;
-			m_maxMsObjects = 0.0;
-			m_maxMsSort = 0.0;
-			m_maxMsPalette = 0.0;
-			m_maxMsTerrain = 0.0;
-			m_maxMsFrameSections = 0.0;
-			m_framesThisSec = 0;
-			if (g_Terrain)
-			{
-				g_Terrain->m_rebuildsThisSecond = 0;
-				g_Terrain->m_skipsThisSecond = 0;
-				g_Terrain->m_rebuildMsThisSecond = 0.0;
-			}
-		}
-	}
+	// Keep legacy per-sec accumulators from growing forever (dump moved to g_perf).
+	m_msObjectsThisSec = 0.0;
+	m_msSortThisSec = 0.0;
+	m_msPaletteThisSec = 0.0;
+	m_msTerrainThisSec = 0.0;
+	m_maxMsObjects = 0.0;
+	m_maxMsSort = 0.0;
+	m_maxMsPalette = 0.0;
+	m_maxMsTerrain = 0.0;
+	m_maxMsFrameSections = 0.0;
+	m_framesThisSec = 0;
+	m_resultsAppliedThisSecond = 0;
+	m_syncFindPathCalls.exchange(0);
 }
 
 void MainState::SetupGame()

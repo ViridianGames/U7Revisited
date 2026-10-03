@@ -23,6 +23,7 @@
 #include "MainState.h"
 #include "CombatState.h"
 #include "PathfindingSystem.h"
+#include "PerfTelemetry.h"
 
 #include <iostream>
 #include <string>
@@ -310,6 +311,7 @@ bool U7Object::EngageCombatTarget()
 	if (targetIt == g_objectList.end() || !targetIt->second || targetIt->second->GetIsDead())
 	{
 		m_target = 0;
+		m_combatPathTargetId = 0;
 		return false;
 	}
 
@@ -322,6 +324,9 @@ bool U7Object::EngageCombatTarget()
 	if (distSqr <= combatRangeSqr)
 	{
 		// Hold position while in melee range so we don't keep walking toward a stale destination.
+		m_pathWaypoints.clear();
+		m_currentWaypointIndex = 0;
+		m_pathfindingPending = false;
 		SetDest(m_Pos);
 
 		if (m_cooldownTimer <= 0.0f)
@@ -342,10 +347,57 @@ bool U7Object::EngageCombatTarget()
 	}
 	else
 	{
-		// Pathfind — do not crow-fly (UpdateMovement requires waypoints for NPCs/monsters).
-		PathfindToDest(GetStandoffPosition(m_Pos, target->m_Pos, m_attackRange));
+		const Vector3 standoff = GetStandoffPosition(m_Pos, target->m_Pos, m_attackRange);
+		const float now = GetTime();
+		const float goalDx = standoff.x - m_combatPathGoal.x;
+		const float goalDz = standoff.z - m_combatPathGoal.z;
+		const float goalMoved = sqrtf(goalDx * goalDx + goalDz * goalDz);
+		const bool hasPath = !m_pathWaypoints.empty() && m_currentWaypointIndex < (int)m_pathWaypoints.size();
+		const bool stuck = m_moveStuckFrames >= 10;
+		const bool targetChanged = (m_combatPathTargetId != m_target);
+		const bool goalDrifted = goalMoved >= kCombatRepathGoalSlopTiles;
+		const bool cooldownReady = (now >= m_combatRepathAt);
+
+		const bool needRepath = !hasPath || stuck || targetChanged || goalDrifted ||
+			(!hasPath && cooldownReady) || (hasPath && goalDrifted && cooldownReady);
+
+		// Keep following an existing path while the target hasn't moved far.
+		if (!needRepath)
+			return true;
+
+		// Only repath on cooldown once we already have a path (avoid per-frame A*).
+		if (hasPath && !stuck && !targetChanged && !cooldownReady)
+			return true;
+
+		if (!g_pathfindingSystem)
+			return true;
+
+		const bool isParty = (m_UnitType == UnitTypes::UNIT_TYPE_NPC && g_Player &&
+			g_Player->NPCIDInParty(m_NPCID));
+		const bool isMonsterChase = (m_UnitType == UnitTypes::UNIT_TYPE_MONSTER) ||
+			(m_Team == 1 && !isParty);
+
+		std::vector<Vector3> path;
+		if (isMonsterChase)
+		{
+			// Absolute simplest: straight / greedy / tiny Fast — never Full A*.
+			path = g_pathfindingSystem->FindMonsterChasePath(m_Pos, standoff, this);
+		}
+		else
+		{
+			// Party chase: Exult Fast budget (explicit ground orders use Full via IssueMoveOrder).
+			path = g_pathfindingSystem->FindFastPath(m_Pos, standoff, this, PathCallerTag::AvatarParty);
+		}
+
+		ApplyPathWaypoints(std::move(path));
+		m_combatPathGoal = standoff;
+		m_combatPathTargetId = m_target;
+		m_combatRepathAt = now + kCombatRepathCooldownSec;
+		m_moveStuckFrames = 0;
+		++g_perf.combatRepaths;
 	}
 
+	++g_perf.engageCombatCalls;
 	return true;
 }
 
@@ -535,6 +587,12 @@ void U7Object::CheckLighting()
 
 void U7Object::Update()
 {
+	// Interest snapshot can list the same pointer twice when a stale chunk-map
+	// ghost still overlaps the interest radius. One sim tick per frame.
+	if (m_lastInterestUpdateFrame == g_CurrentUpdate)
+		return;
+	m_lastInterestUpdateFrame = g_CurrentUpdate;
+
 	// Dispatch to the appropriate type-specific update function.
 	// m_UnitType should be the source of truth.
 	switch (m_UnitType)
@@ -811,7 +869,7 @@ void U7Object::HandleJukeboxEgg()
 
 void U7Object::MonsterInit()
 {
-	m_speed = 5.0f;
+	m_speed = 7.5f;
 	m_attackRange = MELEE_RANGE_TILES;
 	m_attackCooldown = 3.0f;
 	m_cooldownTimer = 0.0;
@@ -2450,8 +2508,27 @@ void U7Object::UpdateMovement()
 				const Vector3 finalGoal = m_pathWaypoints.back();
 				const bool wasSchedule = m_isSchedulePath;
 				m_moveStuckFrames = 0;
-				PathfindToDest(finalGoal);
-				m_isSchedulePath = wasSchedule;
+
+				const bool isParty = (m_UnitType == UnitTypes::UNIT_TYPE_NPC && g_Player &&
+					g_Player->NPCIDInParty(m_NPCID));
+				const bool isMonster = (m_UnitType == UnitTypes::UNIT_TYPE_MONSTER) ||
+					(m_Team == 1 && !isParty);
+
+				if (wasSchedule)
+				{
+					ApplyPathWaypoints(g_pathfindingSystem->FindFastPath(
+						m_Pos, finalGoal, this, PathCallerTag::ScheduleFast));
+					m_isSchedulePath = true;
+				}
+				else if (isMonster)
+				{
+					ApplyPathWaypoints(g_pathfindingSystem->FindMonsterChasePath(
+						m_Pos, finalGoal, this));
+				}
+				else
+				{
+					PathfindToDest(finalGoal, /*allowHierarchical=*/true, PathCallerTag::StuckRepath);
+				}
 				return;
 			}
 
@@ -3580,7 +3657,48 @@ bool U7Object::TryCompletePendingUsecodeByProximity(float maxDistXZ)
 	return true;
 }
 
-void U7Object::PathfindToDest(Vector3 dest, bool allowHierarchical)
+void U7Object::ApplyPathWaypoints(std::vector<Vector3> waypoints)
+{
+	m_pathWaypoints = std::move(waypoints);
+	m_currentWaypointIndex = 0;
+	m_pathfindingPending = false;
+
+	if (m_pathWaypoints.empty())
+	{
+		m_isMoving = false;
+		return;
+	}
+
+	if (g_pathfindingSystem && g_pathfindingSystem->GetFrozenSearchObjectId() == m_ID)
+		g_pathfindingSystem->ClearFrozenSearchGraph();
+
+	if (m_pathWaypoints.size() > 1)
+		m_currentWaypointIndex = 1;
+	else
+		m_currentWaypointIndex = 0;
+
+	while (m_currentWaypointIndex < static_cast<int>(m_pathWaypoints.size()) &&
+		   (int)m_pathWaypoints[m_currentWaypointIndex].x == (int)m_Pos.x &&
+		   (int)m_pathWaypoints[m_currentWaypointIndex].z == (int)m_Pos.z)
+	{
+		m_currentWaypointIndex++;
+	}
+
+	if (m_currentWaypointIndex >= static_cast<int>(m_pathWaypoints.size()))
+	{
+		m_pathWaypoints.clear();
+		m_currentWaypointIndex = 0;
+		m_isMoving = false;
+		m_isSchedulePath = false;
+	}
+	else
+	{
+		SetDest(m_pathWaypoints[m_currentWaypointIndex]);
+		m_isMoving = true;
+	}
+}
+
+void U7Object::PathfindToDest(Vector3 dest, bool allowHierarchical, PathCallerTag tag)
 {
 	if (m_NPCID == 19)
 	{
@@ -3624,101 +3742,18 @@ void U7Object::PathfindToDest(Vector3 dest, bool allowHierarchical)
 			ReleaseFurnitureClaim();
 	}
 
-	m_pathWaypoints = g_pathfindingSystem->FindPath(m_Pos, dest, this, allowHierarchical);
-
-	// If path found, store waypoints
-	if (!m_pathWaypoints.empty())
+	// Infer Avatar/party tag when caller left default Other.
+	if (tag == PathCallerTag::Other && g_Player &&
+		m_UnitType == UnitTypes::UNIT_TYPE_NPC && g_Player->NPCIDInParty(m_NPCID))
 	{
-		// Successful path: clear any frozen failure graph for this unit.
-		if (g_pathfindingSystem->GetFrozenSearchObjectId() == m_ID)
-			g_pathfindingSystem->ClearFrozenSearchGraph();
-		// Pathfinding completed synchronously
-		m_pathfindingPending = false;
-
-		// Debug: Print the returned waypoints for inspection
-		// This will show whether the A* path includes non-zero Y values for stairs/upper floors.
-//#ifdef DEBUG_NPC_PATHFINDING
-//		{
-//			std::stringstream ss;
-//			ss << "PathfindToDest: found " << m_pathWaypoints.size() << " waypoints (dest requested: "
-//				<< dest.x << "," << dest.y << "," << dest.z << ")";
-//			NPCDebugPrint(ss.str());
-//
-//			for (size_t i = 0; i < m_pathWaypoints.size(); ++i)
-//			{
-//				const Vector3& wp = m_pathWaypoints[i];
-//				std::stringstream s2;
-//				s2 << "  wp[" << i << "] = (" << wp.x << ", " << wp.y << ", " << wp.z << ")";
-//				NPCDebugPrint(s2.str());
-//			}
-//		}
-//#endif
-		// Determine the correct initial waypoint index.
-		// FindPath may return a single-point path (size == 1) — previously code used m_pathWaypoints[1] unguarded
-		// which caused "vector subscript out of range" when size == 1.
-		if (m_pathWaypoints.size() > 1)
-		{
-			// common case: first entry is current tile, second is the first step
-			m_currentWaypointIndex = 1;
-		}
-		else
-		{
-			// single-point path: use index 0
-			m_currentWaypointIndex = 0;
-		}
-
-		// Skip initial waypoints that do not change X/Z (these cause SetDest to not set a direction,
-		// which results in "walking in place" because m_Direction remains zero but m_isMoving becomes true)
-		int skipped = 0;
-		while (m_currentWaypointIndex < static_cast<int>(m_pathWaypoints.size()) &&
-			   (int)m_pathWaypoints[m_currentWaypointIndex].x == (int)m_Pos.x &&
-			   (int)m_pathWaypoints[m_currentWaypointIndex].z == (int)m_Pos.z)
-		{
-			m_currentWaypointIndex++;
-			skipped++;
-		}
-
-		// ALWAYS emit this debug info while debugging the walking-in-place issue so you see what's happening.
-		// (Previously this was gated on g_LuaDebug; that prevented logs when the flag was false.)
-		if (skipped > 0)
-		{
-			std::stringstream ss;
-			ss << "PathfindToDest: skipped " << skipped << " initial waypoint(s) equal to current XZ for NPC " << m_NPCID
-			   << "  new waypointIndex=" << m_currentWaypointIndex;
-			NPCDebugPrint(ss.str());
-
-			// Dump the waypoint list so you can inspect X/Y/Z values returned by the pathfinder
-			for (size_t i = 0; i < m_pathWaypoints.size(); ++i)
-			{
-				const Vector3& wp = m_pathWaypoints[i];
-				std::stringstream s2;
-				s2 << "  wp[" << i << "] = (" << wp.x << ", " << wp.y << ", " << wp.z << ")";
-				NPCDebugPrint(s2.str());
-			}
-		}
-
-		// If we've advanced past the end, no effective movement needed
-		if (m_currentWaypointIndex >= static_cast<int>(m_pathWaypoints.size()))
-		{
-			// Nothing to do (destination is current tile)
-			m_pathWaypoints.clear();
-			m_currentWaypointIndex = 0;
-			m_isMoving = false;
-			m_isSchedulePath = false;
-		}
-		else
-		{
-			// Set the initial destination only if the index is valid
-			SetDest(m_pathWaypoints[m_currentWaypointIndex]);
-
-			// Make sure NPC starts moving toward the destination right away.
-			m_isMoving = true;
-		}
+		tag = PathCallerTag::AvatarParty;
 	}
-	else
+
+	auto path = g_pathfindingSystem->FindPath(m_Pos, dest, this, allowHierarchical, tag);
+	ApplyPathWaypoints(std::move(path));
+
+	if (m_pathWaypoints.empty())
 	{
-		m_pathfindingPending = false;  // No path found, done trying
-		// No path found, don't move at all.
 		// F10: freeze the A* visited graph only for the sticky-selected unit.
 		if (g_mainState && g_mainState->m_showPathfindingDebug &&
 			g_mainState->m_pathDebugNpcObjectId == m_ID)
@@ -3933,11 +3968,11 @@ void U7Object::NPCInit(NPCData* npcData)
 	m_name = npcData->name;
 	if (std::string(m_NPCData->name) == "Avatar")
 	{
-		m_speed = 7.5f;
+		m_speed = 10.0f;
 	}
 	else
 	{
-		m_speed = 5.0f;
+		m_speed = 7.5f;
 	}
 	m_NPCID = npcData->id;
 	m_attackRange = MELEE_RANGE_TILES;

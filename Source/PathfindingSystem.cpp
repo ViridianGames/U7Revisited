@@ -2,6 +2,7 @@
 #include "U7Globals.h"
 #include "U7Object.h"
 #include "ShapeData.h"
+#include "PerfTelemetry.h"
 #include "Geist/Logging.h"
 #include "rlgl.h"
 #include <algorithm>
@@ -389,22 +390,35 @@ bool PathfindingSystem::IsStandableObjectTop(const U7Object* obj)
 
 bool PathfindingSystem::ValidateMove(U7Object* agent, const Vector3& desiredPos, float& outDestH)
 {
-	if (!agent) return false;
+	const double t0 = GetTime();
+	const int srcX = agent ? (int)floor(agent->m_Pos.x) : 0;
+	const int srcZ = agent ? (int)floor(agent->m_Pos.z) : 0;
+	const int destXEarly = (int)floor(desiredPos.x);
+	const int destZEarly = (int)floor(desiredPos.z);
+
+	auto finish = [&](bool ok) -> bool {
+		const double ms = (GetTime() - t0) * 1000.0;
+		g_perf.AddMs(g_perf.msValidateMove, g_perf.maxMsValidateMove, ms);
+		g_perf.NoteValidateMove(srcX, srcZ, destXEarly, destZEarly, ok);
+		return ok;
+	};
+
+	if (!agent) return finish(false);
 
 	if (!g_pathfindingSystem)
 	{
 		outDestH = desiredPos.y;
-		return true;
+		return finish(true);
 	}
 
 	PathfindingSystem* sys = g_pathfindingSystem.get();
 
-	int destX = (int)floor(desiredPos.x);
-	int destZ = (int)floor(desiredPos.z);
+	int destX = destXEarly;
+	int destZ = destZEarly;
 
 	// Bounds check
 	if (destX < 0 || destX >= 3072 || destZ < 0 || destZ >= 3072)
-		return false;
+		return finish(false);
 
 	// Source height (feet)
 	float srcH = agent->m_Pos.y;
@@ -426,7 +440,7 @@ bool PathfindingSystem::ValidateMove(U7Object* agent, const Vector3& desiredPos,
 				inStep.push_back(h);
 		}
 		if (inStep.empty())
-			return false;
+			return finish(false);
 
 		const float prefer = desiredPos.y;
 		// Keyboard/mouse steer usually keeps desired.y == current feet (horizontal intent).
@@ -462,7 +476,7 @@ bool PathfindingSystem::ValidateMove(U7Object* agent, const Vector3& desiredPos,
 
 	// Tile must be standable approaching from srcH (any in-step surface).
 	if (!sys->IsPositionWalkable(destX, destZ, srcH, agent))
-		return false;
+		return finish(false);
 
 	// Collision detection using chunk object map
 	// Slightly smaller than half-tile so entering a crate tile (esp. multi-tile
@@ -637,19 +651,19 @@ bool PathfindingSystem::ValidateMove(U7Object* agent, const Vector3& desiredPos,
 							break;
 						}
 					}
-					if (hit) return false;
+					if (hit) return finish(false);
 				}
 
 				if (!(objTop < playerMin.y || objBottom > playerMax.y))
 				{
-					return false;
+					return finish(false);
 				}
 			}
 		}
 	}
 
 	outDestH = destH;
-	return true;
+	return finish(true);
 }
 
 float PathfindingSystem::GetTileHeight(int worldX, int worldZ) const
@@ -669,33 +683,44 @@ static bool CanStandOnSurface(int worldX, int worldZ, float standH,
 	const float bodyMin = standH + 0.05f;
 	const float bodyMax = standH + agentHeight;
 
-	// Terrain: blocks ground-level standing if notwalkable and no raised surface.
+	// Terrain: ground-cost map / terrain_walkable.csv is authoritative for flat
+	// world tiles when warm. Impassable CSV cost (99) — including swamp 22 and
+	// 113–117, matching Exult — fails IsGroundTerrainWalkable and rejects here.
+	// When the map says walkable, skip TFA not-walkable so CSV stays the source
+	// of truth (avoids F10 green vs ValidateMove reject mismatches).
 	if (standH <= 0.05f)
 	{
 		if (worldZ >= 0 && worldZ < (int)g_World.size() &&
 		    worldX >= 0 && worldX < (int)g_World[worldZ].size())
 		{
-			const unsigned short shapeframe = g_World[worldZ][worldX];
-			const int shapeID = shapeframe & 0x3ff;
-			if (shapeID < 1024 && g_objectDataTable[shapeID].m_isNotWalkable &&
-			    !g_objectDataTable[shapeID].m_isDoor)
+			const bool groundMapSaysWalkable =
+				g_pathfindingSystem && g_pathfindingSystem->m_groundCostValid &&
+				g_pathfindingSystem->IsGroundTerrainWalkable(worldX, worldZ);
+
+			if (!groundMapSaysWalkable)
 			{
-				// Raised standable objects clear terrain (crate on blocked tile is fine at H>0).
-				// At ground, terrain notwalkable means blocked unless a door footprint.
-				bool doorClears = false;
-				for (const auto& ov : overlapping)
+				const unsigned short shapeframe = g_World[worldZ][worldX];
+				const int shapeID = shapeframe & 0x3ff;
+				// No warm ground map, or CSV/bake says impassable: fall back to TFA.
+				if (shapeID < 1024 && g_objectDataTable[shapeID].m_isNotWalkable &&
+				    !g_objectDataTable[shapeID].m_isDoor)
 				{
-					if (ov.obj && ov.obj->m_objectData && ov.obj->m_objectData->m_isDoor)
+					bool doorClears = false;
+					for (const auto& ov : overlapping)
 					{
-						const int hingeX = (int)floor(ov.obj->m_Pos.x);
-						const int hingeZ = (int)floor(ov.obj->m_Pos.z);
-						if (!(worldX == hingeX && worldZ == hingeZ))
-							doorClears = true;
+						if (ov.obj && ov.obj->m_objectData && ov.obj->m_objectData->m_isDoor)
+						{
+							const int hingeX = (int)floor(ov.obj->m_Pos.x);
+							const int hingeZ = (int)floor(ov.obj->m_Pos.z);
+							if (!(worldX == hingeX && worldZ == hingeZ))
+								doorClears = true;
+						}
 					}
+					if (!doorClears)
+						return false;
 				}
-				if (!doorClears)
-					return false;
 			}
+			// else: terrain_walkable.csv cost < 99 — allow stand.
 		}
 	}
 
@@ -1272,7 +1297,7 @@ static float PickClosestSurface(PathfindingSystem* self, int tx, int tz, float p
 	return best;
 }
 std::vector<Vector3> PathfindingSystem::FindPathInternal(Vector3 start, Vector3 goal, const U7Object* agent,
-	bool allowHierarchical)
+	bool allowHierarchical, PathSearchKind kind)
 {
 	std::unordered_map<int64_t, bool> walkableCache;
 	std::unordered_map<int, std::vector<float>> heightsCache;
@@ -1286,9 +1311,17 @@ std::vector<Vector3> PathfindingSystem::FindPathInternal(Vector3 start, Vector3 
 	// schedule/Lua walks (Exult is flat tile A* only).
 	int distanceGuess = abs((int)floorf(goal.x) - (int)floorf(start.x))
 		+ abs((int)floorf(goal.z) - (int)floorf(start.z));
-	const int maxNodesToExplore = std::min(25000, std::max(6000, distanceGuess * 60 + 1000));
+	const bool cheapSearch = (kind == PathSearchKind::Fast || kind == PathSearchKind::Monster);
+	// Fast/Monster: keep budgets tight. Full: soft ceiling for Avatar/party climbs.
+	const int maxNodesToExplore = cheapSearch
+		? std::min(4000, std::max(256, distanceGuess * 40 + 128))
+		: std::min(25000, std::max(6000, distanceGuess * 60 + 1000));
 	std::vector<PathNode> nodePool;
-	nodePool.reserve(std::min(maxNodesToExplore + 64, 8192));
+	nodePool.reserve(std::min(maxNodesToExplore + 64, cheapSearch ? 2048 : 8192));
+
+	// Hierarchy only for Full long walks.
+	if (cheapSearch)
+		allowHierarchical = false;
 
 	std::unordered_set<int64_t> localVisitedNodeKeys;
 	std::unordered_set<int64_t> localFinalPathKeys;
@@ -1447,7 +1480,7 @@ std::vector<Vector3> PathfindingSystem::FindPathInternal(Vector3 start, Vector3 
 
 			for (size_t i = 0; i < intermediates.size(); ++i)
 			{
-				auto segPath = FindPathInternal(curStart, intermediates[i], agent, false);
+				auto segPath = FindPathInternal(curStart, intermediates[i], agent, false, kind);
 				if (segPath.empty())
 				{
 					failed = true;
@@ -1460,7 +1493,7 @@ std::vector<Vector3> PathfindingSystem::FindPathInternal(Vector3 start, Vector3 
 			if (!failed)
 			{
 				// Goal is in the next chunk (or we had no transit hops): tile A* to dest.
-				auto lastSeg = FindPathInternal(curStart, goal, agent, false);
+				auto lastSeg = FindPathInternal(curStart, goal, agent, false, kind);
 				if (lastSeg.empty())
 				{
 					failed = true;
@@ -1489,9 +1522,14 @@ std::vector<Vector3> PathfindingSystem::FindPathInternal(Vector3 start, Vector3 
 	// Keep search on the start/goal floor band. Step-to-step climb still works
 	// for intentional upstairs goals, but a ground→ground walk (Spark→inn) will
 	// not flood into 2F / roofs via stair chains and burn the node budget.
+	// Fast/Monster: pin to the agent's current floor only (Exult discrete 2D).
 	const float floorStep = MAX_CLIMBABLE_HEIGHT + 0.05f;
-	const float floorBandMin = std::min(startY, goalPreferredY) - floorStep;
-	const float floorBandMax = std::max(startY, goalPreferredY) + floorStep;
+	const float floorBandMin = cheapSearch
+		? (startY - floorStep)
+		: (std::min(startY, goalPreferredY) - floorStep);
+	const float floorBandMax = cheapSearch
+		? (startY + floorStep)
+		: (std::max(startY, goalPreferredY) + floorStep);
 
 	nodePool.emplace_back(startX, startZ, startY);
 	int startIndex = (int)nodePool.size() - 1;
@@ -1514,13 +1552,33 @@ std::vector<Vector3> PathfindingSystem::FindPathInternal(Vector3 start, Vector3 
 	float bestGoalHeightDiff = 1e9f;
 	int nodesExplored = 0;
 
-	// Exult: max_cost ≈ 3× estimate (with a multi-screen floor). We use ~4×
-	// octile estimate so room-scale detours survive, while impossible goals
-	// still fail without burning the hard node cap.
+	// Exult-style give-up costs (our Heuristic is octile with step≈1):
+	//   Actor/Full:  ~3× estimate (floor for long walks)
+	//   Fast:        clamp(2×, 8..64)
+	//   Monster:     clamp(2×, 18..~48)  (~¾ screen at tile scale)
 	const float pathEstimate = Heuristic(startX, startZ, goalX, goalZ);
-	const float maxPathCost = std::max(pathEstimate * 4.0f, 128.0f);
+	float maxPathCost;
+	if (kind == PathSearchKind::Fast)
+	{
+		maxPathCost = pathEstimate * 2.0f;
+		if (maxPathCost < 8.0f) maxPathCost = 8.0f;
+		else if (maxPathCost > 64.0f) maxPathCost = 64.0f;
+	}
+	else if (kind == PathSearchKind::Monster)
+	{
+		maxPathCost = pathEstimate * 2.0f;
+		if (maxPathCost < 18.0f) maxPathCost = 18.0f;
+		else if (maxPathCost > 48.0f) maxPathCost = 48.0f;
+	}
+	else
+	{
+		// Full / Actor: 3× estimate with a roomy floor for long Avatar clicks.
+		maxPathCost = std::max(pathEstimate * 3.0f, 96.0f);
+	}
 	// Soft node ceiling (backup if f-score pruning is slow to kick in).
-	const int softNodeLimit = std::min(maxNodesToExplore, std::max(4000, distance * 100 + 1000));
+	const int softNodeLimit = cheapSearch
+		? std::min(maxNodesToExplore, std::max(200, distance * 50 + 64))
+		: std::min(maxNodesToExplore, std::max(4000, distance * 100 + 1000));
 	diag.nodeBudget = softNodeLimit;
 
 	// A* main loop
@@ -2150,24 +2208,22 @@ void PathfindingSystem::Init(const std::string& configfile)
 	PopulateChunkPathfindingGrid();
 }
 
-std::vector<Vector3> PathfindingSystem::FindPath(Vector3 start, Vector3 end, U7Object* agent,
-	bool allowHierarchical)
+void PathfindingSystem::RecordPathCall(PathCallerTag tag, uint64_t ms, int nodesExplored)
 {
-	// Instrument A* runtime per call (ms)
-	float t0 = GetTime();
-	auto path = FindPathInternal(start, end, agent, allowHierarchical);
-	float elapsed = GetTime() - t0;
-	uint64_t ms = static_cast<uint64_t>(elapsed * 1000.0f);
+	const int idx = static_cast<int>(tag);
+	if (idx < 0 || idx >= static_cast<int>(PathCallerTag::Count))
+		return;
+	m_pfCallsByTag[idx].fetch_add(1);
+	m_pfMsByTag[idx].fetch_add(ms);
+	m_pfNodesByTag[idx].fetch_add(static_cast<uint64_t>(std::max(0, nodesExplored)));
 	m_astarTotalCalls.fetch_add(1);
 	m_astarTotalMs.fetch_add(ms);
-	// update max
+
 	uint64_t prevMax = m_astarMaxMs.load();
 	while (ms > prevMax && !m_astarMaxMs.compare_exchange_weak(prevMax, ms))
 	{
-		// loop until swapped or prevMax updated
 	}
 
-	// Update an exponential moving average (EMA) for per-call latency so UI/telemetry can show trending.
 	{
 		std::lock_guard<std::mutex> lk(m_instrumentMutex);
 		double msd = static_cast<double>(ms);
@@ -2176,14 +2232,190 @@ std::vector<Vector3> PathfindingSystem::FindPath(Vector3 start, Vector3 end, U7O
 		else
 			m_astarEmaMs = m_astarEmaAlpha * msd + (1.0 - m_astarEmaAlpha) * m_astarEmaMs;
 	}
+}
 
-	// Optional: log unusually slow A* runs for diagnostics
-	const uint64_t SLOW_ASTAR_MS = 400; // tunable threshold
-	if (ms >= SLOW_ASTAR_MS)
+std::vector<Vector3> PathfindingSystem::FindPath(Vector3 start, Vector3 end, U7Object* agent,
+	bool allowHierarchical, PathCallerTag tag)
+{
+	// Soft concurrency cap for expensive Full A* (BG kept ≤15 NPC routes).
+	// Avatar/party still run; extras from accidental Other callers fail soft.
+	const bool isFull = true;
+	int inFlight = 0;
+	if (isFull)
 	{
-		AddConsoleString(std::string("A* slow: ") + std::to_string(ms) + " ms", YELLOW);
+		inFlight = m_fullAStarInFlight.fetch_add(1) + 1;
+		constexpr int kFullAStarCap = 6;
+		if (inFlight > kFullAStarCap && tag != PathCallerTag::AvatarParty)
+		{
+			m_fullAStarInFlight.fetch_sub(1);
+			RecordPathCall(tag, 0, 0);
+			return {};
+		}
 	}
 
+	float t0 = GetTime();
+	auto path = FindPathInternal(start, end, agent, allowHierarchical, PathSearchKind::Full);
+	float elapsed = GetTime() - t0;
+	uint64_t ms = static_cast<uint64_t>(elapsed * 1000.0f);
+	const int nodes = m_lastPathDiag.nodesExplored;
+	RecordPathCall(tag, ms, nodes);
+	m_fullAStarInFlight.fetch_sub(1);
+
+	const uint64_t SLOW_ASTAR_MS = 400;
+	if (ms >= SLOW_ASTAR_MS)
+	{
+		AddConsoleString(std::string("A* slow (") + PathCallerTagName(tag) + "): "
+			+ std::to_string(ms) + " ms", YELLOW);
+	}
+
+	return path;
+}
+
+std::vector<Vector3> PathfindingSystem::FindFastPath(Vector3 start, Vector3 goal, U7Object* agent,
+	PathCallerTag tag)
+{
+	float t0 = GetTime();
+	auto path = FindPathInternal(start, goal, agent, /*allowHierarchical=*/false, PathSearchKind::Fast);
+	float elapsed = GetTime() - t0;
+	uint64_t ms = static_cast<uint64_t>(elapsed * 1000.0f);
+	RecordPathCall(tag, ms, m_lastPathDiag.nodesExplored);
+	return path;
+}
+
+bool PathfindingSystem::IsStraightPathClear(Vector3 start, Vector3 goal, const U7Object* agent) const
+{
+	int x0 = (int)floorf(start.x);
+	int z0 = (int)floorf(start.z);
+	int x1 = (int)floorf(goal.x);
+	int z1 = (int)floorf(goal.z);
+	const float y = start.y;
+
+	const int dx = abs(x1 - x0);
+	const int dz = abs(z1 - z0);
+	const int sx = x0 < x1 ? 1 : -1;
+	const int sz = z0 < z1 ? 1 : -1;
+	int err = dx - dz;
+	int x = x0, z = z0;
+
+	while (true)
+	{
+		// Endpoints may sit on occupied footprints; only intermediate tiles block.
+		if ((x != x0 || z != z0) && (x != x1 || z != z1))
+		{
+			if (!IsPositionWalkable(x, z, y, agent))
+				return false;
+		}
+		if (x == x1 && z == z1)
+			break;
+		const int e2 = 2 * err;
+		if (e2 > -dz) { err -= dz; x += sx; }
+		if (e2 < dx) { err += dx; z += sz; }
+	}
+	return true;
+}
+
+std::vector<Vector3> PathfindingSystem::BuildGreedyChasePath(Vector3 start, Vector3 goal,
+	const U7Object* agent, int maxSteps) const
+{
+	std::vector<Vector3> path;
+	int x = (int)floorf(start.x);
+	int z = (int)floorf(start.z);
+	const int goalX = (int)floorf(goal.x);
+	const int goalZ = (int)floorf(goal.z);
+	float y = start.y;
+
+	path.push_back(Vector3{ x + 0.5f, y, z + 0.5f });
+
+	auto tryStep = [&](int nx, int nz) -> bool {
+		if (nx < 0 || nx >= 3072 || nz < 0 || nz >= 3072)
+			return false;
+		if (!IsPositionWalkable(nx, nz, y, agent))
+			return false;
+		x = nx;
+		z = nz;
+		path.push_back(Vector3{ x + 0.5f, y, z + 0.5f });
+		return true;
+	};
+
+	for (int step = 0; step < maxSteps; ++step)
+	{
+		if (x == goalX && z == goalZ)
+			break;
+
+		const int dx = (goalX > x) ? 1 : ((goalX < x) ? -1 : 0);
+		const int dz = (goalZ > z) ? 1 : ((goalZ < z) ? -1 : 0);
+
+		// Prefer diagonal toward goal, then cardinals, then orthogonal slides.
+		bool advanced = false;
+		if (dx != 0 && dz != 0)
+		{
+			if (tryStep(x + dx, z + dz))
+				advanced = true;
+			else if (tryStep(x + dx, z))
+				advanced = true;
+			else if (tryStep(x, z + dz))
+				advanced = true;
+		}
+		else if (dx != 0)
+		{
+			if (tryStep(x + dx, z))
+				advanced = true;
+			else if (tryStep(x + dx, z + 1))
+				advanced = true;
+			else if (tryStep(x + dx, z - 1))
+				advanced = true;
+		}
+		else if (dz != 0)
+		{
+			if (tryStep(x, z + dz))
+				advanced = true;
+			else if (tryStep(x + 1, z + dz))
+				advanced = true;
+			else if (tryStep(x - 1, z + dz))
+				advanced = true;
+		}
+
+		if (!advanced)
+			break;
+	}
+
+	// Need at least a step beyond start to be useful.
+	if (path.size() <= 1)
+		return {};
+	return path;
+}
+
+std::vector<Vector3> PathfindingSystem::FindMonsterChasePath(Vector3 start, Vector3 goal,
+	U7Object* agent)
+{
+	float t0 = GetTime();
+
+	// 1) Straight line if clear → sparse waypoints (start + goal).
+	if (IsStraightPathClear(start, goal, agent))
+	{
+		std::vector<Vector3> path;
+		path.push_back(Vector3{ floorf(start.x) + 0.5f, start.y, floorf(start.z) + 0.5f });
+		path.push_back(Vector3{ floorf(goal.x) + 0.5f, start.y, floorf(goal.z) + 0.5f });
+		float elapsed = GetTime() - t0;
+		RecordPathCall(PathCallerTag::Monster, static_cast<uint64_t>(elapsed * 1000.0f), 0);
+		return path;
+	}
+
+	// 2) Greedy slide toward goal (BG Walker spirit).
+	auto greedy = BuildGreedyChasePath(start, goal, agent, 24);
+	if (!greedy.empty())
+	{
+		float elapsed = GetTime() - t0;
+		RecordPathCall(PathCallerTag::Monster, static_cast<uint64_t>(elapsed * 1000.0f),
+			static_cast<int>(greedy.size()));
+		return greedy;
+	}
+
+	// 3) Tiny Monster-budget Fast A* — still not climb-aware Full.
+	auto path = FindPathInternal(start, goal, agent, /*allowHierarchical=*/false, PathSearchKind::Monster);
+	float elapsed = GetTime() - t0;
+	RecordPathCall(PathCallerTag::Monster, static_cast<uint64_t>(elapsed * 1000.0f),
+		m_lastPathDiag.nodesExplored);
 	return path;
 }
 

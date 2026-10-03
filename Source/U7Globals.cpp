@@ -7,6 +7,7 @@
 #include "Geist/ScriptingSystem.h"
 #include "ConversationState.h"
 #include "PathfindingSystem.h"
+#include "PerfTelemetry.h"
 #include "lua.hpp"
 #include "../ThirdParty/raylib/include/rlgl.h"
 #include "../ThirdParty/nlohmann/json.hpp"
@@ -22,6 +23,7 @@
 #include <vector>
 #include <memory>
 #include <unordered_map>
+#include <unordered_set>
 #include <cmath>
 #include <cstring>
 #include <cctype>
@@ -1749,11 +1751,15 @@ void UpdateSortedVisibleObjects()
 
 void DrawGameWorld(bool drawObjects)
 {
+	const double tTerrain0 = GetTime();
 	if (g_Terrain)
 		g_Terrain->Draw();
+	g_perf.msDrawTerrain += (GetTime() - tTerrain0) * 1000.0;
 
 	if (!drawObjects)
 		return;
+
+	const double tObj0 = GetTime();
 
 	// Flats are coplanar: camera-distance sort makes draw order flip when you rotate
 	// (z-fight flicker). Use fixed world keys for a stable order at any angle.
@@ -1811,14 +1817,42 @@ void DrawGameWorld(bool drawObjects)
 		return false;
 	};
 
+	auto nameContainsChimney = [](const U7Object* object) {
+		if (!object || !object->m_objectData)
+			return false;
+		const std::string& name = object->m_objectData->m_name;
+		if (name.size() < 7)
+			return false;
+		for (size_t i = 0; i + 7 <= name.size(); ++i)
+		{
+			if (std::tolower(static_cast<unsigned char>(name[i])) == 'c' &&
+				std::tolower(static_cast<unsigned char>(name[i + 1])) == 'h' &&
+				std::tolower(static_cast<unsigned char>(name[i + 2])) == 'i' &&
+				std::tolower(static_cast<unsigned char>(name[i + 3])) == 'm' &&
+				std::tolower(static_cast<unsigned char>(name[i + 4])) == 'n' &&
+				std::tolower(static_cast<unsigned char>(name[i + 5])) == 'e' &&
+				std::tolower(static_cast<unsigned char>(name[i + 6])) == 'y')
+				return true;
+		}
+		return false;
+	};
+
+	auto overlapXZ = [](const BoundingBox& a, const BoundingBox& b) {
+		return a.min.x < b.max.x && a.max.x > b.min.x &&
+			a.min.z < b.max.z && a.max.z > b.min.z;
+	};
+
 	std::vector<U7Object*> rugs;
 	std::vector<U7Object*> roofFlats;
 	std::vector<U7Object*> otherFlats;
 	std::vector<U7Object*> meshes;
+	std::vector<U7Object*> rooftopProps;
+	std::unordered_set<U7Object*> rooftopPropSet;
 	rugs.reserve(16);
 	roofFlats.reserve(64);
 	otherFlats.reserve(64);
 	meshes.reserve(16);
+	rooftopProps.reserve(16);
 
 	for (U7Object* object : g_sortedVisibleObjects)
 	{
@@ -1843,6 +1877,66 @@ void DrawGameWorld(bool drawObjects)
 	std::sort(otherFlats.begin(), otherFlats.end(), stableFlatLess);
 	std::sort(roofFlats.begin(), roofFlats.end(), stableFlatLess);
 
+	// Third-person roof pass paints with depth-test off, so anything that should
+	// sit on the deck (chimneys, Avatar/NPCs on the roof, etc.) must draw after
+	// roofs. Characters use a padded feet-vs-roof test — tight bbox overlap
+	// misses tile-edge stands on the blacksmith and similar decks.
+	auto isRooftopProp = [&](const U7Object* object) -> bool {
+		if (!object || roofFlats.empty())
+			return false;
+		if (nameContainsChimney(object))
+			return true;
+
+		const bool isCharacter =
+			object->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC ||
+			object->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_MONSTER;
+		// Expand roof footprint so feet near a diamond edge still count.
+		constexpr float kCharacterRoofMargin = 1.25f;
+
+		for (const U7Object* roof : roofFlats)
+		{
+			if (!roof)
+				continue;
+			// Characters: allow a little feet-below-deck slop from climb snap.
+			const float ySlop = isCharacter ? 0.2f : 0.05f;
+			if (object->m_Pos.y + ySlop < roof->m_Pos.y)
+				continue;
+
+			if (isCharacter)
+			{
+				const BoundingBox& rb = roof->m_boundingBox;
+				const float x = object->m_Pos.x;
+				const float z = object->m_Pos.z;
+				if (x >= rb.min.x - kCharacterRoofMargin &&
+					x <= rb.max.x + kCharacterRoofMargin &&
+					z >= rb.min.z - kCharacterRoofMargin &&
+					z <= rb.max.z + kCharacterRoofMargin)
+					return true;
+			}
+			else if (overlapXZ(object->m_boundingBox, roof->m_boundingBox))
+			{
+				return true;
+			}
+		}
+		return false;
+	};
+
+	if (!roofFlats.empty())
+	{
+		for (U7Object* object : g_sortedVisibleObjects)
+		{
+			if (!object || isFlatDraw(object))
+				continue;
+			if (object->m_drawType == ShapeDrawType::OBJECT_DRAW_CUSTOM_MESH_DEFER)
+				continue;
+			if (isRooftopProp(object))
+			{
+				rooftopProps.push_back(object);
+				rooftopPropSet.insert(object);
+			}
+		}
+	}
+
 	// Rugs first (under furniture, other flats, etc.). Write depth so later
 	// geometry occludes them correctly. Polygon offset is for flats only —
 	// leaving it on for cuboids/meshes opened seam cracks in-game that the
@@ -1853,7 +1947,7 @@ void DrawGameWorld(bool drawObjects)
 		object->Draw();
 	glDisable(GL_POLYGON_OFFSET_FILL);
 
-	// Non-flats (write depth) — no polygon offset.
+	// Non-flats (write depth) — no polygon offset. Skip deferred rooftop props.
 	for (U7Object* object : g_sortedVisibleObjects)
 	{
 		if (!object)
@@ -1861,6 +1955,8 @@ void DrawGameWorld(bool drawObjects)
 		if (isFlatDraw(object))
 			continue;
 		if (object->m_drawType == ShapeDrawType::OBJECT_DRAW_CUSTOM_MESH_DEFER)
+			continue;
+		if (rooftopPropSet.count(object))
 			continue;
 		object->Draw();
 	}
@@ -1891,6 +1987,10 @@ void DrawGameWorld(bool drawObjects)
 		glDisable(GL_POLYGON_OFFSET_FILL);
 	}
 
+	// Rooftop props after the depth-bypass roof pass so chimneys aren't buried.
+	for (U7Object* object : rooftopProps)
+		object->Draw();
+
 	if (!meshes.empty())
 	{
 		BeginShaderMode(g_alphaDiscard);
@@ -1899,6 +1999,8 @@ void DrawGameWorld(bool drawObjects)
 		EndShaderMode();
 	}
 
+	const double drawObjMs = (GetTime() - tObj0) * 1000.0;
+	g_perf.AddMs(g_perf.msDrawObjects, g_perf.maxMsDrawObjects, drawObjMs);
 }
 Color MakeMeshOutlineIdColor(int objectId)
 {
@@ -2093,9 +2195,11 @@ U7Object* AddObject(int shapenum, int framenum, int id, float x, float y, float 
 	temp->m_ID = id;
 	temp->Init("Data/Units/Walker.cfg", shapenum, framenum);
 	temp->m_ID = id; // Init must not clear it; keep explicit in case subclasses change
+	// SetInitialPos → SetPos → UpdateObjectChunk already registers the object.
+	// A second AssignObjectChunk here duplicated every unit in its spawn chunk;
+	// after the first chunk cross a stale ghost stayed behind and interest sim
+	// ran Update() twice (~2x walk speed) until that chunk left the interest radius.
 	temp->SetInitialPos(Vector3{ x, y, z });
-	AssignObjectChunk(temp);
-	//UpdateModelAnimation(temp->m_shapeData->m_customMesh->GetModel(), temp->m_shapeData->m_customMesh->GetModel()-> ->   0);
 
 	// Notify pathfinding grid if this is a non-walkable object
 	if (temp->m_objectData && temp->m_objectData->m_isNotWalkable)
@@ -2377,32 +2481,31 @@ void UpdateObjectChunk(U7Object* object, Vector3 fromPos)
 	const int toY = static_cast<int>(toChunkPos.y);
 
 	auto inBounds = [](int x, int y) { return x >= 0 && x < 192 && y >= 0 && y < 192; };
+	auto eraseAll = [](std::vector<U7Object*>& chunk, U7Object* obj) {
+		chunk.erase(std::remove(chunk.begin(), chunk.end(), obj), chunk.end());
+	};
+	auto pushUnique = [](std::vector<U7Object*>& chunk, U7Object* obj) {
+		if (std::find(chunk.begin(), chunk.end(), obj) == chunk.end())
+			chunk.push_back(obj);
+	};
 
 	if (toX == fromX && toY == fromY)
 	{
-		// Same chunk: still ensure we are registered (e.g. after a full map clear + SetPos).
+		// Same chunk: ensure exactly one registration (repairs prior duplicates).
 		if (inBounds(toX, toY))
 		{
 			auto& chunk = g_chunkObjectMap[toX][toY];
-			if (std::find(chunk.begin(), chunk.end(), object) == chunk.end())
-				chunk.push_back(object);
+			eraseAll(chunk, object);
+			chunk.push_back(object);
 		}
 		return;
 	}
 
 	if (inBounds(fromX, fromY))
-	{
-		auto& fromChunk = g_chunkObjectMap[fromX][fromY];
-		auto fromChunknode = std::find(fromChunk.begin(), fromChunk.end(), object);
-		if (fromChunknode != fromChunk.end())
-			fromChunk.erase(fromChunknode);
-	}
+		eraseAll(g_chunkObjectMap[fromX][fromY], object);
 
 	if (inBounds(toX, toY))
-	{
-		auto& toChunk = g_chunkObjectMap[toX][toY];
-		toChunk.push_back(object);
-	}
+		pushUnique(g_chunkObjectMap[toX][toY], object);
 }
 
 void AssignObjectChunk(U7Object* object)
@@ -2415,7 +2518,9 @@ void AssignObjectChunk(U7Object* object)
 	if (i < 0 || i >= 192 || j < 0 || j >= 192)
 		return;
 
-	g_chunkObjectMap[i][j].push_back(object);
+	auto& chunk = g_chunkObjectMap[i][j];
+	if (std::find(chunk.begin(), chunk.end(), object) == chunk.end())
+		chunk.push_back(object);
 }
 
 void UnassignObjectChunk(U7Object* object)
@@ -2428,11 +2533,8 @@ void UnassignObjectChunk(U7Object* object)
 	if (i < 0 || i >= 192 || j < 0 || j >= 192)
 		return;
 
-	auto fromChunkPos = std::find(g_chunkObjectMap[i][j].begin(), g_chunkObjectMap[i][j].end(), object);
-	if (fromChunkPos != g_chunkObjectMap[i][j].end())
-	{
-		g_chunkObjectMap[i][j].erase(fromChunkPos);
-	}
+	auto& chunk = g_chunkObjectMap[i][j];
+	chunk.erase(std::remove(chunk.begin(), chunk.end(), object), chunk.end());
 }
 
 void AddObjectToInventory(int objectId, int containerId)
