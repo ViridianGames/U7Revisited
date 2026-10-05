@@ -86,6 +86,35 @@ namespace
 	constexpr float kPartyNameBtnMinWidth = 56.0f;
 	constexpr float kPartyNameBtnMaxWidth = 88.0f;
 
+	// Mode tabs sit one stretchbutton row above the stats panel.
+	constexpr float kStatsPanelTabTop = kPartyNameBtnTop - kPartyNameBtnHeight;
+	constexpr float kStatsPanelTabBoxLeft = kStatsPanelBoxLeft;
+	constexpr float kStatsPanelTabBoxRight = kStatsPanelX + 133.0f;
+	constexpr int kStatsPanelTabCount = 3;
+
+	const char* StatsPanelTabLabel(MainState::StatsPanelMode mode)
+	{
+		switch (mode)
+		{
+		case MainState::StatsPanelMode::Equip: return "Equip";
+		case MainState::StatsPanelMode::Stats: return "Stats";
+		case MainState::StatsPanelMode::Backpack: return "Pack";
+		}
+		return "Stats";
+	}
+
+	Rectangle StatsPanelTabRect(int tabIndex)
+	{
+		const float totalW = kStatsPanelTabBoxRight - kStatsPanelTabBoxLeft;
+		const float btnW = totalW / float(kStatsPanelTabCount);
+		return Rectangle{
+			kStatsPanelTabBoxLeft + float(tabIndex) * btnW,
+			kStatsPanelTabTop,
+			btnW,
+			kPartyNameBtnHeight
+		};
+	}
+
 	std::string PartyMemberDisplayName(int npcId)
 	{
 		if (!g_Player)
@@ -267,12 +296,13 @@ void MainState::Init(const string& configfile)
 
 	if (m_debugToolsWindow && m_debugToolsWindow->IsValid())
 	{
-		// Position on right side of screen, halfway down
+		// Top of screen, 2px left of the minimap.
 		int windowWidth, windowHeight;
 		m_debugToolsWindow->GetSize(windowWidth, windowHeight);
 
-		int x = GetScreenWidth() - windowWidth - 10;  // 10px from right edge
-		int y = (GetScreenHeight() - windowHeight) / 2;  // Centered vertically
+		const int minimapLeft = GetScreenWidth() - int(g_minimapSize * g_DrawScale);
+		const int x = minimapLeft - windowWidth - 2;
+		const int y = 0;
 
 		m_debugToolsWindow->MoveTo(x, y);
 		// Will be shown/hidden based on game mode in Update()
@@ -651,6 +681,14 @@ void MainState::CalculateMouseOverUI()
 	// Stats panel (right side) - drawn at (512, 200), background is 133x136
 	Rectangle statsPanelRect = { 512 * g_DrawScale, 200 * g_DrawScale, 133 * g_DrawScale, 136 * g_DrawScale };
 
+	// Equip / Stats / Backpack tabs above the panel
+	Rectangle statsTabsRect = {
+		kStatsPanelTabBoxLeft * g_DrawScale,
+		kStatsPanelTabTop * g_DrawScale,
+		(kStatsPanelTabBoxRight - kStatsPanelTabBoxLeft) * g_DrawScale,
+		kPartyNameBtnHeight * g_DrawScale
+	};
+
 	// Party name stretchbuttons flush against the stats box body (not the bottom tab)
 	const float partyColW = MeasurePartyNameColumnWidth();
 	const int partyCount = g_Player ? int(g_Player->GetPartyMemberIds().size()) : 0;
@@ -679,6 +717,7 @@ void MainState::CalculateMouseOverUI()
 
 	Vector2 mousePos = GetMousePosition();
 	bool overStats = g_InputSystem->IsMouseInRegion(statsPanelRect);
+	bool overStatsTabs = g_InputSystem->IsMouseInRegion(statsTabsRect);
 	bool overPartyNames = partyCount > 0 && g_InputSystem->IsMouseInRegion(partyNamesRect);
 	bool overMinimap = g_InputSystem->IsMouseInRegion(minimapRect);
 	bool overCharPanel = g_InputSystem->IsMouseInRegion(charPanelRect);
@@ -699,7 +738,7 @@ void MainState::CalculateMouseOverUI()
 		overNpcList = CheckCollisionPointRec(mousePos, npcListRect);
 	}
 
-	g_mouseOverUI = overStats || overPartyNames || overMinimap || overCharPanel || overDebugTools || overNpcList || m_demoHelpScreen->m_Active || m_sandboxHelpScreen->m_Active;
+	g_mouseOverUI = overStats || overStatsTabs || overPartyNames || overMinimap || overCharPanel || overDebugTools || overNpcList || m_demoHelpScreen->m_Active || m_sandboxHelpScreen->m_Active;
 }
 
 void MainState::UpdateInput()
@@ -2327,12 +2366,13 @@ void MainState::Update()
 		{
 			if (!m_debugToolsWindow->IsVisible())
 			{
-				// Position on right side of screen, halfway down
+				// Top of screen, 2px left of the minimap.
 				int windowWidth, windowHeight;
 				m_debugToolsWindow->GetSize(windowWidth, windowHeight);
 
-				int x = GetScreenWidth() - windowWidth - 10;  // 10px from right edge
-				int y = (GetScreenHeight() - windowHeight) / 2;  // Centered vertically
+				const int minimapLeft = GetScreenWidth() - int(g_minimapSize * g_DrawScale);
+				const int x = minimapLeft - windowWidth - 2;
+				const int y = 0;
 
 				m_debugToolsWindow->MoveTo(x, y);
 				m_debugToolsWindow->Show();
@@ -3604,10 +3644,62 @@ void MainState::RebuildWorldFromLoadedData()
 	Log("MainState::RebuildWorldFromLoadedData - Complete");
 }
 
+void MainState::SetStatsPanelMode(StatsPanelMode mode)
+{
+	m_statsPanelMode = mode;
+	if (mode == StatsPanelMode::Equip)
+		EnsureStatsPanelPaperdoll();
+}
+
+void MainState::EnsureStatsPanelPaperdoll()
+{
+	if (!g_Player)
+		return;
+	const int selectedNpcId = g_Player->GetSelectedPartyMember();
+	if (!m_statsPanelPaperdoll)
+		m_statsPanelPaperdoll = std::make_shared<GumpPaperdoll>();
+	if (m_statsPanelPaperdollNpcId != selectedNpcId || !m_statsPanelPaperdoll->IsEmbedded())
+	{
+		// Nudge 5px left so the paperdoll sits flush with the stats box body.
+		m_statsPanelPaperdoll->SetupEmbedded(selectedNpcId, Vector2{ kStatsPanelX - 5.0f, kPartyNameBtnTop });
+		m_statsPanelPaperdollNpcId = selectedNpcId;
+	}
+}
+
 void MainState::DrawStats()
 {
-	//  Draw background
+	// Mode tabs above the panel (Equip / Stats / Backpack).
+	for (int i = 0; i < kStatsPanelTabCount; ++i)
+	{
+		const auto mode = static_cast<StatsPanelMode>(i);
+		const Rectangle btn = StatsPanelTabRect(i);
+		DrawPartyNameStretchButton(btn.x, btn.y, btn.width, StatsPanelTabLabel(mode),
+			mode == m_statsPanelMode);
+	}
+
+	// Party member name stretchbuttons — fixed-width column flush to the stats box body.
+	const float partyColW = MeasurePartyNameColumnWidth();
+	for (int i = 0; i < int(g_Player->GetPartyMemberIds().size()); ++i)
+	{
+		const int npcId = g_Player->GetPartyMemberIds()[i];
+		const Rectangle btn = PartyNameButtonRect(i, partyColW);
+		const bool selected = (npcId == g_Player->GetSelectedPartyMember());
+		DrawPartyNameStretchButton(btn.x, btn.y, btn.width, PartyMemberDisplayName(npcId), selected);
+	}
+
+	if (m_statsPanelMode == StatsPanelMode::Equip)
+	{
+		EnsureStatsPanelPaperdoll();
+		if (m_statsPanelPaperdoll)
+			m_statsPanelPaperdoll->Draw();
+		return;
+	}
+
+	// Stats and Backpack-stub both use the stats background; Backpack has no content yet.
 	DrawTexture(*g_statsBackground.get(), 512, 200, WHITE);
+
+	if (m_statsPanelMode == StatsPanelMode::Backpack)
+		return;
 
 	//  Draw stat numbers
 	int str;
@@ -3672,16 +3764,6 @@ void MainState::DrawStats()
 	DrawStatsValueRight(to_string(level), 208.0f + 9 * yoffset + 5);
 	DrawStatsValueRight(to_string(trainingpoints), 208.0f + 10 * yoffset + 6);
 
-	// Party member name stretchbuttons — fixed-width column flush to the stats box body.
-	const float partyColW = MeasurePartyNameColumnWidth();
-	for (int i = 0; i < int(g_Player->GetPartyMemberIds().size()); ++i)
-	{
-		const int npcId = g_Player->GetPartyMemberIds()[i];
-		const Rectangle btn = PartyNameButtonRect(i, partyColW);
-		const bool selected = (npcId == g_Player->GetSelectedPartyMember());
-		DrawPartyNameStretchButton(btn.x, btn.y, btn.width, PartyMemberDisplayName(npcId), selected);
-	}
-
 	DrawOutlinedText(g_SmallFont, "Gold: " + to_string(g_Player->GetGold()), { 542, 208.0f + 11 * yoffset + 8 }, g_SmallFont.get()->baseSize, 1, WHITE);
 
 	// Weight for the currently selected party member (current / max from their strength).
@@ -3702,6 +3784,20 @@ void MainState::DrawStats()
 
 void MainState::UpdateStats()
 {
+	// Mode tabs (mutually exclusive).
+	for (int i = 0; i < kStatsPanelTabCount; ++i)
+	{
+		const Rectangle logical = StatsPanelTabRect(i);
+		const Rectangle hitRect = {
+			logical.x * g_DrawScale,
+			logical.y * g_DrawScale,
+			logical.width * g_DrawScale,
+			logical.height * g_DrawScale
+		};
+		if (g_InputSystem->WasLButtonClickedInRegion(hitRect.x, hitRect.y, hitRect.width, hitRect.height))
+			SetStatsPanelMode(static_cast<StatsPanelMode>(i));
+	}
+
 	const float partyColW = MeasurePartyNameColumnWidth();
 	for (int i = 0; i < int(g_Player->GetPartyMemberIds().size()); ++i)
 	{
@@ -3714,7 +3810,7 @@ void MainState::UpdateStats()
 			logical.height * g_DrawScale
 		};
 
-		// Double-click still opens/closes that member's paperdoll.
+		// Double-click still opens/closes that member's floating paperdoll.
 		if (g_InputSystem->WasLButtonDoubleClicked() && CheckCollisionPointRec(GetMousePosition(), hitRect))
 		{
 			TogglePaperdoll(npcId);
@@ -3722,8 +3818,21 @@ void MainState::UpdateStats()
 		else if (g_InputSystem->WasLButtonClickedInRegion(hitRect.x, hitRect.y, hitRect.width, hitRect.height))
 		{
 			g_Player->SetSelectedPartyMember(npcId);
+			if (m_statsPanelMode == StatsPanelMode::Equip)
+				EnsureStatsPanelPaperdoll();
 		}
 	}
+
+	if (m_statsPanelMode == StatsPanelMode::Equip)
+	{
+		EnsureStatsPanelPaperdoll();
+		if (m_statsPanelPaperdoll)
+			m_statsPanelPaperdoll->Update();
+		return;
+	}
+
+	if (m_statsPanelMode != StatsPanelMode::Stats)
+		return;
 
 	if (g_InputSystem->WasLButtonClickedInRegion(610 * g_DrawScale, 314 * g_DrawScale, 16 * g_DrawScale, 10 * g_DrawScale ))
 	{

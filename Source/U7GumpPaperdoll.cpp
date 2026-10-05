@@ -1,5 +1,6 @@
 #include "U7GumpPaperdoll.h"
 #include "U7Globals.h"
+#include "MainState.h"
 #include "U7Object.h"
 #include "Geist/ResourceManager.h"
 #include "Geist/Logging.h"
@@ -146,131 +147,136 @@ void GumpPaperdoll::OnExit()
 	m_npcId = -1;
 	m_highlightedSlots.clear();
 	m_backgroundTexture = nullptr;
+	m_embedded = false;
+}
+
+void GumpPaperdoll::ApplyPaperdollSpriteSource()
+{
+	if (!m_serializer)
+		return;
+	int paperdollSpriteID = m_serializer->GetElementID("PAPERDOLL");
+	if (paperdollSpriteID == -1)
+		return;
+	auto paperdollSprite = m_gui.GetElement(paperdollSpriteID);
+	if (paperdollSprite && paperdollSprite->m_Type == GUI_SPRITE)
+	{
+		auto sprite = static_cast<GuiSprite*>(paperdollSprite.get());
+		sprite->m_Sprite->m_sourceRect = Rectangle{
+			m_data.m_texturePos.x,
+			m_data.m_texturePos.y,
+			m_data.m_textureSize.x,
+			m_data.m_textureSize.y
+		};
+	}
+}
+
+void GumpPaperdoll::EnsureGuiLoaded()
+{
+	if (m_serializer)
+		return;
+
+	m_serializer = std::make_unique<GhostSerializer>();
+	if (m_serializer->LoadFromFile("GUI/paperdoll.ghost", &m_gui))
+	{
+		Log("GumpPaperdoll::EnsureGuiLoaded - Successfully loaded paperdoll.ghost");
+		m_loadedFonts = m_serializer->GetLoadedFonts();
+
+		int closeButtonID = m_serializer->GetElementID("CLOSE");
+		if (closeButtonID != -1)
+			m_gui.SetDoneButtonId(closeButtonID);
+	}
+	else
+	{
+		Log("ERROR: GumpPaperdoll::EnsureGuiLoaded - Failed to load paperdoll.ghost");
+	}
+
+	m_backgroundTexture = g_ResourceManager->GetTexture(GUMPS_TEXTURE_PATH);
+}
+
+bool GumpPaperdoll::IsInteractiveTopmost() const
+{
+	if (m_embedded)
+	{
+		// Embedded panel: interactive when the cursor is over us and no floating gump claims the mouse.
+		if (g_gumpManager && g_gumpManager->m_gumpUnderMouse != nullptr)
+			return false;
+		Vector2 mousePos = GetMousePosition();
+		mousePos.x /= g_DrawScale;
+		mousePos.y /= g_DrawScale;
+		return const_cast<GumpPaperdoll*>(this)->IsMouseOverSolidPixel(mousePos);
+	}
+	return g_gumpManager && g_gumpManager->m_gumpUnderMouse == this;
+}
+
+void GumpPaperdoll::SetupEmbedded(int npcId, Vector2 pos)
+{
+	Setup(npcId);
+	m_embedded = true;
+	m_IsDead = false;
+	m_Pos.x = pos.x;
+	m_Pos.y = pos.y;
+
+	m_gui.m_Font = g_SmallFont;
+	m_gui.SetLayout(m_Pos.x, m_Pos.y, m_data.m_textureSize.x, m_data.m_textureSize.y, g_DrawScale, Gui::GUIP_USE_XY);
+	EnsureGuiLoaded();
+	ApplyPaperdollSpriteSource();
+
+	// Stats-panel paperdoll stays pinned; hide CLOSE (mode tabs switch away instead).
+	m_gui.m_Draggable = false;
+	m_gui.m_DragAreaValidationCallback = nullptr;
+	if (m_serializer)
+	{
+		int closeButtonID = m_serializer->GetElementID("CLOSE");
+		if (closeButtonID != -1)
+		{
+			auto closeElem = m_gui.GetElement(closeButtonID);
+			if (closeElem)
+				closeElem->m_Visible = false;
+		}
+	}
 }
 
 void GumpPaperdoll::OnEnter()
 {
 	Log("GumpPaperdoll::OnEnter - NPC " + std::to_string(m_npcId));
+	m_embedded = false;
 
 	// Position paperdoll on screen with cascading offsets for multiple paperdolls
-	// Count how many paperdolls are already open
 	int paperdollCount = 0;
 	for (const auto& gump : g_gumpManager->m_GumpList)
 	{
 		if (dynamic_cast<GumpPaperdoll*>(gump.get()))
-		{
 			paperdollCount++;
-		}
 	}
 
-	// Cascade position: each new paperdoll offset by 30 pixels right and down
 	const int CASCADE_OFFSET = 30;
 	m_Pos.x = 100 + (paperdollCount * CASCADE_OFFSET);
 	m_Pos.y = 100 + (paperdollCount * CASCADE_OFFSET);
 
-	// Set up GUI layout
 	m_gui.m_Font = g_SmallFont;
 	m_gui.SetLayout(m_Pos.x, m_Pos.y, m_data.m_textureSize.x, m_data.m_textureSize.y, g_DrawScale, Gui::GUIP_USE_XY);
 
-	// Load paperdoll GUI from paperdoll.ghost file
-	m_serializer = std::make_unique<GhostSerializer>();
+	EnsureGuiLoaded();
+	ApplyPaperdollSpriteSource();
 
-	if (m_serializer->LoadFromFile("GUI/paperdoll.ghost", &m_gui))
+	// Floating paperdolls show CLOSE and can be dragged.
+	if (m_serializer)
 	{
-		Log("GumpPaperdoll::OnEnter - Successfully loaded paperdoll.ghost");
-
-		// Keep loaded fonts alive
-		m_loadedFonts = m_serializer->GetLoadedFonts();
-
-		// Update the PAPERDOLL sprite to use the correct paperdoll type
-		int paperdollSpriteID = m_serializer->GetElementID("PAPERDOLL");
-		if (paperdollSpriteID != -1)
-		{
-			auto paperdollSprite = m_gui.GetElement(paperdollSpriteID);
-			if (paperdollSprite && paperdollSprite->m_Type == GUI_SPRITE)
-			{
-				auto sprite = static_cast<GuiSprite*>(paperdollSprite.get());
-				// Update sprite source rectangle to match the selected paperdoll type
-				sprite->m_Sprite->m_sourceRect = Rectangle{
-					m_data.m_texturePos.x,
-					m_data.m_texturePos.y,
-					m_data.m_textureSize.x,
-					m_data.m_textureSize.y
-				};
-			}
-		}
-
-		// Set the CLOSE button as the done button
 		int closeButtonID = m_serializer->GetElementID("CLOSE");
 		if (closeButtonID != -1)
 		{
-			m_gui.SetDoneButtonId(closeButtonID);
-		}
-
-		// Debug: Check cycle button states
-		int peaceID = m_serializer->GetElementID("PEACE");
-		int haloID = m_serializer->GetElementID("HALO");
-		int formationID = m_serializer->GetElementID("FORMATION");
-
-		if (peaceID != -1)
-		{
-			auto peaceElem = m_gui.GetElement(peaceID);
-			if (peaceElem && peaceElem->m_Type == GUI_CYCLE)
-			{
-				auto cycle = static_cast<GuiCycle*>(peaceElem.get());
-				Rectangle hitRect = {
-					m_gui.m_Pos.x + peaceElem->m_Pos.x,
-					m_gui.m_Pos.y + peaceElem->m_Pos.y,
-					peaceElem->m_Width * cycle->m_ScaleX,
-					peaceElem->m_Height * cycle->m_ScaleY
-				};
-				Log("PEACE button - ID: " + std::to_string(peaceID) + ", Active: " + std::to_string(peaceElem->m_Active) +
-					", Visible: " + std::to_string(peaceElem->m_Visible) + ", Type: " + std::to_string(peaceElem->m_Type) +
-					", FrameCount: " + std::to_string(cycle->m_FrameCount) + ", Frames size: " + std::to_string(cycle->m_Frames.size()) +
-					", HitRect: (" + std::to_string((int)hitRect.x) + "," + std::to_string((int)hitRect.y) + "," +
-					std::to_string((int)hitRect.width) + "," + std::to_string((int)hitRect.height) + ")");
-			}
-		}
-		if (haloID != -1)
-		{
-			auto haloElem = m_gui.GetElement(haloID);
-			if (haloElem && haloElem->m_Type == GUI_CYCLE)
-			{
-				auto cycle = static_cast<GuiCycle*>(haloElem.get());
-				Log("HALO button - ID: " + std::to_string(haloID) + ", Active: " + std::to_string(haloElem->m_Active) +
-					", Visible: " + std::to_string(haloElem->m_Visible) + ", Type: " + std::to_string(haloElem->m_Type) +
-					", FrameCount: " + std::to_string(cycle->m_FrameCount) + ", Frames size: " + std::to_string(cycle->m_Frames.size()));
-			}
-		}
-		if (formationID != -1)
-		{
-			auto formationElem = m_gui.GetElement(formationID);
-			if (formationElem && formationElem->m_Type == GUI_CYCLE)
-			{
-				auto cycle = static_cast<GuiCycle*>(formationElem.get());
-				Log("FORMATION button - ID: " + std::to_string(formationID) + ", Active: " + std::to_string(formationElem->m_Active) +
-					", Visible: " + std::to_string(formationElem->m_Visible) + ", Type: " + std::to_string(formationElem->m_Type) +
-					", FrameCount: " + std::to_string(cycle->m_FrameCount) + ", Frames size: " + std::to_string(cycle->m_Frames.size()));
-			}
+			auto closeElem = m_gui.GetElement(closeButtonID);
+			if (closeElem)
+				closeElem->m_Visible = true;
 		}
 	}
-	else
-	{
-		Log("ERROR: GumpPaperdoll::OnEnter - Failed to load paperdoll.ghost");
-	}
 
-	// Make the paperdoll draggable
 	m_gui.m_Draggable = true;
-	m_gui.m_DragAreaHeight = int(m_gui.m_Height);  // Allow dragging from anywhere, not just top 20 pixels
-
-	// Drag area validation: allow dragging from solid background but not from slots/buttons
+	m_gui.m_DragAreaHeight = int(m_gui.m_Height);
 	m_gui.m_DragAreaValidationCallback = [this](Vector2 mousePos) {
 		return this->IsMouseOverSolidPixel(mousePos) && !this->IsOverSlot(mousePos);
 	};
-	// Store texture reference for pixel-perfect collision
-	m_backgroundTexture = g_ResourceManager->GetTexture(GUMPS_TEXTURE_PATH);
 
-	// Debug: Log GUI bounds for collision detection
 	Log("GumpPaperdoll::OnEnter - GUI bounds: pos(" + std::to_string(m_gui.m_Pos.x) + ", " + std::to_string(m_gui.m_Pos.y) +
 		") size(" + std::to_string(m_gui.m_Width) + ", " + std::to_string(m_gui.m_Height) + ")");
 }
@@ -310,8 +316,8 @@ void GumpPaperdoll::Update()
 
 	if (g_gumpManager->m_draggingObject && g_gumpManager->m_draggedObjectId != -1)
 	{
-		// Check if THIS paperdoll is the topmost gump under the mouse cursor
-		if (g_gumpManager->GetGumpUnderMouse() == this)
+		// Check if THIS paperdoll is interactive under the mouse cursor
+		if (IsInteractiveTopmost())
 		{
 			// Get the dragged object
 			auto objIt = g_objectList.find(g_gumpManager->m_draggedObjectId);
@@ -439,8 +445,8 @@ void GumpPaperdoll::Update()
 		Log("FORMATION button clicked, frame: " + std::to_string(m_gui.GetElement(formationID)->GetValue()));
 	}
 
-	// Check if close button was clicked
-	if (m_gui.m_ActiveElement == m_gui.m_doneButtonId)
+	// Check if close button was clicked (floating paperdolls only; embedded hides CLOSE)
+	if (!m_embedded && m_gui.m_ActiveElement == m_gui.m_doneButtonId)
 	{
 		OnExit();
 	}
@@ -454,17 +460,20 @@ void GumpPaperdoll::Update()
 		m_gui.m_ActiveElement = -1; // Clear active element to prevent multiple triggers
 	}
 
-	// Check if HEART button was clicked (opens stats gump)
+	// Check if HEART button was clicked (opens stats gump / switches embedded panel to Stats)
 	int heartID = m_serializer->GetElementID("HEART");
 	if (m_gui.m_ActiveElement == heartID)
 	{
-		Log("HEART button clicked - opening stats gump for NPC " + std::to_string(m_npcId));
-		g_mainState->OpenStatsGump(m_npcId);
+		Log("HEART button clicked - opening stats for NPC " + std::to_string(m_npcId));
+		if (m_embedded && g_mainState)
+			g_mainState->SetStatsPanelMode(MainState::StatsPanelMode::Stats);
+		else
+			g_mainState->OpenStatsGump(m_npcId);
 		m_gui.m_ActiveElement = -1; // Clear active element to prevent multiple triggers
 	}
 
-	// Handle equipment slot clicks (only if we're the topmost gump)
-	bool isTopmostGump = (g_gumpManager->m_gumpUnderMouse == this);
+	// Handle equipment slot clicks (only if we're the interactive topmost paperdoll)
+	bool isTopmostGump = IsInteractiveTopmost();
 	const bool selectingTarget = g_mainState && g_mainState->m_objectSelectionMode;
 	auto npcIt = g_NPCData.find(m_npcId);
 	if (isTopmostGump && !selectingTarget && npcIt != g_NPCData.end() && npcIt->second)

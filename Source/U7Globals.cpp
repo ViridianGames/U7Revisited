@@ -2074,11 +2074,105 @@ void DrawMeshOutlineIdPass(bool drawObjects)
 	}
 	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 
+	// Collect outlined meshes, then union adjacent same-shape pieces so a
+	// multi-part bench (etc.) writes one silhouette ID and doesn't ink seams.
+	std::vector<U7Object*> outlined;
+	outlined.reserve(64);
 	for (U7Object* object : g_sortedVisibleObjects)
 	{
 		if (!object || !ObjectWantsScreenSpaceOutline(object))
 			continue;
-		object->DrawMeshId();
+		if (!object->m_Visible || object->m_isContained || !object->m_ShouldDraw || !object->m_shapeData)
+			continue;
+		outlined.push_back(object);
+	}
+
+	const int n = static_cast<int>(outlined.size());
+	std::vector<int> parent(static_cast<size_t>(n));
+	for (int i = 0; i < n; ++i)
+		parent[static_cast<size_t>(i)] = i;
+
+	auto findRoot = [&](int i) {
+		while (parent[static_cast<size_t>(i)] != i)
+		{
+			parent[static_cast<size_t>(i)] = parent[static_cast<size_t>(parent[static_cast<size_t>(i)])];
+			i = parent[static_cast<size_t>(i)];
+		}
+		return i;
+	};
+	auto unite = [&](int a, int b) {
+		a = findRoot(a);
+		b = findRoot(b);
+		if (a == b)
+			return;
+		// Prefer the lower object id as the canonical outline id.
+		if (outlined[static_cast<size_t>(a)]->m_ID <= outlined[static_cast<size_t>(b)]->m_ID)
+			parent[static_cast<size_t>(b)] = a;
+		else
+			parent[static_cast<size_t>(a)] = b;
+	};
+
+	auto shapeOf = [](const U7Object* o) -> int {
+		if (o->m_shapeData)
+			return o->m_shapeData->GetShape();
+		return o->m_ObjectType;
+	};
+
+	// Multi-piece props that use more than one shape id must share an outline
+	// family or seams ink (benches; pole + flag).
+	auto outlineFamily = [](int shape) -> int {
+		if (shape == 292 || shape == 897)
+			return 292; // seat / bench family
+		if (shape == 713 || shape == 222 || shape == 232 || shape == 248)
+			return 713; // pole + flag family
+		return shape;
+	};
+
+	// Neighbors: horizontal (XZ touch, similar lift) or vertical stack
+	// (shared XZ column — posts with flags mounted above).
+	constexpr float kAdjPadXZ = 0.2f;
+	constexpr float kAdjMaxDySide = 0.75f;
+	constexpr float kAdjMaxYGapStack = 3.0f;
+	auto adjacentOutlineFamily = [&](const U7Object* a, const U7Object* b) -> bool {
+		if (outlineFamily(shapeOf(a)) != outlineFamily(shapeOf(b)))
+			return false;
+		const BoundingBox& aa = a->m_boundingBox;
+		const BoundingBox& bb = b->m_boundingBox;
+		const bool xzNear =
+			aa.min.x - kAdjPadXZ < bb.max.x && aa.max.x + kAdjPadXZ > bb.min.x &&
+			aa.min.z - kAdjPadXZ < bb.max.z && aa.max.z + kAdjPadXZ > bb.min.z;
+		if (!xzNear)
+			return false;
+
+		// Side-by-side (benches, twin posts).
+		if (fabsf(a->m_Pos.y - b->m_Pos.y) <= kAdjMaxDySide)
+			return true;
+
+		// Vertical stack: gap between Y extents (flag above post, etc.).
+		float yGap = 0.0f;
+		if (aa.max.y < bb.min.y)
+			yGap = bb.min.y - aa.max.y;
+		else if (bb.max.y < aa.min.y)
+			yGap = aa.min.y - bb.max.y;
+		return yGap <= kAdjMaxYGapStack;
+	};
+
+	for (int i = 0; i < n; ++i)
+	{
+		for (int j = i + 1; j < n; ++j)
+		{
+			if (adjacentOutlineFamily(outlined[static_cast<size_t>(i)], outlined[static_cast<size_t>(j)]))
+				unite(i, j);
+		}
+	}
+
+	for (int i = 0; i < n; ++i)
+	{
+		U7Object* object = outlined[static_cast<size_t>(i)];
+		const int root = findRoot(i);
+		const int outlineId = outlined[static_cast<size_t>(root)]->m_ID;
+		object->m_shapeData->DrawMeshId(
+			object->m_Pos, object->m_Angle, MakeMeshOutlineIdColor(outlineId));
 	}
 
 	// Mark non-rug flat coverage with mid-alpha sentinel (not true empty). Presence

@@ -2,6 +2,7 @@
 #include "U7Gump.h"
 #include "U7GumpPaperdoll.h"
 #include "U7GumpSpellbook.h"
+#include "MainState.h"
 #include "Gui.h"
 #include "Logging.h"
 #include <memory>
@@ -256,12 +257,21 @@ void GumpManager::Update()
 			}
 		}
 
-		//  First check if we're dropping on a paperdoll
+		//  First check if we're dropping on a paperdoll (floating gump or Equip-tab embed)
 		bool droppedOnPaperdoll = false;
 		bool attemptedPaperdollDrop = false;
 
-		// Use m_gumpUnderMouse which already has proper z-order and pixel-perfect collision
 		GumpPaperdoll* paperdoll = dynamic_cast<GumpPaperdoll*>(m_gumpUnderMouse);
+		GumpPaperdoll* embeddedPaperdoll = nullptr;
+		if (!paperdoll && g_mainState)
+		{
+			embeddedPaperdoll = g_mainState->GetStatsPanelPaperdoll();
+			if (embeddedPaperdoll && embeddedPaperdoll->IsMouseOverSolidPixel(mousePos))
+				paperdoll = embeddedPaperdoll;
+			else
+				embeddedPaperdoll = nullptr;
+		}
+
 		if (paperdoll)
 		{
 			attemptedPaperdollDrop = true;
@@ -275,6 +285,9 @@ void GumpManager::Update()
 				g_gumpManager->m_sourceGump = nullptr;
 			}
 		}
+
+		// Treat Equip-tab paperdoll as a UI drop target so failed equips don't dump to the world.
+		const bool overEmbeddedPaperdoll = (embeddedPaperdoll != nullptr);
 
 		//  If not dropped on paperdoll, check dragging to regular containers
 		if (!droppedOnPaperdoll)
@@ -346,10 +359,10 @@ void GumpManager::Update()
 		{
 			bool returnedToSource = false;
 
-			// Return to source when: over a gump (failed container drop), or world drop is invalid.
+			// Return to source when: over a gump / Equip panel (failed drop), or world drop is invalid.
 			const bool wantReturnToSource =
 				m_sourceGump != nullptr &&
-				(m_gumpUnderMouse != nullptr || !m_dropValid);
+				(m_gumpUnderMouse != nullptr || overEmbeddedPaperdoll || !m_dropValid);
 
 			if (wantReturnToSource)
 			{
@@ -391,7 +404,7 @@ void GumpManager::Update()
 			if (!returnedToSource)
 			{
 				// World-origin drag with invalid/failed drop → original world pos.
-				if (!m_dropValid || m_gumpUnderMouse != nullptr)
+				if (!m_dropValid || m_gumpUnderMouse != nullptr || overEmbeddedPaperdoll)
 				{
 					object->SetPos(m_draggedObjectOriginalPos);
 					object->SetDest(m_draggedObjectOriginalDest);

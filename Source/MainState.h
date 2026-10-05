@@ -6,6 +6,7 @@
 #include <list>
 #include <deque>
 #include <array>
+#include <memory>
 #include <math.h>
 #include <thread>
 #include <mutex>
@@ -77,6 +78,14 @@ public:
 
    void DrawStats();
    void UpdateStats();
+	enum class StatsPanelMode { Equip = 0, Stats, Backpack };
+	void SetStatsPanelMode(StatsPanelMode mode);
+	StatsPanelMode GetStatsPanelMode() const { return m_statsPanelMode; }
+	void EnsureStatsPanelPaperdoll();
+	GumpPaperdoll* GetStatsPanelPaperdoll() const
+	{
+		return (m_statsPanelMode == StatsPanelMode::Equip) ? m_statsPanelPaperdoll.get() : nullptr;
+	}
 	void CalculateMouseOverUI();  // Sets g_mouseOverUI based on UI element positions
 	void UpdateInput();
 	// Camera rotation/zoom only (used by CombatState while the world state is underneath).
@@ -275,6 +284,10 @@ public:
 	bool m_worldDragPressIgnored = false;  // Press started off a draggable world object
 
 	MainStateModes m_gameMode = MainStateModes::MAIN_STATE_MODE_SANDBOX;
+
+	StatsPanelMode m_statsPanelMode = StatsPanelMode::Stats;
+	std::shared_ptr<GumpPaperdoll> m_statsPanelPaperdoll;
+	int m_statsPanelPaperdollNpcId = -1;
 
 	enum class FadeState
 	{
