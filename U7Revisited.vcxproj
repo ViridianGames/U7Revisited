@@ -424,6 +424,7 @@
     <ClCompile Include="Source\OptionsState.cpp" />
     <ClCompile Include="Source\PathfindingSystem.cpp" />
     <ClCompile Include="Source\PatreonVillageState.cpp" />
+    <ClCompile Include="Source\PerfTelemetry.cpp" />
     <ClCompile Include="Source\ScriptRenameState.cpp" />
     <ClCompile Include="Source\ShapeData.cpp" />
     <ClCompile Include="Source\ShapeEditorState.cpp" />
@@ -517,6 +518,7 @@
     <ClInclude Include="Source\OptionsState.h" />
     <ClInclude Include="Source\PathfindingSystem.h" />
     <ClInclude Include="Source\PatreonVillageState.h" />
+    <ClInclude Include="Source\PerfTelemetry.h" />
     <ClInclude Include="Source\ScriptRenameState.h" />
     <ClInclude Include="Source\ShapeData.h" />
     <ClInclude Include="Source\ShapeEditorState.h" />
