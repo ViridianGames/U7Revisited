@@ -410,29 +410,25 @@ void GumpPaperdoll::Update()
 		lastActiveElement = m_gui.m_ActiveElement;
 	}
 
-	// Sync PEACE icon (dove/sword) with combat state: frame 0 = peace (dove), 1 = combat (sword)
+	// Sync PEACE icon (dove/sword) with combat mode: frame 0 = peace (dove), 1 = combat (sword)
 	if (peaceID != -1)
 	{
 		auto peaceElem = m_gui.GetElement(peaceID);
 		if (peaceElem && peaceElem->m_Type == GUI_CYCLE)
 		{
 			auto cycle = static_cast<GuiCycle*>(peaceElem.get());
-			bool inCombat = (g_StateMachine && g_StateMachine->GetCurrentState() == STATE_COMBATSTATE);
-			cycle->SetFrameIndex(inCombat ? 1 : 0);
+			cycle->SetFrameIndex(g_isCombatMode ? 1 : 0);
 		}
 	}
 
 	if (m_gui.m_ActiveElement == peaceID)
 	{
-		// Toggle combat mode (entry gated until CombatState is re-enabled)
-		bool inCombat = (g_StateMachine && g_StateMachine->GetCurrentState() == STATE_COMBATSTATE);
-		if (inCombat)
+		if (g_mainState)
 		{
-			g_StateMachine->PopState();
-		}
-		else if (kCombatStateEnabled)
-		{
-			g_StateMachine->PushState(STATE_COMBATSTATE);
+			if (g_isCombatMode)
+				g_mainState->LeaveCombatMode();
+			else if (kCombatStateEnabled)
+				g_mainState->EnterCombatMode();
 		}
 		m_gui.m_ActiveElement = -1; // Clear to prevent re-triggers
 	}

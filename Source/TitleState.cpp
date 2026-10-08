@@ -210,11 +210,12 @@ void TitleState::CreateTitleGUI()
 	m_TitleGui->m_Font = g_SmallFont;
 
 	m_TitleGui->SetLayout(0, 0, g_Engine->m_RenderWidth, g_Engine->m_RenderHeight, g_DrawScale, Gui::GUIP_USE_XY);
-	m_TitleGui->AddOctagonBox(GUI_TITLE_PANEL2, 220, 180, 200, 160, g_Borders);
+	// Taller panel (Options row + social icons); nudged up so the footer stays inside.
+	m_TitleGui->AddOctagonBox(GUI_TITLE_PANEL2, 220, 148, 200, 212, g_Borders);
 	//m_TitleGui->AddTextArea(GUI_TITLE_TITLE, g_Font.get(), "Ultima VII: Revisited", (320 - (MeasureText("Ultima VII: Revisited", g_Font->baseSize * g_DrawScale))) / 2, 20,
 	//   (MeasureText("Ultima VII: Revisited", g_Font->baseSize * g_DrawScale)), 0, Color{255, 255, 255, 255}, true);
 
-	int y = 186;
+	int y = 156;
 	int yoffset = 22;
 
 	m_TitleGui->AddStretchButtonCentered(GUI_TITLE_BUTTON_START_TRINSIC_DEMO, y, "Start Trinsic Demo",
@@ -249,6 +250,10 @@ void TitleState::CreateTitleGUI()
 	                                     g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
 	                                     g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
 
+	y += yoffset;
+	m_TitleGui->AddStretchButtonCentered(GUI_TITLE_BUTTON_OPTIONS, y, "Options",
+	                                     g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
+	                                     g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
 
 	y += yoffset;
 	m_TitleGui->AddStretchButtonCentered(GUI_TITLE_BUTTON_QUIT, y, "Quit",
@@ -489,6 +494,12 @@ void TitleState::UpdateTitle()
 		m_TitleGui->m_Active = false;
 		m_CreditsGui->m_Active = true;
 		m_TitleGui->m_ActiveElement = -1;
+	}
+
+	if (m_TitleGui->m_ActiveElement == GUI_TITLE_BUTTON_OPTIONS)
+	{
+		m_TitleGui->m_ActiveElement = -1;
+		g_StateMachine->PushState(STATE_OPTIONSSTATE);
 	}
 
 	if (m_TitleGui->m_ActiveElement == GUI_TITLE_BUTTON_GITHUB)

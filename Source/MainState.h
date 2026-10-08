@@ -15,6 +15,7 @@
 #include <unordered_set>
 #include <cstdint>
 #include "U7Globals.h"
+#include "CombatMode.h"
 
 class ParticleSystem;
 class Gui;
@@ -344,12 +345,36 @@ public:
 	float  m_partyFollowStopDistance = 1.5f;    // idle when this close to formation slot
 	float  m_partyFollowWarpDistance = 25.0f;   // teleport if farther than this from Avatar
 
+	// Combat mode (peace/sword) — runs inside MainState; no PushState.
+	void EnterCombatMode();
+	void LeaveCombatMode();
+	void UpdateCombatMode();
+	void EnsureCombatParticipant(int objectId);
+	bool IsCombatOrdersPaused() const;
+	bool AllowsCombatPlayerOrders() const;
+	bool IsCombatEnemyObject(const U7Object* obj) const;
+	CombatMode* GetActiveCombatMode() const { return m_combatMode.get(); }
+
+	// Session shared by all combat styles. m_combatPaused is primarily for Real-Time-Pause.
+	bool m_combatPaused = true;
+	std::vector<int> m_combatParticipants;
+	int m_combatSelectedPartyMemberObjectId = -1;
+	std::string m_combatApproachMessage;
+	std::unique_ptr<CombatMode> m_combatMode;
+
 	// Camera-drag while holding left+right: state & helpers
 	void StartCameraDrag();
 	void UpdateCameraDrag();
 	void EndCameraDrag();
 
 private:
+	void ClearCombatPartyTargets();
+	void EnrollNearbyCombatHostiles();
+	void BeginCombatFighting();
+	void PauseCombatForOrders();
+	void HandleCombatOrdersClick();
+	void IssueCombatMoveOrder(U7Object* member, const Vector3& dest);
+	bool IsCombatPartyMemberObject(const U7Object* obj) const;
 	// UpdateInput() sub-handlers — each owns one concern
 	void HandleEscapeKey();
 	void HandleDebugKeys();

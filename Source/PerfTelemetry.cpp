@@ -119,7 +119,18 @@ void PerfTelemetryOnFrame()
 		g_perf.maxFrameMs = frameMs;
 
 	g_perf.inCombat = g_isCombatMode;
-	g_perf.mode = g_isCombatMode ? "combat" : "main";
+	if (g_isCombatMode && g_mainState && g_mainState->GetActiveCombatMode())
+	{
+		switch (g_mainState->GetActiveCombatMode()->GetStyle())
+		{
+		case CombatStyle::Original: g_perf.mode = "combat:original"; break;
+		case CombatStyle::RealTimePause: g_perf.mode = "combat:rtwp"; break;
+		case CombatStyle::TurnBased: g_perf.mode = "combat:turn"; break;
+		default: g_perf.mode = "combat"; break;
+		}
+	}
+	else
+		g_perf.mode = g_isCombatMode ? "combat" : "main";
 
 	PerfTelemetrySampleAvatar();
 
@@ -127,9 +138,9 @@ void PerfTelemetryOnFrame()
 	g_perf.visibleObjSum += (int)g_sortedVisibleObjects.size();
 	++g_perf.interestObjSamples;
 
-	if (g_CombatState)
+	if (g_mainState && g_isCombatMode)
 		g_perf.combatParticipantsMax =
-			std::max(g_perf.combatParticipantsMax, (int)g_CombatState->m_participants.size());
+			std::max(g_perf.combatParticipantsMax, (int)g_mainState->m_combatParticipants.size());
 
 	if (g_perf.lastDumpTime <= 0.0f)
 		g_perf.lastDumpTime = now;

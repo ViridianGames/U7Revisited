@@ -538,6 +538,29 @@ void GumpManager::CloseAllGumps()
 	Log("Closed all gumps (" + std::to_string(count) + " total)");
 }
 
+void GumpManager::MarkAllGumpsDead()
+{
+	int count = 0;
+	for (auto& gump : m_GumpList)
+	{
+		if (gump)
+		{
+			gump->OnExit();
+			++count;
+		}
+	}
+	for (auto& gump : m_PendingGumps)
+	{
+		if (gump)
+		{
+			gump->OnExit();
+			++count;
+		}
+	}
+	if (count > 0)
+		Log("Marked " + std::to_string(count) + " gumps dead (deferred close)");
+}
+
 bool GumpManager::IsAnyGumpBeingDragged()
 {
 	for (const auto& gump : m_GumpList)

@@ -388,6 +388,25 @@ void UpdateObjectChunk(U7Object* object, Vector3 fromPos);
 void AssignObjectChunk(U7Object* object);
 void UnassignObjectChunk(U7Object* object);
 
+// Homing/straight-line spell missiles (e.g. fire bolt 856 for Vas Flam).
+struct FlyingProjectile
+{
+	int objectId = -1;
+	int targetId = -1;
+	int attackerId = -1;
+	Vector3 targetPos = {0, 0, 0};
+	int damage = 0;
+	int damageType = 1;
+	float speed = 16.0f;
+	float animAccum = 0.0f;
+	// Non-empty shape frames to cycle (skips null 1x1 placeholders).
+	std::vector<int> animFrameList;
+	int animIndex = 0;
+};
+
+bool SpawnFlyingProjectile(int shape, int fromId, int toId, float speed, int damage, int damageType);
+void UpdateFlyingProjectiles();
+
 /// Inclusive chunk range currently covered by the camera frustum (ground + tall-object pad).
 /// Used by object visibility; falls back to a distance-based radius if unprojection fails.
 void GetCameraVisibleChunkRange(int& outMinCX, int& outMaxCX, int& outMinCZ, int& outMaxCZ);
@@ -519,7 +538,6 @@ void LoadGameFlagsFromJson(const json& j);
 //int l_add_dialogue(lua_State* L);
 
 extern ConversationState* g_ConversationState;
-extern CombatState* g_CombatState;
 extern MainState* g_mainState;
 
 extern bool g_autoRotate;

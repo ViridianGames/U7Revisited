@@ -456,10 +456,7 @@ int main(int argv, char** argc)
       conversationState->Init("engine.cfg");
       g_StateMachine->RegisterState(STATE_CONVERSATIONSTATE, conversationState, "CONVERSATION_STATE");
 
-      CombatState* combatState = new CombatState;
-      g_CombatState = combatState;
-      combatState->Init("engine.cfg");
-      g_StateMachine->RegisterState(STATE_COMBATSTATE, combatState, "COMBAT_STATE");
+      // Combat is a MainState mode (g_isCombatMode), not a pushed state.
 
       ScriptRenameState* scriptRenameState = new ScriptRenameState;
       scriptRenameState->Init("engine.cfg");

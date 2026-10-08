@@ -23,7 +23,7 @@ using namespace std;
 
 namespace
 {
-	constexpr int kMaxAnswersPerColumn = 8;
+	constexpr int kMaxAnswersPerColumn = 10;
 	constexpr float kAnswerTextX0 = 190.f;
 	constexpr float kAnswerTextY0 = 135.f;
 	constexpr float kAnswerBoxXPad = 6.f; // text at 190, box historically at 184

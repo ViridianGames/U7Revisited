@@ -523,6 +523,9 @@ bool PathfindingSystem::ValidateMove(U7Object* agent, const Vector3& desiredPos,
 				if (obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC
 					|| obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_MONSTER)
 				{
+					// Corpses / despawned units do not block movement.
+					if (const_cast<U7Object*>(obj)->GetIsDead() || obj->IsDeathStatus())
+						continue;
 					if (!PathfindingSystem::AreUnitsHostile(agent, obj))
 						continue;
 					// Hostile unit — fall through to collision checks below
@@ -564,30 +567,45 @@ bool PathfindingSystem::ValidateMove(U7Object* agent, const Vector3& desiredPos,
 				int shapeID = obj->m_shapeData->GetShape();
 				float walkableTop = logicalTop;
 
+				// Spell missiles fly through solids for now (handled by projectile update).
+				if (obj->m_isProjectile)
+					continue;
+
+				const bool isDoor = obj->m_objectData && obj->m_objectData->m_isDoor;
+				const bool isLockedDoor = isDoor && obj->IsLocked();
+
 				// 1) ignore very small ground clutter early
 				float objHeight = objTop - objBottom;
 				if (objHeight > 0.0f && objHeight < kSmallObstacleHeight)
 				{
-					if (!(obj->m_objectData && obj->m_objectData->m_isDoor))
+					if (!isDoor)
 					{
 						continue;
 					}
 
-					float footprintX = maxObj.x - minObj.x;
-					float footprintZ = maxObj.z - minObj.z;
-					if (objHeight < kSmallObstacleHeight && footprintX < 1.0f && footprintZ < 1.0f) continue;
+					// Locked doors stay solid even when the AABB is thin.
+					if (!isLockedDoor)
+					{
+						float footprintX = maxObj.x - minObj.x;
+						float footprintZ = maxObj.z - minObj.z;
+						if (footprintX < 1.0f && footprintZ < 1.0f)
+							continue;
+					}
 				}
 
-				// 2) Doors: never block movement planning/stepping. Closed doors
-				// occupy the doorway; walker opens them on contact.
-				if (obj->m_objectData && obj->m_objectData->m_isDoor)
+				// 2) Unlocked doors: never block stepping — closed ones sit in the
+				// doorway and open on contact (TryOpenDoorAtCurrentPosition).
+				// Locked doors stay solid so WASD cannot walk through; click-path
+				// still plans through CheckTileWalkable and bumps at the door.
+				if (isDoor && !isLockedDoor)
 					continue;
 
 				// Open/sunk barriers listed as walkable in object_walkability.csv
 				// (metal wall 876 closed → 935 open) must not keep blocking.
+				// Door shapes are OW_DOOR in the CSV — do not let that override a lock.
 				{
 					const ObjectWalkability walk = sys->GetObjectWalkability(shapeID, obj);
-					if (walk == OW_WALKABLE || walk == OW_DOOR)
+					if ((walk == OW_WALKABLE || walk == OW_DOOR) && !isLockedDoor)
 						continue;
 				}
 
@@ -736,6 +754,9 @@ static bool CanStandOnSurface(int worldX, int worldZ, float standH,
 		{
 			continue;
 		}
+
+		if (obj->m_isProjectile)
+			continue;
 
 		if (obj->m_objectData->m_isDoor)
 		{

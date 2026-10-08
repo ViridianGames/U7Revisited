@@ -71,6 +71,7 @@ void U7Object::Init(const string& configfile, int unitType, int frame)
 	m_objectData = &g_objectDataTable[m_ObjectType];
 	m_drawType = m_shapeData->GetDrawType();
 	// Desync looping FX so every instance does not pop on the same frame.
+	// Surf tiles stay locked to frame 0 so shoreline strips stay continuous.
 	m_animFrameOffset = 0;
 	// TFA ambient props loop; everything else starts Frozen (craft tools, casino
 	// wheels, doors) until a usecode script drives frames.
@@ -79,7 +80,14 @@ void U7Object::Init(const string& configfile, int unitType, int frame)
 	{
 		m_animMode = ObjectAnimMode::Auto;
 		const int animFrames = g_shapeTable[m_ObjectType][0].m_numFrames;
-		if (animFrames > 1)
+		// Exact TEXT.FLX name "surf" (shoreline strips must stay in phase).
+		const std::string& animName = m_objectData->m_name;
+		const bool isSurf = (animName.size() == 4 &&
+			std::tolower(static_cast<unsigned char>(animName[0])) == 's' &&
+			std::tolower(static_cast<unsigned char>(animName[1])) == 'u' &&
+			std::tolower(static_cast<unsigned char>(animName[2])) == 'r' &&
+			std::tolower(static_cast<unsigned char>(animName[3])) == 'f');
+		if (animFrames > 1 && !isSurf)
 		{
 			m_animFrameOffset = g_NonVitalRNG
 				? (int)g_NonVitalRNG->RandomRange(0, (unsigned)animFrames - 1)
@@ -281,7 +289,9 @@ static bool IsPartyCombatant(const U7Object* unit)
 
 void U7Object::NotifyAttackedBy(U7Object* attacker)
 {
-	if (!attacker || attacker->m_ID == m_ID || attacker->m_hp <= 0.0f)
+	if (!attacker || attacker->m_ID == m_ID || attacker->m_hp <= 0.0f || attacker->IsDeathStatus())
+		return;
+	if (IsDeathStatus() || GetIsDead())
 		return;
 
 	if (!IsHostileCombatant(this) || !IsPartyCombatant(attacker))
@@ -295,8 +305,8 @@ void U7Object::NotifyAttackedBy(U7Object* attacker)
 	m_pathfindingPending = false;
 	m_isSchedulePath = false;
 
-	if (g_isCombatMode && g_CombatState)
-		g_CombatState->EnsureParticipant(static_cast<int>(m_ID));
+	if (g_isCombatMode && g_mainState)
+		g_mainState->EnsureCombatParticipant(static_cast<int>(m_ID));
 
 	if (g_isCombatMode)
 		EngageCombatTarget();
@@ -308,7 +318,8 @@ bool U7Object::EngageCombatTarget()
 		return false;
 
 	auto targetIt = g_objectList.find(m_target);
-	if (targetIt == g_objectList.end() || !targetIt->second || targetIt->second->GetIsDead())
+	if (targetIt == g_objectList.end() || !targetIt->second ||
+	    targetIt->second->GetIsDead() || targetIt->second->IsDeathStatus())
 	{
 		m_target = 0;
 		m_combatPathTargetId = 0;
@@ -337,8 +348,8 @@ bool U7Object::EngageCombatTarget()
 
 			AddConsoleString(m_name + " attacks " + target->m_name + " for 1!", RED);
 
-			if (target->m_hp <= 0)
-				AddConsoleString(target->m_name + " is dead!", RED);
+			if (target->m_hp <= 0.0f)
+				target->ApplyDeath();
 		}
 		else
 		{
@@ -403,7 +414,10 @@ bool U7Object::EngageCombatTarget()
 
 void U7Object::HostileCombatUpdate()
 {
-	if (g_isCombatMode && g_CombatState && g_CombatState->m_paused)
+	if (IsDeathStatus() || GetIsDead())
+		return;
+
+	if (g_mainState && g_mainState->IsCombatOrdersPaused())
 		return;
 
 	if (!g_isCombatMode || !g_Player)
@@ -446,16 +460,16 @@ void U7Object::MonsterUpdate()
 					// Starts combat using the *nearest* hostile for the approach message.
 					TryBeginCombatFromHostileAggro(this);
 				}
-				else if (g_CombatState)
+				else if (g_mainState)
 				{
 					// Enroll even while paused — otherwise nearer Headlesses never join
 					// if a farther Dragon triggered combat first.
-					g_CombatState->EnsureParticipant(static_cast<int>(m_ID));
+					g_mainState->EnsureCombatParticipant(static_cast<int>(m_ID));
 				}
 			}
 
 			// Only skip chase/attack AI while combat is paused for orders.
-			if (g_isCombatMode && g_CombatState && g_CombatState->m_paused)
+			if (g_mainState && g_mainState->IsCombatOrdersPaused())
 				return;
 
 			if (g_isCombatMode)
@@ -825,8 +839,8 @@ void U7Object::HandleMonsterSpawnerEgg()
 			{
 				spawned->m_Team = 1; // 0 = neutral/player, 1 = hostile
 
-				if (g_isCombatMode && g_CombatState)
-					g_CombatState->EnsureParticipant(static_cast<int>(newId));
+				if (g_isCombatMode && g_mainState)
+					g_mainState->EnsureCombatParticipant(static_cast<int>(newId));
 			}
 
 			spawned->MonsterInit();
@@ -1661,6 +1675,14 @@ static std::string GetActivityScriptName(int activityId)
 
 void U7Object::NPCUpdate()
 {
+	// Corpses: no schedules, combat AI, conversation scripts, or movement.
+	if (IsDeathStatus())
+	{
+		if (!m_isFrameOverridden)
+			SetOverrideFrame(GetDeathFrameForFacing());
+		return;
+	}
+
 	// Don't run schedule activity scripts while in the party (including the Avatar).
 	// Avatar was previously excluded from this skip (m_NPCID != 0), so Talk/Combat
 	// activities could run on NPC 0 — self-Interact / npc_frame flicker at game start.
@@ -1720,7 +1742,7 @@ void U7Object::NPCUpdate()
 			}
 		}
 
-		if (g_isCombatMode && g_CombatState && g_CombatState->m_paused)
+		if (g_mainState && g_mainState->IsCombatOrdersPaused())
 			return;
 
 		if (m_combatMoveOrder)
@@ -2688,8 +2710,10 @@ void U7Object::SetPos(Vector3 pos)
 	UpdateObjectChunk(this, fromPos);
 
 	// Notify pathfinding grid if this is a non-walkable STATIC object (not NPCs!)
-	// NPCs don't block pathfinding grid, so no need to update when they move
-	if (m_objectData && m_objectData->m_isNotWalkable && m_UnitType != UnitTypes::UNIT_TYPE_NPC)
+	// NPCs don't block pathfinding grid, so no need to update when they move.
+	// Spell missiles skip the grid entirely (they also skip ValidateMove scans).
+	if (m_objectData && m_objectData->m_isNotWalkable &&
+	    m_UnitType != UnitTypes::UNIT_TYPE_NPC && !m_isProjectile)
 	{
 		// Update both old and new positions (object moved)
 		NotifyPathfindingGridUpdate((int)fromPos.x, (int)fromPos.z);
@@ -2728,6 +2752,112 @@ bool U7Object::IsSleepingPose() const
 {
 	// Exult sleep_frame = 13; +16 = 29 for opposite facing.
 	return m_isFrameOverridden && (m_overrideFrame == 13 || m_overrideFrame == 29);
+}
+
+bool U7Object::IsDeathStatus() const
+{
+	if (m_UnitType != UnitTypes::UNIT_TYPE_NPC || !m_NPCData)
+		return false;
+	// Prefer runtime Obj_flags; also honor npc.dat bit 15 for loaded corpses.
+	if ((m_flags & kObjFlagDead) != 0)
+		return true;
+	return (m_NPCData->status & kNpcDatStatusDead) != 0;
+}
+
+void U7Object::ApplyDeath()
+{
+	if (GetIsDead())
+		return;
+
+	// Already a corpse — keep the pose, do not re-run side effects.
+	if (IsDeathStatus())
+	{
+		m_hp = 0.0f;
+		return;
+	}
+
+	m_hp = 0.0f;
+	m_pathWaypoints.clear();
+	m_currentWaypointIndex = 0;
+	m_pathfindingPending = false;
+	m_isMoving = false;
+	m_isSchedulePath = false;
+	m_combatMoveOrder = false;
+	m_target = 0;
+	m_combatPathTargetId = 0;
+	m_followingSchedule = false;
+	SetDest(m_Pos);
+	ReleaseFurnitureClaim();
+	m_furnitureObjectId = -1;
+
+	if (m_UnitType == UnitTypes::UNIT_TYPE_MONSTER)
+	{
+		AddConsoleString(m_name.empty() ? "Creature is dead!" : (m_name + " is dead!"), RED);
+		if (g_SoundSystem)
+			g_SoundSystem->StopLoopingSoundEffect(static_cast<int>(m_ID));
+		if (g_mainState && g_mainState->m_barkObject == this)
+			g_mainState->ClearBarks();
+		UnassignObjectChunk(this);
+		SetIsDead(true);
+		m_Visible = false;
+		m_ShouldDraw = false;
+		return;
+	}
+
+	if (m_UnitType != UnitTypes::UNIT_TYPE_NPC || !m_NPCData)
+		return;
+
+	m_NPCData->status |= kNpcDatStatusDead;
+	m_flags |= kObjFlagDead;
+	m_isContainer = true;
+
+	// Halt schedule / conversation coroutines for this NPC.
+	if (g_ScriptingSystem)
+	{
+		if (m_NPCData->m_lastActivity >= 0)
+		{
+			const std::string activityScript =
+				GetActivityScriptName(m_NPCData->m_lastActivity) + "_" + std::to_string(m_NPCID);
+			if (g_ScriptingSystem->IsCoroutineActive(activityScript))
+				g_ScriptingSystem->CleanupCoroutine(activityScript);
+			m_NPCData->m_lastActivity = -1;
+		}
+		const std::string npcScript = FindNPCScriptByID(m_NPCID);
+		if (!npcScript.empty() && g_ScriptingSystem->IsCoroutineActive(npcScript))
+			g_ScriptingSystem->CleanupCoroutine(npcScript);
+	}
+
+	// Drop from the party (Avatar stays listed as party leader even when dead).
+	if (g_Player && m_NPCID != 0 && g_Player->NPCIDInParty(m_NPCID))
+		g_Player->RemovePartyMember(m_NPCID);
+
+	SetOverrideFrame(GetDeathFrameForFacing());
+
+	const std::string label = m_name.empty() ? "NPC" : m_name;
+	AddConsoleString(label + " is dead!", RED);
+}
+
+void U7Object::ResurrectFromDeath()
+{
+	if (m_UnitType != UnitTypes::UNIT_TYPE_NPC || !m_NPCData)
+		return;
+	if (!IsDeathStatus())
+		return;
+
+	m_NPCData->status &= ~kNpcDatStatusDead;
+	m_flags &= ~kObjFlagDead;
+	m_hp = m_BaseMaxHP > 0.0f ? m_BaseMaxHP : static_cast<float>(m_NPCData->str);
+	if (m_hp < 1.0f)
+		m_hp = static_cast<float>(std::max(1, static_cast<int>(m_NPCData->str)));
+	m_NPCData->health = static_cast<unsigned short>(m_hp);
+
+	ClearOverrideFrame();
+	m_isContainer = true;
+	m_Visible = true;
+	m_ShouldDraw = true;
+
+	const std::string label = m_name.empty() ? "NPC" : m_name;
+	AddConsoleString(label + " has been resurrected!", GREEN);
 }
 
 int U7Object::GetSitFrameForFacing() const
@@ -3806,6 +3936,16 @@ bool U7Object::RemoveObjectFromInventory(int objectid)
 					child->m_containingObjectId = -1; // Clear parent reference
 				}
 				m_inventory.erase(m_inventory.begin() + i);
+				// Clear equipment slots that still pointed at this item (loot from corpses).
+				if (m_NPCData)
+				{
+					for (int s = 0; s < static_cast<int>(EquipmentSlot::SLOT_COUNT); ++s)
+					{
+						const auto slot = static_cast<EquipmentSlot>(s);
+						if (m_NPCData->GetEquippedItem(slot) == objectid)
+							m_NPCData->m_equipment[slot] = -1;
+					}
+				}
 				InvalidateWeightCache();
 				return true;
 			}
@@ -3817,6 +3957,10 @@ bool U7Object::RemoveObjectFromInventory(int objectid)
 
 void U7Object::Interact(int event)
 {
+	// Dead NPCs are lootable containers — no conversation or usecode.
+	if (IsDeathStatus())
+		return;
+
 	if (m_hasConversationTree)
 	{
 		g_ConversationState->SetNPC(m_NPCID);
@@ -3981,6 +4125,14 @@ void U7Object::NPCInit(NPCData* npcData)
 	m_BaseMaxHP = npcData->health;
 	// Max mana equals Magic; start fully topped up.
 	m_mana = float(npcData->magic);
+
+	// Saved/scripted dead bit: restore corpse pose and silence AI.
+	if (IsDeathStatus())
+	{
+		m_hp = 0.0f;
+		m_followingSchedule = false;
+		SetOverrideFrame(GetDeathFrameForFacing());
+	}
 
 	// Assign contiguous batch index if not already set (preserve any value restored from save)
 	if (m_npcBatchIndex < 0)

@@ -560,6 +560,11 @@ void GumpSpellbook::CastSpell(int spellId)
 	if (caster->m_mana < 0.0f)
 		caster->m_mana = 0.0f;
 
+	// Close spellbook + every other open gump as soon as the spell is selected,
+	// before the script runs (including before click_on_item targeting).
+	if (g_gumpManager)
+		g_gumpManager->MarkAllGumpsDead();
+
 	// Pass the caster as objectref (spell scripts bark / schedule on this id).
 	const std::string result = g_ScriptingSystem->CallScript(
 		scriptName,
@@ -567,9 +572,6 @@ void GumpSpellbook::CastSpell(int spellId)
 
 	Log("GumpSpellbook::CastSpell - " + spellName + " via " + scriptName +
 		" result='" + result + "' mana left=" + std::to_string(caster->m_mana));
-
-	// Close the spellbook after a successful cast attempt (script ran)
-	m_IsDead = true;
 }
 
 void GumpSpellbook::Update()

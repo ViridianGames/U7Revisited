@@ -8,6 +8,7 @@
 #include "ConversationState.h"
 #include "PathfindingSystem.h"
 #include "PerfTelemetry.h"
+#include "SoundSystem.h"
 #include "lua.hpp"
 #include "../ThirdParty/raylib/include/rlgl.h"
 #include "../ThirdParty/nlohmann/json.hpp"
@@ -115,7 +116,6 @@ std::unordered_map<int, SpellData*> g_spellMap;
 std::unique_ptr<PathfindingSystem> g_pathfindingSystem;
 
 ConversationState* g_ConversationState;
-CombatState* g_CombatState;
 MainState* g_mainState;
 
 bool g_CameraMoved;
@@ -2629,6 +2629,158 @@ void UnassignObjectChunk(U7Object* object)
 
 	auto& chunk = g_chunkObjectMap[i][j];
 	chunk.erase(std::remove(chunk.begin(), chunk.end(), object), chunk.end());
+}
+
+namespace {
+	std::vector<FlyingProjectile> g_flyingProjectiles;
+
+	void DestroyProjectileObject(int objectId)
+	{
+		U7Object* obj = GetObjectFromID(objectId);
+		if (!obj)
+			return;
+		UnassignObjectChunk(obj);
+		if (g_SoundSystem)
+			g_SoundSystem->StopLoopingSoundEffect(objectId);
+		obj->SetIsDead(true);
+		obj->m_Visible = false;
+	}
+}
+
+bool SpawnFlyingProjectile(int shape, int fromId, int toId, float speed, int damage, int damageType)
+{
+	U7Object* from = GetObjectFromID(fromId);
+	U7Object* to = GetObjectFromID(toId);
+	if (!from || !to || shape <= 0 || shape >= 1024)
+		return false;
+
+	const int objectId = static_cast<int>(GetNextID());
+	Vector3 spawnPos = from->m_Pos;
+	// Launch from mid-torso so the bolt clears floors/tables.
+	spawnPos.y += 0.9f;
+	Vector3 targetPos = to->m_Pos;
+	targetPos.y += 0.7f;
+
+	U7Object* bolt = AddObject(shape, 0, objectId, spawnPos.x, spawnPos.y, spawnPos.z);
+	if (!bolt)
+		return false;
+
+	bolt->m_isProjectile = true;
+	bolt->m_Visible = true;
+	bolt->m_ShouldDraw = true;
+	bolt->m_isContained = false;
+	// AddObject may have marked the spawn tile blocked; refresh so missiles don't stick.
+	if (bolt->m_objectData && bolt->m_objectData->m_isNotWalkable)
+		NotifyPathfindingGridUpdate(static_cast<int>(spawnPos.x), static_cast<int>(spawnPos.z));
+	bolt->SetDest(targetPos);
+	if (speed > 0.1f)
+		bolt->m_speed = speed;
+
+	FlyingProjectile proj;
+	proj.objectId = objectId;
+	proj.targetId = toId;
+	proj.attackerId = fromId;
+	proj.targetPos = targetPos;
+	proj.damage = damage;
+	proj.damageType = damageType;
+	proj.speed = (speed > 0.1f) ? speed : 16.0f;
+	proj.animAccum = 0.0f;
+	proj.animIndex = 0;
+	// Collect the first contiguous run of drawable frames (skip null 1x1 placeholders).
+	// Fire bolt 856: frames 0–4 spin; 5–7 are empty; 8+ are extra variants.
+	const int declared = std::max(1, g_shapeTable[shape][0].m_numFrames);
+	for (int f = 0; f < declared && f < 32; ++f)
+	{
+		ShapeData& sd = g_shapeTable[shape][f];
+		if (!sd.IsValid())
+		{
+			if (!proj.animFrameList.empty())
+				break;
+			continue;
+		}
+		proj.animFrameList.push_back(f);
+	}
+	if (proj.animFrameList.empty())
+		proj.animFrameList.push_back(0);
+	bolt->SetFrame(proj.animFrameList[0]);
+	g_flyingProjectiles.push_back(proj);
+	return true;
+}
+
+void UpdateFlyingProjectiles()
+{
+	if (g_flyingProjectiles.empty() || !g_Engine)
+		return;
+
+	const float dt = g_Engine->LastFrameInSeconds();
+	constexpr float kHitRadius = 0.65f;
+	constexpr float kAnimFps = 12.0f;
+
+	for (size_t i = 0; i < g_flyingProjectiles.size(); )
+	{
+		FlyingProjectile& proj = g_flyingProjectiles[i];
+		U7Object* bolt = GetObjectFromID(proj.objectId);
+		if (!bolt || bolt->GetIsDead())
+		{
+			g_flyingProjectiles.erase(g_flyingProjectiles.begin() + static_cast<long>(i));
+			continue;
+		}
+
+		// Home toward a live target when possible.
+		if (U7Object* target = GetObjectFromID(proj.targetId))
+		{
+			if (!target->GetIsDead())
+			{
+				proj.targetPos = target->m_Pos;
+				proj.targetPos.y += 0.7f;
+			}
+		}
+
+		Vector3 delta = Vector3Subtract(proj.targetPos, bolt->m_Pos);
+		const float dist = Vector3Length(delta);
+		if (dist <= kHitRadius || dist < 1e-4f)
+		{
+			U7Object* target = GetObjectFromID(proj.targetId);
+			if (target && !target->GetIsDead() && !target->IsDeathStatus() && proj.damage > 0)
+			{
+				target->m_hp -= static_cast<float>(proj.damage);
+				U7Object* attacker = GetObjectFromID(proj.attackerId);
+				if (attacker)
+					target->NotifyAttackedBy(attacker);
+				if (target->m_hp <= 0.0f)
+					target->ApplyDeath();
+				// Flame Bolt / fire bolt: hit SFX only — no explosion sprite (that's for other spells).
+				if (g_SoundSystem)
+					g_SoundSystem->PlaySound(BuildU7SfxPath(13));
+			}
+			DestroyProjectileObject(proj.objectId);
+			g_flyingProjectiles.erase(g_flyingProjectiles.begin() + static_cast<long>(i));
+			continue;
+		}
+
+		const float step = proj.speed * dt;
+		Vector3 next = bolt->m_Pos;
+		if (step >= dist)
+			next = proj.targetPos;
+		else
+			next = Vector3Add(bolt->m_Pos, Vector3Scale(Vector3Normalize(delta), step));
+		bolt->SetPos(next);
+		bolt->SetDest(proj.targetPos);
+
+		// Spin through drawable frames only (null frames already filtered out).
+		if (proj.animFrameList.size() > 1)
+		{
+			proj.animAccum += dt * kAnimFps;
+			while (proj.animAccum >= 1.0f)
+			{
+				proj.animAccum -= 1.0f;
+				proj.animIndex = (proj.animIndex + 1) % static_cast<int>(proj.animFrameList.size());
+				bolt->SetFrame(proj.animFrameList[proj.animIndex]);
+			}
+		}
+
+		++i;
+	}
 }
 
 void AddObjectToInventory(int objectId, int containerId)

@@ -1,7 +1,7 @@
 --- Fire Blast (Vas Flam). Oracle: usecode.dc Func0652 object#(0x652).
---- Second Circle. Weapon shape 856 deals 10 fire damage (WEAPONS.DAT).
+--- Second Circle. Oracle: set_to_attack(caster, target, 0x0358) — weapon/shape 856
+--- ("fire bolt") flies to the target; frames 0–7 are the spin animation.
 --- Do not destroy the caster — earlier decompile used destroy_object(objectref).
---- Projectile / set_to_attack path is unimplemented; apply damage immediately.
 
 function spell_vas_flam_0338(eventid, objectref)
     if eventid ~= 1 and eventid ~= 4 then
@@ -23,13 +23,11 @@ function spell_vas_flam_0338(eventid, objectref)
     -- Cast FX only (no UC_USECODE / attack opcode).
     execute_usecode_array(objectref, {17505, 17530, 17514, 17514, 17520, 8047, 65, 7769})
 
-    if not is_npc(target) or is_dead(target) then
+    if is_npc(target) and is_dead(target) then
         return
     end
 
-    -- apply_damage(base, hit_points, damage_type, target_id [, attacker_id])
-    -- damage_type 1 = fire; 10 HP matches weapon 856.
-    apply_damage(10, 10, 1, target, objectref)
-    obj_sprite_effect(target, 1)
-    play_sound_effect(13, target)
+    -- fire_projectile(shape, from, to, speed [, damage [, damage_type]])
+    -- Shape 856 = fire bolt (spinning frames). Damage 10 fire applied on hit.
+    fire_projectile(856, objectref, target, 18, 10, 1)
 end

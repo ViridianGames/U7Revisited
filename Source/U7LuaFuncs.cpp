@@ -3713,19 +3713,28 @@ static int LuaAttackObject(lua_State *L)
     return 1;
 }
 
-// 0x0076 | fire_projectile
+// 0x0076 | fire_projectile(shape, from_id, to_id, speed [, damage [, damage_type]])
+// Spawns a homing missile (e.g. shape 856 fire bolt for Vas Flam). Damage is
+// applied on impact; damage_type 1 = fire. Defaults: damage=10, damage_type=1.
 static int LuaFireProjectile(lua_State *L)
 {
-    // int source_id = (int)lua_tointeger(L, 1);
-    // int direction = (int)lua_tointeger(L, 2);
-    // int projectile_shape = (int)lua_tointeger(L, 3);
-    // int attack_points = (int)lua_tointeger(L, 4);
-    // int weapon_id = (int)lua_tointeger(L, 5);
-    // int ammo_id = (int)lua_tointeger(L, 6);
+    const int n = lua_gettop(L);
+    if (n < 3)
+    {
+        lua_pushboolean(L, 0);
+        return 1;
+    }
 
-    // Projectile system not implemented
-    // Would spawn moving projectile with damage
-    return 0;
+    const int shape = (int)luaL_checkinteger(L, 1);
+    const int fromId = (int)luaL_checkinteger(L, 2);
+    const int toId = (int)luaL_checkinteger(L, 3);
+    const float speed = (n >= 4) ? (float)luaL_optnumber(L, 4, 18.0) : 18.0f;
+    const int damage = (n >= 5) ? (int)luaL_optinteger(L, 5, 10) : 10;
+    const int damageType = (n >= 6) ? (int)luaL_optinteger(L, 6, 1) : 1;
+
+    const bool ok = SpawnFlyingProjectile(shape, fromId, toId, speed, damage, damageType);
+    lua_pushboolean(L, ok ? 1 : 0);
+    return 1;
 }
 
 // 0x007A | call_guards
@@ -3779,6 +3788,12 @@ static int LuaApplyDamage(lua_State *L)
     }
 
     U7Object* target = g_objectList[target_id].get();
+    if (target->IsDeathStatus() || target->GetIsDead())
+    {
+        lua_pushboolean(L, 1);
+        return 1;
+    }
+
     target->m_hp -= hit_points;
 
     if (attacker_id >= 0)
@@ -3788,9 +3803,9 @@ static int LuaApplyDamage(lua_State *L)
             target->NotifyAttackedBy(it->second.get());
     }
 
-    if (target->m_hp <= 0 && target->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC && target->m_NPCData)
+    if (target->m_hp <= 0)
     {
-        target->m_NPCData->status |= 0x0008;  // Set dead bit
+        target->ApplyDeath();
         lua_pushboolean(L, 1);  // Target died
         return 1;
     }
@@ -3810,12 +3825,11 @@ static int LuaReduceHealth(lua_State *L)
     if (g_objectList.find(object_id) != g_objectList.end())
     {
         U7Object* target = g_objectList[object_id].get();
-        target->m_hp -= hit_points;
-
-        // Check if target died
-        if (target->m_hp <= 0 && target->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC && target->m_NPCData)
+        if (!target->IsDeathStatus() && !target->GetIsDead())
         {
-            target->m_NPCData->status |= 0x0008;  // Set dead bit
+            target->m_hp -= hit_points;
+            if (target->m_hp <= 0)
+                target->ApplyDeath();
         }
     }
 
@@ -3960,10 +3974,8 @@ static int LuaIsDead(lua_State *L)
         return 1;
     }
 
-    // In Exult, status bit 3 (value 0x0008) indicates dead
-    bool is_dead = (obj->m_NPCData->status & 0x0008) != 0;
-
-    lua_pushboolean(L, is_dead);
+    // Dead = Obj_flags::dead / npc.dat bit 15 — not status 0x0008 (that is Good alignment).
+    lua_pushboolean(L, obj->IsDeathStatus() ? 1 : 0);
     return 1;
 }
 
@@ -4033,11 +4045,13 @@ static int LuaKillNPC(lua_State *L)
 {
     int npc_id = (int)lua_tointeger(L, 1);
 
-    // Set NPC's dead status bit
-    if (g_NPCData.find(npc_id) != g_NPCData.end())
+    if (g_NPCData.find(npc_id) != g_NPCData.end() && g_NPCData[npc_id])
     {
-        // Set bit 3 (0x0008) to mark as dead
-        g_NPCData[npc_id]->status |= 0x0008;
+        U7Object* obj = GetObjectFromID(g_NPCData[npc_id]->m_objectID);
+        if (obj)
+            obj->ApplyDeath();
+        else
+            g_NPCData[npc_id]->status |= kNpcDatStatusDead;
     }
 
     return 0;
@@ -4048,16 +4062,13 @@ static int LuaResurrect(lua_State *L)
 {
     int npc_id = (int)lua_tointeger(L, 1);
 
-    // Clear NPC's dead status bit and restore health
-    if (g_NPCData.find(npc_id) != g_NPCData.end())
+    if (g_NPCData.find(npc_id) != g_NPCData.end() && g_NPCData[npc_id])
     {
-        NPCData* npc = g_NPCData[npc_id].get();
-
-        // Clear bit 3 (0x0008) to mark as alive
-        npc->status &= ~0x0008;
-
-        // Restore health to full (strength is max HP)
-        // In full implementation, would also restore HP in U7Object
+        U7Object* obj = GetObjectFromID(g_NPCData[npc_id]->m_objectID);
+        if (obj)
+            obj->ResurrectFromDeath();
+        else
+            g_NPCData[npc_id]->status &= ~kNpcDatStatusDead;
     }
 
     return 0;
@@ -4315,8 +4326,7 @@ static int LuaGetDeadParty(lua_State *L)
         if (party_member->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_NPC || !party_member->m_NPCData)
             continue;
 
-        // Check if dead (status bit 3)
-        if (party_member->m_NPCData->status & 0x0008)
+        if (party_member->IsDeathStatus())
         {
             lua_pushinteger(L, table_index);
             lua_pushinteger(L, party_member_id);

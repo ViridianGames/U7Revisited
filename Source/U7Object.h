@@ -48,6 +48,13 @@ enum class ObjectAnimMode : uint8_t
 	Frozen = 2
 };
 
+// NPCData::status is the raw npc.dat rflags word (Exult Actor::read).
+// Bits 3–4 = alignment (Neutral/Good/Evil/Chaotic). Bit 15 (0x8000) = dead.
+// Never use 0x0008 as "dead" — that is Good alignment (Avatar ships with status 0x0008).
+constexpr unsigned short kNpcDatStatusDead = 0x8000;
+// Exult Obj_flags::dead = 4 → bit on U7Object::m_flags for get/set/clear_item_flag.
+constexpr unsigned int kObjFlagDead = (1u << 4);
+
 struct NPCData
 {
 	unsigned char x;
@@ -482,12 +489,19 @@ public:
 
 	// Pose frames (Exult): 0–15 one facing set, 16–31 the opposite.
 	// sit=10/26, sleep=13/29. Setting a pose stops pathing so NPCDraw uses it.
+	// Death uses the same laying-down frames as sleep (13/29).
 	void SetOverrideFrame(int overrideFrame);
 	void ClearOverrideFrame(const Vector3* toward = nullptr);
 	bool IsSittingPose() const;
 	bool IsSleepingPose() const;
+	bool IsDeathStatus() const;
+	/// Apply combat/script death: NPCs become lootable corpses; monsters despawn.
+	void ApplyDeath();
+	/// Clear death status and restore an NPC (Resurrect). No-op for monsters.
+	void ResurrectFromDeath();
 	int GetSitFrameForFacing() const;
 	int GetSleepFrameForFacing() const;
+	int GetDeathFrameForFacing() const { return GetSleepFrameForFacing(); }
 	void SitOnObject(U7Object* chair);
 	void LieOnObject(U7Object* bed);
 	// After sitting/sleeping, step to a walkable tile so pathfinding isn't trapped
@@ -509,6 +523,9 @@ public:
 	bool IsLocked();
 
 	bool IsMagicLocked();
+
+	// Spell/weapon missile in flight — skipped by walk collision.
+	bool m_isProjectile = false;
 
 	void SetFrames(int framex, int framey)
 	{

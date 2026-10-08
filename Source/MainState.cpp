@@ -26,6 +26,8 @@
 #include "Ghost/GhostSerializer.h"
 #include "NpcListWindow.h"
 #include "SoundSystem.h"
+#include "CombatMode.h"
+#include "CombatState.h"
 
 #include <unordered_set>
 #include <fstream>
@@ -788,6 +790,12 @@ void MainState::HandleEscapeKey()
 		return;
 	}
 
+	if (g_isCombatMode)
+	{
+		LeaveCombatMode();
+		return;
+	}
+
 	if (!g_gumpManager->m_GumpList.empty())
 		g_gumpManager->m_GumpList.back().get()->SetIsDead(true);
 	else// if (!g_Engine->m_askedToExit)
@@ -920,18 +928,20 @@ void MainState::HandleGameKeys()
 	}
 
 	if (IsKeyPressed(KEY_SPACE))
-		m_paused = !m_paused;
+	{
+		// In combat, Space is owned by the active combat style; otherwise it pauses simulation.
+		if (g_isCombatMode && m_combatMode)
+			m_combatMode->HandleInput(*this);
+		else if (!g_isCombatMode)
+			m_paused = !m_paused;
+	}
 
 	if (IsKeyPressed(KEY_C))
 	{
-		if (g_StateMachine && g_StateMachine->GetCurrentState() == STATE_COMBATSTATE)
-		{
-			g_StateMachine->PopState();
-		}
+		if (g_isCombatMode)
+			LeaveCombatMode();
 		else if (kCombatStateEnabled)
-		{
-			g_StateMachine->PushState(STATE_COMBATSTATE);
-		}
+			EnterCombatMode();
 	}
 
 	if (IsKeyPressed(KEY_H))
@@ -1336,6 +1346,14 @@ void MainState::HandleLeftDoubleClick()
 		// when the second click successfully uses/opens the object.
 		ClearObjectInfoTooltip();
 
+		// Dead NPCs are lootable corpses — open their inventory, no talk/paperdoll.
+		if (g_objectUnderMousePointer->IsDeathStatus())
+		{
+			m_handledDoubleLeftClickThisFrame = true;
+			OpenGump(g_objectUnderMousePointer->m_ID);
+			return;
+		}
+
 		bool isAvatar = g_objectUnderMousePointer->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC && g_objectUnderMousePointer->m_NPCID == 0;
 		bool isPartyMember = g_objectUnderMousePointer->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC &&
 			g_Player->NPCIDInParty(g_objectUnderMousePointer->m_NPCID);
@@ -1407,6 +1425,14 @@ void MainState::HandleLeftSingleClick()
 	// Double-click use/open already handled this frame — don't show info.
 	if (m_handledDoubleLeftClickThisFrame)
 		return;
+
+	// Combat: orders click when the style allows it; otherwise swallow world clicks while frozen.
+	if (IsCombatOrdersPaused())
+	{
+		if (AllowsCombatPlayerOrders())
+			HandleCombatOrdersClick();
+		return;
+	}
 
 	// Spell/key targeting: world objects and items inside open gumps.
 	if (m_objectSelectionMode)
@@ -1557,6 +1583,10 @@ void MainState::DebugPrintNpcSchedule(U7Object* npc)
 void MainState::HandleAvatarMovement()
 {
 	if (!IsCameraLockedToAvatar())
+		return;
+
+	U7Object* avatarCheck = g_Player ? g_Player->GetAvatarObject() : nullptr;
+	if (avatarCheck && avatarCheck->IsDeathStatus())
 		return;
 
 	if (g_firstPersonEnabled)
@@ -2013,6 +2043,9 @@ void MainState::Update()
 
 		g_CurrentUpdate++;
 
+		if (g_isCombatMode)
+			UpdateCombatMode();
+
 		// Reset per-frame scripting counters to enforce throttling budgets
 		if (g_ScriptingSystem)
 		{
@@ -2300,6 +2333,10 @@ void MainState::Update()
 		m_msObjectsThisSec += objMs;
 		if (objMs > m_maxMsObjects) m_maxMsObjects = objMs;
 		g_perf.AddMs(g_perf.msObjects, g_perf.maxMsObjects, objMs);
+
+		// Spell missiles (e.g. Vas Flam fire bolt 856) move/animate outside object Update.
+		if (!m_paused)
+			UpdateFlyingProjectiles();
 
 		// Roof pop-off must run AFTER the global m_Visible=true pass above and BEFORE
 		// UpdateSortedVisibleObjects (which builds the pick list). Otherwise invisible
@@ -2828,6 +2865,17 @@ void MainState::Draw()
 					preferY = origY;
 			}
 
+			// Roof tops are standable for walking, but while the Avatar is below
+			// them the drop ghost must not snap onto the roof (gambling tables, etc.).
+			auto isRoofAboveAvatar = [&](U7Object* obj) -> bool {
+				if (hackMove || !obj || !obj->m_objectData)
+					return false;
+				if (!PathfindingSystem::IsRoofShape(obj->m_ObjectType))
+					return false;
+				const float top = PathfindingSystem::GetObjectSurfaceY(obj);
+				return top > preferY + 0.75f;
+			};
+
 			// Placement XZ must NOT use the y=0 ground pick alone: aiming at the top
 			// of a crate stack makes that ray hit ground beside the stack, so the
 			// ghost never sits on the upper crate. Intersect a horizontal plane at
@@ -2837,7 +2885,8 @@ void MainState::Draw()
 			    (hoverForPick && (hoverForPick->m_isContained ||
 			     hoverForPick->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC ||
 			     hoverForPick->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_MONSTER ||
-			     hoverForPick->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_EGG)))
+			     hoverForPick->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_EGG ||
+			     isRoofAboveAvatar(hoverForPick))))
 			{
 				hoverForPick = nullptr;
 			}
@@ -2908,13 +2957,32 @@ void MainState::Draw()
 					{
 						if (tx < 0 || tz < 0 || tx >= 3072 || tz >= 3072)
 							continue;
-						// Walkable floors/roofs: tighter story band.
+						// Walkable floors: tighter story band. Skip roof heights
+						// above the Avatar — those are walkable but not drop targets indoors.
+						const auto overlapping = g_pathfindingSystem->GetOverlappingObjects(tx, tz);
 						for (float hy : g_pathfindingSystem->GetWalkableSurfaceHeights(tx, tz))
 						{
-							if (hy >= bandMin && hy <= bandMax)
+							if (hy < bandMin || hy > bandMax)
+								continue;
+							bool roofAbove = false;
+							if (!hackMove)
+							{
+								for (const auto& o : overlapping)
+								{
+									if (!o.obj || !PathfindingSystem::IsRoofShape(o.obj->m_ObjectType))
+										continue;
+									const float roofTop = PathfindingSystem::GetObjectSurfaceY(o.obj);
+									if (fabsf(roofTop - hy) <= 0.15f && roofTop > preferY + 0.75f)
+									{
+										roofAbove = true;
+										break;
+									}
+								}
+							}
+							if (!roofAbove)
 								supportTops.push_back(hy);
 						}
-						for (const auto& o : g_pathfindingSystem->GetOverlappingObjects(tx, tz))
+						for (const auto& o : overlapping)
 						{
 							U7Object* obj = o.obj;
 							if (!obj || obj == draggedObject || !obj->m_objectData || obj->m_isContained)
@@ -2922,6 +2990,8 @@ void MainState::Draw()
 							if (obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC ||
 							    obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_MONSTER ||
 							    obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_EGG)
+								continue;
+							if (isRoofAboveAvatar(obj))
 								continue;
 
 							const float top = PathfindingSystem::GetObjectSurfaceY(obj);
@@ -2955,7 +3025,8 @@ void MainState::Draw()
 			    hover->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_NPC &&
 			    hover->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_MONSTER &&
 			    hover->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_EGG &&
-			    !hover->m_isContained)
+			    !hover->m_isContained &&
+			    !isRoofAboveAvatar(hover))
 			{
 				const float top = PathfindingSystem::GetObjectSurfaceY(hover);
 				if (top >= bandMin && top <= stackBandMax &&
@@ -3287,9 +3358,9 @@ void MainState::Draw()
 		}
 	}
 
-	if (g_CombatState && g_CombatState->m_paused && g_CombatState->m_selectedPartyMemberObjectId >= 0)
+	if (AllowsCombatPlayerOrders() && IsCombatOrdersPaused() && m_combatSelectedPartyMemberObjectId >= 0)
 	{
-		auto selIt = g_objectList.find(g_CombatState->m_selectedPartyMemberObjectId);
+		auto selIt = g_objectList.find(m_combatSelectedPartyMemberObjectId);
 		if (selIt != g_objectList.end() && selIt->second)
 		{
 			Vector3 pos = selIt->second->m_centerPoint;
@@ -3404,6 +3475,9 @@ void MainState::Draw()
 	{
 		g_gumpManager->Draw();
 	}
+
+	if (g_isCombatMode && m_combatMode)
+		m_combatMode->DrawHud(*this);
 
 	// Restore default blend mode
 	rlSetBlendMode(BLEND_ALPHA);
@@ -4257,6 +4331,298 @@ bool MainState::IsNpcSchedulesEnabled() const
 	return m_npcSchedulesEnabled;
 }
 
+bool MainState::IsCombatOrdersPaused() const
+{
+	if (!g_isCombatMode || !m_combatMode)
+		return false;
+	return m_combatMode->IsSimulationPaused();
+}
+
+bool MainState::AllowsCombatPlayerOrders() const
+{
+	if (!g_isCombatMode || !m_combatMode)
+		return false;
+	return m_combatMode->AllowsPlayerOrders();
+}
+
+bool MainState::IsCombatPartyMemberObject(const U7Object* obj) const
+{
+	if (!obj || !g_Player)
+		return false;
+	if (obj->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_NPC)
+		return false;
+	return g_Player->NPCIDInParty(obj->m_NPCID);
+}
+
+bool MainState::IsCombatEnemyObject(const U7Object* obj) const
+{
+	if (!obj || obj->m_hp <= 0.0f || obj->IsDeathStatus())
+		return false;
+	if (IsCombatPartyMemberObject(obj))
+		return false;
+	if (IsHostileCombatUnit(obj))
+		return true;
+	return std::find(m_combatParticipants.begin(), m_combatParticipants.end(), obj->m_ID)
+		!= m_combatParticipants.end();
+}
+
+void MainState::ClearCombatPartyTargets()
+{
+	if (!g_Player)
+		return;
+	for (int npcId : g_Player->GetPartyMemberIds())
+	{
+		auto itNpc = g_NPCData.find(npcId);
+		if (itNpc == g_NPCData.end() || !itNpc->second)
+			continue;
+		auto itObj = g_objectList.find(itNpc->second->m_objectID);
+		if (itObj != g_objectList.end() && itObj->second)
+		{
+			itObj->second->m_target = 0;
+			itObj->second->m_combatMoveOrder = false;
+		}
+	}
+}
+
+void MainState::EnsureCombatParticipant(int objectId)
+{
+	if (objectId <= 0)
+		return;
+	if (std::find(m_combatParticipants.begin(), m_combatParticipants.end(), objectId)
+		== m_combatParticipants.end())
+		m_combatParticipants.push_back(objectId);
+}
+
+void MainState::EnrollNearbyCombatHostiles()
+{
+	U7Object* avatar = g_Player ? g_Player->GetAvatarObject() : nullptr;
+	if (!avatar)
+		return;
+
+	auto consider = [&](U7Object* obj) {
+		if (!obj || !IsHostileCombatUnit(obj))
+			return;
+		const float distSqr = Vector2DistanceSqr(
+			{ obj->m_Pos.x, obj->m_Pos.z },
+			{ avatar->m_Pos.x, avatar->m_Pos.z });
+		if (distSqr > kHostileAggroRangeSqr)
+			return;
+		EnsureCombatParticipant(static_cast<int>(obj->m_ID));
+	};
+
+	if (!g_interestChunkList.empty())
+	{
+		for (int packed : g_interestChunkList)
+		{
+			const int cx = packed & 0xffff;
+			const int cz = (packed >> 16) & 0xffff;
+			if (cx < 0 || cx >= 192 || cz < 0 || cz >= 192)
+				continue;
+			for (U7Object* object : g_chunkObjectMap[cx][cz])
+				consider(object);
+		}
+	}
+	else
+	{
+		for (const auto& [id, obj] : g_objectList)
+		{
+			(void)id;
+			consider(obj.get());
+		}
+	}
+}
+
+void MainState::EnterCombatMode()
+{
+	if (!kCombatStateEnabled || g_isCombatMode)
+		return;
+
+	Log("MainState::EnterCombatMode");
+	SetFirstPersonMouseLook(false);
+
+	const CombatStyle style = GetCombatStylePreference();
+	m_combatMode = CreateCombatMode(style);
+
+	g_isCombatMode = true;
+	m_combatPaused = true;
+	m_combatSelectedPartyMemberObjectId = -1;
+	m_combatParticipants.clear();
+	ClearCombatPartyTargets();
+
+	if (g_combatCursor)
+		g_Cursor = g_combatCursor;
+
+	if (g_Player)
+	{
+		for (int pid : g_Player->GetPartyMemberIds())
+		{
+			auto itNpc = g_NPCData.find(pid);
+			if (itNpc == g_NPCData.end() || !itNpc->second)
+				continue;
+			EnsureCombatParticipant(itNpc->second->m_objectID);
+		}
+	}
+
+	EnrollNearbyCombatHostiles();
+
+	if (!m_combatApproachMessage.empty())
+	{
+		AddConsoleString(m_combatApproachMessage, YELLOW);
+		m_combatApproachMessage.clear();
+	}
+
+	if (m_combatMode)
+		m_combatMode->OnEnter(*this);
+
+	LockCameraToAvatar();
+}
+
+void MainState::LeaveCombatMode()
+{
+	if (!g_isCombatMode)
+		return;
+
+	Log("MainState::LeaveCombatMode");
+	AddConsoleString("Leaving combat.", GREEN);
+
+	if (m_combatMode)
+		m_combatMode->OnLeave(*this);
+	m_combatMode.reset();
+
+	m_combatParticipants.clear();
+	m_combatSelectedPartyMemberObjectId = -1;
+	m_combatPaused = true;
+	g_isCombatMode = false;
+	m_combatApproachMessage.clear();
+	ClearCombatPartyTargets();
+
+	if (g_defaultCursor)
+		g_Cursor = g_defaultCursor;
+}
+
+void MainState::BeginCombatFighting()
+{
+	m_combatPaused = false;
+	m_combatSelectedPartyMemberObjectId = -1;
+	LockCameraToAvatar();
+	AddConsoleString("Fight!", RED);
+}
+
+void MainState::PauseCombatForOrders()
+{
+	m_combatPaused = true;
+	m_combatSelectedPartyMemberObjectId = -1;
+	LockCameraToAvatar();
+	AddConsoleString("Combat paused.", YELLOW);
+	AddConsoleString("Click a party member, then click an enemy or the ground to assign orders.", WHITE);
+	AddConsoleString("Press Space when ready to resume.", WHITE);
+}
+
+void MainState::IssueCombatMoveOrder(U7Object* member, const Vector3& dest)
+{
+	if (!member)
+		return;
+
+	Vector3 moveDest = dest;
+	moveDest.y = member->m_Pos.y;
+
+	member->m_target = 0;
+	member->m_combatMoveOrder = true;
+	member->PathfindToDest(moveDest, /*allowHierarchical=*/true, PathCallerTag::AvatarParty);
+
+	AddConsoleString(
+		member->m_name + " moving to ("
+		+ std::to_string((int)moveDest.x) + ", "
+		+ std::to_string((int)moveDest.z) + ").",
+		GREEN);
+}
+
+void MainState::HandleCombatOrdersClick()
+{
+	if (!IsCombatOrdersPaused())
+		return;
+	if (g_gumpManager && (g_gumpManager->m_isMouseOverGump || g_gumpManager->m_draggingObject))
+		return;
+	if (g_mouseOverUI)
+		return;
+
+	U7Object* clicked = g_objectUnderMousePointer;
+
+	if (clicked && IsCombatPartyMemberObject(clicked))
+	{
+		m_combatSelectedPartyMemberObjectId = clicked->m_ID;
+		AddConsoleString("Selected " + clicked->m_name + " - click an enemy or the ground.", SKYBLUE);
+		return;
+	}
+
+	if (m_combatSelectedPartyMemberObjectId < 0)
+	{
+		AddConsoleString("Select a party member first.", YELLOW);
+		return;
+	}
+
+	auto itMember = g_objectList.find(m_combatSelectedPartyMemberObjectId);
+	if (itMember == g_objectList.end() || !itMember->second)
+		return;
+
+	U7Object* member = itMember->second.get();
+
+	if (clicked && IsCombatEnemyObject(clicked))
+	{
+		member->m_target = clicked->m_ID;
+		member->m_combatMoveOrder = false;
+		AddConsoleString(member->m_name + " will attack " + clicked->m_name + ".", GREEN);
+		return;
+	}
+
+	IssueCombatMoveOrder(member, g_terrainUnderMousePointer);
+}
+
+void MainState::UpdateCombatMode()
+{
+	if (!g_isCombatMode)
+		return;
+
+	const double tOther0 = GetTime();
+	EnrollNearbyCombatHostiles();
+
+	// Prune despawned / dead participants.
+	auto it = m_combatParticipants.begin();
+	while (it != m_combatParticipants.end())
+	{
+		auto objIt = g_objectList.find(*it);
+		if (objIt == g_objectList.end() || !objIt->second ||
+		    objIt->second->GetIsDead() || objIt->second->IsDeathStatus())
+			it = m_combatParticipants.erase(it);
+		else
+			++it;
+	}
+	g_perf.msCombatOther += (GetTime() - tOther0) * 1000.0;
+
+	if (m_combatMode)
+		m_combatMode->Update(*this);
+
+	// Auto-leave when all hostiles among participants are gone (including stub freeze).
+	bool anyHostiles = false;
+	for (int pid : m_combatParticipants)
+	{
+		auto objIt = g_objectList.find(pid);
+		if (objIt == g_objectList.end() || !objIt->second)
+			continue;
+		if (IsCombatEnemyObject(objIt->second.get()))
+		{
+			anyHostiles = true;
+			break;
+		}
+	}
+
+	if (!anyHostiles)
+	{
+		AddConsoleString("Combat over - all enemies defeated!", GREEN);
+		LeaveCombatMode();
+	}
+}
+
 void MainState::ClearPartyFollowPaths()
 {
 	if (!g_Player)
@@ -4341,6 +4707,8 @@ void MainState::MaybeUpdatePartyFollowing()
 		if (itObj == g_objectList.end() || !itObj->second)
 			continue;
 		U7Object* member = itObj->second.get();
+		if (member->IsDeathStatus() || member->GetIsDead())
+			continue;
 
 		if (member->m_pathfindingPending)
 		{
@@ -4522,16 +4890,9 @@ void MainState::SpawnMonster(int monsterType, int x, int y, int z)
 			// Hostile (combat activity)
 			spawned->m_Team = 1; // 0 = neutral/player, 1 = hostile
 
-			// Add the newly spawned (hostile/combat) monster to the combat unit list (participants) now that
-			// the monster egg's requirements have been fulfilled and it has hatched.
-			if (g_CombatState)
-			{
-				auto& parts = g_CombatState->m_participants;
-				if (std::find(parts.begin(), parts.end(), (int)newId) == parts.end())
-				{
-					parts.push_back((int)newId);
-				}
-			}
+			// Add the newly spawned (hostile/combat) monster to the combat participant list.
+			if (g_isCombatMode)
+				EnsureCombatParticipant(static_cast<int>(newId));
 
 			// Always give feedback in console when a monster actually appears
 			//std::string hatchedMsg = "Monster egg hatched! (shape " + std::to_string(monData.m_shape) + ")";
