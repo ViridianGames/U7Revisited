@@ -28,6 +28,7 @@
 #include <cmath>
 #include <cstring>
 #include <cctype>
+#include <cstdint>
 
 #include "InputSystem.h"
 #include "raylib.h"
@@ -2647,7 +2648,8 @@ namespace {
 	}
 }
 
-bool SpawnFlyingProjectile(int shape, int fromId, int toId, float speed, int damage, int damageType)
+bool SpawnFlyingProjectile(int shape, int fromId, int toId, float speed, int damage, int damageType,
+	int weaponShape, int ammoShape)
 {
 	U7Object* from = GetObjectFromID(fromId);
 	U7Object* to = GetObjectFromID(toId);
@@ -2683,6 +2685,8 @@ bool SpawnFlyingProjectile(int shape, int fromId, int toId, float speed, int dam
 	proj.targetPos = targetPos;
 	proj.damage = damage;
 	proj.damageType = damageType;
+	proj.weaponShape = weaponShape;
+	proj.ammoShape = ammoShape;
 	proj.speed = (speed > 0.1f) ? speed : 16.0f;
 	proj.animAccum = 0.0f;
 	proj.animIndex = 0;
@@ -2707,6 +2711,31 @@ bool SpawnFlyingProjectile(int shape, int fromId, int toId, float speed, int dam
 	return true;
 }
 
+bool MarkNewestFlyingProjectilePauseCasterOnHit(int attackerId)
+{
+	for (int i = static_cast<int>(g_flyingProjectiles.size()) - 1; i >= 0; --i)
+	{
+		if (g_flyingProjectiles[static_cast<size_t>(i)].attackerId == attackerId)
+		{
+			g_flyingProjectiles[static_cast<size_t>(i)].pauseCasterOrdersOnHit = true;
+			return true;
+		}
+	}
+	return false;
+}
+
+namespace
+{
+	void PauseCasterOrdersAfterCombatSpell(const FlyingProjectile& proj)
+	{
+		if (!proj.pauseCasterOrdersOnHit || !g_mainState || !g_isCombatMode)
+			return;
+		U7Object* attacker = GetObjectFromID(proj.attackerId);
+		if (attacker)
+			g_mainState->NotifyCombatantCannotContinue(attacker, "needs a new order!");
+	}
+}
+
 void UpdateFlyingProjectiles()
 {
 	if (g_flyingProjectiles.empty() || !g_Engine)
@@ -2722,6 +2751,7 @@ void UpdateFlyingProjectiles()
 		U7Object* bolt = GetObjectFromID(proj.objectId);
 		if (!bolt || bolt->GetIsDead())
 		{
+			PauseCasterOrdersAfterCombatSpell(proj);
 			g_flyingProjectiles.erase(g_flyingProjectiles.begin() + static_cast<long>(i));
 			continue;
 		}
@@ -2741,18 +2771,39 @@ void UpdateFlyingProjectiles()
 		if (dist <= kHitRadius || dist < 1e-4f)
 		{
 			U7Object* target = GetObjectFromID(proj.targetId);
-			if (target && !target->GetIsDead() && !target->IsDeathStatus() && proj.damage > 0)
+			if (target && !target->GetIsDead() && !target->IsDeathStatus())
 			{
-				target->m_hp -= static_cast<float>(proj.damage);
 				U7Object* attacker = GetObjectFromID(proj.attackerId);
-				if (attacker)
-					target->NotifyAttackedBy(attacker);
-				if (target->m_hp <= 0.0f)
-					target->ApplyDeath();
+				int hits = 0;
+				if (proj.weaponShape >= 0 || proj.ammoShape >= 0)
+					hits = FigureCombatHitPoints(attacker, target, proj.weaponShape, proj.ammoShape);
+				else
+					hits = proj.damage;
+				if (hits > 0)
+					ApplyCombatDamage(target, static_cast<float>(hits), attacker);
+				// Combat weapon missiles: same console wording as melee (damage known at impact).
+				if (proj.weaponShape >= 0 || proj.ammoShape >= 0)
+				{
+					const std::string attackerName = (attacker && !attacker->m_name.empty())
+						? attacker->m_name : "Someone";
+					const std::string targetName = !target->m_name.empty() ? target->m_name : "enemy";
+					std::string weaponName = "fists";
+					if (proj.weaponShape >= 0 && proj.weaponShape < 1024)
+					{
+						const std::string& n = g_objectDataTable[proj.weaponShape].m_name;
+						if (!n.empty())
+							weaponName = n;
+					}
+					AddConsoleString(
+						attackerName + " attacks " + targetName + " with " + weaponName
+						+ " for " + std::to_string(hits) + " damage",
+						RED);
+				}
 				// Flame Bolt / fire bolt: hit SFX only — no explosion sprite (that's for other spells).
 				if (g_SoundSystem)
 					g_SoundSystem->PlaySound(BuildU7SfxPath(13));
 			}
+			PauseCasterOrdersAfterCombatSpell(proj);
 			DestroyProjectileObject(proj.objectId);
 			g_flyingProjectiles.erase(g_flyingProjectiles.begin() + static_cast<long>(i));
 			continue;
@@ -3480,6 +3531,217 @@ std::string GetObjectScriptName(U7Object* object)
 static std::map<int, std::vector<EquipmentSlot>> g_equipmentSlotMap;      // Valid slots item can be placed in
 static std::map<int, std::vector<EquipmentSlot>> g_equipmentSlotFillsMap; // All slots item occupies when equipped
 
+// WEAPONS.DAT / AMMO.DAT / ARMOR.DAT (Exult binary layouts).
+static std::unordered_map<int, WeaponData> g_weaponDataMap;
+static std::unordered_map<int, AmmoData> g_ammoDataMap;
+static std::unordered_map<int, ArmorData> g_armorDataMap;
+
+static std::string CombatStaticDataPath()
+{
+	std::string dataPath;
+	if (g_Engine)
+		dataPath = g_Engine->m_EngineConfig.GetString("data_path");
+	if (dataPath.empty())
+		dataPath = "Data/U7";
+	return dataPath;
+}
+
+static bool ReadStaticDatFile(const std::string& path, std::vector<unsigned char>& outBuf)
+{
+	std::ifstream file(path, std::ios::binary);
+	if (!file.is_open())
+	{
+		Log("ERROR: Could not open " + path);
+		return false;
+	}
+	file.seekg(0, std::ios::end);
+	const std::streamoff fileSize = file.tellg();
+	file.seekg(0, std::ios::beg);
+	if (fileSize <= 0)
+	{
+		Log("ERROR: " + path + " is empty");
+		return false;
+	}
+	outBuf.resize(static_cast<size_t>(fileSize));
+	file.read(reinterpret_cast<char*>(outBuf.data()), fileSize);
+	if (!file)
+	{
+		Log("ERROR: Failed reading " + path);
+		return false;
+	}
+	return true;
+}
+
+void LoadWeaponData()
+{
+	g_weaponDataMap.clear();
+
+	const std::string path = CombatStaticDataPath() + "/STATIC/WEAPONS.DAT";
+	std::vector<unsigned char> buf;
+	if (!ReadStaticDatFile(path, buf))
+		return;
+
+	// Stock BG file is 2416 bytes = 1 pad + 115 * 21. Prefer that alignment; else try 0.
+	constexpr size_t kEntrySize = 21;
+	size_t start = 0;
+	if ((buf.size() % kEntrySize) == 1)
+		start = 1;
+	else if (buf.size() < kEntrySize)
+	{
+		Log("ERROR: " + path + " too small (" + std::to_string(buf.size()) + " bytes)");
+		return;
+	}
+
+	const size_t usable = buf.size() - start;
+	const size_t count = usable / kEntrySize;
+	for (size_t i = 0; i < count; ++i)
+	{
+		const unsigned char* p = buf.data() + start + i * kEntrySize;
+		WeaponData w;
+		w.shape = p[0] | (p[1] << 8);
+		if (w.shape <= 0 || w.shape >= 1024)
+			continue;
+
+		w.ammoFamily = static_cast<int16_t>(p[2] | (p[3] << 8));
+		w.projectile = static_cast<int16_t>(p[4] | (p[5] << 8));
+		w.damage = p[6];
+		const unsigned char flags0 = p[7];
+		w.damageType = static_cast<WeaponDamageType>((flags0 >> 4) & 15);
+		const unsigned char rangeByte = p[8];
+		w.autohit = (rangeByte & 1) != 0;
+		w.uses = static_cast<WeaponUses>((rangeByte >> 1) & 3);
+		w.range = static_cast<unsigned char>(rangeByte >> 3);
+		g_weaponDataMap[w.shape] = w;
+	}
+
+	Log("Loaded WEAPONS.DAT: " + std::to_string(g_weaponDataMap.size()) + " weapons from " + path);
+}
+
+void LoadAmmoData()
+{
+	g_ammoDataMap.clear();
+
+	const std::string path = CombatStaticDataPath() + "/STATIC/AMMO.DAT";
+	std::vector<unsigned char> buf;
+	if (!ReadStaticDatFile(path, buf))
+		return;
+
+	// Stock BG: 274 bytes = 1 pad + 21 * 13.
+	constexpr size_t kEntrySize = 13;
+	size_t start = 0;
+	if ((buf.size() % kEntrySize) == 1)
+		start = 1;
+	else if (buf.size() < kEntrySize)
+	{
+		Log("ERROR: " + path + " too small (" + std::to_string(buf.size()) + " bytes)");
+		return;
+	}
+
+	const size_t count = (buf.size() - start) / kEntrySize;
+	for (size_t i = 0; i < count; ++i)
+	{
+		const unsigned char* p = buf.data() + start + i * kEntrySize;
+		AmmoData a;
+		a.shape = p[0] | (p[1] << 8);
+		if (a.shape <= 0 || a.shape >= 1024)
+			continue;
+		a.familyShape = static_cast<int16_t>(p[2] | (p[3] << 8));
+		a.sprite = static_cast<int16_t>(p[4] | (p[5] << 8));
+		a.damage = p[6];
+		// flags0 at p[7]; unknown at p[8]; flags1 at p[9] holds damage_type in high nibble.
+		const unsigned char flags1 = p[9];
+		a.damageType = static_cast<WeaponDamageType>((flags1 >> 4) & 15);
+		g_ammoDataMap[a.shape] = a;
+	}
+
+	Log("Loaded AMMO.DAT: " + std::to_string(g_ammoDataMap.size()) + " ammo types from " + path);
+}
+
+void LoadArmorData()
+{
+	g_armorDataMap.clear();
+
+	const std::string path = CombatStaticDataPath() + "/STATIC/ARMOR.DAT";
+	std::vector<unsigned char> buf;
+	if (!ReadStaticDatFile(path, buf))
+		return;
+
+	// Stock BG: 351 bytes = 1 pad + 35 * 10.
+	constexpr size_t kEntrySize = 10;
+	size_t start = 0;
+	if ((buf.size() % kEntrySize) == 1)
+		start = 1;
+	else if (buf.size() < kEntrySize)
+	{
+		Log("ERROR: " + path + " too small (" + std::to_string(buf.size()) + " bytes)");
+		return;
+	}
+
+	const size_t count = (buf.size() - start) / kEntrySize;
+	for (size_t i = 0; i < count; ++i)
+	{
+		const unsigned char* p = buf.data() + start + i * kEntrySize;
+		ArmorData a;
+		a.shape = p[0] | (p[1] << 8);
+		if (a.shape <= 0 || a.shape >= 1024)
+			continue;
+		a.prot = p[2];
+		// p[3] unknown; p[4] immunity flags (WeaponDamageType bits).
+		a.immune = p[4];
+		g_armorDataMap[a.shape] = a;
+	}
+
+	Log("Loaded ARMOR.DAT: " + std::to_string(g_armorDataMap.size()) + " armor pieces from " + path);
+}
+
+const WeaponData* GetWeaponData(int shape)
+{
+	auto it = g_weaponDataMap.find(shape);
+	if (it == g_weaponDataMap.end())
+		return nullptr;
+	return &it->second;
+}
+
+const AmmoData* GetAmmoData(int shape)
+{
+	auto it = g_ammoDataMap.find(shape);
+	if (it == g_ammoDataMap.end())
+		return nullptr;
+	return &it->second;
+}
+
+const ArmorData* GetArmorData(int shape)
+{
+	auto it = g_armorDataMap.find(shape);
+	if (it == g_armorDataMap.end())
+		return nullptr;
+	return &it->second;
+}
+
+bool IsRangedWeaponShape(int shape)
+{
+	const WeaponData* w = GetWeaponData(shape);
+	return w && w->uses == WeaponUses::Ranged;
+}
+
+float GetWeaponAttackRangeTiles(int shape)
+{
+	const WeaponData* w = GetWeaponData(shape);
+	if (!w)
+		return MELEE_RANGE_TILES;
+
+	// Projectile weapons (bow, crossbow, sling, wands…): use DAT max range.
+	if (w->uses == WeaponUses::Ranged && w->range > 0)
+		return static_cast<float>(w->range);
+
+	// Thrown: still close to throw range from DAT when present.
+	if ((w->uses == WeaponUses::PoorThrown || w->uses == WeaponUses::Thrown) && w->range > 0)
+		return static_cast<float>(w->range);
+
+	// Melee striking range from DAT is often 3–4; keep our tighter engage for now.
+	return MELEE_RANGE_TILES;
+}
+
 // String to EquipmentSlot enum conversion
 static EquipmentSlot StringToEquipmentSlot(const std::string& slotName)
 {
@@ -3648,54 +3910,11 @@ void NPCData::UnequipItem(EquipmentSlot slot)
 
 bool FillWalkTextures(std::vector<std::vector<Texture*>>& outTextures, int shapenum)
 {
-	// 0=SW, 1=W, 2=NW, 3=N, 4=NE, 5=E, 6=SE, 7=S
-	outTextures.resize(8);
-	for (int d = 0; d < 8; d++)
-	{
-		outTextures[d].assign(2, nullptr);
-	}
-
-	if (g_shapeTable[shapenum][0].m_texture == nullptr ||
-	    g_shapeTable[shapenum][1].m_texture == nullptr ||
-	    g_shapeTable[shapenum][16].m_texture == nullptr ||
-	    g_shapeTable[shapenum][17].m_texture == nullptr)
-	{
+	// Walk is one action in the full SHAPES.VGA action bake.
+	NpcActionTextures actions;
+	if (!FillNpcActionTextures(actions, shapenum))
 		return false;
-	}
-
-	auto getFlipped = [shapenum](int frame, const std::string& name) -> Texture*
-	{
-		if (g_ResourceManager->DoesTextureExist(name))
-		{
-			return g_ResourceManager->GetTexture(name);
-		}
-		Image image = ImageCopy(g_shapeTable[shapenum][frame].m_texture->m_Image);
-		ImageFlipHorizontal(&image);
-		g_ResourceManager->AddTexture(image, name);
-		return g_ResourceManager->GetTexture(name);
-	};
-
-	// SW from shape frames 16/17
-	outTextures[0][0] = &g_shapeTable[shapenum][16].m_texture->m_Texture;
-	outTextures[0][1] = &g_shapeTable[shapenum][17].m_texture->m_Texture;
-
-	// NE from shape frames 0/1
-	outTextures[4][0] = &g_shapeTable[shapenum][0].m_texture->m_Texture;
-	outTextures[4][1] = &g_shapeTable[shapenum][1].m_texture->m_Texture;
-
-	// SE = horizontal flip of SW; NW = horizontal flip of NE.
-	// Use "_walk_*" cache keys so we don't reuse older mislabeled flip textures.
-	outTextures[6][0] = getFlipped(16, to_string(shapenum) + "_walk_SE_0");
-	outTextures[6][1] = getFlipped(17, to_string(shapenum) + "_walk_SE_1");
-	outTextures[2][0] = getFlipped(0, to_string(shapenum) + "_walk_NW_0");
-	outTextures[2][1] = getFlipped(1, to_string(shapenum) + "_walk_NW_1");
-
-	// Cardinals: duplicate adjacent diagonals until dedicated art exists.
-	outTextures[1] = outTextures[0]; // W ← SW
-	outTextures[3] = outTextures[2]; // N ← NW
-	outTextures[5] = outTextures[4]; // E ← NE
-	outTextures[7] = outTextures[6]; // S ← SE
-
+	CopyWalkTexturesFromActions(actions, outTextures);
 	return true;
 }
 
@@ -3939,6 +4158,9 @@ bool ApplyNPCWalkTextures(NPCData* npc, int shapenum, bool avatarMale)
 		return false;
 	}
 
+	// Always bake full action set from SHAPES.VGA (attacks/sit/etc.).
+	FillNpcActionTextures(npc->m_actionTextures, shapenum);
+
 	// Avatar keeps gendered sheet names (avatar_male / avatar_female).
 	const bool isAvatar = (npc->id == 0) || (WalkSheetStemFromNpcName(npc->name, 16) == "avatar");
 	if (isAvatar)
@@ -3958,6 +4180,11 @@ bool ApplyNPCWalkTextures(NPCData* npc, int shapenum, bool avatarMale)
 	}
 
 	npc->m_walkTexturesUpright = false;
+	if (npc->m_actionTextures.valid)
+	{
+		CopyWalkTexturesFromActions(npc->m_actionTextures, npc->m_walkTextures);
+		return true;
+	}
 	return FillWalkTextures(npc->m_walkTextures, shapenum);
 }
 
@@ -3973,6 +4200,8 @@ bool ApplyAvatarWalkTextures(NPCData* npc, bool male)
 		: "Images/WalkSheets/avatar_female.png";
 	const int shapeFallback = male ? 721 : 989;
 
+	FillNpcActionTextures(npc->m_actionTextures, shapeFallback);
+
 	if (LoadWalkSheet(npc->m_walkTextures, path))
 	{
 		npc->m_walkTexturesUpright = true;
@@ -3980,6 +4209,11 @@ bool ApplyAvatarWalkTextures(NPCData* npc, bool male)
 	}
 
 	npc->m_walkTexturesUpright = false;
+	if (npc->m_actionTextures.valid)
+	{
+		CopyWalkTexturesFromActions(npc->m_actionTextures, npc->m_walkTextures);
+		return true;
+	}
 	return FillWalkTextures(npc->m_walkTextures, shapeFallback);
 }
 

@@ -49,6 +49,10 @@ public:
 	/// @param spellId The spell ID to cast (0-71)
 	void CastSpell(int spellId);
 
+	/// @brief Consume mana/reagents and run the spell script (no UI).
+	/// If forcedTargetObjectId > 0, click_on_item returns that id immediately.
+	static bool RunSpellCast(int spellId, U7Object* caster, int forcedTargetObjectId = -1);
+
 	/// @brief Get the NPC ID who owns this spellbook
 	/// @return The NPC ID
 	int GetNpcId() const { return m_npcId; }

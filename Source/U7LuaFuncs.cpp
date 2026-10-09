@@ -763,8 +763,20 @@ static int LuaObjectSelectModal(lua_State *L)
 
     if (g_StateMachine->GetCurrentState() == STATE_MAINSTATE)
     {
-        dynamic_cast<MainState*>(g_StateMachine->GetState(STATE_MAINSTATE))->StartObjectSelectionMode();
-        dynamic_cast<MainState*>(g_StateMachine->GetState(STATE_MAINSTATE))->SetLuaFunction(g_ScriptingSystem->m_currentScript);
+        auto* main = dynamic_cast<MainState*>(g_StateMachine->GetState(STATE_MAINSTATE));
+        if (main)
+        {
+            const int forced = main->TakeForcedSpellTarget();
+            if (forced > 0)
+            {
+                // Scripts expect a position/object table from modal select; return object id
+                // the same way click_on_item does for combat forced targets.
+                lua_pushinteger(L, forced);
+                return 1;
+            }
+            main->StartObjectSelectionMode();
+            main->SetLuaFunction(g_ScriptingSystem->m_currentScript);
+        }
     }
 
     return lua_yield(L, 0);
@@ -3794,23 +3806,16 @@ static int LuaApplyDamage(lua_State *L)
         return 1;
     }
 
-    target->m_hp -= hit_points;
-
+    U7Object* attacker = nullptr;
     if (attacker_id >= 0)
     {
         auto it = g_objectList.find(attacker_id);
         if (it != g_objectList.end() && it->second)
-            target->NotifyAttackedBy(it->second.get());
+            attacker = it->second.get();
     }
 
-    if (target->m_hp <= 0)
-    {
-        target->ApplyDeath();
-        lua_pushboolean(L, 1);  // Target died
-        return 1;
-    }
-
-    lua_pushboolean(L, 0);  // Target survived
+    const bool died = ApplyCombatDamage(target, static_cast<float>(hit_points), attacker);
+    lua_pushboolean(L, died ? 1 : 0);
     return 1;
 }
 
@@ -3826,11 +3831,7 @@ static int LuaReduceHealth(lua_State *L)
     {
         U7Object* target = g_objectList[object_id].get();
         if (!target->IsDeathStatus() && !target->GetIsDead())
-        {
-            target->m_hp -= hit_points;
-            if (target->m_hp <= 0)
-                target->ApplyDeath();
-        }
+            ApplyCombatDamage(target, static_cast<float>(hit_points), nullptr);
     }
 
     return 0;
@@ -5177,15 +5178,23 @@ static int LuaBookMode(lua_State *L)
 
 // 0x0033 | click_on_item — Exult: enter use-cursor mode and return the chosen object.
 // Same behavior as object_select_modal (green usepointer); optional arg ignored.
+// Combat queued casts set a forced target so the script does not yield for a click.
 static int LuaClickOnItem(lua_State *L)
 {
-    (void)L;
-    if (g_LuaDebug) NPCDebugPrint("LUA: click_on_item → object selection mode");
     if (g_StateMachine && g_StateMachine->GetCurrentState() == STATE_MAINSTATE)
     {
         auto* main = dynamic_cast<MainState*>(g_StateMachine->GetState(STATE_MAINSTATE));
         if (main)
         {
+            const int forced = main->TakeForcedSpellTarget();
+            if (forced > 0)
+            {
+                if (g_LuaDebug)
+                    NPCDebugPrint("LUA: click_on_item → forced target " + std::to_string(forced));
+                lua_pushinteger(L, forced);
+                return 1;
+            }
+            if (g_LuaDebug) NPCDebugPrint("LUA: click_on_item → object selection mode");
             main->StartObjectSelectionMode();
             main->SetLuaFunction(g_ScriptingSystem->m_currentScript);
         }

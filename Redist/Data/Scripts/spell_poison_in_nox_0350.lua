@@ -1,19 +1,31 @@
---- Best guess: Manages the "In Nox" spell, curing poison (ID 424) on a selected target, with a fallback effect if the spell fails.
-function spell_poison_in_nox_0350(eventid, objectref)
-    local var_0000, var_0001, var_0002, var_0003
+--- Poison (In Nox). Third Circle. Oracle: usecode Func065E / object#(0x65E).
+--- Applies poison (Obj_flags::poisoned = 8) to a clicked target.
+--- Do not destroy the caster — earlier decompile used broken set_to_attack paths.
 
+function spell_poison_in_nox_0350(eventid, objectref)
     if eventid ~= 1 and eventid ~= 4 then
         return
     end
 
-    var_0000 = object_select_modal()
-    var_0001 = utility_direction_to_target_1069(var_0000)
     halt_scheduled(objectref)
     bark(objectref, "@In Nox@")
-    if utility_condition_0044_1030() and var_0000[1] ~= 0 then
-        var_0002 = set_to_attack(424, var_0000, objectref)
-        var_0003 = execute_usecode_array(objectref, {17505, 17530, 17511, 17511, 8037, 110, 8536, var_0001, 7769})
-    else
-        var_0003 = execute_usecode_array(objectref, {1542, 17493, 17511, 8549, var_0001, 7769})
+    if not check_spell_requirements() then
+        execute_usecode_array(objectref, {17514, 17520, 7781})
+        return
     end
+
+    local target = click_on_item()
+    if not target or target == 0 then
+        return
+    end
+
+    -- Cast FX only (no UC_USECODE).
+    execute_usecode_array(objectref, {17505, 17530, 17514, 17514, 17520, 8047, 65, 7769})
+
+    if is_dead(target) then
+        return
+    end
+
+    -- Obj_flags::poisoned
+    set_item_flag(target, 8)
 end

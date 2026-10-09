@@ -41,6 +41,9 @@ public:
 
 std::unique_ptr<CombatMode> CreateCombatMode(CombatStyle style);
 
+// While RTwP combat is active, keep the Avatar inside the viewport (soft leash).
+void ClampCombatCameraKeepAvatarOnScreen();
+
 class OriginalCombatMode : public CombatMode
 {
 public:
@@ -53,7 +56,20 @@ class RealTimePauseCombatMode : public CombatMode
 public:
 	CombatStyle GetStyle() const override { return CombatStyle::RealTimePause; }
 	const char* GetDisplayName() const override { return CombatStyleDisplayName(CombatStyle::RealTimePause); }
-	// Existing pause/orders helpers on MainState will be adopted here when implemented.
+	bool IsImplemented() const override { return true; }
+
+	void OnEnter(MainState& main) override;
+	void OnLeave(MainState& main) override;
+	void Update(MainState& main) override;
+	void HandleInput(MainState& main) override;
+	void DrawHud(MainState& main) override;
+
+	bool IsSimulationPaused() const override;
+	bool AllowsPlayerOrders() const override { return true; }
+
+private:
+	MainState* m_main = nullptr;
+	bool m_wasCameraLocked = false;
 };
 
 class TurnBasedCombatMode : public CombatMode

@@ -119,7 +119,11 @@ public:
 	void BuildSandboxHelpGUI();
 	void GiveSandboxReagentBag();
 
-	void SpawnMonster(int monsterType, int x, int y, int z);
+	// Returns spawned object ID, or -1 on failure.
+	int SpawnMonster(int monsterType, int x, int y, int z);
+
+	// Temporary combat test: teleport north of Trinsic and spawn Headlesses.
+	void SpawnDebugDuelingField();
 
   // void DrawDebugChunkPathfindingInfo();
 
@@ -355,12 +359,32 @@ public:
 	bool IsCombatEnemyObject(const U7Object* obj) const;
 	CombatMode* GetActiveCombatMode() const { return m_combatMode.get(); }
 
+	// Used by RealTimePauseCombatMode.
+	void BeginCombatFighting();
+	void PauseCombatForOrders();
+	// Pause combat, select the member, and explain why they cannot continue (no ammo, etc.).
+	void NotifyCombatantCannotContinue(U7Object* member, const std::string& reason);
+
+	// Combat spell orders (spellbook while paused → click any target → cast on resume).
+	bool BeginCombatSpellTargeting(int spellId, int casterObjectId);
+	void CancelCombatSpellTargeting();
+	bool IsCombatSpellTargeting() const { return m_combatSpellTargetingSpellId >= 0; }
+	void SetForcedSpellTarget(int objectId) { m_forcedSpellTargetObjectId = objectId; }
+	int TakeForcedSpellTarget(); // returns id or 0; clears the force
+
 	// Session shared by all combat styles. m_combatPaused is primarily for Real-Time-Pause.
 	bool m_combatPaused = true;
 	std::vector<int> m_combatParticipants;
 	int m_combatSelectedPartyMemberObjectId = -1;
 	std::string m_combatApproachMessage;
 	std::unique_ptr<CombatMode> m_combatMode;
+	std::vector<int> m_debugDuelFieldObjectIds;
+
+	// While paused: spellbook cast enters this mode; next object click queues the spell.
+	int m_combatSpellTargetingSpellId = -1;
+	int m_combatSpellTargetingCasterId = -1;
+	// click_on_item / object_select_modal returns this immediately when set (combat cast).
+	int m_forcedSpellTargetObjectId = -1;
 
 	// Camera-drag while holding left+right: state & helpers
 	void StartCameraDrag();
@@ -370,10 +394,10 @@ public:
 private:
 	void ClearCombatPartyTargets();
 	void EnrollNearbyCombatHostiles();
-	void BeginCombatFighting();
-	void PauseCombatForOrders();
 	void HandleCombatOrdersClick();
 	void IssueCombatMoveOrder(U7Object* member, const Vector3& dest);
+	void IssueCombatSpellOrder(U7Object* caster, int spellId, U7Object* target);
+	void FireQueuedCombatSpells();
 	bool IsCombatPartyMemberObject(const U7Object* obj) const;
 	// UpdateInput() sub-handlers — each owns one concern
 	void HandleEscapeKey();

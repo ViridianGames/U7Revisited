@@ -504,6 +504,62 @@ bool GumpSpellbook::ConsumeReagents(int spellId)
 	return true;
 }
 
+bool GumpSpellbook::RunSpellCast(int spellId, U7Object* caster, int forcedTargetObjectId)
+{
+	SpellData* spell = GetSpellData(spellId);
+	if (!spell || !caster || !g_ScriptingSystem)
+		return false;
+
+	GumpSpellbook helper;
+	helper.m_npcId = caster->m_NPCID;
+
+	const std::string scriptName = helper.FindSpellScriptName(spell->scriptId);
+	if (scriptName.empty())
+	{
+		AddConsoleString("Can't cast " + spell->name + ": Spell script missing", RED);
+		return false;
+	}
+
+	const int manaCost = spell->circle;
+	if (caster->m_mana < manaCost)
+	{
+		AddConsoleString("Can't cast " + spell->name + ": Not enough mana", RED);
+		return false;
+	}
+
+	std::string missingReagent;
+	if (!helper.HasReagents(spellId, &missingReagent))
+	{
+		AddConsoleString("Can't cast " + spell->name + ": Missing reagent " + missingReagent, RED);
+		return false;
+	}
+
+	if (!helper.ConsumeReagents(spellId))
+	{
+		AddConsoleString("Can't cast " + spell->name + ": Missing reagent", RED);
+		return false;
+	}
+
+	caster->m_mana -= static_cast<float>(manaCost);
+	if (caster->m_mana < 0.0f)
+		caster->m_mana = 0.0f;
+
+	if (g_mainState && forcedTargetObjectId > 0)
+		g_mainState->SetForcedSpellTarget(forcedTargetObjectId);
+
+	const std::string result = g_ScriptingSystem->CallScript(
+		scriptName,
+		{ static_cast<lua_Integer>(1), static_cast<lua_Integer>(caster->m_ID) });
+
+	if (g_mainState)
+		g_mainState->TakeForcedSpellTarget(); // clear any unused force
+
+	Log("GumpSpellbook::RunSpellCast - " + spell->name + " via " + scriptName +
+		" target=" + std::to_string(forcedTargetObjectId) +
+		" result='" + result + "' mana left=" + std::to_string(caster->m_mana));
+	return true;
+}
+
 void GumpSpellbook::CastSpell(int spellId)
 {
 	SpellData* spell = GetSpellData(spellId);
@@ -550,28 +606,21 @@ void GumpSpellbook::CastSpell(int spellId)
 		return;
 	}
 
-	if (!ConsumeReagents(spellId))
+	// Combat paused: queue a targeted cast — do not spend mana/reagents or run the script yet.
+	if (g_isCombatMode && g_mainState && g_mainState->IsCombatOrdersPaused())
 	{
-		AddConsoleString("Can't cast " + spellName + ": Missing reagent", RED);
+		if (g_gumpManager)
+			g_gumpManager->MarkAllGumpsDead();
+		g_mainState->BeginCombatSpellTargeting(spellId, static_cast<int>(caster->m_ID));
 		return;
 	}
-
-	caster->m_mana -= static_cast<float>(manaCost);
-	if (caster->m_mana < 0.0f)
-		caster->m_mana = 0.0f;
 
 	// Close spellbook + every other open gump as soon as the spell is selected,
 	// before the script runs (including before click_on_item targeting).
 	if (g_gumpManager)
 		g_gumpManager->MarkAllGumpsDead();
 
-	// Pass the caster as objectref (spell scripts bark / schedule on this id).
-	const std::string result = g_ScriptingSystem->CallScript(
-		scriptName,
-		{ static_cast<lua_Integer>(1), static_cast<lua_Integer>(caster->m_ID) });
-
-	Log("GumpSpellbook::CastSpell - " + spellName + " via " + scriptName +
-		" result='" + result + "' mana left=" + std::to_string(caster->m_mana));
+	RunSpellCast(spellId, caster, -1);
 }
 
 void GumpSpellbook::Update()

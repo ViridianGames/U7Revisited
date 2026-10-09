@@ -2390,6 +2390,9 @@ void LoadingState::LoadInitialGameState()
 {
 	// Load equipment slot configuration
 	LoadEquipmentSlotsConfig();
+	LoadWeaponData();
+	LoadAmmoData();
+	LoadArmorData();
 
 	//  Load shape data
 	std::string dataPath = g_Engine->m_EngineConfig.GetString("data_path");
@@ -2831,6 +2834,83 @@ void LoadingState::LoadInitialGameState()
 					avatarNPC->SetEquippedItem(EquipmentSlot::SLOT_BELT, spellbookID);
 
 					Log("Gave Avatar spellbook (shape 761, id=" + std::to_string(spellbookID) + ") equipped in SLOT_BELT");
+				}
+			}
+
+			// Iolo (NPC 1): INITGAME keeps his crossbow + bolts inside the backpack, but the
+			// original game starts him with them readied. Root-level auto-equip only covers
+			// clothes, so pull those shapes out of nested containers and equip them.
+			{
+				constexpr int kIoloNpcId = 1;
+				constexpr int kShapeCrossbow = 598;
+				constexpr int kShapeBolts = 723;
+
+				auto findShapeRecursive = [&](auto&& self, U7Object* container, int shape) -> U7Object* {
+					if (!container)
+						return nullptr;
+					for (int childId : container->m_inventory)
+					{
+						U7Object* child = GetObjectFromID(childId);
+						if (!child)
+							continue;
+						if (child->m_ObjectType == shape)
+							return child;
+						if (child->m_isContainer)
+						{
+							if (U7Object* found = self(self, child, shape))
+								return found;
+						}
+					}
+					return nullptr;
+				};
+
+				auto equipFromInventory = [&](NPCData* npc, int shape, EquipmentSlot primarySlot) {
+					if (!npc || npc->GetEquippedItem(primarySlot) != -1)
+						return;
+
+					U7Object* npcObj = GetObjectFromID(npc->m_objectID);
+					U7Object* item = findShapeRecursive(findShapeRecursive, npcObj, shape);
+					if (!item)
+						return;
+
+					std::vector<EquipmentSlot> fillSlots = GetEquipmentSlotsFilled(shape);
+					if (!fillSlots.empty())
+					{
+						for (EquipmentSlot fillSlot : fillSlots)
+						{
+							if (npc->GetEquippedItem(fillSlot) != -1)
+								return; // required fill occupied; leave item in backpack
+						}
+					}
+
+					// Leave the backpack (or other nest) before assigning equipment slots.
+					if (item->m_containingObjectId >= 0)
+					{
+						if (U7Object* parent = GetObjectFromID(item->m_containingObjectId))
+							parent->RemoveObjectFromInventory(item->m_ID);
+					}
+
+					if (!fillSlots.empty())
+					{
+						for (EquipmentSlot fillSlot : fillSlots)
+							npc->SetEquippedItem(fillSlot, item->m_ID);
+					}
+					else
+					{
+						npc->SetEquippedItem(primarySlot, item->m_ID);
+					}
+
+					Log("Iolo: equipped shape " + std::to_string(shape) +
+						" (id=" + std::to_string(item->m_ID) + ") to slot " +
+						std::to_string(static_cast<int>(primarySlot)));
+				};
+
+				auto ioloIt = g_NPCData.find(kIoloNpcId);
+				if (ioloIt != g_NPCData.end() && ioloIt->second)
+				{
+					NPCData* iolo = ioloIt->second.get();
+					equipFromInventory(iolo, kShapeCrossbow, EquipmentSlot::SLOT_RIGHT_HAND);
+					equipFromInventory(iolo, kShapeBolts, EquipmentSlot::SLOT_AMMO);
 				}
 			}
 

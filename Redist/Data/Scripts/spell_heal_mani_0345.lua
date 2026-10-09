@@ -1,24 +1,49 @@
---- Best guess: Implements the heal spell (Mani), restoring NPC health based on property checks.
-function spell_heal_mani_0345(eventid, objectref)
-    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
+--- Heal (Mani). Third Circle. Oracle: usecode Func0659 / object#(0x659).
+--- Restores half of the target's missing Hits (rounded down).
+--- Do not destroy the caster — earlier decompile used destroy_object(objectref)
+--- and a delayed eventid-2 path that often hit the wrong object.
 
-    if eventid == 1 then
-        var_0000 = object_select_modal() --- Guess: Selects spell target
-        var_0001 = select_spell_target(var_0000) --- Guess: Gets selected target
-        destroy_object(objectref)
-        bark(objectref, "@Mani@")
-        if check_spell_requirements() and is_object_valid(var_0000) then
-            var_0002 = add_containerobject_s(objectref, {17511, 17509, 17510, 8033, 64, 17496, 8557, var_0001, 7769})
-            var_0002 = add_containerobject_s(var_0000, {5, 1625, 17493, 7715})
-        else
-            var_0002 = add_containerobject_s(objectref, {1542, 17493, 17511, 17509, 17510, 17505, 8557, var_0001, 7769})
-        end
-    elseif eventid == 2 then
-        var_0003 = get_npc_property(0, objectref) --- Guess: Gets NPC property
-        var_0004 = get_npc_property(3, objectref) --- Guess: Gets NPC property
-        if var_0004 <= var_0003 then
-            var_0005 = (var_0003 - var_0004) / 2
-            var_0002 = set_npc_property(3, var_0005, objectref) --- Guess: Sets NPC property
-        end
+function spell_heal_mani_0345(eventid, objectref)
+    if eventid ~= 1 and eventid ~= 4 then
+        return
     end
+
+    halt_scheduled(objectref)
+    bark(objectref, "@Mani@")
+    if not check_spell_requirements() then
+        execute_usecode_array(objectref, {17514, 17520, 7781})
+        return
+    end
+
+    local target = click_on_item()
+    if not target or target == 0 then
+        return
+    end
+
+    -- Cast FX only (no UC_USECODE delayed heal on the target).
+    execute_usecode_array(objectref, {17505, 17530, 17514, 17514, 17520, 8047, 65, 7769})
+
+    if not is_npc(target) or is_dead(target) then
+        return
+    end
+
+    -- get_npc_property / set_npc_property take NPC id (Avatar is 0).
+    local npc_id = get_npc_number(target)
+    if npc_id == nil or npc_id < 0 then
+        return
+    end
+
+    local max_hp = get_npc_property(npc_id, 0) or 0
+    local cur_hp = get_npc_property(npc_id, 3) or 0
+    if cur_hp > max_hp then
+        return
+    end
+
+    -- Exult UI_set_npc_prop(health) adds the delta; we set absolute HP.
+    local heal_amount = math.floor((max_hp - cur_hp) / 2)
+    if heal_amount <= 0 then
+        return
+    end
+
+    set_npc_property(npc_id, 3, cur_hp + heal_amount)
 end

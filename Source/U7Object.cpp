@@ -287,6 +287,174 @@ static bool IsPartyCombatant(const U7Object* unit)
 		&& g_Player->NPCIDInParty(unit->m_NPCID);
 }
 
+namespace
+{
+	constexpr int kShapeBow = 597;
+	constexpr int kShapeCrossbow = 598;
+	constexpr int kShapeSling = 474;
+	constexpr int kShapeMagicBow = 606;
+	constexpr int kShapeTripleCrossbow = 647;
+	constexpr int kShapeArrow = 722;
+	constexpr int kShapeBolts = 723;
+	constexpr int kShapeMagicBolts = 417;
+	constexpr int kShapeBurstArrow = 554;
+	constexpr int kShapeMagicArrow = 556;
+	constexpr int kShapeLuckyArrow = 558;
+	constexpr int kShapeLoveArrow = 560;
+	constexpr int kShapeTseramedArrow = 568;
+	constexpr int kShapeDeathBolt = 527;
+	constexpr int kShapeBoltAlt = 948;
+
+	bool WeaponUsesBolts(int weaponShape)
+	{
+		return weaponShape == kShapeCrossbow || weaponShape == kShapeTripleCrossbow;
+	}
+
+	bool WeaponUsesArrows(int weaponShape)
+	{
+		return weaponShape == kShapeBow || weaponShape == kShapeMagicBow;
+	}
+
+	bool IsCompatibleAmmoShape(int weaponShape, int ammoShape)
+	{
+		if (WeaponUsesBolts(weaponShape))
+		{
+			return ammoShape == kShapeBolts
+				|| ammoShape == kShapeMagicBolts
+				|| ammoShape == kShapeDeathBolt
+				|| ammoShape == kShapeBoltAlt;
+		}
+		if (WeaponUsesArrows(weaponShape))
+		{
+			return ammoShape == kShapeArrow
+				|| ammoShape == kShapeBurstArrow
+				|| ammoShape == kShapeMagicArrow
+				|| ammoShape == kShapeLuckyArrow
+				|| ammoShape == kShapeLoveArrow
+				|| ammoShape == kShapeTseramedArrow;
+		}
+		return false; // sling / unknown — no ammo item required
+	}
+
+	int PreferredMissileShape(int weaponShape, int ammoShape)
+	{
+		if (ammoShape > 0)
+			return ammoShape;
+		if (WeaponUsesBolts(weaponShape))
+			return kShapeBolts;
+		if (WeaponUsesArrows(weaponShape))
+			return kShapeArrow;
+		return 0;
+	}
+
+	U7Object* GetEquippedWeapon(U7Object* unit)
+	{
+		if (!unit || !unit->m_NPCData)
+			return nullptr;
+		const int weaponId = unit->m_NPCData->GetEquippedItem(EquipmentSlot::SLOT_RIGHT_HAND);
+		if (weaponId < 0)
+			return nullptr;
+		return GetObjectFromID(weaponId);
+	}
+
+	std::string CombatWeaponDisplayName(int weaponShape)
+	{
+		if (weaponShape >= 0 && weaponShape < 1024)
+		{
+			const std::string& name = g_objectDataTable[weaponShape].m_name;
+			if (!name.empty())
+				return name;
+		}
+		return "fists";
+	}
+
+	std::string FormatCombatAttackConsole(const U7Object* attacker, const U7Object* target,
+		int weaponShape, int hits)
+	{
+		const std::string attackerName = (attacker && !attacker->m_name.empty()) ? attacker->m_name : "Someone";
+		const std::string targetName = (target && !target->m_name.empty()) ? target->m_name : "enemy";
+		return attackerName + " attacks " + targetName + " with " + CombatWeaponDisplayName(weaponShape)
+			+ " for " + std::to_string(hits) + " damage";
+	}
+
+	void RefreshPartyAttackRangeFromWeapon(U7Object* unit)
+	{
+		if (!unit)
+			return;
+		unit->m_attackRange = MELEE_RANGE_TILES;
+		U7Object* weapon = GetEquippedWeapon(unit);
+		if (!weapon || !weapon->m_shapeData)
+			return;
+		unit->m_attackRange = GetWeaponAttackRangeTiles(weapon->m_shapeData->m_shape);
+	}
+
+	// Returns ammo object to consume, or null if this weapon needs none.
+	// Sets outNeedsAmmo=true when a ranged weapon requires ammo that is missing.
+	U7Object* FindCombatAmmo(U7Object* unit, int weaponShape, bool& outNeedsAmmo)
+	{
+		outNeedsAmmo = false;
+		if (!unit || !unit->m_NPCData)
+			return nullptr;
+
+		if (weaponShape == kShapeSling)
+			return nullptr; // sling needs no ammo item
+
+		if (!WeaponUsesBolts(weaponShape) && !WeaponUsesArrows(weaponShape))
+			return nullptr;
+
+		outNeedsAmmo = true;
+
+		auto usable = [&](U7Object* obj) -> bool {
+			return obj && obj->m_shapeData && IsCompatibleAmmoShape(weaponShape, obj->m_shapeData->m_shape);
+		};
+
+		const int ammoId = unit->m_NPCData->GetEquippedItem(EquipmentSlot::SLOT_AMMO);
+		if (ammoId >= 0)
+		{
+			U7Object* ammo = GetObjectFromID(ammoId);
+			if (usable(ammo))
+				return ammo;
+		}
+
+		for (int id : unit->m_inventory)
+		{
+			U7Object* obj = GetObjectFromID(id);
+			if (usable(obj))
+				return obj;
+		}
+		return nullptr;
+	}
+
+	bool ConsumeOneAmmo(U7Object* unit, U7Object* ammo)
+	{
+		if (!unit || !ammo || !ammo->m_shapeData)
+			return false;
+
+		const int shape = ammo->m_shapeData->m_shape;
+		const char shapeType = (shape >= 0 && shape < 1024) ? g_objectDataTable[shape].m_shapeType : 0;
+		if (shapeType == 3)
+		{
+			int qty = ammo->m_Quality & 0x7f;
+			if (qty <= 0)
+				qty = 1;
+			if (qty > 1)
+			{
+				ammo->m_Quality = (ammo->m_Quality & ~0x7f) | ((qty - 1) & 0x7f);
+				return true;
+			}
+		}
+
+		// Last unit in the stack (or non-stackable): remove from inventory/equipment.
+		if (unit->m_NPCData && unit->m_NPCData->GetEquippedItem(EquipmentSlot::SLOT_AMMO) == ammo->m_ID)
+			unit->m_NPCData->m_equipment[EquipmentSlot::SLOT_AMMO] = -1;
+		unit->RemoveObjectFromInventory(ammo->m_ID);
+		ammo->m_isContained = false;
+		ammo->SetIsDead(true);
+		ammo->m_Visible = false;
+		return true;
+	}
+}
+
 void U7Object::NotifyAttackedBy(U7Object* attacker)
 {
 	if (!attacker || attacker->m_ID == m_ID || attacker->m_hp <= 0.0f || attacker->IsDeathStatus())
@@ -321,44 +489,118 @@ bool U7Object::EngageCombatTarget()
 	if (targetIt == g_objectList.end() || !targetIt->second ||
 	    targetIt->second->GetIsDead() || targetIt->second->IsDeathStatus())
 	{
+		const bool wasParty = IsPartyCombatant(this);
 		m_target = 0;
 		m_combatPathTargetId = 0;
+		if (wasParty && g_mainState && g_isCombatMode && !g_mainState->IsCombatOrdersPaused())
+			g_mainState->NotifyCombatantCannotContinue(this, "has no target!");
 		return false;
 	}
 
 	U7Object* target = targetIt->second.get();
 	m_combatMoveOrder = false;
 
+	if (IsPartyCombatant(this))
+		RefreshPartyAttackRangeFromWeapon(this);
+
+	U7Object* weapon = GetEquippedWeapon(this);
+	const int weaponShape = (weapon && weapon->m_shapeData) ? weapon->m_shapeData->m_shape : -1;
+	const bool isRanged = IsRangedWeaponShape(weaponShape);
+
+	// Tile A* goals land on tile centers, so a bare attackRange check often leaves
+	// melee attackers forever one step short of swinging. Engage with slack; path
+	// to a standoff inside that bubble.
+	constexpr float kEngageRangeSlack = 0.85f;
+	constexpr float kStandoffInset = 0.55f;
+	const float engageRange = m_attackRange + kEngageRangeSlack;
+	const float standOffRange = std::max(0.6f, m_attackRange - kStandoffInset);
+
 	float distSqr = Vector2DistanceSqr({ m_Pos.x, m_Pos.z }, { target->m_Pos.x, target->m_Pos.z });
-	float combatRangeSqr = m_attackRange * m_attackRange;
+	float combatRangeSqr = engageRange * engageRange;
 
 	if (distSqr <= combatRangeSqr)
 	{
-		// Hold position while in melee range so we don't keep walking toward a stale destination.
+		// Hold position while in attack range so we don't keep walking toward a stale destination.
 		m_pathWaypoints.clear();
 		m_currentWaypointIndex = 0;
 		m_pathfindingPending = false;
+		m_isMoving = false;
 		SetDest(m_Pos);
 
-		if (m_cooldownTimer <= 0.0f)
+		// Face the target so the attack billboard reads correctly.
+		Vector3 toTarget = Vector3Subtract(target->m_Pos, m_Pos);
+		toTarget.y = 0.0f;
+		if (Vector3LengthSqr(toTarget) > 1e-6f)
+			m_Direction = Vector3Normalize(toTarget);
+
+		// Start a one-shot attack/shoot clip when off cooldown.
+		if (m_cooldownTimer <= 0.0f && !m_npcAnimPlaying)
 		{
+			if (isRanged)
+			{
+				bool needsAmmo = false;
+				U7Object* ammo = FindCombatAmmo(this, weaponShape, needsAmmo);
+				if (needsAmmo && !ammo)
+				{
+					const char* ammoName = WeaponUsesBolts(weaponShape) ? "bolts" : "arrows";
+					if (g_mainState)
+					{
+						g_mainState->NotifyCombatantCannotContinue(
+							this,
+							std::string("is out of ") + ammoName + "!");
+					}
+					++g_perf.engageCombatCalls;
+					return true;
+				}
+				// Stash ammo id on target... we'll consume on hit phase via re-find.
+				(void)ammo;
+			}
+			StartNpcAttackAnim();
 			m_cooldownTimer = m_attackCooldown;
-			target->m_hp -= 1;
-			target->NotifyAttackedBy(this);
-
-			AddConsoleString(m_name + " attacks " + target->m_name + " for 1!", RED);
-
-			if (target->m_hp <= 0.0f)
-				target->ApplyDeath();
 		}
-		else
+		else if (m_cooldownTimer > 0.0f && !m_npcAnimPlaying)
 		{
 			m_cooldownTimer -= g_Engine->LastFrameInSeconds();
+		}
+
+		// Apply the hit when the strike/release frame is reached.
+		if (ConsumeNpcAnimHitEvent())
+		{
+			if (isRanged)
+			{
+				bool needsAmmo = false;
+				U7Object* ammo = FindCombatAmmo(this, weaponShape, needsAmmo);
+				const int ammoShape = (ammo && ammo->m_shapeData) ? ammo->m_shapeData->m_shape : -1;
+				const int missileShape = PreferredMissileShape(weaponShape, ammoShape > 0 ? ammoShape : 0);
+				constexpr float kBoltSpeed = 22.0f;
+				if (missileShape > 0)
+				{
+					if (ammo)
+						ConsumeOneAmmo(this, ammo);
+					// Damage + console line are figured at impact (weapon/ammo/armor).
+					SpawnFlyingProjectile(missileShape, m_ID, target->m_ID, kBoltSpeed, 0, 0,
+						weaponShape, ammoShape);
+				}
+				else
+				{
+					const int hits = FigureCombatHitPoints(this, target, weaponShape, ammoShape);
+					if (hits > 0)
+						ApplyCombatDamage(target, static_cast<float>(hits), this);
+					AddConsoleString(FormatCombatAttackConsole(this, target, weaponShape, hits), RED);
+				}
+			}
+			else
+			{
+				const int hits = FigureCombatHitPoints(this, target, weaponShape, -1);
+				if (hits > 0)
+					ApplyCombatDamage(target, static_cast<float>(hits), this);
+				AddConsoleString(FormatCombatAttackConsole(this, target, weaponShape, hits), RED);
+			}
 		}
 	}
 	else
 	{
-		const Vector3 standoff = GetStandoffPosition(m_Pos, target->m_Pos, m_attackRange);
+		const Vector3 standoff = GetStandoffPosition(m_Pos, target->m_Pos, standOffRange);
 		const float now = GetTime();
 		const float goalDx = standoff.x - m_combatPathGoal.x;
 		const float goalDz = standoff.z - m_combatPathGoal.z;
@@ -400,7 +642,20 @@ bool U7Object::EngageCombatTarget()
 			path = g_pathfindingSystem->FindFastPath(m_Pos, standoff, this, PathCallerTag::AvatarParty);
 		}
 
-		ApplyPathWaypoints(std::move(path));
+		if (path.empty() && isParty)
+		{
+			// Last mile: Avatar/party may crow-fly when A* has nothing left to do
+			// (already on/near the goal tile but still outside engage range).
+			m_pathWaypoints.clear();
+			m_currentWaypointIndex = 0;
+			m_pathfindingPending = false;
+			SetDest(standoff);
+			m_isMoving = true;
+		}
+		else
+		{
+			ApplyPathWaypoints(std::move(path));
+		}
 		m_combatPathGoal = standoff;
 		m_combatPathTargetId = m_target;
 		m_combatRepathAt = now + kCombatRepathCooldownSec;
@@ -423,28 +678,70 @@ void U7Object::HostileCombatUpdate()
 	if (!g_isCombatMode || !g_Player)
 		return;
 
-	U7Object* avatar = g_Player->GetAvatarObject();
-	if (!avatar)
-		return;
+	auto isValidPartyTarget = [&](U7Object* candidate) -> bool {
+		if (!candidate || candidate->GetIsDead() || candidate->IsDeathStatus())
+			return false;
+		if (candidate->m_UnitType != UnitTypes::UNIT_TYPE_NPC)
+			return false;
+		if (!g_Player->NPCIDInParty(candidate->m_NPCID))
+			return false;
+		const float distSqr = Vector2DistanceSqr(
+			{ m_Pos.x, m_Pos.z },
+			{ candidate->m_Pos.x, candidate->m_Pos.z });
+		return distSqr <= kHostileAggroRangeSqr;
+	};
 
-	// Same on-screen leash as aggro — don't A* across the whole map during combat.
-	const float distSqr = Vector2DistanceSqr({ m_Pos.x, m_Pos.z }, { avatar->m_Pos.x, avatar->m_Pos.z });
-	if (distSqr > kHostileAggroRangeSqr)
-	{
+	auto selectNearestPartyTarget = [&]() -> int {
+		int bestId = 0;
+		float bestDistSqr = kHostileAggroRangeSqr;
+		for (int npcId : g_Player->GetPartyMemberIds())
+		{
+			auto itNpc = g_NPCData.find(npcId);
+			if (itNpc == g_NPCData.end() || !itNpc->second)
+				continue;
+			U7Object* member = GetObjectFromID(itNpc->second->m_objectID);
+			if (!isValidPartyTarget(member))
+				continue;
+			const float distSqr = Vector2DistanceSqr(
+				{ m_Pos.x, m_Pos.z },
+				{ member->m_Pos.x, member->m_Pos.z });
+			if (distSqr < bestDistSqr)
+			{
+				bestDistSqr = distSqr;
+				bestId = member->m_ID;
+			}
+		}
+		return bestId;
+	};
+
+	// Drop a target that died or left aggro range, then pick the nearest party member.
+	U7Object* current = (m_target > 0) ? GetObjectFromID(m_target) : nullptr;
+	if (!isValidPartyTarget(current))
 		m_target = 0;
+
+	if (m_target == 0)
+		m_target = selectNearestPartyTarget();
+
+	if (m_target == 0)
+	{
 		UpdateMovement();
 		return;
 	}
 
-	if (m_target == 0)
-		m_target = avatar->m_ID;
-
-	EngageCombatTarget();
+	if (!EngageCombatTarget())
+	{
+		// Target may have died during engage validation — retarget once this frame.
+		m_target = selectNearestPartyTarget();
+		if (m_target != 0)
+			EngageCombatTarget();
+	}
 	UpdateMovement();
 }
 
 void U7Object::MonsterUpdate()
 {
+	UpdateNpcAnim(g_Engine ? g_Engine->LastFrameInSeconds() : 0.0f);
+
 	// Hostiles are Team 1 (combat eggs). Non-combat fauna stay Team 0.
 	if (m_Team == 1 && g_Player)
 	{
@@ -816,13 +1113,17 @@ void U7Object::HandleMonsterSpawnerEgg()
 			if (monData)
 			{
 				spawned->m_hp = (monData->m_hitPoints > 0 ? monData->m_hitPoints : monData->m_strength);
+				spawned->m_BaseMaxHP = spawned->m_hp;
 				spawned->m_BaseAttack = (monData->m_damage > 0 ? monData->m_damage : 5.0f);
+				spawned->m_BaseDefense = monData->m_armor;
 				spawned->m_combat = (monData->m_combat > 0 ? monData->m_combat : 10.0f);
 			}
 			else
 			{
 				spawned->m_hp = 20 + (g_NonVitalRNG ? (int)g_NonVitalRNG->RandomRange(0, 15) : 5);
+				spawned->m_BaseMaxHP = spawned->m_hp;
 				spawned->m_BaseAttack = 5.0f;
+				spawned->m_BaseDefense = 0.0f;
 				spawned->m_combat = 10.0f;
 			}
 
@@ -889,9 +1190,13 @@ void U7Object::MonsterInit()
 	m_cooldownTimer = 0.0;
 	m_name = g_objectDataTable[m_shapeData->m_shape].m_name;
 
-	// Build 8-way walk textures from this shape (cardinals duplicate diagonals for now).
+	// Build full action texture set + legacy walk table from this shape.
 	m_walkTexturesUpright = false;
-	if (!FillWalkTextures(m_walkTextures, m_ObjectType))
+	if (FillNpcActionTextures(m_actionTextures, m_ObjectType))
+	{
+		CopyWalkTexturesFromActions(m_actionTextures, m_walkTextures);
+	}
+	else if (!FillWalkTextures(m_walkTextures, m_ObjectType))
 	{
 		m_walkTextures.clear();
 		if (g_LuaDebug || g_showEggs)
@@ -900,6 +1205,12 @@ void U7Object::MonsterInit()
 				" missing walk frames; falling back to InteractiveDraw");
 		}
 	}
+
+	// DrawWalkBillboard draws at m_Pos with no +0.5 offset (same as NPCs). Spawn
+	// paths often pass integer tile coords, which put the sprite in the UL corner
+	// of the pick box — snap to tile center so visuals and targeting match.
+	m_Pos.x = floorf(m_Pos.x) + 0.5f;
+	m_Pos.z = floorf(m_Pos.z) + 0.5f;
 
 	// Same as NPCInit: refresh pick box now that UnitType is MONSTER.
 	SetPos(m_Pos);
@@ -1508,12 +1819,12 @@ void U7Object::DrawWalkBillboard(const std::vector<std::vector<Texture*>>& walkT
 	// (and toward-camera SE instead of S).
 	int finalAngle = (int(angle) + 7) % 8;
 
-	const int framerate = 200; // ms per walk frame (was 350; a bit snappier for sheet cycles)
-	const int frameCount = int(walkTextures[finalAngle].size());
-	int thisTime = (int(GetTime() * 1000) / framerate) % frameCount;
-	if (!m_isMoving || g_mainState->m_paused) thisTime = 0;
+	const NpcActionTextures* actions = GetNpcActionTextures();
+	const bool useActionTable = actions && actions->valid &&
+		!(uprightSheet && (m_npcAnimAction == NpcAnimAction::Walk ||
+		                   m_npcAnimAction == NpcAnimAction::Stand));
 
-	// Pose override (sleeping, sitting, etc.) when standing still.
+	// Pose override (sleeping, sitting, etc.) when standing still — raw shape frame.
 	if (!m_isMoving && m_isFrameOverridden)
 	{
 		if (g_shapeTable[m_ObjectType][m_overrideFrame].m_texture != nullptr)
@@ -1522,13 +1833,16 @@ void U7Object::DrawWalkBillboard(const std::vector<std::vector<Texture*>>& walkT
 			billboardAngle = m_overrideFrame % 2 ? 45.0f : 0.0f;
 		}
 	}
-	else
+	else if (useActionTable)
 	{
-		// 0=SW, 1=W, 2=NW, 3=N, 4=NE, 5=E, 6=SE, 7=S
-		finalTexture = walkTextures[finalAngle][thisTime];
-		if (uprightSheet)
+		Texture* actionTex = GetNpcActionTexture(*actions, m_npcAnimAction, finalAngle, m_npcAnimPhase);
+		if (actionTex)
+			finalTexture = actionTex;
+		else
+			finalTexture = walkTextures[finalAngle][0];
+
+		if (uprightSheet && m_npcAnimAction == NpcAnimAction::Walk)
 		{
-			// Replacement sheets are drawn upright; no U7 isometric slant.
 			billboardAngle = 0.0f;
 			drawingUprightSheet = true;
 		}
@@ -1536,9 +1850,28 @@ void U7Object::DrawWalkBillboard(const std::vector<std::vector<Texture*>>& walkT
 		{
 			billboardAngle = kBillboardAngle[finalAngle];
 			if ((m_name == "Greg" || m_name == "Poutchouli" || m_name == "Mister Fisp") && billboardAngle < 0.0f)
-			{
 				billboardAngle = -75.0f;
-			}
+		}
+	}
+	else
+	{
+		// Legacy walk-table path (WalkSheets for walk/stand, or missing action bake).
+		const int framerate = 200;
+		const int frameCount = int(walkTextures[finalAngle].size());
+		int thisTime = (int(GetTime() * 1000) / framerate) % frameCount;
+		if (!m_isMoving || (g_mainState && g_mainState->m_paused)) thisTime = 0;
+
+		finalTexture = walkTextures[finalAngle][thisTime];
+		if (uprightSheet)
+		{
+			billboardAngle = 0.0f;
+			drawingUprightSheet = true;
+		}
+		else
+		{
+			billboardAngle = kBillboardAngle[finalAngle];
+			if ((m_name == "Greg" || m_name == "Poutchouli" || m_name == "Mister Fisp") && billboardAngle < 0.0f)
+				billboardAngle = -75.0f;
 		}
 	}
 
@@ -1680,8 +2013,11 @@ void U7Object::NPCUpdate()
 	{
 		if (!m_isFrameOverridden)
 			SetOverrideFrame(GetDeathFrameForFacing());
+		UpdateNpcAnim(g_Engine ? g_Engine->LastFrameInSeconds() : 0.0f);
 		return;
 	}
+
+	UpdateNpcAnim(g_Engine ? g_Engine->LastFrameInSeconds() : 0.0f);
 
 	// Don't run schedule activity scripts while in the party (including the Avatar).
 	// Avatar was previously excluded from this skip (m_NPCID != 0), so Talk/Combat
@@ -1732,15 +2068,7 @@ void U7Object::NPCUpdate()
 
 	if (isPartyMember && g_isCombatMode)
 	{
-
-		if (m_NPCData->m_equipment[EquipmentSlot::SLOT_RIGHT_HAND] != -1)
-		{
-			U7Object* weapon = g_objectList[m_NPCData->m_equipment[EquipmentSlot::SLOT_RIGHT_HAND]].get();
-			if (weapon->m_shapeData->m_shape == 598 || weapon->m_shapeData->m_shape == 474)
-			{
-				m_attackRange = 9;
-			}
-		}
+		RefreshPartyAttackRangeFromWeapon(this);
 
 		if (g_mainState && g_mainState->IsCombatOrdersPaused())
 			return;
@@ -1760,26 +2088,8 @@ void U7Object::NPCUpdate()
 			return;
 		}
 
-		// Companions auto-acquire nearby hostiles; Avatar only fights assigned targets.
-		if (m_NPCID != 0 && m_target == 0)
-		{
-			for (const auto& [id, objPtr] : g_objectList)
-			{
-				if (!objPtr || objPtr->GetIsDead())
-					continue;
-
-				if (objPtr->m_UnitType == UnitTypes::UNIT_TYPE_MONSTER && objPtr->m_Team == 1)
-				{
-					float distSqr = Vector2DistanceSqr({m_Pos.x, m_Pos.z}, {objPtr->m_Pos.x, objPtr->m_Pos.z});
-					if (distSqr < 100)
-					{
-						m_target = id;
-						break;
-					}
-				}
-			}
-		}
-
+		// Party members only fight an assigned target. Losing it auto-pauses
+		// via NotifyCombatantCannotContinue inside EngageCombatTarget.
 		EngageCombatTarget();
 
 		UpdateMovement();
@@ -2217,7 +2527,15 @@ void U7Object::UpdateMovement()
 
 	// Speed budget is along the 3D path (XZ + climb/drop), not XZ alone —
 	// otherwise stairs/crates feel like a teleport because Y is free.
-	float deltav = m_speed * g_Engine->LastFrameInSeconds();
+	float speedScale = 1.0f;
+	if (g_isCombatMode)
+	{
+		const bool partyUnit = isAvatar || isPartyFollower;
+		const bool hostileUnit = IsHostileCombatUnit(this);
+		if (partyUnit || hostileUnit)
+			speedScale = 0.5f;
+	}
+	float deltav = m_speed * speedScale * g_Engine->LastFrameInSeconds();
 	if (deltav < 1e-6f)
 		deltav = 0.001f;
 
@@ -2740,6 +3058,168 @@ void U7Object::ClearOverrideFrame(const Vector3* toward)
 	m_overrideFrame = 0;
 	if (wasPosed || m_furnitureObjectId >= 0)
 		UnstickFromFurniture(toward);
+}
+
+const NpcActionTextures* U7Object::GetNpcActionTextures() const
+{
+	if (m_NPCData && m_NPCData->m_actionTextures.valid)
+		return &m_NPCData->m_actionTextures;
+	if (m_actionTextures.valid)
+		return &m_actionTextures;
+	return nullptr;
+}
+
+void U7Object::SetNpcAnimAction(NpcAnimAction action, bool looping, float frameMs)
+{
+	m_npcAnimAction = action;
+	m_npcAnimPhase = 0;
+	m_npcAnimTimer = frameMs * 0.001f;
+	m_npcAnimLooping = looping;
+	m_npcAnimPlaying = !looping;
+	m_npcAnimHitFired = false;
+
+	const NpcActionTextures* actions = GetNpcActionTextures();
+	if (!actions)
+	{
+		m_npcAnimHitPhase = -1;
+		return;
+	}
+
+	// Strike / release is the last phase of attack/shoot clips.
+	if (action == NpcAnimAction::Attack1H || action == NpcAnimAction::Attack2H ||
+	    action == NpcAnimAction::Shoot)
+	{
+		const int count = GetNpcActionPhaseCount(*actions, action, 0);
+		m_npcAnimHitPhase = (count > 0) ? (count - 1) : -1;
+	}
+	else
+	{
+		m_npcAnimHitPhase = -1;
+	}
+}
+
+void U7Object::StartNpcAttackAnim()
+{
+	NpcAnimAction action = NpcAnimAction::Attack1H;
+	U7Object* weapon = nullptr;
+	if (m_NPCData)
+	{
+		const int weaponId = m_NPCData->GetEquippedItem(EquipmentSlot::SLOT_RIGHT_HAND);
+		if (weaponId >= 0)
+			weapon = GetObjectFromID(weaponId);
+	}
+
+	if (weapon && weapon->m_shapeData)
+	{
+		const int shape = weapon->m_shapeData->m_shape;
+		// Ranged (WEAPONS.DAT uses==3) → Shoot; two-handed melee shapes → Attack2H.
+		if (IsRangedWeaponShape(shape))
+			action = NpcAnimAction::Shoot;
+		else if (shape == 600 || shape == 601 || shape == 602 || shape == 603 || // 2H hammer/axe/sword/halberd
+		         shape == 618 || shape == 553) // scythe / firedoom staff
+			action = NpcAnimAction::Attack2H;
+		else
+			action = NpcAnimAction::Attack1H;
+	}
+
+	SetNpcAnimAction(action, false, 110.0f);
+}
+
+void U7Object::UpdateNpcAnim(float dt)
+{
+	if (dt <= 0.0f)
+		return;
+
+	const NpcActionTextures* actions = GetNpcActionTextures();
+	if (!actions)
+		return;
+
+	// Pose overrides (sit/sleep/death) win until cleared.
+	if (m_isFrameOverridden)
+	{
+		if (IsSittingPose())
+			m_npcAnimAction = NpcAnimAction::Sit;
+		else if (IsSleepingPose() || IsDeathStatus())
+			m_npcAnimAction = NpcAnimAction::Sleep;
+		m_npcAnimPhase = 0;
+		m_npcAnimPlaying = false;
+		m_npcAnimLooping = true;
+		return;
+	}
+
+	// One-shot attack/shoot clips advance on their own timer.
+	if (m_npcAnimPlaying)
+	{
+		m_npcAnimTimer -= dt;
+		if (m_npcAnimTimer > 0.0f)
+			return;
+
+		const int count = GetNpcActionPhaseCount(*actions, m_npcAnimAction, 0);
+		if (count <= 0)
+		{
+			m_npcAnimPlaying = false;
+			return;
+		}
+
+		++m_npcAnimPhase;
+		if (m_npcAnimPhase >= count)
+		{
+			m_npcAnimPlaying = false;
+			m_npcAnimPhase = count - 1;
+			// Return to ready/stand after the swing.
+			if (g_isCombatMode)
+				SetNpcAnimAction(NpcAnimAction::Ready, true, 180.0f);
+			else
+				SetNpcAnimAction(NpcAnimAction::Stand, true, 180.0f);
+			return;
+		}
+		m_npcAnimTimer = 0.110f;
+		return;
+	}
+
+	// Looping locomotion / idle selection when not in a one-shot.
+	if (m_isMoving)
+	{
+		if (m_npcAnimAction != NpcAnimAction::Walk || !m_npcAnimLooping)
+			SetNpcAnimAction(NpcAnimAction::Walk, true, 200.0f);
+	}
+	else if (g_isCombatMode && m_target != 0)
+	{
+		if (m_npcAnimAction != NpcAnimAction::Ready || !m_npcAnimLooping)
+			SetNpcAnimAction(NpcAnimAction::Ready, true, 180.0f);
+	}
+	else
+	{
+		if (m_npcAnimAction != NpcAnimAction::Stand || !m_npcAnimLooping)
+			SetNpcAnimAction(NpcAnimAction::Stand, true, 180.0f);
+	}
+
+	if (!m_npcAnimLooping)
+		return;
+
+	const int count = GetNpcActionPhaseCount(*actions, m_npcAnimAction, 0);
+	if (count <= 1)
+	{
+		m_npcAnimPhase = 0;
+		return;
+	}
+
+	m_npcAnimTimer -= dt;
+	if (m_npcAnimTimer > 0.0f)
+		return;
+
+	m_npcAnimPhase = (m_npcAnimPhase + 1) % count;
+	m_npcAnimTimer = (m_npcAnimAction == NpcAnimAction::Walk) ? 0.200f : 0.180f;
+}
+
+bool U7Object::ConsumeNpcAnimHitEvent()
+{
+	if (m_npcAnimHitPhase < 0 || m_npcAnimHitFired)
+		return false;
+	if (m_npcAnimPhase < m_npcAnimHitPhase)
+		return false;
+	m_npcAnimHitFired = true;
+	return true;
 }
 
 bool U7Object::IsSittingPose() const

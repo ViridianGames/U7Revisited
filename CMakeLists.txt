@@ -176,6 +176,7 @@ set(SOURCES
     Source/CombatMode.cpp
     Source/CombatState.cpp
     Source/ConversationState.cpp
+    Source/NpcAnimation.cpp
     Source/GameSerializer.cpp
     Source/GumpManager.cpp
     Source/LoadingState.cpp

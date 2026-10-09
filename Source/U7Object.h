@@ -9,6 +9,7 @@
 #include <variant>
 #include "lua.h"
 #include "U7Globals.h"
+#include "NpcAnimation.h"
 #include "../ThirdParty/nlohmann/json.hpp"
 
 using u7json = nlohmann::json;
@@ -105,6 +106,8 @@ struct NPCData
 	std::vector<std::vector<Texture *> > m_walkTextures;
 	// True when textures came from an upright WalkSheet (no ±45° billboard tilt).
 	bool m_walkTexturesUpright = false;
+	// Full SHAPES.VGA action clips (walk/attack/sit/…). WalkSheets still override walk only.
+	NpcActionTextures m_actionTextures;
 
 	int m_currentActivity;
 	int m_lastActivity = -1; // Track last activity to detect changes
@@ -451,6 +454,13 @@ public:
 	// uprightSheet: replacement sheets are axis-aligned; skip the U7 isometric tilt.
 	void DrawWalkBillboard(const std::vector<std::vector<Texture*>>& walkTextures, bool uprightSheet = false);
 
+	const NpcActionTextures* GetNpcActionTextures() const;
+	void SetNpcAnimAction(NpcAnimAction action, bool looping, float frameMs = 120.0f);
+	void StartNpcAttackAnim(); // picks 1H/2H/Shoot from weapon; one-shot
+	void UpdateNpcAnim(float dt);
+	bool IsNpcAttackAnimPlaying() const { return m_npcAnimPlaying; }
+	bool ConsumeNpcAnimHitEvent(); // true once when strike/release phase is reached
+
 	void UpdateMovement();
 
 	// Combat: pursue/attack m_target. Returns true when a valid target was engaged.
@@ -683,6 +693,17 @@ public:
 	// Built in MonsterInit; empty ⇒ MonsterDraw falls back to InteractiveDraw.
 	std::vector<std::vector<Texture*>> m_walkTextures;
 	bool m_walkTexturesUpright = false;
+	NpcActionTextures m_actionTextures;
+
+	// Non-WalkSheet action playback (attacks are one-shots; walk/ready loop).
+	NpcAnimAction m_npcAnimAction = NpcAnimAction::Stand;
+	int m_npcAnimPhase = 0;
+	float m_npcAnimTimer = 0.0f;
+	bool m_npcAnimLooping = true;
+	bool m_npcAnimPlaying = false; // true while a one-shot clip is active
+	// Damage/projectile fires when the clip reaches this phase (-1 = none).
+	int m_npcAnimHitPhase = -1;
+	bool m_npcAnimHitFired = false;
 
 	bool m_followingSchedule = false;
 	int m_lastSchedule = -1;
@@ -725,6 +746,10 @@ public:
 	int m_monsterType;
 
 	int m_target = 0; // Who we are currently pissed at.
+
+	// Queued combat spell (chosen while paused; fires when fighting resumes).
+	int m_combatSpellId = -1;
+	int m_combatSpellTargetId = 0;
 
 	// Player-issued combat reposition order; suppresses auto-targeting until destination reached.
 	bool m_combatMoveOrder = false;
