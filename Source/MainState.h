@@ -365,6 +365,14 @@ public:
 	// Pause combat, select the member, and explain why they cannot continue (no ammo, etc.).
 	void NotifyCombatantCannotContinue(U7Object* member, const std::string& reason);
 
+	// RTwP orders (Hold / Automatic / Attack / Move). Keys while paused: H / A.
+	void IssueCombatHoldOrder(U7Object* member);
+	void IssueCombatAutomaticOrder(U7Object* member);
+	void SetCombatOrderMode(U7Object* member, CombatOrderMode mode);
+	static const char* CombatOrderModeName(CombatOrderMode mode);
+	std::string DescribeCombatOrder(const U7Object* member) const;
+	bool HasManualCombatOrder(const U7Object* member) const;
+
 	// Combat spell orders (spellbook while paused → click any target → cast on resume).
 	bool BeginCombatSpellTargeting(int spellId, int casterObjectId);
 	void CancelCombatSpellTargeting();
@@ -393,8 +401,11 @@ public:
 
 private:
 	void ClearCombatPartyTargets();
+	void StopCombatUnitActions(U7Object* member);
 	void EnrollNearbyCombatHostiles();
 	void HandleCombatOrdersClick();
+	void HandleCombatOrderKeys();
+	void IssueCombatAttackOrder(U7Object* member, U7Object* enemy);
 	void IssueCombatMoveOrder(U7Object* member, const Vector3& dest);
 	void IssueCombatSpellOrder(U7Object* caster, int spellId, U7Object* target);
 	void FireQueuedCombatSpells();

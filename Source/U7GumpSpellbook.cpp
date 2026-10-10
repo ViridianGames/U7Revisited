@@ -547,12 +547,21 @@ bool GumpSpellbook::RunSpellCast(int spellId, U7Object* caster, int forcedTarget
 	if (g_mainState && forcedTargetObjectId > 0)
 		g_mainState->SetForcedSpellTarget(forcedTargetObjectId);
 
+	// So check_spell_requirements / begin_casting_mode can find the caster without an arg.
+	g_currentSpellCasterObjectId = static_cast<int>(caster->m_ID);
+
 	const std::string result = g_ScriptingSystem->CallScript(
 		scriptName,
 		{ static_cast<lua_Integer>(1), static_cast<lua_Integer>(caster->m_ID) });
 
+	g_currentSpellCasterObjectId = -1;
+
 	if (g_mainState)
 		g_mainState->TakeForcedSpellTarget(); // clear any unused force
+
+	// If requirements never passed (still InitCasting, no script showed frames), clear.
+	if (caster->GetCastingMode() == CastingMode::InitCasting)
+		caster->HideCastingFrames();
 
 	Log("GumpSpellbook::RunSpellCast - " + spell->name + " via " + scriptName +
 		" target=" + std::to_string(forcedTargetObjectId) +

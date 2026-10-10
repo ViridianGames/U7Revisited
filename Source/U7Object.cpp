@@ -344,28 +344,14 @@ namespace
 			return kShapeBolts;
 		if (WeaponUsesArrows(weaponShape))
 			return kShapeArrow;
-		return 0;
-	}
-
-	U7Object* GetEquippedWeapon(U7Object* unit)
-	{
-		if (!unit || !unit->m_NPCData)
-			return nullptr;
-		const int weaponId = unit->m_NPCData->GetEquippedItem(EquipmentSlot::SLOT_RIGHT_HAND);
-		if (weaponId < 0)
-			return nullptr;
-		return GetObjectFromID(weaponId);
-	}
-
-	std::string CombatWeaponDisplayName(int weaponShape)
-	{
-		if (weaponShape >= 0 && weaponShape < 1024)
+		// Sling (474) and other no-ammo ranged weapons: WEAPONS.DAT projectile
+		// (sling → 581 "ammunition").
+		if (const WeaponData* w = GetWeaponData(weaponShape))
 		{
-			const std::string& name = g_objectDataTable[weaponShape].m_name;
-			if (!name.empty())
-				return name;
+			if (w->uses == WeaponUses::Ranged && w->projectile > 0 && w->projectile < 1024)
+				return w->projectile;
 		}
-		return "fists";
+		return 0;
 	}
 
 	std::string FormatCombatAttackConsole(const U7Object* attacker, const U7Object* target,
@@ -492,13 +478,39 @@ bool U7Object::EngageCombatTarget()
 		const bool wasParty = IsPartyCombatant(this);
 		m_target = 0;
 		m_combatPathTargetId = 0;
-		if (wasParty && g_mainState && g_isCombatMode && !g_mainState->IsCombatOrdersPaused())
-			g_mainState->NotifyCombatantCannotContinue(this, "has no target!");
+		if (wasParty)
+		{
+			m_combatMoveOrder = false;
+			// Ranged: keep Attack mode with no target and finish cooldown / shot anim
+			// before auto-pausing, so a newly issued target can fire immediately.
+			U7Object* weapon = GetEquippedWeapon(this);
+			const int weaponShape = (weapon && weapon->m_shapeData) ? weapon->m_shapeData->m_shape : -1;
+			if (IsRangedWeaponShape(weaponShape)
+			    && (m_cooldownTimer > 0.0f || m_npcAnimPlaying))
+			{
+				return false;
+			}
+			m_combatOrderMode = CombatOrderMode::Hold;
+			if (g_mainState && g_isCombatMode && !g_mainState->IsCombatOrdersPaused())
+				g_mainState->NotifyCombatantCannotContinue(this, "has no target!");
+		}
 		return false;
 	}
 
 	U7Object* target = targetIt->second.get();
 	m_combatMoveOrder = false;
+
+	// Cast / usecode script: stand still and do not swing or path until it ends.
+	if (IsInUsecodeScript())
+	{
+		m_pathWaypoints.clear();
+		m_currentWaypointIndex = 0;
+		m_pathfindingPending = false;
+		m_isMoving = false;
+		SetDest(m_Pos);
+		++g_perf.engageCombatCalls;
+		return true;
+	}
 
 	if (IsPartyCombatant(this))
 		RefreshPartyAttackRangeFromWeapon(this);
@@ -1934,6 +1946,10 @@ void U7Object::DrawWalkBillboard(const std::vector<std::vector<Texture*>>& walkT
 	DrawBillboardPro(g_camera, *finalTexture, Rectangle{ 0, 0, float(finalTexture->width), float(finalTexture->height) }, finalPos, Vector3{ 0, 1, 0 },
 		Vector2{ dims.x, dims.y }, Vector2{ 0, 0 }, billboardAngle, lighting);
 	EndShaderMode();
+
+	// Casting glow outside alphaDiscard: 859 frames are tiny; linear filter + 0.5
+	// alpha cutoff was discarding almost every stretched sample.
+	DrawCastingFramesOverlay(finalPos, Vector2{ dims.x, dims.y }, billboardAngle, lighting);
 }
 
 void U7Object::CustomMeshDraw(Color color)
@@ -2017,6 +2033,9 @@ void U7Object::NPCUpdate()
 		return;
 	}
 
+	// Cast / craft scripts must tick even while combat is paused or on Hold —
+	// those paths return early below and would otherwise freeze the cast anim.
+	UpdateUsecodeScript();
 	UpdateNpcAnim(g_Engine ? g_Engine->LastFrameInSeconds() : 0.0f);
 
 	// Don't run schedule activity scripts while in the party (including the Avatar).
@@ -2073,23 +2092,58 @@ void U7Object::NPCUpdate()
 		if (g_mainState && g_mainState->IsCombatOrdersPaused())
 			return;
 
-		if (m_combatMoveOrder)
+		if (m_combatOrderMode == CombatOrderMode::Hold
+		    || m_combatOrderMode == CombatOrderMode::Automatic)
+		{
+			// Hold: stand. Automatic in combat: no auto-acquire (tactics later).
+			m_target = 0;
+			m_combatMoveOrder = false;
+			m_pathWaypoints.clear();
+			m_currentWaypointIndex = 0;
+			m_pathfindingPending = false;
+			m_isMoving = false;
+			SetDest(m_Pos);
+			return;
+		}
+
+		if (m_combatOrderMode == CombatOrderMode::Move || m_combatMoveOrder)
 		{
 			UpdateMovement();
 
-			bool atDestination = !m_isMoving && m_pathWaypoints.empty();
-			if (atDestination)
+			// Arrived, or path failed / idle with nothing left to walk — become Hold.
+			if (!m_isMoving && m_pathWaypoints.empty() && !m_pathfindingPending)
 			{
-				float distSqr = Vector2DistanceSqr({ m_Pos.x, m_Pos.z }, { m_Dest.x, m_Dest.z });
-				if (distSqr < 1.0f)
-					m_combatMoveOrder = false;
+				m_combatMoveOrder = false;
+				m_combatOrderMode = CombatOrderMode::Hold;
+				SetDest(m_Pos);
 			}
 
 			return;
 		}
 
-		// Party members only fight an assigned target. Losing it auto-pauses
-		// via NotifyCombatantCannotContinue inside EngageCombatTarget.
+		// Attack: only fight an assigned target. Losing it → Hold + auto-pause
+		// via NotifyCombatantCannotContinue (ranged may drain cooldown first).
+		if (m_target == 0)
+		{
+			U7Object* weapon = GetEquippedWeapon(this);
+			const int weaponShape = (weapon && weapon->m_shapeData) ? weapon->m_shapeData->m_shape : -1;
+			if (IsRangedWeaponShape(weaponShape)
+			    && (m_cooldownTimer > 0.0f || m_npcAnimPlaying))
+			{
+				m_pathWaypoints.clear();
+				m_currentWaypointIndex = 0;
+				m_pathfindingPending = false;
+				m_isMoving = false;
+				SetDest(m_Pos);
+				if (m_cooldownTimer > 0.0f && !m_npcAnimPlaying)
+					m_cooldownTimer -= g_Engine->LastFrameInSeconds();
+				return;
+			}
+			if (g_mainState && !g_mainState->IsCombatOrdersPaused())
+				g_mainState->NotifyCombatantCannotContinue(this, "has no target!");
+			return;
+		}
+
 		EngageCombatTarget();
 
 		UpdateMovement();
@@ -2448,7 +2502,6 @@ void U7Object::NPCUpdate()
 	// Schedule checking is now handled by MainState::Update() queue system
 	// This function only handles waypoint following and movement via shared UpdateMovement()
 
-	UpdateUsecodeScript();
 	UpdateMovement();
 }
 
@@ -3125,9 +3178,52 @@ void U7Object::StartNpcAttackAnim()
 	SetNpcAnimAction(action, false, 110.0f);
 }
 
+void U7Object::ApplyNpcPoseFromUsecode(int poseNibble)
+{
+	poseNibble &= 15;
+
+	// Keep m_Frame low nibble in sync for any code that still reads it.
+	const int facingBase = m_Frame & ~0x0f;
+	SetFrame(facingBase | poseNibble);
+
+	NpcAnimAction action = NpcAnimAction::Stand;
+	int phase = 0;
+	switch (poseNibble)
+	{
+	case 0: action = NpcAnimAction::Stand; break;
+	case 1: action = NpcAnimAction::Walk; phase = 1; break;
+	case 2: action = NpcAnimAction::Walk; phase = 3; break;
+	case 3: action = NpcAnimAction::Ready; break;
+	case 4: action = NpcAnimAction::Attack1H; phase = 1; break; // raise1
+	case 5: action = NpcAnimAction::Attack1H; phase = 2; break; // reach1
+	case 6: action = NpcAnimAction::Attack1H; phase = 3; break; // strike1
+	case 7: action = NpcAnimAction::Attack2H; phase = 1; break; // raise2
+	case 8: action = NpcAnimAction::Attack2H; phase = 2; break; // reach2
+	case 9: action = NpcAnimAction::Attack2H; phase = 3; break; // strike2
+	case 10: action = NpcAnimAction::Sit; break;
+	case 11: action = NpcAnimAction::Cast; break;               // bow
+	case 12: action = NpcAnimAction::Kneel; break;
+	case 13: action = NpcAnimAction::Sleep; break;
+	case 14: action = NpcAnimAction::Up; break;
+	case 15: action = NpcAnimAction::Out; break;
+	default: break;
+	}
+
+	m_npcAnimAction = action;
+	m_npcAnimPhase = phase;
+	m_npcAnimPlaying = false; // hold; usecode advances poses on its tick
+	m_npcAnimLooping = true;
+	m_npcAnimHitPhase = -1;
+	m_npcAnimHitFired = true; // never treat cast poses as combat hits
+}
+
 void U7Object::UpdateNpcAnim(float dt)
 {
 	if (dt <= 0.0f)
+		return;
+
+	// Usecode cast/craft scripts own the pose until they finish.
+	if (IsInUsecodeScript())
 		return;
 
 	const NpcActionTextures* actions = GetNpcActionTextures();
@@ -3263,8 +3359,11 @@ void U7Object::ApplyDeath()
 	m_isMoving = false;
 	m_isSchedulePath = false;
 	m_combatMoveOrder = false;
+	m_combatOrderMode = CombatOrderMode::Automatic;
 	m_target = 0;
 	m_combatPathTargetId = 0;
+	m_combatSpellId = -1;
+	m_combatSpellTargetId = 0;
 	m_followingSchedule = false;
 	SetDest(m_Pos);
 	ReleaseFurnitureClaim();
@@ -3581,10 +3680,113 @@ void U7Object::RestoreAnimModeAfterScript()
 	if (IsInUsecodeScript())
 		return;
 
+	// Exult: when the cast script finishes, drop casting frames.
+	if (m_castingMode == CastingMode::ShowCastingFrames
+	    || m_castingMode == CastingMode::InitCasting)
+		HideCastingFrames();
+
 	if (m_objectData && m_objectData->m_isAnimated)
 		m_animMode = ObjectAnimMode::Auto;
 	else
 		m_animMode = ObjectAnimMode::Frozen;
+}
+
+void U7Object::BeginCasting(int shape)
+{
+	m_castingShape = (shape > 0 && shape < 1024) ? shape : 859;
+	// Exult: init only — overlay appears when the cast usecode script starts.
+	m_castingMode = CastingMode::InitCasting;
+}
+
+void U7Object::DisplayCastingFrames()
+{
+	if (m_castingMode == CastingMode::InitCasting
+	    || m_castingMode == CastingMode::ShowCastingFrames)
+		m_castingMode = CastingMode::ShowCastingFrames;
+}
+
+void U7Object::HideCastingFrames()
+{
+	m_castingMode = CastingMode::NotCasting;
+}
+
+void U7Object::DrawCastingFramesOverlay(Vector3 finalPos, Vector2 bodyDims, float billboardAngle, Color lighting)
+{
+	// InitCasting = armed but not yet animating (e.g. waiting on click_on_item).
+	if (m_castingMode != CastingMode::ShowCastingFrames)
+		return;
+	const int shape = m_castingShape;
+	if (shape <= 0 || shape >= 1024)
+		return;
+
+	// Exult Actor::figure_weapon_pos — map NPC pose nibble to casting-frame index.
+	const int pose = m_Frame & 0x0f;
+	int weaponFrame = 1;
+	switch (pose)
+	{
+	case 4: case 7: weaponFrame = 4; break; // raise1 / raise2
+	case 5: case 8: weaponFrame = 3; break; // reach1 / reach2
+	case 6: case 9: weaponFrame = 2; break; // strike1 / strike2
+	case 14:        weaponFrame = 5; break; // up
+	case 15:        weaponFrame = 6; break; // out
+	default:        weaponFrame = 1; break; // standing / kneel / etc.
+	}
+
+	auto pickCastTex = [&](int frame) -> Texture* {
+		if (frame < 0 || frame >= 32)
+			return nullptr;
+		ShapeData& sd = g_shapeTable[shape][frame];
+		if (!sd.m_texture)
+			return nullptr;
+		Texture& tex = sd.m_texture->m_Texture;
+		if (tex.id == 0 || tex.width <= 1 || tex.height <= 1)
+			return nullptr;
+		return &tex;
+	};
+
+	Texture* tex = pickCastTex(weaponFrame);
+	if (!tex)
+		tex = pickCastTex(1);
+	if (!tex)
+		return;
+
+	// Same world scale as other SHAPES.VGA billboards (8 px = 1 tile).
+	// Tiny hand frames (3×10) get a small boost so they read in 3D; never
+	// stretch the large "out" glow frames (40×24) up to body size.
+	float scale = 1.0f;
+	if (tex->width <= 12 && tex->height <= 12)
+		scale = 2.5f;
+	Vector2 dims = {
+		float(tex->width) / 8.0f * scale,
+		float(tex->height) / 8.0f * scale
+	};
+	// Cap so a mis-mapped large frame cannot fill the view.
+	const float maxDim = (bodyDims.y > 0.1f) ? (bodyDims.y * 0.45f) : 2.0f;
+	if (dims.x > maxDim || dims.y > maxDim)
+	{
+		const float m = maxDim / std::max(dims.x, dims.y);
+		dims.x *= m;
+		dims.y *= m;
+	}
+
+	Vector3 toCam = Vector3Subtract(g_camera.position, finalPos);
+	const float lenSq = toCam.x * toCam.x + toCam.y * toCam.y + toCam.z * toCam.z;
+	Vector3 overlayPos = finalPos;
+	if (lenSq > 1e-6f)
+		overlayPos = Vector3Add(finalPos, Vector3Scale(Vector3Normalize(toCam), 0.08f));
+
+	(void)lighting;
+	Color glow = WHITE;
+	SetTextureFilter(*tex, TEXTURE_FILTER_POINT);
+
+	rlDisableDepthTest();
+	BeginBlendMode(BLEND_ALPHA);
+	DrawBillboardPro(g_camera, *tex,
+		Rectangle{ 0, 0, float(tex->width), float(tex->height) },
+		overlayPos, Vector3{ 0, 1, 0 },
+		dims, Vector2{ 0, 0 }, billboardAngle, glow);
+	EndBlendMode();
+	rlEnableDepthTest();
 }
 
 void U7Object::SetFrame(int frame)
@@ -3750,9 +3952,11 @@ namespace {
 		UC_FACE_DIR = 0x59,
 		UC_WEATHER = 0x5A,
 		UC_NPC_FRAME_BASE = 0x61, // 0x61-0x70
+		UC_ATTACK = 0x7A,         // Exult: attack using set_to_attack values
 	};
 
-	constexpr float kUsecodeTickSec = 0.05f; // ~Exult std delay (~1/20s)
+	// Exult c_std_delay is 200 ms per usecode script step (cast poses, etc.).
+	constexpr float kUsecodeTickSec = 0.20f;
 
 	int DecodeScriptOpcode(int raw)
 	{
@@ -3783,6 +3987,83 @@ bool U7Object::IsInUsecodeScript() const
 			return true;
 	}
 	return false;
+}
+
+void U7Object::SetUsecodeAttackTarget(int targetId, int weaponShape)
+{
+	m_usecodeAttackTargetId = targetId;
+	m_usecodeAttackWeaponShape = weaponShape;
+}
+
+bool U7Object::FireUsecodeAttack()
+{
+	const int weaponShape = m_usecodeAttackWeaponShape;
+	const int targetId = m_usecodeAttackTargetId;
+	m_usecodeAttackWeaponShape = -1;
+	m_usecodeAttackTargetId = -1;
+
+	if (weaponShape <= 0 || weaponShape >= 1024 || targetId <= 0)
+	{
+		NPCDebugPrint("usecode_attack: missing target/weapon on object " + std::to_string(m_ID) +
+			" weapon=" + std::to_string(weaponShape) + " target=" + std::to_string(targetId));
+		return false;
+	}
+
+	U7Object* target = GetObjectFromID(targetId);
+	if (!target || target->GetIsDead() || target->IsDeathStatus())
+	{
+		NPCDebugPrint("usecode_attack: bad target " + std::to_string(targetId) +
+			" on object " + std::to_string(m_ID));
+		return false;
+	}
+
+	// Spell bolts: fly with fixed spell damage (or 0 for utility bolts like Douse 540).
+	// Other shapes still spawn a missile; damage 0 lets impact path use weapon tables when present.
+	int damage = 0;
+	int damageType = 0;
+	float speed = 18.0f;
+	if (weaponShape == 856)
+	{
+		damage = 10;
+		damageType = 1; // fire
+	}
+	else if (weaponShape == 540)
+	{
+		// Douse (An Flam) — extinguish on impact via spell event 4; no HP damage.
+		damage = 0;
+		damageType = 0;
+		speed = 16.0f;
+	}
+	else if (weaponShape == 424)
+	{
+		// In Nox poison bolt — apply poisoned flag on impact (no HP from the bolt itself).
+		damage = 0;
+		damageType = 0;
+		speed = 16.0f;
+	}
+	else if (weaponShape == 527)
+	{
+		// Death Bolt (Corp Por) — directional frames 8–23; damage applied on hit.
+		damage = 20;
+		damageType = 2; // magic
+		speed = 18.0f;
+	}
+
+	const bool ok = SpawnFlyingProjectile(weaponShape, static_cast<int>(m_ID), targetId, speed,
+		damage, damageType, weaponShape, -1);
+	if (!ok)
+	{
+		NPCDebugPrint("usecode_attack: SpawnFlyingProjectile failed shape=" +
+			std::to_string(weaponShape) + " from=" + std::to_string(m_ID) +
+			" to=" + std::to_string(targetId));
+		return false;
+	}
+	if (m_pauseOrdersOnNextSpellProjectile)
+	{
+		MarkNewestFlyingProjectilePauseCasterOnHit(static_cast<int>(m_ID));
+		m_pauseOrdersOnNextSpellProjectile = false;
+	}
+	return true;
 }
 
 void U7Object::StartUsecodeScript(std::vector<UsecodeScriptElem> code, float initialDelaySec)
@@ -3839,6 +4120,10 @@ void U7Object::StartUsecodeScript(std::vector<UsecodeScriptElem> code, float ini
 
 	if (touchesFrames)
 		m_animMode = ObjectAnimMode::Scripted;
+
+	// Exult Usecode_script::handle_event: init_casting → show_casting_frames.
+	if (m_castingMode == CastingMode::InitCasting)
+		DisplayCastingFrames();
 
 	UsecodeScriptState script;
 	script.code = std::move(code);
@@ -4038,6 +4323,9 @@ void U7Object::UpdateUsecodeScript()
 					g_SoundSystem->PlaySoundAtObject(BuildU7SfxPath(sfx), m_ID);
 				break;
 			}
+			case UC_ATTACK:
+				FireUsecodeAttack();
+				break;
 			case UC_SAY:
 			{
 				std::string text;
@@ -4126,9 +4414,8 @@ void U7Object::UpdateUsecodeScript()
 			default:
 				if (opcode >= UC_NPC_FRAME_BASE && opcode <= UC_NPC_FRAME_BASE + 15)
 				{
-					// NPC frame-by-type: approximate by setting low nibble of frame
-					int fr = (m_Frame & ~0x0f) | (opcode - UC_NPC_FRAME_BASE);
-					SetFrame(fr);
+					// NPC frame-by-type: drive billboard action table + m_Frame nibble.
+					ApplyNpcPoseFromUsecode(opcode - UC_NPC_FRAME_BASE);
 				}
 				else if (opcode >= 0x30 && opcode <= 0x37)
 				{
@@ -4160,6 +4447,15 @@ void U7Object::UpdateUsecodeScript()
 
 	// Craft tools / Triples: leave Frozen (or restore Auto for TFA ambient).
 	RestoreAnimModeAfterScript();
+
+	// Combat spell with no deferred projectile (Heal / In Nox): pause orders once
+	// the cast script finishes. Projectile spells clear this flag in FireUsecodeAttack.
+	if (!IsInUsecodeScript() && m_pauseOrdersOnNextSpellProjectile)
+	{
+		m_pauseOrdersOnNextSpellProjectile = false;
+		if (g_mainState && g_isCombatMode)
+			g_mainState->NotifyCombatantCannotContinue(this, "needs a new order!");
+	}
 }
 
 void U7Object::ClearPendingUsecode()

@@ -1,7 +1,7 @@
 --- Heal (Mani). Third Circle. Oracle: usecode Func0659 / object#(0x659).
 --- Restores half of the target's missing Hits (rounded down).
---- Do not destroy the caster — earlier decompile used destroy_object(objectref)
---- and a delayed eventid-2 path that often hit the wrong object.
+--- Cast script from usecode: face_dir, kneel, sfx(64), standing, reach1, raise1, strike1.
+--- Gameplay stays in Lua (UC_USECODE delayed heal is unreliable here).
 
 function spell_heal_mani_0345(eventid, objectref)
     if eventid ~= 1 and eventid ~= 4 then
@@ -11,6 +11,7 @@ function spell_heal_mani_0345(eventid, objectref)
     halt_scheduled(objectref)
     bark(objectref, "@Mani@")
     if not check_spell_requirements() then
+        -- Short fizzle poses (no target yet for face_dir).
         execute_usecode_array(objectref, {17514, 17520, 7781})
         return
     end
@@ -20,8 +21,10 @@ function spell_heal_mani_0345(eventid, objectref)
         return
     end
 
-    -- Cast FX only (no UC_USECODE delayed heal on the target).
-    execute_usecode_array(objectref, {17505, 17530, 17514, 17514, 17520, 8047, 65, 7769})
+    local dir = find_direction(objectref, target)
+    -- Success cast (usecode.dc forward: face,dir,kneel,sfx 64,standing,reach1,raise1,strike1)
+    -- Lua table is reverse execution order (ReverseUsecodeArray flips it back).
+    execute_usecode_array(objectref, {17511, 17509, 17510, 17505, 64, 17496, 8045, dir, 7769})
 
     if not is_npc(target) or is_dead(target) then
         return

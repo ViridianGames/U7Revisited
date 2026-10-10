@@ -1,15 +1,23 @@
 --- Poison (In Nox). Third Circle. Oracle: usecode Func065E / object#(0x65E).
---- Applies poison (Obj_flags::poisoned = 8) to a clicked target.
---- Do not destroy the caster — earlier decompile used broken set_to_attack paths.
+--- Projectile shape 424 (0x1A8); on hit applies Obj_flags::poisoned = 8.
+--- Cast script: face_dir, sfx(0x6E), raise1, strike1×2, delay, attack, standing.
 
 function spell_poison_in_nox_0350(eventid, objectref)
-    if eventid ~= 1 and eventid ~= 4 then
+    -- Event 4: projectile 424 impact (objectref = target).
+    if eventid == 4 then
+        if not is_dead(objectref) then
+            set_item_flag(objectref, 8) -- poisoned
+        end
+        return
+    end
+
+    if eventid ~= 1 then
         return
     end
 
     halt_scheduled(objectref)
     bark(objectref, "@In Nox@")
-    if not check_spell_requirements() then
+    if not check_spell_requirements(objectref) then
         execute_usecode_array(objectref, {17514, 17520, 7781})
         return
     end
@@ -19,13 +27,13 @@ function spell_poison_in_nox_0350(eventid, objectref)
         return
     end
 
-    -- Cast FX only (no UC_USECODE).
-    execute_usecode_array(objectref, {17505, 17530, 17514, 17514, 17520, 8047, 65, 7769})
-
-    if is_dead(target) then
+    if is_npc(target) and is_dead(target) then
         return
     end
 
-    -- Obj_flags::poisoned
-    set_item_flag(target, 8)
+    local dir = find_direction(objectref, target)
+    -- Exult: set_to_attack(caster, target, 0x1A8=424).
+    set_to_attack(objectref, target, 424)
+    -- face, dir, sfx 110, raise1, strike1, strike1, attack, standing
+    execute_usecode_array(objectref, {17505, 17530, 17511, 17511, 17509, 110, 7768, dir, 7769})
 end

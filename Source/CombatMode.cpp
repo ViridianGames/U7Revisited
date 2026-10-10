@@ -299,7 +299,7 @@ void RealTimePauseCombatMode::OnEnter(MainState& main)
 	ClampCombatCameraKeepAvatarOnScreen();
 
 	AddConsoleString("Combat! Game is paused — issue orders, then press Space to fight.", YELLOW);
-	AddConsoleString("Click a party member, then an enemy or the ground.", WHITE);
+	AddConsoleString("Click a party member, then an enemy or the ground. H: Hold  A: Automatic.", WHITE);
 	AddConsoleString("Camera unlocked between you and the nearest threat. Press C or Escape to leave.", WHITE);
 	Log("RealTimePauseCombatMode::OnEnter");
 }
@@ -340,7 +340,7 @@ void RealTimePauseCombatMode::DrawHud(MainState& main)
 	const bool paused = main.m_combatPaused;
 	const std::string title = paused ? "PAUSED — Issue Orders" : "FIGHTING";
 	const std::string hint = paused
-		? "Space: fight   C/Esc: leave"
+		? "Space: fight   H: Hold   A: Auto   C/Esc: leave"
 		: "Space: pause   C/Esc: leave";
 
 	const float fontSize = static_cast<float>(font->baseSize);
@@ -370,7 +370,8 @@ void RealTimePauseCombatMode::DrawHud(MainState& main)
 		auto it = g_objectList.find(main.m_combatSelectedPartyMemberObjectId);
 		if (it != g_objectList.end() && it->second)
 		{
-			const std::string sel = "Selected: " + it->second->m_name;
+			const std::string sel = "Selected: " + it->second->m_name
+				+ " — " + main.DescribeCombatOrder(it->second.get());
 			const float selW = MeasureTextEx(*font, sel.c_str(), fontSize, 1).x;
 			DrawTextEx(*font, sel.c_str(),
 			           Vector2{ (640.0f - selW) * 0.5f, boxY + boxH + 4.0f },

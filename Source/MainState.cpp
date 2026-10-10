@@ -488,7 +488,8 @@ void MainState::OnEnter()
 		// Sandbox playtesting uses the female Avatar (walk sheet + shape 989).
 		if (g_Player)
 			g_Player->SetAvatarFemale();
-		g_Player->AddPartyMember(1); // Iolo only; Spark is NPC 2 and must not auto-join
+		g_Player->AddPartyMember(1); // Iolo
+		g_Player->AddPartyMember(2); // Spark (sandbox testing)
 
 		// SpawnMonster(14, 1044.0f, 0.0f, 2182.0f);
 		// SpawnMonster(14, 1042.0f, 0.0f, 2180.0f);
@@ -955,7 +956,11 @@ void MainState::HandleGameKeys()
 			EnterCombatMode();
 	}
 
-	if (IsKeyPressed(KEY_H))
+	if (g_isCombatMode)
+		HandleCombatOrderKeys();
+
+	// While combat orders are paused, H/A are Hold/Automatic (see HandleCombatOrderKeys).
+	if (IsKeyPressed(KEY_H) && !IsCombatOrdersPaused())
 	{
 		if (m_gameMode == MainStateModes::MAIN_STATE_MODE_TRINSIC_DEMO)
 		{
@@ -4380,6 +4385,25 @@ bool MainState::IsCombatEnemyObject(const U7Object* obj) const
 		!= m_combatParticipants.end();
 }
 
+void MainState::StopCombatUnitActions(U7Object* member)
+{
+	if (!member)
+		return;
+	member->m_target = 0;
+	member->m_combatSpellId = -1;
+	member->m_combatSpellTargetId = 0;
+	member->m_combatMoveOrder = false;
+	member->m_combatPathTargetId = 0;
+	member->m_pathWaypoints.clear();
+	member->m_currentWaypointIndex = 0;
+	member->m_pathfindingPending = false;
+	member->m_isSchedulePath = false;
+	member->m_moveStuckFrames = 0;
+	member->ClearPendingUsecode();
+	member->SetDest(member->GetPos());
+	member->m_isMoving = false;
+}
+
 void MainState::ClearCombatPartyTargets()
 {
 	if (!g_Player)
@@ -4394,21 +4418,128 @@ void MainState::ClearCombatPartyTargets()
 			continue;
 
 		U7Object* member = itObj->second.get();
-		member->m_target = 0;
-		member->m_combatSpellId = -1;
-		member->m_combatSpellTargetId = 0;
-		member->m_combatMoveOrder = false;
-		member->m_combatPathTargetId = 0;
+		StopCombatUnitActions(member);
+		member->m_combatOrderMode = CombatOrderMode::Automatic;
 		member->m_cooldownTimer = 0.0;
-		member->m_pathWaypoints.clear();
-		member->m_currentWaypointIndex = 0;
-		member->m_pathfindingPending = false;
-		member->m_isSchedulePath = false;
-		member->m_moveStuckFrames = 0;
-		member->ClearPendingUsecode();
-		member->SetDest(member->GetPos());
-		member->m_isMoving = false;
 	}
+}
+
+const char* MainState::CombatOrderModeName(CombatOrderMode mode)
+{
+	switch (mode)
+	{
+	case CombatOrderMode::Hold: return "Hold";
+	case CombatOrderMode::Attack: return "Attack";
+	case CombatOrderMode::Move: return "Move";
+	case CombatOrderMode::Automatic:
+	default: return "Automatic";
+	}
+}
+
+bool MainState::HasManualCombatOrder(const U7Object* member) const
+{
+	return member && member->m_combatOrderMode != CombatOrderMode::Automatic;
+}
+
+std::string MainState::DescribeCombatOrder(const U7Object* member) const
+{
+	if (!member)
+		return "Automatic";
+	switch (member->m_combatOrderMode)
+	{
+	case CombatOrderMode::Hold:
+		return "Hold";
+	case CombatOrderMode::Move:
+		return "Move";
+	case CombatOrderMode::Attack:
+	{
+		if (member->m_combatSpellId >= 0)
+		{
+			SpellData* spell = GetSpellData(member->m_combatSpellId);
+			const std::string spellName = spell ? spell->name : "spell";
+			U7Object* target = GetObjectFromID(member->m_combatSpellTargetId);
+			const std::string targetName = (target && !target->m_name.empty()) ? target->m_name : "target";
+			return "Cast " + spellName + " on " + targetName;
+		}
+		U7Object* target = GetObjectFromID(member->m_target);
+		const std::string targetName = (target && !target->m_name.empty()) ? target->m_name : "target";
+		return "Attack " + targetName;
+	}
+	case CombatOrderMode::Automatic:
+	default:
+		return "Automatic";
+	}
+}
+
+void MainState::SetCombatOrderMode(U7Object* member, CombatOrderMode mode)
+{
+	if (!member)
+		return;
+	member->m_combatOrderMode = mode;
+}
+
+void MainState::IssueCombatHoldOrder(U7Object* member)
+{
+	if (!member)
+		return;
+	StopCombatUnitActions(member);
+	member->m_combatOrderMode = CombatOrderMode::Hold;
+	const std::string name = member->m_name.empty() ? "Party member" : member->m_name;
+	AddConsoleString(name + " will hold position.", GREEN);
+}
+
+void MainState::IssueCombatAutomaticOrder(U7Object* member)
+{
+	if (!member)
+		return;
+	StopCombatUnitActions(member);
+	member->m_combatOrderMode = CombatOrderMode::Automatic;
+	const std::string name = member->m_name.empty() ? "Party member" : member->m_name;
+	AddConsoleString(name + " returns to automatic behavior.", GREEN);
+}
+
+void MainState::IssueCombatAttackOrder(U7Object* member, U7Object* enemy)
+{
+	if (!member || !enemy)
+		return;
+	member->m_target = enemy->m_ID;
+	member->m_combatSpellId = -1;
+	member->m_combatSpellTargetId = 0;
+	member->m_combatMoveOrder = false;
+	member->m_combatOrderMode = CombatOrderMode::Attack;
+
+	const std::string memberName = member->m_name.empty() ? "Party member" : member->m_name;
+	const std::string enemyName = enemy->m_name.empty() ? "enemy" : enemy->m_name;
+	AddConsoleString(
+		memberName + " will attack " + enemyName + " with "
+		+ CombatWeaponDisplayNameForUnit(member) + ".",
+		GREEN);
+}
+
+void MainState::HandleCombatOrderKeys()
+{
+	if (!IsCombatOrdersPaused() || !AllowsCombatPlayerOrders())
+		return;
+	if (g_gumpManager && !g_gumpManager->m_GumpList.empty())
+		return;
+
+	if (!IsKeyPressed(KEY_H) && !IsKeyPressed(KEY_A))
+		return;
+
+	if (m_combatSelectedPartyMemberObjectId < 0)
+	{
+		AddConsoleString("Select a party member first (click them), then press H (Hold) or A (Automatic).", YELLOW);
+		return;
+	}
+
+	U7Object* member = GetObjectFromID(m_combatSelectedPartyMemberObjectId);
+	if (!member || !IsCombatPartyMemberObject(member))
+		return;
+
+	if (IsKeyPressed(KEY_H))
+		IssueCombatHoldOrder(member);
+	else if (IsKeyPressed(KEY_A))
+		IssueCombatAutomaticOrder(member);
 }
 
 void MainState::EnsureCombatParticipant(int objectId)
@@ -4548,7 +4679,7 @@ void MainState::PauseCombatForOrders()
 	m_combatPaused = true;
 	AddConsoleString("Combat paused.", YELLOW);
 	AddConsoleString("Click a party member, then click an enemy or the ground to assign orders.", WHITE);
-	AddConsoleString("Or open the spellbook to queue a spell on any target.", WHITE);
+	AddConsoleString("H: Hold   A: Automatic   Spellbook: cast on any target.", WHITE);
 	AddConsoleString("Press Space when ready to resume.", WHITE);
 }
 
@@ -4595,6 +4726,8 @@ void MainState::IssueCombatSpellOrder(U7Object* caster, int spellId, U7Object* t
 	caster->m_combatSpellTargetId = target->m_ID;
 	caster->m_target = target->m_ID;
 	caster->m_combatMoveOrder = false;
+	// Queued cast is the current manual order; do not fall into Auto/melee.
+	caster->m_combatOrderMode = CombatOrderMode::Attack;
 
 	const std::string casterName = caster->m_name.empty() ? "Caster" : caster->m_name;
 	const std::string targetName = target->m_name.empty() ? "target" : target->m_name;
@@ -4635,6 +4768,7 @@ void MainState::FireQueuedCombatSpells()
 		caster->m_pathfindingPending = false;
 		caster->m_isMoving = false;
 		caster->SetDest(caster->GetPos());
+		caster->m_combatOrderMode = CombatOrderMode::Hold;
 
 		U7Object* target = GetObjectFromID(targetId);
 		if (!target || target->GetIsDead() || target->IsDeathStatus())
@@ -4646,11 +4780,20 @@ void MainState::FireQueuedCombatSpells()
 			continue;
 		}
 
+		// Projectile spells defer the bolt until UC_ATTACK mid-cast; mark so the
+		// eventual missile pauses orders on hit. Instant spells pause when the
+		// cast script finishes (see UpdateUsecodeScript).
+		caster->m_pauseOrdersOnNextSpellProjectile = true;
 		GumpSpellbook::RunSpellCast(spellId, caster, targetId);
-		// Projectile spells (Vas Flam): keep combat running while the bolt flies;
-		// pause this caster's orders when it hits. Instant spells pause now.
-		if (!MarkNewestFlyingProjectilePauseCasterOnHit(static_cast<int>(caster->m_ID)))
+		if (MarkNewestFlyingProjectilePauseCasterOnHit(static_cast<int>(caster->m_ID)))
+		{
+			caster->m_pauseOrdersOnNextSpellProjectile = false;
+		}
+		else if (!caster->IsInUsecodeScript())
+		{
+			caster->m_pauseOrdersOnNextSpellProjectile = false;
 			NotifyCombatantCannotContinue(caster, "needs a new order!");
+		}
 	}
 }
 
@@ -4658,6 +4801,13 @@ void MainState::NotifyCombatantCannotContinue(U7Object* member, const std::strin
 {
 	if (!g_isCombatMode || !member)
 		return;
+
+	// Finished/blocked manual action → Hold until the player gives a new order.
+	member->m_combatOrderMode = CombatOrderMode::Hold;
+	member->m_combatMoveOrder = false;
+	member->m_target = 0;
+	member->m_combatSpellId = -1;
+	member->m_combatSpellTargetId = 0;
 
 	m_combatPaused = true;
 	m_combatSelectedPartyMemberObjectId = member->m_ID;
@@ -4675,7 +4825,10 @@ void MainState::IssueCombatMoveOrder(U7Object* member, const Vector3& dest)
 	moveDest.y = member->m_Pos.y;
 
 	member->m_target = 0;
+	member->m_combatSpellId = -1;
+	member->m_combatSpellTargetId = 0;
 	member->m_combatMoveOrder = true;
+	member->m_combatOrderMode = CombatOrderMode::Move;
 	member->PathfindToDest(moveDest, /*allowHierarchical=*/true, PathCallerTag::AvatarParty);
 
 	AddConsoleString(
@@ -4721,7 +4874,10 @@ void MainState::HandleCombatOrdersClick()
 	if (clicked && IsCombatPartyMemberObject(clicked))
 	{
 		m_combatSelectedPartyMemberObjectId = clicked->m_ID;
-		AddConsoleString("Selected " + clicked->m_name + " - click an enemy or the ground.", SKYBLUE);
+		AddConsoleString(
+			"Selected " + clicked->m_name + " (" + DescribeCombatOrder(clicked)
+			+ ") — enemy/ground, or H Hold / A Automatic.",
+			SKYBLUE);
 		return;
 	}
 
@@ -4739,16 +4895,10 @@ void MainState::HandleCombatOrdersClick()
 
 	if (clicked && IsCombatEnemyObject(clicked))
 	{
-		member->m_target = clicked->m_ID;
-		member->m_combatSpellId = -1;
-		member->m_combatSpellTargetId = 0;
-		member->m_combatMoveOrder = false;
-		AddConsoleString(member->m_name + " will attack " + clicked->m_name + ".", GREEN);
+		IssueCombatAttackOrder(member, clicked);
 		return;
 	}
 
-	member->m_combatSpellId = -1;
-	member->m_combatSpellTargetId = 0;
 	IssueCombatMoveOrder(member, g_terrainUnderMousePointer);
 }
 
@@ -4883,6 +5033,13 @@ void MainState::MaybeUpdatePartyFollowing()
 		U7Object* member = itObj->second.get();
 		if (member->IsDeathStatus() || member->GetIsDead())
 			continue;
+
+		// Manual combat orders own the actor; do not yank them into formation.
+		if (HasManualCombatOrder(member))
+		{
+			++companionSlot;
+			continue;
+		}
 
 		if (member->m_pathfindingPending)
 		{
@@ -5145,6 +5302,7 @@ void MainState::SpawnDebugDuelingField()
 		unit->m_isSchedulePath = false;
 		unit->m_target = 0;
 		unit->m_combatMoveOrder = false;
+		unit->m_combatOrderMode = CombatOrderMode::Automatic;
 		unit->SetPos(pos);
 		unit->SetDest(pos);
 	};

@@ -66,6 +66,55 @@ std::string PluralizeCreatureName(const std::string& name)
 	return name + "s";
 }
 
+U7Object* GetEquippedWeapon(U7Object* unit)
+{
+	if (!unit || !unit->m_NPCData)
+		return nullptr;
+
+	// Paperdoll allows one-handed weapons in either hand; prefer RIGHT then LEFT.
+	// Only accept WEAPONS.DAT shapes so a shield/torch in the other hand is ignored.
+	auto trySlot = [&](EquipmentSlot slot) -> U7Object* {
+		const int weaponId = unit->m_NPCData->GetEquippedItem(slot);
+		if (weaponId < 0)
+			return nullptr;
+		U7Object* obj = GetObjectFromID(weaponId);
+		if (!obj || !obj->m_shapeData)
+			return nullptr;
+		if (!GetWeaponData(obj->m_shapeData->m_shape))
+			return nullptr;
+		return obj;
+	};
+
+	if (U7Object* right = trySlot(EquipmentSlot::SLOT_RIGHT_HAND))
+		return right;
+	if (U7Object* left = trySlot(EquipmentSlot::SLOT_LEFT_HAND))
+		return left;
+	return nullptr;
+}
+
+std::string CombatWeaponDisplayName(int weaponShape)
+{
+	if (weaponShape < 0 || weaponShape >= 1024)
+		return "fists";
+	if (g_objectDataTable[weaponShape].m_name.empty())
+		return "fists";
+	// TEXT.FLX raw forms like "/dagger//s" → printable "dagger".
+	std::string name = GetShapeFrameName(weaponShape, 0, 1);
+	return name.empty() ? "fists" : name;
+}
+
+std::string CombatWeaponDisplayNameForUnit(U7Object* unit)
+{
+	U7Object* weapon = GetEquippedWeapon(unit);
+	if (!weapon || !weapon->m_shapeData)
+		return "fists";
+	const int shape = weapon->m_shapeData->m_shape;
+	if (shape < 0 || shape >= 1024 || g_objectDataTable[shape].m_name.empty())
+		return "fists";
+	std::string name = GetShapeFrameName(shape, weapon->m_shapeData->GetFrame(), 1);
+	return name.empty() ? "fists" : name;
+}
+
 bool IsHostileCombatUnit(const U7Object* unit)
 {
 	if (!unit || unit->m_hp <= 0.0f || unit->IsDeathStatus())

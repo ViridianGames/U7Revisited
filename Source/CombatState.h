@@ -26,6 +26,13 @@ std::string PluralizeCreatureName(const std::string& name);
 // Max HP for bars (m_BaseMaxHP, else current HP floor).
 float GetCombatMaxHP(const U7Object* unit);
 
+// Ready-hand weapon for combat (RIGHT_HAND first, then LEFT_HAND).
+// Prefers shapes present in WEAPONS.DAT so a shield in the off-hand is ignored.
+U7Object* GetEquippedWeapon(U7Object* unit);
+// Object-data name for a weapon shape, or "fists".
+std::string CombatWeaponDisplayName(int weaponShape);
+std::string CombatWeaponDisplayNameForUnit(U7Object* unit);
+
 // Exult-style hit roll: strength/3 + weapon(+ammo) wpoints, minus armor.
 // weaponShape < 0 → bare hands / monster natural weapon. ammoShape < 0 → no ammo bonus.
 // Returns 0 when armor fully absorbs or the target is immune.

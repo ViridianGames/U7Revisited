@@ -465,8 +465,11 @@ struct FlyingProjectile
 	float speed = 16.0f;
 	float animAccum = 0.0f;
 	// Non-empty shape frames to cycle (skips null 1x1 placeholders).
+	// Unused when directionalFrames is set (Douse/Poison/Death Bolt use 8–23).
 	std::vector<int> animFrameList;
 	int animIndex = 0;
+	// SHAPES.VGA frames 8–23: N, NNE, … clockwise to NNW (world flight heading).
+	bool directionalFrames = false;
 	// Combat-queued spell: keep fighting while in flight; pause caster orders on hit.
 	bool pauseCasterOrdersOnHit = false;
 };
@@ -857,6 +860,10 @@ void PrintNPCPathStats();
 void DrawPerfCounter(Font* font, int loc);
 
 inline bool g_isCombatMode = false;
+
+// Object id of the caster for the spell script currently running via GumpSpellbook::RunSpellCast.
+// Used by check_spell_requirements / begin_casting_mode when Lua omits an explicit caster.
+inline int g_currentSpellCasterObjectId = -1;
 
 #endif
 

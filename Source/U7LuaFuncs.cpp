@@ -2972,21 +2972,24 @@ static int LuaFindDirectionBetween(lua_State *L)
     Vector3 from_pos = g_objectList[from_obj_id]->GetPos();
     Vector3 to_pos = g_objectList[to_obj_id]->GetPos();
 
-    // Calculate direction (0-7): 0=North, 1=NE, 2=East, 3=SE, 4=South, 5=SW, 6=West, 7=NW
-    float dx = to_pos.x - from_pos.x;
-    float dz = to_pos.z - from_pos.z;
+    // Direction 0-7 must match UC_FACE_DIR / Exult: 0=N, 1=NE, 2=E, 3=SE, 4=S, 5=SW, 6=W, 7=NW.
+    // Engine axes: +X east, +Z south, so north is -Z. Old atan2(dz,dx)-90 was 180° off.
+    const float dx = to_pos.x - from_pos.x;
+    const float dz = to_pos.z - from_pos.z;
+    if (dx * dx + dz * dz < 1e-8f)
+    {
+        lua_pushinteger(L, 0);
+        return 1;
+    }
 
-    // Calculate angle in radians, then convert to 0-7 direction
-    float angle = atan2(dz, dx); // atan2(y, x) in standard coords
-    // Convert to degrees: 0 = East, 90 = South, 180 = West, 270 = North
-    float degrees = angle * 180.0f / 3.14159265f;
+    // Angle from north, clockwise: atan2(east, north) = atan2(dx, -dz).
+    float degrees = atan2f(dx, -dz) * (180.0f / 3.14159265f);
+    if (degrees < 0.0f)
+        degrees += 360.0f;
 
-    // Adjust so 0 = North: rotate by -90 degrees
-    degrees = degrees - 90.0f;
-    if (degrees < 0) degrees += 360.0f;
-
-    // Convert to 0-7 (8 directions), rounding to nearest
     int direction = (int)((degrees + 22.5f) / 45.0f) % 8;
+    if (direction < 0)
+        direction += 8;
 
     lua_pushinteger(L, direction);
     return 1;
@@ -3643,29 +3646,113 @@ static int LuaGetContainerOf(lua_State *L)
     return 1;
 }
 
-// 0x0041 | set_to_attack
+// Exult UI_begin_casting_mode(npc [, shape=859]) — arm glow for next cast script.
+static int LuaBeginCastingMode(lua_State *L)
+{
+    const int n = lua_gettop(L);
+    if (n < 1)
+        return 0;
+
+    int objId = (int)lua_tointeger(L, 1);
+    const int shape = (n >= 2) ? (int)lua_tointeger(L, 2) : 859;
+
+    U7Object* obj = GetObjectFromID(objId);
+    if (!obj && g_NPCData.find(objId) != g_NPCData.end() && g_NPCData[objId])
+        obj = GetObjectFromID(g_NPCData[objId]->m_objectID);
+    if (!obj)
+        return 0;
+
+    obj->BeginCasting(shape);
+    return 0;
+}
+
+// Spell gate used by Lua spell scripts. Mana/reagents are already checked by the
+// spellbook for book casts. On success, start casting-mode so the next usecode
+// array shows SHAPES.VGA 859 (blue arms).
+static int LuaCheckSpellRequirements(lua_State *L)
+{
+    int casterId = -1;
+    if (lua_gettop(L) >= 1 && lua_isnumber(L, 1))
+        casterId = (int)lua_tointeger(L, 1);
+    else if (g_currentSpellCasterObjectId >= 0)
+        casterId = g_currentSpellCasterObjectId;
+
+    if (casterId >= 0)
+    {
+        U7Object* caster = GetObjectFromID(casterId);
+        if (!caster && g_NPCData.find(casterId) != g_NPCData.end() && g_NPCData[casterId])
+            caster = GetObjectFromID(g_NPCData[casterId]->m_objectID);
+        if (caster)
+            caster->BeginCasting(859);
+    }
+
+    lua_pushboolean(L, 1);
+    return 1;
+}
+
+// 0x0041 | set_to_attack(from, to, weaponshape)  — Exult order
+// Decompiler often emits set_to_attack(weaponshape, to, from).
+// Object ids and shape ids share the same integer space, so never treat
+// "GetObjectFromID(shape) != null" as proof that arg1 is an attacker.
+// Stores target + weapon for UC_ATTACK (0x7A) so cast scripts can fire mid-anim.
 static int LuaSetToAttack(lua_State *L)
 {
-    int attacker_id = (int)lua_tointeger(L, 1);
-    int target_id = (int)lua_tointeger(L, 2);
-    // int weapon_id = (int)lua_tointeger(L, 3);
-
-    // Check if attacker NPC exists
-    if (g_objectList.find(attacker_id) == g_objectList.end())
+    const int n = lua_gettop(L);
+    if (n < 3)
     {
         lua_pushinteger(L, 0);
         return 1;
     }
 
-    U7Object* attacker = g_objectList[attacker_id].get();
-    if (attacker->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_NPC || !attacker->m_NPCData)
+    const int a = (int)lua_tointeger(L, 1);
+    const int b = (int)lua_tointeger(L, 2);
+    const int c = (int)lua_tointeger(L, 3);
+
+    auto asActor = [](int id) -> U7Object* {
+        U7Object* o = GetObjectFromID(id);
+        if (!o)
+            return nullptr;
+        if (o->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC ||
+            o->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_MONSTER)
+            return o;
+        return nullptr;
+    };
+
+    U7Object* attacker = nullptr;
+    int targetId = b;
+    int weaponShape = 0;
+
+    if (U7Object* atk = asActor(a))
+    {
+        // Exult: (attacker, target, weaponShape)
+        attacker = atk;
+        weaponShape = c;
+    }
+    else if (U7Object* atk = asActor(c); atk && a > 0 && a < 1024)
+    {
+        // Decompiler: (weaponShape, target, attacker)
+        attacker = atk;
+        weaponShape = a;
+    }
+    else
+    {
+        attacker = GetObjectFromID(a);
+        weaponShape = c;
+    }
+
+    if (!attacker || weaponShape <= 0 || weaponShape >= 1024)
     {
         lua_pushinteger(L, 0);
         return 1;
     }
 
-    // Set the target as the oppressor (who this NPC should attack)
-    attacker->m_NPCData->oppressor = target_id;
+    int resolvedTarget = targetId;
+    if (U7Object* t = GetObjectFromID(targetId))
+        resolvedTarget = static_cast<int>(t->m_ID);
+
+    attacker->SetUsecodeAttackTarget(resolvedTarget, weaponShape);
+    if (attacker->m_NPCData)
+        attacker->m_NPCData->oppressor = resolvedTarget;
 
     lua_pushinteger(L, 1);
     return 1;
@@ -6621,6 +6708,8 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction( "remove_item", LuaRemoveItem);
     g_ScriptingSystem->RegisterScriptFunction( "get_container", LuaGetContainerOf);
     g_ScriptingSystem->RegisterScriptFunction( "set_to_attack", LuaSetToAttack);
+    g_ScriptingSystem->RegisterScriptFunction( "begin_casting_mode", LuaBeginCastingMode);
+    g_ScriptingSystem->RegisterScriptFunction( "check_spell_requirements", LuaCheckSpellRequirements);
     g_ScriptingSystem->RegisterScriptFunction( "set_attack_mode", LuaSetAttackMode);
     g_ScriptingSystem->RegisterScriptFunction( "set_oppressor", LuaSetOppressor);
     g_ScriptingSystem->RegisterScriptFunction( "attack_object", LuaAttackObject);

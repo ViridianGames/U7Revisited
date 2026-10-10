@@ -2648,6 +2648,44 @@ namespace {
 	}
 }
 
+namespace
+{
+	// Douse 540 / Poison 424 / Death Bolt 527: frames 1–7 empty, 8–23 are 16
+	// compass facings (N … NNW). Fire bolt 856 keeps frames 0–4 as a spin cycle.
+	bool ShapeHasDirectionalProjectileFrames(int shape)
+	{
+		if (shape <= 0 || shape >= 1024)
+			return false;
+		for (int f = 8; f <= 23; ++f)
+		{
+			if (!g_shapeTable[shape][f].IsValid())
+				return false;
+		}
+		int emptyMid = 0;
+		for (int f = 1; f <= 7; ++f)
+		{
+			if (!g_shapeTable[shape][f].IsValid())
+				++emptyMid;
+		}
+		return emptyMid >= 5;
+	}
+
+	// Same compass basis as find_direction / UC_FACE_DIR: 0° = north (−Z),
+	// clockwise, +X east. 16 sectors → SHAPES.VGA frames 8–23.
+	int ProjectileDirectionalFrame(float dx, float dz)
+	{
+		if (dx * dx + dz * dz < 1e-8f)
+			return 8; // N
+		float degrees = atan2f(dx, -dz) * (180.0f / 3.14159265f);
+		if (degrees < 0.0f)
+			degrees += 360.0f;
+		int dir16 = static_cast<int>((degrees + 11.25f) / 22.5f) % 16;
+		if (dir16 < 0)
+			dir16 += 16;
+		return 8 + dir16;
+	}
+}
+
 bool SpawnFlyingProjectile(int shape, int fromId, int toId, float speed, int damage, int damageType,
 	int weaponShape, int ammoShape)
 {
@@ -2658,10 +2696,16 @@ bool SpawnFlyingProjectile(int shape, int fromId, int toId, float speed, int dam
 
 	const int objectId = static_cast<int>(GetNextID());
 	Vector3 spawnPos = from->m_Pos;
-	// Launch from mid-torso so the bolt clears floors/tables.
-	spawnPos.y += 0.9f;
+	// Launch near the caster billboard center (same lift DrawWalkBillboard uses).
+	float casterLift = 1.4f;
+	if (from->m_shapeData && from->m_shapeData->m_Dims.y > 0.1f)
+		casterLift = from->m_shapeData->m_Dims.y * 0.62f;
+	spawnPos.y += casterLift;
 	Vector3 targetPos = to->m_Pos;
-	targetPos.y += 0.7f;
+	float targetLift = 0.9f;
+	if (to->m_shapeData && to->m_shapeData->m_Dims.y > 0.1f)
+		targetLift = to->m_shapeData->m_Dims.y * 0.45f;
+	targetPos.y += targetLift;
 
 	U7Object* bolt = AddObject(shape, 0, objectId, spawnPos.x, spawnPos.y, spawnPos.z);
 	if (!bolt)
@@ -2690,23 +2734,34 @@ bool SpawnFlyingProjectile(int shape, int fromId, int toId, float speed, int dam
 	proj.speed = (speed > 0.1f) ? speed : 16.0f;
 	proj.animAccum = 0.0f;
 	proj.animIndex = 0;
-	// Collect the first contiguous run of drawable frames (skip null 1x1 placeholders).
-	// Fire bolt 856: frames 0–4 spin; 5–7 are empty; 8+ are extra variants.
-	const int declared = std::max(1, g_shapeTable[shape][0].m_numFrames);
-	for (int f = 0; f < declared && f < 32; ++f)
+	proj.directionalFrames = ShapeHasDirectionalProjectileFrames(shape);
+
+	const float dx0 = targetPos.x - spawnPos.x;
+	const float dz0 = targetPos.z - spawnPos.z;
+
+	if (proj.directionalFrames)
 	{
-		ShapeData& sd = g_shapeTable[shape][f];
-		if (!sd.IsValid())
-		{
-			if (!proj.animFrameList.empty())
-				break;
-			continue;
-		}
-		proj.animFrameList.push_back(f);
+		bolt->SetFrame(ProjectileDirectionalFrame(dx0, dz0));
 	}
-	if (proj.animFrameList.empty())
-		proj.animFrameList.push_back(0);
-	bolt->SetFrame(proj.animFrameList[0]);
+	else
+	{
+		// Fire bolt 856 etc.: first contiguous run of drawable frames (spin cycle).
+		const int declared = std::max(1, g_shapeTable[shape][0].m_numFrames);
+		for (int f = 0; f < declared && f < 32; ++f)
+		{
+			ShapeData& sd = g_shapeTable[shape][f];
+			if (!sd.IsValid())
+			{
+				if (!proj.animFrameList.empty())
+					break;
+				continue;
+			}
+			proj.animFrameList.push_back(f);
+		}
+		if (proj.animFrameList.empty())
+			proj.animFrameList.push_back(0);
+		bolt->SetFrame(proj.animFrameList[0]);
+	}
 	g_flyingProjectiles.push_back(proj);
 	return true;
 }
@@ -2762,7 +2817,10 @@ void UpdateFlyingProjectiles()
 			if (!target->GetIsDead())
 			{
 				proj.targetPos = target->m_Pos;
-				proj.targetPos.y += 0.7f;
+				float targetLift = 0.9f;
+				if (target->m_shapeData && target->m_shapeData->m_Dims.y > 0.1f)
+					targetLift = target->m_shapeData->m_Dims.y * 0.45f;
+				proj.targetPos.y += targetLift;
 			}
 		}
 
@@ -2774,34 +2832,54 @@ void UpdateFlyingProjectiles()
 			if (target && !target->GetIsDead() && !target->IsDeathStatus())
 			{
 				U7Object* attacker = GetObjectFromID(proj.attackerId);
-				int hits = 0;
-				if (proj.weaponShape >= 0 || proj.ammoShape >= 0)
-					hits = FigureCombatHitPoints(attacker, target, proj.weaponShape, proj.ammoShape);
-				else
-					hits = proj.damage;
-				if (hits > 0)
-					ApplyCombatDamage(target, static_cast<float>(hits), attacker);
-				// Combat weapon missiles: same console wording as melee (damage known at impact).
-				if (proj.weaponShape >= 0 || proj.ammoShape >= 0)
+
+				// Douse bolt (shape 540): spell usecode event 4 on the target — extinguish lights.
+				if (proj.weaponShape == 540 || bolt->m_ObjectType == 540)
 				{
-					const std::string attackerName = (attacker && !attacker->m_name.empty())
-						? attacker->m_name : "Someone";
-					const std::string targetName = !target->m_name.empty() ? target->m_name : "enemy";
-					std::string weaponName = "fists";
-					if (proj.weaponShape >= 0 && proj.weaponShape < 1024)
+					if (g_ScriptingSystem)
 					{
-						const std::string& n = g_objectDataTable[proj.weaponShape].m_name;
-						if (!n.empty())
-							weaponName = n;
+						g_ScriptingSystem->CallScript(
+							"spell_dispel_fire_an_flam_0322",
+							{ static_cast<lua_Integer>(4),
+							  static_cast<lua_Integer>(proj.targetId) });
 					}
-					AddConsoleString(
-						attackerName + " attacks " + targetName + " with " + weaponName
-						+ " for " + std::to_string(hits) + " damage",
-						RED);
 				}
-				// Flame Bolt / fire bolt: hit SFX only — no explosion sprite (that's for other spells).
-				if (g_SoundSystem)
-					g_SoundSystem->PlaySound(BuildU7SfxPath(13));
+				else if (proj.weaponShape == 424 || bolt->m_ObjectType == 424)
+				{
+					// Poison (In Nox) bolt — Obj_flags::poisoned.
+					if (g_ScriptingSystem)
+					{
+						g_ScriptingSystem->CallScript(
+							"spell_poison_in_nox_0350",
+							{ static_cast<lua_Integer>(4),
+							  static_cast<lua_Integer>(proj.targetId) });
+					}
+				}
+				else
+				{
+					int hits = 0;
+					if (proj.weaponShape >= 0 || proj.ammoShape >= 0)
+						hits = FigureCombatHitPoints(attacker, target, proj.weaponShape, proj.ammoShape);
+					else
+						hits = proj.damage;
+					if (hits > 0)
+						ApplyCombatDamage(target, static_cast<float>(hits), attacker);
+					// Combat weapon missiles: same console wording as melee (damage known at impact).
+					if (proj.weaponShape >= 0 || proj.ammoShape >= 0)
+					{
+						const std::string attackerName = (attacker && !attacker->m_name.empty())
+							? attacker->m_name : "Someone";
+						const std::string targetName = !target->m_name.empty() ? target->m_name : "enemy";
+						AddConsoleString(
+							attackerName + " attacks " + targetName + " with "
+							+ CombatWeaponDisplayName(proj.weaponShape)
+							+ " for " + std::to_string(hits) + " damage",
+							RED);
+					}
+					// Flame Bolt / fire bolt: hit SFX only — no explosion sprite.
+					if (g_SoundSystem)
+						g_SoundSystem->PlaySound(BuildU7SfxPath(13));
+				}
 			}
 			PauseCasterOrdersAfterCombatSpell(proj);
 			DestroyProjectileObject(proj.objectId);
@@ -2818,9 +2896,14 @@ void UpdateFlyingProjectiles()
 		bolt->SetPos(next);
 		bolt->SetDest(proj.targetPos);
 
-		// Spin through drawable frames only (null frames already filtered out).
-		if (proj.animFrameList.size() > 1)
+		if (proj.directionalFrames)
 		{
+			// Pick SHAPES.VGA frame 8–23 from world flight heading (N…NNW).
+			bolt->SetFrame(ProjectileDirectionalFrame(delta.x, delta.z));
+		}
+		else if (proj.animFrameList.size() > 1)
+		{
+			// Spin cycle (e.g. Vas Flam 856 frames 0–4).
 			proj.animAccum += dt * kAnimFps;
 			while (proj.animAccum >= 1.0f)
 			{

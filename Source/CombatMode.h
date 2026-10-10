@@ -13,6 +13,15 @@ enum class CombatStyle : int
 	TurnBased = 2,
 };
 
+// Real-Time-with-Pause party order (mirrors ultima7-rtwp Auto/Hold/Target/Move).
+enum class CombatOrderMode : unsigned char
+{
+	Automatic = 0,
+	Hold = 1,
+	Attack = 2,
+	Move = 3
+};
+
 CombatStyle GetCombatStylePreference();
 void SetCombatStylePreference(CombatStyle style);
 const char* CombatStyleDisplayName(CombatStyle style);

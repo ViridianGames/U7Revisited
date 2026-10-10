@@ -9,6 +9,7 @@
 #include <variant>
 #include "lua.h"
 #include "U7Globals.h"
+#include "CombatMode.h"
 #include "NpcAnimation.h"
 #include "../ThirdParty/nlohmann/json.hpp"
 
@@ -47,6 +48,14 @@ enum class ObjectAnimMode : uint8_t
 	Auto = 0,
 	Scripted = 1,
 	Frozen = 2
+};
+
+// Exult Actor::Casting_mode — blue glowing arms (SHAPES.VGA 859) during cast scripts.
+enum class CastingMode : uint8_t
+{
+	NotCasting = 0,
+	InitCasting = 1,         // begin_casting; next usecode script will show frames
+	ShowCastingFrames = 2    // overlay shape 859 while the cast script runs
 };
 
 // NPCData::status is the raw npc.dat rflags word (Exult Actor::read).
@@ -457,7 +466,16 @@ public:
 	const NpcActionTextures* GetNpcActionTextures() const;
 	void SetNpcAnimAction(NpcAnimAction action, bool looping, float frameMs = 120.0f);
 	void StartNpcAttackAnim(); // picks 1H/2H/Shoot from weapon; one-shot
+	// Hold a single SHAPES.VGA pose from usecode UC_NPC_FRAME (cast / kneel / etc.).
+	void ApplyNpcPoseFromUsecode(int poseNibble);
 	void UpdateNpcAnim(float dt);
+
+	// Casting frames overlay (shape 859 by default).
+	void BeginCasting(int shape = 859);
+	void DisplayCastingFrames();
+	void HideCastingFrames();
+	CastingMode GetCastingMode() const { return m_castingMode; }
+	void DrawCastingFramesOverlay(Vector3 finalPos, Vector2 bodyDims, float billboardAngle, Color lighting);
 	bool IsNpcAttackAnimPlaying() const { return m_npcAnimPlaying; }
 	bool ConsumeNpcAnimHitEvent(); // true once when strike/release phase is reached
 
@@ -599,6 +617,19 @@ public:
 	void HaltUsecodeScript(bool force = false);
 	bool IsInUsecodeScript() const;
 	void UpdateUsecodeScript();
+
+	// Exult set_to_attack / UC_ATTACK (0x7A): fire stored weapon/spell at stored target
+	// when the cast script reaches the attack opcode (so the bolt waits for poses).
+	void SetUsecodeAttackTarget(int targetId, int weaponShape);
+	bool FireUsecodeAttack();
+	int m_usecodeAttackTargetId = -1;
+	int m_usecodeAttackWeaponShape = -1;
+	// Combat spell: next flying projectile from this caster pauses orders on hit.
+	// If the cast script ends with no projectile, pause orders then.
+	bool m_pauseOrdersOnNextSpellProjectile = false;
+
+	CastingMode m_castingMode = CastingMode::NotCasting;
+	int m_castingShape = 859;
 
 	Vector3 m_ExternalForce;
 
@@ -746,6 +777,9 @@ public:
 	int m_monsterType;
 
 	int m_target = 0; // Who we are currently pissed at.
+
+	// RTwP manual order (ultima7-rtwp contract). Automatic = no manual ownership.
+	CombatOrderMode m_combatOrderMode = CombatOrderMode::Automatic;
 
 	// Queued combat spell (chosen while paused; fires when fighting resumes).
 	int m_combatSpellId = -1;
