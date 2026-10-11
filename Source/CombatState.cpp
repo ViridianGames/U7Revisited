@@ -518,20 +518,27 @@ void DrawCombatHPBars()
 
 	const float drawScale = (g_DrawScale > 0.0f) ? g_DrawScale : 1.0f;
 	constexpr float kBarH = 2.0f;
-	constexpr float kBarWMin = 8.0f;
-	constexpr float kBarWMax = 22.0f;
+	// Fixed world width (tiles/cells) so every combatant gets the same bar size.
+	constexpr float kBarWorldWidth = 1.5f;
+
+	// Camera-right on XZ so the bar stays 1.5 cells wide under rotation.
+	Vector3 camForward = Vector3Subtract(g_camera.target, g_camera.position);
+	camForward.y = 0.0f;
+	if (Vector3LengthSqr(camForward) < 1e-6f)
+		camForward = Vector3{ -1.0f, 0.0f, -1.0f };
+	camForward = Vector3Normalize(camForward);
+	Vector3 camRight = Vector3Normalize(Vector3CrossProduct(Vector3{ 0.0f, 1.0f, 0.0f }, camForward));
+	const float halfW = kBarWorldWidth * 0.5f;
 
 	auto drawBarFor = [&](U7Object* obj, bool party) {
 		if (!obj || obj->GetIsDead() || obj->IsDeathStatus())
 			return;
 
-		// Approximate on-screen body width from the bounding box X extents.
-		Vector3 left = obj->m_centerPoint;
-		Vector3 right = obj->m_centerPoint;
-		left.x = obj->m_boundingBox.min.x;
-		right.x = obj->m_boundingBox.max.x;
-		left.y = right.y = obj->m_centerPoint.y;
+		Vector3 head = obj->m_centerPoint;
+		head.y += 1.35f;
 
+		Vector3 left = Vector3Add(head, Vector3Scale(camRight, -halfW));
+		Vector3 right = Vector3Add(head, Vector3Scale(camRight, halfW));
 		Vector2 screenL = GetWorldToScreen(left, g_camera);
 		Vector2 screenR = GetWorldToScreen(right, g_camera);
 		screenL.x /= drawScale;
@@ -539,14 +546,8 @@ void DrawCombatHPBars()
 
 		float barW = fabsf(screenR.x - screenL.x);
 		if (barW < 1.0f)
-		{
-			// Fallback when the box projects very thin (edge-on / tiny).
-			barW = 12.0f;
-		}
-		barW = std::clamp(barW, kBarWMin, kBarWMax);
+			barW = 1.0f;
 
-		Vector3 head = obj->m_centerPoint;
-		head.y += 1.35f;
 		Vector2 screen = GetWorldToScreen(head, g_camera);
 		screen.x /= drawScale;
 		screen.y /= drawScale;

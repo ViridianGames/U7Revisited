@@ -16,6 +16,7 @@
 #include "Logging.h"
 #include "U7GumpBook.h"
 #include "MainState.h"
+#include "CombatState.h"
 #include "PathfindingSystem.h"
 #include "SoundSystem.h"
 #include "U7SpriteEffects.h"
@@ -3666,6 +3667,40 @@ static int LuaBeginCastingMode(lua_State *L)
     return 0;
 }
 
+// spawn_floating_combat_text(objectref, text [, r, g, b])
+// World-anchored rising text (same system as combat damage numbers). Works in
+// and out of combat. Default color is white when r,g,b omitted.
+static int LuaSpawnFloatingCombatText(lua_State *L)
+{
+	const int n = lua_gettop(L);
+	if (n < 2)
+		return 0;
+
+	const int objId = (int)luaL_checkinteger(L, 1);
+	const char* text = luaL_checkstring(L, 2);
+	if (!text || !text[0])
+		return 0;
+
+	unsigned char r = 255, g = 255, b = 255;
+	if (n >= 5)
+	{
+		r = static_cast<unsigned char>(std::clamp((int)luaL_checkinteger(L, 3), 0, 255));
+		g = static_cast<unsigned char>(std::clamp((int)luaL_checkinteger(L, 4), 0, 255));
+		b = static_cast<unsigned char>(std::clamp((int)luaL_checkinteger(L, 5), 0, 255));
+	}
+
+	U7Object* obj = GetObjectFromID(objId);
+	if (!obj && g_NPCData.find(objId) != g_NPCData.end() && g_NPCData[objId])
+		obj = GetObjectFromID(g_NPCData[objId]->m_objectID);
+	if (!obj)
+		return 0;
+
+	Vector3 pos = obj->m_centerPoint;
+	pos.y += 1.35f; // same head anchor as damage numbers / HP bars
+	SpawnFloatingCombatText(pos, text, Color{ r, g, b, 255 });
+	return 0;
+}
+
 // Spell gate used by Lua spell scripts. Mana/reagents are already checked by the
 // spellbook for book casts. On success, start casting-mode so the next usecode
 // array shows SHAPES.VGA 859 (blue arms).
@@ -4162,16 +4197,74 @@ static int LuaResurrect(lua_State *L)
     return 0;
 }
 
-// 0x0047 | summon
+// 0x0047 | summon([unknown_bool,] shape) — spawn a monster of the given SHAPES shape
+// near the Avatar (Swarm uses insects shape 517). Exult decompiles as summon(false, shape).
 static int LuaSummon(lua_State *L)
 {
-    int shape = (int)lua_tointeger(L, 1);
-    // bool unknown = (lua_gettop(L) >= 2) ? lua_toboolean(L, 2) : false;
+	const int n = lua_gettop(L);
+	int shape = 0;
+	if (n >= 2 && lua_isboolean(L, 1))
+		shape = (int)lua_tointeger(L, 2);
+	else if (n >= 1)
+		shape = (int)lua_tointeger(L, 1);
 
-    // In full implementation, would create a new creature object
-    // For now, return nil to indicate summoning not fully implemented
-    lua_pushnil(L);
-    return 1;
+	if (shape <= 0 || shape >= 1024 || !g_mainState)
+	{
+		lua_pushnil(L);
+		return 1;
+	}
+
+	int monsterType = -1;
+	for (int i = 0; i < (int)g_monsterData.size(); ++i)
+	{
+		if (g_monsterData[i].m_shape == shape)
+		{
+			monsterType = i;
+			break;
+		}
+	}
+	if (monsterType < 0)
+	{
+		lua_pushnil(L);
+		return 1;
+	}
+
+	U7Object* anchor = g_Player ? g_Player->GetAvatarObject() : nullptr;
+	if (!anchor && g_currentSpellCasterObjectId >= 0)
+		anchor = GetObjectFromID(g_currentSpellCasterObjectId);
+	if (!anchor)
+	{
+		lua_pushnil(L);
+		return 1;
+	}
+
+	// Scatter around the caster/Avatar (Swarm is not a targeted spell).
+	const int ox = (g_NonVitalRNG ? (int)g_NonVitalRNG->RandomRange(0, 10) - 5 : 0);
+	const int oz = (g_NonVitalRNG ? (int)g_NonVitalRNG->RandomRange(0, 10) - 5 : 0);
+	const int tx = (int)anchor->m_Pos.x + ox;
+	const int tz = (int)anchor->m_Pos.z + oz;
+	const int ty = (int)anchor->m_Pos.y;
+
+	const int id = g_mainState->SpawnMonster(monsterType, tx, ty, tz);
+	if (id < 0)
+	{
+		lua_pushnil(L);
+		return 1;
+	}
+
+	// Party-aligned summons (Swarm insects): 0-damage distraction pests.
+	if (U7Object* spawned = GetObjectFromID(id))
+	{
+		spawned->m_Team = 2;
+		spawned->m_BaseAttack = 0.0f;
+		spawned->m_attackCooldown = 0.5f;
+		spawned->m_cooldownTimer = g_NonVitalRNG
+			? g_NonVitalRNG->RandomRangeFloat(0.0f, 0.5f)
+			: 0.25f;
+	}
+
+	lua_pushinteger(L, id);
+	return 1;
 }
 
 // 0x0046 | sit_down(npc, chair)  — Exult: npc sits on chair object.
@@ -5425,12 +5518,13 @@ static int LuaCauseLight(lua_State *L)
     return 0;
 }
 
-// 0x0048 | display_map
+// 0x0048 | display_map — Peer (Vas Wis) opens the minimap gump.
 static int LuaDisplayMap(lua_State *L)
 {
-    // Map UI not yet implemented
-    // Would show world map overlay
-    return 0;
+	(void)L;
+	if (g_mainState)
+		g_mainState->OpenMinimapGump(0);
+	return 0;
 }
 
 // 0x004F | display_area
@@ -6718,6 +6812,7 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction( "in_combat", LuaInCombat);
     g_ScriptingSystem->RegisterScriptFunction( "apply_damage", LuaApplyDamage);
     g_ScriptingSystem->RegisterScriptFunction( "reduce_health", LuaReduceHealth);
+    g_ScriptingSystem->RegisterScriptFunction( "spawn_floating_combat_text", LuaSpawnFloatingCombatText);
     g_ScriptingSystem->RegisterScriptFunction( "get_item_flag", LuaGetItemFlag);
     g_ScriptingSystem->RegisterScriptFunction( "set_item_flag", LuaSetItemFlag);
     g_ScriptingSystem->RegisterScriptFunction( "clear_item_flag", LuaClearItemFlag);

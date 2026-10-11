@@ -52,6 +52,11 @@ bool PathfindingSystem::AreUnitsHostile(const U7Object* agent, const U7Object* o
 	if (agentParty && otherParty)
 		return false;
 
+	// Team 2 (Swarm insects, etc.): anyone may walk through them, and they
+	// may pass through party and hostiles (small flying pests).
+	if (agent->m_Team == 2 || other->m_Team == 2)
+		return false;
+
 	// Party vs hostile team, and vice versa
 	if (agentParty && other->m_Team == 1)
 		return true;

@@ -101,7 +101,8 @@ void LoadMonsterData()
 		value = *ptr++;  // Byte 8: weapon/reach
 		md.m_damage = (value >> 4) & 15;  // weapon damage as proxy
 
-		ptr++;  // Byte 9: flags (fly etc) -> unknown0A for now
+		md.m_flagsByte = *ptr++;  // Byte 9: Exult Monster_info::flags (fly=bit0, …)
+		md.m_flies = (md.m_flagsByte & 1) != 0;
 		md.m_unknown0A = *ptr++;  // Byte 10: vulnerable
 		md.m_unknown0B = *ptr++;  // Byte 11: immune
 

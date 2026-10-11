@@ -287,6 +287,9 @@ struct SpellData
 	std::vector<std::string> reagents; // Reagent names: "Ginseng", "Garlic", etc.
 	std::string desc;                 // Spell description
 	int circle;                       // Circle number (0=Linear, 1-8=First-Eighth)
+	// false = no click_on_item (Swarm, Protect All, Light, …). Combat pause
+	// queues these without a targeting prompt.
+	bool targeted = true;
 };
 
 /// @brief Circle data structure (Linear + 8 circles, each with 8 spells)

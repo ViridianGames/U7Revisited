@@ -1041,6 +1041,14 @@ function apply_damage(npc_id, amount) end
 ---@param amount integer Amount to reduce
 function reduce_health(npc_id, amount) end
 
+---Spawns rising world text above an object (damage/heal numbers). Works in and out of combat.
+---@param objectref integer Object or NPC id
+---@param text string Display string (e.g. "+12")
+---@param r integer|nil Red 0–255 (default 255)
+---@param g integer|nil Green 0–255 (default 255)
+---@param b integer|nil Blue 0–255 (default 255)
+function spawn_floating_combat_text(objectref, text, r, g, b) end
+
 -- ============================================================================
 -- EXULT INTRINSICS - NPC MANAGEMENT
 -- ============================================================================

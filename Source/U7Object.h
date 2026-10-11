@@ -196,6 +196,8 @@ struct MonsterData
 	unsigned char m_unknown0B;         // 0x0B
 	unsigned char m_alignmentFlags;    // 0x0C - alignment + basic behavior bits
 	unsigned char m_monsterCategory;   // 0x0D - often used by monster eggs / spawners
+	unsigned char m_flagsByte = 0;     // MONSTERS.DAT byte 9 (Exult Monster_info::flags)
+	bool m_flies = false;              // flags bit 0 (Exult Monster_info::fly)
 
 	// Bytes 0x0E-0x18 contain additional data (experience, treasure, immunities, sounds, etc.)
 	// Left in m_raw[] until specifically needed.
@@ -489,6 +491,8 @@ public:
 
 	// Shared hostile AI during CombatState (monsters and hostile NPCs).
 	void HostileCombatUpdate();
+	// Party-aligned summons (Team 2, e.g. Swarm): distract hostiles, despawn off-screen.
+	void AlliedMonsterUpdate();
 
 	void NPCInit(NPCData *npcData);
 	void MonsterInit();
@@ -672,7 +676,11 @@ public:
 	float m_mana; // Current mana; max is Magic (NPCData::magic / player magic)
 	float m_combat;
 	float m_magic;
+	// 0 = neutral, 1 = hostile, 2 = party-aligned summon (Swarm insects, etc.)
 	int m_Team;
+	bool m_isFlying = false;
+	// Extra billboard/pick lift in world tiles (flying creatures ~waist height).
+	float m_drawHeightOffset = 0.0f;
 
 	bool m_GravityFlag;
 	bool m_ExternalForceFlag;

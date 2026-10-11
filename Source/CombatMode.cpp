@@ -11,6 +11,7 @@
 #include "raymath.h"
 
 #include <algorithm>
+#include <cmath>
 #include <string>
 
 namespace
@@ -171,60 +172,76 @@ void ClampCombatCameraKeepAvatarOnScreen()
 	if (screenW < 1.0f || screenH < 1.0f)
 		return;
 
-	// Keep Avatar inside an inset so they are never glued to the edge.
-	const float marginX = screenW * 0.12f;
-	const float marginY = screenH * 0.12f;
 	const Vector3 avatarPos = avatar->m_centerPoint;
 
-	auto refreshCameraPose = []() {
-		Vector3 camPos = { g_cameraDistance, g_cameraDistance, g_cameraDistance };
-		camPos = Vector3RotateByAxisAngle(camPos, Vector3{ 0, 1, 0 }, g_cameraRotation);
-		g_camera.position = Vector3Add(g_camera.target, camPos);
-		g_camera.fovy = g_cameraDistance;
-		g_camera.projection = CAMERA_ORTHOGRAPHIC;
-	};
+	// Camera-relative axes (same convention as third-person pan).
+	Vector3 forward = Vector3{ -1.0f, 0.0f, -1.0f };
+	forward = Vector3RotateByAxisAngle(forward, Vector3{ 0, 1, 0 }, g_cameraRotation);
+	forward.y = 0.0f;
+	if (Vector3LengthSqr(forward) > 1e-6f)
+		forward = Vector3Normalize(forward);
+	Vector3 right = Vector3Normalize(Vector3CrossProduct(Vector3{ 0.0f, 1.0f, 0.0f }, forward));
 
-	// Iteratively pull the look-at toward the Avatar until they are on-screen.
-	for (int iter = 0; iter < 6; ++iter)
+	// Ortho: fovy ≈ visible world height. Keep Avatar inside a ~12% screen margin
+	// by hard-clamping look-at offset from the Avatar (no spring / no bounce).
+	constexpr float kMarginFrac = 0.12f;
+	const float halfH = std::max(g_cameraDistance, 1.0f) * 0.5f;
+	const float halfW = halfH * (screenW / screenH);
+	const float maxAlongRight = halfW * (1.0f - 2.0f * kMarginFrac);
+	const float maxAlongFwd = halfH * (1.0f - 2.0f * kMarginFrac);
+
+	const float dx = g_camera.target.x - avatarPos.x;
+	const float dz = g_camera.target.z - avatarPos.z;
+	float alongRight = dx * right.x + dz * right.z;
+	float alongFwd = dx * forward.x + dz * forward.z;
+	const float clampedRight = std::clamp(alongRight, -maxAlongRight, maxAlongRight);
+	const float clampedFwd = std::clamp(alongFwd, -maxAlongFwd, maxAlongFwd);
+
+	bool hitLeash = false;
+	if (clampedRight != alongRight || clampedFwd != alongFwd ||
+	    !std::isfinite(g_camera.target.x) || !std::isfinite(g_camera.target.z))
 	{
-		refreshCameraPose();
-		const Vector2 screen = GetWorldToScreen(avatarPos, g_camera);
-		float pullX = 0.0f;
-		float pullY = 0.0f;
-
-		if (screen.x < marginX)
-			pullX = marginX - screen.x;
-		else if (screen.x > screenW - marginX)
-			pullX = (screenW - marginX) - screen.x;
-
-		if (screen.y < marginY)
-			pullY = marginY - screen.y;
-		else if (screen.y > screenH - marginY)
-			pullY = (screenH - marginY) - screen.y;
-
-		if (pullX == 0.0f && pullY == 0.0f)
-			break;
-
-		// Approximate screen-pixel pull as a world XZ nudge along camera right/forward.
-		Vector3 forward = Vector3{ -1.0f, 0.0f, -1.0f };
-		forward = Vector3RotateByAxisAngle(forward, Vector3{ 0, 1, 0 }, g_cameraRotation);
-		forward.y = 0.0f;
-		if (Vector3LengthSqr(forward) > 1e-6f)
-			forward = Vector3Normalize(forward);
-		Vector3 right = Vector3Normalize(Vector3CrossProduct(Vector3{ 0.0f, 1.0f, 0.0f }, forward));
-
-		const float worldPerPixel = std::max(g_cameraDistance, 1.0f) / screenW;
-		g_camera.target = Vector3Add(g_camera.target, Vector3Scale(right, -pullX * worldPerPixel));
-		g_camera.target = Vector3Add(g_camera.target, Vector3Scale(forward, pullY * worldPerPixel));
-
-		if (g_camera.target.x < 0.0f) g_camera.target.x = 0.0f;
-		if (g_camera.target.x > 3072.0f) g_camera.target.x = 3072.0f;
-		if (g_camera.target.z < 0.0f) g_camera.target.z = 0.0f;
-		if (g_camera.target.z > 3072.0f) g_camera.target.z = 3072.0f;
+		g_camera.target.x = avatarPos.x + right.x * clampedRight + forward.x * clampedFwd;
+		g_camera.target.z = avatarPos.z + right.z * clampedRight + forward.z * clampedFwd;
+		g_camera.target.y = avatarPos.y;
+		hitLeash = true;
 	}
 
-	refreshCameraPose();
-	g_CameraMoved = true;
+	constexpr float kWorldMax = 3071.0f;
+	if (!std::isfinite(g_camera.target.x) || g_camera.target.x < 0.0f)
+	{
+		g_camera.target.x = 0.0f;
+		hitLeash = true;
+	}
+	if (g_camera.target.x > kWorldMax)
+	{
+		g_camera.target.x = kWorldMax;
+		hitLeash = true;
+	}
+	if (!std::isfinite(g_camera.target.z) || g_camera.target.z < 0.0f)
+	{
+		g_camera.target.z = 0.0f;
+		hitLeash = true;
+	}
+	if (g_camera.target.z > kWorldMax)
+	{
+		g_camera.target.z = kWorldMax;
+		hitLeash = true;
+	}
+
+	// Kill pan momentum at the border so CameraUpdate decay cannot push past
+	// and fight the hard stop (that felt like bounce).
+	if (hitLeash)
+	{
+		g_CameraMovementSpeed = Vector3{ 0.0f, 0.0f, 0.0f };
+		g_CameraMoved = true;
+	}
+
+	Vector3 camPos = { g_cameraDistance, g_cameraDistance, g_cameraDistance };
+	camPos = Vector3RotateByAxisAngle(camPos, Vector3{ 0, 1, 0 }, g_cameraRotation);
+	g_camera.position = Vector3Add(g_camera.target, camPos);
+	g_camera.fovy = g_cameraDistance;
+	g_camera.projection = CAMERA_ORTHOGRAPHIC;
 }
 
 bool RealTimePauseCombatMode::IsSimulationPaused() const
@@ -317,7 +334,8 @@ void RealTimePauseCombatMode::OnLeave(MainState& main)
 void RealTimePauseCombatMode::Update(MainState& main)
 {
 	(void)main;
-	ClampCombatCameraKeepAvatarOnScreen();
+	// Avatar-on-screen leash runs after the late CameraUpdate in MainState so
+	// pan input cannot push past the border for a frame and bounce.
 }
 
 void RealTimePauseCombatMode::HandleInput(MainState& main)

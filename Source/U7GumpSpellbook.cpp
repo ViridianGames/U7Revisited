@@ -448,7 +448,7 @@ U7Object* GumpSpellbook::GetCasterObject() const
 	return GetObjectFromID(npcIt->second->m_objectID);
 }
 
-std::string GumpSpellbook::FindSpellScriptName(int scriptId) const
+std::string GumpSpellbook::FindSpellScriptName(int scriptId)
 {
 	if (!g_ScriptingSystem)
 		return {};
@@ -615,12 +615,16 @@ void GumpSpellbook::CastSpell(int spellId)
 		return;
 	}
 
-	// Combat paused: queue a targeted cast — do not spend mana/reagents or run the script yet.
+	// Combat paused: queue the cast — do not spend mana/reagents or run the script yet.
+	// Targeted spells ask for a click; untarged ones (Swarm, Protect All, …) queue on the caster.
 	if (g_isCombatMode && g_mainState && g_mainState->IsCombatOrdersPaused())
 	{
 		if (g_gumpManager)
 			g_gumpManager->MarkAllGumpsDead();
-		g_mainState->BeginCombatSpellTargeting(spellId, static_cast<int>(caster->m_ID));
+		if (!spell->targeted)
+			g_mainState->IssueCombatSpellOrder(caster, spellId, caster);
+		else
+			g_mainState->BeginCombatSpellTargeting(spellId, static_cast<int>(caster->m_ID));
 		return;
 	}
 

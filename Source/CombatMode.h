@@ -50,7 +50,7 @@ public:
 
 std::unique_ptr<CombatMode> CreateCombatMode(CombatStyle style);
 
-// While RTwP combat is active, keep the Avatar inside the viewport (soft leash).
+// While RTwP combat freecam is active, hard-stop look-at so Avatar stays on-screen.
 void ClampCombatCameraKeepAvatarOnScreen();
 
 class OriginalCombatMode : public CombatMode

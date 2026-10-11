@@ -373,10 +373,12 @@ public:
 	std::string DescribeCombatOrder(const U7Object* member) const;
 	bool HasManualCombatOrder(const U7Object* member) const;
 
-	// Combat spell orders (spellbook while paused → click any target → cast on resume).
+	// Combat spell orders (spellbook while paused → click target / or queue untargeted → cast on resume).
 	bool BeginCombatSpellTargeting(int spellId, int casterObjectId);
 	void CancelCombatSpellTargeting();
 	bool IsCombatSpellTargeting() const { return m_combatSpellTargetingSpellId >= 0; }
+	// target may be the caster for untargeted spells (Swarm, Protect All, …).
+	void IssueCombatSpellOrder(U7Object* caster, int spellId, U7Object* target);
 	void SetForcedSpellTarget(int objectId) { m_forcedSpellTargetObjectId = objectId; }
 	int TakeForcedSpellTarget(); // returns id or 0; clears the force
 
@@ -407,7 +409,6 @@ private:
 	void HandleCombatOrderKeys();
 	void IssueCombatAttackOrder(U7Object* member, U7Object* enemy);
 	void IssueCombatMoveOrder(U7Object* member, const Vector3& dest);
-	void IssueCombatSpellOrder(U7Object* caster, int spellId, U7Object* target);
 	void FireQueuedCombatSpells();
 	bool IsCombatPartyMemberObject(const U7Object* obj) const;
 	// UpdateInput() sub-handlers — each owns one concern

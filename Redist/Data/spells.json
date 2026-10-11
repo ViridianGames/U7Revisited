@@ -380,8 +380,9 @@
           "name": "Swarm",
           "x": 798,
           "y": 316,
-          "words": "In Bet Xen",
-          "scriptId": 361,
+          "words": "Kal Bet Xen",
+          "scriptId": 346,
+          "targeted": false,
           "reagents": [
             "Blood Moss",
             "Sulfurous Ash"
@@ -393,8 +394,8 @@
           "name": "Paralyze",
           "x": 798,
           "y": 332,
-          "words": "An Ex Por",
-          "scriptId": 359,
+          "words": "An Por",
+          "scriptId": 348,
           "reagents": [
             "Spider Silk",
             "Nightshade"
@@ -407,7 +408,8 @@
           "x": 798,
           "y": 348,
           "words": "Vas Uus Sanct",
-          "scriptId": 356,
+          "scriptId": 347,
+          "targeted": false,
           "reagents": [
             "Sulfurous Ash",
             "Ginseng",
@@ -423,6 +425,7 @@
           "y": 364,
           "words": "Vas Wis",
           "scriptId": 349,
+          "targeted": false,
           "reagents": [
             "Nightshade",
             "Mandrake Root"
@@ -449,7 +452,7 @@
           "x": 798,
           "y": 396,
           "words": "In Zu",
-          "scriptId": 358,
+          "scriptId": 351,
           "reagents": [
             "Nightshade",
             "Spider Silk",

@@ -1,24 +1,38 @@
---- Best guess: Manages the "Kal Bet Xen" spell, summoning a creature (ID 517) with a random chance, creating it with specific properties if the spell succeeds, or applying a fallback effect.
+--- Swarm (Kal Bet Xen). Third Circle. Oracle: usecode Func065A / object#(0x65A).
+--- Spawns several insects (shape 517) near the caster. Do not destroy the caster.
+
 function spell_summon_kal_bet_xen_0346(eventid, objectref)
-    local var_0000, var_0001, var_0002, var_0003
+    if eventid == 2 then
+        -- Oracle: random2(10, 7) insects of shape 517.
+        local count = random2(10, 7)
+        if type(count) ~= "number" or count < 1 then
+            count = 7
+        end
+        for _ = 1, count do
+            summon(false, 517)
+        end
+        return
+    end
 
     if eventid ~= 1 then
-        if eventid == 2 then
-            var_0001 = random2(10, 7)
-            while var_0001 > 0 do
-                var_0001 = var_0001 - 1
-                var_0002 = 517
-                var_0003 = summon(false, var_0002)
-            end
-        end
         return
     end
 
     halt_scheduled(objectref)
     bark(objectref, "@Kal Bet Xen@")
-    if not utility_condition_0044_1030() then
-        var_0000 = execute_usecode_array(objectref, {1626, 8021, 65, 17496, 17514, 17520, 7791})
-    else
-        var_0000 = execute_usecode_array(objectref, {1542, 17493, 17514, 17520, 7791})
+    if not check_spell_requirements(objectref) then
+        execute_usecode_array(objectref, {17514, 17520, 7781})
+        return
+    end
+
+    begin_casting_mode(objectref, 859)
+    -- Cast FX then apply summons immediately (delayed UC_USECODE is unreliable).
+    execute_usecode_array(objectref, {17514, 17520, 8037, 65, 7768})
+    local count = random2(10, 7)
+    if type(count) ~= "number" or count < 1 then
+        count = 7
+    end
+    for _ = 1, count do
+        summon(false, 517)
     end
 end

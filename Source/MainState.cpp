@@ -2000,7 +2000,13 @@ void MainState::Update()
 		m_sandboxHelpScreen->m_Active = false;
 	}
 
-	unsigned short currentTargetTile = g_World[(int)g_camera.target.z][(int)g_camera.target.x];
+	int camTileX = (int)g_camera.target.x;
+	int camTileZ = (int)g_camera.target.z;
+	if (camTileX < 0) camTileX = 0;
+	if (camTileX >= 3072) camTileX = 3071;
+	if (camTileZ < 0) camTileZ = 0;
+	if (camTileZ >= 3072) camTileZ = 3071;
+	unsigned short currentTargetTile = g_World[camTileZ][camTileX];
 	currentTargetTile = currentTargetTile & 0x3ff; // We just need the shape, not the frame.
 	U7Object* avatarForCutoff = (g_Player ? g_Player->GetAvatarObject() : nullptr);
 
@@ -2386,6 +2392,11 @@ void MainState::Update()
 	// rebuild the sim region same-frame). Follow-cam still needs a late update
 	// after NPCs/Avatar move during object->Update().
 	CameraUpdate();
+
+	// Combat freecam: hard-stop after all pan/follow so the drawn frame never
+	// overshoots the Avatar-on-screen border (early clamp bounced against WASD).
+	if (g_isCombatMode)
+		ClampCombatCameraKeepAvatarOnScreen();
 
 	// Rotate U7 glisten bands (224-254); translucent shapes use static xform bake colors
 	const double tPal0 = GetTime();
@@ -3481,6 +3492,12 @@ void MainState::Draw()
 		g_SpriteEffectSystem->Draw(g_camera);
 	}
 
+	// World-anchored overlays before gumps so bars/text sit under UI.
+	// Floating heal/damage numbers also show outside combat (e.g. Mani).
+	if (g_isCombatMode)
+		DrawCombatHPBars();
+	DrawFloatingCombatTexts();
+
 	if (!m_paused && m_showUIElements)
 	{
 		g_gumpManager->Draw();
@@ -3488,12 +3505,6 @@ void MainState::Draw()
 
 	if (g_isCombatMode && m_combatMode)
 		m_combatMode->DrawHud(*this);
-
-	if (g_isCombatMode)
-	{
-		DrawCombatHPBars();
-		DrawFloatingCombatTexts();
-	}
 
 	// Restore default blend mode
 	rlSetBlendMode(BLEND_ALPHA);
@@ -4379,6 +4390,9 @@ bool MainState::IsCombatEnemyObject(const U7Object* obj) const
 		return false;
 	if (IsCombatPartyMemberObject(obj))
 		return false;
+	// Team 2 = party summons (Swarm); allied, never clickable as enemies.
+	if (obj->m_Team == 2)
+		return false;
 	if (IsHostileCombatUnit(obj))
 		return true;
 	return std::find(m_combatParticipants.begin(), m_combatParticipants.end(), obj->m_ID)
@@ -4457,6 +4471,8 @@ std::string MainState::DescribeCombatOrder(const U7Object* member) const
 		{
 			SpellData* spell = GetSpellData(member->m_combatSpellId);
 			const std::string spellName = spell ? spell->name : "spell";
+			if (spell && !spell->targeted)
+				return "Cast " + spellName;
 			U7Object* target = GetObjectFromID(member->m_combatSpellTargetId);
 			const std::string targetName = (target && !target->m_name.empty()) ? target->m_name : "target";
 			return "Cast " + spellName + " on " + targetName;
@@ -4715,26 +4731,35 @@ int MainState::TakeForcedSpellTarget()
 
 void MainState::IssueCombatSpellOrder(U7Object* caster, int spellId, U7Object* target)
 {
-	if (!caster || !target)
+	if (!caster)
 		return;
 
 	SpellData* spell = GetSpellData(spellId);
 	if (!spell)
 		return;
 
+	// Untargeted spells (Swarm, etc.) use the caster as a placeholder target id.
+	if (!target)
+		target = caster;
+
 	caster->m_combatSpellId = spellId;
 	caster->m_combatSpellTargetId = target->m_ID;
-	caster->m_target = target->m_ID;
+	caster->m_target = spell->targeted ? target->m_ID : 0;
 	caster->m_combatMoveOrder = false;
 	// Queued cast is the current manual order; do not fall into Auto/melee.
 	caster->m_combatOrderMode = CombatOrderMode::Attack;
 
 	const std::string casterName = caster->m_name.empty() ? "Caster" : caster->m_name;
-	const std::string targetName = target->m_name.empty() ? "target" : target->m_name;
 	const std::string label = spell->words.empty()
 		? spell->name
 		: (spell->name + " (" + spell->words + ")");
-	AddConsoleString(casterName + " will cast " + label + " on " + targetName + ".", GREEN);
+	if (!spell->targeted || target == caster)
+		AddConsoleString(casterName + " will cast " + label + ".", GREEN);
+	else
+	{
+		const std::string targetName = target->m_name.empty() ? "target" : target->m_name;
+		AddConsoleString(casterName + " will cast " + label + " on " + targetName + ".", GREEN);
+	}
 }
 
 void MainState::FireQueuedCombatSpells()
@@ -5221,7 +5246,7 @@ int MainState::SpawnMonster(int monsterType, int x, int y, int z)
 		spawned->m_BaseMaxHP = monData.m_hitPoints > 0 ? static_cast<float>(monData.m_hitPoints) : spawned->m_hp;
 		if (spawned->m_BaseMaxHP < 1.0f)
 			spawned->m_BaseMaxHP = 1.0f;
-		spawned->m_BaseAttack = monData.m_damage;
+		spawned->m_BaseAttack = static_cast<float>(monData.m_damage);
 		spawned->m_BaseDefense = monData.m_armor; // natural armor from MONSTERS.DAT
 		spawned->m_combat = monData.m_combat;
 

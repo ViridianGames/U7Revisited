@@ -1496,10 +1496,11 @@ void CameraUpdate(bool forcemove)
 
 	current = Vector3Add(current, finalmovement);
 
-	if (current.x < 0) current.x = 0;
-	if (current.x > 3072) current.x = 3072;
-	if (current.z < 0) current.z = 0;
-	if (current.z > 3072) current.z = 3072;
+	// Tiles are indexed 0..3071; keep look-at inside that range (inclusive float max 3071).
+	if (!std::isfinite(current.x) || current.x < 0) current.x = 0;
+	if (current.x > 3071) current.x = 3071;
+	if (!std::isfinite(current.z) || current.z < 0) current.z = 0;
+	if (current.z > 3071) current.z = 3071;
 
 	Vector3 camPos = { g_cameraDistance, g_cameraDistance, g_cameraDistance };
 	camPos = Vector3RotateByAxisAngle(camPos, Vector3{ 0, 1, 0 }, g_cameraRotation);
@@ -2851,6 +2852,39 @@ void UpdateFlyingProjectiles()
 					{
 						g_ScriptingSystem->CallScript(
 							"spell_poison_in_nox_0350",
+							{ static_cast<lua_Integer>(4),
+							  static_cast<lua_Integer>(proj.targetId) });
+					}
+				}
+				else if (proj.weaponShape == 72 || bolt->m_ObjectType == 72)
+				{
+					// Sleep (In Zu).
+					if (g_ScriptingSystem)
+					{
+						g_ScriptingSystem->CallScript(
+							"spell_sleep_in_zu_0351",
+							{ static_cast<lua_Integer>(4),
+							  static_cast<lua_Integer>(proj.targetId) });
+					}
+				}
+				else if (proj.weaponShape == 281 || bolt->m_ObjectType == 281)
+				{
+					// Curse (Des Sanct).
+					if (g_ScriptingSystem)
+					{
+						g_ScriptingSystem->CallScript(
+							"spell_untrap_des_sanct_0344",
+							{ static_cast<lua_Integer>(4),
+							  static_cast<lua_Integer>(proj.targetId) });
+					}
+				}
+				else if (proj.weaponShape == 408 || bolt->m_ObjectType == 408)
+				{
+					// Paralyze (An Por).
+					if (g_ScriptingSystem)
+					{
+						g_ScriptingSystem->CallScript(
+							"spell_paralyze_an_por_0348",
 							{ static_cast<lua_Integer>(4),
 							  static_cast<lua_Integer>(proj.targetId) });
 					}
@@ -4372,6 +4406,7 @@ void LoadSpellData()
 						spell.words = spellJson["words"].get<std::string>();
 						spell.scriptId = spellJson["scriptId"].get<int>();
 						spell.circle = circle.circle;
+						spell.targeted = spellJson.value("targeted", true);
 
 						// Load reagents
 						if (spellJson.contains("reagents") && spellJson["reagents"].is_array())

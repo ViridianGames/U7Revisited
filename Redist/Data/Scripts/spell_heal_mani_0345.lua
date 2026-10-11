@@ -49,4 +49,6 @@ function spell_heal_mani_0345(eventid, objectref)
     end
 
     set_npc_property(npc_id, 3, cur_hp + heal_amount)
+    -- Green rising heal number (same floating-text system as combat damage).
+    spawn_floating_combat_text(target, "+" .. tostring(heal_amount), 80, 220, 100)
 end
