@@ -1,182 +1,49 @@
 ///////////////////////////////////////////////////////////////////////////
 //
 // Name:     COMBATSTATE.CPP
-// Author:   Anthony Salter (framework by existing states)
-// Date:     
-// Purpose:  Handles real-time and turn-based combat for Ultima VII Revisited.
-//           Pushed onto the state stack when combat begins.
+// Purpose:  Shared combat helpers. Combat session/mode lives on MainState.
 //
 ///////////////////////////////////////////////////////////////////////////
 
 #include "Geist/Globals.h"
-#include "Geist/Logging.h"
-#include "Geist/Gui.h"
-#include "Geist/ResourceManager.h"
-#include "Geist/StateMachine.h"
 #include "Geist/Engine.h"
-#include "Geist/InputSystem.h"
+#include "Geist/Logging.h"
+#include "Geist/StateMachine.h"
+#include "Geist/ResourceManager.h"
 #include "U7Globals.h"
 #include "U7Object.h"
 #include "U7Player.h"
 #include "CombatState.h"
 #include "MainState.h"
+#include "raymath.h"
+#include "rlgl.h"
+
+#include "Geist/RNG.h"
 
 #include <string>
-#include <algorithm>
 #include <cctype>
+#include <vector>
+#include <algorithm>
+#include <cmath>
+#include <cstdlib>
 
 using namespace std;
 
-CombatState::CombatState()
+namespace
 {
-	// Combat overlays the game world (we want to see the battlefield)
-	m_RenderStack = true;
-
-	// We may want custom cursor handling later; start with default
-	m_DrawCursor = true;
-}
-
-CombatState::~CombatState()
-{
-}
-
-void CombatState::Init(const string& configfile)
-{
-	Log("CombatState::Init()");
-
-	m_gui = new Gui();
-	m_gui->Init(configfile);
-	m_gui->SetLayout(0, 0, g_Engine->m_RenderWidth, g_Engine->m_RenderHeight, g_DrawScale, Gui::GUIP_USE_XY);
-
-	m_isTurnBased = false;
-	m_participants.clear();
-}
-
-void CombatState::Shutdown()
-{
-	Log("CombatState::Shutdown()");
-
-	if (m_gui)
+	struct FloatingCombatText
 	{
-		delete m_gui;
-		m_gui = nullptr;
-	}
+		Vector3 worldPos;
+		std::string text;
+		Color color;
+		float age = 0.0f;
+		float lifetime = 1.1f;
+	};
+
+	std::vector<FloatingCombatText> g_floatingCombatTexts;
 }
 
-bool CombatState::IsPartyMemberObject(const U7Object* obj) const
-{
-	if (!obj || !g_Player)
-		return false;
-
-	if (obj->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_NPC)
-		return false;
-
-	return g_Player->NPCIDInParty(obj->m_NPCID);
-}
-
-bool CombatState::IsEnemyObject(const U7Object* obj) const
-{
-	if (!obj || obj->m_hp <= 0.0f)
-		return false;
-
-	if (IsPartyMemberObject(obj))
-		return false;
-
-	if (IsHostileCombatUnit(obj))
-		return true;
-
-	return std::find(m_participants.begin(), m_participants.end(), obj->m_ID) != m_participants.end();
-}
-
-void CombatState::ClearPartyTargets()
-{
-	if (!g_Player)
-		return;
-
-	for (int npcId : g_Player->GetPartyMemberIds())
-	{
-		auto itNpc = g_NPCData.find(npcId);
-		if (itNpc == g_NPCData.end() || !itNpc->second)
-			continue;
-
-		auto itObj = g_objectList.find(itNpc->second->m_objectID);
-		if (itObj != g_objectList.end() && itObj->second)
-		{
-			itObj->second->m_target = 0;
-			itObj->second->m_combatMoveOrder = false;
-		}
-	}
-}
-
-void CombatState::OnEnter()
-{
-	Log("CombatState::OnEnter() - Combat starting");
-	SetFirstPersonMouseLook(false);
-
-	g_isCombatMode = true;
-	m_paused = true;
-	m_selectedPartyMemberObjectId = -1;
-	m_participants.clear();
-	ClearPartyTargets();
-
-	if (g_combatCursor)
-		g_Cursor = g_combatCursor;
-
-	// Always include the avatar and party members.
-	if (g_Player)
-	{
-		for (int pid : g_Player->GetPartyMemberIds())
-		{
-			auto itNpc = g_NPCData.find(pid);
-			if (itNpc == g_NPCData.end() || !itNpc->second)
-				continue;
-
-			int objId = itNpc->second->m_objectID;
-			if (std::find(m_participants.begin(), m_participants.end(), objId) == m_participants.end())
-				m_participants.push_back(objId);
-		}
-	}
-
-	EnrollNearbyHostiles();
-
-	if (!m_approachMessage.empty())
-	{
-		AddConsoleString(m_approachMessage, YELLOW);
-		m_approachMessage.clear();
-	}
-	else
-	{
-		AddConsoleString("Combat! The game is paused.", YELLOW);
-	}
-	AddConsoleString("Click a party member, then click an enemy or the ground to assign orders.", WHITE);
-	AddConsoleString("Press Space to begin. Press Space again during combat to pause and reissue orders.", WHITE);
-
-	LockCameraToAvatar();
-
-	// TODO: Determine real-time vs turn-based based on player settings or situation
-}
-
-void CombatState::OnExit()
-{
-	Log("CombatState::OnExit() - Combat ending");
-
-	AddConsoleString("Exiting combat mode.", GREEN);
-
-	m_participants.clear();
-	m_selectedPartyMemberObjectId = -1;
-	m_isTurnBased = false;
-	m_paused = true;
-	g_isCombatMode = false;
-	m_approachMessage.clear();
-	ClearPartyTargets();
-
-	if (g_defaultCursor)
-		g_Cursor = g_defaultCursor;
-
-	// TODO: Clean up any temporary combat effects, restore normal AI schedules, etc.
-}
-
-static std::string PluralizeCreatureName(const std::string& name)
+std::string PluralizeCreatureName(const std::string& name)
 {
 	if (name.empty())
 		return "Enemies";
@@ -195,13 +62,64 @@ static std::string PluralizeCreatureName(const std::string& name)
 		(n >= 2 && lower[n - 2] == 's' && lower[n - 1] == 'h');
 
 	if (endsEs)
-		return name + "es"; // Headless → Headlesses
+		return name + "es";
 	return name + "s";
+}
+
+U7Object* GetEquippedWeapon(U7Object* unit)
+{
+	if (!unit || !unit->m_NPCData)
+		return nullptr;
+
+	// Paperdoll allows one-handed weapons in either hand; prefer RIGHT then LEFT.
+	// Only accept WEAPONS.DAT shapes so a shield/torch in the other hand is ignored.
+	auto trySlot = [&](EquipmentSlot slot) -> U7Object* {
+		const int weaponId = unit->m_NPCData->GetEquippedItem(slot);
+		if (weaponId < 0)
+			return nullptr;
+		U7Object* obj = GetObjectFromID(weaponId);
+		if (!obj || !obj->m_shapeData)
+			return nullptr;
+		if (!GetWeaponData(obj->m_shapeData->m_shape))
+			return nullptr;
+		return obj;
+	};
+
+	if (U7Object* right = trySlot(EquipmentSlot::SLOT_RIGHT_HAND))
+		return right;
+	if (U7Object* left = trySlot(EquipmentSlot::SLOT_LEFT_HAND))
+		return left;
+	return nullptr;
+}
+
+std::string CombatWeaponDisplayName(int weaponShape)
+{
+	if (weaponShape < 0 || weaponShape >= 1024)
+		return "fists";
+	if (g_objectDataTable[weaponShape].m_name.empty())
+		return "fists";
+	// TEXT.FLX raw forms like "/dagger//s" → printable "dagger".
+	std::string name = GetShapeFrameName(weaponShape, 0, 1);
+	return name.empty() ? "fists" : name;
+}
+
+std::string CombatWeaponDisplayNameForUnit(U7Object* unit)
+{
+	U7Object* weapon = GetEquippedWeapon(unit);
+	if (!weapon || !weapon->m_shapeData)
+		return "fists";
+	const int shape = weapon->m_shapeData->m_shape;
+	if (shape < 0 || shape >= 1024 || g_objectDataTable[shape].m_name.empty())
+		return "fists";
+	std::string name = GetShapeFrameName(shape, weapon->m_shapeData->GetFrame(), 1);
+	return name.empty() ? "fists" : name;
 }
 
 bool IsHostileCombatUnit(const U7Object* unit)
 {
-	if (!unit || unit->m_hp <= 0.0f)
+	if (!unit || unit->m_hp <= 0.0f || unit->IsDeathStatus())
+		return false;
+	if (const_cast<U7Object*>(unit)->GetIsDead())
 		return false;
 	if (unit->m_Team != 1)
 		return false;
@@ -219,48 +137,42 @@ U7Object* FindNearestHostileInAggroRange()
 
 	U7Object* nearest = nullptr;
 	float bestDistSqr = kHostileAggroRangeSqr;
-	for (const auto& [id, obj] : g_objectList)
-	{
-		(void)id;
-		if (!obj || !IsHostileCombatUnit(obj.get()))
-			continue;
+
+	// Prefer interest chunks when available (avoids full-world scan every warn).
+	auto consider = [&](U7Object* obj) {
+		if (!obj || !IsHostileCombatUnit(obj))
+			return;
 		const float distSqr = Vector2DistanceSqr(
 			{ obj->m_Pos.x, obj->m_Pos.z },
 			{ avatar->m_Pos.x, avatar->m_Pos.z });
 		if (distSqr < bestDistSqr)
 		{
 			bestDistSqr = distSqr;
-			nearest = obj.get();
+			nearest = obj;
+		}
+	};
+
+	if (!g_interestChunkList.empty())
+	{
+		for (int packed : g_interestChunkList)
+		{
+			const int cx = packed & 0xffff;
+			const int cz = (packed >> 16) & 0xffff;
+			if (cx < 0 || cx >= 192 || cz < 0 || cz >= 192)
+				continue;
+			for (U7Object* object : g_chunkObjectMap[cx][cz])
+				consider(object);
+		}
+	}
+	else
+	{
+		for (const auto& [id, obj] : g_objectList)
+		{
+			(void)id;
+			consider(obj.get());
 		}
 	}
 	return nearest;
-}
-
-void CombatState::EnsureParticipant(int objectId)
-{
-	if (objectId <= 0)
-		return;
-	if (std::find(m_participants.begin(), m_participants.end(), objectId) == m_participants.end())
-		m_participants.push_back(objectId);
-}
-
-void CombatState::EnrollNearbyHostiles()
-{
-	U7Object* avatar = g_Player ? g_Player->GetAvatarObject() : nullptr;
-	if (!avatar)
-		return;
-
-	for (const auto& [id, obj] : g_objectList)
-	{
-		if (!obj || !IsHostileCombatUnit(obj.get()))
-			continue;
-		const float distSqr = Vector2DistanceSqr(
-			{ obj->m_Pos.x, obj->m_Pos.z },
-			{ avatar->m_Pos.x, avatar->m_Pos.z });
-		if (distSqr > kHostileAggroRangeSqr)
-			continue;
-		EnsureParticipant(static_cast<int>(id));
-	}
 }
 
 bool TryBeginCombatFromHostileAggro(U7Object* hintHostile)
@@ -268,25 +180,28 @@ bool TryBeginCombatFromHostileAggro(U7Object* hintHostile)
 	if (!kCombatStateEnabled)
 		return false;
 
-	if (!g_StateMachine)
+	if (g_isCombatMode)
 		return false;
 
-	if (g_isCombatMode || g_StateMachine->GetCurrentState() == STATE_COMBATSTATE)
-		return false;
-
-	// One scan per frame — first hostile to notice still triggers, but message uses nearest.
+	// One scan per frame.
 	static unsigned int s_lastAggroScanFrame = 0;
 	if (s_lastAggroScanFrame == g_CurrentUpdate)
 		return false;
 	s_lastAggroScanFrame = g_CurrentUpdate;
 
+	// Do not auto-enter combat. Warn once per encounter; player presses C to engage.
+	static bool s_warnedThisEncounter = false;
+
 	U7Object* nearest = FindNearestHostileInAggroRange();
 	if (!nearest)
 		nearest = hintHostile;
 	if (!nearest || !IsHostileCombatUnit(nearest))
+	{
+		s_warnedThisEncounter = false;
 		return false;
+	}
 
-	// Confirm the nearest is actually in range (hint alone is not enough).
+	bool inRange = false;
 	if (g_Player)
 	{
 		if (U7Object* avatar = g_Player->GetAvatarObject())
@@ -294,219 +209,423 @@ bool TryBeginCombatFromHostileAggro(U7Object* hintHostile)
 			const float distSqr = Vector2DistanceSqr(
 				{ nearest->m_Pos.x, nearest->m_Pos.z },
 				{ avatar->m_Pos.x, avatar->m_Pos.z });
-			if (distSqr > kHostileAggroRangeSqr)
-				return false;
+			inRange = (distSqr <= kHostileAggroRangeSqr);
 		}
 	}
-
-	if (g_CombatState)
+	if (!inRange)
 	{
+		s_warnedThisEncounter = false;
+		return false;
+	}
+
+	if (!s_warnedThisEncounter)
+	{
+		s_warnedThisEncounter = true;
 		const std::string label = PluralizeCreatureName(nearest->m_name);
-		g_CombatState->m_approachMessage = label + " approach!";
+		AddConsoleString(label + " approach! Press C to enter combat.", YELLOW);
+		if (g_mainState)
+			g_mainState->m_combatApproachMessage = label + " approach!";
 	}
 
-	g_StateMachine->PushState(STATE_COMBATSTATE);
-	return true;
+	return false;
 }
 
-void CombatState::BeginCombat()
+float GetCombatMaxHP(const U7Object* unit)
 {
-	m_paused = false;
-	m_selectedPartyMemberObjectId = -1;
-	LockCameraToAvatar();
-	AddConsoleString("Fight!", RED);
+	if (!unit)
+		return 1.0f;
+	float maxHp = unit->m_BaseMaxHP;
+	if (maxHp < 1.0f)
+		maxHp = unit->m_hp;
+	if (maxHp < 1.0f)
+		maxHp = 1.0f;
+	return maxHp;
 }
 
-void CombatState::PauseForOrders()
+namespace
 {
-	m_paused = true;
-	m_selectedPartyMemberObjectId = -1;
-	LockCameraToAvatar();
-	AddConsoleString("Combat paused.", YELLOW);
-	AddConsoleString("Click a party member, then click an enemy or the ground to assign orders.", WHITE);
-	AddConsoleString("Press Space when ready to resume.", WHITE);
-}
-
-void CombatState::IssueMoveOrder(U7Object* member, const Vector3& dest)
-{
-	if (!member)
-		return;
-
-	Vector3 moveDest = dest;
-	moveDest.y = member->m_Pos.y;
-
-	member->m_target = 0;
-	member->m_combatMoveOrder = true;
-	member->PathfindToDest(moveDest);
-
-	AddConsoleString(
-		member->m_name + " moving to ("
-		+ std::to_string((int)moveDest.x) + ", "
-		+ std::to_string((int)moveDest.z) + ").",
-		GREEN);
-}
-
-void CombatState::HandleCombatClick()
-{
-	if (!m_paused || !g_InputSystem->WasLButtonClicked())
-		return;
-
-	if (g_gumpManager && (g_gumpManager->m_isMouseOverGump || g_gumpManager->m_draggingObject))
-		return;
-
-	if (g_mouseOverUI)
-		return;
-
-	U7Object* clicked = g_objectUnderMousePointer;
-
-	if (clicked && IsPartyMemberObject(clicked))
+	unsigned int CombatRoll(unsigned int n)
 	{
-		m_selectedPartyMemberObjectId = clicked->m_ID;
-		AddConsoleString("Selected " + clicked->m_name + " - click an enemy or the ground.", SKYBLUE);
-		return;
+		if (n == 0)
+			return 0;
+		if (g_VitalRNG)
+			return g_VitalRNG->Random(n);
+		return static_cast<unsigned int>(rand()) % n;
 	}
 
-	if (m_selectedPartyMemberObjectId < 0)
+	int GetCombatStrength(const U7Object* unit)
 	{
-		AddConsoleString("Select a party member first.", YELLOW);
-		return;
-	}
+		if (!unit)
+			return 0;
+		if (unit->m_NPCData)
+			return static_cast<int>(unit->m_NPCData->str);
 
-	auto itMember = g_objectList.find(m_selectedPartyMemberObjectId);
-	if (itMember == g_objectList.end() || !itMember->second)
-		return;
-
-	U7Object* member = itMember->second.get();
-
-	if (clicked && IsEnemyObject(clicked))
-	{
-		member->m_target = clicked->m_ID;
-		member->m_combatMoveOrder = false;
-		AddConsoleString(member->m_name + " will attack " + clicked->m_name + ".", GREEN);
-		return;
-	}
-
-	// Ground (or any non-enemy) click: reposition and disengage
-	IssueMoveOrder(member, g_terrainUnderMousePointer);
-}
-
-void CombatState::HandleCombatInput()
-{
-	HandleCombatClick();
-
-	if (IsKeyPressed(KEY_SPACE))
-	{
-		if (m_paused)
-			BeginCombat();
-		else
-			PauseForOrders();
-		return;
-	}
-
-	// Development escape hatch
-	if (IsKeyPressed(KEY_ESCAPE))
-		g_StateMachine->PopState();
-}
-
-void CombatState::Update()
-{
-	// MainState::Update does not run while we are on top of the stack. Keep
-	// interest visibility + terrain lighting fresh or the stacked Draw shows
-	// black voids where chunks were never re-stamped this frame.
-	g_mouseOverUI = false;
-
-	if (g_mainState)
-		g_mainState->ProcessCameraInput();
-
-	CameraUpdate();
-
-	RebuildInterestCentersFromLocalPlayers();
-	RebuildInterestChunkSet();
-
-	const float heightCutoff = g_mainState ? g_mainState->m_heightCutoff : 16.0f;
-	for (int packed : g_interestChunkList)
-	{
-		const int cx = packed & 0xffff;
-		const int cz = (packed >> 16) & 0xffff;
-		if (cx < 0 || cx >= 192 || cz < 0 || cz >= 192)
-			continue;
-		for (U7Object* object : g_chunkObjectMap[cx][cz])
+		// Monsters: look up MONSTERS.DAT by shape (m_BaseMaxHP is also strength-derived).
+		if (unit->m_shapeData)
 		{
-			if (!object || object->m_isContained || object->GetIsDead())
-				continue;
-			ApplyObjectDrawVisibility(object, heightCutoff);
-		}
-	}
-
-	if (g_Terrain)
-		g_Terrain->Update();
-	UpdateRuntimePalette();
-	UpdateSortedVisibleObjects();
-
-	// Keep enrolling hostiles that walk into range (or were nearer than the trigger).
-	EnrollNearbyHostiles();
-
-	HandleCombatInput();
-
-	if (m_gui)
-		m_gui->Update();
-
-	// Prune dead participants from the unit list
-	auto it = m_participants.begin();
-	while (it != m_participants.end())
-	{
-		auto objIt = g_objectList.find(*it);
-		if (objIt == g_objectList.end() || !objIt->second || objIt->second->GetIsDead())
-			it = m_participants.erase(it);
-		else
-			++it;
-	}
-
-	// Drive updates for participants while combat is running.
-	if (!m_paused)
-	{
-		for (int pid : m_participants)
-		{
-			auto objIt = g_objectList.find(pid);
-			if (objIt != g_objectList.end() && objIt->second)
+			const int shape = unit->m_shapeData->m_shape;
+			for (const MonsterData& md : g_monsterData)
 			{
-				U7Object* obj = objIt->second.get();
-				if (obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_MONSTER ||
-				    obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC)
+				if (static_cast<int>(md.m_shape) == shape)
+					return static_cast<int>(md.m_strength);
+			}
+		}
+		return static_cast<int>(std::max(1.0f, unit->m_BaseMaxHP));
+	}
+
+	int GetEquippedArmorPoints(const U7Object* unit, unsigned char& outImmuneMask)
+	{
+		outImmuneMask = 0;
+		if (!unit || !unit->m_NPCData)
+			return 0;
+
+		static const EquipmentSlot kArmorSlots[] = {
+			EquipmentSlot::SLOT_HEAD,
+			EquipmentSlot::SLOT_NECK,
+			EquipmentSlot::SLOT_TORSO,
+			EquipmentSlot::SLOT_LEGS,
+			EquipmentSlot::SLOT_HANDS,
+			EquipmentSlot::SLOT_FEET,
+			EquipmentSlot::SLOT_LEFT_HAND,  // shield
+			EquipmentSlot::SLOT_RIGHT_HAND, // weapon that also grants armor (Sword of Defense, etc.)
+			EquipmentSlot::SLOT_LEFT_RING,
+			EquipmentSlot::SLOT_RIGHT_RING,
+			EquipmentSlot::SLOT_BELT,
+		};
+
+		int points = 0;
+		for (EquipmentSlot slot : kArmorSlots)
+		{
+			const int id = unit->m_NPCData->GetEquippedItem(slot);
+			if (id < 0)
+				continue;
+			U7Object* piece = GetObjectFromID(id);
+			if (!piece || !piece->m_shapeData)
+				continue;
+			const ArmorData* armor = GetArmorData(piece->m_shapeData->m_shape);
+			if (!armor)
+				continue;
+			points += static_cast<int>(armor->prot);
+			outImmuneMask = static_cast<unsigned char>(outImmuneMask | armor->immune);
+		}
+		return points;
+	}
+
+	int GetNaturalArmorPoints(const U7Object* unit)
+	{
+		if (!unit)
+			return 0;
+		// Set from MONSTERS.DAT on spawn (m_BaseDefense).
+		if (unit->m_BaseDefense > 0.0f)
+			return static_cast<int>(unit->m_BaseDefense);
+		if (unit->m_shapeData)
+		{
+			const int shape = unit->m_shapeData->m_shape;
+			for (const MonsterData& md : g_monsterData)
+			{
+				if (static_cast<int>(md.m_shape) == shape)
+					return static_cast<int>(md.m_armor);
+			}
+		}
+		return 0;
+	}
+}
+
+int FigureCombatHitPoints(U7Object* attacker, U7Object* target, int weaponShape, int ammoShape)
+{
+	if (!target)
+		return 0;
+
+	int wpoints = 0;
+	WeaponDamageType dtype = WeaponDamageType::Normal;
+
+	const WeaponData* winf = (weaponShape >= 0) ? GetWeaponData(weaponShape) : nullptr;
+	if (winf)
+	{
+		wpoints = static_cast<int>(winf->damage);
+		dtype = winf->damageType;
+	}
+	else if (weaponShape < 0 && attacker)
+	{
+		// Bare hands / monster natural weapon (Exult: points = 1, or Monster_info::weapon).
+		int natural = static_cast<int>(attacker->m_BaseAttack);
+		if (natural <= 0 && attacker->m_shapeData)
+		{
+			const int shape = attacker->m_shapeData->m_shape;
+			for (const MonsterData& md : g_monsterData)
+			{
+				if (static_cast<int>(md.m_shape) == shape)
 				{
-					obj->Update();
+					natural = static_cast<int>(md.m_damage);
+					break;
 				}
 			}
 		}
+		wpoints = (natural > 0) ? natural : 1;
+	}
+	else
+	{
+		wpoints = 1; // unknown weapon shape: still deal a minimal hit
+	}
 
-		// End combat when all hostiles are defeated
-		bool anyHostiles = false;
-		for (int pid : m_participants)
-		{
-			auto objIt = g_objectList.find(pid);
-			if (objIt == g_objectList.end() || !objIt->second || objIt->second->GetIsDead())
-				continue;
+	const AmmoData* ainf = (ammoShape >= 0) ? GetAmmoData(ammoShape) : nullptr;
+	if (ainf)
+	{
+		wpoints += static_cast<int>(ainf->damage);
+		if (ainf->damageType != WeaponDamageType::Normal)
+			dtype = ainf->damageType;
+	}
 
-			if (IsEnemyObject(objIt->second.get()))
-			{
-				anyHostiles = true;
-				break;
-			}
-		}
+	if (wpoints <= 0)
+		return 0;
 
-		if (!anyHostiles)
-		{
-			AddConsoleString("Combat over - all enemies defeated!", GREEN);
-			g_StateMachine->PopState();
-		}
+	const int str = GetCombatStrength(attacker);
+	const int bias = 0; // combat difficulty not wired yet
+	int damage = bias;
+
+	// Exult Actor::apply_damage
+	if (wpoints >= 127)
+	{
+		damage = 127;
+	}
+	else
+	{
+		int strContrib = str / 3;
+		if (dtype != WeaponDamageType::Lightning && strContrib > 0)
+			damage += 1 + static_cast<int>(CombatRoll(static_cast<unsigned int>(strContrib)));
+		if (wpoints > 0)
+			damage += 1 + static_cast<int>(CombatRoll(static_cast<unsigned int>(wpoints)));
+	}
+
+	unsigned char gearImmune = 0;
+	int armor = -bias + GetNaturalArmorPoints(target) + GetEquippedArmorPoints(target, gearImmune);
+
+	if ((gearImmune & (1u << static_cast<unsigned>(dtype))) != 0)
+		return 0; // armor grants immunity to this damage type
+
+	// Lightning / ethereal / sonic / instant-death ignore armor (Exult).
+	if (wpoints >= 127
+		|| dtype == WeaponDamageType::Lightning
+		|| dtype == WeaponDamageType::Ethereal
+		|| dtype == WeaponDamageType::Sonic
+		|| armor < 0)
+	{
+		armor = 0;
+	}
+
+	if (armor > 0)
+		damage -= 1 + static_cast<int>(CombatRoll(static_cast<unsigned int>(armor)));
+
+	if (damage <= 0)
+		return 0;
+	return damage;
+}
+
+bool ApplyCombatDamage(U7Object* target, float amount, U7Object* attacker)
+{
+	if (!target || amount <= 0.0f)
+		return false;
+	if (target->IsDeathStatus() || target->GetIsDead())
+		return false;
+
+	target->m_hp -= amount;
+	if (target->m_hp < 0.0f)
+		target->m_hp = 0.0f;
+
+	// Same head anchor as DrawCombatHPBars so the number starts just above the bar.
+	Vector3 textPos = target->m_centerPoint;
+	textPos.y += 1.35f;
+	const bool partyTarget = g_Player
+		&& target->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC
+		&& g_Player->NPCIDInParty(target->m_NPCID);
+	const Color damageColor = partyTarget ? RED : WHITE;
+	SpawnFloatingCombatText(textPos, std::to_string(static_cast<int>(std::ceil(amount))), damageColor);
+
+	if (attacker)
+		target->NotifyAttackedBy(attacker);
+
+	if (target->m_hp <= 0.0f)
+	{
+		target->ApplyDeath();
+		return true;
+	}
+	return false;
+}
+
+void SpawnFloatingCombatText(Vector3 worldPos, const std::string& text, Color color)
+{
+	FloatingCombatText ft;
+	ft.worldPos = worldPos;
+	ft.text = text;
+	ft.color = color;
+	ft.age = 0.0f;
+	ft.lifetime = 1.15f;
+	g_floatingCombatTexts.push_back(ft);
+}
+
+void UpdateFloatingCombatTexts()
+{
+	if (!g_Engine)
+		return;
+	const float dt = g_Engine->LastFrameInSeconds();
+	for (auto it = g_floatingCombatTexts.begin(); it != g_floatingCombatTexts.end(); )
+	{
+		it->age += dt;
+		if (it->age >= it->lifetime)
+			it = g_floatingCombatTexts.erase(it);
+		else
+			++it;
 	}
 }
 
-void CombatState::Draw()
+void DrawFloatingCombatTexts()
 {
-	// The world (MainState + Terrain + objects) is drawn automatically
-	// because m_RenderStack == true.
+	if (!g_SmallFont || g_floatingCombatTexts.empty())
+		return;
 
-	if (m_gui)
-		m_gui->Draw();
+	const float fontSize = static_cast<float>(g_SmallFont->baseSize);
+	const float drawScale = (g_DrawScale > 0.0f) ? g_DrawScale : 1.0f;
+	// Match DrawCombatHPBars: bar sits 6px above the head anchor, 2px tall.
+	constexpr float kBarScreenOffsetY = 6.0f;
+	constexpr float kBarH = 2.0f;
+	constexpr float kTextAboveBar = 2.0f;
+	constexpr float kRisePixels = 18.0f;
+
+	for (const FloatingCombatText& ft : g_floatingCombatTexts)
+	{
+		Vector2 screen = GetWorldToScreen(ft.worldPos, g_camera);
+		screen.x /= drawScale;
+		screen.y /= drawScale;
+
+		const float t = std::clamp(ft.age / ft.lifetime, 0.0f, 1.0f);
+		Color c = ft.color;
+		c.a = static_cast<unsigned char>(255.0f * (1.0f - t));
+
+		const float textW = MeasureTextEx(*g_SmallFont, ft.text.c_str(), fontSize, 1).x;
+		const float startY = screen.y - kBarScreenOffsetY - kBarH - kTextAboveBar - fontSize;
+		const Vector2 pos{
+			screen.x - textW * 0.5f,
+			startY - kRisePixels * t
+		};
+		DrawOutlinedText(g_SmallFont, ft.text, pos, fontSize, 1, c);
+	}
+}
+
+void DrawCombatHPBars()
+{
+	if (!g_isCombatMode || !g_mainState)
+		return;
+
+	const float drawScale = (g_DrawScale > 0.0f) ? g_DrawScale : 1.0f;
+	constexpr float kBarH = 2.0f;
+	// Fixed world width (tiles/cells) so every combatant gets the same bar size.
+	constexpr float kBarWorldWidth = 1.5f;
+
+	// Camera-right on XZ so the bar stays 1.5 cells wide under rotation.
+	Vector3 camForward = Vector3Subtract(g_camera.target, g_camera.position);
+	camForward.y = 0.0f;
+	if (Vector3LengthSqr(camForward) < 1e-6f)
+		camForward = Vector3{ -1.0f, 0.0f, -1.0f };
+	camForward = Vector3Normalize(camForward);
+	Vector3 camRight = Vector3Normalize(Vector3CrossProduct(Vector3{ 0.0f, 1.0f, 0.0f }, camForward));
+	const float halfW = kBarWorldWidth * 0.5f;
+
+	auto drawBarFor = [&](U7Object* obj, bool party) {
+		if (!obj || obj->GetIsDead() || obj->IsDeathStatus())
+			return;
+
+		Vector3 head = obj->m_centerPoint;
+		head.y += 1.35f;
+
+		Vector3 left = Vector3Add(head, Vector3Scale(camRight, -halfW));
+		Vector3 right = Vector3Add(head, Vector3Scale(camRight, halfW));
+		Vector2 screenL = GetWorldToScreen(left, g_camera);
+		Vector2 screenR = GetWorldToScreen(right, g_camera);
+		screenL.x /= drawScale;
+		screenR.x /= drawScale;
+
+		float barW = fabsf(screenR.x - screenL.x);
+		if (barW < 1.0f)
+			barW = 1.0f;
+
+		Vector2 screen = GetWorldToScreen(head, g_camera);
+		screen.x /= drawScale;
+		screen.y /= drawScale;
+
+		const float maxHp = GetCombatMaxHP(obj);
+		const float ratio = std::clamp(obj->m_hp / maxHp, 0.0f, 1.0f);
+		const float x = screen.x - barW * 0.5f;
+		const float y = screen.y - 6.0f;
+
+		DrawRectangle(static_cast<int>(x) - 1, static_cast<int>(y) - 1,
+		              static_cast<int>(barW) + 2, static_cast<int>(kBarH) + 2,
+		              Color{ 0, 0, 0, 200 });
+		DrawRectangle(static_cast<int>(x), static_cast<int>(y),
+		              static_cast<int>(barW), static_cast<int>(kBarH),
+		              Color{ 40, 40, 40, 220 });
+
+		Color fill = party ? Color{ 60, 200, 80, 255 } : Color{ 210, 55, 55, 255 };
+		if (ratio <= 0.35f)
+			fill = party ? Color{ 220, 180, 40, 255 } : Color{ 255, 120, 40, 255 };
+		if (ratio <= 0.15f)
+			fill = Color{ 255, 40, 40, 255 };
+
+		const int fillW = static_cast<int>(barW * ratio);
+		if (fillW > 0)
+			DrawRectangle(static_cast<int>(x), static_cast<int>(y), fillW, static_cast<int>(kBarH), fill);
+	};
+
+	for (int pid : g_mainState->m_combatParticipants)
+	{
+		auto it = g_objectList.find(pid);
+		if (it == g_objectList.end() || !it->second)
+			continue;
+		U7Object* obj = it->second.get();
+		const bool party = g_Player && obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC
+			&& g_Player->NPCIDInParty(obj->m_NPCID);
+		const bool hostile = IsHostileCombatUnit(obj);
+		if (party || hostile)
+			drawBarFor(obj, party);
+	}
+}
+
+void DrawCombatSelectionCircles()
+{
+	if (!g_isCombatMode || !g_mainState || !g_ResourceManager)
+		return;
+
+	Texture* circleTex = g_ResourceManager->GetTexture("Images/selection_circle.png");
+	auto* flatModel = g_ResourceManager->GetModel("Models/3dmodels/flat.obj");
+	if (!circleTex || !flatModel)
+		return;
+
+	SetMaterialTexture(&flatModel->GetModel().materials[0], MATERIAL_MAP_DIFFUSE, *circleTex);
+
+	auto drawGroundRing = [&](U7Object* obj, Color tint, float scale) {
+		if (!obj || obj->GetIsDead() || obj->IsDeathStatus())
+			return;
+		// Same flat-under-feet offset convention as drop shadows.
+		Vector3 pos = Vector3{ obj->m_Pos.x - 0.5f, 0.03f, obj->m_Pos.z + 1.0f };
+		rlDisableDepthMask();
+		DrawModel(flatModel->GetModel(), pos, scale, tint);
+		rlEnableDepthMask();
+	};
+
+	const int selectedId = g_mainState->m_combatSelectedPartyMemberObjectId;
+	if (selectedId >= 0)
+	{
+		auto selIt = g_objectList.find(selectedId);
+		if (selIt != g_objectList.end() && selIt->second)
+		{
+			U7Object* member = selIt->second.get();
+			drawGroundRing(member, Color{ 40, 220, 80, 230 }, 1.35f);
+
+			if (member->m_target > 0)
+			{
+				auto tgtIt = g_objectList.find(member->m_target);
+				if (tgtIt != g_objectList.end() && tgtIt->second)
+					drawGroundRing(tgtIt->second.get(), Color{ 230, 50, 50, 230 }, 1.45f);
+			}
+		}
+	}
 }

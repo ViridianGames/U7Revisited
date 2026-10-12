@@ -1,69 +1,14 @@
 #ifndef _CombatState_H_
 #define _CombatState_H_
 
-#include "Geist/State.h"
-#include <vector>
-#include <memory>
+#include "raylib.h"
 #include <string>
 
-class Gui;
-class GuiElement;
 class U7Object;
 
-// Temporary kill-switch: combat entry is broken and blocks normal play.
-// Flip to true when CombatState is ready to be re-enabled.
-constexpr bool kCombatStateEnabled = false;
-
-// CombatState handles both real-time and turn-based combat modes in Ultima VII.
-// It is entered either manually (via the combat toggle on the character sheet)
-// or automatically when hostile creatures come within range of the party.
-class CombatState : public State
-{
-public:
-	CombatState();
-	virtual ~CombatState();
-
-	virtual void Init(const std::string& configfile) override;
-	virtual void Shutdown() override;
-	virtual void Update() override;
-	virtual void Draw() override;
-
-	virtual void OnEnter() override;
-	virtual void OnExit() override;
-
-	// Whether combat is currently in turn-based mode (vs real-time)
-	bool m_isTurnBased = false;
-
-	// List of participants (NPC IDs or object IDs) currently in this combat
-	std::vector<int> m_participants;
-
-	// GUI for combat-specific overlays (action bar, initiative order, etc.)
-	Gui* m_gui = nullptr;
-
-	// Planning phase: paused until the player presses Space
-	bool m_paused = true;
-
-	// Party member currently receiving a target assignment (object ID)
-	int m_selectedPartyMemberObjectId = -1;
-
-	// Set before PushState when auto-entering from hostile aggro (e.g. "Headlesses approach!").
-	std::string m_approachMessage;
-
-	// Add object id to participants if missing.
-	void EnsureParticipant(int objectId);
-	// Enroll every Team-1 monster/NPC within aggro range of the Avatar.
-	void EnrollNearbyHostiles();
-
-private:
-	void HandleCombatInput();
-	void HandleCombatClick();
-	bool IsPartyMemberObject(const U7Object* obj) const;
-	bool IsEnemyObject(const U7Object* obj) const;
-	void ClearPartyTargets();
-	void BeginCombat();
-	void PauseForOrders();
-	void IssueMoveOrder(U7Object* member, const Vector3& dest);
-};
+// Combat mode lives inside MainState (g_isCombatMode). This header keeps the
+// shared helpers and the kill-switch used by enter paths / aggro warn.
+constexpr bool kCombatStateEnabled = true;
 
 // True for Team-1 monsters/NPCs that should fight the party.
 bool IsHostileCombatUnit(const U7Object* unit);
@@ -71,8 +16,36 @@ bool IsHostileCombatUnit(const U7Object* unit);
 // Find nearest hostile within aggro range of the Avatar (or null).
 U7Object* FindNearestHostileInAggroRange();
 
-// If any hostile is in aggro range and combat is not active, start combat using the nearest.
-// Returns true when combat was newly started.
+// If any hostile is in aggro range and combat is not active, warn once.
+// Does not enter combat — player presses C. Returns false always (no auto-enter).
 bool TryBeginCombatFromHostileAggro(U7Object* hintHostile);
+
+// "Headless" → "Headlesses" style label for approach messages.
+std::string PluralizeCreatureName(const std::string& name);
+
+// Max HP for bars (m_BaseMaxHP, else current HP floor).
+float GetCombatMaxHP(const U7Object* unit);
+
+// Ready-hand weapon for combat (RIGHT_HAND first, then LEFT_HAND).
+// Prefers shapes present in WEAPONS.DAT so a shield in the off-hand is ignored.
+U7Object* GetEquippedWeapon(U7Object* unit);
+// Object-data name for a weapon shape, or "fists".
+std::string CombatWeaponDisplayName(int weaponShape);
+std::string CombatWeaponDisplayNameForUnit(U7Object* unit);
+
+// Exult-style hit roll: strength/3 + weapon(+ammo) wpoints, minus armor.
+// weaponShape < 0 → bare hands / monster natural weapon. ammoShape < 0 → no ammo bonus.
+// Returns 0 when armor fully absorbs or the target is immune.
+int FigureCombatHitPoints(U7Object* attacker, U7Object* target, int weaponShape, int ammoShape = -1);
+
+// Subtract HP, spawn floating damage text, notify attacker, ApplyDeath if needed.
+// Returns true if the target died from this hit.
+bool ApplyCombatDamage(U7Object* target, float amount, U7Object* attacker = nullptr);
+
+void SpawnFloatingCombatText(Vector3 worldPos, const std::string& text, Color color);
+void UpdateFloatingCombatTexts();
+void DrawFloatingCombatTexts(); // screen-space; call inside GUI render target
+void DrawCombatHPBars();        // screen-space; combat mode only
+void DrawCombatSelectionCircles(); // world-space ground rings; combat mode only
 
 #endif

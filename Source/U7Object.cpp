@@ -23,6 +23,9 @@
 #include "MainState.h"
 #include "CombatState.h"
 #include "PathfindingSystem.h"
+#include "PerfTelemetry.h"
+#include "U7GumpSpellbook.h"
+#include "Terrain.h"
 
 #include <iostream>
 #include <string>
@@ -30,6 +33,7 @@
 #include <iomanip>
 #include <algorithm>
 #include <cmath>
+#include <vector>
 #include "raymath.h"
 #include "rlgl.h"
 #include <atomic>
@@ -71,6 +75,7 @@ void U7Object::Init(const string& configfile, int unitType, int frame)
 	m_objectData = &g_objectDataTable[m_ObjectType];
 	m_drawType = m_shapeData->GetDrawType();
 	// Desync looping FX so every instance does not pop on the same frame.
+	// Surf tiles stay locked to frame 0 so shoreline strips stay continuous.
 	m_animFrameOffset = 0;
 	// TFA ambient props loop; everything else starts Frozen (craft tools, casino
 	// wheels, doors) until a usecode script drives frames.
@@ -79,7 +84,14 @@ void U7Object::Init(const string& configfile, int unitType, int frame)
 	{
 		m_animMode = ObjectAnimMode::Auto;
 		const int animFrames = g_shapeTable[m_ObjectType][0].m_numFrames;
-		if (animFrames > 1)
+		// Exact TEXT.FLX name "surf" (shoreline strips must stay in phase).
+		const std::string& animName = m_objectData->m_name;
+		const bool isSurf = (animName.size() == 4 &&
+			std::tolower(static_cast<unsigned char>(animName[0])) == 's' &&
+			std::tolower(static_cast<unsigned char>(animName[1])) == 'u' &&
+			std::tolower(static_cast<unsigned char>(animName[2])) == 'r' &&
+			std::tolower(static_cast<unsigned char>(animName[3])) == 'f');
+		if (animFrames > 1 && !isSurf)
 		{
 			m_animFrameOffset = g_NonVitalRNG
 				? (int)g_NonVitalRNG->RandomRange(0, (unsigned)animFrames - 1)
@@ -279,24 +291,192 @@ static bool IsPartyCombatant(const U7Object* unit)
 		&& g_Player->NPCIDInParty(unit->m_NPCID);
 }
 
+namespace
+{
+	constexpr int kShapeBow = 597;
+	constexpr int kShapeCrossbow = 598;
+	constexpr int kShapeSling = 474;
+	constexpr int kShapeMagicBow = 606;
+	constexpr int kShapeTripleCrossbow = 647;
+	constexpr int kShapeArrow = 722;
+	constexpr int kShapeBolts = 723;
+	constexpr int kShapeMagicBolts = 417;
+	constexpr int kShapeBurstArrow = 554;
+	constexpr int kShapeMagicArrow = 556;
+	constexpr int kShapeLuckyArrow = 558;
+	constexpr int kShapeLoveArrow = 560;
+	constexpr int kShapeTseramedArrow = 568;
+	constexpr int kShapeDeathBolt = 527;
+	constexpr int kShapeBoltAlt = 948;
+
+	bool WeaponUsesBolts(int weaponShape)
+	{
+		return weaponShape == kShapeCrossbow || weaponShape == kShapeTripleCrossbow;
+	}
+
+	bool WeaponUsesArrows(int weaponShape)
+	{
+		return weaponShape == kShapeBow || weaponShape == kShapeMagicBow;
+	}
+
+	bool IsCompatibleAmmoShape(int weaponShape, int ammoShape)
+	{
+		if (WeaponUsesBolts(weaponShape))
+		{
+			return ammoShape == kShapeBolts
+				|| ammoShape == kShapeMagicBolts
+				|| ammoShape == kShapeDeathBolt
+				|| ammoShape == kShapeBoltAlt;
+		}
+		if (WeaponUsesArrows(weaponShape))
+		{
+			return ammoShape == kShapeArrow
+				|| ammoShape == kShapeBurstArrow
+				|| ammoShape == kShapeMagicArrow
+				|| ammoShape == kShapeLuckyArrow
+				|| ammoShape == kShapeLoveArrow
+				|| ammoShape == kShapeTseramedArrow;
+		}
+		return false; // sling / unknown — no ammo item required
+	}
+
+	int PreferredMissileShape(int weaponShape, int ammoShape)
+	{
+		if (ammoShape > 0)
+			return ammoShape;
+		if (WeaponUsesBolts(weaponShape))
+			return kShapeBolts;
+		if (WeaponUsesArrows(weaponShape))
+			return kShapeArrow;
+		// Sling (474) and other no-ammo ranged weapons: WEAPONS.DAT projectile
+		// (sling → 581 "ammunition").
+		if (const WeaponData* w = GetWeaponData(weaponShape))
+		{
+			if (w->uses == WeaponUses::Ranged && w->projectile > 0 && w->projectile < 1024)
+				return w->projectile;
+		}
+		return 0;
+	}
+
+	std::string FormatCombatAttackConsole(const U7Object* attacker, const U7Object* target,
+		int weaponShape, int hits)
+	{
+		const std::string attackerName = (attacker && !attacker->m_name.empty()) ? attacker->m_name : "Someone";
+		const std::string targetName = (target && !target->m_name.empty()) ? target->m_name : "enemy";
+		return attackerName + " attacks " + targetName + " with " + CombatWeaponDisplayName(weaponShape)
+			+ " for " + std::to_string(hits) + " damage";
+	}
+
+	void RefreshPartyAttackRangeFromWeapon(U7Object* unit)
+	{
+		if (!unit)
+			return;
+		unit->m_attackRange = MELEE_RANGE_TILES;
+		U7Object* weapon = GetEquippedWeapon(unit);
+		if (!weapon || !weapon->m_shapeData)
+			return;
+		unit->m_attackRange = GetWeaponAttackRangeTiles(weapon->m_shapeData->m_shape);
+	}
+
+	// Returns ammo object to consume, or null if this weapon needs none.
+	// Sets outNeedsAmmo=true when a ranged weapon requires ammo that is missing.
+	U7Object* FindCombatAmmo(U7Object* unit, int weaponShape, bool& outNeedsAmmo)
+	{
+		outNeedsAmmo = false;
+		if (!unit || !unit->m_NPCData)
+			return nullptr;
+
+		if (weaponShape == kShapeSling)
+			return nullptr; // sling needs no ammo item
+
+		if (!WeaponUsesBolts(weaponShape) && !WeaponUsesArrows(weaponShape))
+			return nullptr;
+
+		outNeedsAmmo = true;
+
+		auto usable = [&](U7Object* obj) -> bool {
+			return obj && obj->m_shapeData && IsCompatibleAmmoShape(weaponShape, obj->m_shapeData->m_shape);
+		};
+
+		const int ammoId = unit->m_NPCData->GetEquippedItem(EquipmentSlot::SLOT_AMMO);
+		if (ammoId >= 0)
+		{
+			U7Object* ammo = GetObjectFromID(ammoId);
+			if (usable(ammo))
+				return ammo;
+		}
+
+		for (int id : unit->m_inventory)
+		{
+			U7Object* obj = GetObjectFromID(id);
+			if (usable(obj))
+				return obj;
+		}
+		return nullptr;
+	}
+
+	bool ConsumeOneAmmo(U7Object* unit, U7Object* ammo)
+	{
+		if (!unit || !ammo || !ammo->m_shapeData)
+			return false;
+
+		const int shape = ammo->m_shapeData->m_shape;
+		const char shapeType = (shape >= 0 && shape < 1024) ? g_objectDataTable[shape].m_shapeType : 0;
+		if (shapeType == 3)
+		{
+			int qty = ammo->m_Quality & 0x7f;
+			if (qty <= 0)
+				qty = 1;
+			if (qty > 1)
+			{
+				ammo->m_Quality = (ammo->m_Quality & ~0x7f) | ((qty - 1) & 0x7f);
+				return true;
+			}
+		}
+
+		// Last unit in the stack (or non-stackable): remove from inventory/equipment.
+		if (unit->m_NPCData && unit->m_NPCData->GetEquippedItem(EquipmentSlot::SLOT_AMMO) == ammo->m_ID)
+			unit->m_NPCData->m_equipment[EquipmentSlot::SLOT_AMMO] = -1;
+		unit->RemoveObjectFromInventory(ammo->m_ID);
+		ammo->m_isContained = false;
+		ammo->SetIsDead(true);
+		ammo->m_Visible = false;
+		return true;
+	}
+}
+
 void U7Object::NotifyAttackedBy(U7Object* attacker)
 {
-	if (!attacker || attacker->m_ID == m_ID || attacker->m_hp <= 0.0f)
+	if (!attacker || attacker->m_ID == m_ID || attacker->m_hp <= 0.0f || attacker->IsDeathStatus())
+		return;
+	if (IsDeathStatus() || GetIsDead())
 		return;
 
-	if (!IsHostileCombatant(this) || !IsPartyCombatant(attacker))
+	// Party and Team 2 summons (Swarm) can pull hostile aggro.
+	const bool allyAttacker = IsPartyCombatant(attacker) || attacker->m_Team == 2;
+	if (!IsHostileCombatant(this) || !allyAttacker)
 		return;
 
-	// Switch to whoever just hit us and drop any movement toward a previous target.
+	// Switch to whoever just hit/harassed us.
 	m_target = attacker->m_ID;
 	m_combatMoveOrder = false;
+
+	// Swarm harass is frequent — only retarget. Do not clear paths or force a
+	// same-frame EngageCombatTarget (that repaths and tanks the frame rate).
+	if (attacker->m_Team == 2)
+	{
+		if (g_isCombatMode && g_mainState)
+			g_mainState->EnsureCombatParticipant(static_cast<int>(m_ID));
+		return;
+	}
+
 	m_pathWaypoints.clear();
 	m_currentWaypointIndex = 0;
 	m_pathfindingPending = false;
 	m_isSchedulePath = false;
 
-	if (g_isCombatMode && g_CombatState)
-		g_CombatState->EnsureParticipant(static_cast<int>(m_ID));
+	if (g_isCombatMode && g_mainState)
+		g_mainState->EnsureCombatParticipant(static_cast<int>(m_ID));
 
 	if (g_isCombatMode)
 		EngageCombatTarget();
@@ -307,80 +487,379 @@ bool U7Object::EngageCombatTarget()
 	if (m_target == 0)
 		return false;
 
+	// Asleep / paralyzed combatants cannot swing or chase.
+	if ((m_flags & (1u << 1)) != 0 || (m_flags & (1u << 7)) != 0)
+		return false;
+
 	auto targetIt = g_objectList.find(m_target);
-	if (targetIt == g_objectList.end() || !targetIt->second || targetIt->second->GetIsDead())
+	if (targetIt == g_objectList.end() || !targetIt->second ||
+	    targetIt->second->GetIsDead() || targetIt->second->IsDeathStatus())
 	{
+		const bool wasParty = IsPartyCombatant(this);
 		m_target = 0;
+		m_combatPathTargetId = 0;
+		if (wasParty)
+		{
+			m_combatMoveOrder = false;
+			// Ranged: keep Attack mode with no target and finish cooldown / shot anim
+			// before auto-pausing, so a newly issued target can fire immediately.
+			U7Object* weapon = GetEquippedWeapon(this);
+			const int weaponShape = (weapon && weapon->m_shapeData) ? weapon->m_shapeData->m_shape : -1;
+			if (IsRangedWeaponShape(weaponShape)
+			    && (m_cooldownTimer > 0.0f || m_npcAnimPlaying))
+			{
+				return false;
+			}
+			m_combatOrderMode = CombatOrderMode::Hold;
+			if (g_mainState && g_isCombatMode && !g_mainState->IsCombatOrdersPaused())
+				g_mainState->NotifyCombatantCannotContinue(this, "has no target!");
+		}
 		return false;
 	}
 
 	U7Object* target = targetIt->second.get();
 	m_combatMoveOrder = false;
 
+	// Cast / usecode script: stand still and do not swing or path until it ends.
+	if (IsInUsecodeScript())
+	{
+		m_pathWaypoints.clear();
+		m_currentWaypointIndex = 0;
+		m_pathfindingPending = false;
+		m_isMoving = false;
+		SetDest(m_Pos);
+		++g_perf.engageCombatCalls;
+		return true;
+	}
+
+	if (IsPartyCombatant(this))
+		RefreshPartyAttackRangeFromWeapon(this);
+
+	U7Object* weapon = GetEquippedWeapon(this);
+	const int weaponShape = (weapon && weapon->m_shapeData) ? weapon->m_shapeData->m_shape : -1;
+	const bool isRanged = IsRangedWeaponShape(weaponShape);
+
+	// Tile A* goals land on tile centers, so a bare attackRange check often leaves
+	// melee attackers forever one step short of swinging. Engage with slack; path
+	// to a standoff inside that bubble.
+	constexpr float kEngageRangeSlack = 0.85f;
+	constexpr float kStandoffInset = 0.55f;
+	const float engageRange = m_attackRange + kEngageRangeSlack;
+	const float standOffRange = std::max(0.6f, m_attackRange - kStandoffInset);
+
 	float distSqr = Vector2DistanceSqr({ m_Pos.x, m_Pos.z }, { target->m_Pos.x, target->m_Pos.z });
-	float combatRangeSqr = m_attackRange * m_attackRange;
+	float combatRangeSqr = engageRange * engageRange;
 
 	if (distSqr <= combatRangeSqr)
 	{
-		// Hold position while in melee range so we don't keep walking toward a stale destination.
+		// Hold position while in attack range so we don't keep walking toward a stale destination.
+		m_pathWaypoints.clear();
+		m_currentWaypointIndex = 0;
+		m_pathfindingPending = false;
+		m_isMoving = false;
 		SetDest(m_Pos);
 
-		if (m_cooldownTimer <= 0.0f)
-		{
-			m_cooldownTimer = m_attackCooldown;
-			target->m_hp -= 1;
-			target->NotifyAttackedBy(this);
+		// Face the target so the attack billboard reads correctly.
+		Vector3 toTarget = Vector3Subtract(target->m_Pos, m_Pos);
+		toTarget.y = 0.0f;
+		if (Vector3LengthSqr(toTarget) > 1e-6f)
+			m_Direction = Vector3Normalize(toTarget);
 
-			AddConsoleString(m_name + " attacks " + target->m_name + " for 1!", RED);
-
-			if (target->m_hp <= 0)
-				AddConsoleString(target->m_name + " is dead!", RED);
-		}
-		else
-		{
+		// Cooldown always ticks; anim length must not stall the next swing.
+		if (m_cooldownTimer > 0.0f && g_Engine)
 			m_cooldownTimer -= g_Engine->LastFrameInSeconds();
+
+		auto applyMeleeHit = [&]() {
+			// Swarm insects: distraction only (0 damage), still pull aggro.
+			if (m_Team == 2)
+			{
+				target->NotifyAttackedBy(this);
+				return;
+			}
+			const int hits = FigureCombatHitPoints(this, target, weaponShape, -1);
+			if (hits > 0)
+				ApplyCombatDamage(target, static_cast<float>(hits), this);
+			if (hits > 0)
+				AddConsoleString(FormatCombatAttackConsole(this, target, weaponShape, hits), RED);
+		};
+
+		// Start a one-shot attack/shoot clip when off cooldown.
+		if (m_cooldownTimer <= 0.0f && !m_npcAnimPlaying)
+		{
+			if (isRanged)
+			{
+				bool needsAmmo = false;
+				U7Object* ammo = FindCombatAmmo(this, weaponShape, needsAmmo);
+				if (needsAmmo && !ammo)
+				{
+					const char* ammoName = WeaponUsesBolts(weaponShape) ? "bolts" : "arrows";
+					if (g_mainState)
+					{
+						g_mainState->NotifyCombatantCannotContinue(
+							this,
+							std::string("is out of ") + ammoName + "!");
+					}
+					++g_perf.engageCombatCalls;
+					return true;
+				}
+				// Stash ammo id on target... we'll consume on hit phase via re-find.
+				(void)ammo;
+			}
+			StartNpcAttackAnim();
+			m_cooldownTimer = m_attackCooldown > 0.1f ? m_attackCooldown : 1.5f;
+			// No strike frames (common for simple monster shapes): land melee now.
+			if (!isRanged && m_npcAnimHitPhase < 0)
+				applyMeleeHit();
+		}
+
+		// Apply the hit when the strike/release frame is reached.
+		if (ConsumeNpcAnimHitEvent())
+		{
+			if (isRanged)
+			{
+				bool needsAmmo = false;
+				U7Object* ammo = FindCombatAmmo(this, weaponShape, needsAmmo);
+				const int ammoShape = (ammo && ammo->m_shapeData) ? ammo->m_shapeData->m_shape : -1;
+				const int missileShape = PreferredMissileShape(weaponShape, ammoShape > 0 ? ammoShape : 0);
+				constexpr float kBoltSpeed = 22.0f;
+				if (missileShape > 0)
+				{
+					if (ammo)
+						ConsumeOneAmmo(this, ammo);
+					// Damage + console line are figured at impact (weapon/ammo/armor).
+					SpawnFlyingProjectile(missileShape, m_ID, target->m_ID, kBoltSpeed, 0, 0,
+						weaponShape, ammoShape);
+				}
+				else
+				{
+					const int hits = FigureCombatHitPoints(this, target, weaponShape, ammoShape);
+					if (hits > 0)
+						ApplyCombatDamage(target, static_cast<float>(hits), this);
+					if (hits > 0)
+						AddConsoleString(FormatCombatAttackConsole(this, target, weaponShape, hits), RED);
+				}
+			}
+			else
+			{
+				applyMeleeHit();
+			}
 		}
 	}
 	else
 	{
-		// Pathfind — do not crow-fly (UpdateMovement requires waypoints for NPCs/monsters).
-		PathfindToDest(GetStandoffPosition(m_Pos, target->m_Pos, m_attackRange));
+		const Vector3 standoff = GetStandoffPosition(m_Pos, target->m_Pos, standOffRange);
+		const float now = GetTime();
+		const float goalDx = standoff.x - m_combatPathGoal.x;
+		const float goalDz = standoff.z - m_combatPathGoal.z;
+		const float goalMoved = sqrtf(goalDx * goalDx + goalDz * goalDz);
+		const bool hasPath = !m_pathWaypoints.empty() && m_currentWaypointIndex < (int)m_pathWaypoints.size();
+		const bool stuck = m_moveStuckFrames >= 10;
+		const bool targetChanged = (m_combatPathTargetId != m_target);
+		const bool goalDrifted = goalMoved >= kCombatRepathGoalSlopTiles;
+		const bool cooldownReady = (now >= m_combatRepathAt);
+
+		const bool needRepath = !hasPath || stuck || targetChanged || goalDrifted ||
+			(!hasPath && cooldownReady) || (hasPath && goalDrifted && cooldownReady);
+
+		// Keep following an existing path while the target hasn't moved far.
+		if (!needRepath)
+			return true;
+
+		// Only repath on cooldown once we already have a path (avoid per-frame A*).
+		if (hasPath && !stuck && !targetChanged && !cooldownReady)
+			return true;
+
+		if (!g_pathfindingSystem)
+			return true;
+
+		const bool isParty = (m_UnitType == UnitTypes::UNIT_TYPE_NPC && g_Player &&
+			g_Player->NPCIDInParty(m_NPCID));
+		const bool isMonsterChase = (m_UnitType == UnitTypes::UNIT_TYPE_MONSTER) ||
+			(m_Team == 1 && !isParty);
+
+		std::vector<Vector3> path;
+		if (isMonsterChase)
+		{
+			// Absolute simplest: straight / greedy / tiny Fast — never Full A*.
+			path = g_pathfindingSystem->FindMonsterChasePath(m_Pos, standoff, this);
+		}
+		else
+		{
+			// Party chase: Exult Fast budget (explicit ground orders use Full via IssueMoveOrder).
+			path = g_pathfindingSystem->FindFastPath(m_Pos, standoff, this, PathCallerTag::AvatarParty);
+		}
+
+		if (path.empty() && isParty)
+		{
+			// Last mile: Avatar/party may crow-fly when A* has nothing left to do
+			// (already on/near the goal tile but still outside engage range).
+			m_pathWaypoints.clear();
+			m_currentWaypointIndex = 0;
+			m_pathfindingPending = false;
+			SetDest(standoff);
+			m_isMoving = true;
+		}
+		else
+		{
+			ApplyPathWaypoints(std::move(path));
+		}
+		m_combatPathGoal = standoff;
+		m_combatPathTargetId = m_target;
+		m_combatRepathAt = now + kCombatRepathCooldownSec;
+		m_moveStuckFrames = 0;
+		++g_perf.combatRepaths;
 	}
 
+	++g_perf.engageCombatCalls;
 	return true;
 }
 
 void U7Object::HostileCombatUpdate()
 {
-	if (g_isCombatMode && g_CombatState && g_CombatState->m_paused)
+	if (IsDeathStatus() || GetIsDead())
+		return;
+
+	// Exult Obj_flags: asleep=1, paralyzed=7 — skip chase/attack while incapacitated.
+	if ((m_flags & (1u << 1)) != 0 || (m_flags & (1u << 7)) != 0)
+		return;
+
+	if (g_mainState && g_mainState->IsCombatOrdersPaused())
 		return;
 
 	if (!g_isCombatMode || !g_Player)
 		return;
 
-	U7Object* avatar = g_Player->GetAvatarObject();
-	if (!avatar)
-		return;
+	auto inAggroRange = [&](U7Object* candidate) -> bool {
+		if (!candidate)
+			return false;
+		const float distSqr = Vector2DistanceSqr(
+			{ m_Pos.x, m_Pos.z },
+			{ candidate->m_Pos.x, candidate->m_Pos.z });
+		return distSqr <= kHostileAggroRangeSqr;
+	};
 
-	// Same on-screen leash as aggro — don't A* across the whole map during combat.
-	const float distSqr = Vector2DistanceSqr({ m_Pos.x, m_Pos.z }, { avatar->m_Pos.x, avatar->m_Pos.z });
-	if (distSqr > kHostileAggroRangeSqr)
-	{
+	auto isValidPartyTarget = [&](U7Object* candidate) -> bool {
+		if (!candidate || candidate->GetIsDead() || candidate->IsDeathStatus())
+			return false;
+		if (candidate->m_UnitType != UnitTypes::UNIT_TYPE_NPC)
+			return false;
+		if (!g_Player->NPCIDInParty(candidate->m_NPCID))
+			return false;
+		return inAggroRange(candidate);
+	};
+
+	// Swarm insects (Team 2): preferred distraction targets over the party.
+	auto isValidSwarmTarget = [&](U7Object* candidate) -> bool {
+		if (!candidate || candidate->GetIsDead() || candidate->IsDeathStatus())
+			return false;
+		if (candidate->m_Team != 2)
+			return false;
+		if (candidate->m_UnitType != UnitTypes::UNIT_TYPE_MONSTER)
+			return false;
+		return inAggroRange(candidate);
+	};
+
+	auto isValidHostileTarget = [&](U7Object* candidate) -> bool {
+		return isValidSwarmTarget(candidate) || isValidPartyTarget(candidate);
+	};
+
+	auto selectNearestSwarmTarget = [&]() -> int {
+		int bestId = 0;
+		float bestDistSqr = kHostileAggroRangeSqr;
+		// Local chunks only — full interest / world scans were too costly with a swarm.
+		const int chunkX = static_cast<int>(m_Pos.x) / 16;
+		const int chunkZ = static_cast<int>(m_Pos.z) / 16;
+		for (int dz = -2; dz <= 2; ++dz)
+		{
+			for (int dx = -2; dx <= 2; ++dx)
+			{
+				const int cx = chunkX + dx;
+				const int cz = chunkZ + dz;
+				if (cx < 0 || cz < 0 || cx >= 192 || cz >= 192)
+					continue;
+				for (U7Object* obj : g_chunkObjectMap[cx][cz])
+				{
+					if (!isValidSwarmTarget(obj))
+						continue;
+					const float distSqr = Vector2DistanceSqr(
+						{ m_Pos.x, m_Pos.z }, { obj->m_Pos.x, obj->m_Pos.z });
+					if (distSqr < bestDistSqr)
+					{
+						bestDistSqr = distSqr;
+						bestId = static_cast<int>(obj->m_ID);
+					}
+				}
+			}
+		}
+		return bestId;
+	};
+
+	auto selectNearestPartyTarget = [&]() -> int {
+		int bestId = 0;
+		float bestDistSqr = kHostileAggroRangeSqr;
+		for (int npcId : g_Player->GetPartyMemberIds())
+		{
+			auto itNpc = g_NPCData.find(npcId);
+			if (itNpc == g_NPCData.end() || !itNpc->second)
+				continue;
+			U7Object* member = GetObjectFromID(itNpc->second->m_objectID);
+			if (!isValidPartyTarget(member))
+				continue;
+			const float distSqr = Vector2DistanceSqr(
+				{ m_Pos.x, m_Pos.z },
+				{ member->m_Pos.x, member->m_Pos.z });
+			if (distSqr < bestDistSqr)
+			{
+				bestDistSqr = distSqr;
+				bestId = member->m_ID;
+			}
+		}
+		return bestId;
+	};
+
+	auto selectPreferredTarget = [&]() -> int {
+		// Prefer Swarm distractions when any are in range.
+		const int swarmId = selectNearestSwarmTarget();
+		if (swarmId != 0)
+			return swarmId;
+		return selectNearestPartyTarget();
+	};
+
+	// Drop a target that died or left aggro range, then prefer Swarm over party.
+	U7Object* current = (m_target > 0) ? GetObjectFromID(m_target) : nullptr;
+	if (!isValidHostileTarget(current))
 		m_target = 0;
+
+	if (m_target == 0)
+		m_target = selectPreferredTarget();
+
+	if (m_target == 0)
+	{
 		UpdateMovement();
 		return;
 	}
 
-	if (m_target == 0)
-		m_target = avatar->m_ID;
-
-	EngageCombatTarget();
+	if (!EngageCombatTarget())
+	{
+		// Target may have died during engage validation — retarget once this frame.
+		m_target = selectPreferredTarget();
+		if (m_target != 0)
+			EngageCombatTarget();
+	}
 	UpdateMovement();
 }
 
 void U7Object::MonsterUpdate()
 {
-	// Hostiles are Team 1 (combat eggs). Non-combat fauna stay Team 0.
+	UpdateNpcAnim(g_Engine ? g_Engine->LastFrameInSeconds() : 0.0f);
+
+	// Hostiles are Team 1 (combat eggs). Team 2 = party summons (Swarm). Team 0 = fauna.
+	if (m_Team == 2)
+	{
+		AlliedMonsterUpdate();
+		return;
+	}
+
 	if (m_Team == 1 && g_Player)
 	{
 		U7Object* avatar = g_Player->GetAvatarObject();
@@ -395,16 +874,16 @@ void U7Object::MonsterUpdate()
 					// Starts combat using the *nearest* hostile for the approach message.
 					TryBeginCombatFromHostileAggro(this);
 				}
-				else if (g_CombatState)
+				else if (g_mainState)
 				{
 					// Enroll even while paused — otherwise nearer Headlesses never join
 					// if a farther Dragon triggered combat first.
-					g_CombatState->EnsureParticipant(static_cast<int>(m_ID));
+					g_mainState->EnsureCombatParticipant(static_cast<int>(m_ID));
 				}
 			}
 
 			// Only skip chase/attack AI while combat is paused for orders.
-			if (g_isCombatMode && g_CombatState && g_CombatState->m_paused)
+			if (g_mainState && g_mainState->IsCombatOrdersPaused())
 				return;
 
 			if (g_isCombatMode)
@@ -413,6 +892,203 @@ void U7Object::MonsterUpdate()
 				return;
 			}
 		}
+	}
+
+	UpdateMovement();
+}
+
+void U7Object::AlliedMonsterUpdate()
+{
+	if (IsDeathStatus() || GetIsDead())
+		return;
+	if ((m_flags & (1u << 1)) != 0 || (m_flags & (1u << 7)) != 0)
+		return;
+	// Swarm keeps acting while combat orders are paused — autonomous distraction.
+
+	// Despawn once they leave the camera tile window (same test as InteractiveDraw).
+	{
+		const int cellx = (TILEWIDTH / 2) + static_cast<int>(m_Pos.x) - static_cast<int>(g_camera.target.x);
+		const int celly = (TILEHEIGHT / 2) + static_cast<int>(m_Pos.z) - static_cast<int>(g_camera.target.z);
+		if (cellx < 0 || cellx >= TILEWIDTH || celly < 0 || celly >= TILEHEIGHT)
+		{
+			if (g_SoundSystem)
+				g_SoundSystem->StopLoopingSoundEffect(static_cast<int>(m_ID));
+			UnassignObjectChunk(this);
+			SetIsDead(true);
+			m_Visible = false;
+			m_ShouldDraw = false;
+			m_hp = 0.0f;
+			return;
+		}
+	}
+
+	constexpr float kHarassCooldownSec = 0.5f;
+	if (m_attackCooldown < kHarassCooldownSec)
+		m_attackCooldown = kHarassCooldownSec;
+	if (m_cooldownTimer > 0.0f && g_Engine)
+		m_cooldownTimer -= g_Engine->LastFrameInSeconds();
+
+	auto isLivingHostile = [&](U7Object* obj) -> bool {
+		return obj && IsHostileCombatUnit(obj)
+			&& Vector2DistanceSqr({ m_Pos.x, m_Pos.z }, { obj->m_Pos.x, obj->m_Pos.z })
+				<= kHostileAggroRangeSqr;
+	};
+
+	// Cheap local scan: only this chunk + neighbors (not the whole interest set /
+	// g_objectList). Previous load-balance walked every world object per insect.
+	auto collectNearbyHostiles = [&]() {
+		std::vector<U7Object*> out;
+		const int chunkX = static_cast<int>(m_Pos.x) / 16;
+		const int chunkZ = static_cast<int>(m_Pos.z) / 16;
+		for (int dz = -2; dz <= 2; ++dz)
+		{
+			for (int dx = -2; dx <= 2; ++dx)
+			{
+				const int cx = chunkX + dx;
+				const int cz = chunkZ + dz;
+				if (cx < 0 || cz < 0 || cx >= 192 || cz >= 192)
+					continue;
+				for (U7Object* obj : g_chunkObjectMap[cx][cz])
+				{
+					if (isLivingHostile(obj))
+						out.push_back(obj);
+				}
+			}
+		}
+		return out;
+	};
+
+	// Stick to current target when still valid; otherwise stable id partition
+	// across nearby hostiles (no O(world) load counts).
+	auto pickHostile = [&]() -> U7Object* {
+		if (U7Object* cur = (m_target > 0) ? GetObjectFromID(m_target) : nullptr)
+		{
+			if (isLivingHostile(cur))
+				return cur;
+		}
+		std::vector<U7Object*> hostiles = collectNearbyHostiles();
+		if (hostiles.empty())
+			return nullptr;
+		std::sort(hostiles.begin(), hostiles.end(),
+			[](const U7Object* a, const U7Object* b) { return a->m_ID < b->m_ID; });
+		return hostiles[static_cast<size_t>(m_ID) % hostiles.size()];
+	};
+
+	auto buzzSlotAround = [&](U7Object* hostile) -> Vector3 {
+		constexpr float kGoldenAngle = 2.399963229728653f;
+		const float angle = static_cast<float>(m_ID) * kGoldenAngle;
+		const float radius = 1.6f + static_cast<float>(m_ID % 5) * 0.45f;
+		Vector3 slot{
+			hostile->m_Pos.x + cosf(angle) * radius,
+			hostile->m_Pos.y,
+			hostile->m_Pos.z + sinf(angle) * radius
+		};
+		slot.x = floorf(slot.x) + 0.5f;
+		slot.z = floorf(slot.z) + 0.5f;
+		return slot;
+	};
+
+	auto pathTo = [&](const Vector3& dest) {
+		const float now = GetTime();
+		const bool pathDone = m_pathWaypoints.empty()
+			|| m_currentWaypointIndex >= (int)m_pathWaypoints.size();
+		const float goalDx = dest.x - m_combatPathGoal.x;
+		const float goalDz = dest.z - m_combatPathGoal.z;
+		const bool goalDrifted = (goalDx * goalDx + goalDz * goalDz) >= 2.25f;
+		// Repath at most ~1.2s; crow-fly SetDest when A* would be wasteful spam.
+		if (!pathDone && !goalDrifted && now < m_combatRepathAt)
+			return;
+
+		m_pathWaypoints.clear();
+		m_currentWaypointIndex = 0;
+		m_pathfindingPending = false;
+		SetDest(dest);
+		m_isMoving = true;
+		m_combatPathGoal = dest;
+		m_combatRepathAt = now + 1.2f;
+	};
+
+	auto wanderRandomly = [&]() {
+		m_target = 0;
+		m_combatPathTargetId = 0;
+		const float now = GetTime();
+		const bool pathDone = m_pathWaypoints.empty()
+			|| m_currentWaypointIndex >= (int)m_pathWaypoints.size();
+		const bool arrived = !m_isMoving
+			|| Vector2DistanceSqr({ m_Pos.x, m_Pos.z }, { m_Dest.x, m_Dest.z }) < 0.35f;
+		if (!arrived && !pathDone && now < m_combatRepathAt)
+		{
+			UpdateMovement();
+			return;
+		}
+
+		float angle = 0.0f;
+		float dist = 5.0f;
+		if (g_NonVitalRNG)
+		{
+			angle = g_NonVitalRNG->RandomRangeFloat(0.0f, 6.2831853f);
+			dist = g_NonVitalRNG->RandomRangeFloat(4.0f, 10.0f);
+		}
+		Vector3 dest{
+			m_Pos.x + cosf(angle) * dist,
+			m_Pos.y,
+			m_Pos.z + sinf(angle) * dist
+		};
+		dest.x = floorf(dest.x) + 0.5f;
+		dest.z = floorf(dest.z) + 0.5f;
+		pathTo(dest);
+		UpdateMovement();
+	};
+
+	U7Object* hostile = pickHostile();
+	if (!hostile)
+	{
+		wanderRandomly();
+		return;
+	}
+
+	// Enroll once when acquiring a new target — not every frame.
+	if (m_target != static_cast<int>(hostile->m_ID))
+	{
+		if (!g_isCombatMode)
+			TryBeginCombatFromHostileAggro(hostile);
+		else if (g_mainState)
+			g_mainState->EnsureCombatParticipant(static_cast<int>(m_ID));
+	}
+
+	m_target = static_cast<int>(hostile->m_ID);
+	m_combatPathTargetId = m_target;
+
+	constexpr float kHarassRange = MELEE_RANGE_TILES + 0.85f;
+	const float distToHostile = Vector2Distance(
+		{ m_Pos.x, m_Pos.z }, { hostile->m_Pos.x, hostile->m_Pos.z });
+	const Vector3 slot = buzzSlotAround(hostile);
+	const float distToSlot = Vector2Distance({ m_Pos.x, m_Pos.z }, { slot.x, slot.z });
+
+	if (distToHostile <= kHarassRange)
+	{
+		m_pathWaypoints.clear();
+		m_currentWaypointIndex = 0;
+		m_pathfindingPending = false;
+		m_isMoving = false;
+		SetDest(m_Pos);
+
+		Vector3 toTarget = Vector3Subtract(hostile->m_Pos, m_Pos);
+		toTarget.y = 0.0f;
+		if (Vector3LengthSqr(toTarget) > 1e-6f)
+			m_Direction = Vector3Normalize(toTarget);
+
+		// Harass at most every ~0.5s. Skip attack anim (often missing frames for
+		// insects) so playing/hit-phase quirks cannot break the cooldown gate.
+		if (m_cooldownTimer <= 0.0f)
+		{
+			m_cooldownTimer = kHarassCooldownSec;
+			hostile->NotifyAttackedBy(this);
+		}
+	}
+	else if (distToSlot > 0.45f)
+	{
+		pathTo(slot);
 	}
 
 	UpdateMovement();
@@ -593,7 +1269,11 @@ void U7Object::MonsterDraw()
 	}
 
 	// Shapes without SW/NE walk frames fall back to ordinary shape drawing.
+	// Temporarily lift m_Pos so InteractiveDraw / shape Draw see flying height.
+	const float savedY = m_Pos.y;
+	m_Pos.y += m_drawHeightOffset;
 	InteractiveDraw();
+	m_Pos.y = savedY;
 }
 
 void U7Object::CheckLighting()
@@ -605,6 +1285,12 @@ void U7Object::CheckLighting()
 
 void U7Object::Update()
 {
+	// Interest snapshot can list the same pointer twice when a stale chunk-map
+	// ghost still overlaps the interest radius. One sim tick per frame.
+	if (m_lastInterestUpdateFrame == g_CurrentUpdate)
+		return;
+	m_lastInterestUpdateFrame = g_CurrentUpdate;
+
 	// Dispatch to the appropriate type-specific update function.
 	// m_UnitType should be the source of truth.
 	switch (m_UnitType)
@@ -814,13 +1500,17 @@ void U7Object::HandleMonsterSpawnerEgg()
 			if (monData)
 			{
 				spawned->m_hp = (monData->m_hitPoints > 0 ? monData->m_hitPoints : monData->m_strength);
+				spawned->m_BaseMaxHP = spawned->m_hp;
 				spawned->m_BaseAttack = (monData->m_damage > 0 ? monData->m_damage : 5.0f);
+				spawned->m_BaseDefense = monData->m_armor;
 				spawned->m_combat = (monData->m_combat > 0 ? monData->m_combat : 10.0f);
 			}
 			else
 			{
 				spawned->m_hp = 20 + (g_NonVitalRNG ? (int)g_NonVitalRNG->RandomRange(0, 15) : 5);
+				spawned->m_BaseMaxHP = spawned->m_hp;
 				spawned->m_BaseAttack = 5.0f;
+				spawned->m_BaseDefense = 0.0f;
 				spawned->m_combat = 10.0f;
 			}
 
@@ -837,8 +1527,8 @@ void U7Object::HandleMonsterSpawnerEgg()
 			{
 				spawned->m_Team = 1; // 0 = neutral/player, 1 = hostile
 
-				if (g_isCombatMode && g_CombatState)
-					g_CombatState->EnsureParticipant(static_cast<int>(newId));
+				if (g_isCombatMode && g_mainState)
+					g_mainState->EnsureCombatParticipant(static_cast<int>(newId));
 			}
 
 			spawned->MonsterInit();
@@ -881,15 +1571,41 @@ void U7Object::HandleJukeboxEgg()
 
 void U7Object::MonsterInit()
 {
-	m_speed = 5.0f;
+	m_speed = 7.5f;
 	m_attackRange = MELEE_RANGE_TILES;
 	m_attackCooldown = 3.0f;
 	m_cooldownTimer = 0.0;
 	m_name = g_objectDataTable[m_shapeData->m_shape].m_name;
 
-	// Build 8-way walk textures from this shape (cardinals duplicate diagonals for now).
+	m_isFlying = false;
+	m_drawHeightOffset = 0.0f;
+	for (const MonsterData& md : g_monsterData)
+	{
+		if (md.m_shape == m_ObjectType)
+		{
+			m_isFlying = md.m_flies;
+			// MONSTERS.DAT weapon nibble is 0 for insects — still need a bite.
+			if (m_BaseAttack <= 0.0f)
+				m_BaseAttack = (md.m_damage > 0) ? static_cast<float>(md.m_damage) : 1.0f;
+			break;
+		}
+	}
+	// Flying monsters (insects, etc.): draw/pick around waist height, feet path on ground.
+	if (m_isFlying)
+	{
+		m_drawHeightOffset = 0.9f;
+		// Insects (shape 517): harass at most ~twice per second.
+		if (m_ObjectType == 517)
+			m_attackCooldown = 0.5f;
+	}
+
+	// Build full action texture set + legacy walk table from this shape.
 	m_walkTexturesUpright = false;
-	if (!FillWalkTextures(m_walkTextures, m_ObjectType))
+	if (FillNpcActionTextures(m_actionTextures, m_ObjectType))
+	{
+		CopyWalkTexturesFromActions(m_actionTextures, m_walkTextures);
+	}
+	else if (!FillWalkTextures(m_walkTextures, m_ObjectType))
 	{
 		m_walkTextures.clear();
 		if (g_LuaDebug || g_showEggs)
@@ -898,6 +1614,12 @@ void U7Object::MonsterInit()
 				" missing walk frames; falling back to InteractiveDraw");
 		}
 	}
+
+	// DrawWalkBillboard draws at m_Pos with no +0.5 offset (same as NPCs). Spawn
+	// paths often pass integer tile coords, which put the sprite in the UL corner
+	// of the pick box — snap to tile center so visuals and targeting match.
+	m_Pos.x = floorf(m_Pos.x) + 0.5f;
+	m_Pos.z = floorf(m_Pos.z) + 0.5f;
 
 	// Same as NPCInit: refresh pick box now that UnitType is MONSTER.
 	SetPos(m_Pos);
@@ -1506,12 +2228,12 @@ void U7Object::DrawWalkBillboard(const std::vector<std::vector<Texture*>>& walkT
 	// (and toward-camera SE instead of S).
 	int finalAngle = (int(angle) + 7) % 8;
 
-	const int framerate = 200; // ms per walk frame (was 350; a bit snappier for sheet cycles)
-	const int frameCount = int(walkTextures[finalAngle].size());
-	int thisTime = (int(GetTime() * 1000) / framerate) % frameCount;
-	if (!m_isMoving || g_mainState->m_paused) thisTime = 0;
+	const NpcActionTextures* actions = GetNpcActionTextures();
+	const bool useActionTable = actions && actions->valid &&
+		!(uprightSheet && (m_npcAnimAction == NpcAnimAction::Walk ||
+		                   m_npcAnimAction == NpcAnimAction::Stand));
 
-	// Pose override (sleeping, sitting, etc.) when standing still.
+	// Pose override (sleeping, sitting, etc.) when standing still — raw shape frame.
 	if (!m_isMoving && m_isFrameOverridden)
 	{
 		if (g_shapeTable[m_ObjectType][m_overrideFrame].m_texture != nullptr)
@@ -1520,13 +2242,16 @@ void U7Object::DrawWalkBillboard(const std::vector<std::vector<Texture*>>& walkT
 			billboardAngle = m_overrideFrame % 2 ? 45.0f : 0.0f;
 		}
 	}
-	else
+	else if (useActionTable)
 	{
-		// 0=SW, 1=W, 2=NW, 3=N, 4=NE, 5=E, 6=SE, 7=S
-		finalTexture = walkTextures[finalAngle][thisTime];
-		if (uprightSheet)
+		Texture* actionTex = GetNpcActionTexture(*actions, m_npcAnimAction, finalAngle, m_npcAnimPhase);
+		if (actionTex)
+			finalTexture = actionTex;
+		else
+			finalTexture = walkTextures[finalAngle][0];
+
+		if (uprightSheet && m_npcAnimAction == NpcAnimAction::Walk)
 		{
-			// Replacement sheets are drawn upright; no U7 isometric slant.
 			billboardAngle = 0.0f;
 			drawingUprightSheet = true;
 		}
@@ -1534,9 +2259,28 @@ void U7Object::DrawWalkBillboard(const std::vector<std::vector<Texture*>>& walkT
 		{
 			billboardAngle = kBillboardAngle[finalAngle];
 			if ((m_name == "Greg" || m_name == "Poutchouli" || m_name == "Mister Fisp") && billboardAngle < 0.0f)
-			{
 				billboardAngle = -75.0f;
-			}
+		}
+	}
+	else
+	{
+		// Legacy walk-table path (WalkSheets for walk/stand, or missing action bake).
+		const int framerate = 200;
+		const int frameCount = int(walkTextures[finalAngle].size());
+		int thisTime = (int(GetTime() * 1000) / framerate) % frameCount;
+		if (!m_isMoving || (g_mainState && g_mainState->m_paused)) thisTime = 0;
+
+		finalTexture = walkTextures[finalAngle][thisTime];
+		if (uprightSheet)
+		{
+			billboardAngle = 0.0f;
+			drawingUprightSheet = true;
+		}
+		else
+		{
+			billboardAngle = kBillboardAngle[finalAngle];
+			if ((m_name == "Greg" || m_name == "Poutchouli" || m_name == "Mister Fisp") && billboardAngle < 0.0f)
+				billboardAngle = -75.0f;
 		}
 	}
 
@@ -1561,6 +2305,8 @@ void U7Object::DrawWalkBillboard(const std::vector<std::vector<Texture*>>& walkT
 		dims = { float(finalTexture->width) / 8.0f, float(finalTexture->height) / 8.0f, 1 };
 		finalPos.y += m_shapeData->m_Dims.y * .62f;
 	}
+	// Flying creatures (Swarm insects, etc.): hover near waist height; shadow stays on ground.
+	finalPos.y += m_drawHeightOffset;
 
 	Vector3 shadowPos = Vector3{ m_Pos.x - .5f, 0.02f, m_Pos.z + 1 };
 	SetMaterialTexture(&g_ResourceManager->GetModel("Models/3dmodels/flat.obj")->GetModel().materials[0], MATERIAL_MAP_DIFFUSE, *g_ResourceManager->GetTexture("Images/dropshadow.png"));
@@ -1599,6 +2345,10 @@ void U7Object::DrawWalkBillboard(const std::vector<std::vector<Texture*>>& walkT
 	DrawBillboardPro(g_camera, *finalTexture, Rectangle{ 0, 0, float(finalTexture->width), float(finalTexture->height) }, finalPos, Vector3{ 0, 1, 0 },
 		Vector2{ dims.x, dims.y }, Vector2{ 0, 0 }, billboardAngle, lighting);
 	EndShaderMode();
+
+	// Casting glow outside alphaDiscard: 859 frames are tiny; linear filter + 0.5
+	// alpha cutoff was discarding almost every stretched sample.
+	DrawCastingFramesOverlay(finalPos, Vector2{ dims.x, dims.y }, billboardAngle, lighting);
 }
 
 void U7Object::CustomMeshDraw(Color color)
@@ -1673,6 +2423,20 @@ static std::string GetActivityScriptName(int activityId)
 
 void U7Object::NPCUpdate()
 {
+	// Corpses: no schedules, combat AI, conversation scripts, or movement.
+	if (IsDeathStatus())
+	{
+		if (!m_isFrameOverridden)
+			SetOverrideFrame(GetDeathFrameForFacing());
+		UpdateNpcAnim(g_Engine ? g_Engine->LastFrameInSeconds() : 0.0f);
+		return;
+	}
+
+	// Cast / craft scripts must tick even while combat is paused or on Hold —
+	// those paths return early below and would otherwise freeze the cast anim.
+	UpdateUsecodeScript();
+	UpdateNpcAnim(g_Engine ? g_Engine->LastFrameInSeconds() : 0.0f);
+
 	// Don't run schedule activity scripts while in the party (including the Avatar).
 	// Avatar was previously excluded from this skip (m_NPCID != 0), so Talk/Combat
 	// activities could run on NPC 0 — self-Interact / npc_frame flicker at game start.
@@ -1722,52 +2486,61 @@ void U7Object::NPCUpdate()
 
 	if (isPartyMember && g_isCombatMode)
 	{
+		RefreshPartyAttackRangeFromWeapon(this);
 
-		if (m_NPCData->m_equipment[EquipmentSlot::SLOT_RIGHT_HAND] != -1)
-		{
-			U7Object* weapon = g_objectList[m_NPCData->m_equipment[EquipmentSlot::SLOT_RIGHT_HAND]].get();
-			if (weapon->m_shapeData->m_shape == 598 || weapon->m_shapeData->m_shape == 474)
-			{
-				m_attackRange = 9;
-			}
-		}
-
-		if (g_isCombatMode && g_CombatState && g_CombatState->m_paused)
+		if (g_mainState && g_mainState->IsCombatOrdersPaused())
 			return;
 
-		if (m_combatMoveOrder)
+		if (m_combatOrderMode == CombatOrderMode::Hold
+		    || m_combatOrderMode == CombatOrderMode::Automatic)
+		{
+			// Hold: stand. Automatic in combat: no auto-acquire (tactics later).
+			m_target = 0;
+			m_combatMoveOrder = false;
+			m_pathWaypoints.clear();
+			m_currentWaypointIndex = 0;
+			m_pathfindingPending = false;
+			m_isMoving = false;
+			SetDest(m_Pos);
+			return;
+		}
+
+		if (m_combatOrderMode == CombatOrderMode::Move || m_combatMoveOrder)
 		{
 			UpdateMovement();
 
-			bool atDestination = !m_isMoving && m_pathWaypoints.empty();
-			if (atDestination)
+			// Arrived, or path failed / idle with nothing left to walk — become Hold.
+			if (!m_isMoving && m_pathWaypoints.empty() && !m_pathfindingPending)
 			{
-				float distSqr = Vector2DistanceSqr({ m_Pos.x, m_Pos.z }, { m_Dest.x, m_Dest.z });
-				if (distSqr < 1.0f)
-					m_combatMoveOrder = false;
+				m_combatMoveOrder = false;
+				m_combatOrderMode = CombatOrderMode::Hold;
+				SetDest(m_Pos);
 			}
 
 			return;
 		}
 
-		// Companions auto-acquire nearby hostiles; Avatar only fights assigned targets.
-		if (m_NPCID != 0 && m_target == 0)
+		// Attack: only fight an assigned target. Losing it → Hold + auto-pause
+		// via NotifyCombatantCannotContinue (ranged may drain cooldown first).
+		if (m_target == 0)
 		{
-			for (const auto& [id, objPtr] : g_objectList)
+			U7Object* weapon = GetEquippedWeapon(this);
+			const int weaponShape = (weapon && weapon->m_shapeData) ? weapon->m_shapeData->m_shape : -1;
+			if (IsRangedWeaponShape(weaponShape)
+			    && (m_cooldownTimer > 0.0f || m_npcAnimPlaying))
 			{
-				if (!objPtr || objPtr->GetIsDead())
-					continue;
-
-				if (objPtr->m_UnitType == UnitTypes::UNIT_TYPE_MONSTER && objPtr->m_Team == 1)
-				{
-					float distSqr = Vector2DistanceSqr({m_Pos.x, m_Pos.z}, {objPtr->m_Pos.x, objPtr->m_Pos.z});
-					if (distSqr < 100)
-					{
-						m_target = id;
-						break;
-					}
-				}
+				m_pathWaypoints.clear();
+				m_currentWaypointIndex = 0;
+				m_pathfindingPending = false;
+				m_isMoving = false;
+				SetDest(m_Pos);
+				if (m_cooldownTimer > 0.0f && !m_npcAnimPlaying)
+					m_cooldownTimer -= g_Engine->LastFrameInSeconds();
+				return;
 			}
+			if (g_mainState && !g_mainState->IsCombatOrdersPaused())
+				g_mainState->NotifyCombatantCannotContinue(this, "has no target!");
+			return;
 		}
 
 		EngageCombatTarget();
@@ -2128,7 +2901,6 @@ void U7Object::NPCUpdate()
 	// Schedule checking is now handled by MainState::Update() queue system
 	// This function only handles waypoint following and movement via shared UpdateMovement()
 
-	UpdateUsecodeScript();
 	UpdateMovement();
 }
 
@@ -2207,7 +2979,15 @@ void U7Object::UpdateMovement()
 
 	// Speed budget is along the 3D path (XZ + climb/drop), not XZ alone —
 	// otherwise stairs/crates feel like a teleport because Y is free.
-	float deltav = m_speed * g_Engine->LastFrameInSeconds();
+	float speedScale = 1.0f;
+	if (g_isCombatMode)
+	{
+		const bool partyUnit = isAvatar || isPartyFollower;
+		const bool hostileUnit = IsHostileCombatUnit(this);
+		if (partyUnit || hostileUnit)
+			speedScale = 0.5f;
+	}
+	float deltav = m_speed * speedScale * g_Engine->LastFrameInSeconds();
 	if (deltav < 1e-6f)
 		deltav = 0.001f;
 
@@ -2520,8 +3300,27 @@ void U7Object::UpdateMovement()
 				const Vector3 finalGoal = m_pathWaypoints.back();
 				const bool wasSchedule = m_isSchedulePath;
 				m_moveStuckFrames = 0;
-				PathfindToDest(finalGoal);
-				m_isSchedulePath = wasSchedule;
+
+				const bool isParty = (m_UnitType == UnitTypes::UNIT_TYPE_NPC && g_Player &&
+					g_Player->NPCIDInParty(m_NPCID));
+				const bool isMonster = (m_UnitType == UnitTypes::UNIT_TYPE_MONSTER) ||
+					(m_Team == 1 && !isParty);
+
+				if (wasSchedule)
+				{
+					ApplyPathWaypoints(g_pathfindingSystem->FindFastPath(
+						m_Pos, finalGoal, this, PathCallerTag::ScheduleFast));
+					m_isSchedulePath = true;
+				}
+				else if (isMonster)
+				{
+					ApplyPathWaypoints(g_pathfindingSystem->FindMonsterChasePath(
+						m_Pos, finalGoal, this));
+				}
+				else
+				{
+					PathfindToDest(finalGoal, /*allowHierarchical=*/true, PathCallerTag::StuckRepath);
+				}
 				return;
 			}
 
@@ -2634,7 +3433,8 @@ void U7Object::SetPos(Vector3 pos)
 		if (dims.y < 0.5f) dims.y = 1.0f;
 		if (dims.z < 0.5f) dims.z = 1.0f;
 		// Tile UL is one unit NW of the center tile's SE-style indexing used elsewhere.
-		boundingBoxAnchorPoint = Vector3{ floorf(m_Pos.x), m_Pos.y, floorf(m_Pos.z) };
+		// Flying creatures: lift pick box with the drawn sprite (waist height).
+		boundingBoxAnchorPoint = Vector3{ floorf(m_Pos.x), m_Pos.y + m_drawHeightOffset, floorf(m_Pos.z) };
 	}
 	else if (m_drawType == ShapeDrawType::OBJECT_DRAW_BILLBOARD)
 	{
@@ -2668,7 +3468,8 @@ void U7Object::SetPos(Vector3 pos)
 	if (characterAtTileCenter)
 	{
 		// Keep sort/lighting center on the visible character (tile center).
-		m_centerPoint = Vector3{ m_Pos.x, m_Pos.y + dims.y * 0.5f, m_Pos.z };
+		// Flying: raise center with draw height so depth sort matches the sprite.
+		m_centerPoint = Vector3{ m_Pos.x, m_Pos.y + m_drawHeightOffset + dims.y * 0.5f, m_Pos.z };
 	}
 	else
 	{
@@ -2680,9 +3481,14 @@ void U7Object::SetPos(Vector3 pos)
 
 	UpdateObjectChunk(this, fromPos);
 
-	// Notify pathfinding grid if this is a non-walkable STATIC object (not NPCs!)
-	// NPCs don't block pathfinding grid, so no need to update when they move
-	if (m_objectData && m_objectData->m_isNotWalkable && m_UnitType != UnitTypes::UNIT_TYPE_NPC)
+	// Notify pathfinding grid if this is a non-walkable STATIC object.
+	// NPCs and monsters use dynamic AreUnitsHostile checks instead — baking
+	// them into the grid (e.g. Swarm insects) permanently blocks tiles.
+	// Spell missiles skip the grid entirely (they also skip ValidateMove scans).
+	if (m_objectData && m_objectData->m_isNotWalkable &&
+	    m_UnitType != UnitTypes::UNIT_TYPE_NPC &&
+	    m_UnitType != UnitTypes::UNIT_TYPE_MONSTER &&
+	    !m_isProjectile)
 	{
 		// Update both old and new positions (object moved)
 		NotifyPathfindingGridUpdate((int)fromPos.x, (int)fromPos.z);
@@ -2711,6 +3517,211 @@ void U7Object::ClearOverrideFrame(const Vector3* toward)
 		UnstickFromFurniture(toward);
 }
 
+const NpcActionTextures* U7Object::GetNpcActionTextures() const
+{
+	if (m_NPCData && m_NPCData->m_actionTextures.valid)
+		return &m_NPCData->m_actionTextures;
+	if (m_actionTextures.valid)
+		return &m_actionTextures;
+	return nullptr;
+}
+
+void U7Object::SetNpcAnimAction(NpcAnimAction action, bool looping, float frameMs)
+{
+	m_npcAnimAction = action;
+	m_npcAnimPhase = 0;
+	m_npcAnimTimer = frameMs * 0.001f;
+	m_npcAnimLooping = looping;
+	m_npcAnimPlaying = !looping;
+	m_npcAnimHitFired = false;
+
+	const NpcActionTextures* actions = GetNpcActionTextures();
+	if (!actions)
+	{
+		m_npcAnimHitPhase = -1;
+		return;
+	}
+
+	// Strike / release is the last phase of attack/shoot clips.
+	if (action == NpcAnimAction::Attack1H || action == NpcAnimAction::Attack2H ||
+	    action == NpcAnimAction::Shoot)
+	{
+		const int count = GetNpcActionPhaseCount(*actions, action, 0);
+		m_npcAnimHitPhase = (count > 0) ? (count - 1) : -1;
+	}
+	else
+	{
+		m_npcAnimHitPhase = -1;
+	}
+}
+
+void U7Object::StartNpcAttackAnim()
+{
+	NpcAnimAction action = NpcAnimAction::Attack1H;
+	U7Object* weapon = nullptr;
+	if (m_NPCData)
+	{
+		const int weaponId = m_NPCData->GetEquippedItem(EquipmentSlot::SLOT_RIGHT_HAND);
+		if (weaponId >= 0)
+			weapon = GetObjectFromID(weaponId);
+	}
+
+	if (weapon && weapon->m_shapeData)
+	{
+		const int shape = weapon->m_shapeData->m_shape;
+		// Ranged (WEAPONS.DAT uses==3) → Shoot; two-handed melee shapes → Attack2H.
+		if (IsRangedWeaponShape(shape))
+			action = NpcAnimAction::Shoot;
+		else if (shape == 600 || shape == 601 || shape == 602 || shape == 603 || // 2H hammer/axe/sword/halberd
+		         shape == 618 || shape == 553) // scythe / firedoom staff
+			action = NpcAnimAction::Attack2H;
+		else
+			action = NpcAnimAction::Attack1H;
+	}
+
+	SetNpcAnimAction(action, false, 110.0f);
+}
+
+void U7Object::ApplyNpcPoseFromUsecode(int poseNibble)
+{
+	poseNibble &= 15;
+
+	// Keep m_Frame low nibble in sync for any code that still reads it.
+	const int facingBase = m_Frame & ~0x0f;
+	SetFrame(facingBase | poseNibble);
+
+	NpcAnimAction action = NpcAnimAction::Stand;
+	int phase = 0;
+	switch (poseNibble)
+	{
+	case 0: action = NpcAnimAction::Stand; break;
+	case 1: action = NpcAnimAction::Walk; phase = 1; break;
+	case 2: action = NpcAnimAction::Walk; phase = 3; break;
+	case 3: action = NpcAnimAction::Ready; break;
+	case 4: action = NpcAnimAction::Attack1H; phase = 1; break; // raise1
+	case 5: action = NpcAnimAction::Attack1H; phase = 2; break; // reach1
+	case 6: action = NpcAnimAction::Attack1H; phase = 3; break; // strike1
+	case 7: action = NpcAnimAction::Attack2H; phase = 1; break; // raise2
+	case 8: action = NpcAnimAction::Attack2H; phase = 2; break; // reach2
+	case 9: action = NpcAnimAction::Attack2H; phase = 3; break; // strike2
+	case 10: action = NpcAnimAction::Sit; break;
+	case 11: action = NpcAnimAction::Cast; break;               // bow
+	case 12: action = NpcAnimAction::Kneel; break;
+	case 13: action = NpcAnimAction::Sleep; break;
+	case 14: action = NpcAnimAction::Up; break;
+	case 15: action = NpcAnimAction::Out; break;
+	default: break;
+	}
+
+	m_npcAnimAction = action;
+	m_npcAnimPhase = phase;
+	m_npcAnimPlaying = false; // hold; usecode advances poses on its tick
+	m_npcAnimLooping = true;
+	m_npcAnimHitPhase = -1;
+	m_npcAnimHitFired = true; // never treat cast poses as combat hits
+}
+
+void U7Object::UpdateNpcAnim(float dt)
+{
+	if (dt <= 0.0f)
+		return;
+
+	// Usecode cast/craft scripts own the pose until they finish.
+	if (IsInUsecodeScript())
+		return;
+
+	const NpcActionTextures* actions = GetNpcActionTextures();
+	if (!actions)
+		return;
+
+	// Pose overrides (sit/sleep/death) win until cleared.
+	if (m_isFrameOverridden)
+	{
+		if (IsSittingPose())
+			m_npcAnimAction = NpcAnimAction::Sit;
+		else if (IsSleepingPose() || IsDeathStatus())
+			m_npcAnimAction = NpcAnimAction::Sleep;
+		m_npcAnimPhase = 0;
+		m_npcAnimPlaying = false;
+		m_npcAnimLooping = true;
+		return;
+	}
+
+	// One-shot attack/shoot clips advance on their own timer.
+	if (m_npcAnimPlaying)
+	{
+		m_npcAnimTimer -= dt;
+		if (m_npcAnimTimer > 0.0f)
+			return;
+
+		const int count = GetNpcActionPhaseCount(*actions, m_npcAnimAction, 0);
+		if (count <= 0)
+		{
+			m_npcAnimPlaying = false;
+			return;
+		}
+
+		++m_npcAnimPhase;
+		if (m_npcAnimPhase >= count)
+		{
+			m_npcAnimPlaying = false;
+			m_npcAnimPhase = count - 1;
+			// Return to ready/stand after the swing.
+			if (g_isCombatMode)
+				SetNpcAnimAction(NpcAnimAction::Ready, true, 180.0f);
+			else
+				SetNpcAnimAction(NpcAnimAction::Stand, true, 180.0f);
+			return;
+		}
+		m_npcAnimTimer = 0.110f;
+		return;
+	}
+
+	// Looping locomotion / idle selection when not in a one-shot.
+	if (m_isMoving)
+	{
+		if (m_npcAnimAction != NpcAnimAction::Walk || !m_npcAnimLooping)
+			SetNpcAnimAction(NpcAnimAction::Walk, true, 200.0f);
+	}
+	else if (g_isCombatMode && m_target != 0)
+	{
+		if (m_npcAnimAction != NpcAnimAction::Ready || !m_npcAnimLooping)
+			SetNpcAnimAction(NpcAnimAction::Ready, true, 180.0f);
+	}
+	else
+	{
+		if (m_npcAnimAction != NpcAnimAction::Stand || !m_npcAnimLooping)
+			SetNpcAnimAction(NpcAnimAction::Stand, true, 180.0f);
+	}
+
+	if (!m_npcAnimLooping)
+		return;
+
+	const int count = GetNpcActionPhaseCount(*actions, m_npcAnimAction, 0);
+	if (count <= 1)
+	{
+		m_npcAnimPhase = 0;
+		return;
+	}
+
+	m_npcAnimTimer -= dt;
+	if (m_npcAnimTimer > 0.0f)
+		return;
+
+	m_npcAnimPhase = (m_npcAnimPhase + 1) % count;
+	m_npcAnimTimer = (m_npcAnimAction == NpcAnimAction::Walk) ? 0.200f : 0.180f;
+}
+
+bool U7Object::ConsumeNpcAnimHitEvent()
+{
+	if (m_npcAnimHitPhase < 0 || m_npcAnimHitFired)
+		return false;
+	if (m_npcAnimPhase < m_npcAnimHitPhase)
+		return false;
+	m_npcAnimHitFired = true;
+	return true;
+}
+
 bool U7Object::IsSittingPose() const
 {
 	// Exult sit_frame = 10; +16 = 26 for opposite facing.
@@ -2721,6 +3732,115 @@ bool U7Object::IsSleepingPose() const
 {
 	// Exult sleep_frame = 13; +16 = 29 for opposite facing.
 	return m_isFrameOverridden && (m_overrideFrame == 13 || m_overrideFrame == 29);
+}
+
+bool U7Object::IsDeathStatus() const
+{
+	if (m_UnitType != UnitTypes::UNIT_TYPE_NPC || !m_NPCData)
+		return false;
+	// Prefer runtime Obj_flags; also honor npc.dat bit 15 for loaded corpses.
+	if ((m_flags & kObjFlagDead) != 0)
+		return true;
+	return (m_NPCData->status & kNpcDatStatusDead) != 0;
+}
+
+void U7Object::ApplyDeath()
+{
+	if (GetIsDead())
+		return;
+
+	// Already a corpse — keep the pose, do not re-run side effects.
+	if (IsDeathStatus())
+	{
+		m_hp = 0.0f;
+		return;
+	}
+
+	m_hp = 0.0f;
+	m_pathWaypoints.clear();
+	m_currentWaypointIndex = 0;
+	m_pathfindingPending = false;
+	m_isMoving = false;
+	m_isSchedulePath = false;
+	m_combatMoveOrder = false;
+	m_combatOrderMode = CombatOrderMode::Automatic;
+	m_target = 0;
+	m_combatPathTargetId = 0;
+	m_combatSpellId = -1;
+	m_combatSpellTargetId = 0;
+	m_followingSchedule = false;
+	SetDest(m_Pos);
+	ReleaseFurnitureClaim();
+	m_furnitureObjectId = -1;
+
+	if (m_UnitType == UnitTypes::UNIT_TYPE_MONSTER)
+	{
+		AddConsoleString(m_name.empty() ? "Creature is dead!" : (m_name + " is dead!"), RED);
+		if (g_SoundSystem)
+			g_SoundSystem->StopLoopingSoundEffect(static_cast<int>(m_ID));
+		if (g_mainState && g_mainState->m_barkObject == this)
+			g_mainState->ClearBarks();
+		UnassignObjectChunk(this);
+		SetIsDead(true);
+		m_Visible = false;
+		m_ShouldDraw = false;
+		return;
+	}
+
+	if (m_UnitType != UnitTypes::UNIT_TYPE_NPC || !m_NPCData)
+		return;
+
+	m_NPCData->status |= kNpcDatStatusDead;
+	m_flags |= kObjFlagDead;
+	m_isContainer = true;
+
+	// Halt schedule / conversation coroutines for this NPC.
+	if (g_ScriptingSystem)
+	{
+		if (m_NPCData->m_lastActivity >= 0)
+		{
+			const std::string activityScript =
+				GetActivityScriptName(m_NPCData->m_lastActivity) + "_" + std::to_string(m_NPCID);
+			if (g_ScriptingSystem->IsCoroutineActive(activityScript))
+				g_ScriptingSystem->CleanupCoroutine(activityScript);
+			m_NPCData->m_lastActivity = -1;
+		}
+		const std::string npcScript = FindNPCScriptByID(m_NPCID);
+		if (!npcScript.empty() && g_ScriptingSystem->IsCoroutineActive(npcScript))
+			g_ScriptingSystem->CleanupCoroutine(npcScript);
+	}
+
+	// Drop from the party (Avatar stays listed as party leader even when dead).
+	if (g_Player && m_NPCID != 0 && g_Player->NPCIDInParty(m_NPCID))
+		g_Player->RemovePartyMember(m_NPCID);
+
+	SetOverrideFrame(GetDeathFrameForFacing());
+
+	const std::string label = m_name.empty() ? "NPC" : m_name;
+	AddConsoleString(label + " is dead!", RED);
+}
+
+void U7Object::ResurrectFromDeath()
+{
+	if (m_UnitType != UnitTypes::UNIT_TYPE_NPC || !m_NPCData)
+		return;
+	if (!IsDeathStatus())
+		return;
+
+	m_NPCData->status &= ~kNpcDatStatusDead;
+	m_flags &= ~kObjFlagDead;
+	m_hp = m_BaseMaxHP > 0.0f ? m_BaseMaxHP : static_cast<float>(m_NPCData->str);
+	if (m_hp < 1.0f)
+		m_hp = static_cast<float>(std::max(1, static_cast<int>(m_NPCData->str)));
+	m_NPCData->health = static_cast<unsigned short>(m_hp);
+
+	ClearOverrideFrame();
+	m_isContainer = true;
+	m_Visible = true;
+	m_ShouldDraw = true;
+
+	const std::string label = m_name.empty() ? "NPC" : m_name;
+	AddConsoleString(label + " has been resurrected!", GREEN);
 }
 
 int U7Object::GetSitFrameForFacing() const
@@ -2964,10 +4084,160 @@ void U7Object::RestoreAnimModeAfterScript()
 	if (IsInUsecodeScript())
 		return;
 
+	// Exult: when the cast script finishes, drop casting frames.
+	if (m_castingMode == CastingMode::ShowCastingFrames
+	    || m_castingMode == CastingMode::InitCasting)
+		HideCastingFrames();
+
 	if (m_objectData && m_objectData->m_isAnimated)
 		m_animMode = ObjectAnimMode::Auto;
 	else
 		m_animMode = ObjectAnimMode::Frozen;
+}
+
+void U7Object::BeginCasting(int shape)
+{
+	m_castingShape = (shape > 0 && shape < 1024) ? shape : 859;
+	// Exult: init only — overlay appears when the cast usecode script starts.
+	m_castingMode = CastingMode::InitCasting;
+}
+
+void U7Object::DisplayCastingFrames()
+{
+	if (m_castingMode == CastingMode::InitCasting
+	    || m_castingMode == CastingMode::ShowCastingFrames)
+		m_castingMode = CastingMode::ShowCastingFrames;
+}
+
+void U7Object::HideCastingFrames()
+{
+	m_castingMode = CastingMode::NotCasting;
+}
+
+void U7Object::DrawCastingFramesOverlay(Vector3 finalPos, Vector2 bodyDims, float billboardAngle, Color lighting)
+{
+	// InitCasting = armed but not yet animating (e.g. waiting on click_on_item).
+	if (m_castingMode != CastingMode::ShowCastingFrames)
+		return;
+	const int shape = m_castingShape;
+	if (shape <= 0 || shape >= 1024)
+		return;
+
+	// Prefer usecode pose from action state when set; else m_Frame nibble.
+	int pose = m_Frame & 0x0f;
+	switch (m_npcAnimAction)
+	{
+	case NpcAnimAction::Attack1H:
+		pose = (m_npcAnimPhase <= 1) ? 4 : (m_npcAnimPhase == 2 ? 5 : 6);
+		break;
+	case NpcAnimAction::Attack2H:
+		pose = (m_npcAnimPhase <= 1) ? 7 : (m_npcAnimPhase == 2 ? 8 : 9);
+		break;
+	case NpcAnimAction::Up:  pose = 14; break;
+	case NpcAnimAction::Out: pose = 15; break;
+	case NpcAnimAction::Kneel: pose = 12; break;
+	default: break;
+	}
+
+	// Exult Actor::figure_weapon_pos — NPC pose → casting-frame index (shape 859).
+	int weaponFrame = 1;
+	switch (pose)
+	{
+	case 4: case 7: weaponFrame = 4; break; // raise1 / raise2
+	case 5: case 8: weaponFrame = 3; break; // reach1 / reach2
+	case 6: case 9: weaponFrame = 2; break; // strike1 / strike2
+	case 14:        weaponFrame = 5; break; // up
+	case 15:        weaponFrame = 6; break; // out
+	default:        weaponFrame = 1; break; // standing / kneel / etc.
+	}
+
+	auto pickCastTex = [&](int frame) -> Texture* {
+		if (frame < 0 || frame >= 32)
+			return nullptr;
+		ShapeData& sd = g_shapeTable[shape][frame];
+		if (!sd.m_texture)
+			return nullptr;
+		Texture& tex = sd.m_texture->m_Texture;
+		if (tex.id == 0 || tex.width <= 1 || tex.height <= 1)
+			return nullptr;
+		return &tex;
+	};
+
+	Texture* tex = pickCastTex(weaponFrame);
+	if (!tex)
+		tex = pickCastTex(1);
+	if (!tex)
+		return;
+
+	// Native SHAPES.VGA scale (8 px = 1 tile). Tiny hand sparks need a boost
+	// to read in 3D; large "out" glows stay near native size.
+	const bool tiny = (tex->width <= 12 && tex->height <= 12);
+	float scale = tiny ? 3.5f : 1.0f;
+	Vector2 dims = {
+		float(tex->width) / 8.0f * scale,
+		float(tex->height) / 8.0f * scale
+	};
+	const float bodyH = (bodyDims.y > 0.1f) ? bodyDims.y : 2.0f;
+	// Hand sparks: at least ~22% of body height. Full-body out glow: cap at body.
+	const float minDim = tiny ? (bodyH * 0.22f) : 0.0f;
+	const float maxDim = tiny ? (bodyH * 0.40f) : (bodyH * 0.95f);
+	if (minDim > 0.0f && dims.y < minDim)
+	{
+		const float m = minDim / std::max(dims.y, 0.01f);
+		dims.x *= m;
+		dims.y *= m;
+	}
+	if (dims.x > maxDim || dims.y > maxDim)
+	{
+		const float m = maxDim / std::max(dims.x, dims.y);
+		dims.x *= m;
+		dims.y *= m;
+	}
+
+	// Approximate Exult weapon-in-hand placement relative to the body billboard.
+	Vector3 overlayPos = finalPos;
+	switch (pose)
+	{
+	case 4: case 7: // raise — hands up
+		overlayPos.y += bodyH * 0.18f;
+		break;
+	case 5: case 8: // reach
+		overlayPos.y += bodyH * 0.08f;
+		break;
+	case 6: case 9: // strike — toward facing
+		overlayPos = Vector3Add(overlayPos, Vector3Scale(m_Direction, bodyH * 0.12f));
+		overlayPos.y += bodyH * 0.05f;
+		break;
+	case 14: // up — above head
+		overlayPos.y += bodyH * 0.42f;
+		break;
+	case 15: // out — wide arm glow, slightly up
+		overlayPos.y += bodyH * 0.12f;
+		break;
+	default:
+		overlayPos.y += bodyH * 0.05f;
+		break;
+	}
+
+	Vector3 toCam = Vector3Subtract(g_camera.position, overlayPos);
+	const float lenSq = toCam.x * toCam.x + toCam.y * toCam.y + toCam.z * toCam.z;
+	if (lenSq > 1e-6f)
+		overlayPos = Vector3Add(overlayPos, Vector3Scale(Vector3Normalize(toCam), 0.10f));
+
+	(void)lighting;
+	Color glow = WHITE;
+	SetTextureFilter(*tex, TEXTURE_FILTER_POINT);
+
+	rlDisableDepthTest();
+	rlDisableDepthMask();
+	BeginBlendMode(BLEND_ALPHA);
+	DrawBillboardPro(g_camera, *tex,
+		Rectangle{ 0, 0, float(tex->width), float(tex->height) },
+		overlayPos, Vector3{ 0, 1, 0 },
+		dims, Vector2{ 0, 0 }, billboardAngle, glow);
+	EndBlendMode();
+	rlEnableDepthMask();
+	rlEnableDepthTest();
 }
 
 void U7Object::SetFrame(int frame)
@@ -3133,9 +4403,11 @@ namespace {
 		UC_FACE_DIR = 0x59,
 		UC_WEATHER = 0x5A,
 		UC_NPC_FRAME_BASE = 0x61, // 0x61-0x70
+		UC_ATTACK = 0x7A,         // Exult: attack using set_to_attack values
 	};
 
-	constexpr float kUsecodeTickSec = 0.05f; // ~Exult std delay (~1/20s)
+	// Exult c_std_delay is 200 ms per usecode script step (cast poses, etc.).
+	constexpr float kUsecodeTickSec = 0.20f;
 
 	int DecodeScriptOpcode(int raw)
 	{
@@ -3166,6 +4438,114 @@ bool U7Object::IsInUsecodeScript() const
 			return true;
 	}
 	return false;
+}
+
+void U7Object::SetUsecodeAttackTarget(int targetId, int weaponShape)
+{
+	m_usecodeAttackTargetId = targetId;
+	m_usecodeAttackWeaponShape = weaponShape;
+}
+
+bool U7Object::FireUsecodeAttack()
+{
+	const int weaponShape = m_usecodeAttackWeaponShape;
+	const int targetId = m_usecodeAttackTargetId;
+	m_usecodeAttackWeaponShape = -1;
+	m_usecodeAttackTargetId = -1;
+
+	if (weaponShape <= 0 || weaponShape >= 1024 || targetId <= 0)
+	{
+		NPCDebugPrint("usecode_attack: missing target/weapon on object " + std::to_string(m_ID) +
+			" weapon=" + std::to_string(weaponShape) + " target=" + std::to_string(targetId));
+		return false;
+	}
+
+	U7Object* target = GetObjectFromID(targetId);
+	if (!target || target->GetIsDead() || target->IsDeathStatus())
+	{
+		NPCDebugPrint("usecode_attack: bad target " + std::to_string(targetId) +
+			" on object " + std::to_string(m_ID));
+		return false;
+	}
+
+	// Spell bolts: fly with fixed spell damage (or 0 for utility bolts like Douse 540).
+	// Other shapes still spawn a missile; damage 0 lets impact path use weapon tables when present.
+	int damage = 0;
+	int damageType = 0;
+	float speed = 18.0f;
+	if (weaponShape == 856)
+	{
+		damage = 10;
+		damageType = 1; // fire
+	}
+	else if (weaponShape == 540)
+	{
+		// Douse (An Flam) — extinguish on impact via spell event 4; no HP damage.
+		damage = 0;
+		damageType = 0;
+		speed = 16.0f;
+	}
+	else if (weaponShape == 424)
+	{
+		// In Nox poison bolt — apply poisoned flag on impact (no HP from the bolt itself).
+		damage = 0;
+		damageType = 0;
+		speed = 16.0f;
+	}
+	else if (weaponShape == 72 || weaponShape == 281 || weaponShape == 408)
+	{
+		// Sleep (72) / Curse (281) / Paralyze (408) — status on impact via spell event 4.
+		damage = 0;
+		damageType = 0;
+		speed = 16.0f;
+	}
+	else if (weaponShape == 527)
+	{
+		// Death Bolt (Corp Por) — directional frames 8–23; damage applied on hit.
+		damage = 20;
+		damageType = 2; // magic
+		speed = 18.0f;
+	}
+
+	const bool ok = SpawnFlyingProjectile(weaponShape, static_cast<int>(m_ID), targetId, speed,
+		damage, damageType, weaponShape, -1);
+	if (!ok)
+	{
+		// Status-spell fallback when the bolt shape has no drawable frames.
+		if (g_ScriptingSystem &&
+		    (weaponShape == 72 || weaponShape == 281 || weaponShape == 408 ||
+		     weaponShape == 424 || weaponShape == 540))
+		{
+			const char* script = nullptr;
+			if (weaponShape == 72) script = "spell_sleep_in_zu_0351";
+			else if (weaponShape == 281) script = "spell_untrap_des_sanct_0344";
+			else if (weaponShape == 408) script = "spell_paralyze_an_por_0348";
+			else if (weaponShape == 424) script = "spell_poison_in_nox_0350";
+			else if (weaponShape == 540) script = "spell_dispel_fire_an_flam_0322";
+			if (script)
+			{
+				g_ScriptingSystem->CallScript(script,
+					{ static_cast<lua_Integer>(4), static_cast<lua_Integer>(targetId) });
+				if (m_pauseOrdersOnNextSpellProjectile)
+				{
+					m_pauseOrdersOnNextSpellProjectile = false;
+					if (g_mainState && g_isCombatMode)
+						g_mainState->NotifyCombatantCannotContinue(this, "needs a new order!");
+				}
+				return true;
+			}
+		}
+		NPCDebugPrint("usecode_attack: SpawnFlyingProjectile failed shape=" +
+			std::to_string(weaponShape) + " from=" + std::to_string(m_ID) +
+			" to=" + std::to_string(targetId));
+		return false;
+	}
+	if (m_pauseOrdersOnNextSpellProjectile)
+	{
+		MarkNewestFlyingProjectilePauseCasterOnHit(static_cast<int>(m_ID));
+		m_pauseOrdersOnNextSpellProjectile = false;
+	}
+	return true;
 }
 
 void U7Object::StartUsecodeScript(std::vector<UsecodeScriptElem> code, float initialDelaySec)
@@ -3222,6 +4602,10 @@ void U7Object::StartUsecodeScript(std::vector<UsecodeScriptElem> code, float ini
 
 	if (touchesFrames)
 		m_animMode = ObjectAnimMode::Scripted;
+
+	// Exult Usecode_script::handle_event: init_casting → show_casting_frames.
+	if (m_castingMode == CastingMode::InitCasting)
+		DisplayCastingFrames();
 
 	UsecodeScriptState script;
 	script.code = std::move(code);
@@ -3421,6 +4805,9 @@ void U7Object::UpdateUsecodeScript()
 					g_SoundSystem->PlaySoundAtObject(BuildU7SfxPath(sfx), m_ID);
 				break;
 			}
+			case UC_ATTACK:
+				FireUsecodeAttack();
+				break;
 			case UC_SAY:
 			{
 				std::string text;
@@ -3442,8 +4829,22 @@ void U7Object::UpdateUsecodeScript()
 				int fun = 0;
 				if (ip < cnt && ScriptElemIsInt(code[ip]))
 					fun = ScriptElemInt(code[ip++]);
-				// Event 2 is Exult's internal_exec for scripted usecode calls.
-				(void)fun;
+				// Exult: call usecode function with event 2 (internal_exec).
+				// Spell functions 0x640–0x68F map to spell scriptIds 320–399.
+				// Calling Interact(2) on the caster would hit the NPC script instead.
+				if (fun >= 0x640 && fun < 0x640 + 80 && g_ScriptingSystem)
+				{
+					const int scriptId = 320 + (fun - 0x640);
+					const std::string spellScript = GumpSpellbook::FindSpellScriptName(scriptId);
+					if (!spellScript.empty())
+					{
+						g_ScriptingSystem->CallScript(
+							spellScript,
+							{ static_cast<lua_Integer>(2),
+							  static_cast<lua_Integer>(m_ID) });
+						break;
+					}
+				}
 				Interact(2);
 				break;
 			}
@@ -3509,9 +4910,8 @@ void U7Object::UpdateUsecodeScript()
 			default:
 				if (opcode >= UC_NPC_FRAME_BASE && opcode <= UC_NPC_FRAME_BASE + 15)
 				{
-					// NPC frame-by-type: approximate by setting low nibble of frame
-					int fr = (m_Frame & ~0x0f) | (opcode - UC_NPC_FRAME_BASE);
-					SetFrame(fr);
+					// NPC frame-by-type: drive billboard action table + m_Frame nibble.
+					ApplyNpcPoseFromUsecode(opcode - UC_NPC_FRAME_BASE);
 				}
 				else if (opcode >= 0x30 && opcode <= 0x37)
 				{
@@ -3543,6 +4943,15 @@ void U7Object::UpdateUsecodeScript()
 
 	// Craft tools / Triples: leave Frozen (or restore Auto for TFA ambient).
 	RestoreAnimModeAfterScript();
+
+	// Combat spell with no deferred projectile (Heal / In Nox): pause orders once
+	// the cast script finishes. Projectile spells clear this flag in FireUsecodeAttack.
+	if (!IsInUsecodeScript() && m_pauseOrdersOnNextSpellProjectile)
+	{
+		m_pauseOrdersOnNextSpellProjectile = false;
+		if (g_mainState && g_isCombatMode)
+			g_mainState->NotifyCombatantCannotContinue(this, "needs a new order!");
+	}
 }
 
 void U7Object::ClearPendingUsecode()
@@ -3650,7 +5059,48 @@ bool U7Object::TryCompletePendingUsecodeByProximity(float maxDistXZ)
 	return true;
 }
 
-void U7Object::PathfindToDest(Vector3 dest, bool allowHierarchical)
+void U7Object::ApplyPathWaypoints(std::vector<Vector3> waypoints)
+{
+	m_pathWaypoints = std::move(waypoints);
+	m_currentWaypointIndex = 0;
+	m_pathfindingPending = false;
+
+	if (m_pathWaypoints.empty())
+	{
+		m_isMoving = false;
+		return;
+	}
+
+	if (g_pathfindingSystem && g_pathfindingSystem->GetFrozenSearchObjectId() == m_ID)
+		g_pathfindingSystem->ClearFrozenSearchGraph();
+
+	if (m_pathWaypoints.size() > 1)
+		m_currentWaypointIndex = 1;
+	else
+		m_currentWaypointIndex = 0;
+
+	while (m_currentWaypointIndex < static_cast<int>(m_pathWaypoints.size()) &&
+		   (int)m_pathWaypoints[m_currentWaypointIndex].x == (int)m_Pos.x &&
+		   (int)m_pathWaypoints[m_currentWaypointIndex].z == (int)m_Pos.z)
+	{
+		m_currentWaypointIndex++;
+	}
+
+	if (m_currentWaypointIndex >= static_cast<int>(m_pathWaypoints.size()))
+	{
+		m_pathWaypoints.clear();
+		m_currentWaypointIndex = 0;
+		m_isMoving = false;
+		m_isSchedulePath = false;
+	}
+	else
+	{
+		SetDest(m_pathWaypoints[m_currentWaypointIndex]);
+		m_isMoving = true;
+	}
+}
+
+void U7Object::PathfindToDest(Vector3 dest, bool allowHierarchical, PathCallerTag tag)
 {
 	if (m_NPCID == 19)
 	{
@@ -3694,101 +5144,18 @@ void U7Object::PathfindToDest(Vector3 dest, bool allowHierarchical)
 			ReleaseFurnitureClaim();
 	}
 
-	m_pathWaypoints = g_pathfindingSystem->FindPath(m_Pos, dest, this, allowHierarchical);
-
-	// If path found, store waypoints
-	if (!m_pathWaypoints.empty())
+	// Infer Avatar/party tag when caller left default Other.
+	if (tag == PathCallerTag::Other && g_Player &&
+		m_UnitType == UnitTypes::UNIT_TYPE_NPC && g_Player->NPCIDInParty(m_NPCID))
 	{
-		// Successful path: clear any frozen failure graph for this unit.
-		if (g_pathfindingSystem->GetFrozenSearchObjectId() == m_ID)
-			g_pathfindingSystem->ClearFrozenSearchGraph();
-		// Pathfinding completed synchronously
-		m_pathfindingPending = false;
-
-		// Debug: Print the returned waypoints for inspection
-		// This will show whether the A* path includes non-zero Y values for stairs/upper floors.
-//#ifdef DEBUG_NPC_PATHFINDING
-//		{
-//			std::stringstream ss;
-//			ss << "PathfindToDest: found " << m_pathWaypoints.size() << " waypoints (dest requested: "
-//				<< dest.x << "," << dest.y << "," << dest.z << ")";
-//			NPCDebugPrint(ss.str());
-//
-//			for (size_t i = 0; i < m_pathWaypoints.size(); ++i)
-//			{
-//				const Vector3& wp = m_pathWaypoints[i];
-//				std::stringstream s2;
-//				s2 << "  wp[" << i << "] = (" << wp.x << ", " << wp.y << ", " << wp.z << ")";
-//				NPCDebugPrint(s2.str());
-//			}
-//		}
-//#endif
-		// Determine the correct initial waypoint index.
-		// FindPath may return a single-point path (size == 1) — previously code used m_pathWaypoints[1] unguarded
-		// which caused "vector subscript out of range" when size == 1.
-		if (m_pathWaypoints.size() > 1)
-		{
-			// common case: first entry is current tile, second is the first step
-			m_currentWaypointIndex = 1;
-		}
-		else
-		{
-			// single-point path: use index 0
-			m_currentWaypointIndex = 0;
-		}
-
-		// Skip initial waypoints that do not change X/Z (these cause SetDest to not set a direction,
-		// which results in "walking in place" because m_Direction remains zero but m_isMoving becomes true)
-		int skipped = 0;
-		while (m_currentWaypointIndex < static_cast<int>(m_pathWaypoints.size()) &&
-			   (int)m_pathWaypoints[m_currentWaypointIndex].x == (int)m_Pos.x &&
-			   (int)m_pathWaypoints[m_currentWaypointIndex].z == (int)m_Pos.z)
-		{
-			m_currentWaypointIndex++;
-			skipped++;
-		}
-
-		// ALWAYS emit this debug info while debugging the walking-in-place issue so you see what's happening.
-		// (Previously this was gated on g_LuaDebug; that prevented logs when the flag was false.)
-		if (skipped > 0)
-		{
-			std::stringstream ss;
-			ss << "PathfindToDest: skipped " << skipped << " initial waypoint(s) equal to current XZ for NPC " << m_NPCID
-			   << "  new waypointIndex=" << m_currentWaypointIndex;
-			NPCDebugPrint(ss.str());
-
-			// Dump the waypoint list so you can inspect X/Y/Z values returned by the pathfinder
-			for (size_t i = 0; i < m_pathWaypoints.size(); ++i)
-			{
-				const Vector3& wp = m_pathWaypoints[i];
-				std::stringstream s2;
-				s2 << "  wp[" << i << "] = (" << wp.x << ", " << wp.y << ", " << wp.z << ")";
-				NPCDebugPrint(s2.str());
-			}
-		}
-
-		// If we've advanced past the end, no effective movement needed
-		if (m_currentWaypointIndex >= static_cast<int>(m_pathWaypoints.size()))
-		{
-			// Nothing to do (destination is current tile)
-			m_pathWaypoints.clear();
-			m_currentWaypointIndex = 0;
-			m_isMoving = false;
-			m_isSchedulePath = false;
-		}
-		else
-		{
-			// Set the initial destination only if the index is valid
-			SetDest(m_pathWaypoints[m_currentWaypointIndex]);
-
-			// Make sure NPC starts moving toward the destination right away.
-			m_isMoving = true;
-		}
+		tag = PathCallerTag::AvatarParty;
 	}
-	else
+
+	auto path = g_pathfindingSystem->FindPath(m_Pos, dest, this, allowHierarchical, tag);
+	ApplyPathWaypoints(std::move(path));
+
+	if (m_pathWaypoints.empty())
 	{
-		m_pathfindingPending = false;  // No path found, done trying
-		// No path found, don't move at all.
 		// F10: freeze the A* visited graph only for the sticky-selected unit.
 		if (g_mainState && g_mainState->m_showPathfindingDebug &&
 			g_mainState->m_pathDebugNpcObjectId == m_ID)
@@ -3841,6 +5208,16 @@ bool U7Object::RemoveObjectFromInventory(int objectid)
 					child->m_containingObjectId = -1; // Clear parent reference
 				}
 				m_inventory.erase(m_inventory.begin() + i);
+				// Clear equipment slots that still pointed at this item (loot from corpses).
+				if (m_NPCData)
+				{
+					for (int s = 0; s < static_cast<int>(EquipmentSlot::SLOT_COUNT); ++s)
+					{
+						const auto slot = static_cast<EquipmentSlot>(s);
+						if (m_NPCData->GetEquippedItem(slot) == objectid)
+							m_NPCData->m_equipment[slot] = -1;
+					}
+				}
 				InvalidateWeightCache();
 				return true;
 			}
@@ -3852,6 +5229,10 @@ bool U7Object::RemoveObjectFromInventory(int objectid)
 
 void U7Object::Interact(int event)
 {
+	// Dead NPCs are lootable containers — no conversation or usecode.
+	if (IsDeathStatus())
+		return;
+
 	if (m_hasConversationTree)
 	{
 		g_ConversationState->SetNPC(m_NPCID);
@@ -4003,11 +5384,11 @@ void U7Object::NPCInit(NPCData* npcData)
 	m_name = npcData->name;
 	if (std::string(m_NPCData->name) == "Avatar")
 	{
-		m_speed = 7.5f;
+		m_speed = 10.0f;
 	}
 	else
 	{
-		m_speed = 5.0f;
+		m_speed = 7.5f;
 	}
 	m_NPCID = npcData->id;
 	m_attackRange = MELEE_RANGE_TILES;
@@ -4016,6 +5397,14 @@ void U7Object::NPCInit(NPCData* npcData)
 	m_BaseMaxHP = npcData->health;
 	// Max mana equals Magic; start fully topped up.
 	m_mana = float(npcData->magic);
+
+	// Saved/scripted dead bit: restore corpse pose and silence AI.
+	if (IsDeathStatus())
+	{
+		m_hp = 0.0f;
+		m_followingSchedule = false;
+		SetOverrideFrame(GetDeathFrameForFacing());
+	}
 
 	// Assign contiguous batch index if not already set (preserve any value restored from save)
 	if (m_npcBatchIndex < 0)

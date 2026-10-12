@@ -1,5 +1,5 @@
 {
-    "178": {
+  "178": {
     "name": "map",
     "slots": [
       "SLOT_LEFT_HAND",
@@ -70,6 +70,13 @@
     "name": "hood",
     "slots": [
       "SLOT_HEAD"
+    ]
+  },
+  "474": {
+    "name": "sling",
+    "slots": [
+      "SLOT_RIGHT_HAND",
+      "SLOT_LEFT_HAND"
     ]
   },
   "527": {

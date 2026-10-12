@@ -1,7 +1,6 @@
 --- Fire Blast (Vas Flam). Oracle: usecode.dc Func0652 object#(0x652).
---- Second Circle. Weapon shape 856 deals 10 fire damage (WEAPONS.DAT).
---- Do not destroy the caster — earlier decompile used destroy_object(objectref).
---- Projectile / set_to_attack path is unimplemented; apply damage immediately.
+--- Second Circle. Cast script: face_dir, sfx(65), up, out, strike2×2, attack, standing.
+--- set_to_attack stores the bolt; UC_ATTACK (0x7A) fires it mid-anim (not immediately).
 
 function spell_vas_flam_0338(eventid, objectref)
     if eventid ~= 1 and eventid ~= 4 then
@@ -20,16 +19,15 @@ function spell_vas_flam_0338(eventid, objectref)
         return
     end
 
-    -- Cast FX only (no UC_USECODE / attack opcode).
-    execute_usecode_array(objectref, {17505, 17530, 17514, 17514, 17520, 8047, 65, 7769})
-
-    if not is_npc(target) or is_dead(target) then
+    if is_npc(target) and is_dead(target) then
         return
     end
 
-    -- apply_damage(base, hit_points, damage_type, target_id [, attacker_id])
-    -- damage_type 1 = fire; 10 HP matches weapon 856.
-    apply_damage(10, 10, 1, target, objectref)
-    obj_sprite_effect(target, 1)
-    play_sound_effect(13, target)
+    local dir = find_direction(objectref, target)
+    begin_casting_mode(objectref, 859)
+    -- Exult order: set_to_attack(caster, target, weaponShape 856). UC_ATTACK fires mid-anim.
+    set_to_attack(objectref, target, 856)
+    -- Success: face,dir,sfx 65,up,out,strike2,strike2,attack,standing
+    -- UC_ATTACK fires on the tick after the last strike, while that pose still shows.
+    execute_usecode_array(objectref, {17505, 17530, 17514, 17514, 17520, 8047, 65, 7768, dir, 7769})
 end

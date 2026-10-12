@@ -79,6 +79,9 @@ public:
 	bool IsOverSlot(Vector2 mousePos);  // Check if mouse is over equipment slot or button
 
 	void Setup(int npcId);  // Configure for specific NPC
+	// Fixed-position paperdoll for the MainState stats panel (no cascade, no drag).
+	void SetupEmbedded(int npcId, Vector2 pos);
+	bool IsEmbedded() const { return m_embedded; }
 	int GetNpcId() const { return m_npcId; }
 
 	// Handle dropping an object onto this paperdoll
@@ -90,11 +93,16 @@ public:
 	std::set<int> m_highlightedSlots;  // Set of slot indices currently highlighted
 
 private:
+	void EnsureGuiLoaded();
+	void ApplyPaperdollSpriteSource();
+	bool IsInteractiveTopmost() const; // floating: under-mouse gump; embedded: over panel, no other gump
+
 	int m_npcId;               // Which NPC this paperdoll belongs to
 	int m_paperdollType;       // Index into m_paperdollData array
 	PaperdollData m_data;      // Cached paperdoll data
 	Texture* m_backgroundTexture; // Pointer to biggumps.png texture for pixel checking
 	std::vector<std::shared_ptr<Font>> m_loadedFonts; // Keep fonts alive
+	bool m_embedded = false;   // Owned by MainState stats panel, not GumpManager
 	// Note: m_gui is inherited from Gump base class
 };
 

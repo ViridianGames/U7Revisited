@@ -43,6 +43,9 @@ public:
 	void CloseGumpForObject(int objectId);  // Close any gump associated with the given object ID
 	void CloseSpellbookForNpc(int npcId);   // Close spellbook gump for the given NPC ID
 	void CloseAllGumps();                   // Close all gumps (used when loading save)
+	/// Mark every open/pending gump dead so Update erases them. Safe to call from
+	/// inside a gump's Update (does not destroy shared_ptrs mid-call).
+	void MarkAllGumpsDead();
 
 	bool IsMouseOverGump() const { return m_isMouseOverGump; }
 	Gump* GetGumpUnderMouse() const { return m_gumpUnderMouse; }

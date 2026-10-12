@@ -361,14 +361,36 @@ bool U7Player::TryMove(const Vector3& desiredPos)
 	return true;
 }
 
+static void ApplyAvatarGenderShape(U7Object* avatar, bool male)
+{
+	if (!avatar)
+		return;
+
+	const int shape = male ? 721 : 989;
+	if (avatar->m_ObjectType == shape)
+		return;
+
+	int frame = avatar->m_Frame;
+	if (frame < 0 || frame >= 32)
+		frame = 0;
+
+	avatar->m_ObjectType = shape;
+	avatar->m_Frame = frame;
+	avatar->m_shapeData = &g_shapeTable[shape][frame];
+	avatar->m_objectData = &g_objectDataTable[shape];
+	avatar->SetPos(avatar->GetPos());
+}
+
 void U7Player::SetAvatarMale()
 {
 	m_isMale = true;
 	m_PlayerName = "Victor";
 
-	if (m_AvatarObject && m_AvatarObject->m_NPCData)
+	if (m_AvatarObject)
 	{
-		ApplyAvatarWalkTextures(m_AvatarObject->m_NPCData, true);
+		ApplyAvatarGenderShape(m_AvatarObject, true);
+		if (m_AvatarObject->m_NPCData)
+			ApplyAvatarWalkTextures(m_AvatarObject->m_NPCData, true);
 	}
 }
 
@@ -377,8 +399,10 @@ void U7Player::SetAvatarFemale()
 	m_isMale = false;
 	m_PlayerName = "Victoria";
 
-	if (m_AvatarObject && m_AvatarObject->m_NPCData)
+	if (m_AvatarObject)
 	{
-		ApplyAvatarWalkTextures(m_AvatarObject->m_NPCData, false);
+		ApplyAvatarGenderShape(m_AvatarObject, false);
+		if (m_AvatarObject->m_NPCData)
+			ApplyAvatarWalkTextures(m_AvatarObject->m_NPCData, false);
 	}
 }

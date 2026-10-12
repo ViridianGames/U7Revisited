@@ -33,6 +33,67 @@
 // Melee combat engagement distance in world tiles (center-to-center)
 constexpr float MELEE_RANGE_TILES = 2.0f;
 
+// Exult WEAPONS.DAT "uses" field (range byte bits 1–2).
+enum class WeaponUses : unsigned char
+{
+	Melee = 0,
+	PoorThrown = 1,
+	Thrown = 2,
+	Ranged = 3
+};
+
+// Exult Weapon_data::Damage_type (also Monster_info immune/vulnerable bit indices).
+enum class WeaponDamageType : unsigned char
+{
+	Normal = 0,
+	Fire = 1,
+	Magic = 2,
+	Lightning = 3,
+	Ethereal = 4,
+	Sonic = 5
+};
+
+// One WEAPONS.DAT entry (shape-keyed). Ranges are in world tiles.
+struct WeaponData
+{
+	int shape = 0;
+	int ammoFamily = -1;   // shape consumed from quiver, or -1/-2/-3 specials
+	int projectile = -1;   // missile shape when fired
+	unsigned char damage = 0;
+	WeaponDamageType damageType = WeaponDamageType::Normal;
+	WeaponUses uses = WeaponUses::Melee;
+	unsigned char range = 0; // striking range if uses < Ranged; projectile range if Ranged
+	bool autohit = false;
+};
+
+// One AMMO.DAT entry (shape-keyed). Extra damage added to the weapon's wpoints.
+struct AmmoData
+{
+	int shape = 0;
+	int familyShape = -1;
+	int sprite = -1;
+	unsigned char damage = 0;
+	WeaponDamageType damageType = WeaponDamageType::Normal;
+};
+
+// One ARMOR.DAT entry (shape-keyed). Protection subtracts from hit damage.
+struct ArmorData
+{
+	int shape = 0;
+	unsigned char prot = 0;
+	unsigned char immune = 0; // bitmask of WeaponDamageType bits
+};
+
+void LoadWeaponData();
+void LoadAmmoData();
+void LoadArmorData();
+const WeaponData* GetWeaponData(int shape);
+const AmmoData* GetAmmoData(int shape);
+const ArmorData* GetArmorData(int shape);
+// Combat engage distance for an equipped weapon shape (DAT ranged range, else melee).
+float GetWeaponAttackRangeTiles(int shape);
+bool IsRangedWeaponShape(int shape);
+
 #include "U7Object.h"
 #include "raylib.h"
 #include "raymath.h"
@@ -226,6 +287,9 @@ struct SpellData
 	std::vector<std::string> reagents; // Reagent names: "Ginseng", "Garlic", etc.
 	std::string desc;                 // Spell description
 	int circle;                       // Circle number (0=Linear, 1-8=First-Eighth)
+	// false = no click_on_item (Swarm, Protect All, Light, …). Combat pause
+	// queues these without a targeting prompt.
+	bool targeted = true;
 };
 
 /// @brief Circle data structure (Linear + 8 circles, each with 8 spells)
@@ -388,6 +452,37 @@ void UpdateObjectChunk(U7Object* object, Vector3 fromPos);
 void AssignObjectChunk(U7Object* object);
 void UnassignObjectChunk(U7Object* object);
 
+// Homing/straight-line spell missiles (e.g. fire bolt 856 for Vas Flam).
+// When weaponShape >= 0, hit damage is figured from WEAPONS/AMMO/ARMOR at impact
+// (Exult-style); otherwise `damage` is applied as a flat spell hit.
+struct FlyingProjectile
+{
+	int objectId = -1;
+	int targetId = -1;
+	int attackerId = -1;
+	Vector3 targetPos = {0, 0, 0};
+	int damage = 0;
+	int damageType = 1;
+	int weaponShape = -1;
+	int ammoShape = -1;
+	float speed = 16.0f;
+	float animAccum = 0.0f;
+	// Non-empty shape frames to cycle (skips null 1x1 placeholders).
+	// Unused when directionalFrames is set (Douse/Poison/Death Bolt use 8–23).
+	std::vector<int> animFrameList;
+	int animIndex = 0;
+	// SHAPES.VGA frames 8–23: N, NNE, … clockwise to NNW (world flight heading).
+	bool directionalFrames = false;
+	// Combat-queued spell: keep fighting while in flight; pause caster orders on hit.
+	bool pauseCasterOrdersOnHit = false;
+};
+
+bool SpawnFlyingProjectile(int shape, int fromId, int toId, float speed, int damage, int damageType,
+	int weaponShape = -1, int ammoShape = -1);
+// Mark the newest in-flight missile from attackerId to pause their combat orders on impact.
+bool MarkNewestFlyingProjectilePauseCasterOnHit(int attackerId);
+void UpdateFlyingProjectiles();
+
 /// Inclusive chunk range currently covered by the camera frustum (ground + tall-object pad).
 /// Used by object visibility; falls back to a distance-based radius if unprojection fails.
 void GetCameraVisibleChunkRange(int& outMinCX, int& outMaxCX, int& outMinCZ, int& outMaxCZ);
@@ -519,7 +614,6 @@ void LoadGameFlagsFromJson(const json& j);
 //int l_add_dialogue(lua_State* L);
 
 extern ConversationState* g_ConversationState;
-extern CombatState* g_CombatState;
 extern MainState* g_mainState;
 
 extern bool g_autoRotate;
@@ -769,6 +863,10 @@ void PrintNPCPathStats();
 void DrawPerfCounter(Font* font, int loc);
 
 inline bool g_isCombatMode = false;
+
+// Object id of the caster for the spell script currently running via GumpSpellbook::RunSpellCast.
+// Used by check_spell_requirements / begin_casting_mode when Lua omits an explicit caster.
+inline int g_currentSpellCasterObjectId = -1;
 
 #endif
 

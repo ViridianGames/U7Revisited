@@ -173,8 +173,10 @@ set(SOURCES
     Source/Ghost/GhostWindow.cpp
 
     Source/AskState.cpp
+    Source/CombatMode.cpp
     Source/CombatState.cpp
     Source/ConversationState.cpp
+    Source/NpcAnimation.cpp
     Source/GameSerializer.cpp
     Source/GumpManager.cpp
     Source/LoadingState.cpp
@@ -183,6 +185,7 @@ set(SOURCES
     Source/NpcListWindow.cpp
     Source/OptionsState.cpp
     Source/PathfindingSystem.cpp
+    Source/PerfTelemetry.cpp
     Source/PatreonVillageState.cpp
     Source/ShapeData.cpp
     Source/ShapeEditorState.cpp

@@ -105,6 +105,38 @@ public:
 	}
 };
 
+// Who asked for a path — used for telemetry and caller policy.
+enum class PathCallerTag : int
+{
+	Monster = 0,
+	ScheduleFast,
+	AvatarParty,
+	StuckRepath,
+	Other,
+	Count
+};
+
+// Search budget / algorithm family (Exult Fast / Monster / Actor).
+enum class PathSearchKind : int
+{
+	Full = 0,   // Climb-aware A*; Actor-like max_cost (~3× estimate)
+	Fast,       // Current-floor A*; Exult Fast max_cost clamp(2×, 8..64)
+	Monster     // Tiny Fast; Exult Monster max_cost clamp(2×, 18..~48)
+};
+
+inline const char* PathCallerTagName(PathCallerTag tag)
+{
+	switch (tag)
+	{
+	case PathCallerTag::Monster: return "Monster";
+	case PathCallerTag::ScheduleFast: return "ScheduleFast";
+	case PathCallerTag::AvatarParty: return "AvatarParty";
+	case PathCallerTag::StuckRepath: return "StuckRepath";
+	case PathCallerTag::Other: return "Other";
+	default: return "?";
+	}
+}
+
 // ============================================================================
 // PathNode: Used by A* algorithm
 // ============================================================================
@@ -171,10 +203,23 @@ public:
 	void Draw() {};
 
 	// --- Pathfinding ---
-	// allowHierarchical: false forces flat tile A* (better for short walk-to-use
-	// targets when chunk centers sit inside buildings).
+	// Full climb-aware A* (Avatar / party unknown→unknown). allowHierarchical:
+	// false forces flat tile A* (better for short walk-to-use when chunk centers
+	// sit inside buildings).
 	std::vector<Vector3> FindPath(Vector3 start, Vector3 goal, U7Object* agent = nullptr,
-		bool allowHierarchical = true);
+		bool allowHierarchical = true, PathCallerTag tag = PathCallerTag::Other);
+
+	// Exult Fast A*: current-floor discrete search, max_cost ≈ clamp(2×est, 8..64).
+	// Used for NPC schedule destinations (known valid slots).
+	std::vector<Vector3> FindFastPath(Vector3 start, Vector3 goal, U7Object* agent = nullptr,
+		PathCallerTag tag = PathCallerTag::ScheduleFast);
+
+	// Absolute-simplest combat chase: straight line if clear, else greedy slide,
+	// else tiny Monster-budget Fast. Never runs climb-aware Full A*.
+	std::vector<Vector3> FindMonsterChasePath(Vector3 start, Vector3 goal, U7Object* agent = nullptr);
+
+	// Bresenham ground walkability along XZ (ignores Z height changes).
+	bool IsStraightPathClear(Vector3 start, Vector3 goal, const U7Object* agent = nullptr) const;
 
 	bool IsPositionWalkable(int worldX, int worldZ, float agentBaseY, const U7Object* agent = nullptr) const;
 	bool EvaluateTileWalkable(int worldX, int worldZ, float agentBaseY, const U7Object* agent = nullptr) const;
@@ -283,11 +328,18 @@ public:
 	std::atomic<uint64_t> m_astarQueueTotalMs{0};
 	std::atomic<uint64_t> m_astarQueueCalls{0};
 
+	// Per-caller-tag counters (lifetime). Telemetry dumps deltas via Snapshot.
+	std::atomic<uint64_t> m_pfCallsByTag[static_cast<int>(PathCallerTag::Count)]{};
+	std::atomic<uint64_t> m_pfMsByTag[static_cast<int>(PathCallerTag::Count)]{};
+	std::atomic<uint64_t> m_pfNodesByTag[static_cast<int>(PathCallerTag::Count)]{};
+	std::atomic<int> m_fullAStarInFlight{0};
+
 	double m_astarEmaMs = 0.0;
 	float  m_astarEmaAlpha = 0.10f;
 	std::mutex m_instrumentMutex;
 
 	void RecordQueueLatency(uint64_t ms);
+	void RecordPathCall(PathCallerTag tag, uint64_t ms, int nodesExplored);
 
 	static bool IsWalkableSurface(int shapeID);
 	static bool IsPassThroughObject(int shapeID);
@@ -322,7 +374,11 @@ private:
 	std::vector<Vector3> ReconstructPath(int goalIndex, std::vector<PathNode>& nodePool);
 	std::vector<Vector3> SmoothPath(const std::vector<Vector3>& path, const U7Object* agent);
 	std::vector<Vector3> FindPathInternal(Vector3 start, Vector3 goal, const U7Object* agent,
-		bool allowHierarchical = true);
+		bool allowHierarchical = true, PathSearchKind kind = PathSearchKind::Full);
+
+	// Greedy combat chase: step toward goal with orthogonal slide on block.
+	std::vector<Vector3> BuildGreedyChasePath(Vector3 start, Vector3 goal, const U7Object* agent,
+		int maxSteps = 24) const;
 
 	void CleanupNodes();
 

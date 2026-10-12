@@ -9,6 +9,8 @@
 #include <variant>
 #include "lua.h"
 #include "U7Globals.h"
+#include "CombatMode.h"
+#include "NpcAnimation.h"
 #include "../ThirdParty/nlohmann/json.hpp"
 
 using u7json = nlohmann::json;
@@ -47,6 +49,21 @@ enum class ObjectAnimMode : uint8_t
 	Scripted = 1,
 	Frozen = 2
 };
+
+// Exult Actor::Casting_mode — blue glowing arms (SHAPES.VGA 859) during cast scripts.
+enum class CastingMode : uint8_t
+{
+	NotCasting = 0,
+	InitCasting = 1,         // begin_casting; next usecode script will show frames
+	ShowCastingFrames = 2    // overlay shape 859 while the cast script runs
+};
+
+// NPCData::status is the raw npc.dat rflags word (Exult Actor::read).
+// Bits 3–4 = alignment (Neutral/Good/Evil/Chaotic). Bit 15 (0x8000) = dead.
+// Never use 0x0008 as "dead" — that is Good alignment (Avatar ships with status 0x0008).
+constexpr unsigned short kNpcDatStatusDead = 0x8000;
+// Exult Obj_flags::dead = 4 → bit on U7Object::m_flags for get/set/clear_item_flag.
+constexpr unsigned int kObjFlagDead = (1u << 4);
 
 struct NPCData
 {
@@ -98,6 +115,8 @@ struct NPCData
 	std::vector<std::vector<Texture *> > m_walkTextures;
 	// True when textures came from an upright WalkSheet (no ±45° billboard tilt).
 	bool m_walkTexturesUpright = false;
+	// Full SHAPES.VGA action clips (walk/attack/sit/…). WalkSheets still override walk only.
+	NpcActionTextures m_actionTextures;
 
 	int m_currentActivity;
 	int m_lastActivity = -1; // Track last activity to detect changes
@@ -177,6 +196,8 @@ struct MonsterData
 	unsigned char m_unknown0B;         // 0x0B
 	unsigned char m_alignmentFlags;    // 0x0C - alignment + basic behavior bits
 	unsigned char m_monsterCategory;   // 0x0D - often used by monster eggs / spawners
+	unsigned char m_flagsByte = 0;     // MONSTERS.DAT byte 9 (Exult Monster_info::flags)
+	bool m_flies = false;              // flags bit 0 (Exult Monster_info::fly)
 
 	// Bytes 0x0E-0x18 contain additional data (experience, treasure, immunities, sounds, etc.)
 	// Left in m_raw[] until specifically needed.
@@ -379,7 +400,11 @@ public:
 	virtual void SetDest(Vector3 pos);
 
 	// allowHierarchical: false = flat tile A* only (walk-to-use / levers).
-	void PathfindToDest(Vector3 dest, bool allowHierarchical = true);
+	// tag: telemetry / policy (AvatarParty for player paths; StuckRepath for recovery).
+	void PathfindToDest(Vector3 dest, bool allowHierarchical = true,
+		PathCallerTag tag = PathCallerTag::Other);
+	// Apply a precomputed waypoint list (combat chase / schedule apply).
+	void ApplyPathWaypoints(std::vector<Vector3> waypoints);
 	int PathfindToDestTracked(Vector3 dest); // Returns request ID for tracking (used by Lua)
 	virtual void SetSpeed(float speed) { m_speed = speed; }
 
@@ -440,6 +465,22 @@ public:
 	// uprightSheet: replacement sheets are axis-aligned; skip the U7 isometric tilt.
 	void DrawWalkBillboard(const std::vector<std::vector<Texture*>>& walkTextures, bool uprightSheet = false);
 
+	const NpcActionTextures* GetNpcActionTextures() const;
+	void SetNpcAnimAction(NpcAnimAction action, bool looping, float frameMs = 120.0f);
+	void StartNpcAttackAnim(); // picks 1H/2H/Shoot from weapon; one-shot
+	// Hold a single SHAPES.VGA pose from usecode UC_NPC_FRAME (cast / kneel / etc.).
+	void ApplyNpcPoseFromUsecode(int poseNibble);
+	void UpdateNpcAnim(float dt);
+
+	// Casting frames overlay (shape 859 by default).
+	void BeginCasting(int shape = 859);
+	void DisplayCastingFrames();
+	void HideCastingFrames();
+	CastingMode GetCastingMode() const { return m_castingMode; }
+	void DrawCastingFramesOverlay(Vector3 finalPos, Vector2 bodyDims, float billboardAngle, Color lighting);
+	bool IsNpcAttackAnimPlaying() const { return m_npcAnimPlaying; }
+	bool ConsumeNpcAnimHitEvent(); // true once when strike/release phase is reached
+
 	void UpdateMovement();
 
 	// Combat: pursue/attack m_target. Returns true when a valid target was engaged.
@@ -450,6 +491,8 @@ public:
 
 	// Shared hostile AI during CombatState (monsters and hostile NPCs).
 	void HostileCombatUpdate();
+	// Party-aligned summons (Team 2, e.g. Swarm): distract hostiles, despawn off-screen.
+	void AlliedMonsterUpdate();
 
 	void NPCInit(NPCData *npcData);
 	void MonsterInit();
@@ -478,12 +521,19 @@ public:
 
 	// Pose frames (Exult): 0–15 one facing set, 16–31 the opposite.
 	// sit=10/26, sleep=13/29. Setting a pose stops pathing so NPCDraw uses it.
+	// Death uses the same laying-down frames as sleep (13/29).
 	void SetOverrideFrame(int overrideFrame);
 	void ClearOverrideFrame(const Vector3* toward = nullptr);
 	bool IsSittingPose() const;
 	bool IsSleepingPose() const;
+	bool IsDeathStatus() const;
+	/// Apply combat/script death: NPCs become lootable corpses; monsters despawn.
+	void ApplyDeath();
+	/// Clear death status and restore an NPC (Resurrect). No-op for monsters.
+	void ResurrectFromDeath();
 	int GetSitFrameForFacing() const;
 	int GetSleepFrameForFacing() const;
+	int GetDeathFrameForFacing() const { return GetSleepFrameForFacing(); }
 	void SitOnObject(U7Object* chair);
 	void LieOnObject(U7Object* bed);
 	// After sitting/sleeping, step to a walkable tile so pathfinding isn't trapped
@@ -505,6 +555,9 @@ public:
 	bool IsLocked();
 
 	bool IsMagicLocked();
+
+	// Spell/weapon missile in flight — skipped by walk collision.
+	bool m_isProjectile = false;
 
 	void SetFrames(int framex, int framey)
 	{
@@ -569,6 +622,19 @@ public:
 	bool IsInUsecodeScript() const;
 	void UpdateUsecodeScript();
 
+	// Exult set_to_attack / UC_ATTACK (0x7A): fire stored weapon/spell at stored target
+	// when the cast script reaches the attack opcode (so the bolt waits for poses).
+	void SetUsecodeAttackTarget(int targetId, int weaponShape);
+	bool FireUsecodeAttack();
+	int m_usecodeAttackTargetId = -1;
+	int m_usecodeAttackWeaponShape = -1;
+	// Combat spell: next flying projectile from this caster pauses orders on hit.
+	// If the cast script ends with no projectile, pause orders then.
+	bool m_pauseOrdersOnNextSpellProjectile = false;
+
+	CastingMode m_castingMode = CastingMode::NotCasting;
+	int m_castingShape = 859;
+
 	Vector3 m_ExternalForce;
 
 	float m_Angle;
@@ -610,7 +676,11 @@ public:
 	float m_mana; // Current mana; max is Magic (NPCData::magic / player magic)
 	float m_combat;
 	float m_magic;
+	// 0 = neutral, 1 = hostile, 2 = party-aligned summon (Swarm insects, etc.)
 	int m_Team;
+	bool m_isFlying = false;
+	// Extra billboard/pick lift in world tiles (flying creatures ~waist height).
+	float m_drawHeightOffset = 0.0f;
 
 	bool m_GravityFlag;
 	bool m_ExternalForceFlag;
@@ -662,11 +732,25 @@ public:
 	// Built in MonsterInit; empty ⇒ MonsterDraw falls back to InteractiveDraw.
 	std::vector<std::vector<Texture*>> m_walkTextures;
 	bool m_walkTexturesUpright = false;
+	NpcActionTextures m_actionTextures;
+
+	// Non-WalkSheet action playback (attacks are one-shots; walk/ready loop).
+	NpcAnimAction m_npcAnimAction = NpcAnimAction::Stand;
+	int m_npcAnimPhase = 0;
+	float m_npcAnimTimer = 0.0f;
+	bool m_npcAnimLooping = true;
+	bool m_npcAnimPlaying = false; // true while a one-shot clip is active
+	// Damage/projectile fires when the clip reaches this phase (-1 = none).
+	int m_npcAnimHitPhase = -1;
+	bool m_npcAnimHitFired = false;
 
 	bool m_followingSchedule = false;
 	int m_lastSchedule = -1;
 	// g_CurrentUpdate when NPCUpdate last ran. Gap ⇒ was outside interest (dormant).
 	unsigned int m_lastNpcUpdateFrame = 0;
+	// g_CurrentUpdate when U7Object::Update last ran — blocks double-sim if the
+	// unit appears twice in the interest snapshot (stale chunk ghost).
+	unsigned int m_lastInterestUpdateFrame = 0;
 	// Set on wake from dormancy; consumed when schedule slot is applied (snap or path).
 	bool m_scheduleWakeSnapPending = false;
 	int m_currentFrameX = 0;
@@ -702,9 +786,22 @@ public:
 
 	int m_target = 0; // Who we are currently pissed at.
 
+	// RTwP manual order (ultima7-rtwp contract). Automatic = no manual ownership.
+	CombatOrderMode m_combatOrderMode = CombatOrderMode::Automatic;
+
+	// Queued combat spell (chosen while paused; fires when fighting resumes).
+	int m_combatSpellId = -1;
+	int m_combatSpellTargetId = 0;
+
 	// Player-issued combat reposition order; suppresses auto-targeting until destination reached.
 	bool m_combatMoveOrder = false;
 
+	// Combat chase repath throttle (avoids per-frame full A*).
+	float m_combatRepathAt = 0.0f;       // GetTime() when next repath is allowed
+	Vector3 m_combatPathGoal = { 0, 0, 0 }; // last chase standoff goal
+	int m_combatPathTargetId = 0;        // target id when last path was built
+	static constexpr float kCombatRepathCooldownSec = 0.35f;
+	static constexpr float kCombatRepathGoalSlopTiles = 2.5f;
 
 };
 

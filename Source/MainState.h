@@ -6,6 +6,7 @@
 #include <list>
 #include <deque>
 #include <array>
+#include <memory>
 #include <math.h>
 #include <thread>
 #include <mutex>
@@ -14,6 +15,7 @@
 #include <unordered_set>
 #include <cstdint>
 #include "U7Globals.h"
+#include "CombatMode.h"
 
 class ParticleSystem;
 class Gui;
@@ -77,6 +79,14 @@ public:
 
    void DrawStats();
    void UpdateStats();
+	enum class StatsPanelMode { Equip = 0, Stats, Backpack };
+	void SetStatsPanelMode(StatsPanelMode mode);
+	StatsPanelMode GetStatsPanelMode() const { return m_statsPanelMode; }
+	void EnsureStatsPanelPaperdoll();
+	GumpPaperdoll* GetStatsPanelPaperdoll() const
+	{
+		return (m_statsPanelMode == StatsPanelMode::Equip) ? m_statsPanelPaperdoll.get() : nullptr;
+	}
 	void CalculateMouseOverUI();  // Sets g_mouseOverUI based on UI element positions
 	void UpdateInput();
 	// Camera rotation/zoom only (used by CombatState while the world state is underneath).
@@ -109,7 +119,11 @@ public:
 	void BuildSandboxHelpGUI();
 	void GiveSandboxReagentBag();
 
-	void SpawnMonster(int monsterType, int x, int y, int z);
+	// Returns spawned object ID, or -1 on failure.
+	int SpawnMonster(int monsterType, int x, int y, int z);
+
+	// Temporary combat test: teleport north of Trinsic and spawn Headlesses.
+	void SpawnDebugDuelingField();
 
   // void DrawDebugChunkPathfindingInfo();
 
@@ -276,6 +290,10 @@ public:
 
 	MainStateModes m_gameMode = MainStateModes::MAIN_STATE_MODE_SANDBOX;
 
+	StatsPanelMode m_statsPanelMode = StatsPanelMode::Stats;
+	std::shared_ptr<GumpPaperdoll> m_statsPanelPaperdoll;
+	int m_statsPanelPaperdollNpcId = -1;
+
 	enum class FadeState
 	{
 		FADE_NONE = 0,
@@ -331,12 +349,68 @@ public:
 	float  m_partyFollowStopDistance = 1.5f;    // idle when this close to formation slot
 	float  m_partyFollowWarpDistance = 25.0f;   // teleport if farther than this from Avatar
 
+	// Combat mode (peace/sword) — runs inside MainState; no PushState.
+	void EnterCombatMode();
+	void LeaveCombatMode();
+	void UpdateCombatMode();
+	void EnsureCombatParticipant(int objectId);
+	bool IsCombatOrdersPaused() const;
+	bool AllowsCombatPlayerOrders() const;
+	bool IsCombatEnemyObject(const U7Object* obj) const;
+	CombatMode* GetActiveCombatMode() const { return m_combatMode.get(); }
+
+	// Used by RealTimePauseCombatMode.
+	void BeginCombatFighting();
+	void PauseCombatForOrders();
+	// Pause combat, select the member, and explain why they cannot continue (no ammo, etc.).
+	void NotifyCombatantCannotContinue(U7Object* member, const std::string& reason);
+
+	// RTwP orders (Hold / Automatic / Attack / Move). Keys while paused: H / A.
+	void IssueCombatHoldOrder(U7Object* member);
+	void IssueCombatAutomaticOrder(U7Object* member);
+	void SetCombatOrderMode(U7Object* member, CombatOrderMode mode);
+	static const char* CombatOrderModeName(CombatOrderMode mode);
+	std::string DescribeCombatOrder(const U7Object* member) const;
+	bool HasManualCombatOrder(const U7Object* member) const;
+
+	// Combat spell orders (spellbook while paused → click target / or queue untargeted → cast on resume).
+	bool BeginCombatSpellTargeting(int spellId, int casterObjectId);
+	void CancelCombatSpellTargeting();
+	bool IsCombatSpellTargeting() const { return m_combatSpellTargetingSpellId >= 0; }
+	// target may be the caster for untargeted spells (Swarm, Protect All, …).
+	void IssueCombatSpellOrder(U7Object* caster, int spellId, U7Object* target);
+	void SetForcedSpellTarget(int objectId) { m_forcedSpellTargetObjectId = objectId; }
+	int TakeForcedSpellTarget(); // returns id or 0; clears the force
+
+	// Session shared by all combat styles. m_combatPaused is primarily for Real-Time-Pause.
+	bool m_combatPaused = true;
+	std::vector<int> m_combatParticipants;
+	int m_combatSelectedPartyMemberObjectId = -1;
+	std::string m_combatApproachMessage;
+	std::unique_ptr<CombatMode> m_combatMode;
+	std::vector<int> m_debugDuelFieldObjectIds;
+
+	// While paused: spellbook cast enters this mode; next object click queues the spell.
+	int m_combatSpellTargetingSpellId = -1;
+	int m_combatSpellTargetingCasterId = -1;
+	// click_on_item / object_select_modal returns this immediately when set (combat cast).
+	int m_forcedSpellTargetObjectId = -1;
+
 	// Camera-drag while holding left+right: state & helpers
 	void StartCameraDrag();
 	void UpdateCameraDrag();
 	void EndCameraDrag();
 
 private:
+	void ClearCombatPartyTargets();
+	void StopCombatUnitActions(U7Object* member);
+	void EnrollNearbyCombatHostiles();
+	void HandleCombatOrdersClick();
+	void HandleCombatOrderKeys();
+	void IssueCombatAttackOrder(U7Object* member, U7Object* enemy);
+	void IssueCombatMoveOrder(U7Object* member, const Vector3& dest);
+	void FireQueuedCombatSpells();
+	bool IsCombatPartyMemberObject(const U7Object* obj) const;
 	// UpdateInput() sub-handlers — each owns one concern
 	void HandleEscapeKey();
 	void HandleDebugKeys();

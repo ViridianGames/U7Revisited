@@ -7,6 +7,8 @@
 #include "Geist/ScriptingSystem.h"
 #include "ConversationState.h"
 #include "PathfindingSystem.h"
+#include "PerfTelemetry.h"
+#include "SoundSystem.h"
 #include "lua.hpp"
 #include "../ThirdParty/raylib/include/rlgl.h"
 #include "../ThirdParty/nlohmann/json.hpp"
@@ -22,9 +24,11 @@
 #include <vector>
 #include <memory>
 #include <unordered_map>
+#include <unordered_set>
 #include <cmath>
 #include <cstring>
 #include <cctype>
+#include <cstdint>
 
 #include "InputSystem.h"
 #include "raylib.h"
@@ -113,7 +117,6 @@ std::unordered_map<int, SpellData*> g_spellMap;
 std::unique_ptr<PathfindingSystem> g_pathfindingSystem;
 
 ConversationState* g_ConversationState;
-CombatState* g_CombatState;
 MainState* g_mainState;
 
 bool g_CameraMoved;
@@ -1493,10 +1496,11 @@ void CameraUpdate(bool forcemove)
 
 	current = Vector3Add(current, finalmovement);
 
-	if (current.x < 0) current.x = 0;
-	if (current.x > 3072) current.x = 3072;
-	if (current.z < 0) current.z = 0;
-	if (current.z > 3072) current.z = 3072;
+	// Tiles are indexed 0..3071; keep look-at inside that range (inclusive float max 3071).
+	if (!std::isfinite(current.x) || current.x < 0) current.x = 0;
+	if (current.x > 3071) current.x = 3071;
+	if (!std::isfinite(current.z) || current.z < 0) current.z = 0;
+	if (current.z > 3071) current.z = 3071;
 
 	Vector3 camPos = { g_cameraDistance, g_cameraDistance, g_cameraDistance };
 	camPos = Vector3RotateByAxisAngle(camPos, Vector3{ 0, 1, 0 }, g_cameraRotation);
@@ -1749,11 +1753,15 @@ void UpdateSortedVisibleObjects()
 
 void DrawGameWorld(bool drawObjects)
 {
+	const double tTerrain0 = GetTime();
 	if (g_Terrain)
 		g_Terrain->Draw();
+	g_perf.msDrawTerrain += (GetTime() - tTerrain0) * 1000.0;
 
 	if (!drawObjects)
 		return;
+
+	const double tObj0 = GetTime();
 
 	// Flats are coplanar: camera-distance sort makes draw order flip when you rotate
 	// (z-fight flicker). Use fixed world keys for a stable order at any angle.
@@ -1811,14 +1819,42 @@ void DrawGameWorld(bool drawObjects)
 		return false;
 	};
 
+	auto nameContainsChimney = [](const U7Object* object) {
+		if (!object || !object->m_objectData)
+			return false;
+		const std::string& name = object->m_objectData->m_name;
+		if (name.size() < 7)
+			return false;
+		for (size_t i = 0; i + 7 <= name.size(); ++i)
+		{
+			if (std::tolower(static_cast<unsigned char>(name[i])) == 'c' &&
+				std::tolower(static_cast<unsigned char>(name[i + 1])) == 'h' &&
+				std::tolower(static_cast<unsigned char>(name[i + 2])) == 'i' &&
+				std::tolower(static_cast<unsigned char>(name[i + 3])) == 'm' &&
+				std::tolower(static_cast<unsigned char>(name[i + 4])) == 'n' &&
+				std::tolower(static_cast<unsigned char>(name[i + 5])) == 'e' &&
+				std::tolower(static_cast<unsigned char>(name[i + 6])) == 'y')
+				return true;
+		}
+		return false;
+	};
+
+	auto overlapXZ = [](const BoundingBox& a, const BoundingBox& b) {
+		return a.min.x < b.max.x && a.max.x > b.min.x &&
+			a.min.z < b.max.z && a.max.z > b.min.z;
+	};
+
 	std::vector<U7Object*> rugs;
 	std::vector<U7Object*> roofFlats;
 	std::vector<U7Object*> otherFlats;
 	std::vector<U7Object*> meshes;
+	std::vector<U7Object*> rooftopProps;
+	std::unordered_set<U7Object*> rooftopPropSet;
 	rugs.reserve(16);
 	roofFlats.reserve(64);
 	otherFlats.reserve(64);
 	meshes.reserve(16);
+	rooftopProps.reserve(16);
 
 	for (U7Object* object : g_sortedVisibleObjects)
 	{
@@ -1843,6 +1879,66 @@ void DrawGameWorld(bool drawObjects)
 	std::sort(otherFlats.begin(), otherFlats.end(), stableFlatLess);
 	std::sort(roofFlats.begin(), roofFlats.end(), stableFlatLess);
 
+	// Third-person roof pass paints with depth-test off, so anything that should
+	// sit on the deck (chimneys, Avatar/NPCs on the roof, etc.) must draw after
+	// roofs. Characters use a padded feet-vs-roof test — tight bbox overlap
+	// misses tile-edge stands on the blacksmith and similar decks.
+	auto isRooftopProp = [&](const U7Object* object) -> bool {
+		if (!object || roofFlats.empty())
+			return false;
+		if (nameContainsChimney(object))
+			return true;
+
+		const bool isCharacter =
+			object->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC ||
+			object->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_MONSTER;
+		// Expand roof footprint so feet near a diamond edge still count.
+		constexpr float kCharacterRoofMargin = 1.25f;
+
+		for (const U7Object* roof : roofFlats)
+		{
+			if (!roof)
+				continue;
+			// Characters: allow a little feet-below-deck slop from climb snap.
+			const float ySlop = isCharacter ? 0.2f : 0.05f;
+			if (object->m_Pos.y + ySlop < roof->m_Pos.y)
+				continue;
+
+			if (isCharacter)
+			{
+				const BoundingBox& rb = roof->m_boundingBox;
+				const float x = object->m_Pos.x;
+				const float z = object->m_Pos.z;
+				if (x >= rb.min.x - kCharacterRoofMargin &&
+					x <= rb.max.x + kCharacterRoofMargin &&
+					z >= rb.min.z - kCharacterRoofMargin &&
+					z <= rb.max.z + kCharacterRoofMargin)
+					return true;
+			}
+			else if (overlapXZ(object->m_boundingBox, roof->m_boundingBox))
+			{
+				return true;
+			}
+		}
+		return false;
+	};
+
+	if (!roofFlats.empty())
+	{
+		for (U7Object* object : g_sortedVisibleObjects)
+		{
+			if (!object || isFlatDraw(object))
+				continue;
+			if (object->m_drawType == ShapeDrawType::OBJECT_DRAW_CUSTOM_MESH_DEFER)
+				continue;
+			if (isRooftopProp(object))
+			{
+				rooftopProps.push_back(object);
+				rooftopPropSet.insert(object);
+			}
+		}
+	}
+
 	// Rugs first (under furniture, other flats, etc.). Write depth so later
 	// geometry occludes them correctly. Polygon offset is for flats only —
 	// leaving it on for cuboids/meshes opened seam cracks in-game that the
@@ -1853,7 +1949,7 @@ void DrawGameWorld(bool drawObjects)
 		object->Draw();
 	glDisable(GL_POLYGON_OFFSET_FILL);
 
-	// Non-flats (write depth) — no polygon offset.
+	// Non-flats (write depth) — no polygon offset. Skip deferred rooftop props.
 	for (U7Object* object : g_sortedVisibleObjects)
 	{
 		if (!object)
@@ -1861,6 +1957,8 @@ void DrawGameWorld(bool drawObjects)
 		if (isFlatDraw(object))
 			continue;
 		if (object->m_drawType == ShapeDrawType::OBJECT_DRAW_CUSTOM_MESH_DEFER)
+			continue;
+		if (rooftopPropSet.count(object))
 			continue;
 		object->Draw();
 	}
@@ -1891,6 +1989,10 @@ void DrawGameWorld(bool drawObjects)
 		glDisable(GL_POLYGON_OFFSET_FILL);
 	}
 
+	// Rooftop props after the depth-bypass roof pass so chimneys aren't buried.
+	for (U7Object* object : rooftopProps)
+		object->Draw();
+
 	if (!meshes.empty())
 	{
 		BeginShaderMode(g_alphaDiscard);
@@ -1899,6 +2001,8 @@ void DrawGameWorld(bool drawObjects)
 		EndShaderMode();
 	}
 
+	const double drawObjMs = (GetTime() - tObj0) * 1000.0;
+	g_perf.AddMs(g_perf.msDrawObjects, g_perf.maxMsDrawObjects, drawObjMs);
 }
 Color MakeMeshOutlineIdColor(int objectId)
 {
@@ -1972,11 +2076,105 @@ void DrawMeshOutlineIdPass(bool drawObjects)
 	}
 	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 
+	// Collect outlined meshes, then union adjacent same-shape pieces so a
+	// multi-part bench (etc.) writes one silhouette ID and doesn't ink seams.
+	std::vector<U7Object*> outlined;
+	outlined.reserve(64);
 	for (U7Object* object : g_sortedVisibleObjects)
 	{
 		if (!object || !ObjectWantsScreenSpaceOutline(object))
 			continue;
-		object->DrawMeshId();
+		if (!object->m_Visible || object->m_isContained || !object->m_ShouldDraw || !object->m_shapeData)
+			continue;
+		outlined.push_back(object);
+	}
+
+	const int n = static_cast<int>(outlined.size());
+	std::vector<int> parent(static_cast<size_t>(n));
+	for (int i = 0; i < n; ++i)
+		parent[static_cast<size_t>(i)] = i;
+
+	auto findRoot = [&](int i) {
+		while (parent[static_cast<size_t>(i)] != i)
+		{
+			parent[static_cast<size_t>(i)] = parent[static_cast<size_t>(parent[static_cast<size_t>(i)])];
+			i = parent[static_cast<size_t>(i)];
+		}
+		return i;
+	};
+	auto unite = [&](int a, int b) {
+		a = findRoot(a);
+		b = findRoot(b);
+		if (a == b)
+			return;
+		// Prefer the lower object id as the canonical outline id.
+		if (outlined[static_cast<size_t>(a)]->m_ID <= outlined[static_cast<size_t>(b)]->m_ID)
+			parent[static_cast<size_t>(b)] = a;
+		else
+			parent[static_cast<size_t>(a)] = b;
+	};
+
+	auto shapeOf = [](const U7Object* o) -> int {
+		if (o->m_shapeData)
+			return o->m_shapeData->GetShape();
+		return o->m_ObjectType;
+	};
+
+	// Multi-piece props that use more than one shape id must share an outline
+	// family or seams ink (benches; pole + flag).
+	auto outlineFamily = [](int shape) -> int {
+		if (shape == 292 || shape == 897)
+			return 292; // seat / bench family
+		if (shape == 713 || shape == 222 || shape == 232 || shape == 248)
+			return 713; // pole + flag family
+		return shape;
+	};
+
+	// Neighbors: horizontal (XZ touch, similar lift) or vertical stack
+	// (shared XZ column — posts with flags mounted above).
+	constexpr float kAdjPadXZ = 0.2f;
+	constexpr float kAdjMaxDySide = 0.75f;
+	constexpr float kAdjMaxYGapStack = 3.0f;
+	auto adjacentOutlineFamily = [&](const U7Object* a, const U7Object* b) -> bool {
+		if (outlineFamily(shapeOf(a)) != outlineFamily(shapeOf(b)))
+			return false;
+		const BoundingBox& aa = a->m_boundingBox;
+		const BoundingBox& bb = b->m_boundingBox;
+		const bool xzNear =
+			aa.min.x - kAdjPadXZ < bb.max.x && aa.max.x + kAdjPadXZ > bb.min.x &&
+			aa.min.z - kAdjPadXZ < bb.max.z && aa.max.z + kAdjPadXZ > bb.min.z;
+		if (!xzNear)
+			return false;
+
+		// Side-by-side (benches, twin posts).
+		if (fabsf(a->m_Pos.y - b->m_Pos.y) <= kAdjMaxDySide)
+			return true;
+
+		// Vertical stack: gap between Y extents (flag above post, etc.).
+		float yGap = 0.0f;
+		if (aa.max.y < bb.min.y)
+			yGap = bb.min.y - aa.max.y;
+		else if (bb.max.y < aa.min.y)
+			yGap = aa.min.y - bb.max.y;
+		return yGap <= kAdjMaxYGapStack;
+	};
+
+	for (int i = 0; i < n; ++i)
+	{
+		for (int j = i + 1; j < n; ++j)
+		{
+			if (adjacentOutlineFamily(outlined[static_cast<size_t>(i)], outlined[static_cast<size_t>(j)]))
+				unite(i, j);
+		}
+	}
+
+	for (int i = 0; i < n; ++i)
+	{
+		U7Object* object = outlined[static_cast<size_t>(i)];
+		const int root = findRoot(i);
+		const int outlineId = outlined[static_cast<size_t>(root)]->m_ID;
+		object->m_shapeData->DrawMeshId(
+			object->m_Pos, object->m_Angle, MakeMeshOutlineIdColor(outlineId));
 	}
 
 	// Mark non-rug flat coverage with mid-alpha sentinel (not true empty). Presence
@@ -2093,9 +2291,11 @@ U7Object* AddObject(int shapenum, int framenum, int id, float x, float y, float 
 	temp->m_ID = id;
 	temp->Init("Data/Units/Walker.cfg", shapenum, framenum);
 	temp->m_ID = id; // Init must not clear it; keep explicit in case subclasses change
+	// SetInitialPos → SetPos → UpdateObjectChunk already registers the object.
+	// A second AssignObjectChunk here duplicated every unit in its spawn chunk;
+	// after the first chunk cross a stale ghost stayed behind and interest sim
+	// ran Update() twice (~2x walk speed) until that chunk left the interest radius.
 	temp->SetInitialPos(Vector3{ x, y, z });
-	AssignObjectChunk(temp);
-	//UpdateModelAnimation(temp->m_shapeData->m_customMesh->GetModel(), temp->m_shapeData->m_customMesh->GetModel()-> ->   0);
 
 	// Notify pathfinding grid if this is a non-walkable object
 	if (temp->m_objectData && temp->m_objectData->m_isNotWalkable)
@@ -2377,32 +2577,31 @@ void UpdateObjectChunk(U7Object* object, Vector3 fromPos)
 	const int toY = static_cast<int>(toChunkPos.y);
 
 	auto inBounds = [](int x, int y) { return x >= 0 && x < 192 && y >= 0 && y < 192; };
+	auto eraseAll = [](std::vector<U7Object*>& chunk, U7Object* obj) {
+		chunk.erase(std::remove(chunk.begin(), chunk.end(), obj), chunk.end());
+	};
+	auto pushUnique = [](std::vector<U7Object*>& chunk, U7Object* obj) {
+		if (std::find(chunk.begin(), chunk.end(), obj) == chunk.end())
+			chunk.push_back(obj);
+	};
 
 	if (toX == fromX && toY == fromY)
 	{
-		// Same chunk: still ensure we are registered (e.g. after a full map clear + SetPos).
+		// Same chunk: ensure exactly one registration (repairs prior duplicates).
 		if (inBounds(toX, toY))
 		{
 			auto& chunk = g_chunkObjectMap[toX][toY];
-			if (std::find(chunk.begin(), chunk.end(), object) == chunk.end())
-				chunk.push_back(object);
+			eraseAll(chunk, object);
+			chunk.push_back(object);
 		}
 		return;
 	}
 
 	if (inBounds(fromX, fromY))
-	{
-		auto& fromChunk = g_chunkObjectMap[fromX][fromY];
-		auto fromChunknode = std::find(fromChunk.begin(), fromChunk.end(), object);
-		if (fromChunknode != fromChunk.end())
-			fromChunk.erase(fromChunknode);
-	}
+		eraseAll(g_chunkObjectMap[fromX][fromY], object);
 
 	if (inBounds(toX, toY))
-	{
-		auto& toChunk = g_chunkObjectMap[toX][toY];
-		toChunk.push_back(object);
-	}
+		pushUnique(g_chunkObjectMap[toX][toY], object);
 }
 
 void AssignObjectChunk(U7Object* object)
@@ -2415,7 +2614,9 @@ void AssignObjectChunk(U7Object* object)
 	if (i < 0 || i >= 192 || j < 0 || j >= 192)
 		return;
 
-	g_chunkObjectMap[i][j].push_back(object);
+	auto& chunk = g_chunkObjectMap[i][j];
+	if (std::find(chunk.begin(), chunk.end(), object) == chunk.end())
+		chunk.push_back(object);
 }
 
 void UnassignObjectChunk(U7Object* object)
@@ -2428,10 +2629,325 @@ void UnassignObjectChunk(U7Object* object)
 	if (i < 0 || i >= 192 || j < 0 || j >= 192)
 		return;
 
-	auto fromChunkPos = std::find(g_chunkObjectMap[i][j].begin(), g_chunkObjectMap[i][j].end(), object);
-	if (fromChunkPos != g_chunkObjectMap[i][j].end())
+	auto& chunk = g_chunkObjectMap[i][j];
+	chunk.erase(std::remove(chunk.begin(), chunk.end(), object), chunk.end());
+}
+
+namespace {
+	std::vector<FlyingProjectile> g_flyingProjectiles;
+
+	void DestroyProjectileObject(int objectId)
 	{
-		g_chunkObjectMap[i][j].erase(fromChunkPos);
+		U7Object* obj = GetObjectFromID(objectId);
+		if (!obj)
+			return;
+		UnassignObjectChunk(obj);
+		if (g_SoundSystem)
+			g_SoundSystem->StopLoopingSoundEffect(objectId);
+		obj->SetIsDead(true);
+		obj->m_Visible = false;
+	}
+}
+
+namespace
+{
+	// Douse 540 / Poison 424 / Death Bolt 527: frames 1–7 empty, 8–23 are 16
+	// compass facings (N … NNW). Fire bolt 856 keeps frames 0–4 as a spin cycle.
+	bool ShapeHasDirectionalProjectileFrames(int shape)
+	{
+		if (shape <= 0 || shape >= 1024)
+			return false;
+		for (int f = 8; f <= 23; ++f)
+		{
+			if (!g_shapeTable[shape][f].IsValid())
+				return false;
+		}
+		int emptyMid = 0;
+		for (int f = 1; f <= 7; ++f)
+		{
+			if (!g_shapeTable[shape][f].IsValid())
+				++emptyMid;
+		}
+		return emptyMid >= 5;
+	}
+
+	// Same compass basis as find_direction / UC_FACE_DIR: 0° = north (−Z),
+	// clockwise, +X east. 16 sectors → SHAPES.VGA frames 8–23.
+	int ProjectileDirectionalFrame(float dx, float dz)
+	{
+		if (dx * dx + dz * dz < 1e-8f)
+			return 8; // N
+		float degrees = atan2f(dx, -dz) * (180.0f / 3.14159265f);
+		if (degrees < 0.0f)
+			degrees += 360.0f;
+		int dir16 = static_cast<int>((degrees + 11.25f) / 22.5f) % 16;
+		if (dir16 < 0)
+			dir16 += 16;
+		return 8 + dir16;
+	}
+}
+
+bool SpawnFlyingProjectile(int shape, int fromId, int toId, float speed, int damage, int damageType,
+	int weaponShape, int ammoShape)
+{
+	U7Object* from = GetObjectFromID(fromId);
+	U7Object* to = GetObjectFromID(toId);
+	if (!from || !to || shape <= 0 || shape >= 1024)
+		return false;
+
+	const int objectId = static_cast<int>(GetNextID());
+	Vector3 spawnPos = from->m_Pos;
+	// Launch near the caster billboard center (same lift DrawWalkBillboard uses).
+	float casterLift = 1.4f;
+	if (from->m_shapeData && from->m_shapeData->m_Dims.y > 0.1f)
+		casterLift = from->m_shapeData->m_Dims.y * 0.62f;
+	spawnPos.y += casterLift;
+	Vector3 targetPos = to->m_Pos;
+	float targetLift = 0.9f;
+	if (to->m_shapeData && to->m_shapeData->m_Dims.y > 0.1f)
+		targetLift = to->m_shapeData->m_Dims.y * 0.45f;
+	targetPos.y += targetLift;
+
+	U7Object* bolt = AddObject(shape, 0, objectId, spawnPos.x, spawnPos.y, spawnPos.z);
+	if (!bolt)
+		return false;
+
+	bolt->m_isProjectile = true;
+	bolt->m_Visible = true;
+	bolt->m_ShouldDraw = true;
+	bolt->m_isContained = false;
+	// AddObject may have marked the spawn tile blocked; refresh so missiles don't stick.
+	if (bolt->m_objectData && bolt->m_objectData->m_isNotWalkable)
+		NotifyPathfindingGridUpdate(static_cast<int>(spawnPos.x), static_cast<int>(spawnPos.z));
+	bolt->SetDest(targetPos);
+	if (speed > 0.1f)
+		bolt->m_speed = speed;
+
+	FlyingProjectile proj;
+	proj.objectId = objectId;
+	proj.targetId = toId;
+	proj.attackerId = fromId;
+	proj.targetPos = targetPos;
+	proj.damage = damage;
+	proj.damageType = damageType;
+	proj.weaponShape = weaponShape;
+	proj.ammoShape = ammoShape;
+	proj.speed = (speed > 0.1f) ? speed : 16.0f;
+	proj.animAccum = 0.0f;
+	proj.animIndex = 0;
+	proj.directionalFrames = ShapeHasDirectionalProjectileFrames(shape);
+
+	const float dx0 = targetPos.x - spawnPos.x;
+	const float dz0 = targetPos.z - spawnPos.z;
+
+	if (proj.directionalFrames)
+	{
+		bolt->SetFrame(ProjectileDirectionalFrame(dx0, dz0));
+	}
+	else
+	{
+		// Fire bolt 856 etc.: first contiguous run of drawable frames (spin cycle).
+		const int declared = std::max(1, g_shapeTable[shape][0].m_numFrames);
+		for (int f = 0; f < declared && f < 32; ++f)
+		{
+			ShapeData& sd = g_shapeTable[shape][f];
+			if (!sd.IsValid())
+			{
+				if (!proj.animFrameList.empty())
+					break;
+				continue;
+			}
+			proj.animFrameList.push_back(f);
+		}
+		if (proj.animFrameList.empty())
+			proj.animFrameList.push_back(0);
+		bolt->SetFrame(proj.animFrameList[0]);
+	}
+	g_flyingProjectiles.push_back(proj);
+	return true;
+}
+
+bool MarkNewestFlyingProjectilePauseCasterOnHit(int attackerId)
+{
+	for (int i = static_cast<int>(g_flyingProjectiles.size()) - 1; i >= 0; --i)
+	{
+		if (g_flyingProjectiles[static_cast<size_t>(i)].attackerId == attackerId)
+		{
+			g_flyingProjectiles[static_cast<size_t>(i)].pauseCasterOrdersOnHit = true;
+			return true;
+		}
+	}
+	return false;
+}
+
+namespace
+{
+	void PauseCasterOrdersAfterCombatSpell(const FlyingProjectile& proj)
+	{
+		if (!proj.pauseCasterOrdersOnHit || !g_mainState || !g_isCombatMode)
+			return;
+		U7Object* attacker = GetObjectFromID(proj.attackerId);
+		if (attacker)
+			g_mainState->NotifyCombatantCannotContinue(attacker, "needs a new order!");
+	}
+}
+
+void UpdateFlyingProjectiles()
+{
+	if (g_flyingProjectiles.empty() || !g_Engine)
+		return;
+
+	const float dt = g_Engine->LastFrameInSeconds();
+	constexpr float kHitRadius = 0.65f;
+	constexpr float kAnimFps = 12.0f;
+
+	for (size_t i = 0; i < g_flyingProjectiles.size(); )
+	{
+		FlyingProjectile& proj = g_flyingProjectiles[i];
+		U7Object* bolt = GetObjectFromID(proj.objectId);
+		if (!bolt || bolt->GetIsDead())
+		{
+			PauseCasterOrdersAfterCombatSpell(proj);
+			g_flyingProjectiles.erase(g_flyingProjectiles.begin() + static_cast<long>(i));
+			continue;
+		}
+
+		// Home toward a live target when possible.
+		if (U7Object* target = GetObjectFromID(proj.targetId))
+		{
+			if (!target->GetIsDead())
+			{
+				proj.targetPos = target->m_Pos;
+				float targetLift = 0.9f;
+				if (target->m_shapeData && target->m_shapeData->m_Dims.y > 0.1f)
+					targetLift = target->m_shapeData->m_Dims.y * 0.45f;
+				proj.targetPos.y += targetLift;
+			}
+		}
+
+		Vector3 delta = Vector3Subtract(proj.targetPos, bolt->m_Pos);
+		const float dist = Vector3Length(delta);
+		if (dist <= kHitRadius || dist < 1e-4f)
+		{
+			U7Object* target = GetObjectFromID(proj.targetId);
+			if (target && !target->GetIsDead() && !target->IsDeathStatus())
+			{
+				U7Object* attacker = GetObjectFromID(proj.attackerId);
+
+				// Douse bolt (shape 540): spell usecode event 4 on the target — extinguish lights.
+				if (proj.weaponShape == 540 || bolt->m_ObjectType == 540)
+				{
+					if (g_ScriptingSystem)
+					{
+						g_ScriptingSystem->CallScript(
+							"spell_dispel_fire_an_flam_0322",
+							{ static_cast<lua_Integer>(4),
+							  static_cast<lua_Integer>(proj.targetId) });
+					}
+				}
+				else if (proj.weaponShape == 424 || bolt->m_ObjectType == 424)
+				{
+					// Poison (In Nox) bolt — Obj_flags::poisoned.
+					if (g_ScriptingSystem)
+					{
+						g_ScriptingSystem->CallScript(
+							"spell_poison_in_nox_0350",
+							{ static_cast<lua_Integer>(4),
+							  static_cast<lua_Integer>(proj.targetId) });
+					}
+				}
+				else if (proj.weaponShape == 72 || bolt->m_ObjectType == 72)
+				{
+					// Sleep (In Zu).
+					if (g_ScriptingSystem)
+					{
+						g_ScriptingSystem->CallScript(
+							"spell_sleep_in_zu_0351",
+							{ static_cast<lua_Integer>(4),
+							  static_cast<lua_Integer>(proj.targetId) });
+					}
+				}
+				else if (proj.weaponShape == 281 || bolt->m_ObjectType == 281)
+				{
+					// Curse (Des Sanct).
+					if (g_ScriptingSystem)
+					{
+						g_ScriptingSystem->CallScript(
+							"spell_untrap_des_sanct_0344",
+							{ static_cast<lua_Integer>(4),
+							  static_cast<lua_Integer>(proj.targetId) });
+					}
+				}
+				else if (proj.weaponShape == 408 || bolt->m_ObjectType == 408)
+				{
+					// Paralyze (An Por).
+					if (g_ScriptingSystem)
+					{
+						g_ScriptingSystem->CallScript(
+							"spell_paralyze_an_por_0348",
+							{ static_cast<lua_Integer>(4),
+							  static_cast<lua_Integer>(proj.targetId) });
+					}
+				}
+				else
+				{
+					int hits = 0;
+					if (proj.weaponShape >= 0 || proj.ammoShape >= 0)
+						hits = FigureCombatHitPoints(attacker, target, proj.weaponShape, proj.ammoShape);
+					else
+						hits = proj.damage;
+					if (hits > 0)
+						ApplyCombatDamage(target, static_cast<float>(hits), attacker);
+					// Combat weapon missiles: same console wording as melee (damage known at impact).
+					if (proj.weaponShape >= 0 || proj.ammoShape >= 0)
+					{
+						const std::string attackerName = (attacker && !attacker->m_name.empty())
+							? attacker->m_name : "Someone";
+						const std::string targetName = !target->m_name.empty() ? target->m_name : "enemy";
+						AddConsoleString(
+							attackerName + " attacks " + targetName + " with "
+							+ CombatWeaponDisplayName(proj.weaponShape)
+							+ " for " + std::to_string(hits) + " damage",
+							RED);
+					}
+					// Flame Bolt / fire bolt: hit SFX only — no explosion sprite.
+					if (g_SoundSystem)
+						g_SoundSystem->PlaySound(BuildU7SfxPath(13));
+				}
+			}
+			PauseCasterOrdersAfterCombatSpell(proj);
+			DestroyProjectileObject(proj.objectId);
+			g_flyingProjectiles.erase(g_flyingProjectiles.begin() + static_cast<long>(i));
+			continue;
+		}
+
+		const float step = proj.speed * dt;
+		Vector3 next = bolt->m_Pos;
+		if (step >= dist)
+			next = proj.targetPos;
+		else
+			next = Vector3Add(bolt->m_Pos, Vector3Scale(Vector3Normalize(delta), step));
+		bolt->SetPos(next);
+		bolt->SetDest(proj.targetPos);
+
+		if (proj.directionalFrames)
+		{
+			// Pick SHAPES.VGA frame 8–23 from world flight heading (N…NNW).
+			bolt->SetFrame(ProjectileDirectionalFrame(delta.x, delta.z));
+		}
+		else if (proj.animFrameList.size() > 1)
+		{
+			// Spin cycle (e.g. Vas Flam 856 frames 0–4).
+			proj.animAccum += dt * kAnimFps;
+			while (proj.animAccum >= 1.0f)
+			{
+				proj.animAccum -= 1.0f;
+				proj.animIndex = (proj.animIndex + 1) % static_cast<int>(proj.animFrameList.size());
+				bolt->SetFrame(proj.animFrameList[proj.animIndex]);
+			}
+		}
+
+		++i;
 	}
 }
 
@@ -3132,6 +3648,217 @@ std::string GetObjectScriptName(U7Object* object)
 static std::map<int, std::vector<EquipmentSlot>> g_equipmentSlotMap;      // Valid slots item can be placed in
 static std::map<int, std::vector<EquipmentSlot>> g_equipmentSlotFillsMap; // All slots item occupies when equipped
 
+// WEAPONS.DAT / AMMO.DAT / ARMOR.DAT (Exult binary layouts).
+static std::unordered_map<int, WeaponData> g_weaponDataMap;
+static std::unordered_map<int, AmmoData> g_ammoDataMap;
+static std::unordered_map<int, ArmorData> g_armorDataMap;
+
+static std::string CombatStaticDataPath()
+{
+	std::string dataPath;
+	if (g_Engine)
+		dataPath = g_Engine->m_EngineConfig.GetString("data_path");
+	if (dataPath.empty())
+		dataPath = "Data/U7";
+	return dataPath;
+}
+
+static bool ReadStaticDatFile(const std::string& path, std::vector<unsigned char>& outBuf)
+{
+	std::ifstream file(path, std::ios::binary);
+	if (!file.is_open())
+	{
+		Log("ERROR: Could not open " + path);
+		return false;
+	}
+	file.seekg(0, std::ios::end);
+	const std::streamoff fileSize = file.tellg();
+	file.seekg(0, std::ios::beg);
+	if (fileSize <= 0)
+	{
+		Log("ERROR: " + path + " is empty");
+		return false;
+	}
+	outBuf.resize(static_cast<size_t>(fileSize));
+	file.read(reinterpret_cast<char*>(outBuf.data()), fileSize);
+	if (!file)
+	{
+		Log("ERROR: Failed reading " + path);
+		return false;
+	}
+	return true;
+}
+
+void LoadWeaponData()
+{
+	g_weaponDataMap.clear();
+
+	const std::string path = CombatStaticDataPath() + "/STATIC/WEAPONS.DAT";
+	std::vector<unsigned char> buf;
+	if (!ReadStaticDatFile(path, buf))
+		return;
+
+	// Stock BG file is 2416 bytes = 1 pad + 115 * 21. Prefer that alignment; else try 0.
+	constexpr size_t kEntrySize = 21;
+	size_t start = 0;
+	if ((buf.size() % kEntrySize) == 1)
+		start = 1;
+	else if (buf.size() < kEntrySize)
+	{
+		Log("ERROR: " + path + " too small (" + std::to_string(buf.size()) + " bytes)");
+		return;
+	}
+
+	const size_t usable = buf.size() - start;
+	const size_t count = usable / kEntrySize;
+	for (size_t i = 0; i < count; ++i)
+	{
+		const unsigned char* p = buf.data() + start + i * kEntrySize;
+		WeaponData w;
+		w.shape = p[0] | (p[1] << 8);
+		if (w.shape <= 0 || w.shape >= 1024)
+			continue;
+
+		w.ammoFamily = static_cast<int16_t>(p[2] | (p[3] << 8));
+		w.projectile = static_cast<int16_t>(p[4] | (p[5] << 8));
+		w.damage = p[6];
+		const unsigned char flags0 = p[7];
+		w.damageType = static_cast<WeaponDamageType>((flags0 >> 4) & 15);
+		const unsigned char rangeByte = p[8];
+		w.autohit = (rangeByte & 1) != 0;
+		w.uses = static_cast<WeaponUses>((rangeByte >> 1) & 3);
+		w.range = static_cast<unsigned char>(rangeByte >> 3);
+		g_weaponDataMap[w.shape] = w;
+	}
+
+	Log("Loaded WEAPONS.DAT: " + std::to_string(g_weaponDataMap.size()) + " weapons from " + path);
+}
+
+void LoadAmmoData()
+{
+	g_ammoDataMap.clear();
+
+	const std::string path = CombatStaticDataPath() + "/STATIC/AMMO.DAT";
+	std::vector<unsigned char> buf;
+	if (!ReadStaticDatFile(path, buf))
+		return;
+
+	// Stock BG: 274 bytes = 1 pad + 21 * 13.
+	constexpr size_t kEntrySize = 13;
+	size_t start = 0;
+	if ((buf.size() % kEntrySize) == 1)
+		start = 1;
+	else if (buf.size() < kEntrySize)
+	{
+		Log("ERROR: " + path + " too small (" + std::to_string(buf.size()) + " bytes)");
+		return;
+	}
+
+	const size_t count = (buf.size() - start) / kEntrySize;
+	for (size_t i = 0; i < count; ++i)
+	{
+		const unsigned char* p = buf.data() + start + i * kEntrySize;
+		AmmoData a;
+		a.shape = p[0] | (p[1] << 8);
+		if (a.shape <= 0 || a.shape >= 1024)
+			continue;
+		a.familyShape = static_cast<int16_t>(p[2] | (p[3] << 8));
+		a.sprite = static_cast<int16_t>(p[4] | (p[5] << 8));
+		a.damage = p[6];
+		// flags0 at p[7]; unknown at p[8]; flags1 at p[9] holds damage_type in high nibble.
+		const unsigned char flags1 = p[9];
+		a.damageType = static_cast<WeaponDamageType>((flags1 >> 4) & 15);
+		g_ammoDataMap[a.shape] = a;
+	}
+
+	Log("Loaded AMMO.DAT: " + std::to_string(g_ammoDataMap.size()) + " ammo types from " + path);
+}
+
+void LoadArmorData()
+{
+	g_armorDataMap.clear();
+
+	const std::string path = CombatStaticDataPath() + "/STATIC/ARMOR.DAT";
+	std::vector<unsigned char> buf;
+	if (!ReadStaticDatFile(path, buf))
+		return;
+
+	// Stock BG: 351 bytes = 1 pad + 35 * 10.
+	constexpr size_t kEntrySize = 10;
+	size_t start = 0;
+	if ((buf.size() % kEntrySize) == 1)
+		start = 1;
+	else if (buf.size() < kEntrySize)
+	{
+		Log("ERROR: " + path + " too small (" + std::to_string(buf.size()) + " bytes)");
+		return;
+	}
+
+	const size_t count = (buf.size() - start) / kEntrySize;
+	for (size_t i = 0; i < count; ++i)
+	{
+		const unsigned char* p = buf.data() + start + i * kEntrySize;
+		ArmorData a;
+		a.shape = p[0] | (p[1] << 8);
+		if (a.shape <= 0 || a.shape >= 1024)
+			continue;
+		a.prot = p[2];
+		// p[3] unknown; p[4] immunity flags (WeaponDamageType bits).
+		a.immune = p[4];
+		g_armorDataMap[a.shape] = a;
+	}
+
+	Log("Loaded ARMOR.DAT: " + std::to_string(g_armorDataMap.size()) + " armor pieces from " + path);
+}
+
+const WeaponData* GetWeaponData(int shape)
+{
+	auto it = g_weaponDataMap.find(shape);
+	if (it == g_weaponDataMap.end())
+		return nullptr;
+	return &it->second;
+}
+
+const AmmoData* GetAmmoData(int shape)
+{
+	auto it = g_ammoDataMap.find(shape);
+	if (it == g_ammoDataMap.end())
+		return nullptr;
+	return &it->second;
+}
+
+const ArmorData* GetArmorData(int shape)
+{
+	auto it = g_armorDataMap.find(shape);
+	if (it == g_armorDataMap.end())
+		return nullptr;
+	return &it->second;
+}
+
+bool IsRangedWeaponShape(int shape)
+{
+	const WeaponData* w = GetWeaponData(shape);
+	return w && w->uses == WeaponUses::Ranged;
+}
+
+float GetWeaponAttackRangeTiles(int shape)
+{
+	const WeaponData* w = GetWeaponData(shape);
+	if (!w)
+		return MELEE_RANGE_TILES;
+
+	// Projectile weapons (bow, crossbow, sling, wands…): use DAT max range.
+	if (w->uses == WeaponUses::Ranged && w->range > 0)
+		return static_cast<float>(w->range);
+
+	// Thrown: still close to throw range from DAT when present.
+	if ((w->uses == WeaponUses::PoorThrown || w->uses == WeaponUses::Thrown) && w->range > 0)
+		return static_cast<float>(w->range);
+
+	// Melee striking range from DAT is often 3–4; keep our tighter engage for now.
+	return MELEE_RANGE_TILES;
+}
+
 // String to EquipmentSlot enum conversion
 static EquipmentSlot StringToEquipmentSlot(const std::string& slotName)
 {
@@ -3300,54 +4027,11 @@ void NPCData::UnequipItem(EquipmentSlot slot)
 
 bool FillWalkTextures(std::vector<std::vector<Texture*>>& outTextures, int shapenum)
 {
-	// 0=SW, 1=W, 2=NW, 3=N, 4=NE, 5=E, 6=SE, 7=S
-	outTextures.resize(8);
-	for (int d = 0; d < 8; d++)
-	{
-		outTextures[d].assign(2, nullptr);
-	}
-
-	if (g_shapeTable[shapenum][0].m_texture == nullptr ||
-	    g_shapeTable[shapenum][1].m_texture == nullptr ||
-	    g_shapeTable[shapenum][16].m_texture == nullptr ||
-	    g_shapeTable[shapenum][17].m_texture == nullptr)
-	{
+	// Walk is one action in the full SHAPES.VGA action bake.
+	NpcActionTextures actions;
+	if (!FillNpcActionTextures(actions, shapenum))
 		return false;
-	}
-
-	auto getFlipped = [shapenum](int frame, const std::string& name) -> Texture*
-	{
-		if (g_ResourceManager->DoesTextureExist(name))
-		{
-			return g_ResourceManager->GetTexture(name);
-		}
-		Image image = ImageCopy(g_shapeTable[shapenum][frame].m_texture->m_Image);
-		ImageFlipHorizontal(&image);
-		g_ResourceManager->AddTexture(image, name);
-		return g_ResourceManager->GetTexture(name);
-	};
-
-	// SW from shape frames 16/17
-	outTextures[0][0] = &g_shapeTable[shapenum][16].m_texture->m_Texture;
-	outTextures[0][1] = &g_shapeTable[shapenum][17].m_texture->m_Texture;
-
-	// NE from shape frames 0/1
-	outTextures[4][0] = &g_shapeTable[shapenum][0].m_texture->m_Texture;
-	outTextures[4][1] = &g_shapeTable[shapenum][1].m_texture->m_Texture;
-
-	// SE = horizontal flip of SW; NW = horizontal flip of NE.
-	// Use "_walk_*" cache keys so we don't reuse older mislabeled flip textures.
-	outTextures[6][0] = getFlipped(16, to_string(shapenum) + "_walk_SE_0");
-	outTextures[6][1] = getFlipped(17, to_string(shapenum) + "_walk_SE_1");
-	outTextures[2][0] = getFlipped(0, to_string(shapenum) + "_walk_NW_0");
-	outTextures[2][1] = getFlipped(1, to_string(shapenum) + "_walk_NW_1");
-
-	// Cardinals: duplicate adjacent diagonals until dedicated art exists.
-	outTextures[1] = outTextures[0]; // W ← SW
-	outTextures[3] = outTextures[2]; // N ← NW
-	outTextures[5] = outTextures[4]; // E ← NE
-	outTextures[7] = outTextures[6]; // S ← SE
-
+	CopyWalkTexturesFromActions(actions, outTextures);
 	return true;
 }
 
@@ -3591,6 +4275,9 @@ bool ApplyNPCWalkTextures(NPCData* npc, int shapenum, bool avatarMale)
 		return false;
 	}
 
+	// Always bake full action set from SHAPES.VGA (attacks/sit/etc.).
+	FillNpcActionTextures(npc->m_actionTextures, shapenum);
+
 	// Avatar keeps gendered sheet names (avatar_male / avatar_female).
 	const bool isAvatar = (npc->id == 0) || (WalkSheetStemFromNpcName(npc->name, 16) == "avatar");
 	if (isAvatar)
@@ -3610,6 +4297,11 @@ bool ApplyNPCWalkTextures(NPCData* npc, int shapenum, bool avatarMale)
 	}
 
 	npc->m_walkTexturesUpright = false;
+	if (npc->m_actionTextures.valid)
+	{
+		CopyWalkTexturesFromActions(npc->m_actionTextures, npc->m_walkTextures);
+		return true;
+	}
 	return FillWalkTextures(npc->m_walkTextures, shapenum);
 }
 
@@ -3625,6 +4317,8 @@ bool ApplyAvatarWalkTextures(NPCData* npc, bool male)
 		: "Images/WalkSheets/avatar_female.png";
 	const int shapeFallback = male ? 721 : 989;
 
+	FillNpcActionTextures(npc->m_actionTextures, shapeFallback);
+
 	if (LoadWalkSheet(npc->m_walkTextures, path))
 	{
 		npc->m_walkTexturesUpright = true;
@@ -3632,6 +4326,11 @@ bool ApplyAvatarWalkTextures(NPCData* npc, bool male)
 	}
 
 	npc->m_walkTexturesUpright = false;
+	if (npc->m_actionTextures.valid)
+	{
+		CopyWalkTexturesFromActions(npc->m_actionTextures, npc->m_walkTextures);
+		return true;
+	}
 	return FillWalkTextures(npc->m_walkTextures, shapeFallback);
 }
 
@@ -3707,6 +4406,7 @@ void LoadSpellData()
 						spell.words = spellJson["words"].get<std::string>();
 						spell.scriptId = spellJson["scriptId"].get<int>();
 						spell.circle = circle.circle;
+						spell.targeted = spellJson.value("targeted", true);
 
 						// Load reagents
 						if (spellJson.contains("reagents") && spellJson["reagents"].is_array())

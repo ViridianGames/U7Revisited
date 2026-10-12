@@ -568,9 +568,15 @@ end
 -- STUBS: named consistently but not implementable as aliases yet
 ------------------------------------------------------------------------
 
-function check_spell_requirements()
-    -- Spell system gate; allow cast attempts until real reagent/mana checks exist.
-    return true
+-- check_spell_requirements is registered in C++ (begins casting frames on success).
+-- Keep a Lua fallback only if the native binding is missing.
+if type(check_spell_requirements) ~= "function" then
+    function check_spell_requirements(caster)
+        if caster then
+            begin_casting_mode(caster)
+        end
+        return true
+    end
 end
 
 function select_spell_target(target)

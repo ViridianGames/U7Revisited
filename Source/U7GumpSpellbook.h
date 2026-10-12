@@ -49,6 +49,13 @@ public:
 	/// @param spellId The spell ID to cast (0-71)
 	void CastSpell(int spellId);
 
+	/// @brief Consume mana/reagents and run the spell script (no UI).
+	/// If forcedTargetObjectId > 0, click_on_item returns that id immediately.
+	static bool RunSpellCast(int spellId, U7Object* caster, int forcedTargetObjectId = -1);
+
+	/// @brief Find Lua function name for a spell scriptId (prefers spell_* suffix match).
+	static std::string FindSpellScriptName(int scriptId);
+
 	/// @brief Get the NPC ID who owns this spellbook
 	/// @return The NPC ID
 	int GetNpcId() const { return m_npcId; }
@@ -116,9 +123,6 @@ private:
 
 	/// @brief Resolve caster U7Object for the spellbook owner
 	U7Object* GetCasterObject() const;
-
-	/// @brief Find Lua function name for a spell scriptId (prefers spell_* suffix match)
-	std::string FindSpellScriptName(int scriptId) const;
 
 	/// @brief Remove one unit of each required reagent from party backpacks
 	bool ConsumeReagents(int spellId);

@@ -34,3 +34,6 @@ cmake-build-debug/
 
 # Visual Studio resource cache files
 *.aps
+
+# Runtime telemetry (regenerated locally; do not commit)
+/Redist/telemetry.txt

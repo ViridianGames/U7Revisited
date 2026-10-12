@@ -16,6 +16,7 @@
 #include "Logging.h"
 #include "U7GumpBook.h"
 #include "MainState.h"
+#include "CombatState.h"
 #include "PathfindingSystem.h"
 #include "SoundSystem.h"
 #include "U7SpriteEffects.h"
@@ -763,8 +764,20 @@ static int LuaObjectSelectModal(lua_State *L)
 
     if (g_StateMachine->GetCurrentState() == STATE_MAINSTATE)
     {
-        dynamic_cast<MainState*>(g_StateMachine->GetState(STATE_MAINSTATE))->StartObjectSelectionMode();
-        dynamic_cast<MainState*>(g_StateMachine->GetState(STATE_MAINSTATE))->SetLuaFunction(g_ScriptingSystem->m_currentScript);
+        auto* main = dynamic_cast<MainState*>(g_StateMachine->GetState(STATE_MAINSTATE));
+        if (main)
+        {
+            const int forced = main->TakeForcedSpellTarget();
+            if (forced > 0)
+            {
+                // Scripts expect a position/object table from modal select; return object id
+                // the same way click_on_item does for combat forced targets.
+                lua_pushinteger(L, forced);
+                return 1;
+            }
+            main->StartObjectSelectionMode();
+            main->SetLuaFunction(g_ScriptingSystem->m_currentScript);
+        }
     }
 
     return lua_yield(L, 0);
@@ -2960,21 +2973,24 @@ static int LuaFindDirectionBetween(lua_State *L)
     Vector3 from_pos = g_objectList[from_obj_id]->GetPos();
     Vector3 to_pos = g_objectList[to_obj_id]->GetPos();
 
-    // Calculate direction (0-7): 0=North, 1=NE, 2=East, 3=SE, 4=South, 5=SW, 6=West, 7=NW
-    float dx = to_pos.x - from_pos.x;
-    float dz = to_pos.z - from_pos.z;
+    // Direction 0-7 must match UC_FACE_DIR / Exult: 0=N, 1=NE, 2=E, 3=SE, 4=S, 5=SW, 6=W, 7=NW.
+    // Engine axes: +X east, +Z south, so north is -Z. Old atan2(dz,dx)-90 was 180° off.
+    const float dx = to_pos.x - from_pos.x;
+    const float dz = to_pos.z - from_pos.z;
+    if (dx * dx + dz * dz < 1e-8f)
+    {
+        lua_pushinteger(L, 0);
+        return 1;
+    }
 
-    // Calculate angle in radians, then convert to 0-7 direction
-    float angle = atan2(dz, dx); // atan2(y, x) in standard coords
-    // Convert to degrees: 0 = East, 90 = South, 180 = West, 270 = North
-    float degrees = angle * 180.0f / 3.14159265f;
+    // Angle from north, clockwise: atan2(east, north) = atan2(dx, -dz).
+    float degrees = atan2f(dx, -dz) * (180.0f / 3.14159265f);
+    if (degrees < 0.0f)
+        degrees += 360.0f;
 
-    // Adjust so 0 = North: rotate by -90 degrees
-    degrees = degrees - 90.0f;
-    if (degrees < 0) degrees += 360.0f;
-
-    // Convert to 0-7 (8 directions), rounding to nearest
     int direction = (int)((degrees + 22.5f) / 45.0f) % 8;
+    if (direction < 0)
+        direction += 8;
 
     lua_pushinteger(L, direction);
     return 1;
@@ -3631,29 +3647,147 @@ static int LuaGetContainerOf(lua_State *L)
     return 1;
 }
 
-// 0x0041 | set_to_attack
+// Exult UI_begin_casting_mode(npc [, shape=859]) — arm glow for next cast script.
+static int LuaBeginCastingMode(lua_State *L)
+{
+    const int n = lua_gettop(L);
+    if (n < 1)
+        return 0;
+
+    int objId = (int)lua_tointeger(L, 1);
+    const int shape = (n >= 2) ? (int)lua_tointeger(L, 2) : 859;
+
+    U7Object* obj = GetObjectFromID(objId);
+    if (!obj && g_NPCData.find(objId) != g_NPCData.end() && g_NPCData[objId])
+        obj = GetObjectFromID(g_NPCData[objId]->m_objectID);
+    if (!obj)
+        return 0;
+
+    obj->BeginCasting(shape);
+    return 0;
+}
+
+// spawn_floating_combat_text(objectref, text [, r, g, b])
+// World-anchored rising text (same system as combat damage numbers). Works in
+// and out of combat. Default color is white when r,g,b omitted.
+static int LuaSpawnFloatingCombatText(lua_State *L)
+{
+	const int n = lua_gettop(L);
+	if (n < 2)
+		return 0;
+
+	const int objId = (int)luaL_checkinteger(L, 1);
+	const char* text = luaL_checkstring(L, 2);
+	if (!text || !text[0])
+		return 0;
+
+	unsigned char r = 255, g = 255, b = 255;
+	if (n >= 5)
+	{
+		r = static_cast<unsigned char>(std::clamp((int)luaL_checkinteger(L, 3), 0, 255));
+		g = static_cast<unsigned char>(std::clamp((int)luaL_checkinteger(L, 4), 0, 255));
+		b = static_cast<unsigned char>(std::clamp((int)luaL_checkinteger(L, 5), 0, 255));
+	}
+
+	U7Object* obj = GetObjectFromID(objId);
+	if (!obj && g_NPCData.find(objId) != g_NPCData.end() && g_NPCData[objId])
+		obj = GetObjectFromID(g_NPCData[objId]->m_objectID);
+	if (!obj)
+		return 0;
+
+	Vector3 pos = obj->m_centerPoint;
+	pos.y += 1.35f; // same head anchor as damage numbers / HP bars
+	SpawnFloatingCombatText(pos, text, Color{ r, g, b, 255 });
+	return 0;
+}
+
+// Spell gate used by Lua spell scripts. Mana/reagents are already checked by the
+// spellbook for book casts. On success, start casting-mode so the next usecode
+// array shows SHAPES.VGA 859 (blue arms).
+static int LuaCheckSpellRequirements(lua_State *L)
+{
+    int casterId = -1;
+    if (lua_gettop(L) >= 1 && lua_isnumber(L, 1))
+        casterId = (int)lua_tointeger(L, 1);
+    else if (g_currentSpellCasterObjectId >= 0)
+        casterId = g_currentSpellCasterObjectId;
+
+    if (casterId >= 0)
+    {
+        U7Object* caster = GetObjectFromID(casterId);
+        if (!caster && g_NPCData.find(casterId) != g_NPCData.end() && g_NPCData[casterId])
+            caster = GetObjectFromID(g_NPCData[casterId]->m_objectID);
+        if (caster)
+            caster->BeginCasting(859);
+    }
+
+    lua_pushboolean(L, 1);
+    return 1;
+}
+
+// 0x0041 | set_to_attack(from, to, weaponshape)  — Exult order
+// Decompiler often emits set_to_attack(weaponshape, to, from).
+// Object ids and shape ids share the same integer space, so never treat
+// "GetObjectFromID(shape) != null" as proof that arg1 is an attacker.
+// Stores target + weapon for UC_ATTACK (0x7A) so cast scripts can fire mid-anim.
 static int LuaSetToAttack(lua_State *L)
 {
-    int attacker_id = (int)lua_tointeger(L, 1);
-    int target_id = (int)lua_tointeger(L, 2);
-    // int weapon_id = (int)lua_tointeger(L, 3);
-
-    // Check if attacker NPC exists
-    if (g_objectList.find(attacker_id) == g_objectList.end())
+    const int n = lua_gettop(L);
+    if (n < 3)
     {
         lua_pushinteger(L, 0);
         return 1;
     }
 
-    U7Object* attacker = g_objectList[attacker_id].get();
-    if (attacker->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_NPC || !attacker->m_NPCData)
+    const int a = (int)lua_tointeger(L, 1);
+    const int b = (int)lua_tointeger(L, 2);
+    const int c = (int)lua_tointeger(L, 3);
+
+    auto asActor = [](int id) -> U7Object* {
+        U7Object* o = GetObjectFromID(id);
+        if (!o)
+            return nullptr;
+        if (o->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC ||
+            o->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_MONSTER)
+            return o;
+        return nullptr;
+    };
+
+    U7Object* attacker = nullptr;
+    int targetId = b;
+    int weaponShape = 0;
+
+    if (U7Object* atk = asActor(a))
+    {
+        // Exult: (attacker, target, weaponShape)
+        attacker = atk;
+        weaponShape = c;
+    }
+    else if (U7Object* atk = asActor(c); atk && a > 0 && a < 1024)
+    {
+        // Decompiler: (weaponShape, target, attacker)
+        attacker = atk;
+        weaponShape = a;
+    }
+    else
+    {
+        attacker = GetObjectFromID(a);
+        weaponShape = c;
+    }
+
+    if (!attacker || weaponShape <= 0 || weaponShape >= 1024)
     {
         lua_pushinteger(L, 0);
         return 1;
     }
 
-    // Set the target as the oppressor (who this NPC should attack)
-    attacker->m_NPCData->oppressor = target_id;
+    int resolvedTarget = targetId;
+    if (U7Object* t = GetObjectFromID(targetId))
+        resolvedTarget = static_cast<int>(t->m_ID);
+
+    attacker->SetUsecodeAttackTarget(resolvedTarget, weaponShape);
+    if (attacker->m_NPCData)
+        attacker->m_NPCData->oppressor = resolvedTarget;
 
     lua_pushinteger(L, 1);
     return 1;
@@ -3713,19 +3847,28 @@ static int LuaAttackObject(lua_State *L)
     return 1;
 }
 
-// 0x0076 | fire_projectile
+// 0x0076 | fire_projectile(shape, from_id, to_id, speed [, damage [, damage_type]])
+// Spawns a homing missile (e.g. shape 856 fire bolt for Vas Flam). Damage is
+// applied on impact; damage_type 1 = fire. Defaults: damage=10, damage_type=1.
 static int LuaFireProjectile(lua_State *L)
 {
-    // int source_id = (int)lua_tointeger(L, 1);
-    // int direction = (int)lua_tointeger(L, 2);
-    // int projectile_shape = (int)lua_tointeger(L, 3);
-    // int attack_points = (int)lua_tointeger(L, 4);
-    // int weapon_id = (int)lua_tointeger(L, 5);
-    // int ammo_id = (int)lua_tointeger(L, 6);
+    const int n = lua_gettop(L);
+    if (n < 3)
+    {
+        lua_pushboolean(L, 0);
+        return 1;
+    }
 
-    // Projectile system not implemented
-    // Would spawn moving projectile with damage
-    return 0;
+    const int shape = (int)luaL_checkinteger(L, 1);
+    const int fromId = (int)luaL_checkinteger(L, 2);
+    const int toId = (int)luaL_checkinteger(L, 3);
+    const float speed = (n >= 4) ? (float)luaL_optnumber(L, 4, 18.0) : 18.0f;
+    const int damage = (n >= 5) ? (int)luaL_optinteger(L, 5, 10) : 10;
+    const int damageType = (n >= 6) ? (int)luaL_optinteger(L, 6, 1) : 1;
+
+    const bool ok = SpawnFlyingProjectile(shape, fromId, toId, speed, damage, damageType);
+    lua_pushboolean(L, ok ? 1 : 0);
+    return 1;
 }
 
 // 0x007A | call_guards
@@ -3779,23 +3922,22 @@ static int LuaApplyDamage(lua_State *L)
     }
 
     U7Object* target = g_objectList[target_id].get();
-    target->m_hp -= hit_points;
+    if (target->IsDeathStatus() || target->GetIsDead())
+    {
+        lua_pushboolean(L, 1);
+        return 1;
+    }
 
+    U7Object* attacker = nullptr;
     if (attacker_id >= 0)
     {
         auto it = g_objectList.find(attacker_id);
         if (it != g_objectList.end() && it->second)
-            target->NotifyAttackedBy(it->second.get());
+            attacker = it->second.get();
     }
 
-    if (target->m_hp <= 0 && target->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC && target->m_NPCData)
-    {
-        target->m_NPCData->status |= 0x0008;  // Set dead bit
-        lua_pushboolean(L, 1);  // Target died
-        return 1;
-    }
-
-    lua_pushboolean(L, 0);  // Target survived
+    const bool died = ApplyCombatDamage(target, static_cast<float>(hit_points), attacker);
+    lua_pushboolean(L, died ? 1 : 0);
     return 1;
 }
 
@@ -3810,13 +3952,8 @@ static int LuaReduceHealth(lua_State *L)
     if (g_objectList.find(object_id) != g_objectList.end())
     {
         U7Object* target = g_objectList[object_id].get();
-        target->m_hp -= hit_points;
-
-        // Check if target died
-        if (target->m_hp <= 0 && target->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC && target->m_NPCData)
-        {
-            target->m_NPCData->status |= 0x0008;  // Set dead bit
-        }
+        if (!target->IsDeathStatus() && !target->GetIsDead())
+            ApplyCombatDamage(target, static_cast<float>(hit_points), nullptr);
     }
 
     return 0;
@@ -3960,10 +4097,8 @@ static int LuaIsDead(lua_State *L)
         return 1;
     }
 
-    // In Exult, status bit 3 (value 0x0008) indicates dead
-    bool is_dead = (obj->m_NPCData->status & 0x0008) != 0;
-
-    lua_pushboolean(L, is_dead);
+    // Dead = Obj_flags::dead / npc.dat bit 15 — not status 0x0008 (that is Good alignment).
+    lua_pushboolean(L, obj->IsDeathStatus() ? 1 : 0);
     return 1;
 }
 
@@ -4033,11 +4168,13 @@ static int LuaKillNPC(lua_State *L)
 {
     int npc_id = (int)lua_tointeger(L, 1);
 
-    // Set NPC's dead status bit
-    if (g_NPCData.find(npc_id) != g_NPCData.end())
+    if (g_NPCData.find(npc_id) != g_NPCData.end() && g_NPCData[npc_id])
     {
-        // Set bit 3 (0x0008) to mark as dead
-        g_NPCData[npc_id]->status |= 0x0008;
+        U7Object* obj = GetObjectFromID(g_NPCData[npc_id]->m_objectID);
+        if (obj)
+            obj->ApplyDeath();
+        else
+            g_NPCData[npc_id]->status |= kNpcDatStatusDead;
     }
 
     return 0;
@@ -4048,31 +4185,86 @@ static int LuaResurrect(lua_State *L)
 {
     int npc_id = (int)lua_tointeger(L, 1);
 
-    // Clear NPC's dead status bit and restore health
-    if (g_NPCData.find(npc_id) != g_NPCData.end())
+    if (g_NPCData.find(npc_id) != g_NPCData.end() && g_NPCData[npc_id])
     {
-        NPCData* npc = g_NPCData[npc_id].get();
-
-        // Clear bit 3 (0x0008) to mark as alive
-        npc->status &= ~0x0008;
-
-        // Restore health to full (strength is max HP)
-        // In full implementation, would also restore HP in U7Object
+        U7Object* obj = GetObjectFromID(g_NPCData[npc_id]->m_objectID);
+        if (obj)
+            obj->ResurrectFromDeath();
+        else
+            g_NPCData[npc_id]->status &= ~kNpcDatStatusDead;
     }
 
     return 0;
 }
 
-// 0x0047 | summon
+// 0x0047 | summon([unknown_bool,] shape) — spawn a monster of the given SHAPES shape
+// near the Avatar (Swarm uses insects shape 517). Exult decompiles as summon(false, shape).
 static int LuaSummon(lua_State *L)
 {
-    int shape = (int)lua_tointeger(L, 1);
-    // bool unknown = (lua_gettop(L) >= 2) ? lua_toboolean(L, 2) : false;
+	const int n = lua_gettop(L);
+	int shape = 0;
+	if (n >= 2 && lua_isboolean(L, 1))
+		shape = (int)lua_tointeger(L, 2);
+	else if (n >= 1)
+		shape = (int)lua_tointeger(L, 1);
 
-    // In full implementation, would create a new creature object
-    // For now, return nil to indicate summoning not fully implemented
-    lua_pushnil(L);
-    return 1;
+	if (shape <= 0 || shape >= 1024 || !g_mainState)
+	{
+		lua_pushnil(L);
+		return 1;
+	}
+
+	int monsterType = -1;
+	for (int i = 0; i < (int)g_monsterData.size(); ++i)
+	{
+		if (g_monsterData[i].m_shape == shape)
+		{
+			monsterType = i;
+			break;
+		}
+	}
+	if (monsterType < 0)
+	{
+		lua_pushnil(L);
+		return 1;
+	}
+
+	U7Object* anchor = g_Player ? g_Player->GetAvatarObject() : nullptr;
+	if (!anchor && g_currentSpellCasterObjectId >= 0)
+		anchor = GetObjectFromID(g_currentSpellCasterObjectId);
+	if (!anchor)
+	{
+		lua_pushnil(L);
+		return 1;
+	}
+
+	// Scatter around the caster/Avatar (Swarm is not a targeted spell).
+	const int ox = (g_NonVitalRNG ? (int)g_NonVitalRNG->RandomRange(0, 10) - 5 : 0);
+	const int oz = (g_NonVitalRNG ? (int)g_NonVitalRNG->RandomRange(0, 10) - 5 : 0);
+	const int tx = (int)anchor->m_Pos.x + ox;
+	const int tz = (int)anchor->m_Pos.z + oz;
+	const int ty = (int)anchor->m_Pos.y;
+
+	const int id = g_mainState->SpawnMonster(monsterType, tx, ty, tz);
+	if (id < 0)
+	{
+		lua_pushnil(L);
+		return 1;
+	}
+
+	// Party-aligned summons (Swarm insects): 0-damage distraction pests.
+	if (U7Object* spawned = GetObjectFromID(id))
+	{
+		spawned->m_Team = 2;
+		spawned->m_BaseAttack = 0.0f;
+		spawned->m_attackCooldown = 0.5f;
+		spawned->m_cooldownTimer = g_NonVitalRNG
+			? g_NonVitalRNG->RandomRangeFloat(0.0f, 0.5f)
+			: 0.25f;
+	}
+
+	lua_pushinteger(L, id);
+	return 1;
 }
 
 // 0x0046 | sit_down(npc, chair)  — Exult: npc sits on chair object.
@@ -4315,8 +4507,7 @@ static int LuaGetDeadParty(lua_State *L)
         if (party_member->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_NPC || !party_member->m_NPCData)
             continue;
 
-        // Check if dead (status bit 3)
-        if (party_member->m_NPCData->status & 0x0008)
+        if (party_member->IsDeathStatus())
         {
             lua_pushinteger(L, table_index);
             lua_pushinteger(L, party_member_id);
@@ -5167,15 +5358,23 @@ static int LuaBookMode(lua_State *L)
 
 // 0x0033 | click_on_item — Exult: enter use-cursor mode and return the chosen object.
 // Same behavior as object_select_modal (green usepointer); optional arg ignored.
+// Combat queued casts set a forced target so the script does not yield for a click.
 static int LuaClickOnItem(lua_State *L)
 {
-    (void)L;
-    if (g_LuaDebug) NPCDebugPrint("LUA: click_on_item → object selection mode");
     if (g_StateMachine && g_StateMachine->GetCurrentState() == STATE_MAINSTATE)
     {
         auto* main = dynamic_cast<MainState*>(g_StateMachine->GetState(STATE_MAINSTATE));
         if (main)
         {
+            const int forced = main->TakeForcedSpellTarget();
+            if (forced > 0)
+            {
+                if (g_LuaDebug)
+                    NPCDebugPrint("LUA: click_on_item → forced target " + std::to_string(forced));
+                lua_pushinteger(L, forced);
+                return 1;
+            }
+            if (g_LuaDebug) NPCDebugPrint("LUA: click_on_item → object selection mode");
             main->StartObjectSelectionMode();
             main->SetLuaFunction(g_ScriptingSystem->m_currentScript);
         }
@@ -5319,12 +5518,13 @@ static int LuaCauseLight(lua_State *L)
     return 0;
 }
 
-// 0x0048 | display_map
+// 0x0048 | display_map — Peer (Vas Wis) opens the minimap gump.
 static int LuaDisplayMap(lua_State *L)
 {
-    // Map UI not yet implemented
-    // Would show world map overlay
-    return 0;
+	(void)L;
+	if (g_mainState)
+		g_mainState->OpenMinimapGump(0);
+	return 0;
 }
 
 // 0x004F | display_area
@@ -6602,6 +6802,8 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction( "remove_item", LuaRemoveItem);
     g_ScriptingSystem->RegisterScriptFunction( "get_container", LuaGetContainerOf);
     g_ScriptingSystem->RegisterScriptFunction( "set_to_attack", LuaSetToAttack);
+    g_ScriptingSystem->RegisterScriptFunction( "begin_casting_mode", LuaBeginCastingMode);
+    g_ScriptingSystem->RegisterScriptFunction( "check_spell_requirements", LuaCheckSpellRequirements);
     g_ScriptingSystem->RegisterScriptFunction( "set_attack_mode", LuaSetAttackMode);
     g_ScriptingSystem->RegisterScriptFunction( "set_oppressor", LuaSetOppressor);
     g_ScriptingSystem->RegisterScriptFunction( "attack_object", LuaAttackObject);
@@ -6610,6 +6812,7 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction( "in_combat", LuaInCombat);
     g_ScriptingSystem->RegisterScriptFunction( "apply_damage", LuaApplyDamage);
     g_ScriptingSystem->RegisterScriptFunction( "reduce_health", LuaReduceHealth);
+    g_ScriptingSystem->RegisterScriptFunction( "spawn_floating_combat_text", LuaSpawnFloatingCombatText);
     g_ScriptingSystem->RegisterScriptFunction( "get_item_flag", LuaGetItemFlag);
     g_ScriptingSystem->RegisterScriptFunction( "set_item_flag", LuaSetItemFlag);
     g_ScriptingSystem->RegisterScriptFunction( "clear_item_flag", LuaClearItemFlag);

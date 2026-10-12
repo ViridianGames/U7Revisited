@@ -1012,12 +1012,16 @@ function set_oppressor(npc_id, oppressor_id) end
 ---@param target_id integer Target
 function attack_object(npc_id, target_id) end
 
----[Exult 0x0076] Fires a projectile
+---[Exult 0x0076] Fires a homing projectile (e.g. shape 856 fire bolt for Vas Flam).
+---Damage is applied on impact. damage_type 1 = fire.
 ---@param shape integer Projectile shape ID
 ---@param from_obj integer Source object
 ---@param to_obj integer Target object
----@param speed integer Projectile speed
-function fire_projectile(shape, from_obj, to_obj, speed) end
+---@param speed number|nil Flight speed in tiles/sec (default 18)
+---@param damage integer|nil Hit points on impact (default 10)
+---@param damage_type integer|nil Damage type (default 1 = fire)
+---@return boolean ok True if the projectile was spawned
+function fire_projectile(shape, from_obj, to_obj, speed, damage, damage_type) end
 
 ---[Exult 0x007A] Summons guards to attack
 ---@param target_id integer Who guards should attack
@@ -1036,6 +1040,14 @@ function apply_damage(npc_id, amount) end
 ---@param npc_id integer NPC to damage
 ---@param amount integer Amount to reduce
 function reduce_health(npc_id, amount) end
+
+---Spawns rising world text above an object (damage/heal numbers). Works in and out of combat.
+---@param objectref integer Object or NPC id
+---@param text string Display string (e.g. "+12")
+---@param r integer|nil Red 0–255 (default 255)
+---@param g integer|nil Green 0–255 (default 255)
+---@param b integer|nil Blue 0–255 (default 255)
+function spawn_floating_combat_text(objectref, text, r, g, b) end
 
 -- ============================================================================
 -- EXULT INTRINSICS - NPC MANAGEMENT

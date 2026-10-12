@@ -21,10 +21,13 @@
 #include "ConversationState.h"
 #include "GumpManager.h"
 #include "PathfindingSystem.h"
+#include "PerfTelemetry.h"
 #include "Ghost/GhostWindow.h"
 #include "Ghost/GhostSerializer.h"
 #include "NpcListWindow.h"
 #include "SoundSystem.h"
+#include "CombatMode.h"
+#include "CombatState.h"
 
 #include <unordered_set>
 #include <fstream>
@@ -84,6 +87,35 @@ namespace
 	constexpr float kPartyNameBtnHeight = 12.0f; // matches Active/Inactive stretchbutton sprites
 	constexpr float kPartyNameBtnMinWidth = 56.0f;
 	constexpr float kPartyNameBtnMaxWidth = 88.0f;
+
+	// Mode tabs sit one stretchbutton row above the stats panel.
+	constexpr float kStatsPanelTabTop = kPartyNameBtnTop - kPartyNameBtnHeight;
+	constexpr float kStatsPanelTabBoxLeft = kStatsPanelBoxLeft;
+	constexpr float kStatsPanelTabBoxRight = kStatsPanelX + 133.0f;
+	constexpr int kStatsPanelTabCount = 3;
+
+	const char* StatsPanelTabLabel(MainState::StatsPanelMode mode)
+	{
+		switch (mode)
+		{
+		case MainState::StatsPanelMode::Equip: return "Equip";
+		case MainState::StatsPanelMode::Stats: return "Stats";
+		case MainState::StatsPanelMode::Backpack: return "Pack";
+		}
+		return "Stats";
+	}
+
+	Rectangle StatsPanelTabRect(int tabIndex)
+	{
+		const float totalW = kStatsPanelTabBoxRight - kStatsPanelTabBoxLeft;
+		const float btnW = totalW / float(kStatsPanelTabCount);
+		return Rectangle{
+			kStatsPanelTabBoxLeft + float(tabIndex) * btnW,
+			kStatsPanelTabTop,
+			btnW,
+			kPartyNameBtnHeight
+		};
+	}
 
 	std::string PartyMemberDisplayName(int npcId)
 	{
@@ -266,12 +298,13 @@ void MainState::Init(const string& configfile)
 
 	if (m_debugToolsWindow && m_debugToolsWindow->IsValid())
 	{
-		// Position on right side of screen, halfway down
+		// Top of screen, 2px left of the minimap.
 		int windowWidth, windowHeight;
 		m_debugToolsWindow->GetSize(windowWidth, windowHeight);
 
-		int x = GetScreenWidth() - windowWidth - 10;  // 10px from right edge
-		int y = (GetScreenHeight() - windowHeight) / 2;  // Centered vertically
+		const int minimapLeft = GetScreenWidth() - int(g_minimapSize * g_DrawScale);
+		const int x = minimapLeft - windowWidth - 2;
+		const int y = 0;
 
 		m_debugToolsWindow->MoveTo(x, y);
 		// Will be shown/hidden based on game mode in Update()
@@ -325,6 +358,18 @@ void MainState::OnEnter()
 	g_scheduleTime = 2;
 
 	m_heightCutoff = 16.0f; // Draw everything unless the player is inside.
+
+	// Loading finishes after MainState::Init/SetupGame, so chunk membership from
+	// AddObject can still carry spawn-chunk duplicates. Rebuild once on entry so
+	// Avatar/NPC Update cannot run twice from a stale ghost registration.
+	for (int cx = 0; cx < 192; ++cx)
+		for (int cz = 0; cz < 192; ++cz)
+			g_chunkObjectMap[cx][cz].clear();
+	for (const auto& p : g_objectList)
+	{
+		if (p.second && !p.second->m_isContained)
+			AssignObjectChunk(p.second.get());
+	}
 
 	if (m_gameMode == MainStateModes::MAIN_STATE_MODE_TRINSIC_DEMO)
 	{
@@ -440,7 +485,11 @@ void MainState::OnEnter()
 	else
 	{
 		m_paused = false;
-		g_Player->AddPartyMember(1); // Iolo only; Spark is NPC 2 and must not auto-join
+		// Sandbox playtesting uses the female Avatar (walk sheet + shape 989).
+		if (g_Player)
+			g_Player->SetAvatarFemale();
+		g_Player->AddPartyMember(1); // Iolo
+		g_Player->AddPartyMember(2); // Spark (sandbox testing)
 
 		// SpawnMonster(14, 1044.0f, 0.0f, 2182.0f);
 		// SpawnMonster(14, 1042.0f, 0.0f, 2180.0f);
@@ -635,6 +684,14 @@ void MainState::CalculateMouseOverUI()
 	// Stats panel (right side) - drawn at (512, 200), background is 133x136
 	Rectangle statsPanelRect = { 512 * g_DrawScale, 200 * g_DrawScale, 133 * g_DrawScale, 136 * g_DrawScale };
 
+	// Equip / Stats / Backpack tabs above the panel
+	Rectangle statsTabsRect = {
+		kStatsPanelTabBoxLeft * g_DrawScale,
+		kStatsPanelTabTop * g_DrawScale,
+		(kStatsPanelTabBoxRight - kStatsPanelTabBoxLeft) * g_DrawScale,
+		kPartyNameBtnHeight * g_DrawScale
+	};
+
 	// Party name stretchbuttons flush against the stats box body (not the bottom tab)
 	const float partyColW = MeasurePartyNameColumnWidth();
 	const int partyCount = g_Player ? int(g_Player->GetPartyMemberIds().size()) : 0;
@@ -663,6 +720,7 @@ void MainState::CalculateMouseOverUI()
 
 	Vector2 mousePos = GetMousePosition();
 	bool overStats = g_InputSystem->IsMouseInRegion(statsPanelRect);
+	bool overStatsTabs = g_InputSystem->IsMouseInRegion(statsTabsRect);
 	bool overPartyNames = partyCount > 0 && g_InputSystem->IsMouseInRegion(partyNamesRect);
 	bool overMinimap = g_InputSystem->IsMouseInRegion(minimapRect);
 	bool overCharPanel = g_InputSystem->IsMouseInRegion(charPanelRect);
@@ -683,7 +741,7 @@ void MainState::CalculateMouseOverUI()
 		overNpcList = CheckCollisionPointRec(mousePos, npcListRect);
 	}
 
-	g_mouseOverUI = overStats || overPartyNames || overMinimap || overCharPanel || overDebugTools || overNpcList || m_demoHelpScreen->m_Active || m_sandboxHelpScreen->m_Active;
+	g_mouseOverUI = overStats || overStatsTabs || overPartyNames || overMinimap || overCharPanel || overDebugTools || overNpcList || m_demoHelpScreen->m_Active || m_sandboxHelpScreen->m_Active;
 }
 
 void MainState::UpdateInput()
@@ -730,6 +788,19 @@ void MainState::HandleEscapeKey()
 		m_doingObjectSelection = false;
 		m_objectSelectionMode = false;
 		m_luaFunction.clear();
+		return;
+	}
+
+	if (IsCombatSpellTargeting())
+	{
+		AddConsoleString("Spell targeting cancelled.", YELLOW);
+		CancelCombatSpellTargeting();
+		return;
+	}
+
+	if (g_isCombatMode)
+	{
+		LeaveCombatMode();
 		return;
 	}
 
@@ -847,6 +918,10 @@ void MainState::HandleDebugKeys()
 		AddConsoleString(g_showEggs ? "Egg display ON" : "Egg display OFF");
 	}
 
+	// Temporary combat arena: open field north of Trinsic (~967, 2032).
+	if (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyDown(KEY_LEFT_SHIFT) && IsKeyPressed(KEY_D))
+		SpawnDebugDuelingField();
+
 	if (m_showPathfindingDebug && g_InputSystem->WasRButtonClicked())
 	{
 		int worldX = (int)floor(g_terrainUnderMousePointer.x);
@@ -865,21 +940,27 @@ void MainState::HandleGameKeys()
 	}
 
 	if (IsKeyPressed(KEY_SPACE))
-		m_paused = !m_paused;
+	{
+		// In combat, Space is owned by the active combat style; otherwise it pauses simulation.
+		if (g_isCombatMode && m_combatMode)
+			m_combatMode->HandleInput(*this);
+		else if (!g_isCombatMode)
+			m_paused = !m_paused;
+	}
 
 	if (IsKeyPressed(KEY_C))
 	{
-		if (g_StateMachine && g_StateMachine->GetCurrentState() == STATE_COMBATSTATE)
-		{
-			g_StateMachine->PopState();
-		}
+		if (g_isCombatMode)
+			LeaveCombatMode();
 		else if (kCombatStateEnabled)
-		{
-			g_StateMachine->PushState(STATE_COMBATSTATE);
-		}
+			EnterCombatMode();
 	}
 
-	if (IsKeyPressed(KEY_H))
+	if (g_isCombatMode)
+		HandleCombatOrderKeys();
+
+	// While combat orders are paused, H/A are Hold/Automatic (see HandleCombatOrderKeys).
+	if (IsKeyPressed(KEY_H) && !IsCombatOrdersPaused())
 	{
 		if (m_gameMode == MainStateModes::MAIN_STATE_MODE_TRINSIC_DEMO)
 		{
@@ -1281,6 +1362,14 @@ void MainState::HandleLeftDoubleClick()
 		// when the second click successfully uses/opens the object.
 		ClearObjectInfoTooltip();
 
+		// Dead NPCs are lootable corpses — open their inventory, no talk/paperdoll.
+		if (g_objectUnderMousePointer->IsDeathStatus())
+		{
+			m_handledDoubleLeftClickThisFrame = true;
+			OpenGump(g_objectUnderMousePointer->m_ID);
+			return;
+		}
+
 		bool isAvatar = g_objectUnderMousePointer->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC && g_objectUnderMousePointer->m_NPCID == 0;
 		bool isPartyMember = g_objectUnderMousePointer->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC &&
 			g_Player->NPCIDInParty(g_objectUnderMousePointer->m_NPCID);
@@ -1352,6 +1441,14 @@ void MainState::HandleLeftSingleClick()
 	// Double-click use/open already handled this frame — don't show info.
 	if (m_handledDoubleLeftClickThisFrame)
 		return;
+
+	// Combat: orders click when the style allows it; otherwise swallow world clicks while frozen.
+	if (IsCombatOrdersPaused())
+	{
+		if (AllowsCombatPlayerOrders())
+			HandleCombatOrdersClick();
+		return;
+	}
 
 	// Spell/key targeting: world objects and items inside open gumps.
 	if (m_objectSelectionMode)
@@ -1502,6 +1599,10 @@ void MainState::DebugPrintNpcSchedule(U7Object* npc)
 void MainState::HandleAvatarMovement()
 {
 	if (!IsCameraLockedToAvatar())
+		return;
+
+	U7Object* avatarCheck = g_Player ? g_Player->GetAvatarObject() : nullptr;
+	if (avatarCheck && avatarCheck->IsDeathStatus())
 		return;
 
 	if (g_firstPersonEnabled)
@@ -1899,7 +2000,13 @@ void MainState::Update()
 		m_sandboxHelpScreen->m_Active = false;
 	}
 
-	unsigned short currentTargetTile = g_World[(int)g_camera.target.z][(int)g_camera.target.x];
+	int camTileX = (int)g_camera.target.x;
+	int camTileZ = (int)g_camera.target.z;
+	if (camTileX < 0) camTileX = 0;
+	if (camTileX >= 3072) camTileX = 3071;
+	if (camTileZ < 0) camTileZ = 0;
+	if (camTileZ >= 3072) camTileZ = 3071;
+	unsigned short currentTargetTile = g_World[camTileZ][camTileX];
 	currentTargetTile = currentTargetTile & 0x3ff; // We just need the shape, not the frame.
 	U7Object* avatarForCutoff = (g_Player ? g_Player->GetAvatarObject() : nullptr);
 
@@ -1957,6 +2064,11 @@ void MainState::Update()
 	g_gumpManager->Update();
 
 		g_CurrentUpdate++;
+
+		if (g_isCombatMode)
+			UpdateCombatMode();
+
+		UpdateFloatingCombatTexts();
 
 		// Reset per-frame scripting counters to enforce throttling budgets
 		if (g_ScriptingSystem)
@@ -2018,8 +2130,8 @@ void MainState::Update()
 					// — repath from the new stand tile so the first step is clean.
 					if (wasPosed && g_pathfindingSystem)
 					{
-						npcObj->m_pathWaypoints = g_pathfindingSystem->FindPath(
-							npcObj->GetPos(), res.dest, npcObj, /*allowHierarchical=*/false);
+						npcObj->m_pathWaypoints = g_pathfindingSystem->FindFastPath(
+							npcObj->GetPos(), res.dest, npcObj, PathCallerTag::ScheduleFast);
 						if (npcObj->m_pathWaypoints.empty())
 							npcObj->m_pathWaypoints = std::move(res.path);
 					}
@@ -2176,13 +2288,19 @@ void MainState::Update()
 		// IMPORTANT: snapshot pointers first. object->Update() / SetPos can reassign
 		// chunks (UpdateObjectChunk erases from g_chunkObjectMap), and eggs can spawn
 		// into the same chunk — iterating the live vector crashes.
-		const double tObjects0 = GetTime();
+		const double tInterest0 = GetTime();
 		g_interestObjectsUpdated = 0;
 		if (!m_paused)
 		{
 			RebuildInterestCentersFromLocalPlayers();
 			RebuildInterestChunkSet();
+		}
+		const double interestMs = (GetTime() - tInterest0) * 1000.0;
+		g_perf.AddMs(g_perf.msInterest, g_perf.maxMsInterest, interestMs);
 
+		const double tObjects0 = GetTime();
+		if (!m_paused)
+		{
 			static std::vector<U7Object*> interestSnapshot;
 			interestSnapshot.clear();
 			interestSnapshot.reserve(8192);
@@ -2217,6 +2335,13 @@ void MainState::Update()
 				// Statics have no per-frame sim; still refresh draw visibility.
 				if (object->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_STATIC)
 				{
+					switch (object->m_UnitType)
+					{
+					case U7Object::UnitTypes::UNIT_TYPE_NPC: ++g_perf.npcUpdates; break;
+					case U7Object::UnitTypes::UNIT_TYPE_MONSTER: ++g_perf.monsterUpdates; break;
+					case U7Object::UnitTypes::UNIT_TYPE_EGG: ++g_perf.eggUpdates; break;
+					default: ++g_perf.otherUpdates; break;
+					}
 					object->Update();
 				}
 				// Re-check after Update (destroy/contain during hatch scripts).
@@ -2231,6 +2356,11 @@ void MainState::Update()
 		const double objMs = (GetTime() - tObjects0) * 1000.0;
 		m_msObjectsThisSec += objMs;
 		if (objMs > m_maxMsObjects) m_maxMsObjects = objMs;
+		g_perf.AddMs(g_perf.msObjects, g_perf.maxMsObjects, objMs);
+
+		// Spell missiles (e.g. Vas Flam fire bolt 856) move/animate outside object Update.
+		if (!m_paused)
+			UpdateFlyingProjectiles();
 
 		// Roof pop-off must run AFTER the global m_Visible=true pass above and BEFORE
 		// UpdateSortedVisibleObjects (which builds the pick list). Otherwise invisible
@@ -2253,6 +2383,7 @@ void MainState::Update()
 		const double sortMs = (GetTime() - tSort0) * 1000.0;
 		m_msSortThisSec += sortMs;
 		if (sortMs > m_maxMsSort) m_maxMsSort = sortMs;
+		g_perf.AddMs(g_perf.msSort, g_perf.maxMsSort, sortMs);
 
 		// Object lighting uses g_Terrain->m_cellLighting in InteractiveDraw/NPCDraw.
 		// The old per-object CheckLighting (O(visible × lights)) was unused for draw.
@@ -2262,12 +2393,18 @@ void MainState::Update()
 	// after NPCs/Avatar move during object->Update().
 	CameraUpdate();
 
+	// Combat freecam: hard-stop after all pan/follow so the drawn frame never
+	// overshoots the Avatar-on-screen border (early clamp bounced against WASD).
+	if (g_isCombatMode)
+		ClampCombatCameraKeepAvatarOnScreen();
+
 	// Rotate U7 glisten bands (224-254); translucent shapes use static xform bake colors
 	const double tPal0 = GetTime();
 	UpdateRuntimePalette();
 	const double palMs = (GetTime() - tPal0) * 1000.0;
 	m_msPaletteThisSec += palMs;
 	if (palMs > m_maxMsPalette) m_maxMsPalette = palMs;
+	g_perf.msPalette += palMs;
 
 	// Terrain::Update rebuilds lighting + ground RT only when dirty (camera tile,
 	// day/night, dungeon view, palette step, nearby lights).
@@ -2280,9 +2417,11 @@ void MainState::Update()
 	m_msTerrainThisSec += terMs;
 	if (terMs > m_maxMsTerrain) m_maxMsTerrain = terMs;
 	m_terrainUpdateTime = static_cast<int>(terMs);
+	g_perf.AddMs(g_perf.msTerrainUp, g_perf.maxMsTerrainUp, terMs);
 
-	const double sectionSum = objMs + sortMs + palMs + terMs;
+	const double sectionSum = interestMs + objMs + sortMs + palMs + terMs;
 	if (sectionSum > m_maxMsFrameSections) m_maxMsFrameSections = sectionSum;
+	if (sectionSum > g_perf.maxMsFrameSections) g_perf.maxMsFrameSections = sectionSum;
 	++m_framesThisSec;
 
 	UpdateStats();
@@ -2293,12 +2432,13 @@ void MainState::Update()
 		{
 			if (!m_debugToolsWindow->IsVisible())
 			{
-				// Position on right side of screen, halfway down
+				// Top of screen, 2px left of the minimap.
 				int windowWidth, windowHeight;
 				m_debugToolsWindow->GetSize(windowWidth, windowHeight);
 
-				int x = GetScreenWidth() - windowWidth - 10;  // 10px from right edge
-				int y = (GetScreenHeight() - windowHeight) / 2;  // Centered vertically
+				const int minimapLeft = GetScreenWidth() - int(g_minimapSize * g_DrawScale);
+				const int x = minimapLeft - windowWidth - 2;
+				const int y = 0;
 
 				m_debugToolsWindow->MoveTo(x, y);
 				m_debugToolsWindow->Show();
@@ -2517,9 +2657,9 @@ void MainState::PathfindingWorkerLoop()
 						agent = itObj->second.get();
 				}
 
-				// Flat tile A* for schedule destinations (Exult has no chunk layer).
-				path = g_pathfindingSystem->FindPath(req.start, req.dest, agent,
-					/*allowHierarchical=*/false);
+				// Exult Fast A* for schedule destinations (tight max_cost, current floor).
+				path = g_pathfindingSystem->FindFastPath(req.start, req.dest, agent,
+					PathCallerTag::ScheduleFast);
 				success = !path.empty();
 			}
 		}
@@ -2754,6 +2894,17 @@ void MainState::Draw()
 					preferY = origY;
 			}
 
+			// Roof tops are standable for walking, but while the Avatar is below
+			// them the drop ghost must not snap onto the roof (gambling tables, etc.).
+			auto isRoofAboveAvatar = [&](U7Object* obj) -> bool {
+				if (hackMove || !obj || !obj->m_objectData)
+					return false;
+				if (!PathfindingSystem::IsRoofShape(obj->m_ObjectType))
+					return false;
+				const float top = PathfindingSystem::GetObjectSurfaceY(obj);
+				return top > preferY + 0.75f;
+			};
+
 			// Placement XZ must NOT use the y=0 ground pick alone: aiming at the top
 			// of a crate stack makes that ray hit ground beside the stack, so the
 			// ghost never sits on the upper crate. Intersect a horizontal plane at
@@ -2763,7 +2914,8 @@ void MainState::Draw()
 			    (hoverForPick && (hoverForPick->m_isContained ||
 			     hoverForPick->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC ||
 			     hoverForPick->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_MONSTER ||
-			     hoverForPick->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_EGG)))
+			     hoverForPick->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_EGG ||
+			     isRoofAboveAvatar(hoverForPick))))
 			{
 				hoverForPick = nullptr;
 			}
@@ -2834,13 +2986,32 @@ void MainState::Draw()
 					{
 						if (tx < 0 || tz < 0 || tx >= 3072 || tz >= 3072)
 							continue;
-						// Walkable floors/roofs: tighter story band.
+						// Walkable floors: tighter story band. Skip roof heights
+						// above the Avatar — those are walkable but not drop targets indoors.
+						const auto overlapping = g_pathfindingSystem->GetOverlappingObjects(tx, tz);
 						for (float hy : g_pathfindingSystem->GetWalkableSurfaceHeights(tx, tz))
 						{
-							if (hy >= bandMin && hy <= bandMax)
+							if (hy < bandMin || hy > bandMax)
+								continue;
+							bool roofAbove = false;
+							if (!hackMove)
+							{
+								for (const auto& o : overlapping)
+								{
+									if (!o.obj || !PathfindingSystem::IsRoofShape(o.obj->m_ObjectType))
+										continue;
+									const float roofTop = PathfindingSystem::GetObjectSurfaceY(o.obj);
+									if (fabsf(roofTop - hy) <= 0.15f && roofTop > preferY + 0.75f)
+									{
+										roofAbove = true;
+										break;
+									}
+								}
+							}
+							if (!roofAbove)
 								supportTops.push_back(hy);
 						}
-						for (const auto& o : g_pathfindingSystem->GetOverlappingObjects(tx, tz))
+						for (const auto& o : overlapping)
 						{
 							U7Object* obj = o.obj;
 							if (!obj || obj == draggedObject || !obj->m_objectData || obj->m_isContained)
@@ -2848,6 +3019,8 @@ void MainState::Draw()
 							if (obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC ||
 							    obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_MONSTER ||
 							    obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_EGG)
+								continue;
+							if (isRoofAboveAvatar(obj))
 								continue;
 
 							const float top = PathfindingSystem::GetObjectSurfaceY(obj);
@@ -2881,7 +3054,8 @@ void MainState::Draw()
 			    hover->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_NPC &&
 			    hover->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_MONSTER &&
 			    hover->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_EGG &&
-			    !hover->m_isContained)
+			    !hover->m_isContained &&
+			    !isRoofAboveAvatar(hover))
 			{
 				const float top = PathfindingSystem::GetObjectSurfaceY(hover);
 				if (top >= bandMin && top <= stackBandMax &&
@@ -3213,16 +3387,8 @@ void MainState::Draw()
 		}
 	}
 
-	if (g_CombatState && g_CombatState->m_paused && g_CombatState->m_selectedPartyMemberObjectId >= 0)
-	{
-		auto selIt = g_objectList.find(g_CombatState->m_selectedPartyMemberObjectId);
-		if (selIt != g_objectList.end() && selIt->second)
-		{
-			Vector3 pos = selIt->second->m_centerPoint;
-			pos.y += 1.5f;
-			DrawCircle3D(pos, 0.8f, Vector3{ 0.0f, 1.0f, 0.0f }, 360.0f, SKYBLUE);
-		}
-	}
+	if (g_isCombatMode)
+		DrawCombatSelectionCircles();
 
 	EndMode3D();
 
@@ -3326,10 +3492,19 @@ void MainState::Draw()
 		g_SpriteEffectSystem->Draw(g_camera);
 	}
 
+	// World-anchored overlays before gumps so bars/text sit under UI.
+	// Floating heal/damage numbers also show outside combat (e.g. Mani).
+	if (g_isCombatMode)
+		DrawCombatHPBars();
+	DrawFloatingCombatTexts();
+
 	if (!m_paused && m_showUIElements)
 	{
 		g_gumpManager->Draw();
 	}
+
+	if (g_isCombatMode && m_combatMode)
+		m_combatMode->DrawHud(*this);
 
 	// Restore default blend mode
 	rlSetBlendMode(BLEND_ALPHA);
@@ -3405,107 +3580,22 @@ void MainState::Draw()
 
 	DrawRectangle(0, 0, g_Engine->m_ScreenWidth, g_Engine->m_ScreenHeight, { 0, 0, 0, m_currentFadeAlpha });
 
-	// Telemetry summary (per-second aggregation)
-	{
-		float now = GetTime();
-		if (now - m_lastTelemetryDumpTime >= 1.0f)
-		{
-			m_lastTelemetryDumpTime = now;
+	// Per-second subsystem dump (also runs during combat — Draw still executes).
+	PerfTelemetryOnFrame();
 
-			// Queue sizes (sample under locks)
-			size_t reqQueueSize = 0;
-			{
-				std::lock_guard<std::mutex> lk(m_scheduleMutex);
-				reqQueueSize = m_schedulePathQueue.size();
-			}
-			size_t resQueueSize = 0;
-			{
-				std::lock_guard<std::mutex> lk(m_resultMutex);
-				resQueueSize = m_scheduleResults.size();
-			}
-
-			// Script errors delta
-			uint64_t totalScriptErrors = g_ScriptingSystem ? g_ScriptingSystem->m_totalScriptErrors.load() : 0;
-			uint64_t scriptErrorsDelta = totalScriptErrors - m_lastScriptErrorTotal;
-			m_lastScriptErrorTotal = totalScriptErrors;
-
-			// Synchronous FindPath calls observed on main thread
-			uint64_t syncFinds = m_syncFindPathCalls.exchange(0);
-
-			// Results applied this second (accumulated)
-			int resultsApplied = m_resultsAppliedThisSecond;
-			m_resultsAppliedThisSecond = 0;
-
-			const int frames = std::max(1, m_framesThisSec);
-			const int terrainRebuilds = g_Terrain ? g_Terrain->m_rebuildsThisSecond : 0;
-			const int terrainSkips = g_Terrain ? g_Terrain->m_skipsThisSecond : 0;
-			const double terrainRebuildMs = g_Terrain ? g_Terrain->m_rebuildMsThisSecond : 0.0;
-			const char* dirtyReason = g_Terrain ? g_Terrain->m_lastDirtyReason : "n/a";
-
-			// A* peak this second (main-thread path spikes cause hitch even at high avg fps).
-			uint64_t astarMaxMs = g_pathfindingSystem ? g_pathfindingSystem->m_astarMaxMs.load() : 0;
-			// Note: m_astarMaxMs is lifetime max; report delta via exchange if we only want per-sec.
-			// Use totalMs/calls for avg; max is process lifetime — still useful when large.
-
-			std::ostringstream ss;
-			ss << std::fixed << std::setprecision(2);
-			ss << "TELEMETRY: fps~" << frames
-				<< " avg objects=" << (m_msObjectsThisSec / frames)
-				<< " sort=" << (m_msSortThisSec / frames)
-				<< " palette=" << (m_msPaletteThisSec / frames)
-				<< " terrain=" << (m_msTerrainThisSec / frames)
-				<< " | max objects=" << m_maxMsObjects
-				<< " sort=" << m_maxMsSort
-				<< " palette=" << m_maxMsPalette
-				<< " terrain=" << m_maxMsTerrain
-				<< " sections=" << m_maxMsFrameSections
-				<< " | terrain rebuilds/s=" << terrainRebuilds
-				<< " skips/s=" << terrainSkips
-				<< " rebuildMs/s=" << (int)terrainRebuildMs
-				<< " lastDirty=" << dirtyReason
-				<< " visible=" << g_sortedVisibleObjects.size()
-				<< " interestObj=" << g_interestObjectsUpdated
-				<< " interestChunks=" << g_interestChunkCount
-				<< " centers=" << g_interestCenterCount
-				<< " | AStar/s=" << callsDelta
-				<< " avgAstarMs=" << (int)avgAstarMs
-				<< " lifetimeAstarMaxMs=" << astarMaxMs
-				<< " syncFind/s=" << syncFinds;
-			const std::string line = ss.str();
-			// Telemetry dump suppressed for now (still accumulate/reset counters above).
-			constexpr bool kDumpTelemetry = false;
-			if (kDumpTelemetry)
-			{
-				//DebugPrint(line);
-				Log(line);
-				std::ofstream tel("telemetry.txt", std::ios::app);
-				if (tel)
-				{
-					tel << line << '\n';
-					tel.flush();
-				}
-				//AddConsoleString(line, YELLOW);
-			}
-			(void)line;
-
-			m_msObjectsThisSec = 0.0;
-			m_msSortThisSec = 0.0;
-			m_msPaletteThisSec = 0.0;
-			m_msTerrainThisSec = 0.0;
-			m_maxMsObjects = 0.0;
-			m_maxMsSort = 0.0;
-			m_maxMsPalette = 0.0;
-			m_maxMsTerrain = 0.0;
-			m_maxMsFrameSections = 0.0;
-			m_framesThisSec = 0;
-			if (g_Terrain)
-			{
-				g_Terrain->m_rebuildsThisSecond = 0;
-				g_Terrain->m_skipsThisSecond = 0;
-				g_Terrain->m_rebuildMsThisSecond = 0.0;
-			}
-		}
-	}
+	// Keep legacy per-sec accumulators from growing forever (dump moved to g_perf).
+	m_msObjectsThisSec = 0.0;
+	m_msSortThisSec = 0.0;
+	m_msPaletteThisSec = 0.0;
+	m_msTerrainThisSec = 0.0;
+	m_maxMsObjects = 0.0;
+	m_maxMsSort = 0.0;
+	m_maxMsPalette = 0.0;
+	m_maxMsTerrain = 0.0;
+	m_maxMsFrameSections = 0.0;
+	m_framesThisSec = 0;
+	m_resultsAppliedThisSecond = 0;
+	m_syncFindPathCalls.exchange(0);
 }
 
 void MainState::SetupGame()
@@ -3531,6 +3621,9 @@ void MainState::SetupGame()
 	// Load optional configs
 	LoadSpellData();
 	LoadEquipmentSlotsConfig();
+	LoadWeaponData();
+	LoadAmmoData();
+	LoadArmorData();
 }
 
 void MainState::RebuildWorldFromLoadedData()
@@ -3655,10 +3748,62 @@ void MainState::RebuildWorldFromLoadedData()
 	Log("MainState::RebuildWorldFromLoadedData - Complete");
 }
 
+void MainState::SetStatsPanelMode(StatsPanelMode mode)
+{
+	m_statsPanelMode = mode;
+	if (mode == StatsPanelMode::Equip)
+		EnsureStatsPanelPaperdoll();
+}
+
+void MainState::EnsureStatsPanelPaperdoll()
+{
+	if (!g_Player)
+		return;
+	const int selectedNpcId = g_Player->GetSelectedPartyMember();
+	if (!m_statsPanelPaperdoll)
+		m_statsPanelPaperdoll = std::make_shared<GumpPaperdoll>();
+	if (m_statsPanelPaperdollNpcId != selectedNpcId || !m_statsPanelPaperdoll->IsEmbedded())
+	{
+		// Nudge 5px left so the paperdoll sits flush with the stats box body.
+		m_statsPanelPaperdoll->SetupEmbedded(selectedNpcId, Vector2{ kStatsPanelX - 5.0f, kPartyNameBtnTop });
+		m_statsPanelPaperdollNpcId = selectedNpcId;
+	}
+}
+
 void MainState::DrawStats()
 {
-	//  Draw background
+	// Mode tabs above the panel (Equip / Stats / Backpack).
+	for (int i = 0; i < kStatsPanelTabCount; ++i)
+	{
+		const auto mode = static_cast<StatsPanelMode>(i);
+		const Rectangle btn = StatsPanelTabRect(i);
+		DrawPartyNameStretchButton(btn.x, btn.y, btn.width, StatsPanelTabLabel(mode),
+			mode == m_statsPanelMode);
+	}
+
+	// Party member name stretchbuttons — fixed-width column flush to the stats box body.
+	const float partyColW = MeasurePartyNameColumnWidth();
+	for (int i = 0; i < int(g_Player->GetPartyMemberIds().size()); ++i)
+	{
+		const int npcId = g_Player->GetPartyMemberIds()[i];
+		const Rectangle btn = PartyNameButtonRect(i, partyColW);
+		const bool selected = (npcId == g_Player->GetSelectedPartyMember());
+		DrawPartyNameStretchButton(btn.x, btn.y, btn.width, PartyMemberDisplayName(npcId), selected);
+	}
+
+	if (m_statsPanelMode == StatsPanelMode::Equip)
+	{
+		EnsureStatsPanelPaperdoll();
+		if (m_statsPanelPaperdoll)
+			m_statsPanelPaperdoll->Draw();
+		return;
+	}
+
+	// Stats and Backpack-stub both use the stats background; Backpack has no content yet.
 	DrawTexture(*g_statsBackground.get(), 512, 200, WHITE);
+
+	if (m_statsPanelMode == StatsPanelMode::Backpack)
+		return;
 
 	//  Draw stat numbers
 	int str;
@@ -3723,16 +3868,6 @@ void MainState::DrawStats()
 	DrawStatsValueRight(to_string(level), 208.0f + 9 * yoffset + 5);
 	DrawStatsValueRight(to_string(trainingpoints), 208.0f + 10 * yoffset + 6);
 
-	// Party member name stretchbuttons — fixed-width column flush to the stats box body.
-	const float partyColW = MeasurePartyNameColumnWidth();
-	for (int i = 0; i < int(g_Player->GetPartyMemberIds().size()); ++i)
-	{
-		const int npcId = g_Player->GetPartyMemberIds()[i];
-		const Rectangle btn = PartyNameButtonRect(i, partyColW);
-		const bool selected = (npcId == g_Player->GetSelectedPartyMember());
-		DrawPartyNameStretchButton(btn.x, btn.y, btn.width, PartyMemberDisplayName(npcId), selected);
-	}
-
 	DrawOutlinedText(g_SmallFont, "Gold: " + to_string(g_Player->GetGold()), { 542, 208.0f + 11 * yoffset + 8 }, g_SmallFont.get()->baseSize, 1, WHITE);
 
 	// Weight for the currently selected party member (current / max from their strength).
@@ -3753,6 +3888,20 @@ void MainState::DrawStats()
 
 void MainState::UpdateStats()
 {
+	// Mode tabs (mutually exclusive).
+	for (int i = 0; i < kStatsPanelTabCount; ++i)
+	{
+		const Rectangle logical = StatsPanelTabRect(i);
+		const Rectangle hitRect = {
+			logical.x * g_DrawScale,
+			logical.y * g_DrawScale,
+			logical.width * g_DrawScale,
+			logical.height * g_DrawScale
+		};
+		if (g_InputSystem->WasLButtonClickedInRegion(hitRect.x, hitRect.y, hitRect.width, hitRect.height))
+			SetStatsPanelMode(static_cast<StatsPanelMode>(i));
+	}
+
 	const float partyColW = MeasurePartyNameColumnWidth();
 	for (int i = 0; i < int(g_Player->GetPartyMemberIds().size()); ++i)
 	{
@@ -3765,7 +3914,7 @@ void MainState::UpdateStats()
 			logical.height * g_DrawScale
 		};
 
-		// Double-click still opens/closes that member's paperdoll.
+		// Double-click still opens/closes that member's floating paperdoll.
 		if (g_InputSystem->WasLButtonDoubleClicked() && CheckCollisionPointRec(GetMousePosition(), hitRect))
 		{
 			TogglePaperdoll(npcId);
@@ -3773,8 +3922,21 @@ void MainState::UpdateStats()
 		else if (g_InputSystem->WasLButtonClickedInRegion(hitRect.x, hitRect.y, hitRect.width, hitRect.height))
 		{
 			g_Player->SetSelectedPartyMember(npcId);
+			if (m_statsPanelMode == StatsPanelMode::Equip)
+				EnsureStatsPanelPaperdoll();
 		}
 	}
+
+	if (m_statsPanelMode == StatsPanelMode::Equip)
+	{
+		EnsureStatsPanelPaperdoll();
+		if (m_statsPanelPaperdoll)
+			m_statsPanelPaperdoll->Update();
+		return;
+	}
+
+	if (m_statsPanelMode != StatsPanelMode::Stats)
+		return;
 
 	if (g_InputSystem->WasLButtonClickedInRegion(610 * g_DrawScale, 314 * g_DrawScale, 16 * g_DrawScale, 10 * g_DrawScale ))
 	{
@@ -4199,6 +4361,617 @@ bool MainState::IsNpcSchedulesEnabled() const
 	return m_npcSchedulesEnabled;
 }
 
+bool MainState::IsCombatOrdersPaused() const
+{
+	if (!g_isCombatMode || !m_combatMode)
+		return false;
+	return m_combatMode->IsSimulationPaused();
+}
+
+bool MainState::AllowsCombatPlayerOrders() const
+{
+	if (!g_isCombatMode || !m_combatMode)
+		return false;
+	return m_combatMode->AllowsPlayerOrders();
+}
+
+bool MainState::IsCombatPartyMemberObject(const U7Object* obj) const
+{
+	if (!obj || !g_Player)
+		return false;
+	if (obj->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_NPC)
+		return false;
+	return g_Player->NPCIDInParty(obj->m_NPCID);
+}
+
+bool MainState::IsCombatEnemyObject(const U7Object* obj) const
+{
+	if (!obj || obj->m_hp <= 0.0f || obj->IsDeathStatus())
+		return false;
+	if (IsCombatPartyMemberObject(obj))
+		return false;
+	// Team 2 = party summons (Swarm); allied, never clickable as enemies.
+	if (obj->m_Team == 2)
+		return false;
+	if (IsHostileCombatUnit(obj))
+		return true;
+	return std::find(m_combatParticipants.begin(), m_combatParticipants.end(), obj->m_ID)
+		!= m_combatParticipants.end();
+}
+
+void MainState::StopCombatUnitActions(U7Object* member)
+{
+	if (!member)
+		return;
+	member->m_target = 0;
+	member->m_combatSpellId = -1;
+	member->m_combatSpellTargetId = 0;
+	member->m_combatMoveOrder = false;
+	member->m_combatPathTargetId = 0;
+	member->m_pathWaypoints.clear();
+	member->m_currentWaypointIndex = 0;
+	member->m_pathfindingPending = false;
+	member->m_isSchedulePath = false;
+	member->m_moveStuckFrames = 0;
+	member->ClearPendingUsecode();
+	member->SetDest(member->GetPos());
+	member->m_isMoving = false;
+}
+
+void MainState::ClearCombatPartyTargets()
+{
+	if (!g_Player)
+		return;
+	for (int npcId : g_Player->GetPartyMemberIds())
+	{
+		auto itNpc = g_NPCData.find(npcId);
+		if (itNpc == g_NPCData.end() || !itNpc->second)
+			continue;
+		auto itObj = g_objectList.find(itNpc->second->m_objectID);
+		if (itObj == g_objectList.end() || !itObj->second)
+			continue;
+
+		U7Object* member = itObj->second.get();
+		StopCombatUnitActions(member);
+		member->m_combatOrderMode = CombatOrderMode::Automatic;
+		member->m_cooldownTimer = 0.0;
+	}
+}
+
+const char* MainState::CombatOrderModeName(CombatOrderMode mode)
+{
+	switch (mode)
+	{
+	case CombatOrderMode::Hold: return "Hold";
+	case CombatOrderMode::Attack: return "Attack";
+	case CombatOrderMode::Move: return "Move";
+	case CombatOrderMode::Automatic:
+	default: return "Automatic";
+	}
+}
+
+bool MainState::HasManualCombatOrder(const U7Object* member) const
+{
+	return member && member->m_combatOrderMode != CombatOrderMode::Automatic;
+}
+
+std::string MainState::DescribeCombatOrder(const U7Object* member) const
+{
+	if (!member)
+		return "Automatic";
+	switch (member->m_combatOrderMode)
+	{
+	case CombatOrderMode::Hold:
+		return "Hold";
+	case CombatOrderMode::Move:
+		return "Move";
+	case CombatOrderMode::Attack:
+	{
+		if (member->m_combatSpellId >= 0)
+		{
+			SpellData* spell = GetSpellData(member->m_combatSpellId);
+			const std::string spellName = spell ? spell->name : "spell";
+			if (spell && !spell->targeted)
+				return "Cast " + spellName;
+			U7Object* target = GetObjectFromID(member->m_combatSpellTargetId);
+			const std::string targetName = (target && !target->m_name.empty()) ? target->m_name : "target";
+			return "Cast " + spellName + " on " + targetName;
+		}
+		U7Object* target = GetObjectFromID(member->m_target);
+		const std::string targetName = (target && !target->m_name.empty()) ? target->m_name : "target";
+		return "Attack " + targetName;
+	}
+	case CombatOrderMode::Automatic:
+	default:
+		return "Automatic";
+	}
+}
+
+void MainState::SetCombatOrderMode(U7Object* member, CombatOrderMode mode)
+{
+	if (!member)
+		return;
+	member->m_combatOrderMode = mode;
+}
+
+void MainState::IssueCombatHoldOrder(U7Object* member)
+{
+	if (!member)
+		return;
+	StopCombatUnitActions(member);
+	member->m_combatOrderMode = CombatOrderMode::Hold;
+	const std::string name = member->m_name.empty() ? "Party member" : member->m_name;
+	AddConsoleString(name + " will hold position.", GREEN);
+}
+
+void MainState::IssueCombatAutomaticOrder(U7Object* member)
+{
+	if (!member)
+		return;
+	StopCombatUnitActions(member);
+	member->m_combatOrderMode = CombatOrderMode::Automatic;
+	const std::string name = member->m_name.empty() ? "Party member" : member->m_name;
+	AddConsoleString(name + " returns to automatic behavior.", GREEN);
+}
+
+void MainState::IssueCombatAttackOrder(U7Object* member, U7Object* enemy)
+{
+	if (!member || !enemy)
+		return;
+	member->m_target = enemy->m_ID;
+	member->m_combatSpellId = -1;
+	member->m_combatSpellTargetId = 0;
+	member->m_combatMoveOrder = false;
+	member->m_combatOrderMode = CombatOrderMode::Attack;
+
+	const std::string memberName = member->m_name.empty() ? "Party member" : member->m_name;
+	const std::string enemyName = enemy->m_name.empty() ? "enemy" : enemy->m_name;
+	AddConsoleString(
+		memberName + " will attack " + enemyName + " with "
+		+ CombatWeaponDisplayNameForUnit(member) + ".",
+		GREEN);
+}
+
+void MainState::HandleCombatOrderKeys()
+{
+	if (!IsCombatOrdersPaused() || !AllowsCombatPlayerOrders())
+		return;
+	if (g_gumpManager && !g_gumpManager->m_GumpList.empty())
+		return;
+
+	if (!IsKeyPressed(KEY_H) && !IsKeyPressed(KEY_A))
+		return;
+
+	if (m_combatSelectedPartyMemberObjectId < 0)
+	{
+		AddConsoleString("Select a party member first (click them), then press H (Hold) or A (Automatic).", YELLOW);
+		return;
+	}
+
+	U7Object* member = GetObjectFromID(m_combatSelectedPartyMemberObjectId);
+	if (!member || !IsCombatPartyMemberObject(member))
+		return;
+
+	if (IsKeyPressed(KEY_H))
+		IssueCombatHoldOrder(member);
+	else if (IsKeyPressed(KEY_A))
+		IssueCombatAutomaticOrder(member);
+}
+
+void MainState::EnsureCombatParticipant(int objectId)
+{
+	if (objectId <= 0)
+		return;
+	if (std::find(m_combatParticipants.begin(), m_combatParticipants.end(), objectId)
+		== m_combatParticipants.end())
+		m_combatParticipants.push_back(objectId);
+}
+
+void MainState::EnrollNearbyCombatHostiles()
+{
+	U7Object* avatar = g_Player ? g_Player->GetAvatarObject() : nullptr;
+	if (!avatar)
+		return;
+
+	auto consider = [&](U7Object* obj) {
+		if (!obj || !IsHostileCombatUnit(obj))
+			return;
+		const float distSqr = Vector2DistanceSqr(
+			{ obj->m_Pos.x, obj->m_Pos.z },
+			{ avatar->m_Pos.x, avatar->m_Pos.z });
+		if (distSqr > kHostileAggroRangeSqr)
+			return;
+		EnsureCombatParticipant(static_cast<int>(obj->m_ID));
+	};
+
+	if (!g_interestChunkList.empty())
+	{
+		for (int packed : g_interestChunkList)
+		{
+			const int cx = packed & 0xffff;
+			const int cz = (packed >> 16) & 0xffff;
+			if (cx < 0 || cx >= 192 || cz < 0 || cz >= 192)
+				continue;
+			for (U7Object* object : g_chunkObjectMap[cx][cz])
+				consider(object);
+		}
+	}
+	else
+	{
+		for (const auto& [id, obj] : g_objectList)
+		{
+			(void)id;
+			consider(obj.get());
+		}
+	}
+}
+
+void MainState::EnterCombatMode()
+{
+	if (!kCombatStateEnabled || g_isCombatMode)
+		return;
+
+	Log("MainState::EnterCombatMode");
+	SetFirstPersonMouseLook(false);
+
+	const CombatStyle style = GetCombatStylePreference();
+	m_combatMode = CreateCombatMode(style);
+
+	g_isCombatMode = true;
+	m_combatPaused = true;
+	m_combatSelectedPartyMemberObjectId = -1;
+	m_combatParticipants.clear();
+	ClearCombatPartyTargets();
+
+	if (g_combatCursor)
+		g_Cursor = g_combatCursor;
+
+	if (g_Player)
+	{
+		for (int pid : g_Player->GetPartyMemberIds())
+		{
+			auto itNpc = g_NPCData.find(pid);
+			if (itNpc == g_NPCData.end() || !itNpc->second)
+				continue;
+			EnsureCombatParticipant(itNpc->second->m_objectID);
+		}
+	}
+
+	EnrollNearbyCombatHostiles();
+
+	if (!m_combatApproachMessage.empty())
+	{
+		AddConsoleString(m_combatApproachMessage, YELLOW);
+		m_combatApproachMessage.clear();
+	}
+
+	if (m_combatMode)
+		m_combatMode->OnEnter(*this);
+	// Camera lock/unlock is owned by the active combat style (RTwP unlocks).
+}
+
+void MainState::LeaveCombatMode()
+{
+	if (!g_isCombatMode)
+		return;
+
+	Log("MainState::LeaveCombatMode");
+	AddConsoleString("Leaving combat.", GREEN);
+
+	if (m_combatMode)
+		m_combatMode->OnLeave(*this);
+	m_combatMode.reset();
+
+	m_combatParticipants.clear();
+	m_combatSelectedPartyMemberObjectId = -1;
+	m_combatPaused = true;
+	g_isCombatMode = false;
+	m_combatApproachMessage.clear();
+	CancelCombatSpellTargeting();
+	m_forcedSpellTargetObjectId = -1;
+	ClearCombatPartyTargets();
+	// Drop leftover combat chase paths so companions resume formation follow.
+	ClearPartyFollowPaths();
+
+	// Party following requires an Avatar-locked camera.
+	if (!IsCameraLockedToAvatar())
+		LockCameraToAvatar();
+
+	if (g_defaultCursor)
+		g_Cursor = g_defaultCursor;
+}
+
+void MainState::BeginCombatFighting()
+{
+	CancelCombatSpellTargeting();
+	m_combatPaused = false;
+	// Keep selection so ground rings / target highlight stay visible while fighting.
+	AddConsoleString("Fight!", RED);
+	FireQueuedCombatSpells();
+}
+
+void MainState::PauseCombatForOrders()
+{
+	m_combatPaused = true;
+	AddConsoleString("Combat paused.", YELLOW);
+	AddConsoleString("Click a party member, then click an enemy or the ground to assign orders.", WHITE);
+	AddConsoleString("H: Hold   A: Automatic   Spellbook: cast on any target.", WHITE);
+	AddConsoleString("Press Space when ready to resume.", WHITE);
+}
+
+bool MainState::BeginCombatSpellTargeting(int spellId, int casterObjectId)
+{
+	SpellData* spell = GetSpellData(spellId);
+	if (!spell)
+		return false;
+
+	m_combatSpellTargetingSpellId = spellId;
+	m_combatSpellTargetingCasterId = casterObjectId;
+	m_combatSelectedPartyMemberObjectId = casterObjectId;
+
+	const std::string label = spell->words.empty()
+		? spell->name
+		: (spell->name + " (" + spell->words + ")");
+	AddConsoleString("Select a target for " + label + ".", SKYBLUE);
+	return true;
+}
+
+void MainState::CancelCombatSpellTargeting()
+{
+	m_combatSpellTargetingSpellId = -1;
+	m_combatSpellTargetingCasterId = -1;
+}
+
+int MainState::TakeForcedSpellTarget()
+{
+	const int id = m_forcedSpellTargetObjectId;
+	m_forcedSpellTargetObjectId = -1;
+	return id;
+}
+
+void MainState::IssueCombatSpellOrder(U7Object* caster, int spellId, U7Object* target)
+{
+	if (!caster)
+		return;
+
+	SpellData* spell = GetSpellData(spellId);
+	if (!spell)
+		return;
+
+	// Untargeted spells (Swarm, etc.) use the caster as a placeholder target id.
+	if (!target)
+		target = caster;
+
+	caster->m_combatSpellId = spellId;
+	caster->m_combatSpellTargetId = target->m_ID;
+	caster->m_target = spell->targeted ? target->m_ID : 0;
+	caster->m_combatMoveOrder = false;
+	// Queued cast is the current manual order; do not fall into Auto/melee.
+	caster->m_combatOrderMode = CombatOrderMode::Attack;
+
+	const std::string casterName = caster->m_name.empty() ? "Caster" : caster->m_name;
+	const std::string label = spell->words.empty()
+		? spell->name
+		: (spell->name + " (" + spell->words + ")");
+	if (!spell->targeted || target == caster)
+		AddConsoleString(casterName + " will cast " + label + ".", GREEN);
+	else
+	{
+		const std::string targetName = target->m_name.empty() ? "target" : target->m_name;
+		AddConsoleString(casterName + " will cast " + label + " on " + targetName + ".", GREEN);
+	}
+}
+
+void MainState::FireQueuedCombatSpells()
+{
+	if (!g_Player)
+		return;
+
+	for (int npcId : g_Player->GetPartyMemberIds())
+	{
+		auto itNpc = g_NPCData.find(npcId);
+		if (itNpc == g_NPCData.end() || !itNpc->second)
+			continue;
+		auto itObj = g_objectList.find(itNpc->second->m_objectID);
+		if (itObj == g_objectList.end() || !itObj->second)
+			continue;
+
+		U7Object* caster = itObj->second.get();
+		if (caster->m_combatSpellId < 0 || caster->m_combatSpellTargetId <= 0)
+			continue;
+
+		const int spellId = caster->m_combatSpellId;
+		const int targetId = caster->m_combatSpellTargetId;
+		caster->m_combatSpellId = -1;
+		caster->m_combatSpellTargetId = 0;
+
+		// Spell was the attack order — do not fall through into melee on the same target.
+		caster->m_target = 0;
+		caster->m_combatPathTargetId = 0;
+		caster->m_pathWaypoints.clear();
+		caster->m_currentWaypointIndex = 0;
+		caster->m_pathfindingPending = false;
+		caster->m_isMoving = false;
+		caster->SetDest(caster->GetPos());
+		caster->m_combatOrderMode = CombatOrderMode::Hold;
+
+		U7Object* target = GetObjectFromID(targetId);
+		if (!target || target->GetIsDead() || target->IsDeathStatus())
+		{
+			AddConsoleString(
+				(caster->m_name.empty() ? "Caster" : caster->m_name) + " spell fizzled — target is gone.",
+				YELLOW);
+			NotifyCombatantCannotContinue(caster, "needs a new order!");
+			continue;
+		}
+
+		// Projectile spells defer the bolt until UC_ATTACK mid-cast; mark so the
+		// eventual missile pauses orders on hit. Instant spells pause when the
+		// cast script finishes (see UpdateUsecodeScript).
+		caster->m_pauseOrdersOnNextSpellProjectile = true;
+		GumpSpellbook::RunSpellCast(spellId, caster, targetId);
+		if (MarkNewestFlyingProjectilePauseCasterOnHit(static_cast<int>(caster->m_ID)))
+		{
+			caster->m_pauseOrdersOnNextSpellProjectile = false;
+		}
+		else if (!caster->IsInUsecodeScript())
+		{
+			caster->m_pauseOrdersOnNextSpellProjectile = false;
+			NotifyCombatantCannotContinue(caster, "needs a new order!");
+		}
+	}
+}
+
+void MainState::NotifyCombatantCannotContinue(U7Object* member, const std::string& reason)
+{
+	if (!g_isCombatMode || !member)
+		return;
+
+	// Finished/blocked manual action → Hold until the player gives a new order.
+	member->m_combatOrderMode = CombatOrderMode::Hold;
+	member->m_combatMoveOrder = false;
+	member->m_target = 0;
+	member->m_combatSpellId = -1;
+	member->m_combatSpellTargetId = 0;
+
+	m_combatPaused = true;
+	m_combatSelectedPartyMemberObjectId = member->m_ID;
+	const std::string name = member->m_name.empty() ? "Party member" : member->m_name;
+	AddConsoleString(name + " " + reason, YELLOW);
+	AddConsoleString("Combat paused. Give a new order, then press Space.", WHITE);
+}
+
+void MainState::IssueCombatMoveOrder(U7Object* member, const Vector3& dest)
+{
+	if (!member)
+		return;
+
+	Vector3 moveDest = dest;
+	moveDest.y = member->m_Pos.y;
+
+	member->m_target = 0;
+	member->m_combatSpellId = -1;
+	member->m_combatSpellTargetId = 0;
+	member->m_combatMoveOrder = true;
+	member->m_combatOrderMode = CombatOrderMode::Move;
+	member->PathfindToDest(moveDest, /*allowHierarchical=*/true, PathCallerTag::AvatarParty);
+
+	AddConsoleString(
+		member->m_name + " moving to ("
+		+ std::to_string((int)moveDest.x) + ", "
+		+ std::to_string((int)moveDest.z) + ").",
+		GREEN);
+}
+
+void MainState::HandleCombatOrdersClick()
+{
+	if (!IsCombatOrdersPaused())
+		return;
+	if (g_gumpManager && (g_gumpManager->m_isMouseOverGump || g_gumpManager->m_draggingObject))
+		return;
+	if (g_mouseOverUI)
+		return;
+
+	U7Object* clicked = g_objectUnderMousePointer;
+
+	// Spellbook targeting: next object click queues the cast for resume.
+	// U7 allows any spell on any target (party, self, enemy, etc.).
+	if (IsCombatSpellTargeting())
+	{
+		if (clicked)
+		{
+			U7Object* caster = GetObjectFromID(m_combatSpellTargetingCasterId);
+			if (!caster)
+				caster = (m_combatSelectedPartyMemberObjectId >= 0)
+					? GetObjectFromID(m_combatSelectedPartyMemberObjectId)
+					: nullptr;
+			if (caster)
+				IssueCombatSpellOrder(caster, m_combatSpellTargetingSpellId, clicked);
+			CancelCombatSpellTargeting();
+			return;
+		}
+
+		AddConsoleString("Spell targeting cancelled.", YELLOW);
+		CancelCombatSpellTargeting();
+		return;
+	}
+
+	if (clicked && IsCombatPartyMemberObject(clicked))
+	{
+		m_combatSelectedPartyMemberObjectId = clicked->m_ID;
+		AddConsoleString(
+			"Selected " + clicked->m_name + " (" + DescribeCombatOrder(clicked)
+			+ ") — enemy/ground, or H Hold / A Automatic.",
+			SKYBLUE);
+		return;
+	}
+
+	if (m_combatSelectedPartyMemberObjectId < 0)
+	{
+		AddConsoleString("Select a party member first.", YELLOW);
+		return;
+	}
+
+	auto itMember = g_objectList.find(m_combatSelectedPartyMemberObjectId);
+	if (itMember == g_objectList.end() || !itMember->second)
+		return;
+
+	U7Object* member = itMember->second.get();
+
+	if (clicked && IsCombatEnemyObject(clicked))
+	{
+		IssueCombatAttackOrder(member, clicked);
+		return;
+	}
+
+	IssueCombatMoveOrder(member, g_terrainUnderMousePointer);
+}
+
+void MainState::UpdateCombatMode()
+{
+	if (!g_isCombatMode)
+		return;
+
+	const double tOther0 = GetTime();
+	EnrollNearbyCombatHostiles();
+
+	// Prune despawned / dead participants.
+	auto it = m_combatParticipants.begin();
+	while (it != m_combatParticipants.end())
+	{
+		auto objIt = g_objectList.find(*it);
+		if (objIt == g_objectList.end() || !objIt->second ||
+		    objIt->second->GetIsDead() || objIt->second->IsDeathStatus())
+			it = m_combatParticipants.erase(it);
+		else
+			++it;
+	}
+	g_perf.msCombatOther += (GetTime() - tOther0) * 1000.0;
+
+	if (m_combatMode)
+		m_combatMode->Update(*this);
+
+	// Auto-leave when all hostiles among participants are gone (including stub freeze).
+	bool anyHostiles = false;
+	for (int pid : m_combatParticipants)
+	{
+		auto objIt = g_objectList.find(pid);
+		if (objIt == g_objectList.end() || !objIt->second)
+			continue;
+		if (IsCombatEnemyObject(objIt->second.get()))
+		{
+			anyHostiles = true;
+			break;
+		}
+	}
+
+	if (!anyHostiles)
+	{
+		AddConsoleString("Combat over - all enemies defeated!", GREEN);
+		LeaveCombatMode();
+	}
+}
+
 void MainState::ClearPartyFollowPaths()
 {
 	if (!g_Player)
@@ -4283,6 +5056,15 @@ void MainState::MaybeUpdatePartyFollowing()
 		if (itObj == g_objectList.end() || !itObj->second)
 			continue;
 		U7Object* member = itObj->second.get();
+		if (member->IsDeathStatus() || member->GetIsDead())
+			continue;
+
+		// Manual combat orders own the actor; do not yank them into formation.
+		if (HasManualCombatOrder(member))
+		{
+			++companionSlot;
+			continue;
+		}
 
 		if (member->m_pathfindingPending)
 		{
@@ -4441,51 +5223,167 @@ void MainState::BuildSandboxHelpGUI()
     m_sandboxHelpScreen->m_Draggable = false;
 }
 
-void MainState::SpawnMonster(int monsterType, int x, int y, int z)
+int MainState::SpawnMonster(int monsterType, int x, int y, int z)
 {
+		if (monsterType < 0 || monsterType >= (int)g_monsterData.size())
+			return -1;
+
 		unsigned int newId = GetNextID();
 
 		MonsterData monData = g_monsterData[monsterType];
 
+		// Tile centers (NPCs use the same convention); MonsterInit also snaps.
 		U7Object* spawned = AddObject(monData.m_shape, 0, newId,
-			x, y, z);
+			x + 0.5f, static_cast<float>(y), z + 0.5f);
 
-		if (spawned)
+		if (!spawned)
+			return -1;
+
+		spawned->m_UnitType = U7Object::UnitTypes::UNIT_TYPE_MONSTER;
+
+		// Pull real stats from MONSTERS.DAT record when available (hp ~ strength, etc.)
+		spawned->m_hp = monData.m_hitPoints;
+		spawned->m_BaseMaxHP = monData.m_hitPoints > 0 ? static_cast<float>(monData.m_hitPoints) : spawned->m_hp;
+		if (spawned->m_BaseMaxHP < 1.0f)
+			spawned->m_BaseMaxHP = 1.0f;
+		spawned->m_BaseAttack = static_cast<float>(monData.m_damage);
+		spawned->m_BaseDefense = monData.m_armor; // natural armor from MONSTERS.DAT
+		spawned->m_combat = monData.m_combat;
+
+		spawned->m_currentActivity = 0; // Default to combat activity
+
+		// Hostile (combat activity)
+		spawned->m_Team = 1; // 0 = neutral/player, 1 = hostile
+
+		// Add the newly spawned (hostile/combat) monster to the combat participant list.
+		if (g_isCombatMode)
+			EnsureCombatParticipant(static_cast<int>(newId));
+
+		if (g_LuaDebug || g_showEggs)
 		{
-			spawned->m_UnitType = U7Object::UnitTypes::UNIT_TYPE_MONSTER;
-
-			// Pull real stats from MONSTERS.DAT record when available (hp ~ strength, etc.)
-			spawned->m_hp = monData.m_hitPoints;
-			spawned->m_BaseAttack = monData.m_damage;
-			spawned->m_combat = monData.m_combat;
-
-			spawned->m_currentActivity = 0; // Default to combat activity
-
-			// Hostile (combat activity)
-			spawned->m_Team = 1; // 0 = neutral/player, 1 = hostile
-
-			// Add the newly spawned (hostile/combat) monster to the combat unit list (participants) now that
-			// the monster egg's requirements have been fulfilled and it has hatched.
-			if (g_CombatState)
-			{
-				auto& parts = g_CombatState->m_participants;
-				if (std::find(parts.begin(), parts.end(), (int)newId) == parts.end())
-				{
-					parts.push_back((int)newId);
-				}
-			}
-
-			// Always give feedback in console when a monster actually appears
-			//std::string hatchedMsg = "Monster egg hatched! (shape " + std::to_string(monData.m_shape) + ")";
-			//hatchedMsg += " " + monData.m_name;
-			//AddConsoleString(hatchedMsg, YELLOW);
-
-			if (g_LuaDebug || g_showEggs)
-			{
-				DebugPrint("MonsterSpawnerEgg hatched @ (" + std::to_string(x) + "," + std::to_string(z) +
-					") -> spawned shape " + std::to_string(monData.m_shape) + " id=" + std::to_string(newId));
-			}
-
-			spawned->MonsterInit();
+			DebugPrint("MonsterSpawnerEgg hatched @ (" + std::to_string(x) + "," + std::to_string(z) +
+				") -> spawned shape " + std::to_string(monData.m_shape) + " id=" + std::to_string(newId));
 		}
+
+		spawned->MonsterInit();
+		return static_cast<int>(newId);
+}
+
+void MainState::SpawnDebugDuelingField()
+{
+	constexpr int kFieldX = 967;
+	constexpr int kFieldZ = 2032;
+	constexpr int kHeadlessShape = 514;
+	constexpr int kHeadlessCount = 4;
+
+	if (!g_Player)
+	{
+		AddConsoleString("Dueling field: no player.", RED);
+		return;
+	}
+
+	int headlessType = -1;
+	for (size_t i = 0; i < g_monsterData.size(); ++i)
+	{
+		if (g_monsterData[i].m_shape == kHeadlessShape)
+		{
+			headlessType = static_cast<int>(i);
+			break;
+		}
+	}
+	if (headlessType < 0)
+	{
+		AddConsoleString("Dueling field: Headless (shape 514) not found in MONSTERS.DAT.", RED);
+		return;
+	}
+
+	// Clear previous debug spawns so re-pressing the hotkey resets the arena.
+	for (int id : m_debugDuelFieldObjectIds)
+	{
+		auto it = g_objectList.find(id);
+		if (it == g_objectList.end() || !it->second)
+			continue;
+		U7Object* obj = it->second.get();
+		if (!obj->GetIsDead() && !obj->IsDeathStatus())
+			obj->ApplyDeath();
+	}
+	m_debugDuelFieldObjectIds.clear();
+
+	auto groundY = [](int tileX, int tileZ) -> float {
+		if (!g_pathfindingSystem)
+			return 0.0f;
+		auto heights = g_pathfindingSystem->GetWalkableSurfaceHeights(tileX, tileZ);
+		return heights.empty() ? 0.0f : heights.front();
+	};
+
+	auto teleportUnit = [](U7Object* unit, const Vector3& pos) {
+		if (!unit)
+			return;
+		unit->ClearPendingUsecode();
+		unit->m_pathWaypoints.clear();
+		unit->m_currentWaypointIndex = 0;
+		unit->m_pathfindingPending = false;
+		unit->m_isMoving = false;
+		unit->m_isSchedulePath = false;
+		unit->m_target = 0;
+		unit->m_combatMoveOrder = false;
+		unit->m_combatOrderMode = CombatOrderMode::Automatic;
+		unit->SetPos(pos);
+		unit->SetDest(pos);
+	};
+
+	const float fieldY = groundY(kFieldX, kFieldZ);
+	const Vector3 avatarPos{ kFieldX + 0.5f, fieldY, kFieldZ + 0.5f };
+
+	U7Object* avatar = g_Player->GetAvatarObject();
+	teleportUnit(avatar, avatarPos);
+
+	int offset = 1;
+	for (int npcId : g_Player->GetPartyMemberIds())
+	{
+		if (npcId == 0)
+			continue;
+		auto nit = g_NPCData.find(npcId);
+		if (nit == g_NPCData.end() || !nit->second)
+			continue;
+		U7Object* member = GetObjectFromID(nit->second->m_objectID);
+		if (!member)
+			continue;
+		Vector3 memberPos = avatarPos;
+		memberPos.x += (npcId % 2 == 0) ? float(offset) : float(-offset);
+		memberPos.z += float(offset);
+		memberPos.y = groundY((int)floorf(memberPos.x), (int)floorf(memberPos.z));
+		teleportUnit(member, memberPos);
+		++offset;
+	}
+
+	// Hostiles south of the party so the field is readable in the isometric view.
+	static const int kOffsets[][2] = {
+		{ 0, 8 },
+		{ -4, 10 },
+		{ 4, 10 },
+		{ 0, 14 },
+	};
+	const int spawnCount = std::min(kHeadlessCount, (int)(sizeof(kOffsets) / sizeof(kOffsets[0])));
+	for (int i = 0; i < spawnCount; ++i)
+	{
+		const int sx = kFieldX + kOffsets[i][0];
+		const int sz = kFieldZ + kOffsets[i][1];
+		const int sy = (int)groundY(sx, sz);
+		const int id = SpawnMonster(headlessType, sx, sy, sz);
+		if (id >= 0)
+			m_debugDuelFieldObjectIds.push_back(id);
+	}
+
+	g_camera.target = avatarPos;
+	g_CameraMoved = true;
+	if (!IsCameraLockedToAvatar())
+		LockCameraToAvatar();
+
+	AddConsoleString(
+		"Dueling field ready @ (" + std::to_string(kFieldX) + ", " + std::to_string(kFieldZ)
+		+ ") — " + std::to_string((int)m_debugDuelFieldObjectIds.size())
+		+ " Headlesses. Press C to fight.",
+		YELLOW);
+	AddConsoleString("Debug: Ctrl+Shift+D reloads the arena.", WHITE);
 }
