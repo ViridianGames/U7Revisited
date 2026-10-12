@@ -242,6 +242,48 @@ float GetCombatMaxHP(const U7Object* unit)
 	return maxHp;
 }
 
+int GetCombatDexterity(const U7Object* unit)
+{
+	if (!unit)
+		return 10;
+	if (unit->m_NPCData)
+		return static_cast<int>(unit->m_NPCData->dex);
+	if (g_Player && g_Player->GetAvatarObject() == unit)
+		return g_Player->GetDex();
+	if (unit->m_shapeData)
+	{
+		const int shape = unit->m_shapeData->m_shape;
+		for (const MonsterData& md : g_monsterData)
+		{
+			if (static_cast<int>(md.m_shape) == shape)
+				return static_cast<int>(md.m_dexterity);
+		}
+	}
+	return 10;
+}
+
+float GetCombatTurnApBudget(const U7Object* unit)
+{
+	const int dex = GetCombatDexterity(unit);
+	const float ap = static_cast<float>(dex / 2);
+	return ap >= 4.0f ? ap : 4.0f;
+}
+
+float CombatStepApCost(Vector3 from, Vector3 to)
+{
+	// Tile indices (floor), not rounded world deltas — centers at *.5 stay stable.
+	const int dx = std::abs(static_cast<int>(std::floor(to.x)) - static_cast<int>(std::floor(from.x)));
+	const int dz = std::abs(static_cast<int>(std::floor(to.z)) - static_cast<int>(std::floor(from.z)));
+	if (dx == 0 && dz == 0)
+		return 0.0f;
+	if ((dx == 1 && dz == 0) || (dx == 0 && dz == 1))
+		return 1.0f;
+	if (dx == 1 && dz == 1)
+		return 1.5f;
+	// Non-adjacent (crow-fly / teleport): charge Chebyshev distance.
+	return static_cast<float>(std::max(dx, dz));
+}
+
 namespace
 {
 	unsigned int CombatRoll(unsigned int n)

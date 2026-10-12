@@ -2,8 +2,10 @@
 #define _CombatMode_H_
 
 #include <memory>
+#include <vector>
 
 class MainState;
+class U7Object;
 
 // Player preference / active encounter combat style.
 enum class CombatStyle : int
@@ -42,10 +44,17 @@ public:
 	virtual void Update(MainState& main);
 	virtual void HandleInput(MainState& main);
 	virtual void DrawHud(MainState& main);
+	// World-space overlays (call inside Mode3D, before EndMode3D).
+	virtual void DrawWorld(MainState& main) { (void)main; }
+	// Style-specific orders click. Return true if the click was consumed.
+	virtual bool HandleOrdersClick(MainState& main) { (void)main; return false; }
 
 	// Gates for MainState / U7Object combat AI.
 	virtual bool IsSimulationPaused() const { return !IsImplemented(); }
 	virtual bool AllowsPlayerOrders() const { return false; }
+	// Finer gate for TB Resolving: only the active unit should run combat AI.
+	// Default matches IsSimulationPaused (everyone or nobody).
+	virtual bool ShouldUnitSimulate(const U7Object* /*unit*/) const { return !IsSimulationPaused(); }
 };
 
 std::unique_ptr<CombatMode> CreateCombatMode(CombatStyle style);
@@ -84,8 +93,86 @@ private:
 class TurnBasedCombatMode : public CombatMode
 {
 public:
+	enum class Phase
+	{
+		Planning,   // frozen; player issues orders for active party unit
+		Resolving   // only active unit simulates until action completes
+	};
+
+	struct ReachTile
+	{
+		int x = 0;
+		int z = 0;
+		float cost = 0.0f;       // AP spent to arrive
+		float apLeft = 0.0f;     // AP remaining after arriving
+	};
+
 	CombatStyle GetStyle() const override { return CombatStyle::TurnBased; }
 	const char* GetDisplayName() const override { return CombatStyleDisplayName(CombatStyle::TurnBased); }
+	bool IsImplemented() const override { return true; }
+
+	void OnEnter(MainState& main) override;
+	void OnLeave(MainState& main) override;
+	void Update(MainState& main) override;
+	void HandleInput(MainState& main) override;
+	void DrawHud(MainState& main) override;
+	void DrawWorld(MainState& main) override;
+	bool HandleOrdersClick(MainState& main) override;
+
+	bool IsSimulationPaused() const override;
+	bool AllowsPlayerOrders() const override;
+	bool ShouldUnitSimulate(const U7Object* unit) const override;
+
+	int GetActiveUnitId() const { return m_activeUnitId; }
+	float GetApRemaining() const { return m_apRemaining; }
+	float GetApBudget() const { return m_apBudget; }
+	Phase GetPhase() const { return m_phase; }
+
+	// Spend AP. Returns false if cost exceeds remaining.
+	bool TrySpendAp(float cost);
+	void EndActiveTurn(); // Space / AP exhausted — advance initiative
+
+private:
+	static constexpr float kAttackApReserve = 3.0f;
+	static constexpr float kApEpsilon = 0.001f;
+
+	void LockCameraToActiveUnit();
+	void RebuildInitiative(MainState& main);
+	void StartUnitTurn(MainState& main);
+	void AdvanceToNextLiving(MainState& main);
+	void ComputeReachableTiles(U7Object* unit, float maxAp, std::vector<ReachTile>& out) const;
+	void RebuildReachableTiles();
+	void ClearReachableTiles();
+	bool TryIssueMoveTo(MainState& main, int tileX, int tileZ);
+	bool BeginMoveToTile(U7Object* unit, int tileX, int tileZ, float spent);
+	void OnMoveResolved(MainState& main);
+	void RunEnemyTurnAi(MainState& main);
+	U7Object* FindNearestPartyTarget(const U7Object* from) const;
+	bool IsLivingCombatant(const U7Object* obj) const;
+	bool IsPartyUnit(const U7Object* obj) const;
+	bool IsTileOccupiedByOther(int tileX, int tileZ, int selfId) const;
+	U7Object* GetActiveUnit() const;
+	std::string UnitLabel(const U7Object* obj) const;
+	std::string FormatAp(float ap) const;
+	const ReachTile* FindReachTile(int tileX, int tileZ) const;
+
+	MainState* m_main = nullptr;
+	bool m_wasCameraLocked = false;
+
+	std::vector<int> m_initiative;
+	int m_initiativeIndex = 0;
+	int m_activeUnitId = -1;
+	float m_apRemaining = 0.0f;
+	float m_apBudget = 0.0f;
+	Phase m_phase = Phase::Planning;
+
+	std::vector<ReachTile> m_reachTiles;
+	float m_reachDrawY = 0.05f;
+	float m_pendingMoveApCost = 0.0f; // AP already spent when Resolving a move
+	bool m_enemyAiPending = false;    // enemy turn: decide move on next Update
+	bool m_endTurnAfterMove = false;  // enemies auto-end after their move resolves
+	int m_resolveFrames = 0;          // failsafe while Phase::Resolving
+	static constexpr int kResolveStuckFrames = 180; // ~3s at 60fps
 };
 
 #endif

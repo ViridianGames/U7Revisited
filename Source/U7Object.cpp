@@ -689,10 +689,10 @@ bool U7Object::EngageCombatTarget()
 			path = g_pathfindingSystem->FindFastPath(m_Pos, standoff, this, PathCallerTag::AvatarParty);
 		}
 
-		if (path.empty() && isParty)
+		if (path.empty())
 		{
-			// Last mile: Avatar/party may crow-fly when A* has nothing left to do
-			// (already on/near the goal tile but still outside engage range).
+			// Last mile: crow-fly toward standoff when A* has nothing left
+			// (crowding, already near goal tile, or chase path failed).
 			m_pathWaypoints.clear();
 			m_currentWaypointIndex = 0;
 			m_pathfindingPending = false;
@@ -724,7 +724,15 @@ void U7Object::HostileCombatUpdate()
 		return;
 
 	if (g_mainState && g_mainState->IsCombatOrdersPaused())
+	{
+		// Turn-Based Resolving: active hostile may finish a Move order.
+		if (g_mainState->CanCombatUnitAct(this)
+		    && (m_combatOrderMode == CombatOrderMode::Move || m_combatMoveOrder))
+		{
+			UpdateMovement();
+		}
 		return;
+	}
 
 	if (!g_isCombatMode || !g_Player)
 		return;
@@ -882,9 +890,17 @@ void U7Object::MonsterUpdate()
 				}
 			}
 
-			// Only skip chase/attack AI while combat is paused for orders.
+			// Skip chase/attack AI while combat is paused for orders.
+			// Turn-Based Resolving: active monster may finish a Move order.
 			if (g_mainState && g_mainState->IsCombatOrdersPaused())
+			{
+				if (g_mainState->CanCombatUnitAct(this)
+				    && (m_combatOrderMode == CombatOrderMode::Move || m_combatMoveOrder))
+				{
+					UpdateMovement();
+				}
 				return;
+			}
 
 			if (g_isCombatMode)
 			{
@@ -2420,7 +2436,16 @@ void U7Object::NPCUpdate()
 		RefreshPartyAttackRangeFromWeapon(this);
 
 		if (g_mainState && g_mainState->IsCombatOrdersPaused())
+		{
+			// Turn-Based Resolving: only the active unit may finish a Move order.
+			if (g_mainState->CanCombatUnitAct(this)
+			    && (m_combatOrderMode == CombatOrderMode::Move || m_combatMoveOrder))
+			{
+				UpdateMovement();
+				return;
+			}
 			return;
+		}
 
 		if (m_combatOrderMode == CombatOrderMode::Hold
 		    || m_combatOrderMode == CombatOrderMode::Automatic)
@@ -2893,12 +2918,14 @@ void U7Object::UpdateMovement()
 	// NPCs/monsters must follow A* waypoints — never crow-fly toward a bare m_Dest
 	// (that walked Spark into his house wall when schedule pathfinding failed and
 	// Dest was still pointed at the inn / a leftover goal).
-	// Exceptions: Avatar (WASD / mouse steer) and party followers (continuous
-	// formation steering via SetDest).
+	// Exceptions: Avatar (WASD / mouse steer), party followers (formation SetDest),
+	// and hostiles mid-combat chase when A* failed (EngageCombatTarget sets Dest).
 	const bool isAvatar = (g_Player && g_Player->GetAvatarObject() == this);
 	const bool isPartyFollower = (!isAvatar && g_Player && m_NPCID >= 0 &&
 	                              g_Player->NPCIDInParty(m_NPCID));
-	if (!isAvatar && !isPartyFollower &&
+	const bool combatHostileChase = g_isCombatMode && m_target != 0
+		&& IsHostileCombatUnit(this);
+	if (!isAvatar && !isPartyFollower && !combatHostileChase &&
 	    (m_UnitType == UnitTypes::UNIT_TYPE_NPC || m_UnitType == UnitTypes::UNIT_TYPE_MONSTER) &&
 	    m_pathWaypoints.empty())
 	{

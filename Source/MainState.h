@@ -122,7 +122,7 @@ public:
 	// Returns spawned object ID, or -1 on failure.
 	int SpawnMonster(int monsterType, int x, int y, int z);
 
-	// Temporary combat test: teleport north of Trinsic and spawn Headlesses.
+	// Temporary combat test: teleport north of Trinsic and spawn pirates.
 	void SpawnDebugDuelingField();
 
   // void DrawDebugChunkPathfindingInfo();
@@ -356,14 +356,17 @@ public:
 	void EnsureCombatParticipant(int objectId);
 	bool IsCombatOrdersPaused() const;
 	bool AllowsCombatPlayerOrders() const;
+	// TB Resolving: true only for the active unit while its action plays out.
+	bool CanCombatUnitAct(const U7Object* obj) const;
 	bool IsCombatEnemyObject(const U7Object* obj) const;
 	CombatMode* GetActiveCombatMode() const { return m_combatMode.get(); }
 
-	// Used by RealTimePauseCombatMode.
+	// Used by RealTimePauseCombatMode / TurnBasedCombatMode.
 	void BeginCombatFighting();
 	void PauseCombatForOrders();
 	// Pause combat, select the member, and explain why they cannot continue (no ammo, etc.).
 	void NotifyCombatantCannotContinue(U7Object* member, const std::string& reason);
+	void StopCombatUnitActions(U7Object* member);
 
 	// RTwP orders (Hold / Automatic / Attack / Move). Keys while paused: H / A.
 	void IssueCombatHoldOrder(U7Object* member);
@@ -403,7 +406,6 @@ public:
 
 private:
 	void ClearCombatPartyTargets();
-	void StopCombatUnitActions(U7Object* member);
 	void EnrollNearbyCombatHostiles();
 	void HandleCombatOrdersClick();
 	void HandleCombatOrderKeys();

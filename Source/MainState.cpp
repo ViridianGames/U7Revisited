@@ -3390,6 +3390,9 @@ void MainState::Draw()
 	if (g_isCombatMode)
 		DrawCombatSelectionCircles();
 
+	if (g_isCombatMode && m_combatMode)
+		m_combatMode->DrawWorld(*this);
+
 	EndMode3D();
 
 	if (worldToRT)
@@ -4375,6 +4378,13 @@ bool MainState::AllowsCombatPlayerOrders() const
 	return m_combatMode->AllowsPlayerOrders();
 }
 
+bool MainState::CanCombatUnitAct(const U7Object* obj) const
+{
+	if (!g_isCombatMode || !m_combatMode || !obj)
+		return false;
+	return m_combatMode->ShouldUnitSimulate(obj);
+}
+
 bool MainState::IsCombatPartyMemberObject(const U7Object* obj) const
 {
 	if (!obj || !g_Player)
@@ -4662,6 +4672,19 @@ void MainState::LeaveCombatMode()
 		m_combatMode->OnLeave(*this);
 	m_combatMode.reset();
 
+	// Clear chase/move leftovers on everyone who fought — hostiles used to keep
+	// TB Hold/path flags and then walk-in-place in the next RTwP fight.
+	for (int id : m_combatParticipants)
+	{
+		auto it = g_objectList.find(id);
+		if (it == g_objectList.end() || !it->second)
+			continue;
+		U7Object* obj = it->second.get();
+		StopCombatUnitActions(obj);
+		obj->m_combatOrderMode = CombatOrderMode::Automatic;
+		obj->m_cooldownTimer = 0.0;
+	}
+
 	m_combatParticipants.clear();
 	m_combatSelectedPartyMemberObjectId = -1;
 	m_combatPaused = true;
@@ -4870,6 +4893,10 @@ void MainState::HandleCombatOrdersClick()
 	if (g_gumpManager && (g_gumpManager->m_isMouseOverGump || g_gumpManager->m_draggingObject))
 		return;
 	if (g_mouseOverUI)
+		return;
+
+	// Turn-Based owns its own click rules (active unit only, AP-limited move).
+	if (m_combatMode && m_combatMode->HandleOrdersClick(*this))
 		return;
 
 	U7Object* clicked = g_objectUnderMousePointer;
@@ -5273,8 +5300,8 @@ void MainState::SpawnDebugDuelingField()
 {
 	constexpr int kFieldX = 967;
 	constexpr int kFieldZ = 2032;
-	constexpr int kHeadlessShape = 514;
-	constexpr int kHeadlessCount = 4;
+	constexpr int kPirateShape = 401; // TEXT.FLX / MONSTERS.DAT humanoid pirate
+	constexpr int kPirateCount = 4;
 
 	if (!g_Player)
 	{
@@ -5282,18 +5309,18 @@ void MainState::SpawnDebugDuelingField()
 		return;
 	}
 
-	int headlessType = -1;
+	int pirateType = -1;
 	for (size_t i = 0; i < g_monsterData.size(); ++i)
 	{
-		if (g_monsterData[i].m_shape == kHeadlessShape)
+		if (g_monsterData[i].m_shape == kPirateShape)
 		{
-			headlessType = static_cast<int>(i);
+			pirateType = static_cast<int>(i);
 			break;
 		}
 	}
-	if (headlessType < 0)
+	if (pirateType < 0)
 	{
-		AddConsoleString("Dueling field: Headless (shape 514) not found in MONSTERS.DAT.", RED);
+		AddConsoleString("Dueling field: pirate (shape 401) not found in MONSTERS.DAT.", RED);
 		return;
 	}
 
@@ -5364,13 +5391,13 @@ void MainState::SpawnDebugDuelingField()
 		{ 4, 10 },
 		{ 0, 14 },
 	};
-	const int spawnCount = std::min(kHeadlessCount, (int)(sizeof(kOffsets) / sizeof(kOffsets[0])));
+	const int spawnCount = std::min(kPirateCount, (int)(sizeof(kOffsets) / sizeof(kOffsets[0])));
 	for (int i = 0; i < spawnCount; ++i)
 	{
 		const int sx = kFieldX + kOffsets[i][0];
 		const int sz = kFieldZ + kOffsets[i][1];
 		const int sy = (int)groundY(sx, sz);
-		const int id = SpawnMonster(headlessType, sx, sy, sz);
+		const int id = SpawnMonster(pirateType, sx, sy, sz);
 		if (id >= 0)
 			m_debugDuelFieldObjectIds.push_back(id);
 	}
@@ -5382,8 +5409,8 @@ void MainState::SpawnDebugDuelingField()
 
 	AddConsoleString(
 		"Dueling field ready @ (" + std::to_string(kFieldX) + ", " + std::to_string(kFieldZ)
-		+ ") — " + std::to_string((int)m_debugDuelFieldObjectIds.size())
-		+ " Headlesses. Press C to fight.",
+		+ ") - " + std::to_string((int)m_debugDuelFieldObjectIds.size())
+		+ " pirates. Press C to fight.",
 		YELLOW);
 	AddConsoleString("Debug: Ctrl+Shift+D reloads the arena.", WHITE);
 }

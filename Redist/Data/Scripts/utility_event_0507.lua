@@ -2,7 +2,7 @@
 function utility_event_0507(eventid, objectref)
     local var_0000
 
-    if eventid == 3 then
+    if eventid == 1 then
         if get_object_quality(objectref) == 100 then
             if not get_flag(767) then
                 set_flag(767, true)

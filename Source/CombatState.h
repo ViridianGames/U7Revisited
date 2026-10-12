@@ -26,6 +26,13 @@ std::string PluralizeCreatureName(const std::string& name);
 // Max HP for bars (m_BaseMaxHP, else current HP floor).
 float GetCombatMaxHP(const U7Object* unit);
 
+// Dexterity for TB initiative / AP (NPC dex, Avatar player dex, monster MONSTERS.DAT).
+int GetCombatDexterity(const U7Object* unit);
+// Turn budget: max(4, DEX/2).
+float GetCombatTurnApBudget(const U7Object* unit);
+// Path step cost: cardinal 1.0, diagonal 1.5.
+float CombatStepApCost(Vector3 from, Vector3 to);
+
 // Ready-hand weapon for combat (RIGHT_HAND first, then LEFT_HAND).
 // Prefers shapes present in WEAPONS.DAT so a shield in the off-hand is ignored.
 U7Object* GetEquippedWeapon(U7Object* unit);
