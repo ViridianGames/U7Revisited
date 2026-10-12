@@ -1115,6 +1115,61 @@ void U7Object::AlliedMonsterUpdate()
 //  Called from U7Object::Draw() via switch on m_UnitType
 ///////////////////////////////////////////////////////////////////////////
 
+// Original U7 IsBoxBlockedAt: SE corner (x, z), footprint extends west/north
+// by w-1 and h-1, vertical volume [lift, lift+height). Solid TFA bit only.
+// Doors are stored on the other collision bit and do not count.
+static bool MirrorBoxBlocked(int seX, int seZ, int lift, int w, int h, int height)
+{
+	const int minX = seX - (w - 1);
+	const int maxX = seX;
+	const int minZ = seZ - (h - 1);
+	const int maxZ = seZ;
+	const float boxMinY = static_cast<float>(lift);
+	const float boxMaxY = static_cast<float>(lift + height);
+
+	int chunkMinX = minX / 16 - 1;
+	int chunkMaxX = maxX / 16 + 1;
+	int chunkMinZ = minZ / 16 - 1;
+	int chunkMaxZ = maxZ / 16 + 1;
+	if (chunkMinX < 0) chunkMinX = 0;
+	if (chunkMinZ < 0) chunkMinZ = 0;
+	if (chunkMaxX > 191) chunkMaxX = 191;
+	if (chunkMaxZ > 191) chunkMaxZ = 191;
+
+	for (int cz = chunkMinZ; cz <= chunkMaxZ; ++cz)
+	{
+		for (int cx = chunkMinX; cx <= chunkMaxX; ++cx)
+		{
+			for (U7Object* obj : g_chunkObjectMap[cx][cz])
+			{
+				if (!obj || !obj->m_objectData || obj->GetIsDead() || obj->m_isContained)
+					continue;
+				if (obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_EGG)
+					continue;
+				if (obj->m_objectData->m_isDoor || !obj->m_objectData->m_isNotWalkable)
+					continue;
+				if (obj->m_objectData->m_height <= 0.0f)
+					continue;
+
+				const int width = std::max(1, static_cast<int>(obj->m_objectData->m_width));
+				const int depth = std::max(1, static_cast<int>(obj->m_objectData->m_depth));
+				const int objMaxX = static_cast<int>(std::floor(obj->m_Pos.x));
+				const int objMaxZ = static_cast<int>(std::floor(obj->m_Pos.z));
+				const int objMinX = objMaxX - width + 1;
+				const int objMinZ = objMaxZ - depth + 1;
+				if (objMaxX < minX || objMinX > maxX || objMaxZ < minZ || objMinZ > maxZ)
+					continue;
+
+				const float baseY = obj->m_Pos.y;
+				const float topY = baseY + obj->m_objectData->m_height;
+				if (baseY < boxMaxY && topY > boxMinY)
+					return true;
+			}
+		}
+	}
+	return false;
+}
+
 void U7Object::StaticDraw()
 {
 	// Statics are drawn through the normal shapeData path below in InteractiveDraw
@@ -1144,7 +1199,21 @@ void U7Object::InteractiveDraw()
 		const int animFrames = g_shapeTable[m_ObjectType][0].m_numFrames;
 		int currentFrame = m_Frame;
 
-		if (m_ObjectType == 284 && animFrames > 1)
+		if (m_ObjectType == 268 || m_ObjectType == 848)
+		{
+			// Original UpdateMirrorFrame: frames >= 2 stay (broken / Arcadion).
+			// 268 probes east of the SE corner; 848 probes south. Lift 1 is absolute.
+			if (m_Frame < 2)
+			{
+				const int x = static_cast<int>(std::floor(m_Pos.x));
+				const int z = static_cast<int>(std::floor(m_Pos.z));
+				const bool blocked = (m_ObjectType == 268)
+					? MirrorBoxBlocked(x + 2, z, 1, 2, 2, 2)
+					: MirrorBoxBlocked(x, z + 2, 1, 2, 2, 2);
+				currentFrame = blocked ? 1 : 0;
+			}
+		}
+		else if (m_ObjectType == 284 && animFrames > 1)
 		{
 			// Sundial: 24 frames, one per game hour (not a looping FX cycle).
 			currentFrame = static_cast<int>(g_hour) % animFrames;
