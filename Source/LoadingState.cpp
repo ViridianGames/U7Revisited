@@ -1413,10 +1413,18 @@ void LoadingState::ParseIREGFile(stringstream& ireg, int superchunkx, int superc
 			}
 			else
 			{
-				thisObject->m_isContainer = true;
+				// 12-byte IREG is used for containers AND for hatchables / virtue
+				// stones / other shapes that store extra fields. Only TFA class 6
+				// may own following records; otherwise nearby ground objects are
+				// swallowed into a fake backpack (GitHub #77).
+				const bool isContainerShape = IsTfaContainerShape(thisObject->m_objectData);
+
+				if (isContainerShape)
+					thisObject->m_isContainer = true;
+
 				if (bargeParent)
 				{
-					// Chest/crate sitting on a barge: world-visible, barge-owned.
+					// Chest/crate (or other 12-byte part) on a barge: world-visible.
 					attachBargeMember(bargeParent, thisObject, id);
 				}
 				else if (!containerStack.empty()) // Nested in a normal container.
@@ -1426,16 +1434,17 @@ void LoadingState::ParseIREGFile(stringstream& ireg, int superchunkx, int superc
 					thisObject->m_containingObjectId = containerStack.back();
 					GetObjectFromID(containerStack.back())->AddObjectToInventory(id);
 				}
-				// Exult: type != 0 means the container has nested entries until a
-				// length-0/1 terminator. Also accept a peek of a known object length
-				// so we don't push when the file has already moved on.
-				const int emptytest = ireg.peek();
-				const bool nextLooksLikeObject =
-					emptytest == 6 || emptytest == 10 || emptytest == 12 ||
-					emptytest == 13 || emptytest == 14 || emptytest == 18;
-				if (type != 0 && nextLooksLikeObject)
+
+				if (isContainerShape)
 				{
-					containerStack.push_back(id);
+					// Exult: type != 0 means nested entries until a length-0/1
+					// terminator. Peek so we don't push when the file moved on.
+					const int emptytest = ireg.peek();
+					const bool nextLooksLikeObject =
+						emptytest == 6 || emptytest == 10 || emptytest == 12 ||
+						emptytest == 13 || emptytest == 14 || emptytest == 18;
+					if (type != 0 && nextLooksLikeObject)
+						containerStack.push_back(id);
 				}
 			}
 		}

@@ -115,9 +115,9 @@ void U7Object::Init(const string& configfile, int unitType, int frame)
 	m_distanceFromCamera = 999999;
 	m_target = 0;
 
-	// WGTVOL capacity: chests/crates/bags/etc. Double-click opens a gump when
-	// unlocked (MainState). Threshold skips tiny volumes (coins, food, garbage).
-	if (m_objectData && m_objectData->m_volume >= 50.0f)
+	// TFA shape class 6 = container (Exult). Do not use WGTVOL volume: tables,
+	// large props, and other scenery also have high volume and are not chests.
+	if (IsTfaContainerShape(m_objectData))
 		m_isContainer = true;
 
 	// STATIC = permanent scenery only: immovable, unusable, and not otherwise special.

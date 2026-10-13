@@ -246,6 +246,15 @@ struct ObjectData
 	//std::unique_ptr<Mesh> m_mesh = nullptr;
 };
 
+// Exult Shape_info::Shape_class from TFA.DAT byte1 low nibble.
+// container=6; hatchable=7 (eggs/moongates); virtue_stone=11.
+constexpr char kTfaShapeClassContainer = 6;
+
+inline bool IsTfaContainerShape(const ObjectData* data)
+{
+	return data && data->m_shapeType == kTfaShapeClassContainer;
+}
+
 // Misc names from TEXT.FLX (entries 1024+) for frame-specific item names
 extern std::vector<std::string> g_miscNames;
 
