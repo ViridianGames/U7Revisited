@@ -2651,9 +2651,8 @@ namespace {
 
 namespace
 {
-	// Douse 540 / Poison 424 / Death Bolt 527: frames 1–7 empty, 8–23 are 16
-	// compass facings (N … NNW). Fire bolt 856 keeps frames 0–4 as a spin cycle.
-	bool ShapeHasDirectionalProjectileFrames(int shape)
+	// SHAPES.VGA frames 8–23: 16 compass facings (N … NNW).
+	bool ShapeHasProjectileFacingBank(int shape)
 	{
 		if (shape <= 0 || shape >= 1024)
 			return false;
@@ -2662,6 +2661,15 @@ namespace
 			if (!g_shapeTable[shape][f].IsValid())
 				return false;
 		}
+		return true;
+	}
+
+	// Douse 540 / Poison 424 / Death Bolt 527: frames 1–7 empty, 8–23 facings.
+	// Fire bolt 856 keeps frames 0–4 as a spin cycle (also has 8–23, but is not ammo).
+	bool ShapeHasDirectionalProjectileFrames(int shape)
+	{
+		if (!ShapeHasProjectileFacingBank(shape))
+			return false;
 		int emptyMid = 0;
 		for (int f = 1; f <= 7; ++f)
 		{
@@ -2669,6 +2677,13 @@ namespace
 				++emptyMid;
 		}
 		return emptyMid >= 5;
+	}
+
+	// Arrows/bolts: inventory angles in 0–4, empty 5–7, flight facings in 8–23.
+	// They fail the spell-bolt emptyMid test, so key off AMMO.DAT instead.
+	bool IsAmmoProjectileShape(int shape)
+	{
+		return GetAmmoData(shape) != nullptr;
 	}
 
 	// Same compass basis as find_direction / UC_FACE_DIR: 0° = north (−Z),
@@ -2735,7 +2750,10 @@ bool SpawnFlyingProjectile(int shape, int fromId, int toId, float speed, int dam
 	proj.speed = (speed > 0.1f) ? speed : 16.0f;
 	proj.animAccum = 0.0f;
 	proj.animIndex = 0;
-	proj.directionalFrames = ShapeHasDirectionalProjectileFrames(shape);
+	// Spell bolts with empty 1–7, or ammo arrows/bolts with a facing bank: orient
+	// to flight heading. Do not spin ammo (frames 0–4 are inventory angles).
+	proj.directionalFrames = ShapeHasDirectionalProjectileFrames(shape)
+		|| (IsAmmoProjectileShape(shape) && ShapeHasProjectileFacingBank(shape));
 
 	const float dx0 = targetPos.x - spawnPos.x;
 	const float dz0 = targetPos.z - spawnPos.z;
@@ -2743,6 +2761,21 @@ bool SpawnFlyingProjectile(int shape, int fromId, int toId, float speed, int dam
 	if (proj.directionalFrames)
 	{
 		bolt->SetFrame(ProjectileDirectionalFrame(dx0, dz0));
+	}
+	else if (IsAmmoProjectileShape(shape))
+	{
+		// Ammo without a facing bank: hold one frame (never spin in flight).
+		int frame = 0;
+		for (int f = 0; f < 32; ++f)
+		{
+			if (g_shapeTable[shape][f].IsValid())
+			{
+				frame = f;
+				break;
+			}
+		}
+		proj.animFrameList.push_back(frame);
+		bolt->SetFrame(frame);
 	}
 	else
 	{
@@ -2765,6 +2798,18 @@ bool SpawnFlyingProjectile(int shape, int fromId, int toId, float speed, int dam
 	}
 	g_flyingProjectiles.push_back(proj);
 	return true;
+}
+
+bool HasFlyingProjectileFrom(int attackerId)
+{
+	if (attackerId <= 0)
+		return false;
+	for (const FlyingProjectile& proj : g_flyingProjectiles)
+	{
+		if (proj.attackerId == attackerId)
+			return true;
+	}
+	return false;
 }
 
 bool MarkNewestFlyingProjectilePauseCasterOnHit(int attackerId)
@@ -3648,10 +3693,12 @@ std::string GetObjectScriptName(U7Object* object)
 static std::map<int, std::vector<EquipmentSlot>> g_equipmentSlotMap;      // Valid slots item can be placed in
 static std::map<int, std::vector<EquipmentSlot>> g_equipmentSlotFillsMap; // All slots item occupies when equipped
 
-// WEAPONS.DAT / AMMO.DAT / ARMOR.DAT (Exult binary layouts).
+// WEAPONS.DAT / AMMO.DAT / ARMOR.DAT / EQUIP.DAT (Exult binary layouts).
 static std::unordered_map<int, WeaponData> g_weaponDataMap;
 static std::unordered_map<int, AmmoData> g_ammoDataMap;
 static std::unordered_map<int, ArmorData> g_armorDataMap;
+// Index 0 unused; MONSTERS.DAT equip_offset is 1-based into this table.
+static std::vector<EquipRecord> g_equipTable;
 
 static std::string CombatStaticDataPath()
 {
@@ -3809,6 +3856,174 @@ void LoadArmorData()
 	}
 
 	Log("Loaded ARMOR.DAT: " + std::to_string(g_armorDataMap.size()) + " armor pieces from " + path);
+}
+
+void LoadEquipData()
+{
+	g_equipTable.clear();
+
+	const std::string path = CombatStaticDataPath() + "/STATIC/EQUIP.DAT";
+	std::vector<unsigned char> buf;
+	if (!ReadStaticDatFile(path, buf))
+		return;
+
+	// Leading count byte, then count * 60-byte records (10 x 6-byte elements).
+	if (buf.empty())
+	{
+		Log("ERROR: " + path + " is empty");
+		return;
+	}
+	const unsigned char count = buf[0];
+	constexpr size_t kRecordSize = 60;
+	constexpr size_t kElementSize = 6;
+	if (buf.size() < 1 + static_cast<size_t>(count) * kRecordSize)
+	{
+		Log("ERROR: " + path + " truncated (size=" + std::to_string(buf.size()) +
+			" count=" + std::to_string(count) + ")");
+		return;
+	}
+
+	// 1-based indexing: slot 0 is unused padding so equip_offset maps directly.
+	g_equipTable.resize(static_cast<size_t>(count) + 1);
+	for (unsigned int r = 0; r < count; ++r)
+	{
+		const unsigned char* rec = buf.data() + 1 + r * kRecordSize;
+		EquipRecord& out = g_equipTable[r + 1];
+		for (int e = 0; e < 10; ++e)
+		{
+			const unsigned char* p = rec + e * kElementSize;
+			out.elements[e].shape = static_cast<unsigned short>(p[0] | (p[1] << 8));
+			out.elements[e].probability = p[2];
+			out.elements[e].quantity = p[3];
+			// p[4], p[5] unused (always 0 in stock BG).
+		}
+	}
+
+	Log("Loaded EQUIP.DAT: " + std::to_string(count) + " equip records from " + path);
+}
+
+const EquipRecord* GetEquipRecord(int equipOffset1Based)
+{
+	if (equipOffset1Based <= 0 || equipOffset1Based >= static_cast<int>(g_equipTable.size()))
+		return nullptr;
+	return &g_equipTable[static_cast<size_t>(equipOffset1Based)];
+}
+
+void ApplyMonsterEquipment(U7Object* monster)
+{
+	if (!monster || monster->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_MONSTER)
+		return;
+
+	unsigned char equipOffset = 0;
+	for (const MonsterData& md : g_monsterData)
+	{
+		if (static_cast<int>(md.m_shape) == monster->m_ObjectType)
+		{
+			equipOffset = md.m_equipOffset;
+			break;
+		}
+	}
+	const EquipRecord* rec = GetEquipRecord(static_cast<int>(equipOffset));
+	if (!rec)
+		return;
+
+	// Inventory lives on the monster so corpses open as lootable containers.
+	monster->m_isContainer = true;
+
+	RNG* rng = g_VitalRNG ? g_VitalRNG.get() : g_NonVitalRNG.get();
+	if (!rng)
+		return;
+
+	auto createOne = [&](int shape, int quantityOrCharges) -> U7Object* {
+		if (shape <= 0 || shape >= 1024)
+			return nullptr;
+		const unsigned int id = GetNextID();
+		U7Object* item = AddObject(shape, 0, static_cast<int>(id), -1000.0f, 0.0f, -1000.0f);
+		if (!item)
+			return nullptr;
+		const char shapeType = g_objectDataTable[shape].m_shapeType;
+		// shapeType 3 = stackable quantity (gold coins): low 7 bits of Quality.
+		if (shapeType == 3)
+		{
+			int qty = quantityOrCharges;
+			if (qty < 1) qty = 1;
+			if (qty > 127) qty = 127;
+			item->m_Quality = qty & 0x7f;
+		}
+		if (!monster->AddObjectToInventory(static_cast<int>(id)))
+		{
+			// Leave the orphan parked in the void rather than on the map.
+			item->m_Visible = false;
+			item->m_ShouldDraw = false;
+			return nullptr;
+		}
+		return item;
+	};
+
+	for (const EquipElement& elem : rec->elements)
+	{
+		if (elem.shape == 0)
+			continue;
+		// Exult: (1 + rand%100) > probability → skip
+		if (static_cast<int>(rng->RandomRange(1, 100)) > static_cast<int>(elem.probability))
+			continue;
+
+		const int shape = static_cast<int>(elem.shape);
+		const int tableQty = elem.quantity > 0 ? static_cast<int>(elem.quantity) : 1;
+		const char shapeType = (shape >= 0 && shape < 1024) ? g_objectDataTable[shape].m_shapeType : 0;
+
+		if (shapeType == 3)
+		{
+			// Exult has_quantity: randomize 1..quantity into one stack.
+			const int amount = static_cast<int>(rng->RandomRange(1, static_cast<unsigned int>(tableQty)));
+			createOne(shape, amount);
+		}
+		else
+		{
+			// Non-stackables: create `quantity` separate objects (e.g. 10 daggers).
+			for (int i = 0; i < tableQty; ++i)
+				createOne(shape, 1);
+		}
+
+		// Exult: weapons that consume ammo also spawn a random handful.
+		if (const WeaponData* winf = GetWeaponData(shape))
+		{
+			if (winf->ammoFamily >= 0 && winf->ammoFamily < 1024)
+			{
+				const int ammoAmount =
+					static_cast<int>(rng->RandomRange(1, 10)) +
+					static_cast<int>(rng->RandomRange(1, 10));
+				const char ammoType = g_objectDataTable[winf->ammoFamily].m_shapeType;
+				if (ammoType == 3)
+					createOne(winf->ammoFamily, ammoAmount);
+				else
+				{
+					for (int i = 0; i < ammoAmount; ++i)
+						createOne(winf->ammoFamily, 1);
+				}
+			}
+		}
+	}
+
+	// Prefer the best inventory weapon for engage range (GetEquippedWeapon reads inventory).
+	U7Object* bestWeapon = nullptr;
+	unsigned char bestDamage = 0;
+	for (int itemId : monster->m_inventory)
+	{
+		U7Object* item = GetObjectFromID(itemId);
+		if (!item || !item->m_shapeData)
+			continue;
+		const WeaponData* w = GetWeaponData(item->m_shapeData->m_shape);
+		if (!w)
+			continue;
+		if (!bestWeapon || w->damage > bestDamage)
+		{
+			bestWeapon = item;
+			bestDamage = w->damage;
+		}
+	}
+	if (bestWeapon && bestWeapon->m_shapeData)
+		monster->m_attackRange = GetWeaponAttackRangeTiles(bestWeapon->m_shapeData->m_shape);
 }
 
 const WeaponData* GetWeaponData(int shape)

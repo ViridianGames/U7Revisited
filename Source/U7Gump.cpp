@@ -67,45 +67,53 @@ void Gump::OnEnter()
 	m_containerObject = GetObjectFromID(m_containerId);
 	int x = 4, y = 34;
 
-	//  Find out what kind of container this is and set the gump background accordingly
-	switch(m_containerObject->m_ObjectType)
+	// Dead NPCs/monsters always use the coffin (corpse) gump, regardless of shape.
+	if (m_containerObject && m_containerObject->IsDeathStatus())
 	{
-		case 788: //  Box
-		case 798:
-			m_containerData = g_containerData[static_cast<int>(ContainerType::CONTAINER_BOX)];
-			break;
-		case 804: //  Crate
-			m_containerData = g_containerData[static_cast<int>(ContainerType::CONTAINER_CRATE)];
-			break;
-		case 819: //  Barrel
-			m_containerData = g_containerData[static_cast<int>(ContainerType::CONTAINER_BARREL)];
-			break;
-		case 802: //  Small Sack
-			m_containerData = g_containerData[static_cast<int>(ContainerType::CONTAINER_BAG)];
-			break;
-		case 801: //  Backpack
-			m_containerData = g_containerData[static_cast<int>(ContainerType::CONTAINER_BACKPACK)];
-			break;
-		case 803: //  Basket
-			m_containerData = g_containerData[static_cast<int>(ContainerType::CONTAINER_BASKET)];
-			break;
-		case 800: //  Treasure Chest
-		case 522:
-			m_containerData = g_containerData[static_cast<int>(ContainerType::CONTAINER_TREASURECHEST)];
-			break;
-		case 679: //  Drawer
-		case 416: //  Drawer
-		case 407: //  Drawer
-		case 283: //  Drawer
-		case 406: //  Nightstand
-			m_containerData = g_containerData[static_cast<int>(ContainerType::CONTAINER_DRAWER)];
-			break;
-		case 507: //  Corpse
-			m_containerData = g_containerData[static_cast<int>(ContainerType::CONTAINER_CORPSE)];
-			break;
-		default:
-			m_containerData = g_containerData[static_cast<int>(ContainerType::CONTAINER_BACKPACK)];
-			break;
+		m_containerData = g_containerData[static_cast<int>(ContainerType::CONTAINER_CORPSE)];
+	}
+	else
+	{
+		// Find out what kind of container this is and set the gump background accordingly
+		switch (m_containerObject ? m_containerObject->m_ObjectType : -1)
+		{
+			case 788: //  Box
+			case 798:
+				m_containerData = g_containerData[static_cast<int>(ContainerType::CONTAINER_BOX)];
+				break;
+			case 804: //  Crate
+				m_containerData = g_containerData[static_cast<int>(ContainerType::CONTAINER_CRATE)];
+				break;
+			case 819: //  Barrel
+				m_containerData = g_containerData[static_cast<int>(ContainerType::CONTAINER_BARREL)];
+				break;
+			case 802: //  Small Sack
+				m_containerData = g_containerData[static_cast<int>(ContainerType::CONTAINER_BAG)];
+				break;
+			case 801: //  Backpack
+				m_containerData = g_containerData[static_cast<int>(ContainerType::CONTAINER_BACKPACK)];
+				break;
+			case 803: //  Basket
+				m_containerData = g_containerData[static_cast<int>(ContainerType::CONTAINER_BASKET)];
+				break;
+			case 800: //  Treasure Chest
+			case 522:
+				m_containerData = g_containerData[static_cast<int>(ContainerType::CONTAINER_TREASURECHEST)];
+				break;
+			case 679: //  Drawer
+			case 416: //  Drawer
+			case 407: //  Drawer
+			case 283: //  Drawer
+			case 406: //  Nightstand
+				m_containerData = g_containerData[static_cast<int>(ContainerType::CONTAINER_DRAWER)];
+				break;
+			case 507: //  Corpse
+				m_containerData = g_containerData[static_cast<int>(ContainerType::CONTAINER_CORPSE)];
+				break;
+			default:
+				m_containerData = g_containerData[static_cast<int>(ContainerType::CONTAINER_BACKPACK)];
+				break;
+		}
 	}
 
 	m_gui.m_Font = g_SmallFont;

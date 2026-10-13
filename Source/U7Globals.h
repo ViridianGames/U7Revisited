@@ -84,12 +84,32 @@ struct ArmorData
 	unsigned char immune = 0; // bitmask of WeaponDamageType bits
 };
 
+// One EQUIP.DAT element (up to 10 per monster equip record).
+struct EquipElement
+{
+	unsigned short shape = 0;
+	unsigned char probability = 0; // 0-100
+	unsigned char quantity = 0;
+};
+
+// One EQUIP.DAT record (indexed 1-based from MONSTERS.DAT equip_offset).
+struct EquipRecord
+{
+	EquipElement elements[10]{};
+};
+
+class U7Object;
+
 void LoadWeaponData();
 void LoadAmmoData();
 void LoadArmorData();
+void LoadEquipData();
 const WeaponData* GetWeaponData(int shape);
 const AmmoData* GetAmmoData(int shape);
 const ArmorData* GetArmorData(int shape);
+const EquipRecord* GetEquipRecord(int equipOffset1Based);
+// Roll EQUIP.DAT loot into a monster's inventory (Exult Monster_actor::equip).
+void ApplyMonsterEquipment(U7Object* monster);
 // Combat engage distance for an equipped weapon shape (DAT ranged range, else melee).
 float GetWeaponAttackRangeTiles(int shape);
 bool IsRangedWeaponShape(int shape);
@@ -482,6 +502,8 @@ bool SpawnFlyingProjectile(int shape, int fromId, int toId, float speed, int dam
 // Mark the newest in-flight missile from attackerId to pause their combat orders on impact.
 bool MarkNewestFlyingProjectilePauseCasterOnHit(int attackerId);
 void UpdateFlyingProjectiles();
+// True while any flying projectile still lists this attacker (TB resolve waits on it).
+bool HasFlyingProjectileFrom(int attackerId);
 
 /// Inclusive chunk range currently covered by the camera frustum (ground + tall-object pad).
 /// Used by object visibility; falls back to a distance-based radius if unprojection fails.

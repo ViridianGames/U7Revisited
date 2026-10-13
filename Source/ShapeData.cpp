@@ -808,6 +808,82 @@ void ShapeData::UpdateTextureCoordinates()
     
 }
 
+BoundingBox ShapeData::GetAsFlatBoundingBox(const Vector3& pos, float height, Vector3 scaling)
+{
+	BoundingBox box{};
+	const bool hasRgb = (m_texture != nullptr && m_texture->m_Texture.id > 0);
+	const bool hasIndex = (m_hasPaletteAnim && m_indexTexture.id > 0);
+	if (!hasRgb && !hasIndex)
+	{
+		box.min = pos;
+		box.max = Vector3{ pos.x + 1.0f, pos.y + height, pos.z + 1.0f };
+		return box;
+	}
+
+	// Same temporary texture dims as DrawAsFlat (billboard shapes store upright dims).
+	const Vector3 savedDims = m_Dims;
+	if (hasRgb)
+		m_Dims = Vector3{ float(m_texture->width) / 8.0f, 0.0f, float(m_texture->height) / 8.0f };
+	else
+		m_Dims = Vector3{ float(m_indexTexture.width) / 8.0f, 0.0f, float(m_indexTexture.height) / 8.0f };
+
+	Vector3 finalPos{};
+	Vector3 flatScaling{};
+	float flatRotation = 0.0f;
+	GetFlatDrawTransform(pos, 0.0f, scaling, finalPos, flatScaling, flatRotation);
+	m_Dims = savedDims;
+
+	// flat.obj spans x in [0, scale.x] and z in [-scale.z, 0] from the model origin.
+	box.min = Vector3{ finalPos.x, pos.y, finalPos.z - flatScaling.z };
+	box.max = Vector3{ finalPos.x + flatScaling.x, pos.y + height, finalPos.z };
+	return box;
+}
+
+void ShapeData::DrawAsFlat(const Vector3& pos, Color color, Vector3 scaling)
+{
+	if (!m_isValid || m_flatModel == nullptr)
+		return;
+
+	const bool hasRgb = (m_texture != nullptr && m_texture->m_Texture.id > 0);
+	const bool hasIndex = (m_hasPaletteAnim && m_indexTexture.id > 0);
+	if (!hasRgb && !hasIndex)
+		return;
+
+	// Size from this frame's texture (billboard shapes store upright dims).
+	const Vector3 savedDims = m_Dims;
+	if (hasRgb)
+		m_Dims = Vector3{ float(m_texture->width) / 8.0f, 0.0f, float(m_texture->height) / 8.0f };
+	else
+		m_Dims = Vector3{ float(m_indexTexture.width) / 8.0f, 0.0f, float(m_indexTexture.height) / 8.0f };
+
+	Vector3 finalPos{};
+	Vector3 flatScaling{};
+	float flatRotation = 0.0f;
+	GetFlatDrawTransform(pos, 0.0f, scaling, finalPos, flatScaling, flatRotation);
+
+	if (hasIndex && g_paletteSystemReady)
+	{
+		Material& mat = m_flatModel->GetModel().materials[0];
+		Shader prevShader = mat.shader;
+		Texture prevSpecular = mat.maps[MATERIAL_MAP_SPECULAR].texture;
+		BindPaletteMaterial(&mat, m_indexTexture);
+		m_flatModel->UpdateFlatUV(0.0f, 1.0f, 0.0f, 1.0f);
+		DrawModelEx(m_flatModel->GetModel(), finalPos, { 0, 1, 0 }, flatRotation, flatScaling, color);
+		mat.shader = prevShader;
+		SetMaterialTexture(&mat, MATERIAL_MAP_SPECULAR, prevSpecular);
+	}
+	else if (hasRgb)
+	{
+		BeginShaderMode(g_alphaDiscard);
+		SetMaterialTexture(&m_flatModel->GetModel().materials[0], MATERIAL_MAP_DIFFUSE, m_texture->m_Texture);
+		m_flatModel->UpdateFlatUV(0.0f, 1.0f, 0.0f, 1.0f);
+		DrawModelEx(m_flatModel->GetModel(), finalPos, { 0, 1, 0 }, flatRotation, flatScaling, color);
+		EndShaderMode();
+	}
+
+	m_Dims = savedDims;
+}
+
 void ShapeData::DrawMeshId(const Vector3& pos, float angle, Color idColor, Vector3 scaling)
 {
 	if (!m_isValid || !m_customMesh)

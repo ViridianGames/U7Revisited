@@ -383,7 +383,7 @@ namespace
 	U7Object* FindCombatAmmo(U7Object* unit, int weaponShape, bool& outNeedsAmmo)
 	{
 		outNeedsAmmo = false;
-		if (!unit || !unit->m_NPCData)
+		if (!unit)
 			return nullptr;
 
 		if (weaponShape == kShapeSling)
@@ -398,12 +398,15 @@ namespace
 			return obj && obj->m_shapeData && IsCompatibleAmmoShape(weaponShape, obj->m_shapeData->m_shape);
 		};
 
-		const int ammoId = unit->m_NPCData->GetEquippedItem(EquipmentSlot::SLOT_AMMO);
-		if (ammoId >= 0)
+		if (unit->m_NPCData)
 		{
-			U7Object* ammo = GetObjectFromID(ammoId);
-			if (usable(ammo))
-				return ammo;
+			const int ammoId = unit->m_NPCData->GetEquippedItem(EquipmentSlot::SLOT_AMMO);
+			if (ammoId >= 0)
+			{
+				U7Object* ammo = GetObjectFromID(ammoId);
+				if (usable(ammo))
+					return ammo;
+			}
 		}
 
 		for (int id : unit->m_inventory)
@@ -859,6 +862,15 @@ void U7Object::HostileCombatUpdate()
 
 void U7Object::MonsterUpdate()
 {
+	// Corpses: keep death pose, no chase/attack AI.
+	if (IsDeathStatus() || GetIsDead())
+	{
+		if (IsDeathStatus() && !m_isFrameOverridden)
+			SetOverrideFrame(GetDeathFrameForFacing());
+		UpdateNpcAnim(g_Engine ? g_Engine->LastFrameInSeconds() : 0.0f);
+		return;
+	}
+
 	UpdateNpcAnim(g_Engine ? g_Engine->LastFrameInSeconds() : 0.0f);
 
 	// Hostiles are Team 1 (combat eggs). Team 2 = party summons (Swarm). Team 0 = fauna.
@@ -1277,6 +1289,12 @@ void U7Object::EggDraw()
 
 void U7Object::MonsterDraw()
 {
+	if (IsDeathStatus())
+	{
+		DrawCorpseFlat();
+		return;
+	}
+
 	// Same 8-way walk billboards as NPCs when walk frames exist for this shape.
 	if (m_walkTextures.size() >= 8)
 	{
@@ -1639,6 +1657,9 @@ void U7Object::MonsterInit()
 
 	// Same as NPCInit: refresh pick box now that UnitType is MONSTER.
 	SetPos(m_Pos);
+
+	// EQUIP.DAT loot/weapons (pirates, guards, …). Inventory stays until death loot.
+	ApplyMonsterEquipment(this);
 }
 
 void U7Object::HandleVoiceEgg()
@@ -2177,6 +2198,12 @@ void U7Object::Shutdown()
 
 void U7Object::NPCDraw()
 {
+	if (IsDeathStatus())
+	{
+		DrawCorpseFlat();
+		return;
+	}
+
 	if (m_NPCData == nullptr)
 	{
 		return;
@@ -2188,6 +2215,29 @@ void U7Object::NPCDraw()
 	}
 
 	DrawWalkBillboard(m_NPCData->m_walkTextures, m_NPCData->m_walkTexturesUpright);
+}
+
+void U7Object::DrawCorpseFlat()
+{
+	const int frame = m_isFrameOverridden ? m_overrideFrame : GetDeathFrameForFacing();
+	if (m_ObjectType < 0 || m_ObjectType >= static_cast<int>(g_shapeTable.size()))
+		return;
+	if (frame < 0 || frame >= 32)
+		return;
+
+	ShapeData& sd = g_shapeTable[m_ObjectType][frame];
+	if (!sd.IsValid())
+		return;
+
+	const int cellx = (TILEWIDTH / 2) + static_cast<int>(m_Pos.x) - static_cast<int>(g_camera.target.x);
+	const int celly = (TILEHEIGHT / 2) + static_cast<int>(m_Pos.z) - static_cast<int>(g_camera.target.z);
+	if (cellx < 0 || cellx >= TILEWIDTH || celly < 0 || celly >= TILEHEIGHT)
+		return;
+
+	Color renderColor = g_Terrain
+		? g_Terrain->m_cellLighting[cellx][celly]
+		: Color{ 255, 255, 255, 255 };
+	sd.DrawAsFlat(m_Pos, renderColor);
 }
 
 void U7Object::DrawWalkBillboard(const std::vector<std::vector<Texture*>>& walkTextures, bool uprightSheet)
@@ -3450,10 +3500,31 @@ void U7Object::SetPos(Vector3 pos)
 	// NPCs/monsters are stored at tile centers (draw matches m_Pos). Their pick box
 	// must still use the tile's upper-left as min — otherwise the clickable volume
 	// sits SE of the visible sprite and feels "off."
+	// Living characters pick as upright volumes at tile center; corpses are ground flats.
 	const bool characterAtTileCenter =
-		(m_UnitType == UnitTypes::UNIT_TYPE_NPC || m_UnitType == UnitTypes::UNIT_TYPE_MONSTER);
+		!IsDeathStatus()
+		&& (m_UnitType == UnitTypes::UNIT_TYPE_NPC || m_UnitType == UnitTypes::UNIT_TYPE_MONSTER);
 
-	if (characterAtTileCenter)
+	if (IsDeathStatus()
+		&& (m_UnitType == UnitTypes::UNIT_TYPE_NPC || m_UnitType == UnitTypes::UNIT_TYPE_MONSTER))
+	{
+		// Match DrawCorpseFlat / DrawAsFlat: hotspot + texture dims + scale re-anchor.
+		const int frame = m_isFrameOverridden ? m_overrideFrame : GetDeathFrameForFacing();
+		if (m_ObjectType >= 0 && m_ObjectType < static_cast<int>(g_shapeTable.size())
+			&& frame >= 0 && frame < 32
+			&& g_shapeTable[m_ObjectType][frame].IsValid())
+		{
+			m_boundingBox = g_shapeTable[m_ObjectType][frame].GetAsFlatBoundingBox(m_Pos, 0.15f);
+			dims = Vector3Subtract(m_boundingBox.max, m_boundingBox.min);
+			boundingBoxAnchorPoint = m_boundingBox.min;
+		}
+		else
+		{
+			dims = Vector3{ 1.0f, 0.15f, 1.0f };
+			boundingBoxAnchorPoint = Vector3Add(m_Pos, Vector3{ -dims.x + 1.0f, 0.0f, -dims.z + 1.0f });
+		}
+	}
+	else if (characterAtTileCenter)
 	{
 		dims = Vector3{ objectData->m_width, objectData->m_height, objectData->m_depth };
 		if (dims.x < 0.5f) dims.x = 1.0f;
@@ -3497,6 +3568,16 @@ void U7Object::SetPos(Vector3 pos)
 		// Keep sort/lighting center on the visible character (tile center).
 		// Flying: raise center with draw height so depth sort matches the sprite.
 		m_centerPoint = Vector3{ m_Pos.x, m_Pos.y + m_drawHeightOffset + dims.y * 0.5f, m_Pos.z };
+	}
+	else if (IsDeathStatus()
+		&& (m_UnitType == UnitTypes::UNIT_TYPE_NPC || m_UnitType == UnitTypes::UNIT_TYPE_MONSTER))
+	{
+		// Flat corpse may be hotspot-offset from m_Pos; center on the drawn AABB.
+		m_centerPoint = Vector3{
+			(m_boundingBox.min.x + m_boundingBox.max.x) * 0.5f,
+			(m_boundingBox.min.y + m_boundingBox.max.y) * 0.5f,
+			(m_boundingBox.min.z + m_boundingBox.max.z) * 0.5f
+		};
 	}
 	else
 	{
@@ -3585,13 +3666,8 @@ void U7Object::SetNpcAnimAction(NpcAnimAction action, bool looping, float frameM
 void U7Object::StartNpcAttackAnim()
 {
 	NpcAnimAction action = NpcAnimAction::Attack1H;
-	U7Object* weapon = nullptr;
-	if (m_NPCData)
-	{
-		const int weaponId = m_NPCData->GetEquippedItem(EquipmentSlot::SLOT_RIGHT_HAND);
-		if (weaponId >= 0)
-			weapon = GetObjectFromID(weaponId);
-	}
+	// Party paperdoll or monster EQUIP.DAT inventory (GetEquippedWeapon).
+	U7Object* weapon = GetEquippedWeapon(this);
 
 	if (weapon && weapon->m_shapeData)
 	{
@@ -3763,12 +3839,13 @@ bool U7Object::IsSleepingPose() const
 
 bool U7Object::IsDeathStatus() const
 {
-	if (m_UnitType != UnitTypes::UNIT_TYPE_NPC || !m_NPCData)
-		return false;
-	// Prefer runtime Obj_flags; also honor npc.dat bit 15 for loaded corpses.
+	// Runtime Obj_flags bit is used for both NPC and monster corpses.
 	if ((m_flags & kObjFlagDead) != 0)
 		return true;
-	return (m_NPCData->status & kNpcDatStatusDead) != 0;
+	// Loaded npc.dat bit 15 for pre-placed dead NPCs.
+	if (m_UnitType == UnitTypes::UNIT_TYPE_NPC && m_NPCData)
+		return (m_NPCData->status & kNpcDatStatusDead) != 0;
+	return false;
 }
 
 void U7Object::ApplyDeath()
@@ -3802,15 +3879,19 @@ void U7Object::ApplyDeath()
 
 	if (m_UnitType == UnitTypes::UNIT_TYPE_MONSTER)
 	{
+		// Same lootable-corpse path as NPCs: stay in the world, death pose, open as container.
+		m_flags |= kObjFlagDead;
+		m_isContainer = true;
+		SetOverrideFrame(GetDeathFrameForFacing());
+		m_Visible = true;
+		m_ShouldDraw = true;
+		SetPos(m_Pos); // refresh pick box for flat corpse
+
 		AddConsoleString(m_name.empty() ? "Creature is dead!" : (m_name + " is dead!"), RED);
 		if (g_SoundSystem)
 			g_SoundSystem->StopLoopingSoundEffect(static_cast<int>(m_ID));
 		if (g_mainState && g_mainState->m_barkObject == this)
 			g_mainState->ClearBarks();
-		UnassignObjectChunk(this);
-		SetIsDead(true);
-		m_Visible = false;
-		m_ShouldDraw = false;
 		return;
 	}
 
@@ -3842,6 +3923,7 @@ void U7Object::ApplyDeath()
 		g_Player->RemovePartyMember(m_NPCID);
 
 	SetOverrideFrame(GetDeathFrameForFacing());
+	SetPos(m_Pos); // refresh pick box for flat corpse
 
 	const std::string label = m_name.empty() ? "NPC" : m_name;
 	AddConsoleString(label + " is dead!", RED);

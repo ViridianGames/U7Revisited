@@ -132,9 +132,19 @@ public:
 	bool TrySpendAp(float cost);
 	void EndActiveTurn(); // Space / AP exhausted — advance initiative
 
+	// Melee 3 / missile & spells 4. Used by reach overlay and MainState spell orders.
+	float GetAttackApCostForUnit(const U7Object* unit) const;
+	float GetSpellApCost() const { return kSpellAp; }
+	bool TrySpendSpellAp();
+	bool CanAffordSpell() const;
+	void RefreshReachableAfterApChange();
+
 private:
-	static constexpr float kAttackApReserve = 3.0f;
+	static constexpr float kMeleeAttackAp = 3.0f;
+	static constexpr float kMissileAttackAp = 4.0f;
+	static constexpr float kSpellAp = 4.0f;
 	static constexpr float kApEpsilon = 0.001f;
+	static constexpr float kEngageRangeSlack = 0.85f;
 
 	void LockCameraToActiveUnit();
 	void RebuildInitiative(MainState& main);
@@ -145,9 +155,22 @@ private:
 	void ClearReachableTiles();
 	bool TryIssueMoveTo(MainState& main, int tileX, int tileZ);
 	bool BeginMoveToTile(U7Object* unit, int tileX, int tileZ, float spent);
+	void ResetResolveTracking(U7Object* unit);
+	void ForceFinishResolvingMove(MainState& main, U7Object* unit, const char* reason);
 	void OnMoveResolved(MainState& main);
 	void RunEnemyTurnAi(MainState& main);
+	bool TryIssueAttackOn(MainState& main, U7Object* target);
+	bool BeginAttackOn(U7Object* attacker, U7Object* target);
+	void OnAttackResolved(MainState& main);
+	void UpdateResolvingAttack(MainState& main, U7Object* unit);
+	bool TryMoveTowardTarget(U7Object* unit, U7Object* target, float reserveAp);
+	bool IsInAttackRange(const U7Object* attacker, const U7Object* target) const;
+	float GetUnitEngageRange(const U7Object* unit) const;
+	void RefreshUnitAttackRange(U7Object* unit) const;
+	bool CanAffordAttack() const;
+	float GetActiveAttackApCost() const;
 	U7Object* FindNearestPartyTarget(const U7Object* from) const;
+	U7Object* FindNearestHostileTarget(const U7Object* from) const;
 	bool IsLivingCombatant(const U7Object* obj) const;
 	bool IsPartyUnit(const U7Object* obj) const;
 	bool IsTileOccupiedByOther(int tileX, int tileZ, int selfId) const;
@@ -169,10 +192,20 @@ private:
 	std::vector<ReachTile> m_reachTiles;
 	float m_reachDrawY = 0.05f;
 	float m_pendingMoveApCost = 0.0f; // AP already spent when Resolving a move
-	bool m_enemyAiPending = false;    // enemy turn: decide move on next Update
-	bool m_endTurnAfterMove = false;  // enemies auto-end after their move resolves
+	bool m_enemyAiPending = false;    // enemy turn: decide move/attack on next Update
+	bool m_endTurnAfterMove = false;  // enemies auto-end after move when they cannot attack
+	bool m_enemyAttackAfterMove = false; // after closing distance, try attack
+	bool m_resolvingAttack = false;   // Resolving is an attack swing/shot
+	bool m_attackSwingStarted = false;
+	int m_attackTargetId = 0;
+	float m_pendingAttackApCost = 0.0f; // AP spent on current attack (for refund)
 	int m_resolveFrames = 0;          // failsafe while Phase::Resolving
+	float m_resolveLastX = 0.0f;
+	float m_resolveLastY = 0.0f;
+	float m_resolveLastZ = 0.0f;
+	int m_resolveNoProgressFrames = 0; // frames with no meaningful pos change
 	static constexpr int kResolveStuckFrames = 180; // ~3s at 60fps
+	static constexpr int kResolveNoProgressFrames = 45; // ~0.75s with no movement
 };
 
 #endif

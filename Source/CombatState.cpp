@@ -68,28 +68,53 @@ std::string PluralizeCreatureName(const std::string& name)
 
 U7Object* GetEquippedWeapon(U7Object* unit)
 {
-	if (!unit || !unit->m_NPCData)
+	if (!unit)
 		return nullptr;
 
-	// Paperdoll allows one-handed weapons in either hand; prefer RIGHT then LEFT.
-	// Only accept WEAPONS.DAT shapes so a shield/torch in the other hand is ignored.
-	auto trySlot = [&](EquipmentSlot slot) -> U7Object* {
-		const int weaponId = unit->m_NPCData->GetEquippedItem(slot);
-		if (weaponId < 0)
-			return nullptr;
-		U7Object* obj = GetObjectFromID(weaponId);
-		if (!obj || !obj->m_shapeData)
-			return nullptr;
-		if (!GetWeaponData(obj->m_shapeData->m_shape))
-			return nullptr;
-		return obj;
-	};
+	if (unit->m_NPCData)
+	{
+		// Paperdoll allows one-handed weapons in either hand; prefer RIGHT then LEFT.
+		// Only accept WEAPONS.DAT shapes so a shield/torch in the other hand is ignored.
+		auto trySlot = [&](EquipmentSlot slot) -> U7Object* {
+			const int weaponId = unit->m_NPCData->GetEquippedItem(slot);
+			if (weaponId < 0)
+				return nullptr;
+			U7Object* obj = GetObjectFromID(weaponId);
+			if (!obj || !obj->m_shapeData)
+				return nullptr;
+			if (!GetWeaponData(obj->m_shapeData->m_shape))
+				return nullptr;
+			return obj;
+		};
 
-	if (U7Object* right = trySlot(EquipmentSlot::SLOT_RIGHT_HAND))
-		return right;
-	if (U7Object* left = trySlot(EquipmentSlot::SLOT_LEFT_HAND))
-		return left;
-	return nullptr;
+		if (U7Object* right = trySlot(EquipmentSlot::SLOT_RIGHT_HAND))
+			return right;
+		if (U7Object* left = trySlot(EquipmentSlot::SLOT_LEFT_HAND))
+			return left;
+		return nullptr;
+	}
+
+	// Monsters: EQUIP.DAT gear lives in inventory (no paperdoll). Prefer highest damage.
+	if (unit->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_MONSTER)
+		return nullptr;
+
+	U7Object* best = nullptr;
+	unsigned char bestDamage = 0;
+	for (int itemId : unit->m_inventory)
+	{
+		U7Object* obj = GetObjectFromID(itemId);
+		if (!obj || !obj->m_shapeData)
+			continue;
+		const WeaponData* w = GetWeaponData(obj->m_shapeData->m_shape);
+		if (!w)
+			continue;
+		if (!best || w->damage > bestDamage)
+		{
+			best = obj;
+			bestDamage = w->damage;
+		}
+	}
+	return best;
 }
 
 std::string CombatWeaponDisplayName(int weaponShape)
@@ -318,30 +343,51 @@ namespace
 	int GetEquippedArmorPoints(const U7Object* unit, unsigned char& outImmuneMask)
 	{
 		outImmuneMask = 0;
-		if (!unit || !unit->m_NPCData)
+		if (!unit)
 			return 0;
 
-		static const EquipmentSlot kArmorSlots[] = {
-			EquipmentSlot::SLOT_HEAD,
-			EquipmentSlot::SLOT_NECK,
-			EquipmentSlot::SLOT_TORSO,
-			EquipmentSlot::SLOT_LEGS,
-			EquipmentSlot::SLOT_HANDS,
-			EquipmentSlot::SLOT_FEET,
-			EquipmentSlot::SLOT_LEFT_HAND,  // shield
-			EquipmentSlot::SLOT_RIGHT_HAND, // weapon that also grants armor (Sword of Defense, etc.)
-			EquipmentSlot::SLOT_LEFT_RING,
-			EquipmentSlot::SLOT_RIGHT_RING,
-			EquipmentSlot::SLOT_BELT,
-		};
+		if (unit->m_NPCData)
+		{
+			static const EquipmentSlot kArmorSlots[] = {
+				EquipmentSlot::SLOT_HEAD,
+				EquipmentSlot::SLOT_NECK,
+				EquipmentSlot::SLOT_TORSO,
+				EquipmentSlot::SLOT_LEGS,
+				EquipmentSlot::SLOT_HANDS,
+				EquipmentSlot::SLOT_FEET,
+				EquipmentSlot::SLOT_LEFT_HAND,  // shield
+				EquipmentSlot::SLOT_RIGHT_HAND, // weapon that also grants armor (Sword of Defense, etc.)
+				EquipmentSlot::SLOT_LEFT_RING,
+				EquipmentSlot::SLOT_RIGHT_RING,
+				EquipmentSlot::SLOT_BELT,
+			};
+
+			int points = 0;
+			for (EquipmentSlot slot : kArmorSlots)
+			{
+				const int id = unit->m_NPCData->GetEquippedItem(slot);
+				if (id < 0)
+					continue;
+				U7Object* piece = GetObjectFromID(id);
+				if (!piece || !piece->m_shapeData)
+					continue;
+				const ArmorData* armor = GetArmorData(piece->m_shapeData->m_shape);
+				if (!armor)
+					continue;
+				points += static_cast<int>(armor->prot);
+				outImmuneMask = static_cast<unsigned char>(outImmuneMask | armor->immune);
+			}
+			return points;
+		}
+
+		// Monsters: sum ARMOR.DAT pieces sitting in EQUIP.DAT inventory.
+		if (unit->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_MONSTER)
+			return 0;
 
 		int points = 0;
-		for (EquipmentSlot slot : kArmorSlots)
+		for (int itemId : unit->m_inventory)
 		{
-			const int id = unit->m_NPCData->GetEquippedItem(slot);
-			if (id < 0)
-				continue;
-			U7Object* piece = GetObjectFromID(id);
+			U7Object* piece = GetObjectFromID(itemId);
 			if (!piece || !piece->m_shapeData)
 				continue;
 			const ArmorData* armor = GetArmorData(piece->m_shapeData->m_shape);

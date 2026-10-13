@@ -88,6 +88,16 @@ public:
 	void Draw(const Vector3& pos, float angle, Color color = Color{ 255, 255, 255, 255 },
 		Vector3 scaling = Vector3{ 1, 1, 1 }, bool playSkeletalAnim = true, int freezeFrame = 0);
 
+	// Draw this shape's texture as a ground flat regardless of m_drawType
+	// (dead NPC/monster corpses lie on the ground).
+	void DrawAsFlat(const Vector3& pos, Color color = Color{ 255, 255, 255, 255 },
+		Vector3 scaling = Vector3{ 1, 1, 1 });
+
+	// World AABB matching DrawAsFlat coverage (texture dims + hotspot + scale re-anchor).
+	// height is the pick-box thickness in Y (flats are visually coplanar with the ground).
+	BoundingBox GetAsFlatBoundingBox(const Vector3& pos, float height = 0.15f,
+		Vector3 scaling = Vector3{ 1, 1, 1 });
+
 	// Flat object-ID draw for the screen-space outline mask pass (custom meshes only).
 	void DrawMeshId(const Vector3& pos, float angle, Color idColor, Vector3 scaling = Vector3{ 1, 1, 1 });
 

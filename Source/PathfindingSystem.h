@@ -346,7 +346,12 @@ public:
 	static bool IsNonBlockingWalkSurface(int shapeID);
 	static bool IsStandableObjectTop(const U7Object* obj);
 	static float GetObjectSurfaceY(const U7Object* obj);
-	static bool ValidateMove(U7Object* agent, const Vector3& desiredPos, float& outDestH);
+	// Optional outRejectReason is filled only when the move is rejected.
+	static bool ValidateMove(U7Object* agent, const Vector3& desiredPos, float& outDestH,
+		std::string* outRejectReason = nullptr);
+
+	// Objects whose TFA footprint stamped this tile impassable in the ground-cost map.
+	std::vector<std::string> DescribeGroundBlockersAt(int worldX, int worldZ) const;
 
 	// Guard for FindPath / visited snapshot
 	mutable std::mutex m_findMutex;

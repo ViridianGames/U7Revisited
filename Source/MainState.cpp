@@ -1362,7 +1362,7 @@ void MainState::HandleLeftDoubleClick()
 		// when the second click successfully uses/opens the object.
 		ClearObjectInfoTooltip();
 
-		// Dead NPCs are lootable corpses — open their inventory, no talk/paperdoll.
+		// Dead NPCs/monsters are lootable corpses - open inventory, no talk/paperdoll.
 		if (g_objectUnderMousePointer->IsDeathStatus())
 		{
 			m_handledDoubleLeftClickThisFrame = true;
@@ -1403,13 +1403,25 @@ void MainState::HandleLeftDoubleClick()
 		}
 		else if (g_objectUnderMousePointer->m_isContainer && !g_objectUnderMousePointer->IsLocked())
 		{
-			m_handledDoubleLeftClickThisFrame = true;
-			OpenGump(g_objectUnderMousePointer->m_ID);
+			// Living NPCs/monsters hold inventory for death loot; only open world containers here.
+			// Corpses are handled above via IsDeathStatus(); party uses paperdoll.
+			const auto ut = g_objectUnderMousePointer->m_UnitType;
+			if (ut != U7Object::UnitTypes::UNIT_TYPE_NPC
+				&& ut != U7Object::UnitTypes::UNIT_TYPE_MONSTER)
+			{
+				m_handledDoubleLeftClickThisFrame = true;
+				OpenGump(g_objectUnderMousePointer->m_ID);
+			}
 		}
 		else if (g_objectUnderMousePointer->m_isContainer)
 		{
-			m_handledDoubleLeftClickThisFrame = true;
-			Bark(g_objectUnderMousePointer, "Locked");
+			const auto ut = g_objectUnderMousePointer->m_UnitType;
+			if (ut != U7Object::UnitTypes::UNIT_TYPE_NPC
+				&& ut != U7Object::UnitTypes::UNIT_TYPE_MONSTER)
+			{
+				m_handledDoubleLeftClickThisFrame = true;
+				Bark(g_objectUnderMousePointer, "Locked");
+			}
 		}
 	}
 	else if (!g_mouseOverUI && !g_gumpManager->m_isMouseOverGump)
@@ -3627,6 +3639,7 @@ void MainState::SetupGame()
 	LoadWeaponData();
 	LoadAmmoData();
 	LoadArmorData();
+	LoadEquipData();
 }
 
 void MainState::RebuildWorldFromLoadedData()
@@ -4546,6 +4559,9 @@ void MainState::HandleCombatOrderKeys()
 {
 	if (!IsCombatOrdersPaused() || !AllowsCombatPlayerOrders())
 		return;
+	// Turn-Based uses Space to end turn; Hold/Automatic are RTwP-only.
+	if (m_combatMode && m_combatMode->GetStyle() == CombatStyle::TurnBased)
+		return;
 	if (g_gumpManager && !g_gumpManager->m_GumpList.empty())
 		return;
 
@@ -4765,6 +4781,60 @@ void MainState::IssueCombatSpellOrder(U7Object* caster, int spellId, U7Object* t
 	if (!target)
 		target = caster;
 
+	// Turn-Based: spend spell AP (4) on the active unit and cast immediately.
+	if (m_combatMode && m_combatMode->GetStyle() == CombatStyle::TurnBased)
+	{
+		auto* tb = static_cast<TurnBasedCombatMode*>(m_combatMode.get());
+		if (tb->GetPhase() != TurnBasedCombatMode::Phase::Planning)
+		{
+			AddConsoleString("Cannot cast while resolving an action.", YELLOW);
+			return;
+		}
+		if (tb->GetActiveUnitId() != static_cast<int>(caster->m_ID))
+		{
+			AddConsoleString("Only the active unit can cast this turn.", YELLOW);
+			return;
+		}
+		if (!tb->TrySpendSpellAp())
+		{
+			AddConsoleString(
+				"Need " + std::to_string(static_cast<int>(tb->GetSpellApCost()))
+					+ " AP to cast.",
+				YELLOW);
+			return;
+		}
+
+		caster->m_combatSpellId = -1;
+		caster->m_combatSpellTargetId = 0;
+		caster->m_target = 0;
+		caster->m_combatPathTargetId = 0;
+		caster->m_pathWaypoints.clear();
+		caster->m_currentWaypointIndex = 0;
+		caster->m_pathfindingPending = false;
+		caster->m_isMoving = false;
+		caster->SetDest(caster->GetPos());
+		caster->m_combatOrderMode = CombatOrderMode::Hold;
+		caster->m_combatMoveOrder = false;
+
+		const std::string casterName = caster->m_name.empty() ? "Caster" : caster->m_name;
+		const std::string label = spell->words.empty()
+			? spell->name
+			: (spell->name + " (" + spell->words + ")");
+		AddConsoleString(
+			casterName + " casts " + label + " ("
+				+ std::to_string(static_cast<int>(tb->GetSpellApCost())) + " AP).",
+			GREEN);
+
+		caster->m_pauseOrdersOnNextSpellProjectile = true;
+		GumpSpellbook::RunSpellCast(spellId, caster, static_cast<int>(target->m_ID));
+		if (MarkNewestFlyingProjectilePauseCasterOnHit(static_cast<int>(caster->m_ID)))
+			caster->m_pauseOrdersOnNextSpellProjectile = false;
+		else if (!caster->IsInUsecodeScript())
+			caster->m_pauseOrdersOnNextSpellProjectile = false;
+		tb->RefreshReachableAfterApChange();
+		return;
+	}
+
 	caster->m_combatSpellId = spellId;
 	caster->m_combatSpellTargetId = target->m_ID;
 	caster->m_target = spell->targeted ? target->m_ID : 0;
@@ -4857,10 +4927,15 @@ void MainState::NotifyCombatantCannotContinue(U7Object* member, const std::strin
 	member->m_combatSpellId = -1;
 	member->m_combatSpellTargetId = 0;
 
-	m_combatPaused = true;
-	m_combatSelectedPartyMemberObjectId = member->m_ID;
 	const std::string name = member->m_name.empty() ? "Party member" : member->m_name;
 	AddConsoleString(name + " " + reason, YELLOW);
+
+	// Turn-Based owns its own AP/turn flow; do not force an RTwP pause prompt.
+	if (m_combatMode && m_combatMode->GetStyle() == CombatStyle::TurnBased)
+		return;
+
+	m_combatPaused = true;
+	m_combatSelectedPartyMemberObjectId = member->m_ID;
 	AddConsoleString("Combat paused. Give a new order, then press Space.", WHITE);
 }
 
@@ -4895,13 +4970,10 @@ void MainState::HandleCombatOrdersClick()
 	if (g_mouseOverUI)
 		return;
 
-	// Turn-Based owns its own click rules (active unit only, AP-limited move).
-	if (m_combatMode && m_combatMode->HandleOrdersClick(*this))
-		return;
-
 	U7Object* clicked = g_objectUnderMousePointer;
 
-	// Spellbook targeting: next object click queues the cast for resume.
+	// Spellbook targeting wins over TB attack/move — otherwise clicking an enemy
+	// for Vas Flam (etc.) is treated as an out-of-range weapon attack and wastes AP.
 	// U7 allows any spell on any target (party, self, enemy, etc.).
 	if (IsCombatSpellTargeting())
 	{
@@ -4922,6 +4994,10 @@ void MainState::HandleCombatOrdersClick()
 		CancelCombatSpellTargeting();
 		return;
 	}
+
+	// Turn-Based owns its own click rules (active unit only, AP-limited move).
+	if (m_combatMode && m_combatMode->HandleOrdersClick(*this))
+		return;
 
 	if (clicked && IsCombatPartyMemberObject(clicked))
 	{
@@ -5325,6 +5401,7 @@ void MainState::SpawnDebugDuelingField()
 	}
 
 	// Clear previous debug spawns so re-pressing the hotkey resets the arena.
+	// Corpses stay lootable in normal play; arena reset hard-despawns them.
 	for (int id : m_debugDuelFieldObjectIds)
 	{
 		auto it = g_objectList.find(id);
@@ -5333,6 +5410,10 @@ void MainState::SpawnDebugDuelingField()
 		U7Object* obj = it->second.get();
 		if (!obj->GetIsDead() && !obj->IsDeathStatus())
 			obj->ApplyDeath();
+		UnassignObjectChunk(obj);
+		obj->SetIsDead(true);
+		obj->m_Visible = false;
+		obj->m_ShouldDraw = false;
 	}
 	m_debugDuelFieldObjectIds.clear();
 
@@ -5399,7 +5480,12 @@ void MainState::SpawnDebugDuelingField()
 		const int sy = (int)groundY(sx, sz);
 		const int id = SpawnMonster(pirateType, sx, sy, sz);
 		if (id >= 0)
+		{
 			m_debugDuelFieldObjectIds.push_back(id);
+			// Distinct labels so TB HUD/console can tell identical pirates apart.
+			if (auto it = g_objectList.find(id); it != g_objectList.end() && it->second)
+				it->second->m_name = "Pirate " + std::to_string(i + 1);
+		}
 	}
 
 	g_camera.target = avatarPos;

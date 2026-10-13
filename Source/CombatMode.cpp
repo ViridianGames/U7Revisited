@@ -512,6 +512,42 @@ bool TurnBasedCombatMode::TrySpendAp(float cost)
 	return true;
 }
 
+float TurnBasedCombatMode::GetAttackApCostForUnit(const U7Object* unit) const
+{
+	if (!unit)
+		return kMeleeAttackAp;
+	U7Object* weapon = GetEquippedWeapon(const_cast<U7Object*>(unit));
+	if (weapon && weapon->m_shapeData && IsRangedWeaponShape(weapon->m_shapeData->m_shape))
+		return kMissileAttackAp;
+	return kMeleeAttackAp;
+}
+
+float TurnBasedCombatMode::GetActiveAttackApCost() const
+{
+	return GetAttackApCostForUnit(GetActiveUnit());
+}
+
+bool TurnBasedCombatMode::CanAffordAttack() const
+{
+	return m_apRemaining + kApEpsilon >= GetActiveAttackApCost();
+}
+
+bool TurnBasedCombatMode::CanAffordSpell() const
+{
+	return m_apRemaining + kApEpsilon >= kSpellAp;
+}
+
+bool TurnBasedCombatMode::TrySpendSpellAp()
+{
+	return TrySpendAp(kSpellAp);
+}
+
+void TurnBasedCombatMode::RefreshReachableAfterApChange()
+{
+	if (m_phase == Phase::Planning)
+		RebuildReachableTiles();
+}
+
 void TurnBasedCombatMode::LockCameraToActiveUnit()
 {
 	if (m_activeUnitId < 0)
@@ -707,9 +743,10 @@ void TurnBasedCombatMode::StartUnitTurn(MainState& main)
 	m_apRemaining = 0.0f;
 	m_apBudget = 0.0f;
 	m_pendingMoveApCost = 0.0f;
+	m_pendingAttackApCost = 0.0f;
 	m_enemyAiPending = false;
 	m_endTurnAfterMove = false;
-	m_resolveFrames = 0;
+	ResetResolveTracking(nullptr);
 	ClearReachableTiles();
 
 	if (m_initiative.empty())
@@ -742,22 +779,32 @@ void TurnBasedCombatMode::StartUnitTurn(MainState& main)
 			+ " ap=" + FormatAp(m_apBudget)
 			+ (IsPartyUnit(unit) ? " party" : " enemy"));
 
+		m_resolvingAttack = false;
+		m_attackSwingStarted = false;
+		m_attackTargetId = 0;
+		m_enemyAttackAfterMove = false;
+
+		ClearConsole();
+
 		if (IsPartyUnit(unit))
 		{
 			main.m_combatSelectedPartyMemberObjectId = id;
+			RefreshUnitAttackRange(unit);
 			RebuildReachableTiles();
 			AddConsoleString(
 				UnitLabel(unit) + "'s turn - AP " + FormatAp(m_apRemaining)
-					+ "  [Click ground: Move   Space: End Turn]",
+					+ "  [Click enemy: Attack (" + FormatAp(GetAttackApCostForUnit(unit))
+					+ ")   Click ground: Move   Space: End Turn]",
 				SKYBLUE);
 		}
 		else
 		{
 			main.m_combatSelectedPartyMemberObjectId = -1;
+			RefreshUnitAttackRange(unit);
 			m_enemyAiPending = true;
-			m_endTurnAfterMove = true;
+			m_endTurnAfterMove = false;
 			AddConsoleString(
-				UnitLabel(unit) + "'s turn - AP " + FormatAp(m_apRemaining) + " (moving...)",
+				UnitLabel(unit) + "'s turn - AP " + FormatAp(m_apRemaining) + " (acting...)",
 				ORANGE);
 		}
 		return;
@@ -811,13 +858,234 @@ void TurnBasedCombatMode::EndActiveTurn()
 
 	m_apRemaining = 0.0f;
 	m_pendingMoveApCost = 0.0f;
+	m_pendingAttackApCost = 0.0f;
 	m_enemyAiPending = false;
 	m_endTurnAfterMove = false;
-	m_resolveFrames = 0;
+	m_enemyAttackAfterMove = false;
+	m_resolvingAttack = false;
+	m_attackSwingStarted = false;
+	m_attackTargetId = 0;
+	ResetResolveTracking(nullptr);
 	m_phase = Phase::Planning;
 	ClearReachableTiles();
 	AdvanceToNextLiving(*m_main);
 }
+
+namespace
+{
+std::vector<Vector3> DensifyPathTiles(
+	const std::vector<Vector3>& sparse, float y, U7Object* unit)
+{
+	std::vector<Vector3> out;
+	if (sparse.empty())
+		return out;
+
+	auto appendCenter = [&](int x, int z) {
+		if (!out.empty())
+		{
+			const int px = static_cast<int>(std::floor(out.back().x));
+			const int pz = static_cast<int>(std::floor(out.back().z));
+			if (px == x && pz == z)
+				return;
+		}
+		out.push_back(Vector3{ static_cast<float>(x) + 0.5f, y, static_cast<float>(z) + 0.5f });
+	};
+
+	appendCenter(
+		static_cast<int>(std::floor(sparse.front().x)),
+		static_cast<int>(std::floor(sparse.front().z)));
+
+	for (size_t i = 1; i < sparse.size(); ++i)
+	{
+		int x0 = static_cast<int>(std::floor(sparse[i - 1].x));
+		int z0 = static_cast<int>(std::floor(sparse[i - 1].z));
+		const int x1 = static_cast<int>(std::floor(sparse[i].x));
+		const int z1 = static_cast<int>(std::floor(sparse[i].z));
+		const int dx = std::abs(x1 - x0);
+		const int dz = std::abs(z1 - z0);
+		const int sx = x0 < x1 ? 1 : -1;
+		const int sz = z0 < z1 ? 1 : -1;
+		int err = dx - dz;
+		int x = x0;
+		int z = z0;
+		while (x != x1 || z != z1)
+		{
+			const int e2 = 2 * err;
+			if (e2 > -dz) { err -= dz; x += sx; }
+			if (e2 < dx) { err += dx; z += sz; }
+			if (x == x0 && z == z0)
+				continue;
+			if (g_pathfindingSystem
+			    && !g_pathfindingSystem->IsPositionWalkable(x, z, y, unit)
+			    && !(x == x1 && z == z1))
+			{
+				// Broken sparse crow-fly — refuse densify so caller can repath.
+				out.clear();
+				return out;
+			}
+			appendCenter(x, z);
+		}
+	}
+	return out;
+}
+
+// First-step probe for an in-progress path: short microstep toward dest.
+bool CanValidateStepToward(U7Object* unit, const Vector3& dest, std::string* outRejectReason = nullptr)
+{
+	if (!unit || !g_pathfindingSystem)
+	{
+		if (outRejectReason)
+			*outRejectReason = "no unit/pathfinding";
+		return false;
+	}
+	Vector3 delta = Vector3Subtract(dest, unit->m_Pos);
+	delta.y = 0.0f;
+	const float len = Vector3Length(delta);
+	if (len < 1e-4f)
+		return true;
+	const float step = std::min(0.35f, len);
+	Vector3 probe = Vector3Add(unit->m_Pos, Vector3Scale(Vector3Normalize(delta), step));
+	probe.y = dest.y;
+	float h = unit->m_Pos.y;
+	return PathfindingSystem::ValidateMove(unit, probe, h, outRejectReason);
+}
+
+// Escape check: ValidateMove all the way onto the neighbor tile center.
+// A short microstep stays on the current tile and falsely fails when the
+// standing tile itself was stamped groundCost=99.
+bool CanValidateEscapeToNeighbor(U7Object* unit, const Vector3& neighborCenter,
+	std::string* outRejectReason = nullptr)
+{
+	if (!unit || !g_pathfindingSystem)
+	{
+		if (outRejectReason)
+			*outRejectReason = "no unit/pathfinding";
+		return false;
+	}
+	float h = unit->m_Pos.y;
+	return PathfindingSystem::ValidateMove(unit, neighborCenter, h, outRejectReason);
+}
+
+bool CanEscapeTile(U7Object* unit)
+{
+	if (!unit || !g_pathfindingSystem)
+		return false;
+	static const int kDx[8] = { 1, -1, 0, 0, 1, 1, -1, -1 };
+	static const int kDz[8] = { 0, 0, 1, -1, 1, -1, 1, -1 };
+	for (int i = 0; i < 8; ++i)
+	{
+		Vector3 dest = unit->m_Pos;
+		dest.x = std::floor(unit->m_Pos.x) + 0.5f + static_cast<float>(kDx[i]);
+		dest.z = std::floor(unit->m_Pos.z) + 0.5f + static_cast<float>(kDz[i]);
+		if (CanValidateEscapeToNeighbor(unit, dest))
+			return true;
+	}
+	return false;
+}
+
+// Once per unit+tile: dump why each of the 8 escape probes fails.
+void LogEscapeTileDiagnostics(U7Object* unit)
+{
+	if (!unit || !g_pathfindingSystem)
+		return;
+
+	static int s_lastId = -1;
+	static int s_lastX = -99999;
+	static int s_lastZ = -99999;
+	const int tileX = static_cast<int>(std::floor(unit->m_Pos.x));
+	const int tileZ = static_cast<int>(std::floor(unit->m_Pos.z));
+	if (unit->m_ID == s_lastId && tileX == s_lastX && tileZ == s_lastZ)
+		return;
+	s_lastId = unit->m_ID;
+	s_lastX = tileX;
+	s_lastZ = tileZ;
+
+	const std::string label = !unit->m_name.empty() ? unit->m_name : ("id=" + std::to_string(unit->m_ID));
+	std::string terrainName = "?";
+	int terrainShape = -1;
+	float groundCost = g_pathfindingSystem->GetGroundCost(tileX, tileZ);
+	if (tileZ >= 0 && tileZ < static_cast<int>(g_World.size())
+		&& tileX >= 0 && tileX < static_cast<int>(g_World[tileZ].size()))
+	{
+		terrainShape = g_World[tileZ][tileX] & 0x3ff;
+		terrainName = g_pathfindingSystem->GetTerrainName(terrainShape);
+	}
+
+	Log("TurnBased: escape diag " + label
+		+ " tile=(" + std::to_string(tileX) + "," + std::to_string(tileZ) + ")"
+		+ " feetY=" + std::to_string(unit->m_Pos.y)
+		+ " terrainShape=" + std::to_string(terrainShape)
+		+ " terrainName=\"" + terrainName + "\""
+		+ " groundCost=" + std::to_string(groundCost));
+
+	const auto blockers = g_pathfindingSystem->DescribeGroundBlockersAt(tileX, tileZ);
+	if (blockers.empty())
+	{
+		Log("TurnBased: escape diag " + label + " groundBlockers: (none)");
+	}
+	else
+	{
+		for (const std::string& b : blockers)
+			Log("TurnBased: escape diag " + label + " groundBlocker: " + b);
+	}
+
+	static const int kDx[8] = { 1, -1, 0, 0, 1, 1, -1, -1 };
+	static const int kDz[8] = { 0, 0, 1, -1, 1, -1, 1, -1 };
+	static const char* kDir[8] = { "+X", "-X", "+Z", "-Z", "+X+Z", "+X-Z", "-X+Z", "-X-Z" };
+	for (int i = 0; i < 8; ++i)
+	{
+		const int nx = tileX + kDx[i];
+		const int nz = tileZ + kDz[i];
+		Vector3 dest = unit->m_Pos;
+		dest.x = static_cast<float>(nx) + 0.5f;
+		dest.z = static_cast<float>(nz) + 0.5f;
+		std::string reason;
+		const bool ok = CanValidateEscapeToNeighbor(unit, dest, &reason);
+		const float nCost = g_pathfindingSystem->GetGroundCost(nx, nz);
+		if (ok)
+		{
+			Log("TurnBased: escape diag " + label + " " + kDir[i]
+				+ " tile=(" + std::to_string(nx) + "," + std::to_string(nz) + ")"
+				+ " cost=" + std::to_string(nCost) + " -> OK");
+		}
+		else
+		{
+			Log("TurnBased: escape diag " + label + " " + kDir[i]
+				+ " tile=(" + std::to_string(nx) + "," + std::to_string(nz) + ")"
+				+ " cost=" + std::to_string(nCost) + " -> " + reason);
+		}
+	}
+}
+
+std::vector<Vector3> BuildTbMovePath(U7Object* unit, const Vector3& dest)
+{
+	std::vector<Vector3> path;
+	if (!unit || !g_pathfindingSystem)
+		return path;
+
+	// Prefer Fast A* — respects solids the way ValidateMove does. Monster
+	// crow-fly (IsStraightPathClear) only checks tile walkability and caused
+	// Pirate 4 to sit forever on MOVING with 100% ValidateMove rejects.
+	path = g_pathfindingSystem->FindFastPath(unit->m_Pos, dest, unit, PathCallerTag::AvatarParty);
+	if (path.empty())
+		path = g_pathfindingSystem->FindMonsterChasePath(unit->m_Pos, dest, unit);
+	if (path.empty())
+		return path;
+
+	const int startX = static_cast<int>(std::floor(unit->m_Pos.x));
+	const int startZ = static_cast<int>(std::floor(unit->m_Pos.z));
+	const int destX = static_cast<int>(std::floor(dest.x));
+	const int destZ = static_cast<int>(std::floor(dest.z));
+	const int cheb = std::max(std::abs(destX - startX), std::abs(destZ - startZ));
+	if (path.size() <= 2 && cheb > 1)
+	{
+		std::vector<Vector3> dense = DensifyPathTiles(path, unit->m_Pos.y, unit);
+		if (dense.size() > 2)
+			path = std::move(dense);
+	}
+	return path;
+}
+} // namespace
 
 bool TurnBasedCombatMode::BeginMoveToTile(U7Object* unit, int tileX, int tileZ, float spent)
 {
@@ -826,29 +1094,57 @@ bool TurnBasedCombatMode::BeginMoveToTile(U7Object* unit, int tileX, int tileZ, 
 	if (!TrySpendAp(spent))
 		return false;
 
+	const bool party = IsPartyUnit(unit);
 	const Vector3 dest{
 		static_cast<float>(tileX) + 0.5f,
 		unit->m_Pos.y,
 		static_cast<float>(tileZ) + 0.5f
 	};
 
-	const bool party = IsPartyUnit(unit);
-	std::vector<Vector3> path = party
-		? g_pathfindingSystem->FindFastPath(unit->m_Pos, dest, unit, PathCallerTag::AvatarParty)
-		: g_pathfindingSystem->FindMonsterChasePath(unit->m_Pos, dest, unit);
-	if (path.empty())
-		path = g_pathfindingSystem->FindFastPath(unit->m_Pos, dest, unit, PathCallerTag::AvatarParty);
-	if (path.empty())
-		path = g_pathfindingSystem->FindMonsterChasePath(unit->m_Pos, dest, unit);
-
-	if (path.empty())
+	// Inescapable tile (props / bad spawn) — never enter Resolving hang.
+	if (!CanEscapeTile(unit))
 	{
-		m_apRemaining += spent; // refund
+		m_apRemaining += spent;
+		LogEscapeTileDiagnostics(unit);
 		return false;
 	}
 
+	std::vector<Vector3> path = BuildTbMovePath(unit, dest);
+	if (path.empty())
+	{
+		m_apRemaining += spent;
+		return false;
+	}
+
+	// First-step probe: refuse paths ValidateMove cannot even begin.
+	Vector3 firstDest = path.size() > 1 ? path[1] : dest;
+	{
+		// After ApplyPathWaypoints, Dest becomes the first non-start waypoint.
+		const int sx = static_cast<int>(std::floor(unit->m_Pos.x));
+		const int sz = static_cast<int>(std::floor(unit->m_Pos.z));
+		for (const Vector3& wp : path)
+		{
+			const int wx = static_cast<int>(std::floor(wp.x));
+			const int wz = static_cast<int>(std::floor(wp.z));
+			if (wx != sx || wz != sz)
+			{
+				firstDest = wp;
+				break;
+			}
+		}
+		std::string stepReason;
+		if (!CanValidateStepToward(unit, firstDest, &stepReason))
+		{
+			m_apRemaining += spent;
+			Log("TurnBased: " + UnitLabel(unit) + " first step rejected toward ("
+				+ std::to_string(static_cast<int>(std::floor(firstDest.x))) + ","
+				+ std::to_string(static_cast<int>(std::floor(firstDest.z))) + "): "
+				+ stepReason);
+			return false;
+		}
+	}
+
 	m_pendingMoveApCost = spent;
-	m_resolveFrames = 0;
 	ClearReachableTiles();
 
 	unit->m_target = 0;
@@ -865,20 +1161,79 @@ bool TurnBasedCombatMode::BeginMoveToTile(U7Object* unit, int tileX, int tileZ, 
 		unit->m_combatOrderMode = CombatOrderMode::Hold;
 		m_phase = Phase::Planning;
 		m_pendingMoveApCost = 0.0f;
+		ResetResolveTracking(nullptr);
 		AddConsoleString(
 			UnitLabel(unit) + " steps in place (" + FormatAp(spent) + " AP) - "
 				+ FormatAp(m_apRemaining) + " left.",
 			party ? GREEN : ORANGE);
-		return true; // caller may EndActiveTurn / rebuild; phase is Planning
+		return true;
+	}
+
+	// Moving flag with nowhere to go — refund and fail (do not soft-lock).
+	if (unit->m_pathWaypoints.empty() && !unit->m_pathfindingPending)
+	{
+		unit->m_isMoving = false;
+		unit->m_combatMoveOrder = false;
+		unit->m_combatOrderMode = CombatOrderMode::Hold;
+		unit->SetDest(unit->GetPos());
+		m_phase = Phase::Planning;
+		m_pendingMoveApCost = 0.0f;
+		m_apRemaining += spent;
+		ResetResolveTracking(nullptr);
+		return false;
 	}
 
 	m_phase = Phase::Resolving;
+	ResetResolveTracking(unit);
 
 	AddConsoleString(
 		UnitLabel(unit) + " moves (" + FormatAp(spent) + " AP) - "
 			+ FormatAp(m_apRemaining) + " left.",
 		party ? GREEN : ORANGE);
 	return true;
+}
+
+void TurnBasedCombatMode::ResetResolveTracking(U7Object* unit)
+{
+	m_resolveFrames = 0;
+	m_resolveNoProgressFrames = 0;
+	if (unit)
+	{
+		m_resolveLastX = unit->m_Pos.x;
+		m_resolveLastY = unit->m_Pos.y;
+		m_resolveLastZ = unit->m_Pos.z;
+	}
+	else
+	{
+		m_resolveLastX = m_resolveLastY = m_resolveLastZ = 0.0f;
+	}
+}
+
+void TurnBasedCombatMode::ForceFinishResolvingMove(MainState& main, U7Object* unit, const char* reason)
+{
+	if (unit)
+	{
+		AddConsoleString(
+			UnitLabel(unit) + " move ended (" + (reason ? reason : "failsafe") + ").",
+			YELLOW);
+		Log("TurnBased: force finish move id=" + std::to_string(m_activeUnitId)
+			+ " reason=" + (reason ? reason : "?")
+			+ " frames=" + std::to_string(m_resolveFrames)
+			+ " noProgress=" + std::to_string(m_resolveNoProgressFrames)
+			+ " moving=" + std::to_string(unit->m_isMoving ? 1 : 0)
+			+ " waypoints=" + std::to_string(unit->m_pathWaypoints.size())
+			+ " pending=" + std::to_string(unit->m_pathfindingPending ? 1 : 0)
+			+ " pos=(" + std::to_string(unit->m_Pos.x) + ","
+			+ std::to_string(unit->m_Pos.z) + ")"
+			+ " dest=(" + std::to_string(unit->m_Dest.x) + ","
+			+ std::to_string(unit->m_Dest.z) + ")");
+		unit->m_pathWaypoints.clear();
+		unit->m_currentWaypointIndex = 0;
+		unit->m_pathfindingPending = false;
+		unit->m_isMoving = false;
+		unit->SetDest(unit->GetPos());
+	}
+	OnMoveResolved(main);
 }
 
 bool TurnBasedCombatMode::TryIssueMoveTo(MainState& main, int tileX, int tileZ)
@@ -936,6 +1291,332 @@ U7Object* TurnBasedCombatMode::FindNearestPartyTarget(const U7Object* from) cons
 	return best;
 }
 
+U7Object* TurnBasedCombatMode::FindNearestHostileTarget(const U7Object* from) const
+{
+	if (!from || !m_main)
+		return nullptr;
+
+	U7Object* best = nullptr;
+	float bestDistSqr = 1.0e12f;
+	for (int id : m_main->m_combatParticipants)
+	{
+		auto it = g_objectList.find(id);
+		if (it == g_objectList.end() || !it->second)
+			continue;
+		U7Object* obj = it->second.get();
+		if (!IsLivingCombatant(obj) || IsPartyUnit(obj))
+			continue;
+		if (!m_main->IsCombatEnemyObject(obj))
+			continue;
+		const float distSqr = Vector2DistanceSqr(
+			{ from->m_Pos.x, from->m_Pos.z },
+			{ obj->m_Pos.x, obj->m_Pos.z });
+		if (distSqr < bestDistSqr)
+		{
+			bestDistSqr = distSqr;
+			best = obj;
+		}
+	}
+	return best;
+}
+
+void TurnBasedCombatMode::RefreshUnitAttackRange(U7Object* unit) const
+{
+	if (!unit)
+		return;
+	unit->m_attackRange = MELEE_RANGE_TILES;
+	U7Object* weapon = GetEquippedWeapon(unit);
+	if (weapon && weapon->m_shapeData)
+		unit->m_attackRange = GetWeaponAttackRangeTiles(weapon->m_shapeData->m_shape);
+}
+
+float TurnBasedCombatMode::GetUnitEngageRange(const U7Object* unit) const
+{
+	if (!unit)
+		return MELEE_RANGE_TILES + kEngageRangeSlack;
+	float range = unit->m_attackRange;
+	if (range < 0.5f)
+		range = MELEE_RANGE_TILES;
+	return range + kEngageRangeSlack;
+}
+
+bool TurnBasedCombatMode::IsInAttackRange(const U7Object* attacker, const U7Object* target) const
+{
+	if (!attacker || !target)
+		return false;
+	const float range = GetUnitEngageRange(attacker);
+	const float distSqr = Vector2DistanceSqr(
+		{ attacker->m_Pos.x, attacker->m_Pos.z },
+		{ target->m_Pos.x, target->m_Pos.z });
+	return distSqr <= range * range;
+}
+
+bool TurnBasedCombatMode::TryMoveTowardTarget(U7Object* unit, U7Object* target, float reserveAp)
+{
+	if (!unit || !target || m_phase != Phase::Planning)
+		return false;
+
+	RefreshUnitAttackRange(unit);
+	const float engageRange = GetUnitEngageRange(unit);
+	const float engageRangeSqr = engageRange * engageRange;
+
+	std::vector<ReachTile> reach;
+	ComputeReachableTiles(unit, m_apRemaining, reach);
+	if (reach.empty())
+		return false;
+
+	const float tx = target->m_Pos.x;
+	const float tz = target->m_Pos.z;
+	const int startX = static_cast<int>(std::floor(unit->m_Pos.x));
+	const int startZ = static_cast<int>(std::floor(unit->m_Pos.z));
+
+	auto distSqrFromTile = [&](int x, int z) -> float {
+		const float cx = static_cast<float>(x) + 0.5f;
+		const float cz = static_cast<float>(z) + 0.5f;
+		const float dx = cx - tx;
+		const float dz = cz - tz;
+		return dx * dx + dz * dz;
+	};
+
+	// Prefer a tile that lands in attack range while keeping reserveAp (3 melee / 4 missile).
+	const ReachTile* bestInRange = nullptr;
+	float bestInRangeDist = 1.0e12f;
+	const ReachTile* bestAny = nullptr;
+	float bestAnyDist = distSqrFromTile(startX, startZ);
+	float bestAnyCost = 0.0f;
+
+	for (const ReachTile& t : reach)
+	{
+		const float d = distSqrFromTile(t.x, t.z);
+		const bool keepsReserve = (t.apLeft + kApEpsilon >= reserveAp);
+		if (d <= engageRangeSqr && keepsReserve)
+		{
+			if (!bestInRange || d + 0.01f < bestInRangeDist
+			    || (std::fabs(d - bestInRangeDist) <= 0.01f && t.cost + kApEpsilon < bestInRange->cost))
+			{
+				bestInRange = &t;
+				bestInRangeDist = d;
+			}
+		}
+
+		if (d + 0.01f < bestAnyDist
+		    || (std::fabs(d - bestAnyDist) <= 0.01f && t.cost + kApEpsilon < bestAnyCost))
+		{
+			bestAnyDist = d;
+			bestAnyCost = t.cost;
+			bestAny = &t;
+		}
+	}
+
+	// Try best-in-range first, then other tiles nearest the target. BeginMoveToTile
+	// may reject crow-fly / blocked starts (Pirate 4); keep looking.
+	std::vector<const ReachTile*> ordered;
+	ordered.reserve(reach.size());
+	if (bestInRange)
+		ordered.push_back(bestInRange);
+	std::vector<const ReachTile*> rest;
+	rest.reserve(reach.size());
+	for (const ReachTile& t : reach)
+	{
+		if (bestInRange && t.x == bestInRange->x && t.z == bestInRange->z)
+			continue;
+		rest.push_back(&t);
+	}
+	std::sort(rest.begin(), rest.end(), [&](const ReachTile* a, const ReachTile* b) {
+		const float da = distSqrFromTile(a->x, a->z);
+		const float db = distSqrFromTile(b->x, b->z);
+		if (da + 0.01f < db) return true;
+		if (db + 0.01f < da) return false;
+		return a->cost < b->cost;
+	});
+	for (const ReachTile* t : rest)
+		ordered.push_back(t);
+
+	for (const ReachTile* chosen : ordered)
+	{
+		if (!chosen)
+			continue;
+		if (chosen->x == startX && chosen->z == startZ)
+			continue;
+		if (BeginMoveToTile(unit, chosen->x, chosen->z, chosen->cost))
+			return true;
+	}
+	return false;
+}
+
+bool TurnBasedCombatMode::BeginAttackOn(U7Object* attacker, U7Object* target)
+{
+	if (!attacker || !target || !IsLivingCombatant(attacker) || !IsLivingCombatant(target))
+		return false;
+	if (m_phase != Phase::Planning)
+		return false;
+
+	const float attackCost = GetAttackApCostForUnit(attacker);
+	if (m_apRemaining + kApEpsilon < attackCost)
+		return false;
+
+	RefreshUnitAttackRange(attacker);
+	if (!IsInAttackRange(attacker, target))
+		return false;
+
+	if (!TrySpendAp(attackCost))
+		return false;
+
+	attacker->m_pathWaypoints.clear();
+	attacker->m_currentWaypointIndex = 0;
+	attacker->m_pathfindingPending = false;
+	attacker->m_isMoving = false;
+	attacker->m_combatMoveOrder = false;
+	attacker->SetDest(attacker->GetPos());
+	attacker->m_target = static_cast<int>(target->m_ID);
+	attacker->m_combatOrderMode = CombatOrderMode::Attack;
+	attacker->m_cooldownTimer = 0.0f;
+
+	Vector3 toTarget = Vector3Subtract(target->m_Pos, attacker->m_Pos);
+	toTarget.y = 0.0f;
+	if (Vector3LengthSqr(toTarget) > 1e-6f)
+		attacker->m_Direction = Vector3Normalize(toTarget);
+
+	m_resolvingAttack = true;
+	m_attackSwingStarted = false;
+	m_attackTargetId = static_cast<int>(target->m_ID);
+	m_pendingAttackApCost = attackCost;
+	m_pendingMoveApCost = 0.0f;
+	m_resolveFrames = 0;
+	m_phase = Phase::Resolving;
+	ClearReachableTiles();
+
+	AddConsoleString(
+		UnitLabel(attacker) + " attacks " + UnitLabel(target)
+			+ " with " + CombatWeaponDisplayNameForUnit(attacker)
+			+ " (" + FormatAp(attackCost) + " AP) - "
+			+ FormatAp(m_apRemaining) + " left.",
+		IsPartyUnit(attacker) ? GREEN : ORANGE);
+	return true;
+}
+
+bool TurnBasedCombatMode::TryIssueAttackOn(MainState& main, U7Object* target)
+{
+	(void)main;
+	U7Object* unit = GetActiveUnit();
+	if (!unit || !IsPartyUnit(unit) || m_phase != Phase::Planning)
+		return false;
+	if (!target || !IsLivingCombatant(target))
+		return true;
+
+	RefreshUnitAttackRange(unit);
+	const float attackCost = GetAttackApCostForUnit(unit);
+
+	if (!CanAffordAttack())
+	{
+		AddConsoleString("Need " + FormatAp(attackCost) + " AP to attack.", YELLOW);
+		return true;
+	}
+
+	if (IsInAttackRange(unit, target))
+	{
+		if (!BeginAttackOn(unit, target))
+			AddConsoleString("Cannot attack that target.", YELLOW);
+		return true;
+	}
+
+	// Out of range: close distance, prefer leaving attack AP for a same-turn shot/swing.
+	AddConsoleString("Out of range - moving closer.", YELLOW);
+	if (!TryMoveTowardTarget(unit, target, attackCost))
+	{
+		// Retry with no reserve so they can still approach.
+		if (!TryMoveTowardTarget(unit, target, 0.0f))
+			AddConsoleString("No path toward that enemy.", YELLOW);
+	}
+	if (m_phase == Phase::Planning)
+		RebuildReachableTiles();
+	return true;
+}
+
+void TurnBasedCombatMode::UpdateResolvingAttack(MainState& main, U7Object* unit)
+{
+	(void)main;
+	if (!unit)
+		return;
+
+	const float dt = g_Engine ? g_Engine->LastFrameInSeconds() : (1.0f / 60.0f);
+	unit->UpdateNpcAnim(dt);
+
+	// Drive one EngageCombatTarget tick: starts swing, applies hit / spawns bolt.
+	unit->EngageCombatTarget();
+	if (unit->m_cooldownTimer > 0.0f || unit->IsNpcAttackAnimPlaying())
+		m_attackSwingStarted = true;
+
+	// Ammo/out-of-range failure: never started a swing - refund AP and bail.
+	if (!m_attackSwingStarted && m_resolveFrames >= 20)
+	{
+		m_apRemaining += m_pendingAttackApCost;
+		m_pendingAttackApCost = 0.0f;
+		AddConsoleString(UnitLabel(unit) + " attack failed - AP refunded.", YELLOW);
+		OnAttackResolved(main);
+		return;
+	}
+
+	const bool animDone = !unit->IsNpcAttackAnimPlaying();
+	const bool boltPending = HasFlyingProjectileFrom(static_cast<int>(unit->m_ID));
+
+	if (m_attackSwingStarted && animDone && !boltPending)
+	{
+		OnAttackResolved(main);
+		return;
+	}
+
+	++m_resolveFrames;
+	if (m_resolveFrames >= kResolveStuckFrames)
+	{
+		AddConsoleString(UnitLabel(unit) + " attack timed out.", YELLOW);
+		OnAttackResolved(main);
+	}
+}
+
+void TurnBasedCombatMode::OnAttackResolved(MainState& main)
+{
+	U7Object* unit = GetActiveUnit();
+	if (unit)
+	{
+		unit->m_combatOrderMode = CombatOrderMode::Hold;
+		unit->m_combatMoveOrder = false;
+		// Keep m_target cleared so they do not auto-swing outside TB resolve.
+		unit->m_target = 0;
+		unit->m_combatPathTargetId = 0;
+		unit->SetDest(unit->GetPos());
+	}
+
+	m_resolvingAttack = false;
+	m_attackSwingStarted = false;
+	m_attackTargetId = 0;
+	m_pendingAttackApCost = 0.0f;
+	m_resolveFrames = 0;
+	m_phase = Phase::Planning;
+	LockCameraToActiveUnit();
+
+	// Enemy: keep attacking while AP and range allow, else end turn.
+	if (unit && !IsPartyUnit(unit))
+	{
+		U7Object* target = FindNearestPartyTarget(unit);
+		if (target && CanAffordAttack())
+		{
+			RefreshUnitAttackRange(unit);
+			if (IsInAttackRange(unit, target) && BeginAttackOn(unit, target))
+				return;
+		}
+		EndActiveTurn();
+		return;
+	}
+
+	RebuildReachableTiles();
+	AddConsoleString(
+		"AP remaining: " + FormatAp(m_apRemaining)
+			+ "  [Click enemy: Attack   Space: End Turn]",
+		SKYBLUE);
+	(void)main;
+}
+
 void TurnBasedCombatMode::RunEnemyTurnAi(MainState& main)
 {
 	m_enemyAiPending = false;
@@ -957,62 +1638,46 @@ void TurnBasedCombatMode::RunEnemyTurnAi(MainState& main)
 		return;
 	}
 
-	std::vector<ReachTile> reach;
-	ComputeReachableTiles(unit, m_apRemaining, reach);
+	RefreshUnitAttackRange(unit);
 
-	const float tx = target->m_Pos.x;
-	const float tz = target->m_Pos.z;
-	const int startX = static_cast<int>(std::floor(unit->m_Pos.x));
-	const int startZ = static_cast<int>(std::floor(unit->m_Pos.z));
-
-	auto distSqrToTarget = [&](int x, int z) -> float {
-		const float cx = static_cast<float>(x) + 0.5f;
-		const float cz = static_cast<float>(z) + 0.5f;
-		const float dx = cx - tx;
-		const float dz = cz - tz;
-		return dx * dx + dz * dz;
-	};
-
-	int bestX = startX;
-	int bestZ = startZ;
-	float bestDist = distSqrToTarget(startX, startZ);
-	float bestCost = 0.0f;
-
-	for (const ReachTile& t : reach)
+	// Prefer attack when already in range.
+	if (CanAffordAttack() && IsInAttackRange(unit, target))
 	{
-		const float d = distSqrToTarget(t.x, t.z);
-		if (d + 0.01f < bestDist
-		    || (std::fabs(d - bestDist) <= 0.01f && t.cost + kApEpsilon < bestCost))
+		if (BeginAttackOn(unit, target))
+			return;
+	}
+
+	// Close distance; try to keep attack AP for a follow-up swing/shot.
+	m_enemyAttackAfterMove = true;
+	m_endTurnAfterMove = false;
+	const float reserveAp = CanAffordAttack() ? GetAttackApCostForUnit(unit) : 0.0f;
+	if (TryMoveTowardTarget(unit, target, reserveAp)
+	    || TryMoveTowardTarget(unit, target, 0.0f))
+	{
+		// Instant collapse → treat like move resolved.
+		if (m_phase == Phase::Planning)
 		{
-			bestDist = d;
-			bestCost = t.cost;
-			bestX = t.x;
-			bestZ = t.z;
+			m_enemyAttackAfterMove = false;
+			if (CanAffordAttack() && IsInAttackRange(unit, target) && BeginAttackOn(unit, target))
+				return;
+			EndActiveTurn();
+			return;
 		}
-	}
-
-	// Already as close as AP allows (or nowhere to walk).
-	if (bestX == startX && bestZ == startZ)
-	{
-		AddConsoleString(UnitLabel(unit) + " holds position.", ORANGE);
-		EndActiveTurn();
+		// Resolving but no walkable path state — do not soft-lock on MOVING.
+		if (m_phase == Phase::Resolving
+		    && unit->m_pathWaypoints.empty() && !unit->m_pathfindingPending)
+		{
+			m_enemyAttackAfterMove = false;
+			ForceFinishResolvingMove(main, unit, "empty path after AI move");
+			return;
+		}
+		(void)main;
 		return;
 	}
 
-	if (!BeginMoveToTile(unit, bestX, bestZ, bestCost))
-	{
-		AddConsoleString(UnitLabel(unit) + " cannot path closer.", ORANGE);
-		EndActiveTurn();
-		return;
-	}
-
-	// BeginMoveToTile may finish instantly (collapsed path) and leave Planning.
-	if (m_phase == Phase::Planning)
-	{
-		EndActiveTurn();
-		return;
-	}
-	(void)main;
+	m_enemyAttackAfterMove = false;
+	AddConsoleString(UnitLabel(unit) + " holds position.", ORANGE);
+	EndActiveTurn();
 }
 
 void TurnBasedCombatMode::OnMoveResolved(MainState& main)
@@ -1028,20 +1693,36 @@ void TurnBasedCombatMode::OnMoveResolved(MainState& main)
 
 	m_pendingMoveApCost = 0.0f;
 	m_phase = Phase::Planning;
+	m_resolvingAttack = false;
 	LockCameraToActiveUnit();
 
-	if (m_endTurnAfterMove || (unit && !IsPartyUnit(unit)))
+	if (unit && !IsPartyUnit(unit))
 	{
+		const bool tryAttack = m_enemyAttackAfterMove || m_endTurnAfterMove;
+		m_enemyAttackAfterMove = false;
 		m_endTurnAfterMove = false;
+		if (tryAttack)
+		{
+			U7Object* target = FindNearestPartyTarget(unit);
+			RefreshUnitAttackRange(unit);
+			if (target && CanAffordAttack() && IsInAttackRange(unit, target)
+			    && BeginAttackOn(unit, target))
+			{
+				return;
+			}
+		}
 		EndActiveTurn();
 		return;
 	}
+
+	m_endTurnAfterMove = false;
+	m_enemyAttackAfterMove = false;
 
 	// Party: stay on this turn even at 0 AP so the player can End Turn (and later undo).
 	RebuildReachableTiles();
 	AddConsoleString(
 		"AP remaining: " + FormatAp(m_apRemaining)
-			+ "  [Space: End Turn]",
+			+ "  [Click enemy: Attack   Space: End Turn]",
 		SKYBLUE);
 	(void)main;
 }
@@ -1069,7 +1750,7 @@ void TurnBasedCombatMode::OnEnter(MainState& main)
 				+ std::to_string(m_initiative.size()) + " combatants).",
 			YELLOW);
 		AddConsoleString(
-			"Green tiles: move and keep at least 3 AP for attack. Yellow: move only. Space: End Turn.",
+			"Green tiles: move and keep attack AP (melee 3 / missile 4). Yellow: move only. Spells cost 4 AP. Space: End Turn.",
 			WHITE);
 		StartUnitTurn(main);
 	}
@@ -1093,6 +1774,14 @@ void TurnBasedCombatMode::OnLeave(MainState& main)
 	m_apRemaining = 0.0f;
 	m_apBudget = 0.0f;
 	m_pendingMoveApCost = 0.0f;
+	m_pendingAttackApCost = 0.0f;
+	m_enemyAiPending = false;
+	m_endTurnAfterMove = false;
+	m_enemyAttackAfterMove = false;
+	m_resolvingAttack = false;
+	m_attackSwingStarted = false;
+	m_attackTargetId = 0;
+	ResetResolveTracking(nullptr);
 	m_phase = Phase::Planning;
 	Log("TurnBasedCombatMode::OnLeave");
 }
@@ -1102,7 +1791,7 @@ void TurnBasedCombatMode::Update(MainState& main)
 	if (m_phase == Phase::Planning && m_enemyAiPending)
 	{
 		RunEnemyTurnAi(main);
-		// Enemy AI may have entered Resolving; fall through to drive movement.
+		// Enemy AI may have entered Resolving; fall through to drive movement/attack.
 	}
 
 	if (m_phase != Phase::Resolving)
@@ -1113,8 +1802,16 @@ void TurnBasedCombatMode::Update(MainState& main)
 	{
 		m_phase = Phase::Planning;
 		m_endTurnAfterMove = false;
+		m_enemyAttackAfterMove = false;
+		m_resolvingAttack = false;
 		m_resolveFrames = 0;
 		AdvanceToNextLiving(main);
+		return;
+	}
+
+	if (m_resolvingAttack)
+	{
+		UpdateResolvingAttack(main, unit);
 		return;
 	}
 
@@ -1122,6 +1819,18 @@ void TurnBasedCombatMode::Update(MainState& main)
 	// object pass, and hostiles outside the party bubble would never walk otherwise.
 	if (unit->m_combatMoveOrder || unit->m_combatOrderMode == CombatOrderMode::Move)
 		unit->UpdateMovement();
+
+	// Moving with nowhere to go: treat as arrived so hostiles cannot soft-lock.
+	if (unit->m_isMoving && unit->m_pathWaypoints.empty() && !unit->m_pathfindingPending)
+	{
+		const float dx = unit->m_Dest.x - unit->m_Pos.x;
+		const float dz = unit->m_Dest.z - unit->m_Pos.z;
+		if (dx * dx + dz * dz < 0.0001f)
+		{
+			unit->m_isMoving = false;
+			unit->SetDest(unit->GetPos());
+		}
+	}
 
 	const bool arrived = !unit->m_isMoving
 		&& unit->m_pathWaypoints.empty()
@@ -1133,20 +1842,48 @@ void TurnBasedCombatMode::Update(MainState& main)
 	}
 
 	++m_resolveFrames;
-	if (m_resolveFrames >= kResolveStuckFrames)
+
+	const float movedX = unit->m_Pos.x - m_resolveLastX;
+	const float movedY = unit->m_Pos.y - m_resolveLastY;
+	const float movedZ = unit->m_Pos.z - m_resolveLastZ;
+	const float movedSqr = movedX * movedX + movedY * movedY + movedZ * movedZ;
+	if (movedSqr > 0.0001f)
 	{
-		AddConsoleString(UnitLabel(unit) + " move timed out - ending action.", YELLOW);
-		Log("TurnBased: resolve timeout id=" + std::to_string(m_activeUnitId)
+		m_resolveLastX = unit->m_Pos.x;
+		m_resolveLastY = unit->m_Pos.y;
+		m_resolveLastZ = unit->m_Pos.z;
+		m_resolveNoProgressFrames = 0;
+	}
+	else
+	{
+		++m_resolveNoProgressFrames;
+	}
+
+	if (m_resolveFrames == 60 || m_resolveFrames == 120 || m_resolveFrames == 180)
+	{
+		Log("TurnBased: resolve stall id=" + std::to_string(m_activeUnitId)
+			+ " name=" + UnitLabel(unit)
+			+ " frames=" + std::to_string(m_resolveFrames)
+			+ " noProgress=" + std::to_string(m_resolveNoProgressFrames)
 			+ " moving=" + std::to_string(unit->m_isMoving ? 1 : 0)
 			+ " waypoints=" + std::to_string(unit->m_pathWaypoints.size())
-			+ " pending=" + std::to_string(unit->m_pathfindingPending ? 1 : 0));
-		unit->m_pathWaypoints.clear();
-		unit->m_currentWaypointIndex = 0;
-		unit->m_pathfindingPending = false;
-		unit->m_isMoving = false;
-		unit->SetDest(unit->GetPos());
-		OnMoveResolved(main);
+			+ " pending=" + std::to_string(unit->m_pathfindingPending ? 1 : 0)
+			+ " order=" + std::to_string(static_cast<int>(unit->m_combatOrderMode))
+			+ " moveFlag=" + std::to_string(unit->m_combatMoveOrder ? 1 : 0)
+			+ " pos=(" + std::to_string(unit->m_Pos.x) + ","
+			+ std::to_string(unit->m_Pos.z) + ")"
+			+ " dest=(" + std::to_string(unit->m_Dest.x) + ","
+			+ std::to_string(unit->m_Dest.z) + ")");
 	}
+
+	if (m_resolveNoProgressFrames >= kResolveNoProgressFrames)
+	{
+		ForceFinishResolvingMove(main, unit, "no progress");
+		return;
+	}
+
+	if (m_resolveFrames >= kResolveStuckFrames)
+		ForceFinishResolvingMove(main, unit, "timeout");
 }
 
 void TurnBasedCombatMode::HandleInput(MainState& main)
@@ -1154,13 +1891,25 @@ void TurnBasedCombatMode::HandleInput(MainState& main)
 	if (!IsKeyPressed(KEY_SPACE))
 		return;
 
-	// Ignore Space while a move is resolving or an enemy is acting.
-	if (m_phase == Phase::Resolving || m_enemyAiPending)
+	// Enemy AI decision tick: wait one frame.
+	if (m_enemyAiPending)
 		return;
 
 	U7Object* unit = GetActiveUnit();
+
+	// Safety valve: stuck Resolving enemy moves soft-locked the round. Space
+	// forces the move to finish so initiative can advance.
+	if (m_phase == Phase::Resolving && unit && !IsPartyUnit(unit) && !m_resolvingAttack)
+	{
+		ForceFinishResolvingMove(main, unit, "player skip");
+		return;
+	}
+
+	if (m_phase == Phase::Resolving)
+		return;
+
 	if (unit && !IsPartyUnit(unit))
-		return; // enemy turns are automatic
+		return; // enemy Planning turns are automatic
 
 	if (m_activeUnitId < 0)
 	{
@@ -1194,10 +1943,7 @@ bool TurnBasedCombatMode::HandleOrdersClick(MainState& main)
 	}
 
 	if (clicked && main.IsCombatEnemyObject(clicked))
-	{
-		AddConsoleString("Attack coming next - click a highlighted tile to move for now.", YELLOW);
-		return true;
-	}
+		return TryIssueAttackOn(main, clicked);
 
 	const int tileX = static_cast<int>(std::floor(g_terrainUnderMousePointer.x));
 	const int tileZ = static_cast<int>(std::floor(g_terrainUnderMousePointer.z));
@@ -1212,12 +1958,13 @@ void TurnBasedCombatMode::DrawWorld(MainState& main)
 
 	const Color green = Color{ 40, 220, 90, 150 };
 	const Color yellow = Color{ 240, 210, 40, 150 };
+	const float attackReserve = GetActiveAttackApCost();
 
 	rlDisableDepthMask();
 	rlBegin(RL_TRIANGLES);
 	for (const ReachTile& t : m_reachTiles)
 	{
-		const Color c = (t.apLeft + kApEpsilon >= kAttackApReserve) ? green : yellow;
+		const Color c = (t.apLeft + kApEpsilon >= attackReserve) ? green : yellow;
 		rlColor4ub(c.r, c.g, c.b, c.a);
 
 		const float y = m_reachDrawY;
@@ -1248,7 +1995,7 @@ void TurnBasedCombatMode::DrawWorld(MainState& main)
 
 	Color boxColor = RED;
 	if (const ReachTile* reach = FindReachTile(hoverX, hoverZ))
-		boxColor = (reach->apLeft + kApEpsilon >= kAttackApReserve)
+		boxColor = (reach->apLeft + kApEpsilon >= attackReserve)
 			? Color{ 40, 220, 90, 255 }
 			: Color{ 240, 210, 40, 255 };
 
@@ -1278,9 +2025,9 @@ void TurnBasedCombatMode::DrawHud(MainState& main)
 	Color accent = YELLOW;
 	if (m_phase == Phase::Resolving && unit)
 	{
-		title = std::string("MOVING - ") + UnitLabel(unit)
+		title = std::string(m_resolvingAttack ? "ATTACKING - " : "MOVING - ") + UnitLabel(unit)
 			+ "  AP " + FormatAp(m_apRemaining) + "/" + FormatAp(m_apBudget);
-		accent = LIME;
+		accent = m_resolvingAttack ? ORANGE : LIME;
 	}
 	else if (!unit)
 	{
@@ -1294,9 +2041,11 @@ void TurnBasedCombatMode::DrawHud(MainState& main)
 		accent = party ? SKYBLUE : ORANGE;
 	}
 
+	const float attackCost = unit ? GetAttackApCostForUnit(unit) : kMeleeAttackAp;
 	const std::string hint = (m_phase == Phase::Resolving)
-		? "Moving...   C/Esc: leave"
-		: "Click tile: Move   Space: End   C/Esc: leave";
+		? (m_resolvingAttack ? "Resolving attack...   C/Esc: leave" : "Moving...   C/Esc: leave")
+		: ("Click enemy: Attack (" + FormatAp(attackCost)
+			+ " AP)   Tile: Move   Space: End   C/Esc: leave");
 
 	const float fontSize = static_cast<float>(font->baseSize);
 	const float titleW = MeasureTextEx(*font, title.c_str(), fontSize, 1).x;

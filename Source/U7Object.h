@@ -198,6 +198,7 @@ struct MonsterData
 	unsigned char m_monsterCategory;   // 0x0D - often used by monster eggs / spawners
 	unsigned char m_flagsByte = 0;     // MONSTERS.DAT byte 9 (Exult Monster_info::flags)
 	bool m_flies = false;              // flags bit 0 (Exult Monster_info::fly)
+	unsigned char m_equipOffset = 0;   // Byte 14: 1-based EQUIP.DAT record (0 = none)
 
 	// Bytes 0x0E-0x18 contain additional data (experience, treasure, immunities, sounds, etc.)
 	// Left in m_raw[] until specifically needed.
@@ -464,6 +465,8 @@ public:
 	// Shared 8-way walk billboard draw used by NPCs and monsters.
 	// uprightSheet: replacement sheets are axis-aligned; skip the U7 isometric tilt.
 	void DrawWalkBillboard(const std::vector<std::vector<Texture*>>& walkTextures, bool uprightSheet = false);
+	// Dead bodies: death-frame texture drawn as a ground flat (not a billboard).
+	void DrawCorpseFlat();
 
 	const NpcActionTextures* GetNpcActionTextures() const;
 	void SetNpcAnimAction(NpcAnimAction action, bool looping, float frameMs = 120.0f);

@@ -110,7 +110,7 @@ void LoadMonsterData()
 		value = *ptr++;  // Byte 13
 		md.m_monsterCategory = value;  // includes attack mode low bits etc.
 
-		ptr++;  // Byte 14: equip_offset
+		md.m_equipOffset = *ptr++;  // Byte 14: 1-based EQUIP.DAT index (0 = none)
 		ptr++;  // Byte 15: exult flags
 		ptr++;  // Byte 16: unknown
 		// Byte 17 would be sfx (ptr now at it)
@@ -2394,6 +2394,7 @@ void LoadingState::LoadInitialGameState()
 	LoadWeaponData();
 	LoadAmmoData();
 	LoadArmorData();
+	LoadEquipData();
 
 	//  Load shape data
 	std::string dataPath = g_Engine->m_EngineConfig.GetString("data_path");

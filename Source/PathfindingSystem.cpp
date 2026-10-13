@@ -393,7 +393,35 @@ bool PathfindingSystem::IsStandableObjectTop(const U7Object* obj)
 // 	return true;
 // }
 
-bool PathfindingSystem::ValidateMove(U7Object* agent, const Vector3& desiredPos, float& outDestH)
+static std::string DescribeBlockingObject(const U7Object* obj)
+{
+	if (!obj)
+		return "null";
+	std::ostringstream oss;
+	oss << "id=" << obj->m_ID;
+	if (obj->m_shapeData)
+		oss << " shape=" << obj->m_shapeData->GetShape();
+	if (obj->m_objectData && !obj->m_objectData->m_name.empty())
+		oss << " name=\"" << obj->m_objectData->m_name << "\"";
+	if (!obj->m_name.empty())
+		oss << " label=\"" << obj->m_name << "\"";
+	oss << " unit=";
+	switch (obj->m_UnitType)
+	{
+	case U7Object::UnitTypes::UNIT_TYPE_NPC: oss << "NPC"; break;
+	case U7Object::UnitTypes::UNIT_TYPE_MONSTER: oss << "MONSTER"; break;
+	case U7Object::UnitTypes::UNIT_TYPE_EGG: oss << "EGG"; break;
+	default: oss << "OBJ"; break;
+	}
+	oss << " pos=(" << obj->m_Pos.x << "," << obj->m_Pos.y << "," << obj->m_Pos.z << ")";
+	oss << " bbox=[" << obj->m_boundingBox.min.x << ".." << obj->m_boundingBox.max.x
+		<< "," << obj->m_boundingBox.min.y << ".." << obj->m_boundingBox.max.y
+		<< "," << obj->m_boundingBox.min.z << ".." << obj->m_boundingBox.max.z << "]";
+	return oss.str();
+}
+
+bool PathfindingSystem::ValidateMove(U7Object* agent, const Vector3& desiredPos, float& outDestH,
+	std::string* outRejectReason)
 {
 	const double t0 = GetTime();
 	const int srcX = agent ? (int)floor(agent->m_Pos.x) : 0;
@@ -401,19 +429,27 @@ bool PathfindingSystem::ValidateMove(U7Object* agent, const Vector3& desiredPos,
 	const int destXEarly = (int)floor(desiredPos.x);
 	const int destZEarly = (int)floor(desiredPos.z);
 
-	auto finish = [&](bool ok) -> bool {
+	auto reject = [&](const std::string& reason) -> bool {
+		if (outRejectReason)
+			*outRejectReason = reason;
 		const double ms = (GetTime() - t0) * 1000.0;
 		g_perf.AddMs(g_perf.msValidateMove, g_perf.maxMsValidateMove, ms);
-		g_perf.NoteValidateMove(srcX, srcZ, destXEarly, destZEarly, ok);
-		return ok;
+		g_perf.NoteValidateMove(srcX, srcZ, destXEarly, destZEarly, false);
+		return false;
+	};
+	auto accept = [&]() -> bool {
+		const double ms = (GetTime() - t0) * 1000.0;
+		g_perf.AddMs(g_perf.msValidateMove, g_perf.maxMsValidateMove, ms);
+		g_perf.NoteValidateMove(srcX, srcZ, destXEarly, destZEarly, true);
+		return true;
 	};
 
-	if (!agent) return finish(false);
+	if (!agent) return reject("no agent");
 
 	if (!g_pathfindingSystem)
 	{
 		outDestH = desiredPos.y;
-		return finish(true);
+		return accept();
 	}
 
 	PathfindingSystem* sys = g_pathfindingSystem.get();
@@ -423,7 +459,7 @@ bool PathfindingSystem::ValidateMove(U7Object* agent, const Vector3& desiredPos,
 
 	// Bounds check
 	if (destX < 0 || destX >= 3072 || destZ < 0 || destZ >= 3072)
-		return finish(false);
+		return reject("out of bounds dest=(" + std::to_string(destX) + "," + std::to_string(destZ) + ")");
 
 	// Source height (feet)
 	float srcH = agent->m_Pos.y;
@@ -445,7 +481,16 @@ bool PathfindingSystem::ValidateMove(U7Object* agent, const Vector3& desiredPos,
 				inStep.push_back(h);
 		}
 		if (inStep.empty())
-			return finish(false);
+		{
+			std::ostringstream oss;
+			oss << "no in-step surface srcH=" << srcH << " dest=(" << destX << "," << destZ << ") heights=";
+			for (size_t i = 0; i < heights.size(); ++i)
+			{
+				if (i) oss << ",";
+				oss << heights[i];
+			}
+			return reject(oss.str());
+		}
 
 		const float prefer = desiredPos.y;
 		// Keyboard/mouse steer usually keeps desired.y == current feet (horizontal intent).
@@ -480,8 +525,32 @@ bool PathfindingSystem::ValidateMove(U7Object* agent, const Vector3& desiredPos,
 	}
 
 	// Tile must be standable approaching from srcH (any in-step surface).
+	// Exception: already standing on this tile — allow intra-tile slides even when
+	// the ground-cost map stamped it impassable (oversized TFA footprints). Without
+	// this, units placed on a stamped tile can never take a ValidateMove microstep
+	// and remain stuck forever.
 	if (!sys->IsPositionWalkable(destX, destZ, srcH, agent))
-		return finish(false);
+	{
+		const bool sameTile = (destX == srcX && destZ == srcZ);
+		if (!sameTile)
+		{
+			std::ostringstream oss;
+			oss << "not walkable dest=(" << destX << "," << destZ << ") srcH=" << srcH
+				<< " groundCost=" << sys->GetGroundCost(destX, destZ)
+				<< " terrainOk=" << (sys->IsGroundTerrainWalkable(destX, destZ) ? "1" : "0");
+			if (destZ >= 0 && destZ < (int)g_World.size()
+				&& destX >= 0 && destX < (int)g_World[destZ].size())
+			{
+				const unsigned short shapeframe = g_World[destZ][destX];
+				const int shapeID = shapeframe & 0x3ff;
+				oss << " terrainShape=" << shapeID
+					<< " terrainName=\"" << sys->GetTerrainName(shapeID) << "\"";
+			}
+			if (IsTileBlockedByHostileUnit(destX, destZ, srcH, agent))
+				oss << " hostileOccupant=1";
+			return reject(oss.str());
+		}
+	}
 
 	// Collision detection using chunk object map
 	// Slightly smaller than half-tile so entering a crate tile (esp. multi-tile
@@ -674,19 +743,20 @@ bool PathfindingSystem::ValidateMove(U7Object* agent, const Vector3& desiredPos,
 							break;
 						}
 					}
-					if (hit) return finish(false);
+					if (hit)
+						return reject("swept collision " + DescribeBlockingObject(obj));
 				}
 
 				if (!(objTop < playerMin.y || objBottom > playerMax.y))
 				{
-					return finish(false);
+					return reject("body overlap " + DescribeBlockingObject(obj));
 				}
 			}
 		}
 	}
 
 	outDestH = destH;
-	return finish(true);
+	return accept();
 }
 
 float PathfindingSystem::GetTileHeight(int worldX, int worldZ) const
@@ -3407,6 +3477,40 @@ void PathfindingSystem::BakeBlockingObjectsIntoGroundCost()
 
 	AddConsoleString("Ground cost: stamped " + std::to_string(blockingObjects) +
 		" tall ground solids onto " + std::to_string(blockedTiles) + " tiles", GREEN);
+}
+
+std::vector<std::string> PathfindingSystem::DescribeGroundBlockersAt(int worldX, int worldZ) const
+{
+	std::vector<std::string> out;
+	for (const auto& pair : g_objectList)
+	{
+		U7Object* obj = pair.second.get();
+		if (!ShouldStampObjectAsGroundBlocker(obj))
+			continue;
+
+		const int w = std::max(1, static_cast<int>(obj->m_objectData->m_width));
+		const int d = std::max(1, static_cast<int>(obj->m_objectData->m_depth));
+		const int maxTileX = static_cast<int>(std::floor(obj->m_Pos.x));
+		const int maxTileZ = static_cast<int>(std::floor(obj->m_Pos.z));
+		const int minTileX = maxTileX - w + 1;
+		const int minTileZ = maxTileZ - d + 1;
+		if (worldX < minTileX || worldX > maxTileX || worldZ < minTileZ || worldZ > maxTileZ)
+			continue;
+
+		std::ostringstream oss;
+		oss << "id=" << obj->m_ID
+			<< " shape=" << obj->m_shapeData->GetShape();
+		if (obj->m_objectData && !obj->m_objectData->m_name.empty())
+			oss << " name=\"" << obj->m_objectData->m_name << "\"";
+		oss << " pos=(" << obj->m_Pos.x << "," << obj->m_Pos.y << "," << obj->m_Pos.z << ")"
+			<< " tfa=" << w << "x" << d
+			<< " footprint=[" << minTileX << ".." << maxTileX << ","
+			<< minTileZ << ".." << maxTileZ << "]"
+			<< " height=" << obj->m_objectData->m_height
+			<< " notWalk=" << (obj->m_objectData->m_isNotWalkable ? 1 : 0);
+		out.push_back(oss.str());
+	}
+	return out;
 }
 
 void PathfindingSystem::PopulateChunkPathfindingGrid()
