@@ -129,7 +129,7 @@ std::vector< std::vector<unsigned short> > g_World;
 
 Vector3 g_Gravity = Vector3{ 0, .1f, 0 };
 // Default first-person settings
-constexpr float DEFAULT_FIRSTPERSON_HEIGHT = 5.5f;
+constexpr float DEFAULT_FIRSTPERSON_HEIGHT = 3.5f;
 constexpr float DEFAULT_FIRSTPERSON_PITCH = 0.0f;
 
 float g_CameraRotateSpeed = 0;
@@ -776,6 +776,11 @@ bool IsCameraLockedToAvatar()
 	return avatar && g_cameraLockObjectId == avatar->m_ID;
 }
 
+bool IsCameraLockedToObject(int objectId)
+{
+	return g_cameraLockObjectId == objectId;
+}
+
 void LockCameraToObject(int objectId)
 {
 	auto it = g_objectList.find(objectId);
@@ -788,6 +793,8 @@ void LockCameraToObject(int objectId)
 	g_cameraLockObjectId = objectId;
 	U7Object* obj = it->second.get();
 	AddConsoleString("Camera locked to " + obj->m_name + ".", SKYBLUE);
+	g_firstPersonHeight = DEFAULT_FIRSTPERSON_HEIGHT;
+	g_firstPersonPitch = DEFAULT_FIRSTPERSON_PITCH;
 }
 
 void LockCameraToAvatar()
@@ -800,6 +807,8 @@ void LockCameraToAvatar()
 		return;
 
 	g_cameraLockObjectId = avatar->m_ID;
+	g_firstPersonHeight = DEFAULT_FIRSTPERSON_HEIGHT;
+	g_firstPersonPitch = DEFAULT_FIRSTPERSON_PITCH;
 }
 
 void UnlockCamera()
@@ -809,6 +818,8 @@ void UnlockCamera()
 
 	g_cameraLockObjectId = -1;
 	AddConsoleString("Camera unlocked.", SKYBLUE);
+	g_firstPersonHeight = DEFAULT_FIRSTPERSON_HEIGHT;
+	g_firstPersonPitch = DEFAULT_FIRSTPERSON_PITCH;
 }
 
 void LockCamera()
@@ -917,13 +928,11 @@ void CameraInput()
 			{
 				U7Object* avatar = g_Player->GetAvatarObject();
 
-				// If camera is locked to the avatar, derive yaw from player/avatar direction as before
+				// If camera is locked to the avatar, derive yaw from the avatar's facing direction
 				if (IsCameraLockedToAvatar())
 				{
-					Vector3 dir = g_Player->GetAvatarObject()->GetPos();
-					if (Vector3Length(dir) < 0.001f && avatar)
-						dir = avatar->m_Direction;
-					if (Vector3Length(dir) >= 0.001f)
+					Vector3 dir = avatar->m_Direction;
+					if (Vector3Length(dir) >= 0.0001f)
 						g_firstPersonYaw = atan2f(dir.z, dir.x);
 				}
 				else
@@ -955,7 +964,9 @@ void CameraInput()
 				if (avatar)
 				{
 					if (IsCameraLockedToAvatar())
-						avatar->m_ShouldDraw = !g_firstPersonEnabled;
+						avatar->m_Visible = !g_firstPersonEnabled;
+					else
+						avatar->m_Visible = true;
 				}
 			}
 
@@ -1005,31 +1016,75 @@ void CameraInput()
 			if (g_firstPersonPitch > maxPitch) g_firstPersonPitch = maxPitch;
 			if (g_firstPersonPitch < minPitch) g_firstPersonPitch = minPitch;
 		}
+	
+		bool userRotated = false;
+		const float CARDINAL = PI / 2.0f;
 
-		// Keyboard look (Q/E yaw; Ctrl+Q/E pitch when locked, height when free)
-		if (!IsKeyDown(KEY_LEFT_CONTROL) && IsKeyDown(KEY_Q))
+		if (IsKeyDown(KEY_LEFT_CONTROL))
 		{
-			g_firstPersonYaw -= dt * 3.5f; // rotate left
+			Vector3 snapForward = Vector3Subtract(g_camera.target, g_camera.position);
+			snapForward.y = 0.0f;
+			float angle;
+			if (Vector3Length(snapForward) < 0.0001f)
+			{
+				angle = g_firstPersonYaw;
+			}
+			else
+			{
+				snapForward = Vector3Normalize(snapForward);
+				angle = atan2f(snapForward.z, snapForward.x);
+			}
+			while (angle < 0.0f) angle += 2.0f * PI;
+			while (angle >= 2.0f * PI) angle -= 2.0f * PI;
+			int idx = static_cast<int>(std::round(angle / CARDINAL)) % 4;
+
+			if (IsKeyPressed(KEY_Q))
+			{
+				int targetIdx = (idx + 3) % 4;
+				float targetAngle = float(targetIdx) * CARDINAL;
+
+				g_firstPersonYaw = targetAngle;
+				g_CameraMoved = true;
+				userRotated = true;
+			}
+			else if (IsKeyPressed(KEY_E))
+			{
+				int targetIdx = (idx + 1) % 4;
+				float targetAngle = float(targetIdx) * CARDINAL;
+
+				g_firstPersonYaw = targetAngle;
+				g_CameraMoved = true;
+				userRotated = true;
+			}
 		}
-		if (!IsKeyDown(KEY_LEFT_CONTROL) && IsKeyDown(KEY_E))
+		else
 		{
-			g_firstPersonYaw += dt * 3.5f; // rotate right
+			if (!IsKeyDown(KEY_LEFT_SHIFT) && IsKeyDown(KEY_Q))
+			{
+				g_firstPersonYaw -= dt * 3.5f;
+				userRotated = true;
+			}
+			if (!IsKeyDown(KEY_LEFT_SHIFT) && IsKeyDown(KEY_E))
+			{
+				g_firstPersonYaw += dt * 3.5f;
+				userRotated = true;
+			}
 		}
 
 		const float heightSpeed = 2.5f;    // units per second for raising/lowering
 		const float pitchSpeed = 1.5f;     // radians per second for looking up/down
-		const float minHeight = 1.0f;
+		const float minHeight = -1.0f;
 		const float maxHeight = 20.0f;
 
 		if (!IsCameraLocked())
 		{
 			// Free first-person: change eye height
-			if (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyDown(KEY_Q))
+			if (IsKeyDown(KEY_LEFT_SHIFT) && IsKeyDown(KEY_Q))
 			{
 				g_firstPersonHeight -= heightSpeed * dt;
 				if (g_firstPersonHeight < minHeight) g_firstPersonHeight = minHeight;
 			}
-			if (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyDown(KEY_E))
+			if (IsKeyDown(KEY_LEFT_SHIFT) && IsKeyDown(KEY_E))
 			{
 				g_firstPersonHeight += heightSpeed * dt;
 				if (g_firstPersonHeight > maxHeight) g_firstPersonHeight = maxHeight;
@@ -1037,13 +1092,13 @@ void CameraInput()
 		}
 		else
 		{
-			// Locked-first-person: Ctrl+Q/E still nudge pitch (mouselook is primary)
-			if (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyDown(KEY_Q))
+			// Locked-first-person: change pitch (look up/down) but keep eye height anchored to avatar
+			if (IsKeyDown(KEY_LEFT_SHIFT) && IsKeyDown(KEY_Q))
 			{
 				g_firstPersonPitch -= pitchSpeed * dt; // look down
 				if (g_firstPersonPitch < minPitch) g_firstPersonPitch = minPitch;
 			}
-			if (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyDown(KEY_E))
+			if (IsKeyDown(KEY_LEFT_SHIFT) && IsKeyDown(KEY_E))
 			{
 				g_firstPersonPitch += pitchSpeed * dt; // look up
 				if (g_firstPersonPitch > maxPitch) g_firstPersonPitch = maxPitch;
@@ -1053,6 +1108,27 @@ void CameraInput()
 		// normalize yaw
 		while (g_firstPersonYaw < 0.0f) g_firstPersonYaw += 2 * PI;
 		while (g_firstPersonYaw >= 2 * PI) g_firstPersonYaw -= 2 * PI;
+
+		if (IsCameraLockedToObject(g_cameraLockObjectId) && !IsCameraLockedToAvatar() && !userRotated)
+		{
+			U7Object* lockedObj = GetObjectFromID(g_cameraLockObjectId);
+			if (lockedObj)
+			{
+				Vector3 dir = lockedObj->m_Direction;
+				if (Vector3Length(dir) >= 0.0001f)
+				{
+					float desiredYaw = atan2f(dir.z, dir.x);
+
+					float delta = desiredYaw - g_firstPersonYaw;
+					while (delta > PI) delta -= 2 * PI;
+					while (delta < -PI) delta += 2 * PI;
+					float maxDelta = 3.5f * dt;
+					if (fabsf(delta) > maxDelta)
+						delta = (delta > 0.0f) ? maxDelta : -maxDelta;
+					g_firstPersonYaw += delta;
+				}
+			}
+		}
 
 		// Ensure camera uses latest yaw/pitch/height
 		CameraUpdate(true);
@@ -1119,7 +1195,7 @@ void CameraInput()
 	{
 		if (IsKeyDown(KEY_A))
 		{
-			direction = Vector3Add(direction, { float(-g_Engine->LastFrameInSeconds()) * frameTimeModifier, 0, float(g_Engine->LastFrameInSeconds()) * frameTimeModifier});
+			direction = Vector3Add(direction, { float(-g_Engine->LastFrameInSeconds()) * frameTimeModifier, 0, float(g_Engine->LastFrameInSeconds()) * frameTimeModifier });
 			g_CameraMoved = true;
 		}
 
@@ -1141,39 +1217,92 @@ void CameraInput()
 			g_CameraMoved = true;
 		}
 	}
-	// else
-	// {
-	// 	Vector3 cameraPosition = g_camera.target;
-	// 	Vector3 playerPosition = g_objectList[g_NPCData[0]->m_objectID]->m_Pos;
-	//
-	// 	if (cameraPosition.x != playerPosition.x || cameraPosition.y != playerPosition.y || cameraPosition.z != playerPosition.z)
-	// 	{
-	// 		g_camera.target = playerPosition;
-	// 		g_CameraMoved = true;
-	// 	}
-	// }
-
 	if (g_CameraMoved)
 	{
 		g_CameraMovementSpeed = direction;
 	}
 
 	bool cameraRotated = false;
-
-	if (g_allowInput)
+	if (IsCameraLockedToObject(g_cameraLockObjectId) && !IsCameraLockedToAvatar() && g_firstPersonEnabled)
 	{
-		if (IsKeyDown(KEY_Q))
+		U7Object* lockedObj = GetObjectFromID(g_cameraLockObjectId);
+		if (lockedObj)
 		{
-			g_CameraRotateSpeed = g_Engine->LastFrameInSeconds() * 5;
-			g_CameraMoved = true;
-			cameraRotated = true;
+			Vector3 dir = lockedObj->m_Direction;
+			if (Vector3Length(dir) >= 0.0001f)
+			{
+				float desiredYaw = atan2f(dir.z, dir.x);
+				float dt = g_Engine->LastFrameInSeconds();
+				float delta = desiredYaw - g_cameraRotation;
+				while (delta > PI) delta -= 2 * PI;
+				while (delta < -PI) delta += 2 * PI;
+				float maxDelta = 3.5f * dt;
+				if (fabsf(delta) > maxDelta)
+					delta = (delta > 0.0f) ? maxDelta : -maxDelta;
+				g_cameraRotation += delta;
+				while (g_cameraRotation < 0) g_cameraRotation += 2 * PI;
+				while (g_cameraRotation >= 2 * PI) g_cameraRotation -= 2 * PI;
+				g_CameraMoved = true;
+				cameraRotated = true;
+			}
 		}
+	}
 
-		if (IsKeyDown(KEY_E))
+	else if (g_allowInput)
+	{
+		const float CARDINAL = PI / 2.0f;
+		const float CARDINAL_OFFSET = -PI / 4.0f;
+		float cur = g_cameraRotation;
+
+		cur += CARDINAL_OFFSET;
+
+		while (cur < 0.0f) cur += 2.0f * PI;
+		while (cur >= 2.0f * PI) cur -= 2.0f * PI;
+
+		int idx = static_cast<int>(std::round(cur / CARDINAL)) % 4;
+		if (idx < 0) idx += 4;
+
+		if (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyPressed(KEY_E))
 		{
-			g_CameraRotateSpeed = -g_Engine->LastFrameInSeconds() * 5;
+			int targetIdx = (idx + 3) % 4;
+			float target = targetIdx * CARDINAL - CARDINAL_OFFSET;
+
+			while (target < 0.0f) target += 2.0f * PI;
+			while (target >= 2.0f * PI) target -= 2.0f * PI;
+
+			g_cameraRotationTarget = target;
+			g_autoRotate = true;
+			g_CameraRotateSpeed = 0.0f;
 			g_CameraMoved = true;
-			cameraRotated = true;
+		}
+		else if (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyPressed(KEY_Q))
+		{
+			int targetIdx = (idx + 1) % 4;
+			float target = targetIdx * CARDINAL - CARDINAL_OFFSET;
+
+			while (target < 0.0f) target += 2.0f * PI;
+			while (target >= 2.0f * PI) target -= 2.0f * PI;
+
+			g_cameraRotationTarget = target;
+			g_autoRotate = true;
+			g_CameraRotateSpeed = 0.0f;
+			g_CameraMoved = true;
+		}
+		else
+		{
+			if (IsKeyDown(KEY_Q))
+			{
+				g_CameraRotateSpeed = g_Engine->LastFrameInSeconds() * 5;
+				g_CameraMoved = true;
+				cameraRotated = true;
+			}
+
+			if (IsKeyDown(KEY_E))
+			{
+				g_CameraRotateSpeed = -g_Engine->LastFrameInSeconds() * 5;
+				g_CameraMoved = true;
+				cameraRotated = true;
+			}
 		}
 	}
 
@@ -1333,7 +1462,7 @@ void CameraUpdate(bool forcemove)
 			{
 				U7Object* lockObj = GetObjectFromID(g_cameraLockObjectId);
 				Vector3 basePos = lockObj ? lockObj->m_Pos : avatar->m_Pos;
-				Vector3 eyePos = Vector3Add(basePos, Vector3{ 0.0f, g_firstPersonHeight - 2.0f, 0.0f });
+				Vector3 eyePos = Vector3Add(basePos, Vector3{ 0.0f, g_firstPersonHeight, 0.0f });
 
 				// forward now respects pitch
 				float cp = cosf(g_firstPersonPitch);
@@ -1353,7 +1482,7 @@ void CameraUpdate(bool forcemove)
 				// then orient by first-person yaw/pitch (mouselook).
 				Vector3 prevPos = g_camera.position; // preserve X/Z
 				Vector3 eyePos = prevPos;
-				eyePos.y = avatar->m_centerPoint.y + g_firstPersonHeight;
+				eyePos.y = g_firstPersonHeight;
 
 				float cp = cosf(g_firstPersonPitch);
 				Vector3 forward = { cosf(g_firstPersonYaw) * cp, sinf(g_firstPersonPitch), sinf(g_firstPersonYaw) * cp };
@@ -1416,10 +1545,6 @@ void CameraUpdate(bool forcemove)
 			UnlockCamera();
 		}
 	}
-
-
-
-		// --- existing third-person CameraUpdate logic below (unchanged) ---
 
 		if (!g_CameraMoved && (g_CameraMovementSpeed.x != 0 || g_CameraMovementSpeed.z != 0))
 		{
@@ -1486,6 +1611,16 @@ void CameraUpdate(bool forcemove)
 		{
 			g_autoRotate = false;
 			g_cameraRotation = g_cameraRotationTarget;
+
+			float finalDeg = g_cameraRotation * 180.0f / PI;
+			while (finalDeg < 0.0f) finalDeg += 360.0f;
+			while (finalDeg >= 360.0f) finalDeg -= 360.0f;
+
+			std::ostringstream oss;
+			oss << "CAM_SNAP COMPLETE finalRad=" << g_cameraRotation << " finalDeg=" << finalDeg
+				<< " targetRad=" << g_cameraRotationTarget << " targetDeg=" << (g_cameraRotationTarget * 180.0f / PI)
+				<< " rotateSpeed=" << g_CameraRotateSpeed;
+			NPCDebugPrint(oss.str());
 		}
 	}
 
@@ -1496,11 +1631,10 @@ void CameraUpdate(bool forcemove)
 
 	current = Vector3Add(current, finalmovement);
 
-	// Tiles are indexed 0..3071; keep look-at inside that range (inclusive float max 3071).
-	if (!std::isfinite(current.x) || current.x < 0) current.x = 0;
-	if (current.x > 3071) current.x = 3071;
-	if (!std::isfinite(current.z) || current.z < 0) current.z = 0;
-	if (current.z > 3071) current.z = 3071;
+	if (current.x < 0) current.x = 0;
+	if (current.x > 3072) current.x = 3072;
+	if (current.z < 0) current.z = 0;
+	if (current.z > 3072) current.z = 3072;
 
 	Vector3 camPos = { g_cameraDistance, g_cameraDistance, g_cameraDistance };
 	camPos = Vector3RotateByAxisAngle(camPos, Vector3{ 0, 1, 0 }, g_cameraRotation);
@@ -1615,6 +1749,19 @@ void GetCameraVisibleChunkRange(int& outMinCX, int& outMaxCX, int& outMinCZ, int
 	{
 		// Fallback: distance-based radius (ortho fovy ≈ world height in tiles).
 		const float halfExtent = std::max(g_cameraDistance, 18.0f) * 1.25f + padTiles;
+		//// Fallback: distance-based radius. For orthographic (third-person) use cameraDistance-derived extent,
+		//// but for perspective/first-person cameras the corner rays often miss horizontal planes (looking near-parallel),
+		//// which would otherwise expand the range to nearly the whole world and kill frame rate. Use a modest fixed
+		//// extent for perspective/first-person to keep visible object counts reasonable.
+		//float halfExtent = 0.0f;
+		//if (g_camera.projection == CAMERA_PERSPECTIVE || g_firstPersonEnabled)
+		//{
+		//	halfExtent = 24.0f + padTiles; // ~24 tiles visible around camera target in FP
+		//}
+		//else
+		//{
+		//	halfExtent = std::max(g_cameraDistance, 18.0f) * 1.25f + padTiles;
+		//}
 		minX = g_camera.target.x - halfExtent;
 		maxX = g_camera.target.x + halfExtent;
 		minZ = g_camera.target.z - halfExtent;
@@ -1626,6 +1773,19 @@ void GetCameraVisibleChunkRange(int& outMinCX, int& outMaxCX, int& outMinCZ, int
 		maxX += padTiles;
 		minZ -= padTiles;
 		maxZ += padTiles;
+	}
+
+	{
+		float halfExtentCurrent = std::max((maxX - minX) * 0.5f, (maxZ - minZ) * 0.5f);
+		const float kMaxHalfExtentFP = 48.0f + padTiles; // tunable limit for FP/perspective
+		if ((g_camera.projection == CAMERA_PERSPECTIVE || g_firstPersonEnabled) && halfExtentCurrent > kMaxHalfExtentFP)
+		{
+			float he = kMaxHalfExtentFP;
+			minX = g_camera.target.x - he;
+			maxX = g_camera.target.x + he;
+			minZ = g_camera.target.z - he;
+			maxZ = g_camera.target.z + he;
+		}
 	}
 
 	auto toChunk = [](float world) -> int {
