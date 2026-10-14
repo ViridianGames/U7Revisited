@@ -263,6 +263,12 @@
     <ClCompile Include="Source\PerfTelemetry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\CombatMode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\NpcAnimation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Source\u7revisited.rc">
@@ -540,6 +546,12 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\PerfTelemetry.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\CombatMode.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\NpcAnimation.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

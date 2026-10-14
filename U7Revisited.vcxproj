@@ -389,6 +389,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Source\AskState.cpp" />
+    <ClCompile Include="Source\CombatMode.cpp" />
     <ClCompile Include="Source\CombatState.cpp" />
     <ClCompile Include="Source\ConversationState.cpp" />
     <ClCompile Include="Source\GameSerializer.cpp" />
@@ -420,6 +421,7 @@
     <ClCompile Include="Source\LoadSaveState.cpp" />
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\MainState.cpp" />
+    <ClCompile Include="Source\NpcAnimation.cpp" />
     <ClCompile Include="Source\NpcListWindow.cpp" />
     <ClCompile Include="Source\OptionsState.cpp" />
     <ClCompile Include="Source\PathfindingSystem.cpp" />
@@ -480,6 +482,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\AskState.h" />
+    <ClInclude Include="Source\CombatMode.h" />
     <ClInclude Include="Source\CombatState.h" />
     <ClInclude Include="Source\ConversationState.h" />
     <ClInclude Include="Source\GameSerializer.h" />
@@ -514,6 +517,7 @@
     <ClInclude Include="Source\LoadingState.h" />
     <ClInclude Include="Source\LoadSaveState.h" />
     <ClInclude Include="Source\MainState.h" />
+    <ClInclude Include="Source\NpcAnimation.h" />
     <ClInclude Include="Source\NpcListWindow.h" />
     <ClInclude Include="Source\OptionsState.h" />
     <ClInclude Include="Source\PathfindingSystem.h" />
