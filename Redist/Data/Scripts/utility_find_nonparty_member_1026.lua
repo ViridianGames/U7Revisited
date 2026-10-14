@@ -1,14 +1,21 @@
---- Best guess: Iterates over negative indices to find a party member not in the party, defaulting to 356.
----@return integer npc_id The NPC ID found, or 356 as default
+--- fn_0902: first companion from a fixed list who is in the party, else the Avatar (-356).
+--- Called on 3 of 10 dialogue rolls. Order is 10, 2, 9, 8, 7, 5, 4, 3, 1.
+--- Both original checks are required: the NPC object is in the party list, and NPCInParty.
 function utility_find_nonparty_member_1026()
-    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
-
-    var_0000 = {10, 2, 9, 8, 7, 5, 4, 3, 1}
-    var_0001 = get_party_members() --- Guess: Gets party members
-    for _, var_0004 in ipairs({2, 3, 4, 0}) do
-        if is_int_in_array(get_object_owner(var_0004), var_0001) and not npc_id_in_party(var_0004) then --- Guess: Checks if NPC is in party
-            return var_0004
+    local candidates = {-10, -2, -9, -8, -7, -5, -4, -3, -1}
+    local party_objects = {}
+    for _, id in ipairs(get_party_list2() or {}) do
+        local obj = get_npc_name(id)
+        if obj then
+            table.insert(party_objects, obj)
         end
     end
-    return 356
+
+    for _, npc_id in ipairs(candidates) do
+        local obj = get_npc_name(npc_id)
+        if obj and is_int_in_array(obj, party_objects) and npc_id_in_party(npc_id) then
+            return npc_id
+        end
+    end
+    return -356
 end
