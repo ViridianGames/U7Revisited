@@ -1520,16 +1520,7 @@ bool TurnBasedCombatMode::TryIssueAttackOn(MainState& main, U7Object* target)
 		return true;
 	}
 
-	// Out of range: close distance, prefer leaving attack AP for a same-turn shot/swing.
-	AddConsoleString("Out of range - moving closer.", YELLOW);
-	if (!TryMoveTowardTarget(unit, target, attackCost))
-	{
-		// Retry with no reserve so they can still approach.
-		if (!TryMoveTowardTarget(unit, target, 0.0f))
-			AddConsoleString("No path toward that enemy.", YELLOW);
-	}
-	if (m_phase == Phase::Planning)
-		RebuildReachableTiles();
+	AddConsoleString("That enemy is out of range.", YELLOW);
 	return true;
 }
 
@@ -1953,64 +1944,143 @@ bool TurnBasedCombatMode::HandleOrdersClick(MainState& main)
 void TurnBasedCombatMode::DrawWorld(MainState& main)
 {
 	(void)main;
-	if (m_phase != Phase::Planning || m_reachTiles.empty())
+	if (m_phase != Phase::Planning)
+		return;
+
+	U7Object* unit = GetActiveUnit();
+	if (!unit || !IsPartyUnit(unit))
 		return;
 
 	const Color green = Color{ 40, 220, 90, 150 };
 	const Color yellow = Color{ 240, 210, 40, 150 };
 	const float attackReserve = GetActiveAttackApCost();
+	const float yFill = m_reachDrawY;
+	const float yOutline = m_reachDrawY + 0.02f;
 
 	rlDisableDepthMask();
-	rlBegin(RL_TRIANGLES);
-	for (const ReachTile& t : m_reachTiles)
+
+	if (!m_reachTiles.empty())
 	{
-		const Color c = (t.apLeft + kApEpsilon >= attackReserve) ? green : yellow;
-		rlColor4ub(c.r, c.g, c.b, c.a);
+		rlBegin(RL_TRIANGLES);
+		for (const ReachTile& t : m_reachTiles)
+		{
+			const Color c = (t.apLeft + kApEpsilon >= attackReserve) ? green : yellow;
+			rlColor4ub(c.r, c.g, c.b, c.a);
 
-		const float y = m_reachDrawY;
-		const float x0 = static_cast<float>(t.x);
-		const float z0 = static_cast<float>(t.z);
-		const float x1 = x0 + 1.0f;
-		const float z1 = z0 + 1.0f;
+			const float x0 = static_cast<float>(t.x);
+			const float z0 = static_cast<float>(t.z);
+			const float x1 = x0 + 1.0f;
+			const float z1 = z0 + 1.0f;
 
-		rlVertex3f(x0, y, z0);
-		rlVertex3f(x1, y, z0);
-		rlVertex3f(x1, y, z1);
+			rlVertex3f(x0, yFill, z0);
+			rlVertex3f(x1, yFill, z0);
+			rlVertex3f(x1, yFill, z1);
 
-		rlVertex3f(x0, y, z0);
-		rlVertex3f(x1, y, z1);
-		rlVertex3f(x0, y, z1);
+			rlVertex3f(x0, yFill, z0);
+			rlVertex3f(x1, yFill, z1);
+			rlVertex3f(x0, yFill, z1);
+		}
+		rlEnd();
 	}
-	rlEnd();
-	rlEnableDepthMask();
 
-	// Destination ghost: 1-tile-high box, colored by reachability.
+	// White outline around tiles within raw weapon range (no engage slack).
+	// Melee draws at 2.0; attack checks still use +0.85 slack separately.
+	// Drawn as ground quads: glLineWidth is clamped to 1 on many GL drivers.
+	RefreshUnitAttackRange(unit);
+	float range = unit->m_attackRange;
+	if (range < 0.5f)
+		range = MELEE_RANGE_TILES;
+	if (range > 0.05f)
+	{
+		const float rangeSqr = range * range;
+		const int rangeTiles = static_cast<int>(std::ceil(range)) + 1;
+		const float ux = unit->m_Pos.x;
+		const float uz = unit->m_Pos.z;
+		constexpr float kOutlineHalfWidth = 0.04f; // world units (~1/12 tile)
+
+		auto tileInRange = [&](int x, int z) -> bool {
+			if (x < 0 || x >= 3072 || z < 0 || z >= 3072)
+				return false;
+			const float dx = (static_cast<float>(x) + 0.5f) - ux;
+			const float dz = (static_cast<float>(z) + 0.5f) - uz;
+			return dx * dx + dz * dz <= rangeSqr;
+		};
+
+		auto emitThickEdge = [&](float ax, float az, float bx, float bz) {
+			const float edx = bx - ax;
+			const float edz = bz - az;
+			const float len = std::sqrt(edx * edx + edz * edz);
+			if (len < 1e-6f)
+				return;
+			const float px = (-edz / len) * kOutlineHalfWidth;
+			const float pz = (edx / len) * kOutlineHalfWidth;
+
+			rlVertex3f(ax + px, yOutline, az + pz);
+			rlVertex3f(ax - px, yOutline, az - pz);
+			rlVertex3f(bx - px, yOutline, bz - pz);
+
+			rlVertex3f(ax + px, yOutline, az + pz);
+			rlVertex3f(bx - px, yOutline, bz - pz);
+			rlVertex3f(bx + px, yOutline, bz + pz);
+		};
+
+		rlBegin(RL_TRIANGLES);
+		rlColor4ub(255, 255, 255, 220);
+		for (int z = static_cast<int>(std::floor(uz)) - rangeTiles;
+		     z <= static_cast<int>(std::floor(uz)) + rangeTiles; ++z)
+		{
+			for (int x = static_cast<int>(std::floor(ux)) - rangeTiles;
+			     x <= static_cast<int>(std::floor(ux)) + rangeTiles; ++x)
+			{
+				if (!tileInRange(x, z))
+					continue;
+
+				const float x0 = static_cast<float>(x);
+				const float z0 = static_cast<float>(z);
+				const float x1 = x0 + 1.0f;
+				const float z1 = z0 + 1.0f;
+
+				if (!tileInRange(x, z - 1))
+					emitThickEdge(x0, z0, x1, z0);
+				if (!tileInRange(x, z + 1))
+					emitThickEdge(x0, z1, x1, z1);
+				if (!tileInRange(x - 1, z))
+					emitThickEdge(x0, z0, x0, z1);
+				if (!tileInRange(x + 1, z))
+					emitThickEdge(x1, z0, x1, z1);
+			}
+		}
+		rlEnd();
+	}
+	rlEnableDepthMask();
+}
+
+CombatMode::OrdersCursorKind TurnBasedCombatMode::GetOrdersCursor()
+{
+	if (m_phase != Phase::Planning)
+		return OrdersCursorKind::Default;
+
+	U7Object* unit = GetActiveUnit();
+	if (!unit || !IsPartyUnit(unit))
+		return OrdersCursorKind::Default;
+
 	if (g_mouseOverUI || (g_gumpManager && g_gumpManager->m_isMouseOverGump))
-		return;
+		return OrdersCursorKind::Default;
+
+	U7Object* under = g_objectUnderMousePointer;
+	if (under && IsLivingCombatant(under) && IsHostileCombatUnit(under))
+	{
+		RefreshUnitAttackRange(unit);
+		if (IsInAttackRange(unit, under))
+			return OrdersCursorKind::Combat;
+		return OrdersCursorKind::CombatGrey;
+	}
 
 	const int hoverX = static_cast<int>(std::floor(g_terrainUnderMousePointer.x));
 	const int hoverZ = static_cast<int>(std::floor(g_terrainUnderMousePointer.z));
-	if (hoverX < 0 || hoverX >= 3072 || hoverZ < 0 || hoverZ >= 3072)
-		return;
-
-	Color boxColor = RED;
-	if (const ReachTile* reach = FindReachTile(hoverX, hoverZ))
-		boxColor = (reach->apLeft + kApEpsilon >= attackReserve)
-			? Color{ 40, 220, 90, 255 }
-			: Color{ 240, 210, 40, 255 };
-
-	BoundingBox box;
-	box.min = Vector3{
-		static_cast<float>(hoverX),
-		m_reachDrawY - 0.05f,
-		static_cast<float>(hoverZ)
-	};
-	box.max = Vector3{
-		box.min.x + 1.0f,
-		box.min.y + 1.0f,
-		box.min.z + 1.0f
-	};
-	DrawBoundingBox(box, boxColor);
+	if (FindReachTile(hoverX, hoverZ))
+		return OrdersCursorKind::Default;
+	return OrdersCursorKind::DefaultGrey;
 }
 
 void TurnBasedCombatMode::DrawHud(MainState& main)

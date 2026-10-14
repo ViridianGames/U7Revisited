@@ -49,6 +49,17 @@ public:
 	// Style-specific orders click. Return true if the click was consumed.
 	virtual bool HandleOrdersClick(MainState& main) { (void)main; return false; }
 
+	// TB orders cursor: None = leave MainState's current g_Cursor alone.
+	enum class OrdersCursorKind
+	{
+		None,
+		Default,
+		DefaultGrey,
+		Combat,
+		CombatGrey
+	};
+	virtual OrdersCursorKind GetOrdersCursor() { return OrdersCursorKind::None; }
+
 	// Gates for MainState / U7Object combat AI.
 	virtual bool IsSimulationPaused() const { return !IsImplemented(); }
 	virtual bool AllowsPlayerOrders() const { return false; }
@@ -118,6 +129,7 @@ public:
 	void DrawHud(MainState& main) override;
 	void DrawWorld(MainState& main) override;
 	bool HandleOrdersClick(MainState& main) override;
+	OrdersCursorKind GetOrdersCursor() override;
 
 	bool IsSimulationPaused() const override;
 	bool AllowsPlayerOrders() const override;

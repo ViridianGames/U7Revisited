@@ -3580,7 +3580,37 @@ void MainState::Draw()
 		}
 		else
 		{
-			DrawTextureEx(*g_Cursor, { float(GetMouseX()), float(GetMouseY()) }, 0, g_DrawScale, WHITE);
+			Texture* cursorTex = g_Cursor;
+			Color cursorTint = WHITE;
+			constexpr Color kGreyCursor = Color{ 140, 140, 140, 255 };
+			if (g_isCombatMode && m_combatMode)
+			{
+				using Kind = CombatMode::OrdersCursorKind;
+				switch (m_combatMode->GetOrdersCursor())
+				{
+				case Kind::Default:
+					cursorTex = g_defaultCursor ? g_defaultCursor : g_Cursor;
+					cursorTint = WHITE;
+					break;
+				case Kind::DefaultGrey:
+					cursorTex = g_defaultCursor ? g_defaultCursor : g_Cursor;
+					cursorTint = kGreyCursor;
+					break;
+				case Kind::Combat:
+					cursorTex = g_combatCursor ? g_combatCursor : g_Cursor;
+					cursorTint = WHITE;
+					break;
+				case Kind::CombatGrey:
+					cursorTex = g_combatCursor ? g_combatCursor : g_Cursor;
+					cursorTint = kGreyCursor;
+					break;
+				case Kind::None:
+				default:
+					break;
+				}
+			}
+			if (cursorTex)
+				DrawTextureEx(*cursorTex, { float(GetMouseX()), float(GetMouseY()) }, 0, g_DrawScale, cursorTint);
 		}
 	}
 	else if (!m_paused && g_firstPersonMouseLookActive)
