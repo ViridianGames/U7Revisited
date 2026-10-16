@@ -71,3 +71,29 @@ end
 function walk_to_object(npc_id, object_id, arrive_dist)
 	return walk_beside_object(npc_id, object_id, arrive_dist)
 end
+
+-- Shape 154 spawned on the forge (world id > 255) is not in schedule.dat.
+-- npc.dat mages (0-255) keep their eternal sit/sleep blocks.
+function is_ambient_mage(npc_id)
+	return npc_id and npc_id > 255 and get_object_shape and get_object_shape(npc_id) == 154
+end
+
+-- After sitting/sleeping, wait min_s..min_s+span_s then switch to loiter 11.
+-- Regular NPCs keep the infinite yield (clock / schedule.dat rotates them).
+function ambient_mage_wait_then_loiter(npc_id, min_s, span_s)
+	if not is_ambient_mage(npc_id) then
+		while true do
+			coroutine.yield()
+		end
+		return
+	end
+	if wait then
+		wait(min_s + math.random() * span_s)
+	end
+	if set_schedule_type then
+		set_schedule_type(npc_id, 11)
+	end
+	while true do
+		coroutine.yield()
+	end
+end

@@ -4,12 +4,11 @@ function activity_sit(npc_id)
     local chair = find_nearest_chair(npc_id)
 
     if not chair then
-        -- No chair - stand instead
+        -- No chair - stand instead. Ambient mage still times out so activity 16
+        -- does not leave him standing forever.
         debug_npc(npc_id, "has no chair for sit activity, standing")
         npc_frame(npc_id, 0)  -- Frame 0 = standing
-        while true do
-            coroutine.yield()
-        end
+        ambient_mage_wait_then_loiter(npc_id, 60, 60)
         return
     end
 
@@ -17,9 +16,7 @@ function activity_sit(npc_id)
     if is_sitting(npc_id) and distance_to(npc_id, chair) < 1.5 then
         -- Already sitting - just continue sitting
         debug_npc(npc_id, "already sitting, continuing")
-        while true do
-            coroutine.yield()
-        end
+        ambient_mage_wait_then_loiter(npc_id, 60, 60)
         return
     end
 
@@ -54,8 +51,6 @@ function activity_sit(npc_id)
         npc_frame(npc_id, 26)
     end
 
-    -- Stay sitting (yield forever until activity changes)
-    while true do
-        coroutine.yield()
-    end
+    -- Stay sitting. Ambient mage: 60-120s then loiter. NPCs: until schedule.dat.
+    ambient_mage_wait_then_loiter(npc_id, 60, 60)
 end

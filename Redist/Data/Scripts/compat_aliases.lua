@@ -583,13 +583,12 @@ function select_spell_target(target)
     return target
 end
 
-function get_cont_items(shape, quality, frame, container)
-    debug_print("compat: get_cont_items not fully implemented")
-    return {}
+-- Native get_cont_items / get_container_objects are registered in C++ (nil if
+-- empty, table if hits). A stub that returned {} was always truthy in Lua and
+-- made every shape-154 mage pass the Erethian identifying-scroll check.
+if type(get_containerobject_s) ~= "function" and type(get_cont_items) == "function" then
+    get_containerobject_s = get_cont_items
 end
-
-get_container_objects = get_cont_items
-get_containerobject_s = get_cont_items
 
 function get_object_status(id)
     -- Often mis-decompiles; try item flag 0 as a weak stand-in.

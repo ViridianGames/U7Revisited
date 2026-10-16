@@ -411,6 +411,8 @@ public:
 
 	void Activate(float timeNow, int maxFrames, int probability);
 	void SetFrame(int frame); // Change object frame (e.g., for doors)
+	// Absolute set_object_frame / UC_FRAME. Hides the walksheet only when that cel has no pixels.
+	void SetAbsoluteFrame(int frame);
 
 	void SetAnimMode(ObjectAnimMode mode) { m_animMode = mode; }
 	ObjectAnimMode GetAnimMode() const { return m_animMode; }
@@ -455,6 +457,14 @@ public:
 	void TryOpenDoorAtCurrentPosition();
 	void InteractiveUpdate();
 	void InteractiveDraw();
+	// Usecode 087D: shape 854 frames 18-21 on the Avatar tile. Keep as a
+	// find_nearby token (0897); do not draw a second body.
+	bool IsUsecodeAvatarOverlay() const
+	{
+		return m_ObjectType == 854 && m_Frame >= 18 && m_Frame <= 21;
+	}
+	// activity_0–31 + proximity event 0 for MONSTERS.DAT objects with the schedule flag.
+	void UpdateUsecodeObjectSchedule();
 
 	void EggUpdate();
 	void EggDraw();
@@ -499,6 +509,8 @@ public:
 
 	void NPCInit(NPCData *npcData);
 	void MonsterInit();
+	// UNIT_TYPE_OBJECT walker from MONSTERS.DAT (usecode spawn). Not NPC, not combat-egg MONSTER.
+	void InitUsecodeObjectSchedule();
 
 	void HandleMonsterSpawnerEgg();
 
@@ -620,6 +632,10 @@ public:
 		bool active = false;
 	};
 	std::vector<UsecodeScriptState> m_usecodeScripts;
+	// Scripts started while UpdateUsecodeScript is inside an opcode. Appended after that step
+	// so the list being stepped is not reallocated.
+	std::vector<UsecodeScriptState> m_pendingUsecodeScripts;
+	bool m_updatingUsecodeScript = false;
 	void StartUsecodeScript(std::vector<UsecodeScriptElem> code, float initialDelaySec = 0.0f);
 	void HaltUsecodeScript(bool force = false);
 	bool IsInUsecodeScript() const;
@@ -660,6 +676,8 @@ public:
 	int m_claimedFurnitureId = -1;
 	bool m_Visible; // This is set to false for objects that are out of range or otherwise not visible
 	bool m_ShouldDraw = true; // This is an override that can be set in a Lua script.
+	// Absolute set_object_frame chose a cel with no pixels. Skip the walksheet until a pictured frame or a pose.
+	bool m_drawSuppressedByEmptyFrame = false;
 	bool m_Selected;
 
 	bool m_isActivated;
@@ -749,6 +767,11 @@ public:
 
 	bool m_followingSchedule = false;
 	int m_lastSchedule = -1;
+	// Usecode set_schedule_type on a non-npc.dat object (Erethian mage body).
+	// Do not reuse m_followingSchedule — that would pick up unrelated objects.
+	bool m_usecodeObjectSchedule = false;
+	int m_usecodeObjectLastActivity = -1;
+	float m_usecodeObjectProximityAt = 0.0f;
 	// g_CurrentUpdate when NPCUpdate last ran. Gap ⇒ was outside interest (dormant).
 	unsigned int m_lastNpcUpdateFrame = 0;
 	// g_CurrentUpdate when U7Object::Update last ran — blocks double-sim if the

@@ -20,6 +20,7 @@
 #include "PathfindingSystem.h"
 #include "SoundSystem.h"
 #include "U7SpriteEffects.h"
+#include "NpcAnimation.h"
 
 extern "C"
 {
@@ -870,7 +871,7 @@ static int LuaSetObjectFrame(lua_State *L)
     U7Object *object = GetObjectFromID(object_id);
     if (object)
     {
-        object->SetFrame(frame);  // Now includes pathfinding grid update for doors
+        object->SetAbsoluteFrame(frame);
     }
     return 0;
 }
@@ -1701,6 +1702,9 @@ static int LuaFindNearby(lua_State *L)
         if (!obj || objId == objectref)
             continue;
         if (obj->m_isContained)
+            continue;
+        // remove_item leftovers stay in g_objectList until purge.
+        if (obj->GetIsDead())
             continue;
 
         if (!anyShape && obj->m_ObjectType != shape)
@@ -2738,6 +2742,28 @@ static int LuaSetModelAnimationFrame(lua_State *L)
     return 0;
 }
 
+// NPC from npc.dat first. A world object only if set_schedule_type armed it.
+static U7Object* ResolveScheduleActor(int id)
+{
+    auto nit = g_NPCData.find(id);
+    if (nit != g_NPCData.end() && nit->second)
+    {
+        auto oit = g_objectList.find(nit->second->m_objectID);
+        if (oit != g_objectList.end())
+            return oit->second.get();
+        return nullptr;
+    }
+
+    U7Object* obj = GetObjectFromID(id);
+    if (!obj)
+        return nullptr;
+    if (obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC)
+        return nullptr;
+    if (!obj->m_usecodeObjectSchedule)
+        return nullptr;
+    return obj;
+}
+
 // Set NPC frame (for changing appearance - standing, sitting, lying down, etc.)
 // This is the same as LuaNPCFrame defined later, kept here for backwards compatibility
 static int LuaSetNPCFrame(lua_State *L)
@@ -2745,12 +2771,7 @@ static int LuaSetNPCFrame(lua_State *L)
     int npc_id = luaL_checkinteger(L, 1);
     int frame = luaL_checkinteger(L, 2);
 
-    if (g_NPCData.find(npc_id) == g_NPCData.end())
-    {
-        return 0;
-    }
-
-    U7Object* npc = g_objectList[g_NPCData[npc_id]->m_objectID].get();
+    U7Object* npc = ResolveScheduleActor(npc_id);
     if (!npc)
         return 0;
 
@@ -3356,6 +3377,11 @@ static int LuaCreateNewObject(lua_State *L)
     obj->m_isContained = false;
     obj->m_containingObjectId = -1;
     obj->m_Visible = false;
+
+    // Original create_new_object(154) is a Monster_actor. Arm sit/sleep/loiter
+    // on this UNIT_TYPE_OBJECT so activities and event 0 can run.
+    if (IsMonsterShape(shape))
+        obj->InitUsecodeObjectSchedule();
 
     SetLastCreatedObjectId(object_id);
 
@@ -4091,6 +4117,12 @@ static int LuaIsDead(lua_State *L)
     }
 
     U7Object* obj = g_objectList[object_id].get();
+    // destroy_object / remove_item mark any object dead without the NPC death flag.
+    if (obj->GetIsDead())
+    {
+        lua_pushboolean(L, 1);
+        return 1;
+    }
     if (obj->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_NPC || !obj->m_NPCData)
     {
         lua_pushboolean(L, 0);
@@ -4285,12 +4317,7 @@ static int LuaSitDown(lua_State *L)
             if (it != g_objectList.end())
                 return it->second.get();
         }
-        // Some scripts pass the NPC's world object id.
-        auto it = g_objectList.find(id);
-        if (it != g_objectList.end() && it->second &&
-            it->second->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC)
-            return it->second.get();
-        return nullptr;
+        return ResolveScheduleActor(id);
     };
 
     U7Object* npc = resolveNpc(a1);
@@ -4334,29 +4361,49 @@ static int LuaSetScheduleType(lua_State *L)
     if (npc_id < 0 && npc_id > -256)
         npc_id = -npc_id;
 
-    if (g_NPCData.find(npc_id) == g_NPCData.end() || !g_NPCData[npc_id])
-        return 0;
-
-    g_NPCData[npc_id]->m_currentActivity = schedule_type;
-    // Force activity restart on next NPCUpdate (clears old coroutine via lastActivity mismatch).
-    g_NPCData[npc_id]->m_lastActivity = -1;
-
-    U7Object* npc = g_objectList[g_NPCData[npc_id]->m_objectID].get();
-    if (npc)
+    if (g_NPCData.find(npc_id) != g_NPCData.end() && g_NPCData[npc_id])
     {
-        // Drop any in-flight schedule/path so the new activity (e.g. Talk approach) can start now.
-        npc->m_pathWaypoints.clear();
-        npc->m_currentWaypointIndex = 0;
-        npc->m_pathfindingPending = false;
-        npc->m_isSchedulePath = false;
-        npc->m_isMoving = false;
-        npc->m_followingSchedule = true;
-        npc->ClearPendingUsecode();
-        npc->HaltUsecodeScript(false);
+        g_NPCData[npc_id]->m_currentActivity = schedule_type;
+        // Force activity restart on next NPCUpdate (clears old coroutine via lastActivity mismatch).
+        g_NPCData[npc_id]->m_lastActivity = -1;
+
+        U7Object* npc = g_objectList[g_NPCData[npc_id]->m_objectID].get();
+        if (npc)
+        {
+            // Drop any in-flight schedule/path so the new activity (e.g. Talk approach) can start now.
+            npc->m_pathWaypoints.clear();
+            npc->m_currentWaypointIndex = 0;
+            npc->m_pathfindingPending = false;
+            npc->m_isSchedulePath = false;
+            npc->m_isMoving = false;
+            npc->m_followingSchedule = true;
+            npc->ClearPendingUsecode();
+            npc->HaltUsecodeScript(false);
+        }
+
+        if (g_LuaDebug)
+            NPCDebugPrint("set_schedule_type: NPC " + std::to_string(npc_id) +
+                " → activity " + std::to_string(schedule_type));
+
+        return 0;
     }
 
+    // Monster-shape UNIT_TYPE_OBJECT (Erethian, golems). Items (sword/gem/mirror)
+    // stay unflagged. Do not invert args; do not Halt a running pose list (0407).
+    if (schedule_type < 0 || schedule_type > 31)
+        return 0;
+
+    U7Object* obj = GetObjectFromID(npc_id);
+    if (!obj || obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC)
+        return 0;
+    if (!IsMonsterShape(obj->m_ObjectType))
+        return 0;
+
+    obj->InitUsecodeObjectSchedule();
+    obj->m_currentActivity = static_cast<unsigned int>(schedule_type);
+
     if (g_LuaDebug)
-        NPCDebugPrint("set_schedule_type: NPC " + std::to_string(npc_id) +
+        NPCDebugPrint("set_schedule_type: object " + std::to_string(npc_id) +
             " → activity " + std::to_string(schedule_type));
 
     return 0;
@@ -5689,18 +5736,16 @@ static int LuaDistanceTo(lua_State *L)
 {
     int npc_id = luaL_checkinteger(L, 1);
     int object_id = luaL_checkinteger(L, 2);
+    if (npc_id == 356 || npc_id == -356) npc_id = 0;
+    if (npc_id < 0 && npc_id > -256) npc_id = -npc_id;
 
-    if (g_NPCData.find(npc_id) == g_NPCData.end())
-    {
-        return luaL_error(L, "Invalid NPC ID: %d", npc_id);
-    }
-
-    U7Object* npc = g_objectList[g_NPCData[npc_id]->m_objectID].get();
+    U7Object* npc = ResolveScheduleActor(npc_id);
     U7Object* target = GetObjectFromID(object_id);
 
     if (!npc || !target)
     {
-        lua_pushnumber(L, 999999.0);  // Return huge distance if invalid
+        // Sit/sleep pass world ids. luaL_error would abort the activity coroutine.
+        lua_pushnumber(L, 999999.0);
         return 1;
     }
 
@@ -5747,18 +5792,10 @@ static int LuaGetNPCPosition(lua_State *L)
 {
     int npc_id = luaL_checkinteger(L, 1);
 
-    if (g_NPCData.find(npc_id) == g_NPCData.end())
-    {
-        return luaL_error(L, "Invalid NPC ID: %d", npc_id);
-    }
-
-    U7Object* npc = g_objectList[g_NPCData[npc_id]->m_objectID].get();
+    U7Object* npc = ResolveScheduleActor(npc_id);
     if (!npc)
     {
-        lua_pushnumber(L, 0);
-        lua_pushnumber(L, 0);
-        lua_pushnumber(L, 0);
-        return 3;
+        return luaL_error(L, "Invalid NPC ID: %d", npc_id);
     }
 
     Vector3 pos = npc->GetPos();
@@ -5845,14 +5882,10 @@ static std::unordered_set<int> CollectClaimedFurnitureIds(int selfObjectId)
 static int LuaFindNearestBed(lua_State *L)
 {
     int npc_id = luaL_checkinteger(L, 1);
+    if (npc_id == 356 || npc_id == -356) npc_id = 0;
+    if (npc_id < 0 && npc_id > -256) npc_id = -npc_id;
 
-    if (g_NPCData.find(npc_id) == g_NPCData.end())
-    {
-        lua_pushnil(L);
-        return 1;
-    }
-
-    U7Object* npc = g_objectList[g_NPCData[npc_id]->m_objectID].get();
+    U7Object* npc = ResolveScheduleActor(npc_id);
     if (!npc)
     {
         lua_pushnil(L);
@@ -5922,14 +5955,10 @@ static int LuaFindNearestBed(lua_State *L)
 static int LuaFindNearestChair(lua_State *L)
 {
     int npc_id = luaL_checkinteger(L, 1);
+    if (npc_id == 356 || npc_id == -356) npc_id = 0;
+    if (npc_id < 0 && npc_id > -256) npc_id = -npc_id;
 
-    if (g_NPCData.find(npc_id) == g_NPCData.end())
-    {
-        lua_pushnil(L);
-        return 1;
-    }
-
-    U7Object* npc = g_objectList[g_NPCData[npc_id]->m_objectID].get();
+    U7Object* npc = ResolveScheduleActor(npc_id);
     if (!npc)
     {
         lua_pushnil(L);
@@ -6098,14 +6127,8 @@ static int LuaFindRandomWalkable(lua_State *L)
     if (radius < 1.0f)
         radius = 1.0f;
 
-    if (g_NPCData.find(npc_id) == g_NPCData.end() || !g_pathfindingSystem)
-    {
-        lua_pushnil(L);
-        return 1;
-    }
-
-    U7Object* npc = g_objectList[g_NPCData[npc_id]->m_objectID].get();
-    if (!npc)
+    U7Object* npc = ResolveScheduleActor(npc_id);
+    if (!npc || !g_pathfindingSystem)
     {
         lua_pushnil(L);
         return 1;
@@ -6200,13 +6223,7 @@ static int LuaIsSleeping(lua_State *L)
     if (npc_id == 356 || npc_id == -356) npc_id = 0;
     if (npc_id < 0 && npc_id > -256) npc_id = -npc_id;
 
-    if (g_NPCData.find(npc_id) == g_NPCData.end() || !g_NPCData[npc_id])
-    {
-        lua_pushboolean(L, 0);
-        return 1;
-    }
-
-    U7Object* npc = g_objectList[g_NPCData[npc_id]->m_objectID].get();
+    U7Object* npc = ResolveScheduleActor(npc_id);
     lua_pushboolean(L, npc && npc->IsSleepingPose());
     return 1;
 }
@@ -6218,13 +6235,7 @@ static int LuaIsSitting(lua_State *L)
     if (npc_id == 356 || npc_id == -356) npc_id = 0;
     if (npc_id < 0 && npc_id > -256) npc_id = -npc_id;
 
-    if (g_NPCData.find(npc_id) == g_NPCData.end() || !g_NPCData[npc_id])
-    {
-        lua_pushboolean(L, 0);
-        return 1;
-    }
-
-    U7Object* npc = g_objectList[g_NPCData[npc_id]->m_objectID].get();
+    U7Object* npc = ResolveScheduleActor(npc_id);
     lua_pushboolean(L, npc && npc->IsSittingPose());
     return 1;
 }
@@ -6441,18 +6452,12 @@ static int LuaRequestPathfind(lua_State *L)
     float y = (float)luaL_checknumber(L, 3);
     float z = (float)luaL_checknumber(L, 4);
 
-    if (g_NPCData.find(npc_id) == g_NPCData.end())
+    U7Object* npc = ResolveScheduleActor(npc_id);
+    if (!npc)
     {
         lua_pushinteger(L, 0);  // Return 0 if NPC doesn't exist
         return 1;
     }
-
-    U7Object* npc = g_objectList[g_NPCData[npc_id]->m_objectID].get();
-	if (!npc)
-	{
-		lua_pushinteger(L, 0);
-		return 1;
-	}
 
     // Stop movement while new path is being computed
     // (PathfindToDestTracked will clear waypoints and set m_pathfindingPending)
@@ -6484,12 +6489,7 @@ static int LuaStartFollowingPath(lua_State *L)
     int npc_id = luaL_checkinteger(L, 1);
     int request_id = luaL_optinteger(L, 2, 0);  // Optional request ID for logging
 
-    if (g_NPCData.find(npc_id) == g_NPCData.end())
-    {
-        return 0;
-    }
-
-    U7Object* npc = g_objectList[g_NPCData[npc_id]->m_objectID].get();
+    U7Object* npc = ResolveScheduleActor(npc_id);
     if (!npc)
     {
         return 0;
@@ -6526,14 +6526,14 @@ static int LuaIsNPCMoving(lua_State *L)
 {
     int npc_id = luaL_checkinteger(L, 1);
 
-    if (g_NPCData.find(npc_id) == g_NPCData.end())
+    U7Object* npc = ResolveScheduleActor(npc_id);
+    if (!npc)
     {
         lua_pushboolean(L, false);
         return 1;
     }
 
-    bool is_moving = g_objectList[g_NPCData[npc_id]->m_objectID]->m_isMoving;
-    lua_pushboolean(L, is_moving);
+    lua_pushboolean(L, npc->m_isMoving);
     return 1;
 }
 
@@ -6543,13 +6543,7 @@ static int LuaWaitMoveEnd(lua_State *L)
 {
     int npc_id = luaL_checkinteger(L, 1);
 
-    if (g_NPCData.find(npc_id) == g_NPCData.end())
-    {
-        lua_pushboolean(L, true);  // NPC doesn't exist, consider path complete
-        return 1;
-    }
-
-    U7Object* npc = g_objectList[g_NPCData[npc_id]->m_objectID].get();
+    U7Object* npc = ResolveScheduleActor(npc_id);
     if (!npc)
     {
         lua_pushboolean(L, true);  // NPC doesn't exist, consider path complete
