@@ -5409,10 +5409,10 @@ static int LuaClearAnswersExult(lua_State *L)
 // 0x0059 | earthquake
 static int LuaEarthquake(lua_State *L)
 {
-    // int duration = (int)lua_tointeger(L, 1);
-
-    // Screen shake effect not yet implemented
-    // Would shake camera for duration
+    int count = 1;
+    if (lua_gettop(L) >= 1 && lua_isnumber(L, 1))
+        count = (int)lua_tointeger(L, 1);
+    StartEarthquake(count);
     return 0;
 }
 
