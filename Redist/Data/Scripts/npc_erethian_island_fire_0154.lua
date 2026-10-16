@@ -1,61 +1,108 @@
+-- Event 0 + chair 873: one bark per contiguous visit (within 1 tile), not once per save.
+local famished_chair_visit = {}
+
 --- Best guess: Manages Erethian's dialogue on the Island of Fire, covering his studies, the Dark Core, Arcadion, and the Talisman of Infinity, with topic selection and flag-based progression.
 function npc_erethian_island_fire_0154(eventid, objectref)
-    start_conversation()
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_0010, var_0011, var_0012, var_0013, var_0014, var_0015, var_0016, var_0017, var_0018, var_0019
 
+    -- Original usecode runs proximity (event 0) before the identifying-scroll
+    -- check. Engine Interact(0) only reaches this object after set_schedule_type
+    -- arms it, so other shape-154 mages do not blow candles.
     if eventid == 0 then
-        var_0000 = find_nearest(336, objectref)
-        var_0001 = find_nearest(338, objectref)
-        var_0002 = find_nearest(997, objectref)
+        var_0000 = find_nearest(objectref, 336, 1)
+        var_0001 = find_nearest(objectref, 338, 1)
+        var_0002 = find_nearest(objectref, 997, 1)
         if var_0000 or var_0001 or var_0002 then
             var_0003 = get_random(100)
             if var_0003 >= 60 then
                 item_say("@Damn candles!@", objectref)
+                return
             elseif var_0003 <= 40 then
-                var_0004 = var_0000
-                table.insert(var_0004, var_0001)
-                table.insert(var_0004, var_0002)
+                var_0004 = {}
+                if var_0000 then table.insert(var_0004, var_0000) end
+                if var_0001 then table.insert(var_0004, var_0001) end
+                if var_0002 then table.insert(var_0004, var_0002) end
                 for _, var_0007 in ipairs(var_0004) do
                     var_0008 = get_object_position(var_0007)
                     remove_item(var_0007)
-                    sprite_effect(-1, 0, 0, 0, var_0008[2] - 1, var_0008[1] - 1, 5)
+                    -- Horizontal XZ is [1] and [3]; [2] is height (same axes as 0407/0408).
+                    sprite_effect(-1, 0, 0, 0, var_0008[3] - 1, var_0008[1] - 1, 5, var_0008[2])
                 end
                 play_sound_effect(8)
+                delayed_execute_usecode_array(objectref, {17447, 8048, 3, 7463, "@An Ailem!", 17490, 7937, 1, 17447, 7791})
+                return
             end
-            local directions = {
-                {17447, 8048, 3, 7463, "@An Ailem!", 17490, 7937, 1, 17447, 7791},
-                {17447, 8048, 3, 7463, "@An Ailem!", 17490, 7937, 1, 17447, 7791}
-            }
-            delayed_execute_usecode_array(objectref, directions[math.random(1, 2)])
-        end
-        var_0009 = find_nearest(432, objectref)
-        var_0010 = find_nearest(433, objectref)
-        if var_0009 or var_0010 then
-            var_0011 = find_nearby(16, 0, 607, objectref)
-            if var_0011 then
-                for _, var_0014 in ipairs(var_0011) do
-                    if get_object_frame(var_0014) == 4 and get_object_frame(objectref) >= 16 then
-                        item_say("@Ah, a wall.@", objectref)
-                        delayed_execute_usecode_array(objectref, {18, "@I'll follow it.@", 17490, 7715})
-                    else
-                        item_say("@Where am I?@", objectref)
-                    end
-                end
-            end
-        end
-    elseif eventid == 1 then
-        if not utility_find_items_frames_18_21_0897() then
-            var_0012 = utility_direction_to_target_1069(objectref)
-            var_0013 = (var_0012 + 4) % 8
-            execute_usecode_array(0, 154, 8533, var_0013, 17497, 7777)
-        else
             return
         end
+
+        -- 873 is a chair. Original said this when event 0 ran within 1 tile,
+        -- then went quiet because it did not poll while sitting. U7R polls
+        -- every 8-12s, so latch until he leaves that tile.
+        if find_nearest(objectref, 873, 1) then
+            if not famished_chair_visit[objectref] then
+                item_say("@I'm famished!@", objectref)
+                famished_chair_visit[objectref] = true
+            end
+            return
+        end
+        famished_chair_visit[objectref] = nil
+
+        var_0009 = find_nearest(objectref, 432, 2)
+        var_0010 = find_nearest(objectref, 433, 2)
+        if var_0009 then
+            item_say("@My door, at last.@", objectref)
+            object_door_0432(1, var_0009)
+            return
+        elseif var_0010 then
+            item_say("@My door, at last.@", objectref)
+            return
+        end
+
+        var_0011 = find_nearby(objectref, 607, 0, 0)
+        for _, var_0014 in ipairs(var_0011) do
+            if get_object_frame(var_0014) == 4 and get_object_frame(objectref) >= 16 then
+                item_say("@Ah, a wall.@", objectref)
+                delayed_execute_usecode_array(objectref, {18, "@I'll follow it.@", 17490, 7715})
+            else
+                item_say("@Where am I?@", objectref)
+            end
+            return
+        end
+        return
+    end
+
+    -- Shape 154 is a generic mage. Scroll 797, quality 240, frame 4 is the
+    -- inventory marker that isolates Erethian from every other mage.
+    if not get_cont_items(objectref, 797, 240, 4) then
+        return
+    end
+
+    if eventid == 1 then
+        -- Original DOUBLECLICK: abort if the Avatar statue overlay is present,
+        -- otherwise turn, then run this same function as event 2.
+        -- Do not dispatch function 154: that suffix collides with npc_grod_0154.
+        if utility_find_items_frames_18_21_0897() then
+            return
+        end
+        -- Double-click when in bed: stand up and loiter now. Sitting stays seated when double-clicked.
+        if is_sleeping and is_sleeping(objectref) then
+            npc_frame(objectref, 0)
+            set_schedule_type(objectref, 11)
+        end
+        var_0012 = utility_direction_to_target_1069(objectref)
+        var_0013 = (var_0012 + 4) % 8
+        execute_usecode_array(0, 154, 8533, var_0013, 17497, 7777)
+        npc_erethian_island_fire_0154(2, objectref)
+        return
     elseif eventid == 2 then
+        -- Event 2 owns the complete conversation. Topic availability mirrors
+        -- the original quest flags and is rebuilt on every interaction.
+        start_conversation()
         var_0013 = get_player_name()
         if get_flag(782) then
             switch_talk_to(286, 1)
             add_dialogue("\"I'll speak to thee no more, Avatar!\" He ignores you.")
+            end_conversation()
             return
         end
         if not get_flag(784) then
@@ -75,30 +122,35 @@ function npc_erethian_island_fire_0154(eventid, objectref)
             end
             add_answer({"bye", "job", "name"})
         end
-        if not get_flag(823) and not get_flag(824) and not get_flag(816) then
-            add_answer("black sword")
-        end
-        if not get_flag(785) and not get_flag(815) and get_flag(808) then
+        -- Add only the quest topics whose original flag gates are currently
+        -- satisfied; individual branches remove themselves after use.
+        if get_flag(823) then
+            if not get_flag(824) and not get_flag(816) then
+                add_answer("black sword")
+            end
+        elseif get_flag(785) and not get_flag(786) then
             add_answer("powerful artifact")
         end
-        if not get_flag(787) then
-            if not get_flag(816) then
+        if get_flag(787) then
+            if not get_flag(815) then
                 add_answer("daemon mirror")
-            elseif not get_flag(824) then
-                add_answer("daemon gem")
+            elseif not get_flag(816) then
+                if not get_flag(824) then
+                    add_answer("daemon gem")
+                end
             elseif not get_flag(825) then
                 add_answer("daemon blade")
             end
-        elseif not get_flag(816) and not get_flag(825) then
+        elseif get_flag(815) and get_flag(816) and not get_flag(825) then
             add_answer("daemon blade")
         end
-        if not get_flag(792) then
+        if get_flag(792) then
             add_answer("the Psyche returns")
         end
-        if not get_flag(807) then
+        if get_flag(807) then
             add_answer("great evil")
         end
-        if not get_flag(833) then
+        if get_flag(833) then
             add_answer("Talisman of Infinity")
         end
         var_0014 = false
@@ -129,7 +181,7 @@ function npc_erethian_island_fire_0154(eventid, objectref)
                     set_flag(783, true)
                     add_dialogue("\"Ah, yes. I once had a scroll that told of a talisman by that name. If only I could remember where I put it. Dost thou by chance have the parchment entitled Scroll of Infinity with thee?\"")
                     if ask_yes_no() then
-                        if not count_objects(50, 797, 357) then
+                        if count_objects(-357, 797, 50, 1) == 0 then
                             add_dialogue("\"If thou dost not have the scroll, I cannot help thee in this matter.\"")
                         else
                             add_dialogue("\"Here we are. Now then, it appears to be written in a strange format. One might even say a code of sorts... I have it! Apparently, the Talisman currently resides in the Great Void. A plane somewhat removed from ours. If thou wishest to gain access to this void, thou shalt need to craft two lenses: one concave, the other convex. Light focused through the properly enchanted lenses will open a conduit between our realm and the void. I believe this treatise speaks of three Talismans of Principle that send out a call to the Infinity Talisman and bring it here. Once here, it would seem that its sole purpose is to coerce a powerful force into the void.\" A thought hits the mage like lightning strikes a tree. \"Oh no, Avatar... Thou shan't gain any more aid from me. I may be blind, but I see through thy sham. I'll not help thee send the Core into the void.\" Erethian falls silent, and it would appear that he'll speak no more.")
@@ -137,6 +189,7 @@ function npc_erethian_island_fire_0154(eventid, objectref)
                             switch_talk_to(292)
                             add_dialogue("Arcadion's voice whispers to you like ripple in still pond, \"Fear not, my master. I have some knowledge of these matters.\"")
                             set_flag(782, true)
+                            end_conversation()
                             return
                         end
                     else
@@ -145,7 +198,7 @@ function npc_erethian_island_fire_0154(eventid, objectref)
                 else
                     add_dialogue("\"Dost thou have the Scroll of Infinity amongst thy possessions?\"")
                     if ask_yes_no() then
-                        if not count_objects(50, 797, 357) then
+                        if count_objects(-357, 797, 50, 1) == 0 then
                             add_dialogue("\"I needs must touch the scroll to glean its meaning. Else I'll not be able to help thee in this matter.\"")
                         else
                             add_dialogue("\"Here we are. Now then, it appears to be written in a strange format. One might even say a code of sorts... I have it! Apparently, the Talisman currently resides in the Great Void. A plane somewhat removed from ours. If thou wishest to gain access to this void, thou shalt need to craft two lenses: one concave, the other convex. Light focused through the properly enchanted lenses will open a conduit between our realm and the void. I believe this treatise speaks of three Talismans of Principle that send out a call to the Infinity Talisman and bring it here. Once here, it would seem that its sole purpose is to coerce a powerful force into the void.\" A thought hits the mage like lightning strikes a tree. \"Oh no, Avatar... Thou shan't gain any more aid from me. I may be blind, but I see through thy sham. I'll not help thee send the Core into the void.\" Erethian falls silent, and it would appear that he'll speak no more.")
@@ -153,6 +206,7 @@ function npc_erethian_island_fire_0154(eventid, objectref)
                             switch_talk_to(292)
                             add_dialogue("Arcadion's voice whispers to you like ripple in still pond, \"Fear not, my master. I have some knowledge of these matters.\"")
                             set_flag(782, true)
+                            end_conversation()
                             return
                         end
                     else
@@ -163,17 +217,18 @@ function npc_erethian_island_fire_0154(eventid, objectref)
             elseif response == "powerful artifact" then
                 add_dialogue("\"I once attempted to create a sword of great power.\" Erethian frowns in concentration then says, \"if thou wishest to continue my work, thou shalt have need of some few pieces of forging equipment... And a place to put them... I know just the spot. Come with me and I'll see what I can do to help thee.\"")
                 var_0015 = true
+                break
             elseif response == "black sword" then
                 switch_talk_to(286, 1)
                 add_dialogue("Erethian nods his head when you tell him of your dilemma with the black sword. \"Yes, I can see how the blade would be too clumsy to swing in combat. However, if thou were to bind a magical source of power into the hilt of the blade, thou mightest be able to counteract the unwieldy nature of the sword.\"")
-                if get_cont_items(13, 359, 760, get_npc_name(-356)) then
+                if get_cont_items(get_npc_name(-356), 760, -359, 13) then
                     switch_talk_to(291)
                     add_dialogue("The little gem sparks up at this turn of the conversation. \"I believe that in my current form, I could serve perfectly well as the blade's stabilizing force. In truth, this would allow me to give thee access to some of my more dramatic powers.\" The daemon sounds excited at this prospect, perhaps a little too excited.")
                     hide_npc(291)
                     switch_talk_to(286, 1)
                     add_dialogue("Erethian's voice is quiet as he says, \"Consider well before thou bindest Arcadion into the sword. For it is true that he will be able to solve the sword's problem of balance, but will he be able to solve his own problems as well?\"")
                     add_answer("problems")
-                elseif not get_flag(815) then
+                elseif get_flag(815) then
                     add_dialogue("You wonder if perhaps Arcadion might be able to shed some light on this issue, and as if reading your thoughts, Erethian says, \"Beware the daemon. His goals are not those of thine or mine. If he offers to help thee, it is to help himself. Of that thou canst be sure.\"")
                 end
                 set_flag(824, true)
@@ -197,8 +252,10 @@ function npc_erethian_island_fire_0154(eventid, objectref)
             elseif response == "blindness" then
                 if not get_flag(811) then
                     var_0014 = true
+                    break
                 else
                     add_dialogue("\"Thou art a tiresome child. Leave me be!\" He ignores your presence.")
+                    end_conversation()
                     return
                 end
             elseif response == "mondain" then
@@ -327,7 +384,7 @@ function npc_erethian_island_fire_0154(eventid, objectref)
                 remove_answer("Test of Courage")
             elseif response == "daemon gem" then
                 add_dialogue("\"So... thou hast made a servant of Arcadion. 'Tis good to be rid of his incessant whining. I hope that thou findest him to be as useful as I didst.\" You're not sure, but his words might be construed as a curse.")
-                if get_cont_items(13, 359, 760, get_npc_name(-356)) then
+                if get_cont_items(get_npc_name(-356), 760, -359, 13) then
                     switch_talk_to(291)
                     add_dialogue("The gem glows brighter, \"'Tis good to see the last of thee, also, old man. Perhaps in another life, I shall be thy master, and thou the slave.\" The daemon lets out a chilling little laugh.")
                     hide_npc(291)
@@ -346,14 +403,21 @@ function npc_erethian_island_fire_0154(eventid, objectref)
                 else
                     add_dialogue("\"Goodbye and good luck...\" Erethian sounds truly sympathetic.")
                 end
+                end_conversation()
                 return
             end
         end
+        -- These topics deliberately leave the answer loop first. Their
+        -- movement/transformation routines take control after dialogue closes.
         if var_0014 then
             npc_erethian_transform_0406(objectref)
+            end_conversation()
+            return
         end
         if var_0015 then
             mech_teleport_summon_0410(objectref)
+            end_conversation()
+            return
         end
     end
     return
