@@ -4,9 +4,11 @@ function activity_sleep(npc_id)
     local bed = find_nearest_bed(npc_id)
 
     if not bed then
-        -- No bed nearby - just stand idle
+        -- No bed nearby. Ambient mage: sit-length timeout then loiter, not a
+        -- 3-5 minute nap standing up.
         debug_npc(npc_id, "has no bed for sleep activity")
-        coroutine.yield()
+        npc_frame(npc_id, 0)
+        ambient_mage_wait_then_loiter(npc_id, 60, 60)
         return
     end
 
@@ -48,8 +50,6 @@ function activity_sleep(npc_id)
     end
     npc_frame(npc_id, 29)  -- 13/29 = Exult sleep frames (facing-aware in C++)
 
-    -- Sleep forever (schedule system will stop this script when activity changes)
-    while true do
-        coroutine.yield()
-    end
+    -- Sleep. Ambient mage: 180-300s then loiter. NPCs: until schedule.dat.
+    ambient_mage_wait_then_loiter(npc_id, 180, 120)
 end

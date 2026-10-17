@@ -109,6 +109,20 @@ std::vector<std::string> g_miscNames;
 std::unordered_map<int, unique_ptr<NPCData>> g_NPCData;
 std::vector<MonsterData> g_monsterData;   // Loaded from STATIC/MONSTERS.DAT (65 entries, 25 bytes each) - see wiki for format
 
+// MONSTERS.DAT walkers created by usecode (shape 154 mage, golems, dragon).
+// They are UNIT_TYPE_OBJECT, not npc.dat, so schedule helpers need this gate.
+bool IsMonsterShape(int shape)
+{
+	if (shape <= 0)
+		return false;
+	for (const MonsterData& md : g_monsterData)
+	{
+		if (static_cast<int>(md.m_shape) == shape)
+			return true;
+	}
+	return false;
+}
+
 // Spell system data
 std::vector<ReagentData> g_reagentData;
 std::vector<SpellCircle> g_spellCircles;

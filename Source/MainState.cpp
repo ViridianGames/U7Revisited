@@ -1495,7 +1495,8 @@ void MainState::HandleLeftSingleClick()
 		// F10 path debug: sticky-select this NPC's current waypoint path.
 		if (m_showPathfindingDebug &&
 			(g_objectUnderMousePointer->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC ||
-			 g_objectUnderMousePointer->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_MONSTER))
+			 g_objectUnderMousePointer->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_MONSTER ||
+			 g_objectUnderMousePointer->m_usecodeObjectSchedule))
 		{
 			const int newId = g_objectUnderMousePointer->m_ID;
 			if (m_pathDebugNpcObjectId != newId && g_pathfindingSystem)
