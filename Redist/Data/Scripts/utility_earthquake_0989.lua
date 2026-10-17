@@ -1,53 +1,56 @@
---- Best guess: Manages NPC shape transformations during an earthquake event, cycling through predefined shapes based on random selection.
+--- fn_08DD: nearby NPCs stop and play six stumble poses, then the screen shakes.
+--- Avatar item flag 10 skips the poses. The shake still runs.
 function utility_earthquake_0989(eventid, objectref)
-    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_0010
+    local function stumble_step()
+        local roll = random(0, 8)
+        if roll == 0 then
+            return {17505, 17516, 7789}
+        elseif roll == 1 then
+            return {17505, 17505, 7789}
+        elseif roll == 2 then
+            return {17505, 17518, 7788}
+        elseif roll == 3 then
+            return {17505, 17505, 7777}
+        elseif roll == 4 then
+            return {17505, 17508, 7789}
+        elseif roll == 5 then
+            return {17505, 17517, 7780}
+        end
+        -- Face a cardinal direction, bow or kneel, then stand.
+        local facing = 7984 + random(0, 3) * 2
+        if roll == 6 then
+            return {17505, 8556, facing, 7769}
+        elseif roll == 7 then
+            return {17505, 8557, facing, 7769}
+        end
+        return {17505, 8548, facing, 7769}
+    end
 
     halt_scheduled(objectref)
-    var_0000 = find_nearby(8, 40, 359, objectref)
-    var_0001 = 6
-    if not get_item_flag(10, 356) then
-        for _, var_0004 in ipairs(var_0000) do
-            var_0005 = 0
-            var_0006 = {""}
-            if var_0005 < var_0001 then
-                var_0007 = die_roll(8, 0)
-                if var_0007 == 0 then
-                    var_0008 = {17505, 17516, 7789}
-                    var_0006 = {var_0008, var_0006}
-                elseif var_0007 == 1 then
-                    var_0008 = {17505, 17505, 7789}
-                    var_0006 = {var_0008, var_0006}
-                elseif var_0007 == 2 then
-                    var_0008 = {17505, 17518, 7788}
-                    var_0006 = {var_0008, var_0006}
-                elseif var_0007 == 3 then
-                    var_0008 = {17505, 17505, 7777}
-                    var_0006 = {var_0008, var_0006}
-                elseif var_0007 == 4 then
-                    var_0008 = {17505, 17508, 7789}
-                    var_0006 = {var_0008, var_0006}
-                elseif var_0007 == 5 then
-                    var_0008 = {17505, 17517, 7780}
-                    var_0006 = {var_0008, var_0006}
-                elseif var_0007 == 6 then
-                    var_0009 = 7984 + die_roll(3, 0) * 2
-                    var_0008 = {17505, 8556, var_0009, 7769}
-                    var_0006 = {var_0008, var_0006}
-                elseif var_0007 == 7 then
-                    var_0009 = 7984 + die_roll(3, 0) * 2
-                    var_0008 = {17505, 8557, var_0009, 7769}
-                    var_0006 = {var_0008, var_0006}
-                elseif var_0007 == 8 then
-                    var_0009 = 7984 + die_roll(3, 0) * 2
-                    var_0008 = {17505, 8548, var_0009, 7769}
-                    var_0006 = {var_0008, var_0006}
+
+    local avatar = get_npc_name(356)
+    local skip_poses = avatar and get_item_flag(avatar, 10) == 1
+    if not skip_poses then
+        -- Exult order: (objectref, shape, distance, mask). Shape 359 means any.
+        -- The old order (8, 40, 359, objectref) was read as shape 40 near NPC 8.
+        local nearby = find_nearby(objectref, 359, 40, 8) or {}
+        for _, npc in ipairs(nearby) do
+            if is_npc(npc) then
+                -- Prepend each step. The engine reverses the list, so the
+                -- first roll plays first. No nested tables, no empty bark.
+                local script = {}
+                for _ = 1, 6 do
+                    local step = stumble_step()
+                    for i = #step, 1, -1 do
+                        table.insert(script, 1, step[i])
+                    end
                 end
-                var_0005 = var_0005 + 1
+                halt_scheduled(npc)
+                execute_usecode_array(script, npc)
             end
-            halt_scheduled(var_0004)
-            var_0010 = execute_usecode_array(var_0006, var_0004)
         end
     end
-    earthquake(var_0001 * 3)
+
+    earthquake(18)
     return
 end

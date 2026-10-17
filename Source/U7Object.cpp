@@ -32,6 +32,7 @@
 #include <sstream>
 #include <iomanip>
 #include <algorithm>
+#include <iterator>
 #include <cmath>
 #include <vector>
 #include "raymath.h"
@@ -143,7 +144,7 @@ void U7Object::Init(const string& configfile, int unitType, int frame)
 void U7Object::Draw()
 {
 	// Common early-out checks. Eggs still reach EggDraw when visible so g_showEggs can gate art.
-	if (!m_Visible || m_isContained || !m_ShouldDraw)
+	if (!m_Visible || m_isContained || !m_ShouldDraw || m_drawSuppressedByEmptyFrame)
 	{
 		return;
 	}
@@ -202,6 +203,11 @@ void U7Object::InteractiveUpdate()
 	// Most interactive objects have very little per-frame logic here.
 	// Container behavior, scripts, etc. are usually event-driven via Interact().
 	UpdateUsecodeScript();
+	if (!m_usecodeObjectSchedule)
+		return;
+	UpdateUsecodeObjectSchedule();
+	UpdateMovement();
+	UpdateNpcAnim(g_Engine ? g_Engine->LastFrameInSeconds() : 0.0f);
 }
 
 void U7Object::EggUpdate()
@@ -276,6 +282,10 @@ void U7Object::EggUpdate()
 			HandleUsecodeEgg();
 			break;
 	}
+
+	// Usecode eggs queue delayed arrays on themselves. Those arrays only
+	// reach the next function if the egg advances them each frame.
+	UpdateUsecodeScript();
 }
 
 static bool IsHostileCombatant(const U7Object* unit)
@@ -1191,6 +1201,19 @@ void U7Object::StaticDraw()
 
 void U7Object::InteractiveDraw()
 {
+	// 087D overlay is a find_nearby token. Drawing it as a second body
+	// offsets from the Avatar walksheet and billboards independently.
+	if (IsUsecodeAvatarOverlay())
+		return;
+
+	// Usecode-armed actors (Erethian mage body): walk billboard like monsters.
+	// Skip while a pose list owns the frame (0407 SetAbsoluteFrame).
+	if (m_usecodeObjectSchedule && m_walkTextures.size() >= 8 && !IsInUsecodeScript())
+	{
+		DrawWalkBillboard(m_walkTextures, m_walkTexturesUpright);
+		return;
+	}
+
 	int cellx = (TILEWIDTH / 2) + m_Pos.x - int(g_camera.target.x);
 	int celly = (TILEHEIGHT / 2) + m_Pos.z - int(g_camera.target.z);
 
@@ -1662,6 +1685,35 @@ void U7Object::MonsterInit()
 	ApplyMonsterEquipment(this);
 }
 
+void U7Object::InitUsecodeObjectSchedule()
+{
+	// Do not convert this to UNIT_TYPE_NPC or spawn an npc.dat slot.
+	if (m_UnitType == UnitTypes::UNIT_TYPE_NPC)
+		return;
+
+	m_usecodeObjectSchedule = true;
+	if (m_speed <= 0.0f)
+		m_speed = 7.5f;
+	if (m_walkTextures.empty())
+	{
+		m_walkTexturesUpright = false;
+		if (FillNpcActionTextures(m_actionTextures, m_ObjectType))
+			CopyWalkTexturesFromActions(m_actionTextures, m_walkTextures);
+		else if (!FillWalkTextures(m_walkTextures, m_ObjectType))
+			m_walkTextures.clear();
+	}
+	// Default combat (0) is for npc.dat. Wait until usecode picks loiter/sit/patrol.
+	if (m_currentActivity == 0)
+		m_currentActivity = 15;
+	if (m_usecodeObjectProximityAt <= 0.0f)
+	{
+		const float delay = g_NonVitalRNG
+			? g_NonVitalRNG->RandomRangeFloat(8.0f, 12.0f)
+			: 8.0f + static_cast<float>(rand() % 5);
+		m_usecodeObjectProximityAt = GetTime() + delay;
+	}
+}
+
 void U7Object::HandleVoiceEgg()
 {
 	bool playing = false;
@@ -1944,17 +1996,19 @@ void U7Object::HandleUsecodeEgg()
 	if (justTriggered)
 	{
 		// Egg usecode funcs are stored as 0x500+N (1280+N). Scripts are named
-		// utility_event_0NNN.lua or utility_unknown_0NNN.lua (decompiler split).
+		// utility_forge_0NNN.lua, utility_unknown_0NNN.lua, or utility_event_0NNN.lua.
 		int scriptnumber = m_eggData.m_usecodeFunc;
 		if (scriptnumber >= 1280)
 			scriptnumber -= 1280;
 
 		char numBuf[16];
 		snprintf(numBuf, sizeof(numBuf), "%04d", scriptnumber);
-		// Decompiler split egg scripts across several prefixes.
+		// The decompiler split egg scripts across several prefixes. Prefer the
+		// specific Forge name so a generic utility_event fallback cannot shadow it.
 		const std::string candidates[] = {
-			std::string("utility_event_") + numBuf,
+			std::string("utility_forge_") + numBuf,
 			std::string("utility_unknown_") + numBuf,
+			std::string("utility_event_") + numBuf,
 			std::string("utility_clock_") + numBuf,
 			std::string("utility_ship_") + numBuf,
 		};
@@ -2082,6 +2136,7 @@ void U7Object::DebugPrintEggInfo() const
 				int scriptNum = egg.m_usecodeFunc >= 1280 ? egg.m_usecodeFunc - 1280 : egg.m_usecodeFunc;
 				std::stringstream scriptSS;
 				scriptSS << "utility_event_" << std::setfill('0') << std::setw(4) << scriptNum
+					<< " / utility_forge_" << std::setfill('0') << std::setw(4) << scriptNum
 					<< " / utility_unknown_" << std::setfill('0') << std::setw(4) << scriptNum;
 				AddConsoleString("  Script: " + scriptSS.str());
 			}
@@ -2433,6 +2488,8 @@ void U7Object::DrawMeshId()
 {
 	if (!m_Visible || m_isContained || !m_ShouldDraw || !m_shapeData)
 		return;
+	if (IsUsecodeAvatarOverlay())
+		return; // Same skip as InteractiveDraw: no outline/pick on the token.
 	if (!ObjectWantsScreenSpaceOutline(this))
 		return;
 	// Match InteractiveDraw → ShapeData::Draw (shape scale, not object m_Scaling).
@@ -2485,6 +2542,72 @@ static std::string GetActivityScriptName(int activityId)
 
 	// Fallback for invalid activity IDs
 	return "activity_" + std::to_string(activityId);
+}
+
+void U7Object::UpdateUsecodeObjectSchedule()
+{
+	if (!g_ScriptingSystem)
+		return;
+
+	const int currentActivity = static_cast<int>(m_currentActivity);
+	const bool runActivity = (currentActivity >= 0 && currentActivity <= 31);
+
+	if (runActivity && currentActivity != m_usecodeObjectLastActivity)
+	{
+		if (m_usecodeObjectLastActivity >= 0)
+		{
+			std::string old_script = GetActivityScriptName(m_usecodeObjectLastActivity) +
+				"_" + std::to_string(m_ID);
+			if (g_ScriptingSystem->IsCoroutineActive(old_script))
+				g_ScriptingSystem->CleanupCoroutine(old_script);
+		}
+
+		if (!m_pathfindingPending && g_ScriptingSystem->TryConsumeScriptStart())
+		{
+			std::string new_script = GetActivityScriptName(currentActivity) +
+				"_" + std::to_string(m_ID);
+			std::vector<ScriptingSystem::LuaArg> args = { m_ID };
+			const std::string callResult = g_ScriptingSystem->CallScript(new_script, args);
+			if (callResult.empty())
+				m_usecodeObjectLastActivity = currentActivity;
+		}
+	}
+	else if (runActivity && !m_pathfindingPending)
+	{
+		std::string script_name = GetActivityScriptName(currentActivity) +
+			"_" + std::to_string(m_ID);
+		if (g_ScriptingSystem->IsCoroutineYielded(script_name) &&
+			g_ScriptingSystem->TryConsumeScriptResume())
+		{
+			std::vector<ScriptingSystem::LuaArg> args = { m_ID };
+			g_ScriptingSystem->ResumeCoroutine(script_name, args);
+		}
+	}
+
+	if (IsInUsecodeScript())
+		return;
+	if (!m_Visible || m_isContained)
+		return;
+	if (g_ConversationState && g_StateMachine &&
+		g_StateMachine->GetCurrentState() == STATE_CONVERSATIONSTATE)
+		return;
+	if (!g_Player)
+		return;
+	U7Object* avatar = g_Player->GetAvatarObject();
+	if (!avatar)
+		return;
+	if (Vector2Distance({ m_Pos.x, m_Pos.z }, { avatar->m_Pos.x, avatar->m_Pos.z }) > 16.0f)
+		return;
+
+	const float now = GetTime();
+	if (now >= m_usecodeObjectProximityAt)
+	{
+		const float delay = g_NonVitalRNG
+			? g_NonVitalRNG->RandomRangeFloat(8.0f, 12.0f)
+			: 8.0f + static_cast<float>(rand() % 5);
+		m_usecodeObjectProximityAt = now + delay;
+		Interact(0);
+	}
 }
 
 void U7Object::NPCUpdate()
@@ -3690,8 +3813,10 @@ void U7Object::ApplyNpcPoseFromUsecode(int poseNibble)
 	poseNibble &= 15;
 
 	// Keep m_Frame low nibble in sync for any code that still reads it.
+	// A pose is not set_object_frame: show the walksheet again.
 	const int facingBase = m_Frame & ~0x0f;
 	SetFrame(facingBase | poseNibble);
+	m_drawSuppressedByEmptyFrame = false;
 
 	NpcAnimAction action = NpcAnimAction::Stand;
 	int phase = 0;
@@ -3732,6 +3857,20 @@ void U7Object::UpdateNpcAnim(float dt)
 	// Usecode cast/craft scripts own the pose until they finish.
 	if (IsInUsecodeScript())
 		return;
+
+	// 087D item flag 16: Avatar stays put (HandleAvatarMovement). Do not
+	// advance walk/idle clips; the overlay token is invisible so this body
+	// is the freeze the player sees.
+	if ((m_flags & (1u << 16)) != 0)
+	{
+		if (!m_isFrameOverridden)
+		{
+			m_npcAnimAction = NpcAnimAction::Stand;
+			m_npcAnimPhase = 0;
+		}
+		m_npcAnimPlaying = false;
+		return;
+	}
 
 	const NpcActionTextures* actions = GetNpcActionTextures();
 	if (!actions)
@@ -4394,6 +4533,54 @@ void U7Object::SetFrame(int frame)
 	}
 }
 
+void U7Object::SetAbsoluteFrame(int frame)
+{
+	if (frame < 0 || frame >= 32)
+	{
+		return;
+	}
+
+	if (m_ObjectType < 0 || m_ObjectType >= 1024)
+	{
+		return;
+	}
+
+	const bool isDoor = (m_objectData && m_objectData->m_isDoor);
+
+	// Same anim-length limit as SetFrame. A null texture is still stored:
+	// set_object_frame(4) on the mage must stick so the walksheet can hide.
+	if (!isDoor)
+	{
+		const int animFrames = g_shapeTable[m_ObjectType][0].m_numFrames;
+		if (animFrames > 1 && frame >= animFrames)
+		{
+			return;
+		}
+	}
+
+	const int oldFrame = m_Frame;
+	m_Frame = frame;
+	m_shapeData = &g_shapeTable[m_ObjectType][m_Frame];
+
+	// Doors opened by script still update the walk grid.
+	if (isDoor && oldFrame != frame)
+	{
+		NotifyPathfindingGridUpdate((int)m_Pos.x, (int)m_Pos.z);
+	}
+
+	// Doors draw their own frames. This only stands in for an empty walksheet cel.
+	if (isDoor)
+	{
+		m_drawSuppressedByEmptyFrame = false;
+		return;
+	}
+
+	// A 1-pixel texture is the unloaded default: that cel has no pixels.
+	auto* frameTexture = g_shapeTable[m_ObjectType][m_Frame].m_texture.get();
+	const bool pictured = frameTexture && frameTexture->width > 1 && frameTexture->height > 1;
+	m_drawSuppressedByEmptyFrame = !pictured;
+}
+
 float U7Object::Pick()
 {
 	Ray ray = GetMouseRay(GetMousePosition(), g_camera);
@@ -4536,6 +4723,57 @@ namespace {
 	int ScriptElemInt(const U7Object::UsecodeScriptElem& e, int fallback = 0)
 	{
 		return std::holds_alternative<int>(e) ? std::get<int>(e) : fallback;
+	}
+
+	// Function 1786 and function 506 both name a script ending in _0506.
+	// 1786 is the high function (id - 1280): utility_event_0506, the tremor.
+	// 506 is the low function: object_unknown_0506, Batlin after Hook dies.
+	// Alphabetical order would run Batlin. Pick by which id was requested.
+	std::string FindUsecodeScriptByFunction(int fun)
+	{
+		if (!g_ScriptingSystem)
+			return {};
+
+		const int scriptNum = fun >= 1280 ? fun - 1280 : fun;
+		char numBuf[8];
+		snprintf(numBuf, sizeof(numBuf), "%04d", scriptNum);
+		const std::string suffix = std::string("_") + numBuf;
+
+		std::vector<std::string> matches;
+		for (const auto& script : g_ScriptingSystem->m_scriptFiles)
+		{
+			const std::string& name = script.first;
+			if (name.size() < suffix.size())
+				continue;
+			if (name.compare(name.size() - suffix.size(), suffix.size(), suffix) != 0)
+				continue;
+			if (name.rfind("spell_", 0) == 0)
+				continue;
+			matches.push_back(name);
+		}
+		if (matches.empty())
+			return {};
+		if (matches.size() == 1)
+			return matches[0];
+
+		const char* highFirst[] = {
+			"utility_forge_", "utility_unknown_", "utility_event_",
+			"utility_clock_", "utility_ship_", "utility_", "npc_"
+		};
+		const char* lowFirst[] = { "object_", "npc_", "func_" };
+		const char** prefixes = fun >= 1280 ? highFirst : lowFirst;
+		const int prefixCount = fun >= 1280 ? 7 : 3;
+		for (int i = 0; i < prefixCount; ++i)
+		{
+			const char* prefix = prefixes[i];
+			const size_t prefixLen = std::char_traits<char>::length(prefix);
+			for (const auto& name : matches)
+			{
+				if (name.compare(0, prefixLen, prefix) == 0)
+					return name;
+			}
+		}
+		return matches[0];
 	}
 }
 
@@ -4696,17 +4934,17 @@ void U7Object::StartUsecodeScript(std::vector<UsecodeScriptElem> code, float ini
 
 	// Exult: starting a new script terminates existing halt-able scripts on this object.
 	// dont_halt scripts are left alone so delayed sequential barks can coexist.
-	for (auto it = m_usecodeScripts.begin(); it != m_usecodeScripts.end(); )
+	// Mark inactive instead of erasing. UpdateUsecodeScript may be inside one of these
+	// lists (the usecode opcode that started this one); erasing it would free that step.
+	for (auto& existing : m_usecodeScripts)
 	{
-		if (!it->active)
-		{
-			it = m_usecodeScripts.erase(it);
-			continue;
-		}
-		if (!it->noHalt)
-			it = m_usecodeScripts.erase(it);
-		else
-			++it;
+		if (existing.active && !existing.noHalt)
+			existing.active = false;
+	}
+	for (auto& existing : m_pendingUsecodeScripts)
+	{
+		if (existing.active && !existing.noHalt)
+			existing.active = false;
 	}
 
 	if (touchesFrames)
@@ -4722,12 +4960,32 @@ void U7Object::StartUsecodeScript(std::vector<UsecodeScriptElem> code, float ini
 	script.delayRemaining = initialDelaySec;
 	script.noHalt = noHalt;
 	script.active = true;
-	m_usecodeScripts.push_back(std::move(script));
+
+	// While a list is stepping, keep the new one aside. Appending here would reallocate
+	// the vector the stepper is walking.
+	if (m_updatingUsecodeScript)
+	{
+		m_pendingUsecodeScripts.erase(
+			std::remove_if(m_pendingUsecodeScripts.begin(), m_pendingUsecodeScripts.end(),
+				[](const UsecodeScriptState& s) { return !s.active; }),
+			m_pendingUsecodeScripts.end());
+		m_pendingUsecodeScripts.push_back(std::move(script));
+	}
+	else
+	{
+		m_usecodeScripts.erase(
+			std::remove_if(m_usecodeScripts.begin(), m_usecodeScripts.end(),
+				[](const UsecodeScriptState& s) { return !s.active; }),
+			m_usecodeScripts.end());
+		m_usecodeScripts.push_back(std::move(script));
+	}
 
 	NPCDebugPrint("usecode_script: start on object " + std::to_string(m_ID) +
-		" len=" + std::to_string(m_usecodeScripts.back().code.size()) +
+		" len=" + std::to_string(m_updatingUsecodeScript
+			? m_pendingUsecodeScripts.back().code.size()
+			: m_usecodeScripts.back().code.size()) +
 		" delay=" + std::to_string(initialDelaySec) +
-		" pending=" + std::to_string(m_usecodeScripts.size()));
+		" pending=" + std::to_string(m_usecodeScripts.size() + m_pendingUsecodeScripts.size()));
 }
 
 void U7Object::HaltUsecodeScript(bool force)
@@ -4755,9 +5013,10 @@ void U7Object::HaltUsecodeScript(bool force)
 
 void U7Object::UpdateUsecodeScript()
 {
-	if (m_usecodeScripts.empty())
+	if (m_usecodeScripts.empty() && m_pendingUsecodeScripts.empty())
 		return;
 
+	m_updatingUsecodeScript = true;
 	const float dt = g_Engine->LastFrameInSeconds();
 
 	for (size_t si = 0; si < m_usecodeScripts.size(); ++si)
@@ -4857,7 +5116,7 @@ void U7Object::UpdateUsecodeScript()
 				int fr = 0;
 				if (ip < cnt && ScriptElemIsInt(code[ip]))
 					fr = ScriptElemInt(code[ip++]);
-				SetFrame(fr);
+				SetAbsoluteFrame(fr);
 				break;
 			}
 			case UC_NEXT_FRAME:
@@ -4938,9 +5197,11 @@ void U7Object::UpdateUsecodeScript()
 				int fun = 0;
 				if (ip < cnt && ScriptElemIsInt(code[ip]))
 					fun = ScriptElemInt(code[ip++]);
-				// Exult: call usecode function with event 2 (internal_exec).
-				// Spell functions 0x640–0x68F map to spell scriptIds 320–399.
-				// Calling Interact(2) on the caster would hit the NPC script instead.
+				// The number after opcode 0x55 is the requested function, not the next
+				// opcode. It is consumed above so the rest of the array stays aligned.
+				// Spell functions 0x640–0x68F keep their spellbook lookup.
+				// Every other ID names its own script (1786 -> utility_event_0506).
+				// Interact(2) would run the current object's script instead.
 				if (fun >= 0x640 && fun < 0x640 + 80 && g_ScriptingSystem)
 				{
 					const int scriptId = 320 + (fun - 0x640);
@@ -4949,6 +5210,18 @@ void U7Object::UpdateUsecodeScript()
 					{
 						g_ScriptingSystem->CallScript(
 							spellScript,
+							{ static_cast<lua_Integer>(2),
+							  static_cast<lua_Integer>(m_ID) });
+						break;
+					}
+				}
+				if (g_ScriptingSystem)
+				{
+					const std::string scriptName = FindUsecodeScriptByFunction(fun);
+					if (!scriptName.empty())
+					{
+						g_ScriptingSystem->CallScript(
+							scriptName,
 							{ static_cast<lua_Integer>(2),
 							  static_cast<lua_Integer>(m_ID) });
 						break;
@@ -5044,7 +5317,16 @@ void U7Object::UpdateUsecodeScript()
 		script.delayRemaining = nextDelay;
 	}
 
-	// Compact finished scripts.
+	m_updatingUsecodeScript = false;
+	if (!m_pendingUsecodeScripts.empty())
+	{
+		m_usecodeScripts.insert(m_usecodeScripts.end(),
+			std::make_move_iterator(m_pendingUsecodeScripts.begin()),
+			std::make_move_iterator(m_pendingUsecodeScripts.end()));
+		m_pendingUsecodeScripts.clear();
+	}
+
+	// Compact finished scripts. Lists halted by a nested start were only marked inactive above.
 	m_usecodeScripts.erase(
 		std::remove_if(m_usecodeScripts.begin(), m_usecodeScripts.end(),
 			[](const UsecodeScriptState& s) { return !s.active; }),

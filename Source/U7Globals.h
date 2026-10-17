@@ -198,6 +198,11 @@ extern bool g_wizardEyeWasLockedToAvatar;
 void StartWizardEye(int ticks);
 void UpdateWizardEye();
 
+// Usecode earthquake: wall-clock deadline from GetTime(); 0 = inactive.
+// Count 18 lasts 4 seconds, the wait before the Forge party line.
+extern float g_earthquakeUntil;
+void StartEarthquake(int count);
+
 inline Vector2 g_DirVectors[8] = {
 	{ 0, -1 }, { 1, -1 }, { 1, 0 }, { 1, 1 },
 	{ 0, 1 }, { -1, 1 }, { -1, 0 }, { -1, -1 }
@@ -386,6 +391,9 @@ extern std::array<std::array<ShapeData, 32>, 1024> g_shapeTable;
 extern std::array<ObjectData, 1024> g_objectDataTable;
 extern std::unordered_map<int, std::unique_ptr<NPCData> > g_NPCData;
 extern std::vector<MonsterData> g_monsterData;   // Base stats for all 65 monster types (STATIC/MONSTERS.DAT, documented format)
+
+// True if shape has a MONSTERS.DAT record (walkers spawned by usecode: mage, golem, dragon).
+bool IsMonsterShape(int shape);
 
 // Per-shape "can pick up / drag into inventory" (not the same as UnitType).
 // Doors and other fixtures are often 0 here but still UNIT_TYPE_OBJECT if usable.

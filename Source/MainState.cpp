@@ -1495,7 +1495,8 @@ void MainState::HandleLeftSingleClick()
 		// F10 path debug: sticky-select this NPC's current waypoint path.
 		if (m_showPathfindingDebug &&
 			(g_objectUnderMousePointer->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC ||
-			 g_objectUnderMousePointer->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_MONSTER))
+			 g_objectUnderMousePointer->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_MONSTER ||
+			 g_objectUnderMousePointer->m_usecodeObjectSchedule))
 		{
 			const int newId = g_objectUnderMousePointer->m_ID;
 			if (m_pathDebugNpcObjectId != newId && g_pathfindingSystem)
@@ -1617,6 +1618,19 @@ void MainState::HandleAvatarMovement()
 	if (avatarCheck && avatarCheck->IsDeathStatus())
 		return;
 
+	// Pose scripts (stumble, cast, item anim) own the Avatar until they finish.
+	// Keyboard and click-to-move wait. Ordinary Lua scripts do not set this.
+	if (avatarCheck && avatarCheck->IsInUsecodeScript())
+	{
+		avatarCheck->m_pathWaypoints.clear();
+		avatarCheck->m_currentWaypointIndex = 0;
+		avatarCheck->m_pathfindingPending = false;
+		avatarCheck->m_isMoving = false;
+		avatarCheck->SetDest(avatarCheck->GetPos());
+		MaybeUpdatePartyFollowing();
+		return;
+	}
+
 	if (g_firstPersonEnabled)
 	{
 		U7Object* avatar = g_Player->GetAvatarObject();
@@ -1718,7 +1732,8 @@ void MainState::KeepAvatarWalkAnimIfSteering()
 	if (!IsCameraLockedToAvatar() || !g_Player)
 		return;
 	U7Object* avatar = g_Player->GetAvatarObject();
-	if (!avatar)
+	// Do not reassert the walk flag while a pose script owns the body.
+	if (!avatar || avatar->IsInUsecodeScript())
 		return;
 
 	const bool steering =
@@ -5191,6 +5206,19 @@ void MainState::MaybeUpdatePartyFollowing()
 		U7Object* member = itObj->second.get();
 		if (member->IsDeathStatus() || member->GetIsDead())
 			continue;
+
+		// Same pose-script lock as the Avatar. Formation must not pull them
+		// out of a stumble or cast. Other Lua scripts do not set this.
+		if (member->IsInUsecodeScript())
+		{
+			member->m_pathWaypoints.clear();
+			member->m_currentWaypointIndex = 0;
+			member->m_pathfindingPending = false;
+			member->SetDest(member->GetPos());
+			member->m_isMoving = false;
+			++companionSlot;
+			continue;
+		}
 
 		// Manual combat orders own the actor; do not yank them into formation.
 		if (HasManualCombatOrder(member))

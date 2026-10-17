@@ -109,6 +109,20 @@ std::vector<std::string> g_miscNames;
 std::unordered_map<int, unique_ptr<NPCData>> g_NPCData;
 std::vector<MonsterData> g_monsterData;   // Loaded from STATIC/MONSTERS.DAT (65 entries, 25 bytes each) - see wiki for format
 
+// MONSTERS.DAT walkers created by usecode (shape 154 mage, golems, dragon).
+// They are UNIT_TYPE_OBJECT, not npc.dat, so schedule helpers need this gate.
+bool IsMonsterShape(int shape)
+{
+	if (shape <= 0)
+		return false;
+	for (const MonsterData& md : g_monsterData)
+	{
+		if (static_cast<int>(md.m_shape) == shape)
+			return true;
+	}
+	return false;
+}
+
 // Spell system data
 std::vector<ReagentData> g_reagentData;
 std::vector<SpellCircle> g_spellCircles;
@@ -694,6 +708,11 @@ float g_spellLightRemaining = 0.f;
 
 float g_wizardEyeUntil = 0.f;
 bool g_wizardEyeWasLockedToAvatar = false;
+
+float g_earthquakeUntil = 0.f;
+// Last shake added to the camera. Removed at the start of the next update
+// so follow does not keep the offset and drift.
+static Vector3 g_earthquakeOffset = { 0.f, 0.f, 0.f };
 
 float g_lastTime;
 unsigned int g_hour;
@@ -1445,11 +1464,58 @@ void CameraSetDestination(Vector3 destination)
 	g_cameraDestination = destination;
 }
 
+void StartEarthquake(int count)
+{
+	if (count < 1)
+		count = 1;
+	const bool alreadyRunning = GetTime() < g_earthquakeUntil;
+	// Forge's Earthquake event passes a "count" of 18. The party dialogue line opens 4 seconds later,
+	// so the earthquake duration is scaled relative to this: count = 18 ⇒ 4 seconds of quake before the party dialogue triggers.
+	// call shakes until the dialogue. Smaller counts stay shorter.
+	const float until = GetTime() + 4.f * (static_cast<float>(count) / 18.f);
+	if (until > g_earthquakeUntil)
+		g_earthquakeUntil = until;
+	// Exult plays Black Gate sfx 60 once when a quake starts.
+	if (!alreadyRunning && g_SoundSystem)
+		g_SoundSystem->PlaySound(BuildU7SfxPath(60));
+}
+
+static void UndoEarthquakeOffset()
+{
+	if (g_earthquakeOffset.x == 0.f && g_earthquakeOffset.z == 0.f)
+		return;
+	g_camera.target = Vector3Subtract(g_camera.target, g_earthquakeOffset);
+	g_camera.position = Vector3Subtract(g_camera.position, g_earthquakeOffset);
+	g_earthquakeOffset = { 0.f, 0.f, 0.f };
+}
+
+static void ApplyEarthquakeOffset()
+{
+	if (g_earthquakeUntil <= 0.f)
+		return;
+	if (GetTime() >= g_earthquakeUntil)
+	{
+		g_earthquakeUntil = 0.f;
+		return;
+	}
+
+	// Stronger than a few pixels, still under a full tile.
+	constexpr float kAmplitude = 0.80f;
+	const float ox = (static_cast<float>(GetRandomValue(-1000, 1000)) / 1000.f) * kAmplitude;
+	const float oz = (static_cast<float>(GetRandomValue(-1000, 1000)) / 1000.f) * kAmplitude;
+	g_earthquakeOffset = { ox, 0.f, oz };
+	g_camera.target = Vector3Add(g_camera.target, g_earthquakeOffset);
+	g_camera.position = Vector3Add(g_camera.position, g_earthquakeOffset);
+}
+
 // --- Replace CameraUpdate() to honor first-person yaw when enabled ---
 void CameraUpdate(bool forcemove)
 {
 	bool moveDecay = false;
 	bool rotateDecay = false;
+
+	// Drop last frame's shake before follow reads the camera.
+	UndoEarthquakeOffset();
 
 	// First-person: position camera at avatar eye when locked, or keep X/Z and apply first-person angle/height when not locked
 	if (g_firstPersonEnabled && g_Player)
@@ -1496,6 +1562,7 @@ void CameraUpdate(bool forcemove)
 				g_hasCameraChanged = true;
 			}
 		}
+		ApplyEarthquakeOffset();
 		return; // skip third-person updates
 	}
 
@@ -1643,6 +1710,7 @@ void CameraUpdate(bool forcemove)
 	g_camera.position = Vector3Add(current, camPos);
 	g_camera.fovy = g_cameraDistance;
 	g_camera.projection = CAMERA_ORTHOGRAPHIC;
+	ApplyEarthquakeOffset();
 }
 
 U7Object* GetObjectFromID(int unitID)

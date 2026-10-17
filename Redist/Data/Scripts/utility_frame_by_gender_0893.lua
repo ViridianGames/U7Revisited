@@ -1,22 +1,30 @@
---- Best guess: Adjusts an item's frame based on player gender and current frame, likely for visual customization.
+--- fn_087D: set Avatar item flag 16 and place shape 854, framed from gender and the Avatar's current frame.
 function utility_frame_by_gender_0893()
-    local var_0000, var_0001, var_0002
+    local avatar = get_npc_name(356)
+    if not avatar then
+        return
+    end
 
-    var_0000 = create_object(854) --- Guess: Creates item
-    set_object_owner(get_object_owner(356), 16) --- Guess: Sets item owner
+    set_item_flag(avatar, 16)
+    local created = create_new_object(854)
+    if not created then
+        return
+    end
+
+    local frame = get_object_frame(avatar)
     if not is_player_female() then
-        if get_object_frame(get_object_owner(356)) < 16 then
-            set_object_frame(var_0000, 18) --- Guess: Sets frame for male
+        if frame < 16 then
+            set_object_frame(created, 18)
         else
-            set_object_frame(var_0000, 19) --- Guess: Sets alternative frame for male
+            set_object_frame(created, 19)
         end
     else
-        if get_object_frame(get_object_owner(356)) < 16 then
-            set_object_frame(var_0000, 20) --- Guess: Sets frame for female
+        if frame < 16 then
+            set_object_frame(created, 20)
         else
-            set_object_frame(var_0000, 21) --- Guess: Sets alternative frame for female
+            set_object_frame(created, 21)
         end
     end
-    var_0001 = get_position_data(get_object_owner(356)) --- Guess: Gets position data
-    var_0002 = get_object_position(var_0001) --- Guess: Gets item position
+
+    update_last_created(get_object_position(avatar))
 end
