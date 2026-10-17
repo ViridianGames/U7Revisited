@@ -282,6 +282,10 @@ void U7Object::EggUpdate()
 			HandleUsecodeEgg();
 			break;
 	}
+
+	// Usecode eggs queue delayed arrays on themselves. Those arrays only
+	// reach the next function if the egg advances them each frame.
+	UpdateUsecodeScript();
 }
 
 static bool IsHostileCombatant(const U7Object* unit)
@@ -1992,17 +1996,19 @@ void U7Object::HandleUsecodeEgg()
 	if (justTriggered)
 	{
 		// Egg usecode funcs are stored as 0x500+N (1280+N). Scripts are named
-		// utility_event_0NNN.lua or utility_unknown_0NNN.lua (decompiler split).
+		// utility_forge_0NNN.lua, utility_unknown_0NNN.lua, or utility_event_0NNN.lua.
 		int scriptnumber = m_eggData.m_usecodeFunc;
 		if (scriptnumber >= 1280)
 			scriptnumber -= 1280;
 
 		char numBuf[16];
 		snprintf(numBuf, sizeof(numBuf), "%04d", scriptnumber);
-		// Decompiler split egg scripts across several prefixes.
+		// The decompiler split egg scripts across several prefixes. Prefer the
+		// specific Forge name so a generic utility_event fallback cannot shadow it.
 		const std::string candidates[] = {
-			std::string("utility_event_") + numBuf,
+			std::string("utility_forge_") + numBuf,
 			std::string("utility_unknown_") + numBuf,
+			std::string("utility_event_") + numBuf,
 			std::string("utility_clock_") + numBuf,
 			std::string("utility_ship_") + numBuf,
 		};
@@ -2130,6 +2136,7 @@ void U7Object::DebugPrintEggInfo() const
 				int scriptNum = egg.m_usecodeFunc >= 1280 ? egg.m_usecodeFunc - 1280 : egg.m_usecodeFunc;
 				std::stringstream scriptSS;
 				scriptSS << "utility_event_" << std::setfill('0') << std::setw(4) << scriptNum
+					<< " / utility_forge_" << std::setfill('0') << std::setw(4) << scriptNum
 					<< " / utility_unknown_" << std::setfill('0') << std::setw(4) << scriptNum;
 				AddConsoleString("  Script: " + scriptSS.str());
 			}
@@ -4717,6 +4724,57 @@ namespace {
 	{
 		return std::holds_alternative<int>(e) ? std::get<int>(e) : fallback;
 	}
+
+	// Function 1786 and function 506 both name a script ending in _0506.
+	// 1786 is the high function (id - 1280): utility_event_0506, the tremor.
+	// 506 is the low function: object_unknown_0506, Batlin after Hook dies.
+	// Alphabetical order would run Batlin. Pick by which id was requested.
+	std::string FindUsecodeScriptByFunction(int fun)
+	{
+		if (!g_ScriptingSystem)
+			return {};
+
+		const int scriptNum = fun >= 1280 ? fun - 1280 : fun;
+		char numBuf[8];
+		snprintf(numBuf, sizeof(numBuf), "%04d", scriptNum);
+		const std::string suffix = std::string("_") + numBuf;
+
+		std::vector<std::string> matches;
+		for (const auto& script : g_ScriptingSystem->m_scriptFiles)
+		{
+			const std::string& name = script.first;
+			if (name.size() < suffix.size())
+				continue;
+			if (name.compare(name.size() - suffix.size(), suffix.size(), suffix) != 0)
+				continue;
+			if (name.rfind("spell_", 0) == 0)
+				continue;
+			matches.push_back(name);
+		}
+		if (matches.empty())
+			return {};
+		if (matches.size() == 1)
+			return matches[0];
+
+		const char* highFirst[] = {
+			"utility_forge_", "utility_unknown_", "utility_event_",
+			"utility_clock_", "utility_ship_", "utility_", "npc_"
+		};
+		const char* lowFirst[] = { "object_", "npc_", "func_" };
+		const char** prefixes = fun >= 1280 ? highFirst : lowFirst;
+		const int prefixCount = fun >= 1280 ? 7 : 3;
+		for (int i = 0; i < prefixCount; ++i)
+		{
+			const char* prefix = prefixes[i];
+			const size_t prefixLen = std::char_traits<char>::length(prefix);
+			for (const auto& name : matches)
+			{
+				if (name.compare(0, prefixLen, prefix) == 0)
+					return name;
+			}
+		}
+		return matches[0];
+	}
 }
 
 bool U7Object::IsInUsecodeScript() const
@@ -5139,9 +5197,11 @@ void U7Object::UpdateUsecodeScript()
 				int fun = 0;
 				if (ip < cnt && ScriptElemIsInt(code[ip]))
 					fun = ScriptElemInt(code[ip++]);
-				// Exult: call usecode function with event 2 (internal_exec).
-				// Spell functions 0x640–0x68F map to spell scriptIds 320–399.
-				// Calling Interact(2) on the caster would hit the NPC script instead.
+				// The number after opcode 0x55 is the requested function, not the next
+				// opcode. It is consumed above so the rest of the array stays aligned.
+				// Spell functions 0x640–0x68F keep their spellbook lookup.
+				// Every other ID names its own script (1786 -> utility_event_0506).
+				// Interact(2) would run the current object's script instead.
 				if (fun >= 0x640 && fun < 0x640 + 80 && g_ScriptingSystem)
 				{
 					const int scriptId = 320 + (fun - 0x640);
@@ -5150,6 +5210,18 @@ void U7Object::UpdateUsecodeScript()
 					{
 						g_ScriptingSystem->CallScript(
 							spellScript,
+							{ static_cast<lua_Integer>(2),
+							  static_cast<lua_Integer>(m_ID) });
+						break;
+					}
+				}
+				if (g_ScriptingSystem)
+				{
+					const std::string scriptName = FindUsecodeScriptByFunction(fun);
+					if (!scriptName.empty())
+					{
+						g_ScriptingSystem->CallScript(
+							scriptName,
 							{ static_cast<lua_Integer>(2),
 							  static_cast<lua_Integer>(m_ID) });
 						break;

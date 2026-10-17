@@ -1618,10 +1618,9 @@ void MainState::HandleAvatarMovement()
 	if (avatarCheck && avatarCheck->IsDeathStatus())
 		return;
 
-	// Item flag 16 is the polymorph marker: shape 854 is standing on this tile
-	// until usecode 1693 removes it, so walking off would leave that copy behind.
-	const bool transformHold = avatarCheck && (avatarCheck->m_flags & (1u << 16)) != 0;
-	if (transformHold)
+	// Pose scripts (stumble, cast, item anim) own the Avatar until they finish.
+	// Keyboard and click-to-move wait. Ordinary Lua scripts do not set this.
+	if (avatarCheck && avatarCheck->IsInUsecodeScript())
 	{
 		avatarCheck->m_pathWaypoints.clear();
 		avatarCheck->m_currentWaypointIndex = 0;
@@ -1733,8 +1732,8 @@ void MainState::KeepAvatarWalkAnimIfSteering()
 	if (!IsCameraLockedToAvatar() || !g_Player)
 		return;
 	U7Object* avatar = g_Player->GetAvatarObject();
-	// Do not reassert the walk flag while the polymorph marker owns the body.
-	if (!avatar || (avatar->m_flags & (1u << 16)) != 0)
+	// Do not reassert the walk flag while a pose script owns the body.
+	if (!avatar || avatar->IsInUsecodeScript())
 		return;
 
 	const bool steering =
@@ -5207,6 +5206,19 @@ void MainState::MaybeUpdatePartyFollowing()
 		U7Object* member = itObj->second.get();
 		if (member->IsDeathStatus() || member->GetIsDead())
 			continue;
+
+		// Same pose-script lock as the Avatar. Formation must not pull them
+		// out of a stumble or cast. Other Lua scripts do not set this.
+		if (member->IsInUsecodeScript())
+		{
+			member->m_pathWaypoints.clear();
+			member->m_currentWaypointIndex = 0;
+			member->m_pathfindingPending = false;
+			member->SetDest(member->GetPos());
+			member->m_isMoving = false;
+			++companionSlot;
+			continue;
+		}
 
 		// Manual combat orders own the actor; do not yank them into formation.
 		if (HasManualCombatOrder(member))
