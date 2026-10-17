@@ -198,6 +198,11 @@ extern bool g_wizardEyeWasLockedToAvatar;
 void StartWizardEye(int ticks);
 void UpdateWizardEye();
 
+// Usecode earthquake: wall-clock deadline from GetTime(); 0 = inactive.
+// Count 18 lasts 4 seconds, the wait before the Forge party line.
+extern float g_earthquakeUntil;
+void StartEarthquake(int count);
+
 inline Vector2 g_DirVectors[8] = {
 	{ 0, -1 }, { 1, -1 }, { 1, 0 }, { 1, 1 },
 	{ 0, 1 }, { -1, 1 }, { -1, 0 }, { -1, -1 }
