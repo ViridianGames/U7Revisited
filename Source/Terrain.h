@@ -73,7 +73,7 @@ private:
 	int m_cachedPaletteStep = -1;
 	uint64_t m_cachedLightHash = 0;
 
-	// Hash of nearby light sources (tile-rounded positions) for night dirty detection.
+	// Hash of nearby light sources (tile-rounded positions) for night/dungeon dirty detection.
 	uint64_t ComputeLightHash() const;
 	static bool ColorsEqual(Color a, Color b);
 };

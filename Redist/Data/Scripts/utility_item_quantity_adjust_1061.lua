@@ -1,12 +1,13 @@
---- Best guess: Manages item quantity, decrementing or removing items based on quantity.
-function utility_item_quantity_adjust_1061(arg1)
-    local var_0000, var_0001, var_0002
-
-    var_0001 = get_object_quantity(arg1, 356) --- Guess: Gets item quantity
-    if var_0001 <= 1 then
-        remove_item(arg1) --- Guess: Unknown function, possibly removes item
+--- Decrement stackable item quantity by 1, or remove the object at quantity 1.
+--- Oracle: usecode.dc Func0925 (also used as pick-break helper from Func0273H).
+function utility_item_quantity_adjust_1061(objectref)
+    local quantity = get_item_quantity(objectref)
+    if quantity == nil then
+        quantity = 1
+    end
+    if quantity <= 1 then
+        remove_item(objectref)
     else
-        var_0001 = var_0001 - 1
-        var_0002 = set_object_quantity(arg1, var_0001) --- Guess: Sets item quantity
+        set_item_quantity(objectref, quantity - 1)
     end
 end

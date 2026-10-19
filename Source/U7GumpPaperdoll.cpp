@@ -670,25 +670,37 @@ static void SetSpriteTexture(GuiSprite* sprite, Texture* texture)
 
 void GumpPaperdoll::Draw()
 {
-	// Update CARRY text area to show weight
-	int carryTextID = m_serializer->GetElementID("CARRY");
+	// CARRY weight: hide the ghost textarea (its CENTERED width-gate skipped Avatar
+	// when the string was wider than the box) and draw babyblocks at the corrected
+	// size (g_guiFont = babyblocks @ 8; ghost had requested 10 and looked soft).
+	std::string carryWeightText;
+	float carryX = 0.0f;
+	float carryY = 0.0f;
+	float carryW = 0.0f;
+	int carryTextID = m_serializer ? m_serializer->GetElementID("CARRY") : -1;
 	if (carryTextID != -1)
 	{
 		auto carryElement = m_gui.GetElement(carryTextID);
 		if (carryElement && carryElement->m_Type == GUI_TEXTAREA)
 		{
 			auto carryText = static_cast<GuiTextArea*>(carryElement.get());
+			carryText->m_Visible = false;
+			carryX = carryText->m_Pos.x;
+			carryY = carryText->m_Pos.y;
+			carryW = carryText->m_Width;
 
-			// Get the NPC's object to calculate weight
 			auto npcIt = g_NPCData.find(m_npcId);
 			if (npcIt != g_NPCData.end() && npcIt->second)
 			{
 				U7Object* npcObject = g_objectList[npcIt->second->m_objectID].get();
 				if (npcObject)
 				{
-					int currentWeight = static_cast<int>(npcObject->GetWeight());
-					int maxWeight = static_cast<int>(g_Player->GetMaxWeight()); // For now all NPCs use Avatar's max weight
-					carryText->m_String = std::to_string(currentWeight) + "/" + std::to_string(maxWeight);
+					const int str = (m_npcId == 0 && g_Player)
+						? g_Player->GetStr()
+						: static_cast<int>(npcIt->second->str);
+					const int currentWeight = static_cast<int>(npcObject->GetWeight());
+					const int maxWeight = static_cast<int>(GetMaxWeightFromStrength(str));
+					carryWeightText = std::to_string(currentWeight) + "/" + std::to_string(maxWeight);
 				}
 			}
 		}
@@ -796,6 +808,22 @@ void GumpPaperdoll::Draw()
 
 	// Draw all GUI elements (including slot sprites)
 	m_gui.Draw();
+
+	// Draw weight with babyblocks at its loaded size (black, no outline).
+	// Snap to integer pixels: half-pixel X from centering clips the thin trailing
+	// digit (Avatar "11/36" hit a .5 offset). Left-align when wider than the box.
+	if (!carryWeightText.empty() && g_guiFont)
+	{
+		SetTextureFilter(g_guiFont->texture, TEXTURE_FILTER_POINT);
+		const float fontSize = float(g_guiFont->baseSize);
+		const float textWidth = MeasureTextEx(*g_guiFont, carryWeightText.c_str(), fontSize, 1).x;
+		float drawX = m_gui.m_Pos.x + carryX;
+		if (carryW > 0.0f && textWidth < carryW)
+			drawX += (carryW - textWidth) * 0.5f;
+		drawX = floorf(drawX + 0.5f);
+		const float drawY = floorf(m_gui.m_Pos.y + carryY + 0.5f);
+		DrawTextEx(*g_guiFont, carryWeightText.c_str(), { drawX, drawY }, fontSize, 1, BLACK);
+	}
 
 	// Draw green borders around highlighted slots
 	if (!m_highlightedSlots.empty())

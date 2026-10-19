@@ -3164,24 +3164,46 @@ void UpdateFlyingProjectiles()
 				}
 				else
 				{
-					int hits = 0;
-					if (proj.weaponShape >= 0 || proj.ammoShape >= 0)
-						hits = FigureCombatHitPoints(attacker, target, proj.weaponShape, proj.ammoShape);
-					else
-						hits = proj.damage;
-					if (hits > 0)
-						ApplyCombatDamage(target, static_cast<float>(hits), attacker);
-					// Combat weapon missiles: same console wording as melee (damage known at impact).
-					if (proj.weaponShape >= 0 || proj.ammoShape >= 0)
+					const bool useWeaponTables = (proj.weaponShape >= 0 || proj.ammoShape >= 0);
+					bool hit = true;
+					if (useWeaponTables)
+						hit = TryCombatHit(attacker, target, proj.weaponShape, proj.ammoShape);
+
+					if (!hit)
 					{
 						const std::string attackerName = (attacker && !attacker->m_name.empty())
 							? attacker->m_name : "Someone";
 						const std::string targetName = !target->m_name.empty() ? target->m_name : "enemy";
 						AddConsoleString(
 							attackerName + " attacks " + targetName + " with "
-							+ CombatWeaponDisplayName(proj.weaponShape)
-							+ " for " + std::to_string(hits) + " damage",
-							RED);
+							+ CombatWeaponDisplayName(proj.weaponShape) + " and misses",
+							YELLOW);
+						if (attacker)
+							target->NotifyAttackedBy(attacker);
+					}
+					else
+					{
+						int hits = 0;
+						if (useWeaponTables)
+							hits = FigureCombatHitPoints(attacker, target, proj.weaponShape, proj.ammoShape);
+						else
+							hits = proj.damage;
+						if (hits > 0)
+							ApplyCombatDamage(target, static_cast<float>(hits), attacker);
+						if (useWeaponTables)
+							ApplyCombatWeaponPowers(attacker, target, proj.weaponShape, proj.ammoShape, hits);
+						// Combat weapon missiles: same console wording as melee (damage known at impact).
+						if (useWeaponTables && hits > 0)
+						{
+							const std::string attackerName = (attacker && !attacker->m_name.empty())
+								? attacker->m_name : "Someone";
+							const std::string targetName = !target->m_name.empty() ? target->m_name : "enemy";
+							AddConsoleString(
+								attackerName + " attacks " + targetName + " with "
+								+ CombatWeaponDisplayName(proj.weaponShape)
+								+ " for " + std::to_string(hits) + " damage",
+								RED);
+						}
 					}
 					// Flame Bolt / fire bolt: hit SFX only — no explosion sprite.
 					if (g_SoundSystem)
@@ -3624,6 +3646,8 @@ shared_ptr<Sprite> g_gumpNumberBarLeftArrow;
 
 
 shared_ptr<Texture2D> g_statsBackground;
+Texture2D g_statAttsIcons[kStatAttsIconCount] = {};
+bool g_statAttsIconsLoaded = false;
 
 Camera g_camera = { 0 };
 
@@ -3998,11 +4022,14 @@ void LoadWeaponData()
 		w.projectile = static_cast<int16_t>(p[4] | (p[5] << 8));
 		w.damage = p[6];
 		const unsigned char flags0 = p[7];
+		w.lucky = (flags0 & 1) != 0;
 		w.damageType = static_cast<WeaponDamageType>((flags0 >> 4) & 15);
 		const unsigned char rangeByte = p[8];
 		w.autohit = (rangeByte & 1) != 0;
 		w.uses = static_cast<WeaponUses>((rangeByte >> 1) & 3);
 		w.range = static_cast<unsigned char>(rangeByte >> 3);
+		// p[9]=flags1, p[10]=flags2, p[11]=powers (Exult Weapon_info::read).
+		w.powers = p[11];
 		g_weaponDataMap[w.shape] = w;
 	}
 
@@ -4040,9 +4067,10 @@ void LoadAmmoData()
 		a.familyShape = static_cast<int16_t>(p[2] | (p[3] << 8));
 		a.sprite = static_cast<int16_t>(p[4] | (p[5] << 8));
 		a.damage = p[6];
-		// flags0 at p[7]; unknown at p[8]; flags1 at p[9] holds damage_type in high nibble.
+		// flags0 at p[7]; unknown at p[8]; flags1 at p[9] (damage_type high nibble); powers at p[10].
 		const unsigned char flags1 = p[9];
 		a.damageType = static_cast<WeaponDamageType>((flags1 >> 4) & 15);
+		a.powers = p[10];
 		g_ammoDataMap[a.shape] = a;
 	}
 

@@ -53,6 +53,18 @@ enum class WeaponDamageType : unsigned char
 	Sonic = 5
 };
 
+// Exult Weapon_data::Powers bit flags (WEAPONS.DAT / AMMO.DAT).
+namespace WeaponPower
+{
+	constexpr unsigned char Sleep     = 0x01;
+	constexpr unsigned char Charm     = 0x02;
+	constexpr unsigned char Curse     = 0x04;
+	constexpr unsigned char Poison    = 0x08;
+	constexpr unsigned char Paralyze  = 0x10;
+	constexpr unsigned char Magebane  = 0x20;
+	constexpr unsigned char NoDamage  = 0x80;
+}
+
 // One WEAPONS.DAT entry (shape-keyed). Ranges are in world tiles.
 struct WeaponData
 {
@@ -63,7 +75,9 @@ struct WeaponData
 	WeaponDamageType damageType = WeaponDamageType::Normal;
 	WeaponUses uses = WeaponUses::Melee;
 	unsigned char range = 0; // striking range if uses < Ranged; projectile range if Ranged
+	unsigned char powers = 0; // WeaponPower bits
 	bool autohit = false;
+	bool lucky = false; // +3 attack value on the hit roll
 };
 
 // One AMMO.DAT entry (shape-keyed). Extra damage added to the weapon's wpoints.
@@ -74,6 +88,7 @@ struct AmmoData
 	int sprite = -1;
 	unsigned char damage = 0;
 	WeaponDamageType damageType = WeaponDamageType::Normal;
+	unsigned char powers = 0; // WeaponPower bits
 };
 
 // One ARMOR.DAT entry (shape-keyed). Protection subtracts from hit damage.
@@ -237,7 +252,7 @@ struct ObjectData
 	float m_height;
 	float m_width;
 	float m_depth;
-	bool m_isTrap;
+	bool m_isTrap; // TFA contact-effect (Exult has_contact_effect); e.g. caltrops 756
 	bool m_isDoor;
 	bool m_isVehiclePart;
 	bool m_isNotSelectable;
@@ -706,6 +721,10 @@ extern std::shared_ptr<Sprite> g_PatreonButton;
 extern std::shared_ptr<Sprite> g_KoFiButton;
 
 extern std::shared_ptr<Texture2D> g_statsBackground;
+// GUMPS.VGA shape 28 "statatts" frames: asleep, poisoned, charmed, hungry, protected, cursed, paralyzed.
+constexpr int kStatAttsIconCount = 7;
+extern Texture2D g_statAttsIcons[kStatAttsIconCount];
+extern bool g_statAttsIconsLoaded;
 
 extern std::shared_ptr<Sprite> g_gumpNumberBarBackground;
 extern std::shared_ptr<Sprite> g_gumpNumberBarMarker;

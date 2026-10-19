@@ -215,6 +215,70 @@ namespace
 		const float width = MeasureTextEx(*g_SmallFont, text.c_str(), fontSize, 1).x;
 		DrawOutlinedText(g_SmallFont, text, { kStatsValueRight - width, y }, fontSize, 1, WHITE);
 	}
+
+	// Exult Stats_gump::paint status icons (gumps/statatts frames).
+	enum StatAttsFrame : int
+	{
+		kStatAttsAsleep = 0,
+		kStatAttsPoisoned = 1,
+		kStatAttsCharmed = 2,
+		kStatAttsHungry = 3,
+		kStatAttsProtected = 4,
+		kStatAttsCursed = 5,
+		kStatAttsParalyzed = 6
+	};
+
+	// Exult: attsx0=29, attsy=130 relative to stats gump origin (drawn at 512,200).
+	constexpr float kStatAttsBaseX = 512.0f + 29.0f;
+	constexpr float kStatAttsBaseY = 200.0f + 118.0f; // bottom strip, clear of backpack
+
+	void DrawStatAttsIcon(int frame, float& x, float y)
+	{
+		if (!g_statAttsIconsLoaded || frame < 0 || frame >= kStatAttsIconCount)
+			return;
+		const Texture2D& tex = g_statAttsIcons[frame];
+		if (tex.id == 0)
+			return;
+		DrawTexture(tex, int(x), int(y), WHITE);
+		x += float(tex.width) + 2.0f;
+	}
+
+	void DrawSelectedMemberStatusIcons(int selectedNpcId)
+	{
+		if (!g_statAttsIconsLoaded)
+			return;
+
+		auto npcIt = g_NPCData.find(selectedNpcId);
+		if (npcIt == g_NPCData.end() || !npcIt->second)
+			return;
+
+		U7Object* obj = nullptr;
+		auto objIt = g_objectList.find(npcIt->second->m_objectID);
+		if (objIt != g_objectList.end())
+			obj = objIt->second.get();
+		if (!obj)
+			return;
+
+		const unsigned int flags = obj->m_flags;
+		const int food = static_cast<int>(npcIt->second->food);
+		float x = kStatAttsBaseX;
+		const float y = kStatAttsBaseY;
+
+		if ((flags & kObjFlagAsleep) != 0)
+			DrawStatAttsIcon(kStatAttsAsleep, x, y);
+		if ((flags & kObjFlagPoisoned) != 0)
+			DrawStatAttsIcon(kStatAttsPoisoned, x, y);
+		if ((flags & kObjFlagCharmed) != 0)
+			DrawStatAttsIcon(kStatAttsCharmed, x, y);
+		if (food <= 9)
+			DrawStatAttsIcon(kStatAttsHungry, x, y);
+		if ((flags & kObjFlagProtection) != 0)
+			DrawStatAttsIcon(kStatAttsProtected, x, y);
+		if ((flags & kObjFlagCursed) != 0)
+			DrawStatAttsIcon(kStatAttsCursed, x, y);
+		if ((flags & kObjFlagParalyzed) != 0)
+			DrawStatAttsIcon(kStatAttsParalyzed, x, y);
+	}
 }
 
 #include <list>
@@ -2921,12 +2985,15 @@ void MainState::Draw()
 					preferY = origY;
 			}
 
-			// Roof tops are standable for walking, but while the Avatar is below
-			// them the drop ghost must not snap onto the roof (gambling tables, etc.).
+			// Roof / mountain-top decks are standable for walking, but while the
+			// Avatar is below them the drop ghost must not snap onto them
+			// (indoor gambling tables; dungeon mountain ceilings).
 			auto isRoofAboveAvatar = [&](U7Object* obj) -> bool {
 				if (hackMove || !obj || !obj->m_objectData)
 					return false;
-				if (!PathfindingSystem::IsRoofShape(obj->m_ObjectType))
+				const int shape = obj->m_ObjectType;
+				if (!PathfindingSystem::IsRoofShape(shape)
+					&& !PathfindingSystem::IsMountainTopShape(shape))
 					return false;
 				const float top = PathfindingSystem::GetObjectSurfaceY(obj);
 				return top > preferY + 0.75f;
@@ -2988,14 +3055,50 @@ void MainState::Draw()
 			// Floor band (floors/roofs): stay near the Avatar's story indoors so
 			// drops don't jump onto roofs. Object-stack band: allow crate stairs
 			// (~5 high) even when the tile is flagged interior (cheat-room climb).
+			// Dungeon tiles are not IsInteriorTile (that flag is building roofs),
+			// but mountain ceilings must use the indoor band / ceiling clamp.
+			bool underDungeonCeiling = g_dungeonViewActive;
+			float dungeonCeilY = -1.0f;
+			if (g_pathfindingSystem)
+			{
+				if (avatar)
+				{
+					const int ax = static_cast<int>(std::floor(avatar->m_Pos.x));
+					const int az = static_cast<int>(std::floor(avatar->m_Pos.z));
+					const int ceilLift = g_pathfindingSystem->GetDungeonCeilingAt(ax, az);
+					if (ceilLift >= 0 && avatar->m_Pos.y < static_cast<float>(ceilLift) - 0.15f)
+					{
+						underDungeonCeiling = true;
+						dungeonCeilY = static_cast<float>(ceilLift);
+					}
+				}
+				if (!underDungeonCeiling
+					&& g_pathfindingSystem->IsDungeonTile(seTileX, seTileZ))
+				{
+					underDungeonCeiling = true;
+					const int ceilLift = g_pathfindingSystem->GetDungeonCeilingAt(seTileX, seTileZ);
+					if (ceilLift >= 0)
+						dungeonCeilY = static_cast<float>(ceilLift);
+				}
+			}
 			const bool outdoorDrop = g_pathfindingSystem &&
-				!g_pathfindingSystem->IsInteriorTile(seTileX, seTileZ);
+				!g_pathfindingSystem->IsInteriorTile(seTileX, seTileZ) &&
+				!underDungeonCeiling;
 			const float kFloorBandUp = outdoorDrop ? 8.0f : 3.5f;
 			constexpr float kStackOnObjectUp = 8.0f; // ~5 crate-heights from feet
 			constexpr float kFloorBandDown = 0.5f;
 			const float bandMin = hackMove ? -1000.0f : (preferY - kFloorBandDown);
-			const float bandMax = hackMove ? 1000.0f : (preferY + kFloorBandUp);
-			const float stackBandMax = hackMove ? 1000.0f : (preferY + kStackOnObjectUp);
+			float bandMax = hackMove ? 1000.0f : (preferY + kFloorBandUp);
+			float stackBandMax = hackMove ? 1000.0f : (preferY + kStackOnObjectUp);
+			// Never offer supports at/above the mountain ceiling while underground.
+			if (!hackMove && dungeonCeilY >= 0.0f)
+			{
+				const float ceilCap = dungeonCeilY - 0.25f;
+				if (bandMax > ceilCap)
+					bandMax = ceilCap;
+				if (stackBandMax > ceilCap)
+					stackBandMax = ceilCap;
+			}
 
 			float stackY = preferY;
 
@@ -3025,7 +3128,11 @@ void MainState::Draw()
 							{
 								for (const auto& o : overlapping)
 								{
-									if (!o.obj || !PathfindingSystem::IsRoofShape(o.obj->m_ObjectType))
+									if (!o.obj)
+										continue;
+									const int shape = o.obj->m_ObjectType;
+									if (!PathfindingSystem::IsRoofShape(shape)
+										&& !PathfindingSystem::IsMountainTopShape(shape))
 										continue;
 									const float roofTop = PathfindingSystem::GetObjectSurfaceY(o.obj);
 									if (fabsf(roofTop - hy) <= 0.15f && roofTop > preferY + 0.75f)
@@ -3140,7 +3247,8 @@ void MainState::Draw()
 						return false;
 					if (shapeID >= 0 && PathfindingSystem::IsNonBlockingWalkSurface(shapeID))
 						return false;
-					if (shapeID >= 0 && PathfindingSystem::IsRoofShape(shapeID))
+					if (shapeID >= 0 && (PathfindingSystem::IsRoofShape(shapeID)
+						|| PathfindingSystem::IsMountainTopShape(shapeID)))
 						return false;
 					if (g_pathfindingSystem)
 					{
@@ -3929,18 +4037,8 @@ void MainState::DrawStats()
 	DrawStatsValueRight(to_string(level), 208.0f + 9 * yoffset + 5);
 	DrawStatsValueRight(to_string(trainingpoints), 208.0f + 10 * yoffset + 6);
 
-	DrawOutlinedText(g_SmallFont, "Gold: " + to_string(g_Player->GetGold()), { 542, 208.0f + 11 * yoffset + 8 }, g_SmallFont.get()->baseSize, 1, WHITE);
-
-	// Weight for the currently selected party member (current / max from their strength).
-	int currentWeight = 0;
-	int maxWeight = int(GetMaxWeightFromStrength(str));
-	if (selectedNpcIt != g_NPCData.end() && selectedNpcIt->second)
-	{
-		auto selectedObjIt = g_objectList.find(selectedNpcIt->second->m_objectID);
-		if (selectedObjIt != g_objectList.end() && selectedObjIt->second)
-			currentWeight = int(selectedObjIt->second->GetWeight());
-	}
-	DrawOutlinedText(g_SmallFont, "Weight: " + to_string(currentWeight) + "/" + to_string(maxWeight), { 542, 208.0f + 12 * yoffset + 9 }, g_SmallFont.get()->baseSize, 1, WHITE);
+	// Status icons in the bottom strip (Exult gumps/statatts). Weight lives on Equip (CARRY).
+	DrawSelectedMemberStatusIcons(selectedNpcId);
 
 	// Backpack icon — click handled in UpdateStats (opens selected member's inventory).
 	if (Texture* backpackTex = g_shapeTable[801][0].GetTexture())
@@ -4646,6 +4744,10 @@ void MainState::EnrollNearbyCombatHostiles()
 
 	auto consider = [&](U7Object* obj) {
 		if (!obj || !IsHostileCombatUnit(obj))
+			return;
+		if (!AreUnitsOnSameDungeonLayer(avatar, obj))
+			return;
+		if (!HasCombatLineOfSight(avatar, obj))
 			return;
 		const float distSqr = Vector2DistanceSqr(
 			{ obj->m_Pos.x, obj->m_Pos.z },

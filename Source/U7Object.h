@@ -62,8 +62,15 @@ enum class CastingMode : uint8_t
 // Bits 3–4 = alignment (Neutral/Good/Evil/Chaotic). Bit 15 (0x8000) = dead.
 // Never use 0x0008 as "dead" — that is Good alignment (Avatar ships with status 0x0008).
 constexpr unsigned short kNpcDatStatusDead = 0x8000;
-// Exult Obj_flags::dead = 4 → bit on U7Object::m_flags for get/set/clear_item_flag.
-constexpr unsigned int kObjFlagDead = (1u << 4);
+// Exult Obj_flags bits on U7Object::m_flags (get/set/clear_item_flag).
+constexpr unsigned int kObjFlagInvisible  = (1u << 0);
+constexpr unsigned int kObjFlagAsleep     = (1u << 1);
+constexpr unsigned int kObjFlagCharmed    = (1u << 2);
+constexpr unsigned int kObjFlagCursed     = (1u << 3);
+constexpr unsigned int kObjFlagDead       = (1u << 4);
+constexpr unsigned int kObjFlagParalyzed  = (1u << 7);
+constexpr unsigned int kObjFlagPoisoned   = (1u << 8);
+constexpr unsigned int kObjFlagProtection = (1u << 9);
 
 struct NPCData
 {
@@ -599,6 +606,9 @@ public:
 	int m_moveStuckFrames = 0; // Consecutive frames movement was fully blocked (slide failed)
 	float m_schedulePathRetryAt = 0.0f; // GetTime() gate so failed schedule paths retry without spamming
 	int m_pendingScheduleTime = -1; // schedule slot we're pathing for (commit m_lastSchedule on success)
+	// Last floor tile that ran CheckContactFieldsAt (caltrops etc.). Sentinel forces first enter.
+	int m_contactFieldLastTx = -9999;
+	int m_contactFieldLastTz = -9999;
 
 	// path_run_usecode: after Avatar finishes walking, Interact(event) on the target object.
 	bool m_hasPendingUsecode = false;

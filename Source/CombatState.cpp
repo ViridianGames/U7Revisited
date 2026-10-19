@@ -15,6 +15,7 @@
 #include "U7Player.h"
 #include "CombatState.h"
 #include "MainState.h"
+#include "PathfindingSystem.h"
 #include "raymath.h"
 #include "rlgl.h"
 
@@ -152,6 +153,32 @@ bool IsHostileCombatUnit(const U7Object* unit)
 		|| unit->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC;
 }
 
+bool IsUnitInDungeon(const U7Object* unit)
+{
+	if (!unit || !g_pathfindingSystem)
+		return false;
+	return g_pathfindingSystem->IsDungeonTile(
+		static_cast<int>(unit->m_Pos.x),
+		static_cast<int>(unit->m_Pos.z));
+}
+
+bool AreUnitsOnSameDungeonLayer(const U7Object* a, const U7Object* b)
+{
+	if (!a || !b)
+		return false;
+	// Without dungeon bake data, treat everything as the same layer.
+	if (!g_pathfindingSystem)
+		return true;
+	return IsUnitInDungeon(a) == IsUnitInDungeon(b);
+}
+
+bool HasCombatLineOfSight(const U7Object* from, const U7Object* to)
+{
+	if (!from || !to || !g_pathfindingSystem)
+		return false;
+	return g_pathfindingSystem->IsStraightPathClear(from->m_Pos, to->m_Pos, from);
+}
+
 U7Object* FindNearestHostileInAggroRange()
 {
 	if (!g_Player)
@@ -166,6 +193,10 @@ U7Object* FindNearestHostileInAggroRange()
 	// Prefer interest chunks when available (avoids full-world scan every warn).
 	auto consider = [&](U7Object* obj) {
 		if (!obj || !IsHostileCombatUnit(obj))
+			return;
+		if (!AreUnitsOnSameDungeonLayer(avatar, obj))
+			return;
+		if (!HasCombatLineOfSight(avatar, obj))
 			return;
 		const float distSqr = Vector2DistanceSqr(
 			{ obj->m_Pos.x, obj->m_Pos.z },
@@ -231,6 +262,12 @@ bool TryBeginCombatFromHostileAggro(U7Object* hintHostile)
 	{
 		if (U7Object* avatar = g_Player->GetAvatarObject())
 		{
+			if (!AreUnitsOnSameDungeonLayer(avatar, nearest)
+				|| !HasCombatLineOfSight(avatar, nearest))
+			{
+				s_warnedThisEncounter = false;
+				return false;
+			}
 			const float distSqr = Vector2DistanceSqr(
 				{ nearest->m_Pos.x, nearest->m_Pos.z },
 				{ avatar->m_Pos.x, avatar->m_Pos.z });
@@ -287,6 +324,37 @@ int GetCombatDexterity(const U7Object* unit)
 	return 10;
 }
 
+int GetCombatIntelligence(const U7Object* unit)
+{
+	if (!unit)
+		return 10;
+	if (unit->m_NPCData)
+		return static_cast<int>(unit->m_NPCData->iq);
+	if (g_Player && g_Player->GetAvatarObject() == unit)
+		return g_Player->GetInt();
+	if (unit->m_shapeData)
+	{
+		const int shape = unit->m_shapeData->m_shape;
+		for (const MonsterData& md : g_monsterData)
+		{
+			if (static_cast<int>(md.m_shape) == shape)
+				return static_cast<int>(md.m_intelligence);
+		}
+	}
+	return 10;
+}
+
+ContactFieldType GetContactFieldType(int shape)
+{
+	switch (shape)
+	{
+	case 756: // caltrops
+		return ContactFieldType::Caltrops;
+	default:
+		return ContactFieldType::None;
+	}
+}
+
 float GetCombatTurnApBudget(const U7Object* unit)
 {
 	const int dex = GetCombatDexterity(unit);
@@ -338,6 +406,16 @@ namespace
 			}
 		}
 		return static_cast<int>(std::max(1.0f, unit->m_BaseMaxHP));
+	}
+
+	unsigned char CombinedWeaponPowers(int weaponShape, int ammoShape)
+	{
+		unsigned char powers = 0;
+		if (const WeaponData* w = (weaponShape >= 0) ? GetWeaponData(weaponShape) : nullptr)
+			powers = static_cast<unsigned char>(powers | w->powers);
+		if (const AmmoData* a = (ammoShape >= 0) ? GetAmmoData(ammoShape) : nullptr)
+			powers = static_cast<unsigned char>(powers | a->powers);
+		return powers;
 	}
 
 	int GetEquippedArmorPoints(const U7Object* unit, unsigned char& outImmuneMask)
@@ -419,9 +497,110 @@ namespace
 	}
 }
 
+int GetCombatSkill(const U7Object* unit)
+{
+	if (!unit)
+		return 0;
+	if (g_Player && g_Player->GetAvatarObject() == unit)
+		return g_Player->GetCombat();
+	if (unit->m_NPCData)
+		return static_cast<int>(unit->m_NPCData->combat);
+	if (unit->m_shapeData)
+	{
+		const int shape = unit->m_shapeData->m_shape;
+		for (const MonsterData& md : g_monsterData)
+		{
+			if (static_cast<int>(md.m_shape) == shape)
+				return static_cast<int>(md.m_combat);
+		}
+	}
+	return static_cast<int>(unit->m_combat);
+}
+
+bool CombatRollToWin(int attackerPoints, int defenderPoints)
+{
+	// Exult Actor::roll_to_win: d30; 0 always lose, 29 always win.
+	constexpr int kSides = 30;
+	const int roll = static_cast<int>(CombatRoll(static_cast<unsigned int>(kSides)));
+	if (roll == 0)
+		return false;
+	if (roll == kSides - 1)
+		return true;
+	return roll + attackerPoints - defenderPoints >= kSides / 2 - 1;
+}
+
+bool TryCombatHit(U7Object* attacker, U7Object* target, int weaponShape, int ammoShape)
+{
+	if (!target)
+		return false;
+
+	const WeaponData* winf = (weaponShape >= 0) ? GetWeaponData(weaponShape) : nullptr;
+	if (winf && winf->autohit)
+		return true;
+
+	int attval = GetCombatSkill(attacker);
+	if (winf && winf->lucky)
+		attval += 3;
+	// Ammo lucky is not stored yet; Exult also adds ainf->lucky().
+
+	int defval = GetCombatSkill(target);
+	if ((target->m_flags & kObjFlagProtection) != 0)
+		defval += 3;
+
+	return CombatRollToWin(attval, defval);
+}
+
+void ApplyCombatWeaponPowers(U7Object* attacker, U7Object* target, int weaponShape,
+	int ammoShape, int hitsDealt)
+{
+	if (!target || target->IsDeathStatus() || target->GetIsDead())
+		return;
+
+	// Exult: Protection prevents weapon powers entirely.
+	if ((target->m_flags & kObjFlagProtection) != 0)
+		return;
+
+	const unsigned char powers = CombinedWeaponPowers(weaponShape, ammoShape);
+	if (powers == 0)
+		return;
+
+	// Exult: powers only if damage landed, or the weapon is powers-only (no_damage / 0 wpoints).
+	int wpoints = 0;
+	if (const WeaponData* w = (weaponShape >= 0) ? GetWeaponData(weaponShape) : nullptr)
+		wpoints = static_cast<int>(w->damage);
+	if (const AmmoData* a = (ammoShape >= 0) ? GetAmmoData(ammoShape) : nullptr)
+		wpoints += static_cast<int>(a->damage);
+	const bool powersOnly = (wpoints == 0) || ((powers & WeaponPower::NoDamage) != 0);
+	if (hitsDealt == 0 && !powersOnly)
+		return;
+
+	// Exult figure_hit_points: for damaging hits attint is fixed at 16.
+	constexpr int kAttInt = 16;
+	const int defstr = GetCombatStrength(target);
+	const int defint = GetCombatIntelligence(target);
+
+	if ((powers & WeaponPower::Poison) != 0 && CombatRollToWin(kAttInt, defstr))
+		target->m_flags |= kObjFlagPoisoned;
+	if ((powers & WeaponPower::Curse) != 0 && CombatRollToWin(kAttInt, defint))
+		target->m_flags |= kObjFlagCursed;
+	if ((powers & WeaponPower::Charm) != 0 && CombatRollToWin(kAttInt, defint))
+		target->m_flags |= kObjFlagCharmed;
+	if ((powers & WeaponPower::Sleep) != 0 && CombatRollToWin(kAttInt, defint))
+		target->m_flags |= kObjFlagAsleep;
+	if ((powers & WeaponPower::Paralyze) != 0 && CombatRollToWin(kAttInt, defstr))
+		target->m_flags |= kObjFlagParalyzed;
+	if ((powers & WeaponPower::Magebane) != 0)
+		target->m_mana = 0;
+	(void)attacker;
+}
+
 int FigureCombatHitPoints(U7Object* attacker, U7Object* target, int weaponShape, int ammoShape)
 {
 	if (!target)
+		return 0;
+
+	// NoDamage weapons still connect for powers, but deal no HP.
+	if ((CombinedWeaponPowers(weaponShape, ammoShape) & WeaponPower::NoDamage) != 0)
 		return 0;
 
 	int wpoints = 0;
@@ -538,6 +717,65 @@ bool ApplyCombatDamage(U7Object* target, float amount, U7Object* attacker)
 		return true;
 	}
 	return false;
+}
+
+bool ApplyCaltropDamage(U7Object* victim)
+{
+	if (!victim || victim->IsDeathStatus() || victim->GetIsDead())
+		return false;
+
+	// Exult Field_object::field_effect (caltrops): intelligence < rand() % 40.
+	const int intel = GetCombatIntelligence(victim);
+	if (intel >= static_cast<int>(CombatRoll(40)))
+		return false;
+
+	const float amount = static_cast<float>(1 + CombatRoll(2)); // 1 or 2
+	ApplyCombatDamage(victim, amount, nullptr);
+	return true;
+}
+
+void CheckContactFieldsAt(U7Object* unit)
+{
+	if (!unit || unit->IsDeathStatus() || unit->GetIsDead())
+		return;
+	if (unit->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_NPC
+		&& unit->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_MONSTER)
+		return;
+
+	const int tx = static_cast<int>(std::floor(unit->m_Pos.x));
+	const int tz = static_cast<int>(std::floor(unit->m_Pos.z));
+	if (tx < 0 || tz < 0 || tx >= 3072 || tz >= 3072)
+		return;
+
+	const int cx = tx / 16;
+	const int cz = tz / 16;
+	if (cx < 0 || cz < 0 || cx >= 192 || cz >= 192)
+		return;
+
+	for (U7Object* obj : g_chunkObjectMap[cx][cz])
+	{
+		if (!obj || obj == unit || !obj->m_objectData || !obj->m_shapeData)
+			continue;
+		if (obj->GetIsDead() || obj->m_isContained)
+			continue;
+		if (!obj->m_objectData->m_isTrap)
+			continue;
+
+		const int shape = obj->m_shapeData->m_shape;
+		if (GetContactFieldType(shape) != ContactFieldType::Caltrops)
+			continue;
+
+		const int ox = static_cast<int>(std::floor(obj->m_Pos.x));
+		const int oz = static_cast<int>(std::floor(obj->m_Pos.z));
+		if (ox != tx || oz != tz)
+			continue;
+
+		// Exult hatch / field: same lift (tiny epsilon for surface snap).
+		if (std::fabs(unit->m_Pos.y - obj->m_Pos.y) > 0.15f)
+			continue;
+
+		ApplyCaltropDamage(unit);
+	}
 }
 
 void SpawnFloatingCombatText(Vector3 worldPos, const std::string& text, Color color)

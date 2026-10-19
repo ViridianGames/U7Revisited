@@ -811,6 +811,9 @@ static int LuaSetObjectShape(lua_State *L)
     object->m_Frame = currentFrame;
     object->m_shapeData = &g_shapeTable[shape][currentFrame];
     object->m_objectData = &g_objectDataTable[shape];
+    // Morphs like locked chest 522→800 must keep (or gain) container status from TFA.
+    if (IsTfaContainerShape(object->m_objectData))
+        object->m_isContainer = true;
     object->SetPos(object->GetPos());
 
     // Propagate door flag to new shape
@@ -992,6 +995,12 @@ static int LuaGetNPCProperty(lua_State *L)
     int npc_id = luaL_checkinteger(L, 1);
     int property_id = luaL_checkinteger(L, 2);
 
+    // Usecode ±356 = Avatar (NPC 0); negative ids are Exult-style NPC refs.
+    if (npc_id == 356 || npc_id == -356)
+        npc_id = 0;
+    else if (npc_id < 0 && npc_id > -256)
+        npc_id = -npc_id;
+
     // Property IDs: 0=strength, 1=dexterity, 2=intelligence, 3=health, 4=combat, 5=mana, 6=magic, 7=training, 8=exp, 9=food_level, 10=sex_flag
     int value = 0;
 
@@ -1036,6 +1045,11 @@ static int LuaSetNPCProperty(lua_State *L)
     int npc_id = luaL_checkinteger(L, 1);
     int property_id = luaL_checkinteger(L, 2);
     int value = luaL_checkinteger(L, 3);
+
+    if (npc_id == 356 || npc_id == -356)
+        npc_id = 0;
+    else if (npc_id < 0 && npc_id > -256)
+        npc_id = -npc_id;
 
     if (g_NPCData.find(npc_id) != g_NPCData.end())
     {

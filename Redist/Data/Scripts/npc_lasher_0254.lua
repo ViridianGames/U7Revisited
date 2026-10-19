@@ -21,7 +21,8 @@ function npc_lasher_0254(eventid, objectref)
             add_dialogue("The creature speaks. \"My name is Lasher.\"")
             remove_answer("name")
         elseif answer == "job" then
-            add_dialogue("Lasher looks at you and blinks. \"Come now, Avatar! I do not live by the rules that govern the society of Mankind. There is what I am, which is a unicorn. Then there is my purpose, which is another thing altogether.\"")
+            add_dialogue("Lasher looks at you and blinks. \"Come now, Avatar! I do not live by the rules that govern the society of Mankind. There is what I am, which is a unicorn.")
+            add_dialogue("Then there is my purpose, which is another thing altogether.\"")
             add_answer({"purpose", "unicorn"})
         elseif answer == "unicorn" then
             add_dialogue("Lasher stares at you, stupefied. \"Tell me, dost thou know what a unicorn is?\"")
@@ -35,16 +36,19 @@ function npc_lasher_0254(eventid, objectref)
             remove_answer("unicorn")
             add_answer("wizard")
         elseif answer == "purpose" then
-            add_dialogue("\"Oh, do not be coy with me, Avatar. Thou dost know very well the purpose of a unicorn.\"")
-            add_dialogue("We are foolproof virgin detectors!")
+            add_dialogue("\"Oh, do not be coy with me, Avatar. Thou dost know very well the purpose of a unicorn.")
+            add_dialogue("We are foolproof virgin detectors!\"")
             remove_answer("purpose")
             add_answer("virgin detector")
         elseif answer == "wizard" then
-            add_dialogue("\"I do not remember the wizard's name, for much time has passed since then, but suffice it to say that he was a royal bastard. Anyway, for one reason or another, the chieftain of our clan, who at that time was a horse's ass named Sharp-Hoof, decided that rather than heed this wizard's rightful and properly performed ritual of calling, he was going to take the herd and chase after this bevy of really fine fillies.\"")
+            add_dialogue("\"I do not remember the wizard's name, for much time has passed since then, but suffice it to say that he was a royal bastard. Anyway, for one reason or another, the chieftain of our clan,")
+            add_dialogue("who at that time was a horse's ass named Sharp-Hoof, decided that rather than heed this wizard's rightful and properly performed ritual of calling,")
+            add_dialogue("he was going to take the herd and chase after this bevy of really fine fillies.\"")
             remove_answer("wizard")
             add_answer("Sharp-Hoof")
         elseif answer == "Sharp-Hoof" then
-            add_dialogue("\"Where was I? Oh, yes, Sharp-Hoof! The next morning, after we had had our way with these fillies, this wizard called us again. This time Sharp-Hoof realized that we had best answer, and were we sorry that we did! The wizard was horribly angry! And, well, I will just say that our agreements with such people are very, very binding.\"")
+            add_dialogue("\"Where was I? Oh, yes, Sharp-Hoof! The next morning, after we had had our way with these fillies, this wizard called us again. This time Sharp-Hoof realized that we had best answer,")
+            add_dialogue("and were we sorry that we did! The wizard was horribly angry! And, well, I will just say that our agreements with such people are very, very binding.\"")
             remove_answer("Sharp-Hoof")
             add_answer("binding")
         elseif answer == "binding" then
@@ -55,14 +59,17 @@ function npc_lasher_0254(eventid, objectref)
             add_dialogue("\"As it fell out, we did not actually have to serve the wizard for a thousand years. He reduced the time by a few weeks after placing that curse on us.\" Lasher snorts sarcastically, \"I was heartbroken.\"")
             remove_answer("service")
         elseif answer == "curse" then
-            add_dialogue("\"We nature spirits used to be renowned for our randiness, and this wizard had called upon us to assist him in the seduction of some maiden. When we stood him up... Well, let us just say that he was one magician who was having a problem convincing his magic wand to work. Anyway, in a pathetic attempt to bolster his diminished feelings of manhood, he ruined us with an awesomely powerful Curse of Chastity.\"")
+            add_dialogue("\"We nature spirits used to be renowned for our randiness, and this wizard had called upon us to assist him in the seduction of some maiden. When we stood him up... Well,")
+            add_dialogue("let us just say that he was one magician who was having a problem convincing his magic wand to work. Anyway,")
+            add_dialogue("in a pathetic attempt to bolster his diminished feelings of manhood, he ruined us with an awesomely powerful Curse of Chastity.\"")
             remove_answer("curse")
             add_answer("Chastity")
         elseif answer == "Chastity" then
             add_dialogue("\"It was a terrible curse. First, it drove us to kill all of the female members of our clan. Then it afflicted us with the particular sensitivity for which we have become known.\"")
             remove_answer("Chastity")
         elseif answer == "virgin detector" then
-            add_dialogue("\"That is correct. So sensitive are members of my race to all forms of sexual energy that we can only tolerate physical contact with one who has not yet had any experience in that form of procreation - or recreation, if thou dost prefer.\"")
+            add_dialogue("\"That is correct. So sensitive are members of my race to all forms of sexual energy that we can only tolerate physical contact with one who has not yet had any experience in that form of procreation -")
+            add_dialogue("or recreation, if thou dost prefer.\"")
             remove_answer("virgin detector")
             add_answer("sensitive")
         elseif answer == "sensitive" then
@@ -76,7 +83,8 @@ function npc_lasher_0254(eventid, objectref)
                 if not get_flag(669) or not get_flag(668) or not get_flag(670) then
                     add_dialogue("\"I thought as much!\" Lasher starts to pace nervously. \"If thou wouldst not mind standing back a bit, I would be most appreciative.\"")
                 else
-                    add_dialogue("Lasher slowly shakes his head. \"Thou dost not have to brag in order to impress me, or fear any sort of verbal chastisements, honestly. By the way, I have an itch right betwixt my shoulder blades. Wouldst thou mind scratching it for me?\" Lasher stretches out toward you. \"Thank thee so much.\"")
+                    add_dialogue("Lasher slowly shakes his head. \"Thou dost not have to brag in order to impress me, or fear any sort of verbal chastisements, honestly. By the way, I have an itch right betwixt my shoulder blades.")
+                    add_dialogue("Wouldst thou mind scratching it for me?\" Lasher stretches out toward you. \"Thank thee so much.\"")
                     var_0003 = is_player_female()
                     var_0004 = npc_id_in_party(1)
                     var_0005 = npc_id_in_party(3)
@@ -138,13 +146,15 @@ function npc_lasher_0254(eventid, objectref)
             remove_answer("unpleasant")
             add_answer("wife")
         elseif answer == "wife" then
-            add_dialogue("\"It is a tragedy. The man always gets nervous, then places a condition on the marriage that his bride must be a virgin. They call me to put her to the test, and the man's bachelorhood is granted a reprieve. I have destroyed more engagements than the Bubonic Plague.\"")
+            add_dialogue("\"It is a tragedy. The man always gets nervous, then places a condition on the marriage that his bride must be a virgin. They call me to put her to the test,")
+            add_dialogue("and the man's bachelorhood is granted a reprieve. I have destroyed more engagements than the Bubonic Plague.\"")
             remove_answer("wife")
             if not get_flag(721) then
                 add_answer("bachelorhood")
             end
         elseif answer == "bachelorhood" then
-            add_dialogue("\"Just like those fools who are wandering around down here looking for me for the same reason, I would wager. Well, they can lose that notion. I like women, I truly do, and frankly, I am sick and tired of being used as the instrument of their humiliation.\"")
+            add_dialogue("\"Just like those fools who are wandering around down here looking for me for the same reason, I would wager. Well, they can lose that notion. I like women,")
+            add_dialogue("I truly do, and frankly, I am sick and tired of being used as the instrument of their humiliation.\"")
             remove_answer("marriages")
             if get_flag(736) then
                 add_answer("male virginity test")
@@ -153,7 +163,8 @@ function npc_lasher_0254(eventid, objectref)
             end
             remove_answer("bachelorhood")
         elseif answer == "fools" then
-            add_dialogue("\"I am a magical creature. I can avoid them down here as long as I want. They will die of old age before they catch me. I refuse to assist them in weaseling out of some breach of promise. Thou canst tell them that if thou dost see them.\"")
+            add_dialogue("\"I am a magical creature. I can avoid them down here as long as I want. They will die of old age before they catch me.")
+            add_dialogue("I refuse to assist them in weaseling out of some breach of promise. Thou canst tell them that if thou dost see them.\"")
             set_flag(720, true)
             remove_answer("fools")
         elseif answer == "male virginity test" then

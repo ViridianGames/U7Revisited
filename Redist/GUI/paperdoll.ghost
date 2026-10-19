@@ -99,12 +99,12 @@
             "name": "CARRY",
             "type": "textarea",
             "position": [
-              60,
+              58,
               120
             ],
             "text": "27/36",
             "font": "babyblocks.ttf",
-            "fontSize": 10,
+            "fontSize": 8,
             "textColor": [
               0,
               0,
@@ -112,7 +112,7 @@
               255
             ],
             "size": [
-              30,
+              40,
               10
             ],
             "justified": 1

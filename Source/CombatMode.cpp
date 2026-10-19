@@ -1471,6 +1471,8 @@ bool TurnBasedCombatMode::BeginAttackOn(U7Object* attacker, U7Object* target)
 	attacker->m_target = static_cast<int>(target->m_ID);
 	attacker->m_combatOrderMode = CombatOrderMode::Attack;
 	attacker->m_cooldownTimer = 0.0f;
+	// Clear any leftover one-shot from a prior swing so EngageCombatTarget can start again.
+	attacker->SetNpcAnimAction(NpcAnimAction::Ready, true, 180.0f);
 
 	Vector3 toTarget = Vector3Subtract(target->m_Pos, attacker->m_Pos);
 	toTarget.y = 0.0f;
@@ -1538,6 +1540,10 @@ void TurnBasedCombatMode::UpdateResolvingAttack(MainState& main, U7Object* unit)
 	if (unit->m_cooldownTimer > 0.0f || unit->IsNpcAttackAnimPlaying())
 		m_attackSwingStarted = true;
 
+	// No baked attack clip: hit applies immediately (hitPhase < 0); do not wait on playing.
+	if (!m_attackSwingStarted && unit->GetNpcActionTextures() == nullptr && m_resolveFrames >= 1)
+		m_attackSwingStarted = true;
+
 	// Ammo/out-of-range failure: never started a swing - refund AP and bail.
 	if (!m_attackSwingStarted && m_resolveFrames >= 20)
 	{
@@ -1576,6 +1582,8 @@ void TurnBasedCombatMode::OnAttackResolved(MainState& main)
 		unit->m_target = 0;
 		unit->m_combatPathTargetId = 0;
 		unit->SetDest(unit->GetPos());
+		// Ensure the next swing is not blocked by a stuck one-shot clip.
+		unit->SetNpcAnimAction(NpcAnimAction::Ready, true, 180.0f);
 	}
 
 	m_resolvingAttack = false;

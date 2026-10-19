@@ -13,6 +13,16 @@ constexpr bool kCombatStateEnabled = true;
 // True for Team-1 monsters/NPCs that should fight the party.
 bool IsHostileCombatUnit(const U7Object* unit);
 
+// True when the unit stands on an Exult mountain-ceiling dungeon tile.
+bool IsUnitInDungeon(const U7Object* unit);
+
+// Dungeon hostiles only sense the party underground, and outdoor hostiles
+// only aboveground (XZ overlap alone must not cross the ceiling).
+bool AreUnitsOnSameDungeonLayer(const U7Object* a, const U7Object* b);
+
+// Straight-line walkability between units (walls block). Used to acquire aggro.
+bool HasCombatLineOfSight(const U7Object* from, const U7Object* to);
+
 // Find nearest hostile within aggro range of the Avatar (or null).
 U7Object* FindNearestHostileInAggroRange();
 
@@ -28,10 +38,29 @@ float GetCombatMaxHP(const U7Object* unit);
 
 // Dexterity for TB initiative / AP (NPC dex, Avatar player dex, monster MONSTERS.DAT).
 int GetCombatDexterity(const U7Object* unit);
+// Intelligence for contact-field checks (NPC iq, Avatar player int, monster MONSTERS.DAT).
+int GetCombatIntelligence(const U7Object* unit);
 // Turn budget: max(4, DEX/2).
 float GetCombatTurnApBudget(const U7Object* unit);
 // Path step cost: cardinal 1.0, diagonal 1.5.
 float CombatStepApCost(Vector3 from, Vector3 to);
+
+// Exult Field_types for TFA contact-effect shapes (ObjectData::m_isTrap).
+enum class ContactFieldType : int
+{
+	None = -1,
+	Caltrops = 0,
+	// Fire / poison / sleep / campfire — later
+};
+
+ContactFieldType GetContactFieldType(int shape);
+
+// Exult Field_object::field_effect for caltrops: INT < rand()%40 → 1–2 damage.
+// Returns true if damage was applied. Does not remove the caltrop.
+bool ApplyCaltropDamage(U7Object* victim);
+
+// On tile enter: scan underfoot contact fields (caltrops for now) and apply effects.
+void CheckContactFieldsAt(U7Object* unit);
 
 // Ready-hand weapon for combat (RIGHT_HAND first, then LEFT_HAND).
 // Prefers shapes present in WEAPONS.DAT so a shield in the off-hand is ignored.
@@ -40,10 +69,26 @@ U7Object* GetEquippedWeapon(U7Object* unit);
 std::string CombatWeaponDisplayName(int weaponShape);
 std::string CombatWeaponDisplayNameForUnit(U7Object* unit);
 
-// Exult-style hit roll: strength/3 + weapon(+ammo) wpoints, minus armor.
+// Exult Actor::get_property(combat) for hit rolls (Avatar via g_Player).
+int GetCombatSkill(const U7Object* unit);
+
+// Exult Actor::roll_to_win (d30; 0 always lose, 29 always win).
+bool CombatRollToWin(int attackerPoints, int defenderPoints);
+
+// Exult Actor::try_to_hit. Protection adds +3 to defender combat.
+// Autohit weapons skip the roll. Returns true if the swing connects.
+bool TryCombatHit(U7Object* attacker, U7Object* target, int weaponShape = -1, int ammoShape = -1);
+
+// Exult-style damage: strength/3 + weapon(+ammo) wpoints, minus armor.
 // weaponShape < 0 → bare hands / monster natural weapon. ammoShape < 0 → no ammo bonus.
 // Returns 0 when armor fully absorbs or the target is immune.
 int FigureCombatHitPoints(U7Object* attacker, U7Object* target, int weaponShape, int ammoShape = -1);
+
+// Exult figure_hit_points weapon powers (poison/curse/charm/sleep/paralyze).
+// No-op when the target has Obj_flags::protection. When hitsDealt==0, powers apply
+// only for NoDamage / zero-wpoint weapons. Magebane clears mana when set.
+void ApplyCombatWeaponPowers(U7Object* attacker, U7Object* target, int weaponShape,
+	int ammoShape = -1, int hitsDealt = 0);
 
 // Subtract HP, spawn floating damage text, notify attacker, ApplyDeath if needed.
 // Returns true if the target died from this hit.

@@ -22,6 +22,7 @@
 #include "LoadingState.h"
 #include "MainState.h"
 #include "CombatState.h"
+#include "CombatMode.h"
 #include "PathfindingSystem.h"
 #include "PerfTelemetry.h"
 #include "U7GumpSpellbook.h"
@@ -373,6 +374,11 @@ namespace
 	{
 		const std::string attackerName = (attacker && !attacker->m_name.empty()) ? attacker->m_name : "Someone";
 		const std::string targetName = (target && !target->m_name.empty()) ? target->m_name : "enemy";
+		if (hits < 0)
+		{
+			return attackerName + " attacks " + targetName + " with " + CombatWeaponDisplayName(weaponShape)
+				+ " and misses";
+		}
 		return attackerName + " attacks " + targetName + " with " + CombatWeaponDisplayName(weaponShape)
 			+ " for " + std::to_string(hits) + " damage";
 	}
@@ -578,6 +584,18 @@ bool U7Object::EngageCombatTarget()
 		if (Vector3LengthSqr(toTarget) > 1e-6f)
 			m_Direction = Vector3Normalize(toTarget);
 
+		// TB / RTwP: first hostile swing pulls the party into paused combat.
+		// Original style: fight in the open without forcing combat mode.
+		auto enterPausedCombatFromHostileAttack = [&]() {
+			if (g_isCombatMode || !g_mainState || m_Team != 1)
+				return;
+			const CombatStyle style = GetCombatStylePreference();
+			if (style != CombatStyle::RealTimePause && style != CombatStyle::TurnBased)
+				return;
+			g_mainState->EnterCombatMode();
+			g_mainState->EnsureCombatParticipant(static_cast<int>(m_ID));
+		};
+
 		// Cooldown always ticks; anim length must not stall the next swing.
 		if (m_cooldownTimer > 0.0f && g_Engine)
 			m_cooldownTimer -= g_Engine->LastFrameInSeconds();
@@ -589,9 +607,16 @@ bool U7Object::EngageCombatTarget()
 				target->NotifyAttackedBy(this);
 				return;
 			}
+			if (!TryCombatHit(this, target, weaponShape, -1))
+			{
+				AddConsoleString(FormatCombatAttackConsole(this, target, weaponShape, -1), YELLOW);
+				target->NotifyAttackedBy(this);
+				return;
+			}
 			const int hits = FigureCombatHitPoints(this, target, weaponShape, -1);
 			if (hits > 0)
 				ApplyCombatDamage(target, static_cast<float>(hits), this);
+			ApplyCombatWeaponPowers(this, target, weaponShape, -1, hits);
 			if (hits > 0)
 				AddConsoleString(FormatCombatAttackConsole(this, target, weaponShape, hits), RED);
 		};
@@ -620,6 +645,7 @@ bool U7Object::EngageCombatTarget()
 			}
 			StartNpcAttackAnim();
 			m_cooldownTimer = m_attackCooldown > 0.1f ? m_attackCooldown : 1.5f;
+			enterPausedCombatFromHostileAttack();
 			// No strike frames (common for simple monster shapes): land melee now.
 			if (!isRanged && m_npcAnimHitPhase < 0)
 				applyMeleeHit();
@@ -645,11 +671,20 @@ bool U7Object::EngageCombatTarget()
 				}
 				else
 				{
-					const int hits = FigureCombatHitPoints(this, target, weaponShape, ammoShape);
-					if (hits > 0)
-						ApplyCombatDamage(target, static_cast<float>(hits), this);
-					if (hits > 0)
-						AddConsoleString(FormatCombatAttackConsole(this, target, weaponShape, hits), RED);
+					if (!TryCombatHit(this, target, weaponShape, ammoShape))
+					{
+						AddConsoleString(FormatCombatAttackConsole(this, target, weaponShape, -1), YELLOW);
+						target->NotifyAttackedBy(this);
+					}
+					else
+					{
+						const int hits = FigureCombatHitPoints(this, target, weaponShape, ammoShape);
+						if (hits > 0)
+							ApplyCombatDamage(target, static_cast<float>(hits), this);
+						ApplyCombatWeaponPowers(this, target, weaponShape, ammoShape, hits);
+						if (hits > 0)
+							AddConsoleString(FormatCombatAttackConsole(this, target, weaponShape, hits), RED);
+					}
 				}
 			}
 			else
@@ -736,7 +771,8 @@ void U7Object::HostileCombatUpdate()
 	if ((m_flags & (1u << 1)) != 0 || (m_flags & (1u << 7)) != 0)
 		return;
 
-	if (g_mainState && g_mainState->IsCombatOrdersPaused())
+	// Orders pause only applies once combat has started.
+	if (g_isCombatMode && g_mainState && g_mainState->IsCombatOrdersPaused())
 	{
 		// Turn-Based Resolving: active hostile may finish a Move order.
 		if (g_mainState->CanCombatUnitAct(this)
@@ -747,11 +783,15 @@ void U7Object::HostileCombatUpdate()
 		return;
 	}
 
-	if (!g_isCombatMode || !g_Player)
+	// Outside formal combat: still select a party target, close in, and swing.
+	// TB/RTwP auto-enter paused combat on the first hostile attack.
+	if (!g_Player)
 		return;
 
 	auto inAggroRange = [&](U7Object* candidate) -> bool {
 		if (!candidate)
+			return false;
+		if (!AreUnitsOnSameDungeonLayer(this, candidate))
 			return false;
 		const float distSqr = Vector2DistanceSqr(
 			{ m_Pos.x, m_Pos.z },
@@ -766,7 +806,13 @@ void U7Object::HostileCombatUpdate()
 			return false;
 		if (!g_Player->NPCIDInParty(candidate->m_NPCID))
 			return false;
-		return inAggroRange(candidate);
+		if (!inAggroRange(candidate))
+			return false;
+		// Walls block acquiring a new target; keep chasing one already acquired.
+		if (m_target != static_cast<int>(candidate->m_ID)
+			&& !HasCombatLineOfSight(this, candidate))
+			return false;
+		return true;
 	};
 
 	// Swarm insects (Team 2): preferred distraction targets over the party.
@@ -896,20 +942,37 @@ void U7Object::MonsterUpdate()
 		if (avatar)
 		{
 			const float distSqr = Vector2DistanceSqr({ m_Pos.x, m_Pos.z }, { avatar->m_Pos.x, avatar->m_Pos.z });
+			const bool sameLayer = AreUnitsOnSameDungeonLayer(this, avatar);
+			const bool inRange = sameLayer && distSqr < kHostileAggroRangeSqr;
+			const bool hasLos = inRange && HasCombatLineOfSight(this, avatar);
+			// Already chasing someone: keep approaching even if LOS breaks briefly.
+			const bool alreadyAggroed = (m_target != 0);
 
-			if (distSqr < kHostileAggroRangeSqr)
+			if (inRange && (hasLos || alreadyAggroed))
 			{
 				if (!g_isCombatMode)
 				{
-					// Starts combat using the *nearest* hostile for the approach message.
-					TryBeginCombatFromHostileAggro(this);
+					if (hasLos)
+						TryBeginCombatFromHostileAggro(this);
+					// Close on the party before the player presses C (no swings yet).
+					HostileCombatUpdate();
+					return;
 				}
-				else if (g_mainState)
+				if (g_mainState && hasLos)
 				{
 					// Enroll even while paused — otherwise nearer Headlesses never join
 					// if a farther Dragon triggered combat first.
 					g_mainState->EnsureCombatParticipant(static_cast<int>(m_ID));
 				}
+			}
+			else if (!inRange && m_target != 0 && !g_isCombatMode)
+			{
+				// Drop pre-combat chase when the party leaves aggro range.
+				m_target = 0;
+				m_combatPathTargetId = 0;
+				m_pathWaypoints.clear();
+				m_isMoving = false;
+				SetDest(m_Pos);
 			}
 
 			// Skip chase/attack AI while combat is paused for orders.
@@ -3165,8 +3228,9 @@ void U7Object::UpdateMovement()
 	const bool isAvatar = (g_Player && g_Player->GetAvatarObject() == this);
 	const bool isPartyFollower = (!isAvatar && g_Player && m_NPCID >= 0 &&
 	                              g_Player->NPCIDInParty(m_NPCID));
-	const bool combatHostileChase = g_isCombatMode && m_target != 0
-		&& IsHostileCombatUnit(this);
+	// Hostiles with a target may crow-fly when chase A* fails (pre-combat
+	// approach and in-combat). Party/NPC schedule walks still require waypoints.
+	const bool combatHostileChase = m_target != 0 && IsHostileCombatUnit(this);
 	if (!isAvatar && !isPartyFollower && !combatHostileChase &&
 	    (m_UnitType == UnitTypes::UNIT_TYPE_NPC || m_UnitType == UnitTypes::UNIT_TYPE_MONSTER) &&
 	    m_pathWaypoints.empty())
@@ -3725,6 +3789,20 @@ void U7Object::SetPos(Vector3 pos)
 		NotifyPathfindingGridUpdate((int)fromPos.x, (int)fromPos.z);
 		NotifyPathfindingGridUpdate((int)pos.x, (int)pos.z);
 	}
+
+	// Contact fields (caltrops): Exult footpad damage on tile enter only.
+	if ((m_UnitType == UnitTypes::UNIT_TYPE_NPC || m_UnitType == UnitTypes::UNIT_TYPE_MONSTER)
+		&& !IsDeathStatus() && !GetIsDead())
+	{
+		const int tx = static_cast<int>(std::floor(m_Pos.x));
+		const int tz = static_cast<int>(std::floor(m_Pos.z));
+		if (tx != m_contactFieldLastTx || tz != m_contactFieldLastTz)
+		{
+			m_contactFieldLastTx = tx;
+			m_contactFieldLastTz = tz;
+			CheckContactFieldsAt(this);
+		}
+	}
 }
 
 void U7Object::SetOverrideFrame(int overrideFrame)
@@ -3769,6 +3847,9 @@ void U7Object::SetNpcAnimAction(NpcAnimAction action, bool looping, float frameM
 	const NpcActionTextures* actions = GetNpcActionTextures();
 	if (!actions)
 	{
+		// No baked clips: one-shots must not stick in "playing" forever
+		// (UpdateNpcAnim returns early without textures, which blocked later TB swings).
+		m_npcAnimPlaying = false;
 		m_npcAnimHitPhase = -1;
 		return;
 	}
@@ -3779,6 +3860,9 @@ void U7Object::SetNpcAnimAction(NpcAnimAction action, bool looping, float frameM
 	{
 		const int count = GetNpcActionPhaseCount(*actions, action, 0);
 		m_npcAnimHitPhase = (count > 0) ? (count - 1) : -1;
+		// Empty attack clip: treat as instantaneous (hit via hitPhase < 0 path).
+		if (count <= 0)
+			m_npcAnimPlaying = false;
 	}
 	else
 	{
@@ -3874,7 +3958,10 @@ void U7Object::UpdateNpcAnim(float dt)
 
 	const NpcActionTextures* actions = GetNpcActionTextures();
 	if (!actions)
+	{
+		m_npcAnimPlaying = false;
 		return;
+	}
 
 	// Pose overrides (sit/sleep/death) win until cleared.
 	if (m_isFrameOverridden)

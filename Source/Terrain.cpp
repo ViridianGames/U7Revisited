@@ -4,10 +4,15 @@
 // Terrain draws a camera-centered TILEWIDTH x TILEHEIGHT patch by blitting
 // 8x8 shape tiles into a render texture. That RT is expensive to rebuild, so
 // Update() is dirty-flagged: camera tile, day/night, dungeon view, palette
-// step, and (at night) nearby light sources.
+// step, and (at night or in dungeons) nearby light sources.
+//
+// Exult: dungeon interiors always use the night palette (gameclk get_time_palette
+// with dungeon=true). Without a torch / light spell the view is night-dark;
+// light sources only illuminate local discs around them.
 
 #include "U7Globals.h"
 #include "U7Object.h"
+#include "U7Player.h"
 #include "Terrain.h"
 #include "Logging.h"
 #include "raymath.h"
@@ -16,6 +21,46 @@
 #include <cstring>
 
 using namespace std;
+
+namespace
+{
+	// Same RGB as MainState night ambient (darklevel 64 / red_green 32).
+	constexpr Color kDungeonAmbient = { 32, 32, 64, 255 };
+
+	bool NeedsDynamicLighting()
+	{
+		return !g_isDay || g_dungeonViewActive;
+	}
+
+	Color AmbientLightingColor()
+	{
+		// Exult: dungeon → night palette regardless of clock hour.
+		if (g_dungeonViewActive)
+			return kDungeonAmbient;
+		return g_dayNightColor;
+	}
+
+	// Exult Actor::add_light_source: lit items in left/right hand only.
+	bool UnitHoldsLightSource(U7Object* unit)
+	{
+		if (!unit || !unit->m_NPCData)
+			return false;
+		static const EquipmentSlot kHands[] = {
+			EquipmentSlot::SLOT_LEFT_HAND,
+			EquipmentSlot::SLOT_RIGHT_HAND,
+		};
+		for (EquipmentSlot slot : kHands)
+		{
+			const int itemId = unit->m_NPCData->GetEquippedItem(slot);
+			if (itemId < 0)
+				continue;
+			U7Object* item = GetObjectFromID(itemId);
+			if (item && item->m_objectData && item->m_objectData->m_isLightSource)
+				return true;
+		}
+		return false;
+	}
+}
 
 bool Terrain::ColorsEqual(Color a, Color b)
 {
@@ -207,6 +252,25 @@ uint64_t Terrain::ComputeLightHash() const
 			h ^= (tx << 20) ^ (tz << 1);
 		}
 	}
+
+	// Equipped hand lights on party members (inventory items are not in the
+	// visible-object light scan).
+	if (g_Player)
+	{
+		for (int npcId : g_Player->GetPartyMemberIds())
+		{
+			auto itNpc = g_NPCData.find(npcId);
+			if (itNpc == g_NPCData.end() || !itNpc->second)
+				continue;
+			U7Object* member = GetObjectFromID(itNpc->second->m_objectID);
+			if (!UnitHoldsLightSource(member))
+				continue;
+			h ^= 0x71A7Cull + static_cast<uint64_t>(npcId) * 0x9E3779B97F4A7C15ull;
+			const uint64_t tx = static_cast<uint64_t>(static_cast<uint32_t>(static_cast<int>(member->m_Pos.x)));
+			const uint64_t tz = static_cast<uint64_t>(static_cast<uint32_t>(static_cast<int>(member->m_Pos.z)));
+			h ^= (tx << 20) ^ (tz << 1);
+		}
+	}
 	return h;
 }
 
@@ -216,14 +280,10 @@ void Terrain::Update()
 	const int centerZ = static_cast<int>(g_camera.target.z);
 
 	uint64_t lightHash = m_cachedLightHash;
-	if (!g_isDay)
-	{
+	if (NeedsDynamicLighting())
 		lightHash = ComputeLightHash();
-	}
 	else
-	{
 		lightHash = 0;
-	}
 
 	const char* reason = nullptr;
 	if (m_forceDirty)
@@ -266,19 +326,20 @@ void Terrain::Update()
 
 void Terrain::CalculateLighting()
 {
-	// Fill the whole patch with ambient day/night color.
+	const Color ambient = AmbientLightingColor();
+
+	// Fill the whole patch with ambient (day, night, or dungeon-as-night).
 	for (int i = 0; i < TILEWIDTH; ++i)
 	{
 		for (int j = 0; j < TILEHEIGHT; ++j)
 		{
-			m_cellLighting[i][j] = g_dayNightColor;
+			m_cellLighting[i][j] = ambient;
 		}
 	}
 
-	if (g_isDay)
-	{
+	// Day outdoors: full bright, no local lights. Night and dungeons: stamp discs.
+	if (!NeedsDynamicLighting())
 		return;
-	}
 
 	// Stamp light discs only (was: every light × full 100×100 grid).
 	constexpr int softLightRange = 14;
@@ -355,6 +416,21 @@ void Terrain::CalculateLighting()
 			stampLight(static_cast<int>(avatar->m_Pos.x), static_cast<int>(avatar->m_Pos.z));
 		}
 	}
+
+	// Torches / lanterns held by the party (not drawn as world light props).
+	if (g_Player)
+	{
+		for (int npcId : g_Player->GetPartyMemberIds())
+		{
+			auto itNpc = g_NPCData.find(npcId);
+			if (itNpc == g_NPCData.end() || !itNpc->second)
+				continue;
+			U7Object* member = GetObjectFromID(itNpc->second->m_objectID);
+			if (!UnitHoldsLightSource(member))
+				continue;
+			stampLight(static_cast<int>(member->m_Pos.x), static_cast<int>(member->m_Pos.z));
+		}
+	}
 }
 
 void Terrain::UpdateTerrainTiles()
@@ -406,7 +482,7 @@ void Terrain::UpdateTerrainTiles()
 			const int lightY = (TILEHEIGHT / 2) + j - camZ;
 			const Color light = (cellx >= 0 && cellx < TILEWIDTH && lightY >= 0 && lightY < TILEHEIGHT)
 				? m_cellLighting[cellx][lightY]
-				: g_dayNightColor;
+				: AmbientLightingColor();
 
 			DrawTexturePro(
 				m_terrainTiles,

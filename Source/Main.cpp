@@ -359,6 +359,22 @@ int main(int argv, char** argc)
       g_statsBackground = make_shared<Texture2D>(LoadTextureFromImage(ImageFromImage(image, {233, 436, 133, 136})));
       UnloadImage(image);
 
+      // Stats-panel status icons (GUMPS.VGA shape 28 / Exult "gumps/statatts").
+      g_statAttsIconsLoaded = true;
+      for (int i = 0; i < kStatAttsIconCount; ++i)
+      {
+         const std::string path = "Images/GUI/statatts/" + std::to_string(i) + ".png";
+         if (FileExists(path.c_str()))
+         {
+            g_statAttsIcons[i] = LoadTexture(path.c_str());
+         }
+         else
+         {
+            g_statAttsIconsLoaded = false;
+            Log("Missing status icon: " + path);
+         }
+      }
+
       g_CuboidModel = nullptr;
 
       //  Initialize scripts

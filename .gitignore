@@ -37,3 +37,7 @@ cmake-build-debug/
 
 # Runtime telemetry (regenerated locally; do not commit)
 /Redist/telemetry.txt
+/Docs/LUA_CONVERSION.md
+/RENAME_MAPPING_COMPLETE.md
+/Tools/fix_npc_cmps.py
+/Tools/scan_lua_debt.py

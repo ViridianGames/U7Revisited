@@ -1,53 +1,71 @@
---- Best guess: Manages a lockpick, unlocking chests or doors with a dexterity check, potentially breaking the pick or triggering traps.
+--- Lockpick (shape 627). Oracle: usecode.dis Func 0273H.
+--- Use on a target: DEX check (random 1..30 < Avatar DEX). Locked chest 522
+--- quality 0 unlocks to 800; quality 255 succeeds with powder-keg trap then unlock;
+--- failure barks "Pick broke" and decrements pick quantity. Locked doors
+--- (shapes 433/432/270/376, frame%4==2, quality 0) unlock via frame helper.
 function object_lockpick_0627(eventid, objectref)
-    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009
+    if eventid ~= 1 then
+        return
+    end
 
-    if eventid == 1 then
-        var_0000 = object_select_modal()
-        set_object_quality(objectref, 27)
-        var_0001 = get_object_shape(var_0000)
-        var_0002 = get_object_quality(var_0000)
-        var_0003 = get_npc_quality(1, -356) >= random2(30, 1)
-        if var_0001 == 522 then
-            if var_0002 == 0 and var_0003 then
-                set_object_shape(800, var_0000)
-                bark(var_0000, "Unlocked")
-            elseif var_0002 == 255 and var_0003 then
-                var_0004 = create_new_object(704)
-                if not var_0004 then
-                    var_0005 = update_last_created(get_object_position(var_0000))
-                    close_gumps()
-                    var_0005 = attack_object(704, var_0004, var_0004)
-                end
-                if not var_0003 then
-                    set_object_shape(var_0000, 800)
-                    bark(var_0000, "Unlocked")
-                else
-                    bark(var_0000, "Pick broke")
-                    utility_item_quantity_adjust_1061(objectref)
-                end
-            else
-                bark(var_0000, "Pick broke")
-                utility_item_quantity_adjust_1061(objectref)
+    local target = object_select_modal()
+    if target == nil or target == 0 then
+        return
+    end
+
+    play_sound_effect(27, objectref)
+
+    local shape = get_object_shape(target)
+    local quality = get_object_quality(target)
+    -- usecode: random2(1,30) < get_npc_prop(Avatar, DEX)
+    local succeed = random2(1, 30) < get_npc_property(-356, 1)
+
+    if shape == 522 then
+        if quality == 0 and succeed then
+            set_object_shape(target, 800)
+            bark(target, "Unlocked")
+            return
+        end
+
+        if quality == 255 and succeed then
+            local keg = create_new_object(704)
+            if keg then
+                update_last_created(get_object_position(target))
+                close_gumps()
+                -- Exult: attack_object(attacker, target, weapon_shape)
+                attack_object(keg, keg, 704)
+                set_object_shape(target, 800)
+                bark(target, "Unlocked")
             end
-        else
-            var_0006 = {433, 432, 270, 376}
-            for var_0007 in ipairs(var_0006) do
-                if var_0001 == var_0009 then
-                    if var_0002 == 0 then
-                        if var_0003 and utility_frame_mod4_0795(var_0000) == 2 then
-                            utility_frame_add_mod4_0796(0, var_0000)
-                            bark(var_0000, "Unlocked")
-                        else
-                            bark(var_0000, "Pick broke")
-                            utility_item_quantity_adjust_1061(objectref)
-                        end
+            return
+        end
+
+        bark(target, "Pick broke")
+        utility_item_quantity_adjust_1061(objectref)
+        return
+    end
+
+    local door_shapes = {433, 432, 270, 376}
+    for _, door_shape in ipairs(door_shapes) do
+        if shape == door_shape then
+            if quality == 0 then
+                if utility_frame_mod4_0795(target) == 2 then
+                    if succeed then
+                        utility_frame_add_mod4_0796(0, target)
+                        bark(target, "Unlocked")
                     else
-                        utility_apply_value_action_1022("@Strange that did not work.@")
+                        bark(target, "Pick broke")
+                        utility_item_quantity_adjust_1061(objectref)
                     end
+                    return
                 end
+                -- Wrong door frame state: keep scanning / fall through to hint.
+            else
+                utility_apply_value_action_1022("@Strange that did not work.@")
+                return
             end
-            utility_apply_value_action_alt_1023("@Try those on a locked chest or door.@")
         end
     end
+
+    utility_apply_value_action_alt_1023("@Try those on a locked chest or door.@")
 end
