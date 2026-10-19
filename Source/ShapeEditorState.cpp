@@ -17,6 +17,7 @@
 #include <math.h>
 #include <fstream>
 #include <algorithm>
+#include <cctype>
 #include <unordered_map>
 #include <filesystem>
 
@@ -53,6 +54,78 @@ static string GetFirstLineOfScript(const string& filepath)
 	}
 
 	return "";
+}
+
+// Helper function to split text into lowercase words for the script search box.
+// Numbers also get a copy without leading zeros, so "87" finds "npc_zorn_0087".
+static vector<string> GetSearchWords(const string& text)
+{
+	vector<string> words;
+	string word;
+	for (char c : text + " ")
+	{
+		if (isalnum((unsigned char)c))
+		{
+			word += (char)tolower((unsigned char)c);
+		}
+		else if (!word.empty())
+		{
+			words.push_back(word);
+			size_t firstNonZero = word.find_first_not_of('0');
+			if (firstNonZero > 0 && firstNonZero != string::npos)
+			{
+				words.push_back(word.substr(firstNonZero));
+			}
+			word.clear();
+		}
+	}
+	return words;
+}
+
+// Helper function to score how well one typed word matches a list of words (0-100).
+// Exact beats prefix, prefix beats substring, and anything else gets a typo-tolerant
+// similarity: 2 * LCS / total length, the same formula as RapidFuzz's fuzz::ratio.
+static float GetSearchWordScore(const string& typed, const vector<string>& words)
+{
+	float best = 0;
+	for (const string& word : words)
+	{
+		float score = 0;
+		if (word == typed)
+		{
+			return 100;
+		}
+		else if (word.compare(0, typed.size(), typed) == 0)
+		{
+			score = 95;
+		}
+		else if (typed.size() >= 3 && word.find(typed) != string::npos)
+		{
+			score = 85;
+		}
+		else
+		{
+			// Longest common subsequence, keeping one row of the table
+			vector<int> row(word.size() + 1, 0);
+			for (char t : typed)
+			{
+				int diagonal = 0;
+				for (size_t i = 1; i <= word.size(); ++i)
+				{
+					int above = row[i];
+					row[i] = (t == word[i - 1]) ? diagonal + 1 : max(row[i], row[i - 1]);
+					diagonal = above;
+				}
+			}
+			score = 200.0f * row[word.size()] / (typed.size() + word.size());
+			if (score < 70)
+			{
+				score = 0;
+			}
+		}
+		best = max(best, score);
+	}
+	return best;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -395,6 +468,7 @@ void ShapeEditorState::RenameScript(const string& oldScript, const string& newNa
 	}
 
 	g_ScriptingSystem->SortScripts();
+	m_scriptSearchLabels.clear();  // Script names/order changed; the search box rebuilds them
 	Log("RenameScript: Scripting system reinitialized, loaded " + std::to_string(g_ScriptingSystem->m_scriptFiles.size()) + " scripts");
 
 	// Find the new script index
@@ -506,7 +580,10 @@ void ShapeEditorState::Update()
 		return;
 	}
 
-	if (IsKeyPressed(KEY_H))
+	// While the script search box has focus, letter keys and Esc go to it instead of the shortcuts below
+	bool typing = static_cast<GuiTextInput*>(m_currentGui->GetElement(GE_LUASCRIPTSEARCHINPUT).get())->m_HasFocus;
+
+	if (!typing && IsKeyPressed(KEY_H))
 	{
 		if (m_helpScreen)
 		{
@@ -599,7 +676,7 @@ void ShapeEditorState::Update()
 	{
 		int stopper = 0;
 	}
-	if (IsKeyDown(KEY_Q))
+	if (!typing && IsKeyDown(KEY_Q))
 	{
 		g_CameraRotateSpeed += g_Engine->LastFrameInSeconds() * 50;
 		if (g_CameraRotateSpeed > 8)
@@ -609,7 +686,7 @@ void ShapeEditorState::Update()
 		g_CameraMoved = true;
 	}
 
-	if (IsKeyDown(KEY_E))
+	if (!typing && IsKeyDown(KEY_E))
 	{
 		g_CameraRotateSpeed -= g_Engine->LastFrameInSeconds() * 50;
 		if (g_CameraRotateSpeed < -8)
@@ -637,7 +714,7 @@ void ShapeEditorState::Update()
 	}
 
 
-	if (IsKeyPressed(KEY_A) || m_currentGui->GetActiveElementID() == GE_PREVSHAPEBUTTON)
+	if ((!typing && IsKeyPressed(KEY_A)) || m_currentGui->GetActiveElementID() == GE_PREVSHAPEBUTTON)
 	{
 		int newShape = m_currentShape - 1;
 
@@ -668,7 +745,7 @@ void ShapeEditorState::Update()
 		}
 	}
 
-	if (IsKeyPressed(KEY_D) || m_currentGui->GetActiveElementID() == GE_NEXTSHAPEBUTTON)
+	if ((!typing && IsKeyPressed(KEY_D)) || m_currentGui->GetActiveElementID() == GE_NEXTSHAPEBUTTON)
 	{
 		int newShape = m_currentShape + 1;
 
@@ -710,7 +787,7 @@ void ShapeEditorState::Update()
 		}
 	}
 
-	if (IsKeyPressed(KEY_W) || m_currentGui->GetActiveElementID() == GE_NEXTFRAMEBUTTON)
+	if ((!typing && IsKeyPressed(KEY_W)) || m_currentGui->GetActiveElementID() == GE_NEXTFRAMEBUTTON)
 	{
 		// Find next valid frame, wrapping around
 		const int maxFrameIndex = static_cast<int>(g_shapeTable[m_currentShape].size() - 1);
@@ -730,7 +807,7 @@ void ShapeEditorState::Update()
 		}
 	}
 
-	if (IsKeyPressed(KEY_S) || m_currentGui->GetActiveElementID() == GE_PREVFRAMEBUTTON)
+	if ((!typing && IsKeyPressed(KEY_S)) || m_currentGui->GetActiveElementID() == GE_PREVFRAMEBUTTON)
 	{
 		// Find previous valid frame, wrapping around
 		const int maxFrameIndex = static_cast<int>(g_shapeTable[m_currentShape].size() - 1);
@@ -750,7 +827,7 @@ void ShapeEditorState::Update()
 		}
 	}
 
-	if (IsKeyDown(KEY_Q))
+	if (!typing && IsKeyDown(KEY_Q))
 	{
 		g_cameraRotation += g_Engine->LastFrameInSeconds() * 5;
 		// Wrap angle to keep within 0 to 2*PI radians
@@ -759,7 +836,7 @@ void ShapeEditorState::Update()
 		g_CameraMoved = true;
 	}
 
-	if (IsKeyDown(KEY_E))
+	if (!typing && IsKeyDown(KEY_E))
 	{
 		g_cameraRotation -= g_Engine->LastFrameInSeconds() * 5;
 		// Wrap angle to keep within 0 to 2*PI radians
@@ -805,7 +882,7 @@ void ShapeEditorState::Update()
 		m_isDraggingSlider = false;
 	}
 
-	if (IsKeyPressed(KEY_F1) || IsKeyPressed(KEY_ESCAPE))
+	if (IsKeyPressed(KEY_F1) || (!typing && IsKeyPressed(KEY_ESCAPE)))
 	{
 		g_StateMachine->PopState();
 	}
@@ -1720,6 +1797,91 @@ void ShapeEditorState::Update()
 		g_shapeTable[m_currentShape][m_currentFrame].m_luaScript = (g_ScriptingSystem->m_scriptFiles[m_luaScriptIndex].first);
 	}
 
+	//  Script search box: type words from a script's name or first line, then pick a result
+	//  with Up/Down + Enter or a click.  Esc or clicking elsewhere clears the search.
+	GuiTextInput* searchInput = static_cast<GuiTextInput*>(m_currentGui->GetElement(GE_LUASCRIPTSEARCHINPUT).get());
+	GuiListBox* searchList = static_cast<GuiListBox*>(m_currentGui->GetElement(GE_LUASCRIPTSEARCHLIST).get());
+	int searchRow = searchList->GetSelectedIndex();
+
+	if ((m_currentGui->GetActiveElementID() == GE_LUASCRIPTSEARCHLIST || (typing && (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_KP_ENTER))))
+		&& searchRow >= 0 && searchRow < static_cast<int>(m_scriptSearchResults.size()))
+	{
+		m_luaScriptIndex = m_scriptSearchResults[searchRow];
+		g_shapeTable[m_currentShape][m_currentFrame].m_luaScript = (g_ScriptingSystem->m_scriptFiles[m_luaScriptIndex].first);
+		searchInput->m_HasFocus = false;
+	}
+
+	if (typing && IsKeyPressed(KEY_ESCAPE))
+	{
+		searchInput->m_HasFocus = false;
+	}
+
+	if (!searchInput->m_HasFocus)
+	{
+		searchInput->m_String = "";
+		searchList->Clear();
+		m_lastScriptSearch = "";
+	}
+	else if (searchInput->m_String != m_lastScriptSearch)
+	{
+		m_lastScriptSearch = searchInput->m_String;
+
+		if (m_scriptSearchLabels.size() != g_ScriptingSystem->m_scriptFiles.size())
+		{
+			m_scriptSearchLabels.clear();
+			for (const auto& script : g_ScriptingSystem->m_scriptFiles)
+			{
+				string firstLine = GetFirstLineOfScript(script.second);
+				firstLine.erase(0, firstLine.find_first_not_of("- "));
+				if (firstLine.rfind("Best guess: ", 0) == 0)
+				{
+					firstLine.erase(0, 12);
+				}
+				m_scriptSearchLabels.push_back(script.first + "  " + firstLine);
+			}
+		}
+
+		// Average each typed word's best match; a match in the name beats one in the description
+		vector<string> typedWords = GetSearchWords(m_lastScriptSearch);
+		vector<pair<float, int>> ranked;
+		for (int i = 0; i < static_cast<int>(m_scriptSearchLabels.size()); ++i)
+		{
+			vector<string> nameWords = GetSearchWords(g_ScriptingSystem->m_scriptFiles[i].first);
+			vector<string> labelWords = GetSearchWords(m_scriptSearchLabels[i]);
+			float score = 0;
+			for (const string& typed : typedWords)
+			{
+				score += max(GetSearchWordScore(typed, nameWords), 0.85f * GetSearchWordScore(typed, labelWords));
+			}
+			if (score > 0)
+			{
+				ranked.push_back({ score / typedWords.size(), i });
+			}
+		}
+		stable_sort(ranked.begin(), ranked.end(), [](const pair<float, int>& a, const pair<float, int>& b) { return a.first > b.first; });
+
+		m_scriptSearchResults.clear();
+		searchList->Clear();
+		for (const auto& entry : ranked)
+		{
+			m_scriptSearchResults.push_back(entry.second);
+			searchList->AddItem(m_scriptSearchLabels[entry.second]);
+		}
+		searchList->SetSelectedIndex(0);
+	}
+
+	if (typing && IsKeyPressed(KEY_DOWN))
+	{
+		searchList->SetSelectedIndex(searchList->GetSelectedIndex() + 1);
+	}
+
+	if (typing && IsKeyPressed(KEY_UP) && searchList->GetSelectedIndex() > 0)
+	{
+		searchList->SetSelectedIndex(searchList->GetSelectedIndex() - 1);
+	}
+
+	searchList->m_Visible = !searchList->m_Items.empty();
+
 	if(m_currentGui->GetActiveElementID() == GE_OPENLUASCRIPTBUTTON)
 	{
 		std::string filePath = g_ScriptingSystem->m_scriptFiles[m_luaScriptIndex].second;
@@ -2616,7 +2778,8 @@ void ShapeEditorState::SetupCuboidGui()
 	m_cuboidGui->AddIconButton(GE_RIGHTHEIGHTPLUSBUTTON, 80, y, g_RightArrow);
 	m_cuboidGui->AddTextArea(GE_RIGHTHEIGHTTEXTAREA, g_guiFont.get(), "H: " + to_string(int(shapeData.m_topTextureRect.height)), 55, y);
 
-	y += yoffset;
+	//  Texture rows use the Tweak Pos spacing so the Cuboid panel still fits with the script search box
+	y += yoffset * .8f;
 
 	m_cuboidGui->AddTextArea(GE_TEXTUREASSIGNMENTTEXTAREA, g_guiFont.get(), "Texture Assignment:", 2, y);
 
@@ -2626,31 +2789,31 @@ void ShapeEditorState::SetupCuboidGui()
 	m_cuboidGui->AddIconButton(GE_PREVTOPBUTTON, 40, y, g_LeftArrow);
 	m_cuboidGui->AddTextArea(GE_TOPSIDETEXTURETEXTAREA, g_guiFont.get(), m_sideDrawStrings[static_cast<int>(shapeData.GetTextureForSide(CuboidSides::CUBOID_TOP))], 50, y);
 	m_cuboidGui->AddIconButton(GE_NEXTTOPBUTTON, 95, y, g_RightArrow);
-	y += yoffset * .8f;
+	y += yoffset * .7f;
 
 	m_cuboidGui->AddTextArea(GE_FRONTSIDETEXTAREA, g_guiFont.get(), "Front", 3, y);
 	m_cuboidGui->AddIconButton(GE_PREVFRONTBUTTON, 40, y, g_LeftArrow);
 	m_cuboidGui->AddTextArea(GE_FRONTSIDETEXTURETEXTAREA, g_guiFont.get(), m_sideDrawStrings[static_cast<int>(shapeData.GetTextureForSide(CuboidSides::CUBOID_FRONT))], 50, y);
 	m_cuboidGui->AddIconButton(GE_NEXTFRONTBUTTON, 95, y, g_RightArrow);
-	y += yoffset * .8f;
+	y += yoffset * .7f;
 
 	m_cuboidGui->AddTextArea(GE_RIGHTSIDETEXTAREA, g_guiFont.get(), "Right", 3, y);
 	m_cuboidGui->AddIconButton(GE_PREVRIGHTBUTTON, 40, y, g_LeftArrow);
 	m_cuboidGui->AddTextArea(GE_RIGHTSIDETEXTURETEXTAREA, g_guiFont.get(), m_sideDrawStrings[static_cast<int>(shapeData.GetTextureForSide(CuboidSides::CUBOID_RIGHT))], 50, y);
 	m_cuboidGui->AddIconButton(GE_NEXTRIGHTBUTTON, 95, y, g_RightArrow);
-	y += yoffset * .8f;
+	y += yoffset * .7f;
 
 	m_cuboidGui->AddTextArea(GE_BOTTOMSIDETEXTAREA, g_guiFont.get(), "Bottom", 3, y);
 	m_cuboidGui->AddIconButton(GE_PREVBOTTOMBUTTON, 40, y, g_LeftArrow);
 	m_cuboidGui->AddTextArea(GE_BOTTOMSIDETEXTURETEXTAREA, g_guiFont.get(), m_sideDrawStrings[static_cast<int>(shapeData.GetTextureForSide(CuboidSides::CUBOID_BOTTOM))], 50, y);
 	m_cuboidGui->AddIconButton(GE_NEXTBOTTOMBUTTON, 95, y, g_RightArrow);
-	y += yoffset * .8f;
+	y += yoffset * .7f;
 
 	m_cuboidGui->AddTextArea(GE_BACKSIDETEXTAREA, g_guiFont.get(), "Back", 3, y);
 	m_cuboidGui->AddIconButton(GE_PREVBACKBUTTON, 40, y, g_LeftArrow);
 	m_cuboidGui->AddTextArea(GE_BACKSIDETEXTURETEXTAREA, g_guiFont.get(), m_sideDrawStrings[static_cast<int>(shapeData.GetTextureForSide(CuboidSides::CUBOID_BACK))], 50, y);
 	m_cuboidGui->AddIconButton(GE_NEXTBACKBUTTON, 95, y, g_RightArrow);
-	y += yoffset * .8f;
+	y += yoffset * .7f;
 
 	m_cuboidGui->AddTextArea(GE_LEFTSIDETEXTAREA, g_guiFont.get(), "Left", 3, y);
 	m_cuboidGui->AddIconButton(GE_PREVLEFTBUTTON, 40, y, g_LeftArrow);
@@ -2856,6 +3019,12 @@ int ShapeEditorState::SetupCommonGui(Gui* gui)
 	gui->AddIconButton(GE_PREVLUASCRIPTBUTTON, 2, y, g_LeftArrow);
 	gui->AddTextArea(GE_LUASCRIPTTEXTAREA, g_guiFont.get(), "", 12, y);
 	gui->AddIconButton(GE_NEXTLUASCRIPTBUTTON, 110, y, g_RightArrow);
+
+	y += yoffset;
+
+	// Script search: the results list opens over the 3D view, left of the panel
+	gui->AddTextInput(GE_LUASCRIPTSEARCHINPUT, 2, y - 2, 116, 11, g_guiFont.get(), "")->m_FormatNumbers = false;
+	gui->AddListBox(GE_LUASCRIPTSEARCHLIST, -302, y - 2, 300, 116, g_guiFont.get());
 
 	y += yoffset;
 

@@ -615,7 +615,7 @@ void GuiTextInput::Update()
 	float val = 0.0f;
 	bool isNumber = false;
 
-	if (!m_String.empty() && m_String.back() != '.')
+	if (m_FormatNumbers && !m_String.empty() && m_String.back() != '.')
 	{
 		try
 		{

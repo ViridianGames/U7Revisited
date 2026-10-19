@@ -75,6 +75,11 @@ public:
 
    int m_luaScriptIndex = 0;
 
+   //  Script search box under the Lua script arrows
+   std::vector<std::string> m_scriptSearchLabels;  // "name  first line" for each m_scriptFiles entry
+   std::vector<int> m_scriptSearchResults;         // m_scriptFiles index for each row of the results list
+   std::string m_lastScriptSearch;
+
    // DEEP BREATH
 
    enum GuiElements
@@ -230,6 +235,8 @@ public:
       GE_PREVLUASCRIPTBUTTON,
       GE_LUASCRIPTTEXTAREA,
       GE_NEXTLUASCRIPTBUTTON,
+      GE_LUASCRIPTSEARCHINPUT,
+      GE_LUASCRIPTSEARCHLIST,
 
       GE_OPENLUASCRIPTBUTTON,
       GE_SETLUASCRIPTTOSHAPEIDBUTTON,
