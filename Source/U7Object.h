@@ -205,6 +205,7 @@ struct MonsterData
 	unsigned char m_monsterCategory;   // 0x0D - often used by monster eggs / spawners
 	unsigned char m_flagsByte = 0;     // MONSTERS.DAT byte 9 (Exult Monster_info::flags)
 	bool m_flies = false;              // flags bit 0 (Exult Monster_info::fly)
+	bool m_cantBleed = false;          // MONSTERS.DAT byte 12 bit 6 (Exult Monster_info::cant_bleed)
 	unsigned char m_equipOffset = 0;   // Byte 14: 1-based EQUIP.DAT record (0 = none)
 
 	// Bytes 0x0E-0x18 contain additional data (experience, treasure, immunities, sounds, etc.)
@@ -549,10 +550,25 @@ public:
 	bool IsSittingPose() const;
 	bool IsSleepingPose() const;
 	bool IsDeathStatus() const;
+	/// Exult is_knocked_out: health <= 0 and not a true corpse.
+	bool IsKnockedOut() const;
+	/// Exult is_dying: health < -(strength / 3).
+	bool IsDying() const;
+	/// Combat KO: asleep + sleep pose; stays in party. No-op if already dead/asleep.
+	void ApplyKnockOut();
+	/// Spell/weapon sleep: set asleep, lie down, start wake/mend timer.
+	void ForceSleep();
+	/// Clear asleep and stand up from the sleep frame when appropriate.
+	void ClearSleep();
+	/// After healing: if HP >= 1 and asleep, stand up.
+	void TryWakeFromHealing();
 	/// Apply combat/script death: NPCs become lootable corpses; monsters despawn.
 	void ApplyDeath();
 	/// Clear death status and restore an NPC (Resurrect). No-op for monsters.
 	void ResurrectFromDeath();
+	/// Exult Actor::bleed — shape 912 blood pool at feet (grow if already present).
+	bool CanBleed() const;
+	void Bleed();
 	int GetSitFrameForFacing() const;
 	int GetSleepFrameForFacing() const;
 	int GetDeathFrameForFacing() const { return GetSleepFrameForFacing(); }
@@ -838,6 +854,21 @@ public:
 	int m_combatPathTargetId = 0;        // target id when last path was built
 	static constexpr float kCombatRepathCooldownSec = 0.35f;
 	static constexpr float kCombatRepathGoalSlopTiles = 2.5f;
+
+	// Exult Npc_poison_timer: lasts 60-180s, first tick ~5s, then every 10-20s for 0-2 HP.
+	float m_poisonEndsAt = 0.0f;     // GetTime() when poison wears off; 0 = inactive
+	float m_poisonNextTickAt = 0.0f; // GetTime() of next DoT tick
+	void StartPoisonTimer();         // (re)start when kObjFlagPoisoned is set
+	void StopPoisonTimer();
+	void UpdatePoisonTimer();        // call from NPC/Monster update
+
+	// Exult Npc_sleep_timer: spell sleep wears off in ~5-10s; KO mends until HP >= 1.
+	float m_sleepEndsAt = 0.0f;          // GetTime() when natural wake is allowed; 0 = inactive
+	float m_sleepNextMendCheckAt = 0.0f; // next mend roll while HP <= 0
+	void StartSleepTimer();
+	void StopSleepTimer();
+	void UpdateSleepTimer();             // call from NPC/Monster update
+	void MendWounds(bool mendMana);      // Exult Actor::mend_wounds (+1 HP when eligible)
 
 };
 

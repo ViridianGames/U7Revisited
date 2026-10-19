@@ -1,7 +1,8 @@
 --- Telekinesis (Ort Por Ylem). Oracle: usecode.dc Func0656 object#(0x656).
---- Remote-use a non-NPC object (levers, doors, containers, scripted props).
---- Skip set_to_attack / event-4 weapon path — apply use immediately.
---- Do not destroy the caster.
+--- Second Circle: fire projectile shape 443 (0x1BB) at a non-NPC target; on
+--- event 4, remotely use the object (levers/doors/containers/scripted props).
+--- Shapes in EXCLUDE fizzle on impact (oracle var0003). Levers 787/788/949/950
+--- are handled by use_object → Interact(2).
 
 local EXCLUDE = {
     [261] = true, [654] = true, [651] = true, [653] = true, [329] = true,
@@ -11,38 +12,46 @@ local EXCLUDE = {
 }
 
 function spell_telekinesis_ort_por_ylem_0342(eventid, objectref)
+    -- Event 4: projectile 443 impact (objectref = target).
+    if eventid == 4 then
+        if is_npc(objectref) then
+            return
+        end
+        local shape = get_object_shape(objectref)
+        if EXCLUDE[shape] then
+            return
+        end
+        use_object(objectref)
+        return
+    end
+
     if eventid ~= 1 then
         return
     end
 
     halt_scheduled(objectref)
     bark(objectref, "@Ort Por Ylem@")
-    if not check_spell_requirements() then
-        execute_usecode_array(objectref, {17511, 17509, 7781})
+    if not check_spell_requirements(objectref) then
+        execute_usecode_array(objectref, {17514, 17520, 7781})
         return
     end
+
+    begin_casting_mode(objectref, 859)
 
     local target = click_on_item()
     if not target or target == 0 then
         return
     end
 
+    local dir = find_direction(objectref, target)
     if is_npc(target) then
-        execute_usecode_array(objectref, {17511, 17509, 7781})
-        bark(objectref, "@Cannot!@")
+        -- Oracle fizzle when the target is an NPC.
+        execute_usecode_array(objectref, {1542, 17493, 17511, 17509, dir, 7769})
         return
     end
 
-    local shape = get_object_shape(target)
-    if EXCLUDE[shape] then
-        execute_usecode_array(objectref, {17511, 17509, 7781})
-        return
-    end
-
-    execute_usecode_array(objectref, {17511, 17509, 8038, 67, 7769})
-    obj_sprite_effect(target, 13)
-
-    if not use_object(target) then
-        bark(objectref, "@Nothing happens.@")
-    end
+    -- Exult: set_to_attack(caster, target, 0x1BB=443). UC_ATTACK fires mid-anim.
+    set_to_attack(objectref, target, 443)
+    -- Oracle success: face, dir, sfx 67, raise1, strike1, UC_ATTACK.
+    execute_usecode_array(objectref, {17530, 17511, 17509, 67, 7768, dir, 7769})
 end

@@ -159,8 +159,14 @@ private:
 	static constexpr float kApEpsilon = 0.001f;
 	static constexpr float kEngageRangeSlack = 0.85f;
 
-	void LockCameraToActiveUnit();
+	/// Soft-center on the active unit without locking; Avatar must stay on-screen.
+	void CenterCameraOnActiveUnit();
 	void RebuildInitiative(MainState& main);
+	// Mid-fight: EnrollNearby adds hostiles to participants but initiative was
+	// only snapshotted on enter. Sync inserts/drops without resetting the
+	// active turn (AP / phase / pending AI).
+	void SyncInitiativeFromParticipants(MainState& main);
+	void CollectInitiativeOrder(MainState& main, std::vector<int>& out) const;
 	void StartUnitTurn(MainState& main);
 	void AdvanceToNextLiving(MainState& main);
 	void ComputeReachableTiles(U7Object* unit, float maxAp, std::vector<ReachTile>& out) const;

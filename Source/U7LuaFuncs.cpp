@@ -1063,7 +1063,11 @@ static int LuaSetNPCProperty(lua_State *L)
             {
                 auto it = g_objectList.find(npc->m_objectID);
                 if (it != g_objectList.end() && it->second)
+                {
                     it->second->m_hp = float(value);
+                    // Heal / Great Heal can bring a KO'd NPC back to HP >= 1.
+                    it->second->TryWakeFromHealing();
+                }
                 break;
             }
             case 4: npc->combat = value; break;        // combat
@@ -4033,8 +4037,18 @@ static int LuaSetItemFlag(lua_State *L)
 
     U7Object* obj = g_objectList[object_id].get();
 
+    // Exult set_flag(asleep) → ForceSleep (pose + Npc_sleep_timer).
+    if (flag_id == 1)
+    {
+        obj->ForceSleep();
+        return 0;
+    }
+
     // Set the bit to 1 using bitwise OR
-    obj->m_flags |= (1 << flag_id);
+    obj->m_flags |= (1u << flag_id);
+    // Exult set_flag(poisoned) starts Npc_poison_timer (DoT + wear-off).
+    if (flag_id == 8)
+        obj->StartPoisonTimer();
 
     return 0;
 }
@@ -4052,8 +4066,18 @@ static int LuaClearItemFlag(lua_State *L)
 
     U7Object* obj = g_objectList[object_id].get();
 
+    // Exult clear_flag(asleep) stands the NPC up when on the sleep frame.
+    if (flag_id == 1)
+    {
+        obj->ClearSleep();
+        obj->StopSleepTimer();
+        return 0;
+    }
+
     // Clear the bit to 0 using bitwise AND with inverted mask
-    obj->m_flags &= ~(1 << flag_id);
+    obj->m_flags &= ~(1u << flag_id);
+    if (flag_id == 8)
+        obj->StopPoisonTimer();
 
     return 0;
 }

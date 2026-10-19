@@ -963,6 +963,34 @@ void GumpSpellbook::Draw()
 
 bool GumpSpellbook::IsMouseOverSolidPixel(Vector2 mousePos)
 {
+	// Spell icons / buttons can sit on transparent atlas pixels; still count as
+	// over the book so world NPCs underneath do not eat the double-click.
+	auto overElement = [&](int elementId) {
+		if (elementId < 0)
+			return false;
+		std::shared_ptr<GuiElement> element = m_gui.GetElement(elementId);
+		if (!element)
+			return false;
+		Rectangle bounds = GetScaledElementBounds(element);
+		bounds.x += m_gui.m_Pos.x;
+		bounds.y += m_gui.m_Pos.y;
+		return CheckCollisionPointRec(mousePos, bounds);
+	};
+
+	if (m_serializer)
+	{
+		const int closeId = m_serializer->GetElementID("CLOSE");
+		if (overElement(closeId))
+			return true;
+	}
+	if (overElement(m_prevButtonId) || overElement(m_nextButtonId))
+		return true;
+	for (int i = 0; i < 8; i++)
+	{
+		if (overElement(m_spellSpriteIds[i]))
+			return true;
+	}
+
 	const Image* img = GetCachedGuiImage("Images/GUI/gumps.png");
 	// If no image, default to solid (always block input)
 	if (!img || img->data == nullptr)

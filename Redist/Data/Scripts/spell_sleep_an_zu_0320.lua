@@ -1,5 +1,7 @@
 --- Awaken (An Zu). Oracle: usecode.dc Func0640 object#(0x640).
---- Linear spell: click a sleeping NPC to clear FLAG_ASLEEP (1).
+--- Linear Circle: clear FLAG_ASLEEP (1) on a targeted NPC after cast poses.
+--- Cast: face_dir, sfx(64), raise1, strike1; effect via delayed event 2.
+--- Filename keeps scriptId 0320 for spellbook lookup (spells.json).
 
 function spell_sleep_an_zu_0320(eventid, objectref)
     if eventid == 2 then
@@ -15,20 +17,20 @@ function spell_sleep_an_zu_0320(eventid, objectref)
 
     halt_scheduled(objectref)
     bark(objectref, "@An Zu@")
-    if not check_spell_requirements() then
-        execute_usecode_array(objectref, {17511, 7781})
+    if not check_spell_requirements(objectref) then
+        execute_usecode_array(objectref, {17514, 17520, 7781})
         return
     end
 
-    execute_usecode_array(objectref, {17511, 8037, 64, 7768})
+    begin_casting_mode(objectref, 859)
 
-    -- Green use-cursor; resumes with selected object id (0 if cancelled).
     local target = click_on_item()
-    if target and target ~= 0 then
-        if is_npc(target) then
-            halt_scheduled(target)
-            clear_item_flag(target, 1)
-            obj_sprite_effect(target, 7)
-        end
+    if not target or target == 0 then
+        return
     end
+
+    local dir = find_direction(objectref, target)
+    -- Oracle success: face, dir, sfx 64, raise1, strike1; then delayed usecode on target.
+    execute_usecode_array(objectref, {17511, 17509, 64, 7768, dir, 7769})
+    delayed_execute_usecode_array(target, {0x640, 17493}, 5)
 end

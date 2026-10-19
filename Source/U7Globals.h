@@ -89,6 +89,7 @@ struct AmmoData
 	unsigned char damage = 0;
 	WeaponDamageType damageType = WeaponDamageType::Normal;
 	unsigned char powers = 0; // WeaponPower bits
+	bool lucky = false; // +3 attack value on the hit roll (Exult Ammo_info::m_lucky)
 };
 
 // One ARMOR.DAT entry (shape-keyed). Protection subtracts from hit damage.

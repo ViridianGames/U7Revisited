@@ -506,8 +506,8 @@ bool U7Object::EngageCombatTarget()
 	if (m_target == 0)
 		return false;
 
-	// Asleep / paralyzed combatants cannot swing or chase.
-	if ((m_flags & (1u << 1)) != 0 || (m_flags & (1u << 7)) != 0)
+	// Asleep / paralyzed / knocked-out combatants cannot swing or chase.
+	if ((m_flags & kObjFlagAsleep) != 0 || (m_flags & kObjFlagParalyzed) != 0 || IsKnockedOut())
 		return false;
 
 	auto targetIt = g_objectList.find(m_target);
@@ -609,7 +609,7 @@ bool U7Object::EngageCombatTarget()
 			}
 			if (!TryCombatHit(this, target, weaponShape, -1))
 			{
-				AddConsoleString(FormatCombatAttackConsole(this, target, weaponShape, -1), YELLOW);
+				SpawnFloatingMissText(target);
 				target->NotifyAttackedBy(this);
 				return;
 			}
@@ -673,7 +673,7 @@ bool U7Object::EngageCombatTarget()
 				{
 					if (!TryCombatHit(this, target, weaponShape, ammoShape))
 					{
-						AddConsoleString(FormatCombatAttackConsole(this, target, weaponShape, -1), YELLOW);
+						SpawnFloatingMissText(target);
 						target->NotifyAttackedBy(this);
 					}
 					else
@@ -916,6 +916,146 @@ void U7Object::HostileCombatUpdate()
 	UpdateMovement();
 }
 
+void U7Object::StartPoisonTimer()
+{
+	// Exult Npc_poison_timer: lasts 1-3 minutes; first check after 5s.
+	const float now = GetTime();
+	m_poisonEndsAt = now + 60.0f + static_cast<float>(rand() % 120);
+	m_poisonNextTickAt = now + 5.0f;
+}
+
+void U7Object::StopPoisonTimer()
+{
+	m_poisonEndsAt = 0.0f;
+	m_poisonNextTickAt = 0.0f;
+}
+
+void U7Object::UpdatePoisonTimer()
+{
+	if (m_poisonEndsAt <= 0.0f)
+		return;
+	if (IsDeathStatus() || GetIsDead())
+	{
+		m_flags &= ~kObjFlagPoisoned;
+		StopPoisonTimer();
+		return;
+	}
+	if ((m_flags & kObjFlagPoisoned) == 0)
+	{
+		StopPoisonTimer();
+		return;
+	}
+
+	const float now = GetTime();
+	if (now >= m_poisonEndsAt)
+	{
+		m_flags &= ~kObjFlagPoisoned;
+		StopPoisonTimer();
+		return;
+	}
+	if (now < m_poisonNextTickAt)
+		return;
+
+	// Exult: reduce_health(rand()%3, poison_damage); next tick in 10-20s.
+	const int penalty = rand() % 3;
+	if (penalty > 0)
+		ApplyCombatDamage(this, static_cast<float>(penalty), nullptr);
+	m_poisonNextTickAt = now + 10.0f + static_cast<float>(rand() % 10);
+}
+
+void U7Object::StartSleepTimer()
+{
+	// Exult Npc_sleep_timer: lasts 5-10 seconds for natural wake when HP >= 1.
+	const float now = GetTime();
+	m_sleepEndsAt = now + 5.0f + static_cast<float>(rand() % 5);
+	m_sleepNextMendCheckAt = now + g_secsPerMinute * 0.5f;
+}
+
+void U7Object::StopSleepTimer()
+{
+	m_sleepEndsAt = 0.0f;
+	m_sleepNextMendCheckAt = 0.0f;
+}
+
+void U7Object::MendWounds(bool mendMana)
+{
+	if (IsDeathStatus() || GetIsDead())
+		return;
+	// Exult: poisoned blocks mend; starving blocks mend only while HP > 0.
+	if ((m_flags & kObjFlagPoisoned) != 0)
+		return;
+	if (m_NPCData && m_NPCData->food <= 9 && m_hp > 0.0f
+	    && g_Player && g_Player->NPCIDInParty(m_NPCID))
+		return;
+
+	float maxHp = m_BaseMaxHP;
+	if (m_NPCData && m_NPCData->str > 0)
+		maxHp = static_cast<float>(m_NPCData->str);
+	if (maxHp < 1.0f)
+		maxHp = 1.0f;
+
+	if (m_hp < maxHp)
+	{
+		m_hp += 1.0f;
+		if (m_hp > maxHp)
+			m_hp = maxHp;
+	}
+
+	if (mendMana)
+	{
+		float maxMana = m_NPCData ? static_cast<float>(m_NPCData->magic) : 0.0f;
+		if (maxMana > 0.0f && m_mana < maxMana)
+		{
+			m_mana += 1.0f;
+			if (m_mana > maxMana)
+				m_mana = maxMana;
+		}
+	}
+}
+
+void U7Object::UpdateSleepTimer()
+{
+	if (m_sleepEndsAt <= 0.0f && (m_flags & kObjFlagAsleep) == 0)
+		return;
+	if (IsDeathStatus() || GetIsDead())
+	{
+		StopSleepTimer();
+		return;
+	}
+
+	const float now = GetTime();
+	const bool inParty = g_Player && g_Player->NPCIDInParty(m_NPCID);
+
+	// While health <= 0, mend toward wake. Do not regenerate during combat —
+	// otherwise KO'd enemies stand up mid-fight (especially noticeable in TB).
+	if (m_hp <= 0.0f && !g_isCombatMode)
+	{
+		if (now >= m_sleepNextMendCheckAt)
+		{
+			m_sleepNextMendCheckAt = now + g_secsPerMinute * 0.5f;
+			if (inParty || m_Visible)
+			{
+				if ((rand() % 6) == 0)
+					MendWounds(false);
+			}
+			else if (m_UnitType == UnitTypes::UNIT_TYPE_NPC && m_NPCData)
+			{
+				// Exult: off-screen non-party fully restore.
+				m_hp = static_cast<float>(std::max(1, static_cast<int>(m_NPCData->str)));
+			}
+		}
+	}
+
+	// Don't wake someone beaten into unconsciousness until HP >= 1.
+	if (m_hp >= 1.0f
+	    && (now >= m_sleepEndsAt || (m_flags & kObjFlagAsleep) == 0))
+	{
+		if ((m_flags & kObjFlagAsleep) != 0)
+			ClearSleep();
+		StopSleepTimer();
+	}
+}
+
 void U7Object::MonsterUpdate()
 {
 	// Corpses: keep death pose, no chase/attack AI.
@@ -927,7 +1067,13 @@ void U7Object::MonsterUpdate()
 		return;
 	}
 
+	UpdatePoisonTimer();
+	UpdateSleepTimer();
 	UpdateNpcAnim(g_Engine ? g_Engine->LastFrameInSeconds() : 0.0f);
+
+	// Exult: asleep / KO skips chase and attack.
+	if ((m_flags & kObjFlagAsleep) != 0 || IsKnockedOut())
+		return;
 
 	// Hostiles are Team 1 (combat eggs). Team 2 = party summons (Swarm). Team 0 = fauna.
 	if (m_Team == 2)
@@ -2684,10 +2830,17 @@ void U7Object::NPCUpdate()
 		return;
 	}
 
+	UpdatePoisonTimer();
+	UpdateSleepTimer();
+
 	// Cast / craft scripts must tick even while combat is paused or on Hold —
 	// those paths return early below and would otherwise freeze the cast anim.
 	UpdateUsecodeScript();
 	UpdateNpcAnim(g_Engine ? g_Engine->LastFrameInSeconds() : 0.0f);
+
+	// Exult: asleep / knocked-out — lie still; sleep timer above still mends.
+	if ((m_flags & kObjFlagAsleep) != 0 || IsKnockedOut())
+		return;
 
 	// Don't run schedule activity scripts while in the party (including the Avatar).
 	// Avatar was previously excluded from this skip (m_NPCID != 0), so Talk/Combat
@@ -4074,6 +4227,142 @@ bool U7Object::IsDeathStatus() const
 	return false;
 }
 
+bool U7Object::IsKnockedOut() const
+{
+	// Exult is_knocked_out: health <= 0 (still alive until IsDying → die).
+	return m_hp <= 0.0f && !IsDeathStatus();
+}
+
+bool U7Object::IsDying() const
+{
+	// Exult is_dying: health < -(strength / 3).
+	int str = 1;
+	if (m_NPCData && m_NPCData->str > 0)
+		str = static_cast<int>(m_NPCData->str);
+	else if (m_BaseMaxHP > 0.0f)
+		str = static_cast<int>(m_BaseMaxHP);
+	return m_hp < -static_cast<float>(str / 3);
+}
+
+void U7Object::ForceSleep()
+{
+	if (IsDeathStatus() || GetIsDead())
+		return;
+	m_flags |= kObjFlagAsleep;
+	StartSleepTimer();
+	m_target = 0;
+	m_combatSpellId = -1;
+	m_combatSpellTargetId = 0;
+	m_combatMoveOrder = false;
+	m_combatPathTargetId = 0;
+	SetOverrideFrame(GetSleepFrameForFacing());
+}
+
+void U7Object::ApplyKnockOut()
+{
+	if (IsDeathStatus() || GetIsDead())
+		return;
+	if ((m_flags & kObjFlagAsleep) != 0 && IsSleepingPose())
+		return;
+
+	ForceSleep();
+
+	const std::string label = m_name.empty() ? "Someone" : m_name;
+	AddConsoleString(label + " is down!", ORANGE);
+}
+
+void U7Object::ClearSleep()
+{
+	m_flags &= ~kObjFlagAsleep;
+	if (IsSleepingPose())
+		ClearOverrideFrame();
+}
+
+void U7Object::TryWakeFromHealing()
+{
+	if (IsDeathStatus() || GetIsDead())
+		return;
+	if (m_hp < 1.0f)
+		return;
+	if ((m_flags & kObjFlagAsleep) == 0 && !IsSleepingPose())
+		return;
+	ClearSleep();
+	StopSleepTimer();
+}
+
+bool U7Object::CanBleed() const
+{
+	// Exult Monster_info::cant_bleed (MONSTERS.DAT byte 12 bit 6). NPCs with no
+	// monster record bleed by default (get_monster_info_safe default).
+	if (!m_shapeData)
+		return true;
+	const int shape = m_shapeData->m_shape;
+	for (const MonsterData& md : g_monsterData)
+	{
+		if (static_cast<int>(md.m_shape) == shape)
+			return !md.m_cantBleed;
+	}
+	return true;
+}
+
+void U7Object::Bleed()
+{
+	// Exult Actor::bleed — shape 912 frames 0-3; grow an existing pool on this tile.
+	if (!CanBleed())
+		return;
+
+	constexpr int kBloodShape = 912;
+	constexpr int kFirstFrame = 0;
+	constexpr int kLastFrame = 3;
+
+	const int tileX = static_cast<int>(std::floor(m_Pos.x));
+	const int tileZ = static_cast<int>(std::floor(m_Pos.z));
+	const int chunkX = tileX / 16;
+	const int chunkZ = tileZ / 16;
+	if (chunkX < 0 || chunkX >= 192 || chunkZ < 0 || chunkZ >= 192)
+		return;
+
+	// Same-tile blood: grow frame instead of stacking another splat.
+	for (U7Object* obj : g_chunkObjectMap[chunkX][chunkZ])
+	{
+		if (!obj || obj->m_ObjectType != kBloodShape || obj->m_isContained)
+			continue;
+		if (obj->GetIsDead())
+			continue;
+		if (static_cast<int>(std::floor(obj->m_Pos.x)) != tileX
+		    || static_cast<int>(std::floor(obj->m_Pos.z)) != tileZ)
+			continue;
+		// Keep pools on the same lift band as the corpse.
+		if (std::fabs(obj->m_Pos.y - m_Pos.y) > 2.5f)
+			continue;
+
+		int frame = obj->m_Frame;
+		if (frame < kFirstFrame || frame > kLastFrame)
+			continue;
+		if (frame < kLastFrame)
+		{
+			obj->SetFrame(frame + 1);
+		}
+		return;
+	}
+
+	// New pool: Exult starts with frames 0-1 when the range is wider than 2.
+	int numFrames = kLastFrame - kFirstFrame + 1;
+	if (numFrames > 2)
+		numFrames = 2;
+	const int bloodFrame = kFirstFrame + (rand() % numFrames);
+
+	const unsigned int id = GetNextID();
+	const float x = static_cast<float>(tileX) + 0.5f;
+	const float z = static_cast<float>(tileZ) + 0.5f;
+	U7Object* blood = AddObject(kBloodShape, bloodFrame, static_cast<int>(id), x, m_Pos.y, z);
+	if (!blood)
+		return;
+	blood->m_Visible = true;
+	blood->m_ShouldDraw = true;
+	blood->m_isContained = false;
+}
+
 void U7Object::ApplyDeath()
 {
 	if (GetIsDead())
@@ -4086,6 +4375,8 @@ void U7Object::ApplyDeath()
 		return;
 	}
 
+	StopSleepTimer();
+	m_flags &= ~kObjFlagAsleep;
 	m_hp = 0.0f;
 	m_pathWaypoints.clear();
 	m_currentWaypointIndex = 0;
@@ -4102,6 +4393,10 @@ void U7Object::ApplyDeath()
 	SetDest(m_Pos);
 	ReleaseFurnitureClaim();
 	m_furnitureObjectId = -1;
+
+	// Exult leaves combat blood pools (shape 912) under the body; ensure at least
+	// one splat on true death so corpses are visibly bloody.
+	Bleed();
 
 	if (m_UnitType == UnitTypes::UNIT_TYPE_MONSTER)
 	{
@@ -4919,6 +5214,20 @@ bool U7Object::FireUsecodeAttack()
 		damageType = 0;
 		speed = 16.0f;
 	}
+	else if (weaponShape == 280)
+	{
+		// Ignite (In Flam) — light on impact via spell event 4; no HP damage.
+		damage = 0;
+		damageType = 0;
+		speed = 16.0f;
+	}
+	else if (weaponShape == 443)
+	{
+		// Telekinesis (Ort Por Ylem) — remote-use on impact via spell event 4.
+		damage = 0;
+		damageType = 0;
+		speed = 16.0f;
+	}
 	else if (weaponShape == 424)
 	{
 		// In Nox poison bolt — apply poisoned flag on impact (no HP from the bolt itself).
@@ -4948,7 +5257,8 @@ bool U7Object::FireUsecodeAttack()
 		// Status-spell fallback when the bolt shape has no drawable frames.
 		if (g_ScriptingSystem &&
 		    (weaponShape == 72 || weaponShape == 281 || weaponShape == 408 ||
-		     weaponShape == 424 || weaponShape == 540))
+		     weaponShape == 424 || weaponShape == 540 || weaponShape == 280 ||
+		     weaponShape == 443))
 		{
 			const char* script = nullptr;
 			if (weaponShape == 72) script = "spell_sleep_in_zu_0351";
@@ -4956,6 +5266,8 @@ bool U7Object::FireUsecodeAttack()
 			else if (weaponShape == 408) script = "spell_paralyze_an_por_0348";
 			else if (weaponShape == 424) script = "spell_poison_in_nox_0350";
 			else if (weaponShape == 540) script = "spell_dispel_fire_an_flam_0322";
+			else if (weaponShape == 280) script = "spell_fireball_in_flam_0326";
+			else if (weaponShape == 443) script = "spell_telekinesis_ort_por_ylem_0342";
 			if (script)
 			{
 				g_ScriptingSystem->CallScript(script,

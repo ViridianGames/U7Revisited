@@ -304,44 +304,77 @@ float GetCombatMaxHP(const U7Object* unit)
 	return maxHp;
 }
 
+namespace
+{
+	// Exult Actor::get_effective_prop: cursed subtracts 3 from str/dex/int/combat.
+	int ApplyCursedPenalty(const U7Object* unit, int val)
+	{
+		if (unit && (unit->m_flags & kObjFlagCursed) != 0)
+			val -= 3;
+		return val;
+	}
+
+	// Exult: paralyzed / asleep / knocked out → dexterity 0, combat 1 (before curse/might).
+	bool IsCombatIncapacitated(const U7Object* unit)
+	{
+		if (!unit || unit->IsDeathStatus())
+			return false;
+		if ((unit->m_flags & kObjFlagParalyzed) != 0)
+			return true;
+		if ((unit->m_flags & kObjFlagAsleep) != 0)
+			return true;
+		return unit->IsKnockedOut();
+	}
+}
+
 int GetCombatDexterity(const U7Object* unit)
 {
 	if (!unit)
 		return 10;
+	if (IsCombatIncapacitated(unit))
+		return 0;
+	int val = 10;
 	if (unit->m_NPCData)
-		return static_cast<int>(unit->m_NPCData->dex);
-	if (g_Player && g_Player->GetAvatarObject() == unit)
-		return g_Player->GetDex();
-	if (unit->m_shapeData)
+		val = static_cast<int>(unit->m_NPCData->dex);
+	else if (g_Player && g_Player->GetAvatarObject() == unit)
+		val = g_Player->GetDex();
+	else if (unit->m_shapeData)
 	{
 		const int shape = unit->m_shapeData->m_shape;
 		for (const MonsterData& md : g_monsterData)
 		{
 			if (static_cast<int>(md.m_shape) == shape)
-				return static_cast<int>(md.m_dexterity);
+			{
+				val = static_cast<int>(md.m_dexterity);
+				break;
+			}
 		}
 	}
-	return 10;
+	return ApplyCursedPenalty(unit, val);
 }
 
 int GetCombatIntelligence(const U7Object* unit)
 {
 	if (!unit)
 		return 10;
+	int val = 10;
 	if (unit->m_NPCData)
-		return static_cast<int>(unit->m_NPCData->iq);
-	if (g_Player && g_Player->GetAvatarObject() == unit)
-		return g_Player->GetInt();
-	if (unit->m_shapeData)
+		val = static_cast<int>(unit->m_NPCData->iq);
+	else if (g_Player && g_Player->GetAvatarObject() == unit)
+		val = g_Player->GetInt();
+	else if (unit->m_shapeData)
 	{
 		const int shape = unit->m_shapeData->m_shape;
 		for (const MonsterData& md : g_monsterData)
 		{
 			if (static_cast<int>(md.m_shape) == shape)
-				return static_cast<int>(md.m_intelligence);
+			{
+				val = static_cast<int>(md.m_intelligence);
+				break;
+			}
 		}
 	}
-	return 10;
+	return ApplyCursedPenalty(unit, val);
 }
 
 ContactFieldType GetContactFieldType(int shape)
@@ -392,20 +425,23 @@ namespace
 	{
 		if (!unit)
 			return 0;
+		int val = static_cast<int>(std::max(1.0f, unit->m_BaseMaxHP));
 		if (unit->m_NPCData)
-			return static_cast<int>(unit->m_NPCData->str);
-
-		// Monsters: look up MONSTERS.DAT by shape (m_BaseMaxHP is also strength-derived).
-		if (unit->m_shapeData)
+			val = static_cast<int>(unit->m_NPCData->str);
+		else if (unit->m_shapeData)
 		{
+			// Monsters: look up MONSTERS.DAT by shape (m_BaseMaxHP is also strength-derived).
 			const int shape = unit->m_shapeData->m_shape;
 			for (const MonsterData& md : g_monsterData)
 			{
 				if (static_cast<int>(md.m_shape) == shape)
-					return static_cast<int>(md.m_strength);
+				{
+					val = static_cast<int>(md.m_strength);
+					break;
+				}
 			}
 		}
-		return static_cast<int>(std::max(1.0f, unit->m_BaseMaxHP));
+		return ApplyCursedPenalty(unit, val);
 	}
 
 	unsigned char CombinedWeaponPowers(int weaponShape, int ammoShape)
@@ -497,24 +533,37 @@ namespace
 	}
 }
 
+int GetTotalArmorPoints(const U7Object* unit)
+{
+	unsigned char immune = 0;
+	return GetEquippedArmorPoints(unit, immune) + GetNaturalArmorPoints(unit);
+}
+
 int GetCombatSkill(const U7Object* unit)
 {
 	if (!unit)
 		return 0;
+	// Exult get_effective_prop(combat): incapacitated actors defend/attack as Combat 1.
+	if (IsCombatIncapacitated(unit))
+		return 1;
+	int val = static_cast<int>(unit->m_combat);
 	if (g_Player && g_Player->GetAvatarObject() == unit)
-		return g_Player->GetCombat();
-	if (unit->m_NPCData)
-		return static_cast<int>(unit->m_NPCData->combat);
-	if (unit->m_shapeData)
+		val = g_Player->GetCombat();
+	else if (unit->m_NPCData)
+		val = static_cast<int>(unit->m_NPCData->combat);
+	else if (unit->m_shapeData)
 	{
 		const int shape = unit->m_shapeData->m_shape;
 		for (const MonsterData& md : g_monsterData)
 		{
 			if (static_cast<int>(md.m_shape) == shape)
-				return static_cast<int>(md.m_combat);
+			{
+				val = static_cast<int>(md.m_combat);
+				break;
+			}
 		}
 	}
-	return static_cast<int>(unit->m_combat);
+	return ApplyCursedPenalty(unit, val);
 }
 
 bool CombatRollToWin(int attackerPoints, int defenderPoints)
@@ -535,13 +584,18 @@ bool TryCombatHit(U7Object* attacker, U7Object* target, int weaponShape, int amm
 		return false;
 
 	const WeaponData* winf = (weaponShape >= 0) ? GetWeaponData(weaponShape) : nullptr;
+	const AmmoData* ainf = (ammoShape >= 0) ? GetAmmoData(ammoShape) : nullptr;
 	if (winf && winf->autohit)
 		return true;
 
 	int attval = GetCombatSkill(attacker);
 	if (winf && winf->lucky)
 		attval += 3;
-	// Ammo lucky is not stored yet; Exult also adds ainf->lucky().
+	if (ainf && ainf->lucky)
+		attval += 3;
+	// Exult Combat_schedule::attack_target: ranged weapons get +6 to attval.
+	if (winf && winf->uses == WeaponUses::Ranged)
+		attval += 6;
 
 	int defval = GetCombatSkill(target);
 	if ((target->m_flags & kObjFlagProtection) != 0)
@@ -580,13 +634,16 @@ void ApplyCombatWeaponPowers(U7Object* attacker, U7Object* target, int weaponSha
 	const int defint = GetCombatIntelligence(target);
 
 	if ((powers & WeaponPower::Poison) != 0 && CombatRollToWin(kAttInt, defstr))
+	{
 		target->m_flags |= kObjFlagPoisoned;
+		target->StartPoisonTimer();
+	}
 	if ((powers & WeaponPower::Curse) != 0 && CombatRollToWin(kAttInt, defint))
 		target->m_flags |= kObjFlagCursed;
 	if ((powers & WeaponPower::Charm) != 0 && CombatRollToWin(kAttInt, defint))
 		target->m_flags |= kObjFlagCharmed;
 	if ((powers & WeaponPower::Sleep) != 0 && CombatRollToWin(kAttInt, defint))
-		target->m_flags |= kObjFlagAsleep;
+		target->ForceSleep();
 	if ((powers & WeaponPower::Paralyze) != 0 && CombatRollToWin(kAttInt, defstr))
 		target->m_flags |= kObjFlagParalyzed;
 	if ((powers & WeaponPower::Magebane) != 0)
@@ -696,8 +753,9 @@ bool ApplyCombatDamage(U7Object* target, float amount, U7Object* attacker)
 		return false;
 
 	target->m_hp -= amount;
-	if (target->m_hp < 0.0f)
-		target->m_hp = 0.0f;
+	// Exult: floor health around -50 for safety.
+	if (target->m_hp < -50.0f)
+		target->m_hp = -50.0f;
 
 	// Same head anchor as DrawCombatHPBars so the number starts just above the bar.
 	Vector3 textPos = target->m_centerPoint;
@@ -711,9 +769,24 @@ bool ApplyCombatDamage(U7Object* target, float amount, U7Object* attacker)
 	if (attacker)
 		target->NotifyAttackedBy(attacker);
 
-	if (target->m_hp <= 0.0f)
+	// Exult: normal weapon hits can start/grow blood (shape 912). Poison/caltrop
+	// pass a null attacker, so they skip this path.
+	if (attacker && target->CanBleed())
+	{
+		const int delta = static_cast<int>(std::ceil(amount));
+		if (delta > 0 && (rand() % 10) < delta)
+			target->Bleed();
+	}
+
+	// Exult reduce_health: die below -str/3; else KO (asleep) when crossing to HP <= 0.
+	if (target->IsDying())
 	{
 		target->ApplyDeath();
+		return true;
+	}
+	if (target->m_hp <= 0.0f && (target->m_flags & kObjFlagAsleep) == 0)
+	{
+		target->ApplyKnockOut();
 		return true;
 	}
 	return false;
@@ -787,6 +860,16 @@ void SpawnFloatingCombatText(Vector3 worldPos, const std::string& text, Color co
 	ft.age = 0.0f;
 	ft.lifetime = 1.15f;
 	g_floatingCombatTexts.push_back(ft);
+}
+
+void SpawnFloatingMissText(U7Object* target)
+{
+	if (!target)
+		return;
+	// Same head anchor as damage numbers.
+	Vector3 textPos = target->m_centerPoint;
+	textPos.y += 1.35f;
+	SpawnFloatingCombatText(textPos, "MISS", WHITE);
 }
 
 void UpdateFloatingCombatTexts()

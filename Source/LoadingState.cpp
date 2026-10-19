@@ -106,7 +106,8 @@ void LoadMonsterData()
 		md.m_unknown0A = *ptr++;  // Byte 10: vulnerable
 		md.m_unknown0B = *ptr++;  // Byte 11: immune
 
-		ptr++;  // Byte 12
+		value = *ptr++;  // Byte 12: cant_yell bit5, cant_bleed bit6
+		md.m_cantBleed = (value & (1u << 6)) != 0;
 		value = *ptr++;  // Byte 13
 		md.m_monsterCategory = value;  // includes attack mode low bits etc.
 

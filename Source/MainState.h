@@ -99,7 +99,7 @@ public:
 	void Bark(U7Object* object, const std::string& text, float duration = 1.5f);
 	void ClearBarks();
 
-	// Single-click object info (name / weight / volume) shown left of the party UI.
+	// Single-click object info (name / weight / volume [/ combat]) shown left of the party UI.
 	void ShowObjectInfoTooltip(U7Object* object);
 	void ClearObjectInfoTooltip();
 
@@ -456,6 +456,7 @@ private:
 	std::string m_objectInfoTooltipName;
 	std::string m_objectInfoTooltipWeight;
 	std::string m_objectInfoTooltipVolume;
+	std::vector<std::string> m_objectInfoTooltipCombat; // weapon/armor lines
 	float m_objectInfoTooltipDuration = 0.0f;
 	static constexpr float kObjectInfoTooltipSeconds = 5.0f;
 

@@ -72,6 +72,9 @@ std::string CombatWeaponDisplayNameForUnit(U7Object* unit);
 // Exult Actor::get_property(combat) for hit rolls (Avatar via g_Player).
 int GetCombatSkill(const U7Object* unit);
 
+// Sum of equipped ARMOR.DAT protection (+ natural for monsters). For party UI.
+int GetTotalArmorPoints(const U7Object* unit);
+
 // Exult Actor::roll_to_win (d30; 0 always lose, 29 always win).
 bool CombatRollToWin(int attackerPoints, int defenderPoints);
 
@@ -90,11 +93,15 @@ int FigureCombatHitPoints(U7Object* attacker, U7Object* target, int weaponShape,
 void ApplyCombatWeaponPowers(U7Object* attacker, U7Object* target, int weaponShape,
 	int ammoShape = -1, int hitsDealt = 0);
 
-// Subtract HP, spawn floating damage text, notify attacker, ApplyDeath if needed.
-// Returns true if the target died from this hit.
+// Subtract HP, spawn floating damage text, notify attacker.
+// Exult thresholds: HP may go negative (floor -50); KO (asleep) at HP <= 0;
+// true death when HP < -(strength/3). Returns true if the target was defeated
+// (knocked out or killed) by this hit.
 bool ApplyCombatDamage(U7Object* target, float amount, U7Object* attacker = nullptr);
 
 void SpawnFloatingCombatText(Vector3 worldPos, const std::string& text, Color color);
+/// Floating "MISS" above the target (replaces miss console spam).
+void SpawnFloatingMissText(U7Object* target);
 void UpdateFloatingCombatTexts();
 void DrawFloatingCombatTexts(); // screen-space; call inside GUI render target
 void DrawCombatHPBars();        // screen-space; combat mode only

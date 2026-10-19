@@ -3118,6 +3118,28 @@ void UpdateFlyingProjectiles()
 							  static_cast<lua_Integer>(proj.targetId) });
 					}
 				}
+				else if (proj.weaponShape == 280 || bolt->m_ObjectType == 280)
+				{
+					// Ignite bolt (shape 280): spell usecode event 4 — light unlit sources.
+					if (g_ScriptingSystem)
+					{
+						g_ScriptingSystem->CallScript(
+							"spell_fireball_in_flam_0326",
+							{ static_cast<lua_Integer>(4),
+							  static_cast<lua_Integer>(proj.targetId) });
+					}
+				}
+				else if (proj.weaponShape == 443 || bolt->m_ObjectType == 443)
+				{
+					// Telekinesis bolt (shape 443): spell usecode event 4 — remote use.
+					if (g_ScriptingSystem)
+					{
+						g_ScriptingSystem->CallScript(
+							"spell_telekinesis_ort_por_ylem_0342",
+							{ static_cast<lua_Integer>(4),
+							  static_cast<lua_Integer>(proj.targetId) });
+					}
+				}
 				else if (proj.weaponShape == 424 || bolt->m_ObjectType == 424)
 				{
 					// Poison (In Nox) bolt — Obj_flags::poisoned.
@@ -3164,6 +3186,8 @@ void UpdateFlyingProjectiles()
 				}
 				else
 				{
+					// Vas Flam (856) etc.: weaponShape set + optional scripted proj.damage.
+					// Exult still rolls try_to_hit for fire bolt; always show floating feedback.
 					const bool useWeaponTables = (proj.weaponShape >= 0 || proj.ammoShape >= 0);
 					bool hit = true;
 					if (useWeaponTables)
@@ -3171,13 +3195,7 @@ void UpdateFlyingProjectiles()
 
 					if (!hit)
 					{
-						const std::string attackerName = (attacker && !attacker->m_name.empty())
-							? attacker->m_name : "Someone";
-						const std::string targetName = !target->m_name.empty() ? target->m_name : "enemy";
-						AddConsoleString(
-							attackerName + " attacks " + targetName + " with "
-							+ CombatWeaponDisplayName(proj.weaponShape) + " and misses",
-							YELLOW);
+						SpawnFloatingMissText(target);
 						if (attacker)
 							target->NotifyAttackedBy(attacker);
 					}
@@ -3186,23 +3204,34 @@ void UpdateFlyingProjectiles()
 						int hits = 0;
 						if (useWeaponTables)
 							hits = FigureCombatHitPoints(attacker, target, proj.weaponShape, proj.ammoShape);
-						else
+						// Spell bolts pass damage>0 as a floor when the table roll soaks to 0.
+						if (hits <= 0 && proj.damage > 0)
 							hits = proj.damage;
 						if (hits > 0)
-							ApplyCombatDamage(target, static_cast<float>(hits), attacker);
-						if (useWeaponTables)
-							ApplyCombatWeaponPowers(attacker, target, proj.weaponShape, proj.ammoShape, hits);
-						// Combat weapon missiles: same console wording as melee (damage known at impact).
-						if (useWeaponTables && hits > 0)
 						{
-							const std::string attackerName = (attacker && !attacker->m_name.empty())
-								? attacker->m_name : "Someone";
-							const std::string targetName = !target->m_name.empty() ? target->m_name : "enemy";
-							AddConsoleString(
-								attackerName + " attacks " + targetName + " with "
-								+ CombatWeaponDisplayName(proj.weaponShape)
-								+ " for " + std::to_string(hits) + " damage",
-								RED);
+							ApplyCombatDamage(target, static_cast<float>(hits), attacker);
+							if (useWeaponTables)
+								ApplyCombatWeaponPowers(attacker, target, proj.weaponShape, proj.ammoShape, hits);
+							if (useWeaponTables)
+							{
+								const std::string attackerName = (attacker && !attacker->m_name.empty())
+									? attacker->m_name : "Someone";
+								const std::string targetName = !target->m_name.empty() ? target->m_name : "enemy";
+								AddConsoleString(
+									attackerName + " attacks " + targetName + " with "
+									+ CombatWeaponDisplayName(proj.weaponShape)
+									+ " for " + std::to_string(hits) + " damage",
+									RED);
+							}
+						}
+						else
+						{
+							// Connected but armor/immunity soaked everything — still show feedback.
+							Vector3 textPos = target->m_centerPoint;
+							textPos.y += 1.35f;
+							SpawnFloatingCombatText(textPos, "0", WHITE);
+							if (attacker)
+								target->NotifyAttackedBy(attacker);
 						}
 					}
 					// Flame Bolt / fire bolt: hit SFX only — no explosion sprite.
@@ -4067,7 +4096,10 @@ void LoadAmmoData()
 		a.familyShape = static_cast<int16_t>(p[2] | (p[3] << 8));
 		a.sprite = static_cast<int16_t>(p[4] | (p[5] << 8));
 		a.damage = p[6];
-		// flags0 at p[7]; unknown at p[8]; flags1 at p[9] (damage_type high nibble); powers at p[10].
+		// flags0 at p[7]: lucky bit0, autohit bit1, returns bit2, ... (Exult Ammo_info::read).
+		const unsigned char flags0 = p[7];
+		a.lucky = (flags0 & 1) != 0;
+		// flags1 at p[9] (damage_type high nibble); powers at p[10].
 		const unsigned char flags1 = p[9];
 		a.damageType = static_cast<WeaponDamageType>((flags1 >> 4) & 15);
 		a.powers = p[10];

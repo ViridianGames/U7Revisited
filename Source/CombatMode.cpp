@@ -548,7 +548,7 @@ void TurnBasedCombatMode::RefreshReachableAfterApChange()
 		RebuildReachableTiles();
 }
 
-void TurnBasedCombatMode::LockCameraToActiveUnit()
+void TurnBasedCombatMode::CenterCameraOnActiveUnit()
 {
 	if (m_activeUnitId < 0)
 		return;
@@ -556,17 +556,19 @@ void TurnBasedCombatMode::LockCameraToActiveUnit()
 	if (it == g_objectList.end() || !it->second)
 		return;
 
-	g_cameraLockObjectId = m_activeUnitId;
+	// Same freecam as RTwP: unlock, soft-center on the actor, Avatar-on-screen leash.
+	g_cameraLockObjectId = -1;
 	g_camera.target = it->second->m_Pos;
 	g_CameraMoved = true;
 
-	// Prefer a readable tactical zoom without unlocking.
 	if (g_Engine)
 	{
 		const float farLimit = g_Engine->m_EngineConfig.GetNumber("camera_far_limit");
 		const float prefer = std::min(farLimit, std::max(g_cameraDistance, 24.0f));
 		g_cameraDistance = prefer;
 	}
+
+	ClampCombatCameraKeepAvatarOnScreen();
 }
 
 void TurnBasedCombatMode::ClearReachableTiles()
@@ -689,7 +691,7 @@ void TurnBasedCombatMode::RebuildReachableTiles()
 	ComputeReachableTiles(unit, m_apRemaining, m_reachTiles);
 }
 
-void TurnBasedCombatMode::RebuildInitiative(MainState& main)
+void TurnBasedCombatMode::CollectInitiativeOrder(MainState& main, std::vector<int>& out) const
 {
 	struct Entry
 	{
@@ -722,10 +724,15 @@ void TurnBasedCombatMode::RebuildInitiative(MainState& main)
 		return a.id < b.id;
 	});
 
-	m_initiative.clear();
-	m_initiative.reserve(entries.size());
+	out.clear();
+	out.reserve(entries.size());
 	for (const Entry& e : entries)
-		m_initiative.push_back(e.id);
+		out.push_back(e.id);
+}
+
+void TurnBasedCombatMode::RebuildInitiative(MainState& main)
+{
+	CollectInitiativeOrder(main, m_initiative);
 
 	m_initiativeIndex = 0;
 	m_activeUnitId = -1;
@@ -734,6 +741,56 @@ void TurnBasedCombatMode::RebuildInitiative(MainState& main)
 	m_phase = Phase::Planning;
 	m_pendingMoveApCost = 0.0f;
 	ClearReachableTiles();
+}
+
+void TurnBasedCombatMode::SyncInitiativeFromParticipants(MainState& main)
+{
+	std::vector<int> fresh;
+	CollectInitiativeOrder(main, fresh);
+
+	if (fresh.size() == m_initiative.size()
+	    && std::equal(fresh.begin(), fresh.end(), m_initiative.begin()))
+		return;
+
+	// Report only newly added combatants (not removals / dex re-sorts).
+	for (int id : fresh)
+	{
+		if (std::find(m_initiative.begin(), m_initiative.end(), id) != m_initiative.end())
+			continue;
+		auto it = g_objectList.find(id);
+		if (it == g_objectList.end() || !it->second)
+			continue;
+		U7Object* obj = it->second.get();
+		AddConsoleString(UnitLabel(obj) + " joins the initiative!", ORANGE);
+		Log("TurnBased: initiative join id=" + std::to_string(id)
+			+ " dex=" + std::to_string(GetCombatDexterity(obj))
+			+ (IsPartyUnit(obj) ? " party" : " enemy"));
+	}
+
+	const int activeId = m_activeUnitId;
+	m_initiative = std::move(fresh);
+
+	if (activeId > 0)
+	{
+		auto pos = std::find(m_initiative.begin(), m_initiative.end(), activeId);
+		if (pos != m_initiative.end())
+		{
+			m_initiativeIndex = static_cast<int>(pos - m_initiative.begin());
+			return;
+		}
+	}
+
+	// Active unit left initiative (died / despawned). Update() handles advancing
+	// when Resolving; if we are idle with no active, leave index sane.
+	if (m_initiative.empty())
+	{
+		m_initiativeIndex = 0;
+		m_activeUnitId = -1;
+	}
+	else if (m_initiativeIndex < 0 || m_initiativeIndex >= static_cast<int>(m_initiative.size()))
+	{
+		m_initiativeIndex = 0;
+	}
 }
 
 void TurnBasedCombatMode::StartUnitTurn(MainState& main)
@@ -772,7 +829,7 @@ void TurnBasedCombatMode::StartUnitTurn(MainState& main)
 		m_activeUnitId = id;
 		m_apBudget = GetCombatTurnApBudget(unit);
 		m_apRemaining = m_apBudget;
-		LockCameraToActiveUnit();
+		CenterCameraOnActiveUnit();
 
 		Log("TurnBased: start turn id=" + std::to_string(id)
 			+ " dex=" + std::to_string(GetCombatDexterity(unit))
@@ -1592,7 +1649,8 @@ void TurnBasedCombatMode::OnAttackResolved(MainState& main)
 	m_pendingAttackApCost = 0.0f;
 	m_resolveFrames = 0;
 	m_phase = Phase::Planning;
-	LockCameraToActiveUnit();
+	// Keep freecam unlocked after resolving; do not yank look-at mid-turn.
+	g_cameraLockObjectId = -1;
 
 	// Enemy: keep attacking while AP and range allow, else end turn.
 	if (unit && !IsPartyUnit(unit))
@@ -1693,7 +1751,8 @@ void TurnBasedCombatMode::OnMoveResolved(MainState& main)
 	m_pendingMoveApCost = 0.0f;
 	m_phase = Phase::Planning;
 	m_resolvingAttack = false;
-	LockCameraToActiveUnit();
+	// Keep freecam unlocked after resolving; do not yank look-at mid-turn.
+	g_cameraLockObjectId = -1;
 
 	if (unit && !IsPartyUnit(unit))
 	{
@@ -1730,6 +1789,9 @@ void TurnBasedCombatMode::OnEnter(MainState& main)
 {
 	m_main = &main;
 	m_wasCameraLocked = IsCameraLocked();
+	// Unlock for freecam pan/zoom (same as RTwP); Avatar-on-screen leash in MainState.
+	if (IsCameraLocked())
+		g_cameraLockObjectId = -1;
 	main.m_combatPaused = true;
 	main.m_combatSelectedPartyMemberObjectId = -1;
 	m_pendingMoveApCost = 0.0f;
@@ -1787,6 +1849,10 @@ void TurnBasedCombatMode::OnLeave(MainState& main)
 
 void TurnBasedCombatMode::Update(MainState& main)
 {
+	// Participants grow every frame via EnrollNearby; keep initiative in sync so
+	// late-joining hostiles actually receive turns.
+	SyncInitiativeFromParticipants(main);
+
 	if (m_phase == Phase::Planning && m_enemyAiPending)
 	{
 		RunEnemyTurnAi(main);

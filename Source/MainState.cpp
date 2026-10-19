@@ -31,6 +31,7 @@
 
 #include <unordered_set>
 #include <fstream>
+#include <cctype>
 
 namespace
 {
@@ -622,6 +623,32 @@ void MainState::GiveSandboxReagentBag()
 	AddConsoleString("Sandbox: reagent bag (100 of each) added to backpack");
 	Log("GiveSandboxReagentBag: bag id=" + std::to_string(bagId) +
 		" in backpack id=" + std::to_string(backpackId));
+
+	// ~200 gold for buying weapons/armor. Vendors use party gold; coin stacks
+	// also go in the backpack (shapeType 3 qty max 127, so two stacks of 100).
+	constexpr int kGoldShape = 644;
+	constexpr int kGoldPerStack = 100;
+	constexpr int kGoldStacks = 2;
+	constexpr int kGoldTotal = kGoldPerStack * kGoldStacks;
+
+	g_Player->AddGold(kGoldTotal);
+
+	for (int i = 0; i < kGoldStacks; ++i)
+	{
+		const unsigned int goldId = GetNextID();
+		U7Object* coins = AddObject(kGoldShape, 0, static_cast<int>(goldId),
+			avatar->m_Pos.x, avatar->m_Pos.y, avatar->m_Pos.z);
+		if (!coins)
+			continue;
+		coins->m_Quality = kGoldPerStack & 0x7f;
+		AddObjectToContainer(static_cast<int>(goldId), backpackId);
+	}
+
+	AddConsoleString("Sandbox: +" + std::to_string(kGoldTotal) +
+		" gold (party) and " + std::to_string(kGoldStacks) + "x" +
+		std::to_string(kGoldPerStack) + " coins in backpack");
+	Log("GiveSandboxReagentBag: +" + std::to_string(kGoldTotal) +
+		" party gold (now " + std::to_string(g_Player->GetGold()) + ")");
 }
 
 void MainState::OnExit()
@@ -1420,6 +1447,11 @@ void MainState::HandleLeftDoubleClick()
 	if (!g_InputSystem->WasLButtonDoubleClicked())
 		return;
 
+	// Gumps own the click (spellbook cast, bag items, etc.). Do not also talk to /
+	// use a world NPC that happens to sit under the window.
+	if (g_mouseOverUI || (g_gumpManager && g_gumpManager->m_isMouseOverGump))
+		return;
+
 	if (g_objectUnderMousePointer != nullptr)
 	{
 		// First click of a double-click may have shown the info tooltip; dismiss it
@@ -1679,7 +1711,8 @@ void MainState::HandleAvatarMovement()
 		return;
 
 	U7Object* avatarCheck = g_Player ? g_Player->GetAvatarObject() : nullptr;
-	if (avatarCheck && avatarCheck->IsDeathStatus())
+	if (avatarCheck && (avatarCheck->IsDeathStatus() || avatarCheck->IsKnockedOut()
+	                    || (avatarCheck->m_flags & kObjFlagAsleep) != 0))
 		return;
 
 	// Pose scripts (stumble, cast, item anim) own the Avatar until they finish.
@@ -1953,8 +1986,11 @@ void MainState::ShowObjectInfoTooltip(U7Object* object)
 	}
 
 	m_objectInfoTooltipName = GetObjectDisplayName(object);
+	if (!m_objectInfoTooltipName.empty())
+		m_objectInfoTooltipName[0] = static_cast<char>(std::toupper(static_cast<unsigned char>(m_objectInfoTooltipName[0])));
 	m_objectInfoTooltipWeight.clear();
 	m_objectInfoTooltipVolume.clear();
+	m_objectInfoTooltipCombat.clear();
 
 	// Weight/volume only for items that can be picked up / dragged into inventory.
 	const int shapeId = (object->m_shapeData) ? object->m_shapeData->m_shape : -1;
@@ -1972,6 +2008,85 @@ void MainState::ShowObjectInfoTooltip(U7Object* object)
 		m_objectInfoTooltipVolume = volumeStream.str();
 	}
 
+	// Compact combat stats from WEAPONS.DAT / ARMOR.DAT when present.
+	if (shapeId >= 0)
+	{
+		if (const WeaponData* w = GetWeaponData(shapeId))
+		{
+			std::string dmg = "Damage: " + std::to_string(static_cast<int>(w->damage));
+			if (w->damageType != WeaponDamageType::Normal)
+			{
+				const char* typeName = "Special";
+				switch (w->damageType)
+				{
+				case WeaponDamageType::Fire: typeName = "Fire"; break;
+				case WeaponDamageType::Magic: typeName = "Magic"; break;
+				case WeaponDamageType::Lightning: typeName = "Lightning"; break;
+				case WeaponDamageType::Ethereal: typeName = "Ethereal"; break;
+				case WeaponDamageType::Sonic: typeName = "Sonic"; break;
+				default: break;
+				}
+				dmg += " (";
+				dmg += typeName;
+				dmg += ")";
+			}
+			m_objectInfoTooltipCombat.push_back(std::move(dmg));
+
+			// Avoid "Ranged range"; melee/thrown keep a short mode prefix.
+			std::string rangeLine;
+			switch (w->uses)
+			{
+			case WeaponUses::PoorThrown:
+			case WeaponUses::Thrown:
+				rangeLine = "Thrown range: ";
+				break;
+			case WeaponUses::Ranged:
+				rangeLine = "Range: ";
+				break;
+			default:
+				rangeLine = "Melee range: ";
+				break;
+			}
+			rangeLine += std::to_string(static_cast<int>(w->range));
+			m_objectInfoTooltipCombat.push_back(std::move(rangeLine));
+
+			std::string powers;
+			auto appendPower = [&](unsigned char bit, const char* label) {
+				if ((w->powers & bit) == 0)
+					return;
+				if (!powers.empty())
+					powers += ", ";
+				powers += label;
+			};
+			appendPower(WeaponPower::Sleep, "Sleep");
+			appendPower(WeaponPower::Charm, "Charm");
+			appendPower(WeaponPower::Curse, "Curse");
+			appendPower(WeaponPower::Poison, "Poison");
+			appendPower(WeaponPower::Paralyze, "Paralyze");
+			appendPower(WeaponPower::Magebane, "Magebane");
+			appendPower(WeaponPower::NoDamage, "No damage");
+			if (w->lucky)
+			{
+				if (!powers.empty())
+					powers += ", ";
+				powers += "Lucky";
+			}
+			if (w->autohit)
+			{
+				if (!powers.empty())
+					powers += ", ";
+				powers += "Autohit";
+			}
+			if (!powers.empty())
+				m_objectInfoTooltipCombat.push_back("Powers: " + powers);
+		}
+		else if (const ArmorData* a = GetArmorData(shapeId))
+		{
+			m_objectInfoTooltipCombat.push_back(
+				"Armor: " + std::to_string(static_cast<int>(a->prot)));
+		}
+	}
+
 	m_objectInfoTooltipVisible = true;
 	m_objectInfoTooltipDuration = kObjectInfoTooltipSeconds;
 }
@@ -1983,6 +2098,7 @@ void MainState::ClearObjectInfoTooltip()
 	m_objectInfoTooltipName.clear();
 	m_objectInfoTooltipWeight.clear();
 	m_objectInfoTooltipVolume.clear();
+	m_objectInfoTooltipCombat.clear();
 }
 
 void MainState::UpdateObjectInfoTooltip()
@@ -2015,6 +2131,8 @@ void MainState::DrawObjectInfoTooltip()
 		lines.push_back({ m_objectInfoTooltipWeight, WHITE });
 	if (!m_objectInfoTooltipVolume.empty())
 		lines.push_back({ m_objectInfoTooltipVolume, WHITE });
+	for (const std::string& combatLine : m_objectInfoTooltipCombat)
+		lines.push_back({ combatLine, LIGHTGRAY });
 
 	float maxTextWidth = 0.0f;
 	for (const auto& line : lines)
@@ -5308,6 +5426,13 @@ void MainState::MaybeUpdatePartyFollowing()
 		U7Object* member = itObj->second.get();
 		if (member->IsDeathStatus() || member->GetIsDead())
 			continue;
+
+		// Down / asleep companions stay in formation slots but do not walk.
+		if (member->IsKnockedOut() || (member->m_flags & kObjFlagAsleep) != 0)
+		{
+			++companionSlot;
+			continue;
+		}
 
 		// Same pose-script lock as the Avatar. Formation must not pull them
 		// out of a stumble or cast. Other Lua scripts do not set this.
