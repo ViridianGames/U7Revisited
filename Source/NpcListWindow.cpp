@@ -451,14 +451,7 @@ void NpcListWindow::HandleDoubleClick()
 
 	// Teleport camera to NPC position (preserving current angle and distance)
 	Vector3 npcPos = npc->GetPos();
-	g_camera.target = Vector3{ npcPos.x, 0, npcPos.z };
-
-	// Recalculate camera position using current rotation and distance
-	Vector3 camOffset = { g_cameraDistance, g_cameraDistance, g_cameraDistance };
-	camOffset = Vector3RotateByAxisAngle(camOffset, Vector3{ 0, 1, 0 }, g_cameraRotation);
-	g_camera.position = Vector3Add(g_camera.target, camOffset);
-
-	g_CameraMoved = true;
+	JumpCameraTo(npcPos);
 
 	// DISABLED: Reduce log spam to improve responsiveness when clicking NPCs
 	// NPCDebugPrint("Camera teleported to NPC " + std::string(npcData->name) +

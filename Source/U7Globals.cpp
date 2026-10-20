@@ -1385,63 +1385,7 @@ void CameraInput()
 				const int tileX = (int)floorf(worldX);
 				const int tileZ = (int)floorf(worldZ);
 
-				float goalY = 0.0f;
-				if (g_pathfindingSystem &&
-				    tileX >= 0 && tileX < 3072 && tileZ >= 0 && tileZ < 3072)
-				{
-					auto heights = g_pathfindingSystem->GetWalkableSurfaceHeights(tileX, tileZ);
-					if (!heights.empty())
-						goalY = heights.front(); // lowest surface (ground preference)
-				}
-
-				auto teleportUnit = [](U7Object* unit, Vector3 pos)
-				{
-					if (!unit)
-						return;
-					unit->ClearPendingUsecode();
-					unit->m_pathWaypoints.clear();
-					unit->m_currentWaypointIndex = 0;
-					unit->m_pathfindingPending = false;
-					unit->m_isMoving = false;
-					unit->m_isSchedulePath = false;
-					unit->SetPos(pos);
-					unit->SetDest(pos);
-				};
-
-				U7Object* avatar = g_Player->GetAvatarObject();
-				const Vector3 avatarPos{ tileX + 0.5f, goalY, tileZ + 0.5f };
-				teleportUnit(avatar, avatarPos);
-
-				int counter = 1;
-				for (int id : g_Player->GetPartyMemberIds())
-				{
-					if (id == 0)
-						continue; // Avatar already placed
-					auto nit = g_NPCData.find(id);
-					if (nit == g_NPCData.end() || !nit->second)
-						continue;
-					U7Object* member = GetObjectFromID(nit->second->m_objectID);
-					if (!member)
-						continue;
-					Vector3 memberPos = avatarPos;
-					if (id % 2 == 0)
-					{
-						memberPos.x += float(counter);
-						memberPos.z += float(counter);
-					}
-					else
-					{
-						memberPos.x += float(counter);
-						memberPos.z -= float(counter);
-					}
-					teleportUnit(member, memberPos);
-					++counter;
-				}
-
-				AddConsoleString(
-					"Teleported party to (" + std::to_string(tileX) + ", " +
-					std::to_string(tileZ) + ").", SKYBLUE);
-				g_CameraMoved = true; // snap follow on next CameraUpdate
+				TeleportPartyTo(tileX, tileZ);
 				// Interest rebuild runs after CameraInput in MainState::Update, so the
 				// same frame's sim pass already uses the new avatar/party centers.
 			}
@@ -1458,10 +1402,79 @@ void CameraInput()
 	}
 }
 
+void TeleportPartyTo(int tileX, int tileZ)
+{
+	float goalY = 0.0f;
+	if (g_pathfindingSystem &&
+	    tileX >= 0 && tileX < 3072 && tileZ >= 0 && tileZ < 3072)
+	{
+		auto heights = g_pathfindingSystem->GetWalkableSurfaceHeights(tileX, tileZ);
+		if (!heights.empty())
+			goalY = heights.front(); // lowest surface (ground preference)
+	}
+
+	auto teleportUnit = [](U7Object* unit, Vector3 pos)
+	{
+		if (!unit)
+			return;
+		unit->ClearPendingUsecode();
+		unit->m_pathWaypoints.clear();
+		unit->m_currentWaypointIndex = 0;
+		unit->m_pathfindingPending = false;
+		unit->m_isMoving = false;
+		unit->m_isSchedulePath = false;
+		unit->SetPos(pos);
+		unit->SetDest(pos);
+	};
+
+	U7Object* avatar = g_Player->GetAvatarObject();
+	const Vector3 avatarPos{ tileX + 0.5f, goalY, tileZ + 0.5f };
+	teleportUnit(avatar, avatarPos);
+
+	int counter = 1;
+	for (int id : g_Player->GetPartyMemberIds())
+	{
+		if (id == 0)
+			continue; // Avatar already placed
+		auto nit = g_NPCData.find(id);
+		if (nit == g_NPCData.end() || !nit->second)
+			continue;
+		U7Object* member = GetObjectFromID(nit->second->m_objectID);
+		if (!member)
+			continue;
+		Vector3 memberPos = avatarPos;
+		if (id % 2 == 0)
+		{
+			memberPos.x += float(counter);
+			memberPos.z += float(counter);
+		}
+		else
+		{
+			memberPos.x += float(counter);
+			memberPos.z -= float(counter);
+		}
+		teleportUnit(member, memberPos);
+		++counter;
+	}
+
+	AddConsoleString(
+		"Teleported party to (" + std::to_string(tileX) + ", " +
+		std::to_string(tileZ) + ").", SKYBLUE);
+	g_CameraMoved = true; // snap follow on next CameraUpdate
+}
+
 void CameraSetDestination(Vector3 destination)
 {
 	g_shouldCameraMoveToDestination = true;
 	g_cameraDestination = destination;
+}
+
+void JumpCameraTo(Vector3 position)
+{
+	UnlockCamera();  // A locked camera would snap back to what it follows
+	g_camera.position = Vector3Add(position, Vector3Subtract(g_camera.position, g_camera.target));  // First person keeps the position
+	g_camera.target = position;
+	g_CameraMoved = true;
 }
 
 void StartEarthquake(int count)
@@ -1747,6 +1760,18 @@ U7Object* GetRootNPCFromContainer(U7Object* container)
 	}
 
 	return nullptr;
+}
+
+U7Object* GetOutermostContainer(U7Object* object)
+{
+	while (object != nullptr && object->m_isContained)
+	{
+		object = GetObjectFromID(object->m_containingObjectId);
+	}
+
+	//  Scripts park some objects off the map at (-1000, -1000)
+	bool inWorld = object != nullptr && !object->GetIsDead() && object->m_Pos.x >= 0 && object->m_Pos.z >= 0;
+	return inWorld ? object : nullptr;
 }
 
 float GetMaxWeightFromStrength(int strength)
@@ -3916,6 +3941,78 @@ std::string GetObjectDisplayName(U7Object* object)
 	}
 
 	return GetShapeFrameName(shape, object->m_shapeData->GetFrame(), quantity);
+}
+
+// Split text into lowercase words for search boxes.
+// Numbers also get a copy without leading zeros, so "87" finds "npc_zorn_0087".
+vector<string> GetSearchWords(const string& text)
+{
+	vector<string> words;
+	string word;
+	for (char c : text + " ")
+	{
+		if (isalnum((unsigned char)c))
+		{
+			word += (char)tolower((unsigned char)c);
+		}
+		else if (!word.empty())
+		{
+			words.push_back(word);
+			size_t firstNonZero = word.find_first_not_of('0');
+			if (firstNonZero > 0 && firstNonZero != string::npos)
+			{
+				words.push_back(word.substr(firstNonZero));
+			}
+			word.clear();
+		}
+	}
+	return words;
+}
+
+// Score how well one typed word matches a list of words (0-100).
+// Exact beats prefix, prefix beats substring, and anything else gets a typo-tolerant
+// similarity: 2 * LCS / total length, the same formula as RapidFuzz's fuzz::ratio.
+float GetSearchWordScore(const string& typed, const vector<string>& words)
+{
+	float best = 0;
+	for (const string& word : words)
+	{
+		float score = 0;
+		if (word == typed)
+		{
+			return 100;
+		}
+		else if (word.compare(0, typed.size(), typed) == 0)
+		{
+			score = 95;
+		}
+		else if (typed.size() >= 3 && word.find(typed) != string::npos)
+		{
+			score = 85;
+		}
+		else
+		{
+			// Longest common subsequence, keeping one row of the table
+			vector<int> row(word.size() + 1, 0);
+			for (char t : typed)
+			{
+				int diagonal = 0;
+				for (size_t i = 1; i <= word.size(); ++i)
+				{
+					int above = row[i];
+					row[i] = (t == word[i - 1]) ? diagonal + 1 : max(row[i], row[i - 1]);
+					diagonal = above;
+				}
+			}
+			score = 200.0f * row[word.size()] / (typed.size() + word.size());
+			if (score < 70)
+			{
+				score = 0;
+			}
+		}
+		best = max(best, score);
+	}
+	return best;
 }
 
 std::string FindNPCScriptByID(int npcID)

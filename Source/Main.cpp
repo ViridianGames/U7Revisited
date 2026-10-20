@@ -29,6 +29,7 @@
 #include "LoadSaveState.h"
 #include "AskState.h"
 #include "PatreonVillageState.h"
+#include "ObjectFinderState.h"
 #include "ShapeData.h"
 #include "GumpManager.h"
 #include <string>
@@ -497,6 +498,10 @@ int main(int argv, char** argc)
       PatreonVillageState* patreonVillageState = new PatreonVillageState;
       patreonVillageState->Init("engine.cfg");
       g_StateMachine->RegisterState(STATE_PATREONVILLAGESTATE, patreonVillageState, "PATREON_VILLAGE_STATE");
+
+      ObjectFinderState* objectFinderState = new ObjectFinderState;
+      objectFinderState->Init("engine.cfg");
+      g_StateMachine->RegisterState(STATE_OBJECTFINDERSTATE, objectFinderState, "OBJECT_FINDER_STATE");
 
       g_StateMachine->MakeStateTransition(STATE_LOADINGSTATE);
 

@@ -28,6 +28,9 @@
     <ClCompile Include="Source\NpcListWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\ObjectFinderState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="Source\OptionsState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -309,6 +312,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\NpcListWindow.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ObjectFinderState.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\OptionsState.h">
