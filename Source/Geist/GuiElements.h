@@ -278,6 +278,7 @@ public:
 		, m_BackgroundColor{0, 0, 0, 0}
 		, m_TextColor{255, 255, 255, 255}
 		, m_HasFocus(0)
+		, m_FormatNumbers(true)
 	{
 		m_Gui = parent;
 		m_Visible = true;
@@ -298,6 +299,7 @@ public:
 	Color m_TextColor;
 
 	int m_HasFocus;
+	bool m_FormatNumbers;  // Tidies numeric text ("1.50" -> "1.5"); turn off for free text like search boxes
 };
 
 
