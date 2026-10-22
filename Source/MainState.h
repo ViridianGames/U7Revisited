@@ -112,6 +112,7 @@ public:
 	void HandleGhostButton();
 	void HandleRenameButton();
 	void HandleNPCListButton();
+	void HandleObjectFinderButton();
 	void UpdateDebugToolsWindow();
 	void DumpNpcScheduleStats();
 
@@ -124,6 +125,13 @@ public:
 
 	// Temporary combat test: teleport north of Trinsic and spawn pirates.
 	void SpawnDebugDuelingField();
+
+	// Object Finder (Ctrl+F) results: F3 / Shift+F3 jump through them and the minimap shows them.
+	std::string m_finderLabel;
+	std::vector<int> m_finderObjectIds;
+	int m_finderIndex = 0;
+	double m_finderJumpTime = -100.0;  // A ring pulses around the result for a few seconds after a jump
+	void JumpToFinderResult(int index);
 
   // void DrawDebugChunkPathfindingInfo();
 

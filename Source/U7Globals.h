@@ -159,6 +159,7 @@ enum GameStates
 	STATE_ASKEXITSTATE,
 	STATE_ASKSAVESTATE,
 	STATE_PATREONVILLAGESTATE,
+	STATE_OBJECTFINDERSTATE,
 	STATE_LASTSTATE
 };
 
@@ -284,6 +285,10 @@ std::string GetShapeFrameName(int shape, int frame, int quantity = 1);
 
 // Get the display name for an object (handles quantity calculation)
 std::string GetObjectDisplayName(U7Object* object);
+
+// Search boxes: split text into lowercase words, then score how well one typed word matches them (0-100)
+std::vector<std::string> GetSearchWords(const std::string& text);
+float GetSearchWordScore(const std::string& typed, const std::vector<std::string>& words);
 
 // Find NPC script by NPC ID (returns script name or empty string)
 // Only matches scripts starting with "npc_" and ending with "_XXXX" where XXXX is the NPC ID
@@ -471,6 +476,12 @@ void CameraUpdate(bool forcemove = false);
 
 void CameraSetDestination(Vector3 destination);
 
+// Unlock the camera and center it on a world position (debug jumps).
+void JumpCameraTo(Vector3 position);
+
+// Sandbox: move the Avatar and party to a world tile.
+void TeleportPartyTo(int tileX, int tileZ);
+
 void CameraInput();
 
 void IsCellVisible(float x, float y);
@@ -485,6 +496,10 @@ U7Object* GetObjectUnderMouse();
 /// @param container The container object to start from
 /// @return The root NPC object, or nullptr if no NPC found in parent chain
 U7Object* GetRootNPCFromContainer(U7Object* container);
+
+/// @brief Find the object that holds this one out in the world (itself if it is not in a container)
+/// @return The outermost container, or nullptr if the object is gone, off the map, or the container chain is broken
+U7Object* GetOutermostContainer(U7Object* object);
 
 /// @brief Calculate max carry weight from strength stat
 /// @param strength The strength value

@@ -423,6 +423,7 @@
     <ClCompile Include="Source\MainState.cpp" />
     <ClCompile Include="Source\NpcAnimation.cpp" />
     <ClCompile Include="Source\NpcListWindow.cpp" />
+    <ClCompile Include="Source\ObjectFinderState.cpp" />
     <ClCompile Include="Source\OptionsState.cpp" />
     <ClCompile Include="Source\PathfindingSystem.cpp" />
     <ClCompile Include="Source\PatreonVillageState.cpp" />
@@ -519,6 +520,7 @@
     <ClInclude Include="Source\MainState.h" />
     <ClInclude Include="Source\NpcAnimation.h" />
     <ClInclude Include="Source\NpcListWindow.h" />
+    <ClInclude Include="Source\ObjectFinderState.h" />
     <ClInclude Include="Source\OptionsState.h" />
     <ClInclude Include="Source\PathfindingSystem.h" />
     <ClInclude Include="Source\PatreonVillageState.h" />

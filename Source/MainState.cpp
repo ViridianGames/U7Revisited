@@ -423,6 +423,7 @@ void MainState::OnEnter()
 	g_scheduleTime = 2;
 
 	m_heightCutoff = 16.0f; // Draw everything unless the player is inside.
+	m_finderObjectIds.clear();  // Object Finder results belong to the previous session
 
 	// Loading finishes after MainState::Init/SetupGame, so chunk membership from
 	// AddObject can still carry spawn-chunk duplicates. Rebuild once on entry so
@@ -1008,6 +1009,13 @@ void MainState::HandleDebugKeys()
 		g_showEggs = !g_showEggs;
 		AddConsoleString(g_showEggs ? "Egg display ON" : "Egg display OFF");
 	}
+
+	// Object Finder: Ctrl+F opens it, F3 / Shift+F3 step through its results
+	if (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyPressed(KEY_F) && m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX)
+		HandleObjectFinderButton();
+
+	if (IsKeyPressed(KEY_F3) && !m_finderObjectIds.empty() && !g_isCombatMode && m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX)
+		JumpToFinderResult(m_finderIndex + (IsKeyDown(KEY_LEFT_SHIFT) ? -1 : 1));
 
 	// Temporary combat arena: open field north of Trinsic (~967, 2032).
 	if (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyDown(KEY_LEFT_SHIFT) && IsKeyPressed(KEY_D))
@@ -3743,6 +3751,18 @@ void MainState::Draw()
 		DrawTextEx(*g_ConversationFont, m_barkText.c_str(), { float(screenPos.x) + xoffset / 2, float(screenPos.y) + (height * .1f) }, g_ConversationFont->baseSize, 1, YELLOW);
 	}
 
+	// Pulse a ring around the Object Finder result the camera just jumped to
+	if (!m_finderObjectIds.empty() && GetTime() - m_finderJumpTime < 3.0)
+	{
+		U7Object* placed = GetOutermostContainer(GetObjectFromID(m_finderObjectIds[m_finderIndex]));
+		if (placed != nullptr)
+		{
+			Vector2 center = Vector2Scale(GetWorldToScreen(placed->m_centerPoint, g_camera), 1.0f / g_DrawScale);
+			float radius = 10.0f + 3.0f * sinf(float(GetTime()) * 8.0f);
+			DrawRing(center, radius, radius + 1.5f, 0, 360, 32, YELLOW);
+		}
+	}
+
 	if (g_SpriteEffectSystem && m_showObjects)
 	{
 		g_SpriteEffectSystem->Draw(g_camera);
@@ -3781,6 +3801,19 @@ void MainState::Draw()
 
 		float _ScaleX = (g_minimapSize * g_DrawScale) / float(g_Terrain->m_width) * g_camera.target.x;
 		float _ScaleZ = (g_minimapSize * g_DrawScale) / float(g_Terrain->m_height) * g_camera.target.z;
+
+		// Object Finder results
+		float minimapScale = (g_minimapSize * g_DrawScale) / float(g_Terrain->m_width);
+		for (int id : m_finderObjectIds)
+		{
+			U7Object* placed = GetOutermostContainer(GetObjectFromID(id));
+			if (placed != nullptr)
+			{
+				Vector2 dot = { g_Engine->m_ScreenWidth - float(g_minimapSize * g_DrawScale) + placed->m_Pos.x * minimapScale, placed->m_Pos.z * minimapScale };
+				DrawRectangleV({ dot.x - 2 * g_DrawScale, dot.y - 2 * g_DrawScale }, { 4 * g_DrawScale, 4 * g_DrawScale }, BLACK);
+				DrawRectangleV({ dot.x - g_DrawScale, dot.y - g_DrawScale }, { 2 * g_DrawScale, 2 * g_DrawScale }, MAGENTA);
+			}
+		}
 
 		// Draw minimap arrow rotated by camera angle around its center
 		float centerX = g_Engine->m_ScreenWidth - float(g_minimapSize * g_DrawScale) + _ScaleX;
@@ -3919,6 +3952,7 @@ void MainState::RebuildWorldFromLoadedData()
 
 	// ---- OnLoadReset: clear transient runtime state ----
 	g_sortedVisibleObjects.clear();
+	m_finderObjectIds.clear();
 	if (g_ScriptingSystem)
 		g_ScriptingSystem->ClearAllCoroutines();
 	// Drop any in-flight pathfind / schedule path queues
@@ -4487,6 +4521,41 @@ void MainState::HandleNPCListButton()
 	}
 }
 
+void MainState::HandleObjectFinderButton()
+{
+	// Clear hover text from debug tools window
+	if (m_debugToolsWindow)
+	{
+		m_debugToolsWindow->ClearHoverText();
+	}
+
+	// Combat keeps the camera near the Avatar, so jumps wouldn't stick
+	if (g_isCombatMode)
+	{
+		AddConsoleString("Leave combat to use the Object Finder.", YELLOW);
+		return;
+	}
+
+	g_StateMachine->PushState(STATE_OBJECTFINDERSTATE);
+}
+
+void MainState::JumpToFinderResult(int index)
+{
+	const int count = int(m_finderObjectIds.size());
+	m_finderIndex = (index + count) % count;
+
+	U7Object* placed = GetOutermostContainer(GetObjectFromID(m_finderObjectIds[m_finderIndex]));
+	if (placed == nullptr)
+	{
+		return;
+	}
+
+	JumpCameraTo(placed->m_Pos);
+	m_finderJumpTime = GetTime();
+	AddConsoleString(m_finderLabel + ": " + to_string(m_finderIndex + 1) + " of " + to_string(count) +
+		" at (" + to_string(int(placed->m_Pos.x)) + ", " + to_string(int(placed->m_Pos.z)) + ")", SKYBLUE);
+}
+
 void MainState::UpdateDebugToolsWindow()
 {
 	if (!m_debugToolsWindow || !m_debugToolsWindow->IsVisible())
@@ -4610,6 +4679,21 @@ void MainState::UpdateDebugToolsWindow()
 			if (button->m_Clicked)
 			{
 				HandleNPCListButton();
+			}
+		}
+	}
+
+	// Check FINDER_BUTTON
+	int finderButtonID = m_debugToolsWindow->GetElementID("FINDER_BUTTON");
+	if (finderButtonID != -1)
+	{
+		auto elem = gui->GetElement(finderButtonID);
+		if (elem && elem->m_Type == GUI_ICONBUTTON)
+		{
+			auto button = static_cast<GuiIconButton*>(elem.get());
+			if (button->m_Clicked)
+			{
+				HandleObjectFinderButton();
 			}
 		}
 	}

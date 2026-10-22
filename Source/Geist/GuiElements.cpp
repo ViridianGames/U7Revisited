@@ -1773,8 +1773,8 @@ void GuiListBox::Update()
 
 	if (m_Hovered)
 	{
-		// Check for clicks on individual items
-		if (g_InputSystem->WasLButtonClicked())
+		// Check for clicks on individual items (the second click of a fast double-click only sets the double-click flag)
+		if (g_InputSystem->WasLButtonClicked() || g_InputSystem->WasLButtonDoubleClicked())
 		{
 			// Calculate which item was clicked
 			float relativeY = scaledY - m_Pos.y;
