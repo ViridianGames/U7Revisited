@@ -9,7 +9,7 @@
         ],
         "size": [
           110,
-          75
+          110
         ],
         "backgroundColor": [
           60,
@@ -183,6 +183,29 @@
               "x": 220,
               "y": 0,
               "w": 23,
+              "h": 30
+            },
+            "color": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "scale": 1.0
+          },
+          {
+            "name": "FINDER_BUTTON",
+            "type": "iconbutton",
+            "hoverText": "Find objects (Ctrl+F)",
+            "position": [
+              -1,
+              -1
+            ],
+            "sprite": {
+              "spritesheet": "GUI/guielements.png",
+              "x": 340,
+              "y": 0,
+              "w": 30,
               "h": 30
             },
             "color": [

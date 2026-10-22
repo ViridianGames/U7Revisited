@@ -141,6 +141,7 @@ sources = files(
            'Source/Main.cpp',
            'Source/MainState.cpp',
            'Source/NpcListWindow.cpp',
+           'Source/ObjectFinderState.cpp',
            'Source/OptionsState.cpp',
            'Source/PathfindingSystem.cpp',
            'Source/ShapeData.cpp',

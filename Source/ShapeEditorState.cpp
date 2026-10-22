@@ -17,7 +17,6 @@
 #include <math.h>
 #include <fstream>
 #include <algorithm>
-#include <cctype>
 #include <unordered_map>
 #include <filesystem>
 
@@ -54,78 +53,6 @@ static string GetFirstLineOfScript(const string& filepath)
 	}
 
 	return "";
-}
-
-// Helper function to split text into lowercase words for the script search box.
-// Numbers also get a copy without leading zeros, so "87" finds "npc_zorn_0087".
-static vector<string> GetSearchWords(const string& text)
-{
-	vector<string> words;
-	string word;
-	for (char c : text + " ")
-	{
-		if (isalnum((unsigned char)c))
-		{
-			word += (char)tolower((unsigned char)c);
-		}
-		else if (!word.empty())
-		{
-			words.push_back(word);
-			size_t firstNonZero = word.find_first_not_of('0');
-			if (firstNonZero > 0 && firstNonZero != string::npos)
-			{
-				words.push_back(word.substr(firstNonZero));
-			}
-			word.clear();
-		}
-	}
-	return words;
-}
-
-// Helper function to score how well one typed word matches a list of words (0-100).
-// Exact beats prefix, prefix beats substring, and anything else gets a typo-tolerant
-// similarity: 2 * LCS / total length, the same formula as RapidFuzz's fuzz::ratio.
-static float GetSearchWordScore(const string& typed, const vector<string>& words)
-{
-	float best = 0;
-	for (const string& word : words)
-	{
-		float score = 0;
-		if (word == typed)
-		{
-			return 100;
-		}
-		else if (word.compare(0, typed.size(), typed) == 0)
-		{
-			score = 95;
-		}
-		else if (typed.size() >= 3 && word.find(typed) != string::npos)
-		{
-			score = 85;
-		}
-		else
-		{
-			// Longest common subsequence, keeping one row of the table
-			vector<int> row(word.size() + 1, 0);
-			for (char t : typed)
-			{
-				int diagonal = 0;
-				for (size_t i = 1; i <= word.size(); ++i)
-				{
-					int above = row[i];
-					row[i] = (t == word[i - 1]) ? diagonal + 1 : max(row[i], row[i - 1]);
-					diagonal = above;
-				}
-			}
-			score = 200.0f * row[word.size()] / (typed.size() + word.size());
-			if (score < 70)
-			{
-				score = 0;
-			}
-		}
-		best = max(best, score);
-	}
-	return best;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1056,9 +983,7 @@ void ShapeEditorState::Update()
 
 		if (closest != nullptr)
 		{
-			g_camera.target = closest->m_Pos;
-			g_camera.position = Vector3Add(g_camera.target, Vector3{ 0, g_cameraDistance, g_cameraDistance });
-			g_CameraMoved = true;
+			JumpCameraTo(closest->m_Pos);
 			g_StateMachine->PopState();  // Close shape editor after jumping
 		}
 		else
