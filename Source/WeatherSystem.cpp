@@ -3,6 +3,7 @@
 #include "Geist/Logging.h"
 #include "Geist/SoundSystem.h"
 #include "Geist/Engine.h"
+#include "Geist/Config.h"
 #include <algorithm>
 #include <cmath>
 
@@ -12,6 +13,9 @@ namespace
 {
 	constexpr float kFlashDuration = 0.12f;
 	constexpr float kOvercastDim = 0.72f;
+	constexpr float kFogDimR = 0.85f;
+	constexpr float kFogDimG = 0.88f;
+	constexpr float kFogDimB = 0.95f;
 }
 
 void WeatherSystem::Init()
@@ -191,12 +195,27 @@ void WeatherSystem::CheckEggDistanceCancel(Vector3 avatarPos, float maxDistanceT
 	}
 }
 
+bool WeatherSystem::EffectsEnabled() const
+{
+	if (!g_Engine)
+	{
+		return true;
+	}
+	// engine.cfg: weather_effects = 1 (default on). 0 disables particles/overlays.
+	return g_Engine->m_EngineConfig.GetNumber("weather_effects") >= 0.5f;
+}
+
 bool WeatherSystem::WantsOvercastPalette() const
 {
 	// Original daytime weather palettes: snow, rain, overcast use overcast; cloudy does not.
 	return m_type == WeatherType::Snow
 		|| m_type == WeatherType::Rain
 		|| m_type == WeatherType::Overcast;
+}
+
+bool WeatherSystem::WantsFogPalette() const
+{
+	return m_type == WeatherType::Fog;
 }
 
 bool WeatherSystem::WantsCloudSprites() const
@@ -208,6 +227,10 @@ bool WeatherSystem::WantsCloudSprites() const
 
 bool WeatherSystem::ShouldDrawPrecipitation() const
 {
+	if (!EffectsEnabled())
+	{
+		return false;
+	}
 	if (m_type != WeatherType::Rain && m_type != WeatherType::Snow)
 	{
 		return false;
@@ -307,18 +330,15 @@ void WeatherSystem::UpdateParticles(float dt)
 
 void WeatherSystem::Update(float dt)
 {
-	if (m_type == WeatherType::Clear)
+	if (!EffectsEnabled() || m_type == WeatherType::Clear)
 	{
 		return;
 	}
 
-	if (ShouldDrawPrecipitation() || m_type == WeatherType::Sparkle)
+	// Sparkle particles update indoors; rain/snow only while outdoor draw is allowed.
+	if (m_type == WeatherType::Sparkle || ShouldDrawPrecipitation())
 	{
-		// Sparkle particles still update indoors (draw gate differs); precip gated in Draw.
-		if (m_type == WeatherType::Sparkle || ShouldDrawPrecipitation())
-		{
-			UpdateParticles(dt);
-		}
+		UpdateParticles(dt);
 	}
 
 	if (WantsCloudSprites())
@@ -368,6 +388,11 @@ void WeatherSystem::Update(float dt)
 
 void WeatherSystem::ApplyLightingModifiers(Color& dayNightColor, bool isDay) const
 {
+	if (!EffectsEnabled())
+	{
+		return;
+	}
+
 	if (!isDay)
 	{
 		return;
@@ -380,6 +405,13 @@ void WeatherSystem::ApplyLightingModifiers(Color& dayNightColor, bool isDay) con
 		dayNightColor.b = static_cast<unsigned char>(dayNightColor.b * kOvercastDim);
 	}
 
+	if (WantsFogPalette())
+	{
+		dayNightColor.r = static_cast<unsigned char>(dayNightColor.r * kFogDimR);
+		dayNightColor.g = static_cast<unsigned char>(dayNightColor.g * kFogDimG);
+		dayNightColor.b = static_cast<unsigned char>(dayNightColor.b * kFogDimB);
+	}
+
 	if (m_flashTimer > 0)
 	{
 		dayNightColor = { 255, 255, 255, 255 };
@@ -389,15 +421,15 @@ void WeatherSystem::ApplyLightingModifiers(Color& dayNightColor, bool isDay) con
 void WeatherSystem::Draw(Camera camera)
 {
 	(void)camera;
-	extern float g_DrawScale;
 
-	if (m_type == WeatherType::Clear)
+	if (!EffectsEnabled() || m_type == WeatherType::Clear)
 	{
 		return;
 	}
 
 	const bool drawPrecip = ShouldDrawPrecipitation();
-	if (drawPrecip)
+	const bool drawSparkle = (m_type == WeatherType::Sparkle); // sparkles OK indoors
+	if (drawPrecip || drawSparkle)
 	{
 		const auto& frames = g_spriteTable[kPrecipSpriteShape];
 		for (const Particle& p : m_particles)
@@ -416,6 +448,11 @@ void WeatherSystem::Draw(Camera camera)
 			{
 				frameIndex = m_firstFrame + (p.frame % m_frameCount);
 			}
+			else if (drawSparkle && m_useSplashes)
+			{
+				// Sparkle uses splash frames as the visible particle (original).
+				frameIndex = m_firstSplashFrame + (p.frame % std::max(1, m_splashFrames));
+			}
 			else
 			{
 				continue;
@@ -432,13 +469,7 @@ void WeatherSystem::Draw(Camera camera)
 				continue;
 			}
 
-			float sx = p.x;
-			float sy = p.y;
-			if (g_DrawScale > 0.0f)
-			{
-				// Particles authored in virtual GUI space already.
-			}
-			DrawTexture(frame.texture, static_cast<int>(sx), static_cast<int>(sy), WHITE);
+			DrawTexture(frame.texture, static_cast<int>(p.x), static_cast<int>(p.y), WHITE);
 		}
 	}
 
@@ -456,11 +487,17 @@ void WeatherSystem::Draw(Camera camera)
 			}
 		}
 	}
+
+	// Soft fog veil in virtual GUI space (daytime fog palette already dims lighting).
+	if (WantsFogPalette() && g_isDay && !g_dungeonViewActive)
+	{
+		DrawRectangle(0, 0, 640, 360, Color{ 200, 210, 220, 48 });
+	}
 }
 
 void WeatherSystem::SyncWeatherMusic()
 {
-	if (!g_SoundSystem)
+	if (!g_SoundSystem || !EffectsEnabled())
 	{
 		return;
 	}
@@ -482,6 +519,8 @@ void WeatherSystem::SyncWeatherMusic()
 		return;
 	}
 
+	// Weather beds are mode-0 ambient tracks. Jukebox eggs are still a stub;
+	// when they land, prefer not restarting a regional track over a weather bed.
 	m_activeWeatherMusicPath = BuildU7MusicPath(track);
 	g_SoundSystem->PlayMusic(m_activeWeatherMusicPath);
 }

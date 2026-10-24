@@ -55,10 +55,13 @@ public:
 	void Update(float dt);
 	void Draw(Camera camera);
 
-	// Apply overcast/storm dim and lightning flash into the day/night tint.
+	// Apply overcast/storm/fog dim and lightning flash into the day/night tint.
 	void ApplyLightingModifiers(Color& dayNightColor, bool isDay) const;
 	bool WantsOvercastPalette() const;
+	bool WantsFogPalette() const;
 	bool WantsCloudSprites() const;
+	bool EffectsEnabled() const;
+	bool IsAntiMagic() const { return m_type == WeatherType::Sparkle; }
 
 	int GetWeather() const { return static_cast<int>(m_type); }
 	WeatherType GetWeatherType() const { return m_type; }
