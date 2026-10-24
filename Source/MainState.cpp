@@ -776,6 +776,11 @@ void MainState::UpdateTime()
 		g_dayNightColor = { 255, 255, 255, 255 };
 		g_isDay = true;
 	}
+
+	if (g_WeatherSystem)
+	{
+		g_WeatherSystem->ApplyLightingModifiers(g_dayNightColor, g_isDay);
+	}
 }
 
 void MainState::CalculateMouseOverUI()
@@ -2698,6 +2703,10 @@ void MainState::Update()
 	if (g_SpriteEffectSystem)
 	{
 		g_SpriteEffectSystem->Update(g_Engine->LastFrameInSeconds());
+		if (g_WeatherSystem)
+		{
+			g_WeatherSystem->Update(g_Engine->LastFrameInSeconds());
+		}
 	}
 
 	if (m_showObjects)
@@ -3780,6 +3789,11 @@ void MainState::Draw()
 	if (g_SpriteEffectSystem && m_showObjects)
 	{
 		g_SpriteEffectSystem->Draw(g_camera);
+	}
+
+	if (g_WeatherSystem)
+	{
+		g_WeatherSystem->Draw(g_camera);
 	}
 
 	// World-anchored overlays before gumps so bars/text sit under UI.
