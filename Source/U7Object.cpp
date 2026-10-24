@@ -25,6 +25,7 @@
 #include "CombatMode.h"
 #include "PathfindingSystem.h"
 #include "PerfTelemetry.h"
+#include "WeatherSystem.h"
 #include "U7GumpSpellbook.h"
 #include "Terrain.h"
 
@@ -1954,7 +1955,91 @@ void U7Object::HandleVoiceEgg()
 
 void U7Object::HandleWeatherEgg()
 {
+	if (!g_WeatherSystem || !g_Player)
+	{
+		return;
+	}
 
+	U7Object* avatar = g_Player->GetAvatarObject();
+	if (!avatar)
+	{
+		return;
+	}
+
+	EggData& egg = m_eggData;
+
+	if (egg.m_hasTriggered && !egg.m_autoReset)
+	{
+		return;
+	}
+	if (egg.m_hasTriggered)
+	{
+		return; // auto-reset clears hasTriggered in EggUpdate when player leaves
+	}
+
+	if (egg.m_nocturnal && g_hour < 20 && g_hour > 6)
+	{
+		return;
+	}
+
+	const float distXZ = Vector2Distance(
+		Vector2{ m_Pos.x, m_Pos.z },
+		Vector2{ avatar->m_Pos.x, avatar->m_Pos.z });
+
+	bool justTriggered = false;
+	switch (egg.m_criteria)
+	{
+	case EggCriteria::CachedIn:
+		if (distXZ <= CACHED_IN_RADIUS)
+		{
+			justTriggered = true;
+			egg.m_shouldReset = true;
+		}
+		break;
+	case EggCriteria::AvatarFootpad:
+	case EggCriteria::PartyFootpad:
+		if (distXZ <= 1.5f)
+		{
+			justTriggered = true;
+		}
+		break;
+	case EggCriteria::AvatarNear:
+	case EggCriteria::PartyNear:
+	default:
+		{
+			const float radius = (egg.m_distance > 0)
+				? static_cast<float>(egg.m_distance)
+				: 2.0f;
+			if (distXZ <= radius)
+			{
+				justTriggered = true;
+			}
+		}
+		break;
+	}
+
+	if (!justTriggered)
+	{
+		return;
+	}
+
+	if (egg.m_probability < 100)
+	{
+		int roll = g_NonVitalRNG ? static_cast<int>(g_NonVitalRNG->RandomRange(0, 99)) : (rand() % 100);
+		if (roll >= egg.m_probability)
+		{
+			egg.m_hasTriggered = true;
+			return;
+		}
+	}
+
+	egg.m_hasTriggered = true;
+	g_WeatherSystem->SetWeather(
+		static_cast<int>(egg.m_specificValue),
+		static_cast<int>(egg.m_durationMinutes),
+		true,
+		m_Pos,
+		static_cast<int>(m_ID));
 }
 
 void U7Object::HandleTeleporterEgg()
@@ -2372,7 +2457,8 @@ void U7Object::DebugPrintEggInfo() const
 			break;
 
 		case EggType::Weather:
-			AddConsoleString("  WeatherType: " + std::to_string((int)egg.m_specificValue));
+			AddConsoleString("  WeatherType: " + std::to_string((int)egg.m_specificValue) +
+				" DurationMinutes: " + std::to_string((int)egg.m_durationMinutes));
 			break;
 
 		case EggType::Path:
@@ -6341,6 +6427,7 @@ json U7Object::SaveToJson() const
 		j["m_autoReset"] = e.m_autoReset;
 		j["m_shouldReset"] = e.m_shouldReset;
 		j["m_specificValue"] = e.m_specificValue;
+		j["m_durationMinutes"] = e.m_durationMinutes;
 		if (!e.m_audioFile.empty())
 			j["m_audioFile"] = e.m_audioFile;
 		if (e.m_usecodeFunc != 0)
@@ -6515,6 +6602,8 @@ U7Object* U7Object::LoadFromJson(const json& j)
 
 		if (j.contains("m_specificValue"))
 			e.m_specificValue = static_cast<uint8_t>(j["m_specificValue"].get<int>());
+		if (j.contains("m_durationMinutes"))
+			e.m_durationMinutes = static_cast<uint8_t>(j["m_durationMinutes"].get<int>());
 		if (j.contains("m_audioFile") && j["m_audioFile"].is_string())
 			e.m_audioFile = j["m_audioFile"].get<std::string>();
 		if (j.contains("m_usecodeFunc"))

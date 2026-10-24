@@ -28,6 +28,7 @@
 #include "SoundSystem.h"
 #include "CombatMode.h"
 #include "CombatState.h"
+#include "WeatherSystem.h"
 
 #include <unordered_set>
 #include <fstream>
@@ -732,6 +733,19 @@ void MainState::UpdateTime()
 					g_Terrain->MarkDirty();
 				}
 			}
+		}
+
+		if (minuteAdvanced && g_WeatherSystem)
+		{
+			g_WeatherSystem->UpdateGameMinute();
+		}
+	}
+
+	if (g_WeatherSystem && g_Player)
+	{
+		if (U7Object* avatar = g_Player->GetAvatarObject())
+		{
+			g_WeatherSystem->CheckEggDistanceCancel(avatar->m_Pos);
 		}
 	}
 

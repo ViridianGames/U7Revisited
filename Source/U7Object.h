@@ -287,6 +287,8 @@ struct EggData
 	bool m_shouldReset = false;
 
 	uint8_t m_specificValue = 0;
+	// Weather eggs: data1 high byte = duration in game minutes (0 = continuous).
+	uint8_t m_durationMinutes = 0;
 	std::string m_audioFile;
 	int m_usecodeFunc = 0;
 

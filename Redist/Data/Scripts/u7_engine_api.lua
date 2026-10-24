@@ -1179,12 +1179,13 @@ function set_path_failure(usecode_num) end
 -- ============================================================================
 
 ---[Exult 0x0044] Gets the current weather state
----@return integer weather Weather type: 0=clear, 1=snow, 2=storm, 3=sparkle/anti-magic, 4=fog, 5=unknown, 6=clear no overcast
+---@return integer weather Weather type: 0=clear, 1=snow, 2=rain/storm, 3=sparkle/anti-magic, 4=fog, 5=overcast, 6=cloudy
 function get_weather() end
 
 ---[Exult 0x0045] Sets the weather
 ---@param weather integer Weather type (see get_weather for values)
-function set_weather(weather) end
+---@param duration_minutes integer|nil Game minutes (0/omit = continuous ~6000); 255 clears
+function set_weather(weather, duration_minutes) end
 
 ---[Exult 0x0090] Checks if location is water
 ---@param x integer X coordinate

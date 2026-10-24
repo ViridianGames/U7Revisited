@@ -20,6 +20,7 @@
 #include "PathfindingSystem.h"
 #include "SoundSystem.h"
 #include "U7SpriteEffects.h"
+#include "WeatherSystem.h"
 #include "NpcAnimation.h"
 
 extern "C"
@@ -5139,20 +5140,25 @@ static int LuaSetPathFailure(lua_State *L)
     return 0;
 }
 
-// Shared weather state for get_weather / set_weather (0=clear, 1=rain, 2=snow, 3=sparkles).
-static int g_luaWeather = 0;
-
-// 0x0044 | get_weather
+// 0x0044 | get_weather — canonical IDs: 0 clear, 1 snow, 2 rain/storm, 3 sparkle,
+// 4 fog, 5 overcast, 6 cloudy (see WeatherSystem / original SetWeather).
 static int LuaGetWeather(lua_State *L)
 {
-    lua_pushinteger(L, g_luaWeather);
+    const int weather = g_WeatherSystem ? g_WeatherSystem->GetWeather() : 0;
+    lua_pushinteger(L, weather);
     return 1;
 }
 
-// 0x0045 | set_weather
+// 0x0045 | set_weather(type [, duration_minutes])
+// duration 0 = continuous (engine uses 6000 game minutes, matching original eggs).
 static int LuaSetWeather(lua_State *L)
 {
-    g_luaWeather = (int)lua_tointeger(L, 1);
+    const int type = (int)lua_tointeger(L, 1);
+    const int duration = (int)luaL_optinteger(L, 2, 0);
+    if (g_WeatherSystem)
+    {
+        g_WeatherSystem->SetWeather(type, duration, false);
+    }
     return 0;
 }
 

@@ -6,6 +6,7 @@
 #include "U7Globals.h"
 #include "LoadingState.h"
 #include "PathfindingSystem.h"
+#include "WeatherSystem.h"
 
 #include <cstring>
 #include <list>
@@ -386,6 +387,12 @@ void LoadingState::UpdateLoading()
 			{
 				g_pathfindingSystem = std::make_unique<PathfindingSystem>();
 				g_pathfindingSystem->Init(std::string(""));
+			}
+
+			if (!g_WeatherSystem)
+			{
+				g_WeatherSystem = std::make_unique<WeatherSystem>();
+				g_WeatherSystem->Init();
 			}
 
 			m_buildingPathfindingGrid = true;
@@ -1305,6 +1312,13 @@ void LoadingState::ParseIREGFile(stringstream& ireg, int superchunkx, int superc
 
 				// Specific value (speech #, usecode param, path/teleport quality, etc.)
 				egg.m_specificValue = specVal;
+
+				// Weather eggs: data1 low = weather ID 0–6, high = duration minutes.
+				if (egg.m_type == EggType::Weather)
+				{
+					egg.m_specificValue = static_cast<uint8_t>(data1 & 0xff);
+					egg.m_durationMinutes = static_cast<uint8_t>((data1 >> 8) & 0xff);
+				}
 
 				// Usecode special case
 				if (egg.m_type == EggType::Usecode)
