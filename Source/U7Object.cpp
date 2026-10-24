@@ -1827,7 +1827,94 @@ void U7Object::HandleMonsterSpawnerEgg()
 
 void U7Object::HandleProximitySoundEgg()
 {
+	// BG ships 0 type-3 / frame-1 sound eggs; this path is for compatibility
+	// (SI / custom maps). SFX id is egg data1 low byte (m_specificValue).
+	if (!g_Player || !g_SoundSystem)
+	{
+		return;
+	}
 
+	U7Object* avatar = g_Player->GetAvatarObject();
+	if (!avatar)
+	{
+		return;
+	}
+
+	EggData& egg = m_eggData;
+	const int soundId = static_cast<int>(egg.m_specificValue);
+	if (soundId < 0)
+	{
+		g_SoundSystem->StopLoopingSoundEffect(static_cast<int>(m_ID));
+		return;
+	}
+
+	float triggerRadius = static_cast<float>(egg.m_distance);
+	switch (egg.m_criteria)
+	{
+		case EggCriteria::CachedIn:
+			triggerRadius = CACHED_IN_RADIUS;
+			break;
+		case EggCriteria::AvatarFootpad:
+		case EggCriteria::PartyFootpad:
+			triggerRadius = 1.5f;
+			break;
+		case EggCriteria::AvatarNear:
+		case EggCriteria::PartyNear:
+		default:
+			break;
+	}
+
+	const float dist = Vector2Distance(
+		{ m_Pos.x, m_Pos.z },
+		{ avatar->m_Pos.x, avatar->m_Pos.z });
+	const bool inRange = dist <= triggerRadius;
+
+	if (!inRange)
+	{
+		if (g_SoundSystem->IsLoopingSoundEffectPlaying(static_cast<int>(m_ID)))
+		{
+			g_SoundSystem->StopLoopingSoundEffect(static_cast<int>(m_ID));
+		}
+		if (egg.m_autoReset)
+		{
+			egg.m_hasTriggered = false;
+		}
+		return;
+	}
+
+	// Same day window as other eggs: nocturnal only fires outside 7..19.
+	if (egg.m_nocturnal && g_hour < 20 && g_hour > 6)
+	{
+		if (g_SoundSystem->IsLoopingSoundEffectPlaying(static_cast<int>(m_ID)))
+		{
+			g_SoundSystem->StopLoopingSoundEffect(static_cast<int>(m_ID));
+		}
+		return;
+	}
+
+	if (egg.m_hasTriggered && !egg.m_autoReset &&
+		g_SoundSystem->IsLoopingSoundEffectPlaying(static_cast<int>(m_ID)))
+	{
+		return;
+	}
+
+	if (!egg.m_hasTriggered && egg.m_probability < 100)
+	{
+		int roll = g_NonVitalRNG ? static_cast<int>(g_NonVitalRNG->RandomRange(0, 99)) : (rand() % 100);
+		if (roll >= egg.m_probability)
+		{
+			egg.m_hasTriggered = true; // spent this entry; auto-reset re-arms on leave
+			return;
+		}
+	}
+
+	if (!g_SoundSystem->IsLoopingSoundEffectPlaying(static_cast<int>(m_ID)))
+	{
+		const float maxRange = (triggerRadius > 0.0f) ? triggerRadius : -1.0f;
+		g_SoundSystem->PlayLoopingSoundEffect(static_cast<int>(m_ID), soundId, maxRange, false);
+	}
+
+	egg.m_hasTriggered = true;
 }
 
 void U7Object::HandleJukeboxEgg()

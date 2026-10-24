@@ -69,6 +69,7 @@ public:
    // Looped ambient SFX (e.g. pool water); replays while registered.
    void PlayLoopingSoundEffect(int objectId, int soundId, float maxRange = -1.0f, bool stopWhenNotVisible = false);
    void StopLoopingSoundEffect(int objectId);
+   bool IsLoopingSoundEffectPlaying(int objectId) const;
 
    void SetGlobalSoundVolume(float newVolume);
    void SetGlobalMusicVolume(float newVolume);

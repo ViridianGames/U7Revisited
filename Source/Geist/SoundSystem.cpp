@@ -598,6 +598,11 @@ void SoundSystem::StopLoopingSoundEffect(int objectId)
    m_loopingSfxByObject.erase(it);
 }
 
+bool SoundSystem::IsLoopingSoundEffectPlaying(int objectId) const
+{
+   return m_loopingSfxByObject.find(objectId) != m_loopingSfxByObject.end();
+}
+
 void SoundSystem::SetGlobalSoundVolume(float newVolume)
 {
    if (newVolume > 100)

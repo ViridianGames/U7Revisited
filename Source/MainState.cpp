@@ -35,46 +35,68 @@
 
 namespace
 {
-	constexpr int kPoolShapeId = 893;
+	// Object shapes that start a spatial ambient loop via usecode event 2
+	// (see object_pool_0893.lua). BG has no type-3 sound eggs; ambient comes
+	// from props like this. Add shapes here as their event-2 scripts land.
+	constexpr int kAmbientObjectShapes[] = {
+		893, // pool / fountain — SFX 48 via object_pool_0893
+	};
 
-	void UpdatePoolAmbientSounds()
+	bool IsAmbientObjectShape(int shapeId)
 	{
-		static std::unordered_set<int> poolsInRange;
+		for (int shape : kAmbientObjectShapes)
+		{
+			if (shape == shapeId)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	void UpdateObjectAmbientSounds()
+	{
+		static std::unordered_set<int> ambientObjectsInRange;
 
 		std::unordered_set<int> currentlyInRange;
 
-		for (U7Object* obj : g_sortedVisibleObjects)
+		// Skip while under a mountain ceiling so outdoor prop loops do not
+		// leak into dungeon view when the same shape happens to be nearby.
+		if (!g_dungeonViewActive)
 		{
-			if (!obj || obj->m_ObjectType != kPoolShapeId)
+			for (U7Object* obj : g_sortedVisibleObjects)
 			{
-				continue;
-			}
-
-			float dist = Vector2Distance(
-				{ obj->m_Pos.x, obj->m_Pos.z },
-				{ g_camera.target.x, g_camera.target.z }
-			);
-
-			const float poolAmbientRange = g_SoundSystem->GetSpatialDefaultRange();
-			if (dist <= poolAmbientRange)
-			{
-				currentlyInRange.insert(obj->m_ID);
-				if (poolsInRange.find(obj->m_ID) == poolsInRange.end())
+				if (!obj || !IsAmbientObjectShape(obj->m_ObjectType))
 				{
-					obj->Interact(2);
+					continue;
+				}
+
+				float dist = Vector2Distance(
+					{ obj->m_Pos.x, obj->m_Pos.z },
+					{ g_camera.target.x, g_camera.target.z }
+				);
+
+				const float ambientRange = g_SoundSystem->GetSpatialDefaultRange();
+				if (dist <= ambientRange)
+				{
+					currentlyInRange.insert(obj->m_ID);
+					if (ambientObjectsInRange.find(obj->m_ID) == ambientObjectsInRange.end())
+					{
+						obj->Interact(2);
+					}
 				}
 			}
 		}
 
-		for (int poolId : poolsInRange)
+		for (int objectId : ambientObjectsInRange)
 		{
-			if (currentlyInRange.find(poolId) == currentlyInRange.end())
+			if (currentlyInRange.find(objectId) == currentlyInRange.end())
 			{
-				g_SoundSystem->StopLoopingSoundEffect(poolId);
+				g_SoundSystem->StopLoopingSoundEffect(objectId);
 			}
 		}
 
-		poolsInRange = std::move(currentlyInRange);
+		ambientObjectsInRange = std::move(currentlyInRange);
 	}
 
 	// Party selector: vertical stretchbuttons left of the stats panel.
@@ -2688,7 +2710,7 @@ void MainState::Update()
 
 	if (m_showObjects)
 	{
-		UpdatePoolAmbientSounds();
+		UpdateObjectAmbientSounds();
 	}
 
 	if (m_barkDuration > 0 && m_barkObject != nullptr)
