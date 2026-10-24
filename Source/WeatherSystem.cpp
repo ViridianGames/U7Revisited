@@ -13,9 +13,9 @@ namespace
 {
 	constexpr float kFlashDuration = 0.12f;
 	constexpr float kOvercastDim = 0.72f;
-	constexpr float kFogDimR = 0.85f;
-	constexpr float kFogDimG = 0.88f;
-	constexpr float kFogDimB = 0.95f;
+	constexpr float kFogDimR = 0.55f;
+	constexpr float kFogDimG = 0.60f;
+	constexpr float kFogDimB = 0.68f;
 }
 
 void WeatherSystem::Init()
@@ -108,13 +108,12 @@ void WeatherSystem::ConfigureEffectParams(WeatherType type)
 		m_frameCount = 4;
 		break;
 	case WeatherType::Sparkle:
-		m_maxCount = kTargetParticles;
-		m_fallSpeed = 160.0f;
-		m_firstFrame = 0;
-		m_frameCount = 0;
-		m_useSplashes = true;
-		m_firstSplashFrame = 21;
-		m_splashFrames = 7;
+		// Exult: Basicdrop<21, 27, 0, true> — hover (delta 0), frames 21..27 ping-pong.
+		m_maxCount = kSparkleParticles;
+		m_fallSpeed = 0;
+		m_firstFrame = 21;
+		m_frameCount = 7; // 21..27 inclusive
+		m_useSplashes = false;
 		break;
 	case WeatherType::Overcast:
 	case WeatherType::Cloudy:
@@ -266,11 +265,25 @@ void WeatherSystem::TryAddParticle()
 
 	Particle& p = m_particles[freeIndex];
 	p.active = true;
-	p.x = static_cast<float>(GetRandomValue(-40, 680));
-	p.y = static_cast<float>(GetRandomValue(-40, 20));
-	p.endY = static_cast<float>(GetRandomValue(120, 380));
-	p.frame = 0;
 	p.splash = 0;
+	p.animTimer = 0;
+	p.forward = (GetRandomValue(0, 1) == 1);
+
+	if (m_type == WeatherType::Sparkle)
+	{
+		// Exult sparkle: spawn anywhere on screen; hang and twinkle in place.
+		p.x = static_cast<float>(GetRandomValue(0, 620));
+		p.y = static_cast<float>(GetRandomValue(0, 340));
+		p.endY = p.y;
+		p.frame = m_firstFrame + GetRandomValue(0, std::max(0, m_frameCount - 1));
+	}
+	else
+	{
+		p.x = static_cast<float>(GetRandomValue(-40, 680));
+		p.y = static_cast<float>(GetRandomValue(-40, 20));
+		p.endY = static_cast<float>(GetRandomValue(120, 380));
+		p.frame = 0;
+	}
 }
 
 void WeatherSystem::UpdateParticles(float dt)
@@ -291,6 +304,9 @@ void WeatherSystem::UpdateParticles(float dt)
 		m_phase = WeatherPhase::Steady;
 	}
 
+	constexpr float kSparkleFrameSeconds = 0.08f;
+	const int sparkleLast = m_firstFrame + m_frameCount - 1; // 27 when first=21, count=7
+
 	for (Particle& p : m_particles)
 	{
 		if (!p.active)
@@ -304,6 +320,40 @@ void WeatherSystem::UpdateParticles(float dt)
 			if (p.splash <= 0)
 			{
 				p.active = false;
+			}
+			continue;
+		}
+
+		// Exult sparkle: delta 0 — hover and ping-pong frames; respawn at end of cycle.
+		if (m_type == WeatherType::Sparkle && m_fallSpeed <= 0.0f)
+		{
+			p.animTimer += dt;
+			while (p.animTimer >= kSparkleFrameSeconds)
+			{
+				p.animTimer -= kSparkleFrameSeconds;
+				if (p.forward)
+				{
+					++p.frame;
+					if (p.frame >= sparkleLast)
+					{
+						p.frame = sparkleLast;
+						p.forward = false;
+						// Respawn like Exult when reaching fraN with delta 0.
+						p.x = static_cast<float>(GetRandomValue(0, 620));
+						p.y = static_cast<float>(GetRandomValue(0, 340));
+						p.frame = m_firstFrame + GetRandomValue(0, std::max(0, m_frameCount - 1));
+						p.forward = (GetRandomValue(0, 1) == 1);
+					}
+				}
+				else
+				{
+					--p.frame;
+					if (p.frame <= m_firstFrame)
+					{
+						p.frame = m_firstFrame;
+						p.forward = true;
+					}
+				}
 			}
 			continue;
 		}
@@ -444,14 +494,14 @@ void WeatherSystem::Draw(Camera camera)
 			{
 				frameIndex = m_firstSplashFrame + (m_splashFrames - static_cast<int>(p.splash));
 			}
+			else if (drawSparkle)
+			{
+				// Sparkle stores absolute SPRITES.VGA frame (21..27).
+				frameIndex = p.frame;
+			}
 			else if (m_frameCount > 0)
 			{
 				frameIndex = m_firstFrame + (p.frame % m_frameCount);
-			}
-			else if (drawSparkle && m_useSplashes)
-			{
-				// Sparkle uses splash frames as the visible particle (original).
-				frameIndex = m_firstSplashFrame + (p.frame % std::max(1, m_splashFrames));
 			}
 			else
 			{
@@ -469,7 +519,11 @@ void WeatherSystem::Draw(Camera camera)
 				continue;
 			}
 
-			DrawTexture(frame.texture, static_cast<int>(p.x), static_cast<int>(p.y), WHITE);
+			const float w = static_cast<float>(frame.width) * kParticleDrawScale;
+			const float h = static_cast<float>(frame.height) * kParticleDrawScale;
+			Rectangle source = { 0.0f, 0.0f, static_cast<float>(frame.width), static_cast<float>(frame.height) };
+			Rectangle dest = { p.x, p.y, w, h };
+			DrawTexturePro(frame.texture, source, dest, { 0.0f, 0.0f }, 0.0f, WHITE);
 		}
 	}
 
@@ -491,7 +545,7 @@ void WeatherSystem::Draw(Camera camera)
 	// Soft fog veil in virtual GUI space (daytime fog palette already dims lighting).
 	if (WantsFogPalette() && g_isDay && !g_dungeonViewActive)
 	{
-		DrawRectangle(0, 0, 640, 360, Color{ 200, 210, 220, 48 });
+		DrawRectangle(0, 0, 640, 360, Color{ 220, 225, 230, 150 });
 	}
 }
 

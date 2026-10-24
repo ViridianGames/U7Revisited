@@ -3696,6 +3696,12 @@ void MainState::Draw()
 	rlSetBlendMode(BLEND_CUSTOM_SEPARATE);
 	rlSetBlendFactorsSeparate(RL_SRC_ALPHA, RL_ONE_MINUS_SRC_ALPHA, RL_ONE, RL_ONE_MINUS_SRC_ALPHA, RL_FUNC_ADD, RL_MAX);
 
+	// Weather (fog/precip/sparkle) under HUD chrome and gumps — not over paperdoll/stats.
+	if (g_WeatherSystem)
+	{
+		g_WeatherSystem->Draw(g_camera);
+	}
+
 	//  Draw the minimap and marker
 
 	if (!m_paused && m_showUIElements)
@@ -3789,11 +3795,6 @@ void MainState::Draw()
 	if (g_SpriteEffectSystem && m_showObjects)
 	{
 		g_SpriteEffectSystem->Draw(g_camera);
-	}
-
-	if (g_WeatherSystem)
-	{
-		g_WeatherSystem->Draw(g_camera);
 	}
 
 	// World-anchored overlays before gumps so bars/text sit under UI.

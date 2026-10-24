@@ -47,6 +47,10 @@ public:
 	static constexpr int kTargetParticles = 125;   // Original BG target
 	static constexpr int kPrecipSpriteShape = 0;   // SPRITES.VGA shape 0
 	static constexpr int kCloudSpriteShape = 2;    // SPRITES.VGA shape 2
+	// SPRITES.VGA precip frames are tiny; scale up in virtual GUI space (640x360).
+	static constexpr float kParticleDrawScale = 1.5f;
+	// Exult Sparkle_effect uses MAXDROPS/6 (~33); rain/snow keep kTargetParticles.
+	static constexpr int kSparkleParticles = kMaxParticles / 6;
 
 	void Init();
 	void Shutdown();
@@ -89,8 +93,10 @@ private:
 		float x = 0;
 		float y = 0;
 		float endY = 0;
-		int frame = 0;
+		int frame = 0;           // Offset within m_frameCount, or absolute for hover sparkle
 		float splash = 0;
+		float animTimer = 0;     // Sparkle frame advance (Exult-style hover)
+		bool forward = true;     // Sparkle ping-pong direction
 		bool active = false;
 	};
 
