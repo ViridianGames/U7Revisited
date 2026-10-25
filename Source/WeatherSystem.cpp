@@ -81,6 +81,67 @@ namespace
 	}
 
 	// Continuous wind uses WindUnitWX/WZ: 0° = N (-Z), wx=sin(yaw), wz=-cos(yaw).
+
+	constexpr float kSkyCloudFadeInSec = 3.0f;
+	constexpr float kDayNightNightFloor = 64.0f;
+	constexpr float kDayNightDayCeil = 255.0f;
+
+	// Continuous 0..1 day amount matching MainState's pre-modifier dusk/dawn ramp
+	// on g_dayNightColor.b (hour 20: 255→64, hour 6: 64→255). Computed from
+	// g_hour/g_minute so ApplyLightingModifiers (overcast/fog) on the global
+	// color cannot collapse the sky toward night at midday.
+	float SkyDayAmount()
+	{
+		float b = kDayNightDayCeil;
+		if (g_hour == 20)
+		{
+			b = kDayNightDayCeil
+				- (static_cast<float>(g_minute) / 60.0f) * (kDayNightDayCeil - kDayNightNightFloor);
+		}
+		else if (g_hour == 6)
+		{
+			b = kDayNightNightFloor
+				+ (static_cast<float>(g_minute) / 60.0f) * (kDayNightDayCeil - kDayNightNightFloor);
+		}
+		else if (g_hour > 20 || g_hour < 6)
+		{
+			b = kDayNightNightFloor;
+		}
+		return std::clamp(
+			(b - kDayNightNightFloor) / (kDayNightDayCeil - kDayNightNightFloor),
+			0.0f,
+			1.0f);
+	}
+
+	bool SkyFluffUsesStormTint(WeatherType type)
+	{
+		return type == WeatherType::Rain
+			|| type == WeatherType::Snow
+			|| type == WeatherType::Overcast;
+	}
+
+	void DrawTexturedXZQuad(const Texture2D& tex, Vector3 center, float halfX, float halfZ, Color tint)
+	{
+		if (tex.id == 0)
+		{
+			return;
+		}
+		const float y = center.y;
+		rlSetTexture(tex.id);
+		rlBegin(RL_QUADS);
+		rlColor4ub(tint.r, tint.g, tint.b, tint.a);
+		rlNormal3f(0.0f, 1.0f, 0.0f);
+		rlTexCoord2f(0.0f, 1.0f);
+		rlVertex3f(center.x - halfX, y, center.z - halfZ);
+		rlTexCoord2f(0.0f, 0.0f);
+		rlVertex3f(center.x - halfX, y, center.z + halfZ);
+		rlTexCoord2f(1.0f, 0.0f);
+		rlVertex3f(center.x + halfX, y, center.z + halfZ);
+		rlTexCoord2f(1.0f, 1.0f);
+		rlVertex3f(center.x + halfX, y, center.z - halfZ);
+		rlEnd();
+		rlSetTexture(0);
+	}
 }
 
 void WeatherSystem::Init()
@@ -1219,6 +1280,7 @@ void WeatherSystem::TrySpawnSkyCloud(Camera camera, bool clearAmbient)
 	c.life = clearAmbient
 		? (18.0f + static_cast<float>(GetRandomValue(0, 80)) / 10.0f)
 		: (12.0f + static_cast<float>(GetRandomValue(0, 60)) / 10.0f);
+	c.maxLife = c.life;
 	c.worldX = inX + px;
 	c.worldZ = inZ + pz;
 	c.worldY = kSkyCloudBaseY + heightT * kSkyCloudYSpan;
@@ -1702,27 +1764,27 @@ void WeatherSystem::ApplyLightingModifiers(Color& dayNightColor, bool isDay) con
 
 void WeatherSystem::GetSkyGradientColors(Color& zenith, Color& mid, Color& horizon) const
 {
-	// Base sky stops — day blue vs night indigo. Do NOT multiply by g_dayNightColor:
-	// that color already includes ApplyLightingModifiers (overcast/fog), which would
-	// double-dim. Apply the same fades here from m_overcastFade / m_fogFade instead.
-	if (g_isDay)
-	{
-		zenith = { 70, 125, 205, 255 };
-		mid = { 130, 175, 220, 255 };
-		horizon = { 175, 200, 225, 255 };
-	}
-	else
-	{
-		zenith = { 6, 8, 22, 255 };
-		mid = { 14, 18, 40, 255 };
-		horizon = { 24, 28, 50, 255 };
-	}
+	// Base sky stops — day blue vs night indigo. Lerp by continuous dayAmount so
+	// dusk (hour 20) and dawn (hour 6) match MainState's lighting ramp (no g_isDay snap).
+	// Do NOT multiply stops by g_dayNightColor RGB: that already includes
+	// ApplyLightingModifiers (overcast/fog) and would double-dim.
+	const Color dayZenith = { 70, 125, 205, 255 };
+	const Color dayMid = { 130, 175, 220, 255 };
+	const Color dayHorizon = { 175, 200, 225, 255 };
+	const Color nightZenith = { 6, 8, 22, 255 };
+	const Color nightMid = { 14, 18, 40, 255 };
+	const Color nightHorizon = { 24, 28, 50, 255 };
 
-	// Same overcast darkening path as terrain lighting (no special storm purple).
-	if (g_isDay && m_overcastFade > 0.01f)
+	const float dayAmount = SkyDayAmount();
+	zenith = LerpSkyColor(nightZenith, dayZenith, dayAmount);
+	mid = LerpSkyColor(nightMid, dayMid, dayAmount);
+	horizon = LerpSkyColor(nightHorizon, dayHorizon, dayAmount);
+
+	// Overcast darkening scaled by dayAmount (fades out at night) — not gated on g_isDay.
+	if (m_overcastFade > 0.01f && dayAmount > 0.01f)
 	{
 		const float floor = OvercastDimMultiplier(m_intensity);
-		const float dim = 1.0f - (1.0f - floor) * m_overcastFade;
+		const float dim = 1.0f - (1.0f - floor) * m_overcastFade * dayAmount;
 		zenith = ScaleSkyColor(zenith, dim * 0.92f);
 		mid = ScaleSkyColor(mid, dim);
 		horizon = ScaleSkyColor(horizon, dim * 1.02f);
@@ -1830,7 +1892,7 @@ void WeatherSystem::DrawSkyGradient(Camera camera) const
 	rlEnableDepthTest();
 }
 
-void WeatherSystem::DrawSkyCloudBillboards(Camera camera) const
+void WeatherSystem::DrawSkyCloudQuads() const
 {
 	if (CountActiveSkyClouds() == 0)
 	{
@@ -1843,8 +1905,18 @@ void WeatherSystem::DrawSkyCloudBillboards(Camera camera) const
 		return;
 	}
 
-	// Same alpha-discard path as tree/NPC billboards — without it the full
-	// quad writes and cloud sprites read as opaque rectangles.
+	// Same continuous dayAmount as sky gradient (dusk + dawn). Soft night floor so
+	// fluff stays readable; Clear stays bright, storm band darker gray.
+	const float dayAmount = SkyDayAmount();
+	const float shade = 0.75f + 0.25f * dayAmount;
+	const bool stormTint = SkyFluffUsesStormTint(m_type);
+	const float baseR = stormTint ? 130.0f : 245.0f;
+	const float baseG = stormTint ? 135.0f : 245.0f;
+	const float baseB = stormTint ? 145.0f : 250.0f;
+	const unsigned char tr = static_cast<unsigned char>(std::clamp(static_cast<int>(baseR * shade), 0, 255));
+	const unsigned char tg = static_cast<unsigned char>(std::clamp(static_cast<int>(baseG * shade), 0, 255));
+	const unsigned char tb = static_cast<unsigned char>(std::clamp(static_cast<int>(baseB * shade), 0, 255));
+
 	rlDisableDepthMask();
 	BeginShaderMode(g_alphaDiscard);
 	BeginBlendMode(BLEND_ALPHA);
@@ -1862,25 +1934,22 @@ void WeatherSystem::DrawSkyCloudBillboards(Camera camera) const
 			continue;
 		}
 
-		const float lifeFade = std::min(1.0f, c.life * 0.25f);
+		const float age = std::max(0.0f, c.maxLife - c.life);
+		const float fadeIn = std::min(1.0f, age / kSkyCloudFadeInSec);
+		const float fadeOut = std::min(1.0f, c.life * 0.25f);
 		const unsigned char a = static_cast<unsigned char>(
-			std::clamp(static_cast<int>(255.0f * c.alpha * lifeFade), 0, 220));
-		// Soft gray-white — not ground xform-253 shadow.
-		const Color tint = { 235, 235, 240, a };
+			std::clamp(static_cast<int>(255.0f * c.alpha * fadeIn * fadeOut), 0, 220));
+		const Color tint = { tr, tg, tb, a };
 		const float aspect = (cloud.height > 0)
 			? (static_cast<float>(cloud.width) / static_cast<float>(cloud.height))
 			: 1.5f;
-		const Vector2 size = { c.size, c.size / std::max(0.35f, aspect) };
-		Rectangle source = { 0, 0, static_cast<float>(cloud.width), static_cast<float>(-cloud.height) };
-		DrawBillboardPro(
-			camera,
+		const float halfX = c.size * 0.5f;
+		const float halfZ = (c.size / std::max(0.35f, aspect)) * 0.5f;
+		DrawTexturedXZQuad(
 			cloud.texture,
-			source,
 			Vector3{ c.worldX, c.worldY, c.worldZ },
-			Vector3{ 0.0f, 1.0f, 0.0f },
-			size,
-			Vector2{ size.x * 0.5f, size.y * 0.5f },
-			0.0f,
+			halfX,
+			halfZ,
 			tint);
 	}
 
@@ -1902,13 +1971,21 @@ void WeatherSystem::DrawSkyLayer(Camera camera)
 	DrawSkyGradient(camera);
 	if (WantsSkyFluff() || CountActiveSkyClouds() > 0)
 	{
-		DrawSkyCloudBillboards(camera);
+		DrawSkyCloudQuads();
 	}
 }
 
 void WeatherSystem::DrawEdgeClouds(Camera camera)
 {
 	if (IsAvatarSheltered() || CountActiveEdgeClouds() == 0)
+	{
+		return;
+	}
+
+	// Night blots read as crawling fog on dark ground — hide/fade with dayAmount.
+	// Weather 10/11 will replace this gate with moonLightAmount.
+	const float dayAmount = SkyDayAmount();
+	if (dayAmount < 0.05f)
 	{
 		return;
 	}
@@ -1959,10 +2036,16 @@ void WeatherSystem::DrawEdgeClouds(Camera camera)
 		const float drawX = screenPos.x - xleft * scale;
 		const float drawY = screenPos.y - yabove * scale;
 
-		// Texture already carries xform-253 alpha; life only fades the whole blot.
+		// Texture already carries xform-253 alpha; life + dayAmount fade the blot.
 		const float lifeFade = std::min(1.0f, c.life * 0.35f);
+		const float dayFade = lifeFade * dayAmount;
+		const int alphaFloor = (dayAmount >= 0.99f) ? 40 : 0;
 		const unsigned char tintA = static_cast<unsigned char>(
-			std::clamp(static_cast<int>(255.0f * lifeFade), 40, 255));
+			std::clamp(static_cast<int>(255.0f * dayFade), alphaFloor, 255));
+		if (tintA < 1)
+		{
+			continue;
+		}
 		Rectangle source = { 0, 0, static_cast<float>(cloud.width), static_cast<float>(cloud.height) };
 		Rectangle dest = { drawX, drawY, drawW, drawH };
 		BeginBlendMode(BLEND_ALPHA);

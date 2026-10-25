@@ -92,7 +92,7 @@ public:
 	void UpdateGameMinute();
 	void Update(float dt);
 	void Draw(Camera camera);
-	// Mode3D backdrop: zenith/mid/horizon fill + high-band cloud billboards.
+	// Mode3D backdrop: zenith/mid/horizon fill + high-band flat cloud quads.
 	// Call after BeginMode3D, before terrain. ClearBackground with GetSkyClearColor first.
 	void DrawSkyLayer(Camera camera);
 	Color GetSkyClearColor() const; // horizon stop, or black indoor/disabled
@@ -166,7 +166,7 @@ private:
 		bool active = false;
 	};
 
-	// High-altitude sky fluff — Mode3D billboards only (no 2D ground shadow).
+	// High-altitude sky fluff — Mode3D XZ quads only (no ground shadow).
 	struct SkyCloud
 	{
 		float worldX = 0;
@@ -174,9 +174,10 @@ private:
 		float worldZ = 0;
 		float vx = 0;
 		float vz = 0;
-		float size = 10.0f; // world-space billboard width
+		float size = 10.0f; // world-space quad width (X)
 		int frame = 0;
 		float life = 0;
+		float maxLife = 0; // set at spawn; used for fade-in
 		float alpha = 0.55f;
 		bool active = false;
 	};
@@ -211,9 +212,9 @@ private:
 	void TrySpawnSkyCloud(Camera camera, bool clearAmbient);
 	void UpdateEdgeClouds(float dt, Camera camera);
 	void UpdateSkyClouds(float dt, Camera camera);
-	void DrawEdgeClouds(Camera camera);
 	void DrawSkyGradient(Camera camera) const;
-	void DrawSkyCloudBillboards(Camera camera) const;
+	void DrawSkyCloudQuads() const;
+	void DrawEdgeClouds(Camera camera);
 	void GetSkyGradientColors(Color& zenith, Color& mid, Color& horizon) const;
 	bool WantsOpenSky() const; // outdoor + effects; false indoor/dungeon/sheltered
 	bool WantsSkyFluff() const;
