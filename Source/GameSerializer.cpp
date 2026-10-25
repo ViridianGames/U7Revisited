@@ -373,6 +373,7 @@ bool GameSerializer::SaveToStream(std::ofstream& stream, const std::string& save
 		saveData["gameTime"]["scheduleTime"] = g_scheduleTime;
 		saveData["gameTime"]["dayOfMonth"] = g_dayOfMonth;
 		saveData["gameTime"]["month"] = g_month;
+		saveData["gameTime"]["britannianYear"] = g_britannianYear;
 		saveData["gameTime"]["britannianDayIndex"] = g_britannianDayIndex;
 
 		// Weather state (akin to original WEATHER.DAT)
@@ -579,6 +580,8 @@ bool GameSerializer::LoadFromStream(std::ifstream& stream)
 			g_scheduleTime = saveData["gameTime"].value("scheduleTime", 0);
 			g_dayOfMonth = saveData["gameTime"].value("dayOfMonth", 1u);
 			g_month = saveData["gameTime"].value("month", 1u);
+			// Legacy saves without year: compatibility default only (do not reconstruct from dayIndex).
+			g_britannianYear = saveData["gameTime"].value("britannianYear", 361u);
 			if (g_dayOfMonth < 1 || g_dayOfMonth > 28)
 			{
 				g_dayOfMonth = 1;

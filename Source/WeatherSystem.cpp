@@ -13,8 +13,10 @@
 #include <algorithm>
 #include <cmath>
 #include <cstdint>
+#include <cstdio>
 #include <array>
 #include <fstream>
+#include <string>
 #include <unordered_set>
 
 std::unique_ptr<WeatherSystem> g_WeatherSystem;
@@ -91,6 +93,8 @@ namespace
 	constexpr float kSkyCloudFadeInSec = 3.0f;
 
 	// Weather 10 celestial constants
+	// 10.4 closeout + lunar kinematics: continuous monotone overnight θ for moon placement;
+	// moon trail = ±12h sliding window (not civil-day rebase). Weather 10 OPEN until playtest.
 	constexpr float kCelestialRadius = 110.0f; // just inside dome (120)
 	constexpr float kSiderealDegPerHour = 15.0f;
 	constexpr float kMonthlyStarDriftDeg = 2.5f;
@@ -133,6 +137,7 @@ namespace
 	constexpr float kDuskSkirtEndHour =
 		kDuskSunSetHour + (kSkySkirtDeg / kSunTwilightElRateDegPerHour);
 	constexpr float kMoonGlowRadiusScale = 2.6f;
+	constexpr float kShootingStarDefaultMeanSeconds = 90.0f; // real-time mean gap between spawns
 	// Modelo A moons: calendar owns phase; geometry places vs sun with personality offsets.
 	constexpr float kTrammelAzBiasDeg = 14.0f;
 	constexpr float kFeluccaAzBiasDeg = -18.0f;
@@ -378,6 +383,46 @@ namespace
 			+ (t3 - t2) * m1;
 	}
 
+	// d/dt of Hermite1D (same basis).
+	float Hermite1DDeriv(float t, float p0, float p1, float m0, float m1)
+	{
+		t = std::clamp(t, 0.0f, 1.0f);
+		const float t2 = t * t;
+		return (6.0f * t2 - 6.0f * t) * p0
+			+ (3.0f * t2 - 4.0f * t + 1.0f) * m0
+			+ (-6.0f * t2 + 6.0f * t) * p1
+			+ (3.0f * t2 - 2.0f * t) * m1;
+	}
+
+	// Keep overnight Hermite increasing: clamp endpoint slopes into (0, 3Δ] (Fritsch-style).
+	void LimitMonotoneHermiteTangents(float p0, float p1, float& m0, float& m1)
+	{
+		const float delta = p1 - p0;
+		if (delta <= 1.0e-6f)
+		{
+			m0 = 0.0f;
+			m1 = 0.0f;
+			return;
+		}
+		const float maxM = 3.0f * delta;
+		if (m0 < 0.0f)
+		{
+			m0 = 0.0f;
+		}
+		if (m1 < 0.0f)
+		{
+			m1 = 0.0f;
+		}
+		if (m0 > maxM)
+		{
+			m0 = maxM;
+		}
+		if (m1 > maxM)
+		{
+			m1 = maxM;
+		}
+	}
+
 	// Calendar phase 0..7 → full-cycle angle 0..315° (not astronomical elongation 0..180).
 	float PhaseCycleAngleDeg(int phase0to7)
 	{
@@ -412,11 +457,32 @@ namespace
 		return IlluminationFromCycleAngleDeg(PhaseCycleAngleDeg(phase0to7));
 	}
 
-	// Smooth cycle angle between today's and tomorrow's table indices (incl. 28→1).
-	float SmoothPhaseCycleAngleDeg(bool trammel)
+	// Smooth cycle angle between sample day's and next day's table indices (incl. 28→1).
+	float SmoothPhaseCycleAngleDegAt(bool trammel, unsigned int month, unsigned int day, float hourInDay)
 	{
-		const unsigned int month = std::clamp(g_month, 1u, 12u);
-		const unsigned int day = std::clamp(g_dayOfMonth, 1u, 28u);
+		month = std::clamp(month, 1u, 12u);
+		day = std::clamp(day, 1u, 28u);
+		float h = hourInDay;
+		while (h >= 24.0f)
+		{
+			h -= 24.0f;
+			NextBritannianCalendarDay(month, day, month, day);
+		}
+		while (h < 0.0f)
+		{
+			h += 24.0f;
+			// Step backward one Britannian day (28-day months).
+			if (day <= 1u)
+			{
+				day = 28u;
+				month = (month <= 1u) ? 12u : (month - 1u);
+			}
+			else
+			{
+				--day;
+			}
+		}
+
 		unsigned int nextMonth = month;
 		unsigned int nextDay = day;
 		NextBritannianCalendarDay(month, day, nextMonth, nextDay);
@@ -426,8 +492,39 @@ namespace
 		const int i1 = trammel ? TrammelPhaseIndexForDay(static_cast<int>(nextDay))
 			: FeluccaPhaseIndexForDay(static_cast<int>(nextDay));
 
-		const float fracDay = std::clamp(GetSmoothClockHours() / 24.0f, 0.0f, 1.0f);
+		const float fracDay = std::clamp(h / 24.0f, 0.0f, 1.0f);
 		return LerpAngleCircularDeg(PhaseCycleAngleDeg(i0), PhaseCycleAngleDeg(i1), fracDay);
+	}
+
+	float SmoothPhaseCycleAngleDeg(bool trammel)
+	{
+		return SmoothPhaseCycleAngleDegAt(
+			trammel, g_month, g_dayOfMonth, GetSmoothClockHours());
+	}
+
+	// Normalize hour into [0,24) advancing month/day (for trail samples across midnight / 28→1).
+	void NormalizeSampleCivilTime(unsigned int& month, unsigned int& day, float& hourInDay)
+	{
+		month = std::clamp(month, 1u, 12u);
+		day = std::clamp(day, 1u, 28u);
+		while (hourInDay >= 24.0f)
+		{
+			hourInDay -= 24.0f;
+			NextBritannianCalendarDay(month, day, month, day);
+		}
+		while (hourInDay < 0.0f)
+		{
+			hourInDay += 24.0f;
+			if (day <= 1u)
+			{
+				day = 28u;
+				month = (month <= 1u) ? 12u : (month - 1u);
+			}
+			else
+			{
+				--day;
+			}
+		}
 	}
 
 	// SplitMix-ish — breaks sequential cord patterns better than a single multiply.
@@ -448,6 +545,8 @@ namespace
 	}
 
 	void SunAzElFromClock(float clockHours, float& outAz, float& outEl);
+	// Day-circle sun for moon placement (extrapolates through night; no Hermite S).
+	Vector3 SunDirForMoonPlacement(float clockHours);
 	Vector3 EquatorialDir(float raDeg, float decDeg);
 	Vector3 RotateCelestial(Vector3 restDir, float siderealDeg);
 	Vector3 CelestialPoleAxis();
@@ -477,6 +576,8 @@ namespace
 	}
 
 	// Place moon vs sun: separation matches illum; sign from waxing/waning; personality bias/incl.
+	// Weather 10.4 C: inclination via small rotation (keeps unit arc), not pole-add+renorm (that kinked paths).
+	// Weather 10.4 closeout: callers must pass day-circle sun (SunDirForMoonPlacement), not night Hermite.
 	Vector3 PlaceMoonDirVsSun(Vector3 sunDir, float cycleAngleDeg, float azBiasDeg, float inclPersonalityDeg)
 	{
 		const float illum = IlluminationFromCycleAngleDeg(cycleAngleDeg);
@@ -485,18 +586,20 @@ namespace
 		const float signedSep = ((cycle <= 180.0f) ? sepDeg : -sepDeg) + azBiasDeg;
 
 		const Vector3 pole = CelestialPoleAxis();
-		Vector3 dir = RotateAroundAxis(sunDir, pole, DegToRad(signedSep));
-		dir = Vector3Normalize(dir);
-		// Inclination personality: lift/sink along pole without collapsing to a point.
-		dir = Vector3Normalize(Vector3Add(
-			dir,
-			Vector3Scale(pole, std::sin(DegToRad(inclPersonalityDeg)) * 0.40f)));
+		Vector3 dir = Vector3Normalize(RotateAroundAxis(sunDir, pole, DegToRad(signedSep)));
+		Vector3 east = Vector3CrossProduct(pole, dir);
+		if (Vector3LengthSqr(east) > 1.0e-8f)
+		{
+			east = Vector3Normalize(east);
+			dir = Vector3Normalize(RotateAroundAxis(dir, east, DegToRad(inclPersonalityDeg)));
+		}
 		return dir;
 	}
 
-	void EvaluateMoon(bool trammel, Vector3 sunDir, MoonState& out)
+	void EvaluateMoon(bool trammel, Vector3 sunDir, MoonState& out,
+		unsigned int month, unsigned int day, float hourInDay)
 	{
-		out.cycleAngleDeg = SmoothPhaseCycleAngleDeg(trammel);
+		out.cycleAngleDeg = SmoothPhaseCycleAngleDegAt(trammel, month, day, hourInDay);
 		out.illumination = IlluminationFromCycleAngleDeg(out.cycleAngleDeg);
 		out.radius = trammel ? kTrammelMoonRadius : kFeluccaMoonRadius;
 		out.dir = PlaceMoonDirVsSun(
@@ -508,10 +611,52 @@ namespace
 		out.altitudeVis = MoonAltitudeVis(out.elevationDeg);
 	}
 
+	void EvaluateMoon(bool trammel, Vector3 sunDir, MoonState& out)
+	{
+		EvaluateMoon(trammel, sunDir, out, g_month, g_dayOfMonth, GetSmoothClockHours());
+	}
+
+	void EvaluateMoons(Vector3 sunDir, MoonState& outTrammel, MoonState& outFelucca,
+		unsigned int month, unsigned int day, float hourInDay)
+	{
+		EvaluateMoon(true, sunDir, outTrammel, month, day, hourInDay);
+		EvaluateMoon(false, sunDir, outFelucca, month, day, hourInDay);
+	}
+
 	void EvaluateMoons(Vector3 sunDir, MoonState& outTrammel, MoonState& outFelucca)
 	{
-		EvaluateMoon(true, sunDir, outTrammel);
-		EvaluateMoon(false, sunDir, outFelucca);
+		EvaluateMoons(sunDir, outTrammel, outFelucca, g_month, g_dayOfMonth, GetSmoothClockHours());
+	}
+
+	// Normalize first, then sun placement + phase share the same civil instant.
+	void EvaluateMoonsAtCivil(unsigned int month, unsigned int day, float hourInDay,
+		MoonState& outTrammel, MoonState& outFelucca)
+	{
+		NormalizeSampleCivilTime(month, day, hourInDay);
+		EvaluateMoons(SunDirForMoonPlacement(hourInDay), outTrammel, outFelucca, month, day, hourInDay);
+	}
+
+	float DirAngleDeg(Vector3 a, Vector3 b)
+	{
+		const float d = Vector3DotProduct(Vector3Normalize(a), Vector3Normalize(b));
+		return RadToDeg(std::acos(std::clamp(d, -1.0f, 1.0f)));
+	}
+
+	// Angular speed (°/h) across a civil interval (same Δt before / at / after a calendar boundary).
+	void MoonBoundaryMotion(unsigned int month, unsigned int day, float hourA, float hourB, float dtHours,
+		float& outTramDeg, float& outFelDeg, float& outTramDegPerH, float& outFelDegPerH)
+	{
+		MoonState tramA{};
+		MoonState felA{};
+		MoonState tramB{};
+		MoonState felB{};
+		EvaluateMoonsAtCivil(month, day, hourA, tramA, felA);
+		EvaluateMoonsAtCivil(month, day, hourB, tramB, felB);
+		outTramDeg = DirAngleDeg(tramA.dir, tramB.dir);
+		outFelDeg = DirAngleDeg(felA.dir, felB.dir);
+		const float invDt = 1.0f / std::max(dtHours, 1.0e-6f);
+		outTramDegPerH = outTramDeg * invDt;
+		outFelDegPerH = outFelDeg * invDt;
 	}
 
 	float SkyLuminance(float dayAmount)
@@ -625,7 +770,9 @@ namespace
 	}
 
 	// Soft corona/glow: center keeps color.a, rim alpha → 0 (no hard ring).
-	void DrawCelestialGlowRadial(Camera camera, Vector3 worldPos, float radius, Color color, int segments = 20)
+	// additive=true: caller must set RL_BLEND_ADDITIVE around this draw (sun only).
+	void DrawCelestialGlowRadial(Camera camera, Vector3 worldPos, float radius, Color color,
+		int segments = 20)
 	{
 		if (color.a < 1 || radius <= 0.01f)
 		{
@@ -1107,6 +1254,8 @@ namespace
 		return kCircle;
 	}
 
+	// Day-circle theta for VISUAL sun skirts / day arc. Overnight uses dual extrapolation
+	// (acceptable here: only feeds SunAzElFromDayCircle join samples for sun Hermite).
 	float SunThetaForHour(const SunDayCircle& sc, float h)
 	{
 		if (h <= kDawnSunRiseHour)
@@ -1128,12 +1277,60 @@ namespace
 		return sc.thetaSet + sc.dThetaDhSet * (h - kDuskSunSetHour);
 	}
 
+	// Moon placement: continuous overnight theta (no midnight branch jump). Same day pieces as sun.
+	float SunThetaForMoonPlacement(const SunDayCircle& sc, float h)
+	{
+		if (h >= kDawnSunRiseHour && h <= kDuskSunSetHour)
+		{
+			if (h < kSunCulminationHour)
+			{
+				const float u = (h - kDawnSunRiseHour)
+					/ std::max(1.0e-3f, kSunCulminationHour - kDawnSunRiseHour);
+				return sc.thetaRise + (sc.thetaPeak - sc.thetaRise) * u;
+			}
+			const float u = (h - kSunCulminationHour)
+				/ std::max(1.0e-3f, kDuskSunSetHour - kSunCulminationHour);
+			return sc.thetaPeak + (sc.thetaSet - sc.thetaPeak) * u;
+		}
+
+		const float nightSpan =
+			(24.0f - kDuskSunSetHour) + kDawnSunRiseHour;
+		float t = (h >= kDuskSunSetHour)
+			? (h - kDuskSunSetHour) / nightSpan
+			: ((h + 24.0f) - kDuskSunSetHour) / nightSpan;
+		t = std::clamp(t, 0.0f, 1.0f);
+
+		const float p0 = sc.thetaSet;
+		const float p1 = sc.thetaRise + 2.0f * PI; // same sense as day arc
+		float m0 = sc.dThetaDhSet * nightSpan;
+		float m1 = sc.dThetaDhRise * nightSpan;
+		LimitMonotoneHermiteTangents(p0, p1, m0, m1);
+		return Hermite1D(t, p0, p1, m0, m1);
+	}
+
 	Vector3 SunDirOnDayCircle(const SunDayCircle& sc, float theta)
 	{
 		const Vector3 radial = Vector3Add(
 			Vector3Scale(sc.u, sc.radius * std::cos(theta)),
 			Vector3Scale(sc.v, sc.radius * std::sin(theta)));
 		return Vector3Normalize(Vector3Add(sc.center, radial));
+	}
+
+	// Modelo A moon placement reference on day circle; overnight θ is continuous + monotone.
+	// Visual sun keeps SunAzElFromClock Hermite — do not route moons through that path.
+	Vector3 SunDirForMoonPlacement(float clockHours)
+	{
+		float h = std::fmod(clockHours, 24.0f);
+		if (h < 0.0f)
+		{
+			h += 24.0f;
+		}
+		const SunDayCircle& sc = GetSunDayCircle();
+		if (!sc.ok)
+		{
+			return SkyDirFromAzEl(kSunPeakAzDeg, kSunPeakElDeg);
+		}
+		return SunDirOnDayCircle(sc, SunThetaForMoonPlacement(sc, h));
 	}
 
 	void SunAzElFromDayCircle(float h, float& outAz, float& outEl)
@@ -1309,6 +1506,144 @@ void WeatherSystem::Shutdown()
 	ClearWeather(false);
 }
 
+void WeatherSystem::SetDrawMoonPathTrail(bool enabled)
+{
+	m_drawMoonPathTrail = enabled;
+	if (m_drawMoonPathTrail)
+	{
+		RunLunarKinematicsDiagnostics();
+	}
+}
+
+void WeatherSystem::ToggleDrawMoonPathTrail()
+{
+	SetDrawMoonPathTrail(!m_drawMoonPathTrail);
+}
+
+void WeatherSystem::RunLunarKinematicsDiagnostics()
+{
+	const SunDayCircle& sc = GetSunDayCircle();
+	if (!sc.ok)
+	{
+		Log("Lunar kinematics: sun day-circle unavailable");
+		return;
+	}
+
+	const float nightSpan = (24.0f - kDuskSunSetHour) + kDawnSunRiseHour;
+	const float p0 = sc.thetaSet;
+	const float p1 = sc.thetaRise + 2.0f * PI;
+	float m0 = sc.dThetaDhSet * nightSpan;
+	float m1 = sc.dThetaDhRise * nightSpan;
+	LimitMonotoneHermiteTangents(p0, p1, m0, m1);
+
+	float minDThetaDt = 1.0e9f;
+	for (int i = 0; i <= 64; ++i)
+	{
+		const float t = static_cast<float>(i) / 64.0f;
+		minDThetaDt = std::min(minDThetaDt, Hermite1DDeriv(t, p0, p1, m0, m1));
+	}
+
+	float maxJump = 0.0f;
+	Vector3 prev = SunDirForMoonPlacement(kDuskSunSetHour);
+	for (int step = 1; step <= 96; ++step)
+	{
+		const float hNight = kDuskSunSetHour
+			+ (nightSpan * static_cast<float>(step) / 96.0f);
+		const float h = std::fmod(hNight, 24.0f);
+		const Vector3 cur = SunDirForMoonPlacement(h);
+		const float jump = Vector3Length(Vector3Subtract(cur, prev));
+		maxJump = std::max(maxJump, jump);
+		prev = cur;
+	}
+	// Explicit midnight samples.
+	{
+		const Vector3 a = SunDirForMoonPlacement(23.99f);
+		const Vector3 b = SunDirForMoonPlacement(0.01f);
+		maxJump = std::max(maxJump, Vector3Length(Vector3Subtract(b, a)));
+	}
+
+	// Phase wrap 28→1: cycle angle continuity at hour 23.9 → next day 0.1.
+	const float c28 = SmoothPhaseCycleAngleDegAt(true, 1u, 28u, 23.9f);
+	unsigned int m = 1u;
+	unsigned int d = 28u;
+	float h = 24.1f;
+	NormalizeSampleCivilTime(m, d, h);
+	const float c01 = SmoothPhaseCycleAngleDegAt(true, m, d, h);
+	float phaseDelta = std::fabs(c01 - c28);
+	if (phaseDelta > 180.0f)
+	{
+		phaseDelta = 360.0f - phaseDelta;
+	}
+
+	// Moon dir continuity: compare boundary speed to equal-Δt intervals before/after.
+	// Nonzero motion across ~1.2 min is legitimate; fail on anomalous speed spikes.
+	constexpr float kBoundaryDtH = 0.02f; // 23.99 → 0.01
+	auto moonSeg = [](unsigned int month, unsigned int day, float hourA, float hourB, float dt,
+		float& tDeg, float& fDeg, float& tRate, float& fRate) {
+		MoonBoundaryMotion(month, day, hourA, hourB, dt, tDeg, fDeg, tRate, fRate);
+	};
+	float midPreT = 0, midPreF = 0, midPreTr = 0, midPreFr = 0;
+	float midBndT = 0, midBndF = 0, midBndTr = 0, midBndFr = 0;
+	float midPostT = 0, midPostF = 0, midPostTr = 0, midPostFr = 0;
+	moonSeg(1u, 15u, 23.99f - kBoundaryDtH, 23.99f, kBoundaryDtH, midPreT, midPreF, midPreTr, midPreFr);
+	moonSeg(1u, 15u, 23.99f, 24.0f + 0.01f, kBoundaryDtH, midBndT, midBndF, midBndTr, midBndFr);
+	moonSeg(1u, 16u, 0.01f, 0.01f + kBoundaryDtH, kBoundaryDtH, midPostT, midPostF, midPostTr, midPostFr);
+
+	float wrapPreT = 0, wrapPreF = 0, wrapPreTr = 0, wrapPreFr = 0;
+	float wrapBndT = 0, wrapBndF = 0, wrapBndTr = 0, wrapBndFr = 0;
+	float wrapPostT = 0, wrapPostF = 0, wrapPostTr = 0, wrapPostFr = 0;
+	moonSeg(1u, 28u, 23.99f - kBoundaryDtH, 23.99f, kBoundaryDtH, wrapPreT, wrapPreF, wrapPreTr, wrapPreFr);
+	moonSeg(1u, 28u, 23.99f, 24.0f + 0.01f, kBoundaryDtH, wrapBndT, wrapBndF, wrapBndTr, wrapBndFr);
+	// Day 28 month 1 → day 1 month 2 (not month 1 day 1).
+	moonSeg(2u, 1u, 0.01f, 0.01f + kBoundaryDtH, kBoundaryDtH, wrapPostT, wrapPostF, wrapPostTr, wrapPostFr);
+
+	auto spikeRatio = [](float boundary, float pre, float post) {
+		const float neigh = std::max(std::max(pre, post), 1.0e-3f);
+		return boundary / neigh;
+	};
+	const float midSpikeT = spikeRatio(midBndTr, midPreTr, midPostTr);
+	const float midSpikeF = spikeRatio(midBndFr, midPreFr, midPostFr);
+	const float wrapSpikeT = spikeRatio(wrapBndTr, wrapPreTr, wrapPostTr);
+	const float wrapSpikeF = spikeRatio(wrapBndFr, wrapPreFr, wrapPostFr);
+	constexpr float kSpikeFail = 3.0f;
+	const bool moonContFail =
+		midSpikeT > kSpikeFail || midSpikeF > kSpikeFail
+		|| wrapSpikeT > kSpikeFail || wrapSpikeF > kSpikeFail;
+
+	// Full-ish moons: max night elevation (hour 20..6) on a mid-month day.
+	float tramNightMaxEl = -90.0f;
+	float felNightMaxEl = -90.0f;
+	for (int slot = 0; slot < 48; ++slot)
+	{
+		float hour = static_cast<float>(slot) * 0.5f;
+		if (hour > 6.0f && hour < 20.0f)
+		{
+			continue;
+		}
+		MoonState tram{};
+		MoonState fel{};
+		EvaluateMoonsAtCivil(1u, 15u, hour, tram, fel);
+		tramNightMaxEl = std::max(tramNightMaxEl, tram.elevationDeg);
+		felNightMaxEl = std::max(felNightMaxEl, fel.elevationDeg);
+	}
+
+	char buf[384];
+	std::snprintf(buf, sizeof(buf),
+		"Lunar kinematics: min dθ/dt=%.4f maxSunJump=%.4f phase28→1Δ=%.2f° "
+		"nightMaxEl T=%.1f F=%.1f | mid °/h T=%.1f(x%.1f) F=%.1f(x%.1f) "
+		"28→1 °/h T=%.1f(x%.1f) F=%.1f(x%.1f)%s",
+		minDThetaDt, maxJump, phaseDelta, tramNightMaxEl, felNightMaxEl,
+		midBndTr, midSpikeT, midBndFr, midSpikeF,
+		wrapBndTr, wrapSpikeT, wrapBndFr, wrapSpikeF,
+		moonContFail ? " FAIL spike" : " ok");
+	Log(buf);
+	AddConsoleString(buf);
+	if (moonContFail)
+	{
+		AddConsoleString("Lunar continuity: anomalous moon speed at midnight/month wrap — investigate live kinematics");
+	}
+}
+
 void WeatherSystem::SetOrreryState(int state)
 {
 	m_orreryAnimActive = false;
@@ -1386,14 +1721,11 @@ void WeatherSystem::RefreshOrreryStateFromFlags()
 
 float WeatherSystem::GetMoonLightAmount() const
 {
-	float sunAz = 0.0f;
-	float sunEl = 0.0f;
-	SunAzElFromClock(GetSmoothClockHours(), sunAz, sunEl);
-	const Vector3 sunDir = SkyDirFromAzEl(sunAz, sunEl);
+	const Vector3 placeSun = SunDirForMoonPlacement(GetSmoothClockHours());
 
 	MoonState tram{};
 	MoonState fel{};
-	EvaluateMoons(sunDir, tram, fel);
+	EvaluateMoons(placeSun, tram, fel);
 
 	// I_phase × V_altitude (geometric el=0), preserve relative weights; not draw-cull −22°.
 	float amount = tram.illumination * tram.altitudeVis * kTrammelLightWeight
@@ -2843,6 +3175,77 @@ void WeatherSystem::Update(float dt)
 		m_orreryAnimElapsed += dt;
 	}
 
+	// Weather 10.4 D: shooting stars — real-time dt (not game minutes).
+	{
+		int activeCount = 0;
+		for (int i = 0; i < kShootingStarSlots; ++i)
+		{
+			ShootingStar& s = m_shootingStars[i];
+			if (!s.active)
+			{
+				continue;
+			}
+			s.life += dt;
+			if (s.life >= s.duration)
+			{
+				s.active = false;
+				continue;
+			}
+			s.dir = Vector3Normalize(Vector3Add(s.dir, Vector3Scale(s.vel, dt)));
+			// Re-orthonormalize velocity into tangent plane.
+			const float radial = Vector3DotProduct(s.vel, s.dir);
+			s.vel = Vector3Subtract(s.vel, Vector3Scale(s.dir, radial));
+			++activeCount;
+		}
+
+		const bool canSpawn = EffectsEnabled() && WantsOpenSky() && !IsAvatarSheltered()
+			&& SkyDayAmount() < 0.22f && m_overcastFade < 0.55f
+			&& activeCount < kShootingStarSlots;
+		if (canSpawn)
+		{
+			m_shootingStarSpawnTimer -= dt;
+			if (m_shootingStarSpawnTimer <= 0.0f)
+			{
+				const float meanGap = kShootingStarDefaultMeanSeconds / m_shootingStarRateScale;
+				m_shootingStarSpawnTimer = meanGap * (0.55f + 0.90f * (GetRandomValue(0, 1000) / 1000.0f));
+				for (int i = 0; i < kShootingStarSlots; ++i)
+				{
+					if (m_shootingStars[i].active)
+					{
+						continue;
+					}
+					// Random sky direction biased above horizon.
+					const float az = static_cast<float>(GetRandomValue(0, 359));
+					const float el = 12.0f + 0.01f * static_cast<float>(GetRandomValue(0, 5500));
+					Vector3 dir = SkyDirFromAzEl(az, el);
+					Vector3 pole = CelestialPoleAxis();
+					Vector3 tang = Vector3CrossProduct(pole, dir);
+					if (Vector3LengthSqr(tang) < 1.0e-6f)
+					{
+						tang = Vector3CrossProduct(Vector3{ 1.0f, 0.0f, 0.0f }, dir);
+					}
+					tang = Vector3Normalize(tang);
+					// Mix a bit of "down" along sky so streak falls slightly.
+					Vector3 down = Vector3Normalize(Vector3CrossProduct(dir, tang));
+					Vector3 vel = Vector3Normalize(Vector3Add(tang, Vector3Scale(down, 0.35f)));
+					const float speed = DegToRad(18.0f + 0.01f * static_cast<float>(GetRandomValue(0, 2200)));
+					ShootingStar& s = m_shootingStars[i];
+					s.active = true;
+					s.dir = dir;
+					s.vel = Vector3Scale(vel, speed);
+					s.life = 0.0f;
+					s.duration = 0.55f + 0.001f * static_cast<float>(GetRandomValue(0, 700));
+					break;
+				}
+			}
+		}
+		else if (!canSpawn)
+		{
+			m_shootingStarSpawnTimer = std::min(m_shootingStarSpawnTimer,
+				kShootingStarDefaultMeanSeconds * 0.5f);
+		}
+	}
+
 	if (!EffectsEnabled())
 	{
 		return;
@@ -3051,6 +3454,22 @@ WeatherSystem::SkyAtmosphereState WeatherSystem::BuildSkyAtmosphereState() const
 	GetSkyGradientColors(atm.zenith, atm.mid, atm.horizon);
 	atm.warmTint = Color{ 255, 145, 70, 255 };
 	atm.overcastFade = std::clamp(m_overcastFade, 0.0f, 1.0f);
+
+	// One lunar evaluation per frame — shared by sky scatter, softShade, and moon draw.
+	MoonState tram{};
+	MoonState fel{};
+	EvaluateMoons(SunDirForMoonPlacement(GetSmoothClockHours()), tram, fel);
+	atm.tramDir = tram.dir;
+	atm.felDir = fel.dir;
+	atm.tramIllum = tram.illumination;
+	atm.felIllum = fel.illumination;
+	atm.tramAltVis = tram.altitudeVis;
+	atm.felAltVis = fel.altitudeVis;
+	atm.tramElevDeg = tram.elevationDeg;
+	atm.felElevDeg = fel.elevationDeg;
+	atm.tramRadius = tram.radius;
+	atm.felRadius = fel.radius;
+	atm.moonsValid = true;
 	return atm;
 }
 
@@ -3071,7 +3490,38 @@ Color WeatherSystem::EvaluateSkyColor(Vector3 skyDirection, const SkyAtmosphereS
 	const float wOvercast = 1.0f - 0.85f * atm.overcastFade;
 	const float w = std::clamp(wSolar * wHorizon * wDirection * wOvercast, 0.0f, 1.0f);
 
-	return LerpSkyColor(base, atm.warmTint, w);
+	Color sky = LerpSkyColor(base, atm.warmTint, w);
+
+	// Weather 10.4 closeout: subtle night lunar atmospheric wash (uses frame moon cache only).
+	if (atm.moonsValid)
+	{
+		const float night = 1.0f - std::clamp(atm.dayAmount, 0.0f, 1.0f);
+		const float clearGate = 1.0f - 0.90f * atm.overcastFade;
+		if (night > 0.04f && clearGate > 0.05f)
+		{
+			constexpr float kMoonScatterMax = 0.11f;
+			constexpr Color kMoonWash{ 185, 205, 255, 255 };
+			auto moonWashWeight = [&](Vector3 moonDir, float illum, float altVis) -> float {
+				if (illum < 0.04f || altVis < 0.02f)
+				{
+					return 0.0f;
+				}
+				const float cosAng = std::clamp(Vector3DotProduct(dir, moonDir), -1.0f, 1.0f);
+				// Narrow directional lobe — discreet glance wash, not a second sun.
+				const float lobe = cosAng > 0.0f ? (cosAng * cosAng * cosAng * cosAng) : 0.0f;
+				return night * clearGate * illum * altVis * lobe * kMoonScatterMax;
+			};
+			const float wT = moonWashWeight(atm.tramDir, atm.tramIllum, atm.tramAltVis);
+			const float wF = moonWashWeight(atm.felDir, atm.felIllum, atm.felAltVis) * 0.72f;
+			const float wMoon = std::clamp(wT + wF, 0.0f, kMoonScatterMax);
+			if (wMoon > 0.001f)
+			{
+				sky = LerpSkyColor(sky, kMoonWash, wMoon);
+			}
+		}
+	}
+
+	return sky;
 }
 
 void WeatherSystem::DrawSkyGradient(Camera camera) const
@@ -3689,52 +4139,70 @@ void WeatherSystem::DrawCelestialBodies(Camera camera, const SkyAtmosphereState&
 		}
 	}
 
-	// --- Moons: Modelo A (calendar phase) + geometric place vs sun; shared MoonState ---
+	// --- Moons: Modelo A from frame atm cache (same dirs as sky scatter / softShade) ---
 	{
 		const float moonNight = 1.0f - dayAmount;
-		const float moonDayPale = 0.28f * dayAmount;
-		const float moonVis = std::clamp((moonNight + moonDayPale) * overcastDim, 0.0f, 1.0f);
-		if (moonVis > 0.02f)
+		// Weather 10.4 closeout: day lit blue-white at near-opaque alpha (was ~0.62 gray wash).
+		// Solid disc stays alpha-blended (not additive). SoftShade = final EvaluateSkyColor.
+		const float dayLitFloor = 0.94f;
+		const float moonVisGate = std::clamp(
+			(moonNight + 0.42f * dayAmount) * overcastDim, 0.0f, 1.0f);
+		if (moonVisGate > 0.02f && atm.moonsValid)
 		{
-			MoonState tram{};
-			MoonState fel{};
-			EvaluateMoons(sunDir, tram, fel);
+			struct MoonDraw
+			{
+				Vector3 dir;
+				float illumination;
+				float elevationDeg;
+				float radius;
+				bool trammel;
+			};
+			const MoonDraw moons[2] = {
+				{ atm.tramDir, atm.tramIllum, atm.tramElevDeg, atm.tramRadius, true },
+				{ atm.felDir, atm.felIllum, atm.felElevDeg, atm.felRadius, false },
+			};
 
-			auto drawMoon = [&](const MoonState& moon, bool trammel) {
+			for (const MoonDraw& moon : moons)
+			{
 				if (moon.elevationDeg < drawCullEl)
 				{
-					return;
+					continue;
 				}
 				const Vector3 worldPos = SkyWorldPosFromDir(camera, moon.dir);
-				const float aMul = moonVis * (0.70f + 0.30f * moon.illumination);
-				// Phase C: subtle identity — Trammel warmer cream, Felucca cooler blue-white.
-				Color dayHigh = trammel ? Color{ 230, 228, 245, 255 } : Color{ 200, 220, 255, 255 };
-				Color nightHigh = trammel ? Color{ 255, 246, 220, 255 } : Color{ 230, 240, 255, 255 };
-				Color amberLit = trammel ? Color{ 255, 180, 120, 255 } : Color{ 220, 185, 160, 255 };
+				const float litA = std::clamp(
+					(moonNight * (0.78f + 0.22f * moon.illumination)
+						+ dayAmount * dayLitFloor * (0.92f + 0.08f * moon.illumination))
+					* overcastDim,
+					0.0f, 1.0f);
+				// Day: cooler blue-white; night: warm cream (Trammel) / cool (Felucca).
+				Color dayHigh = moon.trammel ? Color{ 228, 242, 255, 255 } : Color{ 214, 236, 255, 255 };
+				Color nightHigh = moon.trammel ? Color{ 255, 248, 228, 255 } : Color{ 232, 242, 255, 255 };
+				Color amberLit = moon.trammel ? Color{ 255, 185, 125, 255 } : Color{ 225, 195, 170, 255 };
 				Color noonLit = LerpColorRGB(nightHigh, dayHigh, dayAmount);
 				Color lit = HorizonWarmLit(
 					noonLit, amberLit, moon.elevationDeg - kWorldHorizonDeg, kMoonWarmthElDeg);
-				lit.a = static_cast<unsigned char>(std::clamp(static_cast<int>(255.0f * aMul), 0, 255));
+				lit.a = static_cast<unsigned char>(std::clamp(static_cast<int>(255.0f * litA), 0, 255));
 
-				// Glow behind disc (local visual only; intensity ∝ phase × vis × altitude).
+				// Glow behind disc — discreet alpha (not additive); fade by day.
 				const float altWarm = 1.0f - Smoothstep(0.0f, 28.0f,
 					std::max(0.0f, moon.elevationDeg - kWorldHorizonDeg));
-				const float glowStr = moon.illumination * moonVis
-					* (0.55f + 0.45f * altWarm) * overcastDim;
+				const float glowStr = moon.illumination * moonVisGate
+					* (0.55f + 0.45f * altWarm) * overcastDim
+					* (0.22f + 0.78f * moonNight);
 				if (glowStr > 0.02f)
 				{
 					Color glow = HorizonWarmLit(
-						trammel ? Color{ 255, 240, 210, 255 } : Color{ 210, 225, 255, 255 },
+						moon.trammel ? Color{ 255, 242, 215, 255 } : Color{ 210, 228, 255, 255 },
 						amberLit,
 						moon.elevationDeg - kWorldHorizonDeg,
 						kMoonWarmthElDeg);
 					glow.a = static_cast<unsigned char>(
-						std::clamp(static_cast<int>(95.0f * glowStr), 0, 120));
+						std::clamp(static_cast<int>(88.0f * glowStr), 0, 110));
 					const float glowR = moon.radius * kMoonGlowRadiusScale * (1.0f + 0.15f * altWarm);
 					DrawCelestialGlowRadial(camera, worldPos, glowR, glow, 20);
 				}
 
-				// Opaque silhouette always (phase ≠ full): night black → sky-matched by day.
+				// Dark limb: final sky in this direction (includes lunar scatter); no self-light.
 				Color softShade{ 0, 0, 0, 0 };
 				const float darkFrac = 1.0f - moon.illumination;
 				const float phaseWantsShade = Smoothstep(0.08f, 0.95f, darkFrac);
@@ -3750,14 +4218,11 @@ void WeatherSystem::DrawCelestialBodies(Camera camera, const SkyAtmosphereState&
 					camera, worldPos, moon.dir, sunDir);
 				DrawCelestialMoonPhase(
 					camera, worldPos, moon.radius, lit, moon.illumination, lightAng, softShade, 28);
-			};
-
-			drawMoon(tram, true);
-			drawMoon(fel, false);
+			}
 		}
 	}
 
-	// --- Sun: defined core + radial corona (no hard ring); elevation tint ---
+	// --- Sun: core + additive radial corona (restore alpha blend after) ---
 	if (overcastDim > 0.05f)
 	{
 		if (sunEl > drawCullEl - kSunAngularRadiusDeg)
@@ -3765,23 +4230,53 @@ void WeatherSystem::DrawCelestialBodies(Camera camera, const SkyAtmosphereState&
 			const Vector3 sunPos = SkyWorldPosFromDir(camera, sunDir);
 			const Color noonDisc{ 255, 248, 210, 255 };
 			const Color amberDisc{ 255, 150, 60, 255 };
-			const Color noonCorona{ 255, 230, 170, 255 };
-			const Color amberCorona{ 255, 120, 40, 255 };
+			const Color noonCorona{ 255, 236, 190, 255 };
+			const Color amberCorona{ 255, 150, 70, 255 };
 			const float elAboveLip = std::max(0.0f, sunEl - kWorldHorizonDeg);
 			Color disc = HorizonWarmLit(noonDisc, amberDisc, elAboveLip, kSunWarmthElDeg);
 			Color corona = HorizonWarmLit(noonCorona, amberCorona, elAboveLip, kSunWarmthElDeg);
 			disc.a = static_cast<unsigned char>(std::clamp(static_cast<int>(255.0f * overcastDim), 0, 255));
-			// Slightly wider/softer corona near horizon; still complements 10.1 sky.
 			const float horizonSoft = 1.0f - Smoothstep(0.0f, 18.0f, elAboveLip);
+			// Additive: lower alpha avoids overexposure; warm RGB stays bright on blue sky.
 			corona.a = static_cast<unsigned char>(
-				std::clamp(static_cast<int>((90.0f + 40.0f * horizonSoft) * overcastDim), 0, 140));
+				std::clamp(static_cast<int>((70.0f + 35.0f * horizonSoft) * overcastDim), 0, 120));
 			const float coronaR = kSunCoronaRadius * (1.0f + 0.12f * horizonSoft);
+			rlDrawRenderBatchActive();
+			rlSetBlendMode(RL_BLEND_ADDITIVE);
 			DrawCelestialGlowRadial(camera, sunPos, coronaR, corona, 24);
+			rlDrawRenderBatchActive();
+			rlSetBlendMode(RL_BLEND_ALPHA);
 			DrawCelestialDisc(camera, sunPos, kSunDiscRadius, disc, 16);
 		}
 	}
 
-	// Sandbox path trail: equal-time 3D markers (~30 min) for Phase D accept.
+	// Shooting stars (sky-space; culled like other bodies).
+	for (int i = 0; i < kShootingStarSlots; ++i)
+	{
+		const ShootingStar& s = m_shootingStars[i];
+		if (!s.active)
+		{
+			continue;
+		}
+		const float el = ElevationDegFromDir(s.dir);
+		if (el < drawCullEl)
+		{
+			continue;
+		}
+		const float u = std::clamp(s.life / std::max(0.05f, s.duration), 0.0f, 1.0f);
+		const float fade = (u < 0.2f) ? (u / 0.2f) : (1.0f - (u - 0.2f) / 0.8f);
+		const Vector3 tip = SkyWorldPosFromDir(camera, s.dir);
+		Vector3 trailDir = Vector3Normalize(Vector3Subtract(s.dir, Vector3Scale(s.vel, 0.08f)));
+		const Vector3 tail = SkyWorldPosFromDir(camera, trailDir);
+		Color head{ 255, 255, 245, static_cast<unsigned char>(std::clamp(static_cast<int>(230.0f * fade), 0, 255)) };
+		Color mid{ 200, 220, 255, static_cast<unsigned char>(std::clamp(static_cast<int>(140.0f * fade), 0, 255)) };
+		DrawCelestialDisc(camera, tip, 0.35f, head, 6);
+		DrawCelestialDisc(camera, Vector3Lerp(tip, tail, 0.45f), 0.22f, mid, 5);
+		DrawCelestialDisc(camera, tail, 0.12f,
+			Color{ 160, 190, 255, static_cast<unsigned char>(std::clamp(static_cast<int>(80.0f * fade), 0, 255)) }, 4);
+	}
+
+	// Sandbox: sun path trail (~30 min) + moon path trail (30 min + fine near midnight).
 	if (m_drawCelestialPathTrail)
 	{
 		float az = 0.0f;
@@ -3806,6 +4301,47 @@ void WeatherSystem::DrawCelestialBodies(Camera camera, const SkyAtmosphereState&
 				mark = Color{ 255, 160, 80, 220 };
 			}
 			DrawCelestialDisc(camera, SkyWorldPosFromDir(camera, dir), 0.55f, mark, 8);
+		}
+	}
+	if (m_drawMoonPathTrail)
+	{
+		// ±12h sliding window around now. Normalize civil time first so sun + phase share one instant.
+		// Open path OK (phase drifts); do not rebase the whole ring on g_dayOfMonth.
+		const unsigned int baseMonth = std::clamp(g_month, 1u, 12u);
+		const unsigned int baseDay = std::clamp(g_dayOfMonth, 1u, 28u);
+		const float nowHours = GetSmoothClockHours();
+		auto markMoonOffset = [&](float offsetHours, bool fine) {
+			MoonState tram{};
+			MoonState fel{};
+			EvaluateMoonsAtCivil(baseMonth, baseDay, nowHours + offsetHours, tram, fel);
+			auto drawMark = [&](const MoonState& m, Color c) {
+				const bool below = m.elevationDeg < drawCullEl;
+				if (below)
+				{
+					c.a = static_cast<unsigned char>(std::clamp(static_cast<int>(c.a) / 3, 40, 90));
+				}
+				DrawCelestialDisc(camera, SkyWorldPosFromDir(camera, m.dir),
+					fine ? (below ? 0.20f : 0.28f) : (below ? 0.30f : 0.42f), c, 6);
+			};
+			drawMark(tram, fine ? Color{ 255, 200, 160, 160 } : Color{ 255, 180, 120, 200 });
+			drawMark(fel, fine ? Color{ 160, 200, 255, 160 } : Color{ 140, 190, 255, 200 });
+		};
+		for (int slot = -24; slot <= 24; ++slot)
+		{
+			markMoonOffset(static_cast<float>(slot) * 0.5f, false);
+		}
+		constexpr float kFineStepH = 5.0f / 60.0f;
+		for (float o = -0.5f; o <= 0.5f + 1.0e-4f; o += kFineStepH)
+		{
+			markMoonOffset(o, true);
+		}
+		for (float o = -12.0f; o <= -11.5f + 1.0e-4f; o += kFineStepH)
+		{
+			markMoonOffset(o, true);
+		}
+		for (float o = 11.5f; o <= 12.0f + 1.0e-4f; o += kFineStepH)
+		{
+			markMoonOffset(o, true);
 		}
 	}
 

@@ -204,6 +204,8 @@ extern float g_secsPerMinute;
 // Britannian calendar (336-day year, 12×28 days). Day 1 = double new moon.
 extern unsigned int g_dayOfMonth; // 1..28
 extern unsigned int g_month;      // 1..12
+// Internal lore year (U7 start era). HUD shows DD/MM only; persisted in gameTime.
+extern unsigned int g_britannianYear;
 // Official absolute elapsed-day counter for celestial drift (sidereal). Never resets on
 // month/year wrap; ++ once per AdvanceBritannianCalendarDay.
 extern uint64_t g_britannianDayIndex;
