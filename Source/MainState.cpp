@@ -460,6 +460,9 @@ void MainState::OnEnter()
 	g_minute = 0;
 	g_hour = 7;
 	g_scheduleTime = 2;
+	g_dayOfMonth = 1;
+	g_month = 1;
+	SyncBritannianDayIndexFromCalendar();
 
 	m_heightCutoff = 16.0f; // Draw everything unless the player is inside.
 	m_finderObjectIds.clear();  // Object Finder results belong to the previous session
@@ -754,13 +757,8 @@ void MainState::UpdateTime()
 
 		if (g_minute >= 60)
 		{
-			++g_hour;
 			g_minute = 0;
-		}
-
-		if (g_hour >= 24)
-		{
-			g_hour = 0;
+			AdvanceGameHour();
 		}
 
 		g_scheduleTime = g_hour / 3;
@@ -793,34 +791,10 @@ void MainState::UpdateTime()
 		}
 	}
 
-	unsigned char darklevel = 64;
-	unsigned char red_green_level = (darklevel / 2);
-
-	if (g_hour == 20)
-	{
-		unsigned char darkness = 255 - ((float(g_minute) / 60.0f) * (255 - darklevel));
-		unsigned char red_green = 255 - ((float(g_minute) / 60.0f) * (255 - red_green_level));
-		g_dayNightColor = { red_green, red_green, darkness, 255 };
-		g_isDay = false;
-	}
-	else if (g_hour == 6)
-	{
-		// Dawn ramp: darkness goes darklevel→255; treat as day once past mid-ramp.
-		unsigned char darkness = darklevel + ((float(g_minute) / 60.0f) * (255 - darklevel));
-		unsigned char red_green = (darklevel / 2.0f) + ((float(g_minute) / 60.0f) * (255 - red_green_level));
-		g_dayNightColor = { red_green, red_green, darkness, 255 };
-		g_isDay = darkness > 160;
-	}
-	else if (g_hour > 20 || g_hour < 6)
-	{
-		g_dayNightColor = { red_green_level, red_green_level, darklevel, 255 };
-		g_isDay = false;
-	}
-	else
-	{
-		g_dayNightColor = { 255, 255, 255, 255 };
-		g_isDay = true;
-	}
+	// Same dusk/dawn windows as celestial sun path (shared GetDayNightAmount).
+	const float dayAmount = GetDayNightAmount();
+	g_dayNightColor = GetDayNightColorFromAmount(dayAmount);
+	g_isDay = dayAmount > kDayNightIsDayThreshold;
 
 	if (g_WeatherSystem)
 	{
@@ -1105,9 +1079,7 @@ void MainState::HandleGameKeys()
 {
 	if (IsKeyPressed(KEY_KP_ENTER))
 	{
-		++g_hour;
-		if (g_hour >= 24)
-			g_hour = 0;
+		AdvanceGameHour();
 	}
 
 	if (IsKeyPressed(KEY_SPACE))
@@ -1146,11 +1118,10 @@ void MainState::HandleGameKeys()
 	// Skip to next hour (Sandbox mode only)
 	if (IsKeyPressed(KEY_RIGHT) && m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX)
 	{
-		g_hour++;
-		if (g_hour >= 24)
-			g_hour = 0;
+		AdvanceGameHour();
 		g_minute = 0;
-		AddConsoleString("Time skipped to " + std::to_string(g_hour) + ":00");
+		AddConsoleString("Time skipped to " + std::to_string(g_hour) + ":00 (day "
+			+ std::to_string(g_dayOfMonth) + "/" + std::to_string(g_month) + ")");
 	}
 
 	if (IsKeyPressed(KEY_PAGE_UP) && m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX)

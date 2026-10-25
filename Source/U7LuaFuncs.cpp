@@ -5765,11 +5765,15 @@ static int LuaIsPCInside(lua_State *L)
 }
 
 // 0x0063 | set_orrery
+// Usecode (utility_event_0481): set_orrery(state, pos) — state is count of unset plot flags (0..9).
+// Exult intrinsic is (pos, state); decompiled Lua passes state first. We take arg1 as state.
 static int LuaSetOrrery(lua_State *L)
 {
-    // int value = (int)lua_tointeger(L, 1);
-
-    // Orrery (planetarium) state not implemented
+    const int state = static_cast<int>(luaL_checkinteger(L, 1));
+    if (g_WeatherSystem)
+    {
+        g_WeatherSystem->SetOrreryState(state);
+    }
     return 0;
 }
 

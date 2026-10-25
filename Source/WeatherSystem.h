@@ -99,6 +99,12 @@ public:
 	void DrawSkyLayer(Camera camera, bool useHemisphereDome = false);
 	Color GetSkyClearColor() const; // horizon stop, or black if dungeon/effects off
 
+	// Weather 10 celestial — orrery state 0..9; moonLightAmount 0..1 for night shadows.
+	void SetOrreryState(int state);
+	int GetOrreryState() const { return m_orreryState; }
+	void RefreshOrreryStateFromFlags();
+	float GetMoonLightAmount() const;
+
 	void ApplyLightingModifiers(Color& dayNightColor, bool isDay) const;
 	bool WantsOvercastPalette() const;
 	bool WantsFogPalette() const;
@@ -216,6 +222,7 @@ private:
 	void UpdateSkyClouds(float dt, Camera camera);
 	void DrawSkyGradient(Camera camera) const;       // Title-safe camera-facing panel
 	void DrawSkyHemisphere(Camera camera) const;     // MainState skydome
+	void DrawCelestialBodies(Camera camera) const;
 	void DrawSkyCloudQuads() const;
 	void DrawEdgeClouds(Camera camera);
 	void GetSkyGradientColors(Color& zenith, Color& mid, Color& horizon) const;
@@ -272,6 +279,7 @@ private:
 	float m_fogIntensityScale = 1.0f; // lerps toward Light/Med/Heavy fog density
 	float m_overcastFade = 0;
 	bool m_fogWasActive = false;
+	int m_orreryState = 9; // 0..9; default = all plot flags unset (start)
 
 	float m_fallSpeed = 0;
 	int m_firstFrame = 0;

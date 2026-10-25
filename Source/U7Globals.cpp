@@ -759,6 +759,59 @@ Color g_dayNightColor = WHITE;
 bool g_isDay = true;
 float g_spellLightRemaining = 0.f;
 
+float GetSmoothClockHours()
+{
+	float fracMin = 0.0f;
+	if (g_secsPerMinute > 0.0001f)
+	{
+		fracMin = std::clamp(
+			(static_cast<float>(GetTime()) - g_lastTime) / g_secsPerMinute, 0.0f, 1.0f);
+	}
+	return static_cast<float>(g_hour)
+		+ static_cast<float>(g_minute) / 60.0f
+		+ fracMin / 60.0f;
+}
+
+float GetDayNightAmount()
+{
+	float h = std::fmod(GetSmoothClockHours(), 24.0f);
+	if (h < 0.0f)
+	{
+		h += 24.0f;
+	}
+
+	if (h >= kDuskStartHour && h < kDuskEndHour)
+	{
+		const float span = kDuskEndHour - kDuskStartHour;
+		return std::clamp(1.0f - (h - kDuskStartHour) / span, 0.0f, 1.0f);
+	}
+	if (h >= kDawnStartHour && h < kDawnEndHour)
+	{
+		const float span = kDawnEndHour - kDawnStartHour;
+		return std::clamp((h - kDawnStartHour) / span, 0.0f, 1.0f);
+	}
+	if (h >= kDuskEndHour || h < kDawnStartHour)
+	{
+		return 0.0f;
+	}
+	return 1.0f;
+}
+
+Color GetDayNightColorFromAmount(float amount)
+{
+	amount = std::clamp(amount, 0.0f, 1.0f);
+	constexpr float kNightR = 32.0f;
+	constexpr float kNightG = 32.0f;
+	constexpr float kNightB = 64.0f;
+	constexpr float kDayRGB = 255.0f;
+	return Color{
+		static_cast<unsigned char>(kNightR + (kDayRGB - kNightR) * amount),
+		static_cast<unsigned char>(kNightG + (kDayRGB - kNightG) * amount),
+		static_cast<unsigned char>(kNightB + (kDayRGB - kNightB) * amount),
+		255
+	};
+}
+
 float g_wizardEyeUntil = 0.f;
 bool g_wizardEyeWasLockedToAvatar = false;
 
@@ -772,7 +825,43 @@ unsigned int g_hour;
 unsigned int g_minute;
 unsigned int g_scheduleTime;
 float g_secsPerMinute = 5;
+unsigned int g_dayOfMonth = 1;
+unsigned int g_month = 1;
+uint64_t g_britannianDayIndex = 0;
 bool g_autoRotate = false;
+
+void SyncBritannianDayIndexFromCalendar()
+{
+	const unsigned int month = std::clamp(g_month, 1u, 12u);
+	const unsigned int day = std::clamp(g_dayOfMonth, 1u, 28u);
+	g_britannianDayIndex =
+		static_cast<uint64_t>(month - 1u) * 28u + static_cast<uint64_t>(day - 1u);
+}
+
+void AdvanceBritannianCalendarDay()
+{
+	++g_dayOfMonth;
+	if (g_dayOfMonth > 28)
+	{
+		g_dayOfMonth = 1;
+		++g_month;
+		if (g_month > 12)
+		{
+			g_month = 1;
+		}
+	}
+	++g_britannianDayIndex;
+}
+
+void AdvanceGameHour()
+{
+	++g_hour;
+	if (g_hour >= 24)
+	{
+		g_hour = 0;
+		AdvanceBritannianCalendarDay();
+	}
+}
 
 int g_lastScheduleTimeCheck = -1;
 
