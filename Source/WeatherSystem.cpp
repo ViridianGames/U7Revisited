@@ -267,6 +267,71 @@ namespace
 		return deg;
 	}
 
+	// Azimuth matching SkyDirFromAzEl: 0=+Z (N), 90=+X (E).
+	float AzimuthDegFromDir(Vector3 dir)
+	{
+		const float flatSq = dir.x * dir.x + dir.z * dir.z;
+		if (flatSq < 1.0e-8f)
+		{
+			return 0.0f;
+		}
+		return NormalizeDeg360(RadToDeg(std::atan2(dir.x, dir.z)));
+	}
+
+	float ShortestAzDeltaDeg(float a0, float a1)
+	{
+		float d = NormalizeDeg360(a1) - NormalizeDeg360(a0);
+		if (d > 180.0f)
+		{
+			d -= 360.0f;
+		}
+		else if (d < -180.0f)
+		{
+			d += 360.0f;
+		}
+		return d;
+	}
+
+	// Warm band vs view elevation: continuous through el=0 and −22° skirt.
+	float WarmHorizonWeight(float viewElDeg)
+	{
+		// Knots: −22 → 0.35, 0 → 1, +15 → 0.45, +45 → 0.
+		if (viewElDeg <= -kSkySkirtDeg)
+		{
+			return 0.35f;
+		}
+		if (viewElDeg < 0.0f)
+		{
+			const float t = (viewElDeg - (-kSkySkirtDeg)) / kSkySkirtDeg;
+			return 0.35f + (1.0f - 0.35f) * std::clamp(t, 0.0f, 1.0f);
+		}
+		if (viewElDeg < 15.0f)
+		{
+			const float t = viewElDeg / 15.0f;
+			return 1.0f + (0.45f - 1.0f) * std::clamp(t, 0.0f, 1.0f);
+		}
+		if (viewElDeg < 45.0f)
+		{
+			const float t = (viewElDeg - 15.0f) / 30.0f;
+			return 0.45f * (1.0f - std::clamp(t, 0.0f, 1.0f));
+		}
+		return 0.0f;
+	}
+
+	// Sun elevation twilight window ≈ [−10°, +8°], peak near 0°.
+	float WarmSolarWeight(float sunElDeg)
+	{
+		if (sunElDeg <= -10.0f || sunElDeg >= 8.0f)
+		{
+			return 0.0f;
+		}
+		if (sunElDeg < 0.0f)
+		{
+			return Smoothstep(-10.0f, 0.0f, sunElDeg);
+		}
+		return 1.0f - Smoothstep(0.0f, 8.0f, sunElDeg);
+	}
+
 	// Cubic Hermite: p(0)=p0, p(1)=p1, p'(0)=m0, p'(1)=m1 (derivatives wrt t).
 	float Hermite1D(float t, float p0, float p1, float m0, float m1)
 	{
@@ -2533,6 +2598,38 @@ Color WeatherSystem::GetSkyClearColor() const
 	return horizon;
 }
 
+WeatherSystem::SkyAtmosphereState WeatherSystem::BuildSkyAtmosphereState() const
+{
+	SkyAtmosphereState atm{};
+	atm.dayAmount = SkyDayAmount();
+	SunAzElFromClock(GetSmoothClockHours(), atm.sunAz, atm.sunEl);
+	atm.sunDir = SkyDirFromAzEl(atm.sunAz, atm.sunEl);
+	GetSkyGradientColors(atm.zenith, atm.mid, atm.horizon);
+	atm.warmTint = Color{ 255, 145, 70, 255 };
+	atm.overcastFade = std::clamp(m_overcastFade, 0.0f, 1.0f);
+	return atm;
+}
+
+Color WeatherSystem::EvaluateSkyColor(Vector3 skyDirection, const SkyAtmosphereState& atm)
+{
+	const Vector3 dir = Vector3Normalize(skyDirection);
+	const float viewEl = ElevationDegFromDir(dir);
+	const float viewAz = AzimuthDegFromDir(dir);
+
+	const Color base = SkyGradientColorAtElevationDeg(
+		atm.zenith, atm.mid, atm.horizon, viewEl);
+
+	const float wSolar = WarmSolarWeight(atm.sunEl);
+	const float wHorizon = WarmHorizonWeight(viewEl);
+	const float dAz = ShortestAzDeltaDeg(viewAz, atm.sunAz);
+	const float cosLobe = std::max(0.0f, std::cos(DegToRad(dAz)));
+	const float wDirection = cosLobe * cosLobe; // soft forward lobe
+	const float wOvercast = 1.0f - 0.85f * atm.overcastFade;
+	const float w = std::clamp(wSolar * wHorizon * wDirection * wOvercast, 0.0f, 1.0f);
+
+	return LerpSkyColor(base, atm.warmTint, w);
+}
+
 void WeatherSystem::DrawSkyGradient(Camera camera) const
 {
 	Color zenith{}, mid{}, horizon{};
@@ -2605,11 +2702,8 @@ void WeatherSystem::DrawSkyGradient(Camera camera) const
 	rlEnableDepthTest();
 }
 
-void WeatherSystem::DrawSkyHemisphere(Camera camera) const
+void WeatherSystem::DrawSkyHemisphere(Camera camera, const SkyAtmosphereState& atm) const
 {
-	Color zenith{}, mid{}, horizon{};
-	GetSkyGradientColors(zenith, mid, horizon);
-
 	// Camera-centered dome with a skirt below the camera-horizontal equator so the
 	// sky fills down to the terrain skyline (down-tilted U7R camera). MainState only.
 	constexpr float kRadius = 120.0f;
@@ -2621,10 +2715,6 @@ void WeatherSystem::DrawSkyHemisphere(Camera camera) const
 	const float latSpan = latMax - latMin;
 
 	const Vector3 origin = camera.position;
-
-	auto colorAtElevation = [&](float t) -> Color {
-		return SkyGradientColorAtStackT(zenith, mid, horizon, t);
-	};
 
 	auto domePoint = [&](int slice, int stack) -> Vector3 {
 		const float t = static_cast<float>(stack) / static_cast<float>(kStacks);
@@ -2639,6 +2729,10 @@ void WeatherSystem::DrawSkyHemisphere(Camera camera) const
 		};
 	};
 
+	auto colorAtPoint = [&](const Vector3& worldPos) -> Color {
+		return EvaluateSkyColor(Vector3Subtract(worldPos, origin), atm);
+	};
+
 	// Engine boot (Main.cpp) leaves backface culling OFF for the whole game.
 	// Never rlEnableBackfaceCulling here — that made MainState 3D go black.
 	rlDisableDepthTest();
@@ -2648,10 +2742,6 @@ void WeatherSystem::DrawSkyHemisphere(Camera camera) const
 	rlBegin(RL_TRIANGLES);
 	for (int stack = 0; stack < kStacks; ++stack)
 	{
-		const float t0 = static_cast<float>(stack) / static_cast<float>(kStacks);
-		const float t1 = static_cast<float>(stack + 1) / static_cast<float>(kStacks);
-		const Color c0 = colorAtElevation(t0);
-		const Color c1 = colorAtElevation(t1);
 		for (int slice = 0; slice < kSlices; ++slice)
 		{
 			const int sliceNext = (slice + 1) % kSlices;
@@ -2659,19 +2749,23 @@ void WeatherSystem::DrawSkyHemisphere(Camera camera) const
 			const Vector3 p10 = domePoint(sliceNext, stack);
 			const Vector3 p01 = domePoint(slice, stack + 1);
 			const Vector3 p11 = domePoint(sliceNext, stack + 1);
+			const Color c00 = colorAtPoint(p00);
+			const Color c10 = colorAtPoint(p10);
+			const Color c01 = colorAtPoint(p01);
+			const Color c11 = colorAtPoint(p11);
 
-			rlColor4ub(c0.r, c0.g, c0.b, 255);
+			rlColor4ub(c00.r, c00.g, c00.b, 255);
 			rlVertex3f(p00.x, p00.y, p00.z);
-			rlColor4ub(c0.r, c0.g, c0.b, 255);
+			rlColor4ub(c10.r, c10.g, c10.b, 255);
 			rlVertex3f(p10.x, p10.y, p10.z);
-			rlColor4ub(c1.r, c1.g, c1.b, 255);
+			rlColor4ub(c11.r, c11.g, c11.b, 255);
 			rlVertex3f(p11.x, p11.y, p11.z);
 
-			rlColor4ub(c0.r, c0.g, c0.b, 255);
+			rlColor4ub(c00.r, c00.g, c00.b, 255);
 			rlVertex3f(p00.x, p00.y, p00.z);
-			rlColor4ub(c1.r, c1.g, c1.b, 255);
+			rlColor4ub(c11.r, c11.g, c11.b, 255);
 			rlVertex3f(p11.x, p11.y, p11.z);
-			rlColor4ub(c1.r, c1.g, c1.b, 255);
+			rlColor4ub(c01.r, c01.g, c01.b, 255);
 			rlVertex3f(p01.x, p01.y, p01.z);
 		}
 	}
@@ -2683,26 +2777,24 @@ void WeatherSystem::DrawSkyHemisphere(Camera camera) const
 	rlEnableDepthTest();
 }
 
-void WeatherSystem::DrawCelestialBodies(Camera camera) const
+void WeatherSystem::DrawCelestialBodies(Camera camera, const SkyAtmosphereState& atm) const
 {
-	const float dayAmount = SkyDayAmount();
-	const float overcastDim = 1.0f - 0.85f * std::clamp(m_overcastFade, 0.0f, 1.0f);
+	const float dayAmount = atm.dayAmount;
+	const float overcastDim = 1.0f - 0.85f * std::clamp(atm.overcastFade, 0.0f, 1.0f);
 	if (overcastDim < 0.08f)
 	{
 		return;
 	}
 
 	const float sidereal = SiderealYawDeg();
-	const float clockHours = GetSmoothClockHours();
 	const float skyLum = SkyLuminance(dayAmount);
 	const float timeSec = static_cast<float>(GetTime());
 	// Path/amber use world el=0; draw cull at sky-dome skirt (iso terrain join).
 	const float drawCullEl = -kSkySkirtDeg;
 
-	float sunAz = 0.0f;
-	float sunEl = 0.0f;
-	SunAzElFromClock(clockHours, sunAz, sunEl);
-	const Vector3 sunDir = SkyDirFromAzEl(sunAz, sunEl);
+	const float sunAz = atm.sunAz;
+	const float sunEl = atm.sunEl;
+	const Vector3 sunDir = atm.sunDir;
 
 	rlDisableDepthTest();
 	rlDisableDepthMask();
@@ -2838,12 +2930,9 @@ void WeatherSystem::DrawCelestialBodies(Camera camera) const
 				const float phaseWantsShade = Smoothstep(0.08f, 0.95f, darkFrac);
 				if (phaseWantsShade > 0.01f)
 				{
-					Color zenith{}, mid{}, horizon{};
-					GetSkyGradientColors(zenith, mid, horizon);
-					const Color localSky = SkyGradientColorAtElevationDeg(
-						zenith, mid, horizon, moon.elevationDeg);
-					const float fade = Smoothstep(0.02f, 0.65f, dayAmount);
-					softShade = LerpSkyColor(Color{ 0, 0, 0, 255 }, localSky, fade);
+					const Color localSky = EvaluateSkyColor(moon.dir, atm);
+					const float dayFade = Smoothstep(0.02f, 0.65f, dayAmount);
+					softShade = LerpSkyColor(Color{ 0, 0, 0, 255 }, localSky, dayFade);
 					softShade.a = 255;
 				}
 
@@ -2962,15 +3051,17 @@ void WeatherSystem::DrawSkyLayer(Camera camera, bool useHemisphereDome)
 		return;
 	}
 
+	// One atmosphere sample for this frame — dome verts and moon silhouettes share it.
+	const SkyAtmosphereState atm = BuildSkyAtmosphereState();
 	if (useHemisphereDome)
 	{
-		DrawSkyHemisphere(camera);
+		DrawSkyHemisphere(camera, atm);
 	}
 	else
 	{
-		DrawSkyGradient(camera);
+		DrawSkyGradient(camera); // title/menu: non-directional panel
 	}
-	DrawCelestialBodies(camera);
+	DrawCelestialBodies(camera, atm);
 	if (WantsSkyFluff() || CountActiveSkyClouds() > 0)
 	{
 		DrawSkyCloudQuads();

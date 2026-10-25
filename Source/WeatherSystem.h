@@ -220,9 +220,25 @@ private:
 	void TrySpawnSkyCloud(Camera camera, bool clearAmbient);
 	void UpdateEdgeClouds(float dt, Camera camera);
 	void UpdateSkyClouds(float dt, Camera camera);
+	// Weather 10.1 — one sky-color sample per frame for dome + moon silhouettes.
+	struct SkyAtmosphereState
+	{
+		float dayAmount = 0.0f;
+		float sunAz = 0.0f;
+		float sunEl = 0.0f;
+		Vector3 sunDir{ 0.0f, 1.0f, 0.0f };
+		Color zenith{};
+		Color mid{};
+		Color horizon{};
+		Color warmTint{ 255, 145, 70, 255 };
+		float overcastFade = 0.0f;
+	};
+	SkyAtmosphereState BuildSkyAtmosphereState() const;
+	static Color EvaluateSkyColor(Vector3 skyDirection, const SkyAtmosphereState& atm);
+
 	void DrawSkyGradient(Camera camera) const;       // Title-safe camera-facing panel
-	void DrawSkyHemisphere(Camera camera) const;     // MainState skydome
-	void DrawCelestialBodies(Camera camera) const;
+	void DrawSkyHemisphere(Camera camera, const SkyAtmosphereState& atm) const;
+	void DrawCelestialBodies(Camera camera, const SkyAtmosphereState& atm) const;
 	void DrawSkyCloudQuads() const;
 	void DrawEdgeClouds(Camera camera);
 	void GetSkyGradientColors(Color& zenith, Color& mid, Color& horizon) const;
