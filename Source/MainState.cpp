@@ -3151,7 +3151,7 @@ void MainState::Draw()
 	// Sky fill + high cloud billboards behind terrain (Weather 07).
 	if (g_WeatherSystem)
 	{
-		g_WeatherSystem->DrawSkyLayer(g_camera);
+		g_WeatherSystem->DrawSkyLayer(g_camera, true); // hemisphere; Title keeps panel via DrawGameWorldFrame
 	}
 
 	// A* timing deltas (telemetry; does not affect draw)

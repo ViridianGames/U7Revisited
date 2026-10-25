@@ -948,7 +948,10 @@ bool WeatherSystem::WantsCloudSprites() const
 
 bool WeatherSystem::WantsOpenSky() const
 {
-	return EffectsEnabled() && !IsAvatarSheltered();
+	// Sky backdrop (clear color + dome/panel + fluff). Still draw when the avatar
+	// is under a building roof so FP views through doors/windows show outdoor sky.
+	// Dungeons stay black (no exterior sky). Precip/edge/flash use IsAvatarSheltered.
+	return EffectsEnabled() && !g_dungeonViewActive;
 }
 
 bool WeatherSystem::WantsSkyFluff() const
@@ -1824,6 +1827,7 @@ void WeatherSystem::DrawSkyGradient(Camera camera) const
 	Color zenith{}, mid{}, horizon{};
 	GetSkyGradientColors(zenith, mid, horizon);
 
+	// Camera-facing panel — used by Title / DrawGameWorldFrame (menu-safe).
 	Vector3 forward = Vector3Subtract(camera.target, camera.position);
 	if (Vector3LengthSqr(forward) < 0.0001f)
 	{
@@ -1849,7 +1853,6 @@ void WeatherSystem::DrawSkyGradient(Camera camera) const
 	}
 	Vector3 up = Vector3Normalize(Vector3CrossProduct(right, forward));
 
-	// Large camera-facing panel just inside a typical far plane so look-up is sky.
 	constexpr float kDist = 70.0f;
 	constexpr float kHalfW = 110.0f;
 	constexpr float kHalfH = 90.0f;
@@ -1880,14 +1883,92 @@ void WeatherSystem::DrawSkyGradient(Camera camera) const
 		rlVertex3f(c.x, c.y, c.z);
 	};
 
-	// Upper band: zenith → mid
 	tri(topL, zenith, topR, zenith, midR, mid);
 	tri(topL, zenith, midR, mid, midL, mid);
-	// Lower band: mid → horizon
 	tri(midL, mid, midR, mid, botR, horizon);
 	tri(midL, mid, botR, horizon, botL, horizon);
 
 	rlEnd();
+	rlColor4ub(255, 255, 255, 255);
+	rlEnableDepthMask();
+	rlEnableDepthTest();
+}
+
+void WeatherSystem::DrawSkyHemisphere(Camera camera) const
+{
+	Color zenith{}, mid{}, horizon{};
+	GetSkyGradientColors(zenith, mid, horizon);
+
+	// Camera-centered hemisphere (world +Y). MainState only — do not call from
+	// DrawGameWorldFrame. No rlSetTexture(0); reset color + flush batch after.
+	constexpr float kRadius = 120.0f;
+	constexpr int kSlices = 24;
+	constexpr int kStacks = 10;
+
+	const Vector3 origin = camera.position;
+
+	auto colorAtElevation = [&](float t) -> Color {
+		t = std::clamp(t, 0.0f, 1.0f);
+		if (t <= 0.5f)
+		{
+			return LerpSkyColor(horizon, mid, t * 2.0f);
+		}
+		return LerpSkyColor(mid, zenith, (t - 0.5f) * 2.0f);
+	};
+
+	auto domePoint = [&](int slice, int stack) -> Vector3 {
+		const float t = static_cast<float>(stack) / static_cast<float>(kStacks);
+		const float lat = t * (PI * 0.5f);
+		const float lon = (static_cast<float>(slice) / static_cast<float>(kSlices)) * (2.0f * PI);
+		const float cosLat = std::cos(lat);
+		const float sinLat = std::sin(lat);
+		return Vector3{
+			origin.x + kRadius * cosLat * std::sin(lon),
+			origin.y + kRadius * sinLat,
+			origin.z + kRadius * cosLat * std::cos(lon)
+		};
+	};
+
+	// Engine boot (Main.cpp) leaves backface culling OFF for the whole game.
+	// Never rlEnableBackfaceCulling here — that made MainState 3D go black.
+	rlDisableDepthTest();
+	rlDisableDepthMask();
+	rlDisableBackfaceCulling(); // idempotent with boot; do not re-enable after
+
+	rlBegin(RL_TRIANGLES);
+	for (int stack = 0; stack < kStacks; ++stack)
+	{
+		const float t0 = static_cast<float>(stack) / static_cast<float>(kStacks);
+		const float t1 = static_cast<float>(stack + 1) / static_cast<float>(kStacks);
+		const Color c0 = colorAtElevation(t0);
+		const Color c1 = colorAtElevation(t1);
+		for (int slice = 0; slice < kSlices; ++slice)
+		{
+			const int sliceNext = (slice + 1) % kSlices;
+			const Vector3 p00 = domePoint(slice, stack);
+			const Vector3 p10 = domePoint(sliceNext, stack);
+			const Vector3 p01 = domePoint(slice, stack + 1);
+			const Vector3 p11 = domePoint(sliceNext, stack + 1);
+
+			rlColor4ub(c0.r, c0.g, c0.b, 255);
+			rlVertex3f(p00.x, p00.y, p00.z);
+			rlColor4ub(c0.r, c0.g, c0.b, 255);
+			rlVertex3f(p10.x, p10.y, p10.z);
+			rlColor4ub(c1.r, c1.g, c1.b, 255);
+			rlVertex3f(p11.x, p11.y, p11.z);
+
+			rlColor4ub(c0.r, c0.g, c0.b, 255);
+			rlVertex3f(p00.x, p00.y, p00.z);
+			rlColor4ub(c1.r, c1.g, c1.b, 255);
+			rlVertex3f(p11.x, p11.y, p11.z);
+			rlColor4ub(c1.r, c1.g, c1.b, 255);
+			rlVertex3f(p01.x, p01.y, p01.z);
+		}
+	}
+	rlEnd();
+
+	rlColor4ub(255, 255, 255, 255);
+	rlDrawRenderBatchActive();
 	rlEnableDepthMask();
 	rlEnableDepthTest();
 }
@@ -1958,7 +2039,7 @@ void WeatherSystem::DrawSkyCloudQuads() const
 	rlEnableDepthMask();
 }
 
-void WeatherSystem::DrawSkyLayer(Camera camera)
+void WeatherSystem::DrawSkyLayer(Camera camera, bool useHemisphereDome)
 {
 	m_lastCamera = camera;
 	m_hasCamera = true;
@@ -1968,7 +2049,14 @@ void WeatherSystem::DrawSkyLayer(Camera camera)
 		return;
 	}
 
-	DrawSkyGradient(camera);
+	if (useHemisphereDome)
+	{
+		DrawSkyHemisphere(camera);
+	}
+	else
+	{
+		DrawSkyGradient(camera);
+	}
 	if (WantsSkyFluff() || CountActiveSkyClouds() > 0)
 	{
 		DrawSkyCloudQuads();

@@ -92,10 +92,12 @@ public:
 	void UpdateGameMinute();
 	void Update(float dt);
 	void Draw(Camera camera);
-	// Mode3D backdrop: zenith/mid/horizon fill + high-band flat cloud quads.
+	// Mode3D backdrop: sky fill + high-band flat cloud quads.
 	// Call after BeginMode3D, before terrain. ClearBackground with GetSkyClearColor first.
-	void DrawSkyLayer(Camera camera);
-	Color GetSkyClearColor() const; // horizon stop, or black indoor/disabled
+	// useHemisphereDome: MainState only. Title/Conversation use DrawGameWorldFrame with
+	// default false (camera-facing panel) — dome previously broke menu GUI state.
+	void DrawSkyLayer(Camera camera, bool useHemisphereDome = false);
+	Color GetSkyClearColor() const; // horizon stop, or black if dungeon/effects off
 
 	void ApplyLightingModifiers(Color& dayNightColor, bool isDay) const;
 	bool WantsOvercastPalette() const;
@@ -212,11 +214,12 @@ private:
 	void TrySpawnSkyCloud(Camera camera, bool clearAmbient);
 	void UpdateEdgeClouds(float dt, Camera camera);
 	void UpdateSkyClouds(float dt, Camera camera);
-	void DrawSkyGradient(Camera camera) const;
+	void DrawSkyGradient(Camera camera) const;       // Title-safe camera-facing panel
+	void DrawSkyHemisphere(Camera camera) const;     // MainState skydome
 	void DrawSkyCloudQuads() const;
 	void DrawEdgeClouds(Camera camera);
 	void GetSkyGradientColors(Color& zenith, Color& mid, Color& horizon) const;
-	bool WantsOpenSky() const; // outdoor + effects; false indoor/dungeon/sheltered
+	bool WantsOpenSky() const; // sky backdrop; false only if effects off or dungeon (houses OK)
 	bool WantsSkyFluff() const;
 	int CountActiveParticles() const;
 	int CountActiveEdgeClouds() const;
