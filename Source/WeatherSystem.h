@@ -100,9 +100,11 @@ public:
 	Color GetSkyClearColor() const; // horizon stop, or black if dungeon/effects off
 
 	// Weather 10 celestial — orrery state 0..9; moonLightAmount 0..1 for night shadows.
-	void SetOrreryState(int state);
-	int GetOrreryState() const { return m_orreryState; }
-	void RefreshOrreryStateFromFlags();
+	void SetOrreryState(int state); // snap; cancels in-flight anim
+	void SetOrreryStateAnimated(int targetState, float durationSeconds);
+	int GetOrreryState() const { return m_orreryState; } // logical destination once anim starts
+	bool IsOrreryAnimating() const { return m_orreryAnimActive; }
+	void RefreshOrreryStateFromFlags(); // cancel anim + snap from plot flags
 	float GetMoonLightAmount() const;
 
 	void ApplyLightingModifiers(Color& dayNightColor, bool isDay) const;
@@ -238,7 +240,52 @@ private:
 
 	void DrawSkyGradient(Camera camera) const;       // Title-safe camera-facing panel
 	void DrawSkyHemisphere(Camera camera, const SkyAtmosphereState& atm) const;
-	void DrawCelestialBodies(Camera camera, const SkyAtmosphereState& atm) const;
+	void DrawCelestialBodies(Camera camera, const SkyAtmosphereState& atm); // may clear orrery anim after e=1
+
+	// Weather 10.2 Phase E — generic constellation system (data-driven)
+	struct ConstellationStarRuntime
+	{
+		std::string id;
+		float canvasX = 0.5f;
+		float canvasY = 0.5f;
+		float brightness = 1.0f;
+		Color tint{ 235, 238, 255, 255 };
+		Vector3 restDir{ 0.0f, 1.0f, 0.0f };
+		float size = 0.16f;
+		bool principal = false;
+	};
+	struct ConstellationRuntime
+	{
+		std::string id;
+		std::string name;
+		bool enabled = true;
+		float aspectRatio = 1.0f;
+		std::string poleStarId;
+		float centerRA = 0.0f;
+		float centerDec = 20.0f;
+		float rotationDeg = 0.0f;
+		float scaleDeg = 12.0f;
+		bool mirrorX = false; // flip local U (left/right) after canvas offsets
+		std::vector<ConstellationStarRuntime> stars;
+	};
+	struct ProceduralStarRuntime
+	{
+		Vector3 restDir{ 0.0f, 1.0f, 0.0f };
+		Color tint{ 235, 238, 255, 255 };
+		float mag = 0.55f;
+		float size = 0.16f;
+		float omega = 1.2f;
+		float phase = 0.0f;
+		float flickerAmt = 0.1f;
+	};
+	void LoadConstellations();
+	void BuildConstellationDirections();
+	void BuildProceduralStars();
+	void DrawConstellations(Camera camera, float siderealDeg, float skyLum, float overcastDim,
+		float drawCullEl, float timeSec) const;
+	void DrawProceduralStars(Camera camera, float siderealDeg, float skyLum, float overcastDim,
+		float drawCullEl, float timeSec) const;
+
 	void DrawSkyCloudQuads() const;
 	void DrawEdgeClouds(Camera camera);
 	void GetSkyGradientColors(Color& zenith, Color& mid, Color& horizon) const;
@@ -295,7 +342,12 @@ private:
 	float m_fogIntensityScale = 1.0f; // lerps toward Light/Med/Heavy fog density
 	float m_overcastFade = 0;
 	bool m_fogWasActive = false;
-	int m_orreryState = 9; // 0..9; default = all plot flags unset (start)
+	int m_orreryState = 0; // 0..9; default = no plot flags set (B0 / retail start = S0 spread)
+	// Phase F — cinematic rest-frame blend (not saved; real-time elapsed vs Britannia tDays)
+	bool m_orreryAnimActive = false;
+	float m_orreryAnimDuration = 0.0f;
+	float m_orreryAnimElapsed = 0.0f;
+	Vector3 m_orreryAnimRestStart[8]{};
 
 	float m_fallSpeed = 0;
 	int m_firstFrame = 0;
@@ -316,6 +368,9 @@ private:
 	// Last camera for storm ticks that spawn world clouds between Draws.
 	Camera m_lastCamera = {};
 	bool m_hasCamera = false;
+
+	std::vector<ConstellationRuntime> m_constellations;
+	std::vector<ProceduralStarRuntime> m_proceduralStars;
 };
 
 extern std::unique_ptr<WeatherSystem> g_WeatherSystem;

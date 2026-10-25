@@ -1405,7 +1405,7 @@ function set_timer(timer_id, value) end
 function is_pc_inside() end
 
 ---[Exult 0x0063] Sets Moonglow orrery / sky planet configuration (0–9).
----Usecode passes (state, pos); engine uses state. State = count of unset plot flags in 0481.
+---Usecode passes (state, pos); engine uses state. State = count of SET plot flags in 0481 (B0).
 ---@param state integer Orrery state 0..9
 ---@param pos? integer[] Optional orrery world position (ignored for sky)
 function set_orrery(state, pos) end

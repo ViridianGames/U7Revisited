@@ -1124,6 +1124,34 @@ void MainState::HandleGameKeys()
 			+ std::to_string(g_dayOfMonth) + "/" + std::to_string(g_month) + ")");
 	}
 
+	// Weather 10.2: cycle sky orrery 0..9 — Ctrl+7/8 snap; Ctrl+Shift+7/8 animated 3s (Phase F).
+	if (m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX
+		&& g_WeatherSystem
+		&& IsKeyDown(KEY_LEFT_CONTROL)
+		&& (IsKeyPressed(KEY_SEVEN) || IsKeyPressed(KEY_EIGHT)))
+	{
+		int state = g_WeatherSystem->GetOrreryState();
+		if (IsKeyPressed(KEY_SEVEN))
+		{
+			state = (state + 9) % 10;
+		}
+		else
+		{
+			state = (state + 1) % 10;
+		}
+		const bool animated = IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT);
+		if (animated)
+		{
+			g_WeatherSystem->SetOrreryStateAnimated(state, 3.0f);
+			AddConsoleString("Orrery sky state " + std::to_string(state) + "/9 (animated 3s)");
+		}
+		else
+		{
+			g_WeatherSystem->SetOrreryState(state);
+			AddConsoleString("Orrery sky state " + std::to_string(state) + "/9 (debug)");
+		}
+	}
+
 	if (IsKeyPressed(KEY_PAGE_UP) && m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX)
 	{
 		if (m_heightCutoff == 0.0f)

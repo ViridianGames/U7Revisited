@@ -14,6 +14,8 @@
 #include <cmath>
 #include <cstdint>
 #include <array>
+#include <fstream>
+#include <unordered_set>
 
 std::unique_ptr<WeatherSystem> g_WeatherSystem;
 
@@ -95,7 +97,11 @@ namespace
 	constexpr float kCelestialPoleTiltDeg = 55.0f; // angle from zenith → mid-latitude rise/set
 	// Dome skirt fills sky below world-horizontal (draw only). Celestial lip is el=0.
 	constexpr float kSkySkirtDeg = 22.0f;
-	constexpr int kStarCount = 118;
+	constexpr int kStarCount = 220;
+	constexpr float kConstellationPrincipalBrightness = 0.75f;
+	constexpr float kProceduralRejectSepDeg = 1.5f;
+	constexpr const char* kConstellationSchema = "u7r.constellation.v1";
+	constexpr const char* kConstellationDir = "Data/Constellations";
 	constexpr float kWorldHorizonDeg = 0.0f;
 	// Golden hour / amber: 4° → 0° at dusk/dawn lips; linear warmth.
 	constexpr float kSunGoldenElDeg = 4.0f;
@@ -135,7 +141,8 @@ namespace
 	constexpr float kSkyLumDay = 1.0f;
 	constexpr float kContrastSoft = 0.22f;
 
-	// Exult UI_set_orrery offsets[state 0..9][planet frame 0..7] = {dx, dy} tiles.
+	// Orrery offsets[state 0..9][planet frame 0..7] = {dx, dy} tiles (Kitrinx UC_SetOrrery / B0).
+	// S0 = retail start (spread); S9 = all nine plot flags set (cluster). Sky refs only; mesa later.
 	constexpr short kOrreryOffsets[10][8][2] = {
 		/* S0 */ {{2, -3}, {3, -3}, {1, -6}, {6, -2}, {7, -1}, {8, 1}, {-4, 8}, {9, -2}},
 		/* S1 */ {{3, -1}, {4, -1}, {-5, -3}, {3, 6}, {7, 2}, {4, 7}, {-8, 4}, {8, 5}},
@@ -143,8 +150,8 @@ namespace
 		/* S3 */ {{1, 3}, {1, 4}, {4, 3}, {-5, -3}, {-4, 6}, {-7, 4}, {-9, -1}, {-4, 9}},
 		/* S4 */ {{-2, 3}, {-2, 4}, {5, -2}, {5, -4}, {-7, 2}, {-8, 1}, {-8, -4}, {-8, 6}},
 		/* S5 */ {{-4, 1}, {-5, 1}, {-5, -3}, {6, 3}, {-7, -2}, {-7, -4}, {-7, -6}, {-10, 1}},
-		/* S6 */ {{-4, 9}, {-5, -1}, {-3, 4}, {-3, 6}, {-6, -4}, {-5, -6}, {-7, -6}, {-10, -2}},
-		/* S7 */ {{-4, 2}, {-4, -3}, {4, 3}, {-6, 1}, {-5, -5}, {-3, -7}, {-4, -8}, {-8, -6}},
+		/* S6 */ {{-4, -1}, {-5, -1}, {-3, 4}, {-3, 6}, {-6, -4}, {-5, -6}, {-7, -6}, {-10, -2}},
+		/* S7 */ {{-4, -2}, {-4, -3}, {4, 3}, {-6, 1}, {-5, -5}, {-3, -7}, {-4, -8}, {-8, -6}},
 		/* S8 */ {{-3, -3}, {-3, -4}, {5, -2}, {-3, -5}, {-1, -7}, {0, -8}, {-1, -9}, {-5, -9}},
 		/* S9 */ {{0, -4}, {0, -5}, {1, -6}, {1, -6}, {1, -7}, {1, -8}, {1, -9}, {-1, -10}}
 	};
@@ -159,6 +166,27 @@ namespace
 		{160, 100, 200, 255},
 		{210, 210, 220, 255}
 	};
+
+	// Weather 10.2 B — narrative-anchored apparent orbits (not Kepler / not Black Gate).
+	// Amp shrinks toward S9 (table cluster); full sun+moon AA is a later narrative beat.
+	constexpr float kPlanetEclipticDecDeg = 0.0f;
+	constexpr float kPlanetInclDeg[8] = {
+		-2.4f, -1.7f, -0.9f, -0.3f, 0.3f, 0.9f, 1.7f, 2.4f
+	}; // identity Dec bias |incl| ≤ 3°
+	constexpr float kPlanetMeanMotion[8] = {
+		0.11f, 0.13f, 0.09f, 0.15f, 0.08f, 0.12f, 0.10f, 0.14f
+	}; // cycles per Britannia day
+	constexpr float kPlanetPhase0[8] = {
+		0.00f, 0.12f, 0.31f, 0.47f, 0.58f, 0.71f, 0.83f, 0.94f
+	};
+	constexpr float kPlanetNodeRad[8] = {
+		0.0f, 0.7f, 1.4f, 2.1f, 2.8f, 3.5f, 4.2f, 5.0f
+	};
+	constexpr float kPlanetLatScale[8] = {
+		0.55f, 0.70f, 0.40f, 0.80f, 0.50f, 0.65f, 0.45f, 0.75f
+	};
+	constexpr float kPlanetAmpS0Deg = 15.0f; // mid of ~12–18°
+	constexpr float kPlanetAmpS9Deg = 3.0f;  // mid of ~2–4°
 
 	// Felucca phase index 0..7 per day-of-month 1..28 (Codex / U5 table).
 	constexpr int kFeluccaPhaseByDay[28] = {
@@ -419,6 +447,13 @@ namespace
 	Vector3 CelestialPoleAxis();
 	Vector3 RotateAroundAxis(Vector3 v, Vector3 axis, float angleRad);
 	float ElevationDegFromDir(Vector3 dir);
+	float PlanetAmpDegForState(int state);
+	Vector3 PlanetRefRestDir(int state, int frame);
+	Vector3 LocalInclinedOrbitalMotion(Vector3 refDir, int frame, double tDays, float ampDeg);
+	Vector3 PlanetRestDir(int state, int frame);
+	Vector3 PlanetSkyDir(int state, int frame, float siderealDeg);
+	float OrreryAnimEase(float u);
+	Vector3 UnitSlerp(Vector3 a, Vector3 b, float t);
 
 	struct MoonState
 	{
@@ -698,6 +733,183 @@ namespace
 			Vector3Scale(pole, std::sin(dec))));
 	}
 
+	// East / north tangent basis at a unit celestial direction (north toward pole).
+	void CelestialTangentBasis(Vector3 center, Vector3& outEast, Vector3& outNorth)
+	{
+		const Vector3 pole = CelestialPoleAxis();
+		Vector3 east = Vector3CrossProduct(pole, center);
+		if (Vector3LengthSqr(east) < 1.0e-8f)
+		{
+			Vector3 ref = Vector3CrossProduct(Vector3{ 1.0f, 0.0f, 0.0f }, pole);
+			if (Vector3LengthSqr(ref) < 0.001f)
+			{
+				ref = Vector3CrossProduct(Vector3{ 0.0f, 0.0f, 1.0f }, pole);
+			}
+			east = Vector3CrossProduct(Vector3Normalize(ref), pole);
+		}
+		outEast = Vector3Normalize(east);
+		outNorth = Vector3Normalize(Vector3CrossProduct(center, outEast));
+	}
+
+	// Exponential map: preserves angular distance from center for offsets in radians.
+	Vector3 ExpMapOnSphere(Vector3 center, Vector3 east, Vector3 north, float oxRad, float oyRad)
+	{
+		center = Vector3Normalize(center);
+		const float theta = std::sqrt(oxRad * oxRad + oyRad * oyRad);
+		if (theta < 1.0e-6f)
+		{
+			return center;
+		}
+		const Vector3 tangent = Vector3Scale(
+			Vector3Add(Vector3Scale(east, oxRad), Vector3Scale(north, oyRad)),
+			1.0f / theta);
+		return Vector3Normalize(Vector3Add(
+			Vector3Scale(center, std::cos(theta)),
+			Vector3Scale(tangent, std::sin(theta))));
+	}
+
+	Color ConstellationToneColor(const std::string& tone, bool& known)
+	{
+		known = true;
+		if (tone == "amber") return Color{ 255, 200, 120, 255 };
+		if (tone == "cream") return Color{ 255, 245, 220, 255 };
+		if (tone == "rust") return Color{ 220, 140, 100, 255 };
+		if (tone == "blue") return Color{ 160, 190, 255, 255 };
+		if (tone == "gold") return Color{ 255, 215, 130, 255 };
+		if (tone == "blue_white") return Color{ 180, 205, 255, 255 };
+		if (tone == "warm_white") return Color{ 255, 245, 230, 255 };
+		if (tone == "cool_white") return Color{ 220, 230, 255, 255 };
+		if (tone == "white") return Color{ 235, 238, 255, 255 };
+		known = false;
+		return Color{ 255, 245, 230, 255 }; // warm_white fallback
+	}
+
+	bool EndsWithJson(const std::string& path)
+	{
+		if (path.size() < 5)
+		{
+			return false;
+		}
+		const std::string ext = path.substr(path.size() - 5);
+		return ext == ".json" || ext == ".JSON";
+	}
+
+	float PlanetAmpDegForState(int state)
+	{
+		state = std::clamp(state, 0, 9);
+		const float t = static_cast<float>(state) / 9.0f;
+		return kPlanetAmpS0Deg + (kPlanetAmpS9Deg - kPlanetAmpS0Deg) * t;
+	}
+
+	// Rest-frame narrative center from orrery table (no RA/Dec ladder).
+	Vector3 PlanetRefRestDir(int state, int frame)
+	{
+		state = std::clamp(state, 0, 9);
+		frame = std::clamp(frame, 0, 7);
+		const float dx = static_cast<float>(kOrreryOffsets[state][frame][0]);
+		const float dy = static_cast<float>(kOrreryOffsets[state][frame][1]);
+		const float raRef = std::atan2(dx, -dy) * (180.0f / PI);
+		const float decRef = kPlanetEclipticDecDeg + kPlanetInclDeg[frame];
+		return EquatorialDir(raRef, decRef);
+	}
+
+	// Small lon/lat loop around refDir; combined |offset| capped at ampDeg (anchored apparent orbit).
+	Vector3 LocalInclinedOrbitalMotion(Vector3 refDir, int frame, double tDays, float ampDeg)
+	{
+		frame = std::clamp(frame, 0, 7);
+		ampDeg = std::max(0.0f, ampDeg);
+		Vector3 forward = Vector3Normalize(refDir);
+		if (Vector3LengthSqr(forward) < 1.0e-8f || ampDeg < 1.0e-4f)
+		{
+			return forward;
+		}
+
+		const Vector3 pole = CelestialPoleAxis();
+		Vector3 right = Vector3CrossProduct(pole, forward);
+		if (Vector3LengthSqr(right) < 1.0e-6f)
+		{
+			right = Vector3CrossProduct(Vector3{ 1.0f, 0.0f, 0.0f }, forward);
+			if (Vector3LengthSqr(right) < 1.0e-6f)
+			{
+				right = Vector3CrossProduct(Vector3{ 0.0f, 0.0f, 1.0f }, forward);
+			}
+		}
+		right = Vector3Normalize(right);
+		const Vector3 up = Vector3Normalize(Vector3CrossProduct(forward, right));
+
+		double phase = tDays * static_cast<double>(kPlanetMeanMotion[frame])
+			+ static_cast<double>(kPlanetPhase0[frame]);
+		phase -= std::floor(phase);
+		const float ang = static_cast<float>(phase) * (2.0f * PI);
+		const float lon = ampDeg * std::cos(ang);
+		const float lat = ampDeg * kPlanetLatScale[frame]
+			* std::sin(ang + kPlanetNodeRad[frame]);
+
+		Vector3 offset = Vector3Add(Vector3Scale(right, lon), Vector3Scale(up, lat));
+		const float len = Vector3Length(offset);
+		if (len > ampDeg && len > 1.0e-6f)
+		{
+			offset = Vector3Scale(offset, ampDeg / len);
+		}
+		offset = Vector3Scale(offset, PI / 180.0f);
+		return Vector3Normalize(Vector3Add(forward, offset));
+	}
+
+	// Rest-frame pose only (no sidereal) — used by Phase F slerp + PlanetSkyDir.
+	Vector3 PlanetRestDir(int state, int frame)
+	{
+		const double tDays = static_cast<double>(g_britannianDayIndex)
+			+ static_cast<double>(GetSmoothClockHours()) / 24.0;
+		const Vector3 ref = PlanetRefRestDir(state, frame);
+		const float amp = PlanetAmpDegForState(state);
+		return LocalInclinedOrbitalMotion(ref, frame, tDays, amp);
+	}
+
+	// Deterministic sky dir: narrative ref + local excursion + sidereal (calendar clock only).
+	Vector3 PlanetSkyDir(int state, int frame, float siderealDeg)
+	{
+		return RotateCelestial(PlanetRestDir(state, frame), siderealDeg);
+	}
+
+	float OrreryAnimEase(float u)
+	{
+		u = std::clamp(u, 0.0f, 1.0f);
+		return u * u * (3.0f - 2.0f * u);
+	}
+
+	// Unit-vector short-arc slerp (handles near-parallel and near-opposite).
+	Vector3 UnitSlerp(Vector3 a, Vector3 b, float t)
+	{
+		t = std::clamp(t, 0.0f, 1.0f);
+		a = Vector3Normalize(a);
+		b = Vector3Normalize(b);
+		float dot = Vector3DotProduct(a, b);
+		dot = std::clamp(dot, -1.0f, 1.0f);
+
+		if (dot > 0.9995f)
+		{
+			return Vector3Normalize(Vector3Lerp(a, b, t));
+		}
+
+		if (dot < -0.9995f)
+		{
+			Vector3 axis = Vector3CrossProduct(Vector3{ 1.0f, 0.0f, 0.0f }, a);
+			if (Vector3LengthSqr(axis) < 1.0e-6f)
+			{
+				axis = Vector3CrossProduct(Vector3{ 0.0f, 1.0f, 0.0f }, a);
+			}
+			axis = Vector3Normalize(axis);
+			const Quaternion q = QuaternionFromAxisAngle(axis, PI * t);
+			return Vector3Normalize(Vector3RotateByQuaternion(a, q));
+		}
+
+		const float theta = std::acos(dot);
+		const float sinTheta = std::sin(theta);
+		const float w1 = std::sin((1.0f - t) * theta) / sinTheta;
+		const float w2 = std::sin(t * theta) / sinTheta;
+		return Vector3Normalize(Vector3Add(Vector3Scale(a, w1), Vector3Scale(b, w2)));
+	}
+
 	Color LerpColorRGB(Color a, Color b, float t)
 	{
 		t = std::clamp(t, 0.0f, 1.0f);
@@ -910,10 +1122,16 @@ void WeatherSystem::Init()
 	m_windSpeed = WeatherWindSpeed::Off;
 	m_stormFlag = 0;
 	m_hasCamera = false;
-	m_orreryState = 9;
+	m_orreryState = 0;
+	m_orreryAnimActive = false;
+	m_orreryAnimDuration = 0.0f;
+	m_orreryAnimElapsed = 0.0f;
 	StopWeatherMusicIfPlaying();
 	ConfigureEffectParams(WeatherType::Clear, WeatherIntensity::Medium);
 	RefreshOrreryStateFromFlags();
+	LoadConstellations();
+	BuildConstellationDirections();
+	BuildProceduralStars();
 }
 
 void WeatherSystem::Shutdown()
@@ -924,22 +1142,72 @@ void WeatherSystem::Shutdown()
 
 void WeatherSystem::SetOrreryState(int state)
 {
+	m_orreryAnimActive = false;
+	m_orreryAnimDuration = 0.0f;
+	m_orreryAnimElapsed = 0.0f;
 	m_orreryState = std::clamp(state, 0, 9);
+}
+
+void WeatherSystem::SetOrreryStateAnimated(int targetState, float durationSeconds)
+{
+	targetState = std::clamp(targetState, 0, 9);
+	if (durationSeconds <= 0.0f)
+	{
+		SetOrreryState(targetState);
+		return;
+	}
+	if (targetState == m_orreryState && !m_orreryAnimActive)
+	{
+		return;
+	}
+
+	// Capture current visual rest BEFORE writing m_orreryState (continuity if mid-anim).
+	Vector3 restStart[8]{};
+	if (m_orreryAnimActive && m_orreryAnimDuration > 0.0f)
+	{
+		const float u = std::clamp(m_orreryAnimElapsed / m_orreryAnimDuration, 0.0f, 1.0f);
+		const float e = OrreryAnimEase(u);
+		for (int frame = 0; frame < 8; ++frame)
+		{
+			const Vector3 restEnd = PlanetRestDir(m_orreryState, frame);
+			restStart[frame] = UnitSlerp(m_orreryAnimRestStart[frame], restEnd, e);
+		}
+	}
+	else
+	{
+		for (int frame = 0; frame < 8; ++frame)
+		{
+			restStart[frame] = PlanetRestDir(m_orreryState, frame);
+		}
+	}
+
+	for (int frame = 0; frame < 8; ++frame)
+	{
+		m_orreryAnimRestStart[frame] = restStart[frame];
+	}
+	m_orreryState = targetState;
+	m_orreryAnimDuration = durationSeconds;
+	m_orreryAnimElapsed = 0.0f;
+	m_orreryAnimActive = true;
 }
 
 void WeatherSystem::RefreshOrreryStateFromFlags()
 {
+	m_orreryAnimActive = false;
+	m_orreryAnimDuration = 0.0f;
+	m_orreryAnimElapsed = 0.0f;
+
 	if (!g_ScriptingSystem)
 	{
-		m_orreryState = 9;
+		m_orreryState = 0;
 		return;
 	}
-	// Mirror utility_event_0481: count unset flags among the nine plot bits.
+	// Mirror utility_event_0481 / retail usecode (B0): count SET flags among the nine plot bits.
 	static constexpr int kFlags[] = { 493, 308, 482, 599, 481, 3, 301, 4, 5 };
 	int count = 0;
 	for (int flag : kFlags)
 	{
-		if (!g_ScriptingSystem->GetFlag(flag))
+		if (g_ScriptingSystem->GetFlag(flag))
 		{
 			++count;
 		}
@@ -2400,6 +2668,12 @@ void WeatherSystem::Update(float dt)
 	UpdateBlendFades(dt);
 	UpdateFlagCloth(dt);
 
+	// Phase F: cinematic clock is real dt (independent of Britannia tDays / pause semantics).
+	if (m_orreryAnimActive)
+	{
+		m_orreryAnimElapsed += dt;
+	}
+
 	if (!EffectsEnabled())
 	{
 		return;
@@ -2777,12 +3051,390 @@ void WeatherSystem::DrawSkyHemisphere(Camera camera, const SkyAtmosphereState& a
 	rlEnableDepthTest();
 }
 
-void WeatherSystem::DrawCelestialBodies(Camera camera, const SkyAtmosphereState& atm) const
+void WeatherSystem::LoadConstellations()
+{
+	m_constellations.clear();
+
+	FilePathList files = LoadDirectoryFiles(kConstellationDir);
+	std::vector<std::string> jsonPaths;
+	jsonPaths.reserve(files.count);
+	for (unsigned int i = 0; i < files.count; ++i)
+	{
+		const char* path = files.paths[i];
+		if (path == nullptr)
+		{
+			continue;
+		}
+		std::string p(path);
+		if (EndsWithJson(p) && !DirectoryExists(path))
+		{
+			jsonPaths.push_back(std::move(p));
+		}
+	}
+	UnloadDirectoryFiles(files);
+	std::sort(jsonPaths.begin(), jsonPaths.end());
+
+	std::unordered_set<std::string> formationIds;
+	for (const std::string& path : jsonPaths)
+	{
+		std::ifstream in(path);
+		if (!in)
+		{
+			Log("Constellations: cannot open " + path);
+			continue;
+		}
+		nlohmann::json j;
+		try
+		{
+			in >> j;
+		}
+		catch (const std::exception& e)
+		{
+			Log(std::string("Constellations: parse error in ") + path + ": " + e.what());
+			continue;
+		}
+
+		if (!j.is_object() || !j.contains("schema") || !j["schema"].is_string()
+			|| j["schema"].get<std::string>() != kConstellationSchema)
+		{
+			Log("Constellations: skip " + path + " (schema must be " + std::string(kConstellationSchema) + ")");
+			continue;
+		}
+		if (!j.contains("id") || !j["id"].is_string() || !j.contains("stars") || !j["stars"].is_array())
+		{
+			Log("Constellations: skip " + path + " (missing id or stars[])");
+			continue;
+		}
+
+		ConstellationRuntime c;
+		c.id = j["id"].get<std::string>();
+		if (c.id.empty() || formationIds.count(c.id) != 0)
+		{
+			Log("Constellations: skip " + path + " (empty or duplicate formation id '" + c.id + "')");
+			continue;
+		}
+		c.name = j.value("name", c.id);
+		c.enabled = j.value("enabled", true);
+		c.aspectRatio = 1.0f;
+		if (j.contains("canvas") && j["canvas"].is_object() && j["canvas"].contains("aspect_ratio"))
+		{
+			c.aspectRatio = j["canvas"]["aspect_ratio"].get<float>();
+		}
+		if (!(c.aspectRatio > 0.0f) || !std::isfinite(c.aspectRatio))
+		{
+			Log("Constellations: skip " + path + " (invalid aspect_ratio)");
+			continue;
+		}
+		c.centerRA = j.value("centerRA", 0.0f);
+		c.centerDec = j.value("centerDec", 20.0f);
+		c.rotationDeg = j.value("rotationDeg", 0.0f);
+		c.scaleDeg = j.value("scaleDeg", 12.0f);
+		c.mirrorX = j.value("mirrorX", false);
+		if (j.contains("navigation") && j["navigation"].is_object()
+			&& j["navigation"].contains("pole_star_id") && j["navigation"]["pole_star_id"].is_string())
+		{
+			c.poleStarId = j["navigation"]["pole_star_id"].get<std::string>();
+		}
+
+		std::unordered_set<std::string> starIds;
+		bool starsOk = true;
+		for (const auto& sj : j["stars"])
+		{
+			if (!sj.is_object() || !sj.contains("id") || !sj["id"].is_string())
+			{
+				Log("Constellations: skip " + path + " (star missing id)");
+				starsOk = false;
+				break;
+			}
+			ConstellationStarRuntime s;
+			s.id = sj["id"].get<std::string>();
+			if (s.id.empty() || starIds.count(s.id) != 0)
+			{
+				Log("Constellations: skip " + path + " (empty/duplicate star id '" + s.id + "')");
+				starsOk = false;
+				break;
+			}
+			starIds.insert(s.id);
+			s.canvasX = sj.value("x", 0.5f);
+			s.canvasY = sj.value("y", 0.5f);
+			s.brightness = sj.value("brightness", 0.5f);
+			if (!std::isfinite(s.canvasX) || !std::isfinite(s.canvasY) || !std::isfinite(s.brightness)
+				|| s.canvasX < 0.0f || s.canvasX > 1.0f || s.canvasY < 0.0f || s.canvasY > 1.0f
+				|| s.brightness < 0.0f || s.brightness > 1.0f)
+			{
+				Log("Constellations: skip " + path + " (star '" + s.id + "' out of range)");
+				starsOk = false;
+				break;
+			}
+			const std::string tone = sj.value("tone", std::string("white"));
+			bool toneKnown = true;
+			s.tint = ConstellationToneColor(tone, toneKnown);
+			if (!toneKnown)
+			{
+				Log("Constellations: unknown tone '" + tone + "' in " + path + " (star '" + s.id + "'); using warm_white");
+			}
+			s.principal = s.brightness >= kConstellationPrincipalBrightness;
+			// Slightly softer than raw JSON so dusk doesn't read as constellation-only.
+			s.brightness = std::clamp(s.brightness * 0.92f, 0.0f, 1.0f);
+			s.size = 0.11f + 0.09f * s.brightness;
+			c.stars.push_back(std::move(s));
+		}
+		if (!starsOk || c.stars.empty())
+		{
+			continue;
+		}
+		if (!c.poleStarId.empty() && starIds.count(c.poleStarId) == 0)
+		{
+			Log("Constellations: skip " + path + " (pole_star_id '" + c.poleStarId + "' not in stars[])");
+			continue;
+		}
+
+		formationIds.insert(c.id);
+		m_constellations.push_back(std::move(c));
+	}
+
+	Log("Constellations: loaded " + std::to_string(m_constellations.size()) + " formation(s) from "
+		+ std::string(kConstellationDir));
+}
+
+void WeatherSystem::BuildConstellationDirections()
+{
+	for (ConstellationRuntime& c : m_constellations)
+	{
+		float ax = 0.5f;
+		float ay = 0.5f;
+		Vector3 center{};
+		const bool polar = !c.poleStarId.empty();
+		if (polar)
+		{
+			center = CelestialPoleAxis();
+			for (const ConstellationStarRuntime& s : c.stars)
+			{
+				if (s.id == c.poleStarId)
+				{
+					ax = s.canvasX;
+					ay = s.canvasY;
+					break;
+				}
+			}
+		}
+		else
+		{
+			center = EquatorialDir(c.centerRA, c.centerDec);
+		}
+
+		Vector3 east{}, north{};
+		CelestialTangentBasis(center, east, north);
+		const float rot = DegToRad(c.rotationDeg);
+		const float cosR = std::cos(rot);
+		const float sinR = std::sin(rot);
+
+		for (ConstellationStarRuntime& s : c.stars)
+		{
+			if (polar && s.id == c.poleStarId)
+			{
+				s.restDir = CelestialPoleAxis();
+				continue;
+			}
+			float u = (s.canvasX - ax) * c.aspectRatio;
+			if (c.mirrorX)
+			{
+				u = -u;
+			}
+			float v = (ay - s.canvasY);
+			const float ur = u * cosR - v * sinR;
+			const float vr = u * sinR + v * cosR;
+			const float oxDeg = ur * c.scaleDeg;
+			const float oyDeg = vr * c.scaleDeg;
+			s.restDir = ExpMapOnSphere(center, east, north, DegToRad(oxDeg), DegToRad(oyDeg));
+		}
+	}
+}
+
+void WeatherSystem::BuildProceduralStars()
+{
+	m_proceduralStars.clear();
+	m_proceduralStars.reserve(static_cast<size_t>(kStarCount));
+
+	std::vector<Vector3> principals;
+	for (const ConstellationRuntime& c : m_constellations)
+	{
+		if (!c.enabled)
+		{
+			continue;
+		}
+		for (const ConstellationStarRuntime& s : c.stars)
+		{
+			if (s.principal)
+			{
+				principals.push_back(s.restDir);
+			}
+		}
+	}
+	const float rejectCos = std::cos(DegToRad(kProceduralRejectSepDeg));
+
+	auto tooClose = [&](Vector3 dir) -> bool {
+		for (const Vector3& p : principals)
+		{
+			if (Vector3DotProduct(dir, p) > rejectCos)
+			{
+				return true;
+			}
+		}
+		return false;
+	};
+
+	for (int i = 0; i < kStarCount; ++i)
+	{
+		Vector3 restDir{};
+		bool accepted = false;
+		int chosen = i;
+		for (int attempt = 0; attempt < 48; ++attempt)
+		{
+			chosen = i * 97 + attempt * 131;
+			const float ra = Hash01(chosen, 11) * 360.0f;
+			const float u = Hash01(chosen, 29);
+			const float dec = RadToDeg(std::asin(std::clamp(2.0f * u - 1.0f, -1.0f, 1.0f)));
+			restDir = EquatorialDir(ra, dec);
+			if (!tooClose(restDir))
+			{
+				accepted = true;
+				break;
+			}
+		}
+		if (!accepted)
+		{
+			const float ra = Hash01(i, 11) * 360.0f;
+			const float u = Hash01(i, 29);
+			const float dec = RadToDeg(std::asin(std::clamp(2.0f * u - 1.0f, -1.0f, 1.0f)));
+			restDir = EquatorialDir(ra, dec);
+			chosen = i;
+		}
+
+		ProceduralStarRuntime star;
+		star.restDir = restDir;
+		const float typeRoll = Hash01(chosen, 47);
+		float mag = 0.55f;
+		float size = 0.16f;
+		Color tint{ 230, 235, 255, 255 };
+		if (typeRoll < 0.22f)
+		{
+			tint = Color{ 180, 205, 255, 255 };
+			mag = 0.70f;
+			size = 0.20f;
+		}
+		else if (typeRoll < 0.55f)
+		{
+			tint = Color{ 235, 238, 255, 255 };
+			mag = 0.58f;
+			size = 0.17f;
+		}
+		else if (typeRoll < 0.82f)
+		{
+			tint = Color{ 255, 236, 190, 255 };
+			mag = 0.48f;
+			size = 0.15f;
+		}
+		else
+		{
+			tint = Color{ 255, 190, 140, 255 };
+			mag = 0.40f;
+			size = 0.14f;
+		}
+		mag *= 0.75f + 0.45f * Hash01(chosen, 61);
+		size *= 0.85f + 0.40f * Hash01(chosen, 67);
+		// ~15% early-twilight "beacon" stars so constellations are not alone at dusk.
+		const float earlyRoll = Hash01(chosen, 83);
+		if (earlyRoll > 0.85f)
+		{
+			mag = std::max(mag, 0.88f + 0.12f * Hash01(chosen, 89));
+			size = std::max(size, 0.18f);
+		}
+		else if (earlyRoll > 0.72f)
+		{
+			mag = std::max(mag, 0.72f + 0.10f * Hash01(chosen, 89));
+		}
+		star.mag = mag;
+		star.size = size;
+		star.tint = tint;
+		star.omega = 1.2f + 6.5f * Hash01(chosen, 71);
+		star.phase = Hash01(chosen, 73) * (2.0f * PI);
+		const float steady = Hash01(chosen, 79);
+		star.flickerAmt = 0.04f + 0.16f * (1.0f - steady);
+		m_proceduralStars.push_back(star);
+	}
+}
+
+void WeatherSystem::DrawProceduralStars(Camera camera, float siderealDeg, float skyLum, float overcastDim,
+	float drawCullEl, float timeSec) const
+{
+	for (const ProceduralStarRuntime& star : m_proceduralStars)
+	{
+		const Vector3 dir = RotateCelestial(star.restDir, siderealDeg);
+		if (ElevationDegFromDir(dir) < drawCullEl)
+		{
+			continue;
+		}
+		const float flicker = 1.0f - star.flickerAmt
+			+ star.flickerAmt * (0.5f + 0.5f * std::sin(timeSec * star.omega + star.phase));
+		const float vis = BodyContrastVis(star.mag * flicker, skyLum) * overcastDim;
+		if (vis < 0.02f)
+		{
+			continue;
+		}
+		Color tint = star.tint;
+		tint.a = static_cast<unsigned char>(std::clamp(static_cast<int>(255.0f * vis), 0, 255));
+		DrawCelestialDisc(camera, SkyWorldPosFromDir(camera, dir), star.size, tint, 6);
+	}
+}
+
+void WeatherSystem::DrawConstellations(Camera camera, float siderealDeg, float skyLum, float overcastDim,
+	float drawCullEl, float timeSec) const
+{
+	for (const ConstellationRuntime& c : m_constellations)
+	{
+		if (!c.enabled)
+		{
+			continue;
+		}
+		for (const ConstellationStarRuntime& s : c.stars)
+		{
+			const Vector3 dir = RotateCelestial(s.restDir, siderealDeg);
+			if (ElevationDegFromDir(dir) < drawCullEl)
+			{
+				continue;
+			}
+			const float flicker = s.principal ? 1.0f
+				: (0.96f + 0.04f * std::sin(timeSec * 1.7f + s.brightness * 9.0f));
+			const float vis = BodyContrastVis(s.brightness * flicker, skyLum) * overcastDim;
+			if (vis < 0.02f)
+			{
+				continue;
+			}
+			Color tint = s.tint;
+			tint.a = static_cast<unsigned char>(std::clamp(static_cast<int>(255.0f * vis), 0, 255));
+			DrawCelestialDisc(camera, SkyWorldPosFromDir(camera, dir), s.size, tint, 6);
+		}
+	}
+}
+
+void WeatherSystem::DrawCelestialBodies(Camera camera, const SkyAtmosphereState& atm)
 {
 	const float dayAmount = atm.dayAmount;
 	const float overcastDim = 1.0f - 0.85f * std::clamp(atm.overcastFade, 0.0f, 1.0f);
+	auto clearOrreryAnimIfFinished = [this]() {
+		if (m_orreryAnimActive && m_orreryAnimDuration > 0.0f
+			&& m_orreryAnimElapsed >= m_orreryAnimDuration)
+		{
+			m_orreryAnimActive = false;
+			m_orreryAnimDuration = 0.0f;
+			m_orreryAnimElapsed = 0.0f;
+		}
+	};
 	if (overcastDim < 0.08f)
 	{
+		// Planets not drawn; still retire finished anim so state does not stick.
+		clearOrreryAnimIfFinished();
 		return;
 	}
 
@@ -2809,82 +3461,36 @@ void WeatherSystem::DrawCelestialBodies(Camera camera, const SkyAtmosphereState&
 		DrawCelestialDisc(camera, SkyWorldPosFromDir(camera, dirAlreadyRotated), radius, color, segs);
 	};
 
-	// --- Stars: full-sphere scatter, spectral types, flicker, sky-contrast washout ---
-	{
-		bool anyStar = false;
-		for (int i = 0; i < kStarCount; ++i)
-		{
-			const float ra = Hash01(i, 11) * 360.0f;
-			const float u = Hash01(i, 29);
-			const float dec = RadToDeg(std::asin(std::clamp(2.0f * u - 1.0f, -1.0f, 1.0f)));
-			const Vector3 dir = RotateCelestial(EquatorialDir(ra, dec), sidereal);
-			if (ElevationDegFromDir(dir) < drawCullEl)
-			{
-				continue;
-			}
+	// --- Stars: baked procedural field + authored constellations (10.2 E) ---
+	DrawProceduralStars(camera, sidereal, skyLum, overcastDim, drawCullEl, timeSec);
+	DrawConstellations(camera, sidereal, skyLum, overcastDim, drawCullEl, timeSec);
 
-			// Spectral type 0..3: blue-white / white / yellow / orange
-			const float typeRoll = Hash01(i, 47);
-			Color tint{ 230, 235, 255, 255 };
-			float mag = 0.55f; // intrinsic luminance
-			float size = 0.16f;
-			if (typeRoll < 0.22f)
+	// --- Planets: Phase B poses; Phase F rest-frame slerp when animating ---
+	{
+		const int state = std::clamp(m_orreryState, 0, 9);
+		const bool animating = m_orreryAnimActive && m_orreryAnimDuration > 0.0f;
+		float ease = 0.0f;
+		bool finishAfterDraw = false;
+		if (animating)
+		{
+			const float u = std::clamp(m_orreryAnimElapsed / m_orreryAnimDuration, 0.0f, 1.0f);
+			ease = OrreryAnimEase(u);
+			finishAfterDraw = (u >= 1.0f);
+		}
+
+		for (int frame = 0; frame < 8; ++frame)
+		{
+			Vector3 dir;
+			if (animating)
 			{
-				tint = Color{ 180, 205, 255, 255 };
-				mag = 0.70f;
-				size = 0.20f;
-			}
-			else if (typeRoll < 0.55f)
-			{
-				tint = Color{ 235, 238, 255, 255 };
-				mag = 0.58f;
-				size = 0.17f;
-			}
-			else if (typeRoll < 0.82f)
-			{
-				tint = Color{ 255, 236, 190, 255 };
-				mag = 0.48f;
-				size = 0.15f;
+				const Vector3 restEnd = PlanetRestDir(state, frame);
+				const Vector3 rest = UnitSlerp(m_orreryAnimRestStart[frame], restEnd, ease);
+				dir = RotateCelestial(rest, sidereal);
 			}
 			else
 			{
-				tint = Color{ 255, 190, 140, 255 };
-				mag = 0.40f;
-				size = 0.14f;
+				dir = PlanetSkyDir(state, frame, sidereal);
 			}
-			mag *= 0.75f + 0.45f * Hash01(i, 61);
-			size *= 0.85f + 0.40f * Hash01(i, 67);
-
-			const float omega = 1.2f + 6.5f * Hash01(i, 71);
-			const float phase = Hash01(i, 73) * (2.0f * PI);
-			const float steady = Hash01(i, 79);
-			const float flickerAmt = 0.04f + 0.16f * (1.0f - steady); // some nearly steady
-			const float flicker = 1.0f - flickerAmt
-				+ flickerAmt * (0.5f + 0.5f * std::sin(timeSec * omega + phase));
-
-			const float vis = BodyContrastVis(mag * flicker, skyLum) * overcastDim;
-			if (vis < 0.02f)
-			{
-				continue;
-			}
-			anyStar = true;
-			tint.a = static_cast<unsigned char>(std::clamp(static_cast<int>(255.0f * vis), 0, 255));
-			DrawCelestialDisc(camera, SkyWorldPosFromDir(camera, dir), size, tint, 6);
-		}
-		(void)anyStar;
-	}
-
-	// --- Planets: orrery RA/Dec + higher intrinsic lum (twilight-visible) ---
-	{
-		const int state = std::clamp(m_orreryState, 0, 9);
-		for (int frame = 0; frame < 8; ++frame)
-		{
-			const float dx = static_cast<float>(kOrreryOffsets[state][frame][0]);
-			const float dy = static_cast<float>(kOrreryOffsets[state][frame][1]);
-			const float ra = std::atan2(dx, -dy) * (180.0f / PI) + static_cast<float>(frame) * 3.0f;
-			const float dec = -8.0f + static_cast<float>(frame) * 2.2f
-				+ 2.0f * std::sin(DegToRad(ra * 1.3f + frame * 25.0f));
-			const Vector3 dir = RotateCelestial(EquatorialDir(ra, dec), sidereal);
 			const float intrinsic = 0.78f + 0.08f * static_cast<float>(frame % 3);
 			const float vis = BodyContrastVis(intrinsic, skyLum) * overcastDim;
 			if (vis < 0.02f)
@@ -2894,6 +3500,12 @@ void WeatherSystem::DrawCelestialBodies(Camera camera, const SkyAtmosphereState&
 			Color col = kPlanetColors[frame];
 			col.a = static_cast<unsigned char>(std::clamp(static_cast<int>(255.0f * vis), 0, 255));
 			drawIfAboveHorizon(dir, kPlanetRadius + static_cast<float>(frame) * 0.012f, col, 8);
+		}
+
+		// e=1 frame drawn above; clear only after so snap path cannot skip that sample.
+		if (finishAfterDraw)
+		{
+			clearOrreryAnimIfFinished();
 		}
 	}
 
@@ -3398,14 +4010,9 @@ void WeatherSystem::LoadFromJson(const nlohmann::json& j)
 	}
 	m_fogFade = j.value("fogFade", 0.0f);
 	m_overcastFade = j.value("overcastFade", 0.0f);
-	if (j.contains("orreryState"))
-	{
-		m_orreryState = std::clamp(j.value("orreryState", 9), 0, 9);
-	}
-	else
-	{
-		RefreshOrreryStateFromFlags();
-	}
+	// Always recompute from plot flags (B0 polarity). Ignores saved orreryState so pre-patch
+	// saves (inverted unset-count) and debug snaps do not stick after load; flags are source of truth.
+	RefreshOrreryStateFromFlags();
 	if (m_fogFade > 0.01f)
 	{
 		m_fogWasActive = true;

@@ -5765,7 +5765,7 @@ static int LuaIsPCInside(lua_State *L)
 }
 
 // 0x0063 | set_orrery
-// Usecode (utility_event_0481): set_orrery(state, pos) — state is count of unset plot flags (0..9).
+// Usecode (utility_event_0481): set_orrery(state, pos) — state is count of SET plot flags (0..9; B0).
 // Exult intrinsic is (pos, state); decompiled Lua passes state first. We take arg1 as state.
 static int LuaSetOrrery(lua_State *L)
 {
