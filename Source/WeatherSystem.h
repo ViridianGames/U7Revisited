@@ -107,6 +107,11 @@ public:
 	void RefreshOrreryStateFromFlags(); // cancel anim + snap from plot flags
 	float GetMoonLightAmount() const;
 
+	// Weather 10.3 sandbox: equal-time sun path markers (Ctrl+Shift+P).
+	void SetDrawCelestialPathTrail(bool enabled) { m_drawCelestialPathTrail = enabled; }
+	bool GetDrawCelestialPathTrail() const { return m_drawCelestialPathTrail; }
+	void ToggleDrawCelestialPathTrail() { m_drawCelestialPathTrail = !m_drawCelestialPathTrail; }
+
 	void ApplyLightingModifiers(Color& dayNightColor, bool isDay) const;
 	bool WantsOvercastPalette() const;
 	bool WantsFogPalette() const;
@@ -348,6 +353,7 @@ private:
 	float m_orreryAnimDuration = 0.0f;
 	float m_orreryAnimElapsed = 0.0f;
 	Vector3 m_orreryAnimRestStart[8]{};
+	bool m_drawCelestialPathTrail = false;
 
 	float m_fallSpeed = 0;
 	int m_firstFrame = 0;
