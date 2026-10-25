@@ -14,9 +14,110 @@
 #include "Geist/Engine.h"
 #include "Geist/Logging.h"
 #include "U7Globals.h"
+#include "WeatherSystem.h"
 #include "ShapeData.h"
 
 using namespace std;
+
+namespace
+{
+	// Flag cloth shapes — instance yaw from weather wind (mast 713 excluded).
+	bool IsFlagClothShape(int shape)
+	{
+		return shape == 222 || shape == 232 || shape == 248;
+	}
+
+	// Yaw about the mast axis in the cloth glTF (StaticBone / base mesh XZ
+	// center ≈ origin) — NOT FlagBone00, which is the cloth–pole seam and
+	// made the pivot sit at the fabric join instead of the hinge center.
+	constexpr Vector3 kFlagHingeCenterXZ = { 0.0f, 0.0f, 0.0f };
+	constexpr float kFlagPostSearchRadius = 3.0f; // tiles — pair cloth to mast 713
+
+	// Local hinge after LoadingState Decenter(): DrawModelEx rotates about local
+	// origin (= AABB XZ center). Point is in authored space — subtract Decenter.
+	Vector3 FlagHingeLocal(RaylibModel* mesh)
+	{
+		Vector3 hinge = kFlagHingeCenterXZ;
+		if (mesh)
+		{
+			const Vector3 d = mesh->GetDecenterOffset();
+			hinge.x -= d.x;
+			hinge.z -= d.z;
+		}
+		return hinge;
+	}
+
+	Vector3 FlagHingeScaled(RaylibModel* mesh, Vector3 scale)
+	{
+		Vector3 hinge = FlagHingeLocal(mesh);
+		hinge.x *= scale.x;
+		hinge.y *= scale.y;
+		hinge.z *= scale.z;
+		return hinge;
+	}
+
+	// Nearest flag mast (shape 713) in neighboring chunks; nullptr if none in range.
+	U7Object* FindNearestFlagPost(Vector3 flagPos)
+	{
+		const int cx = static_cast<int>(std::floor(flagPos.x / 16.0f));
+		const int cz = static_cast<int>(std::floor(flagPos.z / 16.0f));
+		U7Object* best = nullptr;
+		float bestDistSq = kFlagPostSearchRadius * kFlagPostSearchRadius;
+		for (int dz = -1; dz <= 1; ++dz)
+		{
+			for (int dx = -1; dx <= 1; ++dx)
+			{
+				const int x = cx + dx;
+				const int z = cz + dz;
+				if (x < 0 || x >= 192 || z < 0 || z >= 192)
+				{
+					continue;
+				}
+				for (U7Object* obj : g_chunkObjectMap[x][z])
+				{
+					if (!obj || obj->m_ObjectType != 713 || !obj->m_Visible)
+					{
+						continue;
+					}
+					const float ddx = obj->m_Pos.x - flagPos.x;
+					const float ddz = obj->m_Pos.z - flagPos.z;
+					const float distSq = ddx * ddx + ddz * ddz;
+					if (distSq < bestDistSq)
+					{
+						bestDistSq = distSq;
+						best = obj;
+					}
+				}
+			}
+		}
+		return best;
+	}
+
+	// Yaw about world mast axis when a 713 is nearby; else keep hinge at finalPos+bone.
+	Vector3 FlagHingeDrawPos(Vector3 objectPos, Vector3 finalPos, float yawDeg,
+		RaylibModel* mesh, Vector3 scale)
+	{
+		const Vector3 hinge = FlagHingeScaled(mesh, scale);
+		const Vector3 rotated = Vector3Transform(
+			hinge, MatrixRotate(Vector3{ 0, 1, 0 }, yawDeg * DEG2RAD));
+
+		if (U7Object* post = FindNearestFlagPost(objectPos))
+		{
+			Vector3 pole = post->m_Pos;
+			if (post->m_shapeData)
+			{
+				pole = Vector3Add(pole, post->m_shapeData->m_TweakPos);
+			}
+			Vector3 drawPos = finalPos;
+			drawPos.x = pole.x - rotated.x;
+			drawPos.z = pole.z - rotated.z;
+			return drawPos;
+		}
+
+		// No mast: rotate about hinge center relative to placed finalPos.
+		return Vector3Add(finalPos, Vector3Subtract(hinge, rotated));
+	}
+}
 
 ShapeData::ShapeData()
 {
@@ -895,13 +996,18 @@ void ShapeData::DrawMeshId(const Vector3& pos, float angle, Color idColor, Vecto
 		return;
 
 	Vector3 finalPos = Vector3Add(pos, m_TweakPos);
-	// Match the color-pass custom-mesh draw (uses shape m_rotation / m_Scaling).
-	(void)angle;
 	Vector3 finalScale = Vector3{
 		m_Scaling.x * scaling.x,
 		m_Scaling.y * scaling.y,
 		m_Scaling.z * scaling.z
 	};
+	// Match the color-pass custom-mesh draw (shape m_rotation + flag cloth yaw).
+	float yaw = m_rotation;
+	if (IsFlagClothShape(m_shape))
+	{
+		yaw += angle;
+		finalPos = FlagHingeDrawPos(pos, finalPos, yaw, m_customMesh, finalScale);
+	}
 
 	Model& model = m_customMesh->GetModel();
 	// ID pass: do not advance skeletal time — pose was set by the color Draw.
@@ -932,7 +1038,7 @@ void ShapeData::DrawMeshId(const Vector3& pos, float angle, Color idColor, Vecto
 	if (g_meshIdAlphaCutoffLoc >= 0)
 		SetShaderValue(g_meshIdShader, g_meshIdAlphaCutoffLoc, &cutoff, SHADER_UNIFORM_FLOAT);
 
-	DrawModelEx(model, finalPos, { 0, 1, 0 }, m_rotation, finalScale, idColor);
+	DrawModelEx(model, finalPos, { 0, 1, 0 }, yaw, finalScale, idColor);
 
 	cutoff = 0.5f;
 	if (g_meshIdAlphaCutoffLoc >= 0)
@@ -1149,12 +1255,42 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 	case ShapeDrawType::OBJECT_DRAW_CUSTOM_MESH:
 	case ShapeDrawType::OBJECT_DRAW_CUSTOM_MESH_DEFER:
 	{
+		// Most custom meshes ignore object angle (shape m_rotation only). Flag
+		// cloth 222/232/248: yaw about FlagBone00 hinge (post-Decenter local);
+		// mast 713 excluded.
+		float yaw = m_rotation;
+		Vector3 drawPos = finalPos;
+		if (IsFlagClothShape(m_shape))
+		{
+			yaw += angle;
+			drawPos = FlagHingeDrawPos(pos, finalPos, yaw, m_customMesh, m_Scaling);
+		}
+
 		if (m_customMesh->CanApplySkeletalAnimation())
 		{
-			if (playSkeletalAnim)
+			if (IsFlagClothShape(m_shape))
+			{
+				// Wind-scaled idle ONLY for flag cloth — never other shapes.
+				if (playSkeletalAnim)
+				{
+					const float animSpeed = g_WeatherSystem
+						? g_WeatherSystem->FlagAnimSpeedScale()
+						: 0.55f;
+					m_customMesh->UpdateAnim("idle", animSpeed);
+				}
+				else
+				{
+					m_customMesh->SetAnimationFrame("idle", freezeFrame < 0 ? 0 : freezeFrame);
+				}
+			}
+			else if (playSkeletalAnim)
+			{
 				m_customMesh->UpdateAnim("idle");
+			}
 			else
+			{
 				m_customMesh->SetAnimationFrame("idle", freezeFrame < 0 ? 0 : freezeFrame);
+			}
 		}
 		Model& model = m_customMesh->GetModel();
 
@@ -1234,11 +1370,11 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 			}
 		};
 
-		// Model-space transform matching DrawModelEx(finalPos, +Y, m_rotation, m_Scaling).
+		// Model-space transform matching DrawModelEx(drawPos, +Y, yaw, m_Scaling).
 		auto makeModelTransform = [&]() {
 			Matrix matScale = MatrixScale(m_Scaling.x, m_Scaling.y, m_Scaling.z);
-			Matrix matRotation = MatrixRotate(Vector3{ 0, 1, 0 }, m_rotation * DEG2RAD);
-			Matrix matTranslation = MatrixTranslate(finalPos.x, finalPos.y, finalPos.z);
+			Matrix matRotation = MatrixRotate(Vector3{ 0, 1, 0 }, yaw * DEG2RAD);
+			Matrix matTranslation = MatrixTranslate(drawPos.x, drawPos.y, drawPos.z);
 			Matrix local = MatrixMultiply(MatrixMultiply(matScale, matRotation), matTranslation);
 			return MatrixMultiply(model.transform, local);
 		};
@@ -1246,7 +1382,7 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 		auto drawMeshFill = [&]() {
 			if (!useGlassPipeline)
 			{
-				DrawModelEx(model, finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, color);
+				DrawModelEx(model, drawPos, { 0, 1, 0 }, yaw, m_Scaling, color);
 				restoreMaterials();
 				return;
 			}
@@ -1330,7 +1466,7 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 					float solidCutoff = kU7GlassOpaqueCutoff;
 					SetShaderValue(g_alphaDiscard, g_alphaDiscardCutoffLoc, &solidCutoff, SHADER_UNIFORM_FLOAT);
 				}
-				DrawModelEx(model, finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, color);
+				DrawModelEx(model, drawPos, { 0, 1, 0 }, yaw, m_Scaling, color);
 				if (g_alphaDiscardCutoffLoc >= 0)
 				{
 					float defaultCutoff = 0.5f;
@@ -1343,7 +1479,7 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 				rlDisableDepthMask();
 				BeginBlendMode(BLEND_ALPHA);
 				// Same cell lighting as the opaque pass (was WHITE — ignored night).
-				DrawModelEx(model, finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, color);
+				DrawModelEx(model, drawPos, { 0, 1, 0 }, yaw, m_Scaling, color);
 				EndBlendMode();
 				rlEnableDepthMask();
 			}
@@ -1399,10 +1535,10 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 				localCenter.y * outlineScale.y,
 				localCenter.z * outlineScale.z };
 			Vector3 centerOffset = Vector3Subtract(scaledCenter, outlineScaledCenter);
-			Vector3 outlinePos = Vector3Add(finalPos, centerOffset);
+			Vector3 outlinePos = Vector3Add(drawPos, centerOffset);
 
 			glDepthMask(GL_FALSE);
-			DrawModelEx(model, outlinePos, { 0, 1, 0 }, m_rotation, outlineScale, BLACK);
+			DrawModelEx(model, outlinePos, { 0, 1, 0 }, yaw, outlineScale, BLACK);
 			glDepthMask(GL_TRUE);
 
 			glDisable(GL_STENCIL_TEST);

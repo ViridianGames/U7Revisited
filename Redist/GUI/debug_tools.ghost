@@ -215,6 +215,29 @@
               255
             ],
             "scale": 1.0
+          },
+          {
+            "name": "WEATHER_BUTTON",
+            "type": "iconbutton",
+            "hoverText": "Cycle weather (debug)",
+            "position": [
+              -1,
+              -1
+            ],
+            "sprite": {
+              "spritesheet": "GUI/guielements.png",
+              "x": 370,
+              "y": 0,
+              "w": 30,
+              "h": 30
+            },
+            "color": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "scale": 1.0
           }
         ]
       }

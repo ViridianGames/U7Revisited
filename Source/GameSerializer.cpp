@@ -4,6 +4,7 @@
 #include "U7Globals.h"
 #include "U7Player.h"
 #include "U7Object.h"
+#include "WeatherSystem.h"
 #include "../ThirdParty/nlohmann/json.hpp"
 #include <filesystem>
 #include <sstream>
@@ -371,6 +372,12 @@ bool GameSerializer::SaveToStream(std::ofstream& stream, const std::string& save
 		saveData["gameTime"]["minute"] = g_minute;
 		saveData["gameTime"]["scheduleTime"] = g_scheduleTime;
 
+		// Weather state (akin to original WEATHER.DAT)
+		if (g_WeatherSystem)
+		{
+			saveData["weather"] = g_WeatherSystem->SaveToJson();
+		}
+
 		// Session / camera (optional restore for continuity)
 		saveData["session"]["combatMode"] = g_isCombatMode;
 		saveData["session"]["camera"] = {
@@ -567,6 +574,18 @@ bool GameSerializer::LoadFromStream(std::ifstream& stream)
 			g_hour = saveData["gameTime"].value("hour", 0);
 			g_minute = saveData["gameTime"].value("minute", 0);
 			g_scheduleTime = saveData["gameTime"].value("scheduleTime", 0);
+		}
+
+		if (g_WeatherSystem)
+		{
+			if (saveData.contains("weather"))
+			{
+				g_WeatherSystem->LoadFromJson(saveData["weather"]);
+			}
+			else
+			{
+				g_WeatherSystem->Init();
+			}
 		}
 
 		if (saveData.contains("nextObjectID"))

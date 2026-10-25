@@ -20,6 +20,7 @@
 #include "PathfindingSystem.h"
 #include "SoundSystem.h"
 #include "U7SpriteEffects.h"
+#include "WeatherSystem.h"
 #include "NpcAnimation.h"
 
 extern "C"
@@ -5139,20 +5140,61 @@ static int LuaSetPathFailure(lua_State *L)
     return 0;
 }
 
-// Shared weather state for get_weather / set_weather (0=clear, 1=rain, 2=snow, 3=sparkles).
-static int g_luaWeather = 0;
-
-// 0x0044 | get_weather
+// 0x0044 | get_weather — canonical IDs: 0 clear, 1 snow, 2 rain/storm, 3 sparkle,
+// 4 fog, 5 overcast, 6 cloudy (see WeatherSystem / original SetWeather).
 static int LuaGetWeather(lua_State *L)
 {
-    lua_pushinteger(L, g_luaWeather);
+    const int weather = g_WeatherSystem ? g_WeatherSystem->GetWeather() : 0;
+    lua_pushinteger(L, weather);
     return 1;
 }
 
-// 0x0045 | set_weather
+// get_weather_intensity — 0 Light, 1 Medium (BG default), 2 Heavy (rain/snow density).
+static int LuaGetWeatherIntensity(lua_State *L)
+{
+    const int intensity = g_WeatherSystem
+        ? static_cast<int>(g_WeatherSystem->GetIntensity())
+        : 1;
+    lua_pushinteger(L, intensity);
+    return 1;
+}
+
+// 0x0045 | set_weather(type [, duration_minutes [, intensity]])
+// duration 0 = continuous (engine uses 6000 game minutes, matching original eggs).
+// intensity omit/-1 = Medium; 0 Light, 1 Medium, 2 Heavy (rain/snow only).
 static int LuaSetWeather(lua_State *L)
 {
-    g_luaWeather = (int)lua_tointeger(L, 1);
+    const int type = (int)lua_tointeger(L, 1);
+    const int duration = (int)luaL_optinteger(L, 2, 0);
+    const int intensity = (int)luaL_optinteger(L, 3, -1);
+    if (g_WeatherSystem)
+    {
+        g_WeatherSystem->SetWeather(type, duration, false, {0, 0, 0}, -1, intensity);
+    }
+    return 0;
+}
+
+// get_weather_wind — returns dir (0=N … 7=NW), speed (0 Off / 1 Light / 2 Medium / 3 Heavy).
+static int LuaGetWeatherWind(lua_State *L)
+{
+    const int dir = g_WeatherSystem ? g_WeatherSystem->GetWindDir() : 0;
+    const int speed = g_WeatherSystem
+        ? static_cast<int>(g_WeatherSystem->GetWindSpeed())
+        : 0;
+    lua_pushinteger(L, dir);
+    lua_pushinteger(L, speed);
+    return 2;
+}
+
+// set_weather_wind(dir [, speed]) — dir 0–7; speed omit/-1 keeps current (0–3 Off…Heavy).
+static int LuaSetWeatherWind(lua_State *L)
+{
+    const int dir = (int)lua_tointeger(L, 1);
+    const int speed = (int)luaL_optinteger(L, 2, -1);
+    if (g_WeatherSystem)
+    {
+        g_WeatherSystem->SetWeatherWind(dir, speed);
+    }
     return 0;
 }
 
@@ -6875,7 +6917,10 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction( "halt_scheduled", LuaHaltScheduled);
     g_ScriptingSystem->RegisterScriptFunction( "set_path_failure", LuaSetPathFailure);
     g_ScriptingSystem->RegisterScriptFunction( "get_weather", LuaGetWeather);
+    g_ScriptingSystem->RegisterScriptFunction( "get_weather_intensity", LuaGetWeatherIntensity);
     g_ScriptingSystem->RegisterScriptFunction( "set_weather", LuaSetWeather);
+    g_ScriptingSystem->RegisterScriptFunction( "get_weather_wind", LuaGetWeatherWind);
+    g_ScriptingSystem->RegisterScriptFunction( "set_weather_wind", LuaSetWeatherWind);
     g_ScriptingSystem->RegisterScriptFunction( "is_water", LuaIsWater);
     g_ScriptingSystem->RegisterScriptFunction( "play_sound_effect", LuaPlaySoundEffect);
     g_ScriptingSystem->RegisterScriptFunction( "play_instrument", LuaPlayInstrument);

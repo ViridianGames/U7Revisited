@@ -17,13 +17,14 @@ function spell_wind_change_rel_hur_0321(eventid, objectref)
 
     local weather = get_weather() or 0
     if weather == 0 then
-        -- Oracle: 1-based index 2 or 3 into {0,1,2} → rain(1) or snow(2)
+        -- Oracle: 1-based index 2 or 3 into {0,1,2} → snow(1) or rain(2)
         if die_roll(1, 2) == 1 then
             set_weather(1)
         else
             set_weather(2)
         end
     elseif weather ~= 3 then
+        -- Never clear sparkle/anti-magic (weather 3) via Rel Hur
         set_weather(0)
     end
 end

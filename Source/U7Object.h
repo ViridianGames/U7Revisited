@@ -285,8 +285,12 @@ struct EggData
 	bool m_nocturnal = false;
 	bool m_autoReset = false;
 	bool m_shouldReset = false;
+	// Weather eggs: probability fail does not set hasTriggered; one roll per visit.
+	bool m_rolledThisVisit = false;
 
 	uint8_t m_specificValue = 0;
+	// Weather eggs: data1 high byte = duration in game minutes (0 = continuous).
+	uint8_t m_durationMinutes = 0;
 	std::string m_audioFile;
 	int m_usecodeFunc = 0;
 

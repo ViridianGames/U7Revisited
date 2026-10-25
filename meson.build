@@ -161,6 +161,7 @@ sources = files(
            'Source/U7Object.cpp',
            'Source/U7Player.cpp',
            'Source/U7ScriptUtils.cpp',
+           'Source/WeatherSystem.cpp',
            'Source/ScriptRenameState.cpp',
 )
 
