@@ -827,6 +827,7 @@ unsigned int g_scheduleTime;
 float g_secsPerMinute = 5;
 unsigned int g_dayOfMonth = 1;
 unsigned int g_month = 1;
+unsigned int g_britannianYear = 361;
 uint64_t g_britannianDayIndex = 0;
 bool g_autoRotate = false;
 
@@ -848,6 +849,7 @@ void AdvanceBritannianCalendarDay()
 		if (g_month > 12)
 		{
 			g_month = 1;
+			++g_britannianYear;
 		}
 	}
 	++g_britannianDayIndex;

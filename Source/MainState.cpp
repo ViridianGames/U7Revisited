@@ -462,6 +462,7 @@ void MainState::OnEnter()
 	g_scheduleTime = 2;
 	g_dayOfMonth = 1;
 	g_month = 1;
+	g_britannianYear = 361;
 	SyncBritannianDayIndexFromCalendar();
 
 	m_heightCutoff = 16.0f; // Draw everything unless the player is inside.
@@ -1152,17 +1153,45 @@ void MainState::HandleGameKeys()
 		}
 	}
 
-	// Weather 10.3: toggle equal-time sun path trail (Phase D accept) — Ctrl+Shift+P.
+	// Weather 10.4 closeout sandbox (audited free of MainState/U7Globals gameplay binds):
+	// Ctrl+Shift+T sun trail; +Y moon trail; +U/I/O meteor rate (halve/double/reset).
+	// Avoids Ctrl+P camera, orrery 7/8, and unmodified -/ = time speed.
 	if (m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX
 		&& g_WeatherSystem
 		&& IsKeyDown(KEY_LEFT_CONTROL)
-		&& (IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT))
-		&& IsKeyPressed(KEY_P))
+		&& (IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT)))
 	{
-		g_WeatherSystem->ToggleDrawCelestialPathTrail();
-		AddConsoleString(g_WeatherSystem->GetDrawCelestialPathTrail()
-			? "Celestial path trail ON (30-min sun markers)"
-			: "Celestial path trail OFF");
+		if (IsKeyPressed(KEY_T))
+		{
+			g_WeatherSystem->ToggleDrawCelestialPathTrail();
+			AddConsoleString(g_WeatherSystem->GetDrawCelestialPathTrail()
+				? "Celestial path trail ON (30-min sun markers)"
+				: "Celestial path trail OFF");
+		}
+		if (IsKeyPressed(KEY_Y))
+		{
+			g_WeatherSystem->ToggleDrawMoonPathTrail();
+			AddConsoleString(g_WeatherSystem->GetDrawMoonPathTrail()
+				? "Moon path trail ON (30-min + fine midnight/skirts/below)"
+				: "Moon path trail OFF");
+		}
+		if (IsKeyPressed(KEY_U))
+		{
+			const float s = g_WeatherSystem->GetShootingStarRateScale() * 0.5f;
+			g_WeatherSystem->SetShootingStarRateScale(s);
+			AddConsoleString("Shooting-star rate scale " + std::to_string(s));
+		}
+		if (IsKeyPressed(KEY_I))
+		{
+			const float s = g_WeatherSystem->GetShootingStarRateScale() * 2.0f;
+			g_WeatherSystem->SetShootingStarRateScale(s);
+			AddConsoleString("Shooting-star rate scale " + std::to_string(s));
+		}
+		if (IsKeyPressed(KEY_O))
+		{
+			g_WeatherSystem->SetShootingStarRateScale(1.0f);
+			AddConsoleString("Shooting-star rate scale 1.0 (reset)");
+		}
 	}
 
 	if (IsKeyPressed(KEY_PAGE_UP) && m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX)
@@ -3790,6 +3819,10 @@ void MainState::Draw()
 
 		string timeString = "Time: " + to_string(g_hour) + ":" + (g_minute < 10 ? "0" : "") + to_string(g_minute) + " (" + to_string(g_scheduleTime) + ")";
 		DrawTextEx(*g_SmallFont, timeString.c_str(), Vector2{ 640.0f - g_minimapSize, g_minimapSize * 1.05f + g_SmallFont->baseSize }, g_SmallFont->baseSize, 1, WHITE);
+
+		string dateString = "Date: " + string(g_dayOfMonth < 10 ? "0" : "") + to_string(g_dayOfMonth)
+			+ "/" + string(g_month < 10 ? "0" : "") + to_string(g_month);
+		DrawTextEx(*g_SmallFont, dateString.c_str(), Vector2{ 640.0f - g_minimapSize, g_minimapSize * 1.05f + 2 * g_SmallFont->baseSize }, g_SmallFont->baseSize, 1, WHITE);
 
 		// Draw character panel below xy/time
 		DrawStats();
