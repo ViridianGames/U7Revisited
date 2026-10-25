@@ -201,10 +201,35 @@ extern unsigned int g_minute;
 extern unsigned int g_scheduleTime;
 extern float g_secsPerMinute;
 
+// Britannian calendar (336-day year, 12×28 days). Day 1 = double new moon.
+extern unsigned int g_dayOfMonth; // 1..28
+extern unsigned int g_month;      // 1..12
+// Official absolute elapsed-day counter for celestial drift (sidereal). Never resets on
+// month/year wrap; ++ once per AdvanceBritannianCalendarDay.
+extern uint64_t g_britannianDayIndex;
+void AdvanceBritannianCalendarDay();
+void AdvanceGameHour(); // ++hour; wraps at 24 and advances calendar day
+// Set g_britannianDayIndex from (month-1)*28+(day-1). New game / legacy save load.
+void SyncBritannianDayIndexFromCalendar();
+
 extern int g_lastScheduleTimeCheck;          // Last schedule time we checked
 
 extern Color g_dayNightColor;
 extern bool g_isDay;
+
+// Shared dusk/dawn lighting windows (game hours, fractional). Sun path uses the same span.
+// Lighting ramps (unchanged by sun phase). Sun geometric set/rise use rate in WeatherSystem.
+constexpr float kDuskStartHour = 20.00f;   // fade starts; sun at golden el
+constexpr float kDuskEndHour = 21.75f;     // night floor (light tail after set)
+constexpr float kDawnStartHour = 5.25f;    // light starts (disc may climb below 0)
+constexpr float kDawnEndHour = 7.00f;      // full day; sun at golden el
+constexpr float kDayNightIsDayThreshold = 0.5f;
+// Sun path tempo lock (same as prior 15°/1.25h). Phase: golden@start → el=0 at start+golden/rate.
+constexpr float kSunTwilightElRateDegPerHour = 12.0f;
+
+float GetSmoothClockHours();
+float GetDayNightAmount();
+Color GetDayNightColorFromAmount(float amount);
 
 // Temporary avatar light from cause_light (In Lor / potions); game minutes remaining.
 // Exult: add_special_light(units) adds units/20 game minutes (In Lor 500 → 25 min).

@@ -1404,9 +1404,11 @@ function set_timer(timer_id, value) end
 ---@return boolean inside True if player is indoors
 function is_pc_inside() end
 
----[Exult 0x0063] Sets orrery state
----@param state integer Orrery state
-function set_orrery(state) end
+---[Exult 0x0063] Sets Moonglow orrery / sky planet configuration (0–9).
+---Usecode passes (state, pos); engine uses state. State = count of unset plot flags in 0481.
+---@param state integer Orrery state 0..9
+---@param pos? integer[] Optional orrery world position (ignored for sky)
+function set_orrery(state, pos) end
 
 ---[Exult 0x005F] Marks virtue stone
 ---@param stone_id integer Stone to mark
