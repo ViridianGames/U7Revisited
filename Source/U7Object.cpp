@@ -1477,7 +1477,11 @@ void U7Object::InteractiveDraw()
 			currentFrame = static_cast<int>(g_hour) % animFrames;
 		}
 		else if (m_animMode == ObjectAnimMode::Auto
-			&& m_objectData->m_isAnimated && animFrames > 1)
+			&& m_objectData->m_isAnimated && animFrames > 1
+			// Flag cloth: flutter is the shared glTF idle, scaled by wind — do not
+			// cycle TFA frames (all frames share one mesh; cycling looked like the
+			// original VGA flutter and ignored Wind Off).
+			&& m_ObjectType != 222 && m_ObjectType != 232 && m_ObjectType != 248)
 		{
 			// TFA "animated" shapes: cycle native SHAPES.VGA frames (no sprite strips).
 			// m_animFrameOffset (set in Init) keeps neighboring instances out of lockstep.

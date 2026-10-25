@@ -56,9 +56,7 @@ namespace
 		}
 	}
 
-	// World XZ for 8-way (0=N … 7=NW). N = -Z.
-	const float kDirWX[8] = { 0,  1, 1, 1, 0, -1, -1, -1 };
-	const float kDirWZ[8] = { -1, -1, 0, 1, 1,  1,  0, -1 };
+	// Continuous wind uses WindUnitWX/WZ: 0° = N (-Z), wx=sin(yaw), wz=-cos(yaw).
 }
 
 void WeatherSystem::Init()
@@ -90,6 +88,10 @@ void WeatherSystem::Init()
 	m_bursts = 0;
 	m_delay = 0;
 	m_direction = 0;
+	// Wind starts Off; picker / storm seed / Lua turn it on.
+	m_windDir = 0;
+	m_windYawDeg = 0;
+	m_windSpeed = WeatherWindSpeed::Off;
 	m_stormFlag = 0;
 	m_hasCamera = false;
 	StopWeatherMusicIfPlaying();
@@ -319,6 +321,185 @@ int WeatherSystem::AvatarFacing8() const
 	return static_cast<int>((deg + 22.5f) / 45.0f) % 8;
 }
 
+float WeatherSystem::WindSpeedScale(WeatherWindSpeed speed) const
+{
+	switch (speed)
+	{
+	case WeatherWindSpeed::Off:    return 0.0f;
+	case WeatherWindSpeed::Light:  return 0.55f;
+	case WeatherWindSpeed::Heavy:  return 1.45f;
+	case WeatherWindSpeed::Medium:
+	default:                       return 1.0f;
+	}
+}
+
+float WeatherSystem::FlagAnimSpeedScale() const
+{
+	// Ambient breeze: Off still flutters at Light rate. Does not affect precip.
+	if (m_windSpeed == WeatherWindSpeed::Off)
+	{
+		return WindSpeedScale(WeatherWindSpeed::Light);
+	}
+	return WindSpeedScale(m_windSpeed);
+}
+
+float WeatherSystem::PrecipWindDriftPixels() const
+{
+	// Steeper than WindSpeedScale so Heavy reads as a clear lean vs Light/Med.
+	switch (m_windSpeed)
+	{
+	case WeatherWindSpeed::Off:    return 0.0f;
+	case WeatherWindSpeed::Light:  return kPrecipWindDriftMedium * 0.75f;
+	case WeatherWindSpeed::Heavy:  return kPrecipWindDriftMedium * 2.25f;
+	case WeatherWindSpeed::Medium:
+	default:                       return kPrecipWindDriftMedium;
+	}
+}
+
+float WeatherSystem::CloudWindWorldSpeed() const
+{
+	return kCloudWorldSpeed * WindSpeedScale(m_windSpeed);
+}
+
+float WeatherSystem::WindUnitWX() const
+{
+	// 0° = N (-Z): wx = sin(yaw), wz = -cos(yaw) — matches kDirWX/WZ octants.
+	return std::sin(m_windYawDeg * DEG2RAD);
+}
+
+float WeatherSystem::WindUnitWZ() const
+{
+	return -std::cos(m_windYawDeg * DEG2RAD);
+}
+
+void WeatherSystem::UpdateWindYaw(float dt)
+{
+	const float target = static_cast<float>((m_windDir % 8 + 8) % 8) * 45.0f;
+	float delta = target - m_windYawDeg;
+	while (delta > 180.0f)
+	{
+		delta -= 360.0f;
+	}
+	while (delta < -180.0f)
+	{
+		delta += 360.0f;
+	}
+	// ~100°/s — a 45° picker step eases in under half a second.
+	constexpr float kTurnDegPerSec = 100.0f;
+	const float step = kTurnDegPerSec * dt;
+	if (std::fabs(delta) <= step)
+	{
+		m_windYawDeg = target;
+	}
+	else
+	{
+		m_windYawDeg += (delta > 0.0f) ? step : -step;
+	}
+	while (m_windYawDeg < 0.0f)
+	{
+		m_windYawDeg += 360.0f;
+	}
+	while (m_windYawDeg >= 360.0f)
+	{
+		m_windYawDeg -= 360.0f;
+	}
+}
+
+bool WeatherSystem::WantsWindEffects() const
+{
+	return m_type == WeatherType::Rain
+		|| m_type == WeatherType::Snow
+		|| m_type == WeatherType::Overcast
+		|| m_type == WeatherType::Cloudy;
+}
+
+void WeatherSystem::SeedWindFromAvatar(WeatherIntensity intensity)
+{
+	m_windDir = (AvatarFacing8() + 3 + GetRandomValue(0, 2)) % 8;
+	m_direction = m_windDir;
+	// Do NOT snap m_windYawDeg — UpdateWindYaw lerps so flags, precip drift,
+	// and edge clouds (WindUnitWX/WZ) ease into the new storm direction.
+	// Map precip L/M/H (0–2) → wind Light/Medium/Heavy (1–3); never leave Off in a storm.
+	m_windSpeed = static_cast<WeatherWindSpeed>(static_cast<int>(intensity) + 1);
+}
+
+void WeatherSystem::SetWeatherWind(int dir, int speed)
+{
+	m_windDir = ((dir % 8) + 8) % 8;
+	m_direction = m_windDir;
+	// m_windYawDeg lerps toward the new target in UpdateWindYaw — no snap.
+	if (speed >= 0 && speed <= 3)
+	{
+		m_windSpeed = static_cast<WeatherWindSpeed>(speed);
+	}
+	RetargetEdgeCloudVelocities();
+}
+
+void WeatherSystem::RetargetEdgeCloudVelocities()
+{
+	// Rebuild speed magnitude only. Heading stays with UpdateEdgeClouds, which
+	// re-aims along the lerped m_windYawDeg every frame (no direction snap).
+	for (EdgeCloud& c : m_edgeClouds)
+	{
+		if (!c.active)
+		{
+			continue;
+		}
+		const float use = CloudWindWorldSpeed()
+			+ static_cast<float>(GetRandomValue(0, 30)) / 10.0f;
+		const float mag = std::sqrt(c.vx * c.vx + c.vz * c.vz);
+		if (mag < 0.01f)
+		{
+			c.vx = WindUnitWX() * use;
+			c.vz = WindUnitWZ() * use;
+		}
+		else
+		{
+			c.vx = (c.vx / mag) * use;
+			c.vz = (c.vz / mag) * use;
+		}
+	}
+}
+
+void WeatherSystem::UpdateFlagCloth(float dt)
+{
+	(void)dt;
+	// Ambient breeze: flags follow wind outdoors even in Clear when speed != Off.
+	// Precip/shadows stay gated by WantsWindEffects() elsewhere.
+	if (IsAvatarSheltered() || !IsWindActive())
+	{
+		return;
+	}
+
+	// Cloth glTF extends along local +X. DrawModelEx Y-rot maps +X → (cos θ, 0, -sin θ).
+	// Wind travel is (sin φ, 0, -cos φ) with φ = m_windYawDeg, so θ = 90° − φ aligns
+	// the fabric with the same direction clouds/precip use (WindUnitWX/WZ).
+	float angle = 90.0f - m_windYawDeg;
+	while (angle < 0.0f)
+	{
+		angle += 360.0f;
+	}
+	while (angle >= 360.0f)
+	{
+		angle -= 360.0f;
+	}
+
+	for (U7Object* obj : g_sortedVisibleObjects)
+	{
+		if (!obj || !obj->m_shapeData || !obj->m_Visible || obj->m_isContained)
+		{
+			continue;
+		}
+		const int shape = obj->m_shapeData->GetShape();
+		// Flag cloth only — mast (713) stays put.
+		if (shape != 222 && shape != 232 && shape != 248)
+		{
+			continue;
+		}
+		obj->m_Angle = angle;
+	}
+}
+
 void WeatherSystem::ConfigureEffectParams(WeatherType type, WeatherIntensity intensity)
 {
 	m_maxCount = ResolveMaxCount(type, intensity);
@@ -402,7 +583,10 @@ void WeatherSystem::ApplyType(WeatherType type, int durationMinutes, bool fromEg
 	m_targetCount = SpawnsPrecipParticles() ? (isStorm ? 1 : m_maxCount) : 0;
 	m_bursts = 0;
 	m_delay = (m_stormFlag * 25) / 2;
-	m_direction = (AvatarFacing8() + 3 + GetRandomValue(0, 2)) % 8;
+	if (isStorm)
+	{
+		SeedWindFromAvatar(intensity);
+	}
 	m_phase = m_stormFlag ? WeatherPhase::Burst : WeatherPhase::Ramping;
 
 	if (type == WeatherType::Fog)
@@ -746,15 +930,17 @@ void WeatherSystem::TrySpawnEdgeBurst(Camera camera)
 		return;
 	}
 
-	const float speed = kCloudWorldSpeed + static_cast<float>(GetRandomValue(0, 30)) / 10.0f;
-	const float vx = kDirWX[m_direction % 8] * speed;
-	const float vz = kDirWZ[m_direction % 8] * speed;
+	const float speed = CloudWindWorldSpeed() + static_cast<float>(GetRandomValue(0, 30)) / 10.0f;
+	const float wx = WindUnitWX();
+	const float wz = WindUnitWZ();
+	const float vx = wx * speed;
+	const float vz = wz * speed;
 
 	const Vector3 center = camera.target;
 	const float spawnDist = 28.0f + static_cast<float>(GetRandomValue(0, 12));
 	// Incoming side = opposite travel direction.
-	const float inX = center.x - kDirWX[m_direction % 8] * spawnDist;
-	const float inZ = center.z - kDirWZ[m_direction % 8] * spawnDist;
+	const float inX = center.x - wx * spawnDist;
+	const float inZ = center.z - wz * spawnDist;
 	// Sit near ground — these are cloud *shadows* on the terrain, not sky billboards.
 	const float baseY = 0.12f;
 
@@ -807,12 +993,22 @@ void WeatherSystem::TrySpawnEdgeBurst(Camera camera)
 void WeatherSystem::UpdateEdgeClouds(float dt, Camera camera)
 {
 	const Vector3 center = camera.target;
+	const float wx = WindUnitWX();
+	const float wz = WindUnitWZ();
 	for (EdgeCloud& c : m_edgeClouds)
 	{
 		if (!c.active)
 		{
 			continue;
 		}
+		// Re-aim along continuous wind yaw; keep each cloud's speed magnitude.
+		float mag = std::sqrt(c.vx * c.vx + c.vz * c.vz);
+		if (mag < 0.1f)
+		{
+			mag = CloudWindWorldSpeed();
+		}
+		c.vx = wx * mag;
+		c.vz = wz * mag;
 		c.worldX += c.vx * dt;
 		c.worldZ += c.vz * dt;
 		c.life -= dt;
@@ -961,6 +1157,60 @@ void WeatherSystem::UpdateParticles(float dt)
 
 		const float fallMul = IsFadingOut() ? kPrecipFadeOutFallMul : 1.0f;
 		p.y += m_fallSpeed * fallMul * dt;
+		// Screen-space wind drift: project world wind through the camera so streaks
+		// travel the same way edge-cloud shadows move on screen (and match flags).
+		if (WantsWindEffects() && m_fallSpeed > 0.0f)
+		{
+			const float drift = PrecipWindDriftPixels() * dt;
+			float dx = 0.0f;
+			float dy = 0.0f;
+			if (m_hasCamera)
+			{
+				const Vector3 origin = m_lastCamera.target;
+				const Vector3 tip = {
+					origin.x + WindUnitWX(),
+					origin.y,
+					origin.z + WindUnitWZ()
+				};
+				const Vector2 s0 = GetWorldToScreen(origin, m_lastCamera);
+				const Vector2 s1 = GetWorldToScreen(tip, m_lastCamera);
+				dx = s1.x - s0.x;
+				dy = s1.y - s0.y;
+				extern float g_DrawScale;
+				if (g_DrawScale > 0.0f)
+				{
+					dx /= g_DrawScale;
+					dy /= g_DrawScale;
+				}
+				const float len = std::sqrt(dx * dx + dy * dy);
+				if (len > 0.01f)
+				{
+					dx /= len;
+					dy /= len;
+				}
+				else
+				{
+					dx = 1.0f;
+					dy = 0.0f;
+				}
+			}
+			else
+			{
+				// No camera yet — crude fallback (same basis as before).
+				dx = -(WindUnitWX() * 0.75f - WindUnitWZ() * 0.35f);
+				dy = 0.0f;
+			}
+			p.x += dx * drift;
+			p.y += dy * drift;
+			if (p.x < -40.0f)
+			{
+				p.x += 700.0f;
+			}
+			else if (p.x > 660.0f)
+			{
+				p.x -= 700.0f;
+			}
+		}
 		if (m_frameCount > 0)
 		{
 			p.frame = (p.frame + 1) % m_frameCount;
@@ -1052,7 +1302,9 @@ void WeatherSystem::UpdateBlendFades(float dt)
 
 void WeatherSystem::Update(float dt)
 {
+	UpdateWindYaw(dt);
 	UpdateBlendFades(dt);
+	UpdateFlagCloth(dt);
 
 	if (!EffectsEnabled())
 	{
@@ -1258,6 +1510,10 @@ void WeatherSystem::Draw(Camera camera)
 
 	const bool sheltered = IsAvatarSheltered();
 
+	// Ground cloud shadows first; precip/sparkle overlays draw on top so drops
+	// are not buried under the blot.
+	DrawEdgeClouds(camera);
+
 	if ((drawPrecip || drawSparkle) && !sheltered)
 	{
 		const auto& frames = g_spriteTable[kPrecipSpriteShape];
@@ -1327,8 +1583,6 @@ void WeatherSystem::Draw(Camera camera)
 			DrawTexturePro(frame.texture, source, dest, { 0, 0 }, 0.0f, tint);
 		}
 	}
-
-	DrawEdgeClouds(camera);
 
 	if (!sheltered && m_overcastFade > 0.01f && g_isDay)
 	{
@@ -1405,6 +1659,10 @@ nlohmann::json WeatherSystem::SaveToJson() const
 	j["bursts"] = m_bursts;
 	j["delay"] = m_delay;
 	j["direction"] = m_direction;
+	j["windDir"] = m_windDir;
+	j["windYawDeg"] = m_windYawDeg;
+	j["windSpeed"] = static_cast<int>(m_windSpeed);
+	j["windSpeedHasOff"] = true;
 	j["fogFade"] = m_fogFade;
 	j["overcastFade"] = m_overcastFade;
 	return j;
@@ -1455,6 +1713,34 @@ void WeatherSystem::LoadFromJson(const nlohmann::json& j)
 	m_bursts = j.value("bursts", 0);
 	m_delay = j.value("delay", 0);
 	m_direction = j.value("direction", 0);
+	m_windDir = j.value("windDir", m_direction);
+	m_windDir = ((m_windDir % 8) + 8) % 8;
+	m_direction = m_windDir;
+	m_windYawDeg = j.value("windYawDeg", static_cast<float>(m_windDir) * 45.0f);
+	while (m_windYawDeg < 0.0f)
+	{
+		m_windYawDeg += 360.0f;
+	}
+	while (m_windYawDeg >= 360.0f)
+	{
+		m_windYawDeg -= 360.0f;
+	}
+	// New: 0=Off … 3=Heavy. Legacy saves used 0–2 as L/M/H (no Off) → +1.
+	if (j.contains("windSpeed"))
+	{
+		int windSpeed = j["windSpeed"].get<int>();
+		if (j.value("windSpeedHasOff", false))
+		{
+			if (windSpeed >= 0 && windSpeed <= 3)
+			{
+				m_windSpeed = static_cast<WeatherWindSpeed>(windSpeed);
+			}
+		}
+		else if (windSpeed >= 0 && windSpeed <= 2)
+		{
+			m_windSpeed = static_cast<WeatherWindSpeed>(windSpeed + 1);
+		}
+	}
 	m_fogFade = j.value("fogFade", 0.0f);
 	m_overcastFade = j.value("overcastFade", 0.0f);
 	if (m_fogFade > 0.01f)

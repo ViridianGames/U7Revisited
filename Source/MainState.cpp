@@ -402,6 +402,13 @@ void MainState::Init(const string& configfile)
 				if (se && se->m_Type == GUI_SCROLLBAR)
 					static_cast<GuiScrollBar*>(se.get())->m_Value = 1; // Medium
 			}
+			const int windSliderId = m_weatherDebugWindow->GetElementID("SLIDER_WIND_SPEED");
+			if (windSliderId != -1)
+			{
+				auto se = gui->GetElement(windSliderId);
+				if (se && se->m_Type == GUI_SCROLLBAR)
+					static_cast<GuiScrollBar*>(se.get())->m_Value = 0; // Off
+			}
 		}
 		PositionWeatherDebugWindow();
 		m_weatherDebugWindow->Hide();
@@ -4651,6 +4658,16 @@ void MainState::HandleWeatherButton()
 						std::clamp(m_weatherIntensitySliderValue, 0, 2);
 				}
 			}
+			const int windSliderId = m_weatherDebugWindow->GetElementID("SLIDER_WIND_SPEED");
+			if (windSliderId != -1 && g_WeatherSystem)
+			{
+				auto se = gui->GetElement(windSliderId);
+				if (se && se->m_Type == GUI_SCROLLBAR)
+				{
+					static_cast<GuiScrollBar*>(se.get())->m_Value =
+						std::clamp(static_cast<int>(g_WeatherSystem->GetWindSpeed()), 0, 3);
+				}
+			}
 		}
 		AddConsoleString("Weather picker ON", SKYBLUE);
 	}
@@ -4894,6 +4911,114 @@ void MainState::UpdateWeatherDebugWindow()
 		slider->m_SpurColor = intensityActive
 			? Color{ 128, 160, 255, 255 }
 			: Color{ 80, 80, 100, 255 };
+	}
+
+	// Wind: 8-way direction + L/M/H speed. Text only (babyblocks has no arrow glyphs).
+	static const char* kWindDirNames[] = { "N", "NE", "E", "SE", "S", "SW", "W", "NW" };
+
+	auto windSpeedAbbrev = [](int speed) -> const char* {
+		switch (speed)
+		{
+		case 0: return "Off";
+		case 1: return "L";
+		case 3: return "H";
+		default: return "M";
+		}
+	};
+
+	auto windSpeedName = [](int speed) -> const char* {
+		switch (speed)
+		{
+		case 0: return "Off";
+		case 1: return "Light";
+		case 3: return "Heavy";
+		default: return "Medium";
+		}
+	};
+
+	// Direction cycle buttons ("< Dir" / "Dir >" — match label sense on compass).
+	const int ccwId = m_weatherDebugWindow->GetElementID("BTN_WIND_CCW");
+	if (ccwId != -1)
+	{
+		auto elem = gui->GetElement(ccwId);
+		if (elem && elem->m_Type == GUI_TEXTBUTTON && elem->m_Clicked)
+		{
+			const int dir = (g_WeatherSystem->GetWindDir() + 1) % 8;
+			g_WeatherSystem->SetWeatherWind(dir, -1);
+		}
+	}
+	const int cwId = m_weatherDebugWindow->GetElementID("BTN_WIND_CW");
+	if (cwId != -1)
+	{
+		auto elem = gui->GetElement(cwId);
+		if (elem && elem->m_Type == GUI_TEXTBUTTON && elem->m_Clicked)
+		{
+			const int dir = (g_WeatherSystem->GetWindDir() + 7) % 8;
+			g_WeatherSystem->SetWeatherWind(dir, -1);
+		}
+	}
+
+	const int windSliderId = m_weatherDebugWindow->GetElementID("SLIDER_WIND_SPEED");
+	GuiScrollBar* windSlider = nullptr;
+	if (windSliderId != -1)
+	{
+		auto se = gui->GetElement(windSliderId);
+		if (se && se->m_Type == GUI_SCROLLBAR)
+			windSlider = static_cast<GuiScrollBar*>(se.get());
+	}
+
+	const int curWindSpeed = static_cast<int>(g_WeatherSystem->GetWindSpeed());
+	if (windSlider)
+	{
+		if (windSlider->m_Value < 0 || windSlider->m_Value > 3)
+			windSlider->m_Value = curWindSpeed;
+
+		const int sliderVal = std::clamp(windSlider->m_Value, 0, 3);
+		if (sliderVal != curWindSpeed)
+		{
+			g_WeatherSystem->SetWeatherWind(g_WeatherSystem->GetWindDir(), sliderVal);
+		}
+		else if (windSlider->m_Value != curWindSpeed)
+		{
+			windSlider->m_Value = curWindSpeed;
+		}
+	}
+
+	const int windDir = ((g_WeatherSystem->GetWindDir() % 8) + 8) % 8;
+	const int windSpeed = static_cast<int>(g_WeatherSystem->GetWindSpeed());
+
+	const int markerId = m_weatherDebugWindow->GetElementID("TXT_WIND_MARKER");
+	if (markerId != -1)
+	{
+		auto elem = gui->GetElement(markerId);
+		if (elem && elem->m_Type == GUI_TEXTAREA)
+		{
+			auto* area = static_cast<GuiTextArea*>(elem.get());
+			area->m_String = std::string(kWindDirNames[windDir]) + "  "
+				+ windSpeedAbbrev(windSpeed);
+		}
+	}
+
+	const int windSpeedLabelId = m_weatherDebugWindow->GetElementID("TXT_WIND_SPEED");
+	if (windSpeedLabelId != -1)
+	{
+		auto elem = gui->GetElement(windSpeedLabelId);
+		if (elem && elem->m_Type == GUI_TEXTAREA)
+		{
+			auto* area = static_cast<GuiTextArea*>(elem.get());
+			area->m_String = std::string("Wind ") + windSpeedName(windSpeed);
+		}
+	}
+
+	// Append wind to status line so type + wind are visible together.
+	if (statusId != -1)
+	{
+		auto elem = gui->GetElement(statusId);
+		if (elem && elem->m_Type == GUI_TEXTAREA)
+		{
+			auto* area = static_cast<GuiTextArea*>(elem.get());
+			area->m_String += std::string(" | ") + kWindDirNames[windDir];
+		}
 	}
 }
 

@@ -111,6 +111,7 @@ RaylibModel& RaylibModel::operator=(RaylibModel&& other)
 		m_Anims = other.m_Anims;
 		m_AnimCount = other.m_AnimCount;
 		m_CanApplySkeletalAnim = other.m_CanApplySkeletalAnim;
+		m_DecenterOffset = other.m_DecenterOffset;
 		m_AnimFrame = other.m_AnimFrame;
 		m_CurrentAnim = std::move(other.m_CurrentAnim);
 
@@ -118,6 +119,7 @@ RaylibModel& RaylibModel::operator=(RaylibModel&& other)
 		other.m_Anims = nullptr;
 		other.m_AnimCount = 0;
 		other.m_CanApplySkeletalAnim = false;
+		other.m_DecenterOffset = { 0, 0, 0 };
 		other.m_AnimFrame = 0;
 		other.m_CurrentAnim.clear();
 		other.m_Filename.clear();
@@ -134,6 +136,11 @@ RaylibModel& RaylibModel::Decenter()
 			(bounds.min.y + bounds.max.y) / 2.0f,
 			(bounds.min.z + bounds.max.z) / 2.0f
 	};
+
+	// Remember the XZ shift so callers (flag hinge yaw) can express points in
+	// post-Decenter local space — DrawModelEx rotates about local origin, which
+	// is the AABB center after this transform.
+	m_DecenterOffset = Vector3{ center.x, 0.0f, center.z };
 
 	Matrix translation = MatrixTranslate(-center.x, 0, -center.z);
 	m_Model.transform = MatrixMultiply(m_Model.transform, translation);
@@ -181,15 +188,20 @@ RaylibModel& RaylibModel::UpdateFlatUV(float uvXmin, float uvXmax, float uvYmin,
 	return *this;
 }
 
-void RaylibModel::UpdateAnim(const std::string& animName) {
+void RaylibModel::UpdateAnim(const std::string& animName, float speedMul) {
 	// Unskinned models (or models whose anims were dropped at load) are a no-op.
 	if (!m_CanApplySkeletalAnim || !m_Anims || m_AnimCount <= 0) {
 		return;
 	}
 
+	// Wind Off / freeze: always snap to frame 0 (do not rely on GetTime()*0).
+	if (speedMul <= 0.0f) {
+		SetAnimationFrame(animName, 0);
+		return;
+	}
+
 	int animIdx = -1;
 	unsigned int currentFrame = 0;
-	double timePerFrame = 1.0 / 24.0;
 
 	// Look for the named animation in this model.
 	for (int i = 0; i < m_AnimCount; ++i) {
@@ -199,9 +211,9 @@ void RaylibModel::UpdateAnim(const std::string& animName) {
 
 		if (animName == m_Anims[i].name) {
 			animIdx = i;
-			// Standard movie animation, 24 frames per second.
-			currentFrame = static_cast<unsigned int>(GetTime() / timePerFrame) % m_Anims[i].frameCount;
-			//currentFrame = static_cast<unsigned int>(GetTime() * 24.0f) % m_Anims[i].frameCount;
+			// Base 24 fps, scaled by speedMul (flag wind, etc.).
+			currentFrame = static_cast<unsigned int>(GetTime() * 24.0 * static_cast<double>(speedMul))
+				% static_cast<unsigned int>(m_Anims[i].frameCount);
 			break;
 		}
 	}

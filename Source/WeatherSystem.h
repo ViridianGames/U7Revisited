@@ -41,6 +41,15 @@ enum class WeatherIntensity : uint8_t
 	Heavy = 2
 };
 
+// Wind strength — separate from precip density (WeatherIntensity).
+enum class WeatherWindSpeed : uint8_t
+{
+	Off = 0,
+	Light = 1,
+	Medium = 2,
+	Heavy = 3
+};
+
 struct WeatherMusicProfile
 {
 	int musicRainTrack = 4;
@@ -65,9 +74,12 @@ public:
 	static constexpr float kFogFadeSeconds = 3.5f;
 	static constexpr float kFogIntensityBlendSeconds = 1.25f;
 	static constexpr float kOvercastFadeSeconds = 1.5f;
-	static constexpr float kCloudWorldSpeed = 4.0f; // world units / sec base
+	static constexpr float kCloudWorldSpeed = 4.0f; // world units / sec at Medium wind
 	static constexpr float kEdgeCloudFadeOutLife = 1.6f; // clamp when Stopping
 	static constexpr float kPrecipFadeOutFallMul = 2.75f; // faster fall while Stopping/Finishing
+	// Screen-space precip drift (pixels/sec) at Medium wind. Light/Heavy use
+	// steeper multipliers in PrecipWindDriftPixels (stronger lean in Heavy).
+	static constexpr float kPrecipWindDriftMedium = 95.0f;
 
 	void Init();
 	void Shutdown();
@@ -91,6 +103,17 @@ public:
 	int GetRemainingMinutes() const { return m_remainingMinutes; }
 	bool HasPendingWeather() const { return m_pending.active; }
 	WeatherType GetPendingWeatherType() const { return m_pending.type; }
+
+	// Global wind: 0=N … 7=NW; speed 0=Off … 3=Heavy (not precip intensity).
+	int GetWindDir() const { return m_windDir; }
+	WeatherWindSpeed GetWindSpeed() const { return m_windSpeed; }
+	void SetWeatherWind(int dir, int speed = -1); // speed -1 keeps current; 0–3 Off…Heavy
+	// 0 Off / ~0.55 Light / 1 Med / ~1.45 Heavy — precip/clouds only (Off = 0).
+	float WindSpeedScale(WeatherWindSpeed speed) const;
+	// Flag cloth idle (shapes 222/232/248 only): Off uses ambient Light rate so
+	// cloth keeps fluttering; L/M/H match WindSpeedScale.
+	float FlagAnimSpeedScale() const;
+	bool IsWindActive() const { return m_windSpeed != WeatherWindSpeed::Off; }
 
 	const WeatherMusicProfile& GetMusicProfile() const { return m_music; }
 	void SetMusicProfile(const WeatherMusicProfile& profile) { m_music = profile; }
@@ -170,6 +193,15 @@ private:
 	void StopWeatherMusicIfPlaying();
 	int ResolveMaxCount(WeatherType type, WeatherIntensity intensity) const;
 	float ResolveFallSpeed(WeatherType type, WeatherIntensity intensity) const;
+	float PrecipWindDriftPixels() const;
+	float CloudWindWorldSpeed() const;
+	float WindUnitWX() const; // continuous yaw → world X (-1..1); N=0
+	float WindUnitWZ() const; // continuous yaw → world Z; N=-1
+	void UpdateWindYaw(float dt); // lerp m_windYawDeg toward m_windDir * 45
+	void SeedWindFromAvatar(WeatherIntensity intensity);
+	void RetargetEdgeCloudVelocities();
+	void UpdateFlagCloth(float dt);
+	bool WantsWindEffects() const;
 	int AvatarFacing8() const;
 	bool TypeWantsOvercast(WeatherType type) const;
 	bool IsFadingOut() const;
@@ -190,7 +222,10 @@ private:
 	int m_targetCount = 0;
 	int m_bursts = 0;
 	int m_delay = 0;
-	int m_direction = 0;
+	int m_direction = 0; // kept in sync with m_windDir for save compat / storm phases
+	int m_windDir = 0;   // 0=N … 7=NW — discrete target (picker / Lua / seed)
+	float m_windYawDeg = 0; // continuous degrees; lerps toward m_windDir * 45 (drives visuals)
+	WeatherWindSpeed m_windSpeed = WeatherWindSpeed::Off;
 	int m_stormFlag = 0;
 	float m_weatherTickAccum = 0;
 	float m_fogFade = 0;

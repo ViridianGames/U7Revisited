@@ -4,7 +4,7 @@
       {
         "type": "panel",
         "position": [0, 0],
-        "size": [200, 340],
+        "size": [200, 470],
         "backgroundColor": [50, 50, 55, 230],
         "filled": true,
         "layout": "vert",
@@ -88,6 +88,48 @@
             "valueRange": 2,
             "vertical": false,
             "spurColor": [128, 160, 255, 255],
+            "backgroundColor": [30, 30, 35, 255]
+          },
+          {
+            "name": "TXT_WIND_MARKER",
+            "type": "textarea",
+            "position": [-1, -1],
+            "size": [184, 26],
+            "text": "N  Off",
+            "textColor": [180, 220, 255, 255],
+            "justified": 1
+          },
+          {
+            "name": "BTN_WIND_CCW",
+            "type": "textbutton",
+            "position": [-1, -1],
+            "size": [184, 28],
+            "text": "< Dir"
+          },
+          {
+            "name": "BTN_WIND_CW",
+            "type": "textbutton",
+            "position": [-1, -1],
+            "size": [184, 28],
+            "text": "Dir >"
+          },
+          {
+            "name": "TXT_WIND_SPEED",
+            "type": "textarea",
+            "position": [-1, -1],
+            "size": [184, 22],
+            "text": "Wind Off",
+            "textColor": [200, 200, 220, 255],
+            "justified": 1
+          },
+          {
+            "name": "SLIDER_WIND_SPEED",
+            "type": "scrollbar",
+            "position": [-1, -1],
+            "size": [184, 18],
+            "valueRange": 3,
+            "vertical": false,
+            "spurColor": [160, 200, 255, 255],
             "backgroundColor": [30, 30, 35, 255]
           }
         ]

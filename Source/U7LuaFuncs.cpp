@@ -5174,6 +5174,30 @@ static int LuaSetWeather(lua_State *L)
     return 0;
 }
 
+// get_weather_wind — returns dir (0=N … 7=NW), speed (0 Off / 1 Light / 2 Medium / 3 Heavy).
+static int LuaGetWeatherWind(lua_State *L)
+{
+    const int dir = g_WeatherSystem ? g_WeatherSystem->GetWindDir() : 0;
+    const int speed = g_WeatherSystem
+        ? static_cast<int>(g_WeatherSystem->GetWindSpeed())
+        : 0;
+    lua_pushinteger(L, dir);
+    lua_pushinteger(L, speed);
+    return 2;
+}
+
+// set_weather_wind(dir [, speed]) — dir 0–7; speed omit/-1 keeps current (0–3 Off…Heavy).
+static int LuaSetWeatherWind(lua_State *L)
+{
+    const int dir = (int)lua_tointeger(L, 1);
+    const int speed = (int)luaL_optinteger(L, 2, -1);
+    if (g_WeatherSystem)
+    {
+        g_WeatherSystem->SetWeatherWind(dir, speed);
+    }
+    return 0;
+}
+
 // 0x0090 | is_water
 static int LuaIsWater(lua_State *L)
 {
@@ -6895,6 +6919,8 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction( "get_weather", LuaGetWeather);
     g_ScriptingSystem->RegisterScriptFunction( "get_weather_intensity", LuaGetWeatherIntensity);
     g_ScriptingSystem->RegisterScriptFunction( "set_weather", LuaSetWeather);
+    g_ScriptingSystem->RegisterScriptFunction( "get_weather_wind", LuaGetWeatherWind);
+    g_ScriptingSystem->RegisterScriptFunction( "set_weather_wind", LuaSetWeatherWind);
     g_ScriptingSystem->RegisterScriptFunction( "is_water", LuaIsWater);
     g_ScriptingSystem->RegisterScriptFunction( "play_sound_effect", LuaPlaySoundEffect);
     g_ScriptingSystem->RegisterScriptFunction( "play_instrument", LuaPlayInstrument);

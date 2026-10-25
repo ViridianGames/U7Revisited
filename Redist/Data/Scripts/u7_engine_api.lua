@@ -1192,6 +1192,16 @@ function set_weather(weather, duration_minutes, intensity) end
 ---@return integer intensity 0 Light, 1 Medium, 2 Heavy
 function get_weather_intensity() end
 
+---Gets global weather wind
+---@return integer dir 0=N … 7=NW
+---@return integer speed 0 Off, 1 Light, 2 Medium, 3 Heavy (separate from precip density)
+function get_weather_wind() end
+
+---Sets global weather wind (drives cloud shadows, precip drift, flag cloth)
+---@param dir integer 0=N … 7=NW
+---@param speed integer|nil 0 Off, 1 Light, 2 Medium, 3 Heavy; omit keeps current
+function set_weather_wind(dir, speed) end
+
 ---[Exult 0x0090] Checks if location is water
 ---@param x integer X coordinate
 ---@param y integer Y coordinate
