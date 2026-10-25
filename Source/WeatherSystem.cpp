@@ -6,6 +6,8 @@
 #include "Geist/SoundSystem.h"
 #include "Geist/Engine.h"
 #include "Geist/Config.h"
+#include "rlgl.h"
+#include "raymath.h"
 #include <algorithm>
 #include <cmath>
 
@@ -45,6 +47,28 @@ namespace
 		}
 	}
 
+	Color LerpSkyColor(Color a, Color b, float t)
+	{
+		t = std::clamp(t, 0.0f, 1.0f);
+		return Color{
+			static_cast<unsigned char>(a.r + (b.r - a.r) * t),
+			static_cast<unsigned char>(a.g + (b.g - a.g) * t),
+			static_cast<unsigned char>(a.b + (b.b - a.b) * t),
+			static_cast<unsigned char>(a.a + (b.a - a.a) * t)
+		};
+	}
+
+	Color ScaleSkyColor(Color c, float mul)
+	{
+		mul = std::clamp(mul, 0.0f, 1.5f);
+		return Color{
+			static_cast<unsigned char>(std::clamp(static_cast<int>(c.r * mul), 0, 255)),
+			static_cast<unsigned char>(std::clamp(static_cast<int>(c.g * mul), 0, 255)),
+			static_cast<unsigned char>(std::clamp(static_cast<int>(c.b * mul), 0, 255)),
+			c.a
+		};
+	}
+
 	float OvercastVeilScale(WeatherIntensity intensity)
 	{
 		switch (intensity)
@@ -74,9 +98,12 @@ void WeatherSystem::Init()
 	m_music.musicSnowTrack = 5;
 	m_particles.assign(kMaxParticles, Particle{});
 	m_edgeClouds.assign(kMaxEdgeClouds, EdgeCloud{});
+	m_skyClouds.assign(kMaxSkyClouds, SkyCloud{});
 	ClearParticles();
 	ClearEdgeClouds();
+	ClearSkyClouds();
 	m_spawnAccumulator = 0;
+	m_skySpawnAccumulator = 0;
 	m_flashTimer = 0;
 	m_flashCooldown = 0;
 	m_weatherTickAccum = 0;
@@ -358,7 +385,22 @@ float WeatherSystem::PrecipWindDriftPixels() const
 
 float WeatherSystem::CloudWindWorldSpeed() const
 {
+	// Low-band / ground shadows: Off still drifts slowly (plan).
+	if (m_windSpeed == WeatherWindSpeed::Off)
+	{
+		return kCloudWorldSpeed * 0.28f;
+	}
 	return kCloudWorldSpeed * WindSpeedScale(m_windSpeed);
+}
+
+float WeatherSystem::SkyCloudWindWorldSpeed() const
+{
+	// High-band: Off = stationary; otherwise faster than low band.
+	if (m_windSpeed == WeatherWindSpeed::Off)
+	{
+		return 0.0f;
+	}
+	return CloudWindWorldSpeed() * kSkyCloudSpeedMul;
 }
 
 float WeatherSystem::WindUnitWX() const
@@ -433,6 +475,7 @@ void WeatherSystem::SetWeatherWind(int dir, int speed)
 		m_windSpeed = static_cast<WeatherWindSpeed>(speed);
 	}
 	RetargetEdgeCloudVelocities();
+	RetargetSkyCloudVelocities();
 }
 
 void WeatherSystem::RetargetEdgeCloudVelocities()
@@ -642,9 +685,11 @@ void WeatherSystem::ClearWeather(bool gradual)
 
 	// Rain/Snow/Overcast/Cloudy: stop new spawns, let precip finish falling (sped up),
 	// and let edge clouds expire quickly — never snap-clear clouds.
+	// Sky fluff shortens too; Clear ambient may respawn light fluff after FinishClear.
 	m_delay = 0;
 	m_targetCount = 0;
 	ShortenEdgeCloudLives(kEdgeCloudFadeOutLife);
+	ShortenSkyCloudLives(kEdgeCloudFadeOutLife);
 	m_phase = WeatherPhase::Stopping;
 	m_remainingMinutes = 0;
 }
@@ -680,6 +725,7 @@ void WeatherSystem::FinishClear()
 	ConfigureEffectParams(WeatherType::Clear, WeatherIntensity::Medium);
 	ClearParticles();
 	ClearEdgeClouds();
+	// Keep high-band sky fluff into Clear; ambient spawn maintains a light layer.
 	m_flashTimer = 0;
 
 	// Keep fog/overcast blends decaying via UpdateBlendFades; then start pending.
@@ -702,6 +748,14 @@ void WeatherSystem::ClearEdgeClouds()
 	}
 }
 
+void WeatherSystem::ClearSkyClouds()
+{
+	for (SkyCloud& c : m_skyClouds)
+	{
+		c = SkyCloud{};
+	}
+}
+
 void WeatherSystem::ShortenEdgeCloudLives(float maxLifeSeconds)
 {
 	for (EdgeCloud& c : m_edgeClouds)
@@ -710,6 +764,38 @@ void WeatherSystem::ShortenEdgeCloudLives(float maxLifeSeconds)
 		{
 			c.life = maxLifeSeconds;
 		}
+	}
+}
+
+void WeatherSystem::ShortenSkyCloudLives(float maxLifeSeconds)
+{
+	for (SkyCloud& c : m_skyClouds)
+	{
+		if (c.active && c.life > maxLifeSeconds)
+		{
+			c.life = maxLifeSeconds;
+		}
+	}
+}
+
+void WeatherSystem::RetargetSkyCloudVelocities()
+{
+	const float use = SkyCloudWindWorldSpeed();
+	for (SkyCloud& c : m_skyClouds)
+	{
+		if (!c.active)
+		{
+			continue;
+		}
+		if (use < 0.01f)
+		{
+			c.vx = 0.0f;
+			c.vz = 0.0f;
+			continue;
+		}
+		const float jitter = static_cast<float>(GetRandomValue(0, 20)) / 10.0f;
+		c.vx = WindUnitWX() * (use + jitter);
+		c.vz = WindUnitWZ() * (use + jitter);
 	}
 }
 
@@ -799,6 +885,27 @@ bool WeatherSystem::WantsCloudSprites() const
 		|| CountActiveEdgeClouds() > 0;
 }
 
+bool WeatherSystem::WantsOpenSky() const
+{
+	return EffectsEnabled() && !IsAvatarSheltered();
+}
+
+bool WeatherSystem::WantsSkyFluff() const
+{
+	if (!WantsOpenSky())
+	{
+		return false;
+	}
+	// Clear gets light high fluff (no ground shadows). Storm types denser.
+	return m_type == WeatherType::Clear
+		|| m_type == WeatherType::Overcast
+		|| m_type == WeatherType::Cloudy
+		|| m_type == WeatherType::Rain
+		|| m_type == WeatherType::Snow
+		|| m_type == WeatherType::Fog
+		|| CountActiveSkyClouds() > 0;
+}
+
 bool WeatherSystem::ShouldDrawPrecipitation() const
 {
 	if (!EffectsEnabled() || IsAvatarSheltered())
@@ -836,9 +943,23 @@ int WeatherSystem::CountActiveEdgeClouds() const
 	return n;
 }
 
+int WeatherSystem::CountActiveSkyClouds() const
+{
+	int n = 0;
+	for (const SkyCloud& c : m_skyClouds)
+	{
+		if (c.active)
+		{
+			++n;
+		}
+	}
+	return n;
+}
+
 bool WeatherSystem::VisualEffectsCleared() const
 {
 	// Blend fades (fog/overcast) may still drain — pending weather is allowed to crossfade.
+	// Sky fluff is allowed to persist into Clear and does not block pending handoff.
 	return CountActiveParticles() == 0
 		&& CountActiveEdgeClouds() == 0;
 }
@@ -1022,6 +1143,129 @@ void WeatherSystem::UpdateEdgeClouds(float dt, Camera camera)
 	}
 }
 
+void WeatherSystem::TrySpawnSkyCloud(Camera camera, bool clearAmbient)
+{
+	if (!WantsSkyFluff() || IsFadingOut())
+	{
+		return;
+	}
+	if (clearAmbient && m_type != WeatherType::Clear)
+	{
+		return;
+	}
+	if (!clearAmbient && m_type == WeatherType::Clear)
+	{
+		return;
+	}
+
+	const auto& clouds = g_spriteTable[kCloudSpriteShape];
+	if (clouds.empty())
+	{
+		return;
+	}
+
+	const int active = CountActiveSkyClouds();
+	const int softCap = clearAmbient ? 4 : kMaxSkyClouds;
+	if (active >= softCap)
+	{
+		return;
+	}
+
+	int slot = -1;
+	for (int i = 0; i < static_cast<int>(m_skyClouds.size()); ++i)
+	{
+		if (!m_skyClouds[i].active)
+		{
+			slot = i;
+			break;
+		}
+	}
+	if (slot < 0)
+	{
+		return;
+	}
+
+	const float wx = WindUnitWX();
+	const float wz = WindUnitWZ();
+	const float speed = SkyCloudWindWorldSpeed()
+		+ ((m_windSpeed == WeatherWindSpeed::Off)
+			? 0.0f
+			: static_cast<float>(GetRandomValue(0, 25)) / 10.0f);
+	const Vector3 center = camera.target;
+	const float spawnDist = 32.0f + static_cast<float>(GetRandomValue(0, 18));
+	const float inX = center.x - wx * spawnDist;
+	const float inZ = center.z - wz * spawnDist;
+	const float lateral = static_cast<float>(GetRandomValue(-18, 18));
+	float px = -wz;
+	float pz = wx;
+	const float plen = std::sqrt(px * px + pz * pz);
+	if (plen > 0.01f)
+	{
+		px = px / plen * lateral;
+		pz = pz / plen * lateral;
+	}
+	else
+	{
+		px = lateral;
+		pz = 0.0f;
+	}
+
+	const float heightT = static_cast<float>(GetRandomValue(0, 100)) / 100.0f;
+	SkyCloud& c = m_skyClouds[slot];
+	c.active = true;
+	c.frame = GetRandomValue(0, static_cast<int>(clouds.size()) - 1);
+	c.vx = wx * speed;
+	c.vz = wz * speed;
+	c.life = clearAmbient
+		? (18.0f + static_cast<float>(GetRandomValue(0, 80)) / 10.0f)
+		: (12.0f + static_cast<float>(GetRandomValue(0, 60)) / 10.0f);
+	c.worldX = inX + px;
+	c.worldZ = inZ + pz;
+	c.worldY = kSkyCloudBaseY + heightT * kSkyCloudYSpan;
+	c.size = 9.0f + static_cast<float>(GetRandomValue(0, 70)) / 10.0f;
+	c.alpha = clearAmbient ? 0.35f : (0.50f + static_cast<float>(GetRandomValue(0, 25)) / 100.0f);
+}
+
+void WeatherSystem::UpdateSkyClouds(float dt, Camera camera)
+{
+	const Vector3 center = camera.target;
+	const float wx = WindUnitWX();
+	const float wz = WindUnitWZ();
+	const float baseSpeed = SkyCloudWindWorldSpeed();
+	for (SkyCloud& c : m_skyClouds)
+	{
+		if (!c.active)
+		{
+			continue;
+		}
+		if (baseSpeed < 0.01f)
+		{
+			c.vx = 0.0f;
+			c.vz = 0.0f;
+		}
+		else
+		{
+			float mag = std::sqrt(c.vx * c.vx + c.vz * c.vz);
+			if (mag < 0.1f)
+			{
+				mag = baseSpeed;
+			}
+			c.vx = wx * mag;
+			c.vz = wz * mag;
+		}
+		c.worldX += c.vx * dt;
+		c.worldZ += c.vz * dt;
+		c.life -= dt;
+		const float dx = c.worldX - center.x;
+		const float dz = c.worldZ - center.z;
+		const float dist = std::sqrt(dx * dx + dz * dz);
+		if (c.life <= 0.0f || dist > 95.0f)
+		{
+			c.active = false;
+		}
+	}
+}
+
 void WeatherSystem::UpdateStormTick()
 {
 	if (m_type == WeatherType::Clear || m_type == WeatherType::Fog || m_type == WeatherType::Sparkle)
@@ -1091,6 +1335,15 @@ void WeatherSystem::UpdateStormTick()
 	if (m_delay != 0 && m_hasCamera && WantsCloudSprites() && !IsFadingOut())
 	{
 		TrySpawnEdgeBurst(m_lastCamera);
+	}
+
+	// Storm sky fluff — denser than Clear ambient (spawned from Update).
+	if (m_hasCamera && WantsSkyFluff() && !IsFadingOut() && m_type != WeatherType::Clear)
+	{
+		if (GetRandomValue(0, 4) == 0)
+		{
+			TrySpawnSkyCloud(m_lastCamera, false);
+		}
 	}
 }
 
@@ -1314,6 +1567,25 @@ void WeatherSystem::Update(float dt)
 	if (m_hasCamera)
 	{
 		UpdateEdgeClouds(dt, m_lastCamera);
+		UpdateSkyClouds(dt, m_lastCamera);
+
+		// Clear / Fog ambient high fluff (no ground shadows for Clear).
+		if (WantsSkyFluff() && !IsFadingOut()
+			&& (m_type == WeatherType::Clear || m_type == WeatherType::Fog)
+			&& (m_phase == WeatherPhase::Idle || m_phase == WeatherPhase::Steady
+				|| m_phase == WeatherPhase::Ramping || m_phase == WeatherPhase::Burst))
+		{
+			m_skySpawnAccumulator += dt;
+			const float interval = (m_type == WeatherType::Fog) ? 1.4f : 2.2f;
+			if (m_skySpawnAccumulator >= interval)
+			{
+				m_skySpawnAccumulator = 0.0f;
+				if (GetRandomValue(0, 2) == 0)
+				{
+					TrySpawnSkyCloud(m_lastCamera, m_type == WeatherType::Clear);
+				}
+			}
+		}
 	}
 
 	if (m_type == WeatherType::Clear && m_phase == WeatherPhase::Idle)
@@ -1425,6 +1697,208 @@ void WeatherSystem::ApplyLightingModifiers(Color& dayNightColor, bool isDay) con
 	if (m_flashTimer > 0)
 	{
 		dayNightColor = { 255, 255, 255, 255 };
+	}
+}
+
+void WeatherSystem::GetSkyGradientColors(Color& zenith, Color& mid, Color& horizon) const
+{
+	// Base sky stops — day blue vs night indigo. Do NOT multiply by g_dayNightColor:
+	// that color already includes ApplyLightingModifiers (overcast/fog), which would
+	// double-dim. Apply the same fades here from m_overcastFade / m_fogFade instead.
+	if (g_isDay)
+	{
+		zenith = { 70, 125, 205, 255 };
+		mid = { 130, 175, 220, 255 };
+		horizon = { 175, 200, 225, 255 };
+	}
+	else
+	{
+		zenith = { 6, 8, 22, 255 };
+		mid = { 14, 18, 40, 255 };
+		horizon = { 24, 28, 50, 255 };
+	}
+
+	// Same overcast darkening path as terrain lighting (no special storm purple).
+	if (g_isDay && m_overcastFade > 0.01f)
+	{
+		const float floor = OvercastDimMultiplier(m_intensity);
+		const float dim = 1.0f - (1.0f - floor) * m_overcastFade;
+		zenith = ScaleSkyColor(zenith, dim * 0.92f);
+		mid = ScaleSkyColor(mid, dim);
+		horizon = ScaleSkyColor(horizon, dim * 1.02f);
+	}
+
+	// FP is inside fog — pull sky toward the veil tone.
+	if (m_fogFade > 0.01f)
+	{
+		const float t = std::min(1.0f, m_fogFade * m_fogIntensityScale);
+		const Color fogCol = { 220, 225, 230, 255 };
+		zenith = LerpSkyColor(zenith, fogCol, t * 0.85f);
+		mid = LerpSkyColor(mid, fogCol, t * 0.90f);
+		horizon = LerpSkyColor(horizon, fogCol, t * 0.95f);
+	}
+
+	if (m_flashTimer > 0)
+	{
+		zenith = { 255, 255, 255, 255 };
+		mid = { 255, 255, 255, 255 };
+		horizon = { 240, 245, 255, 255 };
+	}
+}
+
+Color WeatherSystem::GetSkyClearColor() const
+{
+	if (!WantsOpenSky())
+	{
+		return Color{ 0, 0, 0, 255 };
+	}
+	Color zenith{}, mid{}, horizon{};
+	GetSkyGradientColors(zenith, mid, horizon);
+	return horizon;
+}
+
+void WeatherSystem::DrawSkyGradient(Camera camera) const
+{
+	Color zenith{}, mid{}, horizon{};
+	GetSkyGradientColors(zenith, mid, horizon);
+
+	Vector3 forward = Vector3Subtract(camera.target, camera.position);
+	if (Vector3LengthSqr(forward) < 0.0001f)
+	{
+		forward = { 0.0f, 0.0f, -1.0f };
+	}
+	else
+	{
+		forward = Vector3Normalize(forward);
+	}
+
+	Vector3 right = Vector3CrossProduct(forward, camera.up);
+	if (Vector3LengthSqr(right) < 0.0001f)
+	{
+		right = Vector3CrossProduct(forward, Vector3{ 0.0f, 0.0f, 1.0f });
+	}
+	if (Vector3LengthSqr(right) < 0.0001f)
+	{
+		right = { 1.0f, 0.0f, 0.0f };
+	}
+	else
+	{
+		right = Vector3Normalize(right);
+	}
+	Vector3 up = Vector3Normalize(Vector3CrossProduct(right, forward));
+
+	// Large camera-facing panel just inside a typical far plane so look-up is sky.
+	constexpr float kDist = 70.0f;
+	constexpr float kHalfW = 110.0f;
+	constexpr float kHalfH = 90.0f;
+	const Vector3 center = Vector3Add(camera.position, Vector3Scale(forward, kDist));
+
+	auto corner = [&](float u, float v) {
+		return Vector3Add(center,
+			Vector3Add(Vector3Scale(right, u * kHalfW), Vector3Scale(up, v * kHalfH)));
+	};
+
+	const Vector3 topL = corner(-1.0f, 1.0f);
+	const Vector3 topR = corner(1.0f, 1.0f);
+	const Vector3 midL = corner(-1.0f, 0.15f);
+	const Vector3 midR = corner(1.0f, 0.15f);
+	const Vector3 botL = corner(-1.0f, -1.0f);
+	const Vector3 botR = corner(1.0f, -1.0f);
+
+	rlDisableDepthTest();
+	rlDisableDepthMask();
+	rlBegin(RL_TRIANGLES);
+
+	auto tri = [](Vector3 a, Color ca, Vector3 b, Color cb, Vector3 c, Color cc) {
+		rlColor4ub(ca.r, ca.g, ca.b, 255);
+		rlVertex3f(a.x, a.y, a.z);
+		rlColor4ub(cb.r, cb.g, cb.b, 255);
+		rlVertex3f(b.x, b.y, b.z);
+		rlColor4ub(cc.r, cc.g, cc.b, 255);
+		rlVertex3f(c.x, c.y, c.z);
+	};
+
+	// Upper band: zenith → mid
+	tri(topL, zenith, topR, zenith, midR, mid);
+	tri(topL, zenith, midR, mid, midL, mid);
+	// Lower band: mid → horizon
+	tri(midL, mid, midR, mid, botR, horizon);
+	tri(midL, mid, botR, horizon, botL, horizon);
+
+	rlEnd();
+	rlEnableDepthMask();
+	rlEnableDepthTest();
+}
+
+void WeatherSystem::DrawSkyCloudBillboards(Camera camera) const
+{
+	if (CountActiveSkyClouds() == 0)
+	{
+		return;
+	}
+
+	const auto& clouds = g_spriteTable[kCloudSpriteShape];
+	if (clouds.empty())
+	{
+		return;
+	}
+
+	rlDisableDepthMask();
+	BeginBlendMode(BLEND_ALPHA);
+
+	for (const SkyCloud& c : m_skyClouds)
+	{
+		if (!c.active)
+		{
+			continue;
+		}
+		const int idx = c.frame % static_cast<int>(clouds.size());
+		const SpriteFrame& cloud = clouds[idx];
+		if (cloud.texture.id == 0)
+		{
+			continue;
+		}
+
+		const float lifeFade = std::min(1.0f, c.life * 0.25f);
+		const unsigned char a = static_cast<unsigned char>(
+			std::clamp(static_cast<int>(255.0f * c.alpha * lifeFade), 0, 220));
+		// Soft gray-white — not ground xform-253 shadow.
+		const Color tint = { 235, 235, 240, a };
+		const float aspect = (cloud.height > 0)
+			? (static_cast<float>(cloud.width) / static_cast<float>(cloud.height))
+			: 1.5f;
+		const Vector2 size = { c.size, c.size / std::max(0.35f, aspect) };
+		Rectangle source = { 0, 0, static_cast<float>(cloud.width), static_cast<float>(-cloud.height) };
+		DrawBillboardPro(
+			camera,
+			cloud.texture,
+			source,
+			Vector3{ c.worldX, c.worldY, c.worldZ },
+			Vector3{ 0.0f, 1.0f, 0.0f },
+			size,
+			Vector2{ size.x * 0.5f, size.y * 0.5f },
+			0.0f,
+			tint);
+	}
+
+	EndBlendMode();
+	rlEnableDepthMask();
+}
+
+void WeatherSystem::DrawSkyLayer(Camera camera)
+{
+	m_lastCamera = camera;
+	m_hasCamera = true;
+
+	if (!WantsOpenSky())
+	{
+		return;
+	}
+
+	DrawSkyGradient(camera);
+	if (WantsSkyFluff() || CountActiveSkyClouds() > 0)
+	{
+		DrawSkyCloudBillboards(camera);
 	}
 }
 

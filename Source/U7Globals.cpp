@@ -1,6 +1,7 @@
 #include "U7Globals.h"
 #include "U7SpriteEffects.h"
 #include "U7Object.h"
+#include "WeatherSystem.h"
 #include "Geist/Engine.h"
 #include "Geist/Logging.h"
 #include "Geist/ResourceManager.h"
@@ -2564,8 +2565,12 @@ void DrawGameWorldFrame(bool drawObjects)
 	if (worldToRT)
 		BeginTextureMode(GetWorldRenderTarget());
 
-	ClearBackground(Color{ 0, 0, 0, 255 });
+	ClearBackground(g_WeatherSystem ? g_WeatherSystem->GetSkyClearColor() : Color{ 0, 0, 0, 255 });
 	BeginMode3D(g_camera);
+	if (g_WeatherSystem)
+	{
+		g_WeatherSystem->DrawSkyLayer(g_camera);
+	}
 	DrawGameWorld(drawObjects);
 	EndMode3D();
 
