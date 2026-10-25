@@ -5562,7 +5562,7 @@ void MainState::MaybeUpdatePartyFollowing()
 			Vector3Subtract(avatarPos, Vector3Scale(dir, back)),
 			Vector3Scale(right, side));
 		// Keep current feet height; UpdateMovement / ValidateMove resolve climbs.
-		desired.y = member->GetPos().y;
+		desired.y = avatar->GetPos().y;
 
 		Vector3 memberPos = member->GetPos();
 		Vector3 toSlot = Vector3Subtract(memberPos, desired);
@@ -5606,11 +5606,11 @@ void MainState::MaybeUpdatePartyFollowing()
 		}
 
 		// Soft steer toward the live formation slot (party followers may crow-fly).
-		member->SetDest(desired);
+		member->PathfindToDest(desired);
 		member->m_isMoving = true;
 
 		if (member->m_moveStuckFrames >= 20)
-			member->PathfindToDest(desired);
+			member->SetDest(desired);
 
 		++companionSlot;
 	}

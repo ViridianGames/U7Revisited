@@ -932,6 +932,7 @@ void CameraInput()
 		SetFirstPersonMouseLook(false);
 
 	// Toggle first-person: Left Ctrl + P
+	// Toggle look style: P while first-person is active (free-mouse <-> locked mouse look)
 	if (g_allowInput)
 	{
 		if (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyPressed(KEY_P))
@@ -992,7 +993,7 @@ void CameraInput()
 			AddConsoleString(std::string("First-person view ") + (g_firstPersonEnabled ? "enabled" : "disabled"), WHITE);
 
 			// Mouselook locks the cursor while FP is active; release on exit.
-			SetFirstPersonMouseLook(g_firstPersonEnabled);
+			SetFirstPersonMouseLook(g_firstPersonEnabled && g_firstPersonMouseLookMode);
 
 			// Update camera once so position/target reflect the new first-person yaw/height without changing X/Z
 			CameraUpdate(true);
@@ -1004,6 +1005,12 @@ void CameraInput()
 			ossAfter << "CAM_TOGGLE AFTER  pos=(" << afterPos.x << "," << afterPos.y << "," << afterPos.z << ") tgt=("
 				<< afterTarget.x << "," << afterTarget.y << "," << afterTarget.z << ")";
 			AddConsoleString(ossAfter.str(), WHITE);
+		}
+		else if (g_firstPersonEnabled && !IsKeyDown(KEY_LEFT_CONTROL) && !IsKeyDown(KEY_RIGHT_CONTROL) && IsKeyPressed(KEY_P))
+		{
+			g_firstPersonMouseLookMode = !g_firstPersonMouseLookMode;
+			SetFirstPersonMouseLook(g_firstPersonMouseLookMode);
+			AddConsoleString(std::string("First-person look: ") + (g_firstPersonMouseLookMode ? "mouse look" : "free mouse"), WHITE);
 		}
 	}
 
@@ -1019,7 +1026,7 @@ void CameraInput()
 
 		// Pause mouselook while gumps are open so inventory/UI stays clickable.
 		const bool gumpsOpen = g_gumpManager && !g_gumpManager->m_GumpList.empty();
-		if (gumpsOpen)
+		if (!g_firstPersonMouseLookMode || gumpsOpen)
 		{
 			SetFirstPersonMouseLook(false);
 		}
@@ -1035,7 +1042,7 @@ void CameraInput()
 			if (g_firstPersonPitch > maxPitch) g_firstPersonPitch = maxPitch;
 			if (g_firstPersonPitch < minPitch) g_firstPersonPitch = minPitch;
 		}
-	
+
 		bool userRotated = false;
 		const float CARDINAL = PI / 2.0f;
 
@@ -5143,6 +5150,7 @@ float g_firstPersonPitch = DEFAULT_FIRSTPERSON_PITCH;
 float g_firstPersonMoveSpeed = 5.0f; // units per second
 float g_firstPersonMouseSensitivity = 0.003f; // radians per pixel
 bool g_firstPersonMouseLookActive = false;
+bool g_firstPersonMouseLookMode = true; // true = cursor-locked mouse look, false = free-mouse look
 bool g_firstPersonPreserveCenter = false;
 Vector3 g_firstPersonFocus = { 0.0f, 0.0f, 0.0f };
 
