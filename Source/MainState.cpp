@@ -3143,9 +3143,16 @@ void MainState::Draw()
 	if (worldToRT)
 		BeginTextureMode(GetWorldRenderTarget());
 
-	ClearBackground(Color{ 0, 0, 0, 255 });
+	// Horizon stop so uncovered pixels (look-up) are sky, not black void.
+	ClearBackground(g_WeatherSystem ? g_WeatherSystem->GetSkyClearColor() : Color{ 0, 0, 0, 255 });
 
 	BeginMode3D(g_camera);
+
+	// Sky fill + high cloud billboards behind terrain (Weather 07).
+	if (g_WeatherSystem)
+	{
+		g_WeatherSystem->DrawSkyLayer(g_camera);
+	}
 
 	// A* timing deltas (telemetry; does not affect draw)
 	uint64_t totalCalls = g_pathfindingSystem ? g_pathfindingSystem->m_astarTotalCalls.load() : 0;
