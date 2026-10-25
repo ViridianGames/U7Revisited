@@ -68,6 +68,8 @@ public:
 	static constexpr int kCloudShapeId = 1026;
 	static constexpr int kCloudSpriteShape = kCloudShapeId - 1024; // 2
 	static constexpr int kMaxEdgeClouds = 16;
+	// High-band sky fluff (no ground shadow). Separate from edge shadow pool.
+	static constexpr int kMaxSkyClouds = 12;
 	static constexpr float kParticleDrawScale = 1.5f;
 	static constexpr int kSparkleParticles = kMaxParticles / 6;
 	static constexpr float kWeatherTickSeconds = 0.08f;
@@ -75,6 +77,9 @@ public:
 	static constexpr float kFogIntensityBlendSeconds = 1.25f;
 	static constexpr float kOvercastFadeSeconds = 1.5f;
 	static constexpr float kCloudWorldSpeed = 4.0f; // world units / sec at Medium wind
+	static constexpr float kSkyCloudSpeedMul = 1.45f; // high band vs low-band base
+	static constexpr float kSkyCloudBaseY = 14.0f;
+	static constexpr float kSkyCloudYSpan = 10.0f;
 	static constexpr float kEdgeCloudFadeOutLife = 1.6f; // clamp when Stopping
 	static constexpr float kPrecipFadeOutFallMul = 2.75f; // faster fall while Stopping/Finishing
 	// Screen-space precip drift (pixels/sec) at Medium wind. Light/Heavy use
@@ -87,6 +92,10 @@ public:
 	void UpdateGameMinute();
 	void Update(float dt);
 	void Draw(Camera camera);
+	// Mode3D backdrop: zenith/mid/horizon fill + high-band cloud billboards.
+	// Call after BeginMode3D, before terrain. ClearBackground with GetSkyClearColor first.
+	void DrawSkyLayer(Camera camera);
+	Color GetSkyClearColor() const; // horizon stop, or black indoor/disabled
 
 	void ApplyLightingModifiers(Color& dayNightColor, bool isDay) const;
 	bool WantsOvercastPalette() const;
@@ -157,6 +166,21 @@ private:
 		bool active = false;
 	};
 
+	// High-altitude sky fluff — Mode3D billboards only (no 2D ground shadow).
+	struct SkyCloud
+	{
+		float worldX = 0;
+		float worldY = 0;
+		float worldZ = 0;
+		float vx = 0;
+		float vz = 0;
+		float size = 10.0f; // world-space billboard width
+		int frame = 0;
+		float life = 0;
+		float alpha = 0.55f;
+		bool active = false;
+	};
+
 	struct PendingWeather
 	{
 		bool active = false;
@@ -176,16 +200,26 @@ private:
 	void ConfigureEffectParams(WeatherType type, WeatherIntensity intensity);
 	void ClearParticles();
 	void ClearEdgeClouds();
+	void ClearSkyClouds();
 	void ShortenEdgeCloudLives(float maxLifeSeconds);
+	void ShortenSkyCloudLives(float maxLifeSeconds);
 	void UpdateParticles(float dt);
 	void UpdateStormTick();
 	void UpdateBlendFades(float dt);
 	void TryAddParticle();
 	void TrySpawnEdgeBurst(Camera camera);
+	void TrySpawnSkyCloud(Camera camera, bool clearAmbient);
 	void UpdateEdgeClouds(float dt, Camera camera);
+	void UpdateSkyClouds(float dt, Camera camera);
 	void DrawEdgeClouds(Camera camera);
+	void DrawSkyGradient(Camera camera) const;
+	void DrawSkyCloudBillboards(Camera camera) const;
+	void GetSkyGradientColors(Color& zenith, Color& mid, Color& horizon) const;
+	bool WantsOpenSky() const; // outdoor + effects; false indoor/dungeon/sheltered
+	bool WantsSkyFluff() const;
 	int CountActiveParticles() const;
 	int CountActiveEdgeClouds() const;
+	int CountActiveSkyClouds() const;
 	bool VisualEffectsCleared() const;
 	bool ShouldDrawPrecipitation() const;
 	bool SpawnsPrecipParticles() const;
@@ -194,12 +228,14 @@ private:
 	int ResolveMaxCount(WeatherType type, WeatherIntensity intensity) const;
 	float ResolveFallSpeed(WeatherType type, WeatherIntensity intensity) const;
 	float PrecipWindDriftPixels() const;
-	float CloudWindWorldSpeed() const;
+	float CloudWindWorldSpeed() const; // low-band / shadows (Off = slow ambient)
+	float SkyCloudWindWorldSpeed() const; // high-band (Off = 0 / still)
 	float WindUnitWX() const; // continuous yaw → world X (-1..1); N=0
 	float WindUnitWZ() const; // continuous yaw → world Z; N=-1
 	void UpdateWindYaw(float dt); // lerp m_windYawDeg toward m_windDir * 45
 	void SeedWindFromAvatar(WeatherIntensity intensity);
 	void RetargetEdgeCloudVelocities();
+	void RetargetSkyCloudVelocities();
 	void UpdateFlagCloth(float dt);
 	bool WantsWindEffects() const;
 	int AvatarFacing8() const;
@@ -242,7 +278,9 @@ private:
 
 	std::vector<Particle> m_particles;
 	std::vector<EdgeCloud> m_edgeClouds;
+	std::vector<SkyCloud> m_skyClouds;
 	float m_spawnAccumulator = 0;
+	float m_skySpawnAccumulator = 0;
 	float m_flashTimer = 0;
 	float m_flashCooldown = 0;
 	std::string m_activeWeatherMusicPath;
