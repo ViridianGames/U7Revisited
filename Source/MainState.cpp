@@ -1152,6 +1152,19 @@ void MainState::HandleGameKeys()
 		}
 	}
 
+	// Weather 10.3: toggle equal-time sun path trail (Phase D accept) — Ctrl+Shift+P.
+	if (m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX
+		&& g_WeatherSystem
+		&& IsKeyDown(KEY_LEFT_CONTROL)
+		&& (IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT))
+		&& IsKeyPressed(KEY_P))
+	{
+		g_WeatherSystem->ToggleDrawCelestialPathTrail();
+		AddConsoleString(g_WeatherSystem->GetDrawCelestialPathTrail()
+			? "Celestial path trail ON (30-min sun markers)"
+			: "Celestial path trail OFF");
+	}
+
 	if (IsKeyPressed(KEY_PAGE_UP) && m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX)
 	{
 		if (m_heightCutoff == 0.0f)
