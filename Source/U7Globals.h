@@ -878,7 +878,8 @@ extern float g_firstPersonYaw;       // Yaw (radians) for first-person look
 extern float g_firstPersonPitch;     // Pitch (radians) for first-person look
 extern float g_firstPersonMoveSpeed; // Movement speed while in first-person
 extern float g_firstPersonMouseSensitivity; // radians per pixel for mouselook
-extern bool g_firstPersonMouseLookActive;   // cursor locked for FP mouselook
+extern bool g_firstPersonMouseLookActive;   // actual cursor lock state for FP mouselook
+extern bool g_firstPersonMouseLookMode;     // true = mouse-look mode, false = free-mouse mode
 void SetFirstPersonMouseLook(bool enabled);
 //extern bool g_firstPersonPreserveCenter;
 //extern Vector3 g_firstPersonFocus; // world coords of the center-of-screen to preserve when entering 1st person
