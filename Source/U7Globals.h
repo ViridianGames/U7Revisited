@@ -19,6 +19,7 @@
 #include <array>
 #include <queue>
 #include <shared_mutex>
+#include <cstdint>
 
 #include "Geist/Primitives.h"
 #include "Geist/RNG.h"
@@ -430,6 +431,12 @@ struct SpriteFrame {
 	int height;
 	int xOffset;
 	int yOffset;
+	// >=0: resolve tint from g_runtimePalette each draw (sparkle frames 21-27).
+	int livePaletteIndex = -1;
+	// Per-pixel VGA indices for shapes that must track the live palette (BG cloud
+	// shadows: global shape id 1026 = FIRST_SPRITE 1024 + SPRITES.VGA entry 2).
+	// -1 = transparent; size == width*height when used.
+	std::vector<int16_t> paletteIndices;
 };
 
 extern std::array<std::vector<SpriteFrame>, 32> g_spriteTable;  // 32 sprite shapes, each with multiple frames
@@ -843,6 +850,9 @@ extern bool g_paletteSystemReady;
 
 void InitRuntimePalette(const std::array<Color, 256>& basePalette);
 void UpdateRuntimePalette();
+// Rebake SPRITES.VGA cloud shadows (shape 2 / BG id 1026) from g_basePalette
+// (call when the day/weather base changes — not on glisten ticks).
+void RefreshLivePaletteSprites();
 void BindPaletteShader();
 void BindPaletteMaterial(Material* material, Texture2D indexTexture);
 

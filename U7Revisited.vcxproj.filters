@@ -263,6 +263,9 @@
     <ClCompile Include="Source\U7UsecodeArgs.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\WeatherSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="Source\PerfTelemetry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -549,6 +552,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\U7UsecodeArgs.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\WeatherSystem.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\PerfTelemetry.h">
