@@ -113,7 +113,11 @@ public:
 	void HandleRenameButton();
 	void HandleNPCListButton();
 	void HandleObjectFinderButton();
+	void HandleWeatherButton();
 	void UpdateDebugToolsWindow();
+	void UpdateWeatherDebugWindow();
+	void ApplyWeatherDebugPreset(int type, int intensity, const char* label);
+	void PositionWeatherDebugWindow();
 	void DumpNpcScheduleStats();
 
 	void BuildDemoHelpGUI();
@@ -148,6 +152,10 @@ public:
 
 	// Debug tools window (always visible in sandbox mode)
 	GhostWindow* m_debugToolsWindow = nullptr;
+
+	// Weather debug picker (toggled from WEATHER_BUTTON)
+	GhostWindow* m_weatherDebugWindow = nullptr;
+	int m_weatherIntensitySliderValue = 1; // 0 Light, 1 Medium, 2 Heavy — last user choice
 
 	// NPC list window for debugging/navigation
 	NpcListWindow* m_npcListWindow = nullptr;

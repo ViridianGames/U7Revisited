@@ -1,0 +1,97 @@
+{
+  "gui": {
+    "elements": [
+      {
+        "type": "panel",
+        "position": [0, 0],
+        "size": [200, 340],
+        "backgroundColor": [50, 50, 55, 230],
+        "filled": true,
+        "layout": "vert",
+        "horzPadding": 8,
+        "vertPadding": 5,
+        "font": "babyblocks.ttf",
+        "fontSize": 22,
+        "elements": [
+          {
+            "name": "TXT_STATUS",
+            "type": "textarea",
+            "position": [-1, -1],
+            "size": [184, 26],
+            "text": "Clear",
+            "textColor": [220, 220, 255, 255],
+            "justified": 1
+          },
+          {
+            "name": "BTN_RAIN",
+            "type": "textbutton",
+            "position": [-1, -1],
+            "size": [184, 28],
+            "text": "Rain"
+          },
+          {
+            "name": "BTN_SNOW",
+            "type": "textbutton",
+            "position": [-1, -1],
+            "size": [184, 28],
+            "text": "Snow"
+          },
+          {
+            "name": "BTN_FOG",
+            "type": "textbutton",
+            "position": [-1, -1],
+            "size": [184, 28],
+            "text": "Fog"
+          },
+          {
+            "name": "BTN_SPARKLE",
+            "type": "textbutton",
+            "position": [-1, -1],
+            "size": [184, 28],
+            "text": "Sparkle"
+          },
+          {
+            "name": "BTN_OVERCAST",
+            "type": "textbutton",
+            "position": [-1, -1],
+            "size": [184, 28],
+            "text": "Overcast"
+          },
+          {
+            "name": "BTN_CLOUDY",
+            "type": "textbutton",
+            "position": [-1, -1],
+            "size": [184, 28],
+            "text": "Cloudy"
+          },
+          {
+            "name": "BTN_CLEAR",
+            "type": "textbutton",
+            "position": [-1, -1],
+            "size": [184, 28],
+            "text": "Clear"
+          },
+          {
+            "name": "TXT_INTENSITY",
+            "type": "textarea",
+            "position": [-1, -1],
+            "size": [184, 22],
+            "text": "Medium",
+            "textColor": [200, 200, 220, 255],
+            "justified": 1
+          },
+          {
+            "name": "SLIDER_INTENSITY",
+            "type": "scrollbar",
+            "position": [-1, -1],
+            "size": [184, 18],
+            "valueRange": 2,
+            "vertical": false,
+            "spurColor": [128, 160, 255, 255],
+            "backgroundColor": [30, 30, 35, 255]
+          }
+        ]
+      }
+    ]
+  }
+}

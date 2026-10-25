@@ -1285,12 +1285,16 @@ void LoadingState::ParseIREGFile(stringstream& ireg, int superchunkx, int superc
 				const uint8_t specVal = entryBuffer[7];
 
 				// Display frame maps to our EggType enum (teleporter=frame 5, path=6, …).
-				// Exult stores type in itype&0xf (teleport=7); frame stays the visual id.
+				// Exult stores type in itype&0xf (teleport=7, weather=8); frame stays the visual id.
 				egg.m_type = static_cast<EggType>(frame);
 				const int itypeType = itype & 0x0f;
 				if (itypeType == 7 || itypeType == 11) // teleport / intermap
 				{
 					egg.m_type = EggType::Teleporter;
+				}
+				else if (itypeType == 8) // Exult Egg_types::weather
+				{
+					egg.m_type = EggType::Weather;
 				}
 				else if (itypeType == 9 || (itypeType == 7 && frame == 6))
 				{
@@ -1314,8 +1318,9 @@ void LoadingState::ParseIREGFile(stringstream& ireg, int superchunkx, int superc
 				egg.m_specificValue = specVal;
 
 				// Weather eggs: data1 low = weather ID 0–6, high = duration minutes.
-				if (egg.m_type == EggType::Weather)
+				if (egg.m_type == EggType::Weather || itypeType == 8)
 				{
+					egg.m_type = EggType::Weather;
 					egg.m_specificValue = static_cast<uint8_t>(data1 & 0xff);
 					egg.m_durationMinutes = static_cast<uint8_t>((data1 >> 8) & 0xff);
 				}
@@ -1884,7 +1889,42 @@ void LoadingState::LoadSprites()
 				frameOffsets[frameNum].xDrawOffset = frameOffsets[frameNum].W2;
 				frameOffsets[frameNum].yDrawOffset = frameOffsets[frameNum].H2;
 
-				Image spriteImage = GenImageColor(frameOffsets[frameNum].width, frameOffsets[frameNum].height, Color{0, 0, 0, 0});
+				const int frameW = static_cast<int>(frameOffsets[frameNum].width);
+				const int frameH = static_cast<int>(frameOffsets[frameNum].height);
+				Image spriteImage = GenImageColor(frameW, frameH, Color{0, 0, 0, 0});
+
+				// Sparkle / snow-splash frames 21-27 on shape 0: keep VGA index for live palette tint.
+				const bool keepLivePaletteIndex = (thisSprite == 0 && frameNum >= 21 && frameNum <= 27);
+				// BG weather.c edge clouds use shape id 1026 (= SPRITES.VGA #2); keep indices
+				// so RefreshLivePaletteSprites can track the runtime day/weather palette.
+				const bool storeCloudIndexMap = (thisSprite == 2);
+				int livePaletteIndex = -1;
+				std::vector<int16_t> cloudIndices;
+				if (storeCloudIndexMap)
+				{
+					cloudIndices.assign(static_cast<size_t>(frameW * frameH), static_cast<int16_t>(-1));
+				}
+
+				auto plotSpritePixel = [&](int px, int py, unsigned char Value)
+				{
+					if (px < 0 || py < 0 || px >= frameW || py >= frameH)
+					{
+						return;
+					}
+					if (keepLivePaletteIndex)
+					{
+						livePaletteIndex = Value;
+						ImageDrawPixel(&spriteImage, px, py, Color{255, 255, 255, 255});
+					}
+					else
+					{
+						ImageDrawPixel(&spriteImage, px, py, m_palettes[0][Value]);
+					}
+					if (storeCloudIndexMap)
+					{
+						cloudIndices[static_cast<size_t>(py * frameW + px)] = static_cast<int16_t>(Value);
+					}
+				};
 
 				// Read each span - same format as SHAPES.VGA
 				while (true)
@@ -1900,15 +1940,15 @@ void LoadingState::LoadSprites()
 
 					short xStart = ReadS16(sprites);
 					short yStart = ReadS16(sprites);
-					xStart += frameOffsets[frameNum].width - frameOffsets[frameNum].xDrawOffset - 1;
-					yStart += frameOffsets[frameNum].height - frameOffsets[frameNum].yDrawOffset - 1;
+					xStart += frameW - frameOffsets[frameNum].xDrawOffset - 1;
+					yStart += frameH - frameOffsets[frameNum].yDrawOffset - 1;
 
 					if (spanType == 0) // Not RLE, raw pixel data
 					{
 						for (int i = 0; i < spanLength; ++i)
 						{
 							unsigned char Value = ReadU8(sprites);
-							ImageDrawPixel(&spriteImage, xStart + i, yStart, m_palettes[0][Value]);
+							plotSpritePixel(xStart + i, yStart, Value);
 						}
 					}
 					else // RLE
@@ -1926,7 +1966,7 @@ void LoadingState::LoadSprites()
 								for (int i = 0; i < runLength; ++i)
 								{
 									unsigned char Value = ReadU8(sprites);
-									ImageDrawPixel(&spriteImage, xStart + i, yStart, m_palettes[0][Value]);
+									plotSpritePixel(xStart + i, yStart, Value);
 								}
 							}
 							else // RLE - repeat single pixel
@@ -1934,7 +1974,7 @@ void LoadingState::LoadSprites()
 								unsigned char Value = ReadU8(sprites);
 								for (int i = 0; i < runLength; ++i)
 								{
-									ImageDrawPixel(&spriteImage, xStart + i, yStart, m_palettes[0][Value]);
+									plotSpritePixel(xStart + i, yStart, Value);
 								}
 							}
 							xStart += runLength;
@@ -1949,10 +1989,12 @@ void LoadingState::LoadSprites()
 				SpriteFrame frame;
 				frame.image = spriteImage;
 				frame.texture = spriteTexture;
-				frame.width = frameOffsets[frameNum].width;
-				frame.height = frameOffsets[frameNum].height;
+				frame.width = frameW;
+				frame.height = frameH;
 				frame.xOffset = frameOffsets[frameNum].xDrawOffset;
 				frame.yOffset = frameOffsets[frameNum].yDrawOffset;
+				frame.livePaletteIndex = livePaletteIndex;
+				frame.paletteIndices = std::move(cloudIndices);
 
 				g_spriteTable[thisSprite].push_back(frame);
 			}
@@ -1961,6 +2003,9 @@ void LoadingState::LoadSprites()
 
 	profilingTime = GetTime() - profilingTime;
 	Log("Time to load sprites: " + std::to_string(profilingTime));
+
+	// Cloud shadows (BG id 1026 / SPRITES #2) track the live day palette.
+	RefreshLivePaletteSprites();
 
 //#define DEBUG_SPRITES 1
 #if DEBUG_SPRITES

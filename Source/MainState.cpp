@@ -1,6 +1,7 @@
 #include "Geist/Globals.h"
 #include "Geist/Logging.h"
 #include "Geist/Gui.h"
+#include "Geist/GuiElements.h"
 #include "Geist/ParticleSystem.h"
 #include "Geist/ResourceManager.h"
 #include "Geist/StateMachine.h"
@@ -382,6 +383,36 @@ void MainState::Init(const string& configfile)
 		m_debugToolsWindow = nullptr;
 	}
 
+	// Weather debug picker (hidden until WEATHER_BUTTON toggles it)
+	m_weatherDebugWindow = new GhostWindow(
+		"GUI/weather_debug.ghost",
+		"Data/ghost.cfg",
+		g_ResourceManager.get(),
+		GetScreenWidth(),
+		GetScreenHeight(),
+		false);
+	if (m_weatherDebugWindow && m_weatherDebugWindow->IsValid())
+	{
+		if (Gui* gui = m_weatherDebugWindow->GetGui())
+		{
+			const int sliderId = m_weatherDebugWindow->GetElementID("SLIDER_INTENSITY");
+			if (sliderId != -1)
+			{
+				auto se = gui->GetElement(sliderId);
+				if (se && se->m_Type == GUI_SCROLLBAR)
+					static_cast<GuiScrollBar*>(se.get())->m_Value = 1; // Medium
+			}
+		}
+		PositionWeatherDebugWindow();
+		m_weatherDebugWindow->Hide();
+	}
+	else
+	{
+		Log("ERROR: Failed to load weather_debug.ghost");
+		delete m_weatherDebugWindow;
+		m_weatherDebugWindow = nullptr;
+	}
+
 	// Initialize NPC list window
 	m_npcListWindow = new NpcListWindow(g_ResourceManager.get(), GetScreenWidth(), GetScreenHeight());
 	if (!m_npcListWindow || !m_npcListWindow->IsVisible())
@@ -680,6 +711,12 @@ void MainState::Shutdown()
 		m_debugToolsWindow = nullptr;
 	}
 
+	if (m_weatherDebugWindow)
+	{
+		delete m_weatherDebugWindow;
+		m_weatherDebugWindow = nullptr;
+	}
+
 	// Clean up NPC list window
 	if (m_npcListWindow)
 	{
@@ -761,10 +798,11 @@ void MainState::UpdateTime()
 	}
 	else if (g_hour == 6)
 	{
+		// Dawn ramp: darkness goes darklevel→255; treat as day once past mid-ramp.
 		unsigned char darkness = darklevel + ((float(g_minute) / 60.0f) * (255 - darklevel));
 		unsigned char red_green = (darklevel / 2.0f) + ((float(g_minute) / 60.0f) * (255 - red_green_level));
 		g_dayNightColor = { red_green, red_green, darkness, 255 };
-		g_isDay = darkness < .1f;
+		g_isDay = darkness > 160;
 	}
 	else if (g_hour > 20 || g_hour < 6)
 	{
@@ -852,7 +890,15 @@ void MainState::CalculateMouseOverUI()
 		overNpcList = CheckCollisionPointRec(mousePos, npcListRect);
 	}
 
-	g_mouseOverUI = overStats || overStatsTabs || overPartyNames || overMinimap || overCharPanel || overDebugTools || overNpcList || m_demoHelpScreen->m_Active || m_sandboxHelpScreen->m_Active;
+	bool overWeatherDebug = false;
+	if (m_weatherDebugWindow && m_weatherDebugWindow->IsVisible())
+	{
+		overWeatherDebug = CheckCollisionPointRec(mousePos, m_weatherDebugWindow->GetBounds());
+	}
+
+	g_mouseOverUI = overStats || overStatsTabs || overPartyNames || overMinimap || overCharPanel
+		|| overDebugTools || overNpcList || overWeatherDebug
+		|| m_demoHelpScreen->m_Active || m_sandboxHelpScreen->m_Active;
 }
 
 void MainState::UpdateInput()
@@ -2689,6 +2735,9 @@ void MainState::Update()
 		// Update debug tools window
 		m_debugToolsWindow->Update();
 		UpdateDebugToolsWindow();
+		if (m_weatherDebugWindow && m_weatherDebugWindow->IsVisible())
+			PositionWeatherDebugWindow();
+		UpdateWeatherDebugWindow();
 	}
 
 	// Update NPC list window
@@ -3863,6 +3912,11 @@ void MainState::Draw()
 		m_debugToolsWindow->Draw();
 	}
 
+	if (m_weatherDebugWindow)
+	{
+		m_weatherDebugWindow->Draw();
+	}
+
 	// Draw NPC list window if valid
 	if (m_npcListWindow)
 	{
@@ -4568,6 +4622,281 @@ void MainState::HandleObjectFinderButton()
 	g_StateMachine->PushState(STATE_OBJECTFINDERSTATE);
 }
 
+void MainState::HandleWeatherButton()
+{
+	if (m_debugToolsWindow)
+	{
+		m_debugToolsWindow->ClearHoverText();
+	}
+
+	if (!m_weatherDebugWindow)
+	{
+		AddConsoleString("Weather debug window not loaded.", RED);
+		return;
+	}
+
+	m_weatherDebugWindow->Toggle();
+	if (m_weatherDebugWindow->IsVisible())
+	{
+		PositionWeatherDebugWindow();
+		if (Gui* gui = m_weatherDebugWindow->GetGui())
+		{
+			const int sliderId = m_weatherDebugWindow->GetElementID("SLIDER_INTENSITY");
+			if (sliderId != -1)
+			{
+				auto se = gui->GetElement(sliderId);
+				if (se && se->m_Type == GUI_SCROLLBAR)
+				{
+					static_cast<GuiScrollBar*>(se.get())->m_Value =
+						std::clamp(m_weatherIntensitySliderValue, 0, 2);
+				}
+			}
+		}
+		AddConsoleString("Weather picker ON", SKYBLUE);
+	}
+	else
+	{
+		AddConsoleString("Weather picker OFF", SKYBLUE);
+	}
+}
+
+void MainState::PositionWeatherDebugWindow()
+{
+	if (!m_weatherDebugWindow || !m_weatherDebugWindow->IsValid())
+		return;
+
+	int ww = 0, wh = 0;
+	m_weatherDebugWindow->GetSize(ww, wh);
+
+	const int minimapLeft = GetScreenWidth() - int(g_minimapSize * g_DrawScale);
+	int x = minimapLeft - ww - 2;
+	int y = 2;
+
+	// Sit just under debug tools, same column next to the minimap.
+	if (m_debugToolsWindow && m_debugToolsWindow->IsValid())
+	{
+		int dw = 0, dh = 0;
+		m_debugToolsWindow->GetSize(dw, dh);
+		x = minimapLeft - ww - 2;
+		y = dh + 2;
+	}
+
+	m_weatherDebugWindow->MoveTo(x, y);
+}
+
+void MainState::ApplyWeatherDebugPreset(int type, int intensity, const char* label)
+{
+	if (!g_WeatherSystem)
+	{
+		AddConsoleString("WeatherSystem not ready.", RED);
+		return;
+	}
+
+	if (type == 0)
+	{
+		g_WeatherSystem->SetWeather(255);
+	}
+	else
+	{
+		g_WeatherSystem->SetWeather(type, 0, false, { 0, 0, 0 }, -1, intensity);
+	}
+
+	if (g_WeatherSystem->HasPendingWeather())
+	{
+		AddConsoleString(std::string("Weather queued: ") + label + " (fading out current)", YELLOW);
+	}
+	else
+	{
+		AddConsoleString(std::string("Weather: ") + label, SKYBLUE);
+	}
+}
+
+void MainState::UpdateWeatherDebugWindow()
+{
+	if (!m_weatherDebugWindow || !m_weatherDebugWindow->IsVisible())
+		return;
+
+	m_weatherDebugWindow->Update();
+
+	Gui* gui = m_weatherDebugWindow->GetGui();
+	if (!gui || !g_WeatherSystem)
+		return;
+
+	struct WeatherBtn
+	{
+		const char* name;
+		int type;
+		const char* label;
+	};
+	static const WeatherBtn kBtns[] = {
+		{ "BTN_RAIN", 2, "Rain" },
+		{ "BTN_SNOW", 1, "Snow" },
+		{ "BTN_FOG", 4, "Fog" },
+		{ "BTN_SPARKLE", 3, "Sparkle" },
+		{ "BTN_OVERCAST", 5, "Overcast" },
+		{ "BTN_CLOUDY", 6, "Cloudy" },
+		{ "BTN_CLEAR", 0, "Clear" },
+	};
+
+	auto intensityName = [](int intensity) -> const char* {
+		switch (intensity)
+		{
+		case 0: return "Light";
+		case 2: return "Heavy";
+		default: return "Medium";
+		}
+	};
+
+	auto weatherTypeName = [](WeatherType t) -> const char* {
+		switch (t)
+		{
+		case WeatherType::Snow: return "Snow";
+		case WeatherType::Rain: return "Rain";
+		case WeatherType::Sparkle: return "Sparkle";
+		case WeatherType::Fog: return "Fog";
+		case WeatherType::Overcast: return "Overcast";
+		case WeatherType::Cloudy: return "Cloudy";
+		case WeatherType::Clear:
+		default: return "Clear";
+		}
+	};
+
+	const int sliderId = m_weatherDebugWindow->GetElementID("SLIDER_INTENSITY");
+	GuiScrollBar* slider = nullptr;
+	if (sliderId != -1)
+	{
+		auto se = gui->GetElement(sliderId);
+		if (se && se->m_Type == GUI_SCROLLBAR)
+			slider = static_cast<GuiScrollBar*>(se.get());
+	}
+
+	if (slider)
+	{
+		// Keep slider in 0..2; default Medium if somehow unset on first open.
+		if (slider->m_Value < 0 || slider->m_Value > 2)
+			slider->m_Value = m_weatherIntensitySliderValue;
+	}
+
+	const WeatherType curType = g_WeatherSystem->GetWeatherType();
+	const bool intensityActive = (curType == WeatherType::Rain
+		|| curType == WeatherType::Snow
+		|| curType == WeatherType::Fog)
+		&& !g_WeatherSystem->HasPendingWeather();
+
+	if (slider)
+	{
+		const int sliderVal = std::clamp(slider->m_Value, 0, 2);
+		if (sliderVal != m_weatherIntensitySliderValue)
+		{
+			m_weatherIntensitySliderValue = sliderVal;
+			if (intensityActive)
+			{
+				const char* label = weatherTypeName(curType);
+				std::string full = std::string(label) + " " + intensityName(sliderVal);
+				ApplyWeatherDebugPreset(static_cast<int>(curType), sliderVal, full.c_str());
+			}
+		}
+		else if (intensityActive)
+		{
+			const int weatherInt = static_cast<int>(g_WeatherSystem->GetIntensity());
+			if (slider->m_Value != weatherInt)
+			{
+				slider->m_Value = weatherInt;
+				m_weatherIntensitySliderValue = weatherInt;
+			}
+		}
+	}
+
+	const int intensity = std::clamp(m_weatherIntensitySliderValue, 0, 2);
+
+	for (const WeatherBtn& b : kBtns)
+	{
+		const int id = m_weatherDebugWindow->GetElementID(b.name);
+		if (id == -1)
+			continue;
+		auto elem = gui->GetElement(id);
+		if (!elem || elem->m_Type != GUI_TEXTBUTTON)
+			continue;
+		if (elem->m_Clicked)
+		{
+			if (b.type == 2 || b.type == 1 || b.type == 4)
+			{
+				std::string full = std::string(b.label) + " " + intensityName(intensity);
+				ApplyWeatherDebugPreset(b.type, intensity, full.c_str());
+			}
+			else
+			{
+				ApplyWeatherDebugPreset(b.type, intensity, b.label);
+			}
+		}
+
+		auto* btn = static_cast<GuiTextButton*>(elem.get());
+		const bool active = (b.type == static_cast<int>(curType));
+		if (active)
+		{
+			btn->m_TextColor = Color{ 255, 255, 180, 255 };
+			btn->m_BackgroundColor = Color{ 70, 90, 140, 255 };
+			btn->m_BorderColor = Color{ 220, 220, 120, 255 };
+		}
+		else
+		{
+			btn->m_TextColor = Color{ 255, 255, 255, 255 };
+			btn->m_BackgroundColor = Color{ 0, 0, 0, 255 };
+			btn->m_BorderColor = Color{ 255, 255, 255, 255 };
+		}
+	}
+
+	// Status + intensity labels
+	const int statusId = m_weatherDebugWindow->GetElementID("TXT_STATUS");
+	if (statusId != -1)
+	{
+		auto elem = gui->GetElement(statusId);
+		if (elem && elem->m_Type == GUI_TEXTAREA)
+		{
+			auto* area = static_cast<GuiTextArea*>(elem.get());
+			std::string status;
+			if (g_WeatherSystem->HasPendingWeather())
+			{
+				status = std::string("> ") + weatherTypeName(g_WeatherSystem->GetPendingWeatherType()) + "...";
+			}
+			else if (curType == WeatherType::Rain || curType == WeatherType::Snow
+				|| curType == WeatherType::Fog)
+			{
+				// ASCII only — babyblocks.ttf has no middle-dot / arrow glyphs (show as '?').
+				status = std::string(weatherTypeName(curType)) + " - "
+					+ intensityName(static_cast<int>(g_WeatherSystem->GetIntensity()));
+			}
+			else
+			{
+				status = weatherTypeName(curType);
+			}
+			area->m_String = status;
+		}
+	}
+
+	const int intenLabelId = m_weatherDebugWindow->GetElementID("TXT_INTENSITY");
+	if (intenLabelId != -1)
+	{
+		auto elem = gui->GetElement(intenLabelId);
+		if (elem && elem->m_Type == GUI_TEXTAREA)
+		{
+			auto* area = static_cast<GuiTextArea*>(elem.get());
+			area->m_String = intensityName(intensity);
+			// Dim label when intensity does not apply to current weather.
+			area->m_Color = intensityActive
+				? Color{ 200, 200, 220, 255 }
+				: Color{ 120, 120, 130, 255 };
+		}
+	}
+
+	if (slider)
+	{
+		slider->m_SpurColor = intensityActive
+			? Color{ 128, 160, 255, 255 }
+			: Color{ 80, 80, 100, 255 };
+	}
+}
+
 void MainState::JumpToFinderResult(int index)
 {
 	const int count = int(m_finderObjectIds.size());
@@ -4723,6 +5052,21 @@ void MainState::UpdateDebugToolsWindow()
 			if (button->m_Clicked)
 			{
 				HandleObjectFinderButton();
+			}
+		}
+	}
+
+	// Check WEATHER_BUTTON — cycle debug weather presets
+	int weatherButtonID = m_debugToolsWindow->GetElementID("WEATHER_BUTTON");
+	if (weatherButtonID != -1)
+	{
+		auto elem = gui->GetElement(weatherButtonID);
+		if (elem && elem->m_Type == GUI_ICONBUTTON)
+		{
+			auto button = static_cast<GuiIconButton*>(elem.get());
+			if (button->m_Clicked)
+			{
+				HandleWeatherButton();
 			}
 		}
 	}

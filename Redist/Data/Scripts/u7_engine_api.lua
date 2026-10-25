@@ -1185,7 +1185,12 @@ function get_weather() end
 ---[Exult 0x0045] Sets the weather
 ---@param weather integer Weather type (see get_weather for values)
 ---@param duration_minutes integer|nil Game minutes (0/omit = continuous ~6000); 255 clears
-function set_weather(weather, duration_minutes) end
+---@param intensity integer|nil 0 Light, 1 Medium (default/BG), 2 Heavy — rain/snow density only
+function set_weather(weather, duration_minutes, intensity) end
+
+---Gets rain/snow density intensity
+---@return integer intensity 0 Light, 1 Medium, 2 Heavy
+function get_weather_intensity() end
 
 ---[Exult 0x0090] Checks if location is water
 ---@param x integer X coordinate

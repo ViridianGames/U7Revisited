@@ -508,6 +508,58 @@ void InitRuntimePalette(const std::array<Color, 256>& basePalette)
 	UnloadImage(paletteImage);
 
 	g_paletteSystemReady = (g_paletteShader.id > 0 && g_paletteTexture.id > 0);
+
+	// Clouds track the stable day/weather base — not the glisten-rotated runtime LUT.
+	RefreshLivePaletteSprites();
+}
+
+void RefreshLivePaletteSprites()
+{
+	// BG cloud shadows: weather.c shape 1026 → SPRITES.VGA entry 2.
+	// Bake as translucent xform (U7 shadow index 253) so they darken the world
+	// instead of looking like opaque orange/gray blobs. Never use glisten LUT.
+	constexpr int kCloudSprite = 2;
+	if (kCloudSprite < 0 || kCloudSprite >= static_cast<int>(g_spriteTable.size()))
+	{
+		return;
+	}
+
+	for (SpriteFrame& frame : g_spriteTable[kCloudSprite])
+	{
+		if (frame.paletteIndices.empty() || frame.image.data == nullptr)
+		{
+			continue;
+		}
+		const int w = frame.width;
+		const int h = frame.height;
+		if (w <= 0 || h <= 0 || static_cast<int>(frame.paletteIndices.size()) != w * h)
+		{
+			continue;
+		}
+
+		for (int y = 0; y < h; ++y)
+		{
+			for (int x = 0; x < w; ++x)
+			{
+				const int16_t idx = frame.paletteIndices[y * w + x];
+				if (idx < 0)
+				{
+					ImageDrawPixel(&frame.image, x, y, Color{ 0, 0, 0, 0 });
+					continue;
+				}
+				const int pi = idx & 255;
+				// Prefer native xform indices (244-254); everything else → shadow 253.
+				Color pixel = (pi >= kU7PaletteXformMin && pi <= kU7PaletteXformMaxInclusive)
+					? GetU7XformBakeColor(pi)
+					: GetU7XformBakeColor(253);
+				ImageDrawPixel(&frame.image, x, y, pixel);
+			}
+		}
+		if (frame.texture.id > 0)
+		{
+			::UpdateTexture(frame.texture, frame.image.data);
+		}
+	}
 }
 
 void UpdateRuntimePalette()

@@ -1,5 +1,7 @@
 #include "WeatherSystem.h"
 #include "U7Globals.h"
+#include "U7Object.h"
+#include "U7Player.h"
 #include "Geist/Logging.h"
 #include "Geist/SoundSystem.h"
 #include "Geist/Engine.h"
@@ -12,59 +14,154 @@ std::unique_ptr<WeatherSystem> g_WeatherSystem;
 namespace
 {
 	constexpr float kFlashDuration = 0.12f;
-	constexpr float kOvercastDim = 0.72f;
+	// Daylight multiply at full overcast fade (1 = no dim). Lower = darker.
+	// Was a flat 0.42 (~58% darker) — too heavy for light rain; now intensity-scaled and lighter overall.
+	constexpr int kOvercastVeilAlpha = 55; // was 70; intensity scale applied on top
 	constexpr float kFogDimR = 0.55f;
 	constexpr float kFogDimG = 0.60f;
 	constexpr float kFogDimB = 0.68f;
+	constexpr int kFogVeilAlpha = 150;
+
+	float FogIntensityScale(WeatherIntensity intensity)
+	{
+		switch (intensity)
+		{
+		case WeatherIntensity::Light:  return 0.55f;
+		case WeatherIntensity::Heavy:  return 1.35f;
+		case WeatherIntensity::Medium:
+		default:                       return 1.0f;
+		}
+	}
+
+	// Lighting multiply at full fade: Light drizzle barely dims; keep Heavy shy of old 0.42.
+	float OvercastDimMultiplier(WeatherIntensity intensity)
+	{
+		switch (intensity)
+		{
+		case WeatherIntensity::Light:  return 0.90f; // ~10% darker
+		case WeatherIntensity::Heavy:  return 0.70f; // ~30% darker (was 0.55 / flat 0.42)
+		case WeatherIntensity::Medium:
+		default:                       return 0.80f; // ~20% darker
+		}
+	}
+
+	float OvercastVeilScale(WeatherIntensity intensity)
+	{
+		switch (intensity)
+		{
+		case WeatherIntensity::Light:  return 0.40f;
+		case WeatherIntensity::Heavy:  return 0.95f;
+		case WeatherIntensity::Medium:
+		default:                       return 0.65f;
+		}
+	}
+
+	// World XZ for 8-way (0=N … 7=NW). N = -Z.
+	const float kDirWX[8] = { 0,  1, 1, 1, 0, -1, -1, -1 };
+	const float kDirWZ[8] = { -1, -1, 0, 1, 1,  1,  0, -1 };
 }
 
 void WeatherSystem::Init()
 {
 	m_type = WeatherType::Clear;
 	m_phase = WeatherPhase::Idle;
+	m_intensity = WeatherIntensity::Medium;
 	m_remainingMinutes = 0;
 	m_hasEggOrigin = false;
 	m_eggObjectId = -1;
+	m_manualOverride = false;
+	m_manualOrigin = { 0, 0, 0 };
+	m_pending = {};
 	m_music.musicRainTrack = 4;
 	m_music.musicSnowTrack = 5;
 	m_particles.assign(kMaxParticles, Particle{});
+	m_edgeClouds.assign(kMaxEdgeClouds, EdgeCloud{});
 	ClearParticles();
+	ClearEdgeClouds();
 	m_spawnAccumulator = 0;
 	m_flashTimer = 0;
 	m_flashCooldown = 0;
-	m_cloudFrame = 0;
-	m_cloudTimer = 0;
+	m_weatherTickAccum = 0;
+	m_fogFade = 0;
+	m_fogIntensityScale = 1.0f;
+	m_overcastFade = 0;
+	m_fogWasActive = false;
+	m_targetCount = 0;
+	m_bursts = 0;
+	m_delay = 0;
+	m_direction = 0;
+	m_stormFlag = 0;
+	m_hasCamera = false;
 	StopWeatherMusicIfPlaying();
-	ConfigureEffectParams(WeatherType::Clear);
+	ConfigureEffectParams(WeatherType::Clear, WeatherIntensity::Medium);
 }
 
 void WeatherSystem::Shutdown()
 {
+	m_pending = {};
 	ClearWeather(false);
+}
+
+bool WeatherSystem::TypeWantsOvercast(WeatherType type) const
+{
+	return type == WeatherType::Snow
+		|| type == WeatherType::Rain
+		|| type == WeatherType::Overcast;
+}
+
+bool WeatherSystem::IsFadingOut() const
+{
+	return m_phase == WeatherPhase::Stopping || m_phase == WeatherPhase::Finishing;
+}
+
+bool WeatherSystem::SpawnsPrecipParticles() const
+{
+	return m_type == WeatherType::Rain
+		|| m_type == WeatherType::Snow
+		|| m_type == WeatherType::Sparkle;
 }
 
 void WeatherSystem::UpdateGameMinute()
 {
-	if (m_type == WeatherType::Clear)
+	if (m_type == WeatherType::Clear && m_phase == WeatherPhase::Idle && !m_pending.active)
 	{
 		return;
 	}
 
-	if (m_remainingMinutes > 0)
+	if (m_remainingMinutes > 0 && !IsFadingOut())
 	{
 		--m_remainingMinutes;
 		if (m_remainingMinutes <= 0)
 		{
+			// Do NOT wipe m_pending — picker/Lua may have queued an override.
 			ClearWeather(true);
 		}
 	}
 }
 
 void WeatherSystem::SetWeather(int type, int durationMinutes, bool fromEgg,
-	Vector3 eggOrigin, int eggObjectId)
+	Vector3 eggOrigin, int eggObjectId, int intensity)
 {
+	auto takeManualOwnership = [this]() {
+		m_manualOverride = true;
+		m_hasEggOrigin = false;
+		m_eggObjectId = -1;
+		if (g_Player)
+		{
+			if (U7Object* avatar = g_Player->GetAvatarObject())
+			{
+				m_manualOrigin = avatar->m_Pos;
+				return;
+			}
+		}
+		m_manualOrigin = { 0, 0, 0 };
+	};
+
 	if (type == 255)
 	{
+		// Debug/Lua clear: own the clear so nearby weather eggs don't instantly re-hatch.
+		takeManualOwnership();
+		m_pending = {};
 		ClearWeather(true);
 		return;
 	}
@@ -75,13 +172,157 @@ void WeatherSystem::SetWeather(int type, int durationMinutes, bool fromEgg,
 		return;
 	}
 
-	ApplyType(static_cast<WeatherType>(type), durationMinutes, fromEgg, eggOrigin, eggObjectId);
+	WeatherIntensity inten = WeatherIntensity::Medium;
+	if (intensity >= 0 && intensity <= 2)
+	{
+		inten = static_cast<WeatherIntensity>(intensity);
+	}
+
+	const WeatherType newType = static_cast<WeatherType>(type);
+
+	if (fromEgg)
+	{
+		m_manualOverride = false;
+	}
+	else
+	{
+		takeManualOwnership();
+	}
+
+	// Sparkle snaps on/off (exclusive anti-magic field).
+	if (newType == WeatherType::Sparkle || m_type == WeatherType::Sparkle)
+	{
+		m_pending = {};
+		ApplyType(newType, durationMinutes, fromEgg, eggOrigin, eggObjectId, inten);
+		return;
+	}
+
+	// Same type already running: rain/snow/fog retarget intensity; others keep as-is.
+	if (m_type == newType && !IsFadingOut() && m_type != WeatherType::Clear)
+	{
+		m_remainingMinutes = (durationMinutes <= 0) ? 6000 : durationMinutes;
+		if (fromEgg)
+		{
+			m_hasEggOrigin = true;
+			m_eggOrigin = eggOrigin;
+			m_eggObjectId = eggObjectId;
+		}
+		else
+		{
+			m_hasEggOrigin = false;
+			m_eggObjectId = -1;
+		}
+		if (newType == WeatherType::Rain || newType == WeatherType::Snow || newType == WeatherType::Fog)
+		{
+			m_intensity = inten;
+			ConfigureEffectParams(newType, inten);
+			if (newType == WeatherType::Rain || newType == WeatherType::Snow)
+			{
+				if (m_phase == WeatherPhase::Steady)
+				{
+					m_targetCount = m_maxCount;
+				}
+				else if (m_targetCount > m_maxCount)
+				{
+					m_targetCount = m_maxCount;
+				}
+			}
+		}
+		return;
+	}
+
+	// Already idle/clear: start immediately (blend fades may still drain — OK to crossfade).
+	if (m_type == WeatherType::Clear && m_phase == WeatherPhase::Idle)
+	{
+		m_pending = {};
+		ApplyType(newType, durationMinutes, fromEgg, eggOrigin, eggObjectId, inten);
+		return;
+	}
+
+	// Queue B, fade out A first. Manual pending must not carry egg origin.
+	m_pending.active = true;
+	m_pending.type = newType;
+	m_pending.intensity = inten;
+	m_pending.durationMinutes = durationMinutes;
+	m_pending.fromEgg = fromEgg;
+	m_pending.eggOrigin = fromEgg ? eggOrigin : Vector3{ 0, 0, 0 };
+	m_pending.eggObjectId = fromEgg ? eggObjectId : -1;
+
+	if (!IsFadingOut())
+	{
+		ClearWeather(true);
+	}
 }
 
-void WeatherSystem::ConfigureEffectParams(WeatherType type)
+int WeatherSystem::ResolveMaxCount(WeatherType type, WeatherIntensity intensity) const
 {
-	m_maxCount = 0;
-	m_fallSpeed = 0;
+	switch (type)
+	{
+	case WeatherType::Snow:
+	case WeatherType::Rain:
+		switch (intensity)
+		{
+		case WeatherIntensity::Light:  return kLightParticles;
+		case WeatherIntensity::Heavy:  return kHeavyParticles;
+		case WeatherIntensity::Medium:
+		default:                       return kTargetParticles;
+		}
+	case WeatherType::Sparkle:
+		return kSparkleParticles;
+	case WeatherType::Overcast:
+	case WeatherType::Cloudy:
+		return 0; // edges + palette only; no precip particles
+	default:
+		return 0;
+	}
+}
+
+float WeatherSystem::ResolveFallSpeed(WeatherType type, WeatherIntensity intensity) const
+{
+	float base = 0.0f;
+	if (type == WeatherType::Rain)
+	{
+		base = 220.0f;
+	}
+	else if (type == WeatherType::Snow)
+	{
+		base = 40.0f;
+	}
+	else
+	{
+		return 0.0f;
+	}
+
+	switch (intensity)
+	{
+	case WeatherIntensity::Light:  return base * 0.70f;
+	case WeatherIntensity::Heavy:  return base * 1.55f;
+	case WeatherIntensity::Medium:
+	default:                       return base;
+	}
+}
+
+int WeatherSystem::AvatarFacing8() const
+{
+	if (!g_Player)
+	{
+		return GetRandomValue(0, 7);
+	}
+	U7Object* avatar = g_Player->GetAvatarObject();
+	if (!avatar)
+	{
+		return GetRandomValue(0, 7);
+	}
+	float deg = avatar->m_Angle;
+	while (deg < 0.0f) deg += 360.0f;
+	while (deg >= 360.0f) deg -= 360.0f;
+	return static_cast<int>((deg + 22.5f) / 45.0f) % 8;
+}
+
+void WeatherSystem::ConfigureEffectParams(WeatherType type, WeatherIntensity intensity)
+{
+	m_maxCount = ResolveMaxCount(type, intensity);
+	m_fallSpeed = ResolveFallSpeed(type, intensity);
 	m_firstFrame = 0;
 	m_frameCount = 0;
 	m_useSplashes = false;
@@ -91,34 +332,25 @@ void WeatherSystem::ConfigureEffectParams(WeatherType type)
 	switch (type)
 	{
 	case WeatherType::Snow:
-		// Original: 125, speed 1, frames 13-20, splash 21-27
-		m_maxCount = kTargetParticles;
-		m_fallSpeed = 40.0f;
 		m_firstFrame = 13;
 		m_frameCount = 8;
-		m_useSplashes = true;
-		m_firstSplashFrame = 21;
-		m_splashFrames = 7;
-		break;
-	case WeatherType::Rain:
-		// Original: 125, speed 6, frames 3-6
-		m_maxCount = kTargetParticles;
-		m_fallSpeed = 220.0f;
-		m_firstFrame = 3;
-		m_frameCount = 4;
-		break;
-	case WeatherType::Sparkle:
-		// Exult: Basicdrop<21, 27, 0, true> — hover (delta 0), frames 21..27 ping-pong.
-		m_maxCount = kSparkleParticles;
-		m_fallSpeed = 0;
-		m_firstFrame = 21;
-		m_frameCount = 7; // 21..27 inclusive
+		// No splash: frames 21–27 are sparkle art and read as a sudden shrink/shape change.
 		m_useSplashes = false;
 		break;
-	case WeatherType::Overcast:
-	case WeatherType::Cloudy:
-		m_maxCount = 1;
+	case WeatherType::Rain:
+		m_firstFrame = 3;
+		m_frameCount = 4;
+		if (intensity != WeatherIntensity::Light)
+		{
+			m_useSplashes = true;
+			m_firstSplashFrame = 7;
+			m_splashFrames = 1;
+		}
+		break;
+	case WeatherType::Sparkle:
 		m_fallSpeed = 0;
+		m_firstFrame = 21;
+		m_frameCount = 7;
 		break;
 	default:
 		break;
@@ -126,7 +358,7 @@ void WeatherSystem::ConfigureEffectParams(WeatherType type)
 }
 
 void WeatherSystem::ApplyType(WeatherType type, int durationMinutes, bool fromEgg,
-	Vector3 eggOrigin, int eggObjectId)
+	Vector3 eggOrigin, int eggObjectId, WeatherIntensity intensity)
 {
 	if (type == WeatherType::Clear)
 	{
@@ -135,7 +367,7 @@ void WeatherSystem::ApplyType(WeatherType type, int durationMinutes, bool fromEg
 	}
 
 	m_type = type;
-	m_phase = WeatherPhase::Rising;
+	m_intensity = intensity;
 
 	int minutes = durationMinutes;
 	if (minutes <= 0)
@@ -145,29 +377,129 @@ void WeatherSystem::ApplyType(WeatherType type, int durationMinutes, bool fromEg
 	m_remainingMinutes = minutes;
 
 	m_hasEggOrigin = fromEgg;
-	m_eggOrigin = eggOrigin;
+	m_eggOrigin = fromEgg ? eggOrigin : Vector3{ 0, 0, 0 };
 	m_eggObjectId = fromEgg ? eggObjectId : -1;
+	if (fromEgg)
+	{
+		m_manualOverride = false;
+	}
 
-	ConfigureEffectParams(type);
+	ConfigureEffectParams(type, intensity);
 	ClearParticles();
+	// Keep living edge clouds only if continuing storm look; otherwise clear.
+	if (type == WeatherType::Fog || type == WeatherType::Sparkle)
+	{
+		ClearEdgeClouds();
+	}
 	m_spawnAccumulator = 0;
 	m_flashTimer = 0;
 	m_flashCooldown = GetRandomValue(2, 8) / 10.0f;
+	m_weatherTickAccum = 0;
+
+	const bool isStorm = (type == WeatherType::Rain || type == WeatherType::Snow
+		|| type == WeatherType::Overcast || type == WeatherType::Cloudy);
+	m_stormFlag = isStorm ? 2 : 0;
+	m_targetCount = SpawnsPrecipParticles() ? (isStorm ? 1 : m_maxCount) : 0;
+	m_bursts = 0;
+	m_delay = (m_stormFlag * 25) / 2;
+	m_direction = (AvatarFacing8() + 3 + GetRandomValue(0, 2)) % 8;
+	m_phase = m_stormFlag ? WeatherPhase::Burst : WeatherPhase::Ramping;
+
+	if (type == WeatherType::Fog)
+	{
+		m_phase = WeatherPhase::Steady;
+		m_delay = 0;
+		m_targetCount = 0;
+		m_fogWasActive = true;
+		// Kick so the veil/dim read immediately; rest eases in over kFogFadeSeconds.
+		if (m_fogFade < 0.28f)
+		{
+			m_fogFade = 0.28f;
+		}
+	}
+	else if (type == WeatherType::Sparkle)
+	{
+		m_phase = WeatherPhase::Steady;
+		m_targetCount = m_maxCount;
+		m_delay = 0;
+	}
+
+	// Overcast dim/veil: kick early so day darkening is felt right away (Rain/Snow/Overcast).
+	if (TypeWantsOvercast(type) && m_overcastFade < 0.35f)
+	{
+		m_overcastFade = 0.35f;
+	}
+
 	SyncWeatherMusic();
 }
 
 void WeatherSystem::ClearWeather(bool gradual)
 {
-	(void)gradual;
+	if (!gradual || (m_type == WeatherType::Clear && m_phase == WeatherPhase::Idle))
+	{
+		FinishClear();
+		return;
+	}
+
+	// Sparkle snaps off — particles never drain via storm ticks.
+	if (m_type == WeatherType::Sparkle)
+	{
+		FinishClear();
+		return;
+	}
+
+	if (m_type == WeatherType::Fog)
+	{
+		m_fogWasActive = true;
+		m_phase = WeatherPhase::Stopping;
+		m_remainingMinutes = 0;
+		return;
+	}
+
+	// Rain/Snow/Overcast/Cloudy: stop new spawns, let precip finish falling (sped up),
+	// and let edge clouds expire quickly — never snap-clear clouds.
+	m_delay = 0;
+	m_targetCount = 0;
+	ShortenEdgeCloudLives(kEdgeCloudFadeOutLife);
+	m_phase = WeatherPhase::Stopping;
+	m_remainingMinutes = 0;
+}
+
+void WeatherSystem::TryStartPending()
+{
+	if (!m_pending.active)
+	{
+		return;
+	}
+	if (!VisualEffectsCleared())
+	{
+		return;
+	}
+
+	PendingWeather p = m_pending;
+	m_pending = {};
+	ApplyType(p.type, p.durationMinutes, p.fromEgg, p.eggOrigin, p.eggObjectId, p.intensity);
+}
+
+void WeatherSystem::FinishClear()
+{
 	StopWeatherMusicIfPlaying();
 	m_type = WeatherType::Clear;
 	m_phase = WeatherPhase::Idle;
 	m_remainingMinutes = 0;
 	m_hasEggOrigin = false;
 	m_eggObjectId = -1;
-	ConfigureEffectParams(WeatherType::Clear);
+	m_targetCount = 0;
+	m_bursts = 0;
+	m_delay = 0;
+	m_stormFlag = 0;
+	ConfigureEffectParams(WeatherType::Clear, WeatherIntensity::Medium);
 	ClearParticles();
+	ClearEdgeClouds();
 	m_flashTimer = 0;
+
+	// Keep fog/overcast blends decaying via UpdateBlendFades; then start pending.
+	TryStartPending();
 }
 
 void WeatherSystem::ClearParticles()
@@ -178,8 +510,39 @@ void WeatherSystem::ClearParticles()
 	}
 }
 
+void WeatherSystem::ClearEdgeClouds()
+{
+	for (EdgeCloud& c : m_edgeClouds)
+	{
+		c = EdgeCloud{};
+	}
+}
+
+void WeatherSystem::ShortenEdgeCloudLives(float maxLifeSeconds)
+{
+	for (EdgeCloud& c : m_edgeClouds)
+	{
+		if (c.active && c.life > maxLifeSeconds)
+		{
+			c.life = maxLifeSeconds;
+		}
+	}
+}
+
 void WeatherSystem::CheckEggDistanceCancel(Vector3 avatarPos, float maxDistanceTiles)
 {
+	// Manual picker/Lua weather: drop override once avatar walks away so eggs can hatch again.
+	if (m_manualOverride)
+	{
+		const float mdx = avatarPos.x - m_manualOrigin.x;
+		const float mdz = avatarPos.z - m_manualOrigin.z;
+		if (std::sqrt(mdx * mdx + mdz * mdz) > maxDistanceTiles)
+		{
+			m_manualOverride = false;
+		}
+		return; // never cancel weather for egg distance while manual owns it
+	}
+
 	if (!m_hasEggOrigin || m_type == WeatherType::Clear)
 	{
 		return;
@@ -190,6 +553,16 @@ void WeatherSystem::CheckEggDistanceCancel(Vector3 avatarPos, float maxDistanceT
 	const float dist = std::sqrt(dx * dx + dz * dz);
 	if (dist > maxDistanceTiles)
 	{
+		// Preserve a non-egg pending override (e.g. picker queued during egg weather).
+		if (m_pending.active && !m_pending.fromEgg)
+		{
+			if (!IsFadingOut())
+			{
+				ClearWeather(true);
+			}
+			return;
+		}
+		m_pending = {};
 		ClearWeather(true);
 	}
 }
@@ -200,65 +573,118 @@ bool WeatherSystem::EffectsEnabled() const
 	{
 		return true;
 	}
-	// engine.cfg: weather_effects = 1 (default on). 0 disables particles/overlays.
 	return g_Engine->m_EngineConfig.GetNumber("weather_effects") >= 0.5f;
+}
+
+bool WeatherSystem::IsAvatarSheltered() const
+{
+	if (g_dungeonViewActive)
+	{
+		return true;
+	}
+	if (!g_pathfindingSystem || !g_Player)
+	{
+		return false;
+	}
+	U7Object* avatar = g_Player->GetAvatarObject();
+	if (!avatar)
+	{
+		return false;
+	}
+	const int ax = static_cast<int>(std::floor(avatar->m_Pos.x));
+	const int az = static_cast<int>(std::floor(avatar->m_Pos.z));
+	return g_pathfindingSystem->IsInteriorTile(ax, az);
 }
 
 bool WeatherSystem::WantsOvercastPalette() const
 {
-	// Original daytime weather palettes: snow, rain, overcast use overcast; cloudy does not.
-	return m_type == WeatherType::Snow
-		|| m_type == WeatherType::Rain
-		|| m_type == WeatherType::Overcast;
+	return m_overcastFade > 0.01f;
 }
 
 bool WeatherSystem::WantsFogPalette() const
 {
-	return m_type == WeatherType::Fog;
+	return m_fogFade > 0.01f;
 }
 
 bool WeatherSystem::WantsCloudSprites() const
 {
 	return m_type == WeatherType::Overcast
 		|| m_type == WeatherType::Cloudy
-		|| m_type == WeatherType::Rain;
+		|| m_type == WeatherType::Rain
+		|| m_type == WeatherType::Snow
+		|| CountActiveEdgeClouds() > 0;
 }
 
 bool WeatherSystem::ShouldDrawPrecipitation() const
 {
-	if (!EffectsEnabled())
+	if (!EffectsEnabled() || IsAvatarSheltered())
 	{
 		return false;
 	}
-	if (m_type != WeatherType::Rain && m_type != WeatherType::Snow)
+	return m_type == WeatherType::Rain || m_type == WeatherType::Snow
+		|| ((m_type == WeatherType::Clear || IsFadingOut())
+			&& CountActiveParticles() > 0 && m_fallSpeed > 0.0f);
+}
+
+int WeatherSystem::CountActiveParticles() const
+{
+	int n = 0;
+	for (const Particle& p : m_particles)
 	{
-		return false;
+		if (p.active)
+		{
+			++n;
+		}
 	}
-	// Outdoor-only (not dungeon / under mountain ceiling).
-	if (g_dungeonViewActive)
+	return n;
+}
+
+int WeatherSystem::CountActiveEdgeClouds() const
+{
+	int n = 0;
+	for (const EdgeCloud& c : m_edgeClouds)
 	{
-		return false;
+		if (c.active)
+		{
+			++n;
+		}
 	}
-	return true;
+	return n;
+}
+
+bool WeatherSystem::VisualEffectsCleared() const
+{
+	// Blend fades (fog/overcast) may still drain — pending weather is allowed to crossfade.
+	return CountActiveParticles() == 0
+		&& CountActiveEdgeClouds() == 0;
 }
 
 void WeatherSystem::TryAddParticle()
 {
-	int active = 0;
-	int freeIndex = -1;
-	for (int i = 0; i < static_cast<int>(m_particles.size()); ++i)
+	if (m_type != WeatherType::Sparkle)
 	{
-		if (m_particles[i].active)
+		if (!SpawnsPrecipParticles() || m_fallSpeed <= 0.0f)
 		{
-			++active;
-		}
-		else if (freeIndex < 0)
-		{
-			freeIndex = i;
+			return;
 		}
 	}
 
-	if (active >= m_maxCount || freeIndex < 0)
+	const int active = CountActiveParticles();
+	if (active >= m_targetCount || active >= m_maxCount || m_maxCount <= 0)
+	{
+		return;
+	}
+
+	int freeIndex = -1;
+	for (int i = 0; i < static_cast<int>(m_particles.size()); ++i)
+	{
+		if (!m_particles[i].active)
+		{
+			freeIndex = i;
+			break;
+		}
+	}
+	if (freeIndex < 0)
 	{
 		return;
 	}
@@ -271,7 +697,6 @@ void WeatherSystem::TryAddParticle()
 
 	if (m_type == WeatherType::Sparkle)
 	{
-		// Exult sparkle: spawn anywhere on screen; hang and twinkle in place.
 		p.x = static_cast<float>(GetRandomValue(0, 620));
 		p.y = static_cast<float>(GetRandomValue(0, 340));
 		p.endY = p.y;
@@ -286,31 +711,209 @@ void WeatherSystem::TryAddParticle()
 	}
 }
 
-void WeatherSystem::UpdateParticles(float dt)
+void WeatherSystem::TrySpawnEdgeBurst(Camera camera)
 {
-	if (m_maxCount <= 0)
+	// Keep spawning while sheltered — outdoor weather continues; Draw hides it indoors.
+	if (m_delay == 0 || !WantsCloudSprites())
+	{
+		return;
+	}
+	if (IsFadingOut())
 	{
 		return;
 	}
 
-	if (m_phase == WeatherPhase::Rising || m_phase == WeatherPhase::Steady)
+	int chance = 75;
+	if (m_phase == WeatherPhase::Burst)
 	{
-		m_spawnAccumulator += dt * static_cast<float>(m_maxCount) * 0.35f;
-		while (m_spawnAccumulator >= 1.0f)
-		{
-			m_spawnAccumulator -= 1.0f;
-			TryAddParticle();
-		}
-		m_phase = WeatherPhase::Steady;
+		chance = m_delay;
+	}
+	else if (m_phase == WeatherPhase::Stopping)
+	{
+		chance = 9999;
 	}
 
+	if (GetRandomValue(0, std::max(1, chance) - 1) != 0)
+	{
+		return;
+	}
+
+	const int count = GetRandomValue(1, 3);
+	const auto& clouds = g_spriteTable[kCloudSpriteShape];
+	if (clouds.empty())
+	{
+		++m_bursts;
+		return;
+	}
+
+	const float speed = kCloudWorldSpeed + static_cast<float>(GetRandomValue(0, 30)) / 10.0f;
+	const float vx = kDirWX[m_direction % 8] * speed;
+	const float vz = kDirWZ[m_direction % 8] * speed;
+
+	const Vector3 center = camera.target;
+	const float spawnDist = 28.0f + static_cast<float>(GetRandomValue(0, 12));
+	// Incoming side = opposite travel direction.
+	const float inX = center.x - kDirWX[m_direction % 8] * spawnDist;
+	const float inZ = center.z - kDirWZ[m_direction % 8] * spawnDist;
+	// Sit near ground — these are cloud *shadows* on the terrain, not sky billboards.
+	const float baseY = 0.12f;
+
+	for (int n = 0; n < count; ++n)
+	{
+		int slot = -1;
+		for (int i = 0; i < static_cast<int>(m_edgeClouds.size()); ++i)
+		{
+			if (!m_edgeClouds[i].active)
+			{
+				slot = i;
+				break;
+			}
+		}
+		if (slot < 0)
+		{
+			break;
+		}
+
+		const float lateral = static_cast<float>(GetRandomValue(-14, 14));
+		// Perpendicular in XZ: (-vz, vx) normalized-ish.
+		float px = -vz;
+		float pz = vx;
+		const float plen = std::sqrt(px * px + pz * pz);
+		if (plen > 0.01f)
+		{
+			px = px / plen * lateral;
+			pz = pz / plen * lateral;
+		}
+		else
+		{
+			px = lateral;
+			pz = 0;
+		}
+
+		EdgeCloud& c = m_edgeClouds[slot];
+		c.active = true;
+		c.frame = GetRandomValue(0, static_cast<int>(clouds.size()) - 1);
+		c.vx = vx;
+		c.vz = vz;
+		c.life = 10.0f + static_cast<float>(GetRandomValue(0, 50)) / 10.0f;
+		c.worldX = inX + px;
+		c.worldZ = inZ + pz;
+		c.worldY = baseY + static_cast<float>(GetRandomValue(0, 8)) / 100.0f;
+	}
+
+	++m_bursts;
+}
+
+void WeatherSystem::UpdateEdgeClouds(float dt, Camera camera)
+{
+	const Vector3 center = camera.target;
+	for (EdgeCloud& c : m_edgeClouds)
+	{
+		if (!c.active)
+		{
+			continue;
+		}
+		c.worldX += c.vx * dt;
+		c.worldZ += c.vz * dt;
+		c.life -= dt;
+		const float dx = c.worldX - center.x;
+		const float dz = c.worldZ - center.z;
+		const float dist = std::sqrt(dx * dx + dz * dz);
+		if (c.life <= 0.0f || dist > 80.0f)
+		{
+			c.active = false;
+		}
+	}
+}
+
+void WeatherSystem::UpdateStormTick()
+{
+	if (m_type == WeatherType::Clear || m_type == WeatherType::Fog || m_type == WeatherType::Sparkle)
+	{
+		return;
+	}
+
+	switch (m_phase)
+	{
+	case WeatherPhase::Burst:
+		if (!(m_bursts < 3 && m_delay != 0))
+		{
+			m_phase = WeatherPhase::Ramping;
+		}
+		break;
+	case WeatherPhase::Ramping:
+		if (m_targetCount >= m_maxCount)
+		{
+			m_phase = WeatherPhase::Steady;
+		}
+		else if (SpawnsPrecipParticles())
+		{
+			++m_targetCount;
+		}
+		else
+		{
+			m_phase = WeatherPhase::Steady;
+		}
+		break;
+	case WeatherPhase::Steady:
+		break;
+	case WeatherPhase::Stopping:
+		m_delay = 0;
+		// Drain targetCount quickly so we don't linger in Stopping for Heavy storms.
+		if (m_targetCount <= 0)
+		{
+			m_phase = WeatherPhase::Finishing;
+		}
+		else
+		{
+			m_targetCount = std::max(0, m_targetCount - 20);
+		}
+		break;
+	case WeatherPhase::Finishing:
+		if (CountActiveParticles() <= 0 && CountActiveEdgeClouds() <= 0)
+		{
+			FinishClear();
+			return;
+		}
+		break;
+	default:
+		break;
+	}
+
+	if (SpawnsPrecipParticles()
+		&& (m_phase == WeatherPhase::Burst || m_phase == WeatherPhase::Ramping
+			|| m_phase == WeatherPhase::Steady))
+	{
+		int newParticles = GetRandomValue(1, 12);
+		while (newParticles > 0 && CountActiveParticles() < m_targetCount)
+		{
+			TryAddParticle();
+			--newParticles;
+		}
+	}
+
+	if (m_delay != 0 && m_hasCamera && WantsCloudSprites() && !IsFadingOut())
+	{
+		TrySpawnEdgeBurst(m_lastCamera);
+	}
+}
+
+void WeatherSystem::UpdateParticles(float dt)
+{
 	constexpr float kSparkleFrameSeconds = 0.08f;
-	const int sparkleLast = m_firstFrame + m_frameCount - 1; // 27 when first=21, count=7
+	const int sparkleLast = m_firstFrame + m_frameCount - 1;
 
 	for (Particle& p : m_particles)
 	{
 		if (!p.active)
 		{
+			continue;
+		}
+
+		// Safety: non-sparkle zero-speed orphans (Overcast leftover).
+		if (m_type != WeatherType::Sparkle && m_fallSpeed <= 0.0f && p.splash <= 0.0f)
+		{
+			p.active = false;
 			continue;
 		}
 
@@ -324,7 +927,6 @@ void WeatherSystem::UpdateParticles(float dt)
 			continue;
 		}
 
-		// Exult sparkle: delta 0 — hover and ping-pong frames; respawn at end of cycle.
 		if (m_type == WeatherType::Sparkle && m_fallSpeed <= 0.0f)
 		{
 			p.animTimer += dt;
@@ -338,7 +940,6 @@ void WeatherSystem::UpdateParticles(float dt)
 					{
 						p.frame = sparkleLast;
 						p.forward = false;
-						// Respawn like Exult when reaching fraN with delta 0.
 						p.x = static_cast<float>(GetRandomValue(0, 620));
 						p.y = static_cast<float>(GetRandomValue(0, 340));
 						p.frame = m_firstFrame + GetRandomValue(0, std::max(0, m_frameCount - 1));
@@ -358,7 +959,8 @@ void WeatherSystem::UpdateParticles(float dt)
 			continue;
 		}
 
-		p.y += m_fallSpeed * dt;
+		const float fallMul = IsFadingOut() ? kPrecipFadeOutFallMul : 1.0f;
+		p.y += m_fallSpeed * fallMul * dt;
 		if (m_frameCount > 0)
 		{
 			p.frame = (p.frame + 1) % m_frameCount;
@@ -366,7 +968,8 @@ void WeatherSystem::UpdateParticles(float dt)
 
 		if (p.y >= p.endY)
 		{
-			if (m_useSplashes && m_splashFrames > 0)
+			// Skip splash during fade-out so precip clears faster for pending weather.
+			if (m_useSplashes && m_splashFrames > 0 && !IsFadingOut())
 			{
 				p.splash = static_cast<float>(m_splashFrames);
 			}
@@ -378,35 +981,136 @@ void WeatherSystem::UpdateParticles(float dt)
 	}
 }
 
+void WeatherSystem::UpdateBlendFades(float dt)
+{
+	const bool fogOn = (m_type == WeatherType::Fog && !IsFadingOut());
+	const float fogTarget = fogOn ? 1.0f : 0.0f;
+	if (fogOn)
+	{
+		m_fogWasActive = true;
+	}
+	const float fogStep = dt / kFogFadeSeconds;
+	if (m_fogFade < fogTarget)
+	{
+		m_fogFade = std::min(fogTarget, m_fogFade + fogStep);
+	}
+	else if (m_fogFade > fogTarget)
+	{
+		m_fogFade = std::max(fogTarget, m_fogFade - fogStep);
+	}
+	if (m_fogFade < 0.01f)
+	{
+		m_fogFade = 0;
+		if (!fogOn)
+		{
+			m_fogWasActive = false;
+		}
+	}
+
+	// Smooth Light/Medium/Heavy fog density (veil + dim) — no instant snaps.
+	{
+		const float intenTarget = (fogOn || m_fogFade > 0.01f)
+			? FogIntensityScale(m_intensity)
+			: 1.0f;
+		const float intenStep = dt / kFogIntensityBlendSeconds;
+		if (m_fogIntensityScale < intenTarget)
+		{
+			m_fogIntensityScale = std::min(intenTarget, m_fogIntensityScale + intenStep);
+		}
+		else if (m_fogIntensityScale > intenTarget)
+		{
+			m_fogIntensityScale = std::max(intenTarget, m_fogIntensityScale - intenStep);
+		}
+	}
+
+	const bool overOn = TypeWantsOvercast(m_type) && !IsFadingOut() && m_type != WeatherType::Clear;
+	const float overTarget = overOn ? 1.0f : 0.0f;
+	const float overStep = dt / kOvercastFadeSeconds;
+	if (m_overcastFade < overTarget)
+	{
+		m_overcastFade = std::min(overTarget, m_overcastFade + overStep);
+	}
+	else if (m_overcastFade > overTarget)
+	{
+		m_overcastFade = std::max(overTarget, m_overcastFade - overStep);
+	}
+	if (m_overcastFade < 0.01f)
+	{
+		m_overcastFade = 0;
+	}
+
+	// Fog-only stop: finish when veil drained.
+	if (m_type == WeatherType::Fog && IsFadingOut() && m_fogFade < 0.02f)
+	{
+		FinishClear();
+	}
+	else if (m_type == WeatherType::Clear && m_phase == WeatherPhase::Idle && m_pending.active)
+	{
+		TryStartPending();
+	}
+}
+
 void WeatherSystem::Update(float dt)
 {
-	if (!EffectsEnabled() || m_type == WeatherType::Clear)
+	UpdateBlendFades(dt);
+
+	if (!EffectsEnabled())
 	{
 		return;
 	}
 
-	// Sparkle particles update indoors; rain/snow only while outdoor draw is allowed.
-	if (m_type == WeatherType::Sparkle || ShouldDrawPrecipitation())
+	if (m_hasCamera)
 	{
-		UpdateParticles(dt);
+		UpdateEdgeClouds(dt, m_lastCamera);
 	}
 
-	if (WantsCloudSprites())
+	if (m_type == WeatherType::Clear && m_phase == WeatherPhase::Idle)
 	{
-		m_cloudTimer += dt;
-		if (m_cloudTimer > 0.25f)
+		return;
+	}
+
+	if (m_type == WeatherType::Sparkle)
+	{
+		if (IsFadingOut())
 		{
-			m_cloudTimer = 0;
-			const auto& clouds = g_spriteTable[kCloudSpriteShape];
-			if (!clouds.empty())
+			FinishClear();
+			return;
+		}
+		if (m_phase == WeatherPhase::Steady)
+		{
+			m_spawnAccumulator += dt * static_cast<float>(m_maxCount) * 0.35f;
+			while (m_spawnAccumulator >= 1.0f)
 			{
-				m_cloudFrame = (m_cloudFrame + 1) % static_cast<int>(clouds.size());
+				m_spawnAccumulator -= 1.0f;
+				m_targetCount = m_maxCount;
+				TryAddParticle();
 			}
+		}
+		UpdateParticles(dt);
+		return;
+	}
+
+	if (m_type == WeatherType::Fog)
+	{
+		return;
+	}
+
+	m_weatherTickAccum += dt;
+	while (m_weatherTickAccum >= kWeatherTickSeconds)
+	{
+		m_weatherTickAccum -= kWeatherTickSeconds;
+		UpdateStormTick();
+		if (m_type == WeatherType::Clear && m_phase == WeatherPhase::Idle)
+		{
+			break;
 		}
 	}
 
-	// Storm lightning flash (original: random palette flash while type == 2, daytime).
-	if (m_type == WeatherType::Rain && g_isDay)
+	UpdateParticles(dt);
+
+	// Exult Lightning_effect: flash+SFX 62 when not in dungeon (no day/night gate).
+	// U7R: suppress in dungeon only; night storms may thunder.
+	if (m_type == WeatherType::Rain && !g_dungeonViewActive && !IsFadingOut())
 	{
 		if (m_flashTimer > 0)
 		{
@@ -420,7 +1124,6 @@ void WeatherSystem::Update(float dt)
 				if (GetRandomValue(0, 100) < 8)
 				{
 					m_flashTimer = kFlashDuration;
-					// Optional Exult-aligned thunder SFX
 					if (g_SoundSystem)
 					{
 						g_SoundSystem->PlaySound(BuildU7SfxPath(62));
@@ -430,7 +1133,7 @@ void WeatherSystem::Update(float dt)
 			}
 		}
 	}
-	else
+	else if (m_type != WeatherType::Rain || g_dungeonViewActive)
 	{
 		m_flashTimer = 0;
 	}
@@ -438,50 +1141,135 @@ void WeatherSystem::Update(float dt)
 
 void WeatherSystem::ApplyLightingModifiers(Color& dayNightColor, bool isDay) const
 {
-	if (!EffectsEnabled())
+	if (!EffectsEnabled() || IsAvatarSheltered())
 	{
 		return;
 	}
 
-	if (!isDay)
+	// Overcast dim is a daytime sky look; fog applies day or night so Fog picker is visible.
+	// Rain/Snow intensity (and Overcast/Cloudy via current m_intensity) scales how dark it gets.
+	if (isDay && m_overcastFade > 0.01f)
 	{
-		return;
+		const float t = m_overcastFade;
+		const float floor = OvercastDimMultiplier(m_intensity);
+		const float dim = 1.0f - (1.0f - floor) * t;
+		dayNightColor.r = static_cast<unsigned char>(dayNightColor.r * dim);
+		dayNightColor.g = static_cast<unsigned char>(dayNightColor.g * dim);
+		dayNightColor.b = static_cast<unsigned char>(dayNightColor.b * dim);
 	}
 
-	if (WantsOvercastPalette())
+	if (m_fogFade > 0.01f)
 	{
-		dayNightColor.r = static_cast<unsigned char>(dayNightColor.r * kOvercastDim);
-		dayNightColor.g = static_cast<unsigned char>(dayNightColor.g * kOvercastDim);
-		dayNightColor.b = static_cast<unsigned char>(dayNightColor.b * kOvercastDim);
+		const float t = m_fogFade * m_fogIntensityScale;
+		const float dimR = 1.0f - (1.0f - kFogDimR) * std::min(1.0f, t);
+		const float dimG = 1.0f - (1.0f - kFogDimG) * std::min(1.0f, t);
+		const float dimB = 1.0f - (1.0f - kFogDimB) * std::min(1.0f, t);
+		dayNightColor.r = static_cast<unsigned char>(dayNightColor.r * dimR);
+		dayNightColor.g = static_cast<unsigned char>(dayNightColor.g * dimG);
+		dayNightColor.b = static_cast<unsigned char>(dayNightColor.b * dimB);
 	}
 
-	if (WantsFogPalette())
-	{
-		dayNightColor.r = static_cast<unsigned char>(dayNightColor.r * kFogDimR);
-		dayNightColor.g = static_cast<unsigned char>(dayNightColor.g * kFogDimG);
-		dayNightColor.b = static_cast<unsigned char>(dayNightColor.b * kFogDimB);
-	}
-
+	// Flash may fire at night too (Exult); still skip when sheltered so indoor view stays calm.
 	if (m_flashTimer > 0)
 	{
 		dayNightColor = { 255, 255, 255, 255 };
 	}
 }
 
-void WeatherSystem::Draw(Camera camera)
+void WeatherSystem::DrawEdgeClouds(Camera camera)
 {
-	(void)camera;
-
-	if (!EffectsEnabled() || m_type == WeatherType::Clear)
+	if (IsAvatarSheltered() || CountActiveEdgeClouds() == 0)
 	{
 		return;
 	}
 
-	const bool drawPrecip = ShouldDrawPrecipitation();
-	const bool drawSparkle = (m_type == WeatherType::Sparkle); // sparkles OK indoors
-	if (drawPrecip || drawSparkle)
+	const auto& clouds = g_spriteTable[kCloudSpriteShape];
+	if (clouds.empty())
+	{
+		return;
+	}
+
+	extern float g_DrawScale;
+
+	for (const EdgeCloud& c : m_edgeClouds)
+	{
+		if (!c.active)
+		{
+			continue;
+		}
+		const int idx = c.frame % static_cast<int>(clouds.size());
+		const SpriteFrame& cloud = clouds[idx];
+		if (cloud.texture.id == 0)
+		{
+			continue;
+		}
+
+		Vector3 worldPos = { c.worldX, c.worldY, c.worldZ };
+		Vector2 screenPos = GetWorldToScreen(worldPos, camera);
+		Vector2 screenPosRight = GetWorldToScreen(
+			Vector3{ c.worldX + 1.0f, c.worldY, c.worldZ }, camera);
+		float pixelsPerUnit = Vector2Distance(screenPos, screenPosRight);
+		if (pixelsPerUnit < 1.0f)
+		{
+			pixelsPerUnit = 1.0f;
+		}
+		if (g_DrawScale > 0.0f)
+		{
+			screenPos.x /= g_DrawScale;
+			screenPos.y /= g_DrawScale;
+			pixelsPerUnit /= g_DrawScale;
+		}
+
+		// Slightly larger than precip scale so the shadow covers a readable patch of ground.
+		const float scale = (pixelsPerUnit / 8.0f) * 1.6f;
+		const float xleft = static_cast<float>(cloud.width - cloud.xOffset - 1);
+		const float yabove = static_cast<float>(cloud.height - cloud.yOffset - 1);
+		const float drawW = static_cast<float>(cloud.width) * scale;
+		const float drawH = static_cast<float>(cloud.height) * scale;
+		const float drawX = screenPos.x - xleft * scale;
+		const float drawY = screenPos.y - yabove * scale;
+
+		// Texture already carries xform-253 alpha; life only fades the whole blot.
+		const float lifeFade = std::min(1.0f, c.life * 0.35f);
+		const unsigned char tintA = static_cast<unsigned char>(
+			std::clamp(static_cast<int>(255.0f * lifeFade), 40, 255));
+		Rectangle source = { 0, 0, static_cast<float>(cloud.width), static_cast<float>(cloud.height) };
+		Rectangle dest = { drawX, drawY, drawW, drawH };
+		BeginBlendMode(BLEND_ALPHA);
+		DrawTexturePro(cloud.texture, source, dest, { 0, 0 }, 0.0f, Color{ 255, 255, 255, tintA });
+		EndBlendMode();
+	}
+}
+
+void WeatherSystem::Draw(Camera camera)
+{
+	m_lastCamera = camera;
+	m_hasCamera = true;
+
+	if (!EffectsEnabled())
+	{
+		return;
+	}
+
+	const bool drawPrecip = ShouldDrawPrecipitation()
+		|| (m_type == WeatherType::Rain || m_type == WeatherType::Snow)
+		|| (IsFadingOut() && CountActiveParticles() > 0 && m_fallSpeed > 0.0f);
+	const bool drawSparkle = (m_type == WeatherType::Sparkle);
+
+	const bool sheltered = IsAvatarSheltered();
+
+	if ((drawPrecip || drawSparkle) && !sheltered)
 	{
 		const auto& frames = g_spriteTable[kPrecipSpriteShape];
+		// Sparkle frames vary in size — lock dest to first-frame box so they don't "shrink".
+		float sparkleDrawW = 0.0f;
+		float sparkleDrawH = 0.0f;
+		if (drawSparkle && m_firstFrame >= 0 && m_firstFrame < static_cast<int>(frames.size()))
+		{
+			sparkleDrawW = static_cast<float>(frames[m_firstFrame].width) * kParticleDrawScale;
+			sparkleDrawH = static_cast<float>(frames[m_firstFrame].height) * kParticleDrawScale;
+		}
+
 		for (const Particle& p : m_particles)
 		{
 			if (!p.active)
@@ -492,11 +1280,11 @@ void WeatherSystem::Draw(Camera camera)
 			int frameIndex = 0;
 			if (p.splash > 0 && m_useSplashes)
 			{
-				frameIndex = m_firstSplashFrame + (m_splashFrames - static_cast<int>(p.splash));
+				const int splashLeft = std::max(1, static_cast<int>(p.splash));
+				frameIndex = m_firstSplashFrame + (m_splashFrames - splashLeft);
 			}
 			else if (drawSparkle)
 			{
-				// Sparkle stores absolute SPRITES.VGA frame (21..27).
 				frameIndex = p.frame;
 			}
 			else if (m_frameCount > 0)
@@ -519,33 +1307,43 @@ void WeatherSystem::Draw(Camera camera)
 				continue;
 			}
 
-			const float w = static_cast<float>(frame.width) * kParticleDrawScale;
-			const float h = static_cast<float>(frame.height) * kParticleDrawScale;
-			Rectangle source = { 0.0f, 0.0f, static_cast<float>(frame.width), static_cast<float>(frame.height) };
-			Rectangle dest = { p.x, p.y, w, h };
-			DrawTexturePro(frame.texture, source, dest, { 0.0f, 0.0f }, 0.0f, WHITE);
-		}
-	}
-
-	if (WantsCloudSprites() && !g_dungeonViewActive)
-	{
-		const auto& clouds = g_spriteTable[kCloudSpriteShape];
-		if (!clouds.empty())
-		{
-			const int idx = m_cloudFrame % static_cast<int>(clouds.size());
-			const SpriteFrame& cloud = clouds[idx];
-			if (cloud.texture.id != 0)
+			float w = static_cast<float>(frame.width) * kParticleDrawScale;
+			float h = static_cast<float>(frame.height) * kParticleDrawScale;
+			if (drawSparkle && sparkleDrawW > 0.0f && sparkleDrawH > 0.0f)
 			{
-				DrawTexture(cloud.texture, 40, 20, Color{ 255, 255, 255, 160 });
-				DrawTexture(cloud.texture, 280, 48, Color{ 255, 255, 255, 120 });
+				w = sparkleDrawW;
+				h = sparkleDrawH;
 			}
+			Rectangle source = { 0, 0, static_cast<float>(frame.width), static_cast<float>(frame.height) };
+			Rectangle dest = { p.x, p.y, w, h };
+
+			Color tint = WHITE;
+			if (drawSparkle && frame.livePaletteIndex >= 0)
+			{
+				tint = g_runtimePalette[frame.livePaletteIndex & 255];
+				tint.a = 255;
+			}
+
+			DrawTexturePro(frame.texture, source, dest, { 0, 0 }, 0.0f, tint);
 		}
 	}
 
-	// Soft fog veil in virtual GUI space (daytime fog palette already dims lighting).
-	if (WantsFogPalette() && g_isDay && !g_dungeonViewActive)
+	DrawEdgeClouds(camera);
+
+	if (!sheltered && m_overcastFade > 0.01f && g_isDay)
 	{
-		DrawRectangle(0, 0, 640, 360, Color{ 220, 225, 230, 150 });
+		const unsigned char a = static_cast<unsigned char>(
+			std::clamp(static_cast<int>(kOvercastVeilAlpha * m_overcastFade * OvercastVeilScale(m_intensity)), 0, 255));
+		DrawRectangle(0, 0, 640, 360, Color{ 40, 45, 55, a });
+	}
+
+	if (!sheltered && m_fogFade > 0.01f)
+	{
+		// Slightly stronger veil at night so Fog still reads on a dark scene.
+		const float nightBoost = g_isDay ? 1.0f : 1.15f;
+		const unsigned char a = static_cast<unsigned char>(
+			std::clamp(static_cast<int>(kFogVeilAlpha * m_fogFade * nightBoost * m_fogIntensityScale), 0, 255));
+		DrawRectangle(0, 0, 640, 360, Color{ 220, 225, 230, a });
 	}
 }
 
@@ -573,8 +1371,6 @@ void WeatherSystem::SyncWeatherMusic()
 		return;
 	}
 
-	// Weather beds are mode-0 ambient tracks. Jukebox eggs are still a stub;
-	// when they land, prefer not restarting a regional track over a weather bed.
 	m_activeWeatherMusicPath = BuildU7MusicPath(track);
 	g_SoundSystem->PlayMusic(m_activeWeatherMusicPath);
 }
@@ -596,12 +1392,21 @@ nlohmann::json WeatherSystem::SaveToJson() const
 	nlohmann::json j;
 	j["type"] = static_cast<int>(m_type);
 	j["phase"] = static_cast<int>(m_phase);
+	j["intensity"] = static_cast<int>(m_intensity);
 	j["remainingMinutes"] = m_remainingMinutes;
 	j["hasEggOrigin"] = m_hasEggOrigin;
 	j["eggObjectId"] = m_eggObjectId;
 	j["eggOrigin"] = { m_eggOrigin.x, m_eggOrigin.y, m_eggOrigin.z };
+	j["manualOverride"] = m_manualOverride;
+	j["manualOrigin"] = { m_manualOrigin.x, m_manualOrigin.y, m_manualOrigin.z };
 	j["musicRainTrack"] = m_music.musicRainTrack;
 	j["musicSnowTrack"] = m_music.musicSnowTrack;
+	j["targetCount"] = m_targetCount;
+	j["bursts"] = m_bursts;
+	j["delay"] = m_delay;
+	j["direction"] = m_direction;
+	j["fogFade"] = m_fogFade;
+	j["overcastFade"] = m_overcastFade;
 	return j;
 }
 
@@ -619,9 +1424,14 @@ void WeatherSystem::LoadFromJson(const nlohmann::json& j)
 		m_type = static_cast<WeatherType>(type);
 	}
 	const int phase = j.value("phase", 0);
-	if (phase >= 0 && phase <= 4)
+	if (phase >= 0 && phase <= 5)
 	{
 		m_phase = static_cast<WeatherPhase>(phase);
+	}
+	const int intensity = j.value("intensity", 1);
+	if (intensity >= 0 && intensity <= 2)
+	{
+		m_intensity = static_cast<WeatherIntensity>(intensity);
 	}
 	m_remainingMinutes = j.value("remainingMinutes", 0);
 	m_hasEggOrigin = j.value("hasEggOrigin", false);
@@ -632,8 +1442,25 @@ void WeatherSystem::LoadFromJson(const nlohmann::json& j)
 		m_eggOrigin.y = j["eggOrigin"][1].get<float>();
 		m_eggOrigin.z = j["eggOrigin"][2].get<float>();
 	}
+	m_manualOverride = j.value("manualOverride", false);
+	if (j.contains("manualOrigin") && j["manualOrigin"].is_array() && j["manualOrigin"].size() >= 3)
+	{
+		m_manualOrigin.x = j["manualOrigin"][0].get<float>();
+		m_manualOrigin.y = j["manualOrigin"][1].get<float>();
+		m_manualOrigin.z = j["manualOrigin"][2].get<float>();
+	}
 	m_music.musicRainTrack = j.value("musicRainTrack", 4);
 	m_music.musicSnowTrack = j.value("musicSnowTrack", 5);
+	m_targetCount = j.value("targetCount", 0);
+	m_bursts = j.value("bursts", 0);
+	m_delay = j.value("delay", 0);
+	m_direction = j.value("direction", 0);
+	m_fogFade = j.value("fogFade", 0.0f);
+	m_overcastFade = j.value("overcastFade", 0.0f);
+	if (m_fogFade > 0.01f)
+	{
+		m_fogWasActive = true;
+	}
 
 	if (m_type == WeatherType::Clear)
 	{
@@ -642,7 +1469,11 @@ void WeatherSystem::LoadFromJson(const nlohmann::json& j)
 	}
 	else
 	{
-		ConfigureEffectParams(m_type);
+		ConfigureEffectParams(m_type, m_intensity);
+		if (m_targetCount <= 0 && m_maxCount > 0 && !IsFadingOut())
+		{
+			m_targetCount = (m_phase == WeatherPhase::Steady) ? m_maxCount : 1;
+		}
 		SyncWeatherMusic();
 	}
 }

@@ -229,22 +229,35 @@ void U7Object::EggUpdate()
 				{
 					m_eggData.m_hasTriggered = false;
 					m_eggData.m_shouldReset = false;
+					m_eggData.m_rolledThisVisit = false;
+				}
+				else if (dist > CACHED_IN_RADIUS)
+				{
+					m_eggData.m_rolledThisVisit = false;
 				}
 			}
 			else if (m_eggData.m_criteria == EggCriteria::AvatarNear ||
 					 m_eggData.m_criteria == EggCriteria::PartyNear)
 			{
-				if (dist > (float)m_eggData.m_distance && m_eggData.m_autoReset)
+				if (dist > (float)m_eggData.m_distance)
 				{
-					m_eggData.m_hasTriggered = false;
+					m_eggData.m_rolledThisVisit = false;
+					if (m_eggData.m_autoReset)
+					{
+						m_eggData.m_hasTriggered = false;
+					}
 				}
 			}
 			else if (m_eggData.m_criteria == EggCriteria::AvatarFootpad ||
 					 m_eggData.m_criteria == EggCriteria::PartyFootpad)
 			{
-				if (dist > 1.5f && m_eggData.m_autoReset)
+				if (dist > 1.5f)
 				{
-					m_eggData.m_hasTriggered = false;
+					m_eggData.m_rolledThisVisit = false;
+					if (m_eggData.m_autoReset)
+					{
+						m_eggData.m_hasTriggered = false;
+					}
 				}
 			}
 		}
@@ -1960,6 +1973,12 @@ void U7Object::HandleWeatherEgg()
 		return;
 	}
 
+	// Debug picker / Lua Clear or SetWeather: don't let eggs stomp until avatar walks away.
+	if (g_WeatherSystem->IsManualOverride())
+	{
+		return;
+	}
+
 	U7Object* avatar = g_Player->GetAvatarObject();
 	if (!avatar)
 	{
@@ -2023,14 +2042,24 @@ void U7Object::HandleWeatherEgg()
 		return;
 	}
 
+	// One probability roll per visit; fail does not consume the egg (no hasTriggered).
+	if (egg.m_rolledThisVisit)
+	{
+		return;
+	}
+
 	if (egg.m_probability < 100)
 	{
+		egg.m_rolledThisVisit = true;
 		int roll = g_NonVitalRNG ? static_cast<int>(g_NonVitalRNG->RandomRange(0, 99)) : (rand() % 100);
 		if (roll >= egg.m_probability)
 		{
-			egg.m_hasTriggered = true;
 			return;
 		}
+	}
+	else
+	{
+		egg.m_rolledThisVisit = true;
 	}
 
 	egg.m_hasTriggered = true;
@@ -6426,6 +6455,7 @@ json U7Object::SaveToJson() const
 		j["m_nocturnal"] = e.m_nocturnal;
 		j["m_autoReset"] = e.m_autoReset;
 		j["m_shouldReset"] = e.m_shouldReset;
+		j["m_rolledThisVisit"] = e.m_rolledThisVisit;
 		j["m_specificValue"] = e.m_specificValue;
 		j["m_durationMinutes"] = e.m_durationMinutes;
 		if (!e.m_audioFile.empty())
@@ -6593,6 +6623,8 @@ U7Object* U7Object::LoadFromJson(const json& j)
 			e.m_hasTriggered = j["m_hasTriggered"].get<bool>();
 		if (j.contains("m_shouldReset"))
 			e.m_shouldReset = j["m_shouldReset"].get<bool>();
+		if (j.contains("m_rolledThisVisit"))
+			e.m_rolledThisVisit = j["m_rolledThisVisit"].get<bool>();
 		if (j.contains("m_onceOnly"))
 			e.m_onceOnly = j["m_onceOnly"].get<bool>();
 		if (j.contains("m_nocturnal"))

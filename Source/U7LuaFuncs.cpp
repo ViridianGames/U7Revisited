@@ -5149,15 +5149,27 @@ static int LuaGetWeather(lua_State *L)
     return 1;
 }
 
-// 0x0045 | set_weather(type [, duration_minutes])
+// get_weather_intensity — 0 Light, 1 Medium (BG default), 2 Heavy (rain/snow density).
+static int LuaGetWeatherIntensity(lua_State *L)
+{
+    const int intensity = g_WeatherSystem
+        ? static_cast<int>(g_WeatherSystem->GetIntensity())
+        : 1;
+    lua_pushinteger(L, intensity);
+    return 1;
+}
+
+// 0x0045 | set_weather(type [, duration_minutes [, intensity]])
 // duration 0 = continuous (engine uses 6000 game minutes, matching original eggs).
+// intensity omit/-1 = Medium; 0 Light, 1 Medium, 2 Heavy (rain/snow only).
 static int LuaSetWeather(lua_State *L)
 {
     const int type = (int)lua_tointeger(L, 1);
     const int duration = (int)luaL_optinteger(L, 2, 0);
+    const int intensity = (int)luaL_optinteger(L, 3, -1);
     if (g_WeatherSystem)
     {
-        g_WeatherSystem->SetWeather(type, duration, false);
+        g_WeatherSystem->SetWeather(type, duration, false, {0, 0, 0}, -1, intensity);
     }
     return 0;
 }
@@ -6881,6 +6893,7 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction( "halt_scheduled", LuaHaltScheduled);
     g_ScriptingSystem->RegisterScriptFunction( "set_path_failure", LuaSetPathFailure);
     g_ScriptingSystem->RegisterScriptFunction( "get_weather", LuaGetWeather);
+    g_ScriptingSystem->RegisterScriptFunction( "get_weather_intensity", LuaGetWeatherIntensity);
     g_ScriptingSystem->RegisterScriptFunction( "set_weather", LuaSetWeather);
     g_ScriptingSystem->RegisterScriptFunction( "is_water", LuaIsWater);
     g_ScriptingSystem->RegisterScriptFunction( "play_sound_effect", LuaPlaySoundEffect);
