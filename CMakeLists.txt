@@ -208,6 +208,7 @@ set(SOURCES
     Source/U7Player.cpp
     Source/U7ScriptUtils.cpp
     Source/ScriptRenameState.cpp
+    Source/WeatherSystem.cpp
 )
 
 # Organize files into virtual folders in Visual Studio
