@@ -1843,7 +1843,10 @@ void WeatherSystem::DrawSkyCloudBillboards(Camera camera) const
 		return;
 	}
 
+	// Same alpha-discard path as tree/NPC billboards — without it the full
+	// quad writes and cloud sprites read as opaque rectangles.
 	rlDisableDepthMask();
+	BeginShaderMode(g_alphaDiscard);
 	BeginBlendMode(BLEND_ALPHA);
 
 	for (const SkyCloud& c : m_skyClouds)
@@ -1882,6 +1885,7 @@ void WeatherSystem::DrawSkyCloudBillboards(Camera camera) const
 	}
 
 	EndBlendMode();
+	EndShaderMode();
 	rlEnableDepthMask();
 }
 
