@@ -49,28 +49,33 @@ void Engine::Init(const std::string &configfile)
 	//SetConfigFlags(FLAG_VSYNC_HINT);
 	InitWindow(g_Engine->m_EngineConfig.GetNumber("h_res"), g_Engine->m_EngineConfig.GetNumber("v_res"), windowTitle.c_str());
 	SetExitKey(KEY_NULL); // We'll handle exiting with ESC
-#ifdef __APPLE__
-	// macOS shrinks a window that doesn't fit the display, leaving the render targets
-	// (sized from m_ScreenWidth/Height) out of step with it. Pick the largest whole
-	// multiple of the render resolution that fits, leaving room for the menu bar and title bar.
-	{
-		const int monitor = GetCurrentMonitor();
-		const int maxW = GetMonitorWidth(monitor);
-		const int maxH = GetMonitorHeight(monitor) - 80;
-		if (m_ScreenWidth > maxW || m_ScreenHeight > maxH)
-		{
-			int scale = std::max(1, std::min(maxW / (int)m_RenderWidth, maxH / (int)m_RenderHeight));
-			m_ScreenWidth = m_RenderWidth * scale;
-			m_ScreenHeight = m_RenderHeight * scale;
-			SetWindowSize((int)m_ScreenWidth, (int)m_ScreenHeight);
-			SetWindowPosition((maxW - (int)m_ScreenWidth) / 2, (maxH - (int)m_ScreenHeight) / 2 + 40);
-		}
-	}
-#endif
 	if (g_Engine->m_EngineConfig.GetNumber("full_screen") == 1)
 	{
 		ToggleFullscreen();
 	}
+#ifdef __APPLE__
+	else if (m_RenderWidth > 0 && m_RenderHeight > 0)
+	{
+		// macOS shrinks a window that doesn't fit the display, leaving the render targets
+		// (sized from m_ScreenWidth/Height) out of step with it. Pick the largest whole
+		// multiple of the render resolution that fits, matching the sizes OptionsState offers.
+		// Monitor sizes are in points; reserve the menu bar plus the window title bar.
+		const int kMenuBarHeight = 40;
+		const int kTitleBarHeight = 40;
+		const int monitor = GetCurrentMonitor();
+		const int maxW = GetMonitorWidth(monitor);
+		const int maxH = GetMonitorHeight(monitor) - kMenuBarHeight - kTitleBarHeight;
+		if (m_ScreenWidth > maxW || m_ScreenHeight > maxH)
+		{
+			const int scale = std::max(1, std::min(maxW / (int)m_RenderWidth, maxH / (int)m_RenderHeight));
+			m_ScreenWidth = m_RenderWidth * scale;
+			m_ScreenHeight = m_RenderHeight * scale;
+			SetWindowSize((int)m_ScreenWidth, (int)m_ScreenHeight);
+			SetWindowPosition((maxW - (int)m_ScreenWidth) / 2,
+				kMenuBarHeight + kTitleBarHeight + (maxH - (int)m_ScreenHeight) / 2);
+		}
+	}
+#endif
 	SetTargetFPS(60);
 
 	//  Relies on Raylib, so let's set it up after Raylib has started.

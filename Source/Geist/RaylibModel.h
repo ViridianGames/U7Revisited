@@ -1,7 +1,6 @@
 #ifndef _RAYLIB_MODEL_H_
 #define _RAYLIB_MODEL_H_
 
-#include <cmath>
 #include <string>
 #include "raylib.h"
 
@@ -44,8 +43,9 @@ private:
 	bool m_CanApplySkeletalAnim = false;
 	Vector3 m_DecenterOffset = { 0, 0, 0 };
 
-	// Last UVs uploaded by UpdateFlatUV; NaN forces the first upload.
-	Vector4 m_LastFlatUV = { NAN, NAN, NAN, NAN };
+	// Last UVs uploaded by UpdateFlatUV, so unchanged calls can skip the upload.
+	bool m_HasFlatUV = false;
+	Vector4 m_LastFlatUV = { 0, 0, 0, 0 };
 
 	unsigned int m_AnimFrame = 0;
 	std::string m_CurrentAnim = "";
