@@ -41,7 +41,7 @@ raylib_options.add_cmake_defines({
 raylib_subproject = cmake.subproject('raylib', options: raylib_options)
 dependencies += raylib_subproject.dependency('raylib')
 
-raylib_external_include = include_directories('ThirdParty/raylib/external')
+raylib_external_include = include_directories('ThirdParty/raylib/external/include')
 dependencies += declare_dependency(include_directories: raylib_external_include)
 
 # declare the lua dependency referencing the bundled version
@@ -104,6 +104,12 @@ if host_machine.system() == 'windows'
   ]
 endif
 
+# macOS build requires the system frameworks GLFW links against
+if host_machine.system() == 'darwin'
+  dependencies += dependency('appleframeworks',
+    modules: ['Cocoa', 'IOKit', 'CoreVideo', 'CoreFoundation', 'OpenGL'])
+endif
+
 include_directories = include_directories(
   'Source/Geist',
   'Source',
@@ -119,6 +125,7 @@ sources = files(
            'Source/Geist/Gui.cpp',
            'Source/Geist/GuiElements.cpp',
            'Source/Geist/GuiManager.cpp',
+           'Source/Geist/InputSystem.cpp',
            'Source/Geist/IO.cpp',
            'Source/Geist/Logging.cpp',
            'Source/Geist/ParticleSystem.cpp',
@@ -127,6 +134,7 @@ sources = files(
            'Source/Geist/ResourceManager.cpp',
            'Source/Geist/RNG.cpp',
            'Source/Geist/ScriptingSystem.cpp',
+           'Source/Geist/SoundSystem.cpp',
            'Source/Geist/StateMachine.cpp',
            'Source/Geist/TooltipSystem.cpp',
 
@@ -134,16 +142,21 @@ sources = files(
            'Source/Ghost/GhostWindow.cpp',
 
            'Source/AskState.cpp',
+           'Source/CombatMode.cpp',
+           'Source/CombatState.cpp',
            'Source/ConversationState.cpp',
            'Source/GameSerializer.cpp',
            'Source/GumpManager.cpp',
            'Source/LoadingState.cpp',
            'Source/Main.cpp',
            'Source/MainState.cpp',
+           'Source/NpcAnimation.cpp',
            'Source/NpcListWindow.cpp',
            'Source/ObjectFinderState.cpp',
            'Source/OptionsState.cpp',
            'Source/PathfindingSystem.cpp',
+           'Source/PatreonVillageState.cpp',
+           'Source/PerfTelemetry.cpp',
            'Source/ShapeData.cpp',
            'Source/ShapeEditorState.cpp',
            'Source/Terrain.cpp',
@@ -161,6 +174,8 @@ sources = files(
            'Source/U7Object.cpp',
            'Source/U7Player.cpp',
            'Source/U7ScriptUtils.cpp',
+           'Source/U7SpriteEffects.cpp',
+           'Source/U7UsecodeArgs.cpp',
            'Source/WeatherSystem.cpp',
            'Source/ScriptRenameState.cpp',
 )
@@ -188,12 +203,14 @@ ghost_geist_sources = files(
            'Source/Geist/Globals.cpp',
            'Source/Geist/Gui.cpp',
            'Source/Geist/GuiElements.cpp',
+           'Source/Geist/InputSystem.cpp',
            'Source/Geist/IO.cpp',
            'Source/Geist/Logging.cpp',
            'Source/Geist/Primitives.cpp',
            'Source/Geist/RaylibModel.cpp',
            'Source/Geist/ResourceManager.cpp',
            'Source/Geist/ScriptingSystem.cpp',
+           'Source/Geist/SoundSystem.cpp',
            'Source/Geist/StateMachine.cpp',
 )
 
