@@ -1,3 +1,4 @@
+#include <cmath>
 #include <fstream>
 #include <string>
 #include <sstream>
@@ -240,6 +241,12 @@ void Gui::SetLayout(int x, int y, int width, int height, float scale, int flag)
 		m_Pos.y = (g_Engine.get()->m_RenderHeight - m_Height) / 2;
 		break;
 	}
+
+	// Centering an odd-sized GUI lands it on a half pixel. Point-sampled sprites drawn
+	// there sample exactly on texel edges, and the GPU's rounding can drop or double
+	// one-pixel strokes, so keep GUIs on whole pixels.
+	m_Pos.x = floorf(m_Pos.x);
+	m_Pos.y = floorf(m_Pos.y);
 }
 
 shared_ptr<GuiElement> Gui::GetElement(int ID)
