@@ -112,6 +112,7 @@ RaylibModel& RaylibModel::operator=(RaylibModel&& other)
 		m_AnimCount = other.m_AnimCount;
 		m_CanApplySkeletalAnim = other.m_CanApplySkeletalAnim;
 		m_DecenterOffset = other.m_DecenterOffset;
+		m_LastFlatUV = other.m_LastFlatUV;
 		m_AnimFrame = other.m_AnimFrame;
 		m_CurrentAnim = std::move(other.m_CurrentAnim);
 
@@ -150,6 +151,15 @@ RaylibModel& RaylibModel::Decenter()
 
 RaylibModel& RaylibModel::UpdateFlatUV(float uvXmin, float uvXmax, float uvYmin, float uvYmax)
 {
+	// Callers set UVs before nearly every flat draw, usually to the same full-frame values.
+	// Re-uploading an in-flight buffer is cheap on some drivers but forces a GPU flush on
+	// macOS, so skip the upload when nothing changed.
+	if (m_LastFlatUV.x == uvXmin && m_LastFlatUV.y == uvXmax && m_LastFlatUV.z == uvYmin && m_LastFlatUV.w == uvYmax)
+	{
+		return *this;
+	}
+	m_LastFlatUV = { uvXmin, uvXmax, uvYmin, uvYmax };
+
 	Mesh mesh = m_Model.meshes[0];
 	
 	// here is the dirty secret to how I can do UV updates, I had to get the vertex order and print it out so that I'd know.
