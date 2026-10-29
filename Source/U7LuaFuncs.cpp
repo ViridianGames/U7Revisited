@@ -5283,7 +5283,9 @@ static int LuaPlayLoopingSoundEffect(lua_State *L)
     int soundId = (int)luaL_checkinteger(L, 2);
     float maxRange = (float)luaL_optnumber(L, 3, g_SoundSystem->GetSpatialDefaultRange());
     bool stopWhenNotVisible = lua_toboolean(L, 4) != 0;
-    g_SoundSystem->PlayLoopingSoundEffect(objectId, soundId, maxRange, stopWhenNotVisible);
+    if (soundId < 0)
+        return 0;
+    g_SoundSystem->PlayLoopingSoundEffect(objectId, BuildU7SfxPath(soundId), maxRange, stopWhenNotVisible);
     return 0;
 }
 

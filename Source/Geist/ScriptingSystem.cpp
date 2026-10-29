@@ -10,7 +10,7 @@
 #include <sstream>
 #include <iostream>
 #include <algorithm>
-#include <U7Globals.h>
+#include <charconv>
 
 using namespace std;
 
@@ -97,9 +97,6 @@ void ScriptingSystem::Update()
     // works as intended and doesn't permanently block resumes.
     ResetPerFrameScriptCounters();
 
-    // accumulator for diagnostics when developer logging is enabled
-    int deferredResumeCount = 0;
-
     // Collect coroutines that are no longer yielded (completed or errored)
     std::vector<std::string> to_cleanup;
     for (const auto& pair : m_activeCoroutines)
@@ -138,79 +135,29 @@ void ScriptingSystem::Update()
     {
         m_waitTimers.erase(scriptKey);
 
-        // ONLY strip suffix for activity scripts (which start with "activity_")
-        std::string scriptName = scriptKey;
+        // Extract an NPC suffix for the policy check, keeping the full key for
+        // the coroutine lookup. A missing or invalid suffix is not an NPC ID.
         int npc_id = 0;
         bool hasNpcId = false;
 
         if (scriptKey.find("activity_") == 0)
         {
             size_t underscorePos = scriptKey.find_last_of('_');
-            if (underscorePos != std::string::npos)
+            if (underscorePos > std::string("activity_").size() &&
+                underscorePos + 1 < scriptKey.size())
             {
-                bool isNumeric = true;
-                for (size_t i = underscorePos + 1; i < scriptKey.length(); i++)
-                {
-                    if (!isdigit(scriptKey[i])) { isNumeric = false; break; }
-                }
-                if (isNumeric && underscorePos > 0)
-                {
-                    scriptName = scriptKey.substr(0, underscorePos);
-                    npc_id = std::stoi(scriptKey.substr(underscorePos + 1));
-                    hasNpcId = true;
-                }
+                const char* begin = scriptKey.data() + underscorePos + 1;
+                const char* end = scriptKey.data() + scriptKey.size();
+                const auto result = std::from_chars(begin, end, npc_id);
+                hasNpcId = result.ec == std::errc{} && result.ptr == end && npc_id >= 0;
             }
         }
 
-        // Distance-based defer: avoid resuming activity scripts for NPCs far from camera
-       // Tune threshold (tiles). Start with 50 and lower if needed.
-        const float RESUME_DISTANCE_THRESHOLD = 50.0f;
+        // Let the game defer activity scripts for NPCs it doesn't want to resume yet
+        // (e.g. ones far from the camera).
         if (hasNpcId)
         {
-            bool delay = false;
-            auto itNpcGlobal = g_NPCData.find(npc_id);
-            if (itNpcGlobal != g_NPCData.end() && itNpcGlobal->second)
-            {
-                int objId = itNpcGlobal->second->m_objectID;
-                auto itObj = g_objectList.find(objId);
-                if (itObj != g_objectList.end() && itObj->second)
-                {
-                    U7Object* obj = itObj->second.get();
-                    float dist = Vector2Distance({ obj->m_Pos.x, obj->m_Pos.z }, { g_camera.target.x, g_camera.target.z });
-                    if (dist > RESUME_DISTANCE_THRESHOLD)
-                        delay = true;
-
-                    if (delay)
-                    {
-                        ++deferredResumeCount;
-                        // Log deferred resume only when verbose Lua debug logging is enabled
-                        //if (g_LuaDebug)
-                        //{
-                        //    NPCDebugPrint("Defer resume: " + scriptKey + " npc=" + std::to_string(npc_id) +
-                        //        " dist=" + std::to_string(dist) +
-                        //        " thresh=" + std::to_string(RESUME_DISTANCE_THRESHOLD));
-                        //}
-                    }
-                }
-                else
-                {
-                    //// object not present - log only when verbose logging enabled
-                    //if (g_LuaDebug)
-                    //{
-                    //    NPCDebugPrint("Defer-check: NPC id found but no object: npc=" + std::to_string(npc_id) + " objId=" + std::to_string(objId));
-                    //}
-                }
-            }
-            else
-            {
-                // NPC id not present in map (avoid operator[]!). Log only if verbose logging enabled.
-                //if (g_LuaDebug)
-                //{
-                //    NPCDebugPrint("Defer-check: g_NPCData has no entry for npc=" + std::to_string(npc_id));
-                //}
-            }
-
-            if (delay)
+            if (m_shouldDeferNpcResume && m_shouldDeferNpcResume(npc_id))
             {
                 // re-schedule a small delay so it will be retried later
                 m_waitTimers[scriptKey] = 0.05f; // 50ms
@@ -222,7 +169,7 @@ void ScriptingSystem::Update()
         if (hasNpcId)
         {
             if (TryConsumeScriptResume())
-                ResumeCoroutine(scriptName, { npc_id });
+                ResumeCoroutine(scriptKey, { npc_id });
             else
             {
                 // briefly requeue to try again next frame
@@ -240,12 +187,6 @@ void ScriptingSystem::Update()
             }
         }
     }
-
-    // Diagnostic: summarize deferred resumes this frame when developer logging enabled
-    //if (deferredResumeCount > 0 && g_LuaDebug)
-    //{
-    //    DebugPrint("SCRIPT: deferred resumes this frame=" + std::to_string(deferredResumeCount));
-    //}
 
     // Periodically dump instrumentation summary (every 1s)
     float now = GetTime();

@@ -12,6 +12,7 @@
 #include <map>
 #include <variant> // For flexible argument types
 #include <atomic>
+#include <functional>
 
 class Config; 
 
@@ -98,6 +99,10 @@ public:
     bool TryConsumeScriptStart();
     bool TryConsumeScriptResume();
     void ResetPerFrameScriptCounters();
+
+    // Game-supplied check: return true to postpone resuming an NPC's activity
+    // script. Unset means never defer.
+    std::function<bool(int npcId)> m_shouldDeferNpcResume;
 
 };
 

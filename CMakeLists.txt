@@ -66,24 +66,53 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
 endif()
 
 # ============================================================================
-# Raylib Dependency (Prebuilt)
+# Raylib Dependency
 # ============================================================================
 set(RAYLIB_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/raylib/include)
 set(RAYLIB_EXTERNAL_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/raylib/external/include)
 
-# Platform-specific library selection
-if(WIN32)
-    set(RAYLIB_LIBRARY ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/raylib/lib/raylib.lib)
-else()
-    set(RAYLIB_LIBRARY ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/raylib/lib/libraylib.a)
-endif()
+# Build raylib for the Mac's native architecture instead of using the bundled
+# Windows/Linux binaries. FetchContent uses CMake's downloader and archive tools.
+if(APPLE)
+    include(FetchContent)
+    if(POLICY CMP0135)
+        cmake_policy(SET CMP0135 NEW)
+    endif()
+    # raylib 5.0 and its GLFW copy predate CMake 4's policy minimum.
+    if(NOT DEFINED CMAKE_POLICY_VERSION_MINIMUM)
+        set(CMAKE_POLICY_VERSION_MINIMUM 3.5)
+    endif()
+    set(BUILD_EXAMPLES OFF CACHE BOOL "Build raylib examples")
+    FetchContent_Declare(raylib
+        URL https://github.com/raysan5/raylib/archive/refs/tags/5.0.tar.gz
+        URL_HASH SHA256=98f049b9ea2a9c40a14e4e543eeea1a7ec3090ebdcd329c4ca2cf98bc9793482
+        TLS_VERIFY TRUE
+    )
+    FetchContent_MakeAvailable(raylib)
+    set(RAYLIB_INCLUDE_DIR ${raylib_SOURCE_DIR}/src)
 
-# Create imported target for raylib
-add_library(raylib STATIC IMPORTED)
-set_target_properties(raylib PROPERTIES
-    IMPORTED_LOCATION ${RAYLIB_LIBRARY}
-    INTERFACE_INCLUDE_DIRECTORIES "${RAYLIB_INCLUDE_DIR};${RAYLIB_EXTERNAL_INCLUDE}"
-)
+    # raylib embeds GLFW's object files, which do not propagate its framework
+    # dependencies. Expose them to every executable that links raylib.
+    target_link_libraries(raylib
+        "-framework Cocoa"
+        "-framework IOKit"
+        "-framework CoreVideo"
+        "-framework CoreFoundation"
+        "-framework OpenGL"
+    )
+else()
+    if(WIN32)
+        set(RAYLIB_LIBRARY ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/raylib/lib/raylib.lib)
+    else()
+        set(RAYLIB_LIBRARY ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/raylib/lib/libraylib.a)
+    endif()
+
+    add_library(raylib STATIC IMPORTED)
+    set_target_properties(raylib PROPERTIES
+        IMPORTED_LOCATION ${RAYLIB_LIBRARY}
+        INTERFACE_INCLUDE_DIRECTORIES "${RAYLIB_INCLUDE_DIR};${RAYLIB_EXTERNAL_INCLUDE}"
+    )
+endif()
 
 # ============================================================================
 # Lua Static Library
@@ -269,7 +298,7 @@ if(WIN32)
         COMMAND_EXPAND_LISTS
         COMMENT "Copying RelWithDebInfo executable and PDB to Redist folder"
     )
-else()
+elseif(NOT APPLE)
     # On Linux/Unix, set runtime output directory to Redist
     set_target_properties(U7Revisited PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
@@ -298,6 +327,23 @@ add_executable(ScriptTests
 )
 
 # Lightweight contract-layer tests (no full game boot).
+enable_testing()
+add_executable(EngineHooksTests
+    Tests/EngineHooksTests.cpp
+    Source/Geist/Config.cpp
+    Source/Geist/ScriptingSystem.cpp
+    Source/Geist/SoundSystem.cpp
+)
+target_include_directories(EngineHooksTests PRIVATE
+    ThirdParty/lua/src
+    ${RAYLIB_INCLUDE_DIR}
+)
+target_link_libraries(EngineHooksTests PRIVATE lua)
+if(UNIX AND NOT APPLE)
+    target_link_libraries(EngineHooksTests PRIVATE m ${CMAKE_DL_LIBS})
+endif()
+add_test(NAME EngineHooksTests COMMAND EngineHooksTests)
+
 add_executable(UsecodeArgsTests
     Tests/UsecodeArgsTests.cpp
     Source/U7UsecodeArgs.cpp
@@ -310,11 +356,14 @@ target_link_libraries(UsecodeArgsTests PRIVATE lua)
 if(UNIX AND NOT APPLE)
     target_link_libraries(UsecodeArgsTests PRIVATE m ${CMAKE_DL_LIBS})
 endif()
-set_target_properties(UsecodeArgsTests PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
-    RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
-    RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
-)
+if(NOT APPLE)
+    set_target_properties(UsecodeArgsTests PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
+        RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
+        RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
+    )
+endif()
+add_test(NAME UsecodeArgsTests COMMAND UsecodeArgsTests)
 
 # Build configuration specific definitions
 target_compile_definitions(ScriptTests PRIVATE
@@ -345,7 +394,7 @@ if(WIN32)
         VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
         VS_DEBUGGER_COMMAND_ARGUMENTS "--execute"
     )
-else()
+elseif(NOT APPLE)
     # On Linux/Unix, set runtime output directory to Redist
     set_target_properties(ScriptTests PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
@@ -433,7 +482,7 @@ if(WIN32)
         COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:Ghost> "${CMAKE_CURRENT_SOURCE_DIR}/Redist/"
         COMMENT "Copying Ghost executable to Redist folder"
     )
-else()
+elseif(NOT APPLE)
     # On Linux/Unix, set runtime output directory to Redist so Ghost can find its files
     set_target_properties(Ghost PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Redist"

@@ -219,3 +219,21 @@ executable('Ghost',
   dependencies: dependencies,
   include_directories: include_directories,
 )
+
+# Contract tests use fake audio and host services, without a window or game data.
+engine_hooks_test_dependencies = []
+if host_machine.system() != 'windows'
+  engine_hooks_test_dependencies += cpp.find_library('m')
+endif
+
+engine_hooks_tests = executable('EngineHooksTests',
+  'Tests/EngineHooksTests.cpp',
+  'Source/Geist/Config.cpp',
+  'Source/Geist/ScriptingSystem.cpp',
+  'Source/Geist/SoundSystem.cpp',
+  link_with: lua_lib,
+  dependencies: engine_hooks_test_dependencies,
+  include_directories: [include_directories, lua_include,
+                        'ThirdParty/raylib/include'],
+)
+test('EngineHooksTests', engine_hooks_tests)
