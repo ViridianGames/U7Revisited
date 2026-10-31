@@ -92,10 +92,35 @@ public:
 	void UpdateGameMinute();
 	void Update(float dt);
 	void Draw(Camera camera);
-	// Mode3D backdrop: zenith/mid/horizon fill + high-band cloud billboards.
+	// Mode3D backdrop: sky fill + high-band flat cloud quads.
 	// Call after BeginMode3D, before terrain. ClearBackground with GetSkyClearColor first.
-	void DrawSkyLayer(Camera camera);
-	Color GetSkyClearColor() const; // horizon stop, or black indoor/disabled
+	// useHemisphereDome: MainState only. Title/Conversation use DrawGameWorldFrame with
+	// default false (camera-facing panel) — dome previously broke menu GUI state.
+	void DrawSkyLayer(Camera camera, bool useHemisphereDome = false);
+	Color GetSkyClearColor() const; // horizon stop, or black if dungeon/effects off
+
+	// Weather 10 celestial — orrery state 0..9; moonLightAmount 0..1 for night shadows.
+	void SetOrreryState(int state); // snap; cancels in-flight anim
+	void SetOrreryStateAnimated(int targetState, float durationSeconds);
+	int GetOrreryState() const { return m_orreryState; } // logical destination once anim starts
+	bool IsOrreryAnimating() const { return m_orreryAnimActive; }
+	void RefreshOrreryStateFromFlags(); // cancel anim + snap from plot flags
+	float GetMoonLightAmount() const;
+
+	// Weather 10.4/10.5 sandbox: sun trail Ctrl+Shift+T; moon trail Ctrl+Shift+Y;
+	// meteor rate Ctrl+Shift+U/I/O (halve/double/reset).
+	void SetDrawCelestialPathTrail(bool enabled);
+	bool GetDrawCelestialPathTrail() const { return m_drawCelestialPathTrail; }
+	void ToggleDrawCelestialPathTrail();
+	void SetDrawMoonPathTrail(bool enabled);
+	bool GetDrawMoonPathTrail() const { return m_drawMoonPathTrail; }
+	void ToggleDrawMoonPathTrail();
+	// Sandbox: lunar continuity / seasonal sun peaks / Hermite skirt 3D joins.
+	void RunLunarKinematicsDiagnostics();
+	void RunSeasonalSunDiagnostics();
+	// Shooting-star mean gap scale (1 = default ~90s real-time); sandbox test only.
+	void SetShootingStarRateScale(float scale) { m_shootingStarRateScale = (scale < 0.05f) ? 0.05f : scale; }
+	float GetShootingStarRateScale() const { return m_shootingStarRateScale; }
 
 	void ApplyLightingModifiers(Color& dayNightColor, bool isDay) const;
 	bool WantsOvercastPalette() const;
@@ -166,7 +191,7 @@ private:
 		bool active = false;
 	};
 
-	// High-altitude sky fluff — Mode3D billboards only (no 2D ground shadow).
+	// High-altitude sky fluff — Mode3D XZ quads only (no ground shadow).
 	struct SkyCloud
 	{
 		float worldX = 0;
@@ -174,9 +199,10 @@ private:
 		float worldZ = 0;
 		float vx = 0;
 		float vz = 0;
-		float size = 10.0f; // world-space billboard width
+		float size = 10.0f; // world-space quad width (X)
 		int frame = 0;
 		float life = 0;
+		float maxLife = 0; // set at spawn; used for fade-in
 		float alpha = 0.55f;
 		bool active = false;
 	};
@@ -211,11 +237,88 @@ private:
 	void TrySpawnSkyCloud(Camera camera, bool clearAmbient);
 	void UpdateEdgeClouds(float dt, Camera camera);
 	void UpdateSkyClouds(float dt, Camera camera);
+	// Weather 10.1/10.4 — one atmosphere build per DrawSkyLayer frame: solar + moon cache.
+	// Moon dirs/illum/vis computed once; EvaluateSkyColor scatters per sample; softShade +
+	// DrawCelestialBodies must use this same cache (do not re-evaluate moons later).
+	struct SkyAtmosphereState
+	{
+		float dayAmount = 0.0f;
+		float sunAz = 0.0f;
+		float sunEl = 0.0f;
+		Vector3 sunDir{ 0.0f, 1.0f, 0.0f };
+		Color zenith{};
+		Color mid{};
+		Color horizon{};
+		Color warmTint{ 255, 145, 70, 255 };
+		float overcastFade = 0.0f;
+		// Per-frame Modelo A moons (placement vs day-circle sun, not night Hermite).
+		bool moonsValid = false;
+		Vector3 tramDir{ 0.0f, 1.0f, 0.0f };
+		Vector3 felDir{ 0.0f, 1.0f, 0.0f };
+		float tramIllum = 0.0f;
+		float felIllum = 0.0f;
+		float tramAltVis = 0.0f;
+		float felAltVis = 0.0f;
+		float tramElevDeg = 0.0f;
+		float felElevDeg = 0.0f;
+		float tramRadius = 3.2f;
+		float felRadius = 2.1f;
+	};
+	SkyAtmosphereState BuildSkyAtmosphereState() const;
+	static Color EvaluateSkyColor(Vector3 skyDirection, const SkyAtmosphereState& atm);
+
+	void DrawSkyGradient(Camera camera) const;       // Title-safe camera-facing panel
+	void DrawSkyHemisphere(Camera camera, const SkyAtmosphereState& atm) const;
+	void DrawCelestialBodies(Camera camera, const SkyAtmosphereState& atm); // may clear orrery anim after e=1
+
+	// Weather 10.2 Phase E — generic constellation system (data-driven)
+	struct ConstellationStarRuntime
+	{
+		std::string id;
+		float canvasX = 0.5f;
+		float canvasY = 0.5f;
+		float brightness = 1.0f;
+		Color tint{ 235, 238, 255, 255 };
+		Vector3 restDir{ 0.0f, 1.0f, 0.0f };
+		float size = 0.16f;
+		bool principal = false;
+	};
+	struct ConstellationRuntime
+	{
+		std::string id;
+		std::string name;
+		bool enabled = true;
+		float aspectRatio = 1.0f;
+		std::string poleStarId;
+		float centerRA = 0.0f;
+		float centerDec = 20.0f;
+		float rotationDeg = 0.0f;
+		float scaleDeg = 12.0f;
+		bool mirrorX = false; // flip local U (left/right) after canvas offsets
+		std::vector<ConstellationStarRuntime> stars;
+	};
+	struct ProceduralStarRuntime
+	{
+		Vector3 restDir{ 0.0f, 1.0f, 0.0f };
+		Color tint{ 235, 238, 255, 255 };
+		float mag = 0.55f;
+		float size = 0.16f;
+		float omega = 1.2f;
+		float phase = 0.0f;
+		float flickerAmt = 0.1f;
+	};
+	void LoadConstellations();
+	void BuildConstellationDirections();
+	void BuildProceduralStars();
+	void DrawConstellations(Camera camera, float siderealDeg, float skyLum, float overcastDim,
+		float drawCullEl, float timeSec) const;
+	void DrawProceduralStars(Camera camera, float siderealDeg, float skyLum, float overcastDim,
+		float drawCullEl, float timeSec) const;
+
+	void DrawSkyCloudQuads() const;
 	void DrawEdgeClouds(Camera camera);
-	void DrawSkyGradient(Camera camera) const;
-	void DrawSkyCloudBillboards(Camera camera) const;
 	void GetSkyGradientColors(Color& zenith, Color& mid, Color& horizon) const;
-	bool WantsOpenSky() const; // outdoor + effects; false indoor/dungeon/sheltered
+	bool WantsOpenSky() const; // sky backdrop; false only if effects off or dungeon (houses OK)
 	bool WantsSkyFluff() const;
 	int CountActiveParticles() const;
 	int CountActiveEdgeClouds() const;
@@ -268,6 +371,27 @@ private:
 	float m_fogIntensityScale = 1.0f; // lerps toward Light/Med/Heavy fog density
 	float m_overcastFade = 0;
 	bool m_fogWasActive = false;
+	int m_orreryState = 0; // 0..9; default = no plot flags set (B0 / retail start = S0 spread)
+	// Phase F — cinematic rest-frame blend (not saved; real-time elapsed vs Britannia tDays)
+	bool m_orreryAnimActive = false;
+	float m_orreryAnimDuration = 0.0f;
+	float m_orreryAnimElapsed = 0.0f;
+	Vector3 m_orreryAnimRestStart[8]{};
+	bool m_drawCelestialPathTrail = false;
+	bool m_drawMoonPathTrail = false;
+
+	struct ShootingStar
+	{
+		bool active = false;
+		Vector3 dir{ 0.0f, 1.0f, 0.0f };
+		Vector3 vel{ 0.0f, 0.0f, 0.0f }; // unit-sphere tangent angular motion
+		float life = 0.0f;
+		float duration = 0.8f;
+	};
+	static constexpr int kShootingStarSlots = 2;
+	ShootingStar m_shootingStars[kShootingStarSlots]{};
+	float m_shootingStarSpawnTimer = 0.0f;
+	float m_shootingStarRateScale = 1.0f;
 
 	float m_fallSpeed = 0;
 	int m_firstFrame = 0;
@@ -288,6 +412,9 @@ private:
 	// Last camera for storm ticks that spawn world clouds between Draws.
 	Camera m_lastCamera = {};
 	bool m_hasCamera = false;
+
+	std::vector<ConstellationRuntime> m_constellations;
+	std::vector<ProceduralStarRuntime> m_proceduralStars;
 };
 
 extern std::unique_ptr<WeatherSystem> g_WeatherSystem;
