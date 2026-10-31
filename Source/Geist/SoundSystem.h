@@ -13,10 +13,28 @@
 #include "RNG.h"
 #include "raylib.h"
 #include <string>
+#include <functional>
 #include <memory>
 #include <unordered_map>
+#include <utility>
 
-class U7Object;
+// The sound system knows nothing about the game's objects or camera. The game
+// fills these in so spatial audio can follow its world. Without both a listener
+// and an object position, sounds play centered at the global sound volume.
+struct SoundSystemHooks
+{
+   // Listener for spatial audio, normally the gameplay camera.
+   std::function<Camera()> getListenerCamera;
+   // Listener yaw in radians, used when the camera looks straight down.
+   std::function<float()> getListenerYaw;
+   // World position of an object; returns false if it doesn't exist.
+   // Unset means no object tracking; loops continue until explicitly stopped.
+   std::function<bool(int objectId, Vector3& outPos)> getObjectPosition;
+   std::function<bool(int objectId)> isObjectDead;
+   std::function<bool(int objectId)> isObjectOnScreen;
+   std::function<void(int objectId)> onInstrumentStarted;
+   std::function<void(int objectId)> onInstrumentStopped;
+};
 
 class SoundSystem : public Object
 {
@@ -67,7 +85,7 @@ public:
    bool IsInstrumentPlaying(int objectId);
 
    // Looped ambient SFX (e.g. pool water); replays while registered.
-   void PlayLoopingSoundEffect(int objectId, int soundId, float maxRange = -1.0f, bool stopWhenNotVisible = false);
+   void PlayLoopingSoundEffect(int objectId, const std::string& soundPath, float maxRange = -1.0f, bool stopWhenNotVisible = false);
    void StopLoopingSoundEffect(int objectId);
 
    void SetGlobalSoundVolume(float newVolume);
@@ -77,7 +95,12 @@ public:
    float GetGlobalMusicVolume() { return m_GlobalMusicVolume; }
    float GetSpatialDefaultRange() const { return m_defaultSpatialRange; }
 
+   // Call Shutdown() while hook targets are still alive; it clears the hooks.
+   void SetHooks(SoundSystemHooks hooks) { m_hooks = std::move(hooks); }
+
 private:
+
+   SoundSystemHooks m_hooks;
 
    float m_GlobalSoundVolume = 0;
    float m_GlobalMusicVolume = 0;
@@ -103,8 +126,10 @@ private:
    void ApplySpatialSmoothed(Sound& sound, float& currentVolume, float& currentPan,
       const Vector3& worldPos, float maxRange, float dt);
    void InitSpatialStateFromWorld(float& currentVolume, float& currentPan, const Vector3& worldPos, float maxRange);
+   bool GetObjectPosition(int objectId, Vector3& outPos) const;
    bool IsObjectVisibleOnScreen(int objectId) const;
-   bool ShouldStopLoopingEntry(const LoopingSfxEntry& entry, U7Object* obj) const;
+   bool ShouldStopLoopingEntry(const LoopingSfxEntry& entry, bool objectFound, int objectId) const;
+   void NotifyInstrumentStopped(int objectId);
 };
 
 #endif
