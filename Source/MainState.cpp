@@ -3836,8 +3836,13 @@ void MainState::Draw()
 		string timeString = "Time: " + to_string(g_hour) + ":" + (g_minute < 10 ? "0" : "") + to_string(g_minute) + " (" + to_string(g_scheduleTime) + ")";
 		DrawTextEx(*g_SmallFont, timeString.c_str(), Vector2{ 640.0f - g_minimapSize, g_minimapSize * 1.05f + g_SmallFont->baseSize }, g_SmallFont->baseSize, 1, WHITE);
 
+		static const char* kMonthAbbr[12] = {
+			"Jan", "Feb", "Mar", "Apr", "May", "Jun",
+			"Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+		};
+		const unsigned int mon = (g_month < 1u) ? 1u : ((g_month > 12u) ? 12u : g_month);
 		string dateString = "Date: " + string(g_dayOfMonth < 10 ? "0" : "") + to_string(g_dayOfMonth)
-			+ "/" + string(g_month < 10 ? "0" : "") + to_string(g_month);
+			+ "/" + kMonthAbbr[mon - 1u];
 		DrawTextEx(*g_SmallFont, dateString.c_str(), Vector2{ 640.0f - g_minimapSize, g_minimapSize * 1.05f + 2 * g_SmallFont->baseSize }, g_SmallFont->baseSize, 1, WHITE);
 
 		// Draw character panel below xy/time

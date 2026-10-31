@@ -107,17 +107,17 @@ public:
 	void RefreshOrreryStateFromFlags(); // cancel anim + snap from plot flags
 	float GetMoonLightAmount() const;
 
-	// Weather 10.4 closeout sandbox: sun trail Ctrl+Shift+T; moon trail Ctrl+Shift+Y;
-	// meteor rate Ctrl+Shift+U/I/O (halve/double/reset). Weather 10 firmament stays open
-	// until playtest confirms no artificial lunar S-paths.
-	void SetDrawCelestialPathTrail(bool enabled) { m_drawCelestialPathTrail = enabled; }
+	// Weather 10.4/10.5 sandbox: sun trail Ctrl+Shift+T; moon trail Ctrl+Shift+Y;
+	// meteor rate Ctrl+Shift+U/I/O (halve/double/reset).
+	void SetDrawCelestialPathTrail(bool enabled);
 	bool GetDrawCelestialPathTrail() const { return m_drawCelestialPathTrail; }
-	void ToggleDrawCelestialPathTrail() { m_drawCelestialPathTrail = !m_drawCelestialPathTrail; }
+	void ToggleDrawCelestialPathTrail();
 	void SetDrawMoonPathTrail(bool enabled);
 	bool GetDrawMoonPathTrail() const { return m_drawMoonPathTrail; }
 	void ToggleDrawMoonPathTrail();
-	// Sandbox: sample continuity / night vis / 28→1; console summary (no elev clamps).
+	// Sandbox: lunar continuity / seasonal sun peaks / Hermite skirt 3D joins.
 	void RunLunarKinematicsDiagnostics();
+	void RunSeasonalSunDiagnostics();
 	// Shooting-star mean gap scale (1 = default ~90s real-time); sandbox test only.
 	void SetShootingStarRateScale(float scale) { m_shootingStarRateScale = (scale < 0.05f) ? 0.05f : scale; }
 	float GetShootingStarRateScale() const { return m_shootingStarRateScale; }
