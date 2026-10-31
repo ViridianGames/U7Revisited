@@ -93,8 +93,8 @@ namespace
 	constexpr float kSkyCloudFadeInSec = 3.0f;
 
 	// Weather 10 celestial constants
-	// 10.4 closeout + lunar kinematics: continuous monotone overnight θ for moon placement;
-	// moon trail = ±12h sliding window (not civil-day rebase). Weather 10 OPEN until playtest.
+	// 10.4 lunar continuity (±12h trails); 10.5 seasonal sun peak (Jan=spring equinox, U7R convention).
+	// Fixed civil dawn/dusk in 10.5; SeasonalSunrise/SunsetHour stubs for Weather 14.
 	constexpr float kCelestialRadius = 110.0f; // just inside dome (120)
 	constexpr float kSiderealDegPerHour = 15.0f;
 	constexpr float kMonthlyStarDriftDeg = 2.5f;
@@ -115,7 +115,12 @@ namespace
 	constexpr float kSunDiscRadius = 3.6f;
 	constexpr float kSunCoronaRadius = 9.0f; // soft radial falloff (replaces hard halo disc)
 	constexpr float kSunAngularRadiusDeg = (kSunDiscRadius / kCelestialRadius) * (180.0f / PI);
+	// Equinox baseline peak; Weather 10.5 seasons swing ±10° via SeasonalSunPeakElDegAt.
 	constexpr float kSunPeakElDeg = 68.0f;
+	constexpr float kSunPeakElSeasonAmpDeg = 10.0f;
+	constexpr double kBritannianYearDays = 336.0;
+	// U7R artistic convention (not Black Gate lore): day 0 = spring equinox; summer max at 84.
+	constexpr double kSeasonalSummerDayIndex = 84.0;
 	constexpr float kSunCulminationHour = 0.5f * (kDawnEndHour + kDuskStartHour); // 13:30
 	// Geometric rise/set (el=0); rate 12°/h from golden lips at 7:00 / 20:00.
 	constexpr float kDuskSunSetHour =
@@ -544,9 +549,10 @@ namespace
 		return Hash01(a * 73856093 ^ b * 19349663);
 	}
 
-	void SunAzElFromClock(float clockHours, float& outAz, float& outEl);
+	struct SunDayCircle;
+	void SunAzElFromClock(float clockHours, const SunDayCircle& sc, float& outAz, float& outEl);
 	// Day-circle sun for moon placement (extrapolates through night; no Hermite S).
-	Vector3 SunDirForMoonPlacement(float clockHours);
+	Vector3 SunDirForMoonPlacement(float clockHours, const SunDayCircle& sc);
 	Vector3 EquatorialDir(float raDeg, float decDeg);
 	Vector3 RotateCelestial(Vector3 restDir, float siderealDeg);
 	Vector3 CelestialPoleAxis();
@@ -628,35 +634,10 @@ namespace
 		EvaluateMoons(sunDir, outTrammel, outFelucca, g_month, g_dayOfMonth, GetSmoothClockHours());
 	}
 
-	// Normalize first, then sun placement + phase share the same civil instant.
-	void EvaluateMoonsAtCivil(unsigned int month, unsigned int day, float hourInDay,
-		MoonState& outTrammel, MoonState& outFelucca)
-	{
-		NormalizeSampleCivilTime(month, day, hourInDay);
-		EvaluateMoons(SunDirForMoonPlacement(hourInDay), outTrammel, outFelucca, month, day, hourInDay);
-	}
-
 	float DirAngleDeg(Vector3 a, Vector3 b)
 	{
 		const float d = Vector3DotProduct(Vector3Normalize(a), Vector3Normalize(b));
 		return RadToDeg(std::acos(std::clamp(d, -1.0f, 1.0f)));
-	}
-
-	// Angular speed (°/h) across a civil interval (same Δt before / at / after a calendar boundary).
-	void MoonBoundaryMotion(unsigned int month, unsigned int day, float hourA, float hourB, float dtHours,
-		float& outTramDeg, float& outFelDeg, float& outTramDegPerH, float& outFelDegPerH)
-	{
-		MoonState tramA{};
-		MoonState felA{};
-		MoonState tramB{};
-		MoonState felB{};
-		EvaluateMoonsAtCivil(month, day, hourA, tramA, felA);
-		EvaluateMoonsAtCivil(month, day, hourB, tramB, felB);
-		outTramDeg = DirAngleDeg(tramA.dir, tramB.dir);
-		outFelDeg = DirAngleDeg(felA.dir, felB.dir);
-		const float invDt = 1.0f / std::max(dtHours, 1.0e-6f);
-		outTramDegPerH = outTramDeg * invDt;
-		outFelDegPerH = outFelDeg * invDt;
 	}
 
 	float SkyLuminance(float dayAmount)
@@ -1168,7 +1149,7 @@ namespace
 		return theta;
 	}
 
-	// Weather 10.3 D: small-circle through rise / culmination(68°) / set; clock-timed anchors.
+	// Weather 10.3 D: small-circle through rise / culmination / set; Weather 10.5 peak is seasonal.
 	struct SunDayCircle
 	{
 		Vector3 center{};
@@ -1183,11 +1164,47 @@ namespace
 		bool ok = false;
 	};
 
-	SunDayCircle BuildSunDayCircle()
+	// U7R convention: day 0 = spring equinox; summer max at day 84. Not Black Gate lore.
+	// Weather 14 must reuse this annual phase (climate may lag).
+	float SeasonalSunPeakElDegAt(double tDays)
+	{
+		const double phase = (tDays - kSeasonalSummerDayIndex) / kBritannianYearDays;
+		return kSunPeakElDeg
+			+ kSunPeakElSeasonAmpDeg * static_cast<float>(std::cos(phase * 2.0 * PI));
+	}
+
+	float SeasonalSunPeakElDeg()
+	{
+		const double tDays = static_cast<double>(g_britannianDayIndex)
+			+ static_cast<double>(GetSmoothClockHours()) / 24.0;
+		return SeasonalSunPeakElDegAt(tDays);
+	}
+
+	float SeasonalSunriseHour()
+	{
+		return kDawnSunRiseHour; // Weather 14 may vary; lighting stays civil-fixed in 10.5
+	}
+
+	float SeasonalSunsetHour()
+	{
+		return kDuskSunSetHour;
+	}
+
+	float CivilDayFraction(unsigned int month, unsigned int day, float hourInDay)
+	{
+		month = std::clamp(month, 1u, 12u);
+		day = std::clamp(day, 1u, 28u);
+		return static_cast<float>(month - 1u) * 28.0f
+			+ static_cast<float>(day - 1u)
+			+ hourInDay / 24.0f;
+	}
+
+	SunDayCircle BuildSunDayCircle(float peakElDeg)
 	{
 		SunDayCircle sc{};
+		const float peakEl = std::clamp(peakElDeg, 1.0f, 89.0f);
 		const Vector3 rise = SkyDirFromAzEl(kSunRiseAzDeg, 0.0f);
-		const Vector3 peak = SkyDirFromAzEl(kSunPeakAzDeg, kSunPeakElDeg);
+		const Vector3 peak = SkyDirFromAzEl(kSunPeakAzDeg, peakEl);
 		const Vector3 set = SkyDirFromAzEl(kSunSetAzDeg, 0.0f);
 
 		Vector3 n = Vector3CrossProduct(
@@ -1240,64 +1257,63 @@ namespace
 			sc.thetaSet += 2.0f * PI;
 		}
 
-		const float riseSpan = std::max(1.0e-3f, kSunCulminationHour - kDawnSunRiseHour);
-		const float setSpan = std::max(1.0e-3f, kDuskSunSetHour - kSunCulminationHour);
+		const float riseH = SeasonalSunriseHour();
+		const float setH = SeasonalSunsetHour();
+		const float riseSpan = std::max(1.0e-3f, kSunCulminationHour - riseH);
+		const float setSpan = std::max(1.0e-3f, setH - kSunCulminationHour);
 		sc.dThetaDhRise = (sc.thetaPeak - sc.thetaRise) / riseSpan;
 		sc.dThetaDhSet = (sc.thetaSet - sc.thetaPeak) / setSpan;
 		sc.ok = true;
 		return sc;
 	}
 
-	const SunDayCircle& GetSunDayCircle()
-	{
-		static const SunDayCircle kCircle = BuildSunDayCircle();
-		return kCircle;
-	}
-
 	// Day-circle theta for VISUAL sun skirts / day arc. Overnight uses dual extrapolation
 	// (acceptable here: only feeds SunAzElFromDayCircle join samples for sun Hermite).
 	float SunThetaForHour(const SunDayCircle& sc, float h)
 	{
-		if (h <= kDawnSunRiseHour)
+		const float riseH = SeasonalSunriseHour();
+		const float setH = SeasonalSunsetHour();
+		if (h <= riseH)
 		{
-			return sc.thetaRise + sc.dThetaDhRise * (h - kDawnSunRiseHour);
+			return sc.thetaRise + sc.dThetaDhRise * (h - riseH);
 		}
 		if (h < kSunCulminationHour)
 		{
-			const float u = (h - kDawnSunRiseHour)
-				/ std::max(1.0e-3f, kSunCulminationHour - kDawnSunRiseHour);
+			const float u = (h - riseH)
+				/ std::max(1.0e-3f, kSunCulminationHour - riseH);
 			return sc.thetaRise + (sc.thetaPeak - sc.thetaRise) * u;
 		}
-		if (h <= kDuskSunSetHour)
+		if (h <= setH)
 		{
 			const float u = (h - kSunCulminationHour)
-				/ std::max(1.0e-3f, kDuskSunSetHour - kSunCulminationHour);
+				/ std::max(1.0e-3f, setH - kSunCulminationHour);
 			return sc.thetaPeak + (sc.thetaSet - sc.thetaPeak) * u;
 		}
-		return sc.thetaSet + sc.dThetaDhSet * (h - kDuskSunSetHour);
+		return sc.thetaSet + sc.dThetaDhSet * (h - setH);
 	}
 
 	// Moon placement: continuous overnight theta (no midnight branch jump). Same day pieces as sun.
 	float SunThetaForMoonPlacement(const SunDayCircle& sc, float h)
 	{
-		if (h >= kDawnSunRiseHour && h <= kDuskSunSetHour)
+		const float riseH = SeasonalSunriseHour();
+		const float setH = SeasonalSunsetHour();
+		if (h >= riseH && h <= setH)
 		{
 			if (h < kSunCulminationHour)
 			{
-				const float u = (h - kDawnSunRiseHour)
-					/ std::max(1.0e-3f, kSunCulminationHour - kDawnSunRiseHour);
+				const float u = (h - riseH)
+					/ std::max(1.0e-3f, kSunCulminationHour - riseH);
 				return sc.thetaRise + (sc.thetaPeak - sc.thetaRise) * u;
 			}
 			const float u = (h - kSunCulminationHour)
-				/ std::max(1.0e-3f, kDuskSunSetHour - kSunCulminationHour);
+				/ std::max(1.0e-3f, setH - kSunCulminationHour);
 			return sc.thetaPeak + (sc.thetaSet - sc.thetaPeak) * u;
 		}
 
-		const float nightSpan =
-			(24.0f - kDuskSunSetHour) + kDawnSunRiseHour;
-		float t = (h >= kDuskSunSetHour)
-			? (h - kDuskSunSetHour) / nightSpan
-			: ((h + 24.0f) - kDuskSunSetHour) / nightSpan;
+		const float nightSpan = (24.0f - setH) + riseH;
+		float t = (h >= setH)
+			? (h - setH) / nightSpan
+			: ((h + 24.0f) - setH) / nightSpan;
 		t = std::clamp(t, 0.0f, 1.0f);
 
 		const float p0 = sc.thetaSet;
@@ -1318,14 +1334,14 @@ namespace
 
 	// Modelo A moon placement reference on day circle; overnight θ is continuous + monotone.
 	// Visual sun keeps SunAzElFromClock Hermite — do not route moons through that path.
-	Vector3 SunDirForMoonPlacement(float clockHours)
+	// Caller supplies the seasonal circle for this civil instant (shared sun+moons / per trail sample).
+	Vector3 SunDirForMoonPlacement(float clockHours, const SunDayCircle& sc)
 	{
 		float h = std::fmod(clockHours, 24.0f);
 		if (h < 0.0f)
 		{
 			h += 24.0f;
 		}
-		const SunDayCircle& sc = GetSunDayCircle();
 		if (!sc.ok)
 		{
 			return SkyDirFromAzEl(kSunPeakAzDeg, kSunPeakElDeg);
@@ -1333,9 +1349,8 @@ namespace
 		return SunDirOnDayCircle(sc, SunThetaForMoonPlacement(sc, h));
 	}
 
-	void SunAzElFromDayCircle(float h, float& outAz, float& outEl)
+	void SunAzElFromDayCircle(float h, const SunDayCircle& sc, float& outAz, float& outEl)
 	{
-		const SunDayCircle& sc = GetSunDayCircle();
 		if (!sc.ok)
 		{
 			outAz = kSunPeakAzDeg;
@@ -1346,7 +1361,7 @@ namespace
 	}
 
 	// Day+twilight: small-circle clock path. Night: preserved Hermite with C1 dir joins at skirts.
-	void SunAzElFromClock(float clockHours, float& outAz, float& outEl)
+	void SunAzElFromClock(float clockHours, const SunDayCircle& sc, float& outAz, float& outEl)
 	{
 		float h = std::fmod(clockHours, 24.0f);
 		if (h < 0.0f)
@@ -1356,11 +1371,10 @@ namespace
 
 		if (h >= kDawnSkirtStartHour && h < kDuskSkirtEndHour)
 		{
-			SunAzElFromDayCircle(h, outAz, outEl);
+			SunAzElFromDayCircle(h, sc, outAz, outEl);
 			return;
 		}
 
-		const SunDayCircle& sc = GetSunDayCircle();
 		float azDusk = kSunSetAzDeg;
 		float elDusk = -kSkySkirtDeg;
 		float azDawn = kSunRiseAzDeg;
@@ -1371,11 +1385,11 @@ namespace
 		float elDawnPrev = elDawn;
 		if (sc.ok)
 		{
-			SunAzElFromDayCircle(kDuskSkirtEndHour, azDusk, elDusk);
-			SunAzElFromDayCircle(kDawnSkirtStartHour, azDawn, elDawn);
+			SunAzElFromDayCircle(kDuskSkirtEndHour, sc, azDusk, elDusk);
+			SunAzElFromDayCircle(kDawnSkirtStartHour, sc, azDawn, elDawn);
 			const float eps = 0.02f;
-			SunAzElFromDayCircle(kDuskSkirtEndHour + eps, azDuskNext, elDuskNext);
-			SunAzElFromDayCircle(kDawnSkirtStartHour - eps, azDawnPrev, elDawnPrev);
+			SunAzElFromDayCircle(kDuskSkirtEndHour + eps, sc, azDuskNext, elDuskNext);
+			SunAzElFromDayCircle(kDawnSkirtStartHour - eps, sc, azDawnPrev, elDawnPrev);
 		}
 
 		const float nightSpanHours =
@@ -1411,6 +1425,40 @@ namespace
 
 		outEl = Hermite1D(t, elDusk, elDawn, elM0, elM1);
 		outAz = NormalizeDeg360(Hermite1D(t, azDusk, az1, azM0, azM1));
+	}
+
+	// Normalize civil time, build seasonal circle for that instant, then sun+phase share it.
+	void EvaluateMoonsAtCivil(unsigned int month, unsigned int day, float hourInDay,
+		MoonState& outTrammel, MoonState& outFelucca)
+	{
+		NormalizeSampleCivilTime(month, day, hourInDay);
+		const float tDays = CivilDayFraction(month, day, hourInDay);
+		const SunDayCircle sc = BuildSunDayCircle(SeasonalSunPeakElDegAt(static_cast<double>(tDays)));
+		EvaluateMoons(SunDirForMoonPlacement(hourInDay, sc), outTrammel, outFelucca, month, day, hourInDay);
+	}
+
+	void MoonBoundaryMotion(unsigned int month, unsigned int day, float hourA, float hourB, float dtHours,
+		float& outTramDeg, float& outFelDeg, float& outTramDegPerH, float& outFelDegPerH)
+	{
+		MoonState tramA{};
+		MoonState felA{};
+		MoonState tramB{};
+		MoonState felB{};
+		EvaluateMoonsAtCivil(month, day, hourA, tramA, felA);
+		EvaluateMoonsAtCivil(month, day, hourB, tramB, felB);
+		outTramDeg = DirAngleDeg(tramA.dir, tramB.dir);
+		outFelDeg = DirAngleDeg(felA.dir, felB.dir);
+		const float invDt = 1.0f / std::max(dtHours, 1.0e-6f);
+		outTramDegPerH = outTramDeg * invDt;
+		outFelDegPerH = outFelDeg * invDt;
+	}
+
+	Vector3 SunDirFromClock(float clockHours, const SunDayCircle& sc)
+	{
+		float az = 0.0f;
+		float el = 0.0f;
+		SunAzElFromClock(clockHours, sc, az, el);
+		return SkyDirFromAzEl(az, el);
 	}
 
 	// Continuous 0..1 day amount — same windows as MainState / GetDayNightAmount.
@@ -1506,6 +1554,20 @@ void WeatherSystem::Shutdown()
 	ClearWeather(false);
 }
 
+void WeatherSystem::SetDrawCelestialPathTrail(bool enabled)
+{
+	m_drawCelestialPathTrail = enabled;
+	if (m_drawCelestialPathTrail)
+	{
+		RunSeasonalSunDiagnostics();
+	}
+}
+
+void WeatherSystem::ToggleDrawCelestialPathTrail()
+{
+	SetDrawCelestialPathTrail(!m_drawCelestialPathTrail);
+}
+
 void WeatherSystem::SetDrawMoonPathTrail(bool enabled)
 {
 	m_drawMoonPathTrail = enabled;
@@ -1520,16 +1582,72 @@ void WeatherSystem::ToggleDrawMoonPathTrail()
 	SetDrawMoonPathTrail(!m_drawMoonPathTrail);
 }
 
+void WeatherSystem::RunSeasonalSunDiagnostics()
+{
+	const float peakNow = SeasonalSunPeakElDeg();
+	const double tDays = static_cast<double>(g_britannianDayIndex)
+		+ static_cast<double>(GetSmoothClockHours()) / 24.0;
+	char buf[320];
+	std::snprintf(buf, sizeof(buf),
+		"Seasonal sun: tDays=%.2f peakNow=%.2f° | peaks d0=%.1f d84=%.1f d168=%.1f d252=%.1f "
+		"(spring eq / summer / autumn eq / winter)",
+		tDays, peakNow,
+		SeasonalSunPeakElDegAt(0.0),
+		SeasonalSunPeakElDegAt(84.0),
+		SeasonalSunPeakElDegAt(168.0),
+		SeasonalSunPeakElDegAt(252.0));
+	Log(buf);
+	AddConsoleString(buf);
+
+	// 3D Hermite skirt joins at winter / equinox / summer peaks (dir + angular speed).
+	constexpr float kDt = 0.02f;
+	auto skirtCheck = [&](float peakEl, const char* tag) {
+		const SunDayCircle sc = BuildSunDayCircle(peakEl);
+		if (!sc.ok)
+		{
+			return;
+		}
+		const float dusk = kDuskSkirtEndHour;
+		const float dawn = kDawnSkirtStartHour;
+		const Vector3 d0 = SunDirFromClock(dusk - kDt, sc);
+		const Vector3 d1 = SunDirFromClock(dusk, sc);
+		const Vector3 d2 = SunDirFromClock(dusk + kDt, sc);
+		const Vector3 a0 = SunDirFromClock(dawn - kDt, sc);
+		const Vector3 a1 = SunDirFromClock(dawn, sc);
+		const Vector3 a2 = SunDirFromClock(dawn + kDt, sc);
+		const float duskPre = DirAngleDeg(d0, d1) / kDt;
+		const float duskPost = DirAngleDeg(d1, d2) / kDt;
+		const float dawnPre = DirAngleDeg(a0, a1) / kDt;
+		const float dawnPost = DirAngleDeg(a1, a2) / kDt;
+		const float duskRatio = duskPost / std::max(duskPre, 1.0e-3f);
+		const float dawnRatio = dawnPost / std::max(dawnPre, 1.0e-3f);
+		const bool fail = duskRatio > 3.0f || dawnRatio > 3.0f
+			|| duskRatio < (1.0f / 3.0f) || dawnRatio < (1.0f / 3.0f);
+		char line[256];
+		std::snprintf(line, sizeof(line),
+			"  Hermite %s peak=%.1f° dusk °/h %.1f→%.1f (x%.2f) dawn %.1f→%.1f (x%.2f)%s",
+			tag, peakEl, duskPre, duskPost, duskRatio, dawnPre, dawnPost, dawnRatio,
+			fail ? " FAIL" : " ok");
+		Log(line);
+		AddConsoleString(line);
+	};
+	skirtCheck(SeasonalSunPeakElDegAt(252.0), "winter");
+	skirtCheck(SeasonalSunPeakElDegAt(0.0), "equinox");
+	skirtCheck(SeasonalSunPeakElDegAt(84.0), "summer");
+}
+
 void WeatherSystem::RunLunarKinematicsDiagnostics()
 {
-	const SunDayCircle& sc = GetSunDayCircle();
+	const SunDayCircle sc = BuildSunDayCircle(SeasonalSunPeakElDeg());
 	if (!sc.ok)
 	{
 		Log("Lunar kinematics: sun day-circle unavailable");
 		return;
 	}
 
-	const float nightSpan = (24.0f - kDuskSunSetHour) + kDawnSunRiseHour;
+	const float riseH = SeasonalSunriseHour();
+	const float setH = SeasonalSunsetHour();
+	const float nightSpan = (24.0f - setH) + riseH;
 	const float p0 = sc.thetaSet;
 	const float p1 = sc.thetaRise + 2.0f * PI;
 	float m0 = sc.dThetaDhSet * nightSpan;
@@ -1544,21 +1662,20 @@ void WeatherSystem::RunLunarKinematicsDiagnostics()
 	}
 
 	float maxJump = 0.0f;
-	Vector3 prev = SunDirForMoonPlacement(kDuskSunSetHour);
+	Vector3 prev = SunDirForMoonPlacement(setH, sc);
 	for (int step = 1; step <= 96; ++step)
 	{
-		const float hNight = kDuskSunSetHour
-			+ (nightSpan * static_cast<float>(step) / 96.0f);
+		const float hNight = setH + (nightSpan * static_cast<float>(step) / 96.0f);
 		const float h = std::fmod(hNight, 24.0f);
-		const Vector3 cur = SunDirForMoonPlacement(h);
+		const Vector3 cur = SunDirForMoonPlacement(h, sc);
 		const float jump = Vector3Length(Vector3Subtract(cur, prev));
 		maxJump = std::max(maxJump, jump);
 		prev = cur;
 	}
 	// Explicit midnight samples.
 	{
-		const Vector3 a = SunDirForMoonPlacement(23.99f);
-		const Vector3 b = SunDirForMoonPlacement(0.01f);
+		const Vector3 a = SunDirForMoonPlacement(23.99f, sc);
+		const Vector3 b = SunDirForMoonPlacement(0.01f, sc);
 		maxJump = std::max(maxJump, Vector3Length(Vector3Subtract(b, a)));
 	}
 
@@ -1721,7 +1838,9 @@ void WeatherSystem::RefreshOrreryStateFromFlags()
 
 float WeatherSystem::GetMoonLightAmount() const
 {
-	const Vector3 placeSun = SunDirForMoonPlacement(GetSmoothClockHours());
+	const float hours = GetSmoothClockHours();
+	const SunDayCircle sc = BuildSunDayCircle(SeasonalSunPeakElDeg());
+	const Vector3 placeSun = SunDirForMoonPlacement(hours, sc);
 
 	MoonState tram{};
 	MoonState fel{};
@@ -3448,7 +3567,10 @@ WeatherSystem::SkyAtmosphereState WeatherSystem::BuildSkyAtmosphereState() const
 {
 	SkyAtmosphereState atm{};
 	atm.dayAmount = SkyDayAmount();
-	SunAzElFromClock(GetSmoothClockHours(), atm.sunAz, atm.sunEl);
+	// One seasonal day-circle per sky evaluation — shared by visual sun + both moons.
+	const float hours = GetSmoothClockHours();
+	const SunDayCircle sc = BuildSunDayCircle(SeasonalSunPeakElDeg());
+	SunAzElFromClock(hours, sc, atm.sunAz, atm.sunEl);
 	atm.sunDir = SkyDirFromAzEl(atm.sunAz, atm.sunEl);
 	GetSkyGradientColors(atm.zenith, atm.mid, atm.horizon);
 	atm.warmTint = Color{ 255, 145, 70, 255 };
@@ -3457,7 +3579,7 @@ WeatherSystem::SkyAtmosphereState WeatherSystem::BuildSkyAtmosphereState() const
 	// One lunar evaluation per frame — shared by sky scatter, softShade, and moon draw.
 	MoonState tram{};
 	MoonState fel{};
-	EvaluateMoons(SunDirForMoonPlacement(GetSmoothClockHours()), tram, fel);
+	EvaluateMoons(SunDirForMoonPlacement(hours, sc), tram, fel);
 	atm.tramDir = tram.dir;
 	atm.felDir = fel.dir;
 	atm.tramIllum = tram.illumination;
@@ -4275,37 +4397,48 @@ void WeatherSystem::DrawCelestialBodies(Camera camera, const SkyAtmosphereState&
 			Color{ 160, 190, 255, static_cast<unsigned char>(std::clamp(static_cast<int>(80.0f * fade), 0, 255)) }, 4);
 	}
 
-	// Sandbox: sun path trail (~30 min) + moon path trail (30 min + fine near midnight).
+	// Sandbox: ±12h trails; each sample uses its own seasonal day-circle (not live-sky circle).
 	if (m_drawCelestialPathTrail)
 	{
-		float az = 0.0f;
-		float el = 0.0f;
-		for (int slot = 0; slot < 48; ++slot)
-		{
-			const float hour = static_cast<float>(slot) * 0.5f;
-			SunAzElFromClock(hour, az, el);
+		const unsigned int baseMonth = std::clamp(g_month, 1u, 12u);
+		const unsigned int baseDay = std::clamp(g_dayOfMonth, 1u, 28u);
+		const float nowHours = GetSmoothClockHours();
+		auto markSunOffset = [&](float offsetHours) {
+			unsigned int month = baseMonth;
+			unsigned int day = baseDay;
+			float hour = nowHours + offsetHours;
+			NormalizeSampleCivilTime(month, day, hour);
+			const float tDays = CivilDayFraction(month, day, hour);
+			const SunDayCircle sc = BuildSunDayCircle(
+				SeasonalSunPeakElDegAt(static_cast<double>(tDays)));
+			float az = 0.0f;
+			float el = 0.0f;
+			SunAzElFromClock(hour, sc, az, el);
 			if (el < drawCullEl)
 			{
-				continue;
+				return;
 			}
 			const Vector3 dir = SkyDirFromAzEl(az, el);
 			Color mark{ 255, 220, 120, 180 };
-			if (std::fabs(hour - kSunCulminationHour) < 0.01f)
+			if (std::fabs(hour - kSunCulminationHour) < 0.05f)
 			{
 				mark = Color{ 255, 255, 255, 255 };
 			}
-			else if (std::fabs(hour - kDawnSunRiseHour) < 0.05f
-				|| std::fabs(hour - kDuskSunSetHour) < 0.05f)
+			else if (std::fabs(hour - SeasonalSunriseHour()) < 0.05f
+				|| std::fabs(hour - SeasonalSunsetHour()) < 0.05f)
 			{
 				mark = Color{ 255, 160, 80, 220 };
 			}
 			DrawCelestialDisc(camera, SkyWorldPosFromDir(camera, dir), 0.55f, mark, 8);
+		};
+		for (int slot = -24; slot <= 24; ++slot)
+		{
+			markSunOffset(static_cast<float>(slot) * 0.5f);
 		}
 	}
 	if (m_drawMoonPathTrail)
 	{
-		// ±12h sliding window around now. Normalize civil time first so sun + phase share one instant.
-		// Open path OK (phase drifts); do not rebase the whole ring on g_dayOfMonth.
+		// ±12h sliding window; EvaluateMoonsAtCivil builds peak/circle for that sample date.
 		const unsigned int baseMonth = std::clamp(g_month, 1u, 12u);
 		const unsigned int baseDay = std::clamp(g_dayOfMonth, 1u, 28u);
 		const float nowHours = GetSmoothClockHours();
