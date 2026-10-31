@@ -145,17 +145,16 @@ public:
 	bool TrySpendAp(float cost);
 	void EndActiveTurn(); // Space / AP exhausted — advance initiative
 
-	// Melee 3 / missile & spells 4. Used by reach overlay and MainState spell orders.
-	float GetAttackApCostForUnit(const U7Object* unit) const;
-	float GetSpellApCost() const { return kSpellAp; }
-	bool TrySpendSpellAp();
-	bool CanAffordSpell() const;
+	// Max AP you may spend on movement and still be allowed to act this turn.
+	float GetHalfApThreshold() const { return m_apBudget * 0.5f; }
+	// True when this turn still allows one act (attack or spell): not yet acted,
+	// and AP spent on movement is at most half the turn budget.
+	bool CanActThisTurn() const;
+	// Marks the turn's single act as used. Returns false if CanActThisTurn is false.
+	bool TryCommitAct();
 	void RefreshReachableAfterApChange();
 
 private:
-	static constexpr float kMeleeAttackAp = 3.0f;
-	static constexpr float kMissileAttackAp = 4.0f;
-	static constexpr float kSpellAp = 4.0f;
 	static constexpr float kApEpsilon = 0.001f;
 	static constexpr float kEngageRangeSlack = 0.85f;
 
@@ -169,6 +168,9 @@ private:
 	void CollectInitiativeOrder(MainState& main, std::vector<int>& out) const;
 	void StartUnitTurn(MainState& main);
 	void AdvanceToNextLiving(MainState& main);
+	// Brief beat after a unit ends so the player can read what happened.
+	void BeginInterTurnPause();
+	bool IsInterTurnPause() const { return m_interTurnPauseRemaining > 0.0f; }
 	void ComputeReachableTiles(U7Object* unit, float maxAp, std::vector<ReachTile>& out) const;
 	void RebuildReachableTiles();
 	void ClearReachableTiles();
@@ -186,8 +188,6 @@ private:
 	bool IsInAttackRange(const U7Object* attacker, const U7Object* target) const;
 	float GetUnitEngageRange(const U7Object* unit) const;
 	void RefreshUnitAttackRange(U7Object* unit) const;
-	bool CanAffordAttack() const;
-	float GetActiveAttackApCost() const;
 	U7Object* FindNearestPartyTarget(const U7Object* from) const;
 	U7Object* FindNearestHostileTarget(const U7Object* from) const;
 	bool IsLivingCombatant(const U7Object* obj) const;
@@ -216,13 +216,15 @@ private:
 	bool m_enemyAttackAfterMove = false; // after closing distance, try attack
 	bool m_resolvingAttack = false;   // Resolving is an attack swing/shot
 	bool m_attackSwingStarted = false;
+	bool m_hasActedThisTurn = false; // at most one act (attack or spell) per turn
 	int m_attackTargetId = 0;
-	float m_pendingAttackApCost = 0.0f; // AP spent on current attack (for refund)
 	int m_resolveFrames = 0;          // failsafe while Phase::Resolving
 	float m_resolveLastX = 0.0f;
 	float m_resolveLastY = 0.0f;
 	float m_resolveLastZ = 0.0f;
 	int m_resolveNoProgressFrames = 0; // frames with no meaningful pos change
+	float m_interTurnPauseRemaining = 0.0f; // delay before next StartUnitTurn
+	static constexpr float kInterTurnPauseSeconds = 0.5f;
 	static constexpr int kResolveStuckFrames = 180; // ~3s at 60fps
 	static constexpr int kResolveNoProgressFrames = 45; // ~0.75s with no movement
 };

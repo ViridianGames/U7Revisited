@@ -1748,7 +1748,8 @@ void WeatherSystem::GetSkyGradientColors(Color& zenith, Color& mid, Color& horiz
 
 Color WeatherSystem::GetSkyClearColor() const
 {
-	if (!WantsOpenSky())
+	// Sky backdrop is first-person only; third-person keeps a black clear.
+	if (!g_firstPersonEnabled || !WantsOpenSky())
 	{
 		return Color{ 0, 0, 0, 255 };
 	}
@@ -1894,7 +1895,8 @@ void WeatherSystem::DrawSkyLayer(Camera camera)
 	m_lastCamera = camera;
 	m_hasCamera = true;
 
-	if (!WantsOpenSky())
+	// Gradient + high cloud billboards are for first-person look-up only.
+	if (!g_firstPersonEnabled || !WantsOpenSky())
 	{
 		return;
 	}

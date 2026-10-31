@@ -19,6 +19,7 @@
 
 #include <algorithm>
 #include <cstring>
+#include <vector>
 
 using namespace std;
 
@@ -59,6 +60,163 @@ namespace
 				return true;
 		}
 		return false;
+	}
+
+	// Case-insensitive substring check (ASCII).
+	bool NameContainsI(const std::string& name, const char* needle)
+	{
+		if (!needle || !*needle || name.empty())
+			return false;
+		const size_t nlen = std::strlen(needle);
+		if (name.size() < nlen)
+			return false;
+		for (size_t i = 0; i + nlen <= name.size(); ++i)
+		{
+			bool match = true;
+			for (size_t j = 0; j < nlen; ++j)
+			{
+				const char a = name[i + j];
+				const char b = needle[j];
+				const char al = (a >= 'A' && a <= 'Z') ? static_cast<char>(a - 'A' + 'a') : a;
+				const char bl = (b >= 'A' && b <= 'Z') ? static_cast<char>(b - 'A' + 'a') : b;
+				if (al != bl)
+				{
+					match = false;
+					break;
+				}
+			}
+			if (match)
+				return true;
+		}
+		return false;
+	}
+
+	// House/dungeon vertical occluders. Many building walls are OW_CLIMBABLE in
+	// object_walkability.csv (standable tops) — still block light by name.
+	bool NameSuggestsLightOccluder(const std::string& name)
+	{
+		if (NameContainsI(name, "wall")) // wall, broken wall, metal wall, …
+			return true;
+		if (NameContainsI(name, "portcullis"))
+			return true;
+		if (NameContainsI(name, "fence"))
+			return true;
+		if (NameContainsI(name, "cavern"))
+			return true;
+		if (NameContainsI(name, "fortress"))
+			return true;
+		if (NameContainsI(name, "iron bars"))
+			return true;
+		return false;
+	}
+
+	// Tall walls / closed doors block dynamic light. Windows (TFA translucent,
+	// e.g. shape 438) and short furniture do not.
+	bool ObjectBlocksDynamicLight(const U7Object* obj)
+	{
+		if (!obj || !obj->m_objectData || !obj->m_shapeData)
+			return false;
+		if (obj->m_isContained)
+			return false;
+		if (const_cast<U7Object*>(obj)->GetIsDead())
+			return false;
+		if (obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC ||
+			obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_MONSTER ||
+			obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_EGG)
+		{
+			return false;
+		}
+
+		// Glass / stained-glass panes let light through (including "glass wall").
+		if (obj->m_objectData->m_isTranslucent)
+			return false;
+
+		const int shapeID = obj->m_shapeData->GetShape();
+		if (shapeID >= 0 && PathfindingSystem::IsPassThroughObject(shapeID))
+			return false;
+		if (shapeID >= 0 && (PathfindingSystem::IsRoofShape(shapeID)
+			|| PathfindingSystem::IsMountainTopShape(shapeID)))
+		{
+			return false;
+		}
+
+		// Fully sunk / open barriers (portcullis in the floor, etc.).
+		if (PathfindingSystem::GetObjectSurfaceY(obj) <= 0.05f)
+			return false;
+
+		const std::string& name = obj->m_objectData->m_name;
+		const bool namedOccluder = NameSuggestsLightOccluder(name);
+
+		// Floors/stairs/rugs — skip unless the shape is a misclassified wall
+		// (e.g. shape 344 "wall" sits in IsWalkableSurface's 341-344 range).
+		if (shapeID >= 0 && PathfindingSystem::IsNonBlockingWalkSurface(shapeID)
+			&& !namedOccluder)
+		{
+			return false;
+		}
+
+		// Closed doors block light even though pathfinding treats them as OW_DOOR.
+		if (obj->m_objectData->m_isDoor)
+			return obj->m_objectData->m_height >= 2.0f;
+
+		ObjectWalkability walk = OW_WALKABLE;
+		if (g_pathfindingSystem)
+			walk = g_pathfindingSystem->GetObjectWalkability(shapeID, obj);
+
+		if (walk == OW_WALKABLE || walk == OW_DOOR)
+			return false;
+
+		// Climbable CSV walls (common for house exteriors/interiors): occlude by name.
+		// Other climbables (tables, desks, carts) stay non-occluding.
+		if (walk == OW_CLIMBABLE)
+			return namedOccluder && obj->m_objectData->m_height >= 2.0f;
+
+		// OW_BLOCKING from CSV (even when TFA not-walkable is clear — walls 151/152)
+		// or TFA not-walkable tall solids.
+		if (walk != OW_BLOCKING && !obj->m_objectData->m_isNotWalkable)
+			return false;
+
+		if (obj->m_objectData->m_height < 2.0f)
+			return false;
+
+		return true;
+	}
+
+	// Bresenham LOS against a packed occlusion grid. Endpoints are not required
+	// to be clear (torch against a wall still lights its own tile and neighbors).
+	bool HasLightLOS(int x0, int z0, int x1, int z1,
+		const std::vector<uint8_t>& blocks, int occMinX, int occMinZ, int occW, int occH)
+	{
+		if (x0 == x1 && z0 == z1)
+			return true;
+
+		const int dx = std::abs(x1 - x0);
+		const int dz = std::abs(z1 - z0);
+		const int sx = x0 < x1 ? 1 : -1;
+		const int sz = z0 < z1 ? 1 : -1;
+		int err = dx - dz;
+		int x = x0;
+		int z = z0;
+
+		while (true)
+		{
+			if (!(x == x0 && z == z0) && !(x == x1 && z == z1))
+			{
+				const int lx = x - occMinX;
+				const int lz = z - occMinZ;
+				if (lx >= 0 && lz >= 0 && lx < occW && lz < occH
+					&& blocks[static_cast<size_t>(lz * occW + lx)] != 0)
+				{
+					return false;
+				}
+			}
+			if (x == x1 && z == z1)
+				break;
+			const int e2 = 2 * err;
+			if (e2 > -dz) { err -= dz; x += sx; }
+			if (e2 < dx) { err += dx; z += sz; }
+		}
+		return true;
 	}
 }
 
@@ -351,6 +509,55 @@ void Terrain::CalculateLighting()
 	const int camZ = static_cast<int>(g_camera.target.z);
 	const int patchMinX = camX - (TILEWIDTH / 2);
 	const int patchMinZ = camZ - (TILEHEIGHT / 2);
+	const int patchMaxX = patchMinX + TILEWIDTH - 1;
+	const int patchMaxZ = patchMinZ + TILEHEIGHT - 1;
+
+	// Occlusion grid covers the lit patch plus one soft radius so LOS near the
+	// edge still sees walls just outside the camera window.
+	const int occMinX = patchMinX - softLightRange;
+	const int occMaxX = patchMaxX + softLightRange;
+	const int occMinZ = patchMinZ - softLightRange;
+	const int occMaxZ = patchMaxZ + softLightRange;
+	const int occW = occMaxX - occMinX + 1;
+	const int occH = occMaxZ - occMinZ + 1;
+	std::vector<uint8_t> blocks(static_cast<size_t>(occW * occH), 0);
+
+	auto stampBlockerFootprint = [&](const U7Object* obj)
+	{
+		const int w = std::max(1, static_cast<int>(obj->m_objectData->m_width));
+		const int d = std::max(1, static_cast<int>(obj->m_objectData->m_depth));
+		const int maxTileX = static_cast<int>(std::floor(obj->m_Pos.x));
+		const int maxTileZ = static_cast<int>(std::floor(obj->m_Pos.z));
+		const int minTileX = maxTileX - w + 1;
+		const int minTileZ = maxTileZ - d + 1;
+		for (int z = minTileZ; z <= maxTileZ; ++z)
+		{
+			if (z < occMinZ || z > occMaxZ)
+				continue;
+			for (int x = minTileX; x <= maxTileX; ++x)
+			{
+				if (x < occMinX || x > occMaxX)
+					continue;
+				blocks[static_cast<size_t>((z - occMinZ) * occW + (x - occMinX))] = 1;
+			}
+		}
+	};
+
+	const int chunkMinX = std::max(0, occMinX / 16);
+	const int chunkMaxX = std::min(191, occMaxX / 16);
+	const int chunkMinZ = std::max(0, occMinZ / 16);
+	const int chunkMaxZ = std::min(191, occMaxZ / 16);
+	for (int cz = chunkMinZ; cz <= chunkMaxZ; ++cz)
+	{
+		for (int cx = chunkMinX; cx <= chunkMaxX; ++cx)
+		{
+			for (U7Object* obj : g_chunkObjectMap[cx][cz])
+			{
+				if (ObjectBlocksDynamicLight(obj))
+					stampBlockerFootprint(obj);
+			}
+		}
+	}
 
 	const Color hardLight = { 208, 208, 192, 255 };
 	const Color softLight = { 144, 144, 128, 255 };
@@ -364,9 +571,9 @@ void Terrain::CalculateLighting()
 
 		// Clamp stamp region to the camera patch.
 		const int minWX = std::max(worldMinX, patchMinX);
-		const int maxWX = std::min(worldMaxX, patchMinX + TILEWIDTH - 1);
+		const int maxWX = std::min(worldMaxX, patchMaxX);
 		const int minWZ = std::max(worldMinZ, patchMinZ);
-		const int maxWZ = std::min(worldMaxZ, patchMinZ + TILEHEIGHT - 1);
+		const int maxWZ = std::min(worldMaxZ, patchMaxZ);
 
 		for (int wx = minWX; wx <= maxWX; ++wx)
 		{
@@ -375,19 +582,22 @@ void Terrain::CalculateLighting()
 				const int dx = wx - lightX;
 				const int dz = wz - lightZ;
 				const int distSq = dx * dx + dz * dz;
+				if (distSq > softLightRangeSq)
+					continue;
 
 				const int cellx = (TILEWIDTH / 2) + wx - camX;
 				const int celly = (TILEHEIGHT / 2) + wz - camZ;
 				if (cellx < 0 || cellx >= TILEWIDTH || celly < 0 || celly >= TILEHEIGHT)
-				{
 					continue;
-				}
+
+				if (!HasLightLOS(lightX, lightZ, wx, wz, blocks, occMinX, occMinZ, occW, occH))
+					continue;
 
 				if (distSq <= lightRangeSq)
 				{
 					m_cellLighting[cellx][celly] = hardLight;
 				}
-				else if (distSq <= softLightRangeSq)
+				else
 				{
 					Color& cell = m_cellLighting[cellx][celly];
 					if (cell.r < 128 && cell.g < 128 && cell.b < 128)

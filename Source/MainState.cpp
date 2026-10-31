@@ -3143,12 +3143,12 @@ void MainState::Draw()
 	if (worldToRT)
 		BeginTextureMode(GetWorldRenderTarget());
 
-	// Horizon stop so uncovered pixels (look-up) are sky, not black void.
+	// FP horizon stop (sky clear); third-person stays black via GetSkyClearColor.
 	ClearBackground(g_WeatherSystem ? g_WeatherSystem->GetSkyClearColor() : Color{ 0, 0, 0, 255 });
 
 	BeginMode3D(g_camera);
 
-	// Sky fill + high cloud billboards behind terrain (Weather 07).
+	// FP-only sky fill + high cloud billboards behind terrain (Weather 07).
 	if (g_WeatherSystem)
 	{
 		g_WeatherSystem->DrawSkyLayer(g_camera);
@@ -5635,7 +5635,7 @@ void MainState::IssueCombatSpellOrder(U7Object* caster, int spellId, U7Object* t
 	if (!target)
 		target = caster;
 
-	// Turn-Based: spend spell AP (4) on the active unit and cast immediately.
+	// Turn-Based: one free act per turn (shared with attacks); casting ends the turn.
 	if (m_combatMode && m_combatMode->GetStyle() == CombatStyle::TurnBased)
 	{
 		auto* tb = static_cast<TurnBasedCombatMode*>(m_combatMode.get());
@@ -5649,12 +5649,12 @@ void MainState::IssueCombatSpellOrder(U7Object* caster, int spellId, U7Object* t
 			AddConsoleString("Only the active unit can cast this turn.", YELLOW);
 			return;
 		}
-		if (!tb->TrySpendSpellAp())
+		if (!tb->TryCommitAct())
 		{
-			AddConsoleString(
-				"Need " + std::to_string(static_cast<int>(tb->GetSpellApCost()))
-					+ " AP to cast.",
-				YELLOW);
+			if (tb->GetApRemaining() + 0.001f < tb->GetHalfApThreshold())
+				AddConsoleString("Moved more than half AP - cannot act this turn.", YELLOW);
+			else
+				AddConsoleString("Already acted this turn.", YELLOW);
 			return;
 		}
 
@@ -5674,10 +5674,7 @@ void MainState::IssueCombatSpellOrder(U7Object* caster, int spellId, U7Object* t
 		const std::string label = spell->words.empty()
 			? spell->name
 			: (spell->name + " (" + spell->words + ")");
-		AddConsoleString(
-			casterName + " casts " + label + " ("
-				+ std::to_string(static_cast<int>(tb->GetSpellApCost())) + " AP).",
-			GREEN);
+		AddConsoleString(casterName + " casts " + label + " (ends turn).", GREEN);
 
 		caster->m_pauseOrdersOnNextSpellProjectile = true;
 		GumpSpellbook::RunSpellCast(spellId, caster, static_cast<int>(target->m_ID));
@@ -5685,7 +5682,7 @@ void MainState::IssueCombatSpellOrder(U7Object* caster, int spellId, U7Object* t
 			caster->m_pauseOrdersOnNextSpellProjectile = false;
 		else if (!caster->IsInUsecodeScript())
 			caster->m_pauseOrdersOnNextSpellProjectile = false;
-		tb->RefreshReachableAfterApChange();
+		tb->EndActiveTurn();
 		return;
 	}
 

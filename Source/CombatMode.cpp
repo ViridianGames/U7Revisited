@@ -417,6 +417,8 @@ bool TurnBasedCombatMode::IsSimulationPaused() const
 
 bool TurnBasedCombatMode::AllowsPlayerOrders() const
 {
+	if (IsInterTurnPause())
+		return false;
 	if (m_phase != Phase::Planning)
 		return false;
 	U7Object* unit = GetActiveUnit();
@@ -512,34 +514,20 @@ bool TurnBasedCombatMode::TrySpendAp(float cost)
 	return true;
 }
 
-float TurnBasedCombatMode::GetAttackApCostForUnit(const U7Object* unit) const
+bool TurnBasedCombatMode::CanActThisTurn() const
 {
-	if (!unit)
-		return kMeleeAttackAp;
-	U7Object* weapon = GetEquippedWeapon(const_cast<U7Object*>(unit));
-	if (weapon && weapon->m_shapeData && IsRangedWeaponShape(weapon->m_shapeData->m_shape))
-		return kMissileAttackAp;
-	return kMeleeAttackAp;
+	if (m_hasActedThisTurn)
+		return false;
+	// May move up to half the turn budget and still attack or cast.
+	return m_apRemaining + kApEpsilon >= GetHalfApThreshold();
 }
 
-float TurnBasedCombatMode::GetActiveAttackApCost() const
+bool TurnBasedCombatMode::TryCommitAct()
 {
-	return GetAttackApCostForUnit(GetActiveUnit());
-}
-
-bool TurnBasedCombatMode::CanAffordAttack() const
-{
-	return m_apRemaining + kApEpsilon >= GetActiveAttackApCost();
-}
-
-bool TurnBasedCombatMode::CanAffordSpell() const
-{
-	return m_apRemaining + kApEpsilon >= kSpellAp;
-}
-
-bool TurnBasedCombatMode::TrySpendSpellAp()
-{
-	return TrySpendAp(kSpellAp);
+	if (!CanActThisTurn())
+		return false;
+	m_hasActedThisTurn = true;
+	return true;
 }
 
 void TurnBasedCombatMode::RefreshReachableAfterApChange()
@@ -800,7 +788,7 @@ void TurnBasedCombatMode::StartUnitTurn(MainState& main)
 	m_apRemaining = 0.0f;
 	m_apBudget = 0.0f;
 	m_pendingMoveApCost = 0.0f;
-	m_pendingAttackApCost = 0.0f;
+	m_hasActedThisTurn = false;
 	m_enemyAiPending = false;
 	m_endTurnAfterMove = false;
 	ResetResolveTracking(nullptr);
@@ -838,6 +826,7 @@ void TurnBasedCombatMode::StartUnitTurn(MainState& main)
 
 		m_resolvingAttack = false;
 		m_attackSwingStarted = false;
+		m_hasActedThisTurn = false;
 		m_attackTargetId = 0;
 		m_enemyAttackAfterMove = false;
 
@@ -850,8 +839,8 @@ void TurnBasedCombatMode::StartUnitTurn(MainState& main)
 			RebuildReachableTiles();
 			AddConsoleString(
 				UnitLabel(unit) + "'s turn - AP " + FormatAp(m_apRemaining)
-					+ "  [Click enemy: Attack (" + FormatAp(GetAttackApCostForUnit(unit))
-					+ ")   Click ground: Move   Space: End Turn]",
+					+ "  [Move up to " + FormatAp(GetHalfApThreshold())
+					+ " AP then act once (attack or spell ends turn)   Space: End Turn]",
 				SKYBLUE);
 		}
 		else
@@ -901,6 +890,24 @@ void TurnBasedCombatMode::AdvanceToNextLiving(MainState& main)
 	AddConsoleString("Initiative empty - no living combatants.", YELLOW);
 }
 
+void TurnBasedCombatMode::BeginInterTurnPause()
+{
+	m_apRemaining = 0.0f;
+	m_pendingMoveApCost = 0.0f;
+	m_hasActedThisTurn = false;
+	m_enemyAiPending = false;
+	m_endTurnAfterMove = false;
+	m_enemyAttackAfterMove = false;
+	m_resolvingAttack = false;
+	m_attackSwingStarted = false;
+	m_attackTargetId = 0;
+	ResetResolveTracking(nullptr);
+	m_phase = Phase::Planning;
+	m_activeUnitId = -1;
+	ClearReachableTiles();
+	m_interTurnPauseRemaining = kInterTurnPauseSeconds;
+}
+
 void TurnBasedCombatMode::EndActiveTurn()
 {
 	if (!m_main)
@@ -913,19 +920,7 @@ void TurnBasedCombatMode::EndActiveTurn()
 		m_main->StopCombatUnitActions(unit);
 	}
 
-	m_apRemaining = 0.0f;
-	m_pendingMoveApCost = 0.0f;
-	m_pendingAttackApCost = 0.0f;
-	m_enemyAiPending = false;
-	m_endTurnAfterMove = false;
-	m_enemyAttackAfterMove = false;
-	m_resolvingAttack = false;
-	m_attackSwingStarted = false;
-	m_attackTargetId = 0;
-	ResetResolveTracking(nullptr);
-	m_phase = Phase::Planning;
-	ClearReachableTiles();
-	AdvanceToNextLiving(*m_main);
+	BeginInterTurnPause();
 }
 
 namespace
@@ -1435,7 +1430,8 @@ bool TurnBasedCombatMode::TryMoveTowardTarget(U7Object* unit, U7Object* target, 
 		return dx * dx + dz * dz;
 	};
 
-	// Prefer a tile that lands in attack range while keeping reserveAp (3 melee / 4 missile).
+	// Prefer a tile that lands in attack range while keeping reserveAp
+	// (half-AP threshold so the unit can still attack after moving).
 	const ReachTile* bestInRange = nullptr;
 	float bestInRangeDist = 1.0e12f;
 	const ReachTile* bestAny = nullptr;
@@ -1507,16 +1503,10 @@ bool TurnBasedCombatMode::BeginAttackOn(U7Object* attacker, U7Object* target)
 		return false;
 	if (m_phase != Phase::Planning)
 		return false;
-
-	const float attackCost = GetAttackApCostForUnit(attacker);
-	if (m_apRemaining + kApEpsilon < attackCost)
-		return false;
-
 	RefreshUnitAttackRange(attacker);
 	if (!IsInAttackRange(attacker, target))
 		return false;
-
-	if (!TrySpendAp(attackCost))
+	if (!TryCommitAct())
 		return false;
 
 	attacker->m_pathWaypoints.clear();
@@ -1539,7 +1529,6 @@ bool TurnBasedCombatMode::BeginAttackOn(U7Object* attacker, U7Object* target)
 	m_resolvingAttack = true;
 	m_attackSwingStarted = false;
 	m_attackTargetId = static_cast<int>(target->m_ID);
-	m_pendingAttackApCost = attackCost;
 	m_pendingMoveApCost = 0.0f;
 	m_resolveFrames = 0;
 	m_phase = Phase::Resolving;
@@ -1548,8 +1537,7 @@ bool TurnBasedCombatMode::BeginAttackOn(U7Object* attacker, U7Object* target)
 	AddConsoleString(
 		UnitLabel(attacker) + " attacks " + UnitLabel(target)
 			+ " with " + CombatWeaponDisplayNameForUnit(attacker)
-			+ " (" + FormatAp(attackCost) + " AP) - "
-			+ FormatAp(m_apRemaining) + " left.",
+			+ " (ends turn).",
 		IsPartyUnit(attacker) ? GREEN : ORANGE);
 	return true;
 }
@@ -1564,11 +1552,16 @@ bool TurnBasedCombatMode::TryIssueAttackOn(MainState& main, U7Object* target)
 		return true;
 
 	RefreshUnitAttackRange(unit);
-	const float attackCost = GetAttackApCostForUnit(unit);
 
-	if (!CanAffordAttack())
+	if (!CanActThisTurn())
 	{
-		AddConsoleString("Need " + FormatAp(attackCost) + " AP to attack.", YELLOW);
+		if (m_hasActedThisTurn)
+			AddConsoleString("Already acted this turn.", YELLOW);
+		else
+			AddConsoleString(
+				"Moved more than " + FormatAp(GetHalfApThreshold())
+					+ " AP - cannot act this turn.",
+				YELLOW);
 		return true;
 	}
 
@@ -1601,12 +1594,10 @@ void TurnBasedCombatMode::UpdateResolvingAttack(MainState& main, U7Object* unit)
 	if (!m_attackSwingStarted && unit->GetNpcActionTextures() == nullptr && m_resolveFrames >= 1)
 		m_attackSwingStarted = true;
 
-	// Ammo/out-of-range failure: never started a swing - refund AP and bail.
+	// Ammo/out-of-range failure: never started a swing - bail (attack still spent the turn).
 	if (!m_attackSwingStarted && m_resolveFrames >= 20)
 	{
-		m_apRemaining += m_pendingAttackApCost;
-		m_pendingAttackApCost = 0.0f;
-		AddConsoleString(UnitLabel(unit) + " attack failed - AP refunded.", YELLOW);
+		AddConsoleString(UnitLabel(unit) + " attack failed.", YELLOW);
 		OnAttackResolved(main);
 		return;
 	}
@@ -1646,32 +1637,14 @@ void TurnBasedCombatMode::OnAttackResolved(MainState& main)
 	m_resolvingAttack = false;
 	m_attackSwingStarted = false;
 	m_attackTargetId = 0;
-	m_pendingAttackApCost = 0.0f;
 	m_resolveFrames = 0;
 	m_phase = Phase::Planning;
 	// Keep freecam unlocked after resolving; do not yank look-at mid-turn.
 	g_cameraLockObjectId = -1;
 
-	// Enemy: keep attacking while AP and range allow, else end turn.
-	if (unit && !IsPartyUnit(unit))
-	{
-		U7Object* target = FindNearestPartyTarget(unit);
-		if (target && CanAffordAttack())
-		{
-			RefreshUnitAttackRange(unit);
-			if (IsInAttackRange(unit, target) && BeginAttackOn(unit, target))
-				return;
-		}
-		EndActiveTurn();
-		return;
-	}
-
-	RebuildReachableTiles();
-	AddConsoleString(
-		"AP remaining: " + FormatAp(m_apRemaining)
-			+ "  [Click enemy: Attack   Space: End Turn]",
-		SKYBLUE);
+	// One attack per turn - always end after the swing resolves.
 	(void)main;
+	EndActiveTurn();
 }
 
 void TurnBasedCombatMode::RunEnemyTurnAi(MainState& main)
@@ -1697,17 +1670,17 @@ void TurnBasedCombatMode::RunEnemyTurnAi(MainState& main)
 
 	RefreshUnitAttackRange(unit);
 
-	// Prefer attack when already in range.
-	if (CanAffordAttack() && IsInAttackRange(unit, target))
+	// Prefer attack when already in range (and still allowed this turn).
+	if (CanActThisTurn() && IsInAttackRange(unit, target))
 	{
 		if (BeginAttackOn(unit, target))
 			return;
 	}
 
-	// Close distance; try to keep attack AP for a follow-up swing/shot.
+	// Close distance; prefer landing with enough AP left to still attack.
 	m_enemyAttackAfterMove = true;
 	m_endTurnAfterMove = false;
-	const float reserveAp = CanAffordAttack() ? GetAttackApCostForUnit(unit) : 0.0f;
+	const float reserveAp = CanActThisTurn() ? GetHalfApThreshold() : 0.0f;
 	if (TryMoveTowardTarget(unit, target, reserveAp)
 	    || TryMoveTowardTarget(unit, target, 0.0f))
 	{
@@ -1715,7 +1688,7 @@ void TurnBasedCombatMode::RunEnemyTurnAi(MainState& main)
 		if (m_phase == Phase::Planning)
 		{
 			m_enemyAttackAfterMove = false;
-			if (CanAffordAttack() && IsInAttackRange(unit, target) && BeginAttackOn(unit, target))
+			if (CanActThisTurn() && IsInAttackRange(unit, target) && BeginAttackOn(unit, target))
 				return;
 			EndActiveTurn();
 			return;
@@ -1763,7 +1736,7 @@ void TurnBasedCombatMode::OnMoveResolved(MainState& main)
 		{
 			U7Object* target = FindNearestPartyTarget(unit);
 			RefreshUnitAttackRange(unit);
-			if (target && CanAffordAttack() && IsInAttackRange(unit, target)
+			if (target && CanActThisTurn() && IsInAttackRange(unit, target)
 			    && BeginAttackOn(unit, target))
 			{
 				return;
@@ -1778,10 +1751,12 @@ void TurnBasedCombatMode::OnMoveResolved(MainState& main)
 
 	// Party: stay on this turn even at 0 AP so the player can End Turn (and later undo).
 	RebuildReachableTiles();
-	AddConsoleString(
-		"AP remaining: " + FormatAp(m_apRemaining)
-			+ "  [Click enemy: Attack   Space: End Turn]",
-		SKYBLUE);
+	std::string afterMoveHint = "AP remaining: " + FormatAp(m_apRemaining);
+	if (CanActThisTurn())
+		afterMoveHint += "  [Attack or cast (ends turn)   Space: End Turn]";
+	else
+		afterMoveHint += "  [Moved too far to act   Space: End Turn]";
+	AddConsoleString(afterMoveHint, SKYBLUE);
 	(void)main;
 }
 
@@ -1835,13 +1810,14 @@ void TurnBasedCombatMode::OnLeave(MainState& main)
 	m_apRemaining = 0.0f;
 	m_apBudget = 0.0f;
 	m_pendingMoveApCost = 0.0f;
-	m_pendingAttackApCost = 0.0f;
+	m_hasActedThisTurn = false;
 	m_enemyAiPending = false;
 	m_endTurnAfterMove = false;
 	m_enemyAttackAfterMove = false;
 	m_resolvingAttack = false;
 	m_attackSwingStarted = false;
 	m_attackTargetId = 0;
+	m_interTurnPauseRemaining = 0.0f;
 	ResetResolveTracking(nullptr);
 	m_phase = Phase::Planning;
 	Log("TurnBasedCombatMode::OnLeave");
@@ -1852,6 +1828,18 @@ void TurnBasedCombatMode::Update(MainState& main)
 	// Participants grow every frame via EnrollNearby; keep initiative in sync so
 	// late-joining hostiles actually receive turns.
 	SyncInitiativeFromParticipants(main);
+
+	if (IsInterTurnPause())
+	{
+		const float dt = g_Engine ? g_Engine->LastFrameInSeconds() : (1.0f / 60.0f);
+		m_interTurnPauseRemaining -= dt;
+		if (m_interTurnPauseRemaining <= 0.0f)
+		{
+			m_interTurnPauseRemaining = 0.0f;
+			AdvanceToNextLiving(main);
+		}
+		return;
+	}
 
 	if (m_phase == Phase::Planning && m_enemyAiPending)
 	{
@@ -1870,7 +1858,7 @@ void TurnBasedCombatMode::Update(MainState& main)
 		m_enemyAttackAfterMove = false;
 		m_resolvingAttack = false;
 		m_resolveFrames = 0;
-		AdvanceToNextLiving(main);
+		BeginInterTurnPause();
 		return;
 	}
 
@@ -1956,6 +1944,14 @@ void TurnBasedCombatMode::HandleInput(MainState& main)
 	if (!IsKeyPressed(KEY_SPACE))
 		return;
 
+	// Space skips the inter-turn beat.
+	if (IsInterTurnPause())
+	{
+		m_interTurnPauseRemaining = 0.0f;
+		AdvanceToNextLiving(main);
+		return;
+	}
+
 	// Enemy AI decision tick: wait one frame.
 	if (m_enemyAiPending)
 		return;
@@ -2027,7 +2023,8 @@ void TurnBasedCombatMode::DrawWorld(MainState& main)
 
 	const Color green = Color{ 40, 220, 90, 150 };
 	const Color yellow = Color{ 240, 210, 40, 150 };
-	const float attackReserve = GetActiveAttackApCost();
+	// Green: arrive with at least half budget left (can still attack). Yellow: moved too far.
+	const float attackMoveThreshold = GetHalfApThreshold();
 	const float yFill = m_reachDrawY;
 	const float yOutline = m_reachDrawY + 0.02f;
 
@@ -2038,7 +2035,7 @@ void TurnBasedCombatMode::DrawWorld(MainState& main)
 		rlBegin(RL_TRIANGLES);
 		for (const ReachTile& t : m_reachTiles)
 		{
-			const Color c = (t.apLeft + kApEpsilon >= attackReserve) ? green : yellow;
+			const Color c = (t.apLeft + kApEpsilon >= attackMoveThreshold) ? green : yellow;
 			rlColor4ub(c.r, c.g, c.b, c.a);
 
 			const float x0 = static_cast<float>(t.x);
@@ -2131,7 +2128,7 @@ void TurnBasedCombatMode::DrawWorld(MainState& main)
 
 CombatMode::OrdersCursorKind TurnBasedCombatMode::GetOrdersCursor()
 {
-	if (m_phase != Phase::Planning)
+	if (IsInterTurnPause() || m_phase != Phase::Planning)
 		return OrdersCursorKind::Default;
 
 	U7Object* unit = GetActiveUnit();
@@ -2145,7 +2142,7 @@ CombatMode::OrdersCursorKind TurnBasedCombatMode::GetOrdersCursor()
 	if (under && IsLivingCombatant(under) && IsHostileCombatUnit(under))
 	{
 		RefreshUnitAttackRange(unit);
-		if (IsInAttackRange(unit, under))
+		if (IsInAttackRange(unit, under) && CanActThisTurn())
 			return OrdersCursorKind::Combat;
 		return OrdersCursorKind::CombatGrey;
 	}
@@ -2167,7 +2164,12 @@ void TurnBasedCombatMode::DrawHud(MainState& main)
 	U7Object* unit = GetActiveUnit();
 	std::string title;
 	Color accent = YELLOW;
-	if (m_phase == Phase::Resolving && unit)
+	if (IsInterTurnPause())
+	{
+		title = "TURN - ...";
+		accent = WHITE;
+	}
+	else if (m_phase == Phase::Resolving && unit)
 	{
 		title = std::string(m_resolvingAttack ? "ATTACKING - " : "MOVING - ") + UnitLabel(unit)
 			+ "  AP " + FormatAp(m_apRemaining) + "/" + FormatAp(m_apBudget);
@@ -2185,11 +2187,24 @@ void TurnBasedCombatMode::DrawHud(MainState& main)
 		accent = party ? SKYBLUE : ORANGE;
 	}
 
-	const float attackCost = unit ? GetAttackApCostForUnit(unit) : kMeleeAttackAp;
-	const std::string hint = (m_phase == Phase::Resolving)
-		? (m_resolvingAttack ? "Resolving attack...   C/Esc: leave" : "Moving...   C/Esc: leave")
-		: ("Click enemy: Attack (" + FormatAp(attackCost)
-			+ " AP)   Tile: Move   Space: End   C/Esc: leave");
+	std::string hint;
+	if (IsInterTurnPause())
+	{
+		hint = "Next combatant...   Space: skip   C/Esc: leave";
+	}
+	else if (m_phase == Phase::Resolving)
+	{
+		hint = m_resolvingAttack ? "Resolving attack...   C/Esc: leave" : "Moving...   C/Esc: leave";
+	}
+	else if (CanActThisTurn())
+	{
+		hint = "Move up to " + FormatAp(GetHalfApThreshold())
+			+ " AP then act once (attack/spell ends turn)   Space: End   C/Esc: leave";
+	}
+	else
+	{
+		hint = "Moved too far to act   Space: End   C/Esc: leave";
+	}
 
 	const float fontSize = static_cast<float>(font->baseSize);
 	const float titleW = MeasureTextEx(*font, title.c_str(), fontSize, 1).x;

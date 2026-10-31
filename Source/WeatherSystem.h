@@ -93,9 +93,10 @@ public:
 	void Update(float dt);
 	void Draw(Camera camera);
 	// Mode3D backdrop: zenith/mid/horizon fill + high-band cloud billboards.
-	// Call after BeginMode3D, before terrain. ClearBackground with GetSkyClearColor first.
+	// First-person only (no-op / black clear in third-person). Call after
+	// BeginMode3D, before terrain. ClearBackground with GetSkyClearColor first.
 	void DrawSkyLayer(Camera camera);
-	Color GetSkyClearColor() const; // horizon stop, or black indoor/disabled
+	Color GetSkyClearColor() const; // FP horizon stop, or black third-person/indoor/disabled
 
 	void ApplyLightingModifiers(Color& dayNightColor, bool isDay) const;
 	bool WantsOvercastPalette() const;

@@ -2565,8 +2565,10 @@ void DrawGameWorldFrame(bool drawObjects)
 	if (worldToRT)
 		BeginTextureMode(GetWorldRenderTarget());
 
+	// FP horizon stop (sky clear); third-person stays black via GetSkyClearColor.
 	ClearBackground(g_WeatherSystem ? g_WeatherSystem->GetSkyClearColor() : Color{ 0, 0, 0, 255 });
 	BeginMode3D(g_camera);
+	// FP-only sky fill + high clouds (Weather 07); no-op in third-person.
 	if (g_WeatherSystem)
 	{
 		g_WeatherSystem->DrawSkyLayer(g_camera);
@@ -3797,6 +3799,10 @@ void NotifyPathfindingGridUpdate(int worldX, int worldZ, int radius)
 	// old footprint stays impassable for both drive and pathfinding (#876).
 	if (g_pathfindingSystem)
 		g_pathfindingSystem->RefreshGroundCostAround(worldX, worldZ, radius);
+
+	// Dynamic light LOS uses the same wall/door footprints — rebuild lighting.
+	if (g_Terrain)
+		g_Terrain->MarkDirty();
 }
 
 #ifdef DEBUG_NPC_PATHFINDING
