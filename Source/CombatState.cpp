@@ -14,6 +14,7 @@
 #include "U7Object.h"
 #include "U7Player.h"
 #include "CombatState.h"
+#include "CombatMode.h"
 #include "MainState.h"
 #include "PathfindingSystem.h"
 #include "raymath.h"
@@ -179,6 +180,118 @@ bool HasCombatLineOfSight(const U7Object* from, const U7Object* to)
 	return g_pathfindingSystem->IsStraightPathClear(from->m_Pos, to->m_Pos, from);
 }
 
+bool HasCombatWalkPathToParty(U7Object* hostile, float maxCrowFlyTiles, float maxWalkCost)
+{
+	if (!hostile || !g_pathfindingSystem || !g_Player)
+		return false;
+	if (maxCrowFlyTiles < 1.0f)
+		maxCrowFlyTiles = 1.0f;
+	if (maxWalkCost < 1.0f)
+		maxWalkCost = 1.0f;
+	const float maxCrowFlySqr = maxCrowFlyTiles * maxCrowFlyTiles;
+
+	const int startX = static_cast<int>(std::floor(hostile->m_Pos.x));
+	const int startZ = static_cast<int>(std::floor(hostile->m_Pos.z));
+	if (startX < 0 || startX >= 3072 || startZ < 0 || startZ >= 3072)
+		return false;
+
+	// Must match what chase movement can actually do: FindFastPath / MonsterChase
+	// plus ValidateMove on the first step. A flat IsPositionWalkable flood was
+	// connecting Destard↔Lasher over mountain-top tiles that ValidateMove rejects,
+	// so drakes enrolled then stood still forever.
+	auto pathWalkCost = [](const std::vector<Vector3>& path) -> float {
+		if (path.size() < 2)
+			return 0.0f;
+		float cost = 0.0f;
+		for (size_t i = 1; i < path.size(); ++i)
+		{
+			const int x0 = static_cast<int>(std::floor(path[i - 1].x));
+			const int z0 = static_cast<int>(std::floor(path[i - 1].z));
+			const int x1 = static_cast<int>(std::floor(path[i].x));
+			const int z1 = static_cast<int>(std::floor(path[i].z));
+			const int dx = std::abs(x1 - x0);
+			const int dz = std::abs(z1 - z0);
+			// Octile between sparse waypoints (same metric as combat steps).
+			const int diag = std::min(dx, dz);
+			const int straight = std::max(dx, dz) - diag;
+			cost += static_cast<float>(straight) + static_cast<float>(diag) * 1.5f;
+		}
+		return cost;
+	};
+
+	auto firstStepValid = [&](const std::vector<Vector3>& path) -> bool {
+		if (path.empty())
+			return false;
+		// Find the first waypoint on a different tile from the hostile.
+		Vector3 dest = path.back();
+		for (const Vector3& wp : path)
+		{
+			const int wx = static_cast<int>(std::floor(wp.x));
+			const int wz = static_cast<int>(std::floor(wp.z));
+			if (wx != startX || wz != startZ)
+			{
+				dest = Vector3{ wx + 0.5f, hostile->m_Pos.y, wz + 0.5f };
+				break;
+			}
+		}
+		const int dx = static_cast<int>(std::floor(dest.x));
+		const int dz = static_cast<int>(std::floor(dest.z));
+		if (dx == startX && dz == startZ)
+			return true; // already on goal tile
+		// Step onto the neighbor toward dest (not a long crow-fly jump).
+		const int sx = (dx > startX) ? 1 : ((dx < startX) ? -1 : 0);
+		const int sz = (dz > startZ) ? 1 : ((dz < startZ) ? -1 : 0);
+		Vector3 neighbor{
+			startX + sx + 0.5f,
+			hostile->m_Pos.y,
+			startZ + sz + 0.5f
+		};
+		float outH = hostile->m_Pos.y;
+		return PathfindingSystem::ValidateMove(hostile, neighbor, outH, nullptr);
+	};
+
+	for (int npcId : g_Player->GetPartyMemberIds())
+	{
+		auto npcIt = g_NPCData.find(npcId);
+		if (npcIt == g_NPCData.end() || !npcIt->second)
+			continue;
+		U7Object* member = GetObjectFromID(npcIt->second->m_objectID);
+		if (!member || member->GetIsDead() || member->IsDeathStatus() || member->m_hp <= 0.0f)
+			continue;
+		if (!AreUnitsOnSameDungeonLayer(hostile, member))
+			continue;
+		const float distSqr = Vector2DistanceSqr(
+			{ hostile->m_Pos.x, hostile->m_Pos.z },
+			{ member->m_Pos.x, member->m_Pos.z });
+		if (distSqr > maxCrowFlySqr)
+			continue;
+
+		Vector3 goal = member->m_Pos;
+		Vector3 stand{};
+		if (g_pathfindingSystem->FindNearestWalkableStand(
+				member->m_Pos, member->m_Pos.y, hostile, stand, 2))
+			goal = stand;
+
+		const int goalX = static_cast<int>(std::floor(goal.x));
+		const int goalZ = static_cast<int>(std::floor(goal.z));
+		if (goalX == startX && goalZ == startZ)
+			return true;
+
+		std::vector<Vector3> path = g_pathfindingSystem->FindFastPath(
+			hostile->m_Pos, goal, hostile, PathCallerTag::Monster);
+		if (path.empty())
+			path = g_pathfindingSystem->FindMonsterChasePath(hostile->m_Pos, goal, hostile);
+		if (path.empty())
+			continue;
+		if (pathWalkCost(path) > maxWalkCost + 1.5f)
+			continue;
+		if (!firstStepValid(path))
+			continue;
+		return true;
+	}
+	return false;
+}
+
 U7Object* FindNearestHostileInAggroRange()
 {
 	if (!g_Player)
@@ -188,7 +301,7 @@ U7Object* FindNearestHostileInAggroRange()
 		return nullptr;
 
 	U7Object* nearest = nullptr;
-	float bestDistSqr = kHostileAggroRangeSqr;
+	float bestDistSqr = kHostileCombatEnrollRangeSqr;
 
 	// Prefer interest chunks when available (avoids full-world scan every warn).
 	auto consider = [&](U7Object* obj) {
@@ -196,16 +309,16 @@ U7Object* FindNearestHostileInAggroRange()
 			return;
 		if (!AreUnitsOnSameDungeonLayer(avatar, obj))
 			return;
-		if (!HasCombatLineOfSight(avatar, obj))
-			return;
 		const float distSqr = Vector2DistanceSqr(
 			{ obj->m_Pos.x, obj->m_Pos.z },
 			{ avatar->m_Pos.x, avatar->m_Pos.z });
-		if (distSqr < bestDistSqr)
-		{
-			bestDistSqr = distSqr;
-			nearest = obj;
-		}
+		if (distSqr >= bestDistSqr)
+			return;
+		// Short enroll range + capped walk flood (no long Destard detours).
+		if (!HasCombatWalkPathToParty(obj))
+			return;
+		bestDistSqr = distSqr;
+		nearest = obj;
 	};
 
 	if (!g_interestChunkList.empty())
@@ -245,7 +358,6 @@ bool TryBeginCombatFromHostileAggro(U7Object* hintHostile)
 		return false;
 	s_lastAggroScanFrame = g_CurrentUpdate;
 
-	// Do not auto-enter combat. Warn once per encounter; player presses C to engage.
 	static bool s_warnedThisEncounter = false;
 
 	U7Object* nearest = FindNearestHostileInAggroRange();
@@ -263,7 +375,7 @@ bool TryBeginCombatFromHostileAggro(U7Object* hintHostile)
 		if (U7Object* avatar = g_Player->GetAvatarObject())
 		{
 			if (!AreUnitsOnSameDungeonLayer(avatar, nearest)
-				|| !HasCombatLineOfSight(avatar, nearest))
+				|| !HasCombatWalkPathToParty(nearest))
 			{
 				s_warnedThisEncounter = false;
 				return false;
@@ -271,7 +383,7 @@ bool TryBeginCombatFromHostileAggro(U7Object* hintHostile)
 			const float distSqr = Vector2DistanceSqr(
 				{ nearest->m_Pos.x, nearest->m_Pos.z },
 				{ avatar->m_Pos.x, avatar->m_Pos.z });
-			inRange = (distSqr <= kHostileAggroRangeSqr);
+			inRange = (distSqr <= kHostileCombatEnrollRangeSqr);
 		}
 	}
 	if (!inRange)
@@ -280,10 +392,23 @@ bool TryBeginCombatFromHostileAggro(U7Object* hintHostile)
 		return false;
 	}
 
+	const std::string label = PluralizeCreatureName(nearest->m_name);
+
+	if (GetCombatAutoStartOnAggro())
+	{
+		s_warnedThisEncounter = false;
+		if (g_mainState)
+		{
+			g_mainState->m_combatApproachMessage = label + " approach!";
+			g_mainState->EnterCombatMode();
+			return true;
+		}
+		return false;
+	}
+
 	if (!s_warnedThisEncounter)
 	{
 		s_warnedThisEncounter = true;
-		const std::string label = PluralizeCreatureName(nearest->m_name);
 		AddConsoleString(label + " approach! Press C to enter combat.", YELLOW);
 		if (g_mainState)
 			g_mainState->m_combatApproachMessage = label + " approach!";

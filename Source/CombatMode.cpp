@@ -72,6 +72,29 @@ void SetCombatStylePreference(CombatStyle style)
 	g_Engine->m_EngineConfig.Save();
 }
 
+namespace
+{
+	constexpr const char* kCombatAutoStartConfigKey = "combat_auto_start_on_aggro";
+}
+
+bool GetCombatAutoStartOnAggro()
+{
+	if (!g_Engine)
+		return true;
+	// Default ON when the key has never been saved.
+	if (!g_Engine->m_EngineConfig.HasNumber(kCombatAutoStartConfigKey))
+		return true;
+	return g_Engine->m_EngineConfig.GetNumber(kCombatAutoStartConfigKey) != 0.0f;
+}
+
+void SetCombatAutoStartOnAggro(bool enabled)
+{
+	if (!g_Engine)
+		return;
+	g_Engine->m_EngineConfig.SetNumber(kCombatAutoStartConfigKey, enabled ? 1.0f : 0.0f);
+	g_Engine->m_EngineConfig.Save();
+}
+
 std::unique_ptr<CombatMode> CreateCombatMode(CombatStyle style)
 {
 	switch (style)
@@ -544,10 +567,7 @@ void TurnBasedCombatMode::CenterCameraOnActiveUnit()
 	if (it == g_objectList.end() || !it->second)
 		return;
 
-	// Same freecam as RTwP: unlock, soft-center on the actor, Avatar-on-screen leash.
-	g_cameraLockObjectId = -1;
-	g_camera.target = it->second->m_Pos;
-	g_CameraMoved = true;
+	U7Object* unit = it->second.get();
 
 	if (g_Engine)
 	{
@@ -556,6 +576,20 @@ void TurnBasedCombatMode::CenterCameraOnActiveUnit()
 		g_cameraDistance = prefer;
 	}
 
+	// Enemy turns: lock the camera to the acting foe so their move/attack is clear.
+	// Quiet lock (no console spam) — LockCameraToObject would chat every turn.
+	if (!IsPartyUnit(unit))
+	{
+		g_cameraLockObjectId = static_cast<int>(unit->m_ID);
+		g_camera.target = unit->m_Pos;
+		g_CameraMoved = true;
+		return;
+	}
+
+	// Party turns: freecam soft-center with Avatar-on-screen leash.
+	g_cameraLockObjectId = -1;
+	g_camera.target = unit->m_Pos;
+	g_CameraMoved = true;
 	ClampCombatCameraKeepAvatarOnScreen();
 }
 
@@ -906,6 +940,8 @@ void TurnBasedCombatMode::BeginInterTurnPause()
 	m_activeUnitId = -1;
 	ClearReachableTiles();
 	m_interTurnPauseRemaining = kInterTurnPauseSeconds;
+	// Drop enemy camera lock between turns; next StartUnitTurn re-centers/locks.
+	g_cameraLockObjectId = -1;
 }
 
 void TurnBasedCombatMode::EndActiveTurn()
@@ -1497,9 +1533,20 @@ bool TurnBasedCombatMode::TryMoveTowardTarget(U7Object* unit, U7Object* target, 
 	return false;
 }
 
+bool TurnBasedCombatMode::IsFinishableCombatTarget(const U7Object* obj) const
+{
+	// Living hostiles, or KO'd (downed) ones that can still be finished into death.
+	// True corpses (IsDeathStatus / GetIsDead) are loot, not attack targets.
+	if (!obj || obj->IsDeathStatus())
+		return false;
+	if (const_cast<U7Object*>(obj)->GetIsDead())
+		return false;
+	return true;
+}
+
 bool TurnBasedCombatMode::BeginAttackOn(U7Object* attacker, U7Object* target)
 {
-	if (!attacker || !target || !IsLivingCombatant(attacker) || !IsLivingCombatant(target))
+	if (!attacker || !target || !IsLivingCombatant(attacker) || !IsFinishableCombatTarget(target))
 		return false;
 	if (m_phase != Phase::Planning)
 		return false;
@@ -1548,7 +1595,7 @@ bool TurnBasedCombatMode::TryIssueAttackOn(MainState& main, U7Object* target)
 	U7Object* unit = GetActiveUnit();
 	if (!unit || !IsPartyUnit(unit) || m_phase != Phase::Planning)
 		return false;
-	if (!target || !IsLivingCombatant(target))
+	if (!target || !IsFinishableCombatTarget(target))
 		return true;
 
 	RefreshUnitAttackRange(unit);
@@ -1639,8 +1686,7 @@ void TurnBasedCombatMode::OnAttackResolved(MainState& main)
 	m_attackTargetId = 0;
 	m_resolveFrames = 0;
 	m_phase = Phase::Planning;
-	// Keep freecam unlocked after resolving; do not yank look-at mid-turn.
-	g_cameraLockObjectId = -1;
+	// Party freecam stays unlocked mid-turn; enemy lock is cleared in EndActiveTurn.
 
 	// One attack per turn - always end after the swing resolves.
 	(void)main;
@@ -1724,11 +1770,11 @@ void TurnBasedCombatMode::OnMoveResolved(MainState& main)
 	m_pendingMoveApCost = 0.0f;
 	m_phase = Phase::Planning;
 	m_resolvingAttack = false;
-	// Keep freecam unlocked after resolving; do not yank look-at mid-turn.
-	g_cameraLockObjectId = -1;
 
 	if (unit && !IsPartyUnit(unit))
 	{
+		// Stay locked on the enemy through their post-move attack (if any).
+		g_cameraLockObjectId = static_cast<int>(unit->m_ID);
 		const bool tryAttack = m_enemyAttackAfterMove || m_endTurnAfterMove;
 		m_enemyAttackAfterMove = false;
 		m_endTurnAfterMove = false;
@@ -1748,6 +1794,8 @@ void TurnBasedCombatMode::OnMoveResolved(MainState& main)
 
 	m_endTurnAfterMove = false;
 	m_enemyAttackAfterMove = false;
+	// Party freecam: unlock after resolve so pan is not yanked mid-turn.
+	g_cameraLockObjectId = -1;
 
 	// Party: stay on this turn even at 0 AP so the player can End Turn (and later undo).
 	RebuildReachableTiles();
@@ -2004,7 +2052,11 @@ bool TurnBasedCombatMode::HandleOrdersClick(MainState& main)
 	}
 
 	if (clicked && main.IsCombatEnemyObject(clicked))
+	{
+		// Player click — enroll even without a walk path (ranged / finish).
+		main.EnsureCombatParticipant(static_cast<int>(clicked->m_ID), false);
 		return TryIssueAttackOn(main, clicked);
+	}
 
 	const int tileX = static_cast<int>(std::floor(g_terrainUnderMousePointer.x));
 	const int tileZ = static_cast<int>(std::floor(g_terrainUnderMousePointer.z));
@@ -2139,7 +2191,7 @@ CombatMode::OrdersCursorKind TurnBasedCombatMode::GetOrdersCursor()
 		return OrdersCursorKind::Default;
 
 	U7Object* under = g_objectUnderMousePointer;
-	if (under && IsLivingCombatant(under) && IsHostileCombatUnit(under))
+	if (under && g_mainState && g_mainState->IsCombatEnemyObject(under))
 	{
 		RefreshUnitAttackRange(unit);
 		if (IsInAttackRange(unit, under) && CanActThisTurn())
@@ -2162,6 +2214,35 @@ void TurnBasedCombatMode::DrawHud(MainState& main)
 		return;
 
 	U7Object* unit = GetActiveUnit();
+
+	// Yellow caret over the active combatant (Planning and Resolving). Hidden
+	// during the inter-turn pause when there is no active unit.
+	if (unit && !unit->GetIsDead() && !unit->IsDeathStatus())
+	{
+		const float drawScale = (g_DrawScale > 0.0f) ? g_DrawScale : 1.0f;
+		Vector3 head = unit->m_centerPoint;
+		head.y += 1.35f; // same head anchor as HP bars
+		Vector2 screen = GetWorldToScreen(head, g_camera);
+		screen.x /= drawScale;
+		screen.y /= drawScale;
+
+		// Bob a few pixels above the HP bar (bar sits ~6px above the head).
+		constexpr float kBobAmp = 2.5f;
+		constexpr float kBobSpeed = 5.0f;
+		const float bob = kBobAmp * std::sin(static_cast<float>(GetTime()) * kBobSpeed);
+		const float tipY = screen.y - 14.0f + bob;
+		const float tipX = screen.x;
+		constexpr float kHalfW = 5.0f;
+		constexpr float kH = 7.0f;
+		const Vector2 left{ tipX - kHalfW, tipY - kH };
+		const Vector2 right{ tipX + kHalfW, tipY - kH };
+		const Vector2 tip{ tipX, tipY };
+
+		// Outline then fill (CCW winding).
+		DrawTriangleLines(left, right, tip, Color{ 0, 0, 0, 220 });
+		DrawTriangle(left, right, tip, YELLOW);
+	}
+
 	std::string title;
 	Color accent = YELLOW;
 	if (IsInterTurnPause())

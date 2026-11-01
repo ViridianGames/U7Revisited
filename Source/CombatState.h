@@ -23,11 +23,23 @@ bool AreUnitsOnSameDungeonLayer(const U7Object* a, const U7Object* b);
 // Straight-line walkability between units (walls block). Used to acquire aggro.
 bool HasCombatLineOfSight(const U7Object* from, const U7Object* to);
 
+// True when chase pathfinding can actually walk the hostile to a living party
+// member. Uses FindFastPath / MonsterChase plus ValidateMove on the first step
+// (same gates as real movement). Flat walkable floods are not used — they
+// false-connected Destard to Lasher's cave.
+// maxCrowFlyTiles / maxWalkCost default to the short enroll budget; pruning
+// mid-fight may pass the longer chase leash so valid fights are not dropped.
+bool HasCombatWalkPathToParty(
+	U7Object* hostile,
+	float maxCrowFlyTiles = /* kHostileCombatEnrollRangeTiles */ 16.0f,
+	float maxWalkCost = /* kHostileCombatEnrollRangeTiles */ 16.0f);
+
 // Find nearest hostile within aggro range of the Avatar (or null).
 U7Object* FindNearestHostileInAggroRange();
 
-// If any hostile is in aggro range and combat is not active, warn once.
-// Does not enter combat — player presses C. Returns false always (no auto-enter).
+// If any hostile is in aggro range and combat is not active: either enter combat
+// (when combat_auto_start_on_aggro is on) or warn once for manual C. Returns true
+// if combat was entered this call.
 bool TryBeginCombatFromHostileAggro(U7Object* hintHostile);
 
 // "Headless" → "Headlesses" style label for approach messages.

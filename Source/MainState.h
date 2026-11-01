@@ -347,6 +347,9 @@ public:
 	bool m_showPathfindingDebug = false;  // F10: Tile-level visualization (shows objects)
 	int m_pathDebugNpcObjectId = -1;   // Sticky: NPC whose path to draw (click to select)
 
+	// Sandbox: Ctrl+O toggles the FPS / frame-time overlay (off by default).
+	bool m_showPerfCounter = false;
+
 	// Debug: Allow moving static objects
 	bool m_allowMovingStaticObjects = false;  // F7: hack moving — drag anything, drop anywhere
 
@@ -369,7 +372,9 @@ public:
 	void EnterCombatMode();
 	void LeaveCombatMode();
 	void UpdateCombatMode();
-	void EnsureCombatParticipant(int objectId);
+	/// Add to m_combatParticipants. Hostiles must pass HasCombatWalkPathToParty
+	/// unless requireWalkPath is false (player click-to-attack / forced enroll).
+	void EnsureCombatParticipant(int objectId, bool requireWalkPath = true);
 	bool IsCombatOrdersPaused() const;
 	bool AllowsCombatPlayerOrders() const;
 	// TB Resolving: true only for the active unit while its action plays out.
@@ -404,6 +409,8 @@ public:
 	// Session shared by all combat styles. m_combatPaused is primarily for Real-Time-Pause.
 	bool m_combatPaused = true;
 	std::vector<int> m_combatParticipants;
+	/// Hostiles the player explicitly targeted — not pruned for missing walk path.
+	std::unordered_set<int> m_combatForceEnrolledIds;
 	int m_combatSelectedPartyMemberObjectId = -1;
 	std::string m_combatApproachMessage;
 	std::unique_ptr<CombatMode> m_combatMode;

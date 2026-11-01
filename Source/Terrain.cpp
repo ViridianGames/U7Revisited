@@ -18,6 +18,7 @@
 #include "raymath.h"
 
 #include <algorithm>
+#include <cmath>
 #include <cstring>
 #include <vector>
 
@@ -223,6 +224,316 @@ namespace
 bool Terrain::ColorsEqual(Color a, Color b)
 {
 	return a.r == b.r && a.g == b.g && a.b == b.b && a.a == b.a;
+}
+
+Color Terrain::GetAmbientLightingColor() const
+{
+	return AmbientLightingColor();
+}
+
+Color Terrain::GetLightingAtWorld(int worldX, int worldZ) const
+{
+	const int camX = static_cast<int>(g_camera.target.x);
+	const int camZ = static_cast<int>(g_camera.target.z);
+	const int cellx = (TILEWIDTH / 2) + worldX - camX;
+	const int celly = (TILEHEIGHT / 2) + worldZ - camZ;
+	if (cellx < 0 || cellx >= TILEWIDTH || celly < 0 || celly >= TILEHEIGHT)
+		return AmbientLightingColor();
+	return m_cellLighting[cellx][celly];
+}
+
+Color Terrain::GetLightingForObject(const U7Object* obj, Vector3 viewPos) const
+{
+	if (!obj || !obj->m_objectData)
+		return AmbientLightingColor();
+
+	const int shapeID = obj->m_shapeData ? obj->m_shapeData->GetShape() : obj->m_ObjectType;
+	const std::string& name = obj->m_objectData->m_name;
+
+	// Roofs never pick up local discs.
+	if (PathfindingSystem::IsRoofShape(shapeID)
+		|| NameContainsI(name, "roof"))
+	{
+		return AmbientLightingColor();
+	}
+
+	const int w = std::max(1, static_cast<int>(obj->m_objectData->m_width));
+	const int d = std::max(1, static_cast<int>(obj->m_objectData->m_depth));
+	// SE-origin footprint (same as pathfinding stamps).
+	const int maxTileX = static_cast<int>(std::floor(obj->m_Pos.x));
+	const int maxTileZ = static_cast<int>(std::floor(obj->m_Pos.z));
+	const int minTileX = maxTileX - w + 1;
+	const int minTileZ = maxTileZ - d + 1;
+	const float centerX = (static_cast<float>(minTileX) + static_cast<float>(maxTileX)) * 0.5f;
+	const float centerZ = (static_cast<float>(minTileZ) + static_cast<float>(maxTileZ)) * 0.5f;
+
+	const bool verticalBarrier =
+		NameSuggestsLightOccluder(name)
+		|| NameContainsI(name, "window")
+		|| obj->m_objectData->m_isDoor;
+
+	if (verticalBarrier)
+	{
+		// Facing test:
+		// - Long wall + camera clearly off its plane → thin-axis half-space.
+		// - 1x1 posts, or camera nearly edge-on (cardinal views along a wall) →
+		//   XZ hemisphere toward the camera. Near-cardinal edge-on used to flip
+		//   sign(dz)/sign(dx) on noise so a behind-wall light counted as facing.
+		const float dx = viewPos.x - centerX;
+		const float dz = viewPos.z - centerZ;
+		const float viewDist = std::sqrt(dx * dx + dz * dz);
+		const bool isPost = (w == 1 && d == 1);
+
+		// sin(angle off the wall plane); below this ≈ edge-on / unstable.
+		constexpr float kClearSin = 0.30f; // ~17.5°
+		constexpr float kLightRange = 15.0f;
+		constexpr float kLightRangeSq = kLightRange * kLightRange;
+		constexpr float kPlaneEps = 0.15f;
+		constexpr float kHemisphereCos = 0.08f; // light must sit a bit in front
+
+		float nx = 0.0f;
+		float nz = 0.0f;
+		bool usePlane = false;
+		int probeX = (minTileX + maxTileX) / 2;
+		int probeZ = (minTileZ + maxTileZ) / 2;
+
+		if (!isPost && w >= d * 3 / 2)
+		{
+			// Elongated along X → faces ±Z.
+			const float clear = (viewDist > 1e-3f) ? (std::fabs(dz) / viewDist) : 0.0f;
+			if (clear >= kClearSin)
+			{
+				usePlane = true;
+				nz = (dz >= 0.0f) ? 1.0f : -1.0f;
+				probeZ = (nz > 0.0f) ? (maxTileZ + 1) : (minTileZ - 1);
+			}
+		}
+		else if (!isPost && d >= w * 3 / 2)
+		{
+			// Elongated along Z → faces ±X.
+			const float clear = (viewDist > 1e-3f) ? (std::fabs(dx) / viewDist) : 0.0f;
+			if (clear >= kClearSin)
+			{
+				usePlane = true;
+				nx = (dx >= 0.0f) ? 1.0f : -1.0f;
+				probeX = (nx > 0.0f) ? (maxTileX + 1) : (minTileX - 1);
+			}
+		}
+
+		if (!usePlane)
+		{
+			// Hemisphere path: probe along the stronger camera axis.
+			if (std::fabs(dx) >= std::fabs(dz))
+			{
+				probeX = (dx >= 0.0f) ? (maxTileX + 1) : (minTileX - 1);
+			}
+			else
+			{
+				probeZ = (dz >= 0.0f) ? (maxTileZ + 1) : (minTileZ - 1);
+			}
+		}
+
+		auto lightFacesWall = [&](float lx, float lz) -> bool
+		{
+			const float ldx = lx - centerX;
+			const float ldz = lz - centerZ;
+			const float lightDistSq = ldx * ldx + ldz * ldz;
+			if (lightDistSq > kLightRangeSq)
+				return false;
+
+			if (usePlane)
+				return (nx * ldx + nz * ldz) > kPlaneEps;
+
+			// Hemisphere toward camera; reject near-orthogonal lights.
+			const float lightDist = std::sqrt(lightDistSq);
+			if (viewDist < 1e-3f || lightDist < 1e-3f)
+				return false;
+			const float cosAng = (dx * ldx + dz * ldz) / (viewDist * lightDist);
+			return cosAng > kHemisphereCos;
+		};
+
+		bool litFromFacingSide = false;
+		auto consider = [&](float lx, float lz)
+		{
+			if (!litFromFacingSide && lightFacesWall(lx, lz))
+				litFromFacingSide = true;
+		};
+
+		for (U7Object* lightObj : g_sortedVisibleObjects)
+		{
+			if (!lightObj || !lightObj->m_objectData || !lightObj->m_objectData->m_isLightSource)
+				continue;
+			consider(lightObj->m_Pos.x, lightObj->m_Pos.z);
+			if (litFromFacingSide)
+				break;
+		}
+		if (!litFromFacingSide && g_spellLightRemaining > 0.f && g_Player)
+		{
+			if (U7Object* avatar = g_Player->GetAvatarObject())
+				consider(avatar->m_Pos.x, avatar->m_Pos.z);
+		}
+		if (!litFromFacingSide && g_Player)
+		{
+			for (int npcId : g_Player->GetPartyMemberIds())
+			{
+				auto itNpc = g_NPCData.find(npcId);
+				if (itNpc == g_NPCData.end() || !itNpc->second)
+					continue;
+				U7Object* member = GetObjectFromID(itNpc->second->m_objectID);
+				if (!UnitHoldsLightSource(member))
+					continue;
+				consider(member->m_Pos.x, member->m_Pos.z);
+				if (litFromFacingSide)
+					break;
+			}
+		}
+
+		if (!litFromFacingSide)
+			return AmbientLightingColor();
+
+		return GetLightingAtWorld(probeX, probeZ);
+	}
+
+	return GetLightingAtWorld(maxTileX, maxTileZ);
+}
+
+void Terrain::FillCuboidFaceLighting(const U7Object* obj, Color outFaces[6]) const
+{
+	const Color ambient = AmbientLightingColor();
+	for (int i = 0; i < 6; ++i)
+		outFaces[i] = ambient;
+
+	if (!obj || !obj->m_objectData)
+		return;
+
+	const int shapeID = obj->m_shapeData ? obj->m_shapeData->GetShape() : obj->m_ObjectType;
+	const std::string& name = obj->m_objectData->m_name;
+	if (PathfindingSystem::IsRoofShape(shapeID) || NameContainsI(name, "roof"))
+		return;
+
+	const bool verticalBarrier =
+		NameSuggestsLightOccluder(name)
+		|| NameContainsI(name, "window")
+		|| obj->m_objectData->m_isDoor;
+	if (!verticalBarrier)
+	{
+		// Non-wall cuboid: same omnidirectional cell lighting on every face.
+		const Color lit = GetLightingAtWorld(
+			static_cast<int>(std::floor(obj->m_Pos.x)),
+			static_cast<int>(std::floor(obj->m_Pos.z)));
+		for (int i = 0; i < 6; ++i)
+			outFaces[i] = lit;
+		return;
+	}
+
+	const int w = std::max(1, static_cast<int>(obj->m_objectData->m_width));
+	const int d = std::max(1, static_cast<int>(obj->m_objectData->m_depth));
+	const int maxTileX = static_cast<int>(std::floor(obj->m_Pos.x));
+	const int maxTileZ = static_cast<int>(std::floor(obj->m_Pos.z));
+	const int minTileX = maxTileX - w + 1;
+	const int minTileZ = maxTileZ - d + 1;
+	const float centerX = (static_cast<float>(minTileX) + static_cast<float>(maxTileX)) * 0.5f;
+	const float centerZ = (static_cast<float>(minTileZ) + static_cast<float>(maxTileZ)) * 0.5f;
+
+	// Match DrawModelEx Y-rotation (degrees → raylib MatrixRotateY).
+	const float yawRad = obj->m_Angle * DEG2RAD;
+	const float c = std::cos(yawRad);
+	const float s = std::sin(yawRad);
+
+	constexpr float kLightRange = 15.0f;
+	constexpr float kLightRangeSq = kLightRange * kLightRange;
+	constexpr float kPlaneEps = 0.15f;
+
+	// Local XZ normals: FRONT +Z, RIGHT +X, BACK -Z, LEFT -X.
+	// World: (nx,nz) → (nx*c + nz*s, -nx*s + nz*c).
+	struct FaceDef
+	{
+		int side; // CuboidSides index
+		float localNx;
+		float localNz;
+	};
+	const FaceDef verticalFaces[4] = {
+		{ 1, 0.0f, 1.0f },  // FRONT
+		{ 2, 1.0f, 0.0f },  // RIGHT
+		{ 4, 0.0f, -1.0f }, // BACK
+		{ 5, -1.0f, 0.0f }, // LEFT
+	};
+
+	float lightXs[64];
+	float lightZs[64];
+	int lightCount = 0;
+	auto addLight = [&](float lx, float lz)
+	{
+		if (lightCount >= 64)
+			return;
+		const float ldx = lx - centerX;
+		const float ldz = lz - centerZ;
+		if (ldx * ldx + ldz * ldz > kLightRangeSq)
+			return;
+		lightXs[lightCount] = lx;
+		lightZs[lightCount] = lz;
+		++lightCount;
+	};
+
+	for (U7Object* lightObj : g_sortedVisibleObjects)
+	{
+		if (!lightObj || !lightObj->m_objectData || !lightObj->m_objectData->m_isLightSource)
+			continue;
+		addLight(lightObj->m_Pos.x, lightObj->m_Pos.z);
+	}
+	if (g_spellLightRemaining > 0.f && g_Player)
+	{
+		if (U7Object* avatar = g_Player->GetAvatarObject())
+			addLight(avatar->m_Pos.x, avatar->m_Pos.z);
+	}
+	if (g_Player)
+	{
+		for (int npcId : g_Player->GetPartyMemberIds())
+		{
+			auto itNpc = g_NPCData.find(npcId);
+			if (itNpc == g_NPCData.end() || !itNpc->second)
+				continue;
+			U7Object* member = GetObjectFromID(itNpc->second->m_objectID);
+			if (!UnitHoldsLightSource(member))
+				continue;
+			addLight(member->m_Pos.x, member->m_Pos.z);
+		}
+	}
+
+	const float halfX = static_cast<float>(w) * 0.5f;
+	const float halfZ = static_cast<float>(d) * 0.5f;
+
+	for (const FaceDef& face : verticalFaces)
+	{
+		const float nwx = face.localNx * c + face.localNz * s;
+		const float nwz = -face.localNx * s + face.localNz * c;
+
+		bool lit = false;
+		for (int i = 0; i < lightCount; ++i)
+		{
+			const float side = nwx * (lightXs[i] - centerX) + nwz * (lightZs[i] - centerZ);
+			if (side > kPlaneEps)
+			{
+				lit = true;
+				break;
+			}
+		}
+		if (!lit)
+		{
+			outFaces[face.side] = ambient;
+			continue;
+		}
+
+		// Probe one tile outside along the face normal.
+		const float reach = std::fabs(nwx) * halfX + std::fabs(nwz) * halfZ + 0.85f;
+		const int probeX = static_cast<int>(std::floor(centerX + nwx * reach));
+		const int probeZ = static_cast<int>(std::floor(centerZ + nwz * reach));
+		outFaces[face.side] = GetLightingAtWorld(probeX, probeZ);
+	}
+
+	// Top / bottom stay ambient (no torch glow on wall caps).
+	outFaces[0] = ambient;
+	outFaces[3] = ambient;
 }
 
 Terrain::Terrain()
@@ -499,11 +810,13 @@ void Terrain::CalculateLighting()
 	if (!NeedsDynamicLighting())
 		return;
 
-	// Stamp light discs only (was: every light × full 100×100 grid).
-	constexpr int softLightRange = 14;
-	constexpr int lightRange = 3;
-	const int lightRangeSq = lightRange * lightRange;
+	// Smooth radial falloff (peak → ambient). Full brightness out to brightCore,
+	// then softstep to ambient at softLightRange (larger bright disc, soft rim).
+	constexpr int softLightRange = 15;
+	constexpr float brightCoreRange = 6.0f;
 	const int softLightRangeSq = softLightRange * softLightRange;
+	const float falloffSpan = static_cast<float>(softLightRange) - brightCoreRange;
+	constexpr Color peakLight = { 208, 208, 192, 255 };
 
 	const int camX = static_cast<int>(g_camera.target.x);
 	const int camZ = static_cast<int>(g_camera.target.z);
@@ -559,9 +872,6 @@ void Terrain::CalculateLighting()
 		}
 	}
 
-	const Color hardLight = { 208, 208, 192, 255 };
-	const Color softLight = { 144, 144, 128, 255 };
-
 	auto stampLight = [&](int lightX, int lightZ)
 	{
 		const int worldMinX = lightX - softLightRange;
@@ -593,18 +903,32 @@ void Terrain::CalculateLighting()
 				if (!HasLightLOS(lightX, lightZ, wx, wz, blocks, occMinX, occMinZ, occW, occH))
 					continue;
 
-				if (distSq <= lightRangeSq)
+				const float dist = std::sqrt(static_cast<float>(distSq));
+				float t;
+				if (dist <= brightCoreRange)
 				{
-					m_cellLighting[cellx][celly] = hardLight;
+					t = 1.0f;
 				}
 				else
 				{
-					Color& cell = m_cellLighting[cellx][celly];
-					if (cell.r < 128 && cell.g < 128 && cell.b < 128)
-					{
-						cell = softLight;
-					}
+					float u = 1.0f - (dist - brightCoreRange) / falloffSpan;
+					if (u <= 0.0f)
+						continue;
+					// Smoothstep across the outer ring only.
+					t = u * u * (3.0f - 2.0f * u);
 				}
+
+				Color& cell = m_cellLighting[cellx][celly];
+				auto blendChan = [&](unsigned char peakC, unsigned char ambC, unsigned char curC) -> unsigned char
+				{
+					const float lit = static_cast<float>(ambC)
+						+ (static_cast<float>(peakC) - static_cast<float>(ambC)) * t;
+					return static_cast<unsigned char>(std::min(255.0f, std::max(static_cast<float>(curC), lit)));
+				};
+				cell.r = blendChan(peakLight.r, ambient.r, cell.r);
+				cell.g = blendChan(peakLight.g, ambient.g, cell.g);
+				cell.b = blendChan(peakLight.b, ambient.b, cell.b);
+				cell.a = 255;
 			}
 		}
 	};

@@ -405,6 +405,7 @@ int g_u7GlassCoverageLoc = -1;
 int g_u7GlassBrightnessLoc = -1;
 Shader g_cuboidShader;
 int g_cuboidTexCoordsLoc;
+int g_cuboidFaceLightLoc;
 
 Shader g_meshIdShader{};
 int g_meshIdAlphaCutoffLoc = -1;

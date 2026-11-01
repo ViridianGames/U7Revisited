@@ -85,8 +85,11 @@ public:
 
 	// playSkeletalAnim: when false, custom meshes with idle clips hold freezeFrame
 	// (use-while-busy rest pose / Triples stop). Default true keeps editor/preview looping.
+	// cuboidFaceLights: optional 6 tints (TOP,FRONT,RIGHT,BOTTOM,BACK,LEFT). When null,
+	// all cuboid faces use `color`.
 	void Draw(const Vector3& pos, float angle, Color color = Color{ 255, 255, 255, 255 },
-		Vector3 scaling = Vector3{ 1, 1, 1 }, bool playSkeletalAnim = true, int freezeFrame = 0);
+		Vector3 scaling = Vector3{ 1, 1, 1 }, bool playSkeletalAnim = true, int freezeFrame = 0,
+		const Color* cuboidFaceLights = nullptr);
 
 	// Draw this shape's texture as a ground flat regardless of m_drawType
 	// (dead NPC/monster corpses lie on the ground).

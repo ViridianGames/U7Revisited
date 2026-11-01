@@ -580,9 +580,15 @@ void UpdateSortedVisibleObjects();
 /// Radius in world tiles around each interest center (default ~16 chunks / town + outskirts).
 extern float g_interestRadiusTiles;
 
-/// Hostile aggro / combat chase leash (on-screen-ish). Keep pathfinding inside this.
+/// Hostile chase leash once already engaged (on-screen-ish). Keep pathfinding inside this.
 constexpr float kHostileAggroRangeTiles = 32.0f;
 constexpr float kHostileAggroRangeSqr = kHostileAggroRangeTiles * kHostileAggroRangeTiles;
+
+/// Auto-enroll / combat-start range. Shorter than the chase leash so adjacent but
+/// disconnected dungeon halls (e.g. Lasher's cave vs Destard) do not join.
+constexpr float kHostileCombatEnrollRangeTiles = 16.0f;
+constexpr float kHostileCombatEnrollRangeSqr =
+	kHostileCombatEnrollRangeTiles * kHostileCombatEnrollRangeTiles;
 
 /// Clear and rebuild centers from avatar + party (camera only when freecam).
 void ClearInterestCenters();
@@ -773,6 +779,7 @@ extern Shader g_alphaDiscard;
 extern int g_alphaDiscardCutoffLoc;
 extern Shader g_cuboidShader;
 extern int g_cuboidTexCoordsLoc;
+extern int g_cuboidFaceLightLoc;
 // Saturated alpha tint for TFA meshes that contain xform/glass pixels.
 extern Shader g_u7GlassShader;
 extern int g_u7GlassSaturationLoc;

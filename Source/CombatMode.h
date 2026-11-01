@@ -30,6 +30,10 @@ void SetCombatStylePreference(CombatStyle style);
 const char* CombatStyleDisplayName(CombatStyle style);
 const char* CombatStyleConfigToken(CombatStyle style);
 
+// engine.cfg combat_auto_start_on_aggro (1 = enter combat when hostiles approach).
+bool GetCombatAutoStartOnAggro();
+void SetCombatAutoStartOnAggro(bool enabled);
+
 // Strategy for one combat encounter while g_isCombatMode is set.
 class CombatMode
 {
@@ -191,6 +195,8 @@ private:
 	U7Object* FindNearestPartyTarget(const U7Object* from) const;
 	U7Object* FindNearestHostileTarget(const U7Object* from) const;
 	bool IsLivingCombatant(const U7Object* obj) const;
+	/// Living or KO'd (downed) — finishable into true death; excludes corpses.
+	bool IsFinishableCombatTarget(const U7Object* obj) const;
 	bool IsPartyUnit(const U7Object* obj) const;
 	bool IsTileOccupiedByOther(int tileX, int tileZ, int selfId) const;
 	U7Object* GetActiveUnit() const;

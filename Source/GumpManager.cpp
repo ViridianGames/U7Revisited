@@ -230,19 +230,39 @@ void GumpManager::Update()
 			}
 		}
 
-		// Handle dropping onto the Avatar or other party member.
-		if (g_objectUnderMousePointer != nullptr && g_objectUnderMousePointer == g_Player->GetAvatarObject())
+		// Drop onto the Avatar or another party member → their equipped backpack.
+		// Failed attempts stay as inventory targets (return-to-source), not world drops.
+		bool attemptedPartyDrop = false;
+		if (g_objectUnderMousePointer != nullptr && g_Player
+			&& g_objectUnderMousePointer->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC
+			&& g_Player->NPCIDInParty(g_objectUnderMousePointer->m_NPCID))
 		{
-			//  Attempt to drop the object into the Avatar's inventory.
-			U7Object* avatar = g_Player->GetAvatarObject();
+			attemptedPartyDrop = true;
+			U7Object* member = g_objectUnderMousePointer;
 			U7Object* draggedObject = GetObjectFromID(m_draggedObjectId);
-			if (avatar->GetRemainingCarryCapacity() > object->GetWeight())
+			const int npcId = member->m_NPCID;
+			auto itNpc = g_NPCData.find(npcId);
+			const int backpackId = (itNpc != g_NPCData.end() && itNpc->second)
+				? itNpc->second->GetEquippedItem(EquipmentSlot::SLOT_BACKPACK)
+				: -1;
+
+			if (backpackId < 0)
 			{
-				AddConsoleString("Added " + GetObjectDisplayName(draggedObject) + " to Avatar's inventory.", WHITE);
-				int backpackId = g_NPCData[0]->GetEquippedItem(EquipmentSlot::SLOT_BACKPACK);
+				const std::string who = member->m_name.empty() ? "That party member" : member->m_name;
+				AddConsoleString(who + " has no backpack.", RED);
+			}
+			else if (member->GetRemainingCarryCapacity() > object->GetWeight())
+			{
+				const std::string who = (npcId == 0)
+					? "Avatar"
+					: (member->m_name.empty() ? "party member" : member->m_name);
+				AddConsoleString(
+					"Added " + GetObjectDisplayName(draggedObject ? draggedObject : object) + " to " + who + "'s inventory.",
+					WHITE);
 
 				AddObjectToContainer(m_draggedObjectId, backpackId);
-				if (draggedObject->m_shapeData->GetShape() == 641 && draggedObject->m_Quality == 253)
+				if (npcId == 0 && draggedObject && draggedObject->m_shapeData
+					&& draggedObject->m_shapeData->GetShape() == 641 && draggedObject->m_Quality == 253)
 				{
 					g_ScriptingSystem->SetFlag(60, 1);
 				}
@@ -359,10 +379,11 @@ void GumpManager::Update()
 		{
 			bool returnedToSource = false;
 
-			// Return to source when: over a gump / Equip panel (failed drop), or world drop is invalid.
+			// Return to source when: over a gump / Equip panel / party member (failed drop),
+			// or world drop is invalid.
 			const bool wantReturnToSource =
 				m_sourceGump != nullptr &&
-				(m_gumpUnderMouse != nullptr || overEmbeddedPaperdoll || !m_dropValid);
+				(m_gumpUnderMouse != nullptr || overEmbeddedPaperdoll || attemptedPartyDrop || !m_dropValid);
 
 			if (wantReturnToSource)
 			{
@@ -404,7 +425,7 @@ void GumpManager::Update()
 			if (!returnedToSource)
 			{
 				// World-origin drag with invalid/failed drop → original world pos.
-				if (!m_dropValid || m_gumpUnderMouse != nullptr || overEmbeddedPaperdoll)
+				if (!m_dropValid || m_gumpUnderMouse != nullptr || overEmbeddedPaperdoll || attemptedPartyDrop)
 				{
 					object->SetPos(m_draggedObjectOriginalPos);
 					object->SetDest(m_draggedObjectOriginalDest);

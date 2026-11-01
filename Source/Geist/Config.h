@@ -39,6 +39,7 @@ public:
 	void        Save(std::string filename);
 	float       GetNumber(std::string node);
 	std::string GetString(std::string node);
+	bool        HasNumber(std::string node) const;
 	void        SetNumber(std::string node, float number);
 	void        SetString(std::string node, std::string name);
 

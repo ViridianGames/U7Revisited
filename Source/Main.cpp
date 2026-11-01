@@ -149,6 +149,7 @@ int main(int argv, char** argc)
       }
       g_cuboidShader = LoadShader("Data/Shaders/cuboid.vs", NULL);
       g_cuboidTexCoordsLoc = GetShaderLocation(g_cuboidShader, "cuboidTexCoords");
+      g_cuboidFaceLightLoc = GetShaderLocation(g_cuboidShader, "cuboidFaceLight");
       g_paletteShader = LoadShader(NULL, "Data/Shaders/paletteLookup.fs");
       // texture1 is auto-bound as SHADER_LOC_MAP_SPECULAR by LoadShader; keep explicit loc for billboards
       g_paletteSamplerLoc = g_paletteShader.locs[SHADER_LOC_MAP_SPECULAR];

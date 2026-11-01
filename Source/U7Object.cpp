@@ -499,7 +499,7 @@ void U7Object::NotifyAttackedBy(U7Object* attacker)
 	if (attacker->m_Team == 2)
 	{
 		if (g_isCombatMode && g_mainState)
-			g_mainState->EnsureCombatParticipant(static_cast<int>(m_ID));
+			g_mainState->EnsureCombatParticipant(static_cast<int>(m_ID), false);
 		return;
 	}
 
@@ -508,8 +508,9 @@ void U7Object::NotifyAttackedBy(U7Object* attacker)
 	m_pathfindingPending = false;
 	m_isSchedulePath = false;
 
+	// Hit by the party — force enroll even if walk path is currently blocked.
 	if (g_isCombatMode && g_mainState)
-		g_mainState->EnsureCombatParticipant(static_cast<int>(m_ID));
+		g_mainState->EnsureCombatParticipant(static_cast<int>(m_ID), false);
 
 	if (g_isCombatMode)
 		EngageCombatTarget();
@@ -1103,37 +1104,35 @@ void U7Object::MonsterUpdate()
 		{
 			const float distSqr = Vector2DistanceSqr({ m_Pos.x, m_Pos.z }, { avatar->m_Pos.x, avatar->m_Pos.z });
 			const bool sameLayer = AreUnitsOnSameDungeonLayer(this, avatar);
-			const bool inRange = sameLayer && distSqr < kHostileAggroRangeSqr;
-			const bool hasLos = inRange && HasCombatLineOfSight(this, avatar);
-			// Already chasing someone: keep approaching even if LOS breaks briefly.
+			// New aggro / enroll uses the short range; chase leash stays at 32.
+			const bool inEnrollRange = sameLayer && distSqr <= kHostileCombatEnrollRangeSqr;
+			const bool inChaseRange = sameLayer && distSqr <= kHostileAggroRangeSqr;
+			// Already chasing: keep approaching even if path flickers briefly.
 			const bool alreadyAggroed = (m_target != 0);
 
-			if (inRange && (hasLos || alreadyAggroed))
+			if (!g_isCombatMode && (inEnrollRange || (alreadyAggroed && inChaseRange)))
 			{
-				if (!g_isCombatMode)
+				// Path-gate new aggro; already-aggroed keep closing without re-flood.
+				const bool canReach = alreadyAggroed || HasCombatWalkPathToParty(this);
+				if (canReach)
 				{
-					if (hasLos)
+					if (!alreadyAggroed)
 						TryBeginCombatFromHostileAggro(this);
 					// Close on the party before the player presses C (no swings yet).
 					HostileCombatUpdate();
 					return;
 				}
-				if (g_mainState && hasLos)
-				{
-					// Enroll even while paused — otherwise nearer Headlesses never join
-					// if a farther Dragon triggered combat first.
-					g_mainState->EnsureCombatParticipant(static_cast<int>(m_ID));
-				}
 			}
-			else if (!inRange && m_target != 0 && !g_isCombatMode)
+			else if (!g_isCombatMode && !inChaseRange && m_target != 0)
 			{
-				// Drop pre-combat chase when the party leaves aggro range.
+				// Drop pre-combat chase when the party leaves the chase leash.
 				m_target = 0;
 				m_combatPathTargetId = 0;
 				m_pathWaypoints.clear();
 				m_isMoving = false;
 				SetDest(m_Pos);
 			}
+			// In combat, EnrollNearbyCombatHostiles path-gates new joiners.
 
 			// Skip chase/attack AI while combat is paused for orders.
 			// Turn-Based Resolving: active monster may finish a Move order.
@@ -1496,25 +1495,38 @@ void U7Object::InteractiveDraw()
 		}
 	}
 
-	Color renderColor = g_Terrain->m_cellLighting[cellx][celly];
+	// Roofs → ambient; wall cuboids → per-face lights; other walls → camera-side.
+	Color renderColor = g_Terrain
+		? g_Terrain->GetLightingForObject(this, g_camera.position)
+		: Color{ 255, 255, 255, 255 };
 
-	// Apply green tint if F11 script debug is enabled and object has a non-default script
-	// Also check for conversation trees (NPCs with dialogue scripts)
-	if (g_showScriptedObjects &&
-	    ((m_shapeData->m_luaScript != "" && m_shapeData->m_luaScript != "default") || m_hasConversationTree))
+	Color cuboidFaces[6];
+	const bool useCuboidFaces = g_Terrain && m_shapeData
+		&& m_shapeData->GetDrawType() == ShapeDrawType::OBJECT_DRAW_CUBOID;
+	if (useCuboidFaces)
+		g_Terrain->FillCuboidFaceLighting(this, cuboidFaces);
+
+	auto applyDebugTint = [&](Color& c)
 	{
-		// Blend with green to highlight scripted objects
-		renderColor.r = (renderColor.r + 0) / 2;
-		renderColor.g = (renderColor.g + 255) / 2;
-		renderColor.b = (renderColor.b + 0) / 2;
-	}
-	// Apply blue tint if F11 debug is enabled and object is walkable (isNotWalkable = false)
-	else if (g_showScriptedObjects && m_objectData && !m_objectData->m_isNotWalkable)
+		if (g_showScriptedObjects &&
+		    ((m_shapeData->m_luaScript != "" && m_shapeData->m_luaScript != "default") || m_hasConversationTree))
+		{
+			c.r = (c.r + 0) / 2;
+			c.g = (c.g + 255) / 2;
+			c.b = (c.b + 0) / 2;
+		}
+		else if (g_showScriptedObjects && m_objectData && !m_objectData->m_isNotWalkable)
+		{
+			c.r = (c.r + 0) / 2;
+			c.g = (c.g + 0) / 2;
+			c.b = (c.b + 255) / 2;
+		}
+	};
+	applyDebugTint(renderColor);
+	if (useCuboidFaces)
 	{
-		// Blend with blue to highlight walkable objects
-		renderColor.r = (renderColor.r + 0) / 2;
-		renderColor.g = (renderColor.g + 0) / 2;
-		renderColor.b = (renderColor.b + 255) / 2;
+		for (Color& fc : cuboidFaces)
+			applyDebugTint(fc);
 	}
 
 	if (m_isCustomMesh) {
@@ -1523,7 +1535,7 @@ void U7Object::InteractiveDraw()
 		// Skeletal custom meshes: play while Auto/Scripted, rest pose while Frozen.
 		const bool playMeshAnim = (m_animMode != ObjectAnimMode::Frozen);
 		m_shapeData->Draw(m_Pos, m_Angle, renderColor, Vector3{ 1, 1, 1 },
-			playMeshAnim, 0);
+			playMeshAnim, 0, useCuboidFaces ? cuboidFaces : nullptr);
 	}
 }
 

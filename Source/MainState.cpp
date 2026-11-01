@@ -1082,6 +1082,14 @@ void MainState::HandleDebugKeys()
 		AddConsoleString(g_showEggs ? "Egg display ON" : "Egg display OFF");
 	}
 
+	// Sandbox: Ctrl+O toggles the FPS / frame-time overlay.
+	if (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyPressed(KEY_O)
+		&& m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX)
+	{
+		m_showPerfCounter = !m_showPerfCounter;
+		AddConsoleString(m_showPerfCounter ? "Perf counter ON" : "Perf counter OFF");
+	}
+
 	// Object Finder: Ctrl+F opens it, F3 / Shift+F3 step through its results
 	if (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyPressed(KEY_F) && m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX)
 		HandleObjectFinderButton();
@@ -3167,7 +3175,15 @@ void MainState::Draw()
 	// Shared terrain + object path (same as Conversation/Options overlays).
 	DrawGameWorld(m_showObjects);
 
-	if (g_gumpManager->m_draggingObject && !g_gumpManager->m_isMouseOverGump && g_objectUnderMousePointer != g_Player->GetAvatarObject())
+	// Hovering the Avatar or any other party member is an inventory drop target
+	// (backpack handoff in GumpManager) — skip the world placement ghost.
+	const bool hoveringPartyInventoryTarget =
+		g_objectUnderMousePointer != nullptr
+		&& g_Player
+		&& g_objectUnderMousePointer->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC
+		&& g_Player->NPCIDInParty(g_objectUnderMousePointer->m_NPCID);
+
+	if (g_gumpManager->m_draggingObject && !g_gumpManager->m_isMouseOverGump && !hoveringPartyInventoryTarget)
 	{
 		U7Object* draggedObject = nullptr;
 		{
@@ -3807,7 +3823,7 @@ void MainState::Draw()
 		unsigned short shapeframe = g_World[worldZ][worldX];
 		int shape = shapeframe & 0x3ff;
 
-		if (m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX)
+		if (m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX && m_showPerfCounter)
 		{
 			DrawPerfCounter(g_guiFont.get(), 0);
 		}
@@ -5259,17 +5275,20 @@ bool MainState::IsCombatPartyMemberObject(const U7Object* obj) const
 
 bool MainState::IsCombatEnemyObject(const U7Object* obj) const
 {
-	if (!obj || obj->m_hp <= 0.0f || obj->IsDeathStatus())
+	if (!obj || obj->IsDeathStatus())
+		return false;
+	if (const_cast<U7Object*>(obj)->GetIsDead())
 		return false;
 	if (IsCombatPartyMemberObject(obj))
 		return false;
 	// Team 2 = party summons (Swarm); allied, never clickable as enemies.
 	if (obj->m_Team == 2)
 		return false;
-	if (IsHostileCombatUnit(obj))
-		return true;
-	return std::find(m_combatParticipants.begin(), m_combatParticipants.end(), obj->m_ID)
-		!= m_combatParticipants.end();
+	// Living and knocked-out (downed) non-party NPC/monsters are valid targets.
+	// KO'd foes can be finished into true death; lootable corpses stay excluded
+	// via IsDeathStatus / GetIsDead above.
+	return obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC
+		|| obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_MONSTER;
 }
 
 void MainState::StopCombatUnitActions(U7Object* member)
@@ -5391,6 +5410,8 @@ void MainState::IssueCombatAttackOrder(U7Object* member, U7Object* enemy)
 {
 	if (!member || !enemy)
 		return;
+	// Player chose this target (ranged / finish) — enroll even without a walk path.
+	EnsureCombatParticipant(static_cast<int>(enemy->m_ID), false);
 	member->m_target = enemy->m_ID;
 	member->m_combatSpellId = -1;
 	member->m_combatSpellTargetId = 0;
@@ -5434,13 +5455,26 @@ void MainState::HandleCombatOrderKeys()
 		IssueCombatAutomaticOrder(member);
 }
 
-void MainState::EnsureCombatParticipant(int objectId)
+void MainState::EnsureCombatParticipant(int objectId, bool requireWalkPath)
 {
 	if (objectId <= 0)
 		return;
+
+	if (!requireWalkPath)
+		m_combatForceEnrolledIds.insert(objectId);
+
 	if (std::find(m_combatParticipants.begin(), m_combatParticipants.end(), objectId)
-		== m_combatParticipants.end())
-		m_combatParticipants.push_back(objectId);
+		!= m_combatParticipants.end())
+		return;
+
+	if (requireWalkPath)
+	{
+		U7Object* obj = GetObjectFromID(objectId);
+		if (obj && IsHostileCombatUnit(obj) && !HasCombatWalkPathToParty(obj))
+			return;
+	}
+
+	m_combatParticipants.push_back(objectId);
 }
 
 void MainState::EnrollNearbyCombatHostiles()
@@ -5454,14 +5488,20 @@ void MainState::EnrollNearbyCombatHostiles()
 			return;
 		if (!AreUnitsOnSameDungeonLayer(avatar, obj))
 			return;
-		if (!HasCombatLineOfSight(avatar, obj))
-			return;
 		const float distSqr = Vector2DistanceSqr(
 			{ obj->m_Pos.x, obj->m_Pos.z },
 			{ avatar->m_Pos.x, avatar->m_Pos.z });
-		if (distSqr > kHostileAggroRangeSqr)
+		// Short enroll range — chase leash (32) is separate once engaged.
+		if (distSqr > kHostileCombatEnrollRangeSqr)
 			return;
-		EnsureCombatParticipant(static_cast<int>(obj->m_ID));
+		// Skip path check for units already enrolled (flood every frame is costly).
+		const int id = static_cast<int>(obj->m_ID);
+		if (std::find(m_combatParticipants.begin(), m_combatParticipants.end(), id)
+			!= m_combatParticipants.end())
+			return;
+		if (!HasCombatWalkPathToParty(obj))
+			return;
+		EnsureCombatParticipant(id);
 	};
 
 	if (!g_interestChunkList.empty())
@@ -5501,6 +5541,7 @@ void MainState::EnterCombatMode()
 	m_combatPaused = true;
 	m_combatSelectedPartyMemberObjectId = -1;
 	m_combatParticipants.clear();
+	m_combatForceEnrolledIds.clear();
 	ClearCombatPartyTargets();
 
 	if (g_combatCursor)
@@ -5556,6 +5597,7 @@ void MainState::LeaveCombatMode()
 	}
 
 	m_combatParticipants.clear();
+	m_combatForceEnrolledIds.clear();
 	m_combatSelectedPartyMemberObjectId = -1;
 	m_combatPaused = true;
 	g_isCombatMode = false;
@@ -5889,41 +5931,39 @@ void MainState::UpdateCombatMode()
 	const double tOther0 = GetTime();
 	EnrollNearbyCombatHostiles();
 
-	// Prune despawned / dead participants.
+	// Prune despawned / dead / unreachable auto-enrolled hostiles.
+	// Destard drakes that pass crow-fly but cannot ValidateMove to the party
+	// must leave the list so they do not eat initiative turns doing nothing.
 	auto it = m_combatParticipants.begin();
 	while (it != m_combatParticipants.end())
 	{
 		auto objIt = g_objectList.find(*it);
 		if (objIt == g_objectList.end() || !objIt->second ||
 		    objIt->second->GetIsDead() || objIt->second->IsDeathStatus())
+		{
 			it = m_combatParticipants.erase(it);
-		else
-			++it;
+			continue;
+		}
+		U7Object* obj = objIt->second.get();
+		const int id = *it;
+		const bool forceEnrolled = m_combatForceEnrolledIds.count(id) > 0;
+		// Prune with the chase leash so valid mid-fight chases past 16 tiles stay.
+		// Destard drakes with no ValidateMove path still fail and drop out.
+		if (!forceEnrolled && IsHostileCombatUnit(obj)
+			&& !HasCombatWalkPathToParty(obj, kHostileAggroRangeTiles, kHostileAggroRangeTiles))
+		{
+			it = m_combatParticipants.erase(it);
+			continue;
+		}
+		++it;
 	}
 	g_perf.msCombatOther += (GetTime() - tOther0) * 1000.0;
 
 	if (m_combatMode)
 		m_combatMode->Update(*this);
 
-	// Auto-leave when all hostiles among participants are gone (including stub freeze).
-	bool anyHostiles = false;
-	for (int pid : m_combatParticipants)
-	{
-		auto objIt = g_objectList.find(pid);
-		if (objIt == g_objectList.end() || !objIt->second)
-			continue;
-		if (IsCombatEnemyObject(objIt->second.get()))
-		{
-			anyHostiles = true;
-			break;
-		}
-	}
-
-	if (!anyHostiles)
-	{
-		AddConsoleString("Combat over - all enemies defeated!", GREEN);
-		LeaveCombatMode();
-	}
+	// Combat ends only when the player leaves (C / Esc / paperdoll). Do not
+	// auto-leave when every foe is KO'd — outside combat, sleep-mend wakes them.
 }
 
 void MainState::ClearPartyFollowPaths()
@@ -6143,7 +6183,7 @@ void MainState::BuildDemoHelpGUI()
 
 	textY += 92;
 
-	m_demoHelpScreen->AddTextArea(GUI_DEMO_HELP_TITLE + idOffset++, g_SmallFont.get(), "INTERACTIONS:\nHold the mouse over an object to get a popup saying what it is.\nDrag objects and drop them on the Avatar or over an open backpack to add them to the Avatar's inventory.\nDouble-click objects in the world to interact with them. If you can use an object on another object (like a key),\n     you get a green target cursor. Use this to select the target.\nDouble-click NPCs to talk to them.\n", 10, textY,
+	m_demoHelpScreen->AddTextArea(GUI_DEMO_HELP_TITLE + idOffset++, g_SmallFont.get(), "INTERACTIONS:\nHold the mouse over an object to get a popup saying what it is.\nDrag objects and drop them on the Avatar or a party member (or an open backpack) to add them to inventory.\nDouble-click objects in the world to interact with them. If you can use an object on another object (like a key),\n     you get a green target cursor. Use this to select the target.\nDouble-click NPCs to talk to them.\n", 10, textY,
 								0, 0, WHITE, GuiTextArea::LEFT, 0, 1, false);
 
 
@@ -6183,7 +6223,7 @@ void MainState::BuildSandboxHelpGUI()
 
 	textY += 48;
 
-	m_sandboxHelpScreen->AddTextArea(GUI_DEMO_HELP_TITLE + idOffset++, g_SmallFont.get(), "F1 - Shape Editor\nF5 - Lock camera to unit under cursor (or Avatar)\nF6 - SUPER PIXELLATION MODE\nF7 - Allow hack moving (move anything)\nF8 - Lua script debug text\nF9 - Show object bounding boxes\nF10 - Show pathfinding info\nF11 - Highlight objects with scripts\nPageUp - Move the camera up one floor\nPageDown - Move the camera down one floor\nMinus Key - Speed up time\nPlus Key - Slow down time\nKeypad Enter - Jump time forward one hour.\nCtrl-p - ???", 10, textY,
+	m_sandboxHelpScreen->AddTextArea(GUI_DEMO_HELP_TITLE + idOffset++, g_SmallFont.get(), "F1 - Shape Editor\nF5 - Lock camera to unit under cursor (or Avatar)\nF6 - SUPER PIXELLATION MODE\nF7 - Allow hack moving (move anything)\nF8 - Lua script debug text\nF9 - Show object bounding boxes\nF10 - Show pathfinding info\nF11 - Highlight objects with scripts\nPageUp - Move the camera up one floor\nPageDown - Move the camera down one floor\nMinus Key - Speed up time\nPlus Key - Slow down time\nKeypad Enter - Jump time forward one hour.\nCtrl+O - Toggle perf counter\nCtrl+F - Object Finder", 10, textY,
 								0, 0, WHITE, GuiTextArea::LEFT, 0, 1, false);
 
 

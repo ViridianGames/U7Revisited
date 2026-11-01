@@ -177,6 +177,15 @@ void OptionsState::Update()
 		return;
 	}
 
+	if (activeId == GUI_OPTIONS_COMBAT_AUTO_START_CHECKBOX)
+	{
+		GuiCheckBox* checkbox = static_cast<GuiCheckBox*>(
+			m_Gui->GetElement(GUI_OPTIONS_COMBAT_AUTO_START_CHECKBOX).get());
+		if (checkbox)
+			SetCombatAutoStartOnAggro(checkbox->m_Selected);
+		return;
+	}
+
 	if (activeId == GUI_OPTIONS_BACK_TO_GAME_BUTTON)
 	{
 		g_Engine->m_EngineConfig.SetNumber("music_volume", g_SoundSystem->GetGlobalMusicVolume());
@@ -402,6 +411,16 @@ void OptionsState::CreateOptionsGUI()
 	m_Gui->AddTextArea(GUI_OPTIONS_COMBAT_STYLE_TURN_LABEL, g_SmallFont.get(), "Turn-Based", x + 16, y - 1, 0, 0,
 	                   Color{ 255, 255, 255, 255 }, GuiTextArea::LEFT, 0, 1, true);
 	m_gameplayElementIds.push_back(GUI_OPTIONS_COMBAT_STYLE_TURN_LABEL);
+
+	y += 28;
+	m_Gui->AddTextArea(GUI_OPTIONS_COMBAT_AUTO_START_LABEL, g_SmallFont.get(),
+	                   "Auto-start combat on aggro:", x, y, 0, 0,
+	                   Color{ 255, 255, 255, 255 }, GuiTextArea::LEFT, 0, 1, true);
+	m_gameplayElementIds.push_back(GUI_OPTIONS_COMBAT_AUTO_START_LABEL);
+	GuiCheckBox* autoStartBox = m_Gui->AddCheckBox(
+		GUI_OPTIONS_COMBAT_AUTO_START_CHECKBOX, 320, y, 10, 10, 1, 1, GRAY, 0, true);
+	autoStartBox->m_Selected = GetCombatAutoStartOnAggro();
+	m_gameplayElementIds.push_back(GUI_OPTIONS_COMBAT_AUTO_START_CHECKBOX);
 
 	// Footer (always visible)
 	y = 240;

@@ -45,6 +45,15 @@ public:
 	void MarkDirty();
 
 	void CalculateLighting();
+	// Day / night / dungeon ambient only (no local torch discs). Used for roof flats.
+	Color GetAmbientLightingColor() const;
+	// Cell lighting at a world tile (ambient if outside the current patch).
+	Color GetLightingAtWorld(int worldX, int worldZ) const;
+	// Object draw tint: roofs → ambient; walls (non-cuboid) → camera-side lighting.
+	Color GetLightingForObject(const class U7Object* obj, Vector3 viewPos) const;
+	// Cuboid walls: one tint per face (TOP,FRONT,RIGHT,BOTTOM,BACK,LEFT).
+	// Vertical faces light only when a light sits on that face's side.
+	void FillCuboidFaceLighting(const class U7Object* obj, Color outFaces[6]) const;
 	void UpdateTerrainTexture(Image img);
 	void SetTerrainIndexImage(Image indexImage);
 

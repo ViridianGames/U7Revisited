@@ -161,6 +161,12 @@ float Config::GetNumber(string node)
    }
 }
 
+bool Config::HasNumber(string node) const
+{
+	auto it = m_Config.find(node);
+	return it != m_Config.end() && it->second.datatype == DATA_NUMBER;
+}
+
 string Config::GetString(string node)
 {
    if (m_Config[node].datatype == DATA_STRING)

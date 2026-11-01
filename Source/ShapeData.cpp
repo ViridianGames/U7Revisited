@@ -1116,7 +1116,7 @@ void ShapeData::DrawInventoryIcon(int x, int y, Color tint)
 }
 
 void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scaling,
-	bool playSkeletalAnim, int freezeFrame)
+	bool playSkeletalAnim, int freezeFrame, const Color* cuboidFaceLights)
 {
 	if (m_isValid == false)
 	{
@@ -1143,7 +1143,26 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 
 		SetMaterialTexture(&g_CuboidModel.get()->materials[0], MATERIAL_MAP_DIFFUSE, m_cuboidTexture->m_Texture);
 		UpdateTextureCoordinates();
-		DrawModelEx(*g_CuboidModel.get(), thisPos, Vector3{ 0, 1, 0 }, angle, { m_Dims.x * m_Scaling.x, m_Dims.y * m_Scaling.y, m_Dims.z * m_Scaling.z }, color);
+
+		// Per-face lighting (or flat `color` on every face). colDiffuse stays white
+		// so the face uniform is the only tint (default FS: texel*colDiffuse*fragColor).
+		float faceLight[24];
+		for (int i = 0; i < 6; ++i)
+		{
+			const Color& fc = cuboidFaceLights ? cuboidFaceLights[i] : color;
+			faceLight[i * 4 + 0] = fc.r / 255.0f;
+			faceLight[i * 4 + 1] = fc.g / 255.0f;
+			faceLight[i * 4 + 2] = fc.b / 255.0f;
+			faceLight[i * 4 + 3] = fc.a / 255.0f;
+		}
+		if (g_cuboidFaceLightLoc >= 0)
+		{
+			SetShaderValueV(g_CuboidModel.get()->materials[0].shader, g_cuboidFaceLightLoc,
+				faceLight, SHADER_UNIFORM_VEC4, 6);
+		}
+
+		DrawModelEx(*g_CuboidModel.get(), thisPos, Vector3{ 0, 1, 0 }, angle,
+			{ m_Dims.x * m_Scaling.x, m_Dims.y * m_Scaling.y, m_Dims.z * m_Scaling.z }, WHITE);
 
 		break;
 	}
