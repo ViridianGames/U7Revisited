@@ -14,6 +14,7 @@
 #include "Geist/Primitives.h"
 #include "Geist/GuiManager.h"
 #include "Geist/ScriptingSystem.h"
+#include "Geist/SoundSystem.h"
 #include "Geist/Logging.h"
 #include "raylib.h"
 #include "U7Globals.h"
@@ -32,6 +33,7 @@
 #include "ObjectFinderState.h"
 #include "ShapeData.h"
 #include "GumpManager.h"
+#include "U7SpriteEffects.h"
 #include <string>
 #include <sstream>
 #include <memory>
@@ -80,12 +82,71 @@ extern "C" {
 using namespace std;
 using namespace std::filesystem;
 
+// Geist's sound and scripting systems don't know about U7 objects or the
+// camera; give them what they need from the game world.
+static void InstallEngineHooks()
+{
+   SoundSystemHooks soundHooks;
+   soundHooks.getListenerCamera = []() { return g_camera; };
+   soundHooks.getListenerYaw = []() { return g_cameraRotation; };
+   soundHooks.getObjectPosition = [](int objectId, Vector3& outPos)
+   {
+      U7Object* obj = GetObjectFromID(objectId);
+      if (!obj)
+         return false;
+      outPos = obj->m_Pos;
+      return true;
+   };
+   soundHooks.isObjectDead = [](int objectId)
+   {
+      U7Object* obj = GetObjectFromID(objectId);
+      return obj && obj->GetIsDead();
+   };
+   soundHooks.isObjectOnScreen = [](int objectId)
+   {
+      for (U7Object* obj : g_sortedVisibleObjects)
+      {
+         if (obj && obj->m_ID == objectId)
+            return true;
+      }
+      return false;
+   };
+   soundHooks.onInstrumentStarted = [](int objectId)
+   {
+      if (g_SpriteEffectSystem)
+         g_SpriteEffectSystem->StartInstrumentNotesOnObject(objectId);
+   };
+   soundHooks.onInstrumentStopped = [](int objectId)
+   {
+      if (g_SpriteEffectSystem)
+         g_SpriteEffectSystem->StopInstrumentNotesOnObject(objectId);
+   };
+   g_SoundSystem->SetHooks(std::move(soundHooks));
+
+   // Don't resume activity scripts for NPCs far from the camera (in tiles).
+   g_ScriptingSystem->m_shouldDeferNpcResume = [](int npcId)
+   {
+      const float RESUME_DISTANCE_THRESHOLD = 50.0f;
+      auto itNpc = g_NPCData.find(npcId);
+      if (itNpc == g_NPCData.end() || !itNpc->second)
+         return false;
+      auto itObj = g_objectList.find(itNpc->second->m_objectID);
+      if (itObj == g_objectList.end() || !itObj->second)
+         return false;
+      const U7Object* obj = itObj->second.get();
+      float dist = Vector2Distance({ obj->m_Pos.x, obj->m_Pos.z }, { g_camera.target.x, g_camera.target.z });
+      return dist > RESUME_DISTANCE_THRESHOLD;
+   };
+}
+
 int main(int argv, char** argc)
 {
+   int exitCode = 0;
    try
    {
       g_Engine = make_unique<Engine>();
       g_Engine->Init("Data/engine.cfg");
+      InstallEngineHooks();
 
       // Set window icon - EXACT copy of Ghost's working code
       #ifdef _WIN32
@@ -514,16 +575,21 @@ int main(int argv, char** argc)
       }
    }
 
-   catch (string errorCode)
+   catch (const string& error)
    {
-      Log(errorCode);
-      exit(0);
+      Log(error);
+      exitCode = 1;
    }
+
+   // Release aliases and notify game effects while hook targets and resources
+   // are still alive, rather than relying on global destruction order.
+   if (g_SoundSystem)
+      g_SoundSystem->Shutdown();
 
    if (g_Engine)
    {
       g_Engine.reset();
    }
 
-   return 0;
+   return exitCode;
 }

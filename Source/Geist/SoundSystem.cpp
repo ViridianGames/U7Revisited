@@ -8,8 +8,7 @@
 
 #include "Engine.h"
 #include "ResourceManager.h"
-#include "U7Globals.h"
-#include "U7SpriteEffects.h"
+#include "raymath.h"
 
 #define NUM_CHANNELS 16
 
@@ -24,6 +23,7 @@ void SoundSystem::Shutdown()
 {
    ClearAllInstruments();
    ClearAllLoopingSfx();
+   m_hooks = {};
 }
 
 void SoundSystem::ClearAllLoopingSfx()
@@ -44,12 +44,9 @@ void SoundSystem::ClearAllLoopingSfx()
 
 void SoundSystem::ClearAllInstruments()
 {
-   if (g_SpriteEffectSystem)
+   for (auto& pair : m_playingInstruments)
    {
-      for (auto& pair : m_playingInstruments)
-      {
-         g_SpriteEffectSystem->StopInstrumentNotesOnObject(pair.first);
-      }
+      NotifyInstrumentStopped(pair.first);
    }
 
    for (auto& pair : m_playingInstruments)
@@ -85,8 +82,16 @@ float SoundSystem::ResolveSpatialRange(float maxRange) const
 
 void SoundSystem::ComputeSpatialTargets(float& outVolume, float& outPan, const Vector3& worldPos, float maxRange) const
 {
-   const float listenerX = g_camera.target.x;
-   const float listenerZ = g_camera.target.z;
+   if (!m_hooks.getListenerCamera)
+   {
+      outVolume = m_GlobalSoundVolume / 100.0f;
+      outPan = 0.5f;
+      return;
+   }
+
+   const Camera listener = m_hooks.getListenerCamera();
+   const float listenerX = listener.target.x;
+   const float listenerZ = listener.target.z;
 
    const float dx = worldPos.x - listenerX;
    const float dz = worldPos.z - listenerZ;
@@ -107,12 +112,13 @@ void SoundSystem::ComputeSpatialTargets(float& outVolume, float& outPan, const V
       return;
    }
 
-   Vector3 camForward = Vector3Subtract(g_camera.target, g_camera.position);
+   Vector3 camForward = Vector3Subtract(listener.target, listener.position);
    camForward.y = 0.0f;
    float forwardLen = Vector3Length(camForward);
    if (forwardLen < 0.0001f)
    {
-      camForward = Vector3{ sinf(g_cameraRotation), 0.0f, cosf(g_cameraRotation) };
+      const float yaw = m_hooks.getListenerYaw ? m_hooks.getListenerYaw() : 0.0f;
+      camForward = Vector3{ sinf(yaw), 0.0f, cosf(yaw) };
       forwardLen = Vector3Length(camForward);
    }
 
@@ -183,15 +189,15 @@ void SoundSystem::PlaySoundAtObject(std::string soundName, int objectId, float m
       return;
    }
 
-   U7Object* obj = GetObjectFromID(objectId);
-   if (!obj)
+   Vector3 objectPos;
+   if (!GetObjectPosition(objectId, objectPos))
    {
       PlaySound(soundName);
       return;
    }
 
    const float range = ResolveSpatialRange(maxRange);
-   ApplySpatial(*sound, obj->m_Pos, range);
+   ApplySpatial(*sound, objectPos, range);
    ::PlaySound(*sound);
 }
 
@@ -278,10 +284,7 @@ bool SoundSystem::StopInstrument(int objectId)
       return false;
    }
 
-   if (g_SpriteEffectSystem)
-   {
-      g_SpriteEffectSystem->StopInstrumentNotesOnObject(objectId);
-   }
+   NotifyInstrumentStopped(objectId);
 
    if (it->second.sound.frameCount > 0)
    {
@@ -312,11 +315,8 @@ bool SoundSystem::PlayInstrument(int objectId, std::string musicPath, float maxR
          StopInstrument(objectId);
          return false;
       }
-      if (existing->second.sound.frameCount > 0)
-      {
-         UnloadSoundAlias(existing->second.sound);
-      }
-      m_playingInstruments.erase(existing);
+      // A finished clip still owns an alias, effects, and possibly BGM ducking.
+      StopInstrument(objectId);
    }
 
    Sound* baseSound = g_ResourceManager->GetSound(musicPath);
@@ -336,10 +336,10 @@ bool SoundSystem::PlayInstrument(int objectId, std::string musicPath, float maxR
    entry.maxRange = ResolveSpatialRange(maxRange);
    entry.sound = alias;
 
-   U7Object* obj = GetObjectFromID(objectId);
-   if (obj)
+   Vector3 objectPos;
+   if (GetObjectPosition(objectId, objectPos))
    {
-      InitSpatialStateFromWorld(entry.currentVolume, entry.currentPan, obj->m_Pos, entry.maxRange);
+      InitSpatialStateFromWorld(entry.currentVolume, entry.currentPan, objectPos, entry.maxRange);
       SetSoundVolume(entry.sound, entry.currentVolume);
       SetSoundPan(entry.sound, entry.currentPan);
    }
@@ -354,9 +354,9 @@ bool SoundSystem::PlayInstrument(int objectId, std::string musicPath, float maxR
    ::PlaySound(entry.sound);
    m_playingInstruments[objectId] = entry;
 
-   if (g_SpriteEffectSystem)
+   if (m_hooks.onInstrumentStarted)
    {
-      g_SpriteEffectSystem->StartInstrumentNotesOnObject(objectId);
+      m_hooks.onInstrumentStarted(objectId);
    }
 
    EnsureInstrumentBgmDuck();
@@ -415,31 +415,26 @@ void SoundSystem::Update()
       InstrumentEntry& entry = it->second;
       if (entry.sound.frameCount == 0)
       {
-         if (g_SpriteEffectSystem)
-         {
-            g_SpriteEffectSystem->StopInstrumentNotesOnObject(objectId);
-         }
+         NotifyInstrumentStopped(objectId);
          it = m_playingInstruments.erase(it);
          continue;
       }
 
       if (!IsSoundPlaying(entry.sound))
       {
-         if (g_SpriteEffectSystem)
-         {
-            g_SpriteEffectSystem->StopInstrumentNotesOnObject(objectId);
-         }
+         NotifyInstrumentStopped(objectId);
          UnloadSoundAlias(entry.sound);
          it = m_playingInstruments.erase(it);
          continue;
       }
 
-      U7Object* obj = GetObjectFromID(objectId);
-      if (obj)
+      Vector3 objectPos;
+      if (GetObjectPosition(objectId, objectPos) && m_hooks.getListenerCamera)
       {
+         const Camera listener = m_hooks.getListenerCamera();
          const float dist = Vector2Distance(
-            { obj->m_Pos.x, obj->m_Pos.z },
-            { g_camera.target.x, g_camera.target.z }
+            { objectPos.x, objectPos.z },
+            { listener.target.x, listener.target.z }
          );
 
          if (dist > entry.maxRange)
@@ -449,8 +444,15 @@ void SoundSystem::Update()
          else
          {
             ApplySpatialSmoothed(entry.sound, entry.currentVolume, entry.currentPan,
-               obj->m_Pos, entry.maxRange, dt);
+               objectPos, entry.maxRange, dt);
          }
+      }
+      else
+      {
+         entry.currentVolume = m_GlobalSoundVolume / 100.0f;
+         entry.currentPan = 0.5f;
+         SetSoundVolume(entry.sound, entry.currentVolume);
+         SetSoundPan(entry.sound, entry.currentPan);
       }
 
       ++it;
@@ -477,71 +479,90 @@ void SoundSystem::Update()
          continue;
       }
 
-      U7Object* obj = GetObjectFromID(objectId);
-      if (entry.stopWhenNotVisible && obj && IsObjectVisibleOnScreen(obj->m_ID))
+      Vector3 objectPos;
+      const bool objectFound = GetObjectPosition(objectId, objectPos);
+      if (entry.stopWhenNotVisible && objectFound && IsObjectVisibleOnScreen(objectId))
       {
          entry.wasEverVisibleOnScreen = true;
       }
 
-      if (ShouldStopLoopingEntry(entry, obj))
+      if (ShouldStopLoopingEntry(entry, objectFound, objectId))
       {
          ++it;
          StopLoopingSoundEffect(objectId);
          continue;
       }
 
+      if (!objectFound)
+      {
+         entry.currentVolume = m_GlobalSoundVolume / 100.0f;
+         entry.currentPan = 0.5f;
+         SetSoundVolume(entry.sound, entry.currentVolume);
+         SetSoundPan(entry.sound, entry.currentPan);
+      }
+
       if (!IsSoundPlaying(entry.sound))
       {
-         InitSpatialStateFromWorld(entry.currentVolume, entry.currentPan, obj->m_Pos, entry.maxRange);
+         if (objectFound)
+            InitSpatialStateFromWorld(entry.currentVolume, entry.currentPan, objectPos, entry.maxRange);
          SetSoundVolume(entry.sound, entry.currentVolume);
          SetSoundPan(entry.sound, entry.currentPan);
          ::PlaySound(entry.sound);
       }
 
-      ApplySpatialSmoothed(entry.sound, entry.currentVolume, entry.currentPan, obj->m_Pos, entry.maxRange, dt);
+      if (objectFound)
+         ApplySpatialSmoothed(entry.sound, entry.currentVolume, entry.currentPan, objectPos, entry.maxRange, dt);
 
       ++it;
    }
 }
 
+bool SoundSystem::GetObjectPosition(int objectId, Vector3& outPos) const
+{
+   return m_hooks.getObjectPosition && m_hooks.getObjectPosition(objectId, outPos);
+}
+
 bool SoundSystem::IsObjectVisibleOnScreen(int objectId) const
 {
-   for (U7Object* obj : g_sortedVisibleObjects)
+   return m_hooks.isObjectOnScreen && m_hooks.isObjectOnScreen(objectId);
+}
+
+void SoundSystem::NotifyInstrumentStopped(int objectId)
+{
+   if (m_hooks.onInstrumentStopped)
    {
-      if (obj && obj->m_ID == objectId)
-      {
-         return true;
-      }
+      m_hooks.onInstrumentStopped(objectId);
+   }
+}
+
+bool SoundSystem::ShouldStopLoopingEntry(const LoopingSfxEntry& entry, bool objectFound, int objectId) const
+{
+   // An absent lookup means unpositioned playback; a failed lookup means the
+   // tracked object has gone away.
+   if ((m_hooks.getObjectPosition && !objectFound) ||
+       (m_hooks.isObjectDead && m_hooks.isObjectDead(objectId)))
+   {
+      return true;
+   }
+
+   if (m_hooks.isObjectOnScreen && entry.stopWhenNotVisible &&
+       entry.wasEverVisibleOnScreen && !IsObjectVisibleOnScreen(objectId))
+   {
+      return true;
    }
 
    return false;
 }
 
-bool SoundSystem::ShouldStopLoopingEntry(const LoopingSfxEntry& entry, U7Object* obj) const
+void SoundSystem::PlayLoopingSoundEffect(int objectId, const std::string& soundPath, float maxRange, bool stopWhenNotVisible)
 {
-   if (!obj || obj->GetIsDead())
-   {
-      return true;
-   }
-
-   if (entry.stopWhenNotVisible && entry.wasEverVisibleOnScreen && !IsObjectVisibleOnScreen(obj->m_ID))
-   {
-      return true;
-   }
-
-   return false;
-}
-
-void SoundSystem::PlayLoopingSoundEffect(int objectId, int soundId, float maxRange, bool stopWhenNotVisible)
-{
-   if (objectId < 0 || soundId < 0)
+   if (objectId < 0 || soundPath.empty())
    {
       return;
    }
 
    StopLoopingSoundEffect(objectId);
 
-   std::string soundPath = BuildU7SfxPath(soundId);
    Sound* baseSound = g_ResourceManager->GetSound(soundPath);
    if (!baseSound || baseSound->frameCount == 0)
    {
@@ -560,10 +581,10 @@ void SoundSystem::PlayLoopingSoundEffect(int objectId, int soundId, float maxRan
    entry.stopWhenNotVisible = stopWhenNotVisible;
    entry.sound = alias;
 
-   U7Object* obj = GetObjectFromID(objectId);
-   if (obj)
+   Vector3 objectPos;
+   if (GetObjectPosition(objectId, objectPos))
    {
-      InitSpatialStateFromWorld(entry.currentVolume, entry.currentPan, obj->m_Pos, entry.maxRange);
+      InitSpatialStateFromWorld(entry.currentVolume, entry.currentPan, objectPos, entry.maxRange);
    }
    else
    {

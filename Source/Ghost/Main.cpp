@@ -2,6 +2,7 @@
 #include "../Geist/Engine.h"
 #include "../Geist/StateMachine.h"
 #include "../Geist/ResourceManager.h"
+#include "../Geist/InputSystem.h"
 #include "../Geist/Logging.h"
 #include "GhostState.h"
 #include "ColorPickerState.h"
@@ -95,6 +96,7 @@ int main()
 					break;
 				}
 
+				g_InputSystem->Update();
 				g_StateMachine->Update();
 				g_StateMachine->Draw();
 			}
@@ -118,6 +120,9 @@ int main()
 				// Initialize only what we need
 				g_ResourceManager = make_unique<ResourceManager>();
 				g_StateMachine = make_unique<StateMachine>();
+				// The GUI reads mouse and keyboard state through the input system
+				g_InputSystem = make_unique<InputSystem>();
+				g_InputSystem->Init("");
 
 				// Create and register Ghost state
 				State* ghostState = new GhostState;

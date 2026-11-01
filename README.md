@@ -36,7 +36,72 @@ will allow the replacement engine to read in the maps and graphics from the orig
 - Make sure you have the [Meson Build system](https://mesonbuild.com/) installed
 - Run `meson setup build`, or if you want to generate a Visual Studio project, `meson setup --backend vs build`
 - Run `meson compile -C build` to build the project
-- Go to `build/` directory and run the `u7revisited` program
+- Run the game from `Redist` so it can find its assets: `cd Redist && ../build/U7Revisited`
+
+### Building on macOS
+
+Use CMake to build both the game and the Ghost GUI editor on macOS.
+
+**Required tools:**
+
+- **Xcode Command Line Tools:** Apple Clang with C++17 support, Make, Git, and the macOS SDK. A full Xcode installation also provides these tools.
+- **[CMake 3.15 or newer](https://cmake.org/download/):** Configures and builds the project, downloads raylib, and includes CTest for running the contract tests.
+
+Meson, Ninja, and Python are not required for this workflow.
+
+Install the Command Line Tools if they are not already installed, and finish the installer before continuing:
+
+```bash
+xcode-select --install
+```
+
+Install CMake from its website and make sure `cmake` and `ctest` are on your `PATH`. If you install the official CMake app in `/Applications`, you can add its tools to the current shell with:
+
+```bash
+export PATH="/Applications/CMake.app/Contents/bin:$PATH"
+```
+
+Alternatively, if you already use [Homebrew](https://brew.sh/), install CMake with:
+
+```bash
+brew install cmake
+```
+
+**Libraries provided by the project or macOS:**
+
+- **raylib 5.0:** CMake downloads a checksum-verified source archive from GitHub and builds it for your Mac. Its GLFW window backend and audio/image dependencies are bundled with raylib.
+- **Lua 5.4.7:** Built from the sources in `ThirdParty/lua`.
+- **nlohmann/json:** Headers are included in `ThirdParty/nlohmann`.
+- **Cocoa, IOKit, CoreVideo, CoreFoundation, and OpenGL:** System frameworks supplied by macOS and its SDK.
+
+The first CMake configure requires internet access to download raylib.
+
+**Build and run:**
+
+Copy the contents of your original DOS Ultima VII: The Black Gate installation into `Redist/Data/U7/`. These game files are required to run the game; Ghost uses the editor assets already in `Redist`.
+
+From the repository root, configure with the Makefiles generator and build:
+
+```bash
+cmake -S . -B build-cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release
+cmake --build build-cmake --parallel 4
+```
+
+The Makefiles generator uses the Make supplied by Apple's Command Line Tools. Keep `build-cmake` separate from any existing Meson build directory. Run the contract tests with:
+
+```bash
+(cd build-cmake && ctest --output-on-failure)
+```
+
+Mac executables stay in `build-cmake`. Launch either application from `Redist` so its relative asset paths resolve correctly:
+
+```bash
+# Game
+(cd Redist && ../build-cmake/U7Revisited)
+
+# Ghost GUI editor
+(cd Redist && ../build-cmake/Ghost)
+```
 
 ### Building with CMake (Windows & Linux)
 
