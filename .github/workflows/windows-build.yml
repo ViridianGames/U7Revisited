@@ -1,11 +1,11 @@
-# Build the Windows MSVC Release executable and upload it as an artifact.
-# Trigger: manual (Actions → Windows Build → Run workflow) or push to master.
-#
-# After download: copy U7Revisited.exe into Redist/ (cwd for assets), then run
-# under Proton or on a real Windows box. Does not bundle original U7 data.
+# Build the Windows MSVC Release executable, put it in Redist/, upload an
+# artifact, and commit Redist/U7Revisited.exe back to master so `git pull`
+# picks up the new binary.
 #
 # Pin windows-2022: windows-latest moved to VS 2026, which does not provide the
 # "Visual Studio 17 2022" CMake generator this project expects with raylib.lib.
+#
+# Loop guards: push paths-ignore for the exe + "[skip ci]" on the bot commit.
 
 name: Windows Build
 
@@ -13,10 +13,15 @@ on:
   workflow_dispatch:
   push:
     branches: [master]
+    paths-ignore:
+      - "Redist/U7Revisited.exe"
 
 concurrency:
   group: windows-build-${{ github.ref }}
   cancel-in-progress: true
+
+permissions:
+  contents: write
 
 jobs:
   build-windows:
@@ -26,6 +31,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # Need full history / writeable remote for the bot push.
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Show toolchain
         shell: pwsh
@@ -74,7 +83,6 @@ jobs:
           }
 
           Write-Host "Copying $src -> $dest"
-          # cmake -E copy is more reliable than Copy-Item across drive quirks
           cmake -E copy_if_different "$src" "$dest"
           if (-not (Test-Path -LiteralPath $dest)) {
             Write-Error "Copy finished but $dest is missing"
@@ -89,3 +97,23 @@ jobs:
           path: Redist/U7Revisited.exe
           if-no-files-found: error
           retention-days: 14
+
+      - name: Commit Redist/U7Revisited.exe to master
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add -- "Redist/U7Revisited.exe"
+          $porcelain = git status --porcelain -- "Redist/U7Revisited.exe"
+          if (-not $porcelain) {
+            Write-Host "Redist/U7Revisited.exe unchanged; nothing to commit."
+            exit 0
+          }
+
+          git commit -m "Update Redist/U7Revisited.exe [skip ci]"
+          # Retry once if master moved while we built.
+          git pull --rebase --autostash origin master
+          git push origin HEAD:master
+          Write-Host "Pushed Redist/U7Revisited.exe to master."
