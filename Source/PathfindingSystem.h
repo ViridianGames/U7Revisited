@@ -221,6 +221,14 @@ public:
 	// Bresenham ground walkability along XZ (ignores Z height changes).
 	bool IsStraightPathClear(Vector3 start, Vector3 goal, const U7Object* agent = nullptr) const;
 
+	/// Tall walls / closed doors / named barriers that block shots and combat LOS.
+	/// Windows (TFA translucent) and furniture do not. Matches dynamic-light occluders.
+	static bool ObjectBlocksProjectile(const U7Object* obj);
+
+	/// Bresenham tile LOS against wall-like objects (not ground-cost walkability).
+	/// Endpoints are not required to be clear (standing next to a wall is fine).
+	bool HasWallLineOfSight(Vector3 start, Vector3 goal) const;
+
 	bool IsPositionWalkable(int worldX, int worldZ, float agentBaseY, const U7Object* agent = nullptr) const;
 	bool EvaluateTileWalkable(int worldX, int worldZ, float agentBaseY, const U7Object* agent = nullptr) const;
 

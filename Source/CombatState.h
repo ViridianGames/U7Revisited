@@ -20,13 +20,17 @@ bool IsUnitInDungeon(const U7Object* unit);
 // only aboveground (XZ overlap alone must not cross the ceiling).
 bool AreUnitsOnSameDungeonLayer(const U7Object* a, const U7Object* b);
 
-// Straight-line walkability between units (walls block). Used to acquire aggro.
+// Straight-line wall LOS between units (walls / closed doors block; windows do not).
+// Used for aggro acquire, ranged fire, and attack orders.
 bool HasCombatLineOfSight(const U7Object* from, const U7Object* to);
 
-// True when chase pathfinding can actually walk the hostile to a living party
-// member. Uses FindFastPath / MonsterChase plus ValidateMove on the first step
-// (same gates as real movement). Flat walkable floods are not used — they
-// false-connected Destard to Lasher's cave.
+// True when the hostile has wall LOS to at least one living party member
+// (same dungeon layer, within crow-fly). Required for new aggro / enroll.
+bool HasCombatLineOfSightToParty(const U7Object* hostile, float maxCrowFlyTiles = 16.0f);
+
+// True when FindFastPath can walk the hostile to a living party member and every
+// densified tile step passes ValidateMove. MonsterChase crow-fly / greedy stubs
+// are not accepted — those false-connected Destard to Lasher's cave.
 // maxCrowFlyTiles / maxWalkCost default to the short enroll budget; pruning
 // mid-fight may pass the longer chase leash so valid fights are not dropped.
 bool HasCombatWalkPathToParty(

@@ -584,6 +584,37 @@ bool U7Object::EngageCombatTarget()
 	float distSqr = Vector2DistanceSqr({ m_Pos.x, m_Pos.z }, { target->m_Pos.x, target->m_Pos.z });
 	float combatRangeSqr = engageRange * engageRange;
 
+	// In weapon range but a wall blocks the shot — reposition instead of firing through.
+	if (distSqr <= combatRangeSqr && !HasCombatLineOfSight(this, target))
+	{
+		const Vector3 standoff = GetStandoffPosition(m_Pos, target->m_Pos, standOffRange);
+		const bool hasPath = !m_pathWaypoints.empty() && m_currentWaypointIndex < (int)m_pathWaypoints.size();
+		if (!hasPath && g_pathfindingSystem && !m_pathfindingPending)
+		{
+			const bool isParty = (m_UnitType == UnitTypes::UNIT_TYPE_NPC && g_Player &&
+				g_Player->NPCIDInParty(m_NPCID));
+			const bool isMonsterChase = (m_UnitType == UnitTypes::UNIT_TYPE_MONSTER) ||
+				(m_Team == 1 && !isParty);
+			if (isMonsterChase)
+			{
+				ApplyPathWaypoints(g_pathfindingSystem->FindMonsterChasePath(m_Pos, standoff, this));
+				if (m_pathWaypoints.empty())
+					SetDest(standoff);
+			}
+			else
+			{
+				ApplyPathWaypoints(g_pathfindingSystem->FindFastPath(
+					m_Pos, standoff, this, PathCallerTag::AvatarParty));
+				if (m_pathWaypoints.empty())
+					SetDest(standoff);
+			}
+			m_combatPathGoal = standoff;
+			m_combatPathTargetId = static_cast<int>(target->m_ID);
+		}
+		++g_perf.engageCombatCalls;
+		return true;
+	}
+
 	if (distSqr <= combatRangeSqr)
 	{
 		// Hold position while in attack range so we don't keep walking toward a stale destination.
@@ -1112,9 +1143,11 @@ void U7Object::MonsterUpdate()
 
 			if (!g_isCombatMode && (inEnrollRange || (alreadyAggroed && inChaseRange)))
 			{
-				// Path-gate new aggro; already-aggroed keep closing without re-flood.
-				const bool canReach = alreadyAggroed || HasCombatWalkPathToParty(this);
-				if (canReach)
+				// New aggro needs wall LOS + a real ValidateMove path (no crow-fly stubs).
+				// Already-aggroed keep closing without re-flooding every frame.
+				const bool canEngage = alreadyAggroed
+					|| (HasCombatLineOfSightToParty(this) && HasCombatWalkPathToParty(this));
+				if (canEngage)
 				{
 					if (!alreadyAggroed)
 						TryBeginCombatFromHostileAggro(this);
@@ -1551,7 +1584,7 @@ void U7Object::EggDraw()
 
 void U7Object::MonsterDraw()
 {
-	if (IsDeathStatus())
+	if (ShouldLieFlat())
 	{
 		DrawCorpseFlat();
 		return;
@@ -1912,8 +1945,8 @@ void U7Object::MonsterInit()
 	}
 
 	// DrawWalkBillboard draws at m_Pos with no +0.5 offset (same as NPCs). Spawn
-	// paths often pass integer tile coords, which put the sprite in the UL corner
-	// of the pick box — snap to tile center so visuals and targeting match.
+	// paths often pass integer tile coords; snap to tile center for a clean start.
+	// Pick/drag bbox is centered on m_Pos and follows mid-tile movement.
 	m_Pos.x = floorf(m_Pos.x) + 0.5f;
 	m_Pos.z = floorf(m_Pos.z) + 0.5f;
 
@@ -2593,7 +2626,7 @@ void U7Object::Shutdown()
 
 void U7Object::NPCDraw()
 {
-	if (IsDeathStatus())
+	if (ShouldLieFlat())
 	{
 		DrawCorpseFlat();
 		return;
@@ -3840,6 +3873,56 @@ void U7Object::UpdateMovement()
 				}
 			}
 
+			// Pinned on a 1×1 solid (tree / lamp / stalactite): Dest slides only try
+			// toward the goal, so crow-fly followers stay pressed forever. Nudge off
+			// sideways early (ValidateMove also allows non-deeper escape slides).
+			if (m_moveStuckFrames == 8 || m_moveStuckFrames == 20 ||
+			    m_moveStuckFrames == 40 || m_moveStuckFrames == 55)
+			{
+				const Vector3 nudgeGoal = !m_pathWaypoints.empty() ? m_pathWaypoints.back() : m_Dest;
+				if (TryNudgeOffSolidBlocker(&nudgeGoal))
+				{
+					m_moveStuckFrames = 0;
+					if (g_pathfindingSystem && !m_pathfindingPending)
+					{
+						const bool isParty = (m_UnitType == UnitTypes::UNIT_TYPE_NPC && g_Player &&
+							g_Player->NPCIDInParty(m_NPCID));
+						const bool isMonster = (m_UnitType == UnitTypes::UNIT_TYPE_MONSTER) ||
+							(m_Team == 1 && !isParty);
+						if (m_isSchedulePath)
+						{
+							ApplyPathWaypoints(g_pathfindingSystem->FindFastPath(
+								m_Pos, nudgeGoal, this, PathCallerTag::ScheduleFast));
+							m_isSchedulePath = true;
+						}
+						else if (isMonster)
+						{
+							ApplyPathWaypoints(g_pathfindingSystem->FindMonsterChasePath(
+								m_Pos, nudgeGoal, this));
+						}
+						else if (!m_pathWaypoints.empty() || isParty)
+						{
+							// Formation follow: clear leftover A* so MaybeUpdatePartyFollowing
+							// resumes slot steering from the freed tile (nudge-only path).
+							if (isParty && m_pathWaypoints.empty())
+							{
+								SetDest(nudgeGoal);
+							}
+							else
+							{
+								PathfindToDest(nudgeGoal, /*allowHierarchical=*/true, PathCallerTag::StuckRepath);
+							}
+						}
+						else
+						{
+							SetDest(nudgeGoal);
+						}
+					}
+					m_isMoving = true;
+					return;
+				}
+			}
+
 			// After longer stuck with a path remaining, repath to the final goal
 			// instead of freezing in place (handles dynamic blockers / bad corners).
 			if (!m_pathWaypoints.empty() && m_moveStuckFrames >= 28 &&
@@ -3877,9 +3960,12 @@ void U7Object::UpdateMovement()
 			    TryCompletePendingUsecodeByProximity(kPathRunUseRange))
 				return;
 
-			// Give up after longer stuck (avoids infinite shuffle).
+			// Give up after longer stuck (avoids infinite shuffle). Still try one nudge
+			// so party members are not left permanently pinned on a prop.
 			if (m_moveStuckFrames >= 60)
 			{
+				const Vector3 lastGoal = !m_pathWaypoints.empty() ? m_pathWaypoints.back() : m_Dest;
+				TryNudgeOffSolidBlocker(&lastGoal);
 				m_pathWaypoints.clear();
 				m_currentWaypointIndex = 0;
 				m_isMoving = false;
@@ -3968,16 +4054,17 @@ void U7Object::SetPos(Vector3 pos)
 
 	ObjectData* objectData = &g_objectDataTable[m_shapeData->GetShape()];
 
-	// NPCs/monsters are stored at tile centers (draw matches m_Pos). Their pick box
-	// must still use the tile's upper-left as min — otherwise the clickable volume
-	// sits SE of the visible sprite and feels "off."
-	// Living characters pick as upright volumes at tile center; corpses are ground flats.
-	const bool characterAtTileCenter =
-		!IsDeathStatus()
+	// Living upright NPCs/monsters: pick/drag volume centered on actual XZ so
+	// mid-tile movement still matches the visible sprite (and F9 debug boxes).
+	// Dead / KO / asleep stay ground flats. Props keep SE-origin tile footprints.
+	const bool lyingFlatCharacter =
+		ShouldLieFlat()
+		&& (m_UnitType == UnitTypes::UNIT_TYPE_NPC || m_UnitType == UnitTypes::UNIT_TYPE_MONSTER);
+	const bool characterCentered =
+		!lyingFlatCharacter
 		&& (m_UnitType == UnitTypes::UNIT_TYPE_NPC || m_UnitType == UnitTypes::UNIT_TYPE_MONSTER);
 
-	if (IsDeathStatus()
-		&& (m_UnitType == UnitTypes::UNIT_TYPE_NPC || m_UnitType == UnitTypes::UNIT_TYPE_MONSTER))
+	if (lyingFlatCharacter)
 	{
 		// Match DrawCorpseFlat / DrawAsFlat: hotspot + texture dims + scale re-anchor.
 		const int frame = m_isFrameOverridden ? m_overrideFrame : GetDeathFrameForFacing();
@@ -3995,15 +4082,18 @@ void U7Object::SetPos(Vector3 pos)
 			boundingBoxAnchorPoint = Vector3Add(m_Pos, Vector3{ -dims.x + 1.0f, 0.0f, -dims.z + 1.0f });
 		}
 	}
-	else if (characterAtTileCenter)
+	else if (characterCentered)
 	{
 		dims = Vector3{ objectData->m_width, objectData->m_height, objectData->m_depth };
 		if (dims.x < 0.5f) dims.x = 1.0f;
 		if (dims.y < 0.5f) dims.y = 1.0f;
 		if (dims.z < 0.5f) dims.z = 1.0f;
-		// Tile UL is one unit NW of the center tile's SE-style indexing used elsewhere.
-		// Flying creatures: lift pick box with the drawn sprite (waist height).
-		boundingBoxAnchorPoint = Vector3{ floorf(m_Pos.x), m_Pos.y + m_drawHeightOffset, floorf(m_Pos.z) };
+		// Center XZ on m_Pos (not floor-snapped). Flying: lift with draw height.
+		boundingBoxAnchorPoint = Vector3{
+			m_Pos.x - dims.x * 0.5f,
+			m_Pos.y + m_drawHeightOffset,
+			m_Pos.z - dims.z * 0.5f
+		};
 	}
 	else if (m_drawType == ShapeDrawType::OBJECT_DRAW_BILLBOARD)
 	{
@@ -4034,16 +4124,15 @@ void U7Object::SetPos(Vector3 pos)
 
 	m_boundingBox = { boundingBoxAnchorPoint, Vector3Add(boundingBoxAnchorPoint, dims) };
 
-	if (characterAtTileCenter)
+	if (characterCentered)
 	{
-		// Keep sort/lighting center on the visible character (tile center).
+		// Keep sort/lighting center on the visible character (actual XZ).
 		// Flying: raise center with draw height so depth sort matches the sprite.
 		m_centerPoint = Vector3{ m_Pos.x, m_Pos.y + m_drawHeightOffset + dims.y * 0.5f, m_Pos.z };
 	}
-	else if (IsDeathStatus()
-		&& (m_UnitType == UnitTypes::UNIT_TYPE_NPC || m_UnitType == UnitTypes::UNIT_TYPE_MONSTER))
+	else if (lyingFlatCharacter)
 	{
-		// Flat corpse may be hotspot-offset from m_Pos; center on the drawn AABB.
+		// Flat body may be hotspot-offset from m_Pos; center on the drawn AABB.
 		m_centerPoint = Vector3{
 			(m_boundingBox.min.x + m_boundingBox.max.x) * 0.5f,
 			(m_boundingBox.min.y + m_boundingBox.max.y) * 0.5f,
@@ -4364,6 +4453,11 @@ bool U7Object::IsKnockedOut() const
 	return m_hp <= 0.0f && !IsDeathStatus();
 }
 
+bool U7Object::ShouldLieFlat() const
+{
+	return IsDeathStatus() || IsKnockedOut() || (m_flags & kObjFlagAsleep) != 0;
+}
+
 bool U7Object::IsDying() const
 {
 	// Exult is_dying: health < -(strength / 3).
@@ -4387,6 +4481,7 @@ void U7Object::ForceSleep()
 	m_combatMoveOrder = false;
 	m_combatPathTargetId = 0;
 	SetOverrideFrame(GetSleepFrameForFacing());
+	SetPos(m_Pos); // refresh pick box for flat sleep / KO pose
 }
 
 void U7Object::ApplyKnockOut()
@@ -4407,6 +4502,7 @@ void U7Object::ClearSleep()
 	m_flags &= ~kObjFlagAsleep;
 	if (IsSleepingPose())
 		ClearOverrideFrame();
+	SetPos(m_Pos); // restore upright pick box after waking
 }
 
 void U7Object::TryWakeFromHealing()
@@ -4699,6 +4795,129 @@ void U7Object::LieOnObject(U7Object* bed)
 	liePos.y = m_Pos.y;
 	SetPos(liePos);
 	SetOverrideFrame(GetSleepFrameForFacing());
+}
+
+bool U7Object::TryNudgeOffSolidBlocker(const Vector3* toward)
+{
+	if (!g_pathfindingSystem)
+		return false;
+
+	const int curX = static_cast<int>(std::floor(m_Pos.x));
+	const int curZ = static_cast<int>(std::floor(m_Pos.z));
+	const Vector3 startPos = m_Pos;
+
+	auto makeStand = [&](int tx, int tz) -> Vector3 {
+		Vector3 stand{ tx + 0.5f, m_Pos.y, tz + 0.5f };
+		auto heights = g_pathfindingSystem->GetWalkableSurfaceHeights(tx, tz);
+		if (!heights.empty())
+		{
+			float best = heights[0];
+			float bestD = fabsf(best - m_Pos.y);
+			for (float h : heights)
+			{
+				const float d = fabsf(h - m_Pos.y);
+				if (d < bestD) { bestD = d; best = h; }
+			}
+			stand.y = best;
+		}
+		return stand;
+	};
+
+	auto scoreToward = [&](int tx, int tz) -> float {
+		// Lower is better. Prefer adjacent clear tiles; light bias toward the goal
+		// so a formation slot through a tree does not beat a free sideways stand.
+		float score = static_cast<float>(std::max(std::abs(tx - curX), std::abs(tz - curZ)));
+		if (toward)
+		{
+			const int gx = static_cast<int>(std::floor(toward->x));
+			const int gz = static_cast<int>(std::floor(toward->z));
+			const float before = static_cast<float>(std::max(std::abs(curX - gx), std::abs(curZ - gz)));
+			const float after = static_cast<float>(std::max(std::abs(tx - gx), std::abs(tz - gz)));
+			score += (after - before) * 1.5f;
+		}
+		return score;
+	};
+
+	// 1) ValidateMove onto a neighbor tile center (same gate as real walking).
+	float bestScore = 1e30f;
+	Vector3 bestStand{};
+	bool found = false;
+	static const int kDx[8] = { 1, -1, 0, 0, 1, 1, -1, -1 };
+	static const int kDz[8] = { 0, 0, 1, -1, 1, -1, 1, -1 };
+	for (int i = 0; i < 8; ++i)
+	{
+		const int tx = curX + kDx[i];
+		const int tz = curZ + kDz[i];
+		if (tx < 0 || tx >= 3072 || tz < 0 || tz >= 3072)
+			continue;
+		Vector3 dest = makeStand(tx, tz);
+		float outH = dest.y;
+		if (!PathfindingSystem::ValidateMove(this, dest, outH))
+			continue;
+		dest.y = outH;
+		const float s = scoreToward(tx, tz);
+		if (s < bestScore)
+		{
+			bestScore = s;
+			bestStand = dest;
+			found = true;
+		}
+	}
+
+	if (found)
+	{
+		SetPos(bestStand);
+		return Vector2Distance({ startPos.x, startPos.z }, { m_Pos.x, m_Pos.z }) > 0.01f;
+	}
+
+	// 2) Force snap to nearest walkable stand in a small radius (already overlapping
+	// a solid so every ValidateMove from here fails — e.g. standing on a stamped 1×1).
+	for (int r = 1; r <= 3; ++r)
+	{
+		bestScore = 1e30f;
+		found = false;
+		int bestX = curX, bestZ = curZ;
+		for (int dz = -r; dz <= r; ++dz)
+		{
+			for (int dx = -r; dx <= r; ++dx)
+			{
+				if (std::max(std::abs(dx), std::abs(dz)) != r)
+					continue;
+				const int tx = curX + dx;
+				const int tz = curZ + dz;
+				if (tx < 0 || tx >= 3072 || tz < 0 || tz >= 3072)
+					continue;
+				if (!g_pathfindingSystem->IsPositionWalkable(tx, tz, m_Pos.y, this))
+					continue;
+				const float s = scoreToward(tx, tz);
+				if (s < bestScore)
+				{
+					bestScore = s;
+					bestX = tx;
+					bestZ = tz;
+					found = true;
+				}
+			}
+		}
+		if (found)
+		{
+			SetPos(makeStand(bestX, bestZ));
+			return Vector2Distance({ startPos.x, startPos.z }, { m_Pos.x, m_Pos.z }) > 0.01f;
+		}
+	}
+
+	Vector3 stand{};
+	if (g_pathfindingSystem->FindNearestWalkableStand(m_Pos, m_Pos.y, this, stand, 3))
+	{
+		const int sx = static_cast<int>(std::floor(stand.x));
+		const int sz = static_cast<int>(std::floor(stand.z));
+		if (sx != curX || sz != curZ)
+		{
+			SetPos(stand);
+			return true;
+		}
+	}
+	return false;
 }
 
 void U7Object::UnstickFromFurniture(const Vector3* toward)
@@ -6344,7 +6563,7 @@ void U7Object::NPCInit(NPCData* npcData)
 		}
 	}
 
-	// AddObject/SetPos ran before UnitType was NPC, so rebuild the tile-center pick box now.
+	// AddObject/SetPos ran before UnitType was NPC, so rebuild the centered pick box now.
 	SetPos(m_Pos);
 }
 

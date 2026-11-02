@@ -361,11 +361,23 @@ Color Terrain::GetLightingForObject(const U7Object* obj, Vector3 viewPos) const
 
 		for (U7Object* lightObj : g_sortedVisibleObjects)
 		{
-			if (!lightObj || !lightObj->m_objectData || !lightObj->m_objectData->m_isLightSource)
+			if (!ObjectEmitsDynamicLight(lightObj))
 				continue;
 			consider(lightObj->m_Pos.x, lightObj->m_Pos.z);
 			if (litFromFacingSide)
 				break;
+		}
+		if (!litFromFacingSide)
+		{
+			for (const FlyingProjectile& proj : g_flyingProjectiles)
+			{
+				U7Object* bolt = GetObjectFromID(proj.objectId);
+				if (!ObjectEmitsDynamicLight(bolt))
+					continue;
+				consider(bolt->m_Pos.x, bolt->m_Pos.z);
+				if (litFromFacingSide)
+					break;
+			}
 		}
 		if (!litFromFacingSide && g_spellLightRemaining > 0.f && g_Player)
 		{
@@ -477,9 +489,16 @@ void Terrain::FillCuboidFaceLighting(const U7Object* obj, Color outFaces[6]) con
 
 	for (U7Object* lightObj : g_sortedVisibleObjects)
 	{
-		if (!lightObj || !lightObj->m_objectData || !lightObj->m_objectData->m_isLightSource)
+		if (!ObjectEmitsDynamicLight(lightObj))
 			continue;
 		addLight(lightObj->m_Pos.x, lightObj->m_Pos.z);
+	}
+	for (const FlyingProjectile& proj : g_flyingProjectiles)
+	{
+		U7Object* bolt = GetObjectFromID(proj.objectId);
+		if (!ObjectEmitsDynamicLight(bolt))
+			continue;
+		addLight(bolt->m_Pos.x, bolt->m_Pos.z);
 	}
 	if (g_spellLightRemaining > 0.f && g_Player)
 	{
@@ -698,10 +717,8 @@ uint64_t Terrain::ComputeLightHash() const
 	uint64_t h = 0;
 	for (U7Object* object : g_sortedVisibleObjects)
 	{
-		if (!object || !object->m_objectData || !object->m_objectData->m_isLightSource)
-		{
+		if (!ObjectEmitsDynamicLight(object))
 			continue;
-		}
 		// Pack id + tile coords into one word then XOR.
 		const uint64_t id = static_cast<uint64_t>(static_cast<uint32_t>(object->m_ID));
 		const uint64_t tx = static_cast<uint64_t>(static_cast<uint32_t>(static_cast<int>(object->m_Pos.x)));
@@ -739,6 +756,18 @@ uint64_t Terrain::ComputeLightHash() const
 			const uint64_t tz = static_cast<uint64_t>(static_cast<uint32_t>(static_cast<int>(member->m_Pos.z)));
 			h ^= (tx << 20) ^ (tz << 1);
 		}
+	}
+
+	// Fire missiles: dirty on spawn/move/despawn even before frustum sort catches up.
+	for (const FlyingProjectile& proj : g_flyingProjectiles)
+	{
+		U7Object* bolt = GetObjectFromID(proj.objectId);
+		if (!ObjectEmitsDynamicLight(bolt))
+			continue;
+		const uint64_t id = static_cast<uint64_t>(static_cast<uint32_t>(bolt->m_ID));
+		const uint64_t tx = static_cast<uint64_t>(static_cast<uint32_t>(static_cast<int>(bolt->m_Pos.x)));
+		const uint64_t tz = static_cast<uint64_t>(static_cast<uint32_t>(static_cast<int>(bolt->m_Pos.z)));
+		h ^= (id * 0x9E3779B97F4A7C15ull) ^ (tx << 20) ^ (tz << 1) ^ 0xF1AEB017ull;
 	}
 	return h;
 }
@@ -814,9 +843,11 @@ void Terrain::CalculateLighting()
 	// then softstep to ambient at softLightRange (larger bright disc, soft rim).
 	constexpr int softLightRange = 15;
 	constexpr float brightCoreRange = 6.0f;
-	const int softLightRangeSq = softLightRange * softLightRange;
-	const float falloffSpan = static_cast<float>(softLightRange) - brightCoreRange;
+	// Fire missiles: ~1/3 torch radius, stronger yellow (torch peak is only barely warm).
+	constexpr int fireBoltLightRange = 5;
+	constexpr float fireBoltBrightCore = 2.0f;
 	constexpr Color peakLight = { 208, 208, 192, 255 };
+	constexpr Color fireBoltPeakLight = { 255, 200, 64, 255 };
 
 	const int camX = static_cast<int>(g_camera.target.x);
 	const int camZ = static_cast<int>(g_camera.target.z);
@@ -872,12 +903,14 @@ void Terrain::CalculateLighting()
 		}
 	}
 
-	auto stampLight = [&](int lightX, int lightZ)
+	auto stampLight = [&](int lightX, int lightZ, int range, float coreRange, Color peak)
 	{
-		const int worldMinX = lightX - softLightRange;
-		const int worldMaxX = lightX + softLightRange;
-		const int worldMinZ = lightZ - softLightRange;
-		const int worldMaxZ = lightZ + softLightRange;
+		const int rangeSq = range * range;
+		const float falloffSpan = static_cast<float>(range) - coreRange;
+		const int worldMinX = lightX - range;
+		const int worldMaxX = lightX + range;
+		const int worldMinZ = lightZ - range;
+		const int worldMaxZ = lightZ + range;
 
 		// Clamp stamp region to the camera patch.
 		const int minWX = std::max(worldMinX, patchMinX);
@@ -892,7 +925,7 @@ void Terrain::CalculateLighting()
 				const int dx = wx - lightX;
 				const int dz = wz - lightZ;
 				const int distSq = dx * dx + dz * dz;
-				if (distSq > softLightRangeSq)
+				if (distSq > rangeSq)
 					continue;
 
 				const int cellx = (TILEWIDTH / 2) + wx - camX;
@@ -905,13 +938,13 @@ void Terrain::CalculateLighting()
 
 				const float dist = std::sqrt(static_cast<float>(distSq));
 				float t;
-				if (dist <= brightCoreRange)
+				if (dist <= coreRange)
 				{
 					t = 1.0f;
 				}
 				else
 				{
-					float u = 1.0f - (dist - brightCoreRange) / falloffSpan;
+					float u = 1.0f - (dist - coreRange) / falloffSpan;
 					if (u <= 0.0f)
 						continue;
 					// Smoothstep across the outer ring only.
@@ -925,21 +958,40 @@ void Terrain::CalculateLighting()
 						+ (static_cast<float>(peakC) - static_cast<float>(ambC)) * t;
 					return static_cast<unsigned char>(std::min(255.0f, std::max(static_cast<float>(curC), lit)));
 				};
-				cell.r = blendChan(peakLight.r, ambient.r, cell.r);
-				cell.g = blendChan(peakLight.g, ambient.g, cell.g);
-				cell.b = blendChan(peakLight.b, ambient.b, cell.b);
+				cell.r = blendChan(peak.r, ambient.r, cell.r);
+				cell.g = blendChan(peak.g, ambient.g, cell.g);
+				cell.b = blendChan(peak.b, ambient.b, cell.b);
 				cell.a = 255;
 			}
 		}
 	};
 
+	auto isFireBoltLight = [](const U7Object* obj) -> bool
+	{
+		return obj && obj->m_isProjectile && IsFireProjectileLightShape(obj->m_ObjectType);
+	};
+
 	for (U7Object* object : g_sortedVisibleObjects)
 	{
-		if (!object || !object->m_objectData || !object->m_objectData->m_isLightSource)
-		{
+		if (!ObjectEmitsDynamicLight(object))
 			continue;
-		}
-		stampLight(static_cast<int>(object->m_Pos.x), static_cast<int>(object->m_Pos.z));
+		// Fire missiles use the smaller yellow disc (also stamped from the projectile
+		// list below); skip here so they don't get a full torch-sized stamp first.
+		if (isFireBoltLight(object))
+			continue;
+		stampLight(static_cast<int>(object->m_Pos.x), static_cast<int>(object->m_Pos.z),
+			softLightRange, brightCoreRange, peakLight);
+	}
+
+	// Fire missiles may not be in the frustum sort yet on the first flight frame;
+	// stamp them from the projectile list so the light never lags the sprite.
+	for (const FlyingProjectile& proj : g_flyingProjectiles)
+	{
+		U7Object* bolt = GetObjectFromID(proj.objectId);
+		if (!ObjectEmitsDynamicLight(bolt))
+			continue;
+		stampLight(static_cast<int>(bolt->m_Pos.x), static_cast<int>(bolt->m_Pos.z),
+			fireBoltLightRange, fireBoltBrightCore, fireBoltPeakLight);
 	}
 
 	if (g_spellLightRemaining > 0.f)
@@ -947,7 +999,8 @@ void Terrain::CalculateLighting()
 		U7Object* avatar = g_Player ? g_Player->GetAvatarObject() : nullptr;
 		if (avatar)
 		{
-			stampLight(static_cast<int>(avatar->m_Pos.x), static_cast<int>(avatar->m_Pos.z));
+			stampLight(static_cast<int>(avatar->m_Pos.x), static_cast<int>(avatar->m_Pos.z),
+				softLightRange, brightCoreRange, peakLight);
 		}
 	}
 
@@ -962,7 +1015,8 @@ void Terrain::CalculateLighting()
 			U7Object* member = GetObjectFromID(itNpc->second->m_objectID);
 			if (!UnitHoldsLightSource(member))
 				continue;
-			stampLight(static_cast<int>(member->m_Pos.x), static_cast<int>(member->m_Pos.z));
+			stampLight(static_cast<int>(member->m_Pos.x), static_cast<int>(member->m_Pos.z),
+				softLightRange, brightCoreRange, peakLight);
 		}
 	}
 }

@@ -1189,12 +1189,19 @@ bool TurnBasedCombatMode::BeginMoveToTile(U7Object* unit, int tileX, int tileZ, 
 		static_cast<float>(tileZ) + 0.5f
 	};
 
-	// Inescapable tile (props / bad spawn) — never enter Resolving hang.
+	// Inescapable tile (props / bad spawn) — nudge off 1×1 solids, then retry.
 	if (!CanEscapeTile(unit))
 	{
-		m_apRemaining += spent;
-		LogEscapeTileDiagnostics(unit);
-		return false;
+		if (unit->TryNudgeOffSolidBlocker(&dest) && CanEscapeTile(unit))
+		{
+			// Nudged clear — continue into pathing below.
+		}
+		else
+		{
+			m_apRemaining += spent;
+			LogEscapeTileDiagnostics(unit);
+			return false;
+		}
 	}
 
 	std::vector<Vector3> path = BuildTbMovePath(unit, dest);
@@ -1553,6 +1560,8 @@ bool TurnBasedCombatMode::BeginAttackOn(U7Object* attacker, U7Object* target)
 	RefreshUnitAttackRange(attacker);
 	if (!IsInAttackRange(attacker, target))
 		return false;
+	if (!HasCombatLineOfSight(attacker, target))
+		return false;
 	if (!TryCommitAct())
 		return false;
 
@@ -1614,6 +1623,11 @@ bool TurnBasedCombatMode::TryIssueAttackOn(MainState& main, U7Object* target)
 
 	if (IsInAttackRange(unit, target))
 	{
+		if (!HasCombatLineOfSight(unit, target))
+		{
+			AddConsoleString("No line of sight to that target.", YELLOW);
+			return true;
+		}
 		if (!BeginAttackOn(unit, target))
 			AddConsoleString("Cannot attack that target.", YELLOW);
 		return true;

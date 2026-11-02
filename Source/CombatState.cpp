@@ -177,7 +177,38 @@ bool HasCombatLineOfSight(const U7Object* from, const U7Object* to)
 {
 	if (!from || !to || !g_pathfindingSystem)
 		return false;
-	return g_pathfindingSystem->IsStraightPathClear(from->m_Pos, to->m_Pos, from);
+	// Wall objects (including climbable house walls) — not ground-cost walkability.
+	// IsStraightPathClear misses OW_CLIMBABLE walls that never stamp the cost map.
+	return g_pathfindingSystem->HasWallLineOfSight(from->m_Pos, to->m_Pos);
+}
+
+bool HasCombatLineOfSightToParty(const U7Object* hostile, float maxCrowFlyTiles)
+{
+	if (!hostile || !g_Player || !g_pathfindingSystem)
+		return false;
+	if (maxCrowFlyTiles < 1.0f)
+		maxCrowFlyTiles = 1.0f;
+	const float maxCrowFlySqr = maxCrowFlyTiles * maxCrowFlyTiles;
+
+	for (int npcId : g_Player->GetPartyMemberIds())
+	{
+		auto npcIt = g_NPCData.find(npcId);
+		if (npcIt == g_NPCData.end() || !npcIt->second)
+			continue;
+		U7Object* member = GetObjectFromID(npcIt->second->m_objectID);
+		if (!member || member->GetIsDead() || member->IsDeathStatus() || member->m_hp <= 0.0f)
+			continue;
+		if (!AreUnitsOnSameDungeonLayer(hostile, member))
+			continue;
+		const float distSqr = Vector2DistanceSqr(
+			{ hostile->m_Pos.x, hostile->m_Pos.z },
+			{ member->m_Pos.x, member->m_Pos.z });
+		if (distSqr > maxCrowFlySqr)
+			continue;
+		if (HasCombatLineOfSight(hostile, member))
+			return true;
+	}
+	return false;
 }
 
 bool HasCombatWalkPathToParty(U7Object* hostile, float maxCrowFlyTiles, float maxWalkCost)
@@ -195,10 +226,7 @@ bool HasCombatWalkPathToParty(U7Object* hostile, float maxCrowFlyTiles, float ma
 	if (startX < 0 || startX >= 3072 || startZ < 0 || startZ >= 3072)
 		return false;
 
-	// Must match what chase movement can actually do: FindFastPath / MonsterChase
-	// plus ValidateMove on the first step. A flat IsPositionWalkable flood was
-	// connecting Destard↔Lasher over mountain-top tiles that ValidateMove rejects,
-	// so drakes enrolled then stood still forever.
+	// Octile length of a waypoint polyline (combat step metric).
 	auto pathWalkCost = [](const std::vector<Vector3>& path) -> float {
 		if (path.size() < 2)
 			return 0.0f;
@@ -211,7 +239,6 @@ bool HasCombatWalkPathToParty(U7Object* hostile, float maxCrowFlyTiles, float ma
 			const int z1 = static_cast<int>(std::floor(path[i].z));
 			const int dx = std::abs(x1 - x0);
 			const int dz = std::abs(z1 - z0);
-			// Octile between sparse waypoints (same metric as combat steps).
 			const int diag = std::min(dx, dz);
 			const int straight = std::max(dx, dz) - diag;
 			cost += static_cast<float>(straight) + static_cast<float>(diag) * 1.5f;
@@ -219,35 +246,56 @@ bool HasCombatWalkPathToParty(U7Object* hostile, float maxCrowFlyTiles, float ma
 		return cost;
 	};
 
-	auto firstStepValid = [&](const std::vector<Vector3>& path) -> bool {
+	// Path must end on/near the goal — greedy MonsterChase stubs often stop early.
+	auto pathReachesGoal = [](const std::vector<Vector3>& path, int goalX, int goalZ) -> bool {
 		if (path.empty())
 			return false;
-		// Find the first waypoint on a different tile from the hostile.
-		Vector3 dest = path.back();
-		for (const Vector3& wp : path)
+		const int ex = static_cast<int>(std::floor(path.back().x));
+		const int ez = static_cast<int>(std::floor(path.back().z));
+		return std::max(std::abs(ex - goalX), std::abs(ez - goalZ)) <= 1;
+	};
+
+	// Densify waypoints and require ValidateMove on every tile step. IsPositionWalkable
+	// alone still false-connects Destard↔Lasher over mountain-top tiles that
+	// ValidateMove rejects; checking only the first neighbor let crow-fly stubs pass.
+	auto pathStepsValid = [](U7Object* agent, const std::vector<Vector3>& path) -> bool {
+		if (!agent || path.size() < 2)
+			return false;
+		const Vector3 savedPos = agent->m_Pos;
+		Vector3 cur = savedPos;
+		float curH = savedPos.y;
+		bool ok = true;
+
+		for (size_t i = 0; i < path.size() && ok; ++i)
 		{
-			const int wx = static_cast<int>(std::floor(wp.x));
-			const int wz = static_cast<int>(std::floor(wp.z));
-			if (wx != startX || wz != startZ)
+			const int tx = static_cast<int>(std::floor(path[i].x));
+			const int tz = static_cast<int>(std::floor(path[i].z));
+			int cx = static_cast<int>(std::floor(cur.x));
+			int cz = static_cast<int>(std::floor(cur.z));
+			int guard = 0;
+			while ((cx != tx || cz != tz) && guard++ < 64)
 			{
-				dest = Vector3{ wx + 0.5f, hostile->m_Pos.y, wz + 0.5f };
-				break;
+				const int sx = (tx > cx) ? 1 : ((tx < cx) ? -1 : 0);
+				const int sz = (tz > cz) ? 1 : ((tz < cz) ? -1 : 0);
+				Vector3 next{ cx + sx + 0.5f, curH, cz + sz + 0.5f };
+				float outH = curH;
+				// ValidateMove sweeps from agent->m_Pos — park feet without SetPos.
+				agent->m_Pos = cur;
+				if (!PathfindingSystem::ValidateMove(agent, next, outH, nullptr))
+				{
+					ok = false;
+					break;
+				}
+				cur = next;
+				cur.y = outH;
+				curH = outH;
+				cx = static_cast<int>(std::floor(cur.x));
+				cz = static_cast<int>(std::floor(cur.z));
 			}
 		}
-		const int dx = static_cast<int>(std::floor(dest.x));
-		const int dz = static_cast<int>(std::floor(dest.z));
-		if (dx == startX && dz == startZ)
-			return true; // already on goal tile
-		// Step onto the neighbor toward dest (not a long crow-fly jump).
-		const int sx = (dx > startX) ? 1 : ((dx < startX) ? -1 : 0);
-		const int sz = (dz > startZ) ? 1 : ((dz < startZ) ? -1 : 0);
-		Vector3 neighbor{
-			startX + sx + 0.5f,
-			hostile->m_Pos.y,
-			startZ + sz + 0.5f
-		};
-		float outH = hostile->m_Pos.y;
-		return PathfindingSystem::ValidateMove(hostile, neighbor, outH, nullptr);
+
+		agent->m_Pos = savedPos;
+		return ok;
 	};
 
 	for (int npcId : g_Player->GetPartyMemberIds())
@@ -277,15 +325,17 @@ bool HasCombatWalkPathToParty(U7Object* hostile, float maxCrowFlyTiles, float ma
 		if (goalX == startX && goalZ == startZ)
 			return true;
 
+		// FindFastPath only — never MonsterChase crow-fly / greedy (those report a
+		// "path" that never reaches the party when IsStraightPathClear lies).
 		std::vector<Vector3> path = g_pathfindingSystem->FindFastPath(
 			hostile->m_Pos, goal, hostile, PathCallerTag::Monster);
 		if (path.empty())
-			path = g_pathfindingSystem->FindMonsterChasePath(hostile->m_Pos, goal, hostile);
-		if (path.empty())
+			continue;
+		if (!pathReachesGoal(path, goalX, goalZ))
 			continue;
 		if (pathWalkCost(path) > maxWalkCost + 1.5f)
 			continue;
-		if (!firstStepValid(path))
+		if (!pathStepsValid(hostile, path))
 			continue;
 		return true;
 	}
@@ -314,7 +364,9 @@ U7Object* FindNearestHostileInAggroRange()
 			{ avatar->m_Pos.x, avatar->m_Pos.z });
 		if (distSqr >= bestDistSqr)
 			return;
-		// Short enroll range + capped walk flood (no long Destard detours).
+		// Must see the party and have a real walk path (no Destard crow-fly stubs).
+		if (!HasCombatLineOfSightToParty(obj))
+			return;
 		if (!HasCombatWalkPathToParty(obj))
 			return;
 		bestDistSqr = distSqr;
@@ -375,6 +427,7 @@ bool TryBeginCombatFromHostileAggro(U7Object* hintHostile)
 		if (U7Object* avatar = g_Player->GetAvatarObject())
 		{
 			if (!AreUnitsOnSameDungeonLayer(avatar, nearest)
+				|| !HasCombatLineOfSightToParty(nearest)
 				|| !HasCombatWalkPathToParty(nearest))
 			{
 				s_warnedThisEncounter = false;

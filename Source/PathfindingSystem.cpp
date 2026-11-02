@@ -722,8 +722,34 @@ bool PathfindingSystem::ValidateMove(U7Object* agent, const Vector3& desiredPos,
 						continue;
 				}
 
-				// 4) swept XZ collision at destination body height (not mid-climb lerp)
+				// 4) Collision at destination. If the agent is already embedded in
+				// this solid (party pressed into a 1×1 tree/lamp), allow moves that
+				// do not dig deeper so sideways slides can peel free. Swept tests
+				// from inside the AABB otherwise reject every lateral microstep and
+				// only "directly away" succeeds.
 				Vector3 srcPos = agent->m_Pos;
+				const float srcBodyY = srcH;
+				Vector3 srcMin = { srcPos.x - kPlayerRadius, srcBodyY, srcPos.z - kPlayerRadius };
+				Vector3 srcMax = { srcPos.x + kPlayerRadius, srcBodyY + kPlayerHeight, srcPos.z + kPlayerRadius };
+				const bool alreadyEmbedded = CheckCollisionBoxes({ srcMin, srcMax }, { minObj, maxObj });
+
+				if (alreadyEmbedded)
+				{
+					const float objCx = (minObj.x + maxObj.x) * 0.5f;
+					const float objCz = (minObj.z + maxObj.z) * 0.5f;
+					const float dx0 = srcPos.x - objCx;
+					const float dz0 = srcPos.z - objCz;
+					const float dx1 = desiredPos.x - objCx;
+					const float dz1 = desiredPos.z - objCz;
+					const float dist0Sq = dx0 * dx0 + dz0 * dz0;
+					const float dist1Sq = dx1 * dx1 + dz1 * dz1;
+					// Sideways / out: keep or increase distance from the solid center.
+					if (dist1Sq + 1e-4f >= dist0Sq)
+						continue;
+					// Deeper into the solid — still block.
+					return reject("body overlap (deeper) " + DescribeBlockingObject(obj));
+				}
+
 				Vector3 moveDelta = Vector3Subtract(desiredPos, srcPos);
 				float distXZ = sqrtf(moveDelta.x * moveDelta.x + moveDelta.z * moveDelta.z);
 				if (distXZ > 0.0001f)
@@ -2399,6 +2425,134 @@ bool PathfindingSystem::IsStraightPathClear(Vector3 start, Vector3 goal, const U
 		if ((x != x0 || z != z0) && (x != x1 || z != z1))
 		{
 			if (!IsPositionWalkable(x, z, y, agent))
+				return false;
+		}
+		if (x == x1 && z == z1)
+			break;
+		const int e2 = 2 * err;
+		if (e2 > -dz) { err -= dz; x += sx; }
+		if (e2 < dx) { err += dx; z += sz; }
+	}
+	return true;
+}
+
+bool PathfindingSystem::ObjectBlocksProjectile(const U7Object* obj)
+{
+	if (!obj || !obj->m_objectData || !obj->m_shapeData)
+		return false;
+	if (obj->m_isContained)
+		return false;
+	if (const_cast<U7Object*>(obj)->GetIsDead())
+		return false;
+	if (obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC ||
+		obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_MONSTER ||
+		obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_EGG)
+	{
+		return false;
+	}
+
+	// Glass / stained-glass panes let shots through (including "glass wall").
+	if (obj->m_objectData->m_isTranslucent)
+		return false;
+
+	const int shapeID = obj->m_shapeData->GetShape();
+	if (shapeID >= 0 && IsPassThroughObject(shapeID))
+		return false;
+	if (shapeID >= 0 && (IsRoofShape(shapeID) || IsMountainTopShape(shapeID)))
+		return false;
+
+	if (GetObjectSurfaceY(obj) <= 0.05f)
+		return false;
+
+	auto nameContainsI = [](const std::string& name, const char* needle) -> bool {
+		if (!needle || !*needle || name.empty())
+			return false;
+		const size_t nlen = std::strlen(needle);
+		if (name.size() < nlen)
+			return false;
+		for (size_t i = 0; i + nlen <= name.size(); ++i)
+		{
+			bool match = true;
+			for (size_t j = 0; j < nlen; ++j)
+			{
+				const char a = name[i + j];
+				const char b = needle[j];
+				const char al = (a >= 'A' && a <= 'Z') ? static_cast<char>(a - 'A' + 'a') : a;
+				const char bl = (b >= 'A' && b <= 'Z') ? static_cast<char>(b - 'A' + 'a') : b;
+				if (al != bl) { match = false; break; }
+			}
+			if (match)
+				return true;
+		}
+		return false;
+	};
+
+	const std::string& name = obj->m_objectData->m_name;
+	const bool namedOccluder =
+		nameContainsI(name, "wall") ||
+		nameContainsI(name, "portcullis") ||
+		nameContainsI(name, "fence") ||
+		nameContainsI(name, "cavern") ||
+		nameContainsI(name, "fortress") ||
+		nameContainsI(name, "iron bars");
+
+	if (shapeID >= 0 && IsNonBlockingWalkSurface(shapeID) && !namedOccluder)
+		return false;
+
+	if (obj->m_objectData->m_isDoor)
+		return obj->m_objectData->m_height >= 2.0f;
+
+	ObjectWalkability walk = OW_WALKABLE;
+	if (g_pathfindingSystem)
+		walk = g_pathfindingSystem->GetObjectWalkability(shapeID, obj);
+
+	if (walk == OW_WALKABLE || walk == OW_DOOR)
+		return false;
+
+	// Climbable CSV walls (house exteriors): block by name. Tables/desks do not.
+	if (walk == OW_CLIMBABLE)
+		return namedOccluder && obj->m_objectData->m_height >= 2.0f;
+
+	if (walk != OW_BLOCKING && !obj->m_objectData->m_isNotWalkable)
+		return false;
+
+	if (obj->m_objectData->m_height < 2.0f)
+		return false;
+
+	return true;
+}
+
+bool PathfindingSystem::HasWallLineOfSight(Vector3 start, Vector3 goal) const
+{
+	int x0 = static_cast<int>(floorf(start.x));
+	int z0 = static_cast<int>(floorf(start.z));
+	int x1 = static_cast<int>(floorf(goal.x));
+	int z1 = static_cast<int>(floorf(goal.z));
+
+	const int dx = abs(x1 - x0);
+	const int dz = abs(z1 - z0);
+	const int sx = x0 < x1 ? 1 : -1;
+	const int sz = z0 < z1 ? 1 : -1;
+	int err = dx - dz;
+	int x = x0, z = z0;
+
+	auto tileBlocks = [&](int tx, int tz) -> bool {
+		if (tx < 0 || tx >= 3072 || tz < 0 || tz >= 3072)
+			return true;
+		for (const OverlappingObject& ov : GetOverlappingObjects(tx, tz))
+		{
+			if (ObjectBlocksProjectile(ov.obj))
+				return true;
+		}
+		return false;
+	};
+
+	while (true)
+	{
+		// Endpoints may sit against a wall footprint; only intermediate tiles block.
+		if ((x != x0 || z != z0) && (x != x1 || z != z1))
+		{
+			if (tileBlocks(x, z))
 				return false;
 		}
 		if (x == x1 && z == z1)

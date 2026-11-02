@@ -2953,9 +2953,9 @@ void UnassignObjectChunk(U7Object* object)
 	chunk.erase(std::remove(chunk.begin(), chunk.end(), object), chunk.end());
 }
 
-namespace {
-	std::vector<FlyingProjectile> g_flyingProjectiles;
+std::vector<FlyingProjectile> g_flyingProjectiles;
 
+namespace {
 	void DestroyProjectileObject(int objectId)
 	{
 		U7Object* obj = GetObjectFromID(objectId);
@@ -3020,6 +3020,21 @@ namespace
 			dir16 += 16;
 		return 8 + dir16;
 	}
+}
+
+bool IsFireProjectileLightShape(int shape)
+{
+	// textflx: 9 fireball, 856 fire bolt (Vas Flam / Fire Blast), 857 dragon breath.
+	return shape == 9 || shape == 856 || shape == 857;
+}
+
+bool ObjectEmitsDynamicLight(const U7Object* obj)
+{
+	if (!obj || !obj->m_objectData)
+		return false;
+	if (obj->m_objectData->m_isLightSource)
+		return true;
+	return obj->m_isProjectile && IsFireProjectileLightShape(obj->m_ObjectType);
 }
 
 bool SpawnFlyingProjectile(int shape, int fromId, int toId, float speed, int damage, int damageType,
@@ -3343,6 +3358,16 @@ void UpdateFlyingProjectiles()
 			next = proj.targetPos;
 		else
 			next = Vector3Add(bolt->m_Pos, Vector3Scale(Vector3Normalize(delta), step));
+
+		// Walls / closed doors stop missiles mid-flight (windows do not).
+		if (g_pathfindingSystem && !g_pathfindingSystem->HasWallLineOfSight(bolt->m_Pos, next))
+		{
+			PauseCasterOrdersAfterCombatSpell(proj);
+			DestroyProjectileObject(proj.objectId);
+			g_flyingProjectiles.erase(g_flyingProjectiles.begin() + static_cast<long>(i));
+			continue;
+		}
+
 		bolt->SetPos(next);
 		bolt->SetDest(proj.targetPos);
 

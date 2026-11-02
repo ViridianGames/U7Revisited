@@ -556,6 +556,8 @@ public:
 	bool IsDeathStatus() const;
 	/// Exult is_knocked_out: health <= 0 and not a true corpse.
 	bool IsKnockedOut() const;
+	/// Dead, KO, or asleep — draw/pick as a ground flat (same as corpses).
+	bool ShouldLieFlat() const;
 	/// Exult is_dying: health < -(strength / 3).
 	bool IsDying() const;
 	/// Combat KO: asleep + sleep pose; stays in party. No-op if already dead/asleep.
@@ -582,6 +584,10 @@ public:
 	// inside the furniture footprint / AABB. If toward is set, prefer a tile that
 	// progresses toward that destination (faster schedule handoff).
 	void UnstickFromFurniture(const Vector3* toward = nullptr);
+	/// Snap off a solid pin (1×1 tree/lamp/stalactite, etc.) onto a ValidateMove-
+	/// legal neighbor (or nearest walkable stand). Prefer tiles toward `toward`
+	/// when set. Returns true if position changed.
+	bool TryNudgeOffSolidBlocker(const Vector3* toward = nullptr);
 	// Drop m_furnitureObjectId once the NPC has stepped clear of the seat tile
 	// (keeps ValidateMove ignoring the chair AABB during the stand-up step).
 	void ReleaseFurnitureIfClear();

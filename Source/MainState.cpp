@@ -5470,7 +5470,8 @@ void MainState::EnsureCombatParticipant(int objectId, bool requireWalkPath)
 	if (requireWalkPath)
 	{
 		U7Object* obj = GetObjectFromID(objectId);
-		if (obj && IsHostileCombatUnit(obj) && !HasCombatWalkPathToParty(obj))
+		if (obj && IsHostileCombatUnit(obj)
+			&& (!HasCombatLineOfSightToParty(obj) || !HasCombatWalkPathToParty(obj)))
 			return;
 	}
 
@@ -5498,6 +5499,8 @@ void MainState::EnrollNearbyCombatHostiles()
 		const int id = static_cast<int>(obj->m_ID);
 		if (std::find(m_combatParticipants.begin(), m_combatParticipants.end(), id)
 			!= m_combatParticipants.end())
+			return;
+		if (!HasCombatLineOfSightToParty(obj))
 			return;
 		if (!HasCombatWalkPathToParty(obj))
 			return;

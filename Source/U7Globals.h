@@ -552,6 +552,8 @@ struct FlyingProjectile
 	bool pauseCasterOrdersOnHit = false;
 };
 
+extern std::vector<FlyingProjectile> g_flyingProjectiles;
+
 bool SpawnFlyingProjectile(int shape, int fromId, int toId, float speed, int damage, int damageType,
 	int weaponShape = -1, int ammoShape = -1);
 // Mark the newest in-flight missile from attackerId to pause their combat orders on impact.
@@ -559,6 +561,11 @@ bool MarkNewestFlyingProjectilePauseCasterOnHit(int attackerId);
 void UpdateFlyingProjectiles();
 // True while any flying projectile still lists this attacker (TB resolve waits on it).
 bool HasFlyingProjectileFrom(int attackerId);
+
+/// Fireball (9), Fire Blast / fire bolt (856), dragon breath (857) — torch-like discs in flight.
+bool IsFireProjectileLightShape(int shape);
+/// TFA light-source flag, or a fire projectile currently in flight.
+bool ObjectEmitsDynamicLight(const U7Object* obj);
 
 /// Inclusive chunk range currently covered by the camera frustum (ground + tall-object pad).
 /// Used by object visibility; falls back to a distance-based radius if unprojection fails.
