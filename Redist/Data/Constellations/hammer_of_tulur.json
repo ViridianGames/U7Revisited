@@ -1,0 +1,39 @@
+{
+  "schema": "u7r.constellation.v1",
+  "id": "hammer_of_tulur",
+  "name": "Hammer of Tulur",
+  "enabled": true,
+  "canvas": {
+    "coordinate_system": "normalized_2d",
+    "origin": "top_left",
+    "aspect_ratio": 1.014891
+  },
+  "rules": {
+    "no_lines": true,
+    "no_text_in_game": true,
+    "irregular_spacing": true,
+    "navigation_to_north": true
+  },
+  "navigation": {
+    "pole_star_id": "north_pole_star"
+  },
+  "rotationDeg": 0.0,
+  "scaleDeg": 14.0,
+  "stars": [
+    { "id": "north_pole_star", "x": 0.94808, "y": 0.03322, "brightness": 1.0, "tone": "warm_white" },
+    { "id": "guide_upper_1", "x": 0.84199, "y": 0.10997, "brightness": 0.74, "tone": "amber" },
+    { "id": "guide_upper_3", "x": 0.7246, "y": 0.22566, "brightness": 0.83, "tone": "warm_white" },
+    { "id": "guide_mid_1", "x": 0.58916, "y": 0.30813, "brightness": 0.87, "tone": "blue_white" },
+    { "id": "guide_mid_2", "x": 0.54515, "y": 0.37915, "brightness": 0.63, "tone": "amber" },
+    { "id": "guide_lower_2", "x": 0.35666, "y": 0.55212, "brightness": 0.9, "tone": "warm_white" },
+    { "id": "hammer_head_top", "x": 0.15011, "y": 0.56014, "brightness": 0.57, "tone": "amber" },
+    { "id": "hammer_head_left_edge", "x": 0.05643, "y": 0.66552, "brightness": 0.72, "tone": "warm_white" },
+    { "id": "hammer_head_inner_blue", "x": 0.20993, "y": 0.63918, "brightness": 0.79, "tone": "blue_white" },
+    { "id": "hammer_head_central", "x": 0.18962, "y": 0.73769, "brightness": 0.97, "tone": "warm_white" },
+    { "id": "hammer_head_lower_left", "x": 0.24944, "y": 0.85338, "brightness": 0.78, "tone": "blue_white" },
+    { "id": "hammer_head_lower_right", "x": 0.38488, "y": 0.80756, "brightness": 0.64, "tone": "amber" },
+    { "id": "hammer_head_edge_right", "x": 0.43679, "y": 0.86712, "brightness": 0.84, "tone": "blue_white" },
+    { "id": "hammer_head_bottom_left", "x": 0.25056, "y": 0.95418, "brightness": 0.63, "tone": "cream" },
+    { "id": "hammer_head_bottom_right", "x": 0.32054, "y": 0.96449, "brightness": 0.48, "tone": "blue_white" }
+  ]
+}

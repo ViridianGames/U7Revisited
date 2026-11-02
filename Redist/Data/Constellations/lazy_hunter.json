@@ -1,0 +1,62 @@
+{
+  "schema": "u7r.constellation.v1",
+  "id": "lazy_hunter",
+  "name": "Lazy Hunter",
+  "enabled": true,
+  "canvas": {
+    "coordinate_system": "normalized_2d",
+    "origin": "top_left",
+    "aspect_ratio": 1.149425
+  },
+  "rules": {
+    "no_lines": true,
+    "no_text_in_game": true,
+    "irregular_spacing": true,
+    "figure_suggested_not_outlined": true
+  },
+  "astronomy": {
+    "seasonal_cue": "spring_midnight_near_treetops"
+  },
+  "centerRA": 80.0,
+  "centerDec": 25.0,
+  "rotationDeg": 0.0,
+  "scaleDeg": 28.0,
+  "stars": [
+    { "id": "head_left", "x": 0.177, "y": 0.23218, "brightness": 0.67, "tone": "blue_white" },
+    { "id": "head_crown", "x": 0.255, "y": 0.22184, "brightness": 1.0, "tone": "amber" },
+    { "id": "head_rear", "x": 0.32, "y": 0.24598, "brightness": 0.34, "tone": "amber" },
+    { "id": "face_near", "x": 0.307, "y": 0.30115, "brightness": 0.72, "tone": "blue_white" },
+    { "id": "neck_left", "x": 0.217, "y": 0.30115, "brightness": 0.41, "tone": "amber" },
+    { "id": "shoulder_lower", "x": 0.207, "y": 0.37011, "brightness": 0.6, "tone": "blue_white" },
+    { "id": "shoulder_right", "x": 0.33, "y": 0.36782, "brightness": 0.83, "tone": "warm_white" },
+    { "id": "torso_center", "x": 0.369, "y": 0.3954, "brightness": 0.35, "tone": "amber" },
+    { "id": "forearm_guide_1", "x": 0.461, "y": 0.4092, "brightness": 0.61, "tone": "blue_white" },
+    { "id": "forearm_guide_2", "x": 0.509, "y": 0.41494, "brightness": 0.31, "tone": "warm_white" },
+    { "id": "bow_hand", "x": 0.53, "y": 0.43908, "brightness": 0.95, "tone": "amber" },
+    { "id": "arrow_guide_left", "x": 0.589, "y": 0.42644, "brightness": 0.4, "tone": "blue_white" },
+    { "id": "arrow_guide_middle", "x": 0.668, "y": 0.40805, "brightness": 0.26, "tone": "amber" },
+    { "id": "waist_outer", "x": 0.292, "y": 0.50115, "brightness": 0.44, "tone": "amber" },
+    { "id": "waist_right", "x": 0.353, "y": 0.51034, "brightness": 0.63, "tone": "blue_white" },
+    { "id": "left_thigh", "x": 0.275, "y": 0.5908, "brightness": 0.39, "tone": "amber" },
+    { "id": "left_knee", "x": 0.268, "y": 0.67126, "brightness": 0.8, "tone": "amber" },
+    { "id": "left_shin", "x": 0.183, "y": 0.77241, "brightness": 0.66, "tone": "amber" },
+    { "id": "left_ankle", "x": 0.108, "y": 0.81149, "brightness": 0.58, "tone": "blue_white" },
+    { "id": "left_foot", "x": 0.031, "y": 0.96092, "brightness": 0.93, "tone": "amber" },
+    { "id": "left_boot_side", "x": 0.24, "y": 0.86207, "brightness": 0.78, "tone": "warm_white" },
+    { "id": "right_thigh", "x": 0.355, "y": 0.62414, "brightness": 0.64, "tone": "blue_white" },
+    { "id": "right_knee_outer", "x": 0.458, "y": 0.68621, "brightness": 0.42, "tone": "amber" },
+    { "id": "right_foot", "x": 0.496, "y": 0.70805, "brightness": 0.99, "tone": "blue_white" },
+    { "id": "right_shin_lower", "x": 0.357, "y": 0.78506, "brightness": 0.47, "tone": "warm_white" },
+    { "id": "bow_top", "x": 0.688, "y": 0.05632, "brightness": 1.0, "tone": "amber" },
+    { "id": "bow_top_inner", "x": 0.67, "y": 0.1092, "brightness": 0.33, "tone": "amber" },
+    { "id": "bow_upper_blue", "x": 0.732, "y": 0.15402, "brightness": 0.52, "tone": "blue_white" },
+    { "id": "bow_upper_mid", "x": 0.77, "y": 0.21149, "brightness": 0.77, "tone": "amber" },
+    { "id": "bow_upper_edge", "x": 0.796, "y": 0.26897, "brightness": 0.47, "tone": "blue_white" },
+    { "id": "bow_grip", "x": 0.815, "y": 0.37701, "brightness": 0.85, "tone": "amber" },
+    { "id": "bow_lower_blue", "x": 0.838, "y": 0.52299, "brightness": 0.66, "tone": "blue_white" },
+    { "id": "bow_lower_warm", "x": 0.833, "y": 0.58046, "brightness": 0.48, "tone": "amber" },
+    { "id": "bow_bottom", "x": 0.78, "y": 0.72299, "brightness": 0.96, "tone": "amber" },
+    { "id": "bow_bottom_inner", "x": 0.704, "y": 0.65287, "brightness": 0.44, "tone": "amber" },
+    { "id": "arrow_tip", "x": 0.967, "y": 0.34713, "brightness": 1.0, "tone": "blue_white" }
+  ]
+}

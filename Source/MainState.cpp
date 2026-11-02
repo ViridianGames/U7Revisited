@@ -460,6 +460,10 @@ void MainState::OnEnter()
 	g_minute = 0;
 	g_hour = 7;
 	g_scheduleTime = 2;
+	g_dayOfMonth = 1;
+	g_month = 1;
+	g_britannianYear = 361;
+	SyncBritannianDayIndexFromCalendar();
 
 	m_heightCutoff = 16.0f; // Draw everything unless the player is inside.
 	m_finderObjectIds.clear();  // Object Finder results belong to the previous session
@@ -754,13 +758,8 @@ void MainState::UpdateTime()
 
 		if (g_minute >= 60)
 		{
-			++g_hour;
 			g_minute = 0;
-		}
-
-		if (g_hour >= 24)
-		{
-			g_hour = 0;
+			AdvanceGameHour();
 		}
 
 		g_scheduleTime = g_hour / 3;
@@ -793,34 +792,10 @@ void MainState::UpdateTime()
 		}
 	}
 
-	unsigned char darklevel = 64;
-	unsigned char red_green_level = (darklevel / 2);
-
-	if (g_hour == 20)
-	{
-		unsigned char darkness = 255 - ((float(g_minute) / 60.0f) * (255 - darklevel));
-		unsigned char red_green = 255 - ((float(g_minute) / 60.0f) * (255 - red_green_level));
-		g_dayNightColor = { red_green, red_green, darkness, 255 };
-		g_isDay = false;
-	}
-	else if (g_hour == 6)
-	{
-		// Dawn ramp: darkness goes darklevel→255; treat as day once past mid-ramp.
-		unsigned char darkness = darklevel + ((float(g_minute) / 60.0f) * (255 - darklevel));
-		unsigned char red_green = (darklevel / 2.0f) + ((float(g_minute) / 60.0f) * (255 - red_green_level));
-		g_dayNightColor = { red_green, red_green, darkness, 255 };
-		g_isDay = darkness > 160;
-	}
-	else if (g_hour > 20 || g_hour < 6)
-	{
-		g_dayNightColor = { red_green_level, red_green_level, darklevel, 255 };
-		g_isDay = false;
-	}
-	else
-	{
-		g_dayNightColor = { 255, 255, 255, 255 };
-		g_isDay = true;
-	}
+	// Same dusk/dawn windows as celestial sun path (shared GetDayNightAmount).
+	const float dayAmount = GetDayNightAmount();
+	g_dayNightColor = GetDayNightColorFromAmount(dayAmount);
+	g_isDay = dayAmount > kDayNightIsDayThreshold;
 
 	if (g_WeatherSystem)
 	{
@@ -1113,9 +1088,7 @@ void MainState::HandleGameKeys()
 {
 	if (IsKeyPressed(KEY_KP_ENTER))
 	{
-		++g_hour;
-		if (g_hour >= 24)
-			g_hour = 0;
+		AdvanceGameHour();
 	}
 
 	if (IsKeyPressed(KEY_SPACE))
@@ -1154,11 +1127,79 @@ void MainState::HandleGameKeys()
 	// Skip to next hour (Sandbox mode only)
 	if (IsKeyPressed(KEY_RIGHT) && m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX)
 	{
-		g_hour++;
-		if (g_hour >= 24)
-			g_hour = 0;
+		AdvanceGameHour();
 		g_minute = 0;
-		AddConsoleString("Time skipped to " + std::to_string(g_hour) + ":00");
+		AddConsoleString("Time skipped to " + std::to_string(g_hour) + ":00 (day "
+			+ std::to_string(g_dayOfMonth) + "/" + std::to_string(g_month) + ")");
+	}
+
+	// Weather 10.2: cycle sky orrery 0..9 — Ctrl+7/8 snap; Ctrl+Shift+7/8 animated 3s (Phase F).
+	if (m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX
+		&& g_WeatherSystem
+		&& IsKeyDown(KEY_LEFT_CONTROL)
+		&& (IsKeyPressed(KEY_SEVEN) || IsKeyPressed(KEY_EIGHT)))
+	{
+		int state = g_WeatherSystem->GetOrreryState();
+		if (IsKeyPressed(KEY_SEVEN))
+		{
+			state = (state + 9) % 10;
+		}
+		else
+		{
+			state = (state + 1) % 10;
+		}
+		const bool animated = IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT);
+		if (animated)
+		{
+			g_WeatherSystem->SetOrreryStateAnimated(state, 3.0f);
+			AddConsoleString("Orrery sky state " + std::to_string(state) + "/9 (animated 3s)");
+		}
+		else
+		{
+			g_WeatherSystem->SetOrreryState(state);
+			AddConsoleString("Orrery sky state " + std::to_string(state) + "/9 (debug)");
+		}
+	}
+
+	// Weather 10.4 closeout sandbox (audited free of MainState/U7Globals gameplay binds):
+	// Ctrl+Shift+T sun trail; +Y moon trail; +U/I/O meteor rate (halve/double/reset).
+	// Avoids Ctrl+P camera, orrery 7/8, and unmodified -/ = time speed.
+	if (m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX
+		&& g_WeatherSystem
+		&& IsKeyDown(KEY_LEFT_CONTROL)
+		&& (IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT)))
+	{
+		if (IsKeyPressed(KEY_T))
+		{
+			g_WeatherSystem->ToggleDrawCelestialPathTrail();
+			AddConsoleString(g_WeatherSystem->GetDrawCelestialPathTrail()
+				? "Celestial path trail ON (30-min sun markers)"
+				: "Celestial path trail OFF");
+		}
+		if (IsKeyPressed(KEY_Y))
+		{
+			g_WeatherSystem->ToggleDrawMoonPathTrail();
+			AddConsoleString(g_WeatherSystem->GetDrawMoonPathTrail()
+				? "Moon path trail ON (30-min + fine midnight/skirts/below)"
+				: "Moon path trail OFF");
+		}
+		if (IsKeyPressed(KEY_U))
+		{
+			const float s = g_WeatherSystem->GetShootingStarRateScale() * 0.5f;
+			g_WeatherSystem->SetShootingStarRateScale(s);
+			AddConsoleString("Shooting-star rate scale " + std::to_string(s));
+		}
+		if (IsKeyPressed(KEY_I))
+		{
+			const float s = g_WeatherSystem->GetShootingStarRateScale() * 2.0f;
+			g_WeatherSystem->SetShootingStarRateScale(s);
+			AddConsoleString("Shooting-star rate scale " + std::to_string(s));
+		}
+		if (IsKeyPressed(KEY_O))
+		{
+			g_WeatherSystem->SetShootingStarRateScale(1.0f);
+			AddConsoleString("Shooting-star rate scale 1.0 (reset)");
+		}
 	}
 
 	if (IsKeyPressed(KEY_PAGE_UP) && m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX)
@@ -3159,7 +3200,7 @@ void MainState::Draw()
 	// FP-only sky fill + high cloud billboards behind terrain (Weather 07).
 	if (g_WeatherSystem)
 	{
-		g_WeatherSystem->DrawSkyLayer(g_camera);
+		g_WeatherSystem->DrawSkyLayer(g_camera, true); // hemisphere; Title keeps panel via DrawGameWorldFrame
 	}
 
 	// A* timing deltas (telemetry; does not affect draw)
@@ -3794,6 +3835,15 @@ void MainState::Draw()
 
 		string timeString = "Time: " + to_string(g_hour) + ":" + (g_minute < 10 ? "0" : "") + to_string(g_minute) + " (" + to_string(g_scheduleTime) + ")";
 		DrawTextEx(*g_SmallFont, timeString.c_str(), Vector2{ 640.0f - g_minimapSize, g_minimapSize * 1.05f + g_SmallFont->baseSize }, g_SmallFont->baseSize, 1, WHITE);
+
+		static const char* kMonthAbbr[12] = {
+			"Jan", "Feb", "Mar", "Apr", "May", "Jun",
+			"Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+		};
+		const unsigned int mon = (g_month < 1u) ? 1u : ((g_month > 12u) ? 12u : g_month);
+		string dateString = "Date: " + string(g_dayOfMonth < 10 ? "0" : "") + to_string(g_dayOfMonth)
+			+ "/" + kMonthAbbr[mon - 1u];
+		DrawTextEx(*g_SmallFont, dateString.c_str(), Vector2{ 640.0f - g_minimapSize, g_minimapSize * 1.05f + 2 * g_SmallFont->baseSize }, g_SmallFont->baseSize, 1, WHITE);
 
 		// Draw character panel below xy/time
 		DrawStats();
