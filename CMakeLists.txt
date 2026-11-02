@@ -281,22 +281,25 @@ endif()
 
 # Set working directory for running the executable
 if(WIN32)
-    # Visual Studio debugger working directory
+    # Always ship as Redist/U7Revisited.exe (do not inherit project() display name).
+    # Per-config RUNTIME_OUTPUT_DIRECTORY_* writes straight into Redist/ (no
+    # Redist/Release/ subdir) so VS and CI both land the exe where the game runs.
     set_target_properties(U7Revisited PROPERTIES
+        OUTPUT_NAME "U7Revisited"
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
+        RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
+        RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
+        RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
+        RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
         VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
     )
-    # Copy executable to Redist folder after build (Release only)
+    # Belt-and-suspenders: also copy TARGET_FILE into Redist after every build.
     add_custom_command(TARGET U7Revisited POST_BUILD
-        COMMAND $<$<CONFIG:Release>:${CMAKE_COMMAND}> $<$<CONFIG:Release>:-E> $<$<CONFIG:Release>:copy> $<$<CONFIG:Release>:$<TARGET_FILE:U7Revisited>> $<$<CONFIG:Release>:"${CMAKE_CURRENT_SOURCE_DIR}/Redist/">
-        COMMAND_EXPAND_LISTS
-        COMMENT "Copying Release executable to Redist folder"
-    )
-    # Copy executable and PDB to Redist folder after build (RelWithDebInfo)
-    add_custom_command(TARGET U7Revisited POST_BUILD
-        COMMAND $<$<CONFIG:RelWithDebInfo>:${CMAKE_COMMAND}> $<$<CONFIG:RelWithDebInfo>:-E> $<$<CONFIG:RelWithDebInfo>:copy> $<$<CONFIG:RelWithDebInfo>:$<TARGET_FILE:U7Revisited>> $<$<CONFIG:RelWithDebInfo>:"${CMAKE_CURRENT_SOURCE_DIR}/Redist/">
-        COMMAND $<$<CONFIG:RelWithDebInfo>:${CMAKE_COMMAND}> $<$<CONFIG:RelWithDebInfo>:-E> $<$<CONFIG:RelWithDebInfo>:copy> $<$<CONFIG:RelWithDebInfo>:$<TARGET_PDB_FILE:U7Revisited>> $<$<CONFIG:RelWithDebInfo>:"${CMAKE_CURRENT_SOURCE_DIR}/Redist/">
-        COMMAND_EXPAND_LISTS
-        COMMENT "Copying RelWithDebInfo executable and PDB to Redist folder"
+        COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            $<TARGET_FILE:U7Revisited>
+            "${CMAKE_CURRENT_SOURCE_DIR}/Redist/U7Revisited.exe"
+        COMMENT "Copying U7Revisited.exe into Redist/"
     )
 elseif(NOT APPLE)
     # On Linux/Unix, set runtime output directory to Redist

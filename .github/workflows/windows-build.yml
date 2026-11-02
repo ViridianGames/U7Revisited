@@ -3,6 +3,9 @@
 #
 # After download: copy U7Revisited.exe into Redist/ (cwd for assets), then run
 # under Proton or on a real Windows box. Does not bundle original U7 data.
+#
+# Pin windows-2022: windows-latest moved to VS 2026, which does not provide the
+# "Visual Studio 17 2022" CMake generator this project expects with raylib.lib.
 
 name: Windows Build
 
@@ -18,35 +21,58 @@ concurrency:
 jobs:
   build-windows:
     name: MSVC Release (x64)
-    runs-on: windows-latest
+    runs-on: windows-2022
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Show toolchain
+        shell: pwsh
+        run: |
+          cmake --version
+          Write-Host "--- CMake generators (Visual Studio) ---"
+          cmake --help | Select-String -Pattern "Visual Studio"
+          Write-Host "--- vswhere ---"
+          & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationPath
+
       - name: Configure CMake (VS 2022 x64)
-        run: cmake -G "Visual Studio 17 2022" -A x64 -B build -DCMAKE_BUILD_TYPE=Release
+        run: cmake -G "Visual Studio 17 2022" -A x64 -B build
 
       - name: Build U7Revisited (Release)
         run: cmake --build build --config Release --target U7Revisited --parallel
 
-      - name: Verify Redist exe
+      - name: Copy exe into Redist
         shell: pwsh
         run: |
-          $exe = "Redist/U7Revisited.exe"
-          if (-not (Test-Path $exe)) {
-            Write-Error "Expected $exe after POST_BUILD copy — listing Redist and build/Release"
-            Get-ChildItem Redist -ErrorAction SilentlyContinue | Select-Object Name
-            Get-ChildItem build/Release -ErrorAction SilentlyContinue | Select-Object Name
+          New-Item -ItemType Directory -Force -Path Redist | Out-Null
+          $dest = "Redist/U7Revisited.exe"
+          $candidates = @(
+            "Redist/U7Revisited.exe",
+            "build/Release/U7Revisited.exe",
+            "build/U7Revisited/Release/U7Revisited.exe",
+            "build/RelWithDebInfo/U7Revisited.exe"
+          )
+          $src = $candidates | Where-Object { Test-Path $_ } | Select-Object -First 1
+          if (-not $src) {
+            Write-Host "Searching build tree for U7Revisited.exe..."
+            $found = Get-ChildItem build -Recurse -Filter "U7Revisited.exe" -ErrorAction SilentlyContinue |
+              Select-Object -First 5 FullName
+            $found | ForEach-Object { Write-Host $_.FullName }
+            if ($found) { $src = $found[0].FullName }
+          }
+          if (-not $src) {
+            Write-Error "Could not find U7Revisited.exe after build"
             exit 1
           }
-          Get-Item $exe | Format-List FullName, Length, LastWriteTime
+          Write-Host "Copying $src -> $dest"
+          Copy-Item -LiteralPath $src -Destination $dest -Force
+          Get-Item $dest | Format-List FullName, Length, LastWriteTime
 
       - name: Upload Windows executable
         uses: actions/upload-artifact@v4
         with:
-          name: U7Revisited-windows-x64
-          path: |
-            Redist/U7Revisited.exe
+          name: U7Revisited
+          path: Redist/U7Revisited.exe
           if-no-files-found: error
           retention-days: 14
