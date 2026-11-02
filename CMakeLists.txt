@@ -296,6 +296,18 @@ if(WIN32)
             "${CMAKE_CURRENT_SOURCE_DIR}/Redist/U7Revisited.exe"
         COMMENT "Copying $<TARGET_FILE_NAME:U7Revisited> into Redist/"
     )
+elseif(APPLE)
+    # Mach-O binary as Redist/U7RevisitedMac (distinct from Linux u7revisited).
+    set_target_properties(U7Revisited PROPERTIES
+        OUTPUT_NAME "U7RevisitedMac"
+    )
+    add_custom_command(TARGET U7Revisited POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            $<TARGET_FILE:U7Revisited>
+            "${CMAKE_CURRENT_SOURCE_DIR}/Redist/U7RevisitedMac"
+        COMMENT "Copying U7RevisitedMac into Redist/"
+    )
 elseif(NOT APPLE)
     # On Linux/Unix, set runtime output directory to Redist
     set_target_properties(U7Revisited PROPERTIES

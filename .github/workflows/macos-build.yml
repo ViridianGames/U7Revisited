@@ -1,0 +1,102 @@
+# Build the macOS Release executable, put it in Redist/, upload an artifact,
+# and commit Redist/U7RevisitedMac back to master so `git pull` picks it up.
+#
+# Uses Apple Silicon runners (macos-14). CMake FetchContent downloads/builds
+# raylib 5.0 on the runner (needs network). Unsigned binary — Gatekeeper may
+# require right-click Open or xattr -cr on first launch.
+#
+# Loop guards: paths-ignore for the Mac binary + "[skip ci]" on the bot commit.
+
+name: macOS Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [master]
+    paths-ignore:
+      - "Redist/U7RevisitedMac"
+      - "Redist/U7Revisited.exe"
+      - "Redist/u7revisited"
+      - "Redist/u7revisited_debug"
+
+concurrency:
+  group: macos-build-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  build-macos:
+    name: Apple Clang Release (arm64)
+    runs-on: macos-14
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Show toolchain
+        run: |
+          cmake --version
+          clang++ --version
+          sw_vers
+
+      - name: Configure CMake (Release)
+        run: cmake -S . -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build U7Revisited (Release)
+        run: cmake --build build --target U7Revisited --parallel 4
+
+      - name: Copy binary into Redist
+        run: |
+          set -euo pipefail
+          mkdir -p Redist
+          dest="Redist/U7RevisitedMac"
+          echo "--- binaries under build/ ---"
+          find build -type f -perm -111 \( -name 'U7RevisitedMac' -o -name 'U7Revisited' \) -print || true
+
+          src=""
+          for c in build/U7RevisitedMac Redist/U7RevisitedMac; do
+            if [ -f "$c" ]; then src="$c"; break; fi
+          done
+          if [ -z "$src" ]; then
+            src="$(find build -type f \( -name 'U7RevisitedMac' -o -name 'U7Revisited' \) | head -n 1 || true)"
+          fi
+          if [ -z "$src" ] || [ ! -f "$src" ]; then
+            echo "U7RevisitedMac not found under build/ after Release build" >&2
+            exit 1
+          fi
+
+          echo "Copying $src -> $dest"
+          cmake -E copy_if_different "$src" "$dest"
+          chmod +x "$dest"
+          ls -la "$dest"
+          file "$dest"
+
+      - name: Upload macOS executable
+        uses: actions/upload-artifact@v4
+        with:
+          name: U7RevisitedMac
+          path: Redist/U7RevisitedMac
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Commit Redist/U7RevisitedMac to master
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add -- Redist/U7RevisitedMac
+          if git diff --cached --quiet -- Redist/U7RevisitedMac; then
+            echo "Redist/U7RevisitedMac unchanged; nothing to commit."
+            exit 0
+          fi
+
+          git commit -m "Update Redist/U7RevisitedMac [skip ci]"
+          git pull --rebase --autostash origin master
+          git push origin HEAD:master
+          echo "Pushed Redist/U7RevisitedMac to master."

@@ -1,0 +1,129 @@
+# Build Linux Release + Debug, land them in Redist/, upload artifacts, and
+# commit both binaries back to master so `git pull` picks them up.
+#
+# Names match existing CMake OUTPUT_NAME_* :
+#   Release → Redist/u7revisited
+#   Debug   → Redist/u7revisited_debug
+#
+# Loop guards: paths-ignore for shipped Redist binaries + "[skip ci]" on the
+# bot commit. Do not recurse all of Redist/ (U7 data tree).
+
+name: Linux Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [master]
+    paths-ignore:
+      - "Redist/U7Revisited.exe"
+      - "Redist/U7RevisitedMac"
+      - "Redist/u7revisited"
+      - "Redist/u7revisited_debug"
+
+concurrency:
+  group: linux-build-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  build-linux:
+    name: GCC Release + Debug (x64)
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            build-essential \
+            cmake \
+            libgl1-mesa-dev \
+            libx11-dev \
+            libxrandr-dev \
+            libxi-dev \
+            libxcursor-dev \
+            libxinerama-dev \
+            libasound2-dev
+
+      - name: Show toolchain
+        run: |
+          cmake --version
+          g++ --version
+
+      - name: Configure + build Release
+        run: |
+          cmake -S . -B build-release -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release
+          cmake --build build-release --target U7Revisited --parallel "$(nproc)"
+
+      - name: Configure + build Debug
+        run: |
+          cmake -S . -B build-debug -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug
+          cmake --build build-debug --target U7Revisited --parallel "$(nproc)"
+
+      - name: Ensure binaries are in Redist
+        run: |
+          set -euo pipefail
+          mkdir -p Redist
+
+          # CMake Linux RUNTIME_OUTPUT_DIRECTORY already targets Redist/ with
+          # OUTPUT_NAME_RELEASE=u7revisited and OUTPUT_NAME_DEBUG=u7revisited_debug.
+          # Copy from build trees if needed.
+          ensure() {
+            local name="$1"
+            local dest="Redist/$name"
+            if [ -f "$dest" ]; then
+              echo "OK $dest"
+              ls -la "$dest"
+              return 0
+            fi
+            local src
+            src="$(find build-release build-debug -type f -name "$name" 2>/dev/null | head -n 1 || true)"
+            if [ -z "$src" ] || [ ! -f "$src" ]; then
+              echo "Missing $name under build-release/build-debug" >&2
+              find build-release build-debug -type f -executable -print 2>/dev/null | head -n 40 || true
+              exit 1
+            fi
+            echo "Copying $src -> $dest"
+            cmake -E copy_if_different "$src" "$dest"
+            chmod +x "$dest"
+            ls -la "$dest"
+          }
+
+          ensure u7revisited
+          ensure u7revisited_debug
+          file Redist/u7revisited Redist/u7revisited_debug
+
+      - name: Upload Linux executables
+        uses: actions/upload-artifact@v4
+        with:
+          name: U7Revisited-linux
+          path: |
+            Redist/u7revisited
+            Redist/u7revisited_debug
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Commit Linux binaries to master
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add -- Redist/u7revisited Redist/u7revisited_debug
+          if git diff --cached --quiet -- Redist/u7revisited Redist/u7revisited_debug; then
+            echo "Linux Redist binaries unchanged; nothing to commit."
+            exit 0
+          fi
+
+          git commit -m "Update Redist/u7revisited and u7revisited_debug [skip ci]"
+          git pull --rebase --autostash origin master
+          git push origin HEAD:master
+          echo "Pushed Linux Redist binaries to master."

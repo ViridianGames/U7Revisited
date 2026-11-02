@@ -15,6 +15,9 @@ on:
     branches: [master]
     paths-ignore:
       - "Redist/U7Revisited.exe"
+      - "Redist/U7RevisitedMac"
+      - "Redist/u7revisited"
+      - "Redist/u7revisited_debug"
 
 concurrency:
   group: windows-build-${{ github.ref }}
