@@ -1116,7 +1116,8 @@ void ShapeData::DrawInventoryIcon(int x, int y, Color tint)
 }
 
 void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scaling,
-	bool playSkeletalAnim, int freezeFrame, const Color* cuboidFaceLights)
+	bool playSkeletalAnim, int freezeFrame, const Color* cuboidFaceLights,
+	const char* skeletalAnimName)
 {
 	if (m_isValid == false)
 	{
@@ -1287,6 +1288,9 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 
 		if (m_customMesh->CanApplySkeletalAnimation())
 		{
+			const char* clip = (skeletalAnimName && skeletalAnimName[0] != '\0')
+				? skeletalAnimName
+				: "idle";
 			if (IsFlagClothShape(m_shape))
 			{
 				// Wind-scaled idle ONLY for flag cloth — never other shapes.
@@ -1304,11 +1308,11 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 			}
 			else if (playSkeletalAnim)
 			{
-				m_customMesh->UpdateAnim("idle");
+				m_customMesh->UpdateAnim(clip);
 			}
 			else
 			{
-				m_customMesh->SetAnimationFrame("idle", freezeFrame < 0 ? 0 : freezeFrame);
+				m_customMesh->SetAnimationFrame(clip, freezeFrame < 0 ? 0 : freezeFrame);
 			}
 		}
 		Model& model = m_customMesh->GetModel();

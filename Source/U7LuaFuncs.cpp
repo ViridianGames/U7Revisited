@@ -804,6 +804,7 @@ static int LuaSetObjectShape(lua_State *L)
     bool wasDoor = object->m_objectData && object->m_objectData->m_isDoor;
 
     // Keep the object's live frame (not shapetable metadata) and update m_ObjectType.
+    const int previousShape = object->m_ObjectType;
     int currentFrame = object->m_Frame;
     if (currentFrame < 0 || currentFrame >= 32)
         currentFrame = 0;
@@ -812,9 +813,27 @@ static int LuaSetObjectShape(lua_State *L)
     object->m_Frame = currentFrame;
     object->m_shapeData = &g_shapeTable[shape][currentFrame];
     object->m_objectData = &g_objectDataTable[shape];
+    object->m_drawType = object->m_shapeData->GetDrawType();
     // Morphs like locked chest 522→800 must keep (or gain) container status from TFA.
     if (IsTfaContainerShape(object->m_objectData))
         object->m_isContainer = true;
+    // Lit↔unlit: refresh anim. Morphing onto an extinguish mesh (595 torch, 535
+    // spent sconce) plays Extinguish-armatureAction once, then holds the last frame.
+    // Leave Scripted alone while a usecode array still owns the object.
+    if (object->GetAnimMode() != ObjectAnimMode::Scripted)
+    {
+        const bool shapeChanged = (previousShape != shape);
+        RaylibModel* mesh = object->m_shapeData ? object->m_shapeData->m_customMesh : nullptr;
+        const bool extinguishMesh = mesh
+            && mesh->HasAnimation("Extinguish-armatureAction")
+            && object->m_objectData
+            && !object->m_objectData->m_isLightSource
+            && !object->m_objectData->m_isAnimated;
+        if (shapeChanged && extinguishMesh)
+            object->BeginMeshExtinguishOneShot();
+        else
+            object->ApplyDefaultAnimMode();
+    }
     object->SetPos(object->GetPos());
 
     // Propagate door flag to new shape

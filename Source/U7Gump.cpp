@@ -262,6 +262,24 @@ void Gump::Update()
 						g_mainState->OpenMinimapGump(0);
 					return;
 				}
+				// Bags/crates/etc. use script "default" — Interact is a no-op.
+				// Mirror world double-click / use_object: open unlocked containers.
+				else if (object->m_isContainer)
+				{
+					if (object->IsLocked())
+					{
+						if (g_mainState)
+							g_mainState->Bark(object, "Locked");
+					}
+					else if (g_mainState)
+					{
+						Log("Container - Double-click nested container shape " +
+							std::to_string(object->m_ObjectType) +
+							" id=" + std::to_string(object->m_ID) + ", OpenGump");
+						g_mainState->OpenGump(object->m_ID);
+					}
+					return;
+				}
 				else
 				{
 					Log("Container - Double-click on item shape " +

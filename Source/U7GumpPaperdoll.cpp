@@ -2,13 +2,26 @@
 #include "U7Globals.h"
 #include "MainState.h"
 #include "U7Object.h"
+#include "ShapeData.h"
 #include "Geist/ResourceManager.h"
 #include "Geist/Logging.h"
 #include "Geist/StateMachine.h"
 #include "Geist/Engine.h"
 #include <filesystem>
+#include <algorithm>
+#include <vector>
 
 #include "InputSystem.h"
+
+namespace
+{
+	// Equip icons that need DrawInventoryIcon (palette LUT glisten) instead of a
+	// static GuiSprite texture. Do not cycle VGA frames — fire is pixel cycling.
+	bool NeedsPaletteIconOverlay(U7Object* obj, ShapeData* sd)
+	{
+		return obj && sd && sd->HasPaletteAnimation();
+	}
+}
 
 extern std::unique_ptr<ResourceManager> g_ResourceManager;
 extern std::unique_ptr<U7Player> g_Player;
@@ -500,12 +513,13 @@ void GumpPaperdoll::Update()
 					GuiSprite* slotSprite = dynamic_cast<GuiSprite*>(element.get());
 					if (slotSprite && slotSprite->m_Sprite)
 					{
-						// Check if mouse is over this slot
+						// Use m_Width/m_Height (set in Draw) so palette-overlay slots
+						// keep the item hit box after the sprite texture is cleared.
 						Rectangle slotRect = {
 							m_gui.m_Pos.x + slotSprite->m_Pos.x,
 							m_gui.m_Pos.y + slotSprite->m_Pos.y,
-							slotSprite->m_Sprite->m_sourceRect.width,
-							slotSprite->m_Sprite->m_sourceRect.height
+							slotSprite->m_Width * slotSprite->m_ScaleX,
+							slotSprite->m_Height * slotSprite->m_ScaleY
 						};
 
 						if (CheckCollisionPointRec(mousePos, slotRect))
@@ -513,66 +527,56 @@ void GumpPaperdoll::Update()
 							EquipmentSlot slot = static_cast<EquipmentSlot>(i);
 							int objectId = npcData->GetEquippedItem(slot);
 
-							// Check for double-click on backpack
-							if (slot == EquipmentSlot::SLOT_BACKPACK && objectId != -1)
+							// Double-click equipped items: open specials, else run usecode
+							// (torches light/extinguish, keys, etc. — same as inventory gump).
+							if (objectId != -1 && g_InputSystem->WasLButtonDoubleClicked())
 							{
-								if (g_InputSystem->WasLButtonDoubleClicked())
+								auto objIt = g_objectList.find(objectId);
+								U7Object* object = (objIt != g_objectList.end()) ? objIt->second.get() : nullptr;
+								if (g_mainState)
+									g_mainState->ClearObjectInfoTooltip();
+
+								if (slot == EquipmentSlot::SLOT_BACKPACK)
 								{
 									Log("Paperdoll - Double-click on backpack, opening gump for objectId=" + std::to_string(objectId));
 									if (g_mainState)
-									{
-										g_mainState->ClearObjectInfoTooltip();
-										Log("Paperdoll - Calling g_mainState->OpenGump(" + std::to_string(objectId) + ")");
 										g_mainState->OpenGump(objectId);
-										Log("Paperdoll - OpenGump returned successfully");
-									}
-									else
-									{
-										Log("Paperdoll - ERROR: g_mainState is null!");
-									}
-									break;
 								}
-							}
-
-							// Check for double-click on spellbook (shape 761)
-							if (objectId != -1)
-							{
-								auto objIt = g_objectList.find(objectId);
-								if (objIt != g_objectList.end() && objIt->second->m_shapeData && objIt->second->m_shapeData->m_shape == 761)
+								else if (object && object->m_shapeData && object->m_shapeData->m_shape == 761)
 								{
-									if (g_InputSystem->WasLButtonDoubleClicked())
-									{
-										Log("Paperdoll - Double-click on spellbook, opening spellbook gump for NPC=" + std::to_string(m_npcId));
-										if (g_mainState)
-										{
-											g_mainState->ClearObjectInfoTooltip();
-											g_mainState->OpenSpellbookGump(m_npcId);
-										}
-										else
-										{
-											Log("Paperdoll - ERROR: g_mainState is null!");
-										}
-										break;
-									}
+									Log("Paperdoll - Double-click on spellbook, opening spellbook gump for NPC=" + std::to_string(m_npcId));
+									if (g_mainState)
+										g_mainState->OpenSpellbookGump(m_npcId);
 								}
-								// Check for double-click on map (shape 178)
-								else if (objIt != g_objectList.end() && objIt->second->m_shapeData && objIt->second->m_shapeData->m_shape == 178)
+								else if (object && object->m_shapeData && object->m_shapeData->m_shape == 178)
 								{
-									if (g_InputSystem->WasLButtonDoubleClicked())
+									Log("Paperdoll - Double-click on map, opening minimap gump for NPC=" + std::to_string(m_npcId));
+									if (g_mainState)
+										g_mainState->OpenMinimapGump(m_npcId);
+								}
+								else if (object && object->m_isContainer)
+								{
+									// Bags/sacks in hand etc.: script is often "default".
+									if (object->IsLocked())
 									{
-										Log("Paperdoll - Double-click on map, opening minimap gump for NPC=" + std::to_string(m_npcId));
 										if (g_mainState)
-										{
-											g_mainState->ClearObjectInfoTooltip();
-											g_mainState->OpenMinimapGump(m_npcId);
-										}
-										else
-										{
-											Log("Paperdoll - ERROR: g_mainState is null!");
-										}
-										break;
+											g_mainState->Bark(object, "Locked");
+									}
+									else if (g_mainState)
+									{
+										Log("Paperdoll - Double-click equipped container id=" +
+											std::to_string(objectId) + ", OpenGump");
+										g_mainState->OpenGump(objectId);
 									}
 								}
+								else if (object)
+								{
+									Log("Paperdoll - Double-click on equipped shape " +
+										std::to_string(object->m_ObjectType) +
+										" id=" + std::to_string(object->m_ID) + ", Interact(1)");
+									object->Interact(1);
+								}
+								break;
 							}
 
 							// Capture equipped item at press time (not when move threshold hits)
@@ -727,6 +731,14 @@ void GumpPaperdoll::Draw()
 			loggedOnce = true;
 		}
 
+		struct EquippedIconOverlay
+		{
+			int x = 0;
+			int y = 0;
+			ShapeData* shapeData = nullptr;
+		};
+		std::vector<EquippedIconOverlay> iconOverlays;
+
 		for (int i = 0; i < static_cast<int>(EquipmentSlot::SLOT_COUNT); i++)
 		{
 			EquipmentSlot slot = static_cast<EquipmentSlot>(i);
@@ -740,74 +752,79 @@ void GumpPaperdoll::Draw()
 					auto slotSprite = static_cast<GuiSprite*>(slotElement.get());
 					int objectId = npcData->GetEquippedItem(slot);
 
-					// Debug: Log what we find
-					static int debugCount = 0;
-					if (debugCount < 13 && m_npcId == 0)
-					{
-						if (objectId != -1)
-						{
-							auto objIt = g_objectList.find(objectId);
-							if (objIt != g_objectList.end() && objIt->second)
-							{
-								int shape = objIt->second->m_shapeData ? objIt->second->m_shapeData->GetShape() : -1;
-								Log("Paperdoll - " + std::string(slotNames[i]) + " has objectId=" + std::to_string(objectId) + ", shape=" + std::to_string(shape));
-							}
-						}
-						else
-						{
-							Log("Paperdoll - " + std::string(slotNames[i]) + " is EMPTY");
-						}
-						debugCount++;
-					}
-
 					// Update slot texture based on equipped item (highlighting is done separately via border drawing)
-					if (objectId != -1)
+					if (objectId != -1 && objectId != g_gumpManager->m_draggedObjectId)
 					{
-						// Item is equipped - show the item's texture
 						auto objIt = g_objectList.find(objectId);
 						if (objIt != g_objectList.end() && objIt->second && objIt->second->m_shapeData)
 						{
 							U7Object* obj = objIt->second.get();
-							Texture* itemTexture = obj->m_shapeData->GetTexture();
+							ShapeData* iconSd = obj->m_shapeData;
+							Texture* itemTexture = iconSd ? iconSd->GetTexture() : nullptr;
 
-							// Debug: Log texture info
-							static int textureLogCount = 0;
-							if (textureLogCount < 10 && m_npcId == 0 && itemTexture)
+							// Palette-glisten icons (lit torch fire, gems, …) via
+							// DrawInventoryIcon after m_gui.Draw — not VGA frame cycling.
+							if (NeedsPaletteIconOverlay(obj, iconSd))
 							{
-								Log("Paperdoll - Setting texture for " + std::string(slotNames[i]) +
-									": texture=" + std::to_string((long long)itemTexture) +
-									", size=" + std::to_string(itemTexture->width) + "x" + std::to_string(itemTexture->height));
-								textureLogCount++;
+								int iw = 0;
+								int ih = 0;
+								if (itemTexture)
+								{
+									iw = itemTexture->width;
+									ih = itemTexture->height;
+								}
+								else if (Texture2D* indexTex = iconSd->GetIndexTexture())
+								{
+									iw = indexTex->width;
+									ih = indexTex->height;
+								}
+
+								// Clear the GuiSprite so DrawInventoryIcon owns the pixels,
+								// but keep the slot's hit box at the item size (Update uses
+								// m_Width/m_Height; sourceRect must match too).
+								SetSpriteTexture(slotSprite, g_EmptyTexture);
+								if (iw > 0 && ih > 0 && slotSprite->m_Sprite)
+								{
+									slotSprite->m_Width = iw;
+									slotSprite->m_Height = ih;
+									slotSprite->m_Sprite->m_sourceRect.width = float(iw);
+									slotSprite->m_Sprite->m_sourceRect.height = float(ih);
+								}
+								iconOverlays.push_back({
+									static_cast<int>(m_gui.m_Pos.x + slotSprite->m_Pos.x),
+									static_cast<int>(m_gui.m_Pos.y + slotSprite->m_Pos.y),
+									iconSd
+								});
 							}
-
-							SetSpriteTexture(slotSprite, itemTexture);
-						}
-						else
-						{
-							// Debug: Log why texture failed
-							static int failLogCount = 0;
-							if (failLogCount < 5 && m_npcId == 0)
+							else
 							{
-								Log("Paperdoll - FAILED to get texture for " + std::string(slotNames[i]) +
-									": objFound=" + std::string((objIt != g_objectList.end()) ? "yes" : "no") +
-									", objValid=" + std::string((objIt != g_objectList.end() && objIt->second) ? "yes" : "no") +
-									", hasShapeData=" + std::string((objIt != g_objectList.end() && objIt->second && objIt->second->m_shapeData) ? "yes" : "no"));
-								failLogCount++;
+								SetSpriteTexture(slotSprite, itemTexture);
 							}
 						}
 					}
 					else
 					{
-						// No item equipped - use empty texture
+						// No item equipped (or currently dragged out) - use empty texture
 						SetSpriteTexture(slotSprite, g_EmptyTexture);
 					}
 				}
 			}
 		}
-	}
 
-	// Draw all GUI elements (including slot sprites)
-	m_gui.Draw();
+		// Draw all GUI elements (including slot sprites)
+		m_gui.Draw();
+
+		// Lit torch / glisten overlays on top of empty slot sprites.
+		for (const EquippedIconOverlay& overlay : iconOverlays)
+		{
+			if (overlay.shapeData)
+				overlay.shapeData->DrawInventoryIcon(overlay.x, overlay.y);
+		}
+	}
+	else
+	{
+		m_gui.Draw();
+	}
 
 	// Draw weight with babyblocks at its loaded size (black, no outline).
 	// Snap to integer pixels: half-pixel X from centering clips the thin trailing
@@ -1064,10 +1081,14 @@ bool GumpPaperdoll::HandleDrop(U7Object* object, Vector2 mousePos)
 
 								if (canCarry)
 								{
-									equippedItem->AddObjectToInventory(object->m_ID);
-									object->m_InventoryPos = { 0, 0 };
-									Log("Added item to equipped container in slot " + std::to_string(static_cast<int>(slot)));
-									return true;
+									if (equippedItem->AddObjectToInventory(object->m_ID))
+									{
+										object->m_InventoryPos = { 0, 0 };
+										Log("Added item to equipped container in slot " + std::to_string(static_cast<int>(slot)));
+										return true;
+									}
+									// Lit torch etc. rejected — do not claim the drop succeeded.
+									return false;
 								}
 								// Exit early - we tried to drop on container
 								return false;
@@ -1127,12 +1148,13 @@ bool GumpPaperdoll::HandleDrop(U7Object* object, Vector2 mousePos)
 			}
 		}
 
-		// If we found a specific target slot, try that first; otherwise try all valid slots
+		// If we found a specific target slot, try that first; otherwise try all valid slots.
+		// Prefer the drag's original slot when re-equipping on this same paperdoll so a
+		// failed backpack drop does not jump the torch to the other hand.
 		std::vector<EquipmentSlot> slotsToTry;
 		if (targetSlot != EquipmentSlot::SLOT_COUNT)
 		{
 			slotsToTry.push_back(targetSlot);
-			// Add remaining valid slots as fallback
 			for (EquipmentSlot slot : validSlots)
 			{
 				if (slot != targetSlot)
@@ -1142,6 +1164,17 @@ bool GumpPaperdoll::HandleDrop(U7Object* object, Vector2 mousePos)
 		else
 		{
 			slotsToTry = validSlots;
+		}
+		if (g_gumpManager && g_gumpManager->m_sourceGump == this
+			&& g_gumpManager->m_sourceSlotIndex >= 0
+			&& g_gumpManager->m_sourceSlotIndex < static_cast<int>(EquipmentSlot::SLOT_COUNT))
+		{
+			const auto srcSlot = static_cast<EquipmentSlot>(g_gumpManager->m_sourceSlotIndex);
+			if (std::find(validSlots.begin(), validSlots.end(), srcSlot) != validSlots.end())
+			{
+				slotsToTry.erase(std::remove(slotsToTry.begin(), slotsToTry.end(), srcSlot), slotsToTry.end());
+				slotsToTry.insert(slotsToTry.begin(), srcSlot);
+			}
 		}
 
 		// Try each slot in order (target slot first if specified)
@@ -1226,10 +1259,13 @@ bool GumpPaperdoll::HandleDrop(U7Object* object, Vector2 mousePos)
 
 				if (canCarry)
 				{
-					equippedItem->AddObjectToInventory(object->m_ID);
-					object->m_InventoryPos = { 0, 0 };
-					Log("Added item to equipped container in slot " + std::to_string(static_cast<int>(slot)) + " (fallback)");
-					return true;
+					if (equippedItem->AddObjectToInventory(object->m_ID))
+					{
+						object->m_InventoryPos = { 0, 0 };
+						Log("Added item to equipped container in slot " + std::to_string(static_cast<int>(slot)) + " (fallback)");
+						return true;
+					}
+					return false;
 				}
 			}
 		}

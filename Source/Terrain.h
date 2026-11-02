@@ -7,9 +7,25 @@
 #include <array>
 #include <cstdint>
 
-// Visible ground patch size in world tiles (centered on camera target).
-constexpr int TILEWIDTH = 100;
-constexpr int TILEHEIGHT = 100;
+// Visible ground patch size in world tiles (centered on camera).
+// Third-person stays at 100; first-person uses 256 (±128) to match
+// g_firstPersonDrawRange. Arrays/RT are sized to the max.
+constexpr int kTerrainPatchThirdPerson = 100;
+constexpr int kTerrainPatchFirstPerson = 256;
+constexpr int kTerrainPatchMax = kTerrainPatchFirstPerson;
+
+// Active patch edge length (even). Defaults to third-person.
+extern int g_terrainPatchSize;
+
+// Center tile of the active ground/lighting patch (eye XZ in FP, look-at in TP).
+void GetTerrainPatchCenterTiles(int& outX, int& outZ);
+
+// Map world tile → lighting cell; false if outside the active patch.
+bool WorldToTerrainCell(int worldX, int worldZ, int& outCellX, int& outCellY);
+
+// Legacy aliases: array capacity / max patch (prefer g_terrainPatchSize for loops).
+constexpr int TILEWIDTH = kTerrainPatchMax;
+constexpr int TILEHEIGHT = kTerrainPatchMax;
 
 class Terrain : public Object
 {
@@ -18,7 +34,7 @@ public:
 	int m_height = 3072;
 
 	// Per-cell lighting for the current camera-centered patch (object draw samples this).
-	Color m_cellLighting[TILEWIDTH][TILEHEIGHT];
+	Color m_cellLighting[kTerrainPatchMax][kTerrainPatchMax];
 
 	Model m_cellModel{};
 	Mesh m_cellMesh{};
@@ -72,6 +88,9 @@ public:
 	const char* m_lastDirtyReason = "none";
 
 private:
+	// Recreate RT + plane mesh when active patch size changes (FP ↔ TP).
+	void EnsurePatchResources(int patchSize);
+
 	// Dirty-flag state: rebuild only when inputs that affect the ground RT change.
 	bool m_forceDirty = true;
 	int m_cachedCenterTileX = 0x7fffffff;
@@ -81,6 +100,7 @@ private:
 	bool m_cachedDungeonView = false;
 	int m_cachedPaletteStep = -1;
 	uint64_t m_cachedLightHash = 0;
+	int m_allocatedPatchSize = 0;
 
 	// Hash of nearby light sources (tile-rounded positions) for night/dungeon dirty detection.
 	uint64_t ComputeLightHash() const;

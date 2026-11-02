@@ -44,6 +44,12 @@
 
 using namespace std;
 
+namespace
+{
+	constexpr const char* kMeshExtinguishAnim = "Extinguish-armatureAction";
+	constexpr float kMeshAnimFps = 24.0f;
+}
+
 // Contiguous per-NPC batch index allocator.
 // This is file-scoped so it's preserved while the program runs and used by NPCInit / LoadFromJson.
 static std::atomic_int s_nextNpcBatchIndex{0};
@@ -80,12 +86,11 @@ void U7Object::Init(const string& configfile, int unitType, int frame)
 	// Desync looping FX so every instance does not pop on the same frame.
 	// Surf tiles stay locked to frame 0 so shoreline strips stay continuous.
 	m_animFrameOffset = 0;
-	// TFA ambient props loop; everything else starts Frozen (craft tools, casino
-	// wheels, doors) until a usecode script drives frames.
-	m_animMode = ObjectAnimMode::Frozen;
+	// TFA ambient props / lit lights loop; craft tools, casino wheels, doors stay
+	// Frozen until a usecode script drives frames.
+	ApplyDefaultAnimMode();
 	if (m_objectData && m_objectData->m_isAnimated)
 	{
-		m_animMode = ObjectAnimMode::Auto;
 		const int animFrames = g_shapeTable[m_ObjectType][0].m_numFrames;
 		// Exact TEXT.FLX name "surf" (shoreline strips must stay in phase).
 		const std::string& animName = m_objectData->m_name;
@@ -1200,9 +1205,8 @@ void U7Object::AlliedMonsterUpdate()
 
 	// Despawn once they leave the camera tile window (same test as InteractiveDraw).
 	{
-		const int cellx = (TILEWIDTH / 2) + static_cast<int>(m_Pos.x) - static_cast<int>(g_camera.target.x);
-		const int celly = (TILEHEIGHT / 2) + static_cast<int>(m_Pos.z) - static_cast<int>(g_camera.target.z);
-		if (cellx < 0 || cellx >= TILEWIDTH || celly < 0 || celly >= TILEHEIGHT)
+		int cellx = 0, celly = 0;
+		if (!WorldToTerrainCell(static_cast<int>(m_Pos.x), static_cast<int>(m_Pos.z), cellx, celly))
 		{
 			if (g_SoundSystem)
 				g_SoundSystem->StopLoopingSoundEffect(static_cast<int>(m_ID));
@@ -1469,12 +1473,10 @@ void U7Object::InteractiveDraw()
 		return;
 	}
 
-	int cellx = (TILEWIDTH / 2) + m_Pos.x - int(g_camera.target.x);
-	int celly = (TILEHEIGHT / 2) + m_Pos.z - int(g_camera.target.z);
-
-	if (cellx < 0 || cellx >= TILEWIDTH || celly < 0 || celly >= TILEHEIGHT)
+	int cellx = 0, celly = 0;
+	if (!WorldToTerrainCell(static_cast<int>(m_Pos.x), static_cast<int>(m_Pos.z), cellx, celly))
 	{
-		return; // Not on the screen.
+		return; // Outside the active terrain / draw patch.
 	}
 
 	// Multi-frame shapes: pick the right frame before drawing.
@@ -1562,13 +1564,67 @@ void U7Object::InteractiveDraw()
 			applyDebugTint(fc);
 	}
 
+	// First-person: soft alpha fade over the outer quarter of draw range so
+	// props never hard-pop at g_firstPersonDrawRange.
+	{
+		const float fade = GetFirstPersonViewFade(m_centerPoint);
+		if (fade <= 0.02f)
+			return;
+		ApplyFirstPersonViewFade(renderColor, m_centerPoint);
+		if (useCuboidFaces)
+		{
+			for (Color& fc : cuboidFaces)
+				ApplyFirstPersonViewFade(fc, m_centerPoint);
+		}
+	}
+
 	if (m_isCustomMesh) {
 		CustomMeshDraw(renderColor);
 	} else {
 		// Skeletal custom meshes: play while Auto/Scripted, rest pose while Frozen.
-		const bool playMeshAnim = (m_animMode != ObjectAnimMode::Frozen);
+		// Extinguish one-shot / rest uses m_meshPoseAnim + m_meshPoseFrame.
+		bool playMeshAnim = (m_animMode != ObjectAnimMode::Frozen);
+		int freezeFrame = 0;
+		const char* skeletalClip = nullptr;
+
+		if (!m_meshPoseAnim.empty())
+		{
+			skeletalClip = m_meshPoseAnim.c_str();
+			playMeshAnim = false;
+
+			if (m_meshOneShotPlaying && m_shapeData && m_shapeData->m_customMesh)
+			{
+				const int n = m_shapeData->m_customMesh->GetAnimationFrameCount(m_meshPoseAnim);
+				if (n <= 1)
+				{
+					m_meshPoseFrame = std::max(0, n - 1);
+					m_meshOneShotPlaying = false;
+				}
+				else
+				{
+					m_meshOneShotFrameTimer += GetFrameTime();
+					const float frameDur = 1.0f / kMeshAnimFps;
+					while (m_meshOneShotPlaying && m_meshOneShotFrameTimer >= frameDur)
+					{
+						m_meshOneShotFrameTimer -= frameDur;
+						if (m_meshPoseFrame + 1 >= n)
+						{
+							m_meshPoseFrame = n - 1;
+							m_meshOneShotPlaying = false;
+						}
+						else
+						{
+							++m_meshPoseFrame;
+						}
+					}
+				}
+			}
+
+			freezeFrame = m_meshPoseFrame;
+		}
+
 		m_shapeData->Draw(m_Pos, m_Angle, renderColor, Vector3{ 1, 1, 1 },
-			playMeshAnim, 0, useCuboidFaces ? cuboidFaces : nullptr);
+			playMeshAnim, freezeFrame, useCuboidFaces ? cuboidFaces : nullptr, skeletalClip);
 	}
 }
 
@@ -1900,7 +1956,7 @@ void U7Object::HandleJukeboxEgg()
 
 void U7Object::MonsterInit()
 {
-	m_speed = 7.5f;
+	m_speed = 5.0f;
 	m_attackRange = MELEE_RANGE_TILES;
 	m_attackCooldown = 3.0f;
 	m_cooldownTimer = 0.0;
@@ -1965,7 +2021,7 @@ void U7Object::InitUsecodeObjectSchedule()
 
 	m_usecodeObjectSchedule = true;
 	if (m_speed <= 0.0f)
-		m_speed = 7.5f;
+		m_speed = 5.0f;
 	if (m_walkTextures.empty())
 	{
 		m_walkTexturesUpright = false;
@@ -2657,14 +2713,16 @@ void U7Object::DrawCorpseFlat()
 	if (!sd.IsValid())
 		return;
 
-	const int cellx = (TILEWIDTH / 2) + static_cast<int>(m_Pos.x) - static_cast<int>(g_camera.target.x);
-	const int celly = (TILEHEIGHT / 2) + static_cast<int>(m_Pos.z) - static_cast<int>(g_camera.target.z);
-	if (cellx < 0 || cellx >= TILEWIDTH || celly < 0 || celly >= TILEHEIGHT)
+	int cellx = 0, celly = 0;
+	if (!WorldToTerrainCell(static_cast<int>(m_Pos.x), static_cast<int>(m_Pos.z), cellx, celly))
 		return;
 
 	Color renderColor = g_Terrain
 		? g_Terrain->m_cellLighting[cellx][celly]
 		: Color{ 255, 255, 255, 255 };
+	if (GetFirstPersonViewFade(m_Pos) <= 0.02f)
+		return;
+	ApplyFirstPersonViewFade(renderColor, m_Pos);
 	sd.DrawAsFlat(m_Pos, renderColor);
 }
 
@@ -2685,9 +2743,14 @@ void U7Object::DrawWalkBillboard(const std::vector<std::vector<Texture*>>& walkT
 
 	// Draw at m_Pos (feet/world position). NPCs/monsters are stored at tile centers so
 	// logical position matches what you see — no +0.5 draw hack.
-	if (abs(m_Pos.x - g_camera.target.x) > 64 || abs(m_Pos.z - g_camera.target.z) > 64)
 	{
-		return; // Not on the screen.
+		const float refX = g_firstPersonEnabled ? g_camera.position.x : g_camera.target.x;
+		const float refZ = g_firstPersonEnabled ? g_camera.position.z : g_camera.target.z;
+		const float maxDist = g_firstPersonEnabled
+			? (std::max(16.0f, g_firstPersonDrawRange) + 8.0f)
+			: 64.0f;
+		if (fabsf(m_Pos.x - refX) > maxDist || fabsf(m_Pos.z - refZ) > maxDist)
+			return; // Outside draw range.
 	}
 
 	// Billboard tilt per direction: SW/W/NE/E use -45; NW/N/SE/S (flipped art) use +45.
@@ -2802,23 +2865,33 @@ void U7Object::DrawWalkBillboard(const std::vector<std::vector<Texture*>>& walkT
 	// Flying creatures (Swarm insects, etc.): hover near waist height; shadow stays on ground.
 	finalPos.y += m_drawHeightOffset;
 
-	Vector3 shadowPos = Vector3{ m_Pos.x - .5f, 0.02f, m_Pos.z + 1 };
+	const float viewFade = GetFirstPersonViewFade(m_Pos);
+	if (viewFade <= 0.02f)
+		return;
+
+	constexpr float kDropShadowScale = 1.5f;
+	const Vector3 shadowPos = FlatUnderFeetOrigin(m_Pos, kDropShadowScale, 0.02f);
 	SetMaterialTexture(&g_ResourceManager->GetModel("Models/3dmodels/flat.obj")->GetModel().materials[0], MATERIAL_MAP_DIFFUSE, *g_ResourceManager->GetTexture("Images/dropshadow.png"));
+	Color shadowTint = BLACK;
+	shadowTint.a = static_cast<unsigned char>(std::clamp(
+		static_cast<int>(std::lround(255.0f * viewFade)), 0, 255));
 	rlDisableDepthMask();
-	DrawModel(g_ResourceManager->GetModel("Models/3dmodels/flat.obj")->GetModel(), shadowPos, 1.5f, BLACK);
+	DrawModel(g_ResourceManager->GetModel("Models/3dmodels/flat.obj")->GetModel(), shadowPos, kDropShadowScale, shadowTint);
 	rlEnableDepthMask();
+
+	// Locked first-person: draw the ground shadow only — the walk billboard would
+	// fill the view (blonde Avatar hair band when looking up).
+	if (g_firstPersonEnabled && IsCameraLocked() && m_ID == g_cameraLockObjectId)
+		return;
 
 	BeginShaderMode(g_alphaDiscard);
 
-	Vector3 offset = Vector3Subtract(m_Pos, g_camera.target);
-	offset = Vector3Add(offset, Vector3{ 50, 0, 50 });
-
-	if (offset.x < 0 || offset.z < 0 || offset.x > 100 || offset.z > 100)
-	{
-		return; // Off screen
-	}
-
-	Color lighting = g_Terrain->m_cellLighting[int(offset.x)][int(offset.z)];
+	int cellx = 0, celly = 0;
+	Color lighting = g_Terrain
+		? (WorldToTerrainCell(static_cast<int>(m_Pos.x), static_cast<int>(m_Pos.z), cellx, celly)
+			? g_Terrain->m_cellLighting[cellx][celly]
+			: g_Terrain->GetAmbientLightingColor())
+		: Color{ 255, 255, 255, 255 };
 
 	// Apply green tint if F11 script debug is enabled and unit has a non-default script
 	// Also check for conversation trees (NPCs with dialogue scripts)
@@ -2835,6 +2908,8 @@ void U7Object::DrawWalkBillboard(const std::vector<std::vector<Texture*>>& walkT
 		lighting.g = (lighting.g + 0) / 2;
 		lighting.b = (lighting.b + 255) / 2;
 	}
+
+	ApplyFirstPersonViewFade(lighting, m_Pos);
 
 	DrawBillboardPro(g_camera, *finalTexture, Rectangle{ 0, 0, float(finalTexture->width), float(finalTexture->height) }, finalPos, Vector3{ 0, 1, 0 },
 		Vector2{ dims.x, dims.y }, Vector2{ 0, 0 }, billboardAngle, lighting);
@@ -2865,8 +2940,14 @@ void U7Object::DrawMeshId()
 		return; // Same skip as InteractiveDraw: no outline/pick on the token.
 	if (!ObjectWantsScreenSpaceOutline(this))
 		return;
+	const float fade = GetFirstPersonViewFade(m_centerPoint);
+	if (fade <= 0.02f)
+		return;
+	Color idColor = MakeMeshOutlineIdColor(m_ID);
+	idColor.a = static_cast<unsigned char>(std::clamp(
+		static_cast<int>(std::lround(255.0f * fade)), 0, 255));
 	// Match InteractiveDraw → ShapeData::Draw (shape scale, not object m_Scaling).
-	m_shapeData->DrawMeshId(m_Pos, m_Angle, MakeMeshOutlineIdColor(m_ID));
+	m_shapeData->DrawMeshId(m_Pos, m_Angle, idColor);
 }
 
 // Helper function to convert activity ID to script name
@@ -5059,6 +5140,72 @@ int U7Object::GetShapeAnimFrameCount() const
 	return count > 0 ? count : 1;
 }
 
+void U7Object::ClearMeshOneShot()
+{
+	m_meshOneShotPlaying = false;
+	m_meshOneShotFrameTimer = 0.0f;
+	m_meshPoseAnim.clear();
+	m_meshPoseFrame = 0;
+}
+
+void U7Object::ApplyDefaultAnimMode()
+{
+	// TFA isAnimated: VGA ambient FX (bubbles, etc.) cycle frames in InteractiveDraw.
+	// TFA isLightSource: lit sconces/torches/lamps (435/701/526/…) keep fire mesh
+	// idle playing. Their TFA anim bit is clear (Exult also skips Frame_animator),
+	// so Auto here only unlocks playMeshAnim — VGA SetFrame still needs isAnimated.
+	if (m_objectData && (m_objectData->m_isAnimated || m_objectData->m_isLightSource))
+	{
+		ClearMeshOneShot();
+		m_animMode = ObjectAnimMode::Auto;
+		return;
+	}
+
+	m_animMode = ObjectAnimMode::Frozen;
+	m_meshOneShotPlaying = false;
+	m_meshOneShotFrameTimer = 0.0f;
+
+	// Unlit torch (595) / spent sconce (535): rest on the last extinguish frame.
+	RaylibModel* mesh = (m_shapeData && m_shapeData->m_customMesh)
+		? m_shapeData->m_customMesh
+		: nullptr;
+	if (mesh)
+	{
+		const int n = mesh->GetAnimationFrameCount(kMeshExtinguishAnim);
+		if (n > 0)
+		{
+			m_meshPoseAnim = kMeshExtinguishAnim;
+			m_meshPoseFrame = n - 1;
+			return;
+		}
+	}
+
+	m_meshPoseAnim.clear();
+	m_meshPoseFrame = 0;
+}
+
+void U7Object::BeginMeshExtinguishOneShot()
+{
+	RaylibModel* mesh = (m_shapeData && m_shapeData->m_customMesh)
+		? m_shapeData->m_customMesh
+		: nullptr;
+	const int n = mesh ? mesh->GetAnimationFrameCount(kMeshExtinguishAnim) : 0;
+	if (n <= 0)
+	{
+		ApplyDefaultAnimMode();
+		return;
+	}
+
+	// Drive frames manually in InteractiveDraw; hold last when done.
+	m_animMode = ObjectAnimMode::Frozen;
+	m_meshPoseAnim = kMeshExtinguishAnim;
+	m_meshPoseFrame = 0;
+	m_meshOneShotFrameTimer = 0.0f;
+	m_meshOneShotPlaying = (n > 1);
+	if (!m_meshOneShotPlaying)
+		m_meshPoseFrame = n - 1;
+}
+
 void U7Object::RestoreAnimModeAfterScript()
 {
 	if (IsInUsecodeScript())
@@ -5069,10 +5216,7 @@ void U7Object::RestoreAnimModeAfterScript()
 	    || m_castingMode == CastingMode::InitCasting)
 		HideCastingFrames();
 
-	if (m_objectData && m_objectData->m_isAnimated)
-		m_animMode = ObjectAnimMode::Auto;
-	else
-		m_animMode = ObjectAnimMode::Frozen;
+	ApplyDefaultAnimMode();
 }
 
 void U7Object::BeginCasting(int shape)
@@ -5315,6 +5459,9 @@ void U7Object::SetAbsoluteFrame(int frame)
 
 float U7Object::Pick()
 {
+	if (g_objectDataTable[m_shapeData->m_shape].m_name == "rug")
+		return -1;
+
 	Ray ray = GetMouseRay(GetMousePosition(), g_camera);
 
 	RayCollision collision = GetRayCollisionBox(ray, m_boundingBox);
@@ -5331,6 +5478,9 @@ float U7Object::Pick()
 
 float U7Object::PickXYZ(Vector3& pos)
 {
+	if (g_objectDataTable[m_shapeData->m_shape].m_name == "rug")
+		return -1;
+
 	Ray ray = GetMouseRay(GetMousePosition(), g_camera);
 
 	RayCollision collision = GetRayCollisionBox(ray, m_boundingBox);
@@ -6313,10 +6463,19 @@ bool U7Object::AddObjectToInventory(int objectid)
 		if (childIt == g_objectList.end() || !childIt->second)
 			return false;
 
+		U7Object* child = childIt->second.get();
+
+		// Original U7: lit torches (701) will not go into bags/chests/backpacks.
+		// NPC inventory still accepts them so they can be held in hand.
+		if (child->m_ObjectType == 701 && IsTfaContainerShape(m_objectData))
+		{
+			AddConsoleString("Cannot put lit torch in a container.", RED);
+			return false;
+		}
+
 		m_inventory.push_back(objectid);
 
 		// Set the child's containing object ID to point back to this container
-		U7Object* child = childIt->second.get();
 		child->m_containingObjectId = m_ID;
 		child->m_isContained = true;  // Mark as contained
 		// Do NOT SetPos(0,0,0) — that registers the item into chunk (0,0) via
@@ -6524,11 +6683,11 @@ void U7Object::NPCInit(NPCData* npcData)
 	m_name = npcData->name;
 	if (std::string(m_NPCData->name) == "Avatar")
 	{
-		m_speed = 10.0f;
+		m_speed = 7.5f;
 	}
 	else
 	{
-		m_speed = 7.5f;
+		m_speed = 5.0f;
 	}
 	m_NPCID = npcData->id;
 	m_attackRange = MELEE_RANGE_TILES;

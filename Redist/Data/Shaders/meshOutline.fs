@@ -4,16 +4,16 @@
 // texture0 = scene color
 // texture1 = ID mask:
 //   a ≈ 0          → true empty (clear / sky / terrain gap)
-//   a ≈ 0.5        → flat sprite cover (do NOT outline against these)
-//   a ≈ 1, rgb≠0   → outlined custom mesh object ID
+//   a ≈ 0.5, rgb=0 → flat sprite cover (do NOT outline against these)
+//   a > 0, rgb≠0   → outlined custom mesh object ID (a carries FP distance fade)
 //
 // Edges:
 //   mesh ↔ true empty     → outer silhouette (both sides of the stroke)
 //   mesh ↔ other mesh ID  → per-object borders (fence posts, props)
 //   mesh ↔ flat           → ignored (flats already have baked borders)
 //
-// Lanterns stay clean because each object writes one solid ID footprint
-// (translucent shapes use a low meshId alpha cutoff — no glass holes).
+// Outline ink alpha follows the mesh ID alpha so distant faded props do not
+// show a hard black ring before the mesh itself is visible.
 
 in vec2 fragTexCoord;
 in vec4 fragColor;
@@ -33,19 +33,21 @@ vec4 rawAt(vec2 uv)
 
 bool isTrueEmpty(vec4 c)
 {
-	return c.a < 0.25;
+	// Clear / no ID. Faded meshes keep non-zero RGB so they are not empty.
+	return (c.r + c.g + c.b) < 0.001 && c.a < 0.25;
 }
 
 bool isFlatCover(vec4 c)
 {
-	// Flat sentinel is rgb=0, a≈0.5. Require near-black RGB so glass mesh IDs
-	// that somehow carry mid alpha are never mistaken for flats.
+	// Flat sentinel is rgb=0, a≈0.5. Require near-black RGB so faded mesh IDs
+	// (rgb≠0, mid alpha) are never mistaken for flats.
 	return c.a >= 0.25 && c.a < 0.75 && (c.r + c.g + c.b) < 0.004;
 }
 
 bool isMesh(vec4 c)
 {
-	return c.a >= 0.75 && (c.r + c.g + c.b) > 0.001;
+	// Any non-black ID with some alpha — includes FP distance-faded meshes.
+	return (c.r + c.g + c.b) > 0.001 && c.a >= 0.02;
 }
 
 ivec3 meshId(vec4 c)
@@ -73,9 +75,23 @@ bool isOutlineEdge(vec4 a, vec4 b)
 	return false;
 }
 
-float outlineEdgeDistance(vec2 uv, float radius)
+// Mesh-side alpha for an outline edge (drives ink opacity).
+float edgeMeshAlpha(vec4 a, vec4 b)
+{
+	if (isMesh(a) && isMesh(b))
+		return min(a.a, b.a);
+	if (isMesh(a))
+		return a.a;
+	if (isMesh(b))
+		return b.a;
+	return 1.0;
+}
+
+// Returns edge distance and (via out param) strongest nearby mesh fade alpha.
+float outlineEdgeDistance(vec2 uv, float radius, out float meshFade)
 {
 	vec4 center = rawAt(uv);
+	meshFade = isMesh(center) ? center.a : 0.0;
 	if (isFlatCover(center))
 		return 1e6;
 	if (!isMesh(center) && !isTrueEmpty(center))
@@ -94,7 +110,10 @@ float outlineEdgeDistance(vec2 uv, float radius)
 				continue;
 			vec4 n = rawAt(uv + vec2(dx, dy) * texel);
 			if (isOutlineEdge(center, n))
+			{
 				best = min(best, dist);
+				meshFade = max(meshFade, edgeMeshAlpha(center, n));
+			}
 		}
 	}
 	return best;
@@ -113,8 +132,10 @@ void main()
 	}
 
 	float thickness = max(outlineThickness, 0.5);
-	float d = outlineEdgeDistance(fragTexCoord, thickness + 0.5);
+	float meshFade = 1.0;
+	float d = outlineEdgeDistance(fragTexCoord, thickness + 0.5, meshFade);
 
 	float cover = 1.0 - smoothstep(thickness - 0.25, thickness + 0.25, d);
-	finalColor = mix(scene, vec4(0.0, 0.0, 0.0, 1.0), clamp(cover, 0.0, 1.0));
+	cover = clamp(cover, 0.0, 1.0) * clamp(meshFade, 0.0, 1.0);
+	finalColor = mix(scene, vec4(0.0, 0.0, 0.0, 1.0), cover);
 }

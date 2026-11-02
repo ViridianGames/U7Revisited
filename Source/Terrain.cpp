@@ -1,7 +1,7 @@
 // Ultima VII's map consists of 12x12 "superchunks", each of which is 16x16 "chunks".
 // A chunk consists of 16x16 cells. The world is 192x192 chunks (3072x3072 tiles).
 //
-// Terrain draws a camera-centered TILEWIDTH x TILEHEIGHT patch by blitting
+// Terrain draws a camera-centered patch (100 TP / 256 FP) by blitting
 // 8x8 shape tiles into a render texture. That RT is expensive to rebuild, so
 // Update() is dirty-flagged: camera tile, day/night, dungeon view, palette
 // step, and (at night or in dungeons) nearby light sources.
@@ -23,6 +23,32 @@
 #include <vector>
 
 using namespace std;
+
+int g_terrainPatchSize = kTerrainPatchThirdPerson;
+
+void GetTerrainPatchCenterTiles(int& outX, int& outZ)
+{
+	if (g_firstPersonEnabled)
+	{
+		outX = static_cast<int>(g_camera.position.x);
+		outZ = static_cast<int>(g_camera.position.z);
+	}
+	else
+	{
+		outX = static_cast<int>(g_camera.target.x);
+		outZ = static_cast<int>(g_camera.target.z);
+	}
+}
+
+bool WorldToTerrainCell(int worldX, int worldZ, int& outCellX, int& outCellY)
+{
+	const int patch = std::max(2, g_terrainPatchSize);
+	int camX = 0, camZ = 0;
+	GetTerrainPatchCenterTiles(camX, camZ);
+	outCellX = (patch / 2) + worldX - camX;
+	outCellY = (patch / 2) + worldZ - camZ;
+	return outCellX >= 0 && outCellX < patch && outCellY >= 0 && outCellY < patch;
+}
 
 namespace
 {
@@ -233,11 +259,8 @@ Color Terrain::GetAmbientLightingColor() const
 
 Color Terrain::GetLightingAtWorld(int worldX, int worldZ) const
 {
-	const int camX = static_cast<int>(g_camera.target.x);
-	const int camZ = static_cast<int>(g_camera.target.z);
-	const int cellx = (TILEWIDTH / 2) + worldX - camX;
-	const int celly = (TILEHEIGHT / 2) + worldZ - camZ;
-	if (cellx < 0 || cellx >= TILEWIDTH || celly < 0 || celly >= TILEHEIGHT)
+	int cellx = 0, celly = 0;
+	if (!WorldToTerrainCell(worldX, worldZ, cellx, celly))
 		return AmbientLightingColor();
 	return m_cellLighting[cellx][celly];
 }
@@ -555,6 +578,31 @@ void Terrain::FillCuboidFaceLighting(const U7Object* obj, Color outFaces[6]) con
 	outFaces[3] = ambient;
 }
 
+void Terrain::EnsurePatchResources(int patchSize)
+{
+	patchSize = std::clamp(patchSize, 2, kTerrainPatchMax);
+	if ((patchSize & 1) != 0)
+		++patchSize; // keep even so /2 centering is symmetric
+	if (patchSize == m_allocatedPatchSize && m_currentTerrain.id > 0 && m_cellModel.meshCount > 0)
+		return;
+
+	if (m_allocatedPatchSize > 0)
+	{
+		UnloadModel(m_cellModel);
+		m_cellModel = {};
+		UnloadRenderTexture(m_currentTerrain);
+		m_currentTerrain = {};
+	}
+
+	m_currentTerrain = LoadRenderTexture(patchSize * 8, patchSize * 8);
+	m_cellModel = LoadModelFromMesh(GenMeshPlane(static_cast<float>(patchSize), static_cast<float>(patchSize), 1, 1));
+	SetMaterialTexture(&m_cellModel.materials[0], MATERIAL_MAP_DIFFUSE, m_currentTerrain.texture);
+
+	m_allocatedPatchSize = patchSize;
+	g_terrainPatchSize = patchSize;
+	MarkDirty();
+}
+
 Terrain::Terrain()
 {
 	m_height = 3072;
@@ -565,14 +613,13 @@ Terrain::Terrain()
 	m_terrainTiles = LoadTextureFromImage(blank);
 	UnloadImage(blank);
 
-	m_currentTerrain = LoadRenderTexture(TILEWIDTH * 8, TILEHEIGHT * 8);
-	m_cellModel = LoadModelFromMesh(GenMeshPlane(TILEWIDTH, TILEHEIGHT, 1, 1));
-	SetMaterialTexture(&m_cellModel.materials[0], MATERIAL_MAP_DIFFUSE, m_currentTerrain.texture);
+	g_terrainPatchSize = kTerrainPatchThirdPerson;
+	EnsurePatchResources(kTerrainPatchThirdPerson);
 
 	// Default lighting to white so object draw before first Update is safe.
-	for (int i = 0; i < TILEWIDTH; ++i)
+	for (int i = 0; i < kTerrainPatchMax; ++i)
 	{
-		for (int j = 0; j < TILEHEIGHT; ++j)
+		for (int j = 0; j < kTerrainPatchMax; ++j)
 		{
 			m_cellLighting[i][j] = WHITE;
 		}
@@ -703,7 +750,9 @@ void Terrain::ApplyPaletteToTerrainAtlas()
 
 void Terrain::Draw()
 {
-	DrawModel(m_cellModel, { float(int(g_camera.target.x)), 0, float(int(g_camera.target.z)) }, 1, WHITE);
+	int camX = 0, camZ = 0;
+	GetTerrainPatchCenterTiles(camX, camZ);
+	DrawModel(m_cellModel, { float(camX), 0, float(camZ) }, 1, WHITE);
 }
 
 void Terrain::Shutdown()
@@ -774,8 +823,13 @@ uint64_t Terrain::ComputeLightHash() const
 
 void Terrain::Update()
 {
-	const int centerX = static_cast<int>(g_camera.target.x);
-	const int centerZ = static_cast<int>(g_camera.target.z);
+	const int desiredPatch = g_firstPersonEnabled
+		? kTerrainPatchFirstPerson
+		: kTerrainPatchThirdPerson;
+	EnsurePatchResources(desiredPatch);
+
+	int centerX = 0, centerZ = 0;
+	GetTerrainPatchCenterTiles(centerX, centerZ);
 
 	uint64_t lightHash = m_cachedLightHash;
 	if (NeedsDynamicLighting())
@@ -825,11 +879,12 @@ void Terrain::Update()
 void Terrain::CalculateLighting()
 {
 	const Color ambient = AmbientLightingColor();
+	const int patch = std::max(2, g_terrainPatchSize);
 
 	// Fill the whole patch with ambient (day, night, or dungeon-as-night).
-	for (int i = 0; i < TILEWIDTH; ++i)
+	for (int i = 0; i < patch; ++i)
 	{
-		for (int j = 0; j < TILEHEIGHT; ++j)
+		for (int j = 0; j < patch; ++j)
 		{
 			m_cellLighting[i][j] = ambient;
 		}
@@ -849,12 +904,12 @@ void Terrain::CalculateLighting()
 	constexpr Color peakLight = { 208, 208, 192, 255 };
 	constexpr Color fireBoltPeakLight = { 255, 200, 64, 255 };
 
-	const int camX = static_cast<int>(g_camera.target.x);
-	const int camZ = static_cast<int>(g_camera.target.z);
-	const int patchMinX = camX - (TILEWIDTH / 2);
-	const int patchMinZ = camZ - (TILEHEIGHT / 2);
-	const int patchMaxX = patchMinX + TILEWIDTH - 1;
-	const int patchMaxZ = patchMinZ + TILEHEIGHT - 1;
+	int camX = 0, camZ = 0;
+	GetTerrainPatchCenterTiles(camX, camZ);
+	const int patchMinX = camX - (patch / 2);
+	const int patchMinZ = camZ - (patch / 2);
+	const int patchMaxX = patchMinX + patch - 1;
+	const int patchMaxZ = patchMinZ + patch - 1;
 
 	// Occlusion grid covers the lit patch plus one soft radius so LOS near the
 	// edge still sees walls just outside the camera window.
@@ -928,9 +983,9 @@ void Terrain::CalculateLighting()
 				if (distSq > rangeSq)
 					continue;
 
-				const int cellx = (TILEWIDTH / 2) + wx - camX;
-				const int celly = (TILEHEIGHT / 2) + wz - camZ;
-				if (cellx < 0 || cellx >= TILEWIDTH || celly < 0 || celly >= TILEHEIGHT)
+				const int cellx = (patch / 2) + wx - camX;
+				const int celly = (patch / 2) + wz - camZ;
+				if (cellx < 0 || cellx >= patch || celly < 0 || celly >= patch)
 					continue;
 
 				if (!HasLightLOS(lightX, lightZ, wx, wz, blocks, occMinX, occMinZ, occW, occH))
@@ -1026,23 +1081,24 @@ void Terrain::UpdateTerrainTiles()
 	unsigned short prevShape = 0;
 	unsigned short prevFrame = 0;
 
-	const int camX = static_cast<int>(g_camera.target.x);
-	const int camZ = static_cast<int>(g_camera.target.z);
+	const int patch = std::max(2, g_terrainPatchSize);
+	int camX = 0, camZ = 0;
+	GetTerrainPatchCenterTiles(camX, camZ);
 
 	BeginTextureMode(m_currentTerrain);
 	ClearBackground(BLANK);
 
-	for (int i = camX - (TILEWIDTH / 2); i <= camX + (TILEWIDTH / 2 - 1); ++i)
+	for (int i = camX - (patch / 2); i <= camX + (patch / 2 - 1); ++i)
 	{
-		for (int j = camZ - (TILEHEIGHT / 2); j <= camZ + (TILEHEIGHT / 2 - 1); ++j)
+		for (int j = camZ - (patch / 2); j <= camZ + (patch / 2 - 1); ++j)
 		{
 			if (i < 0 || j < 0 || i >= 3072 || j >= 3072)
 			{
 				continue;
 			}
 
-			const int cellx = (TILEWIDTH / 2) + i - camX;
-			const int celly = TILEHEIGHT - ((TILEHEIGHT / 2) + j - camZ);
+			const int cellx = (patch / 2) + i - camX;
+			const int celly = patch - ((patch / 2) + j - camZ);
 
 			// Exult dungeon blackness: exterior tiles go black under a mountain.
 			if (g_dungeonViewActive && g_pathfindingSystem
@@ -1067,8 +1123,8 @@ void Terrain::UpdateTerrainTiles()
 			}
 
 			// Lighting grid uses world-relative cell coords (not flipped Y).
-			const int lightY = (TILEHEIGHT / 2) + j - camZ;
-			const Color light = (cellx >= 0 && cellx < TILEWIDTH && lightY >= 0 && lightY < TILEHEIGHT)
+			const int lightY = (patch / 2) + j - camZ;
+			const Color light = (cellx >= 0 && cellx < patch && lightY >= 0 && lightY < patch)
 				? m_cellLighting[cellx][lightY]
 				: AmbientLightingColor();
 

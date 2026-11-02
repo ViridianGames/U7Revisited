@@ -1122,18 +1122,7 @@ void CameraInput()
 				}
 			}
 
-			// Hide/show avatar mesh when toggling first-person
-			if (g_Player)
-			{
-				U7Object* avatar = g_Player->GetAvatarObject();
-				if (avatar)
-				{
-					if (IsCameraLockedToAvatar())
-						avatar->m_Visible = !g_firstPersonEnabled;
-					else
-						avatar->m_Visible = true;
-				}
-			}
+			// Locked FP skips the followed unit's sprite in DrawWalkBillboard (shadow stays).
 
 			AddConsoleString(std::string("First-person view ") + (g_firstPersonEnabled ? "enabled" : "disabled"), WHITE);
 
@@ -1943,7 +1932,29 @@ static bool RayHitPlaneY(const Ray& ray, float planeY, Vector3& outHit)
 
 void GetCameraVisibleChunkRange(int& outMinCX, int& outMaxCX, int& outMinCZ, int& outMaxCZ)
 {
-	// Unproject the four screen corners onto horizontal planes through the world.
+	auto toChunk = [](float world) -> int {
+		return static_cast<int>(std::floor(world / 16.0f));
+	};
+
+	// First-person: eye-centered box at g_firstPersonDrawRange (not the 10-unit
+	// look-at, and not the old ~48-tile FP clamp). Per-object forward/distance
+	// cull in UpdateSortedVisibleObjects trims what is actually drawn.
+	if (g_firstPersonEnabled)
+	{
+		const float padTiles = 12.0f;
+		const float range = std::max(16.0f, g_firstPersonDrawRange) + padTiles;
+		const float eyeX = g_camera.position.x;
+		const float eyeZ = g_camera.position.z;
+		outMinCX = std::max(0, toChunk(eyeX - range));
+		outMaxCX = std::min(191, toChunk(eyeX + range));
+		outMinCZ = std::max(0, toChunk(eyeZ - range));
+		outMaxCZ = std::min(191, toChunk(eyeZ + range));
+		if (outMinCX > outMaxCX) std::swap(outMinCX, outMaxCX);
+		if (outMinCZ > outMaxCZ) std::swap(outMinCZ, outMaxCZ);
+		return;
+	}
+
+	// Third-person: unproject the four screen corners onto horizontal planes.
 	// Using ground (y=0) plus a tall-object plane expands the range so rooftops and
 	// multi-story walls near the frustum edge still pull in their home chunks.
 	// This tracks zoom, aspect ratio, and camera rotation — unlike a fixed ±N radius
@@ -1994,19 +2005,6 @@ void GetCameraVisibleChunkRange(int& outMinCX, int& outMaxCX, int& outMinCZ, int
 	{
 		// Fallback: distance-based radius (ortho fovy ≈ world height in tiles).
 		const float halfExtent = std::max(g_cameraDistance, 18.0f) * 1.25f + padTiles;
-		//// Fallback: distance-based radius. For orthographic (third-person) use cameraDistance-derived extent,
-		//// but for perspective/first-person cameras the corner rays often miss horizontal planes (looking near-parallel),
-		//// which would otherwise expand the range to nearly the whole world and kill frame rate. Use a modest fixed
-		//// extent for perspective/first-person to keep visible object counts reasonable.
-		//float halfExtent = 0.0f;
-		//if (g_camera.projection == CAMERA_PERSPECTIVE || g_firstPersonEnabled)
-		//{
-		//	halfExtent = 24.0f + padTiles; // ~24 tiles visible around camera target in FP
-		//}
-		//else
-		//{
-		//	halfExtent = std::max(g_cameraDistance, 18.0f) * 1.25f + padTiles;
-		//}
 		minX = g_camera.target.x - halfExtent;
 		maxX = g_camera.target.x + halfExtent;
 		minZ = g_camera.target.z - halfExtent;
@@ -2019,23 +2017,6 @@ void GetCameraVisibleChunkRange(int& outMinCX, int& outMaxCX, int& outMinCZ, int
 		minZ -= padTiles;
 		maxZ += padTiles;
 	}
-
-	{
-		float halfExtentCurrent = std::max((maxX - minX) * 0.5f, (maxZ - minZ) * 0.5f);
-		const float kMaxHalfExtentFP = 48.0f + padTiles; // tunable limit for FP/perspective
-		if ((g_camera.projection == CAMERA_PERSPECTIVE || g_firstPersonEnabled) && halfExtentCurrent > kMaxHalfExtentFP)
-		{
-			float he = kMaxHalfExtentFP;
-			minX = g_camera.target.x - he;
-			maxX = g_camera.target.x + he;
-			minZ = g_camera.target.z - he;
-			maxZ = g_camera.target.z + he;
-		}
-	}
-
-	auto toChunk = [](float world) -> int {
-		return static_cast<int>(std::floor(world / 16.0f));
-	};
 
 	outMinCX = std::max(0, toChunk(minX));
 	outMaxCX = std::min(191, toChunk(maxX));
@@ -2054,6 +2035,18 @@ void UpdateSortedVisibleObjects()
 
 	g_sortedVisibleObjects.clear();
 
+	const bool fpCull = g_firstPersonEnabled;
+	const float fpRange = std::max(16.0f, g_firstPersonDrawRange);
+	const float fpRangePad = 8.0f;   // multi-tile / billboard reach past range
+	const float fpRearPad = 12.0f;  // keep nearby props slightly behind the camera
+	const float fpMaxDist = fpRange + fpRangePad;
+	const float fpMaxDistSqr = fpMaxDist * fpMaxDist;
+	Vector3 flatForward = { 0.0f, 0.0f, 1.0f };
+	if (fpCull)
+	{
+		flatForward = Vector3{ cosf(g_firstPersonYaw), 0.0f, sinf(g_firstPersonYaw) };
+	}
+
 	for (int x = minCX; x <= maxCX; x++)
 	{
 		for (int y = minCZ; y <= maxCZ; y++)
@@ -2064,6 +2057,24 @@ void UpdateSortedVisibleObjects()
 				if (!object || object->GetIsDead() || object->m_isContained || !object->m_Visible)
 				{
 					continue;
+				}
+
+				if (fpCull)
+				{
+					const float dx = object->m_centerPoint.x - g_camera.position.x;
+					const float dz = object->m_centerPoint.z - g_camera.position.z;
+					const float distSqr = dx * dx + dz * dz;
+					if (distSqr > fpMaxDistSqr)
+						continue;
+
+					const float dist = sqrtf(distSqr);
+					if (dist > fpRearPad)
+					{
+						const float along = dx * flatForward.x + dz * flatForward.z;
+						// Far behind the look direction: skip (keep a small rear pad).
+						if (along < -fpRearPad)
+							continue;
+					}
 				}
 
 				object->m_distanceFromCamera = Vector3DistanceSqr(object->m_centerPoint, g_camera.position);
@@ -2578,8 +2589,16 @@ void DrawMeshOutlineIdPass(bool drawObjects)
 		U7Object* object = outlined[static_cast<size_t>(i)];
 		const int root = findRoot(i);
 		const int outlineId = outlined[static_cast<size_t>(root)]->m_ID;
+		Color idColor = MakeMeshOutlineIdColor(outlineId);
+		// FP distance fade: meshId.fs writes fragColor.a into the ID buffer so
+		// meshOutline.fs can soft-ink the ring with the mesh.
+		const float fade = GetFirstPersonViewFade(object->m_centerPoint);
+		if (fade <= 0.02f)
+			continue;
+		idColor.a = static_cast<unsigned char>(std::clamp(
+			static_cast<int>(std::lround(255.0f * fade)), 0, 255));
 		object->m_shapeData->DrawMeshId(
-			object->m_Pos, object->m_Angle, MakeMeshOutlineIdColor(outlineId));
+			object->m_Pos, object->m_Angle, idColor);
 	}
 
 	// Mark non-rug flat coverage with mid-alpha sentinel (not true empty). Presence
@@ -5325,14 +5344,61 @@ std::array<int, 1024> g_isObjectMoveable =
 bool g_firstPersonEnabled = false;
 float g_firstPersonHeight = DEFAULT_FIRSTPERSON_HEIGHT;   // eye height above avatar center (tweak)
 float g_firstPersonFOV = 75.0f;
+float g_firstPersonDrawRange = 128.0f; // tiles; FP object/terrain view radius
+float g_firstPersonFadeStartFraction = 0.75f; // solid until 75% of range, then alpha → 0
 float g_firstPersonYaw = 0.0f;
 float g_firstPersonPitch = DEFAULT_FIRSTPERSON_PITCH;
 float g_firstPersonMoveSpeed = 5.0f; // units per second
-float g_firstPersonMouseSensitivity = 0.003f; // radians per pixel
+float g_firstPersonMouseSensitivity = 0.0018f; // radians per pixel (~60% of old 0.003)
 bool g_firstPersonMouseLookActive = false;
 bool g_firstPersonMouseLookMode = true; // true = cursor-locked mouse look, false = free-mouse look
 bool g_firstPersonPreserveCenter = false;
 Vector3 g_firstPersonFocus = { 0.0f, 0.0f, 0.0f };
+
+float GetFirstPersonViewFade(Vector3 worldPos)
+{
+	if (!g_firstPersonEnabled)
+		return 1.0f;
+
+	const float range = std::max(16.0f, g_firstPersonDrawRange);
+	const float startFrac = std::clamp(g_firstPersonFadeStartFraction, 0.0f, 0.99f);
+	const float fadeStart = range * startFrac;
+	const float dx = worldPos.x - g_camera.position.x;
+	const float dz = worldPos.z - g_camera.position.z;
+	const float dist = sqrtf(dx * dx + dz * dz);
+	if (dist <= fadeStart)
+		return 1.0f;
+	if (dist >= range)
+		return 0.0f;
+	return 1.0f - (dist - fadeStart) / (range - fadeStart);
+}
+
+void ApplyFirstPersonViewFade(Color& color, Vector3 worldPos)
+{
+	const float fade = GetFirstPersonViewFade(worldPos);
+	if (fade >= 0.999f)
+		return;
+
+	// Lerp RGB toward ambient so cutout billboards/meshes still soft-hide when
+	// alpha blending is unreliable; also scale alpha for true translucency.
+	Color fog = Color{ 255, 255, 255, 255 };
+	if (g_Terrain)
+		fog = g_Terrain->GetAmbientLightingColor();
+	else if (!g_isDay)
+		fog = g_dayNightColor;
+
+	auto lerpChan = [fade](unsigned char from, unsigned char to) -> unsigned char {
+		return static_cast<unsigned char>(std::clamp(
+			static_cast<int>(std::lround(static_cast<float>(to) +
+				(static_cast<float>(from) - static_cast<float>(to)) * fade)),
+			0, 255));
+	};
+	color.r = lerpChan(color.r, fog.r);
+	color.g = lerpChan(color.g, fog.g);
+	color.b = lerpChan(color.b, fog.b);
+	color.a = static_cast<unsigned char>(std::clamp(
+		static_cast<int>(std::lround(static_cast<float>(color.a) * fade)), 0, 255));
+}
 
 void SetFirstPersonMouseLook(bool enabled)
 {

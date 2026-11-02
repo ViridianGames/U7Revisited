@@ -1188,16 +1188,72 @@ void DrawCombatSelectionCircles()
 
 	SetMaterialTexture(&flatModel->GetModel().materials[0], MATERIAL_MAP_DIFFUSE, *circleTex);
 
+	constexpr Color kPartyRing = Color{ 40, 220, 80, 230 };
+	constexpr Color kEnemyRing = Color{ 230, 50, 50, 230 };
+
 	auto drawGroundRing = [&](U7Object* obj, Color tint, float scale) {
 		if (!obj || obj->GetIsDead() || obj->IsDeathStatus())
 			return;
-		// Same flat-under-feet offset convention as drop shadows.
-		Vector3 pos = Vector3{ obj->m_Pos.x - 0.5f, 0.03f, obj->m_Pos.z + 1.0f };
+		const Vector3 pos = FlatUnderFeetOrigin(obj->m_Pos, scale, 0.03f);
 		rlDisableDepthMask();
 		DrawModel(flatModel->GetModel(), pos, scale, tint);
 		rlEnableDepthMask();
 	};
 
+	auto drawTargetRing = [&](U7Object* unit) {
+		if (!unit || unit->m_target <= 0)
+			return;
+		auto tgtIt = g_objectList.find(unit->m_target);
+		if (tgtIt != g_objectList.end() && tgtIt->second)
+			drawGroundRing(tgtIt->second.get(), kEnemyRing, 1.45f);
+	};
+
+	// Turn-based: ring under whoever's turn it is (green party / red enemy).
+	// Inter-turn pause has no active unit — no ring until the next combatant.
+	if (g_mainState->m_combatMode
+		&& g_mainState->m_combatMode->GetStyle() == CombatStyle::TurnBased)
+	{
+		auto* tb = dynamic_cast<TurnBasedCombatMode*>(g_mainState->m_combatMode.get());
+		if (tb)
+		{
+			const int activeId = tb->GetActiveUnitId();
+			int drawnEnemyRingId = -1;
+			if (activeId >= 0)
+			{
+				auto it = g_objectList.find(activeId);
+				if (it != g_objectList.end() && it->second)
+				{
+					U7Object* unit = it->second.get();
+					const bool party = g_Player && g_Player->NPCIDInParty(unit->m_NPCID);
+					if (party)
+					{
+						drawGroundRing(unit, kPartyRing, 1.35f);
+						drawTargetRing(unit);
+						if (unit->m_target > 0)
+							drawnEnemyRingId = unit->m_target;
+					}
+					else
+					{
+						drawGroundRing(unit, kEnemyRing, 1.45f);
+						drawnEnemyRingId = activeId;
+					}
+				}
+			}
+
+			// Hover preview: red ring under an enemy a click would attack
+			// (same gate as the Combat cursor in GetOrdersCursor).
+			if (tb->GetOrdersCursor() == CombatMode::OrdersCursorKind::Combat
+				&& g_objectUnderMousePointer
+				&& g_mainState->IsCombatEnemyObject(g_objectUnderMousePointer)
+				&& static_cast<int>(g_objectUnderMousePointer->m_ID) != drawnEnemyRingId)
+			{
+				drawGroundRing(g_objectUnderMousePointer, kEnemyRing, 1.45f);
+			}
+			return;
+		}
+	}
+
+	// RTwP: selected party member receiving orders + their attack target.
 	const int selectedId = g_mainState->m_combatSelectedPartyMemberObjectId;
 	if (selectedId >= 0)
 	{
@@ -1205,14 +1261,8 @@ void DrawCombatSelectionCircles()
 		if (selIt != g_objectList.end() && selIt->second)
 		{
 			U7Object* member = selIt->second.get();
-			drawGroundRing(member, Color{ 40, 220, 80, 230 }, 1.35f);
-
-			if (member->m_target > 0)
-			{
-				auto tgtIt = g_objectList.find(member->m_target);
-				if (tgtIt != g_objectList.end() && tgtIt->second)
-					drawGroundRing(tgtIt->second.get(), Color{ 230, 50, 50, 230 }, 1.45f);
-			}
+			drawGroundRing(member, kPartyRing, 1.35f);
+			drawTargetRing(member);
 		}
 	}
 }

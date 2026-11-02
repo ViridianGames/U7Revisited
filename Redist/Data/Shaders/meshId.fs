@@ -2,9 +2,10 @@
 
 // Flat object-ID output for screen-space mesh outlines.
 // Texture alpha only controls discard (silhouette holes).
-// Output alpha is always 1 — glTF glass materials often carry baseColor
-// alpha ~0.3; if that leaked into the ID buffer, the outline shader treated
-// glass as "flat cover" and only opaque caps got borders.
+// Output alpha comes from fragColor (object tint) so first-person
+// distance fade can soft-hide outlines with the mesh. Do not inherit
+// material/texture alpha — glTF glass baseColor ~0.3 would look like
+// "flat cover" in the outline pass.
 
 in vec2 fragTexCoord;
 in vec4 fragColor;
@@ -21,7 +22,8 @@ void main()
 	float cutoff = alphaCutoff > 0.0 ? alphaCutoff : 0.5;
 	if (texel.a < cutoff)
 		discard;
-	// ID from tint × material RGB only; never inherit material/texture alpha.
+	// ID from tint × material RGB; fade lives in fragColor.a.
 	vec3 id = fragColor.rgb * colDiffuse.rgb;
-	finalColor = vec4(id, 1.0);
+	float idAlpha = clamp(fragColor.a * colDiffuse.a, 0.0, 1.0);
+	finalColor = vec4(id, idAlpha);
 }

@@ -253,23 +253,27 @@ void GumpManager::Update()
 			}
 			else if (member->GetRemainingCarryCapacity() > object->GetWeight())
 			{
-				const std::string who = (npcId == 0)
-					? "Avatar"
-					: (member->m_name.empty() ? "party member" : member->m_name);
-				AddConsoleString(
-					"Added " + GetObjectDisplayName(draggedObject ? draggedObject : object) + " to " + who + "'s inventory.",
-					WHITE);
-
-				AddObjectToContainer(m_draggedObjectId, backpackId);
-				if (npcId == 0 && draggedObject && draggedObject->m_shapeData
-					&& draggedObject->m_shapeData->GetShape() == 641 && draggedObject->m_Quality == 253)
+				U7Object* backpack = GetObjectFromID(backpackId);
+				if (backpack && backpack->AddObjectToInventory(m_draggedObjectId))
 				{
-					g_ScriptingSystem->SetFlag(60, 1);
+					const std::string who = (npcId == 0)
+						? "Avatar"
+						: (member->m_name.empty() ? "party member" : member->m_name);
+					AddConsoleString(
+						"Added " + GetObjectDisplayName(draggedObject ? draggedObject : object) + " to " + who + "'s inventory.",
+						WHITE);
+
+					if (npcId == 0 && draggedObject && draggedObject->m_shapeData
+						&& draggedObject->m_shapeData->GetShape() == 641 && draggedObject->m_Quality == 253)
+					{
+						g_ScriptingSystem->SetFlag(60, 1);
+					}
+					g_SoundSystem->PlaySound(BuildU7SfxPath(74));
+					g_gumpManager->m_draggingObject = false;
+					g_gumpManager->m_draggedObjectId = -1;
+					g_gumpManager->m_sourceGump = nullptr;
 				}
-				g_SoundSystem->PlaySound(BuildU7SfxPath(74));
-				g_gumpManager->m_draggingObject = false;
-				g_gumpManager->m_draggedObjectId = -1;
-				g_gumpManager->m_sourceGump = nullptr;
+				// Lit torch etc. rejected: leave dragging so return-to-source restores the hand.
 			}
 			else
 			{
@@ -341,35 +345,36 @@ void GumpManager::Update()
 
 					if (canCarry)
 					{
+						Vector2 pendingInvPos = { 0, 0 };
 						if (CheckCollisionPointRec(mousePos, Rectangle{ gump->m_gui.m_Pos.x + (gump->m_containerData.m_boxOffset.x), gump->m_gui.m_Pos.y + (gump->m_containerData.m_boxOffset.y),
 	gump->m_containerData.m_boxSize.x, gump->m_containerData.m_boxSize.y }))
 						{
 							// Center item on cursor by offsetting by half the item's size
 							float itemWidth = object->m_shapeData->GetDefaultTextureImage().width;
 							float itemHeight = object->m_shapeData->GetDefaultTextureImage().height;
-							object->m_InventoryPos = {
+							pendingInvPos = {
 								mousePos.x - (gump->m_gui.m_Pos.x + (gump->m_containerData.m_boxOffset.x)) - (itemWidth / 2.0f),
 								mousePos.y - (gump->m_gui.m_Pos.y + (gump->m_containerData.m_boxOffset.y)) - (itemHeight / 2.0f)
 							};
 						}
-						else // In the container but not in the box area
-						{
-							object->m_InventoryPos = { 0, 0 };
-						}
 
-						// Add to new container (item was already removed from source when drag started)
-						gump->m_containerObject->AddObjectToInventory(object->m_ID);
-						if (object->m_shapeData->GetShape() == 641 && object->m_Quality == 253)
+						// Add to new container (item was already removed from source when drag started).
+						// Lit torches and other rejects leave dragging active → return-to-source.
+						if (gump->m_containerObject->AddObjectToInventory(object->m_ID))
 						{
-							g_ScriptingSystem->SetFlag(60, 1);
-						}
+							object->m_InventoryPos = pendingInvPos;
+							if (object->m_shapeData->GetShape() == 641 && object->m_Quality == 253)
+							{
+								g_ScriptingSystem->SetFlag(60, 1);
+							}
 
-						g_SoundSystem->PlaySound(BuildU7SfxPath(74));
-						g_gumpManager->m_draggingObject = false;
-						g_gumpManager->m_draggedObjectId = -1;
-						g_gumpManager->m_sourceGump = nullptr;
+							g_SoundSystem->PlaySound(BuildU7SfxPath(74));
+							g_gumpManager->m_draggingObject = false;
+							g_gumpManager->m_draggedObjectId = -1;
+							g_gumpManager->m_sourceGump = nullptr;
+						}
 					}
-					// If can't carry, leave m_draggingObject true so it falls through to return-to-source logic
+					// If can't carry / rejected, leave m_draggingObject true so it falls through to return-to-source logic
 				}
 			}
 		}
@@ -393,8 +398,11 @@ void GumpManager::Update()
 					auto sourceNpcIt = g_NPCData.find(sourcePaperdoll->GetNpcId());
 					if (sourceNpcIt != g_NPCData.end() && m_sourceSlotIndex >= 0)
 					{
-						int shape = object->m_shapeData->GetShape();
-						std::vector<EquipmentSlot> fillSlots = GetEquipmentSlotsFilled(shape);
+						// Always restore the exact slot the drag started from (same hand).
+						// Multi-slot weapons (bows) still re-fill every slot they occupy.
+						const int shape = object->m_ObjectType;
+						const std::vector<EquipmentSlot> fillSlots = GetEquipmentSlotsFilled(shape);
+						const auto sourceSlot = static_cast<EquipmentSlot>(m_sourceSlotIndex);
 						if (!fillSlots.empty())
 						{
 							for (EquipmentSlot fillSlot : fillSlots)
@@ -402,8 +410,7 @@ void GumpManager::Update()
 						}
 						else
 						{
-							sourceNpcIt->second->SetEquippedItem(
-								static_cast<EquipmentSlot>(m_sourceSlotIndex), object->m_ID);
+							sourceNpcIt->second->SetEquippedItem(sourceSlot, object->m_ID);
 						}
 						g_SoundSystem->PlaySound(BuildU7SfxPath(76));
 						if (g_mainState) g_mainState->ShowErrorCursor();
@@ -494,14 +501,19 @@ void GumpManager::Draw()
 	if (m_draggingObject && m_draggedObjectId != -1)
 	{
 		U7Object* object = GetObjectFromID(m_draggedObjectId);
-		Vector2 mousePos = GetMousePosition();
-		mousePos.x = int(mousePos.x /= g_DrawScale);
-		mousePos.y = int(mousePos.y /= g_DrawScale);
+		if (object && object->m_shapeData)
+		{
+			Vector2 mousePos = GetMousePosition();
+			mousePos.x = int(mousePos.x /= g_DrawScale);
+			mousePos.y = int(mousePos.y /= g_DrawScale);
 
-		//mousePos = Vector2Add(mousePos, m_draggedObjectOffset);
-		mousePos = Vector2Subtract(mousePos, {float(object->m_shapeData->m_texture->m_Image.width) * .75f, float(object->m_shapeData->m_texture->m_Image.height) * .75f });
+			ShapeData* iconSd = object->m_shapeData;
+			const float iw = iconSd->m_texture ? float(iconSd->m_texture->m_Image.width) : 16.0f;
+			const float ih = iconSd->m_texture ? float(iconSd->m_texture->m_Image.height) : 16.0f;
+			mousePos = Vector2Subtract(mousePos, { iw * .75f, ih * .75f });
 
-		object->m_shapeData->DrawInventoryIcon(int(mousePos.x), int(mousePos.y));
+			iconSd->DrawInventoryIcon(int(mousePos.x), int(mousePos.y));
+		}
 	}
 }
 

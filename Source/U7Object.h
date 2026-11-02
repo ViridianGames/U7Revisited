@@ -40,7 +40,7 @@ enum class EquipmentSlot
 };
 
 // Shape-frame / skeletal playback for non-NPC props.
-// Auto: TFA ambient loop (bubbles, etc.).
+// Auto: TFA ambient loop (bubbles) or lit light-source mesh idle (sconce/torch fire).
 // Scripted: frames only from usecode scripts / SetFrame (spins, craft tools in use).
 // Frozen: hold current frame / rest pose (idle loom, post-spin Triples wheel).
 enum class ObjectAnimMode : uint8_t
@@ -428,6 +428,13 @@ public:
 
 	void SetAnimMode(ObjectAnimMode mode) { m_animMode = mode; }
 	ObjectAnimMode GetAnimMode() const { return m_animMode; }
+	// Auto for TFA isAnimated ambient FX, or TFA light sources (fire mesh idle).
+	// Non-light meshes with Extinguish-armatureAction rest on that clip's last frame.
+	void ApplyDefaultAnimMode();
+	// Play Extinguish-armatureAction once from frame 0, then hold the last frame
+	// (torch 595 / spent sconce 535 after lit→unlit morph).
+	void BeginMeshExtinguishOneShot();
+	void ClearMeshOneShot();
 	// Valid shape-frame count for wrap/clamp (skips empty high frames when possible).
 	int GetShapeAnimFrameCount() const;
 	// After usecode scripts that touch frames finish: Auto if TFA-animated, else Frozen.
@@ -700,6 +707,11 @@ public:
 	// Phase offset so TFA-animated props (swamp bubbles, etc.) do not all sync to frame 0.
 	int m_animFrameOffset = 0;
 	ObjectAnimMode m_animMode = ObjectAnimMode::Frozen;
+	// Non-looping skeletal clip (e.g. Extinguish-armatureAction). Empty = use idle.
+	std::string m_meshPoseAnim;
+	int m_meshPoseFrame = 0;
+	bool m_meshOneShotPlaying = false;
+	float m_meshOneShotFrameTimer = 0.0f;
 	int m_Quality;
 
 	bool m_isFrameOverridden = false;

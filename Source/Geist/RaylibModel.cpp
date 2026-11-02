@@ -280,3 +280,21 @@ bool RaylibModel::SetAnimationFrame(const std::string& animName, int frame)
 	UpdateModelAnimation(m_Model, m_Anims[i], frame);
 	return true;
 }
+
+bool RaylibModel::HasAnimation(const std::string& animName) const
+{
+	return GetAnimationFrameCount(animName) > 0;
+}
+
+int RaylibModel::GetAnimationFrameCount(const std::string& animName) const
+{
+	if (!m_CanApplySkeletalAnim || !m_Anims || m_AnimCount <= 0)
+		return 0;
+
+	for (int i = 0; i < m_AnimCount; ++i)
+	{
+		if (animName == m_Anims[i].name)
+			return m_Anims[i].frameCount;
+	}
+	return 0;
+}

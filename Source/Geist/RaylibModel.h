@@ -31,6 +31,9 @@ public:
 	/// speedMul scales playback (1 = 24 fps). <= 0 freezes on frame 0.
 	void UpdateAnim(const std::string& animName, float speedMul = 1.0f);
 	bool SetAnimationFrame(const std::string& animName, int frame);
+	bool HasAnimation(const std::string& animName) const;
+	/// Frame count for a named clip, or 0 if missing / unskinned.
+	int GetAnimationFrameCount(const std::string& animName) const;
 
 private:
 	// True if every mesh has boneIds/boneWeights and model has a skeleton.

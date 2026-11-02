@@ -925,6 +925,8 @@ extern bool g_hasCameraChanged;
 extern bool g_firstPersonEnabled;    // Toggleable first-person view
 extern float g_firstPersonHeight;    // Eye height above avatar center
 extern float g_firstPersonFOV;       // FOV when in first-person
+extern float g_firstPersonDrawRange; // Max XZ draw distance (tiles) in first-person
+extern float g_firstPersonFadeStartFraction; // 0..1; solid until this fraction of draw range
 extern float g_firstPersonYaw;       // Yaw (radians) for first-person look
 extern float g_firstPersonPitch;     // Pitch (radians) for first-person look
 extern float g_firstPersonMoveSpeed; // Movement speed while in first-person
@@ -932,6 +934,11 @@ extern float g_firstPersonMouseSensitivity; // radians per pixel for mouselook
 extern bool g_firstPersonMouseLookActive;   // actual cursor lock state for FP mouselook
 extern bool g_firstPersonMouseLookMode;     // true = mouse-look mode, false = free-mouse mode
 void SetFirstPersonMouseLook(bool enabled);
+
+/// FP distance fade: 1 = fully solid, 0 = invisible. Always 1 in third-person.
+float GetFirstPersonViewFade(Vector3 worldPos);
+/// Multiply color.a by the FP view fade (no-op in third-person).
+void ApplyFirstPersonViewFade(Color& color, Vector3 worldPos);
 //extern bool g_firstPersonPreserveCenter;
 //extern Vector3 g_firstPersonFocus; // world coords of the center-of-screen to preserve when entering 1st person
 
@@ -961,6 +968,14 @@ const float MAX_WALKABLE_SURFACE_HEIGHT = 5.0f;
 
 // Position an attacker should move toward to stand at melee range from a target.
 Vector3 GetStandoffPosition(const Vector3& attackerPos, const Vector3& targetPos, float meleeRange = MELEE_RANGE_TILES);
+
+// flat.obj origin is texture bottom-left: with uniform scale s it covers
+// x in [origin.x, origin.x+s] and z in [origin.z-s, origin.z]. Return an origin
+// so the quad is centered on feetPos.xz (drop shadows, combat selection rings).
+inline Vector3 FlatUnderFeetOrigin(const Vector3& feetPos, float scale, float y)
+{
+	return Vector3{ feetPos.x - scale * 0.5f, y, feetPos.z + scale * 0.5f };
+}
 
 // Call this whenever ANY object changes position or state
 // radius covers multi-tile footprints (metal walls are 4 wide).
