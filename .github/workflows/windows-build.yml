@@ -46,28 +46,51 @@ jobs:
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force -Path Redist | Out-Null
-          $dest = "Redist/U7Revisited.exe"
+          $dest = Join-Path $PWD "Redist/U7Revisited.exe"
+
+          Write-Host "--- .exe files under build/ and Redist/ ---"
+          Get-ChildItem -Path build,Redist -Recurse -Filter "*.exe" -ErrorAction SilentlyContinue |
+            ForEach-Object { Write-Host $_.FullName }
+
           $candidates = @(
-            "Redist/U7Revisited.exe",
-            "build/Release/U7Revisited.exe",
-            "build/U7Revisited/Release/U7Revisited.exe",
-            "build/RelWithDebInfo/U7Revisited.exe"
+            (Join-Path $PWD "Redist/U7Revisited.exe"),
+            (Join-Path $PWD "Redist/Release/U7Revisited.exe"),
+            (Join-Path $PWD "Redist/RelWithDebInfo/U7Revisited.exe"),
+            (Join-Path $PWD "build/Release/U7Revisited.exe"),
+            (Join-Path $PWD "build/U7Revisited/Release/U7Revisited.exe"),
+            (Join-Path $PWD "build/RelWithDebInfo/U7Revisited.exe")
           )
-          $src = $candidates | Where-Object { Test-Path $_ } | Select-Object -First 1
-          if (-not $src) {
-            Write-Host "Searching build tree for U7Revisited.exe..."
-            $found = Get-ChildItem build -Recurse -Filter "U7Revisited.exe" -ErrorAction SilentlyContinue |
-              Select-Object -First 5 FullName
-            $found | ForEach-Object { Write-Host $_.FullName }
-            if ($found) { $src = $found[0].FullName }
+          $src = $null
+          foreach ($c in $candidates) {
+            if (Test-Path -LiteralPath $c) { $src = $c; break }
           }
           if (-not $src) {
-            Write-Error "Could not find U7Revisited.exe after build"
+            $hit = Get-ChildItem -Path build,Redist -Recurse -Filter "U7Revisited.exe" -ErrorAction SilentlyContinue |
+              Select-Object -First 1
+            if ($hit) { $src = $hit.FullName }
+          }
+          if (-not $src) {
+            # Last resort: any freshly built game exe (exclude Ghost/tests)
+            $hit = Get-ChildItem -Path build -Recurse -Filter "*.exe" -ErrorAction SilentlyContinue |
+              Where-Object { $_.Name -match 'U7|Ultima' -and $_.Name -notmatch 'Ghost|Test' } |
+              Sort-Object LastWriteTime -Descending |
+              Select-Object -First 1
+            if ($hit) {
+              Write-Host "Fallback match: $($hit.FullName)"
+              $src = $hit.FullName
+            }
+          }
+          if (-not $src) {
+            Write-Error "Could not find U7Revisited.exe after successful build"
             exit 1
           }
-          Write-Host "Copying $src -> $dest"
+          Write-Host "Copying '$src' -> '$dest'"
           Copy-Item -LiteralPath $src -Destination $dest -Force
-          Get-Item $dest | Format-List FullName, Length, LastWriteTime
+          if (-not (Test-Path -LiteralPath $dest)) {
+            Write-Error "Copy reported success but $dest is missing"
+            exit 1
+          }
+          Get-Item -LiteralPath $dest | Format-List FullName, Length, LastWriteTime
 
       - name: Upload Windows executable
         uses: actions/upload-artifact@v4
