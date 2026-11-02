@@ -3,6 +3,7 @@
 
 #include "raylib.h"
 #include <array>
+#include <cstddef>
 #include <vector>
 
 // Ultima VII / Exult actor frame layout for default SHAPES.VGA NPCs and monsters.
@@ -57,7 +58,7 @@ enum class NpcAnimAction : int
 // 0=SW, 1=W, 2=NW, 3=N, 4=NE, 5=E, 6=SE, 7=S.
 struct NpcActionTextures
 {
-	std::array<std::array<std::vector<Texture*>, 8>, static_cast<size_t>(NpcAnimAction::COUNT)> textures{};
+	std::array<std::array<std::vector<Texture*>, 8>, static_cast<std::size_t>(NpcAnimAction::COUNT)> textures{};
 	bool valid = false;
 };
 

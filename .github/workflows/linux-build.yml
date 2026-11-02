@@ -30,7 +30,9 @@ permissions:
 jobs:
   build-linux:
     name: GCC Release + Debug (x64)
-    runs-on: ubuntu-22.04
+    # ubuntu-24.04 / GCC 13 matches local Linux builds; 22.04’s GCC 11 is stricter
+    # about bare size_t and rejected NpcAnimation.h until std::size_t was used.
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout
