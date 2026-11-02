@@ -42,52 +42,42 @@ jobs:
       - name: Build U7Revisited (Release)
         run: cmake --build build --config Release --target U7Revisited --parallel
 
+      # Do NOT recurse Redist/ (huge U7 data tree). Prefer the MSVC default
+      # build/Release output, then fall back to whatever POST_BUILD left in Redist.
       - name: Copy exe into Redist
         shell: pwsh
         run: |
+          $ErrorActionPreference = "Stop"
           New-Item -ItemType Directory -Force -Path Redist | Out-Null
-          $dest = Join-Path $PWD "Redist/U7Revisited.exe"
+          $dest = "Redist\U7Revisited.exe"
 
-          Write-Host "--- .exe files under build/ and Redist/ ---"
-          Get-ChildItem -Path build,Redist -Recurse -Filter "*.exe" -ErrorAction SilentlyContinue |
+          Write-Host "--- .exe files under build/ only ---"
+          Get-ChildItem -Path build -Recurse -Filter "*.exe" -ErrorAction SilentlyContinue |
             ForEach-Object { Write-Host $_.FullName }
 
-          $candidates = @(
-            (Join-Path $PWD "Redist/U7Revisited.exe"),
-            (Join-Path $PWD "Redist/Release/U7Revisited.exe"),
-            (Join-Path $PWD "Redist/RelWithDebInfo/U7Revisited.exe"),
-            (Join-Path $PWD "build/Release/U7Revisited.exe"),
-            (Join-Path $PWD "build/U7Revisited/Release/U7Revisited.exe"),
-            (Join-Path $PWD "build/RelWithDebInfo/U7Revisited.exe")
-          )
           $src = $null
-          foreach ($c in $candidates) {
+          foreach ($c in @(
+            "build\Release\U7Revisited.exe",
+            "build\U7Revisited\Release\U7Revisited.exe",
+            "Redist\U7Revisited.exe"
+          )) {
             if (Test-Path -LiteralPath $c) { $src = $c; break }
           }
           if (-not $src) {
-            $hit = Get-ChildItem -Path build,Redist -Recurse -Filter "U7Revisited.exe" -ErrorAction SilentlyContinue |
+            $hit = Get-ChildItem -Path build -Recurse -Filter "U7Revisited.exe" -ErrorAction SilentlyContinue |
               Select-Object -First 1
             if ($hit) { $src = $hit.FullName }
           }
           if (-not $src) {
-            # Last resort: any freshly built game exe (exclude Ghost/tests)
-            $hit = Get-ChildItem -Path build -Recurse -Filter "*.exe" -ErrorAction SilentlyContinue |
-              Where-Object { $_.Name -match 'U7|Ultima' -and $_.Name -notmatch 'Ghost|Test' } |
-              Sort-Object LastWriteTime -Descending |
-              Select-Object -First 1
-            if ($hit) {
-              Write-Host "Fallback match: $($hit.FullName)"
-              $src = $hit.FullName
-            }
-          }
-          if (-not $src) {
-            Write-Error "Could not find U7Revisited.exe after successful build"
+            Write-Error "U7Revisited.exe not found under build/ after Release build"
             exit 1
           }
-          Write-Host "Copying '$src' -> '$dest'"
-          Copy-Item -LiteralPath $src -Destination $dest -Force
+
+          Write-Host "Copying $src -> $dest"
+          # cmake -E copy is more reliable than Copy-Item across drive quirks
+          cmake -E copy_if_different "$src" "$dest"
           if (-not (Test-Path -LiteralPath $dest)) {
-            Write-Error "Copy reported success but $dest is missing"
+            Write-Error "Copy finished but $dest is missing"
             exit 1
           }
           Get-Item -LiteralPath $dest | Format-List FullName, Length, LastWriteTime

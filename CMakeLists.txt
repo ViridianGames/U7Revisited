@@ -281,25 +281,20 @@ endif()
 
 # Set working directory for running the executable
 if(WIN32)
-    # Always ship as Redist/U7Revisited.exe (do not inherit project() display name).
-    # Per-config RUNTIME_OUTPUT_DIRECTORY_* writes straight into Redist/ (no
-    # Redist/Release/ subdir) so VS and CI both land the exe where the game runs.
+    # Keep the MSVC default output dir (build/<Config>/) and copy into Redist
+    # after build — same pattern that worked for local VS Release builds.
+    # Name is always U7Revisited.exe (not the project() display title).
     set_target_properties(U7Revisited PROPERTIES
         OUTPUT_NAME "U7Revisited"
-        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
-        RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
-        RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
-        RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
-        RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
         VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
     )
-    # Belt-and-suspenders: also copy TARGET_FILE into Redist after every build.
+    # Copy Release / RelWithDebInfo exe into Redist/U7Revisited.exe
     add_custom_command(TARGET U7Revisited POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
             $<TARGET_FILE:U7Revisited>
             "${CMAKE_CURRENT_SOURCE_DIR}/Redist/U7Revisited.exe"
-        COMMENT "Copying U7Revisited.exe into Redist/"
+        COMMENT "Copying $<TARGET_FILE_NAME:U7Revisited> into Redist/"
     )
 elseif(NOT APPLE)
     # On Linux/Unix, set runtime output directory to Redist
