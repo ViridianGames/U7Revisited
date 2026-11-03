@@ -981,6 +981,10 @@ inline Vector3 FlatUnderFeetOrigin(const Vector3& feetPos, float scale, float y)
 // radius covers multi-tile footprints (metal walls are 4 wide).
 void NotifyPathfindingGridUpdate(int worldX, int worldZ, int radius = 4);
 
+// After world load: raise shop goods buried in tables under shape 518
+// "glass counter tops" up onto the display surface (idempotent).
+void RestackGlassCounterDisplays();
+
 extern bool g_allowInput;
 
 // True while the avatar is under a mountain ceiling (dungeon interior).

@@ -137,85 +137,99 @@ namespace
 		return false;
 	}
 
-	// Tall walls / closed doors block dynamic light. Windows (TFA translucent,
-	// e.g. shape 438) and short furniture do not.
-	bool ObjectBlocksDynamicLight(const U7Object* obj)
+	// Per-tile occlusion for dynamic lights (ordered so max() prefers full):
+	//   0 = clear
+	//   1 = half  (short barriers + translucent windows — one-tile dark notch, then spill)
+	//   2 = full  (tall walls / closed doors — hard LOS cut)
+	uint8_t ObjectLightOcclusionLevel(const U7Object* obj)
 	{
 		if (!obj || !obj->m_objectData || !obj->m_shapeData)
-			return false;
+			return 0;
 		if (obj->m_isContained)
-			return false;
+			return 0;
 		if (const_cast<U7Object*>(obj)->GetIsDead())
-			return false;
+			return 0;
 		if (obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC ||
 			obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_MONSTER ||
 			obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_EGG)
 		{
-			return false;
-		}
-
-		// Glass / stained-glass panes let light through (including "glass wall").
-		if (obj->m_objectData->m_isTranslucent)
-			return false;
-
-		const int shapeID = obj->m_shapeData->GetShape();
-		if (shapeID >= 0 && PathfindingSystem::IsPassThroughObject(shapeID))
-			return false;
-		if (shapeID >= 0 && (PathfindingSystem::IsRoofShape(shapeID)
-			|| PathfindingSystem::IsMountainTopShape(shapeID)))
-		{
-			return false;
+			return 0;
 		}
 
 		// Fully sunk / open barriers (portcullis in the floor, etc.).
 		if (PathfindingSystem::GetObjectSurfaceY(obj) <= 0.05f)
-			return false;
+			return 0;
+
+		const int shapeID = obj->m_shapeData->GetShape();
+		if (shapeID >= 0 && PathfindingSystem::IsPassThroughObject(shapeID))
+			return 0;
+		if (shapeID >= 0 && (PathfindingSystem::IsRoofShape(shapeID)
+			|| PathfindingSystem::IsMountainTopShape(shapeID)))
+		{
+			return 0;
+		}
+
+		// Glass / stained-glass panes: one-tile notch then spill (windows).
+		if (obj->m_objectData->m_isTranslucent)
+			return 1;
 
 		const std::string& name = obj->m_objectData->m_name;
 		const bool namedOccluder = NameSuggestsLightOccluder(name);
+		// TFA height is in tiles (0–7). Ground-level props/cuboids up to 2 tiles
+		// tall spill (one dark notch, then light); 3+ is a hard LOS wall.
+		const float height = obj->m_objectData->m_height;
+		const uint8_t byHeight = (height >= 3.0f) ? 2 : 1;
 
 		// Floors/stairs/rugs — skip unless the shape is a misclassified wall
 		// (e.g. shape 344 "wall" sits in IsWalkableSurface's 341-344 range).
 		if (shapeID >= 0 && PathfindingSystem::IsNonBlockingWalkSurface(shapeID)
 			&& !namedOccluder)
 		{
-			return false;
+			return 0;
 		}
 
-		// Closed doors block light even though pathfinding treats them as OW_DOOR.
+		// Closed doors block (or spill if short) even though pathfinding uses OW_DOOR.
 		if (obj->m_objectData->m_isDoor)
-			return obj->m_objectData->m_height >= 2.0f;
+			return byHeight;
 
 		ObjectWalkability walk = OW_WALKABLE;
 		if (g_pathfindingSystem)
 			walk = g_pathfindingSystem->GetObjectWalkability(shapeID, obj);
 
 		if (walk == OW_WALKABLE || walk == OW_DOOR)
-			return false;
+			return 0;
 
 		// Climbable CSV walls (common for house exteriors/interiors): occlude by name.
 		// Other climbables (tables, desks, carts) stay non-occluding.
 		if (walk == OW_CLIMBABLE)
-			return namedOccluder && obj->m_objectData->m_height >= 2.0f;
+			return namedOccluder ? byHeight : 0;
 
 		// OW_BLOCKING from CSV (even when TFA not-walkable is clear — walls 151/152)
-		// or TFA not-walkable tall solids.
+		// or TFA not-walkable solids.
 		if (walk != OW_BLOCKING && !obj->m_objectData->m_isNotWalkable)
-			return false;
+			return 0;
 
-		if (obj->m_objectData->m_height < 2.0f)
-			return false;
-
-		return true;
+		return byHeight;
 	}
 
-	// Bresenham LOS against a packed occlusion grid. Endpoints are not required
-	// to be clear (torch against a wall still lights its own tile and neighbors).
-	bool HasLightLOS(int x0, int z0, int x1, int z1,
+	// Light transmission past half-height blockers (after the spill counter is
+	// resolved at the destination):
+	//   clearAfterHalf == 1 → fully dark notch
+	//   clearAfterHalf == 2 → penumbra (~half of normal disc light)
+	//   else                → full transmission
+	constexpr float kHalfBlockerPenumbra = 0.5f;
+
+	// Bresenham LOS against a packed occlusion grid (0/1/2). Returns how much of
+	// the disc light reaches the destination cell: 0 = blocked, (0,1) = penumbra,
+	// 1 = clear. Endpoints are not required to be clear (torch against a wall
+	// still lights its own tile). Full (2) middle cells hard-block. Half (1)
+	// arms a spill counter; the first clear cell past is a dark notch, the
+	// second is penumbra, and farther cells are fully lit again.
+	float LightLosFactor(int x0, int z0, int x1, int z1,
 		const std::vector<uint8_t>& blocks, int occMinX, int occMinZ, int occW, int occH)
 	{
 		if (x0 == x1 && z0 == z1)
-			return true;
+			return 1.0f;
 
 		const int dx = std::abs(x1 - x0);
 		const int dz = std::abs(z1 - z0);
@@ -224,26 +238,54 @@ namespace
 		int err = dx - dz;
 		int x = x0;
 		int z = z0;
+		int clearAfterHalf = -1; // -1 = never armed
+
+		auto cellLevel = [&](int cx, int cz) -> uint8_t
+		{
+			const int lx = cx - occMinX;
+			const int lz = cz - occMinZ;
+			if (lx < 0 || lz < 0 || lx >= occW || lz >= occH)
+				return 0;
+			return blocks[static_cast<size_t>(lz * occW + lx)];
+		};
 
 		while (true)
 		{
-			if (!(x == x0 && z == z0) && !(x == x1 && z == z1))
+			const bool isStart = (x == x0 && z == z0);
+			const bool isEnd = (x == x1 && z == z1);
+
+			if (!isStart)
 			{
-				const int lx = x - occMinX;
-				const int lz = z - occMinZ;
-				if (lx >= 0 && lz >= 0 && lx < occW && lz < occH
-					&& blocks[static_cast<size_t>(lz * occW + lx)] != 0)
+				const uint8_t level = cellLevel(x, z);
+
+				if (!isEnd)
 				{
-					return false;
+					if (level == 2)
+						return 0.0f;
+					if (level == 1)
+						clearAfterHalf = 0;
+					else if (clearAfterHalf >= 0)
+						++clearAfterHalf;
+				}
+				else
+				{
+					// Destination: count as a clear cell for notch / penumbra.
+					if (level == 0 && clearAfterHalf >= 0)
+						++clearAfterHalf;
+					if (clearAfterHalf == 1)
+						return 0.0f;
+					if (clearAfterHalf == 2)
+						return kHalfBlockerPenumbra;
 				}
 			}
-			if (x == x1 && z == z1)
+
+			if (isEnd)
 				break;
 			const int e2 = 2 * err;
 			if (e2 > -dz) { err -= dz; x += sx; }
 			if (e2 < dx) { err += dx; z += sz; }
 		}
-		return true;
+		return 1.0f;
 	}
 }
 
@@ -921,7 +963,7 @@ void Terrain::CalculateLighting()
 	const int occH = occMaxZ - occMinZ + 1;
 	std::vector<uint8_t> blocks(static_cast<size_t>(occW * occH), 0);
 
-	auto stampBlockerFootprint = [&](const U7Object* obj)
+	auto stampBlockerFootprint = [&](const U7Object* obj, uint8_t level)
 	{
 		const int w = std::max(1, static_cast<int>(obj->m_objectData->m_width));
 		const int d = std::max(1, static_cast<int>(obj->m_objectData->m_depth));
@@ -937,7 +979,9 @@ void Terrain::CalculateLighting()
 			{
 				if (x < occMinX || x > occMaxX)
 					continue;
-				blocks[static_cast<size_t>((z - occMinZ) * occW + (x - occMinX))] = 1;
+				uint8_t& cell = blocks[static_cast<size_t>((z - occMinZ) * occW + (x - occMinX))];
+				if (level > cell)
+					cell = level;
 			}
 		}
 	};
@@ -952,8 +996,9 @@ void Terrain::CalculateLighting()
 		{
 			for (U7Object* obj : g_chunkObjectMap[cx][cz])
 			{
-				if (ObjectBlocksDynamicLight(obj))
-					stampBlockerFootprint(obj);
+				const uint8_t level = ObjectLightOcclusionLevel(obj);
+				if (level != 0)
+					stampBlockerFootprint(obj, level);
 			}
 		}
 	}
@@ -988,7 +1033,9 @@ void Terrain::CalculateLighting()
 				if (cellx < 0 || cellx >= patch || celly < 0 || celly >= patch)
 					continue;
 
-				if (!HasLightLOS(lightX, lightZ, wx, wz, blocks, occMinX, occMinZ, occW, occH))
+				const float los = LightLosFactor(lightX, lightZ, wx, wz,
+					blocks, occMinX, occMinZ, occW, occH);
+				if (los <= 0.0f)
 					continue;
 
 				const float dist = std::sqrt(static_cast<float>(distSq));
@@ -1005,6 +1052,7 @@ void Terrain::CalculateLighting()
 					// Smoothstep across the outer ring only.
 					t = u * u * (3.0f - 2.0f * u);
 				}
+				t *= los;
 
 				Color& cell = m_cellLighting[cellx][celly];
 				auto blendChan = [&](unsigned char peakC, unsigned char ambC, unsigned char curC) -> unsigned char

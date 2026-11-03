@@ -2028,6 +2028,177 @@ void GetCameraVisibleChunkRange(int& outMinCX, int& outMaxCX, int& outMinCZ, int
 	if (outMinCZ > outMaxCZ) std::swap(outMinCZ, outMaxCZ);
 }
 
+namespace
+{
+	constexpr int kGlassCounterShape = 518;
+
+	void SeFootprint(const U7Object* obj, int& minX, int& maxX, int& minZ, int& maxZ)
+	{
+		const int w = std::max(1, static_cast<int>(obj->m_objectData->m_width));
+		const int d = std::max(1, static_cast<int>(obj->m_objectData->m_depth));
+		maxX = static_cast<int>(std::floor(obj->m_Pos.x));
+		maxZ = static_cast<int>(std::floor(obj->m_Pos.z));
+		minX = maxX - w + 1;
+		minZ = maxZ - d + 1;
+	}
+
+	bool FootprintsOverlap(int aMinX, int aMaxX, int aMinZ, int aMaxZ,
+		int bMinX, int bMaxX, int bMinZ, int bMaxZ)
+	{
+		return aMinX <= bMaxX && aMaxX >= bMinX && aMinZ <= bMaxZ && aMaxZ >= bMinZ;
+	}
+
+	bool NameHasFurnitureHint(const std::string& name)
+	{
+		auto has = [&](const char* needle) -> bool
+		{
+			if (!needle || !*needle || name.empty())
+				return false;
+			const size_t nlen = std::strlen(needle);
+			if (name.size() < nlen)
+				return false;
+			for (size_t i = 0; i + nlen <= name.size(); ++i)
+			{
+				bool match = true;
+				for (size_t j = 0; j < nlen; ++j)
+				{
+					const char a = name[i + j];
+					const char b = needle[j];
+					const char al = (a >= 'A' && a <= 'Z') ? static_cast<char>(a - 'A' + 'a') : a;
+					const char bl = (b >= 'A' && b <= 'Z') ? static_cast<char>(b - 'A' + 'a') : b;
+					if (al != bl) { match = false; break; }
+				}
+				if (match)
+					return true;
+			}
+			return false;
+		};
+		return has("table") || has("desk") || has("counter") || has("bookshelf");
+	}
+
+	bool IsGlassCounterFurniture(const U7Object* obj, const U7Object* glassCase)
+	{
+		if (!obj || obj == glassCase || !obj->m_objectData || !obj->m_shapeData)
+			return false;
+		if (obj->m_isContained)
+			return false;
+		const int shape = obj->m_shapeData->GetShape();
+		if (shape == kGlassCounterShape)
+			return false;
+		if (PathfindingSystem::IsStandableObjectTop(obj))
+			return true;
+		// Some small tables are OW_BLOCKING in CSV — still skip named furniture.
+		return NameHasFurnitureHint(obj->m_objectData->m_name);
+	}
+
+	bool IsGlassCounterDisplayGood(const U7Object* obj, const U7Object* glassCase)
+	{
+		if (!obj || obj == glassCase || !obj->m_objectData || !obj->m_shapeData)
+			return false;
+		if (obj->m_isContained)
+			return false;
+		if (obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC ||
+			obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_MONSTER ||
+			obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_EGG)
+		{
+			return false;
+		}
+		const int shape = obj->m_shapeData->GetShape();
+		if (shape == kGlassCounterShape)
+			return false;
+		if (obj->m_objectData->m_isDoor)
+			return false;
+		if (PathfindingSystem::IsPassThroughObject(shape) ||
+			PathfindingSystem::IsRoofShape(shape) ||
+			PathfindingSystem::IsMountainTopShape(shape))
+		{
+			return false;
+		}
+		if (IsGlassCounterFurniture(obj, glassCase))
+			return false;
+		if (NameHasFurnitureHint(obj->m_objectData->m_name))
+			return false;
+
+		const float h = obj->m_objectData->m_height;
+		const int w = std::max(1, static_cast<int>(obj->m_objectData->m_width));
+		const int d = std::max(1, static_cast<int>(obj->m_objectData->m_depth));
+		// Typical shop goods: short and compact. Skip large blockers/walls.
+		if (h > 2.0f)
+			return false;
+		if (w * d > 6)
+			return false;
+		return true;
+	}
+}
+
+void RestackGlassCounterDisplays()
+{
+	std::vector<U7Object*> cases;
+	cases.reserve(64);
+	for (auto& [id, up] : g_objectList)
+	{
+		(void)id;
+		U7Object* obj = up.get();
+		if (!obj || obj->m_isContained || !obj->m_shapeData || !obj->m_objectData)
+			continue;
+		if (obj->m_shapeData->GetShape() == kGlassCounterShape)
+			cases.push_back(obj);
+	}
+	if (cases.empty())
+		return;
+
+	int raised = 0;
+	for (U7Object* glassCase : cases)
+	{
+		int cMinX = 0, cMaxX = 0, cMinZ = 0, cMaxZ = 0;
+		SeFootprint(glassCase, cMinX, cMaxX, cMinZ, cMaxZ);
+
+		// Shelf is the base of the glass case (right under the translucent top),
+		// not the supporting table's standable surface — that often matches the
+		// case lid when table and 518 share the same lift.
+		const float shelfY = glassCase->m_Pos.y;
+
+		const int chunkMinX = std::max(0, cMinX / 16 - 1);
+		const int chunkMaxX = std::min(191, cMaxX / 16 + 1);
+		const int chunkMinZ = std::max(0, cMinZ / 16 - 1);
+		const int chunkMaxZ = std::min(191, cMaxZ / 16 + 1);
+
+		// Collect then SetPos (chunk vectors can reassign).
+		std::vector<U7Object*> toRaise;
+		for (int cz = chunkMinZ; cz <= chunkMaxZ; ++cz)
+		{
+			for (int cx = chunkMinX; cx <= chunkMaxX; ++cx)
+			{
+				for (U7Object* obj : g_chunkObjectMap[cx][cz])
+				{
+					if (!IsGlassCounterDisplayGood(obj, glassCase))
+						continue;
+					int oMinX = 0, oMaxX = 0, oMinZ = 0, oMaxZ = 0;
+					SeFootprint(obj, oMinX, oMaxX, oMinZ, oMaxZ);
+					if (!FootprintsOverlap(cMinX, cMaxX, cMinZ, cMaxZ, oMinX, oMaxX, oMinZ, oMaxZ))
+						continue;
+					// Only raise buried goods up to the shelf — never pull objects down
+					// that already sit on / above the glass case.
+					if (obj->m_Pos.y >= shelfY - 0.05f)
+						continue;
+					toRaise.push_back(obj);
+				}
+			}
+		}
+		for (U7Object* obj : toRaise)
+		{
+			Vector3 pos = obj->m_Pos;
+			pos.y = shelfY;
+			obj->SetPos(pos);
+			++raised;
+		}
+	}
+
+	if (raised > 0)
+		Log("RestackGlassCounterDisplays: raised " + std::to_string(raised) +
+			" object(s) under " + std::to_string(cases.size()) + " glass counter(s)");
+}
+
 void UpdateSortedVisibleObjects()
 {
 	int minCX = 0, maxCX = 0, minCZ = 0, maxCZ = 0;

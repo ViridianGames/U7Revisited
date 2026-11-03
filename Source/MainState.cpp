@@ -479,6 +479,8 @@ void MainState::OnEnter()
 		if (p.second && !p.second->m_isContained)
 			AssignObjectChunk(p.second.get());
 	}
+	// Classic U7 parks shop goods at table lift; raise them into glass cases (518).
+	RestackGlassCounterDisplays();
 
 	if (m_gameMode == MainStateModes::MAIN_STATE_MODE_TRINSIC_DEMO)
 	{
@@ -4177,6 +4179,8 @@ void MainState::RebuildWorldFromLoadedData()
 		}
 	}
 	Log("MainState::RebuildWorldFromLoadedData - Assigned to chunks: " + std::to_string(staticCount) + " static, " + std::to_string(dynamicCount) + " objects, " + std::to_string(npcCount) + " NPCs, " + std::to_string(containedCount) + " contained (skipped)");
+
+	RestackGlassCounterDisplays();
 
 	// Rebuild roof groups / interior map against the restored object list.
 	if (g_pathfindingSystem)
