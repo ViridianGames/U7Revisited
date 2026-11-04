@@ -10,6 +10,18 @@
 
 using namespace std;
 
+namespace
+{
+	// Redist-relative. A shape mesh that is missing or fails to load draws this
+	// instead of throwing out of model load and shutting the game down.
+	const char* kMissingModelFallback = "Models/3dmodels/zzwrongcube.obj";
+
+	bool ModelFileExists(const std::string& path)
+	{
+		return !path.empty() && FileExists(path.c_str());
+	}
+}
+
 // Initialize static members
 std::string ResourceManager::s_audioPath = "Audio/";
 
@@ -104,8 +116,47 @@ void ResourceManager::AddTexture(Image& image, const std::string& textureName, b
 
 void ResourceManager::AddModel(const std::string& modelName)
 {
-	Log("Loading model " + modelName);
-	m_ModelList[modelName] = std::make_unique<RaylibModel>(modelName);
+	std::string path = modelName;
+	if (!ModelFileExists(path))
+	{
+		Log("WARNING: Model not found: \"" + modelName + "\". Using " + std::string(kMissingModelFallback) + ".");
+		if (modelName == kMissingModelFallback || !ModelFileExists(kMissingModelFallback))
+		{
+			throw std::string("Failed to load model " + modelName);
+		}
+		path = kMissingModelFallback;
+	}
+
+	Log("Loading model " + path);
+	try
+	{
+		auto loaded = std::make_unique<RaylibModel>(path);
+		// LoadModels decenters every mesh except flat.obj after a normal AddModel.
+		// This copy is stored under the missing name, so decenter it here.
+		if (path != modelName)
+		{
+			loaded->Decenter();
+		}
+		m_ModelList[modelName] = std::move(loaded);
+	}
+	catch (const std::string& error)
+	{
+		if (path == kMissingModelFallback)
+		{
+			throw;
+		}
+
+		Log("WARNING: " + error + ". Using " + std::string(kMissingModelFallback) + ".");
+		if (modelName == kMissingModelFallback || !ModelFileExists(kMissingModelFallback))
+		{
+			throw;
+		}
+
+		auto loaded = std::make_unique<RaylibModel>(kMissingModelFallback);
+		loaded->Decenter();
+		m_ModelList[modelName] = std::move(loaded);
+	}
+
 	Log("Load successful.");
 }
 
