@@ -30,10 +30,13 @@
 #include "CombatMode.h"
 #include "CombatState.h"
 #include "WeatherSystem.h"
+#include "GameSerializer.h"
+#include "../ThirdParty/nlohmann/json.hpp"
 
 #include <unordered_set>
 #include <fstream>
 #include <cctype>
+#include <optional>
 
 namespace
 {
@@ -4129,6 +4132,11 @@ void MainState::RebuildWorldFromLoadedData()
 	for (auto& [id, obj] : g_objectList)
 	{
 		if (!obj) continue;
+		if (obj->m_preserveLoadedMotion)
+		{
+			obj->m_preserveLoadedMotion = false;
+			continue;
+		}
 		if (obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC ||
 		    obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_MONSTER)
 		{
@@ -4207,6 +4215,20 @@ void MainState::RebuildWorldFromLoadedData()
 			Vector3 camPos = { g_cameraDistance, g_cameraDistance, g_cameraDistance };
 			camPos = Vector3RotateByAxisAngle(camPos, Vector3{ 0, 1, 0 }, g_cameraRotation);
 			g_camera.position = Vector3Add(g_camera.target, camPos);
+		}
+	}
+
+	if (std::optional<std::string> pending = GameSerializer::TakePendingSessionJson())
+	{
+		nlohmann::ordered_json session = nlohmann::ordered_json::parse(*pending, nullptr, false);
+		if (session.is_discarded() || !session.is_object())
+		{
+			Log("MainState::RebuildWorldFromLoadedData - session JSON was unreadable; leaving combat");
+			ClearCombatSessionForLoad();
+		}
+		else
+		{
+			ApplyLoadedSession(session);
 		}
 	}
 
@@ -5580,6 +5602,266 @@ void MainState::EnrollNearbyCombatHostiles()
 			(void)id;
 			consider(obj.get());
 		}
+	}
+}
+
+namespace
+{
+	void ReadIdList(const nlohmann::ordered_json& node, const char* key, std::vector<int>& out)
+	{
+		out.clear();
+		if (!node.contains(key) || !node[key].is_array())
+		{
+			return;
+		}
+		for (const auto& item : node[key])
+		{
+			const int id = item.get<int>();
+			if (GetObjectFromID(id))
+			{
+				out.push_back(id);
+			}
+		}
+	}
+
+	FlyingProjectile ProjectileFromJson(const nlohmann::ordered_json& j)
+	{
+		FlyingProjectile proj;
+		proj.objectId = j.value("objectId", -1);
+		proj.targetId = j.value("targetId", -1);
+		proj.attackerId = j.value("attackerId", -1);
+		proj.damage = j.value("damage", 0);
+		proj.damageType = j.value("damageType", 1);
+		proj.weaponShape = j.value("weaponShape", -1);
+		proj.ammoShape = j.value("ammoShape", -1);
+		proj.speed = j.value("speed", 16.0f);
+		proj.animAccum = j.value("animAccum", 0.0f);
+		proj.animIndex = j.value("animIndex", 0);
+		proj.directionalFrames = j.value("directionalFrames", false);
+		proj.pauseCasterOrdersOnHit = j.value("pauseCasterOrdersOnHit", false);
+		if (j.contains("targetPos") && j["targetPos"].is_array() && j["targetPos"].size() == 3)
+		{
+			proj.targetPos.x = j["targetPos"][0].get<float>();
+			proj.targetPos.y = j["targetPos"][1].get<float>();
+			proj.targetPos.z = j["targetPos"][2].get<float>();
+		}
+		if (j.contains("animFrameList") && j["animFrameList"].is_array())
+		{
+			for (const auto& frame : j["animFrameList"])
+			{
+				proj.animFrameList.push_back(frame.get<int>());
+			}
+		}
+		return proj;
+	}
+}
+
+void MainState::WriteSessionCombat(nlohmann::ordered_json& session) const
+{
+	if (!g_flyingProjectiles.empty())
+	{
+		nlohmann::ordered_json bolts = nlohmann::ordered_json::array();
+		for (const FlyingProjectile& proj : g_flyingProjectiles)
+		{
+			nlohmann::ordered_json j;
+			j["objectId"] = proj.objectId;
+			j["targetId"] = proj.targetId;
+			j["attackerId"] = proj.attackerId;
+			j["targetPos"] = { proj.targetPos.x, proj.targetPos.y, proj.targetPos.z };
+			j["damage"] = proj.damage;
+			j["damageType"] = proj.damageType;
+			j["weaponShape"] = proj.weaponShape;
+			j["ammoShape"] = proj.ammoShape;
+			j["speed"] = proj.speed;
+			j["animAccum"] = proj.animAccum;
+			j["animIndex"] = proj.animIndex;
+			j["animFrameList"] = proj.animFrameList;
+			j["directionalFrames"] = proj.directionalFrames;
+			j["pauseCasterOrdersOnHit"] = proj.pauseCasterOrdersOnHit;
+			bolts.push_back(j);
+		}
+		session["projectiles"] = bolts;
+	}
+
+	if (!g_isCombatMode)
+	{
+		return;
+	}
+
+	nlohmann::ordered_json combat;
+	const CombatStyle style = m_combatMode ? m_combatMode->GetStyle() : GetCombatStylePreference();
+	combat["style"] = CombatStyleConfigToken(style);
+	combat["paused"] = m_combatPaused;
+	combat["selectedPartyMember"] = m_combatSelectedPartyMemberObjectId;
+	combat["participants"] = m_combatParticipants;
+	combat["forceEnrolled"] = nlohmann::ordered_json::array();
+	for (int id : m_combatForceEnrolledIds)
+	{
+		combat["forceEnrolled"].push_back(id);
+	}
+	if (m_combatSpellTargetingSpellId >= 0)
+	{
+		combat["spellTargetingSpellId"] = m_combatSpellTargetingSpellId;
+		combat["spellTargetingCasterId"] = m_combatSpellTargetingCasterId;
+	}
+	if (m_forcedSpellTargetObjectId > 0)
+	{
+		combat["forcedSpellTarget"] = m_forcedSpellTargetObjectId;
+	}
+
+	nlohmann::ordered_json mode = nlohmann::ordered_json::object();
+	if (m_combatMode)
+	{
+		m_combatMode->SaveState(mode);
+	}
+	combat["mode"] = mode;
+	session["combat"] = combat;
+}
+
+void MainState::ClearCombatSessionForLoad()
+{
+	m_combatMode.reset();
+	m_combatParticipants.clear();
+	m_combatForceEnrolledIds.clear();
+	m_combatSelectedPartyMemberObjectId = -1;
+	m_combatPaused = true;
+	m_combatApproachMessage.clear();
+	CancelCombatSpellTargeting();
+	m_forcedSpellTargetObjectId = -1;
+	g_isCombatMode = false;
+	if (g_defaultCursor)
+	{
+		g_Cursor = g_defaultCursor;
+	}
+}
+
+void MainState::RestoreCombatEncounter(const nlohmann::ordered_json& combat)
+{
+	const CombatStyle style = CombatStyleFromToken(combat.value("style", std::string("realtime_pause")));
+
+	if (g_Player && g_Player->GetAvatarObject())
+	{
+		const Vector3& pos = g_Player->GetAvatarObject()->GetPos();
+		NotifyPathfindingGridUpdate(static_cast<int>(pos.x), static_cast<int>(pos.z), 32);
+	}
+
+	g_isCombatMode = true;
+	m_combatPaused = combat.value("paused", true);
+	ReadIdList(combat, "participants", m_combatParticipants);
+
+	m_combatForceEnrolledIds.clear();
+	if (combat.contains("forceEnrolled") && combat["forceEnrolled"].is_array())
+	{
+		for (const auto& item : combat["forceEnrolled"])
+		{
+			const int id = item.get<int>();
+			if (GetObjectFromID(id))
+			{
+				m_combatForceEnrolledIds.insert(id);
+			}
+		}
+	}
+
+	const int selected = combat.value("selectedPartyMember", -1);
+	m_combatSelectedPartyMemberObjectId = GetObjectFromID(selected) ? selected : -1;
+
+	const int spellId = combat.value("spellTargetingSpellId", -1);
+	const int casterId = combat.value("spellTargetingCasterId", -1);
+	if (spellId >= 0 && GetObjectFromID(casterId))
+	{
+		m_combatSpellTargetingSpellId = spellId;
+		m_combatSpellTargetingCasterId = casterId;
+	}
+
+	const int forcedTarget = combat.value("forcedSpellTarget", -1);
+	if (forcedTarget > 0 && GetObjectFromID(forcedTarget))
+	{
+		m_forcedSpellTargetObjectId = forcedTarget;
+	}
+
+	m_combatMode = CreateCombatMode(style);
+	if (m_combatMode)
+	{
+		const nlohmann::ordered_json mode = combat.contains("mode") ? combat["mode"] : nlohmann::ordered_json::object();
+		m_combatMode->RestoreState(*this, mode);
+	}
+
+	if (g_combatCursor)
+	{
+		g_Cursor = g_combatCursor;
+	}
+
+	for (int id : m_combatParticipants)
+	{
+		U7Object* obj = GetObjectFromID(id);
+		if (!obj || !obj->m_pathfindingPending || !obj->m_pathWaypoints.empty())
+		{
+			continue;
+		}
+		const bool party = obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC
+			&& g_Player && g_Player->NPCIDInParty(obj->m_NPCID);
+		obj->PathfindToDest(obj->GetDest(), true, party ? PathCallerTag::AvatarParty : PathCallerTag::Monster);
+	}
+
+	AddConsoleString(std::string("Combat restored (") + CombatStyleDisplayName(style) + ").", GREEN);
+	Log(std::string("MainState::RestoreCombatEncounter style=") + CombatStyleConfigToken(style)
+		+ " paused=" + (m_combatPaused ? "1" : "0")
+		+ " participants=" + std::to_string(m_combatParticipants.size()));
+}
+
+void MainState::ApplyLoadedSession(const nlohmann::ordered_json& session)
+{
+	g_flyingProjectiles.clear();
+	if (session.contains("projectiles") && session["projectiles"].is_array())
+	{
+		for (const auto& item : session["projectiles"])
+		{
+			FlyingProjectile proj = ProjectileFromJson(item);
+			U7Object* bolt = GetObjectFromID(proj.objectId);
+			if (!bolt)
+			{
+				continue;
+			}
+			bolt->m_isProjectile = true;
+			bolt->m_Visible = true;
+			bolt->m_ShouldDraw = true;
+			if (proj.speed > 0.1f)
+			{
+				bolt->m_speed = proj.speed;
+			}
+			g_flyingProjectiles.push_back(proj);
+		}
+	}
+
+	const bool wantCombat = session.value("combatMode", false);
+	if (!wantCombat || !kCombatStateEnabled)
+	{
+		ClearCombatSessionForLoad();
+		if (!wantCombat && g_Player && (!session.contains("camera") || !session["camera"].contains("lockObjectId")))
+		{
+			LockCameraToAvatar();
+		}
+	}
+	else if (!session.contains("combat") || !session["combat"].is_object())
+	{
+		ClearCombatSessionForLoad();
+		Log("MainState::ApplyLoadedSession - legacy combat flag, starting a fresh encounter");
+		EnterCombatMode();
+	}
+	else
+	{
+		ClearCombatSessionForLoad();
+		RestoreCombatEncounter(session["combat"]);
+	}
+
+	if (session.contains("camera") && session["camera"].contains("lockObjectId"))
+	{
+		int lockId = session["camera"]["lockObjectId"].get<int>();
+		if (lockId >= 0 && !GetObjectFromID(lockId))
+		{
+			lockId = -1;
+		}
+		g_cameraLockObjectId = lockId;
 	}
 }
 

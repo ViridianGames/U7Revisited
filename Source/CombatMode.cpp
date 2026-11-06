@@ -55,6 +55,19 @@ const char* CombatStyleConfigToken(CombatStyle style)
 	return "realtime_pause";
 }
 
+CombatStyle CombatStyleFromToken(const std::string& token)
+{
+	if (token == "original" || token == "0")
+	{
+		return CombatStyle::Original;
+	}
+	if (token == "turn_based" || token == "2")
+	{
+		return CombatStyle::TurnBased;
+	}
+	return CombatStyle::RealTimePause;
+}
+
 CombatStyle GetCombatStylePreference()
 {
 	if (!g_Engine)
@@ -348,6 +361,18 @@ void RealTimePauseCombatMode::OnEnter(MainState& main)
 	AddConsoleString("Click a party member, then an enemy or the ground. H: Hold  A: Automatic.", WHITE);
 	AddConsoleString("Camera unlocked between you and the nearest threat. Press C or Escape to leave.", WHITE);
 	Log("RealTimePauseCombatMode::OnEnter");
+}
+
+void RealTimePauseCombatMode::SaveState(nlohmann::ordered_json& out) const
+{
+	out["wasCameraLocked"] = m_wasCameraLocked;
+}
+
+void RealTimePauseCombatMode::RestoreState(MainState& main, const nlohmann::ordered_json& in)
+{
+	m_main = &main;
+	m_wasCameraLocked = in.value("wasCameraLocked", false);
+	Log("RealTimePauseCombatMode::RestoreState paused=" + std::string(main.m_combatPaused ? "1" : "0"));
 }
 
 void RealTimePauseCombatMode::OnLeave(MainState& main)
@@ -1820,6 +1845,129 @@ void TurnBasedCombatMode::OnMoveResolved(MainState& main)
 		afterMoveHint += "  [Moved too far to act   Space: End Turn]";
 	AddConsoleString(afterMoveHint, SKYBLUE);
 	(void)main;
+}
+
+void TurnBasedCombatMode::SaveState(nlohmann::ordered_json& out) const
+{
+	out["wasCameraLocked"] = m_wasCameraLocked;
+	out["initiative"] = m_initiative;
+	out["initiativeIndex"] = m_initiativeIndex;
+	out["activeUnitId"] = m_activeUnitId;
+	out["apRemaining"] = m_apRemaining;
+	out["apBudget"] = m_apBudget;
+	out["phase"] = (m_phase == Phase::Resolving) ? "resolving" : "planning";
+	out["pendingMoveApCost"] = m_pendingMoveApCost;
+	out["enemyAiPending"] = m_enemyAiPending;
+	out["endTurnAfterMove"] = m_endTurnAfterMove;
+	out["enemyAttackAfterMove"] = m_enemyAttackAfterMove;
+	out["resolvingAttack"] = m_resolvingAttack;
+	out["attackSwingStarted"] = m_attackSwingStarted;
+	out["hasActedThisTurn"] = m_hasActedThisTurn;
+	out["attackTargetId"] = m_attackTargetId;
+	out["resolveFrames"] = m_resolveFrames;
+	out["resolveLast"] = { m_resolveLastX, m_resolveLastY, m_resolveLastZ };
+	out["resolveNoProgressFrames"] = m_resolveNoProgressFrames;
+	out["interTurnPauseRemaining"] = m_interTurnPauseRemaining;
+}
+
+void TurnBasedCombatMode::RestoreState(MainState& main, const nlohmann::ordered_json& in)
+{
+	m_main = &main;
+	m_wasCameraLocked = in.value("wasCameraLocked", false);
+	m_pendingMoveApCost = in.value("pendingMoveApCost", 0.0f);
+	m_apRemaining = in.value("apRemaining", 0.0f);
+	m_apBudget = in.value("apBudget", 0.0f);
+	m_enemyAiPending = in.value("enemyAiPending", false);
+	m_endTurnAfterMove = in.value("endTurnAfterMove", false);
+	m_enemyAttackAfterMove = in.value("enemyAttackAfterMove", false);
+	m_resolvingAttack = in.value("resolvingAttack", false);
+	m_attackSwingStarted = in.value("attackSwingStarted", false);
+	m_hasActedThisTurn = in.value("hasActedThisTurn", false);
+	m_attackTargetId = in.value("attackTargetId", 0);
+	m_resolveFrames = in.value("resolveFrames", 0);
+	m_resolveNoProgressFrames = in.value("resolveNoProgressFrames", 0);
+	m_interTurnPauseRemaining = in.value("interTurnPauseRemaining", 0.0f);
+	m_phase = (in.value("phase", std::string("planning")) == "resolving") ? Phase::Resolving : Phase::Planning;
+
+	m_resolveLastX = 0.0f;
+	m_resolveLastY = 0.0f;
+	m_resolveLastZ = 0.0f;
+	if (in.contains("resolveLast") && in["resolveLast"].is_array() && in["resolveLast"].size() == 3)
+	{
+		m_resolveLastX = in["resolveLast"][0].get<float>();
+		m_resolveLastY = in["resolveLast"][1].get<float>();
+		m_resolveLastZ = in["resolveLast"][2].get<float>();
+	}
+
+	m_initiative.clear();
+	if (in.contains("initiative") && in["initiative"].is_array())
+	{
+		for (const auto& item : in["initiative"])
+		{
+			const int id = item.get<int>();
+			if (GetObjectFromID(id))
+			{
+				m_initiative.push_back(id);
+			}
+		}
+	}
+
+	m_activeUnitId = in.value("activeUnitId", -1);
+	if (!GetObjectFromID(m_activeUnitId))
+	{
+		m_activeUnitId = -1;
+	}
+
+	m_initiativeIndex = 0;
+	if (m_activeUnitId >= 0)
+	{
+		for (int i = 0; i < static_cast<int>(m_initiative.size()); ++i)
+		{
+			if (m_initiative[static_cast<size_t>(i)] == m_activeUnitId)
+			{
+				m_initiativeIndex = i;
+				break;
+			}
+		}
+	}
+	else if (!m_initiative.empty())
+	{
+		m_initiativeIndex = in.value("initiativeIndex", 0);
+		if (m_initiativeIndex < 0 || m_initiativeIndex >= static_cast<int>(m_initiative.size()))
+		{
+			m_initiativeIndex = 0;
+		}
+	}
+
+	ClearReachableTiles();
+
+	// The saved active unit is gone. Hand the turn to the next living combatant.
+	if (m_activeUnitId < 0 && !m_initiative.empty() && m_interTurnPauseRemaining <= 0.0f)
+	{
+		m_phase = Phase::Planning;
+		m_enemyAiPending = false;
+		m_resolvingAttack = false;
+		StartUnitTurn(main);
+		Log("TurnBasedCombatMode::RestoreState active unit missing, advanced turn");
+		return;
+	}
+
+	if (m_phase == Phase::Planning && m_interTurnPauseRemaining <= 0.0f && !m_enemyAiPending)
+	{
+		if (U7Object* unit = GetActiveUnit())
+		{
+			if (IsPartyUnit(unit))
+			{
+				RefreshUnitAttackRange(unit);
+				RebuildReachableTiles();
+			}
+		}
+	}
+
+	Log("TurnBasedCombatMode::RestoreState active=" + std::to_string(m_activeUnitId)
+		+ " ap=" + FormatAp(m_apRemaining)
+		+ " phase=" + std::string(m_phase == Phase::Resolving ? "resolving" : "planning")
+		+ " initiative=" + std::to_string(m_initiative.size()));
 }
 
 void TurnBasedCombatMode::OnEnter(MainState& main)

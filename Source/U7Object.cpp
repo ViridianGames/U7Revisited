@@ -6730,6 +6730,202 @@ void U7Object::NPCInit(NPCData* npcData)
 // Serialization
 // ============================================================================
 
+namespace
+{
+	bool IsCombatParticipant(int objectId)
+	{
+		if (!g_isCombatMode || !g_mainState)
+		{
+			return false;
+		}
+		const std::vector<int>& parts = g_mainState->m_combatParticipants;
+		return std::find(parts.begin(), parts.end(), objectId) != parts.end();
+	}
+
+	json Vec3ToJson(const Vector3& v)
+	{
+		return json::array({ v.x, v.y, v.z });
+	}
+
+	bool JsonToVec3(const json& j, Vector3& out)
+	{
+		if (!j.is_array() || j.size() != 3)
+		{
+			return false;
+		}
+		out.x = j[0].get<float>();
+		out.y = j[1].get<float>();
+		out.z = j[2].get<float>();
+		return true;
+	}
+}
+
+void U7Object::WriteCombatFields(json& j) const
+{
+	const bool creature = (m_UnitType == UnitTypes::UNIT_TYPE_NPC || m_UnitType == UnitTypes::UNIT_TYPE_MONSTER);
+	if (!creature)
+	{
+		return;
+	}
+
+	const bool combatNoteworthy =
+		m_target != 0
+		|| m_combatOrderMode != CombatOrderMode::Automatic
+		|| m_combatSpellId >= 0
+		|| m_combatMoveOrder
+		|| m_combatPathTargetId != 0
+		|| m_npcAnimPlaying
+		|| m_pauseOrdersOnNextSpellProjectile;
+	const bool participant = IsCombatParticipant(static_cast<int>(m_ID));
+	if (!participant && !combatNoteworthy)
+	{
+		return;
+	}
+
+	json combat;
+	combat["order"] = static_cast<int>(m_combatOrderMode);
+	combat["target"] = m_target;
+	combat["spellId"] = m_combatSpellId;
+	combat["spellTarget"] = m_combatSpellTargetId;
+	combat["moveOrder"] = m_combatMoveOrder;
+	combat["pathTarget"] = m_combatPathTargetId;
+	combat["pathGoal"] = Vec3ToJson(m_combatPathGoal);
+	combat["cooldown"] = m_cooldownTimer;
+	combat["attackRange"] = m_attackRange;
+	combat["pauseOnSpellHit"] = m_pauseOrdersOnNextSpellProjectile;
+	combat["frameX"] = m_currentFrameX;
+	combat["frameY"] = m_currentFrameY;
+	combat["direction"] = Vec3ToJson(m_Direction);
+
+	if (m_npcAnimPlaying || m_npcAnimAction != NpcAnimAction::Stand)
+	{
+		json anim;
+		anim["action"] = static_cast<int>(m_npcAnimAction);
+		anim["phase"] = m_npcAnimPhase;
+		anim["timer"] = m_npcAnimTimer;
+		anim["looping"] = m_npcAnimLooping;
+		anim["playing"] = m_npcAnimPlaying;
+		anim["hitPhase"] = m_npcAnimHitPhase;
+		anim["hitFired"] = m_npcAnimHitFired;
+		combat["anim"] = anim;
+	}
+
+	// Paths are saved only for a live fight. Peace-time schedule walks stay at the saved tile.
+	if (g_isCombatMode && (participant || combatNoteworthy)
+		&& (m_isMoving || m_pathfindingPending || !m_pathWaypoints.empty()))
+	{
+		json motion;
+		motion["moving"] = m_isMoving;
+		motion["pending"] = m_pathfindingPending;
+		motion["schedulePath"] = m_isSchedulePath;
+		motion["waypointIndex"] = m_currentWaypointIndex;
+		motion["dest"] = Vec3ToJson(m_Dest);
+		json points = json::array();
+		for (const Vector3& point : m_pathWaypoints)
+		{
+			points.push_back(Vec3ToJson(point));
+		}
+		motion["waypoints"] = points;
+		combat["motion"] = motion;
+	}
+
+	// "combat" is the skill rating. The encounter snapshot uses its own key.
+	j["combatState"] = combat;
+}
+
+void U7Object::ReadCombatFields(const json& j)
+{
+	m_preserveLoadedMotion = false;
+	if (!j.contains("combatState") || !j["combatState"].is_object())
+	{
+		return;
+	}
+
+	const json& combat = j["combatState"];
+	if (combat.contains("order"))
+	{
+		int order = combat["order"].get<int>();
+		if (order < 0 || order > static_cast<int>(CombatOrderMode::Move))
+		{
+			order = static_cast<int>(CombatOrderMode::Automatic);
+		}
+		m_combatOrderMode = static_cast<CombatOrderMode>(order);
+	}
+	m_target = combat.value("target", m_target);
+	m_combatSpellId = combat.value("spellId", m_combatSpellId);
+	m_combatSpellTargetId = combat.value("spellTarget", m_combatSpellTargetId);
+	m_combatMoveOrder = combat.value("moveOrder", m_combatMoveOrder);
+	m_combatPathTargetId = combat.value("pathTarget", m_combatPathTargetId);
+	m_cooldownTimer = combat.value("cooldown", m_cooldownTimer);
+	m_attackRange = combat.value("attackRange", m_attackRange);
+	m_pauseOrdersOnNextSpellProjectile = combat.value("pauseOnSpellHit", m_pauseOrdersOnNextSpellProjectile);
+	m_currentFrameX = combat.value("frameX", m_currentFrameX);
+	m_currentFrameY = combat.value("frameY", m_currentFrameY);
+
+	Vector3 direction = m_Direction;
+	if (combat.contains("direction") && JsonToVec3(combat["direction"], direction))
+	{
+		m_Direction = direction;
+	}
+	Vector3 goal = m_combatPathGoal;
+	if (combat.contains("pathGoal") && JsonToVec3(combat["pathGoal"], goal))
+	{
+		m_combatPathGoal = goal;
+	}
+
+	if (combat.contains("anim") && combat["anim"].is_object())
+	{
+		const json& anim = combat["anim"];
+		int action = anim.value("action", static_cast<int>(NpcAnimAction::Stand));
+		if (action < 0 || action >= static_cast<int>(NpcAnimAction::COUNT))
+		{
+			action = static_cast<int>(NpcAnimAction::Stand);
+		}
+		m_npcAnimAction = static_cast<NpcAnimAction>(action);
+		m_npcAnimPhase = anim.value("phase", 0);
+		m_npcAnimTimer = anim.value("timer", 0.0f);
+		m_npcAnimLooping = anim.value("looping", true);
+		m_npcAnimPlaying = anim.value("playing", false);
+		m_npcAnimHitPhase = anim.value("hitPhase", -1);
+		m_npcAnimHitFired = anim.value("hitFired", false);
+	}
+
+	if (combat.contains("motion") && combat["motion"].is_object())
+	{
+		const json& motion = combat["motion"];
+		m_isMoving = motion.value("moving", false);
+		m_pathfindingPending = motion.value("pending", false);
+		m_isSchedulePath = motion.value("schedulePath", false);
+		m_currentWaypointIndex = motion.value("waypointIndex", 0);
+		Vector3 dest = m_Pos;
+		if (motion.contains("dest") && JsonToVec3(motion["dest"], dest))
+		{
+			SetDest(dest);
+		}
+		m_pathWaypoints.clear();
+		if (motion.contains("waypoints") && motion["waypoints"].is_array())
+		{
+			for (const json& point : motion["waypoints"])
+			{
+				Vector3 waypoint = { 0, 0, 0 };
+				if (JsonToVec3(point, waypoint))
+				{
+					m_pathWaypoints.push_back(waypoint);
+				}
+			}
+		}
+		if (m_currentWaypointIndex < 0)
+		{
+			m_currentWaypointIndex = 0;
+		}
+		if (!m_pathWaypoints.empty() && m_currentWaypointIndex >= static_cast<int>(m_pathWaypoints.size()))
+		{
+			m_currentWaypointIndex = static_cast<int>(m_pathWaypoints.size()) - 1;
+		}
+		m_preserveLoadedMotion = m_isMoving || m_pathfindingPending || !m_pathWaypoints.empty();
+	}
+}
+
 json U7Object::SaveToJson() const
 {
 	// note: this will never be called for STATIC objects
@@ -6869,6 +7065,15 @@ json U7Object::SaveToJson() const
 			j["m_destMap"] = e.m_destMap;
 	}
 
+	WriteCombatFields(j);
+
+	if (m_isProjectile)
+	{
+		j["isProjectile"] = true;
+		j["speed"] = m_speed;
+		j["dest"] = { m_Dest.x, m_Dest.y, m_Dest.z };
+	}
+
 	return j;
 }
 
@@ -6950,12 +7155,6 @@ U7Object* U7Object::LoadFromJson(const json& j)
 		obj->m_lastSchedule = j.value("lastSchedule", -1);
 		obj->m_npcBatchIndex = j.value("npcBatchIndex", -1);
 
-		// Clear any mid-path state; stay at saved position until schedule system runs.
-		obj->m_pathWaypoints.clear();
-		obj->m_currentWaypointIndex = 0;
-		obj->m_pathfindingPending = false;
-		obj->SetDest(obj->m_Pos);
-
 		auto npcIt = g_NPCData.find(obj->m_NPCID);
 		if (npcIt != g_NPCData.end() && npcIt->second)
 		{
@@ -6969,9 +7168,13 @@ U7Object* U7Object::LoadFromJson(const json& j)
 		}
 
 		// Apply saved combat stats AFTER NPCInit (which sets template HP/mana).
+		// "combat" is the skill rating. An object here is not a number.
 		obj->m_hp = j.value("hp", obj->m_hp);
 		obj->m_mana = j.value("mana", obj->m_mana);
-		obj->m_combat = j.value("combat", obj->m_combat);
+		if (j.contains("combat") && j["combat"].is_number())
+		{
+			obj->m_combat = j["combat"].get<float>();
+		}
 		obj->m_magic = j.value("magic", obj->m_magic);
 		obj->m_Team = j.value("team", obj->m_Team);
 		// Equipment restored in second pass by GameSerializer
@@ -6982,7 +7185,11 @@ U7Object* U7Object::LoadFromJson(const json& j)
 		obj->MonsterInit();
 		obj->m_hp = j.value("hp", 25.0f);
 		obj->m_mana = j.value("mana", 0.0f);
-		obj->m_combat = j.value("combat", 10.0f);
+		obj->m_combat = 10.0f;
+		if (j.contains("combat") && j["combat"].is_number())
+		{
+			obj->m_combat = j["combat"].get<float>();
+		}
 		obj->m_magic = j.value("magic", 0.0f);
 		obj->m_Team = j.value("team", 0);
 	}
@@ -7060,6 +7267,33 @@ U7Object* U7Object::LoadFromJson(const json& j)
 		}
 		if (j.contains("m_destMap"))
 			e.m_destMap = j["m_destMap"].get<int>();
+	}
+
+	obj->ReadCombatFields(j);
+	if ((obj->m_UnitType == UnitTypes::UNIT_TYPE_NPC || obj->m_UnitType == UnitTypes::UNIT_TYPE_MONSTER)
+		&& !obj->m_preserveLoadedMotion)
+	{
+		// Peace-time loads stay on the saved tile. Schedule walks are not resumed.
+		obj->m_pathWaypoints.clear();
+		obj->m_currentWaypointIndex = 0;
+		obj->m_pathfindingPending = false;
+		obj->m_isMoving = false;
+		obj->SetDest(obj->m_Pos);
+	}
+
+	if (j.value("isProjectile", false))
+	{
+		obj->m_isProjectile = true;
+		obj->m_Visible = true;
+		obj->m_ShouldDraw = true;
+		if (j.contains("speed"))
+		{
+			obj->m_speed = j["speed"].get<float>();
+		}
+		if (j.contains("dest") && j["dest"].is_array() && j["dest"].size() == 3)
+		{
+			obj->SetDest(Vector3{ j["dest"][0].get<float>(), j["dest"][1].get<float>(), j["dest"][2].get<float>() });
+		}
 	}
 
 	return obj;

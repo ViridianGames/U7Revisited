@@ -622,6 +622,8 @@ public:
 
 	// Serialization
 	json SaveToJson() const;
+	void WriteCombatFields(json& j) const;
+	void ReadCombatFields(const json& j);
 
 	static U7Object *LoadFromJson(const json &j);
 
@@ -845,6 +847,8 @@ public:
 	bool m_movingToActivity = false;
 	bool m_isMoving = false;
 	bool m_isPaused = true;
+	// Set when a save restored a path. RebuildWorldFromLoadedData must not wipe it.
+	bool m_preserveLoadedMotion = false;
 
 		// Per-NPC contiguous index used for deterministic batching of activity script updates.
 		// Assigned at NPCInit time to guarantee a compact range [0..N).

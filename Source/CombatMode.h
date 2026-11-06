@@ -4,6 +4,7 @@
 #include <memory>
 #include <vector>
 #include <string>
+#include "../ThirdParty/nlohmann/json.hpp"
 
 class MainState;
 class U7Object;
@@ -29,6 +30,7 @@ CombatStyle GetCombatStylePreference();
 void SetCombatStylePreference(CombatStyle style);
 const char* CombatStyleDisplayName(CombatStyle style);
 const char* CombatStyleConfigToken(CombatStyle style);
+CombatStyle CombatStyleFromToken(const std::string& token);
 
 // engine.cfg combat_auto_start_on_aggro (1 = enter combat when hostiles approach).
 bool GetCombatAutoStartOnAggro();
@@ -46,6 +48,13 @@ public:
 
 	virtual void OnEnter(MainState& main);
 	virtual void OnLeave(MainState& main);
+	// Encounter snapshot. RestoreState must not reroll initiative or move the camera.
+	virtual void SaveState(nlohmann::ordered_json& out) const { (void)out; }
+	virtual void RestoreState(MainState& main, const nlohmann::ordered_json& in)
+	{
+		(void)main;
+		(void)in;
+	}
 	virtual void Update(MainState& main);
 	virtual void HandleInput(MainState& main);
 	virtual void DrawHud(MainState& main);
@@ -94,6 +103,8 @@ public:
 
 	void OnEnter(MainState& main) override;
 	void OnLeave(MainState& main) override;
+	void SaveState(nlohmann::ordered_json& out) const override;
+	void RestoreState(MainState& main, const nlohmann::ordered_json& in) override;
 	void Update(MainState& main) override;
 	void HandleInput(MainState& main) override;
 	void DrawHud(MainState& main) override;
@@ -129,6 +140,8 @@ public:
 
 	void OnEnter(MainState& main) override;
 	void OnLeave(MainState& main) override;
+	void SaveState(nlohmann::ordered_json& out) const override;
+	void RestoreState(MainState& main, const nlohmann::ordered_json& in) override;
 	void Update(MainState& main) override;
 	void HandleInput(MainState& main) override;
 	void DrawHud(MainState& main) override;

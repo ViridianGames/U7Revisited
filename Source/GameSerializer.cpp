@@ -4,9 +4,11 @@
 #include "U7Globals.h"
 #include "U7Player.h"
 #include "U7Object.h"
+#include "MainState.h"
 #include "WeatherSystem.h"
 #include "../ThirdParty/nlohmann/json.hpp"
 #include <filesystem>
+#include <optional>
 #include <sstream>
 #include <iomanip>
 #include <unordered_map>
@@ -18,6 +20,14 @@ namespace fs = std::filesystem;
 
 // Static member initialization
 std::string GameSerializer::s_lastError = "";
+static std::optional<std::string> s_pendingSessionJson;
+
+std::optional<std::string> GameSerializer::TakePendingSessionJson()
+{
+	std::optional<std::string> pending = std::move(s_pendingSessionJson);
+	s_pendingSessionJson.reset();
+	return pending;
+}
 
 // ============================================================================
 // Error Handling
@@ -382,13 +392,19 @@ bool GameSerializer::SaveToStream(std::ofstream& stream, const std::string& save
 			saveData["weather"] = g_WeatherSystem->SaveToJson();
 		}
 
-		// Session / camera (optional restore for continuity)
+		// Session / camera (optional restore for continuity).
+		// combatMode alone is not enough: the encounter (style, turn, orders) is session.combat.
 		saveData["session"]["combatMode"] = g_isCombatMode;
+		if (g_mainState)
+		{
+			g_mainState->WriteSessionCombat(saveData["session"]);
+		}
 		saveData["session"]["camera"] = {
 			{"target", { g_camera.target.x, g_camera.target.y, g_camera.target.z }},
 			{"position", { g_camera.position.x, g_camera.position.y, g_camera.position.z }},
 			{"distance", g_cameraDistance},
-			{"rotation", g_cameraRotation}
+			{"rotation", g_cameraRotation},
+			{"lockObjectId", g_cameraLockObjectId}
 		};
 
 		// Player state
@@ -549,6 +565,9 @@ bool GameSerializer::LoadFromStream(std::ifstream& stream)
 
 		// ---- Commit point: mutate live world ----
 
+		// Bolts are reattached from the session after the world rebuild.
+		g_flyingProjectiles.clear();
+
 		// Stop scripts before destroying objects they may reference.
 		if (g_ScriptingSystem)
 			g_ScriptingSystem->ClearAllCoroutines();
@@ -693,12 +712,11 @@ bool GameSerializer::LoadFromStream(std::ifstream& stream)
 			}
 		}
 
-		// Session / camera
+		// Session / camera. Combat encounter is applied after the chunk rebuild,
+		// once saved objects exist. Do not set g_isCombatMode here.
 		if (saveData.contains("session"))
 		{
 			const auto& session = saveData["session"];
-			if (session.contains("combatMode"))
-				g_isCombatMode = session["combatMode"].get<bool>();
 			if (session.contains("camera"))
 			{
 				const auto& cam = session["camera"];
@@ -718,6 +736,8 @@ bool GameSerializer::LoadFromStream(std::ifstream& stream)
 					g_cameraDistance = cam["distance"].get<float>();
 				if (cam.contains("rotation"))
 					g_cameraRotation = cam["rotation"].get<float>();
+				if (cam.contains("lockObjectId"))
+					g_cameraLockObjectId = cam["lockObjectId"].get<int>();
 			}
 		}
 
@@ -738,6 +758,7 @@ bool GameSerializer::LoadFromStream(std::ifstream& stream)
 		    " (" + std::to_string(staticCount) + " static, " +
 		    std::to_string(objectCount) + " objects, " + std::to_string(npcCount) + " NPCs)");
 
+		s_pendingSessionJson = saveData.contains("session") ? saveData["session"].dump() : std::string("{}");
 		return true;
 	}
 	catch (const json::parse_error&)

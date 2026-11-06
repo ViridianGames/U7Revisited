@@ -372,6 +372,10 @@ public:
 	void EnterCombatMode();
 	void LeaveCombatMode();
 	void UpdateCombatMode();
+	// Writes session.combat and session.projectiles. Does not touch the camera block.
+	void WriteSessionCombat(nlohmann::ordered_json& session) const;
+	// Applies a loaded session: projectiles, then combat encounter or a clean peace state.
+	void ApplyLoadedSession(const nlohmann::ordered_json& session);
 	/// Add to m_combatParticipants. Hostiles must pass HasCombatWalkPathToParty
 	/// unless requireWalkPath is false (player click-to-attack / forced enroll).
 	void EnsureCombatParticipant(int objectId, bool requireWalkPath = true);
@@ -429,6 +433,8 @@ public:
 
 private:
 	void ClearCombatPartyTargets();
+	void ClearCombatSessionForLoad();
+	void RestoreCombatEncounter(const nlohmann::ordered_json& combat);
 	void EnrollNearbyCombatHostiles();
 	void HandleCombatOrdersClick();
 	void HandleCombatOrderKeys();

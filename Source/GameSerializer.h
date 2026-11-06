@@ -4,6 +4,7 @@
 #include <string>
 #include <fstream>
 #include <ctime>
+#include <optional>
 
 class GameSerializer
 {
@@ -16,6 +17,10 @@ public:
 	// Save/Load operations
 	static bool SaveGame(int slotNumber, const std::string& saveName);
 	static bool LoadGame(int slotNumber);
+
+	// Session JSON from the load that just succeeded. Empty until the next successful load.
+	// RebuildWorldFromLoadedData takes it once and restores combat.
+	static std::optional<std::string> TakePendingSessionJson();
 
 	// Error handling
 	static std::string GetLastError();  // Returns user-friendly error message from last failed operation
