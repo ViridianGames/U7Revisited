@@ -13,6 +13,9 @@ constexpr bool kCombatStateEnabled = true;
 // True for Team-1 monsters/NPCs that should fight the party.
 bool IsHostileCombatUnit(const U7Object* unit);
 
+// Team-2 summons (Swarm insects). They fight for the party and are not player-controlled.
+bool IsAlliedSummonUnit(const U7Object* unit);
+
 // True when the unit stands on an Exult mountain-ceiling dungeon tile.
 bool IsUnitInDungeon(const U7Object* unit);
 
@@ -26,11 +29,13 @@ bool HasCombatLineOfSight(const U7Object* from, const U7Object* to);
 
 // True when the hostile has wall LOS to at least one living party member
 // (same dungeon layer, within crow-fly). Required for new aggro / enroll.
+// A member this hostile cannot see (invisibility, no see-invisible) does not count.
 bool HasCombatLineOfSightToParty(const U7Object* hostile, float maxCrowFlyTiles = 16.0f);
 
 // True when FindFastPath can walk the hostile to a living party member and every
 // densified tile step passes ValidateMove. MonsterChase crow-fly / greedy stubs
 // are not accepted — those false-connected Destard to Lasher's cave.
+// Invisible members this hostile cannot see are skipped, same as the LOS check.
 // maxCrowFlyTiles / maxWalkCost default to the short enroll budget; pruning
 // mid-fight may pass the longer chase leash so valid fights are not dropped.
 bool HasCombatWalkPathToParty(

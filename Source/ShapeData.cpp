@@ -376,6 +376,31 @@ void ShapeData::GetFlatDrawTransform(const Vector3& pos, float angle, Vector3 sc
 	outRotation = m_rotation + angle;
 }
 
+void ShapeData::GetCenteredFlatTransform(const Vector3& pos, Vector3 scaling,
+                                         Vector3& outPos, Vector3& outScale) const
+{
+	// Same lift as GetFlatModelPosition so the cel clears the terrain.
+	float y = pos.y;
+	if (y <= 0.0f)
+	{
+		y = 0.02f;
+	}
+	y += 0.12f;
+	y += m_TweakPos.y;
+
+	outScale = Vector3{
+		m_Dims.x * m_Scaling.x * scaling.x,
+		1.0f,
+		m_Dims.z * m_Scaling.z * scaling.z
+	};
+	// flat.obj covers x [0, scale.x] and z [-scale.z, 0]. Center that on pos.
+	outPos = Vector3{
+		pos.x + m_TweakPos.x - outScale.x * 0.5f,
+		y,
+		pos.z + m_TweakPos.z + outScale.z * 0.5f
+	};
+}
+
 void ShapeData::CaptureSpecialPaletteReferences(int posX, int posY, int paletteRef)
 {
 	// Caller decides which indices are glisten for this shape (see IsU7PaletteGlistenIndex).
@@ -479,13 +504,6 @@ void ShapeData::Deserialize(ifstream& inStream)
 	inStream >> m_TweakPos.z;
 	if (abs(m_TweakPos.z) < .01f) { m_TweakPos.z = 0; }
 	inStream >> m_rotation;
-	// Legacy billboards stored 0 while Draw used a hardcoded -45 (= 315°).
-	// Migrate once on load so draw can treat 0 as a real angle.
-	if (m_drawType == ShapeDrawType::OBJECT_DRAW_BILLBOARD &&
-		(fabsf(m_rotation) < 0.001f || fabsf(m_rotation + 45.0f) < 0.001f))
-	{
-		m_rotation = 315.0f;
-	}
 	int sideTexture;
 	inStream >> sideTexture;
 	m_sideTextures[0] = static_cast<CuboidTexture>(sideTexture);
@@ -909,7 +927,7 @@ void ShapeData::UpdateTextureCoordinates()
     
 }
 
-BoundingBox ShapeData::GetAsFlatBoundingBox(const Vector3& pos, float height, Vector3 scaling)
+BoundingBox ShapeData::GetAsFlatBoundingBox(const Vector3& pos, float height, Vector3 scaling, bool centerOnPos)
 {
 	BoundingBox box{};
 	const bool hasRgb = (m_texture != nullptr && m_texture->m_Texture.id > 0);
@@ -931,16 +949,24 @@ BoundingBox ShapeData::GetAsFlatBoundingBox(const Vector3& pos, float height, Ve
 	Vector3 finalPos{};
 	Vector3 flatScaling{};
 	float flatRotation = 0.0f;
-	GetFlatDrawTransform(pos, 0.0f, scaling, finalPos, flatScaling, flatRotation);
+	if (centerOnPos)
+	{
+		GetCenteredFlatTransform(pos, scaling, finalPos, flatScaling);
+	}
+	else
+	{
+		GetFlatDrawTransform(pos, 0.0f, scaling, finalPos, flatScaling, flatRotation);
+	}
 	m_Dims = savedDims;
 
 	// flat.obj spans x in [0, scale.x] and z in [-scale.z, 0] from the model origin.
+	// centerOnPos keeps yaw at 0, so this AABB is the quad.
 	box.min = Vector3{ finalPos.x, pos.y, finalPos.z - flatScaling.z };
 	box.max = Vector3{ finalPos.x + flatScaling.x, pos.y + height, finalPos.z };
 	return box;
 }
 
-void ShapeData::DrawAsFlat(const Vector3& pos, Color color, Vector3 scaling)
+void ShapeData::DrawAsFlat(const Vector3& pos, Color color, Vector3 scaling, bool centerOnPos)
 {
 	if (!m_isValid || m_flatModel == nullptr)
 		return;
@@ -960,7 +986,14 @@ void ShapeData::DrawAsFlat(const Vector3& pos, Color color, Vector3 scaling)
 	Vector3 finalPos{};
 	Vector3 flatScaling{};
 	float flatRotation = 0.0f;
-	GetFlatDrawTransform(pos, 0.0f, scaling, finalPos, flatScaling, flatRotation);
+	if (centerOnPos)
+	{
+		GetCenteredFlatTransform(pos, scaling, finalPos, flatScaling);
+	}
+	else
+	{
+		GetFlatDrawTransform(pos, 0.0f, scaling, finalPos, flatScaling, flatRotation);
+	}
 
 	if (hasIndex && g_paletteSystemReady)
 	{
@@ -975,11 +1008,21 @@ void ShapeData::DrawAsFlat(const Vector3& pos, Color color, Vector3 scaling)
 	}
 	else if (hasRgb)
 	{
-		BeginShaderMode(g_alphaDiscard);
-		SetMaterialTexture(&m_flatModel->GetModel().materials[0], MATERIAL_MAP_DIFFUSE, m_texture->m_Texture);
+		// DrawModelEx binds material.shader and ignores BeginShaderMode.
+		// Without alphaDiscard, the frame's transparent texels still write depth
+		// and the empty rectangle of one corpse hides the next.
+		Material& mat = m_flatModel->GetModel().materials[0];
+		const Shader prevShader = mat.shader;
+		mat.shader = g_alphaDiscard;
+		if (g_alphaDiscardCutoffLoc >= 0)
+		{
+			float cutoff = 0.5f;
+			SetShaderValue(g_alphaDiscard, g_alphaDiscardCutoffLoc, &cutoff, SHADER_UNIFORM_FLOAT);
+		}
+		SetMaterialTexture(&mat, MATERIAL_MAP_DIFFUSE, m_texture->m_Texture);
 		m_flatModel->UpdateFlatUV(0.0f, 1.0f, 0.0f, 1.0f);
 		DrawModelEx(m_flatModel->GetModel(), finalPos, { 0, 1, 0 }, flatRotation, flatScaling, color);
-		EndShaderMode();
+		mat.shader = prevShader;
 	}
 
 	m_Dims = savedDims;
@@ -1243,10 +1286,9 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 		finalPos.y += m_Dims.y * .60f;
 		finalPos = Vector3Add(finalPos, m_TweakPos);
 
-		// Per shape/frame spin (Shape Editor "Rot:"). Default for new/legacy
-		// billboards is 315° (seeded on load / in the editor) — do NOT remap 0
-		// here or scrubbing through 0 jumps to 315 for a frame.
-		const float billboardAngle = m_rotation;
+		// Stored Rot is an offset. 0 is the default. The isometric facing (315°)
+		// is added only here, so flats and meshes keep the number as written.
+		const float billboardAngle = 315.0f + m_rotation;
 
 		// W/H scale tweaks (D unused for upright billboards).
 		const Vector2 billboardSize = {

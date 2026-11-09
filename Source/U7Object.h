@@ -554,8 +554,9 @@ public:
 	void DebugPrintMonsterInfo() const;
 
 	// Pose frames (Exult): 0–15 one facing set, 16–31 the opposite.
-	// sit=10/26, sleep=13/29. Setting a pose stops pathing so NPCDraw uses it.
-	// Death uses the same laying-down frames as sleep (13/29).
+	// sit=10/26, sleep=13/29. Setting a pose stops pathing so the billboard uses it.
+	// KO and asleep lie flat as that sleep frame. True death lies flat as the
+	// remains shape from the original body table.
 	void SetOverrideFrame(int overrideFrame);
 	void ClearOverrideFrame(const Vector3* toward = nullptr);
 	bool IsSittingPose() const;
@@ -563,7 +564,7 @@ public:
 	bool IsDeathStatus() const;
 	/// Exult is_knocked_out: health <= 0 and not a true corpse.
 	bool IsKnockedOut() const;
-	/// Dead, KO, or asleep — draw/pick as a ground flat (same as corpses).
+	/// Dead, KO, or asleep — draw and pick as a ground flat.
 	bool ShouldLieFlat() const;
 	/// Exult is_dying: health < -(strength / 3).
 	bool IsDying() const;
@@ -750,6 +751,8 @@ public:
 	// 0 = neutral, 1 = hostile, 2 = party-aligned summon (Swarm insects, etc.)
 	int m_Team;
 	bool m_isFlying = false;
+	// Exult Monster_info::see_invisible (flags byte bit 7). Set in MonsterInit.
+	bool m_canSeeInvisible = false;
 	// Extra billboard/pick lift in world tiles (flying creatures ~waist height).
 	float m_drawHeightOffset = 0.0f;
 
@@ -889,12 +892,38 @@ public:
 	void UpdatePoisonTimer();        // call from NPC/Monster update
 
 	// Exult Npc_sleep_timer: spell sleep wears off in ~5-10s; KO mends until HP >= 1.
+	// Turn-based combat counts this unit's turns instead of that wall clock.
 	float m_sleepEndsAt = 0.0f;          // GetTime() when natural wake is allowed; 0 = inactive
 	float m_sleepNextMendCheckAt = 0.0f; // next mend roll while HP <= 0
+	int m_sleepTurnsRemaining = 0;       // >0: skip this many turn-based turns, then stand up
+	enum class TurnBasedSleepTick
+	{
+		NotAsleep,
+		StillAsleep,
+		Woke
+	};
 	void StartSleepTimer();
 	void StopSleepTimer();
 	void UpdateSleepTimer();             // call from NPC/Monster update
+	// Once per turn-based turn. Spell sleep skips the action. The turn that
+	// reaches 0 stands them up and still does not let them act.
+	TurnBasedSleepTick TickTurnBasedSleep();
 	void MendWounds(bool mendMana);      // Exult Actor::mend_wounds (+1 HP when eligible)
+
+	// Exult Npc_invisibility_timer: spell/potion lasts 60-80s. A worn ring of
+	// invisibility (shape 296 frame 0) keeps the flag and drops the timer.
+	float m_invisibilityEndsAt = 0.0f;   // GetTime() when the spell wears off; 0 = no timer
+	bool IsInvisible() const { return (m_flags & kObjFlagInvisible) != 0; }
+	bool CanSeeInvisible() const { return m_canSeeInvisible; }
+	// Non-party actors are not drawn or picked. Avatar and party are ghosted.
+	bool IsHiddenByInvisibility() const;
+	bool WearsInvisibilityRing() const;
+	void ApplyInvisibilityGhostTint(Color& color) const;
+	void StartInvisibilityTimer();
+	void StopInvisibilityTimer();
+	void UpdateInvisibilityTimer();
+	// Exult Combat_schedule::stop_attacking_invisible.
+	void StopAttacksOnInvisible();
 
 };
 

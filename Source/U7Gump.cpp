@@ -436,15 +436,31 @@ void Gump::SortContainer()
 
 bool Gump::IsMouseOverSolidPixel(Vector2 mousePos)
 {
+	// Convert mouse position to local gump coordinates
+	const float localX = mousePos.x - m_gui.m_Pos.x;
+	const float localY = mousePos.y - m_gui.m_Pos.y;
+
+	// The inventory well is transparent in the gump art. It still owns clicks
+	// and drops, or they fall through onto the paperdoll and get equipped.
+	if (m_containerObject != nullptr)
+	{
+		Rectangle inventoryBox = {
+			m_containerData.m_boxOffset.x,
+			m_containerData.m_boxOffset.y,
+			m_containerData.m_boxSize.x,
+			m_containerData.m_boxSize.y
+		};
+		if (CheckCollisionPointRec({ localX, localY }, inventoryBox))
+		{
+			return true;
+		}
+	}
+
 	static constexpr const char* kBigGumpsPath = "Images/GUI/biggumps.png";
 	const Image* img = GetCachedGuiImage(kBigGumpsPath);
 	// If no image, default to solid (always block input)
 	if (!img || img->data == nullptr)
 		return true;
-
-	// Convert mouse position to local gump coordinates
-	const float localX = mousePos.x - m_gui.m_Pos.x;
-	const float localY = mousePos.y - m_gui.m_Pos.y;
 
 	// Must be inside this container's sprite rect (not just the atlas)
 	if (localX < 0 || localY < 0 ||

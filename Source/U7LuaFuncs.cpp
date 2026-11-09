@@ -4064,6 +4064,18 @@ static int LuaSetItemFlag(lua_State *L)
         return 0;
     }
 
+    // Exult set_flag(invisible): spell timer, unless a ring of invisibility is worn.
+    if (flag_id == 0)
+    {
+        obj->m_flags |= kObjFlagInvisible;
+        if (obj->WearsInvisibilityRing())
+            obj->StopInvisibilityTimer();
+        else
+            obj->StartInvisibilityTimer();
+        obj->StopAttacksOnInvisible();
+        return 0;
+    }
+
     // Set the bit to 1 using bitwise OR
     obj->m_flags |= (1u << flag_id);
     // Exult set_flag(poisoned) starts Npc_poison_timer (DoT + wear-off).
@@ -4091,6 +4103,14 @@ static int LuaClearItemFlag(lua_State *L)
     {
         obj->ClearSleep();
         obj->StopSleepTimer();
+        return 0;
+    }
+
+    // Exult clear_flag(invisible) drops the spell timer immediately.
+    if (flag_id == 0)
+    {
+        obj->m_flags &= ~kObjFlagInvisible;
+        obj->StopInvisibilityTimer();
         return 0;
     }
 
@@ -4343,6 +4363,8 @@ static int LuaSummon(lua_State *L)
 	}
 
 	// Party-aligned summons (Swarm insects): 0-damage distraction pests.
+	// SpawnMonster enrolled them while they were still hostile. Re-enroll after
+	// the team change so a failed hostile path check cannot leave them out.
 	if (U7Object* spawned = GetObjectFromID(id))
 	{
 		spawned->m_Team = 2;
@@ -4351,6 +4373,8 @@ static int LuaSummon(lua_State *L)
 		spawned->m_cooldownTimer = g_NonVitalRNG
 			? g_NonVitalRNG->RandomRangeFloat(0.0f, 0.5f)
 			: 0.25f;
+		if (g_isCombatMode)
+			g_mainState->EnsureCombatParticipant(id, false);
 	}
 
 	lua_pushinteger(L, id);

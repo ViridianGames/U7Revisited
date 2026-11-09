@@ -8,6 +8,7 @@
 #include "Geist/ScriptingSystem.h"
 #include "ConversationState.h"
 #include "PathfindingSystem.h"
+#include "CombatState.h"
 #include "PerfTelemetry.h"
 #include "SoundSystem.h"
 #include "lua.hpp"
@@ -2199,6 +2200,16 @@ void RestackGlassCounterDisplays()
 			" object(s) under " + std::to_string(cases.size()) + " glass counter(s)");
 }
 
+// Team-2 summons (Swarm and the like) are friendly and not a combat target.
+// Their box must not hide the enemy, party member, or prop under the cursor.
+static bool CombatPickSkipsAlly(const U7Object* obj)
+{
+	if (!g_isCombatMode || !obj || obj->m_Team != 2)
+		return false;
+	return obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC
+		|| obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_MONSTER;
+}
+
 void UpdateSortedVisibleObjects()
 {
 	int minCX = 0, maxCX = 0, minCZ = 0, maxCZ = 0;
@@ -2226,6 +2237,12 @@ void UpdateSortedVisibleObjects()
 			{
 				// Skip null, dead, or contained objects
 				if (!object || object->GetIsDead() || object->m_isContained || !object->m_Visible)
+				{
+					continue;
+				}
+
+				// Invisible non-party actors are not drawn and cannot be picked.
+				if (object->IsHiddenByInvisibility())
 				{
 					continue;
 				}
@@ -2274,6 +2291,7 @@ void UpdateSortedVisibleObjects()
 	{
 		const bool skipLockedObject = g_firstPersonEnabled && IsCameraLocked();
 		U7Object* avatar = (g_Player) ? g_Player->GetAvatarObject() : nullptr;
+		U7Object* allyFallback = nullptr;
 
 		for (auto node = g_sortedVisibleObjects.rbegin(); node != g_sortedVisibleObjects.rend(); ++node)
 		{
@@ -2298,11 +2316,27 @@ void UpdateSortedVisibleObjects()
 			Vector3 pos = { 0, 0, 0 };
 			float picked = (*node)->PickXYZ(pos);
 
-			if (picked != -1)
+			if (picked == -1)
 			{
-				g_objectUnderMousePointer = obj;
-				break; // closest visible non-skipped object
+				continue;
 			}
+
+			if (CombatPickSkipsAlly(obj))
+			{
+				if (!allyFallback)
+				{
+					allyFallback = obj;
+				}
+				continue;
+			}
+
+			g_objectUnderMousePointer = obj;
+			break; // closest visible object that can take a combat click
+		}
+
+		if (!g_objectUnderMousePointer)
+		{
+			g_objectUnderMousePointer = allyFallback;
 		}
 	}
 
@@ -4965,13 +4999,98 @@ EquipmentSlot GetEquipmentSlotForShape(int shapeId)
 	return EquipmentSlot::SLOT_COUNT;
 }
 
+// Exult readied (5) / unreadied (6) only runs when the item's usecode
+// declares those events. A double-click script (books, scrolls, food)
+// must not run just because the item was equipped at load.
+static bool ScriptHandlesEquipEvent(const std::string& scriptName)
+{
+	static std::unordered_map<std::string, bool> cache;
+	auto found = cache.find(scriptName);
+	if (found != cache.end())
+		return found->second;
+
+	bool handles = false;
+	if (g_ScriptingSystem)
+	{
+		for (const auto& script : g_ScriptingSystem->m_scriptFiles)
+		{
+			if (script.first != scriptName)
+				continue;
+
+			std::ifstream in(script.second);
+			std::string line;
+			while (std::getline(in, line))
+			{
+				if (line.find("eventid == 5") != std::string::npos
+					|| line.find("eventid == 6") != std::string::npos
+					|| line.find("eventid==5") != std::string::npos
+					|| line.find("eventid==6") != std::string::npos)
+				{
+					handles = true;
+					break;
+				}
+			}
+			break;
+		}
+	}
+
+	cache.emplace(scriptName, handles);
+	return handles;
+}
+
+// Exult readied (5) / unreadied (6). The item must still be in the NPC's
+// inventory so scripts can walk get_container up to the wearer.
+static void CallItemReadiedUsecode(int itemId, int eventId)
+{
+	if (!g_ScriptingSystem || itemId < 0)
+		return;
+
+	U7Object* item = GetObjectFromID(itemId);
+	if (!item)
+		return;
+
+	std::string scriptName = GetObjectScriptName(item);
+	if (scriptName.empty()
+		&& item->m_ObjectType >= 0
+		&& item->m_ObjectType < static_cast<int>(g_shapeTable.size())
+		&& !g_shapeTable[item->m_ObjectType].empty())
+	{
+		const std::string& frame0 = g_shapeTable[item->m_ObjectType][0].m_luaScript;
+		if (!frame0.empty() && frame0 != "default")
+			scriptName = frame0;
+	}
+	if (scriptName.empty() || !ScriptHandlesEquipEvent(scriptName))
+		return;
+
+	g_ScriptingSystem->CallScript(
+		scriptName,
+		{ static_cast<lua_Integer>(eventId), static_cast<lua_Integer>(itemId) });
+}
+
 // NPCData equipment management implementations
 void NPCData::SetEquippedItem(EquipmentSlot slot, int objectId)
 {
+	const int previous = GetEquippedItem(slot);
+	bool alreadyWorn = false;
+	if (objectId != -1)
+	{
+		for (int s = 0; s < static_cast<int>(EquipmentSlot::SLOT_COUNT); ++s)
+		{
+			if (GetEquippedItem(static_cast<EquipmentSlot>(s)) == objectId)
+			{
+				alreadyWorn = true;
+				break;
+			}
+		}
+	}
+
 	m_equipment[slot] = objectId;
 
 	// Add to NPC's inventory if not already there, or invalidate cache if it is
-	U7Object* npcObject = g_objectList[m_objectID].get();
+	U7Object* npcObject = nullptr;
+	auto npcIt = g_objectList.find(m_objectID);
+	if (npcIt != g_objectList.end())
+		npcObject = npcIt->second.get();
 	if (npcObject)
 	{
 		if (!npcObject->IsInInventoryById(objectId))
@@ -4983,6 +5102,11 @@ void NPCData::SetEquippedItem(EquipmentSlot slot, int objectId)
 			// Item already in inventory, just invalidate weight cache
 			npcObject->InvalidateWeightCache();
 		}
+
+		// Fire once when the item first becomes worn (multi-slot gear fills several slots).
+		// The item is in this NPC's inventory, so the script can walk get_container.
+		if (objectId != -1 && objectId != previous && !alreadyWorn)
+			CallItemReadiedUsecode(objectId, 5);
 	}
 }
 
@@ -4991,12 +5115,18 @@ void NPCData::UnequipItem(EquipmentSlot slot)
 	int objectId = GetEquippedItem(slot);
 	m_equipment[slot] = -1;
 
-	// Remove from NPC's inventory
+	// Remove from NPC's inventory. Readied usecode runs first, while get_container
+	// still walks up to this NPC. RemoveObjectFromInventory clears every slot that
+	// held the item, so a second UnequipItem on a fill slot does not fire again.
 	if (objectId != -1)
 	{
-		U7Object* npcObject = g_objectList[m_objectID].get();
+		U7Object* npcObject = nullptr;
+		auto npcIt = g_objectList.find(m_objectID);
+		if (npcIt != g_objectList.end())
+			npcObject = npcIt->second.get();
 		if (npcObject)
 		{
+			CallItemReadiedUsecode(objectId, 6);
 			npcObject->RemoveObjectFromInventory(objectId);
 		}
 	}

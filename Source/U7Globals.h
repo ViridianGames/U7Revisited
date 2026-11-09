@@ -977,6 +977,16 @@ inline Vector3 FlatUnderFeetOrigin(const Vector3& feetPos, float scale, float y)
 	return Vector3{ feetPos.x - scale * 0.5f, y, feetPos.z + scale * 0.5f };
 }
 
+// ShapeData::GetFlatModelPosition lifts every ground flat, including corpses
+// drawn through DrawAsFlat: y snaps up to 0.02, then adds 0.12. Those quads
+// write depth in the character pass. Combat markers below that height lose
+// the depth test and disappear under a body on the same tile.
+inline float CombatGroundMarkerY(float feetY)
+{
+	const float base = (feetY <= 0.0f) ? 0.02f : feetY;
+	return base + 0.20f;
+}
+
 // Call this whenever ANY object changes position or state
 // radius covers multi-tile footprints (metal walls are 4 wide).
 void NotifyPathfindingGridUpdate(int worldX, int worldZ, int radius = 4);

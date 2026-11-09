@@ -156,6 +156,12 @@ void U7Object::Draw()
 		return;
 	}
 
+	// Invisible strangers are omitted from the visible list; this is a backstop.
+	if (IsHiddenByInvisibility())
+	{
+		return;
+	}
+
 	// Dispatch to type-specific drawing.
 	switch (m_UnitType)
 	{
@@ -495,18 +501,45 @@ void U7Object::NotifyAttackedBy(U7Object* attacker)
 	if (!IsHostileCombatant(this) || !allyAttacker)
 		return;
 
-	// Switch to whoever just hit/harassed us.
-	m_target = attacker->m_ID;
-	m_combatMoveOrder = false;
-
-	// Swarm harass is frequent — only retarget. Do not clear paths or force a
-	// same-frame EngageCombatTarget (that repaths and tanks the frame rate).
-	if (attacker->m_Team == 2)
+	// A hit still counts, but an unseen attacker is not a legal target.
+	if (attacker->IsInvisible() && !CanSeeInvisible())
 	{
+		if (m_target == static_cast<int>(attacker->m_ID))
+		{
+			m_target = 0;
+			m_combatPathTargetId = 0;
+		}
 		if (g_isCombatMode && g_mainState)
 			g_mainState->EnsureCombatParticipant(static_cast<int>(m_ID), false);
 		return;
 	}
+
+	// Swarm harass is frequent and deals no damage. A hit has a chance to pull
+	// this unit off its current target. Do not clear paths (that repaths every insect).
+	if (attacker->m_Team == 2)
+	{
+		const int attackerId = static_cast<int>(attacker->m_ID);
+		bool pullAggro = (m_target == 0 || m_target == attackerId);
+		if (!pullAggro)
+		{
+			const unsigned int roll = g_NonVitalRNG
+				? g_NonVitalRNG->Random(2u)
+				: static_cast<unsigned int>(rand() % 2);
+			pullAggro = (roll == 0);
+		}
+		if (pullAggro)
+		{
+			m_target = attackerId;
+			m_combatMoveOrder = false;
+		}
+		if (g_isCombatMode && g_mainState)
+			g_mainState->EnsureCombatParticipant(static_cast<int>(m_ID), false);
+		return;
+	}
+
+	// Switch to whoever just hit us.
+	m_target = attacker->m_ID;
+	m_combatMoveOrder = false;
 
 	m_pathWaypoints.clear();
 	m_currentWaypointIndex = 0;
@@ -531,8 +564,10 @@ bool U7Object::EngageCombatTarget()
 		return false;
 
 	auto targetIt = g_objectList.find(m_target);
+	// Invisible targets drop out unless this unit can see them (monster flag bit 7).
 	if (targetIt == g_objectList.end() || !targetIt->second ||
-	    targetIt->second->GetIsDead() || targetIt->second->IsDeathStatus())
+	    targetIt->second->GetIsDead() || targetIt->second->IsDeathStatus() ||
+	    (targetIt->second->IsInvisible() && !CanSeeInvisible()))
 	{
 		const bool wasParty = IsPartyCombatant(this);
 		m_target = 0;
@@ -853,6 +888,8 @@ void U7Object::HostileCombatUpdate()
 	auto isValidPartyTarget = [&](U7Object* candidate) -> bool {
 		if (!candidate || candidate->GetIsDead() || candidate->IsDeathStatus())
 			return false;
+		if (candidate->IsInvisible() && !CanSeeInvisible())
+			return false;
 		if (candidate->m_UnitType != UnitTypes::UNIT_TYPE_NPC)
 			return false;
 		if (!g_Player->NPCIDInParty(candidate->m_NPCID))
@@ -870,6 +907,8 @@ void U7Object::HostileCombatUpdate()
 	auto isValidSwarmTarget = [&](U7Object* candidate) -> bool {
 		if (!candidate || candidate->GetIsDead() || candidate->IsDeathStatus())
 			return false;
+		if (candidate->IsInvisible() && !CanSeeInvisible())
+			return false;
 		if (candidate->m_Team != 2)
 			return false;
 		if (candidate->m_UnitType != UnitTypes::UNIT_TYPE_MONSTER)
@@ -879,37 +918,6 @@ void U7Object::HostileCombatUpdate()
 
 	auto isValidHostileTarget = [&](U7Object* candidate) -> bool {
 		return isValidSwarmTarget(candidate) || isValidPartyTarget(candidate);
-	};
-
-	auto selectNearestSwarmTarget = [&]() -> int {
-		int bestId = 0;
-		float bestDistSqr = kHostileAggroRangeSqr;
-		// Local chunks only — full interest / world scans were too costly with a swarm.
-		const int chunkX = static_cast<int>(m_Pos.x) / 16;
-		const int chunkZ = static_cast<int>(m_Pos.z) / 16;
-		for (int dz = -2; dz <= 2; ++dz)
-		{
-			for (int dx = -2; dx <= 2; ++dx)
-			{
-				const int cx = chunkX + dx;
-				const int cz = chunkZ + dz;
-				if (cx < 0 || cz < 0 || cx >= 192 || cz >= 192)
-					continue;
-				for (U7Object* obj : g_chunkObjectMap[cx][cz])
-				{
-					if (!isValidSwarmTarget(obj))
-						continue;
-					const float distSqr = Vector2DistanceSqr(
-						{ m_Pos.x, m_Pos.z }, { obj->m_Pos.x, obj->m_Pos.z });
-					if (distSqr < bestDistSqr)
-					{
-						bestDistSqr = distSqr;
-						bestId = static_cast<int>(obj->m_ID);
-					}
-				}
-			}
-		}
-		return bestId;
 	};
 
 	auto selectNearestPartyTarget = [&]() -> int {
@@ -936,10 +944,8 @@ void U7Object::HostileCombatUpdate()
 	};
 
 	auto selectPreferredTarget = [&]() -> int {
-		// Prefer Swarm distractions when any are in range.
-		const int swarmId = selectNearestSwarmTarget();
-		if (swarmId != 0)
-			return swarmId;
+		// New targets stay on the party. An insect pulls aggro only when its
+		// harass roll in NotifyAttackedBy succeeds; that target stays valid above.
 		return selectNearestPartyTarget();
 	};
 
@@ -965,6 +971,121 @@ void U7Object::HostileCombatUpdate()
 			EngageCombatTarget();
 	}
 	UpdateMovement();
+}
+
+bool U7Object::IsHiddenByInvisibility() const
+{
+	if ((m_flags & kObjFlagInvisible) == 0)
+		return false;
+	// Exult paints the Avatar and party with the invisibility xform.
+	// Everyone else is skipped entirely.
+	if (m_UnitType == UnitTypes::UNIT_TYPE_NPC)
+	{
+		if (m_NPCID == 0)
+			return false;
+		if (g_Player && g_Player->NPCIDInParty(m_NPCID))
+			return false;
+	}
+	return true;
+}
+
+bool U7Object::WearsInvisibilityRing() const
+{
+	if (!m_NPCData)
+		return false;
+
+	auto slotIsRing = [this](EquipmentSlot slot) -> bool
+	{
+		const int itemId = m_NPCData->GetEquippedItem(slot);
+		if (itemId < 0)
+			return false;
+		U7Object* item = GetObjectFromID(itemId);
+		// Exult Wearing_ring(actor, 296, 0): shape 296, frame 0, either finger.
+		return item && item->m_ObjectType == 296 && item->m_Frame == 0;
+	};
+
+	return slotIsRing(EquipmentSlot::SLOT_LEFT_RING)
+		|| slotIsRing(EquipmentSlot::SLOT_RIGHT_RING);
+}
+
+void U7Object::ApplyInvisibilityGhostTint(Color& color) const
+{
+	if ((m_flags & kObjFlagInvisible) == 0)
+		return;
+	// alphaDiscard keys off the texture, so a low tint alpha still ghosts the body.
+	color.r = static_cast<unsigned char>((static_cast<int>(color.r) * 3) / 4);
+	color.g = static_cast<unsigned char>((static_cast<int>(color.g) * 3) / 4);
+	const int boostedBlue = static_cast<int>(color.b) + 48;
+	color.b = static_cast<unsigned char>(boostedBlue > 255 ? 255 : boostedBlue);
+	color.a = static_cast<unsigned char>((static_cast<int>(color.a) * 110) / 255);
+}
+
+void U7Object::StartInvisibilityTimer()
+{
+	// Exult: Game::get_ticks() + 60000 + rand()%20000.
+	const float now = GetTime();
+	m_invisibilityEndsAt = now + 60.0f + static_cast<float>(rand() % 20);
+}
+
+void U7Object::StopInvisibilityTimer()
+{
+	m_invisibilityEndsAt = 0.0f;
+}
+
+void U7Object::UpdateInvisibilityTimer()
+{
+	if ((m_flags & kObjFlagInvisible) == 0)
+	{
+		StopInvisibilityTimer();
+		return;
+	}
+	if (IsDeathStatus() || GetIsDead())
+	{
+		m_flags &= ~kObjFlagInvisible;
+		StopInvisibilityTimer();
+		return;
+	}
+	// Worn ring: stay invisible and do not keep a spell timer underneath it.
+	if (WearsInvisibilityRing())
+	{
+		StopInvisibilityTimer();
+		return;
+	}
+	if (m_invisibilityEndsAt <= 0.0f)
+	{
+		// Flag restored without a duration (older save). Give the spell a fresh span.
+		StartInvisibilityTimer();
+		return;
+	}
+	if (GetTime() >= m_invisibilityEndsAt)
+	{
+		m_flags &= ~kObjFlagInvisible;
+		StopInvisibilityTimer();
+	}
+}
+
+void U7Object::StopAttacksOnInvisible()
+{
+	if ((m_flags & kObjFlagInvisible) == 0)
+		return;
+
+	const int myId = static_cast<int>(m_ID);
+	for (auto& entry : g_objectList)
+	{
+		U7Object* attacker = entry.second.get();
+		if (!attacker || attacker == this || attacker->CanSeeInvisible())
+			continue;
+		if (attacker->m_target == myId)
+		{
+			attacker->m_target = 0;
+			attacker->m_combatPathTargetId = 0;
+		}
+		if (attacker->m_combatSpellTargetId == myId)
+		{
+			attacker->m_combatSpellId = -1;
+			attacker->m_combatSpellTargetId = 0;
+		}
+	}
 }
 
 void U7Object::StartPoisonTimer()
@@ -1014,18 +1135,47 @@ void U7Object::UpdatePoisonTimer()
 	m_poisonNextTickAt = now + 10.0f + static_cast<float>(rand() % 10);
 }
 
+namespace
+{
+	// Exult sleeps a living actor for 5-10 seconds. Attack cooldown is about
+	// 3 seconds, so that is two or three missed actions. Turn-based combat
+	// counts those as this unit's own turns.
+	int RollTurnBasedSleepTurns()
+	{
+		return 2 + (rand() % 2);
+	}
+
+	bool InTurnBasedCombat()
+	{
+		return g_isCombatMode && g_mainState && g_mainState->m_combatMode
+			&& g_mainState->m_combatMode->GetStyle() == CombatStyle::TurnBased;
+	}
+}
+
 void U7Object::StartSleepTimer()
 {
-	// Exult Npc_sleep_timer: lasts 5-10 seconds for natural wake when HP >= 1.
 	const float now = GetTime();
-	m_sleepEndsAt = now + 5.0f + static_cast<float>(rand() % 5);
 	m_sleepNextMendCheckAt = now + g_secsPerMinute * 0.5f;
+
+	// Knockout stays on the real-time timer. Combat already refuses to mend,
+	// so HP <= 0 does not stand back up mid-fight.
+	if (m_hp <= 0.0f || !InTurnBasedCombat())
+	{
+		m_sleepTurnsRemaining = 0;
+		m_sleepEndsAt = now + 5.0f + static_cast<float>(rand() % 5);
+		return;
+	}
+
+	// Living spell sleep. Other units' turns must not run out this clock.
+	m_sleepTurnsRemaining = RollTurnBasedSleepTurns();
+	m_sleepEndsAt = 0.0f;
 }
 
 void U7Object::StopSleepTimer()
 {
 	m_sleepEndsAt = 0.0f;
 	m_sleepNextMendCheckAt = 0.0f;
+	m_sleepTurnsRemaining = 0;
 }
 
 void U7Object::MendWounds(bool mendMana)
@@ -1066,7 +1216,7 @@ void U7Object::MendWounds(bool mendMana)
 
 void U7Object::UpdateSleepTimer()
 {
-	if (m_sleepEndsAt <= 0.0f && (m_flags & kObjFlagAsleep) == 0)
+	if (m_sleepEndsAt <= 0.0f && m_sleepTurnsRemaining <= 0 && (m_flags & kObjFlagAsleep) == 0)
 		return;
 	if (IsDeathStatus() || GetIsDead())
 	{
@@ -1097,18 +1247,61 @@ void U7Object::UpdateSleepTimer()
 		}
 	}
 
-	// Don't wake someone beaten into unconsciousness until HP >= 1.
-	if (m_hp >= 1.0f
-	    && (now >= m_sleepEndsAt || (m_flags & kObjFlagAsleep) == 0))
+	// Awaken (and any other clear) drops a leftover turn count or clock.
+	if ((m_flags & kObjFlagAsleep) == 0)
 	{
-		if ((m_flags & kObjFlagAsleep) != 0)
-			ClearSleep();
+		if (m_hp >= 1.0f)
+			StopSleepTimer();
+		return;
+	}
+
+	// Living sleeper in turn-based combat waits for their own turn.
+	if (m_hp >= 1.0f && InTurnBasedCombat())
+	{
+		if (m_sleepTurnsRemaining <= 0)
+			m_sleepTurnsRemaining = RollTurnBasedSleepTurns();
+		m_sleepEndsAt = 0.0f;
+		return;
+	}
+
+	// Left turn-based combat with turns still banked. Finish on the real-time timer.
+	if (m_sleepTurnsRemaining > 0)
+	{
+		m_sleepTurnsRemaining = 0;
+		if (m_sleepEndsAt <= now)
+			m_sleepEndsAt = now + 5.0f + static_cast<float>(rand() % 5);
+		return;
+	}
+
+	// Don't wake someone beaten into unconsciousness until HP >= 1.
+	if (m_hp >= 1.0f && (m_sleepEndsAt <= 0.0f || now >= m_sleepEndsAt))
+	{
+		ClearSleep();
 		StopSleepTimer();
 	}
 }
 
+U7Object::TurnBasedSleepTick U7Object::TickTurnBasedSleep()
+{
+	if ((m_flags & kObjFlagAsleep) == 0 || m_hp < 1.0f || IsDeathStatus() || GetIsDead())
+		return TurnBasedSleepTick::NotAsleep;
+
+	if (m_sleepTurnsRemaining <= 0)
+		m_sleepTurnsRemaining = RollTurnBasedSleepTurns();
+
+	--m_sleepTurnsRemaining;
+	if (m_sleepTurnsRemaining > 0)
+		return TurnBasedSleepTick::StillAsleep;
+
+	ClearSleep();
+	StopSleepTimer();
+	return TurnBasedSleepTick::Woke;
+}
+
 void U7Object::MonsterUpdate()
 {
+	UpdateInvisibilityTimer();
+
 	// Corpses: keep death pose, no chase/attack AI.
 	if (IsDeathStatus() || GetIsDead())
 	{
@@ -1129,6 +1322,13 @@ void U7Object::MonsterUpdate()
 	// Hostiles are Team 1 (combat eggs). Team 2 = party summons (Swarm). Team 0 = fauna.
 	if (m_Team == 2)
 	{
+		// Turn-based: each insect waits for its initiative turn. Free roaming
+		// would move and harass on everyone else's turn.
+		if (g_isCombatMode && g_mainState && g_mainState->m_combatMode
+			&& g_mainState->m_combatMode->GetStyle() == CombatStyle::TurnBased)
+		{
+			return;
+		}
 		AlliedMonsterUpdate();
 		return;
 	}
@@ -1226,9 +1426,12 @@ void U7Object::AlliedMonsterUpdate()
 		m_cooldownTimer -= g_Engine->LastFrameInSeconds();
 
 	auto isLivingHostile = [&](U7Object* obj) -> bool {
-		return obj && IsHostileCombatUnit(obj)
-			&& Vector2DistanceSqr({ m_Pos.x, m_Pos.z }, { obj->m_Pos.x, obj->m_Pos.z })
-				<= kHostileAggroRangeSqr;
+		if (!obj || !IsHostileCombatUnit(obj))
+			return false;
+		if (obj->IsInvisible() && !CanSeeInvisible())
+			return false;
+		return Vector2DistanceSqr({ m_Pos.x, m_Pos.z }, { obj->m_Pos.x, obj->m_Pos.z })
+			<= kHostileAggroRangeSqr;
 	};
 
 	// Cheap local scan: only this chunk + neighbors (not the whole interest set /
@@ -1577,6 +1780,12 @@ void U7Object::InteractiveDraw()
 				ApplyFirstPersonViewFade(fc, m_centerPoint);
 		}
 	}
+	ApplyInvisibilityGhostTint(renderColor);
+	if (useCuboidFaces)
+	{
+		for (Color& fc : cuboidFaces)
+			ApplyInvisibilityGhostTint(fc);
+	}
 
 	if (m_isCustomMesh) {
 		CustomMeshDraw(renderColor);
@@ -1646,8 +1855,14 @@ void U7Object::MonsterDraw()
 		return;
 	}
 
+	// Sit and other upright poses: the shape's own frame, even with no walk sheet.
+	const bool poseReady = !m_isMoving && m_isFrameOverridden
+		&& m_ObjectType >= 0 && m_ObjectType < static_cast<int>(g_shapeTable.size())
+		&& m_overrideFrame >= 0 && m_overrideFrame < 32
+		&& g_shapeTable[m_ObjectType][m_overrideFrame].m_texture != nullptr;
+
 	// Same 8-way walk billboards as NPCs when walk frames exist for this shape.
-	if (m_walkTextures.size() >= 8)
+	if (poseReady || m_walkTextures.size() >= 8)
 	{
 		DrawWalkBillboard(m_walkTextures, m_walkTexturesUpright);
 		return;
@@ -1963,12 +2178,15 @@ void U7Object::MonsterInit()
 	m_name = g_objectDataTable[m_shapeData->m_shape].m_name;
 
 	m_isFlying = false;
+	m_canSeeInvisible = false;
 	m_drawHeightOffset = 0.0f;
 	for (const MonsterData& md : g_monsterData)
 	{
 		if (md.m_shape == m_ObjectType)
 		{
 			m_isFlying = md.m_flies;
+			// Exult Monster_info::see_invisible is bit 7 of the flags byte.
+			m_canSeeInvisible = (md.m_flagsByte & 0x80) != 0;
 			// MONSTERS.DAT weapon nibble is 0 for insects — still need a bite.
 			if (m_BaseAttack <= 0.0f)
 				m_BaseAttack = (md.m_damage > 0) ? static_cast<float>(md.m_damage) : 1.0f;
@@ -2609,6 +2827,7 @@ void U7Object::DebugPrintEggInfo() const
 
 void U7Object::DebugPrintMonsterInfo() const
 {
+	return;
 	int shape = m_ObjectType;
 
 	// Header
@@ -2701,17 +2920,96 @@ void U7Object::NPCDraw()
 	DrawWalkBillboard(m_NPCData->m_walkTextures, m_NPCData->m_walkTexturesUpright);
 }
 
+namespace
+{
+	// Black Gate bodies.c: creature shape, remains shape, remains frame.
+	// A downed creature keeps its own sleep frame. Death draws one of these.
+	struct BodyRemains
+	{
+		int type;
+		int shape;
+		int frame;
+	};
+
+	const BodyRemains kBodyRemains[] = {
+		{ 721, 400, 1 }, { 989, 400, 2 }, { 445, 400, 3 }, { 446, 400, 4 },
+		{ 318, 400, 5 }, { 448, 400, 6 }, { 449, 400, 7 }, { 450, 400, 8 },
+		{ 319, 400, 9 }, { 452, 400, 10 }, { 455, 400, 11 }, { 454, 400, 12 },
+		{ 451, 400, 13 }, { 456, 400, 14 }, { 457, 400, 15 }, { 458, 400, 16 },
+		{ 459, 400, 17 }, { 460, 400, 18 }, { 461, 400, 19 }, { 462, 400, 20 },
+		{ 463, 400, 21 }, { 464, 400, 22 }, { 720, 400, 23 }, { 467, 400, 24 },
+		{ 468, 400, 25 }, { 469, 400, 26 }, { 265, 400, 27 }, { 304, 400, 28 },
+		{ 864, 400, 29 }, { 471, 400, 30 }, { 472, 400, 31 }, { 473, 414, 1 },
+		{ 274, 414, 2 }, { 475, 414, 3 }, { 299, 414, 4 }, { 317, 414, 5 },
+		{ 477, 414, 6 }, { 382, 414, 7 }, { 952, 414, 8 }, { 957, 414, 9 },
+		{ 478, 414, 10 }, { 479, 414, 11 }, { 519, 414, 12 }, { 466, 414, 13 },
+		{ 480, 414, 14 }, { 482, 414, 16 }, { 485, 414, 17 }, { 465, 414, 18 },
+		{ 487, 414, 19 }, { 488, 414, 20 }, { 489, 414, 21 }, { 490, 414, 22 },
+		{ 617, 414, 23 }, { 229, 414, 27 }, { 228, 414, 28 }, { 476, 778, 1 },
+		{ 375, 778, 2 }, { 381, 778, 3 }, { 380, 778, 4 }, { 861, 778, 5 },
+		{ 501, 778, 6 }, { 504, 778, 7 }, { 505, 778, 8 }, { 727, 778, 9 },
+		{ 533, 778, 10 }, { 500, 778, 11 }, { 502, 778, 12 }, { 882, 892, 1 },
+		{ 881, 892, 2 }, { 227, 892, 3 }, { 805, 892, 4 }, { 884, 892, 5 },
+		{ 929, 892, 6 }, { 946, 892, 7 }, { 806, 892, 8 }, { 534, 892, 9 },
+		{ 394, 892, 10 }, { 447, 892, 11 }, { 491, 892, 12 }, { 492, 892, 13 },
+		{ 493, 892, 14 }, { 494, 892, 15 }, { 716, 892, 16 }, { 811, 892, 17 },
+		{ 495, 892, 18 }, { 506, 892, 19 }, { 498, 892, 20 }, { 499, 892, 21 },
+		{ 496, 892, 24 }, { 784, 892, 25 }, { 509, 377, 12 }, { 510, 892, 27 },
+		{ 230, 892, 28 }, { 226, 892, 29 }, { 883, 762, 1 }, { 511, 762, 2 },
+		{ 337, 762, 3 }, { 513, 762, 4 }, { 532, 762, 5 }, { 514, 762, 6 },
+		{ 517, 762, 7 }, { 354, 762, 8 }, { 661, 762, 9 }, { 521, 762, 10 },
+		{ 523, 762, 11 }, { 524, 762, 12 }, { 525, 762, 13 }, { 970, 762, 14 },
+		{ 528, 762, 16 }, { 529, 762, 17 }, { 530, 762, 18 }, { 865, 762, 19 },
+		{ 753, 762, 20 }, { 537, 762, 21 }, { 154, 762, 22 }, { 247, 762, 23 },
+		{ 259, 762, 24 }, { 401, 762, 25 }, { 706, 762, 26 }, { 965, 400, 30 },
+	};
+
+	bool FlatFrameDrawable(int shape, int frame)
+	{
+		if (shape < 0 || shape >= static_cast<int>(g_shapeTable.size()))
+			return false;
+		if (frame < 0 || frame >= 32)
+			return false;
+		ShapeData& sd = g_shapeTable[shape][frame];
+		return sd.IsValid() && sd.m_texture != nullptr && sd.m_texture->m_Texture.id > 0;
+	}
+
+	// KO and sleep: the creature's lie frame. Death: the remains sprite, when one exists.
+	void ResolveLieFlatArt(const U7Object& obj, int& shape, int& frame)
+	{
+		shape = obj.m_ObjectType;
+		frame = obj.m_isFrameOverridden ? obj.m_overrideFrame : obj.GetDeathFrameForFacing();
+		if (!obj.IsDeathStatus())
+			return;
+
+		for (const BodyRemains& entry : kBodyRemains)
+		{
+			if (entry.type != obj.m_ObjectType)
+				continue;
+			if (FlatFrameDrawable(entry.shape, entry.frame))
+			{
+				shape = entry.shape;
+				frame = entry.frame;
+			}
+			return;
+		}
+	}
+}
+
 void U7Object::DrawCorpseFlat()
 {
-	const int frame = m_isFrameOverridden ? m_overrideFrame : GetDeathFrameForFacing();
-	if (m_ObjectType < 0 || m_ObjectType >= static_cast<int>(g_shapeTable.size()))
-		return;
-	if (frame < 0 || frame >= 32)
+	int shape = 0;
+	int frame = 0;
+	ResolveLieFlatArt(*this, shape, frame);
+	if (!FlatFrameDrawable(shape, frame))
 		return;
 
-	ShapeData& sd = g_shapeTable[m_ObjectType][frame];
-	if (!sd.IsValid())
-		return;
+	ShapeData& sd = g_shapeTable[shape][frame];
+
+	// Lie the creature's own frame flat and centered. Remains sprites are
+	// authored flats and keep their hotspot placement. The billboard's 315°
+	// facing is not applied here.
+	const bool centerOnPos = (sd.GetDrawType() == ShapeDrawType::OBJECT_DRAW_BILLBOARD);
 
 	int cellx = 0, celly = 0;
 	if (!WorldToTerrainCell(static_cast<int>(m_Pos.x), static_cast<int>(m_Pos.z), cellx, celly))
@@ -2723,21 +3021,31 @@ void U7Object::DrawCorpseFlat()
 	if (GetFirstPersonViewFade(m_Pos) <= 0.02f)
 		return;
 	ApplyFirstPersonViewFade(renderColor, m_Pos);
-	sd.DrawAsFlat(m_Pos, renderColor);
+	ApplyInvisibilityGhostTint(renderColor);
+	sd.DrawAsFlat(m_Pos, renderColor, Vector3{ 1, 1, 1 }, centerOnPos);
 }
 
 void U7Object::DrawWalkBillboard(const std::vector<std::vector<Texture*>>& walkTextures, bool uprightSheet)
 {
+	// Upright poses (sit, and a lie frame that is not drawn as a ground flat).
+	const bool poseOverride = !m_isMoving && m_isFrameOverridden
+		&& m_ObjectType >= 0 && m_ObjectType < static_cast<int>(g_shapeTable.size())
+		&& m_overrideFrame >= 0 && m_overrideFrame < 32
+		&& g_shapeTable[m_ObjectType][m_overrideFrame].m_texture != nullptr;
+
 	// Verify all 8 directional animation vectors are properly sized (N frames OK).
-	if (walkTextures.size() < 8)
+	if (!poseOverride)
 	{
-		return;
-	}
-	for (int i = 0; i < 8; i++)
-	{
-		if (walkTextures[i].empty() || walkTextures[i][0] == nullptr)
+		if (walkTextures.size() < 8)
 		{
 			return;
+		}
+		for (int i = 0; i < 8; i++)
+		{
+			if (walkTextures[i].empty() || walkTextures[i][0] == nullptr)
+			{
+				return;
+			}
 		}
 	}
 
@@ -2761,7 +3069,7 @@ void U7Object::DrawWalkBillboard(const std::vector<std::vector<Texture*>>& walkT
 		45.0f, 45.0f    // SE, S
 	};
 
-	Texture* finalTexture = walkTextures[0][0];
+	Texture* finalTexture = nullptr;
 	float billboardAngle = -45.0f;
 	bool drawingUprightSheet = false;
 
@@ -2790,14 +3098,11 @@ void U7Object::DrawWalkBillboard(const std::vector<std::vector<Texture*>>& walkT
 		!(uprightSheet && (m_npcAnimAction == NpcAnimAction::Walk ||
 		                   m_npcAnimAction == NpcAnimAction::Stand));
 
-	// Pose override (sleeping, sitting, etc.) when standing still — raw shape frame.
-	if (!m_isMoving && m_isFrameOverridden)
+	// Pose override (sleeping, sitting, knocked out) — the shape's own frame.
+	if (poseOverride)
 	{
-		if (g_shapeTable[m_ObjectType][m_overrideFrame].m_texture != nullptr)
-		{
-			finalTexture = &g_shapeTable[m_ObjectType][m_overrideFrame].m_texture->m_Texture;
-			billboardAngle = m_overrideFrame % 2 ? 45.0f : 0.0f;
-		}
+		finalTexture = &g_shapeTable[m_ObjectType][m_overrideFrame].m_texture->m_Texture;
+		billboardAngle = m_overrideFrame % 2 ? 45.0f : 0.0f;
 	}
 	else if (useActionTable)
 	{
@@ -2857,13 +3162,22 @@ void U7Object::DrawWalkBillboard(const std::vector<std::vector<Texture*>>& walkT
 		dims.x = dims.x * .70f;
 		dims.y = dims.y * 1.2f;
 	}
+	else if (poseOverride && IsSleepingPose())
+	{
+		// Lie-frame cels are short. Origin {0,0} is the quad center, so half the
+		// cel height puts the lowest pixel on the feet instead of at chest height.
+		dims = { float(finalTexture->width) / 8.0f, float(finalTexture->height) / 8.0f, 1 };
+		finalPos.y += dims.y * 0.5f;
+	}
 	else
 	{
 		dims = { float(finalTexture->width) / 8.0f, float(finalTexture->height) / 8.0f, 1 };
 		finalPos.y += m_shapeData->m_Dims.y * .62f;
 	}
 	// Flying creatures (Swarm insects, etc.): hover near waist height; shadow stays on ground.
-	finalPos.y += m_drawHeightOffset;
+	// A knocked-out or sleeping flyer is on the ground (original FallToGround).
+	if (!(poseOverride && IsSleepingPose()))
+		finalPos.y += m_drawHeightOffset;
 
 	const float viewFade = GetFirstPersonViewFade(m_Pos);
 	if (viewFade <= 0.02f)
@@ -2875,6 +3189,10 @@ void U7Object::DrawWalkBillboard(const std::vector<std::vector<Texture*>>& walkT
 	Color shadowTint = BLACK;
 	shadowTint.a = static_cast<unsigned char>(std::clamp(
 		static_cast<int>(std::lround(255.0f * viewFade)), 0, 255));
+	if (IsInvisible())
+	{
+		shadowTint.a = static_cast<unsigned char>((static_cast<int>(shadowTint.a) * 70) / 255);
+	}
 	rlDisableDepthMask();
 	DrawModel(g_ResourceManager->GetModel("Models/3dmodels/flat.obj")->GetModel(), shadowPos, kDropShadowScale, shadowTint);
 	rlEnableDepthMask();
@@ -2910,6 +3228,7 @@ void U7Object::DrawWalkBillboard(const std::vector<std::vector<Texture*>>& walkT
 	}
 
 	ApplyFirstPersonViewFade(lighting, m_Pos);
+	ApplyInvisibilityGhostTint(lighting);
 
 	DrawBillboardPro(g_camera, *finalTexture, Rectangle{ 0, 0, float(finalTexture->width), float(finalTexture->height) }, finalPos, Vector3{ 0, 1, 0 },
 		Vector2{ dims.x, dims.y }, Vector2{ 0, 0 }, billboardAngle, lighting);
@@ -3066,6 +3385,8 @@ void U7Object::UpdateUsecodeObjectSchedule()
 
 void U7Object::NPCUpdate()
 {
+	UpdateInvisibilityTimer();
+
 	// Corpses: no schedules, combat AI, conversation scripts, or movement.
 	if (IsDeathStatus())
 	{
@@ -3627,9 +3948,12 @@ void U7Object::UpdateMovement()
 	const bool isPartyFollower = (!isAvatar && g_Player && m_NPCID >= 0 &&
 	                              g_Player->NPCIDInParty(m_NPCID));
 	// Hostiles with a target may crow-fly when chase A* fails (pre-combat
-	// approach and in-combat). Party/NPC schedule walks still require waypoints.
+	// approach and in-combat). Swarm summons set a bare Dest on purpose
+	// (they are flying pests and skip per-insect A*). Party/NPC schedule
+	// walks still require waypoints.
 	const bool combatHostileChase = m_target != 0 && IsHostileCombatUnit(this);
-	if (!isAvatar && !isPartyFollower && !combatHostileChase &&
+	const bool alliedSummonMove = IsAlliedSummonUnit(this);
+	if (!isAvatar && !isPartyFollower && !combatHostileChase && !alliedSummonMove &&
 	    (m_UnitType == UnitTypes::UNIT_TYPE_NPC || m_UnitType == UnitTypes::UNIT_TYPE_MONSTER) &&
 	    m_pathWaypoints.empty())
 	{
@@ -3646,7 +3970,7 @@ void U7Object::UpdateMovement()
 	{
 		const bool partyUnit = isAvatar || isPartyFollower;
 		const bool hostileUnit = IsHostileCombatUnit(this);
-		if (partyUnit || hostileUnit)
+		if (partyUnit || hostileUnit || alliedSummonMove)
 			speedScale = 0.5f;
 	}
 	float deltav = m_speed * speedScale * g_Engine->LastFrameInSeconds();
@@ -4137,7 +4461,7 @@ void U7Object::SetPos(Vector3 pos)
 
 	// Living upright NPCs/monsters: pick/drag volume centered on actual XZ so
 	// mid-tile movement still matches the visible sprite (and F9 debug boxes).
-	// Dead / KO / asleep stay ground flats. Props keep SE-origin tile footprints.
+	// Dead, KO, and asleep stay ground flats. Props keep SE-origin tile footprints.
 	const bool lyingFlatCharacter =
 		ShouldLieFlat()
 		&& (m_UnitType == UnitTypes::UNIT_TYPE_NPC || m_UnitType == UnitTypes::UNIT_TYPE_MONSTER);
@@ -4147,13 +4471,15 @@ void U7Object::SetPos(Vector3 pos)
 
 	if (lyingFlatCharacter)
 	{
-		// Match DrawCorpseFlat / DrawAsFlat: hotspot + texture dims + scale re-anchor.
-		const int frame = m_isFrameOverridden ? m_overrideFrame : GetDeathFrameForFacing();
-		if (m_ObjectType >= 0 && m_ObjectType < static_cast<int>(g_shapeTable.size())
-			&& frame >= 0 && frame < 32
-			&& g_shapeTable[m_ObjectType][frame].IsValid())
+		// Match DrawCorpseFlat. Sleep/KO billboards are centered; remains stay hotspot-placed.
+		int shape = 0;
+		int frame = 0;
+		ResolveLieFlatArt(*this, shape, frame);
+		if (FlatFrameDrawable(shape, frame))
 		{
-			m_boundingBox = g_shapeTable[m_ObjectType][frame].GetAsFlatBoundingBox(m_Pos, 0.15f);
+			ShapeData& lieArt = g_shapeTable[shape][frame];
+			const bool centerOnPos = (lieArt.GetDrawType() == ShapeDrawType::OBJECT_DRAW_BILLBOARD);
+			m_boundingBox = lieArt.GetAsFlatBoundingBox(m_Pos, 0.15f, Vector3{ 1, 1, 1 }, centerOnPos);
 			dims = Vector3Subtract(m_boundingBox.max, m_boundingBox.min);
 			boundingBoxAnchorPoint = m_boundingBox.min;
 		}
@@ -4536,6 +4862,8 @@ bool U7Object::IsKnockedOut() const
 
 bool U7Object::ShouldLieFlat() const
 {
+	// Knocked-out and asleep creatures are on the ground, drawn as their own
+	// sleep frame. A true corpse is also flat, but uses the remains sprite.
 	return IsDeathStatus() || IsKnockedOut() || (m_flags & kObjFlagAsleep) != 0;
 }
 
@@ -4685,6 +5013,8 @@ void U7Object::ApplyDeath()
 
 	StopSleepTimer();
 	m_flags &= ~kObjFlagAsleep;
+	m_flags &= ~kObjFlagInvisible;
+	StopInvisibilityTimer();
 	m_hp = 0.0f;
 	m_pathWaypoints.clear();
 	m_currentWaypointIndex = 0;
@@ -6955,6 +7285,16 @@ json U7Object::SaveToJson() const
 	// State (only save if non-zero)
 	if (m_flags != 0)
 		j["flags"] = m_flags;
+	if (m_sleepTurnsRemaining > 0)
+		j["sleepTurnsRemaining"] = m_sleepTurnsRemaining;
+	if (m_sleepEndsAt > GetTime())
+		j["sleepRemaining"] = m_sleepEndsAt - GetTime();
+	if (m_invisibilityEndsAt > 0.0f)
+	{
+		const float remaining = m_invisibilityEndsAt - GetTime();
+		if (remaining > 0.0f)
+			j["invisibilityRemaining"] = remaining;
+	}
 
 	// Container hierarchy
 	if (m_isContained)
@@ -7121,6 +7461,19 @@ U7Object* U7Object::LoadFromJson(const json& j)
 
 	// Restore state
 	obj->m_flags = j.value("flags", 0u);
+	obj->m_sleepTurnsRemaining = j.value("sleepTurnsRemaining", 0);
+	if (j.contains("sleepRemaining") && j["sleepRemaining"].is_number())
+	{
+		const float remaining = j["sleepRemaining"].get<float>();
+		if (remaining > 0.0f)
+			obj->m_sleepEndsAt = GetTime() + remaining;
+	}
+	if (j.contains("invisibilityRemaining") && j["invisibilityRemaining"].is_number())
+	{
+		const float remaining = j["invisibilityRemaining"].get<float>();
+		if (remaining > 0.0f)
+			obj->m_invisibilityEndsAt = GetTime() + remaining;
+	}
 
 	// Container hierarchy (restored in second pass by GameSerializer)
 	int containingId = j.value("containingObjectId", -1);

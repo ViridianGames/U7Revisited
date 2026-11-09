@@ -58,6 +58,8 @@ public:
 	virtual void Update(MainState& main);
 	virtual void HandleInput(MainState& main);
 	virtual void DrawHud(MainState& main);
+	// Screen-space unit markers. Call after EndMode3D and before gumps.
+	virtual void DrawScreenMarkers(MainState& main) { (void)main; }
 	// World-space overlays (call inside Mode3D, before EndMode3D).
 	virtual void DrawWorld(MainState& main) { (void)main; }
 	// Style-specific orders click. Return true if the click was consumed.
@@ -145,6 +147,7 @@ public:
 	void Update(MainState& main) override;
 	void HandleInput(MainState& main) override;
 	void DrawHud(MainState& main) override;
+	void DrawScreenMarkers(MainState& main) override;
 	void DrawWorld(MainState& main) override;
 	bool HandleOrdersClick(MainState& main) override;
 	OrdersCursorKind GetOrdersCursor() override;
@@ -207,6 +210,8 @@ private:
 	void RefreshUnitAttackRange(U7Object* unit) const;
 	U7Object* FindNearestPartyTarget(const U7Object* from) const;
 	U7Object* FindNearestHostileTarget(const U7Object* from) const;
+	// Hostiles keep a swarm distraction when one has stuck; summons chase enemies.
+	U7Object* FindAiCombatTarget(const U7Object* from) const;
 	bool IsLivingCombatant(const U7Object* obj) const;
 	/// Living or KO'd (downed) — finishable into true death; excludes corpses.
 	bool IsFinishableCombatTarget(const U7Object* obj) const;
@@ -228,7 +233,7 @@ private:
 	Phase m_phase = Phase::Planning;
 
 	std::vector<ReachTile> m_reachTiles;
-	float m_reachDrawY = 0.05f;
+	float m_reachDrawY = 0.22f;
 	float m_pendingMoveApCost = 0.0f; // AP already spent when Resolving a move
 	bool m_enemyAiPending = false;    // enemy turn: decide move/attack on next Update
 	bool m_endTurnAfterMove = false;  // enemies auto-end after move when they cannot attack

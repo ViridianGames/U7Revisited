@@ -999,6 +999,7 @@
           "y": 332,
           "words": "Vas Sanct Lor",
           "scriptId": 387,
+          "targeted": false,
           "reagents": [
             "Mandrake Root",
             "Nightshade",

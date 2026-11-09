@@ -1,19 +1,31 @@
---- Best guess: Manages the "Sanct Lor" spell, granting invisibility (ID 1645) to a selected target, with a fallback effect if the spell fails.
-function spell_sanct_lor_0365(eventid, objectref)
-    local var_0000, var_0001, var_0002
+--- Invisibility (Sanct Lor). Fifth Circle.
+--- Sets item flag 0 on a selected NPC. The ring of invisibility uses the same flag.
+--- Do not destroy the caster.
 
-    if eventid == 1 then
-        var_0000 = object_select_modal()
-        halt_scheduled(objectref)
-        var_0001 = utility_direction_to_target_1069(var_0000)
-        bark(objectref, "@Sanct Lor@")
-        if not utility_condition_0044_1030() then
-            var_0002 = execute_usecode_array(objectref, {17514, 17520, 8047, 67, 8536, var_0001, 7769})
-            var_0002 = delayed_execute_usecode_array(4, {1645, 17493, 7715}, var_0000)
-        else
-            var_0002 = execute_usecode_array(objectref, {1542, 17493, 17514, 17520, 8559, var_0001, 7769})
-        end
-    elseif eventid == 2 then
-        set_item_flag(0, objectref)
+function spell_sanct_lor_0365(eventid, objectref)
+    if eventid == 2 then
+        set_item_flag(objectref, 0)
+        return
     end
+
+    if eventid ~= 1 then
+        return
+    end
+
+    halt_scheduled(objectref)
+    bark(objectref, "@Sanct Lor@")
+    if not check_spell_requirements(objectref) then
+        execute_usecode_array(objectref, {17514, 17520, 7781})
+        return
+    end
+
+    local target = click_on_item()
+    if not target or target == 0 or not is_npc(target) then
+        execute_usecode_array(objectref, {17514, 17520, 7781})
+        return
+    end
+
+    execute_usecode_array(objectref, {17514, 17520, 8047, 109, 7769})
+    obj_sprite_effect(target, 13)
+    set_item_flag(target, 0)
 end

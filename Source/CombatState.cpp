@@ -154,6 +154,18 @@ bool IsHostileCombatUnit(const U7Object* unit)
 		|| unit->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC;
 }
 
+bool IsAlliedSummonUnit(const U7Object* unit)
+{
+	if (!unit || unit->m_hp <= 0.0f || unit->IsDeathStatus())
+		return false;
+	if (const_cast<U7Object*>(unit)->GetIsDead())
+		return false;
+	if (unit->m_Team != 2)
+		return false;
+	return unit->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_MONSTER
+		|| unit->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC;
+}
+
 bool IsUnitInDungeon(const U7Object* unit)
 {
 	if (!unit || !g_pathfindingSystem)
@@ -198,6 +210,11 @@ bool HasCombatLineOfSightToParty(const U7Object* hostile, float maxCrowFlyTiles)
 		U7Object* member = GetObjectFromID(npcIt->second->m_objectID);
 		if (!member || member->GetIsDead() || member->IsDeathStatus() || member->m_hp <= 0.0f)
 			continue;
+		// Exult: invisible actors are not sensed unless the monster can see invisible.
+		if (member->IsInvisible() && !hostile->CanSeeInvisible())
+		{
+			continue;
+		}
 		if (!AreUnitsOnSameDungeonLayer(hostile, member))
 			continue;
 		const float distSqr = Vector2DistanceSqr(
@@ -306,6 +323,12 @@ bool HasCombatWalkPathToParty(U7Object* hostile, float maxCrowFlyTiles, float ma
 		U7Object* member = GetObjectFromID(npcIt->second->m_objectID);
 		if (!member || member->GetIsDead() || member->IsDeathStatus() || member->m_hp <= 0.0f)
 			continue;
+		// Same sight rule as HasCombatLineOfSightToParty: do not path to someone
+		// this hostile cannot see, or proximity still auto-starts combat.
+		if (member->IsInvisible() && !hostile->CanSeeInvisible())
+		{
+			continue;
+		}
 		if (!AreUnitsOnSameDungeonLayer(hostile, member))
 			continue;
 		const float distSqr = Vector2DistanceSqr(
@@ -1120,6 +1143,8 @@ void DrawCombatHPBars()
 	auto drawBarFor = [&](U7Object* obj, bool party) {
 		if (!obj || obj->GetIsDead() || obj->IsDeathStatus())
 			return;
+		if (obj->IsHiddenByInvisibility())
+			return;
 
 		Vector3 head = obj->m_centerPoint;
 		head.y += 1.35f;
@@ -1194,10 +1219,24 @@ void DrawCombatSelectionCircles()
 	auto drawGroundRing = [&](U7Object* obj, Color tint, float scale) {
 		if (!obj || obj->GetIsDead() || obj->IsDeathStatus())
 			return;
-		const Vector3 pos = FlatUnderFeetOrigin(obj->m_Pos, scale, 0.03f);
+		if (obj->IsHiddenByInvisibility())
+			return;
+		const Vector3 pos = FlatUnderFeetOrigin(obj->m_Pos, scale, CombatGroundMarkerY(obj->m_Pos.y));
 		rlDisableDepthMask();
 		DrawModel(flatModel->GetModel(), pos, scale, tint);
 		rlEnableDepthMask();
+	};
+
+	// Scale the selection image to the wider horizontal side of the enemy's box.
+	auto enemyRingScale = [](const U7Object* obj) -> float {
+		const float sx = obj->m_boundingBox.max.x - obj->m_boundingBox.min.x;
+		const float sz = obj->m_boundingBox.max.z - obj->m_boundingBox.min.z;
+		const float diameter = (sx > sz) ? sx : sz;
+		if (diameter > 0.05f)
+		{
+			return diameter;
+		}
+		return 1.45f;
 	};
 
 	auto drawTargetRing = [&](U7Object* unit) {
@@ -1205,7 +1244,10 @@ void DrawCombatSelectionCircles()
 			return;
 		auto tgtIt = g_objectList.find(unit->m_target);
 		if (tgtIt != g_objectList.end() && tgtIt->second)
-			drawGroundRing(tgtIt->second.get(), kEnemyRing, 1.45f);
+		{
+			U7Object* target = tgtIt->second.get();
+			drawGroundRing(target, kEnemyRing, enemyRingScale(target));
+		}
 	};
 
 	// Turn-based: ring under whoever's turn it is (green party / red enemy).
@@ -1234,7 +1276,7 @@ void DrawCombatSelectionCircles()
 					}
 					else
 					{
-						drawGroundRing(unit, kEnemyRing, 1.45f);
+						drawGroundRing(unit, kEnemyRing, enemyRingScale(unit));
 						drawnEnemyRingId = activeId;
 					}
 				}
@@ -1247,7 +1289,7 @@ void DrawCombatSelectionCircles()
 				&& g_mainState->IsCombatEnemyObject(g_objectUnderMousePointer)
 				&& static_cast<int>(g_objectUnderMousePointer->m_ID) != drawnEnemyRingId)
 			{
-				drawGroundRing(g_objectUnderMousePointer, kEnemyRing, 1.45f);
+				drawGroundRing(g_objectUnderMousePointer, kEnemyRing, enemyRingScale(g_objectUnderMousePointer));
 			}
 			return;
 		}

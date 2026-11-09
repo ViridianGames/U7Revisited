@@ -734,7 +734,8 @@ void TurnBasedCombatMode::RebuildReachableTiles()
 	if (!unit || !IsPartyUnit(unit) || m_phase != Phase::Planning)
 		return;
 
-	m_reachDrawY = unit->m_Pos.y + 0.05f;
+	// Above corpse/flat lift so a body on the tile does not hide the cells.
+	m_reachDrawY = CombatGroundMarkerY(unit->m_Pos.y);
 	ComputeReachableTiles(unit, m_apRemaining, m_reachTiles);
 }
 
@@ -758,7 +759,8 @@ void TurnBasedCombatMode::CollectInitiativeOrder(MainState& main, std::vector<in
 		if (!IsLivingCombatant(obj))
 			continue;
 		const bool party = IsPartyUnit(obj);
-		if (!party && !IsHostileCombatUnit(obj))
+		// Allied summons (Swarm) take a turn. They are not player-controlled.
+		if (!party && !IsHostileCombatUnit(obj) && !IsAlliedSummonUnit(obj))
 			continue;
 		entries.push_back(Entry{ id, GetCombatDexterity(obj), party });
 	}
@@ -809,9 +811,14 @@ void TurnBasedCombatMode::SyncInitiativeFromParticipants(MainState& main)
 			continue;
 		U7Object* obj = it->second.get();
 		AddConsoleString(UnitLabel(obj) + " joins the initiative!", ORANGE);
+		const char* side = " enemy";
+		if (IsPartyUnit(obj))
+			side = " party";
+		else if (IsAlliedSummonUnit(obj))
+			side = " ally";
 		Log("TurnBased: initiative join id=" + std::to_string(id)
 			+ " dex=" + std::to_string(GetCombatDexterity(obj))
-			+ (IsPartyUnit(obj) ? " party" : " enemy"));
+			+ side);
 	}
 
 	const int activeId = m_activeUnitId;
@@ -874,14 +881,43 @@ void TurnBasedCombatMode::StartUnitTurn(MainState& main)
 		U7Object* unit = it->second.get();
 		m_initiativeIndex = idx;
 		m_activeUnitId = id;
+
+		const U7Object::TurnBasedSleepTick sleepTick = unit->TickTurnBasedSleep();
+		if (sleepTick != U7Object::TurnBasedSleepTick::NotAsleep)
+		{
+			CenterCameraOnActiveUnit();
+			if (IsPartyUnit(unit))
+				main.m_combatSelectedPartyMemberObjectId = id;
+			else
+				main.m_combatSelectedPartyMemberObjectId = -1;
+			ClearConsole();
+			if (sleepTick == U7Object::TurnBasedSleepTick::Woke)
+			{
+				AddConsoleString(UnitLabel(unit) + " wakes up.", SKYBLUE);
+			}
+			else
+			{
+				AddConsoleString(UnitLabel(unit) + " is asleep.", SKYBLUE);
+			}
+			Log("TurnBased: sleep skip id=" + std::to_string(id)
+				+ " left=" + std::to_string(unit->m_sleepTurnsRemaining));
+			BeginInterTurnPause();
+			return;
+		}
+
 		m_apBudget = GetCombatTurnApBudget(unit);
 		m_apRemaining = m_apBudget;
 		CenterCameraOnActiveUnit();
 
+		const char* side = " enemy";
+		if (IsPartyUnit(unit))
+			side = " party";
+		else if (IsAlliedSummonUnit(unit))
+			side = " ally";
 		Log("TurnBased: start turn id=" + std::to_string(id)
 			+ " dex=" + std::to_string(GetCombatDexterity(unit))
 			+ " ap=" + FormatAp(m_apBudget)
-			+ (IsPartyUnit(unit) ? " party" : " enemy"));
+			+ side);
 
 		m_resolvingAttack = false;
 		m_attackSwingStarted = false;
@@ -908,9 +944,19 @@ void TurnBasedCombatMode::StartUnitTurn(MainState& main)
 			RefreshUnitAttackRange(unit);
 			m_enemyAiPending = true;
 			m_endTurnAfterMove = false;
-			AddConsoleString(
-				UnitLabel(unit) + "'s turn - AP " + FormatAp(m_apRemaining) + " (acting...)",
-				ORANGE);
+			if (IsAlliedSummonUnit(unit))
+			{
+				AddConsoleString(
+					UnitLabel(unit) + "'s turn - AP " + FormatAp(m_apRemaining)
+						+ " (allied, acting on its own...)",
+					SKYBLUE);
+			}
+			else
+			{
+				AddConsoleString(
+					UnitLabel(unit) + "'s turn - AP " + FormatAp(m_apRemaining) + " (acting...)",
+					ORANGE);
+			}
 		}
 		return;
 	}
@@ -977,8 +1023,37 @@ void TurnBasedCombatMode::EndActiveTurn()
 	U7Object* unit = GetActiveUnit();
 	if (unit)
 	{
+		// StopCombatUnitActions clears targets. A swarm pull should survive
+		// the turn so the hostile keeps chasing that insect next round.
+		int keepSummonId = 0;
+		if (!IsPartyUnit(unit))
+		{
+			auto livingSummonId = [&](int id) -> int {
+				if (id <= 0)
+					return 0;
+				U7Object* cur = GetObjectFromID(id);
+				if (!cur || !IsAlliedSummonUnit(cur) || !IsLivingCombatant(cur))
+					return 0;
+				const float distSqr = Vector2DistanceSqr(
+					{ unit->m_Pos.x, unit->m_Pos.z },
+					{ cur->m_Pos.x, cur->m_Pos.z });
+				if (distSqr > kHostileAggroRangeSqr)
+					return 0;
+				return id;
+			};
+			keepSummonId = livingSummonId(unit->m_target);
+			if (keepSummonId == 0)
+				keepSummonId = livingSummonId(unit->m_combatPathTargetId);
+		}
+
 		AddConsoleString(UnitLabel(unit) + " ends turn.", WHITE);
 		m_main->StopCombatUnitActions(unit);
+
+		if (keepSummonId > 0)
+		{
+			unit->m_target = keepSummonId;
+			unit->m_combatPathTargetId = keepSummonId;
+		}
 	}
 
 	BeginInterTurnPause();
@@ -1440,6 +1515,41 @@ U7Object* TurnBasedCombatMode::FindNearestHostileTarget(const U7Object* from) co
 	return best;
 }
 
+U7Object* TurnBasedCombatMode::FindAiCombatTarget(const U7Object* from) const
+{
+	if (!from)
+		return nullptr;
+
+	// Swarm chases enemies. A hostile keeps an insect it was pulled onto.
+	if (IsAlliedSummonUnit(from))
+		return FindNearestHostileTarget(from);
+
+	auto livingSummon = [&](int id) -> U7Object* {
+		if (id <= 0)
+			return nullptr;
+		U7Object* cur = GetObjectFromID(id);
+		if (!cur || !IsAlliedSummonUnit(cur) || !IsLivingCombatant(cur))
+			return nullptr;
+		// Drop the distraction once the insect leaves the chase leash.
+		const float distSqr = Vector2DistanceSqr(
+			{ from->m_Pos.x, from->m_Pos.z },
+			{ cur->m_Pos.x, cur->m_Pos.z });
+		if (distSqr > kHostileAggroRangeSqr)
+			return nullptr;
+		return cur;
+	};
+
+	if (U7Object* pinned = livingSummon(from->m_target))
+		return pinned;
+	// A live non-summon target (the party) wins over a stale path id.
+	if (from->m_target > 0)
+		return FindNearestPartyTarget(from);
+	// BeginMoveToTile clears m_target; the distraction is kept on the path id.
+	if (U7Object* pinned = livingSummon(from->m_combatPathTargetId))
+		return pinned;
+	return FindNearestPartyTarget(from);
+}
+
 void TurnBasedCombatMode::RefreshUnitAttackRange(U7Object* unit) const
 {
 	if (!unit)
@@ -1615,11 +1725,21 @@ bool TurnBasedCombatMode::BeginAttackOn(U7Object* attacker, U7Object* target)
 	m_phase = Phase::Resolving;
 	ClearReachableTiles();
 
-	AddConsoleString(
-		UnitLabel(attacker) + " attacks " + UnitLabel(target)
-			+ " with " + CombatWeaponDisplayNameForUnit(attacker)
-			+ " (ends turn).",
-		IsPartyUnit(attacker) ? GREEN : ORANGE);
+	if (IsAlliedSummonUnit(attacker))
+	{
+		AddConsoleString(
+			UnitLabel(attacker) + " harasses " + UnitLabel(target)
+				+ " (no damage, ends turn).",
+			SKYBLUE);
+	}
+	else
+	{
+		AddConsoleString(
+			UnitLabel(attacker) + " attacks " + UnitLabel(target)
+				+ " with " + CombatWeaponDisplayNameForUnit(attacker)
+				+ " (ends turn).",
+			IsPartyUnit(attacker) ? GREEN : ORANGE);
+	}
 	return true;
 }
 
@@ -1710,11 +1830,19 @@ void TurnBasedCombatMode::OnAttackResolved(MainState& main)
 	U7Object* unit = GetActiveUnit();
 	if (unit)
 	{
+		const int keptTarget = unit->m_target;
+		U7Object* kept = (keptTarget > 0) ? GetObjectFromID(keptTarget) : nullptr;
+		const bool keepSummon = kept && IsAlliedSummonUnit(kept) && IsLivingCombatant(kept);
+
 		unit->m_combatOrderMode = CombatOrderMode::Hold;
 		unit->m_combatMoveOrder = false;
-		// Keep m_target cleared so they do not auto-swing outside TB resolve.
-		unit->m_target = 0;
-		unit->m_combatPathTargetId = 0;
+		// Clear ordinary targets so they do not auto-swing outside TB resolve.
+		// A swarm distraction stays; EndActiveTurn restores it after the stop.
+		if (!keepSummon)
+		{
+			unit->m_target = 0;
+			unit->m_combatPathTargetId = 0;
+		}
 		unit->SetDest(unit->GetPos());
 		// Ensure the next swing is not blocked by a stuck one-shot clip.
 		unit->SetNpcAnimAction(NpcAnimAction::Ready, true, 180.0f);
@@ -1745,7 +1873,7 @@ void TurnBasedCombatMode::RunEnemyTurnAi(MainState& main)
 	if (IsPartyUnit(unit) || m_phase != Phase::Planning)
 		return;
 
-	U7Object* target = FindNearestPartyTarget(unit);
+	U7Object* target = FindAiCombatTarget(unit);
 	if (!target)
 	{
 		AddConsoleString(UnitLabel(unit) + " finds no target.", ORANGE);
@@ -1763,6 +1891,8 @@ void TurnBasedCombatMode::RunEnemyTurnAi(MainState& main)
 	}
 
 	// Close distance; prefer landing with enough AP left to still attack.
+	// Remember a swarm distraction across BeginMoveToTile, which clears m_target.
+	unit->m_combatPathTargetId = static_cast<int>(target->m_ID);
 	m_enemyAttackAfterMove = true;
 	m_endTurnAfterMove = false;
 	const float reserveAp = CanActThisTurn() ? GetHalfApThreshold() : 0.0f;
@@ -1819,7 +1949,7 @@ void TurnBasedCombatMode::OnMoveResolved(MainState& main)
 		m_endTurnAfterMove = false;
 		if (tryAttack)
 		{
-			U7Object* target = FindNearestPartyTarget(unit);
+			U7Object* target = FindAiCombatTarget(unit);
 			RefreshUnitAttackRange(unit);
 			if (target && CanActThisTurn() && IsInAttackRange(unit, target)
 			    && BeginAttackOn(unit, target))
@@ -2051,6 +2181,21 @@ void TurnBasedCombatMode::Update(MainState& main)
 		return;
 	}
 
+	// A bolt can land after this turn has already started. Stop the action.
+	// The turn count itself is ticked in StartUnitTurn.
+	if (U7Object* acting = GetActiveUnit())
+	{
+		if (acting->m_hp >= 1.0f
+		    && (acting->m_flags & kObjFlagAsleep) != 0
+		    && !acting->IsDeathStatus())
+		{
+			AddConsoleString(UnitLabel(acting) + " is asleep.", SKYBLUE);
+			main.StopCombatUnitActions(acting);
+			BeginInterTurnPause();
+			return;
+		}
+	}
+
 	if (m_phase == Phase::Planning && m_enemyAiPending)
 	{
 		RunEnemyTurnAi(main);
@@ -2195,8 +2340,10 @@ void TurnBasedCombatMode::HandleInput(MainState& main)
 
 bool TurnBasedCombatMode::HandleOrdersClick(MainState& main)
 {
+	// Enemy and allied-summon turns are automatic. Swallow the click so it
+	// does not fall through and issue a party order, or select the insect.
 	if (!AllowsPlayerOrders())
-		return false;
+		return true;
 
 	U7Object* unit = GetActiveUnit();
 	if (!unit)
@@ -2368,6 +2515,41 @@ CombatMode::OrdersCursorKind TurnBasedCombatMode::GetOrdersCursor()
 	return OrdersCursorKind::DefaultGrey;
 }
 
+void TurnBasedCombatMode::DrawScreenMarkers(MainState& main)
+{
+	(void)main;
+
+	// Yellow caret over the active combatant (Planning and Resolving). Hidden
+	// during the inter-turn pause when there is no active unit. Drawn with the
+	// HP bars so an open gump covers it.
+	U7Object* unit = GetActiveUnit();
+	if (!unit || unit->GetIsDead() || unit->IsDeathStatus())
+		return;
+
+	const float drawScale = (g_DrawScale > 0.0f) ? g_DrawScale : 1.0f;
+	Vector3 head = unit->m_centerPoint;
+	head.y += 1.35f; // same head anchor as HP bars
+	Vector2 screen = GetWorldToScreen(head, g_camera);
+	screen.x /= drawScale;
+	screen.y /= drawScale;
+
+	// Bob a few pixels above the HP bar (bar sits ~6px above the head).
+	constexpr float kBobAmp = 2.5f;
+	constexpr float kBobSpeed = 5.0f;
+	const float bob = kBobAmp * std::sin(static_cast<float>(GetTime()) * kBobSpeed);
+	const float tipY = screen.y - 14.0f + bob;
+	const float tipX = screen.x;
+	constexpr float kHalfW = 5.0f;
+	constexpr float kH = 7.0f;
+	const Vector2 left{ tipX - kHalfW, tipY - kH };
+	const Vector2 right{ tipX + kHalfW, tipY - kH };
+	const Vector2 tip{ tipX, tipY };
+
+	// Outline then fill (CCW winding).
+	DrawTriangleLines(left, right, tip, Color{ 0, 0, 0, 220 });
+	DrawTriangle(left, right, tip, YELLOW);
+}
+
 void TurnBasedCombatMode::DrawHud(MainState& main)
 {
 	(void)main;
@@ -2376,34 +2558,6 @@ void TurnBasedCombatMode::DrawHud(MainState& main)
 		return;
 
 	U7Object* unit = GetActiveUnit();
-
-	// Yellow caret over the active combatant (Planning and Resolving). Hidden
-	// during the inter-turn pause when there is no active unit.
-	if (unit && !unit->GetIsDead() && !unit->IsDeathStatus())
-	{
-		const float drawScale = (g_DrawScale > 0.0f) ? g_DrawScale : 1.0f;
-		Vector3 head = unit->m_centerPoint;
-		head.y += 1.35f; // same head anchor as HP bars
-		Vector2 screen = GetWorldToScreen(head, g_camera);
-		screen.x /= drawScale;
-		screen.y /= drawScale;
-
-		// Bob a few pixels above the HP bar (bar sits ~6px above the head).
-		constexpr float kBobAmp = 2.5f;
-		constexpr float kBobSpeed = 5.0f;
-		const float bob = kBobAmp * std::sin(static_cast<float>(GetTime()) * kBobSpeed);
-		const float tipY = screen.y - 14.0f + bob;
-		const float tipX = screen.x;
-		constexpr float kHalfW = 5.0f;
-		constexpr float kH = 7.0f;
-		const Vector2 left{ tipX - kHalfW, tipY - kH };
-		const Vector2 right{ tipX + kHalfW, tipY - kH };
-		const Vector2 tip{ tipX, tipY };
-
-		// Outline then fill (CCW winding).
-		DrawTriangleLines(left, right, tip, Color{ 0, 0, 0, 220 });
-		DrawTriangle(left, right, tip, YELLOW);
-	}
 
 	std::string title;
 	Color accent = YELLOW;

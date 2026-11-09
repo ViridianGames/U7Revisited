@@ -94,13 +94,16 @@ public:
 
 	// Draw this shape's texture as a ground flat regardless of m_drawType
 	// (dead NPC/monster corpses lie on the ground).
+	// centerOnPos: quad centered on pos, yaw 0. Sleep/KO billboards use this
+	// so the cel sits in the middle of the box. The 315° billboard facing is
+	// applied only by the billboard draw.
 	void DrawAsFlat(const Vector3& pos, Color color = Color{ 255, 255, 255, 255 },
-		Vector3 scaling = Vector3{ 1, 1, 1 });
+		Vector3 scaling = Vector3{ 1, 1, 1 }, bool centerOnPos = false);
 
 	// World AABB matching DrawAsFlat coverage (texture dims + hotspot + scale re-anchor).
 	// height is the pick-box thickness in Y (flats are visually coplanar with the ground).
 	BoundingBox GetAsFlatBoundingBox(const Vector3& pos, float height = 0.15f,
-		Vector3 scaling = Vector3{ 1, 1, 1 });
+		Vector3 scaling = Vector3{ 1, 1, 1 }, bool centerOnPos = false);
 
 	// Flat object-ID draw for the screen-space outline mask pass (custom meshes only).
 	void DrawMeshId(const Vector3& pos, float angle, Color idColor, Vector3 scaling = Vector3{ 1, 1, 1 });
@@ -119,6 +122,10 @@ public:
 	// Final flat DrawModelEx transform: hotspot placement + scaling re-anchor.
 	void GetFlatDrawTransform(const Vector3& pos, float angle, Vector3 scaling,
 	                          Vector3& outPos, Vector3& outScale, float& outRotation) const;
+
+	// Ground quad centered on pos. Yaw stays 0 so the cel matches its AABB.
+	void GetCenteredFlatTransform(const Vector3& pos, Vector3 scaling,
+	                              Vector3& outPos, Vector3& outScale) const;
 
 	bool IsValid() { return m_isValid; }
 	void SetPixelOffset(int offsetX, int offsetY);

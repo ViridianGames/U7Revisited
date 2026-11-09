@@ -281,19 +281,32 @@ void GumpManager::Update()
 			}
 		}
 
-		//  First check if we're dropping on a paperdoll (floating gump or Equip-tab embed)
+		//  First check if we're dropping on a paperdoll (floating gump or Equip-tab embed).
+		//  An open bag under the cursor keeps the item. The equip panel sits
+		//  underneath and would otherwise wear rings, arrows, and the like.
 		bool droppedOnPaperdoll = false;
 		bool attemptedPaperdollDrop = false;
 
-		GumpPaperdoll* paperdoll = dynamic_cast<GumpPaperdoll*>(m_gumpUnderMouse);
+		const bool droppingIntoContainer =
+			m_gumpUnderMouse != nullptr && m_gumpUnderMouse->m_containerObject != nullptr;
+
+		GumpPaperdoll* paperdoll = nullptr;
 		GumpPaperdoll* embeddedPaperdoll = nullptr;
-		if (!paperdoll && g_mainState)
+		if (!droppingIntoContainer)
 		{
-			embeddedPaperdoll = g_mainState->GetStatsPanelPaperdoll();
-			if (embeddedPaperdoll && embeddedPaperdoll->IsMouseOverSolidPixel(mousePos))
-				paperdoll = embeddedPaperdoll;
-			else
-				embeddedPaperdoll = nullptr;
+			paperdoll = dynamic_cast<GumpPaperdoll*>(m_gumpUnderMouse);
+			if (!paperdoll && g_mainState)
+			{
+				embeddedPaperdoll = g_mainState->GetStatsPanelPaperdoll();
+				if (embeddedPaperdoll && embeddedPaperdoll->IsMouseOverSolidPixel(mousePos))
+				{
+					paperdoll = embeddedPaperdoll;
+				}
+				else
+				{
+					embeddedPaperdoll = nullptr;
+				}
+			}
 		}
 
 		if (paperdoll)

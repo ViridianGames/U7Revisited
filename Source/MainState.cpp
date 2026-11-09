@@ -3936,6 +3936,8 @@ void MainState::Draw()
 	if (g_isCombatMode)
 		DrawCombatHPBars();
 	DrawFloatingCombatTexts();
+	if (g_isCombatMode && m_combatMode)
+		m_combatMode->DrawScreenMarkers(*this);
 
 	if (!m_paused && m_showUIElements)
 	{
@@ -5583,6 +5585,25 @@ void MainState::EnrollNearbyCombatHostiles()
 		EnsureCombatParticipant(id);
 	};
 
+	// Swarm insects fight on the party's side. Enroll them so turn-based
+	// initiative gives each one a turn. They are not player-controlled.
+	auto considerAlly = [&](U7Object* obj) {
+		if (!IsAlliedSummonUnit(obj))
+			return;
+		if (!AreUnitsOnSameDungeonLayer(avatar, obj))
+			return;
+		const float distSqr = Vector2DistanceSqr(
+			{ obj->m_Pos.x, obj->m_Pos.z },
+			{ avatar->m_Pos.x, avatar->m_Pos.z });
+		if (distSqr > kHostileCombatEnrollRangeSqr)
+			return;
+		const int id = static_cast<int>(obj->m_ID);
+		if (std::find(m_combatParticipants.begin(), m_combatParticipants.end(), id)
+			!= m_combatParticipants.end())
+			return;
+		EnsureCombatParticipant(id, false);
+	};
+
 	if (!g_interestChunkList.empty())
 	{
 		for (int packed : g_interestChunkList)
@@ -5592,7 +5613,10 @@ void MainState::EnrollNearbyCombatHostiles()
 			if (cx < 0 || cx >= 192 || cz < 0 || cz >= 192)
 				continue;
 			for (U7Object* object : g_chunkObjectMap[cx][cz])
+			{
 				consider(object);
+				considerAlly(object);
+			}
 		}
 	}
 	else
@@ -5601,6 +5625,7 @@ void MainState::EnrollNearbyCombatHostiles()
 		{
 			(void)id;
 			consider(obj.get());
+			considerAlly(obj.get());
 		}
 	}
 }
@@ -6628,6 +6653,9 @@ void MainState::SpawnDebugDuelingField()
 	constexpr int kFieldZ = 2032;
 	constexpr int kPirateShape = 401; // TEXT.FLX / MONSTERS.DAT humanoid pirate
 	constexpr int kPirateCount = 4;
+	// Pirates sit 8–14 tiles south of the anchor. Step the party north of that
+	// so the nearest foe is far enough for a ranged spell, still inside aggro.
+	constexpr int kPartyStandoffTiles = 6;
 
 	if (!g_Player)
 	{
@@ -6690,8 +6718,9 @@ void MainState::SpawnDebugDuelingField()
 		unit->SetDest(pos);
 	};
 
-	const float fieldY = groundY(kFieldX, kFieldZ);
-	const Vector3 avatarPos{ kFieldX + 0.5f, fieldY, kFieldZ + 0.5f };
+	const int partyZ = kFieldZ - kPartyStandoffTiles;
+	const float fieldY = groundY(kFieldX, partyZ);
+	const Vector3 avatarPos{ kFieldX + 0.5f, fieldY, partyZ + 0.5f };
 
 	U7Object* avatar = g_Player->GetAvatarObject();
 	teleportUnit(avatar, avatarPos);
@@ -6709,7 +6738,8 @@ void MainState::SpawnDebugDuelingField()
 			continue;
 		Vector3 memberPos = avatarPos;
 		memberPos.x += (npcId % 2 == 0) ? float(offset) : float(-offset);
-		memberPos.z += float(offset);
+		// Behind the avatar, away from the pirates, so nobody spawns in the gap.
+		memberPos.z -= 1.0f;
 		memberPos.y = groundY((int)floorf(memberPos.x), (int)floorf(memberPos.z));
 		teleportUnit(member, memberPos);
 		++offset;

@@ -1,6 +1,11 @@
 function object_book_0797(eventid, objectref)
     local var_0000, var_0001
 
+    -- Double-click only. Readied gear must not open the scroll.
+    if eventid ~= 1 then
+        return
+    end
+
     var_0000 = get_object_quality(objectref)
     if var_0000 == 45 then
         --mech_golem_ritual_0528(objectref)

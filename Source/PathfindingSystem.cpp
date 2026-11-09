@@ -86,6 +86,72 @@ static bool UnitOccupiesTileAtHeight(const U7Object* unit, int worldX, int world
 	return true;
 }
 
+// Knocked-out or slept, still alive. Corpses are not in this set.
+static bool IsLivingDownedUnit(const U7Object* unit)
+{
+	if (!unit || unit->m_isContained)
+		return false;
+	if (unit->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_NPC
+		&& unit->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_MONSTER)
+	{
+		return false;
+	}
+	if (const_cast<U7Object*>(unit)->GetIsDead() || unit->IsDeathStatus())
+		return false;
+	if (unit->IsKnockedOut())
+		return true;
+	return (unit->m_flags & kObjFlagAsleep) != 0;
+}
+
+// Party vs team-1, same as AreUnitsHostile, but hp may already be 0.
+static bool DownedEnemyBlocksAgent(const U7Object* agent, const U7Object* other)
+{
+	if (!agent || !other || agent->m_ID == other->m_ID)
+		return false;
+	if (!IsLivingDownedUnit(other))
+		return false;
+	if (agent->m_Team == 2 || other->m_Team == 2)
+		return false;
+
+	const bool agentParty = IsPartyMemberUnit(agent);
+	const bool otherParty = IsPartyMemberUnit(other);
+	if (agentParty && otherParty)
+		return false;
+	if (agentParty && other->m_Team == 1)
+		return true;
+	if (otherParty && agent->m_Team == 1)
+		return true;
+	return false;
+}
+
+// Tiles the centered lie quad actually covers. A max that lands on a tile
+// edge does not claim the next tile, so the blocked set matches the sprite.
+static bool DownedFlatOverlapsTile(const U7Object* unit, int worldX, int worldZ, float agentBaseY)
+{
+	if (!unit)
+		return false;
+	if (std::fabs(unit->m_Pos.y - agentBaseY) > (MAX_CLIMBABLE_HEIGHT + 0.5f))
+		return false;
+
+	const BoundingBox& bbox = unit->m_boundingBox;
+	if (bbox.max.x <= static_cast<float>(worldX) || bbox.min.x >= static_cast<float>(worldX + 1))
+		return false;
+	if (bbox.max.z <= static_cast<float>(worldZ) || bbox.min.z >= static_cast<float>(worldZ + 1))
+		return false;
+	return true;
+}
+
+static bool UnitFeetOnTile(const U7Object* unit, int worldX, int worldZ, float agentBaseY)
+{
+	if (!unit)
+		return false;
+	if (std::fabs(unit->m_Pos.y - agentBaseY) > (MAX_CLIMBABLE_HEIGHT + 0.5f))
+		return false;
+	const int tileX = static_cast<int>(std::floor(unit->m_Pos.x));
+	const int tileZ = static_cast<int>(std::floor(unit->m_Pos.z));
+	return worldX == tileX && worldZ == tileZ;
+}
+
 static bool IsTileBlockedByHostileUnit(int worldX, int worldZ, float agentBaseY, const U7Object* agent)
 {
 	if (!agent)
@@ -108,6 +174,15 @@ static bool IsTileBlockedByHostileUnit(int worldX, int worldZ, float agentBaseY,
 
 			for (U7Object* obj : g_chunkObjectMap[cx][cz])
 			{
+				// Block the tiles the centered lie sprite covers, plus the feet tile.
+				// True corpses stay out of IsLivingDownedUnit, so they stay walkable.
+				if (DownedEnemyBlocksAgent(agent, obj)
+					&& (UnitFeetOnTile(obj, worldX, worldZ, agentBaseY)
+						|| DownedFlatOverlapsTile(obj, worldX, worldZ, agentBaseY)))
+				{
+					return true;
+				}
+
 				if (!IsPathfindingAgentUnit(obj))
 					continue;
 

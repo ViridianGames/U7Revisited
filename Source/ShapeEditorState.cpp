@@ -140,15 +140,6 @@ void ShapeEditorState::ChangeGui(Gui* newGui)
 
 void ShapeEditorState::SwitchToGuiForDrawType(ShapeDrawType drawType)
 {
-	// Billboard Rot: was hardcoded -45 (= 315°) in Draw(); seed 315 when unset
-	// (or still stored as -45) so Rot: stays in 0–360 and matches the draw.
-	if (drawType == ShapeDrawType::OBJECT_DRAW_BILLBOARD)
-	{
-		ShapeData& sd = g_shapeTable[m_currentShape][m_currentFrame];
-		if (fabsf(sd.m_rotation) < 0.001f || fabsf(sd.m_rotation + 45.0f) < 0.001f)
-			sd.m_rotation = 315.0f;
-	}
-
 	switch (drawType)
 	{
 	case ShapeDrawType::OBJECT_DRAW_BILLBOARD:
@@ -1580,19 +1571,29 @@ void ShapeEditorState::Update()
 		auto plusBtn = m_currentGui->GetElement(GE_TWEAKROTATIONPLUSBUTTON);
 		auto minusBtn = m_currentGui->GetElement(GE_TWEAKROTATIONMINUSBUTTON);
 
+		// Left arrow lowers the angle and the right arrow raises it, same as the
+		// other tweak rows (the plus button id sits on the left).
 		if (shiftHeld)
 		{
 			if (plusBtn && plusBtn->m_Down)
-				applyRot(+1.0f);
-			if (minusBtn && minusBtn->m_Down)
+			{
 				applyRot(-1.0f);
+			}
+			if (minusBtn && minusBtn->m_Down)
+			{
+				applyRot(+1.0f);
+			}
 		}
 		else
 		{
 			if (m_currentGui->GetActiveElementID() == GE_TWEAKROTATIONPLUSBUTTON)
-				applyRot(+1.0f);
-			if (m_currentGui->GetActiveElementID() == GE_TWEAKROTATIONMINUSBUTTON)
+			{
 				applyRot(-1.0f);
+			}
+			if (m_currentGui->GetActiveElementID() == GE_TWEAKROTATIONMINUSBUTTON)
+			{
+				applyRot(+1.0f);
+			}
 		}
 	}
 
