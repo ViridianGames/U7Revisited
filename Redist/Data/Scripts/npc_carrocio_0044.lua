@@ -34,10 +34,10 @@ function npc_carrocio_0044(eventid, objectref)
     var_0003 = is_player_female()
     var_0004 = npc_id_in_party(2)
     add_answer({"bye", "job", "name"})
-    if not get_flag(122) then
+    if get_flag(122) then
         add_answer("Nell with child")
     end
-    if not get_flag(137) then
+    if get_flag(137) then
         add_answer("Charles is angry")
     end
     if not get_flag(173) then
@@ -104,7 +104,7 @@ function npc_carrocio_0044(eventid, objectref)
         elseif answer == "marriage" then
             add_dialogue("\"My coins are arrows rushing to make good, 'Til the day when the jeweller sells his ring, For my sure heart is not but carved from wood, And she doth tend to the bed of a king.\"")
             remove_answer("marriage")
-            if not get_flag(122) then
+            if get_flag(122) then
                 add_answer("Nell with child")
             end
         elseif answer == "Nell with child" then

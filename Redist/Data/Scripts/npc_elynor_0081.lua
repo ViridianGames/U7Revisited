@@ -14,14 +14,14 @@ function npc_elynor_0081(eventid, objectref)
             utility_ship_0891() --- Guess: Starts Fellowship ceremony
         end
         add_answer({"bye", "job", "name"})
-        if not get_flag(135) then
+        if get_flag(135) then
             add_answer("Elizabeth and Abraham")
         end
         var_0005 = npc_id_in_party(82) --- Guess: Checks player status
         if var_0005 and var_0004 == 16 then
             add_answer("Gregor")
         end
-        if not get_flag(293) then
+        if get_flag(293) then
             add_answer("candelabra")
         end
         if not get_flag(268) then
@@ -51,7 +51,7 @@ function npc_elynor_0081(eventid, objectref)
                     else
                         add_dialogue("\"Ah-- but thou dost know all of this.\"")
                     end
-                    if not get_flag(143) and not get_flag(265) and not get_flag(258) and not get_flag(286) then
+                    if get_flag(143) and not get_flag(265) and not get_flag(258) and not get_flag(286) then
                         add_dialogue("\"I now recall a message Batlin sent to me. I have been expecting thee. Thou has been sent to deliver our package. Thou mayest relinquish it now.\"")
                         add_answer("deliver")
                     end
@@ -74,10 +74,10 @@ function npc_elynor_0081(eventid, objectref)
                 add_dialogue("\"I am saddened at the loss of life but cannot say I am surprised. Frederico and Tania were antagonistic people. The same may be said of most gypsies. I have nothing against them personally, of course.\"")
                 add_answer({"gypsies", "antagonistic"})
                 remove_answer("murders")
-                if not get_flag(64) then
+                if get_flag(64) then
                     add_answer("Crown Jewel")
                 end
-                if not get_flag(67) then
+                if get_flag(67) then
                     add_answer("Hook")
                 end
             elseif var_0006 == "deliver" then

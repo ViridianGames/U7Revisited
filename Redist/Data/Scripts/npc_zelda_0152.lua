@@ -15,10 +15,10 @@ function npc_zelda_0152(eventid, objectref)
             set_flag(506, true)
         else
             add_dialogue("\"What dost thou need now?\"")
-            if not get_flag(475) then
+            if get_flag(475) then
                 add_answer("Brion's feelings")
             end
-            if not get_flag(476) then
+            if get_flag(476) then
                 add_answer("Nelson's feelings")
             end
         end
@@ -27,16 +27,16 @@ function npc_zelda_0152(eventid, objectref)
             if var_0004 == "name" then
                 add_dialogue("\"I am Zelda.\"")
                 remove_answer("name")
-                if not get_flag(475) then
+                if get_flag(475) then
                     add_answer("Brion's feelings")
                 end
-                if not get_flag(476) then
+                if get_flag(476) then
                     add_answer("Nelson's feelings")
                 end
             elseif var_0004 == "job" then
                 add_dialogue("\"I am the advisor at the Lycaeum.\"")
                 add_answer({"advisor", "Lycaeum"})
-                if not get_flag(502) then
+                if get_flag(502) then
                     add_answer("North East sea")
                 end
             elseif var_0004 == "Lycaeum" then

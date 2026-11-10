@@ -130,6 +130,33 @@ std::string CombatWeaponDisplayName(int weaponShape)
 	return name.empty() ? "fists" : name;
 }
 
+std::string FormatCombatAttackSentence(const U7Object* attacker, const U7Object* target, int weaponShape, int hits)
+{
+	const std::string attackerName = (attacker && !attacker->m_name.empty()) ? attacker->m_name : "Someone";
+	const std::string targetName = (target && !target->m_name.empty()) ? target->m_name : "enemy";
+	const std::string weapon = CombatWeaponDisplayName(weaponShape);
+	if (hits < 0)
+	{
+		return attackerName + " attacks " + targetName + " with " + weapon + ", and misses!";
+	}
+	return attackerName + " attacks " + targetName + " with " + weapon + ", and hits for "
+		+ std::to_string(hits) + " damage!";
+}
+
+Color CombatAttackLogColor(const U7Object* attacker, int hits)
+{
+	if (hits < 0)
+		return YELLOW;
+	if (attacker
+		&& attacker->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC
+		&& g_Player
+		&& g_Player->NPCIDInParty(attacker->m_NPCID))
+	{
+		return WHITE;
+	}
+	return RED;
+}
+
 std::string CombatWeaponDisplayNameForUnit(U7Object* unit)
 {
 	U7Object* weapon = GetEquippedWeapon(unit);
@@ -1073,6 +1100,19 @@ void SpawnFloatingMissText(U7Object* target)
 	SpawnFloatingCombatText(textPos, "MISS", WHITE);
 }
 
+void SpawnFloatingZeroDamageText(U7Object* target)
+{
+	if (!target)
+		return;
+	Vector3 textPos = target->m_centerPoint;
+	textPos.y += 1.35f;
+	const bool partyTarget = g_Player
+		&& target->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC
+		&& g_Player->NPCIDInParty(target->m_NPCID);
+	const Color damageColor = partyTarget ? RED : WHITE;
+	SpawnFloatingCombatText(textPos, "0", damageColor);
+}
+
 void UpdateFloatingCombatTexts()
 {
 	if (!g_Engine)
@@ -1282,8 +1322,8 @@ void DrawCombatSelectionCircles()
 				}
 			}
 
-			// Hover preview: red ring under an enemy a click would attack
-			// (same gate as the Combat cursor in GetOrdersCursor).
+			// Hover preview: red ring under an enemy a click would attack or cast on
+			// (same gate as the lit combat cursor in GetOrdersCursor).
 			if (tb->GetOrdersCursor() == CombatMode::OrdersCursorKind::Combat
 				&& g_objectUnderMousePointer
 				&& g_mainState->IsCombatEnemyObject(g_objectUnderMousePointer)

@@ -34,7 +34,7 @@ function npc_phearcy_0163(eventid, objectref)
         else
             add_dialogue("\"How may I help thee, " .. var_0001 .. "?\" asks Phearcy.")
         end
-        if not get_flag(474) and not get_flag(473) then
+        if get_flag(474) and not get_flag(473) then
             add_dialogue("\"Hast thou discovered the reason for Zelda's moods?\"")
             var_0006 = ask_yes_no()
             if var_0006 then
@@ -82,7 +82,7 @@ function npc_phearcy_0163(eventid, objectref)
                 add_answer({"clerk", "charge", "no one"})
             elseif answer == "mage" then
                 add_dialogue("\"Ah, yes, Mariah is very nice.\"")
-                if not get_flag(473) then
+                if get_flag(473) then
                     add_dialogue("\"She can sell thee many spells.\"")
                 elseif not var_0004 then
                     add_dialogue("\"But I am more interested in discussing Zelda.\"")
@@ -103,7 +103,7 @@ function npc_phearcy_0163(eventid, objectref)
                 remove_answer("Jillian")
             elseif answer == "Effrem" then
                 add_dialogue("\"Friendly fellow -- I like him.\"")
-                if not get_flag(473) then
+                if get_flag(473) then
                     add_dialogue("\"He stays home to care for their son.\"")
                 elseif not var_0004 then
                     add_dialogue("\"But I am more interested in discussing Brion.\"")

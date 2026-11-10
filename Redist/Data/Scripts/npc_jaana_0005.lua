@@ -14,7 +14,7 @@ function npc_jaana_0005(eventid, objectref)
         elseif not get_flag(24) then
             add_answer("join")
         end
-        if not get_flag(228) and not get_flag(239) then
+        if get_flag(228) and get_flag(239) then
             add_answer("Lord Heather")
         end
         if get_flag(40) then
@@ -31,7 +31,7 @@ function npc_jaana_0005(eventid, objectref)
             if var_0003 == "name" then
                 add_dialogue("\"Why, I am Jaana. Thou shouldst remember me!\"")
                 remove_answer("name")
-                if not get_flag(228) then
+                if get_flag(228) then
                     add_answer("Lord Heather")
                 end
                 set_flag(239, true)

@@ -63,30 +63,37 @@ void GumpManager::Update()
 		}
 	}
 
+	// The combat log is drawn over gumps. A press there must not click the gump
+	// underneath. An in-progress window drag still owns the cursor.
+	const bool combatConsoleOwnsPointer = CombatConsoleHasPointer() && draggingGump == nullptr;
+
 	// First pass: Find topmost gump under mouse (iterate backwards to find last one)
-	for (auto it = m_GumpList.rbegin(); it != m_GumpList.rend(); ++it)
+	if (!combatConsoleOwnsPointer)
 	{
-		Rectangle gumpRect = (*it)->m_gui.GetBounds();
-		bool collision = CheckCollisionPointRec(mousePos, gumpRect);
-
-		// If bounding box collision, check pixel-perfect collision
-		if (collision)
+		for (auto it = m_GumpList.rbegin(); it != m_GumpList.rend(); ++it)
 		{
-			collision = (*it)->IsMouseOverSolidPixel(mousePos);
-		}
+			Rectangle gumpRect = (*it)->m_gui.GetBounds();
+			bool collision = CheckCollisionPointRec(mousePos, gumpRect);
 
-		if (collision)
-		{
-			topmostGumpUnderMouse = (*it).get();
-			m_isMouseOverGump = true;
-			m_gumpUnderMouse = topmostGumpUnderMouse;
-
-			// If mouse clicked on this gump, bring it to front (if not already at front)
-			if (g_InputSystem->IsLButtonJustDown() && !m_draggingObject && draggingGump == nullptr)
+			// If bounding box collision, check pixel-perfect collision
+			if (collision)
 			{
-				gumpToMoveToFront = *it;
+				collision = (*it)->IsMouseOverSolidPixel(mousePos);
 			}
-			break; // Found topmost, stop searching
+
+			if (collision)
+			{
+				topmostGumpUnderMouse = (*it).get();
+				m_isMouseOverGump = true;
+				m_gumpUnderMouse = topmostGumpUnderMouse;
+
+				// If mouse clicked on this gump, bring it to front (if not already at front)
+				if (g_InputSystem->IsLButtonJustDown() && !m_draggingObject && draggingGump == nullptr)
+				{
+					gumpToMoveToFront = *it;
+				}
+				break; // Found topmost, stop searching
+			}
 		}
 	}
 
@@ -107,7 +114,7 @@ void GumpManager::Update()
 		// can clear IsDragging on release even if the cursor left its pixels.
 		bool wasActive = (*gump)->m_gui.m_Active;
 		const bool isDragOwner = (draggingGump != nullptr && (*gump).get() == draggingGump);
-		if (m_draggingObject ||
+		if (combatConsoleOwnsPointer || m_draggingObject ||
 			(!isDragOwner && topmostGumpUnderMouse != nullptr && (*gump).get() != topmostGumpUnderMouse))
 		{
 			(*gump)->m_gui.m_Active = false;
@@ -208,32 +215,36 @@ void GumpManager::Update()
 		}
 
 		// Re-check which gump is under mouse now (may have changed during drag)
-		// Use same logic as initial check: proper z-order (rbegin) and pixel-perfect collision
+		// Use same logic as initial check: proper z-order (rbegin) and pixel-perfect collision.
+		// The combat log covers that corner, so a release there is not a gump drop.
 		m_gumpUnderMouse = nullptr;
 		m_isMouseOverGump = false;
-		for (auto it = m_GumpList.rbegin(); it != m_GumpList.rend(); ++it)
+		if (!CombatConsoleHasPointer())
 		{
-			Rectangle gumpRect = (*it)->m_gui.GetBounds();
-			bool collision = CheckCollisionPointRec(mousePos, gumpRect);
-
-			// Pixel-perfect collision detection (checks transparency)
-			if (collision)
+			for (auto it = m_GumpList.rbegin(); it != m_GumpList.rend(); ++it)
 			{
-				collision = (*it)->IsMouseOverSolidPixel(mousePos);
-			}
+				Rectangle gumpRect = (*it)->m_gui.GetBounds();
+				bool collision = CheckCollisionPointRec(mousePos, gumpRect);
 
-			if (collision)
-			{
-				m_gumpUnderMouse = (*it).get();
-				m_isMouseOverGump = true;
-				break;  // Found topmost gump with solid pixel under mouse
+				// Pixel-perfect collision detection (checks transparency)
+				if (collision)
+				{
+					collision = (*it)->IsMouseOverSolidPixel(mousePos);
+				}
+
+				if (collision)
+				{
+					m_gumpUnderMouse = (*it).get();
+					m_isMouseOverGump = true;
+					break;  // Found topmost gump with solid pixel under mouse
+				}
 			}
 		}
 
 		// Drop onto the Avatar or another party member → their equipped backpack.
 		// Failed attempts stay as inventory targets (return-to-source), not world drops.
 		bool attemptedPartyDrop = false;
-		if (g_objectUnderMousePointer != nullptr && g_Player
+		if (!CombatConsoleHasPointer() && g_objectUnderMousePointer != nullptr && g_Player
 			&& g_objectUnderMousePointer->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC
 			&& g_Player->NPCIDInParty(g_objectUnderMousePointer->m_NPCID))
 		{
@@ -401,7 +412,8 @@ void GumpManager::Update()
 			// or world drop is invalid.
 			const bool wantReturnToSource =
 				m_sourceGump != nullptr &&
-				(m_gumpUnderMouse != nullptr || overEmbeddedPaperdoll || attemptedPartyDrop || !m_dropValid);
+				(m_gumpUnderMouse != nullptr || overEmbeddedPaperdoll || attemptedPartyDrop
+					|| CombatConsoleHasPointer() || !m_dropValid);
 
 			if (wantReturnToSource)
 			{

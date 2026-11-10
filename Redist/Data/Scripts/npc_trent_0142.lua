@@ -35,7 +35,7 @@ function npc_trent_0142(eventid, objectref)
     if var_0000 then
         add_answer("ring")
     end
-    if not get_flag(408) then
+    if get_flag(408) then
         add_answer("sacrifice")
     end
     if not get_flag(422) then

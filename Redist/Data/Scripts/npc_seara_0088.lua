@@ -21,7 +21,7 @@ function npc_seara_0088(eventid, objectref)
                 add_dialogue("\"I am called Seara, " .. var_0000 .. ". A pleasure to meet thee.\"")
                 remove_answer("name")
             elseif var_0003 == "job" then
-                if not get_flag(287) then
+                if get_flag(287) then
                     add_dialogue("\"I am a member of our local Artist's Guild here in Minoc.\"")
                     add_answer({"Minoc", "Artist's Guild"})
                 else

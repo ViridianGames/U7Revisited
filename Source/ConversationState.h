@@ -65,6 +65,11 @@ public:
 	}
 
 	void AddStep(ConversationStep step) { m_steps.push_back(step); }
+
+	// Pages that fit the main dialogue panel. One entry when the text already fits.
+	// A break is moved back to the start of a sentence that would not finish
+	// on the current page. A sentence longer than the panel still breaks mid-sentence.
+	static std::vector<std::string> SplitDialogueToFit(const std::string& text);
 	void AddAnswers(std::vector<std::string> answers);
 	void RemoveAnswer(std::string answer);
 	void ClearAnswers() { m_answers.clear(); }

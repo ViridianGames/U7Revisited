@@ -19,10 +19,10 @@ function npc_rutherford_0092(eventid, objectref)
     if get_flag(287) then
         add_answer("murders")
     end
-    if not get_flag(64) then
+    if get_flag(64) then
         add_answer("Crown Jewel")
     end
-    if not get_flag(67) then
+    if get_flag(67) then
         add_answer("Hook")
     end
     if not get_flag(279) then
@@ -43,7 +43,7 @@ function npc_rutherford_0092(eventid, objectref)
             add_dialogue("He lets out a sharp cough to clear his throat. \"Rutherford's me name. Pleased ta meet 'chur.\"~~ He extends his greasy hand for you to shake and does not retract it until it is clasped.")
             remove_answer("name")
         elseif answer == "job" then
-            if not get_flag(287) then
+            if get_flag(287) then
                 add_dialogue("\"Why I be the barkeep of The Checquered Cork. No better place in Minoc to discuss the events of the day.\"")
                 if var_0002 == 23 then
                     add_dialogue("He coughs into the rag he had just been using to polish the bar.")

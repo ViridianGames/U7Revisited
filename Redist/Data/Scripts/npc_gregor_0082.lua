@@ -36,7 +36,7 @@ function npc_gregor_0082(eventid, objectref)
                 add_dialogue("\"My name is Gregor.\"")
                 remove_answer("name")
             elseif var_0005 == "job" then
-                if not get_flag(287) then
+                if get_flag(287) then
                     add_dialogue("\"I am in charge of the Minoc branch of the Britannian Mining Company.\"")
                     add_answer({"Britannian Mining Company", "Minoc"})
                 else

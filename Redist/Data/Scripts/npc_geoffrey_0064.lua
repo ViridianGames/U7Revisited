@@ -7,7 +7,7 @@ function npc_geoffrey_0064(eventid, objectref)
         switch_talk_to(64)
         var_0000 = get_player_name()
         add_answer({"bye", "job", "name"})
-        if not get_flag(153) then
+        if get_flag(153) then
             add_answer("Nystul")
         end
         if not get_flag(193) then

@@ -716,6 +716,32 @@ void AddConsoleString(std::string string, Color color, float starttime);
 
 void AddConsoleString(std::string string, Color color = Color{ 255, 255, 255, 255 });
 
+// Combat log. Separate from the fading console. Cleared when a fight starts,
+// and kept until the next one. Drawn in a box at the bottom-left while in combat.
+struct CombatConsoleString
+{
+	std::string m_String;
+	Color m_Color;
+};
+
+void ClearCombatConsole();
+void AddCombatConsoleString(std::string string, Color color = Color{ 255, 255, 255, 255 });
+// Events that also happen outside combat mode (an open-world hit) stay on the
+// fading console until a fight is actually running.
+void AddCombatLogString(std::string string, Color color = Color{ 255, 255, 255, 255 });
+// While a sentence is open, knockout and death clauses join it instead of
+// starting another combat-log line.
+void BeginCombatLogSentence();
+void NoteCombatLogClause(const std::string& clause, Color color);
+std::string FinishCombatLogSentence(std::string sentence);
+void UpdateCombatConsole();
+void DrawCombatConsole();
+// True while the cursor is over the combat log, or a press that started there
+// is still held (so the scrollbar drag does not turn into a move order).
+bool CombatConsoleHasPointer();
+// g_isCombatMode, UI visible, and the game is not in the pause menu.
+bool CombatConsoleIsActive();
+
 void SaveShapeTable();
 
 void DrawConsole();

@@ -14,10 +14,10 @@ function npc_lord_heather_0077(eventid, objectref)
     switch_talk_to(77)
     var_0000 = is_player_female()
     add_answer({"bye", "job", "name"})
-    if not get_flag(224) then
+    if get_flag(224) then
         add_answer("Nastassia")
     end
-    if not get_flag(106) then
+    if get_flag(106) then
         add_answer({"Lock Lake", "bill"})
     end
     if not get_flag(234) then

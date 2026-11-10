@@ -34,7 +34,7 @@ function npc_mordra_0143(eventid, objectref)
             return
         end
     end
-    if not get_flag(464) and not get_flag(448) then
+    if not get_flag(464) and get_flag(448) then
         add_answer("ingredients")
     end
     var_000A = get_party_members()
@@ -44,7 +44,7 @@ function npc_mordra_0143(eventid, objectref)
     if get_item_flag(get_npc_name(147), 6) then
         npc_mordra_mayor_argument_0962()
     end
-    if not get_flag(408) then
+    if get_flag(408) then
         add_answer("sacrifice")
     end
     var_000B = false

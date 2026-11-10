@@ -12,10 +12,10 @@ function npc_constance_0133(eventid, objectref)
         var_0004 = npc_id_in_party(2) --- Guess: Checks player status
         var_0005 = npc_id_in_party(132) --- Guess: Checks player status
         add_answer({"bye", "job", "name"})
-        if not get_flag(384) then
+        if get_flag(384) then
             add_answer("strangers")
         end
-        if not get_flag(388) then
+        if get_flag(388) then
             add_answer("scoundrels")
         end
         if get_flag(461) then

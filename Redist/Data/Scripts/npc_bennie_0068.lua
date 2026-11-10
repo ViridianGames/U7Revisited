@@ -7,7 +7,7 @@ function npc_bennie_0068(eventid, objectref)
         switch_talk_to(68)
         var_0000 = get_player_name()
         add_answer({"bye", "job", "name"})
-        if not get_flag(113) then
+        if get_flag(113) then
             add_answer("absent-minded")
         end
         var_0001 = get_schedule(68) --- Guess: Checks game state or timer

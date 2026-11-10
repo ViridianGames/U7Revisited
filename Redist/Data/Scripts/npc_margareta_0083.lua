@@ -9,10 +9,10 @@ function npc_margareta_0083(eventid, objectref)
     switch_talk_to(83)
     var_0000 = is_player_wearing_fellowship_medallion() --- Guess: Checks Fellowship membership
     add_answer({"bye", "job", "name"})
-    if not get_flag(254) then
+    if get_flag(254) then
         add_answer({"Tania", "Frederico", "murders"})
     end
-    if not get_flag(255) then
+    if get_flag(255) then
         add_answer("Sasha")
     end
     if not get_flag(270) then

@@ -71,7 +71,7 @@ function npc_sir_denton_0199(eventid, objectref)
             elseif answer == "Sir Horffe" then
                 add_dialogue("\"Sir Horffe is an excellent warrior. He is a gargoyle that was found by two knights when he was very young. They chose to raise him as their own child. He is very honorable.\"")
                 remove_answer("Sir Horffe")
-                if not get_flag(622) then
+                if get_flag(622) then
                     add_answer("Gargish accent")
                 end
             elseif answer == "Gargish accent" then

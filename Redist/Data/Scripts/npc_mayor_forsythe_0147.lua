@@ -29,7 +29,7 @@ function npc_mayor_forsythe_0147(eventid, objectref)
             abort()
         end
         var_0006 = get_lord_or_lady()
-        if not get_flag(408) then
+        if get_flag(408) then
             add_answer("sacrifice")
         end
         if not get_flag(409) then
@@ -114,7 +114,7 @@ function npc_mayor_forsythe_0147(eventid, objectref)
                 remove_answer("name")
             elseif var_0009 == "job" then
                 add_dialogue("He seems confused by your question. \"Did I not already reveal that? I am the mayor.\"")
-                if not get_flag(380) then
+                if get_flag(380) then
                     add_answer("Tortured One")
                 end
             elseif var_0009 == "Liche" then
@@ -140,7 +140,7 @@ function npc_mayor_forsythe_0147(eventid, objectref)
                 add_dialogue("\"I apparently got the proportions a bit off when I told the alchemist about the formula. Anyway, it should be as easy as falling off a log, for thee. I guess thou hadst better be running along now, Mistress Mordra can tell thee ever so much more about this than can I. Be careful though, she is a dangerous old wench.\"")
                 var_0000 = true
                 remove_answer("fire")
-                if not get_flag(426) then
+                if get_flag(426) then
                     add_dialogue("\"Of course, now thou hast already taken care of all that!\" He smile gracioulsy.")
                 else
                     add_answer({"proportions", "Mistress Mordra", "Horance"})

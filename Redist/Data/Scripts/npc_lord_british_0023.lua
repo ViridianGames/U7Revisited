@@ -24,7 +24,7 @@ function npc_lord_british_0023(eventid, objectref)
         if not get_flag(211) then
             add_answer("heal")
         end
-        if not get_flag(295) then
+        if get_flag(295) then
             add_answer("The Guardian")
         end
         if get_flag(212) then
@@ -145,7 +145,7 @@ function npc_lord_british_0023(eventid, objectref)
             elseif var_0009 == "killer" then
                 add_dialogue("\"That is, of course, only an assumption on my part. But that is all we have had to work with. Unless thou hast already uncovered some useful information?\"")
                 remove_answer("killer")
-                if not get_flag(67) then
+                if get_flag(67) then
                     add_answer("Hook")
                 end
                 if get_flag(64) then

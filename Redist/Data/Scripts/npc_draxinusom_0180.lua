@@ -7,7 +7,7 @@ function npc_draxinusom_0180(eventid, objectref)
         var_0000 = get_player_name()
         start_conversation()
         add_answer({"bye", "job", "name"})
-        if not get_flag(569) and not get_flag(568) then
+        if get_flag(569) and not get_flag(568) then
             add_answer("Inamo")
         end
         if get_flag(4) then

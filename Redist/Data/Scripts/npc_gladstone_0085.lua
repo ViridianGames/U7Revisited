@@ -20,7 +20,7 @@ function npc_gladstone_0085(eventid, objectref)
                 add_dialogue("\"My name is Gladstone, " .. var_0000 .. ". At thy service.\"")
                 remove_answer("name")
             elseif var_0002 == "job" then
-                if not get_flag(287) then
+                if get_flag(287) then
                     add_dialogue("\"I am a glassblower and a sculptor. I make mostly bottles and bowls. But in my time I have constructed all manners of statuary out of glass as well.\"")
                     add_answer({"Minoc", "Artist's Guild", "glass"})
                 else

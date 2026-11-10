@@ -12,7 +12,7 @@ function npc_jergi_0096(eventid, objectref)
     if var_0001 then
         add_answer("Margareta")
     end
-    if not get_flag(466) then
+    if get_flag(466) then
         add_answer("hourglass")
     end
     if not get_flag(283) then

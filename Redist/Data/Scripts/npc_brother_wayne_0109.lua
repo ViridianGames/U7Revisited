@@ -68,7 +68,7 @@ function npc_brother_wayne_0109(eventid, objectref)
         elseif answer == "flowers" then
             add_dialogue("\"Very, very lovely plants. All the colors of the rainbow, and then some. One of the monks at the Abbey had a lovely flower garden. She may still tend it for all that I know, " .. var_0000 .. ".\"")
             remove_answer("flowers")
-            if not get_flag(332) then
+            if get_flag(332) then
                 add_answer("She still does.")
             end
         elseif answer == "She still does." then

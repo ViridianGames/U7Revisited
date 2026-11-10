@@ -12,7 +12,7 @@ function npc_paulette_0145(eventid, objectref)
         var_0004 = false
         var_0005 = false
         add_answer({"bye", "job", "name"})
-        if not get_flag(380) then
+        if get_flag(380) then
             add_answer("Tortured One")
         end
         if not get_flag(441) then
@@ -60,7 +60,7 @@ function npc_paulette_0145(eventid, objectref)
                 set_flag(445, true)
             end
         end
-        if not get_flag(408) then
+        if get_flag(408) then
             add_answer("sacrifice")
         end
         if not get_flag(458) then

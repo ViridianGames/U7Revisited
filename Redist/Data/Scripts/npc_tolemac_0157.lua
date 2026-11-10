@@ -47,7 +47,7 @@ function npc_tolemac_0157(eventid, objectref)
         if answer == "name" then
             add_dialogue("\"I am called Tolemac, " .. var_0000 .. ".\"")
             remove_answer("name")
-            if not get_flag(470) then
+            if get_flag(470) then
                 add_answer("reconvert")
             end
         elseif answer == "job" then

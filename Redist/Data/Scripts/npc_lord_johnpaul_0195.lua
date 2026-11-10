@@ -10,7 +10,7 @@ function npc_lord_johnpaul_0195(eventid, objectref)
         var_0003 = false
         start_conversation()
         add_answer({"bye", "job", "name"})
-        if get_flag(607) and not get_flag(613) then
+        if get_flag(607) and not get_flag(613) and not get_flag(609) then
             add_answer("Sir Horffe responsible")
         end
         if get_flag(605) and not get_flag(609) then
@@ -21,7 +21,7 @@ function npc_lord_johnpaul_0195(eventid, objectref)
             add_dialogue("The very serious man breaks into a half-smile as he greets you.")
             var_0004 = get_distance(-197, -195)
             if var_0004 < 10 then
-                if not get_flag(622) then
+                if get_flag(622) then
                     add_dialogue("Horffe is standing at attention just behind him.")
                 else
                     add_dialogue("Standing at attention just behind him is a wingled gargoyle.")
@@ -132,7 +132,7 @@ function npc_lord_johnpaul_0195(eventid, objectref)
                 utility_set_party_quest_prop8_1041(100)
                 add_dialogue("He smiles and extends his hand.")
                 add_dialogue("\"Excellent job, \" .. var_0000 .. \". I cannot adequately express my gratitude. I will see that Sir Pendaran is properly reprimanded. I thank thee, \" .. var_0000 .. \".\"")
-                if not get_flag(610) then
+                if get_flag(610) then
                     add_dialogue("\"Now I must apologize to Sir Horffe!\"")
                     if var_0002 then
                         add_dialogue("*")

@@ -14,7 +14,7 @@ function npc_silamo_0187(eventid, objectref)
             local answer = get_answer()
             if answer == "name" then
                 add_dialogue("\"To be named `Silamo.'\"")
-                if not get_flag(573) then
+                if get_flag(573) then
                     add_answer("wingless status")
                 end
                 remove_answer("name")

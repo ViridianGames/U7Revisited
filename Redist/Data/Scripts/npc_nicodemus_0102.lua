@@ -11,7 +11,7 @@ function npc_nicodemus_0102(eventid, objectref)
     add_answer({"bye", "job", "name"})
     var_0001 = get_party_members()
     var_0002 = count_objects(0, 359, 839, 357) --- Guess: Counts items
-    if not get_flag(466) then
+    if get_flag(466) then
         add_answer({"Time Lord", "hourglass"})
     end
     if var_0002 or get_flag(529) then

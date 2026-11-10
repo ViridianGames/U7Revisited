@@ -28,10 +28,10 @@ function npc_figg_0045(eventid, objectref)
         end
     end
     add_answer({"bye", "job", "name"})
-    if not get_flag(198) then
+    if get_flag(198) then
         add_answer("Weston")
     end
-    if not get_flag(148) then
+    if get_flag(148) then
         add_answer("Fellowship")
     end
     if not get_flag(174) then
@@ -69,7 +69,7 @@ function npc_figg_0045(eventid, objectref)
         elseif answer == "Weston" then
             add_dialogue("\"He now resides in the prison, thanks to me! I knew what he was up to from the moment I saw him! He had the look of a hardened apple thief so I had him nicked by the town guard.\"")
             add_answer({"apple thief", "prison"})
-            if not get_flag(148) then
+            if get_flag(148) then
                 add_answer("Fellowship")
             end
             remove_answer("Weston")

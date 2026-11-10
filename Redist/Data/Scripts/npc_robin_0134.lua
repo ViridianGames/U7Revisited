@@ -12,7 +12,7 @@ function npc_robin_0134(eventid, objectref)
         var_0004 = utility_party_has_items_1073(2, 359, 955, 1, 356) --- Guess: Checks item in inventory
         var_0005 = is_player_wearing_fellowship_medallion() --- Guess: Checks Fellowship membership
         add_answer({"bye", "job", "name"})
-        if not get_flag(381) then
+        if get_flag(381) then
             add_answer("locket")
         end
         if var_0004 then
@@ -24,7 +24,7 @@ function npc_robin_0134(eventid, objectref)
         if not get_flag(399) then
             add_dialogue("You see a roguish man dressed in what appears to be some nobleman's ratty hand-me-downs.")
             set_flag(399, true)
-            if not get_flag(384) then
+            if get_flag(384) then
                 add_answer("strangers")
             end
         else

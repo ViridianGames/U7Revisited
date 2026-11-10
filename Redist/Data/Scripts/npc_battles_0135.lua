@@ -10,13 +10,13 @@ function npc_battles_0135(eventid, objectref)
         var_0002 = npc_id_in_party(134) --- Guess: Checks player status
         var_0003 = npc_id_in_party(136) --- Guess: Checks player status
         add_answer({"bye", "job", "name"})
-        if not get_flag(381) then
+        if get_flag(381) then
             add_answer("locket")
         end
         if not get_flag(400) then
             add_dialogue("The man before you examines you with shifty eyes. He has a slightly crouched posture as if constantly poised to strike out at the world around him.")
             set_flag(400, true)
-            if not get_flag(384) then
+            if get_flag(384) then
                 add_answer("strangers")
             end
         else

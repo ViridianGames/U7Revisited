@@ -48,7 +48,7 @@ function npc_gordy_0230(eventid, objectref)
                 else
                     add_dialogue("\"I hope to see thee there during business hours.\"")
                 end
-                if not get_flag(6) then
+                if get_flag(6) then
                     add_dialogue("\"Ah, thou art a Fellowship member. Thou wilt surely find thy reward at these tables!\" Gordy winks and nudges you, then guffaws loudly.")
                 end
                 add_answer({"skill", "House of Games", "The Mister"})

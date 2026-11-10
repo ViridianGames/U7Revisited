@@ -6,10 +6,10 @@ function npc_de_maria_0080(eventid, objectref)
     if eventid == 1 then
         switch_talk_to(80)
         add_answer({"bye", "job", "name"})
-        if not get_flag(227) then
+        if get_flag(227) then
             add_answer("Nastassia")
         end
-        if not get_flag(228) and not get_flag(242) then
+        if get_flag(228) and get_flag(242) then
             add_answer("Zinaida")
         end
         if not get_flag(237) then
@@ -24,7 +24,7 @@ function npc_de_maria_0080(eventid, objectref)
             if var_0000 == "name" then
                 add_dialogue("\"I am De Maria, the Bard.\"")
                 remove_answer("name")
-                if not get_flag(228) then
+                if get_flag(228) then
                     add_answer("Zinaida")
                 end
                 set_flag(242, true)

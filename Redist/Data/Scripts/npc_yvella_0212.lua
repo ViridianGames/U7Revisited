@@ -108,7 +108,7 @@ function npc_yvella_0212(eventid, objectref)
                     add_dialogue("\"Wilt thou tell me?\"")
                     var_000B = ask_yes_no()
                     if var_000B then
-                        if not get_flag(637) then
+                        if get_flag(637) then
                             add_dialogue("After you tell her, she responds, \"I knew it! That girl must be taught some sense. Associating with those vile creatures. Imagine!\" She shakes her head.")
                             if var_0003 then
                                 add_dialogue("\"If only her father were here today, he would show that loathsome creature his place!\"")

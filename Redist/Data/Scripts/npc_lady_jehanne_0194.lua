@@ -15,7 +15,7 @@ function npc_lady_jehanne_0194(eventid, objectref)
         else
             add_dialogue("\"Good day, \" .. var_0001 .. \",\" says Lady Jehanne.")
         end
-        if get_flag(604) and not get_flag(605) then
+        if get_flag(636) and get_flag(604) and not get_flag(605) then
             add_answer("commons")
             var_0002 = true
         end

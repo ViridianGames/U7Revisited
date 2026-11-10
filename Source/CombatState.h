@@ -90,6 +90,12 @@ U7Object* GetEquippedWeapon(U7Object* unit);
 std::string CombatWeaponDisplayName(int weaponShape);
 std::string CombatWeaponDisplayNameForUnit(U7Object* unit);
 
+// One combat-log sentence for a resolved swing.
+// hits < 0 is a miss. Otherwise "and hits for N damage!"
+std::string FormatCombatAttackSentence(const U7Object* attacker, const U7Object* target, int weaponShape, int hits);
+// Misses are yellow. A party member's hit is white. An enemy's hit is red.
+Color CombatAttackLogColor(const U7Object* attacker, int hits);
+
 // Exult Actor::get_property(combat) for hit rolls (Avatar via g_Player).
 int GetCombatSkill(const U7Object* unit);
 
@@ -123,6 +129,8 @@ bool ApplyCombatDamage(U7Object* target, float amount, U7Object* attacker = null
 void SpawnFloatingCombatText(Vector3 worldPos, const std::string& text, Color color);
 /// Floating "MISS" above the target (replaces miss console spam).
 void SpawnFloatingMissText(U7Object* target);
+/// Floating "0" when a connecting hit is soaked to no HP (armor or immunity).
+void SpawnFloatingZeroDamageText(U7Object* target);
 void UpdateFloatingCombatTexts();
 void DrawFloatingCombatTexts(); // screen-space; call inside GUI render target
 void DrawCombatHPBars();        // screen-space; combat mode only

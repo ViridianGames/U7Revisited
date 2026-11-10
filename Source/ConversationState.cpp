@@ -16,6 +16,7 @@
 #include <fstream>
 #include <algorithm>
 #include <cctype>
+#include <sstream>
 
 #include "InputSystem.h"
 
@@ -23,6 +24,19 @@ using namespace std;
 
 namespace
 {
+	// Main dialogue panel in Draw(). Text starts 10px below the panel top.
+	constexpr float kDialogueBoxX = 100.f;
+	constexpr float kDialogueBoxY = 10.f;
+	constexpr float kDialogueBoxW = 500.f;
+	constexpr float kDialogueBoxH = 110.f;
+	constexpr float kDialogueTextX = 115.f;
+	constexpr float kDialogueTextY = 20.f;
+	constexpr float kDialogueTextMaxWidth = 450.f;
+	constexpr float kDialogueTextBottomPad = 10.f;
+	// DrawParagraph steps y by fontSize * 1.2 and measures with spacing 1.
+	constexpr float kDialogueLineScale = 1.2f;
+	constexpr int kDialogueSpacing = 1;
+
 	constexpr int kMaxAnswersPerColumn = 10;
 	constexpr float kAnswerTextX0 = 190.f;
 	constexpr float kAnswerTextY0 = 135.f;
@@ -142,6 +156,452 @@ namespace
 			outBackdrop->valid = true;
 		}
 	}
+
+	struct DialogueVisLine
+	{
+		std::string content;
+		bool hardBreakBefore = false;
+	};
+
+	int DialogueLinesThatFit(float fontSize)
+	{
+		if (fontSize <= 0.f)
+		{
+			return 1;
+		}
+
+		const float limit = (kDialogueBoxY + kDialogueBoxH) - kDialogueTextBottomPad;
+		const float lineAdvance = fontSize * kDialogueLineScale;
+		int lines = 0;
+		while (lines < 32)
+		{
+			const float top = kDialogueTextY + static_cast<float>(lines) * lineAdvance;
+			// DrawTextEx uses y as the top. The outline extends one pixel lower.
+			const float bottom = top + fontSize + 1.f;
+			if (bottom > limit)
+			{
+				break;
+			}
+			++lines;
+		}
+		if (lines < 1)
+		{
+			return 1;
+		}
+		return lines;
+	}
+
+	// Same integer truncation as DrawParagraph's width test.
+	int DialogueMeasureWidth(const std::string& text, float fontSize)
+	{
+		return static_cast<int>(MeasureTextEx(*g_ConversationFont, text.c_str(), fontSize, kDialogueSpacing).x);
+	}
+
+	void AppendUtf8(std::string& dest, const std::string& src, size_t& index)
+	{
+		if (index >= src.size())
+		{
+			return;
+		}
+		const unsigned char lead = static_cast<unsigned char>(src[index]);
+		size_t len = 1;
+		if ((lead & 0xE0) == 0xC0)
+		{
+			len = 2;
+		}
+		else if ((lead & 0xF0) == 0xE0)
+		{
+			len = 3;
+		}
+		else if ((lead & 0xF8) == 0xF0)
+		{
+			len = 4;
+		}
+		if (index + len > src.size())
+		{
+			len = 1;
+		}
+		dest.append(src, index, len);
+		index += len;
+	}
+
+	// A token wider than the panel is broken on code points so it can wrap.
+	std::vector<std::string> BreakDialogueToken(const std::string& word, float fontSize)
+	{
+		std::vector<std::string> parts;
+		if (word.empty())
+		{
+			return parts;
+		}
+		const int maxWidth = static_cast<int>(kDialogueTextMaxWidth);
+		if (DialogueMeasureWidth(word, fontSize) <= maxWidth)
+		{
+			parts.push_back(word);
+			return parts;
+		}
+
+		std::string part;
+		size_t index = 0;
+		while (index < word.size())
+		{
+			const size_t start = index;
+			std::string codepoint;
+			AppendUtf8(codepoint, word, index);
+			const std::string next = part + codepoint;
+			if (DialogueMeasureWidth(next, fontSize) > maxWidth && !part.empty())
+			{
+				parts.push_back(part);
+				part = word.substr(start, index - start);
+			}
+			else
+			{
+				part = next;
+			}
+		}
+		if (!part.empty())
+		{
+			parts.push_back(part);
+		}
+		return parts;
+	}
+
+	std::vector<DialogueVisLine> WrapDialogueLines(const std::string& text, float fontSize, bool& brokeLongToken)
+	{
+		brokeLongToken = false;
+		std::vector<DialogueVisLine> lines;
+		std::istringstream paragraphs(text);
+		std::string rawline;
+		std::string line;
+		bool firstParagraph = true;
+		const int maxWidth = static_cast<int>(kDialogueTextMaxWidth);
+
+		auto flushLine = [&](bool hardBefore)
+		{
+			std::string content = line;
+			while (!content.empty() && content.back() == ' ')
+			{
+				content.pop_back();
+			}
+			DialogueVisLine vis;
+			vis.content = std::move(content);
+			vis.hardBreakBefore = hardBefore;
+			lines.push_back(std::move(vis));
+			line.clear();
+		};
+
+		while (std::getline(paragraphs, rawline))
+		{
+			if (!rawline.empty() && rawline.back() == '\r')
+			{
+				rawline.pop_back();
+			}
+
+			bool lineHard = !firstParagraph;
+			firstParagraph = false;
+
+			std::stringstream words(rawline);
+			std::string word;
+			while (words >> word)
+			{
+				const std::vector<std::string> parts = BreakDialogueToken(word, fontSize);
+				if (parts.size() > 1)
+				{
+					brokeLongToken = true;
+				}
+				for (const std::string& part : parts)
+				{
+					if (!line.empty() && DialogueMeasureWidth(line + part, fontSize) > maxWidth)
+					{
+						flushLine(lineHard);
+						lineHard = false;
+					}
+					line += part + " ";
+				}
+			}
+			flushLine(lineHard);
+		}
+		return lines;
+	}
+
+	struct DialogueWord
+	{
+		std::string text;
+		int newlinesBefore = 0;
+		bool startsSentence = false;
+	};
+
+	bool IsSentenceCloserChar(unsigned char c)
+	{
+		return c == '"' || c == '\'' || c == ')' || c == ']' || c == '*' || c == '}';
+	}
+
+	bool IsAbbreviationWord(const std::string& word)
+	{
+		int end = static_cast<int>(word.size()) - 1;
+		while (end >= 0 && IsSentenceCloserChar(static_cast<unsigned char>(word[end])))
+		{
+			--end;
+		}
+		if (end < 0 || word[end] != '.')
+		{
+			return false;
+		}
+		int start = end - 1;
+		while (start >= 0 && std::isalpha(static_cast<unsigned char>(word[start])))
+		{
+			--start;
+		}
+		const std::string core = word.substr(static_cast<size_t>(start + 1), static_cast<size_t>(end - start - 1));
+		std::string lower = core;
+		for (char& ch : lower)
+		{
+			ch = static_cast<char>(std::tolower(static_cast<unsigned char>(ch)));
+		}
+		return lower == "mr" || lower == "mrs" || lower == "ms" || lower == "dr"
+			|| lower == "st" || lower == "sr" || lower == "jr" || lower == "prof"
+			|| lower == "etc" || lower == "vs";
+	}
+
+	bool WordEndsSentence(const std::string& word)
+	{
+		int i = static_cast<int>(word.size()) - 1;
+		while (i >= 0 && IsSentenceCloserChar(static_cast<unsigned char>(word[i])))
+		{
+			--i;
+		}
+		if (i < 0)
+		{
+			return false;
+		}
+		const char mark = word[i];
+		if (mark != '.' && mark != '!' && mark != '?')
+		{
+			return false;
+		}
+		if (mark == '.' && IsAbbreviationWord(word))
+		{
+			return false;
+		}
+		return true;
+	}
+
+	std::vector<DialogueWord> TokenizeDialogue(const std::string& text, float fontSize, bool& brokeLongToken)
+	{
+		brokeLongToken = false;
+		std::vector<DialogueWord> words;
+		std::istringstream paragraphs(text);
+		std::string rawline;
+		int newlinesBeforeNext = 0;
+		bool nextStartsSentence = true;
+		bool seenParagraph = false;
+
+		while (std::getline(paragraphs, rawline))
+		{
+			if (!rawline.empty() && rawline.back() == '\r')
+			{
+				rawline.pop_back();
+			}
+			if (seenParagraph)
+			{
+				++newlinesBeforeNext;
+			}
+			seenParagraph = true;
+
+			std::stringstream stream(rawline);
+			std::string word;
+			while (stream >> word)
+			{
+				const std::vector<std::string> parts = BreakDialogueToken(word, fontSize);
+				if (parts.size() > 1)
+				{
+					brokeLongToken = true;
+				}
+				const bool endsSentence = WordEndsSentence(word);
+				for (size_t partIndex = 0; partIndex < parts.size(); ++partIndex)
+				{
+					DialogueWord token;
+					token.text = parts[partIndex];
+					token.newlinesBefore = (partIndex == 0) ? newlinesBeforeNext : 0;
+					token.startsSentence = (partIndex == 0) && nextStartsSentence;
+					words.push_back(std::move(token));
+					newlinesBeforeNext = 0;
+				}
+				nextStartsSentence = endsSentence;
+			}
+		}
+		return words;
+	}
+
+	struct DialogueSim
+	{
+		std::string text;
+		int closed = 0;
+		std::string line;
+	};
+
+	int DialogueLinesUsed(const DialogueSim& sim)
+	{
+		return sim.closed + (sim.line.empty() ? 0 : 1);
+	}
+
+	// Place one word the way DrawParagraph wraps. Returns false when the word
+	// would start a line past maxLines. `out` is only meaningful on success.
+	bool PlaceDialogueWord(const DialogueSim& sim, const DialogueWord& word, int maxLines, float fontSize, DialogueSim& out)
+	{
+		out = sim;
+		const int maxWidth = static_cast<int>(kDialogueTextMaxWidth);
+
+		if (word.newlinesBefore > 0)
+		{
+			const bool hadOpenLine = !sim.line.empty();
+			if (hadOpenLine)
+			{
+				out.closed += 1;
+				out.line.clear();
+			}
+			int blanks = word.newlinesBefore;
+			if (hadOpenLine && blanks > 0)
+			{
+				--blanks;
+			}
+			if (out.closed + blanks + 1 > maxLines)
+			{
+				return false;
+			}
+			for (int n = 0; n < word.newlinesBefore; ++n)
+			{
+				out.text.push_back('\n');
+			}
+			out.closed += blanks;
+			out.line = word.text + " ";
+			out.text += word.text;
+			return true;
+		}
+
+		if (!out.line.empty() && DialogueMeasureWidth(out.line + word.text, fontSize) > maxWidth)
+		{
+			out.closed += 1;
+			out.line.clear();
+			if (out.closed + 1 > maxLines)
+			{
+				return false;
+			}
+			if (!out.text.empty() && out.text.back() != '\n')
+			{
+				out.text.push_back(' ');
+			}
+			out.text += word.text;
+			out.line = word.text + " ";
+			return true;
+		}
+
+		if (out.line.empty() && out.closed + 1 > maxLines)
+		{
+			return false;
+		}
+
+		if (!out.line.empty() && !out.text.empty() && out.text.back() != '\n')
+		{
+			out.text.push_back(' ');
+		}
+		out.text += word.text;
+		out.line += word.text + " ";
+		return true;
+	}
+
+	std::vector<std::string> PagesFromDialogueWords(const std::vector<DialogueWord>& words, int maxLines, float fontSize)
+	{
+		std::vector<std::string> pages;
+		size_t index = 0;
+		while (index < words.size())
+		{
+			const size_t pageStart = index;
+			DialogueSim page;
+			DialogueSim sentenceSnapshot;
+			size_t sentenceStart = index;
+			bool canRollBack = false;
+			bool finishedPage = false;
+
+			while (index < words.size())
+			{
+				const DialogueWord& word = words[index];
+				if (word.startsSentence)
+				{
+					if (DialogueLinesUsed(page) > 0)
+					{
+						sentenceSnapshot = page;
+						sentenceStart = index;
+						canRollBack = true;
+					}
+					else
+					{
+						sentenceStart = index;
+						canRollBack = false;
+					}
+				}
+
+				DialogueSim next;
+				if (!PlaceDialogueWord(page, word, maxLines, fontSize, next))
+				{
+					if (canRollBack && sentenceStart > pageStart)
+					{
+						page = sentenceSnapshot;
+						index = sentenceStart;
+					}
+					else if (page.text.empty())
+					{
+						page.text = word.text;
+						++index;
+					}
+					finishedPage = true;
+					break;
+				}
+
+				page = std::move(next);
+				++index;
+			}
+
+			if (!page.text.empty())
+			{
+				pages.push_back(page.text);
+			}
+			if (!finishedPage)
+			{
+				break;
+			}
+			if (index == pageStart)
+			{
+				break;
+			}
+		}
+		return pages;
+	}
+}
+
+std::vector<std::string> ConversationState::SplitDialogueToFit(const std::string& text)
+{
+	if (!g_ConversationFont || text.empty())
+	{
+		return { text };
+	}
+
+	const float fontSize = static_cast<float>(g_ConversationFont->baseSize);
+	const int maxLines = DialogueLinesThatFit(fontSize);
+	bool brokeLongToken = false;
+	const std::vector<DialogueVisLine> lines = WrapDialogueLines(text, fontSize, brokeLongToken);
+	if (!brokeLongToken && static_cast<int>(lines.size()) <= maxLines)
+	{
+		return { text };
+	}
+
+	brokeLongToken = false;
+	const std::vector<DialogueWord> words = TokenizeDialogue(text, fontSize, brokeLongToken);
+	std::vector<std::string> pages = PagesFromDialogueWords(words, maxLines, fontSize);
+	if (pages.empty())
+	{
+		return { text };
+	}
+	return pages;
 }
 
 ConversationState::~ConversationState()
@@ -424,15 +884,15 @@ void ConversationState::Draw()
 
 	BeginTextureMode(g_guiRenderTarget);
 	ClearBackground({0, 0, 0, 0});
-	DrawRectangleRounded({100, 10, 500, 110}, .25, 100, {0, 0, 0, 224});
+	DrawRectangleRounded({kDialogueBoxX, kDialogueBoxY, kDialogueBoxW, kDialogueBoxH}, .25, 100, {0, 0, 0, 224});
 
 	m_Gui->Draw();
 
 	DrawTextureEx(*g_ResourceManager->GetTexture("U7FACES" + to_string(m_npcId) + to_string(m_npcFrame)), {4, 10}, 0, 2,
 	              WHITE);
 
-	DrawParagraph(g_ConversationFont, m_currentDialogue, {115, 20}, 450,
-	              g_ConversationFont.get()->baseSize, 1, YELLOW);
+	DrawParagraph(g_ConversationFont, m_currentDialogue, {kDialogueTextX, kDialogueTextY}, kDialogueTextMaxWidth,
+	              g_ConversationFont.get()->baseSize, kDialogueSpacing, YELLOW);
 
 	if (m_secondSpeakerActive)
 	{

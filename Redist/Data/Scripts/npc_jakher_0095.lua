@@ -38,7 +38,7 @@ function npc_jakher_0095(eventid, objectref)
             remove_answer("name")
             add_answer("Minoc")
         elseif answer == "job" then
-            if not get_flag(287) then
+            if get_flag(287) then
                 add_dialogue("\"Along with Karenna, I am a trainer in the fighting arts. My specialty is strength and strategy. On the field of battle, if one does not use his head while using one's muscles, he is in danger of losing it.\"")
                 add_answer({"trainer", "Karenna"})
             else

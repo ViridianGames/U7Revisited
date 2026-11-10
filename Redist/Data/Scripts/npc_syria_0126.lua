@@ -24,7 +24,7 @@ function npc_syria_0126(eventid, objectref)
         end
     end
     if var_0001 == 4 then
-        if not get_flag(360) then
+        if get_flag(360) and not get_flag(362) then
             add_dialogue("\"I see that coward Sprellic has given thee the flag so that it may be returned to us. Thou hadst better hand it over.\"")
             var_0006 = remove_party_items(359, 359, 359, 286, 1)
             if var_0006 then

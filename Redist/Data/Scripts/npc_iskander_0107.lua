@@ -18,7 +18,7 @@ function npc_iskander_0107(eventid, objectref)
         add_dialogue("\"What dost thou want?\" says Iskander.")
     end
     add_answer({"bye", "job", "name"})
-    if not get_flag(731) then
+    if get_flag(731) then
         add_answer("Eiko and Amanda")
     end
     while true do

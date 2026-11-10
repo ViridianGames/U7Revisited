@@ -9,7 +9,7 @@ function npc_frank_0165(eventid, objectref)
         var_0002 = false
         start_conversation()
         add_answer({"bye", "job", "name"})
-        if not get_flag(519) then
+        if get_flag(519) then
             add_dialogue("\"I think thou dost ask too many questions.\"")
             var_0002 = true
         else

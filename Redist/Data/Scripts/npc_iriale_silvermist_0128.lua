@@ -9,7 +9,7 @@ function npc_iriale_silvermist_0128(eventid, objectref)
     switch_talk_to(128)
     var_0000 = get_player_name()
     add_answer({"bye", "job", "name"})
-    if not get_flag(699) then
+    if get_flag(699) then
         add_answer("Gorn")
     end
     if not get_flag(716) then

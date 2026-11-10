@@ -12,10 +12,10 @@ function npc_penumbra_0150(eventid, objectref)
     var_0001 = utility_party_has_items_1073(359, 359, 759, 1, 357) --- Guess: Checks inventory items
     var_0002 = get_lord_or_lady()
     add_answer({"bye", "job", "name"})
-    if not get_flag(479) then
+    if get_flag(479) then
         add_answer("blackrock")
     end
-    if not get_flag(480) then
+    if get_flag(480) then
         add_answer("ring")
     end
     if not get_flag(504) then

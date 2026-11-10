@@ -19,7 +19,7 @@ function npc_malloy_0243(eventid, objectref)
     else
         add_dialogue("\"Hello, good friend,\" says Malloy. \"A pleasure to see thee again.\"")
     end
-    if not get_flag(729) then
+    if get_flag(729) then
         add_answer("helmet on foot")
     end
     while true do
@@ -49,7 +49,7 @@ function npc_malloy_0243(eventid, objectref)
             else
                 add_dialogue("\"Owings and myself are working as mining engineers, a position we were fortunate enough to have acquired quite recently. We are working on a special project for the Britannian Mining Company.\"")
                 switch_talk_to(239)
-                if not get_flag(730) then
+                if get_flag(730) then
                     add_dialogue("Owings gives a big nod, throwing his head back and snapping it straight down. \"That is absolutely right, Malloy.\"")
                 else
                     add_dialogue("\"That is absolutely right, Malloy,\" says Owings. He gives a big nod which causes his helmet to fall down over his eyes.")

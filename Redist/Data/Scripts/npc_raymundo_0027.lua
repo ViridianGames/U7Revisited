@@ -31,10 +31,10 @@ function npc_raymundo_0027(eventid, objectref)
     var_0000 = get_schedule(27)
     var_0001 = get_schedule_type(get_npc_name(27))
     add_answer({"bye", "job", "name"})
-    if not get_flag(104) then
+    if get_flag(104) then
         add_answer("audition")
     end
-    if not get_flag(105) then
+    if get_flag(105) then
         add_answer({"Max", "Miranda"})
     end
     if not get_flag(156) then

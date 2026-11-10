@@ -8,10 +8,10 @@ function npc_joseph_0120(eventid, objectref)
         var_0000 = get_lord_or_lady()
         var_0001 = is_player_wearing_fellowship_medallion() --- Guess: Checks Fellowship membership
         add_answer({"bye", "job", "name"})
-        if not get_flag(535) then
+        if get_flag(535) then
             add_answer("Elizabeth and Abraham")
         end
-        if not get_flag(368) then
+        if get_flag(368) then
             add_answer("Sprellic")
         end
         if not get_flag(370) then

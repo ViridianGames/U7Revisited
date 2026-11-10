@@ -17,7 +17,7 @@ function npc_penni_0115(eventid, objectref)
         else
             add_dialogue("\"Hail, " .. var_0000 .. ". Might I assist thee?\" asks Penni.")
         end
-        if not get_flag(478) then
+        if get_flag(478) then
             add_answer("Addom")
         end
         while true do

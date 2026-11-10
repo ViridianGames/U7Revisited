@@ -131,7 +131,7 @@ function npc_murray_0241(eventid, objectref)
         elseif answer == "babies" then
             add_dialogue("The man nods. \"We babies then.\"")
             remove_answer("babies")
-            if not get_flag(338) then
+            if get_flag(338) then
                 add_answer("Art thou from Yew?")
             end
         elseif answer == "Art thou from Yew?" then

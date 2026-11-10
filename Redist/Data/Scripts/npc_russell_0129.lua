@@ -10,16 +10,16 @@ function npc_russell_0129(eventid, objectref)
         var_0002 = get_schedule_type(129) --- Guess: Gets object state
         var_0003 = is_player_wearing_fellowship_medallion() --- Guess: Checks Fellowship membership
         add_answer({"bye", "job", "name"})
-        if not get_flag(381) then
+        if get_flag(381) then
             add_answer("locket")
         end
         if var_0003 then
             add_answer("medallion")
         end
-        if not get_flag(295) then
+        if get_flag(295) then
             add_answer({"Crown Jewel", "Hook"})
         end
-        if not get_flag(384) then
+        if get_flag(384) then
             add_answer("strangers")
         end
         if not get_flag(394) then

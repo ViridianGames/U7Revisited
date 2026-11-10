@@ -21,7 +21,7 @@ function npc_ben_0116(eventid, objectref)
                 add_answer({"forest", "Yew"})
             elseif var_0001 == "job" then
                 add_dialogue("\"I be a logger, " .. var_0000 .. ". 'Tis what I have done all my life. In fact, " .. var_0000 .. ", 'tis what my father did. And 'is father before 'im. And so on. We have been doin' this for more than ten generations.\"")
-                if not get_flag(298) then
+                if get_flag(298) then
                     add_answer("Silverleaf")
                 end
             elseif var_0001 == "Yew" then

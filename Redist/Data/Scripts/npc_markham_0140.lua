@@ -22,7 +22,7 @@ function npc_markham_0140(eventid, objectref)
     end
     var_0001 = "it's not all his fault"
     var_0002 = false
-    if not get_flag(408) then
+    if get_flag(408) then
         add_answer("sacrifice")
     end
     var_0003 = get_schedule(140)

@@ -7,10 +7,10 @@ function npc_magenta_0131(eventid, objectref)
         switch_talk_to(131)
         var_0000 = get_lord_or_lady()
         add_answer({"bye", "job", "name"})
-        if not get_flag(382) and not get_flag(383) then
+        if get_flag(382) and not get_flag(383) then
             add_answer("locket")
         end
-        if not get_flag(384) then
+        if get_flag(384) then
             add_answer("strangers")
         end
         if not get_flag(396) then

@@ -19,7 +19,7 @@ function npc_caine_0247(eventid, objectref)
             set_flag(450, true)
         else
             add_dialogue("\"Greetings, " .. var_0003 .. ".\" Caine breathes deeply, apparently forcing back his torment.")
-            if not get_flag(380) and not get_flag(406) then
+            if get_flag(380) and not get_flag(406) then
                 add_answer("questions")
                 var_0002 = true
             end

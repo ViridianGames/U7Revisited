@@ -14,7 +14,7 @@ function npc_zinaida_0079(eventid, objectref)
     switch_talk_to(79)
     var_0000 = get_schedule_type(get_npc_name(79))
     add_answer({"bye", "job", "name"})
-    if not get_flag(228) then
+    if get_flag(228) and get_flag(241) then
         add_answer("De Maria")
     end
     if not get_flag(236) then
@@ -23,7 +23,7 @@ function npc_zinaida_0079(eventid, objectref)
     else
         add_dialogue("\"Hello,\" Zinaida says.")
     end
-    if not get_flag(228) then
+    if get_flag(228) then
         add_answer("De Maria")
     end
     set_flag(241, true)

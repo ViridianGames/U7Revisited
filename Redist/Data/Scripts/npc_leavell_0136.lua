@@ -10,13 +10,13 @@ function npc_leavell_0136(eventid, objectref)
         var_0002 = npc_id_in_party(134) --- Guess: Checks player status
         var_0003 = npc_id_in_party(135) --- Guess: Checks player status
         add_answer({"bye", "job", "name"})
-        if not get_flag(381) then
+        if get_flag(381) then
             add_answer("locket")
         end
         if not get_flag(401) then
             add_dialogue("You see a young man balancing a dagger on the tip of his finger. He tries hard to ignore you.")
             set_flag(401, true)
-            if not get_flag(384) then
+            if get_flag(384) then
                 add_answer("strangers")
             end
         else

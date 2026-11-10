@@ -146,7 +146,6 @@ public:
 	void RestoreState(MainState& main, const nlohmann::ordered_json& in) override;
 	void Update(MainState& main) override;
 	void HandleInput(MainState& main) override;
-	void DrawHud(MainState& main) override;
 	void DrawScreenMarkers(MainState& main) override;
 	void DrawWorld(MainState& main) override;
 	bool HandleOrdersClick(MainState& main) override;

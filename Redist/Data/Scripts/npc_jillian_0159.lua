@@ -35,7 +35,7 @@ function npc_jillian_0159(eventid, objectref)
         elseif answer == "job" then
             add_dialogue("\"I am a scholar, " .. var_0001 .. ". I also tutor and train those who seek knowledge here in Moonglow.\"")
             add_answer({"tutor", "Moonglow"})
-            if not get_flag(502) then
+            if get_flag(502) then
                 add_answer("North East sea")
             end
         elseif answer == "Moonglow" then

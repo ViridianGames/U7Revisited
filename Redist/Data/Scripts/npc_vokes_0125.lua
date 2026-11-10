@@ -82,7 +82,7 @@ function npc_vokes_0125(eventid, objectref)
                     switch_talk_to(125)
                 end
                 add_answer("honor flag")
-                if not get_flag(390) then
+                if get_flag(390) then
                     add_answer("misunderstanding")
                 end
             else

@@ -8,10 +8,10 @@ function npc_alagner_0246(eventid, objectref)
         var_0001 = is_player_wearing_fellowship_medallion()
         start_conversation()
         add_answer({"bye", "job", "name"})
-        if not get_flag(307) and not get_flag(406) then
+        if get_flag(307) and not get_flag(406) then
             add_answer({"notebook", "Wisps"})
         end
-        if not get_flag(406) then
+        if get_flag(406) then
             add_answer("answers")
         end
         if not get_flag(393) then
@@ -85,7 +85,7 @@ function npc_alagner_0246(eventid, objectref)
                 remove_answer("suspect")
             elseif answer == "notebook" then
                 add_dialogue("\"It is hidden in a safe place, along with mine other treasured sources of knowledge.\"")
-                if not get_flag(307) and not get_flag(406) then
+                if get_flag(307) and not get_flag(406) then
                     add_dialogue("Alagner listens as you tell him you would like to borrow the notebook.")
                     add_dialogue("\"Since thou art on an honorable quest, I suppose I might allow thee to borrow it if thou dost give me thy word that thou wilt return it, and if thou dost offer proof of thine eagerness to learn the true knowledge of the world.\"")
                     add_answer("learn")

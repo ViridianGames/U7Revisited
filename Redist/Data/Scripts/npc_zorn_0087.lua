@@ -25,7 +25,7 @@ function npc_zorn_0087(eventid, objectref)
                 add_dialogue("\"I am Zorn.\"")
                 remove_answer("name")
             elseif var_0004 == "job" then
-                if not get_flag(287) then
+                if get_flag(287) then
                     add_dialogue("\"I am the blacksmith of Minoc.\"")
                     add_answer({"Minoc", "blacksmith"})
                 else

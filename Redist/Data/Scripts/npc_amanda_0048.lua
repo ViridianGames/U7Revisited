@@ -15,7 +15,7 @@ function npc_amanda_0048(eventid, objectref)
     else
         add_dialogue("\"How may I help thee?\" asks Amanda.")
     end
-    if not get_flag(732) and not get_flag(734) then
+    if get_flag(732) and not get_flag(734) then
         add_answer("Stay thine hand!")
     end
     add_answer({"bye", "job", "name"})

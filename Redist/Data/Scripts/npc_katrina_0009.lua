@@ -16,13 +16,13 @@ function npc_katrina_0009(eventid, objectref)
         if npc_id_in_party(9) then
             add_answer("leave")
         end
-        if not get_flag(397) then
+        if get_flag(397) then
             add_answer("Henry")
         end
-        if not get_flag(381) then
+        if get_flag(381) then
             add_answer("locket")
         end
-        if not get_flag(384) then
+        if get_flag(384) then
             add_answer("strangers")
         end
         if not get_flag(28) then

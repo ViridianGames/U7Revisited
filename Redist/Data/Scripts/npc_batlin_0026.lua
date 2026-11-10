@@ -21,12 +21,12 @@ function npc_batlin_0026(eventid, objectref)
         remove_npc(get_npc_name(26))
         return
     end
-    if not get_flag(30) then
+    if get_flag(30) then
         add_dialogue("Batlin looks at you and his gaze returns to the Armageddon winter storm. \"Many years ago, Avatar, I went to Skara Brae, the ghost city. The way the world is now reminds me of that dead place. In Skara Brae I had a spiritual experience so profound that I have never spoken of to another soul. I would like to share that experience with thee now, Avatar.")
         add_dialogue("\"There at Skara Brae I saw a man who was called The Tortured One. I asked this dead man, pray tell, what is the answer to the question of Life and Death? He gave me no reply, and I asked him again. I beseeched him to impart some small parcel of wisdom upon me. What is the answer to the question of Life and Death?! He said nothing, but in his eyes... In his eyes I could see, Avatar, that he could not answer me for there was no answer to give. No answers to the question of Life and Death! It was then I understood. No meanings! No virtues! No values!!!... I commend thee, Avatar, for reaching that same liberating illumination!\"")
         return
     end
-    if not get_flag(56) then
+    if get_flag(56) then
         add_dialogue("\"Art thou ready to answer questions from the Book of Fellowship?\"")
         if ask_yes_no() then
             mech_britannian_lore_quiz_0850()
@@ -66,7 +66,7 @@ function npc_batlin_0026(eventid, objectref)
     var_0006 = get_schedule(26)
     var_0007 = get_player_name()
     add_answer({"bye", "job", "name"})
-    if not get_flag(65) then
+    if get_flag(65) then
         add_answer("Elizabeth and Abraham")
     end
     if not get_flag(150) then
@@ -103,13 +103,13 @@ function npc_batlin_0026(eventid, objectref)
             add_answer("medallion")
         end
     end
-    if not get_flag(148) then
+    if get_flag(148) then
         add_answer("apples")
     end
     if get_flag(138) or get_flag(140) or get_flag(10) then
         add_answer("voice")
     end
-    if not get_flag(139) then
+    if get_flag(139) then
         add_answer("Meditation Retreat")
     end
     if not get_flag(155) then

@@ -24,7 +24,7 @@ function npc_gaye_0053(eventid, objectref)
             end
         end
         add_answer({"bye", "job", "name"})
-        if not get_flag(181) then
+        if get_flag(181) then
             add_answer("Willy")
         end
         if not get_flag(182) then
@@ -49,7 +49,7 @@ function npc_gaye_0053(eventid, objectref)
                 if var_0003 ~= 19 then
                     add_dialogue("\"I am so sorry, the clothier's shop is closed. Please return during our regular business hours. We are open from nine until six every day.\"")
                 else
-                    if not get_flag(103) then
+                    if get_flag(103) then
                         add_dialogue("\"Do not tell me! Raymundo sent thee to get an Avatar costume! They cost thirty gold coins. Dost thou want one?\"")
                         var_0005 = select_option()
                         if var_0005 then

@@ -20,7 +20,7 @@ function npc_sprellic_0124(eventid, objectref)
     if var_0003 and var_0004 and var_0005 then
         var_0002 = true
     end
-    if not get_flag(360) and not get_flag(362) then
+    if get_flag(360) and not get_flag(362) then
         add_answer("I have false flag")
     end
     if var_0002 or get_flag(362) then
@@ -36,7 +36,7 @@ function npc_sprellic_0124(eventid, objectref)
     else
         add_dialogue("\"Greetings again, " .. var_0000 .. ",\" says Sprellic.")
     end
-    if not get_flag(390) and not get_flag(368) and not get_flag(362) then
+    if get_flag(390) and not get_flag(368) and not get_flag(362) then
         add_answer("champion")
     end
     while true do

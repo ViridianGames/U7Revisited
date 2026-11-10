@@ -17,7 +17,7 @@ function npc_mack_0061(eventid, objectref)
     if get_flag(147) then
         add_answer("proof")
     end
-    if not get_flag(207) then
+    if get_flag(207) then
         add_answer("picked eggs")
     end
     if not get_flag(190) then

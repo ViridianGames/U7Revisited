@@ -59,7 +59,7 @@ function npc_morz_0158(eventid, objectref)
             remove_answer({"T-T-Tolemac", "Tolemac"})
         elseif answer == "Fellowship" then
             add_dialogue("\"T-T-Tolemac says they d-d-do m-m-many g-g-good things and they would h-h-help m-m-me m-m-make f-f-friends m-m-more easily. C-C-Cubolt thinks they're b-b-bad. I d-d-do not kn-kn-know what t-t-to d-d-do.\"")
-            if not get_flag(471) then
+            if get_flag(471) then
                 add_answer("don't join")
             end
             remove_answer("Fellowship")

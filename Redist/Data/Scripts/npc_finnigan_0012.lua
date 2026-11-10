@@ -146,10 +146,10 @@ function npc_finnigan_0012(eventid, objectref)
     if get_flag(63) then
         add_answer({"Klog", "Fellowship"})
     end
-    if get_flag(66) and get_flag(61) then
+    if get_flag(66) and not get_flag(61) then
         add_answer("password")
     end
-    if get_flag(69) and get_flag(68) then
+    if get_flag(69) and not get_flag(68) then
         add_answer("Pay me now, please")
     end
     while true do

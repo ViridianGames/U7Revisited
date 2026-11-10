@@ -14,7 +14,7 @@ function npc_pamela_0078(eventid, objectref)
     switch_talk_to(78)
     var_0000 = get_schedule_type(get_npc_name(78))
     add_answer({"bye", "job", "name"})
-    if not get_flag(228) then
+    if get_flag(228) and get_flag(240) then
         add_answer("Rayburt")
     end
     if not get_flag(235) then
@@ -35,7 +35,7 @@ function npc_pamela_0078(eventid, objectref)
         if answer == "name" then
             add_dialogue("\"I am Pamela!\"")
             remove_answer("name")
-            if not get_flag(228) then
+            if get_flag(228) then
                 add_answer("Rayburt")
             end
             set_flag(240, true)

@@ -49,7 +49,7 @@ function npc_sir_pendaran_0193(eventid, objectref)
                 remove_answer("lady")
             elseif answer == "statue" then
                 add_dialogue("\"Terrible shame, \" .. var_0000 .. \".\" He eyes you coldly.")
-                if not get_flag(605) then
+                if get_flag(605) then
                     add_answer("Thou didst do it!")
                 end
                 remove_answer("statue")

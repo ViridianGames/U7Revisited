@@ -14,10 +14,10 @@ function npc_nelson_0249(eventid, objectref)
             set_flag(503, true)
         else
             add_dialogue("\"Salutations, " .. var_0000 .. ".\"")
-            if not get_flag(502) then
+            if get_flag(502) then
                 add_answer("North East sea")
             end
-            if not get_flag(483) then
+            if get_flag(483) then
                 add_answer("Zelda's response")
             end
         end
@@ -26,7 +26,7 @@ function npc_nelson_0249(eventid, objectref)
             if answer == "name" then
                 add_dialogue("\"Thou mayest call me Nelson.\"")
                 remove_answer("name")
-                if not get_flag(502) then
+                if get_flag(502) then
                     add_answer("North East sea")
                 end
             elseif answer == "job" then
@@ -45,7 +45,7 @@ function npc_nelson_0249(eventid, objectref)
             elseif answer == "beautiful" then
                 add_dialogue("\"Dost thou not agree? I am flushed whenever her fair presence passes by. But!\" he holds up his index finger, \"I fear she does not share a mutual attraction. And she is far too serious for me to feel comfortable with a proposal.\"")
                 set_flag(476, true)
-                if not get_flag(474) then
+                if get_flag(474) then
                     add_answer("Zelda's feelings")
                 end
                 remove_answer("beautiful")

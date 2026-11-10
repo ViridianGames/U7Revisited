@@ -9,10 +9,10 @@ function npc_kliftin_0121(eventid, objectref)
         var_0001 = get_schedule(121) --- Guess: Checks game state
         var_0002 = get_schedule_type(121) --- Guess: Gets object state
         add_answer({"bye", "job", "name"})
-        if not get_flag(390) then
+        if get_flag(390) then
             add_answer("Sprellic")
         end
-        if not get_flag(359) and not get_flag(360) then
+        if get_flag(359) and not get_flag(360) then
             add_answer("false flag")
         end
         if not get_flag(371) then
@@ -89,7 +89,7 @@ function npc_kliftin_0121(eventid, objectref)
                 add_dialogue("\"Dost thou want me to make an honor flag that can be given to the Library of Scars so the duels can be stopped?\"")
                 var_0004 = select_option()
                 if var_0004 then
-                    if not get_flag(368) then
+                    if get_flag(368) then
                         add_dialogue("\"Then thou must be sure to come pick it up from me before thou dost go to the Duelling Area. It is the area outside my shop next to the Library of Scars. I had best get busy if I am to have it finished in time! Please return to my shop in a few hours.\"")
                         set_flag(359, true)
                         set_flag(379, true)
@@ -103,7 +103,7 @@ function npc_kliftin_0121(eventid, objectref)
                         abort()
                     end
                 else
-                    if not get_flag(368) then
+                    if get_flag(368) then
                         add_dialogue("\"Thou dost wish to deal with the Library of Scars personally? Very well then, but be warned -- the only type of honor they believe in is victory.\"")
                     else
                         add_dialogue("\"How canst thou have the key to saving Sprellic's life in thine hand and do nothing as he faces certain death?!\"")

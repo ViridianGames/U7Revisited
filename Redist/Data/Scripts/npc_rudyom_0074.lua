@@ -9,7 +9,7 @@ function npc_rudyom_0074(eventid, objectref)
     start_conversation()
     switch_talk_to(74)
     add_answer({"bye", "job", "name"})
-    if not get_flag(101) then
+    if get_flag(101) then
         add_answer({"Moongates", "blackrock"})
     end
     if not get_flag(231) then

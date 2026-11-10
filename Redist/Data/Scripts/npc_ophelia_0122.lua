@@ -23,10 +23,10 @@ function npc_ophelia_0122(eventid, objectref)
     else
         add_dialogue("\"I bid thee welcome once again, " .. var_0000 .. ",\" says Ophelia.")
     end
-    if not get_flag(727) then
+    if get_flag(727) then
         add_answer("Cosmo")
     end
-    if not get_flag(366) then
+    if get_flag(366) then
         add_answer("Sprellic")
     end
     var_0005 = is_dead(get_npc_name(125))

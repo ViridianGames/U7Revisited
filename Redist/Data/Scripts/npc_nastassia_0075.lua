@@ -18,7 +18,7 @@ function npc_nastassia_0075(eventid, objectref)
     var_0004 = is_player_female()
     var_0005 = get_player_name()
     add_answer({"bye", "job", "name"})
-    if not get_flag(224) and not get_flag(226) then
+    if get_flag(224) and not get_flag(226) then
         add_answer({"Yew", "Nadia", "Julius", "Ariana"})
     end
     if get_flag(297) then

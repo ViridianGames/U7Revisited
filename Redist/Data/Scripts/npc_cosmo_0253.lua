@@ -65,7 +65,7 @@ function npc_cosmo_0253(eventid, objectref)
             elseif answer == "pure" then
                 add_dialogue("\"I must prove to the lovely Ophelia that I am still a virgin. To do this I need to demonstrate that a unicorn will allow me to touch it. My friends and I are here to find such a creature, for recent legend purports that one lives in this dungeon.\"")
                 set_flag(736, true)
-                if not get_flag(720) then
+                if get_flag(720) then
                     add_answer("the unicorn said no")
                 end
                 remove_answer("pure")

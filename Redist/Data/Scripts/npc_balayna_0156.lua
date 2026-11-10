@@ -16,7 +16,7 @@ function npc_balayna_0156(eventid, objectref)
     var_0002 = get_schedule(156)
     var_0003 = false
     add_answer({"bye", "Fellowship", "job", "name"})
-    if not get_flag(526) then
+    if get_flag(526) then
         add_answer("liqueur")
     end
     if var_0002 == 7 then

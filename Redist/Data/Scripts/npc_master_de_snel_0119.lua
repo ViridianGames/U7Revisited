@@ -26,7 +26,7 @@ function npc_master_de_snel_0119(eventid, objectref)
         if var_0005 and var_0006 and var_0007 then
             add_answer("duellists")
         end
-        if not get_flag(362) then
+        if get_flag(362) then
             add_answer("honor flag")
         end
         while true do

@@ -16,7 +16,7 @@ function npc_rayburt_0076(eventid, objectref)
     var_0000 = get_schedule(76)
     var_0001 = get_schedule_type(get_npc_name(76))
     add_answer({"bye", "job", "name"})
-    if not get_flag(228) then
+    if get_flag(228) and get_flag(238) then
         add_answer("Pamela")
     end
     if not get_flag(233) then
@@ -43,7 +43,7 @@ function npc_rayburt_0076(eventid, objectref)
                 add_answer("Regal")
             end
             remove_answer("name")
-            if not get_flag(228) then
+            if get_flag(228) then
                 add_answer("Pamela")
             end
             set_flag(238, true)

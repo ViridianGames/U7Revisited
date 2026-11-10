@@ -11,10 +11,10 @@ function npc_willy_0052(eventid, objectref)
         var_0003 = get_schedule(52) --- Guess: Checks game state or timer
         var_0004 = npc_id_in_party(2) --- Guess: Checks player status
         add_answer({"bye", "job", "name"})
-        if not get_flag(133) then
+        if get_flag(133) then
             add_answer("Jeanette")
         end
-        if not get_flag(203) then
+        if get_flag(203) then
             add_answer("made bread")
         end
         var_0005 = utility_party_has_items_1073(14, 359, 863, 1, 357) --- Guess: Verifies Avatar identity

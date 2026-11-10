@@ -95,40 +95,40 @@ function npc_mandy_0231(eventid, objectref)
             elseif answer == "Fallen Virgin" then
                 add_dialogue("\"Yes, I have run this tavern and inn since my wenching days.\" Mandy laughs. \"I was quite a beauty back then, but thou canst not tell it now. I know everyone in town and they all know me. If thou dost need to know something about anyone, let me know.\"")
                 remove_answer("Fallen Virgin")
-                if not get_flag(681) then
+                if get_flag(681) then
                     add_answer("Danag")
                 end
-                if not get_flag(687) then
+                if get_flag(687) then
                     add_answer("Blacktooth")
                 end
-                if not get_flag(688) then
+                if get_flag(688) then
                     add_answer("Mole")
                 end
-                if not get_flag(690) then
+                if get_flag(690) then
                     add_answer("Budo")
                 end
-                if not get_flag(683) then
+                if get_flag(683) then
                     add_answer("Glenno")
                 end
-                if not get_flag(682) then
+                if get_flag(682) then
                     add_answer("Wench")
                 end
-                if not get_flag(684) then
+                if get_flag(684) then
                     add_answer("Martine")
                 end
-                if not get_flag(685) then
+                if get_flag(685) then
                     add_answer("Roberto")
                 end
-                if not get_flag(689) then
+                if get_flag(689) then
                     add_answer("Lucky")
                 end
-                if not get_flag(691) then
+                if get_flag(691) then
                     add_answer("Gordy")
                 end
-                if not get_flag(686) then
+                if get_flag(686) then
                     add_answer("Sintag")
                 end
-                if not get_flag(693) then
+                if get_flag(693) then
                     add_answer("Smithy")
                 end
                 if get_flag(309) or get_flag(260) then

@@ -3,6 +3,7 @@
 #include "U7Object.h"
 #include "WeatherSystem.h"
 #include "Geist/Engine.h"
+#include "Geist/Gui.h"
 #include "Geist/Logging.h"
 #include "Geist/ResourceManager.h"
 #include "Geist/ScriptingSystem.h"
@@ -1471,7 +1472,9 @@ void CameraInput()
 	bool mouseWheel = false;
 	float mouseDelta = 1;
 
-	if (g_allowInput)
+	// The combat log uses the wheel to scroll. Leave the camera distance alone
+	// while the cursor is over that box.
+	if (g_allowInput && !CombatConsoleHasPointer())
 	{
 		if (GetMouseWheelMove() < 0)
 		{
@@ -3620,6 +3623,12 @@ void UpdateFlyingProjectiles()
 						SpawnFloatingMissText(target);
 						if (attacker)
 							target->NotifyAttackedBy(attacker);
+						if (useWeaponTables)
+						{
+							AddCombatLogString(
+								FormatCombatAttackSentence(attacker, target, proj.weaponShape, -1),
+								CombatAttackLogColor(attacker, -1));
+						}
 					}
 					else
 					{
@@ -3631,29 +3640,27 @@ void UpdateFlyingProjectiles()
 							hits = proj.damage;
 						if (hits > 0)
 						{
+							// Weapon missiles fold knockout/death into the attack sentence.
+							// Spell bolts with no weapon table keep that line on its own.
+							if (useWeaponTables)
+								BeginCombatLogSentence();
 							ApplyCombatDamage(target, static_cast<float>(hits), attacker);
 							if (useWeaponTables)
 								ApplyCombatWeaponPowers(attacker, target, proj.weaponShape, proj.ammoShape, hits);
-							if (useWeaponTables)
-							{
-								const std::string attackerName = (attacker && !attacker->m_name.empty())
-									? attacker->m_name : "Someone";
-								const std::string targetName = !target->m_name.empty() ? target->m_name : "enemy";
-								AddConsoleString(
-									attackerName + " attacks " + targetName + " with "
-									+ CombatWeaponDisplayName(proj.weaponShape)
-									+ " for " + std::to_string(hits) + " damage",
-									RED);
-							}
 						}
 						else
 						{
 							// Connected but armor/immunity soaked everything — still show feedback.
-							Vector3 textPos = target->m_centerPoint;
-							textPos.y += 1.35f;
-							SpawnFloatingCombatText(textPos, "0", WHITE);
+							SpawnFloatingZeroDamageText(target);
 							if (attacker)
 								target->NotifyAttackedBy(attacker);
+						}
+						if (useWeaponTables)
+						{
+							AddCombatLogString(
+								FinishCombatLogSentence(FormatCombatAttackSentence(
+									attacker, target, proj.weaponShape, hits)),
+								CombatAttackLogColor(attacker, hits));
 						}
 					}
 					// Flame Bolt / fire bolt: hit SFX only — no explosion sprite.
@@ -3969,6 +3976,621 @@ void DrawConsole()
 			++node;
 		}
 	}
+}
+
+namespace
+{
+	constexpr float kCombatConsoleX = 1.0f;
+	constexpr float kCombatConsoleW = 256.0f;
+	// 4px pad plus 7 lines at font 9 + 2. Extra height sits empty under the last line.
+	constexpr float kCombatConsoleH = 85.0f;
+	constexpr float kCombatConsoleBottom = 1.0f;
+	constexpr float kCombatConsolePad = 4.0f;
+	// Text sits one pixel further right than the wood inset.
+	constexpr float kCombatConsoleTextShiftX = 1.0f;
+	constexpr float kCombatConsoleScrollW = 10.0f;
+	constexpr size_t kCombatConsoleMaxEntries = 400;
+
+	struct CombatConsoleLine
+	{
+		std::string m_Text;
+		Color m_Color;
+	};
+
+	std::vector<CombatConsoleString> g_combatConsoleEntries;
+	std::vector<CombatConsoleLine> g_combatConsoleLines;
+	bool g_combatConsoleLinesDirty = false;
+	int g_combatConsoleScroll = 0;
+	bool g_combatConsoleDragging = false;
+	bool g_combatConsolePress = false;
+	bool g_combatConsoleBlockClick = false;
+	float g_combatConsoleDragGrab = 0.0f;
+	// One bucket per open swing. A hit can make the target swing back before
+	// the first sentence finishes, and that counterattack must keep its own line.
+	std::vector<std::string> g_combatSentenceClauses;
+
+	float CombatConsoleFontSize()
+	{
+		if (!g_SmallFont)
+		{
+			return 9.0f;
+		}
+		return static_cast<float>(g_SmallFont->baseSize);
+	}
+
+	float CombatConsoleLineHeight()
+	{
+		return CombatConsoleFontSize() + 2.0f;
+	}
+
+	float CombatConsoleTextWidth()
+	{
+		return kCombatConsoleW - (kCombatConsolePad * 2.0f) - kCombatConsoleScrollW - 2.0f - kCombatConsoleTextShiftX;
+	}
+
+	float CombatConsoleBoxY()
+	{
+		float screenH = 360.0f;
+		if (g_Engine && g_Engine->m_RenderHeight > 0)
+		{
+			screenH = static_cast<float>(g_Engine->m_RenderHeight);
+		}
+		return screenH - kCombatConsoleH - kCombatConsoleBottom;
+	}
+
+	int CombatConsoleVisibleLines()
+	{
+		const float innerH = kCombatConsoleH - (kCombatConsolePad * 2.0f);
+		int visible = static_cast<int>(innerH / CombatConsoleLineHeight());
+		if (visible < 1)
+		{
+			visible = 1;
+		}
+		return visible;
+	}
+
+	Vector2 CombatConsoleMouseGui()
+	{
+		Vector2 mouse = GetMousePosition();
+		const float scale = (g_DrawScale > 0.0f) ? g_DrawScale : 1.0f;
+		mouse.x /= scale;
+		mouse.y /= scale;
+		return mouse;
+	}
+
+	void PushCombatConsoleChunk(std::string chunk, Color color, std::vector<CombatConsoleLine>& lines)
+	{
+		while (!chunk.empty() && chunk.back() == ' ')
+		{
+			chunk.pop_back();
+		}
+		CombatConsoleLine line;
+		line.m_Text = std::move(chunk);
+		line.m_Color = color;
+		lines.push_back(std::move(line));
+	}
+
+	// Break one token that is wider than the box into pieces that fit.
+	void HardBreakCombatToken(const std::string& token, Color color, float maxWidth, float fontSize,
+		std::string& current, std::vector<CombatConsoleLine>& lines)
+	{
+		std::string chunk;
+		for (char c : token)
+		{
+			const std::string next = chunk + c;
+			const float width = MeasureTextEx(*g_SmallFont, next.c_str(), fontSize, 1).x;
+			if (width > maxWidth && !chunk.empty())
+			{
+				PushCombatConsoleChunk(chunk, color, lines);
+				chunk = std::string(1, c);
+			}
+			else
+			{
+				chunk = next;
+			}
+		}
+		current = std::move(chunk);
+	}
+
+	void AppendWrappedCombatText(const std::string& text, Color color, float maxWidth, float fontSize,
+		std::vector<CombatConsoleLine>& lines)
+	{
+		if (!g_SmallFont || maxWidth <= 4.0f)
+		{
+			PushCombatConsoleChunk(text, color, lines);
+			return;
+		}
+
+		std::string current;
+		std::string token;
+		auto flushToken = [&]()
+		{
+			if (token.empty())
+			{
+				return;
+			}
+
+			const std::string trial = current.empty() ? token : (current + " " + token);
+			const float trialWidth = MeasureTextEx(*g_SmallFont, trial.c_str(), fontSize, 1).x;
+			if (current.empty() || trialWidth <= maxWidth)
+			{
+				if (current.empty() && MeasureTextEx(*g_SmallFont, token.c_str(), fontSize, 1).x > maxWidth)
+				{
+					HardBreakCombatToken(token, color, maxWidth, fontSize, current, lines);
+				}
+				else
+				{
+					current = trial;
+				}
+			}
+			else
+			{
+				PushCombatConsoleChunk(current, color, lines);
+				if (MeasureTextEx(*g_SmallFont, token.c_str(), fontSize, 1).x > maxWidth)
+				{
+					HardBreakCombatToken(token, color, maxWidth, fontSize, current, lines);
+				}
+				else
+				{
+					current = token;
+				}
+			}
+			token.clear();
+		};
+
+		for (char c : text)
+		{
+			if (c == '\n')
+			{
+				flushToken();
+				PushCombatConsoleChunk(current, color, lines);
+				current.clear();
+			}
+			else if (c == ' ' || c == '\t')
+			{
+				flushToken();
+			}
+			else
+			{
+				token.push_back(c);
+			}
+		}
+		flushToken();
+		if (!current.empty())
+		{
+			PushCombatConsoleChunk(current, color, lines);
+		}
+	}
+
+	void RebuildCombatConsoleLines()
+	{
+		g_combatConsoleLines.clear();
+		if (!g_SmallFont)
+		{
+			g_combatConsoleLinesDirty = true;
+			return;
+		}
+
+		const float maxWidth = CombatConsoleTextWidth();
+		const float fontSize = CombatConsoleFontSize();
+		for (const CombatConsoleString& entry : g_combatConsoleEntries)
+		{
+			const size_t before = g_combatConsoleLines.size();
+			AppendWrappedCombatText(entry.m_String, entry.m_Color, maxWidth, fontSize, g_combatConsoleLines);
+			if (g_combatConsoleLines.size() == before)
+			{
+				PushCombatConsoleChunk(std::string(), entry.m_Color, g_combatConsoleLines);
+			}
+		}
+		g_combatConsoleLinesDirty = false;
+	}
+
+	void EnsureCombatConsoleLines()
+	{
+		if (g_combatConsoleLinesDirty)
+		{
+			RebuildCombatConsoleLines();
+		}
+	}
+
+	int CombatConsoleMaxScroll()
+	{
+		EnsureCombatConsoleLines();
+		int maxScroll = static_cast<int>(g_combatConsoleLines.size()) - CombatConsoleVisibleLines();
+		if (maxScroll < 0)
+		{
+			maxScroll = 0;
+		}
+		return maxScroll;
+	}
+
+	void ClampCombatConsoleScroll()
+	{
+		const int maxScroll = CombatConsoleMaxScroll();
+		if (g_combatConsoleScroll < 0)
+		{
+			g_combatConsoleScroll = 0;
+		}
+		if (g_combatConsoleScroll > maxScroll)
+		{
+			g_combatConsoleScroll = maxScroll;
+		}
+	}
+
+	struct CombatConsoleLayout
+	{
+		Rectangle m_Box;
+		Rectangle m_Text;
+		Rectangle m_Track;
+		Rectangle m_Thumb;
+		int m_VisibleLines = 1;
+		int m_MaxScroll = 0;
+	};
+
+	CombatConsoleLayout BuildCombatConsoleLayout()
+	{
+		EnsureCombatConsoleLines();
+
+		CombatConsoleLayout layout;
+		layout.m_Box = Rectangle{ kCombatConsoleX, CombatConsoleBoxY(), kCombatConsoleW, kCombatConsoleH };
+		layout.m_Text = Rectangle{
+			layout.m_Box.x + kCombatConsolePad + kCombatConsoleTextShiftX,
+			layout.m_Box.y + kCombatConsolePad,
+			CombatConsoleTextWidth(),
+			kCombatConsoleH - (kCombatConsolePad * 2.0f)
+		};
+		layout.m_Track = Rectangle{
+			layout.m_Box.x + layout.m_Box.width - kCombatConsolePad - kCombatConsoleScrollW,
+			layout.m_Text.y,
+			kCombatConsoleScrollW,
+			layout.m_Text.height
+		};
+		layout.m_VisibleLines = CombatConsoleVisibleLines();
+		layout.m_MaxScroll = CombatConsoleMaxScroll();
+
+		const int total = static_cast<int>(g_combatConsoleLines.size());
+		float thumbH = layout.m_Track.height;
+		if (total > layout.m_VisibleLines && total > 0)
+		{
+			thumbH = layout.m_Track.height * (static_cast<float>(layout.m_VisibleLines) / static_cast<float>(total));
+		}
+		if (thumbH < 12.0f)
+		{
+			thumbH = 12.0f;
+		}
+		if (thumbH > layout.m_Track.height)
+		{
+			thumbH = layout.m_Track.height;
+		}
+
+		float thumbY = layout.m_Track.y;
+		const float travel = layout.m_Track.height - thumbH;
+		if (layout.m_MaxScroll > 0 && travel > 0.0f)
+		{
+			thumbY = layout.m_Track.y + travel * (static_cast<float>(g_combatConsoleScroll) / static_cast<float>(layout.m_MaxScroll));
+		}
+
+		layout.m_Thumb = Rectangle{
+			layout.m_Track.x + 1.0f,
+			thumbY,
+			layout.m_Track.width - 2.0f,
+			thumbH
+		};
+		return layout;
+	}
+
+	// guielements.png 0,12–12,24. Nine 4×4 cells, row-major, for GuiOctagonBox.
+	GuiOctagonBox* CombatConsoleFrame()
+	{
+		static Gui gui;
+		static GuiOctagonBox* frame = nullptr;
+		if (frame)
+		{
+			return frame;
+		}
+		if (!g_ResourceManager)
+		{
+			return nullptr;
+		}
+
+		Texture* tex = g_ResourceManager->GetTexture("Images/GUI/guielements.png", false);
+		if (!tex)
+		{
+			return nullptr;
+		}
+
+		std::vector<std::shared_ptr<Sprite>> borders;
+		borders.reserve(9);
+		constexpr int kCell = 4;
+		constexpr int kOriginX = 0;
+		constexpr int kOriginY = 12;
+		for (int row = 0; row < 3; ++row)
+		{
+			for (int col = 0; col < 3; ++col)
+			{
+				borders.push_back(std::make_shared<Sprite>(
+					tex,
+					kOriginX + col * kCell,
+					kOriginY + row * kCell,
+					kCell,
+					kCell));
+			}
+		}
+
+		gui.m_Pos = { 0.0f, 0.0f };
+		gui.m_Active = true;
+		frame = gui.AddOctagonBox(1, 0, 0,
+			static_cast<int>(kCombatConsoleW),
+			static_cast<int>(kCombatConsoleH),
+			borders, WHITE);
+		return frame;
+	}
+}
+
+void ClearCombatConsole()
+{
+	g_combatConsoleEntries.clear();
+	g_combatConsoleLines.clear();
+	g_combatConsoleLinesDirty = false;
+	g_combatConsoleScroll = 0;
+	g_combatConsoleDragging = false;
+	g_combatConsolePress = false;
+	g_combatConsoleBlockClick = false;
+	g_combatConsoleDragGrab = 0.0f;
+	g_combatSentenceClauses.clear();
+}
+
+void AddCombatConsoleString(std::string string, Color color)
+{
+	cout << string << endl;
+
+	const bool follow = g_combatConsoleScroll >= CombatConsoleMaxScroll();
+
+	CombatConsoleString temp;
+	temp.m_String = std::move(string);
+	temp.m_Color = color;
+	g_combatConsoleEntries.push_back(std::move(temp));
+
+	if (g_combatConsoleEntries.size() > kCombatConsoleMaxEntries)
+	{
+		const size_t extra = g_combatConsoleEntries.size() - kCombatConsoleMaxEntries;
+		g_combatConsoleEntries.erase(g_combatConsoleEntries.begin(), g_combatConsoleEntries.begin() + static_cast<std::ptrdiff_t>(extra));
+	}
+
+	g_combatConsoleLinesDirty = true;
+	if (follow)
+	{
+		g_combatConsoleScroll = CombatConsoleMaxScroll();
+	}
+	else
+	{
+		ClampCombatConsoleScroll();
+	}
+}
+
+void AddCombatLogString(std::string string, Color color)
+{
+	if (g_isCombatMode)
+	{
+		AddCombatConsoleString(std::move(string), color);
+	}
+	else
+	{
+		AddConsoleString(std::move(string), color);
+	}
+}
+
+void BeginCombatLogSentence()
+{
+	g_combatSentenceClauses.emplace_back();
+}
+
+void NoteCombatLogClause(const std::string& clause, Color color)
+{
+	if (!g_combatSentenceClauses.empty())
+	{
+		std::string& bucket = g_combatSentenceClauses.back();
+		if (!bucket.empty())
+		{
+			bucket += " ";
+		}
+		bucket += clause;
+		return;
+	}
+	AddCombatLogString(clause, color);
+}
+
+std::string FinishCombatLogSentence(std::string sentence)
+{
+	if (g_combatSentenceClauses.empty())
+	{
+		return sentence;
+	}
+	const std::string clauses = std::move(g_combatSentenceClauses.back());
+	g_combatSentenceClauses.pop_back();
+	if (!clauses.empty())
+	{
+		if (!sentence.empty())
+		{
+			sentence += " ";
+		}
+		sentence += clauses;
+	}
+	return sentence;
+}
+
+bool CombatConsoleHasPointer()
+{
+	if (g_combatConsoleBlockClick || g_combatConsolePress || g_combatConsoleDragging)
+	{
+		return true;
+	}
+	if (!CombatConsoleIsActive())
+	{
+		return false;
+	}
+
+	const CombatConsoleLayout layout = BuildCombatConsoleLayout();
+	return CheckCollisionPointRec(CombatConsoleMouseGui(), layout.m_Box);
+}
+
+void UpdateCombatConsole()
+{
+	g_combatConsoleBlockClick = false;
+
+	if (!CombatConsoleIsActive() || !g_allowInput || !g_InputSystem)
+	{
+		g_combatConsoleDragging = false;
+		g_combatConsolePress = false;
+		return;
+	}
+
+	const CombatConsoleLayout layout = BuildCombatConsoleLayout();
+	const Vector2 mouse = CombatConsoleMouseGui();
+	const bool overBox = CheckCollisionPointRec(mouse, layout.m_Box);
+
+	if (g_InputSystem->IsLButtonJustDown() && overBox)
+	{
+		g_combatConsolePress = true;
+	}
+
+	if (g_combatConsoleDragging)
+	{
+		if (!g_InputSystem->IsLButtonDown())
+		{
+			g_combatConsoleDragging = false;
+		}
+		else if (layout.m_MaxScroll > 0)
+		{
+			const float travel = layout.m_Track.height - layout.m_Thumb.height;
+			if (travel > 0.0f)
+			{
+				const float thumbY = mouse.y - g_combatConsoleDragGrab;
+				float t = (thumbY - layout.m_Track.y) / travel;
+				if (t < 0.0f)
+				{
+					t = 0.0f;
+				}
+				if (t > 1.0f)
+				{
+					t = 1.0f;
+				}
+				g_combatConsoleScroll = static_cast<int>(std::lround(t * static_cast<float>(layout.m_MaxScroll)));
+			}
+		}
+	}
+	else if (g_combatConsolePress && g_InputSystem->IsLButtonJustDown()
+		&& CheckCollisionPointRec(mouse, layout.m_Track))
+	{
+		if (CheckCollisionPointRec(mouse, layout.m_Thumb))
+		{
+			g_combatConsoleDragging = true;
+			g_combatConsoleDragGrab = mouse.y - layout.m_Thumb.y;
+		}
+		else if (layout.m_MaxScroll > 0)
+		{
+			int page = layout.m_VisibleLines - 1;
+			if (page < 1)
+			{
+				page = 1;
+			}
+			if (mouse.y < layout.m_Thumb.y)
+			{
+				g_combatConsoleScroll -= page;
+			}
+			else
+			{
+				g_combatConsoleScroll += page;
+			}
+		}
+	}
+
+	if (g_combatConsolePress && !g_InputSystem->IsLButtonDown())
+	{
+		g_combatConsolePress = false;
+		g_combatConsoleDragging = false;
+		g_combatConsoleBlockClick = true;
+	}
+
+	if (overBox)
+	{
+		const float wheel = GetMouseWheelMove();
+		if (wheel != 0.0f)
+		{
+			int notches = static_cast<int>(std::lround(wheel));
+			if (notches == 0)
+			{
+				notches = (wheel > 0.0f) ? 1 : -1;
+			}
+			g_combatConsoleScroll -= notches * 3;
+		}
+	}
+
+	ClampCombatConsoleScroll();
+}
+
+void DrawCombatConsole()
+{
+	if (!CombatConsoleIsActive() || !g_SmallFont)
+	{
+		return;
+	}
+
+	const CombatConsoleLayout layout = BuildCombatConsoleLayout();
+	const float fontSize = CombatConsoleFontSize();
+	const float lineH = CombatConsoleLineHeight();
+
+	if (GuiOctagonBox* frame = CombatConsoleFrame())
+	{
+		frame->m_Pos.x = layout.m_Box.x;
+		frame->m_Pos.y = layout.m_Box.y;
+		frame->SetSize(layout.m_Box.width, layout.m_Box.height);
+		frame->m_Visible = true;
+		frame->Draw();
+	}
+
+	DrawRectangle(
+		static_cast<int>(layout.m_Track.x),
+		static_cast<int>(layout.m_Track.y),
+		static_cast<int>(layout.m_Track.width),
+		static_cast<int>(layout.m_Track.height),
+		Color{ 24, 24, 24, 230 });
+	DrawRectangle(
+		static_cast<int>(layout.m_Thumb.x),
+		static_cast<int>(layout.m_Thumb.y),
+		static_cast<int>(layout.m_Thumb.width),
+		static_cast<int>(layout.m_Thumb.height),
+		Color{ 188, 196, 208, 240 });
+
+	const int total = static_cast<int>(g_combatConsoleLines.size());
+	const int first = g_combatConsoleScroll;
+	int last = first + layout.m_VisibleLines;
+	if (last > total)
+	{
+		last = total;
+	}
+
+	// Short logs sit on the bottom of the box. A full page starts at the top.
+	float textY = layout.m_Text.y;
+	if (total < layout.m_VisibleLines)
+	{
+		textY = layout.m_Text.y + layout.m_Text.height - static_cast<float>(total) * lineH;
+	}
+
+	BeginScissorMode(
+		static_cast<int>(layout.m_Text.x),
+		static_cast<int>(layout.m_Text.y),
+		static_cast<int>(layout.m_Text.width),
+		static_cast<int>(layout.m_Text.height));
+
+	for (int i = first; i < last; ++i)
+	{
+		const CombatConsoleLine& line = g_combatConsoleLines[static_cast<size_t>(i)];
+		const float y = textY + static_cast<float>(i - first) * lineH;
+		DrawOutlinedText(g_SmallFont, line.m_Text.c_str(), Vector2{ layout.m_Text.x, y }, fontSize, 1, line.m_Color);
+	}
+
+	EndScissorMode();
 }
 
 void DrawOutlinedText(std::shared_ptr<Font> font, const std::string& text, Vector2 position, float fontSize, int spacing, Color color)

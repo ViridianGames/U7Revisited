@@ -16,13 +16,13 @@ function npc_brion_0248(eventid, objectref)
             set_flag(505, true)
         else
             add_dialogue("\"Salutations, " .. var_0001 .. ".\" Brion smiles.")
-            if not get_flag(8) then
+            if get_flag(8) then
                 add_answer("Caddellite")
             end
-            if not get_flag(494) then
+            if get_flag(494) then
                 add_answer("crystals")
             end
-            if not get_flag(493) and not get_flag(496) then
+            if get_flag(493) and not get_flag(496) then
                 add_answer("have crystal")
             end
             if not get_flag(521) and not get_flag(474) and not var_0002 then
@@ -40,7 +40,7 @@ function npc_brion_0248(eventid, objectref)
             elseif answer == "job" then
                 add_dialogue("\"I am the head of the observatory here in Moonglow,\" he says proudly. \"This is where the telescope is kept.\"")
                 add_answer({"Moonglow", "telescope"})
-                if not get_flag(256) then
+                if get_flag(256) then
                     add_answer("event")
                 end
             elseif answer == "Moonglow" then

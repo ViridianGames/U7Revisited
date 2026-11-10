@@ -180,15 +180,19 @@ static int LuaAddDialogue(lua_State *L)
     if (!g_ConversationState) {
         return luaL_error(L, "ConversationState not initialized");
     }
-    NPCDebugPrint("LUA: add_dialogue called with " + string(luaL_checkstring(L, 1)));
     const char *text = luaL_checkstring(L, 1);
+    NPCDebugPrint("LUA: add_dialogue called with " + string(text));
 
-    ConversationState::ConversationStep step;
-    step.type = ConversationState::ConversationStepType::STEP_ADD_DIALOGUE;
-    step.dialog = text;
-    step.npcId = 0;
-    step.frame = 0;
-    g_ConversationState->AddStep(step);
+    const std::vector<std::string> pages = ConversationState::SplitDialogueToFit(text);
+    for (const std::string& page : pages)
+    {
+        ConversationState::ConversationStep step;
+        step.type = ConversationState::ConversationStepType::STEP_ADD_DIALOGUE;
+        step.dialog = page;
+        step.npcId = 0;
+        step.frame = 0;
+        g_ConversationState->AddStep(step);
+    }
 
     return 0;
 }

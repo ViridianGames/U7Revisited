@@ -14,19 +14,19 @@ function npc_sam_0137(eventid, objectref)
         -- why called twice?? var_0002 = get_schedule(137) --- Guess: Checks game state
         var_0005 = is_player_female()
         add_answer({"bye", "job", "name"})
-        if not get_flag(384) then
+        if get_flag(384) then
             add_answer("strangers")
         end
-        if not get_flag(381) then
+        if get_flag(381) then
             add_answer("locket")
         end
-        if not get_flag(399) then
+        if get_flag(399) then
             add_answer("Robin")
         end
-        if not get_flag(400) then
+        if get_flag(400) then
             add_answer("Battles")
         end
-        if not get_flag(401) then
+        if get_flag(401) then
             add_answer("Leavell")
         end
         if not get_flag(391) then

@@ -9,13 +9,13 @@ function npc_boris_0130(eventid, objectref)
         var_0001 = get_schedule(130) --- Guess: Checks game state
         var_0002 = get_schedule_type(130) --- Guess: Gets object state
         add_answer({"bye", "job", "name"})
-        if not get_flag(384) then
+        if get_flag(384) then
             add_answer("strangers")
         end
-        if not get_flag(381) then
+        if get_flag(381) then
             add_answer("locket")
         end
-        if not get_flag(405) then
+        if get_flag(405) then
             add_dialogue("\"Art thou ready to pay thy bill?\"")
             if select_option() then
                 var_0004 = get_party_gold() --- Guess: Counts items

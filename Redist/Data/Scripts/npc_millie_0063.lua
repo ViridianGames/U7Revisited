@@ -44,7 +44,7 @@ function npc_millie_0063(eventid, objectref)
         end
     end
     add_answer({"bye", "job", "name"})
-    if not get_flag(321) then
+    if get_flag(321) then
         add_answer("Thad")
     end
     if not get_flag(192) then

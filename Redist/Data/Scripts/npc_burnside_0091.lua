@@ -49,7 +49,7 @@ function npc_burnside_0091(eventid, objectref)
             add_dialogue("\"Burnside is my name.\"")
             remove_answer("name")
         elseif answer == "job" then
-            if not get_flag(287) then
+            if get_flag(287) then
                 add_dialogue("\"I am Mayor of Minoc and have been lo these past twenty years and more.\"")
                 add_answer("Minoc")
             else

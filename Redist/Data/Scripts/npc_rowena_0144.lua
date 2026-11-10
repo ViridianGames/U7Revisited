@@ -10,7 +10,7 @@ function npc_rowena_0144(eventid, objectref)
             set_flag(423, false)
             abort()
         end
-        if not get_flag(408) then
+        if get_flag(408) then
             add_answer("sacrifice")
         end
         var_0000 = is_player_female()

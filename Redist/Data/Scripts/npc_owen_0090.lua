@@ -33,14 +33,14 @@ function npc_owen_0090(eventid, objectref)
     end
     var_0002 = get_lord_or_lady()
     add_answer({"bye", "job", "name"})
-    if not get_flag(64) and not get_flag(291) then
+    if get_flag(64) and get_flag(291) then
         add_answer({"Hook", "Crown Jewel"})
         var_0003 = true
     end
     if get_flag(251) then
         add_answer("ship")
     end
-    if not get_flag(247) then
+    if get_flag(247) then
         add_answer("statue is cancelled")
     end
     if not get_flag(277) then

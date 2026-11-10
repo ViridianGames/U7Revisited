@@ -17,7 +17,7 @@ function npc_quenton_0146(eventid, objectref)
         else
             var_0003 = "The barkeep"
         end
-        if not get_flag(408) then
+        if get_flag(408) then
             add_answer("sacrifice")
         end
         var_0004 = get_schedule(146) --- Guess: Checks game state
@@ -61,7 +61,7 @@ function npc_quenton_0146(eventid, objectref)
             add_answer("information")
         end
         add_answer({"bye", "shade", "job", "name"})
-        if not get_flag(380) then
+        if get_flag(380) then
             add_answer("Tortured One")
         end
         while true do

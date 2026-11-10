@@ -20,7 +20,7 @@ function npc_julia_0008(eventid, objectref)
         if npc_id_in_party(8) then
             add_answer("leave")
         end
-        if not get_flag(257) then
+        if get_flag(257) then
             add_answer("join")
         end
         if not get_flag(27) then

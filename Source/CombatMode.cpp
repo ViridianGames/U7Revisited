@@ -129,8 +129,8 @@ void CombatMode::OnEnter(MainState& main)
 		return;
 
 	std::string line = std::string(GetDisplayName()) + " combat is not implemented yet.";
-	AddConsoleString(line, YELLOW);
-	AddConsoleString("Combat is frozen. Press C or Escape to leave.", WHITE);
+	AddCombatConsoleString(line, YELLOW);
+	AddCombatConsoleString("Combat is frozen. Press C or Escape to leave.", WHITE);
 	Log(std::string("CombatMode stub enter: ") + GetDisplayName());
 }
 
@@ -152,7 +152,7 @@ void CombatMode::HandleInput(MainState& main)
 
 	if (IsKeyPressed(KEY_SPACE))
 	{
-		AddConsoleString(
+		AddCombatConsoleString(
 			std::string(GetDisplayName()) + " - coming soon. Press C or Escape to leave combat.",
 			YELLOW);
 	}
@@ -357,9 +357,9 @@ void RealTimePauseCombatMode::OnEnter(MainState& main)
 
 	ClampCombatCameraKeepAvatarOnScreen();
 
-	AddConsoleString("Combat! Game is paused - issue orders, then press Space to fight.", YELLOW);
-	AddConsoleString("Click a party member, then an enemy or the ground. H: Hold  A: Automatic.", WHITE);
-	AddConsoleString("Camera unlocked between you and the nearest threat. Press C or Escape to leave.", WHITE);
+	AddCombatConsoleString("Combat! Game is paused - issue orders, then press Space to fight.", YELLOW);
+	AddCombatConsoleString("Click a party member, then an enemy or the ground. H: Hold  A: Automatic.", WHITE);
+	AddCombatConsoleString("Camera unlocked between you and the nearest threat. Press C or Escape to leave.", WHITE);
 	Log("RealTimePauseCombatMode::OnEnter");
 }
 
@@ -810,7 +810,6 @@ void TurnBasedCombatMode::SyncInitiativeFromParticipants(MainState& main)
 		if (it == g_objectList.end() || !it->second)
 			continue;
 		U7Object* obj = it->second.get();
-		AddConsoleString(UnitLabel(obj) + " joins the initiative!", ORANGE);
 		const char* side = " enemy";
 		if (IsPartyUnit(obj))
 			side = " party";
@@ -862,7 +861,7 @@ void TurnBasedCombatMode::StartUnitTurn(MainState& main)
 
 	if (m_initiative.empty())
 	{
-		AddConsoleString("No combatants left in initiative.", YELLOW);
+		AddCombatConsoleString("No combatants left in initiative.", YELLOW);
 		return;
 	}
 
@@ -890,14 +889,13 @@ void TurnBasedCombatMode::StartUnitTurn(MainState& main)
 				main.m_combatSelectedPartyMemberObjectId = id;
 			else
 				main.m_combatSelectedPartyMemberObjectId = -1;
-			ClearConsole();
 			if (sleepTick == U7Object::TurnBasedSleepTick::Woke)
 			{
-				AddConsoleString(UnitLabel(unit) + " wakes up.", SKYBLUE);
+				AddCombatConsoleString(UnitLabel(unit) + " wakes up.", SKYBLUE);
 			}
 			else
 			{
-				AddConsoleString(UnitLabel(unit) + " is asleep.", SKYBLUE);
+				AddCombatConsoleString(UnitLabel(unit) + " is asleep.", SKYBLUE);
 			}
 			Log("TurnBased: sleep skip id=" + std::to_string(id)
 				+ " left=" + std::to_string(unit->m_sleepTurnsRemaining));
@@ -925,18 +923,11 @@ void TurnBasedCombatMode::StartUnitTurn(MainState& main)
 		m_attackTargetId = 0;
 		m_enemyAttackAfterMove = false;
 
-		ClearConsole();
-
 		if (IsPartyUnit(unit))
 		{
 			main.m_combatSelectedPartyMemberObjectId = id;
 			RefreshUnitAttackRange(unit);
 			RebuildReachableTiles();
-			AddConsoleString(
-				UnitLabel(unit) + "'s turn - AP " + FormatAp(m_apRemaining)
-					+ "  [Move up to " + FormatAp(GetHalfApThreshold())
-					+ " AP then act once (attack or spell ends turn)   Space: End Turn]",
-				SKYBLUE);
 		}
 		else
 		{
@@ -944,25 +935,12 @@ void TurnBasedCombatMode::StartUnitTurn(MainState& main)
 			RefreshUnitAttackRange(unit);
 			m_enemyAiPending = true;
 			m_endTurnAfterMove = false;
-			if (IsAlliedSummonUnit(unit))
-			{
-				AddConsoleString(
-					UnitLabel(unit) + "'s turn - AP " + FormatAp(m_apRemaining)
-						+ " (allied, acting on its own...)",
-					SKYBLUE);
-			}
-			else
-			{
-				AddConsoleString(
-					UnitLabel(unit) + "'s turn - AP " + FormatAp(m_apRemaining) + " (acting...)",
-					ORANGE);
-			}
 		}
 		return;
 	}
 
 	m_activeUnitId = -1;
-	AddConsoleString("No combatants left to act.", YELLOW);
+	AddCombatConsoleString("No combatants left to act.", YELLOW);
 }
 
 void TurnBasedCombatMode::AdvanceToNextLiving(MainState& main)
@@ -992,7 +970,7 @@ void TurnBasedCombatMode::AdvanceToNextLiving(MainState& main)
 
 	m_activeUnitId = -1;
 	m_apRemaining = 0.0f;
-	AddConsoleString("Initiative empty - no living combatants.", YELLOW);
+	AddCombatConsoleString("Initiative empty - no living combatants.", YELLOW);
 }
 
 void TurnBasedCombatMode::BeginInterTurnPause()
@@ -1046,7 +1024,6 @@ void TurnBasedCombatMode::EndActiveTurn()
 				keepSummonId = livingSummonId(unit->m_combatPathTargetId);
 		}
 
-		AddConsoleString(UnitLabel(unit) + " ends turn.", WHITE);
 		m_main->StopCombatUnitActions(unit);
 
 		if (keepSummonId > 0)
@@ -1357,10 +1334,6 @@ bool TurnBasedCombatMode::BeginMoveToTile(U7Object* unit, int tileX, int tileZ, 
 		m_phase = Phase::Planning;
 		m_pendingMoveApCost = 0.0f;
 		ResetResolveTracking(nullptr);
-		AddConsoleString(
-			UnitLabel(unit) + " steps in place (" + FormatAp(spent) + " AP) - "
-				+ FormatAp(m_apRemaining) + " left.",
-			party ? GREEN : ORANGE);
 		return true;
 	}
 
@@ -1381,10 +1354,7 @@ bool TurnBasedCombatMode::BeginMoveToTile(U7Object* unit, int tileX, int tileZ, 
 	m_phase = Phase::Resolving;
 	ResetResolveTracking(unit);
 
-	AddConsoleString(
-		UnitLabel(unit) + " moves (" + FormatAp(spent) + " AP) - "
-			+ FormatAp(m_apRemaining) + " left.",
-		party ? GREEN : ORANGE);
+	AddCombatConsoleString(UnitLabel(unit) + " moves.", party ? GREEN : ORANGE);
 	return true;
 }
 
@@ -1408,7 +1378,7 @@ void TurnBasedCombatMode::ForceFinishResolvingMove(MainState& main, U7Object* un
 {
 	if (unit)
 	{
-		AddConsoleString(
+		AddCombatConsoleString(
 			UnitLabel(unit) + " move ended (" + (reason ? reason : "failsafe") + ").",
 			YELLOW);
 		Log("TurnBased: force finish move id=" + std::to_string(m_activeUnitId)
@@ -1441,14 +1411,14 @@ bool TurnBasedCombatMode::TryIssueMoveTo(MainState& main, int tileX, int tileZ)
 	const ReachTile* reach = FindReachTile(tileX, tileZ);
 	if (!reach)
 	{
-		AddConsoleString("That tile is out of movement range.", YELLOW);
+		AddCombatConsoleString("That tile is out of movement range.", YELLOW);
 		return true;
 	}
 
 	// Charge the same cost the green/yellow overlay used (Dijkstra with 1/1.5 steps).
 	if (!BeginMoveToTile(unit, tileX, tileZ, reach->cost))
 	{
-		AddConsoleString("No path to that tile.", YELLOW);
+		AddCombatConsoleString("No path to that tile.", YELLOW);
 		return true;
 	}
 	if (m_phase == Phase::Planning)
@@ -1724,22 +1694,6 @@ bool TurnBasedCombatMode::BeginAttackOn(U7Object* attacker, U7Object* target)
 	m_resolveFrames = 0;
 	m_phase = Phase::Resolving;
 	ClearReachableTiles();
-
-	if (IsAlliedSummonUnit(attacker))
-	{
-		AddConsoleString(
-			UnitLabel(attacker) + " harasses " + UnitLabel(target)
-				+ " (no damage, ends turn).",
-			SKYBLUE);
-	}
-	else
-	{
-		AddConsoleString(
-			UnitLabel(attacker) + " attacks " + UnitLabel(target)
-				+ " with " + CombatWeaponDisplayNameForUnit(attacker)
-				+ " (ends turn).",
-			IsPartyUnit(attacker) ? GREEN : ORANGE);
-	}
 	return true;
 }
 
@@ -1757,12 +1711,9 @@ bool TurnBasedCombatMode::TryIssueAttackOn(MainState& main, U7Object* target)
 	if (!CanActThisTurn())
 	{
 		if (m_hasActedThisTurn)
-			AddConsoleString("Already acted this turn.", YELLOW);
+			AddCombatConsoleString("Already acted this turn.", YELLOW);
 		else
-			AddConsoleString(
-				"Moved more than " + FormatAp(GetHalfApThreshold())
-					+ " AP - cannot act this turn.",
-				YELLOW);
+			AddCombatConsoleString("Moved too far to act this turn.", YELLOW);
 		return true;
 	}
 
@@ -1770,15 +1721,15 @@ bool TurnBasedCombatMode::TryIssueAttackOn(MainState& main, U7Object* target)
 	{
 		if (!HasCombatLineOfSight(unit, target))
 		{
-			AddConsoleString("No line of sight to that target.", YELLOW);
+			AddCombatConsoleString("No line of sight to that target.", YELLOW);
 			return true;
 		}
 		if (!BeginAttackOn(unit, target))
-			AddConsoleString("Cannot attack that target.", YELLOW);
+			AddCombatConsoleString("Cannot attack that target.", YELLOW);
 		return true;
 	}
 
-	AddConsoleString("That enemy is out of range.", YELLOW);
+	AddCombatConsoleString("That enemy is out of range.", YELLOW);
 	return true;
 }
 
@@ -1803,7 +1754,7 @@ void TurnBasedCombatMode::UpdateResolvingAttack(MainState& main, U7Object* unit)
 	// Ammo/out-of-range failure: never started a swing - bail (attack still spent the turn).
 	if (!m_attackSwingStarted && m_resolveFrames >= 20)
 	{
-		AddConsoleString(UnitLabel(unit) + " attack failed.", YELLOW);
+		AddCombatConsoleString(UnitLabel(unit) + " attack failed.", YELLOW);
 		OnAttackResolved(main);
 		return;
 	}
@@ -1820,7 +1771,7 @@ void TurnBasedCombatMode::UpdateResolvingAttack(MainState& main, U7Object* unit)
 	++m_resolveFrames;
 	if (m_resolveFrames >= kResolveStuckFrames)
 	{
-		AddConsoleString(UnitLabel(unit) + " attack timed out.", YELLOW);
+		AddCombatConsoleString(UnitLabel(unit) + " attack timed out.", YELLOW);
 		OnAttackResolved(main);
 	}
 }
@@ -1876,7 +1827,7 @@ void TurnBasedCombatMode::RunEnemyTurnAi(MainState& main)
 	U7Object* target = FindAiCombatTarget(unit);
 	if (!target)
 	{
-		AddConsoleString(UnitLabel(unit) + " finds no target.", ORANGE);
+		AddCombatConsoleString(UnitLabel(unit) + " finds no target.", ORANGE);
 		EndActiveTurn();
 		return;
 	}
@@ -1921,7 +1872,7 @@ void TurnBasedCombatMode::RunEnemyTurnAi(MainState& main)
 	}
 
 	m_enemyAttackAfterMove = false;
-	AddConsoleString(UnitLabel(unit) + " holds position.", ORANGE);
+	AddCombatConsoleString(UnitLabel(unit) + " holds position.", ORANGE);
 	EndActiveTurn();
 }
 
@@ -1968,12 +1919,6 @@ void TurnBasedCombatMode::OnMoveResolved(MainState& main)
 
 	// Party: stay on this turn even at 0 AP so the player can End Turn (and later undo).
 	RebuildReachableTiles();
-	std::string afterMoveHint = "AP remaining: " + FormatAp(m_apRemaining);
-	if (CanActThisTurn())
-		afterMoveHint += "  [Attack or cast (ends turn)   Space: End Turn]";
-	else
-		afterMoveHint += "  [Moved too far to act   Space: End Turn]";
-	AddConsoleString(afterMoveHint, SKYBLUE);
 	(void)main;
 }
 
@@ -2116,18 +2061,14 @@ void TurnBasedCombatMode::OnEnter(MainState& main)
 
 	if (m_initiative.empty())
 	{
-		AddConsoleString("Turn-Based combat - no combatants enrolled.", YELLOW);
-		AddConsoleString("Press C or Escape to leave.", WHITE);
+		AddCombatConsoleString("No combatants. Press C or Escape to leave.", YELLOW);
 	}
 	else
 	{
-		AddConsoleString(
+		AddCombatConsoleString(
 			"Turn-Based combat - initiative set ("
 				+ std::to_string(m_initiative.size()) + " combatants).",
 			YELLOW);
-		AddConsoleString(
-			"Green tiles: move and keep attack AP (melee 3 / missile 4). Yellow: move only. Spells cost 4 AP. Space: End Turn.",
-			WHITE);
 		StartUnitTurn(main);
 	}
 
@@ -2189,7 +2130,7 @@ void TurnBasedCombatMode::Update(MainState& main)
 		    && (acting->m_flags & kObjFlagAsleep) != 0
 		    && !acting->IsDeathStatus())
 		{
-			AddConsoleString(UnitLabel(acting) + " is asleep.", SKYBLUE);
+			AddCombatConsoleString(UnitLabel(acting) + " is asleep.", SKYBLUE);
 			main.StopCombatUnitActions(acting);
 			BeginInterTurnPause();
 			return;
@@ -2355,7 +2296,7 @@ bool TurnBasedCombatMode::HandleOrdersClick(MainState& main)
 	if (clicked && IsPartyUnit(clicked))
 	{
 		if (static_cast<int>(clicked->m_ID) != m_activeUnitId)
-			AddConsoleString("Only " + UnitLabel(unit) + " can act this turn.", YELLOW);
+			AddCombatConsoleString("Only " + UnitLabel(unit) + " can act this turn.", YELLOW);
 		main.m_combatSelectedPartyMemberObjectId = m_activeUnitId;
 		return true;
 	}
@@ -2502,6 +2443,11 @@ CombatMode::OrdersCursorKind TurnBasedCombatMode::GetOrdersCursor()
 	U7Object* under = g_objectUnderMousePointer;
 	if (under && g_mainState && g_mainState->IsCombatEnemyObject(under))
 	{
+		// A spell is not limited to weapon range. An enemy under the cursor
+		// is a legal target, so the attack arrow lights the same way.
+		if (g_mainState->IsCombatSpellTargeting() && CanActThisTurn())
+			return OrdersCursorKind::Combat;
+
 		RefreshUnitAttackRange(unit);
 		if (IsInAttackRange(unit, under) && CanActThisTurn())
 			return OrdersCursorKind::Combat;
@@ -2550,82 +2496,4 @@ void TurnBasedCombatMode::DrawScreenMarkers(MainState& main)
 	DrawTriangle(left, right, tip, YELLOW);
 }
 
-void TurnBasedCombatMode::DrawHud(MainState& main)
-{
-	(void)main;
-	Font* font = g_SmallFont ? g_SmallFont.get() : nullptr;
-	if (!font || !g_Engine)
-		return;
 
-	U7Object* unit = GetActiveUnit();
-
-	std::string title;
-	Color accent = YELLOW;
-	if (IsInterTurnPause())
-	{
-		title = "TURN - ...";
-		accent = WHITE;
-	}
-	else if (m_phase == Phase::Resolving && unit)
-	{
-		title = std::string(m_resolvingAttack ? "ATTACKING - " : "MOVING - ") + UnitLabel(unit)
-			+ "  AP " + FormatAp(m_apRemaining) + "/" + FormatAp(m_apBudget);
-		accent = m_resolvingAttack ? ORANGE : LIME;
-	}
-	else if (!unit)
-	{
-		title = "TURN - (none)";
-	}
-	else
-	{
-		const bool party = IsPartyUnit(unit);
-		title = std::string("TURN - ") + UnitLabel(unit)
-			+ "  AP " + FormatAp(m_apRemaining) + "/" + FormatAp(m_apBudget);
-		accent = party ? SKYBLUE : ORANGE;
-	}
-
-	std::string hint;
-	if (IsInterTurnPause())
-	{
-		hint = "Next combatant...   Space: skip   C/Esc: leave";
-	}
-	else if (m_phase == Phase::Resolving)
-	{
-		hint = m_resolvingAttack ? "Resolving attack...   C/Esc: leave" : "Moving...   C/Esc: leave";
-	}
-	else if (CanActThisTurn())
-	{
-		hint = "Move up to " + FormatAp(GetHalfApThreshold())
-			+ " AP then act once (attack/spell ends turn)   Space: End   C/Esc: leave";
-	}
-	else
-	{
-		hint = "Moved too far to act   Space: End   C/Esc: leave";
-	}
-
-	const float fontSize = static_cast<float>(font->baseSize);
-	const float titleW = MeasureTextEx(*font, title.c_str(), fontSize, 1).x;
-	const float hintW = MeasureTextEx(*font, hint.c_str(), fontSize, 1).x;
-	const float padX = 10.0f;
-	const float padY = 3.0f;
-	const float lineGap = fontSize * 1.05f;
-	const float boxW = std::max(titleW, hintW) + padX * 2.0f;
-	const float boxH = padY * 2.0f + lineGap + fontSize;
-	const float screenW = static_cast<float>(g_Engine->m_RenderWidth);
-	const float screenH = static_cast<float>(g_Engine->m_RenderHeight);
-	const float boxX = (screenW - boxW) * 0.5f;
-	const float boxY = screenH - boxH - 6.0f;
-
-	DrawRectangle(static_cast<int>(boxX), static_cast<int>(boxY),
-	              static_cast<int>(boxW), static_cast<int>(boxH),
-	              Color{ 0, 0, 0, 150 });
-	DrawRectangleLines(static_cast<int>(boxX), static_cast<int>(boxY),
-	                   static_cast<int>(boxW), static_cast<int>(boxH), accent);
-
-	DrawTextEx(*font, title.c_str(),
-	           Vector2{ boxX + (boxW - titleW) * 0.5f, boxY + padY },
-	           fontSize, 1, accent);
-	DrawTextEx(*font, hint.c_str(),
-	           Vector2{ boxX + (boxW - hintW) * 0.5f, boxY + padY + lineGap },
-	           fontSize, 1, WHITE);
-}

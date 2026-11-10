@@ -148,7 +148,7 @@ function npc_tseramed_0010(eventid, objectref)
             end
         elseif answer == fellowship_leader then
             remove_answer(fellowship_leader)
-            if not get_flag(29) then
+            if get_flag(29) then
                 add_dialogue("\"Not long ago The Fellowship began to spread its influence throughout Britannia.")
                 add_dialogue("\"In their early days they attracted many bright and enthusiastic young people, among them my love, Lady M.")
                 add_dialogue("A woman so intelligent could not help but rise in their ranks. Her direct superior was " .. fellowship_leader .. ".")

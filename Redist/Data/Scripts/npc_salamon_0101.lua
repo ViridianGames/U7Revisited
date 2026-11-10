@@ -24,7 +24,7 @@ function npc_salamon_0101(eventid, objectref)
         else
             add_dialogue("\"You are hailed, human.\"")
         end
-        if not get_flag(299) then
+        if get_flag(299) then
             add_answer("Trellek")
         end
         add_answer({"bye", "job", "name"})

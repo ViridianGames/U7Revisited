@@ -8,7 +8,7 @@ function npc_miranda_0070(eventid, objectref)
         var_0000 = get_player_name()
         var_0001 = get_schedule(70) --- Guess: Checks game state or timer
         add_answer({"bye", "job", "name"})
-        if not get_flag(222) then
+        if get_flag(222) then
             add_answer("signed")
         end
         if not get_flag(199) then

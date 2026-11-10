@@ -14,7 +14,7 @@ function npc_taylor_0242(eventid, objectref)
         else
             add_dialogue("\"Yes, " .. var_0000 .. ",\" Taylor asks. \"May I assist thee?\"")
         end
-        if not get_flag(312) then
+        if get_flag(312) then
             var_0001 = true
             add_answer({"Emps", "wisps"})
         end
@@ -23,7 +23,7 @@ function npc_taylor_0242(eventid, objectref)
             if answer == "name" then
                 add_dialogue("\"My name is Taylor, " .. var_0000 .. ".\"")
                 remove_answer("name")
-                if not get_flag(226) then
+                if get_flag(226) then
                     add_answer("Julius")
                 end
             elseif answer == "job" then
@@ -45,7 +45,7 @@ function npc_taylor_0242(eventid, objectref)
             elseif answer == "order" then
                 add_dialogue("\"Yes, " .. var_0000 .. ". One other monk, Aimi, lives here in the Abbey. She is a painter and a gardener.\"")
                 add_answer({"gardener", "painter"})
-                if not get_flag(328) then
+                if get_flag(328) then
                     add_answer("Kreg")
                 end
                 remove_answer("order")

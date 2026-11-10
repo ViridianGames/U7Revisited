@@ -19,7 +19,7 @@ function npc_xanthia_0086(eventid, objectref)
                 add_dialogue("\"Hello, my name is Xanthia.\"")
                 remove_answer("name")
             elseif var_0001 == "job" then
-                if not get_flag(287) then
+                if get_flag(287) then
                     add_dialogue("\"I am a member of the Artist's Guild in Minoc. I make and sell candelabras.\"")
                     add_answer({"candelabras", "Minoc", "Artist's Guild"})
                 else
@@ -38,7 +38,7 @@ function npc_xanthia_0086(eventid, objectref)
                 add_dialogue("\"Elynor, the head of the local Fellowship branch, showed me a picture of the Fellowship symbol and I based the design for my candelabra on that.\"")
                 remove_answer("Fellowship")
                 add_answer("Elynor")
-                if not get_flag(290) then
+                if get_flag(290) then
                     add_answer("candelabra at murder site")
                 end
             elseif var_0001 == "Elynor" then

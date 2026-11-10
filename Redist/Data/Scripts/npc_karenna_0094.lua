@@ -40,7 +40,7 @@ function npc_karenna_0094(eventid, objectref)
             add_dialogue("\"I answer to Karenna, and to nothing else.\"")
             remove_answer("name")
         elseif answer == "job" then
-            if not get_flag(287) then
+            if get_flag(287) then
                 add_dialogue("\"I am a teacher in Minoc, along with Jakher.\"")
                 add_answer({"Jakher", "Minoc", "teacher"})
             else

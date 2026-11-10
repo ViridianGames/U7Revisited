@@ -13,7 +13,7 @@ function npc_goth_0117(eventid, objectref)
         else
             add_dialogue("\"What dost thou want now?\" Goth spits.")
         end
-        if not get_flag(300) then
+        if get_flag(300) then
             add_answer("buy keys")
         end
         while true do

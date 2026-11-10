@@ -25,7 +25,7 @@ function npc_saralek_0098(eventid, objectref)
         else
             var_0001 = false
             add_dialogue("Saralek greets you. \"Hello is said to you, human.\"")
-            if not get_flag(306) then
+            if get_flag(306) then
                 add_answer("Trellek")
             end
         end
@@ -51,7 +51,7 @@ function npc_saralek_0098(eventid, objectref)
             elseif var_0002 == "Trellek" then
                 add_dialogue("\"Trellek is my husband.\"")
                 var_0001 = true
-                if not get_flag(304) then
+                if get_flag(306) and not get_flag(304) then
                     add_dialogue("\"Trellek has been met by you?\" She smiles proudly, and takes another step forward. \"What was said by him?\"")
                     add_answer("join party")
                 end
@@ -83,7 +83,7 @@ function npc_saralek_0098(eventid, objectref)
                 add_dialogue("\"I am sorry. A lie was told by me. Trellek's leaving is not desired by me. Permission will not be given.\"")
                 add_dialogue("\"What is the reason you asked him?\"")
                 add_answer({"never mind", "adventure"})
-                if not get_flag(312) then
+                if get_flag(312) then
                     add_answer("wisps")
                 end
                 set_flag(344, true)

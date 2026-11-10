@@ -70,7 +70,7 @@ function npc_owings_0239(eventid, objectref)
             hide_npc(243)
             switch_talk_to(239)
             remove_answer("eyes")
-            if not get_flag(728) then
+            if get_flag(728) then
                 add_answer("Owings's helmet")
             end
         elseif answer == "helmet" then

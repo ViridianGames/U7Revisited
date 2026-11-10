@@ -26,10 +26,10 @@ function npc_patterson_0043(eventid, objectref)
         end
     end
     add_answer({"bye", "job", "name"})
-    if not get_flag(128) then
+    if get_flag(128) then
         add_answer("Candice")
     end
-    if not get_flag(209) then
+    if get_flag(209) then
         add_answer("body")
     end
     if not get_flag(172) then

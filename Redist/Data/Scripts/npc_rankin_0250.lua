@@ -10,7 +10,7 @@ function npc_rankin_0250(eventid, objectref)
         var_0003 = get_schedule(250)
         var_0004 = utility_party_has_items_1073(1, 359, 981, 1, 357)
         if var_0003 == 7 then
-            if not get_flag(508) then
+            if get_flag(508) then
                 add_dialogue("Rankin is unable to speak with you now, for he is conducting the Fellowship meeting.")
                 utility_ship_0975()
                 return
@@ -22,7 +22,7 @@ function npc_rankin_0250(eventid, objectref)
         end
         start_conversation()
         add_answer({"bye", "Fellowship", "job", "name"})
-        if not get_flag(644) then
+        if get_flag(644) then
             add_answer("Elizabeth and Abraham")
         end
         if not get_flag(508) then
@@ -30,13 +30,13 @@ function npc_rankin_0250(eventid, objectref)
             set_flag(508, true)
         else
             add_dialogue("Rankin smiles. \"Please tell me how I may be of assistance, " .. var_0000 .. ".\"")
-            if not get_flag(472) and not get_flag(522) and not get_flag(523) then
+            if get_flag(472) and not get_flag(522) and get_flag(523) then
                 add_answer("Balayna's accusation")
             end
-            if not get_flag(527) then
+            if get_flag(527) then
                 add_answer("merchant")
             end
-            if not get_flag(522) and not get_flag(528) then
+            if get_flag(522) and not get_flag(528) then
                 add_answer("Balayna")
             end
         end
@@ -51,7 +51,7 @@ function npc_rankin_0250(eventid, objectref)
                 end
             elseif answer == "job" then
                 add_dialogue("\"I am the new branch leader of The Fellowship here in Moonglow.\"")
-                if not get_flag(501) then
+                if get_flag(501) then
                     add_answer("voice")
                 end
                 if not get_flag(472) and not get_flag(522) and not var_0001 then
@@ -60,7 +60,7 @@ function npc_rankin_0250(eventid, objectref)
                 add_answer({"Moonglow", "new"})
             elseif answer == "Balayna" then
                 utility_set_party_quest_prop8_1041(50)
-                if not get_flag(525) then
+                if get_flag(525) then
                     add_dialogue("\"What dost thou want to know about her, " .. var_0000 .. "?\"")
                     add_answer("liqueur")
                 elseif not get_flag(524) then
@@ -153,7 +153,7 @@ function npc_rankin_0250(eventid, objectref)
             elseif answer == "Fellowship" then
                 var_0009 = is_player_wearing_fellowship_medallion()
                 if var_0009 then
-                    if not get_flag(6) then
+                    if get_flag(6) then
                         add_dialogue("\"As is customary, our meetings are at 9 p.m. Please feel free to join us.\"")
                     else
                         add_dialogue("\"Thou shouldst return thy medallion to the person from whom it came. Only Fellowship members are permitted to wear them.\"")
@@ -168,7 +168,7 @@ function npc_rankin_0250(eventid, objectref)
                 utility_ship_1050()
                 remove_answer("philosophy")
             elseif answer == "voice" then
-                if not get_flag(6) then
+                if get_flag(6) then
                     add_dialogue("\"Relax, friend, thou wilt hear when the time is right.\"")
                 else
                     add_dialogue("\"There is an inner voice that exists within each and every one of us. This voice is our companion and guide.\"")
@@ -214,7 +214,7 @@ function npc_rankin_0250(eventid, objectref)
                 remove_answer("Balayna's accusation")
                 var_0001 = true
             elseif answer == "bye" then
-                if not get_flag(6) then
+                if get_flag(6) then
                     add_dialogue("\"May the triad guide thy life.\"")
                 else
                     add_dialogue("\"Shouldst thou find an interest in The Fellowship, " .. var_0000 .. ", seek Batlin in Britain. Farewell, " .. var_0000 .. ".\"")

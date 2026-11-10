@@ -7,10 +7,10 @@ function npc_henry_0132(eventid, objectref)
         switch_talk_to(132)
         var_0000 = get_lord_or_lady()
         add_answer({"bye", "job", "name"})
-        if not get_flag(384) then
+        if get_flag(384) then
             add_answer("strangers")
         end
-        if not get_flag(383) and not get_flag(461) then
+        if get_flag(383) and not get_flag(461) then
             add_answer("found")
         end
         if not get_flag(397) then

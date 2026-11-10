@@ -69,7 +69,7 @@ function npc_unknown_0112(eventid, objectref)
             elseif var_0005 == "Buccaneer's Den" then
                 add_dialogue("\"Thou hast heard of Buccaneer's Den, hast thou not? 'Tis the island due east of the mainland. Home of the sort of men who walk with peg-legs, have hooks for hands, and carry parrots on their shoulders! Har! Har!\"")
                 remove_answer("Buccaneer's Den")
-                if not get_flag(67) then
+                if get_flag(67) then
                     add_answer("Hook")
                 end
             elseif var_0005 == "Hook" then

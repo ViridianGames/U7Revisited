@@ -30,7 +30,7 @@ function npc_reyna_0108(eventid, objectref)
     if var_0005 and not get_flag(296) then
         add_answer("brought flowers")
     end
-    if not get_flag(355) then
+    if get_flag(355) then
         add_answer("heal")
         var_0004 = true
     end
@@ -52,7 +52,7 @@ function npc_reyna_0108(eventid, objectref)
                 add_answer("heal")
             end
             add_answer("forest")
-            if not get_flag(315) then
+            if get_flag(315) then
                 add_answer("animals")
             end
         elseif answer == "forest" then
@@ -70,7 +70,7 @@ function npc_reyna_0108(eventid, objectref)
             remove_answer("scholar")
         elseif answer == "Aimi" then
             var_0003 = true
-            if not get_flag(346) then
+            if get_flag(346) then
                 add_dialogue("\"She is the monk who tends the garden at the Abbey.\"")
             else
                 add_dialogue("\"She is one of the monks who lives at the Abbey. At this time, she is the only other person I have actually met here in the forest.\"")

@@ -6,13 +6,13 @@ function npc_charles_0073(eventid, objectref)
     if eventid == 1 then
         switch_talk_to(73)
         add_answer({"bye", "job", "name"})
-        if not get_flag(118) then
+        if get_flag(118) then
             add_answer("Nell")
         end
-        if not get_flag(125) then
+        if get_flag(125) then
             add_answer("Jeanette")
         end
-        if not get_flag(126) then
+        if get_flag(126) then
             add_answer("Thou art in luck")
         end
         if not get_flag(202) then
@@ -53,7 +53,7 @@ function npc_charles_0073(eventid, objectref)
                 add_dialogue("\"She is engaged to the carousel manager. It is hard to get used to. I have always been overly protective of my little sister. I would wager she has never even been kissed! Not even by Carrocio! That is mainly because I have looked after her all this time. I would smite anyone who laid a hand on her! Besides, Nell has always been chaste and prudish. She would never think to allow a man to kiss her.\"")
                 remove_answer("Nell")
                 set_flag(124, true)
-                if not get_flag(122) then
+                if get_flag(122) then
                     add_answer("child")
                 end
             elseif var_0000 == "child" then

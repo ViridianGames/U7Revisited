@@ -15,10 +15,10 @@ function npc_cynthia_0042(eventid, objectref)
     var_0000 = get_lord_or_lady()
     var_0001 = get_schedule(42)
     add_answer({"bye", "job", "name"})
-    if not get_flag(220) then
+    if get_flag(220) then
         add_answer("exchange")
     end
-    if not get_flag(175) then
+    if get_flag(175) then
         add_answer("James")
     end
     if not get_flag(171) then

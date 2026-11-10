@@ -12,7 +12,7 @@ function npc_kreg_0245(eventid, objectref)
         if var_0002 == 2 then
             set_schedule_type(0, var_0001)
         end
-        if not get_flag(345) and not get_flag(328) then
+        if get_flag(345) and get_flag(328) then
             add_answer("Thief!")
         end
         if not get_flag(328) then
@@ -20,7 +20,7 @@ function npc_kreg_0245(eventid, objectref)
             set_flag(328, true)
         else
             add_dialogue("\"Hello, " .. var_0000 .. ".\"")
-            if not get_flag(303) then
+            if get_flag(303) then
                 add_answer("give potion")
             end
         end

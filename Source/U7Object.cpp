@@ -36,6 +36,7 @@
 #include <algorithm>
 #include <iterator>
 #include <cmath>
+#include <cctype>
 #include <vector>
 #include "raymath.h"
 #include "rlgl.h"
@@ -394,18 +395,12 @@ namespace
 		return 0;
 	}
 
-	std::string FormatCombatAttackConsole(const U7Object* attacker, const U7Object* target,
-		int weaponShape, int hits)
+	void LogResolvedAttack(U7Object* attacker, U7Object* target, int weaponShape, int hits)
 	{
-		const std::string attackerName = (attacker && !attacker->m_name.empty()) ? attacker->m_name : "Someone";
-		const std::string targetName = (target && !target->m_name.empty()) ? target->m_name : "enemy";
-		if (hits < 0)
-		{
-			return attackerName + " attacks " + targetName + " with " + CombatWeaponDisplayName(weaponShape)
-				+ " and misses";
-		}
-		return attackerName + " attacks " + targetName + " with " + CombatWeaponDisplayName(weaponShape)
-			+ " for " + std::to_string(hits) + " damage";
+		const Color color = CombatAttackLogColor(attacker, hits);
+		AddCombatLogString(
+			FinishCombatLogSentence(FormatCombatAttackSentence(attacker, target, weaponShape, hits)),
+			color);
 	}
 
 	void RefreshPartyAttackRangeFromWeapon(U7Object* unit)
@@ -691,20 +686,24 @@ bool U7Object::EngageCombatTarget()
 			if (m_Team == 2)
 			{
 				target->NotifyAttackedBy(this);
+				LogResolvedAttack(this, target, weaponShape, 0);
 				return;
 			}
+			BeginCombatLogSentence();
 			if (!TryCombatHit(this, target, weaponShape, -1))
 			{
 				SpawnFloatingMissText(target);
 				target->NotifyAttackedBy(this);
+				LogResolvedAttack(this, target, weaponShape, -1);
 				return;
 			}
 			const int hits = FigureCombatHitPoints(this, target, weaponShape, -1);
 			if (hits > 0)
 				ApplyCombatDamage(target, static_cast<float>(hits), this);
+			else
+				SpawnFloatingZeroDamageText(target);
 			ApplyCombatWeaponPowers(this, target, weaponShape, -1, hits);
-			if (hits > 0)
-				AddConsoleString(FormatCombatAttackConsole(this, target, weaponShape, hits), RED);
+			LogResolvedAttack(this, target, weaponShape, hits);
 		};
 
 		// Start a one-shot attack/shoot clip when off cooldown.
@@ -757,19 +756,22 @@ bool U7Object::EngageCombatTarget()
 				}
 				else
 				{
+					BeginCombatLogSentence();
 					if (!TryCombatHit(this, target, weaponShape, ammoShape))
 					{
 						SpawnFloatingMissText(target);
 						target->NotifyAttackedBy(this);
+						LogResolvedAttack(this, target, weaponShape, -1);
 					}
 					else
 					{
 						const int hits = FigureCombatHitPoints(this, target, weaponShape, ammoShape);
 						if (hits > 0)
 							ApplyCombatDamage(target, static_cast<float>(hits), this);
+						else
+							SpawnFloatingZeroDamageText(target);
 						ApplyCombatWeaponPowers(this, target, weaponShape, ammoShape, hits);
-						if (hits > 0)
-							AddConsoleString(FormatCombatAttackConsole(this, target, weaponShape, hits), RED);
+						LogResolvedAttack(this, target, weaponShape, hits);
 					}
 				}
 			}
@@ -2169,13 +2171,34 @@ void U7Object::HandleJukeboxEgg()
 
 }
 
+static std::string CapitalizeMonsterName(const std::string& name)
+{
+	std::string out = name;
+	bool capNext = true;
+	for (char& ch : out)
+	{
+		const unsigned char c = static_cast<unsigned char>(ch);
+		if (std::isspace(c) || c == '-')
+		{
+			capNext = true;
+			continue;
+		}
+		if (capNext && std::isalpha(c))
+		{
+			ch = static_cast<char>(std::toupper(c));
+		}
+		capNext = false;
+	}
+	return out;
+}
+
 void U7Object::MonsterInit()
 {
 	m_speed = 5.0f;
 	m_attackRange = MELEE_RANGE_TILES;
 	m_attackCooldown = 3.0f;
 	m_cooldownTimer = 0.0;
-	m_name = g_objectDataTable[m_shapeData->m_shape].m_name;
+	m_name = CapitalizeMonsterName(g_objectDataTable[m_shapeData->m_shape].m_name);
 
 	m_isFlying = false;
 	m_canSeeInvisible = false;
@@ -4903,7 +4926,7 @@ void U7Object::ApplyKnockOut()
 	ForceSleep();
 
 	const std::string label = m_name.empty() ? "Someone" : m_name;
-	AddConsoleString(label + " is down!", ORANGE);
+	NoteCombatLogClause(label + " is down!", ORANGE);
 }
 
 void U7Object::ClearSleep()
@@ -5046,7 +5069,7 @@ void U7Object::ApplyDeath()
 		m_ShouldDraw = true;
 		SetPos(m_Pos); // refresh pick box for flat corpse
 
-		AddConsoleString(m_name.empty() ? "Creature is dead!" : (m_name + " is dead!"), RED);
+		NoteCombatLogClause(m_name.empty() ? "Creature is dead!" : (m_name + " is dead!"), RED);
 		if (g_SoundSystem)
 			g_SoundSystem->StopLoopingSoundEffect(static_cast<int>(m_ID));
 		if (g_mainState && g_mainState->m_barkObject == this)
@@ -5085,7 +5108,7 @@ void U7Object::ApplyDeath()
 	SetPos(m_Pos); // refresh pick box for flat corpse
 
 	const std::string label = m_name.empty() ? "NPC" : m_name;
-	AddConsoleString(label + " is dead!", RED);
+	NoteCombatLogClause(label + " is dead!", RED);
 }
 
 void U7Object::ResurrectFromDeath()
@@ -5108,7 +5131,7 @@ void U7Object::ResurrectFromDeath()
 	m_ShouldDraw = true;
 
 	const std::string label = m_name.empty() ? "NPC" : m_name;
-	AddConsoleString(label + " has been resurrected!", GREEN);
+	AddCombatLogString(label + " has been resurrected!", GREEN);
 }
 
 int U7Object::GetSitFrameForFacing() const

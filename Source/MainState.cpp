@@ -885,7 +885,17 @@ void MainState::CalculateMouseOverUI()
 
 	g_mouseOverUI = overStats || overStatsTabs || overPartyNames || overMinimap || overCharPanel
 		|| overDebugTools || overNpcList || overWeatherDebug
-		|| m_demoHelpScreen->m_Active || m_sandboxHelpScreen->m_Active;
+		|| m_demoHelpScreen->m_Active || m_sandboxHelpScreen->m_Active
+		|| CombatConsoleHasPointer();
+}
+
+bool CombatConsoleIsActive()
+{
+	if (!g_isCombatMode || g_mainState == nullptr)
+	{
+		return false;
+	}
+	return !g_mainState->m_paused && g_mainState->m_showUIElements;
 }
 
 void MainState::UpdateInput()
@@ -937,7 +947,7 @@ void MainState::HandleEscapeKey()
 
 	if (IsCombatSpellTargeting())
 	{
-		AddConsoleString("Spell targeting cancelled.", YELLOW);
+		AddCombatConsoleString("Spell targeting cancelled.", YELLOW);
 		CancelCombatSpellTargeting();
 		return;
 	}
@@ -2403,6 +2413,9 @@ void MainState::Update()
 
 		// Moved schedule determination logic to U7Object::NPCUpdate
 	}
+
+	// Before gumps, so a click on the combat log is not also a gump click.
+	UpdateCombatConsole();
 
 	g_gumpManager->Update();
 
@@ -3947,6 +3960,8 @@ void MainState::Draw()
 	if (g_isCombatMode && m_combatMode)
 		m_combatMode->DrawHud(*this);
 
+	DrawCombatConsole();
+
 	// Restore default blend mode
 	rlSetBlendMode(BLEND_ALPHA);
 
@@ -5471,7 +5486,7 @@ void MainState::IssueCombatHoldOrder(U7Object* member)
 	StopCombatUnitActions(member);
 	member->m_combatOrderMode = CombatOrderMode::Hold;
 	const std::string name = member->m_name.empty() ? "Party member" : member->m_name;
-	AddConsoleString(name + " will hold position.", GREEN);
+	AddCombatConsoleString(name + " will hold position.", GREEN);
 }
 
 void MainState::IssueCombatAutomaticOrder(U7Object* member)
@@ -5481,7 +5496,7 @@ void MainState::IssueCombatAutomaticOrder(U7Object* member)
 	StopCombatUnitActions(member);
 	member->m_combatOrderMode = CombatOrderMode::Automatic;
 	const std::string name = member->m_name.empty() ? "Party member" : member->m_name;
-	AddConsoleString(name + " returns to automatic behavior.", GREEN);
+	AddCombatConsoleString(name + " returns to automatic behavior.", GREEN);
 }
 
 void MainState::IssueCombatAttackOrder(U7Object* member, U7Object* enemy)
@@ -5498,7 +5513,7 @@ void MainState::IssueCombatAttackOrder(U7Object* member, U7Object* enemy)
 
 	const std::string memberName = member->m_name.empty() ? "Party member" : member->m_name;
 	const std::string enemyName = enemy->m_name.empty() ? "enemy" : enemy->m_name;
-	AddConsoleString(
+	AddCombatConsoleString(
 		memberName + " will attack " + enemyName + " with "
 		+ CombatWeaponDisplayNameForUnit(member) + ".",
 		GREEN);
@@ -5519,7 +5534,7 @@ void MainState::HandleCombatOrderKeys()
 
 	if (m_combatSelectedPartyMemberObjectId < 0)
 	{
-		AddConsoleString("Select a party member first (click them), then press H (Hold) or A (Automatic).", YELLOW);
+		AddCombatConsoleString("Select a party member first (click them), then press H (Hold) or A (Automatic).", YELLOW);
 		return;
 	}
 
@@ -5771,6 +5786,8 @@ void MainState::RestoreCombatEncounter(const nlohmann::ordered_json& combat)
 	}
 
 	g_isCombatMode = true;
+	ClearCombatConsole();
+	AddCombatConsoleString(std::string("Combat restored (") + CombatStyleDisplayName(style) + ").", GREEN);
 	m_combatPaused = combat.value("paused", true);
 	ReadIdList(combat, "participants", m_combatParticipants);
 
@@ -5828,7 +5845,6 @@ void MainState::RestoreCombatEncounter(const nlohmann::ordered_json& combat)
 		obj->PathfindToDest(obj->GetDest(), true, party ? PathCallerTag::AvatarParty : PathCallerTag::Monster);
 	}
 
-	AddConsoleString(std::string("Combat restored (") + CombatStyleDisplayName(style) + ").", GREEN);
 	Log(std::string("MainState::RestoreCombatEncounter style=") + CombatStyleConfigToken(style)
 		+ " paused=" + (m_combatPaused ? "1" : "0")
 		+ " participants=" + std::to_string(m_combatParticipants.size()));
@@ -5902,6 +5918,7 @@ void MainState::EnterCombatMode()
 	m_combatMode = CreateCombatMode(style);
 
 	g_isCombatMode = true;
+	ClearCombatConsole();
 	m_combatPaused = true;
 	m_combatSelectedPartyMemberObjectId = -1;
 	m_combatParticipants.clear();
@@ -5926,7 +5943,7 @@ void MainState::EnterCombatMode()
 
 	if (!m_combatApproachMessage.empty())
 	{
-		AddConsoleString(m_combatApproachMessage, YELLOW);
+		AddCombatConsoleString(m_combatApproachMessage, YELLOW);
 		m_combatApproachMessage.clear();
 	}
 
@@ -5985,17 +6002,17 @@ void MainState::BeginCombatFighting()
 	CancelCombatSpellTargeting();
 	m_combatPaused = false;
 	// Keep selection so ground rings / target highlight stay visible while fighting.
-	AddConsoleString("Fight!", RED);
+	AddCombatConsoleString("Fight!", RED);
 	FireQueuedCombatSpells();
 }
 
 void MainState::PauseCombatForOrders()
 {
 	m_combatPaused = true;
-	AddConsoleString("Combat paused.", YELLOW);
-	AddConsoleString("Click a party member, then click an enemy or the ground to assign orders.", WHITE);
-	AddConsoleString("H: Hold   A: Automatic   Spellbook: cast on any target.", WHITE);
-	AddConsoleString("Press Space when ready to resume.", WHITE);
+	AddCombatConsoleString("Combat paused.", YELLOW);
+	AddCombatConsoleString("Click a party member, then click an enemy or the ground to assign orders.", WHITE);
+	AddCombatConsoleString("H: Hold   A: Automatic   Spellbook: cast on any target.", WHITE);
+	AddCombatConsoleString("Press Space when ready to resume.", WHITE);
 }
 
 bool MainState::BeginCombatSpellTargeting(int spellId, int casterObjectId)
@@ -6011,7 +6028,7 @@ bool MainState::BeginCombatSpellTargeting(int spellId, int casterObjectId)
 	const std::string label = spell->words.empty()
 		? spell->name
 		: (spell->name + " (" + spell->words + ")");
-	AddConsoleString("Select a target for " + label + ".", SKYBLUE);
+	AddCombatConsoleString("Select a target for " + label + ".", SKYBLUE);
 	return true;
 }
 
@@ -6047,20 +6064,20 @@ void MainState::IssueCombatSpellOrder(U7Object* caster, int spellId, U7Object* t
 		auto* tb = static_cast<TurnBasedCombatMode*>(m_combatMode.get());
 		if (tb->GetPhase() != TurnBasedCombatMode::Phase::Planning)
 		{
-			AddConsoleString("Cannot cast while resolving an action.", YELLOW);
+			AddCombatConsoleString("Cannot cast while resolving an action.", YELLOW);
 			return;
 		}
 		if (tb->GetActiveUnitId() != static_cast<int>(caster->m_ID))
 		{
-			AddConsoleString("Only the active unit can cast this turn.", YELLOW);
+			AddCombatConsoleString("Only the active unit can cast this turn.", YELLOW);
 			return;
 		}
 		if (!tb->TryCommitAct())
 		{
 			if (tb->GetApRemaining() + 0.001f < tb->GetHalfApThreshold())
-				AddConsoleString("Moved more than half AP - cannot act this turn.", YELLOW);
+				AddCombatConsoleString("Moved too far to act this turn.", YELLOW);
 			else
-				AddConsoleString("Already acted this turn.", YELLOW);
+				AddCombatConsoleString("Already acted this turn.", YELLOW);
 			return;
 		}
 
@@ -6080,7 +6097,7 @@ void MainState::IssueCombatSpellOrder(U7Object* caster, int spellId, U7Object* t
 		const std::string label = spell->words.empty()
 			? spell->name
 			: (spell->name + " (" + spell->words + ")");
-		AddConsoleString(casterName + " casts " + label + " (ends turn).", GREEN);
+		AddCombatConsoleString(casterName + " casts " + label + ".", GREEN);
 
 		caster->m_pauseOrdersOnNextSpellProjectile = true;
 		GumpSpellbook::RunSpellCast(spellId, caster, static_cast<int>(target->m_ID));
@@ -6104,11 +6121,11 @@ void MainState::IssueCombatSpellOrder(U7Object* caster, int spellId, U7Object* t
 		? spell->name
 		: (spell->name + " (" + spell->words + ")");
 	if (!spell->targeted || target == caster)
-		AddConsoleString(casterName + " will cast " + label + ".", GREEN);
+		AddCombatConsoleString(casterName + " will cast " + label + ".", GREEN);
 	else
 	{
 		const std::string targetName = target->m_name.empty() ? "target" : target->m_name;
-		AddConsoleString(casterName + " will cast " + label + " on " + targetName + ".", GREEN);
+		AddCombatConsoleString(casterName + " will cast " + label + " on " + targetName + ".", GREEN);
 	}
 }
 
@@ -6148,7 +6165,7 @@ void MainState::FireQueuedCombatSpells()
 		U7Object* target = GetObjectFromID(targetId);
 		if (!target || target->GetIsDead() || target->IsDeathStatus())
 		{
-			AddConsoleString(
+			AddCombatConsoleString(
 				(caster->m_name.empty() ? "Caster" : caster->m_name) + " spell fizzled — target is gone.",
 				YELLOW);
 			NotifyCombatantCannotContinue(caster, "needs a new order!");
@@ -6185,7 +6202,7 @@ void MainState::NotifyCombatantCannotContinue(U7Object* member, const std::strin
 	member->m_combatSpellTargetId = 0;
 
 	const std::string name = member->m_name.empty() ? "Party member" : member->m_name;
-	AddConsoleString(name + " " + reason, YELLOW);
+	AddCombatConsoleString(name + " " + reason, YELLOW);
 
 	// Turn-Based owns its own AP/turn flow; do not force an RTwP pause prompt.
 	if (m_combatMode && m_combatMode->GetStyle() == CombatStyle::TurnBased)
@@ -6193,7 +6210,7 @@ void MainState::NotifyCombatantCannotContinue(U7Object* member, const std::strin
 
 	m_combatPaused = true;
 	m_combatSelectedPartyMemberObjectId = member->m_ID;
-	AddConsoleString("Combat paused. Give a new order, then press Space.", WHITE);
+	AddCombatConsoleString("Combat paused. Give a new order, then press Space.", WHITE);
 }
 
 void MainState::IssueCombatMoveOrder(U7Object* member, const Vector3& dest)
@@ -6211,7 +6228,7 @@ void MainState::IssueCombatMoveOrder(U7Object* member, const Vector3& dest)
 	member->m_combatOrderMode = CombatOrderMode::Move;
 	member->PathfindToDest(moveDest, /*allowHierarchical=*/true, PathCallerTag::AvatarParty);
 
-	AddConsoleString(
+	AddCombatConsoleString(
 		member->m_name + " moving to ("
 		+ std::to_string((int)moveDest.x) + ", "
 		+ std::to_string((int)moveDest.z) + ").",
@@ -6247,7 +6264,7 @@ void MainState::HandleCombatOrdersClick()
 			return;
 		}
 
-		AddConsoleString("Spell targeting cancelled.", YELLOW);
+		AddCombatConsoleString("Spell targeting cancelled.", YELLOW);
 		CancelCombatSpellTargeting();
 		return;
 	}
@@ -6259,7 +6276,7 @@ void MainState::HandleCombatOrdersClick()
 	if (clicked && IsCombatPartyMemberObject(clicked))
 	{
 		m_combatSelectedPartyMemberObjectId = clicked->m_ID;
-		AddConsoleString(
+		AddCombatConsoleString(
 			"Selected " + clicked->m_name + " (" + DescribeCombatOrder(clicked)
 			+ ") — enemy/ground, or H Hold / A Automatic.",
 			SKYBLUE);
@@ -6268,7 +6285,7 @@ void MainState::HandleCombatOrdersClick()
 
 	if (m_combatSelectedPartyMemberObjectId < 0)
 	{
-		AddConsoleString("Select a party member first.", YELLOW);
+		AddCombatConsoleString("Select a party member first.", YELLOW);
 		return;
 	}
 
@@ -6762,9 +6779,6 @@ void MainState::SpawnDebugDuelingField()
 		if (id >= 0)
 		{
 			m_debugDuelFieldObjectIds.push_back(id);
-			// Distinct labels so TB HUD/console can tell identical pirates apart.
-			if (auto it = g_objectList.find(id); it != g_objectList.end() && it->second)
-				it->second->m_name = "Pirate " + std::to_string(i + 1);
 		}
 	}
 

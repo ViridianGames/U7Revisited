@@ -44,7 +44,7 @@ function npc_william_0093(eventid, objectref)
             add_dialogue("\"I am called William, " .. var_0004 .. ".\"")
             remove_answer("name")
         elseif answer == "job" then
-            if not get_flag(287) then
+            if get_flag(287) then
                 add_dialogue("\"I work in the sawmill here in Minoc.\"")
                 add_answer({"Minoc", "sawmill"})
             else

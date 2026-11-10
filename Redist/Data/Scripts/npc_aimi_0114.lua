@@ -29,7 +29,7 @@ function npc_aimi_0114(eventid, objectref)
             elseif var_0002 == "job" then
                 add_dialogue("\"As a monk, I am not sure how to answer thy question. I often help to make wine. However, " .. var_0000 .. ", in my spare time I paint or tend my garden here at the Abbey.\"")
                 add_answer({"Abbey", "garden", "paint"})
-                if not get_flag(328) then
+                if get_flag(328) then
                     add_answer("Kreg")
                 end
             elseif var_0002 == "Abbey" then

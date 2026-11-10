@@ -109,7 +109,7 @@ function npc_lady_tory_0200(eventid, objectref)
                 remove_answer("provisioner")
             elseif answer == "captain" then
                 add_dialogue("\"The Captain of the guard, Sir Horffe, is a gargoyle. He was found by two humans who raised him to be a valiant knight. He is a very dedicated warrior, and rarely leaves Lord John-Paul's side.\"")
-                if not get_flag(622) then
+                if get_flag(622) then
                     add_answer("Gargish accent")
                 end
                 remove_answer("captain")
