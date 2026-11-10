@@ -1,9 +1,10 @@
 # Build the macOS Release executable, put it in Redist/, upload an artifact,
 # and commit Redist/U7RevisitedMac back to master so `git pull` picks it up.
 #
-# Uses Apple Silicon runners (macos-14). CMake FetchContent downloads/builds
-# raylib 5.0 on the runner (needs network). Unsigned binary — Gatekeeper may
-# require right-click Open or xattr -cr on first launch.
+# Uses Apple Silicon runners (macos-15). GitHub retired macos-14 on
+# November 2, 2026. CMake FetchContent downloads/builds raylib 5.0 on the
+# runner (needs network). Unsigned binary — Gatekeeper may require
+# right-click Open or xattr -cr on first launch.
 #
 # Loop guards: paths-ignore for the Mac binary + "[skip ci]" on the bot commit.
 
@@ -29,7 +30,7 @@ permissions:
 jobs:
   build-macos:
     name: Apple Clang Release (arm64)
-    runs-on: macos-14
+    runs-on: macos-15
 
     steps:
       - name: Checkout
