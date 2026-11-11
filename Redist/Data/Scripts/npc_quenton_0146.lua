@@ -87,12 +87,9 @@ function npc_quenton_0146(eventid, objectref)
             elseif var_000A == "Marney" then
                 add_dialogue("\"After I was murdered, my good friend, Yorl, cared for her as his own. He tried his best, but her sickness only worsened. After several months she weakened, and died.\" He stops here, tears filling his ghostly eyes, then, angrily, he says, \"And now her spirit is held by Horance the Liche. Thou must rescue her from that foul beast!\" He attempts to grab you, but his hands pass through without resistance.")
                 if var_0002 then
-                    if not get_flag(436) then
-                        switch_talk_to(140)
-                        add_dialogue("\"Now, now, Quen. Settle down.\" " .. var_0003 .. " moves closer to you and whispers, \"Fergive him, " .. var_0001 .. ".\"")
-                        add_dialogue("\"He sometimes loses control like that when he talks about his daughter. Sure'n ya can understand, tho'.\"")
-                        hide_npc(140)
-                        switch_talk_to(146)
+                    if get_flag(436) then
+                        second_speaker(140, 0, "\"Now, now, Quen. Settle down.\" " .. var_0003 .. " moves closer to you and whispers, \"Fergive him, " .. var_0001 .. ".\"")
+                        second_speaker(140, 0, "\"He sometimes loses control like that when he talks about his daughter. Sure'n ya can understand, tho'.\"")
                     end
                 else
                     add_dialogue("Quenton regains control of himself. \"Forgive me, " .. var_0001 .. ". I've no right to inflict my woes upon thee. It hurts to think of my sweet Marney in the power of that... creature.\"")
@@ -107,20 +104,14 @@ function npc_quenton_0146(eventid, objectref)
                 add_dialogue("\"First his beautiful sonnets became a rhyming doggerel. It became the only way in which he would speak. His spells, which he displayed before the townsfolk, became destructive and violent. People began to fear him. My death occurred at about this time. Not long after that, he became reclusive. He had a tower built on the northern point and never removed himself from it.")
                 add_dialogue("\"Then, one night, the graves in the graveyard opened and the dead began to walk.\"")
                 if var_0002 then
-                    if not get_flag(436) then
-                        switch_talk_to(140)
-                        add_dialogue(var_0003 .. " nods his head emphatically, \"'At's right, I seen it, I did.\"")
-                        hide_npc(140)
-                        switch_talk_to(146)
+                    if get_flag(436) then
+                        second_speaker(140, 0, var_0003 .. " nods his head emphatically, \"'At's right, I seen it, I did.\"")
                     end
                 end
                 add_dialogue("\"They marched to his tower, and now they roam all over the island, performing his bidding.\"")
                 if var_0002 then
-                    if not get_flag(436) then
-                        switch_talk_to(140)
-                        add_dialogue("\"It be gettin' so's a ghost cannot make an honest livin' no more. Hmph.\" " .. var_0003 .. " looks a bit disgruntled.")
-                        hide_npc(140)
-                        switch_talk_to(146)
+                    if get_flag(436) then
+                        second_speaker(140, 0, "\"It be gettin' so's a ghost cannot make an honest livin' no more. Hmph.\" " .. var_0003 .. " looks a bit disgruntled.")
                     end
                 end
                 remove_answer("Liche")

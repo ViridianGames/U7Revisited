@@ -172,7 +172,6 @@ function npc_spark_0002(eventid, objectref)
                 local party_size = (type(party) == "table") and #party or 0
                 if party_size < 8 then
                     hide_npc(2)
-                    switch_talk_to(2)
                     add_dialogue("\"Hooray!\"")
                     remove_answer("join")
                     add_answer("leave")

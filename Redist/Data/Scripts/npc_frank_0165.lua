@@ -41,10 +41,7 @@ function npc_frank_0165(eventid, objectref)
                 add_dialogue("\"Speaking of thy friends, I have heard that thy companion, Dupre, is a drunken sot.\"")
                 var_0003 = npc_id_in_party(4)
                 if var_0003 then
-                    switch_talk_to(4)
-                    add_dialogue("\"Hey, I don't think --\"")
-                    hide_npc(4)
-                    switch_talk_to(165)
+                    second_speaker(4, 0, "\"Hey, I don't think --\"")
                 end
                 add_dialogue("\"Yes, from what I have been told, that Dupre has no will when confronted by a tankard of, well, anything.\" \"As a matter of fact, thou hast fairly poor taste in companions overall.\"")
                 add_answer("companions")
@@ -53,10 +50,7 @@ function npc_frank_0165(eventid, objectref)
                 add_dialogue("\"I am glad thou didst ask, " .. var_0001 .. ". Thy friend, Iolo, charges far too much for his bows. Perhaps thou couldst have a chat with him.\"")
                 var_0004 = npc_id_in_party(1)
                 if var_0004 then
-                    switch_talk_to(1)
-                    add_dialogue("\"Too much? What dost thou mean, too --\"")
-                    hide_npc(1)
-                    switch_talk_to(165)
+                    second_speaker(1, 0, "\"Too much? What dost thou mean, too --\"")
                 end
                 add_dialogue("\"His bows and crossbows just aren't of the quality that is worth the kind of gold he charges.\" He takes a step back. \"Gads! Thy breath could gag an ox. Thou shouldst consider taking better care of thy teeth, or thy fellows will leave thee.\"")
                 add_answer("teeth")
@@ -65,10 +59,7 @@ function npc_frank_0165(eventid, objectref)
                 add_dialogue("\"That is the reason for thine offensive mouth odor. I have not seen anything that yellow since the time thy fellow Shamino ran away from a battle in fear.\"")
                 var_0005 = npc_id_in_party(3)
                 if var_0005 then
-                    switch_talk_to(3)
-                    add_dialogue("\"Thou must be mad!\" Shamino turns to you. \"This rogue needs to be taught a lesson.\"")
-                    hide_npc(3)
-                    switch_talk_to(165)
+                    second_speaker(3, 0, "\"Thou must be mad!\" Shamino turns to you. \"This rogue needs to be taught a lesson.\"")
                     add_dialogue("\"And thy friend, Shamino, " .. var_0000 .. ", has quite a bellicose temper.\"")
                     add_answer("bellicose")
                 end
@@ -82,10 +73,7 @@ function npc_frank_0165(eventid, objectref)
             elseif answer == "unschooled" then
                 add_dialogue("\"Trust me, " .. var_0001 .. ", thou art too ignorant to argue with me.\"")
                 if var_0003 then
-                    switch_talk_to(4)
-                    add_dialogue("\"Oh, this is too much!\"")
-                    hide_npc(4)
-                    switch_talk_to(165)
+                    second_speaker(4, 0, "\"Oh, this is too much!\"")
                 end
                 remove_answer("unschooled")
             elseif answer == "nose" then

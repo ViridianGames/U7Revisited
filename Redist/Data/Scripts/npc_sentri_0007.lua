@@ -100,10 +100,7 @@ function npc_sentri_0007(eventid, objectref)
                 var_000C = npc_id_in_party(1) --- Guess: Checks player status
                 if var_000C then
                     add_dialogue("\"How art thou, friend? Thou dost look like thou couldst use a little training thyself!\"")
-                    switch_talk_to(1)
-                    add_dialogue("\"What is this? Everyone doth make fun of my physique!\"")
-                    hide_npc(1)
-                    switch_talk_to(7)
+                    second_speaker(1, 0, "\"What is this? Everyone doth make fun of my physique!\"")
                     add_dialogue("\"I am not making fun, Iolo. I am serious!\" Sentri laughs.")
                 else
                     add_dialogue("\"I miss that fellow!\"")
@@ -113,15 +110,10 @@ function npc_sentri_0007(eventid, objectref)
                 var_000D = npc_id_in_party(3) --- Guess: Checks player status
                 if var_000D then
                     add_dialogue("\"Say, Shamino, art thou still spending thy time dressing in women's clothes?\"")
-                    switch_talk_to(3)
-                    add_dialogue("\"-What-?!?!\"")
-                    switch_talk_to(7)
+                    second_speaker(3, 0, "\"-What-?!?!\"")
                     add_dialogue("\"Or art thou wasting away thy life in a healer's den, now that thou art in thy middle ages?\"")
-                    switch_talk_to(3)
-                    add_dialogue("\"Careful, friend. Those are fighting words!\"")
-                    switch_talk_to(7)
+                    second_speaker(3, 0, "\"Careful, friend. Those are fighting words!\"")
                     add_dialogue("Sentri punches Shamino good-naturedly. \"And that is all they are, my dear friend. Words! 'Tis good to see thee!\"")
-                    hide_npc(3)
                 else
                     add_dialogue("\"'Twould be good to share a joke or two with him!\"")
                 end
@@ -136,16 +128,12 @@ function npc_sentri_0007(eventid, objectref)
                         add_dialogue("\"Art thou joking? I -always- have ale!\"")
                         switch_talk_to(7)
                         add_dialogue("\"Then we should have some before someone else does!\"")
-                        switch_talk_to(4)
-                        add_dialogue("\"'Twould be a pleasure. However, I must be prudent and save the ale for when we need it.\"")
-                        switch_talk_to(7)
+                        second_speaker(4, 0, "\"'Twould be a pleasure. However, I must be prudent and save the ale for when we need it.\"")
                         add_dialogue("Sentri feels of Dupre's head. \"Art thou feeling all right, Dupre? Or has knighthood done something to thy brain?\"")
                     else
                         add_dialogue("\"No, but I would be glad to stop in a pub and share a few pints with thee!\"")
-                        switch_talk_to(7)
                         add_dialogue("\"Mmmm! Sounds good to me! Next time we pass a place, let us stop!\"")
                     end
-                    hide_npc(4)
                 else
                     add_dialogue("\"I want to see that no-good trouble-maker! He is a knight now, I hear! Sir Dupre indeed!\"")
                 end

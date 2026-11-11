@@ -1,27 +1,64 @@
---- Best guess: Implements the lock spell (Ex Por), locking specific item types (e.g., doors, chests) with frame adjustments.
-function spell_lock_ex_por_0359(eventid, objectref)
-    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007
+--- Unlock Magic (Ex Por). Fourth Circle. Oracle: usecode Func0667 / object#(0x667).
+--- Click a door or false wall. Magically locked means frame % 4 == 3
+--- ((frame + 1) % 4 == 0). Those frames drop by 3, the closed unlocked state.
+--- Ordinary locks (frame % 4 == 2) stay locked. Shapes: 270, 376, 432, 433,
+--- 845, 828. The frame changes immediately. Event 2 still drops it by 3 when
+--- the piece is still magically locked, so a late usecode call does not
+--- subtract twice. No sprite. Do not destroy the caster.
 
-    if eventid == 1 then
-        var_0000 = object_select_modal() --- Guess: Selects spell target
-        var_0001 = get_object_shape(var_0000)
-        var_0002 = select_spell_target(var_0000) --- Guess: Gets selected target
-        destroy_object(objectref)
-        var_0003 = {828, 845, 433, 432, 376, 270}
-        var_0004 = {376, 270, 433, 432}
-        bark(objectref, "@Ex Por@")
-        if check_spell_requirements() and not (var_0001 == var_0003[1] or var_0001 == var_0003[2]) then --  or ...
-            var_0005 = get_object_frame(var_0000)
-            if (var_0005 + 1) % 4 ~= 0 then
-                var_0006 = add_containerobject_s(objectref, {66, 17496, 17511, 17509, 8550, var_0002, 7769})
-                var_0006 = add_containerobject_s(var_0000, {6, 1639, 17493, 7715})
-            end
-        else
-            var_0006 = add_containerobject_s(objectref, {1542, 17493, 17511, 17509, 8550, var_0002, 7769})
-        end
-    elseif eventid == 2 then
-        var_0005 = get_object_frame(objectref)
-        var_0007 = var_0005 - 3
-        set_object_frame(objectref, var_0007) --- Guess: Sets item frame
+local magic_lock_shapes = {
+    [270] = true,
+    [376] = true,
+    [432] = true,
+    [433] = true,
+    [845] = true,
+    [828] = true,
+}
+
+local function magically_locked(target)
+    if not target or target == 0 then
+        return false
     end
+    if not magic_lock_shapes[get_object_shape(target)] then
+        return false
+    end
+    local frame = get_object_frame(target)
+    return ((frame + 1) % 4) == 0
+end
+
+local function unlock_target(target)
+    local frame = get_object_frame(target)
+    set_object_frame(target, frame - 3)
+end
+
+function spell_lock_ex_por_0359(eventid, objectref)
+    if eventid == 2 then
+        if magically_locked(objectref) then
+            unlock_target(objectref)
+        end
+        return
+    end
+
+    if eventid ~= 1 then
+        return
+    end
+
+    halt_scheduled(objectref)
+    local target = click_on_item()
+    if not target or target == 0 then
+        return
+    end
+
+    local dir = find_direction(objectref, target)
+    bark(objectref, "@Ex Por@")
+    if not check_spell_requirements(objectref) or not magically_locked(target) then
+        -- Playback: face, dir, reach_1h, raise_1h, strike_1h. No sfx, no spellFails.
+        execute_usecode_array(objectref, {17511, 8037, 17510, dir, 7769})
+        return
+    end
+
+    begin_casting_mode(objectref, 859)
+    -- Stored reversed. Playback: face, dir, reach_1h, raise_1h, strike_1h, sfx 66.
+    execute_usecode_array(objectref, {66, 7768, 17511, 8037, 17510, dir, 7769})
+    unlock_target(target)
 end

@@ -27,21 +27,12 @@ function npc_sir_jordan_0198(eventid, objectref)
                 var_0005 = var_0002
                 set_flag(603, true)
                 if not var_0003 then
-                    switch_talk_to(1)
-                    add_dialogue("\"'Tis true, Sir Jordan. He is the Avatar.\"")
-                    hide_npc(1)
-                    switch_talk_to(198)
+                    second_speaker(1, 0, "\"'Tis true, Sir Jordan. He is the Avatar.\"")
                     add_dialogue("Jordan smiles. \"I see. And who wouldst thou be? Shamino?\"")
                     if var_0004 then
-                        switch_talk_to(1)
-                        add_dialogue("\"No.\" He points to Shamino. \"He is. I am Iolo!\"")
-                        hide_npc(1)
-                        switch_talk_to(198)
+                        second_speaker(1, 0, "\"No.\" He points to Shamino. \"He is. I am Iolo!\"")
                     else
-                        switch_talk_to(1)
-                        add_dialogue("\"No. I am Iolo, not Shamino!\"")
-                        hide_npc(1)
-                        switch_talk_to(198)
+                        second_speaker(1, 0, "\"No. I am Iolo, not Shamino!\"")
                     end
                     add_dialogue("\"Of course!\" He says, patronizingly. \"How could I not recognize the great Iolo.\"")
                 end
@@ -76,15 +67,10 @@ function npc_sir_jordan_0198(eventid, objectref)
                 add_dialogue("\"The great archer himself, Iolo, started that branch more than two hundred years ago.\"")
                 if var_0003 then
                     add_dialogue("*")
-                    switch_talk_to(1)
-                    add_dialogue("\"I, er, thank thee for thy compliment.\"")
-                    switch_talk_to(198)
+                    second_speaker(1, 0, "\"I, er, thank thee for thy compliment.\"")
                     add_dialogue("\"'Twould mean more wert thou Iolo!\"")
-                    switch_talk_to(1)
-                    add_dialogue("\"Listen, here, rogue, I truly -am-...\"")
-                    switch_talk_to(198)
+                    second_speaker(1, 0, "\"Listen, here, rogue, I truly -am-...\"")
                     add_dialogue("\"Yes, yes, I know. Thou really -art- Iolo... And I am Lord British!\"")
-                    hide_npc(1)
                 end
                 remove_answer("original branch")
             elseif answer == "knights" then

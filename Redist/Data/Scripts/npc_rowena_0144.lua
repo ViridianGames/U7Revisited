@@ -15,17 +15,22 @@ function npc_rowena_0144(eventid, objectref)
         end
         var_0000 = is_player_female()
         var_0001 = get_lord_or_lady()
-        if not get_flag(422) then
+        -- Func0490. Reunion once 422 is set. Escort to Trent once the Soul
+        -- Cage sets 426. Music-box awakening while 423 is set and 425 is clear.
+        if get_flag(422) then
             switch_talk_to(144, 1)
-            npc_trent_rowena_no_sacrifice_0982() --- Guess: Initiates follow behavior
+            npc_trent_rowena_no_sacrifice_0982()
+            return
         end
-        if not get_flag(426) then
+        if get_flag(426) then
             switch_talk_to(144, 1)
-            utility_music_0983() --- Guess: Sets follow behavior
+            npc_rowena_escort_trent_0984()
+            return
         end
-        if not get_flag(423) and not get_flag(425) then
+        if get_flag(423) and not get_flag(425) then
             switch_talk_to(144, 1)
-            npc_rowena_escort_trent_0984() --- Guess: Checks ring status
+            utility_music_0983()
+            return
         end
         var_0002 = get_schedule(144) --- Guess: Checks game state
         var_0003 = get_schedule_type(144) --- Guess: Gets schedule

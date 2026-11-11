@@ -59,10 +59,7 @@ function npc_eiko_0015(eventid, objectref)
         elseif answer == "Amanda" then
             add_dialogue("\"Neither one of us knew that the other existed until after the death of our father.\"")
             if var_0001 then
-                switch_talk_to(48)
-                add_dialogue("\"I had always felt like I had a sister somewhere. But I attributed those feelings to the natural loneliness a child feels upon losing a father. Learning about each other has been the only good thing that has happened to me since father's death.\"")
-                hide_npc(48)
-                switch_talk_to(15)
+                second_speaker(48, 0, "\"I had always felt like I had a sister somewhere. But I attributed those feelings to the natural loneliness a child feels upon losing a father. Learning about each other has been the only good thing that has happened to me since father's death.\"")
             end
             remove_answer("Amanda")
         elseif answer == "Iskander" then
@@ -72,10 +69,7 @@ function npc_eiko_0015(eventid, objectref)
             add_dialogue("You explain to Eiko what you have learned. Kalideth had gone mad when he fought with Iskander and the source of what is causing the problems with magic and the mage's minds was the thing that really killed Kalideth!")
             add_dialogue("\"Then if thou hast discovered the true force that killed my father, my vengeance against Kalideth would be unjust.\"")
             if var_0001 and not get_flag(734) then
-                switch_talk_to(48)
-                add_dialogue("\"How canst thou say that? I thought that thou wert my sister? Thou art a traitor!\"")
-                hide_npc(48)
-                switch_talk_to(15)
+                second_speaker(48, 0, "\"How canst thou say that? I thought that thou wert my sister? Thou art a traitor!\"")
                 set_flag(709, true)
             end
             remove_answer("Stay thine hand!")

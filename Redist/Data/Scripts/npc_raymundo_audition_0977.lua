@@ -32,13 +32,9 @@ function npc_raymundo_audition_0977()
         if not var_0001 then
             add_dialogue("\"Jesse, hand our friend thy staff.\"")
             if var_0000 then
-                switch_talk_to(28, 1)
-                add_dialogue("\"Here it is, milady.\"")
-                hide_npc(28)
+                second_speaker(28, 1, "\"Here it is, milady.\"")
             else
-                switch_talk_to(28)
-                add_dialogue("\"Here it is, milord.\"")
-                hide_npc(28)
+                second_speaker(28, 0, "\"Here it is, milord.\"")
             end
         else
             add_dialogue("Raymundo hands you a staff.")

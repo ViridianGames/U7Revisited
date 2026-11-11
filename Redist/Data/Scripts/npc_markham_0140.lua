@@ -71,7 +71,7 @@ function npc_markham_0140(eventid, objectref)
         if answer == "name" then
             add_dialogue("The heavy-set zombie wipes his mouth off on the back of his hand. \"I be Markham. Markham o' the Keg.\" He pats the large keg of wine he carries.")
             var_0007 = npc_id_in_party(145)
-            if var_0007 and get_flag(441) then
+            if var_0007 and get_flag(441) and not get_flag(420) then
                 if not var_0002 then
                     _hide_npc(146)
                 end

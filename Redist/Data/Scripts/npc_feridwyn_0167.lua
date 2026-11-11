@@ -21,10 +21,7 @@ function npc_feridwyn_0167(eventid, objectref)
             add_dialogue("\"Garritt, my son, told me that Tobias was in possession of some silver snake venom. I went to investigate and found Tobias with it!\"")
             var_0004 = npc_id_in_party(NPC_MERRICK)
             if var_0004 then
-                switch_talk_to(NPC_MERRICK)
-                add_dialogue("\"That is correct! I am a witness that what Feridwyn has said is the truth!\"")
-                hide_npc(NPC_MERRICK)
-                switch_talk_to(NPC_FERIDWYN)
+                second_speaker(170, 0, "\"That is correct! I am a witness that what Feridwyn has said is the truth!\"")
             end
             add_dialogue("\"I have often said that Tobias was no good. Now here is proof. He is the thief that has been praying upon one of our honest merchants! And to think I let him come into contact with my son! I hope he shall be dealt with in a manner appropriate to one who is leading youth astray from the way of The Fellowship.\"")
             add_dialogue("\"I suggest that thou go and speak with his mother at once! Camille should keep a tighter rein on her offspring!\"")
@@ -88,10 +85,7 @@ function npc_feridwyn_0167(eventid, objectref)
                     add_dialogue("\"A wonderful woman. Thou shouldst meet her.\"")
                     var_0006 = npc_id_in_party(NPC_BRITA)
                     if var_0006 then
-                        switch_talk_to(NPC_BRITA)
-                        add_dialogue("\"Mine husband is such a flatterer. The truth is that our work for The Fellowship has brought us closer together.\"")
-                        hide_npc(NPC_BRITA)
-                        switch_talk_to(NPC_FERIDWYN)
+                        second_speaker(168, 0, "\"Mine husband is such a flatterer. The truth is that our work for The Fellowship has brought us closer together.\"")
                     end
                 else
                     add_dialogue("\"As thou dost already know my wife Brita, I am certain thou wilt agree that thou couldst not find a more dedicated practitioner of The Fellowship's teachings.\"")

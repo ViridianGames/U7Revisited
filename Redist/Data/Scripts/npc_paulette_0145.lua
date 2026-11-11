@@ -39,10 +39,7 @@ function npc_paulette_0145(eventid, objectref)
             if not get_flag(446) then
                 add_dialogue("Paulette perks up as she sees Rowena.")
                 add_dialogue("\"Hello, milady. 'Tis good to see thee again. How art thou?\"")
-                switch_talk_to(144)
-                add_dialogue("\"I am fine, Paulette. I thank thee for thy concern.\"")
-                hide_npc(144)
-                switch_talk_to(145)
+                second_speaker(144, 0, "\"I am fine, Paulette. I thank thee for thy concern.\"")
                 add_dialogue("\"'Tis good news indeed, milady.\"")
                 set_flag(446, true)
             end
@@ -51,11 +48,8 @@ function npc_paulette_0145(eventid, objectref)
         if var_0007 then
             if not get_flag(445) then
                 add_dialogue("\"Hello, Mayor. It has been quite a while since we've seen thee in our tavern. There was a time, I remember, when we couldn't keep thee away.\"")
-                switch_talk_to(147)
-                add_dialogue("The mayor becomes quickly embarrassed as he tries to quiet the rather friendly Paulette.")
-                add_dialogue("\"I, er, used to be a wine connoisseur of sorts,\" he says to you.")
-                hide_npc(147)
-                switch_talk_to(145)
+                second_speaker(147, 0, "The mayor becomes quickly embarrassed as he tries to quiet the rather friendly Paulette.")
+                second_speaker(147, 0, "\"I, er, used to be a wine connoisseur of sorts,\" he says to you.")
                 add_dialogue("\"'Tis not all thou wert a connoisseur of,\" adds Paulette, eyes twinkling. \"I seem to remember thou had quite a taste for redheads.\"")
                 set_flag(445, true)
             end
@@ -105,11 +99,8 @@ function npc_paulette_0145(eventid, objectref)
                 if var_0009 then
                     add_dialogue("\"I am sorry, " .. var_0000 .. ",\" she giggles, \"but all we serve here are... spirits!\"")
                     var_000A = npc_id_in_party(140) --- Guess: Checks player status
-                    if var_000A and not get_flag(436) then
-                        switch_talk_to(140)
-                        add_dialogue("\"That's a good one, wench,\" laughs the portly ghost.")
-                        hide_npc(140)
-                        switch_talk_to(145)
+                    if var_000A and get_flag(436) then
+                        second_speaker(140, 0, "\"That's a good one, wench,\" laughs the portly ghost.")
                     end
                 else
                     add_dialogue("\"Very well, " .. var_0000 .. ".\"")

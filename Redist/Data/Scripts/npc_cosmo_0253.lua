@@ -29,22 +29,16 @@ function npc_cosmo_0253(eventid, objectref)
                 add_dialogue("\"Aye, " .. var_0000 .. ", we are to be wed as soon I return to her silky arms.\"")
                 if var_0002 then
                     add_dialogue("*")
-                    switch_talk_to(244)
-                    add_dialogue("\"Oh, please!\" He rolls his eyes.")
-                    hide_npc(244)
-                    switch_talk_to(253)
+                    second_speaker(244, 0, "\"Oh, please!\" He rolls his eyes.")
                 end
                 remove_answer("betrothed")
             elseif answer == "searching" then
                 add_dialogue("\"Well, " .. var_0000 .. ", 'tis a bit of a personal matter.\"")
                 if var_0002 then
                     add_dialogue("*")
-                    switch_talk_to(244)
-                    add_dialogue("\"What he is searching for, " .. var_0000 .. ", is his virginity!\"")
-                    switch_talk_to(253)
+                    second_speaker(244, 0, "\"What he is searching for, " .. var_0000 .. ", is his virginity!\"")
                     add_dialogue("\"That is not true!\" He blushes.")
                     add_dialogue("\"I am looking for a way to -prove-... my virginity!\"")
-                    hide_npc(244)
                     add_answer("proof")
                 end
                 add_answer("personal")

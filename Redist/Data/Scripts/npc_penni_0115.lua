@@ -63,11 +63,8 @@ function npc_penni_0115(eventid, objectref)
                 add_dialogue("\"Yes,\" she nods her head, grinning, \"I know Bradman. We go hunting together. Of course, he rarely catches anything with that toothpick shooter of his.\"")
                 var_0005 = npc_id_in_party(1) --- Guess: Checks player status
                 if var_0005 then
-                    switch_talk_to(1)
-                    add_dialogue("\"I resent that, my friend. Bows and crossbows can be wielded with deadly effect.\"")
-                    switch_talk_to(115)
+                    second_speaker(1, 0, "\"I resent that, my friend. Bows and crossbows can be wielded with deadly effect.\"")
                     add_dialogue("She smiles, nodding to Iolo. \"Perhaps thou art correct, friend archer, but I prefer more physical challenges.\"")
-                    hide_npc(1)
                 else
                     add_dialogue("\"Although I consider him a true friend and an honorable companion, I wonder about his physical prowess.\"")
                 end

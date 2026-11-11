@@ -23,10 +23,7 @@ function npc_phearcy_0163(eventid, objectref)
         add_answer({"bye", "Fellowship", "job", "name"})
         if not var_0002 then
             add_dialogue("\"Why, Hello, Sir Dupre. Things fare well I trust?\"")
-            switch_talk_to(4)
-            add_dialogue("\"Greetings, fair Phearcy. Yes, thank thee, things are well.\"")
-            hide_npc(4)
-            switch_talk_to(163)
+            second_speaker(4, 0, "\"Greetings, fair Phearcy. Yes, thank thee, things are well.\"")
         end
         if not get_flag(517) then
             add_dialogue("You see a man who gives you a friendly smile.")

@@ -61,10 +61,7 @@ function npc_murray_0241(eventid, objectref)
             else
                 add_dialogue("\"Cave good to us. We stay away from bees. They no hurt us. We no hurt them. We take honey when they sleep. We eat the mice in cave. Cook them up on campfire. Very good!\"")
                 if var_0002 then
-                    switch_talk_to(1)
-                    add_dialogue("\"I may puke.\"")
-                    hide_npc(1)
-                    switch_talk_to(241)
+                    second_speaker(1, 0, "\"I may puke.\"")
                 end
             end
             remove_answer("cave")
@@ -82,13 +79,9 @@ function npc_murray_0241(eventid, objectref)
                         return
                     else
                         add_dialogue("He points at Tseramed. \"Him bee hunter! Go away!\" The man spits at you and turns away.")
-                        switch_talk_to(10)
-                        add_dialogue("\"This is an act, I tell thee! These people are not savages! They are Britannians!\"")
-                        hide_npc(10)
+                        second_speaker(10, 0, "\"This is an act, I tell thee! These people are not savages! They are Britannians!\"")
                         if var_0002 then
-                            switch_talk_to(1)
-                            add_dialogue("\"He seems quite savage to me!\"")
-                            hide_npc(1)
+                            second_speaker(1, 0, "\"He seems quite savage to me!\"")
                         end
                         switch_talk_to(241)
                         set_flag(723, true)
@@ -120,10 +113,7 @@ function npc_murray_0241(eventid, objectref)
             else
                 add_dialogue("\"Mama and me live in cave since babies.\"")
                 if var_0002 then
-                    switch_talk_to(1)
-                    add_dialogue("\"Avatar! They must have been abandoned in here! Why, they must be brother and sister!\"")
-                    hide_npc(1)
-                    switch_talk_to(241)
+                    second_speaker(1, 0, "\"Avatar! They must have been abandoned in here! Why, they must be brother and sister!\"")
                 end
                 add_answer("babies")
             end

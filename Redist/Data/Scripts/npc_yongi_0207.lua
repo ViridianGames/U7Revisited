@@ -15,10 +15,7 @@ function npc_yongi_0207(eventid, objectref)
         add_answer({"bye", "job", "name"})
         if not var_0003 then
             add_dialogue("\"Ah, me good friend, Dupre. What kinna do fer ye this fine day?\"")
-            switch_talk_to(4)
-            add_dialogue("\"Ah, master Yongi, always ready to offer a tankard of thy finest.\"")
-            hide_npc(4)
-            switch_talk_to(207)
+            second_speaker(4, 0, "\"Ah, master Yongi, always ready to offer a tankard of thy finest.\"")
         end
         if not get_flag(652) then
             add_dialogue("Tending the bar is a jovial-looking man. \"Welcome ta the Gilded Lizard.\"")

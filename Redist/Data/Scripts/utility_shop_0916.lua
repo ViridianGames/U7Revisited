@@ -18,7 +18,6 @@ function utility_shop_0916(eventid, objectref)
             add_dialogue("@The stone statue stands with a lowered head...@")
             say_with_newline("@Why, by the stars, I believe it is a creature!@") --- Guess: Says with newline
             add_dialogue("@Slowly, as if with great effort, it raises it head.@")
-            switch_talk_to(289) --- Guess: Initiates dialogue
             var_0001 = get_object_frame(select_party_member(40, 414, 356)) --- Guess: Selects party member
             if var_0001 == 4 or var_0001 == 5 then
                 add_dialogue("@What dost thou... want?' it asks slowly.@")

@@ -39,10 +39,7 @@ function npc_kristy_0031(eventid, objectref)
         if answer == "name" then
             add_dialogue("\"Kwisty.\"")
             if var_0000 then
-                switch_talk_to(34)
-                add_dialogue("\"Kristy, like Nicholas, is one of our orphans. She was found in an abandoned home in Paws by one of the Great Council members.\"")
-                --syntax error hide_npc34)
-                switch_talk_to(31)
+                second_speaker(34, 0, "\"Kristy, like Nicholas, is one of our orphans. She was found in an abandoned home in Paws by one of the Great Council members.\"")
             end
             remove_answer("name")
         elseif answer == "job" then
@@ -67,10 +64,7 @@ function npc_kristy_0031(eventid, objectref)
         elseif answer == "winner" then
             add_dialogue("\"I am winner!\" she proclaims loudly.")
             if var_0000 then
-                switch_talk_to(34)
-                add_dialogue("\"She keeps saying that. I am not sure what it means. Something to do with a competition.\"")
-                --syntax error hide_npc34)
-                switch_talk_to(31)
+                second_speaker(34, 0, "\"She keeps saying that. I am not sure what it means. Something to do with a competition.\"")
             end
             remove_answer("winner")
         elseif answer == "bye" then

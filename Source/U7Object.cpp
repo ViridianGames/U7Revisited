@@ -109,6 +109,10 @@ void U7Object::Init(const string& configfile, int unitType, int frame)
 	}
 	m_isContainer = false;
 	m_isContained = false;
+	m_virtueMarked = false;
+	m_virtueX = 0.0f;
+	m_virtueY = 0.0f;
+	m_virtueZ = 0.0f;
 	m_hasGump = false;
 	m_inventory.clear();
 	m_hasConversationTree = false;
@@ -403,6 +407,56 @@ namespace
 			color);
 	}
 
+	// Original GetNpcWeapon: a readied weapon wins. An empty hand uses the
+	// creature's own shape when that shape is a WEAPONS.DAT row (insects 0,
+	// rat 3 poison, snake 4 poison). Otherwise -1, and the hit uses the
+	// MONSTERS.DAT damage nibble.
+	int CombatStrikeWeaponShape(U7Object* unit)
+	{
+		if (!unit)
+			return -1;
+		if (U7Object* weapon = GetEquippedWeapon(unit))
+		{
+			if (weapon->m_shapeData && weapon->m_shapeData->m_shape > 0)
+				return weapon->m_shapeData->m_shape;
+		}
+		if (unit->m_shapeData && GetWeaponData(unit->m_shapeData->m_shape))
+			return unit->m_shapeData->m_shape;
+		return -1;
+	}
+
+	void ResolveMeleeHit(U7Object* attacker, U7Object* target, int weaponShape)
+	{
+		if (!attacker || !target)
+			return;
+		BeginCombatLogSentence();
+		if (!TryCombatHit(attacker, target, weaponShape, -1))
+		{
+			SpawnFloatingMissText(target);
+			target->NotifyAttackedBy(attacker);
+			LogResolvedAttack(attacker, target, weaponShape, -1);
+			return;
+		}
+		const int hits = FigureCombatHitPoints(attacker, target, weaponShape, -1);
+		if (hits > 0)
+		{
+			ApplyCombatDamage(target, static_cast<float>(hits), attacker);
+		}
+		else
+		{
+			// A 0-damage weapon (insects) connects without a floating "0".
+			// Armor soaking a real bite still shows 0.
+			const WeaponData* w = (weaponShape >= 0) ? GetWeaponData(weaponShape) : nullptr;
+			if (!w || w->damage != 0)
+				SpawnFloatingZeroDamageText(target);
+			// Team-2 bites still pull when the swing connects for no HP.
+			if (attacker->m_Team == 2)
+				target->NotifyAttackedBy(attacker);
+		}
+		ApplyCombatWeaponPowers(attacker, target, weaponShape, -1, hits);
+		LogResolvedAttack(attacker, target, weaponShape, hits);
+	}
+
 	void RefreshPartyAttackRangeFromWeapon(U7Object* unit)
 	{
 		if (!unit)
@@ -604,8 +658,7 @@ bool U7Object::EngageCombatTarget()
 	if (IsPartyCombatant(this))
 		RefreshPartyAttackRangeFromWeapon(this);
 
-	U7Object* weapon = GetEquippedWeapon(this);
-	const int weaponShape = (weapon && weapon->m_shapeData) ? weapon->m_shapeData->m_shape : -1;
+	const int weaponShape = CombatStrikeWeaponShape(this);
 	const bool isRanged = IsRangedWeaponShape(weaponShape);
 
 	// Tile A* goals land on tile centers, so a bare attackRange check often leaves
@@ -682,28 +735,7 @@ bool U7Object::EngageCombatTarget()
 			m_cooldownTimer -= g_Engine->LastFrameInSeconds();
 
 		auto applyMeleeHit = [&]() {
-			// Swarm insects: distraction only (0 damage), still pull aggro.
-			if (m_Team == 2)
-			{
-				target->NotifyAttackedBy(this);
-				LogResolvedAttack(this, target, weaponShape, 0);
-				return;
-			}
-			BeginCombatLogSentence();
-			if (!TryCombatHit(this, target, weaponShape, -1))
-			{
-				SpawnFloatingMissText(target);
-				target->NotifyAttackedBy(this);
-				LogResolvedAttack(this, target, weaponShape, -1);
-				return;
-			}
-			const int hits = FigureCombatHitPoints(this, target, weaponShape, -1);
-			if (hits > 0)
-				ApplyCombatDamage(target, static_cast<float>(hits), this);
-			else
-				SpawnFloatingZeroDamageText(target);
-			ApplyCombatWeaponPowers(this, target, weaponShape, -1, hits);
-			LogResolvedAttack(this, target, weaponShape, hits);
+			ResolveMeleeHit(this, target, weaponShape);
 		};
 
 		// Start a one-shot attack/shoot clip when off cooldown.
@@ -979,8 +1011,11 @@ bool U7Object::IsHiddenByInvisibility() const
 {
 	if ((m_flags & kObjFlagInvisible) == 0)
 		return false;
-	// Exult paints the Avatar and party with the invisibility xform.
-	// Everyone else is skipped entirely.
+	// Exult Actor::paint skips invisible NPCs who are not the Avatar or in the
+	// party. Ordinary objects stay on screen and use the invisibility xform.
+	if (m_UnitType != UnitTypes::UNIT_TYPE_NPC
+		&& m_UnitType != UnitTypes::UNIT_TYPE_MONSTER)
+		return false;
 	if (m_UnitType == UnitTypes::UNIT_TYPE_NPC)
 	{
 		if (m_NPCID == 0)
@@ -1125,6 +1160,7 @@ void U7Object::UpdatePoisonTimer()
 	{
 		m_flags &= ~kObjFlagPoisoned;
 		StopPoisonTimer();
+		AnnounceStatusFlag(kObjFlagPoisoned, false);
 		return;
 	}
 	if (now < m_poisonNextTickAt)
@@ -1280,6 +1316,10 @@ void U7Object::UpdateSleepTimer()
 	{
 		ClearSleep();
 		StopSleepTimer();
+		// Knockouts also wake on this timer once they have HP. They do not
+		// stand up during a fight, so only the combat case is a sleep spell ending.
+		if (g_isCombatMode)
+			AnnounceStatusFlag(kObjFlagAsleep, false);
 	}
 }
 
@@ -1479,7 +1519,10 @@ void U7Object::AlliedMonsterUpdate()
 	auto buzzSlotAround = [&](U7Object* hostile) -> Vector3 {
 		constexpr float kGoldenAngle = 2.399963229728653f;
 		const float angle = static_cast<float>(m_ID) * kGoldenAngle;
-		const float radius = 1.6f + static_cast<float>(m_ID % 5) * 0.45f;
+		// Insects keep a loose cloud. Other summons stand inside melee range.
+		const float radius = (m_ObjectType == 517)
+			? 1.6f + static_cast<float>(m_ID % 5) * 0.45f
+			: 1.15f;
 		Vector3 slot{
 			hostile->m_Pos.x + cosf(angle) * radius,
 			hostile->m_Pos.y,
@@ -1580,12 +1623,17 @@ void U7Object::AlliedMonsterUpdate()
 		if (Vector3LengthSqr(toTarget) > 1e-6f)
 			m_Direction = Vector3Normalize(toTarget);
 
-		// Harass at most every ~0.5s. Skip attack anim (often missing frames for
-		// insects) so playing/hit-phase quirks cannot break the cooldown gate.
+		// Insects bite on a short cooldown and deal 0 (their weapon row).
+		// Other summons use their own cooldown and a real strike.
 		if (m_cooldownTimer <= 0.0f)
 		{
-			m_cooldownTimer = kHarassCooldownSec;
-			hostile->NotifyAttackedBy(this);
+			const int strikeShape = CombatStrikeWeaponShape(this);
+			const WeaponData* strikeWeapon = (strikeShape >= 0) ? GetWeaponData(strikeShape) : nullptr;
+			if (strikeWeapon && strikeWeapon->damage == 0)
+				hostile->NotifyAttackedBy(this);
+			else
+				ResolveMeleeHit(this, hostile, strikeShape);
+			m_cooldownTimer = m_attackCooldown > 0.1f ? m_attackCooldown : kHarassCooldownSec;
 		}
 	}
 	else if (distToSlot > 0.45f)
@@ -2210,9 +2258,10 @@ void U7Object::MonsterInit()
 			m_isFlying = md.m_flies;
 			// Exult Monster_info::see_invisible is bit 7 of the flags byte.
 			m_canSeeInvisible = (md.m_flagsByte & 0x80) != 0;
-			// MONSTERS.DAT weapon nibble is 0 for insects — still need a bite.
-			if (m_BaseAttack <= 0.0f)
-				m_BaseAttack = (md.m_damage > 0) ? static_cast<float>(md.m_damage) : 1.0f;
+			// A 0 nibble stays 0. Weapon-shapes (insects, rat, snake) strike
+			// with their WEAPONS.DAT row instead of this value.
+			if (m_BaseAttack <= 0.0f && md.m_damage > 0)
+				m_BaseAttack = static_cast<float>(md.m_damage);
 			break;
 		}
 	}
@@ -4901,6 +4950,48 @@ bool U7Object::IsDying() const
 	return m_hp < -static_cast<float>(str / 3);
 }
 
+void U7Object::AnnounceStatusFlag(unsigned int flag, bool applied)
+{
+	if (m_UnitType != UnitTypes::UNIT_TYPE_NPC
+		&& m_UnitType != UnitTypes::UNIT_TYPE_MONSTER)
+		return;
+	if (IsDeathStatus() || GetIsDead())
+		return;
+
+	const char* word = nullptr;
+	Color color = YELLOW;
+	switch (flag)
+	{
+	case kObjFlagAsleep:
+		word = "asleep";
+		break;
+	case kObjFlagCharmed:
+		word = "charmed";
+		break;
+	case kObjFlagCursed:
+		word = "cursed";
+		break;
+	case kObjFlagParalyzed:
+		word = "paralyzed";
+		break;
+	case kObjFlagPoisoned:
+		word = "poisoned";
+		break;
+	case kObjFlagProtection:
+		word = "protected";
+		color = GREEN;
+		break;
+	default:
+		return;
+	}
+
+	const std::string name = m_name.empty() ? "Someone" : m_name;
+	if (applied)
+		NoteCombatLogClause(name + " is " + word + "!", color);
+	else
+		NoteCombatLogClause(name + " is no longer " + word + ".", SKYBLUE);
+}
+
 void U7Object::ForceSleep()
 {
 	if (IsDeathStatus() || GetIsDead())
@@ -6102,8 +6193,41 @@ bool U7Object::FireUsecodeAttack()
 		damageType = 2; // magic
 		speed = 18.0f;
 	}
+	else if (weaponShape == 78)
+	{
+		// Explosion (shape 78). WEAPONS.DAT: fire damage 16, ranged, reach 16.
+		// The flying art is projectile 856. Impact detonates; damage stays 0 here
+		// so the hit path uses the weapon row inside the blast.
+		const int ax = static_cast<int>(std::floor(m_Pos.x));
+		const int az = static_cast<int>(std::floor(m_Pos.z));
+		const int ay = static_cast<int>(std::floor(m_Pos.y));
+		const int bx = static_cast<int>(std::floor(target->m_Pos.x));
+		const int bz = static_cast<int>(std::floor(target->m_Pos.z));
+		const int by = static_cast<int>(std::floor(target->m_Pos.y));
+		const int dx = std::abs(ax - bx);
+		const int dz = std::abs(az - bz);
+		const int dy = std::abs(ay - by);
+		const int tileDist = std::max(dx, std::max(dz, dy));
+		if (tileDist > 16)
+		{
+			if (g_Player && g_Player->NPCIDInParty(m_NPCID))
+			{
+				AddConsoleString("Out of range", RED);
+			}
+			return false;
+		}
+		damage = 0;
+		damageType = 1; // fire
+		speed = 18.0f;
+	}
 
-	const bool ok = SpawnFlyingProjectile(weaponShape, static_cast<int>(m_ID), targetId, speed,
+	int visualShape = weaponShape;
+	if (weaponShape == 78)
+	{
+		visualShape = 856;
+	}
+
+	const bool ok = SpawnFlyingProjectile(visualShape, static_cast<int>(m_ID), targetId, speed,
 		damage, damageType, weaponShape, -1);
 	if (!ok)
 	{
@@ -7298,6 +7422,13 @@ json U7Object::SaveToJson() const
 		j["frame"] = m_Frame;
 	if (m_Quality != 0)
 		j["quality"] = m_Quality;
+	if (m_virtueMarked)
+	{
+		j["virtueMarked"] = true;
+		j["virtueX"] = m_virtueX;
+		j["virtueY"] = m_virtueY;
+		j["virtueZ"] = m_virtueZ;
+	}
 
 	// Transform (only save position if not contained)
 	if (!m_isContained)
@@ -7469,6 +7600,13 @@ U7Object* U7Object::LoadFromJson(const json& j)
 	// Now restore all other properties (which will overwrite Init's defaults)
 	obj->m_ID = j.value("id", 0);
 	obj->m_Quality = j.value("quality", 0);
+	obj->m_virtueMarked = j.value("virtueMarked", false);
+	if (obj->m_virtueMarked)
+	{
+		obj->m_virtueX = j.value("virtueX", 0.0f);
+		obj->m_virtueY = j.value("virtueY", 0.0f);
+		obj->m_virtueZ = j.value("virtueZ", 0.0f);
+	}
 
 	// Restore transform
 	if (j.contains("position") && j["position"].is_array() && j["position"].size() == 3)

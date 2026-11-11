@@ -59,12 +59,8 @@ function npc_karenna_0094(eventid, objectref)
             add_dialogue("\"He is quite an able trainer in his own right. Not as skilled as myself, obviously. But I do think he is cute, though I bid thee, do not tell him that I spoke of this. It will only encourage him.\"")
             var_0003 = npc_id_in_party(95)
             if var_0003 then
-                switch_talk_to(95)
-                add_dialogue("\"Art thou speaking about me? Mine ears are burning!\"")
-                switch_talk_to(94)
+                second_speaker(95, 0, "\"Art thou speaking about me? Mine ears are burning!\"")
                 add_dialogue("\"Nothing thou shouldst be concerned about, Jakher.\" She winks at you.")
-                --syntax error hide_npc95)
-                switch_talk_to(94)
             end
             set_flag(246, true)
             remove_answer("Jakher")
@@ -96,12 +92,8 @@ function npc_karenna_0094(eventid, objectref)
             add_dialogue("\"Jakher told thee he doth find me attractive? He denies it, of course, but I have known for years that he doth have feelings for me.\"")
             var_0003 = npc_id_in_party(95)
             if var_0003 then
-                switch_talk_to(95)
-                add_dialogue("\"What? What didst thou say?\"")
-                switch_talk_to(94)
+                second_speaker(95, 0, "\"What? What didst thou say?\"")
                 add_dialogue("\"Nothing, Jakher. Go away.\" She giggles conspiratorially at you.")
-                --syntax error hide_npc95)
-                switch_talk_to(94)
             end
             remove_answer("attractive")
         elseif answer == "gypsies" then

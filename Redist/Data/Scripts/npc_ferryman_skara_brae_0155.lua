@@ -55,23 +55,13 @@ function npc_ferryman_skara_brae_0155(eventid, objectref)
                 if not get_flag(407) then
                     add_dialogue("He turns all the way around and points across the water to the west. \"There... \"")
                     if not (var_0001 and var_0000) then
-                        switch_talk_to(3)
-                        add_dialogue("\"Er... " .. var_0002 .. ", art thou sure we need to go over there?\"")
-                        hide_npc(3)
-                        switch_talk_to(2)
-                        add_dialogue("\"What's the matter, Shamino? Art thou -afraid-?\"")
-                        hide_npc(2)
-                        switch_talk_to(3)
-                        add_dialogue("\"Of course not! I just... well, I... oh, never mind! Let's go!\"")
-                        hide_npc(3)
+                        second_speaker(3, 0, "\"Er... " .. var_0002 .. ", art thou sure we need to go over there?\"")
+                        second_speaker(2, 0, "\"What's the matter, Shamino? Art thou -afraid-?\"")
+                        second_speaker(3, 0, "\"Of course not! I just... well, I... oh, never mind! Let's go!\"")
                         var_0003 = npc_id_in_party(1)
                         if var_0003 then
-                            switch_talk_to(1)
-                            add_dialogue("Iolo's eyes narrow as he adopts a patronizing look on his face.~~\"And I suppose thou art without fear?\" he says to Spark.")
-                            hide_npc(1)
-                            switch_talk_to(2)
-                            add_dialogue("\"No, sir. I am not afraid of a skeleton,\" he says. As he looks at the ferryman, however, he gulps.")
-                            hide_npc(2)
+                            second_speaker(1, 0, "Iolo's eyes narrow as he adopts a patronizing look on his face.~~\"And I suppose thou art without fear?\" he says to Spark.")
+                            second_speaker(2, 0, "\"No, sir. I am not afraid of a skeleton,\" he says. As he looks at the ferryman, however, he gulps.")
                         end
                         switch_talk_to(285)
                     end

@@ -34,7 +34,6 @@ function spell_manages_erethian_s_spell_casti_0416(eventid, objectref)
         switch_talk_to(1, 286)
         add_dialogue("Amidst muttered curses detailing the uselessness of ether and bothersome inter-dimensional beings, Erethian intones the magical words,")
         add_dialogue("\"An Vas Ailem!   Kal Bet Ailem!\"")
-        hide_npc(286)
         var_000D = execute_usecode_array(1697, {8021, 3, 17447, 8033, 3, 17447, 8048, 4, 17447, 7791}, objectref)
         remove_item(var_0001)
         remove_item(var_0003)
@@ -66,7 +65,6 @@ function spell_manages_erethian_s_spell_casti_0416(eventid, objectref)
         if var_000E and get_object_quality(var_000E) == 100 then
             add_dialogue("He stops himself for a moment and says, \"If perchance thou hadst some item or other laying upon the floor here, thou'lt find it within yonder chest.\" He motions to the chest sitting on the floor, then continues with his spell.")
         end
-        hide_npc(286)
         if not get_flag(3) then
             var_000D = execute_usecode_array(1697, {8021, 2, 17447, 8033, 2, 17447, 8048, 2, 7719}, objectref)
         else

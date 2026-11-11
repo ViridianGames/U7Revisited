@@ -1,54 +1,44 @@
---- Best guess: Implements the stop time spell (Kal Wis Corp), freezing time for a duration based on game time with multiple flags.
-function spell_stop_time_kal_wis_corp_0358(eventid, objectref)
-    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006
+--- Seance (Kal Wis Corp). Fourth Circle. Oracle: usecode Func0666 / object#(0x666).
+--- Untargeted. Opens the ten Skara Brae ghosts until 07:00 if cast before 06:00,
+--- otherwise until midnight. Weather 3 (anti-magic sparkle) fizzles the cast.
+--- Do not destroy the caster. The function name stays on script 358.
 
-    if eventid == 1 then
-        destroy_object(objectref)
-        bark(objectref, "@Kal Wis Corp@")
-        if check_spell_requirements() then
-            var_0000 = add_containerobject_s(objectref, {17511, 17509, 8038, 67, 7768})
-            var_0001 = get_object_position(objectref) --- Guess: Gets position data
-            var_0002 = var_0001[1] - 2
-            var_0003 = var_0001[2] - 2
-            apply_sprite_effect(-1, 0, 0, 0, var_0003, var_0002, 13) --- Guess: Applies sprite effect
-            apply_sprite_effect(-1, 0, 0, 0, var_0003, var_0002, 7) --- Guess: Applies sprite effect
-            set_flag(434, true)
-            set_flag(435, true)
-            set_flag(436, true)
-            set_flag(437, true)
-            set_flag(438, true)
-            set_flag(439, true)
-            set_flag(440, true)
-            set_flag(441, true)
-            set_flag(442, true)
-            set_flag(443, true)
-            set_flag(439, true)
-            var_0004 = get_time_hour() --- Guess: Gets current hour
-            var_0005 = get_time_minute() --- Guess: Gets current minute
-            if var_0004 < 6 then
-                var_0006 = (6 - var_0004) * 60
-                var_0006 = var_0006 + (60 - var_0005)
-                var_0006 = var_0006 * 25
-            else
-                var_0006 = (23 - var_0004) * 60
-                var_0006 = var_0006 + (60 - var_0005)
-                var_0006 = var_0006 * 25
-            end
-            var_0000 = add_containerobject_s(objectref, {var_0006, 1638, 17493, 17452, 7715})
-        else
-            var_0000 = add_containerobject_s(objectref, {1542, 17493, 17511, 17509, 7782})
-        end
-    elseif eventid == 2 then
-        set_flag(434, false)
-        set_flag(435, false)
-        set_flag(436, false)
-        set_flag(437, false)
-        set_flag(438, false)
-        set_flag(439, false)
-        set_flag(440, false)
-        set_flag(441, false)
-        set_flag(442, false)
-        set_flag(443, false)
-        set_flag(439, false)
+local function set_seance_flags(on)
+    for flag = 434, 443 do
+        set_flag(flag, on)
     end
+end
+
+function spell_stop_time_kal_wis_corp_0358(eventid, objectref)
+    if eventid == 2 then
+        end_seance()
+        return
+    end
+
+    if eventid ~= 1 then
+        return
+    end
+
+    halt_scheduled(objectref)
+    bark(objectref, "@Kal Wis Corp@")
+    -- Func0906 returns false only while get_weather() == 3.
+    if get_weather() == 3 or not check_spell_requirements(objectref) then
+        -- Playback: reach_1h, raise_1h, strike_1h. No spellFails.
+        execute_usecode_array(objectref, {17511, 8037, 17510})
+        return
+    end
+
+    begin_casting_mode(objectref, 859)
+    -- Playback: sfx 67, reach_1h, raise_1h, strike_1h.
+    execute_usecode_array(objectref, {17511, 8037, 17510, 67, 7768})
+
+    local pos = get_object_position(objectref)
+    if pos then
+        -- Green bubbles (13) and the teleport puff (7), two tiles up-left.
+        sprite_effect(-1, 0, 0, 0, pos.z - 2, pos.x - 2, 13, pos.y)
+        sprite_effect(-1, 0, 0, 0, pos.z - 2, pos.x - 2, 7, pos.y)
+    end
+
+    set_seance_flags(true)
+    arm_seance()
 end

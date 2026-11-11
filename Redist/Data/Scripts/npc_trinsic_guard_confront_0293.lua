@@ -19,9 +19,7 @@ function npc_trinsic_guard_confront_0293(eventid, objectref)
             hide_npc(259)
             initiate_combat() --- Guess: Initiates combat
         elseif utility_array_bounds_check_1017(var_0002, var_0001, var_0003) then
-            switch_talk_to(258)
-            add_dialogue("The guard glares at you. \"Unrepentant scoundrel!\"")
-            hide_npc(258)
+            second_speaker(258, 0, "The guard glares at you. \"Unrepentant scoundrel!\"")
             initiate_combat() --- Guess: Initiates combat
         else
             switch_talk_to(258)

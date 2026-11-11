@@ -94,7 +94,12 @@ public:
 	void UpdateTime();
 
 	void SetLuaFunction(const std::string& func_name) { m_luaFunction = func_name; }
-	void StartObjectSelectionMode() { m_objectSelectionMode = true; m_doingObjectSelection = true; }
+	void StartObjectSelectionMode()
+	{
+		m_objectSelectionMode = true;
+		m_doingObjectSelection = true;
+		m_pendingUseTargetId = -1;
+	}
 
 	void Bark(U7Object* object, const std::string& text, float duration = 1.5f);
 	void ClearBarks();
@@ -451,6 +456,11 @@ private:
 	void HandleRightDoubleClick();
 	void HandleMouseHoldTimers();
 	void HandleRightMouseHoldMovement();
+	void ResolveUseCursorTarget();
+	void CommitUseCursorTarget(int objectId);
+	void OpenUseCursorContainer(U7Object* object);
+	U7Object* ObjectUnderUseCursor(bool& fromEmbeddedPaperdoll);
+	bool IsUseCursorContainer(const U7Object* object) const;
 	void HandleLeftDoubleClick();
 	void HandleLeftSingleClick();
 	void DebugPrintNpcSchedule(U7Object* npc);
@@ -476,6 +486,10 @@ private:
 	float   m_cameraDragSensitivity = 0.008f; // radians per pixel (tune as needed)
 
 	bool m_handledDoubleLeftClickThisFrame = false;
+
+	// Container under the green use cursor, waiting out the double-click window.
+	int m_pendingUseTargetId = -1;
+	float m_pendingUseTargetTime = 0.0f;
 
 	float m_barkTimer = 0.0f;
 	U7Object* m_previousObjectUnderMousePointer = nullptr;

@@ -60,10 +60,7 @@ function npc_effrem_0160(eventid, objectref)
             elseif answer == "Jillian" or answer == "wife" then
                 add_dialogue("\"My wife? Jillian? She's the scholar. She is a very good one, too. Not that I could not have done well. I could have. Better, in fact. But it is not worth arguing about now. She has her occupation, even if I do not have one. I should have a job, though. Dost thou not agree, " .. var_0001 .. "? This is not what a man ought to be doing. Staying at home raising the children, like this. 'Tis a disgrace!\"")
                 if var_0005 then
-                    switch_talk_to(159)
-                    add_dialogue("\"Now Effrem! Thou knowest perfectly well what we agreed when little Mikhail was born. Thou shouldst be ashamed, talking such nonsense.\"")
-                    hide_npc(159)
-                    switch_talk_to(160)
+                    second_speaker(159, 0, "\"Now Effrem! Thou knowest perfectly well what we agreed when little Mikhail was born. Thou shouldst be ashamed, talking such nonsense.\"")
                     add_dialogue("He raises his shoulders, making him appear quite sheepish.")
                 end
                 remove_answer({"Jillian", "wife"})

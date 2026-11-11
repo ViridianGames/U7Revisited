@@ -615,11 +615,15 @@ void GumpSpellbook::CastSpell(int spellId)
 		return;
 	}
 
+	// Mark (34) and Recall (36) target a virtue stone in an open pack.
+	// Leave every gump up so that click can land on the stone.
+	const bool keepGumpsOpen = (spellId == 34 || spellId == 36);
+
 	// Combat paused: queue the cast — do not spend mana/reagents or run the script yet.
 	// Targeted spells ask for a click; untarged ones (Swarm, Protect All, …) queue on the caster.
 	if (g_isCombatMode && g_mainState && g_mainState->IsCombatOrdersPaused())
 	{
-		if (g_gumpManager)
+		if (g_gumpManager && !keepGumpsOpen)
 			g_gumpManager->MarkAllGumpsDead();
 		if (!spell->targeted)
 			g_mainState->IssueCombatSpellOrder(caster, spellId, caster);
@@ -630,7 +634,7 @@ void GumpSpellbook::CastSpell(int spellId)
 
 	// Close spellbook + every other open gump as soon as the spell is selected,
 	// before the script runs (including before click_on_item targeting).
-	if (g_gumpManager)
+	if (g_gumpManager && !keepGumpsOpen)
 		g_gumpManager->MarkAllGumpsDead();
 
 	RunSpellCast(spellId, caster, -1);
@@ -867,6 +871,11 @@ void GumpSpellbook::Update()
 			return;
 		CastSpell(circleSpells[spellIndex].id);
 	};
+
+	// Mark/Recall leave this book open while waiting for a virtue stone.
+	// Ignore another spell click until that target click is finished.
+	if (g_mainState && (g_mainState->m_objectSelectionMode || g_mainState->IsCombatSpellTargeting()))
+		return;
 
 	if (g_InputSystem && g_InputSystem->WasLButtonDoubleClicked())
 	{

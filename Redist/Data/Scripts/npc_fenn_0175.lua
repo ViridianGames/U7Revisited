@@ -45,10 +45,7 @@ function npc_fenn_0175(eventid, objectref)
                 var_0001 = npc_id_in_party(NPC_KOMOR)
                 if var_0001 then
                     add_dialogue("*")
-                    switch_talk_to(NPC_KOMOR)
-                    add_dialogue("\"Oh, please! Thou art making mine eyes leak!\"")
-                    hide_npc(NPC_KOMOR)
-                    switch_talk_to(NPC_FENN)
+                    second_speaker(174, 0, "\"Oh, please! Thou art making mine eyes leak!\"")
                 end
                 remove_answer("Komor")
             elseif answer == "Merrick" then
@@ -100,10 +97,7 @@ function npc_fenn_0175(eventid, objectref)
                 var_0001 = npc_id_in_party(NPC_KOMOR)
                 if var_0001 then
                     add_dialogue("*")
-                    switch_talk_to(NPC_KOMOR)
-                    add_dialogue("\"We would not want the likes of him walking down our side of the road anyway!\"")
-                    hide_npc(NPC_KOMOR)
-                    switch_talk_to(NPC_FENN)
+                    second_speaker(174, 0, "\"We would not want the likes of him walking down our side of the road anyway!\"")
                 end
                 remove_answer("Garritt")
             elseif answer == "give" then

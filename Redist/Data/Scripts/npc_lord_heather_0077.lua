@@ -56,33 +56,21 @@ function npc_lord_heather_0077(eventid, objectref)
             add_dialogue("\"Well, let's see... I am in love with Jaana, our healer. And she is in love with me, of course. Then there is Zinaida, who runs the Emerald. She has an interest in De Maria, our local bard. And vice versa. Rayburt, our trainer, is courting Pamela, the innkeeper.\"")
             var_0001 = npc_id_in_party(1)
             if var_0001 then
-                switch_talk_to(1)
-                add_dialogue("\"Sounds like bad theatre to me!\"")
-                --syntax error hide_npc1)
-                switch_talk_to(77)
+                second_speaker(1, 0, "\"Sounds like bad theatre to me!\"")
             end
             var_0002 = npc_id_in_party(2)
             if var_0002 then
-                switch_talk_to(2)
-                add_dialogue("\"Any wenches mine own age around here?\"")
-                --syntax error hide_npc2)
-                switch_talk_to(77)
+                second_speaker(2, 0, "\"Any wenches mine own age around here?\"")
             end
             set_flag(228, true)
             remove_answer("everyone")
             var_0003 = npc_id_in_party(5)
             if var_0003 then
                 add_dialogue("\"I see that thou art leaving Cove for a while, my dear?\"")
-                switch_talk_to(5)
-                add_dialogue("\"Yes, milord. But I shall return. I promise thee.\"")
-                switch_talk_to(77)
+                second_speaker(5, 0, "\"Yes, milord. But I shall return. I promise thee.\"")
                 add_dialogue("\"I shall try not to worry about thee, but it will be difficult.\"")
-                switch_talk_to(5)
-                add_dialogue("\"Do not worry. I shall be safe with the Avatar.\"")
-                switch_talk_to(77)
+                second_speaker(5, 0, "\"Do not worry. I shall be safe with the Avatar.\"")
                 add_dialogue("\"I do hope so.\" The Mayor embraces Jaana.")
-                --syntax error hide_npc5)
-                switch_talk_to(77)
             end
         elseif answer == "almost everyone" then
             add_dialogue("\"Except for Nastassia.\"")

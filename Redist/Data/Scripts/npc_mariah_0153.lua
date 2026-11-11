@@ -24,10 +24,7 @@ function npc_mariah_0153(eventid, objectref)
                 if var_0002 == "name" then
                     var_0003 = npc_id_in_party(1) --- Guess: Checks player status
                     if var_0003 then
-                        switch_talk_to(1)
-                        add_dialogue("\"Surely thou dost recognize thine old companion, Mariah?\"")
-                        hide_npc(1)
-                        switch_talk_to(153)
+                        second_speaker(1, 0, "\"Surely thou dost recognize thine old companion, Mariah?\"")
                     else
                         add_dialogue("\"Hast thou already forgotten me, " .. var_0001 .. "? I am Mariah.\"")
                     end
@@ -59,10 +56,7 @@ function npc_mariah_0153(eventid, objectref)
                 if var_0002 == "name" then
                     var_0003 = npc_id_in_party(1) --- Guess: Checks player status
                     if var_0003 then
-                        switch_talk_to(1)
-                        add_dialogue("\"Surely thou dost recognize thine old companion, Mariah?\"")
-                        hide_npc(1)
-                        switch_talk_to(153)
+                        second_speaker(1, 0, "\"Surely thou dost recognize thine old companion, Mariah?\"")
                         add_dialogue("\"Yes, dost thou not recognize me?\" She pauses, glaring at you. \"But who art thou, and where are my pastries?\"")
                     else
                         add_dialogue("\"Yes, thou mayest tell me thy name,\" she says, glancing around the building. \"Are not the many books beautiful?\"")

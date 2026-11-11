@@ -134,12 +134,31 @@ std::string FormatCombatAttackSentence(const U7Object* attacker, const U7Object*
 {
 	const std::string attackerName = (attacker && !attacker->m_name.empty()) ? attacker->m_name : "Someone";
 	const std::string targetName = (target && !target->m_name.empty()) ? target->m_name : "enemy";
-	const std::string weapon = CombatWeaponDisplayName(weaponShape);
+
+	// Body strikes (wolf, rat, insects) are not a held weapon. Naming them
+	// prints "with fists" or the creature's own shape. A readied weapon stays.
+	std::string withWeapon;
+	bool nameWeapon = true;
+	if (attacker && attacker->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_MONSTER)
+	{
+		nameWeapon = false;
+		U7Object* readied = GetEquippedWeapon(const_cast<U7Object*>(attacker));
+		if (readied && readied->m_shapeData
+			&& readied->m_shapeData->m_shape == weaponShape && weaponShape > 0)
+		{
+			nameWeapon = true;
+		}
+	}
+	if (nameWeapon)
+	{
+		withWeapon = " with " + CombatWeaponDisplayName(weaponShape);
+	}
+
 	if (hits < 0)
 	{
-		return attackerName + " attacks " + targetName + " with " + weapon + ", and misses!";
+		return attackerName + " attacks " + targetName + withWeapon + ", and misses!";
 	}
-	return attackerName + " attacks " + targetName + " with " + weapon + ", and hits for "
+	return attackerName + " attacks " + targetName + withWeapon + ", and hits for "
 		+ std::to_string(hits) + " damage!";
 }
 
@@ -863,17 +882,40 @@ void ApplyCombatWeaponPowers(U7Object* attacker, U7Object* target, int weaponSha
 
 	if ((powers & WeaponPower::Poison) != 0 && CombatRollToWin(kAttInt, defstr))
 	{
+		const bool was = (target->m_flags & kObjFlagPoisoned) != 0;
 		target->m_flags |= kObjFlagPoisoned;
 		target->StartPoisonTimer();
+		if (!was)
+			target->AnnounceStatusFlag(kObjFlagPoisoned, true);
 	}
 	if ((powers & WeaponPower::Curse) != 0 && CombatRollToWin(kAttInt, defint))
+	{
+		const bool was = (target->m_flags & kObjFlagCursed) != 0;
 		target->m_flags |= kObjFlagCursed;
+		if (!was)
+			target->AnnounceStatusFlag(kObjFlagCursed, true);
+	}
 	if ((powers & WeaponPower::Charm) != 0 && CombatRollToWin(kAttInt, defint))
+	{
+		const bool was = (target->m_flags & kObjFlagCharmed) != 0;
 		target->m_flags |= kObjFlagCharmed;
+		if (!was)
+			target->AnnounceStatusFlag(kObjFlagCharmed, true);
+	}
 	if ((powers & WeaponPower::Sleep) != 0 && CombatRollToWin(kAttInt, defint))
+	{
+		const bool was = (target->m_flags & kObjFlagAsleep) != 0;
 		target->ForceSleep();
+		if (!was && (target->m_flags & kObjFlagAsleep) != 0 && target->m_hp > 0.0f)
+			target->AnnounceStatusFlag(kObjFlagAsleep, true);
+	}
 	if ((powers & WeaponPower::Paralyze) != 0 && CombatRollToWin(kAttInt, defstr))
+	{
+		const bool was = (target->m_flags & kObjFlagParalyzed) != 0;
 		target->m_flags |= kObjFlagParalyzed;
+		if (!was)
+			target->AnnounceStatusFlag(kObjFlagParalyzed, true);
+	}
 	if ((powers & WeaponPower::Magebane) != 0)
 		target->m_mana = 0;
 	(void)attacker;

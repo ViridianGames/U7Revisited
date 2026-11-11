@@ -1,18 +1,28 @@
---- Best guess: Implements the summon item spell (Kal Por Ylem), summoning a specific item (type 330) with restrictions.
-function spell_summon_item_kal_por_ylem_0354(eventid, objectref)
-    local var_0000, var_0001, var_0002
+--- Mark (Kal Por Ylem). Fourth Circle. Usecode Func0662 / object#(0x662).
+--- Only a virtue stone (shape 330) accepts the mark. The stone stores the
+--- Avatar's current position. Each stone keeps its own place.
 
-    if eventid == 1 then
-        destroy_object(objectref)
-        var_0000 = object_select_modal() --- Guess: Selects spell target
-        if get_object_shape(var_0000) ~= 330 and get_object_owner(356) and not get_flag(39) then
-            bark(objectref, "@Kal Por Ylem@")
-            var_0001 = add_containerobject_s(var_0000, {1554, 17493, 7715})
-            var_0002 = add_containerobject_s(objectref, {17514, 17520, 8047, 67, 7768})
-            var_0001 = get_object_position(objectref) --- Guess: Gets position data
-            apply_sprite_effect(-1, 0, 0, 0, var_0001[2], var_0001[1], 13) --- Guess: Applies sprite effect
-        else
-            var_0002 = add_containerobject_s(objectref, {1542, 17493, 17514, 17520, 7791})
-        end
+function spell_summon_item_kal_por_ylem_0354(eventid, objectref)
+    if eventid ~= 1 then
+        return
     end
+
+    halt_scheduled(objectref)
+    local stone = click_on_item()
+    if not stone or stone == 0 or get_object_shape(stone) ~= 330 then
+        execute_usecode_array(objectref, {17514, 17520, 7781})
+        return
+    end
+
+    bark(objectref, "@Kal Por Ylem@")
+    -- Flag 0x39 (57): Codex attunement. Original Mark fails while it is set.
+    if not check_spell_requirements(objectref) or get_flag(57) then
+        execute_usecode_array(objectref, {17514, 17520, 7781})
+        return
+    end
+
+    mark_virtue_stone(stone)
+    -- Stored reversed: sfx 67, cast up, cast out, strike 2h.
+    execute_usecode_array(objectref, {17514, 8048, 17519, 67, 17496})
+    obj_sprite_effect(objectref, 13)
 end

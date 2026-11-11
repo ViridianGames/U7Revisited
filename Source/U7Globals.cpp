@@ -761,6 +761,52 @@ std::vector< std::vector<Texture> > g_walkFrames;
 Color g_dayNightColor = WHITE;
 bool g_isDay = true;
 float g_spellLightRemaining = 0.f;
+int64_t g_seanceExpireAtMinute = -1;
+
+int64_t GameAbsoluteMinute()
+{
+	return static_cast<int64_t>(g_britannianDayIndex) * 1440
+		+ static_cast<int64_t>(g_hour) * 60
+		+ static_cast<int64_t>(g_minute);
+}
+
+void EndSeance()
+{
+	g_seanceExpireAtMinute = -1;
+	if (!g_ScriptingSystem)
+	{
+		return;
+	}
+	for (int flag = 434; flag <= 443; ++flag)
+	{
+		g_ScriptingSystem->SetFlag(flag, false);
+	}
+}
+
+void ArmSeanceDeadline()
+{
+	const int64_t dayBase = static_cast<int64_t>(g_britannianDayIndex) * 1440;
+	if (g_hour < 6)
+	{
+		g_seanceExpireAtMinute = dayBase + 7 * 60;
+	}
+	else
+	{
+		g_seanceExpireAtMinute = dayBase + 24 * 60;
+	}
+}
+
+void UpdateSeanceDeadline()
+{
+	if (g_seanceExpireAtMinute < 0)
+	{
+		return;
+	}
+	if (GameAbsoluteMinute() >= g_seanceExpireAtMinute)
+	{
+		EndSeance();
+	}
+}
 
 float GetSmoothClockHours()
 {
@@ -1547,17 +1593,8 @@ void CameraInput()
 	}
 }
 
-void TeleportPartyTo(int tileX, int tileZ)
+void TeleportPartyToPosition(float worldX, float worldY, float worldZ)
 {
-	float goalY = 0.0f;
-	if (g_pathfindingSystem &&
-	    tileX >= 0 && tileX < 3072 && tileZ >= 0 && tileZ < 3072)
-	{
-		auto heights = g_pathfindingSystem->GetWalkableSurfaceHeights(tileX, tileZ);
-		if (!heights.empty())
-			goalY = heights.front(); // lowest surface (ground preference)
-	}
-
 	auto teleportUnit = [](U7Object* unit, Vector3 pos)
 	{
 		if (!unit)
@@ -1572,8 +1609,11 @@ void TeleportPartyTo(int tileX, int tileZ)
 		unit->SetDest(pos);
 	};
 
+	if (!g_Player)
+		return;
+
 	U7Object* avatar = g_Player->GetAvatarObject();
-	const Vector3 avatarPos{ tileX + 0.5f, goalY, tileZ + 0.5f };
+	const Vector3 avatarPos{ worldX, worldY, worldZ };
 	teleportUnit(avatar, avatarPos);
 
 	int counter = 1;
@@ -1602,10 +1642,26 @@ void TeleportPartyTo(int tileX, int tileZ)
 		++counter;
 	}
 
+	const int tileX = (int)floorf(worldX);
+	const int tileZ = (int)floorf(worldZ);
 	AddConsoleString(
 		"Teleported party to (" + std::to_string(tileX) + ", " +
 		std::to_string(tileZ) + ").", SKYBLUE);
 	g_CameraMoved = true; // snap follow on next CameraUpdate
+}
+
+void TeleportPartyTo(int tileX, int tileZ)
+{
+	float goalY = 0.0f;
+	if (g_pathfindingSystem &&
+	    tileX >= 0 && tileX < 3072 && tileZ >= 0 && tileZ < 3072)
+	{
+		auto heights = g_pathfindingSystem->GetWalkableSurfaceHeights(tileX, tileZ);
+		if (!heights.empty())
+			goalY = heights.front(); // lowest surface (ground preference)
+	}
+
+	TeleportPartyToPosition(tileX + 0.5f, goalY, tileZ + 0.5f);
 }
 
 void CameraSetDestination(Vector3 destination)
@@ -2245,6 +2301,7 @@ void UpdateSortedVisibleObjects()
 				}
 
 				// Invisible non-party actors are not drawn and cannot be picked.
+				// Objects with the flag stay in the list and draw with the ghost tint.
 				if (object->IsHiddenByInvisibility())
 				{
 					continue;
@@ -3480,6 +3537,100 @@ bool MarkNewestFlyingProjectilePauseCasterOnHit(int attackerId)
 
 namespace
 {
+	// Exult Explosion_effect: at frame (count / 4), radius = frame width / 16.
+	// Sprite 4 frame 3 is 80px, so the blast is 5 tiles (Chebyshev, inclusive).
+	int ExplosionSpellRadiusTiles()
+	{
+		constexpr int kSprite = 4;
+		const auto& frames = g_spriteTable[kSprite];
+		if (!frames.empty())
+		{
+			const int fr = static_cast<int>(frames.size()) / 4;
+			const int idx = std::min(fr, static_cast<int>(frames.size()) - 1);
+			const int radius = frames[static_cast<size_t>(idx)].width / 16;
+			if (radius > 0)
+			{
+				return radius;
+			}
+		}
+		return 5;
+	}
+
+	int TileChebyshev(const U7Object* a, const U7Object* b)
+	{
+		const int dx = std::abs(static_cast<int>(std::floor(a->m_Pos.x)) - static_cast<int>(std::floor(b->m_Pos.x)));
+		const int dz = std::abs(static_cast<int>(std::floor(a->m_Pos.z)) - static_cast<int>(std::floor(b->m_Pos.z)));
+		const int dy = std::abs(static_cast<int>(std::floor(a->m_Pos.y)) - static_cast<int>(std::floor(b->m_Pos.y)));
+		return std::max(dx, std::max(dz, dy));
+	}
+
+	// Shape 78 only. Lightning (807) and other WEAPONS.DAT rows also have the
+	// explodes bit; those stay on their existing single-target hit path.
+	void DetonateExplosionSpell(U7Object* attacker, U7Object* target)
+	{
+		if (!target)
+			return;
+
+		Vector3 pos = target->m_Pos;
+		if (target->m_shapeData && target->m_shapeData->m_Dims.y > 0.1f)
+		{
+			pos.y += target->m_shapeData->m_Dims.y * 0.5f;
+		}
+		if (g_SpriteEffectSystem)
+		{
+			g_SpriteEffectSystem->Spawn(4, pos);
+		}
+		if (g_SoundSystem)
+		{
+			g_SoundSystem->PlaySoundAtObject(BuildU7SfxPath(8), static_cast<int>(target->m_ID));
+		}
+
+		const int radius = ExplosionSpellRadiusTiles();
+		std::vector<U7Object*> victims;
+		for (const auto& pair : g_objectList)
+		{
+			U7Object* obj = pair.second.get();
+			if (!obj || obj->m_isContained || obj->m_isProjectile)
+				continue;
+			if (obj->GetIsDead() || obj->IsDeathStatus() || obj->IsInvisible())
+				continue;
+			const auto unit = obj->m_UnitType;
+			if (unit != U7Object::UnitTypes::UNIT_TYPE_NPC
+				&& unit != U7Object::UnitTypes::UNIT_TYPE_MONSTER)
+			{
+				continue;
+			}
+			if (TileChebyshev(obj, target) > radius)
+				continue;
+			victims.push_back(obj);
+		}
+
+		for (U7Object* victim : victims)
+		{
+			if (!victim || victim->GetIsDead() || victim->IsDeathStatus())
+				continue;
+
+			// Exult attacks everyone in the blast with explosion=true: no miss roll.
+			// Armor can still soak the fire damage to 0. The caster is included.
+			const int hits = FigureCombatHitPoints(attacker, victim, 78, -1);
+			if (hits > 0)
+			{
+				BeginCombatLogSentence();
+				ApplyCombatDamage(victim, static_cast<float>(hits), attacker);
+				ApplyCombatWeaponPowers(attacker, victim, 78, -1, hits);
+			}
+			else
+			{
+				SpawnFloatingZeroDamageText(victim);
+				if (attacker)
+					victim->NotifyAttackedBy(attacker);
+			}
+			AddCombatLogString(
+				FinishCombatLogSentence(FormatCombatAttackSentence(attacker, victim, 78, hits)),
+				CombatAttackLogColor(attacker, hits));
+		}
+	}
+
 	void PauseCasterOrdersAfterCombatSpell(const FlyingProjectile& proj)
 	{
 		if (!proj.pauseCasterOrdersOnHit || !g_mainState || !g_isCombatMode)
@@ -3532,8 +3683,13 @@ void UpdateFlyingProjectiles()
 			{
 				U7Object* attacker = GetObjectFromID(proj.attackerId);
 
+				// Explosion spell (weapon 78). The bolt art is 856; do not key off that.
+				if (proj.weaponShape == 78)
+				{
+					DetonateExplosionSpell(attacker, target);
+				}
 				// Douse bolt (shape 540): spell usecode event 4 on the target — extinguish lights.
-				if (proj.weaponShape == 540 || bolt->m_ObjectType == 540)
+				else if (proj.weaponShape == 540 || bolt->m_ObjectType == 540)
 				{
 					if (g_ScriptingSystem)
 					{

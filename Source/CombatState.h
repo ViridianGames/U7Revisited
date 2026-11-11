@@ -92,6 +92,7 @@ std::string CombatWeaponDisplayNameForUnit(U7Object* unit);
 
 // One combat-log sentence for a resolved swing.
 // hits < 0 is a miss. Otherwise "and hits for N damage!"
+// A monster or animal with no readied weapon omits the "with ..." clause.
 std::string FormatCombatAttackSentence(const U7Object* attacker, const U7Object* target, int weaponShape, int hits);
 // Misses are yellow. A party member's hit is white. An enemy's hit is red.
 Color CombatAttackLogColor(const U7Object* attacker, int hits);

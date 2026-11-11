@@ -46,22 +46,13 @@ function npc_horance_0141(eventid, objectref)
         var_0006 = npc_id_in_party(3)
         var_0007 = npc_id_in_party(1)
         if var_0006 then
-            switch_talk_to(3)
-            add_dialogue("Shamino steps near you and speaks in a whispered tone.~~\"Do not trust this one, " .. var_0001 .. ". Methinks he'll cause naught but evil.\"")
-            --syntax error hide_npc3)
-            switch_talk_to(141)
+            second_speaker(3, 0, "Shamino steps near you and speaks in a whispered tone.~~\"Do not trust this one, " .. var_0001 .. ". Methinks he'll cause naught but evil.\"")
         elseif var_0007 then
-            switch_talk_to(1)
-            add_dialogue("Iolo steps near you and speaks in a whispered tone.~~\"Do not trust this one, " .. var_0001 .. ". Methinks he'll cause naught but evil.\"")
-            --syntax error hide_npc1)
-            switch_talk_to(141)
+            second_speaker(1, 0, "Iolo steps near you and speaks in a whispered tone.~~\"Do not trust this one, " .. var_0001 .. ". Methinks he'll cause naught but evil.\"")
         end
         var_0008 = npc_id_in_party(2)
         if var_0008 then
-            switch_talk_to(2)
-            add_dialogue("\"Uh, " .. var_0001 .. "? I am ready to go now,\" he says to you, cowering from the undead creature.")
-            --syntax error hide_npc2)
-            switch_talk_to(141)
+            second_speaker(2, 0, "\"Uh, " .. var_0001 .. "? I am ready to go now,\" he says to you, cowering from the undead creature.")
         end
         set_flag(453, true)
     else
@@ -133,15 +124,9 @@ function npc_horance_0141(eventid, objectref)
             var_0009 = npc_id_in_party(4)
             var_0007 = npc_id_in_party(1)
             if var_0009 then
-                switch_talk_to(4)
-                add_dialogue("\"Yeah, right.\"")
-                --syntax error hide_npc4)
-                switch_talk_to(141)
+                second_speaker(4, 0, "\"Yeah, right.\"")
             elseif var_0007 then
-                switch_talk_to(1)
-                add_dialogue("\"Yeah, right.\"")
-                --syntax error hide_npc1)
-                switch_talk_to(141)
+                second_speaker(1, 0, "\"Yeah, right.\"")
             end
             add_dialogue("\"Feel free to explore mine humble abode. Though, have a care. My guardians are none too intelligent and will most likely assault anything living.\" He smiles with his death's head grin.")
             return

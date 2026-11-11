@@ -7,9 +7,7 @@ function quest_murder_investigation_0899()
     var_0000 = check_npc_presence(11) --- Guess: Checks NPC presence
     if var_0000 then
         add_dialogue("@Petre here knows something about all of this.@")
-        switch_talk_to(11) --- Guess: Initiates dialogue
-        add_dialogue("@I discovered poor Christopher and the Gargoyle Inamo early this morning.@")
-        hide_npc(11) --- Guess: Hides NPC
+        second_speaker(11, 0, "@I discovered poor Christopher and the Gargoyle Inamo early this morning.@")
     else
         switch_talk_to(12) --- Guess: Initiates dialogue
         add_dialogue("@Petre the stables caretaker discovered poor Christopher and Inamo early this morning.@")

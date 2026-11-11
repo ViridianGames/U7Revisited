@@ -1,6 +1,7 @@
 #include "U7LuaFuncs.h"
 
 #include <algorithm>
+#include <cmath>
 #include <fstream>
 #include <unordered_set>
 
@@ -1364,6 +1365,20 @@ static int LuaGetFlag(lua_State *L)
     DebugPrint("Getting Lua flag " + to_string(flag_id) + ", value is " + to_string(value));
     lua_pushboolean(L, value);
     return 1;
+}
+
+static int LuaArmSeance(lua_State *L)
+{
+    (void)L;
+    ArmSeanceDeadline();
+    return 0;
+}
+
+static int LuaEndSeance(lua_State *L)
+{
+    (void)L;
+    EndSeance();
+    return 0;
 }
 
 static int LuaSetFlag(lua_State *L)
@@ -4064,27 +4079,37 @@ static int LuaSetItemFlag(lua_State *L)
     // Exult set_flag(asleep) → ForceSleep (pose + Npc_sleep_timer).
     if (flag_id == 1)
     {
+        const bool was = (obj->m_flags & kObjFlagAsleep) != 0;
         obj->ForceSleep();
+        if (!was && (obj->m_flags & kObjFlagAsleep) != 0 && obj->m_hp > 0.0f)
+            obj->AnnounceStatusFlag(kObjFlagAsleep, true);
         return 0;
     }
 
-    // Exult set_flag(invisible): spell timer, unless a ring of invisibility is worn.
+    // Exult set_flag(invisible): actors get the spell timer unless a ring is worn.
+    // A chest or other item keeps the flag until something clears it.
     if (flag_id == 0)
     {
         obj->m_flags |= kObjFlagInvisible;
-        if (obj->WearsInvisibilityRing())
-            obj->StopInvisibilityTimer();
-        else
+        const bool actor = obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC
+            || obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_MONSTER;
+        if (actor && !obj->WearsInvisibilityRing())
             obj->StartInvisibilityTimer();
+        else
+            obj->StopInvisibilityTimer();
         obj->StopAttacksOnInvisible();
         return 0;
     }
 
     // Set the bit to 1 using bitwise OR
-    obj->m_flags |= (1u << flag_id);
+    const unsigned int bit = 1u << flag_id;
+    const bool was = (obj->m_flags & bit) != 0;
+    obj->m_flags |= bit;
     // Exult set_flag(poisoned) starts Npc_poison_timer (DoT + wear-off).
     if (flag_id == 8)
         obj->StartPoisonTimer();
+    if (!was)
+        obj->AnnounceStatusFlag(bit, true);
 
     return 0;
 }
@@ -4105,8 +4130,11 @@ static int LuaClearItemFlag(lua_State *L)
     // Exult clear_flag(asleep) stands the NPC up when on the sleep frame.
     if (flag_id == 1)
     {
+        const bool was = (obj->m_flags & kObjFlagAsleep) != 0 && obj->m_hp > 0.0f;
         obj->ClearSleep();
         obj->StopSleepTimer();
+        if (was && (obj->m_flags & kObjFlagAsleep) == 0)
+            obj->AnnounceStatusFlag(kObjFlagAsleep, false);
         return 0;
     }
 
@@ -4119,9 +4147,13 @@ static int LuaClearItemFlag(lua_State *L)
     }
 
     // Clear the bit to 0 using bitwise AND with inverted mask
-    obj->m_flags &= ~(1u << flag_id);
+    const unsigned int bit = 1u << flag_id;
+    const bool was = (obj->m_flags & bit) != 0;
+    obj->m_flags &= ~bit;
     if (flag_id == 8)
         obj->StopPoisonTimer();
+    if (was)
+        obj->AnnounceStatusFlag(bit, false);
 
     return 0;
 }
@@ -4183,6 +4215,39 @@ static int LuaIsNPC(lua_State *L)
     bool is_npc = obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC;
 
     lua_pushboolean(L, is_npc);
+    return 1;
+}
+
+// NPCs and monsters. is_npc stays NPC-only so other scripts are unchanged.
+static int LuaIsCreature(lua_State *L)
+{
+    int object_id = (int)lua_tointeger(L, 1);
+
+    if (g_objectList.find(object_id) == g_objectList.end())
+    {
+        lua_pushboolean(L, 0);
+        return 1;
+    }
+
+    U7Object* obj = g_objectList[object_id].get();
+    const bool creature = obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC
+        || obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_MONSTER;
+    lua_pushboolean(L, creature);
+    return 1;
+}
+
+// Combat side. 0 = neutral/party, 1 = hostile, 2 = allied summon.
+static int LuaGetTeam(lua_State *L)
+{
+    int object_id = (int)lua_tointeger(L, 1);
+
+    if (g_objectList.find(object_id) == g_objectList.end())
+    {
+        lua_pushinteger(L, -1);
+        return 1;
+    }
+
+    lua_pushinteger(L, g_objectList[object_id]->m_Team);
     return 1;
 }
 
@@ -4366,14 +4431,13 @@ static int LuaSummon(lua_State *L)
 		return 1;
 	}
 
-	// Party-aligned summons (Swarm insects): 0-damage distraction pests.
+	// Party-aligned. Damage stays whatever SpawnMonster copied: the monster
+	// nibble, or WEAPONS.DAT when the shape itself is a weapon (insects 0).
 	// SpawnMonster enrolled them while they were still hostile. Re-enroll after
 	// the team change so a failed hostile path check cannot leave them out.
 	if (U7Object* spawned = GetObjectFromID(id))
 	{
 		spawned->m_Team = 2;
-		spawned->m_BaseAttack = 0.0f;
-		spawned->m_attackCooldown = 0.5f;
 		spawned->m_cooldownTimer = g_NonVitalRNG
 			? g_NonVitalRNG->RandomRangeFloat(0.0f, 0.5f)
 			: 0.25f;
@@ -5835,21 +5899,64 @@ static int LuaGetArraySize(lua_State *L)
     return 1;
 }
 
-// 0x005F | mark_virtue_stone
+// Shape 330. The mark lives on the stone, so each of the eight stones is its own place.
+static constexpr int kVirtueStoneShape = 330;
+// Usecode gflags[0x39]. Set while the Codex attunes the party. Recall clears it.
+static constexpr int kAttunedSpiritualityFlag = 0x39;
+
+static U7Object* VirtueStoneFromLua(lua_State* L)
+{
+    if (lua_gettop(L) < 1 || !lua_isnumber(L, 1))
+        return nullptr;
+    U7Object* stone = GetObjectFromID((int)lua_tointeger(L, 1));
+    if (!stone || stone->m_ObjectType != kVirtueStoneShape)
+        return nullptr;
+    return stone;
+}
+
+// 0x005F | mark_virtue_stone(stone) — store the Avatar's current position on that stone.
 static int LuaMarkVirtueStone(lua_State *L)
 {
-    // int stone_index = (int)lua_tointeger(L, 1);
+    U7Object* stone = VirtueStoneFromLua(L);
+    if (!stone || !g_Player)
+        return 0;
+    if (g_ScriptingSystem && g_ScriptingSystem->GetFlag(kAttunedSpiritualityFlag))
+        return 0;
 
-    // Virtue stone system not implemented - would save location
+    U7Object* avatar = g_Player->GetAvatarObject();
+    if (!avatar)
+        return 0;
+
+    stone->m_virtueMarked = true;
+    stone->m_virtueX = avatar->m_Pos.x;
+    stone->m_virtueY = avatar->m_Pos.y;
+    stone->m_virtueZ = avatar->m_Pos.z;
+
+    const int tileX = (int)floorf(avatar->m_Pos.x);
+    const int tileZ = (int)floorf(avatar->m_Pos.z);
+    AddConsoleString(
+        "Marked virtue stone at (" + std::to_string(tileX) + ", " +
+        std::to_string(tileZ) + ").", SKYBLUE);
     return 0;
 }
 
-// 0x0060 | recall_virtue_stone
+// 0x0060 | recall_virtue_stone(stone) — party teleports to the position stored on that stone.
 static int LuaRecallVirtueStone(lua_State *L)
 {
-    // int stone_index = (int)lua_tointeger(L, 1);
+    U7Object* stone = VirtueStoneFromLua(L);
+    if (!stone)
+        return 0;
 
-    // Virtue stone system not implemented - would teleport to location
+    if (g_ScriptingSystem)
+        g_ScriptingSystem->SetFlag(kAttunedSpiritualityFlag, false);
+
+    if (!stone->m_virtueMarked)
+    {
+        AddConsoleString("The virtue stone has no marked location.", YELLOW);
+        return 0;
+    }
+
+    TeleportPartyToPosition(stone->m_virtueX, stone->m_virtueY, stone->m_virtueZ);
     return 0;
 }
 
@@ -6863,6 +6970,8 @@ void RegisterAllLuaFunctions()
     // These are new functions designed to be called by Lua scripts.
     g_ScriptingSystem->RegisterScriptFunction("get_flag", LuaGetFlag);
     g_ScriptingSystem->RegisterScriptFunction("set_flag", LuaSetFlag);
+    g_ScriptingSystem->RegisterScriptFunction("arm_seance", LuaArmSeance);
+    g_ScriptingSystem->RegisterScriptFunction("end_seance", LuaEndSeance);
     g_ScriptingSystem->RegisterScriptFunction("is_int_in_array", LuaIsIntInArray);
     g_ScriptingSystem->RegisterScriptFunction("is_string_in_array", LuaIsStringInArray);
 
@@ -6948,6 +7057,8 @@ void RegisterAllLuaFunctions()
 
     // Exult Intrinsics - MEDIUM PRIORITY
     g_ScriptingSystem->RegisterScriptFunction( "is_npc", LuaIsNPC);
+    g_ScriptingSystem->RegisterScriptFunction( "is_creature", LuaIsCreature);
+    g_ScriptingSystem->RegisterScriptFunction( "get_team", LuaGetTeam);
     g_ScriptingSystem->RegisterScriptFunction( "is_dead", LuaIsDead);
     g_ScriptingSystem->RegisterScriptFunction( "get_npc_number", LuaGetNPCNumber);
     g_ScriptingSystem->RegisterScriptFunction( "get_alignment", LuaGetAlignment);

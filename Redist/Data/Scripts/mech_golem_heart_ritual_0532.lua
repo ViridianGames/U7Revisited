@@ -51,7 +51,6 @@ function mech_golem_heart_ritual_0532(eventid, objectref)
                         switch_talk_to(289) --- Guess: Initiates dialogue
                         add_dialogue("You watch in stunned horror as Bollux pierces his chest open with his fingers.")
                         hide_npc(289) --- Guess: Hides NPC
-                        switch_talk_to(289) --- Guess: Initiates dialogue
                         add_dialogue("He pulls forth a heart-shape stone and, with a final flurry of action, drops the stone upon Adjhar's chest as he falls dead to the ground.")
                         hide_npc(289) --- Guess: Hides NPC
                         var_0011 = add_containerobject_s(var_0002, {1808, 8021, 1, 17447, 8046, 2, 17447, 8047, 2, 17447, 8045, 2, 8487, var_0010, 7769})

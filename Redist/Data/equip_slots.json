@@ -66,6 +66,12 @@
       "SLOT_RIGHT_HAND"
     ]
   },
+  "417": {
+    "name": "magic bolt",
+    "slots": [
+      "SLOT_AMMO"
+    ]
+  },
   "444": {
     "name": "hood",
     "slots": [

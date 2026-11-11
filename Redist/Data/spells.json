@@ -473,6 +473,7 @@
           "y": 284,
           "words": "Kal Xen",
           "scriptId": 352,
+          "targeted": false,
           "reagents": [
             "Mandrake Root",
             "Garlic",
@@ -486,7 +487,7 @@
           "x": 842,
           "y": 300,
           "words": "Ort Grav",
-          "scriptId": 363,
+          "scriptId": 353,
           "reagents": [
             "Sulfurous Ash",
             "Mandrake Root"
@@ -513,6 +514,7 @@
           "y": 332,
           "words": "Vas Des Sanct",
           "scriptId": 355,
+          "targeted": false,
           "reagents": [
             "Sulfurous Ash",
             "Nightshade",
@@ -527,7 +529,7 @@
           "x": 842,
           "y": 348,
           "words": "Kal Ort Por",
-          "scriptId": 348,
+          "scriptId": 356,
           "reagents": [
             "Black Pearl",
             "Blood Moss",
@@ -542,6 +544,7 @@
           "y": 364,
           "words": "Wis Quas",
           "scriptId": 357,
+          "targeted": false,
           "reagents": [
             "Sulfurous Ash",
             "Blood Moss"
@@ -554,7 +557,8 @@
           "x": 842,
           "y": 380,
           "words": "Kal Wis Corp",
-          "scriptId": 372,
+          "scriptId": 358,
+          "targeted": false,
           "reagents": [
             "Blood Moss",
             "Mandrake Root",
@@ -568,7 +572,7 @@
           "x": 842,
           "y": 396,
           "words": "Ex Por",
-          "scriptId": 323,
+          "scriptId": 359,
           "reagents": [
             "Sulfurous Ash",
             "Blood Moss"
@@ -630,7 +634,7 @@
           "x": 886,
           "y": 332,
           "words": "Vas Ort Flam",
-          "scriptId": 353,
+          "scriptId": 363,
           "reagents": [
             "Mandrake Root",
             "Sulfurous Ash",
@@ -794,7 +798,7 @@
           "x": 930,
           "y": 380,
           "words": "In Zu Grav",
-          "scriptId": 389,
+          "scriptId": 374,
           "reagents": [
             "Ginseng",
             "Spider Silk",
@@ -1028,8 +1032,9 @@
           "name": "Summon",
           "x": 1018,
           "y": 364,
-          "words": "Kal Xen Corp",
-          "scriptId": 394,
+          "words": "Kal Vas Xen",
+          "scriptId": 389,
+          "targeted": false,
           "reagents": [
             "Mandrake Root",
             "Blood Moss",

@@ -237,6 +237,15 @@ Color GetDayNightColorFromAmount(float amount);
 // Exult: add_special_light(units) adds units/20 game minutes (In Lor 500 → 25 min).
 extern float g_spellLightRemaining;
 
+// Seance (Kal Wis Corp). Absolute game minute when flags 434–443 clear.
+// -1 means no seance is running. Cast before 06:00 ends at 07:00; otherwise
+// at the next midnight. A new cast replaces the deadline.
+extern int64_t g_seanceExpireAtMinute;
+int64_t GameAbsoluteMinute();
+void ArmSeanceDeadline();
+void EndSeance();
+void UpdateSeanceDeadline();
+
 // Wizard Eye freecam: wall-clock deadline from GetTime(); 0 = inactive.
 extern float g_wizardEyeUntil;
 extern bool g_wizardEyeWasLockedToAvatar;
@@ -513,8 +522,10 @@ void CameraSetDestination(Vector3 destination);
 // Unlock the camera and center it on a world position (debug jumps).
 void JumpCameraTo(Vector3 position);
 
-// Sandbox: move the Avatar and party to a world tile.
+// Move the Avatar and party onto a world tile (lowest walkable surface).
 void TeleportPartyTo(int tileX, int tileZ);
+// Move the Avatar to an exact position. Companions stand on the same floor, offset.
+void TeleportPartyToPosition(float worldX, float worldY, float worldZ);
 
 void CameraInput();
 

@@ -385,6 +385,7 @@ bool GameSerializer::SaveToStream(std::ofstream& stream, const std::string& save
 		saveData["gameTime"]["month"] = g_month;
 		saveData["gameTime"]["britannianYear"] = g_britannianYear;
 		saveData["gameTime"]["britannianDayIndex"] = g_britannianDayIndex;
+		saveData["gameTime"]["seanceExpireAtMinute"] = g_seanceExpireAtMinute;
 
 		// Weather state (akin to original WEATHER.DAT)
 		if (g_WeatherSystem)
@@ -618,6 +619,7 @@ bool GameSerializer::LoadFromStream(std::ifstream& stream)
 				// Legacy saves: derive from month/day, then continue ++ from there.
 				SyncBritannianDayIndexFromCalendar();
 			}
+			g_seanceExpireAtMinute = saveData["gameTime"].value("seanceExpireAtMinute", static_cast<int64_t>(-1));
 		}
 
 		if (g_WeatherSystem)
@@ -710,6 +712,7 @@ bool GameSerializer::LoadFromStream(std::ifstream& stream)
 				Log("GameSerializer::LoadFromStream - Restored " +
 					std::to_string(saveData["flags"].size()) + " flags");
 			}
+			UpdateSeanceDeadline();
 		}
 
 		// Session / camera. Combat encounter is applied after the chunk rebuild,

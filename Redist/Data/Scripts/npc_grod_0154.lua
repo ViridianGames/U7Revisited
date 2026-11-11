@@ -44,10 +44,7 @@ function npc_grod_0154(eventid, objectref)
                         switch_talk_to(154)
                     end
                     if var_0002 and var_0003 then
-                        switch_talk_to(220)
-                        add_dialogue("\"Now, now, Anton, the nice person was simply answering a question.\"")
-                        hide_npc(220)
-                        switch_talk_to(154)
+                        second_speaker(220, 0, "\"Now, now, Anton, the nice person was simply answering a question.\"")
                     end
                 else
                     add_dialogue("\"Good. I do my job good!\"")
@@ -69,10 +66,7 @@ function npc_grod_0154(eventid, objectref)
         elseif answer == "job" then
             add_dialogue("\"I torture prisoners,\" he says, thumping his chest proudly.")
             if var_0001 then
-                switch_talk_to(2)
-                add_dialogue("Spark's eyes light up.~~\"Torture? Wow!\" He quickly looks at you and changes expressions.~~ \"I, er, mean, that is very awful.\"")
-                hide_npc(2)
-                switch_talk_to(154)
+                second_speaker(2, 0, "Spark's eyes light up.~~\"Torture? Wow!\" He quickly looks at you and changes expressions.~~ \"I, er, mean, that is very awful.\"")
             end
             var_000B = is_player_wearing_fellowship_medallion()
             if var_000B then
@@ -81,16 +75,9 @@ function npc_grod_0154(eventid, objectref)
                 if var_000C then
                     if var_0003 and var_0002 then
                         add_dialogue("He points to one of the prisoners.~~\"He not fun like the other. Torture other first.\"")
-                        switch_talk_to(220)
-                        add_dialogue("\"What? No, that's all right, " .. var_0004 .. ". Torture me, first.\"")
-                        hide_npc(220)
-                        switch_talk_to(240)
-                        add_dialogue("\"Yes, " .. var_0004 .. ". Torture him first.\"")
-                        hide_npc(240)
-                        switch_talk_to(220)
-                        add_dialogue("\"I thank thee,\" he says to the other.")
-                        hide_npc(220)
-                        switch_talk_to(154)
+                        second_speaker(220, 0, "\"What? No, that's all right, " .. var_0004 .. ". Torture me, first.\"")
+                        second_speaker(240, 0, "\"Yes, " .. var_0004 .. ". Torture him first.\"")
+                        second_speaker(220, 0, "\"I thank thee,\" he says to the other.")
                         add_dialogue("\"Go ahead,\" says Grod.")
                         var_000D = add_party_items(true, 359, 359, 622, 1)
                         if var_000D then
@@ -131,10 +118,7 @@ function npc_grod_0154(eventid, objectref)
                 add_dialogue("\"There one!\" he says, pointing to a man.")
                 if not get_flag(737) and get_flag(738) then
                     add_dialogue("\"There another one!\" he says, indicating the other man.")
-                    switch_talk_to(220)
-                    add_dialogue("\"How art thou today, " .. var_0004 .. "?\" he says, smiling.")
-                    hide_npc(220)
-                    switch_talk_to(154)
+                    second_speaker(220, 0, "\"How art thou today, " .. var_0004 .. "?\" he says, smiling.")
                 end
             end
             remove_answer("prisoners")
@@ -144,10 +128,7 @@ function npc_grod_0154(eventid, objectref)
                 add_dialogue("\"Except that one. He not scream. He just talk. And talk. I get so bored I get mad. So I torture more. And,\" he throws up his hands, \"he just talk more! I no know what to do.\"")
             end
             if var_0000 then
-                switch_talk_to(1)
-                add_dialogue("\"That is terrible, " .. var_0005 .. ". We must command him to stop!\"")
-                hide_npc(1)
-                switch_talk_to(154)
+                second_speaker(1, 0, "\"That is terrible, " .. var_0005 .. ". We must command him to stop!\"")
                 if var_0003 then
                     add_dialogue("\"I try make him stop. But he talk and talk. You try? Maybe he stop.\"")
                 end

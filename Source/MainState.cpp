@@ -467,6 +467,7 @@ void MainState::OnEnter()
 	g_month = 1;
 	g_britannianYear = 361;
 	SyncBritannianDayIndexFromCalendar();
+	g_seanceExpireAtMinute = -1;
 
 	m_heightCutoff = 16.0f; // Draw everything unless the player is inside.
 	m_finderObjectIds.clear();  // Object Finder results belong to the previous session
@@ -806,6 +807,8 @@ void MainState::UpdateTime()
 	{
 		g_WeatherSystem->ApplyLightingModifiers(g_dayNightColor, g_isDay);
 	}
+
+	UpdateSeanceDeadline();
 }
 
 void MainState::CalculateMouseOverUI()
@@ -919,6 +922,7 @@ void MainState::UpdateInput()
 	HandleMiddleClick();
 	HandleRightDoubleClick();
 	HandleMouseHoldTimers();
+	ResolveUseCursorTarget();
 	HandleLeftDoubleClick();
 	HandleLeftSingleClick();
 	// WASD Dest is applied before UpdateMovement (facing stop). Re-assert the
@@ -938,6 +942,7 @@ void MainState::HandleEscapeKey()
 	// Cancel spell/key targeting first so Esc does not also close the open bag.
 	if (m_objectSelectionMode)
 	{
+		m_pendingUseTargetId = -1;
 		g_ScriptingSystem->ResumeCoroutine(m_luaFunction, {0});
 		m_doingObjectSelection = false;
 		m_objectSelectionMode = false;
@@ -1586,9 +1591,155 @@ void MainState::HandleRightMouseHoldMovement()
 	}
 }
 
+bool MainState::IsUseCursorContainer(const U7Object* object) const
+{
+	if (!object || object->IsDeathStatus())
+		return false;
+	if (object->m_objectData && object->m_objectData->m_isDoor)
+		return false;
+
+	const auto unitType = object->m_UnitType;
+	if (unitType == U7Object::UnitTypes::UNIT_TYPE_NPC
+		|| unitType == U7Object::UnitTypes::UNIT_TYPE_MONSTER)
+		return false;
+
+	if (object->m_isContainer)
+		return true;
+
+	// Equipped backpack. The paperdoll opens this slot on a double-click.
+	return object->m_shapeData && object->m_shapeData->m_shape == 801;
+}
+
+U7Object* MainState::ObjectUnderUseCursor(bool& fromEmbeddedPaperdoll)
+{
+	fromEmbeddedPaperdoll = false;
+
+	if (g_gumpManager && g_gumpManager->m_isMouseOverGump && g_gumpManager->m_gumpUnderMouse)
+		return g_gumpManager->m_gumpUnderMouse->GetObjectUnderMousePointer();
+
+	// Stats-panel Equip doll is not in the gump list. Its backpack slot still
+	// has to open while the green use cursor is up.
+	if (m_statsPanelMode == StatsPanelMode::Equip && m_statsPanelPaperdoll
+		&& m_statsPanelPaperdoll->IsInteractiveTopmost())
+	{
+		fromEmbeddedPaperdoll = true;
+		return m_statsPanelPaperdoll->GetObjectUnderMousePointer();
+	}
+
+	if (!g_gumpManager || !g_gumpManager->m_isMouseOverGump)
+		return g_objectUnderMousePointer;
+	return nullptr;
+}
+
+void MainState::CommitUseCursorTarget(int objectId)
+{
+	m_pendingUseTargetId = -1;
+	if (!m_objectSelectionMode || !g_ScriptingSystem)
+		return;
+	if (!g_ScriptingSystem->IsCoroutineYielded(m_luaFunction))
+		return;
+
+	U7Object* object = GetObjectFromID(objectId);
+	if (!object)
+		return;
+
+	m_objectSelectionMode = false;
+	m_doingObjectSelection = false;
+	ClearObjectInfoTooltip();
+	g_ScriptingSystem->ResumeCoroutine(m_luaFunction, { object->m_ID });
+	m_luaFunction.clear();
+}
+
+void MainState::OpenUseCursorContainer(U7Object* object)
+{
+	if (!object)
+		return;
+
+	ClearObjectInfoTooltip();
+	if (object->IsLocked())
+	{
+		Bark(object, "Locked");
+		return;
+	}
+
+	Log("Use cursor - double-click container id=" + std::to_string(object->m_ID) + ", OpenGump");
+	OpenGump(object->m_ID);
+}
+
+void MainState::ResolveUseCursorTarget()
+{
+	if (!m_objectSelectionMode)
+	{
+		m_pendingUseTargetId = -1;
+		return;
+	}
+
+	// Paused combat owns the click for its own spell cursor.
+	if (IsCombatOrdersPaused())
+		return;
+
+	const bool single = g_InputSystem->WasLButtonClicked();
+	const bool dbl = g_InputSystem->WasLButtonDoubleClicked();
+	const bool dragging = g_gumpManager && g_gumpManager->m_draggingObject;
+
+	if (dragging)
+		m_pendingUseTargetId = -1;
+
+	bool fromEmbedded = false;
+	U7Object* selected = nullptr;
+	if ((single || dbl) && !dragging)
+		selected = ObjectUnderUseCursor(fromEmbedded);
+
+	const bool blockedByUi = g_mouseOverUI && !fromEmbedded;
+	if ((single || dbl) && !dragging && blockedByUi)
+		m_pendingUseTargetId = -1;
+
+	if ((single || dbl) && !dragging && !blockedByUi)
+	{
+		m_handledDoubleLeftClickThisFrame = true;
+
+		if (dbl && selected && IsUseCursorContainer(selected))
+		{
+			m_pendingUseTargetId = -1;
+			OpenUseCursorContainer(selected);
+			return;
+		}
+
+		if (dbl || !selected)
+		{
+			m_pendingUseTargetId = -1;
+			if (dbl && selected)
+				CommitUseCursorTarget(selected->m_ID);
+			return;
+		}
+
+		if (IsUseCursorContainer(selected))
+		{
+			m_pendingUseTargetId = selected->m_ID;
+			m_pendingUseTargetTime = g_InputSystem->m_LastLeftClickTime;
+			return;
+		}
+
+		m_pendingUseTargetId = -1;
+		CommitUseCursorTarget(selected->m_ID);
+		return;
+	}
+
+	if (m_pendingUseTargetId != -1
+		&& GetTime() - m_pendingUseTargetTime >= g_InputSystem->m_DoubleClickTime)
+	{
+		CommitUseCursorTarget(m_pendingUseTargetId);
+	}
+}
+
 void MainState::HandleLeftDoubleClick()
 {
 	if (!g_InputSystem->WasLButtonDoubleClicked())
+		return;
+
+	// ResolveUseCursorTarget already opened the container, or the green cursor
+	// is still up and this click must not also use the object.
+	if (m_objectSelectionMode || m_handledDoubleLeftClickThisFrame)
 		return;
 
 	// Gumps own the click (spellbook cast, bag items, etc.). Do not also talk to /
@@ -1702,25 +1853,9 @@ void MainState::HandleLeftSingleClick()
 		return;
 	}
 
-	// Spell/key targeting: world objects and items inside open gumps.
+	// Green use-cursor clicks are handled in ResolveUseCursorTarget.
 	if (m_objectSelectionMode)
-	{
-		U7Object* selected = nullptr;
-		if (g_gumpManager->m_isMouseOverGump && g_gumpManager->m_gumpUnderMouse)
-			selected = g_gumpManager->m_gumpUnderMouse->GetObjectUnderMousePointer();
-		else if (!g_gumpManager->m_isMouseOverGump)
-			selected = g_objectUnderMousePointer;
-
-		if (selected && g_ScriptingSystem->IsCoroutineYielded(m_luaFunction))
-		{
-			m_objectSelectionMode = false;
-			m_doingObjectSelection = false;
-			ClearObjectInfoTooltip();
-			g_ScriptingSystem->ResumeCoroutine(m_luaFunction, { selected->m_ID });
-			m_luaFunction.clear();
-		}
 		return;
-	}
 
 	if (g_gumpManager->m_isMouseOverGump)
 		return;
@@ -4033,9 +4168,14 @@ void MainState::Draw()
 			// Show error cursor for 5 frames after drag/drop error
 			DrawTextureEx(*m_errorCursor, { float(GetMouseX()), float(GetMouseY()) }, 0, g_DrawScale, WHITE);
 		}
-		else if (m_objectSelectionMode)
+		else if (m_objectSelectionMode && g_objectSelectCursor)
 		{
-			DrawTextureEx(*g_objectSelectCursor, { float(GetMouseX()), float(GetMouseY()) }, 0, g_DrawScale, WHITE);
+			// Crosshair hotspot is the center of the 9x9 use cursor, not its top-left.
+			const float halfW = g_objectSelectCursor->width * g_DrawScale * 0.5f;
+			const float halfH = g_objectSelectCursor->height * g_DrawScale * 0.5f;
+			DrawTextureEx(*g_objectSelectCursor,
+				{ float(GetMouseX()) - halfW, float(GetMouseY()) - halfH },
+				0, g_DrawScale, WHITE);
 		}
 		else
 		{
@@ -6239,6 +6379,24 @@ void MainState::HandleCombatOrdersClick()
 {
 	if (!IsCombatOrdersPaused())
 		return;
+
+	// Mark/Recall keep packs open. A click on a stone in that pack is the spell target.
+	if (IsCombatSpellTargeting() && g_gumpManager && g_gumpManager->m_isMouseOverGump &&
+		g_gumpManager->m_gumpUnderMouse && !g_gumpManager->m_draggingObject)
+	{
+		U7Object* selected = g_gumpManager->m_gumpUnderMouse->GetObjectUnderMousePointer();
+		if (selected)
+		{
+			U7Object* caster = GetObjectFromID(m_combatSpellTargetingCasterId);
+			if (!caster && m_combatSelectedPartyMemberObjectId >= 0)
+				caster = GetObjectFromID(m_combatSelectedPartyMemberObjectId);
+			if (caster)
+				IssueCombatSpellOrder(caster, m_combatSpellTargetingSpellId, selected);
+			CancelCombatSpellTargeting();
+		}
+		return;
+	}
+
 	if (g_gumpManager && (g_gumpManager->m_isMouseOverGump || g_gumpManager->m_draggingObject))
 		return;
 	if (g_mouseOverUI)

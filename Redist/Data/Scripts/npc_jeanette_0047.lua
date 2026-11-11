@@ -69,10 +69,7 @@ function npc_jeanette_0047(eventid, objectref)
             set_flag(133, true)
             var_0003 = npc_id_in_party(37)
             if var_0003 then
-                switch_talk_to(37)
-                add_dialogue("\"A moment, Jeanette! Thou hast it all wrong! Charles is a -servant-! Thou art an ignoramus! Charles is not 'upper class'! He is as working class as thee! 'Tis Willy who is the rich merchant! If thou dost ask me, 'tis Willy who is obnoxious and egotistical. Charles is a dream!\"")
-                --syntax error hide_npc37)
-                switch_talk_to(47)
+                second_speaker(37, 0, "\"A moment, Jeanette! Thou hast it all wrong! Charles is a -servant-! Thou art an ignoramus! Charles is not 'upper class'! He is as working class as thee! 'Tis Willy who is the rich merchant! If thou dost ask me, 'tis Willy who is obnoxious and egotistical. Charles is a dream!\"")
             else
                 add_dialogue("You point out to Jeanette that Charles is a servant.")
             end

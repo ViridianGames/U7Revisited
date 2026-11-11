@@ -83,6 +83,8 @@ public:
 	void SetupEmbedded(int npcId, Vector2 pos);
 	bool IsEmbedded() const { return m_embedded; }
 	int GetNpcId() const { return m_npcId; }
+	// Floating: this gump is under the mouse. Embedded: cursor is on the panel and no other gump owns it.
+	bool IsInteractiveTopmost() const;
 
 	// Handle dropping an object onto this paperdoll
 	// Returns true if the drop was handled, false otherwise
@@ -95,7 +97,6 @@ public:
 private:
 	void EnsureGuiLoaded();
 	void ApplyPaperdollSpriteSource();
-	bool IsInteractiveTopmost() const; // floating: under-mouse gump; embedded: over panel, no other gump
 
 	int m_npcId;               // Which NPC this paperdoll belongs to
 	int m_paperdollType;       // Index into m_paperdollData array

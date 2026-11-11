@@ -19,36 +19,23 @@ function utility_ship_0939()
     add_dialogue("\"We must spread the philosophy to everyone who can hear it. For who is there to lift the disunited, mistrustful, and unworthy Britannia up from its sad state but we of The Fellowship?\"")
     add_dialogue("\"And now is the time we ask each of our members to give testimonial aloud, and tell how walking with The Fellowship has affected their life.\"")
     if var_0001 then
-        switch_talk_to(236)
-        add_dialogue("\"The Fellowship has enabled me to reach out and help people where before I have been too preoccupied.\"")
-        hide_npc(236)
+        second_speaker(236, 0, "\"The Fellowship has enabled me to reach out and help people where before I have been too preoccupied.\"")
     end
     if var_0000 then
-        switch_talk_to(14)
-        add_dialogue("\"The Fellowship has made me more alert and thorough in the execution of my job as a Trinsic guard.\"")
-        hide_npc(14)
+        second_speaker(14, 0, "\"The Fellowship has made me more alert and thorough in the execution of my job as a Trinsic guard.\"")
     end
     if var_0002 then
-        switch_talk_to(18)
-        add_dialogue("\"The Fellowship has made me a happier, more agreeable person.\"")
-        switch_talk_to(16)
+        second_speaker(18, 0, "\"The Fellowship has made me a happier, more agreeable person.\"")
         add_dialogue("\"Thank thee for sharing, brother!\"")
-        hide_npc(18)
     end
     if var_0003 then
-        switch_talk_to(22)
-        add_dialogue("\"As a Fellowship member, I feel as if I am doing some good for Britannia.\"")
-        hide_npc(22)
+        second_speaker(22, 0, "\"As a Fellowship member, I feel as if I am doing some good for Britannia.\"")
     end
     if var_0005 then
-        switch_talk_to(2)
-        add_dialogue("Spark whispers to no one in particular, \"This is the most boring pile of horse manure in which I have ever had the pleasure to wallow!\"")
-        hide_npc(2)
+        second_speaker(2, 0, "Spark whispers to no one in particular, \"This is the most boring pile of horse manure in which I have ever had the pleasure to wallow!\"")
     end
     if var_0004 then
-        switch_talk_to(1)
-        add_dialogue("Iolo slaps his own cheek to keep himself from dozing off. ~~\"Avatar, I do believe that we have heard enough of this.\"")
-        hide_npc(1)
+        second_speaker(1, 0, "Iolo slaps his own cheek to keep himself from dozing off. ~~\"Avatar, I do believe that we have heard enough of this.\"")
     end
     switch_talk_to(16)
     add_dialogue("It is apparent that the meeting will be continuing for some time... You decide you have more important matters to attend to.")

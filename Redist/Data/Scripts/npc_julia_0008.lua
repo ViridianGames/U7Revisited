@@ -134,10 +134,7 @@ function npc_julia_0008(eventid, objectref)
                     add_dialogue("\"Perhaps we should go find Iolo and have him join us as well.\"")
                 else
                     add_dialogue("\"Hello, Iolo.\"")
-                    switch_talk_to(1)
-                    add_dialogue("\"'Tis a pleasure to see thee again, Julia.\"")
-                    hide_npc(1)
-                    switch_talk_to(8)
+                    second_speaker(1, 0, "\"'Tis a pleasure to see thee again, Julia.\"")
                 end
                 remove_answer("Iolo")
             elseif var_0005 == "Shamino" then
@@ -146,10 +143,7 @@ function npc_julia_0008(eventid, objectref)
                     add_dialogue("\"Perhaps we should go find Shamino and have him join us as well.\"")
                 else
                     add_dialogue("\"Hello, Shamino!\"")
-                    switch_talk_to(3)
-                    add_dialogue("\"Oh, Julia! Good of thee to be joining us again!\"")
-                    hide_npc(3)
-                    switch_talk_to(8)
+                    second_speaker(3, 0, "\"Oh, Julia! Good of thee to be joining us again!\"")
                 end
                 remove_answer("Shamino")
             elseif var_0005 == "Dupre" then
@@ -158,27 +152,17 @@ function npc_julia_0008(eventid, objectref)
                     add_dialogue("\"Perhaps we should go find Sir Dupre and have him join us as well.\"")
                 else
                     add_dialogue("\"Once again our paths cross, Sir Dupre!\"")
-                    switch_talk_to(4)
-                    add_dialogue("\"Julia! I was just wondering if we would ever see thee again!\"")
-                    switch_talk_to(8)
+                    second_speaker(4, 0, "\"Julia! I was just wondering if we would ever see thee again!\"")
                     add_dialogue("\"Well, thou canst wonder no more, Dupre.\"")
-                    switch_talk_to(4)
-                    add_dialogue("\"" .. var_0003 .. ", just between thou, myself and the lamppost, thou hadst better watch Julia. She hath a temper.\"")
-                    hide_npc(4)
-                    switch_talk_to(8)
+                    second_speaker(4, 0, "\"" .. var_0003 .. ", just between thou, myself and the lamppost, thou hadst better watch Julia. She hath a temper.\"")
                 end
                 remove_answer("Dupre")
             elseif var_0005 == "Spark" then
                 add_dialogue("\"And who is this fine young lad?\"")
                 if var_0004 then
-                    switch_talk_to(2)
-                    add_dialogue("\"My name is Spark, milady.\"")
-                    switch_talk_to(8)
+                    second_speaker(2, 0, "\"My name is Spark, milady.\"")
                     add_dialogue("\"He is a cute one! And so well-mannered!\"")
-                    switch_talk_to(2)
-                    add_dialogue("Spark turns beet red.")
-                    hide_npc(2)
-                    switch_talk_to(8)
+                    second_speaker(2, 0, "Spark turns beet red.")
                     set_flag(289, true)
                 end
                 remove_answer("Spark")

@@ -24,10 +24,7 @@ function npc_komor_0174(eventid, objectref)
                 add_dialogue("\"I am a dancer, " .. var_0000 .. ".\" He cannot keep a straight face and almost falls off his crutches.")
                 add_answer("beggar")
                 if var_0001 then
-                    switch_talk_to(NPC_FENN)
-                    add_dialogue("\"Ha! Ha! Ha! Ha! Ha! Ha! 'Tis a ripe one, Komor!\"")
-                    hide_npc(NPC_FENN)
-                    switch_talk_to(NPC_KOMOR)
+                    second_speaker(175, 0, "\"Ha! Ha! Ha! Ha! Ha! Ha! 'Tis a ripe one, Komor!\"")
                 end
             elseif answer == "beggar" then
                 add_dialogue("\"I was not always a beggar. Like Fenn and Merrick, I used to be a farmer, too. But times got worse, and times are always bad in Paws.\"")
@@ -38,19 +35,13 @@ function npc_komor_0174(eventid, objectref)
                 remove_answer("Fenn")
                 add_answer({"wealth", "chums"})
                 if var_0001 then
-                    switch_talk_to(NPC_FENN)
-                    add_dialogue("\"Ha! Ha! Ha! Ha! With thy wit thou shouldst be on stage!\"")
-                    hide_npc(NPC_FENN)
-                    switch_talk_to(NPC_KOMOR)
+                    second_speaker(175, 0, "\"Ha! Ha! Ha! Ha! With thy wit thou shouldst be on stage!\"")
                 end
             elseif answer == "chums" then
                 add_dialogue("\"Fenn and me have been friends since we were little tiny babies.\"")
                 if var_0001 then
                     add_dialogue("\"I would bet thee that thou didst not think we would end up like this. Eh, Fenn?\"")
-                    switch_talk_to(NPC_FENN)
-                    add_dialogue("\"Not in me wildest dreams, Komor.\"")
-                    hide_npc(NPC_FENN)
-                    switch_talk_to(NPC_KOMOR)
+                    second_speaker(175, 0, "\"Not in me wildest dreams, Komor.\"")
                 end
                 remove_answer("chums")
             elseif answer == "wealth" then

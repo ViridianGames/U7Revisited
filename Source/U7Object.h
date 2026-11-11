@@ -574,6 +574,9 @@ public:
 	void ForceSleep();
 	/// Clear asleep and stand up from the sleep frame when appropriate.
 	void ClearSleep();
+	/// Combat-log line when a status flag newly turns on or off.
+	/// Asleep, charmed, cursed, paralyzed, poisoned, protected.
+	void AnnounceStatusFlag(unsigned int flag, bool applied);
 	/// After healing: if HP >= 1 and asleep, stand up.
 	void TryWakeFromHealing();
 	/// Apply combat/script death: NPCs become lootable corpses; monsters despawn.
@@ -716,6 +719,12 @@ public:
 	bool m_meshOneShotPlaying = false;
 	float m_meshOneShotFrameTimer = 0.0f;
 	int m_Quality;
+	// Virtue stone (shape 330). Mark writes the Avatar's position onto this object.
+	// Frame stays the stone's color. Eight stones are eight places.
+	bool m_virtueMarked = false;
+	float m_virtueX = 0.0f;
+	float m_virtueY = 0.0f;
+	float m_virtueZ = 0.0f;
 
 	bool m_isFrameOverridden = false;
 	int m_overrideFrame = 0;

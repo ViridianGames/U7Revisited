@@ -16,25 +16,15 @@ function npc_myrtle_0255(eventid, objectref)
     if not get_flag(704) then
         add_dialogue("You see a lovely naked woman. She is not in the least concerned that she is wearing no clothes.")
         if var_0001 and var_0002 then
-            switch_talk_to(2)
-            add_dialogue("Spark's eyes widen and his jaw drops.")
-            hide_npc(2)
-            switch_talk_to(1)
-            add_dialogue("\"Close thy mouth, boy. An insect may fly in. And put thine eyes back in thine head. They shall look strange dangling out of their sockets.\"")
-            hide_npc(1)
-            switch_talk_to(255)
+            second_speaker(2, 0, "Spark's eyes widen and his jaw drops.")
+            second_speaker(1, 0, "\"Close thy mouth, boy. An insect may fly in. And put thine eyes back in thine head. They shall look strange dangling out of their sockets.\"")
         end
         add_dialogue("\"Me Mama!\" the woman exclaims proudly.")
         if not get_flag(724) then
             if var_0000 then
-                switch_talk_to(241)
-                add_dialogue("\"Forget it, Myrtle. The jig is up. They know all about us.\"")
-                switch_talk_to(255)
+                second_speaker(241, 0, "\"Forget it, Myrtle. The jig is up. They know all about us.\"")
                 add_dialogue("\"Murray! Didst thou give us away? How couldst thou do it? This just isn't going to be much fun anymore knowing that someone is aware of the truth!\"")
-                switch_talk_to(241)
-                add_dialogue("\"Sorry, dear.\"")
-                hide_npc(241)
-                switch_talk_to(255)
+                second_speaker(241, 0, "\"Sorry, dear.\"")
                 var_0004 = true
             else
                 add_dialogue("You tell the woman what Papa said about their past lives.")
@@ -69,10 +59,7 @@ function npc_myrtle_0255(eventid, objectref)
             if not var_0004 then
                 add_dialogue("Mama explains. \"Eat. Sleep. Love.\"")
                 if var_0003 then
-                    switch_talk_to(4)
-                    add_dialogue("\"What else is there?\"")
-                    hide_npc(4)
-                    switch_talk_to(255)
+                    second_speaker(4, 0, "\"What else is there?\"")
                 end
             else
                 add_dialogue("\"We do our best to eat, sleep, and love each other down here isolated from the rest of society.\"")

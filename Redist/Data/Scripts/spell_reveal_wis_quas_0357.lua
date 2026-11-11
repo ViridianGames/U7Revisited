@@ -1,47 +1,87 @@
---- Best guess: Implements the reveal spell (Wis Quas), revealing hidden objects or NPCs in a grid pattern around the caster.
-function spell_reveal_wis_quas_0357(eventid, objectref)
-    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E, var_000F
+--- Reveal (Wis Quas). Fourth Circle. Oracle: usecode Func0665 / object#(0x665).
+--- Untargeted. Searches around the Avatar, not the caster. Twelve probes of
+--- radius 7 cover a block about 45 by 33 tiles. Anything there with the
+--- invisible flag (flag 0) loses it. Green bubbles (sprite 13) mark each one.
+--- If nothing is invisible, the bubbles play on the caster. Do not destroy the caster.
 
-    if eventid == 1 then
-        destroy_object(objectref)
-        var_0000 = get_object_position(356) --- Guess: Gets position data
-        var_0001 = {}
-        bark(objectref, "@Wis Quas@")
-        if check_spell_requirements() then
-            var_0002 = add_containerobject_s(objectref, {17511, 17510, 8037, 67, 7768})
-            var_0003 = get_object_position(objectref) --- Guess: Gets position data
-            var_0004 = {15, 15, 15, 5, 5, 5, -5, -5, -5, -15, -15, -15}
-            var_0005 = {11, 2, -7, 11, 2, -7, 11, 2, -7, 11, 2, -7}
-            var_0006 = 7
-            var_0007 = 0
-            while var_0007 ~= 12 do
-                var_0007 = var_0007 + 1
-                var_0008 = var_0000[1] + var_0004[var_0007]
-                var_0009 = var_0000[2] + var_0005[var_0007]
-                var_0003 = {0, var_0009, var_0008}
-                var_000A = find_nearby(32, var_0006, 359, var_0003) --- Guess: Sets NPC location
-                -- Guess: sloop checks nearby objects
-                for i = 1, 5 do
-                    var_000D = ({11, 12, 13, 10, 35})[i]
-                    if get_item_flag(0, var_000D) and not (var_000D == var_0001[1] or var_000D == var_0001[2]) then --  or ...
-                        table.insert(var_0001, var_000D)
-                    end
-                end
-            end
-            if var_0001 then
-                -- Guess: sloop reveals hidden objects
-                for i = 1, 5 do
-                    var_000D = ({14, 15, 13, 1, 54})[i]
-                    var_0002 = add_containerobject_s(var_000D, {5, 1637, 17493, 7715})
-                    apply_protection_effect(-1, 0, 0, 0, -1, -1, 13, var_000D) --- Guess: Applies protection effect
-                end
-            else
-                apply_protection_effect(-1, 0, 0, 0, -1, -1, 13, objectref) --- Guess: Applies protection effect
-            end
-        else
-            var_0002 = add_containerobject_s(objectref, {1542, 17493, 17511, 17510, 7781})
-        end
-    elseif eventid == 2 then
-        clear_item_flag(0, objectref) --- Guess: Sets quest flag
+local offset_x = { -15, -15, -15, -5, -5, -5, 5, 5, 5, 15, 15, 15 }
+local offset_z = { -7, 2, 11, -7, 2, 11, -7, 2, 11, -7, 2, 11 }
+local kProbeRadius = 7
+-- Farthest probe is 15, plus the probe radius.
+local kSearchRadius = 22
+
+local function tile_dist(ax, az, bx, bz)
+    local dx = math.floor(math.abs(ax - bx))
+    local dz = math.floor(math.abs(az - bz))
+    if dz > dx then
+        return dz
     end
+    return dx
+end
+
+local function in_reveal_area(origin, pos)
+    for i = 1, 12 do
+        local dist = tile_dist(origin.x + offset_x[i], origin.z + offset_z[i], pos.x, pos.z)
+        if dist <= kProbeRadius then
+            return true
+        end
+    end
+    return false
+end
+
+local function reveal_area(caster)
+    local center = get_avatar_ref()
+    if not center or center == -1 then
+        center = caster
+    end
+    local origin = get_object_position(center)
+    if not origin then
+        obj_sprite_effect(caster, 13)
+        return
+    end
+
+    local nearby = find_nearby(center, -359, kSearchRadius, 32) or {}
+    nearby[#nearby + 1] = center
+
+    local seen = {}
+    local found = false
+    for _, id in ipairs(nearby) do
+        if id and id ~= -1 and not seen[id] and get_item_flag(id, 0) == 1 then
+            seen[id] = true
+            local pos = get_object_position(id)
+            if pos and in_reveal_area(origin, pos) then
+                clear_item_flag(id, 0)
+                obj_sprite_effect(id, 13)
+                found = true
+            end
+        end
+    end
+
+    if not found then
+        obj_sprite_effect(caster, 13)
+    end
+end
+
+function spell_reveal_wis_quas_0357(eventid, objectref)
+    if eventid == 2 then
+        clear_item_flag(objectref, 0)
+        return
+    end
+
+    if eventid ~= 1 then
+        return
+    end
+
+    halt_scheduled(objectref)
+    bark(objectref, "@Wis Quas@")
+    if not check_spell_requirements(objectref) then
+        -- raise, reach, strike. No call to spellFails (0x606).
+        execute_usecode_array(objectref, {17511, 17510, 8037})
+        return
+    end
+
+    begin_casting_mode(objectref, 859)
+    -- Reversed. Playback: sfx 67, raise_1h, reach_1h, strike_1h.
+    execute_usecode_array(objectref, {17511, 17510, 8037, 67, 7768})
+    reveal_area(objectref)
 end

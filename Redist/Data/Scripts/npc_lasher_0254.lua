@@ -91,22 +91,13 @@ function npc_lasher_0254(eventid, objectref)
                     var_0006 = npc_id_in_party(4)
                     if not var_0003 then
                         if var_0004 then
-                            switch_talk_to(1)
-                            add_dialogue("\"There's no shame in it, milord,\" says Iolo, looking very serious.")
-                            hide_npc(1)
-                            switch_talk_to(254)
+                            second_speaker(1, 0, "\"There's no shame in it, milord,\" says Iolo, looking very serious.")
                         end
                         if var_0005 then
-                            switch_talk_to(3)
-                            add_dialogue("\"No, it is perfectly understandable. Thou hast been so busy lately,\" says Shamino. You sense he is struggling to maintain a straight face.")
-                            hide_npc(3)
-                            switch_talk_to(254)
+                            second_speaker(3, 0, "\"No, it is perfectly understandable. Thou hast been so busy lately,\" says Shamino. You sense he is struggling to maintain a straight face.")
                         end
                         if var_0006 then
-                            switch_talk_to(4)
-                            add_dialogue("\"Why dost thou not go and pet the nice horsey. We would do it, but I think he prefers thee.\" With that, you hear an explosion of snorts and giggles.")
-                            hide_npc(4)
-                            switch_talk_to(254)
+                            second_speaker(4, 0, "\"Why dost thou not go and pet the nice horsey. We would do it, but I think he prefers thee.\" With that, you hear an explosion of snorts and giggles.")
                         end
                         add_answer("virginity")
                     end

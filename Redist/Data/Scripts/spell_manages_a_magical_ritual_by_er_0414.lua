@@ -11,7 +11,6 @@ function spell_manages_a_magical_ritual_by_er_0414(eventid, objectref, arg1)
     else
         add_dialogue("@You feel a great surge in the ether, which seems to temporarily stabilize it in this area.@")
     end
-    hide_npc(286) --- Guess: Hides Erethian after ritual
     var_0000 = add_containerobject_s(objectref, {1695, 17493, 8047, 1, 17447, 8048, 1, 17447, 8033, 1, 17447, 8044, 9, 17447, 8045, 2, 17447, 8044, 2, 7719}) --- Guess: Adds items to container
     var_0001 = get_position_data(objectref) --- Guess: Gets position data
     create_explosion(-1, 0, 0, 0, var_0001[2], var_0001[1], 17) --- Guess: Creates explosion

@@ -74,10 +74,7 @@ function npc_martingo_0191(eventid, objectref)
                 add_dialogue("Martingo turns back to you. \"As I said, I am the Sultan here. I am the master of all of these subjects.\" He gestures around the room.")
                 var_0005 = npc_id_in_party(1)
                 if var_0005 then
-                    switch_talk_to(1)
-                    add_dialogue("Iolo whispers to you. \"This fellow is quite daft. Be careful.\"")
-                    hide_npc(1)
-                    switch_talk_to(191)
+                    second_speaker(1, 0, "Iolo whispers to you. \"This fellow is quite daft. Be careful.\"")
                 end
                 remove_answer("Spektran")
             elseif answer == "Lucinda" then

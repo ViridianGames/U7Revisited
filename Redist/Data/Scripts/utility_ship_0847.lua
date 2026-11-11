@@ -17,7 +17,6 @@ function utility_ship_0847()
             add_dialogue("\"It is a relief to me to hear that thou art not certain! Allow me to remind thee that it is not too late to refuse their offer! Let us leave, and quickly!\"")
             abort()
         end
-        --syntax error hide_npc1)
     end
     switch_talk_to(26)
     add_dialogue("\"Now is the time when our members give their testimonials of how they have been applying the Triad of Inner Strength to their lives. Who shall be the first?\"")
@@ -25,7 +24,6 @@ function utility_ship_0847()
     if not var_0004 then
         switch_talk_to(53)
         add_dialogue("\"The Fellowship has taught me to live with the shortcomings of others,\" says Gaye.")
-        --syntax error hide_npc53)
     end
     var_0005 = npc_id_in_party(41)
     if not var_0005 then
@@ -33,25 +31,21 @@ function utility_ship_0847()
         add_dialogue("\"I had lost all enthusiasm for life before I joined The Fellowship,\" says Candice.")
         switch_talk_to(26)
         add_dialogue("\"Thank thee for sharing, Candice.\"")
-        --syntax error hide_npc41)
     end
     var_0006 = npc_id_in_party(43)
     if not var_0006 then
         switch_talk_to(43)
         add_dialogue("\"The Fellowship helps me to be more honest with people,\" says Patterson.")
-        --syntax error hide_npc43)
     end
     var_0007 = npc_id_in_party(45)
     if not var_0007 then
         switch_talk_to(45)
         add_dialogue("\"The Fellowship has taught me not to let others push me around,\" says Figg.")
-        --syntax error hide_npc45)
     end
     var_0008 = npc_id_in_party(55)
     if not var_0008 then
         switch_talk_to(55)
         add_dialogue("\"The Triad of Inner Strength has helped me to improve my skills and build better weapons,\" says Grayson.")
-        --syntax error hide_npc55)
     end
     var_0009 = npc_id_in_party(58)
     if not var_0009 then
@@ -59,32 +53,27 @@ function utility_ship_0847()
         add_dialogue("\"The Fellowship has put me back on the path to prosperity,\" says Gordon.")
         switch_talk_to(26)
         add_dialogue("\"Yes! Thank thee for sharing, brother!\"")
-        --syntax error hide_npc58)
     end
     var_000A = npc_id_in_party(59)
     if not var_000A then
         switch_talk_to(59)
         add_dialogue("\"The Fellowship has taught me not to be afraid of success,\" says Sean.")
-        --syntax error hide_npc59)
     end
     var_000B = npc_id_in_party(63)
     if not var_000B then
         switch_talk_to(63)
         add_dialogue("\"The Fellowship has given my life a whole new purpose. Just today I have recruited two more potential members!\" says Millie.")
-        --syntax error hide_npc63)
     end
     var_000C = npc_id_in_party(34)
     if not var_000C then
         switch_talk_to(34)
         add_dialogue("\"The Fellowship has taught me about the evils of the class structure,\" says Nanna.")
-        --syntax error hide_npc34)
     end
     var_0002 = npc_id_in_party(1)
     var_000D = npc_id_in_party(3)
     if var_000D and var_0002 then
         switch_talk_to(1)
         add_dialogue("You notice Iolo is whispering to Shamino. \"I do not think that " .. var_0000 .. " doth realize the significance of the situation. " .. var_0001 .. " cannot be dissuaded. Perhaps thou shouldst give it a try.\"")
-        --syntax error hide_npc1)
         switch_talk_to(3)
         add_dialogue("\"All right, I shall give it a try.\" He nudges you and whispers. \"Perhaps we should get out of here, " .. var_0001 .. ", before one of us does something they may later regret? Let us leave these premises, all right?\"")
         var_000E = ask_yes_no()
@@ -94,7 +83,6 @@ function utility_ship_0847()
         else
             add_dialogue("\"Then I guess it is too late for I already regret coming here.\"")
         end
-        --syntax error hide_npc3)
     end
     switch_talk_to(26)
     add_dialogue("\"Now is the time to welcome the newest member of The Fellowship to sit at our table.\" Batlin beckons you to join him at the podium.")
@@ -107,7 +95,6 @@ function utility_ship_0847()
         if not var_000F then
             switch_talk_to(3)
             add_dialogue("You hear Shamino desperately whispering to Dupre as they stand behind you. \"Dupre, we are having no success in showing the Avatar the mistake " .. var_0011 .. " must surely be making. Thou art our last hope.\"")
-            --syntax error hide_npc3)
             switch_talk_to(4)
             add_dialogue("You feel a tapping on your shoulder and you turn to see Dupre as he whispers in your ear. \"I know a much better place to get a drink than this one. Perhaps thou wouldst like to join thy comrades there?\"")
             var_0012 = ask_yes_no()
@@ -117,7 +104,6 @@ function utility_ship_0847()
             else
                 add_dialogue("\"Then I hope this game amuses thee, for it makes thy comrades sorely worried.\"")
             end
-            --syntax error hide_npc4)
         end
     end
     switch_talk_to(26)

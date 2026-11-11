@@ -74,12 +74,8 @@ function npc_jakher_0095(eventid, objectref)
             add_dialogue("\"A skillful and fierce battler, but a bit short-sighted when it comes to tactics, I'm afraid. Still, a woman as attractive as she is diverting enough when encountered. But do not mention to her that I said that. It would just encourage her. It is uncomfortable enough sharing the same roof with her as it is.\"")
             var_0003 = npc_id_in_party(94)
             if var_0003 then
-                switch_talk_to(94)
-                add_dialogue("\"What art thou whispering about over there?\"")
-                switch_talk_to(95)
+                second_speaker(94, 0, "\"What art thou whispering about over there?\"")
                 add_dialogue("\"Nothing! Nothing at all!\" Jakher winks at you.")
-                --syntax error hide_npc94)
-                switch_talk_to(95)
             end
             set_flag(245, true)
             remove_answer("Karenna")
@@ -88,12 +84,8 @@ function npc_jakher_0095(eventid, objectref)
             add_dialogue("\"She is the sort of person who labors under the belief that all problems can be solved in one of three ways. Hit them harder. Hit them faster. Or, hit them some more.\"")
             var_0003 = npc_id_in_party(94)
             if var_0003 then
-                switch_talk_to(94)
-                add_dialogue("\"Art thou talking about me? I feel mine ears burning!\"")
-                switch_talk_to(95)
+                second_speaker(94, 0, "\"Art thou talking about me? I feel mine ears burning!\"")
                 add_dialogue("\"Thou art dreaming, Karenna. Why would I talk about thee?\" He giggles conspiratorially at you.")
-                --syntax error hide_npc94)
-                switch_talk_to(95)
             end
             remove_answer("short-sighted")
         elseif answer == "roof" then

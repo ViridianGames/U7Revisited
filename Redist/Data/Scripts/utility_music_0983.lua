@@ -19,7 +19,7 @@ function utility_music_0983()
             add_dialogue("The music of the little box makes Rowena turn her head in your direction. She blinks several times as if waking from a dream, or, in this case, a nightmare.")
         end
         add_dialogue("\"I am in control of my mind for the time being, but I know not for how long. Tell me what has transpired in the town outside.\" You relay to her what you know of the events you've heard in town.")
-        if not get_flag(455) then
+        if get_flag(455) then
             add_dialogue("\"My poor Trent. I cannot bear to think that he's become so hurt that he would forget our love.\" She wrings her hands in sorrow and notices something on one of them.")
         else
             add_dialogue("\"And what of my poor Trent? He must be heartsick. I must find a way to get a message to him.\" Something on her hand sparkles brilliantly.")

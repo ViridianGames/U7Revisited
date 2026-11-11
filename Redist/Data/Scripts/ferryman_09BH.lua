@@ -98,22 +98,12 @@ function ferryman_09BH(eventid, objectref)
                 if not get_flag(0x0197) then
                     add_dialogue(strings[0x048E])
                     if iolo_id and shamino_id then
-                        switch_talk_to(3) -- Iolo
-                        add_dialogue(strings[0x04DF] .. player_name .. strings[0x04E7])
-                        hide_npc(3)
-                        switch_talk_to(2) -- Shamino
-                        add_dialogue(strings[0x0513])
-                        hide_npc(2)
-                        switch_talk_to(3) -- Iolo
-                        add_dialogue(strings[0x0545])
-                        hide_npc(3)
+                        second_speaker(3, 0, strings[0x04DF] .. player_name .. strings[0x04E7])
+                        second_speaker(2, 0, strings[0x0513])
+                        second_speaker(3, 0, strings[0x0545])
                         if spark_id then
-                            switch_talk_to(1) -- Spark
-                            add_dialogue(strings[0x0586])
-                            hide_npc(1)
-                            switch_talk_to(2) -- Shamino
-                            add_dialogue(strings[0x0601])
-                            hide_npc(2)
+                            second_speaker(1, 0, strings[0x0586])
+                            second_speaker(2, 0, strings[0x0601])
                         end
                         switch_talk_to(285) -- Avatar
                     end

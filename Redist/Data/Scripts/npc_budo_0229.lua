@@ -18,14 +18,10 @@ function npc_budo_0229(eventid, objectref)
                 add_dialogue("\"Hello, hello my friend! Thou dost look like thou needest to spend money!\"")
                 var_0003 = npc_id_in_party(3)
                 if var_0003 then
-                    switch_talk_to(3)
-                    add_dialogue("\"This place looks quite well-off.\"")
-                    hide_npc(3)
+                    second_speaker(3, 0, "\"This place looks quite well-off.\"")
                     var_0004 = npc_id_in_party(1)
                     if var_0004 then
-                        switch_talk_to(1)
-                        add_dialogue("\"The entire island is very opulent. It is not the same island we once knew.\"")
-                        hide_npc(1)
+                        second_speaker(1, 0, "\"The entire island is very opulent. It is not the same island we once knew.\"")
                     end
                     switch_talk_to(229)
                 end

@@ -1410,12 +1410,12 @@ function is_pc_inside() end
 ---@param pos? integer[] Optional orrery world position (ignored for sky)
 function set_orrery(state, pos) end
 
----[Exult 0x005F] Marks virtue stone
----@param stone_id integer Stone to mark
+---[Exult 0x005F] Store the Avatar's position on a virtue stone (shape 330).
+---@param stone_id integer Virtue stone object id
 function mark_virtue_stone(stone_id) end
 
----[Exult 0x0060] Recalls to virtue stone
----@param stone_id integer Stone to recall to
+---[Exult 0x0060] Teleport the party to the position stored on a virtue stone.
+---@param stone_id integer Virtue stone object id
 function recall_virtue_stone(stone_id) end
 
 ---[Exult 0x0083] Sets time-based palette

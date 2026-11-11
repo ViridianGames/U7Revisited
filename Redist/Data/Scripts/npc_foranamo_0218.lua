@@ -42,11 +42,8 @@ function npc_foranamo_0218(eventid, objectref)
                         var_000E = npc_id_in_party(217)
                         if not var_000E then
                             add_dialogue("setting a hand on the shoulder of the gargoyle next to him.")
-                            switch_talk_to(217)
-                            add_dialogue("The other gargoyle also stands. Anger flashes across his face as he points a finger at you.")
-                            add_dialogue("\"To be the cause for our unhappiness, \" .. var_000D .. \"!\"")
-                            hide_npc(217)
-                            switch_talk_to(218)
+                            second_speaker(217, 0, "The other gargoyle also stands. Anger flashes across his face as he points a finger at you.")
+                            second_speaker(217, 0, "\"To be the cause for our unhappiness, \" .. var_000D .. \"!\"")
                         end
                         add_dialogue("\"To be the reason for our poverty. To die, \" .. var_000D .. \", to die!\"")
                         set_schedule_type(0, var_0000)

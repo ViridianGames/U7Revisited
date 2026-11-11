@@ -1,16 +1,35 @@
---- Best guess: Implements a spell effect (likely a fireball) triggered by eventid 1 or 4, selecting a target, casting with a direction, and creating projectiles or container items.
-function spell_likely_a_fireball_0363(eventid, objectref, arg1)
-    local var_0000, var_0001, var_0002
+--- Explosion (book: Vas Ort Flam). Fifth Circle. Oracle: usecode Func066B / object#(0x66B).
+--- The caster says "@Vas Flam Hur@", matching the original and Exult.
+--- Bolt weapon is shape 78 (fire, damage 16). It flies as fireball shape 856
+--- and bursts on impact. Do not destroy the caster.
 
-    if eventid == 1 or eventid == 4 then
-        var_0000 = object_select_modal() --- Guess: Selects target object
-        var_0001 = utility_direction_to_target_1069(get_spell_target(objectref), var_0000) --- Guess: Gets spell direction; External call to determine direction
-        bark(objectref, "@Vas Flam Hur@") --- Guess: Item says spell incantation
-        if not utility_condition_0044_1030() then --- External call to check spell success
-            var_0002 = create_projectile(78, var_0000, objectref) --- Guess: Creates projectile
-            var_0002 = add_containerobject_s(objectref, {17505, 17530, 17511, 17511, 17520, 8047, 65, 8536, var_0001, 7769}) --- Guess: Adds items to container
-        else
-            var_0002 = add_containerobject_s(objectref, {1542, 17493, 17511, 17520, 8559, var_0001, 7769}) --- Guess: Adds alternative items to container
-        end
+function spell_likely_a_fireball_0363(eventid, objectref)
+    if eventid ~= 1 then
+        return
     end
+
+    halt_scheduled(objectref)
+    local target = click_on_item()
+    if not target or target == 0 then
+        return
+    end
+
+    if is_npc(target) and is_dead(target) then
+        return
+    end
+
+    local dir = find_direction(objectref, target)
+    bark(objectref, "@Vas Flam Hur@")
+    if not check_spell_requirements(objectref) then
+        -- Playback: face, dir, cast_up, cast_out, strike_1h. No spellFails.
+        execute_usecode_array(objectref, {17511, 17520, 8047, dir, 7769})
+        return
+    end
+
+    begin_casting_mode(objectref, 859)
+    -- Exult: set_to_attack(caster, target, SHAPE_SPELL_EXPLOSION 78).
+    set_to_attack(objectref, target, 78)
+    -- Stored reversed. Playback: face, dir, sfx 65, cast_up, cast_out,
+    -- strike_1h, strike_1h, attack, standing.
+    execute_usecode_array(objectref, {17505, 17530, 17511, 17511, 17520, 8047, 65, 7768, dir, 7769})
 end

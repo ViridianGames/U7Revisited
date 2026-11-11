@@ -40,10 +40,7 @@ function npc_cairbre_0244(eventid, objectref)
                 add_dialogue("\"He is a fool.\"")
                 if var_0000 then
                     add_dialogue("*")
-                    switch_talk_to(253)
-                    add_dialogue("\"I heard that, Cairbre!\"")
-                    hide_npc(253)
-                    switch_talk_to(244)
+                    second_speaker(253, 0, "\"I heard that, Cairbre!\"")
                 end
                 set_flag(736, true)
                 remove_answer("senses")
