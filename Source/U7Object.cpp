@@ -224,6 +224,36 @@ namespace
 	bool InTurnBasedCombat();
 }
 
+bool RealTimeCombatOrdersPaused()
+{
+	return g_isCombatMode && g_mainState && g_mainState->m_combatMode
+		&& g_mainState->m_combatMode->GetStyle() == CombatStyle::RealTimePause
+		&& g_mainState->m_combatPaused;
+}
+
+float SpellClockNow()
+{
+	// Orders pause holds every spell duration at the moment the fight was paused.
+	// Unpausing continues from the time that was left. Turn-based planning
+	// leaves this clock running. The offset is not saved.
+	static float pausedAccum = 0.0f;
+	static float pauseBegan = -1.0f;
+
+	const float real = static_cast<float>(GetTime());
+	if (RealTimeCombatOrdersPaused())
+	{
+		if (pauseBegan < 0.0f)
+			pauseBegan = real;
+		return pauseBegan - pausedAccum;
+	}
+	if (pauseBegan >= 0.0f)
+	{
+		pausedAccum += real - pauseBegan;
+		pauseBegan = -1.0f;
+	}
+	return real - pausedAccum;
+}
+
 void U7Object::ArmFireField(float seconds)
 {
 	if (seconds < 0.0f)
@@ -233,7 +263,7 @@ void U7Object::ArmFireField(float seconds)
 	// removal clock would never run. Spell fields have to be interactive.
 	m_UnitType = UnitTypes::UNIT_TYPE_OBJECT;
 	m_fireFieldPlayStartup = true;
-	m_fireFieldAnimStart = GetTime();
+	m_fireFieldAnimStart = SpellClockNow();
 	SetFrame(0);
 	// 20 seconds is 7 rounds. Shorter fields (Fire Ring, Flame Strike) scale
 	// by the same seconds-per-round so a 7-second field is about 2 rounds.
@@ -249,12 +279,12 @@ void U7Object::ArmFireField(float seconds)
 	else
 	{
 		m_fireFieldTurnsRemaining = 0;
-		m_fireFieldEndsAt = GetTime() + seconds;
+		m_fireFieldEndsAt = SpellClockNow() + seconds;
 	}
 	NoteTimedFireField(static_cast<int>(m_ID));
 	// Anyone already on the tile burns now. The next pulse waits a second
 	// so this frame's UpdateFireField does not hit them again.
-	m_fireFieldNextPulse = GetTime() + kFireFieldPulseSec;
+	m_fireFieldNextPulse = SpellClockNow() + kFireFieldPulseSec;
 	ApplyFireFieldPulse(this);
 }
 
@@ -277,7 +307,7 @@ void U7Object::ArmEnergyField()
 	else
 	{
 		m_fireFieldTurnsRemaining = 0;
-		m_fireFieldEndsAt = GetTime() + seconds;
+		m_fireFieldEndsAt = SpellClockNow() + seconds;
 	}
 	NoteTimedFireField(static_cast<int>(m_ID));
 }
@@ -312,7 +342,7 @@ void U7Object::UpdateFireField()
 	if (GetIsDead() || m_isContained || !m_Visible)
 		return;
 
-	const float now = GetTime();
+	const float now = SpellClockNow();
 	const bool turnBased = InTurnBasedCombat();
 
 	// Left turn-based combat with rounds still banked. Finish on the real-time clock.
@@ -1221,7 +1251,7 @@ void U7Object::ApplyInvisibilityGhostTint(Color& color) const
 void U7Object::StartInvisibilityTimer()
 {
 	// Exult: Game::get_ticks() + 60000 + rand()%20000.
-	const float now = GetTime();
+	const float now = SpellClockNow();
 	m_invisibilityEndsAt = now + 60.0f + static_cast<float>(rand() % 20);
 }
 
@@ -1255,7 +1285,7 @@ void U7Object::UpdateInvisibilityTimer()
 		StartInvisibilityTimer();
 		return;
 	}
-	if (GetTime() >= m_invisibilityEndsAt)
+	if (SpellClockNow() >= m_invisibilityEndsAt)
 	{
 		m_flags &= ~kObjFlagInvisible;
 		StopInvisibilityTimer();
@@ -1290,7 +1320,7 @@ void U7Object::StopAttacksOnInvisible()
 void U7Object::StartPoisonTimer()
 {
 	// Exult Npc_poison_timer: lasts 1-3 minutes; first check after 5s.
-	const float now = GetTime();
+	const float now = SpellClockNow();
 	m_poisonEndsAt = now + 60.0f + static_cast<float>(rand() % 120);
 	m_poisonNextTickAt = now + 5.0f;
 }
@@ -1317,7 +1347,7 @@ void U7Object::UpdatePoisonTimer()
 		return;
 	}
 
-	const float now = GetTime();
+	const float now = SpellClockNow();
 	if (now >= m_poisonEndsAt)
 	{
 		m_flags &= ~kObjFlagPoisoned;
@@ -1357,7 +1387,7 @@ bool U7Object::IsCharmImmune() const
 void U7Object::StartCharmTimer()
 {
 	// Exult Npc_flag_timer: 60000 + rand()%60000 ms, about 60–120 seconds.
-	const float now = GetTime();
+	const float now = SpellClockNow();
 	m_charmEndsAt = now + 60.0f + static_cast<float>(rand() % 61);
 }
 
@@ -1403,7 +1433,7 @@ void U7Object::UpdateCharmTimer()
 		EndCharm(false);
 		return;
 	}
-	if (GetTime() >= m_charmEndsAt)
+	if (SpellClockNow() >= m_charmEndsAt)
 		EndCharm(true);
 }
 
@@ -1506,7 +1536,7 @@ void U7Object::ApplyMight()
 	if (IsDeathStatus() || GetIsDead())
 		return;
 
-	const float now = GetTime();
+	const float now = SpellClockNow();
 	const bool already = m_mightEndsAt > now
 		&& (m_mightStrBonus != 0 || m_mightDexBonus != 0
 			|| m_mightIntBonus != 0 || m_mightCombatBonus != 0);
@@ -1580,7 +1610,7 @@ void U7Object::UpdateMightTimer()
 		EndMight(false);
 		return;
 	}
-	if (GetTime() >= m_mightEndsAt)
+	if (SpellClockNow() >= m_mightEndsAt)
 		EndMight(true);
 }
 
@@ -1588,7 +1618,7 @@ void U7Object::RestoreMightStats()
 {
 	if (m_mightEndsAt <= 0.0f)
 		return;
-	if (GetTime() >= m_mightEndsAt)
+	if (SpellClockNow() >= m_mightEndsAt)
 	{
 		EndMight(false);
 		return;
@@ -1690,7 +1720,7 @@ namespace
 
 void U7Object::StartSleepTimer()
 {
-	const float now = GetTime();
+	const float now = SpellClockNow();
 	m_sleepNextMendCheckAt = now + g_secsPerMinute * 0.5f;
 
 	// Knockout stays on the real-time timer. Combat already refuses to mend,
@@ -1760,7 +1790,7 @@ void U7Object::UpdateSleepTimer()
 		return;
 	}
 
-	const float now = GetTime();
+	const float now = SpellClockNow();
 	const bool inParty = g_Player && g_Player->NPCIDInParty(m_NPCID);
 
 	// While health <= 0, mend toward wake. Do not regenerate during combat —
@@ -1927,7 +1957,7 @@ void U7Object::ApplyDancePose()
 
 void U7Object::StartDance()
 {
-	const float now = GetTime();
+	const float now = SpellClockNow();
 	const int ticks = 50 + (rand() % 26);
 	const float seconds = static_cast<float>(ticks) * 0.2f;
 
@@ -2001,7 +2031,7 @@ void U7Object::UpdateDance()
 		return;
 	}
 
-	const float now = GetTime();
+	const float now = SpellClockNow();
 	if (m_danceBarkAt > 0.0f && now >= m_danceBarkAt)
 	{
 		m_danceBarkAt = 0.0f;
@@ -3008,7 +3038,7 @@ namespace
 		if (mist.targetId != victimId)
 			mist.seated = false;
 		mist.targetId = victimId;
-		const float now = GetTime();
+		const float now = SpellClockNow();
 		if (g_SpriteEffectSystem)
 			g_SpriteEffectSystem->Spawn(mist.sprite, Vector3{ mist.x, mist.y, mist.z });
 		mist.nextPuff = now + 0.2f;
@@ -3284,7 +3314,7 @@ bool TimeIsStopped()
 {
 	if (g_timeStopUntil <= 0.0f)
 		return false;
-	if (GetTime() >= g_timeStopUntil)
+	if (SpellClockNow() >= g_timeStopUntil)
 	{
 		g_timeStopUntil = 0.0f;
 		AddCombatLogString("Time resumes.", SKYBLUE);
@@ -3333,7 +3363,7 @@ void StartTimeStop(int length)
 	}
 	if (length <= 0)
 		return;
-	const float now = GetTime();
+	const float now = SpellClockNow();
 	const float until = now + static_cast<float>(length) * 0.25f;
 	const bool fresh = g_timeStopUntil <= now;
 	if (until > g_timeStopUntil)
@@ -3377,7 +3407,7 @@ bool ExpireDeadEnemyTimeStops()
 
 void UpdateSixthCircleEffects()
 {
-	const float now = GetTime();
+	const float now = SpellClockNow();
 	DrainPendingClones(now);
 	DrainPendingRings(now);
 	DrainPendingGold(now);
@@ -3412,7 +3442,7 @@ void ScheduleClone(int targetId)
 {
 	if (targetId <= 0)
 		return;
-	const float at = static_cast<float>(GetTime()) + 4.0f * kUsecodeStepSec;
+	const float at = static_cast<float>(SpellClockNow()) + 4.0f * kUsecodeStepSec;
 	g_pendingClones.push_back(PendingClone{ targetId, at });
 }
 
@@ -3422,7 +3452,7 @@ void PlaceFireRing(int tileX, int tileZ, float lift)
 	// The second list is U7 y, which is this engine's z.
 	static const int kOx[12] = { -1, 0, 1, 2, 2, 2, 1, 0, -1, -2, -2, -2 };
 	static const int kOz[12] = { -2, -2, -2, -1, 0, 1, 2, 2, 2, 1, 0, -1 };
-	const float now = GetTime();
+	const float now = SpellClockNow();
 	for (int i = 0; i < 12; ++i)
 	{
 		const int tx = tileX + kOx[i];
@@ -3466,7 +3496,7 @@ void StartMagicStorm(U7Object* caster)
 {
 	if (!caster)
 		return;
-	const float now = GetTime();
+	const float now = SpellClockNow();
 	const bool already = g_stormEndsAt > now;
 	g_stormCasterId = static_cast<int>(caster->m_ID);
 	g_stormEndsAt = now + 70.0f * kUsecodeStepSec;
@@ -3559,7 +3589,7 @@ void ScheduleCreateGold(int leadId)
 {
 	if (leadId <= 0)
 		return;
-	const float now = GetTime();
+	const float now = SpellClockNow();
 	// Five usecode ticks. The lead may be inside a bag; Update() does not run there.
 	g_pendingGold.push_back(PendingGold{ leadId, now + 5.0f * kUsecodeStepSec });
 }
@@ -3586,7 +3616,7 @@ void ScheduleDelayedBlast(int casterId, int markerId)
 {
 	if (markerId <= 0)
 		return;
-	const float now = GetTime();
+	const float now = SpellClockNow();
 	PendingBlast blast;
 	blast.casterId = casterId;
 	blast.markerId = markerId;
@@ -3603,7 +3633,7 @@ void StartHomingCloud(U7Object* caster, U7Object* target,
 	if (!caster)
 		return;
 
-	const float now = GetTime();
+	const float now = SpellClockNow();
 	EnergyMist mist;
 	mist.casterId = static_cast<int>(caster->m_ID);
 	mist.targetId = (target && !target->GetIsDead() && !target->IsDeathStatus())
@@ -3680,7 +3710,7 @@ void AdvanceEnergyMistTurns()
 
 void FreezeEnergyMistsForTurns()
 {
-	const float now = GetTime();
+	const float now = SpellClockNow();
 	for (EnergyMist& mist : g_energyMists)
 	{
 		if (mist.turnsRemaining > 0)
@@ -3695,7 +3725,7 @@ void FreezeEnergyMistsForTurns()
 
 void ReleaseEnergyMistsToRealTime()
 {
-	const float now = GetTime();
+	const float now = SpellClockNow();
 	for (EnergyMist& mist : g_energyMists)
 	{
 		if (mist.turnsRemaining <= 0)
@@ -3726,7 +3756,7 @@ void CastMassCharm(U7Object* caster)
 
 	std::vector<U7Object*> targets;
 	CollectOffensiveTargets(caster, 25, targets);
-	const float now = GetTime();
+	const float now = SpellClockNow();
 	for (U7Object* target : targets)
 	{
 		if (!IsLivingCreature(target))
@@ -3763,7 +3793,7 @@ void CastMassMight(U7Object* caster)
 	if (!g_Player)
 		return;
 
-	const float now = GetTime();
+	const float now = SpellClockNow();
 	const std::vector<int> party = g_Player->GetPartyMemberIds();
 	for (int npcId : party)
 	{
@@ -3882,7 +3912,7 @@ void CastMassDeath(U7Object* caster)
 		}
 	}
 
-	const float now = GetTime();
+	const float now = SpellClockNow();
 	for (U7Object* victim : victims)
 	{
 		victim->HaltUsecodeScript(true);
@@ -3927,7 +3957,7 @@ void CastArmageddon(U7Object* caster)
 
 	g_armageddonCasterId = static_cast<int>(caster->m_ID);
 	// The gesture is twelve steps. The quake and the deaths follow it.
-	const float now = GetTime();
+	const float now = SpellClockNow();
 	g_armageddonAt = now + 12.0f * kUsecodeStepSec;
 }
 
@@ -4019,10 +4049,10 @@ void U7Object::ArmPoisonField()
 	// Spell cast plays 0-11 once, then loops 6-11. Map fields leave this clear
 	// and stay on the loop.
 	m_fireFieldPlayStartup = true;
-	m_fireFieldAnimStart = GetTime();
+	m_fireFieldAnimStart = SpellClockNow();
 	SetFrame(0);
 	// Anyone already on the tile rolls now. The next standing pulse waits a second.
-	m_fireFieldNextPulse = GetTime() + kFireFieldPulseSec;
+	m_fireFieldNextPulse = SpellClockNow() + kFireFieldPulseSec;
 	if (PulseHazardField(this, true))
 		ExpireFireField();
 }
@@ -4036,10 +4066,10 @@ void U7Object::ArmSleepField()
 	// Spell cast plays 0-13 once, then loops 7-13. Map fields leave this clear
 	// and stay on the loop.
 	m_fireFieldPlayStartup = true;
-	m_fireFieldAnimStart = GetTime();
+	m_fireFieldAnimStart = SpellClockNow();
 	SetFrame(0);
 	// Anyone already on the tile rolls now. The next standing pulse waits a second.
-	m_fireFieldNextPulse = GetTime() + kFireFieldPulseSec;
+	m_fireFieldNextPulse = SpellClockNow() + kFireFieldPulseSec;
 	if (PulseHazardField(this, true))
 		ExpireFireField();
 }
@@ -4055,7 +4085,7 @@ void U7Object::UpdateHazardField()
 	if (InTurnBasedCombat())
 		return;
 
-	const float now = GetTime();
+	const float now = SpellClockNow();
 	if (m_fireFieldNextPulse > 0.0f && now < m_fireFieldNextPulse)
 		return;
 	m_fireFieldNextPulse = now + kFireFieldPulseSec;
@@ -4478,7 +4508,7 @@ static int SplitFieldDisplayFrame(bool playStartup, float animStart, int animFra
 		return 0;
 	if (loopStart <= 0 || loopStart >= animFrames)
 	{
-		const int step = static_cast<int>(GetTime() / kTimePerFrame);
+		const int step = static_cast<int>(SpellClockNow() / kTimePerFrame);
 		const int wrapped = step % animFrames;
 		return wrapped < 0 ? wrapped + animFrames : wrapped;
 	}
@@ -4486,12 +4516,12 @@ static int SplitFieldDisplayFrame(bool playStartup, float animStart, int animFra
 	const int loopFrames = animFrames - loopStart;
 	if (!playStartup)
 	{
-		const int step = static_cast<int>(GetTime() / kTimePerFrame);
+		const int step = static_cast<int>(SpellClockNow() / kTimePerFrame);
 		const int wrapped = step % loopFrames;
 		return loopStart + (wrapped < 0 ? wrapped + loopFrames : wrapped);
 	}
 
-	int step = static_cast<int>((GetTime() - animStart) / kTimePerFrame);
+	int step = static_cast<int>((SpellClockNow() - animStart) / kTimePerFrame);
 	if (step < 0)
 		step = 0;
 	if (step < animFrames)
@@ -10402,12 +10432,12 @@ json U7Object::SaveToJson() const
 		j["flags"] = m_flags;
 	if (m_sleepTurnsRemaining > 0)
 		j["sleepTurnsRemaining"] = m_sleepTurnsRemaining;
-	if (m_sleepEndsAt > GetTime())
-		j["sleepRemaining"] = m_sleepEndsAt - GetTime();
+	if (m_sleepEndsAt > SpellClockNow())
+		j["sleepRemaining"] = m_sleepEndsAt - SpellClockNow();
 	if (m_danceTurnsRemaining > 0)
 		j["danceTurnsRemaining"] = m_danceTurnsRemaining;
-	else if (m_danceEndsAt > GetTime())
-		j["danceRemaining"] = m_danceEndsAt - GetTime();
+	else if (m_danceEndsAt > SpellClockNow())
+		j["danceRemaining"] = m_danceEndsAt - SpellClockNow();
 	if (m_attackMode == 7)
 	{
 		j["attackMode"] = m_attackMode;
@@ -10415,19 +10445,19 @@ json U7Object::SaveToJson() const
 	}
 	if (m_invisibilityEndsAt > 0.0f)
 	{
-		const float remaining = m_invisibilityEndsAt - GetTime();
+		const float remaining = m_invisibilityEndsAt - SpellClockNow();
 		if (remaining > 0.0f)
 			j["invisibilityRemaining"] = remaining;
 	}
-	if (m_charmEndsAt > GetTime())
+	if (m_charmEndsAt > SpellClockNow())
 	{
-		j["charmRemaining"] = m_charmEndsAt - GetTime();
+		j["charmRemaining"] = m_charmEndsAt - SpellClockNow();
 		if (m_charmHomeTeam >= 0)
 			j["charmHomeTeam"] = m_charmHomeTeam;
 	}
-	if (m_mightEndsAt > GetTime())
+	if (m_mightEndsAt > SpellClockNow())
 	{
-		j["mightRemaining"] = m_mightEndsAt - GetTime();
+		j["mightRemaining"] = m_mightEndsAt - SpellClockNow();
 		j["mightStrBonus"] = m_mightStrBonus;
 		j["mightDexBonus"] = m_mightDexBonus;
 		j["mightIntBonus"] = m_mightIntBonus;
@@ -10441,7 +10471,7 @@ json U7Object::SaveToJson() const
 		j["fireFieldTurnsRemaining"] = m_fireFieldTurnsRemaining;
 	else if (m_fireFieldEndsAt > 0.0f)
 	{
-		const float remaining = m_fireFieldEndsAt - GetTime();
+		const float remaining = m_fireFieldEndsAt - SpellClockNow();
 		j["fireFieldRemaining"] = remaining > 0.0f ? remaining : 0.0f;
 	}
 	if (m_flameStrikeField)
@@ -10628,7 +10658,7 @@ U7Object* U7Object::LoadFromJson(const json& j)
 	{
 		const float remaining = j["sleepRemaining"].get<float>();
 		if (remaining > 0.0f)
-			obj->m_sleepEndsAt = GetTime() + remaining;
+			obj->m_sleepEndsAt = SpellClockNow() + remaining;
 	}
 	obj->m_danceTurnsRemaining = j.value("danceTurnsRemaining", 0);
 	if (obj->m_danceTurnsRemaining < 0)
@@ -10638,7 +10668,7 @@ U7Object* U7Object::LoadFromJson(const json& j)
 	{
 		const float remaining = j["danceRemaining"].get<float>();
 		if (remaining > 0.0f)
-			obj->m_danceEndsAt = GetTime() + remaining;
+			obj->m_danceEndsAt = SpellClockNow() + remaining;
 	}
 	if (obj->m_danceTurnsRemaining > 0 || obj->m_danceEndsAt > 0.0f)
 		obj->m_flags |= kObjFlagInAction;
@@ -10652,14 +10682,14 @@ U7Object* U7Object::LoadFromJson(const json& j)
 	{
 		const float remaining = j["invisibilityRemaining"].get<float>();
 		if (remaining > 0.0f)
-			obj->m_invisibilityEndsAt = GetTime() + remaining;
+			obj->m_invisibilityEndsAt = SpellClockNow() + remaining;
 	}
 	if (j.contains("charmRemaining") && j["charmRemaining"].is_number())
 	{
 		const float remaining = j["charmRemaining"].get<float>();
 		if (remaining > 0.0f)
 		{
-			obj->m_charmEndsAt = GetTime() + remaining;
+			obj->m_charmEndsAt = SpellClockNow() + remaining;
 			if (j.contains("charmHomeTeam") && j["charmHomeTeam"].is_number())
 				obj->m_charmHomeTeam = j["charmHomeTeam"].get<int>();
 		}
@@ -10676,7 +10706,7 @@ U7Object* U7Object::LoadFromJson(const json& j)
 		&& j.contains("fireFieldRemaining") && j["fireFieldRemaining"].is_number())
 	{
 		const float remaining = j["fireFieldRemaining"].get<float>();
-		obj->m_fireFieldEndsAt = GetTime() + (remaining > 0.0f ? remaining : 0.0f);
+		obj->m_fireFieldEndsAt = SpellClockNow() + (remaining > 0.0f ? remaining : 0.0f);
 	}
 	if (obj->m_fireFieldTurnsRemaining > 0 || obj->m_fireFieldEndsAt > 0.0f)
 	{
@@ -10765,7 +10795,7 @@ U7Object* U7Object::LoadFromJson(const json& j)
 		const float remaining = j["mightRemaining"].get<float>();
 		if (remaining > 0.0f)
 		{
-			obj->m_mightEndsAt = GetTime() + remaining;
+			obj->m_mightEndsAt = SpellClockNow() + remaining;
 			obj->m_mightStrBonus = j.value("mightStrBonus", 0);
 			obj->m_mightDexBonus = j.value("mightDexBonus", 0);
 			obj->m_mightIntBonus = j.value("mightIntBonus", 0);

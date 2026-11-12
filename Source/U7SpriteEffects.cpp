@@ -148,6 +148,12 @@ void U7SpriteEffectSystem::StartInstrumentNotesOnObject(int objectId, float heig
 
 void U7SpriteEffectSystem::Update(float dt)
 {
+	// Hold the current frame so a cloud puff stays on screen while orders are open.
+	if (RealTimeCombatOrdersPaused())
+	{
+		dt = 0.0f;
+	}
+
 	for (auto it = m_active.begin(); it != m_active.end();)
 	{
 		if (it->spriteIndex < 0 || it->spriteIndex >= static_cast<int>(g_spriteTable.size()))

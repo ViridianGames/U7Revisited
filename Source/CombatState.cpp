@@ -1207,7 +1207,7 @@ void ApplyFireFieldDamage(U7Object* victim, U7Object* field)
 		return;
 
 	// Enter and the field's own pulse share one gap so a step is not hit twice.
-	const float now = GetTime();
+	const float now = SpellClockNow();
 	if (now - victim->m_fireFieldHurtAt < kFireFieldPulseSec * 0.9f)
 		return;
 	victim->m_fireFieldHurtAt = now;
@@ -1302,7 +1302,7 @@ void AdvanceFireFieldRounds()
 
 void FreezeFireFieldsForTurns()
 {
-	const float now = GetTime();
+	const float now = SpellClockNow();
 	const std::vector<int> ids = g_timedFireFieldIds;
 	for (int id : ids)
 	{
@@ -1333,7 +1333,7 @@ void FreezeFireFieldsForTurns()
 
 void ReleaseFireFieldsToRealTime()
 {
-	const float now = GetTime();
+	const float now = SpellClockNow();
 	const std::vector<int> ids = g_timedFireFieldIds;
 	for (int id : ids)
 	{

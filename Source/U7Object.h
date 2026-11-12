@@ -913,8 +913,8 @@ public:
 	static constexpr float kCombatRepathGoalSlopTiles = 2.5f;
 
 	// Exult Npc_poison_timer: lasts 60-180s, first tick ~5s, then every 10-20s for 0-2 HP.
-	float m_poisonEndsAt = 0.0f;     // GetTime() when poison wears off; 0 = inactive
-	float m_poisonNextTickAt = 0.0f; // GetTime() of next DoT tick
+	float m_poisonEndsAt = 0.0f;     // SpellClockNow() when poison wears off; 0 = inactive
+	float m_poisonNextTickAt = 0.0f; // SpellClockNow() of next DoT tick
 	void StartPoisonTimer();         // (re)start when kObjFlagPoisoned is set
 	void StopPoisonTimer();
 	void UpdatePoisonTimer();        // call from NPC/Monster update
@@ -950,7 +950,7 @@ public:
 	void UpdateMightTimer();
 	void RestoreMightStats();
 
-	// Shape 895 fire field. endsAt > 0 is the spell's removal time (GetTime()).
+	// Shape 895 fire field. endsAt > 0 is the spell's removal time (SpellClockNow()).
 	// 0 means a permanent field: it still burns. nextPulse is the next burn check.
 	// hurtAt is the last time this creature took fire-field damage.
 	// turnsRemaining > 0 is the turn-based lifetime (rounds). The wall clock is idle.
@@ -967,7 +967,7 @@ public:
 
 	// Exult Npc_sleep_timer: spell sleep wears off in ~5-10s; KO mends until HP >= 1.
 	// Turn-based combat counts this unit's turns instead of that wall clock.
-	float m_sleepEndsAt = 0.0f;          // GetTime() when natural wake is allowed; 0 = inactive
+	float m_sleepEndsAt = 0.0f;          // SpellClockNow() when natural wake is allowed; 0 = inactive
 	float m_sleepNextMendCheckAt = 0.0f; // next mend roll while HP <= 0
 	int m_sleepTurnsRemaining = 0;       // >0: skip this many turn-based turns, then stand up
 	enum class TurnBasedSleepTick
@@ -1029,7 +1029,7 @@ public:
 
 	// Exult Npc_invisibility_timer: spell/potion lasts 60-80s. A worn ring of
 	// invisibility (shape 296 frame 0) keeps the flag and drops the timer.
-	float m_invisibilityEndsAt = 0.0f;   // GetTime() when the spell wears off; 0 = no timer
+	float m_invisibilityEndsAt = 0.0f;   // SpellClockNow() when the spell wears off; 0 = no timer
 	bool IsInvisible() const { return (m_flags & kObjFlagInvisible) != 0; }
 	bool CanSeeInvisible() const { return m_canSeeInvisible; }
 	// Non-party actors are not drawn or picked. Avatar and party are ghosted.

@@ -761,8 +761,9 @@ void MainState::UpdateTime()
 	if (!m_paused)
 	{
 		float thisTime = GetTime();
-		// An Tym freezes the game clock. Catch-up minutes would skip the pause.
-		if (TimeIsStopped())
+		// An Tym and real-time-with-pause orders freeze the game clock.
+		// Catch-up minutes would skip the pause.
+		if (TimeIsStopped() || RealTimeCombatOrdersPaused())
 		{
 			g_lastTime = thisTime;
 			return;

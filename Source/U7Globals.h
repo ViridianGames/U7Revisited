@@ -258,6 +258,12 @@ void UpdateWizardEye();
 extern float g_earthquakeUntil;
 void StartEarthquake(int count);
 
+// Spell durations. Frozen while real-time-with-pause orders are open, then
+// continued from the time that was left. Turn-based planning does not freeze
+// this clock. The pause offset is not saved; remaining time is.
+bool RealTimeCombatOrdersPaused();
+float SpellClockNow();
+
 // Sixth and Seventh Circle timers that must not go through delayed usecode
 // (that path treats a tick as 0.05s). A usecode tick is 0.20s.
 void UpdateSixthCircleEffects();
