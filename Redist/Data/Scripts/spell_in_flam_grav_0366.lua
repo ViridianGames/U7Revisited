@@ -1,29 +1,44 @@
---- Best guess: Manages the "In Flam Grav" spell, creating a fire wall or explosion (ID 895) at a selected location, with a fallback effect if the spell fails.
-function spell_in_flam_grav_0366(eventid, objectref)
-    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009
+--- Fire Field (In Flam Grav). Fifth Circle. Oracle: usecode Func066E / object#(0x66E).
+--- The caster says "@In Flam Grav@". One shape-895 field is placed on the
+--- chosen tile (a creature click uses that creature's tile). It burns anyone
+--- standing on it and is removed after about 20 seconds.
+--- Do not destroy the caster. The function name stays on script 366.
 
+function spell_in_flam_grav_0366(eventid, objectref)
     if eventid ~= 1 then
         return
     end
 
-    var_0000 = object_select_modal()
-    var_0001 = utility_direction_to_target_1069(var_0000)
     halt_scheduled(objectref)
-    bark(objectref, "@In Flam Grav@")
-    if not utility_condition_0044_1030() then
-        var_0002 = execute_usecode_array(objectref, {17511, 17510, 8549, var_0001, 8025, 65, 7768})
-        var_0003 = create_new_object(895)
-        if not var_0003 then
-            var_0004 = var_0000[2] + 1
-            var_0005 = var_0000[3] + 1
-            var_0006 = var_0000[4]
-            var_0007 = {var_0004, var_0005, var_0006}
-            var_0008 = update_last_created(var_0007)
-            set_item_flag(18, var_0003)
-            var_0009 = set_object_quality(100, var_0003)
-            var_0008 = delayed_execute_usecode_array(var_0009, 100, 8493, var_0003)
-        end
-    else
-        var_0002 = execute_usecode_array(objectref, {1542, 17493, 17511, 17510, 8549, var_0001, 7769})
+    local objId, tileX, tileZ, lift = click_on_tile(objectref)
+    if tileX == nil then
+        return
     end
+
+    local dir = find_direction(objectref, tileX, tileZ)
+    bark(objectref, "@In Flam Grav@")
+    if not check_spell_requirements(objectref) then
+        -- Playback: face, dir, raise_1h, reach_1h, strike_1h. No spellFails.
+        execute_usecode_array(objectref, {17511, 17510, 8037, dir, 7769})
+        return
+    end
+
+    begin_casting_mode(objectref, 859)
+    -- Stored reversed. Playback: sfx 65, face, dir, raise_1h, reach_1h, strike_1h.
+    execute_usecode_array(objectref, {17511, 17510, 8037, dir, 7769, 65, 7768})
+
+    local field = create_new_object(895)
+    if not field then
+        return
+    end
+
+    -- Engine position is {x, height, z}. The picked tile is already the
+    -- cursor tile, so this does not add the original usecode +1,+1.
+    if not update_last_created({tileX, lift, tileZ}) then
+        destroy_object(field)
+        return
+    end
+
+    set_object_quality(field, 100)
+    arm_fire_field(field)
 end

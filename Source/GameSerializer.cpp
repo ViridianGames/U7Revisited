@@ -568,6 +568,8 @@ bool GameSerializer::LoadFromStream(std::ifstream& stream)
 
 		// Bolts are reattached from the session after the world rebuild.
 		g_flyingProjectiles.clear();
+		// Gold, blasts, charms, might delays, and mist do not survive a load.
+		ClearSeventhCirclePending();
 
 		// Stop scripts before destroying objects they may reference.
 		if (g_ScriptingSystem)
@@ -649,6 +651,15 @@ bool GameSerializer::LoadFromStream(std::ifstream& stream)
 
 		// Player (uses SetPos for avatar; rebuilds party names)
 		g_Player->LoadFromJson(saveData["player"]);
+
+		// The player json just replaced the Avatar's panel stats. Write
+		// base+bonus again so Might survives that overwrite.
+		for (const auto& entry : g_objectList)
+		{
+			U7Object* unit = entry.second.get();
+			if (unit && unit->m_mightEndsAt > 0.0f)
+				unit->RestoreMightStats();
+		}
 
 		// Second pass: inventories + equipment (validate IDs exist)
 		for (const auto& objData : saveData["objects"])

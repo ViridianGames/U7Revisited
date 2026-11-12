@@ -152,6 +152,25 @@ static bool UnitFeetOnTile(const U7Object* unit, int worldX, int worldZ, float a
 	return worldX == tileX && worldZ == tileZ;
 }
 
+// Feet tile plus the centered lie quad. Same test IsTileBlockedByHostileUnit uses.
+static bool DownedUnitCoversTile(const U7Object* unit, int worldX, int worldZ, float agentBaseY)
+{
+	return UnitFeetOnTile(unit, worldX, worldZ, agentBaseY)
+		|| DownedFlatOverlapsTile(unit, worldX, worldZ, agentBaseY);
+}
+
+// Already standing in this body's footprint. The lie quad often covers the
+// tile under a neighbor's feet and the tiles around it, which used to leave
+// no legal step. That body does not block the unit who is already on it.
+static bool AgentStandsOnDownedUnit(const U7Object* agent, const U7Object* downed)
+{
+	if (!agent || !downed)
+		return false;
+	const int tileX = static_cast<int>(std::floor(agent->m_Pos.x));
+	const int tileZ = static_cast<int>(std::floor(agent->m_Pos.z));
+	return DownedUnitCoversTile(downed, tileX, tileZ, agent->m_Pos.y);
+}
+
 static bool IsTileBlockedByHostileUnit(int worldX, int worldZ, float agentBaseY, const U7Object* agent)
 {
 	if (!agent)
@@ -176,9 +195,10 @@ static bool IsTileBlockedByHostileUnit(int worldX, int worldZ, float agentBaseY,
 			{
 				// Block the tiles the centered lie sprite covers, plus the feet tile.
 				// True corpses stay out of IsLivingDownedUnit, so they stay walkable.
+				// A unit already standing on this body can still walk off it.
 				if (DownedEnemyBlocksAgent(agent, obj)
-					&& (UnitFeetOnTile(obj, worldX, worldZ, agentBaseY)
-						|| DownedFlatOverlapsTile(obj, worldX, worldZ, agentBaseY)))
+					&& DownedUnitCoversTile(obj, worldX, worldZ, agentBaseY)
+					&& !AgentStandsOnDownedUnit(agent, obj))
 				{
 					return true;
 				}

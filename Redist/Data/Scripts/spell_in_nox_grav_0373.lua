@@ -1,25 +1,40 @@
---- Best guess: Implements the poison field spell (In Nox Grav), creating a poison field at a target location.
-function spell_in_nox_grav_0373(eventid, objectref)
-    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008
+--- Poison Field (In Nox Grav). Sixth Circle. Oracle: usecode Func0675 / object#(0x675).
+--- Ground target. One shape-900 field. It stays until it poisons someone or
+--- Dispel Field removes it. Do not destroy the caster.
+--- The function name stays on script 373.
 
-    if eventid == 1 then
-        var_0000 = object_select_modal() --- Guess: Selects spell target
-        destroy_object(objectref)
-        var_0001 = select_spell_target(var_0000) --- Guess: Gets selected target
-        bark(objectref, "@In Nox Grav@")
-        if check_spell_requirements() then
-            var_0002 = add_containerobject_s(objectref, {17511, 17510, 8037, 110, 8536, var_0001, 7769})
-            var_0003 = get_object_status(900) --- Guess: Gets item status
-            if var_0003 then
-                var_0004 = var_0000[2] + 1
-                var_0005 = var_0000[3] + 1
-                var_0006 = var_0000[4]
-                var_0007 = {var_0006, var_0005, var_0004}
-                set_object_flag(var_0003, 18)
-                var_0002 = update_last_created(var_0007) --- Guess: Updates position
-            end
-        else
-            var_0002 = add_containerobject_s(objectref, {1542, 17493, 17511, 17510, 8549, var_0001, 7769})
-        end
+function spell_in_nox_grav_0373(eventid, objectref)
+    if eventid ~= 1 then
+        return
     end
+
+    halt_scheduled(objectref)
+    local objId, tileX, tileZ, lift = click_on_tile(objectref)
+    if tileX == nil then
+        return
+    end
+
+    local dir = find_direction(objectref, tileX, tileZ)
+    bark(objectref, "@In Nox Grav@")
+    if not check_spell_requirements(objectref) then
+        -- Playback: face, dir, raise_1h, reach_1h, strike_1h. No spellFails.
+        execute_usecode_array(objectref, {17511, 17510, 17509, dir, 7769})
+        return
+    end
+
+    begin_casting_mode(objectref, 859)
+    -- Stored reversed. Playback: face, dir, sfx 110, raise_1h, reach_1h, strike_1h.
+    execute_usecode_array(objectref, {17511, 17510, 17509, 110, 7768, dir, 7769})
+
+    local field = create_new_object(900)
+    if not field then
+        return
+    end
+
+    if not update_last_created({tileX, lift, tileZ}) then
+        destroy_object(field)
+        return
+    end
+
+    arm_poison_field(field)
 end

@@ -1,17 +1,28 @@
---- Best guess: Implements the death vortex spell (Vas Corp Hur), creating a damaging vortex at a target location.
-function spell_vas_corp_hur_0385(eventid, objectref)
-    local var_0000, var_0001, var_0002, var_0003
+--- Death Vortex (Vas Corp Hur). Eighth Circle. Oracle: usecode Func0681 / object#(0x681).
+--- Targeted. set_to_attack fires weapon shape 639, a homing cloud. Not a one-shot blast.
+--- Do not destroy the caster. The function name stays on script 385.
 
-    if eventid == 1 then
-        var_0000 = object_select_modal() --- Guess: Selects spell target
-        var_0001 = select_spell_target(var_0000) --- Guess: Gets selected target
-        destroy_object(objectref)
-        bark(objectref, "@Vas Corp Hur@")
-        if check_spell_requirements() then
-            var_0002 = apply_spell_effect(639, var_0000, objectref) --- Guess: Applies spell effect
-            var_0003 = add_containerobject_s(objectref, {17530, 17511, 8047, 65, 8536, var_0001, 7769})
-        else
-            var_0003 = add_containerobject_s(objectref, {1542, 17493, 17511, 8559, var_0001, 7769})
-        end
+function spell_vas_corp_hur_0385(eventid, objectref)
+    if eventid ~= 1 then
+        return
     end
+
+    halt_scheduled(objectref)
+    local target = click_on_item()
+    if not target or target == 0 then
+        return
+    end
+
+    local dir = find_direction(objectref, target)
+    bark(objectref, "@Vas Corp Hur@")
+    if get_weather() == 3 or not check_spell_requirements(objectref) then
+        -- Playback: face, dir, cast_up, strike_1h. No spellFails.
+        execute_usecode_array(objectref, {17511, 17519, dir, 7769})
+        return
+    end
+
+    begin_casting_mode(objectref, 859)
+    set_to_attack(objectref, target, 639)
+    -- Stored reversed. Playback: face, dir, sfx 65, cast_up, strike_1h, attack.
+    execute_usecode_array(objectref, {17530, 17511, 17519, 65, 7768, dir, 7769})
 end

@@ -1264,8 +1264,10 @@ static int LuaPlayMusic(lua_State *L)
 {
     if (g_LuaDebug) NPCDebugPrint("LUA: play_music called");
     int track = luaL_checkinteger(L, 1);
-    int loop = luaL_checkinteger(L, 2);
-    // TODO: g_AudioSystem->PlayMusic(track, loop)
+    if (lua_gettop(L) >= 2)
+        (void)luaL_optinteger(L, 2, 0);
+    if (g_SoundSystem)
+        g_SoundSystem->PlayMusic(BuildU7MusicPath(track));
     return 0;
 }
 
@@ -1465,6 +1467,15 @@ static void DestroyObjectByID(int object_id)
     }
 
     U7Object* obj = it->second.get();
+
+    // A spell fire field stays armed until ExpireFireField drops its timer.
+    // Hiding it alone leaves the id in the round list.
+    const int shape = obj->m_shapeData ? obj->m_shapeData->m_shape : obj->m_ObjectType;
+    if (shape == kFireFieldShape || shape == kEnergyFieldShape)
+    {
+        obj->ExpireFireField();
+        return;
+    }
 
     if (g_LuaDebug)
     {
@@ -3035,33 +3046,13 @@ static int LuaGetDistanceBetween(lua_State *L)
     return 1;
 }
 
-// 0x001A | find_direction
-static int LuaFindDirectionBetween(lua_State *L)
+// Direction 0-7 must match UC_FACE_DIR / Exult: 0=N, 1=NE, 2=E, 3=SE, 4=S, 5=SW, 6=W, 7=NW.
+// Engine axes: +X east, +Z south, so north is -Z.
+static int DirectionFromDelta(float dx, float dz)
 {
-    int from_obj_id = (int)lua_tointeger(L, 1);
-    int to_obj_id = (int)lua_tointeger(L, 2);
-
-    if (g_objectList.find(from_obj_id) == g_objectList.end() ||
-        g_objectList.find(to_obj_id) == g_objectList.end())
-    {
-        lua_pushinteger(L, 0);
-        return 1;
-    }
-
-    Vector3 from_pos = g_objectList[from_obj_id]->GetPos();
-    Vector3 to_pos = g_objectList[to_obj_id]->GetPos();
-
-    // Direction 0-7 must match UC_FACE_DIR / Exult: 0=N, 1=NE, 2=E, 3=SE, 4=S, 5=SW, 6=W, 7=NW.
-    // Engine axes: +X east, +Z south, so north is -Z. Old atan2(dz,dx)-90 was 180° off.
-    const float dx = to_pos.x - from_pos.x;
-    const float dz = to_pos.z - from_pos.z;
     if (dx * dx + dz * dz < 1e-8f)
-    {
-        lua_pushinteger(L, 0);
-        return 1;
-    }
+        return 0;
 
-    // Angle from north, clockwise: atan2(east, north) = atan2(dx, -dz).
     float degrees = atan2f(dx, -dz) * (180.0f / 3.14159265f);
     if (degrees < 0.0f)
         degrees += 360.0f;
@@ -3069,8 +3060,39 @@ static int LuaFindDirectionBetween(lua_State *L)
     int direction = (int)((degrees + 22.5f) / 45.0f) % 8;
     if (direction < 0)
         direction += 8;
+    return direction;
+}
 
-    lua_pushinteger(L, direction);
+// 0x001A | find_direction
+// find_direction(fromId, toId) or find_direction(fromId, tileX, tileZ).
+static int LuaFindDirectionBetween(lua_State *L)
+{
+    int from_obj_id = (int)lua_tointeger(L, 1);
+    if (g_objectList.find(from_obj_id) == g_objectList.end())
+    {
+        lua_pushinteger(L, 0);
+        return 1;
+    }
+
+    Vector3 from_pos = g_objectList[from_obj_id]->GetPos();
+
+    if (lua_gettop(L) >= 3 && lua_isnumber(L, 2) && lua_isnumber(L, 3))
+    {
+        const float dx = (float)lua_tonumber(L, 2) - from_pos.x;
+        const float dz = (float)lua_tonumber(L, 3) - from_pos.z;
+        lua_pushinteger(L, DirectionFromDelta(dx, dz));
+        return 1;
+    }
+
+    int to_obj_id = (int)lua_tointeger(L, 2);
+    if (g_objectList.find(to_obj_id) == g_objectList.end())
+    {
+        lua_pushinteger(L, 0);
+        return 1;
+    }
+
+    Vector3 to_pos = g_objectList[to_obj_id]->GetPos();
+    lua_pushinteger(L, DirectionFromDelta(to_pos.x - from_pos.x, to_pos.z - from_pos.z));
     return 1;
 }
 
@@ -3876,20 +3898,51 @@ static int LuaSetToAttack(lua_State *L)
     return 1;
 }
 
+// Actor from an object id, an NPC id, or an Exult avatar ref.
+static U7Object* ResolveAttackModeActor(int id)
+{
+    if (id == 356 || id == -356)
+        id = 0;
+    if (id < 0 && id > -256)
+        id = -id;
+    if (id >= 0 && id <= 255 && g_NPCData.find(id) != g_NPCData.end() && g_NPCData[id])
+    {
+        U7Object* npc = GetObjectFromID(g_NPCData[id]->m_objectID);
+        if (npc)
+            return npc;
+    }
+    return GetObjectFromID(id);
+}
+
 // 0x004B | set_attack_mode
+// Exult (actor, mode) or decompiler (mode, actor). Mode 7 is flee.
 static int LuaSetAttackMode(lua_State *L)
 {
-    int npc_id = (int)lua_tointeger(L, 1);
-    int mode = (int)lua_tointeger(L, 2);
+    const int a = (int)luaL_checkinteger(L, 1);
+    const int b = (int)luaL_checkinteger(L, 2);
 
-    // Attack modes: 0=nearest, 1=weakest, 2=strongest, 3=berserk, etc.
-    // Store in NPC data - could use a new field or repurpose existing one
-    if (g_NPCData.find(npc_id) != g_NPCData.end())
+    U7Object* actor = nullptr;
+    int mode = 0;
+    U7Object* fromA = ResolveAttackModeActor(a);
+    U7Object* fromB = ResolveAttackModeActor(b);
+    if (fromA && b >= 0 && b <= 15)
     {
-        // For now, just validate the call succeeds
-        // In full implementation, would set combat AI behavior
+        actor = fromA;
+        mode = b;
+    }
+    else if (fromB && a >= 0 && a <= 15)
+    {
+        actor = fromB;
+        mode = a;
+    }
+    else if (fromA)
+    {
+        actor = fromA;
+        mode = b;
     }
 
+    if (actor)
+        actor->SetAttackMode(mode);
     return 0;
 }
 
@@ -5622,6 +5675,206 @@ static int LuaClickOnItem(lua_State *L)
     return lua_yield(L, 0);
 }
 
+// Ground-target picker. Does not change click_on_item's integer return.
+// Returns objId, tileX, tileZ, lift. Cancel (Esc) resumes with a single 0,
+// so tileX is nil. A forced combat tile returns immediately.
+// Optional arg is the caster, used to pick the walkable surface near their feet.
+static int LuaClickOnTile(lua_State *L)
+{
+    if (g_StateMachine && g_StateMachine->GetCurrentState() == STATE_MAINSTATE)
+    {
+        auto* main = dynamic_cast<MainState*>(g_StateMachine->GetState(STATE_MAINSTATE));
+        if (main)
+        {
+            int objId = 0;
+            int tileX = 0;
+            int tileZ = 0;
+            float tileY = 0.0f;
+            if (main->TakeForcedSpellTile(objId, tileX, tileZ, tileY))
+            {
+                lua_pushinteger(L, objId);
+                lua_pushinteger(L, tileX);
+                lua_pushinteger(L, tileZ);
+                lua_pushnumber(L, tileY);
+                return 4;
+            }
+
+            float preferredY = 0.0f;
+            if (lua_gettop(L) >= 1 && lua_isnumber(L, 1))
+            {
+                U7Object* caster = GetObjectFromID((int)lua_tointeger(L, 1));
+                if (caster)
+                    preferredY = caster->m_Pos.y;
+            }
+            else if (g_Player && g_Player->GetAvatarObject())
+            {
+                preferredY = g_Player->GetAvatarObject()->m_Pos.y;
+            }
+
+            if (g_LuaDebug) NPCDebugPrint("LUA: click_on_tile → tile selection mode");
+            main->StartTileSelectionMode(preferredY);
+            main->SetLuaFunction(g_ScriptingSystem->m_currentScript);
+        }
+    }
+    return lua_yield(L, 0);
+}
+
+// Spell fire field: quality 100 and a real 20s removal. Shape 895 burns either way.
+static int LuaArmFireField(lua_State *L)
+{
+    int object_id = (int)luaL_checkinteger(L, 1);
+    U7Object* obj = GetObjectFromID(object_id);
+    if (!obj)
+        return 0;
+
+    const int shape = obj->m_shapeData ? obj->m_shapeData->m_shape : obj->m_ObjectType;
+    if (shape != kFireFieldShape)
+        return 0;
+
+    obj->ArmFireField(kFireFieldLifetimeSec);
+    return 0;
+}
+
+// Por Xen event 2. The caster is the object the gesture script calls back.
+static int LuaCauseDancing(lua_State *L)
+{
+    U7Object* caster = GetObjectFromID((int)luaL_checkinteger(L, 1));
+    if (caster)
+        caster->CauseDancing();
+    return 0;
+}
+
+// Quas Wis event 2.
+static int LuaCauseFear(lua_State *L)
+{
+    U7Object* caster = GetObjectFromID((int)luaL_checkinteger(L, 1));
+    if (caster)
+        caster->CauseFear();
+    return 0;
+}
+
+// In Quas Xen. The copy appears 4 usecode ticks later.
+static int LuaScheduleClone(lua_State *L)
+{
+    ScheduleClone((int)luaL_checkinteger(L, 1));
+    return 0;
+}
+
+// Kal Flam Grav. Twelve fire fields around the chosen tile.
+static int LuaPlaceFireRing(lua_State *L)
+{
+    const int tileX = (int)luaL_checkinteger(L, 1);
+    const int tileZ = (int)luaL_checkinteger(L, 2);
+    const float lift = (float)luaL_checknumber(L, 3);
+    PlaceFireRing(tileX, tileZ, lift);
+    return 0;
+}
+
+// Vas In Flam Grav.
+static int LuaFlameStrike(lua_State *L)
+{
+    U7Object* caster = GetObjectFromID((int)luaL_checkinteger(L, 1));
+    if (caster)
+        CastFlameStrike(caster);
+    return 0;
+}
+
+// Vas Oort Hur.
+static int LuaStartMagicStorm(lua_State *L)
+{
+    U7Object* caster = GetObjectFromID((int)luaL_checkinteger(L, 1));
+    if (caster)
+        StartMagicStorm(caster);
+    return 0;
+}
+
+// In Nox Grav. The field stays until it poisons someone.
+static int LuaArmPoisonField(lua_State *L)
+{
+    U7Object* obj = GetObjectFromID((int)luaL_checkinteger(L, 1));
+    if (obj)
+        obj->ArmPoisonField();
+    return 0;
+}
+
+// In Zu Grav. The field stays until it puts someone to sleep.
+static int LuaArmSleepField(lua_State *L)
+{
+    U7Object* obj = GetObjectFromID((int)luaL_checkinteger(L, 1));
+    if (obj)
+        obj->ArmSleepField();
+    return 0;
+}
+
+// Vas Por Ylem event 2.
+static int LuaCauseTremor(lua_State *L)
+{
+    U7Object* caster = GetObjectFromID((int)luaL_checkinteger(L, 1));
+    if (caster)
+        CastTremor(caster);
+    return 0;
+}
+
+// Rel Ylem. The lead becomes a gold nugget one second later.
+static int LuaScheduleCreateGold(lua_State *L)
+{
+    ScheduleCreateGold((int)luaL_checkinteger(L, 1));
+    return 0;
+}
+
+// In Sanct Grav. True when a walkable surface is within 2 of the chosen lift.
+static int LuaEnergyFieldTileOpen(lua_State *L)
+{
+    const int tileX = (int)luaL_checkinteger(L, 1);
+    const int tileZ = (int)luaL_checkinteger(L, 2);
+    const float lift = (float)luaL_checknumber(L, 3);
+    lua_pushboolean(L, SpellSurfaceOpen(tileX, tileZ, lift) ? 1 : 0);
+    return 1;
+}
+
+// In Sanct Grav. Shape 768, impassable, removed after 40 seconds. No damage.
+static int LuaPlaceEnergyField(lua_State *L)
+{
+    const int tileX = (int)luaL_checkinteger(L, 1);
+    const int tileZ = (int)luaL_checkinteger(L, 2);
+    const float lift = (float)luaL_checknumber(L, 3);
+    lua_pushinteger(L, PlaceEnergyField(tileX, tileZ, lift));
+    return 1;
+}
+
+// Tym Vas Flam. The marker is attacked after 2.4s and removed after 2.8s.
+static int LuaScheduleDelayedBlast(lua_State *L)
+{
+    ScheduleDelayedBlast((int)luaL_checkinteger(L, 1), (int)luaL_checkinteger(L, 2));
+    return 0;
+}
+
+// Vas An Xen Ex.
+static int LuaMassCharm(lua_State *L)
+{
+    U7Object* caster = GetObjectFromID((int)luaL_checkinteger(L, 1));
+    if (caster)
+        CastMassCharm(caster);
+    return 0;
+}
+
+// In Vas Por.
+static int LuaMassMight(lua_State *L)
+{
+    U7Object* caster = GetObjectFromID((int)luaL_checkinteger(L, 1));
+    if (caster)
+        CastMassMight(caster);
+    return 0;
+}
+
+// Vas Mani. Heals the party and clears poison and paralysis.
+static int LuaCastRestoration(lua_State *L)
+{
+    U7Object* caster = GetObjectFromID((int)luaL_checkinteger(L, 1));
+    CastRestoration(caster);
+    return 0;
+}
+
 // 0x000C | input_numeric_value
 static int LuaInputNumericValue(lua_State *L)
 {
@@ -5656,12 +5909,43 @@ static int LuaEarthquake(lua_State *L)
     return 0;
 }
 
+// Vas Kal An Mani. Sprite, rain, then the kill after the gesture.
+static int LuaCastArmageddon(lua_State *L)
+{
+    U7Object* caster = GetObjectFromID((int)luaL_checkinteger(L, 1));
+    if (caster)
+        CastArmageddon(caster);
+    return 0;
+}
+
 // 0x005B | armageddon
 static int LuaArmageddon(lua_State *L)
 {
-    // End of world event not implemented
-    // Would kill all NPCs and trigger finale
+    U7Object* caster = nullptr;
+    if (lua_gettop(L) >= 1 && lua_isnumber(L, 1))
+        caster = GetObjectFromID((int)lua_tointeger(L, 1));
+    if (!caster && g_Player)
+        caster = g_Player->GetAvatarObject();
+    if (caster)
+        CastArmageddon(caster);
     return 0;
+}
+
+// Vas Corp.
+static int LuaMassDeath(lua_State *L)
+{
+    U7Object* caster = GetObjectFromID((int)luaL_checkinteger(L, 1));
+    if (caster)
+        CastMassDeath(caster);
+    return 0;
+}
+
+// In Mani Corp. True when a dead NPC stands back up.
+static int LuaCastResurrect(lua_State *L)
+{
+    U7Object* target = GetObjectFromID((int)luaL_checkinteger(L, 1));
+    lua_pushboolean(L, CastResurrect(target) ? 1 : 0);
+    return 1;
 }
 
 // 0x0050 | wizard_eye(ticks [, unused]) — temporary freecam (Exult ShowWizardEye).
@@ -5792,12 +6076,13 @@ static int LuaFlashMouse(lua_State *L)
     return 0;
 }
 
-// 0x0056 | stop_time
+// 0x0056 | stop_time. Exult multiplies the argument by 250 ms. 100 is 25 seconds.
 static int LuaStopTime(lua_State *L)
 {
-    // int duration = (int)lua_tointeger(L, 1);
-
-    // Time pause not implemented - would freeze game clock
+    int length = 100;
+    if (lua_gettop(L) >= 1 && lua_isnumber(L, 1))
+        length = (int)lua_tointeger(L, 1);
+    StartTimeStop(length);
     return 0;
 }
 
@@ -7108,6 +7393,27 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction( "in_gump_mode", LuaInGumpMode);
     g_ScriptingSystem->RegisterScriptFunction( "book_mode", LuaBookMode);
     g_ScriptingSystem->RegisterScriptFunction( "click_on_item", LuaClickOnItem);
+    g_ScriptingSystem->RegisterScriptFunction( "click_on_tile", LuaClickOnTile);
+    g_ScriptingSystem->RegisterScriptFunction( "arm_fire_field", LuaArmFireField);
+    g_ScriptingSystem->RegisterScriptFunction( "cause_dancing", LuaCauseDancing);
+    g_ScriptingSystem->RegisterScriptFunction( "cause_fear", LuaCauseFear);
+    g_ScriptingSystem->RegisterScriptFunction( "schedule_clone", LuaScheduleClone);
+    g_ScriptingSystem->RegisterScriptFunction( "place_fire_ring", LuaPlaceFireRing);
+    g_ScriptingSystem->RegisterScriptFunction( "flame_strike", LuaFlameStrike);
+    g_ScriptingSystem->RegisterScriptFunction( "start_magic_storm", LuaStartMagicStorm);
+    g_ScriptingSystem->RegisterScriptFunction( "arm_poison_field", LuaArmPoisonField);
+    g_ScriptingSystem->RegisterScriptFunction( "arm_sleep_field", LuaArmSleepField);
+    g_ScriptingSystem->RegisterScriptFunction( "cause_tremor", LuaCauseTremor);
+    g_ScriptingSystem->RegisterScriptFunction( "schedule_create_gold", LuaScheduleCreateGold);
+    g_ScriptingSystem->RegisterScriptFunction( "energy_field_tile_open", LuaEnergyFieldTileOpen);
+    g_ScriptingSystem->RegisterScriptFunction( "place_energy_field", LuaPlaceEnergyField);
+    g_ScriptingSystem->RegisterScriptFunction( "schedule_delayed_blast", LuaScheduleDelayedBlast);
+    g_ScriptingSystem->RegisterScriptFunction( "mass_charm", LuaMassCharm);
+    g_ScriptingSystem->RegisterScriptFunction( "mass_might", LuaMassMight);
+    g_ScriptingSystem->RegisterScriptFunction( "cast_restoration", LuaCastRestoration);
+    g_ScriptingSystem->RegisterScriptFunction( "mass_death", LuaMassDeath);
+    g_ScriptingSystem->RegisterScriptFunction( "cast_armageddon", LuaCastArmageddon);
+    g_ScriptingSystem->RegisterScriptFunction( "cast_resurrect", LuaCastResurrect);
     g_ScriptingSystem->RegisterScriptFunction( "input_numeric_value", LuaInputNumericValue);
     // Note: clear_answers registered as LuaClearAnswersExult to avoid conflict with existing LuaClearAnswers
     g_ScriptingSystem->RegisterScriptFunction( "earthquake", LuaEarthquake);

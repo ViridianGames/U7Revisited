@@ -71,8 +71,21 @@ enum class ContactFieldType : int
 {
 	None = -1,
 	Caltrops = 0,
-	// Fire / poison / sleep / campfire — later
+	// Poison / sleep / campfire — later
 };
+
+// Shape 895. Spell fields are removed after 100 usecode ticks (20s at 200 ms).
+// A map field with no timer still burns and is left in place.
+constexpr int kFireFieldShape = 895;
+constexpr int kPoisonFieldShape = 900;
+constexpr int kSleepFieldShape = 902;
+// Seventh Circle Energy Field. Impassable for 200 usecode ticks (40s). No damage.
+constexpr int kEnergyFieldShape = 768;
+constexpr float kFireFieldLifetimeSec = 20.0f;
+// Exult Field_frame_animator: 10% chance each 100 ms frame. Mean gap is 1 second.
+constexpr float kFireFieldPulseSec = 1.0f;
+// 20 seconds at about one action every 3 seconds. A round is one pass through initiative.
+constexpr int kFireFieldTurnRounds = 7;
 
 ContactFieldType GetContactFieldType(int shape);
 
@@ -80,8 +93,41 @@ ContactFieldType GetContactFieldType(int shape);
 // Returns true if damage was applied. Does not remove the caltrop.
 bool ApplyCaltropDamage(U7Object* victim);
 
-// On tile enter: scan underfoot contact fields (caltrops for now) and apply effects.
+// Exult fire field: flat 2–4 fire HP. Monster immunity zeros it, vulnerability
+// doubles it. Armor does not soak. Sleepers wake unless they are knocked out.
+// The field is not consumed. Party and the caster are included.
+// A Flame Strike field also pulls team-1 victims and its caster into combat.
+void ApplyFireFieldDamage(U7Object* victim, U7Object* field = nullptr);
+
+// Team-1 NPCs and monsters join the current fight. Starts combat when none is
+// running. Party members and other teams are left as they are.
+void PullEnemyIntoCombat(U7Object* unit);
+
+// Anyone standing on this field's tile takes one fire pulse.
+void ApplyFireFieldPulse(U7Object* field);
+
+// Poison (900) and sleep (902). A 50% roll applies the status when the
+// creature does not already have it, and that success removes the field.
+// A miss, or an already-affected creature, leaves the field in place.
+// Step-in passes announceResist so a clean miss writes "Name resists sleep field!"
+// Returns true when this victim consumed the field.
+bool TryConsumeHazardField(U7Object* field, U7Object* victim, bool announceResist = false);
+// One pass over creatures on the field's tile. True when the field is consumed.
+// A cast passes announceResist so a creature already standing there rolls now.
+bool PulseHazardField(U7Object* field, bool announceResist = false);
+
+// Spell fields only. Turn-based combat counts rounds instead of the wall clock.
+void NoteTimedFireField(int objectId);
+void ForgetTimedFireField(int objectId);
+void AdvanceFireFieldRounds();
+void FreezeFireFieldsForTurns();
+void ReleaseFireFieldsToRealTime();
+
+// On tile enter: scan underfoot contact fields (caltrops, fire) and apply effects.
 void CheckContactFieldsAt(U7Object* unit);
+
+// Turn-based: one fire pulse for a creature who starts their turn on a field.
+void ApplyStandingFireFieldDamage(U7Object* unit);
 
 // Ready-hand weapon for combat (RIGHT_HAND first, then LEFT_HAND).
 // Prefers shapes present in WEAPONS.DAT so a shield in the off-hand is ignored.

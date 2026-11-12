@@ -638,6 +638,13 @@ void MainState::GiveSandboxReagentBag()
 	if (!avatar)
 		return;
 
+	// Magic is the mana pool. Both copies feed a display (side panel vs stats gump).
+	constexpr int kSandboxMana = 100;
+	avatarNpc->magic = static_cast<unsigned char>(kSandboxMana);
+	avatar->m_mana = static_cast<float>(kSandboxMana);
+	g_Player->SetMagic(kSandboxMana);
+	AddConsoleString("Sandbox: Avatar mana " + std::to_string(kSandboxMana));
+
 	const int backpackId = avatarNpc->GetEquippedItem(EquipmentSlot::SLOT_BACKPACK);
 	U7Object* backpack = GetObjectFromID(backpackId);
 	if (!backpack)
@@ -754,6 +761,12 @@ void MainState::UpdateTime()
 	if (!m_paused)
 	{
 		float thisTime = GetTime();
+		// An Tym freezes the game clock. Catch-up minutes would skip the pause.
+		if (TimeIsStopped())
+		{
+			g_lastTime = thisTime;
+			return;
+		}
 		bool minuteAdvanced = false;
 		if (thisTime - g_lastTime >= g_secsPerMinute)
 		{
@@ -946,6 +959,8 @@ void MainState::HandleEscapeKey()
 		g_ScriptingSystem->ResumeCoroutine(m_luaFunction, {0});
 		m_doingObjectSelection = false;
 		m_objectSelectionMode = false;
+		m_selectingGroundTile = false;
+		m_deferGroundTileClick = false;
 		m_luaFunction.clear();
 		return;
 	}
@@ -1631,6 +1646,66 @@ U7Object* MainState::ObjectUnderUseCursor(bool& fromEmbeddedPaperdoll)
 	return nullptr;
 }
 
+static float SurfaceNear(int tx, int tz, float preferredY)
+{
+	if (!g_pathfindingSystem)
+		return preferredY;
+	const std::vector<float> heights = g_pathfindingSystem->GetWalkableSurfaceHeights(tx, tz);
+	if (heights.empty())
+		return preferredY;
+
+	float best = heights[0];
+	float bestDiff = fabsf(best - preferredY);
+	for (float h : heights)
+	{
+		const float d = fabsf(h - preferredY);
+		if (d < bestDiff)
+		{
+			bestDiff = d;
+			best = h;
+		}
+	}
+	return best;
+}
+
+// Tile a ground spell will use. A creature click uses that creature's feet.
+// Any other click, including empty ground, uses the cell under the cursor.
+static bool GroundSpellTileFrom(U7Object* selected, float preferredY, int& objId, int& tx, int& tz, float& y)
+{
+	objId = 0;
+	const bool creature = selected
+		&& !selected->m_isContained
+		&& (selected->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC
+			|| selected->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_MONSTER);
+	if (creature)
+	{
+		objId = static_cast<int>(selected->m_ID);
+		tx = static_cast<int>(std::floor(selected->m_Pos.x));
+		tz = static_cast<int>(std::floor(selected->m_Pos.z));
+		y = selected->m_Pos.y;
+	}
+	else
+	{
+		tx = static_cast<int>(std::floor(g_terrainUnderMousePointer.x));
+		tz = static_cast<int>(std::floor(g_terrainUnderMousePointer.z));
+		y = SurfaceNear(tx, tz, preferredY);
+	}
+
+	if (tx < 0 || tz < 0 || tx >= 3072 || tz >= 3072)
+		return false;
+	return true;
+}
+
+void MainState::StartTileSelectionMode(float preferredY)
+{
+	StartObjectSelectionMode();
+	m_selectingGroundTile = true;
+	m_tileSelectionPreferredY = preferredY;
+	// CastSpell runs from the gump update, before this frame's click is resolved.
+	// That double-click must not also choose the tile.
+	m_deferGroundTileClick = true;
+}
+
 void MainState::CommitUseCursorTarget(int objectId)
 {
 	m_pendingUseTargetId = -1;
@@ -1645,9 +1720,112 @@ void MainState::CommitUseCursorTarget(int objectId)
 
 	m_objectSelectionMode = false;
 	m_doingObjectSelection = false;
+	m_selectingGroundTile = false;
 	ClearObjectInfoTooltip();
 	g_ScriptingSystem->ResumeCoroutine(m_luaFunction, { object->m_ID });
 	m_luaFunction.clear();
+}
+
+void MainState::CommitTileSelection(U7Object* selected)
+{
+	m_pendingUseTargetId = -1;
+	if (!m_objectSelectionMode || !m_selectingGroundTile || !g_ScriptingSystem)
+		return;
+	if (!g_ScriptingSystem->IsCoroutineYielded(m_luaFunction))
+		return;
+
+	int objId = 0;
+	int tx = 0;
+	int tz = 0;
+	float y = m_tileSelectionPreferredY;
+	if (!GroundSpellTileFrom(selected, m_tileSelectionPreferredY, objId, tx, tz, y))
+		return;
+
+	m_objectSelectionMode = false;
+	m_doingObjectSelection = false;
+	m_selectingGroundTile = false;
+	m_deferGroundTileClick = false;
+	ClearObjectInfoTooltip();
+	g_ScriptingSystem->ResumeCoroutine(m_luaFunction, {
+		static_cast<lua_Integer>(objId),
+		static_cast<lua_Integer>(tx),
+		static_cast<lua_Integer>(tz),
+		static_cast<double>(y)
+	});
+	m_luaFunction.clear();
+}
+
+void MainState::DrawGroundSpellTargetMarker()
+{
+	float preferredY = m_tileSelectionPreferredY;
+	bool show = m_selectingGroundTile;
+	if (!show && IsCombatSpellTargeting())
+	{
+		SpellData* spell = GetSpellData(m_combatSpellTargetingSpellId);
+		if (spell && spell->groundTarget)
+		{
+			show = true;
+			U7Object* caster = GetObjectFromID(m_combatSpellTargetingCasterId);
+			if (caster)
+				preferredY = caster->m_Pos.y;
+		}
+	}
+	if (!show || m_paused)
+		return;
+	if (g_mouseOverUI)
+		return;
+	if (g_gumpManager && (g_gumpManager->m_isMouseOverGump || g_gumpManager->m_draggingObject))
+		return;
+
+	int objId = 0;
+	int tx = 0;
+	int tz = 0;
+	float y = preferredY;
+	if (!GroundSpellTileFrom(g_objectUnderMousePointer, preferredY, objId, tx, tz, y))
+		return;
+
+	const float yFill = CombatGroundMarkerY(y);
+	const float x0 = static_cast<float>(tx);
+	const float z0 = static_cast<float>(tz);
+	const float x1 = x0 + 1.0f;
+	const float z1 = z0 + 1.0f;
+
+	auto emitEdge = [&](float ax, float az, float bx, float bz)
+	{
+		const float edx = bx - ax;
+		const float edz = bz - az;
+		const float len = sqrtf(edx * edx + edz * edz);
+		if (len < 1e-6f)
+			return;
+		constexpr float kHalf = 0.035f;
+		const float px = (-edz / len) * kHalf;
+		const float pz = (edx / len) * kHalf;
+		const float ye = yFill + 0.02f;
+		rlVertex3f(ax + px, ye, az + pz);
+		rlVertex3f(ax - px, ye, az - pz);
+		rlVertex3f(bx - px, ye, bz - pz);
+		rlVertex3f(ax + px, ye, az + pz);
+		rlVertex3f(bx - px, ye, bz - pz);
+		rlVertex3f(bx + px, ye, bz + pz);
+	};
+
+	rlDisableDepthMask();
+	rlBegin(RL_TRIANGLES);
+	rlColor4ub(255, 96, 24, 150);
+	rlVertex3f(x0, yFill, z0);
+	rlVertex3f(x1, yFill, z0);
+	rlVertex3f(x1, yFill, z1);
+	rlVertex3f(x0, yFill, z0);
+	rlVertex3f(x1, yFill, z1);
+	rlVertex3f(x0, yFill, z1);
+
+	rlColor4ub(255, 220, 80, 230);
+	emitEdge(x0, z0, x1, z0);
+	emitEdge(x1, z0, x1, z1);
+	emitEdge(x1, z1, x0, z1);
+	emitEdge(x0, z1, x0, z0);
+	rlEnd();
+	rlEnableDepthMask();
 }
 
 void MainState::OpenUseCursorContainer(U7Object* object)
@@ -1668,6 +1846,14 @@ void MainState::OpenUseCursorContainer(U7Object* object)
 
 void MainState::ResolveUseCursorTarget()
 {
+	// Opening cast click is still this frame's double-click. Wait for a new one.
+	if (m_deferGroundTileClick)
+	{
+		m_deferGroundTileClick = false;
+		if (m_selectingGroundTile)
+			return;
+	}
+
 	if (!m_objectSelectionMode)
 	{
 		m_pendingUseTargetId = -1;
@@ -1697,6 +1883,29 @@ void MainState::ResolveUseCursorTarget()
 	if ((single || dbl) && !dragging && !blockedByUi)
 	{
 		m_handledDoubleLeftClickThisFrame = true;
+
+		if (m_selectingGroundTile)
+		{
+			if (dbl && selected && IsUseCursorContainer(selected))
+			{
+				m_pendingUseTargetId = -1;
+				OpenUseCursorContainer(selected);
+				return;
+			}
+			if (selected && selected->m_isContained)
+			{
+				m_pendingUseTargetId = -1;
+				return;
+			}
+			if (selected && IsUseCursorContainer(selected) && !dbl)
+			{
+				m_pendingUseTargetId = selected->m_ID;
+				m_pendingUseTargetTime = g_InputSystem->m_LastLeftClickTime;
+				return;
+			}
+			CommitTileSelection(selected);
+			return;
+		}
 
 		if (dbl && selected && IsUseCursorContainer(selected))
 		{
@@ -1728,7 +1937,10 @@ void MainState::ResolveUseCursorTarget()
 	if (m_pendingUseTargetId != -1
 		&& GetTime() - m_pendingUseTargetTime >= g_InputSystem->m_DoubleClickTime)
 	{
-		CommitUseCursorTarget(m_pendingUseTargetId);
+		if (m_selectingGroundTile)
+			CommitTileSelection(GetObjectFromID(m_pendingUseTargetId));
+		else
+			CommitUseCursorTarget(m_pendingUseTargetId);
 	}
 }
 
@@ -1996,7 +2208,7 @@ void MainState::HandleAvatarMovement()
 
 	// Pose scripts (stumble, cast, item anim) own the Avatar until they finish.
 	// Keyboard and click-to-move wait. Ordinary Lua scripts do not set this.
-	if (avatarCheck && avatarCheck->IsInUsecodeScript())
+	if (avatarCheck && (avatarCheck->IsInUsecodeScript() || avatarCheck->IsTrembling()))
 	{
 		avatarCheck->m_pathWaypoints.clear();
 		avatarCheck->m_currentWaypointIndex = 0;
@@ -2468,6 +2680,7 @@ void MainState::Update()
 
 	UpdateTime();
 	UpdateWizardEye();
+	UpdateSixthCircleEffects();
 
 	if (MainStateModes::MAIN_STATE_MODE_TRINSIC_DEMO == m_gameMode && m_ranIntroScript && g_allowInput && !m_helpConsoleLineShown)
 	{
@@ -3949,6 +4162,8 @@ void MainState::Draw()
 
 	if (g_isCombatMode && m_combatMode)
 		m_combatMode->DrawWorld(*this);
+
+	DrawGroundSpellTargetMarker();
 
 	EndMode3D();
 
@@ -5531,6 +5746,7 @@ void MainState::StopCombatUnitActions(U7Object* member)
 	member->m_target = 0;
 	member->m_combatSpellId = -1;
 	member->m_combatSpellTargetId = 0;
+	member->m_combatSpellHasTile = false;
 	member->m_combatMoveOrder = false;
 	member->m_combatPathTargetId = 0;
 	member->m_pathWaypoints.clear();
@@ -5598,6 +5814,12 @@ std::string MainState::DescribeCombatOrder(const U7Object* member) const
 			const std::string spellName = spell ? spell->name : "spell";
 			if (spell && !spell->targeted)
 				return "Cast " + spellName;
+			if (member->m_combatSpellHasTile)
+			{
+				return "Cast " + spellName + " at ("
+					+ std::to_string(member->m_combatSpellTileX) + ", "
+					+ std::to_string(member->m_combatSpellTileZ) + ")";
+			}
 			U7Object* target = GetObjectFromID(member->m_combatSpellTargetId);
 			const std::string targetName = (target && !target->m_name.empty()) ? target->m_name : "target";
 			return "Cast " + spellName + " on " + targetName;
@@ -5648,6 +5870,7 @@ void MainState::IssueCombatAttackOrder(U7Object* member, U7Object* enemy)
 	member->m_target = enemy->m_ID;
 	member->m_combatSpellId = -1;
 	member->m_combatSpellTargetId = 0;
+	member->m_combatSpellHasTile = false;
 	member->m_combatMoveOrder = false;
 	member->m_combatOrderMode = CombatOrderMode::Attack;
 
@@ -5908,6 +6131,7 @@ void MainState::ClearCombatSessionForLoad()
 	m_combatApproachMessage.clear();
 	CancelCombatSpellTargeting();
 	m_forcedSpellTargetObjectId = -1;
+	m_forcedSpellTileValid = false;
 	g_isCombatMode = false;
 	if (g_defaultCursor)
 	{
@@ -6125,6 +6349,7 @@ void MainState::LeaveCombatMode()
 	m_combatApproachMessage.clear();
 	CancelCombatSpellTargeting();
 	m_forcedSpellTargetObjectId = -1;
+	m_forcedSpellTileValid = false;
 	ClearCombatPartyTargets();
 	// Drop leftover combat chase paths so companions resume formation follow.
 	ClearPartyFollowPaths();
@@ -6168,7 +6393,10 @@ bool MainState::BeginCombatSpellTargeting(int spellId, int casterObjectId)
 	const std::string label = spell->words.empty()
 		? spell->name
 		: (spell->name + " (" + spell->words + ")");
-	AddCombatConsoleString("Select a target for " + label + ".", SKYBLUE);
+	if (spell->groundTarget)
+		AddCombatConsoleString("Select a tile for " + label + ".", SKYBLUE);
+	else
+		AddCombatConsoleString("Select a target for " + label + ".", SKYBLUE);
 	return true;
 }
 
@@ -6183,6 +6411,27 @@ int MainState::TakeForcedSpellTarget()
 	const int id = m_forcedSpellTargetObjectId;
 	m_forcedSpellTargetObjectId = -1;
 	return id;
+}
+
+void MainState::SetForcedSpellTile(int objId, int tileX, int tileZ, float tileY)
+{
+	m_forcedSpellTileValid = true;
+	m_forcedSpellTileObjId = objId;
+	m_forcedSpellTileX = tileX;
+	m_forcedSpellTileZ = tileZ;
+	m_forcedSpellTileY = tileY;
+}
+
+bool MainState::TakeForcedSpellTile(int& objId, int& tileX, int& tileZ, float& tileY)
+{
+	if (!m_forcedSpellTileValid)
+		return false;
+	objId = m_forcedSpellTileObjId;
+	tileX = m_forcedSpellTileX;
+	tileZ = m_forcedSpellTileZ;
+	tileY = m_forcedSpellTileY;
+	m_forcedSpellTileValid = false;
+	return true;
 }
 
 void MainState::IssueCombatSpellOrder(U7Object* caster, int spellId, U7Object* target)
@@ -6223,6 +6472,7 @@ void MainState::IssueCombatSpellOrder(U7Object* caster, int spellId, U7Object* t
 
 		caster->m_combatSpellId = -1;
 		caster->m_combatSpellTargetId = 0;
+		caster->m_combatSpellHasTile = false;
 		caster->m_target = 0;
 		caster->m_combatPathTargetId = 0;
 		caster->m_pathWaypoints.clear();
@@ -6251,6 +6501,7 @@ void MainState::IssueCombatSpellOrder(U7Object* caster, int spellId, U7Object* t
 
 	caster->m_combatSpellId = spellId;
 	caster->m_combatSpellTargetId = target->m_ID;
+	caster->m_combatSpellHasTile = false;
 	caster->m_target = spell->targeted ? target->m_ID : 0;
 	caster->m_combatMoveOrder = false;
 	// Queued cast is the current manual order; do not fall into Auto/melee.
@@ -6269,6 +6520,89 @@ void MainState::IssueCombatSpellOrder(U7Object* caster, int spellId, U7Object* t
 	}
 }
 
+void MainState::IssueCombatGroundSpellOrder(U7Object* caster, int spellId, int tileX, int tileZ, float tileY)
+{
+	if (!caster)
+		return;
+
+	SpellData* spell = GetSpellData(spellId);
+	if (!spell)
+		return;
+
+	if (tileX < 0 || tileZ < 0 || tileX >= 3072 || tileZ >= 3072)
+		return;
+
+	if (m_combatMode && m_combatMode->GetStyle() == CombatStyle::TurnBased)
+	{
+		auto* tb = static_cast<TurnBasedCombatMode*>(m_combatMode.get());
+		if (tb->GetPhase() != TurnBasedCombatMode::Phase::Planning)
+		{
+			AddCombatConsoleString("Cannot cast while resolving an action.", YELLOW);
+			return;
+		}
+		if (tb->GetActiveUnitId() != static_cast<int>(caster->m_ID))
+		{
+			AddCombatConsoleString("Only the active unit can cast this turn.", YELLOW);
+			return;
+		}
+		if (!tb->TryCommitAct())
+		{
+			if (tb->GetApRemaining() + 0.001f < tb->GetHalfApThreshold())
+				AddCombatConsoleString("Moved too far to act this turn.", YELLOW);
+			else
+				AddCombatConsoleString("Already acted this turn.", YELLOW);
+			return;
+		}
+
+		caster->m_combatSpellId = -1;
+		caster->m_combatSpellTargetId = 0;
+		caster->m_combatSpellHasTile = false;
+		caster->m_target = 0;
+		caster->m_combatPathTargetId = 0;
+		caster->m_pathWaypoints.clear();
+		caster->m_currentWaypointIndex = 0;
+		caster->m_pathfindingPending = false;
+		caster->m_isMoving = false;
+		caster->SetDest(caster->GetPos());
+		caster->m_combatOrderMode = CombatOrderMode::Hold;
+		caster->m_combatMoveOrder = false;
+
+		const std::string casterName = caster->m_name.empty() ? "Caster" : caster->m_name;
+		const std::string label = spell->words.empty()
+			? spell->name
+			: (spell->name + " (" + spell->words + ")");
+		AddCombatConsoleString(casterName + " casts " + label + " at ("
+			+ std::to_string(tileX) + ", " + std::to_string(tileZ) + ").", GREEN);
+
+		caster->m_pauseOrdersOnNextSpellProjectile = true;
+		SetForcedSpellTile(0, tileX, tileZ, tileY);
+		GumpSpellbook::RunSpellCast(spellId, caster, -1);
+		if (MarkNewestFlyingProjectilePauseCasterOnHit(static_cast<int>(caster->m_ID)))
+			caster->m_pauseOrdersOnNextSpellProjectile = false;
+		else if (!caster->IsInUsecodeScript())
+			caster->m_pauseOrdersOnNextSpellProjectile = false;
+		tb->EndActiveTurn();
+		return;
+	}
+
+	caster->m_combatSpellId = spellId;
+	caster->m_combatSpellTargetId = 0;
+	caster->m_combatSpellHasTile = true;
+	caster->m_combatSpellTileX = tileX;
+	caster->m_combatSpellTileZ = tileZ;
+	caster->m_combatSpellTileY = tileY;
+	caster->m_target = 0;
+	caster->m_combatMoveOrder = false;
+	caster->m_combatOrderMode = CombatOrderMode::Attack;
+
+	const std::string casterName = caster->m_name.empty() ? "Caster" : caster->m_name;
+	const std::string label = spell->words.empty()
+		? spell->name
+		: (spell->name + " (" + spell->words + ")");
+	AddCombatConsoleString(casterName + " will cast " + label + " at ("
+		+ std::to_string(tileX) + ", " + std::to_string(tileZ) + ").", GREEN);
+}
+
 void MainState::FireQueuedCombatSpells()
 {
 	if (!g_Player)
@@ -6284,13 +6618,20 @@ void MainState::FireQueuedCombatSpells()
 			continue;
 
 		U7Object* caster = itObj->second.get();
-		if (caster->m_combatSpellId < 0 || caster->m_combatSpellTargetId <= 0)
+		const bool tileCast = caster->m_combatSpellHasTile;
+		if (caster->m_combatSpellId < 0)
+			continue;
+		if (!tileCast && caster->m_combatSpellTargetId <= 0)
 			continue;
 
 		const int spellId = caster->m_combatSpellId;
 		const int targetId = caster->m_combatSpellTargetId;
+		const int tileX = caster->m_combatSpellTileX;
+		const int tileZ = caster->m_combatSpellTileZ;
+		const float tileY = caster->m_combatSpellTileY;
 		caster->m_combatSpellId = -1;
 		caster->m_combatSpellTargetId = 0;
+		caster->m_combatSpellHasTile = false;
 
 		// Spell was the attack order — do not fall through into melee on the same target.
 		caster->m_target = 0;
@@ -6302,21 +6643,28 @@ void MainState::FireQueuedCombatSpells()
 		caster->SetDest(caster->GetPos());
 		caster->m_combatOrderMode = CombatOrderMode::Hold;
 
-		U7Object* target = GetObjectFromID(targetId);
-		if (!target || target->GetIsDead() || target->IsDeathStatus())
+		if (!tileCast)
 		{
-			AddCombatConsoleString(
-				(caster->m_name.empty() ? "Caster" : caster->m_name) + " spell fizzled — target is gone.",
-				YELLOW);
-			NotifyCombatantCannotContinue(caster, "needs a new order!");
-			continue;
+			U7Object* target = GetObjectFromID(targetId);
+			if (!target || target->GetIsDead() || target->IsDeathStatus())
+			{
+				AddCombatConsoleString(
+					(caster->m_name.empty() ? "Caster" : caster->m_name) + " spell fizzled — target is gone.",
+					YELLOW);
+				NotifyCombatantCannotContinue(caster, "needs a new order!");
+				continue;
+			}
+		}
+		else
+		{
+			SetForcedSpellTile(0, tileX, tileZ, tileY);
 		}
 
 		// Projectile spells defer the bolt until UC_ATTACK mid-cast; mark so the
 		// eventual missile pauses orders on hit. Instant spells pause when the
 		// cast script finishes (see UpdateUsecodeScript).
 		caster->m_pauseOrdersOnNextSpellProjectile = true;
-		GumpSpellbook::RunSpellCast(spellId, caster, targetId);
+		GumpSpellbook::RunSpellCast(spellId, caster, tileCast ? -1 : targetId);
 		if (MarkNewestFlyingProjectilePauseCasterOnHit(static_cast<int>(caster->m_ID)))
 		{
 			caster->m_pauseOrdersOnNextSpellProjectile = false;
@@ -6340,6 +6688,7 @@ void MainState::NotifyCombatantCannotContinue(U7Object* member, const std::strin
 	member->m_target = 0;
 	member->m_combatSpellId = -1;
 	member->m_combatSpellTargetId = 0;
+	member->m_combatSpellHasTile = false;
 
 	const std::string name = member->m_name.empty() ? "Party member" : member->m_name;
 	AddCombatConsoleString(name + " " + reason, YELLOW);
@@ -6364,6 +6713,7 @@ void MainState::IssueCombatMoveOrder(U7Object* member, const Vector3& dest)
 	member->m_target = 0;
 	member->m_combatSpellId = -1;
 	member->m_combatSpellTargetId = 0;
+	member->m_combatSpellHasTile = false;
 	member->m_combatMoveOrder = true;
 	member->m_combatOrderMode = CombatOrderMode::Move;
 	member->PathfindToDest(moveDest, /*allowHierarchical=*/true, PathCallerTag::AvatarParty);
@@ -6381,9 +6731,14 @@ void MainState::HandleCombatOrdersClick()
 		return;
 
 	// Mark/Recall keep packs open. A click on a stone in that pack is the spell target.
+	// A ground spell does not place its field on an item inside a bag.
 	if (IsCombatSpellTargeting() && g_gumpManager && g_gumpManager->m_isMouseOverGump &&
 		g_gumpManager->m_gumpUnderMouse && !g_gumpManager->m_draggingObject)
 	{
+		SpellData* spell = GetSpellData(m_combatSpellTargetingSpellId);
+		if (spell && spell->groundTarget)
+			return;
+
 		U7Object* selected = g_gumpManager->m_gumpUnderMouse->GetObjectUnderMousePointer();
 		if (selected)
 		{
@@ -6409,20 +6764,30 @@ void MainState::HandleCombatOrdersClick()
 	// U7 allows any spell on any target (party, self, enemy, etc.).
 	if (IsCombatSpellTargeting())
 	{
-		if (clicked)
+		U7Object* caster = GetObjectFromID(m_combatSpellTargetingCasterId);
+		if (!caster)
+			caster = (m_combatSelectedPartyMemberObjectId >= 0)
+				? GetObjectFromID(m_combatSelectedPartyMemberObjectId)
+				: nullptr;
+
+		SpellData* spell = GetSpellData(m_combatSpellTargetingSpellId);
+		if (spell && spell->groundTarget && caster)
 		{
-			U7Object* caster = GetObjectFromID(m_combatSpellTargetingCasterId);
-			if (!caster)
-				caster = (m_combatSelectedPartyMemberObjectId >= 0)
-					? GetObjectFromID(m_combatSelectedPartyMemberObjectId)
-					: nullptr;
-			if (caster)
-				IssueCombatSpellOrder(caster, m_combatSpellTargetingSpellId, clicked);
+			int ignoredObj = 0;
+			int tileX = 0;
+			int tileZ = 0;
+			float tileY = caster->m_Pos.y;
+			if (GroundSpellTileFrom(clicked, caster->m_Pos.y, ignoredObj, tileX, tileZ, tileY))
+				IssueCombatGroundSpellOrder(caster, m_combatSpellTargetingSpellId, tileX, tileZ, tileY);
 			CancelCombatSpellTargeting();
 			return;
 		}
 
-		AddCombatConsoleString("Spell targeting cancelled.", YELLOW);
+		if (clicked && caster)
+			IssueCombatSpellOrder(caster, m_combatSpellTargetingSpellId, clicked);
+
+		if (!clicked)
+			AddCombatConsoleString("Spell targeting cancelled.", YELLOW);
 		CancelCombatSpellTargeting();
 		return;
 	}

@@ -27,7 +27,9 @@
 #include "PerfTelemetry.h"
 #include "WeatherSystem.h"
 #include "U7GumpSpellbook.h"
+#include "U7SpriteEffects.h"
 #include "Terrain.h"
+#include "raylib.h"
 
 #include <iostream>
 #include <string>
@@ -36,6 +38,7 @@
 #include <algorithm>
 #include <iterator>
 #include <cmath>
+#include <unordered_map>
 #include <cctype>
 #include <vector>
 #include "raymath.h"
@@ -216,11 +219,147 @@ void U7Object::StaticUpdate()
 	// Statics do nothing on update.
 }
 
+namespace
+{
+	bool InTurnBasedCombat();
+}
+
+void U7Object::ArmFireField(float seconds)
+{
+	if (seconds < 0.0f)
+		seconds = 0.0f;
+	m_Quality = 100;
+	// Immovable scenery is UNIT_TYPE_STATIC and never Update()s, so the
+	// removal clock would never run. Spell fields have to be interactive.
+	m_UnitType = UnitTypes::UNIT_TYPE_OBJECT;
+	m_fireFieldPlayStartup = true;
+	m_fireFieldAnimStart = GetTime();
+	SetFrame(0);
+	// 20 seconds is 7 rounds. Shorter fields (Fire Ring, Flame Strike) scale
+	// by the same seconds-per-round so a 7-second field is about 2 rounds.
+	const float secPerRound = kFireFieldLifetimeSec / static_cast<float>(kFireFieldTurnRounds);
+	int rounds = static_cast<int>(std::lround(seconds / secPerRound));
+	if (rounds < 1)
+		rounds = 1;
+	if (InTurnBasedCombat())
+	{
+		m_fireFieldTurnsRemaining = rounds;
+		m_fireFieldEndsAt = 0.0f;
+	}
+	else
+	{
+		m_fireFieldTurnsRemaining = 0;
+		m_fireFieldEndsAt = GetTime() + seconds;
+	}
+	NoteTimedFireField(static_cast<int>(m_ID));
+	// Anyone already on the tile burns now. The next pulse waits a second
+	// so this frame's UpdateFireField does not hit them again.
+	m_fireFieldNextPulse = GetTime() + kFireFieldPulseSec;
+	ApplyFireFieldPulse(this);
+}
+
+void U7Object::ArmEnergyField()
+{
+	// Usecode quality and the removal delay are both 200 ticks (40 seconds).
+	m_Quality = 200;
+	m_UnitType = UnitTypes::UNIT_TYPE_OBJECT;
+	m_fireFieldPlayStartup = false;
+	const float seconds = 40.0f; // 200 usecode ticks at 0.20s
+	const float secPerRound = kFireFieldLifetimeSec / static_cast<float>(kFireFieldTurnRounds);
+	int rounds = static_cast<int>(std::lround(seconds / secPerRound));
+	if (rounds < 1)
+		rounds = 1;
+	if (InTurnBasedCombat())
+	{
+		m_fireFieldTurnsRemaining = rounds;
+		m_fireFieldEndsAt = 0.0f;
+	}
+	else
+	{
+		m_fireFieldTurnsRemaining = 0;
+		m_fireFieldEndsAt = GetTime() + seconds;
+	}
+	NoteTimedFireField(static_cast<int>(m_ID));
+}
+
+void U7Object::ExpireFireField()
+{
+	if (GetIsDead())
+		return;
+	m_fireFieldEndsAt = 0.0f;
+	m_fireFieldTurnsRemaining = 0;
+	ForgetTimedFireField(static_cast<int>(m_ID));
+	if (m_objectData && m_objectData->m_isNotWalkable)
+		NotifyPathfindingGridUpdate(static_cast<int>(m_Pos.x), static_cast<int>(m_Pos.z));
+	if (g_mainState && g_mainState->m_barkObject == this)
+		g_mainState->ClearBarks();
+	if (g_SoundSystem)
+		g_SoundSystem->StopLoopingSoundEffect(static_cast<int>(m_ID));
+	m_ShouldDraw = false;
+	m_Visible = false;
+	SetIsDead(true);
+	// Poison and sleep fields have no burn timer. The same removal drops them
+	// once they catch someone, and Dispel Field uses this path too.
+}
+
+void U7Object::UpdateFireField()
+{
+	const int shape = m_shapeData ? m_shapeData->m_shape : m_ObjectType;
+	const bool fire = (shape == kFireFieldShape);
+	const bool energy = (shape == kEnergyFieldShape);
+	if (!fire && !energy)
+		return;
+	if (GetIsDead() || m_isContained || !m_Visible)
+		return;
+
+	const float now = GetTime();
+	const bool turnBased = InTurnBasedCombat();
+
+	// Left turn-based combat with rounds still banked. Finish on the real-time clock.
+	if (!turnBased && m_fireFieldTurnsRemaining > 0)
+	{
+		const float sec = (static_cast<float>(m_fireFieldTurnsRemaining) / static_cast<float>(kFireFieldTurnRounds))
+			* kFireFieldLifetimeSec;
+		m_fireFieldTurnsRemaining = 0;
+		m_fireFieldEndsAt = now + sec;
+	}
+
+	// Entered turn-based combat with a live clock. Rounds take over.
+	if (turnBased && m_fireFieldTurnsRemaining <= 0 && m_fireFieldEndsAt > 0.0f)
+	{
+		const float remaining = m_fireFieldEndsAt - now;
+		const float rounds = (remaining / kFireFieldLifetimeSec) * static_cast<float>(kFireFieldTurnRounds);
+		m_fireFieldTurnsRemaining = std::max(1, static_cast<int>(std::lround(rounds)));
+		m_fireFieldEndsAt = 0.0f;
+		NoteTimedFireField(static_cast<int>(m_ID));
+	}
+
+	if (m_fireFieldTurnsRemaining > 0)
+		return;
+
+	if (m_fireFieldEndsAt > 0.0f && now >= m_fireFieldEndsAt)
+	{
+		ExpireFireField();
+		return;
+	}
+
+	// Energy fields block the tile. They do not burn.
+	if (!fire)
+		return;
+
+	if (now < m_fireFieldNextPulse)
+		return;
+	m_fireFieldNextPulse = now + kFireFieldPulseSec;
+	ApplyFireFieldPulse(this);
+}
+
 void U7Object::InteractiveUpdate()
 {
 	// Most interactive objects have very little per-frame logic here.
 	// Container behavior, scripts, etc. are usually event-driven via Interact().
 	UpdateUsecodeScript();
+	UpdateFireField();
+	UpdateHazardField();
 	if (!m_usecodeObjectSchedule)
 		return;
 	UpdateUsecodeObjectSchedule();
@@ -891,6 +1030,18 @@ void U7Object::HostileCombatUpdate()
 	if ((m_flags & (1u << 1)) != 0 || (m_flags & (1u << 7)) != 0)
 		return;
 
+	// Vas Por Ylem. The stumble script owns the pose until it finishes.
+	if (IsTrembling())
+	{
+		m_pathWaypoints.clear();
+		m_currentWaypointIndex = 0;
+		m_pathfindingPending = false;
+		m_isMoving = false;
+		m_combatMoveOrder = false;
+		SetDest(m_Pos);
+		return;
+	}
+
 	// Orders pause only applies once combat has started.
 	if (g_isCombatMode && g_mainState && g_mainState->IsCombatOrdersPaused())
 	{
@@ -900,6 +1051,16 @@ void U7Object::HostileCombatUpdate()
 		{
 			UpdateMovement();
 		}
+		return;
+	}
+
+	// Quas Wis. Turn-based flees on that unit's own turn. Real time runs here.
+	if (IsFleeing())
+	{
+		const bool turnBased = g_isCombatMode && g_mainState && g_mainState->m_combatMode
+			&& g_mainState->m_combatMode->GetStyle() == CombatStyle::TurnBased;
+		if (!turnBased)
+			UpdateFearFlee();
 		return;
 	}
 
@@ -1121,6 +1282,7 @@ void U7Object::StopAttacksOnInvisible()
 		{
 			attacker->m_combatSpellId = -1;
 			attacker->m_combatSpellTargetId = 0;
+			attacker->m_combatSpellHasTile = false;
 		}
 	}
 }
@@ -1171,6 +1333,342 @@ void U7Object::UpdatePoisonTimer()
 	if (penalty > 0)
 		ApplyCombatDamage(this, static_cast<float>(penalty), nullptr);
 	m_poisonNextTickAt = now + 10.0f + static_cast<float>(rand() % 10);
+}
+
+bool U7Object::IsCharmImmune() const
+{
+	// MONSTERS.DAT byte 2 bit 1 = charm_safe, byte 6 bit 2 = power_safe.
+	// Exult set_flag(charmed) returns without applying either. Gear frame
+	// powers are not loaded. No monster row means the creature can be charmed.
+	int shape = m_ObjectType;
+	if (m_shapeData)
+		shape = m_shapeData->m_shape;
+	for (const MonsterData& md : g_monsterData)
+	{
+		if (static_cast<int>(md.m_shape) != shape)
+			continue;
+		if ((md.m_raw[2] & 2) != 0 || (md.m_raw[6] & 4) != 0)
+			return true;
+		return false;
+	}
+	return false;
+}
+
+void U7Object::StartCharmTimer()
+{
+	// Exult Npc_flag_timer: 60000 + rand()%60000 ms, about 60–120 seconds.
+	const float now = GetTime();
+	m_charmEndsAt = now + 60.0f + static_cast<float>(rand() % 61);
+}
+
+void U7Object::StopCharmTimer()
+{
+	m_charmEndsAt = 0.0f;
+}
+
+void U7Object::EndCharm(bool announce)
+{
+	const bool had = (m_flags & kObjFlagCharmed) != 0;
+	m_flags &= ~kObjFlagCharmed;
+	StopCharmTimer();
+	if (m_charmHomeTeam >= 0)
+	{
+		m_Team = m_charmHomeTeam;
+		m_charmHomeTeam = -1;
+		m_target = 0;
+		m_combatPathTargetId = 0;
+		m_pathWaypoints.clear();
+		m_currentWaypointIndex = 0;
+		m_pathfindingPending = false;
+		m_isMoving = false;
+		SetDest(m_Pos);
+	}
+	if (announce && had)
+		AnnounceStatusFlag(kObjFlagCharmed, false);
+}
+
+void U7Object::UpdateCharmTimer()
+{
+	const bool flagged = (m_flags & kObjFlagCharmed) != 0;
+	if (!flagged && m_charmEndsAt <= 0.0f && m_charmHomeTeam < 0)
+		return;
+
+	if (IsDeathStatus() || GetIsDead() || !flagged)
+	{
+		EndCharm(false);
+		return;
+	}
+	if (m_charmEndsAt <= 0.0f)
+	{
+		EndCharm(false);
+		return;
+	}
+	if (GetTime() >= m_charmEndsAt)
+		EndCharm(true);
+}
+
+namespace
+{
+	bool IsAvatarUnit(const U7Object* unit)
+	{
+		if (!unit)
+			return false;
+		if (unit->m_NPCID == 0)
+			return true;
+		return g_Player && g_Player->GetAvatarObject() == unit;
+	}
+
+	void ReadMightStats(U7Object* unit, int& str, int& dex, int& iq, int& combat)
+	{
+		str = 1;
+		dex = 0;
+		iq = 0;
+		combat = 0;
+		if (!unit)
+			return;
+		if (IsAvatarUnit(unit) && g_Player)
+		{
+			str = g_Player->GetStr();
+			dex = g_Player->GetDex();
+			iq = g_Player->GetInt();
+			combat = g_Player->GetCombat();
+			return;
+		}
+		if (unit->m_NPCData)
+		{
+			str = static_cast<int>(unit->m_NPCData->str);
+			dex = static_cast<int>(unit->m_NPCData->dex);
+			iq = static_cast<int>(unit->m_NPCData->iq);
+			combat = static_cast<int>(unit->m_NPCData->combat);
+		}
+	}
+
+	int ClampMightStat(int value, int lo)
+	{
+		if (value < lo)
+			return lo;
+		if (value > 255)
+			return 255;
+		return value;
+	}
+
+	void WriteMightStats(U7Object* unit, int str, int dex, int iq, int combat)
+	{
+		if (!unit)
+			return;
+		str = ClampMightStat(str, 1);
+		dex = ClampMightStat(dex, 0);
+		iq = ClampMightStat(iq, 0);
+		combat = ClampMightStat(combat, 0);
+		if (unit->m_NPCData)
+		{
+			unit->m_NPCData->str = static_cast<unsigned char>(str);
+			unit->m_NPCData->dex = static_cast<unsigned char>(dex);
+			unit->m_NPCData->iq = static_cast<unsigned char>(iq);
+			unit->m_NPCData->combat = static_cast<unsigned char>(combat);
+		}
+		unit->m_combat = static_cast<float>(combat);
+		if (IsAvatarUnit(unit) && g_Player)
+		{
+			g_Player->SetStr(str);
+			g_Player->SetDex(dex);
+			g_Player->SetInt(iq);
+			g_Player->SetCombat(combat);
+		}
+	}
+
+	int MightBonusFor(int stat)
+	{
+		return stat < 15 ? stat : 15;
+	}
+}
+
+bool U7Object::IsDeathSafe() const
+{
+	// Exult Monster_info byte 6 bit 3. A named NPC with no monster row is not safe.
+	int shape = m_ObjectType;
+	if (m_shapeData)
+		shape = m_shapeData->m_shape;
+	for (const MonsterData& md : g_monsterData)
+	{
+		if (static_cast<int>(md.m_shape) != shape)
+			continue;
+		return (md.m_raw[6] & 8) != 0;
+	}
+	return false;
+}
+
+void U7Object::ApplyMight()
+{
+	if (m_UnitType != UnitTypes::UNIT_TYPE_NPC
+		&& m_UnitType != UnitTypes::UNIT_TYPE_MONSTER)
+		return;
+	if (IsDeathStatus() || GetIsDead())
+		return;
+
+	const float now = GetTime();
+	const bool already = m_mightEndsAt > now
+		&& (m_mightStrBonus != 0 || m_mightDexBonus != 0
+			|| m_mightIntBonus != 0 || m_mightCombatBonus != 0);
+	if (already)
+	{
+		m_mightEndsAt = now + 60.0f + static_cast<float>(rand() % 61);
+		m_flags |= kObjFlagMight;
+		return;
+	}
+
+	int str = 1;
+	int dex = 0;
+	int iq = 0;
+	int combat = 0;
+	ReadMightStats(this, str, dex, iq, combat);
+	m_mightBaseStr = str;
+	m_mightBaseDex = dex;
+	m_mightBaseInt = iq;
+	m_mightBaseCombat = combat;
+	m_mightStrBonus = MightBonusFor(str);
+	m_mightDexBonus = MightBonusFor(dex);
+	m_mightIntBonus = MightBonusFor(iq);
+	m_mightCombatBonus = MightBonusFor(combat);
+	WriteMightStats(this,
+		str + m_mightStrBonus,
+		dex + m_mightDexBonus,
+		iq + m_mightIntBonus,
+		combat + m_mightCombatBonus);
+	m_flags |= kObjFlagMight;
+	m_mightEndsAt = now + 60.0f + static_cast<float>(rand() % 61);
+	AnnounceStatusFlag(kObjFlagMight, true);
+}
+
+void U7Object::EndMight(bool announce)
+{
+	const bool had = (m_flags & kObjFlagMight) != 0;
+	if (m_mightStrBonus != 0 || m_mightDexBonus != 0
+		|| m_mightIntBonus != 0 || m_mightCombatBonus != 0)
+	{
+		int str = 1;
+		int dex = 0;
+		int iq = 0;
+		int combat = 0;
+		ReadMightStats(this, str, dex, iq, combat);
+		WriteMightStats(this,
+			str - m_mightStrBonus,
+			dex - m_mightDexBonus,
+			iq - m_mightIntBonus,
+			combat - m_mightCombatBonus);
+	}
+	m_mightStrBonus = 0;
+	m_mightDexBonus = 0;
+	m_mightIntBonus = 0;
+	m_mightCombatBonus = 0;
+	m_mightBaseStr = 0;
+	m_mightBaseDex = 0;
+	m_mightBaseInt = 0;
+	m_mightBaseCombat = 0;
+	m_mightEndsAt = 0.0f;
+	m_flags &= ~kObjFlagMight;
+	if (announce && had)
+		AnnounceStatusFlag(kObjFlagMight, false);
+}
+
+void U7Object::UpdateMightTimer()
+{
+	if (m_mightEndsAt <= 0.0f && (m_flags & kObjFlagMight) == 0)
+		return;
+	if (IsDeathStatus() || GetIsDead() || (m_flags & kObjFlagMight) == 0)
+	{
+		EndMight(false);
+		return;
+	}
+	if (GetTime() >= m_mightEndsAt)
+		EndMight(true);
+}
+
+void U7Object::RestoreMightStats()
+{
+	if (m_mightEndsAt <= 0.0f)
+		return;
+	if (GetTime() >= m_mightEndsAt)
+	{
+		EndMight(false);
+		return;
+	}
+	WriteMightStats(this,
+		m_mightBaseStr + m_mightStrBonus,
+		m_mightBaseDex + m_mightDexBonus,
+		m_mightBaseInt + m_mightIntBonus,
+		m_mightBaseCombat + m_mightCombatBonus);
+	m_flags |= kObjFlagMight;
+}
+
+void U7Object::ApplyCharm(U7Object* caster)
+{
+	if (m_UnitType != UnitTypes::UNIT_TYPE_NPC
+		&& m_UnitType != UnitTypes::UNIT_TYPE_MONSTER)
+		return;
+	if (IsDeathStatus() || GetIsDead() || m_hp <= 0.0f)
+		return;
+	if (IsCharmImmune())
+		return;
+
+	const bool was = (m_flags & kObjFlagCharmed) != 0;
+	m_flags |= kObjFlagCharmed;
+	StartCharmTimer();
+
+	// Exult's normal charm difficulty does not turn the Avatar, and it does
+	// not force charmed party members to attack. Switching their team would
+	// also make the combat prune treat them as hostiles.
+	const bool avatar = (g_Player && g_Player->GetAvatarObject() == this);
+	const bool partyMember = avatar
+		|| (m_UnitType == UnitTypes::UNIT_TYPE_NPC && g_Player
+			&& g_Player->NPCIDInParty(m_NPCID));
+	if (!partyMember)
+	{
+		if (m_charmHomeTeam < 0)
+			m_charmHomeTeam = m_Team;
+
+		bool casterHostile = false;
+		if (caster)
+		{
+			const bool casterParty = caster->m_UnitType == UnitTypes::UNIT_TYPE_NPC
+				&& g_Player && g_Player->NPCIDInParty(caster->m_NPCID);
+			casterHostile = !casterParty && caster->m_Team == 1;
+		}
+		// Party / neutral / summon caster: fight hostiles (team 2).
+		// Hostile caster: fight the party (team 1). A recast keeps the home team.
+		m_Team = casterHostile ? 1 : 2;
+		m_target = 0;
+		m_combatPathTargetId = 0;
+		m_combatSpellId = -1;
+		m_combatSpellTargetId = 0;
+		m_combatSpellHasTile = false;
+		m_combatMoveOrder = false;
+		m_pathWaypoints.clear();
+		m_currentWaypointIndex = 0;
+		m_pathfindingPending = false;
+		m_isMoving = false;
+		SetDest(m_Pos);
+
+		// Exult Combat_schedule::stop_attacking_npc: drop anyone aiming at them.
+		const int myId = static_cast<int>(m_ID);
+		for (auto& entry : g_objectList)
+		{
+			U7Object* other = entry.second.get();
+			if (!other || other == this)
+				continue;
+			if (other->m_target == myId)
+			{
+				other->m_target = 0;
+				other->m_combatPathTargetId = 0;
+			}
+		}
+
+		if (g_isCombatMode && g_mainState)
+			g_mainState->EnsureCombatParticipant(myId, false);
+	}
+
+	if (!was)
+		AnnounceStatusFlag(kObjFlagCharmed, true);
 }
 
 namespace
@@ -1340,9 +1838,2236 @@ U7Object::TurnBasedSleepTick U7Object::TickTurnBasedSleep()
 	return TurnBasedSleepTick::Woke;
 }
 
+namespace
+{
+	bool IsPartyActor(const U7Object* unit)
+	{
+		if (!unit || unit->m_NPCID < 0)
+			return false;
+		if (unit->m_NPCID == 0)
+			return true;
+		return g_Player && g_Player->NPCIDInParty(unit->m_NPCID);
+	}
+
+	bool CanBeDanced(U7Object* unit)
+	{
+		if (!unit || unit->GetIsDead() || unit->IsDeathStatus() || unit->IsKnockedOut())
+			return false;
+		if (unit->m_isContained)
+			return false;
+		if (unit->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_NPC
+			&& unit->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_MONSTER)
+			return false;
+		if ((unit->m_flags & kObjFlagAsleep) != 0 || (unit->m_flags & kObjFlagParalyzed) != 0)
+			return false;
+		const int intelligence = GetCombatIntelligence(unit);
+		return intelligence > 5 && intelligence < 25;
+	}
+
+	void AssignScheduleActivity(U7Object* npc, int activity)
+	{
+		if (!npc || npc->m_NPCID < 0)
+			return;
+		auto it = g_NPCData.find(npc->m_NPCID);
+		if (it == g_NPCData.end() || !it->second)
+			return;
+		it->second->m_currentActivity = activity;
+		it->second->m_lastActivity = -1;
+		npc->m_currentActivity = static_cast<unsigned int>(activity);
+		npc->m_followingSchedule = true;
+		npc->m_pathWaypoints.clear();
+		npc->m_currentWaypointIndex = 0;
+		npc->m_pathfindingPending = false;
+		npc->m_isSchedulePath = false;
+		npc->m_isMoving = false;
+	}
+
+	U7Object* ObjectFromNpcId(int npcId)
+	{
+		if (npcId == 0)
+			return g_Player ? g_Player->GetAvatarObject() : nullptr;
+		auto it = g_NPCData.find(npcId);
+		if (it == g_NPCData.end() || !it->second)
+			return nullptr;
+		return GetObjectFromID(it->second->m_objectID);
+	}
+
+	constexpr int kDanceSchedule = 4;
+	constexpr int kWanderSchedule = 12;
+	constexpr int kAttunedSpiritualityFlag = 0x39;
+	constexpr float kDanceStepSeconds = 0.4f;
+
+	const char* kDanceBarks[] = {
+		"Dance!", "Yeah!", "Huh!", "Oh, yeah!", "I'm bad!", "Boogie!", "Yow!"
+	};
+}
+
+void U7Object::ApplyDancePose()
+{
+	static const Vector3 kDirs[8] = {
+		{ 0, 0, -1 }, { 1, 0, -1 }, { 1, 0, 0 }, { 1, 0, 1 },
+		{ 0, 0, 1 }, { -1, 0, 1 }, { -1, 0, 0 }, { -1, 0, -1 }
+	};
+	static const NpcAnimAction kPoses[4] = {
+		NpcAnimAction::Stand,
+		NpcAnimAction::Up,
+		NpcAnimAction::Out,
+		NpcAnimAction::Stand
+	};
+
+	const int dir = m_danceStep & 7;
+	m_Angle = static_cast<float>(dir) * 45.0f;
+	m_Direction = Vector3Normalize(kDirs[dir]);
+	m_npcAnimAction = kPoses[m_danceStep & 3];
+	m_npcAnimPlaying = false;
+	m_npcAnimLooping = true;
+	m_npcAnimPhase = 0;
+	m_npcAnimHitFired = true;
+}
+
+void U7Object::StartDance()
+{
+	const float now = GetTime();
+	const int ticks = 50 + (rand() % 26);
+	const float seconds = static_cast<float>(ticks) * 0.2f;
+
+	m_flags |= kObjFlagInAction;
+	m_danceStep = 0;
+	m_danceNextStepAt = now + kDanceStepSeconds;
+	m_pathWaypoints.clear();
+	m_currentWaypointIndex = 0;
+	m_pathfindingPending = false;
+	m_isSchedulePath = false;
+	m_isMoving = false;
+	m_combatMoveOrder = false;
+	SetDest(m_Pos);
+	ApplyDancePose();
+
+	if (InTurnBasedCombat())
+	{
+		m_danceTurnsRemaining = std::max(1, static_cast<int>(std::lround(seconds / 3.0f)));
+		m_danceEndsAt = 0.0f;
+	}
+	else
+	{
+		m_danceTurnsRemaining = 0;
+		m_danceEndsAt = now + seconds;
+	}
+
+	if (GetCombatIntelligence(this) >= 10)
+	{
+		const int barkTicks = 10 + (rand() % 31);
+		m_danceBarkAt = now + static_cast<float>(barkTicks) * 0.2f;
+	}
+	else
+	{
+		m_danceBarkAt = 0.0f;
+	}
+
+	if (g_SpriteEffectSystem)
+		g_SpriteEffectSystem->SpawnOnObject(static_cast<int>(m_ID), 16, 0.0f);
+
+	if (!IsPartyActor(this))
+		AssignScheduleActivity(this, kDanceSchedule);
+}
+
+void U7Object::StopDance()
+{
+	if (!IsDancing() && m_danceTurnsRemaining <= 0 && m_danceEndsAt <= 0.0f)
+		return;
+
+	const bool wasDancing = IsDancing();
+	m_flags &= ~kObjFlagInAction;
+	m_danceEndsAt = 0.0f;
+	m_danceTurnsRemaining = 0;
+	m_danceBarkAt = 0.0f;
+	m_danceNextStepAt = 0.0f;
+	m_npcAnimAction = NpcAnimAction::Stand;
+	m_npcAnimPlaying = false;
+	m_npcAnimPhase = 0;
+
+	if (wasDancing && !IsPartyActor(this))
+		AssignScheduleActivity(this, kWanderSchedule);
+}
+
+void U7Object::UpdateDance()
+{
+	if (!IsDancing() && m_danceTurnsRemaining <= 0 && m_danceEndsAt <= 0.0f)
+		return;
+
+	if (GetIsDead() || IsDeathStatus())
+	{
+		StopDance();
+		return;
+	}
+
+	const float now = GetTime();
+	if (m_danceBarkAt > 0.0f && now >= m_danceBarkAt)
+	{
+		m_danceBarkAt = 0.0f;
+		if (g_mainState)
+		{
+			const int which = rand() % 7;
+			g_mainState->Bark(this, kDanceBarks[which], 2.5f);
+		}
+	}
+
+	if (now >= m_danceNextStepAt)
+	{
+		m_danceStep = (m_danceStep + 1) & 7;
+		m_danceNextStepAt = now + kDanceStepSeconds;
+	}
+
+	if (InTurnBasedCombat())
+	{
+		if (m_danceTurnsRemaining <= 0)
+		{
+			float remaining = m_danceEndsAt - now;
+			if (remaining < 0.2f)
+				remaining = 0.2f;
+			m_danceTurnsRemaining = std::max(1, static_cast<int>(std::lround(remaining / 3.0f)));
+			m_danceEndsAt = 0.0f;
+		}
+		return;
+	}
+
+	if (m_danceTurnsRemaining > 0)
+	{
+		m_danceEndsAt = now + static_cast<float>(m_danceTurnsRemaining) * 3.0f;
+		m_danceTurnsRemaining = 0;
+	}
+
+	if (m_danceEndsAt <= 0.0f || now >= m_danceEndsAt)
+		StopDance();
+}
+
+U7Object::TurnBasedDanceTick U7Object::TickTurnBasedDance()
+{
+	if (!IsDancing())
+		return TurnBasedDanceTick::NotDancing;
+
+	if (m_danceTurnsRemaining <= 0)
+		m_danceTurnsRemaining = 4;
+
+	--m_danceTurnsRemaining;
+	if (m_danceTurnsRemaining > 0)
+		return TurnBasedDanceTick::StillDancing;
+
+	StopDance();
+	return TurnBasedDanceTick::Stopped;
+}
+
+void U7Object::CauseDancing()
+{
+	const bool partyCaster = IsPartyActor(this);
+	const bool attuned = g_ScriptingSystem && g_ScriptingSystem->GetFlag(kAttunedSpiritualityFlag);
+
+	auto tryDance = [](U7Object* unit)
+	{
+		if (!CanBeDanced(unit))
+			return;
+		unit->StartDance();
+	};
+
+	if (!partyCaster)
+	{
+		if (attuned || !g_Player)
+			return;
+		for (int npcId : g_Player->GetPartyMemberIds())
+		{
+			U7Object* member = ObjectFromNpcId(npcId);
+			if (member && member != this)
+				tryDance(member);
+		}
+		return;
+	}
+
+	const int tx = static_cast<int>(std::floor(m_Pos.x));
+	const int tz = static_cast<int>(std::floor(m_Pos.z));
+	const int cx = tx / 16;
+	const int cz = tz / 16;
+	for (int oz = cz - 2; oz <= cz + 2; ++oz)
+	{
+		for (int ox = cx - 2; ox <= cx + 2; ++ox)
+		{
+			if (ox < 0 || oz < 0 || ox >= 192 || oz >= 192)
+				continue;
+			const std::vector<U7Object*> units = g_chunkObjectMap[ox][oz];
+			for (U7Object* unit : units)
+			{
+				if (!unit || unit == this || IsPartyActor(unit))
+					continue;
+				const int ux = static_cast<int>(std::floor(unit->m_Pos.x));
+				const int uz = static_cast<int>(std::floor(unit->m_Pos.z));
+				if (std::max(std::abs(ux - tx), std::abs(uz - tz)) > 25)
+					continue;
+				tryDance(unit);
+			}
+		}
+	}
+}
+
+void U7Object::SetAttackMode(int mode)
+{
+	if (mode < 0)
+		mode = 0;
+	m_attackMode = mode;
+	if (mode != 7)
+		m_fearOppressorId = 0;
+}
+
+U7Object* U7Object::FearOppressor() const
+{
+	if (U7Object* from = GetObjectFromID(m_fearOppressorId))
+		return from;
+	if (g_Player)
+		return g_Player->GetAvatarObject();
+	return nullptr;
+}
+
+void U7Object::StartFear(int oppressorId)
+{
+	m_target = 0;
+	m_combatPathTargetId = 0;
+	m_combatMoveOrder = false;
+	m_pathWaypoints.clear();
+	m_currentWaypointIndex = 0;
+	m_pathfindingPending = false;
+	m_isSchedulePath = false;
+	m_isMoving = false;
+	SetDest(m_Pos);
+	SetAttackMode(7);
+	m_fearOppressorId = oppressorId;
+	if (!IsPartyActor(this))
+		AssignScheduleActivity(this, 0);
+	NoteCombatLogClause((m_name.empty() ? "Someone" : m_name) + " flees!", YELLOW);
+}
+
+void U7Object::UpdateFearFlee()
+{
+	if (IsDeathStatus() || GetIsDead())
+		return;
+
+	U7Object* from = FearOppressor();
+	if (!from)
+		return;
+
+	m_target = 0;
+	m_combatMoveOrder = false;
+	m_combatPathTargetId = 0;
+
+	const float dx = m_Pos.x - from->m_Pos.x;
+	const float dz = m_Pos.z - from->m_Pos.z;
+	const float dist = std::sqrt(dx * dx + dz * dz);
+	if (dist >= 16.0f)
+	{
+		m_pathWaypoints.clear();
+		m_currentWaypointIndex = 0;
+		m_pathfindingPending = false;
+		m_isMoving = false;
+		SetDest(m_Pos);
+		UpdateMovement();
+		return;
+	}
+
+	const bool hasPath = !m_pathWaypoints.empty()
+		&& m_currentWaypointIndex < static_cast<int>(m_pathWaypoints.size());
+	if (hasPath || m_pathfindingPending)
+	{
+		UpdateMovement();
+		return;
+	}
+
+	float ax = dx;
+	float az = dz;
+	if (dist < 0.5f)
+	{
+		ax = 1.0f;
+		az = 0.0f;
+	}
+	else
+	{
+		ax /= dist;
+		az /= dist;
+	}
+
+	float destX = m_Pos.x + ax * 8.0f;
+	float destZ = m_Pos.z + az * 8.0f;
+	if (destX < 1.0f)
+		destX = 1.0f;
+	if (destZ < 1.0f)
+		destZ = 1.0f;
+	if (destX > 3070.0f)
+		destX = 3070.0f;
+	if (destZ > 3070.0f)
+		destZ = 3070.0f;
+
+	const Vector3 dest{ destX, m_Pos.y, destZ };
+	if (g_pathfindingSystem)
+		ApplyPathWaypoints(g_pathfindingSystem->FindMonsterChasePath(m_Pos, dest, this));
+	if (m_pathWaypoints.empty())
+		SetDest(dest);
+	UpdateMovement();
+}
+
+void U7Object::CauseFear()
+{
+	U7Object* avatar = g_Player ? g_Player->GetAvatarObject() : nullptr;
+	if (!avatar)
+		return;
+	const int oppressorId = static_cast<int>(avatar->m_ID);
+
+	auto tryFear = [&](U7Object* unit)
+	{
+		if (!unit || unit == this || unit->m_isContained)
+			return;
+		if (unit->GetIsDead() || unit->IsDeathStatus())
+			return;
+		if (unit->m_UnitType != UnitTypes::UNIT_TYPE_NPC
+			&& unit->m_UnitType != UnitTypes::UNIT_TYPE_MONSTER)
+			return;
+		if ((unit->m_flags & kObjFlagInvisible) != 0)
+			return;
+		if (IsPartyActor(unit))
+			return;
+		if (GetCombatIntelligence(unit) <= 5)
+			return;
+		unit->StartFear(oppressorId);
+	};
+
+	const int tx = static_cast<int>(std::floor(m_Pos.x));
+	const int tz = static_cast<int>(std::floor(m_Pos.z));
+	const int cx = tx / 16;
+	const int cz = tz / 16;
+	for (int oz = cz - 2; oz <= cz + 2; ++oz)
+	{
+		for (int ox = cx - 2; ox <= cx + 2; ++ox)
+		{
+			if (ox < 0 || oz < 0 || ox >= 192 || oz >= 192)
+				continue;
+			const std::vector<U7Object*> units = g_chunkObjectMap[ox][oz];
+			for (U7Object* unit : units)
+			{
+				if (!unit)
+					continue;
+				const int ux = static_cast<int>(std::floor(unit->m_Pos.x));
+				const int uz = static_cast<int>(std::floor(unit->m_Pos.z));
+				if (std::max(std::abs(ux - tx), std::abs(uz - tz)) > 25)
+					continue;
+				tryFear(unit);
+			}
+		}
+	}
+}
+
+// Sixth Circle timers. delayed_execute_usecode_array scales ticks by 0.05s.
+// These durations use the real usecode step, 0.20s.
+namespace
+{
+	constexpr float kUsecodeStepSec = 0.2f;
+	constexpr int kMagicStormFlag = 0x2ED;
+
+	struct PendingClone
+	{
+		int targetId = 0;
+		float at = 0.0f;
+	};
+
+	struct PendingRing
+	{
+		int x = 0;
+		int z = 0;
+		float y = 0.0f;
+		float at = 0.0f;
+	};
+
+	std::vector<PendingClone> g_pendingClones;
+	std::vector<PendingRing> g_pendingRings;
+	int g_stormCasterId = 0;
+	float g_stormEndsAt = 0.0f;
+	float g_stormNextStrike = 0.0f;
+
+	int InclusiveRoll(int lo, int hi)
+	{
+		if (hi < lo)
+			std::swap(lo, hi);
+		if (g_NonVitalRNG)
+			return g_NonVitalRNG->RandomRange(static_cast<unsigned int>(lo), static_cast<unsigned int>(hi));
+		const int span = (hi - lo) + 1;
+		return lo + (span > 0 ? (rand() % span) : 0);
+	}
+
+	bool IsLivingCreature(U7Object* unit)
+	{
+		if (!unit || unit->m_isContained || unit->GetIsDead() || unit->IsDeathStatus())
+			return false;
+		return unit->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC
+			|| unit->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_MONSTER;
+	}
+
+	bool SurfaceNear(int tx, int tz, float prefer, float maxDelta, float& outY)
+	{
+		if (!g_pathfindingSystem)
+			return false;
+		if (tx < 0 || tz < 0 || tx >= 3072 || tz >= 3072)
+			return false;
+		const std::vector<float> heights = g_pathfindingSystem->GetWalkableSurfaceHeights(tx, tz);
+		if (heights.empty())
+			return false;
+		float best = heights[0];
+		float bestDelta = std::fabs(best - prefer);
+		for (float h : heights)
+		{
+			const float delta = std::fabs(h - prefer);
+			if (delta < bestDelta)
+			{
+				bestDelta = delta;
+				best = h;
+			}
+		}
+		if (bestDelta > maxDelta)
+			return false;
+		outY = best;
+		return true;
+	}
+
+	U7Object* MakeSpellField(int shape, int tx, int tz, float y)
+	{
+		if (tx < 0 || tz < 0 || tx >= 3072 || tz >= 3072)
+			return nullptr;
+		const int id = static_cast<int>(GetNextID());
+		U7Object* obj = AddObject(shape, 0, id, tx + 0.5f, y, tz + 0.5f);
+		if (!obj)
+			return nullptr;
+		obj->m_UnitType = U7Object::UnitTypes::UNIT_TYPE_OBJECT;
+		obj->m_Visible = true;
+		obj->m_ShouldDraw = true;
+		return obj;
+	}
+
+	bool AlreadyListed(const std::vector<U7Object*>& list, const U7Object* unit)
+	{
+		return std::find(list.begin(), list.end(), unit) != list.end();
+	}
+
+	// Func0934. A party caster hits non-party creatures within dist.
+	// Anyone else hits the whole party, with no distance check.
+	void CollectOffensiveTargets(U7Object* caster, int dist, std::vector<U7Object*>& out)
+	{
+		if (!caster)
+			return;
+
+		if (!IsPartyActor(caster))
+		{
+			if (!g_Player)
+				return;
+			for (int npcId : g_Player->GetPartyMemberIds())
+			{
+				U7Object* member = ObjectFromNpcId(npcId);
+				if (!IsLivingCreature(member) || member == caster)
+					continue;
+				if (AlreadyListed(out, member))
+					continue;
+				out.push_back(member);
+			}
+			return;
+		}
+
+		const int tx = static_cast<int>(std::floor(caster->m_Pos.x));
+		const int tz = static_cast<int>(std::floor(caster->m_Pos.z));
+		const int radius = (dist / 16) + 1;
+		const int cx = tx / 16;
+		const int cz = tz / 16;
+		for (int oz = cz - radius; oz <= cz + radius; ++oz)
+		{
+			for (int ox = cx - radius; ox <= cx + radius; ++ox)
+			{
+				if (ox < 0 || oz < 0 || ox >= 192 || oz >= 192)
+					continue;
+				const std::vector<U7Object*> units = g_chunkObjectMap[ox][oz];
+				for (U7Object* unit : units)
+				{
+					if (!IsLivingCreature(unit) || unit == caster || IsPartyActor(unit))
+						continue;
+					if ((unit->m_flags & kObjFlagInvisible) != 0)
+						continue;
+					if (AlreadyListed(out, unit))
+						continue;
+					const int ux = static_cast<int>(std::floor(unit->m_Pos.x));
+					const int uz = static_cast<int>(std::floor(unit->m_Pos.z));
+					if (std::max(std::abs(ux - tx), std::abs(uz - tz)) > dist)
+						continue;
+					out.push_back(unit);
+				}
+			}
+		}
+	}
+
+	struct CloneSpot
+	{
+		int x = 0;
+		int z = 0;
+		float y = 0.0f;
+	};
+
+	bool FindCloneSpot(const U7Object* src, CloneSpot& out)
+	{
+		if (!src)
+			return false;
+		const int sx = static_cast<int>(std::floor(src->m_Pos.x));
+		const int sz = static_cast<int>(std::floor(src->m_Pos.z));
+		std::vector<CloneSpot> spots;
+		for (int r = 1; r <= 3; ++r)
+		{
+			for (int dz = -r; dz <= r; ++dz)
+			{
+				for (int dx = -r; dx <= r; ++dx)
+				{
+					if (std::max(std::abs(dx), std::abs(dz)) != r)
+						continue;
+					const int tx = sx + dx;
+					const int tz = sz + dz;
+					float y = 0.0f;
+					if (!SurfaceNear(tx, tz, src->m_Pos.y, 2.0f, y))
+						continue;
+					spots.push_back(CloneSpot{ tx, tz, y });
+				}
+			}
+		}
+		if (spots.empty())
+			return false;
+		out = spots[InclusiveRoll(0, static_cast<int>(spots.size()) - 1)];
+		return true;
+	}
+
+	void EnrollAlly(U7Object* spawned)
+	{
+		if (!spawned)
+			return;
+		spawned->m_Team = 2;
+		spawned->m_currentActivity = 0;
+		spawned->m_target = 0;
+		spawned->m_combatPathTargetId = 0;
+		if (g_isCombatMode && g_mainState)
+			g_mainState->EnsureCombatParticipant(static_cast<int>(spawned->m_ID), false);
+	}
+
+	void SpawnCloneNow(int targetId)
+	{
+		U7Object* src = GetObjectFromID(targetId);
+		if (!IsLivingCreature(src) || !g_mainState)
+			return;
+
+		CloneSpot spot;
+		if (!FindCloneSpot(src, spot))
+			return;
+
+		const int shape = src->m_shapeData ? src->m_shapeData->m_shape : src->m_ObjectType;
+		int monsterType = -1;
+		for (int i = 0; i < static_cast<int>(g_monsterData.size()); ++i)
+		{
+			if (static_cast<int>(g_monsterData[i].m_shape) == shape)
+			{
+				monsterType = i;
+				break;
+			}
+		}
+
+		U7Object* clone = nullptr;
+		if (monsterType >= 0)
+		{
+			const int id = g_mainState->SpawnMonster(monsterType, spot.x, static_cast<int>(std::lround(spot.y)), spot.z);
+			clone = GetObjectFromID(id);
+			if (!clone)
+				return;
+			clone->SetPos(Vector3{ spot.x + 0.5f, spot.y, spot.z + 0.5f });
+		}
+		else
+		{
+			float hp = src->m_BaseMaxHP;
+			if (src->m_NPCData && src->m_NPCData->str > 0)
+				hp = static_cast<float>(src->m_NPCData->str);
+			else if (g_Player && g_Player->GetAvatarObject() == src)
+				hp = static_cast<float>(g_Player->GetStr());
+			if (hp < 1.0f)
+				hp = 1.0f;
+
+			const int id = static_cast<int>(GetNextID());
+			clone = AddObject(shape, 0, id, spot.x + 0.5f, spot.y, spot.z + 0.5f);
+			if (!clone)
+				return;
+			clone->m_UnitType = U7Object::UnitTypes::UNIT_TYPE_MONSTER;
+			clone->m_NPCID = -1;
+			clone->m_NPCData = nullptr;
+			clone->m_hp = hp;
+			clone->m_BaseMaxHP = hp;
+			clone->m_BaseAttack = src->m_BaseAttack;
+			if (src->m_NPCData)
+				clone->m_combat = src->m_NPCData->combat;
+			else
+				clone->m_combat = src->m_combat;
+			clone->MonsterInit();
+			clone->m_NPCID = -1;
+			clone->m_NPCData = nullptr;
+			clone->m_UnitType = U7Object::UnitTypes::UNIT_TYPE_MONSTER;
+			clone->m_hp = hp;
+			clone->m_BaseMaxHP = hp;
+			clone->SetPos(Vector3{ spot.x + 0.5f, spot.y, spot.z + 0.5f });
+		}
+
+		clone->m_Direction = src->m_Direction;
+		clone->m_Angle = src->m_Angle;
+		EnrollAlly(clone);
+	}
+
+	void DrainPendingClones(float now)
+	{
+		size_t i = 0;
+		while (i < g_pendingClones.size())
+		{
+			if (now < g_pendingClones[i].at)
+			{
+				++i;
+				continue;
+			}
+			const int targetId = g_pendingClones[i].targetId;
+			g_pendingClones.erase(g_pendingClones.begin() + static_cast<std::ptrdiff_t>(i));
+			SpawnCloneNow(targetId);
+		}
+	}
+
+	void DrainPendingRings(float now)
+	{
+		size_t i = 0;
+		while (i < g_pendingRings.size())
+		{
+			if (now < g_pendingRings[i].at)
+			{
+				++i;
+				continue;
+			}
+			const PendingRing ring = g_pendingRings[i];
+			g_pendingRings.erase(g_pendingRings.begin() + static_cast<std::ptrdiff_t>(i));
+			U7Object* field = MakeSpellField(kFireFieldShape, ring.x, ring.z, ring.y);
+			if (!field)
+				continue;
+			// 30 + roll(1, 5) usecode ticks. Rolled when the segment appears.
+			const float life = (30.0f + static_cast<float>(InclusiveRoll(1, 5))) * kUsecodeStepSec;
+			field->ArmFireField(life);
+		}
+	}
+
+	void StopMagicStorm()
+	{
+		g_stormCasterId = 0;
+		g_stormEndsAt = 0.0f;
+		g_stormNextStrike = 0.0f;
+		if (g_ScriptingSystem)
+			g_ScriptingSystem->SetFlag(kMagicStormFlag, false);
+		if (g_WeatherSystem)
+			g_WeatherSystem->SetWeather(0, 0, false, Vector3{ 0, 0, 0 }, -1, -1);
+	}
+
+	void StrikeMagicStorm()
+	{
+		U7Object* caster = GetObjectFromID(g_stormCasterId);
+		if (!caster)
+		{
+			StopMagicStorm();
+			return;
+		}
+
+		std::vector<U7Object*> targets;
+		CollectOffensiveTargets(caster, 45, targets);
+		if (targets.empty())
+			return;
+
+		U7Object* victim = targets[InclusiveRoll(0, static_cast<int>(targets.size()) - 1)];
+		if (!IsLivingCreature(victim))
+			return;
+
+		if (g_SpriteEffectSystem)
+			g_SpriteEffectSystem->Spawn(17, victim->m_Pos);
+		if (g_SoundSystem)
+			g_SoundSystem->PlaySound(BuildU7SfxPath(62));
+		if (g_WeatherSystem)
+			g_WeatherSystem->PulseLightningFlash();
+
+		// Join before the log. EnterCombatMode clears the console.
+		PullEnemyIntoCombat(caster);
+		PullEnemyIntoCombat(victim);
+
+		// Exult lightning: 1 + rand()%12. Armor is not applied. No miss roll.
+		const int hits = InclusiveRoll(1, 12);
+		const std::string name = victim->m_name.empty() ? "Someone" : victim->m_name;
+		const bool partyVictim = victim->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC
+			&& g_Player
+			&& g_Player->NPCIDInParty(victim->m_NPCID);
+		AddCombatLogString(
+			name + " takes " + std::to_string(hits) + " damage from lightning!",
+			partyVictim ? RED : WHITE);
+		ApplyCombatDamage(victim, static_cast<float>(hits), nullptr);
+	}
+
+	void PushStumble(std::vector<U7Object::UsecodeScriptElem>& code, int roll)
+	{
+		auto three = [&](int a, int b, int c)
+		{
+			code.push_back(a);
+			code.push_back(b);
+			code.push_back(c);
+		};
+		auto faced = [&](int pose)
+		{
+			// (byte)0x30 + roll(0, 3) * 2, then masked to a facing. N E S W.
+			const int dir = InclusiveRoll(0, 3) * 2;
+			code.push_back(0x59);
+			code.push_back(dir);
+			code.push_back(pose);
+			code.push_back(0x61);
+		};
+
+		switch (roll)
+		{
+		case 0: three(0x6D, 0x6C, 0x61); break; // kneel, bow, stand
+		case 1: three(0x6D, 0x61, 0x61); break; // kneel, stand, stand
+		case 2: three(0x6C, 0x6E, 0x61); break; // bow, sleep, stand
+		case 3: three(0x61, 0x61, 0x61); break; // stand, stand, stand
+		case 4: three(0x6D, 0x64, 0x61); break; // kneel, ready, stand
+		case 5: three(0x64, 0x6D, 0x61); break; // ready, kneel, stand
+		case 6: faced(0x6C); break;             // face, bow, stand
+		case 7: faced(0x6D); break;             // face, kneel, stand
+		case 8: faced(0x64); break;             // face, ready, stand
+		default: break;
+		}
+	}
+
+	void ArmHazardShape(U7Object* obj, int wantShape)
+	{
+		if (!obj)
+			return;
+		const int shape = obj->m_shapeData ? obj->m_shapeData->m_shape : obj->m_ObjectType;
+		if (shape != wantShape)
+			return;
+		obj->m_UnitType = U7Object::UnitTypes::UNIT_TYPE_OBJECT;
+		obj->m_Visible = true;
+		obj->m_ShouldDraw = true;
+		obj->m_fireFieldNextPulse = 0.0f;
+	}
+
+	struct PendingGold
+	{
+		int leadId = 0;
+		float at = 0.0f;
+	};
+
+	struct PendingBlast
+	{
+		int casterId = 0;
+		int markerId = 0;
+		float attackAt = 0.0f;
+		float removeAt = 0.0f;
+		bool attacked = false;
+	};
+
+	struct PendingCharm
+	{
+		int casterId = 0;
+		int targetId = 0;
+		float at = 0.0f;
+	};
+
+	struct PendingMight
+	{
+		int targetId = 0;
+		float at = 0.0f;
+	};
+
+	struct EnergyMist
+	{
+		int casterId = 0;
+		int targetId = 0;
+		float x = 0.0f;
+		float y = 0.0f;
+		float z = 0.0f;
+		float endsAt = 0.0f;
+		float nextDamage = 0.0f;
+		float nextStep = 0.0f;
+		float nextPuff = 0.0f;
+		int radius = 2;
+		// 0 follows the wall clock. Above 0, one strike per combatant turn.
+		int turnsRemaining = 0;
+		// Turn-based: the cloud has reached its enemy and copies their position.
+		bool seated = false;
+		// Energy Mist is 399 / sprite 13 / sfx 65. Death Vortex is 639 / 8 / 63.
+		int weaponShape = 399;
+		int sprite = 13;
+		int sfx = 65;
+		const char* hitNoun = "the mist";
+	};
+
+	// Real-time pulses once a second for 20 seconds. Turn-based gets the same count.
+	constexpr int kEnergyMistTurnBudget = 20;
+
+	std::vector<PendingGold> g_pendingGold;
+	std::vector<PendingBlast> g_pendingBlasts;
+	std::vector<PendingCharm> g_pendingCharms;
+	struct PendingDeath
+	{
+		int casterId = 0;
+		int targetId = 0;
+		float at = 0.0f;
+	};
+
+	std::vector<PendingMight> g_pendingMights;
+	std::vector<PendingDeath> g_pendingDeaths;
+	std::vector<EnergyMist> g_energyMists;
+	// Armageddon's kill waits out the gesture. 0 means none is scheduled.
+	int g_armageddonCasterId = 0;
+	float g_armageddonAt = 0.0f;
+	// Time Stop outside turn-based combat. Exult stores an absolute tick. 0 means running.
+	float g_timeStopUntil = 0.0f;
+	// Turn-based Time Stop. Object id -> enemy turns still skipped. Empty means running.
+	std::unordered_map<int, int> g_timeStopTurns;
+
+	int ChebyshevXZ(const U7Object* a, const U7Object* b)
+	{
+		if (!a || !b)
+			return 0;
+		const int dx = std::abs(static_cast<int>(std::floor(a->m_Pos.x)) - static_cast<int>(std::floor(b->m_Pos.x)));
+		const int dz = std::abs(static_cast<int>(std::floor(a->m_Pos.z)) - static_cast<int>(std::floor(b->m_Pos.z)));
+		return std::max(dx, dz);
+	}
+
+	int AvatarAlignment()
+	{
+		auto it = g_NPCData.find(0);
+		if (it == g_NPCData.end() || !it->second)
+			return 0;
+		return (static_cast<int>(it->second->status) >> 2) & 3;
+	}
+
+	void ApplySpellShape(U7Object* object, int shape)
+	{
+		if (!object || shape < 0 || shape >= 1024)
+			return;
+		if (g_mainState && g_mainState->m_barkObject == object)
+			g_mainState->ClearBarks();
+		int currentFrame = object->m_Frame;
+		if (currentFrame < 0 || currentFrame >= 32)
+			currentFrame = 0;
+		object->m_ObjectType = shape;
+		object->m_Frame = currentFrame;
+		object->m_shapeData = &g_shapeTable[shape][currentFrame];
+		object->m_objectData = &g_objectDataTable[shape];
+		if (object->m_shapeData)
+			object->m_drawType = object->m_shapeData->GetDrawType();
+		if (object->GetAnimMode() != ObjectAnimMode::Scripted)
+			object->ApplyDefaultAnimMode();
+		object->SetPos(object->GetPos());
+		NotifyPathfindingGridUpdate(static_cast<int>(object->m_Pos.x), static_cast<int>(object->m_Pos.z), 4);
+	}
+
+	void TransmuteLeadNow(int leadId)
+	{
+		U7Object* obj = GetObjectFromID(leadId);
+		if (!obj || obj->GetIsDead())
+			return;
+		const int shape = obj->m_shapeData ? obj->m_shapeData->m_shape : obj->m_ObjectType;
+		if (shape != 915)
+			return;
+
+		// Quantity shapes store the count in quality. Lead (915) and gold
+		// nuggets (645) are breakable shapes, so the original set_item_quantity
+		// refuses them. The *10 is still clamped here if a stack ever qualifies.
+		int qty = 1;
+		if (shape >= 0 && shape < 1024 && g_objectDataTable[shape].m_shapeType == 3)
+		{
+			qty = obj->m_Quality & 0x7f;
+			if (qty <= 0)
+				qty = 1;
+			qty *= 10;
+			if (qty > 127)
+				qty = 127;
+		}
+		ApplySpellShape(obj, 645);
+		const int gold = obj->m_shapeData ? obj->m_shapeData->m_shape : obj->m_ObjectType;
+		if (gold >= 0 && gold < 1024 && g_objectDataTable[gold].m_shapeType == 3)
+			obj->m_Quality = (qty & 0x7f) | (obj->m_Quality & 0x80);
+	}
+
+	void RemoveBlastMarker(int markerId)
+	{
+		U7Object* marker = GetObjectFromID(markerId);
+		if (!marker || marker->GetIsDead())
+			return;
+		marker->m_ShouldDraw = false;
+		marker->m_Visible = false;
+		marker->SetIsDead(true);
+	}
+
+	void FireDelayedBlastNow(const PendingBlast& blast)
+	{
+		U7Object* marker = GetObjectFromID(blast.markerId);
+		U7Object* caster = GetObjectFromID(blast.casterId);
+		if (!marker || marker->GetIsDead())
+			return;
+		bool launched = false;
+		if (caster && !caster->GetIsDead() && !caster->IsDeathStatus())
+		{
+			caster->SetUsecodeAttackTarget(static_cast<int>(marker->m_ID), 621);
+			launched = caster->FireUsecodeAttack();
+		}
+		if (!launched)
+			DetonateDelayedBlast(caster, marker);
+	}
+
+	void MassCharmOne(U7Object* caster, U7Object* target)
+	{
+		if (!IsLivingCreature(target))
+			return;
+		const int npc = target->m_NPCID;
+		// Usecode skips Anmanivas (-217), Foranamo (-218), and the Avatar (-356).
+		if (npc == 0 || npc == 217 || npc == 218)
+			return;
+		if (AvatarAlignment() != 0)
+			target->ApplyCharm(caster);
+		else
+			target->EndCharm(true);
+	}
+
+	int MistRadiusTiles(int sprite)
+	{
+		if (sprite >= 0 && sprite < static_cast<int>(g_spriteTable.size()))
+		{
+			const auto& frames = g_spriteTable[static_cast<size_t>(sprite)];
+			if (!frames.empty())
+			{
+				const int fr = static_cast<int>(frames.size()) / 4;
+				const int idx = std::min(fr, static_cast<int>(frames.size()) - 1);
+				const int radius = frames[static_cast<size_t>(idx)].width / 16;
+				if (radius > 0)
+					return radius;
+			}
+		}
+		return 2;
+	}
+
+	bool IsMistEnemy(U7Object* unit)
+	{
+		return IsLivingCreature(unit)
+			&& !IsPartyActor(unit)
+			&& unit->m_Team == 1
+			&& !unit->IsInvisible();
+	}
+
+	U7Object* RetargetMist(EnergyMist& mist, bool skipInvisible = false)
+	{
+		U7Object* best = nullptr;
+		int bestDist = 31;
+		for (const auto& entry : g_objectList)
+		{
+			U7Object* unit = entry.second.get();
+			if (!IsLivingCreature(unit) || IsPartyActor(unit) || unit->m_Team != 1)
+				continue;
+			if (skipInvisible && unit->IsInvisible())
+				continue;
+			const int dx = std::abs(static_cast<int>(std::floor(unit->m_Pos.x)) - static_cast<int>(std::floor(mist.x)));
+			const int dz = std::abs(static_cast<int>(std::floor(unit->m_Pos.z)) - static_cast<int>(std::floor(mist.z)));
+			const int dist = std::max(dx, dz);
+			if (dist > 30 || dist >= bestDist)
+				continue;
+			bestDist = dist;
+			best = unit;
+		}
+		mist.targetId = best ? static_cast<int>(best->m_ID) : 0;
+		return best;
+	}
+
+	void StepMistToward(EnergyMist& mist, float destX, float destY, float destZ)
+	{
+		auto stepAxis = [](float& pos, float dest)
+		{
+			const float delta = dest - pos;
+			if (std::fabs(delta) >= 1.0f)
+				pos += (delta > 0.0f) ? 1.0f : -1.0f;
+		};
+		stepAxis(mist.x, destX);
+		stepAxis(mist.y, destY);
+		stepAxis(mist.z, destZ);
+	}
+
+	void StepEnergyMist(EnergyMist& mist)
+	{
+		U7Object* target = GetObjectFromID(mist.targetId);
+		if (!IsLivingCreature(target))
+			target = RetargetMist(mist);
+		if (!target)
+			return;
+		StepMistToward(mist, target->m_Pos.x, target->m_Pos.y, target->m_Pos.z);
+	}
+
+	bool MistHasReached(const EnergyMist& mist, const U7Object* target)
+	{
+		if (!target)
+			return false;
+		const float dx = std::fabs(mist.x - target->m_Pos.x);
+		const float dy = std::fabs(mist.y - target->m_Pos.y);
+		const float dz = std::fabs(mist.z - target->m_Pos.z);
+		return dx < 1.0f && dy < 1.0f && dz < 1.0f;
+	}
+
+	// Walk toward the locked enemy. Once there, copy their position so a move
+	// carries the cloud. A dead enemy waits for the next turn to choose another.
+	void RideEnergyMist(EnergyMist& mist, float now)
+	{
+		U7Object* target = GetObjectFromID(mist.targetId);
+		if (!IsMistEnemy(target))
+		{
+			mist.seated = false;
+			return;
+		}
+		if (mist.seated || MistHasReached(mist, target))
+		{
+			mist.seated = true;
+			mist.x = target->m_Pos.x;
+			mist.y = target->m_Pos.y;
+			mist.z = target->m_Pos.z;
+			return;
+		}
+		if (now < mist.nextStep)
+			return;
+		StepMistToward(mist, target->m_Pos.x, target->m_Pos.y, target->m_Pos.z);
+		mist.nextStep = now + 0.1f;
+		if (MistHasReached(mist, target))
+		{
+			mist.seated = true;
+			mist.x = target->m_Pos.x;
+			mist.y = target->m_Pos.y;
+			mist.z = target->m_Pos.z;
+		}
+	}
+
+	void DamageMistVictim(EnergyMist& mist, U7Object* victim)
+	{
+		if (!IsLivingCreature(victim))
+			return;
+		U7Object* caster = GetObjectFromID(mist.casterId);
+		if (caster && (caster->GetIsDead() || caster->IsDeathStatus()))
+			caster = nullptr;
+
+		const int hits = FigureCombatHitPoints(caster, victim, mist.weaponShape, -1);
+		if (hits > 0)
+		{
+			const std::string name = victim->m_name.empty() ? "Someone" : victim->m_name;
+			const char* noun = mist.hitNoun ? mist.hitNoun : "the mist";
+			AddCombatLogString(
+				name + " takes " + std::to_string(hits) + " damage from " + noun + "!",
+				WHITE);
+			ApplyCombatDamage(victim, static_cast<float>(hits), caster);
+		}
+		else if (caster)
+		{
+			victim->NotifyAttackedBy(caster);
+		}
+	}
+
+	void DamageEnergyMist(EnergyMist& mist)
+	{
+		std::vector<U7Object*> victims;
+		for (const auto& entry : g_objectList)
+		{
+			U7Object* unit = entry.second.get();
+			if (!IsLivingCreature(unit) || IsPartyActor(unit) || unit->IsInvisible())
+				continue;
+			const int dx = std::abs(static_cast<int>(std::floor(unit->m_Pos.x)) - static_cast<int>(std::floor(mist.x)));
+			const int dz = std::abs(static_cast<int>(std::floor(unit->m_Pos.z)) - static_cast<int>(std::floor(mist.z)));
+			const int dy = std::abs(static_cast<int>(std::floor(unit->m_Pos.y)) - static_cast<int>(std::floor(mist.y)));
+			if (std::max(dx, std::max(dz, dy)) > mist.radius)
+				continue;
+			victims.push_back(unit);
+		}
+
+		for (U7Object* victim : victims)
+			DamageMistVictim(mist, victim);
+	}
+
+	// One enemy, one hit. The cloud keeps its place and walks to a new enemy.
+	void StrikeEnergyMistTurn(EnergyMist& mist)
+	{
+		U7Object* victim = GetObjectFromID(mist.targetId);
+		if (!IsMistEnemy(victim))
+			victim = RetargetMist(mist, true);
+		if (!victim)
+		{
+			mist.seated = false;
+			return;
+		}
+
+		const int victimId = static_cast<int>(victim->m_ID);
+		if (mist.targetId != victimId)
+			mist.seated = false;
+		mist.targetId = victimId;
+		const float now = GetTime();
+		if (g_SpriteEffectSystem)
+			g_SpriteEffectSystem->Spawn(mist.sprite, Vector3{ mist.x, mist.y, mist.z });
+		mist.nextPuff = now + 0.2f;
+		if (mist.nextStep <= 0.0f)
+			mist.nextStep = now;
+		if (g_SoundSystem && mist.sfx >= 0)
+			g_SoundSystem->PlaySound(BuildU7SfxPath(mist.sfx));
+		DamageMistVictim(mist, victim);
+	}
+
+	void DrainPendingGold(float now)
+	{
+		size_t i = 0;
+		while (i < g_pendingGold.size())
+		{
+			if (now < g_pendingGold[i].at)
+			{
+				++i;
+				continue;
+			}
+			const int leadId = g_pendingGold[i].leadId;
+			g_pendingGold.erase(g_pendingGold.begin() + static_cast<std::ptrdiff_t>(i));
+			TransmuteLeadNow(leadId);
+		}
+	}
+
+	void DrainPendingBlasts(float now)
+	{
+		size_t i = 0;
+		while (i < g_pendingBlasts.size())
+		{
+			PendingBlast& blast = g_pendingBlasts[i];
+			if (!blast.attacked && now >= blast.attackAt)
+			{
+				blast.attacked = true;
+				FireDelayedBlastNow(blast);
+			}
+			if (now >= blast.removeAt)
+			{
+				const int markerId = blast.markerId;
+				g_pendingBlasts.erase(g_pendingBlasts.begin() + static_cast<std::ptrdiff_t>(i));
+				RemoveBlastMarker(markerId);
+				continue;
+			}
+			++i;
+		}
+	}
+
+	void DrainPendingCharms(float now)
+	{
+		size_t i = 0;
+		while (i < g_pendingCharms.size())
+		{
+			if (now < g_pendingCharms[i].at)
+			{
+				++i;
+				continue;
+			}
+			const PendingCharm pending = g_pendingCharms[i];
+			g_pendingCharms.erase(g_pendingCharms.begin() + static_cast<std::ptrdiff_t>(i));
+			MassCharmOne(GetObjectFromID(pending.casterId), GetObjectFromID(pending.targetId));
+		}
+	}
+
+	void DrainPendingMights(float now)
+	{
+		size_t i = 0;
+		while (i < g_pendingMights.size())
+		{
+			if (now < g_pendingMights[i].at)
+			{
+				++i;
+				continue;
+			}
+			const int targetId = g_pendingMights[i].targetId;
+			g_pendingMights.erase(g_pendingMights.begin() + static_cast<std::ptrdiff_t>(i));
+			if (U7Object* target = GetObjectFromID(targetId))
+				target->ApplyMight();
+		}
+	}
+
+	void UpdateEnergyMists(float now)
+	{
+		size_t i = 0;
+		while (i < g_energyMists.size())
+		{
+			EnergyMist& mist = g_energyMists[i];
+			// Turn-based life is turnsRemaining. endsAt is 0. The clock may walk
+			// the cloud, and it must not strike or delete it between turns.
+			if (mist.turnsRemaining > 0)
+			{
+				RideEnergyMist(mist, now);
+				if (g_SpriteEffectSystem && now >= mist.nextPuff)
+				{
+					g_SpriteEffectSystem->Spawn(mist.sprite, Vector3{ mist.x, mist.y, mist.z });
+					mist.nextPuff = now + 0.2f;
+				}
+				++i;
+				continue;
+			}
+			if (now >= mist.endsAt)
+			{
+				g_energyMists.erase(g_energyMists.begin() + static_cast<std::ptrdiff_t>(i));
+				continue;
+			}
+			if (now >= mist.nextStep)
+			{
+				StepEnergyMist(mist);
+				mist.nextStep = now + 0.1f;
+			}
+			if (g_SpriteEffectSystem && now >= mist.nextPuff)
+			{
+				g_SpriteEffectSystem->Spawn(mist.sprite, Vector3{ mist.x, mist.y, mist.z });
+				mist.nextPuff = now + 0.2f;
+			}
+			if (now >= mist.nextDamage)
+			{
+				if (g_SoundSystem && mist.sfx >= 0)
+					g_SoundSystem->PlaySound(BuildU7SfxPath(mist.sfx));
+				DamageEnergyMist(mist);
+				mist.nextDamage = now + 1.0f;
+			}
+			++i;
+		}
+	}
+
+	void ResolveMassDeath(int casterId, int targetId)
+	{
+		U7Object* victim = GetObjectFromID(targetId);
+		if (!IsLivingCreature(victim))
+			return;
+		if (victim->IsDeathSafe())
+			return;
+
+		U7Object* caster = GetObjectFromID(casterId);
+		if (caster && (caster->GetIsDead() || caster->IsDeathStatus()))
+			caster = nullptr;
+
+		const int hp = static_cast<int>(victim->m_hp);
+		if (hp > 2)
+			ApplyCombatDamage(victim, static_cast<float>(hp - 2), caster);
+		if (!IsLivingCreature(victim))
+			return;
+		ApplyCombatDamage(victim, 50.0f, caster);
+		if (!victim->GetIsDead() && !victim->IsDeathStatus())
+			victim->ApplyDeath();
+	}
+
+	void DrainPendingDeaths(float now)
+	{
+		size_t i = 0;
+		while (i < g_pendingDeaths.size())
+		{
+			if (now < g_pendingDeaths[i].at)
+			{
+				++i;
+				continue;
+			}
+			const PendingDeath pending = g_pendingDeaths[i];
+			g_pendingDeaths.erase(g_pendingDeaths.begin() + static_cast<std::ptrdiff_t>(i));
+			ResolveMassDeath(pending.casterId, pending.targetId);
+		}
+	}
+
+	int ObjectShape(const U7Object* unit)
+	{
+		if (!unit)
+			return -1;
+		if (unit->m_shapeData)
+			return unit->m_shapeData->m_shape;
+		return unit->m_ObjectType;
+	}
+
+	// shape_info actor flag armageddon_safe: Lord British 466, Batlin 403 and 482.
+	// The Avatar is npc 0 and is outside the original loop.
+	bool SurvivesArmageddon(const U7Object* unit)
+	{
+		if (!unit)
+			return true;
+		if (unit->m_NPCID == 0)
+			return true;
+		const int shape = ObjectShape(unit);
+		return shape == 466 || shape == 403 || shape == 482;
+	}
+
+	bool UnitOnScreen(const U7Object* unit)
+	{
+		if (!unit)
+			return false;
+		const Vector2 screen = GetWorldToScreen(unit->m_Pos, g_camera);
+		const float w = static_cast<float>(GetScreenWidth());
+		const float h = static_cast<float>(GetScreenHeight());
+		return screen.x >= 0.0f && screen.y >= 0.0f && screen.x < w && screen.y < h;
+	}
+
+	void RunArmageddonNow()
+	{
+		U7Object* caster = GetObjectFromID(g_armageddonCasterId);
+		if (caster && g_mainState && !caster->GetIsDead() && !caster->IsDeathStatus())
+			g_mainState->Bark(caster, "In Corp Hur Tym", 2.5f);
+		StartEarthquake(40);
+
+		static const char* kScreams[] = { "Aiiiieee!", "Noooo!", "#!?*#%!" };
+		std::vector<U7Object*> npcs;
+		for (const auto& entry : g_NPCData)
+		{
+			if (entry.first == 0)
+				continue;
+			U7Object* npc = ObjectFromNpcId(entry.first);
+			if (!IsLivingCreature(npc) || SurvivesArmageddon(npc))
+				continue;
+			npcs.push_back(npc);
+		}
+		for (U7Object* npc : npcs)
+		{
+			const bool onScreen = UnitOnScreen(npc);
+			const int scream = InclusiveRoll(0, 2);
+			npc->ApplyDeath(true);
+			if (onScreen && g_mainState)
+				g_mainState->Bark(npc, kScreams[scream], 2.0f);
+		}
+
+		U7Object* center = (g_Player && g_Player->GetAvatarObject())
+			? g_Player->GetAvatarObject() : caster;
+		if (center)
+		{
+			const int tx = static_cast<int>(std::floor(center->m_Pos.x));
+			const int tz = static_cast<int>(std::floor(center->m_Pos.z));
+			const int cx = tx / 16;
+			const int cz = tz / 16;
+			std::vector<U7Object*> monsters;
+			for (int oz = cz - 3; oz <= cz + 3; ++oz)
+			{
+				for (int ox = cx - 3; ox <= cx + 3; ++ox)
+				{
+					if (ox < 0 || oz < 0 || ox >= 192 || oz >= 192)
+						continue;
+					const std::vector<U7Object*> units = g_chunkObjectMap[ox][oz];
+					for (U7Object* unit : units)
+					{
+						if (!unit || unit->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_MONSTER)
+							continue;
+						if (!IsLivingCreature(unit) || SurvivesArmageddon(unit))
+							continue;
+						if (AlreadyListed(monsters, unit))
+							continue;
+						const int ux = static_cast<int>(std::floor(unit->m_Pos.x));
+						const int uz = static_cast<int>(std::floor(unit->m_Pos.z));
+						if (std::max(std::abs(ux - tx), std::abs(uz - tz)) > 40)
+							continue;
+						monsters.push_back(unit);
+					}
+				}
+			}
+			for (U7Object* monster : monsters)
+				monster->ApplyDeath(true);
+		}
+
+		if (g_ScriptingSystem)
+			g_ScriptingSystem->SetFlag(0x1E, true);
+	}
+
+	void DrainArmageddon(float now)
+	{
+		if (g_armageddonAt <= 0.0f || now < g_armageddonAt)
+			return;
+		g_armageddonAt = 0.0f;
+		RunArmageddonNow();
+	}
+}
+
+bool TimeIsStopped()
+{
+	if (g_timeStopUntil <= 0.0f)
+		return false;
+	if (GetTime() >= g_timeStopUntil)
+	{
+		g_timeStopUntil = 0.0f;
+		AddCombatLogString("Time resumes.", SKYBLUE);
+		return false;
+	}
+	return true;
+}
+
+static void StartTurnBasedEnemyFreeze()
+{
+	const int turns = InclusiveRoll(3, 5);
+	const bool fresh = g_timeStopTurns.empty();
+	bool raised = false;
+	if (g_mainState)
+	{
+		for (int id : g_mainState->m_combatParticipants)
+		{
+			U7Object* unit = GetObjectFromID(id);
+			if (!IsHostileCombatUnit(unit))
+				continue;
+			int& left = g_timeStopTurns[id];
+			if (turns > left)
+			{
+				left = turns;
+				raised = true;
+			}
+		}
+	}
+	// The turn count is the whole effect. A wall-clock stop must not also run.
+	g_timeStopUntil = 0.0f;
+	if (!raised)
+		return;
+	if (fresh)
+		AddCombatLogString("Time stops.", SKYBLUE);
+	AddCombatLogString(
+		"Enemies are frozen for " + std::to_string(turns) + " turns.",
+		SKYBLUE);
+}
+
+void StartTimeStop(int length)
+{
+	if (InTurnBasedCombat())
+	{
+		StartTurnBasedEnemyFreeze();
+		return;
+	}
+	if (length <= 0)
+		return;
+	const float now = GetTime();
+	const float until = now + static_cast<float>(length) * 0.25f;
+	const bool fresh = g_timeStopUntil <= now;
+	if (until > g_timeStopUntil)
+		g_timeStopUntil = until;
+	if (fresh)
+		AddCombatLogString("Time stops.", SKYBLUE);
+}
+
+bool SpendEnemyTimeStopTurn(U7Object* unit)
+{
+	if (!unit || !IsHostileCombatUnit(unit))
+		return false;
+	const auto it = g_timeStopTurns.find(static_cast<int>(unit->m_ID));
+	if (it == g_timeStopTurns.end() || it->second <= 0)
+		return false;
+	--(it->second);
+	if (it->second <= 0)
+		g_timeStopTurns.erase(it);
+	return true;
+}
+
+bool EnemyTimeStopActive()
+{
+	return !g_timeStopTurns.empty();
+}
+
+bool ExpireDeadEnemyTimeStops()
+{
+	if (g_timeStopTurns.empty())
+		return false;
+	for (auto it = g_timeStopTurns.begin(); it != g_timeStopTurns.end(); )
+	{
+		U7Object* unit = GetObjectFromID(it->first);
+		if (!IsHostileCombatUnit(unit))
+			it = g_timeStopTurns.erase(it);
+		else
+			++it;
+	}
+	return g_timeStopTurns.empty();
+}
+
+void UpdateSixthCircleEffects()
+{
+	const float now = GetTime();
+	DrainPendingClones(now);
+	DrainPendingRings(now);
+	DrainPendingGold(now);
+	DrainPendingBlasts(now);
+	DrainPendingCharms(now);
+	DrainPendingMights(now);
+	DrainPendingDeaths(now);
+	DrainArmageddon(now);
+	UpdateEnergyMists(now);
+	// Expire a finished Time Stop even when nothing else asks.
+	TimeIsStopped();
+
+	if (g_stormEndsAt > 0.0f)
+	{
+		if (now >= g_stormEndsAt)
+			StopMagicStorm();
+		else if (now >= g_stormNextStrike)
+		{
+			StrikeMagicStorm();
+			if (g_stormEndsAt > 0.0f)
+				g_stormNextStrike = now + static_cast<float>(InclusiveRoll(3, 8)) * kUsecodeStepSec;
+		}
+	}
+	else if (g_ScriptingSystem && g_ScriptingSystem->GetFlag(kMagicStormFlag))
+	{
+		// A save cannot resume the strike chain. Clear the leftover flag and rain.
+		StopMagicStorm();
+	}
+}
+
+void ScheduleClone(int targetId)
+{
+	if (targetId <= 0)
+		return;
+	const float at = static_cast<float>(GetTime()) + 4.0f * kUsecodeStepSec;
+	g_pendingClones.push_back(PendingClone{ targetId, at });
+}
+
+void PlaceFireRing(int tileX, int tileZ, float lift)
+{
+	// Func0672 indexes from 1. These are the twelve offsets in that order.
+	// The second list is U7 y, which is this engine's z.
+	static const int kOx[12] = { -1, 0, 1, 2, 2, 2, 1, 0, -1, -2, -2, -2 };
+	static const int kOz[12] = { -2, -2, -2, -1, 0, 1, 2, 2, 2, 1, 0, -1 };
+	const float now = GetTime();
+	for (int i = 0; i < 12; ++i)
+	{
+		const int tx = tileX + kOx[i];
+		const int tz = tileZ + kOz[i];
+		float y = 0.0f;
+		if (!SurfaceNear(tx, tz, lift, 2.0f, y))
+			continue;
+		// Delay is the 1-based index: 1 through 12 usecode ticks.
+		g_pendingRings.push_back(PendingRing{ tx, tz, y, now + static_cast<float>(i + 1) * kUsecodeStepSec });
+	}
+}
+
+void CastFlameStrike(U7Object* caster)
+{
+	if (!caster)
+		return;
+	// Before the fields arm. The arm pulse logs, and starting combat
+	// there would erase that line.
+	PullEnemyIntoCombat(caster);
+	std::vector<U7Object*> targets;
+	CollectOffensiveTargets(caster, 25, targets);
+	for (U7Object* target : targets)
+	{
+		if (!IsLivingCreature(target))
+			continue;
+		PullEnemyIntoCombat(target);
+		const int tx = static_cast<int>(std::floor(target->m_Pos.x));
+		const int tz = static_cast<int>(std::floor(target->m_Pos.z));
+		U7Object* field = MakeSpellField(kFireFieldShape, tx, tz, target->m_Pos.y);
+		if (!field)
+			continue;
+		field->m_flameStrikeField = true;
+		field->m_flameStrikeCasterId = static_cast<int>(caster->m_ID);
+		// 30 + roll(1, 15) ticks. Quality is not the duration; ArmFireField stores it.
+		const float life = (30.0f + static_cast<float>(InclusiveRoll(1, 15))) * kUsecodeStepSec;
+		field->ArmFireField(life);
+	}
+}
+
+void StartMagicStorm(U7Object* caster)
+{
+	if (!caster)
+		return;
+	const float now = GetTime();
+	const bool already = g_stormEndsAt > now;
+	g_stormCasterId = static_cast<int>(caster->m_ID);
+	g_stormEndsAt = now + 70.0f * kUsecodeStepSec;
+	if (!already)
+		g_stormNextStrike = now + 8.0f * kUsecodeStepSec;
+	if (g_ScriptingSystem)
+		g_ScriptingSystem->SetFlag(kMagicStormFlag, true);
+	if (g_WeatherSystem)
+		g_WeatherSystem->SetWeather(2, 0, false, Vector3{ 0, 0, 0 }, -1, -1);
+}
+
+void CastTremor(U7Object* caster)
+{
+	if (!caster)
+		return;
+
+	const bool partyCaster = IsPartyActor(caster);
+	const int tx = static_cast<int>(std::floor(caster->m_Pos.x));
+	const int tz = static_cast<int>(std::floor(caster->m_Pos.z));
+	const int cx = tx / 16;
+	const int cz = tz / 16;
+	std::vector<U7Object*> victims;
+
+	for (int oz = cz - 3; oz <= cz + 3; ++oz)
+	{
+		for (int ox = cx - 3; ox <= cx + 3; ++ox)
+		{
+			if (ox < 0 || oz < 0 || ox >= 192 || oz >= 192)
+				continue;
+			const std::vector<U7Object*> units = g_chunkObjectMap[ox][oz];
+			for (U7Object* unit : units)
+			{
+				if (!IsLivingCreature(unit) || unit == caster)
+					continue;
+				if ((unit->m_flags & kObjFlagInvisible) != 0)
+					continue;
+				if (AlreadyListed(victims, unit))
+					continue;
+				const int ux = static_cast<int>(std::floor(unit->m_Pos.x));
+				const int uz = static_cast<int>(std::floor(unit->m_Pos.z));
+				if (std::max(std::abs(ux - tx), std::abs(uz - tz)) > 40)
+					continue;
+				// Process when the caster is outside the party, or the target is.
+				// Skip only a party caster hitting a party member.
+				if (partyCaster && IsPartyActor(unit))
+					continue;
+				victims.push_back(unit);
+			}
+		}
+	}
+
+	const float until = GetTime() + 8.0f;
+	for (U7Object* victim : victims)
+	{
+		std::vector<U7Object::UsecodeScriptElem> code;
+		code.reserve(12 * 4);
+		for (int n = 0; n < 12; ++n)
+			PushStumble(code, InclusiveRoll(0, 8));
+		if (code.empty())
+			continue;
+		victim->m_pathWaypoints.clear();
+		victim->m_currentWaypointIndex = 0;
+		victim->m_pathfindingPending = false;
+		victim->m_isMoving = false;
+		victim->m_combatMoveOrder = false;
+		victim->SetDest(victim->m_Pos);
+		victim->HaltUsecodeScript(true);
+		victim->StartUsecodeScript(std::move(code));
+		victim->m_tremorUntil = until;
+	}
+
+	StartEarthquake(36);
+}
+
+void ClearSeventhCirclePending()
+{
+	g_pendingGold.clear();
+	g_pendingBlasts.clear();
+	g_pendingCharms.clear();
+	g_pendingMights.clear();
+	g_pendingDeaths.clear();
+	g_energyMists.clear();
+	g_armageddonAt = 0.0f;
+	g_armageddonCasterId = 0;
+	g_timeStopUntil = 0.0f;
+	g_timeStopTurns.clear();
+}
+
+void ScheduleCreateGold(int leadId)
+{
+	if (leadId <= 0)
+		return;
+	const float now = GetTime();
+	// Five usecode ticks. The lead may be inside a bag; Update() does not run there.
+	g_pendingGold.push_back(PendingGold{ leadId, now + 5.0f * kUsecodeStepSec });
+}
+
+bool SpellSurfaceOpen(int tileX, int tileZ, float lift)
+{
+	float y = 0.0f;
+	return SurfaceNear(tileX, tileZ, lift, 2.0f, y);
+}
+
+int PlaceEnergyField(int tileX, int tileZ, float lift)
+{
+	float y = 0.0f;
+	if (!SurfaceNear(tileX, tileZ, lift, 2.0f, y))
+		return 0;
+	U7Object* field = MakeSpellField(kEnergyFieldShape, tileX, tileZ, y);
+	if (!field)
+		return 0;
+	field->ArmEnergyField();
+	return static_cast<int>(field->m_ID);
+}
+
+void ScheduleDelayedBlast(int casterId, int markerId)
+{
+	if (markerId <= 0)
+		return;
+	const float now = GetTime();
+	PendingBlast blast;
+	blast.casterId = casterId;
+	blast.markerId = markerId;
+	// Attack at 12 ticks, remove the marker at 14. The bolt may still be in the air.
+	blast.attackAt = now + 12.0f * kUsecodeStepSec;
+	blast.removeAt = now + 14.0f * kUsecodeStepSec;
+	blast.attacked = false;
+	g_pendingBlasts.push_back(blast);
+}
+
+void StartHomingCloud(U7Object* caster, U7Object* target,
+	int weaponShape, int sprite, int sfx, const char* hitNoun)
+{
+	if (!caster)
+		return;
+
+	const float now = GetTime();
+	EnergyMist mist;
+	mist.casterId = static_cast<int>(caster->m_ID);
+	mist.targetId = (target && !target->GetIsDead() && !target->IsDeathStatus())
+		? static_cast<int>(target->m_ID) : 0;
+	mist.x = caster->m_Pos.x;
+	mist.y = caster->m_Pos.y;
+	mist.z = caster->m_Pos.z;
+	mist.weaponShape = weaponShape;
+	mist.sprite = sprite;
+	mist.sfx = sfx;
+	mist.hitNoun = hitNoun ? hitNoun : "the mist";
+	mist.radius = MistRadiusTiles(sprite);
+	if (mist.radius < 1)
+		mist.radius = 1;
+
+	if (InTurnBasedCombat())
+	{
+		// The clicked creature is the first enemy at any distance. Otherwise the
+		// strike searches within 30 tiles of the caster.
+		mist.targetId = IsMistEnemy(target) ? static_cast<int>(target->m_ID) : 0;
+		StrikeEnergyMistTurn(mist);
+		mist.turnsRemaining = kEnergyMistTurnBudget - 1;
+		mist.endsAt = 0.0f;
+		if (mist.targetId == 0)
+		{
+			if (g_SpriteEffectSystem)
+				g_SpriteEffectSystem->Spawn(mist.sprite, Vector3{ mist.x, mist.y, mist.z });
+			mist.nextPuff = now + 0.2f;
+		}
+		g_energyMists.push_back(mist);
+		return;
+	}
+
+	mist.endsAt = now + 20.0f;
+	// Exult damages on the first frame. The pump plays the cloud's sfx with that hit.
+	mist.nextDamage = now;
+	mist.nextStep = now + 0.1f;
+	mist.nextPuff = now;
+	g_energyMists.push_back(mist);
+}
+
+void StartEnergyMist(U7Object* caster, U7Object* target)
+{
+	StartHomingCloud(caster, target, 399, 13, 65, "the mist");
+}
+
+void StartDeathVortex(U7Object* caster, U7Object* target)
+{
+	// Weapon 639. Sprite 8, sfx 63, 12 lightning. Same homing cloud as the mist.
+	StartHomingCloud(caster, target, 639, 8, 63, "the vortex");
+}
+
+void AdvanceEnergyMistTurns()
+{
+	size_t i = 0;
+	while (i < g_energyMists.size())
+	{
+		EnergyMist& mist = g_energyMists[i];
+		if (mist.turnsRemaining <= 0)
+		{
+			++i;
+			continue;
+		}
+		StrikeEnergyMistTurn(mist);
+		mist.turnsRemaining -= 1;
+		if (mist.turnsRemaining <= 0)
+		{
+			g_energyMists.erase(g_energyMists.begin() + static_cast<std::ptrdiff_t>(i));
+			continue;
+		}
+		++i;
+	}
+}
+
+void FreezeEnergyMistsForTurns()
+{
+	const float now = GetTime();
+	for (EnergyMist& mist : g_energyMists)
+	{
+		if (mist.turnsRemaining > 0)
+			continue;
+		const float remaining = mist.endsAt - now;
+		if (remaining <= 0.0f)
+			continue;
+		mist.turnsRemaining = std::max(1, static_cast<int>(std::lround(remaining)));
+		mist.endsAt = 0.0f;
+	}
+}
+
+void ReleaseEnergyMistsToRealTime()
+{
+	const float now = GetTime();
+	for (EnergyMist& mist : g_energyMists)
+	{
+		if (mist.turnsRemaining <= 0)
+			continue;
+		mist.endsAt = now + static_cast<float>(mist.turnsRemaining);
+		mist.turnsRemaining = 0;
+		// The turn that just happened already struck. The next pulse waits a second.
+		mist.nextDamage = now + 1.0f;
+		mist.nextStep = now + 0.1f;
+	}
+}
+
+void CastMassCharm(U7Object* caster)
+{
+	if (!caster)
+		return;
+
+	if (g_SpriteEffectSystem)
+	{
+		g_SpriteEffectSystem->Spawn(7, Vector3{
+			caster->m_Pos.x - 2.0f,
+			caster->m_Pos.y,
+			caster->m_Pos.z - 2.0f });
+	}
+
+	// The gesture's call would re-enter on the caster. That roll is not the 1-in-3.
+	MassCharmOne(caster, caster);
+
+	std::vector<U7Object*> targets;
+	CollectOffensiveTargets(caster, 25, targets);
+	const float now = GetTime();
+	for (U7Object* target : targets)
+	{
+		if (!IsLivingCreature(target))
+			continue;
+		// die_roll(1, 3) == 1 skips. Two of three are charmed.
+		if (InclusiveRoll(1, 3) == 1)
+			continue;
+		const int dist = ChebyshevXZ(caster, target);
+		const float delay = (static_cast<float>(dist / 4) + 4.0f) * kUsecodeStepSec;
+		g_pendingCharms.push_back(PendingCharm{
+			static_cast<int>(caster->m_ID),
+			static_cast<int>(target->m_ID),
+			now + delay });
+	}
+}
+
+void CastMassMight(U7Object* caster)
+{
+	if (!caster)
+		return;
+
+	if (g_SpriteEffectSystem)
+	{
+		g_SpriteEffectSystem->Spawn(7, Vector3{
+			caster->m_Pos.x - 2.0f,
+			caster->m_Pos.y,
+			caster->m_Pos.z - 2.0f });
+	}
+
+	// Event 2 on the caster runs when the gesture finishes. Apply it now.
+	// A party caster is also in the list below; that later call only refreshes.
+	caster->ApplyMight();
+
+	if (!g_Player)
+		return;
+
+	const float now = GetTime();
+	const std::vector<int> party = g_Player->GetPartyMemberIds();
+	for (int npcId : party)
+	{
+		U7Object* member = ObjectFromNpcId(npcId);
+		if (!IsLivingCreature(member))
+			continue;
+		const int dist = ChebyshevXZ(caster, member);
+		const float delay = (static_cast<float>(dist / 3) + 5.0f) * kUsecodeStepSec;
+		g_pendingMights.push_back(PendingMight{
+			static_cast<int>(member->m_ID),
+			now + delay });
+	}
+}
+
+void CastRestoration(U7Object* caster)
+{
+	// A caster outside the party still heals the player's party, not themselves.
+	(void)caster;
+	if (!g_Player)
+		return;
+
+	const std::vector<int> party = g_Player->GetPartyMemberIds();
+	for (int npcId : party)
+	{
+		U7Object* member = ObjectFromNpcId(npcId);
+		if (!member || member->GetIsDead() || member->IsDeathStatus())
+			continue;
+		if (member->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_NPC)
+			continue;
+
+		if ((member->m_flags & kObjFlagParalyzed) != 0)
+		{
+			member->m_flags &= ~kObjFlagParalyzed;
+			member->AnnounceStatusFlag(kObjFlagParalyzed, false);
+		}
+		if ((member->m_flags & kObjFlagPoisoned) != 0)
+		{
+			member->m_flags &= ~kObjFlagPoisoned;
+			member->StopPoisonTimer();
+			member->AnnounceStatusFlag(kObjFlagPoisoned, false);
+		}
+
+		int str = 1;
+		if (IsAvatarUnit(member))
+			str = g_Player->GetStr();
+		else if (member->m_NPCData)
+			str = static_cast<int>(member->m_NPCData->str);
+		if (str < 1)
+			str = 1;
+
+		// Knockout is the sleep pose with no hit points. A real sleeper stays asleep.
+		const bool knockedOut = member->IsKnockedOut();
+		const int before = static_cast<int>(member->m_hp);
+		if (before < str)
+			member->m_hp = static_cast<float>(str);
+		if (knockedOut)
+			member->TryWakeFromHealing();
+
+		if (g_SpriteEffectSystem)
+			g_SpriteEffectSystem->SpawnOnObject(static_cast<int>(member->m_ID), 13, 0.0f);
+
+		if (before < str)
+		{
+			Vector3 textPos = member->m_centerPoint;
+			textPos.y += 1.35f;
+			SpawnFloatingCombatText(textPos,
+				"+" + std::to_string(str - before), GREEN);
+		}
+	}
+}
+
+void CastMassDeath(U7Object* caster)
+{
+	if (!caster)
+		return;
+
+	if (g_SpriteEffectSystem)
+	{
+		g_SpriteEffectSystem->Spawn(7, Vector3{
+			caster->m_Pos.x - 2.0f,
+			caster->m_Pos.y,
+			caster->m_Pos.z - 2.0f });
+	}
+
+	// Mask 4 is Exult is_npc(): people and monsters, alive or dead.
+	// Dead creatures in the original are body shapes. This engine's corpses
+	// stay the same object, so only the living are scheduled. Invisible
+	// creatures are excluded.
+	const int tx = static_cast<int>(std::floor(caster->m_Pos.x));
+	const int tz = static_cast<int>(std::floor(caster->m_Pos.z));
+	const int radius = (25 / 16) + 1;
+	const int cx = tx / 16;
+	const int cz = tz / 16;
+	std::vector<U7Object*> victims;
+	for (int oz = cz - radius; oz <= cz + radius; ++oz)
+	{
+		for (int ox = cx - radius; ox <= cx + radius; ++ox)
+		{
+			if (ox < 0 || oz < 0 || ox >= 192 || oz >= 192)
+				continue;
+			const std::vector<U7Object*> units = g_chunkObjectMap[ox][oz];
+			for (U7Object* unit : units)
+			{
+				if (!IsLivingCreature(unit) || AlreadyListed(victims, unit))
+					continue;
+				if (unit->IsInvisible())
+					continue;
+				if (IsPartyActor(unit) || unit->m_NPCID == 23 || unit->m_NPCID == 26)
+					continue;
+				const int ux = static_cast<int>(std::floor(unit->m_Pos.x));
+				const int uz = static_cast<int>(std::floor(unit->m_Pos.z));
+				if (std::max(std::abs(ux - tx), std::abs(uz - tz)) > 25)
+					continue;
+				victims.push_back(unit);
+			}
+		}
+	}
+
+	const float now = GetTime();
+	for (U7Object* victim : victims)
+	{
+		victim->HaltUsecodeScript(true);
+		const int dist = ChebyshevXZ(caster, victim);
+		const float delay = (static_cast<float>(dist / 3) + 5.0f) * kUsecodeStepSec;
+		g_pendingDeaths.push_back(PendingDeath{
+			static_cast<int>(caster->m_ID),
+			static_cast<int>(victim->m_ID),
+			now + delay });
+	}
+
+	if (victims.empty() || !g_Player)
+		return;
+
+	// Anyone queued, including a death-safe NPC, taxes the party down to 2 HP.
+	const std::vector<int> party = g_Player->GetPartyMemberIds();
+	for (int npcId : party)
+	{
+		U7Object* member = ObjectFromNpcId(npcId);
+		if (!IsLivingCreature(member))
+			continue;
+		const int hp = static_cast<int>(member->m_hp);
+		if (hp > 2)
+			ApplyCombatDamage(member, static_cast<float>(hp - 2), nullptr);
+	}
+}
+
+void CastArmageddon(U7Object* caster)
+{
+	if (!caster)
+		return;
+
+	if (g_SpriteEffectSystem)
+	{
+		g_SpriteEffectSystem->Spawn(7, Vector3{
+			caster->m_Pos.x - 2.0f,
+			caster->m_Pos.y,
+			caster->m_Pos.z - 2.0f });
+	}
+	if (g_WeatherSystem)
+		g_WeatherSystem->SetWeather(2, 0, false, Vector3{ 0, 0, 0 }, -1, -1);
+
+	g_armageddonCasterId = static_cast<int>(caster->m_ID);
+	// The gesture is twelve steps. The quake and the deaths follow it.
+	const float now = GetTime();
+	g_armageddonAt = now + 12.0f * kUsecodeStepSec;
+}
+
+bool CastResurrect(U7Object* target)
+{
+	if (!target)
+		return false;
+
+	U7Object* npc = nullptr;
+	const int shape = ObjectShape(target);
+	if (shape == 400 || shape == 414 || shape == 778)
+	{
+		int quantity = 0;
+		if (shape >= 0 && shape < 1024 && g_objectDataTable[shape].m_shapeType == 3)
+			quantity = target->m_Quality & 0x7f;
+		if (target->m_Quality == 0 && quantity == 0)
+			return false;
+		if (target->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC && target->IsDeathStatus())
+			npc = target;
+		else if (target->m_Quality > 0)
+			npc = ObjectFromNpcId(target->m_Quality);
+	}
+	else if (target->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC
+		&& target->m_NPCData && target->IsDeathStatus())
+	{
+		// This engine keeps the dead NPC. The original would only accept a body.
+		npc = target;
+	}
+
+	if (!npc || npc->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_NPC || !npc->IsDeathStatus())
+		return false;
+
+	if (npc != target)
+		npc->SetPos(target->m_Pos);
+
+	npc->ResurrectFromDeath();
+	if (npc->IsDeathStatus())
+		return false;
+
+	if (g_SpriteEffectSystem)
+	{
+		g_SpriteEffectSystem->Spawn(17, Vector3{ npc->m_Pos.x, npc->m_Pos.y, npc->m_Pos.z });
+		g_SpriteEffectSystem->Spawn(13, Vector3{
+			npc->m_Pos.x - 2.0f, npc->m_Pos.y, npc->m_Pos.z - 2.0f });
+	}
+	if (g_SoundSystem)
+		g_SoundSystem->PlayMusic(BuildU7MusicPath(15));
+	return true;
+}
+
+void ApplyDeathBoltIntellect(U7Object* attacker, U7Object* target)
+{
+	if (!attacker || !target)
+		return;
+	// The bolt's own hit already landed. A corpse does not take the second blow.
+	if (target->GetIsDead() || target->IsDeathStatus())
+		return;
+	// Monsters are not NPCs. Usecode forces attacker 0 and defender 1, so no kill.
+	if (target->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_NPC || !target->m_NPCData)
+		return;
+	// Func0679 skips the Avatar (item != 0xFE9C). The 20 damage still landed.
+	if (target->m_NPCID == 0)
+		return;
+	if (target->IsDeathSafe())
+		return;
+
+	// The decompile reads the Avatar's intelligence. This uses the bolt's caster.
+	const int atk = GetCombatIntelligence(attacker);
+	const int def = GetCombatIntelligence(target);
+	if (atk <= def)
+		return;
+
+	ApplyCombatDamage(target, 127.0f, attacker);
+	if (!target->GetIsDead() && !target->IsDeathStatus())
+		target->ApplyDeath();
+}
+
+bool U7Object::IsTrembling() const
+{
+	return m_tremorUntil > 0.0f && GetTime() < m_tremorUntil;
+}
+
+void U7Object::ArmPoisonField()
+{
+	ArmHazardShape(this, kPoisonFieldShape);
+	const int shape = m_shapeData ? m_shapeData->m_shape : m_ObjectType;
+	if (shape != kPoisonFieldShape)
+		return;
+	// Spell cast plays 0-11 once, then loops 6-11. Map fields leave this clear
+	// and stay on the loop.
+	m_fireFieldPlayStartup = true;
+	m_fireFieldAnimStart = GetTime();
+	SetFrame(0);
+	// Anyone already on the tile rolls now. The next standing pulse waits a second.
+	m_fireFieldNextPulse = GetTime() + kFireFieldPulseSec;
+	if (PulseHazardField(this, true))
+		ExpireFireField();
+}
+
+void U7Object::ArmSleepField()
+{
+	ArmHazardShape(this, kSleepFieldShape);
+	const int shape = m_shapeData ? m_shapeData->m_shape : m_ObjectType;
+	if (shape != kSleepFieldShape)
+		return;
+	// Spell cast plays 0-13 once, then loops 7-13. Map fields leave this clear
+	// and stay on the loop.
+	m_fireFieldPlayStartup = true;
+	m_fireFieldAnimStart = GetTime();
+	SetFrame(0);
+	// Anyone already on the tile rolls now. The next standing pulse waits a second.
+	m_fireFieldNextPulse = GetTime() + kFireFieldPulseSec;
+	if (PulseHazardField(this, true))
+		ExpireFireField();
+}
+
+void U7Object::UpdateHazardField()
+{
+	const int shape = m_shapeData ? m_shapeData->m_shape : m_ObjectType;
+	if (shape != kPoisonFieldShape && shape != kSleepFieldShape)
+		return;
+	if (GetIsDead() || m_isContained || !m_Visible)
+		return;
+	// Turn-based contact is the step-in check and the start of that unit's turn.
+	if (InTurnBasedCombat())
+		return;
+
+	const float now = GetTime();
+	if (m_fireFieldNextPulse > 0.0f && now < m_fireFieldNextPulse)
+		return;
+	m_fireFieldNextPulse = now + kFireFieldPulseSec;
+	if (PulseHazardField(this))
+		ExpireFireField();
+}
+
 void U7Object::MonsterUpdate()
 {
 	UpdateInvisibilityTimer();
+	UpdateCharmTimer();
+	UpdateMightTimer();
 
 	// Corpses: keep death pose, no chase/attack AI.
 	if (IsDeathStatus() || GetIsDead())
@@ -1353,13 +4078,49 @@ void U7Object::MonsterUpdate()
 		return;
 	}
 
+	// An Tym. Non-party creatures hold still. The party is not on this path.
+	if (TimeIsStopped())
+	{
+		m_pathWaypoints.clear();
+		m_currentWaypointIndex = 0;
+		m_pathfindingPending = false;
+		m_isSchedulePath = false;
+		m_isMoving = false;
+		m_combatMoveOrder = false;
+		SetDest(m_Pos);
+		UpdateNpcAnim(g_Engine ? g_Engine->LastFrameInSeconds() : 0.0f);
+		return;
+	}
+
 	UpdatePoisonTimer();
 	UpdateSleepTimer();
+	UpdateDance();
+	if (IsDancing() || IsTrembling())
+	{
+		m_pathWaypoints.clear();
+		m_currentWaypointIndex = 0;
+		m_pathfindingPending = false;
+		m_isSchedulePath = false;
+		m_isMoving = false;
+		m_combatMoveOrder = false;
+		SetDest(m_Pos);
+	}
+	// Stumble poses are a usecode script. Monsters do not otherwise tick one.
+	UpdateUsecodeScript();
 	UpdateNpcAnim(g_Engine ? g_Engine->LastFrameInSeconds() : 0.0f);
 
 	// Exult: asleep / KO skips chase and attack.
 	if ((m_flags & kObjFlagAsleep) != 0 || IsKnockedOut())
 		return;
+
+	if (IsTrembling())
+		return;
+
+	if (IsDancing())
+	{
+		ApplyDancePose();
+		return;
+	}
 
 	// Hostiles are Team 1 (combat eggs). Team 2 = party summons (Swarm). Team 0 = fauna.
 	if (m_Team == 2)
@@ -1445,7 +4206,9 @@ void U7Object::AlliedMonsterUpdate()
 		return;
 	// Swarm keeps acting while combat orders are paused — autonomous distraction.
 
-	// Despawn once they leave the camera tile window (same test as InteractiveDraw).
+	// Summons despawn outside the loaded terrain window. A charmed creature
+	// keeps their body until the charm wears off.
+	if ((m_flags & kObjFlagCharmed) == 0)
 	{
 		int cellx = 0, celly = 0;
 		if (!WorldToTerrainCell(static_cast<int>(m_Pos.x), static_cast<int>(m_Pos.z), cellx, celly))
@@ -1704,6 +4467,38 @@ static bool MirrorBoxBlocked(int seX, int seZ, int lift, int w, int h, int heigh
 	return false;
 }
 
+// First half appears, second half loops. A new field plays every frame once,
+// then stays on the loop. A field already in the world stays on the loop.
+// Same 8 fps as other TFA FX. Fire is 0-7 then 8-15. Poison is 0-5 then 6-11.
+// Sleep is 0-6 then 7-13.
+static int SplitFieldDisplayFrame(bool playStartup, float animStart, int animFrames, int loopStart)
+{
+	constexpr float kTimePerFrame = 1.0f / 8.0f;
+	if (animFrames <= 1)
+		return 0;
+	if (loopStart <= 0 || loopStart >= animFrames)
+	{
+		const int step = static_cast<int>(GetTime() / kTimePerFrame);
+		const int wrapped = step % animFrames;
+		return wrapped < 0 ? wrapped + animFrames : wrapped;
+	}
+
+	const int loopFrames = animFrames - loopStart;
+	if (!playStartup)
+	{
+		const int step = static_cast<int>(GetTime() / kTimePerFrame);
+		const int wrapped = step % loopFrames;
+		return loopStart + (wrapped < 0 ? wrapped + loopFrames : wrapped);
+	}
+
+	int step = static_cast<int>((GetTime() - animStart) / kTimePerFrame);
+	if (step < 0)
+		step = 0;
+	if (step < animFrames)
+		return step;
+	return loopStart + ((step - animFrames) % loopFrames);
+}
+
 void U7Object::StaticDraw()
 {
 	// Statics are drawn through the normal shapeData path below in InteractiveDraw
@@ -1762,6 +4557,27 @@ void U7Object::InteractiveDraw()
 		{
 			// Sundial: 24 frames, one per game hour (not a looping FX cycle).
 			currentFrame = static_cast<int>(g_hour) % animFrames;
+		}
+		else if (m_ObjectType == kFireFieldShape)
+		{
+			// 16 frames: play 0-15, then loop 8-15.
+			const int frames = std::min(animFrames, 16);
+			currentFrame = SplitFieldDisplayFrame(
+				m_fireFieldPlayStartup, m_fireFieldAnimStart, frames, 8);
+		}
+		else if (m_ObjectType == kPoisonFieldShape)
+		{
+			// 12 frames: play 0-11, then loop 6-11.
+			const int frames = std::min(animFrames, 12);
+			currentFrame = SplitFieldDisplayFrame(
+				m_fireFieldPlayStartup, m_fireFieldAnimStart, frames, 6);
+		}
+		else if (m_ObjectType == kSleepFieldShape)
+		{
+			// 14 frames: play 0-13, then loop 7-13.
+			const int frames = std::min(animFrames, 14);
+			currentFrame = SplitFieldDisplayFrame(
+				m_fireFieldPlayStartup, m_fireFieldAnimStart, frames, frames / 2);
 		}
 		else if (m_animMode == ObjectAnimMode::Auto
 			&& m_objectData->m_isAnimated && animFrames > 1
@@ -3458,6 +6274,29 @@ void U7Object::UpdateUsecodeObjectSchedule()
 void U7Object::NPCUpdate()
 {
 	UpdateInvisibilityTimer();
+	UpdateCharmTimer();
+	UpdateMightTimer();
+
+	// An Tym. The Avatar and the party keep acting. Everyone else holds.
+	if (TimeIsStopped() && !IsPartyActor(this))
+	{
+		if (IsDeathStatus())
+		{
+			if (!m_isFrameOverridden)
+				SetOverrideFrame(GetDeathFrameForFacing());
+			UpdateNpcAnim(g_Engine ? g_Engine->LastFrameInSeconds() : 0.0f);
+			return;
+		}
+		m_pathWaypoints.clear();
+		m_currentWaypointIndex = 0;
+		m_pathfindingPending = false;
+		m_isSchedulePath = false;
+		m_isMoving = false;
+		m_combatMoveOrder = false;
+		SetDest(m_Pos);
+		UpdateNpcAnim(g_Engine ? g_Engine->LastFrameInSeconds() : 0.0f);
+		return;
+	}
 
 	// Corpses: no schedules, combat AI, conversation scripts, or movement.
 	if (IsDeathStatus())
@@ -3470,15 +6309,35 @@ void U7Object::NPCUpdate()
 
 	UpdatePoisonTimer();
 	UpdateSleepTimer();
+	UpdateDance();
 
 	// Cast / craft scripts must tick even while combat is paused or on Hold —
 	// those paths return early below and would otherwise freeze the cast anim.
+	if (IsDancing() || IsTrembling())
+	{
+		m_pathWaypoints.clear();
+		m_currentWaypointIndex = 0;
+		m_pathfindingPending = false;
+		m_isSchedulePath = false;
+		m_isMoving = false;
+		m_combatMoveOrder = false;
+		SetDest(m_Pos);
+	}
 	UpdateUsecodeScript();
 	UpdateNpcAnim(g_Engine ? g_Engine->LastFrameInSeconds() : 0.0f);
 
 	// Exult: asleep / knocked-out — lie still; sleep timer above still mends.
 	if ((m_flags & kObjFlagAsleep) != 0 || IsKnockedOut())
 		return;
+
+	if (IsTrembling())
+		return;
+
+	if (IsDancing())
+	{
+		ApplyDancePose();
+		return;
+	}
 
 	// Don't run schedule activity scripts while in the party (including the Avatar).
 	// Avatar was previously excluded from this skip (m_NPCID != 0), so Talk/Combat
@@ -3524,6 +6383,19 @@ void U7Object::NPCUpdate()
 	if (!isPartyMember && m_Team == 1 && g_isCombatMode)
 	{
 		HostileCombatUpdate();
+		return;
+	}
+
+	// Charmed onto the party's side. Same fight loop as a summon, without the
+	// off-map despawn. Turn-based waits for this unit's own turn.
+	if (!isPartyMember && m_Team == 2 && (m_flags & kObjFlagCharmed) != 0)
+	{
+		if (g_isCombatMode && g_mainState && g_mainState->m_combatMode
+			&& g_mainState->m_combatMode->GetStyle() == CombatStyle::TurnBased)
+		{
+			return;
+		}
+		AlliedMonsterUpdate();
 		return;
 	}
 
@@ -4981,6 +7853,10 @@ void U7Object::AnnounceStatusFlag(unsigned int flag, bool applied)
 		word = "protected";
 		color = GREEN;
 		break;
+	case kObjFlagMight:
+		word = "mighty";
+		color = GREEN;
+		break;
 	default:
 		return;
 	}
@@ -5001,6 +7877,7 @@ void U7Object::ForceSleep()
 	m_target = 0;
 	m_combatSpellId = -1;
 	m_combatSpellTargetId = 0;
+	m_combatSpellHasTile = false;
 	m_combatMoveOrder = false;
 	m_combatPathTargetId = 0;
 	SetOverrideFrame(GetSleepFrameForFacing());
@@ -5113,7 +7990,7 @@ void U7Object::Bleed()
 	blood->m_isContained = false;
 }
 
-void U7Object::ApplyDeath()
+void U7Object::ApplyDeath(bool quiet)
 {
 	if (GetIsDead())
 		return;
@@ -5141,6 +8018,7 @@ void U7Object::ApplyDeath()
 	m_combatPathTargetId = 0;
 	m_combatSpellId = -1;
 	m_combatSpellTargetId = 0;
+	m_combatSpellHasTile = false;
 	m_followingSchedule = false;
 	SetDest(m_Pos);
 	ReleaseFurnitureClaim();
@@ -5160,7 +8038,8 @@ void U7Object::ApplyDeath()
 		m_ShouldDraw = true;
 		SetPos(m_Pos); // refresh pick box for flat corpse
 
-		NoteCombatLogClause(m_name.empty() ? "Creature is dead!" : (m_name + " is dead!"), RED);
+		if (!quiet)
+			NoteCombatLogClause(m_name.empty() ? "Creature is dead!" : (m_name + " is dead!"), RED);
 		if (g_SoundSystem)
 			g_SoundSystem->StopLoopingSoundEffect(static_cast<int>(m_ID));
 		if (g_mainState && g_mainState->m_barkObject == this)
@@ -5192,14 +8071,19 @@ void U7Object::ApplyDeath()
 	}
 
 	// Drop from the party (Avatar stays listed as party leader even when dead).
+	// The flag is how Resurrect knows to put a companion back.
 	if (g_Player && m_NPCID != 0 && g_Player->NPCIDInParty(m_NPCID))
+	{
+		m_flags |= kObjFlagInParty;
 		g_Player->RemovePartyMember(m_NPCID);
+	}
 
 	SetOverrideFrame(GetDeathFrameForFacing());
 	SetPos(m_Pos); // refresh pick box for flat corpse
 
 	const std::string label = m_name.empty() ? "NPC" : m_name;
-	NoteCombatLogClause(label + " is dead!", RED);
+	if (!quiet)
+		NoteCombatLogClause(label + " is dead!", RED);
 }
 
 void U7Object::ResurrectFromDeath()
@@ -5223,6 +8107,11 @@ void U7Object::ResurrectFromDeath()
 
 	const std::string label = m_name.empty() ? "NPC" : m_name;
 	AddCombatLogString(label + " has been resurrected!", GREEN);
+
+	const bool rejoin = (m_flags & kObjFlagInParty) != 0;
+	m_flags &= ~kObjFlagInParty;
+	if (rejoin && g_Player && m_NPCID > 0)
+		g_Player->AddPartyMember(m_NPCID);
 }
 
 int U7Object::GetSitFrameForFacing() const
@@ -6134,6 +9023,24 @@ bool U7Object::FireUsecodeAttack()
 	}
 
 	U7Object* target = GetObjectFromID(targetId);
+
+	// Energy Mist (399) and Death Vortex (639). WEAPONS.DAT explodes and the
+	// ammo row is homing, so Exult never fires a bolt. The cloud starts on the caster.
+	if (weaponShape == 399 || weaponShape == 639)
+	{
+		if (weaponShape == 639)
+			StartDeathVortex(this, target);
+		else
+			StartEnergyMist(this, target);
+		if (m_pauseOrdersOnNextSpellProjectile)
+		{
+			m_pauseOrdersOnNextSpellProjectile = false;
+			if (g_mainState && g_isCombatMode)
+				g_mainState->NotifyCombatantCannotContinue(this, "needs a new order!");
+		}
+		return true;
+	}
+
 	if (!target || target->GetIsDead() || target->IsDeathStatus())
 	{
 		NPCDebugPrint("usecode_attack: bad target " + std::to_string(targetId) +
@@ -6188,7 +9095,8 @@ bool U7Object::FireUsecodeAttack()
 	}
 	else if (weaponShape == 527)
 	{
-		// Death Bolt (Corp Por) — directional frames 8–23; damage applied on hit.
+		// Death Bolt (Corp Por). Table damage is 0, so this 20 is the whole hit.
+		// The explodes bit stays single-target. Intellect kill is on impact.
 		damage = 20;
 		damageType = 2; // magic
 		speed = 18.0f;
@@ -6220,11 +9128,50 @@ bool U7Object::FireUsecodeAttack()
 		damageType = 1; // fire
 		speed = 18.0f;
 	}
+	else if (weaponShape == 80)
+	{
+		// Charm (shape 80). WEAPONS.DAT: damage 0, autohit, charm power,
+		// projectile 540. Damage stays 0 so impact uses the weapon row.
+		// weaponShape stays 80 so the bolt is not treated as Douse.
+		damage = 0;
+		damageType = 0;
+		speed = 16.0f;
+	}
+	else if (weaponShape == 287)
+	{
+		// Swordstrike. Damage 35, lucky, range 30, very fast. The blast on
+		// impact applies the weapon row once. Damage stays 0 on the bolt.
+		const int ax = static_cast<int>(std::floor(m_Pos.x));
+		const int az = static_cast<int>(std::floor(m_Pos.z));
+		const int ay = static_cast<int>(std::floor(m_Pos.y));
+		const int bx = static_cast<int>(std::floor(target->m_Pos.x));
+		const int bz = static_cast<int>(std::floor(target->m_Pos.z));
+		const int by = static_cast<int>(std::floor(target->m_Pos.y));
+		const int tileDist = std::max(std::abs(ax - bx), std::max(std::abs(az - bz), std::abs(ay - by)));
+		if (tileDist > 30)
+		{
+			if (g_Player && g_Player->NPCIDInParty(m_NPCID))
+				AddConsoleString("Out of range", RED);
+			return false;
+		}
+		damage = 0;
+		damageType = 0;
+		speed = 28.0f;
+	}
 
 	int visualShape = weaponShape;
 	if (weaponShape == 78)
 	{
 		visualShape = 856;
+	}
+	else if (weaponShape == 80)
+	{
+		visualShape = 540;
+		if (const WeaponData* w = GetWeaponData(80))
+		{
+			if (w->projectile > 0 && w->projectile < 1024)
+				visualShape = w->projectile;
+		}
 	}
 
 	const bool ok = SpawnFlyingProjectile(visualShape, static_cast<int>(m_ID), targetId, speed,
@@ -7264,6 +10211,13 @@ void U7Object::WriteCombatFields(json& j) const
 	combat["target"] = m_target;
 	combat["spellId"] = m_combatSpellId;
 	combat["spellTarget"] = m_combatSpellTargetId;
+	if (m_combatSpellHasTile)
+	{
+		combat["spellTile"] = true;
+		combat["spellTileX"] = m_combatSpellTileX;
+		combat["spellTileZ"] = m_combatSpellTileZ;
+		combat["spellTileY"] = m_combatSpellTileY;
+	}
 	combat["moveOrder"] = m_combatMoveOrder;
 	combat["pathTarget"] = m_combatPathTargetId;
 	combat["pathGoal"] = Vec3ToJson(m_combatPathGoal);
@@ -7331,6 +10285,13 @@ void U7Object::ReadCombatFields(const json& j)
 	m_target = combat.value("target", m_target);
 	m_combatSpellId = combat.value("spellId", m_combatSpellId);
 	m_combatSpellTargetId = combat.value("spellTarget", m_combatSpellTargetId);
+	m_combatSpellHasTile = combat.value("spellTile", false);
+	if (m_combatSpellHasTile)
+	{
+		m_combatSpellTileX = combat.value("spellTileX", 0);
+		m_combatSpellTileZ = combat.value("spellTileZ", 0);
+		m_combatSpellTileY = combat.value("spellTileY", 0.0f);
+	}
 	m_combatMoveOrder = combat.value("moveOrder", m_combatMoveOrder);
 	m_combatPathTargetId = combat.value("pathTarget", m_combatPathTargetId);
 	m_cooldownTimer = combat.value("cooldown", m_cooldownTimer);
@@ -7443,11 +10404,51 @@ json U7Object::SaveToJson() const
 		j["sleepTurnsRemaining"] = m_sleepTurnsRemaining;
 	if (m_sleepEndsAt > GetTime())
 		j["sleepRemaining"] = m_sleepEndsAt - GetTime();
+	if (m_danceTurnsRemaining > 0)
+		j["danceTurnsRemaining"] = m_danceTurnsRemaining;
+	else if (m_danceEndsAt > GetTime())
+		j["danceRemaining"] = m_danceEndsAt - GetTime();
+	if (m_attackMode == 7)
+	{
+		j["attackMode"] = m_attackMode;
+		j["fearOppressorId"] = m_fearOppressorId;
+	}
 	if (m_invisibilityEndsAt > 0.0f)
 	{
 		const float remaining = m_invisibilityEndsAt - GetTime();
 		if (remaining > 0.0f)
 			j["invisibilityRemaining"] = remaining;
+	}
+	if (m_charmEndsAt > GetTime())
+	{
+		j["charmRemaining"] = m_charmEndsAt - GetTime();
+		if (m_charmHomeTeam >= 0)
+			j["charmHomeTeam"] = m_charmHomeTeam;
+	}
+	if (m_mightEndsAt > GetTime())
+	{
+		j["mightRemaining"] = m_mightEndsAt - GetTime();
+		j["mightStrBonus"] = m_mightStrBonus;
+		j["mightDexBonus"] = m_mightDexBonus;
+		j["mightIntBonus"] = m_mightIntBonus;
+		j["mightCombatBonus"] = m_mightCombatBonus;
+		j["mightBaseStr"] = m_mightBaseStr;
+		j["mightBaseDex"] = m_mightBaseDex;
+		j["mightBaseInt"] = m_mightBaseInt;
+		j["mightBaseCombat"] = m_mightBaseCombat;
+	}
+	if (m_fireFieldTurnsRemaining > 0)
+		j["fireFieldTurnsRemaining"] = m_fireFieldTurnsRemaining;
+	else if (m_fireFieldEndsAt > 0.0f)
+	{
+		const float remaining = m_fireFieldEndsAt - GetTime();
+		j["fireFieldRemaining"] = remaining > 0.0f ? remaining : 0.0f;
+	}
+	if (m_flameStrikeField)
+	{
+		j["flameStrikeField"] = true;
+		if (m_flameStrikeCasterId > 0)
+			j["flameStrikeCasterId"] = m_flameStrikeCasterId;
 	}
 
 	// Container hierarchy
@@ -7629,12 +10630,61 @@ U7Object* U7Object::LoadFromJson(const json& j)
 		if (remaining > 0.0f)
 			obj->m_sleepEndsAt = GetTime() + remaining;
 	}
+	obj->m_danceTurnsRemaining = j.value("danceTurnsRemaining", 0);
+	if (obj->m_danceTurnsRemaining < 0)
+		obj->m_danceTurnsRemaining = 0;
+	if (obj->m_danceTurnsRemaining <= 0
+		&& j.contains("danceRemaining") && j["danceRemaining"].is_number())
+	{
+		const float remaining = j["danceRemaining"].get<float>();
+		if (remaining > 0.0f)
+			obj->m_danceEndsAt = GetTime() + remaining;
+	}
+	if (obj->m_danceTurnsRemaining > 0 || obj->m_danceEndsAt > 0.0f)
+		obj->m_flags |= kObjFlagInAction;
+	else
+		obj->m_flags &= ~kObjFlagInAction;
+	obj->m_attackMode = j.value("attackMode", 0);
+	if (obj->m_attackMode != 7)
+		obj->m_attackMode = 0;
+	obj->m_fearOppressorId = j.value("fearOppressorId", 0);
 	if (j.contains("invisibilityRemaining") && j["invisibilityRemaining"].is_number())
 	{
 		const float remaining = j["invisibilityRemaining"].get<float>();
 		if (remaining > 0.0f)
 			obj->m_invisibilityEndsAt = GetTime() + remaining;
 	}
+	if (j.contains("charmRemaining") && j["charmRemaining"].is_number())
+	{
+		const float remaining = j["charmRemaining"].get<float>();
+		if (remaining > 0.0f)
+		{
+			obj->m_charmEndsAt = GetTime() + remaining;
+			if (j.contains("charmHomeTeam") && j["charmHomeTeam"].is_number())
+				obj->m_charmHomeTeam = j["charmHomeTeam"].get<int>();
+		}
+	}
+	if ((obj->m_flags & kObjFlagCharmed) != 0 && obj->m_charmEndsAt <= 0.0f)
+		obj->m_flags &= ~kObjFlagCharmed;
+	if (j.contains("fireFieldTurnsRemaining") && j["fireFieldTurnsRemaining"].is_number())
+	{
+		obj->m_fireFieldTurnsRemaining = j["fireFieldTurnsRemaining"].get<int>();
+		if (obj->m_fireFieldTurnsRemaining < 0)
+			obj->m_fireFieldTurnsRemaining = 0;
+	}
+	if (obj->m_fireFieldTurnsRemaining <= 0
+		&& j.contains("fireFieldRemaining") && j["fireFieldRemaining"].is_number())
+	{
+		const float remaining = j["fireFieldRemaining"].get<float>();
+		obj->m_fireFieldEndsAt = GetTime() + (remaining > 0.0f ? remaining : 0.0f);
+	}
+	if (obj->m_fireFieldTurnsRemaining > 0 || obj->m_fireFieldEndsAt > 0.0f)
+	{
+		obj->m_UnitType = UnitTypes::UNIT_TYPE_OBJECT;
+		NoteTimedFireField(static_cast<int>(obj->m_ID));
+	}
+	obj->m_flameStrikeField = j.value("flameStrikeField", false);
+	obj->m_flameStrikeCasterId = j.value("flameStrikeCasterId", 0);
 
 	// Container hierarchy (restored in second pass by GameSerializer)
 	int containingId = j.value("containingObjectId", -1);
@@ -7707,6 +10757,28 @@ U7Object* U7Object::LoadFromJson(const json& j)
 		obj->m_magic = j.value("magic", 0.0f);
 		obj->m_Team = j.value("team", 0);
 	}
+
+	// After NPCInit / MonsterInit, which reload the unbuffed stats.
+	// base+bonus is absolute, so a second pass after the player json is safe.
+	if (j.contains("mightRemaining") && j["mightRemaining"].is_number())
+	{
+		const float remaining = j["mightRemaining"].get<float>();
+		if (remaining > 0.0f)
+		{
+			obj->m_mightEndsAt = GetTime() + remaining;
+			obj->m_mightStrBonus = j.value("mightStrBonus", 0);
+			obj->m_mightDexBonus = j.value("mightDexBonus", 0);
+			obj->m_mightIntBonus = j.value("mightIntBonus", 0);
+			obj->m_mightCombatBonus = j.value("mightCombatBonus", 0);
+			obj->m_mightBaseStr = j.value("mightBaseStr", 0);
+			obj->m_mightBaseDex = j.value("mightBaseDex", 0);
+			obj->m_mightBaseInt = j.value("mightBaseInt", 0);
+			obj->m_mightBaseCombat = j.value("mightBaseCombat", 0);
+			obj->RestoreMightStats();
+		}
+	}
+	if ((obj->m_flags & kObjFlagMight) != 0 && obj->m_mightEndsAt <= 0.0f)
+		obj->m_flags &= ~kObjFlagMight;
 
 	if (obj->m_UnitType == UnitTypes::UNIT_TYPE_EGG ||
 	    (obj->m_shapeData && obj->m_shapeData->m_shape == 275))

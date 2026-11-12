@@ -1,23 +1,47 @@
---- Best guess: Manages the "Vas Mani" spell, healing a selected target's health (ID 64) by restoring their hit points, with a fallback effect if the spell fails.
-function spell_vas_mani_0364(eventid, objectref)
-    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
+--- Great Heal (Vas In Mani). Fifth Circle. Oracle: usecode Func066C / object#(0x66C).
+--- Restores the target's Hits to full. Strength is max HP, same as Heal.
+--- The caster says "@Vas Mani@". Do not destroy the caster.
+--- The function name stays on script 364.
 
+function spell_vas_mani_0364(eventid, objectref)
     if eventid ~= 1 then
         return
     end
 
-    var_0000 = object_select_modal()
-    halt_scheduled(var_0000)
-    var_0001 = utility_direction_to_target_1069(var_0000)
+    halt_scheduled(objectref)
     bark(objectref, "@Vas Mani@")
-    if not utility_condition_0044_1030() then
-        var_0002 = execute_usecode_array(objectref, {64, 17496, 17511, 17509, 8550, var_0001, 7769})
-        if not is_npc(var_0000) then
-            var_0003 = get_npc_quality(var_0000, 0)
-            var_0004 = get_npc_quality(var_0000, 3)
-            var_0005 = set_npc_quality(var_0000, 3, var_0003 - var_0004)
-        end
-    else
-        var_0002 = execute_usecode_array(objectref, {1542, 17493, 17511, 17509, 8550, var_0001, 7769})
+    if not check_spell_requirements(objectref) then
+        -- Playback: reach_1h, raise_1h, strike_1h. No target yet, so no face. No spellFails.
+        execute_usecode_array(objectref, {17511, 8037, 17510})
+        return
     end
+
+    local target = click_on_item()
+    if not target or target == 0 then
+        return
+    end
+
+    local dir = find_direction(objectref, target)
+    begin_casting_mode(objectref, 859)
+    -- Stored reversed. Playback: face, dir, reach_1h, raise_1h, strike_1h, sfx 64.
+    -- 7724 is finish (0x2C). It sits first so the sfx id 64 is not read as a start delay.
+    execute_usecode_array(objectref, {7724, 64, 7768, 17511, 8037, 17510, dir, 7769})
+
+    if not is_npc(target) or is_dead(target) then
+        return
+    end
+
+    local npc_id = get_npc_number(target)
+    if npc_id == nil or npc_id < 0 then
+        return
+    end
+
+    local max_hp = get_npc_property(npc_id, 0) or 0
+    local cur_hp = get_npc_property(npc_id, 3) or 0
+    if max_hp <= 0 or cur_hp >= max_hp then
+        return
+    end
+
+    set_npc_property(npc_id, 3, max_hp)
+    spawn_floating_combat_text(target, "+" .. tostring(max_hp - cur_hp), 80, 220, 100)
 end

@@ -557,7 +557,14 @@ bool GumpSpellbook::RunSpellCast(int spellId, U7Object* caster, int forcedTarget
 	g_currentSpellCasterObjectId = -1;
 
 	if (g_mainState)
+	{
 		g_mainState->TakeForcedSpellTarget(); // clear any unused force
+		int unusedObj = 0;
+		int unusedX = 0;
+		int unusedZ = 0;
+		float unusedY = 0.0f;
+		g_mainState->TakeForcedSpellTile(unusedObj, unusedX, unusedZ, unusedY);
+	}
 
 	// If requirements never passed (still InitCasting, no script showed frames), clear.
 	if (caster->GetCastingMode() == CastingMode::InitCasting)

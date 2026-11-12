@@ -91,6 +91,7 @@ struct AmmoData
 	WeaponDamageType damageType = WeaponDamageType::Normal;
 	unsigned char powers = 0; // WeaponPower bits
 	bool lucky = false; // +3 attack value on the hit roll (Exult Ammo_info::m_lucky)
+	bool explodes = false; // flags0 bit 6. Burst arrows (554) are the only BG row.
 };
 
 // One ARMOR.DAT entry (shape-keyed). Protection subtracts from hit damage.
@@ -257,6 +258,50 @@ void UpdateWizardEye();
 extern float g_earthquakeUntil;
 void StartEarthquake(int count);
 
+// Sixth and Seventh Circle timers that must not go through delayed usecode
+// (that path treats a tick as 0.05s). A usecode tick is 0.20s.
+void UpdateSixthCircleEffects();
+void ScheduleClone(int targetId);
+void PlaceFireRing(int tileX, int tileZ, float lift);
+void CastFlameStrike(U7Object* caster);
+void StartMagicStorm(U7Object* caster);
+void CastTremor(U7Object* caster);
+// Drop gold, blast, charm, might, and mist schedules. A load must not
+// fire them at objects that no longer exist. Might on creatures is saved.
+void ClearSeventhCirclePending();
+void ScheduleCreateGold(int leadId);
+bool SpellSurfaceOpen(int tileX, int tileZ, float lift);
+int PlaceEnergyField(int tileX, int tileZ, float lift);
+void ScheduleDelayedBlast(int casterId, int markerId);
+void DetonateDelayedBlast(U7Object* attacker, U7Object* at);
+void StartEnergyMist(U7Object* caster, U7Object* target);
+void StartDeathVortex(U7Object* caster, U7Object* target);
+// Turn-based: one strike per combatant turn. Entering freezes a cloud already
+// in the air; leaving hands the remaining strikes back to the wall clock.
+void AdvanceEnergyMistTurns();
+void FreezeEnergyMistsForTurns();
+void ReleaseEnergyMistsToRealTime();
+void CastMassCharm(U7Object* caster);
+void CastMassMight(U7Object* caster);
+void CastRestoration(U7Object* caster);
+// Eighth Circle. Mass Death, Armageddon, and Resurrect. Outside turn-based
+// combat, Time Stop is 25s at length 100 (Exult length * 250 ms). In
+// turn-based combat each hostile already in the fight skips 3-5 turns.
+// A load drops both.
+void CastMassDeath(U7Object* caster);
+void CastArmageddon(U7Object* caster);
+bool CastResurrect(U7Object* target);
+void StartTimeStop(int length);
+bool TimeIsStopped();
+// True when this hostile still owes a skipped turn. Spends one.
+bool SpendEnemyTimeStopTurn(U7Object* unit);
+bool EnemyTimeStopActive();
+// Drops entries for creatures who are no longer hostiles. True only when
+// that drop ends the freeze.
+bool ExpireDeadEnemyTimeStops();
+// Death Bolt impact. NPCs only. The bolt's own hit already landed.
+void ApplyDeathBoltIntellect(U7Object* attacker, U7Object* target);
+
 inline Vector2 g_DirVectors[8] = {
 	{ 0, -1 }, { 1, -1 }, { 1, 0 }, { 1, 1 },
 	{ 0, 1 }, { -1, 1 }, { -1, 0 }, { -1, -1 }
@@ -382,6 +427,9 @@ struct SpellData
 	// false = no click_on_item (Swarm, Protect All, Light, …). Combat pause
 	// queues these without a targeting prompt.
 	bool targeted = true;
+	// true = the click may be empty ground. click_on_tile returns that tile.
+	// A creature click still uses the creature's tile. Object spells stay false.
+	bool groundTarget = false;
 };
 
 /// @brief Circle data structure (Linear + 8 circles, each with 8 spells)

@@ -68,9 +68,16 @@ constexpr unsigned int kObjFlagAsleep     = (1u << 1);
 constexpr unsigned int kObjFlagCharmed    = (1u << 2);
 constexpr unsigned int kObjFlagCursed     = (1u << 3);
 constexpr unsigned int kObjFlagDead       = (1u << 4);
+// Exult Obj_flags::in_party. Set when a party member dies so Resurrect can
+// put them back. Living members stay on the party list.
+constexpr unsigned int kObjFlagInParty    = (1u << 6);
 constexpr unsigned int kObjFlagParalyzed  = (1u << 7);
 constexpr unsigned int kObjFlagPoisoned   = (1u << 8);
 constexpr unsigned int kObjFlagProtection = (1u << 9);
+// Exult Obj_flags::might. Mass Might adds min(stat, 15) to str/dex/int/combat.
+constexpr unsigned int kObjFlagMight      = (1u << 12);
+// Exult Obj_flags::in_action. Set while the Dance spell has this actor spinning.
+constexpr unsigned int kObjFlagInAction   = (1u << 15);
 
 struct NPCData
 {
@@ -476,6 +483,12 @@ public:
 	void TryOpenDoorAtCurrentPosition();
 	void InteractiveUpdate();
 	void InteractiveDraw();
+	// Shape 895. seconds > 0 arms the spell lifetime (Exult delay 100).
+	void ArmFireField(float seconds);
+	// Shape 768. Same removal clock as a fire field, forty seconds, no damage.
+	void ArmEnergyField();
+	void UpdateFireField();
+	void ExpireFireField();
 	// Usecode 087D: shape 854 frames 18-21 on the Avatar tile. Keep as a
 	// find_nearby token (0897); do not draw a second body.
 	bool IsUsecodeAvatarOverlay() const
@@ -579,8 +592,9 @@ public:
 	void AnnounceStatusFlag(unsigned int flag, bool applied);
 	/// After healing: if HP >= 1 and asleep, stand up.
 	void TryWakeFromHealing();
-	/// Apply combat/script death: NPCs become lootable corpses; monsters despawn.
-	void ApplyDeath();
+	/// Apply combat/script death: NPCs become lootable corpses; monsters stay as corpses.
+	/// quiet skips the "is dead" console line (Armageddon kills the whole world).
+	void ApplyDeath(bool quiet = false);
 	/// Clear death status and restore an NPC (Resurrect). No-op for monsters.
 	void ResurrectFromDeath();
 	/// Exult Actor::bleed — shape 912 blood pool at feet (grow if already present).
@@ -882,6 +896,11 @@ public:
 	// Queued combat spell (chosen while paused; fires when fighting resumes).
 	int m_combatSpellId = -1;
 	int m_combatSpellTargetId = 0;
+	// Ground-target spells (Fire Field) queue a tile instead of an object id.
+	bool m_combatSpellHasTile = false;
+	int m_combatSpellTileX = 0;
+	int m_combatSpellTileZ = 0;
+	float m_combatSpellTileY = 0.0f;
 
 	// Player-issued combat reposition order; suppresses auto-targeting until destination reached.
 	bool m_combatMoveOrder = false;
@@ -899,6 +918,52 @@ public:
 	void StartPoisonTimer();         // (re)start when kObjFlagPoisoned is set
 	void StopPoisonTimer();
 	void UpdatePoisonTimer();        // call from NPC/Monster update
+
+	// Exult Npc_flag_timer for Obj_flags::charmed: 60–120 real seconds.
+	// m_charmHomeTeam is the side to restore. -1 means the side was not switched.
+	float m_charmEndsAt = 0.0f;
+	int m_charmHomeTeam = -1;
+	bool IsCharmImmune() const;
+	void ApplyCharm(U7Object* caster);
+	void StartCharmTimer();
+	void StopCharmTimer();
+	void EndCharm(bool announce);
+	void UpdateCharmTimer();
+
+	// MONSTERS.DAT byte 6 bit 3. No monster row means the creature is not safe.
+	bool IsDeathSafe() const;
+
+	// Exult get_effective_prop(might): +min(stat, 15) on str, dex, int, and combat.
+	// 60–120 real seconds. A recast refreshes the timer and does not stack.
+	// Bases are the stats before the bonus, so a load can write base+bonus once.
+	float m_mightEndsAt = 0.0f;
+	int m_mightStrBonus = 0;
+	int m_mightDexBonus = 0;
+	int m_mightIntBonus = 0;
+	int m_mightCombatBonus = 0;
+	int m_mightBaseStr = 0;
+	int m_mightBaseDex = 0;
+	int m_mightBaseInt = 0;
+	int m_mightBaseCombat = 0;
+	void ApplyMight();
+	void EndMight(bool announce);
+	void UpdateMightTimer();
+	void RestoreMightStats();
+
+	// Shape 895 fire field. endsAt > 0 is the spell's removal time (GetTime()).
+	// 0 means a permanent field: it still burns. nextPulse is the next burn check.
+	// hurtAt is the last time this creature took fire-field damage.
+	// turnsRemaining > 0 is the turn-based lifetime (rounds). The wall clock is idle.
+	float m_fireFieldEndsAt = 0.0f;
+	float m_fireFieldNextPulse = 0.0f;
+	float m_fireFieldHurtAt = -1000.0f;
+	int m_fireFieldTurnsRemaining = 0;
+	// Spell cast plays frames 0-15 once, then loops 8-15. Map fields are already burning.
+	bool m_fireFieldPlayStartup = false;
+	float m_fireFieldAnimStart = 0.0f;
+	// Flame Strike only. A burn from this field pulls team-1 creatures into the fight.
+	bool m_flameStrikeField = false;
+	int m_flameStrikeCasterId = 0;
 
 	// Exult Npc_sleep_timer: spell sleep wears off in ~5-10s; KO mends until HP >= 1.
 	// Turn-based combat counts this unit's turns instead of that wall clock.
@@ -918,6 +983,49 @@ public:
 	// reaches 0 stands them up and still does not let them act.
 	TurnBasedSleepTick TickTurnBasedSleep();
 	void MendWounds(bool mendMana);      // Exult Actor::mend_wounds (+1 HP when eligible)
+
+	// Por Xen. 10–15 real seconds, or that many turns at about 3 seconds each.
+	// A party caster dances outsiders within 25 tiles. Anyone else dances the party.
+	float m_danceEndsAt = 0.0f;
+	float m_danceNextStepAt = 0.0f;
+	float m_danceBarkAt = 0.0f;
+	int m_danceTurnsRemaining = 0;
+	int m_danceStep = 0;
+	bool IsDancing() const { return (m_flags & kObjFlagInAction) != 0; }
+	void StartDance();
+	void StopDance();
+	void UpdateDance();
+	void ApplyDancePose();
+	void CauseDancing();
+	enum class TurnBasedDanceTick
+	{
+		NotDancing,
+		StillDancing,
+		Stopped
+	};
+	// Once per turn-based turn. The turn that reaches 0 stops the dance
+	// and still does not let them act.
+	TurnBasedDanceTick TickTurnBasedDance();
+
+	// Quas Wis. Attack mode 7 runs away from the Avatar and stays until
+	// something else sets the mode. 0 is the ordinary nearest-target mode.
+	int m_attackMode = 0;
+	int m_fearOppressorId = 0;
+	bool IsFleeing() const { return m_attackMode == 7; }
+	void SetAttackMode(int mode);
+	U7Object* FearOppressor() const;
+	void StartFear(int oppressorId);
+	void UpdateFearFlee();
+	void CauseFear();
+
+	// Vas Por Ylem. While this is in the future the unit holds still.
+	float m_tremorUntil = 0.0f;
+	bool IsTrembling() const;
+	// In Nox Grav / In Zu Grav. No lifetime: the field stays until it catches
+	// someone or Dispel Field removes it.
+	void ArmPoisonField();
+	void ArmSleepField();
+	void UpdateHazardField();
 
 	// Exult Npc_invisibility_timer: spell/potion lasts 60-80s. A worn ring of
 	// invisibility (shape 296 frame 0) keeps the flag and drops the timer.

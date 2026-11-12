@@ -1,25 +1,23 @@
---- Best guess: Manages the "Vas Mani" spell (party variant), healing all party members' health by restoring hit points, with a fallback effect if the spell fails.
-function spell_party_variant_0383(eventid, objectref)
-    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006
+--- Restoration (Vas Mani). Seventh Circle. Oracle: usecode Func067F / object#(0x67F).
+--- Untargeted. Heals the party and clears poison and paralysis.
+--- Do not destroy the caster. The function name stays spell_party_variant_0383.
 
+function spell_party_variant_0383(eventid, objectref)
     if eventid ~= 1 then
         return
     end
 
     halt_scheduled(objectref)
     bark(objectref, "@Vas Mani@")
-    if not utility_condition_0044_1030() then
-        var_0000 = execute_usecode_array(objectref, {64, 17496, 17514, 17520, 7781})
-        var_0001 = get_party_members()
-        for var_0002 in ipairs(var_0001) do
-            clear_item_flag(7, var_0004)
-            clear_item_flag(8, var_0004)
-            var_0005 = get_npc_quality(var_0004, 0)
-            var_0006 = get_npc_quality(var_0004, 3)
-            var_0000 = set_npc_quality(var_0004, 3, var_0005 - var_0006)
-            obj_sprite_effect(-1, 0, 0, 0, -1, -1, 13, -356)
-        end
-    else
-        var_0000 = execute_usecode_array(objectref, {1542, 17493, 17514, 17520, 7781})
+    if get_weather() == 3 or not check_spell_requirements(objectref) then
+        -- Playback: raise_1h, cast_out, strike_2h. No spellFails.
+        execute_usecode_array(objectref, {17514, 17520, 8037})
+        return
     end
+
+    begin_casting_mode(objectref, 859)
+    -- Stored reversed. Playback: raise_1h, cast_out, strike_2h, sfx 64.
+    -- 7724 is finish (0x2C). It sits first so the sfx id 64 is not read as a start delay.
+    execute_usecode_array(objectref, {7724, 64, 7768, 17514, 17520, 8037})
+    cast_restoration(objectref)
 end

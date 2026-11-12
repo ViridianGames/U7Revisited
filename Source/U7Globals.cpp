@@ -3538,22 +3538,24 @@ bool MarkNewestFlyingProjectilePauseCasterOnHit(int attackerId)
 namespace
 {
 	// Exult Explosion_effect: at frame (count / 4), radius = frame width / 16.
-	// Sprite 4 frame 3 is 80px, so the blast is 5 tiles (Chebyshev, inclusive).
-	int ExplosionSpellRadiusTiles()
+	// Sprite 4 frame 3 is 80px (5 tiles). Sprite 19 frame 1 is 23px (1 tile).
+	int ExplosionRadiusTiles(int sprite, int fallback)
 	{
-		constexpr int kSprite = 4;
-		const auto& frames = g_spriteTable[kSprite];
-		if (!frames.empty())
+		if (sprite >= 0 && sprite < static_cast<int>(g_spriteTable.size()))
 		{
-			const int fr = static_cast<int>(frames.size()) / 4;
-			const int idx = std::min(fr, static_cast<int>(frames.size()) - 1);
-			const int radius = frames[static_cast<size_t>(idx)].width / 16;
-			if (radius > 0)
+			const auto& frames = g_spriteTable[static_cast<size_t>(sprite)];
+			if (!frames.empty())
 			{
-				return radius;
+				const int fr = static_cast<int>(frames.size()) / 4;
+				const int idx = std::min(fr, static_cast<int>(frames.size()) - 1);
+				const int radius = frames[static_cast<size_t>(idx)].width / 16;
+				if (radius > 0)
+				{
+					return radius;
+				}
 			}
 		}
-		return 5;
+		return fallback;
 	}
 
 	int TileChebyshev(const U7Object* a, const U7Object* b)
@@ -3564,9 +3566,12 @@ namespace
 		return std::max(dx, std::max(dz, dy));
 	}
 
-	// Shape 78 only. Lightning (807) and other WEAPONS.DAT rows also have the
-	// explodes bit; those stay on their existing single-target hit path.
-	void DetonateExplosionSpell(U7Object* attacker, U7Object* target)
+	// Shared Explosion_effect. explosion=true: no miss roll, no second detonation.
+	// Armor can still soak the hit to 0. The attacker is included when in range.
+	// Lightning (807) and other WEAPONS.DAT explodes bits stay single-target.
+	// radiusFallback is used only when the sprite frames are not loaded.
+	void DetonateExplosion(U7Object* attacker, U7Object* target,
+		int weaponShape, int ammoShape, int sprite, int sfx, int radiusFallback)
 	{
 		if (!target)
 			return;
@@ -3578,14 +3583,14 @@ namespace
 		}
 		if (g_SpriteEffectSystem)
 		{
-			g_SpriteEffectSystem->Spawn(4, pos);
+			g_SpriteEffectSystem->Spawn(sprite, pos);
 		}
-		if (g_SoundSystem)
+		if (g_SoundSystem && sfx >= 0)
 		{
-			g_SoundSystem->PlaySoundAtObject(BuildU7SfxPath(8), static_cast<int>(target->m_ID));
+			g_SoundSystem->PlaySoundAtObject(BuildU7SfxPath(sfx), static_cast<int>(target->m_ID));
 		}
 
-		const int radius = ExplosionSpellRadiusTiles();
+		const int radius = ExplosionRadiusTiles(sprite, radiusFallback);
 		std::vector<U7Object*> victims;
 		for (const auto& pair : g_objectList)
 		{
@@ -3610,14 +3615,12 @@ namespace
 			if (!victim || victim->GetIsDead() || victim->IsDeathStatus())
 				continue;
 
-			// Exult attacks everyone in the blast with explosion=true: no miss roll.
-			// Armor can still soak the fire damage to 0. The caster is included.
-			const int hits = FigureCombatHitPoints(attacker, victim, 78, -1);
+			const int hits = FigureCombatHitPoints(attacker, victim, weaponShape, ammoShape);
 			if (hits > 0)
 			{
 				BeginCombatLogSentence();
 				ApplyCombatDamage(victim, static_cast<float>(hits), attacker);
-				ApplyCombatWeaponPowers(attacker, victim, 78, -1, hits);
+				ApplyCombatWeaponPowers(attacker, victim, weaponShape, ammoShape, hits);
 			}
 			else
 			{
@@ -3626,9 +3629,29 @@ namespace
 					victim->NotifyAttackedBy(attacker);
 			}
 			AddCombatLogString(
-				FinishCombatLogSentence(FormatCombatAttackSentence(attacker, victim, 78, hits)),
+				FinishCombatLogSentence(FormatCombatAttackSentence(attacker, victim, weaponShape, hits)),
 				CombatAttackLogColor(attacker, hits));
 		}
+	}
+
+	// Shape 78 only: sprite 4, sfx 8, 16 fire, radius from that sprite (5 tiles).
+	void DetonateExplosionSpell(U7Object* attacker, U7Object* target)
+	{
+		DetonateExplosion(attacker, target, 78, -1, 4, 8, 5);
+	}
+
+	// shape_info.txt explosions, keyed by the projectile shape.
+	// Burst arrow 554 → sprite 19, sfx 7. Anything else uses the default sprite.
+	void ExplosionArtForAmmo(int ammoShape, int& sprite, int& sfx)
+	{
+		if (ammoShape == 554)
+		{
+			sprite = 19;
+			sfx = 7;
+			return;
+		}
+		sprite = 5;
+		sfx = -1;
 	}
 
 	void PauseCasterOrdersAfterCombatSpell(const FlyingProjectile& proj)
@@ -3639,6 +3662,13 @@ namespace
 		if (attacker)
 			g_mainState->NotifyCombatantCannotContinue(attacker, "needs a new order!");
 	}
+}
+
+// Delayed Blast (weapon 621). Sprite 4, sfx 9, five tiles, 30 fire from the row.
+// Lightning (807) and other WEAPONS.DAT explodes bits stay single-target.
+void DetonateDelayedBlast(U7Object* attacker, U7Object* at)
+{
+	DetonateExplosion(attacker, at, 621, -1, 4, 9, 5);
 }
 
 void UpdateFlyingProjectiles()
@@ -3678,18 +3708,51 @@ void UpdateFlyingProjectiles()
 		const float dist = Vector3Length(delta);
 		if (dist <= kHitRadius || dist < 1e-4f)
 		{
+			// The marker is removed 0.4s after launch and may already be gone.
+			// The bolt is at the blast point. Weapon 621 is the only new blast.
+			if (proj.weaponShape == 621)
+			{
+				U7Object* attacker = GetObjectFromID(proj.attackerId);
+				DetonateDelayedBlast(attacker, bolt);
+				PauseCasterOrdersAfterCombatSpell(proj);
+				DestroyProjectileObject(proj.objectId);
+				g_flyingProjectiles.erase(g_flyingProjectiles.begin() + static_cast<long>(i));
+				continue;
+			}
+
 			U7Object* target = GetObjectFromID(proj.targetId);
 			if (target && !target->GetIsDead() && !target->IsDeathStatus())
 			{
 				U7Object* attacker = GetObjectFromID(proj.attackerId);
 
 				// Explosion spell (weapon 78). The bolt art is 856; do not key off that.
+				// Lightning (807) has the weapon explodes bit and stays single-target.
 				if (proj.weaponShape == 78)
 				{
 					DetonateExplosionSpell(attacker, target);
 				}
-				// Douse bolt (shape 540): spell usecode event 4 on the target — extinguish lights.
-				else if (proj.weaponShape == 540 || bolt->m_ObjectType == 540)
+				// Swordstrike (287). Sprite 23, sfx 65. The bolt itself deals no
+				// second hit; the blast applies the weapon row (35, lucky).
+				else if (proj.weaponShape == 287)
+				{
+					DetonateExplosion(attacker, target, 287, -1, 23, 65, 3);
+				}
+				// Burst arrows: AMMO.DAT explodes replaces the direct hit with the blast.
+				// Sprite, sound, and radius come from the ammo shape, damage from bow+ammo.
+				else if (const AmmoData* ammo = (proj.ammoShape >= 0) ? GetAmmoData(proj.ammoShape) : nullptr;
+					ammo && ammo->explodes)
+				{
+					int sprite = 5;
+					int sfx = -1;
+					ExplosionArtForAmmo(proj.ammoShape, sprite, sfx);
+					const int radiusFallback = (proj.ammoShape == 554) ? 1 : 2;
+					DetonateExplosion(attacker, target, proj.weaponShape, proj.ammoShape,
+						sprite, sfx, radiusFallback);
+				}
+				// Douse bolt (weapon 540). Charm's art is also shape 540; that bolt
+				// keeps weaponShape 80 and falls through to the weapon-power hit.
+				else if (proj.weaponShape == 540
+					|| (proj.weaponShape < 0 && bolt->m_ObjectType == 540))
 				{
 					if (g_ScriptingSystem)
 					{
@@ -3806,9 +3869,15 @@ void UpdateFlyingProjectiles()
 						}
 						else
 						{
-							// Connected but armor/immunity soaked everything — still show feedback.
+							// Connected but armor soaked the HP, or the weapon is
+							// powers-only (charm, damage 0). Powers still apply.
+							if (useWeaponTables)
+								BeginCombatLogSentence();
 							SpawnFloatingZeroDamageText(target);
-							if (attacker)
+							if (useWeaponTables)
+								ApplyCombatWeaponPowers(attacker, target, proj.weaponShape, proj.ammoShape, 0);
+							// A successful charm already cleared this target. A miss still aggroes.
+							if (attacker && (target->m_flags & kObjFlagCharmed) == 0)
 								target->NotifyAttackedBy(attacker);
 						}
 						if (useWeaponTables)
@@ -3818,6 +3887,10 @@ void UpdateFlyingProjectiles()
 									attacker, target, proj.weaponShape, hits)),
 								CombatAttackLogColor(attacker, hits));
 						}
+					}
+					if (hit && proj.weaponShape == 527)
+					{
+						ApplyDeathBoltIntellect(attacker, target);
 					}
 					// Flame Bolt / fire bolt: hit SFX only — no explosion sprite.
 					if (g_SoundSystem)
@@ -3838,7 +3911,9 @@ void UpdateFlyingProjectiles()
 			next = Vector3Add(bolt->m_Pos, Vector3Scale(Vector3Normalize(delta), step));
 
 		// Walls / closed doors stop missiles mid-flight (windows do not).
-		if (g_pathfindingSystem && !g_pathfindingSystem->HasWallLineOfSight(bolt->m_Pos, next))
+		// Charm (80), Death Bolt (527), and Delayed Blast (621) are no_blocking.
+		if (proj.weaponShape != 80 && proj.weaponShape != 527 && proj.weaponShape != 621
+			&& g_pathfindingSystem && !g_pathfindingSystem->HasWallLineOfSight(bolt->m_Pos, next))
 		{
 			PauseCasterOrdersAfterCombatSpell(proj);
 			DestroyProjectileObject(proj.objectId);
@@ -5382,9 +5457,11 @@ void LoadAmmoData()
 		a.familyShape = static_cast<int16_t>(p[2] | (p[3] << 8));
 		a.sprite = static_cast<int16_t>(p[4] | (p[5] << 8));
 		a.damage = p[6];
-		// flags0 at p[7]: lucky bit0, autohit bit1, returns bit2, ... (Exult Ammo_info::read).
+		// flags0 at p[7]: lucky bit0, autohit bit1, returns bit2, no_blocking bit3,
+		// drop/homing bits 4–5, explodes bit6 (Exult Ammo_info::read).
 		const unsigned char flags0 = p[7];
 		a.lucky = (flags0 & 1) != 0;
+		a.explodes = ((flags0 >> 6) & 1) != 0;
 		// flags1 at p[9] (damage_type high nibble); powers at p[10].
 		const unsigned char flags1 = p[9];
 		a.damageType = static_cast<WeaponDamageType>((flags1 >> 4) & 15);
@@ -6292,6 +6369,7 @@ void LoadSpellData()
 						spell.scriptId = spellJson["scriptId"].get<int>();
 						spell.circle = circle.circle;
 						spell.targeted = spellJson.value("targeted", true);
+						spell.groundTarget = spellJson.value("groundTarget", false);
 
 						// Load reagents
 						if (spellJson.contains("reagents") && spellJson["reagents"].is_array())

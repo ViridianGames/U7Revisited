@@ -1,19 +1,28 @@
---- Best guess: Implements the clone spell (In Quas Xen), duplicating a valid item with specific status checks.
-function spell_in_quas_xen_0369(eventid, objectref)
-    local var_0000, var_0001, var_0002
+--- Clone (In Quas Xen). Sixth Circle. Oracle: usecode Func0671 / object#(0x671).
+--- Targeted. A living NPC or monster is copied onto a nearby tile, on the
+--- party's side, about 0.8 seconds later. Do not destroy the caster.
+--- The function name stays on script 369.
 
-    if eventid == 1 then
-        var_0000 = object_select_modal() --- Guess: Selects spell target
-        var_0001 = select_spell_target(var_0000) --- Guess: Gets selected target
-        destroy_object(objectref)
-        bark(objectref, "@In Quas Xen@")
-        if check_spell_requirements() and is_object_valid(var_0000) and get_item_flag(27, 0) ~= -1 then
-            var_0002 = add_containerobject_s(objectref, {17514, 17520, 7781})
-            var_0002 = add_containerobject_s(var_0000, {4, 1649, 17493, 7715})
-        else
-            var_0002 = add_containerobject_s(objectref, {1542, 17493, 17514, 17520, 7781})
-        end
-    elseif eventid == 2 then
-        var_0002 = cloneobject_(objectref) --- Guess: Clones item
+function spell_in_quas_xen_0369(eventid, objectref)
+    if eventid ~= 1 then
+        return
     end
+
+    local target = click_on_item()
+    halt_scheduled(objectref)
+    bark(objectref, "@In Quas Xen@")
+
+    local living = target and target ~= 0 and is_creature(target) and not is_dead(target)
+    -- get_item_flag(0, 27) is the decompile's flag check. Object 0 is absent,
+    -- so this returns 0 and does not block the cast.
+    if not check_spell_requirements(objectref) or not living or get_item_flag(0, 27) == -1 then
+        -- Playback: raise_1h, cast_out, strike_2h. No spellFails.
+        execute_usecode_array(objectref, {17514, 17520, 17509})
+        return
+    end
+
+    begin_casting_mode(objectref, 859)
+    -- Stored reversed. Playback: raise_1h, cast_out, strike_2h.
+    execute_usecode_array(objectref, {17514, 17520, 17509})
+    schedule_clone(target)
 end

@@ -4,6 +4,13 @@ function npc_lord_british_0023(eventid, objectref)
 
     var_0000 = false
     start_conversation()
+    -- Flag 30 is set by Armageddon. The normal greeting never runs.
+    if get_flag(30) and (eventid == 1 or eventid == 2) then
+        switch_talk_to(23)
+        add_dialogue("\"Fool!! What possessed thee to cast that damned Armageddon Spell? I knew it was dangerous! Thou didst know it was dangerous!! Now look at us! We are all alone on the entire planet! Britannia is ruined! What kind of Avatar art thou!?! Now, with no Moongates working, we are both forced to spend eternity in this blasted wasteland!")
+        add_dialogue("\"Of course, it could be viewed as a clever solution to all of our problems. After all, not even this so-called Guardian would want Britannia now!\"")
+        return
+    end
     if eventid == 1 then
         var_0001 = get_player_name()
         var_0002 = get_party_members()

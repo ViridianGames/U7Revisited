@@ -1,37 +1,27 @@
---- Best guess: Manages the "In Sanct Grav" spell, creating a protective wall or barrier (ID 768) at a selected location, with a fallback effect if the spell fails.
-function spell_in_sanct_grav_0379(eventid, objectref)
-    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A
+--- Energy Field (In Sanct Grav). Seventh Circle. Oracle: usecode Func067B / object#(0x67B).
+--- Ground target. One shape-768 wall on the chosen tile. It does not shock.
+--- Do not destroy the caster. The function name stays on script 379.
 
-    var_0000 = false
+function spell_in_sanct_grav_0379(eventid, objectref)
     if eventid ~= 1 then
         return
     end
 
     halt_scheduled(objectref)
-    var_0001 = object_select_modal()
-    bark(objectref, "@In Sanct Grav@")
-    var_0002 = var_0001[2] + 1
-    var_0003 = var_0001[3] + 1
-    var_0004 = var_0001[4]
-    var_0005 = {var_0002, var_0003, var_0004}
-    var_0006 = is_not_blocked(0, 768, var_0005)
-    if utility_condition_0044_1030() and var_0006 then
-        var_0007 = execute_usecode_array(objectref, {17511, 17510, 7781})
-        var_0008 = create_new_object(768)
-        if not var_0008 then
-            var_0009 = update_last_created(var_0005)
-            if not var_0009 then
-                var_000A = set_object_quality(200, var_0008)
-                var_0009 = delayed_execute_usecode_array(var_000A, 200, 8493, var_0008)
-            end
-        else
-            var_0000 = true
-        end
-    else
-        var_0000 = true
+    local objId, tileX, tileZ, lift = click_on_tile(objectref)
+    if tileX == nil then
+        return
     end
 
-    if var_0000 then
-        var_0007 = execute_usecode_array(objectref, {1542, 17493, 17511, 17510, 7781})
+    bark(objectref, "@In Sanct Grav@")
+    -- Fail when magic is blocked or the tile has no walkable surface. No spellFails.
+    -- The three poses are the same either way: raise_1h, reach_1h, strike_1h.
+    if get_weather() == 3 or not check_spell_requirements(objectref) or not energy_field_tile_open(tileX, tileZ, lift) then
+        execute_usecode_array(objectref, {17511, 17510, 8037})
+        return
     end
+
+    begin_casting_mode(objectref, 859)
+    execute_usecode_array(objectref, {17511, 17510, 8037})
+    place_energy_field(tileX, tileZ, lift)
 end

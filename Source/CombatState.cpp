@@ -896,12 +896,7 @@ void ApplyCombatWeaponPowers(U7Object* attacker, U7Object* target, int weaponSha
 			target->AnnounceStatusFlag(kObjFlagCursed, true);
 	}
 	if ((powers & WeaponPower::Charm) != 0 && CombatRollToWin(kAttInt, defint))
-	{
-		const bool was = (target->m_flags & kObjFlagCharmed) != 0;
-		target->m_flags |= kObjFlagCharmed;
-		if (!was)
-			target->AnnounceStatusFlag(kObjFlagCharmed, true);
-	}
+		target->ApplyCharm(attacker);
 	if ((powers & WeaponPower::Sleep) != 0 && CombatRollToWin(kAttInt, defint))
 	{
 		const bool was = (target->m_flags & kObjFlagAsleep) != 0;
@@ -1077,6 +1072,318 @@ bool ApplyCaltropDamage(U7Object* victim)
 	return true;
 }
 
+static void LogHazardResist(U7Object* victim, const char* fieldName)
+{
+	if (!victim || !fieldName)
+		return;
+	const std::string name = victim->m_name.empty() ? "Someone" : victim->m_name;
+	AddCombatLogString(name + " resists " + fieldName + "!", SKYBLUE);
+}
+
+bool TryConsumeHazardField(U7Object* field, U7Object* victim, bool announceResist)
+{
+	if (!field || !victim || victim == field)
+		return false;
+	if (field->GetIsDead() || !field->m_Visible || field->m_isContained)
+		return false;
+	if (victim->GetIsDead() || victim->IsDeathStatus() || victim->m_isContained)
+		return false;
+	if (victim->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_NPC
+		&& victim->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_MONSTER)
+		return false;
+
+	const int shape = field->m_shapeData ? field->m_shapeData->m_shape : field->m_ObjectType;
+	const bool poison = shape == kPoisonFieldShape;
+	const bool sleep = shape == kSleepFieldShape;
+	if (!poison && !sleep)
+		return false;
+
+	// Exult Field_object: rand()%2 must be set, and the status must be absent.
+	if (CombatRoll(2) == 0)
+	{
+		// One line on the step that entered the tile. Standing pulses stay quiet.
+		if (announceResist)
+		{
+			const bool already = poison
+				? ((victim->m_flags & kObjFlagPoisoned) != 0)
+				: ((victim->m_flags & kObjFlagAsleep) != 0);
+			if (!already)
+				LogHazardResist(victim, poison ? "poison field" : "sleep field");
+		}
+		return false;
+	}
+
+	if (poison)
+	{
+		if ((victim->m_flags & kObjFlagPoisoned) != 0)
+			return false;
+		victim->m_flags |= kObjFlagPoisoned;
+		victim->StartPoisonTimer();
+		victim->AnnounceStatusFlag(kObjFlagPoisoned, true);
+		return true;
+	}
+
+	if ((victim->m_flags & kObjFlagAsleep) != 0)
+		return false;
+	victim->ForceSleep();
+	if ((victim->m_flags & kObjFlagAsleep) == 0)
+		return false;
+	if (victim->m_hp > 0.0f)
+		victim->AnnounceStatusFlag(kObjFlagAsleep, true);
+	return true;
+}
+
+bool PulseHazardField(U7Object* field, bool announceResist)
+{
+	if (!field || field->GetIsDead() || field->m_isContained || !field->m_Visible)
+		return false;
+
+	const int shape = field->m_shapeData ? field->m_shapeData->m_shape : field->m_ObjectType;
+	if (shape != kPoisonFieldShape && shape != kSleepFieldShape)
+		return false;
+
+	const int tx = static_cast<int>(std::floor(field->m_Pos.x));
+	const int tz = static_cast<int>(std::floor(field->m_Pos.z));
+	if (tx < 0 || tz < 0 || tx >= 3072 || tz >= 3072)
+		return false;
+	const int cx = tx / 16;
+	const int cz = tz / 16;
+	if (cx < 0 || cz < 0 || cx >= 192 || cz >= 192)
+		return false;
+
+	const std::vector<U7Object*> units = g_chunkObjectMap[cx][cz];
+	for (U7Object* unit : units)
+	{
+		if (!unit || unit == field)
+			continue;
+		const int ux = static_cast<int>(std::floor(unit->m_Pos.x));
+		const int uz = static_cast<int>(std::floor(unit->m_Pos.z));
+		if (ux != tx || uz != tz)
+			continue;
+		if (std::fabs(unit->m_Pos.y - field->m_Pos.y) > 0.15f)
+			continue;
+		if (TryConsumeHazardField(field, unit, announceResist))
+			return true;
+	}
+	return false;
+}
+
+static const MonsterData* MonsterRecordForShape(int shape)
+{
+	for (const MonsterData& md : g_monsterData)
+	{
+		if (static_cast<int>(md.m_shape) == shape)
+			return &md;
+	}
+	return nullptr;
+}
+
+void PullEnemyIntoCombat(U7Object* unit)
+{
+	if (!kCombatStateEnabled || !unit || !g_mainState)
+		return;
+	if (unit->m_Team != 1)
+		return;
+	if (unit->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_NPC
+		&& unit->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_MONSTER)
+		return;
+	if (unit->IsDeathStatus() || unit->GetIsDead())
+		return;
+
+	// Enter first. EnterCombatMode clears the console, so the damage line
+	// that follows this call is the one that stays on screen.
+	if (!g_isCombatMode)
+		g_mainState->EnterCombatMode();
+	if (g_isCombatMode)
+		g_mainState->EnsureCombatParticipant(static_cast<int>(unit->m_ID), false);
+}
+
+void ApplyFireFieldDamage(U7Object* victim, U7Object* field)
+{
+	if (!victim || victim->IsDeathStatus() || victim->GetIsDead())
+		return;
+	if (victim->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_NPC
+		&& victim->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_MONSTER)
+		return;
+
+	// Enter and the field's own pulse share one gap so a step is not hit twice.
+	const float now = GetTime();
+	if (now - victim->m_fireFieldHurtAt < kFireFieldPulseSec * 0.9f)
+		return;
+	victim->m_fireFieldHurtAt = now;
+
+	// Exult Actor::reduce_health: monster immune/vulnerable, no armor soak.
+	int delta = 2 + static_cast<int>(CombatRoll(3));
+	const int shape = victim->m_shapeData ? victim->m_shapeData->m_shape : -1;
+	const MonsterData* md = MonsterRecordForShape(shape);
+	const unsigned char fireBit = static_cast<unsigned char>(1u << static_cast<unsigned>(WeaponDamageType::Fire));
+	if (md && (md->m_unknown0B & fireBit) != 0)
+		delta = 0;
+	else if (md && (md->m_unknown0A & fireBit) != 0)
+		delta *= 2;
+
+	// Before the log. Starting combat clears the console.
+	if (field && field->m_flameStrikeField)
+	{
+		PullEnemyIntoCombat(victim);
+		if (field->m_flameStrikeCasterId > 0)
+			PullEnemyIntoCombat(GetObjectFromID(field->m_flameStrikeCasterId));
+	}
+
+	if (delta > 0)
+	{
+		// Fire Field, Fire Ring, and Flame Strike all burn through this hit.
+		// Party victims match the red damage number. Everyone else is white.
+		const std::string name = victim->m_name.empty() ? "Someone" : victim->m_name;
+		const bool partyVictim = victim->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC
+			&& g_Player
+			&& g_Player->NPCIDInParty(victim->m_NPCID);
+		AddCombatLogString(
+			name + " takes " + std::to_string(delta) + " damage from fire!",
+			partyVictim ? RED : WHITE);
+		ApplyCombatDamage(victim, static_cast<float>(delta), nullptr);
+	}
+
+	if (victim->IsDeathStatus() || victim->GetIsDead())
+		return;
+	if ((victim->m_flags & kObjFlagAsleep) != 0 && !victim->IsKnockedOut())
+	{
+		victim->ClearSleep();
+		victim->StopSleepTimer();
+		victim->AnnounceStatusFlag(kObjFlagAsleep, false);
+	}
+}
+
+namespace
+{
+	std::vector<int> g_timedFireFieldIds;
+}
+
+void NoteTimedFireField(int objectId)
+{
+	if (objectId <= 0)
+		return;
+	for (int id : g_timedFireFieldIds)
+	{
+		if (id == objectId)
+			return;
+	}
+	g_timedFireFieldIds.push_back(objectId);
+}
+
+void ForgetTimedFireField(int objectId)
+{
+	for (auto it = g_timedFireFieldIds.begin(); it != g_timedFireFieldIds.end(); ++it)
+	{
+		if (*it == objectId)
+		{
+			g_timedFireFieldIds.erase(it);
+			return;
+		}
+	}
+}
+
+void AdvanceFireFieldRounds()
+{
+	const std::vector<int> ids = g_timedFireFieldIds;
+	for (int id : ids)
+	{
+		U7Object* field = GetObjectFromID(id);
+		if (!field || field->GetIsDead() || field->m_fireFieldTurnsRemaining <= 0)
+		{
+			ForgetTimedFireField(id);
+			continue;
+		}
+		field->m_fireFieldTurnsRemaining -= 1;
+		if (field->m_fireFieldTurnsRemaining <= 0)
+			field->ExpireFireField();
+	}
+}
+
+void FreezeFireFieldsForTurns()
+{
+	const float now = GetTime();
+	const std::vector<int> ids = g_timedFireFieldIds;
+	for (int id : ids)
+	{
+		U7Object* field = GetObjectFromID(id);
+		if (!field || field->GetIsDead())
+		{
+			ForgetTimedFireField(id);
+			continue;
+		}
+		if (field->m_fireFieldTurnsRemaining > 0)
+			continue;
+		if (field->m_fireFieldEndsAt <= 0.0f)
+		{
+			ForgetTimedFireField(id);
+			continue;
+		}
+		const float remaining = field->m_fireFieldEndsAt - now;
+		if (remaining <= 0.0f)
+		{
+			field->ExpireFireField();
+			continue;
+		}
+		const float rounds = (remaining / kFireFieldLifetimeSec) * static_cast<float>(kFireFieldTurnRounds);
+		field->m_fireFieldTurnsRemaining = std::max(1, static_cast<int>(std::lround(rounds)));
+		field->m_fireFieldEndsAt = 0.0f;
+	}
+}
+
+void ReleaseFireFieldsToRealTime()
+{
+	const float now = GetTime();
+	const std::vector<int> ids = g_timedFireFieldIds;
+	for (int id : ids)
+	{
+		U7Object* field = GetObjectFromID(id);
+		if (!field || field->GetIsDead())
+		{
+			ForgetTimedFireField(id);
+			continue;
+		}
+		if (field->m_fireFieldTurnsRemaining <= 0)
+			continue;
+		const float sec = (static_cast<float>(field->m_fireFieldTurnsRemaining) / static_cast<float>(kFireFieldTurnRounds))
+			* kFireFieldLifetimeSec;
+		field->m_fireFieldTurnsRemaining = 0;
+		field->m_fireFieldEndsAt = now + sec;
+		field->m_fireFieldNextPulse = now;
+	}
+}
+
+void ApplyFireFieldPulse(U7Object* field)
+{
+	if (!field || field->GetIsDead() || field->m_isContained || !field->m_Visible)
+		return;
+
+	const int tx = static_cast<int>(std::floor(field->m_Pos.x));
+	const int tz = static_cast<int>(std::floor(field->m_Pos.z));
+	if (tx < 0 || tz < 0 || tx >= 3072 || tz >= 3072)
+		return;
+
+	const int cx = tx / 16;
+	const int cz = tz / 16;
+	if (cx < 0 || cz < 0 || cx >= 192 || cz >= 192)
+		return;
+
+	// Copy first. A killing blow can drop the victim out of the chunk vector.
+	const std::vector<U7Object*> units = g_chunkObjectMap[cx][cz];
+	for (U7Object* unit : units)
+	{
+		if (!unit || unit == field)
+			continue;
+		const int ux = static_cast<int>(std::floor(unit->m_Pos.x));
+		const int uz = static_cast<int>(std::floor(unit->m_Pos.z));
+		if (ux != tx || uz != tz)
+			continue;
+		if (std::fabs(unit->m_Pos.y - field->m_Pos.y) > 0.15f)
+			continue;
+		ApplyFireFieldDamage(unit, field);
+	}
+}
+
 void CheckContactFieldsAt(U7Object* unit)
 {
 	if (!unit || unit->IsDeathStatus() || unit->GetIsDead())
@@ -1095,17 +1402,21 @@ void CheckContactFieldsAt(U7Object* unit)
 	if (cx < 0 || cz < 0 || cx >= 192 || cz >= 192)
 		return;
 
-	for (U7Object* obj : g_chunkObjectMap[cx][cz])
+	// Copy first. A successful poison or sleep roll removes the field from this chunk.
+	const std::vector<U7Object*> objects = g_chunkObjectMap[cx][cz];
+	for (U7Object* obj : objects)
 	{
 		if (!obj || obj == unit || !obj->m_objectData || !obj->m_shapeData)
 			continue;
-		if (obj->GetIsDead() || obj->m_isContained)
-			continue;
-		if (!obj->m_objectData->m_isTrap)
+		if (obj->GetIsDead() || obj->m_isContained || !obj->m_Visible)
 			continue;
 
 		const int shape = obj->m_shapeData->m_shape;
-		if (GetContactFieldType(shape) != ContactFieldType::Caltrops)
+		const bool fireField = (shape == kFireFieldShape);
+		const bool hazard = (shape == kPoisonFieldShape || shape == kSleepFieldShape);
+		const bool caltrops = obj->m_objectData->m_isTrap
+			&& GetContactFieldType(shape) == ContactFieldType::Caltrops;
+		if (!fireField && !hazard && !caltrops)
 			continue;
 
 		const int ox = static_cast<int>(std::floor(obj->m_Pos.x));
@@ -1117,7 +1428,58 @@ void CheckContactFieldsAt(U7Object* unit)
 		if (std::fabs(unit->m_Pos.y - obj->m_Pos.y) > 0.15f)
 			continue;
 
-		ApplyCaltropDamage(unit);
+		if (fireField)
+			ApplyFireFieldDamage(unit, obj);
+		else if (hazard)
+		{
+			if (TryConsumeHazardField(obj, unit, true))
+				obj->ExpireFireField();
+		}
+		else
+			ApplyCaltropDamage(unit);
+	}
+}
+
+void ApplyStandingFireFieldDamage(U7Object* unit)
+{
+	if (!unit || unit->IsDeathStatus() || unit->GetIsDead())
+		return;
+	if (unit->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_NPC
+		&& unit->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_MONSTER)
+		return;
+
+	const int tx = static_cast<int>(std::floor(unit->m_Pos.x));
+	const int tz = static_cast<int>(std::floor(unit->m_Pos.z));
+	if (tx < 0 || tz < 0 || tx >= 3072 || tz >= 3072)
+		return;
+
+	const int cx = tx / 16;
+	const int cz = tz / 16;
+	if (cx < 0 || cz < 0 || cx >= 192 || cz >= 192)
+		return;
+
+	const std::vector<U7Object*> objects = g_chunkObjectMap[cx][cz];
+	for (U7Object* obj : objects)
+	{
+		if (!obj || obj == unit || !obj->m_shapeData)
+			continue;
+		if (obj->GetIsDead() || obj->m_isContained || !obj->m_Visible)
+			continue;
+		const int shape = obj->m_shapeData->m_shape;
+		const bool fireField = (shape == kFireFieldShape);
+		const bool hazard = (shape == kPoisonFieldShape || shape == kSleepFieldShape);
+		if (!fireField && !hazard)
+			continue;
+		const int ox = static_cast<int>(std::floor(obj->m_Pos.x));
+		const int oz = static_cast<int>(std::floor(obj->m_Pos.z));
+		if (ox != tx || oz != tz)
+			continue;
+		if (std::fabs(unit->m_Pos.y - obj->m_Pos.y) > 0.15f)
+			continue;
+		if (fireField)
+			ApplyFireFieldDamage(unit, obj);
+		else if (TryConsumeHazardField(obj, unit))
+			obj->ExpireFireField();
 	}
 }
 

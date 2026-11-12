@@ -154,6 +154,8 @@ public:
 
 	void SetWeather(int type, int durationMinutes = 0, bool fromEgg = false,
 		Vector3 eggOrigin = { 0, 0, 0 }, int eggObjectId = -1, int intensity = -1);
+	// Usecode lightning(): one screen flash. Rain draws it; dungeons clear it.
+	void PulseLightningFlash();
 
 	bool HasEggOrigin() const { return m_hasEggOrigin; }
 	Vector3 GetEggOrigin() const { return m_eggOrigin; }

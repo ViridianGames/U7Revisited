@@ -321,6 +321,8 @@ void ScriptingSystem::AddScript(const std::string& func_name, const vector<LuaAr
                     lua_pushstring(co, value.c_str());
                 } else if constexpr (std::is_same_v<T, bool>) {
                     lua_pushboolean(co, value);
+                } else if constexpr (std::is_same_v<T, double>) {
+                    lua_pushnumber(co, value);
                 }
             }, arg);
         }
@@ -427,6 +429,8 @@ string ScriptingSystem::CallScript(const string& func_name, const vector<LuaArg>
                     lua_pushstring(co, value.c_str());
                 } else if constexpr (std::is_same_v<T, bool>) {
                     lua_pushboolean(co, value);
+                } else if constexpr (std::is_same_v<T, double>) {
+                    lua_pushnumber(co, value);
                 }
             }, arg);
         }
@@ -443,6 +447,8 @@ string ScriptingSystem::CallScript(const string& func_name, const vector<LuaArg>
                     lua_pushstring(co, value.c_str());
                 } else if constexpr (std::is_same_v<T, bool>) {
                     lua_pushboolean(co, value);
+                } else if constexpr (std::is_same_v<T, double>) {
+                    lua_pushnumber(co, value);
                 }
             }, arg);
         }
@@ -570,6 +576,8 @@ string ScriptingSystem::ResumeCoroutine(const string& func_name, const vector<Lu
                 lua_pushstring(co, value.c_str());
             } else if constexpr (std::is_same_v<T, bool>) {
                 lua_pushboolean(co, value);
+            } else if constexpr (std::is_same_v<T, double>) {
+                lua_pushnumber(co, value);
             }
         }, arg);
     }

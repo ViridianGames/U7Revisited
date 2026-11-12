@@ -1,41 +1,43 @@
---- Best guess: Manages the "Tym Vas Flam" spell, igniting a target (ID 621) with a fiery effect, applying status effects and creating visual items, with a fallback effect if the spell fails.
-function spell_tym_vas_flam_0378(eventid, objectref)
-    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
+--- Delayed Blast (Tym Vas Flam). Seventh Circle. Oracle: usecode Func067A / object#(0x67A).
+--- Ground target. An invisible shape-621 marker is attacked after 2.4 seconds.
+--- Do not destroy the caster. The function name stays on script 378.
 
-    var_0000 = false
+function spell_tym_vas_flam_0378(eventid, objectref)
     if eventid ~= 1 then
         return
     end
 
     halt_scheduled(objectref)
-    var_0001 = object_select_modal()
-    var_0002 = utility_direction_to_target_1069(var_0001)
-    var_0003 = {var_0001[2], var_0001[3], var_0001[4]}
-    bark(objectref, "@Tym Vas Flam@")
-    if not utility_condition_0044_1030() then
-        var_0004 = create_new_object(621)
-        if not var_0004 then
-            set_item_flag(18, var_0004)
-            set_item_flag(0, var_0004)
-            var_0005 = update_last_created(var_0003)
-            if var_0005 then
-                var_0005 = set_npc_quality(var_0004, 1, 3)
-                var_0005 = set_to_attack(621, var_0004, objectref)
-                var_0005 = delayed_execute_usecode_array(12, 7715, 17530, var_0004)
-                var_0005 = delayed_execute_usecode_array(14, 7715, 17453, var_0004)
-            else
-                var_0000 = true
-            end
-        else
-            var_0000 = true
-        end
-        var_0005 = execute_usecode_array(objectref, {17530, 17519, 17520, 8042, 65, 8536, var_0002, 7769})
-        sprite_effect(-1, 0, 0, 0, var_0003[2], var_0003[1], 13)
-    else
-        var_0000 = true
+    local objId, tileX, tileZ, lift = click_on_tile(objectref)
+    if tileX == nil then
+        return
     end
 
-    if var_0000 then
-        var_0005 = execute_usecode_array(objectref, {1542, 17493, 17519, 17520, 8554, var_0002, 7769})
+    local dir = find_direction(objectref, tileX, tileZ)
+    bark(objectref, "@Tym Vas Flam@")
+    if get_weather() == 3 or not check_spell_requirements(objectref) then
+        -- Playback: face, dir, strike_2h, cast_out, cast_up. No spellFails.
+        execute_usecode_array(objectref, {17519, 17520, 17514, dir, 7769})
+        return
     end
+
+    local marker = create_new_object(621)
+    if not marker then
+        execute_usecode_array(objectref, {17519, 17520, 17514, dir, 7769})
+        return
+    end
+
+    -- Flag 0 hides the marker. The attack is scheduled in C++, not in this gesture.
+    set_item_flag(marker, 0)
+    if not update_last_created({tileX, lift, tileZ}) then
+        destroy_object(marker)
+        execute_usecode_array(objectref, {17519, 17520, 17514, dir, 7769})
+        return
+    end
+
+    begin_casting_mode(objectref, 859)
+    -- Stored reversed. Playback: face, dir, sfx 65, strike_2h, cast_out, cast_up.
+    execute_usecode_array(objectref, {17519, 17520, 17514, 65, 7768, dir, 7769})
+    obj_sprite_effect(marker, 13)
+    schedule_delayed_blast(objectref, marker)
 end

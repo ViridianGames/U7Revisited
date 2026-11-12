@@ -871,11 +871,12 @@ function find_object(a, b, c, d) end
 ---@return integer distance Distance in tiles
 function get_distance(obj1, obj2) end
 
----[Exult 0x001A] Finds the direction from one object to another
+---[Exult 0x001A] Finds the direction from one object to another, or to a tile.
 ---@param from_obj integer Source object ID
----@param to_obj integer Target object ID
+---@param to_obj integer Target object ID, or tile X when tile_z is passed
+---@param tile_z integer|nil Target tile Z (south). Omit to aim at to_obj.
 ---@return integer direction Direction (0-7, where 0=North, clockwise)
-function find_direction(from_obj, to_obj) end
+function find_direction(from_obj, to_obj, tile_z) end
 
 ---[Exult 0x0087] Gets the direction from an object
 ---@param object_id integer The object ID
@@ -1057,6 +1058,11 @@ function spawn_floating_combat_text(objectref, text, r, g, b) end
 ---@param object_id integer Object to check
 ---@return boolean is_npc True if object is an NPC
 function is_npc(object_id) end
+
+---NPCs and monsters. is_npc stays NPC-only.
+---@param object_id integer Object to check
+---@return boolean is_creature True if the object is an NPC or a monster
+function is_creature(object_id) end
 
 ---[Exult 0x0037] Checks if NPC is dead
 ---@param npc_id integer NPC to check
@@ -1307,6 +1313,105 @@ function book_mode(book_id) end
 ---@param object_id integer Item to click
 function click_on_item(object_id) end
 
+--- Ground click. Returns objId, tileX, tileZ, lift. Esc leaves tileX nil.
+--- Does not change click_on_item. Optional caster picks the surface near their feet.
+---@param caster_id integer|nil Caster object id
+---@return integer obj_id
+---@return integer tile_x
+---@return integer tile_z
+---@return number lift
+function click_on_tile(caster_id) end
+
+--- Shape 895 spell field: quality 100 and removal after 20 seconds.
+---@param object_id integer Fire field object id
+function arm_fire_field(object_id) end
+
+--- Por Xen. The caster dances qualifying people. Party hits outsiders within 25 tiles.
+---@param caster_id integer Caster object id
+function cause_dancing(caster_id) end
+
+--- Quas Wis. Creatures within 25 tiles flee the Avatar. The party is spared.
+---@param caster_id integer Caster object id
+function cause_fear(caster_id) end
+
+--- In Quas Xen. Copies a living creature onto a nearby tile after 4 usecode ticks.
+---@param target_id integer Creature to copy
+function schedule_clone(target_id) end
+
+--- Kal Flam Grav. Twelve fire fields around the chosen tile.
+---@param tile_x integer
+---@param tile_z integer
+---@param lift number
+function place_fire_ring(tile_x, tile_z, lift) end
+
+--- Vas In Flam Grav. Fire at the feet of each enemy.
+---@param caster_id integer Caster object id
+function flame_strike(caster_id) end
+
+--- Vas Oort Hur. Fourteen seconds of lightning under rain.
+---@param caster_id integer Caster object id
+function start_magic_storm(caster_id) end
+
+--- In Nox Grav. Shape 900 stays until it poisons someone.
+---@param object_id integer Poison field object id
+function arm_poison_field(object_id) end
+
+--- In Zu Grav. Shape 902 stays until it puts someone to sleep.
+---@param object_id integer Sleep field object id
+function arm_sleep_field(object_id) end
+
+--- Vas Por Ylem. Creatures within 40 tiles stumble.
+---@param caster_id integer Caster object id
+function cause_tremor(caster_id) end
+
+--- Rel Ylem. Lead becomes a gold nugget after one second.
+---@param lead_id integer Lead object id
+function schedule_create_gold(lead_id) end
+
+--- In Sanct Grav. True when a walkable surface is within 2 of the lift.
+---@param tile_x integer
+---@param tile_z integer
+---@param lift number
+---@return boolean open
+function energy_field_tile_open(tile_x, tile_z, lift) end
+
+--- In Sanct Grav. Places shape 768 for 40 seconds. Returns 0 if it could not.
+---@param tile_x integer
+---@param tile_z integer
+---@param lift number
+---@return integer field_id
+function place_energy_field(tile_x, tile_z, lift) end
+
+--- Tym Vas Flam. Attacks the marker after 2.4 seconds.
+---@param caster_id integer
+---@param marker_id integer
+function schedule_delayed_blast(caster_id, marker_id) end
+
+--- Vas An Xen Ex. Charms nearby creatures. Skips the Avatar, Anmanivas, and Foranamo.
+---@param caster_id integer
+function mass_charm(caster_id) end
+
+--- In Vas Por. Raises party str, dex, int, and combat for 60–120 seconds.
+---@param caster_id integer
+function mass_might(caster_id) end
+
+--- Vas Mani. Heals the party to full and clears poison and paralysis.
+---@param caster_id integer
+function cast_restoration(caster_id) end
+
+--- Vas Corp. NPCs within 25 tiles die after a delay. The party is left at 2 HP.
+---@param caster_id integer
+function mass_death(caster_id) end
+
+--- Vas Kal An Mani. Rain now. Deaths, the quake, and the second bark follow the gesture.
+---@param caster_id integer
+function cast_armageddon(caster_id) end
+
+--- In Mani Corp. True when the dead NPC stands back up.
+---@param target_id integer
+---@return boolean revived
+function cast_resurrect(target_id) end
+
 ---[Exult 0x000C] Gets numeric input from user (currently not implemented - returns default)
 ---@param min integer Minimum value
 ---@param max integer Maximum value
@@ -1358,8 +1463,9 @@ function view_tile(tile_id) end
 ---@param flash_type integer The type of flash effect
 function flash_mouse(flash_type) end
 
----[Exult 0x0056] Stops time (Time Lord spell)
-function stop_time() end
+---[Exult 0x0056] Stops time. Outside turn-based combat, length * 0.25 seconds (100 is 25 seconds). In turn-based combat each enemy already in the fight skips 3-5 turns.
+---@param length integer
+function stop_time(length) end
 
 -- ============================================================================
 -- EXULT INTRINSICS - GAME CONTROL

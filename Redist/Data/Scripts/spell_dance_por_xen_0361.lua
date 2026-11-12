@@ -1,36 +1,30 @@
---- Best guess: Implements the dance spell (Por Xen), causing nearby NPCs to dance with random exclamations.
-function spell_dance_por_xen_0361(eventid, objectref)
-    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A
+--- Dance (Por Xen). Fifth Circle. Oracle: usecode Func0669 / object#(0x669).
+--- No target. The caster says "@Por Xen@" and "@Everybody DANCE now!@".
+--- When the gesture finishes, people nearby stop and dance.
+--- A party caster hits non-party people within 25 tiles. Anyone else hits the party.
+--- Intelligence 6 through 24. Do not destroy the caster.
+--- The function name stays on script 361.
 
-    if eventid == 1 then
-        destroy_object(objectref)
-        bark(objectref, "@Por Xen@")
-        if check_spell_requirements() then
-            var_0000 = add_containerobject_s(objectref, {1641, 17493, 17514, 17520, 8037, 67, 7768})
-            bark(objectref, "@Everybody DANCE now!@")
-        else
-            var_0000 = add_containerobject_s(objectref, {1542, 17493, 17514, 17520, 7781})
-        end
-    elseif eventid == 2 then
-        var_0001 = 25
-        var_0002 = get_nearby_npcs(var_0001) --- Guess: Gets nearby NPCs
-        -- Guess: sloop triggers dance for NPCs
-        for i = 1, 5 do
-            var_0005 = ({3, 4, 5, 2, 198})[i]
-            if not (var_0005 == var_0002[1] or var_0005 == var_0002[2]) then --  or ...
-                var_0006 = get_npc_property(2, var_0005) --- Guess: Gets NPC property
-                if var_0006 > 5 and var_0006 < 25 then
-                    var_0007 = get_object_position(var_0005) --- Guess: Gets position data
-                    apply_sprite_effect(-1, 0, 0, 0, var_0007[2], var_0007[1], 16) --- Guess: Applies sprite effect
-                    update_npc_state(4, var_0005) --- Guess: Updates NPC state
-                    set_object_flag(var_0005, 15)
-                    var_0008 = {"@Yow!@", "@Boogie!@", "@I'm bad!@", "@Oh, yeah!@", "@Huh!@", "@Yeah!@", "@Dance!@"}
-                    var_0009 = random(1, 7)
-                    var_000A = random(10, 40)
-                    npc_add_dialogue(var_0005, var_0008[var_0009]) --- Guess: NPC says random phrase
-                    var_0000 = add_containerobject_s(var_0005, {var_000A, 1672, 17493, 7715})
-                end
-            end
-        end
+function spell_dance_por_xen_0361(eventid, objectref)
+    if eventid == 2 then
+        cause_dancing(objectref)
+        return
     end
+
+    if eventid ~= 1 then
+        return
+    end
+
+    halt_scheduled(objectref)
+    bark(objectref, "@Por Xen@")
+    if not check_spell_requirements(objectref) then
+        -- Playback: raise_1h, cast_out, strike_2h. No spellFails.
+        execute_usecode_array(objectref, {17514, 17520, 8037})
+        return
+    end
+
+    begin_casting_mode(objectref, 859)
+    bark(objectref, "@Everybody DANCE now!@")
+    -- Stored reversed. Playback: sfx 67, raise_1h, cast_out, strike_2h, then event 2.
+    execute_usecode_array(objectref, {1641, 17493, 17514, 17520, 8037, 67, 7768})
 end

@@ -1,52 +1,29 @@
---- Best guess: Implements the fireball storm spell (Kal Flam Grav), spawning multiple fireballs in a grid pattern.
-function spell_kal_flam_grav_0370(eventid, objectref)
-    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D
+--- Fire Ring (Kal Flam Grav). Sixth Circle. Oracle: usecode Func0672 / object#(0x672).
+--- Ground target. Twelve fire fields appear around the chosen tile, one after
+--- another. Each burns for about 6 to 7 seconds. Do not destroy the caster.
+--- The function name stays on script 370.
 
-    if eventid == 1 then
-        var_0000 = object_select_modal() --- Guess: Selects spell target
-        destroy_object(objectref)
-        var_0001 = select_spell_target(var_0000) --- Guess: Gets selected target
-        bark(objectref, "@Kal Flam Grav@")
-        if check_spell_requirements() then
-            var_0002 = add_containerobject_s(objectref, {17509, 17511, 8038, 65, 8536, var_0001, 7769})
-            var_0003 = {-2, -2, -2, -1, 0, 1, 2, 2, 2, 1, 0, -1}
-            var_0004 = {-1, 0, 1, 2, 2, 2, 1, 0, -1, -2, -2, -2}
-            var_0005 = 0
-            while var_0005 < 12 do
-                var_0005 = var_0005 + 1
-                var_0006 = var_0000[2] + var_0003[var_0005]
-                var_0007 = var_0000[3] + var_0004[var_0005]
-                var_0008 = var_0000[4]
-                var_0009 = {var_0008, var_0007, var_0006}
-                var_000A = var_0009
-                if not is_not_blocked(0, 621, var_0009) then
-                    var_0009 = var_000A
-                end
-                var_000B = get_object_status(621) --- Guess: Gets item status
-                if var_000B then
-                    set_object_flag(var_000B, 18)
-                    set_object_flag(var_000B, 0)
-                    var_0002 = update_last_created(var_0009) --- Guess: Updates position
-                    var_0002 = set_npc_property(1, 3, var_000B) --- Guess: Sets NPC property
-                    var_0002 = add_containerobject_s(var_000B, {1650, 17493, 7715})
-                end
-            end
-        else
-            var_0002 = add_containerobject_s(objectref, {1542, 17493, 17509, 17511, 8550, var_0001, 7769})
-        end
-    elseif eventid == 2 then
-        var_0009 = get_object_position(objectref) --- Guess: Gets position data
-        var_0002 = set_last_created(objectref) --- Guess: Checks position
-        if var_0002 then
-            var_0002 = update_last_created(358) --- Guess: Updates position
-        end
-        var_000B = get_object_status(895) --- Guess: Gets item status
-        if var_000B then
-            set_object_flag(var_000B, 18)
-            var_0002 = update_last_created(var_0009) --- Guess: Updates position
-            var_000D = 30
-            var_000D = var_000D + random(1, 5)
-            var_0002 = add_containerobject_s(var_000B, {var_000D, 17453, 7715})
-        end
+function spell_kal_flam_grav_0370(eventid, objectref)
+    if eventid ~= 1 then
+        return
     end
+
+    halt_scheduled(objectref)
+    local objId, tileX, tileZ, lift = click_on_tile(objectref)
+    if tileX == nil then
+        return
+    end
+
+    local dir = find_direction(objectref, tileX, tileZ)
+    bark(objectref, "@Kal Flam Grav@")
+    if not check_spell_requirements(objectref) then
+        -- Playback: face, dir, reach_1h, strike_1h, raise_1h. No spellFails.
+        execute_usecode_array(objectref, {17509, 17511, 17510, dir, 7769})
+        return
+    end
+
+    begin_casting_mode(objectref, 859)
+    -- Stored reversed. Playback: face, dir, sfx 65, reach_1h, strike_1h, raise_1h.
+    execute_usecode_array(objectref, {17509, 17511, 17510, 65, 7768, dir, 7769})
+    place_fire_ring(tileX, tileZ, lift)
 end

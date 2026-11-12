@@ -1,23 +1,23 @@
---- Best guess: Implements the Armageddon spell (Vas Kal An Mani), triggering catastrophic game state changes with a follow-up incantation.
-function spell_vas_kal_an_mani_0384(eventid, objectref)
-    local var_0000, var_0001
+--- Armageddon (Vas Kal An Mani). Eighth Circle. Oracle: usecode Func0680 / object#(0x680).
+--- Untargeted. The second bark, the quake, and the deaths follow the gesture.
+--- Do not destroy the caster. The function name stays on script 384.
 
-    if eventid == 1 then
-        destroy_object(objectref)
-        bark(objectref, "@Vas Kal An Mani@")
-        if check_spell_requirements() then
-            var_0000 = get_object_position(objectref) --- Guess: Gets position data
-            apply_sprite_effect(-1, 0, 0, 0, var_0000[2] - 2, var_0000[1] - 2, 7) --- Guess: Applies sprite effect
-            cast_spell(2) --- Guess: Casts spell
-            destroy_object(objectref)
-            var_0001 = add_containerobject_s(objectref, {1664, 17493, 17505, 17516, 17511, 8047, 67, 17496, 17520, 17519, 17505, 17517, 17517, 8045, 65, 7768})
-        else
-            var_0001 = add_containerobject_s(objectref, {1542, 17493, 17505, 17516, 17511, 17519, 17520, 17519, 17505, 17517, 17518, 7789})
-        end
-    elseif eventid == 2 then
-        bark(objectref, "@In Corp Hur Tym@")
-        set_spell_duration(40) --- Guess: Sets spell duration
-        reset_game_state() --- Guess: Resets game state
-        set_flag(30, true)
+function spell_vas_kal_an_mani_0384(eventid, objectref)
+    if eventid ~= 1 then
+        return
     end
+
+    halt_scheduled(objectref)
+    bark(objectref, "@Vas Kal An Mani@")
+    if get_weather() == 3 or not check_spell_requirements(objectref) then
+        -- Playback: kneel, sleep, kneel, stand, cast_up, cast_out, cast_up, strike_1h, bow, stand.
+        execute_usecode_array(objectref, {17505, 17516, 17511, 17519, 17520, 17519, 17505, 17517, 17518, 17517})
+        return
+    end
+
+    begin_casting_mode(objectref, 859)
+    -- Stored reversed. Playback: sfx 65, kneel, kneel, kneel, stand, cast_up, cast_out,
+    -- sfx 67, cast_up, strike_1h, bow, stand.
+    execute_usecode_array(objectref, {17505, 17516, 17511, 17519, 67, 7768, 17520, 17519, 17505, 17517, 17517, 17517, 65, 7768})
+    cast_armageddon(objectref)
 end

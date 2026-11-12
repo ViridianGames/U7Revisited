@@ -99,7 +99,10 @@ public:
 		m_objectSelectionMode = true;
 		m_doingObjectSelection = true;
 		m_pendingUseTargetId = -1;
+		m_selectingGroundTile = false;
 	}
+	// Same green use cursor. An empty-ground click is a valid target.
+	void StartTileSelectionMode(float preferredY);
 
 	void Bark(U7Object* object, const std::string& text, float duration = 1.5f);
 	void ClearBarks();
@@ -271,6 +274,11 @@ public:
 	int m_errorCursorFramesRemaining = 0;
 
 	bool m_objectSelectionMode = false;
+	// click_on_tile: empty ground resumes the script with a tile.
+	bool m_selectingGroundTile = false;
+	// The spellbook double-click that opened targeting is still down this frame.
+	bool m_deferGroundTileClick = false;
+	float m_tileSelectionPreferredY = 0.0f;
 
 	int m_numberofObjects = 0;
 	int m_numberofObjectsPassingFirstCheck = 0;
@@ -414,6 +422,9 @@ public:
 	void IssueCombatSpellOrder(U7Object* caster, int spellId, U7Object* target);
 	void SetForcedSpellTarget(int objectId) { m_forcedSpellTargetObjectId = objectId; }
 	int TakeForcedSpellTarget(); // returns id or 0; clears the force
+	// click_on_tile returns this tile immediately when set (ground-target cast).
+	void SetForcedSpellTile(int objId, int tileX, int tileZ, float tileY);
+	bool TakeForcedSpellTile(int& objId, int& tileX, int& tileZ, float& tileY);
 
 	// Session shared by all combat styles. m_combatPaused is primarily for Real-Time-Pause.
 	bool m_combatPaused = true;
@@ -430,6 +441,11 @@ public:
 	int m_combatSpellTargetingCasterId = -1;
 	// click_on_item / object_select_modal returns this immediately when set (combat cast).
 	int m_forcedSpellTargetObjectId = -1;
+	bool m_forcedSpellTileValid = false;
+	int m_forcedSpellTileObjId = 0;
+	int m_forcedSpellTileX = 0;
+	int m_forcedSpellTileZ = 0;
+	float m_forcedSpellTileY = 0.0f;
 
 	// Camera-drag while holding left+right: state & helpers
 	void StartCameraDrag();
@@ -458,6 +474,9 @@ private:
 	void HandleRightMouseHoldMovement();
 	void ResolveUseCursorTarget();
 	void CommitUseCursorTarget(int objectId);
+	void CommitTileSelection(U7Object* selected);
+	void DrawGroundSpellTargetMarker();
+	void IssueCombatGroundSpellOrder(U7Object* caster, int spellId, int tileX, int tileZ, float tileY);
 	void OpenUseCursorContainer(U7Object* object);
 	U7Object* ObjectUnderUseCursor(bool& fromEmbeddedPaperdoll);
 	bool IsUseCursorContainer(const U7Object* object) const;

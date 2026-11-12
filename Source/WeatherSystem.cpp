@@ -1893,6 +1893,11 @@ void WeatherSystem::UpdateGameMinute()
 	}
 }
 
+void WeatherSystem::PulseLightningFlash()
+{
+	m_flashTimer = 0.12f;
+}
+
 void WeatherSystem::SetWeather(int type, int durationMinutes, bool fromEgg,
 	Vector3 eggOrigin, int eggObjectId, int intensity)
 {

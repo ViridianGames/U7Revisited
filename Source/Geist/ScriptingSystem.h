@@ -19,7 +19,7 @@ class Config;
 class ScriptingSystem : public Object
 {
 public:
-    using LuaArg = std::variant<lua_Integer, std::string, bool>; // Support integers, strings, booleans
+    using LuaArg = std::variant<lua_Integer, std::string, bool, double>; // integers, strings, booleans, numbers
 
     ScriptingSystem();
     ~ScriptingSystem();

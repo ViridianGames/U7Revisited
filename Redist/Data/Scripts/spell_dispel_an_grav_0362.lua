@@ -1,28 +1,44 @@
---- Best guess: Manages the "An Grav" spell, dispelling electrical or trap effects (IDs 902, 900, 895, 768) on a selected target, with a fallback effect if the spell fails.
-function spell_dispel_an_grav_0362(eventid, objectref)
-    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006
+--- Dispel Field (An Grav). Fifth Circle. Oracle: usecode Func066A / object#(0x66A).
+--- The caster says "@An Grav@". The clicked object is removed when it is an
+--- energy field (768), fire field (895), poison field (900), or sleep field (902).
+--- Any other target stays. Do not destroy the caster.
+--- The function name stays on script 362.
 
+local FIELD_SHAPES = {
+    [768] = true, -- energy field
+    [895] = true, -- fire field
+    [900] = true, -- poison field
+    [902] = true, -- sleep field
+}
+
+function spell_dispel_an_grav_0362(eventid, objectref)
     if eventid ~= 1 then
         return
     end
 
-    var_0000 = object_select_modal()
-    var_0001 = utility_direction_to_target_1069(var_0000)
     halt_scheduled(objectref)
-    var_0002 = {902, 900, 895, 768}
-    bark(objectref, "@An Grav@")
-    if not utility_condition_0044_1030() then
-        var_0003 = execute_usecode_array(objectref, {17514, 17520, 8559, var_0001, 8025, 65, 7768})
-        for var_0004 in ipairs(var_0002) do
-            if var_0006 == get_object_shape(var_0000) then
-                var_0003 = set_last_created(var_0000)
-                if not var_0003 then
-                    var_0003 = update_last_created(-358)
-                    halt_scheduled(var_0000)
-                end
-            end
-        end
-    else
-        var_0003 = execute_usecode_array(objectref, {1542, 17493, 17514, 17520, 8559, var_0001, 7769})
+    local target = click_on_item()
+    if not target or target == 0 then
+        return
     end
+
+    local dir = find_direction(objectref, target)
+    bark(objectref, "@An Grav@")
+    if not check_spell_requirements(objectref) then
+        -- Playback: face, dir, cast_up, cast_out, strike_2h. No spellFails.
+        execute_usecode_array(objectref, {17514, 17520, 8047, dir, 7769})
+        return
+    end
+
+    begin_casting_mode(objectref, 859)
+    -- Stored reversed. Playback: sfx 65, face, dir, cast_up, cast_out, strike_2h.
+    execute_usecode_array(objectref, {17514, 17520, 8047, dir, 7769, 65, 7768})
+
+    local shape = get_object_shape(target)
+    if not FIELD_SHAPES[shape] then
+        return
+    end
+
+    halt_scheduled(target)
+    destroy_object(target)
 end

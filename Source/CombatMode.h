@@ -199,6 +199,7 @@ private:
 	void ForceFinishResolvingMove(MainState& main, U7Object* unit, const char* reason);
 	void OnMoveResolved(MainState& main);
 	void RunEnemyTurnAi(MainState& main);
+	void TryFleeTurn(MainState& main, U7Object* unit);
 	bool TryIssueAttackOn(MainState& main, U7Object* target);
 	bool BeginAttackOn(U7Object* attacker, U7Object* target);
 	void OnAttackResolved(MainState& main);

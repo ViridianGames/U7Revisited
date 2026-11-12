@@ -1,24 +1,30 @@
---- Best guess: Implements the shape-shift spell (Rel Ylem), transforming an item (type 915) with visual effects.
-function spell_rel_ylem_0376(eventid, objectref)
-    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
+--- Create Gold (Rel Ylem). Seventh Circle. Oracle: usecode Func0678 / object#(0x678).
+--- Targeted. Shape 915 becomes shape 645 one second later. Do not destroy the caster.
+--- The function name stays on script 376.
 
-    if eventid == 1 then
-        destroy_object(objectref)
-        var_0000 = object_select_modal() --- Guess: Selects spell target
-        var_0001 = select_spell_target(var_0000) --- Guess: Gets selected target
-        bark(objectref, "@Rel Ylem@")
-        if check_spell_requirements() and get_object_shape(var_0000) == 915 then
-            var_0002 = add_containerobject_s(objectref, {17511, 8037, 66, 8536, var_0001, 7769})
-            var_0003 = get_object_position(var_0000) --- Guess: Gets position data
-            apply_sprite_effect(-1, 0, 0, 0, var_0003[2], var_0003[1], 13) --- Guess: Applies sprite effect
-            var_0004 = add_containerobject_s(var_0000, {5, 1656, 17493, 7715})
-        else
-            var_0002 = add_containerobject_s(objectref, {1542, 17493, 17511, 8549, var_0001, 7769})
-        end
-    else
-        var_0005 = set_object_count(1, objectref) --- Guess: Sets item count
-        var_0005 = var_0005 * 10
-        set_object_shape(645, objectref) --- Guess: Sets item type
-        var_0005 = set_object_weight(var_0005, objectref) --- Guess: Sets item weight
+function spell_rel_ylem_0376(eventid, objectref)
+    if eventid ~= 1 then
+        return
     end
+
+    halt_scheduled(objectref)
+    local target = click_on_item()
+    if not target or target == 0 then
+        return
+    end
+
+    local dir = find_direction(objectref, target)
+    bark(objectref, "@Rel Ylem@")
+    -- Func0906 returns false only while get_weather() == 3.
+    if get_weather() == 3 or not check_spell_requirements(objectref) or get_object_shape(target) ~= 915 then
+        -- Playback: face, dir, raise_1h, strike_1h. No spellFails.
+        execute_usecode_array(objectref, {17511, 8037, dir, 7769})
+        return
+    end
+
+    begin_casting_mode(objectref, 859)
+    -- Stored reversed. Playback: face, dir, sfx 66, raise_1h, strike_1h.
+    execute_usecode_array(objectref, {17511, 8037, 66, 7768, dir, 7769})
+    obj_sprite_effect(target, 13)
+    schedule_create_gold(target)
 end

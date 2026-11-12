@@ -605,7 +605,8 @@
           "x": 886,
           "y": 300,
           "words": "Por Xen",
-          "scriptId": 375,
+          "scriptId": 361,
+          "targeted": false,
           "reagents": [
             "Spider Silk",
             "Blood Moss",
@@ -649,7 +650,7 @@
           "x": 886,
           "y": 348,
           "words": "Vas In Mani",
-          "scriptId": 347,
+          "scriptId": 364,
           "reagents": [
             "Ginseng",
             "Spider Silk",
@@ -678,6 +679,7 @@
           "y": 380,
           "words": "In Flam Grav",
           "scriptId": 366,
+          "groundTarget": true,
           "reagents": [
             "Black Pearl",
             "Sulfurous Ash",
@@ -692,6 +694,7 @@
           "y": 396,
           "words": "Vas Zu",
           "scriptId": 367,
+          "targeted": false,
           "reagents": [
             "Ginseng",
             "Nightshade",
@@ -710,8 +713,9 @@
           "name": "Cause Fear",
           "x": 930,
           "y": 284,
-          "words": "Quas Corp",
+          "words": "Quas Wis",
           "scriptId": 368,
+          "targeted": false,
           "reagents": [
             "Nightshade",
             "Mandrake Root",
@@ -742,7 +746,8 @@
           "x": 930,
           "y": 316,
           "words": "Kal Flam Grav",
-          "scriptId": 382,
+          "scriptId": 370,
+          "groundTarget": true,
           "reagents": [
             "Sulfurous Ash",
             "Mandrake Root",
@@ -755,8 +760,9 @@
           "name": "Flame Strike",
           "x": 930,
           "y": 332,
-          "words": "Kal Vas Flam",
-          "scriptId": 388,
+          "words": "Vas In Flam Grav",
+          "scriptId": 371,
+          "targeted": false,
           "reagents": [
             "Sulfurous Ash",
             "Black Pearl",
@@ -769,8 +775,9 @@
           "name": "Magic Storm",
           "x": 930,
           "y": 348,
-          "words": "Vas Ort Grav",
-          "scriptId": 370,
+          "words": "Vas Oort Hur",
+          "scriptId": 372,
+          "targeted": false,
           "reagents": [
             "Sulfurous Ash",
             "Mandrake Root",
@@ -785,6 +792,7 @@
           "y": 364,
           "words": "In Nox Grav",
           "scriptId": 373,
+          "groundTarget": true,
           "reagents": [
             "Nightshade",
             "Spider Silk",
@@ -799,6 +807,7 @@
           "y": 380,
           "words": "In Zu Grav",
           "scriptId": 374,
+          "groundTarget": true,
           "reagents": [
             "Ginseng",
             "Spider Silk",
@@ -811,8 +820,9 @@
           "name": "Tremor",
           "x": 930,
           "y": 396,
-          "words": "Vas Hur",
-          "scriptId": 327,
+          "words": "Vas Por Ylem",
+          "scriptId": 375,
+          "targeted": false,
           "reagents": [
             "Blood Moss",
             "Sulfurous Ash",
@@ -844,8 +854,8 @@
           "name": "Death Bolt",
           "x": 974,
           "y": 300,
-          "words": "Corp Por Ylem",
-          "scriptId": 386,
+          "words": "Corp Por",
+          "scriptId": 377,
           "reagents": [
             "Black Pearl",
             "Nightshade",
@@ -858,8 +868,9 @@
           "name": "Delayed Blast",
           "x": 974,
           "y": 316,
-          "words": "Tim Vas Ort Flam",
-          "scriptId": 392,
+          "words": "Tym Vas Flam",
+          "scriptId": 378,
+          "groundTarget": true,
           "reagents": [
             "Mandrake Root",
             "Blood Moss",
@@ -875,6 +886,7 @@
           "y": 332,
           "words": "In Sanct Grav",
           "scriptId": 379,
+          "groundTarget": true,
           "reagents": [
             "Mandrake Root",
             "Spider Silk",
@@ -888,8 +900,8 @@
           "name": "Energy Mist",
           "x": 974,
           "y": 348,
-          "words": "Ort Ylem",
-          "scriptId": 378,
+          "words": "In Hur Grav Ylem",
+          "scriptId": 380,
           "reagents": [
             "Mandrake Root",
             "Nightshade",
@@ -905,6 +917,7 @@
           "y": 364,
           "words": "Vas An Xen Ex",
           "scriptId": 381,
+          "targeted": false,
           "reagents": [
             "Black Pearl",
             "Nightshade",
@@ -918,8 +931,9 @@
           "name": "Mass Might",
           "x": 974,
           "y": 380,
-          "words": "In Hur Grav Ylem",
-          "scriptId": 380,
+          "words": "In Vas Por",
+          "scriptId": 382,
+          "targeted": false,
           "reagents": [
             "Black Pearl",
             "Mandrake Root",
@@ -934,6 +948,7 @@
           "y": 396,
           "words": "Vas Mani",
           "scriptId": 383,
+          "targeted": false,
           "reagents": [
             "Ginseng",
             "Garlic",
@@ -954,7 +969,8 @@
           "x": 1018,
           "y": 284,
           "words": "Vas Kal An Mani Corp",
-          "scriptId": 393,
+          "scriptId": 384,
+          "targeted": false,
           "reagents": [
             "Black Pearl",
             "Blood Moss",
@@ -986,7 +1002,8 @@
           "x": 1018,
           "y": 316,
           "words": "Vas Corp",
-          "scriptId": 364,
+          "scriptId": 386,
+          "targeted": false,
           "reagents": [
             "Garlic",
             "Ginseng",
@@ -1018,7 +1035,7 @@
           "x": 1018,
           "y": 348,
           "words": "In Mani Corp",
-          "scriptId": 374,
+          "scriptId": 388,
           "reagents": [
             "Garlic",
             "Ginseng",
@@ -1064,6 +1081,7 @@
           "y": 396,
           "words": "An Tym",
           "scriptId": 391,
+          "targeted": false,
           "reagents": [
             "Mandrake Root",
             "Garlic",

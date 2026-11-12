@@ -848,6 +848,11 @@ void TurnBasedCombatMode::SyncInitiativeFromParticipants(MainState& main)
 
 void TurnBasedCombatMode::StartUnitTurn(MainState& main)
 {
+	// Sleep, stumble, and dance still spend the turn. Call this once, up front.
+	AdvanceEnergyMistTurns();
+	if (ExpireDeadEnemyTimeStops())
+		AddCombatConsoleString("Time resumes.", SKYBLUE);
+
 	m_phase = Phase::Planning;
 	m_activeUnitId = -1;
 	m_apRemaining = 0.0f;
@@ -881,6 +886,26 @@ void TurnBasedCombatMode::StartUnitTurn(MainState& main)
 		m_initiativeIndex = idx;
 		m_activeUnitId = id;
 
+		ApplyStandingFireFieldDamage(unit);
+		if (!IsLivingCombatant(unit))
+		{
+			BeginInterTurnPause();
+			return;
+		}
+
+			// An Tym. Each hostile stamped at cast skips their own turns. Party and
+		// summons still act. The wall clock does not spend this freeze.
+		if (SpendEnemyTimeStopTurn(unit))
+		{
+			CenterCameraOnActiveUnit();
+			main.m_combatSelectedPartyMemberObjectId = -1;
+			AddCombatConsoleString(UnitLabel(unit) + " is frozen.", SKYBLUE);
+			if (!EnemyTimeStopActive())
+				AddCombatConsoleString("Time resumes.", SKYBLUE);
+			BeginInterTurnPause();
+			return;
+		}
+
 		const U7Object::TurnBasedSleepTick sleepTick = unit->TickTurnBasedSleep();
 		if (sleepTick != U7Object::TurnBasedSleepTick::NotAsleep)
 		{
@@ -899,6 +924,34 @@ void TurnBasedCombatMode::StartUnitTurn(MainState& main)
 			}
 			Log("TurnBased: sleep skip id=" + std::to_string(id)
 				+ " left=" + std::to_string(unit->m_sleepTurnsRemaining));
+			BeginInterTurnPause();
+			return;
+		}
+
+		if (unit->IsTrembling())
+		{
+			CenterCameraOnActiveUnit();
+			if (IsPartyUnit(unit))
+				main.m_combatSelectedPartyMemberObjectId = id;
+			else
+				main.m_combatSelectedPartyMemberObjectId = -1;
+			AddCombatConsoleString(UnitLabel(unit) + " is stumbling.", SKYBLUE);
+			BeginInterTurnPause();
+			return;
+		}
+
+		const U7Object::TurnBasedDanceTick danceTick = unit->TickTurnBasedDance();
+		if (danceTick != U7Object::TurnBasedDanceTick::NotDancing)
+		{
+			CenterCameraOnActiveUnit();
+			if (IsPartyUnit(unit))
+				main.m_combatSelectedPartyMemberObjectId = id;
+			else
+				main.m_combatSelectedPartyMemberObjectId = -1;
+			if (danceTick == U7Object::TurnBasedDanceTick::Stopped)
+				AddCombatConsoleString(UnitLabel(unit) + " stops dancing.", SKYBLUE);
+			else
+				AddCombatConsoleString(UnitLabel(unit) + " is dancing.", SKYBLUE);
 			BeginInterTurnPause();
 			return;
 		}
@@ -963,6 +1016,9 @@ void TurnBasedCombatMode::AdvanceToNextLiving(MainState& main)
 			continue;
 		if (IsLivingCombatant(it->second.get()))
 		{
+			// Index wrapped back through the list: one full round.
+			if (m_initiativeIndex <= start)
+				AdvanceFireFieldRounds();
 			StartUnitTurn(main);
 			return;
 		}
@@ -1322,6 +1378,7 @@ bool TurnBasedCombatMode::BeginMoveToTile(U7Object* unit, int tileX, int tileZ, 
 	unit->m_target = 0;
 	unit->m_combatSpellId = -1;
 	unit->m_combatSpellTargetId = 0;
+	unit->m_combatSpellHasTile = false;
 	unit->m_combatMoveOrder = true;
 	unit->m_combatOrderMode = CombatOrderMode::Move;
 	unit->ApplyPathWaypoints(std::move(path));
@@ -1811,6 +1868,76 @@ void TurnBasedCombatMode::OnAttackResolved(MainState& main)
 	EndActiveTurn();
 }
 
+void TurnBasedCombatMode::TryFleeTurn(MainState& main, U7Object* unit)
+{
+	(void)main;
+	if (!unit)
+	{
+		EndActiveTurn();
+		return;
+	}
+
+	unit->m_target = 0;
+	unit->m_combatPathTargetId = 0;
+
+	U7Object* from = unit->FearOppressor();
+	AddCombatConsoleString(UnitLabel(unit) + " flees.", SKYBLUE);
+	if (!from)
+	{
+		EndActiveTurn();
+		return;
+	}
+
+	std::vector<ReachTile> reach;
+	ComputeReachableTiles(unit, m_apRemaining, reach);
+
+	const int startX = static_cast<int>(std::floor(unit->m_Pos.x));
+	const int startZ = static_cast<int>(std::floor(unit->m_Pos.z));
+	auto distSqrFrom = [&](int x, int z) -> float
+	{
+		const float cx = static_cast<float>(x) + 0.5f;
+		const float cz = static_cast<float>(z) + 0.5f;
+		const float dx = cx - from->m_Pos.x;
+		const float dz = cz - from->m_Pos.z;
+		return dx * dx + dz * dz;
+	};
+
+	int bestX = startX;
+	int bestZ = startZ;
+	float bestCost = 0.0f;
+	float bestDist = distSqrFrom(startX, startZ);
+	bool found = false;
+	for (const ReachTile& tile : reach)
+	{
+		if (tile.x == startX && tile.z == startZ)
+			continue;
+		const float dist = distSqrFrom(tile.x, tile.z);
+		if (!found || dist > bestDist + 0.01f)
+		{
+			found = true;
+			bestDist = dist;
+			bestX = tile.x;
+			bestZ = tile.z;
+			bestCost = tile.cost;
+		}
+	}
+
+	m_enemyAttackAfterMove = false;
+	m_endTurnAfterMove = true;
+	if (found && BeginMoveToTile(unit, bestX, bestZ, bestCost))
+	{
+		if (m_phase == Phase::Planning)
+		{
+			m_endTurnAfterMove = false;
+			EndActiveTurn();
+		}
+		return;
+	}
+
+	m_endTurnAfterMove = false;
+	EndActiveTurn();
+}
+
 void TurnBasedCombatMode::RunEnemyTurnAi(MainState& main)
 {
 	m_enemyAiPending = false;
@@ -1823,6 +1950,12 @@ void TurnBasedCombatMode::RunEnemyTurnAi(MainState& main)
 	}
 	if (IsPartyUnit(unit) || m_phase != Phase::Planning)
 		return;
+
+	if (unit->IsFleeing())
+	{
+		TryFleeTurn(main, unit);
+		return;
+	}
 
 	U7Object* target = FindAiCombatTarget(unit);
 	if (!target)
@@ -2058,6 +2191,8 @@ void TurnBasedCombatMode::OnEnter(MainState& main)
 	ClearReachableTiles();
 
 	RebuildInitiative(main);
+	FreezeFireFieldsForTurns();
+	FreezeEnergyMistsForTurns();
 
 	if (m_initiative.empty())
 	{
@@ -2078,6 +2213,8 @@ void TurnBasedCombatMode::OnEnter(MainState& main)
 void TurnBasedCombatMode::OnLeave(MainState& main)
 {
 	(void)main;
+	ReleaseFireFieldsToRealTime();
+	ReleaseEnergyMistsToRealTime();
 	ClearReachableTiles();
 	if (m_wasCameraLocked)
 		LockCameraToAvatar();
