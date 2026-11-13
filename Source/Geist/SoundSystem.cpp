@@ -201,11 +201,13 @@ void SoundSystem::PlaySoundAtObject(std::string soundName, int objectId, float m
    ::PlaySound(*sound);
 }
 
-void SoundSystem::PlayMusic(std::string musicName, float volume)
+void SoundSystem::PlayMusic(std::string musicName, float volume, bool loop)
 {
    Music* music = g_ResourceManager->GetMusic(musicName);
    if (music)
    {
+      // The cached stream is shared, so a later play must set this every time.
+      music->looping = loop;
       PlayMusicStream(*music);
 
       if (volume == -1)
@@ -219,7 +221,25 @@ void SoundSystem::PlayMusic(std::string musicName, float volume)
       }
 
       m_currentMusicName = musicName;
+      m_musicLoops = loop;
    }
+}
+
+void SoundSystem::SetMusicLooping(bool loop)
+{
+   if (m_currentMusicName.empty())
+   {
+      return;
+   }
+
+   Music* music = g_ResourceManager->GetMusic(m_currentMusicName);
+   if (!music)
+   {
+      return;
+   }
+
+   music->looping = loop;
+   m_musicLoops = loop;
 }
 
 void SoundSystem::StopMusic(std::string musicName)
@@ -229,6 +249,7 @@ void SoundSystem::StopMusic(std::string musicName)
    {
       StopMusicStream(*music);
       m_currentMusicName.clear();
+      m_musicLoops = false;
       ClearAllInstruments();
    }
 }
@@ -404,7 +425,16 @@ void SoundSystem::Update()
 
    if (!m_currentMusicName.empty())
    {
-      UpdateMusicStream(*g_ResourceManager->GetMusic(m_currentMusicName));
+      Music* music = g_ResourceManager->GetMusic(m_currentMusicName);
+      if (music)
+      {
+         UpdateMusicStream(*music);
+         // Raylib stops a non-looping stream once its last buffer is queued.
+         if (!m_musicLoops && !IsMusicStreamPlaying(*music))
+         {
+            StopMusic(m_currentMusicName);
+         }
+      }
    }
 
    std::vector<int> instrumentsOutOfRange;

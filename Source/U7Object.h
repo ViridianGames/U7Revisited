@@ -213,6 +213,7 @@ struct MonsterData
 	unsigned char m_flagsByte = 0;     // MONSTERS.DAT byte 9 (Exult Monster_info::flags)
 	bool m_flies = false;              // flags bit 0 (Exult Monster_info::fly)
 	bool m_cantBleed = false;          // MONSTERS.DAT byte 12 bit 6 (Exult Monster_info::cant_bleed)
+	bool m_cantYell = false;           // MONSTERS.DAT byte 12 bit 5 (Exult Monster_info::cant_yell)
 	unsigned char m_equipOffset = 0;   // Byte 14: 1-based EQUIP.DAT record (0 = none)
 
 	// Bytes 0x0E-0x18 contain additional data (experience, treasure, immunities, sounds, etc.)
@@ -234,6 +235,8 @@ enum class EggType
 	Teleporter,
 	Path,
 	Usecode,
+	Missile, // itype 6. Dungeon dart / lightning / fireball traps. Usually shape 200.
+	Button,  // itype 10. Hatches nearby eggs whose criteria is external.
 	// Add more as needed for the demo and beyond
 };
 
@@ -267,7 +270,9 @@ inline const char* g_eggTypeStrings[] = {
 	"Weather",
 	"Teleporter",
 	"Path",
-	"Usecode"
+	"Usecode",
+	"Missile",
+	"Button"
 };
 
 inline const char* g_eggCriteriaStrings[] = {
@@ -313,6 +318,18 @@ struct EggData
 	// Teleport extras
 	Vector3 m_teleportDest = {0, 0, 0};
 	int m_destMap = 0;
+
+	// Missile egg (itype 6). data1 is the weapon shape. data2 low is direction
+	// (0–7, or 8+ to aim at the party). data2 high is the pause between shots
+	// in 0.2s steps. Armed traps keep firing while the Avatar is in weapon range.
+	int m_missileWeapon = 0;
+	uint8_t m_missileDir = 0;
+	uint8_t m_missileDelay = 0;
+	bool m_missileArmed = false;
+	float m_missileNextAt = 0.0f;
+
+	// Button egg (itype 10). data1 low byte is how far to look for external eggs.
+	uint8_t m_buttonRadius = 0;
 };
 
 class U7Object : public Unit3D
@@ -495,6 +512,8 @@ public:
 	{
 		return m_ObjectType == 854 && m_Frame >= 18 && m_Frame <= 21;
 	}
+	// activity_0–31. Egg creatures tick this while they are not chasing.
+	void TickScheduleActivity();
 	// activity_0–31 + proximity event 0 for MONSTERS.DAT objects with the schedule flag.
 	void UpdateUsecodeObjectSchedule();
 
@@ -545,6 +564,8 @@ public:
 	void InitUsecodeObjectSchedule();
 
 	void HandleMonsterSpawnerEgg();
+	// Spawn this egg's creature, or the field / wall it drops. Criteria already passed.
+	void HatchMonsterEggNow();
 
 	void HandleProximitySoundEgg();
 
@@ -559,6 +580,14 @@ public:
 	void HandlePathEgg();
 
 	void HandleUsecodeEgg();
+	void RunEggUsecodeScript();
+
+	void HandleMissileEgg();
+	void HandleButtonEgg();
+	// Button eggs call this. External criteria, one hatch, then the hatched flag.
+	void HatchExternalEgg();
+	// One missile from this egg. False when a party-aimed trap has no target.
+	bool LaunchMissileEgg();
 
 	// Temporary debug helper - prints detailed, type-specific info about this egg
 	void DebugPrintEggInfo() const;

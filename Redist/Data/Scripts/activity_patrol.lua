@@ -11,6 +11,7 @@
 --   7/8 about-face pause
 --   11 50% reverse direction
 --   12 50% skip next egg
+--   14 check the area (shutters and lamps)
 --   25 50% wrap to start
 -- Flags: bit 6 (64) = forever (repeat last egg)
 
@@ -216,6 +217,12 @@ function activity_patrol(npc_id)
                         pathnum = pathnum + dir
                     end
                     wait(0.25)
+                elseif action == 14 then
+                    -- Check area. Force the cooldown, try once, then keep walking.
+                    if try_street_maintenance then
+                        try_street_maintenance(npc_id, true)
+                    end
+                    wait(0.4)
                 else
                     -- none / unhandled: brief beat so the route doesn't look frantic
                     wait(0.2 + math.random() * 0.3)

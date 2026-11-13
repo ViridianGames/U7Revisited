@@ -475,21 +475,26 @@ function activity_waiter(npc_id)
             npc_wait(0.8 + math.random() * 0.8)
 
         elseif state == "wait_at_counter" then
-            local unattended = find_unattended_created_plates(npc_id, created_plates)
-            if math.random() < 0.5 and #unattended > 0 then
-                state = "cleanup"
-            elseif prep_table and object_exists(prep_table) then
-                face_npc(npc_id, prep_table)
-                if math.random() < 0.5 then
-                    prep_animation(npc_id, prep_table)
-                end
-                if math.random() < 0.33 then
+            -- Exult: 1 in 4 waits at the counter, tend a shutter or lamp.
+            if math.random(4) == 1 and try_street_maintenance and try_street_maintenance(npc_id) then
+                state = "bring_food"
+            else
+                local unattended = find_unattended_created_plates(npc_id, created_plates)
+                if math.random() < 0.5 and #unattended > 0 then
+                    state = "cleanup"
+                elseif prep_table and object_exists(prep_table) then
+                    face_npc(npc_id, prep_table)
+                    if math.random() < 0.5 then
+                        prep_animation(npc_id, prep_table)
+                    end
+                    if math.random() < 0.33 then
+                        state = "get_customer"
+                    end
+                else
                     state = "get_customer"
                 end
-            else
-                state = "get_customer"
+                npc_wait(1.5 + math.random() * 1.5)
             end
-            npc_wait(1.5 + math.random() * 1.5)
 
         elseif state == "cleanup" then
             local unattended = find_unattended_created_plates(npc_id, created_plates)

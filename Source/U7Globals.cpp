@@ -64,6 +64,20 @@ std::string BuildU7VoicePath(int voiceId)
 	return path;
 }
 
+int SpeechClipIndex(int speechNumber)
+{
+	// Ordinal of each non-empty member of U7SPEECH.SPC. Speech 31 is file 023.
+	static const int kClip[34] = {
+		-1, 0, 1, 2, 3, 4, 5, 6, 7, -1,
+		-1, 8, -1, 9, 10, -1, -1, -1, 11, 12,
+		-1, 13, 14, 15, 16, 17, 18, 19, 20, 21,
+		22, 23, 24, -1
+	};
+	if (speechNumber < 0 || speechNumber >= 34)
+		return -1;
+	return kClip[speechNumber];
+}
+
 std::string BuildU7MusicPath(int trackId)
 {
 	char path[128];
@@ -1990,28 +2004,21 @@ static bool RayHitPlaneY(const Ray& ray, float planeY, Vector3& outHit)
 	return true;
 }
 
-void GetCameraVisibleChunkRange(int& outMinCX, int& outMaxCX, int& outMinCZ, int& outMaxCZ)
+// Unpadded ground AABB of the current view. Chunk loading adds its own pad.
+static bool ComputeCameraViewAabb(float& minX, float& maxX, float& minZ, float& maxZ)
 {
-	auto toChunk = [](float world) -> int {
-		return static_cast<int>(std::floor(world / 16.0f));
-	};
-
 	// First-person: eye-centered box at g_firstPersonDrawRange (not the 10-unit
-	// look-at, and not the old ~48-tile FP clamp). Per-object forward/distance
-	// cull in UpdateSortedVisibleObjects trims what is actually drawn.
+	// look-at, and not the old ~48-tile FP clamp).
 	if (g_firstPersonEnabled)
 	{
-		const float padTiles = 12.0f;
-		const float range = std::max(16.0f, g_firstPersonDrawRange) + padTiles;
+		const float range = std::max(16.0f, g_firstPersonDrawRange);
 		const float eyeX = g_camera.position.x;
 		const float eyeZ = g_camera.position.z;
-		outMinCX = std::max(0, toChunk(eyeX - range));
-		outMaxCX = std::min(191, toChunk(eyeX + range));
-		outMinCZ = std::max(0, toChunk(eyeZ - range));
-		outMaxCZ = std::min(191, toChunk(eyeZ + range));
-		if (outMinCX > outMaxCX) std::swap(outMinCX, outMaxCX);
-		if (outMinCZ > outMaxCZ) std::swap(outMinCZ, outMaxCZ);
-		return;
+		minX = eyeX - range;
+		maxX = eyeX + range;
+		minZ = eyeZ - range;
+		maxZ = eyeZ + range;
+		return true;
 	}
 
 	// Third-person: unproject the four screen corners onto horizontal planes.
@@ -2032,7 +2039,10 @@ void GetCameraVisibleChunkRange(int& outMinCX, int& outMaxCX, int& outMinCZ, int
 	// m_heightCutoff for "inside" drawing is 16; sample a bit above for safety.
 	const float planes[] = { 0.0f, 8.0f, 16.0f };
 
-	float minX = 1e9f, maxX = -1e9f, minZ = 1e9f, maxZ = -1e9f;
+	minX = 1e9f;
+	maxX = -1e9f;
+	minZ = 1e9f;
+	maxZ = -1e9f;
 	int hitCount = 0;
 
 	for (float planeY : planes)
@@ -2057,26 +2067,38 @@ void GetCameraVisibleChunkRange(int& outMinCX, int& outMaxCX, int& outMinCZ, int
 		}
 	}
 
-	// Pad for multi-tile objects whose m_Pos chunk is outside the pure ground AABB
-	// but whose art still reaches into the frustum (SE-origin footprints, billboards).
-	const float padTiles = 12.0f;
-
 	if (hitCount < 4)
 	{
 		// Fallback: distance-based radius (ortho fovy ≈ world height in tiles).
-		const float halfExtent = std::max(g_cameraDistance, 18.0f) * 1.25f + padTiles;
+		const float halfExtent = std::max(g_cameraDistance, 18.0f) * 1.25f;
 		minX = g_camera.target.x - halfExtent;
 		maxX = g_camera.target.x + halfExtent;
 		minZ = g_camera.target.z - halfExtent;
 		maxZ = g_camera.target.z + halfExtent;
 	}
-	else
-	{
-		minX -= padTiles;
-		maxX += padTiles;
-		minZ -= padTiles;
-		maxZ += padTiles;
-	}
+
+	return true;
+}
+
+void GetCameraVisibleChunkRange(int& outMinCX, int& outMaxCX, int& outMinCZ, int& outMaxCZ)
+{
+	auto toChunk = [](float world) -> int {
+		return static_cast<int>(std::floor(world / 16.0f));
+	};
+
+	float minX = 0.0f;
+	float maxX = 0.0f;
+	float minZ = 0.0f;
+	float maxZ = 0.0f;
+	ComputeCameraViewAabb(minX, maxX, minZ, maxZ);
+
+	// Pad for multi-tile objects whose m_Pos chunk is outside the pure ground AABB
+	// but whose art still reaches into the frustum (SE-origin footprints, billboards).
+	const float padTiles = 12.0f;
+	minX -= padTiles;
+	maxX += padTiles;
+	minZ -= padTiles;
+	maxZ += padTiles;
 
 	outMinCX = std::max(0, toChunk(minX));
 	outMaxCX = std::min(191, toChunk(maxX));
@@ -2086,6 +2108,24 @@ void GetCameraVisibleChunkRange(int& outMinCX, int& outMaxCX, int& outMinCZ, int
 	// Safety: never return an inverted range.
 	if (outMinCX > outMaxCX) std::swap(outMinCX, outMaxCX);
 	if (outMinCZ > outMaxCZ) std::swap(outMinCZ, outMaxCZ);
+}
+
+bool IsWorldPointOnEnlargedScreen(float worldX, float worldZ)
+{
+	float minX = 0.0f;
+	float maxX = 0.0f;
+	float minZ = 0.0f;
+	float maxZ = 0.0f;
+	ComputeCameraViewAabb(minX, maxX, minZ, maxZ);
+	if (minX > maxX)
+		std::swap(minX, maxX);
+	if (minZ > maxZ)
+		std::swap(minZ, maxZ);
+
+	// Exult: winrect.enlarge(winrect.w / 4) — same delta on both axes.
+	const float extra = std::max(0.0f, (maxX - minX) * 0.25f);
+	return worldX >= minX - extra && worldX <= maxX + extra
+		&& worldZ >= minZ - extra && worldZ <= maxZ + extra;
 }
 
 namespace
@@ -3395,6 +3435,51 @@ namespace
 			dir16 += 16;
 		return 8 + dir16;
 	}
+
+	// Facing bank, held ammo frame, or the spin cycle used by fire bolts.
+	void ApplyProjectileAppearance(U7Object* bolt, FlyingProjectile& proj, int shape, float dx, float dz)
+	{
+		proj.directionalFrames = ShapeHasDirectionalProjectileFrames(shape)
+			|| (IsAmmoProjectileShape(shape) && ShapeHasProjectileFacingBank(shape));
+		proj.animFrameList.clear();
+		proj.animIndex = 0;
+		if (proj.directionalFrames)
+		{
+			bolt->SetFrame(ProjectileDirectionalFrame(dx, dz));
+		}
+		else if (IsAmmoProjectileShape(shape))
+		{
+			int frame = 0;
+			for (int f = 0; f < 32; ++f)
+			{
+				if (g_shapeTable[shape][f].IsValid())
+				{
+					frame = f;
+					break;
+				}
+			}
+			proj.animFrameList.push_back(frame);
+			bolt->SetFrame(frame);
+		}
+		else
+		{
+			const int declared = std::max(1, g_shapeTable[shape][0].m_numFrames);
+			for (int f = 0; f < declared && f < 32; ++f)
+			{
+				ShapeData& sd = g_shapeTable[shape][f];
+				if (!sd.IsValid())
+				{
+					if (!proj.animFrameList.empty())
+						break;
+					continue;
+				}
+				proj.animFrameList.push_back(f);
+			}
+			if (proj.animFrameList.empty())
+				proj.animFrameList.push_back(0);
+			bolt->SetFrame(proj.animFrameList[0]);
+		}
+	}
 }
 
 bool IsFireProjectileLightShape(int shape)
@@ -3461,51 +3546,49 @@ bool SpawnFlyingProjectile(int shape, int fromId, int toId, float speed, int dam
 	proj.animAccum = 0.0f;
 	proj.animIndex = 0;
 	// Spell bolts with empty 1–7, or ammo arrows/bolts with a facing bank: orient
-	// to flight heading. Do not spin ammo (frames 0–4 are inventory angles).
-	proj.directionalFrames = ShapeHasDirectionalProjectileFrames(shape)
-		|| (IsAmmoProjectileShape(shape) && ShapeHasProjectileFacingBank(shape));
-
+	// to flight heading. Ammo without that bank holds one frame.
 	const float dx0 = targetPos.x - spawnPos.x;
 	const float dz0 = targetPos.z - spawnPos.z;
+	ApplyProjectileAppearance(bolt, proj, shape, dx0, dz0);
+	g_flyingProjectiles.push_back(proj);
+	return true;
+}
 
-	if (proj.directionalFrames)
-	{
-		bolt->SetFrame(ProjectileDirectionalFrame(dx0, dz0));
-	}
-	else if (IsAmmoProjectileShape(shape))
-	{
-		// Ammo without a facing bank: hold one frame (never spin in flight).
-		int frame = 0;
-		for (int f = 0; f < 32; ++f)
-		{
-			if (g_shapeTable[shape][f].IsValid())
-			{
-				frame = f;
-				break;
-			}
-		}
-		proj.animFrameList.push_back(frame);
-		bolt->SetFrame(frame);
-	}
-	else
-	{
-		// Fire bolt 856 etc.: first contiguous run of drawable frames (spin cycle).
-		const int declared = std::max(1, g_shapeTable[shape][0].m_numFrames);
-		for (int f = 0; f < declared && f < 32; ++f)
-		{
-			ShapeData& sd = g_shapeTable[shape][f];
-			if (!sd.IsValid())
-			{
-				if (!proj.animFrameList.empty())
-					break;
-				continue;
-			}
-			proj.animFrameList.push_back(f);
-		}
-		if (proj.animFrameList.empty())
-			proj.animFrameList.push_back(0);
-		bolt->SetFrame(proj.animFrameList[0]);
-	}
+bool SpawnTrapProjectile(int shape, int attackerId, Vector3 from, Vector3 dest, float speed,
+	int weaponShape, int ammoShape, bool noBlocking)
+{
+	if (shape <= 0 || shape >= 1024 || attackerId < 0)
+		return false;
+
+	const int objectId = static_cast<int>(GetNextID());
+	U7Object* bolt = AddObject(shape, 0, objectId, from.x, from.y, from.z);
+	if (!bolt)
+		return false;
+
+	bolt->m_isProjectile = true;
+	bolt->m_Visible = true;
+	bolt->m_ShouldDraw = true;
+	bolt->m_isContained = false;
+	if (bolt->m_objectData && bolt->m_objectData->m_isNotWalkable)
+		NotifyPathfindingGridUpdate(static_cast<int>(from.x), static_cast<int>(from.z));
+	bolt->SetDest(dest);
+	if (speed > 0.1f)
+		bolt->m_speed = speed;
+
+	FlyingProjectile proj;
+	proj.objectId = objectId;
+	proj.targetId = -1;
+	proj.attackerId = attackerId;
+	proj.targetPos = dest;
+	proj.damage = 0;
+	proj.damageType = 0;
+	proj.weaponShape = weaponShape;
+	proj.ammoShape = ammoShape;
+	proj.speed = (speed > 0.1f) ? speed : 16.0f;
+	proj.animAccum = 0.0f;
+	proj.trapSeek = true;
+	proj.noBlocking = noBlocking;
+	ApplyProjectileAppearance(bolt, proj, shape, dest.x - from.x, dest.z - from.z);
 	g_flyingProjectiles.push_back(proj);
 	return true;
 }
@@ -3662,6 +3745,87 @@ namespace
 		if (attacker)
 			g_mainState->NotifyCombatantCannotContinue(attacker, "needs a new order!");
 	}
+
+	U7Object* ActorOnTile(int tileX, int tileZ, int boltY)
+	{
+		if (tileX < 0 || tileZ < 0 || tileX >= 3072 || tileZ >= 3072)
+			return nullptr;
+		const int cx = tileX / 16;
+		const int cz = tileZ / 16;
+		if (cx < 0 || cx >= 192 || cz < 0 || cz >= 192)
+			return nullptr;
+		for (U7Object* obj : g_chunkObjectMap[cx][cz])
+		{
+			if (!obj || obj->m_isContained || obj->m_isProjectile || obj->GetIsDead())
+				continue;
+			if (obj->IsDeathStatus() || obj->m_hp <= 0.0f)
+				continue;
+			const auto unit = obj->m_UnitType;
+			if (unit != U7Object::UnitTypes::UNIT_TYPE_NPC
+				&& unit != U7Object::UnitTypes::UNIT_TYPE_MONSTER)
+			{
+				continue;
+			}
+			if (static_cast<int>(std::floor(obj->m_Pos.x)) != tileX)
+				continue;
+			if (static_cast<int>(std::floor(obj->m_Pos.z)) != tileZ)
+				continue;
+			const int dy = std::abs(static_cast<int>(std::floor(obj->m_Pos.y)) - boltY);
+			if (dy > 1)
+				continue;
+			return obj;
+		}
+		return nullptr;
+	}
+
+	// Tiles the bolt crosses this step, including both ends.
+	U7Object* FindActorOnBoltSegment(Vector3 from, Vector3 to)
+	{
+		int x = static_cast<int>(std::floor(from.x));
+		int z = static_cast<int>(std::floor(from.z));
+		const int x1 = static_cast<int>(std::floor(to.x));
+		const int z1 = static_cast<int>(std::floor(to.z));
+		const int boltY = static_cast<int>(std::floor(from.y));
+		const int dx = std::abs(x1 - x);
+		const int dz = std::abs(z1 - z);
+		const int sx = x < x1 ? 1 : -1;
+		const int sz = z < z1 ? 1 : -1;
+		int err = dx - dz;
+		for (int guard = 0; guard < 16; ++guard)
+		{
+			if (U7Object* hit = ActorOnTile(x, z, boltY))
+				return hit;
+			if (x == x1 && z == z1)
+				break;
+			const int e2 = 2 * err;
+			if (e2 > -dz)
+			{
+				err -= dz;
+				x += sx;
+			}
+			if (e2 < dx)
+			{
+				err += dx;
+				z += sz;
+			}
+		}
+		return nullptr;
+	}
+
+	// Weapon 9 is the fire trap. Projectile 856 uses sprite 5 and sfx 65.
+	// The Avatar is blamed so anyone caught in the blast can answer it.
+	void DetonateTrapFireball(const FlyingProjectile& proj, U7Object* at)
+	{
+		if (!at)
+			return;
+		U7Object* blame = GetObjectFromID(proj.attackerId);
+		if (!blame || blame->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_EGG)
+		{
+			if (g_Player)
+				blame = g_Player->GetAvatarObject();
+		}
+		DetonateExplosion(blame, at, 9, -1, 5, 65, 2);
+	}
 }
 
 // Delayed Blast (weapon 621). Sprite 4, sfx 9, five tiles, 30 fire from the row.
@@ -3705,15 +3869,70 @@ void UpdateFlyingProjectiles()
 		}
 
 		Vector3 delta = Vector3Subtract(proj.targetPos, bolt->m_Pos);
-		const float dist = Vector3Length(delta);
+		float dist = Vector3Length(delta);
+
+		// Missile eggs have no target until a person is standing on a tile they cross.
+		if (proj.trapSeek && proj.targetId < 0)
+		{
+			Vector3 stepNext = proj.targetPos;
+			if (dist > kHitRadius && dist >= 1e-4f)
+			{
+				const float step = proj.speed * dt;
+				if (step < dist)
+					stepNext = Vector3Add(bolt->m_Pos, Vector3Scale(Vector3Normalize(delta), step));
+			}
+			const float stepLen = Vector3Length(Vector3Subtract(stepNext, bolt->m_Pos));
+			const bool blocked = stepLen > 0.05f
+				&& !proj.noBlocking
+				&& g_pathfindingSystem
+				&& !g_pathfindingSystem->HasWallLineOfSight(bolt->m_Pos, stepNext);
+			if (blocked)
+			{
+				if (proj.weaponShape == 9)
+					DetonateTrapFireball(proj, bolt);
+				PauseCasterOrdersAfterCombatSpell(proj);
+				DestroyProjectileObject(proj.objectId);
+				g_flyingProjectiles.erase(g_flyingProjectiles.begin() + static_cast<long>(i));
+				continue;
+			}
+			if (U7Object* hit = FindActorOnBoltSegment(bolt->m_Pos, stepNext))
+			{
+				proj.targetId = static_cast<int>(hit->m_ID);
+				float targetLift = 0.9f;
+				if (hit->m_shapeData && hit->m_shapeData->m_Dims.y > 0.1f)
+					targetLift = hit->m_shapeData->m_Dims.y * 0.45f;
+				proj.targetPos = hit->m_Pos;
+				proj.targetPos.y += targetLift;
+				bolt->SetPos(proj.targetPos);
+				delta = Vector3{ 0.0f, 0.0f, 0.0f };
+				dist = 0.0f;
+			}
+		}
+
 		if (dist <= kHitRadius || dist < 1e-4f)
 		{
 			// The marker is removed 0.4s after launch and may already be gone.
-			// The bolt is at the blast point. Weapon 621 is the only new blast.
+			// The bolt is at the blast point. Weapon 621 detonates here.
 			if (proj.weaponShape == 621)
 			{
 				U7Object* attacker = GetObjectFromID(proj.attackerId);
 				DetonateDelayedBlast(attacker, bolt);
+				PauseCasterOrdersAfterCombatSpell(proj);
+				DestroyProjectileObject(proj.objectId);
+				g_flyingProjectiles.erase(g_flyingProjectiles.begin() + static_cast<long>(i));
+				continue;
+			}
+
+			// Fire trap (weapon 9). The blast replaces the direct hit, including a miss into a wall's far side.
+			if (proj.trapSeek && proj.weaponShape == 9)
+			{
+				U7Object* center = bolt;
+				if (U7Object* tgt = GetObjectFromID(proj.targetId))
+				{
+					if (!tgt->GetIsDead() && !tgt->IsDeathStatus())
+						center = tgt;
+				}
+				DetonateTrapFireball(proj, center);
 				PauseCasterOrdersAfterCombatSpell(proj);
 				DestroyProjectileObject(proj.objectId);
 				g_flyingProjectiles.erase(g_flyingProjectiles.begin() + static_cast<long>(i));
@@ -3912,9 +4131,13 @@ void UpdateFlyingProjectiles()
 
 		// Walls / closed doors stop missiles mid-flight (windows do not).
 		// Charm (80), Death Bolt (527), and Delayed Blast (621) are no_blocking.
-		if (proj.weaponShape != 80 && proj.weaponShape != 527 && proj.weaponShape != 621
+		// Trap rows copy WEAPONS.DAT no_blocking (the ether trap).
+		if (!proj.noBlocking
+			&& proj.weaponShape != 80 && proj.weaponShape != 527 && proj.weaponShape != 621
 			&& g_pathfindingSystem && !g_pathfindingSystem->HasWallLineOfSight(bolt->m_Pos, next))
 		{
+			if (proj.trapSeek && proj.weaponShape == 9)
+				DetonateTrapFireball(proj, bolt);
 			PauseCasterOrdersAfterCombatSpell(proj);
 			DestroyProjectileObject(proj.objectId);
 			g_flyingProjectiles.erase(g_flyingProjectiles.begin() + static_cast<long>(i));
@@ -5420,6 +5643,20 @@ void LoadWeaponData()
 		w.range = static_cast<unsigned char>(rangeByte >> 3);
 		// p[9]=flags1, p[10]=flags2, p[11]=powers (Exult Weapon_info::read).
 		w.powers = p[11];
+		w.noBlocking = ((flags0 >> 2) & 1) != 0;
+		// missile_speed: nonzero flags1 field means 4; else flags2 speed maps to 3/2/1.
+		const unsigned char flags1 = p[9];
+		const unsigned char flags2 = p[10];
+		const unsigned char speedField = static_cast<unsigned char>((flags1 >> 2) & 3);
+		const int actorSpeed = (flags2 >> 5) & 7;
+		if (speedField != 0)
+			w.missileSpeed = 4;
+		else if (actorSpeed == 0)
+			w.missileSpeed = 3;
+		else if (actorSpeed < 3)
+			w.missileSpeed = 2;
+		else
+			w.missileSpeed = 1;
 		g_weaponDataMap[w.shape] = w;
 	}
 

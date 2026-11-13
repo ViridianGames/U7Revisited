@@ -1326,10 +1326,13 @@ static int LuaBarkNPC(lua_State *L)
 {
     int npc_id = luaL_checkinteger(L, 1);
     const char *text = luaL_checkstring(L, 2);
-    if (g_LuaDebug) NPCDebugPrint("LUA: bark_npc called with NPC " + string(g_NPCData[npc_id]->name) + " text: " + string(text));
+    auto it = g_NPCData.find(npc_id);
+    if (it == g_NPCData.end() || !it->second)
+        return 0;
+    if (g_LuaDebug) NPCDebugPrint("LUA: bark_npc called with NPC " + string(it->second->name) + " text: " + string(text));
     if (g_StateMachine->GetCurrentState() == STATE_MAINSTATE)
     {
-        dynamic_cast<MainState*>(g_StateMachine->GetState(STATE_MAINSTATE))->Bark(GetObjectFromID(g_NPCData[npc_id]->m_objectID), text);
+        dynamic_cast<MainState*>(g_StateMachine->GetState(STATE_MAINSTATE))->Bark(GetObjectFromID(it->second->m_objectID), text);
     }
     return 0;
 }
@@ -6850,13 +6853,13 @@ static int LuaFindApproachSpot(lua_State *L)
 	if (ring > 4)
 		ring = 4;
 
-	if (g_NPCData.find(npc_id) == g_NPCData.end() || !g_pathfindingSystem)
+	U7Object* npc = ResolveScheduleActor(npc_id);
+	if (!npc || !g_pathfindingSystem)
 	{
 		lua_pushnil(L);
 		return 1;
 	}
 
-	U7Object* npc = g_objectList[g_NPCData[npc_id]->m_objectID].get();
 	U7Object* target = GetObjectFromID(object_id);
 	if (!npc || !target || !target->m_objectData)
 	{
@@ -7144,6 +7147,102 @@ static int LuaClearNPCOverrideFrame(lua_State *L)
 
     npc->ClearOverrideFrame();
 
+    return 1;
+}
+
+static const MonsterData* MonsterDataForShape(int shape)
+{
+    for (const MonsterData& md : g_monsterData)
+    {
+        if (static_cast<int>(md.m_shape) == shape)
+            return &md;
+    }
+    return nullptr;
+}
+
+// Exult Actor::is_sentient: monster intelligence >= 6.
+// Shapes with no MONSTERS.DAT row use the default intelligence of 10.
+static int LuaIsSentient(lua_State* L)
+{
+    const int id = static_cast<int>(luaL_checkinteger(L, 1));
+    U7Object* actor = ResolveScheduleActor(id);
+    if (!actor)
+    {
+        lua_pushboolean(L, 0);
+        return 1;
+    }
+
+    const MonsterData* md = MonsterDataForShape(actor->m_ObjectType);
+    const int intel = md ? static_cast<int>(md->m_intelligence) : 10;
+    lua_pushboolean(L, intel >= 6 ? 1 : 0);
+    return 1;
+}
+
+// Exult Actor::can_speak: no monster row, or the row does not set cant_yell.
+static int LuaCanSpeak(lua_State* L)
+{
+    const int id = static_cast<int>(luaL_checkinteger(L, 1));
+    U7Object* actor = ResolveScheduleActor(id);
+    if (!actor)
+    {
+        lua_pushboolean(L, 0);
+        return 1;
+    }
+
+    const MonsterData* md = MonsterDataForShape(actor->m_ObjectType);
+    lua_pushboolean(L, (!md || !md->m_cantYell) ? 1 : 0);
+    return 1;
+}
+
+// Exult street maintenance: NPC must be on the enlarged screen before pathing.
+static int LuaActorOnEnlargedScreen(lua_State* L)
+{
+    const int id = static_cast<int>(luaL_checkinteger(L, 1));
+    U7Object* actor = ResolveScheduleActor(id);
+    if (!actor)
+    {
+        lua_pushboolean(L, 0);
+        return 1;
+    }
+
+    lua_pushboolean(L, IsWorldPointOnEnlargedScreen(actor->m_Pos.x, actor->m_Pos.z) ? 1 : 0);
+    return 1;
+}
+
+// Wall-clock seconds (raylib GetTime). Schedule cooldowns use this, not the game hour.
+static int LuaGetTicks(lua_State* L)
+{
+    lua_pushnumber(L, GetTime());
+    return 1;
+}
+
+// Schedule-budget path test. Does not move the actor or clear a sit pose.
+// True when already beside the spot, or FindFastPath reaches it.
+static int LuaCanReach(lua_State* L)
+{
+    const int id = static_cast<int>(luaL_checkinteger(L, 1));
+    const float x = static_cast<float>(luaL_checknumber(L, 2));
+    const float y = static_cast<float>(luaL_checknumber(L, 3));
+    const float z = static_cast<float>(luaL_checknumber(L, 4));
+
+    U7Object* npc = ResolveScheduleActor(id);
+    if (!npc || !g_pathfindingSystem)
+    {
+        lua_pushboolean(L, 0);
+        return 1;
+    }
+
+    const float dx = npc->m_Pos.x - x;
+    const float dz = npc->m_Pos.z - z;
+    if (dx * dx + dz * dz <= 1.5f * 1.5f)
+    {
+        lua_pushboolean(L, 1);
+        return 1;
+    }
+
+    const std::vector<Vector3> path = g_pathfindingSystem->FindFastPath(
+        npc->GetPos(), Vector3{ x, y, z }, npc, PathCallerTag::ScheduleFast);
+    lua_pushboolean(L, path.empty() ? 0 : 1);
     return 1;
 }
 
@@ -7453,6 +7552,11 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction( "get_object_dimensions", LuaGetObjectDimensions);
     g_ScriptingSystem->RegisterScriptFunction( "find_random_walkable", LuaFindRandomWalkable);
     g_ScriptingSystem->RegisterScriptFunction( "find_approach_spot", LuaFindApproachSpot);
+    g_ScriptingSystem->RegisterScriptFunction( "is_sentient", LuaIsSentient);
+    g_ScriptingSystem->RegisterScriptFunction( "can_speak", LuaCanSpeak);
+    g_ScriptingSystem->RegisterScriptFunction( "actor_on_enlarged_screen", LuaActorOnEnlargedScreen);
+    g_ScriptingSystem->RegisterScriptFunction( "get_ticks", LuaGetTicks);
+    g_ScriptingSystem->RegisterScriptFunction( "can_reach", LuaCanReach);
     g_ScriptingSystem->RegisterScriptFunction( "get_current_animation", LuaGetCurrentAnimation);
     g_ScriptingSystem->RegisterScriptFunction( "is_sleeping", LuaIsSleeping);
     g_ScriptingSystem->RegisterScriptFunction( "is_sitting", LuaIsSitting);

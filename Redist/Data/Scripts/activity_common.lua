@@ -97,3 +97,199 @@ function ambient_mage_wait_then_loiter(npc_id, min_s, span_s)
 		coroutine.yield()
 	end
 end
+
+-- Exult Schedule::try_street_maintenance (schedule.cc).
+-- Sentient NPCs on the enlarged screen open shutters and tend lamps by the
+-- clock. Hours 6-9 do nothing. Rain is not a trigger. Shape 997 is swapped
+-- here; every other target is a double-click (use_object).
+-- Returns did_work, stood_up. stood_up is true when a seated NPC was stood
+-- up to test paths and the caller should sit them again.
+
+local street_state = {}
+
+local DAY_SHAPES = { 290, 291, 338, 997, 526 }
+local NIGHT_SHAPES = { 322, 372, 336, 997, 889 }
+
+local BARK_OPEN = {
+	"Ah, 'tis better!",
+	"That will let some light in!",
+	"Too nice a day for these to be shut!",
+}
+local BARK_CLOSE = {
+	"These should be closed.",
+	"Too cold for these to be open!",
+	"Who left these open?",
+}
+local BARK_LAMP_ON = {
+	"Ah, 'tis better.",
+	"Much better!",
+	"'Tis better.",
+	"I can see again!",
+}
+local BARK_LAMP_OFF = { "This need not be on." }
+local BARK_CANDLE = { "This needs replacing." }
+
+local function street_bark_lines(shape)
+	if shape == 322 or shape == 372 then
+		return BARK_CLOSE
+	end
+	if shape == 290 or shape == 291 then
+		return BARK_OPEN
+	end
+	if shape == 336 or shape == 889 then
+		return BARK_LAMP_ON
+	end
+	if shape == 338 or shape == 526 then
+		return BARK_LAMP_OFF
+	end
+	if shape == 997 then
+		return BARK_CANDLE
+	end
+	return nil
+end
+
+local function street_say(actor_id, shape)
+	if not can_speak or not can_speak(actor_id) then
+		return
+	end
+	local lines = street_bark_lines(shape)
+	if not lines or #lines == 0 then
+		return
+	end
+	local line = lines[math.random(#lines)]
+	-- Town schedules pass an npc.dat id. Egg wander passes a world object id.
+	if actor_id >= 0 and actor_id < 256 and bark_npc then
+		bark_npc(actor_id, line)
+	elseif bark then
+		bark(actor_id, line)
+	end
+end
+
+local function xz_dist_to(actor_id, x, z)
+	local ax, _, az = get_npc_position(actor_id)
+	if not ax then
+		return 999
+	end
+	local dx = ax - x
+	local dz = az - z
+	return math.sqrt(dx * dx + dz * dz)
+end
+
+local function shapes_for_hour(hour)
+	hour = hour or 0
+	if hour >= 9 and hour < 18 then
+		return DAY_SHAPES
+	end
+	if hour >= 18 or hour < 6 then
+		return NIGHT_SHAPES
+	end
+	return nil
+end
+
+local function tend_spent_light(object_id)
+	local hour = get_time_hour and get_time_hour() or 0
+	local new_shape = 336
+	if hour >= 18 or hour < 6 then
+		new_shape = 338
+	end
+	if set_object_shape then
+		set_object_shape(object_id, new_shape)
+	end
+	if set_object_quality then
+		-- About 5-9 hours. Original quality sits in 30..56.
+		set_object_quality(object_id, 30 + math.random(0, 26))
+	end
+end
+
+function try_street_maintenance(actor_id, force)
+	if not actor_id or not get_ticks or not is_sentient or not actor_on_enlarged_screen then
+		return false, false
+	end
+
+	local state = street_state[actor_id]
+	if not state then
+		state = { next_time = 0, failures = 0 }
+		street_state[actor_id] = state
+	end
+
+	-- Patrol opcode 14 forces one try. The attempt still arms the cooldown.
+	if force then
+		state.next_time = 0
+	end
+
+	local now = get_ticks()
+	if now < (state.next_time or 0) then
+		return false, false
+	end
+	if not is_sentient(actor_id) then
+		return false, false
+	end
+
+	-- At least 30s, plus 5s for each object we could not path to.
+	state.next_time = now + 30 + (state.failures or 0) * 5
+
+	local shapes = shapes_for_hour(get_time_hour and get_time_hour() or 0)
+	if not shapes then
+		return false, false
+	end
+	if not actor_on_enlarged_screen(actor_id) then
+		return false, false
+	end
+
+	-- A chair blocks the start tile. Stand before the path test.
+	local stood = false
+	if is_sitting and is_sitting(actor_id) and npc_frame then
+		npc_frame(actor_id, 0)
+		stood = true
+	end
+
+	for s = 1, #shapes do
+		local shape = shapes[s]
+		local nearby = find_nearby(actor_id, shape, 20, 0) or {}
+		for i = 1, #nearby do
+			local object_id = nearby[i]
+			if object_id and get_object_shape(object_id) == shape then
+				local frame = get_object_frame and get_object_frame(object_id) or 0
+				local sx, sy, sz = find_approach_spot(actor_id, object_id, 1)
+				local reachable = sx and can_reach and can_reach(actor_id, sx, sy, sz)
+				if not reachable then
+					state.failures = (state.failures or 0) + 1
+				else
+					if xz_dist_to(actor_id, sx, sz) > 1.5 then
+						walk_to_pos(actor_id, sx, sy, sz, 1.25)
+					end
+					if xz_dist_to(actor_id, sx, sz) > 2.0 then
+						state.failures = (state.failures or 0) + 1
+						-- Left the post. Caller walks back; cooldown stays armed.
+						return true, stood
+					end
+
+					local still = get_object_shape(object_id) == shape
+						and (not get_object_frame or get_object_frame(object_id) == frame)
+					if still then
+						if npc_frame then
+							npc_frame(actor_id, 0)
+						end
+						if face_npc then
+							face_npc(actor_id, object_id)
+						end
+						if shape == 997 then
+							tend_spent_light(object_id)
+						elseif use_object then
+							use_object(object_id)
+						end
+						street_say(actor_id, shape)
+					end
+
+					-- A finished chore starts the cooldown over, same as
+					-- Exult replacing the schedule when maintenance ends.
+					state.failures = 0
+					state.next_time = 0
+					return true, stood
+				end
+			end
+		end
+	end
+
+	return false, stood
+end

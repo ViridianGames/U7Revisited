@@ -397,12 +397,84 @@ void U7Object::InteractiveUpdate()
 	UpdateNpcAnim(g_Engine ? g_Engine->LastFrameInSeconds() : 0.0f);
 }
 
+// Shape 200 field plates. Distance is a tile square, and 0 is the egg's own tile.
+// Creature eggs keep the Euclidean check they already ship with.
+static int FieldPlateTileDist(const U7Object* a, const U7Object* b)
+{
+	const int dx = std::abs(static_cast<int>(std::floor(a->m_Pos.x)) - static_cast<int>(std::floor(b->m_Pos.x)));
+	const int dz = std::abs(static_cast<int>(std::floor(a->m_Pos.z)) - static_cast<int>(std::floor(b->m_Pos.z)));
+	return dx > dz ? dx : dz;
+}
+
+static int FieldPlateLiftGap(const U7Object* a, const U7Object* b)
+{
+	return std::abs(static_cast<int>(std::floor(a->m_Pos.y)) - static_cast<int>(std::floor(b->m_Pos.y)));
+}
+
+static bool FieldPlateActorNear(const U7Object* egg, U7Object* who)
+{
+	if (!egg || !who || who->GetIsDead() || who->IsDeathStatus() || who->m_hp <= 0.0f)
+		return false;
+	const int radius = static_cast<int>(egg->m_eggData.m_distance);
+	return FieldPlateTileDist(egg, who) <= radius && FieldPlateLiftGap(egg, who) <= 1;
+}
+
+static bool Shape200FieldPlateTripped(U7Object* egg)
+{
+	if (!egg || !g_Player)
+		return false;
+
+	if (egg->m_eggData.m_criteria == EggCriteria::PartyNear)
+	{
+		for (int npcId : g_Player->GetPartyMemberIds())
+		{
+			auto it = g_NPCData.find(npcId);
+			if (it == g_NPCData.end() || !it->second)
+				continue;
+			U7Object* who = GetObjectFromID(it->second->m_objectID);
+			if (FieldPlateActorNear(egg, who))
+				return true;
+		}
+		return FieldPlateActorNear(egg, g_Player->GetAvatarObject());
+	}
+
+	return FieldPlateActorNear(egg, g_Player->GetAvatarObject());
+}
+
+// Party-near usecode. Same Euclidean reach the Avatar already uses, applied
+// to each living party member. Weather, voice, and monster eggs stay on the Avatar.
+static bool UsecodePartyNear(U7Object* egg)
+{
+	if (!egg || !g_Player)
+		return false;
+
+	const float reach = static_cast<float>(egg->m_eggData.m_distance);
+	auto nearEgg = [&](U7Object* who) -> bool
+	{
+		if (!who || who->GetIsDead() || who->IsDeathStatus() || who->m_hp <= 0.0f)
+			return false;
+		return Vector2Distance({ egg->m_Pos.x, egg->m_Pos.z }, { who->m_Pos.x, who->m_Pos.z }) <= reach;
+	};
+
+	for (int npcId : g_Player->GetPartyMemberIds())
+	{
+		auto it = g_NPCData.find(npcId);
+		if (it == g_NPCData.end() || !it->second)
+			continue;
+		if (nearEgg(GetObjectFromID(it->second->m_objectID)))
+			return true;
+	}
+	return nearEgg(g_Player->GetAvatarObject());
+}
+
 void U7Object::EggUpdate()
 {
 	// Reset hasTriggered for proximity-style criteria when outside their area
 	// (if autoReset or for CachedIn). This allows re-triggering on re-entry.
 	// For CachedIn this simulates "caching out" (>64 tiles) and back in.
-	if (g_Player)
+	// Jukebox eggs stop and re-arm in HandleJukeboxEgg, including the ones
+	// that do not have auto-reset.
+	if (g_Player && m_eggData.m_type != EggType::Jukebox)
 	{
 		U7Object* avatar = g_Player->GetAvatarObject();
 		if (avatar)
@@ -424,7 +496,16 @@ void U7Object::EggUpdate()
 			else if (m_eggData.m_criteria == EggCriteria::AvatarNear ||
 					 m_eggData.m_criteria == EggCriteria::PartyNear)
 			{
-				if (dist > (float)m_eggData.m_distance)
+				// Field plates measure tiles. A distance of 0 is one tile, so the
+				// Euclidean test would clear them while the party is still standing there.
+				const bool fieldPlate = m_ObjectType == 200
+					&& m_eggData.m_type == EggType::MonsterSpawner;
+				const bool partyUsecode = m_eggData.m_type == EggType::Usecode
+					&& m_eggData.m_criteria == EggCriteria::PartyNear;
+				const bool outside = fieldPlate
+					? !Shape200FieldPlateTripped(this)
+					: (partyUsecode ? !UsecodePartyNear(this) : dist > (float)m_eggData.m_distance);
+				if (outside)
 				{
 					m_eggData.m_rolledThisVisit = false;
 					if (m_eggData.m_autoReset)
@@ -480,6 +561,14 @@ void U7Object::EggUpdate()
 
 		case EggType::Usecode:
 			HandleUsecodeEgg();
+			break;
+
+		case EggType::Missile:
+			HandleMissileEgg();
+			break;
+
+		case EggType::Button:
+			HandleButtonEgg();
 			break;
 	}
 
@@ -2752,9 +2841,12 @@ namespace
 	std::vector<PendingMight> g_pendingMights;
 	std::vector<PendingDeath> g_pendingDeaths;
 	std::vector<EnergyMist> g_energyMists;
-	// Armageddon's kill waits out the gesture. 0 means none is scheduled.
+	// Armageddon's quake waits out the gesture, on SpellClockNow. 0 means none is scheduled.
 	int g_armageddonCasterId = 0;
 	float g_armageddonAt = 0.0f;
+	// The kill waits out the shake, on GetTime, the same clock as the camera. 0 means none.
+	float g_armageddonKillAt = 0.0f;
+	std::vector<int> g_armageddonVictims;
 	// Time Stop outside turn-based combat. Exult stores an absolute tick. 0 means running.
 	float g_timeStopUntil = 0.0f;
 	// Turn-based Time Stop. Object id -> enemy turns still skipped. Empty means running.
@@ -3234,15 +3326,17 @@ namespace
 		return screen.x >= 0.0f && screen.y >= 0.0f && screen.x < w && screen.y < h;
 	}
 
-	void RunArmageddonNow()
+	void BeginArmageddonQuake()
 	{
 		U7Object* caster = GetObjectFromID(g_armageddonCasterId);
 		if (caster && g_mainState && !caster->GetIsDead() && !caster->IsDeathStatus())
 			g_mainState->Bark(caster, "In Corp Hur Tym", 2.5f);
 		StartEarthquake(40);
+		// Deaths wait until this shake is over. The deadline is wall-clock.
+		g_armageddonKillAt = g_earthquakeUntil;
 
+		g_armageddonVictims.clear();
 		static const char* kScreams[] = { "Aiiiieee!", "Noooo!", "#!?*#%!" };
-		std::vector<U7Object*> npcs;
 		for (const auto& entry : g_NPCData)
 		{
 			if (entry.first == 0)
@@ -3250,63 +3344,102 @@ namespace
 			U7Object* npc = ObjectFromNpcId(entry.first);
 			if (!IsLivingCreature(npc) || SurvivesArmageddon(npc))
 				continue;
-			npcs.push_back(npc);
-		}
-		for (U7Object* npc : npcs)
-		{
-			const bool onScreen = UnitOnScreen(npc);
-			const int scream = InclusiveRoll(0, 2);
-			npc->ApplyDeath(true);
-			if (onScreen && g_mainState)
-				g_mainState->Bark(npc, kScreams[scream], 2.0f);
+			g_armageddonVictims.push_back(static_cast<int>(npc->m_ID));
+			// Say it while they are still standing. The fall comes after the quake.
+			if (UnitOnScreen(npc) && g_mainState)
+				g_mainState->Bark(npc, kScreams[InclusiveRoll(0, 2)], 2.0f);
 		}
 
 		U7Object* center = (g_Player && g_Player->GetAvatarObject())
 			? g_Player->GetAvatarObject() : caster;
-		if (center)
+		if (!center)
+			return;
+		const int tx = static_cast<int>(std::floor(center->m_Pos.x));
+		const int tz = static_cast<int>(std::floor(center->m_Pos.z));
+		const int cx = tx / 16;
+		const int cz = tz / 16;
+		for (int oz = cz - 3; oz <= cz + 3; ++oz)
 		{
-			const int tx = static_cast<int>(std::floor(center->m_Pos.x));
-			const int tz = static_cast<int>(std::floor(center->m_Pos.z));
-			const int cx = tx / 16;
-			const int cz = tz / 16;
-			std::vector<U7Object*> monsters;
-			for (int oz = cz - 3; oz <= cz + 3; ++oz)
+			for (int ox = cx - 3; ox <= cx + 3; ++ox)
 			{
-				for (int ox = cx - 3; ox <= cx + 3; ++ox)
+				if (ox < 0 || oz < 0 || ox >= 192 || oz >= 192)
+					continue;
+				const std::vector<U7Object*> units = g_chunkObjectMap[ox][oz];
+				for (U7Object* unit : units)
 				{
-					if (ox < 0 || oz < 0 || ox >= 192 || oz >= 192)
+					if (!unit || unit->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_MONSTER)
 						continue;
-					const std::vector<U7Object*> units = g_chunkObjectMap[ox][oz];
-					for (U7Object* unit : units)
-					{
-						if (!unit || unit->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_MONSTER)
-							continue;
-						if (!IsLivingCreature(unit) || SurvivesArmageddon(unit))
-							continue;
-						if (AlreadyListed(monsters, unit))
-							continue;
-						const int ux = static_cast<int>(std::floor(unit->m_Pos.x));
-						const int uz = static_cast<int>(std::floor(unit->m_Pos.z));
-						if (std::max(std::abs(ux - tx), std::abs(uz - tz)) > 40)
-							continue;
-						monsters.push_back(unit);
-					}
+					if (!IsLivingCreature(unit) || SurvivesArmageddon(unit))
+						continue;
+					const int id = static_cast<int>(unit->m_ID);
+					if (std::find(g_armageddonVictims.begin(), g_armageddonVictims.end(), id) != g_armageddonVictims.end())
+						continue;
+					const int ux = static_cast<int>(std::floor(unit->m_Pos.x));
+					const int uz = static_cast<int>(std::floor(unit->m_Pos.z));
+					if (std::max(std::abs(ux - tx), std::abs(uz - tz)) > 40)
+						continue;
+					g_armageddonVictims.push_back(id);
 				}
 			}
-			for (U7Object* monster : monsters)
-				monster->ApplyDeath(true);
 		}
+	}
 
+	void DropUnshownVictimBarks()
+	{
+		if (!g_mainState)
+			return;
+		auto& queue = g_mainState->m_barkQueue;
+		for (auto it = queue.begin(); it != queue.end(); )
+		{
+			const bool victim = it->object
+				&& std::find(g_armageddonVictims.begin(), g_armageddonVictims.end(), static_cast<int>(it->object->m_ID))
+					!= g_armageddonVictims.end();
+			if (victim)
+				it = queue.erase(it);
+			else
+				++it;
+		}
+	}
+
+	void FinishArmageddonDeaths()
+	{
+		// One bark shows at a time. Lines still waiting would play over corpses.
+		DropUnshownVictimBarks();
+		for (int id : g_armageddonVictims)
+		{
+			U7Object* unit = GetObjectFromID(id);
+			if (!IsLivingCreature(unit) || SurvivesArmageddon(unit))
+				continue;
+			unit->ApplyDeath(true);
+		}
+		g_armageddonVictims.clear();
+		g_armageddonCasterId = 0;
 		if (g_ScriptingSystem)
 			g_ScriptingSystem->SetFlag(0x1E, true);
 	}
 
 	void DrainArmageddon(float now)
 	{
-		if (g_armageddonAt <= 0.0f || now < g_armageddonAt)
-			return;
-		g_armageddonAt = 0.0f;
-		RunArmageddonNow();
+		if (g_armageddonAt > 0.0f && now >= g_armageddonAt)
+		{
+			g_armageddonAt = 0.0f;
+			BeginArmageddonQuake();
+		}
+		if (g_armageddonKillAt > 0.0f && GetTime() >= g_armageddonKillAt)
+		{
+			g_armageddonKillAt = 0.0f;
+			FinishArmageddonDeaths();
+		}
+	}
+
+	// Exult Monster_egg::hatch_now returns when the spawn shape is an NPC
+	// and the Armageddon flag is set. The pending cast counts too: a creature
+	// hatched during the quake would miss the kill list.
+	bool ArmageddonStopsNewMonsters()
+	{
+		if (g_armageddonAt > 0.0f || g_armageddonKillAt > 0.0f)
+			return true;
+		return g_ScriptingSystem && g_ScriptingSystem->GetFlag(0x1E);
 	}
 }
 
@@ -3580,7 +3713,9 @@ void ClearSeventhCirclePending()
 	g_pendingDeaths.clear();
 	g_energyMists.clear();
 	g_armageddonAt = 0.0f;
+	g_armageddonKillAt = 0.0f;
 	g_armageddonCasterId = 0;
+	g_armageddonVictims.clear();
 	g_timeStopUntil = 0.0f;
 	g_timeStopTurns.clear();
 }
@@ -3956,7 +4091,7 @@ void CastArmageddon(U7Object* caster)
 		g_WeatherSystem->SetWeather(2, 0, false, Vector3{ 0, 0, 0 }, -1, -1);
 
 	g_armageddonCasterId = static_cast<int>(caster->m_ID);
-	// The gesture is twelve steps. The quake and the deaths follow it.
+	// The gesture is twelve steps. The quake follows it, and the kill follows the quake.
 	const float now = SpellClockNow();
 	g_armageddonAt = now + 12.0f * kUsecodeStepSec;
 }
@@ -4089,7 +4224,7 @@ void U7Object::UpdateHazardField()
 	if (m_fireFieldNextPulse > 0.0f && now < m_fireFieldNextPulse)
 		return;
 	m_fireFieldNextPulse = now + kFireFieldPulseSec;
-	if (PulseHazardField(this))
+	if (PulseHazardField(this) && m_fireFieldPlayStartup)
 		ExpireFireField();
 }
 
@@ -4223,6 +4358,14 @@ void U7Object::MonsterUpdate()
 				return;
 			}
 		}
+	}
+
+	// Egg schedule (Wander, Shy, Graze, …). Chase and an open fight return above.
+	// Real-time-with-pause orders and turn-based planning hold them with the fight.
+	if (m_usecodeObjectSchedule
+		&& !(g_mainState && g_mainState->IsCombatOrdersPaused()))
+	{
+		TickScheduleActivity();
 	}
 
 	UpdateMovement();
@@ -4818,6 +4961,8 @@ void U7Object::Update()
 
 
 
+static bool DamagePlateNewlyOccupied(U7Object* egg);
+
 void U7Object::HandleMonsterSpawnerEgg()
 {
 	EggData& egg = m_eggData;
@@ -4858,7 +5003,13 @@ void U7Object::HandleMonsterSpawnerEgg()
 	{
 		case EggCriteria::AvatarNear:
 		case EggCriteria::PartyNear:
-			if (dist <= (float)egg.m_distance && !egg.m_hasTriggered)
+			// Shape 200 itype-1 plates drop a field. Distance 0 is that tile.
+			if (m_ObjectType == 200)
+			{
+				if (!egg.m_hasTriggered && Shape200FieldPlateTripped(this))
+					shouldActivate = true;
+			}
+			else if (dist <= (float)egg.m_distance && !egg.m_hasTriggered)
 				shouldActivate = true;
 			break;
 
@@ -4881,8 +5032,20 @@ void U7Object::HandleMonsterSpawnerEgg()
 			}
 			break;
 
+		case EggCriteria::External:
+			// A nearby button hatches these. Walking up does not.
+			break;
+
+		case EggCriteria::SomethingOn:
+			// A non-actor placed in the square. Walking the Avatar does not.
+			// The new object is recorded before the probability roll, so a miss
+			// is one roll for that placement.
+			if (DamagePlateNewlyOccupied(this))
+				shouldActivate = true;
+			break;
+
 		default:
-			// Other types (e.g. External) or unknown: use the egg's own distance (or 2x as fallback).
+			// AvatarFar and anything still unhandled: the egg's own distance.
 			if (dist <= (float)egg.m_distance * 2.0f)
 				shouldActivate = true;
 			break;
@@ -4899,6 +5062,71 @@ void U7Object::HandleMonsterSpawnerEgg()
 			return; // Didn't trigger this time
 	}
 
+	HatchMonsterEggNow();
+}
+
+static bool TileHoldsShape(int shape, float x, float y, float z)
+{
+	const int tx = static_cast<int>(std::floor(x));
+	const int tz = static_cast<int>(std::floor(z));
+	const int ty = static_cast<int>(std::floor(y));
+	if (tx < 0 || tz < 0 || tx >= 3072 || tz >= 3072)
+		return true;
+	const int cx = tx / 16;
+	const int cz = tz / 16;
+	if (cx < 0 || cz < 0 || cx >= 192 || cz >= 192)
+		return true;
+	for (U7Object* obj : g_chunkObjectMap[cx][cz])
+	{
+		if (!obj || obj->GetIsDead() || obj->m_isContained)
+			continue;
+		const int objShape = obj->m_shapeData ? obj->m_shapeData->m_shape : obj->m_ObjectType;
+		if (objShape != shape)
+			continue;
+		if (static_cast<int>(std::floor(obj->m_Pos.x)) != tx)
+			continue;
+		if (static_cast<int>(std::floor(obj->m_Pos.z)) != tz)
+			continue;
+		if (std::abs(static_cast<int>(std::floor(obj->m_Pos.y)) - ty) > 1)
+			continue;
+		return true;
+	}
+	return false;
+}
+
+// Fire, poison, sleep, and energy fields, plus walls and the odd item.
+// A second press does not stack another copy on the same tile.
+static void PlaceHatchedEggObject(U7Object* egg, int shape, int frame)
+{
+	if (!egg || shape <= 0 || shape >= 1024)
+		return;
+	if (TileHoldsShape(shape, egg->m_Pos.x, egg->m_Pos.y, egg->m_Pos.z))
+		return;
+	if (frame < 0 || frame >= 32)
+		frame = 0;
+
+	const int id = static_cast<int>(GetNextID());
+	U7Object* obj = AddObject(shape, frame, id, egg->m_Pos.x, egg->m_Pos.y, egg->m_Pos.z);
+	if (!obj)
+		return;
+
+	const bool field = shape == kFireFieldShape || shape == kPoisonFieldShape
+		|| shape == kSleepFieldShape || shape == kEnergyFieldShape;
+	if (!field)
+		return;
+
+	// Spell fields expire. One hatched by an egg stays, and it has to Update.
+	obj->m_UnitType = U7Object::UnitTypes::UNIT_TYPE_OBJECT;
+	obj->m_Visible = true;
+	obj->m_ShouldDraw = true;
+	obj->m_fireFieldPlayStartup = false;
+	obj->m_fireFieldNextPulse = 0.0f;
+}
+
+void U7Object::HatchMonsterEggNow()
+{
+	EggData& egg = m_eggData;
+
 	// Resolve the intended spawn shape early (this block used to live later).
 	// We need the shape before the liveness check.
 	int shapeToSpawn = egg.m_monsterShape;
@@ -4913,6 +5141,21 @@ void U7Object::HandleMonsterSpawnerEgg()
 	if (shapeToSpawn <= 0 || shapeToSpawn > 1000)
 	{
 		shapeToSpawn = 529; // Rat-like default
+	}
+
+	// Most external "monster" eggs drop a field or a wall, not a creature.
+	if (!IsMonsterShape(shapeToSpawn))
+	{
+		PlaceHatchedEggObject(this, shapeToSpawn, egg.m_monsterFrame);
+		egg.m_hasTriggered = true;
+		return;
+	}
+
+	// Armageddon. The egg is spent, and no creature appears.
+	if (ArmageddonStopsNewMonsters())
+	{
+		egg.m_hasTriggered = true;
+		return;
 	}
 
 	// Find the matching MonsterData record (by datIndex if valid, else by shape) for real stats.
@@ -5010,9 +5253,14 @@ void U7Object::HandleMonsterSpawnerEgg()
 				spawned->m_combat = 10.0f;
 			}
 
-			// Set the activity from the egg's workType (0 = combat). Non-combat monsters
-			// (e.g. foxes, deer from non-combat eggs) are not hostile.
-			spawned->m_currentActivity = egg.m_monsterWorkType;
+			// Exult Monster_actor::create stores the egg schedule byte (data1 >> 8).
+			// 0 is Combat. That schedule looks for a foe and only shuffles after
+			// it misses. The combat activity script stands still, so an unengaged
+			// combat egg wanders until it aggros. Shy, graze, loiter, and wander
+			// eggs keep the byte from the egg.
+			spawned->m_currentActivity = (egg.m_monsterWorkType == 0)
+				? 12u
+				: egg.m_monsterWorkType;
 
 			// Hostile if combat schedule OR evil/chaotic egg alignment (2/3).
 			const bool hostile =
@@ -5029,8 +5277,10 @@ void U7Object::HandleMonsterSpawnerEgg()
 
 			spawned->MonsterInit();
 
-			// Optional: give them a simple "attack player" activity later
-			// For now they exist in the world and can be clicked / pathfound to.
+			// Activity scripts resolve a non-NPC by object id only with this flag.
+			// Fields and other non-creature hatches stay put.
+			if (IsMonsterShape(spawned->m_ObjectType) && spawned->m_currentActivity <= 31)
+				spawned->m_usecodeObjectSchedule = true;
 
 			// Always give feedback in console when a monster actually appears
 			//std::string hatchedMsg = "Monster egg hatched! (shape " + std::to_string(shapeToSpawn) + ")";
@@ -5060,9 +5310,101 @@ void U7Object::HandleProximitySoundEgg()
 
 }
 
+static bool EggRollFails(uint8_t probability);
+static void RetireHatchedEgg(U7Object* egg);
+
+static int g_jukeboxTrack = -1;
+static int g_jukeboxHolders = 0;
+
+static bool JukeboxLoops(const EggData& egg)
+{
+	return (egg.m_durationMinutes & 0x01) != 0;
+}
+
+static void JukeboxAcquire(int track, bool continuous)
+{
+	if (!g_SoundSystem || !g_ResourceManager || track < 0)
+		return;
+
+	const std::string path = BuildU7MusicPath(track);
+	Music* music = g_ResourceManager->GetMusic(path);
+	if (!music)
+		return;
+
+	// A second continuous egg of the track already playing joins it.
+	// A one-shot always starts, including when this egg is entered again.
+	if (continuous && g_jukeboxTrack == track && g_SoundSystem->GetCurrentMusicName() == path)
+	{
+		++g_jukeboxHolders;
+		g_SoundSystem->SetMusicLooping(true);
+		return;
+	}
+
+	if (!g_SoundSystem->GetCurrentMusicName().empty())
+		g_SoundSystem->StopMusic(g_SoundSystem->GetCurrentMusicName());
+
+	g_SoundSystem->PlayMusic(path, -1, continuous);
+	g_jukeboxTrack = track;
+	g_jukeboxHolders = continuous ? 1 : 0;
+}
+
+static void JukeboxRelease(int track, bool continuous)
+{
+	if (g_jukeboxTrack != track || !continuous)
+		return;
+	if (g_jukeboxHolders > 1)
+	{
+		--g_jukeboxHolders;
+		return;
+	}
+	g_jukeboxHolders = 0;
+	g_jukeboxTrack = -1;
+	if (g_SoundSystem)
+		g_SoundSystem->StopMusic(BuildU7MusicPath(track));
+}
+
 void U7Object::HandleJukeboxEgg()
 {
+	if (GetIsDead() || !g_Player)
+		return;
+	U7Object* avatar = g_Player->GetAvatarObject();
+	if (!avatar)
+		return;
 
+	int radius = static_cast<int>(m_eggData.m_distance);
+	if (m_eggData.m_criteria == EggCriteria::CachedIn)
+		radius = static_cast<int>(CACHED_IN_RADIUS);
+	else if (m_eggData.m_criteria != EggCriteria::AvatarNear
+		&& m_eggData.m_criteria != EggCriteria::PartyNear)
+		return;
+
+	const bool inside = FieldPlateTileDist(this, avatar) <= radius;
+	const bool loops = JukeboxLoops(m_eggData);
+	const int track = static_cast<int>(m_eggData.m_specificValue);
+
+	if (inside)
+	{
+		if (m_eggData.m_hasTriggered)
+			return;
+		// A failed roll still counts as hatched until the Avatar leaves.
+		if (EggRollFails(m_eggData.m_probability))
+		{
+			m_eggData.m_hasTriggered = true;
+			return;
+		}
+		JukeboxAcquire(track, loops);
+		m_eggData.m_hasTriggered = true;
+		return;
+	}
+
+	if (!m_eggData.m_hasTriggered)
+		return;
+
+	JukeboxRelease(track, loops);
+	if (m_eggData.m_autoReset)
+		m_eggData.m_hasTriggered = false;
+	if (m_eggData.m_onceOnly)
+		RetireHatchedEgg(this);
 }
 
 static std::string CapitalizeMonsterName(const std::string& name)
@@ -5178,6 +5520,20 @@ void U7Object::InitUsecodeObjectSchedule()
 	}
 }
 
+static void PlayEggVoice(U7Object* egg)
+{
+	if (!egg || !g_SoundSystem)
+		return;
+	if (egg->m_eggData.m_audioFile.empty())
+	{
+		const int clip = SpeechClipIndex(static_cast<int>(egg->m_eggData.m_specificValue));
+		if (clip >= 0)
+			egg->m_eggData.m_audioFile = BuildU7VoicePath(clip);
+	}
+	if (!egg->m_eggData.m_audioFile.empty())
+		g_SoundSystem->PlaySound(egg->m_eggData.m_audioFile);
+}
+
 void U7Object::HandleVoiceEgg()
 {
 	bool playing = false;
@@ -5202,9 +5558,7 @@ void U7Object::HandleVoiceEgg()
 	}
 
 	if (playing)
-	{
-		g_SoundSystem->PlaySound(m_eggData.m_audioFile);
-	}
+		PlayEggVoice(this);
 }
 
 void U7Object::HandleWeatherEgg()
@@ -5515,6 +5869,85 @@ void U7Object::HandlePathEgg()
 
 }
 
+// Something-on eggs. Exult fires when a non-actor is moved onto the area, not
+// because a wall was already standing there. The first look records what is
+// already in the square. A later new object trips it.
+static std::unordered_map<int, std::vector<int>> g_damagePlateSeen;
+
+static bool DamagePlateHolds(const U7Object* egg, int objectId)
+{
+	auto it = g_damagePlateSeen.find(static_cast<int>(egg->m_ID));
+	if (it == g_damagePlateSeen.end())
+		return false;
+	for (int id : it->second)
+	{
+		if (id == objectId)
+			return true;
+	}
+	return false;
+}
+
+static bool DamagePlateNewlyOccupied(U7Object* egg)
+{
+	if (!egg)
+		return false;
+
+	const EggData& data = egg->m_eggData;
+	const int radius = static_cast<int>(data.m_distance);
+	const int x0 = static_cast<int>(std::floor(egg->m_Pos.x));
+	const int z0 = static_cast<int>(std::floor(egg->m_Pos.z));
+	const int y0 = static_cast<int>(std::floor(egg->m_Pos.y));
+	const int cx0 = std::max(0, (x0 - radius) / 16);
+	const int cx1 = std::min(191, (x0 + radius) / 16);
+	const int cz0 = std::max(0, (z0 - radius) / 16);
+	const int cz1 = std::min(191, (z0 + radius) / 16);
+
+	std::vector<int> now;
+	for (int cx = cx0; cx <= cx1; ++cx)
+	{
+		for (int cz = cz0; cz <= cz1; ++cz)
+		{
+			for (U7Object* obj : g_chunkObjectMap[cx][cz])
+			{
+				if (!obj || obj == egg || obj->GetIsDead() || obj->m_isContained || obj->m_isProjectile)
+					continue;
+				const auto unit = obj->m_UnitType;
+				if (unit == U7Object::UnitTypes::UNIT_TYPE_EGG
+					|| unit == U7Object::UnitTypes::UNIT_TYPE_NPC
+					|| unit == U7Object::UnitTypes::UNIT_TYPE_MONSTER)
+				{
+					continue;
+				}
+				const int dx = std::abs(static_cast<int>(std::floor(obj->m_Pos.x)) - x0);
+				const int dz = std::abs(static_cast<int>(std::floor(obj->m_Pos.z)) - z0);
+				if ((dx > dz ? dx : dz) > radius)
+					continue;
+				const int dy = std::abs(static_cast<int>(std::floor(obj->m_Pos.y)) - y0);
+				if (dy > 3)
+					continue;
+				now.push_back(static_cast<int>(obj->m_ID));
+			}
+		}
+	}
+
+	const int eggId = static_cast<int>(egg->m_ID);
+	auto it = g_damagePlateSeen.find(eggId);
+	if (it == g_damagePlateSeen.end())
+	{
+		g_damagePlateSeen.emplace(eggId, std::move(now));
+		return false;
+	}
+
+	bool fresh = false;
+	for (int id : now)
+	{
+		if (!DamagePlateHolds(egg, id))
+			fresh = true;
+	}
+	it->second = std::move(now);
+	return fresh;
+}
+
 void U7Object::HandleUsecodeEgg()
 {
 	U7Object* _avatar = g_Player->GetAvatarObject();
@@ -5548,8 +5981,26 @@ void U7Object::HandleUsecodeEgg()
 		}
 
 		case EggCriteria::AvatarNear:
-		case EggCriteria::PartyNear:
 			if (Vector2Distance({m_Pos.x, m_Pos.z}, {_avatar->m_Pos.x, _avatar->m_Pos.z}) <= m_eggData.m_distance && !m_eggData.m_hasTriggered)
+			{
+				m_eggData.m_hasTriggered = true;
+				justTriggered = true;
+			}
+			break;
+
+		case EggCriteria::PartyNear:
+			if (!m_eggData.m_hasTriggered && UsecodePartyNear(this))
+			{
+				m_eggData.m_hasTriggered = true;
+				justTriggered = true;
+			}
+			break;
+
+		case EggCriteria::SomethingOn:
+			// Any usecode egg. The object that tripped it stays recorded, so
+			// an auto-reset egg waits for a new object instead of repeating.
+			if (DamagePlateNewlyOccupied(this)
+				&& (!m_eggData.m_hasTriggered || m_eggData.m_autoReset))
 			{
 				m_eggData.m_hasTriggered = true;
 				justTriggered = true;
@@ -5557,54 +6008,505 @@ void U7Object::HandleUsecodeEgg()
 			break;
 	}
 
-	if (justTriggered)
+	// A miss still counts. hasTriggered is already set, so the egg does not
+	// roll again until it resets.
+	if (justTriggered && !EggRollFails(m_eggData.m_probability))
+		RunEggUsecodeScript();
+}
+
+void U7Object::RunEggUsecodeScript()
+{
+	if (!g_ScriptingSystem)
+		return;
+
+	// Egg usecode funcs are stored as 0x500+N (1280+N). The usual names are
+	// utility_forge_, utility_unknown_, utility_event_, utility_clock_, and
+	// utility_ship_. Anything else is found by the _NNNN suffix.
+	int scriptnumber = m_eggData.m_usecodeFunc;
+	if (scriptnumber >= 1280)
+		scriptnumber -= 1280;
+
+	char numBuf[16];
+	snprintf(numBuf, sizeof(numBuf), "%04d", scriptnumber);
+	// The decompiler split egg scripts across several prefixes. Prefer the
+	// specific Forge name so a generic utility_event fallback cannot shadow it.
+	const std::string candidates[] = {
+		std::string("utility_forge_") + numBuf,
+		std::string("utility_unknown_") + numBuf,
+		std::string("utility_event_") + numBuf,
+		std::string("utility_clock_") + numBuf,
+		std::string("utility_ship_") + numBuf,
+	};
+
+	auto scriptLoaded = [](const std::string& name) -> bool {
+		for (const auto& script : g_ScriptingSystem->m_scriptFiles)
+		{
+			if (script.first == name)
+				return true;
+		}
+		return false;
+	};
+
+	std::string scriptname;
+	bool found = false;
+	for (const auto& name : candidates)
 	{
-		// Egg usecode funcs are stored as 0x500+N (1280+N). Scripts are named
-		// utility_forge_0NNN.lua, utility_unknown_0NNN.lua, or utility_event_0NNN.lua.
-		int scriptnumber = m_eggData.m_usecodeFunc;
-		if (scriptnumber >= 1280)
-			scriptnumber -= 1280;
+		if (scriptLoaded(name))
+		{
+			scriptname = name;
+			found = true;
+			break;
+		}
+	}
 
-		char numBuf[16];
-		snprintf(numBuf, sizeof(numBuf), "%04d", scriptnumber);
-		// The decompiler split egg scripts across several prefixes. Prefer the
-		// specific Forge name so a generic utility_event fallback cannot shadow it.
-		const std::string candidates[] = {
-			std::string("utility_forge_") + numBuf,
-			std::string("utility_unknown_") + numBuf,
-			std::string("utility_event_") + numBuf,
-			std::string("utility_clock_") + numBuf,
-			std::string("utility_ship_") + numBuf,
-		};
+	// The five prefixes miss scripts filed under mech_, door_, object_, and
+	// other utility_ names. One file ending in _NNNN is that script. Three
+	// numbers belong to two functions:
+	//   309  utility_bake_bread_0309 is the egg (mech_oven_ is the old name)
+	//   526  door_courage_region_0526 is object function 0x70E (the egg).
+	//        object_lamppost_0526 is shape 0x20E.
+	//   820  object_sign_0820 is shape function 0x334 and handles event 3.
+	if (!found)
+	{
+		const char* preferred = nullptr;
+		if (scriptnumber == 309)
+			preferred = "utility_bake_bread_0309";
+		else if (scriptnumber == 526)
+			preferred = "door_courage_region_0526";
+		else if (scriptnumber == 820)
+			preferred = "object_sign_0820";
 
-		auto scriptLoaded = [](const std::string& name) -> bool {
-			if (!g_ScriptingSystem) return false;
-			for (const auto& script : g_ScriptingSystem->m_scriptFiles)
+		if (preferred && scriptLoaded(preferred))
+		{
+			scriptname = preferred;
+			found = true;
+		}
+	}
+
+	if (!found)
+	{
+		const std::string suffix = std::string("_") + numBuf;
+		int matches = 0;
+		std::string unique;
+		for (const auto& script : g_ScriptingSystem->m_scriptFiles)
+		{
+			const std::string& name = script.first;
+			if (name.size() < suffix.size())
+				continue;
+			if (name.compare(name.size() - suffix.size(), suffix.size(), suffix) != 0)
+				continue;
+			unique = name;
+			++matches;
+		}
+		if (matches == 1)
+		{
+			scriptname = unique;
+			found = true;
+		}
+	}
+
+	if (!found)
+	{
+		NPCDebugPrint("Usecode egg has no script for func " +
+			std::to_string(m_eggData.m_usecodeFunc));
+		return;
+	}
+
+	// Exult hatches usecode eggs with event 3 (egg) and the egg as itemref.
+	NPCDebugPrint("Usecode egg @" + std::to_string((int)m_Pos.x) + "," +
+		std::to_string((int)m_Pos.z) + " → " + scriptname +
+		" (func=" + std::to_string(m_eggData.m_usecodeFunc) + ")");
+	std::string result = g_ScriptingSystem->CallScript(scriptname, { 3, m_ID });
+	if (!result.empty())
+		NPCDebugPrint("Usecode egg script error: " + result);
+}
+
+static int EggTileDist(const U7Object* a, const U7Object* b)
+{
+	const int dx = std::abs(static_cast<int>(std::floor(a->m_Pos.x)) - static_cast<int>(std::floor(b->m_Pos.x)));
+	const int dz = std::abs(static_cast<int>(std::floor(a->m_Pos.z)) - static_cast<int>(std::floor(b->m_Pos.z)));
+	return dx > dz ? dx : dz;
+}
+
+static int EggLiftDelta(const U7Object* a, const U7Object* b)
+{
+	return std::abs(static_cast<int>(std::floor(a->m_Pos.y)) - static_cast<int>(std::floor(b->m_Pos.y)));
+}
+
+static bool EggRollFails(uint8_t probability)
+{
+	if (probability >= 100)
+		return false;
+	const int roll = g_NonVitalRNG
+		? static_cast<int>(g_NonVitalRNG->RandomRange(0, 99))
+		: (rand() % 100);
+	return roll >= static_cast<int>(probability);
+}
+
+static void RetireHatchedEgg(U7Object* egg)
+{
+	if (!egg)
+		return;
+	egg->m_Visible = false;
+	egg->m_ShouldDraw = false;
+	egg->SetIsDead(true);
+}
+
+static int LivingParty(U7Object** out, int cap)
+{
+	int count = 0;
+	if (!g_Player || cap <= 0)
+		return 0;
+	for (int npcId : g_Player->GetPartyMemberIds())
+	{
+		if (count >= cap)
+			break;
+		auto it = g_NPCData.find(npcId);
+		if (it == g_NPCData.end() || !it->second)
+			continue;
+		U7Object* obj = GetObjectFromID(it->second->m_objectID);
+		if (!obj || obj->GetIsDead() || obj->IsDeathStatus() || obj->m_hp <= 0.0f)
+			continue;
+		out[count++] = obj;
+	}
+	if (U7Object* avatar = g_Player->GetAvatarObject())
+	{
+		if (count < cap && !avatar->GetIsDead() && !avatar->IsDeathStatus() && avatar->m_hp > 0.0f)
+		{
+			bool have = false;
+			for (int i = 0; i < count; ++i)
 			{
-				if (script.first == name)
+				if (out[i] == avatar)
+					have = true;
+			}
+			if (!have)
+				out[count++] = avatar;
+		}
+	}
+	return count;
+}
+
+// Exult Egg_object::is_active for the criteria these traps actually use.
+static bool TrapCriteriaMet(U7Object* egg)
+{
+	if (!egg || !g_Player)
+		return false;
+	U7Object* avatar = g_Player->GetAvatarObject();
+	if (!avatar)
+		return false;
+
+	const EggData& data = egg->m_eggData;
+	switch (data.m_criteria)
+	{
+		case EggCriteria::External:
+		case EggCriteria::AvatarFar:
+			return false;
+
+		case EggCriteria::CachedIn:
+			return EggTileDist(egg, avatar) <= static_cast<int>(CACHED_IN_RADIUS);
+
+		case EggCriteria::AvatarNear:
+			return EggTileDist(egg, avatar) <= static_cast<int>(data.m_distance)
+				&& EggLiftDelta(egg, avatar) <= 1;
+
+		case EggCriteria::PartyNear:
+		{
+			U7Object* party[16];
+			const int count = LivingParty(party, 16);
+			for (int i = 0; i < count; ++i)
+			{
+				if (EggTileDist(egg, party[i]) <= static_cast<int>(data.m_distance)
+					&& EggLiftDelta(egg, party[i]) <= 1)
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+
+		case EggCriteria::AvatarFootpad:
+			return EggTileDist(egg, avatar) == 0 && EggLiftDelta(egg, avatar) == 0;
+
+		case EggCriteria::PartyFootpad:
+		{
+			U7Object* party[16];
+			const int count = LivingParty(party, 16);
+			for (int i = 0; i < count; ++i)
+			{
+				if (EggTileDist(egg, party[i]) == 0 && EggLiftDelta(egg, party[i]) == 0)
 					return true;
 			}
 			return false;
-		};
-
-		std::string scriptname = candidates[0];
-		for (const auto& name : candidates)
-		{
-			if (scriptLoaded(name))
-			{
-				scriptname = name;
-				break;
-			}
 		}
 
-		// Exult hatches usecode eggs with event 3 (egg) and the egg as itemref.
-		NPCDebugPrint("Usecode egg @" + std::to_string((int)m_Pos.x) + "," +
-			std::to_string((int)m_Pos.z) + " → " + scriptname +
-			" (func=" + std::to_string(m_eggData.m_usecodeFunc) + ")");
-		std::string result = g_ScriptingSystem->CallScript(scriptname, { 3, m_ID });
-		if (!result.empty())
-			NPCDebugPrint("Usecode egg script error: " + result);
+		case EggCriteria::SomethingOn:
+		{
+			const int radius = static_cast<int>(data.m_distance);
+			const int x0 = static_cast<int>(std::floor(egg->m_Pos.x));
+			const int z0 = static_cast<int>(std::floor(egg->m_Pos.z));
+			const int cx0 = std::max(0, (x0 - radius) / 16);
+			const int cx1 = std::min(191, (x0 + radius) / 16);
+			const int cz0 = std::max(0, (z0 - radius) / 16);
+			const int cz1 = std::min(191, (z0 + radius) / 16);
+			for (int cx = cx0; cx <= cx1; ++cx)
+			{
+				for (int cz = cz0; cz <= cz1; ++cz)
+				{
+					for (U7Object* obj : g_chunkObjectMap[cx][cz])
+					{
+						if (!obj || obj == egg || obj->GetIsDead() || obj->m_isContained || obj->m_isProjectile)
+							continue;
+						const auto unit = obj->m_UnitType;
+						if (unit == U7Object::UnitTypes::UNIT_TYPE_EGG
+							|| unit == U7Object::UnitTypes::UNIT_TYPE_NPC
+							|| unit == U7Object::UnitTypes::UNIT_TYPE_MONSTER)
+						{
+							continue;
+						}
+						const int dx = std::abs(static_cast<int>(std::floor(obj->m_Pos.x)) - x0);
+						const int dz = std::abs(static_cast<int>(std::floor(obj->m_Pos.z)) - z0);
+						if ((dx > dz ? dx : dz) > radius)
+							continue;
+						const int dy = std::abs(static_cast<int>(std::floor(obj->m_Pos.y)) - static_cast<int>(std::floor(egg->m_Pos.y)));
+						if (dy > 3)
+							continue;
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+
+		default:
+			return false;
 	}
+}
+
+bool U7Object::LaunchMissileEgg()
+{
+	const EggData& egg = m_eggData;
+	const WeaponData* weapon = GetWeaponData(egg.m_missileWeapon);
+	int projectile = 856;
+	int range = 20;
+	float speed = 30.0f;
+	bool noBlocking = false;
+	if (weapon)
+	{
+		if (weapon->projectile > 0 && weapon->projectile < 1024)
+			projectile = weapon->projectile;
+		if (weapon->range > 0)
+			range = weapon->range;
+		if (weapon->missileSpeed > 0)
+			speed = static_cast<float>(weapon->missileSpeed) * 10.0f;
+		noBlocking = weapon->noBlocking;
+	}
+
+	Vector3 from = m_Pos;
+	from.y += 0.4f;
+	Vector3 dest = from;
+
+	// 0 north, then clockwise. 8 and above pick a party member (Exult Missile_launcher).
+	if (egg.m_missileDir < 8)
+	{
+		static const int kDx[8] = { 0, 1, 1, 1, 0, -1, -1, -1 };
+		static const int kDz[8] = { -1, -1, 0, 1, 1, 1, 0, -1 };
+		const int dir = egg.m_missileDir;
+		dest.x += static_cast<float>(kDx[dir] * range);
+		dest.z += static_cast<float>(kDz[dir] * range);
+	}
+	else
+	{
+		U7Object* party[16];
+		const int count = LivingParty(party, 16);
+		if (count <= 0)
+			return false;
+		int start = 0;
+		if (count > 1)
+		{
+			start = g_NonVitalRNG
+				? static_cast<int>(g_NonVitalRNG->RandomRange(0, count - 1))
+				: (rand() % count);
+		}
+		U7Object* pick = nullptr;
+		for (int n = 0; n < count; ++n)
+		{
+			U7Object* who = party[(start + n) % count];
+			if (!noBlocking && g_pathfindingSystem
+				&& !g_pathfindingSystem->HasWallLineOfSight(m_Pos, who->m_Pos))
+			{
+				continue;
+			}
+			pick = who;
+			break;
+		}
+		if (!pick)
+			return false;
+		dest = pick->m_Pos;
+		dest.y += 0.9f;
+	}
+
+	if (dest.x < 0.0f) dest.x = 0.0f;
+	if (dest.z < 0.0f) dest.z = 0.0f;
+	if (dest.x > 3071.0f) dest.x = 3071.0f;
+	if (dest.z > 3071.0f) dest.z = 3071.0f;
+
+	int ammoShape = -1;
+	if (GetAmmoData(projectile))
+		ammoShape = projectile;
+	return SpawnTrapProjectile(projectile, static_cast<int>(m_ID), from, dest, speed,
+		egg.m_missileWeapon, ammoShape, noBlocking);
+}
+
+void U7Object::HandleMissileEgg()
+{
+	if (GetIsDead())
+		return;
+
+	EggData& egg = m_eggData;
+	if (egg.m_nocturnal && !egg.m_missileArmed && g_hour < 20 && g_hour > 6)
+		return;
+
+	const bool repeat = egg.m_criteria == EggCriteria::AvatarNear
+		|| egg.m_criteria == EggCriteria::PartyNear;
+
+	if (!egg.m_missileArmed)
+	{
+		if (egg.m_hasTriggered)
+			return;
+		if (!TrapCriteriaMet(this))
+			return;
+		egg.m_hasTriggered = true;
+		if (EggRollFails(egg.m_probability))
+			return;
+		if (!repeat)
+		{
+			LaunchMissileEgg();
+			if (egg.m_onceOnly)
+				RetireHatchedEgg(this);
+			return;
+		}
+		egg.m_missileArmed = true;
+		egg.m_missileNextAt = 0.0f;
+	}
+
+	if (!g_Player)
+		return;
+	U7Object* avatar = g_Player->GetAvatarObject();
+	if (!avatar)
+		return;
+
+	int range = 20;
+	if (const WeaponData* weapon = GetWeaponData(egg.m_missileWeapon))
+	{
+		if (weapon->range > 0)
+			range = weapon->range;
+	}
+	// Exult keeps firing while the Avatar is inside the weapon's range.
+	const int reach = std::max(EggTileDist(this, avatar), EggLiftDelta(this, avatar));
+	if (reach > range)
+		return;
+
+	const float now = SpellClockNow();
+	if (egg.m_missileNextAt > 0.0f && now < egg.m_missileNextAt)
+		return;
+	if (!LaunchMissileEgg())
+		return;
+
+	const int ticks = egg.m_missileDelay > 0 ? egg.m_missileDelay : 1;
+	egg.m_missileNextAt = now + 0.2f * static_cast<float>(ticks);
+	if (egg.m_onceOnly)
+		RetireHatchedEgg(this);
+}
+
+void U7Object::HatchExternalEgg()
+{
+	EggData& egg = m_eggData;
+	if (egg.m_criteria != EggCriteria::External)
+		return;
+	if (egg.m_hasTriggered && !egg.m_autoReset)
+		return;
+	if (EggRollFails(egg.m_probability))
+	{
+		egg.m_hasTriggered = true;
+		return;
+	}
+
+	if (egg.m_type == EggType::Missile)
+		LaunchMissileEgg();
+	else if (egg.m_type == EggType::Usecode)
+		RunEggUsecodeScript();
+	else if (egg.m_type == EggType::MonsterSpawner)
+		HatchMonsterEggNow();
+	else if (egg.m_type == EggType::Voice)
+		PlayEggVoice(this);
+
+	egg.m_hasTriggered = true;
+	if (egg.m_onceOnly)
+		RetireHatchedEgg(this);
+}
+
+void U7Object::HandleButtonEgg()
+{
+	if (GetIsDead())
+		return;
+
+	EggData& egg = m_eggData;
+	if (egg.m_hasTriggered && !egg.m_autoReset)
+		return;
+	if (egg.m_hasTriggered)
+		return;
+	if (egg.m_nocturnal && g_hour < 20 && g_hour > 6)
+		return;
+	if (!TrapCriteriaMet(this))
+		return;
+
+	egg.m_hasTriggered = true;
+	if (EggRollFails(egg.m_probability))
+		return;
+
+	const int radius = static_cast<int>(egg.m_buttonRadius);
+	const int x0 = static_cast<int>(std::floor(m_Pos.x));
+	const int z0 = static_cast<int>(std::floor(m_Pos.z));
+	const int cx0 = std::max(0, (x0 - radius) / 16);
+	const int cx1 = std::min(191, (x0 + radius) / 16);
+	const int cz0 = std::max(0, (z0 - radius) / 16);
+	const int cz1 = std::min(191, (z0 + radius) / 16);
+
+	std::vector<int> targets;
+	for (int cx = cx0; cx <= cx1; ++cx)
+	{
+		for (int cz = cz0; cz <= cz1; ++cz)
+		{
+			for (U7Object* obj : g_chunkObjectMap[cx][cz])
+			{
+				if (!obj || obj == this || obj->GetIsDead())
+					continue;
+				if (obj->m_UnitType != UnitTypes::UNIT_TYPE_EGG)
+					continue;
+				if (obj->m_ObjectType != 275 && obj->m_ObjectType != 200)
+					continue;
+				if (obj->m_eggData.m_criteria != EggCriteria::External)
+					continue;
+				if (obj->m_eggData.m_hasTriggered && !obj->m_eggData.m_autoReset)
+					continue;
+				const int dx = std::abs(static_cast<int>(std::floor(obj->m_Pos.x)) - x0);
+				const int dz = std::abs(static_cast<int>(std::floor(obj->m_Pos.z)) - z0);
+				if ((dx > dz ? dx : dz) > radius)
+					continue;
+				targets.push_back(static_cast<int>(obj->m_ID));
+			}
+		}
+	}
+
+	for (int id : targets)
+	{
+		U7Object* obj = GetObjectFromID(id);
+		if (obj)
+			obj->HatchExternalEgg();
+	}
+
+	if (egg.m_onceOnly)
+		RetireHatchedEgg(this);
 }
 
 void U7Object::DebugPrintEggInfo() const
@@ -5707,7 +6609,8 @@ void U7Object::DebugPrintEggInfo() const
 			break;
 
 		case EggType::Jukebox:
-			AddConsoleString("  Track: " + std::to_string((int)egg.m_specificValue));
+			AddConsoleString("  Track: " + std::to_string((int)egg.m_specificValue)
+				+ ((egg.m_durationMinutes & 1) ? " (loops)" : " (once)"));
 			break;
 
 		case EggType::Voice:
@@ -5733,6 +6636,17 @@ void U7Object::DebugPrintEggInfo() const
 
 		case EggType::Path:
 			AddConsoleString("  PathID: " + std::to_string((int)egg.m_specificValue));
+			break;
+
+		case EggType::Missile:
+			AddConsoleString("  Weapon: " + std::to_string(egg.m_missileWeapon));
+			AddConsoleString("  Direction: " + std::to_string((int)egg.m_missileDir));
+			AddConsoleString("  Delay: " + std::to_string((int)egg.m_missileDelay));
+			AddConsoleString("  Armed: " + std::string(egg.m_missileArmed ? "yes" : "no"));
+			break;
+
+		case EggType::Button:
+			AddConsoleString("  Radius: " + std::to_string((int)egg.m_buttonRadius));
 			break;
 
 		default:
@@ -6235,7 +7149,7 @@ static std::string GetActivityScriptName(int activityId)
 	return "activity_" + std::to_string(activityId);
 }
 
-void U7Object::UpdateUsecodeObjectSchedule()
+void U7Object::TickScheduleActivity()
 {
 	if (!g_ScriptingSystem)
 		return;
@@ -6274,6 +7188,11 @@ void U7Object::UpdateUsecodeObjectSchedule()
 			g_ScriptingSystem->ResumeCoroutine(script_name, args);
 		}
 	}
+}
+
+void U7Object::UpdateUsecodeObjectSchedule()
+{
+	TickScheduleActivity();
 
 	if (IsInUsecodeScript())
 		return;
@@ -10588,6 +11507,17 @@ json U7Object::SaveToJson() const
 			j["m_teleportDest"] = { e.m_teleportDest.x, e.m_teleportDest.y, e.m_teleportDest.z };
 		if (e.m_destMap != 0)
 			j["m_destMap"] = e.m_destMap;
+		// The next-shot clock is SpellClockNow and is not saved.
+		if (e.m_missileWeapon != 0)
+			j["m_missileWeapon"] = e.m_missileWeapon;
+		if (e.m_missileDir != 0)
+			j["m_missileDir"] = e.m_missileDir;
+		if (e.m_missileDelay != 0)
+			j["m_missileDelay"] = e.m_missileDelay;
+		if (e.m_missileArmed)
+			j["m_missileArmed"] = true;
+		if (e.m_buttonRadius != 0)
+			j["m_buttonRadius"] = e.m_buttonRadius;
 	}
 
 	WriteCombatFields(j);
@@ -10814,7 +11744,12 @@ U7Object* U7Object::LoadFromJson(const json& j)
 	    (obj->m_shapeData && obj->m_shapeData->m_shape == 275))
 	{
 		obj->m_UnitType = UnitTypes::UNIT_TYPE_EGG;
-		obj->m_Visible = true;  // TEMP: make eggs visible for debugging
+		// Shape 275 stays visible while eggs are being debugged.
+		// Shape 200 traps keep the visibility Init already set.
+		if (obj->m_ObjectType == 275)
+			obj->m_Visible = true;
+		if (obj->m_ObjectType == 200 && obj->m_name.empty() && obj->m_objectData)
+			obj->m_name = obj->m_objectData->m_name;
 	}
 
 	// Restore full egg config + runtime state (see SaveToJson).
@@ -10883,6 +11818,17 @@ U7Object* U7Object::LoadFromJson(const json& j)
 		}
 		if (j.contains("m_destMap"))
 			e.m_destMap = j["m_destMap"].get<int>();
+
+		if (j.contains("m_missileWeapon"))
+			e.m_missileWeapon = j["m_missileWeapon"].get<int>();
+		if (j.contains("m_missileDir"))
+			e.m_missileDir = static_cast<uint8_t>(j["m_missileDir"].get<int>());
+		if (j.contains("m_missileDelay"))
+			e.m_missileDelay = static_cast<uint8_t>(j["m_missileDelay"].get<int>());
+		if (j.contains("m_missileArmed"))
+			e.m_missileArmed = j["m_missileArmed"].get<bool>();
+		if (j.contains("m_buttonRadius"))
+			e.m_buttonRadius = static_cast<uint8_t>(j["m_buttonRadius"].get<int>());
 	}
 
 	obj->ReadCombatFields(j);

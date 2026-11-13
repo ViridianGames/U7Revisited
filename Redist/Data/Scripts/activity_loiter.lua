@@ -22,6 +22,11 @@ function activity_loiter(npc_id)
     local until_roll = mage and (30 + math.random() * 60) or nil
 
     while true do
+        -- Exult loiter: about 1 in 3 cycles, tend a nearby shutter or lamp.
+        if math.random(3) == 1 and try_street_maintenance then
+            try_street_maintenance(npc_id)
+        end
+
         -- Exult: walk_to_tile(..., delay = rand() % 2000 ms)
         local pause = math.random() * 2.0
         if wait then

@@ -5,6 +5,11 @@ function activity_wander(npc_id)
     npc_frame(npc_id, 0)  -- Frame 0 = standing
 
     while true do
+        -- Exult wander: about 1 in 2 strolls, tend a nearby shutter or lamp.
+        if math.random(2) == 1 and try_street_maintenance then
+            try_street_maintenance(npc_id)
+        end
+
         -- Try to find a random walkable destination within 10 tiles
         local dest_x, dest_y, dest_z = find_random_walkable(npc_id, 10.0)
 

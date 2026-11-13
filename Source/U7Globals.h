@@ -79,6 +79,9 @@ struct WeaponData
 	unsigned char powers = 0; // WeaponPower bits
 	bool autohit = false;
 	bool lucky = false; // +3 attack value on the hit roll
+	bool noBlocking = false; // flags0 bit 2. The missile flies through walls.
+	// Exult Weapon_info missile_speed: tiles per animation tick (1–4).
+	unsigned char missileSpeed = 3;
 };
 
 // One AMMO.DAT entry (shape-keyed). Extra damage added to the weapon's wpoints.
@@ -325,6 +328,8 @@ constexpr char* g_activityNames[] = {
 // Audio path helpers (paths relative to Redist working directory)
 std::string BuildU7SfxPath(int soundId);    // Audio/SFX/<bank>/U7BG_SFX_<bank>_NNN.wav
 std::string BuildU7VoicePath(int voiceFileIndex);  // Audio/Voice/U7BG_voice_NNN.wav
+// Non-empty clip in STATIC/U7SPEECH.SPC, or -1 when that speech has no audio.
+int SpeechClipIndex(int speechNumber);
 std::string BuildU7MusicPath(int trackId);  // Audio/Music/NNbg.ogg
 
 struct ObjectData
@@ -357,8 +362,9 @@ struct ObjectData
 };
 
 // Exult Shape_info::Shape_class from TFA.DAT byte1 low nibble.
-// container=6; hatchable=7 (eggs/moongates); virtue_stone=11.
+// container=6; hatchable=7 (eggs, traps, moongates); virtue_stone=11.
 constexpr char kTfaShapeClassContainer = 6;
+constexpr char kTfaShapeClassHatchable = 7;
 
 inline bool IsTfaContainerShape(const ObjectData* data)
 {
@@ -642,12 +648,19 @@ struct FlyingProjectile
 	bool directionalFrames = false;
 	// Combat-queued spell: keep fighting while in flight; pause caster orders on hit.
 	bool pauseCasterOrdersOnHit = false;
+	// Missile egg: straight flight, first person on the path takes the hit.
+	bool trapSeek = false;
+	// Copied from the weapon row. Walls do not stop this missile.
+	bool noBlocking = false;
 };
 
 extern std::vector<FlyingProjectile> g_flyingProjectiles;
 
 bool SpawnFlyingProjectile(int shape, int fromId, int toId, float speed, int damage, int damageType,
 	int weaponShape = -1, int ammoShape = -1);
+// Missile-egg dart/fireball. Flies from `from` toward `dest` and hits whoever it reaches.
+bool SpawnTrapProjectile(int shape, int attackerId, Vector3 from, Vector3 dest, float speed,
+	int weaponShape, int ammoShape, bool noBlocking);
 // Mark the newest in-flight missile from attackerId to pause their combat orders on impact.
 bool MarkNewestFlyingProjectilePauseCasterOnHit(int attackerId);
 void UpdateFlyingProjectiles();
@@ -662,6 +675,10 @@ bool ObjectEmitsDynamicLight(const U7Object* obj);
 /// Inclusive chunk range currently covered by the camera frustum (ground + tall-object pad).
 /// Used by object visibility; falls back to a distance-based radius if unprojection fails.
 void GetCameraVisibleChunkRange(int& outMinCX, int& outMaxCX, int& outMinCZ, int& outMaxCZ);
+
+/// Ground XZ is inside the camera view, grown by a quarter of that view's width.
+/// Exult street maintenance uses the same enlarge on the screen tile rect.
+bool IsWorldPointOnEnlargedScreen(float worldX, float worldZ);
 
 /// Rebuild g_sortedVisibleObjects from chunks overlapping the camera frustum.
 void UpdateSortedVisibleObjects();

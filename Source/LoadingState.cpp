@@ -108,6 +108,7 @@ void LoadMonsterData()
 		md.m_unknown0B = *ptr++;  // Byte 11: immune
 
 		value = *ptr++;  // Byte 12: cant_yell bit5, cant_bleed bit6
+		md.m_cantYell = (value & (1u << 5)) != 0;
 		md.m_cantBleed = (value & (1u << 6)) != 0;
 		value = *ptr++;  // Byte 13
 		md.m_monsterCategory = value;  // includes attack mode low bits etc.
@@ -1264,10 +1265,29 @@ void LoadingState::ParseIREGFile(stringstream& ireg, int superchunkx, int superc
 			{
 				//thisObject->m_Visible = false;
 			}
-			if (shape == 275)
+			// Shape 275 is the egg. Missile (itype 6) and button (itype 10) traps are
+			// also hatchable, usually shape 200, and use the same 12-byte record.
+			// Shape 200 itype 1 drops a fire, poison, or sleep field. Shape 200
+			// itype 5 function 1727 is a script-447 damage plate. Moongates
+			// (776, 777) and the Black Gate (305) stay ordinary objects.
+			const int itypeLow = (static_cast<int>(entryBuffer[4]) | (static_cast<int>(entryBuffer[5]) << 8)) & 0x0f;
+			const int data2Low = static_cast<int>(entryBuffer[10]) | (static_cast<int>(entryBuffer[11]) << 8);
+			const bool hatchable = shape >= 0 && shape < 1024
+				&& g_objectDataTable[shape].m_shapeType == kTfaShapeClassHatchable;
+			const bool ordinaryHatchable = shape == 305 || shape == 776 || shape == 777;
+			const bool fieldPlate = hatchable && !ordinaryHatchable && shape != 275 && itypeLow == 1;
+			const bool damagePlate = hatchable && !ordinaryHatchable && shape != 275
+				&& itypeLow == 5 && data2Low == 1727;
+			const bool combatEgg = itypeLow == 6 || itypeLow == 10 || fieldPlate || damagePlate;
+			if (shape == 275 || (hatchable && combatEgg))
 			{
 				thisObject->m_UnitType = U7Object::UnitTypes::UNIT_TYPE_EGG;
-				thisObject->m_Visible = true;  // TEMP: make eggs visible for debugging
+				// Shape 275 stays visible while eggs are being debugged.
+				// Shape 200 keeps the art AddObject already set.
+				if (shape == 275)
+					thisObject->m_Visible = true;
+				if (shape == 200 && thisObject->m_name.empty())
+					thisObject->m_name = g_objectDataTable[shape].m_name;
 				thisObject->m_Pos = {float(actualx), lift1, float(actualy)};
 
 				EggData& egg = thisObject->m_eggData;
@@ -1301,9 +1321,37 @@ void LoadingState::ParseIREGFile(stringstream& ireg, int superchunkx, int superc
 					egg.m_type = EggType::Path;
 				}
 				// Path eggs are shape 275 frame 6 (Exult remaps teleport+frame6 → path).
-				if (shape == 275 && frame == 6)
+				if (shape == 275 && frame == 6 && itypeType != 6 && itypeType != 10)
 				{
 					egg.m_type = EggType::Path;
+				}
+
+				// Frame is the trap's facing art. The behavior comes from itype.
+				// Missile eggs ignore the hatched bit so they can fire again.
+				if (itypeType == 6)
+				{
+					egg.m_type = EggType::Missile;
+					egg.m_missileWeapon = static_cast<int>(data1);
+					egg.m_missileDir = static_cast<uint8_t>(data2 & 0xff);
+					egg.m_missileDelay = static_cast<uint8_t>(data2 >> 8);
+				}
+				else if (itypeType == 10)
+				{
+					egg.m_type = EggType::Button;
+					egg.m_buttonRadius = static_cast<uint8_t>(data1 & 0xff);
+				}
+				else if (itypeType == 1)
+				{
+					// The frame is the picture. Itype 1 is a monster egg.
+					// A shape-275 frame 7 would otherwise be read as usecode.
+					egg.m_type = EggType::MonsterSpawner;
+				}
+				else if (itypeType == 5)
+				{
+					// Itype 5 is a usecode egg. Frame 0 would be a monster egg,
+					// and frame 3 would be a voice egg. Shape 200 damage plates
+					// (function 1727) land here too.
+					egg.m_type = EggType::Usecode;
 				}
 
 				egg.m_probability = prob;
@@ -1313,6 +1361,9 @@ void LoadingState::ParseIREGFile(stringstream& ireg, int superchunkx, int superc
 				egg.m_onceOnly = ((itype >> 8) & 1) != 0;
 				egg.m_hasTriggered = ((itype >> 9) & 1) != 0;
 				egg.m_autoReset = ((itype >> 15) & 1) != 0;
+				// Exult forces the hatched bit off for missile eggs so they can re-arm.
+				if (egg.m_type == EggType::Missile)
+					egg.m_hasTriggered = false;
 
 				// Specific value (speech #, usecode param, path/teleport quality, etc.)
 				egg.m_specificValue = specVal;
@@ -1355,10 +1406,20 @@ void LoadingState::ParseIREGFile(stringstream& ireg, int superchunkx, int superc
 					egg.m_teleportDest = Vector3{ destX, 0.0f, destZ };
 				}
 
-				// Voice eggs: link each egg's specificValue to an audio file explicitly.
-				if (egg.m_type == EggType::Voice && egg.m_specificValue == 31)
+				// Voice eggs: data1 low byte is the speech number in U7SPEECH.SPC.
+				if (egg.m_type == EggType::Voice)
 				{
-					egg.m_audioFile = BuildU7VoicePath(23);
+					const int clip = SpeechClipIndex(egg.m_specificValue);
+					if (clip >= 0)
+						egg.m_audioFile = BuildU7VoicePath(clip);
+				}
+
+				// Jukebox: data1 low byte is the music track. Bit 0 of the high
+				// byte loops the track while the Avatar stays inside.
+				if (egg.m_type == EggType::Jukebox)
+				{
+					egg.m_specificValue = static_cast<uint8_t>(data1 & 0xff);
+					egg.m_durationMinutes = static_cast<uint8_t>((data1 >> 8) & 0x01);
 				}
 
 				// Monster spawner specific data 
@@ -1551,14 +1612,18 @@ void LoadingState::CreateShapeTable()
 		for (int thisFrame = 0; thisFrame < numFrames; ++thisFrame)
 		{
 			ShapeData& shapeData = g_shapeTable[thisShape][thisFrame];
-			if (thisShape == 12 && thisFrame == 0)
-				continue;
 			//Log("Processing Shape " + std::to_string(thisShape) + " Frame " + std::to_string(thisFrame), "anims.log");
 			for (int i = 0; i < 8; ++i)
 			{
 				for (int j = 0; j < 8; ++j)
 				{
 					unsigned char Value = ReadU8(shapes);
+					// Shape 12 is a debug terrain tile.
+					if (thisShape == 12)
+					{
+						ImageDrawPixel(&tempImage, (thisShape * 8) + j, (thisFrame * 8) + i, BLACK);
+						continue;
+					}
 					ImageDrawPixel(&tempImage, (thisShape * 8) + j, (thisFrame * 8) + i, m_palettes[0][Value]);
 					ImageDrawPixel(&terrainIndexImage, (thisShape * 8) + j, (thisFrame * 8) + i, Color{ Value, 0, 0, 255 });
 					// Track glisten pixels only (224-243); xform 244-254 stay fixed in the LUT.

@@ -1,15 +1,30 @@
---- Best guess: Randomly applies an effect to party members based on item quality when event ID 3 is triggered, likely part of a dungeon trap.
+--- Party damage plate. Usecode 0x6BF (1727), event 3.
+--- die_roll(1, quality) is 1..quality. Func0936 is reduce_health(who, amount, 0).
 function utility_event_0447(eventid, objectref)
-    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
+    if eventid ~= 3 then
+        return
+    end
 
-    if eventid == 3 then
-        var_0000 = get_party_list2()
-        var_0001 = get_object_quality(objectref)
-        for i = 1, #var_0000 do
-            var_0004 = var_0000[i]
-            var_0005 = die_roll(var_0001, 1)
-            utility_reduce_health_1078(var_0004, var_0005)
+    local quality = get_object_quality(objectref) or 0
+    if quality < 1 then
+        return
+    end
+
+    local party = get_party_list2()
+    for i = 1, #party do
+        local npcId = party[i]
+        local amount = die_roll(1, quality)
+        local objId = get_npc_object_id(npcId)
+        if objId and objId >= 0 and amount > 0 then
+            reduce_health(objId, amount, 0)
+            local name = "Someone"
+            if get_npc_name then
+                local got = get_npc_name(npcId)
+                if type(got) == "string" and got ~= "" then
+                    name = got
+                end
+            end
+            console_log(name .. " takes " .. tostring(amount) .. " damage from a trap!")
         end
     end
-    return
 end

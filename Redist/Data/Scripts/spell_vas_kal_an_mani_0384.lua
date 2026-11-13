@@ -1,5 +1,6 @@
 --- Armageddon (Vas Kal An Mani). Eighth Circle. Oracle: usecode Func0680 / object#(0x680).
---- Untargeted. The second bark, the quake, and the deaths follow the gesture.
+--- Untargeted. The second bark and the quake follow the gesture.
+--- The deaths wait until that quake is over.
 --- Do not destroy the caster. The function name stays on script 384.
 
 function spell_vas_kal_an_mani_0384(eventid, objectref)

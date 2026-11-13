@@ -75,8 +75,10 @@ public:
    // Spatial one-shot at object world position (distance attenuation + stereo pan).
    void PlaySoundAtObject(std::string fName, int objectId, float maxRange = -1.0f);
    void StopSound(std::string fName);
-   void PlayMusic(std::string fName, float volume = -1);
+   // loop defaults to false. Pass true to repeat until StopMusic.
+   void PlayMusic(std::string fName, float volume = -1, bool loop = false);
    void StopMusic(std::string fName);
+   void SetMusicLooping(bool loop);
 
    // One-shot instrument clip (Audio/Music/NNbg.ogg) via PlaySound; ducks BGM while any play.
    // Returns true if playback started; false if toggled off (same object was already playing).
@@ -93,6 +95,7 @@ public:
 
    float GetGlobalSoundVolume() { return m_GlobalSoundVolume; }
    float GetGlobalMusicVolume() { return m_GlobalMusicVolume; }
+   const std::string& GetCurrentMusicName() const { return m_currentMusicName; }
    float GetSpatialDefaultRange() const { return m_defaultSpatialRange; }
 
    // Call Shutdown() while hook targets are still alive; it clears the hooks.
@@ -108,6 +111,7 @@ private:
    float m_spatialSmoothSpeed = 8.0f;
 
    std::string m_currentMusicName;
+   bool m_musicLoops = false;
 
    // BGM ducking while any instrument clip is playing.
    bool m_isDuckingBgm = false;

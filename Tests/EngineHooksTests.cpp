@@ -27,6 +27,7 @@ std::unique_ptr<ScriptingSystem> g_ScriptingSystem;
 static std::vector<std::unique_ptr<rAudioBuffer>> buffers;
 static Sound lastPlayed{};
 static float musicVolume = 1.0f;
+static bool musicPlaying = false;
 static int failures = 0;
 
 static void Expect(bool condition, const std::string& message)
@@ -91,9 +92,10 @@ bool IsSoundPlaying(Sound sound) { return sound.stream.buffer->playing; }
 void StopSound(Sound sound) { sound.stream.buffer->playing = false; }
 void SetSoundVolume(Sound sound, float volume) { sound.stream.buffer->volume = volume; }
 void SetSoundPan(Sound sound, float pan) { sound.stream.buffer->pan = pan; }
-void PlayMusicStream(Music) {}
-void StopMusicStream(Music) {}
+void PlayMusicStream(Music) { musicPlaying = true; }
+void StopMusicStream(Music) { musicPlaying = false; }
 void UpdateMusicStream(Music) {}
+bool IsMusicStreamPlaying(Music) { return musicPlaying; }
 void SetMusicVolume(Music, float volume) { musicVolume = volume; }
 
 static SoundSystemHooks WorldHooks(Vector3& position, Camera& camera)
@@ -234,6 +236,29 @@ static void TestInstrumentNotifications()
     Expect(events == std::vector<int>({42, -42, 42, -42}), "repeated shutdown does not duplicate notifications");
 }
 
+static void TestMusicPlaysOnce()
+{
+    SoundSystem sound;
+    sound.PlayMusic("music");
+    Expect(sound.GetCurrentMusicName() == "music", "one-shot becomes the current track");
+    Expect(!g_ResourceManager->GetMusic("music")->looping, "default playback plays once");
+    sound.Update();
+    Expect(sound.GetCurrentMusicName() == "music", "one-shot keeps playing until the stream ends");
+    musicPlaying = false;
+    sound.Update();
+    Expect(sound.GetCurrentMusicName().empty(), "finished one-shot stops and clears the current track");
+
+    sound.PlayMusic("music", -1, true);
+    Expect(g_ResourceManager->GetMusic("music")->looping, "an explicit loop request repeats");
+    musicPlaying = false;
+    sound.Update();
+    Expect(sound.GetCurrentMusicName() == "music", "a looping track stays current when the stream reports stopped");
+    sound.SetMusicLooping(false);
+    Expect(!g_ResourceManager->GetMusic("music")->looping, "looping can be turned off without restarting");
+    sound.Update();
+    Expect(sound.GetCurrentMusicName().empty(), "a track that was set to play once stops after the stream ends");
+}
+
 static void AddYieldingScript(ScriptingSystem& scripts, const std::string& key)
 {
     lua_State* co = lua_newthread(scripts.m_luaState);
@@ -311,6 +336,7 @@ int main()
     TestPartialHooks();
     TestWorldAudio();
     TestInstrumentNotifications();
+    TestMusicPlaysOnce();
     TestNpcResume();
     if (failures == 0)
         std::cout << "All engine hook contract tests passed.\n";
