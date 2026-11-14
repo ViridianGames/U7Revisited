@@ -223,6 +223,7 @@ set(SOURCES
     Source/TitleState.cpp
     Source/U7GumpNumberBar.cpp
     Source/U7GumpBook.cpp
+    Source/U7VgaFont.cpp
     Source/LoadSaveState.cpp
     Source/U7GumpMinimap.cpp
     Source/U7GumpPaperdoll.cpp

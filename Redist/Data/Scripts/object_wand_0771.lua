@@ -1,33 +1,75 @@
---- Best guess: Handles a wand's interaction with specific items (e.g., Black Gate, ID 305) or NPCs (e.g., Batlin, ID 403), triggering effects or dialogue.
-function object_wand_0771(eventid, objectref)
-    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
+--- Rudyom's Wand (shape 771). Double-click aims it.
+--- Any target thunders. Blackrock (914) is removed. The Black Gate (305)
+--- speaks Batlin's line while he is nearby; with the beams of light gone
+--- and Batlin absent, it calls the ending.
 
-    if eventid == 4 then
-        var_0000 = objectref
-    else
-        var_0000 = object_select_modal()
-    end
-    if var_0000 then
-        close_gumps()
-        var_0001 = get_object_shape(var_0000)
-        if var_0001 == 914 then
-            var_0002 = utility_direction_to_target_1069(var_0000)
-            var_0003 = execute_usecode_array(var_0000, {7981, 5, 7719})
-            var_0003 = set_to_attack(704, var_0000, -356)
-            var_0003 = execute_usecode_array(-356, {17530, 17505, 17511, 8449, var_0002, 7769})
-        elseif var_0001 == 305 then
-            var_0004 = find_nearby(176, 12, 168, objectref)
-            var_0005 = find_nearby(0, 80, 403, -356)
-            if not var_0005 and not var_0004 then
-                run_endgame(true)
-            else
-                switch_talk_to(26)
-                add_dialogue("The wand glows faintly. Batlin smirks. \"Not yet, Avatar.\"")
-                hide_npc(26)
-                abort()
-            end
+local BLACKROCK = 914
+local BLACK_GATE = 305
+local BEAM = 168
+local BATLIN = 403
+
+local function nonempty(list)
+    return type(list) == "table" and #list > 0
+end
+
+-- A wand in a pack sits at the void point. Measure from whoever is holding it.
+local function outermost(id)
+    local guard = 0
+    while id and guard < 8 do
+        local parent = get_container(id)
+        if not parent or parent == 0 then
+            return id
         end
-        play_sound_effect(62)
-        start_endgame()
+        id = parent
+        guard = guard + 1
     end
+    return id
+end
+
+local function strike()
+    play_sound_effect(62)
+    lightning()
+end
+
+function object_wand_0771(eventid, objectref)
+    -- Event 4 is a weapon hit: the caller passes the thing that was struck.
+    local target
+    if eventid == 4 then
+        target = objectref
+    else
+        target = object_select_modal()
+    end
+    if not target or target == 0 then
+        return
+    end
+
+    close_gumps()
+    local shape = get_object_shape(target)
+    local avatar = get_avatar_ref()
+
+    if shape == BLACKROCK then
+        if avatar and avatar > 0 then
+            local dir = find_direction(avatar, target) or 0
+            -- Face the rock, ready, then stand. The powder-keg swing stays off
+            -- this path; the rock is removed on its own after one second.
+            execute_usecode_array(avatar, {17505, 17511, 8449, dir, 7769})
+        end
+        execute_usecode_array(target, {7981, 5, 7719})
+    elseif shape == BLACK_GATE then
+        local near = (eventid == 4) and target or outermost(objectref)
+        local beams = find_nearby(near, BEAM, 12, 0) or {}
+        local batlin = find_nearby(-356, BATLIN, 80, 0) or {}
+        if nonempty(batlin) then
+            start_conversation()
+            switch_talk_to(26, 0)
+            add_dialogue("The wand glows faintly. Batlin smirks. \"Not yet, Avatar.\"")
+            return
+        end
+        if not nonempty(beams) then
+            console_log("Rudyom's Wand: the Black Gate ending starts.")
+            run_endgame(true)
+        end
+    end
+
+    strike()
 end

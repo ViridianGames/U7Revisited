@@ -197,5 +197,5 @@ function object_sign_0820(eventid, objectref)
     elseif var_0001 == 65 then
         var_000A = {"see (is", "wish to", "do, not", "(ou"}
     end
-    display_sign(var_000A, 51)
+    display_sign(51, var_000A)
 end

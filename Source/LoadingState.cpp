@@ -4,6 +4,7 @@
 #include "Geist/Engine.h"
 #include "Geist/ResourceManager.h"
 #include "U7Globals.h"
+#include "U7VgaFont.h"
 #include "LoadingState.h"
 #include "PathfindingSystem.h"
 #include "WeatherSystem.h"
@@ -299,6 +300,10 @@ void LoadingState::UpdateLoading()
 			AddConsoleString(std::string("Loading sprites..."));
 			LoadSprites();
 			ExtractGumps();
+			if (!m_palettes.empty())
+			{
+				LoadU7VgaFonts(m_palettes[0]);
+			}
 			m_loadingSprites = true;
 			return;
 		}

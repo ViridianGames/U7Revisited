@@ -1898,6 +1898,13 @@ void WeatherSystem::PulseLightningFlash()
 	m_flashTimer = 0.12f;
 }
 
+void WeatherSystem::StartUsecodeLightning()
+{
+	// Long enough to read. Storm blinks stay on kFlashDuration.
+	m_flashTimer = 0.22f;
+	m_usecodeLightningFlash = true;
+}
+
 void WeatherSystem::SetWeather(int type, int durationMinutes, bool fromEgg,
 	Vector3 eggOrigin, int eggObjectId, int intensity)
 {
@@ -3289,6 +3296,18 @@ void WeatherSystem::UpdateBlendFades(float dt)
 
 void WeatherSystem::Update(float dt)
 {
+	// Count this down before the clear-weather return, or the flash stays on.
+	if (m_usecodeLightningFlash)
+	{
+		if (m_flashTimer > 0.0f)
+			m_flashTimer -= dt;
+		if (m_flashTimer <= 0.0f)
+		{
+			m_flashTimer = 0.0f;
+			m_usecodeLightningFlash = false;
+		}
+	}
+
 	UpdateWindYaw(dt);
 	UpdateBlendFades(dt);
 	UpdateFlagCloth(dt);
@@ -3445,7 +3464,8 @@ void WeatherSystem::Update(float dt)
 
 	// Exult Lightning_effect: flash+SFX 62 when not in dungeon (no day/night gate).
 	// U7R: suppress in dungeon only; night storms may thunder.
-	if (m_type == WeatherType::Rain && !g_dungeonViewActive && !IsFadingOut())
+	if (m_type == WeatherType::Rain && !g_dungeonViewActive && !IsFadingOut()
+		&& !m_usecodeLightningFlash)
 	{
 		if (m_flashTimer > 0)
 		{
@@ -3468,7 +3488,8 @@ void WeatherSystem::Update(float dt)
 			}
 		}
 	}
-	else if (m_type != WeatherType::Rain || g_dungeonViewActive)
+	else if (!m_usecodeLightningFlash
+		&& (m_type != WeatherType::Rain || g_dungeonViewActive))
 	{
 		m_flashTimer = 0;
 	}
@@ -3476,6 +3497,14 @@ void WeatherSystem::Update(float dt)
 
 void WeatherSystem::ApplyLightingModifiers(Color& dayNightColor, bool isDay) const
 {
+	// Usecode lightning() whites the world even indoors and in dungeons.
+	// Storm flashes still stop at the shelter check below.
+	if (m_usecodeLightningFlash && m_flashTimer > 0.0f)
+	{
+		dayNightColor = { 255, 255, 255, 255 };
+		return;
+	}
+
 	if (!EffectsEnabled() || IsAvatarSheltered())
 	{
 		return;

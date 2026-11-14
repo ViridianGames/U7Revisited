@@ -100,6 +100,9 @@ public:
 		m_doingObjectSelection = true;
 		m_pendingUseTargetId = -1;
 		m_selectingGroundTile = false;
+		// Inventory and paperdoll double-clicks run before ResolveUseCursorTarget
+		// in the same frame. That click must not also become the target.
+		m_deferGroundTileClick = true;
 	}
 	// Same green use cursor. An empty-ground click is a valid target.
 	void StartTileSelectionMode(float preferredY);

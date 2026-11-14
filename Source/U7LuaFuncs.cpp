@@ -2674,6 +2674,58 @@ static int LuaOpenBook(lua_State *L)
     return 0;
 }
 
+// Exult display_runes. Arg order is (gump number, text). Gump 49 is a wooden
+// sign, 50 a gravestone, 51 a gold plaque. A string or a line table both work.
+static int LuaDisplaySign(lua_State *L)
+{
+    int gumpNum = 49;
+    int textIndex = 2;
+    const bool textFirst = lua_istable(L, 1) || (lua_isstring(L, 1) && !lua_isnumber(L, 1));
+    if (textFirst)
+    {
+        textIndex = 1;
+        gumpNum = static_cast<int>(lua_tointeger(L, 2));
+    }
+    else if (lua_gettop(L) >= 1)
+    {
+        gumpNum = static_cast<int>(lua_tointeger(L, 1));
+    }
+
+    vector<string> lines;
+    if (lua_istable(L, textIndex))
+    {
+        const int count = static_cast<int>(lua_rawlen(L, textIndex));
+        for (int i = 1; i <= count; ++i)
+        {
+            lua_rawgeti(L, textIndex, i);
+            if (lua_isstring(L, -1))
+            {
+                lines.emplace_back(lua_tostring(L, -1));
+            }
+            lua_pop(L, 1);
+        }
+    }
+    else if (lua_isstring(L, textIndex))
+    {
+        lines.emplace_back(lua_tostring(L, textIndex));
+    }
+
+    int bookType = static_cast<int>(BookType::BOOK_WOODEN_SIGN);
+    if (gumpNum == 50)
+    {
+        bookType = static_cast<int>(BookType::BOOK_GRAVESTONE);
+    }
+    else if (gumpNum == 51)
+    {
+        bookType = static_cast<int>(BookType::BOOK_PLAQUE);
+    }
+
+    GumpBook signGump;
+    signGump.Setup(bookType, lines);
+    g_gumpManager->AddGump(make_shared<GumpBook>(signGump));
+    return 0;
+}
+
 // static int LuaWait(lua_State *L)
 // {
 //     if (g_LuaDebug)
@@ -5395,8 +5447,19 @@ static int LuaIsWater(lua_State *L)
 }
 
 // 0x000F | play_sound_effect(sound_id [, object_id [, max_range]])
+// A string plays that file through the same player as a numbered effect.
 static int LuaPlaySoundEffect(lua_State *L)
 {
+    if (lua_type(L, 1) == LUA_TSTRING)
+    {
+        const char* path = lua_tostring(L, 1);
+        if (path && path[0] != '\0' && g_SoundSystem)
+        {
+            g_SoundSystem->PlaySound(path);
+        }
+        return 0;
+    }
+
     int sound_id = (int)luaL_checkinteger(L, 1);
     if (sound_id < 0)
     {
@@ -6093,6 +6156,17 @@ static int LuaStopTime(lua_State *L)
 static int LuaRestartGame(lua_State *L)
 {
     // Game restart not implemented - would reload from start
+    return 0;
+}
+
+// 0x005D | lightning() — one screen flash. The wand also plays sfx 62 itself.
+static int LuaLightning(lua_State *L)
+{
+    (void)L;
+    if (g_WeatherSystem)
+    {
+        g_WeatherSystem->StartUsecodeLightning();
+    }
     return 0;
 }
 
@@ -7342,6 +7416,7 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction("get_time_minute", LuaGetTimeMinute);
     g_ScriptingSystem->RegisterScriptFunction("get_schedule_time", LuaGetScheduleTime);
     g_ScriptingSystem->RegisterScriptFunction("open_book", LuaOpenBook);
+    g_ScriptingSystem->RegisterScriptFunction("display_sign", LuaDisplaySign);
     g_ScriptingSystem->RegisterScriptFunction("bark", LuaBark);
     g_ScriptingSystem->RegisterScriptFunction("play_music", LuaPlayMusic);
 
@@ -7527,6 +7602,7 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction( "flash_mouse", LuaFlashMouse);
     g_ScriptingSystem->RegisterScriptFunction( "stop_time", LuaStopTime);
     g_ScriptingSystem->RegisterScriptFunction( "restart_game", LuaRestartGame);
+    g_ScriptingSystem->RegisterScriptFunction( "lightning", LuaLightning);
     g_ScriptingSystem->RegisterScriptFunction( "run_endgame", LuaRunEndgame);
     g_ScriptingSystem->RegisterScriptFunction( "get_item_frame_rot", LuaGetItemFrameRot);
     g_ScriptingSystem->RegisterScriptFunction( "set_item_frame_rot", LuaSetItemFrameRot);

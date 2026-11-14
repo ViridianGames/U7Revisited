@@ -154,8 +154,16 @@ public:
 
 	void SetWeather(int type, int durationMinutes = 0, bool fromEgg = false,
 		Vector3 eggOrigin = { 0, 0, 0 }, int eggObjectId = -1, int intensity = -1);
-	// Usecode lightning(): one screen flash. Rain draws it; dungeons clear it.
+	// Rain thunder. Cleared immediately when it is not raining.
 	void PulseLightningFlash();
+	// Usecode lightning(): one flash, including clear weather and dungeons.
+	void StartUsecodeLightning();
+	// True while that flash should cover the screen. Daylight ambient is already
+	// white, so the palette tint alone does not read.
+	bool IsUsecodeLightningActive() const
+	{
+		return m_usecodeLightningFlash && m_flashTimer > 0.0f;
+	}
 
 	bool HasEggOrigin() const { return m_hasEggOrigin; }
 	Vector3 GetEggOrigin() const { return m_eggOrigin; }
@@ -409,6 +417,8 @@ private:
 	float m_skySpawnAccumulator = 0;
 	float m_flashTimer = 0;
 	float m_flashCooldown = 0;
+	// Keeps m_flashTimer alive outside rain for StartUsecodeLightning().
+	bool m_usecodeLightningFlash = false;
 	std::string m_activeWeatherMusicPath;
 
 	// Last camera for storm ticks that spawn world clouds between Draws.

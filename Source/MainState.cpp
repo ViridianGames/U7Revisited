@@ -1847,11 +1847,11 @@ void MainState::OpenUseCursorContainer(U7Object* object)
 
 void MainState::ResolveUseCursorTarget()
 {
-	// Opening cast click is still this frame's double-click. Wait for a new one.
+	// The click that opened the use cursor is still this frame. Wait for a new one.
 	if (m_deferGroundTileClick)
 	{
 		m_deferGroundTileClick = false;
-		if (m_selectingGroundTile)
+		if (m_objectSelectionMode)
 			return;
 	}
 
@@ -4436,6 +4436,11 @@ void MainState::Draw()
 		const float arm = 6.0f * g_DrawScale;
 		DrawLineEx({ cx - arm, cy }, { cx + arm, cy }, 2.0f, Fade(WHITE, 0.7f));
 		DrawLineEx({ cx, cy - arm }, { cx, cy + arm }, 2.0f, Fade(WHITE, 0.7f));
+	}
+
+	if (g_WeatherSystem && g_WeatherSystem->IsUsecodeLightningActive())
+	{
+		DrawRectangle(0, 0, g_Engine->m_ScreenWidth, g_Engine->m_ScreenHeight, { 255, 255, 255, 210 });
 	}
 
 	DrawRectangle(0, 0, g_Engine->m_ScreenWidth, g_Engine->m_ScreenHeight, { 0, 0, 0, m_currentFadeAlpha });
