@@ -28,8 +28,10 @@ enum class CuboidTexture
 	CUBOID_DRAW_TOP_INVERTED,
 	CUBOID_DRAW_FRONT_INVERTED,
 	CUBOID_DRAW_RIGHT_INVERTED,
-	CUBOID_DRAW_LAST,
-	CUBOID_INVALID,
+	// 7 is unused in shapetable.dat. 8 stays CUBOID_INVALID (saved on many frames).
+	CUBOID_DRAW_BLACK = 7,
+	CUBOID_INVALID = 8,
+	CUBOID_DRAW_LAST = 9,
 };
 
 enum class ShapeDrawType
@@ -79,6 +81,17 @@ public:
 
 	void SetupDrawTypes();
 	void UpdateTextures();
+
+	// Image the cuboid face rects are cut from. A loaded custom texture wins;
+	// otherwise this is the shape/frame sprite.
+	ModTexture* GetCuboidSource();
+	Texture* GetCuboidSourceTexture();
+
+	// Empty path restores the sprite. Does not reset the face rects.
+	// Returns false when a non-empty path cannot be loaded (the previous path stays).
+	bool SetCuboidTexturePath(const std::string& path);
+	bool LoadCuboidSource();
+	void RebuildCuboidAtlas();
 
 	void Serialize(std::ofstream& outputStream );
 	void Deserialize(std::ifstream& inputStream);
@@ -231,6 +244,12 @@ public:
 	bool m_meshOutline = true;
 
 	std::string m_luaScript;
+
+	// Optional cuboid face source. Empty means the shape/frame sprite.
+	// Stored as one shapetable token after modelPaletteCycle, relative to Redist
+	// (for example Models/3dmodels/dirtwall.png).
+	std::string m_cuboidTexturePath;
+	std::unique_ptr<ModTexture> m_cuboidSourceTexture;
 
 	RaylibModel* m_flatModel = nullptr;
 	RaylibModel* m_uprightFlatModel = nullptr;

@@ -33,6 +33,18 @@ namespace
 	constexpr Vector3 kFlagHingeCenterXZ = { 0.0f, 0.0f, 0.0f };
 	constexpr float kFlagPostSearchRadius = 3.0f; // tiles — pair cloth to mast 713
 
+	// ModTexture does not unload its CPU image. Drop it before replacing the owner.
+	void ReleaseModTextureImage(ModTexture* texture)
+	{
+		if (texture == nullptr || texture->m_Image.data == nullptr)
+		{
+			return;
+		}
+		UnloadImage(texture->m_Image);
+		texture->m_Image = { 0 };
+		texture->m_OriginalImage = { 0 };
+	}
+
 	// Local hinge after LoadingState Decenter(): DrawModelEx rotates about local
 	// origin (= AABB XZ center). Point is in authored space — subtract Decenter.
 	Vector3 FlagHingeLocal(RaylibModel* mesh)
@@ -138,8 +150,10 @@ ShapeData::ShapeData()
 	m_meshOutline = true;
 	m_useShapePointer = false;
 	m_luaScript = "default";
+	m_cuboidTexturePath = "";
 	m_texture = nullptr;
 	m_cuboidTexture = nullptr;
+	m_cuboidSourceTexture = nullptr;
 }
 
 void ShapeData::Init(int shape, int frame, bool shouldreset)
@@ -155,11 +169,10 @@ void ShapeData::Init(int shape, int frame, bool shouldreset)
 	}
 	else
 	{
-		Image image = GenImageColor(m_texture->m_Image.width * 2, m_texture->m_Image.height * 2, Color{ 0, 0, 0, 0 });
+		LoadCuboidSource();
+		RebuildCuboidAtlas();
 
-		m_cuboidTexture = std::make_unique<ModTexture>(image);
-
-		m_isValid = true;
+		m_isValid = (m_cuboidTexture != nullptr);
 
 		ObjectData* objectData = &g_objectDataTable[m_shape];
 
@@ -462,8 +475,15 @@ void ShapeData::Serialize(ofstream& outStream)
 	outStream << m_pointerShape << " ";
 	outStream << m_pointerFrame << " ";
 	outStream << m_luaScript << " ";
-	// Optional trailing field (older shapetable.dat lines omit this; default true).
+	// Optional trailing fields (older shapetable.dat lines omit these).
+	// modelPaletteCycle defaults true. The cuboid texture path is written only when set,
+	// so a full save does not add a token to every line.
 	outStream << (m_modelPaletteCycle ? 1 : 0) << " ";
+	if (!m_cuboidTexturePath.empty())
+	{
+		std::replace(m_cuboidTexturePath.begin(), m_cuboidTexturePath.end(), '\\', '/');
+		outStream << m_cuboidTexturePath << " ";
+	}
 	outStream << endl;
 
 	outStream.flush();
@@ -533,8 +553,9 @@ void ShapeData::Deserialize(ifstream& inStream)
 
 	inStream >> m_luaScript;
 
-	// Optional: model palette cycle (default true for pre-flag shapetable lines).
+	// Optional: model palette cycle (default true), then an optional cuboid texture path.
 	m_modelPaletteCycle = true;
+	m_cuboidTexturePath.clear();
 	{
 		std::string trailing;
 		std::getline(inStream, trailing);
@@ -543,6 +564,23 @@ void ShapeData::Deserialize(ifstream& inStream)
 		if (rest >> flag)
 		{
 			m_modelPaletteCycle = (flag != 0);
+			std::string path;
+			if (rest >> path)
+			{
+				std::replace(path.begin(), path.end(), '\\', '/');
+				m_cuboidTexturePath = path;
+			}
+		}
+		else
+		{
+			rest.clear();
+			rest.seekg(0);
+			std::string path;
+			if (rest >> path)
+			{
+				std::replace(path.begin(), path.end(), '\\', '/');
+				m_cuboidTexturePath = path;
+			}
 		}
 	}
 
@@ -564,11 +602,16 @@ void ShapeData::ResetTopTextureRect()
 void ShapeData::ResetFrontTextureRect()
 {
 	ObjectData* objectData = &g_objectDataTable[m_shape];
+	ModTexture* source = GetCuboidSource();
+	if (source == nullptr)
+	{
+		return;
+	}
 
 	m_frontTextureRect.x = 0;
 	m_frontTextureRect.y = objectData->m_depth * 8;
 	m_frontTextureRect.width = objectData->m_width * 8;
-	m_frontTextureRect.height = m_texture->height - objectData->m_depth * 8;
+	m_frontTextureRect.height = source->height - objectData->m_depth * 8;
 
 	SafeAndSane();
 }
@@ -576,20 +619,124 @@ void ShapeData::ResetFrontTextureRect()
 void ShapeData::ResetRightTextureRect()
 {
 	ObjectData* objectData = &g_objectDataTable[m_shape];
+	ModTexture* source = GetCuboidSource();
+	if (source == nullptr)
+	{
+		return;
+	}
 
 	m_rightTextureRect.x = objectData->m_width * 8;
 	m_rightTextureRect.y = 0;
-	m_rightTextureRect.width = m_texture->width - objectData->m_width * 8;
+	m_rightTextureRect.width = source->width - objectData->m_width * 8;
 	m_rightTextureRect.height = objectData->m_depth * 8;
 
 	SafeAndSane();
 }
 
+ModTexture* ShapeData::GetCuboidSource()
+{
+	if (m_cuboidSourceTexture != nullptr
+		&& m_cuboidSourceTexture->m_Image.data != nullptr
+		&& m_cuboidSourceTexture->width > 0
+		&& m_cuboidSourceTexture->height > 0)
+	{
+		return m_cuboidSourceTexture.get();
+	}
+	return m_texture.get();
+}
+
+Texture* ShapeData::GetCuboidSourceTexture()
+{
+	ModTexture* source = GetCuboidSource();
+	if (source == nullptr)
+	{
+		return nullptr;
+	}
+	return &source->m_Texture;
+}
+
+bool ShapeData::LoadCuboidSource()
+{
+	if (m_cuboidSourceTexture)
+	{
+		ReleaseModTextureImage(m_cuboidSourceTexture.get());
+		m_cuboidSourceTexture.reset();
+	}
+
+	if (m_cuboidTexturePath.empty())
+	{
+		return true;
+	}
+
+	if (!FileExists(m_cuboidTexturePath.c_str()))
+	{
+		Log("Cuboid texture not found: " + m_cuboidTexturePath);
+		return false;
+	}
+
+	Image image = LoadImage(m_cuboidTexturePath.c_str());
+	if (image.data == nullptr || image.width <= 0 || image.height <= 0)
+	{
+		if (image.data != nullptr)
+		{
+			UnloadImage(image);
+		}
+		Log("Cuboid texture failed to load: " + m_cuboidTexturePath);
+		return false;
+	}
+
+	ImageFormat(&image, PIXELFORMAT_UNCOMPRESSED_R8G8B8A8);
+	m_cuboidSourceTexture = std::make_unique<ModTexture>(image);
+	return m_cuboidSourceTexture != nullptr && m_cuboidSourceTexture->m_Image.data != nullptr;
+}
+
+void ShapeData::RebuildCuboidAtlas()
+{
+	ModTexture* source = GetCuboidSource();
+	if (source == nullptr || source->m_Image.width <= 0 || source->m_Image.height <= 0)
+	{
+		return;
+	}
+
+	if (m_cuboidTexture)
+	{
+		ReleaseModTextureImage(m_cuboidTexture.get());
+	}
+
+	Image image = GenImageColor(source->m_Image.width * 2, source->m_Image.height * 2, Color{ 0, 0, 0, 0 });
+	m_cuboidTexture = std::make_unique<ModTexture>(image);
+}
+
+bool ShapeData::SetCuboidTexturePath(const std::string& path)
+{
+	std::string cleaned = path;
+	std::replace(cleaned.begin(), cleaned.end(), '\\', '/');
+
+	const std::string previous = m_cuboidTexturePath;
+	m_cuboidTexturePath = cleaned;
+	if (!LoadCuboidSource())
+	{
+		m_cuboidTexturePath = previous;
+		LoadCuboidSource();
+		return false;
+	}
+
+	RebuildCuboidAtlas();
+	if (m_cuboidTexture != nullptr)
+	{
+		SafeAndSane();
+		UpdateTextures();
+	}
+	return true;
+}
+
 void ShapeData::SafeAndSane()
 {
-
-
-	ModTexture* textureToUse = m_texture.get();
+	ModTexture* textureToUse = GetCuboidSource();
+	if (textureToUse == nullptr || textureToUse->width < 1 || textureToUse->height < 1)
+	{
+		return;
+	}
 
 	if (m_topTextureRect.width > textureToUse->width) { m_topTextureRect.width = textureToUse->width; }
 	if (m_topTextureRect.height > textureToUse->height) { m_topTextureRect.height = textureToUse->height; }
@@ -708,14 +855,18 @@ void ShapeData::UpdateTextures()
 
 	SafeAndSane();
 
-	ModTexture* textureToUse = m_texture.get();
+	ModTexture* source = GetCuboidSource();
+	if (source == nullptr || source->m_Image.data == nullptr)
+	{
+		return;
+	}
 
 	int startx = 0;
 	int starty = 0;
 
 	ImageClearBackground(&m_cuboidTexture->m_Image, { 0, 0, 0, 0 });
 
-	ImageDraw(&m_cuboidTexture->m_Image, m_texture->m_Image, m_topTextureRect,
+	ImageDraw(&m_cuboidTexture->m_Image, source->m_Image, m_topTextureRect,
 		{ 0, 0, m_topTextureRect.width, m_topTextureRect.height }, WHITE);
 
 	//  Front face unslant
@@ -724,28 +875,28 @@ void ShapeData::UpdateTextures()
 	{
 		//  Count empty pixels at the beginning of this line
 		int offset = 0;
-		for (int j = m_frontTextureRect.x; j < m_texture.get()->width; ++j)
+		for (int j = m_frontTextureRect.x; j < source->width; ++j)
 		{
-			Color thisPixel = GetImageColor(m_texture->m_Image, j, i);
+			Color thisPixel = GetImageColor(source->m_Image, j, i);
 			if (thisPixel.a == 0 && thisPixel.r == 0 && thisPixel.g == 0 && thisPixel.b == 0)
 				++offset;
 			else
 				break;
 		}
 
-		if (offset == m_texture->width)
+		if (offset == source->width)
 		{
 			//  There were no pixels to copy on this line
 			continue;
 		}
 
 		float finalwidth = m_frontTextureRect.width;
-		if (m_frontTextureRect.x + offset + m_frontTextureRect.width >= m_texture->width)
+		if (m_frontTextureRect.x + offset + m_frontTextureRect.width >= source->width)
 		{
-			finalwidth = m_texture.get()->width - (m_frontTextureRect.x + offset);
+			finalwidth = source->width - (m_frontTextureRect.x + offset);
 		}
 
-		ImageDraw(&m_cuboidTexture->m_Image, m_texture->m_Image,
+		ImageDraw(&m_cuboidTexture->m_Image, source->m_Image,
 			{ m_frontTextureRect.x + offset, m_frontTextureRect.y + counter, finalwidth, 1 }, //  Source rect
 			{ 0, m_topTextureRect.height + counter + 1, finalwidth, 1 }, //  Dest rect
 			WHITE
@@ -760,34 +911,41 @@ void ShapeData::UpdateTextures()
 	{
 		//  Count empty pixels at the beginning of this line
 		int offset = 0;
-		for (int j = m_rightTextureRect.y; j < m_texture.get()->height; ++j)
+		for (int j = m_rightTextureRect.y; j < source->height; ++j)
 		{
-			Color thisPixel = GetImageColor(m_texture->m_Image, i, j);
+			Color thisPixel = GetImageColor(source->m_Image, i, j);
 			if (thisPixel.a == 0 && thisPixel.r == 0 && thisPixel.g == 0 && thisPixel.b == 0)
 				++offset;
 			else
 				break;
 		}
 
-		if (offset == m_texture->height)
+		if (offset == source->height)
 		{
 			//  There were no pixels to copy on this line
 			continue;
 		}
 
 		float finalheight = m_rightTextureRect.height;
-		if (m_rightTextureRect.y + offset + m_rightTextureRect.height >= m_texture->height)
+		if (m_rightTextureRect.y + offset + m_rightTextureRect.height >= source->height)
 		{
-			finalheight = m_texture.get()->height - (m_rightTextureRect.y + offset);
+			finalheight = source->height - (m_rightTextureRect.y + offset);
 		}
 
-		ImageDraw(&m_cuboidTexture->m_Image, m_texture->m_Image,
+		ImageDraw(&m_cuboidTexture->m_Image, source->m_Image,
 		{ m_rightTextureRect.x + counter, m_rightTextureRect.y + offset, 1, finalheight }, //  Source rect
 		{ m_topTextureRect.width + counter + 1, m_rightTextureRect.y, 1, finalheight }, //  Dest rect
 			WHITE
 		);
 
 		++counter;
+	}
+
+	// Solid black for the Black side option. Last column, top row: the don't-draw
+	// corner is the bottom-right, and face rects are packed from the top-left.
+	if (m_cuboidTexture->m_Image.width > 0 && m_cuboidTexture->m_Image.height > 0)
+	{
+		ImageDrawPixel(&m_cuboidTexture->m_Image, m_cuboidTexture->m_Image.width - 1, 0, Color{ 0, 0, 0, 255 });
 	}
 
 	m_cuboidTexture->UpdateTexture();
@@ -881,6 +1039,18 @@ void ShapeData::UpdateTextureCoordinates()
 	1.0f,	.75f,
 	};
 
+	// Center of the opaque black texel stamped in UpdateTextures.
+	const float blackU = (static_cast<float>(m_cuboidTexture->width) - 0.5f) / static_cast<float>(m_cuboidTexture->width);
+	const float blackV = 0.5f / static_cast<float>(m_cuboidTexture->height);
+	float blackUVCoords[6 * 2] = {
+		blackU, blackV,
+		blackU, blackV,
+		blackU, blackV,
+		blackU, blackV,
+		blackU, blackV,
+		blackU, blackV,
+	};
+
     float shaderUVCoords[72];
 	for (int i = 0; i < 6; ++i)
 	{
@@ -919,6 +1089,11 @@ void ShapeData::UpdateTextureCoordinates()
 		case CuboidTexture::CUBOID_DONT_DRAW:
 		{
             memcpy(&shaderUVCoords[i * 6 * 2], dontdrawUVCoords, 6 * 2 * sizeof(float));
+			break;
+		}
+		case CuboidTexture::CUBOID_DRAW_BLACK:
+		{
+            memcpy(&shaderUVCoords[i * 6 * 2], blackUVCoords, 6 * 2 * sizeof(float));
 			break;
 		}
 		}
@@ -1637,6 +1812,7 @@ void ShapeData::SetTextureForMeshFromSideData(CuboidSides side)
 	case CuboidTexture::CUBOID_DRAW_TOP_INVERTED:
 	case CuboidTexture::CUBOID_DRAW_FRONT_INVERTED:
 	case CuboidTexture::CUBOID_DRAW_RIGHT_INVERTED:
+	case CuboidTexture::CUBOID_DRAW_BLACK:
 	{
 		SetMaterialTexture(&g_CuboidModel.get()->materials[0], MATERIAL_MAP_DIFFUSE, m_cuboidTexture->m_Texture);
 		break;

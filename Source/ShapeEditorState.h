@@ -70,7 +70,7 @@ public:
    std::string m_pendingRenameOldName;
    std::string m_pendingRenameNewName;
 
-   std::string m_sideDrawStrings[7];
+   std::string m_sideDrawStrings[8];
    std::string m_sideStrings[6];
 
    int m_luaScriptIndex = 0;
@@ -79,6 +79,11 @@ public:
    std::vector<std::string> m_scriptSearchLabels;  // "name  first line" for each m_scriptFiles entry
    std::vector<int> m_scriptSearchResults;         // m_scriptFiles index for each row of the results list
    std::string m_lastScriptSearch;
+
+   // Cuboid face textures under Models/3dmodels. Search paths use "" for the sprite.
+   std::vector<std::string> m_cuboidTextureFiles;
+   std::vector<std::string> m_cuboidTextureSearchPaths;
+   std::string m_lastCuboidTextureSearch;
 
    // DEEP BREATH
 
@@ -246,6 +251,14 @@ public:
       GE_CLEARALLSCRIPTSBUTTON,
 
       GE_VIEWANGLESLIDER,
+
+      // Cuboid-only. Drawn on the left of the view, not in the side panel.
+      GE_CUBOIDTEXTURELABEL,
+      GE_PREVCUBOIDTEXTUREBUTTON,
+      GE_CUBOIDTEXTURETEXTAREA,
+      GE_NEXTCUBOIDTEXTUREBUTTON,
+      GE_CUBOIDTEXTURESEARCHINPUT,
+      GE_CUBOIDTEXTURESEARCHLIST,
 
       GE_LASTGUIELEMENT,
 

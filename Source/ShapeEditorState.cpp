@@ -55,6 +55,120 @@ static string GetFirstLineOfScript(const string& filepath)
 	return "";
 }
 
+static string LowerAscii(string value)
+{
+	for (char& c : value)
+	{
+		if (c >= 'A' && c <= 'Z')
+		{
+			c = static_cast<char>(c - 'A' + 'a');
+		}
+	}
+	return value;
+}
+
+static string CuboidTextureDisplayName(const string& path)
+{
+	if (path.empty())
+	{
+		return "(sprite)";
+	}
+
+	string name = filesystem::path(path).filename().string();
+	constexpr size_t kMaxChars = 22;
+	if (name.size() > kMaxChars)
+	{
+		name = name.substr(0, kMaxChars - 3) + "...";
+	}
+	return name;
+}
+
+// PNGs next to the meshes. Stored paths stay relative to Redist and contain no spaces.
+static void ScanCuboidTextureFiles(vector<string>& files)
+{
+	files.clear();
+	namespace fs = std::filesystem;
+	const fs::path dir("Models/3dmodels");
+	std::error_code ec;
+	if (!fs::is_directory(dir, ec))
+	{
+		return;
+	}
+
+	for (const fs::directory_entry& entry : fs::directory_iterator(dir, ec))
+	{
+		std::error_code fileEc;
+		if (ec || !entry.is_regular_file(fileEc))
+		{
+			continue;
+		}
+
+		const string filename = entry.path().filename().string();
+		if (filename.find_first_of(" \t") != string::npos)
+		{
+			continue;
+		}
+
+		string ext = LowerAscii(entry.path().extension().string());
+		if (ext != ".png")
+		{
+			continue;
+		}
+
+		files.push_back("Models/3dmodels/" + filename);
+	}
+
+	std::sort(files.begin(), files.end(), [](const string& a, const string& b)
+	{
+		return LowerAscii(a) < LowerAscii(b);
+	});
+}
+
+static void AssignCuboidTexture(ShapeData& shapeData, const string& path)
+{
+	if (!shapeData.SetCuboidTexturePath(path) && !path.empty())
+	{
+		AddConsoleString("Couldn't load cuboid texture " + path, RED);
+	}
+}
+
+// Arrow order. Saved values stay put: Black is 7, Hidden is 0.
+static CuboidTexture StepCuboidSideTexture(CuboidTexture current, int direction)
+{
+	static const CuboidTexture kOrder[] = {
+		CuboidTexture::CUBOID_DRAW_BLACK,
+		CuboidTexture::CUBOID_DONT_DRAW,
+		CuboidTexture::CUBOID_DRAW_TOP,
+		CuboidTexture::CUBOID_DRAW_FRONT,
+		CuboidTexture::CUBOID_DRAW_RIGHT,
+		CuboidTexture::CUBOID_DRAW_TOP_INVERTED,
+		CuboidTexture::CUBOID_DRAW_FRONT_INVERTED,
+		CuboidTexture::CUBOID_DRAW_RIGHT_INVERTED,
+	};
+	constexpr int kCount = static_cast<int>(sizeof(kOrder) / sizeof(kOrder[0]));
+
+	int index = 0;
+	for (int i = 0; i < kCount; ++i)
+	{
+		if (kOrder[i] == current)
+		{
+			index = i;
+			break;
+		}
+	}
+
+	index += direction;
+	if (index < 0)
+	{
+		index = 0;
+	}
+	if (index >= kCount)
+	{
+		index = kCount - 1;
+	}
+	return kOrder[index];
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 //  ShapeEditorState
 ////////////////////////////////////////////////////////////////////////////////
@@ -73,6 +187,7 @@ void ShapeEditorState::Init(const string& configfile)
 	m_sideDrawStrings[4] = "Top Inv";
 	m_sideDrawStrings[5] = "Front Inv";
 	m_sideDrawStrings[6] = "Right Inv";
+	m_sideDrawStrings[7] = "Black";
 
 	m_sideStrings[0] = "Top";
 	m_sideStrings[1] = "Front";
@@ -498,10 +613,16 @@ void ShapeEditorState::Update()
 		return;
 	}
 
-	// While the script search box has focus, letter keys and Esc go to it instead of the shortcuts below
+	// While a search box has focus, letter keys and Esc go to it instead of the shortcuts below
 	bool typing = static_cast<GuiTextInput*>(m_currentGui->GetElement(GE_LUASCRIPTSEARCHINPUT).get())->m_HasFocus;
+	bool typingCuboidTexture = false;
+	if (m_currentGui == m_cuboidGui.get())
+	{
+		typingCuboidTexture = static_cast<GuiTextInput*>(m_currentGui->GetElement(GE_CUBOIDTEXTURESEARCHINPUT).get())->m_HasFocus;
+	}
+	const bool typingAny = typing || typingCuboidTexture;
 
-	if (!typing && IsKeyPressed(KEY_H))
+	if (!typingAny && IsKeyPressed(KEY_H))
 	{
 		if (m_helpScreen)
 		{
@@ -594,7 +715,7 @@ void ShapeEditorState::Update()
 	{
 		int stopper = 0;
 	}
-	if (!typing && IsKeyDown(KEY_Q))
+	if (!typingAny && IsKeyDown(KEY_Q))
 	{
 		g_CameraRotateSpeed += g_Engine->LastFrameInSeconds() * 50;
 		if (g_CameraRotateSpeed > 8)
@@ -604,7 +725,7 @@ void ShapeEditorState::Update()
 		g_CameraMoved = true;
 	}
 
-	if (!typing && IsKeyDown(KEY_E))
+	if (!typingAny && IsKeyDown(KEY_E))
 	{
 		g_CameraRotateSpeed -= g_Engine->LastFrameInSeconds() * 50;
 		if (g_CameraRotateSpeed < -8)
@@ -632,7 +753,7 @@ void ShapeEditorState::Update()
 	}
 
 
-	if ((!typing && IsKeyPressed(KEY_A)) || m_currentGui->GetActiveElementID() == GE_PREVSHAPEBUTTON)
+	if ((!typingAny && IsKeyPressed(KEY_A)) || m_currentGui->GetActiveElementID() == GE_PREVSHAPEBUTTON)
 	{
 		int newShape = m_currentShape - 1;
 
@@ -663,7 +784,7 @@ void ShapeEditorState::Update()
 		}
 	}
 
-	if ((!typing && IsKeyPressed(KEY_D)) || m_currentGui->GetActiveElementID() == GE_NEXTSHAPEBUTTON)
+	if ((!typingAny && IsKeyPressed(KEY_D)) || m_currentGui->GetActiveElementID() == GE_NEXTSHAPEBUTTON)
 	{
 		int newShape = m_currentShape + 1;
 
@@ -705,7 +826,7 @@ void ShapeEditorState::Update()
 		}
 	}
 
-	if ((!typing && IsKeyPressed(KEY_W)) || m_currentGui->GetActiveElementID() == GE_NEXTFRAMEBUTTON)
+	if ((!typingAny && IsKeyPressed(KEY_W)) || m_currentGui->GetActiveElementID() == GE_NEXTFRAMEBUTTON)
 	{
 		// Find next valid frame, wrapping around
 		const int maxFrameIndex = static_cast<int>(g_shapeTable[m_currentShape].size() - 1);
@@ -725,7 +846,7 @@ void ShapeEditorState::Update()
 		}
 	}
 
-	if ((!typing && IsKeyPressed(KEY_S)) || m_currentGui->GetActiveElementID() == GE_PREVFRAMEBUTTON)
+	if ((!typingAny && IsKeyPressed(KEY_S)) || m_currentGui->GetActiveElementID() == GE_PREVFRAMEBUTTON)
 	{
 		// Find previous valid frame, wrapping around
 		const int maxFrameIndex = static_cast<int>(g_shapeTable[m_currentShape].size() - 1);
@@ -745,7 +866,7 @@ void ShapeEditorState::Update()
 		}
 	}
 
-	if (!typing && IsKeyDown(KEY_Q))
+	if (!typingAny && IsKeyDown(KEY_Q))
 	{
 		g_cameraRotation += g_Engine->LastFrameInSeconds() * 5;
 		// Wrap angle to keep within 0 to 2*PI radians
@@ -754,7 +875,7 @@ void ShapeEditorState::Update()
 		g_CameraMoved = true;
 	}
 
-	if (!typing && IsKeyDown(KEY_E))
+	if (!typingAny && IsKeyDown(KEY_E))
 	{
 		g_cameraRotation -= g_Engine->LastFrameInSeconds() * 5;
 		// Wrap angle to keep within 0 to 2*PI radians
@@ -800,7 +921,7 @@ void ShapeEditorState::Update()
 		m_isDraggingSlider = false;
 	}
 
-	if (IsKeyPressed(KEY_F1) || (!typing && IsKeyPressed(KEY_ESCAPE)))
+	if (IsKeyPressed(KEY_F1) || (!typingAny && IsKeyPressed(KEY_ESCAPE)))
 	{
 		g_StateMachine->PopState();
 	}
@@ -918,6 +1039,7 @@ void ShapeEditorState::Update()
 				shapeData.m_pointerShape = frame0Data.m_pointerShape;
 				shapeData.m_pointerFrame = frame0Data.m_pointerFrame;
 				shapeData.m_luaScript = frame0Data.m_luaScript;
+				AssignCuboidTexture(shapeData, frame0Data.m_cuboidTexturePath);
 
 				// Keep editor model/script iterators in sync so Next/Prev stay correct.
 				for (auto node = g_ResourceManager->m_ModelList.begin();
@@ -1161,145 +1283,85 @@ void ShapeEditorState::Update()
 	if (m_currentGui->GetActiveElementID() == GE_PREVTOPBUTTON)
 	{
 		somethingChanged = true;
-		int sideTexture = static_cast<int>(shapeData.GetTextureForSide(CuboidSides::CUBOID_TOP));
-		sideTexture--;
-		if (sideTexture < 0)
-		{
-			sideTexture = 0;
-		}
-		shapeData.SetTextureForSide(CuboidSides::CUBOID_TOP, static_cast<CuboidTexture>(sideTexture));
+		shapeData.SetTextureForSide(CuboidSides::CUBOID_TOP,
+			StepCuboidSideTexture(shapeData.GetTextureForSide(CuboidSides::CUBOID_TOP), -1));
 	}
 
 	if (m_currentGui->GetActiveElementID() == GE_NEXTTOPBUTTON)
 	{
 		somethingChanged = true;
-		int sideTexture = static_cast<int>(shapeData.GetTextureForSide(CuboidSides::CUBOID_TOP));
-		sideTexture++;
-		if (sideTexture > 6)
-		{
-			sideTexture = 6;
-		}
-		shapeData.SetTextureForSide(CuboidSides::CUBOID_TOP, static_cast<CuboidTexture>(sideTexture));
+		shapeData.SetTextureForSide(CuboidSides::CUBOID_TOP,
+			StepCuboidSideTexture(shapeData.GetTextureForSide(CuboidSides::CUBOID_TOP), 1));
 	}
 
 	if (m_currentGui->GetActiveElementID() == GE_PREVFRONTBUTTON)
 	{
 		somethingChanged = true;
-		int sideTexture = static_cast<int>(shapeData.GetTextureForSide(CuboidSides::CUBOID_FRONT));
-		sideTexture--;
-		if (sideTexture < 0)
-		{
-			sideTexture = 0;
-		}
-		shapeData.SetTextureForSide(CuboidSides::CUBOID_FRONT, static_cast<CuboidTexture>(sideTexture));
+		shapeData.SetTextureForSide(CuboidSides::CUBOID_FRONT,
+			StepCuboidSideTexture(shapeData.GetTextureForSide(CuboidSides::CUBOID_FRONT), -1));
 	}
 
 	if (m_currentGui->GetActiveElementID() == GE_NEXTFRONTBUTTON)
 	{
 		somethingChanged = true;
-		int sideTexture = static_cast<int>(shapeData.GetTextureForSide(CuboidSides::CUBOID_FRONT));
-		sideTexture++;
-		if (sideTexture > 6)
-		{
-			sideTexture = 6;
-		}
-		shapeData.SetTextureForSide(CuboidSides::CUBOID_FRONT, static_cast<CuboidTexture>(sideTexture));
+		shapeData.SetTextureForSide(CuboidSides::CUBOID_FRONT,
+			StepCuboidSideTexture(shapeData.GetTextureForSide(CuboidSides::CUBOID_FRONT), 1));
 	}
 
 	if (m_currentGui->GetActiveElementID() == GE_PREVRIGHTBUTTON)
 	{
 		somethingChanged = true;
-		int sideTexture = static_cast<int>(shapeData.GetTextureForSide(CuboidSides::CUBOID_RIGHT));
-		sideTexture--;
-		if (sideTexture < 0)
-		{
-			sideTexture = 0;
-		}
-		shapeData.SetTextureForSide(CuboidSides::CUBOID_RIGHT, static_cast<CuboidTexture>(sideTexture));
+		shapeData.SetTextureForSide(CuboidSides::CUBOID_RIGHT,
+			StepCuboidSideTexture(shapeData.GetTextureForSide(CuboidSides::CUBOID_RIGHT), -1));
 	}
 
 	if (m_currentGui->GetActiveElementID() == GE_NEXTRIGHTBUTTON)
 	{
 		somethingChanged = true;
-		int sideTexture = static_cast<int>(shapeData.GetTextureForSide(CuboidSides::CUBOID_RIGHT));
-		sideTexture++;
-		if (sideTexture > 6)
-		{
-			sideTexture = 6;
-		}
-		shapeData.SetTextureForSide(CuboidSides::CUBOID_RIGHT, static_cast<CuboidTexture>(sideTexture));
+		shapeData.SetTextureForSide(CuboidSides::CUBOID_RIGHT,
+			StepCuboidSideTexture(shapeData.GetTextureForSide(CuboidSides::CUBOID_RIGHT), 1));
 	}
 
 	if (m_currentGui->GetActiveElementID() == GE_PREVBOTTOMBUTTON)
 	{
 		somethingChanged = true;
-		int sideTexture = static_cast<int>(shapeData.GetTextureForSide(CuboidSides::CUBOID_BOTTOM));
-		sideTexture--;
-		if (sideTexture < 0)
-		{
-			sideTexture = 0;
-		}
-		shapeData.SetTextureForSide(CuboidSides::CUBOID_BOTTOM, static_cast<CuboidTexture>(sideTexture));
+		shapeData.SetTextureForSide(CuboidSides::CUBOID_BOTTOM,
+			StepCuboidSideTexture(shapeData.GetTextureForSide(CuboidSides::CUBOID_BOTTOM), -1));
 	}
 
 	if (m_currentGui->GetActiveElementID() == GE_NEXTBOTTOMBUTTON)
 	{
 		somethingChanged = true;
-		int sideTexture = static_cast<int>(shapeData.GetTextureForSide(CuboidSides::CUBOID_BOTTOM));
-		sideTexture++;
-		if (sideTexture > 6)
-		{
-			sideTexture = 6;
-		}
-		shapeData.SetTextureForSide(CuboidSides::CUBOID_BOTTOM, static_cast<CuboidTexture>(sideTexture));
+		shapeData.SetTextureForSide(CuboidSides::CUBOID_BOTTOM,
+			StepCuboidSideTexture(shapeData.GetTextureForSide(CuboidSides::CUBOID_BOTTOM), 1));
 	}
 
 	if (m_currentGui->GetActiveElementID() == GE_PREVBACKBUTTON)
 	{
 		somethingChanged = true;
-		int sideTexture = static_cast<int>(shapeData.GetTextureForSide(CuboidSides::CUBOID_BACK));
-		sideTexture--;
-		if (sideTexture < 0)
-		{
-			sideTexture = 0;
-		}
-		shapeData.SetTextureForSide(CuboidSides::CUBOID_BACK, static_cast<CuboidTexture>(sideTexture));
+		shapeData.SetTextureForSide(CuboidSides::CUBOID_BACK,
+			StepCuboidSideTexture(shapeData.GetTextureForSide(CuboidSides::CUBOID_BACK), -1));
 	}
 
 	if (m_currentGui->GetActiveElementID() == GE_NEXTBACKBUTTON)
 	{
 		somethingChanged = true;
-		int sideTexture = static_cast<int>(shapeData.GetTextureForSide(CuboidSides::CUBOID_BACK));
-		sideTexture++;
-		if (sideTexture > 6)
-		{
-			sideTexture = 6;
-		}
-		shapeData.SetTextureForSide(CuboidSides::CUBOID_BACK, static_cast<CuboidTexture>(sideTexture));
+		shapeData.SetTextureForSide(CuboidSides::CUBOID_BACK,
+			StepCuboidSideTexture(shapeData.GetTextureForSide(CuboidSides::CUBOID_BACK), 1));
 	}
 
 	if (m_currentGui->GetActiveElementID() == GE_PREVLEFTBUTTON)
 	{
 		somethingChanged = true;
-		int sideTexture = static_cast<int>(shapeData.GetTextureForSide(CuboidSides::CUBOID_LEFT));
-		sideTexture--;
-		if (sideTexture < 0)
-		{
-			sideTexture = 0;
-		}
-		shapeData.SetTextureForSide(CuboidSides::CUBOID_LEFT, static_cast<CuboidTexture>(sideTexture));
+		shapeData.SetTextureForSide(CuboidSides::CUBOID_LEFT,
+			StepCuboidSideTexture(shapeData.GetTextureForSide(CuboidSides::CUBOID_LEFT), -1));
 	}
 
 	if (m_currentGui->GetActiveElementID() == GE_NEXTLEFTBUTTON)
 	{
 		somethingChanged = true;
-		int sideTexture = static_cast<int>(shapeData.GetTextureForSide(CuboidSides::CUBOID_LEFT));
-		sideTexture++;
-		if (sideTexture > 6)
-		{
-			sideTexture = 6;
-		}
-		shapeData.SetTextureForSide(CuboidSides::CUBOID_LEFT, static_cast<CuboidTexture>(sideTexture));
+		shapeData.SetTextureForSide(CuboidSides::CUBOID_LEFT,
+			StepCuboidSideTexture(shapeData.GetTextureForSide(CuboidSides::CUBOID_LEFT), 1));
 	}
 
 
@@ -1723,6 +1785,43 @@ void ShapeEditorState::Update()
 		g_shapeTable[m_currentShape][m_currentFrame].m_luaScript = (g_ScriptingSystem->m_scriptFiles[m_luaScriptIndex].first);
 	}
 
+	if (m_currentGui == m_cuboidGui.get()
+		&& (m_currentGui->GetActiveElementID() == GE_NEXTCUBOIDTEXTUREBUTTON
+			|| m_currentGui->GetActiveElementID() == GE_PREVCUBOIDTEXTUREBUTTON))
+	{
+		const int count = static_cast<int>(m_cuboidTextureFiles.size()) + 1;
+		int index = 0;
+		if (!shapeData.m_cuboidTexturePath.empty())
+		{
+			for (int i = 0; i < static_cast<int>(m_cuboidTextureFiles.size()); ++i)
+			{
+				if (m_cuboidTextureFiles[static_cast<size_t>(i)] == shapeData.m_cuboidTexturePath)
+				{
+					index = i + 1;
+					break;
+				}
+			}
+		}
+
+		int step = (m_currentGui->GetActiveElementID() == GE_NEXTCUBOIDTEXTUREBUTTON) ? 1 : -1;
+		if (IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT))
+		{
+			step *= 10;
+		}
+		index += step;
+		if (count > 0)
+		{
+			index %= count;
+			if (index < 0)
+			{
+				index += count;
+			}
+			const string path = (index == 0) ? string() : m_cuboidTextureFiles[static_cast<size_t>(index - 1)];
+			AssignCuboidTexture(shapeData, path);
+			somethingChanged = true;
+		}
+	}
+
 	//  Script search box: type words from a script's name or first line, then pick a result
 	//  with Up/Down + Enter or a click.  Esc or clicking elsewhere clears the search.
 	GuiTextInput* searchInput = static_cast<GuiTextInput*>(m_currentGui->GetElement(GE_LUASCRIPTSEARCHINPUT).get());
@@ -1807,6 +1906,82 @@ void ShapeEditorState::Update()
 	}
 
 	searchList->m_Visible = !searchList->m_Items.empty();
+
+	// Cuboid texture search. Same idea as the script box: type to filter, Up/Down/Enter
+	// or a click picks a row, and leaving the box hides the list. "(sprite)" clears it.
+	if (m_currentGui == m_cuboidGui.get())
+	{
+		GuiTextInput* textureInput = static_cast<GuiTextInput*>(m_currentGui->GetElement(GE_CUBOIDTEXTURESEARCHINPUT).get());
+		GuiListBox* textureList = static_cast<GuiListBox*>(m_currentGui->GetElement(GE_CUBOIDTEXTURESEARCHLIST).get());
+		const int textureRow = textureList->GetSelectedIndex();
+
+		if ((m_currentGui->GetActiveElementID() == GE_CUBOIDTEXTURESEARCHLIST
+				|| (typingCuboidTexture && (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_KP_ENTER))))
+			&& textureRow >= 0 && textureRow < static_cast<int>(m_cuboidTextureSearchPaths.size()))
+		{
+			AssignCuboidTexture(shapeData, m_cuboidTextureSearchPaths[static_cast<size_t>(textureRow)]);
+			somethingChanged = true;
+			textureInput->m_HasFocus = false;
+		}
+
+		if (typingCuboidTexture && IsKeyPressed(KEY_ESCAPE))
+		{
+			textureInput->m_HasFocus = false;
+		}
+
+		if (!textureInput->m_HasFocus)
+		{
+			textureInput->m_String = "";
+			textureList->Clear();
+			m_cuboidTextureSearchPaths.clear();
+			m_lastCuboidTextureSearch = "";
+		}
+		else if (textureInput->m_String != m_lastCuboidTextureSearch || textureList->m_Items.empty())
+		{
+			m_lastCuboidTextureSearch = textureInput->m_String;
+			const string query = LowerAscii(m_lastCuboidTextureSearch);
+
+			textureList->Clear();
+			m_cuboidTextureSearchPaths.clear();
+
+			auto addChoice = [&](const string& label, const string& path)
+			{
+				textureList->AddItem(label);
+				m_cuboidTextureSearchPaths.push_back(path);
+			};
+
+			if (query.empty() || string("(sprite)").find(query) != string::npos || string("sprite").find(query) != string::npos)
+			{
+				addChoice("(sprite)", "");
+			}
+
+			for (const string& path : m_cuboidTextureFiles)
+			{
+				const string name = filesystem::path(path).filename().string();
+				if (query.empty() || LowerAscii(name).find(query) != string::npos)
+				{
+					addChoice(name, path);
+				}
+			}
+
+			if (!textureList->m_Items.empty())
+			{
+				textureList->SetSelectedIndex(0);
+			}
+		}
+
+		if (typingCuboidTexture && IsKeyPressed(KEY_DOWN))
+		{
+			textureList->SetSelectedIndex(textureList->GetSelectedIndex() + 1);
+		}
+
+		if (typingCuboidTexture && IsKeyPressed(KEY_UP) && textureList->GetSelectedIndex() > 0)
+		{
+			textureList->SetSelectedIndex(textureList->GetSelectedIndex() - 1);
+		}
+
+		textureList->m_Visible = textureInput->m_HasFocus && !textureList->m_Items.empty();
+	}
 
 	if(m_currentGui->GetActiveElementID() == GE_OPENLUASCRIPTBUTTON)
 	{
@@ -2159,6 +2334,7 @@ void ShapeEditorState::Update()
 		m_currentGui->GetElement(GE_BOTTOMSIDETEXTURETEXTAREA)->m_String = m_sideDrawStrings[static_cast<int>(shapeData.GetTextureForSide(CuboidSides::CUBOID_BOTTOM))];
 		m_currentGui->GetElement(GE_BACKSIDETEXTURETEXTAREA)->m_String = m_sideDrawStrings[static_cast<int>(shapeData.GetTextureForSide(CuboidSides::CUBOID_BACK))];
 		m_currentGui->GetElement(GE_LEFTSIDETEXTURETEXTAREA)->m_String = m_sideDrawStrings[static_cast<int>(shapeData.GetTextureForSide(CuboidSides::CUBOID_LEFT))];
+		m_currentGui->GetElement(GE_CUBOIDTEXTURETEXTAREA)->m_String = CuboidTextureDisplayName(shapeData.m_cuboidTexturePath);
 	}
 
 	std::ostringstream out;
@@ -2336,12 +2512,29 @@ void ShapeEditorState::Draw()
 
 	if (shapeData->GetDrawType() == ShapeDrawType::OBJECT_DRAW_CUBOID)
 	{
-		Texture* d = shapeData->GetTexture();
+		Texture* d = shapeData->GetCuboidSourceTexture();
+		if (d == nullptr)
+		{
+			d = shapeData->GetTexture();
+		}
 
+		// Picker sits in this strip. The side panel has no room for another search box.
+		DrawRectangle(2, 0, 214, 28, Color{ 0, 0, 0, 160 });
 
-		//  Draw original texture with label and border
-		DrawTextEx(*g_guiFont.get(), "Original Texture", { 0, 0 }, g_guiFontSize, 1, WHITE);
-		float yoffset = (g_guiFontSize + 2);
+		string caption = "Original Texture";
+		if (!shapeData->m_cuboidTexturePath.empty())
+		{
+			caption = filesystem::path(shapeData->m_cuboidTexturePath).filename().string();
+			if (shapeData->m_cuboidSourceTexture == nullptr)
+			{
+				caption += " (missing)";
+			}
+		}
+
+		//  Draw the face source with label and border, under the texture picker
+		const float previewTop = 30.0f;
+		DrawTextEx(*g_guiFont.get(), caption.c_str(), { 0, previewTop }, g_guiFontSize, 1, WHITE);
+		float yoffset = previewTop + (g_guiFontSize + 2);
 		DrawRectangleLinesEx({ 0, yoffset, float(d->width) * scale + scale + scale, float(d->height) * scale + scale + scale }, scale, WHITE);
 		yoffset += scale;
 		DrawTextureEx(*d, Vector2{ scale, yoffset }, 0, 2, Color{ 255, 255, 255, 255 });
@@ -2446,6 +2639,27 @@ void ShapeEditorState::Draw()
 		{ 0, 0, float(g_guiRenderTarget.texture.width), float(g_guiRenderTarget.texture.height) },
 		{ 0, float(g_Engine->m_ScreenHeight), float(g_Engine->m_ScreenWidth), -float(g_Engine->m_ScreenHeight) },
 		{ 0, 0 }, 0, WHITE);
+
+	// TFA footprint for this shape. Sits in the 3D view, just left of the side panel.
+	if (m_currentShape >= 0 && m_currentShape < static_cast<int>(g_objectDataTable.size()) && g_guiFont)
+	{
+		const ObjectData& objectData = g_objectDataTable[static_cast<size_t>(m_currentShape)];
+		const std::string boxText = "X:" + std::to_string(static_cast<int>(objectData.m_width))
+			+ " Y:" + std::to_string(static_cast<int>(objectData.m_height))
+			+ " Z:" + std::to_string(static_cast<int>(objectData.m_depth));
+		const float boxFontSize = 22.0f;
+		const Vector2 boxTextSize = MeasureTextEx(*g_guiFont.get(), boxText.c_str(), boxFontSize, 1);
+		const float renderWidth = static_cast<float>(g_Engine->m_RenderWidth);
+		const float panelScreenWidth = (renderWidth > 0.0f)
+			? 120.0f * (static_cast<float>(g_Engine->m_ScreenWidth) / renderWidth)
+			: 120.0f;
+		const float boxX = static_cast<float>(g_Engine->m_ScreenWidth) - panelScreenWidth - boxTextSize.x - 8.0f;
+		const float boxY = 8.0f;
+		DrawRectangle(static_cast<int>(boxX) - 4, static_cast<int>(boxY) - 2,
+			static_cast<int>(boxTextSize.x) + 8, static_cast<int>(boxTextSize.y) + 4,
+			Color{ 0, 0, 0, 180 });
+		DrawTextEx(*g_guiFont.get(), boxText.c_str(), { boxX, boxY }, boxFontSize, 1, WHITE);
+	}
 
 	//  Draw any tooltips
 	auto openScriptBtn = m_currentGui->GetElement(GE_OPENLUASCRIPTBUTTON);
@@ -2631,6 +2845,26 @@ void ShapeEditorState::SetupCuboidGui()
 	//  Cuboid specific setup
 
 	m_cuboidGui->GetElement(GE_CURRENTDRAWTYPETEXTAREA)->m_String = "Cuboid";
+
+	// The face editors fill the panel. The texture picker floats on the far left of the
+	// view, above the original-texture preview, and opens its list over that preview.
+	ScanCuboidTextureFiles(m_cuboidTextureFiles);
+	{
+		const int renderWidth = (g_Engine != nullptr && g_Engine->m_RenderWidth > 0.0f)
+			? static_cast<int>(g_Engine->m_RenderWidth)
+			: 640;
+		const int left = 4 - (renderWidth - 120);
+		const int labelWidth = static_cast<int>(MeasureTextEx(*g_guiFont.get(), "Texture:", g_guiFont->baseSize, 1).x) + 4;
+
+		m_cuboidGui->AddTextArea(GE_CUBOIDTEXTURELABEL, g_guiFont.get(), "Texture:", left, 2, 0, 0, WHITE, GuiTextArea::LEFT, 0, true, true);
+		m_cuboidGui->AddIconButton(GE_PREVCUBOIDTEXTUREBUTTON, left + labelWidth, 2, g_LeftArrow);
+		m_cuboidGui->AddTextArea(GE_CUBOIDTEXTURETEXTAREA, g_guiFont.get(), "(sprite)", left + labelWidth + 12, 2, 0, 0, WHITE, GuiTextArea::LEFT, 0, true, true);
+		m_cuboidGui->AddIconButton(GE_NEXTCUBOIDTEXTUREBUTTON, left + 198, 2, g_RightArrow);
+
+		m_cuboidGui->AddTextInput(GE_CUBOIDTEXTURESEARCHINPUT, left, 15, 188, 11, g_guiFont.get(), "",
+			WHITE, WHITE, Color{ 0, 0, 0, 255 })->m_FormatNumbers = false;
+		m_cuboidGui->AddListBox(GE_CUBOIDTEXTURESEARCHLIST, left, 27, 210, 116, g_guiFont.get())->m_Visible = false;
+	}
 
 	int yoffset = 13;
 
