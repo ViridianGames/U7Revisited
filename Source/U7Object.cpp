@@ -6904,6 +6904,7 @@ void U7Object::DrawWalkBillboard(const std::vector<std::vector<Texture*>>& walkT
 	Texture* finalTexture = nullptr;
 	float billboardAngle = -45.0f;
 	bool drawingUprightSheet = false;
+	int legacyPhase = 0;
 
 	Vector3 cameraAngle = Vector3Subtract(g_camera.position, g_camera.target);
 	Vector3 cameraVector = Vector3{ cameraAngle.x, 0, cameraAngle.z };
@@ -6961,10 +6962,10 @@ void U7Object::DrawWalkBillboard(const std::vector<std::vector<Texture*>>& walkT
 		// Legacy walk-table path (WalkSheets for walk/stand, or missing action bake).
 		const int framerate = 200;
 		const int frameCount = int(walkTextures[finalAngle].size());
-		int thisTime = (int(GetTime() * 1000) / framerate) % frameCount;
-		if (!m_isMoving || (g_mainState && g_mainState->m_paused)) thisTime = 0;
+		legacyPhase = (int(GetTime() * 1000) / framerate) % frameCount;
+		if (!m_isMoving || (g_mainState && g_mainState->m_paused)) legacyPhase = 0;
 
-		finalTexture = walkTextures[finalAngle][thisTime];
+		finalTexture = walkTextures[finalAngle][legacyPhase];
 		if (uprightSheet)
 		{
 			billboardAngle = 0.0f;
@@ -7010,6 +7011,38 @@ void U7Object::DrawWalkBillboard(const std::vector<std::vector<Texture*>>& walkT
 	// A knocked-out or sleeping flyer is on the ground (original FallToGround).
 	if (!(poseOverride && IsSleepingPose()))
 		finalPos.y += m_drawHeightOffset;
+
+	// Billboard tweak pos / size / rot from the frame on screen. Stored Rot is an
+	// offset on the facing angle already chosen; 0 leaves ±45 (or the upright
+	// sheet's 0) alone. Defaults (scale 1, pos 0, rot 0) do not move the sprite.
+	// Upright WalkSheets are not VGA frames, so they use the object's frame.
+	{
+		const ShapeData* tweakFrame = nullptr;
+		if (poseOverride)
+		{
+			tweakFrame = &g_shapeTable[m_ObjectType][m_overrideFrame];
+		}
+		else if (!drawingUprightSheet && m_ObjectType >= 0 && m_ObjectType < 1024)
+		{
+			const NpcAnimAction action = useActionTable ? m_npcAnimAction : NpcAnimAction::Walk;
+			const int phase = useActionTable ? m_npcAnimPhase : legacyPhase;
+			const int frame = GetNpcActionSourceFrame(m_ObjectType, action, finalAngle, phase);
+			if (frame >= 0 && frame < 32)
+				tweakFrame = &g_shapeTable[m_ObjectType][frame];
+		}
+		else if (m_shapeData != nullptr)
+		{
+			tweakFrame = m_shapeData;
+		}
+
+		if (tweakFrame != nullptr)
+		{
+			dims.x *= tweakFrame->m_Scaling.x;
+			dims.y *= tweakFrame->m_Scaling.y;
+			finalPos = Vector3Add(finalPos, tweakFrame->m_TweakPos);
+			billboardAngle += tweakFrame->m_rotation;
+		}
+	}
 
 	const float viewFade = GetFirstPersonViewFade(m_Pos);
 	if (viewFade <= 0.02f)

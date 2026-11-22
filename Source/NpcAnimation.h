@@ -82,6 +82,10 @@ Texture* GetNpcActionTexture(const NpcActionTextures& actions,
 
 int GetNpcActionPhaseCount(const NpcActionTextures& actions, NpcAnimAction action, int dir8);
 
+// Shape-table frame whose texture that clip draws. Mirrored directions use the
+// unflipped source frame (flips have no shapetable row). -1 if none.
+int GetNpcActionSourceFrame(int shapenum, NpcAnimAction action, int dir8, int phase);
+
 const char* NpcAnimActionName(NpcAnimAction action);
 
 #endif

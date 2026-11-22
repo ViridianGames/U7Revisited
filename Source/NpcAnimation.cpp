@@ -69,6 +69,67 @@ namespace
 		return g_ResourceManager->GetTexture(cacheName);
 	}
 
+	const vector<int>& PosesForAction(NpcAnimAction action)
+	{
+		static const vector<int> kWalk{ 0, 1, 0, 2, 0 };
+		static const vector<int> kStand{ 0 };
+		static const vector<int> kReady{ 3 };
+		static const vector<int> kAttack1H{ 3, 4, 5, 6 };
+		static const vector<int> kAttack2H{ 3, 7, 8, 9 };
+		static const vector<int> kShoot{ 3, 11 };
+		static const vector<int> kCast{ 11 };
+		static const vector<int> kKneel{ 12 };
+		static const vector<int> kSit{ 10 };
+		static const vector<int> kSleep{ 13 };
+		static const vector<int> kUp{ 14 };
+		static const vector<int> kOut{ 15 };
+		static const vector<int> kEmpty;
+		switch (action)
+		{
+		case NpcAnimAction::Walk: return kWalk;
+		case NpcAnimAction::Stand: return kStand;
+		case NpcAnimAction::Ready: return kReady;
+		case NpcAnimAction::Attack1H: return kAttack1H;
+		case NpcAnimAction::Attack2H: return kAttack2H;
+		case NpcAnimAction::Shoot: return kShoot;
+		case NpcAnimAction::Cast: return kCast;
+		case NpcAnimAction::Kneel: return kKneel;
+		case NpcAnimAction::Sit: return kSit;
+		case NpcAnimAction::Sleep: return kSleep;
+		case NpcAnimAction::Up: return kUp;
+		case NpcAnimAction::Out: return kOut;
+		default: return kEmpty;
+		}
+	}
+
+	// SW/W and SE/S read the south block. N/E and their mirrors read north.
+	int FacingBaseForDir(int dir8)
+	{
+		dir8 = ((dir8 % 8) + 8) % 8;
+		if (dir8 == 0 || dir8 == 1 || dir8 == 6 || dir8 == 7)
+			return 16;
+		return 0;
+	}
+
+	// Same fallback order as ResolveShapeTexture, so the tweak row matches the pixels.
+	int SourceFrameForPose(int shapenum, int facingBase, int poseNibble)
+	{
+		poseNibble &= 15;
+		int frame = facingBase + poseNibble;
+		if (HasShapeTexture(shapenum, frame))
+			return frame;
+
+		frame = facingBase + NpcVisiblePoseFrame(poseNibble);
+		if (HasShapeTexture(shapenum, frame))
+			return frame;
+
+		if (HasShapeTexture(shapenum, facingBase))
+			return facingBase;
+		if (HasShapeTexture(shapenum, 0))
+			return 0;
+		return -1;
+	}
+
 	void AssignDirFromPoses(NpcActionTextures& out, NpcAnimAction action, int dir,
 	                        int shapenum, int facingBase, const vector<int>& poses)
 	{
@@ -144,19 +205,12 @@ bool FillNpcActionTextures(NpcActionTextures& out, int shapenum)
 	if (!HasShapeTexture(shapenum, 0) || !HasShapeTexture(shapenum, 16))
 		return false;
 
-	// Walk: Exult NPC cycle with stand between steps.
-	FillActionAllDirs(out, NpcAnimAction::Walk, shapenum, { 0, 1, 0, 2, 0 });
-	FillActionAllDirs(out, NpcAnimAction::Stand, shapenum, { 0 });
-	FillActionAllDirs(out, NpcAnimAction::Ready, shapenum, { 3 });
-	FillActionAllDirs(out, NpcAnimAction::Attack1H, shapenum, { 3, 4, 5, 6 });
-	FillActionAllDirs(out, NpcAnimAction::Attack2H, shapenum, { 3, 7, 8, 9 });
-	FillActionAllDirs(out, NpcAnimAction::Shoot, shapenum, { 3, 11 });
-	FillActionAllDirs(out, NpcAnimAction::Cast, shapenum, { 11 });
-	FillActionAllDirs(out, NpcAnimAction::Kneel, shapenum, { 12 });
-	FillActionAllDirs(out, NpcAnimAction::Sit, shapenum, { 10 });
-	FillActionAllDirs(out, NpcAnimAction::Sleep, shapenum, { 13 });
-	FillActionAllDirs(out, NpcAnimAction::Up, shapenum, { 14 });
-	FillActionAllDirs(out, NpcAnimAction::Out, shapenum, { 15 });
+	// One clip per action. Walk is the Exult cycle with stand between steps.
+	for (int action = 0; action < static_cast<int>(NpcAnimAction::COUNT); ++action)
+	{
+		const NpcAnimAction anim = static_cast<NpcAnimAction>(action);
+		FillActionAllDirs(out, anim, shapenum, PosesForAction(anim));
+	}
 
 	// Require walk NE/SW to have something drawable.
 	if (out.textures[static_cast<size_t>(NpcAnimAction::Walk)][4].empty() ||
@@ -191,6 +245,21 @@ Texture* GetNpcActionTexture(const NpcActionTextures& actions,
 	if (phase < 0)
 		phase = 0;
 	return clip[static_cast<size_t>(phase) % clip.size()];
+}
+
+int GetNpcActionSourceFrame(int shapenum, NpcAnimAction action, int dir8, int phase)
+{
+	if (shapenum < 0 || shapenum >= 1024)
+		return -1;
+	const vector<int>& poses = PosesForAction(action);
+	if (poses.empty())
+		return -1;
+	if (phase < 0)
+		phase = 0;
+	dir8 = ((dir8 % 8) + 8) % 8;
+	const int base = FacingBaseForDir(dir8);
+	const int pose = poses[static_cast<size_t>(phase) % poses.size()] & 15;
+	return SourceFrameForPose(shapenum, base, pose);
 }
 
 int GetNpcActionPhaseCount(const NpcActionTextures& actions, NpcAnimAction action, int dir8)
