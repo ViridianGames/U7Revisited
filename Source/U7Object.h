@@ -557,6 +557,12 @@ public:
 	void HostileCombatUpdate();
 	// Party-aligned summons (Team 2, e.g. Swarm): distract hostiles, despawn off-screen.
 	void AlliedMonsterUpdate();
+	// Original combat: this party member moves and attacks from m_attackMode.
+	// The Avatar does too, unless their stance is Manual.
+	bool UsesOriginalStanceCombat() const;
+	void UpdateOriginalCombat();
+	// Pick a foe id from the attack-mode stance. foesAreParty: this unit hunts the party.
+	int SelectAttackModeTarget(bool foesAreParty);
 
 	void NPCInit(NPCData *npcData);
 	void MonsterInit();
@@ -1036,15 +1042,19 @@ public:
 	// and still does not let them act.
 	TurnBasedDanceTick TickTurnBasedDance();
 
-	// Quas Wis. Attack mode 7 runs away from the Avatar and stays until
-	// something else sets the mode. 0 is the ordinary nearest-target mode.
+	// Exult attack mode (AttackMode). Npc.dat supplies party stances. Monsters
+	// roll one from their MONSTERS.DAT category. Quas Wis sets Flee and stores
+	// who they run from; that lasts until something else sets the mode.
 	int m_attackMode = 0;
 	int m_fearOppressorId = 0;
-	bool IsFleeing() const { return m_attackMode == 7; }
+	// npc.dat attack-mode bit 4. Protect stance guards this party member.
+	bool m_combatProtected = false;
+	bool IsFleeing() const;
 	void SetAttackMode(int mode);
 	U7Object* FearOppressor() const;
 	void StartFear(int oppressorId);
 	void UpdateFearFlee();
+	void UpdateFleeFrom(U7Object* from);
 	void CauseFear();
 
 	// Vas Por Ylem. While this is in the future the unit holds still.

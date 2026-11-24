@@ -48,7 +48,8 @@ bool PathfindingSystem::AreUnitsHostile(const U7Object* agent, const U7Object* o
 	bool agentParty = IsPartyMemberUnit(agent);
 	bool otherParty = IsPartyMemberUnit(other);
 
-	// Friendly party members can share space (Avatar + Iolo, etc.)
+	// Party members are not hostile to each other, so the body box does not
+	// block them. They still cannot share a feet tile (AnotherUnitClaimsFeetTile).
 	if (agentParty && otherParty)
 		return false;
 
@@ -171,6 +172,53 @@ static bool AgentStandsOnDownedUnit(const U7Object* agent, const U7Object* downe
 	return DownedUnitCoversTile(downed, tileX, tileZ, agent->m_Pos.y);
 }
 
+// One square per living character. Feet only: a centered body straddles the
+// next tile, and allies still need to stand on the squares around a foe.
+// Team 2 stays pass-through. Downed bodies stay on DownedEnemyBlocksAgent.
+static bool AnotherUnitClaimsFeetTile(const U7Object* other, int worldX, int worldZ,
+	float agentBaseY, const U7Object* agent)
+{
+	if (!agent || !other || agent->m_ID == other->m_ID)
+		return false;
+	if (agent->m_Team == 2 || other->m_Team == 2)
+		return false;
+	if (!IsPathfindingAgentUnit(other))
+		return false;
+	if (IsLivingDownedUnit(other))
+		return false;
+	return UnitFeetOnTile(other, worldX, worldZ, agentBaseY);
+}
+
+static bool TileClaimedByOtherFeet(int worldX, int worldZ, float agentBaseY, const U7Object* agent)
+{
+	if (!agent)
+		return false;
+
+	const int chunkX = worldX / 16;
+	const int chunkZ = worldZ / 16;
+
+	extern std::shared_mutex g_chunkMapMutex;
+	std::shared_lock lock(g_chunkMapMutex);
+
+	for (int dz = -1; dz <= 1; ++dz)
+	{
+		for (int dx = -1; dx <= 1; ++dx)
+		{
+			const int cx = chunkX + dx;
+			const int cz = chunkZ + dz;
+			if (cx < 0 || cx >= 192 || cz < 0 || cz >= 192)
+				continue;
+
+			for (U7Object* obj : g_chunkObjectMap[cx][cz])
+			{
+				if (AnotherUnitClaimsFeetTile(obj, worldX, worldZ, agentBaseY, agent))
+					return true;
+			}
+		}
+	}
+	return false;
+}
+
 static bool IsTileBlockedByHostileUnit(int worldX, int worldZ, float agentBaseY, const U7Object* agent)
 {
 	if (!agent)
@@ -203,6 +251,11 @@ static bool IsTileBlockedByHostileUnit(int worldX, int worldZ, float agentBaseY,
 					return true;
 				}
 
+				// Allies and same-team foes do not block by body box. Their feet
+				// still own this one square, so pirates cannot pile onto it.
+				if (AnotherUnitClaimsFeetTile(obj, worldX, worldZ, agentBaseY, agent))
+					return true;
+
 				if (!IsPathfindingAgentUnit(obj))
 					continue;
 
@@ -216,6 +269,12 @@ static bool IsTileBlockedByHostileUnit(int worldX, int worldZ, float agentBaseY,
 	}
 
 	return false;
+}
+
+bool PathfindingSystem::IsTileOccupiedByAnotherUnit(int worldX, int worldZ, float agentBaseY,
+	const U7Object* agent) const
+{
+	return TileClaimedByOtherFeet(worldX, worldZ, agentBaseY, agent);
 }
 
 // ============================================================================
@@ -2144,8 +2203,17 @@ std::vector<int> PathfindingSystem::GetNeighbors(int nodeIndex, int goalX, int g
 		}
 
 		const bool isGoal = (nx == goalX && nz == goalZ);
-		if (!isGoal && !canApproach(nx, nz, currentHeight))
+		// Terrain-blocked goals stay legal (a door or a stand tile). A character
+		// already on the goal is not a legal place to end the path.
+		if (isGoal)
+		{
+			if (agent && IsTileBlockedByHostileUnit(nx, nz, currentHeight, agent))
+				continue;
+		}
+		else if (!canApproach(nx, nz, currentHeight))
+		{
 			continue;
+		}
 
 		emitHeights(nx, nz, getHeights(nx, nz));
 	}

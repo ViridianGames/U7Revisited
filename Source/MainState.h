@@ -405,6 +405,11 @@ public:
 	// Used by RealTimePauseCombatMode / TurnBasedCombatMode.
 	void BeginCombatFighting();
 	void PauseCombatForOrders();
+	// Original combat, Avatar stance Manual: the player orders the Avatar.
+	// Any other stance means the fight plays out with no click orders.
+	bool AvatarHasManualOrders() const;
+	// While paused in Manual, keep the Avatar selected so the next click is the order.
+	void SelectAvatarForOriginalOrders();
 	// Pause combat, select the member, and explain why they cannot continue (no ammo, etc.).
 	void NotifyCombatantCannotContinue(U7Object* member, const std::string& reason);
 	void StopCombatUnitActions(U7Object* member);

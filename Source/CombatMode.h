@@ -26,6 +26,24 @@ enum class CombatOrderMode : unsigned char
 	Move = 3
 };
 
+// Ultima VII stats-gump combat stance. Values match npc.dat's attack-mode nibble
+// and Exult's Actor::Attack_mode. The Avatar stays on Manual for player control.
+enum class AttackMode : int
+{
+	Nearest = 0,
+	Weakest = 1,
+	Strongest = 2,
+	Berserk = 3,
+	Protect = 4,
+	Defend = 5,
+	Flank = 6,
+	Flee = 7,
+	Random = 8,
+	Manual = 9
+};
+
+const char* AttackModeName(int mode);
+
 CombatStyle GetCombatStylePreference();
 void SetCombatStylePreference(CombatStyle style);
 const char* CombatStyleDisplayName(CombatStyle style);
@@ -94,6 +112,22 @@ class OriginalCombatMode : public CombatMode
 public:
 	CombatStyle GetStyle() const override { return CombatStyle::Original; }
 	const char* GetDisplayName() const override { return CombatStyleDisplayName(CombatStyle::Original); }
+	bool IsImplemented() const override { return true; }
+
+	void OnEnter(MainState& main) override;
+	void OnLeave(MainState& main) override;
+	void SaveState(nlohmann::ordered_json& out) const override;
+	void RestoreState(MainState& main, const nlohmann::ordered_json& in) override;
+	void Update(MainState& main) override;
+	void HandleInput(MainState& main) override;
+	void DrawHud(MainState& main) override;
+
+	bool IsSimulationPaused() const override;
+	bool AllowsPlayerOrders() const override { return true; }
+
+private:
+	MainState* m_main = nullptr;
+	bool m_wasCameraLocked = false;
 };
 
 class RealTimePauseCombatMode : public CombatMode

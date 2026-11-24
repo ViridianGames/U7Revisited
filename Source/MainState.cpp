@@ -5895,6 +5895,19 @@ void MainState::HandleCombatOrderKeys()
 	// Turn-Based uses Space to end turn; Hold/Automatic are RTwP-only.
 	if (m_combatMode && m_combatMode->GetStyle() == CombatStyle::TurnBased)
 		return;
+	// Manual is the only original stance the player orders. Any other stance
+	// plays out, so drop the selection. A spell being aimed keeps its caster.
+	if (m_combatMode && m_combatMode->GetStyle() == CombatStyle::Original)
+	{
+		if (!AvatarHasManualOrders())
+		{
+			if (!IsCombatSpellTargeting())
+				m_combatSelectedPartyMemberObjectId = -1;
+			return;
+		}
+		if (!IsCombatSpellTargeting())
+			SelectAvatarForOriginalOrders();
+	}
 	if (g_gumpManager && !g_gumpManager->m_GumpList.empty())
 		return;
 
@@ -6197,6 +6210,13 @@ void MainState::RestoreCombatEncounter(const nlohmann::ordered_json& combat)
 		const nlohmann::ordered_json mode = combat.contains("mode") ? combat["mode"] : nlohmann::ordered_json::object();
 		m_combatMode->RestoreState(*this, mode);
 	}
+	if (style == CombatStyle::Original && m_combatPaused && m_combatSpellTargetingSpellId < 0)
+	{
+		if (AvatarHasManualOrders())
+			SelectAvatarForOriginalOrders();
+		else
+			m_combatSelectedPartyMemberObjectId = -1;
+	}
 
 	if (g_combatCursor)
 	{
@@ -6377,9 +6397,42 @@ void MainState::BeginCombatFighting()
 	FireQueuedCombatSpells();
 }
 
+bool MainState::AvatarHasManualOrders() const
+{
+	if (!m_combatMode || m_combatMode->GetStyle() != CombatStyle::Original)
+		return false;
+	U7Object* avatar = g_Player ? g_Player->GetAvatarObject() : nullptr;
+	return avatar && avatar->m_attackMode == static_cast<int>(AttackMode::Manual);
+}
+
+void MainState::SelectAvatarForOriginalOrders()
+{
+	if (!AvatarHasManualOrders())
+		return;
+	U7Object* avatar = g_Player ? g_Player->GetAvatarObject() : nullptr;
+	if (!avatar)
+		return;
+	m_combatSelectedPartyMemberObjectId = static_cast<int>(avatar->m_ID);
+}
+
 void MainState::PauseCombatForOrders()
 {
 	m_combatPaused = true;
+	if (m_combatMode && m_combatMode->GetStyle() == CombatStyle::Original)
+	{
+		AddCombatConsoleString("Combat paused.", YELLOW);
+		if (AvatarHasManualOrders())
+		{
+			SelectAvatarForOriginalOrders();
+			AddCombatConsoleString("Press Space to fight. Companions use their combat mode. You control the Avatar.", WHITE);
+		}
+		else
+		{
+			m_combatSelectedPartyMemberObjectId = -1;
+			AddCombatConsoleString("Press Space to fight. Everyone fights on their own.", WHITE);
+		}
+		return;
+	}
 	AddCombatConsoleString("Combat paused.", YELLOW);
 	AddCombatConsoleString("Click a party member, then click an enemy or the ground to assign orders.", WHITE);
 	AddCombatConsoleString("H: Hold   A: Automatic   Spellbook: cast on any target.", WHITE);
@@ -6804,12 +6857,46 @@ void MainState::HandleCombatOrdersClick()
 
 	if (clicked && IsCombatPartyMemberObject(clicked))
 	{
+		const bool original = m_combatMode && m_combatMode->GetStyle() == CombatStyle::Original;
+		const bool orderingAvatar = clicked->m_NPCID == 0 && AvatarHasManualOrders();
+		if (original && !orderingAvatar)
+		{
+			const std::string name = clicked->m_name.empty() ? "Companion" : clicked->m_name;
+			AddCombatConsoleString(
+				name + " fights on their own (" + AttackModeName(clicked->m_attackMode) + ").",
+				SKYBLUE);
+			return;
+		}
 		m_combatSelectedPartyMemberObjectId = clicked->m_ID;
-		AddCombatConsoleString(
-			"Selected " + clicked->m_name + " (" + DescribeCombatOrder(clicked)
-			+ ") — enemy/ground, or H Hold / A Automatic.",
-			SKYBLUE);
+		if (original)
+		{
+			AddCombatConsoleString(
+				"Selected " + clicked->m_name + " — click an enemy or the ground.",
+				SKYBLUE);
+		}
+		else
+		{
+			AddCombatConsoleString(
+				"Selected " + clicked->m_name + " (" + DescribeCombatOrder(clicked)
+				+ ") — enemy/ground, or H Hold / A Automatic.",
+				SKYBLUE);
+		}
 		return;
+	}
+
+	if (m_combatMode && m_combatMode->GetStyle() == CombatStyle::Original)
+	{
+		if (!AvatarHasManualOrders())
+		{
+			if (clicked && IsCombatEnemyObject(clicked))
+			{
+				AddCombatConsoleString(
+					"The party fights on its own. Set the Avatar to manual to give orders.",
+					SKYBLUE);
+			}
+			return;
+		}
+		SelectAvatarForOriginalOrders();
 	}
 
 	if (m_combatSelectedPartyMemberObjectId < 0)

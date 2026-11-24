@@ -33,6 +33,27 @@ extern float g_DrawScale;
 extern std::shared_ptr<Sprite> g_gumpCheckmarkUp;
 extern std::shared_ptr<Sprite> g_gumpCheckmarkDown;
 
+namespace
+{
+	U7Object* PaperdollActor(int npcId)
+	{
+		auto it = g_NPCData.find(npcId);
+		if (it == g_NPCData.end() || !it->second)
+			return nullptr;
+		return GetObjectFromID(it->second->m_objectID);
+	}
+
+	GuiCycle* PaperdollCycle(Gui& gui, int elementId)
+	{
+		if (elementId == -1)
+			return nullptr;
+		auto elem = gui.GetElement(elementId);
+		if (!elem || elem->m_Type != GUI_CYCLE)
+			return nullptr;
+		return static_cast<GuiCycle*>(elem.get());
+	}
+}
+
 GumpPaperdoll::GumpPaperdoll()
 	: m_npcId(-1)
 	, m_paperdollType(0)
@@ -413,7 +434,7 @@ void GumpPaperdoll::Update()
 	// Handle cycle button clicks
 	int peaceID = m_serializer->GetElementID("PEACE");
 	int haloID = m_serializer->GetElementID("HALO");
-	int formationID = m_serializer->GetElementID("FORMATION");
+	int formationID =  m_serializer->GetElementID("FORMATION");
 
 	// Log active element every frame for debugging
 	static int lastActiveElement = -999;
@@ -422,6 +443,10 @@ void GumpPaperdoll::Update()
 		Log("GumpPaperdoll::Update - m_ActiveElement changed to: " + std::to_string(m_gui.m_ActiveElement));
 		lastActiveElement = m_gui.m_ActiveElement;
 	}
+
+	// The cycle widget advances itself on click. Stance and halo frames are rewritten
+	// from the actor below, so a companion never lands on the Avatar-only Manual frame.
+	U7Object* actor = PaperdollActor(m_npcId);
 
 	// Sync PEACE icon (dove/sword) with combat mode: frame 0 = peace (dove), 1 = combat (sword)
 	if (peaceID != -1)
@@ -447,11 +472,53 @@ void GumpPaperdoll::Update()
 	}
 	else if (m_gui.m_ActiveElement == haloID)
 	{
-		Log("HALO button clicked, frame: " + std::to_string(m_gui.GetElement(haloID)->GetValue()));
+		// Exult Halo_button: toggle this member, and turning it on clears the rest of the party.
+		if (actor)
+		{
+			const bool prot = !actor->m_combatProtected;
+			actor->m_combatProtected = prot;
+			if (prot && g_Player)
+			{
+				for (int npcId : g_Player->GetPartyMemberIds())
+				{
+					if (npcId == m_npcId)
+						continue;
+					if (U7Object* other = PaperdollActor(npcId))
+						other->m_combatProtected = false;
+				}
+			}
+			Log("HALO button: NPC " + std::to_string(m_npcId)
+				+ (actor->m_combatProtected ? " protected" : " unprotected"));
+		}
+		m_gui.m_ActiveElement = -1;
 	}
 	else if (m_gui.m_ActiveElement == formationID)
 	{
-		Log("FORMATION button clicked, frame: " + std::to_string(m_gui.GetElement(formationID)->GetValue()));
+		// Exult Combat_mode_button: Avatar cycles all 10 stances. Everyone else stays in 0-8.
+		if (actor)
+		{
+			const int span = (m_npcId == 0) ? 10 : 9;
+			int mode = actor->m_attackMode;
+			int next = 0;
+			if (mode >= 0 && mode < span)
+				next = (mode + 1) % span;
+			actor->SetAttackMode(next);
+			Log("FORMATION button: NPC " + std::to_string(m_npcId)
+				+ " stance " + AttackModeName(actor->m_attackMode));
+		}
+		m_gui.m_ActiveElement = -1;
+	}
+
+	if (GuiCycle* halo = PaperdollCycle(m_gui, haloID))
+		halo->SetFrameIndex(actor && actor->m_combatProtected ? 1 : 0);
+	if (GuiCycle* formation = PaperdollCycle(m_gui, formationID))
+	{
+		int frame = actor ? actor->m_attackMode : 0;
+		if (frame < 0)
+			frame = 0;
+		if (frame > static_cast<int>(AttackMode::Manual))
+			frame = static_cast<int>(AttackMode::Manual);
+		formation->SetFrameIndex(frame);
 	}
 
 	// Check if close button was clicked (floating paperdolls only; embedded hides CLOSE)

@@ -33,6 +33,24 @@ namespace
 	}
 }
 
+const char* AttackModeName(int mode)
+{
+	switch (mode)
+	{
+	case static_cast<int>(AttackMode::Nearest): return "nearest";
+	case static_cast<int>(AttackMode::Weakest): return "weakest";
+	case static_cast<int>(AttackMode::Strongest): return "strongest";
+	case static_cast<int>(AttackMode::Berserk): return "berserk";
+	case static_cast<int>(AttackMode::Protect): return "protect";
+	case static_cast<int>(AttackMode::Defend): return "defend";
+	case static_cast<int>(AttackMode::Flank): return "flank";
+	case static_cast<int>(AttackMode::Flee): return "flee";
+	case static_cast<int>(AttackMode::Random): return "random";
+	case static_cast<int>(AttackMode::Manual): return "manual";
+	default: return "nearest";
+	}
+}
+
 const char* CombatStyleDisplayName(CombatStyle style)
 {
 	switch (style)
@@ -1091,6 +1109,186 @@ void TurnBasedCombatMode::EndActiveTurn()
 
 	BeginInterTurnPause();
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// Original stance-based combat
+////////////////////////////////////////////////////////////////////////////////
+
+bool OriginalCombatMode::IsSimulationPaused() const
+{
+	return m_main ? m_main->m_combatPaused : true;
+}
+
+void OriginalCombatMode::OnEnter(MainState& main)
+{
+	m_main = &main;
+	m_wasCameraLocked = IsCameraLocked();
+
+	// Unlock for battlefield pan/zoom; Avatar-on-screen leash runs in Update.
+	if (IsCameraLocked())
+		g_cameraLockObjectId = -1;
+
+	main.m_combatPaused = true;
+
+	// Frame the fight: look-at between Avatar and nearest threat, Avatar kept on-screen.
+	U7Object* avatar = g_Player ? g_Player->GetAvatarObject() : nullptr;
+	U7Object* threat = nullptr;
+	float bestDistSqr = 1.0e12f;
+	for (int pid : main.m_combatParticipants)
+	{
+		auto it = g_objectList.find(pid);
+		if (it == g_objectList.end() || !it->second)
+			continue;
+		U7Object* obj = it->second.get();
+		if (!IsHostileCombatUnit(obj))
+			continue;
+		if (!avatar)
+		{
+			threat = obj;
+			break;
+		}
+		const float distSqr = Vector2DistanceSqr(
+			{ obj->m_Pos.x, obj->m_Pos.z },
+			{ avatar->m_Pos.x, avatar->m_Pos.z });
+		if (distSqr < bestDistSqr)
+		{
+			bestDistSqr = distSqr;
+			threat = obj;
+		}
+	}
+	if (!threat)
+		threat = FindNearestHostileInAggroRange();
+
+	if (avatar && threat)
+	{
+		// Bias slightly toward the Avatar so the party stays readable.
+		constexpr float kTowardThreat = 0.35f;
+		g_camera.target.x = avatar->m_Pos.x + (threat->m_Pos.x - avatar->m_Pos.x) * kTowardThreat;
+		g_camera.target.z = avatar->m_Pos.z + (threat->m_Pos.z - avatar->m_Pos.z) * kTowardThreat;
+		g_camera.target.y = avatar->m_Pos.y;
+		g_CameraMoved = true;
+
+		// Prefer a slightly wider tactical view when still zoomed in.
+		if (g_Engine)
+		{
+			const float farLimit = g_Engine->m_EngineConfig.GetNumber("camera_far_limit");
+			const float prefer = std::min(farLimit, std::max(g_cameraDistance, 28.0f));
+			g_cameraDistance = prefer;
+		}
+	}
+	else if (avatar)
+	{
+		g_camera.target = avatar->m_Pos;
+		g_CameraMoved = true;
+	}
+
+	ClampCombatCameraKeepAvatarOnScreen();
+
+	AddCombatConsoleString("Combat! Game is paused. Press Space to fight.", YELLOW);
+	if (main.AvatarHasManualOrders())
+	{
+		main.SelectAvatarForOriginalOrders();
+		AddCombatConsoleString("Companions fight on their own. You control the Avatar.", WHITE);
+		AddCombatConsoleString("The Avatar is selected. Click an enemy or the ground. Press C or Escape to leave.", WHITE);
+	}
+	else
+	{
+		main.m_combatSelectedPartyMemberObjectId = -1;
+		AddCombatConsoleString("Everyone fights on their own, including the Avatar.", WHITE);
+		AddCombatConsoleString("Set the Avatar to manual to give orders. Press C or Escape to leave.", WHITE);
+	}
+	Log("OriginalCombatMode::OnEnter");
+}
+
+void OriginalCombatMode::SaveState(nlohmann::ordered_json& out) const
+{
+	out["wasCameraLocked"] = m_wasCameraLocked;
+}
+
+void OriginalCombatMode::RestoreState(MainState& main, const nlohmann::ordered_json& in)
+{
+	m_main = &main;
+	m_wasCameraLocked = in.value("wasCameraLocked", false);
+	Log("OriginalCombatMode::RestoreState paused=" + std::string(main.m_combatPaused ? "1" : "0"));
+}
+
+void OriginalCombatMode::OnLeave(MainState& main)
+{
+	(void)main;
+	if (m_wasCameraLocked)
+		LockCameraToAvatar();
+	m_main = nullptr;
+	m_wasCameraLocked = false;
+	Log("OriginalCombatMode::OnLeave");
+}
+
+void OriginalCombatMode::Update(MainState& main)
+{
+	(void)main;
+	// Avatar-on-screen leash runs after the late CameraUpdate in MainState so
+	// pan input cannot push past the border for a frame and bounce.
+}
+
+void OriginalCombatMode::HandleInput(MainState& main)
+{
+	if (!IsKeyPressed(KEY_SPACE))
+		return;
+
+	if (main.m_combatPaused)
+		main.BeginCombatFighting();
+	else
+		main.PauseCombatForOrders();
+}
+
+void OriginalCombatMode::DrawHud(MainState& main)
+{
+	Font* font = g_SmallFont ? g_SmallFont.get() : nullptr;
+	if (!font)
+		return;
+
+	const bool paused = main.m_combatPaused;
+	const std::string title = paused ? "PAUSED" : "FIGHTING";
+	const std::string hint = paused
+		? "Space: fight   C/Esc: leave"
+		: "Space: pause   C/Esc: leave";
+
+	const float fontSize = static_cast<float>(font->baseSize);
+	const float titleW = MeasureTextEx(*font, title.c_str(), fontSize, 1).x;
+	const float hintW = MeasureTextEx(*font, hint.c_str(), fontSize, 1).x;
+	const float boxW = std::max(titleW, hintW) + 24.0f;
+	const float boxH = fontSize * 2.6f + 16.0f;
+	const float boxX = (640.0f - boxW) * 0.5f;
+	const float boxY = 8.0f;
+	const Color accent = paused ? YELLOW : Color{ 220, 60, 60, 255 };
+
+	DrawRectangle(static_cast<int>(boxX), static_cast<int>(boxY),
+	              static_cast<int>(boxW), static_cast<int>(boxH),
+	              Color{ 0, 0, 0, 160 });
+	DrawRectangleLines(static_cast<int>(boxX), static_cast<int>(boxY),
+	                   static_cast<int>(boxW), static_cast<int>(boxH), accent);
+
+	DrawTextEx(*font, title.c_str(),
+	           Vector2{ boxX + (boxW - titleW) * 0.5f, boxY + 6.0f },
+	           fontSize, 1, accent);
+	DrawTextEx(*font, hint.c_str(),
+	           Vector2{ boxX + (boxW - hintW) * 0.5f, boxY + 6.0f + fontSize * 1.25f },
+	           fontSize, 1, WHITE);
+
+	if (paused && main.m_combatSelectedPartyMemberObjectId >= 0)
+	{
+		auto it = g_objectList.find(main.m_combatSelectedPartyMemberObjectId);
+		if (it != g_objectList.end() && it->second)
+		{
+			const std::string sel = "Selected: " + it->second->m_name
+				+ " - " + main.DescribeCombatOrder(it->second.get());
+			const float selW = MeasureTextEx(*font, sel.c_str(), fontSize, 1).x;
+			DrawTextEx(*font, sel.c_str(),
+			           Vector2{ (640.0f - selW) * 0.5f, boxY + boxH + 4.0f },
+			           fontSize, 1, SKYBLUE);
+		}
+	}
+}
+
 
 namespace
 {

@@ -441,8 +441,32 @@ static bool Shape200FieldPlateTripped(U7Object* egg)
 	return FieldPlateActorNear(egg, g_Player->GetAvatarObject());
 }
 
+// Living party, including the Avatar when the party list does not already have them.
+static int LivingParty(U7Object** out, int cap);
+
+// Same Euclidean reach these eggs already use for the Avatar, on each living
+// party member. sameLift is the teleporter rule (feet on the egg's floor).
+static bool EuclideanPartyNear(const U7Object* egg, float reach, bool sameLift)
+{
+	if (!egg)
+		return false;
+	U7Object* party[16];
+	const int count = LivingParty(party, 16);
+	for (int i = 0; i < count; ++i)
+	{
+		U7Object* who = party[i];
+		if (!who)
+			continue;
+		if (sameLift && fabsf(who->m_Pos.y - egg->m_Pos.y) > 0.15f)
+			continue;
+		if (Vector2Distance({ egg->m_Pos.x, egg->m_Pos.z }, { who->m_Pos.x, who->m_Pos.z }) <= reach)
+			return true;
+	}
+	return false;
+}
+
 // Party-near usecode. Same Euclidean reach the Avatar already uses, applied
-// to each living party member. Weather, voice, and monster eggs stay on the Avatar.
+// to each living party member.
 static bool UsecodePartyNear(U7Object* egg)
 {
 	if (!egg || !g_Player)
@@ -502,9 +526,43 @@ void U7Object::EggUpdate()
 					&& m_eggData.m_type == EggType::MonsterSpawner;
 				const bool partyUsecode = m_eggData.m_type == EggType::Usecode
 					&& m_eggData.m_criteria == EggCriteria::PartyNear;
-				const bool outside = fieldPlate
-					? !Shape200FieldPlateTripped(this)
-					: (partyUsecode ? !UsecodePartyNear(this) : dist > (float)m_eggData.m_distance);
+				// Monster, weather, and teleporter PartyNear hatch for any
+				// companion. Reset only after the whole party has left.
+				const bool partyProximity = m_eggData.m_criteria == EggCriteria::PartyNear
+					&& (m_eggData.m_type == EggType::MonsterSpawner
+						|| m_eggData.m_type == EggType::Weather
+						|| m_eggData.m_type == EggType::Teleporter);
+				bool outside = false;
+				if (fieldPlate)
+				{
+					outside = !Shape200FieldPlateTripped(this);
+				}
+				else if (partyUsecode)
+				{
+					outside = !UsecodePartyNear(this);
+				}
+				else if (partyProximity && m_eggData.m_type == EggType::Teleporter)
+				{
+					const float radius = (m_eggData.m_distance > 0)
+						? static_cast<float>(m_eggData.m_distance)
+						: 2.0f;
+					outside = !EuclideanPartyNear(this, radius, true);
+				}
+				else if (partyProximity && m_eggData.m_type == EggType::Weather)
+				{
+					const float radius = (m_eggData.m_distance > 0)
+						? static_cast<float>(m_eggData.m_distance)
+						: 2.0f;
+					outside = !EuclideanPartyNear(this, radius, false);
+				}
+				else if (partyProximity)
+				{
+					outside = !EuclideanPartyNear(this, static_cast<float>(m_eggData.m_distance), false);
+				}
+				else
+				{
+					outside = dist > static_cast<float>(m_eggData.m_distance);
+				}
 				if (outside)
 				{
 					m_eggData.m_rolledThisVisit = false;
@@ -588,6 +646,54 @@ static bool IsPartyCombatant(const U7Object* unit)
 		&& unit->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC
 		&& g_Player
 		&& g_Player->NPCIDInParty(unit->m_NPCID);
+}
+
+// A companion still in the fight: health left, not a corpse, not packed away.
+// Spell sleep with HP remaining counts. A knockout does not.
+static bool AnotherPartyMemberIsUp(const U7Object* avatar)
+{
+	if (!avatar || !g_Player)
+		return false;
+	for (int npcId : g_Player->GetPartyMemberIds())
+	{
+		if (npcId == avatar->m_NPCID)
+			continue;
+		auto it = g_NPCData.find(npcId);
+		if (it == g_NPCData.end() || !it->second)
+			continue;
+		U7Object* member = GetObjectFromID(it->second->m_objectID);
+		if (!member || member->m_isContained)
+			continue;
+		if (member->GetIsDead() || member->IsDeathStatus())
+			continue;
+		if (member->m_hp <= 0.0f)
+			continue;
+		return true;
+	}
+	return false;
+}
+
+// The next hostile update acquires someone still standing.
+static void RetargetEnemiesOffAvatar(const U7Object* avatar)
+{
+	if (!avatar)
+		return;
+	const int avatarId = static_cast<int>(avatar->m_ID);
+	for (auto& entry : g_objectList)
+	{
+		U7Object* unit = entry.second.get();
+		if (!unit || unit->m_target != avatarId)
+			continue;
+		if (!IsHostileCombatant(unit))
+			continue;
+		unit->m_target = 0;
+		unit->m_combatPathTargetId = 0;
+		unit->m_pathWaypoints.clear();
+		unit->m_currentWaypointIndex = 0;
+		unit->m_pathfindingPending = false;
+		unit->m_isMoving = false;
+		unit->SetDest(unit->m_Pos);
+	}
 }
 
 namespace
@@ -882,6 +988,9 @@ bool U7Object::EngageCombatTarget()
 		if (wasParty)
 		{
 			m_combatMoveOrder = false;
+			// Stance combat picks the next foe. Do not Hold or pause the fight.
+			if (UsesOriginalStanceCombat())
+				return false;
 			// Ranged: keep Attack mode with no target and finish cooldown / shot anim
 			// before auto-pausing, so a newly issued target can fire immediately.
 			U7Object* weapon = GetEquippedWeapon(this);
@@ -1005,6 +1114,14 @@ bool U7Object::EngageCombatTarget()
 				U7Object* ammo = FindCombatAmmo(this, weaponShape, needsAmmo);
 				if (needsAmmo && !ammo)
 				{
+					// Stance combat keeps going. Running dry must not pause the battle
+					// or log every frame.
+					if (UsesOriginalStanceCombat())
+					{
+						m_cooldownTimer = 2.0f;
+						++g_perf.engageCombatCalls;
+						return true;
+					}
 					const char* ammoName = WeaponUsesBolts(weaponShape) ? "bolts" : "arrows";
 					if (g_mainState)
 					{
@@ -1173,13 +1290,22 @@ void U7Object::HostileCombatUpdate()
 		return;
 	}
 
-	// Quas Wis. Turn-based flees on that unit's own turn. Real time runs here.
+	// Quas Wis runs from its oppressor. A flee stance runs from the nearest foe.
+	// Turn-based flees on that unit's own turn.
 	if (IsFleeing())
 	{
 		const bool turnBased = g_isCombatMode && g_mainState && g_mainState->m_combatMode
 			&& g_mainState->m_combatMode->GetStyle() == CombatStyle::TurnBased;
 		if (!turnBased)
-			UpdateFearFlee();
+		{
+			if (m_fearOppressorId != 0)
+				UpdateFearFlee();
+			else
+			{
+				const int foeId = SelectAttackModeTarget(true);
+				UpdateFleeFrom(foeId > 0 ? GetObjectFromID(foeId) : nullptr);
+			}
+		}
 		return;
 	}
 
@@ -1201,6 +1327,11 @@ void U7Object::HostileCombatUpdate()
 
 	auto isValidPartyTarget = [&](U7Object* candidate) -> bool {
 		if (!candidate || candidate->GetIsDead() || candidate->IsDeathStatus())
+			return false;
+		// Unconscious, not a corpse, while a companion is still up. An enemy
+		// who already has her may finish her once the rest of the party is down.
+		if (candidate->m_NPCID == 0 && candidate->m_hp <= 0.0f
+			&& AnotherPartyMemberIsUp(candidate))
 			return false;
 		if (candidate->IsInvisible() && !CanSeeInvisible())
 			return false;
@@ -1258,8 +1389,12 @@ void U7Object::HostileCombatUpdate()
 	};
 
 	auto selectPreferredTarget = [&]() -> int {
-		// New targets stay on the party. An insect pulls aggro only when its
-		// harass roll in NotifyAttackedBy succeeds; that target stays valid above.
+		// Original combat: stance (nearest, berserk, flee, …) picks the foe.
+		// RTwP and turn-based stay on the nearest party member. An insect pulls
+		// aggro only when its harass roll in NotifyAttackedBy succeeds.
+		if (g_isCombatMode && g_mainState && g_mainState->m_combatMode
+			&& g_mainState->m_combatMode->GetStyle() == CombatStyle::Original)
+			return SelectAttackModeTarget(true);
 		return selectNearestPartyTarget();
 	};
 
@@ -1281,6 +1416,399 @@ void U7Object::HostileCombatUpdate()
 	{
 		// Target may have died during engage validation — retarget once this frame.
 		m_target = selectPreferredTarget();
+		if (m_target != 0)
+			EngageCombatTarget();
+	}
+	UpdateMovement();
+}
+
+namespace
+{
+	void HaltCombatChase(U7Object* unit)
+	{
+		if (!unit)
+			return;
+		unit->m_combatMoveOrder = false;
+		unit->m_pathWaypoints.clear();
+		unit->m_currentWaypointIndex = 0;
+		unit->m_pathfindingPending = false;
+		unit->m_isMoving = false;
+		unit->SetDest(unit->m_Pos);
+	}
+
+	int CombatStrength(U7Object* unit)
+	{
+		if (!unit)
+			return 1;
+		if (unit->m_NPCID == 0 && g_Player)
+			return g_Player->GetStr();
+		if (unit->m_NPCData && unit->m_NPCData->str > 0)
+			return static_cast<int>(unit->m_NPCData->str);
+		if (unit->m_BaseMaxHP > 0.0f)
+			return static_cast<int>(unit->m_BaseMaxHP);
+		return 1;
+	}
+
+	int CombatRoll(int count)
+	{
+		if (count <= 1)
+			return 0;
+		if (g_NonVitalRNG)
+			return static_cast<int>(g_NonVitalRNG->Random(static_cast<unsigned int>(count)));
+		return 0;
+	}
+
+	void CollectPartyMembers(std::vector<U7Object*>& out)
+	{
+		if (!g_Player)
+			return;
+		for (int npcId : g_Player->GetPartyMemberIds())
+		{
+			auto it = g_NPCData.find(npcId);
+			if (it == g_NPCData.end() || !it->second)
+				continue;
+			if (U7Object* member = GetObjectFromID(it->second->m_objectID))
+				out.push_back(member);
+		}
+		U7Object* avatar = g_Player->GetAvatarObject();
+		if (!avatar)
+			return;
+		for (U7Object* member : out)
+		{
+			if (member == avatar)
+				return;
+		}
+		out.push_back(avatar);
+	}
+
+	U7Object* FindCombatProtectedPartyMember()
+	{
+		std::vector<U7Object*> party;
+		CollectPartyMembers(party);
+		for (U7Object* member : party)
+		{
+			if (!member || !member->m_combatProtected)
+				continue;
+			if (member->GetIsDead() || member->IsDeathStatus())
+				continue;
+			return member;
+		}
+		return nullptr;
+	}
+
+	bool AllyIsAttacking(const U7Object* self, int foeId, bool selfHuntsParty)
+	{
+		if (!self || foeId <= 0)
+			return false;
+		auto hitting = [&](U7Object* ally) -> bool {
+			return ally && ally != self && ally->m_target == foeId;
+		};
+		if (!g_mainState)
+			return false;
+		if (selfHuntsParty)
+		{
+			for (int id : g_mainState->m_combatParticipants)
+			{
+				U7Object* ally = GetObjectFromID(id);
+				if (ally && ally->m_Team == 1 && hitting(ally))
+					return true;
+			}
+			return false;
+		}
+		std::vector<U7Object*> party;
+		CollectPartyMembers(party);
+		for (U7Object* ally : party)
+		{
+			if (hitting(ally))
+				return true;
+		}
+		for (int id : g_mainState->m_combatParticipants)
+		{
+			U7Object* ally = GetObjectFromID(id);
+			if (ally && ally->m_Team == 2 && hitting(ally))
+				return true;
+		}
+		return false;
+	}
+
+	bool AttackModeFoeOk(const U7Object* self, U7Object* foe, bool requireLos)
+	{
+		if (!self || !foe || foe == self || foe->m_isContained)
+			return false;
+		if (foe->GetIsDead() || foe->IsDeathStatus() || foe->m_hp <= 0.0f)
+			return false;
+		if (foe->IsInvisible() && !self->CanSeeInvisible())
+			return false;
+		if (!AreUnitsOnSameDungeonLayer(self, foe))
+			return false;
+		const float distSqr = Vector2DistanceSqr(
+			{ self->m_Pos.x, self->m_Pos.z },
+			{ foe->m_Pos.x, foe->m_Pos.z });
+		if (distSqr > kHostileAggroRangeSqr)
+			return false;
+		if (requireLos && self->m_target != static_cast<int>(foe->m_ID)
+			&& !HasCombatLineOfSight(self, foe))
+			return false;
+		return true;
+	}
+
+	struct AttackModeFoe
+	{
+		U7Object* obj = nullptr;
+		float dist = 0.0f;
+		int str = 1;
+		bool allyOnThem = false;
+	};
+
+	U7Object* NearestFoe(const std::vector<AttackModeFoe>& foes)
+	{
+		U7Object* best = nullptr;
+		float bestScore = 1.0e12f;
+		for (const AttackModeFoe& foe : foes)
+		{
+			float score = foe.dist;
+			if (foe.allyOnThem)
+				score += 16.0f;
+			if (foe.obj->IsFleeing())
+				score += 32.0f;
+			if (score < bestScore)
+			{
+				bestScore = score;
+				best = foe.obj;
+			}
+		}
+		return best;
+	}
+
+	U7Object* WeakestFoe(const std::vector<AttackModeFoe>& foes)
+	{
+		U7Object* best = nullptr;
+		int bestStr = 100000;
+		float bestDist = 1.0e12f;
+		for (const AttackModeFoe& foe : foes)
+		{
+			if (foe.str < bestStr || (foe.str == bestStr && foe.dist < bestDist))
+			{
+				bestStr = foe.str;
+				bestDist = foe.dist;
+				best = foe.obj;
+			}
+		}
+		return best;
+	}
+
+	U7Object* StrongestFoe(const std::vector<AttackModeFoe>& foes)
+	{
+		U7Object* best = nullptr;
+		int bestStr = -1;
+		float bestDist = 1.0e12f;
+		for (const AttackModeFoe& foe : foes)
+		{
+			if (foe.str > bestStr || (foe.str == bestStr && foe.dist < bestDist))
+			{
+				bestStr = foe.str;
+				bestDist = foe.dist;
+				best = foe.obj;
+			}
+		}
+		return best;
+	}
+
+	U7Object* RandomFoe(const std::vector<AttackModeFoe>& foes)
+	{
+		for (int attempt = 0; attempt < 3; ++attempt)
+		{
+			const AttackModeFoe& foe = foes[static_cast<size_t>(CombatRoll(static_cast<int>(foes.size())))];
+			if (!foe.allyOnThem)
+				return foe.obj;
+		}
+		return WeakestFoe(foes);
+	}
+}
+
+int U7Object::SelectAttackModeTarget(bool foesAreParty)
+{
+	std::vector<U7Object*> raw;
+	if (foesAreParty)
+	{
+		CollectPartyMembers(raw);
+	}
+	else
+	{
+		const int chunkX = static_cast<int>(m_Pos.x) / 16;
+		const int chunkZ = static_cast<int>(m_Pos.z) / 16;
+		for (int dz = -2; dz <= 2; ++dz)
+		{
+			for (int dx = -2; dx <= 2; ++dx)
+			{
+				const int cx = chunkX + dx;
+				const int cz = chunkZ + dz;
+				if (cx < 0 || cz < 0 || cx >= 192 || cz >= 192)
+					continue;
+				for (U7Object* obj : g_chunkObjectMap[cx][cz])
+				{
+					if (!IsHostileCombatUnit(obj))
+						continue;
+					bool seen = false;
+					for (U7Object* have : raw)
+					{
+						if (have == obj)
+						{
+							seen = true;
+							break;
+						}
+					}
+					if (!seen)
+						raw.push_back(obj);
+				}
+			}
+		}
+	}
+
+	std::vector<AttackModeFoe> foes;
+	for (U7Object* obj : raw)
+	{
+		if (!AttackModeFoeOk(this, obj, true))
+			continue;
+		if (foesAreParty)
+		{
+			if (obj->m_UnitType != UnitTypes::UNIT_TYPE_NPC)
+				continue;
+			const bool avatar = obj->m_NPCID == 0;
+			if (!avatar && (!g_Player || !g_Player->NPCIDInParty(obj->m_NPCID)))
+				continue;
+		}
+		AttackModeFoe foe;
+		foe.obj = obj;
+		foe.dist = std::sqrt(Vector2DistanceSqr(
+			{ m_Pos.x, m_Pos.z },
+			{ obj->m_Pos.x, obj->m_Pos.z }));
+		foe.str = CombatStrength(obj);
+		foe.allyOnThem = AllyIsAttacking(this, static_cast<int>(obj->m_ID), foesAreParty);
+		foes.push_back(foe);
+	}
+	if (foes.empty())
+		return 0;
+
+	int mode = m_attackMode;
+	if (mode == static_cast<int>(AttackMode::Flee)
+		|| mode == static_cast<int>(AttackMode::Manual))
+		mode = static_cast<int>(AttackMode::Nearest);
+
+	U7Object* chosen = nullptr;
+	switch (mode)
+	{
+	case static_cast<int>(AttackMode::Weakest):
+		chosen = WeakestFoe(foes);
+		break;
+	case static_cast<int>(AttackMode::Strongest):
+		chosen = StrongestFoe(foes);
+		break;
+	case static_cast<int>(AttackMode::Berserk):
+		chosen = (CombatRoll(2) == 0) ? RandomFoe(foes) : NearestFoe(foes);
+		break;
+	case static_cast<int>(AttackMode::Random):
+		chosen = RandomFoe(foes);
+		break;
+	case static_cast<int>(AttackMode::Defend):
+	{
+		const int maxHp = CombatStrength(this);
+		const int currHp = static_cast<int>(m_hp);
+		chosen = (maxHp <= 2 * currHp) ? NearestFoe(foes) : WeakestFoe(foes);
+		break;
+	}
+	case static_cast<int>(AttackMode::Flank):
+	{
+		std::vector<AttackModeFoe> ganged;
+		for (const AttackModeFoe& foe : foes)
+		{
+			if (foe.allyOnThem)
+				ganged.push_back(foe);
+		}
+		chosen = ganged.empty() ? NearestFoe(foes) : NearestFoe(ganged);
+		break;
+	}
+	case static_cast<int>(AttackMode::Protect):
+	{
+		U7Object* ward = FindCombatProtectedPartyMember();
+		if (ward)
+		{
+			U7Object* best = nullptr;
+			float bestDist = 1.0e12f;
+			const int wardId = static_cast<int>(ward->m_ID);
+			for (const AttackModeFoe& foe : foes)
+			{
+				if (foe.obj->m_target == wardId && foe.dist < bestDist)
+				{
+					bestDist = foe.dist;
+					best = foe.obj;
+				}
+			}
+			chosen = best;
+		}
+		if (!chosen)
+			chosen = NearestFoe(foes);
+		break;
+	}
+	case static_cast<int>(AttackMode::Nearest):
+	default:
+		chosen = NearestFoe(foes);
+		break;
+	}
+
+	return chosen ? static_cast<int>(chosen->m_ID) : 0;
+}
+
+bool U7Object::UsesOriginalStanceCombat() const
+{
+	if (!g_isCombatMode || !g_mainState || !g_mainState->m_combatMode)
+		return false;
+	if (g_mainState->m_combatMode->GetStyle() != CombatStyle::Original)
+		return false;
+	// Manual is the Avatar's click-order stance. Everyone else, and an Avatar
+	// on any other stance, fights from m_attackMode.
+	if (m_NPCID == 0 && m_attackMode == static_cast<int>(AttackMode::Manual))
+		return false;
+	return true;
+}
+
+void U7Object::UpdateOriginalCombat()
+{
+	if (IsDeathStatus() || GetIsDead())
+		return;
+	if ((m_flags & kObjFlagAsleep) != 0 || (m_flags & kObjFlagParalyzed) != 0 || IsKnockedOut())
+		return;
+
+	RefreshPartyAttackRangeFromWeapon(this);
+
+	if (m_attackMode == static_cast<int>(AttackMode::Flee))
+	{
+		if (m_fearOppressorId != 0)
+			UpdateFearFlee();
+		else
+		{
+			const int foeId = SelectAttackModeTarget(false);
+			UpdateFleeFrom(foeId > 0 ? GetObjectFromID(foeId) : nullptr);
+		}
+		return;
+	}
+
+	U7Object* current = (m_target > 0) ? GetObjectFromID(m_target) : nullptr;
+	if (!AttackModeFoeOk(this, current, false) || !IsHostileCombatUnit(current))
+		m_target = 0;
+	if (m_target == 0)
+		m_target = SelectAttackModeTarget(false);
+
+	if (m_target == 0)
+	{
+		HaltCombatChase(this);
+		UpdateMovement();
+		return;
+	}
+
+	if (!EngageCombatTarget())
+	{
+		m_target = SelectAttackModeTarget(false);
 		if (m_target != 0)
 			EngageCombatTarget();
 	}
@@ -1812,8 +2340,8 @@ void U7Object::StartSleepTimer()
 	const float now = SpellClockNow();
 	m_sleepNextMendCheckAt = now + g_secsPerMinute * 0.5f;
 
-	// Knockout stays on the real-time timer. Combat already refuses to mend,
-	// so HP <= 0 does not stand back up mid-fight.
+	// Knockout stays on the real-time timer. Hostiles do not mend during
+	// combat, so they stay down. Party members do mend, and stand once HP >= 1.
 	if (m_hp <= 0.0f || !InTurnBasedCombat())
 	{
 		m_sleepTurnsRemaining = 0;
@@ -1882,9 +2410,10 @@ void U7Object::UpdateSleepTimer()
 	const float now = SpellClockNow();
 	const bool inParty = g_Player && g_Player->NPCIDInParty(m_NPCID);
 
-	// While health <= 0, mend toward wake. Do not regenerate during combat —
-	// otherwise KO'd enemies stand up mid-fight (especially noticeable in TB).
-	if (m_hp <= 0.0f && !g_isCombatMode)
+	// While health <= 0, mend toward wake. Hostiles stay down for the whole
+	// fight, or a KO'd pirate stands back up. A party member at 0 is
+	// unconscious, not dead, and still mends while companions are fighting.
+	if (m_hp <= 0.0f && (!g_isCombatMode || inParty))
 	{
 		if (now >= m_sleepNextMendCheckAt)
 		{
@@ -2230,9 +2759,23 @@ void U7Object::SetAttackMode(int mode)
 {
 	if (mode < 0)
 		mode = 0;
+	if (mode > static_cast<int>(AttackMode::Manual))
+		mode = static_cast<int>(AttackMode::Manual);
 	m_attackMode = mode;
-	if (mode != 7)
+	if (mode != static_cast<int>(AttackMode::Flee))
 		m_fearOppressorId = 0;
+}
+
+bool U7Object::IsFleeing() const
+{
+	if (m_attackMode != static_cast<int>(AttackMode::Flee))
+		return false;
+	// Quas Wis always runs. A flee stance only takes over during original combat,
+	// so RTwP and turn-based enemies keep their existing chase.
+	if (m_fearOppressorId != 0)
+		return true;
+	return g_isCombatMode && g_mainState && g_mainState->m_combatMode
+		&& g_mainState->m_combatMode->GetStyle() == CombatStyle::Original;
 }
 
 U7Object* U7Object::FearOppressor() const
@@ -2264,16 +2807,28 @@ void U7Object::StartFear(int oppressorId)
 
 void U7Object::UpdateFearFlee()
 {
-	if (IsDeathStatus() || GetIsDead())
-		return;
+	UpdateFleeFrom(FearOppressor());
+}
 
-	U7Object* from = FearOppressor();
-	if (!from)
+void U7Object::UpdateFleeFrom(U7Object* from)
+{
+	if (IsDeathStatus() || GetIsDead())
 		return;
 
 	m_target = 0;
 	m_combatMoveOrder = false;
 	m_combatPathTargetId = 0;
+
+	if (!from)
+	{
+		m_pathWaypoints.clear();
+		m_currentWaypointIndex = 0;
+		m_pathfindingPending = false;
+		m_isMoving = false;
+		SetDest(m_Pos);
+		UpdateMovement();
+		return;
+	}
 
 	const float dx = m_Pos.x - from->m_Pos.x;
 	const float dz = m_Pos.z - from->m_Pos.z;
@@ -5009,6 +5564,12 @@ void U7Object::HandleMonsterSpawnerEgg()
 				if (!egg.m_hasTriggered && Shape200FieldPlateTripped(this))
 					shouldActivate = true;
 			}
+			else if (egg.m_criteria == EggCriteria::PartyNear)
+			{
+				if (!egg.m_hasTriggered
+					&& EuclideanPartyNear(this, static_cast<float>(egg.m_distance), false))
+					shouldActivate = true;
+			}
 			else if (dist <= (float)egg.m_distance && !egg.m_hasTriggered)
 				shouldActivate = true;
 			break;
@@ -5428,6 +5989,46 @@ static std::string CapitalizeMonsterName(const std::string& name)
 	return out;
 }
 
+static int RollMonsterAttackMode(unsigned char categoryByte)
+{
+	// Exult Monster_info: low 3 bits, with 0 remapped to the unpredictable row.
+	int cat = categoryByte & 7;
+	if (cat == 0)
+		cat = 2;
+	else
+		--cat;
+	if (cat < 0)
+		cat = 0;
+	if (cat > 4)
+		cat = 4;
+
+	static const int odds[5][4] = {
+		{ 20, 45, 70, 100 },
+		{ 50, 100, 0, 0 },
+		{ 35, 70, 100, 0 },
+		{ 35, 55, 70, 100 },
+		{ 50, 100, 0, 0 }
+	};
+	static const int modes[5][4] = {
+		{ static_cast<int>(AttackMode::Nearest), static_cast<int>(AttackMode::Random), static_cast<int>(AttackMode::Flee), static_cast<int>(AttackMode::Nearest) },
+		{ static_cast<int>(AttackMode::Weakest), static_cast<int>(AttackMode::Nearest), static_cast<int>(AttackMode::Nearest), static_cast<int>(AttackMode::Nearest) },
+		{ static_cast<int>(AttackMode::Nearest), static_cast<int>(AttackMode::Random), static_cast<int>(AttackMode::Nearest), static_cast<int>(AttackMode::Nearest) },
+		{ static_cast<int>(AttackMode::Flank), static_cast<int>(AttackMode::Defend), static_cast<int>(AttackMode::Weakest), static_cast<int>(AttackMode::Strongest) },
+		{ static_cast<int>(AttackMode::Berserk), static_cast<int>(AttackMode::Nearest), static_cast<int>(AttackMode::Nearest), static_cast<int>(AttackMode::Nearest) }
+	};
+
+	int prob = 0;
+	if (g_NonVitalRNG)
+		prob = static_cast<int>(g_NonVitalRNG->Random(100u));
+	int i = 0;
+	for (; i < 3; ++i)
+	{
+		if (prob < odds[cat][i])
+			break;
+	}
+	return modes[cat][i];
+}
+
 void U7Object::MonsterInit()
 {
 	m_speed = 5.0f;
@@ -5450,6 +6051,7 @@ void U7Object::MonsterInit()
 			// with their WEAPONS.DAT row instead of this value.
 			if (m_BaseAttack <= 0.0f && md.m_damage > 0)
 				m_BaseAttack = static_cast<float>(md.m_damage);
+			m_attackMode = RollMonsterAttackMode(md.m_monsterCategory);
 			break;
 		}
 	}
@@ -5617,8 +6219,16 @@ void U7Object::HandleWeatherEgg()
 			justTriggered = true;
 		}
 		break;
-	case EggCriteria::AvatarNear:
 	case EggCriteria::PartyNear:
+		{
+			const float radius = (egg.m_distance > 0)
+				? static_cast<float>(egg.m_distance)
+				: 2.0f;
+			if (EuclideanPartyNear(this, radius, false))
+				justTriggered = true;
+		}
+		break;
+	case EggCriteria::AvatarNear:
 	default:
 		{
 			const float radius = (egg.m_distance > 0)
@@ -5726,8 +6336,17 @@ void U7Object::HandleTeleporterEgg()
 		}
 		break;
 
-	case EggCriteria::AvatarNear:
 	case EggCriteria::PartyNear:
+		{
+			const float radius = (m_eggData.m_distance > 0)
+				? static_cast<float>(m_eggData.m_distance)
+				: 2.0f;
+			if (EuclideanPartyNear(this, radius, true))
+				justTriggered = true;
+		}
+		break;
+
+	case EggCriteria::AvatarNear:
 	default:
 		// Default: proximity radius (Exult: any tile in area, exact lift).
 		{
@@ -7397,6 +8016,13 @@ void U7Object::NPCUpdate()
 			return;
 		}
 
+		// Original: stance combat, including the Avatar unless they are on Manual.
+		if (UsesOriginalStanceCombat())
+		{
+			UpdateOriginalCombat();
+			return;
+		}
+
 		if (m_combatOrderMode == CombatOrderMode::Hold
 		    || m_combatOrderMode == CombatOrderMode::Automatic)
 		{
@@ -7810,6 +8436,101 @@ void U7Object::NPCUpdate()
 	UpdateMovement();
 }
 
+// Someone else already has this square. Step to a free neighbor so an
+// in-range hold cannot freeze a pile. Combat pause never reaches here.
+// Returns true when a step off was armed (Dest set, old path dropped).
+static bool TryStepOffSharedSquare(U7Object* unit)
+{
+	if (!unit || !g_pathfindingSystem)
+		return false;
+	if (unit->m_isContained || unit->m_Team == 2)
+		return false;
+	if (unit->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_NPC
+		&& unit->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_MONSTER)
+		return false;
+	if (unit->GetIsDead() || unit->IsDeathStatus() || unit->IsKnockedOut())
+		return false;
+	if ((unit->m_flags & kObjFlagAsleep) != 0 || (unit->m_flags & kObjFlagParalyzed) != 0)
+		return false;
+	// A chair or a bed owns this tile with the sitter. A usecode script owns the body.
+	if (unit->GetFurnitureObjectId() >= 0 || unit->IsSittingPose() || unit->IsSleepingPose())
+		return false;
+	if (unit->IsInUsecodeScript())
+		return false;
+
+	const int tileX = (int)floorf(unit->m_Pos.x);
+	const int tileZ = (int)floorf(unit->m_Pos.z);
+	if (!g_pathfindingSystem->IsTileOccupiedByAnotherUnit(tileX, tileZ, unit->m_Pos.y, unit))
+		return false;
+
+	U7Object* focus = (unit->m_target > 0) ? GetObjectFromID(unit->m_target) : nullptr;
+
+	struct StepOff
+	{
+		int x;
+		int z;
+		float score;
+	};
+	std::vector<StepOff> cands;
+	cands.reserve(8);
+
+	const int dirs[8][2] = {
+		{0, -1}, {0, 1}, {1, 0}, {-1, 0},
+		{1, -1}, {1, 1}, {-1, -1}, {-1, 1}
+	};
+	for (int i = 0; i < 8; ++i)
+	{
+		const int nx = tileX + dirs[i][0];
+		const int nz = tileZ + dirs[i][1];
+		const bool diagonal = (dirs[i][0] != 0 && dirs[i][1] != 0);
+		if (diagonal)
+		{
+			if (!g_pathfindingSystem->IsPositionWalkable(tileX + dirs[i][0], tileZ, unit->m_Pos.y, unit))
+				continue;
+			if (!g_pathfindingSystem->IsPositionWalkable(tileX, tileZ + dirs[i][1], unit->m_Pos.y, unit))
+				continue;
+		}
+		if (!g_pathfindingSystem->IsPositionWalkable(nx, nz, unit->m_Pos.y, unit))
+			continue;
+
+		float score = (float)nx * 4096.0f + (float)nz;
+		if (focus)
+		{
+			const float dx = (nx + 0.5f) - focus->m_Pos.x;
+			const float dz = (nz + 0.5f) - focus->m_Pos.z;
+			score = dx * dx + dz * dz;
+		}
+		cands.push_back(StepOff{ nx, nz, score });
+	}
+	if (cands.empty())
+		return false;
+
+	std::sort(cands.begin(), cands.end(), [](const StepOff& a, const StepOff& b) {
+		if (a.score != b.score)
+			return a.score < b.score;
+		if (a.x != b.x)
+			return a.x < b.x;
+		return a.z < b.z;
+	});
+
+	int pool = (int)cands.size();
+	if (focus)
+		pool = std::max(1, (pool + 1) / 2);
+	int id = unit->m_ID;
+	if (id < 0)
+		id = -id;
+	const StepOff& chosen = cands[id % pool];
+
+	unit->m_pathWaypoints.clear();
+	unit->m_currentWaypointIndex = 0;
+	unit->m_pathfindingPending = false;
+	unit->m_isSchedulePath = false;
+	const Vector3 dest{ chosen.x + 0.5f, unit->m_Pos.y, chosen.z + 0.5f };
+	unit->SetDest(dest);
+	unit->m_isMoving = true;
+	return true;
+}
+
 void U7Object::UpdateMovement()
 {
 	// Shared movement for NPCs, monsters, and avatar path-follow.
@@ -7818,6 +8539,11 @@ void U7Object::UpdateMovement()
 
 	// After standing up, drop the furniture collision-ignore once clear of the seat.
 	ReleaseFurnitureIfClear();
+
+	// Pirates (and anyone else) already sharing a square walk off before the
+	// waypoint snap or an in-range hold can pin them there. Crow-fly cancel
+	// below must not drop this one-tile step.
+	const bool steppingOffShared = TryStepOffSharedSquare(this);
 
 	// Walk-to-use: close enough to operate → cancel pathfinding and fire.
 	// (Stand tiles between furniture are often unreachable; don't wait for exact arrival.)
@@ -7859,9 +8585,18 @@ void U7Object::UpdateMovement()
 
 		if (distXZ < threshold)
 		{
-			SetPos(wp);
-			SetDest(wp);
-			advanceWaypoint();
+			// Arrival used to SetPos onto the waypoint with no occupancy test,
+			// so a whole crew could land on one shared standoff tile.
+			const int wpX = (int)floorf(wp.x);
+			const int wpZ = (int)floorf(wp.z);
+			const bool occupied = g_pathfindingSystem
+				&& g_pathfindingSystem->IsTileOccupiedByAnotherUnit(wpX, wpZ, m_Pos.y, this);
+			if (!occupied)
+			{
+				SetPos(wp);
+				SetDest(wp);
+				advanceWaypoint();
+			}
 		}
 	}
 
@@ -7879,7 +8614,7 @@ void U7Object::UpdateMovement()
 	// walks still require waypoints.
 	const bool combatHostileChase = m_target != 0 && IsHostileCombatUnit(this);
 	const bool alliedSummonMove = IsAlliedSummonUnit(this);
-	if (!isAvatar && !isPartyFollower && !combatHostileChase && !alliedSummonMove &&
+	if (!steppingOffShared && !isAvatar && !isPartyFollower && !combatHostileChase && !alliedSummonMove &&
 	    (m_UnitType == UnitTypes::UNIT_TYPE_NPC || m_UnitType == UnitTypes::UNIT_TYPE_MONSTER) &&
 	    m_pathWaypoints.empty())
 	{
@@ -8877,6 +9612,10 @@ void U7Object::ApplyKnockOut()
 
 	const std::string label = m_name.empty() ? "Someone" : m_name;
 	NoteCombatLogClause(label + " is down!", ORANGE);
+
+	// While companions are up she cannot be finished, so hostiles switch off her.
+	if (m_NPCID == 0 && AnotherPartyMemberIsUp(this))
+		RetargetEnemiesOffAvatar(this);
 }
 
 void U7Object::ClearSleep()
@@ -8981,6 +9720,16 @@ void U7Object::ApplyDeath(bool quiet)
 	if (IsDeathStatus())
 	{
 		m_hp = 0.0f;
+		return;
+	}
+
+	// Lethal damage leaves her unconscious at 0 while someone else is up.
+	// ApplyKnockOut bails out if she is already down, so retarget here too.
+	if (m_NPCID == 0 && AnotherPartyMemberIsUp(this))
+	{
+		m_hp = 0.0f;
+		ApplyKnockOut();
+		RetargetEnemiesOffAvatar(this);
 		return;
 	}
 
@@ -11096,6 +11845,11 @@ void U7Object::NPCInit(NPCData* npcData)
 		m_speed = 5.0f;
 	}
 	m_NPCID = npcData->id;
+	// Low nibble is the combat stance. Bit 4 is the protect halo.
+	m_attackMode = npcData->DAM & 0x0f;
+	if (m_attackMode > static_cast<int>(AttackMode::Manual))
+		m_attackMode = static_cast<int>(AttackMode::Nearest);
+	m_combatProtected = (npcData->DAM & (1 << 4)) != 0;
 	m_attackRange = MELEE_RANGE_TILES;
 	m_anchorPos = m_Pos;
 	m_hp = npcData->health;
@@ -11390,10 +12144,23 @@ json U7Object::SaveToJson() const
 		j["danceTurnsRemaining"] = m_danceTurnsRemaining;
 	else if (m_danceEndsAt > SpellClockNow())
 		j["danceRemaining"] = m_danceEndsAt - SpellClockNow();
-	if (m_attackMode == 7)
 	{
-		j["attackMode"] = m_attackMode;
-		j["fearOppressorId"] = m_fearOppressorId;
+		int fileMode = 0;
+		bool fileProtected = false;
+		if (m_NPCData)
+		{
+			fileMode = m_NPCData->DAM & 0x0f;
+			fileProtected = (m_NPCData->DAM & (1 << 4)) != 0;
+		}
+		const bool monster = m_UnitType == UnitTypes::UNIT_TYPE_MONSTER;
+		if (monster || m_attackMode != fileMode || m_fearOppressorId != 0)
+		{
+			j["attackMode"] = m_attackMode;
+			if (m_fearOppressorId != 0)
+				j["fearOppressorId"] = m_fearOppressorId;
+		}
+		if (m_combatProtected != fileProtected)
+			j["combatProtected"] = m_combatProtected;
 	}
 	if (m_invisibilityEndsAt > 0.0f)
 	{
@@ -11637,10 +12404,11 @@ U7Object* U7Object::LoadFromJson(const json& j)
 		obj->m_flags |= kObjFlagInAction;
 	else
 		obj->m_flags &= ~kObjFlagInAction;
-	obj->m_attackMode = j.value("attackMode", 0);
-	if (obj->m_attackMode != 7)
-		obj->m_attackMode = 0;
-	obj->m_fearOppressorId = j.value("fearOppressorId", 0);
+	const bool hasAttackMode = j.contains("attackMode");
+	const int savedAttackMode = j.value("attackMode", 0);
+	const int savedFearOppressor = j.value("fearOppressorId", 0);
+	const bool hasCombatProtected = j.contains("combatProtected");
+	const bool savedCombatProtected = j.value("combatProtected", false);
 	if (j.contains("invisibilityRemaining") && j["invisibilityRemaining"].is_number())
 	{
 		const float remaining = j["invisibilityRemaining"].get<float>();
@@ -11750,6 +12518,16 @@ U7Object* U7Object::LoadFromJson(const json& j)
 		obj->m_magic = j.value("magic", 0.0f);
 		obj->m_Team = j.value("team", 0);
 	}
+
+	// NPCInit / MonsterInit load the file or rolled stance. A saved stance wins,
+	// including Quas Wis flee, which is not the npc.dat default.
+	if (hasAttackMode)
+	{
+		obj->SetAttackMode(savedAttackMode);
+		obj->m_fearOppressorId = savedFearOppressor;
+	}
+	if (hasCombatProtected)
+		obj->m_combatProtected = savedCombatProtected;
 
 	// After NPCInit / MonsterInit, which reload the unbuffed stats.
 	// base+bonus is absolute, so a second pass after the player json is safe.

@@ -257,6 +257,10 @@ public:
 
 	static bool AreUnitsHostile(const U7Object* agent, const U7Object* other);
 
+	// Another living upright NPC or monster has their feet on this tile.
+	// Swarm (team 2) does not claim a square. Downed bodies use the hostile-downed rules.
+	bool IsTileOccupiedByAnotherUnit(int worldX, int worldZ, float agentBaseY, const U7Object* agent) const;
+
 	// Overlap / surface helpers (former PathfindingGrid)
 	std::vector<OverlappingObject> GetOverlappingObjects(int worldX, int worldZ) const;
 	float GetTileHeight(int worldX, int worldZ) const;

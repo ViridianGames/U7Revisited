@@ -45,6 +45,52 @@ namespace
 		texture->m_OriginalImage = { 0 };
 	}
 
+	// World-only caltrops (756/0). Inventory keeps the VGA metal sprite.
+	// Opaque texels become one neutral gray; unencoded holes stay clear.
+	// Full light is visible if you look for it. Dark cells scale that gray and its alpha down.
+	constexpr int kCaltropShape = 756;
+	constexpr int kCaltropFrame = 0;
+	constexpr int kCaltropGray = 160;
+	constexpr int kCaltropAlpha = 112;
+
+	Texture2D CaltropWorldTexture(const Image& src)
+	{
+		static Texture2D cached = { 0 };
+		if (cached.id > 0)
+			return cached;
+		if (src.data == nullptr || src.width <= 0 || src.height <= 0)
+			return cached;
+
+		Image ghost = GenImageColor(src.width, src.height, Color{ 0, 0, 0, 0 });
+		Color* pixels = LoadImageColors(src);
+		if (pixels != nullptr)
+		{
+			const int count = src.width * src.height;
+			for (int i = 0; i < count; ++i)
+			{
+				if (pixels[i].a < 128)
+					continue;
+				ImageDrawPixel(&ghost, i % src.width, i / src.width, WHITE);
+			}
+			UnloadImageColors(pixels);
+		}
+		cached = LoadTextureFromImage(ghost);
+		SetTextureFilter(cached, TEXTURE_FILTER_POINT);
+		UnloadImage(ghost);
+		return cached;
+	}
+
+	Color CaltropWorldTint(Color light)
+	{
+		const int luma = (static_cast<int>(light.r) + static_cast<int>(light.g) + static_cast<int>(light.b)) / 3;
+		const int gray = (kCaltropGray * luma) / 255;
+		int alpha = (static_cast<int>(light.a) * kCaltropAlpha * luma) / (255 * 255);
+		if (alpha > 255)
+			alpha = 255;
+		const unsigned char g = static_cast<unsigned char>(gray);
+		return Color{ g, g, g, static_cast<unsigned char>(alpha) };
+	}
+
 	// Local hinge after LoadingState Decenter(): DrawModelEx rotates about local
 	// origin (= AABB XZ center). Point is in authored space — subtract Decenter.
 	Vector3 FlagHingeLocal(RaylibModel* mesh)
@@ -1443,10 +1489,21 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 		else
 		{
 			// Same as billboards: discard transparent texels (roofs, floors, etc.).
+			Texture2D diffuse = m_texture->m_Texture;
+			Color drawColor = color;
+			if (m_shape == kCaltropShape && m_frame == kCaltropFrame && m_texture->m_Image.data != nullptr)
+			{
+				const Texture2D ghost = CaltropWorldTexture(m_texture->m_Image);
+				if (ghost.id > 0)
+				{
+					diffuse = ghost;
+					drawColor = CaltropWorldTint(color);
+				}
+			}
 			BeginShaderMode(g_alphaDiscard);
-			SetMaterialTexture(&m_flatModel->GetModel().materials[0], MATERIAL_MAP_DIFFUSE, m_texture->m_Texture);
+			SetMaterialTexture(&m_flatModel->GetModel().materials[0], MATERIAL_MAP_DIFFUSE, diffuse);
 			m_flatModel->UpdateFlatUV(0.0, 1.0, 0.0, 1.0);
-			DrawModelEx(m_flatModel->GetModel(), finalPos, { 0, 1, 0 }, flatRotation, flatScaling, color);
+			DrawModelEx(m_flatModel->GetModel(), finalPos, { 0, 1, 0 }, flatRotation, flatScaling, drawColor);
 			EndShaderMode();
 		}
 		break;
